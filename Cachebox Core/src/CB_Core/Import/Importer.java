@@ -37,7 +37,8 @@ public class Importer
 	}
 
 	/**
-	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden.
+	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden. Oder das GPX-File
+	 * falls eine einzelne Datei übergeben wird.
 	 * 
 	 * @param directoryPath
 	 * @param ip
@@ -51,51 +52,57 @@ public class Importer
 		GPXFileImporter.LogCount = 0;
 
 		// Extract all Zip Files!
-		ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(new File(directoryPath), new ArrayList<File>(), "zip", false);
 
-		ip.setJobMax("ExtractZip", ordnerInhalt_Zip.size());
+		File file = new File(directoryPath);
 
-		for (File tmpZip : ordnerInhalt_Zip)
+		if (file.isDirectory())
 		{
+			ArrayList<File> ordnerInhalt_Zip = FileIO.recursiveDirectoryReader(file, new ArrayList<File>(), "zip", false);
+
+			ip.setJobMax("ExtractZip", ordnerInhalt_Zip.size());
+
+			for (File tmpZip : ordnerInhalt_Zip)
+			{
+				try
+				{
+					Thread.sleep(20);
+				}
+				catch (InterruptedException e2)
+				{
+					return; // Thread Canceld
+				}
+
+				ip.ProgressInkrement("ExtractZip", "", false);
+				// Extract ZIP
+				try
+				{
+					UnZip.extractFolder(tmpZip.getAbsolutePath());
+				}
+				catch (ZipException e)
+				{
+					Logger.Error("Core.Importer.ImportGPX", "ZipException", e);
+					e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					Logger.Error("Core.Importer.ImportGPX", "IOException", e);
+					e.printStackTrace();
+				}
+			}
+
+			if (ordnerInhalt_Zip.size() == 0)
+			{
+				ip.ProgressInkrement("ExtractZip", "", true);
+			}
+
 			try
 			{
-				Thread.sleep(20);
+				Thread.sleep(50);
 			}
 			catch (InterruptedException e2)
 			{
 				return; // Thread Canceld
 			}
-
-			ip.ProgressInkrement("ExtractZip", "", false);
-			// Extract ZIP
-			try
-			{
-				UnZip.extractFolder(tmpZip.getAbsolutePath());
-			}
-			catch (ZipException e)
-			{
-				Logger.Error("Core.Importer.ImportGPX", "ZipException", e);
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				Logger.Error("Core.Importer.ImportGPX", "IOException", e);
-				e.printStackTrace();
-			}
-		}
-
-		if (ordnerInhalt_Zip.size() == 0)
-		{
-			ip.ProgressInkrement("ExtractZip", "", true);
-		}
-
-		try
-		{
-			Thread.sleep(50);
-		}
-		catch (InterruptedException e2)
-		{
-			return; // Thread Canceld
 		}
 
 		// Import all GPX files
@@ -456,12 +463,18 @@ public class Importer
 
 	private File[] GetFilesToLoad(String directoryPath)
 	{
-		// GPX sortieren
-
-		FileIO.DirectoryExists(directoryPath);
-
 		ArrayList<File> files = new ArrayList<File>();
-		files = FileIO.recursiveDirectoryReader(new File(directoryPath), files);
+
+		File file = new File(directoryPath);
+		if (file.isFile())
+		{
+			files.add(file);
+		}
+		else
+		{
+			FileIO.DirectoryExists(directoryPath);
+			files = FileIO.recursiveDirectoryReader(new File(directoryPath), files);
+		}
 
 		File[] fileArray = files.toArray(new File[files.size()]);
 

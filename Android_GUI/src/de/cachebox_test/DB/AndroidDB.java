@@ -81,6 +81,7 @@ public class AndroidDB extends Database
 	@Override
 	public CoreCursor rawQuery(String sql, String[] args)
 	{
+		if (myDB == null) return null;
 		Cursor c = myDB.rawQuery(sql, args);
 		return new AndroidCursor(c);
 	}

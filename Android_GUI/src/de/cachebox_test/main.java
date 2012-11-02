@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -20,6 +21,7 @@ import org.openintents.intents.FileManagerIntents;
 import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.FileIO;
+import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
 import CB_Core.TrackRecorder;
@@ -51,8 +53,11 @@ import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
 import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.runOnGL;
+import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -63,6 +68,9 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL.renderStartet;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.Import.GPXFileImporter;
+import CB_Core.Import.Importer;
+import CB_Core.Import.ImporterProgress;
 import CB_Core.Locator.Locator;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
@@ -186,9 +194,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent, KeyboardFocusChangedEvent
 {
 
-	private ServiceConnection mConnection;
-	private Service myNotifyService;
-	private BroadcastReceiver mReceiver;
+	private static ServiceConnection mConnection;
+	private static Intent serviceIntent;
+	private static Service myNotifyService;
+	private static BroadcastReceiver mReceiver;
 	public boolean KeybordShown = false;
 
 	public HorizontalListView QuickButtonList;
@@ -263,6 +272,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public downSlider InfoDownSlider;
 
 	private String GcCode = null;
+	private String GpxPath = null;
 
 	private boolean mustRunSearch = false;
 
@@ -405,17 +415,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// TODO onCreate => restore more from onSaveInstanceState
 
 		}
+		else
+		{
+			GlobalCore.restartAfterKill = false;
+		}
 
 		ActivityUtils.onActivityCreateSetTheme(this);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		// Initial CB running notification Icon
-		if (mConnection == null)
+		if (mConnection == null && serviceIntent == null || GlobalCore.restartAfterKill)
 		{
-			Intent service = new Intent(this, NotifyService.class);
+			if (serviceIntent == null) serviceIntent = new Intent(this, NotifyService.class);
 
-			mConnection = new ServiceConnection()
+			if (mConnection == null) mConnection = new ServiceConnection()
 			{
 
 				@Override
@@ -432,7 +446,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			};
 
 			NotifyService.finish = false;
-			bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+			try
+			{
+				bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+			}
+			catch (Exception e)
+			{
+				Logger.Error("main on create", "Service register error", e);
+			}
 		}
 
 		if (GlobalCore.isTab)
@@ -492,8 +513,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		initialViewGL();
 		initalMicIcon();
 
-		// initialViewGL();
-
 		glListener.onStart();
 		if (tabFrame != null) tabFrame.setVisibility(View.INVISIBLE);
 		if (frame != null) frame.setVisibility(View.INVISIBLE);
@@ -538,7 +557,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 			else
 			{
-				chkGpsIsOn();
+				if (!GlobalCore.restartAfterKill) chkGpsIsOn();
 			}
 
 			if (Config.settings.newInstall.getValue())
@@ -571,24 +590,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
-		final Bundle extras = getIntent().getExtras();
-		if (!GlobalCore.restartAfterKill && extras != null)
-		{
-			GcCode = extras.getString("GcCode");
-
-			mustRunSearch = true;
-
-		}
-
 		if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
 		if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
 		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
-
-		// Initial PlugIn
-
-		fillPluginList();
-		bindPluginServices();
 
 		// initial hidden EditText
 		initialHiddenEditText();
@@ -648,6 +653,91 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			};
 
 			t.start();
+
+		}
+	}
+
+	CancelWaitDialog wd;
+
+	private void startGPXImport()
+	{
+		Logger.LogCat("startGPXImport");
+		if (GpxPath != null)
+		{
+
+			Timer timer = new Timer();
+			TimerTask task = new TimerTask()
+			{
+				@Override
+				public void run()
+				{
+					Logger.LogCat("startGPXImport:Timer startet");
+					Thread t = new Thread()
+					{
+						public void run()
+						{
+							runOnUiThread(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ImportGPX"), new IcancelListner()
+									{
+
+										@Override
+										public void isCanceld()
+										{
+											wd.close();
+										}
+									}, new Runnable()
+									{
+
+										@Override
+										public void run()
+										{
+											Date ImportStart = new Date();
+											Logger.LogCat("startGPXImport:Timer startet");
+											Importer importer = new Importer();
+											ImporterProgress ip = new ImporterProgress();
+											Database.Data.beginTransaction();
+
+											importer.importGpx(GpxPath, ip);
+
+											Database.Data.setTransactionSuccessful();
+											Database.Data.endTransaction();
+
+											// Import ready
+											wd.close();
+
+											// finish close activity and notify changes
+
+											CachListChangedEventList.Call();
+
+											Date Importfin = new Date();
+											long ImportZeit = Importfin.getTime() - ImportStart.getTime();
+
+											String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C "
+													+ String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
+
+											Logger.DEBUG(Msg);
+
+											FilterProperties props = GlobalCore.LastFilter;
+
+											EditFilterSettings.ApplyFilter(props);
+
+											GL.that.Toast(Msg, 3000);
+										}
+									});
+
+								}
+							});
+						}
+					};
+
+					t.start();
+				}
+			};
+			timer.schedule(task, 500);
 
 		}
 	}
@@ -948,6 +1038,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		stopped = true;
 
+		unbindPluginServices();
+
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -959,9 +1051,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (isFinishing())
 		{
-			NotifyService.finish = true;
-			unbindService(mConnection);
-			mConnection = null;
+			if (mConnection != null)
+			{
+				NotifyService.finish = true;
+				unbindService(mConnection);
+				mConnection = null;
+			}
+
 		}
 
 		super.onPause();
@@ -982,16 +1078,26 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			pWaitD = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("waitForGL"), "", MessageBoxButtons.NOTHING,
 					MessageBoxIcon.None, null);
 			stopped = false;
-			GL.that.registerRenderStartetListner(new renderStartet()
+
+			GL.that.RunIfInitial(new runOnGL()
 			{
 
 				@Override
-				public void renderIsStartet()
+				public void run()
 				{
-					pWaitD.dismiss();
-					pWaitD = null;
+					GL.that.registerRenderStartetListner(new renderStartet()
+					{
+
+						@Override
+						public void renderIsStartet()
+						{
+							pWaitD.dismiss();
+							pWaitD = null;
+						}
+					});
 				}
 			});
+
 		}
 	}
 
@@ -1066,6 +1172,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// register KeyboardFocusChangedEvent
 		KeyboardFocusChangedEventList.Add(this);
+
+		// Initial PlugIn
+		fillPluginList();
+		bindPluginServices();
+
+		final Bundle extras = getIntent().getExtras();
+		if (!GlobalCore.restartAfterKill && extras != null)
+		{
+			GcCode = extras.getString("GcCode");
+			GpxPath = extras.getString("GpxPath");
+			if (GpxPath != null) Logger.LogCat("GPX found: " + GpxPath);
+			mustRunSearch = true;
+
+		}
+
 	}
 
 	@Override
@@ -1109,7 +1230,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		mReceiver = null;
 
 		Log.d("CACHEBOX", "Main=> onDestroy");
-		frame.removeAllViews();
+		// frame.removeAllViews();
 		if (isRestart)
 		{
 			Log.d("CACHEBOX", "Main=> onDestroy isFinishing");
@@ -1597,57 +1718,57 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			if (viewGL == null)
+			// if (viewGL == null)
+			// {
+
+			if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
+			gdxView = initializeForView(glListener, false);
+
+			Logger.DEBUG("Initial new gdxView=" + gdxView.toString());
+
+			int GlSurfaceType = -1;
+			if (gdxView instanceof GLSurfaceView20) GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
+			if (gdxView instanceof GLSurfaceViewCupcake) GlSurfaceType = ViewGL.GLSURFACE_CUPCAKE;
+			if (gdxView instanceof DefaultGLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_DEFAULT;
+			if (gdxView instanceof GLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_GLSURFACE;
+
+			ViewGL.setSurfaceType(GlSurfaceType);
+
+			Logger.DEBUG("InitializeForView...");
+
+			switch (GlSurfaceType)
 			{
-
-				if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
-				gdxView = initializeForView(glListener, false);
-
-				Logger.DEBUG("Initial new gdxView=" + gdxView.toString());
-
-				int GlSurfaceType = -1;
-				if (gdxView instanceof GLSurfaceView20) GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
-				if (gdxView instanceof GLSurfaceViewCupcake) GlSurfaceType = ViewGL.GLSURFACE_CUPCAKE;
-				if (gdxView instanceof DefaultGLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_DEFAULT;
-				if (gdxView instanceof GLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_GLSURFACE;
-
-				ViewGL.setSurfaceType(GlSurfaceType);
-
-				Logger.DEBUG("InitializeForView...");
-
-				switch (GlSurfaceType)
-				{
-				case ViewGL.GLSURFACE_VIEW20:
-					((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
-					break;
-				case ViewGL.GLSURFACE_CUPCAKE:
-					((GLSurfaceViewCupcake) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
-					break;
-				case ViewGL.GLSURFACE_DEFAULT:
-					((DefaultGLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
-					break;
-				case ViewGL.GLSURFACE_GLSURFACE:
-					((GLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
-					break;
-				}
-
-				initialOnTouchListner();
-
-				viewGL = new ViewGL(this, inflater, gdxView, glListener);
-
-				viewGL.Initialize();
-				viewGL.InitializeMap();
-
-				GlFrame.removeAllViews();
-				ViewParent parent = ((View) gdxView).getParent();
-				if (parent != null)
-				{
-					// aktView ist noch gebunden, also lösen
-					((RelativeLayout) parent).removeAllViews();
-				}
-				GlFrame.addView((View) gdxView);
-
+			case ViewGL.GLSURFACE_VIEW20:
+				((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+				break;
+			case ViewGL.GLSURFACE_CUPCAKE:
+				((GLSurfaceViewCupcake) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+				break;
+			case ViewGL.GLSURFACE_DEFAULT:
+				((DefaultGLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+				break;
+			case ViewGL.GLSURFACE_GLSURFACE:
+				((GLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+				break;
 			}
+
+			initialOnTouchListner();
+
+			if (viewGL == null) viewGL = new ViewGL(this, inflater, gdxView, glListener);
+
+			viewGL.Initialize();
+			viewGL.InitializeMap();
+
+			GlFrame.removeAllViews();
+			ViewParent parent = ((View) gdxView).getParent();
+			if (parent != null)
+			{
+				// aktView ist noch gebunden, also lösen
+				((RelativeLayout) parent).removeAllViews();
+			}
+			GlFrame.addView((View) gdxView);
+
+			// }
 		}
 		catch (Exception e)
 		{
@@ -2474,7 +2595,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							GetApiAuth();
 							break;
 						case -2:
-							// no, we check GPS
+							// now, we check GPS
 							chkGpsIsOn();
 							break;
 						case -3:
@@ -2693,6 +2814,24 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
+	}
+
+	private void unbindPluginServices()
+	{
+		if (services != null)
+		{
+			for (int i = 0; i < services.size(); ++i)
+			{
+
+				for (PluginServiceConnection con : pluginServiceConnection)
+				{
+					if (con != null)
+					{
+						unbindService(con);
+					}
+				}
+			}
+		}
 	}
 
 	class PluginServiceConnection implements ServiceConnection
@@ -2966,7 +3105,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				if (mustRunSearch)
 				{
-					startSearchTimer();
+					Logger.LogCat("mustRunSearch");
+					if (GcCode != null) startSearchTimer();
+					if (GpxPath != null) startGPXImport();
 				}
 
 			}

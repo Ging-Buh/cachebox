@@ -21,12 +21,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Menu extends Dialog
 {
-	protected static CB_RectF MENU_REC = new CB_RectF(0, 0, 400, 60); // wird mit jedem Item größer
+	private static CB_RectF MENU_REC = null;
 	private static boolean sizeIsInitial = false;
 
 	private static void initialSize()
 	{
-		MENU_REC = new CB_RectF(new SizeF(UiSizes.getWindowWidth() * 0.83f, 50));
+		float sollWidth = GL_UISizes.UI_Left.getWidth();
+
+		if (!GlobalCore.isTab) sollWidth /= 1.2f;
+		sollWidth *= 0.83;
+		MENU_REC = new CB_RectF(new SizeF(sollWidth, 50));
 		sizeIsInitial = true;
 	}
 
@@ -63,12 +67,13 @@ public class Menu extends Dialog
 
 	public Menu(String Name)
 	{
-		super(MENU_REC, Name);
+		super(getMenuRec(), Name);
 		that = this;
 
 		if (ItemHeight == -1f) ItemHeight = UiSizes.getButtonHeight();
 
-		MENU_REC = new CB_RectF(new SizeF(UiSizes.getWindowWidth() * 0.83f, mHeaderHight + getFooterHeight() + (margin * 2)));
+		MENU_REC = new CB_RectF(new SizeF((GlobalCore.isTab ? UiSizes.getWindowHeight() : UiSizes.getWindowWidth()) * 0.83f, mHeaderHight
+				+ getFooterHeight() + (margin * 2)));
 
 		this.setRec(MENU_REC);
 

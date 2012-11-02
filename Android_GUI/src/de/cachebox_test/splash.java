@@ -55,6 +55,7 @@ public class splash extends Activity
 	String GcCode = null;
 	String guid = null;
 	String name = null;
+	String GpxPath = null;
 
 	String workPath;
 
@@ -227,6 +228,14 @@ public class splash extends Activity
 					finish();
 					return;
 				}
+			}
+		}
+
+		if (uri != null)
+		{
+			if (uri.getEncodedPath().endsWith(".gpx"))
+			{
+				GpxPath = uri.getEncodedPath();
 			}
 		}
 
@@ -441,6 +450,12 @@ public class splash extends Activity
 			b.putSerializable("guid", guid);
 
 		}
+
+		if (GpxPath != null)
+		{
+			b.putSerializable("GpxPath", GpxPath);
+		}
+
 		b.putSerializable("UI", ui);
 		mainIntent.putExtras(b);
 		startActivity(mainIntent);

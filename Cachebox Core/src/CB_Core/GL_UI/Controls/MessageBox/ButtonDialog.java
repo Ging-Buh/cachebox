@@ -80,7 +80,7 @@ public class ButtonDialog extends Dialog
 		addChild(label);
 		mMsgBoxClickListner = Listener;
 
-		setFooterHeight(80);
+		// setFooterHeight(80);
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public class ButtonDialog extends Dialog
 	{
 		setButtonListner();
 
-		float buttonY = 7.5f;
+		float buttonY = margin;
 
 		float buttonX_R = width - UiSizes.getButtonWidthWide() - margin;
 		float buttonX_L = margin;

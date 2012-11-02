@@ -315,7 +315,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public static float calcFooterHeight(boolean hasButtons)
 	{
-		return hasButtons ? UiSizes.getButtonHeight() * 1.2f : calcHeaderHeight();
+		return hasButtons ? UiSizes.getButtonHeight() + margin + margin : calcHeaderHeight();
 	}
 
 	public void setWidth(float Width)
@@ -378,9 +378,9 @@ public abstract class Dialog extends CB_View_Base
 		return mFooterHeight;
 	}
 
-	public void setFooterHeight(float mFooterHeight)
+	public void setFooterHeight(float FooterHeight)
 	{
-		this.mFooterHeight = mFooterHeight;
+		this.mFooterHeight = FooterHeight;
 		reziseContentBox();
 	}
 

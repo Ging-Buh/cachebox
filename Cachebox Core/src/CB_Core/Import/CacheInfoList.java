@@ -222,6 +222,12 @@ public class CacheInfoList
 				}
 			}
 
+			if (!info.Found)
+			{
+				// nur wenn der Cache nicht als gefunden markiert ist, wird der Wert aus dem GPX Import übernommen!
+				info.Found = cache.Found;
+			}
+
 			// Schreibe info neu in die List(lösche den Eintrag vorher)
 
 			List.remove(GcCode);
@@ -253,10 +259,11 @@ public class CacheInfoList
 			args.put("ImagesUpdated", info.ImagesUpdated ? 1 : 0);
 			args.put("DescriptionImagesUpdated", info.DescriptionImagesUpdated ? 1 : 0);
 			args.put("ListingCheckSum", info.ListingCheckSum);
+			args.put("Found", info.Found ? 1 : 0);
 
 			try
 			{
-				long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+				Database.Data.update("Caches", args, "Id = ?", new String[]
 					{ String.valueOf(info.id) });
 			}
 			catch (Exception exc)

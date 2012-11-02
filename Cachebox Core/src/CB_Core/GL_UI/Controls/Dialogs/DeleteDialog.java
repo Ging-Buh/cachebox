@@ -16,7 +16,6 @@ import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -37,13 +36,14 @@ public class DeleteDialog extends ButtonDialog
 
 	public DeleteDialog()
 	{
-		super(Menu.getMenuRec(), "Delete-Dialog", "", GlobalCore.Translations.Get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
+		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Delete-Dialog", "", GlobalCore.Translations
+				.Get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
 		// initial VariableField
 		TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
-		float innerWidth = msgBoxContentSize.width + Left + Right;
+		float innerWidth = msgBoxContentSize.width;
 
 		layout = new Linearlayout(innerWidth, "Layout");
 		layout.setX(0);
@@ -208,6 +208,13 @@ public class DeleteDialog extends ButtonDialog
 				return true;
 			}
 		});
+
+	}
+
+	@Override
+	protected void Initial()
+	{
+		super.Initial();
 
 	}
 

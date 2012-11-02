@@ -619,8 +619,8 @@ public class SearchDialog extends PopUp_Base
 					int ret = GroundspeakAPI.GetMembershipType(Config.GetAccessToken());
 					if (ret == 3)
 					{
+						closeWaitDialog();
 						searchOnlineNow();
-
 					}
 					else
 					{

@@ -74,6 +74,7 @@ public class CancelWaitDialog extends WaitDialog
 
 		CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listner, runnable);
 		waitDialog.setTitle("");
+		waitDialog.setButtonCaptions(MessageBoxButtons.Cancel);
 
 		SizeF contentSize = waitDialog.getContentSize();
 
@@ -107,7 +108,6 @@ public class CancelWaitDialog extends WaitDialog
 		iconImage.setY(imageYPos);
 
 		waitDialog.addChild(waitDialog.label);
-		waitDialog.setButtonCaptions(MessageBoxButtons.NOTHING);
 
 		waitDialog.rotateAngle = 0;
 

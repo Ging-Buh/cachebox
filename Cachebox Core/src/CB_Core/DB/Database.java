@@ -647,6 +647,7 @@ public abstract class Database
 		String description = "";
 		CoreCursor reader = Database.Data.rawQuery("select Description from Caches where Id=?", new String[]
 			{ Long.toString(cache.Id) });
+		if (reader == null) return "";
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
 		{

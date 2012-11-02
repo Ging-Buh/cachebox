@@ -13,7 +13,6 @@ import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -34,14 +33,14 @@ public class ParkingDialog extends ButtonDialog
 
 	public ParkingDialog()
 	{
-		super(Menu.getMenuRec(), "Parking-Dialog", "", GlobalCore.Translations.Get("My_Parking_Area_Title"), MessageBoxButtons.Cancel,
-				null, null);
+		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Parking-Dialog", "", GlobalCore.Translations
+				.Get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
 		// initial VariableField
 		TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
-		float innerWidth = msgBoxContentSize.width + Left + Right;
+		float innerWidth = msgBoxContentSize.width;
 
 		layout = new Linearlayout(innerWidth, "Layout");
 		layout.setX(0);
