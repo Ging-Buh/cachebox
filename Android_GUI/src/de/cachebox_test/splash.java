@@ -82,43 +82,47 @@ public class splash extends Activity
 		// check if Layout forced from User
 		workPath = Environment.getExternalStorageDirectory() + "/cachebox";
 
-		// search for an external sd card on different devices
-		// when on an external sd card a folder /CacheBox exists the data will be installed on the external sd
-		if (FileIO.FileExists("/mnt/extSdCard/CacheBox"))
+		if (!FileIO.FileExists(workPath))
 		{
-			workPath = "/mnt/extSdCard/CacheBox";
-		}
-		else if (FileIO.FileExists("/Removable/MicroSD/CacheBox"))
-		{
-			workPath = "/Removable/MicroSD/CacheBox";
-		}
-		else if (FileIO.FileExists("/mnt/sdcard/ext_sd/CacheBox"))
-		{
-			workPath = "/mnt/sdcard/ext_sd/CacheBox";
-		}
-		else if (FileIO.FileExists("/mnt/external/CacheBox"))
-		{
-			workPath = "/mnt/external/CacheBox";
-		}
-		else if (FileIO.FileExists("/mnt/sdcard2/CacheBox"))
-		{
-			workPath = "/mnt/sdcard2/CacheBox";
-		}
-		else if (FileIO.FileExists("/mnt/sdcard/_ExternalSD/CacheBox"))
-		{
-			workPath = "/mnt/sdcard/_ExternalSD/CacheBox";
-		}
-		else if (FileIO.FileExists("/mnt/sdcard-ext/CacheBox"))
-		{
-			workPath = "/mnt/sdcard-ext/CacheBox";
-		}
-		else if (FileIO.FileExists("/mnt/external1/CacheBox"))
-		{
-			workPath = "/mnt/external1/CacheBox";
-		}
-		else if (FileIO.FileExists("/mnt/sdcard/external_sd/CacheBox"))
-		{
-			workPath = "/mnt/sdcard/external_sd/CacheBox";
+			// search for an external sd card on different devices
+			// when on an external sd card a folder /CacheBox exists the data will be installed on the external sd
+			// but only when no Cachebox folder exists on the internal sdcard
+			if (FileIO.FileExists("/mnt/extSdCard/CacheBox"))
+			{
+				workPath = "/mnt/extSdCard/CacheBox";
+			}
+			else if (FileIO.FileExists("/Removable/MicroSD/CacheBox"))
+			{
+				workPath = "/Removable/MicroSD/CacheBox";
+			}
+			else if (FileIO.FileExists("/mnt/sdcard/ext_sd/CacheBox"))
+			{
+				workPath = "/mnt/sdcard/ext_sd/CacheBox";
+			}
+			else if (FileIO.FileExists("/mnt/external/CacheBox"))
+			{
+				workPath = "/mnt/external/CacheBox";
+			}
+			else if (FileIO.FileExists("/mnt/sdcard2/CacheBox"))
+			{
+				workPath = "/mnt/sdcard2/CacheBox";
+			}
+			else if (FileIO.FileExists("/mnt/sdcard/_ExternalSD/CacheBox"))
+			{
+				workPath = "/mnt/sdcard/_ExternalSD/CacheBox";
+			}
+			else if (FileIO.FileExists("/mnt/sdcard-ext/CacheBox"))
+			{
+				workPath = "/mnt/sdcard-ext/CacheBox";
+			}
+			else if (FileIO.FileExists("/mnt/external1/CacheBox"))
+			{
+				workPath = "/mnt/external1/CacheBox";
+			}
+			else if (FileIO.FileExists("/mnt/sdcard/external_sd/CacheBox"))
+			{
+				workPath = "/mnt/sdcard/external_sd/CacheBox";
+			}
 		}
 
 		// chk gibt es eine Pfad Umleitung
