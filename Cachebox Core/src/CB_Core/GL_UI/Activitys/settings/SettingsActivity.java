@@ -469,8 +469,8 @@ public class SettingsActivity extends ActivityBase
 	private CB_View_Base getStringView(final SettingString SB, int backgroundChanger)
 	{
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		final String trans = GlobalCore.Translations.Get(SB.getName());
+		item.setName(trans);
 		item.setDefault(SB.getValue());
 
 		item.setOnClickListener(new OnClickListener()
@@ -485,7 +485,7 @@ public class SettingsActivity extends ActivityBase
 
 				type = (SB instanceof SettingLongString) ? TextFieldType.MultiLineWraped : TextFieldType.SingleLine;
 
-				StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), SB.getName(), SB.getValue(),
+				StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(),
 						new OnMsgBoxClickListener()
 						{
 
@@ -669,8 +669,9 @@ public class SettingsActivity extends ActivityBase
 	{
 
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+		final String trans = GlobalCore.Translations.Get(SB.getName());
 
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setName(trans);
 		item.setDefault(String.valueOf(SB.getValue()));
 
 		item.setOnClickListener(new OnClickListener()
@@ -682,7 +683,7 @@ public class SettingsActivity extends ActivityBase
 				EditKey = SB.getName();
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), SB.getName(), SB.getValue(),
+				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
 						new returnValueListner()
 						{
 							@Override
@@ -729,8 +730,8 @@ public class SettingsActivity extends ActivityBase
 	private CB_View_Base getDblView(final SettingDouble SB, int backgroundChanger)
 	{
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		final String trans = GlobalCore.Translations.Get(SB.getName());
+		item.setName(trans);
 		item.setDefault(String.valueOf(SB.getValue()));
 
 		item.setOnClickListener(new OnClickListener()
@@ -742,7 +743,7 @@ public class SettingsActivity extends ActivityBase
 				EditKey = SB.getName();
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), SB.getName(), SB.getValue(),
+				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
 						new returnValueListnerDouble()
 						{
 							@Override
@@ -969,8 +970,8 @@ public class SettingsActivity extends ActivityBase
 	{
 
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		final String trans = GlobalCore.Translations.Get(SB.getName());
+		item.setName(trans);
 		item.setDefault(intToTime(SB.getValue()));
 
 		item.setOnClickListener(new OnClickListener()
@@ -988,7 +989,7 @@ public class SettingsActivity extends ActivityBase
 				int intValueSec = Integer.parseInt(s[1]);
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), SB.getName(), intValueMin, intValueSec,
+				NumerikInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec,
 						new returnValueListnerTime()
 						{
 							@Override

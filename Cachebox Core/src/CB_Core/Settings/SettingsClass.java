@@ -230,14 +230,15 @@ public class SettingsClass extends SettingsList
 		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, true));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, true));
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, true));
-		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NORMAL, 60000, true));
+		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NEVER, 60000, true));
 
 		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity, true));
-		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, EXPERT, 1.0, true));
+		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, NEVER, 1.0, true));// TODO 0.6 Set to
+																														// EXPERT
 		addSetting(vibrateFeedback = new SettingBool("vibrateFeedback", cat, NORMAL, true, true));
 		addSetting(VibrateTime = new SettingInt("VibrateTime", cat, NORMAL, 20, true));
 		addSetting(LongClicktime = new SettingInt("LongClicktime", cat, NORMAL, 600, true));
-		addSetting(dynamicFilterAtSearch = new SettingBool("dynamicFilterAtSearch", cat, NORMAL, true, true));
+		addSetting(dynamicFilterAtSearch = new SettingBool("dynamicFilterAtSearch", cat, NEVER, true, true));
 
 	}
 
@@ -367,7 +368,7 @@ public class SettingsClass extends SettingsList
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, true, true));
 		addSetting(AutoResort = new SettingBool("AutoResort", cat, INVISIBLE, false, true));
 
-		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, INVISIBLE, true, true));
+		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, NEVER, true, true));
 		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, INVISIBLE, true, true));
 
 		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NEVER, true, true));

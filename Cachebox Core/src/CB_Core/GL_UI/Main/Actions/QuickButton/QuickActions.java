@@ -48,15 +48,15 @@ public enum QuickActions
 	VoiceRecord, // 9
 	LiveSearch, // 10
 	Filter, // 11
-	ScreenLock, // 12
-	AutoResort, // 13
-	Solver, // 14
-	Spoiler, // 15
-	Hint, // 16
-	Parking, // 17
-	Day_Night, // 18
-	FieldNotes, // 19
-	QuickFieldNotes, // 20
+	AutoResort, // 12
+	Solver, // 13
+	Spoiler, // 14
+	Hint, // 15
+	Parking, // 16
+	Day_Night, // 17
+	FieldNotes, // 18
+	QuickFieldNotes, // 19
+	// ScreenLock, // 20
 
 	empty, ;
 
@@ -143,24 +143,23 @@ public enum QuickActions
 		case 11:
 			return action_Filtersettings;
 		case 12:
-			return action_ScreenLock;
-		case 13:
 			return action_SwitchAutoResort;
-		case 14:
+		case 13:
 			return TabMainView.actionShowSolverView;
-		case 15:
+		case 14:
 			return TabMainView.actionShowSpoilerView;
-		case 16:
+		case 15:
 			return action_Hint;
-		case 17:
+		case 16:
 			return TabMainView.actionParking;
-		case 18:
+		case 17:
 			return action_DayNight;
-		case 19:
+		case 18:
 			return TabMainView.actionShowFieldNotesView;
-		case 20:
+		case 19:
 			return TabMainView.actionQuickFieldNote;
-
+			// case 12:
+			// return action_ScreenLock;
 		}
 		return null;
 	}
@@ -194,23 +193,23 @@ public enum QuickActions
 		case 11:
 			return GlobalCore.Translations.Get("filter");
 		case 12:
-			return GlobalCore.Translations.Get("screenlock");
-		case 13:
 			return GlobalCore.Translations.Get("AutoResort");
-		case 14:
+		case 13:
 			return GlobalCore.Translations.Get("Solver");
-		case 15:
+		case 14:
 			return GlobalCore.Translations.Get("spoiler");
-		case 16:
+		case 15:
 			return GlobalCore.Translations.Get("hint");
-		case 17:
+		case 16:
 			return GlobalCore.Translations.Get("MyParking");
-		case 18:
+		case 17:
 			return GlobalCore.Translations.Get("DayNight");
-		case 19:
+		case 18:
 			return GlobalCore.Translations.Get("Fieldnotes");
-		case 20:
+		case 19:
 			return GlobalCore.Translations.Get("QuickFieldNote");
+			// case 12:
+			// return GlobalCore.Translations.Get("screenlock");
 		}
 		return "empty";
 	}
@@ -228,7 +227,7 @@ public enum QuickActions
 		action_Filtersettings = new CB_Action_ShowActivity("filtersettings", MenuID.AID_SHOW_FILTER_SETTINGS, ViewConst.FILTER_SETTINGS,
 				SpriteCache.Icons.get(13));
 
-		action_ScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
+		// action_ScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
 	}
 
@@ -239,7 +238,7 @@ public enum QuickActions
 	private static CB_Action action_Search;
 
 	private static CB_Action action_Filtersettings;
-	private static CB_Action action_ScreenLock;
+	// private static CB_Action action_ScreenLock;
 
 	private static CB_Action action_SwitchAutoResort = new CB_Action_switch_Autoresort();
 

@@ -37,7 +37,6 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowQuit;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView2;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
-import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Delete_Dialog;
@@ -77,7 +76,7 @@ public class TabMainView extends MainViewBase
 {
 	public static TabMainView that;
 
-	private CB_Action_ShowTestView actionTestView;
+	// private CB_Action_ShowTestView actionTestView;
 	private CB_Action_ShowHint actionShowHint;
 	public static CB_Action_ShowMap actionShowMap;
 	public static CB_Action_ShowCacheList actionShowCacheList;
@@ -112,7 +111,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowActivity actionRecVideo;
 
 	private CB_Action_switch_DayNight actionDayNight;
-	private CB_Action_ShowActivity actionScreenLock;
+	// private CB_Action_ShowActivity actionScreenLock;
 
 	public static CB_Action_ShowQuit actionClose = new CB_Action_ShowQuit();
 	public static MapView mapView = null;
@@ -177,7 +176,7 @@ public class TabMainView extends MainViewBase
 		// TODO activate TB List on 0.6.x => actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
-		actionTestView = new CB_Action_ShowTestView();
+		// actionTestView = new CB_Action_ShowTestView();
 		actionShowSettings = new CB_Action_Show_Settings();
 
 		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
@@ -189,7 +188,7 @@ public class TabMainView extends MainViewBase
 		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
 
 		actionDayNight = new CB_Action_switch_DayNight();
-		actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
+		// actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
 		if (GlobalCore.isTab) addTabletTabs();
 		else
@@ -285,9 +284,9 @@ public class TabMainView extends MainViewBase
 		actionRecVoice.setTab(this, Tab);
 		actionRecPicture.setTab(this, Tab);
 		actionRecVideo.setTab(this, Tab);
-		actionTestView.setTab(this, Tab);
+		// actionTestView.setTab(this, Tab);
 
-		actionScreenLock.setTab(this, Tab);
+		// actionScreenLock.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
 
@@ -307,7 +306,7 @@ public class TabMainView extends MainViewBase
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
 		btn3.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
-		btn3.addAction(new CB_ActionButton(actionTestView, false));
+		// btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
 		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
@@ -325,7 +324,7 @@ public class TabMainView extends MainViewBase
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 		btn5.addAction(new CB_ActionButton(actionDayNight, false));
-		btn5.addAction(new CB_ActionButton(actionScreenLock, false));
+		// btn5.addAction(new CB_ActionButton(actionScreenLock, false));
 		btn5.addAction(new CB_ActionButton(actionClose, false, GestureDirection.Down));
 
 		btn5.performClick();// actionShowAboutView.Execute();
@@ -388,7 +387,7 @@ public class TabMainView extends MainViewBase
 		actionRecPicture.setTab(this, Tab);
 		actionRecVideo.setTab(this, Tab);
 
-		actionScreenLock.setTab(this, Tab);
+		// actionScreenLock.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
 		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true));
@@ -419,7 +418,7 @@ public class TabMainView extends MainViewBase
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 		btn5.addAction(new CB_ActionButton(actionDayNight, false));
-		btn5.addAction(new CB_ActionButton(actionScreenLock, false));
+		// btn5.addAction(new CB_ActionButton(actionScreenLock, false));
 		btn5.addAction(new CB_ActionButton(actionClose, false));
 
 		btn5.performClick();// actionShowAboutView.Execute();
@@ -460,7 +459,7 @@ public class TabMainView extends MainViewBase
 		actionShowSolverView2.setTab(this, Tab);
 		actionShowDescriptionView.setTab(this, Tab);
 		actionNavigateTo2.setTab(this, Tab);
-		actionTestView.setTab(this, Tab);
+		// actionTestView.setTab(this, Tab);
 		actionShowSpoilerView.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
@@ -469,7 +468,7 @@ public class TabMainView extends MainViewBase
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo2, false, GestureDirection.Down));
-		btn3.addAction(new CB_ActionButton(actionTestView, false));
+		// btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 
