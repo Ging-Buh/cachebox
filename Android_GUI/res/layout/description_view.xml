@@ -7,7 +7,7 @@
 	<LinearLayout android:layout_height="fill_parent"
 		android:orientation="vertical" android:layout_width="fill_parent"
 		android:layout_alignParentTop="true">
-		<de.cachebox_test.Custom_Controls.CacheInfoControl
+		<de.droidcachebox.Custom_Controls.CacheInfoControl
 			android:id="@+id/CompassDescriptionView" android:layout_height="wrap_content"
 			android:layout_width="fill_parent" android:layout_marginLeft="2dip"
 			android:layout_marginRight="2dip" android:layout_marginTop="1dip" />
@@ -16,11 +16,11 @@
 			android:layout_width="fill_parent">
 			<LinearLayout android:id="@+id/WebViewLayout"
 				android:layout_height="match_parent" android:layout_width="fill_parent">
-				<de.cachebox_test.Custom_Controls.DescriptionViewControl
+				<de.droidcachebox.Custom_Controls.DescriptionViewControl
 					android:id="@+id/DescriptionViewControl" android:layout_height="fill_parent"
 					android:layout_width="fill_parent" />
 			</LinearLayout>
-			<de.cachebox_test.Custom_Controls.invertViewControl
+			<de.droidcachebox.Custom_Controls.invertViewControl
 				android:id="@+id/InvertViewControl" android:layout_height="fill_parent"
 				android:layout_width="fill_parent" />
 

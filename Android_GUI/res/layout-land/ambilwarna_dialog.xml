@@ -41,7 +41,7 @@
 			android:background="#aaf"
 		/>
 	</LinearLayout>
-	<de.cachebox_test.Custom_Controls.ColorDialog.AmbilWarnaKotak
+	<de.droidcachebox.Custom_Controls.ColorDialog.AmbilWarnaKotak
 		android:id="@+id/ambilwarna_viewSatBri"
 		android:layout_width="@dimen/ambilwarna_hsvWidth"
 		android:layout_height="@dimen/ambilwarna_hsvHeight"
