@@ -260,7 +260,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(HardwareCompassLevel = new SettingInt("HardwareCompassLevel", cat, NORMAL, 5, true));
 		addSetting(HardwareCompass = new SettingBool("HardwareCompass", cat, NORMAL, true, true));
-		addSetting(gpsUpdateTime = new SettingInt("gpsUpdateTime", cat, NORMAL, 150, true));
+		addSetting(gpsUpdateTime = new SettingInt("gpsUpdateTime", cat, NORMAL, 500, true));
 	}
 
 	private void addPositionSettings()

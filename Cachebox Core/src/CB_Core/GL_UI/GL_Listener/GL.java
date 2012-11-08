@@ -28,6 +28,7 @@ import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
+import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -449,7 +450,8 @@ public class GL implements ApplicationListener
 		// wenn dieser TouchDown ausserhalb einer TextView war, dann resete den TextField Focus
 		if (GL.that.getKeyboardFocus() != null)
 		{
-			if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !GL.that.PopUpIsShown())
+			if (!(view instanceof EditTextFieldBase) && !(view instanceof SelectionMarker) && !(view instanceof Button)
+					&& !GL.that.PopUpIsShown())
 			{
 				GL.that.setKeyboardFocus(null);
 			}
