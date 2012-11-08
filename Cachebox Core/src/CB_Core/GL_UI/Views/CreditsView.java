@@ -68,7 +68,7 @@ public class CreditsView extends CB_View_Base
 	{
 		margin = Menu.margin;
 
-		lineHeight = Fonts.Measure("T").height * 1.2f;
+		lineHeight = Fonts.Measure("Tg").height * 1.6f;
 		layout.removeChilds();
 
 		captioned("conception");
@@ -106,7 +106,7 @@ public class CreditsView extends CB_View_Base
 
 	private void divider()
 	{
-		Box box = new Box(new CB_RectF(0, 0, this.width, lineHeight * 1.2f), "");
+		Box box = new Box(new CB_RectF(0, 0, this.width, lineHeight * 2f), "");
 		layout.addChild(box);
 	}
 
@@ -222,7 +222,14 @@ public class CreditsView extends CB_View_Base
 		list.add(new Person("Longri", Job.developer));
 		list.add(new Person("ersthelfer", Job.developer));
 		list.add(new Person("arbor95", Job.developer));
-
+		list.add(new Person("droogi", Job.tester));
+		list.add(new Person("droogi", Job.localization));
+		list.add(new Person("Teleskopix", Job.tester));
+		list.add(new Person("halkman", Job.localization));
+		list.add(new Person("Lady-in-blue", Job.tester));
+		list.add(new Person("Koblenzer", Job.tester));
+		list.add(new Person("GeoSilverio", Job.tester));
+		list.add(new Person("GeoPfaff", Job.tester));
 		return list;
 	}
 

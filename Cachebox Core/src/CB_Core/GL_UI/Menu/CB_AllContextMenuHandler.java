@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Menu;
 
-import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.GL_View_Base;
@@ -59,7 +58,7 @@ public class CB_AllContextMenuHandler
 		mi = icm.addItem(MenuID.MI_SOLVER, "Solver", SpriteCache.Icons.get(24));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		if (Config.settings.hasCallPermission.getValue())
+		if (GlobalCore.JokerisOnline())
 		{
 			mi = icm.addItem(MenuID.MI_JOKER, "joker", SpriteCache.Icons.get(25));
 			// Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5

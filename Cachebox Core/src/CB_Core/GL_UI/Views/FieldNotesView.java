@@ -41,7 +41,7 @@ public class FieldNotesView extends V_ListView
 {
 	public static FieldNotesView that;
 	public static FieldNoteEntry aktFieldNote;
-	private static int aktFieldNoteIndex = -1;
+	// private static int aktFieldNoteIndex = -1;
 	static FieldNoteList lFieldNotes;
 	CustomAdapter lvAdapter;
 	public static CB_RectF ItemRec;
@@ -434,7 +434,7 @@ public class FieldNotesView extends V_ListView
 					newFieldNote.DeleteFromDatabase();
 					newFieldNote.timestamp = new Date();
 					aktFieldNote = newFieldNote;
-					aktFieldNoteIndex = index;
+					// aktFieldNoteIndex = index;
 				}
 				index++;
 			}
@@ -452,7 +452,7 @@ public class FieldNotesView extends V_ListView
 			newFieldNote.CacheUrl = cache.Url;
 			newFieldNote.cacheType = cache.Type.ordinal();
 			newFieldNote.fillType();
-			aktFieldNoteIndex = -1;
+			// aktFieldNoteIndex = -1;
 			aktFieldNote = newFieldNote;
 		}
 		else
@@ -577,53 +577,41 @@ public class FieldNotesView extends V_ListView
 
 			if (fieldNote != null)
 			{
-				if ((aktFieldNote != null) && (aktFieldNoteIndex != -1))
-				{
-					// Änderungen in aktFieldNote übernehmen
-					if (lFieldNotes.size() > 0) lFieldNotes.remove(aktFieldNoteIndex);
-					aktFieldNote = fieldNote;
-					lFieldNotes.add(aktFieldNoteIndex, aktFieldNote);
-					aktFieldNote.UpdateDatabase();
 
-					FieldNoteList.CreateVisitsTxt();
-				}
-				else
+				// neue FieldNote
+				lFieldNotes.add(0, fieldNote);
+				fieldNote.WriteToDatabase();
+				aktFieldNote = fieldNote;
+				if (fieldNote.type == 1)
 				{
-					// neue FieldNote
-					lFieldNotes.add(0, fieldNote);
-					fieldNote.WriteToDatabase();
-					aktFieldNote = fieldNote;
-					if (fieldNote.type == 1)
+					// Found it! -> Cache als gefunden markieren
+					if (!GlobalCore.SelectedCache().Found)
 					{
-						// Found it! -> Cache als gefunden markieren
-						if (!GlobalCore.SelectedCache().Found)
-						{
-							GlobalCore.SelectedCache().Found = true;
-							CacheDAO cacheDAO = new CacheDAO();
-							cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
-							Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
-							Config.AcceptChanges();
-						}
-						// und eine evtl. vorhandene FieldNote FoundIt löschen
-						lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 2);
+						GlobalCore.SelectedCache().Found = true;
+						CacheDAO cacheDAO = new CacheDAO();
+						cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+						Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
+						Config.AcceptChanges();
 					}
-					else if (fieldNote.type == 2)
-					{
-						// DidNotFound -> Cache als nicht gefunden markieren
-						if (GlobalCore.SelectedCache().Found)
-						{
-							GlobalCore.SelectedCache().Found = false;
-							CacheDAO cacheDAO = new CacheDAO();
-							cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
-							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
-							Config.AcceptChanges();
-						}
-						// und eine evtl. vorhandene FieldNote FoundIt löschen
-						lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
-					}
-
-					FieldNoteList.CreateVisitsTxt();
+					// und eine evtl. vorhandene FieldNote FoundIt löschen
+					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 2);
 				}
+				else if (fieldNote.type == 2)
+				{
+					// DidNotFound -> Cache als nicht gefunden markieren
+					if (GlobalCore.SelectedCache().Found)
+					{
+						GlobalCore.SelectedCache().Found = false;
+						CacheDAO cacheDAO = new CacheDAO();
+						cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+						Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+						Config.AcceptChanges();
+					}
+					// und eine evtl. vorhandene FieldNote FoundIt löschen
+					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
+				}
+
+				FieldNoteList.CreateVisitsTxt();
 
 			}
 			that.notifyDataSetChanged();
@@ -712,7 +700,6 @@ public class FieldNotesView extends V_ListView
 					lFieldNotes.DeleteFieldNote(aktFieldNote.Id, aktFieldNote.type);
 
 					aktFieldNote = null;
-					aktFieldNoteIndex = -1;
 
 					lFieldNotes = new FieldNoteList();
 					lFieldNotes.LoadFieldNotes("");
@@ -760,7 +747,7 @@ public class FieldNotesView extends V_ListView
 
 					lFieldNotes.clear();
 					aktFieldNote = null;
-					aktFieldNoteIndex = -1;
+
 					that.setBaseAdapter(null);
 					lvAdapter = new CustomAdapter(lFieldNotes);
 					that.setBaseAdapter(lvAdapter);
@@ -825,7 +812,6 @@ public class FieldNotesView extends V_ListView
 			int index = ((ListViewItemBase) v).getIndex();
 
 			aktFieldNote = lFieldNotes.get(index);
-			aktFieldNoteIndex = index;
 
 			Menu cm = new Menu("CacheListContextMenu");
 

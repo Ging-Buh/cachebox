@@ -1,6 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
-import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -29,7 +29,7 @@ public class CB_Action_ShowJokerView extends CB_Action_ShowView
 	@Override
 	public boolean getEnabled()
 	{
-		return Config.settings.hasCallPermission.getValue();
+		return GlobalCore.JokerisOnline();
 	}
 
 	@Override

@@ -585,7 +585,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				config.useGL20 = true;
 				graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 						: config.resolutionStrategy);
-				input = new AndroidInput(this, graphics.getView(), config);
+
+				input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
+
 			}
 
 		}
@@ -1046,7 +1048,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			config.useGL20 = true;
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 					: config.resolutionStrategy);
-			input = new AndroidInput(this, graphics.getView(), config);
+			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
 		}
 
 		if (isFinishing())
@@ -1119,7 +1121,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			config.useGL20 = true;
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 					: config.resolutionStrategy);
-			input = new AndroidInput(this, graphics.getView(), config);
+			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
 		}
 
 		super.onResume();
