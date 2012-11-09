@@ -327,20 +327,20 @@ public class SettingsClass extends SettingsList
 		String Work = Config.WorkPath;
 
 		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", cat, NORMAL, Work + "/User/Media", true));
-		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, NORMAL, Work + "/data/lang", true));
-		addSetting(SoundPath = new SettingFolder("SoundPath", cat, NORMAL, Work + "/data/sound", true));
+		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, EXPERT, Work + "/data/lang", true));
+		addSetting(SoundPath = new SettingFolder("SoundPath", cat, EXPERT, Work + "/data/sound", true));
 		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/cache", true));
 		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, NORMAL, Work + "/PocketQuery", true));
 
-		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, NORMAL, Work + "/repository/images", true));
+		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, EXPERT, Work + "/repository/images", true));
 		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", true));
-		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, NORMAL, Work + "/repository/spoilers", true));
+		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers", true));
 
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", true));
 
 		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, INVISIBLE, Work + "/data/lang/en-GB/strings.ini", true,
 				"lan"));
-		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, NORMAL, Work + "/cachebox.db3", true, "db3"));
+		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, EXPERT, Work + "/cachebox.db3", true, "db3"));
 		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, INVISIBLE, Work + "/User/geocache_visits.txt", true));
 
 		addSetting(SkinFolder = new SettingFolder("SkinFolder", cat, INVISIBLE, Work + "/skins/default", true));
