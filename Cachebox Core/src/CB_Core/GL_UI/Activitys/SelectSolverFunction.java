@@ -74,7 +74,7 @@ public class SelectSolverFunction extends ButtonDialog
 	private void iniOkCancel()
 	{
 
-		button1.setText(GlobalCore.Translations.Get("Ok"));
+		button1.setText(GlobalCore.Translations.Get("ok"));
 		button1.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -95,7 +95,7 @@ public class SelectSolverFunction extends ButtonDialog
 				return true;
 			}
 		});
-		button3.setText(GlobalCore.Translations.Get("Cancel"));
+		button3.setText(GlobalCore.Translations.Get("cancel"));
 		button3.setOnClickListener(new OnClickListener()
 		{
 			@Override

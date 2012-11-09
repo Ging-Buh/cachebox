@@ -99,7 +99,11 @@ public class GL_MsgBox extends Dialog
 		Height += calcFooterHeight(hasButtons);
 		Height += calcHeaderHeight();
 
+		// min Height festlegen
 		Height = (int) Math.max(Height, UiSizes.getButtonHeight() * 2.5f);
+
+		// max Height festlegen
+		Height = (int) Math.min(Height, UiSizes.getWindowHeight() * 0.95f);
 
 		Size ret = new Size((int) Width, Height);
 		return ret;
@@ -406,10 +410,9 @@ public class GL_MsgBox extends Dialog
 		return label.text;
 	}
 
-	public void setText(String text)
+	public TextBounds setText(String text)
 	{
-		label.setWrappedText(text);
-
+		return label.setWrappedText(text);
 	}
 
 	public void close()
