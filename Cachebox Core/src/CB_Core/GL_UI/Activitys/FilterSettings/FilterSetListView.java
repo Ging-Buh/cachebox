@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -227,8 +226,8 @@ public class FilterSetListView extends V_ListView
 		public ListViewItemBase getView(int position)
 		{
 			FilterSetListViewItem v = lFilterSetListViewItems.get(position);
-			if (v.getVisibility() == CB_View_Base.INVISIBLE) return null;// new FieldNoteViewItem(EditFilterSettings.ItemRec, position,
-																			// null);
+			if (!v.isVisible()) return null;// new FieldNoteViewItem(EditFilterSettings.ItemRec, position,
+											// null);
 
 			return v;
 		}
@@ -237,7 +236,7 @@ public class FilterSetListView extends V_ListView
 		public float getItemSize(int position)
 		{
 			FilterSetListViewItem v = lFilterSetListViewItems.get(position);
-			if (v.getVisibility() == CB_View_Base.INVISIBLE) return 0;
+			if (!v.isSelected) return 0;
 			return v.getHeight();
 		}
 	}
@@ -451,7 +450,7 @@ public class FilterSetListView extends V_ListView
 
 		FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
 		// inital mit GONE
-		v.setVisibility(CB_View_Base.INVISIBLE);
+		v.setInvisible();
 		lFilterSetListViewItems.add(v);
 		return v;
 
@@ -469,7 +468,7 @@ public class FilterSetListView extends V_ListView
 
 		FilterSetListViewItem v = new FilterSetListViewItem(EditFilterSettings.ItemRec, index++, tmp);
 		// inital mit GONE
-		v.setVisibility(CB_View_Base.INVISIBLE);
+		v.setInvisible();
 		lFilterSetListViewItems.add(v);
 		return v;
 	}

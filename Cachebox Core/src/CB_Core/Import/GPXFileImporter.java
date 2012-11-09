@@ -988,7 +988,7 @@ public class GPXFileImporter
 		{
 			if (values.get("cache_gsak_corrected_coordinates").equalsIgnoreCase("True"))
 			{
-				cache.CorrectedCoordinates = true;
+				cache.setCorrectedCoordinates(true);
 			}
 		}
 

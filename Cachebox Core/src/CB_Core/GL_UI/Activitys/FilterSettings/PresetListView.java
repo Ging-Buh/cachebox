@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -262,10 +261,10 @@ public class PresetListView extends V_ListView
 	}
 
 	@Override
-	public void setVisibility(int value)
+	public void setVisible(boolean On)
 	{
-		super.setVisibility(value);
-		if (value == CB_View_Base.VISIBLE) chkIsPreset();
+		super.setVisible(On);
+		if (On) chkIsPreset();
 	}
 
 	private void chkIsPreset()

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.Converter.UTMConvert;
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
@@ -527,15 +526,15 @@ public class EditCoord extends ActivityBase
 		{
 		case 0:
 			// show Degrees
-			lUtmO.setVisibility(CB_View_Base.INVISIBLE);
-			lUtmN.setVisibility(CB_View_Base.INVISIBLE);
-			lUtmZ.setVisibility(CB_View_Base.INVISIBLE);
-			bDLat.setVisibility(CB_View_Base.VISIBLE);
-			bDLon.setVisibility(CB_View_Base.VISIBLE);
-			trDec.setVisibility(CB_View_Base.VISIBLE);
-			trMin.setVisibility(CB_View_Base.INVISIBLE);
-			trSec.setVisibility(CB_View_Base.INVISIBLE);
-			trUtm.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmO.setInvisible();
+			lUtmN.setInvisible();
+			lUtmZ.setInvisible();
+			bDLat.setVisible();
+			bDLon.setVisible();
+			trDec.setVisible();
+			trMin.setInvisible();
+			trSec.setInvisible();
+			trUtm.setInvisible();
 			bDec.setState(1);
 			bMin.setState(0);
 			bSec.setState(0);
@@ -546,8 +545,10 @@ public class EditCoord extends ActivityBase
 			if (coord.getLongitude() > 0) bDLon.setText("E");
 			else
 				bDLon.setText("W");
+
 			tbDLat.setText(String.format("%.5f", coord.getLatitude()).replace(",", "."));
 			tbDLat.setFocus();
+
 			tbDLon.setText(String.format("%.5f", coord.getLongitude()).replace(",", "."));
 
 			showNumPad(NumPad.Type.withDot);
@@ -555,15 +556,15 @@ public class EditCoord extends ActivityBase
 			break;
 		case 1:
 			// show Degree - Minute
-			lUtmO.setVisibility(CB_View_Base.INVISIBLE);
-			lUtmN.setVisibility(CB_View_Base.INVISIBLE);
-			lUtmZ.setVisibility(CB_View_Base.INVISIBLE);
-			bDLat.setVisibility(CB_View_Base.VISIBLE);
-			bDLon.setVisibility(CB_View_Base.VISIBLE);
-			trDec.setVisibility(CB_View_Base.INVISIBLE);
-			trMin.setVisibility(CB_View_Base.VISIBLE);
-			trSec.setVisibility(CB_View_Base.INVISIBLE);
-			trUtm.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmO.setInvisible();
+			lUtmN.setInvisible();
+			lUtmZ.setInvisible();
+			bDLat.setVisible();
+			bDLon.setVisible();
+			trDec.setInvisible();
+			trMin.setVisible();
+			trSec.setInvisible();
+			trUtm.setInvisible();
 			bDec.setState(0);
 			bMin.setState(1);
 			bSec.setState(0);
@@ -594,15 +595,15 @@ public class EditCoord extends ActivityBase
 			break;
 		case 2:
 			// show Degree - Minute - Second
-			lUtmO.setVisibility(CB_View_Base.INVISIBLE);
-			lUtmN.setVisibility(CB_View_Base.INVISIBLE);
-			lUtmZ.setVisibility(CB_View_Base.INVISIBLE);
-			bDLat.setVisibility(CB_View_Base.VISIBLE);
-			bDLon.setVisibility(CB_View_Base.VISIBLE);
-			trMin.setVisibility(CB_View_Base.INVISIBLE);
-			trDec.setVisibility(CB_View_Base.INVISIBLE);
-			trSec.setVisibility(CB_View_Base.VISIBLE);
-			trUtm.setVisibility(CB_View_Base.INVISIBLE);
+			lUtmO.setInvisible();
+			lUtmN.setInvisible();
+			lUtmZ.setInvisible();
+			bDLat.setVisible();
+			bDLon.setVisible();
+			trMin.setInvisible();
+			trDec.setInvisible();
+			trSec.setVisible();
+			trUtm.setInvisible();
 			bDec.setState(0);
 			bMin.setState(0);
 			bSec.setState(1);
@@ -644,15 +645,15 @@ public class EditCoord extends ActivityBase
 			break;
 		case 3:
 			// show UTM
-			lUtmO.setVisibility(CB_View_Base.VISIBLE);
-			lUtmN.setVisibility(CB_View_Base.VISIBLE);
-			lUtmZ.setVisibility(CB_View_Base.VISIBLE);
-			bDLat.setVisibility(CB_View_Base.INVISIBLE);
-			bDLon.setVisibility(CB_View_Base.INVISIBLE);
-			trMin.setVisibility(CB_View_Base.INVISIBLE);
-			trDec.setVisibility(CB_View_Base.INVISIBLE);
-			trSec.setVisibility(CB_View_Base.INVISIBLE);
-			trUtm.setVisibility(CB_View_Base.VISIBLE);
+			lUtmO.setVisible();
+			lUtmN.setVisible();
+			lUtmZ.setVisible();
+			bDLat.setInvisible();
+			bDLon.setInvisible();
+			trMin.setInvisible();
+			trDec.setInvisible();
+			trSec.setInvisible();
+			trUtm.setVisible();
 			bDec.setState(0);
 			bMin.setState(0);
 			bSec.setState(0);

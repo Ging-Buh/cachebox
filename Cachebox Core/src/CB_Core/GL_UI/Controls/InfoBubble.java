@@ -93,7 +93,7 @@ public class InfoBubble extends CB_View_Base
 		// Logger.LogCat("Show BubbleSelected");
 		mCacheId = GlobalCore.SelectedCache().Id;
 		mCache = GlobalCore.SelectedCache();
-		setVisibility(VISIBLE);
+		setVisible();
 	}
 
 	@Override

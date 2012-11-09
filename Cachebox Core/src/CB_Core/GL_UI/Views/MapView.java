@@ -206,7 +206,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 		else
 		{
-			mapScale.setVisibility(CB_View_Base.INVISIBLE);
+			mapScale.setInvisible();
 		}
 
 		// initial Zoom Buttons
@@ -258,7 +258,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 		else
 		{
-			zoomBtn.setVisibility(CB_View_Base.INVISIBLE);
+			zoomBtn.setInvisible();
 		}
 
 		this.setOnClickListener(onClickListner);
@@ -362,7 +362,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (!CompassMode) this.addChild(togBtn);
 
 		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
-		infoBubble.setVisibility(GL_View_Base.INVISIBLE);
+		infoBubble.setInvisible();
 		infoBubble.setOnClickListener(new OnClickListener()
 		{
 
@@ -370,7 +370,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				GlobalCore.SelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
-				infoBubble.setVisibility(INVISIBLE);
+				infoBubble.setInvisible();
 				return true;
 			}
 		});
@@ -419,7 +419,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingWidth = mapIntWidth;
 			drawingHeight = mapIntHeight;
 		}
-		setVisibility(CB_View_Base.VISIBLE);
+		setVisible();
 		SelectedCacheChanged(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 	}
 
@@ -428,7 +428,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		CB_Core.Events.SelectedCacheEventList.Remove(this);
 		CB_Core.Events.PositionChangedEventList.Remove(this);
-		setVisibility(CB_View_Base.INVISIBLE);
+		setInvisible();
 	}
 
 	@Override
@@ -2097,7 +2097,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				if (infoBubble.isVisible())
 				{
 					// Click outside Bubble -> hide Bubble
-					infoBubble.setVisibility(INVISIBLE);
+					infoBubble.setInvisible();
 				}
 
 				for (WaypointRenderInfo wpi : mapCacheList.list)
@@ -2128,7 +2128,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						{
 							// Show Bubble at the location of the Waypoint!!!
 							infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
-							infoBubble.setVisibility(VISIBLE);
+							infoBubble.setVisible();
 						}
 						else
 						{
@@ -2153,7 +2153,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						// Show Bubble
 						// unabhängig davon, ob der angeklickte Cache == der selectedCache ist
 						infoBubble.setCache(minWpi.Cache, null);
-						infoBubble.setVisibility(VISIBLE);
+						infoBubble.setVisible();
 					}
 					inputState = InputState.Idle;
 					// debugString = "State: " + inputState;
@@ -2365,7 +2365,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// Logger.LogCat("MapView clacLayout()");
 		float margin = GL_UISizes.margin;
 		info.setPos(new Vector2(margin, (float) (this.mapIntHeight - margin - info.getHeight())));
-		info.setVisibility(showCompass ? GL_View_Base.VISIBLE : GL_View_Base.INVISIBLE);
+		info.setVisible(showCompass);
 		togBtn.setPos(new Vector2((float) (this.mapIntWidth - margin - togBtn.getWidth()), this.mapIntHeight - margin - togBtn.getHeight()));
 
 		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI),

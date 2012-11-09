@@ -159,7 +159,7 @@ public class Cache implements Comparable<Cache>
 	/**
 	 * hat der Cache korrigierte Koordinaten
 	 */
-	public boolean CorrectedCoordinates;
+	private boolean CorrectedCoordinates;
 
 	/**
 	 * Wurde der Cache bereits gefunden?
@@ -324,7 +324,7 @@ public class Cache implements Comparable<Cache>
 	 */
 	public boolean CorrectedCoordiantesOrMysterySolved()
 	{
-		if (this.CorrectedCoordinates) return true;
+		if (this.hasCorrectedCoordinates()) return true;
 
 		if (this.Type != CacheTypes.Mystery) return false;
 
@@ -688,6 +688,16 @@ public class Cache implements Comparable<Cache>
 	public boolean isSearchVisible()
 	{
 		return isSearchVisible;
+	}
+
+	public boolean hasCorrectedCoordinates()
+	{
+		return CorrectedCoordinates;
+	}
+
+	public void setCorrectedCoordinates(boolean correctedCoordinates)
+	{
+		this.CorrectedCoordinates = correctedCoordinates;
 	}
 
 }

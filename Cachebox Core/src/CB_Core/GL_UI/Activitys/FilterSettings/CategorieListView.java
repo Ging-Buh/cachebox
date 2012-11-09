@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.GlobalCore;
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -321,7 +320,7 @@ public class CategorieListView extends V_ListView
 		{
 			if (lCategoriesListViewItems == null) return null;
 			CategorieListViewItem v = lCategoriesListViewItems.get(position);
-			if (v.getVisibility() == CB_View_Base.INVISIBLE) return null;
+			if (!v.isVisible()) return null;
 
 			return v;
 		}
@@ -380,7 +379,7 @@ public class CategorieListView extends V_ListView
 
 		CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
 		// inital mit INVISIBLE
-		v.setVisibility(CB_View_Base.INVISIBLE);
+		v.setInvisible();
 		lCategorieListViewItems.add(v);
 		return v;
 
@@ -397,7 +396,7 @@ public class CategorieListView extends V_ListView
 		lCategories.add(tmp);
 		CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
 		// inital mit INVISIBLE
-		v.setVisibility(CB_View_Base.INVISIBLE);
+		v.setInvisible();
 		v.setOnClickListener(onItemClickListner);
 		lCategorieListViewItems.add(v);
 		return v;

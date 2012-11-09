@@ -223,7 +223,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 		else if (!this.isVisible())
 		{
 			// Log.d("CACHEBOX", "Start Fade In");
-			this.setVisibility(VISIBLE);
+			this.setVisible(true);
 			fadeIn = true;
 			FadeValue = 0f;
 		}
@@ -294,7 +294,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 					// Log.d("CACHEBOX", "Ende Fade Out");
 					FadeValue = 0f;
 					fadeOut = false;
-					this.setVisibility(INVISIBLE);
+					this.setVisible(false);
 					GL.that.removeRenderView(this);
 				}
 				timeLastAction = new Date();
@@ -354,9 +354,9 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	@Override
-	public void setVisibility(int value)
+	public void setVisible(boolean On)
 	{
-		super.setVisibility(value);
+		super.setVisible(On);
 
 		cancelTimerToFadeOut();
 

@@ -2,7 +2,6 @@ package CB_Core.GL_UI.Activitys.FilterSettings;
 
 import java.util.ArrayList;
 
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
@@ -48,11 +47,11 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	{
 		if (mChildList != null && mChildList.size() > 0)
 		{
-			int newState = (mChildList.get(0).getVisibility() == CB_View_Base.VISIBLE) ? CB_View_Base.INVISIBLE : CB_View_Base.VISIBLE;
+			boolean newState = !mChildList.get(0).isVisible();
 
 			for (FilterSetListViewItem tmp : mChildList)
 			{
-				tmp.setVisibility(newState);
+				tmp.setVisible(newState);
 			}
 		}
 

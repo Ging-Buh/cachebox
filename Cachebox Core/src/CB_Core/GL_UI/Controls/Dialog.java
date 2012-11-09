@@ -268,7 +268,7 @@ public abstract class Dialog extends CB_View_Base
 
 				// hier nicht view.render(batch) aufrufen, da sonnst die in der
 				// view enthaldenen Childs nicht aufgerufen werden.
-				if (view != null && view.getVisibility() == VISIBLE)
+				if (view != null && view.isVisible())
 				{
 
 					if (childsInvalidate) view.invalidate();

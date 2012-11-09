@@ -85,9 +85,9 @@ public class CacheDAO
 			else
 				cache.listingChanged = false;
 
-			if (reader.getInt(24) > 0) cache.CorrectedCoordinates = true;
+			if (reader.getInt(24) > 0) cache.setCorrectedCoordinates(true);
 			else
-				cache.CorrectedCoordinates = false;
+				cache.setCorrectedCoordinates(false);
 
 			if (reader.isNull(25)) cache.ApiStatus = 0;
 			else
@@ -181,7 +181,7 @@ public class CacheDAO
 		// args.put("ListingCheckSum", cache.);
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("ApiStatus", cache.ApiStatus);
-		args.put("CorrectedCoordinates", cache.CorrectedCoordinates ? 1 : 0);
+		args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
 		args.put("TourName", cache.TourName);
 
 		try
@@ -282,7 +282,7 @@ public class CacheDAO
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("Favorit", cache.Favorit() ? 1 : 0);
 		args.put("ApiStatus", cache.ApiStatus);
-		args.put("CorrectedCoordinates", cache.CorrectedCoordinates ? 1 : 0);
+		args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
 		args.put("TourName", cache.TourName);
 
 		try

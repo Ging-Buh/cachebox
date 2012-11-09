@@ -35,16 +35,6 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
 
-	/**
-	 * This view is visible. Use with {@link #setVisibility}.
-	 */
-	public final static int VISIBLE = 0x00000000;
-
-	/**
-	 * This view is invisible. Use with {@link #setVisibility}.
-	 */
-	public static final int INVISIBLE = 0x00000002;
-
 	public static boolean debug = false;
 	public static boolean disableScissor = false;
 
@@ -68,7 +58,7 @@ public abstract class GL_View_Base extends CB_RectF
 	protected boolean onTouchDown = false;
 	public Vector2 lastTouchPos;
 
-	private int mViewState = VISIBLE;
+	private boolean mVisible = true;
 
 	protected GL_View_Base parent;
 	protected static int nDepthCounter = 0;
@@ -134,11 +124,29 @@ public abstract class GL_View_Base extends CB_RectF
 
 	}
 
-	// # Method
-	public void setVisibility(int visibility)
+	public void setVisible(boolean On)
 	{
-		if (mViewState == visibility) return;
-		mViewState = visibility;
+		if (On)
+		{
+			setVisible();
+		}
+		else
+		{
+			setInvisible();
+		}
+	}
+
+	public void setVisible()
+	{
+		if (mVisible) return;
+		mVisible = true;
+		GL.that.renderOnce(this.getName() + "setVisibility");
+	}
+
+	public void setInvisible()
+	{
+		if (!mVisible) return;
+		mVisible = false;
 		GL.that.renderOnce(this.getName() + "setVisibility");
 	}
 
@@ -162,15 +170,15 @@ public abstract class GL_View_Base extends CB_RectF
 	 * 
 	 * @return
 	 */
-	public int getVisibility()
+	private boolean getVisibility()
 	{
-		if (this.getWidth() <= 0f || this.getHeight() <= 0f) return INVISIBLE;
-		return mViewState;
+		if (this.getWidth() <= 0f || this.getHeight() <= 0f) return false;
+		return mVisible;
 	}
 
 	public boolean isVisible()
 	{
-		return (getVisibility() == VISIBLE);
+		return getVisibility();
 	}
 
 	public GL_View_Base addChild(final GL_View_Base view)
@@ -357,7 +365,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
-					if (view != null && view.getVisibility() == VISIBLE)
+					if (view != null && view.isVisible())
 					{
 
 						if (childsInvalidate) view.invalidate();

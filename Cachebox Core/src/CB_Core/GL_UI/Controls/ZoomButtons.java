@@ -309,7 +309,7 @@ public class ZoomButtons extends CB_View_Base
 		else if (!virtualVisible)
 		{
 			// Log.d("CACHEBOX", "Start Fade In");
-			this.setVisibility(VISIBLE);
+			this.setVisible(true);
 			virtualVisible = true;
 			fadeIn = true;
 			FadeValue = 0f;
@@ -446,9 +446,9 @@ public class ZoomButtons extends CB_View_Base
 	}
 
 	@Override
-	public void setVisibility(int value)
+	public void setVisible(boolean On)
 	{
-		super.setVisibility(value);
+		super.setVisible(On);
 
 		cancelTimerToFadeOut();
 	}

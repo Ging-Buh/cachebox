@@ -6,7 +6,6 @@ import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Button;
@@ -227,29 +226,29 @@ public class EditFilterSettings extends ActivityBase
 	{
 		if (btPre.getState() == 1)
 		{
-			lvSet.setVisibility(CB_View_Base.INVISIBLE);
-			lvPre.setVisibility(CB_View_Base.VISIBLE);
-			lvCat.setVisibility(CB_View_Base.INVISIBLE);
-			btnAddPreset.setVisibility(CB_View_Base.VISIBLE);
+			lvSet.setInvisible();
+			lvPre.setVisible();
+			lvCat.setInvisible();
+			btnAddPreset.setVisible();
 			if (lvCat != null) lvCat.SetCategory();
 			lvPre.onShow();
 		}
 
 		if (btSet.getState() == 1)
 		{
-			lvPre.setVisibility(CB_View_Base.INVISIBLE);
-			lvSet.setVisibility(CB_View_Base.VISIBLE);
-			lvCat.setVisibility(CB_View_Base.INVISIBLE);
-			btnAddPreset.setVisibility(CB_View_Base.INVISIBLE);
+			lvPre.setInvisible();
+			lvSet.setVisible();
+			lvCat.setInvisible();
+			btnAddPreset.setInvisible();
 			if (lvCat != null) lvCat.SetCategory();
 			lvSet.onShow();
 		}
 		if (btCat.getState() == 1)
 		{
-			lvPre.setVisibility(CB_View_Base.INVISIBLE);
-			lvSet.setVisibility(CB_View_Base.INVISIBLE);
-			lvCat.setVisibility(CB_View_Base.VISIBLE);
-			btnAddPreset.setVisibility(CB_View_Base.INVISIBLE);
+			lvPre.setInvisible();
+			lvSet.setInvisible();
+			lvCat.setVisible();
+			btnAddPreset.setInvisible();
 			lvCat.onShow();
 		}
 	}

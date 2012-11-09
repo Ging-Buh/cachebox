@@ -246,8 +246,8 @@ public class GL_MsgBox extends Dialog
 		else if (button == 6)
 		{
 			createButtons(this, 3);
-			button1.setVisibility(CB_View_Base.INVISIBLE);
-			button2.setVisibility(CB_View_Base.INVISIBLE);
+			button1.setInvisible();
+			button2.setInvisible();
 			button3.setText(GlobalCore.Translations.Get("cancel"));
 		}
 		else

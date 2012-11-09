@@ -1202,7 +1202,7 @@ public class GL implements ApplicationListener
 		darknesAnimationRuns = true;
 		actDialog.onShow();
 		actDialog.setEnabled(true);
-		actDialog.setVisibility(CB_View_Base.VISIBLE);
+		actDialog.setVisible();
 
 		platformConector.showForDialog();
 
@@ -1508,9 +1508,9 @@ public class GL implements ApplicationListener
 	public void hideMarker()
 	{
 		if (selectionMarkerCenter == null || selectionMarkerLeft == null || selectionMarkerRight == null) initialMarkerOverlay();
-		selectionMarkerCenter.setVisibility(GL_View_Base.INVISIBLE);
-		selectionMarkerLeft.setVisibility(GL_View_Base.INVISIBLE);
-		selectionMarkerRight.setVisibility(GL_View_Base.INVISIBLE);
+		selectionMarkerCenter.setInvisible();
+		selectionMarkerLeft.setInvisible();
+		selectionMarkerRight.setInvisible();
 
 		MarkerIsShown = false;
 	}
@@ -1522,13 +1522,13 @@ public class GL implements ApplicationListener
 		switch (type)
 		{
 		case Center:
-			selectionMarkerCenter.setVisibility(GL_View_Base.VISIBLE);
+			selectionMarkerCenter.setVisible();
 			break;
 		case Left:
-			selectionMarkerLeft.setVisibility(GL_View_Base.VISIBLE);
+			selectionMarkerLeft.setVisible();
 			break;
 		case Right:
-			selectionMarkerRight.setVisibility(GL_View_Base.VISIBLE);
+			selectionMarkerRight.setVisible();
 			break;
 		}
 
