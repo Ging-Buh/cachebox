@@ -172,7 +172,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		// float position = glyphPositions.get(cursor);
 		// float distance = position - Math.abs(renderOffset);
 		// float visibleWidth = width;
-		// if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
+		// if (style.background != null) visibleWidth -= style.background.this.LeftWidth + style.background.RightWidth;
 
 		// check whether the cursor left the left or right side of
 		// the visible area and adjust renderoffset.

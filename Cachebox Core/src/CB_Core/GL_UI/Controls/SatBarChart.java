@@ -36,7 +36,6 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 
@@ -76,8 +75,8 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 			balken[13] = new CB_Rect(balken[12].getMaxX() + 3, 0, w, 10);
 		}
 
-		int w = getNextHighestPO2((int) this.getWidth());
-		int h = getNextHighestPO2((int) this.getHeight());
+		int w = getNextHighestPO2((int) this.width);
+		int h = getNextHighestPO2((int) this.height);
 		// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGB565);
 		int count = 0;
@@ -120,7 +119,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 
 		Texture tex = new Texture(p);
 
-		drawing = new Sprite(tex, (int) this.getWidth(), (int) this.getHeight());
+		drawing = new Sprite(tex, (int) this.width, (int) this.height);
 		drawing.setX(0);
 		drawing.setY(0);
 		drawing.flip(false, true);
@@ -147,7 +146,6 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 

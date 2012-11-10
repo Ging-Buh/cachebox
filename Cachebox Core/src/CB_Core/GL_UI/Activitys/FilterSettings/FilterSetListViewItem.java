@@ -79,7 +79,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		// initial
 		left = LeftWidth;
-		top = this.height - TopHight;
+		top = this.height - this.TopHeight;
 
 		switch (this.mFilterSetEntry.getItemType())
 		{

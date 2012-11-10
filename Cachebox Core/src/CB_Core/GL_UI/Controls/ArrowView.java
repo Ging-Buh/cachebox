@@ -55,7 +55,7 @@ public class ArrowView extends CB_View_Base
 		Sprite arrow = SpriteCache.Arrows.get(0);
 		arrow.setRotation(0);
 		arrow.setBounds(-(width / 2), 0, width, height);
-		arrow.setOrigin(centerPos.x, centerPos.y);
+		arrow.setOrigin(this.centerPos.x, this.centerPos.y);
 		arrow.draw(batch);
 
 	}
@@ -72,14 +72,12 @@ public class ArrowView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

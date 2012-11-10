@@ -528,7 +528,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 	@Override
 	public void onShow()
 	{
-		initialYpos = this.getY();
+		initialYpos = this.Pos.y;
 		KeyboardFocusChangedEventList.Add(this);
 	}
 

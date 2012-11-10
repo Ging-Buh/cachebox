@@ -30,7 +30,7 @@ public class DescriptionView extends CB_View_Base
 	public void onShow()
 	{
 		// Rufe ANDROID VIEW auf
-		platformConector.showView(ViewConst.DESCRIPTION_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		platformConector.showView(ViewConst.DESCRIPTION_VIEW, this.Pos.x, this.Pos.y, this.width, this.height);
 	}
 
 	@Override
@@ -42,14 +42,12 @@ public class DescriptionView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

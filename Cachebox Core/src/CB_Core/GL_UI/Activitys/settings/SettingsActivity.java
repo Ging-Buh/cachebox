@@ -87,10 +87,10 @@ public class SettingsActivity extends ActivityBase
 		super(ActivityBase.ActivityRec(), "Settings");
 		that = this;
 		Config.settings.SaveToLastValue();
-		ButtonRec = new CB_RectF(Left, 0, this.width - this.drawableBackground.getLeftWidth() - this.drawableBackground.getRightWidth(),
-				UiSizes.getButtonHeight());
+		ButtonRec = new CB_RectF(this.LeftWidth, 0, this.width - this.drawableBackground.getLeftWidth()
+				- this.drawableBackground.getRightWidth(), UiSizes.getButtonHeight());
 
-		itemRec = new CB_RectF(Left, 0, ButtonRec.getWidth() - Left - Right, UiSizes.getButtonHeight());
+		itemRec = new CB_RectF(this.LeftWidth, 0, ButtonRec.getWidth() - this.LeftWidth - this.RightWidth, UiSizes.getButtonHeight());
 
 		createButtons();
 		fillContent();
@@ -100,9 +100,9 @@ public class SettingsActivity extends ActivityBase
 	{
 		float btnW = (innerWidth - UiSizes.getButtonWidth()) / 2;
 
-		btnOk = new Button(Left, Bottom, btnW, UiSizes.getButtonHeight(), "OK Button");
-		btnMenu = new Button(btnOk.getMaxX(), Bottom, UiSizes.getButtonWidth(), UiSizes.getButtonHeight(), "Menu Button");
-		btnCancel = new Button(btnMenu.getMaxX(), Bottom, btnW, UiSizes.getButtonHeight(), "Cancel Button");
+		btnOk = new Button(this.LeftWidth, this.BottomHeight, btnW, UiSizes.getButtonHeight(), "OK Button");
+		btnMenu = new Button(btnOk.getMaxX(), this.BottomHeight, UiSizes.getButtonWidth(), UiSizes.getButtonHeight(), "Menu Button");
+		btnCancel = new Button(btnMenu.getMaxX(), this.BottomHeight, btnW, UiSizes.getButtonHeight(), "Cancel Button");
 
 		// Translations
 		btnOk.setText(GlobalCore.Translations.Get("save"));

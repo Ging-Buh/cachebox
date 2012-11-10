@@ -276,9 +276,8 @@ public class CategorieListView extends V_ListView
 
 			CB_RectF HitRec = v.copy();
 
-			CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), HitRec.getTop(), HitRec.getRight(),
-					HitRec.getBottom());
-			CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getLeft(), HitRec.getTop(), HitRec.getHeight(), HitRec.getBottom());
+			CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), HitRec.getTop(), HitRec.getRight(), HitRec.getY());
+			CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), HitRec.getTop(), HitRec.getHeight(), HitRec.getY());
 
 			SetCategory();
 
@@ -425,7 +424,7 @@ public class CategorieListView extends V_ListView
 				HitRec.setY(0);
 
 				CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getTop());
-				CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getLeft(), 0, HitRec.getHeight(), HitRec.getTop());
+				CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getTop());
 
 				float lastTouchX = ((CategorieListViewItem) v).lastItemTouchPos.x;
 				float lastTouchY = ((CategorieListViewItem) v).lastItemTouchPos.y;

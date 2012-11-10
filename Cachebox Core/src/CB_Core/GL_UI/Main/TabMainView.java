@@ -239,7 +239,7 @@ public class TabMainView extends MainViewBase
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		rec.setHeight(this.getHeight() - UiSizes.getInfoSliderHeight());
+		rec.setHeight(this.height - UiSizes.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
@@ -346,7 +346,7 @@ public class TabMainView extends MainViewBase
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		rec.setHeight(this.getHeight() - UiSizes.getInfoSliderHeight());
+		rec.setHeight(this.height - UiSizes.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
@@ -435,7 +435,7 @@ public class TabMainView extends MainViewBase
 		rec.setX(GL_UISizes.UI_Left.getWidth());
 		rec.setY(0);
 
-		rec.setHeight(this.getHeight() - UiSizes.getInfoSliderHeight());
+		rec.setHeight(this.height - UiSizes.getInfoSliderHeight());
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 

@@ -32,7 +32,7 @@ public class SolverViewItem extends ListViewItemBackground
 
 		mS_FontCache = new BitmapFontCache(mBitmapFont);
 		mS_FontCache.setColor(Fonts.getFontColor());
-		mS_FontCache.setText(solverZeile.getOrgText(), LeftWidth, this.height - TopHight);
+		mS_FontCache.setText(solverZeile.getOrgText(), LeftWidth, this.height - TopHeight);
 
 		mS_FontCacheResult = new BitmapFontCache(mBitmapFont);
 		mS_FontCacheResult.setText(solverZeile.Solution, LeftWidth * 3, BottomHeight * 2);

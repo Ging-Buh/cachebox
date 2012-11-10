@@ -1018,7 +1018,7 @@ public class SearchDialog extends PopUp_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		lastPoint = new Vector2(this.getX(), this.getY());
+		lastPoint = new Vector2(this.Pos.x, this.Pos.y);
 		return true;
 	}
 

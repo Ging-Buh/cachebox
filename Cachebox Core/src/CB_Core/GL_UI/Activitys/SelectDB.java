@@ -75,20 +75,21 @@ public class SelectDB extends ActivityBase
 			index++;
 		}
 
-		lvFiles = new V_ListView(new CB_RectF(Left, Bottom + UiSizes.getButtonHeight() * 2, width - Left - Right, height
-				- (UiSizes.getButtonHeight() * 2) - Top - Bottom), "DB File ListView");
+		lvFiles = new V_ListView(new CB_RectF(this.LeftWidth, this.BottomHeight + UiSizes.getButtonHeight() * 2, width - this.LeftWidth
+				- this.RightWidth, height - (UiSizes.getButtonHeight() * 2) - this.TopHeight - this.BottomHeight), "DB File ListView");
 
 		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
 
 		this.addChild(lvFiles);
 
-		float btWidth = (width - Left - Right) / 3;
+		float btWidth = (width - this.LeftWidth - this.RightWidth) / 3;
 
-		bNew = new Button(new CB_RectF(Left, Bottom, btWidth, UiSizes.getButtonHeight()), "selectDB.bNew");
-		bSelect = new Button(new CB_RectF(bNew.getMaxX(), Bottom, btWidth, UiSizes.getButtonHeight()), "selectDB.bSelect");
-		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), Bottom, btWidth, UiSizes.getButtonHeight()), "selectDB.bCancel");
-		bAutostart = new Button(new CB_RectF(Left, bNew.getMaxY(), width - Left - Right, UiSizes.getButtonHeight()), "selectDB.bAutostart");
+		bNew = new Button(new CB_RectF(this.LeftWidth, this.BottomHeight, btWidth, UiSizes.getButtonHeight()), "selectDB.bNew");
+		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.BottomHeight, btWidth, UiSizes.getButtonHeight()), "selectDB.bSelect");
+		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.BottomHeight, btWidth, UiSizes.getButtonHeight()), "selectDB.bCancel");
+		bAutostart = new Button(new CB_RectF(this.LeftWidth, bNew.getMaxY(), width - this.LeftWidth - this.RightWidth,
+				UiSizes.getButtonHeight()), "selectDB.bAutostart");
 
 		this.addChild(bSelect);
 		this.addChild(bNew);
@@ -404,7 +405,7 @@ public class SelectDB extends ActivityBase
 			this.files = files;
 			recItem = UiSizes.getCacheListItemRec().asFloat();
 			recItem.setHeight(recItem.getHeight() * 0.8f);
-			recItem.setWidth(width - Left - Right - (margin * 1.5f));
+			recItem.setWidth(width - getLeftWidth() - getRightWidth() - (margin * 1.5f));
 		}
 
 		public void setFiles(FileList files)

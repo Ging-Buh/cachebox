@@ -46,7 +46,7 @@ public abstract class GL_View_Base extends CB_RectF
 	protected GL_View_Base Me;
 
 	/**
-	 * Enth�lt alle GL_Views innerhalb dieser Gl_View
+	 * Enthaelt alle GL_Views innerhalb dieser Gl_View
 	 */
 	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
@@ -172,7 +172,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	private boolean getVisibility()
 	{
-		if (this.getWidth() <= 0f || this.getHeight() <= 0f) return false;
+		if (this.width <= 0f || this.height <= 0f) return false;
 		return mVisible;
 	}
 
@@ -278,9 +278,9 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Die renderChilds() Methode wird vom GL_Listner bei jedem Render-Vorgang aufgerufen. </br> Hier wird dann zuerst die render() Methode
-	 * dieser View aufgerufen. </br> Danach werden alle Childs iteriert und dessen renderChilds() Methode aufgerufen, wenn die View sichtbar
-	 * ist (Visibility).
+	 * Die renderChilds() Methode wird vom GL_Listner bei jedem Render-Vorgang aufgerufen. Hier wird dann zuerst die render() Methode dieser
+	 * View aufgerufen. Danach werden alle Childs iteriert und dessen renderChilds() Methode aufgerufen, wenn die View sichtbar ist
+	 * (Visibility).
 	 * 
 	 * @param batch
 	 */
@@ -469,16 +469,16 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Berechnet das Scissor Rechteck und die Infos f�r die Childs immer dann wenn sich etwas an Position oder Gr��e dieses
-	 * GL_View_Base ge�ndert hat.</br> Wenn sich etwas ge�ndert hat, wird auch ein Invalidate an die Childs �bergeben, da diese auch
-	 * neu berechnet werden m�ssen. </br> Die detection wann sich etwas ge�ndert hat, kommt von der �berschriebenen CB_RectF Methode
-	 * CalcCrossPos, da diese bei jeder �nderung aufgerufen wird.
+	 * Berechnet das Scissor Rechteck und die Infos fuer die Childs immer dann wenn sich etwas an Position oder Groesse dieses GL_View_Base
+	 * geaendert hat. Wenn sich etwas geaendert hat, wird auch ein Invalidate an die Childs uebergeben, da diese auch neu berechnet werden
+	 * muessen. Die detection wann sich etwas geaendert hat, kommt von der ueberschriebenen CB_RectF Methode CalcCrossPos, da diese bei
+	 * jeder Aenderung aufgerufen wird.
 	 */
 	private void CalcMyInfoForChild()
 	{
 		childsInvalidate = true;
 		ThisWorldRec = this.copy().offset(myParentInfo.Vector());
-		ThisWorldRec.offset(-this.getX(), -this.getY());
+		ThisWorldRec.offset(-this.Pos.x, -this.Pos.y);
 		mustSetScissor = !myParentInfo.drawRec().contains(ThisWorldRec);
 
 		if (mustSetScissor)
@@ -497,13 +497,6 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void invalidate()
 	{
-		thisInvalidate = true;
-	}
-
-	@Override
-	protected void calcCrossCorner()
-	{
-		super.calcCrossCorner();
 		thisInvalidate = true;
 	}
 
@@ -891,8 +884,8 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Setzt dieses View Clicable mit der �bergabe von True. </br> Wenn Dieses View nicht Clickable ist, werden auch keine Click-Abfragen
-	 * an die Childs weitergegeben.
+	 * Setzt dieses View Clicable mit der Uebergabe von True. Wenn dieses View nicht Clickable ist, werden auch keine Click-Abfragen an die
+	 * Childs weitergegeben.
 	 * 
 	 * @param value
 	 */
@@ -919,7 +912,7 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void setY(float i)
 	{
-		if (this.getY() == i) return;
+		if (this.Pos.y == i) return;
 		super.setY(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL.that.renderOnce(this.getName() + " setY");
@@ -928,7 +921,7 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void setX(float i)
 	{
-		if (this.getX() == i) return;
+		if (this.Pos.x == i) return;
 		super.setX(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL.that.renderOnce(this.getName() + " setX");
@@ -937,7 +930,7 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void setPos(Vector2 Pos)
 	{
-		if (this.getPos().x == Pos.x && this.getPos().y == Pos.y) return;
+		if (this.Pos.x == Pos.x && this.Pos.y == Pos.y) return;
 		super.setPos(Pos);
 		this.invalidate(); // Scissor muss neu berechnet werden
 		GL.that.renderOnce(this.getName() + " setPos(Vector)");

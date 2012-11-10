@@ -29,7 +29,7 @@ public class TrackableListView extends CB_View_Base
 	@Override
 	public void onShow()
 	{
-		platformConector.showView(ViewConst.TB_LIST_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		platformConector.showView(ViewConst.TB_LIST_VIEW, this.Pos.x, this.Pos.y, this.width, this.height);
 	}
 
 	@Override
@@ -47,7 +47,6 @@ public class TrackableListView extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

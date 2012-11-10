@@ -32,7 +32,7 @@ public class AboutView extends CB_View_Base
 	public void onShow()
 	{
 		// Rufe ANDROID VIEW auf
-		platformConector.showView(ViewConst.ABOUT_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		platformConector.showView(ViewConst.ABOUT_VIEW, this.Pos.x, this.Pos.y, this.width, this.height);
 	}
 
 	@Override

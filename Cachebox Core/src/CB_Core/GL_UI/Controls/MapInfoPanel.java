@@ -130,13 +130,13 @@ public class MapInfoPanel extends CB_View_Base
 
 		lblLatitude = new Label(this.ScaleCenter(0.4f), "lblLatitude");
 		lblLatitude.setFont(Fonts.getSmall());
-		lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth(), CompassRec.getWidth() / 2));
+		lblLatitude.setPos(new Vector2(this.width - lblLatitude.getWidth(), CompassRec.getWidth() / 2));
 		lblLatitude.setText("---");
 		this.addChild(lblLatitude);
 
 		lblLongitude = new Label(this.ScaleCenter(0.4f), "lblLongitude");
 		lblLongitude.setFont(Fonts.getSmall());
-		lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth(), this.height * 0.1f));
+		lblLongitude.setPos(new Vector2(this.width - lblLongitude.getWidth(), this.height * 0.1f));
 		lblLongitude.setText("---");
 		this.addChild(lblLongitude);
 	}

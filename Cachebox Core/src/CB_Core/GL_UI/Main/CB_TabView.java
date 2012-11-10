@@ -54,7 +54,7 @@ public class CB_TabView extends CB_View_Base
 
 	private void layout()
 	{
-		mContentRec.setHeight(this.getHeight() - GL_UISizes.BottomButtonHeight);
+		mContentRec.setHeight(this.height - GL_UISizes.BottomButtonHeight);
 		mContentRec.setPos(0, GL_UISizes.BottomButtonHeight);
 
 		if (aktView != null)

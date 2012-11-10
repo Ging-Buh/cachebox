@@ -81,7 +81,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	public Import()
 	{
 		super(ActivityRec(), "importActivity");
-		innerWidth = this.width - Left - Left;
+		innerWidth = this.width - this.LeftWidth - this.LeftWidth;
 		CollabseBoxMaxHeight = CollabseBoxHeight = UiSizes.getButtonHeight() * 6;
 		innerHeight = 1000;
 		scrollBox = new ScrollBox(ActivityRec(), innerHeight, "ScrollBox");
@@ -119,8 +119,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private void createOkCancelBtn()
 	{
-		bOK = new Button(Left, Left, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-		bCancel = new Button(bOK.getMaxX(), Left, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		bOK = new Button(this.LeftWidth, this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
+		bCancel = new Button(bOK.getMaxX(), this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
 
 		// Translations
 		bOK.setText(GlobalCore.Translations.Get("import"));
@@ -160,14 +160,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		float lineHeight = UiSizes.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(Left + margin, this.height - Top - lineHeight - margin, width - Left - Right - margin, lineHeight,
-				"TitleLabel");
+		lblTitle = new Label(this.LeftWidth + margin, this.height - this.TopHeight - lineHeight - margin, width - this.LeftWidth
+				- this.RightWidth - margin, lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		float lblWidth = (lblTitle.setText(GlobalCore.Translations.Get("import"))).width;
 		this.addChild(lblTitle);
 
-		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), this.width - margin - margin - lblWidth - Left
-				- Right, lineHeight);
+		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), this.width - margin - margin - lblWidth
+				- this.LeftWidth - this.RightWidth, lineHeight);
 
 		pgBar = new ProgressBar(rec, "ProgressBar");
 
@@ -175,8 +175,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		float SmallLineHeight = Fonts.MeasureSmall("T").height;
 
-		lblProgressMsg = new Label(Left + margin, lblTitle.getY() - margin - SmallLineHeight, this.getWidth() - Left - Right - margin
-				- margin, SmallLineHeight, "ProgressMsg");
+		lblProgressMsg = new Label(this.LeftWidth + margin, lblTitle.getY() - margin - SmallLineHeight, this.getWidth() - this.LeftWidth
+				- this.RightWidth - margin - margin, SmallLineHeight, "ProgressMsg");
 
 		lblProgressMsg.setFont(Fonts.getSmall());
 
@@ -188,7 +188,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private void createPQLines()
 	{
 
-		innerLeft = Left + margin - this.getLeftWidth();
+		innerLeft = this.LeftWidth + margin - this.LeftWidth;
 
 		checkImportPQfromGC = new chkBox("PQ");
 		checkImportPQfromGC.setX(innerLeft);
@@ -226,7 +226,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			}
 		});
 
-		lvPQs = new V_ListView(new CB_RectF(this.getLeftWidth(), refreshPqList.getMaxY() + margin, PQ_ListCollabseBox.getWidth(),
+		lvPQs = new V_ListView(new CB_RectF(this.LeftWidth, refreshPqList.getMaxY() + margin, PQ_ListCollabseBox.getWidth(),
 				PQ_ListCollabseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
 
 		lvPQs.setEmptyMsg(GlobalCore.Translations.Get("EmptyPqList"));

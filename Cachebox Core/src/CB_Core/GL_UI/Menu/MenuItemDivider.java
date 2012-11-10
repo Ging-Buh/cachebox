@@ -39,7 +39,7 @@ public class MenuItemDivider extends MenuItemBase
 			Image = new NinePatchDrawable(new NinePatch(s, 1, 1, 1, 1));
 		}
 
-		Image.draw(batch, 0, halfHeight - (spriteHeight / 2), width, spriteHeight);
+		Image.draw(batch, 0, this.halfHeight - (spriteHeight / 2), width, spriteHeight);
 	}
 
 }

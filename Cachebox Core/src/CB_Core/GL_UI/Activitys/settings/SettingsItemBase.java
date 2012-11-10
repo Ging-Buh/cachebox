@@ -15,11 +15,11 @@ public class SettingsItemBase extends ListViewItemBackground
 	{
 		super(rec, Index, Name);
 		Initial();
-		Left = Right = Top = Bottom = LeftWidth / 2;
+		this.LeftWidth = this.RightWidth = this.TopHeight = this.BottomHeight = LeftWidth / 2;
 
 		if (MeasuredLabelHeight == -1) MeasuredLabelHeight = Fonts.MeasureSmall("Tg").height;
 
-		CB_RectF LblRec = new CB_RectF(Left, 0, this.width - Left - Right, this.halfHeight);
+		CB_RectF LblRec = new CB_RectF(this.LeftWidth, 0, this.width - this.LeftWidth - this.RightWidth, this.halfHeight);
 
 		lblDefault = new Label(LblRec, "");
 		lblDefault.setFont(Fonts.getSmall());
@@ -57,7 +57,7 @@ public class SettingsItemBase extends ListViewItemBackground
 	{
 		float asc = lblDefault.getFont().getDescent() * 2;
 
-		lblDefault.setY(Bottom + asc);
+		lblDefault.setY(this.BottomHeight + asc);
 
 		asc = lblName.getFont().getDescent();
 
@@ -67,7 +67,7 @@ public class SettingsItemBase extends ListViewItemBackground
 
 		lblName.setY(lblDefault.getMaxY() - (asc * 2) + a);
 
-		this.setHeight(Bottom + lblDefault.getHeight() + lblName.getHeight() - asc);
+		this.setHeight(this.BottomHeight + lblDefault.getHeight() + lblName.getHeight() - asc);
 
 	}
 

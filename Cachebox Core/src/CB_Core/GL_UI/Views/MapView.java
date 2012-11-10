@@ -1361,7 +1361,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				// Berechne die darstellbare Entfernung für jedes ZoomLevel
 				DistanceZoomLevel = new TreeMap<Integer, Integer>();
 
-				int posiblePixel = (int) this.getHalfHeight();
+				int posiblePixel = (int) this.halfHeight;
 
 				for (int i = setMaxZoom; i > setMinZoom; i--)
 				{

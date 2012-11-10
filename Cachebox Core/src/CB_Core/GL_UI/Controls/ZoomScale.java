@@ -59,7 +59,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (this.getWidth() < 1 || this.getHeight() < 1) return;
+		if (this.width < 1 || this.height < 1) return;
 
 		int valueRecHeight = (int) (this.width / 2);
 

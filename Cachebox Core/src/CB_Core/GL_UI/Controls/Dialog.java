@@ -66,10 +66,10 @@ public abstract class Dialog extends CB_View_Base
 		mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), pW, pW, 1, 1);
 		mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 3, pW);
 
-		Left = mCenter9patch.getLeftWidth();
-		Right = mCenter9patch.getRightWidth();
-		Top = mCenter9patch.getTopHeight();
-		Bottom = mFooter9patch.getBottomHeight();
+		this.LeftWidth = mCenter9patch.getLeftWidth();
+		this.RightWidth = mCenter9patch.getRightWidth();
+		this.TopHeight = mCenter9patch.getTopHeight();
+		this.BottomHeight = mFooter9patch.getBottomHeight();
 		mTitleVersatz = (float) pW;
 
 	}
@@ -219,7 +219,7 @@ public abstract class Dialog extends CB_View_Base
 
 		}
 
-		mContent.setWidth(this.getWidth() * 0.95f);
+		mContent.setWidth(this.width * 0.95f);
 		mContent.setHeight(this.height - mHeaderHight - getFooterHeight() - mTitleHeight - margin);
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
 		float centerversatzY = getFooterHeight();// this.halfHeight - mContent.getHalfHeight();

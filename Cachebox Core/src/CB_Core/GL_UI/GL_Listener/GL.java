@@ -1393,7 +1393,7 @@ public class GL implements ApplicationListener
 		}
 		toast.setText(string);
 
-		float measuredWidth = Fonts.Measure(string).width + (toast.Left * 3);
+		float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 3);
 		toast.setWidth(measuredWidth);
 
 		toast.setPos((width / 2) - (measuredWidth / 2), GL_UISizes.BottomButtonHeight * 1.3f);

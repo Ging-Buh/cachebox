@@ -45,10 +45,11 @@ public class SelectSolverFunction extends ButtonDialog
 		mResultListner = resultListner;
 
 		// Grössen für die CategoryButtons und ItemButtons berechnen!
-		categoryBtnRec = new CB_RectF(Left, 0, this.width - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth() - Left - Right,
-				UiSizes.getButtonHeight());
+		categoryBtnRec = new CB_RectF(this.LeftWidth, 0, this.width - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth()
+				- this.LeftWidth - this.RightWidth, UiSizes.getButtonHeight());
 
-		itemBtnRec = new CB_RectF(Left, 0, categoryBtnRec.getWidth() - Left - Right, UiSizes.getButtonHeight());
+		itemBtnRec = new CB_RectF(this.LeftWidth, 0, categoryBtnRec.getWidth() - this.LeftWidth - this.RightWidth,
+				UiSizes.getButtonHeight());
 
 		// Initialisiert die unteren Buttons für Ok/Cancel
 		iniOkCancel();
@@ -172,7 +173,7 @@ public class SelectSolverFunction extends ButtonDialog
 	private void iniDescLabel()
 	{
 		// rechteck für Label erstellen
-		CB_RectF rec = new CB_RectF(0, Bottom, this.width, UiSizes.getButtonHeight() * 1.5f);
+		CB_RectF rec = new CB_RectF(0, this.BottomHeight, this.width, UiSizes.getButtonHeight() * 1.5f);
 
 		desc = new Label(rec, "description");
 

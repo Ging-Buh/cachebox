@@ -45,18 +45,19 @@ public class EditFilterSettings extends ActivityBase
 	{
 		super(rec, Name);
 		that = this;
-		ItemRec = new CB_RectF(Left, 0, this.width - Left - Right, UiSizes.getButtonHeight() * 1.1f);
+		ItemRec = new CB_RectF(this.LeftWidth, 0, this.width - this.LeftWidth - this.RightWidth, UiSizes.getButtonHeight() * 1.1f);
 
 		tmpFilterProps = GlobalCore.LastFilter;
 
-		float innerWidth = this.width - Left - Left;
-		CB_RectF MTBRec = new CB_RectF(Left, this.height - Left - UiSizes.getButtonHeight(), innerWidth / 3, UiSizes.getButtonHeight());
+		float innerWidth = this.width - this.LeftWidth - this.LeftWidth;
+		CB_RectF MTBRec = new CB_RectF(this.LeftWidth, this.height - this.LeftWidth - UiSizes.getButtonHeight(), innerWidth / 3,
+				UiSizes.getButtonHeight());
 
 		btPre = new MultiToggleButton(MTBRec, "btPre");
 		btSet = new MultiToggleButton(MTBRec, "btSet");
 		btCat = new MultiToggleButton(MTBRec, "btCat");
 
-		btPre.setX(Left);
+		btPre.setX(this.LeftWidth);
 		btSet.setX(btPre.getMaxX());
 		btCat.setX(btSet.getMaxX());
 
@@ -130,7 +131,7 @@ public class EditFilterSettings extends ActivityBase
 			}
 		});
 
-		Button bOK = new Button(Left, Left, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
+		Button bOK = new Button(this.LeftWidth, this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
 
 		bOK.setOnClickListener(new OnClickListener()
 		{
@@ -151,7 +152,7 @@ public class EditFilterSettings extends ActivityBase
 
 		this.addChild(bOK);
 
-		Button bCancel = new Button(bOK.getMaxX(), Left, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		Button bCancel = new Button(bOK.getMaxX(), this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
 
 		bCancel.setOnClickListener(new OnClickListener()
 		{
@@ -182,7 +183,7 @@ public class EditFilterSettings extends ActivityBase
 
 	private void initialPresets()
 	{
-		CB_RectF rec = new CB_RectF(Left, ListViewRec.getY(), width - Right - Left, UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.LeftWidth, ListViewRec.getY(), width - this.RightWidth - this.LeftWidth, UiSizes.getButtonHeight());
 		btnAddPreset = new Button(rec, "AddPresetButon");
 		btnAddPreset.setText(GlobalCore.Translations.Get("AddOwnFilterPreset"));
 		btnAddPreset.setOnClickListener(new OnClickListener()

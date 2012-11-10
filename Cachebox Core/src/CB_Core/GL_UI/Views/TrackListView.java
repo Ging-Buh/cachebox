@@ -47,7 +47,7 @@ public class TrackListView extends V_ListView
 	{
 		this.notifyDataSetChanged();
 
-		// platformConector.showView(ViewConst.TRACK_LIST_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+		// platformConector.showView(ViewConst.TRACK_LIST_VIEW, this.Pos.x, this.Pos.y, this.width, this.height);
 	}
 
 	@Override

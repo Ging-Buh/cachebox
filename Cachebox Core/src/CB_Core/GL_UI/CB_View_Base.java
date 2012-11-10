@@ -15,10 +15,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
 
-	public float Left;
-	public float Right;
-	public float Top;
-	public float Bottom;
+	protected float LeftWidth; // linker Rand
+	protected float RightWidth; // rechter Rand
+	protected float TopHeight; // oberer Rand
+	protected float BottomHeight; // unterer Rand
 
 	// # Constructors
 
@@ -274,7 +274,27 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	@Override
 	public String toString()
 	{
-		return getName() + " X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.width + "," + this.height;
+		return getName() + " X,Y/Width,Height = " + this.Pos.x + "," + this.Pos.y + "/" + this.width + "," + this.height;
+	}
+
+	public float getLeftWidth()
+	{
+		return LeftWidth;
+	}
+
+	public float getBottomHeight()
+	{
+		return BottomHeight;
+	}
+
+	public float getRightWidth()
+	{
+		return RightWidth;
+	}
+
+	public float getTopHeight()
+	{
+		return TopHeight;
 	}
 
 }

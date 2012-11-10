@@ -137,7 +137,7 @@ public class splash extends TabMainView
 	{
 
 		float ref = UiSizes.getWindowHeight() / 13;
-		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
+		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
@@ -202,7 +202,7 @@ public class splash extends TabMainView
 		FX2_Logo.setPos(xPos, yPos);
 
 		yPos -= GC_Logo.getHeight();// + refHeight;
-		LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
+		LibGdx_Logo.setPos(this.halfWidth - LibGdx_Logo.getHalfWidth(), yPos);
 
 		yPos -= GC_Logo.getHeight();//
 		xPos = (this.width - (ref) - Route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;

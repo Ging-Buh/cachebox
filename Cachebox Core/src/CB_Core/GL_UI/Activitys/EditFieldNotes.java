@@ -106,7 +106,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniOkCancel()
 	{
-		CB_RectF btnRec = new CB_RectF(Left, Bottom, (width - Left - Right) / 2, UiSizes.getButtonHeight());
+		CB_RectF btnRec = new CB_RectF(this.LeftWidth, this.BottomHeight, (this.width - this.LeftWidth - this.RightWidth) / 2,
+				UiSizes.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 		bOK.setText(GlobalCore.Translations.Get("ok"));
 
@@ -220,8 +221,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniNameLabel()
 	{
-		tvCacheName = new Label(Left + margin, height - Top - MeasuredLabelHeight, width - Left - Right - margin, MeasuredLabelHeight,
-				"CacheNameLabel");
+		tvCacheName = new Label(this.LeftWidth + margin, height - this.TopHeight - MeasuredLabelHeight, width - this.LeftWidth
+				- this.RightWidth - margin, MeasuredLabelHeight, "CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBig());
 		tvCacheName.setText(fieldNote.CacheName);
 		scrollBox.addChild(tvCacheName);
@@ -231,7 +232,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniImage()
 	{
-		ivTyp = new Image(Left + margin, tvCacheName.getY() - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
+		ivTyp = new Image(this.LeftWidth + margin, tvCacheName.getY() - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
 				UiSizes.getButtonHeight(), "");
 		scrollBox.addChild(ivTyp);
 
@@ -240,7 +241,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniFoundLabel()
 	{
-		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UiSizes.getButtonHeight(), width - secondTab - Right - margin,
+		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UiSizes.getButtonHeight(), width - secondTab - this.RightWidth - margin,
 				UiSizes.getButtonHeight(), "CacheNameLabel");
 		tvFounds.setFont(Fonts.getBig());
 		scrollBox.addChild(tvFounds);
@@ -259,8 +260,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		lblDate.setFont(Fonts.getBig());
 		lblDate.setText(GlobalCore.Translations.Get("date") + ":");
 		scrollBox.addChild(lblDate);
-		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin - Right,
-				UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin
+				- this.RightWidth, UiSizes.getButtonHeight());
 
 		tvDate = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvDate);
@@ -273,8 +274,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		lblTime.setFont(Fonts.getBig());
 		lblTime.setText(GlobalCore.Translations.Get("time") + ":");
 		scrollBox.addChild(lblTime);
-		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin - Right,
-				UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin
+				- this.RightWidth, UiSizes.getButtonHeight());
 
 		tvTime = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvTime);
@@ -289,8 +290,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 			FilterSetEntry tmp = new FilterSetEntry(GlobalCore.Translations.Get("maxRating"), SpriteCache.Stars.toArray(),
 					FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
-			GcVote = new FilterSetListViewItem(new CB_RectF(Left, lblTime.getY() - itemHeight - margin, this.width - Left - Right,
-					itemHeight), 0, tmp);
+			GcVote = new FilterSetListViewItem(new CB_RectF(this.LeftWidth, lblTime.getY() - itemHeight - margin, this.width
+					- this.LeftWidth - this.RightWidth, itemHeight), 0, tmp);
 			scrollBox.addChild(GcVote);
 		}
 
@@ -301,11 +302,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		CB_RectF rec;
 		if (GcVote != null)
 		{
-			rec = new CB_RectF(Left, GcVote.getY() - UiSizes.getButtonHeight(), width - Left - Right, UiSizes.getButtonHeight());
+			rec = new CB_RectF(this.LeftWidth, GcVote.getY() - UiSizes.getButtonHeight(), width - this.LeftWidth - this.RightWidth,
+					UiSizes.getButtonHeight());
 		}
 		else
 		{
-			rec = new CB_RectF(Left, lblTime.getY() - UiSizes.getButtonHeight() - margin, width - Left - Right, UiSizes.getButtonHeight());
+			rec = new CB_RectF(this.LeftWidth, lblTime.getY() - UiSizes.getButtonHeight() - margin, width - this.LeftWidth
+					- this.RightWidth, UiSizes.getButtonHeight());
 		}
 
 		etComment = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "DescTextField");

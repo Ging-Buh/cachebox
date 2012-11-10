@@ -110,7 +110,7 @@ public class H_ListView extends ListViewBase
 						float itemPos = tmpPosDefault.get(i);
 						itemPos -= mPos;
 
-						if (itemPos <= this.getWidth())
+						if (itemPos <= this.width)
 						{
 							tmp.setX(itemPos);
 							// Logger.LogCat("Add: " + tmp.getName());

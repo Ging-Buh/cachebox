@@ -88,16 +88,17 @@ public class EditCoord extends ActivityBase
 		cancelCoord = coord.copy();
 		mReturnListner = returnListner;
 
-		float innerWidth = this.width - Left - Left;
+		float innerWidth = this.width - this.LeftWidth - this.LeftWidth;
 
-		CB_RectF MTBRec = new CB_RectF(Left, this.height - Left - UiSizes.getButtonHeight(), innerWidth / 4, UiSizes.getButtonHeight());
+		CB_RectF MTBRec = new CB_RectF(this.LeftWidth, this.height - this.LeftWidth - UiSizes.getButtonHeight(), innerWidth / 4,
+				UiSizes.getButtonHeight());
 
 		bDec = new MultiToggleButton(MTBRec, "bDec");
-		bMin = new MultiToggleButton(MTBRec, "bDec");
-		bSec = new MultiToggleButton(MTBRec, "bDec");
-		bUtm = new MultiToggleButton(MTBRec, "bDec");
+		bMin = new MultiToggleButton(MTBRec, "bMin");
+		bSec = new MultiToggleButton(MTBRec, "bSec");
+		bUtm = new MultiToggleButton(MTBRec, "bUtm");
 
-		bDec.setX(Left);
+		bDec.setX(this.LeftWidth);
 		bMin.setX(bDec.getMaxX());
 		bSec.setX(bMin.getMaxX());
 		bUtm.setX(bSec.getMaxX());
@@ -112,10 +113,12 @@ public class EditCoord extends ActivityBase
 		MultiToggleButton.initialOn_Off_ToggleStates(bSec, "Sec", "Sec");
 		MultiToggleButton.initialOn_Off_ToggleStates(bUtm, "UTM", "UTM");
 
-		Button bOK = new Button(Left, Left, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-		Button bCancel = new Button(bOK.getMaxX(), Left, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
-		bDLat = new Button(Left, bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "BDLat");
-		bDLon = new Button(Left, bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "bDLon");
+		Button bOK = new Button(this.LeftWidth, this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
+		Button bCancel = new Button(bOK.getMaxX(), this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		bDLat = new Button(this.LeftWidth, bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
+				"BDLat");
+		bDLon = new Button(this.LeftWidth, bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
+				"bDLon");
 		CB_RectF EditTextBoxRec = new CB_RectF(bDLon.getMaxX() + margin, bDLon.getY(), this.width - bDLon.getMaxX() - margin,
 				bDLat.getMaxY() - bDLon.getY());
 
@@ -579,6 +582,7 @@ public class EditCoord extends ActivityBase
 			double deg = (int) Math.abs(coord.getLatitude());
 			double frac = Math.abs(coord.getLatitude()) - deg;
 			double min = frac * 60;
+
 			tbMLatDeg.setText(String.format("%.0f", deg).replace(",", "."));
 			tbMLatMin.setText(String.format("%.3f", min).replace(",", "."));
 
@@ -732,12 +736,12 @@ public class EditCoord extends ActivityBase
 	private void showNumPad(NumPad.Type type)
 	{
 		if (numPad != null) return;
-		float numWidth = this.width - Left - Right;
-		float numHeight = this.height - Bottom - Top - (UiSizes.getButtonHeight() * 2) - (margin * 2);
+		float numWidth = this.width - this.LeftWidth - this.RightWidth;
+		float numHeight = this.height - this.BottomHeight - this.TopHeight - (UiSizes.getButtonHeight() * 2) - (margin * 2);
 
 		numHeight -= trUtm.getHeight();
 
-		CB_RectF numRec = new CB_RectF(Left, UiSizes.getButtonHeight() + (margin * 3), numWidth, numHeight);
+		CB_RectF numRec = new CB_RectF(this.LeftWidth, UiSizes.getButtonHeight() + (margin * 3), numWidth, numHeight);
 
 		numPad = new NumPad(numRec, "numPad", type, keyListner);
 

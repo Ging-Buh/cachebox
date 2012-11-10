@@ -59,7 +59,7 @@ public abstract class PopUp_Base extends CB_View_Base
 
 	public void showNotCloseAutomaticly()
 	{
-		show(this.getX(), this.getY(), SHOW_TIME_NEVER_CLOSE);
+		show(this.Pos.x, this.Pos.y, SHOW_TIME_NEVER_CLOSE);
 	}
 
 	public void show(float x, float y, int msec)

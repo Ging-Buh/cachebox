@@ -34,7 +34,7 @@ public class CreditsView extends CB_View_Base
 		this.setBackground(SpriteCache.AboutBack);
 
 		ref = UiSizes.getWindowHeight() / 13;
-		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
+		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 
 		logo = new Image(CB_LogoRec, "Logo");

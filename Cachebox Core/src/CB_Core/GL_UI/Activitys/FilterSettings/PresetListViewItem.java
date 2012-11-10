@@ -56,7 +56,7 @@ public class PresetListViewItem extends ListViewItemBackground
 
 		// initial
 		left = LeftWidth;
-		top = this.height - TopHight;
+		top = this.height - this.TopHeight;
 
 		drawIcon(batch);
 

@@ -174,7 +174,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			p.dispose();
 		}
 
-		float margin = (this.getHeight() - bounds.height) / 1.6f;
+		float margin = (this.height - bounds.height) / 1.6f;
 		fontCache.setPosition(this.width - bounds.width - margin, margin);
 
 	}

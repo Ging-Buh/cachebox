@@ -29,11 +29,6 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	protected static boolean mBackIsInitial = false;
 	protected boolean isPressed = false;
 
-	protected static float LeftWidth = 0;
-	protected static float RightWidth = 0;
-	protected static float TopHight = 0;
-	protected static float BottomHeight = 0;
-
 	public static void ResetBackground()
 	{
 		mBackIsInitial = false;
@@ -50,7 +45,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 
 			LeftWidth = back1.getLeftWidth();
 			RightWidth = back1.getRightWidth();
-			TopHight = back1.getTopHeight();
+			TopHeight = back1.getTopHeight();
 			BottomHeight = back1.getBottomHeight();
 
 			mBackIsInitial = true;

@@ -93,7 +93,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 		// initial
 		left = LeftWidth;
-		top = this.height - TopHight;
+		top = this.height - this.TopHeight;
 
 		if (rBounds == null || rChkBounds == null || lPinBounds == null)
 		{
