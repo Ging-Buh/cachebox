@@ -28,7 +28,10 @@ import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -38,7 +41,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,8 +53,10 @@ import de.droidcachebox.DB.AndroidDB;
 
 public class splash extends Activity
 {
-	public static Activity mainActivity;
+	public static final String PREFS_NAME = "DroidCacheboxPrefsFile";
 
+	public static Activity mainActivity;
+	final Context context = this;
 	Handler handler;
 	Bitmap bitmap;
 
@@ -66,6 +74,9 @@ public class splash extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+		setContentView(R.layout.splash);
+
 		GlobalCore.displayDensity = this.getResources().getDisplayMetrics().density;
 		int h = this.getResources().getDisplayMetrics().heightPixels;
 		int w = this.getResources().getDisplayMetrics().widthPixels;
@@ -78,77 +89,6 @@ public class splash extends Activity
 
 		// chek if use small skin
 		GlobalCore.useSmallSkin = sw < 200 ? true : false;
-
-		// check if Layout forced from User
-		workPath = Environment.getExternalStorageDirectory() + "/cachebox";
-
-		/*
-		 * we can not use a complete movement of the cachebox folder to the external sd because of fixed path's in the mapsforge themes if
-		 * (!FileIO.FileExists(workPath)) { // search for an external sd card on different devices // when on an external sd card a folder
-		 * /CacheBox exists the data will be installed on the external sd // but only when no Cachebox folder exists on the internal sdcard
-		 * if (FileIO.FileExists("/mnt/extSdCard/CacheBox")) { workPath = "/mnt/extSdCard/CacheBox"; } else if
-		 * (FileIO.FileExists("/Removable/MicroSD/CacheBox")) { workPath = "/Removable/MicroSD/CacheBox"; } else if
-		 * (FileIO.FileExists("/mnt/sdcard/ext_sd/CacheBox")) { workPath = "/mnt/sdcard/ext_sd/CacheBox"; } else if
-		 * (FileIO.FileExists("/mnt/external/CacheBox")) { workPath = "/mnt/external/CacheBox"; } else if
-		 * (FileIO.FileExists("/mnt/sdcard2/CacheBox")) { workPath = "/mnt/sdcard2/CacheBox"; } else if
-		 * (FileIO.FileExists("/mnt/sdcard/_ExternalSD/CacheBox")) { workPath = "/mnt/sdcard/_ExternalSD/CacheBox"; } else if
-		 * (FileIO.FileExists("/mnt/sdcard-ext/CacheBox")) { workPath = "/mnt/sdcard-ext/CacheBox"; } else if
-		 * (FileIO.FileExists("/mnt/external1/CacheBox")) { workPath = "/mnt/external1/CacheBox"; } else if
-		 * (FileIO.FileExists("/mnt/sdcard/external_sd/CacheBox")) { workPath = "/mnt/sdcard/external_sd/CacheBox"; } }
-		 */
-		// chk gibt es eine Pfad Umleitung
-
-		if (FileIO.FileExists(workPath + "/redirection.txt"))
-		{
-			BufferedReader Filereader;
-
-			try
-			{
-				Filereader = new BufferedReader(new FileReader(workPath + "/redirection.txt"));
-				String line;
-
-				while ((line = Filereader.readLine()) != null)
-				{
-					// chk ob der umleitungs Ordner exestiert
-					if (FileIO.FileExists(line))
-					{
-						workPath = line;
-					}
-				}
-
-				Filereader.close();
-			}
-			catch (IOException e)
-			{
-				Logger.Error("read redirection", "", e);
-				e.printStackTrace();
-			}
-
-		}
-
-		if (FileIO.FileExists(workPath + "/.forcePhone"))
-		{
-			GlobalCore.isTab = false;
-		}
-		else if (FileIO.FileExists(workPath + "/.forceTablet"))
-		{
-			GlobalCore.isTab = true;
-		}
-
-		if (GlobalCore.isTab)
-		{
-			// Tab Modus only Landscape
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-		}
-		else
-		{
-			// Phone Modus only Landscape
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-		}
-
-		setContentView(GlobalCore.isTab ? R.layout.tab_splash : R.layout.splash);
 
 		// get parameters
 		final Bundle extras = getIntent().getExtras();
@@ -226,17 +166,193 @@ public class splash extends Activity
 
 		if (mOriantationRestart) return; // wait for result
 
-		Thread thread = new Thread()
+		// Thread thread = new Thread()
+		// {
+		// @Override
+		// public void run()
+		// {
+		// Initial();
+		// }
+		// };
+		//
+		// thread.start();
+		//
+	}
+
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+
+		// first, try to find stored preferences of workPath
+		SharedPreferences settings = this.getSharedPreferences(PREFS_NAME, 0);
+		workPath = settings.getString("WorkPath", "");
+		boolean askAgain = settings.getBoolean("AskAgain", true);
+
+		if ((workPath.length() == 0) || (askAgain))
 		{
-			@Override
-			public void run()
+			// no saved workPath found -> search sd-cards and if more than 1 is found give the user the possibility to select one
+
+			// check if Layout forced from User
+			workPath = Environment.getExternalStorageDirectory() + "/cachebox";
+			// extract first part of path ("/mnt/" or "/storage/" ...)
+			int pos = workPath.indexOf("/", 2); // search for the second /
+			String prev = "/mnt";
+			if (pos > 0)
 			{
-				Initial();
+				prev = workPath.substring(0, pos);
 			}
-		};
+			// search for an external SD-Card
+			String externalSd = "";
 
-		thread.start();
+			// search for an external sd card on different devices
+			if (testExtSdPath(prev + "/extSdCard"))
+			{
+				externalSd = prev + "/extSdCard/CacheBox";
+			}
+			else if (testExtSdPath(prev + "/MicroSD"))
+			{
+				externalSd = prev + "/MicroSD/CacheBox";
+			}
+			else if (testExtSdPath(prev + "/sdcard/ext_sd"))
+			{
+				externalSd = prev + "/sdcard/ext_sd/CacheBox";
+			}
+			else if (testExtSdPath(prev + "/external"))
+			{
+				externalSd = prev + "/external/CacheBox";
+			}
+			else if (testExtSdPath(prev + "/sdcard2"))
+			{
+				externalSd = prev + "/sdcard2/CacheBox";
+			}
+			else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
+			{
+				externalSd = prev + "/sdcard/_ExternalSD";
+			}
+			else if (testExtSdPath(prev + "/sdcard-ext"))
+			{
+				externalSd = prev + "/sdcard-ext/CacheBox";
+			}
+			else if (testExtSdPath(prev + "/external1"))
+			{
+				externalSd = prev + "/external1/CacheBox";
+			}
+			else if (testExtSdPath(prev + "/sdcard/external_sd"))
+			{
+				externalSd = prev + "/sdcard/external_sd/CacheBox";
+			}
+			else if (testExtSdPath(prev + "/sdcard"))
+			{
+				// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
+				// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
+				externalSd = prev + "/sdcard/CacheBox";
+			}
+			final String externalSd2 = externalSd;
 
+			if ((externalSd.length() > 0) && (!externalSd.equals(workPath)))
+			{
+				// externe SD wurde gefunden != internal
+				// -> Auswahldialog anzeigen
+				try
+				{
+					final Dialog dialog = new Dialog(context);
+					dialog.setContentView(R.layout.sdselectdialog);
+					TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
+					title.setText(title.getText() + "\n ");
+					final CheckBox cbAskAgain = (CheckBox) dialog.findViewById(R.id.select_sd_askagain);
+					cbAskAgain.setChecked(askAgain);
+					Button buttonI = (Button) dialog.findViewById(R.id.button1);
+					buttonI.setText("Internal SD\n\n" + workPath);
+					buttonI.setOnClickListener(new OnClickListener()
+					{
+						@Override
+						public void onClick(View v)
+						{
+							// use internal SD -> nothing to change
+							boolean askAgain = cbAskAgain.isChecked();
+							saveWorkPath(askAgain);
+							Initial();
+						}
+					});
+					Button buttonE = (Button) dialog.findViewById(R.id.button2);
+					buttonE.setText("External SD\n\n" + externalSd);
+					buttonE.setOnClickListener(new OnClickListener()
+					{
+						@Override
+						public void onClick(View v)
+						{
+							// use external SD -> change workPath
+							workPath = externalSd2;
+							boolean askAgain = cbAskAgain.isChecked();
+							saveWorkPath(askAgain);
+							Initial();
+						}
+					});
+
+					dialog.show();
+
+				}
+				catch (Exception ex)
+				{
+					String x = ex.getMessage();
+				}
+			}
+			else
+			{
+				Thread thread = new Thread()
+				{
+					@Override
+					public void run()
+					{
+						Initial();
+					}
+				};
+
+				thread.start();
+
+			}
+		}
+		else
+		{
+			// saved workPath found -> use this
+			Thread thread = new Thread()
+			{
+				@Override
+				public void run()
+				{
+					Initial();
+				}
+			};
+
+			thread.start();
+
+		}
+
+	}
+
+	// this will test whether the extPath is an existing path to an external sd card
+	private boolean testExtSdPath(String extPath)
+	{
+		if (extPath.equals(workPath)) return false; // if this extPath is the same than the actual workPath -> this is the internal SD, not
+													// the external!!!
+		if (FileIO.FileExists(extPath))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	private void saveWorkPath(boolean askAgain)
+	{
+		SharedPreferences settings = this.getSharedPreferences(PREFS_NAME, 0);
+		// We need an Editor object to make preference changes.
+		// All objects are from android.context.Context
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString("WorkPath", workPath);
+		editor.putBoolean("AskAgain", askAgain);
+		// Commit the edits!
+		editor.commit();
 	}
 
 	@Override
@@ -256,6 +372,58 @@ public class splash extends Activity
 
 	private void Initial()
 	{
+		// Jetzt ist der workPath erstmal festgelegt.
+		// Zur Kompatibilität mit älteren Installationen wird hier noch die redirection.txt abgefragt
+		if (FileIO.FileExists(workPath + "/redirection.txt"))
+		{
+			BufferedReader Filereader;
+
+			try
+			{
+				Filereader = new BufferedReader(new FileReader(workPath + "/redirection.txt"));
+				String line;
+
+				while ((line = Filereader.readLine()) != null)
+				{
+					// chk ob der umleitungs Ordner exestiert
+					if (FileIO.FileExists(line))
+					{
+						workPath = line;
+					}
+				}
+
+				Filereader.close();
+			}
+			catch (IOException e)
+			{
+				Logger.Error("read redirection", "", e);
+				e.printStackTrace();
+			}
+
+		}
+
+		if (FileIO.FileExists(workPath + "/.forcePhone"))
+		{
+			GlobalCore.isTab = false;
+		}
+		else if (FileIO.FileExists(workPath + "/.forceTablet"))
+		{
+			GlobalCore.isTab = true;
+		}
+
+		if (GlobalCore.isTab)
+		{
+			// Tab Modus only Landscape
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+		}
+		else
+		{
+			// Phone Modus only Landscape
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+		}
+
 		Logger.setDebug(Global.Debug);
 
 		// Read Config

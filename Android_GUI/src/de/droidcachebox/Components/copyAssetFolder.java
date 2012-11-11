@@ -1,10 +1,14 @@
 package de.droidcachebox.Components;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import android.content.res.AssetManager;
@@ -21,7 +25,7 @@ public class copyAssetFolder
 		}
 		catch (IOException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 
@@ -31,18 +35,18 @@ public class copyAssetFolder
 			{
 				try
 				{
-					copyFile(assets, tmp, targetPath + "/" + tmp);
+					copyFile(assets, tmp, targetPath);
 				}
 				catch (IOException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 	}
@@ -91,8 +95,9 @@ public class copyAssetFolder
 		}
 	}
 
-	private static void copyFile(AssetManager assets, String source, String target) throws IOException
+	private static void copyFile(AssetManager assets, String source, String targetPath) throws IOException
 	{
+		String target = targetPath + "/" + source;
 
 		InputStream myInput = assets.open(source);
 
@@ -100,12 +105,39 @@ public class copyAssetFolder
 		ziel.getParentFile().mkdirs();
 		OutputStream myOutput = new FileOutputStream(target);
 
-		// transfer bytes from the inputfile to the outputfile
-		byte[] buffer = new byte[1024];
-		int length;
-		while ((length = myInput.read(buffer)) > 0)
+		int dotposition = target.lastIndexOf(".");
+		String ext = target.substring(dotposition + 1, target.length()).toLowerCase();
+		if (ext.equals("xml") && !targetPath.toLowerCase().equals("/mnt/sdcard/cachebox"))
 		{
-			myOutput.write(buffer, 0, length);
+			// in xml files replace the fixed path "/mnt/sdcard/cachebox" by the actual workpath
+			// Reson for this: in the mapsforge theme files (xml) the path to the image files must be entered absolute, no relative paths
+			// are allowed
+			// Copy text file and replace paths if found
+			BufferedReader r = new BufferedReader(new InputStreamReader(myInput));
+			String x = "";
+			x = r.readLine();
+
+			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(myOutput));
+
+			while (x != null)
+			{
+				// case insensitive replace of the orginal path by the new workPath
+				x = x.replaceAll("(?i)/mnt/sdcard/cachebox", targetPath);
+				w.write(x + "\n");
+				x = r.readLine();
+			}
+			w.close();
+			r.close();
+		}
+		else
+		{
+			// transfer bytes from the inputfile to the outputfile
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = myInput.read(buffer)) > 0)
+			{
+				myOutput.write(buffer, 0, length);
+			}
 		}
 
 		// Close the streams
