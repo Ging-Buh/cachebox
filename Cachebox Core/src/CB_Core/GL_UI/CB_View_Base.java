@@ -15,10 +15,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
 
-	protected float LeftWidth; // linker Rand
-	protected float RightWidth; // rechter Rand
-	protected float TopHeight; // oberer Rand
-	protected float BottomHeight; // unterer Rand
+	// protected float LeftWidth; // linker Rand
+	// protected float RightWidth; // rechter Rand
+	// protected float TopHeight; // oberer Rand
+	// protected float BottomHeight; // unterer Rand
 
 	// # Constructors
 
@@ -279,22 +279,22 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public float getLeftWidth()
 	{
-		return LeftWidth;
+		return drawableBackground != null ? drawableBackground.getLeftWidth() : 0;
 	}
 
 	public float getBottomHeight()
 	{
-		return BottomHeight;
+		return drawableBackground != null ? drawableBackground.getBottomHeight() : 0;
 	}
 
 	public float getRightWidth()
 	{
-		return RightWidth;
+		return drawableBackground != null ? drawableBackground.getRightWidth() : 0;
 	}
 
 	public float getTopHeight()
 	{
-		return TopHeight;
+		return drawableBackground != null ? drawableBackground.getTopHeight() : 0;
 	}
 
 }

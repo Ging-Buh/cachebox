@@ -55,8 +55,8 @@ public class PresetListViewItem extends ListViewItemBackground
 		}
 
 		// initial
-		left = LeftWidth;
-		top = this.height - this.TopHeight;
+		left = getLeftWidth();
+		top = this.height - this.getTopHeight();
 
 		drawIcon(batch);
 
@@ -79,7 +79,7 @@ public class PresetListViewItem extends ListViewItemBackground
 			float iconWidth = iconHeight;
 			mPresetEntry.getIcon().setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
 			mPresetEntry.getIcon().draw(batch);
-			left += iconWidth + UiSizes.getMargin() + LeftWidth;
+			left += iconWidth + UiSizes.getMargin() + getLeftWidth();
 		}
 	}
 

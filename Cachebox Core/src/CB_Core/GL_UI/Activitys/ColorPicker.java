@@ -66,8 +66,8 @@ public class ColorPicker extends ActivityBase
 
 	private void createOkCancelBtn()
 	{
-		bOK = new Button(this.LeftWidth, this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-		bCancel = new Button(bOK.getMaxX(), this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
+		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
 
 		// Translations
 		bOK.setText(GlobalCore.Translations.Get("ok"));
@@ -126,8 +126,8 @@ public class ColorPicker extends ActivityBase
 	{
 		float vWidth = bOK.getHeight();
 
-		viewHue = new Image(this.width - this.RightWidth - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.height
-				- this.TopHeight - actColorBox.getMaxY() - margin * 2, "viewHue");
+		viewHue = new Image(this.width - this.getRightWidth() - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.height
+				- this.getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue");
 		viewHue.setDrawable(new SpriteDrawable(SpriteCache.ambilwarna_hue));
 		this.addChild(viewHue);
 
@@ -144,7 +144,7 @@ public class ColorPicker extends ActivityBase
 
 	private void createTest()
 	{
-		CB_RectF rec = new CB_RectF(this.LeftWidth + margin, viewHue.getY(), viewHue.getX() - margin * 3 - this.LeftWidth,
+		CB_RectF rec = new CB_RectF(this.getLeftWidth() + margin, viewHue.getY(), viewHue.getX() - margin * 3 - this.getLeftWidth(),
 				viewHue.getHeight());
 
 		viewSatVal = new ColorPickerRec(rec, "");
@@ -189,7 +189,7 @@ public class ColorPicker extends ActivityBase
 
 		viewCursor.setX((float) (viewHue.getX() - Math.floor(viewCursor.getWidth() / 2)));
 
-		viewCursor.setY((float) (viewHue.getTop() - y - Math.floor(viewCursor.getHeight() / 2)));
+		viewCursor.setY((float) (viewHue.getMaxY() - y - Math.floor(viewCursor.getHeight() / 2)));
 
 	}
 

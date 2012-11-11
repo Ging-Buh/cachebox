@@ -66,10 +66,10 @@ public abstract class Dialog extends CB_View_Base
 		mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), pW, pW, 1, 1);
 		mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 3, pW);
 
-		this.LeftWidth = mCenter9patch.getLeftWidth();
-		this.RightWidth = mCenter9patch.getRightWidth();
-		this.TopHeight = mCenter9patch.getTopHeight();
-		this.BottomHeight = mFooter9patch.getBottomHeight();
+		// this.LeftWidth = mCenter9patch.getLeftWidth();
+		// this.RightWidth = mCenter9patch.getRightWidth();
+		// this.TopHeight = mCenter9patch.getTopHeight();
+		// this.BottomHeight = mFooter9patch.getBottomHeight();
 		mTitleVersatz = (float) pW;
 
 	}

@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Views;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
@@ -174,7 +175,7 @@ public class CreditsView extends CB_View_Base
 		idea, developer, designer, tester, sponsor, library, service, localization
 	}
 
-	public class Person
+	public class Person implements Comparable<Person>
 	{
 
 		public String name;
@@ -204,6 +205,16 @@ public class CreditsView extends CB_View_Base
 			this.image = image;
 		}
 
+		@Override
+		public int compareTo(Person o)
+		{
+			if (this.job == Job.developer || o.job == Job.developer) return 0;
+
+			if (this.name == null) return -1;
+			if (o.name == null) return 1;
+			return this.name.compareToIgnoreCase(o.name);
+		}
+
 	}
 
 	private ArrayList<Person> getPersons()
@@ -225,11 +236,16 @@ public class CreditsView extends CB_View_Base
 		list.add(new Person("droogi", Job.tester));
 		list.add(new Person("droogi", Job.localization));
 		list.add(new Person("Teleskopix", Job.tester));
-		list.add(new Person("halkman", Job.localization));
+		list.add(new Person("hulkman", Job.localization));
 		list.add(new Person("Lady-in-blue", Job.tester));
 		list.add(new Person("Koblenzer", Job.tester));
 		list.add(new Person("GeoSilverio", Job.tester));
 		list.add(new Person("GeoPfaff", Job.tester));
+		list.add(new Person("Homer-S", Job.tester));
+		list.add(new Person("Mozartkugel", Job.tester));
+
+		Collections.sort(list);
+
 		return list;
 	}
 

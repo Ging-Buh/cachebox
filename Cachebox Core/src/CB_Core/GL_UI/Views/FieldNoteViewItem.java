@@ -54,7 +54,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniImage()
 	{
-		ivTyp = new Image(LeftWidth, this.height - (headHeight / 2) - (UiSizes.getButtonHeight() / 1.5f / 2),
+		ivTyp = new Image(getLeftWidth(), this.height - (headHeight / 2) - (UiSizes.getButtonHeight() / 1.5f / 2),
 				UiSizes.getButtonHeight() / 1.5f, UiSizes.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
 		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(fieldnote.typeIcon)));
@@ -63,7 +63,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniFoundLabel()
 	{
-		lblFounds = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab - RightWidth
+		lblFounds = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab - getRightWidth()
 				- Dialog.margin, MeasuredLabelHeight, "");
 		lblFounds.setFont(Fonts.getNormal());
 		lblFounds.setText(fieldnote.typeString);
@@ -87,7 +87,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 			e.printStackTrace();
 		}
 
-		lblDate = new Label(this.width - RightWidth - DateLength, lblFounds.getY(), DateLength, MeasuredLabelHeight, "");
+		lblDate = new Label(this.width - getRightWidth() - DateLength, lblFounds.getY(), DateLength, MeasuredLabelHeight, "");
 		lblDate.setFont(Fonts.getNormal());
 		lblDate.setText(dateString);
 		this.addChild(lblDate);
@@ -95,7 +95,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniCacheTypeImage()
 	{
-		ivCacheType = new Image(LeftWidth + Dialog.margin, this.height - headHeight - (UiSizes.getButtonHeight()) - Dialog.margin,
+		ivCacheType = new Image(getLeftWidth() + Dialog.margin, this.height - headHeight - (UiSizes.getButtonHeight()) - Dialog.margin,
 				UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "");
 		this.addChild(ivCacheType);
 		ivCacheType.setDrawable(new SpriteDrawable(SpriteCache.BigIcons.get(fieldnote.cacheType)));
@@ -125,8 +125,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniCommentLabel()
 	{
-		lblComment = new Label(LeftWidth + Dialog.margin, 0, this.width - LeftWidth - RightWidth - (Dialog.margin * 2), this.height
-				- (this.height - lblGcCode.getY()) - Dialog.margin, "");
+		lblComment = new Label(getLeftWidth() + Dialog.margin, 0, this.width - getLeftWidth() - getRightWidth() - (Dialog.margin * 2),
+				this.height - (this.height - lblGcCode.getY()) - Dialog.margin, "");
 		lblComment.setFont(Fonts.getNormal());
 		lblComment.setWrappedText(fieldnote.comment);
 		this.addChild(lblComment);

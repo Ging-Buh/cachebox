@@ -328,6 +328,10 @@ public class CacheInfoList
 		info.ListingCheckSum = ListingCheckSum;
 		info.Latitude = cache.Latitude();
 		info.Longitude = cache.Longitude();
+		info.Found = cache.Found;
+		info.favorite = cache.Favorit();
+		info.CorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
+
 		List.put(cache.GcCode, info);
 
 	}

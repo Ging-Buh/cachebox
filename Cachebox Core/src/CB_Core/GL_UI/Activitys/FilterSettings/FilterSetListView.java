@@ -48,7 +48,7 @@ public class FilterSetListView extends V_ListView
 	private static FilterSetListViewItem maxRating;
 	private static FilterSetListViewItem Types;
 	private static FilterSetListViewItem Attr;
-	private static FilterSetListViewItem AttrNegative;
+	// private static FilterSetListViewItem AttrNegative;
 
 	private ArrayList<FilterSetEntry> lFilterSets;
 	private ArrayList<FilterSetListViewItem> lFilterSetListViewItems;
@@ -236,18 +236,18 @@ public class FilterSetListView extends V_ListView
 		public float getItemSize(int position)
 		{
 			FilterSetListViewItem v = lFilterSetListViewItems.get(position);
-			if (!v.isSelected) return 0;
+			if (!v.isVisible()) return 0;
 			return v.getHeight();
 		}
 	}
 
 	public void onShow()
 	{
+		super.onShow();
 		if (EditFilterSettings.tmpFilterProps != null && !EditFilterSettings.tmpFilterProps.ToString().equals(""))
 		{
 			LoadFilterProperties(EditFilterSettings.tmpFilterProps);
 		}
-
 	}
 
 	private void fillFilterSetList()

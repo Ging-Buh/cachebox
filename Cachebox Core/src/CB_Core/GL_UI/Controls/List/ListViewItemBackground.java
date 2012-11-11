@@ -43,11 +43,6 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec-first"), 16, 16, 16, 16);
 			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec-secend"), 16, 16, 16, 16);
 
-			LeftWidth = back1.getLeftWidth();
-			RightWidth = back1.getRightWidth();
-			TopHeight = back1.getTopHeight();
-			BottomHeight = back1.getBottomHeight();
-
 			mBackIsInitial = true;
 		}
 	}

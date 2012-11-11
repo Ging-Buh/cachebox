@@ -78,8 +78,8 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		}
 
 		// initial
-		left = LeftWidth;
-		top = this.height - this.TopHeight;
+		left = getLeftWidth();
+		top = this.height - this.getTopHeight();
 
 		switch (this.mFilterSetEntry.getItemType())
 		{
@@ -103,7 +103,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			EntryName.setColor(Fonts.getFontColor());
 			if (this.mFilterSetEntry.getItemType() == FilterSetListView.THREE_STATE_ITEM)
 			{
-				float TextWidth = width - (left + 20) - RightWidth - height;
+				float TextWidth = width - (left + 20) - getRightWidth() - height;
 				EntryName.setWrappedText(name, left + 20, top, TextWidth);
 			}
 			else
@@ -354,7 +354,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			float iconWidth = iconHeight;
 			mFilterSetEntry.getIcon().setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
 			mFilterSetEntry.getIcon().draw(batch);
-			left += iconWidth + UiSizes.getMargin() + LeftWidth;
+			left += iconWidth + UiSizes.getMargin() + getLeftWidth();
 		}
 
 	}

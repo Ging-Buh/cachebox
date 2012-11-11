@@ -60,10 +60,10 @@ public class ScrollBox extends CB_View_Base
 
 	private void Layout()
 	{
-		lv.setWidth(this.width - this.LeftWidth - this.RightWidth);
-		lv.setHeight(this.height - this.TopHeight - this.BottomHeight);
-		lv.setX(this.LeftWidth);
-		lv.setY(this.BottomHeight);
+		lv.setWidth(this.width - this.getLeftWidth() - this.getRightWidth());
+		lv.setHeight(this.height - this.getTopHeight() - this.getBottomHeight());
+		lv.setX(this.getLeftWidth());
+		lv.setY(this.getBottomHeight());
 		item.setHeight(innerHeight);
 		lv.notifyDataSetChanged();
 	}

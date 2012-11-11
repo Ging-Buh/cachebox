@@ -100,7 +100,7 @@ public class TrackListViewItem extends ListViewItemBackground
 		}
 
 		// initial
-		left = LeftWidth;
+		left = getLeftWidth();
 
 		drawColorRec(batch);
 

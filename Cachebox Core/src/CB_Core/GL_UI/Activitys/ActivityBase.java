@@ -26,8 +26,7 @@ public class ActivityBase extends Dialog
 
 		this.setBackground(SpriteCache.activityBackground);
 
-		this.LeftWidth = this.RightWidth = this.TopHeight = this.BottomHeight = drawableBackground.getLeftWidth() / 2;
-		innerWidth = this.width - this.LeftWidth - this.LeftWidth;
+		innerWidth = this.width - this.getLeftWidth() - this.getRightWidth();
 		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 		MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
 		ButtonHeight = UiSizes.getButtonHeight();

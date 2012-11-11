@@ -1036,4 +1036,11 @@ public abstract class GL_View_Base extends CB_RectF
 		return enabled;
 	}
 
+	@Override
+	protected void calcCrossCorner()
+	{
+		super.calcCrossCorner();
+		thisInvalidate = true;
+	}
+
 }

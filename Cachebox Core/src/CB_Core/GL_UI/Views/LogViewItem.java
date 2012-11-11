@@ -46,7 +46,7 @@ public class LogViewItem extends ListViewItemBackground
 
 	private void iniImage()
 	{
-		ivTyp = new Image(LeftWidth, this.height - (headHeight / 2) - (UiSizes.getButtonHeight() / 1.5f / 2),
+		ivTyp = new Image(getLeftWidth(), this.height - (headHeight / 2) - (UiSizes.getButtonHeight() / 1.5f / 2),
 				UiSizes.getButtonHeight() / 1.5f, UiSizes.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
 		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(logEntry.Type.getIconID())));
@@ -55,8 +55,8 @@ public class LogViewItem extends ListViewItemBackground
 
 	private void iniFoundLabel()
 	{
-		lblFoundByName = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab - RightWidth
-				- Dialog.margin, MeasuredLabelHeight, "");
+		lblFoundByName = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab
+				- getRightWidth() - Dialog.margin, MeasuredLabelHeight, "");
 		lblFoundByName.setFont(Fonts.getNormal());
 		lblFoundByName.setText(logEntry.Finder);
 		this.addChild(lblFoundByName);
@@ -69,8 +69,8 @@ public class LogViewItem extends ListViewItemBackground
 		String dateString = postFormater.format(logEntry.Timestamp);
 		float DateLength = Fonts.Measure(dateString).width;
 
-		lblDate = new Label(this.width - RightWidth - DateLength, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength,
-				MeasuredLabelHeight, "");
+		lblDate = new Label(this.width - getRightWidth() - DateLength, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2),
+				DateLength, MeasuredLabelHeight, "");
 		lblDate.setFont(Fonts.getNormal());
 		lblDate.setText(dateString);
 		this.addChild(lblDate);
@@ -78,8 +78,8 @@ public class LogViewItem extends ListViewItemBackground
 
 	private void iniCommentLabel()
 	{
-		lblComment = new Label(LeftWidth, 0, this.width - getLeftWidthStatic() - getRightWidthStatic() - (Dialog.margin * 2), this.height
-				- headHeight - Dialog.margin, "");
+		lblComment = new Label(getLeftWidth(), 0, this.width - getLeftWidthStatic() - getRightWidthStatic() - (Dialog.margin * 2),
+				this.height - headHeight - Dialog.margin, "");
 		lblComment.setFont(Fonts.getNormal());
 		lblComment.setWrappedText(logEntry.Comment);
 		this.addChild(lblComment);

@@ -115,6 +115,10 @@ public class CB_AllContextMenuHandler
 				if (TabMainView.actionShowSolverView != null) TabMainView.actionShowSolverView.Execute();
 				return true;
 
+			case MenuID.MI_JOKER:
+				if (TabMainView.actionShowJokerView != null) TabMainView.actionShowJokerView.Execute();
+				return true;
+
 			default:
 				return false;
 

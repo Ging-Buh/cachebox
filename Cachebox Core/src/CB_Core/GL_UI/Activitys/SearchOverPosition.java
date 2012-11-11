@@ -79,8 +79,8 @@ public class SearchOverPosition extends ActivityBase
 
 	private void createOkCancelBtn()
 	{
-		bOK = new Button(this.LeftWidth, this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-		bCancel = new Button(bOK.getMaxX(), this.LeftWidth, innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
+		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
 
 		// Translations
 		bOK.setText(GlobalCore.Translations.Get("import"));
@@ -133,13 +133,13 @@ public class SearchOverPosition extends ActivityBase
 
 		float lineHeight = UiSizes.getButtonHeight() * 0.75f;
 
-		gsLogo = new Image(width - this.LeftWidth - this.RightWidth - margin - lineHeight, this.height - this.TopHeight - lineHeight
-				- margin, lineHeight, lineHeight, "");
+		gsLogo = new Image(width - this.getLeftWidth() - this.getRightWidth() - margin - lineHeight, this.height - this.getTopHeight()
+				- lineHeight - margin, lineHeight, lineHeight, "");
 		gsLogo.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(35)));
 		this.addChild(gsLogo);
 
-		lblTitle = new Label(this.LeftWidth + margin, this.height - this.TopHeight - lineHeight - margin, width - this.LeftWidth
-				- this.RightWidth - margin - gsLogo.getWidth(), lineHeight, "TitleLabel");
+		lblTitle = new Label(this.getLeftWidth() + margin, this.height - this.getTopHeight() - lineHeight - margin, width
+				- this.getLeftWidth() - this.getRightWidth() - margin - gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		lblTitle.setText(GlobalCore.Translations.Get("importCachesOverPosition"));
 		this.addChild(lblTitle);
@@ -216,7 +216,7 @@ public class SearchOverPosition extends ActivityBase
 	{
 		float y = lblExcludeFounds.getY() - margin - UiSizes.getButtonHeight();
 
-		tglBtnGPS = new MultiToggleButton(this.LeftWidth, y, innerWidth / 2, UiSizes.getButtonHeight(), "");
+		tglBtnGPS = new MultiToggleButton(this.getLeftWidth(), y, innerWidth / 2, UiSizes.getButtonHeight(), "");
 		tglBtnMap = new MultiToggleButton(tglBtnGPS.getMaxX(), y, innerWidth / 2, UiSizes.getButtonHeight(), "");
 
 		tglBtnGPS.setFont(Fonts.getSmall());

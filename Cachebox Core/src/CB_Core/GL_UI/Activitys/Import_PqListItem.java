@@ -21,8 +21,8 @@ public class Import_PqListItem extends ListViewItemBackground
 	{
 		super(rec, Index, "");
 
-		lblName = new Label(LeftWidth, this.halfHeight, this.width - LeftWidth - RightWidth, this.halfHeight, "");
-		lblInfo = new Label(LeftWidth, 0, this.width - LeftWidth - RightWidth, this.halfHeight, "");
+		lblName = new Label(getLeftWidth(), this.halfHeight, this.width - getLeftWidth() - getRightWidth(), this.halfHeight, "");
+		lblInfo = new Label(getLeftWidth(), 0, this.width - getLeftWidth() - getRightWidth(), this.halfHeight, "");
 
 		lblName.setFont(Fonts.getNormal());
 		lblInfo.setFont(Fonts.getSmall());
@@ -37,7 +37,7 @@ public class Import_PqListItem extends ListViewItemBackground
 		lblInfo.setText(dateString + "  " + FileSize + Count);
 
 		chk = new chkBox("");
-		chk.setX(this.width - RightWidth - chk.getWidth() - Dialog.margin);
+		chk.setX(this.width - getRightWidth() - chk.getWidth() - Dialog.margin);
 		chk.setY(this.halfHeight - chk.getHalfHeight());
 		chk.setChecked(pq.downloadAvible);
 		chk.setOnCheckedChangeListener(new OnCheckedChangeListener()
@@ -58,7 +58,6 @@ public class Import_PqListItem extends ListViewItemBackground
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 
