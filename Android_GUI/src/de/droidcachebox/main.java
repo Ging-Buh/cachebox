@@ -2204,7 +2204,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Intent implicitIntent = null;
 			try
 			{
-				implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
+				// implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
+				// Changed the call for navigation app to maps.google.com...
+				// Copilot Live 9.3 listens for this intent call and google maps is working with this too...
+				implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+
 			}
 			catch (Exception e)
 			{
