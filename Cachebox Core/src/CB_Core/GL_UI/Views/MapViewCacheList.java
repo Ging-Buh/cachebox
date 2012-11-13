@@ -212,7 +212,7 @@ public class MapViewCacheList
 										wpiF.OverlayIcon = null;
 									}
 									wpiF.Cache = solution.Cache;
-									wpiF.Waypoint = solution.Waypoint;
+									wpiF.Waypoint = null; // solution.Waypoint;
 									wpiF.Selected = (GlobalCore.SelectedWaypoint() == solution.Waypoint);
 									if (iconSize > 0) wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache, solution.Waypoint);
 
