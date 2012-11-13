@@ -39,9 +39,9 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	{
 		if (!mBackIsInitial)
 		{
-			backSelect = new NinePatch(SpriteCache.getThemedSprite("listrec-selected"), 16, 16, 16, 16);
-			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec-first"), 16, 16, 16, 16);
-			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec-secend"), 16, 16, 16, 16);
+			backSelect = new NinePatch(SpriteCache.getThemedSprite("listrec-selected"), 13, 13, 13, 13);
+			back1 = new NinePatch(SpriteCache.getThemedSprite("listrec-first"), 13, 13, 13, 13);
+			back2 = new NinePatch(SpriteCache.getThemedSprite("listrec-secend"), 13, 13, 13, 13);
 
 			mBackIsInitial = true;
 		}
@@ -107,4 +107,73 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 		}
 		return 0;
 	}
+
+	@Override
+	public float getLeftWidth()
+	{
+		if (isSelected)
+		{
+			return backSelect.getLeftWidth();
+		}
+		else if ((this.getIndex() % 2) == 1)
+		{
+			return back1.getLeftWidth();
+		}
+		else
+		{
+			return back2.getLeftWidth();
+		}
+	}
+
+	@Override
+	public float getBottomHeight()
+	{
+		if (isSelected)
+		{
+			return backSelect.getBottomHeight();
+		}
+		else if ((this.getIndex() % 2) == 1)
+		{
+			return back1.getBottomHeight();
+		}
+		else
+		{
+			return back2.getBottomHeight();
+		}
+	}
+
+	@Override
+	public float getRightWidth()
+	{
+		if (isSelected)
+		{
+			return backSelect.getRightWidth();
+		}
+		else if ((this.getIndex() % 2) == 1)
+		{
+			return back1.getRightWidth();
+		}
+		else
+		{
+			return back2.getRightWidth();
+		}
+	}
+
+	@Override
+	public float getTopHeight()
+	{
+		if (isSelected)
+		{
+			return backSelect.getTopHeight();
+		}
+		else if ((this.getIndex() % 2) == 1)
+		{
+			return back1.getTopHeight();
+		}
+		else
+		{
+			return back2.getTopHeight();
+		}
+	}
+
 }
