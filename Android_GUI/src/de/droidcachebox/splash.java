@@ -242,6 +242,11 @@ public class splash extends Activity
 			{
 				externalSd = prev + "/sdcard/external_sd/CacheBox";
 			}
+			else if (testExtSdPath("/Removable/MicroSD"))
+			{
+				// Asus Transformer
+				externalSd = "/Removable/MicroSD";
+			}
 			else if (testExtSdPath(prev + "/sdcard"))
 			{
 				// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
@@ -250,7 +255,7 @@ public class splash extends Activity
 			}
 			final String externalSd2 = externalSd;
 
-			if ((externalSd.length() > 0) && (!externalSd.equals(workPath)))
+			if ((externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath)))
 			{
 				// externe SD wurde gefunden != internal
 				// -> Auswahldialog anzeigen
@@ -334,8 +339,9 @@ public class splash extends Activity
 	// this will test whether the extPath is an existing path to an external sd card
 	private boolean testExtSdPath(String extPath)
 	{
-		if (extPath.equals(workPath)) return false; // if this extPath is the same than the actual workPath -> this is the internal SD, not
-													// the external!!!
+		if (extPath.equalsIgnoreCase(workPath)) return false; // if this extPath is the same than the actual workPath -> this is the
+																// internal SD, not
+		// the external!!!
 		if (FileIO.FileExists(extPath))
 		{
 			return true;
