@@ -398,6 +398,10 @@ public class splash extends Activity
 
 	private void startInitial()
 	{
+
+		// show wait dialog if not running
+		if (pWaitD == null) showPleaseWaitDialog();
+
 		// saved workPath found -> use this
 		Thread thread = new Thread()
 		{
@@ -641,8 +645,11 @@ public class splash extends Activity
 			b.putSerializable("GpxPath", GpxPath);
 		}
 
-		pWaitD.dismiss();
-		pWaitD = null;
+		if (pWaitD != null)
+		{
+			pWaitD.dismiss();
+			pWaitD = null;
+		}
 
 		b.putSerializable("UI", ui);
 		mainIntent.putExtras(b);
