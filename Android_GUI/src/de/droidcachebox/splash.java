@@ -228,6 +228,10 @@ public class splash extends Activity
 			{
 				externalSd = prev + "/sdcard2/CacheBox";
 			}
+			else if (testExtSdPath(prev + "/sdcard1"))
+			{
+				externalSd = prev + "/sdcard1/CacheBox";
+			}
 			else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
 			{
 				externalSd = prev + "/sdcard/_ExternalSD";
@@ -247,7 +251,7 @@ public class splash extends Activity
 			else if (testExtSdPath("/Removable/MicroSD"))
 			{
 				// Asus Transformer
-				externalSd = "/Removable/MicroSD";
+				externalSd = "/Removable/MicroSD/CacheBox";
 			}
 			else if (testExtSdPath(prev + "/sdcard"))
 			{
