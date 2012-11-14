@@ -248,6 +248,11 @@ public class splash extends Activity
 			{
 				externalSd = prev + "/sdcard/external_sd/CacheBox";
 			}
+			else if (testExtSdPath(prev + "/emmc"))
+			{
+				// for CM9
+				externalSd = prev + "/emmc/CacheBox";
+			}
 			else if (testExtSdPath("/Removable/MicroSD"))
 			{
 				// Asus Transformer
