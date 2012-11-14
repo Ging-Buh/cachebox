@@ -29,6 +29,7 @@ import CB_Core.Settings.SettingTime;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,6 +37,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -59,7 +61,7 @@ public class splash extends Activity
 	final Context context = this;
 	Handler handler;
 	Bitmap bitmap;
-
+	Dialog pWaitD;
 	String GcCode = null;
 	String guid = null;
 	String name = null;
@@ -274,10 +276,25 @@ public class splash extends Activity
 						@Override
 						public void onClick(View v)
 						{
+							// close select dialog
+							dialog.dismiss();
+
+							// show please wait dialog
+							showPleaseWaitDialog();
+
 							// use internal SD -> nothing to change
-							boolean askAgain = cbAskAgain.isChecked();
-							saveWorkPath(askAgain);
-							Initial();
+							Thread thread = new Thread()
+							{
+								@Override
+								public void run()
+								{
+									boolean askAgain = cbAskAgain.isChecked();
+									saveWorkPath(askAgain);
+									dialog.dismiss();
+									startInitial();
+								}
+							};
+							thread.start();
 						}
 					});
 					Button buttonE = (Button) dialog.findViewById(R.id.button2);
@@ -287,11 +304,26 @@ public class splash extends Activity
 						@Override
 						public void onClick(View v)
 						{
+							// close select dialog
+							dialog.dismiss();
+
+							// show please wait dialog
+							showPleaseWaitDialog();
+
 							// use external SD -> change workPath
-							workPath = externalSd2;
-							boolean askAgain = cbAskAgain.isChecked();
-							saveWorkPath(askAgain);
-							Initial();
+							Thread thread = new Thread()
+							{
+								@Override
+								public void run()
+								{
+									workPath = externalSd2;
+									boolean askAgain = cbAskAgain.isChecked();
+									saveWorkPath(askAgain);
+									startInitial();
+								}
+							};
+							thread.start();
+
 						}
 					});
 
@@ -305,35 +337,23 @@ public class splash extends Activity
 			}
 			else
 			{
-				Thread thread = new Thread()
-				{
-					@Override
-					public void run()
-					{
-						Initial();
-					}
-				};
-
-				thread.start();
-
+				startInitial();
 			}
 		}
 		else
 		{
-			// saved workPath found -> use this
-			Thread thread = new Thread()
-			{
-				@Override
-				public void run()
-				{
-					Initial();
-				}
-			};
-
-			thread.start();
-
+			startInitial();
 		}
 
+	}
+
+	private void showPleaseWaitDialog()
+	{
+		pWaitD = ProgressDialog.show(splash.this, "In progress", "Copy resources");
+
+		pWaitD.show();
+		TextView tv1 = (TextView) pWaitD.findViewById(android.R.id.message);
+		tv1.setTextColor(Color.WHITE);
 	}
 
 	// this will test whether the extPath is an existing path to an external sd card
@@ -374,6 +394,22 @@ public class splash extends Activity
 
 		}
 		super.onDestroy();
+	}
+
+	private void startInitial()
+	{
+		// saved workPath found -> use this
+		Thread thread = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				Initial();
+			}
+		};
+
+		thread.start();
+
 	}
 
 	private void Initial()
@@ -604,6 +640,9 @@ public class splash extends Activity
 		{
 			b.putSerializable("GpxPath", GpxPath);
 		}
+
+		pWaitD.dismiss();
+		pWaitD = null;
 
 		b.putSerializable("UI", ui);
 		mainIntent.putExtras(b);
