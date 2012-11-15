@@ -15,8 +15,10 @@ import android.view.ViewParent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
+import de.droidcachebox.main;
 import de.droidcachebox.Ui.ActivityUtils;
 
 public class GcApiLogin extends Activity
@@ -24,6 +26,8 @@ public class GcApiLogin extends Activity
 	private static GcApiLogin gcApiLogin;
 	private static ProgressDialog pd;
 	private static boolean pdIsShow = false;
+	private LinearLayout webViewLayout;
+	private WebView WebControl;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -31,6 +35,9 @@ public class GcApiLogin extends Activity
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.gcapilogin);
+
+		webViewLayout = (LinearLayout) findViewById(R.id.gal_Layout);
+
 		gcApiLogin = this;
 
 		new RetreiveFeedTask().execute();
@@ -62,6 +69,7 @@ public class GcApiLogin extends Activity
 			return GC_AuthUrl;
 		}
 
+		@Override
 		protected void onPostExecute(String GC_AuthUrl)
 		{
 			ShowWebsite(GC_AuthUrl);
@@ -71,6 +79,21 @@ public class GcApiLogin extends Activity
 
 	private void ShowWebsite(String GC_AuthUrl)
 	{
+		// Initial new VebView Instanz
+
+		WebControl = (WebView) gcApiLogin.findViewById(R.id.gal_WebView);
+
+		webViewLayout.removeAllViews();
+		if (WebControl != null)
+		{
+			WebControl.destroy();
+			WebControl = null;
+		}
+
+		// Instanz new WebView
+		WebControl = new WebView(main.mainActivity);
+		webViewLayout.addView(WebControl);
+
 		if (!pdIsShow)
 		{
 			gcApiLogin.runOnUiThread(new Runnable()
@@ -97,9 +120,7 @@ public class GcApiLogin extends Activity
 			}
 		}
 
-		final WebView webView = (WebView) gcApiLogin.findViewById(R.id.gal_WebView);
-
-		webView.setWebViewClient(new WebViewClient()
+		WebControl.setWebViewClient(new WebViewClient()
 		{
 
 			@Override
@@ -143,7 +164,8 @@ public class GcApiLogin extends Activity
 
 				if (url.toLowerCase().contains("oauth_verifier=") && (url.toLowerCase().contains("oauth_token=")))
 				{
-					webView.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+					WebControl
+							.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
 				}
 				else
 					super.onPageFinished(view, url);
@@ -151,17 +173,17 @@ public class GcApiLogin extends Activity
 
 		});
 
-		WebSettings settings = webView.getSettings();
+		WebSettings settings = WebControl.getSettings();
 
 		// settings.setPluginsEnabled(true);
 		settings.setJavaScriptEnabled(true);
 		// settings.setJavaScriptCanOpenWindowsAutomatically(true);
 
 		// webView.setWebChromeClient(new WebChromeClient());
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
+		WebControl.getSettings().setJavaScriptEnabled(true);
+		WebControl.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
 
-		webView.loadUrl(GC_AuthUrl);
+		WebControl.loadUrl(GC_AuthUrl);
 	}
 
 	class MyJavaScriptInterface

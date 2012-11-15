@@ -3,6 +3,8 @@ package de.droidcachebox.Custom_Controls;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
@@ -20,6 +22,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -41,11 +44,34 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	private LinkedList<String> NonLocalImagesUrl = new LinkedList<String>();
 	private static ProgressDialog pd;
 	private static DescriptionViewControl that;
+	private boolean firstLoadReady = false;
 
 	public DescriptionViewControl(Context context)
 	{
 		super(context);
+		setWebViewClient(new WebViewClient()
+		{
 
+			@Override
+			public void onPageFinished(WebView view, String url)
+			{
+				firstLoadReady = true;
+				super.onPageFinished(view, url);
+
+				Timer timer = new Timer();
+				TimerTask task = new TimerTask()
+				{
+					@Override
+					public void run()
+					{
+						scrollTo(scrollPos.x, scrollPos.y);
+					}
+				};
+				timer.schedule(task, 100);
+
+			}
+
+		});
 	}
 
 	public DescriptionViewControl(Context context, AttributeSet attrs)
@@ -372,7 +398,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			public void run()
 			{
 				SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
-				that.getParent().requestLayout();
+				// that.getParent().requestLayout();
 
 				if (downloadTryCounter > 9) mustLoadDescription = true; // Versuchs
 																		// nochmal mit
@@ -433,6 +459,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
+
 		aktCache = cache;
 		mustLoadDescription = true;
 		setCache(aktCache);
@@ -474,6 +501,32 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		super.onDraw(canvas);
 		isDrawn = true;
 		invertViewControl.Me.invalidate();
+	}
+
+	private Point scrollPos = new Point(0, 0);
+
+	@Override
+	protected void onScrollChanged(int x, int y, int oldl, int oldt)
+	{
+		super.onScrollChanged(x, y, oldl, oldt);
+		scrollPos.x = x;
+		scrollPos.y = y;
+	}
+
+	public Point getScrollPos()
+	{
+		return scrollPos;
+	}
+
+	public void setScrollPos(Point pos)
+	{
+		scrollPos = pos;
+	}
+
+	@Override
+	public void scrollTo(int x, int y)
+	{
+		if (firstLoadReady) super.scrollTo(x, y);
 	}
 
 }

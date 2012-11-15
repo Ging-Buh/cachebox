@@ -8,6 +8,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,8 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public static DescriptionViewControl WebControl;
 	public static LinearLayout webViewLayout;
 
+	private Point lastScrollPos = new Point(0, 0);
+
 	public DescriptionView(Context context, LayoutInflater inflater)
 	{
 		super(context);
@@ -42,7 +45,6 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		cacheInfo = (CacheInfoControl) findViewById(R.id.CompassDescriptionView);
 		cacheInfo.setStyle(DrawStyle.withOwner);
 		WebControl = (DescriptionViewControl) findViewById(R.id.DescriptionViewControl);
-
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 
 		if (main.mainActivity.getString(R.string.density).equals("ldpi"))
@@ -50,7 +52,6 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 			cacheInfo.setVisibility(GONE);
 		}
 
-		OnShow();
 	}
 
 	@Override
@@ -100,6 +101,19 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	{
 		this.forceLayout();
 
+		// Del View from XML Layout
+		webViewLayout.removeAllViews();
+		if (WebControl != null)
+		{
+			WebControl.destroy();
+			WebControl = null;
+		}
+
+		// Instanz new WebView
+		WebControl = new DescriptionViewControl(main.mainActivity);
+		WebControl.setScrollPos(lastScrollPos);
+		webViewLayout.addView(WebControl);
+
 		WebControl.OnShow();
 		webViewLayout.setWillNotDraw(false);
 		webViewLayout.invalidate();
@@ -107,6 +121,8 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		WebControl.invalidate();
 
 		SelectedCacheEventList.Add(this);
+
+		WebControl.getSettings().setBuiltInZoomControls(true);
 
 	}
 
@@ -129,13 +145,26 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void OnHide()
 	{
-		WebControl.OnHide();
+
+		// save last ScrollPos
+
+		Point scpo = WebControl.getScrollPos();
+
+		lastScrollPos.x = scpo.x;
+		lastScrollPos.y = scpo.y;
+
+		webViewLayout.removeAllViews();
+		if (WebControl != null)
+		{
+			WebControl.destroy();
+			WebControl = null;
+		}
 	}
 
 	@Override
 	public void OnFree()
 	{
-		WebControl.OnFree();
+		if (WebControl != null) WebControl.OnFree();
 	}
 
 	@Override
@@ -169,25 +198,29 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
+
+		// reset ScrollPos
+		lastScrollPos = new Point(0, 0);
+
 		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 
-		Thread t = new Thread()
-		{
-			public void run()
-			{
-				main.mainActivity.runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						WebControl.OnShow();
-						WebControl.invalidate();
-					}
-				});
-			}
-		};
-
-		t.start();
+		// Thread t = new Thread()
+		// {
+		// public void run()
+		// {
+		// main.mainActivity.runOnUiThread(new Runnable()
+		// {
+		// @Override
+		// public void run()
+		// {
+		// WebControl.OnShow();
+		// WebControl.invalidate();
+		// }
+		// });
+		// }
+		// };
+		//
+		// t.start();
 
 	}
 }
