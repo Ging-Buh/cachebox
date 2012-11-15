@@ -356,9 +356,17 @@ public class splash extends Activity
 		{
 			// restore the saved workPath
 			// test whether workPath is available by checking the free size on the SD
-			StatFs stat = new StatFs(workPath);
-			long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
-			bytesAvailable = 0;
+			String workPathToTest = workPath.substring(0, workPath.lastIndexOf("/"));
+			long bytesAvailable = 0;
+			try
+			{
+				StatFs stat = new StatFs(workPathToTest);
+				bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
+			}
+			catch (Exception ex)
+			{
+				bytesAvailable = 0;
+			}
 			if (bytesAvailable == 0)
 			{
 				// there is a workPath stored but this workPath is not available at the moment (maybe SD is removed)
