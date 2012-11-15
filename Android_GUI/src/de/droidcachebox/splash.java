@@ -42,6 +42,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StatFs;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -50,6 +51,7 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.droidcachebox.Components.copyAssetFolder;
 import de.droidcachebox.DB.AndroidDB;
 
@@ -197,6 +199,7 @@ public class splash extends Activity
 
 			// check if Layout forced from User
 			workPath = Environment.getExternalStorageDirectory() + "/cachebox";
+
 			// extract first part of path ("/mnt/" or "/storage/" ...)
 			int pos = workPath.indexOf("/", 2); // search for the second /
 			String prev = "/mnt";
@@ -351,6 +354,20 @@ public class splash extends Activity
 		}
 		else
 		{
+			// restore the saved workPath
+			// test whether workPath is available by checking the free size on the SD
+			StatFs stat = new StatFs(workPath);
+			long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
+			bytesAvailable = 0;
+			if (bytesAvailable == 0)
+			{
+				// there is a workPath stored but this workPath is not available at the moment (maybe SD is removed)
+				Toast.makeText(mainActivity, "WorkPath " + workPath + " is not available!\nMaybe SD-Card is removed?", Toast.LENGTH_LONG)
+						.show();
+				finish();
+				return;
+			}
+
 			startInitial();
 		}
 
@@ -373,7 +390,11 @@ public class splash extends Activity
 		// the external!!!
 		if (FileIO.FileExists(extPath))
 		{
-			return true;
+			StatFs stat = new StatFs(extPath);
+			long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
+			if (bytesAvailable == 0) return false; // ext SD-Card is not plugged in -> do not use it
+			else
+				return true; // ext SD-Card is plugged in
 		}
 		return false;
 	}
