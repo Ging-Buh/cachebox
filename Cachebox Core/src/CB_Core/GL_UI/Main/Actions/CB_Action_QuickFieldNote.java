@@ -1,6 +1,8 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.GlobalCore;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
@@ -51,6 +53,8 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 					FieldNotesView.addNewFieldnote(1, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
+					// damit die Icons in der Map aktualisiert werden
+					SelectedCacheEventList.Call(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
 					pop.show(PopUp_Base.SHOW_TIME_SHORT);
 					platformConector.vibrate();
@@ -59,6 +63,8 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 					FieldNotesView.addNewFieldnote(2, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
+					// damit die Icons in der Map aktualisiert werden
+					SelectedCacheEventList.Call(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
 					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
 					pop2.show(PopUp_Base.SHOW_TIME_SHORT);
 					platformConector.vibrate();
