@@ -64,7 +64,14 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 					@Override
 					public void run()
 					{
-						scrollTo(scrollPos.x, scrollPos.y);
+						main.mainActivity.runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								scrollTo(scrollPos.x, scrollPos.y);
+							}
+						});
 					}
 				};
 				timer.schedule(task, 100);
