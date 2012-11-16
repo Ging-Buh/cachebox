@@ -782,7 +782,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				int radius = (int) (pixelsPerMeter * locator.getLocation().Accuracy);
 				// Logger.LogCat("Accuracy radius " + radius);
 				// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
-				if (radius > 0 && radius < UiSizes.getSmallestWidth())
+				if (radius > 0 && radius < UiSizes.getSmallestWidth() && false) // TODO für Release 0.5.x ausgeschalten
 				{
 
 					try
