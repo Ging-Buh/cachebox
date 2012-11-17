@@ -700,4 +700,80 @@ public class Cache implements Comparable<Cache>
 		this.CorrectedCoordinates = correctedCoordinates;
 	}
 
+	public Waypoint findWaypointByGc(String gc)
+	{
+		for (Waypoint waypoint : waypoints)
+		{
+			if (waypoint.GcCode.equals(gc))
+			{
+				return waypoint;
+			}
+		}
+		return null;
+	}
+
+	// copy all Informations from cache into this
+	// this is used after actualization of cache with API
+	public void copyFrom(Cache cache)
+	{
+		this.MapX = cache.MapX;
+		this.MapY = cache.MapY;
+		this.Name = cache.Name;
+		this.Pos = cache.Pos;
+		this.Rating = cache.Rating;
+		this.Size = cache.Size;
+		this.Difficulty = cache.Difficulty;
+		this.Terrain = cache.Terrain;
+		this.Archived = cache.Archived;
+		this.Available = cache.Available;
+		this.ApiStatus = cache.ApiStatus;
+		// this.favorite = false;
+		// this.noteCheckSum = 0;
+		// this.solverCheckSum = 0;
+		// this.hasUserData = false;
+		// this.CorrectedCoordinates = false;
+		// only change the found status when it is true in the loaded cache
+		// This will prevent ACB from overriding a found cache which is still not found in GC
+		if (cache.Found) this.Found = cache.Found;
+		// this.TourName = "";
+		// this.GPXFilename_ID = 0;
+		this.Type = cache.Type;
+		this.PlacedBy = cache.PlacedBy;
+		this.Owner = cache.Owner;
+		this.DateHidden = cache.DateHidden;
+		this.Url = cache.Url;
+		this.listingChanged = true; // so that spoiler download will be done again
+		this.attributesPositive = cache.attributesPositive;
+		this.attributesNegative = cache.attributesNegative;
+		this.NumTravelbugs = cache.NumTravelbugs;
+		// this.cachedDistance = 0;
+		this.hint = cache.hint;
+		// do not copy waypoints List directly because actual user defined Waypoints would be deleted
+		// this.waypoints = new ArrayList<Waypoint>();
+		for (Waypoint newWaypoint : cache.waypoints)
+		{
+
+			Waypoint aktWaypoint = this.findWaypointByGc(newWaypoint.GcCode);
+			if (aktWaypoint == null)
+			{
+				// this waypoint is new -> Add to list
+				this.waypoints.add(newWaypoint);
+			}
+			else
+			{
+				// this waypoint is already in our list -> Copy Informations
+				aktWaypoint.Description = newWaypoint.Description;
+				aktWaypoint.Pos = newWaypoint.Pos;
+				aktWaypoint.Title = newWaypoint.Title;
+				aktWaypoint.Type = newWaypoint.Type;
+			}
+		}
+		// this.spoilerRessources = null;
+		this.shortDescription = cache.shortDescription;
+		this.longDescription = cache.longDescription;
+		this.myCache = cache.myCache;
+		// this.gcLogin = null;
+
+	}
+
 }

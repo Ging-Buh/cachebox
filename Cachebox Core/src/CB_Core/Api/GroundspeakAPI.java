@@ -740,15 +740,18 @@ public class GroundspeakAPI
 		{
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-			if (Database.Data.Query.GetCacheById(cache.Id) == null)
+			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+			if (aktCache == null)
 			{
 				Database.Data.Query.add(cache);
 				cacheDAO.WriteToDatabase(cache);
 			}
 			else
 			{
-				Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
-				Database.Data.Query.add(cache);
+				// 2012-11-17: do not remove old instance from Query because of problems with cacheList and MapView
+				// Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
+				// Database.Data.Query.add(cache);
+				aktCache.copyFrom(cache);
 				cacheDAO.UpdateDatabase(cache);
 			}
 
