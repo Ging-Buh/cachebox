@@ -1,6 +1,18 @@
 
-
 Changes:
+
+Version : 0.5.1213
+	• Complete reworking of the UI on the basis of openGL
+	• Save park bay coordinates
+	• Quicker GPS Fixed
+	• Save own filters Presets
+	• Support of Mapsforge 0.3. x maps
+	• Load/Save/Rename/Color of tracks
+	• OpenRouteService to WP
+	• Support of external SD's
+	• Gesture control
+	• Delete Caches from data base
+	• Import reworks
 
 Version: 0.4.593
 	• Download of PQ through the GC-API

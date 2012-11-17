@@ -1,6 +1,14 @@
 
 Versions Änderungen:
 
+Version : 0.5.1213
+	• Komplette Überarbeitung der UI auf Basis von openGL
+	• Speichern von Parkkoordinaten
+	• Schnellerer GPS Fix
+	• Abspeichern eigener Filter Presets
+	• Unterstützung von Mapsforge 0.3.x Karten
+
+
 Version : 0.4.593
 	• Download von PQ über die API
 	• GPX Import komplett überarbeitet
