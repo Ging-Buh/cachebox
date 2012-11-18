@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+	<string name="langId">de</string>
+	<string name="selectSdCard">SD-Karte auswählen, die für die Daten genutzt werden soll:</string>
+	<string name="askAlways">Immer nachfragen?</string>
+
+
+</resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:id="@+id/solverLayout" android:orientation="vertical">
+
+
+	<RelativeLayout android:layout_height="fill_parent"
+		android:layout_width="fill_parent">
+
+
+		<LinearLayout android:layout_height="wrap_content"
+			android:layout_alignParentTop="true" android:layout_width="match_parent"
+			android:id="@+id/solverButtons">
+			<Button android:text="Button" android:layout_marginTop="3dip"
+				android:layout_width="0dip" android:layout_weight="1"
+				android:layout_height="55dip" android:id="@+id/solverButtonSolve"></Button>
+			<Button android:text="Button" android:layout_marginTop="3dip"
+				android:layout_width="0dip" android:layout_weight="1"
+				android:layout_height="55dip" android:id="@+id/solverButtonFunktion"></Button>
+			<Button android:text="Button" android:layout_marginTop="3dip"
+				android:layout_width="0dip" android:layout_weight="1"
+				android:layout_height="55dip" android:id="@+id/solverButtonSelect"></Button>
+		</LinearLayout>
+
+		<ScrollView android:layout_height="fill_parent"
+			android:layout_width="match_parent" android:layout_weight="1"
+			android:id="@+id/settings_scrollView" android:layout_above="@+id/solverViewButtons"
+			android:layout_below="@+id/solverButtons" android:fillViewport="true">
+
+			<LinearLayout android:id="@+id/linearLayout1"
+				android:layout_height="fill_parent" android:layout_width="match_parent"
+				android:fillViewport="true">
+				<EditText android:text="EditText" android:id="@+id/solverText"
+					android:gravity="top" android:layout_width="match_parent"
+					android:scrollHorizontally="true" android:fillViewport="true"
+					android:layout_weight="1" android:layout_height="match_parent"></EditText>
+				<EditText android:text="EditText" android:id="@+id/solverResult"
+					android:fillViewport="true" android:layout_width="match_parent"
+					android:scrollHorizontally="true" android:layout_weight="1"
+					android:editable="false" android:gravity="top"
+					android:layout_height="match_parent"></EditText>
+			</LinearLayout>
+
+		</ScrollView>
+
+
+		<LinearLayout android:orientation="horizontal"
+			android:id="@+id/solverViewButtons" android:layout_alignParentBottom="true"
+			android:layout_width="match_parent" android:layout_height="wrap_content">
+			<Button android:text="Button" android:layout_height="55dip"
+				android:layout_marginTop="10dip" android:layout_weight="1"
+				android:id="@+id/solverButtonViewLeft" android:layout_width="0dip"></Button>
+			<Button android:text="Button" android:layout_height="55dip"
+				android:layout_marginTop="10dip" android:layout_weight="1"
+				android:id="@+id/solverButtonViewMidle" android:layout_width="0dip"></Button>
+			<Button android:text="Button" android:layout_height="55dip"
+				android:layout_marginTop="10dip" android:layout_weight="1"
+				android:id="@+id/solverButtonViewRight" android:layout_width="0dip"></Button>
+		</LinearLayout>
+	</RelativeLayout>
+
+</LinearLayout>

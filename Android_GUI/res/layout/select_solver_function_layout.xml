@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/main_LinearLayout" android:gravity="bottom"
+	android:layout_height="match_parent" android:orientation="vertical"
+	android:layout_width="match_parent">
+	<ScrollView android:layout_height="wrap_content" android:id="@+id/solver_scroll_view"
+		android:layout_width="match_parent" android:layout_weight="1">
+
+		<LinearLayout android:id="@+id/solver_function_scrollView"
+			android:layout_height="wrap_content" android:layout_width="match_parent"
+			android:orientation="vertical">
+
+			<!-- The contents are dynamically generated in selectSolverFunction.java -->
+
+		</LinearLayout>
+
+	</ScrollView>
+
+	<TextView android:id="@+id/solver_function_desc"
+		android:layout_width="match_parent" android:layout_height="wrap_content" android:text="desc"/>
+
+	<LinearLayout android:orientation="horizontal"
+		android:id="@+id/solver_function_okcancel_linearlayout"
+		android:layout_width="match_parent" android:layout_alignParentBottom="true"
+		android:layout_height="55dip">
+		<Button android:layout_weight="1" android:layout_width="match_parent"
+			android:text="Button" android:layout_height="match_parent"
+			android:id="@+id/solver_function_ok">
+		</Button>
+		<Button android:layout_weight="1" android:layout_width="match_parent"
+			android:text="Button" android:layout_height="match_parent"
+			android:id="@+id/solver_function_cancel">
+		</Button>
+	</LinearLayout>
+</LinearLayout>

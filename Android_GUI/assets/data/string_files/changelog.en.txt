@@ -1,0 +1,69 @@
+
+Changes:
+
+Version : 0.5.1213
+	• Complete reworking of the UI on the basis of openGL
+	• Save park bay coordinates
+	• Quicker GPS Fixed
+	• Save own filters Presets
+	• Support of Mapsforge 0.3. x maps
+	• Load/Save/Rename/Color of tracks
+	• OpenRouteService to WP
+	• Support of external SD's
+	• Gesture control
+	• Delete Caches from data base
+	• Import reworks
+	• Car-Mode for Map
+
+Version: 0.4.593
+	• Download of PQ through the GC-API
+	• Import of GPX files completely reworked
+	• removed unit tests from core 
+	• Settings revised 
+	• Download GC-Vote
+	• Categories for GPX import
+	• more texts for the translations
+	• Api search through position of GPS,
+	  map or manual co-ordinates input
+	• Option to change the view
+	  to the compass when appoaching the cache
+	• Layout adaptations for different 
+	  display resolutions
+	• Import of description images 
+
+Version: 0.3.484
+	• Construction of the 
+	  Api Key's changed
+	• API looks for name, 
+	  GC code and Owner
+	• several new Solver functions
+	• Reworking of the attributes
+	• Attributes in the Slider inserted
+	• Treatment of a Misterys with 
+	  0 co-ordinates as unsolved
+	• Compass needle to Community 
+	  version changed
+	• Screenlock release reworks 
+	  in MapView
+	• Mistakes repaired ()
+
+
+Version: 0.2.453
+	• Activation of the Groundspeak APi
+	• check the Cache status about 
+	  the API (Filterselection)
+	• Fair GPS co-ordinates 
+	  (average for the time)
+	• more translations
+	• load track file with choice dialog
+	• pair of smaller mistakes repaired.
+
+
+Version: 0.1.433
+	• Binding of the Groundspeak API 
+	  (Unfortunately, not yet 
+	  from GS released!)
+	• Import GPX
+	• Search in local Cache list
+	• many colors for the night mode
+	• many mistakes repaired

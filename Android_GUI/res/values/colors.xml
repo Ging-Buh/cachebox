@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <drawable name="MapViewPanel">#40000000</drawable>
+
+<!-- Day -->
+		<color name="Day_Background">#CAD4B2</color>
+	    <color name="Day_ListBackground">#FFFFFF</color>
+	    <color name="Day_ListBackground_secend">#EEEEEE</color>
+	    <color name="Day_ListSeperator">#4c5e21</color>	    
+	    <color name="Day_EmptyBackground">#CAD4B2</color>
+	    <color name="Day_Foreground">#000000</color>
+	    <color name="Day_Foreground_disable">#769676</color>
+	    <color name="Day_SelectedBackground">#ffd240</color>
+	    <color name="Day_TitleBarColor">#8B9D5F</color>
+	    <color name="Day_TitleBarText">#000000</color>
+	    <color name="Day_ColorCompassPanel">#64000000</color>
+	    <color name="Day_ColorCompassText">#FFFFFF</color>
+	    <color name="Day_Compass_rimColorFilter">#003200</color>
+	    <color name="Day_Compass_faceColorFilter">#1EFF1E</color>
+	    <color name="Day_Compass_TextColor">#000000</color>
+	    <color name="Day_Compass_N_TextColor">#EE0000</color>
+	    <color name="Day_toggle_on">#00EE00</color>
+	    <color name="Day_toggle_off">#EEEEEE</color>
+	    <color name="Day_SlideDownColorFilter">#99ff99</color>
+	    <color name="Day_SlideDownBackColor">#eecce1cc</color>
+	    <color name="Day_LinkLabelColor">#0000aa</color>
+	    <color name="Day_TitleBarBackColor">#CAD4B2</color>
+	    
+	    
+<!-- Night -->
+		<color name="Night_Background">#000000</color>
+	    <color name="Night_ListBackground">#000000</color>
+	    <color name="Night_ListBackground_secend">#201010</color>
+	    <color name="Night_ListSeperator">#402000</color>
+	    <color name="Night_EmptyBackground">#000000</color>	    
+	    <color name="Night_Foreground">#BA0000</color>
+	    <color name="Night_Foreground_disable">#420000</color>	    
+	    <color name="Night_SelectedBackground">#520000</color>	    
+	    <color name="Night_TitleBarColor">#BA0000</color>	    
+	    <color name="Night_TitleBarText">#000000</color>	    
+		<color name="Night_ColorCompassPanel">#F0402000</color>
+	    <color name="Night_ColorCompassText">#FF3030</color>
+		<color name="Night_Compass_rimColorFilter">#300000</color>
+	    <color name="Night_Compass_faceColorFilter">#150000</color>
+	    <color name="Night_Compass_TextColor">#BA0000</color>
+	    <color name="Night_Compass_N_TextColor">#400000</color>
+	    <color name="Night_toggle_on">#00EE00</color>
+	    <color name="Night_toggle_off">#EEEEEE</color>
+	    <color name="Night_SlideDownColorFilter">#99ff99</color>
+	    <color name="Night_SlideDownBackColor">#ee150000</color>
+	    <color name="Night_LinkLabelColor">#000080</color>
+	    <color name="Night_TitleBarBackColor">#BA0000</color>
+	    <color name="transparent_red">#A0ff0000</color>
+</resources>

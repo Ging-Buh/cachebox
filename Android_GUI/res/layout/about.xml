@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:id="@+id/notesLayout">
+
+	<include android:layout_height="fill_parent" 
+		layout="@layout/splash" android:layout_width="fill_parent"></include>
+
+	<TextView android:text="Founds" android:id="@+id/about_CachesFoundLabel"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|center" android:layout_marginBottom="120dip"></TextView>
+		
+	<TextView android:text="GPS:" android:id="@+id/about_lblGPS"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="10dip" android:layout_marginBottom="85dip"></TextView>
+	<TextView android:text="GPS State" android:id="@+id/about_GPS"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginBottom="85dip" android:layout_marginLeft="50dip"></TextView>
+		
+	
+	<include 
+				 android:layout_height="wrap_content" 
+				 android:id="@+id/strength_control" 
+				 layout="@layout/strength_control" 
+				 android:layout_width="wrap_content" 
+				 android:layout_gravity="bottom|right" android:layout_marginRight="10dip" android:layout_marginBottom="85dip"
+				 ></include>	
+	
+	
+	<TextView android:text="Accuracy:" android:id="@+id/about_lblAccuracy"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="10dip" android:layout_marginBottom="65dip"></TextView>
+
+	<TextView android:text="accuracy" android:id="@+id/about_Accuracy"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="110dip" android:layout_marginBottom="65dip"></TextView>
+	
+	<TextView android:text="Waypoint:" android:id="@+id/about_lblWP"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="10dip" android:layout_marginBottom="45dip"></TextView>
+
+	<TextView android:text="WaypointCode" android:id="@+id/about_WP"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="110dip" android:layout_marginBottom="45dip"></TextView>
+	
+	<TextView android:text="Coordinate:" android:id="@+id/about_lblCord"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="10dip" android:layout_marginBottom="25dip"></TextView>
+
+	<TextView android:text="cordinate" android:id="@+id/about_Cord"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="110dip" android:layout_marginBottom="25dip"></TextView>
+	
+	<TextView android:text="Current:" android:id="@+id/about_lblCurrent"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="10dip" android:layout_marginBottom="5dip"></TextView>
+
+	<TextView android:text="current" android:id="@+id/about_Current"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_gravity="bottom|left" android:layout_marginLeft="110dip" android:layout_marginBottom="5dip"></TextView>
+	
+
+</FrameLayout>

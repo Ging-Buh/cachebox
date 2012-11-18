@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:id="@+id/notesLayout">
+
+
+	<LinearLayout android:layout_height="fill_parent"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_alignParentTop="true">
+		<de.droidcachebox.Custom_Controls.CacheInfoControl
+			android:id="@+id/CompassDescriptionView" android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:layout_marginLeft="2dip"
+			android:layout_marginRight="2dip" android:layout_marginTop="1dip" />
+
+		<AbsoluteLayout android:layout_height="match_parent"
+			android:layout_width="fill_parent">
+			<LinearLayout android:id="@+id/WebViewLayout"
+				android:layout_height="match_parent" android:layout_width="fill_parent">
+				<de.droidcachebox.Custom_Controls.DescriptionViewControl
+					android:id="@+id/DescriptionViewControl" android:layout_height="fill_parent"
+					android:layout_width="fill_parent" />
+			</LinearLayout>
+			<de.droidcachebox.Custom_Controls.invertViewControl
+				android:id="@+id/InvertViewControl" android:layout_height="fill_parent"
+				android:layout_width="fill_parent" />
+
+
+		</AbsoluteLayout>
+
+
+	</LinearLayout>
+
+
+
+
+
+
+
+</RelativeLayout>
