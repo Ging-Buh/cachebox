@@ -286,11 +286,12 @@ public class GL implements ApplicationListener
 			mMarkerOverlay.renderChilds(batch, prjMatrix);
 		}
 
-		batch.begin();
-		batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
-		FpsInfoPos++;
-		if (FpsInfoPos > 60) FpsInfoPos = 0;
-		batch.end();
+		// TODO switch on with test version
+		// batch.begin();
+		// batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
+		// FpsInfoPos++;
+		// if (FpsInfoPos > 60) FpsInfoPos = 0;
+		// batch.end();
 
 		GL_View_Base.debug = Config.settings.DebugMode.getValue();
 

@@ -1,5 +1,7 @@
 Thanks for installing Cachebox.
 
+Do not use Cachebox during the drive in the car!
+
 This version is still in beta stage and can contain errors.
 
 You can report an error at http://www.team-cachebox.de.
@@ -8,6 +10,4 @@ Here you can also leave a feature request.
 
 Or you visit us at our forum http://www.geoclub.de/viewforum.php?f=114.
 Some developers and forums user also speak English, so that you can get help in English.
-
-
 

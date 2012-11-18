@@ -7,6 +7,13 @@ Version : 0.5.1213
 	• Schnellerer GPS Fix
 	• Abspeichern eigener Filter Presets
 	• Unterstützung von Mapsforge 0.3.x Karten
+	• Laden/Speichern/Umbenennen/Farbe von Tracks
+	• OpenRouteService zu WP
+	• Unterstützung von externen SD's
+	• Gestensteuerung 
+	• Löschen von Caches aus Datenbank
+	• Import überarbeitet
+	• KFZ-Modus für Kartenansicht
 
 
 Version : 0.4.593

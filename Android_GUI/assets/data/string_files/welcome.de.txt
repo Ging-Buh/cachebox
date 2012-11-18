@@ -1,5 +1,7 @@
 Danke dass Du Cachebox installiert hast.
 
+Bediene Cachebox niemals während der Fahrt im Auto!
+
 Diese Version ist noch eine Beta Version und kann noch Fehler enthalten.
 
 Einen Fehler kannst Du auf www.team-cachebox.de melden.

@@ -13,6 +13,7 @@ Version : 0.5.1213
 	• Gesture control
 	• Delete Caches from data base
 	• Import reworks
+	• Car-Mode for Map
 
 Version: 0.4.593
 	• Download of PQ through the GC-API
