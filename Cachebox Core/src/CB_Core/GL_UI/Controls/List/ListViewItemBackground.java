@@ -111,6 +111,9 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	@Override
 	public float getLeftWidth()
 	{
+
+		if (!mBackIsInitial) Initial();
+
 		if (isSelected)
 		{
 			return backSelect.getLeftWidth();
@@ -128,6 +131,8 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	@Override
 	public float getBottomHeight()
 	{
+		if (!mBackIsInitial) Initial();
+
 		if (isSelected)
 		{
 			return backSelect.getBottomHeight();
@@ -145,6 +150,9 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	@Override
 	public float getRightWidth()
 	{
+
+		if (!mBackIsInitial) Initial();
+
 		if (isSelected)
 		{
 			return backSelect.getRightWidth();
@@ -162,6 +170,9 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	@Override
 	public float getTopHeight()
 	{
+
+		if (!mBackIsInitial) Initial();
+
 		if (isSelected)
 		{
 			return backSelect.getTopHeight();
