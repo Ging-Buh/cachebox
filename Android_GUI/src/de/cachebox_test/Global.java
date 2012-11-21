@@ -548,11 +548,18 @@ public class Global
 					R.attr.LinkLabelColor, R.attr.Compass_rimColorFilter, R.attr.Compass_faceColorFilter, R.attr.Compass_TextColor,
 					R.attr.Compass_N_TextColor, R.attr.Map_Compass_TextColor, R.attr.Map_ColorCompassPanel };
 
-		context.setTheme(Config.settings.nightMode.getValue() ? R.style.Theme_night : R.style.Theme_day);
+		try
+		{
+			context.setTheme(Config.settings.nightMode.getValue() ? R.style.Theme_night : R.style.Theme_day);
 
-		Theme t = context.getTheme();
-		Arrays.sort(colorAttrs);
-		themeStyles = t.obtainStyledAttributes(colorAttrs);
+			Theme t = context.getTheme();
+			Arrays.sort(colorAttrs);
+			themeStyles = t.obtainStyledAttributes(colorAttrs);
+		}
+		catch (NullPointerException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public static int getColor(int attrResid)

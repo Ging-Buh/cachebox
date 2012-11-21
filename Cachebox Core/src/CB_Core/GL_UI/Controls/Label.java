@@ -97,6 +97,10 @@ public class Label extends CB_View_Base
 		{
 			// kommt manchmal wenn der Text geändert wird
 		}
+		catch (NullPointerException e)
+		{
+			// kommt manchmal wenn der Text geändert wird
+		}
 
 	}
 

@@ -62,11 +62,14 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 
 			startTime = System.currentTimeMillis();
 
-			do
+			if (cIterator != null && cIterator.hasNext())
 			{
-				chkList.add(cIterator.next());
+				do
+				{
+					chkList.add(cIterator.next());
+				}
+				while (cIterator.hasNext());
 			}
-			while (cIterator.hasNext());
 
 			float ProgressInkrement = 100.0f / (chkList.size() / BlockSize);
 
