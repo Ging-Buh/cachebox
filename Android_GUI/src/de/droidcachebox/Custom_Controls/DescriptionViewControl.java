@@ -293,7 +293,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 				return; // if an exception here, then this is not initializes
 			}
 		}
-		this.getSettings().setLightTouchEnabled(true);
+
+		if (this.getSettings() != null) this.getSettings().setLightTouchEnabled(true);
 
 		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
 		// erlaubt ist, diese laden und Bilder erneut auflösen

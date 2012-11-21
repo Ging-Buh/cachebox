@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.droidcachebox" android:installLocation="preferExternal"
-	android:versionCode="7" android:versionName="0.5.1216 (Beta)">
+	android:versionCode="8" android:versionName="0.5.1232 (Beta)">
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -12,7 +12,8 @@
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.VIBRATE" />
-
+	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+	
 
 
 	<application android:label="@string/app_name" android:theme="@style/Theme_day" android:debuggable="true" android:icon="@drawable/cb">

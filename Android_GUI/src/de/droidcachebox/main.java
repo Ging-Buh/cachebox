@@ -359,7 +359,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		GL.resetIsInitial();
 		mainActivity = this;
 
 		if (savedInstanceState != null)
@@ -915,16 +915,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						mediaTimeString = Global.GetTrackDateTimeString();
 						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", GlobalCore.LastValidPosition,
 								mediaTimeString);
+
+						TabMainView.that.reloadSprites(false);
+
 					}
 				});
 
-				return;
 			}
-			else
-			{
-				// Log.d("DroidCachebox", "Picture NOT taken!!!");
-				return;
-			}
+
+			return;
 		}
 
 		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)

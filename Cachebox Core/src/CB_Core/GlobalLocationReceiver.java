@@ -120,7 +120,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 			if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid && location.getProvider().equalsIgnoreCase(GPS_PROVIDER))
 			{
 				initialFixSoundCompleted = true;
-				if (!GPS_Fix.isPlaying())
+				if (GPS_Fix != null && !GPS_Fix.isPlaying())
 				{
 					Logger.LogCat("Play Fix");
 					GPS_Fix.play();
@@ -147,7 +147,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 
 					if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
 					{
-						Approach.play();
+						if (Approach != null) Approach.play();
 						approachSoundCompleted = true;
 
 					}
@@ -216,7 +216,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 						{
 							Database.Data.Query.Resort();
 
-							AutoResort.play();
+							if (AutoResort != null) AutoResort.play();
 							return;
 						}
 					}
