@@ -151,8 +151,10 @@ public class TabMainView extends MainViewBase
 		// Config.AcceptChanges();
 
 		ini();
-
+		isInitial = true;
 	}
+
+	private boolean isInitial = false;
 
 	private void ini()
 	{
@@ -518,8 +520,17 @@ public class TabMainView extends MainViewBase
 
 	public void switchDayNight()
 	{
+		reloadSprites(true);
+	}
+
+	public void reloadSprites(boolean switchDayNight)
+	{
+
+		// chk if initial
+		if (!isInitial) Initial();
+
 		GL.that.StopRender();
-		Config.changeDayNight();
+		if (switchDayNight) Config.changeDayNight();
 		ManagerBase.RenderThemeChanged = true;
 		GL.that.onStop();
 

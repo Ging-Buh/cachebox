@@ -102,16 +102,16 @@ public class GL implements ApplicationListener
 	protected EditWrapedTextField keyboardFocus;
 
 	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
-	private ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
+	private static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
 
-	private boolean ifAllInitial = false;
+	private static boolean ifAllInitial = false;
 
-	public void setIsInitial()
+	public static void setIsInitial()
 	{
 		ifAllInitial = true;
 	}
 
-	public void resetIsInitial()
+	public static void resetIsInitial()
 	{
 		ifAllInitial = false;
 	}
