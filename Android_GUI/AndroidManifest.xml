@@ -19,8 +19,9 @@
 
 	<application android:label="@string/app_name" android:theme="@style/Theme_day" android:debuggable="true" android:icon="@drawable/cb_test">
 		<activity android:name=".main" android:label="@string/app_name" android:screenOrientation="behind"
-			              android:alwaysRetainTaskState="true"
-              android:launchMode="singleTask">
+			    android:alwaysRetainTaskState="true"
+				android:configChanges="orientation|keyboard|keyboardHidden"
+              	android:launchMode="singleTask">
 		</activity>
 		<activity android:name="splash">
 			<intent-filter>
