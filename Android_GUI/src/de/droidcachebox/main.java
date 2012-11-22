@@ -1065,7 +1065,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Logger.DEBUG("Main=> onPause release SuppressPowerSaving");
 
-		if (this.mWakeLock != null) this.mWakeLock.release();
+		try
+		{
+			if (this.mWakeLock != null) this.mWakeLock.release();
+		}
+		catch (Exception e)
+		{
+			// dann ebend nicht!
+		}
 	}
 
 	Dialog pWaitD;

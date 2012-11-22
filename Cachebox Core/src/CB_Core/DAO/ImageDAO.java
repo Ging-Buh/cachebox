@@ -65,6 +65,9 @@ public class ImageDAO
 				"select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=? and IsCacheImage=1",
 				new String[]
 					{ GcCode });
+
+		if (reader == null) return images;
+
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
 		{
@@ -83,6 +86,8 @@ public class ImageDAO
 
 		CoreCursor reader = Database.Data.rawQuery("select ImageUrl from Images where GcCode=?", new String[]
 			{ GcCode });
+
+		if (reader == null) return images;
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
 		{
@@ -101,6 +106,7 @@ public class ImageDAO
 		CoreCursor reader = Database.Data.rawQuery("select count(id) from Images where GcCode in (select GcCode from Caches "
 				+ ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + ")", null);
 
+		if (reader == null) return 0;
 		reader.moveToFirst();
 
 		if (!reader.isAfterLast())
@@ -119,6 +125,7 @@ public class ImageDAO
 		CoreCursor reader = Database.Data.rawQuery("select GcCode from Caches "
 				+ ((whereClause.length() > 0) ? "where " + whereClause : whereClause), null);
 
+		if (reader == null) return gcCodes;
 		reader.moveToFirst();
 
 		while (!reader.isAfterLast())

@@ -1,6 +1,10 @@
 
 Changes:
 
+Version : 0.5.1235
+	• Fix hardware filter for Google play
+	• Fix some minor bugs
+
 Version : 0.5.1213
 	• Complete reworking of the UI on the basis of openGL
 	• Save park bay coordinates

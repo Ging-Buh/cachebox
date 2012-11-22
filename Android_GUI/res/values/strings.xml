@@ -11,4 +11,5 @@
 	<string name="Maps">Maps</string>
 	<string name="selectSdCard">Select SD-Card for the Data</string>
 	<string name="askAlways">Ask Always</string>
+	 <string name="langId">en</string>
 </resources>
