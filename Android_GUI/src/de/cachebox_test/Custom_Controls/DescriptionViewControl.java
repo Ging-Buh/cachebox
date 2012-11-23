@@ -294,7 +294,14 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			}
 		}
 
-		if (this.getSettings() != null) this.getSettings().setLightTouchEnabled(true);
+		try
+		{
+			if (this.getSettings() != null) this.getSettings().setLightTouchEnabled(true);
+		}
+		catch (Exception e1)
+		{
+			// dann kann eben nicht gezoomt werden!
+		}
 
 		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
 		// erlaubt ist, diese laden und Bilder erneut auflösen
