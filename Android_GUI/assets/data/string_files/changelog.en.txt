@@ -1,6 +1,10 @@
 
 Changes:
 
+Version : 0.5.1237
+	• Fix  java.lang.NullPointerException at (DescriptionViewControl.java:297)
+	• Fix Show Keyboard problem at API-Login with Android Level <11
+
 Version : 0.5.1235
 	• Fix hardware filter for Google play
 	• Fix some minor bugs
