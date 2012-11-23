@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.webkit.WebSettings;
@@ -91,7 +92,26 @@ public class GcApiLogin extends Activity
 		}
 
 		// Instanz new WebView
-		WebControl = new WebView(main.mainActivity);
+		WebControl = new WebView(main.mainActivity, null, android.R.attr.webViewStyle);
+		WebControl.requestFocus(View.FOCUS_DOWN);
+		WebControl.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				switch (event.getAction())
+				{
+				case MotionEvent.ACTION_DOWN:
+				case MotionEvent.ACTION_UP:
+					if (!v.hasFocus())
+					{
+						v.requestFocus();
+					}
+					break;
+				}
+				return false;
+			}
+		});
 		webViewLayout.addView(WebControl);
 
 		if (!pdIsShow)
