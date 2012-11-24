@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.Converter.UTMConvert;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
@@ -11,7 +12,6 @@ import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
-import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
 import CB_Core.GL_UI.GL_Listener.GL;
@@ -21,6 +21,8 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class EditCoord extends ActivityBase
@@ -71,6 +73,14 @@ public class EditCoord extends ActivityBase
 	private Label lUtmO;
 	private Label lUtmN;
 	private Label lUtmZ;
+
+	// Deg - Min new
+	private Box trMinNew;
+	private Button[] btnLat;
+	private Button[] btnLon;
+	private BitmapFont font = Fonts.getCompass();
+	private Button[] btnNumpad;
+	private int focus;
 
 	private NumPad numPad;
 
@@ -125,6 +135,11 @@ public class EditCoord extends ActivityBase
 		trDec = new Box(EditTextBoxRec, "trDec");
 		trMin = new Box(EditTextBoxRec, "trMin");
 		trSec = new Box(EditTextBoxRec, "trSec");
+		trMinNew = new Box(new CB_RectF(this.getLeftWidth(), //
+				this.getBottomHeight() + bOK.getHeight(), //
+				this.width - this.getLeftWidth() - this.getRightWidth(), //
+				this.height - this.getBottomHeight() - this.getTopHeight() - this.bMin.getHeight() - bOK.getHeight()), //
+				"trMinNew");
 
 		EditTextBoxRec.setHeight((bDLat.getMaxY() - bDLon.getY()) * 1.5f);
 		EditTextBoxRec.setY(bDLon.getY() - bDLon.getHeight());
@@ -135,6 +150,7 @@ public class EditCoord extends ActivityBase
 		this.addChild(trMin);
 		this.addChild(trSec);
 		this.addChild(trUtm);
+		this.addChild(trMinNew);
 
 		// Translations
 		bOK.setText(GlobalCore.Translations.Get("ok"));
@@ -179,43 +195,22 @@ public class EditCoord extends ActivityBase
 				return true;
 			}
 		});
-
-		bDec.setOnStateChangedListner(new OnStateChangeListener()
-		{
-			@Override
-			public void onStateChange(GL_View_Base v, int State)
-			{
-				if (State == 1) showPage(0);
-			}
-		});
-
-		bMin.setState(1);
-		bMin.setOnStateChangedListner(new OnStateChangeListener()
-		{
-			@Override
-			public void onStateChange(GL_View_Base v, int State)
-			{
-				if (State == 1) showPage(1);
-			}
-		});
-
-		bSec.setOnStateChangedListner(new OnStateChangeListener()
-		{
-			@Override
-			public void onStateChange(GL_View_Base v, int State)
-			{
-				if (State == 1) showPage(2);
-			}
-		});
-		bUtm.setOnStateChangedListner(new OnStateChangeListener()
-		{
-			@Override
-			public void onStateChange(GL_View_Base v, int State)
-			{
-				if (State == 1) showPage(3);
-			}
-		});
-
+		/*
+		 * bDec.setOnStateChangedListner(new OnStateChangeListener() {
+		 * 
+		 * @Override public void onStateChange(GL_View_Base v, int State) { if (State == 1) showPage(0); } });
+		 * 
+		 * bMin.setState(1); bMin.setOnStateChangedListner(new OnStateChangeListener() {
+		 * 
+		 * @Override public void onStateChange(GL_View_Base v, int State) { if (State == 1) showPage(1); } });
+		 * 
+		 * bSec.setOnStateChangedListner(new OnStateChangeListener() {
+		 * 
+		 * @Override public void onStateChange(GL_View_Base v, int State) { if (State == 1) showPage(2); } });
+		 * bUtm.setOnStateChangedListner(new OnStateChangeListener() {
+		 * 
+		 * @Override public void onStateChange(GL_View_Base v, int State) { if (State == 1) showPage(3); } });
+		 */
 	}
 
 	@Override
@@ -303,14 +298,13 @@ public class EditCoord extends ActivityBase
 			}
 		});
 
-		// trMin
 		createTrMin();
-
-		showPage(1);
-
 		createTrDec();
 		createTrSec();
 		createTrUtn();
+		createTrMinNew();
+		showNumPad(NumPad.Type.withDot);
+		showPage(1);
 
 	}
 
@@ -489,6 +483,160 @@ public class EditCoord extends ActivityBase
 		trMin.addChild(tbMLonMin);
 	}
 
+	private void createTrMinNew()
+	{
+
+		this.btnLat = new Button[9]; // N_48[°]29[.]369
+		this.btnLon = new Button[9]; // E__9[°]15[.]807
+		for (int i = 0; i < 9; i++)
+		{
+			this.btnLat[i] = new Button(this, "btnLat" + i);
+			this.btnLon[i] = new Button(this, "btnLon" + i);
+		}
+
+		Button btn1 = new Button("btn1"); // oder Label for Degree Lat
+		Button btn2 = new Button("btn2"); // oder Label for point Lat
+		Button btn3 = new Button("btn3"); // oder Label for Degree Lon
+		Button btn4 = new Button("btn4"); // oder Label for point Lon
+
+		// Lat
+		for (int i = 0; i < 4; i++)
+		{
+			this.trMinNew.addNext(this.btnLat[i]);
+		}
+		this.trMinNew.addNext(btn1);
+		this.trMinNew.addNext(this.btnLat[4]);
+		this.trMinNew.addNext(this.btnLat[5]);
+		this.trMinNew.addNext(btn2);
+		this.trMinNew.addNext(this.btnLat[6]);
+		this.trMinNew.addNext(this.btnLat[7]);
+		this.trMinNew.addLast(this.btnLat[8]);
+		// Lon
+		for (int i = 0; i < 4; i++)
+		{
+			this.trMinNew.addNext(this.btnLon[i]);
+		}
+		this.trMinNew.addNext(btn3);
+		this.trMinNew.addNext(this.btnLon[4]);
+		this.trMinNew.addNext(this.btnLon[5]);
+		this.trMinNew.addNext(btn4);
+		this.trMinNew.addNext(this.btnLon[6]);
+		this.trMinNew.addNext(this.btnLon[7]);
+		this.trMinNew.addLast(this.btnLon[8]);
+
+		btn1.setText("°", font, Color.BLACK);
+		btn1.disable();
+		btn2.setText(".", font, Color.BLACK);
+		btn2.disable();
+		btn3.setText("°", font, Color.BLACK);
+		btn3.disable();
+		btn4.setText(".", font, Color.BLACK);
+		btn4.disable();
+
+		this.btnLat[0].setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				Button btn = (Button) v;
+				if (btn.getText().equals("N")) btn.setText("S");
+				else
+					btn.setText("N");
+				return true;
+			}
+		});
+
+		this.btnLon[0].setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				Button btn = (Button) v;
+				if (btn.getText().equals("E")) btn.setText("W");
+				else
+					btn.setText("E");
+				return true;
+			}
+		});
+
+		for (int i = 1; i < 9; i++)
+		{
+			this.btnLat[i].setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					Button btn = (Button) v;
+					// Focus setzen;
+					EditCoord parent = (EditCoord) btn.getParent();
+					int l = btn.getName().length() - 1;
+					int f = Integer.parseInt(btn.getName().substring(l));
+					parent.setFocus(f);
+					return true;
+				}
+			});
+			this.btnLon[i].setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					Button btn = (Button) v;
+					// Focus setzen;
+					EditCoord parent = (EditCoord) btn.getParent();
+					int l = btn.getName().length() - 1;
+					int f = Integer.parseInt(btn.getName().substring(l));
+					parent.setFocus(f + 9);
+					return true;
+				}
+			});
+		}
+
+		// NumPad for the Buttons
+		this.btnNumpad = new Button[10];
+		Button dummy1 = new Button("dummy1");
+		dummy1.setInvisible();
+		Button dummy2 = new Button("dummy2");
+		dummy2.setInvisible();
+		for (int i = 0; i < 10; i++)
+		{
+			this.btnNumpad[i] = new Button(this, "btnNumpad" + i);
+			btnNumpad[i].setText(String.format("%1d", i), font, Color.BLACK);
+			this.btnNumpad[i].setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					Button btn = (Button) v;
+					EditCoord parent = (EditCoord) btn.getParent();
+					if (parent.focus < 9)
+					{
+						parent.btnLat[parent.focus].setText(btn.getText(), font, Color.GREEN);
+					}
+					else
+					{
+						parent.btnLon[parent.focus - 9].setText(btn.getText(), font, Color.GREEN);
+					}
+					parent.setNextFocus();
+					return true;
+				}
+			});
+
+		}
+		this.trMinNew.initRow(false);
+		this.trMinNew.addNext(dummy1); // dummy links
+		this.trMinNew.addNext(btnNumpad[0]);
+		this.trMinNew.addLast(dummy2); // dummy rechts
+		this.trMinNew.addNext(btnNumpad[7]);
+		this.trMinNew.addNext(btnNumpad[8]);
+		this.trMinNew.addLast(btnNumpad[9]);
+		this.trMinNew.addNext(btnNumpad[4]);
+		this.trMinNew.addNext(btnNumpad[5]);
+		this.trMinNew.addLast(btnNumpad[6]);
+		this.trMinNew.addNext(btnNumpad[1]);
+		this.trMinNew.addNext(btnNumpad[2]);
+		this.trMinNew.addLast(btnNumpad[3]);
+	}
+
 	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
 
 	private void setKeyboardHandling(final EditWrapedTextField textField)
@@ -524,7 +672,29 @@ public class EditCoord extends ActivityBase
 
 	private void showPage(int newPage)
 	{
-		if (aktPage >= 0) parseView();
+
+		if (aktPage >= 0)
+		{
+			parseView(); // setting coord
+		}
+
+		if (!coord.Valid)
+		{
+			// oder aktuelle Position oder Cache Koordinaten
+			coord.setLatitude(0d);
+			coord.setLongitude(0d);
+		}
+
+		if (coord.getLatitude() >= 0) bDLat.setText("N");
+		else
+			bDLat.setText("S");
+		if (coord.getLongitude() >= 0) bDLon.setText("E");
+		else
+			bDLon.setText("W");
+
+		this.numPad.setVisible();
+		this.trMinNew.setInvisible();
+
 		switch (newPage)
 		{
 		case 0:
@@ -542,22 +712,67 @@ public class EditCoord extends ActivityBase
 			bMin.setState(0);
 			bSec.setState(0);
 			bUtm.setState(0);
-			if (coord.getLatitude() > 0) bDLat.setText("N");
-			else
-				bDLat.setText("S");
-			if (coord.getLongitude() > 0) bDLon.setText("E");
-			else
-				bDLon.setText("W");
 
-			tbDLat.setText(String.format("%.5f", coord.getLatitude()).replace(",", "."));
+			tbDLat.setText(String.format("%.5f", Math.abs(coord.getLatitude())).replace(",", "."));
 			tbDLat.setFocus();
 
-			tbDLon.setText(String.format("%.5f", coord.getLongitude()).replace(",", "."));
-
-			showNumPad(NumPad.Type.withDot);
+			tbDLon.setText(String.format("%.5f", Math.abs(coord.getLongitude())).replace(",", "."));
 
 			break;
 		case 1:
+			lUtmO.setInvisible();
+			lUtmN.setInvisible();
+			lUtmZ.setInvisible();
+			bDLat.setInvisible();
+			bDLon.setInvisible();
+
+			trDec.setInvisible();
+			trMin.setInvisible();
+			trSec.setInvisible();
+			trUtm.setInvisible();
+			bDec.setState(0);
+			bMin.setState(1);
+			bSec.setState(0);
+			bUtm.setState(0);
+
+			String s;
+			// Lat
+			if (coord.getLatitude() >= 0) s = "N";
+			else
+				s = "S";
+			double deg = (int) Math.abs(coord.getLatitude());
+			double frac = Math.abs(coord.getLatitude()) - deg;
+			double min = frac * 60;
+
+			s = s + String.format("%03d", (int) deg);
+			s = s + String.format("%02d", (int) min);
+			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
+			for (int i = 0; i < 9; i++)
+			{
+				this.btnLat[i].setText(s.substring(i, (i + 1)), font, Color.BLACK);
+			}
+			this.btnLat[1].setInvisible(); // nur 2 Stellen Grad
+			// Lon
+			if (coord.getLongitude() >= 0) s = "E";
+			else
+				s = "W";
+			deg = (int) Math.abs(coord.getLongitude());
+			frac = Math.abs(coord.getLongitude()) - deg;
+			min = frac * 60;
+			s = s + String.format("%03d", (int) deg);
+			s = s + String.format("%02d", (int) min);
+			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
+			for (int i = 0; i < 9; i++)
+			{
+				this.btnLon[i].setText(s.substring(i, (i + 1)), font, Color.BLACK);
+			}
+
+			this.setFocus(6); // erste Nachkommastelle N / S
+			this.numPad.setInvisible();
+			this.trMinNew.setVisible();
+
+			break;
+		case 4:
 			// show Degree - Minute
 			lUtmO.setInvisible();
 			lUtmN.setInvisible();
@@ -572,16 +787,10 @@ public class EditCoord extends ActivityBase
 			bMin.setState(1);
 			bSec.setState(0);
 			bUtm.setState(0);
-			if (coord.getLatitude() >= 0) bDLat.setText("N");
-			else
-				bDLat.setText("S");
-			if (coord.getLongitude() >= 0) bDLon.setText("E");
-			else
-				bDLon.setText("W");
 
-			double deg = (int) Math.abs(coord.getLatitude());
-			double frac = Math.abs(coord.getLatitude()) - deg;
-			double min = frac * 60;
+			deg = (int) Math.abs(coord.getLatitude());
+			frac = Math.abs(coord.getLatitude()) - deg;
+			min = frac * 60;
 
 			tbMLatDeg.setText(String.format("%.0f", deg).replace(",", "."));
 			tbMLatMin.setText(String.format("%.3f", min).replace(",", "."));
@@ -593,8 +802,6 @@ public class EditCoord extends ActivityBase
 			tbMLonMin.setText(String.format("%.3f", min).replace(",", "."));
 
 			tbMLonDeg.setFocus();
-
-			showNumPad(NumPad.Type.withDot);
 
 			break;
 		case 2:
@@ -620,13 +827,6 @@ public class EditCoord extends ActivityBase
 			frac = min - imin;
 			double sec = frac * 60;
 
-			if (coord.getLatitude() >= 0) bDLat.setText("N");
-			else
-				bDLat.setText("S");
-			if (coord.getLongitude() >= 0) bDLon.setText("E");
-			else
-				bDLon.setText("W");
-
 			tbSLatDeg.setText(String.format("%.0f", deg).replace(",", "."));
 			tbSLatMin.setText(String.valueOf(imin).replace(",", "."));
 			tbSLatSec.setText(String.format("%.2f", sec).replace(",", "."));
@@ -643,8 +843,6 @@ public class EditCoord extends ActivityBase
 			tbSLonSec.setText(String.format("%.2f", sec).replace(",", "."));
 
 			tbSLonDeg.setFocus();
-
-			showNumPad(NumPad.Type.withDot);
 
 			break;
 		case 3:
@@ -676,20 +874,39 @@ public class EditCoord extends ActivityBase
 			tbUX.setText(String.format("%.1f", easting).replace(",", "."));
 			tbUZone.setText(zone);
 
-			if (coord.getLatitude() >= 0) bDLat.setText("N");
-			else
-				bDLat.setText("S");
-			if (coord.getLongitude() >= 0) bDLon.setText("E");
-			else
-				bDLon.setText("W");
-
 			tbUY.setFocus();
-
-			showNumPad(NumPad.Type.withDot);
 
 			break;
 		}
 		aktPage = newPage;
+	}
+
+	private void setFocus(int newFocus)
+	{
+		if (this.focus < 9)
+		{
+			this.btnLat[this.focus].setText(this.btnLat[this.focus].getText(), font, Color.BLACK);
+		}
+		else
+		{
+			this.btnLon[this.focus - 9].setText(this.btnLon[this.focus - 9].getText(), font, Color.BLACK);
+		}
+		if (newFocus < 9)
+		{
+			this.btnLat[newFocus].setText(this.btnLat[newFocus].getText(), font, Color.GREEN);
+		}
+		else
+		{
+			this.btnLon[newFocus - 9].setText(this.btnLon[newFocus - 9].getText(), font, Color.GREEN);
+		}
+		this.focus = newFocus;
+	}
+
+	private void setNextFocus()
+	{
+		int nextFocus = this.focus + 1;
+		if (nextFocus == 9) nextFocus = 15; // erste Nachkommastelle E / W
+		setFocus(nextFocus);
 	}
 
 	private boolean parseView()
@@ -703,6 +920,16 @@ public class EditCoord extends ActivityBase
 			scoord += " " + bDLon.getText() + " " + tbDLon.getText() + "\u00B0";
 			break;
 		case 1:
+			scoord += this.btnLat[0].getText() + " ";
+			scoord += this.btnLat[2].getText() + this.btnLat[3].getText() + "\u00B0 ";
+			scoord += this.btnLat[4].getText() + this.btnLat[5].getText() + ".";
+			scoord += this.btnLat[6].getText() + this.btnLat[7].getText() + this.btnLat[8].getText() + "\u0027 ";
+			scoord += this.btnLon[0].getText() + " ";
+			scoord += this.btnLon[1].getText() + this.btnLon[2].getText() + this.btnLon[3].getText() + "\u00B0 ";
+			scoord += this.btnLon[4].getText() + this.btnLon[5].getText() + ".";
+			scoord += this.btnLon[6].getText() + this.btnLon[7].getText() + this.btnLon[8].getText() + "\u0027";
+			break;
+		case 4:
 			// show Degree - Minute
 			scoord += bDLat.getText() + " " + tbMLatDeg.getText() + "\u00B0 " + tbMLatMin.getText() + "\u0027";
 			scoord += " " + bDLon.getText() + " " + tbMLonDeg.getText() + "\u00B0 " + tbMLonMin.getText() + "\u0027";
