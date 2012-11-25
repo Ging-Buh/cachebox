@@ -21,7 +21,6 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -610,11 +609,11 @@ public class EditCoord extends ActivityBase
 					EditCoord parent = (EditCoord) btn.getParent();
 					if (parent.focus < 9)
 					{
-						parent.btnLat[parent.focus].setText(btn.getText(), font, Color.GREEN);
+						parent.btnLat[parent.focus].setText(btn.getText(), font, Fonts.getHighLightFontColor());
 					}
 					else
 					{
-						parent.btnLon[parent.focus - 9].setText(btn.getText(), font, Color.GREEN);
+						parent.btnLon[parent.focus - 9].setText(btn.getText(), font, Fonts.getHighLightFontColor());
 					}
 					parent.setNextFocus();
 					return true;
@@ -893,11 +892,11 @@ public class EditCoord extends ActivityBase
 		}
 		if (newFocus < 9)
 		{
-			this.btnLat[newFocus].setText(this.btnLat[newFocus].getText(), font, Color.GREEN);
+			this.btnLat[newFocus].setText(this.btnLat[newFocus].getText(), font, Fonts.getHighLightFontColor());
 		}
 		else
 		{
-			this.btnLon[newFocus - 9].setText(this.btnLon[newFocus - 9].getText(), font, Color.GREEN);
+			this.btnLon[newFocus - 9].setText(this.btnLon[newFocus - 9].getText(), font, Fonts.getHighLightFontColor());
 		}
 		this.focus = newFocus;
 	}
