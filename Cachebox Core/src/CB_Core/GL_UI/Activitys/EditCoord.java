@@ -524,13 +524,13 @@ public class EditCoord extends ActivityBase
 		this.trMinNew.addNext(this.btnLon[7]);
 		this.trMinNew.addLast(this.btnLon[8]);
 
-		btn1.setText("°", font, Color.BLACK);
+		btn1.setText("°", font, Fonts.getFontColor());
 		btn1.disable();
-		btn2.setText(".", font, Color.BLACK);
+		btn2.setText(".", font, Fonts.getFontColor());
 		btn2.disable();
-		btn3.setText("°", font, Color.BLACK);
+		btn3.setText("°", font, Fonts.getFontColor());
 		btn3.disable();
-		btn4.setText(".", font, Color.BLACK);
+		btn4.setText(".", font, Fonts.getFontColor());
 		btn4.disable();
 
 		this.btnLat[0].setOnClickListener(new OnClickListener()
@@ -600,7 +600,7 @@ public class EditCoord extends ActivityBase
 		for (int i = 0; i < 10; i++)
 		{
 			this.btnNumpad[i] = new Button(this, "btnNumpad" + i);
-			btnNumpad[i].setText(String.format("%1d", i), font, Color.BLACK);
+			btnNumpad[i].setText(String.format("%1d", i), font, Fonts.getFontColor());
 			this.btnNumpad[i].setOnClickListener(new OnClickListener()
 			{
 				@Override
@@ -749,7 +749,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnLat[i].setText(s.substring(i, (i + 1)), font, Color.BLACK);
+				this.btnLat[i].setText(s.substring(i, (i + 1)), font, Fonts.getFontColor());
 			}
 			this.btnLat[1].setInvisible(); // nur 2 Stellen Grad
 			// Lon
@@ -764,7 +764,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnLon[i].setText(s.substring(i, (i + 1)), font, Color.BLACK);
+				this.btnLon[i].setText(s.substring(i, (i + 1)), font, Fonts.getFontColor());
 			}
 
 			this.setFocus(6); // erste Nachkommastelle N / S
@@ -885,11 +885,11 @@ public class EditCoord extends ActivityBase
 	{
 		if (this.focus < 9)
 		{
-			this.btnLat[this.focus].setText(this.btnLat[this.focus].getText(), font, Color.BLACK);
+			this.btnLat[this.focus].setText(this.btnLat[this.focus].getText(), font, Fonts.getFontColor());
 		}
 		else
 		{
-			this.btnLon[this.focus - 9].setText(this.btnLon[this.focus - 9].getText(), font, Color.BLACK);
+			this.btnLon[this.focus - 9].setText(this.btnLon[this.focus - 9].getText(), font, Fonts.getFontColor());
 		}
 		if (newFocus < 9)
 		{
