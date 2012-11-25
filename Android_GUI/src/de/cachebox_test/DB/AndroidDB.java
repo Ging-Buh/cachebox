@@ -130,8 +130,15 @@ public class AndroidDB extends Database
 	@Override
 	public long update(String tablename, Parameters val, String whereClause, String[] whereArgs)
 	{
-		ContentValues values = getContentValues(val);
-		return myDB.update(tablename, values, whereClause, whereArgs);
+		try
+		{
+			ContentValues values = getContentValues(val);
+			return myDB.update(tablename, values, whereClause, whereArgs);
+		}
+		catch (Exception ex)
+		{
+			return 0;
+		}
 	}
 
 	@Override
