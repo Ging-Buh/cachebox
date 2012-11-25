@@ -12,6 +12,8 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
@@ -80,12 +82,26 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case MenuID.MI_FAVORIT:
+					if (GlobalCore.SelectedCache() == null)
+					{
+						GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("Error"),
+								MessageBoxIcon.Error);
+						return true;
+					}
+
 					GlobalCore.SelectedCache().setFavorit(!GlobalCore.SelectedCache().Favorit());
 					CacheDAO dao = new CacheDAO();
 					dao.UpdateDatabase(GlobalCore.SelectedCache());
 
 					return true;
 				case MenuID.MI_RELOAD_CACHE:
+
+					if (GlobalCore.SelectedCache() == null)
+					{
+						GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("Error"),
+								MessageBoxIcon.Error);
+						return true;
+					}
 
 					wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ReloadCacheAPI"), new IcancelListner()
 					{
