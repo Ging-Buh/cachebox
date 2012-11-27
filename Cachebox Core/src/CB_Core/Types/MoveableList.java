@@ -258,6 +258,11 @@ public class MoveableList<T> extends ArrayList<T>
 			@Override
 			public T next()
 			{
+				if (that.size() == 0 || that.size() < aktItem)
+				{
+					aktItem = -1;
+					return null;
+				}
 
 				T ret = that.get(aktItem);
 				aktItem--;

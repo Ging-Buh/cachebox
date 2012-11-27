@@ -140,7 +140,14 @@ public class GL implements ApplicationListener
 		that = this;
 		width = initalWidth;
 		height = initialHeight;
-		mLongClickTime = Config.settings.LongClicktime.getValue();
+		if (Config.settings == null || Config.settings.LongClicktime == null)
+		{
+			mLongClickTime = 600;
+		}
+		else
+		{
+			mLongClickTime = Config.settings.LongClicktime.getValue();
+		}
 	}
 
 	// Overrides
