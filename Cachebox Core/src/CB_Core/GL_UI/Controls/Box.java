@@ -32,6 +32,11 @@ public class Box extends CB_View_Base
 		super(rec, Name);
 	}
 
+	public Box(float Width, float Height, String Name)
+	{
+		super(0f, 0f, Width, Height, Name);
+	}
+
 	@Override
 	protected void Initial()
 	{

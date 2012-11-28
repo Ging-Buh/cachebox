@@ -60,7 +60,7 @@ public class Button extends CB_View_Base
 
 	public Button(GL_View_Base parent, String name)
 	{
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), parent, name);
+		super(new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight()), parent, name);
 		this.isClickable = true;
 	}
 

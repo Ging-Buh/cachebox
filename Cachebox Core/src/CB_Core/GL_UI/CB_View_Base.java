@@ -305,6 +305,10 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	private float rowMaxHeight = 0;
 	private float xMargin = 0;
 	private float yMargin = 0;
+	private float leftBorder = this.getLeftWidth();
+	private float rightBorder = this.getRightWidth();
+	private float bottomBorder = this.getBottomHeight();
+	private float topBorder = this.getTopHeight();
 
 	/**
 	 ** setting the margins between the added objects
@@ -313,6 +317,28 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	{
 		this.xMargin = xMargin;
 		this.yMargin = yMargin;
+	}
+
+	/**
+	 ** no borders to use on this (page), if you want
+	 **/
+	public void setNoBorders()
+	{
+		this.leftBorder = 0f;
+		this.rightBorder = 0f;
+		this.bottomBorder = 0f;
+		this.topBorder = 0f;
+	}
+
+	/**
+	 ** setting the borders to use on this (page), if you want
+	 **/
+	public void setBorders(float l, float r, float b, float t)
+	{
+		this.leftBorder = l;
+		this.rightBorder = r;
+		this.bottomBorder = b;
+		this.topBorder = t;
 	}
 
 	/**
@@ -330,12 +356,12 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	{
 		if (direction)
 		{
-			initRow(direction, this.height - this.getTopHeight());
+			initRow(direction, this.height - this.topBorder);
 			// - height of the row, calculated after adding last object
 		}
 		else
 		{
-			initRow(direction, this.getBottomHeight()); // this.BottomHeight;
+			initRow(direction, this.bottomBorder); // this.BottomHeight;
 		}
 	}
 
@@ -357,26 +383,37 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	/**
+	 ** get y Position for the next object addition
+	 **/
+	public float getRowYPosition()
+	{
+		return this.rowYPos;
+	}
+
+	// Note: Final Position and Size of objects is done on addLast
+	// Note: Changing of objects (depending on final Position or Size) must be done after addLast
+	// Examples: setting Text of a Button, ....
+	/**
 	 ** Add the object at the end of the current row. the current row will be ended after the object is added.
 	 **/
-	public GL_View_Base addLast(GL_View_Base c)
+	public void addLast(GL_View_Base c)
 	{
-		return addMe(c, true);
+		addMe(c, true);
 	}
 
 	/**
 	 * Add the object at the end of the current row.
 	 **/
-	public GL_View_Base addNext(GL_View_Base c)
+	public void addNext(GL_View_Base c)
 	{
-		return addMe(c, false);
+		addMe(c, false);
 	}
 
 	// ===================================================================
-	private GL_View_Base addMe(GL_View_Base c, boolean lastInRow)
+	private void addMe(GL_View_Base c, boolean lastInRow)
 	// ===================================================================
 	{
-		if (c == null) return null;
+		if (c == null) return;
 		if (this.row == null) this.initRow();
 		row.add(c);
 		if (lastInRow)
@@ -392,8 +429,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 				this.rowYPos = this.rowYPos - this.rowMaxHeight;
 			}
 			// Determine width of objects from number of objects in row
-			float rowXPos = this.getLeftWidth();
-			float objectWidth = (this.width - rowXPos - this.getRightWidth()) / this.row.size() - this.xMargin;
+			float rowXPos = this.leftBorder;
+			float objectWidth = (this.width - this.leftBorder - this.rightBorder) / this.row.size() - this.xMargin;
 			for (GL_View_Base g : this.row)
 			{
 				g.setWidth(objectWidth);
@@ -412,7 +449,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			}
 			this.row.clear();
 		}
-		return c;
 	}
 
 }

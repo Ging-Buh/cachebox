@@ -18,9 +18,11 @@ package CB_Core.GL_UI.Controls;
 
 import java.util.ArrayList;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -42,6 +44,11 @@ public class MultiToggleButton extends Button
 	{
 		super(rec, Name);
 		setClickable(true);
+	}
+
+	public MultiToggleButton(String Name)
+	{
+		super(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight(), Name);
 	}
 
 	private States aktState;
@@ -177,7 +184,7 @@ public class MultiToggleButton extends Button
 		String ButtonTxt = "";
 		bt.clearStates();
 		bt.addState(ButtonTxt, Color.GRAY);
-		bt.addState(ButtonTxt, Color.GREEN);
+		bt.addState(ButtonTxt, Fonts.getHighLightFontColor());
 		bt.setState(0, true);
 	}
 
@@ -185,7 +192,7 @@ public class MultiToggleButton extends Button
 	{
 		bt.clearStates();
 		bt.addState(txtOff, Color.GRAY);
-		bt.addState(txtOn, Color.GREEN);
+		bt.addState(txtOn, Fonts.getHighLightFontColor());
 		bt.setState(0, true);
 	}
 
