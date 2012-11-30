@@ -66,6 +66,8 @@ public abstract class GL_View_Base extends CB_RectF
 	private Sprite debugRec = null;
 	private boolean enabled = true;
 
+	private float Weight = 1;
+
 	// # Constructors
 
 	public GL_View_Base(String Name)
@@ -1041,6 +1043,16 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		super.calcCrossCorner();
 		thisInvalidate = true;
+	}
+
+	public float getWeight()
+	{
+		return Weight;
+	}
+
+	public void setWeight(float weight)
+	{
+		Weight = weight;
 	}
 
 }
