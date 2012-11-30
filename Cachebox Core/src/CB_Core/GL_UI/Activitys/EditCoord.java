@@ -114,11 +114,11 @@ public class EditCoord extends ActivityBase
 		btnCancel.setText(GlobalCore.Translations.Get("cancel"), font, Fonts.getFontColor());
 		btnOK.setText(GlobalCore.Translations.Get("ok"), font, Fonts.getFontColor());
 
-		pnlNumPad = new Box(this.width, 0, "pnlNumPad");
+		pnlNumPad = new Box(this.width - this.getLeftWidth() - this.getRightWidth(), 0, "pnlNumPad");
 		this.createNumPad(pnlNumPad);
 		this.addLast(pnlNumPad);
 
-		pnlD = new Box(this.width, maxYPosition - this.getRowYPosition(), "pnlD");
+		pnlD = new Box(this.width - this.getLeftWidth() - this.getRightWidth(), maxYPosition - this.getRowYPosition(), "pnlD");
 		this.createD(this.pnlD);
 		this.addLast(pnlD);
 
@@ -285,10 +285,10 @@ public class EditCoord extends ActivityBase
 			this.btnDLon[i] = new Button(this, "btnDLon" + i);
 		}
 
-		Button btn1 = new Button("btn1"); // oder Label for Degree Lat
-		Button btn2 = new Button("btn2"); // oder Label for point Lat
-		Button btn3 = new Button("btn3"); // oder Label for Degree Lon
-		Button btn4 = new Button("btn4"); // oder Label for point Lon
+		Label btn1 = new Label("btn1"); // oder Label for Degree Lat
+		Label btn2 = new Label("btn2"); // oder Label for point Lat
+		Label btn3 = new Label("btn3"); // oder Label for Degree Lon
+		Label btn4 = new Label("btn4"); // oder Label for point Lon
 
 		// Lat
 		for (int i = 0; i < 4; i++)
@@ -314,13 +314,9 @@ public class EditCoord extends ActivityBase
 		panel.addLast(btn3);
 
 		btn1.setText("°", font, Fonts.getFontColor());
-		btn1.disable();
 		btn2.setText(".", font, Fonts.getFontColor());
-		btn2.disable();
 		btn3.setText("°", font, Fonts.getFontColor());
-		btn3.disable();
 		btn4.setText(".", font, Fonts.getFontColor());
-		btn4.disable();
 		this.setClickHandlers(this.btnDLat, this.btnDLon);
 	}
 
@@ -335,10 +331,10 @@ public class EditCoord extends ActivityBase
 			this.btnDMLon[i] = new Button(this, "btnDMLon" + i);
 		}
 
-		Button btn1 = new Button("btn1"); // oder Label for Degree Lat
-		Button btn2 = new Button("btn2"); // oder Label for point Lat
-		Button btn3 = new Button("btn3"); // oder Label for Degree Lon
-		Button btn4 = new Button("btn4"); // oder Label for point Lon
+		Label btn1 = new Label("btn1"); // oder Label for Degree Lat
+		Label btn2 = new Label("btn2"); // oder Label for point Lat
+		Label btn3 = new Label("btn3"); // oder Label for Degree Lon
+		Label btn4 = new Label("btn4"); // oder Label for point Lon
 
 		// Lat
 		for (int i = 0; i < 4; i++)
@@ -366,13 +362,9 @@ public class EditCoord extends ActivityBase
 		panel.addLast(this.btnDMLon[8]);
 
 		btn1.setText("°", font, Fonts.getFontColor());
-		btn1.disable();
 		btn2.setText(".", font, Fonts.getFontColor());
-		btn2.disable();
 		btn3.setText("°", font, Fonts.getFontColor());
-		btn3.disable();
 		btn4.setText(".", font, Fonts.getFontColor());
-		btn4.disable();
 		this.setClickHandlers(this.btnDMLat, this.btnDMLon);
 	}
 
@@ -388,10 +380,10 @@ public class EditCoord extends ActivityBase
 		}
 
 		// Lat
-		Button btndeglat = new Button("btndeglat");
-		Button btnminlat = new Button("btnminlat");
-		Button btnpntlat = new Button("btnpntlat");
-		Button btnseclat = new Button("btnseclat");
+		Label btndeglat = new Label("btndeglat");
+		Label btnminlat = new Label("btnminlat");
+		Label btnpntlat = new Label("btnpntlat");
+		Label btnseclat = new Label("btnseclat");
 		for (int i = 0; i < 4; i++)
 		{
 			panel.addNext(this.btnDMSLat[i]);
@@ -408,19 +400,15 @@ public class EditCoord extends ActivityBase
 		// panel.addLast(btnseclat);// leave it because of small screen size
 
 		btndeglat.setText("°", font, Fonts.getFontColor());
-		btndeglat.disable();
 		btnminlat.setText("'", font, Fonts.getFontColor());
-		btnminlat.disable();
 		btnpntlat.setText(".", font, Fonts.getFontColor());
-		btnpntlat.disable();
 		btnseclat.setText("\"", font, Fonts.getFontColor());
-		btnseclat.disable();
 
 		// Lon
-		Button btndeglon = new Button("btndeglon");
-		Button btnminlon = new Button("btnminlon");
-		Button btnpntlon = new Button("btnpntlon");
-		Button btnseclon = new Button("btnseclon");
+		Label btndeglon = new Label("btndeglon");
+		Label btnminlon = new Label("btnminlon");
+		Label btnpntlon = new Label("btnpntlon");
+		Label btnseclon = new Label("btnseclon");
 		for (int i = 0; i < 4; i++)
 		{
 			panel.addNext(this.btnDMSLon[i]);
@@ -437,13 +425,9 @@ public class EditCoord extends ActivityBase
 		// panel.addLast(btnseclon); // leave it because of small screen size
 
 		btndeglon.setText("°", font, Fonts.getFontColor());
-		btndeglon.disable();
 		btnminlon.setText("'", font, Fonts.getFontColor());
-		btnminlon.disable();
 		btnpntlon.setText(".", font, Fonts.getFontColor());
-		btnpntlon.disable();
 		btnseclon.setText("\"", font, Fonts.getFontColor());
-		btnseclon.disable();
 		this.setClickHandlers(this.btnDMSLat, this.btnDMSLon);
 	}
 

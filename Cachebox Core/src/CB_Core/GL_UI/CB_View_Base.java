@@ -11,6 +11,7 @@ import CB_Core.Math.SizeF;
 import CB_Core.Types.MoveableList;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
@@ -449,6 +450,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			}
 			this.row.clear();
 		}
+	}
+
+	@Override
+	public void setBackground(Drawable background)
+	{
+		drawableBackground = background;
+		leftBorder = this.getLeftWidth();
+		rightBorder = this.getRightWidth();
+		bottomBorder = this.getBottomHeight();
+		topBorder = this.getTopHeight();
 	}
 
 }

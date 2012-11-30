@@ -261,13 +261,6 @@ public class Button extends CB_View_Base
 				lblTxt.setFont(Fonts.getNormal());
 			}
 
-			if (color != null)
-			{
-				// lblTxt.getFont().setColor(color);
-				// lblTxt.color = color;
-				lblTxt.setTextColor(color);
-			}
-
 			lblTxt.setText(Text);
 			lblTxt.setHAlignment(HAlignment.CENTER);
 			lblTxt.setVAlignment(VAlignment.CENTER);

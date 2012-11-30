@@ -20,6 +20,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -71,6 +72,14 @@ public class Label extends CB_View_Base
 	{
 		super(rec, Parent, Name);
 		calcInnerRec();
+	}
+
+	public Label(String name)
+	{
+
+		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), name);
+		this.isClickable = true;
+
 	}
 
 	private void calcInnerRec()
@@ -182,8 +191,15 @@ public class Label extends CB_View_Base
 
 	public TextBounds setText(String text)
 	{
+		return setText(text, null, null);
+	}
+
+	public TextBounds setText(String text, BitmapFont font, Color fontColor)
+	{
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 
+		if (font != null) setFont(font);
+		if (fontColor != null) setTextColor(fontColor);
 		chkCache();
 		this.text = text;
 		wrapType = WrapType.singleLine;
