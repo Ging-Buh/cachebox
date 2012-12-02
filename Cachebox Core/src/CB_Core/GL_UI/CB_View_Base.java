@@ -307,8 +307,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	private float yMargin = 0;
 	private float leftBorder;
 	private float rightBorder;
-	private float maxY;
-	private float minY = -1;
+	private float topYAdd;
+	private float bottomYAdd = -1;
 
 	/**
 	 ** setting the margins between the added objects
@@ -380,18 +380,18 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		this.rowYPos = y;
 		this.leftBorder = this.getLeftWidth();
 		this.rightBorder = this.getRightWidth();
-		if (minY < 0)
+		if (bottomYAdd < 0)
 		{
 			// nur beim ersten Mal, sonst müssen die Werte erhalten bleiben
 			if (direction)
 			{
-				this.minY = this.getBottomHeight();
-				this.maxY = y;
+				this.bottomYAdd = this.getBottomHeight();
+				this.topYAdd = y;
 			}
 			else
 			{
-				this.minY = y;
-				this.maxY = this.height - this.getTopHeight();
+				this.bottomYAdd = y;
+				this.topYAdd = this.height - this.getTopHeight();
 			}
 		}
 		this.topdown = direction;
@@ -412,20 +412,27 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	public float getAvailableHeight()
 	{
 		if (this.row == null) this.initRow();
-		return this.maxY - this.minY;
+		return this.topYAdd - this.bottomYAdd;
 	}
 
 	public void adjustHeight()
 	{
-		this.setHeight(this.getHeight() - this.maxY + this.minY);
-		// eigentlich egal, es sollte ja nichts mehr hinzukommen.
+		// nicht sinnvoll wenn von unten und von oben was hinzugefügt wurde
+		// und danach auch bitte nichts mehr hinzufügen.
 		if (this.topdown)
 		{
-			this.maxY = this.minY;
+			this.setHeight(this.getHeight() - this.topYAdd);
+			// Die Position aller Clients muss bei TopDown neu gesetzt werden.
+			for (GL_View_Base g : this.childs)
+			{
+				g.setPos(g.getPos().x, g.getPos().y - this.topYAdd);
+			}
+			// this.topYAdd = this.bottomYAdd; // fertig gebaut
 		}
 		else
 		{
-			this.minY = this.maxY;
+			this.setHeight(this.bottomYAdd);
+			// this.topYAdd = this.bottomYAdd; // fertig gebaut
 		}
 	}
 
@@ -470,9 +477,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	private void addMe(GL_View_Base c, boolean lastInRow)
 	// ===================================================================
 	{
-		if (c == null) return;
 		if (this.row == null) this.initRow();
-		row.add(c);
+		if (c != null) row.add(c);
 		if (lastInRow)
 		{
 			// Determine this.rowMaxHeight
@@ -515,12 +521,12 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			if (this.topdown)
 			{
 				this.rowYPos = this.rowYPos - this.yMargin;
-				this.maxY = this.rowYPos;
+				this.topYAdd = this.rowYPos;
 			}
 			else
 			{
 				this.rowYPos = this.rowYPos + this.rowMaxHeight + this.yMargin;
-				this.minY = this.rowYPos;
+				this.bottomYAdd = this.rowYPos;
 			}
 			this.row.clear();
 		}
