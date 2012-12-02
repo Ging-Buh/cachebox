@@ -1,27 +1,20 @@
 package CB_Core.GL_UI.Activitys;
 
-import java.util.ArrayList;
-
 import CB_Core.GlobalCore;
 import CB_Core.Converter.UTMConvert;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
-import CB_Core.GL_UI.Controls.NumPad;
-import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class EditCoord extends ActivityBase
 {
@@ -31,7 +24,6 @@ public class EditCoord extends ActivityBase
 	private Coordinate cancelCoord;
 	private Coordinate coord;
 	private ReturnListner mReturnListner;
-	private Box trUtm;
 
 	// Allgemein
 	private BitmapFont font = Fonts.getCompass();
@@ -42,6 +34,7 @@ public class EditCoord extends ActivityBase
 	private MultiToggleButton bUtm;
 
 	private int focus; // Nr of Button for next Input
+	// for UTM is : 0..5=Ostwert,6..13=Nordwert,14,15=zone,16=zoneletter
 	private int focusStartLon; // jump to this first input digit on Lon - input
 
 	private Box pnlNumPad;
@@ -62,18 +55,11 @@ public class EditCoord extends ActivityBase
 	private Button[] btnDMSLon;
 
 	// Utm
-	private Button bDLat;
-	private Button bDLon;
-	private EditWrapedTextField tbUX;
-	private EditWrapedTextField tbUY;
-	private EditWrapedTextField tbUZone;
-	private Label lUtmO;
-	private Label lUtmN;
-	private Label lUtmZ;
-
-	private NumPad numPad;
-
-	private EditWrapedTextField focusedTextField = null;
+	private Box pnlUTM;
+	private Button[] btnUTMLat;
+	private Button[] btnUTMLon;
+	private Button[] btnUTMZone;
+	Button Leertaste; // additional to numeric input (for "deleting" input)
 
 	public interface ReturnListner
 	{
@@ -129,17 +115,9 @@ public class EditCoord extends ActivityBase
 		this.createDMS(this.pnlDMS);
 		this.addChild(pnlDMS);
 
-		bDLat = new Button(this.getLeftWidth(), bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
-				UiSizes.getButtonHeight(), "BDLat");
-		bDLon = new Button(this.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
-				UiSizes.getButtonHeight(), "bDLon");
-		CB_RectF EditTextBoxRec = new CB_RectF(bDLon.getMaxX() + margin, bDLon.getY(), this.width - bDLon.getMaxX() - margin,
-				bDLat.getMaxY() - bDLon.getY());
-		EditTextBoxRec.setHeight((bDLat.getMaxY() - bDLon.getY()) * 1.5f);
-		EditTextBoxRec.setY(bDLon.getY() - bDLon.getHeight());
-		EditTextBoxRec.setX(EditTextBoxRec.getX() + (margin * 3f));
-		trUtm = new Box(EditTextBoxRec, "trUtm");
-		this.addChild(trUtm);
+		pnlUTM = new Box(pnlD.copy(), "pnlUTM");
+		this.createUTM(pnlUTM);
+		this.addChild(pnlUTM);
 
 		btnOK.setOnClickListener(new OnClickListener()
 		{
@@ -184,21 +162,6 @@ public class EditCoord extends ActivityBase
 	protected void Initial()
 	{
 
-		lUtmO = new Label(drawableBackground.getLeftWidth(), bDec.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(),
-				UiSizes.getButtonHeight(), "lUtmO");
-		lUtmO.setText("Ostwert");
-		this.addChild(lUtmO);
-
-		lUtmN = new Label(drawableBackground.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide(),
-				UiSizes.getButtonHeight(), "lUtmN");
-		lUtmN.setText("Nordwert");
-		this.addChild(lUtmN);
-
-		lUtmZ = new Label(drawableBackground.getLeftWidth(), bDLat.getY() - UiSizes.getButtonHeight() - UiSizes.getButtonHeight(),
-				UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight(), "lUtmZ");
-		lUtmZ.setText("Zone");
-		this.addChild(lUtmZ);
-
 		bDec.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -209,7 +172,6 @@ public class EditCoord extends ActivityBase
 			}
 		});
 
-		bMin.setState(1);
 		bMin.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -229,6 +191,7 @@ public class EditCoord extends ActivityBase
 				return true;
 			}
 		});
+
 		bUtm.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -239,38 +202,9 @@ public class EditCoord extends ActivityBase
 			}
 		});
 
-		this.addChild(bDLat);
-
-		this.addChild(bDLon);
-
-		createTrUtn();
-
-		showNumPad(NumPad.Type.withDot);
+		bMin.setState(1);
 		showPage(1);
 
-	}
-
-	private void createTrUtn()
-	{
-		CB_RectF editRec = new CB_RectF(0, 0, (pnlDM.getWidth() - (margin * 3)), UiSizes.getButtonHeight());
-		editRec.setWidth(editRec.getWidth() - (margin * 2));
-
-		tbUZone = new EditWrapedTextField(this, editRec, "tbUZone");
-		setKeyboardHandling(tbUZone);
-
-		editRec.setY(tbUZone.getMaxY());
-
-		tbUY = new EditWrapedTextField(this, editRec, "tbUY");
-		setKeyboardHandling(tbUY);
-
-		editRec.setY(tbUY.getMaxY());
-
-		tbUX = new EditWrapedTextField(this, editRec, "tbUX");
-		setKeyboardHandling(tbUX);
-
-		trUtm.addChild(tbUX);
-		trUtm.addChild(tbUY);
-		trUtm.addChild(tbUZone);
 	}
 
 	private void createD(Box panel)
@@ -430,6 +364,66 @@ public class EditCoord extends ActivityBase
 		this.setClickHandlers(this.btnDMSLat, this.btnDMSLon);
 	}
 
+	private void createUTM(Box panel)
+	{
+
+		this.btnUTMLat = new Button[8]; // N < 10,000,000
+		this.btnUTMLon = new Button[8]; // E > 160,000 and < 834,000 (2 unsichtbar)
+		this.btnUTMZone = new Button[4]; // Zone 2stellig + 1 unsichtbar
+
+		for (int i = 0; i < 8; i++)
+		{
+			this.btnUTMLat[i] = new Button(this, "btnUTMLat" + i);
+			this.btnUTMLon[i] = new Button(this, "btnUTMLon" + i);
+		}
+		for (int i = 0; i < 4; i++)
+		{
+			this.btnUTMZone[i] = new Button(this, "btnUTMZone" + i);
+		}
+		Label lUtmO = new Label("lUtmO"); // Ostwert
+		Label lUtmN = new Label("lUtmN"); // Nordwert
+		Label lUtmZ = new Label("lUtmZ"); // Zone
+
+		// Lon
+		Box pnlOstwert = new Box(panel.getAvailableWidth(), this.btnUTMLon[0].getHeight(), "pnlOstwert");
+		panel.addNext(lUtmO, 0.2f);
+		panel.addLast(pnlOstwert); // erst die Breite bestimmen und dann darauf verteilen
+		for (int i = 0; i < 7; i++)
+		{
+			pnlOstwert.addNext(this.btnUTMLon[i]);
+		}
+		pnlOstwert.addLast(this.btnUTMLon[7]);
+
+		// Lat
+		Box pnlNordwert = new Box(panel.getAvailableWidth(), this.btnUTMLat[0].getHeight(), "pnlNordwert");
+		pnlNordwert.adjustHeight();
+		panel.addNext(lUtmN, 0.2f);
+		panel.addLast(pnlNordwert); // erst die Breite bestimmen und dann darauf verteilen
+		for (int i = 0; i < 7; i++)
+		{
+			pnlNordwert.addNext(this.btnUTMLat[i]);
+		}
+		pnlNordwert.addLast(this.btnUTMLat[7]);
+
+		// Zone
+		Box pnlZone = new Box(panel.getAvailableWidth(), btnUTMZone[0].getHeight(), "pnlZone");
+		panel.addNext(lUtmZ, 0.2f);
+		panel.addLast(pnlZone); // erst die Breite bestimmen und dann darauf verteilen
+		pnlZone.addNext(btnUTMZone[0]);
+		pnlZone.addNext(btnUTMZone[1]);
+		pnlZone.addNext(btnUTMZone[2]);
+		pnlZone.addLast(btnUTMZone[3], 4f);
+
+		btnUTMLon[6].setInvisible();
+		btnUTMLon[7].setInvisible();
+		btnUTMZone[3].setInvisible();
+		lUtmO.setText("OstW"); // TODO translation Ostwert + Platzproblem Bildschirm
+		lUtmN.setText("NordW"); // TODO translation Nordwert + Platzproblem Bildschirm
+		lUtmZ.setText("Zone"); // TODO translation + Platzproblem Bildschirm
+
+		this.setUTMClickHandlers(this.btnUTMLat, this.btnUTMLon, this.btnUTMZone);
+	}
+
 	private void setClickHandlers(Button[] bLat, Button[] bLon)
 	{
 		// N/S
@@ -483,8 +477,6 @@ public class EditCoord extends ActivityBase
 					case 2:
 						parent.focus = parent.setFocus(parent.btnDMSLat, parent.btnDMSLon, f);
 						break;
-					case 3:
-						break;
 					}
 					return true;
 				}
@@ -511,13 +503,74 @@ public class EditCoord extends ActivityBase
 					case 2:
 						parent.focus = parent.setFocus(parent.btnDMSLat, parent.btnDMSLon, f + 10);
 						break;
-					case 3:
-						break;
 					}
 					return true;
 				}
 			});
 		}
+	}
+
+	private void setUTMClickHandlers(Button[] bLat, Button[] bLon, Button[] bZone)
+	{
+		// the clicked button accepts the next input from Numpad
+
+		for (int i = 0; i < bLat.length; i++)
+		{
+			bLat[i].setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					Button btn = (Button) v;
+					// Focus setzen;
+					EditCoord parent = (EditCoord) btn.getParent();
+					// Hilfskonstruktion: letztes Zeichen des Namens = Index des Buttonarrays
+					int l = btn.getName().length() - 1;
+					int f = Integer.parseInt(btn.getName().substring(l)); // 0..7
+					parent.setUTMFocus(f + 6); // 6..13
+					return true;
+				}
+			});
+		}
+
+		for (int i = 0; i < (bLon.length - 2); i++)
+		{
+			bLon[i].setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					Button btn = (Button) v;
+					// Focus setzen;
+					EditCoord parent = (EditCoord) btn.getParent();
+					// Hilfskonstruktion: letztes Zeichen des Namens = Index des Buttonarrays
+					int l = btn.getName().length() - 1;
+					int f = Integer.parseInt(btn.getName().substring(l)); // 0..5
+					parent.setUTMFocus(f); // 0..5
+					return true;
+				}
+			});
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			bZone[i].setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					Button btn = (Button) v;
+					// Focus setzen;
+					EditCoord parent = (EditCoord) btn.getParent();
+					// Hilfskonstruktion: letztes Zeichen des Namens = Index des Buttonarrays
+					int l = btn.getName().length() - 1;
+					int f = Integer.parseInt(btn.getName().substring(l)); // 0..2
+					parent.setUTMFocus(f + 8 + 6); // 14,15,16
+					return true;
+				}
+			});
+		}
+
 	}
 
 	private void createNumPad(Box panel)
@@ -527,8 +580,9 @@ public class EditCoord extends ActivityBase
 		btnNumpad = new Button[10];
 		Button dummy1 = new Button("dummy1");
 		dummy1.setInvisible();
-		Button dummy2 = new Button("dummy2");
-		dummy2.setInvisible();
+		Leertaste = new Button(this, "Leertaste");
+		Leertaste.setInvisible();
+
 		for (int i = 0; i < 10; i++)
 		{
 			btnNumpad[i] = new Button(this, "btnNumpad" + i);
@@ -544,37 +598,38 @@ public class EditCoord extends ActivityBase
 					case 0:
 						if (parent.focus < 9)
 						{
-							parent.btnDLat[parent.focus].setText(btn.getText(), font, Fonts.getHighLightFontColor());
+							parent.btnDLat[parent.focus].setText(btn.getText());
 						}
 						else
 						{
-							parent.btnDLon[parent.focus - 9].setText(btn.getText(), font, Fonts.getHighLightFontColor());
+							parent.btnDLon[parent.focus - 9].setText(btn.getText());
 						}
 						parent.setNextFocus(parent.btnDLat, parent.btnDLon);
 						break;
 					case 1:
 						if (parent.focus < 9)
 						{
-							parent.btnDMLat[parent.focus].setText(btn.getText(), font, Fonts.getHighLightFontColor());
+							parent.btnDMLat[parent.focus].setText(btn.getText());
 						}
 						else
 						{
-							parent.btnDMLon[parent.focus - 9].setText(btn.getText(), font, Fonts.getHighLightFontColor());
+							parent.btnDMLon[parent.focus - 9].setText(btn.getText());
 						}
 						parent.setNextFocus(parent.btnDMLat, parent.btnDMLon);
 						break;
 					case 2:
 						if (parent.focus < 10)
 						{
-							parent.btnDMSLat[parent.focus].setText(btn.getText(), font, Fonts.getHighLightFontColor());
+							parent.btnDMSLat[parent.focus].setText(btn.getText());
 						}
 						else
 						{
-							parent.btnDMSLon[parent.focus - 10].setText(btn.getText(), font, Fonts.getHighLightFontColor());
+							parent.btnDMSLon[parent.focus - 10].setText(btn.getText());
 						}
 						parent.setNextFocus(parent.btnDMSLat, parent.btnDMSLon);
 						break;
 					case 3:
+						numPadtoUTMButton(parent, btn.getText());
 						break;
 					}
 					return true;
@@ -582,10 +637,23 @@ public class EditCoord extends ActivityBase
 			});
 
 		}
+
+		Leertaste.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				Button btn = (Button) v;
+				EditCoord parent = (EditCoord) btn.getParent();
+				numPadtoUTMButton(parent, "");
+				return true;
+			}
+		});
+
 		panel.initRow(false);
 		panel.addNext(dummy1); // dummy links
 		panel.addNext(btnNumpad[0]);
-		panel.addLast(dummy2); // dummy rechts
+		panel.addLast(Leertaste); // Leertaste rechts, nur bei UTM-Eingabe sichtbar
 		panel.addNext(btnNumpad[7]);
 		panel.addNext(btnNumpad[8]);
 		panel.addLast(btnNumpad[9]);
@@ -602,37 +670,27 @@ public class EditCoord extends ActivityBase
 		panel.adjustHeight();
 	}
 
-	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
-
-	private void setKeyboardHandling(final EditWrapedTextField textField)
+	private void numPadtoUTMButton(EditCoord them, String value)
 	{
-		textField.setOnscreenKeyboard(new OnscreenKeyboard()
+		int f = them.focus;
+		if (f < 6) // 0..5
 		{
-			@Override
-			public void show(boolean arg0)
+			them.btnUTMLon[f].setText(value, font, Fonts.getFontColor());
+		}
+		else
+		{
+			f = f - 6; // 6..13
+			if (f < 8)
 			{
-
-				for (EditWrapedTextField tmp : allTextFields)
-				{
-					tmp.resetFocus();
-				}
-
-				textField.setFocus(true);
-				focusedTextField = textField;
-
-				if (tbUZone != null && textField.equals(tbUZone))
-				{
-					Gdx.input.setOnscreenKeyboardVisible(true);
-				}
-				else
-				{
-					Gdx.input.setOnscreenKeyboardVisible(false);
-				}
-
+				them.btnUTMLat[f].setText(value, font, Fonts.getFontColor());
 			}
-		});
-
-		allTextFields.add(textField);
+			else
+			{
+				f = f - 8; // 14,15 -- > 0,1 (16 -> 2 ist zoneletter)
+				them.btnUTMZone[f].setText(value, font, Fonts.getFontColor());
+			}
+		}
+		them.setNextUTMFocus(); // weiter zum nächsten Eingabebutton
 	}
 
 	private void showPage(int newPage)
@@ -649,22 +707,14 @@ public class EditCoord extends ActivityBase
 		this.pnlD.setInvisible();
 		this.pnlDM.setInvisible();
 		this.pnlDMS.setInvisible();
+		this.pnlUTM.setInvisible();
 		this.pnlNumPad.setVisible();
-		this.numPad.setInvisible();
+		Gdx.input.setOnscreenKeyboardVisible(false);
+		this.Leertaste.setInvisible();
 
 		switch (newPage)
 		{
 		case 0:
-			// show Degrees
-			lUtmO.setInvisible();
-			lUtmN.setInvisible();
-			lUtmZ.setInvisible();
-
-			bDLat.setInvisible();
-			bDLon.setInvisible();
-
-			trUtm.setInvisible();
-
 			bDec.setState(1);
 			bMin.setState(0);
 			bSec.setState(0);
@@ -697,15 +747,6 @@ public class EditCoord extends ActivityBase
 
 			break;
 		case 1:
-			lUtmO.setInvisible();
-			lUtmN.setInvisible();
-			lUtmZ.setInvisible();
-
-			bDLat.setInvisible();
-			bDLon.setInvisible();
-
-			trUtm.setInvisible();
-
 			bDec.setState(0);
 			bMin.setState(1);
 			bSec.setState(0);
@@ -749,16 +790,6 @@ public class EditCoord extends ActivityBase
 
 			break;
 		case 2:
-			// show Degree - Minute - Second
-			lUtmO.setInvisible();
-			lUtmN.setInvisible();
-			lUtmZ.setInvisible();
-
-			bDLat.setInvisible();
-			bDLon.setInvisible();
-
-			trUtm.setInvisible();
-
 			bDec.setState(0);
 			bMin.setState(0);
 			bSec.setState(1);
@@ -811,38 +842,43 @@ public class EditCoord extends ActivityBase
 
 			break;
 		case 3:
-			// show UTM
-			lUtmO.setVisible();
-			lUtmN.setVisible();
-			lUtmZ.setVisible();
-
-			bDLat.setInvisible();
-			bDLon.setInvisible();
-
-			trUtm.setVisible();
-
 			bDec.setState(0);
 			bMin.setState(0);
 			bSec.setState(0);
 			bUtm.setState(1);
+			this.Leertaste.setVisible();
 
-			double nording = 0;
-			double easting = 0;
-			String zone = "";
 			convert.iLatLon2UTM(coord.getLatitude(), coord.getLongitude());
-			nording = convert.UTMNorthing;
-			easting = convert.UTMEasting;
-			zone = convert.sUtmZone;
-			// tbUY.setText(String.Format(NumberFormatInfo.InvariantInfo, "{0:0}", Math.Floor(nording)));
-			// tbUX.setText(String.Format(NumberFormatInfo.InvariantInfo, "{0:0}", Math.Floor(easting)));
-			tbUY.setText(String.format("%.1f", nording).replace(",", "."));
-			tbUX.setText(String.format("%.1f", easting).replace(",", "."));
-			tbUZone.setText(zone);
+			String nording = String.format("%d", (int) (convert.UTMNorthing + 0.5f));
+			String easting = String.format("%d", (int) (convert.UTMEasting + 0.5f));
+			String zone = String.format("%02d", convert.iUTM_Zone_Num);
+			String UTMZoneLetter = convert.sUtmLetterActual(coord.getLatitude());
+			for (int i = 0; i < nording.length(); i++)
+			{
+				this.btnUTMLat[i].setText(nording.substring(i, (i + 1)), font, Fonts.getFontColor());
+			}
+			for (int i = nording.length(); i < 8; i++)
+			{
+				this.btnUTMLat[i].setText("", font, Fonts.getFontColor());
+			}
+			for (int i = 0; i < easting.length(); i++)
+			{
+				this.btnUTMLon[i].setText(easting.substring(i, (i + 1)), font, Fonts.getFontColor());
+			}
+			for (int i = easting.length(); i < 8; i++)
+			{
+				this.btnUTMLon[i].setText("", font, Fonts.getFontColor());
+			}
+			for (int i = 0; i < 2; i++)
+			{
+				this.btnUTMZone[i].setText(zone.substring(i, (i + 1)), font, Fonts.getFontColor());
+			}
+			this.btnUTMZone[2].setText(UTMZoneLetter, font, Fonts.getFontColor());
 
-			tbUY.setFocus();
+			this.setUTMFocus(0);
 
-			this.pnlNumPad.setInvisible();
-			this.numPad.setVisible();
+			this.pnlUTM.setVisible();
+			//
 
 			break;
 		}
@@ -877,8 +913,58 @@ public class EditCoord extends ActivityBase
 	{
 		int nextFocus = this.focus + 1;
 		if (nextFocus == bLat.length) nextFocus = this.focusStartLon; // jump
-		// TODO action if behind last : nothing (at the moment) or autosave or focusStartLat (discuss)
+		// TODO action if behind last : autosave or beginfirst (discuss)
+		if (nextFocus == bLat.length + bLon.length) nextFocus = 2;
 		this.focus = setFocus(bLat, bLon, nextFocus);
+	}
+
+	private void setUTMFocus(int newFocus)
+	{
+		setUTMbtnTextColor(this.focus, Fonts.getFontColor());
+		setUTMbtnTextColor(newFocus, Fonts.getHighLightFontColor());
+		if (newFocus == 6 + 8 + 3 - 1)
+		{
+			// keyboard einblenden
+			Gdx.input.setOnscreenKeyboardVisible(true); // TODO wie krieg ich ein Zeichen der Tastatur bzw vom hidden Eingabefeld
+			// Numpad ausblenden
+			this.pnlNumPad.setInvisible();
+		}
+		else
+		{
+			// keyboard ausblenden
+			Gdx.input.setOnscreenKeyboardVisible(false);
+			// Numpad einblenden
+			this.pnlNumPad.setVisible();
+		}
+		this.focus = newFocus;
+	}
+
+	private void setUTMbtnTextColor(int f, Color c)
+	{
+		if (f < 6)
+		{
+			this.btnUTMLon[f].setText(this.btnUTMLon[f].getText(), font, c);
+		}
+		else
+		{
+			f = f - 6;
+			if (f < 8)
+			{
+				this.btnUTMLat[f].setText(this.btnUTMLat[f].getText(), font, c);
+			}
+			else
+			{
+				f = f - 8;
+				this.btnUTMZone[f].setText(this.btnUTMZone[f].getText(), font, c);
+			}
+		}
+	}
+
+	private void setNextUTMFocus()
+	{
+		int nextFocus = this.focus + 1;
+		if (nextFocus >= 6 + 8 + 3) nextFocus = 0;
+		setUTMFocus(nextFocus);
 	}
 
 	private boolean parseView()
@@ -921,8 +1007,21 @@ public class EditCoord extends ActivityBase
 			scoord += this.btnDMSLon[8].getText() + this.btnDMSLon[9].getText() + "\\u0022"; // Sec 2
 			break;
 		case 3:
-			// show UTM
-			scoord += tbUZone.getText() + " " + tbUX.getText() + " " + tbUY.getText();
+			for (int i = 0; i < 3; i++)
+			{
+				scoord += this.btnUTMZone[i].getText();
+			}
+			scoord += " ";
+			for (int i = 0; i < this.btnUTMLon.length; i++)
+			{
+				if (this.btnUTMLon.length > 0) scoord += this.btnUTMLon[i].getText();
+			}
+			scoord += " ";
+			for (int i = 0; i < this.btnUTMLat.length; i++)
+			{
+				if (this.btnUTMLat.length > 0) scoord += this.btnUTMLat[i].getText();
+			}
+			scoord = scoord.replace("null", ""); // TODO ??? warum kommt hier der Text "null" von getText() ?
 			break;
 		}
 
@@ -934,85 +1033,6 @@ public class EditCoord extends ActivityBase
 		}
 		else
 			return false;
-	}
-
-	private void showNumPad(NumPad.Type type)
-	{
-		if (numPad != null) return;
-		float numWidth = this.width - this.getLeftWidth() - this.getRightWidth();
-		float numHeight = this.height - this.getBottomHeight() - this.getTopHeight() - (UiSizes.getButtonHeight() * 2) - (margin * 2);
-
-		numHeight -= trUtm.getHeight();
-
-		CB_RectF numRec = new CB_RectF(this.getLeftWidth(), UiSizes.getButtonHeight() + (margin * 3), numWidth, numHeight);
-
-		numPad = new NumPad(numRec, "numPad", type, keyListner);
-
-		this.addChildAtLast(numPad);
-	}
-
-	keyEventListner keyListner = new keyEventListner()
-	{
-
-		@Override
-		public void KeyPressed(String value)
-		{
-			if (focusedTextField == null) return;
-
-			int cursorPos = focusedTextField.getCursorPosition();
-
-			if (value.equals("O"))
-			{
-				// sollte nicht passieren, da der Button nicht sichtbar ist
-			}
-			else if (value.equals("C"))
-			{
-				// sollte nicht passieren, da der Button nicht sichtbar ist
-			}
-			else if (value.equals("<"))
-			{
-				if (cursorPos == 0) cursorPos = 1; // cursorPos darf nicht 0 sein
-				focusedTextField.setCursorPosition(cursorPos - 1);
-			}
-			else if (value.equals(">"))
-			{
-				focusedTextField.setCursorPosition(cursorPos + 1);
-			}
-			else if (value.equals("D"))
-			{
-				if (cursorPos > 0)
-				{
-					String text2 = focusedTextField.getText().substring(cursorPos);
-					String text1 = focusedTextField.getText().substring(0, cursorPos - 1);
-
-					focusedTextField.setText(text1 + text2);
-					focusedTextField.setCursorPosition(cursorPos + -1);
-				}
-			}
-			else
-			{
-				String text2 = focusedTextField.getText().substring(cursorPos);
-				String text1 = focusedTextField.getText().substring(0, cursorPos);
-
-				focusedTextField.setText(text1 + value + text2);
-				focusedTextField.setCursorPosition(cursorPos + value.length());
-			}
-
-		}
-	};
-
-	@Override
-	protected void render(SpriteBatch batch)
-	{
-		super.render(batch);
-
-		// wenn utm Zone TextField kein Focus hat, SoftKeyBoard ausblenden
-
-		if (GL.that.getKeyboardFocus() != tbUZone)
-		{
-			Gdx.input.setOnscreenKeyboardVisible(false);
-		}
-
 	}
 
 }
