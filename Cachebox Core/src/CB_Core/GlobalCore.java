@@ -14,8 +14,8 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1248;
-	public static final String CurrentVersion = "0.6.";
+	public static final int CurrentRevision = 1252;
+	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
 	public static final String br = System.getProperty("line.separator");

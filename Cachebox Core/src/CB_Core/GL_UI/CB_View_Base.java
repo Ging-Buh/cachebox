@@ -488,16 +488,27 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			// Determine width of objects from number of objects in row
 			float rowXPos = this.leftBorder;
 			float weightedSize = 0;
+			float unWeightedSize = 0;
 			for (GL_View_Base g : this.row)
 			{
-				weightedSize += g.getWeight();
+				float we = g.getWeight();
+				if (we != -1)
+				{
+					weightedSize += g.getWeight();
+				}
+				else
+				{
+					unWeightedSize += g.getWidth();
+				}
+
 			}
-			float objectWidth = (this.width - this.leftBorder - this.rightBorder) / weightedSize - this.xMargin;
+			float objectWidth = (this.width - this.leftBorder - this.rightBorder - unWeightedSize) / weightedSize - this.xMargin;
 			for (GL_View_Base g : this.row)
 			{
-				g.setWidth(objectWidth);
+				Boolean unWeighted = g.getWeight() == -1;
+				if (!unWeighted) g.setWidth(objectWidth * g.getWeight());
 				g.setPos(rowXPos, this.rowYPos);
-				rowXPos = rowXPos + objectWidth * g.getWeight() + this.xMargin;
+				rowXPos = rowXPos + g.getWidth() + this.xMargin;
 				this.addChildDirekt(g);
 			}
 			//
