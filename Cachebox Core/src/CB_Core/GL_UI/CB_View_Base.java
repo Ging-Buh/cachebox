@@ -297,4 +297,239 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		return drawableBackground != null ? drawableBackground.getTopHeight() : 0;
 	}
 
+	// Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
+	// the position and width (stretched equally on this) of the objects is calculated automatically
+	private MoveableList<GL_View_Base> row;
+	private boolean topdown = true; // false = bottomup
+	private float rowYPos = 0;
+	private float rowMaxHeight = 0;
+	private float xMargin = 0;
+	private float yMargin = 0;
+	private float leftBorder;
+	private float rightBorder;
+	private float topYAdd;
+	private float bottomYAdd = -1;
+
+	/**
+	 ** setting the margins between the added objects
+	 **/
+	public void setMargins(float xMargin, float yMargin)
+	{
+		this.xMargin = xMargin;
+		this.yMargin = yMargin;
+	}
+
+	/**
+	 ** no borders to use on this (page), if you want
+	 **/
+	public void setNoBorders()
+	{
+		if (this.row == null) this.initRow();
+		this.leftBorder = 0f;
+		this.rightBorder = 0f;
+	}
+
+	/**
+	 ** setting the borders to use on this (page), if you want
+	 **/
+	public void setBorders(float l, float r)
+	{
+		if (this.row == null) this.initRow();
+		this.leftBorder = l;
+		this.rightBorder = r;
+	}
+
+	/**
+	 ** start objects at top
+	 **/
+	public void initRow()
+	{
+		initRow(true);
+	}
+
+	/**
+	 ** start objects at top (direction true) or bottom (direction false)
+	 **/
+	public void initRow(boolean direction)
+	{
+		if (direction)
+		{
+			initRow(direction, this.height - this.getTopHeight());
+		}
+		else
+		{
+			// starting at 0
+			initRow(direction, this.getBottomHeight()); // this.BottomHeight;
+		}
+	}
+
+	/**
+	 ** start objects at this y Position, direction true = topdown
+	 **/
+	// TODO ob beliebige Position richtig funktioniert bleibt noch zu prüfen
+	private void initRow(boolean direction, float y)
+	{
+		if (this.row == null)
+		{
+			this.row = new MoveableList<GL_View_Base>();
+		}
+		else
+		{
+			this.row.clear();
+		}
+		this.rowYPos = y;
+		this.leftBorder = this.getLeftWidth();
+		this.rightBorder = this.getRightWidth();
+		if (bottomYAdd < 0)
+		{
+			// nur beim ersten Mal, sonst müssen die Werte erhalten bleiben
+			if (direction)
+			{
+				this.bottomYAdd = this.getBottomHeight();
+				this.topYAdd = y;
+			}
+			else
+			{
+				this.bottomYAdd = y;
+				this.topYAdd = this.height - this.getTopHeight();
+			}
+		}
+		this.topdown = direction;
+	}
+
+	/**
+	 ** get available height (not filled with objects)
+	 **/
+	public float getAvailableWidth()
+	{
+		if (this.row == null) this.initRow();
+		return this.width - this.leftBorder - this.rightBorder;
+	}
+
+	/**
+	 ** get available height (not filled with objects)
+	 **/
+	public float getAvailableHeight()
+	{
+		if (this.row == null) this.initRow();
+		return this.topYAdd - this.bottomYAdd;
+	}
+
+	public void adjustHeight()
+	{
+		// nicht sinnvoll wenn von unten und von oben was hinzugefügt wurde
+		// und danach auch bitte nichts mehr hinzufügen.
+		if (this.topdown)
+		{
+			this.setHeight(this.getHeight() - this.topYAdd);
+			// Die Position aller Clients muss bei TopDown neu gesetzt werden.
+			for (GL_View_Base g : this.childs)
+			{
+				g.setPos(g.getPos().x, g.getPos().y - this.topYAdd);
+			}
+			// this.topYAdd = this.bottomYAdd; // fertig gebaut
+		}
+		else
+		{
+			this.setHeight(this.bottomYAdd);
+			// this.topYAdd = this.bottomYAdd; // fertig gebaut
+		}
+	}
+
+	// Note: Final Position and Size of objects is done on addLast
+	// Note: Changing of objects (depending on final Position or Size) must be done after addLast
+	// Examples: setting Text of a Button, ....
+	/**
+	 ** Add the object at the end of the current row. the current row will be ended after the object is added.
+	 **/
+	public void addLast(GL_View_Base c)
+	{
+		addMe(c, true);
+	}
+
+	/**
+	 * Add the object at the end of the current row.
+	 **/
+	public void addNext(GL_View_Base c)
+	{
+		addMe(c, false);
+	}
+
+	/**
+	 ** Add the object at the end of the current row. the current row will be ended after the object is added.
+	 **/
+	public void addLast(GL_View_Base c, float Weight)
+	{
+		c.setWeight(Weight);
+		addMe(c, true);
+	}
+
+	/**
+	 * Add the object at the end of the current row.
+	 **/
+	public void addNext(GL_View_Base c, float Weight)
+	{
+		c.setWeight(Weight);
+		addMe(c, false);
+	}
+
+	// ===================================================================
+	private void addMe(GL_View_Base c, boolean lastInRow)
+	// ===================================================================
+	{
+		if (this.row == null) this.initRow();
+		if (c != null) row.add(c);
+		if (lastInRow)
+		{
+			// Determine this.rowMaxHeight
+			this.rowMaxHeight = 0;
+			for (GL_View_Base g : this.row)
+			{
+				if (g.getHeight() > this.rowMaxHeight) this.rowMaxHeight = g.getHeight();
+			}
+			if (this.topdown)
+			{
+				this.rowYPos = this.rowYPos - this.rowMaxHeight;
+			}
+			// Determine width of objects from number of objects in row
+			float rowXPos = this.leftBorder;
+			float weightedSize = 0;
+			float unWeightedSize = 0;
+			for (GL_View_Base g : this.row)
+			{
+				float we = g.getWeight();
+				if (we != -1)
+				{
+					weightedSize += g.getWeight();
+				}
+				else
+				{
+					unWeightedSize += g.getWidth();
+				}
+
+			}
+			float objectWidth = (this.width - this.leftBorder - this.rightBorder - unWeightedSize) / weightedSize - this.xMargin;
+			for (GL_View_Base g : this.row)
+			{
+				Boolean unWeighted = g.getWeight() == -1;
+				if (!unWeighted) g.setWidth(objectWidth * g.getWeight());
+				g.setPos(rowXPos, this.rowYPos);
+				rowXPos = rowXPos + g.getWidth() + this.xMargin;
+				this.addChildDirekt(g);
+			}
+			//
+			if (this.topdown)
+			{
+				this.rowYPos = this.rowYPos - this.yMargin;
+				this.topYAdd = this.rowYPos;
+			}
+			else
+			{
+				this.rowYPos = this.rowYPos + this.rowMaxHeight + this.yMargin;
+				this.bottomYAdd = this.rowYPos;
+			}
+			this.row.clear();
+		}
+	}
+
 }

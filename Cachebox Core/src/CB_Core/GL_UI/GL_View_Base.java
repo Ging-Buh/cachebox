@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public abstract class GL_View_Base extends CB_RectF
 {
 
-	// # CONSTANDS
+	// # CONSTANTS
 
 	/**
 	 * Pointer ID for Mouse wheel scrolling up
@@ -65,6 +65,8 @@ public abstract class GL_View_Base extends CB_RectF
 
 	private Sprite debugRec = null;
 	private boolean enabled = true;
+
+	private float Weight = 1;
 
 	// # Constructors
 
@@ -1041,6 +1043,16 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		super.calcCrossCorner();
 		thisInvalidate = true;
+	}
+
+	public float getWeight()
+	{
+		return Weight;
+	}
+
+	public void setWeight(float weight)
+	{
+		Weight = weight;
 	}
 
 }

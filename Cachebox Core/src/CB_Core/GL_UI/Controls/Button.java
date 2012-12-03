@@ -26,6 +26,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -54,6 +55,12 @@ public class Button extends CB_View_Base
 	public Button(CB_RectF rec, GL_View_Base parent, String name)
 	{
 		super(rec, parent, name);
+		this.isClickable = true;
+	}
+
+	public Button(GL_View_Base parent, String name)
+	{
+		super(new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight()), parent, name);
 		this.isClickable = true;
 	}
 
@@ -217,7 +224,7 @@ public class Button extends CB_View_Base
 			return super.click(x, y, pointer, button);
 	}
 
-	public void setText(String Text)
+	public void setText(String Text, BitmapFont font, Color color)
 	{
 		if (Text == null || Text.equals(""))
 		{
@@ -244,6 +251,7 @@ public class Button extends CB_View_Base
 			r.setPos(new Vector2(l, b));
 
 			lblTxt = new Label(r, this, name + "Label");
+			if (font != null) mFont = font;
 			if (mFont != null)
 			{
 				lblTxt.setFont(mFont);
@@ -259,8 +267,17 @@ public class Button extends CB_View_Base
 			this.addChild(lblTxt);
 		}
 
+		if (color != null)
+		{
+			lblTxt.setTextColor(color);
+		}
 		lblTxt.setText(Text);
 		GL.that.renderOnce(this.getName() + " setText2");
+	}
+
+	public void setText(String Text)
+	{
+		setText(Text, null, null);
 	}
 
 	@Override
