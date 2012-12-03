@@ -121,6 +121,19 @@ public class EditWrapedTextField extends EditTextFieldBase
 		this.type = type;
 	}
 
+	public EditWrapedTextField()
+	{
+		super(null, new CB_RectF(), "");
+		this.style = getDefaultStyle();
+		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
+		setCursorLine(0, true);
+		lineHeight = style.font.getLineHeight();
+		setText("");
+		topLine = 0;
+		leftPos = 0;
+		this.isClickable = true;
+	}
+
 	@Override
 	public void onShow()
 	{

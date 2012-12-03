@@ -6,6 +6,9 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.EditTextFieldBase;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.GL_Listener.GL;
@@ -417,9 +420,9 @@ public class EditCoord extends ActivityBase
 		btnUTMLon[6].setInvisible();
 		btnUTMLon[7].setInvisible();
 		btnUTMZone[3].setInvisible();
-		lUtmO.setText("OstW"); // TODO translation Ostwert + Platzproblem Bildschirm
-		lUtmN.setText("NordW"); // TODO translation Nordwert + Platzproblem Bildschirm
-		lUtmZ.setText("Zone"); // TODO translation + Platzproblem Bildschirm
+		lUtmO.setText("OstW"); // no Translation
+		lUtmN.setText("NordW"); // no Translation
+		lUtmZ.setText("Zone"); // no Translation
 
 		this.setUTMClickHandlers(this.btnUTMLat, this.btnUTMLon, this.btnUTMZone);
 	}
@@ -918,6 +921,9 @@ public class EditCoord extends ActivityBase
 		this.focus = setFocus(bLat, bLon, nextFocus);
 	}
 
+	private EditWrapedTextField invisibleTextField = new EditWrapedTextField();
+	private final String utmTest = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+
 	private void setUTMFocus(int newFocus)
 	{
 		setUTMbtnTextColor(this.focus, Fonts.getFontColor());
@@ -925,14 +931,34 @@ public class EditCoord extends ActivityBase
 		if (newFocus == 6 + 8 + 3 - 1)
 		{
 			// keyboard einblenden
-			Gdx.input.setOnscreenKeyboardVisible(true); // TODO wie krieg ich ein Zeichen der Tastatur bzw vom hidden Eingabefeld
+			GL.that.setKeyboardFocus(invisibleTextField);
+			invisibleTextField.setTextFieldListener(new TextFieldListener()
+			{
+
+				@Override
+				public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight)
+				{
+				}
+
+				@Override
+				public void keyTyped(EditTextFieldBase textField, char key)
+				{
+					String k = String.valueOf(key).toUpperCase();
+					if (utmTest.contains(k))
+					{
+						btnUTMZone[2].setText(k);
+						// TODO set next Focus
+					}
+
+				}
+			});
 			// Numpad ausblenden
 			this.pnlNumPad.setInvisible();
 		}
 		else
 		{
 			// keyboard ausblenden
-			Gdx.input.setOnscreenKeyboardVisible(false);
+			GL.that.setKeyboardFocus(null);
 			// Numpad einblenden
 			this.pnlNumPad.setVisible();
 		}

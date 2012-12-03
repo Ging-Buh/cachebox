@@ -1,6 +1,11 @@
 
 Changes:
 
+Version : 0.5.1258
+	• Revised Coordinate Input
+	• Use of the GS-API V6
+	• Fix some minor bugs
+
 Version : 0.5.1237
 	• Fix  java.lang.NullPointerException at (DescriptionViewControl.java:297)
 	• Fix Show Keyboard problem at API-Login with Android Level <11
