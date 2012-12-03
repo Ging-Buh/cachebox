@@ -15,7 +15,6 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.Coordinate;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
@@ -712,7 +711,8 @@ public class EditCoord extends ActivityBase
 		this.pnlDMS.setInvisible();
 		this.pnlUTM.setInvisible();
 		this.pnlNumPad.setVisible();
-		Gdx.input.setOnscreenKeyboardVisible(false);
+		// keyboard ausblenden
+		GL.that.setKeyboardFocus(null);
 		this.Leertaste.setInvisible();
 
 		switch (newPage)
@@ -947,7 +947,7 @@ public class EditCoord extends ActivityBase
 					if (utmTest.contains(k))
 					{
 						btnUTMZone[2].setText(k);
-						// TODO set next Focus
+						setNextUTMFocus();
 					}
 
 				}
