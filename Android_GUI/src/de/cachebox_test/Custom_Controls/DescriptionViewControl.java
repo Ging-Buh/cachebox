@@ -412,7 +412,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			@Override
 			public void run()
 			{
-				SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+				SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 				// that.getParent().requestLayout();
 
 				if (downloadTryCounter > 9) mustLoadDescription = true; // Versuchs

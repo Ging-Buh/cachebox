@@ -58,7 +58,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 
 		findViewById();
 		setLang();
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
 		bSolve.setOnClickListener(new OnClickListener()
 		{

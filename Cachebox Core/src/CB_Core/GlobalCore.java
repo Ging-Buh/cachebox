@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1258;
+	public static final int CurrentRevision = 1264;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -90,12 +90,12 @@ public class GlobalCore
 
 	public static FilterProperties LastFilter = null;
 
-	public static void SelectedCache(Cache cache)
+	public static void setSelectedCache(Cache cache)
 	{
-		SelectedWaypoint(cache, null);
+		setSelectedWaypoint(cache, null);
 	}
 
-	public static Cache SelectedCache()
+	public static Cache getSelectedCache()
 	{
 		return selectedCache;
 	}
@@ -109,9 +109,9 @@ public class GlobalCore
 
 	private static Waypoint selectedWaypoint = null;
 
-	public static void SelectedWaypoint(Cache cache, Waypoint waypoint)
+	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint)
 	{
-		SelectedWaypoint(cache, waypoint, true);
+		setSelectedWaypoint(cache, waypoint, true);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class GlobalCore
 	 * @param waypoint
 	 * @param changeAutoResort
 	 */
-	public static void SelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort)
+	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort)
 	{
 		selectedCache = cache;
 		selectedWaypoint = waypoint;
@@ -140,7 +140,7 @@ public class GlobalCore
 		nearestCache = nearest;
 	}
 
-	public static Waypoint SelectedWaypoint()
+	public static Waypoint getSelectedWaypoint()
 	{
 		return selectedWaypoint;
 	}

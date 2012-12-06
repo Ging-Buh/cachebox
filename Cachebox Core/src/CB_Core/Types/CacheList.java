@@ -86,7 +86,7 @@ public class CacheList extends MoveableList<Cache>
 			Waypoint waypoint = nextCache.GetFinalWaypoint();
 
 			// do not Change AutoResort Flag when selecting a Cache in the Resort function
-			GlobalCore.SelectedWaypoint(nextCache, waypoint, false);
+			GlobalCore.setSelectedWaypoint(nextCache, waypoint, false);
 			GlobalCore.NearestCache(nextCache);
 		}
 

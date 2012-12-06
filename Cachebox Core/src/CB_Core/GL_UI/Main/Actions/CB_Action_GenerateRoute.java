@@ -98,13 +98,13 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 			start = GlobalCore.LastValidPosition;
 		}
 
-		if (GlobalCore.SelectedWaypoint() != null)
+		if (GlobalCore.getSelectedWaypoint() != null)
 		{
-			target = GlobalCore.SelectedWaypoint().Pos;
+			target = GlobalCore.getSelectedWaypoint().Pos;
 		}
-		else if (GlobalCore.SelectedCache() != null)
+		else if (GlobalCore.getSelectedCache() != null)
 		{
-			target = GlobalCore.SelectedCache().Pos;
+			target = GlobalCore.getSelectedCache().Pos;
 		}
 		else
 		{
@@ -266,7 +266,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 												else
 												{
 													Coordinate.distanceBetween(FromPosition.getLatitude(), FromPosition.getLongitude(),
-															lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
+															lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(),
+															dist);
 													Distance += dist[0];
 													FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
 													FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());

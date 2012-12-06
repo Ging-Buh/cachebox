@@ -116,7 +116,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		tvCacheName = new Label(this.getLeftWidth() + margin, height - this.getTopHeight() - MeasuredLabelHeight, width
 				- this.getLeftWidth() - this.getRightWidth() - margin, MeasuredLabelHeight, "CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBubbleNormal());
-		tvCacheName.setText(GlobalCore.SelectedCache().Name);
+		tvCacheName.setText(GlobalCore.getSelectedCache().Name);
 		scrollBox.addChild(tvCacheName);
 	}
 

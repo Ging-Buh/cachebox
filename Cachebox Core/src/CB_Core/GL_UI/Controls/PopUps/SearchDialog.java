@@ -513,7 +513,7 @@ public class SearchDialog extends PopUp_Base
 
 				Waypoint finalWp = null;
 				if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
-				if (tmp != null) GlobalCore.SelectedWaypoint(tmp, finalWp);
+				if (tmp != null) GlobalCore.setSelectedWaypoint(tmp, finalWp);
 				// deactivate autoResort when Cache is selected by hand
 				GlobalCore.autoResort = false;
 
@@ -798,7 +798,7 @@ public class SearchDialog extends PopUp_Base
 					{
 						// select this Cache
 						Cache cache = Database.Data.Query.GetCacheById(apiCaches.get(0).Id);
-						GlobalCore.SelectedCache(cache);
+						GlobalCore.setSelectedCache(cache);
 					}
 
 				}

@@ -98,14 +98,14 @@ public class MapViewCacheList
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
 								boolean CacheIsVisible = isVisible(MapX, MapY);
-								if (!CacheIsVisible && !(showAllWaypoints || GlobalCore.SelectedCache() == cache))
+								if (!CacheIsVisible && !(showAllWaypoints || GlobalCore.getSelectedCache() == cache))
 								{
 									// Cache nicht im Bild && keine Wegpunkte anzuzeigen
 									continue;
 								}
 								Waypoint fwp = null;
 								// zuerst Wegpunkte hinzufügen, damit deren Anzeige erfolgt, auch wenn der Cache nicht im Bild ist
-								if (showAllWaypoints || GlobalCore.SelectedCache() == cache)
+								if (showAllWaypoints || GlobalCore.getSelectedCache() == cache)
 								{
 									addWaypoints(cache, iconSize);
 								}
@@ -139,7 +139,7 @@ public class MapViewCacheList
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
 									wpi.Waypoint = fwp; // ist null, ausser bei Mystery-Final
-									wpi.Selected = (GlobalCore.SelectedCache() == cache);
+									wpi.Selected = (GlobalCore.getSelectedCache() == cache);
 
 									tmplist.add(wpi);
 								}
@@ -208,7 +208,7 @@ public class MapViewCacheList
 			wpi.Cache = cache;
 			wpi.Waypoint = wp;
 			wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint, iconSize);
-			wpi.Selected = (GlobalCore.SelectedWaypoint() == wp);
+			wpi.Selected = (GlobalCore.getSelectedWaypoint() == wp);
 
 			tmplist.add(wpi);
 		}
@@ -221,7 +221,7 @@ public class MapViewCacheList
 
 	private Sprite getCacheIcon(Cache cache, int iconSize)
 	{
-		if ((iconSize < 1) && (cache != GlobalCore.SelectedCache()))
+		if ((iconSize < 1) && (cache != GlobalCore.getSelectedCache()))
 		{
 			return getSmallMapIcon(cache);
 		}
@@ -300,7 +300,7 @@ public class MapViewCacheList
 
 	private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint, int iconSize)
 	{
-		if ((iconSize == 0) && (cache != GlobalCore.SelectedCache()))
+		if ((iconSize == 0) && (cache != GlobalCore.getSelectedCache()))
 		{
 			return null;
 		}
@@ -308,7 +308,7 @@ public class MapViewCacheList
 		{
 			if (waypoint == null)
 			{
-				if ((cache == null) || (cache == GlobalCore.SelectedCache()))
+				if ((cache == null) || (cache == GlobalCore.getSelectedCache()))
 				{
 					return SpriteCache.MapOverlay.get(1);
 				}
@@ -319,7 +319,7 @@ public class MapViewCacheList
 			}
 			else
 			{
-				if (waypoint == GlobalCore.SelectedWaypoint())
+				if (waypoint == GlobalCore.getSelectedWaypoint())
 				{
 					return SpriteCache.MapOverlay.get(1);
 				}

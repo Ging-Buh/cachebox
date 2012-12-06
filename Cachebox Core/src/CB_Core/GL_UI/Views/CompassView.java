@@ -84,7 +84,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		info = new CacheInfo(
 				new SizeF(width - margin - margin, UiSizes.getCacheInfoHeight() + margin + Fonts.Measure("T").height + margin),
-				"Cacheinfo", GlobalCore.SelectedCache());
+				"Cacheinfo", GlobalCore.getSelectedCache());
 
 		info.setViewMode(CacheInfo.VIEW_MODE_COMPAS);
 
@@ -118,8 +118,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		rightBox.addChild(distanceBack);
 		rightBox.addChild(lblDistance);
 
-		setCache(GlobalCore.SelectedCache());
-		setWP(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		setCache(GlobalCore.getSelectedCache());
+		setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
 		Layout();
 

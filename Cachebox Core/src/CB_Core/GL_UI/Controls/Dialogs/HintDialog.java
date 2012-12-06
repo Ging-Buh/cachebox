@@ -27,9 +27,9 @@ public class HintDialog extends GL_MsgBox
 	 */
 	public static void show()
 	{
-		if (GlobalCore.SelectedCache() == null) return;
-		String hintTextDecoded = GlobalCore.Rot13(GlobalCore.SelectedCache().hint);
-		String hintTextEncoded = GlobalCore.SelectedCache().hint;
+		if (GlobalCore.getSelectedCache() == null) return;
+		String hintTextDecoded = GlobalCore.Rot13(GlobalCore.getSelectedCache().hint);
+		String hintTextEncoded = GlobalCore.getSelectedCache().hint;
 
 		Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
 		Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);

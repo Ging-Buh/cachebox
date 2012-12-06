@@ -82,21 +82,21 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case MenuID.MI_FAVORIT:
-					if (GlobalCore.SelectedCache() == null)
+					if (GlobalCore.getSelectedCache() == null)
 					{
 						GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("Error"),
 								MessageBoxIcon.Error);
 						return true;
 					}
 
-					GlobalCore.SelectedCache().setFavorit(!GlobalCore.SelectedCache().Favorit());
+					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().Favorit());
 					CacheDAO dao = new CacheDAO();
-					dao.UpdateDatabase(GlobalCore.SelectedCache());
+					dao.UpdateDatabase(GlobalCore.getSelectedCache());
 
 					return true;
 				case MenuID.MI_RELOAD_CACHE:
 
-					if (GlobalCore.SelectedCache() == null)
+					if (GlobalCore.getSelectedCache() == null)
 					{
 						GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("Error"),
 								MessageBoxIcon.Error);
@@ -121,7 +121,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							String accessToken = Config.GetAccessToken();
 
 							CB_Core.Api.SearchForGeocaches.SearchGC searchC = new CB_Core.Api.SearchForGeocaches.SearchGC();
-							searchC.gcCode = GlobalCore.SelectedCache().GcCode;
+							searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
 
 							searchC.number = 1;
 
@@ -152,13 +152,13 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		MenuItem mi;
 
-		boolean isSelected = (GlobalCore.SelectedCache() != null);
+		boolean isSelected = (GlobalCore.getSelectedCache() != null);
 
 		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCache.Icons.get(42));
 		mi.setCheckable(true);
 		if (isSelected)
 		{
-			mi.setChecked(GlobalCore.SelectedCache().Favorit());
+			mi.setChecked(GlobalCore.getSelectedCache().Favorit());
 		}
 		else
 		{

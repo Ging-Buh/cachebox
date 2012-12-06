@@ -196,15 +196,15 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				return true;
 
 			case MenuID.MI_CENTER_WP:
-				if (GlobalCore.SelectedCache() != null)
+				if (GlobalCore.getSelectedCache() != null)
 				{
-					if (GlobalCore.SelectedWaypoint() != null)
+					if (GlobalCore.getSelectedWaypoint() != null)
 					{
-						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 					}
 					else
 					{
-						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
 					}
 				}
 

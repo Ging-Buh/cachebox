@@ -30,7 +30,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 	public boolean getEnabled()
 	{
 		boolean hasSpoiler = false;
-		if (GlobalCore.SelectedCache() != null) hasSpoiler = GlobalCore.SelectedCache().SpoilerExists();
+		if (GlobalCore.getSelectedCache() != null) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
 		return hasSpoiler;
 	}
 

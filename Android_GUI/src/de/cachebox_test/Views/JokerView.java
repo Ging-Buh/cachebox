@@ -39,7 +39,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 		this.parentActivity = parentActivity;
 		SelectedCacheEventList.Add(this);
 		this.setAdapter(null);
-		lvAdapter = new CustomAdapter(getContext(), GlobalCore.SelectedCache());
+		lvAdapter = new CustomAdapter(getContext(), GlobalCore.getSelectedCache());
 		this.setAdapter(lvAdapter);
 		this.setOnItemLongClickListener(new OnItemLongClickListener()
 		{

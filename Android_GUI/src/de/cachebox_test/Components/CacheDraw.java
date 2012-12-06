@@ -132,7 +132,7 @@ public class CacheDraw
 	{
 		// init
 		Boolean notAvailable = (!cache.Available || cache.Archived);
-		Boolean GlobalSelected = cache == GlobalCore.SelectedCache();
+		Boolean GlobalSelected = cache == GlobalCore.getSelectedCache();
 		if (BackgroundColor == -1) BackgroundColor = GlobalSelected ? Global.getColor(R.attr.ListBackground_select) : Global
 				.getColor(R.attr.ListBackground);
 		if (BorderColor == -1) BorderColor = Global.getColor(R.attr.ListSeparator);

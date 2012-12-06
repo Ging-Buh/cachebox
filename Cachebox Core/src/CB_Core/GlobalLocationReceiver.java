@@ -137,12 +137,12 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 		{
 			if (PlaySounds && !approachSoundCompleted)
 			{
-				if (GlobalCore.SelectedCache() != null)
+				if (GlobalCore.getSelectedCache() != null)
 				{
-					float distance = GlobalCore.SelectedCache().Distance(false);
-					if (GlobalCore.SelectedWaypoint() != null)
+					float distance = GlobalCore.getSelectedCache().Distance(false);
+					if (GlobalCore.getSelectedWaypoint() != null)
 					{
-						distance = GlobalCore.SelectedWaypoint().Distance();
+						distance = GlobalCore.getSelectedWaypoint().Distance();
 					}
 
 					if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
@@ -164,7 +164,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 		{
 			if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
 			{
-				if (GlobalCore.SelectedCache() == null)
+				if (GlobalCore.getSelectedCache() == null)
 				{
 					Database.Data.Query.Resort();
 				}

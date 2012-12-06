@@ -455,11 +455,11 @@ public class splash extends TabMainView
 					}
 				}
 
-				GlobalCore.SelectedWaypoint(c, w);
+				GlobalCore.setSelectedWaypoint(c, w);
 			}
 			else
 			{
-				GlobalCore.SelectedCache(c);
+				GlobalCore.setSelectedCache(c);
 			}
 
 		}

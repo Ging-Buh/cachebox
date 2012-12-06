@@ -329,15 +329,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				else if (State == 2)
 				{
 
-					if (GlobalCore.SelectedCache() != null)
+					if (GlobalCore.getSelectedCache() != null)
 					{
-						if (GlobalCore.SelectedWaypoint() != null)
+						if (GlobalCore.getSelectedWaypoint() != null)
 						{
-							GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+							GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 						}
 						else
 						{
-							GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+							GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
 						}
 					}
 				}
@@ -369,7 +369,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				GlobalCore.SelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
+				GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
 				infoBubble.setInvisible();
 				return true;
 			}
@@ -420,7 +420,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingHeight = mapIntHeight;
 		}
 		setVisible();
-		SelectedCacheChanged(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 
 	@Override
@@ -862,9 +862,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private void RenderTargetArrow(SpriteBatch batch)
 	{
 
-		if (GlobalCore.SelectedCache() == null) return;
+		if (GlobalCore.getSelectedCache() == null) return;
 
-		Coordinate coord = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos : GlobalCore.SelectedCache().Pos;
+		Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().Pos;
 
 		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, coord.getLongitude()));
 		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, coord.getLatitude()));
@@ -1013,7 +1013,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		screen.y -= ySpeedVersatz;
 
-		if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
+		if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
 		{
 
 			// if (directLineOverlay == null)
@@ -1051,7 +1051,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		float NameYMovement = 0;
 
-		if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.SelectedWaypoint()))
+		if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
 		{
 			// Draw Cross and move screen vector
 			Sprite cross = SpriteCache.MapOverlay.get(3);
@@ -1607,11 +1607,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			float distance = -1;
 
 			// Gps empfang ?
-			if (GlobalCore.SelectedCache() != null && position.Valid)
+			if (GlobalCore.getSelectedCache() != null && position.Valid)
 			{
-				if (GlobalCore.SelectedWaypoint() == null) distance = position.Distance(GlobalCore.SelectedCache().Pos);
+				if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos);
 				else
-					distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
+					distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos);
 			}
 			info.setDistance(distance);
 
@@ -1667,11 +1667,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				position = new Coordinate();
 
 			float distance = -1;
-			if (GlobalCore.SelectedCache() != null && position.Valid)
+			if (GlobalCore.getSelectedCache() != null && position.Valid)
 			{
-				if (GlobalCore.SelectedWaypoint() == null) distance = position.Distance(GlobalCore.SelectedCache().Pos);
+				if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos);
 				else
-					distance = position.Distance(GlobalCore.SelectedWaypoint().Pos);
+					distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos);
 			}
 			int setZoomTo = zoomBtn.getMinZoom();
 
@@ -1759,10 +1759,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
 			else
 				position = new Coordinate();
-			if (GlobalCore.SelectedCache() != null)
+			if (GlobalCore.getSelectedCache() != null)
 			{
-				Coordinate cache = (GlobalCore.SelectedWaypoint() != null) ? GlobalCore.SelectedWaypoint().Pos
-						: GlobalCore.SelectedCache().Pos;
+				Coordinate cache = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos
+						: GlobalCore.getSelectedCache().Pos;
 				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.getLatitude(),
 						cache.getLongitude());
 				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()), this.mapHeading);
@@ -2078,15 +2078,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			if (TargetArrow != null && TargetArrow.contains(x, y))
 			{
-				if (GlobalCore.SelectedCache() != null)
+				if (GlobalCore.getSelectedCache() != null)
 				{
-					if (GlobalCore.SelectedWaypoint() != null)
+					if (GlobalCore.getSelectedWaypoint() != null)
 					{
-						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 					}
 					else
 					{
-						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
 					}
 					return false;
 				}
@@ -2124,7 +2124,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 					if (minWpi.Waypoint != null)
 					{
-						if (GlobalCore.SelectedCache() != minWpi.Cache)
+						if (GlobalCore.getSelectedCache() != minWpi.Cache)
 						{
 							// Show Bubble at the location of the Waypoint!!!
 							infoBubble.setCache(minWpi.Cache, minWpi.Waypoint);
@@ -2137,7 +2137,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							// a
 							// different cache but only a different waypoint
 							// Wegpunktliste ausrichten
-							GlobalCore.SelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
+							GlobalCore.setSelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
 							// FormMain.WaypointListPanel.AlignSelected();
 							// updateCacheList();
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),

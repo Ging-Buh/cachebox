@@ -87,8 +87,8 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				CacheListDAO cacheListDAO = new CacheListDAO();
 				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 
-				GlobalCore.SelectedCache(null);
-				GlobalCore.SelectedWaypoint(null, null);
+				GlobalCore.setSelectedCache(null);
+				GlobalCore.setSelectedWaypoint(null, null);
 				CachListChangedEventList.Call();
 
 				// set last selected Cache
@@ -99,7 +99,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 					{
 						if (c.GcCode.equalsIgnoreCase(sGc))
 						{
-							GlobalCore.SelectedCache(c);
+							GlobalCore.setSelectedCache(c);
 							break;
 						}
 					}

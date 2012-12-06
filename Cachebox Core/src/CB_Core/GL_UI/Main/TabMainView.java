@@ -219,7 +219,7 @@ public class TabMainView extends MainViewBase
 				{
 					if (c.GcCode.equalsIgnoreCase(sGc))
 					{
-						GlobalCore.SelectedCache(c);
+						GlobalCore.setSelectedCache(c);
 						break;
 					}
 				}

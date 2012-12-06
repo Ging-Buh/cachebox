@@ -91,15 +91,15 @@ public class InfoBubble extends CB_View_Base
 	public void showBubbleSelected()
 	{
 		// Logger.LogCat("Show BubbleSelected");
-		mCacheId = GlobalCore.SelectedCache().Id;
-		mCache = GlobalCore.SelectedCache();
+		mCacheId = GlobalCore.getSelectedCache().Id;
+		mCache = GlobalCore.getSelectedCache();
 		setVisible();
 	}
 
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		Sprite sprite = (mCache == GlobalCore.SelectedCache()) ? SpriteCache.Bubble.get(1) : SpriteCache.Bubble.get(0);
+		Sprite sprite = (mCache == GlobalCore.getSelectedCache()) ? SpriteCache.Bubble.get(1) : SpriteCache.Bubble.get(0);
 		sprite.setPosition(0, 0);
 		sprite.setSize(width, height);
 		sprite.draw(batch);
