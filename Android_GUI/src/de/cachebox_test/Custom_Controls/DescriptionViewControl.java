@@ -282,6 +282,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 				if (!Config.settings.DescriptionNoAttributes.getValue()) html = getAttributesHtml(cache) + html;
 
+				// add 2 empty lines so that the last line of description can be selected with the markers
+				html += "</br></br>";
 			}
 
 			try
