@@ -9,7 +9,6 @@ import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.MysterySolution;
 import CB_Core.Types.Waypoint;
 
 public class CoordinateEntity extends Entity
@@ -132,14 +131,6 @@ public class CoordinateEntity extends Entity
 				{
 					wp.Pos.setLatitude(coord.getLatitude());
 					wp.Pos.setLongitude(coord.getLongitude());
-					for (MysterySolution sol : Database.Data.Query.MysterySolutions)
-					{
-						if ((sol.Cache == cacheFromCacheList) && (sol.Waypoint == wp))
-						{
-							sol.Latitude = coord.getLatitude();
-							sol.Longitude = coord.getLongitude();
-						}
-					}
 					break;
 				}
 			}
