@@ -208,10 +208,27 @@ public class RouteOverlay
 
 						if (ReadName & !IStrkptORrtept)
 						{
-							if (isSeg | isRte) route.Name = line.substring(0, line.indexOf("</name>"));
-							else
+							int cdata_start = 0;
+							int name_start = 0;
+							int name_end;
+
+							name_end = line.indexOf("</name>");
+
+							// Name contains cdata?
+							cdata_start = line.indexOf("[cdata[");
+							if (cdata_start > -1)
+							{
+								name_start = cdata_start + 7;
+								name_end = line.indexOf("]");
+							}
+
+							if (name_end > name_start)
+							{
 								// tmpLine, damit Groﬂ-/Kleinschreibung beachtet wird
-								GPXName = tmpLine.substring(0, line.indexOf("</name>"));
+								if (isSeg | isRte) route.Name = tmpLine.substring(name_start, name_end);
+								else
+									GPXName = tmpLine.substring(name_start, name_end);
+							}
 
 							ReadName = false;
 							continue;
