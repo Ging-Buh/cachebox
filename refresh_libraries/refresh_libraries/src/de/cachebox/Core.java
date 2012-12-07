@@ -837,7 +837,16 @@ public class Core implements ApplicationListener
 		String inputFolder = imageWorkPath + "\\LibgdxPacker\\default\\input\\day\\UI_IconPack";
 		String outputFolder = imageWorkPath + "\\LibgdxPacker\\default\\Output\\day";
 		String Name = "UI_IconPack.spp";
-		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+
+		try
+		{
+			TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+		}
+		catch (Exception e1)
+		{
+			writeMsg(e1.getCause().getMessage());
+			writeMsg(e1.getCause().getCause().getMessage());
+		}
 
 		// Pack Default night
 		inputFolder = imageWorkPath + "\\LibgdxPacker\\default\\input\\night\\UI_IconPack";
