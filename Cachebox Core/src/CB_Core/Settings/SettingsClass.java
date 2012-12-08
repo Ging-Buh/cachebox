@@ -95,6 +95,14 @@ public class SettingsClass extends SettingsList
 	public SettingBool hasFTF_PlugIn;
 	public SettingBool dynamicZoom;
 	public SettingBool dynamicFilterAtSearch;
+	public SettingBool CompassShowMap;
+	public SettingBool CompassShowWP_Name;
+	public SettingBool CompassShowWP_Icon;
+	public SettingBool CompassShowAttributes;
+	public SettingBool CompassShowGcCode;
+	public SettingBool CompassShowCoords;
+	public SettingBool CompassShowWpDesc;
+	public SettingBool CompassShowSatInfos;
 
 	// int
 	public SettingInt LogMaxMonthAge;
@@ -191,6 +199,7 @@ public class SettingsClass extends SettingsList
 		addLogInSettings();
 		addFolderSettings();
 		addGpsSettings();
+		addCompassSettings();
 		addMiscSettings();
 		addTemplateSettings();
 		addInternalSettings();
@@ -261,6 +270,20 @@ public class SettingsClass extends SettingsList
 		addSetting(HardwareCompassLevel = new SettingInt("HardwareCompassLevel", cat, NORMAL, 5, true));
 		addSetting(HardwareCompass = new SettingBool("HardwareCompass", cat, NORMAL, true, true));
 		addSetting(gpsUpdateTime = new SettingInt("gpsUpdateTime", cat, NORMAL, 500, true));
+	}
+
+	private void addCompassSettings()
+	{
+		SettingCategory cat = SettingCategory.Compass;
+
+		addSetting(CompassShowMap = new SettingBool("CompassShowMap", cat, NORMAL, true, true));
+		addSetting(CompassShowWP_Name = new SettingBool("CompassShowWP_Name", cat, NORMAL, true, true));
+		addSetting(CompassShowWP_Icon = new SettingBool("CompassShowWP_Icon", cat, NORMAL, true, true));
+		addSetting(CompassShowAttributes = new SettingBool("CompassShowAttributes", cat, NORMAL, true, true));
+		addSetting(CompassShowGcCode = new SettingBool("CompassShowGcCode", cat, NORMAL, true, true));
+		addSetting(CompassShowCoords = new SettingBool("CompassShowCoords", cat, NORMAL, true, true));
+		addSetting(CompassShowWpDesc = new SettingBool("CompassShowWpDesc", cat, NORMAL, true, true));
+		addSetting(CompassShowSatInfos = new SettingBool("CompassShowSatInfos", cat, NORMAL, true, true));
 	}
 
 	private void addPositionSettings()

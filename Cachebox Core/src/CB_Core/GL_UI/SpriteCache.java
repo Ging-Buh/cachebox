@@ -129,6 +129,10 @@ public class SpriteCache
 	public static Drawable copy;
 	public static Drawable paste;
 	public static Drawable cut;
+	public static Drawable bar;
+	public static Drawable barSmall;
+	public static Drawable bar_0;
+	public static Drawable barSmall_0;
 
 	public static int patch;
 
@@ -220,7 +224,7 @@ public class SpriteCache
 			if (tmp == null)
 			{
 				tmp = createSprite(atlasCustom, name);
-				if (tmp != null) tmp = setNightColorMatrix(name, atlasCustom);
+				if (tmp != null) tmp = setNightColorMatrixSprite(name, atlasCustom);
 			}
 
 			if (tmp == null)
@@ -229,7 +233,7 @@ public class SpriteCache
 
 				if (tmp == null)
 				{
-					tmp = setNightColorMatrix(name, atlasDefault);
+					tmp = setNightColorMatrixSprite(name, atlasDefault);
 				}
 
 			}
@@ -250,10 +254,59 @@ public class SpriteCache
 		return tmp;
 	}
 
-	private static Sprite setNightColorMatrix(String name, TextureAtlas atlas)
+	public static NinePatch getThemedPatch(String name)
+	{
+		NinePatch tmp = null;
+		if (Config.settings.nightMode.getValue())
+		{
+			tmp = createPatch(atlasCustomtNight, name);
+			if (tmp == null)
+			{
+				tmp = createPatch(atlasCustom, name);
+				if (tmp != null) tmp = setNightColorMatrixPatch(name, atlasCustom);
+			}
+
+			if (tmp == null)
+			{
+				tmp = createPatch(atlasDefaultNight, name);
+
+				if (tmp == null)
+				{
+					tmp = setNightColorMatrixPatch(name, atlasDefault);
+				}
+
+			}
+
+		}
+		else
+		{
+			tmp = createPatch(atlasCustom, name);
+		}
+
+		if (tmp == null)
+		{
+			tmp = createPatch(atlasDefault, name);
+		}
+
+		return tmp;
+	}
+
+	private static Sprite setNightColorMatrixSprite(String name, TextureAtlas atlas)
 	{
 		Sprite tmp = null;
 		tmp = createSprite(atlas, name);
+		if (tmp == null) return null;
+
+		Color colorOverlay = new Color(0.5f, 0.4f, 0.4f, 1f);
+		tmp.setColor(colorOverlay);
+
+		return tmp;
+	}
+
+	private static NinePatch setNightColorMatrixPatch(String name, TextureAtlas atlas)
+	{
+		NinePatch tmp = null;
+		tmp = createPatch(atlas, name);
 		if (tmp == null) return null;
 
 		Color colorOverlay = new Color(0.5f, 0.4f, 0.4f, 1f);
@@ -268,6 +321,16 @@ public class SpriteCache
 		if (atlas != null)
 		{
 			tmp = atlas.createSprite(name);
+		}
+		return tmp;
+	}
+
+	private static NinePatch createPatch(TextureAtlas atlas, String name)
+	{
+		NinePatch tmp = null;
+		if (atlas != null)
+		{
+			tmp = atlas.createPatch(name);
 		}
 		return tmp;
 	}
@@ -660,6 +723,12 @@ public class SpriteCache
 		copy = new SpriteDrawable(getThemedSprite("tf-copy"));
 		paste = new SpriteDrawable(getThemedSprite("tf-paste"));
 		cut = new SpriteDrawable(getThemedSprite("tf-cut"));
+
+		bar = new NinePatchDrawable(getThemedPatch("bar"));
+		barSmall = new NinePatchDrawable(getThemedPatch("bar-small"));
+
+		bar_0 = new SpriteDrawable(getThemedSprite("bar-0"));
+		barSmall_0 = new SpriteDrawable(getThemedSprite("bar-small-0"));
 
 		textFieldCursor = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("selection-input-icon"), 1, 1, 2, 2));
 

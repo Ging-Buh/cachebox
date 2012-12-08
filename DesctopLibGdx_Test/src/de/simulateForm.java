@@ -11,12 +11,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.PositionChangedEventList;
+import CB_Core.Locator.GPS;
+import CB_Core.Locator.GpsStrength;
 import CB_Core.Locator.Locator;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
@@ -169,6 +173,20 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 				Loc.setLocation(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, "GPS");
 				PositionChangedEventList.PositionChanged(Loc);
 				GlobalCore.LastValidPosition = Loc.getLocation();
+
+				ArrayList<GpsStrength> satList = new ArrayList<GpsStrength>();
+
+				satList.add(new GpsStrength(true, 120));
+				satList.add(new GpsStrength(true, 100));
+				satList.add(new GpsStrength(true, 75));
+				satList.add(new GpsStrength(true, 50));
+				satList.add(new GpsStrength(true, 30));
+				satList.add(new GpsStrength(true, 10));
+				satList.add(new GpsStrength(false, 0));
+				satList.add(new GpsStrength(false, 10));
+				GPS.setSatList(satList);
+				GpsStateChangeEventList.Call();
+
 			}
 
 		}
