@@ -1,6 +1,6 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import CB_Core.DAO.LogDAO;
+import CB_Core.DB.Database;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -58,15 +58,14 @@ public class TestView extends CB_View_Base
 		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), wrappedTextField.getY()
 				- Dialog.margin - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
-		btnSetting.setText("Delete orphaned Logs");
+		btnSetting.setText("Delete old Logs");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				LogDAO dao = new LogDAO();
-				dao.ClearOrphanedLogs();
+				Database.Data.DeleteOldLogs();
 				return true;
 			}
 		});

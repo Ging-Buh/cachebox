@@ -4,10 +4,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.Enums.LogTypes;
@@ -888,4 +890,65 @@ public abstract class Database
 
 	public abstract int getCacheCountInDB(String filename);
 
+	public void DeleteOldLogs()
+	{
+		int minToKeep = Config.settings.LogMinCount.getValue();
+		int LogMaxMonthAge = Config.settings.LogMaxMonthAge.getValue();
+		ArrayList<Long> oldLogCaches = new ArrayList<Long>();
+
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.MONTH, -LogMaxMonthAge);
+		String TimeStamp = (now.get(Calendar.YEAR)) + "-" + now.get(Calendar.MONTH) + "-" + now.get(Calendar.DATE);
+
+		// ###################################################
+		// Get CacheId's from Caches with to match older Logs
+		// ###################################################
+		{
+			String command = "select cacheid from logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > "
+					+ String.valueOf(minToKeep);
+
+			CoreCursor reader = Database.Data.rawQuery(command, null);
+			reader.moveToFirst();
+			while (reader.isAfterLast() == false)
+			{
+				long tmp = reader.getLong(0);
+				if (!oldLogCaches.contains(tmp)) oldLogCaches.add(reader.getLong(0));
+				reader.moveToNext();
+			}
+			reader.close();
+		}
+
+		// ###################################################
+		// Get Logs
+		// ###################################################
+		{
+			for (long oldLogCache : oldLogCaches)
+			{
+				ArrayList<Long> minLogIds = new ArrayList<Long>();
+
+				String command = "select id from logs where cacheid = " + String.valueOf(oldLogCache) + " order by Timestamp desc";
+
+				int count = 0;
+				CoreCursor reader = Database.Data.rawQuery(command, null);
+				reader.moveToFirst();
+				while (reader.isAfterLast() == false)
+				{
+					if (count == minToKeep) break;
+					minLogIds.add(reader.getLong(0));
+					reader.moveToNext();
+					count++;
+				}
+				;
+
+				StringBuilder sb = new StringBuilder();
+				for (long id : minLogIds)
+					sb.append(id).append(",");
+
+				// now delete all Logs out of Date without minLogIds
+				String delCommand = "delete from Logs where Timestamp<'" + TimeStamp + "' and cacheid = " + String.valueOf(oldLogCache)
+						+ " and id not in (" + sb.toString().substring(0, sb.length() - 1) + ")";
+				Database.Data.rawQuery(delCommand, null);
+			}
+		}
+	}
 }
