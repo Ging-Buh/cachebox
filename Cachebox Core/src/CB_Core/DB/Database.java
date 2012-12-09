@@ -887,4 +887,5 @@ public abstract class Database
 	public abstract void Close();
 
 	public abstract int getCacheCountInDB(String filename);
+
 }

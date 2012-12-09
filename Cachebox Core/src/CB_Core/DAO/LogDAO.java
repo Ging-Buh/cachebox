@@ -2,7 +2,6 @@ package CB_Core.DAO;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import CB_Core.DB.Database;
@@ -35,7 +34,7 @@ public class LogDAO
 
 	}
 
-	static HashMap<String, String> LogLookup = null;
+	// static HashMap<String, String> LogLookup = null;
 
 	public void WriteImports(Iterator<LogEntry> logIterator, int logCount, ImporterProgress ip)
 	{
@@ -61,6 +60,15 @@ public class LogDAO
 
 		}
 
+	}
+
+	/**
+	 * Delete all Logs without exist Cache
+	 */
+	public void ClearOrphanedLogs()
+	{
+		String SQL = "DELETE  FROM  Logs WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Logs.CacheId = c.Id)";
+		Database.Data.execSQL(SQL);
 	}
 
 }

@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls.Dialogs;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
+import CB_Core.DAO.LogDAO;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -121,6 +122,7 @@ public class DeleteDialog extends ButtonDialog
 					{
 						CacheListDAO dao = new CacheListDAO();
 						long nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere());
+						cleanupLogs();
 						wd.close();
 
 						// reset Filter
@@ -160,6 +162,8 @@ public class DeleteDialog extends ButtonDialog
 					{
 						CacheListDAO dao = new CacheListDAO();
 						long nun = dao.DelArchiv();
+
+						cleanupLogs();
 						wd.close();
 
 						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
@@ -197,6 +201,7 @@ public class DeleteDialog extends ButtonDialog
 					{
 						CacheListDAO dao = new CacheListDAO();
 						long nun = dao.DelFound();
+						cleanupLogs();
 						wd.close();
 
 						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
@@ -211,16 +216,10 @@ public class DeleteDialog extends ButtonDialog
 
 	}
 
-	@Override
-	protected void Initial()
+	private void cleanupLogs()
 	{
-		super.Initial();
-
-	}
-
-	@Override
-	protected void SkinIsChanged()
-	{
+		LogDAO dao = new LogDAO();
+		dao.ClearOrphanedLogs();
 	}
 
 	@Override

@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1270;
+	public static final int CurrentRevision = 1272;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -277,4 +277,8 @@ public class GlobalCore
 		return ret;
 	}
 
+	public static boolean isTestVersion()
+	{
+		return VersionPrefix.contains("Test");
+	}
 }
