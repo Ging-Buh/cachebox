@@ -33,7 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent
 {
 	public static CompassView that;
-	private CB_RectF imageRec, WpInfoRec;
+	private CB_RectF imageRec;
 	private Image frame, scale, arrow, att[], Icon;
 
 	private Box topContentBox, leftBox, rightBox, rightBoxMask, distanceBack;
@@ -155,7 +155,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private void setCache(Cache c)
 	{
+
 		aktCache = c;
+		if (c == null) return;
 		if (showAtt)
 		{
 			for (int i = 0; i < 19; i++)
@@ -287,6 +289,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private void createControls()
 	{
+		this.removeChilds();
 
 		if (distanceBack != null)
 		{
@@ -339,7 +342,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topContentBox.setHeight(contentHeight);
 		topContentBox.setZeroPos();
 
-		WpInfoRec = new CB_RectF(0, 0, this.halfWidth - margin - margin, GL_UISizes.Info.getHeight());
 		leftBox = new Box(new CB_RectF(0, 0, showMap ? this.halfWidth : this.width, this.height - topBox.getHeight()), "left");
 		leftBox.setBackground(SpriteCache.activityBackground);
 
@@ -389,15 +391,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			distanceBack.addChild(lblAccuracy);
 		}
 
-		// topContentBox.setBackground(new ColorDrawable(Color.GREEN));//debug
-		float inityPos = showIcon ? margin + margin + margin : 0;
-		if (showIcon && !showName) inityPos -= margin * 2;
-		topContentBox.initRow(true, contentHeight + inityPos);
-
 		this.addChild(topBox);
 		this.addChild(leftBox);
 
 		margin = GL_UISizes.margin;
+
+		topContentBox.setMargins(margin, margin);
+		topContentBox.initRow(true);
 
 		imageRec = (new CB_RectF(0, 0, width, width)).ScaleCenter(0.6f);
 		this.setBackground(SpriteCache.ListBack);
@@ -414,14 +414,11 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		arrow.setDrawable(SpriteCache.Compass.get(4));
 		this.addChild(arrow);
 
-		topContentBox.setMargins(margin, margin);
-
 		// add WP Name and Icon Line
 		if (showIcon || showName)
 		{
 			if (showIcon)
 			{
-				topContentBox.setMargins(margin, 0);
 				Icon = new Image(attRec, "");
 				Icon.setWeight(-1);
 				if (showName)
@@ -436,12 +433,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			if (showName)
 			{
 				lbl_Name = new Label("NameLabel");
-				if (!showIcon) lbl_Name.setHeight(lblHeight);
+				lbl_Name.setHeight(lblHeight);
 				topContentBox.addLast(lbl_Name);
 			}
 		}
-
-		topContentBox.setMargins(margin, margin);
 
 		if (showGcCode || showCoords)
 		{
@@ -538,23 +533,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	@Override
 	public void onRezised(CB_RectF rec)
 	{
-		leftBox.setRec(new CB_RectF(0, 0, showMap ? this.halfWidth : this.width, this.height - topBox.getHeight()));
-		if (showMap)
-		{
-			topBox.setRec(new CB_RectF(0, this.halfWidth, this.width, this.height - this.halfWidth));
-		}
-		else
-		{
-			float h = (this.width * 0.7f);
-			topBox.setRec(new CB_RectF(0, h, this.width, this.height - h));
-		}
-
-		if (showMap)
-		{
-			rightBox.setRec(new CB_RectF(this.halfWidth, 0, this.halfWidth, this.halfWidth));
-			rightBoxMask.setRec(new CB_RectF(this.halfWidth, -1, this.halfWidth, this.halfWidth + 1));
-		}
-
+		createControls();
 		Layout();
 	}
 
