@@ -432,6 +432,12 @@ public class splash extends Activity
 
 		}
 		super.onDestroy();
+		if (pWaitD != null && pWaitD.isShowing())
+		{
+			pWaitD.dismiss();
+			pWaitD = null;
+		}
+
 	}
 
 	private void startInitial()

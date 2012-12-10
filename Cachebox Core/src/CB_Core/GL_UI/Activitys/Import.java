@@ -30,6 +30,9 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.ScrollBox;
+import CB_Core.GL_UI.Controls.Spinner;
+import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_Core.GL_UI.Controls.SpinnerAdapter;
 import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -55,10 +58,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private V_ListView lvPQs;
 	private Button bOK, bCancel, refreshPqList;
 	private float innerLeft, innerWidth, innerHeight, CollabseBoxHeight, CollabseBoxMaxHeight;
-	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblMaps, lblProgressMsg;
+	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblMaps, lblProgressMsg, lblLogs;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxImportMaps;
-	private CollabseBox PQ_ListCollabseBox;
+	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxImportMaps, checkBoxCleanLogs;
+	private CollabseBox PQ_ListCollabseBox, LogCollabseBox;
+	private Spinner spinner;
+
 	private Timer mAnimationTimer;
 	private long ANIMATION_TICK = 450;
 	private int animationValue = 0;
@@ -97,6 +102,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		createGcVoteLine();
 		createImageLine();
 		createMapLine();
+		createLogLine();
+		createLogCollabseBox();
 
 		initialForm();
 
@@ -282,6 +289,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.addChild(lblImage);
 	}
 
+	final boolean MAP_LINE_ACTIVE = false;
+
 	private void createMapLine()
 	{
 		checkBoxImportMaps = new chkBox("Image");
@@ -298,13 +307,98 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		// scrollBox.addChild(lblMaps);
 	}
 
+	private void createLogLine()
+	{
+		checkBoxCleanLogs = new chkBox("Image");
+		checkBoxCleanLogs.setX(innerLeft);
+
+		float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadImages.getY();
+
+		checkBoxCleanLogs.setY(yPos - margin - checkBoxCleanLogs.getHeight());
+
+		lblLogs = new Label(checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), this.innerWidth - margin * 3
+				- checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight(), "");
+		lblLogs.setFont(Fonts.getNormal());
+		lblLogs.setText(GlobalCore.Translations.Get("DeleteLogs"));
+
+		scrollBox.addChild(checkBoxCleanLogs);
+		scrollBox.addChild(lblLogs);
+	}
+
+	ArrayList<String> values = new ArrayList<String>();
+
+	private void createLogCollabseBox()
+	{
+		CB_RectF rec = new CB_RectF(lblLogs.getX(), lblLogs.getY() - CollabseBoxHeight - margin, lblLogs.getWidth(), CollabseBoxHeight);
+		LogCollabseBox = new CollabseBox(rec, "LogCollabse");
+		LogCollabseBox.setBackground(this.getBackground());
+		scrollBox.addChild(LogCollabseBox);
+
+		// ################################
+		// create and fill LogLife spinner
+		// ################################
+
+		values.clear();
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_0"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_1"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_2"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_3"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_4"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_5"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_6"));
+
+		final SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return values.get(position);
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return values.size();
+			}
+		};
+
+		spinner = new Spinner(margin, LogCollabseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollabseBox.getWidth()
+				- margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner()
+		{
+
+			@Override
+			public void selectionChanged(int index)
+			{
+				Config.settings.LogMaxMonthAge.setValue(index);
+				Config.AcceptChanges();
+			}
+		});
+
+		LogCollabseBox.addChild(spinner);
+
+	}
+
 	private void Layout()
 	{
-		checkBoxImportMaps.setY(margin);
-		lblMaps.setY(margin);
+		LogCollabseBox.setY(margin);
 
-		checkBoxPreloadImages.setY(lblMaps.getMaxY() + margin);
-		lblImage.setY(lblMaps.getMaxY() + margin);
+		checkBoxCleanLogs.setY(LogCollabseBox.getMaxY() + margin);
+		lblLogs.setY(LogCollabseBox.getMaxY() + margin);
+
+		checkBoxImportMaps.setY(lblLogs.getMaxY() + margin);
+		lblMaps.setY(lblLogs.getMaxY() + margin);
+
+		float yPos = MAP_LINE_ACTIVE ? lblMaps.getMaxY() : lblLogs.getMaxY();
+
+		checkBoxPreloadImages.setY(yPos + margin);
+		lblImage.setY(yPos + margin);
 
 		checkBoxGcVote.setY(lblImage.getMaxY() + margin);
 		lblGcVote.setY(lblImage.getMaxY() + margin);
@@ -360,17 +454,55 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			checkBoxImportGPX.setEnabled(false);
 		}
 
-		PQ_ListCollabseBox.setAnimationListner(new animatetHeightChangedListner()
-		{
+		PQ_ListCollabseBox.setAnimationListner(Animationlistner);
+		LogCollabseBox.setAnimationListner(Animationlistner);
 
-			@Override
-			public void animatetHeightCanged(float Height)
-			{
-				Layout();
-			}
-		});
+		checkBoxCleanLogs.setChecked(Config.settings.LogMaxMonthAge.getValue() < 12);
+		checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
+
+		if (checkBoxCleanLogs.isChecked())
+		{
+			LogCollabseBox.setAnimationHeight(CollabseBoxMaxHeight);
+			spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
+		}
+		else
+		{
+			LogCollabseBox.setAnimationHeight(0);
+		}
 
 	}
+
+	animatetHeightChangedListner Animationlistner = new animatetHeightChangedListner()
+	{
+		@Override
+		public void animatetHeightCanged(float Height)
+		{
+			Layout();
+		}
+	};
+
+	private OnCheckedChangeListener checkLog_CheckStateChanged = new OnCheckedChangeListener()
+	{
+
+		@Override
+		public void onCheckedChanged(chkBox view, boolean isChecked)
+		{
+			if (checkBoxCleanLogs.isChecked())
+			{
+				LogCollabseBox.expand();
+				Config.settings.LogMaxMonthAge.setValue(6);
+				Config.AcceptChanges();
+
+				spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
+			}
+			else
+			{
+				LogCollabseBox.collabse();
+				Config.settings.LogMaxMonthAge.setValue(Config.settings.LogMaxMonthAge.getDefaultValue());
+				Config.AcceptChanges();
+			}
+		}
+	};
 
 	private OnCheckedChangeListener checkImportPQfromGC_CheckStateChanged = new OnCheckedChangeListener()
 	{

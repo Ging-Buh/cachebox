@@ -894,6 +894,14 @@ public abstract class Database
 	{
 		int minToKeep = Config.settings.LogMinCount.getValue();
 		int LogMaxMonthAge = Config.settings.LogMaxMonthAge.getValue();
+
+		if (LogMaxMonthAge == 0)
+		{
+			// Setting are 'immediately'
+			// Delete all Logs and return
+			// TODO implement this
+		}
+
 		ArrayList<Long> oldLogCaches = new ArrayList<Long>();
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.MONTH, -LogMaxMonthAge);
