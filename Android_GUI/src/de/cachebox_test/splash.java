@@ -438,6 +438,8 @@ public class splash extends Activity
 			pWaitD = null;
 		}
 
+		ui = null;
+
 	}
 
 	private void startInitial()
