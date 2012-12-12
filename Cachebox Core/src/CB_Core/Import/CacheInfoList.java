@@ -209,9 +209,11 @@ public class CacheInfoList
 					ImagesUpdated = false;
 					DescriptionImagesUpdated = false;
 
-					CreateChangedListingFile(Config.GetString("DescriptionImageFolder") + "\\" + GcCode.substring(0, 4) + "\\" + GcCode
-							+ ".changed");
-					CreateChangedListingFile(Config.GetString("SpoilerFolder") + "\\" + GcCode.substring(0, 4) + "\\" + GcCode + ".changed");
+					String desImageFolder = Config.settings.DescriptionImageFolder.getValue();
+
+					CreateChangedListingFile(desImageFolder + "\\" + GcCode.substring(0, 4) + "\\" + GcCode + ".changed");
+
+					CreateChangedListingFile(desImageFolder + "\\" + GcCode.substring(0, 4) + "\\" + GcCode + ".changed");
 				}
 				else
 				{

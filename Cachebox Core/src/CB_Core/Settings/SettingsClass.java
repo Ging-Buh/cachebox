@@ -103,6 +103,8 @@ public class SettingsClass extends SettingsList
 	public SettingBool CompassShowCoords;
 	public SettingBool CompassShowWpDesc;
 	public SettingBool CompassShowSatInfos;
+	public SettingBool DeleteLogs;
+	public SettingBool CompactDB;
 
 	// int
 	public SettingInt LogMaxMonthAge;
@@ -398,9 +400,11 @@ public class SettingsClass extends SettingsList
 
 		addSetting(newInstall = new SettingBool("newInstall", cat, NEVER, false, true));
 
-		// int
-		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", cat, INVISIBLE, 99999, true));
+		addSetting(LogMaxMonthAge = new SettingInt("LogMaxMonthAge", cat, INVISIBLE, 6, true));
 		addSetting(LogMinCount = new SettingInt("LogMinCount", cat, INVISIBLE, 99999, true));
+		addSetting(DeleteLogs = new SettingBool("DeleteLogs", cat, INVISIBLE, false, true));
+		addSetting(CompactDB = new SettingBool("CompactDB", cat, INVISIBLE, false, true));
+
 		addSetting(installRev = new SettingInt("installRev", cat, NEVER, 0, true));
 
 		addSetting(MultiDBAutoStartTime = new SettingInt("MultiDBAutoStartTime", cat, NEVER, 0, true));
