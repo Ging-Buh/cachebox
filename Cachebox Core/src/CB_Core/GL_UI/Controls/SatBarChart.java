@@ -23,7 +23,6 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	{
 		super(rec, Name);
 
-		GpsStateChangeEventList.Add(this);
 	}
 
 	public void setGpsStatus(GpsStatus status)
@@ -146,6 +145,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	public void GpsStateChanged()
 	{
 		redraw = true;
+		GL.that.renderOnce("GPS-State Change");
 	}
 
 	@Override
@@ -160,4 +160,17 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 
 	}
 
+	@Override
+	public void onShow()
+	{
+		super.onShow();
+		GpsStateChangeEventList.Add(this);
+	}
+
+	@Override
+	public void onHide()
+	{
+		super.onHide();
+		GpsStateChangeEventList.Remove(this);
+	}
 }

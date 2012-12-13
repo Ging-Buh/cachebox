@@ -159,6 +159,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 			WebControl.destroy();
 			WebControl = null;
 		}
+
 	}
 
 	@Override

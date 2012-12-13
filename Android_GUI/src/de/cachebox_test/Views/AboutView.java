@@ -79,18 +79,11 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 		Me = this;
 
-		SelectedCacheEventList.Add(this);
-
 		FrameLayout notesLayout = (FrameLayout) inflater.inflate(R.layout.about, null, false);
 		this.addView(notesLayout);
 
 		findViewById();
 		setText();
-
-		// add Event Handler
-		SelectedCacheEventList.Add(this);
-		PositionEventList.Add(this);
-		GpsStateChangeEventList.Add(this);
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
 		{
@@ -162,8 +155,8 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 				{
 					Toast.makeText(
 							main.mainActivity,
-							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim() + ")",
-							Toast.LENGTH_SHORT).show();
+							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim()
+									+ ")", Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -326,6 +319,12 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	{
 		LoadImages();
 		if (!Energy.AboutIsShown()) Energy.setAboutIsShown();
+
+		// add Event Handler
+		SelectedCacheEventList.Add(this);
+		PositionEventList.Add(this);
+		GpsStateChangeEventList.Add(this);
+
 		setSatStrength();
 	}
 
@@ -335,6 +334,10 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		if (Energy.AboutIsShown()) Energy.resetAboutIsShown();
 		ReleaseImages();
 
+		// remove Event Handler
+		SelectedCacheEventList.Remove(this);
+		PositionEventList.Remove(this);
+		GpsStateChangeEventList.Remove(this);
 	}
 
 	@Override

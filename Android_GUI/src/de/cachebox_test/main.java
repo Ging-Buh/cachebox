@@ -29,8 +29,6 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.GpsStateChangeEvent;
-import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
@@ -191,7 +189,7 @@ import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
-		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent, KeyboardFocusChangedEvent
+		GpsStatus.NmeaListener, ILog, KeyboardFocusChangedEvent
 {
 
 	private static ServiceConnection mConnection;
@@ -499,7 +497,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// add Event Handler
 		SelectedCacheEventList.Add(this);
 		CachListChangedEventList.Add(this);
-		GpsStateChangeEventList.Add(this);
+		// GpsStateChangeEventList.Add(this);
 
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -2570,19 +2568,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		return GpsOn;
 	}
 
-	@Override
-	public void GpsStateChanged()
-	{
-		try
-		{
-			setSatStrength();
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.GpsStateChanged()", "setSatStrength()", e);
-			e.printStackTrace();
-		}
-	}
+	// @Override
+	// public void GpsStateChanged()
+	// {
+	// try
+	// {
+	// setSatStrength();
+	// }
+	// catch (Exception e)
+	// {
+	// Logger.Error("main.GpsStateChanged()", "setSatStrength()", e);
+	// e.printStackTrace();
+	// }
+	// }
 
 	private static View[] balken = null;
 
