@@ -404,6 +404,8 @@ public class SpriteCache
 			Compass.add(new SpriteDrawable(getThemedSprite("compass-frame-small")));
 			Compass.add(new SpriteDrawable(getThemedSprite("compass-scale-small")));
 			Compass.add(new SpriteDrawable(getThemedSprite("compass_arrow")));
+			Compass.add(new SpriteDrawable(getThemedSprite("sonne")));
+			Compass.add(new SpriteDrawable(getThemedSprite("mond")));
 
 		}
 

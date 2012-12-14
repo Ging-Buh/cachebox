@@ -173,5 +173,6 @@ public class MenuID
 	public static final int MI_COMPASS_SHOW_COORDS = 147;
 	public static final int MI_COMPASS_SHOW_WP_DESC = 148;
 	public static final int MI_COMPASS_SHOW_SAT_INFO = 149;
+	public static final int MI_COMPASS_SHOW_SUN_MOON = 150;
 
 }

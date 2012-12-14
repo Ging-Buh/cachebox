@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Views;
 
+import java.util.Date;
+
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
@@ -24,6 +26,7 @@ import CB_Core.Math.SizeF;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Core.Util.Astronomy;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -34,7 +37,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 {
 	public static CompassView that;
 	private CB_RectF imageRec;
-	private Image frame, scale, arrow, att[], Icon;
+	private Image frame, scale, arrow, att[], Icon, Sun, Moon;
 
 	private Box topContentBox, leftBox, rightBox, rightBoxMask, distanceBack;
 	private ScrollBox topBox;
@@ -46,8 +49,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	private Waypoint aktWaypoint;
 
 	private float margin, attHeight, descHeight;
-
-	private boolean isInitial, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos;
+	private double heading;
+	private boolean isInitial, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon;
 
 	public CompassView(CB_RectF rec, String Name)
 	{
@@ -135,6 +138,11 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (showSatInfos != Config.settings.CompassShowSatInfos.getValue())
 		{
 			showSatInfos = Config.settings.CompassShowSatInfos.getValue();
+			ret = true;
+		}
+		if (showSunMoon != Config.settings.CompassShowSunMoon.getValue())
+		{
+			showSunMoon = Config.settings.CompassShowSunMoon.getValue();
 			ret = true;
 		}
 
@@ -261,6 +269,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			compassHeight *= 0.95f;
 		}
 
+		if (showSunMoon) compassHeight -= Sun.getHeight();
+
 		SizeF s = new SizeF(compassHeight, compassHeight);
 
 		frame.setSize(s);
@@ -273,17 +283,21 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		frame.setX(left);
 		scale.setX(left);
 
-		frame.setY(margin);
-		scale.setY(margin);
+		float yPos = showSunMoon ? margin + Sun.getHalfHeight() : margin;
+
+		frame.setY(yPos);
+		scale.setY(yPos);
+		arrow.setY(yPos);
 
 		arrow.setSize(frame);
-		arrow.setY(margin);
 		arrow.setX(frame.getX());
 		arrow.setRec(arrow.ScaleCenter(0.8f));
 		arrow.setScale(0.7f);
 
 		scale.setOriginCenter();
 		arrow.setOriginCenter();
+
+		if (showSunMoon) setMoonSunPos();
 
 	}
 
@@ -413,6 +427,22 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		arrow = new Image(imageRec, "arrow");
 		arrow.setDrawable(SpriteCache.Compass.get(4));
 		this.addChild(arrow);
+
+		if (showSunMoon)
+		{
+
+			CB_RectF rec = showMap ? attRec.ScaleCenter(0.7f) : attRec.copy();
+
+			Sun = new Image(rec, "sun");
+			Sun.setDrawable(SpriteCache.Compass.get(5));
+			Sun.setInvisible();
+			this.addChild(Sun);
+
+			Moon = new Image(rec, "moon");
+			Moon.setDrawable(SpriteCache.Compass.get(6));
+			Moon.setInvisible();
+			this.addChild(Moon);
+		}
 
 		// add WP Name and Icon Line
 		if (showIcon || showName)
@@ -551,7 +581,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (GlobalCore.LastValidPosition.Valid)
 		{
 			Coordinate position = GlobalCore.LastValidPosition;
-			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
+			heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 
 			Coordinate dest = aktCache.Pos;
 			float distance = aktCache.Distance(false);
@@ -585,6 +615,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				lblAlt.setText(GlobalCore.Translations.Get("alt") + locator.getAltString());
 			}
 
+			if (showSunMoon) setMoonSunPos();
+
 			GL.that.renderOnce("Compass-PositionChanged");
 		}
 	}
@@ -597,7 +629,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (GlobalCore.LastValidPosition.Valid)
 		{
 			Coordinate position = GlobalCore.LastValidPosition;
-			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
+			heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
 
 			Coordinate dest = aktCache.Pos;
 			float distance = aktCache.Distance(false);
@@ -610,6 +642,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			double relativeBearing = bearing - heading;
 			arrow.setRotate((float) -relativeBearing);
 			scale.setRotate((float) heading);
+
+			if (showSunMoon) setMoonSunPos();
+
 			GL.that.renderOnce("Compass-OrientationChanged");
 		}
 	}
@@ -619,4 +654,48 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 		return "CompassView";
 	}
+
+	private void setMoonSunPos()
+	{
+		if (GlobalCore.Locator != null && GlobalCore.LastValidPosition != null)
+		{
+			double julianDate = Astronomy.UtcToJulianDate(new Date());
+			float centerX = frame.getCenterPos().x;
+			float centerY = frame.getCenterPos().y;
+			float radius = frame.getHalfWidth() + Sun.getHalfHeight() + (Sun.getHalfHeight() / 4);
+			float iconSize = Sun.getWidth();
+
+			// ##################
+			// Set Moon
+			// ##################
+			Coordinate eclipticMoon = Astronomy.EclipticCoordinatesMoon(julianDate);
+			Coordinate equatorialMoon = Astronomy.EclipticToEquatorial(eclipticMoon, julianDate);
+			Coordinate azymuthMoon = Astronomy.EquatorialToAzymuth(GlobalCore.LastValidPosition, julianDate, equatorialMoon);
+
+			if (azymuthMoon.getLatitude() >= 0)
+			{
+
+				int x = (int) (centerX + (radius - iconSize / 2) * Math.sin((azymuthMoon.getLongitude() - heading) * Math.PI / 180.0));
+				int y = (int) (centerY + (radius - iconSize / 2) * Math.cos((azymuthMoon.getLongitude() - heading) * Math.PI / 180.0));
+				Moon.setPos(x - iconSize / 2, y - iconSize / 2);
+				Moon.setVisible();
+			}
+
+			// ##################
+			// Set Sun
+			// ##################
+			Coordinate eclipticSun = Astronomy.EclipticCoordinatesSun(julianDate);
+			Coordinate equatorialSun = Astronomy.EclipticToEquatorial(eclipticSun, julianDate);
+			Coordinate azymuthSun = Astronomy.EquatorialToAzymuth(GlobalCore.LastValidPosition, julianDate, equatorialSun);
+
+			if (azymuthSun.getLatitude() >= 0)
+			{
+				int x = (int) (centerX + (radius - iconSize / 2) * Math.sin((azymuthSun.getLongitude() - heading) * Math.PI / 180.0));
+				int y = (int) (centerY + (radius - iconSize / 2) * Math.cos((azymuthSun.getLongitude() - heading) * Math.PI / 180.0));
+				Sun.setPos(x - iconSize / 2, y - iconSize / 2);
+				Sun.setVisible();
+			}
+		}
+	}
+
 }
