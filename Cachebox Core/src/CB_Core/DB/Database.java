@@ -890,6 +890,16 @@ public abstract class Database
 
 	public abstract int getCacheCountInDB(String filename);
 
+	public int getCacheCountInDB()
+	{
+		CoreCursor reader = Database.Data.rawQuery("select count(*) from caches", null);
+		reader.moveToFirst();
+		int count = reader.getInt(0);
+		reader.close();
+
+		return count;
+	}
+
 	public void DeleteOldLogs()
 	{
 		int minToKeep = Config.settings.LogMinCount.getValue();

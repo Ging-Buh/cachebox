@@ -582,6 +582,23 @@ public class TabMainView extends MainViewBase
 			CacheListButton.setButtonSprites(SpriteCache.CacheListFilter);
 		}
 
+		// ##################################
+		// Set new list size at context menu
+		// ##################################
+
+		int filterCount = Database.Data.Query.size();
+
+		if (Database.Data.Query.GetCacheByGcCode("CBPark") != null) --filterCount;
+
+		int DBCount = Database.Data.getCacheCountInDB();
+		String Filtert = "";
+		if (filterCount != DBCount)
+		{
+			Filtert = String.valueOf(filterCount) + "/";
+		}
+
+		String Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
+		actionShowCacheList.setNameExtention(Name);
 	}
 
 	public void showCacheList()
