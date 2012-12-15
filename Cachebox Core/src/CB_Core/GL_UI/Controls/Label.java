@@ -135,9 +135,12 @@ public class Label extends CB_View_Base
 			x = innerRec.getWidth() - bounds.width;
 		}
 
+		VAlignment switchValue = ((valignment != null) ? valignment : VAlignment.CENTER);
+
 		if (wrapType == WrapType.singleLine)
 		{
-			switch (valignment)
+
+			switch (switchValue)
 			{
 			case TOP:
 				cache.setPosition(x, innerRec.getHeight() - bounds.height);
@@ -152,7 +155,7 @@ public class Label extends CB_View_Base
 		}
 		else
 		{
-			switch (valignment)
+			switch (switchValue)
 			{
 			case TOP:
 				cache.setPosition(x, (innerRec.getHeight() - bounds.height) + bottom);
@@ -297,6 +300,7 @@ public class Label extends CB_View_Base
 
 	public void setVAlignment(VAlignment aligment)
 	{
+		if (aligment == null) return;
 		this.valignment = aligment;
 		change();
 	}

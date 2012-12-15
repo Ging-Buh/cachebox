@@ -2,6 +2,7 @@ package CB_Core.Locator;
 
 import CB_Core.Config;
 import CB_Core.UnitFormatter;
+import CB_Core.Events.platformConector;
 import CB_Core.Types.Coordinate;
 
 public class Locator
@@ -49,27 +50,6 @@ public class Locator
 		return (ProviderString.equalsIgnoreCase("GPS"));
 	}
 
-	// / <summary>
-	// / Aktueller Winkel des mag. Kompass
-	// / </summary>
-	private float CompassHeading = -1;
-
-	public void setCompassHeading(float value)
-	{
-		synchronized (this)
-		{
-			CompassHeading = value;
-		}
-	}
-
-	public float getCompassHeading()
-	{
-		synchronized (this)
-		{
-			return CompassHeading;
-		}
-	}
-
 	public float SpeedOverGround()
 	{
 		if (hasSpeed)
@@ -97,7 +77,7 @@ public class Locator
 		synchronized (this)
 		{
 			if (!Config.settings.HardwareCompass.getValue()) return false;
-			if (CompassHeading < 0) return false; // kein Kompass Wert -> Komapass nicht verwenden!
+			if (platformConector.getCompassHeading() < 0) return false; // kein Kompass Wert -> Komapass nicht verwenden!
 
 			// Geschwindigkeit > 5 km/h -> GPs Kompass verwenden
 			if (hasBearing && speed > Config.settings.HardwareCompassLevel.getValue()) return false;
@@ -109,7 +89,28 @@ public class Locator
 	/**
 	 * hier wird gespeichert, ob der zuletzt ausgegebene Winkel vom Kompass kam...
 	 */
-	public boolean LastUsedCompass = false;
+	private boolean LastUsedCompass = false;
+
+	public enum CompassType
+	{
+		GPS, Magnetic
+	};
+
+	public boolean isLastUsedCompass(CompassType type)
+	{
+		if (type == CompassType.GPS)
+		{
+			if (LastUsedCompass) return false;
+			else
+				return true;
+		}
+		else
+		{
+			if (LastUsedCompass) return true;
+			else
+				return false;
+		}
+	}
 
 	public float getHeading()
 	{
@@ -119,8 +120,8 @@ public class Locator
 			if (UseCompass())
 			{
 				LastUsedCompass = true;
-				return CompassHeading; // Compass Heading ausgeben, wenn
-										// Geschwindigkeit klein ist
+				return platformConector.getCompassHeading(); // Compass Heading ausgeben, wenn
+				// Geschwindigkeit klein ist
 			}
 			else if (hasBearing)
 			{

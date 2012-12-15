@@ -41,6 +41,8 @@ public class DesktopMain
 
 	static GL CB_UI;
 
+	static float compassheading = -1;
+
 	public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame)
 	{
 		GlobalCore.platform = Plattform.Desktop;
@@ -136,6 +138,12 @@ public class DesktopMain
 			{
 
 				return null;
+			}
+
+			@Override
+			public float getCompassHeading()
+			{
+				return compassheading;
 			}
 		});
 

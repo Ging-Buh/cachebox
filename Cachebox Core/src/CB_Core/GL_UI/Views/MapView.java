@@ -827,7 +827,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				AccuracySprite.draw(batch);
 			}
 
-			boolean lastUsedCompass = locator.LastUsedCompass;
+			boolean lastUsedCompass = locator.isLastUsedCompass(Locator.CompassType.Magnetic);
 			boolean Transparency = Config.settings.PositionMarkerTransparent.getValue();
 			// int arrowId = lastUsedCompass ? (Transparency ? 2 : 0) :
 			// (Transparency ? 3 : 1);
@@ -864,7 +864,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if (GlobalCore.getSelectedCache() == null) return;
 
-		Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().Pos;
+		Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
+				.getSelectedCache().Pos;
 
 		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, coord.getLongitude()));
 		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, coord.getLatitude()));
@@ -1761,8 +1762,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				position = new Coordinate();
 			if (GlobalCore.getSelectedCache() != null)
 			{
-				Coordinate cache = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos
-						: GlobalCore.getSelectedCache().Pos;
+				Coordinate cache = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
+						.getSelectedCache().Pos;
 				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.getLatitude(),
 						cache.getLongitude());
 				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()), this.mapHeading);

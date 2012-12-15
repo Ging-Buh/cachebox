@@ -287,7 +287,7 @@ public class SettingsClass extends SettingsList
 		addSetting(CompassShowCoords = new SettingBool("CompassShowCoords", cat, NORMAL, true, true));
 		addSetting(CompassShowWpDesc = new SettingBool("CompassShowWpDesc", cat, NORMAL, true, true));
 		addSetting(CompassShowSatInfos = new SettingBool("CompassShowSatInfos", cat, NORMAL, true, true));
-		addSetting(CompassShowSunMoon = new SettingBool("CompassShowSunMon", cat, NORMAL, false, true));
+		addSetting(CompassShowSunMoon = new SettingBool("CompassShowSunMoon", cat, NORMAL, false, true));
 	}
 
 	private void addPositionSettings()

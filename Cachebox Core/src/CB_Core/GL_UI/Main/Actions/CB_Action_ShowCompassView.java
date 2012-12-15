@@ -96,7 +96,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.CompassShowSatInfos.getValue());
 
-		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_SUN_MOON, "CompassShowSunMon");
+		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_SUN_MOON, "CompassShowSunMoon");
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.CompassShowSunMoon.getValue());
 

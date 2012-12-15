@@ -43,14 +43,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	private ScrollBox topBox;
 	private MapView map;
 	private SatBarChart chart;
-	private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblSats;
+	private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblSats, lblOwnCoords;
 
 	private Cache aktCache;
 	private Waypoint aktWaypoint;
 
-	private float margin, attHeight, descHeight;
+	private float margin, attHeight, descHeight, lblHeight;
 	private double heading;
-	private boolean isInitial, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon;
+	private boolean isInitial, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon,
+			showAnyContent;
 
 	public CompassView(CB_RectF rec, String Name)
 	{
@@ -58,6 +59,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		margin = GL_UISizes.margin;
 		SelectedCacheEventList.Add(this);
 		that = this;
+		aktCache = GlobalCore.getSelectedCache();
+		aktWaypoint = GlobalCore.getSelectedWaypoint();
+		createControls();
+		Layout();
 	}
 
 	@Override
@@ -146,6 +151,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			ret = true;
 		}
 
+		showAnyContent = showSatInfos || showWpDesc || showCoords || showGcCode || showAtt || showIcon || showName;
+
 		return ret;
 	}
 
@@ -157,8 +164,28 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private void setWP(Cache c, Waypoint wp)
 	{
+		boolean resetControls = false; // sett if WP desc changed
+
+		if (wp != null)
+		{
+			if (wp.Description != null && !wp.Description.equals(""))
+			{
+				float newDescHeight = Fonts.MeasureWrapped(wp.Description, topContentBox.getWidth()).height + margin;
+				if (newDescHeight != descHeight) resetControls = true;
+			}
+		}
+
 		aktWaypoint = wp;
-		setCache(c);
+
+		if (resetControls)
+		{
+			createControls();
+		}
+		else
+		{
+			setCache(c);
+		}
+
 	}
 
 	private void setCache(Cache c)
@@ -261,7 +288,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		float compassHeight = 0;
 
-		compassHeight = leftBox.getHeight() - margin - margin;
+		compassHeight = Math.min(leftBox.getHeight(), this.width) - margin - margin;
 
 		if (!showMap)
 		{
@@ -298,7 +325,19 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		arrow.setOriginCenter();
 
 		if (showSunMoon) setMoonSunPos();
+		if (showSatInfos && showCoords && !showGcCode)
+		{
+			chart.setHeight((lblHeight + margin) * 2.3f + (lblHeight + margin));
+		}
 
+		if (showAnyContent)
+		{
+			topBox.setVisible();
+		}
+		else
+		{
+			topBox.setInvisible();
+		}
 	}
 
 	private void createControls()
@@ -317,7 +356,27 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			topContentBox.dispose();
 		}
 
-		float topH = (this.width * 0.7f);
+		// Calc content height
+		float contentHeight = margin + margin;
+		if (showName || showIcon) contentHeight += (showIcon ? attHeight : lblHeight) + margin;
+		if (showAtt) contentHeight += attHeight + margin + attHeight + margin;// two Att Lines
+		if (showGcCode || showCoords) contentHeight += lblHeight + margin;
+		if (showWpDesc)
+		{
+			if (aktWaypoint != null)
+			{
+				if (aktWaypoint.Description != null && !aktWaypoint.Description.equals(""))
+				{
+					descHeight = Fonts.MeasureWrapped(aktWaypoint.Description, topContentBox.getWidth()).height + margin;
+					contentHeight += descHeight + margin;
+				}
+			}
+		}
+		if (showSatInfos) contentHeight += attHeight + attHeight + margin;
+
+		float topH = Math.max((this.width * 0.7f), this.height - contentHeight - SpriteCache.activityBackground.getTopHeight()
+				- SpriteCache.activityBackground.getBottomHeight());
+
 		if (showMap)
 		{
 			topH = this.halfWidth;
@@ -333,25 +392,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		attHeight = (this.width / 9) - margin;
 		CB_RectF attRec = new CB_RectF(0, 0, attHeight, attHeight);
 
-		float lblHeight = Fonts.Measure("Tg").height * 1.3f;
-
-		// Calc content height
-		float contentHeight = margin + margin;
-		if (showName || showIcon) contentHeight += (showIcon ? attHeight : lblHeight) + margin;
-		if (showAtt) contentHeight += attHeight + margin + attHeight + margin;// two Att Lines
-		if (showGcCode || showCoords) contentHeight += lblHeight + margin;
-		if (showWpDesc)
-		{
-			if (aktWaypoint != null)
-			{
-				if (aktWaypoint.Description != null && !aktWaypoint.Description.equals(""))
-				{
-					descHeight = Fonts.MeasureWrapped(aktWaypoint.Description, topContentBox.getWidth()).height;
-					contentHeight += descHeight + margin;
-				}
-			}
-		}
-		if (showSatInfos) contentHeight += attHeight + attHeight + margin;
+		lblHeight = Fonts.Measure("Tg").height * 1.3f;
 
 		topContentBox.setHeight(contentHeight);
 		topContentBox.setZeroPos();
@@ -468,40 +509,43 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			}
 		}
 
-		if (showGcCode || showCoords)
-		{
-			float weight = showCoords ? 0.3f : 1f;
-			if (showGcCode)
-			{
-				if (showCoords)
-				{
-					lblGcCode = new Label("GcCodeLabel");
-					lblGcCode.setHeight(lblHeight);
-					lblGcCode.setWeight(weight);
-					topContentBox.addNext(lblGcCode);
-				}
-				else
-				{
-					lblGcCode = new Label("GcCodeLabel");
-					lblGcCode.setHeight(lblHeight);
-					lblGcCode.setWeight(weight);
-					topContentBox.addLast(lblGcCode);
-				}
-			}
-			if (showCoords)
-			{
-				lblCoords = new Label("CoordsLabel");
-				lblCoords.setHeight(lblHeight);
-				lblCoords.setWeight(1);
-				topContentBox.addLast(lblCoords);
-			}
-		}
-
 		if (showWpDesc)
 		{
 			lblDesc = new Label("DescLabel");
 			lblDesc.setHeight(descHeight);
 			topContentBox.addLast(lblDesc);
+		}
+
+		float mesuredCoorWidth = Fonts.Measure("52° 27.130N / 13° 33.117E").width + margin;
+
+		if (showGcCode || showCoords)
+		{
+			if (showCoords)
+			{
+				if (showGcCode)
+				{
+					lblCoords = new Label("CoordsLabel");
+					lblCoords.setHeight(lblHeight);
+					lblCoords.setWeight(-1);
+					lblCoords.setWidth(mesuredCoorWidth);
+					topContentBox.addNext(lblCoords);
+				}
+				else
+				{
+					lblCoords = new Label("CoordsLabel");
+					lblCoords.setHeight(lblHeight);
+					lblCoords.setWeight(-1);
+					lblCoords.setWidth(mesuredCoorWidth);
+					topContentBox.addLast(lblCoords);
+				}
+			}
+			if (showGcCode)
+			{
+				lblGcCode = new Label("GcCodeLabel");
+				lblGcCode.setHeight(lblHeight);
+				lblGcCode.setWeight(1);
+				topContentBox.addLast(lblGcCode);
+			}
 		}
 
 		if (showSatInfos)
@@ -527,8 +571,18 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			}
 
 			chart = new SatBarChart(attRec, "");
-			chart.setHeight(attRec.getHeight() * 2);
+			chart.setHeight((lblHeight + margin) * 2.3f);
+
+			float chartWidth = topContentBox.getAvailableWidth() - mesuredCoorWidth - margin;
+			chart.setWeight(-1);
+			chart.setWidth(chartWidth);
 			topContentBox.addLast(chart);
+
+			lblOwnCoords = new Label("OwnCoords");
+			lblOwnCoords.setHeight(lblHeight);
+			lblOwnCoords.setWidth(chart.getX() - margin);
+			lblOwnCoords.setPos(0, lblAlt.getMaxY() + margin);
+			topContentBox.addChild(lblOwnCoords);
 
 		}
 
@@ -557,7 +611,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topBox.setInerHeight(contentHeight);
 		topBox.scrollTo(0);
 		setCache(GlobalCore.getSelectedCache());
-		setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+		// setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 
 	@Override
@@ -578,10 +632,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 		if (aktCache == null) return;
 
-		if (GlobalCore.LastValidPosition.Valid)
+		if (GlobalCore.Locator.getLocation() != null)
 		{
-			Coordinate position = GlobalCore.LastValidPosition;
+			Coordinate position = GlobalCore.Locator.getLocation();
 			heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
+
+			if (lblOwnCoords != null) lblOwnCoords.setText(position.FormatCoordinate());
 
 			Coordinate dest = aktCache.Pos;
 			float distance = aktCache.Distance(false);
@@ -680,6 +736,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				Moon.setPos(x - iconSize / 2, y - iconSize / 2);
 				Moon.setVisible();
 			}
+			else
+			{
+				Moon.setInvisible();
+			}
 
 			// ##################
 			// Set Sun
@@ -694,6 +754,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				int y = (int) (centerY + (radius - iconSize / 2) * Math.cos((azymuthSun.getLongitude() - heading) * Math.PI / 180.0));
 				Sun.setPos(x - iconSize / 2, y - iconSize / 2);
 				Sun.setVisible();
+			}
+			else
+			{
+				Sun.setInvisible();
 			}
 		}
 	}

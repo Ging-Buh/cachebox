@@ -1395,7 +1395,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 * Handler
 	 */
 
-	private float compassHeading = 0;
+	private float compassHeading = -1;
 
 	private final SensorEventListener mListener = new SensorEventListener()
 	{
@@ -1412,7 +1412,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				mCompassValues = event.values;
 				compassHeading = mCompassValues[0];
 
-				GlobalCore.Locator.setCompassHeading(mCompassValues[0]);
 				PositionEventList.Call(mCompassValues[0], "CompassValue");
 			}
 			catch (Exception e)
@@ -2953,6 +2952,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 
 				return coreStatus;
+			}
+
+			@Override
+			public float getCompassHeading()
+			{
+				return compassHeading;
 			}
 		});
 

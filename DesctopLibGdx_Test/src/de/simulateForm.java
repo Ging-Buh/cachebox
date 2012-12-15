@@ -316,8 +316,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 				Locator Loc = new Locator();
 
 				Loc.setLocation(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, "GPS");
-				Loc.setCompassHeading((float) trk.Direction);
-				Loc.LastUsedCompass = true;
+				DesktopMain.compassheading = (float) trk.Direction;
 
 				lastLoc = Loc;
 
