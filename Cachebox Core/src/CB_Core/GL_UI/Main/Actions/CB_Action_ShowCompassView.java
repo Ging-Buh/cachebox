@@ -148,7 +148,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 				toggleSetting(Config.settings.CompassShowSunMoon);
 				return true;
 			}
-			return true;
+			return false;
 		}
 	};
 
