@@ -494,7 +494,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
 
-		if (Config.settings.GcAPI.getValue().length() > 0)
+		if ((Config.settings.GcAPI.getValue() != null) && (Config.settings.GcAPI.getValue().length() > 0))
 		{
 			checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
 			checkImportPQfromGC.setEnabled(true);
