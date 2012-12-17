@@ -1,15 +1,21 @@
 package CB_Core.Api;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.commons.lang.NullArgumentException;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -190,7 +196,7 @@ public class PocketQuery
 
 	public static int DownloadSinglePocketQuery(PQ pocketQuery)
 	{
-		return DownloadSinglePocketQuery(pocketQuery, Config.settings.PocketQueryFolder.getValue() + System.getProperty("file.separator"));
+		return DownloadSinglePocketQuery2(pocketQuery, Config.settings.PocketQueryFolder.getValue() + System.getProperty("file.separator"));
 	}
 
 	public static int DownloadSinglePocketQuery(PQ pocketQuery, String savePath)
@@ -225,6 +231,108 @@ public class PocketQuery
 					fs.close();
 
 					resultByte = null;
+					result = null;
+					System.gc();
+
+					return 0;
+				}
+				else
+				{
+					GroundspeakAPI.LastAPIError = "";
+					GroundspeakAPI.LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					GroundspeakAPI.LastAPIError += status.getString("StatusMessage") + "\n";
+					GroundspeakAPI.LastAPIError += status.getString("ExceptionDetails");
+
+					return (-1);
+				}
+
+			}
+			catch (JSONException e)
+			{
+
+				e.printStackTrace();
+			}
+		}
+		catch (ClientProtocolException e)
+		{
+			System.out.println(e.getMessage());
+			return (-1);
+		}
+		catch (IOException e)
+		{
+			System.out.println(e.getMessage());
+			return (-1);
+		}
+
+		return 0;
+
+	}
+
+	public static int DownloadSinglePocketQuery2(PQ pocketQuery, String savePath)
+	{
+		String accessToken = Config.GetAccessToken(); // ""
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken=" + accessToken
+				+ "&PocketQueryGuid=" + pocketQuery.GUID);
+
+		try
+		{
+			// String result = GroundspeakAPI.Execute(httpGet);
+			httpGet.setHeader("Accept", "application/json");
+			httpGet.setHeader("Content-type", "application/json");
+
+			// Execute HTTP Post Request
+			String result = "";
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpResponse response = httpclient.execute(httpGet);
+
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()), 100);
+			String line = "";
+			while ((line = rd.readLine()) != null)
+			{
+				result += line + "\n";
+			}
+			/*
+			 * result = ""; // now read from the response until the ZIP Informations are beginning or to the end of stream do { int c =
+			 * response.getEntity().getContent().read(); if (c == -1) { break; } result += (char) c; if
+			 * (result.contains("\"ZippedFile\":\"")) { // The stream position represents the beginning of the ZIP block // to have a
+			 * correct JSON Array we must add a "}} to the result result += "\"}}"; break; } } while (true);
+			 */
+			//
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					GroundspeakAPI.LastAPIError = "";
+					SimpleDateFormat postFormater = new SimpleDateFormat("yyyyMMddHHmmss");
+					String dateString = postFormater.format(pocketQuery.DateLastGenerated);
+					String local = savePath + pocketQuery.Name + "_" + dateString + ".zip";
+
+					// String test = json.getString("ZippedFile");
+
+					FileOutputStream fs;
+					fs = new FileOutputStream(local);
+					BufferedOutputStream bfs = new BufferedOutputStream(fs);
+
+					try
+					{
+						int firstZipPos = result.indexOf("\"ZippedFile\":\"") + 14;
+						int lastZipPos = result.indexOf("\"", firstZipPos + 1) - 1;
+						CB_Core.Converter.Base64.decodeToStream(result, firstZipPos, lastZipPos, bfs);
+					}
+					catch (Exception ex)
+					{
+						String s = ex.getMessage();
+					}
+
+					// fs.write(resultByte);
+					bfs.flush();
+					bfs.close();
+					fs.close();
+
 					result = null;
 					System.gc();
 
