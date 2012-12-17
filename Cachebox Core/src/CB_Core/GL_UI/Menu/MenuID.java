@@ -164,4 +164,15 @@ public class MenuID
 	public static int AID_SHOW_PARKING_DIALOG = 140;
 	public static int AID_SHOW_DELETE_DIALOG = 141;
 
+	// Compass
+	public static final int MI_COMPASS_SHOW_MAP = 142;
+	public static final int MI_COMPASS_SHOW_NAME = 143;
+	public static final int MI_COMPASS_SHOW_ICON = 144;
+	public static final int MI_COMPASS_SHOW_ATTRIBUTES = 145;
+	public static final int MI_COMPASS_SHOW_GC_CODE = 146;
+	public static final int MI_COMPASS_SHOW_COORDS = 147;
+	public static final int MI_COMPASS_SHOW_WP_DESC = 148;
+	public static final int MI_COMPASS_SHOW_SAT_INFO = 149;
+	public static final int MI_COMPASS_SHOW_SUN_MOON = 150;
+
 }

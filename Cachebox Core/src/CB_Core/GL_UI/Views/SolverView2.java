@@ -53,7 +53,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		 * this.addChild(lblDummy);
 		 */
 
-		cache = GlobalCore.SelectedCache();
+		cache = GlobalCore.getSelectedCache();
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 		setBackground(SpriteCache.ListBack);
 
-		cache = GlobalCore.SelectedCache();
+		cache = GlobalCore.getSelectedCache();
 
 		intiList();
 	}
@@ -75,7 +75,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		if (cache == null) solver = new Solver("");
 		else
 		{
-			this.cache = GlobalCore.SelectedCache();
+			this.cache = GlobalCore.getSelectedCache();
 			String s = Database.GetSolver(this.cache);
 			if (s == null) s = "";
 			solver = new Solver(s);
@@ -134,7 +134,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		// platformConector.hideView(ViewConst.SOLVER_VIEW);
 		// CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Remove(this);
-		Database.SetSolver(GlobalCore.SelectedCache(), solver.getSolverString());
+		Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 	}
 
 	@Override
@@ -417,14 +417,14 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		{
 			// Create New Waypoint
 			Waypoint wp = new Waypoint();
-			wp.CacheId = GlobalCore.SelectedCache().Id;
+			wp.CacheId = GlobalCore.getSelectedCache().Id;
 			wp.setCoordinate(result);
 			wp.Type = CacheTypes.Final;
 			wp.Description = "Final";
 			wp.IsUserWaypoint = true;
 			try
 			{
-				wp.GcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+				wp.GcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
 			}
 			catch (Exception e)
 			{
@@ -438,11 +438,11 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 					if (waypoint != null)
 					{
 						// Waypoint in der DB speichern
-						GlobalCore.SelectedCache().waypoints.add(waypoint);
+						GlobalCore.getSelectedCache().waypoints.add(waypoint);
 						WaypointDAO waypointDAO = new WaypointDAO();
 						waypointDAO.WriteToDatabase(waypoint);
-						WaypointListChangedEventList.Call(GlobalCore.SelectedCache());
-						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
+						WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
+						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
 					}
 				}
 			}, false);

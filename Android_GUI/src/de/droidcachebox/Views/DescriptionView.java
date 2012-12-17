@@ -45,7 +45,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		cacheInfo = (CacheInfoControl) findViewById(R.id.CompassDescriptionView);
 		cacheInfo.setStyle(DrawStyle.withOwner);
 		WebControl = (DescriptionViewControl) findViewById(R.id.DescriptionViewControl);
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
 		if (main.mainActivity.getString(R.string.density).equals("ldpi"))
 		{
@@ -159,6 +159,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 			WebControl.destroy();
 			WebControl = null;
 		}
+
 	}
 
 	@Override
@@ -202,7 +203,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		// reset ScrollPos
 		lastScrollPos = new Point(0, 0);
 
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
 		// Thread t = new Thread()
 		// {

@@ -11,6 +11,7 @@ import CB_Core.GL_UI.Activitys.SelectDB;
 import CB_Core.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
@@ -87,8 +88,8 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				CacheListDAO cacheListDAO = new CacheListDAO();
 				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 
-				GlobalCore.SelectedCache(null);
-				GlobalCore.SelectedWaypoint(null, null);
+				GlobalCore.setSelectedCache(null);
+				GlobalCore.setSelectedWaypoint(null, null);
 				CachListChangedEventList.Call();
 
 				// set last selected Cache
@@ -99,11 +100,13 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 					{
 						if (c.GcCode.equalsIgnoreCase(sGc))
 						{
-							GlobalCore.SelectedCache(c);
+							GlobalCore.setSelectedCache(c);
 							break;
 						}
 					}
 				}
+				TabMainView.that.filterSetChanged();
+
 				wd.dismis();
 			}
 		});

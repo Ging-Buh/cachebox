@@ -381,7 +381,7 @@ public class FieldNotesView extends V_ListView
 
 	public static void addNewFieldnote(int type, boolean witoutShowEdit)
 	{
-		Cache cache = GlobalCore.SelectedCache();
+		Cache cache = GlobalCore.getSelectedCache();
 
 		if (cache == null)
 		{
@@ -497,11 +497,11 @@ public class FieldNotesView extends V_ListView
 			// if (newFieldNote.type == 1)
 			// {
 			// // Found it! -> Cache als gefunden markieren
-			// if (!GlobalCore.SelectedCache().Found)
+			// if (!GlobalCore.getSelectedCache().Found)
 			// {
-			// GlobalCore.SelectedCache().Found = true;
+			// GlobalCore.getSelectedCache().Found = true;
 			// CacheDAO cacheDAO = new CacheDAO();
-			// cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+			// cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 			// Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
 			// Config.AcceptChanges();
 			// }
@@ -509,16 +509,16 @@ public class FieldNotesView extends V_ListView
 			// else if (newFieldNote.type == 2)
 			// {
 			// // DidNotFound -> Cache als nicht gefunden markieren
-			// if (GlobalCore.SelectedCache().Found)
+			// if (GlobalCore.getSelectedCache().Found)
 			// {
-			// GlobalCore.SelectedCache().Found = false;
+			// GlobalCore.getSelectedCache().Found = false;
 			// CacheDAO cacheDAO = new CacheDAO();
-			// cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+			// cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 			// Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
 			// Config.AcceptChanges();
 			// }
 			// // und eine evtl. vorhandene FieldNote FoundIt löschen
-			// lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
+			// lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
 			// }
 			//
 			// FieldNoteList.CreateVisitsTxt();
@@ -530,30 +530,30 @@ public class FieldNotesView extends V_ListView
 			if (newFieldNote.type == 1)
 			{
 				// Found it! -> Cache als gefunden markieren
-				if (!GlobalCore.SelectedCache().Found)
+				if (!GlobalCore.getSelectedCache().Found)
 				{
-					GlobalCore.SelectedCache().Found = true;
+					GlobalCore.getSelectedCache().Found = true;
 					CacheDAO cacheDAO = new CacheDAO();
-					cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
 					Config.AcceptChanges();
 				}
 				// und eine evtl. vorhandene FieldNote DNF löschen
-				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 2);
+				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 2);
 			}
 			else if (newFieldNote.type == 2)
 			{
 				// DidNotFound -> Cache als nicht gefunden markieren
-				if (GlobalCore.SelectedCache().Found)
+				if (GlobalCore.getSelectedCache().Found)
 				{
-					GlobalCore.SelectedCache().Found = false;
+					GlobalCore.getSelectedCache().Found = false;
 					CacheDAO cacheDAO = new CacheDAO();
-					cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
 					Config.AcceptChanges();
 				}
 				// und eine evtl. vorhandene FieldNote FoundIt löschen
-				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
+				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
 			}
 
 			FieldNoteList.CreateVisitsTxt();
@@ -585,30 +585,30 @@ public class FieldNotesView extends V_ListView
 				if (fieldNote.type == 1)
 				{
 					// Found it! -> Cache als gefunden markieren
-					if (!GlobalCore.SelectedCache().Found)
+					if (!GlobalCore.getSelectedCache().Found)
 					{
-						GlobalCore.SelectedCache().Found = true;
+						GlobalCore.getSelectedCache().Found = true;
 						CacheDAO cacheDAO = new CacheDAO();
-						cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 						Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
 						Config.AcceptChanges();
 					}
 					// und eine evtl. vorhandene FieldNote FoundIt löschen
-					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 2);
+					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 2);
 				}
 				else if (fieldNote.type == 2)
 				{
 					// DidNotFound -> Cache als nicht gefunden markieren
-					if (GlobalCore.SelectedCache().Found)
+					if (GlobalCore.getSelectedCache().Found)
 					{
-						GlobalCore.SelectedCache().Found = false;
+						GlobalCore.getSelectedCache().Found = false;
 						CacheDAO cacheDAO = new CacheDAO();
-						cacheDAO.WriteToDatabase_Found(GlobalCore.SelectedCache());
+						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 						Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
 						Config.AcceptChanges();
 					}
 					// und eine evtl. vorhandene FieldNote FoundIt löschen
-					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.SelectedCache().Id, 1);
+					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
 				}
 
 				FieldNoteList.CreateVisitsTxt();
@@ -629,7 +629,7 @@ public class FieldNotesView extends V_ListView
 		template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
 		template = template.replace("##date##", sdate);
 		template = template.replace("##time##", stime);
-		template = template.replace("##owner##", GlobalCore.SelectedCache().Owner);
+		template = template.replace("##owner##", GlobalCore.getSelectedCache().Owner);
 		template = template.replace("##gcusername##", Config.settings.GcLogin.getValue());
 		// template = template.replace("##gcvote##",
 		// comboBoxVote.SelectedIndex.ToString());
@@ -799,7 +799,7 @@ public class FieldNotesView extends V_ListView
 
 		Waypoint finalWp = null;
 		if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
-		if (cache != null) GlobalCore.SelectedWaypoint(cache, finalWp);
+		if (cache != null) GlobalCore.setSelectedWaypoint(cache, finalWp);
 	}
 
 	private OnLongClickListener itemLogClickListner = new OnLongClickListener()

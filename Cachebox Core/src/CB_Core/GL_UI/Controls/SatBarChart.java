@@ -3,29 +3,26 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.Events.GpsStateChangeEvent;
 import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.GL_UI.CB_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.GPS;
 import CB_Core.Locator.GpsStatus;
 import CB_Core.Locator.GpsStrength;
-import CB_Core.Math.CB_Rect;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 {
 
 	private GpsStatus mGpsStatus;
+	private Image[] balken = null;
 
 	public SatBarChart(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 
-		GpsStateChangeEventList.Add(this);
 	}
 
 	public void setGpsStatus(GpsStatus status)
@@ -43,63 +40,85 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	protected void render(SpriteBatch batch)
 	{
 
-		if (drawing != null) drawing.draw(batch);
-
 		if (redraw) setSatStrength();
 
 	}
 
-	Sprite drawing;
-
 	private void setSatStrength()
 	{
-		CB_Rect[] balken = null;
-		if (balken == null)
-		{
-			int w = (int) (this.width / 14);
+		float minH = (SpriteCache.bar.getBottomHeight() / 2) + SpriteCache.bar.getTopHeight();
 
-			balken = new CB_Rect[14];
-			balken[0] = new CB_Rect(0, 0, w, 10);
-			balken[1] = new CB_Rect(balken[0].getMaxX() + 3, 0, w, 10);
-			balken[2] = new CB_Rect(balken[1].getMaxX() + 3, 0, w, 10);
-			balken[3] = new CB_Rect(balken[2].getMaxX() + 3, 0, w, 10);
-			balken[4] = new CB_Rect(balken[3].getMaxX() + 3, 0, w, 10);
-			balken[5] = new CB_Rect(balken[4].getMaxX() + 3, 0, w, 10);
-			balken[6] = new CB_Rect(balken[5].getMaxX() + 3, 0, w, 10);
-			balken[7] = new CB_Rect(balken[6].getMaxX() + 3, 0, w, 10);
-			balken[8] = new CB_Rect(balken[7].getMaxX() + 3, 0, w, 10);
-			balken[9] = new CB_Rect(balken[8].getMaxX() + 3, 0, w, 10);
-			balken[10] = new CB_Rect(balken[9].getMaxX() + 3, 0, w, 10);
-			balken[11] = new CB_Rect(balken[10].getMaxX() + 3, 0, w, 10);
-			balken[12] = new CB_Rect(balken[11].getMaxX() + 3, 0, w, 10);
-			balken[13] = new CB_Rect(balken[12].getMaxX() + 3, 0, w, 10);
+		float w = (this.width / 14);
+		boolean small = SpriteCache.bar.getMinWidth() > w * 1.2f;
+		if (small)
+		{
+			w = (this.width / 12);
 		}
 
-		int w = getNextHighestPO2((int) this.width);
-		int h = getNextHighestPO2((int) this.height);
-		// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGB565);
+		if (balken == null)
+		{
+
+			float iniHeight = small ? SpriteCache.barSmall.getTopHeight() : SpriteCache.bar.getTopHeight();
+
+			w += 1;
+			balken = new Image[14];
+			balken[0] = new Image(new CB_RectF(0, 0, w, iniHeight), "");
+			balken[1] = new Image(new CB_RectF(balken[0].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[2] = new Image(new CB_RectF(balken[1].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[3] = new Image(new CB_RectF(balken[2].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[4] = new Image(new CB_RectF(balken[3].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[5] = new Image(new CB_RectF(balken[4].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[6] = new Image(new CB_RectF(balken[5].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[7] = new Image(new CB_RectF(balken[6].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[8] = new Image(new CB_RectF(balken[7].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[9] = new Image(new CB_RectF(balken[8].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[10] = new Image(new CB_RectF(balken[9].getMaxX() - 1, 0, w, iniHeight), "");
+			balken[11] = new Image(new CB_RectF(balken[10].getMaxX() - 1, 0, w, iniHeight), "");
+			if (!small) balken[12] = new Image(new CB_RectF(balken[11].getMaxX() - 1, 0, w, iniHeight), "");
+			if (!small) balken[13] = new Image(new CB_RectF(balken[12].getMaxX() - 1, 0, w, iniHeight), "");
+
+			for (Image tmp : balken)
+			{
+				if (tmp != null)
+				{
+					tmp.setDrawable(small ? SpriteCache.barSmall_0 : SpriteCache.bar_0);
+					this.addChild(tmp);
+				}
+			}
+		}
+
 		int count = 0;
 		if (GPS.getSatList() != null)
 		{
 			for (GpsStrength tmp : GPS.getSatList())
 			{
-
 				// balken höhe festlegen
-
-				balken[count].setHeight((int) ((tmp.getStrength() * 3 / 100) * this.height));
-
-				// // balken farbe festlegen
-				if (tmp.getFixed())
+				if (balken[count] != null)
 				{
-					p.setColor(Color.GREEN);
-				}
-				else
-				{
-					p.setColor(Color.GRAY);
-				}
+					float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.height, this.height);
 
-				p.fillRectangle(balken[count].getX(), balken[count].getY(), balken[count].getWidth(), balken[count].getHeight());
+					if (barHeight < minH)
+					{
+						barHeight = small ? SpriteCache.barSmall.getTopHeight() : SpriteCache.bar.getTopHeight();
+						balken[count].setDrawable(small ? SpriteCache.barSmall_0 : SpriteCache.bar_0);
+					}
+					else
+					{
+						balken[count].setDrawable(small ? SpriteCache.barSmall : SpriteCache.bar);
+					}
+
+					balken[count].setHeight(barHeight);
+
+					// // balken farbe festlegen
+					if (tmp.getFixed())
+					{
+						balken[count].setColor(Color.GREEN);
+					}
+					else
+					{
+						balken[count].setColor(Color.RED);
+					}
+				}
 
 				count++;
 				if (count >= 13) break;
@@ -111,19 +130,10 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		{
 			for (int i = count; i <= 13; i++)
 			{
-				p.setColor(Color.LIGHT_GRAY);
-
-				p.fillRectangle(balken[i].getX(), balken[i].getY(), balken[i].getWidth(), 5);
+				if (balken[i] != null) balken[i].setColor(Color.LIGHT_GRAY);
 			}
 		}
 
-		Texture tex = new Texture(p);
-
-		drawing = new Sprite(tex, (int) this.width, (int) this.height);
-		drawing.setX(0);
-		drawing.setY(0);
-		drawing.flip(false, true);
-		p.dispose();
 		redraw = false;
 		GL.that.renderOnce("MeasureCoord");
 
@@ -135,6 +145,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	public void GpsStateChanged()
 	{
 		redraw = true;
+		GL.that.renderOnce("GPS-State Change");
 	}
 
 	@Override
@@ -149,4 +160,17 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 
 	}
 
+	@Override
+	public void onShow()
+	{
+		super.onShow();
+		GpsStateChangeEventList.Add(this);
+	}
+
+	@Override
+	public void onHide()
+	{
+		super.onHide();
+		GpsStateChangeEventList.Remove(this);
+	}
 }

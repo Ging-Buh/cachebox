@@ -12,11 +12,9 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
-import CB_Core.Types.MysterySolution;
 import CB_Core.Types.Waypoint;
 
 public class CacheListDAO
@@ -25,7 +23,6 @@ public class CacheListDAO
 	{
 		SortedMap<Long, ArrayList<Waypoint>> waypoints;
 		waypoints = new TreeMap<Long, ArrayList<Waypoint>>();
-		cacheList.MysterySolutions = new ArrayList<MysterySolution>();
 		// zuerst alle Waypoints einlesen
 		ArrayList<Waypoint> wpList = new ArrayList<Waypoint>();
 		long aktCacheID = -1;
@@ -75,25 +72,6 @@ public class CacheListDAO
 			{
 				cache.waypoints = waypoints.get(cache.Id);
 				waypoints.remove(cache.Id);
-				if (cache.Type == CacheTypes.Multi || cache.Type == CacheTypes.Mystery || cache.Type == CacheTypes.Wherigo)
-				{
-					for (Waypoint wp : cache.waypoints)
-					{
-						if (wp.Type == CacheTypes.Final)
-						{
-							if (!(wp.Pos.getLatitude() == 0 && wp.Pos.getLongitude() == 0))
-							{
-								MysterySolution solution = new MysterySolution();
-								solution.Cache = cache;
-								solution.Waypoint = wp;
-								solution.Latitude = wp.Pos.getLatitude();
-								solution.Longitude = wp.Pos.getLongitude();
-								cacheList.MysterySolutions.add(solution);
-							}
-						}
-					}
-
-				}
 			}
 			else
 				cache.waypoints = new ArrayList<Waypoint>();

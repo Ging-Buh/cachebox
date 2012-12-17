@@ -259,26 +259,6 @@ public class Config
 		keyLookup.put(key, value);
 	}
 
-	// public static void Set(String key, double value)
-	// {
-	// Set(key, String.valueOf(value));
-	// }
-	//
-	// public static void Set(String key, float value)
-	// {
-	// Set(key, String.valueOf(value));
-	// }
-	//
-	// public static void Set(String key, boolean value)
-	// {
-	// Set(key, String.valueOf(value));
-	// }
-	//
-	// public static void Set(String key, int value)
-	// {
-	// Set(key, String.valueOf(value));
-	// }
-
 	public static void AcceptChanges()
 	{
 		settings.WriteToDB();

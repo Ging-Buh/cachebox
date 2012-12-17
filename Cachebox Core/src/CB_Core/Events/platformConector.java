@@ -89,6 +89,8 @@ public class platformConector
 
 		void vibrate();
 
+		float getCompassHeading();
+
 		GpsStatus getGpsStatus();
 	}
 
@@ -136,6 +138,16 @@ public class platformConector
 		}
 
 		return null;
+	}
+
+	public static float getCompassHeading()
+	{
+		if (hardwareListner != null)
+		{
+			return hardwareListner.getCompassHeading();
+		}
+
+		return -1;
 	}
 
 	private static KeyEventListner mKeyListner;

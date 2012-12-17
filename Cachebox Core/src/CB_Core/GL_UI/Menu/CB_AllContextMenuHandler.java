@@ -18,7 +18,7 @@ public class CB_AllContextMenuHandler
 	public static void showBtnCacheContextMenu()
 	{
 
-		boolean selectedCacheIsNull = (GlobalCore.SelectedCache() == null);
+		boolean selectedCacheIsNull = (GlobalCore.getSelectedCache() == null);
 
 		Menu icm = new Menu("BtnCacheContextMenu");
 		icm.addItemClickListner(onItemClickListner);
@@ -40,7 +40,7 @@ public class CB_AllContextMenuHandler
 		if (mi != null)
 		{
 			boolean enabled = false;
-			if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.SelectedCache()).equals(""))) enabled = true;
+			if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.getSelectedCache()).equals(""))) enabled = true;
 			mi.setEnabled(enabled);
 			mi.setIcon(new SpriteDrawable(SpriteCache.Icons.get(19)));
 		}
@@ -48,7 +48,7 @@ public class CB_AllContextMenuHandler
 		mi = icm.addItem(MenuID.MI_SPOILER, "spoiler", SpriteCache.Icons.get(22));
 		if (selectedCacheIsNull)
 		{
-			mi.setEnabled(GlobalCore.SelectedCache().SpoilerExists());
+			mi.setEnabled(GlobalCore.getSelectedCache().SpoilerExists());
 		}
 		else
 		{

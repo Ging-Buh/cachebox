@@ -37,6 +37,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowQuit;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView2;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Delete_Dialog;
@@ -76,7 +77,7 @@ public class TabMainView extends MainViewBase
 {
 	public static TabMainView that;
 
-	// private CB_Action_ShowTestView actionTestView;
+	private CB_Action_ShowTestView actionTestView;
 	private CB_Action_ShowHint actionShowHint;
 	public static CB_Action_ShowMap actionShowMap;
 	public static CB_Action_ShowCacheList actionShowCacheList;
@@ -178,7 +179,7 @@ public class TabMainView extends MainViewBase
 		// TODO activate TB List on 0.6.x => actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
-		// actionTestView = new CB_Action_ShowTestView();
+		if (GlobalCore.isTestVersion()) actionTestView = new CB_Action_ShowTestView();
 		actionShowSettings = new CB_Action_Show_Settings();
 
 		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
@@ -219,7 +220,7 @@ public class TabMainView extends MainViewBase
 				{
 					if (c.GcCode.equalsIgnoreCase(sGc))
 					{
-						GlobalCore.SelectedCache(c);
+						GlobalCore.setSelectedCache(c);
 						break;
 					}
 				}
@@ -286,7 +287,7 @@ public class TabMainView extends MainViewBase
 		actionRecVoice.setTab(this, Tab);
 		actionRecPicture.setTab(this, Tab);
 		actionRecVideo.setTab(this, Tab);
-		// actionTestView.setTab(this, Tab);
+		if (GlobalCore.isTestVersion()) actionTestView.setTab(this, Tab);
 
 		// actionScreenLock.setTab(this, Tab);
 
@@ -308,7 +309,7 @@ public class TabMainView extends MainViewBase
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
 		btn3.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
-		// btn3.addAction(new CB_ActionButton(actionTestView, false));
+		if (GlobalCore.isTestVersion()) btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
 		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
@@ -461,7 +462,7 @@ public class TabMainView extends MainViewBase
 		actionShowSolverView2.setTab(this, Tab);
 		actionShowDescriptionView.setTab(this, Tab);
 		actionNavigateTo2.setTab(this, Tab);
-		// actionTestView.setTab(this, Tab);
+		if (GlobalCore.isTestVersion()) actionTestView.setTab(this, Tab);
 		actionShowSpoilerView.setTab(this, Tab);
 
 		// Actions den Buttons zuweisen
@@ -470,7 +471,7 @@ public class TabMainView extends MainViewBase
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo2, false, GestureDirection.Down));
-		// btn3.addAction(new CB_ActionButton(actionTestView, false));
+		if (GlobalCore.isTestVersion()) btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 
@@ -581,6 +582,23 @@ public class TabMainView extends MainViewBase
 			CacheListButton.setButtonSprites(SpriteCache.CacheListFilter);
 		}
 
+		// ##################################
+		// Set new list size at context menu
+		// ##################################
+
+		int filterCount = Database.Data.Query.size();
+
+		if (Database.Data.Query.GetCacheByGcCode("CBPark") != null) --filterCount;
+
+		int DBCount = Database.Data.getCacheCountInDB();
+		String Filtert = "";
+		if (filterCount != DBCount)
+		{
+			Filtert = String.valueOf(filterCount) + "/";
+		}
+
+		String Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
+		actionShowCacheList.setNameExtention(Name);
 	}
 
 	public void showCacheList()

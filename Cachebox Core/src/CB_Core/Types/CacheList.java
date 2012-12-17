@@ -1,6 +1,5 @@
 package CB_Core.Types;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 import CB_Core.GlobalCore;
@@ -13,8 +12,6 @@ public class CacheList extends MoveableList<Cache>
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public ArrayList<MysterySolution> MysterySolutions;
 
 	public Cache GetCacheByGcCode(String GcCode)
 	{
@@ -86,7 +83,7 @@ public class CacheList extends MoveableList<Cache>
 			Waypoint waypoint = nextCache.GetFinalWaypoint();
 
 			// do not Change AutoResort Flag when selecting a Cache in the Resort function
-			GlobalCore.SelectedWaypoint(nextCache, waypoint, false);
+			GlobalCore.setSelectedWaypoint(nextCache, waypoint, false);
 			GlobalCore.NearestCache(nextCache);
 		}
 

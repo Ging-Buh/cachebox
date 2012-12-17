@@ -79,18 +79,11 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 
 		Me = this;
 
-		SelectedCacheEventList.Add(this);
-
 		FrameLayout notesLayout = (FrameLayout) inflater.inflate(R.layout.about, null, false);
 		this.addView(notesLayout);
 
 		findViewById();
 		setText();
-
-		// add Event Handler
-		SelectedCacheEventList.Add(this);
-		PositionEventList.Add(this);
-		GpsStateChangeEventList.Add(this);
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
 		{
@@ -151,19 +144,19 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 			@Override
 			public void onClick(View arg0)
 			{
-				if (GlobalCore.SelectedCache() == null) return;
+				if (GlobalCore.getSelectedCache() == null) return;
 
 				try
 				{
-					Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(GlobalCore.SelectedCache().Url.trim()));
+					Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(GlobalCore.getSelectedCache().Url.trim()));
 					main.mainActivity.startActivity(browserIntent);
 				}
 				catch (Exception exc)
 				{
 					Toast.makeText(
 							main.mainActivity,
-							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.SelectedCache().Url.trim() + ")",
-							Toast.LENGTH_SHORT).show();
+							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim()
+									+ ")", Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -280,17 +273,17 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	{
 		CachesFoundLabel
 				.setText(GlobalCore.Translations.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()));
-		if (GlobalCore.SelectedCache() != null) if (GlobalCore.SelectedWaypoint() != null)
+		if (GlobalCore.getSelectedCache() != null) if (GlobalCore.getSelectedWaypoint() != null)
 		{
-			WP.setText(GlobalCore.SelectedWaypoint().GcCode);
-			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.SelectedWaypoint().Pos.getLatitude()) + " "
-					+ GlobalCore.FormatLongitudeDM(GlobalCore.SelectedWaypoint().Pos.getLongitude()));
+			WP.setText(GlobalCore.getSelectedWaypoint().GcCode);
+			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.getSelectedWaypoint().Pos.getLatitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(GlobalCore.getSelectedWaypoint().Pos.getLongitude()));
 		}
 		else
 		{
-			WP.setText(GlobalCore.SelectedCache().GcCode);
-			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.SelectedCache().Pos.getLatitude()) + " "
-					+ GlobalCore.FormatLongitudeDM(GlobalCore.SelectedCache().Pos.getLongitude()));
+			WP.setText(GlobalCore.getSelectedCache().GcCode);
+			Cord.setText(GlobalCore.FormatLatitudeDM(GlobalCore.getSelectedCache().Pos.getLatitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(GlobalCore.getSelectedCache().Pos.getLongitude()));
 		}
 
 		this.invalidate();
@@ -326,6 +319,12 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 	{
 		LoadImages();
 		if (!Energy.AboutIsShown()) Energy.setAboutIsShown();
+
+		// add Event Handler
+		SelectedCacheEventList.Add(this);
+		PositionEventList.Add(this);
+		GpsStateChangeEventList.Add(this);
+
 		setSatStrength();
 	}
 
@@ -335,6 +334,10 @@ public class AboutView extends FrameLayout implements ViewOptionsMenu, SelectedC
 		if (Energy.AboutIsShown()) Energy.resetAboutIsShown();
 		ReleaseImages();
 
+		// remove Event Handler
+		SelectedCacheEventList.Remove(this);
+		PositionEventList.Remove(this);
+		GpsStateChangeEventList.Remove(this);
 	}
 
 	@Override

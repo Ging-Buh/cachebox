@@ -67,8 +67,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		lblDescMeasureCoord.setText(GlobalCore.Translations.Get("MeasureCoord"));
 		lblDescMeasureCount.setText(GlobalCore.Translations.Get("MeasureCount"));
 
-		CB_Core.Events.PositionChangedEventList.Add(this);
-
 		iniChart();
 
 	}
@@ -311,7 +309,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		}
 
 		redraw = true;
-
+		GL.that.renderOnce("MeasureCoord");
 	}
 
 	@Override
@@ -324,6 +322,20 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	public String getReceiverName()
 	{
 		return "MeasureCoordinate";
+	}
+
+	@Override
+	public void onShow()
+	{
+		super.onShow();
+		CB_Core.Events.PositionChangedEventList.Add(this);
+	}
+
+	@Override
+	public void onHide()
+	{
+		super.onHide();
+		CB_Core.Events.PositionChangedEventList.Remove(this);
 	}
 
 }

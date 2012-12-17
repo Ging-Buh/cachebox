@@ -25,8 +25,8 @@ public class CB_Action_ShowHint extends CB_Action
 	public boolean getEnabled()
 	{
 		// liefert true zurück wenn ein Cache gewählt ist und dieser einen Hint hat
-		if (GlobalCore.SelectedCache() == null) return false;
-		String hintText = GlobalCore.SelectedCache().hint;
+		if (GlobalCore.getSelectedCache() == null) return false;
+		String hintText = GlobalCore.getSelectedCache().hint;
 		if ((hintText == null) || (hintText.length() == 0)) return false;
 		return true;
 	}

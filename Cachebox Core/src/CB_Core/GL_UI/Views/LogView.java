@@ -32,7 +32,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		setBackground(SpriteCache.ListBack);
 
 		this.setBaseAdapter(null);
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		this.setDisposeFlag(false);
 	}
 
@@ -45,7 +45,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 			SelectedCacheEventList.Add(this);
 		}
 
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
 		resetInitial();
 	}

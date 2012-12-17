@@ -47,12 +47,12 @@ public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 			e.printStackTrace();
 		}
 
-		if (GlobalCore.SelectedCache() != null)
+		if (GlobalCore.getSelectedCache() != null)
 		{
-			float distance = GlobalCore.SelectedCache().Distance(false);
-			if (GlobalCore.SelectedWaypoint() != null)
+			float distance = GlobalCore.getSelectedCache().Distance(false);
+			if (GlobalCore.getSelectedWaypoint() != null)
 			{
-				distance = GlobalCore.SelectedWaypoint().Distance();
+				distance = GlobalCore.getSelectedWaypoint().Distance();
 			}
 
 			if (Config.settings.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted

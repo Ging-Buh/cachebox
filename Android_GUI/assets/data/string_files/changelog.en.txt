@@ -1,6 +1,14 @@
 
 Changes:
 
+Version : 0.5.1285
+	• Fix the start on a Nexus 7
+	• Option to delete older log's
+	• Adjustable compass layout
+	• Compress the DB after importing
+	• Fix the Download Description for Basic Member
+	• Fix some minor bugs
+
 Version : 0.5.1258
 	• Revised Coordinate Input
 	• Use of the GS-API V6

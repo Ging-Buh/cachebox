@@ -14,7 +14,9 @@ public class SettingEncryptedString extends SettingLongString
 	// liefert die Einstellung im Klartext
 	public String getValue()
 	{
-		return Config.decrypt(this.value);
+		if (value == null) return value;
+		else
+			return Config.decrypt(this.value);
 	}
 
 	// Liefert die verschlüsselte Einstellung zurück

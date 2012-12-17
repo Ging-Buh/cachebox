@@ -9,7 +9,6 @@ import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
-import CB_Core.Types.MysterySolution;
 import CB_Core.Types.Waypoint;
 
 public class CoordinateEntity extends Entity
@@ -60,7 +59,7 @@ public class CoordinateEntity extends Entity
 	@Override
 	public String Berechne()
 	{
-		Cache selCache = CB_Core.GlobalCore.SelectedCache();
+		Cache selCache = CB_Core.GlobalCore.getSelectedCache();
 		Coordinate coord = null;
 		if (selCache != null)
 		// In 99,9% der Fälle dürfte der Wegpunkt zum aktuellen Cache gehören
@@ -106,7 +105,7 @@ public class CoordinateEntity extends Entity
 		{
 			reader.close();
 		}
-		if ((CB_Core.GlobalCore.SelectedCache() == null) || (CB_Core.GlobalCore.SelectedCache().Id != dbWaypoint.CacheId))
+		if ((CB_Core.GlobalCore.getSelectedCache() == null) || (CB_Core.GlobalCore.getSelectedCache().Id != dbWaypoint.CacheId))
 		{
 			// Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
 			// Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
@@ -132,18 +131,10 @@ public class CoordinateEntity extends Entity
 				{
 					wp.Pos.setLatitude(coord.getLatitude());
 					wp.Pos.setLongitude(coord.getLongitude());
-					for (MysterySolution sol : Database.Data.Query.MysterySolutions)
-					{
-						if ((sol.Cache == cacheFromCacheList) && (sol.Waypoint == wp))
-						{
-							sol.Latitude = coord.getLatitude();
-							sol.Longitude = coord.getLongitude();
-						}
-					}
 					break;
 				}
 			}
-			if (CB_Core.GlobalCore.SelectedCache().Id == cacheFromCacheList.Id)
+			if (CB_Core.GlobalCore.getSelectedCache().Id == cacheFromCacheList.Id)
 
 			// Views.WaypointView.View.Refresh();
 			;

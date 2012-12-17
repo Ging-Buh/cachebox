@@ -49,41 +49,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	public DescriptionViewControl(Context context)
 	{
 		super(context);
-		setWebViewClient(new WebViewClient()
-		{
 
-			@Override
-			public void onPageFinished(WebView view, String url)
-			{
-				firstLoadReady = true;
-				super.onPageFinished(view, url);
-
-				Timer timer = new Timer();
-				TimerTask task = new TimerTask()
-				{
-					@Override
-					public void run()
-					{
-						main.mainActivity.runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								scrollTo(scrollPos.x, scrollPos.y);
-							}
-						});
-					}
-				};
-				timer.schedule(task, 100);
-
-			}
-
-		});
-	}
-
-	public DescriptionViewControl(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
 		mustLoadDescription = false;
 
 		this.setDrawingCacheEnabled(false);
@@ -97,85 +63,131 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		this.getSettings().setJavaScriptEnabled(true);
 		this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
-		this.setWebViewClient(new WebViewClient()
+		this.setWebViewClient(clint);
+		that = this;
+	}
+
+	public DescriptionViewControl(Context context, AttributeSet attrs)
+	{
+		super(context, attrs);
+
+		mustLoadDescription = false;
+
+		this.setDrawingCacheEnabled(false);
+		this.setAlwaysDrawnWithCacheEnabled(false);
+
+		// this.getSettings().setJavaScriptEnabled(true);
+		this.getSettings().setLightTouchEnabled(false);
+		this.getSettings().setLoadWithOverviewMode(true);
+		this.getSettings().setSupportZoom(true);
+		this.getSettings().setBuiltInZoomControls(true);
+		this.getSettings().setJavaScriptEnabled(true);
+		this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
+	}
+
+	WebViewClient clint = new WebViewClient()
+	{
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView view, String url)
 		{
-
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url)
+			if (url.contains("fake://fake.de/Attr"))
 			{
-				if (url.contains("fake://fake.de/Attr"))
+				int pos = url.indexOf("+");
+				if (pos < 0) return true;
+
+				final String attr = url.substring(pos + 1, url.length() - 1);
+
+				MessageBox.Show(GlobalCore.Translations.Get(attr));
+				return true;
+			}
+			else if (url.contains("fake://fake.de/download"))
+			{
+
+				Thread thread = new Thread()
 				{
-					int pos = url.indexOf("+");
-					if (pos < 0) return true;
-
-					final String attr = url.substring(pos + 1, url.length() - 1);
-
-					MessageBox.Show(GlobalCore.Translations.Get(attr));
-					return true;
-				}
-				else if (url.contains("fake://fake.de/download"))
-				{
-
-					Thread thread = new Thread()
+					public void run()
 					{
-						public void run()
+
+						String accessToken = Config.GetAccessToken();
+						if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
 						{
-
-							String accessToken = Config.GetAccessToken();
-							if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
+							int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);
+							if (result != 0)
 							{
-								int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);
-								if (result != 0)
-								{
-									onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
-									return;
-								}
-							}
-							if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
-							{
-								String s = "Download limit is reached!\n";
-								s += "You have downloaded the full cache details of " + CB_Core.Api.GroundspeakAPI.MaxCacheCount
-										+ " caches in the last 24 hours.\n";
-								if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10) s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
-
-								message = s;
-
-								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(2));
-
-								return;
-							}
-
-							if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
-							{
-								String s = "Download Details of this cache?\n";
-								s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
-								s += "Actual Downloads: " + CB_Core.Api.GroundspeakAPI.CurrentCacheCount + "\n";
-								s += "Max. Downloads in 24h: " + CB_Core.Api.GroundspeakAPI.MaxCacheCount;
-								message = s;
-								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(3));
-								return;
-							}
-							else
-							{
-								// call the download directly
-								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(4));
+								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
 								return;
 							}
 						}
-					};
-					pd = ProgressDialog.show(getContext(), "", "Download Description", true);
+						if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
+						{
+							String s = "Download limit is reached!\n";
+							s += "You have downloaded the full cache details of " + CB_Core.Api.GroundspeakAPI.MaxCacheCount
+									+ " caches in the last 24 hours.\n";
+							if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10) s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
 
-					thread.start();
+							message = s;
 
-					return true;
-				}
-				view.loadUrl(url);
+							onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(2));
+
+							return;
+						}
+
+						if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
+						{
+							String s = "Download Details of this cache?\n";
+							s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
+							s += "Actual Downloads: " + CB_Core.Api.GroundspeakAPI.CurrentCacheCount + "\n";
+							s += "Max. Downloads in 24h: " + CB_Core.Api.GroundspeakAPI.MaxCacheCount;
+							message = s;
+							onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(3));
+							return;
+						}
+						else
+						{
+							// call the download directly
+							onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(4));
+							return;
+						}
+					}
+				};
+				pd = ProgressDialog.show(getContext(), "", "Download Description", true);
+
+				thread.start();
+
 				return true;
 			}
+			view.loadUrl(url);
+			return true;
+		}
 
-		});
-		that = this;
-	}
+		@Override
+		public void onPageFinished(WebView view, String url)
+		{
+			firstLoadReady = true;
+			super.onPageFinished(view, url);
+
+			Timer timer = new Timer();
+			TimerTask task = new TimerTask()
+			{
+				@Override
+				public void run()
+				{
+					main.mainActivity.runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							scrollTo(scrollPos.x, scrollPos.y);
+						}
+					});
+				}
+			};
+			timer.schedule(task, 100);
+
+		}
+
+	};
 
 	private String message = "";
 	private Handler onlineSearchReadyHandler = new Handler()
@@ -246,18 +258,6 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		}
 	};
 
-	public DescriptionViewControl(Context context, AttributeSet attrs, int defStyle)
-	{
-		super(context, attrs, defStyle);
-
-	}
-
-	public DescriptionViewControl(Context context, String text)
-	{
-		super(context);
-
-	}
-
 	private int downloadTryCounter = 0;
 
 	public void setCache(final Cache cache)
@@ -282,6 +282,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 				if (!Config.settings.DescriptionNoAttributes.getValue()) html = getAttributesHtml(cache) + html;
 
+				// add 2 empty lines so that the last line of description can be selected with the markers
+				html += "</br></br>";
 			}
 
 			try
@@ -412,7 +414,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			@Override
 			public void run()
 			{
-				SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+				SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 				// that.getParent().requestLayout();
 
 				if (downloadTryCounter > 9) mustLoadDescription = true; // Versuchs

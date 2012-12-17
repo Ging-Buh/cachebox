@@ -26,12 +26,19 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollabseBox;
 import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
+import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.ScrollBox;
+import CB_Core.GL_UI.Controls.Spinner;
+import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_Core.GL_UI.Controls.SpinnerAdapter;
 import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.Controls.chkBox.OnCheckedChangeListener;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
+import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -54,11 +61,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private V_ListView lvPQs;
 	private Button bOK, bCancel, refreshPqList;
-	private float innerLeft, innerWidth, innerHeight, CollabseBoxHeight, CollabseBoxMaxHeight;
-	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblMaps, lblProgressMsg;
+	private float innerLeft, innerWidth, innerHeight, CollabseBoxHeight, CollabseBoxMaxHeight, CollabseBoxLogsMaxHeight;
+	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblMaps, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxImportMaps;
-	private CollabseBox PQ_ListCollabseBox;
+	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxImportMaps, checkBoxCleanLogs,
+			checkBoxCompactDB;
+	private CollabseBox PQ_ListCollabseBox, LogCollabseBox;
+	private Spinner spinner;
+
 	private Timer mAnimationTimer;
 	private long ANIMATION_TICK = 450;
 	private int animationValue = 0;
@@ -97,6 +107,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		createGcVoteLine();
 		createImageLine();
 		createMapLine();
+		createLogLine();
+		createLogCollabseBox();
+		createCompactDBLine();
 
 		initialForm();
 
@@ -173,7 +186,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		pgBar.setProgress(0, "");
 
-		float SmallLineHeight = Fonts.MeasureSmall("T").height;
+		float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
 
 		lblProgressMsg = new Label(this.getLeftWidth() + margin, lblTitle.getY() - margin - SmallLineHeight, this.getWidth()
 				- this.getLeftWidth() - this.getRightWidth() - margin - margin, SmallLineHeight, "ProgressMsg");
@@ -282,6 +295,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.addChild(lblImage);
 	}
 
+	final boolean MAP_LINE_ACTIVE = false;
+
 	private void createMapLine()
 	{
 		checkBoxImportMaps = new chkBox("Image");
@@ -298,13 +313,162 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		// scrollBox.addChild(lblMaps);
 	}
 
+	private void createLogLine()
+	{
+		checkBoxCleanLogs = new chkBox("Image");
+		checkBoxCleanLogs.setX(innerLeft);
+
+		float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadImages.getY();
+
+		checkBoxCleanLogs.setY(yPos - margin - checkBoxCleanLogs.getHeight());
+
+		lblLogs = new Label(checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), this.innerWidth - margin * 3
+				- checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight(), "");
+		lblLogs.setFont(Fonts.getNormal());
+		lblLogs.setText(GlobalCore.Translations.Get("DeleteLogs"));
+
+		scrollBox.addChild(checkBoxCleanLogs);
+		scrollBox.addChild(lblLogs);
+	}
+
+	ArrayList<String> values = new ArrayList<String>();
+
+	private void createLogCollabseBox()
+	{
+		float SmallLineHeight = Fonts.MeasureSmall("Tg").height * 1.5f;
+		CollabseBoxLogsMaxHeight = checkBoxCleanLogs.getHeight() + (SmallLineHeight * 3.5f) + (margin * 4);
+
+		CB_RectF rec = new CB_RectF(lblLogs.getX(), lblLogs.getY() - CollabseBoxLogsMaxHeight - margin, lblLogs.getWidth(),
+				CollabseBoxLogsMaxHeight);
+		LogCollabseBox = new CollabseBox(rec, "LogCollabse");
+		LogCollabseBox.setBackground(this.getBackground());
+		scrollBox.addChild(LogCollabseBox);
+
+		// ################################
+		// create and fill LogLife spinner
+		// ################################
+
+		values.clear();
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_0"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_1"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_2"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_3"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_4"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_5"));
+		values.add(GlobalCore.Translations.Get("comboBoxLogLifeItem_6"));
+
+		final SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return values.get(position);
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return values.size();
+			}
+		};
+
+		spinner = new Spinner(margin, LogCollabseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollabseBox.getWidth()
+				- margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner()
+		{
+
+			@Override
+			public void selectionChanged(int index)
+			{
+				Config.settings.LogMaxMonthAge.setValue(index);
+				Config.AcceptChanges();
+			}
+		});
+
+		LogCollabseBox.addChild(spinner);
+
+		Label lblButKeepLeast = new Label(margin, spinner.getY() - margin - SmallLineHeight, LogCollabseBox.getAvailableWidth(),
+				SmallLineHeight, "lblButKeepLeast");
+		lblButKeepLeast.setText(GlobalCore.Translations.Get("ButKeepLeast"));
+		LogCollabseBox.addChild(lblButKeepLeast);
+
+		final EditWrapedTextField input = new EditWrapedTextField(LogCollabseBox, checkBoxCleanLogs.ScaleCenter(2), "InputTextField");
+		input.setHeight(SmallLineHeight * 2.5f);
+		input.setText(String.valueOf(Config.settings.LogMinCount.getValue()));
+		input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());
+		LogCollabseBox.addChild(input);
+
+		// prevented Keyboard popup, show NumerikInputBox
+		input.setOnscreenKeyboard(new OnscreenKeyboard()
+		{
+			@Override
+			public void show(boolean visible)
+			{
+				if (visible)
+				{
+					NumerikInputBox.Show(GlobalCore.Translations.Get("ButKeepLeast"), GlobalCore.Translations.Get("DeleteLogs"),
+							Config.settings.LogMinCount.getValue(), new returnValueListner()
+							{
+
+								@Override
+								public void returnValue(int value)
+								{
+									Config.settings.LogMinCount.setValue(value);
+									Config.AcceptChanges();
+									input.setText(String.valueOf(value));
+								}
+
+								@Override
+								public void cancelClicked()
+								{
+
+								}
+							});
+				}
+			}
+		});
+
+	}
+
+	private void createCompactDBLine()
+	{
+		checkBoxCompactDB = new chkBox("Compact");
+		checkBoxCompactDB.setX(innerLeft);
+		checkBoxCompactDB.setY(LogCollabseBox.getY() - margin - checkBoxCompactDB.getHeight());
+
+		lblCompact = new Label(checkBoxPreloadImages.getMaxX() + margin, checkBoxCompactDB.getY(), this.innerWidth - margin * 3
+				- checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
+		lblCompact.setFont(Fonts.getNormal());
+		lblCompact.setText(GlobalCore.Translations.Get("CompactDB"));
+
+		scrollBox.addChild(checkBoxCompactDB);
+		scrollBox.addChild(lblCompact);
+	}
+
 	private void Layout()
 	{
-		checkBoxImportMaps.setY(margin);
-		lblMaps.setY(margin);
 
-		checkBoxPreloadImages.setY(lblMaps.getMaxY() + margin);
-		lblImage.setY(lblMaps.getMaxY() + margin);
+		checkBoxCompactDB.setY(margin);
+		lblCompact.setY(margin);
+
+		LogCollabseBox.setY(checkBoxCompactDB.getMaxY() + margin);
+
+		checkBoxCleanLogs.setY(LogCollabseBox.getMaxY() + margin);
+		lblLogs.setY(LogCollabseBox.getMaxY() + margin);
+
+		checkBoxImportMaps.setY(lblLogs.getMaxY() + margin);
+		lblMaps.setY(lblLogs.getMaxY() + margin);
+
+		float yPos = MAP_LINE_ACTIVE ? lblMaps.getMaxY() : lblLogs.getMaxY();
+
+		checkBoxPreloadImages.setY(yPos + margin);
+		lblImage.setY(yPos + margin);
 
 		checkBoxGcVote.setY(lblImage.getMaxY() + margin);
 		lblGcVote.setY(lblImage.getMaxY() + margin);
@@ -330,7 +494,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
 
-		if (Config.settings.GcAPI.getValue().length() > 0)
+		if ((Config.settings.GcAPI.getValue() != null) && (Config.settings.GcAPI.getValue().length() > 0))
 		{
 			checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
 			checkImportPQfromGC.setEnabled(true);
@@ -360,17 +524,64 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			checkBoxImportGPX.setEnabled(false);
 		}
 
-		PQ_ListCollabseBox.setAnimationListner(new animatetHeightChangedListner()
-		{
+		PQ_ListCollabseBox.setAnimationListner(Animationlistner);
+		LogCollabseBox.setAnimationListner(Animationlistner);
 
-			@Override
-			public void animatetHeightCanged(float Height)
+		checkBoxCleanLogs.setChecked(Config.settings.DeleteLogs.getValue());
+		checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
+
+		if (checkBoxCleanLogs.isChecked())
+		{
+			LogCollabseBox.setAnimationHeight(CollabseBoxLogsMaxHeight);
+
+			// validate value
+			int value = Config.settings.LogMaxMonthAge.getValue();
+			if (value > 6)
 			{
-				Layout();
+				Config.settings.LogMaxMonthAge.setValue(6);
+				Config.AcceptChanges();
 			}
-		});
+
+			spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
+		}
+		else
+		{
+			LogCollabseBox.setAnimationHeight(0);
+		}
+
+		checkBoxCompactDB.setChecked(Config.settings.CompactDB.getValue());
 
 	}
+
+	animatetHeightChangedListner Animationlistner = new animatetHeightChangedListner()
+	{
+		@Override
+		public void animatetHeightCanged(float Height)
+		{
+			Layout();
+		}
+	};
+
+	private OnCheckedChangeListener checkLog_CheckStateChanged = new OnCheckedChangeListener()
+	{
+
+		@Override
+		public void onCheckedChanged(chkBox view, boolean isChecked)
+		{
+			if (checkBoxCleanLogs.isChecked())
+			{
+				LogCollabseBox.expand();
+				spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
+			}
+			else
+			{
+				LogCollabseBox.collabse();
+			}
+
+			Config.settings.DeleteLogs.setValue(isChecked);
+			Config.AcceptChanges();
+		}
+	};
 
 	private OnCheckedChangeListener checkImportPQfromGC_CheckStateChanged = new OnCheckedChangeListener()
 	{
@@ -512,6 +723,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		Config.settings.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
 		Config.settings.ImportRatings.setValue(checkBoxGcVote.isChecked());
+		Config.settings.CompactDB.setValue(checkBoxCompactDB.isChecked());
 		Config.AcceptChanges();
 		String directoryPath = Config.settings.PocketQueryFolder.getValue();
 		// chk exist import folder
@@ -536,7 +748,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 				try
 				{
-
+					// Set Progress values
 					if (checkImportPQfromGC.isChecked())
 					{
 						ip.addStep(ip.new Step("importGC", 4));
@@ -558,6 +770,18 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						ip.addStep(ip.new Step("importImageUrls", 4));
 						ip.addStep(ip.new Step("importImages", 4));
 					}
+
+					if (checkBoxCleanLogs.isChecked())
+					{
+						ip.addStep(ip.new Step("DeleteLogs", 1));
+					}
+
+					if (checkBoxCompactDB.isChecked())
+					{
+						ip.addStep(ip.new Step("CompactDB", 1));
+					}
+
+					// begin import
 
 					if (checkImportPQfromGC.isChecked())
 					{
@@ -697,6 +921,20 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 					if (checkBoxImportMaps.isChecked()) importer.importMaps();
 
 					Thread.sleep(1000);
+					if (checkBoxCleanLogs.isChecked())
+					{
+						ip.setJobMax("DeleteLogs", 1);
+						Database.Data.DeleteOldLogs();
+						ip.ProgressInkrement("DeleteLogs", "", true);
+					}
+
+					if (checkBoxCompactDB.isChecked())
+					{
+						ip.setJobMax("CompactDB", 1);
+						Database.Data.execSQL("vacuum");
+						ip.ProgressInkrement("CompactDB", "", true);
+					}
+
 				}
 				catch (InterruptedException e)
 				{

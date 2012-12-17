@@ -54,7 +54,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
 					// damit die Icons in der Map aktualisiert werden
-					SelectedCacheEventList.Call(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+					SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
 					pop.show(PopUp_Base.SHOW_TIME_SHORT);
 					platformConector.vibrate();
@@ -64,7 +64,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
 					// damit die Icons in der Map aktualisiert werden
-					SelectedCacheEventList.Call(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+					SelectedCacheEventList.Call(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
 					pop2.show(PopUp_Base.SHOW_TIME_SHORT);
 					platformConector.vibrate();

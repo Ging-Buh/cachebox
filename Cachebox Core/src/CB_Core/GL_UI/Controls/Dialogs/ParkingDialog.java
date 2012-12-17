@@ -132,7 +132,7 @@ public class ParkingDialog extends ButtonDialog
 			{
 				Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
 
-				if (cache != null) GlobalCore.SelectedCache(cache);
+				if (cache != null) GlobalCore.setSelectedCache(cache);
 				close();
 				return true;
 			}

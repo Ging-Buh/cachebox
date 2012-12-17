@@ -29,8 +29,6 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.GpsStateChangeEvent;
-import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
@@ -191,7 +189,7 @@ import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
-		GpsStatus.NmeaListener, ILog, GpsStateChangeEvent, KeyboardFocusChangedEvent
+		GpsStatus.NmeaListener, ILog, KeyboardFocusChangedEvent
 {
 
 	private static ServiceConnection mConnection;
@@ -346,8 +344,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putInt("WindowWidth", UiSizes.ui.Window.width);
 		savedInstanceState.putInt("WindowHeight", UiSizes.ui.Window.height);
 
-		if (GlobalCore.SelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.SelectedCache().GcCode);
-		if (GlobalCore.SelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint", GlobalCore.SelectedWaypoint().GcCode);
+		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().GcCode);
+		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint",
+				GlobalCore.getSelectedWaypoint().GcCode);
 
 		// TODO onSaveInstanceState => save more
 
@@ -498,7 +497,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// add Event Handler
 		SelectedCacheEventList.Add(this);
 		CachListChangedEventList.Add(this);
-		GpsStateChangeEventList.Add(this);
+		// GpsStateChangeEventList.Add(this);
 
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -910,7 +909,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					@Override
 					public void run()
 					{
-						if (GlobalCore.SelectedCache() != null) GlobalCore.SelectedCache().ReloadSpoilerRessources();
+						if (GlobalCore.getSelectedCache() != null) GlobalCore.getSelectedCache().ReloadSpoilerRessources();
 						String MediaFolder = Config.settings.UserImageFolder.getValue();
 						String TrackFolder = Config.settings.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
@@ -1270,7 +1269,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					extAudioRecorder.release();
 					extAudioRecorder = null;
 				}
-				GlobalCore.SelectedCache(null);
+				GlobalCore.setSelectedCache(null);
 				SelectedCacheEventList.list.clear();
 				PositionEventList.list.clear();
 				SelectedCacheEventList.list.clear();
@@ -1396,7 +1395,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	 * Handler
 	 */
 
-	private float compassHeading = 0;
+	private float compassHeading = -1;
 
 	private final SensorEventListener mListener = new SensorEventListener()
 	{
@@ -1413,7 +1412,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				mCompassValues = event.values;
 				compassHeading = mCompassValues[0];
 
-				GlobalCore.Locator.setCompassHeading(mCompassValues[0]);
 				PositionEventList.Call(mCompassValues[0], "CompassValue");
 			}
 			catch (Exception e)
@@ -1899,9 +1897,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		basename = Global.GetDateTimeString();
 
-		if (GlobalCore.SelectedCache() != null)
+		if (GlobalCore.getSelectedCache() != null)
 		{
-			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+			String validName = FileIO
+					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-" + GlobalCore.getSelectedCache().Name);
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1933,9 +1932,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		basename = Global.GetDateTimeString();
 
-		if (GlobalCore.SelectedCache() != null)
+		if (GlobalCore.getSelectedCache() != null)
 		{
-			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+			String validName = FileIO
+					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-" + GlobalCore.getSelectedCache().Name);
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1981,9 +1981,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			basename = Global.GetDateTimeString();
 
-			if (GlobalCore.SelectedCache() != null)
+			if (GlobalCore.getSelectedCache() != null)
 			{
-				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.SelectedCache().GcCode + "-" + GlobalCore.SelectedCache().Name);
+				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-"
+						+ GlobalCore.getSelectedCache().Name);
 				mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 				// Title = Global.SelectedCache().Name;
 			}
@@ -2050,7 +2051,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					try
 					{
 						URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.settings.GcJoker.getValue() + "&wpt="
-								+ GlobalCore.SelectedCache().GcCode);
+								+ GlobalCore.getSelectedCache().GcCode);
 						URLConnection urlConnection = url.openConnection();
 						HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
 
@@ -2165,15 +2166,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void NavigateTo()
 	{
-		if (GlobalCore.SelectedCache() != null)
+		if (GlobalCore.getSelectedCache() != null)
 		{
-			double lat = GlobalCore.SelectedCache().Latitude();
-			double lon = GlobalCore.SelectedCache().Pos.getLongitude();
+			double lat = GlobalCore.getSelectedCache().Latitude();
+			double lon = GlobalCore.getSelectedCache().Pos.getLongitude();
 
-			if (GlobalCore.SelectedWaypoint() != null)
+			if (GlobalCore.getSelectedWaypoint() != null)
 			{
-				lat = GlobalCore.SelectedWaypoint().Pos.getLatitude();
-				lon = GlobalCore.SelectedWaypoint().Pos.getLongitude();
+				lat = GlobalCore.getSelectedWaypoint().Pos.getLatitude();
+				lon = GlobalCore.getSelectedWaypoint().Pos.getLongitude();
 			}
 
 			/*
@@ -2566,19 +2567,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		return GpsOn;
 	}
 
-	@Override
-	public void GpsStateChanged()
-	{
-		try
-		{
-			setSatStrength();
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.GpsStateChanged()", "setSatStrength()", e);
-			e.printStackTrace();
-		}
-	}
+	// @Override
+	// public void GpsStateChanged()
+	// {
+	// try
+	// {
+	// setSatStrength();
+	// }
+	// catch (Exception e)
+	// {
+	// Logger.Error("main.GpsStateChanged()", "setSatStrength()", e);
+	// e.printStackTrace();
+	// }
+	// }
 
 	private static View[] balken = null;
 
@@ -2951,6 +2952,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 
 				return coreStatus;
+			}
+
+			@Override
+			public float getCompassHeading()
+			{
+				return compassHeading;
 			}
 		});
 
@@ -3417,10 +3424,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 			case -1:
 				CacheDAO dao = new CacheDAO();
-				Cache newCache = dao.LoadApiDetails(GlobalCore.SelectedCache());
+				Cache newCache = dao.LoadApiDetails(GlobalCore.getSelectedCache());
 				if (newCache != null)
 				{
-					GlobalCore.SelectedCache(newCache);
+					GlobalCore.setSelectedCache(newCache);
 
 					// hier ist kein AccessToke mehr notwendig, da diese Info
 					// bereits im Cache sein muss!

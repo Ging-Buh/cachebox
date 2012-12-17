@@ -90,10 +90,10 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	public void onItemSelected(AdapterView<?> parent, View v, int position, long id)
 	{
 		if (aktCache == null) return;
-		String filename = GlobalCore.SelectedCache().SpoilerRessources().get(position).Name;
+		String filename = GlobalCore.getSelectedCache().SpoilerRessources().get(position).Name;
 
 		spoilerFilename.setText(filename);
-		String file = GlobalCore.SelectedCache().SpoilerRessources().get(position).LocalPath;
+		String file = GlobalCore.getSelectedCache().SpoilerRessources().get(position).LocalPath;
 
 		String html = "<html><body><div style=\"width: 100%;\"><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"file://"
 				+ file + "\"></img></div></body></html>";
@@ -132,7 +132,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 			ImageView i = new ImageView(mContext);
 
 			// String file =
-			// GlobalCore.SelectedCache().SpoilerRessources().get(position);
+			// GlobalCore.getSelectedCache().SpoilerRessources().get(position);
 			Bitmap bit = null;
 			bit = lBitmaps.get(position);
 			if (bit == null) return null;
@@ -198,7 +198,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	@Override
 	public void OnShow()
 	{
-		aktCache = GlobalCore.SelectedCache();
+		aktCache = GlobalCore.getSelectedCache();
 		lBitmaps.clear();
 		for (ImageEntry image : aktCache.SpoilerRessources())
 		{

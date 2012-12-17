@@ -49,7 +49,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		setBackground(SpriteCache.ListBack);
 
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		SelectedCacheEventList.Add(this);
 		WaypointListChangedEventList.Add(this);
 	}
@@ -76,9 +76,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			this.setDragable();
 		}
 
-		if (GlobalCore.SelectedWaypoint() != null)
+		if (GlobalCore.getSelectedWaypoint() != null)
 		{
-			aktWaypoint = GlobalCore.SelectedWaypoint();
+			aktWaypoint = GlobalCore.getSelectedWaypoint();
 			int id = 0;
 
 			for (Waypoint wp : aktCache.waypoints)
@@ -112,7 +112,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			if (selectionIndex == 0)
 			{
 				// Cache selected
-				GlobalCore.SelectedCache(aktCache);
+				GlobalCore.setSelectedCache(aktCache);
 			}
 			else
 			{
@@ -122,7 +122,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				{
 					aktWaypoint = wpi.getWaypoint();
 				}
-				GlobalCore.SelectedWaypoint(aktCache, aktWaypoint);
+				GlobalCore.setSelectedWaypoint(aktCache, aktWaypoint);
 			}
 
 			setSelection(selectionIndex);
@@ -141,7 +141,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			if (selectionIndex == 0)
 			{
 				// Cache selected
-				GlobalCore.SelectedCache(aktCache);
+				GlobalCore.setSelectedCache(aktCache);
 			}
 			else
 			{
@@ -151,7 +151,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				{
 					aktWaypoint = wpi.getWaypoint();
 				}
-				GlobalCore.SelectedWaypoint(aktCache, aktWaypoint);
+				GlobalCore.setSelectedWaypoint(aktCache, aktWaypoint);
 			}
 
 			setSelection(selectionIndex);
@@ -277,9 +277,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			this.setDragable();
 		}
 
-		if (GlobalCore.SelectedWaypoint() != null)
+		if (GlobalCore.getSelectedWaypoint() != null)
 		{
-			aktWaypoint = GlobalCore.SelectedWaypoint();
+			aktWaypoint = GlobalCore.getSelectedWaypoint();
 			int id = 0;
 
 			for (Waypoint wp : aktCache.waypoints)
@@ -360,16 +360,16 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		String newGcCode = "";
 		try
 		{
-			newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+			newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
 		}
 		catch (Exception e)
 		{
 			return;
 		}
 		Coordinate coord = GlobalCore.LastValidPosition;
-		if ((coord == null) || (!coord.Valid)) coord = GlobalCore.SelectedCache().Pos;
+		if ((coord == null) || (!coord.Valid)) coord = GlobalCore.getSelectedCache().Pos;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
-				GlobalCore.SelectedCache().Id, "", GlobalCore.Translations.Get("wyptDefTitle"));
+				GlobalCore.getSelectedCache().Id, "", GlobalCore.Translations.Get("wyptDefTitle"));
 		editWP(newWP);
 
 	}
@@ -397,10 +397,10 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					if (createNewWaypoint)
 					{
 
-						GlobalCore.SelectedCache().waypoints.add(waypoint);
+						GlobalCore.getSelectedCache().waypoints.add(waypoint);
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = waypoint;
-						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), waypoint);
+						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
 						WaypointDAO waypointDAO = new WaypointDAO();
 						waypointDAO.WriteToDatabase(waypoint);
 
@@ -449,8 +449,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						case GL_MsgBox.BUTTON_POSITIVE:
 							// Yes button clicked
 							Database.DeleteFromDatabase(aktWaypoint);
-							GlobalCore.SelectedCache().waypoints.remove(aktWaypoint);
-							GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), null);
+							GlobalCore.getSelectedCache().waypoints.remove(aktWaypoint);
+							GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
 							aktWaypoint = null;
 							that.setBaseAdapter(lvAdapter);
 
@@ -496,7 +496,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						String newGcCode = "";
 						try
 						{
-							newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+							newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
 						}
 						catch (Exception e)
 						{
@@ -504,11 +504,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 							return;
 						}
 						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(),
-								targetCoord.getLongitude(), GlobalCore.SelectedCache().Id, "", "projiziert");
-						GlobalCore.SelectedCache().waypoints.add(newWP);
+								targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
+						GlobalCore.getSelectedCache().waypoints.add(newWP);
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = newWP;
-						GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), newWP);
+						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
 						WaypointDAO waypointDAO = new WaypointDAO();
 						waypointDAO.WriteToDatabase(newWP);
 
@@ -535,7 +535,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				String newGcCode = "";
 				try
 				{
-					newGcCode = Database.CreateFreeGcCode(GlobalCore.SelectedCache().GcCode);
+					newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
 				}
 				catch (Exception e)
 				{
@@ -543,11 +543,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					return;
 				}
 				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(),
-						returnCoord.getLongitude(), GlobalCore.SelectedCache().Id, "", "Measured");
-				GlobalCore.SelectedCache().waypoints.add(newWP);
+						returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
+				GlobalCore.getSelectedCache().waypoints.add(newWP);
 				that.setBaseAdapter(lvAdapter);
 				aktWaypoint = newWP;
-				GlobalCore.SelectedWaypoint(GlobalCore.SelectedCache(), newWP);
+				GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
 				WaypointDAO waypointDAO = new WaypointDAO();
 				waypointDAO.WriteToDatabase(newWP);
 

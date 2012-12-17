@@ -73,7 +73,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		this.setOnTouchListener(myTouchListner);
 
 		Me = this;
-		GpsStateChangeEventList.Add(this);
 
 	}
 
@@ -287,10 +286,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		SlideIcon.setBounds(SlideIconRec);
 		SlideIcon.draw(canvas);
 
-		if (mCache == null) return;
-
 		// draw Cache Name
-		canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
+		if (mCache != null) canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
 
 		// Draw only is visible
 		if (Config.settings.quickButtonShow.getValue())
@@ -298,6 +295,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			if (yPos <= QuickButtonMaxHeight)
 			{
 				if (Energy.SliderIsShown()) Energy.resetSliderIsShown();
+				// Slider is visible, chk if GpsStateChangedListner
+				if (GpsStateChabgedListnerRegistred) unregisterGpsStateChangedListner();
 				return;
 			}
 		}
@@ -306,9 +305,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			if (yPos <= 1)
 			{
 				if (Energy.SliderIsShown()) Energy.resetSliderIsShown();
+				// Slider is visible, chk if GpsStateChangedListner
+				if (GpsStateChabgedListnerRegistred) unregisterGpsStateChangedListner();
 				return;
 			}
 		}
+
+		// Slider is visible, chk if GpsStateChangedListner
+		if (!GpsStateChabgedListnerRegistred) registerGpsStateChangedListner();
 
 		if (!Energy.SliderIsShown()) Energy.setSliderIsShown();
 
@@ -481,9 +485,9 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				downSlider.Me.setPos_onUI(0);
 			}
 
-			if (GlobalCore.SelectedCache() != null)
+			if (GlobalCore.getSelectedCache() != null)
 			{
-				downSlider.Me.setCache_onUI(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+				downSlider.Me.setCache_onUI(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 			}
 
 		}
@@ -917,6 +921,20 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	{
 		this.invalidate();
 
+	}
+
+	boolean GpsStateChabgedListnerRegistred = false;
+
+	private void registerGpsStateChangedListner()
+	{
+		GpsStateChangeEventList.Add(this);
+		GpsStateChabgedListnerRegistred = true;
+	}
+
+	private void unregisterGpsStateChangedListner()
+	{
+		GpsStateChangeEventList.Remove(this);
+		GpsStateChabgedListnerRegistred = false;
 	}
 
 }

@@ -71,7 +71,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (emptyMsg == null)
 			{
 				emptyMsg = new BitmapFontCache(Fonts.getBig());
-				TextBounds bounds = emptyMsg.setText(GlobalCore.Translations.Get("EmptyCacheList"), 0, 0);
+				TextBounds bounds = emptyMsg.setWrappedText(GlobalCore.Translations.Get("EmptyCacheList"), 0, 0, this.width);
 				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
@@ -127,7 +127,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			public void run()
 			{
 				// aktuellen Cache in der List anzeigen
-				if (GlobalCore.SelectedCache() != null)
+				if (GlobalCore.getSelectedCache() != null)
 				{
 					setSelectedCacheVisible();
 
@@ -170,7 +170,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		{
 			for (Cache ca : Database.Data.Query)
 			{
-				if (ca == GlobalCore.SelectedCache())
+				if (ca == GlobalCore.getSelectedCache())
 				{
 					listView.setSelection(id);
 					if (!(first <= id && last >= id)) listView.scrollToItem(id - pos);
@@ -220,7 +220,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			{
 				// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
 				Waypoint waypoint = cache.GetFinalWaypoint();
-				GlobalCore.SelectedWaypoint(cache, waypoint);
+				GlobalCore.setSelectedWaypoint(cache, waypoint);
 			}
 			listView.setSelection(selectionIndex);
 			return true;
@@ -244,7 +244,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 			// shutdown AutoResort when selecting a cache by hand
 			GlobalCore.autoResort = false;
-			GlobalCore.SelectedWaypoint(cache, finalWp);
+			GlobalCore.setSelectedWaypoint(cache, finalWp);
 
 			invalidate();
 			CB_AllContextMenuHandler.showBtnCacheContextMenu();
@@ -353,7 +353,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		if (GlobalCore.SelectedCache() != null)
+		if (GlobalCore.getSelectedCache() != null)
 		{
 			setSelectedCacheVisible();
 		}

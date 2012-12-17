@@ -10,7 +10,6 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
-import CB_Core.Types.MysterySolution;
 import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -98,125 +97,51 @@ public class MapViewCacheList
 								// im Bild ?
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
-								boolean CacheIsNotVisible = !((MapX >= point1.x) && (MapX < point2.x)
-										&& (Math.abs(MapY) > Math.abs(point1.y)) && (Math.abs(MapY) < Math.abs(point2.y)));
-								if (CacheIsNotVisible && !(showAllWaypoints || GlobalCore.SelectedCache() == cache))
+								boolean CacheIsVisible = isVisible(MapX, MapY);
+								if (!CacheIsVisible && !(showAllWaypoints || GlobalCore.getSelectedCache() == cache))
 								{
-									// keine Wegpunkte anzuzeigen und Cache nicht im Bild
+									// Cache nicht im Bild && keine Wegpunkte anzuzeigen
 									continue;
 								}
-								// zuerst Wegpunkte hinzufügen, damit die Anzeige erfolgt, auch wenn Cache nicht im Bild ist
-								if (showAllWaypoints || GlobalCore.SelectedCache() == cache)
+								Waypoint fwp = null;
+								// zuerst Wegpunkte hinzufügen, damit deren Anzeige erfolgt, auch wenn der Cache nicht im Bild ist
+								if (showAllWaypoints || GlobalCore.getSelectedCache() == cache)
 								{
-									addWaypoints(cache);
+									addWaypoints(cache, iconSize);
 								}
 								else
 								{
 									if (cache.Type == CacheTypes.Mystery)
 									{
-										if (cache.CorrectedCoordiantesOrMysterySolved())
+										if (!cache.hasCorrectedCoordinates())
 										{
-											if (cache.HasFinalWaypoint())
+											fwp = cache.GetFinalWaypoint();
+											if (fwp != null)
 											{
-												// könnte man eigentlich auch jetzt schon hinzufügen, aber
-												// Final statt Cache später hinzufügen aus den MysterySolutions
-												// (mit geändertem Symbol)
-												continue;
+												// nehme Finalkoordinaten
+												MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, fwp.Pos.getLongitude());
+												MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, fwp.Pos.getLatitude());
+												CacheIsVisible = isVisible(MapX, MapY);
 											}
 										}
 									}
 									// kein Final, bzw Wegpunkte nicht anzeigen, dann den Cache anzeigen
 								}
 								// im Bild?
-								if (CacheIsNotVisible) continue;
-
-								// Cache zeigen
-								WaypointRenderInfo wpi = new WaypointRenderInfo();
-								wpi.MapX = (float) MapX;
-								wpi.MapY = (float) MapY;
-								if (cache.Archived || !cache.Available) wpi.OverlayIcon = SpriteCache.MapOverlay.get(2);
-								if ((iconSize < 1) && (cache != GlobalCore.SelectedCache()))
+								if (CacheIsVisible)
 								{
-									wpi.Icon = getSmallMapIcon(cache);
-									wpi.UnderlayIcon = null;
-								}
-								else
-								{
-									// der SelectedCache wird immer mit den großen Symbolen dargestellt!
-									wpi.Icon = getMapIcon(cache);
-									wpi.UnderlayIcon = getUnderlayIcon(cache, wpi.Waypoint);
-								}
-								wpi.Cache = cache;
-								wpi.Waypoint = null;
-								wpi.Selected = (GlobalCore.SelectedCache() == cache);
+									// Cache zeigen
+									WaypointRenderInfo wpi = new WaypointRenderInfo();
+									wpi.MapX = (float) MapX;
+									wpi.MapY = (float) MapY;
+									if (cache.Archived || !cache.Available) wpi.OverlayIcon = SpriteCache.MapOverlay.get(2);
+									wpi.UnderlayIcon = getUnderlayIcon(cache, null, iconSize);
+									wpi.Icon = getCacheIcon(cache, iconSize);
+									wpi.Cache = cache;
+									wpi.Waypoint = fwp; // ist null, ausser bei Mystery-Final
+									wpi.Selected = (GlobalCore.getSelectedCache() == cache);
 
-								tmplist.add(wpi);
-
-							}
-
-							if (!showAllWaypoints)
-							{
-								// Final-Waypoints von Mysteries einzeichnen
-								// MysterySolutions enthält gültige Finals von Mystries, Multis und WhereIGos
-								for (MysterySolution solution : Database.Data.Query.MysterySolutions)
-								{
-									if (GlobalCore.SelectedCache() == solution.Cache) continue;
-
-									if (hideMyFinds && solution.Cache.Found) continue;
-
-									double mapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, solution.Longitude);
-									double mapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, solution.Latitude);
-									if (!((mapX >= point1.x) && (mapX < point2.x) && (Math.abs(mapY) > Math.abs(point1.y)) && (Math
-											.abs(mapY) < Math.abs(point2.y)))) continue;
-
-									WaypointRenderInfo wpiF = new WaypointRenderInfo();
-									wpiF.MapX = (float) mapX;
-									wpiF.MapY = (float) mapY;
-
-									if (iconSize == 2)
-									{
-										wpiF.Icon = (solution.Cache.Type == CacheTypes.Mystery) ? SpriteCache.MapIcons.get(21)
-												: SpriteCache.MapIcons.get(18);
-										wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache, solution.Waypoint);
-										if ((solution.Cache.Type == CacheTypes.Mystery)
-												&& solution.Cache.CorrectedCoordiantesOrMysterySolved()
-												&& solution.Cache.HasFinalWaypoint())
-										{
-											if (GlobalCore.SelectedCache() != solution.Cache)
-											{
-												// die Icons aller geloesten Mysterys
-												// evtl. aendern,
-												// wenn der Cache gefunden oder ein
-												// Eigener ist.
-												// change the icon of solved mysterys if
-												// necessary
-												// when the cache is found or own
-												if (solution.Cache.Found) wpiF.Icon = SpriteCache.MapIcons.get(19);
-												if (solution.Cache.ImTheOwner()) wpiF.Icon = SpriteCache.MapIcons.get(22);
-											}
-											else
-											{
-												// das Icon des geloesten Mysterys als
-												// Final
-												// anzeigen, wenn dieser Selected ist
-												// show the Icon of solved mysterys as
-												// final when
-												// cache is selected
-												wpiF.Icon = SpriteCache.MapIcons.get((int) solution.Waypoint.Type.ordinal());
-											}
-										}
-									}
-									else
-									{
-										wpiF.Icon = getSmallMapIcon(solution.Cache);
-										wpiF.OverlayIcon = null;
-									}
-									wpiF.Cache = solution.Cache;
-									wpiF.Waypoint = null; // solution.Waypoint;
-									wpiF.Selected = (GlobalCore.SelectedWaypoint() == solution.Waypoint);
-									if (iconSize > 0) wpiF.UnderlayIcon = getUnderlayIcon(solution.Cache, solution.Waypoint);
-
-									tmplist.add(wpiF);
+									tmplist.add(wpi);
 								}
 							}
 						}
@@ -261,26 +186,49 @@ public class MapViewCacheList
 		}
 	}
 
-	private void addWaypoints(Cache cache)
+	private void addWaypoints(Cache cache, int iconSize)
 	{
 		for (Waypoint wp : cache.waypoints)
 		{
-			// im Bild?
-			double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
-			double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
-			if ((MapX >= point1.x) && (MapX < point2.x) && (Math.abs(MapY) > Math.abs(point1.y)) && (Math.abs(MapY) < Math.abs(point2.y)))
-			{
-				WaypointRenderInfo wpi = new WaypointRenderInfo();
-				wpi.MapX = (float) MapX;
-				wpi.MapY = (float) MapY;
-				wpi.Icon = SpriteCache.MapIcons.get(wp.Type.ordinal());
-				wpi.Cache = cache;
-				wpi.Waypoint = wp;
-				wpi.Selected = (GlobalCore.SelectedWaypoint() == wp);
-				wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint);
+			addWaypoint(cache, wp, iconSize);
+		}
+	}
 
-				tmplist.add(wpi);
-			}
+	private void addWaypoint(Cache cache, Waypoint wp, int iconSize)
+	{
+		// im Bild ?
+		double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
+		double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
+		if (isVisible(MapX, MapY))
+		{
+			WaypointRenderInfo wpi = new WaypointRenderInfo();
+			wpi.MapX = (float) MapX;
+			wpi.MapY = (float) MapY;
+			wpi.Icon = SpriteCache.MapIcons.get(wp.Type.ordinal());
+			wpi.Cache = cache;
+			wpi.Waypoint = wp;
+			wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint, iconSize);
+			wpi.Selected = (GlobalCore.getSelectedWaypoint() == wp);
+
+			tmplist.add(wpi);
+		}
+	}
+
+	private boolean isVisible(double x, double y)
+	{
+		return ((x >= point1.x) && (x < point2.x) && (Math.abs(y) > Math.abs(point1.y)) && (Math.abs(y) < Math.abs(point2.y)));
+	}
+
+	private Sprite getCacheIcon(Cache cache, int iconSize)
+	{
+		if ((iconSize < 1) && (cache != GlobalCore.getSelectedCache()))
+		{
+			return getSmallMapIcon(cache);
+		}
+		else
+		{
+			// der SelectedCache wird immer mit den großen Symbolen dargestellt!
+			return getMapIcon(cache);
 		}
 	}
 
@@ -350,28 +298,35 @@ public class MapViewCacheList
 
 	}
 
-	private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint)
+	private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint, int iconSize)
 	{
-		if (waypoint == null)
+		if ((iconSize == 0) && (cache != GlobalCore.getSelectedCache()))
 		{
-			if ((cache == null) || (cache == GlobalCore.SelectedCache()))
-			{
-				return SpriteCache.MapOverlay.get(1);
-			}
-			else
-			{
-				return SpriteCache.MapOverlay.get(0);
-			}
+			return null;
 		}
 		else
 		{
-			if (waypoint == GlobalCore.SelectedWaypoint())
+			if (waypoint == null)
 			{
-				return SpriteCache.MapOverlay.get(1);
+				if ((cache == null) || (cache == GlobalCore.getSelectedCache()))
+				{
+					return SpriteCache.MapOverlay.get(1);
+				}
+				else
+				{
+					return SpriteCache.MapOverlay.get(0);
+				}
 			}
 			else
 			{
-				return SpriteCache.MapOverlay.get(0);
+				if (waypoint == GlobalCore.getSelectedWaypoint())
+				{
+					return SpriteCache.MapOverlay.get(1);
+				}
+				else
+				{
+					return SpriteCache.MapOverlay.get(0);
+				}
 			}
 		}
 	}

@@ -149,4 +149,14 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 
 		return cm;
 	}
+
+	public void setName(String newName)
+	{
+		this.name = newName;
+	}
+
+	public void setNameExtention(String newExtention)
+	{
+		this.nameExtention = newExtention;
+	}
 }

@@ -32,7 +32,7 @@ public class NotesView extends FrameLayout implements ViewOptionsMenu
 				: R.layout.notesview, null, false);
 		this.addView(notesLayout);
 		edNotes = (EditText) findViewById(R.id.notesText);
-		SetSelectedCache(GlobalCore.SelectedCache(), GlobalCore.SelectedWaypoint());
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
