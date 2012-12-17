@@ -2,6 +2,14 @@
 Versions Änderungen:
 
 Version : 0.5.1258
+	• Fix beim Start auf einem Nexus 7
+	• Option zum löschen älterer Log´s
+	• Einstellbares Kompass Layout
+	• Komprimieren der DB nach dem Import
+	• Fix beim Download der Beschreibung für Basic Member
+	• Fix einige kleinere Fehler
+
+Version : 0.5.1258
 	• Koordinaten Eingabe überarbeitet
 	• Benutzung der GS API V6
 	• Fix einige kleinere Fehler
