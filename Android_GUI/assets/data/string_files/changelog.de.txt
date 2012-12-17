@@ -1,7 +1,7 @@
 
 Versions Änderungen:
 
-Version : 0.5.1258
+Version : 0.5.1285
 	• Fix beim Start auf einem Nexus 7
 	• Option zum löschen älterer Log´s
 	• Einstellbares Kompass Layout
