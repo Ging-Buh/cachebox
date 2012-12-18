@@ -97,20 +97,10 @@ public class MapViewCacheList
 								// im Bild ?
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
-								boolean CacheIsVisible = isVisible(MapX, MapY);
-								if (!CacheIsVisible && !(showAllWaypoints || GlobalCore.getSelectedCache() == cache))
-								{
-									// Cache nicht im Bild && keine Wegpunkte anzuzeigen
-									continue;
-								}
 								Waypoint fwp = null;
-								// zuerst Wegpunkte hinzufügen, damit deren Anzeige erfolgt, auch wenn der Cache nicht im Bild ist
-								if (showAllWaypoints || GlobalCore.getSelectedCache() == cache)
+								if (!(showAllWaypoints || GlobalCore.getSelectedCache() == cache))
 								{
-									addWaypoints(cache, iconSize);
-								}
-								else
-								{
+									// korrigierte Mysterykoordinaten im Bild ?
 									if (cache.Type == CacheTypes.Mystery)
 									{
 										if (!cache.hasCorrectedCoordinates())
@@ -121,12 +111,24 @@ public class MapViewCacheList
 												// nehme Finalkoordinaten
 												MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, fwp.Pos.getLongitude());
 												MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, fwp.Pos.getLatitude());
-												CacheIsVisible = isVisible(MapX, MapY);
 											}
 										}
 									}
-									// kein Final, bzw Wegpunkte nicht anzeigen, dann den Cache anzeigen
 								}
+								boolean CacheIsVisible = isVisible(MapX, MapY);
+
+								if (!CacheIsVisible && !(showAllWaypoints || GlobalCore.getSelectedCache() == cache))
+								{
+									// Cache nicht im Bild && keine Wegpunkte anzuzeigen
+									continue;
+								}
+
+								// zuerst Wegpunkte hinzufügen, damit deren Anzeige erfolgt, auch wenn der Cache nicht im Bild ist
+								if (showAllWaypoints || GlobalCore.getSelectedCache() == cache)
+								{
+									addWaypoints(cache, iconSize);
+								}
+
 								// im Bild?
 								if (CacheIsVisible)
 								{
