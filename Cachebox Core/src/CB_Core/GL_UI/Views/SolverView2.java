@@ -161,11 +161,11 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		}
 	};
 
-	private OnLongClickListener onItemLongClickListner = new OnLongClickListener()
+	private OnClickListener onItemLongClickListner = new OnClickListener()
 	{
 
 		@Override
-		public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 			setSelection(selectionIndex);

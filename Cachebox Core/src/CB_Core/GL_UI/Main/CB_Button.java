@@ -6,7 +6,6 @@ import CB_Core.GL_UI.ButtonSprites;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
-import CB_Core.GL_UI.GL_View_Base.OnLongClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.GestureHelp;
@@ -27,7 +26,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class CB_Button extends Button implements OnClickListener, OnLongClickListener
+public class CB_Button extends Button implements OnClickListener
 {
 
 	private ArrayList<CB_ActionButton> mButtonActions;
@@ -40,7 +39,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		super(rec, Name);
 		mButtonActions = ButtonActions;
 		this.setOnClickListener(this);
-		this.setOnLongClickListener(this);
+		this.setOnLongClickListener(longClickListner);
 	}
 
 	public CB_Button(CB_RectF rec, String Name)
@@ -48,7 +47,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		super(rec, Name);
 		mButtonActions = new ArrayList<CB_ActionButton>();
 		this.setOnClickListener(this);
-		this.setOnLongClickListener(this);
+		this.setOnLongClickListener(longClickListner);
 	}
 
 	public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites)
@@ -56,7 +55,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		super(rec, Name);
 		mButtonActions = new ArrayList<CB_ActionButton>();
 		this.setOnClickListener(this);
-		this.setOnLongClickListener(this);
+		this.setOnLongClickListener(longClickListner);
 		this.setButtonSprites(sprites);
 	}
 
@@ -111,43 +110,47 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 
 	}
 
-	@Override
-	public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+	private OnClickListener longClickListner = new OnClickListener()
 	{
-		// GL_MsgBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
-		// Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menü angezeigt aus dem eine dieser
-		// Actions gewählt werden kann
 
-		if (mButtonActions.size() > 1)
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			getLongClickMenu().show();
-		}
-		else if (mButtonActions.size() == 1)
-		{
-			// nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
-			CB_ActionButton ba = mButtonActions.get(0);
-			CB_Action action = ba.getAction();
-			if (action != null)
+			// GL_MsgBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
+			// Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menü angezeigt aus dem eine dieser
+			// Actions gewählt werden kann
+
+			if (mButtonActions.size() > 1)
 			{
-				action.CallExecute();
-				if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
-				// else
-				// aktActionView = null;
+				getLongClickMenu().show();
 			}
+			else if (mButtonActions.size() == 1)
+			{
+				// nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
+				CB_ActionButton ba = mButtonActions.get(0);
+				CB_Action action = ba.getAction();
+				if (action != null)
+				{
+					action.CallExecute();
+					if (action instanceof CB_Action_ShowView) aktActionView = (CB_Action_ShowView) action;
+					// else
+					// aktActionView = null;
+				}
+			}
+
+			// Show Gester Help
+
+			if (help != null)
+			{
+				CB_RectF rec = CB_Button.this.ThisWorldRec;
+
+				help.setPos(rec.getX(), rec.getMaxY());
+				GL.that.Toast(help, 2000);
+			}
+
+			return true;
 		}
-
-		// Show Gester Help
-
-		if (help != null)
-		{
-			CB_RectF rec = this.ThisWorldRec;
-
-			help.setPos(rec.getX(), rec.getMaxY());
-			GL.that.Toast(help, 2000);
-		}
-
-		return true;
-	}
+	};
 
 	private Menu getLongClickMenu()
 	{
@@ -201,6 +204,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 	@Override
 	public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 	{
+
 		// Einfacher Click -> alle Actions durchsuchen, ob die aktActionView darin enthalten ist und diese sichtbar ist
 		if ((aktActionView != null) && (aktActionView.HasContextMenu()))
 		{
@@ -267,7 +271,7 @@ public class CB_Button extends Button implements OnClickListener, OnLongClickLis
 		// wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausführen
 		if (!actionExecuted)
 		{
-			return onLongClick(v, x, y, pointer, button);
+			return mOnLongClickListener.onClick(v, x, y, pointer, button);
 		}
 
 		return true;

@@ -14,6 +14,8 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 
+import com.badlogic.gdx.Input.Keys;
+
 public class NumerikInputBox extends CB_View_Base
 {
 
@@ -261,11 +263,12 @@ public class NumerikInputBox extends CB_View_Base
 			@Override
 			public void KeyPressed(String value)
 			{
-				int cursorPos = editText.getCursorPosition();
+				if (editText == null || value == null) return;
+				char c = value.charAt(0);
 
-				if (value.equals("O"))
+				switch (c)
 				{
-
+				case 'O':
 					String StringValue = editText.getText();
 
 					// Replase Linebraek
@@ -333,10 +336,9 @@ public class NumerikInputBox extends CB_View_Base
 					{
 						close(msgBox);
 					}
+					break;
 
-				}
-				else if (value.equals("C"))
-				{
+				case 'C':
 					if (mType == type.doubleType)
 
 					{
@@ -361,34 +363,22 @@ public class NumerikInputBox extends CB_View_Base
 					}
 
 					close(msgBox);
-				}
-				else if (value.equals("<"))
-				{
-					if (cursorPos == 0) cursorPos = 1; // cursorPos darf nicht 0 sein
-					editText.setCursorPosition(cursorPos - 1);
-				}
-				else if (value.equals(">"))
-				{
-					editText.setCursorPosition(cursorPos + 1);
-				}
-				else if (value.equals("D"))
-				{
-					if (cursorPos > 0)
-					{
-						String text2 = editText.getText().substring(cursorPos);
-						String text1 = editText.getText().substring(0, cursorPos - 1);
+					break;
 
-						editText.setText(text1 + text2);
-						editText.setCursorPosition(cursorPos + -1);
-					}
-				}
-				else
-				{
-					String text2 = editText.getText().substring(cursorPos);
-					String text1 = editText.getText().substring(0, cursorPos);
+				case '<':
+					editText.keyDown(Keys.LEFT);
+					break;
 
-					editText.setText(text1 + value + text2);
-					editText.setCursorPosition(cursorPos + value.length());
+				case '>':
+					editText.keyDown(Keys.RIGHT);
+					break;
+
+				case 'D':
+					editText.keyTyped(EditWrapedTextField.DELETE);
+					break;
+
+				default:
+					editText.keyTyped(c);
 				}
 
 			}

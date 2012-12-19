@@ -520,11 +520,11 @@ public class SettingsActivity extends ActivityBase
 
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -584,11 +584,11 @@ public class SettingsActivity extends ActivityBase
 			}
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -647,11 +647,11 @@ public class SettingsActivity extends ActivityBase
 			}
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -710,11 +710,11 @@ public class SettingsActivity extends ActivityBase
 
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -769,11 +769,11 @@ public class SettingsActivity extends ActivityBase
 
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -825,11 +825,11 @@ public class SettingsActivity extends ActivityBase
 
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -881,11 +881,11 @@ public class SettingsActivity extends ActivityBase
 
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -942,11 +942,11 @@ public class SettingsActivity extends ActivityBase
 			});
 		}
 
-		btn.setOnLongClickListener(new OnLongClickListener()
+		btn.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -1016,11 +1016,11 @@ public class SettingsActivity extends ActivityBase
 
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 
@@ -1244,11 +1244,11 @@ public class SettingsActivity extends ActivityBase
 			}
 		});
 
-		item.setOnLongClickListener(new OnLongClickListener()
+		item.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// zeige Beschreibung der Einstellung
 

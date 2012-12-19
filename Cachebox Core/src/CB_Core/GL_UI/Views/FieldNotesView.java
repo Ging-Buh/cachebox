@@ -802,11 +802,11 @@ public class FieldNotesView extends V_ListView
 		if (cache != null) GlobalCore.setSelectedWaypoint(cache, finalWp);
 	}
 
-	private OnLongClickListener itemLogClickListner = new OnLongClickListener()
+	private OnClickListener itemLogClickListner = new OnClickListener()
 	{
 
 		@Override
-		public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 
 			int index = ((ListViewItemBase) v).getIndex();

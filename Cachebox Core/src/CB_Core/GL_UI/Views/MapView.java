@@ -378,11 +378,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		resize(rec.getWidth(), rec.getHeight());
 
-		this.setOnLongClickListener(new OnLongClickListener()
+		this.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// CB_AllContextMenuHandler.showMapViewGLContextMenu();
 				return true;
