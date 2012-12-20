@@ -58,6 +58,11 @@ public class Trackable_Test extends TestCase
 			{
 				String Name = iterator.next().getName();
 				if (Name.contains("Cachebox") && Name.contains("honour")) Assert = true;
+				if (Name.contains("Cachebox") && Name.contains("Honour")) Assert = true;
+				if (Name.contains("cachebox") && Name.contains("honour")) Assert = true;
+				if (Name.contains("cachebox") && Name.contains("Honour")) Assert = true;
+				if (Name.contains("CacheBox") && Name.contains("honour")) Assert = true;
+				if (Name.contains("CacheBox") && Name.contains("Honour")) Assert = true;
 			}
 			while (iterator.hasNext());
 		}

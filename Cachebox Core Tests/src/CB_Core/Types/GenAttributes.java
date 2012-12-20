@@ -31,7 +31,7 @@ public class GenAttributes extends TestCase
 
 	public static String LastAPIError = "";
 
-	public void testGenerate() throws IOException
+	public void testGetAllAttributes() throws IOException
 	{
 		if (NotRun) return;
 

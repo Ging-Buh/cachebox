@@ -31,7 +31,7 @@ public class PocketQueryTest extends TestCase
 	private void LoadConfig()
 	{
 		InitTestDBs.InitalConfig();
-		String key = Config.GetAccessToken();
+		String key = Config.GetAccessToken(true);
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 	}
 
@@ -39,7 +39,12 @@ public class PocketQueryTest extends TestCase
 	{
 		ArrayList<PQ> list = new ArrayList<PQ>();
 
-		PocketQuery.GetPocketQueryList(Config.GetAccessToken(), list);
+		PocketQuery.GetPocketQueryList(Config.GetAccessToken(true), list);
+
+		if (list == null || list.size() == 0)
+		{
+			assertFalse("PQ List ist leer", true);
+		}
 
 	}
 }

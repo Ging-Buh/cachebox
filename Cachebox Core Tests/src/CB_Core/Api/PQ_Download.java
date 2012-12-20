@@ -39,11 +39,17 @@ public class PQ_Download extends TestCase
 	{
 		ArrayList<PQ> list = new ArrayList<PQ>();
 
-		PocketQuery.GetPocketQueryList(Config.GetAccessToken(), list);
+		PocketQuery.GetPocketQueryList(Config.GetAccessToken(true), list);
 
-		PQ pq = list.get(0);
-
-		PocketQuery.DownloadSinglePocketQuery(pq, "./testdata/");
+		if (list != null && list.size() > 0)
+		{
+			PQ pq = list.get(0);
+			PocketQuery.DownloadSinglePocketQuery(pq, "./testdata/");
+		}
+		else
+		{
+			assertFalse("Kein PQ download, da PQ List leer ist", true);
+		}
 
 	}
 }

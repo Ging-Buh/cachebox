@@ -654,7 +654,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			public void run()
 			{
 				PqList = new ArrayList<PQ>();
-				PocketQuery.GetPocketQueryList(Config.GetAccessToken(), PqList);
+				PocketQuery.GetPocketQueryList(Config.GetAccessToken(true), PqList);
 				lvPQs.setBaseAdapter(new CustomAdapter());
 				lvPQs.notifyDataSetChanged();
 
