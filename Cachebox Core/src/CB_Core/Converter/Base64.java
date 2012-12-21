@@ -1337,9 +1337,6 @@ public class Base64
 	 */
 	public static boolean decodeToStream(String data, int firstPos, int lastPos, BufferedOutputStream os) throws java.io.IOException
 	{
-		CB_Core.Log.Logger.DEBUG("decodeToStream 1");
-		CB_Core.Log.Logger.DEBUG("decodeToStream: " + firstPos + " - " + lastPos);
-
 		if (os == null)
 		{
 			return false;
@@ -1356,7 +1353,6 @@ public class Base64
 		byte[] b4 = new byte[4]; // Four byte buffer from source, eliminating white space
 		int b4Posn = 0; // Keep track of four byte input buffer
 		byte sbiDecode = 0; // Special value from DECODABET
-		CB_Core.Log.Logger.DEBUG("decodeToStream 2");
 		long count = 0;
 		for (int i = firstPos; i <= lastPos; i++)
 		{
@@ -1401,12 +1397,10 @@ public class Base64
 			else
 			{
 				// There's a bad input character in the Base64 stream.
-				CB_Core.Log.Logger.DEBUG("decodeToStream Error!");
 				throw new java.io.IOException(String.format("Bad Base64 input character decimal %d in array position %d",
 						((int) sib) & 0xFF, i));
 			} // end else:
 		}
-		CB_Core.Log.Logger.DEBUG("decodeToStream 3: count = " + count);
 
 		return true;
 	} // end decode
@@ -1419,8 +1413,6 @@ public class Base64
 	public static boolean decodeStreamToStream(java.io.InputStream inputStream, byte[] buff, int buffLen, int buffCount, int buffPos,
 			BufferedOutputStream os) throws java.io.IOException
 	{
-		CB_Core.Log.Logger.DEBUG("decodeToStream 1");
-
 		if (os == null)
 		{
 			return false;
@@ -1437,17 +1429,14 @@ public class Base64
 		byte[] b4 = new byte[4]; // Four byte buffer from source, eliminating white space
 		int b4Posn = 0; // Keep track of four byte input buffer
 		byte sbiDecode = 0; // Special value from DECODABET
-		CB_Core.Log.Logger.DEBUG("decodeToStream 2");
 		long count = 0;
 		do
 		{
 			buffPos++;
 			if (buffPos == buffCount)
 			{
-				CB_Core.Log.Logger.DEBUG("LoadBuffer");
 				// weitere Daten laden!!!
 				buffCount = inputStream.read(buff);
-				CB_Core.Log.Logger.DEBUG(buffCount + " Bytes loaded");
 				buffPos = 0;
 			}
 			if (buffPos >= buffCount) break;
@@ -1491,12 +1480,10 @@ public class Base64
 			else
 			{
 				// There's a bad input character in the Base64 stream.
-				CB_Core.Log.Logger.DEBUG("decodeToStream Error!");
 				throw new java.io.IOException(String.format("Bad Base64 input character decimal %d", ((int) sib) & 0xFF));
 			} // end else:
 		}
 		while (true);
-		CB_Core.Log.Logger.DEBUG("decodeToStream 3: count = " + count);
 
 		return true;
 	} // end decode
