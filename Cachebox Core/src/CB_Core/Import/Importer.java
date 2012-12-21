@@ -424,7 +424,7 @@ public class Importer
 		ImportHandler importHandler = new ImportHandler();
 		LinkedList<String> allImages = new LinkedList<String>();
 		ArrayList<String> apiImages = new ArrayList<String>();
-		GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(), GcCode, apiImages);
+		GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(true), GcCode, apiImages);
 		for (String image : apiImages)
 		{
 			if (image.contains("/log/")) continue; // do not import log-images

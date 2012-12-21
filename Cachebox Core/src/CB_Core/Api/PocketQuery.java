@@ -206,7 +206,7 @@ public class PocketQuery
 
 	public static int DownloadSinglePocketQuery(PQ pocketQuery, String savePath)
 	{
-		String accessToken = Config.GetAccessToken(); // ""
+		String accessToken = Config.GetAccessToken(true); // ""
 		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken=" + accessToken
 				+ "&PocketQueryGuid=" + pocketQuery.GUID);
 
