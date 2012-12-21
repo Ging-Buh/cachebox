@@ -1337,6 +1337,8 @@ public class Base64
 	 */
 	public static boolean decodeToStream(String data, int firstPos, int lastPos, BufferedOutputStream os) throws java.io.IOException
 	{
+		CB_Core.Log.Logger.DEBUG("decodeToStream 1");
+		CB_Core.Log.Logger.DEBUG("decodeToStream: " + firstPos + " - " + lastPos);
 
 		if (os == null)
 		{
@@ -1354,6 +1356,8 @@ public class Base64
 		byte[] b4 = new byte[4]; // Four byte buffer from source, eliminating white space
 		int b4Posn = 0; // Keep track of four byte input buffer
 		byte sbiDecode = 0; // Special value from DECODABET
+		CB_Core.Log.Logger.DEBUG("decodeToStream 2");
+		long count = 0;
 		for (int i = firstPos; i <= lastPos; i++)
 		{
 			char si = data.charAt(i);
@@ -1382,7 +1386,8 @@ public class Base64
 						outBuffPosn = 0;
 						outBuffPosn += decode4to3(b4, 0, outBuff, outBuffPosn, NO_OPTIONS);
 						// in outBuff there are outBuffPosn bytes which have to be written into the output Stream
-						// os.write(outBuff, 0, outBuffPosn);
+						os.write(outBuff, 0, outBuffPosn);
+						count += outBuffPosn;
 						b4Posn = 0;
 
 						// If that was the equals sign, break out of 'for' loop
@@ -1396,10 +1401,102 @@ public class Base64
 			else
 			{
 				// There's a bad input character in the Base64 stream.
+				CB_Core.Log.Logger.DEBUG("decodeToStream Error!");
 				throw new java.io.IOException(String.format("Bad Base64 input character decimal %d in array position %d",
 						((int) sib) & 0xFF, i));
 			} // end else:
 		}
+		CB_Core.Log.Logger.DEBUG("decodeToStream 3: count = " + count);
+
+		return true;
+	} // end decode
+
+	/*
+	 * This reads the bytes from an InputStream and writes the result directly to a file Only for API-PQ-Download!!! buff : Buffer fuer das
+	 * Einlesen buffLen : Max. Anzahl an Bytes im Buffer buffCount : Aktuell im Buffer enthaltene gültige Bytes buffPos : Aktuelle Position
+	 * im Buffer
+	 */
+	public static boolean decodeStreamToStream(java.io.InputStream inputStream, byte[] buff, int buffLen, int buffCount, int buffPos,
+			BufferedOutputStream os) throws java.io.IOException
+	{
+		CB_Core.Log.Logger.DEBUG("decodeToStream 1");
+
+		if (os == null)
+		{
+			return false;
+		} // end if
+
+		// Decode
+		// bytes = decode( bytes, 0, bytes.length, options );
+
+		byte[] DECODABET = getDecodabet(NO_OPTIONS);
+
+		byte[] outBuff = new byte[4]; // Upper limit on size of output
+		int outBuffPosn = 0; // Keep track of where we're writing
+
+		byte[] b4 = new byte[4]; // Four byte buffer from source, eliminating white space
+		int b4Posn = 0; // Keep track of four byte input buffer
+		byte sbiDecode = 0; // Special value from DECODABET
+		CB_Core.Log.Logger.DEBUG("decodeToStream 2");
+		long count = 0;
+		do
+		{
+			buffPos++;
+			if (buffPos == buffCount)
+			{
+				CB_Core.Log.Logger.DEBUG("LoadBuffer");
+				// weitere Daten laden!!!
+				buffCount = inputStream.read(buff);
+				CB_Core.Log.Logger.DEBUG(buffCount + " Bytes loaded");
+				buffPos = 0;
+			}
+			if (buffPos >= buffCount) break;
+			byte sib = buff[buffPos];
+
+			if ((char) sib == '\"')
+			{
+				break; // end of block
+			}
+			if ((char) sib == '\\')
+			{
+				continue; // ignore Backslash
+			}
+			sbiDecode = DECODABET[sib & 0xFF];
+
+			// White space, Equals sign, or legit Base64 character
+			// Note the values such as -5 and -9 in the
+			// DECODABETs at the top of the file.
+			if (sbiDecode >= WHITE_SPACE_ENC)
+			{
+				if (sbiDecode >= EQUALS_SIGN_ENC)
+				{
+					b4[b4Posn++] = sib; // Save non-whitespace
+					if (b4Posn > 3)
+					{ // Time to decode?
+						outBuffPosn = 0;
+						outBuffPosn += decode4to3(b4, 0, outBuff, outBuffPosn, NO_OPTIONS);
+						// in outBuff there are outBuffPosn bytes which have to be written into the output Stream
+						os.write(outBuff, 0, outBuffPosn);
+						count += outBuffPosn;
+						b4Posn = 0;
+
+						// If that was the equals sign, break out of 'for' loop
+						if (sib == EQUALS_SIGN)
+						{
+							break;
+						} // end if: equals sign
+					} // end if: quartet built
+				} // end if: equals sign or better
+			} // end if: white space, equals sign or better
+			else
+			{
+				// There's a bad input character in the Base64 stream.
+				CB_Core.Log.Logger.DEBUG("decodeToStream Error!");
+				throw new java.io.IOException(String.format("Bad Base64 input character decimal %d", ((int) sib) & 0xFF));
+			} // end else:
+		}
+		while (true);
+		CB_Core.Log.Logger.DEBUG("decodeToStream 3: count = " + count);
 
 		return true;
 	} // end decode
