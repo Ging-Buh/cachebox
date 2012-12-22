@@ -45,10 +45,11 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		pd = ProgressDialog.Show("Title", ChkStatRunnable);
+		pd = ProgressDialog.Show(GlobalCore.Translations.Get("chkState"), ChkStatRunnable);
 	}
 
-	long startTime = 0;
+	int ChangedCount = 0;
+	int result = 0;
 
 	private RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler(new Runnable()
 	{
@@ -57,10 +58,12 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 		@Override
 		public void run()
 		{
+			if (Database.Data.Query == null || Database.Data.Query.size() == 0) return;
+
 			ArrayList<Cache> chkList = new ArrayList<Cache>();
 			Iterator<Cache> cIterator = Database.Data.Query.iterator();
 
-			startTime = System.currentTimeMillis();
+			ChangedCount = 0;
 
 			if (cIterator != null && cIterator.hasNext())
 			{
@@ -79,7 +82,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			int stop = BlockSize;
 			ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
 
-			int result = 0;
+			result = 0;
 			ArrayList<Cache> chkList100;
 
 			boolean cancelThread = false;
@@ -100,6 +103,12 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				chkList100 = new ArrayList<Cache>();
 				if (!cancelThread)
 				{
+
+					if (chkList == null || chkList.size() == 0)
+					{
+						break;
+					}
+
 					Iterator<Cache> Iterator2 = chkList.iterator();
 
 					int index = 0;
@@ -117,7 +126,9 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 					}
 					while (Iterator2.hasNext());
 
+					// result = GroundspeakAPI.GetGeocacheStatus("WERTWEE", chkList100);
 					result = GroundspeakAPI.GetGeocacheStatus(Config.GetAccessToken(), chkList100);
+					if (result == -1) break;// API Error
 					addedReturnList.addAll(chkList100);
 					start += BlockSize + 1;
 					stop += BlockSize + 1;
@@ -139,7 +150,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				do
 				{
 					Cache writeTmp = iterator.next();
-					dao.UpdateDatabaseCacheState(writeTmp);
+					if (dao.UpdateDatabaseCacheState(writeTmp)) ChangedCount++;
 				}
 				while (iterator.hasNext());
 
@@ -149,7 +160,8 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			}
 			else
 			{
-				GL_MsgBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
+				pd.close();
+				GL_MsgBox.Show(GroundspeakAPI.LastAPIError, GlobalCore.Translations.Get("errorAPI"), MessageBoxIcon.Error);
 			}
 		}
 	})
@@ -158,8 +170,12 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 		@Override
 		public void RunnableReady(boolean canceld)
 		{
-			pd.close();
-			GL_MsgBox.Show("Ready :" + (System.currentTimeMillis() - startTime));
+			if (result != -1)
+			{
+				pd.close();
+				GL_MsgBox.Show(GlobalCore.Translations.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),
+						GlobalCore.Translations.Get("chkState"), MessageBoxIcon.None);
+			}
 		}
 	};
 }
