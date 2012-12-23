@@ -1,6 +1,13 @@
 
 Changes:
 
+Version : 0.5.1298
+	• Fix UI handling with fast input
+	• Fix problem with empty PQ list
+	• Fix OutOfMemory exception with PQ download
+	• Fix exception with handling of empty Cache list
+	• Fix a problem with closing wait dialog
+	
 Version : 0.5.1285
 	• Fix the start on a Nexus 7
 	• Option to delete older log's
