@@ -190,11 +190,11 @@ public class PresetListView extends V_ListView
 				}
 			});
 
-			v.setOnLongClickListener(new OnLongClickListener()
+			v.setOnLongClickListener(new OnClickListener()
 			{
 
 				@Override
-				public boolean onLongClick(final GL_View_Base v, int x, int y, int pointer, int button)
+				public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button)
 				{
 					final int delItemIndex = ((PresetListViewItem) v).getIndex();
 

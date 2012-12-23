@@ -94,18 +94,12 @@ public class MapViewCacheList
 							{
 								// Funde
 								if (hideMyFinds && cache.Found) continue;
-								// im Bild ?
+								boolean showWaypoints = showAllWaypoints || GlobalCore.getSelectedCache() == cache;
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
-								boolean CacheIsVisible = isVisible(MapX, MapY);
-								if (!CacheIsVisible && !(showAllWaypoints || GlobalCore.getSelectedCache() == cache))
-								{
-									// Cache nicht im Bild && keine Wegpunkte anzuzeigen
-									continue;
-								}
 								Waypoint fwp = null;
-								// zuerst Wegpunkte hinzufügen, damit deren Anzeige erfolgt, auch wenn der Cache nicht im Bild ist
-								if (showAllWaypoints || GlobalCore.getSelectedCache() == cache)
+								// sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
+								if (showWaypoints)
 								{
 									addWaypoints(cache, iconSize);
 								}
@@ -118,19 +112,16 @@ public class MapViewCacheList
 											fwp = cache.GetFinalWaypoint();
 											if (fwp != null)
 											{
-												// nehme Finalkoordinaten
+												// nehme Mystery-Final
 												MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, fwp.Pos.getLongitude());
 												MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, fwp.Pos.getLatitude());
-												CacheIsVisible = isVisible(MapX, MapY);
 											}
 										}
 									}
-									// kein Final, bzw Wegpunkte nicht anzeigen, dann den Cache anzeigen
 								}
-								// im Bild?
-								if (CacheIsVisible)
+								if (isVisible(MapX, MapY))
 								{
-									// Cache zeigen
+									// sichtbaren Cache/Mystery-Final hinzufügen
 									WaypointRenderInfo wpi = new WaypointRenderInfo();
 									wpi.MapX = (float) MapX;
 									wpi.MapY = (float) MapY;
@@ -140,7 +131,6 @@ public class MapViewCacheList
 									wpi.Cache = cache;
 									wpi.Waypoint = fwp; // ist null, ausser bei Mystery-Final
 									wpi.Selected = (GlobalCore.getSelectedCache() == cache);
-
 									tmplist.add(wpi);
 								}
 							}

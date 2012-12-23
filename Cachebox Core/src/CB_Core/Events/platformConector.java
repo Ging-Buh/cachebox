@@ -105,7 +105,16 @@ public class platformConector
 	{
 		if (hardwareListner != null)
 		{
-			hardwareListner.vibrate();
+			Thread t = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					hardwareListner.vibrate();
+				}
+			});
+			t.start();
 		}
 
 	}

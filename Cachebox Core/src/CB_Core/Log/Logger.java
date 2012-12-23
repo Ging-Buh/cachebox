@@ -217,6 +217,7 @@ public class Logger
 		if (Config.settings.newInstall.getValue())
 		{
 			file.delete();
+			Config.settings.newInstall.setValue(false);
 		}
 
 		if (!file.exists())

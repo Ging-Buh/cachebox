@@ -43,7 +43,7 @@ public class SettingEncryptedString extends SettingLongString
 	{
 		String encrypted = "";
 		if (value.length() > 0) encrypted = Config.encrypt(value);
-		if (this.value.equals(encrypted)) return;
+		if ((this.value != null) && (this.value.equals(encrypted))) return;
 		this.value = encrypted;
 		setDirty();
 	}
@@ -51,7 +51,7 @@ public class SettingEncryptedString extends SettingLongString
 	// hier kann die schon verschlüsselte Einstellung übergeben werden.
 	public void setEncryptedValue(String value)
 	{
-		if (this.value.equals(value)) return;
+		if ((this.value != null) && (this.value.equals(value))) return;
 		this.value = value;
 		setDirty();
 	}

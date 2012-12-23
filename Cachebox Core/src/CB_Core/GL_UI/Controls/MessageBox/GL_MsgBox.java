@@ -187,7 +187,7 @@ public class GL_MsgBox extends Dialog
 				UiSizes.getButtonHeight());
 
 		Image iconImage = new Image(imageRec, "MsgBoxIcon");
-		iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
+		if (icon != MessageBoxIcon.None) iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
 		msgBox.addChild(iconImage);
 
 		label = new Label(contentSize.getBounds(), "MsgBoxLabel");

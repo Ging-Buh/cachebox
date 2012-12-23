@@ -376,14 +376,14 @@ public class CacheDAO
 	 * 
 	 * @param cache
 	 */
-	public void UpdateDatabaseCacheState(Cache cache)
+	public boolean UpdateDatabaseCacheState(Cache cache)
 	{
 
 		// chk of changes
 		boolean changed = false;
 		Cache fromDB = getFromDbByCacheId(cache.Id);
 
-		if (fromDB == null) return; // nichts zum Updaten gefunden
+		if (fromDB == null) return false; // nichts zum Updaten gefunden
 
 		if (fromDB.Archived != cache.Archived)
 		{
@@ -424,6 +424,7 @@ public class CacheDAO
 			}
 		}
 
+		return changed;
 	}
 
 	public Cache LoadApiDetails(Cache aktCache)

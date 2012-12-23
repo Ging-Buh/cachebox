@@ -28,12 +28,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 		SingleLine, MultiLine, MultiLineWraped
 	}
 
-	static protected final char BACKSPACE = 8;
-	static protected final char ENTER_DESKTOP = '\r';
-	static protected final char ENTER_ANDROID = '\n';
-	static protected final char TAB = '\t';
-	static protected final char DELETE = 127;
-	static protected final char BULLET = 149;
+	public static final char BACKSPACE = 8;
+	public static final char ENTER_DESKTOP = '\r';
+	public static final char ENTER_ANDROID = '\n';
+	public static final char TAB = '\t';
+	public static final char DELETE = 127;
+	public static final char BULLET = 149;
 
 	// factor for the size of the selectinMarkers
 	static protected final double markerFactor = 2.0;
@@ -1164,7 +1164,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	}
 
 	// bewegt den Cursor nach links - rechts
-	private void cursorLeftRight(int i)
+	public void cursorLeftRight(int i)
 	{
 		DisplayText dt = getAktDisplayText();
 		if (dt == null) return;
@@ -1186,7 +1186,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			cursor.pos = newCursor;
 		}
 		// überprüfen, ob der Cursor sichtbar ist
-		checkCursorVisible(true);
+		// checkCursorVisible(true);
 	}
 
 	// fügt eine neue Zeile an der Cursor Position ein
@@ -1822,7 +1822,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 	@Override
 	public boolean keyUp(int KeyCode)
 	{
-		return false;
+		return true;
 	}
 
 	private class DisplayText

@@ -352,7 +352,7 @@ public class GroundspeakAPI
 					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
-
+					LastAPIError = result;
 					return (-1);
 				}
 

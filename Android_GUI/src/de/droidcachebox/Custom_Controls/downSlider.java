@@ -338,69 +338,72 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		// draw Cache Info
 
-		Iterator<Attributes> iterator = mCache.getAttributes().iterator();
-		int lines = 0;
-		if (iterator != null && iterator.hasNext())
+		if (mCache != null)
 		{
-			if (attHeight == -1) attHeight = (int) (UiSizes.getIconSize() * 0.75);
-
-			lines = 1 + (mCache.getAttributes().size() / 8);
-			attCompleadHeight = (int) (lines * attHeight * 1.3);
-
-		}
-
-		if (attLineHeight == -1) attLineHeight = attHeight + (UiSizes.getScaledFontSize() / 3);
-
-		if (CacheInfoHeight == 0)
-		{
-			CacheInfoHeight = (int) (FSize * 9) + attCompleadHeight;
-			topCalc = (int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + UiSizes.getScaledFontSize());
-		}
-
-		versatz += CacheInfoHeight;
-		canvas.translate(5, -versatz);
-		CacheDraw.DrawInfo(mCache, canvas, width - 10, CacheInfoHeight,
-				WPisDraw ? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select),
-				DrawStyle.withOwnerAndName);
-
-		// draw Attributes
-
-		int left = 8;
-
-		int top = topCalc;
-		if (iterator != null && iterator.hasNext())
-		{
-			int i = 0;
-			do
+			Iterator<Attributes> iterator = mCache.getAttributes().iterator();
+			int lines = 0;
+			if (iterator != null && iterator.hasNext())
 			{
-				Attributes att = iterator.next();
-				String uri = "drawable/" + att.getImageName();
+				if (attHeight == -1) attHeight = (int) (UiSizes.getIconSize() * 0.75);
 
-				int imageResource = getResources().getIdentifier(uri, null, main.mainActivity.getPackageName());
-				Drawable image = null;
-				try
-				{
-					image = getResources().getDrawable(imageResource);
-				}
-				catch (NotFoundException e)
-				{
-					image = Global.Icons[34];
-				}
-
-				if (image != null)
-				{
-					left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
-					i++;
-					if (i % 8 == 0 && i > 7)
-					{
-						left = 8;
-						top += attLineHeight;
-					}
-				}
+				lines = 1 + (mCache.getAttributes().size() / 8);
+				attCompleadHeight = (int) (lines * attHeight * 1.3);
 
 			}
-			while (iterator.hasNext());
 
+			if (attLineHeight == -1) attLineHeight = attHeight + (UiSizes.getScaledFontSize() / 3);
+
+			if (CacheInfoHeight == 0)
+			{
+				CacheInfoHeight = (int) (FSize * 9) + attCompleadHeight;
+				topCalc = (int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + UiSizes.getScaledFontSize());
+			}
+
+			versatz += CacheInfoHeight;
+			canvas.translate(5, -versatz);
+			CacheDraw.DrawInfo(mCache, canvas, width - 10, CacheInfoHeight,
+					WPisDraw ? Global.getColor(R.attr.ListBackground) : Global.getColor(R.attr.ListBackground_select),
+					DrawStyle.withOwnerAndName);
+
+			// draw Attributes
+
+			int left = 8;
+
+			int top = topCalc;
+			if (iterator != null && iterator.hasNext())
+			{
+				int i = 0;
+				do
+				{
+					Attributes att = iterator.next();
+					String uri = "drawable/" + att.getImageName();
+
+					int imageResource = getResources().getIdentifier(uri, null, main.mainActivity.getPackageName());
+					Drawable image = null;
+					try
+					{
+						image = getResources().getDrawable(imageResource);
+					}
+					catch (NotFoundException e)
+					{
+						image = Global.Icons[34];
+					}
+
+					if (image != null)
+					{
+						left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
+						i++;
+						if (i % 8 == 0 && i > 7)
+						{
+							left = 8;
+							top += attLineHeight;
+						}
+					}
+
+				}
+				while (iterator.hasNext());
+
+			}
 		}
 		canvas.translate(0, +versatz);
 	}

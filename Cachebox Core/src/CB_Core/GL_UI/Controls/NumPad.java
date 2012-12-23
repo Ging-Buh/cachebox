@@ -9,6 +9,8 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.Math.CB_RectF;
 
+import com.badlogic.gdx.Input.Keys;
+
 public class NumPad extends CB_View_Base
 {
 
@@ -226,6 +228,21 @@ public class NumPad extends CB_View_Base
 		btn_left.setOnClickListener(clickListner);
 		btn_right.setOnClickListener(clickListner);
 
+		btn_0.setOnDoubleClickListener(doubleClickListner);
+		btn_1.setOnDoubleClickListener(doubleClickListner);
+		btn_2.setOnDoubleClickListener(doubleClickListner);
+		btn_3.setOnDoubleClickListener(doubleClickListner);
+		btn_4.setOnDoubleClickListener(doubleClickListner);
+		btn_5.setOnDoubleClickListener(doubleClickListner);
+		btn_6.setOnDoubleClickListener(doubleClickListner);
+		btn_7.setOnDoubleClickListener(doubleClickListner);
+		btn_8.setOnDoubleClickListener(doubleClickListner);
+		btn_9.setOnDoubleClickListener(doubleClickListner);
+		btn_Dot.setOnDoubleClickListener(doubleClickListner);
+
+		btn_left.setOnDoubleClickListener(doubleClickListner);
+		btn_right.setOnDoubleClickListener(doubleClickListner);
+
 		btn_OK.setOnClickListener(new OnClickListener()
 		{
 
@@ -285,16 +302,49 @@ public class NumPad extends CB_View_Base
 	{
 
 		@Override
-		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			if (v instanceof Button)
 			{
-				if (mKeyPressedListner != null)
+				Thread t = new Thread(new Runnable()
 				{
-					platformConector.vibrate();
-					mKeyPressedListner.KeyPressed(((Button) v).getText());
-					return true;
-				}
+
+					@Override
+					public void run()
+					{
+						if (mKeyPressedListner != null)
+						{
+							mKeyPressedListner.KeyPressed(((Button) v).getText());
+						}
+					}
+				});
+				t.start();
+			}
+			return true;
+		}
+	};
+
+	OnClickListener doubleClickListner = new OnClickListener()
+	{
+
+		@Override
+		public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button)
+		{
+			if (v instanceof Button)
+			{
+				Thread t = new Thread(new Runnable()
+				{
+
+					@Override
+					public void run()
+					{
+						if (mKeyPressedListner != null)
+						{
+							mKeyPressedListner.KeyPressed(((Button) v).getText());
+						}
+					}
+				});
+				t.start();
 			}
 			return true;
 		}
@@ -327,45 +377,27 @@ public class NumPad extends CB_View_Base
 		@Override
 		public void KeyPressed(String value)
 		{
-			if (focusedTextField == null) return;
+			if (focusedTextField == null || value == null) return;
 
-			int cursorPos = focusedTextField.getCursorPosition();
+			char c = value.charAt(0);
 
-			if (value.equals("O"))
+			switch (c)
 			{
-				// sollte nicht passieren, da der Button nicht sichtbar ist
-			}
-			else if (value.equals("C"))
-			{
-				// sollte nicht passieren, da der Button nicht sichtbar ist
-			}
-			else if (value.equals("<"))
-			{
-				if (cursorPos == 0) cursorPos = 1; // cursorPos darf nicht 0 sein
-				focusedTextField.setCursorPosition(cursorPos - 1);
-			}
-			else if (value.equals(">"))
-			{
-				focusedTextField.setCursorPosition(cursorPos + 1);
-			}
-			else if (value.equals("D"))
-			{
-				if (cursorPos > 0)
-				{
-					String text2 = focusedTextField.getText().substring(cursorPos);
-					String text1 = focusedTextField.getText().substring(0, cursorPos - 1);
+			case '<':
+				focusedTextField.cursorLeftRight(-1);
+				// focusedTextField.clearSelection();
+				break;
 
-					focusedTextField.setText(text1 + text2);
-					focusedTextField.setCursorPosition(cursorPos + -1);
-				}
-			}
-			else
-			{
-				String text2 = focusedTextField.getText().substring(cursorPos);
-				String text1 = focusedTextField.getText().substring(0, cursorPos);
+			case '>':
+				focusedTextField.keyDown(Keys.RIGHT);
+				break;
 
-				focusedTextField.setText(text1 + value + text2);
-				focusedTextField.setCursorPosition(cursorPos + value.length());
+			case 'D':
+				focusedTextField.keyTyped(EditWrapedTextField.DELETE);
+				break;
+
+			default:
+				focusedTextField.keyTyped(c);
 			}
 
 		}

@@ -116,6 +116,11 @@ public class GL implements ApplicationListener
 		ifAllInitial = false;
 	}
 
+	public static boolean isInitial()
+	{
+		return ifAllInitial;
+	}
+
 	/**
 	 * Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	 */

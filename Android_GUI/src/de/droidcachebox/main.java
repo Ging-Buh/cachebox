@@ -1083,6 +1083,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showWaitToRenderStartet()
 	{
+		if (!GL.that.isInitial()) return;
+
 		if (pWaitD == null)
 		{
 

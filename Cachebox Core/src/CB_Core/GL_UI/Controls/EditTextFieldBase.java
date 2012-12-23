@@ -254,11 +254,11 @@ public abstract class EditTextFieldBase extends CB_View_Base
 
 	protected void registerPopUpLongClick()
 	{
-		this.setOnLongClickListener(new OnLongClickListener()
+		this.setOnLongClickListener(new OnClickListener()
 		{
 
 			@Override
-			public boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				showPopUp(x, y);
 				return true;

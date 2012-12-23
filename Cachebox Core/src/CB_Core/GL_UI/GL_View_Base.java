@@ -51,7 +51,8 @@ public abstract class GL_View_Base extends CB_RectF
 	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
 	protected OnClickListener mOnClickListener;
-	protected OnLongClickListener mOnLongClickListener;
+	protected OnClickListener mOnLongClickListener;
+	protected OnClickListener mOnDoubleClickListener;
 	protected boolean isClickable = false;
 
 	protected boolean onTouchUp = false;
@@ -291,7 +292,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 		if (thisInvalidate)
 		{
-			myParentInfo = parentInfo.cpy();
+			myParentInfo = parentInfo;
 			CalcMyInfoForChild();
 		}
 
@@ -642,6 +643,16 @@ public abstract class GL_View_Base extends CB_RectF
 				}
 			}
 		}
+		if (!behandelt)
+		{
+			// kein Klick in einem untergeordnetem View
+			// -> hier behandeln
+			if (mOnDoubleClickListener != null)
+			{
+				behandelt = mOnDoubleClickListener.onClick(this, x, y, pointer, button);
+			}
+
+		}
 		return behandelt;
 	}
 
@@ -674,7 +685,7 @@ public abstract class GL_View_Base extends CB_RectF
 			// -> hier behandeln
 			if (mOnLongClickListener != null)
 			{
-				behandelt = mOnLongClickListener.onLongClick(this, x, y, pointer, button);
+				behandelt = mOnLongClickListener.onClick(this, x, y, pointer, button);
 			}
 
 		}
@@ -835,20 +846,6 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Interface definition for a callback to be invoked when a view is clicked.
-	 */
-	public interface OnLongClickListener
-	{
-		/**
-		 * Called when a view has been Longclicked.
-		 * 
-		 * @param v
-		 *            The view that was clicked.
-		 */
-		boolean onLongClick(GL_View_Base v, int x, int y, int pointer, int button);
-	}
-
-	/**
 	 * Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.
 	 * 
 	 * @param l
@@ -865,19 +862,52 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Register a callback to be invoked when this view is clicked. If this view is not clickable, it becomes clickable.
+	 * Register a callback to be invoked when this view is clicked for all events (single, double and long). If this view is not clickable,
+	 * it becomes clickable.
 	 * 
 	 * @param l
 	 *            The callback that will run
 	 * @see #setClickable(boolean)
 	 */
-	public void setOnLongClickListener(OnLongClickListener l)
+	public void setAllClickListener(OnClickListener l)
+	{
+		if (!isClickable)
+		{
+			isClickable = true;
+		}
+		mOnDoubleClickListener = mOnLongClickListener = mOnClickListener = l;
+	}
+
+	/**
+	 * Register a callback to be invoked when this view is long clicked. If this view is not clickable, it becomes clickable.
+	 * 
+	 * @param l
+	 *            The callback that will run
+	 * @see #setClickable(boolean)
+	 */
+	public void setOnLongClickListener(OnClickListener l)
 	{
 		if (!isClickable)
 		{
 			isClickable = true;
 		}
 		mOnLongClickListener = l;
+	}
+
+	/**
+	 * Register a callback to be invoked when this view is double clicked. If this view is not clickable, it becomes clickable.
+	 * 
+	 * @param l
+	 *            The callback that will run
+	 * @see #setClickable(boolean)
+	 */
+	public void setOnDoubleClickListener(OnClickListener l)
+	{
+		if (!isClickable)
+		{
+			isClickable = true;
+		}
+		mOnDoubleClickListener = l;
 	}
 
 	public boolean isClickable()
