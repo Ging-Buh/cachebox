@@ -129,7 +129,8 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 							ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-							CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
+							CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages,
+									GlobalCore.getSelectedCache().GPXFilename_ID);
 
 							try
 							{
