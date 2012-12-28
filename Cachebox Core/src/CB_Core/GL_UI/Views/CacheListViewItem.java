@@ -98,9 +98,13 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 	private void setDistanceString(String txt)
 	{
-		TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
-		float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
-		distance.setPosition(x, 0);
+		synchronized (distance)
+		{
+			TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
+			float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
+			distance.setPosition(x, 0);
+		}
+
 	}
 
 	double heading = 0;
@@ -135,7 +139,14 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		super.render(batch);
 
 		if (arrow != null) arrow.draw(batch);
-		if (distance != null) distance.draw(batch);
+		if (distance != null)
+		{
+			synchronized (distance)
+			{
+				distance.draw(batch);
+			}
+
+		}
 		// if (debugIndex != null) debugIndex.draw(batch);
 
 	}
