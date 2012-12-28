@@ -1581,6 +1581,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void PositionChanged(Locator locator)
 	{
+		Logger.DEBUG("Map.PositionChanged");
 		if (locator == null) return;
 		if (locator.getLocation() == null) return;
 
@@ -1591,8 +1592,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		this.locator = locator;
-		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().getLatitude(), locator.getLocation().getLongitude());
-		GlobalCore.LastValidPosition.setElevation(locator.getAlt());
+		// GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().getLatitude(), locator.getLocation().getLongitude());
+		// GlobalCore.LastValidPosition.setElevation(locator.getAlt());
+
+		Logger.DEBUG("Map.locator=" + locator.getProvider() + "/" + locator.getLocation().FormatCoordinate());
 
 		if (info != null)
 		{
@@ -1600,7 +1603,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			info.setSpeed(locator.SpeedString());
 
 			info.setDistance(GlobalCore.getSelectedCoord().Distance());
-
+			Logger.DEBUG("Map.SetDistance=" + GlobalCore.getSelectedCoord().Distance());
 		}
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().getLatitude(), locator
@@ -2197,7 +2200,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 
-		if (togBtn.getState() > 0 && togBtn.getState() != 2) return;
+		// Ich weiß nicht mehr warum dies so drin war, aber es hat verhindert, das am ende der Methode
+		// PositionChanged(GlobalCore.Locator); Aufgerufen wurde. Damit hat sich beim wechsel des Caches die Distance nicht Aktualisiert!
+		// Deshalb habe ich es erstmal auskommentiert! ( Longri)
+		// if (togBtn.getState() > 0 && togBtn.getState() != 2) return;
 
 		positionInitialized = true;
 
