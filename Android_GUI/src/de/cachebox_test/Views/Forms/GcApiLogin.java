@@ -78,6 +78,17 @@ public class GcApiLogin extends Activity
 
 	}
 
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		if (pd != null && pd.isShowing())
+		{
+			pd.dismiss();
+		}
+		pd = null;
+	}
+
 	private void ShowWebsite(String GC_AuthUrl)
 	{
 		// Initial new VebView Instanz
