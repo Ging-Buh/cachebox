@@ -579,6 +579,9 @@ public class GL implements ApplicationListener
 					}
 					else
 					{
+
+						// TODO erst senden, wenn kein DblClick kommt
+
 						// normaler Click
 						boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 								- (int) first.view.ThisWorldRec.getY(), pointer, button);

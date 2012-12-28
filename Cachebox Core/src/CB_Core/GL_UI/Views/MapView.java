@@ -1599,22 +1599,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			info.setCoord(GlobalCore.LastValidPosition);
 			info.setSpeed(locator.SpeedString());
 
-			Coordinate position = null;
-			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
-			else
-				position = new Coordinate();
-
-			float distance = -1;
-
-			// Gps empfang ?
-			if (GlobalCore.getSelectedCache() != null && position.Valid)
-			{
-				if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos);
-				else
-					distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos);
-			}
-			info.setDistance(distance);
+			info.setDistance(GlobalCore.getSelectedCoord().Distance());
 
 		}
 

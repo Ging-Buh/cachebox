@@ -26,10 +26,12 @@ public class Fonts
 	private static Color day_fontColor;
 	private static Color day_fontColorDisable;
 	private static Color day_fontColorHighLight;
+	private static Color day_fontColorLink;
 
 	private static Color night_fontColor;
 	private static Color night_fontColorDisable;
 	private static Color night_fontColorHighLight;
+	private static Color night_fontColorLink;
 
 	private static int FONT_SIZE_COMPASS_DISTANCE = 27;
 	private static int FONT_SIZE_BIG = 18;
@@ -62,12 +64,14 @@ public class Fonts
 		day_fontColor = day_skin.getColor("font-color");
 		day_fontColorDisable = day_skin.getColor("font-color-disable");
 		day_fontColorHighLight = day_skin.getColor("font-color-highlight");
+		day_fontColorLink = day_skin.getColor("font-color-link");
 
 		String night_skinPath = path + "\\night\\skin.json";
 		Skin night_skin = new Skin(Gdx.files.absolute(night_skinPath));
 		night_fontColor = night_skin.getColor("font-color");
 		night_fontColorDisable = night_skin.getColor("font-color-disable");
 		night_fontColorHighLight = night_skin.getColor("font-color-highlight");
+		night_fontColorLink = night_skin.getColor("font-color-link");
 
 		// get the first founded ttf-font
 		File skinDir = new File(path);
@@ -132,6 +136,11 @@ public class Fonts
 	public static Color getHighLightFontColor()
 	{
 		return Config.settings.nightMode.getValue() ? night_fontColorHighLight : day_fontColorHighLight;
+	}
+
+	public static Color getLinkFontColor()
+	{
+		return Config.settings.nightMode.getValue() ? night_fontColorLink : day_fontColorLink;
 	}
 
 	public static void dispose()

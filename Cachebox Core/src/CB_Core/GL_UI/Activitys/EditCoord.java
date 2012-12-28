@@ -429,7 +429,7 @@ public class EditCoord extends ActivityBase
 	private void setClickHandlers(Button[] bLat, Button[] bLon)
 	{
 		// N/S
-		bLat[0].setAllClickListener(new OnClickListener()
+		bLat[0].setOnClickListener(new OnClickListener()
 		{
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -442,7 +442,7 @@ public class EditCoord extends ActivityBase
 			}
 		});
 		// E/W
-		bLon[0].setAllClickListener(new OnClickListener()
+		bLon[0].setOnClickListener(new OnClickListener()
 		{
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -457,7 +457,7 @@ public class EditCoord extends ActivityBase
 
 		for (int i = 1; i < bLat.length; i++) // must have same length for Lat and Lon
 		{
-			bLat[i].setAllClickListener(new OnClickListener()
+			bLat[i].setOnClickListener(new OnClickListener()
 			{
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -483,7 +483,7 @@ public class EditCoord extends ActivityBase
 					return true;
 				}
 			});
-			bLon[i].setAllClickListener(new OnClickListener()
+			bLon[i].setOnClickListener(new OnClickListener()
 			{
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -518,7 +518,7 @@ public class EditCoord extends ActivityBase
 
 		for (int i = 0; i < bLat.length; i++)
 		{
-			bLat[i].setAllClickListener(new OnClickListener()
+			bLat[i].setOnClickListener(new OnClickListener()
 			{
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -537,7 +537,7 @@ public class EditCoord extends ActivityBase
 
 		for (int i = 0; i < (bLon.length - 2); i++)
 		{
-			bLon[i].setAllClickListener(new OnClickListener()
+			bLon[i].setOnClickListener(new OnClickListener()
 			{
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -556,7 +556,7 @@ public class EditCoord extends ActivityBase
 
 		for (int i = 0; i < 3; i++)
 		{
-			bZone[i].setAllClickListener(new OnClickListener()
+			bZone[i].setOnClickListener(new OnClickListener()
 			{
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -588,7 +588,7 @@ public class EditCoord extends ActivityBase
 		for (int i = 0; i < 10; i++)
 		{
 			btnNumpad[i] = new Button(this, "btnNumpad" + i);
-			btnNumpad[i].setAllClickListener(new OnClickListener()
+			btnNumpad[i].setOnClickListener(new OnClickListener()
 			{
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -640,7 +640,7 @@ public class EditCoord extends ActivityBase
 
 		}
 
-		Leertaste.setAllClickListener(new OnClickListener()
+		Leertaste.setOnClickListener(new OnClickListener()
 		{
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)

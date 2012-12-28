@@ -78,7 +78,6 @@ public class Label extends CB_View_Base
 	{
 
 		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), name);
-		this.isClickable = true;
 
 	}
 

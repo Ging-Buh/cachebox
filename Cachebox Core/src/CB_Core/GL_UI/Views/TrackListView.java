@@ -104,7 +104,7 @@ public class TrackListView extends V_ListView
 						}
 					});
 					aktRouteItem.setOnClickListener(onItemClickListner);
-					aktRouteItem.setOnLongClickListener(mOnLongClickListener);
+					aktRouteItem.setOnLongClickListener(TrackListView.this.getOnLongClickListner());
 
 					return aktRouteItem;
 				}
@@ -123,7 +123,7 @@ public class TrackListView extends V_ListView
 			});
 
 			v.setOnClickListener(onItemClickListner);
-			v.setOnLongClickListener(mOnLongClickListener);
+			v.setOnLongClickListener(TrackListView.this.getOnLongClickListner());
 			return v;
 		}
 

@@ -18,6 +18,7 @@ public abstract class ListViewItemBase extends CB_View_Base
 	{
 		super(rec, Name);
 		mIndex = Index;
+		this.setClickable(true);
 	}
 
 	protected int mIndex;

@@ -101,6 +101,6 @@ public class LinearCollabseBox extends CollabseBox
 	public void setClickable(boolean value)
 	{
 		linearLayout.setClickable(value);
-		isClickable = value;
+		super.setClickable(value);
 	}
 }

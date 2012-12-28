@@ -181,8 +181,8 @@ public class MenuItem extends MenuItemBase
 		if (!mIsEnabled)
 		{
 			// lösche ClickListner
-			mOnClickListener = null;
-			mOnLongClickListener = null;
+			setOnClickListener(null);
+			setOnLongClickListener(null);
 		}
 
 		this.resetInitial();

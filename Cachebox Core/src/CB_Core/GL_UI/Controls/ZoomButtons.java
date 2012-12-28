@@ -75,19 +75,13 @@ public class ZoomButtons extends CB_View_Base
 
 	public void setOnClickListenerUp(OnClickListener l)
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
+		this.setClickable(true);
 		mOnClickListenerUp = l;
 	}
 
 	public void setOnClickListenerDown(OnClickListener l)
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
+		this.setClickable(true);
 		mOnClickListenerDown = l;
 	}
 

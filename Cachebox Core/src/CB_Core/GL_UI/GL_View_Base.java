@@ -50,10 +50,16 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
-	protected OnClickListener mOnClickListener;
-	protected OnClickListener mOnLongClickListener;
-	protected OnClickListener mOnDoubleClickListener;
-	protected boolean isClickable = false;
+	private OnClickListener mOnClickListener;
+	private OnClickListener mOnLongClickListener;
+	private OnClickListener mOnDoubleClickListener;
+	private boolean isClickable = false;
+	private boolean isLongClickable = false;
+	private boolean isDoubleClickable = false;
+
+	private boolean ChildIsClickable = false;
+	private boolean ChildIsLongClickable = false;
+	private boolean ChildIsDoubleClickable = false;
 
 	protected boolean onTouchUp = false;
 	protected boolean onTouchDown = false;
@@ -206,7 +212,7 @@ public abstract class GL_View_Base extends CB_RectF
 				{
 					childs.add(view);
 				}
-				// }
+				chkChildClickable();
 			}
 		});
 
@@ -221,6 +227,7 @@ public abstract class GL_View_Base extends CB_RectF
 			public void run()
 			{
 				if (childs != null && childs.size() > 0) childs.remove(view);
+				chkChildClickable();
 			}
 		});
 	}
@@ -233,6 +240,7 @@ public abstract class GL_View_Base extends CB_RectF
 			public void run()
 			{
 				if (childs != null && childs.size() > 0) childs.clear();
+				chkChildClickable();
 			}
 		});
 	}
@@ -245,8 +253,32 @@ public abstract class GL_View_Base extends CB_RectF
 			public void run()
 			{
 				if (childs != null && childs.size() > 0) childs.remove(Childs);
+				chkChildClickable();
 			}
 		});
+	}
+
+	/**
+	 * Checks whether any child has the status Clickable. </br>If so, then this view must also Clickable!
+	 */
+	private void chkChildClickable()
+	{
+		boolean tmpClickable = false;
+		boolean tmpDblClickable = false;
+		boolean tmpLongClickable = false;
+		if (childs != null)
+		{
+			for (GL_View_Base tmp : childs)
+			{
+				if (tmp.isClickable()) tmpClickable = true;
+				if (tmp.isLongClickable()) tmpLongClickable = true;
+				if (tmp.isDblClickable()) tmpDblClickable = true;
+			}
+		}
+
+		ChildIsClickable = tmpClickable;
+		ChildIsDoubleClickable = tmpDblClickable;
+		ChildIsLongClickable = tmpLongClickable;
 	}
 
 	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
@@ -854,28 +886,23 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void setOnClickListener(OnClickListener l)
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
+		isClickable = l != null;
 		mOnClickListener = l;
 	}
 
-	/**
-	 * Register a callback to be invoked when this view is clicked for all events (single, double and long). If this view is not clickable,
-	 * it becomes clickable.
-	 * 
-	 * @param l
-	 *            The callback that will run
-	 * @see #setClickable(boolean)
-	 */
-	public void setAllClickListener(OnClickListener l)
+	public OnClickListener getOnClickListner()
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
-		mOnDoubleClickListener = mOnLongClickListener = mOnClickListener = l;
+		return mOnClickListener;
+	}
+
+	public OnClickListener getOnLongClickListner()
+	{
+		return mOnLongClickListener;
+	}
+
+	public OnClickListener getOnDblClickListner()
+	{
+		return mOnDoubleClickListener;
 	}
 
 	/**
@@ -887,10 +914,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void setOnLongClickListener(OnClickListener l)
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
+		isLongClickable = l != null;
 		mOnLongClickListener = l;
 	}
 
@@ -903,16 +927,26 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void setOnDoubleClickListener(OnClickListener l)
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
+		isDoubleClickable = l != null;
 		mOnDoubleClickListener = l;
+	}
+
+	public boolean isDblClickable()
+	{
+		if (!this.isVisible()) return false;
+		return isDoubleClickable | ChildIsDoubleClickable;
+	}
+
+	public boolean isLongClickable()
+	{
+		if (!this.isVisible()) return false;
+		return isLongClickable | ChildIsLongClickable;
 	}
 
 	public boolean isClickable()
 	{
-		return isClickable;
+		if (!this.isVisible()) return false;
+		return isClickable | ChildIsClickable;
 	}
 
 	/**

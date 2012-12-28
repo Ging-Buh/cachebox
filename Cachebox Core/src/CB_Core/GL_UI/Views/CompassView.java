@@ -632,7 +632,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 		if (aktCache == null) return;
 
-		if (GlobalCore.Locator.getLocation() != null)
+		if (GlobalCore.Locator != null && GlobalCore.Locator.getLocation() != null)
 		{
 			Coordinate position = GlobalCore.Locator.getLocation();
 			heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;

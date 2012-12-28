@@ -18,13 +18,13 @@ public class chkBox extends Button
 	public chkBox(String name)
 	{
 		super(new CB_RectF(UiSizes.getChkBoxSize()), name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public chkBox(CB_RectF rec, String name)
 	{
 		super(rec, name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	@Override
