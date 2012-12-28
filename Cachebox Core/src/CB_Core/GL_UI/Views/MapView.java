@@ -1581,7 +1581,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void PositionChanged(Locator locator)
 	{
-		Logger.DEBUG("Map.PositionChanged");
+		// Logger.DEBUG("Map.PositionChanged");
 		if (locator == null) return;
 		if (locator.getLocation() == null) return;
 
@@ -1595,7 +1595,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().getLatitude(), locator.getLocation().getLongitude());
 		// GlobalCore.LastValidPosition.setElevation(locator.getAlt());
 
-		Logger.DEBUG("Map.locator=" + locator.getProvider() + "/" + locator.getLocation().FormatCoordinate());
+		// Logger.DEBUG("Map.locator=" + locator.getProvider() + "/" + locator.getLocation().FormatCoordinate());
 
 		if (info != null)
 		{
@@ -1603,7 +1603,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			info.setSpeed(locator.SpeedString());
 
 			info.setDistance(GlobalCore.getSelectedCoord().Distance());
-			Logger.DEBUG("Map.SetDistance=" + GlobalCore.getSelectedCoord().Distance());
+			// Logger.DEBUG("Map.SetDistance=" + GlobalCore.getSelectedCoord().Distance());
 		}
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().getLatitude(), locator
@@ -2187,7 +2187,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		// xxx if (Global.autoResort) return;
-
+		// Logger.DEBUG("Cache Changed Event");
 		if (cache == null) return;
 		/*
 		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
