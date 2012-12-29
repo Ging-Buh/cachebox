@@ -50,7 +50,7 @@ public class DesktopMain
 		new DesktopLogger();
 
 		InitalConfig();
-
+		Config.settings.ReadFromDB();
 		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
 
 		GL_View_Base.debug = debug;

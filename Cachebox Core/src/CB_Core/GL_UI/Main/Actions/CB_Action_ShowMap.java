@@ -67,6 +67,11 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		MenuItem mi;
 
 		mi = icm.addItem(MenuID.MI_LAYER, "Layer");
+
+		mi = icm.addItem(456789, "HillShade");
+		mi.setCheckable(true);
+		mi.setChecked(MapView.that.GetHillShade());
+
 		mi = icm.addItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass");
 		mi.setCheckable(true);
 		mi.setChecked(MapView.that.GetAlignToCompass());
@@ -163,6 +168,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 			case MenuID.MI_MAPVIEW_VIEW:
 				showMapViewLayerMenu();
+				return true;
+
+			case 456789:
+				MapView.that.SetHillShade(!MapView.that.GetHillShade());
 				return true;
 
 			case MenuID.MI_ALIGN_TO_COMPSS:

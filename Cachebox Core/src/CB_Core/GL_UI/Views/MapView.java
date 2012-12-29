@@ -80,7 +80,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected SortedMap<Integer, Integer> DistanceZoomLevel;
 
 	private Locator locator = null;
-	public static MapTileLoader mapTileLoader = new MapTileLoader();
+	public static MapTileLoader mapTileLoader = new MapTileLoader(false);
 	private boolean alignToCompass = false;
 	private boolean CarMode = false;
 
@@ -287,6 +287,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			if (mapTileLoader.CurrentLayer == null) mapTileLoader.CurrentLayer = ManagerBase.Manager.GetLayerByName(
 					(currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
+			if (mapTileLoader.CurrentOverlayLayer == null) mapTileLoader.CurrentOverlayLayer = ManagerBase.Manager.GetLayerByName(
+					"HillShade", "HillShade", "");
 		}
 
 		mapIntWidth = (int) rec.getWidth();
@@ -494,6 +496,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	}
 
 	protected SortedMap<Long, TileGL> tilesToDraw = new TreeMap<Long, TileGL>();
+	protected SortedMap<Long, TileGL> overlayToDraw = new TreeMap<Long, TileGL>();
 
 	@Override
 	protected void render(SpriteBatch batch)
@@ -681,9 +684,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					Descriptor desc = new Descriptor(i, j, tmpzoom);
 					TileGL tile = null;
+					TileGL tileOverlay = null;
 					try
 					{
 						tile = mapTileLoader.getLoadedTile(desc);
+						tileOverlay = mapTileLoader.getLoadedOverlayTile(desc);
 					}
 					catch (Exception ex)
 					{
@@ -708,6 +713,16 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						// dieser Aufruf kann auch rekursiv sein...
 						renderSmallerTiles(batch, i, j, aktZoom);
 					}
+					if (tileOverlay != null)
+					{
+						if (tmpzoom == aktZoom) tileOverlay.Age = 0;
+						if (!overlayToDraw.containsKey(tileOverlay.Descriptor.GetHashCode())) overlayToDraw.put(
+								tileOverlay.Descriptor.GetHashCode(), tileOverlay);
+					}
+					else if (tmpzoom == aktZoom)
+					{
+						if (!renderBiggerOverlayTiles(batch, i, j, aktZoom)) renderSmallerOverlayTiles(batch, i, j, aktZoom);
+					}
 				}
 			}
 		}
@@ -731,6 +746,26 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		}
 		tilesToDraw.clear();
+		synchronized (screenCenterW)
+		{
+			for (TileGL tile : overlayToDraw.values())
+			{
+				tile.createTexture();
+				if (tile.texture != null)
+				{
+					// Faktor, mit der dieses MapTile vergrößert gezeichnet
+					// werden muß
+					long posFactor = mapTileLoader.getMapTilePosFactor(tile.Descriptor.Zoom);
+
+					long xPos = (long) tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
+					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
+					float xSize = tile.texture.getWidth() * posFactor;
+					float ySize = tile.texture.getHeight() * posFactor;
+					batch.draw(tile.texture, (float) xPos, (float) yPos, xSize, ySize);
+				}
+			}
+		}
+		overlayToDraw.clear();
 
 	}
 
@@ -1173,6 +1208,45 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		return false;
 	}
 
+	private boolean renderBiggerOverlayTiles(SpriteBatch batch, int i, int j, int zoom2)
+	{
+		// für den aktuellen Zoom ist kein Tile vorhanden -> kleinere
+		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
+		// von dem gefundenen Tile muß dann nur ein Ausschnitt gezeichnet werden
+		int ii = i / 2;
+		int jj = j / 2;
+		int zoomzoom = zoom2 - 1;
+
+		Descriptor desc = new Descriptor(ii, jj, zoomzoom);
+		TileGL tile = null;
+		try
+		{
+			tile = mapTileLoader.getLoadedOverlayTile(desc);
+		}
+		catch (Exception ex)
+		{
+		}
+		if (tile != null)
+		{
+			// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
+			// eigentlich nicht das richtige Tile ist!!!
+			// tile.Age = 0;
+			if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.put(tile.Descriptor.GetHashCode(), tile);
+			return true;
+		}
+		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
+		{
+			// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+			// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
+			// sind...
+			// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles
+			// gezeichnet werden (4 oder 16 oder 64...)
+			// dieser Aufruf kann auch rekursiv sein...
+			renderBiggerOverlayTiles(batch, ii, jj, zoomzoom);
+		}
+		return false;
+	}
+
 	private void renderSmallerTiles(SpriteBatch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
@@ -1213,6 +1287,51 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// gezeichnet werden (4 oder 16 oder 64...)
 					// dieser Aufruf kann auch rekursiv sein...
 					renderSmallerTiles(batch, ii, jj, zoomzoom);
+				}
+			}
+		}
+	}
+
+	private void renderSmallerOverlayTiles(SpriteBatch batch, int i, int j, int zoom2)
+	{
+		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
+		// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles gezeichnet
+		// werden (4 oder 16 oder 64...)
+		int i1 = i * 2;
+		int i2 = i * 2 + 1;
+		int j1 = j * 2;
+		int j2 = j * 2 + 1;
+		int zoomzoom = zoom2 + 1;
+		for (int ii = i1; ii <= i2; ii++)
+		{
+			for (int jj = j1; jj <= j2; jj++)
+			{
+				Descriptor desc = new Descriptor(ii, jj, zoomzoom);
+				TileGL tile = null;
+				try
+				{
+					tile = mapTileLoader.getLoadedOverlayTile(desc);
+				}
+				catch (Exception ex)
+				{
+				}
+				if (tile != null)
+				{
+					if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.put(tile.Descriptor.GetHashCode(), tile);
+					// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
+					// eigentlich nicht das richtige Tile ist!!!
+					// tile.Age = 0;
+				}
+				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM))
+				{
+					// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+					// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
+					// sind...
+					// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles
+					// gezeichnet werden (4 oder 16 oder 64...)
+					// dieser Aufruf kann auch rekursiv sein...
+					renderSmallerOverlayTiles(batch, ii, jj, zoomzoom);
 				}
 			}
 		}
@@ -1758,6 +1877,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		}
 
+	}
+
+	public void SetHillShade(boolean value)
+	{
+		mapTileLoader.SetOverlay(value);
+		mapTileLoader.clearLoadedTiles();
+	}
+
+	public boolean GetHillShade()
+	{
+		return mapTileLoader.GetOverlay();
 	}
 
 	public void SetAlignToCompass(boolean value)
