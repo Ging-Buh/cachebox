@@ -73,7 +73,7 @@ public class splash extends TabMainView
 
 				String defaultPath = Config.settings.SkinFolder.getValue();
 				int pos = defaultPath.lastIndexOf("/");
-				defaultPath = defaultPath.substring(0, pos) + "/default";
+				if (pos != -1) defaultPath = defaultPath.substring(0, pos) + "/default";
 
 				String path = defaultPath + "/day/SplashPack.spp";
 				atlas = new TextureAtlas(Gdx.files.absolute(path));

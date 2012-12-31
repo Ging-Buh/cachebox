@@ -699,7 +699,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						// für den richtigen aktuellen Zoom ist
 						if (tmpzoom == aktZoom) tile.Age = 0;
 
-						if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+						try
+						{
+							if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(),
+									tile);
+						}
+						catch (Exception e)
+						{
+						}
 					}
 					else if (tmpzoom == aktZoom)
 					{
@@ -716,8 +723,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					if (tileOverlay != null)
 					{
 						if (tmpzoom == aktZoom) tileOverlay.Age = 0;
-						if (!overlayToDraw.containsKey(tileOverlay.Descriptor.GetHashCode())) overlayToDraw.put(
-								tileOverlay.Descriptor.GetHashCode(), tileOverlay);
+						try
+						{
+							if (!overlayToDraw.containsKey(tileOverlay.Descriptor.GetHashCode())) overlayToDraw.put(
+									tileOverlay.Descriptor.GetHashCode(), tileOverlay);
+						}
+						catch (Exception e)
+						{
+						}
 					}
 					else if (tmpzoom == aktZoom)
 					{
@@ -1192,7 +1205,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
 			// eigentlich nicht das richtige Tile ist!!!
 			// tile.Age = 0;
-			if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+			try
+			{
+				if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+			}
+			catch (Exception e)
+			{
+			}
 			return true;
 		}
 		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
@@ -1231,7 +1250,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
 			// eigentlich nicht das richtige Tile ist!!!
 			// tile.Age = 0;
-			if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.put(tile.Descriptor.GetHashCode(), tile);
+			try
+			{
+				if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.put(tile.Descriptor.GetHashCode(), tile);
+			}
+			catch (Exception e)
+			{
+			}
 			return true;
 		}
 		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
@@ -1273,7 +1298,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 				if (tile != null)
 				{
-					if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+					try
+					{
+						if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+					}
+					catch (Exception e)
+					{
+					}
 					// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
 					// eigentlich nicht das richtige Tile ist!!!
 					// tile.Age = 0;
@@ -1318,7 +1349,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 				if (tile != null)
 				{
-					if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.put(tile.Descriptor.GetHashCode(), tile);
+					try
+					{
+						if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.put(tile.Descriptor.GetHashCode(),
+								tile);
+					}
+					catch (Exception e)
+					{
+					}
 					// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
 					// eigentlich nicht das richtige Tile ist!!!
 					// tile.Age = 0;
@@ -1489,6 +1527,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					DistanceZoomLevel.put(i, (int) (posiblePixel / PixelForZoomLevel));
 				}
 			}
+
+			// Hill Shading ?
+			mapTileLoader.SetOverlay(Config.settings.MapHillShading.getValue());
+			mapTileLoader.clearLoadedTiles();
+
 		}
 
 		if ((InitialFlags & INITIAL_THEME) != 0)
@@ -1883,6 +1926,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		mapTileLoader.SetOverlay(value);
 		mapTileLoader.clearLoadedTiles();
+
+		Config.settings.MapHillShading.setValue(value);
+		Config.AcceptChanges();
 	}
 
 	public boolean GetHillShade()

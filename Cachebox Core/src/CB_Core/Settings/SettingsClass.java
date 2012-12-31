@@ -57,6 +57,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool MapShowCompass;
 	public SettingBool CompassNorthOriented;
 	public SettingBool MapNorthOriented;
+	public SettingBool MapHillShading;
 	// public SettingBool ResortRepaint;
 	public SettingBool GCAutoSyncCachesFound;
 	public SettingBool GCAdditionalImageDownload;
@@ -323,6 +324,8 @@ public class SettingsClass extends SettingsList
 		addSetting(CompassNorthOriented = new SettingBool("CompassNorthOriented", cat, NORMAL, true, true));
 		addSetting(MapNorthOriented = new SettingBool("MapNorthOriented", cat, NORMAL, true, true));
 		addSetting(LastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", cat, INVISIBLE, 0, true));
+
+		addSetting(MapHillShading = new SettingBool("MapHillShading", cat, NORMAL, false, true));
 
 		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", cat, EXPERT, "Mapnik", true));
 

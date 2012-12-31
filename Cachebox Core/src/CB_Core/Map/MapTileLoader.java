@@ -492,7 +492,8 @@ public class MapTileLoader
 		byte[] bytes = null;
 		if (ManagerBase.Manager != null)
 		{
-			bytes = ManagerBase.Manager.LoadInvertedPixmap(CurrentOverlayLayer, desc);
+			// Load Overlay never inverted !!!
+			bytes = ManagerBase.Manager.LoadLocalPixmap(CurrentOverlayLayer, desc);
 		}
 		// byte[] bytes = MapManagerEventPtr.OnGetMapTile(CurrentLayer, desc);
 		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));

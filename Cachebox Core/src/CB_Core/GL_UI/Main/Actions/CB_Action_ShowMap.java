@@ -68,7 +68,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		mi = icm.addItem(MenuID.MI_LAYER, "Layer");
 
-		mi = icm.addItem(456789, "HillShade");
+		mi = icm.addItem(MenuID.MI_MAP_HILL_SHADING, "HillShade");
 		mi.setCheckable(true);
 		mi.setChecked(MapView.that.GetHillShade());
 
@@ -170,7 +170,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				showMapViewLayerMenu();
 				return true;
 
-			case 456789:
+			case MenuID.MI_MAP_HILL_SHADING:
 				MapView.that.SetHillShade(!MapView.that.GetHillShade());
 				return true;
 
