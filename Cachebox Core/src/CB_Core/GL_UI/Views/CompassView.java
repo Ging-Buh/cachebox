@@ -713,6 +713,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private void setMoonSunPos()
 	{
+
+		// chk instanzes
+		if (Sun == null || Moon == null) return;
+
 		if (GlobalCore.Locator != null && GlobalCore.LastValidPosition != null)
 		{
 			double julianDate = Astronomy.UtcToJulianDate(new Date());
