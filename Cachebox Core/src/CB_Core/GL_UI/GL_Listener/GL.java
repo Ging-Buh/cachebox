@@ -567,8 +567,8 @@ public class GL implements ApplicationListener
 				if (first.view.isClickable())
 				{
 					// Testen, ob dies ein Doppelklick ist
-					if ((System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null)
-							&& (distance(akt, lastClickPoint) < first.view.getClickTolerance()))
+					if (first.view.isDblClickable() && (System.currentTimeMillis() < lastClickTime + mDoubleClickTime)
+							&& (lastClickPoint != null) && (distance(akt, lastClickPoint) < first.view.getClickTolerance()))
 					{
 						boolean handled = first.view.doubleClick(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight()
 								- y - (int) first.view.ThisWorldRec.getY(), pointer, button);
@@ -579,9 +579,6 @@ public class GL implements ApplicationListener
 					}
 					else
 					{
-
-						// TODO erst senden, wenn kein DblClick kommt
-
 						// normaler Click
 						boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 								- (int) first.view.ThisWorldRec.getY(), pointer, button);

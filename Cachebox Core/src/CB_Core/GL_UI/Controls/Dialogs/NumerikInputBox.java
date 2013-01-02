@@ -13,6 +13,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Input.Keys;
 
@@ -47,7 +48,7 @@ public class NumerikInputBox extends CB_View_Base
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -111,7 +112,7 @@ public class NumerikInputBox extends CB_View_Base
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -176,7 +177,7 @@ public class NumerikInputBox extends CB_View_Base
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, (msgBoxSize.width - (margin * 2)) / 5 * 4);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -375,6 +376,9 @@ public class NumerikInputBox extends CB_View_Base
 
 				case 'D':
 					editText.keyTyped(EditWrapedTextField.DELETE);
+					break;
+				case 'B':
+					editText.keyTyped(EditWrapedTextField.BACKSPACE);
 					break;
 
 				default:

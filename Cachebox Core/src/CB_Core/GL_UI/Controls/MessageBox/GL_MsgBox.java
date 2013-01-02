@@ -12,11 +12,13 @@ import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
+import CB_Core.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -40,7 +42,114 @@ public class GL_MsgBox extends Dialog
 	public OnClickListener neutralButtonClickListener;
 	public OnClickListener negativeButtonClickListener;
 
+	protected SettingBool rememberSeting = null;
+	protected chkBox chkRemember;
+
 	// **************************************************
+
+	public static GL_MsgBox Show(String msg, OnMsgBoxClickListener Listener)
+	{
+		return Show(msg, "", Listener);
+	}
+
+	public static GL_MsgBox Show(String msg, String title, OnMsgBoxClickListener Listener)
+	{
+		return Show(msg, title, MessageBoxButtons.OK, Listener, null);
+	}
+
+	public static GL_MsgBox Show(String msg, String title, MessageBoxIcon icon)
+	{
+		return Show(msg, title, MessageBoxButtons.OK, icon, null, null);
+	}
+
+	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener)
+	{
+		return Show(msg, title, buttons, Listener, null);
+	}
+
+	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener)
+	{
+		return Show(msg, title, buttons, icon, Listener, null);
+	}
+
+	// ++++++++++++++++++++++
+
+	public static GL_MsgBox Show(String msg, OnMsgBoxClickListener Listener, SettingBool remember)
+	{
+		return Show(msg, "", Listener, remember);
+	}
+
+	public static GL_MsgBox Show(String msg, String title, OnMsgBoxClickListener Listener, SettingBool remember)
+	{
+		return Show(msg, title, MessageBoxButtons.OK, Listener, remember);
+	}
+
+	public static GL_MsgBox Show(String msg, String title, MessageBoxIcon icon, SettingBool remember)
+	{
+		return Show(msg, title, MessageBoxButtons.OK, icon, null, remember);
+	}
+
+	public static GL_MsgBox Show(String msg)
+	{
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
+		msgBox.setButtonCaptions(MessageBoxButtons.OK);
+		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+		label.setZeroPos();
+		label.setWrappedText(msg);
+		msgBox.addChild(label);
+
+		GL.that.showDialog(msgBox);
+		return msgBox;
+	}
+
+	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener, SettingBool remember)
+	{
+
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)),
+				"MsgBox");
+		msgBox.rememberSeting = remember;
+		msgBox.mMsgBoxClickListner = Listener;
+		msgBox.setButtonCaptions(buttons);
+		msgBox.setTitle(title);
+		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+		label.setZeroPos();
+		label.setWrappedText(msg);
+		msgBox.addChild(label);
+
+		GL.that.showDialog(msgBox);
+		return msgBox;
+	}
+
+	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener,
+			SettingBool remember)
+	{
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)),
+				"MsgBox");
+		msgBox.rememberSeting = remember;
+		msgBox.mMsgBoxClickListner = Listener;
+		msgBox.setTitle(title);
+
+		msgBox.setButtonCaptions(buttons);
+
+		SizeF contentSize = msgBox.getContentSize();
+
+		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
+				UiSizes.getButtonHeight());
+
+		Image iconImage = new Image(imageRec, "MsgBoxIcon");
+		if (icon != MessageBoxIcon.None) iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
+		msgBox.addChild(iconImage);
+
+		label = new Label(contentSize.getBounds(), "MsgBoxLabel");
+		label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getButtonHeight());
+		label.setX(imageRec.getMaxX() + 5);
+		label.setY(0);
+		label.setWrappedText(msg);
+		msgBox.addChild(label);
+
+		GL.that.showDialog(msgBox);
+		return msgBox;
+	}
 
 	/**
 	 * Interface used to allow the creator of a dialog to run some code when an item on the dialog is clicked..
@@ -79,6 +188,11 @@ public class GL_MsgBox extends Dialog
 
 	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon)
 	{
+		return calcMsgBoxSize(Text, hasTitle, hasButtons, hasIcon, false);
+	}
+
+	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember)
+	{
 		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
 
 		if (Width * 1.2 < UiSizes.getWindowWidth()) Width *= 1.2f;
@@ -97,6 +211,7 @@ public class GL_MsgBox extends Dialog
 			Height += margin * 2;
 		}
 		Height += calcFooterHeight(hasButtons);
+		if (hasRemember) Height += UiSizes.getChkBoxSize().height;
 		Height += calcHeaderHeight();
 
 		// min Height festlegen
@@ -120,91 +235,6 @@ public class GL_MsgBox extends Dialog
 			if (item.getMaxY() > maxItemY) maxItemY = item.getMaxY();
 		}
 		mFooterHeight = maxItemY + margin;
-	}
-
-	public static GL_MsgBox Show(String msg)
-	{
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
-		msgBox.setButtonCaptions(MessageBoxButtons.OK);
-		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
-		label.setZeroPos();
-		label.setWrappedText(msg);
-		msgBox.addChild(label);
-
-		GL.that.showDialog(msgBox);
-		return msgBox;
-	}
-
-	private void resetClickListner()
-	{
-		mMsgBoxClickListner = null;
-		if (button1 != null) button1.setOnClickListener(null);
-		if (button2 != null) button2.setOnClickListener(null);
-		if (button3 != null) button3.setOnClickListener(null);
-		positiveButtonClickListener = null;
-		negativeButtonClickListener = null;
-		neutralButtonClickListener = null;
-
-	}
-
-	public static GL_MsgBox Show(String msg, OnMsgBoxClickListener Listener)
-	{
-		return Show(msg, "", Listener);
-	}
-
-	public static GL_MsgBox Show(String msg, String title, OnMsgBoxClickListener Listener)
-	{
-		return Show(msg, title, MessageBoxButtons.OK, Listener);
-	}
-
-	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener)
-	{
-
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false), "MsgBox");
-		msgBox.mMsgBoxClickListner = Listener;
-		msgBox.setButtonCaptions(buttons);
-		msgBox.setTitle(title);
-		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
-		label.setZeroPos();
-		label.setWrappedText(msg);
-		msgBox.addChild(label);
-
-		GL.that.showDialog(msgBox);
-		return msgBox;
-	}
-
-	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener)
-	{
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true), "MsgBox");
-		msgBox.mMsgBoxClickListner = Listener;
-		msgBox.setTitle(title);
-
-		msgBox.setButtonCaptions(buttons);
-
-		SizeF contentSize = msgBox.getContentSize();
-
-		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
-				UiSizes.getButtonHeight());
-
-		Image iconImage = new Image(imageRec, "MsgBoxIcon");
-		if (icon != MessageBoxIcon.None) iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
-		msgBox.addChild(iconImage);
-
-		label = new Label(contentSize.getBounds(), "MsgBoxLabel");
-		label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getButtonHeight());
-		label.setX(imageRec.getMaxX() + 5);
-		label.setY(0);
-		label.setWrappedText(msg);
-		msgBox.addChild(label);
-
-		GL.that.showDialog(msgBox);
-		return msgBox;
-	}
-
-	public static GL_MsgBox Show(String msg, String title, MessageBoxIcon icon)
-	{
-		return Show(msg, title, MessageBoxButtons.OK, icon, null);
-
 	}
 
 	public void setButtonCaptions(MessageBoxButtons buttons)
@@ -354,7 +384,20 @@ public class GL_MsgBox extends Dialog
 
 		}
 
-		msgBox.setFooterHeight(calcFooterHeight(true));
+		float calcedFooterHeight = calcFooterHeight(true);
+
+		// add Remember line?
+
+		if (rememberSeting != null)
+		{
+			chkRemember = new chkBox("remember");
+			chkRemember.setChecked(rememberSeting.getValue());
+			chkRemember.setPos(buttonX_L, button1.getMaxY());
+			msgBox.addFooterChild(chkRemember);
+			calcedFooterHeight += chkRemember.getHeight() + margin;
+		}
+
+		msgBox.setFooterHeight(calcedFooterHeight);
 	}
 
 	private void setButtonListner()

@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import CB_Core.DB.Database;
+import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -8,7 +9,10 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -58,14 +62,15 @@ public class TestView extends CB_View_Base
 		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), wrappedTextField.getY()
 				- Dialog.margin - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
-		btnSetting.setText("Delete old Logs");
+		btnSetting.setText("Remember MsgBox");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				Database.Data.DeleteOldLogs();
+				GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"),
+						MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, null, Config.settings.RememberAsk_API_Coast);
 				return true;
 			}
 		});

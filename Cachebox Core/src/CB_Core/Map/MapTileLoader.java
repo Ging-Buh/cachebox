@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.security.auth.DestroyFailedException;
 
+import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
@@ -422,7 +423,12 @@ public class MapTileLoader
 						}
 						catch (Exception ex1)
 						{
+							if (Config.settings.FireMapQueueProcessorExceptions.getValue())
+							{
+								throw ex1;
+							}
 							Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
+							Thread.sleep(400);
 						}
 
 					}
@@ -436,6 +442,16 @@ public class MapTileLoader
 			catch (Exception ex3)
 			{
 				Logger.Error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
+
+				try
+				{
+					Thread.sleep(400);
+				}
+				catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			finally
 			{

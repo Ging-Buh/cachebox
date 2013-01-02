@@ -29,7 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base
 {
-	Label descTextView, CachesFoundLabel, WP, Cord;
+	Label descTextView, CachesFoundLabel, WP, Cord, lblGPS, GPS, lblAccuracy, Accuracy, lblWP, lblCord, lblCurrent, Current;
 	Image CB_Logo;
 	float margin;
 	private int transFounds = -1;
@@ -89,65 +89,65 @@ public class AboutView extends CB_View_Base
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 
-				GL_MsgBox.Show("", new OnMsgBoxClickListener()
-				{
-
-					@Override
-					public boolean onClick(int which)
-					{
-						// Behandle das ergebniss
-						switch (which)
+				GL_MsgBox.Show(GlobalCore.Translations.Get("LoadFounds"), GlobalCore.Translations.Get("AdjustFinds"),
+						MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
 						{
-						case -1:
 
-							pd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("LoadFounds"), new IcancelListner()
+							@Override
+							public boolean onClick(int which)
 							{
-
-								@Override
-								public void isCanceld()
+								// Behandle das ergebniss
+								switch (which)
 								{
-									// TODO Auto-generated method stub
+								case 1:
+
+									pd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("LoadFounds"), new IcancelListner()
+									{
+
+										@Override
+										public void isCanceld()
+										{
+											// TODO Auto-generated method stub
+
+										}
+									}, new Runnable()
+									{
+
+										@Override
+										public void run()
+										{
+											transFounds = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
+											pd.close();
+
+											if (transFounds > -1)
+											{
+												String Text = GlobalCore.Translations.Get("FoundsSetTo", String.valueOf(transFounds));
+												GL_MsgBox.Show(Text, GlobalCore.Translations.Get("LoadFinds!"), MessageBoxButtons.OK,
+														MessageBoxIcon.GC_Live, null);
+
+												Config.settings.FoundOffset.setValue(transFounds);
+												Config.AcceptChanges();
+												AboutView.this.refreshText();
+											}
+											else
+											{
+												GL_MsgBox.Show(GlobalCore.Translations.Get("LogInErrorLoadFinds"), "",
+														MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+											}
+										}
+									});
+
+									break;
+								case 3:
+									NumerikInputBox.Show(GlobalCore.Translations.Get("TelMeFounds"),
+											GlobalCore.Translations.Get("AdjustFinds"), CB_Core.Config.settings.FoundOffset.getValue(),
+											DialogListner);
+									break;
 
 								}
-							}, new Runnable()
-							{
-
-								@Override
-								public void run()
-								{
-									transFounds = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
-									pd.close();
-
-									if (transFounds > -1)
-									{
-										String Text = GlobalCore.Translations.Get("FoundsSetTo", String.valueOf(transFounds));
-										GL_MsgBox.Show(Text, GlobalCore.Translations.Get("LoadFinds!"), MessageBoxButtons.OK,
-												MessageBoxIcon.GC_Live, null);
-
-										Config.settings.FoundOffset.setValue(transFounds);
-										Config.AcceptChanges();
-										AboutView.this.refreshText();
-									}
-									else
-									{
-										GL_MsgBox.Show(GlobalCore.Translations.Get("LogInErrorLoadFinds"), "", MessageBoxButtons.OK,
-												MessageBoxIcon.GC_Live, null);
-									}
-								}
-							});
-
-							break;
-						case -2:
-							NumerikInputBox.Show(GlobalCore.Translations.Get("AdjustFinds"), GlobalCore.Translations.Get("TelMeFounds"),
-									CB_Core.Config.settings.FoundOffset.getValue(), DialogListner);
-							break;
-						case -3:
-
-							break;
-						}
-						return true;
-					}
-				});
+								return true;
+							}
+						});
 
 				return true;
 			}

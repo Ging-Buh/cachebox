@@ -108,6 +108,9 @@ public class SettingsClass extends SettingsList
 	public SettingBool DeleteLogs;
 	public SettingBool CompactDB;
 
+	public SettingBool RememberAsk_API_Coast;
+	public SettingBool FireMapQueueProcessorExceptions;
+
 	// int
 	public SettingInt LogMaxMonthAge;
 	public SettingInt LogMinCount;
@@ -212,6 +215,7 @@ public class SettingsClass extends SettingsList
 		addQuickbuttonsSettings();
 		addDebugSettings();
 		addPositionSettings();
+		addRememberAsk();
 	}
 
 	private void addCarModeSettings()
@@ -422,6 +426,7 @@ public class SettingsClass extends SettingsList
 		addSetting(hasCallPermission = new SettingBool("hasCallPermission", cat, NEVER, false, true));
 		addSetting(hasPQ_PlugIn = new SettingBool("hasPQ_PlugIn", cat, NEVER, false, true));
 		addSetting(hasFTF_PlugIn = new SettingBool("hasFTF_PlugIn", cat, NEVER, false, true));
+		addSetting(FireMapQueueProcessorExceptions = new SettingBool("FireMapQueueProcessorExceptions", cat, INVISIBLE, false, true));
 	}
 
 	private void addAPISettings()
@@ -458,6 +463,14 @@ public class SettingsClass extends SettingsList
 		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", cat, EXPERT, false, true));
 		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, EXPERT, false, true));
 		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, EXPERT, "", true));
+
+	}
+
+	private void addRememberAsk()
+	{
+		SettingCategory cat = SettingCategory.RememberAsk;
+
+		addSetting(RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", cat, NORMAL, false, true));
 
 	}
 
