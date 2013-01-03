@@ -40,6 +40,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.ICallUrl;
 import CB_Core.Events.platformConector.IGetApiKey;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IQuit;
@@ -181,7 +182,6 @@ import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
-import de.cachebox_test.Views.AboutView;
 import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.NotesView;
@@ -218,7 +218,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static SpoilerView spoilerView = null; // ID 5
 	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
-	private static AboutView aboutView = null; // ID 11
 	private static JokerView jokerView = null; // ID 12
 	private static TrackableListView trackablelistView = null; // ID 14
 
@@ -1452,7 +1451,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (ID == ViewConst.TB_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
 		else if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
-		else if (ID == ViewConst.ABOUT_VIEW) return aboutView = new AboutView(this, inflater);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
 		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
 		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
@@ -1533,13 +1531,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				jokerView.OnFree();
 				jokerView = null;
-			}
-			else if (aktView.equals(aboutView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				aboutView.OnFree();
-				aboutView = null;
 			}
 			else if (aktView.equals(solverView))
 			{
@@ -3340,6 +3331,28 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 			}
 		});
+
+		platformConector.setCallUrlListner(new ICallUrl()
+		{
+
+			@Override
+			public void call(String url)
+			{
+				try
+				{
+					Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(url.trim()));
+					main.mainActivity.startActivity(browserIntent);
+				}
+				catch (Exception exc)
+				{
+					Toast.makeText(
+							main.mainActivity,
+							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim()
+									+ ")", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
 	}
 
 	IgetFileReturnListner getFileReturnListner = null;

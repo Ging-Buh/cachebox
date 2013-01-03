@@ -86,27 +86,4 @@ public class Energy
 
 	}
 
-	// ##############################
-	// About is Shown
-	// ##############################
-
-	private static boolean aboutIsShown = false;
-
-	public static boolean AboutIsShown()
-	{
-		if (displayOff) return true;
-		return aboutIsShown;
-	}
-
-	public static void setAboutIsShown()
-	{
-		aboutIsShown = true;
-
-	}
-
-	public static void resetAboutIsShown()
-	{
-		aboutIsShown = false;
-
-	}
 }

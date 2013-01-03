@@ -329,6 +329,12 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	{
 		super.onShow();
 		CB_Core.Events.PositionChangedEventList.Add(this);
+		if (chart != null)
+		{
+			chart.onShow();
+			chart.setDrawWithAlpha(false);
+		}
+
 	}
 
 	@Override
@@ -336,6 +342,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	{
 		super.onHide();
 		CB_Core.Events.PositionChangedEventList.Remove(this);
+		if (chart != null) chart.onHide();
 	}
 
 }

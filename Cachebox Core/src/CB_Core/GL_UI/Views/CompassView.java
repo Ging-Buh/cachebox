@@ -69,7 +69,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	public void onShow()
 	{
 		super.onShow();
-		if (chart != null) chart.onShow();
+		if (chart != null)
+		{
+			chart.onShow();
+			chart.setDrawWithAlpha(false);
+		}
+
 		if (chkSettingChanges())
 		{
 			this.removeChilds();

@@ -339,6 +339,27 @@ public class platformConector
 	{
 		if (setKeybordFocusListner != null) setKeybordFocusListner.setKeybordFocus(value);
 	}
+
+	// ----------------------------------------
+
+	// ------ setCallUrl ------
+
+	public interface ICallUrl
+	{
+		public void call(String url);
+	}
+
+	static ICallUrl CallUrlListner;
+
+	public static void setCallUrlListner(ICallUrl listner)
+	{
+		CallUrlListner = listner;
+	}
+
+	public static void callUrl(String url)
+	{
+		if (CallUrlListner != null) CallUrlListner.call(url);
+	}
 	// ----------------------------------------
 
 }

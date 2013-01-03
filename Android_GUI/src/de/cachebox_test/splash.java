@@ -36,7 +36,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -712,11 +711,7 @@ public class splash extends Activity
 
 	private void LoadImages()
 	{
-		Resources res = getResources();
 
-		bitmap = BitmapFactory.decodeResource(res, R.drawable.splash_back);
-
-		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
 		((TextView) findViewById(R.id.splash_textViewDesc)).setVisibility(View.INVISIBLE);
 		((TextView) findViewById(R.id.splash_textViewVersion)).setVisibility(View.INVISIBLE);
 		((TextView) findViewById(R.id.splash_TextView)).setVisibility(View.INVISIBLE);
