@@ -110,6 +110,7 @@ public class SettingsClass extends SettingsList
 
 	public SettingBool RememberAsk_API_Coast;
 	public SettingBool FireMapQueueProcessorExceptions;
+	public SettingBool DebugSpriteBatchCountBuffer;
 
 	// int
 	public SettingInt LogMaxMonthAge;
@@ -463,6 +464,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DebugShowMarker = new SettingBool("DebugShowMarker", cat, EXPERT, false, true));
 		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, EXPERT, false, true));
 		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, EXPERT, "", true));
+		addSetting(DebugSpriteBatchCountBuffer = new SettingBool("DebugSpriteBatchCountBuffer", cat, EXPERT, false, true));
 
 	}
 

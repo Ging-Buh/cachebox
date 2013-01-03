@@ -198,36 +198,6 @@ public class FieldNotesView extends V_ListView
 					addNewFieldnote(4);
 					return true;
 
-				case MenuID.MI_MANAGE:
-					manageFieldNote();
-					return true;
-				}
-				return false;
-			}
-		});
-
-		cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
-		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
-		cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
-		cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
-		cm.addItem(MenuID.MI_MANAGE, "ManageNotes");
-
-		return cm;
-
-	}
-
-	private void manageFieldNote()
-	{
-		Menu cm = new Menu("CacheListContextMenu");
-
-		cm.addItemClickListner(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				switch (((MenuItem) v).getMenuItemId())
-				{
 				case MenuID.MI_UPLOAD_FIELDNOTE:
 					UploadFieldnotes();
 					return true;
@@ -239,10 +209,14 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
+		cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
+		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
+		cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
+		cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
 		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(35));
 		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
 
-		cm.show();
+		return cm;
 
 	}
 
@@ -250,7 +224,7 @@ public class FieldNotesView extends V_ListView
 	{
 
 		GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"),
-				MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner);
+				MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.settings.RememberAsk_API_Coast);
 
 	}
 

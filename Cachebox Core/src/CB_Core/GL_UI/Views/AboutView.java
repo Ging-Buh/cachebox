@@ -59,6 +59,8 @@ public class AboutView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
+		this.removeChilds();
+
 		this.setBackground(SpriteCache.AboutBack);
 		float ref = UiSizes.getWindowHeight() / 13;
 		margin = UiSizes.getMargin();
@@ -155,7 +157,53 @@ public class AboutView extends CB_View_Base
 
 		this.addChild(CachesFoundLabel);
 
+		createTable();
+
 		refreshText();
+	}
+
+	private void createTable()
+	{
+		float TableHeight = 5 * UiSizes.getButtonHeight() + 6 * margin;
+		float leftMaxWidth = 0;
+
+		lblGPS = new Label("lblGPS");
+		leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(GlobalCore.Translations.Get("gps")).width);
+
+		lblAccuracy = new Label("lblAccuracy");
+		leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.setText(GlobalCore.Translations.Get("accuracy")).width);
+
+		lblWP = new Label("lblWP");
+		leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(GlobalCore.Translations.Get("waypoint")).width);
+
+		lblCord = new Label("lblCord");
+		leftMaxWidth = Math.max(leftMaxWidth, lblCord.setText(GlobalCore.Translations.Get("coordinate")).width);
+
+		lblCurrent = new Label("lblCurrent");
+		leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(GlobalCore.Translations.Get("current")).width);
+
+		// set all lbl to the same max width + margin
+		leftMaxWidth += margin;
+		lblGPS.setWidth(leftMaxWidth);
+		lblAccuracy.setWidth(leftMaxWidth);
+		lblWP.setWidth(leftMaxWidth);
+		lblCord.setWidth(leftMaxWidth);
+		lblCurrent.setWidth(leftMaxWidth);
+
+		// set lbl position on Screen
+		lblCurrent.setPos(margin, margin);
+		lblCord.setPos(margin, lblCurrent.getMaxY() + margin);
+		lblWP.setPos(margin, lblCord.getMaxY() + margin);
+		lblAccuracy.setPos(margin, lblWP.getMaxY() + margin);
+		lblGPS.setPos(margin, lblAccuracy.getMaxY() + margin);
+
+		// add to Screen
+		this.addChild(lblGPS);
+		this.addChild(lblAccuracy);
+		this.addChild(lblWP);
+		this.addChild(lblCord);
+		this.addChild(lblCurrent);
+
 	}
 
 	@Override

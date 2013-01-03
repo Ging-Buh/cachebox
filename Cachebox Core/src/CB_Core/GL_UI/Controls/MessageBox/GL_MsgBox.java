@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls.MessageBox;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
@@ -105,6 +106,17 @@ public class GL_MsgBox extends Dialog
 	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener, SettingBool remember)
 	{
 
+		if (remember.getValue())
+		{
+			// wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
+			// Wir liefern nur ein On Click auf den OK Button zurück!
+			if (Listener != null)
+			{
+				Listener.onClick(BUTTON_POSITIVE);
+			}
+			return null;
+		}
+
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)),
 				"MsgBox");
 		msgBox.rememberSeting = remember;
@@ -123,6 +135,18 @@ public class GL_MsgBox extends Dialog
 	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener,
 			SettingBool remember)
 	{
+
+		if (remember != null && remember.getValue())
+		{
+			// wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
+			// Wir liefern nur ein On Click auf den OK Button zurück!
+			if (Listener != null)
+			{
+				Listener.onClick(BUTTON_POSITIVE);
+			}
+			return null;
+		}
+
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)),
 				"MsgBox");
 		msgBox.rememberSeting = remember;
@@ -182,6 +206,18 @@ public class GL_MsgBox extends Dialog
 	private boolean ButtonClick(int button)
 	{
 		GL.that.closeDialog(that);
+
+		// wenn Dies eine Remember MsgBox ist, überprüfen wir ob das remember gesetzt ist
+		if (rememberSeting != null)
+		{
+			if (chkRemember.isChecked())
+			{
+				// User hat Remember aktiviert, was hier abgespeichert wird!
+				rememberSeting.setValue(true);
+				Config.AcceptChanges();
+			}
+		}
+
 		if (mMsgBoxClickListner != null) return mMsgBoxClickListner.onClick(button);
 		return false;
 	}
@@ -394,6 +430,14 @@ public class GL_MsgBox extends Dialog
 			chkRemember.setChecked(rememberSeting.getValue());
 			chkRemember.setPos(buttonX_L, button1.getMaxY());
 			msgBox.addFooterChild(chkRemember);
+
+			Label lbl = new Label(chkRemember.getMaxX() + margin, chkRemember.getY(), this.width - chkRemember.getMaxX(),
+					chkRemember.getHeight(), "");
+
+			lbl.setText(GlobalCore.Translations.Get("remember"));
+
+			msgBox.addFooterChild(lbl);
+
 			calcedFooterHeight += chkRemember.getHeight() + margin;
 		}
 

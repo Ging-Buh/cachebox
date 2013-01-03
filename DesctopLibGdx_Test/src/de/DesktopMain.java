@@ -95,7 +95,7 @@ public class DesktopMain
 		}
 		else
 		{
-			new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height, false);
+			new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height, true);
 		}
 
 		Timer timer = new Timer();

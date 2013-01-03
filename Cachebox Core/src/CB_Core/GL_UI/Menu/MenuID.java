@@ -27,7 +27,7 @@ public class MenuID
 	public static final int MI_NOT_FOUND = 11;
 	public static final int MI_MAINTANCE = 12;
 	public static final int MI_NOTE = 13;
-	public static final int MI_MANAGE = 14;
+	// public static final int MI_MANAGE = 14;
 	public static final int MI_UPLOAD_FIELDNOTE = 15;
 	public static final int MI_DELETE_ALL_FIELDNOTES = 16;
 	public static final int MI_DELETE_FIELDNOTE = 17;

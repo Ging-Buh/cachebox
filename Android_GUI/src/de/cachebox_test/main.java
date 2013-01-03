@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+
 import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
@@ -1730,11 +1735,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			// if (viewGL == null)
-			// {
+			boolean GL20 = checkGL20Support(this);
 
 			if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
-			gdxView = initializeForView(glListener, false);
+			gdxView = initializeForView(glListener, GL20);
 
 			Logger.DEBUG("Initial new gdxView=" + gdxView.toString());
 
@@ -2892,6 +2896,26 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return -1;
 		}
 	};
+
+	private boolean checkGL20Support(Context context)
+	{
+		EGL10 egl = (EGL10) EGLContext.getEGL();
+		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+
+		int[] version = new int[2];
+		egl.eglInitialize(display, version);
+
+		int EGL_OPENGL_ES2_BIT = 4;
+		int[] configAttribs =
+			{ EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4, EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+					EGL10.EGL_NONE };
+
+		EGLConfig[] configs = new EGLConfig[10];
+		int[] num_config = new int[1];
+		egl.eglChooseConfig(display, configAttribs, configs, 10, num_config);
+		egl.eglTerminate(display);
+		return num_config[0] > 0;
+	}
 
 	// #########################################################
 

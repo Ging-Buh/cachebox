@@ -15,7 +15,6 @@ import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.GlobalCore;
 import CB_Core.GlobalLocationReceiver;
-import CB_Core.Plattform;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
@@ -64,6 +63,11 @@ public class GL implements ApplicationListener
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
+
+	/**
+	 * See http://code.google.com/p/libgdx/wiki/SpriteBatch Performance tuning
+	 */
+	protected final int SPRITE_BATCH_BUFFER = 150;
 
 	// Public Static Member
 	public static GL_Listener_Interface listenerInterface;
@@ -136,6 +140,7 @@ public class GL implements ApplicationListener
 	protected SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
 	protected boolean DialogIsShown = false, ActivityIsShown = false;
 	protected int width = 0, height = 0;
+	private boolean debugWriteSpriteCount = false;
 
 	/**
 	 * Constructor
@@ -178,6 +183,7 @@ public class GL implements ApplicationListener
 		FpsInfoSprite.setSize(4, 4);
 
 		GlobalCore.receiver = new GlobalLocationReceiver();
+		debugWriteSpriteCount = Config.settings.DebugSpriteBatchCountBuffer.getValue();
 	}
 
 	public void RunOnGL(runOnGL run)
@@ -200,6 +206,14 @@ public class GL implements ApplicationListener
 		renderOnce("runIfInitial called");
 	}
 
+	private boolean ShaderSetted = false;
+
+	private void setShader()
+	{
+		if (Gdx.graphics.isGL20Available()) batch.setShader(SpriteBatch.createDefaultShader());
+		ShaderSetted = true;
+	}
+
 	@Override
 	public void render()
 	{
@@ -214,6 +228,8 @@ public class GL implements ApplicationListener
 			renderStartetListner = null;
 			removeRenderView(child);
 		}
+
+		if (!ShaderSetted) setShader();
 
 		synchronized (runOnGL_List)
 		{
@@ -298,13 +314,6 @@ public class GL implements ApplicationListener
 			mMarkerOverlay.renderChilds(batch, prjMatrix);
 		}
 
-		// TODO switch on with test version
-		// batch.begin();
-		// batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
-		// FpsInfoPos++;
-		// if (FpsInfoPos > 60) FpsInfoPos = 0;
-		// batch.end();
-
 		GL_View_Base.debug = Config.settings.DebugMode.getValue();
 
 		if (GL_View_Base.debug && misTouchDown)
@@ -325,10 +334,30 @@ public class GL implements ApplicationListener
 
 		}
 
+		if (GlobalCore.isTestVersion())
+		{
+			batch.begin();
+			batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
+			FpsInfoPos++;
+			if (FpsInfoPos > 60)
+			{
+				FpsInfoPos = 0;
+			}
+
+			if (debugWriteSpriteCount)
+			{
+				Fonts.getBubbleSmall().draw(batch, "Max Sprites on Batch:" + String.valueOf(debugSpritebatchMaxCount), width / 2, 20);
+				debugSpritebatchMaxCount = Math.max(debugSpritebatchMaxCount, batch.maxSpritesInBatch);
+			}
+			batch.end();
+		}
+
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();
 
 	}
+
+	int debugSpritebatchMaxCount = 0;
 
 	@Override
 	public void resize(int Width, int Height)
@@ -495,9 +524,6 @@ public class GL implements ApplicationListener
 			// für diesen Pointer ist kein touchDownPos gespeichert ->
 			// dürfte nicht passieren!!!
 
-			// Wenn Doch, dann Logge auser auf dem Desctop, hier kommt das Event bei MouseMove
-			if (GlobalCore.platform != Plattform.Desktop) Logger.Error("onTouchDraggedBase", "Keine TouchdownPos gespeichert");
-
 			return false;
 		}
 
@@ -548,9 +574,6 @@ public class GL implements ApplicationListener
 		{
 			// für diesen Pointer ist kein touchDownPos gespeichert ->
 			// dürfte nicht passieren!!!
-
-			// Wenn Doch, dann Logge
-			Logger.Error("onTouchDraggedBase", "Keine TouchdownPos gespeichert");
 
 			return false;
 		}
@@ -748,7 +771,15 @@ public class GL implements ApplicationListener
 
 		if (batch == null)
 		{
-			batch = new SpriteBatch();
+			if (Config.settings.DebugSpriteBatchCountBuffer.getValue())
+			{
+				// for Debug set to max!
+				batch = new SpriteBatch(10000);
+			}
+			else
+			{
+				batch = new SpriteBatch(SPRITE_BATCH_BUFFER);
+			}
 		}
 
 		if (child == null)

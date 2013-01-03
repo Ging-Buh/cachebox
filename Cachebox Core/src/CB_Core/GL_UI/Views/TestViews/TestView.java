@@ -70,7 +70,7 @@ public class TestView extends CB_View_Base
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"),
-						MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, null, Config.settings.RememberAsk_API_Coast);
+						MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, click, Config.settings.RememberAsk_API_Coast);
 				return true;
 			}
 		});
