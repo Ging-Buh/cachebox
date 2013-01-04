@@ -103,6 +103,8 @@ public class DesctopManager extends ManagerBase
 	// / <returns></returns>
 	public boolean CacheTile(Layer layer, Descriptor tile)
 	{
+		if (tile == null) return false;
+
 		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen
 		// werden!
 		for (PackBase pack : mapPacks)

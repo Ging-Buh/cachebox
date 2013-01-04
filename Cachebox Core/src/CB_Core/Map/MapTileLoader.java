@@ -442,7 +442,18 @@ public class MapTileLoader
 			catch (Exception ex3)
 			{
 				Logger.Error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
-
+				if (Config.settings.FireMapQueueProcessorExceptions.getValue())
+				{
+					try
+					{
+						throw new Exception(ex3);
+					}
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				try
 				{
 					Thread.sleep(400);
