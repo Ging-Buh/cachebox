@@ -106,7 +106,7 @@ public class GL_MsgBox extends Dialog
 	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener, SettingBool remember)
 	{
 
-		if (remember.getValue())
+		if (remember != null && remember.getValue())
 		{
 			// wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
 			// Wir liefern nur ein On Click auf den OK Button zurück!

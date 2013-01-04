@@ -130,7 +130,7 @@ public class FileIO
 	public static String RemoveInvalidFatChars(String str)
 	{
 		String[] invalidChars = new String[]
-			{ ":", "\\", "/", "<", ">", "?", "*", "|", "\"", ";" };
+			{ ":", "\\", "/", "<", ">", "?", "*", "|", "\"", ";", "#" };
 
 		for (int i = 0; i < invalidChars.length; i++)
 			str = str.replace(invalidChars[i], "");
