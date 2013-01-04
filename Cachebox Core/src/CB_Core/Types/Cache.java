@@ -8,7 +8,6 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
-import CB_Core.DAO.ImageDAO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
@@ -424,6 +423,21 @@ public class Cache implements Comparable<Cache>
 		String path = Config.settings.SpoilerFolder.getValue();
 		String directory = path + "/" + GcCode.substring(0, 4);
 
+		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+
+		path = Config.settings.DescriptionImageFolder.getValue();
+		directory = path + "/" + GcCode.substring(0, 4);
+
+		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+
+		// Add own taken photo
+		directory = Config.settings.UserImageFolder.getValue();
+
+		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+	}
+
+	private void reloadSpoilerResourcesFromPath(String directory, ArrayList<ImageEntry> spoilerResources)
+	{
 		if (!FileIO.DirectoryExists(directory)) return;
 
 		File dir = new File(directory);
@@ -443,33 +457,6 @@ public class Cache implements Comparable<Cache>
 			}
 		};
 		String[] files = dir.list(filter);
-
-		for (String image : files)
-		{
-			ImageEntry imageEntry = new ImageEntry();
-			imageEntry.LocalPath = directory + "/" + image;
-			imageEntry.Name = image;
-			spoilerRessources.add(imageEntry);
-		}
-
-		// Add own taken photo
-		directory = Config.settings.UserImageFolder.getValue();
-
-		if (!FileIO.DirectoryExists(directory)) return;
-
-		dir = new File(directory);
-		filter = new FilenameFilter()
-		{
-			@Override
-			public boolean accept(File dir, String filename)
-			{
-
-				filename = filename.toLowerCase();
-				if (filename.indexOf(GcCode.toLowerCase()) >= 0) return true;
-				return false;
-			}
-		};
-		files = dir.list(filter);
 		if (!(files == null))
 		{
 			if (files.length > 0)
@@ -488,19 +475,6 @@ public class Cache implements Comparable<Cache>
 				}
 			}
 		}
-
-		ImageDAO imageDAO = new ImageDAO();
-
-		ArrayList<ImageEntry> descImages = imageDAO.getDescriptionImagesForCache(GcCode);
-
-		for (ImageEntry image : descImages)
-		{
-			if (FileIO.FileExists(image.LocalPath))
-			{
-				spoilerRessources.add(image);
-			}
-		}
-
 	}
 
 	/**

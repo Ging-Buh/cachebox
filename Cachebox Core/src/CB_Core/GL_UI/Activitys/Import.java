@@ -767,7 +767,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 					if (checkBoxPreloadImages.isChecked())
 					{
-						ip.addStep(ip.new Step("importImageUrls", 4));
+						// ip.addStep(ip.new Step("importImageUrls", 4));
 						ip.addStep(ip.new Step("importImages", 4));
 					}
 
@@ -909,7 +909,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 					if (checkBoxPreloadImages.isChecked())
 					{
-						importer.importImages(ip);
+						importer.importImagesNew(ip);
 						if (importCancel)
 						{
 							importCanceld();

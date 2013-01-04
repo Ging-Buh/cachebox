@@ -3,8 +3,10 @@ package CB_Core.Api;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TimeZone;
 
@@ -703,6 +705,60 @@ public class GroundspeakAPI
 		}
 
 		return (-1);
+	}
+
+	public static HashMap<String, URI> GetAllImageLinks(String accessToken, String cacheCode)
+	{
+		HashMap<String, URI> list = new HashMap<String, URI>();
+		try
+		{
+			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
+					+ "&format=json");
+
+			String result = Execute(httppost);
+
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					LastAPIError = "";
+					JSONArray jImages = json.getJSONArray("Images");
+
+					for (int ii = 0; ii < jImages.length(); ii++)
+					{
+						JSONObject jImage = (JSONObject) jImages.get(ii);
+						list.put(jImage.getString("Name"), new URI(jImage.getString("Url")));
+					}
+					return list;
+				}
+				else
+				{
+					LastAPIError = "";
+					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					LastAPIError += status.getString("StatusMessage") + "\n";
+					LastAPIError += status.getString("ExceptionDetails");
+
+					return null;
+				}
+
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			return null;
+		}
+
+		return null;
 	}
 
 	/**

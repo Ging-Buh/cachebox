@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -16,11 +17,15 @@ import java.util.zip.ZipException;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.GCVoteDAO;
 import CB_Core.DAO.ImageDAO;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
@@ -416,6 +421,143 @@ public class Importer
 		// Write CacheInfoList back
 		CacheInfoList.writeListToDB();
 		CacheInfoList.dispose();
+	}
+
+	public void importImagesNew(ImporterProgress ip)
+	{
+		// Import images in WinCB style
+		String where = GlobalCore.LastFilter.getSqlWhere();
+
+		// refresch all Image Url´s
+
+		String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
+		if (where.length() > 0) sql += " where " + where;
+		CoreCursor reader = Database.Data.rawQuery(sql, null);
+
+		int cnt = -1;
+		int numCaches = reader.getCount();
+		ip.setJobMax("importImages", numCaches);
+
+		if (reader.getCount() > 0)
+		{
+			reader.moveToFirst();
+			while (reader.isAfterLast() == false)
+			{
+				cnt++;
+				long id = reader.getLong(0);
+				String name = reader.getString(2);
+				String gcCode = reader.getString(3);
+
+				ip.ProgressInkrement("importImages",
+						"Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
+
+				boolean additionalImagesUpdated = false;
+				boolean descriptionImagesUpdated = false;
+
+				if (!reader.isNull(5))
+				{
+					additionalImagesUpdated = reader.getInt(5) != 0;
+				}
+				if (!reader.isNull(6))
+				{
+					descriptionImagesUpdated = reader.getInt(6) != 0;
+				}
+				boolean dbUpdate = false;
+
+				if (!descriptionImagesUpdated)
+				{
+					descriptionImagesUpdated = CheckLocalImages(Config.settings.DescriptionImageFolder.getValue(), gcCode);
+
+					if (descriptionImagesUpdated)
+					{
+						dbUpdate = true;
+					}
+				}
+				if (!additionalImagesUpdated)
+				{
+					additionalImagesUpdated = CheckLocalImages(Config.settings.SpoilerFolder.getValue(), gcCode);
+
+					if (additionalImagesUpdated)
+					{
+						dbUpdate = true;
+					}
+				}
+				if (dbUpdate)
+				{
+					Parameters args = new Parameters();
+					args.put("ImagesUpdated", additionalImagesUpdated);
+					args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
+					long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+						{ String.valueOf(id) });
+				}
+
+				DescriptionImageGrabber.GrabImagesSelectedByCache(descriptionImagesUpdated, additionalImagesUpdated, numCaches, reader,
+						cnt, name, gcCode);
+				reader.moveToNext();
+			}
+		}
+
+		reader.close();
+	}
+
+	private boolean CheckLocalImages(String path, final String GcCode)
+	{
+		boolean retval = true;
+
+		String imagePath = path + "/" + GcCode.substring(0, 4);
+		boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
+
+		if (imagePathDirExists)
+		{
+			File dir = new File(imagePath);
+			FilenameFilter filter = new FilenameFilter()
+			{
+				@Override
+				public boolean accept(File dir, String filename)
+				{
+
+					filename = filename.toLowerCase();
+					if (filename.indexOf(GcCode.toLowerCase()) == 0)
+					{
+						return true;
+					}
+					return false;
+				}
+			};
+			String[] files = dir.list(filter);
+
+			if (files.length > 0)
+			{
+				for (String file : files)
+				{
+					if (file.endsWith(".1st") || file.endsWith(".changed"))
+					{
+						if (file.endsWith(".changed"))
+						{
+							File f = new File(file);
+							try
+							{
+								f.delete();
+							}
+							catch (Exception ex)
+							{
+							}
+						}
+						retval = false;
+					}
+				}
+			}
+			else
+			{
+				retval = false;
+			}
+		}
+		else
+		{
+			retval = false;
+		}
+
+		return retval;
 	}
 
 	private void importApiImages(String GcCode, long ID)
