@@ -357,14 +357,12 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 
 		// first Draw Background?
-		batch.begin();
+		batch.flush();
 
 		if (drawableBackground != null)
 		{
 			drawableBackground.draw(batch, 0, 0, width, height);
 		}
-
-		batch.end();
 
 		if (runOnGL_List.size() > 0)
 		{
@@ -376,15 +374,12 @@ public abstract class GL_View_Base extends CB_RectF
 			runOnGL_List.clear();
 		}
 
-		batch.begin();
+		batch.flush();
 		this.render(batch);
-		batch.end();
-
+		batch.flush();
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 
-		batch.begin();
-		this.renderWithoutScissor(batch);
-		batch.end();
+		// this.renderWithoutScissor(batch);
 
 		if (childs != null && childs.size() > 0)
 		{
@@ -424,17 +419,6 @@ public abstract class GL_View_Base extends CB_RectF
 					e.printStackTrace();
 					// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 
-					// wir müssen aber eventuell den Batch beenden?
-					try
-					{
-						batch.end();
-					}
-					catch (Exception e1)
-					{
-						// war wohl schon beendet // TODO es gibt noch keine Möglichkeit zu Testen ob ein Batch läuft!
-						e1.printStackTrace();
-					}
-
 					break;
 				}
 			}
@@ -448,9 +432,9 @@ public abstract class GL_View_Base extends CB_RectF
 
 			if (debugRec != null)
 			{
-				batch.begin();
+				batch.flush();
 				debugRec.draw(batch);
-				batch.end();
+
 			}
 
 		}
@@ -537,7 +521,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	protected abstract void render(SpriteBatch batch);
 
-	protected abstract void renderWithoutScissor(SpriteBatch batch);
+	// protected abstract void renderWithoutScissor(SpriteBatch batch);
 
 	@Override
 	public void resize(float width, float height)

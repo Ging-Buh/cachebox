@@ -230,7 +230,7 @@ public abstract class Dialog extends CB_View_Base
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
 
-		batch.begin();
+		batch.flush();
 
 		if (mHeader9patch != null) mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHight, this.width, mHeaderHight);
 		if (mFooter9patch != null) mFooter9patch.draw(batch, 0, 0, this.width, getFooterHeight() + 2);
@@ -252,7 +252,7 @@ public abstract class Dialog extends CB_View_Base
 			}
 		}
 
-		batch.end();
+		batch.flush();
 
 		super.renderChilds(batch, parentInfo);
 

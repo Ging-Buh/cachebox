@@ -44,10 +44,10 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		{
 			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
-			batch.begin();
+			batch.flush();
 
 			this.render(batch);
-			batch.end();
+			batch.flush();
 
 			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 		}
@@ -147,7 +147,6 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			}
 
 		}
-		// if (debugIndex != null) debugIndex.draw(batch);
 
 	}
 

@@ -94,12 +94,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		}
 	}
 
-	@Override
-	protected void renderWithoutScissor(SpriteBatch batch)
-	{
-
-	}
-
 	/**
 	 * Da die meisten Sprite Initialisierungen von Sprites im Render Thread durchgeführt werden müssen, wird diese Methode, zu
 	 * Initialisierung im ersten Render Durchgang ausgeführt.

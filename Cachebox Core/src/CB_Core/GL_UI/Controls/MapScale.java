@@ -183,7 +183,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	 * Zeichnet den Maﬂstab. pixelsPerKm muss durch zoomChanged initialisiert sein!
 	 */
 	@Override
-	protected void renderWithoutScissor(SpriteBatch batch)
+	protected void render(SpriteBatch batch)
 	{
 		if (pixelsPerMeter <= 0) return;
 		if (CachedScaleSprite == null) zoomChanged();

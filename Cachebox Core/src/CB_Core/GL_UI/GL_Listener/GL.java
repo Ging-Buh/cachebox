@@ -274,6 +274,7 @@ public class GL implements ApplicationListener
 			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		}
 
+		batch.begin();
 		batch.setProjectionMatrix(prjMatrix.Matrix());
 
 		// if Tablet, so the Activity is smaller the screen size
@@ -329,16 +330,15 @@ public class GL implements ApplicationListener
 				int y = this.height - first.point.y;
 				int pointSize = 20;
 
-				batch.begin();
 				batch.draw(point, x - (pointSize / 2), y - (pointSize / 2), pointSize, pointSize);
-				batch.end();
+
 			}
 
 		}
 
 		if (GlobalCore.isTestVersion())
 		{
-			batch.begin();
+
 			batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
 			FpsInfoPos++;
 			if (FpsInfoPos > 60)
@@ -754,8 +754,6 @@ public class GL implements ApplicationListener
 			mDarknesSprite = new Sprite(tex, (int) width, (int) height);
 		}
 
-		batch.begin();
-
 		if (mDarknesSprite != null) mDarknesSprite.draw(batch, darknesAlpha);
 		if (darknesAnimationRuns)
 		{
@@ -769,7 +767,6 @@ public class GL implements ApplicationListener
 			}
 		}
 
-		batch.end();
 	}
 
 	public void Initialize()
