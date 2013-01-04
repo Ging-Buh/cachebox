@@ -222,6 +222,8 @@ public class GL implements ApplicationListener
 
 		if (!started.get() || stopRender) return;
 
+		lastRenderBegin = System.currentTimeMillis();
+
 		if (renderStartetListner != null)
 		{
 			renderStartetListner.renderIsStartet();
@@ -346,7 +348,10 @@ public class GL implements ApplicationListener
 
 			if (debugWriteSpriteCount)
 			{
-				Fonts.getBubbleSmall().draw(batch, "Max Sprites on Batch:" + String.valueOf(debugSpritebatchMaxCount), width / 2, 20);
+				renderTime = ((System.currentTimeMillis() - lastRenderBegin) + renderTime) / 2;
+				Fonts.getBubbleSmall().draw(batch,
+						"Max Sprites on Batch:" + String.valueOf(debugSpritebatchMaxCount) + "/" + String.valueOf(renderTime), width / 4,
+						20);
 				debugSpritebatchMaxCount = Math.max(debugSpritebatchMaxCount, batch.maxSpritesInBatch);
 			}
 			batch.end();
@@ -358,6 +363,8 @@ public class GL implements ApplicationListener
 	}
 
 	int debugSpritebatchMaxCount = 0;
+	private long lastRenderBegin = 0;
+	private long renderTime = 0;
 
 	@Override
 	public void resize(int Width, int Height)
