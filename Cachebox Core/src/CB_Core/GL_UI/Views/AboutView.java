@@ -61,6 +61,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		SelectedCacheEventList.Add(this);
 		GpsStateChangeEventList.Add(this);
 
+		if (!this.isInitial) Initial();
+
 		if (chart != null) chart.onShow();
 		refreshText();
 

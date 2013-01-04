@@ -163,7 +163,24 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		super(rec, Name);
 		// statischen that nur setzen wenn die HauptMapView initialisiert wird
-		if (!compassMode) that = this;
+		if (!compassMode)
+		{
+			that = this;
+		}
+		else
+		{
+			this.setOnDoubleClickListener(new OnClickListener()
+			{
+
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					// Center own position!
+					setCenter(new Coordinate(GlobalCore.LastValidPosition.getLatitude(), GlobalCore.LastValidPosition.getLongitude()));
+					return true;
+				}
+			});
+		}
 
 		CompassMode = compassMode;
 
@@ -2379,7 +2396,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// Ich weiß nicht mehr warum dies so drin war, aber es hat verhindert, das am ende der Methode
 		// PositionChanged(GlobalCore.Locator); Aufgerufen wurde. Damit hat sich beim wechsel des Caches die Distance nicht Aktualisiert!
 		// Deshalb habe ich es erstmal auskommentiert! ( Longri)
-		// if (togBtn.getState() > 0 && togBtn.getState() != 2) return;
+		if (togBtn.getState() > 0 && togBtn.getState() != 2)
+		{
+			PositionChanged(GlobalCore.Locator);
+			return;
+		}
 
 		positionInitialized = true;
 
