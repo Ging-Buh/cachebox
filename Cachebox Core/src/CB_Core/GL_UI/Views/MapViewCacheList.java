@@ -129,7 +129,7 @@ public class MapViewCacheList
 									wpi.UnderlayIcon = getUnderlayIcon(cache, null, iconSize);
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
-									wpi.Waypoint = fwp; // ist null, ausser bei Mystery-Final
+									wpi.Waypoint = null; // = fwp; ist null, ausser bei Mystery-Final // null -> Beschriftung Name vom Cache
 									wpi.Selected = (GlobalCore.getSelectedCache() == cache);
 									tmplist.add(wpi);
 								}
