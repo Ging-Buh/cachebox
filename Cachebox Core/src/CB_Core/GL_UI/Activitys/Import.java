@@ -1060,7 +1060,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			}
 		};
 
-		public void renderWithoutScissor(SpriteBatch batch)
+		public void render(SpriteBatch batch)
 		{
 			if (drawableBackground != null)
 			{
@@ -1077,7 +1077,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				float g = c.g;
 				float b = c.b;
 
-				Color trans = new Color(0, 0.3f, 0, 0.25f);
+				Color trans = new Color(0, 0.3f, 0, 0.40f);
 				batch.setColor(trans);
 				back.draw(batch, 0, 0, this.width, this.height);
 
