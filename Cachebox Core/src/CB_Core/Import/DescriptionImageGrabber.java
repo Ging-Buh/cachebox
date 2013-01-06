@@ -20,7 +20,6 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.Parameters;
 import CB_Core.Types.Cache;
@@ -367,18 +366,18 @@ public class DescriptionImageGrabber
 		return images;
 	}
 
-	public static void GrabImagesSelectedByCache(boolean descriptionImagesUpdated, boolean additionalImagesUpdated, int numCaches,
-			CoreCursor reader, int cnt, String name, String gcCode)
+	public static void GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated,
+			long id, String gcCode, String name, String description, String url)
 	{
 		boolean importLogImages = false;
 
-		long id = reader.getLong(0);
-		String description = reader.getString(1);
 		boolean imageLoadError = false;
 
 		if (!descriptionImagesUpdated)
 		{
-			LinkedList<URI> imgUris = GetImageUris(description, reader.getString(4));
+			ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode);
+
+			LinkedList<URI> imgUris = GetImageUris(description, url);
 
 			int i = 0;
 			for (URI uri : imgUris)
@@ -387,6 +386,8 @@ public class DescriptionImageGrabber
 				 * if (uri..IsFile) continue; if (uri.IsLoopback) continue; if (uri.IsUnc) continue;
 				 */
 				String local = BuildImageFilename(gcCode, uri);
+
+				ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode + " - Download: " + uri);
 
 				// parent.ProgressChanged("Loading " + name + " (Image " + (i + 1).ToString() + "/" + imgUris.Count.ToString() + ")", i + 1,
 				// imgUris.Count);
@@ -430,6 +431,7 @@ public class DescriptionImageGrabber
 
 			// if (gcAdditionalImageDownload)
 			{
+				ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode);
 				HashMap<String, URI> allimgDict = GroundspeakAPI.GetAllImageLinks(Config.GetAccessToken(true), gcCode);
 
 				int i = 0;
@@ -437,6 +439,8 @@ public class DescriptionImageGrabber
 				{
 					URI uri = allimgDict.get(key);
 					if (uri.toString().startsWith("http://img.geocaching.com/cache/log")) continue; // LOG-Image
+
+					ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode + " - Download: " + uri);
 
 					String decodedImageName = key;
 
