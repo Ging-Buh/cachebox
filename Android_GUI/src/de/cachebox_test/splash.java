@@ -305,7 +305,7 @@ public class splash extends Activity
 									startInitial();
 								}
 							};
-							thread.start();
+							thread.run();
 						}
 					});
 					Button buttonE = (Button) dialog.findViewById(R.id.button2);
@@ -333,7 +333,7 @@ public class splash extends Activity
 									startInitial();
 								}
 							};
-							thread.start();
+							thread.run();
 
 						}
 					});

@@ -15,6 +15,7 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -42,6 +43,8 @@ public class GL_MsgBox extends Dialog
 	public OnClickListener positiveButtonClickListener;
 	public OnClickListener neutralButtonClickListener;
 	public OnClickListener negativeButtonClickListener;
+
+	public Label label;
 
 	protected SettingBool rememberSeting = null;
 	protected chkBox chkRemember;
@@ -92,12 +95,12 @@ public class GL_MsgBox extends Dialog
 
 	public static GL_MsgBox Show(String msg)
 	{
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox");
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, false, true, false), "MsgBox" + msg.substring(0, Math.max(10, msg.length())));
 		msgBox.setButtonCaptions(MessageBoxButtons.OK);
-		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
-		label.setZeroPos();
-		label.setWrappedText(msg);
-		msgBox.addChild(label);
+		msgBox.label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+		msgBox.label.setZeroPos();
+		msgBox.label.setWrappedText(msg);
+		msgBox.addChild(msgBox.label);
 
 		GL.that.showDialog(msgBox);
 		return msgBox;
@@ -118,15 +121,15 @@ public class GL_MsgBox extends Dialog
 		}
 
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)),
-				"MsgBox");
+				"MsgBox" + title);
 		msgBox.rememberSeting = remember;
 		msgBox.mMsgBoxClickListner = Listener;
 		msgBox.setButtonCaptions(buttons);
 		msgBox.setTitle(title);
-		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
-		label.setZeroPos();
-		label.setWrappedText(msg);
-		msgBox.addChild(label);
+		msgBox.label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+		msgBox.label.setZeroPos();
+		msgBox.label.setWrappedText(msg);
+		msgBox.addChild(msgBox.label);
 
 		GL.that.showDialog(msgBox);
 		return msgBox;
@@ -148,7 +151,7 @@ public class GL_MsgBox extends Dialog
 		}
 
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)),
-				"MsgBox");
+				"MsgBox" + title);
 		msgBox.rememberSeting = remember;
 		msgBox.mMsgBoxClickListner = Listener;
 		msgBox.setTitle(title);
@@ -164,12 +167,12 @@ public class GL_MsgBox extends Dialog
 		if (icon != MessageBoxIcon.None) iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
 		msgBox.addChild(iconImage);
 
-		label = new Label(contentSize.getBounds(), "MsgBoxLabel");
-		label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getButtonHeight());
-		label.setX(imageRec.getMaxX() + 5);
-		label.setY(0);
-		label.setWrappedText(msg);
-		msgBox.addChild(label);
+		msgBox.label = new Label(contentSize.getBounds(), "MsgBoxLabel");
+		msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getButtonHeight());
+		msgBox.label.setX(imageRec.getMaxX() + 5);
+		msgBox.label.setY(0);
+		msgBox.label.setWrappedText(msg);
+		msgBox.addChild(msgBox.label);
 
 		GL.that.showDialog(msgBox);
 		return msgBox;
@@ -490,8 +493,6 @@ public class GL_MsgBox extends Dialog
 		}
 	}
 
-	protected static Label label;
-
 	public String getText()
 	{
 		return label.text;
@@ -510,5 +511,36 @@ public class GL_MsgBox extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
+	}
+
+	@Override
+	public void dispose()
+	{
+		Logger.LogCat("Dispose GL_MsgBox=> " + name);
+
+		if (FooterItems != null)
+		{
+			for (CB_View_Base t : FooterItems)
+			{
+				t.dispose();
+				t = null;
+			}
+			FooterItems = null;
+		}
+
+		button1 = null;
+		button2 = null;
+		button3 = null;
+		mMsgBoxClickListner = null;
+		positiveButtonClickListener = null;
+		neutralButtonClickListener = null;
+		negativeButtonClickListener = null;
+
+		label = null;
+
+		rememberSeting = null;
+		chkRemember = null;
+
+		super.dispose();
 	}
 }

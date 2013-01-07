@@ -43,14 +43,14 @@ public class HintDialog extends GL_MsgBox
 
 		scrollBox = new ScrollBox(msgBox.getContentSize().getBounds(), 100, "");
 
-		label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
-		label.setZeroPos();
-		TextBounds bounds = label.setWrappedText(hintTextDecoded);
-		label.setHeight(bounds.height);
+		msgBox.label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+		msgBox.label.setZeroPos();
+		TextBounds bounds = msgBox.label.setWrappedText(hintTextDecoded);
+		msgBox.label.setHeight(bounds.height);
 
 		// label in Scrollbox verpacken
-		scrollBox.addChild(label);
-		scrollBox.setInerHeight(label.getHeight());
+		scrollBox.addChild(msgBox.label);
+		scrollBox.setInerHeight(msgBox.label.getHeight());
 
 		msgBox.addChild(scrollBox);
 
@@ -65,8 +65,8 @@ public class HintDialog extends GL_MsgBox
 			{
 				GL_MsgBox msgBox = (GL_MsgBox) GL.that.getActDialog();
 				TextBounds bounds = msgBox.setText(GlobalCore.Rot13(msgBox.getText()));
-				label.setHeight(bounds.height);
-				scrollBox.setInerHeight(label.getHeight());
+				msgBox.label.setHeight(bounds.height);
+				scrollBox.setInerHeight(msgBox.label.getHeight());
 				return true;
 			}
 		});

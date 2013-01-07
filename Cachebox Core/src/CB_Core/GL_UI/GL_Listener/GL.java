@@ -88,6 +88,9 @@ public class GL implements ApplicationListener
 	private float darknesAlpha = 0f;
 	private long mLongClickTime = 0, mDoubleClickTime = 500, lastClickTime = 0;
 
+	// private Threads
+	Thread threadDisposeDialog;
+
 	/**
 	 * Static for Debug
 	 */
@@ -1340,6 +1343,7 @@ public class GL implements ApplicationListener
 		if (!DialogIsShown || !mDialog.getchilds().contains((dialog)))
 		{
 			if (dialog != null) dialog.dispose();
+			System.gc();
 			return;
 		}
 
@@ -1367,16 +1371,18 @@ public class GL implements ApplicationListener
 			mDarknesSprite = null;// Create new Pixmap on next call
 		}
 
-		Thread t = new Thread(new Runnable()
+		if (threadDisposeDialog == null) threadDisposeDialog = new Thread(new Runnable()
 		{
 
 			@Override
 			public void run()
 			{
 				if (dialog != null) dialog.dispose();
+				System.gc();
+
 			}
 		});
-		t.start();
+		threadDisposeDialog.run();
 
 		clearRenderViews();
 		if (ActivityIsShown) platformConector.showForDialog();
@@ -1522,6 +1528,8 @@ public class GL implements ApplicationListener
 
 	public void setKeyboardFocus(EditWrapedTextField view)
 	{
+		// don't set Focus to NULL?
+		if (view == null && keyboardFocus == null) return;
 
 		String sView = "NULL";
 		if (view != null) sView = view.toString();

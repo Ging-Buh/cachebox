@@ -5,7 +5,6 @@ import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.SelectSolverFunction;
 import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
@@ -30,7 +29,6 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Functions.Function;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SolverDialog extends ButtonDialog implements OnStateChangeListener, KeyboardFocusChangedEvent
 {
@@ -84,6 +82,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 		mSolverString = SolverString;
 		ignoreStateChange = false;
 		page = pages.Nothing;
+		dontRenderDialogBackground = true;
 	}
 
 	private void initialLayout()
@@ -511,18 +510,6 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 		mFormulaField.setZeroPos();
 		mLinearLayout.addChild(mFormulaField);
 		y -= TextFieldHeight;
-	}
-
-	@Override
-	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
-	{
-		// clear dialog BackGrounds
-		if (mHeader9patch != null) mHeader9patch = null;
-		if (mFooter9patch != null) mFooter9patch = null;
-		if (mCenter9patch != null) mCenter9patch = null;
-		if (mTitle9patch != null) mTitle9patch = null;
-
-		super.renderChilds(batch, parentInfo);
 	}
 
 	@Override

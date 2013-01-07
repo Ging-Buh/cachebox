@@ -288,6 +288,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
 
+	// private Threads
+	Thread threadReceiveShortLog;
+	Thread threadUp;
+	Thread threadDown;
+	Thread threadMove;
+	Thread threadReloadSelectedCacheInfo;
+
 	// Powermanager
 	protected PowerManager.WakeLock mWakeLock;
 	// GPS
@@ -624,40 +631,33 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		if (GcCode != null)
 		{
-			Thread t = new Thread()
+
+			runOnUiThread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
-					runOnUiThread(new Runnable()
+					if (flag)
 					{
-						@Override
-						public void run()
+						flag = false;
+
+						if (SearchDialog.that == null)
 						{
-							if (flag)
-							{
-								flag = false;
-
-								if (SearchDialog.that == null)
-								{
-									new SearchDialog();
-								}
-
-								SearchDialog.that.showNotCloseAutomaticly();
-								SearchDialog.that.addSearch(GcCode, searchMode.GcCode);
-							}
-							else
-							{
-								flag = true;
-								TabMainView.that.showCacheList();
-								startSearchTimer();
-							}
-
+							new SearchDialog();
 						}
-					});
-				}
-			};
 
-			t.start();
+						SearchDialog.that.showNotCloseAutomaticly();
+						SearchDialog.that.addSearch(GcCode, searchMode.GcCode);
+					}
+					else
+					{
+						flag = true;
+						TabMainView.that.showCacheList();
+						startSearchTimer();
+					}
+
+				}
+			});
 
 		}
 	}
@@ -677,69 +677,62 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				public void run()
 				{
 					Logger.LogCat("startGPXImport:Timer startet");
-					Thread t = new Thread()
+					runOnUiThread(new Runnable()
 					{
+						@Override
 						public void run()
 						{
-							runOnUiThread(new Runnable()
+							wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ImportGPX"), new IcancelListner()
 							{
+
+								@Override
+								public void isCanceld()
+								{
+									wd.close();
+								}
+							}, new Runnable()
+							{
+
 								@Override
 								public void run()
 								{
-									wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ImportGPX"), new IcancelListner()
-									{
+									Date ImportStart = new Date();
+									Logger.LogCat("startGPXImport:Timer startet");
+									Importer importer = new Importer();
+									ImporterProgress ip = new ImporterProgress();
+									Database.Data.beginTransaction();
 
-										@Override
-										public void isCanceld()
-										{
-											wd.close();
-										}
-									}, new Runnable()
-									{
+									importer.importGpx(GpxPath, ip);
 
-										@Override
-										public void run()
-										{
-											Date ImportStart = new Date();
-											Logger.LogCat("startGPXImport:Timer startet");
-											Importer importer = new Importer();
-											ImporterProgress ip = new ImporterProgress();
-											Database.Data.beginTransaction();
+									Database.Data.setTransactionSuccessful();
+									Database.Data.endTransaction();
 
-											importer.importGpx(GpxPath, ip);
+									// Import ready
+									wd.close();
 
-											Database.Data.setTransactionSuccessful();
-											Database.Data.endTransaction();
+									// finish close activity and notify changes
 
-											// Import ready
-											wd.close();
+									CachListChangedEventList.Call();
 
-											// finish close activity and notify changes
+									Date Importfin = new Date();
+									long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
-											CachListChangedEventList.Call();
+									String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C "
+											+ String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-											Date Importfin = new Date();
-											long ImportZeit = Importfin.getTime() - ImportStart.getTime();
+									Logger.DEBUG(Msg);
 
-											String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C "
-													+ String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
+									FilterProperties props = GlobalCore.LastFilter;
 
-											Logger.DEBUG(Msg);
+									EditFilterSettings.ApplyFilter(props);
 
-											FilterProperties props = GlobalCore.LastFilter;
-
-											EditFilterSettings.ApplyFilter(props);
-
-											GL.that.Toast(Msg, 3000);
-										}
-									});
-
+									GL.that.Toast(Msg, 3000);
 								}
 							});
-						}
-					};
 
-					t.start();
+						}
+					});
+
 				}
 			};
 			timer.schedule(task, 500);
@@ -1809,58 +1802,57 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 
+		if (threadUp == null) threadUp = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex),
+						0);
+			}
+		});
+
+		if (threadDown == null) threadDown = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+						event.getPointerId(pointerIndex), 0);
+			}
+		});
+
+		if (threadMove == null) threadMove = new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+						event.getPointerId(pointerIndex));
+			}
+		});
+
 		try
 		{
 			switch (action & MotionEvent.ACTION_MASK)
 			{
 			case MotionEvent.ACTION_POINTER_DOWN:
 			case MotionEvent.ACTION_DOWN:
-				Thread threadDown = new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-								event.getPointerId(pointerIndex), 0);
-					}
-				});
 				threadDown.run();
-
 				break;
 			case MotionEvent.ACTION_MOVE:
-				Thread threadMove = new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-								event.getPointerId(pointerIndex));
-					}
-				});
 				threadMove.run();
-
 				break;
 			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_UP:
-
-				Thread threadUp = new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-								event.getPointerId(pointerIndex), 0);
-					}
-				});
 				threadUp.run();
-
 				break;
 			}
 		}
 		catch (Exception e)
 		{
 			Logger.Error("gdxView.OnTouchListener", "", e);
-			return false;
+			return true;
 		}
 		return true;
 	}
@@ -2292,22 +2284,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void setDebugMsg(String msg)
 	{
 		debugMsg = msg;
-		Thread t = new Thread()
+
+		runOnUiThread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						debugInfoPanel.setMsg(debugMsg);
-					}
-				});
+				debugInfoPanel.setMsg(debugMsg);
 			}
-		};
-
-		t.start();
+		});
 
 	}
 
@@ -2403,7 +2388,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void receiveShortLog(String Msg)
 	{
 		debugMsg = Msg;
-		Thread t = new Thread()
+		if (threadReceiveShortLog == null) threadReceiveShortLog = new Thread()
 		{
 			public void run()
 			{
@@ -2418,7 +2403,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		};
 
-		t.start();
+		threadReceiveShortLog.run();
 
 	}
 
@@ -2473,25 +2458,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void setQuickButtonHeight(int value)
 	{
 		horizontalListViewHeigt = value;
-		Thread t = new Thread()
+
+		runOnUiThread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						QuickButtonList.setHeight(horizontalListViewHeigt);
-						QuickButtonList.invalidate();
-						TopLayout.requestLayout();
-						frame.requestLayout();
-					}
-				});
+				QuickButtonList.setHeight(horizontalListViewHeigt);
+				QuickButtonList.invalidate();
+				TopLayout.requestLayout();
+				frame.requestLayout();
 			}
-		};
-
-		t.start();
+		});
 
 	}
 
@@ -2504,49 +2482,41 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (!GpsOn())
 			{
-				Thread t = new Thread()
+
+				runOnUiThread(new Runnable()
 				{
+					@Override
 					public void run()
 					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
-										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+						MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
+								MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+								{
+									@Override
+									public void onClick(DialogInterface dialog, int button)
+									{
+										// Behandle das ergebniss
+										switch (button)
 										{
-											@Override
-											public void onClick(DialogInterface dialog, int button)
-											{
-												// Behandle das ergebniss
-												switch (button)
-												{
-												case -1:
-													// yes open gps settings
-													Intent gpsOptionsIntent = new Intent(
-															android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+										case -1:
+											// yes open gps settings
+											Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 
-													startActivity(gpsOptionsIntent);
-													break;
-												case -2:
-													// no,
-													break;
-												case -3:
+											startActivity(gpsOptionsIntent);
+											break;
+										case -2:
+											// no,
+											break;
+										case -3:
 
-													break;
-												}
+											break;
+										}
 
-												dialog.dismiss();
-											}
+										dialog.dismiss();
+									}
 
-										});
-							}
-						});
+								});
 					}
-				};
-
-				t.start();
+				});
 
 			}
 		}
@@ -2824,7 +2794,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				}
 			};
-			t.start();
+			t.run();
 
 		}
 
@@ -2890,6 +2860,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private boolean checkGL20Support(Context context)
 	{
+
 		EGL10 egl = (EGL10) EGLContext.getEGL();
 		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
 
@@ -3366,7 +3337,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void reloadSelectedCacheInfo()
 	{
-		Thread thread = new Thread()
+		if (threadReloadSelectedCacheInfo == null) threadReloadSelectedCacheInfo = new Thread()
 		{
 			public void run()
 			{
@@ -3415,7 +3386,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		};
 		waitPD = ProgressDialog.show(this, "", "Download Description", true);
 
-		thread.start();
+		threadReloadSelectedCacheInfo.run();
 	}
 
 	private String message = "";
