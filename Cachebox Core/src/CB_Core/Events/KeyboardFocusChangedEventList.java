@@ -27,9 +27,11 @@ public class KeyboardFocusChangedEventList
 		}
 	}
 
+	static Thread threadKeyboardFocusChangedEvent;
+
 	public static void Call(final EditTextFieldBase focus)
 	{
-		Thread thread = new Thread(new Runnable()
+		if (threadKeyboardFocusChangedEvent == null) threadKeyboardFocusChangedEvent = new Thread(new Runnable()
 		{
 			@Override
 			public void run()
@@ -46,7 +48,7 @@ public class KeyboardFocusChangedEventList
 			}
 		});
 
-		thread.start();
+		threadKeyboardFocusChangedEvent.run();
 
 	}
 

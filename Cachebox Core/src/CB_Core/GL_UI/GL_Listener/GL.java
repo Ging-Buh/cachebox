@@ -38,6 +38,7 @@ import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Log.Logger;
+import CB_Core.Map.MapTileLoader;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -342,7 +343,9 @@ public class GL implements ApplicationListener
 		if (GlobalCore.isTestVersion())
 		{
 
-			batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
+			float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
+
+			batch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
 			FpsInfoPos++;
 			if (FpsInfoPos > 60)
 			{
@@ -1325,7 +1328,6 @@ public class GL implements ApplicationListener
 
 		ActivityIsShown = false;
 		darknesAlpha = 0f;
-		mDarknesSprite = null;// Create new Pixmap on next call
 
 		clearRenderViews();
 		renderOnce("Close Activity");
@@ -1368,7 +1370,6 @@ public class GL implements ApplicationListener
 			child.invalidate();
 			DialogIsShown = false;
 			darknesAlpha = 0f;
-			mDarknesSprite = null;// Create new Pixmap on next call
 		}
 
 		if (threadDisposeDialog == null) threadDisposeDialog = new Thread(new Runnable()

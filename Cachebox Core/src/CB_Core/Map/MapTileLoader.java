@@ -310,6 +310,8 @@ public class MapTileLoader
 		return loadedOverlayTiles.get(desc.GetHashCode());
 	}
 
+	public static boolean queueProcessorLifeCycle = false;
+
 	private class queueProcessor extends Thread
 	{
 		@Override
@@ -320,6 +322,7 @@ public class MapTileLoader
 
 				do
 				{
+					queueProcessorLifeCycle = !queueProcessorLifeCycle;
 					Descriptor desc = null;
 					if (!Energy.DisplayOff() /* && MapView.this.isVisible() */
 							&& ((queuedTiles.size() > 0) || (queuedOverlayTiles.size() > 0)))

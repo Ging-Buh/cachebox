@@ -101,11 +101,13 @@ public class platformConector
 		hardwareListner = listner;
 	}
 
+	static Thread threadVibrate;
+
 	public static void vibrate()
 	{
 		if (hardwareListner != null)
 		{
-			Thread t = new Thread(new Runnable()
+			if (threadVibrate == null) threadVibrate = new Thread(new Runnable()
 			{
 
 				@Override
@@ -114,7 +116,7 @@ public class platformConector
 					hardwareListner.vibrate();
 				}
 			});
-			t.start();
+			threadVibrate.run();
 		}
 
 	}
