@@ -254,7 +254,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 	private void GenTrackP2P()
 	{
-		final Coordinate coord = GlobalCore.LastValidPosition;
+		Coordinate coord = GlobalCore.getSelectedCoord();
+
+		if (coord == null) coord = GlobalCore.LastValidPosition;
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("fromPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
@@ -289,7 +291,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 	private void GenTrackProjection()
 	{
-		final Coordinate coord = GlobalCore.LastValidPosition;
+		Coordinate coord = GlobalCore.getSelectedCoord();
+		if (coord == null) coord = GlobalCore.LastValidPosition;
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("Projection"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
@@ -326,7 +329,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 	private void GenTrackCircle()
 	{
-		final Coordinate coord = GlobalCore.LastValidPosition;
+		Coordinate coord = GlobalCore.getSelectedCoord();
+		if (coord == null) coord = GlobalCore.LastValidPosition;
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("centerPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()

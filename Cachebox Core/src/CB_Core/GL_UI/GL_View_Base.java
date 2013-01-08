@@ -285,7 +285,11 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void RunOnGL(runOnGL run)
 	{
-		runOnGL_List.add(run);
+		synchronized (runOnGL_List)
+		{
+			runOnGL_List.add(run);
+		}
+		GL.that.renderOnce(this.getName() + "add RunOnGL");
 	}
 
 	public float getLeftWidth()
@@ -364,14 +368,17 @@ public abstract class GL_View_Base extends CB_RectF
 			drawableBackground.draw(batch, 0, 0, width, height);
 		}
 
-		if (runOnGL_List.size() > 0)
+		synchronized (runOnGL_List)
 		{
-			for (runOnGL run : runOnGL_List)
+			if (runOnGL_List.size() > 0)
 			{
-				if (run != null) run.run();
-			}
+				for (runOnGL run : runOnGL_List)
+				{
+					if (run != null) run.run();
+				}
 
-			runOnGL_List.clear();
+				runOnGL_List.clear();
+			}
 		}
 
 		batch.flush();

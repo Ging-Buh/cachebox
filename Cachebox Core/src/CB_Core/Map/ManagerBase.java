@@ -42,6 +42,12 @@ public abstract class ManagerBase
 		RenderThemeChanged = true;
 	}
 
+	public boolean isRenderThemeSetted()
+	{
+		if (RenderTheme != null && !RenderTheme.isEmpty()) return true;
+		return false;
+	}
+
 	public PackBase CreatePack(String file) throws IOException
 	{
 		return new PackBase(this, file);

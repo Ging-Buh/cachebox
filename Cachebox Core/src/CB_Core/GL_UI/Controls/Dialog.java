@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Core.Config;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -54,13 +55,16 @@ public abstract class Dialog extends CB_View_Base
 
 	public static float margin = 5f;
 
+	public static boolean lastNightMode = false;
+
 	public Dialog(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		mHeaderHight = margin = calcHeaderHeight();
 		setFooterHeight(calcFooterHeight(false));
 
-		if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null)
+		if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null
+				|| lastNightMode != Config.settings.nightMode.getValue())
 		{
 			// calcBase
 			pW = (int) (SpriteCache.Dialog.get(2).getWidth() / 8);
@@ -71,6 +75,8 @@ public abstract class Dialog extends CB_View_Base
 			mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 3, pW);
 
 			mTitleVersatz = (float) pW;
+
+			lastNightMode = Config.settings.nightMode.getValue();
 		}
 
 	}

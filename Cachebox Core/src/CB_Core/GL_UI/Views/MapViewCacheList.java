@@ -10,6 +10,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
+import CB_Core.Types.MoveableList;
 import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -32,7 +33,8 @@ public class MapViewCacheList
 	private Vector2 point2;
 	private int zoom = 15;
 	public ArrayList<WaypointRenderInfo> list = new ArrayList<MapViewCacheList.WaypointRenderInfo>();
-	public ArrayList<WaypointRenderInfo> tmplist;
+	private MoveableList<WaypointRenderInfo> tmplist;
+	private WaypointRenderInfo selectedWP;
 	public int anz = 0;
 	private boolean hideMyFinds = false;
 	private boolean showAllWaypoints = false;
@@ -86,8 +88,8 @@ public class MapViewCacheList
 						if ((zoom >= 13) && (zoom <= 14)) iconSize = 1; // 13x13
 						else if (zoom > 14) iconSize = 2; // default Images
 
-						tmplist = new ArrayList<MapViewCacheList.WaypointRenderInfo>();
-
+						tmplist = new MoveableList<MapViewCacheList.WaypointRenderInfo>();
+						selectedWP = null;
 						synchronized (Database.Data.Query)
 						{
 							for (Cache cache : Database.Data.Query)
@@ -131,6 +133,8 @@ public class MapViewCacheList
 									wpi.Cache = cache;
 									wpi.Waypoint = null; // = fwp; ist null, ausser bei Mystery-Final // null -> Beschriftung Name vom Cache
 									wpi.Selected = (GlobalCore.getSelectedCache() == cache);
+									if (wpi.Selected && selectedWP == null) selectedWP = wpi;// select nur wenn kein WP selectiert ist (draw
+																								// last)
 									tmplist.add(wpi);
 								}
 							}
@@ -138,6 +142,11 @@ public class MapViewCacheList
 
 						synchronized (list)
 						{
+
+							// move selected WPI to last
+							int index = tmplist.indexOf(selectedWP);
+							tmplist.MoveItemLast(index);
+
 							list.clear();
 							list = tmplist;
 							tmplist = null;
@@ -199,7 +208,7 @@ public class MapViewCacheList
 			wpi.Waypoint = wp;
 			wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint, iconSize);
 			wpi.Selected = (GlobalCore.getSelectedWaypoint() == wp);
-
+			if (wpi.Selected) selectedWP = wpi;
 			tmplist.add(wpi);
 		}
 	}

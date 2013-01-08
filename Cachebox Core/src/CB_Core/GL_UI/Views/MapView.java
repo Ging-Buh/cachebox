@@ -1621,8 +1621,20 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			if (themePath != null)
 			{
-				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-				ManagerBase.Manager.setRenderTheme(themePath);
+				if (CompassMode)
+				{
+					if (!ManagerBase.Manager.isRenderThemeSetted())
+					{
+						ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
+						ManagerBase.Manager.setRenderTheme(themePath);
+					}
+				}
+				else
+				{
+					ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
+					ManagerBase.Manager.setRenderTheme(themePath);
+				}
+
 			}
 
 			// Initial_all wird vom Constructor der MapView übergeben. Beim Constructor müssen die Texturen nicht ungültig gemacht werden

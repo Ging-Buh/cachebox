@@ -38,12 +38,14 @@ public class MultiToggleButton extends Button
 	{
 		super(X, Y, Width, Height, Name);
 		setClickable(true);
+		setLongClickable(true);
 	}
 
 	public MultiToggleButton(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		setClickable(true);
+		setLongClickable(true);
 	}
 
 	public MultiToggleButton(String Name)
