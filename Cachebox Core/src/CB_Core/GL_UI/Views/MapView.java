@@ -1783,7 +1783,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			info.setCoord(GlobalCore.LastValidPosition);
 			info.setSpeed(locator.SpeedString());
 
-			info.setDistance(GlobalCore.getSelectedCoord().Distance());
+			if (GlobalCore.getSelectedCoord() != null)
+			{
+				info.setDistance(GlobalCore.getSelectedCoord().Distance());
+			}
 			// Logger.DEBUG("Map.SetDistance=" + GlobalCore.getSelectedCoord().Distance());
 		}
 
