@@ -86,6 +86,7 @@ public class SettingsActivity extends ActivityBase
 	{
 		super(ActivityBase.ActivityRec(), "Settings");
 		that = this;
+		this.setLongClickable(true);
 		Config.settings.SaveToLastValue();
 		ButtonRec = new CB_RectF(this.getLeftWidth(), 0, this.width - this.drawableBackground.getLeftWidth()
 				- this.drawableBackground.getRightWidth(), UiSizes.getButtonHeight());
@@ -392,8 +393,10 @@ public class SettingsActivity extends ActivityBase
 
 			scrollBox = new ScrollBox(rec, rec.getHalfHeight(), "SettingsActivity-scrollBox");
 			scrollBox.setClickable(true);
+			scrollBox.setLongClickable(true);
 			LinearLayout = new Linearlayout(ButtonRec.getWidth(), "SettingsActivity-LinearLayout");
 			LinearLayout.setClickable(true);
+			LinearLayout.setLongClickable(true);
 			LinearLayout.setZeroPos();
 			scrollBox.addChild(LinearLayout);
 			// LinearLayout.setBackground(new ColorDrawable(Color.RED));
@@ -402,6 +405,8 @@ public class SettingsActivity extends ActivityBase
 		}
 
 		view.setZeroPos();
+		view.setClickable(true);
+		view.setLongClickable(true);
 
 		LinearLayout.addChild(view, itemMargin);
 		LinearLayout.setZeroPos();
@@ -530,7 +535,7 @@ public class SettingsActivity extends ActivityBase
 
 				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
-				return false;
+				return true;
 			}
 
 		});

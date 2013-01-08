@@ -42,6 +42,7 @@ public abstract class Dialog extends CB_View_Base
 	static protected NinePatch mCenter9patch;
 	static protected NinePatch mFooter9patch;
 	static protected float mTitleVersatz = 6;
+	static private int pW = 0;
 
 	protected float mTitleHeight = 0;
 	protected float mTitleWidth = 100;
@@ -52,8 +53,6 @@ public abstract class Dialog extends CB_View_Base
 	protected float mFooterHeight = 10f;
 
 	public static float margin = 5f;
-
-	int pW = 0;
 
 	public Dialog(CB_RectF rec, String Name)
 	{

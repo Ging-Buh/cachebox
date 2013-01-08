@@ -212,6 +212,16 @@ public class ScrollBox extends CB_View_Base
 		lv.scrollTo(scrollPos);
 	}
 
-	// ############### touch overrides #################
+	public void setClickable(boolean value)
+	{
+		lv.setClickable(value);
+		super.setClickable(value);
+	}
 
+	public void setLongClickable(boolean value)
+	{
+
+		lv.setLongClickable(value);
+		super.setLongClickable(value);
+	}
 }

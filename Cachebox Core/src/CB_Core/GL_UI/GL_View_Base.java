@@ -944,6 +944,11 @@ public abstract class GL_View_Base extends CB_RectF
 		isClickable = value;
 	}
 
+	public void setLongClickable(boolean value)
+	{
+		isLongClickable = value;
+	}
+
 	public void setBackground(Drawable background)
 	{
 		drawableBackground = background;

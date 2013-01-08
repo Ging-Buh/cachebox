@@ -31,6 +31,8 @@ public class SettingsItemBase extends ListViewItemBackground
 		lblName.setFont(Fonts.getNormal());
 		this.addChild(lblName);
 
+		this.setLongClickable(true);
+
 	}
 
 	@Override
