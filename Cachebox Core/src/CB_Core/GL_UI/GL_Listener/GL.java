@@ -521,8 +521,15 @@ public class GL implements ApplicationListener
 		// down Position merken
 		touchDownPos.put(pointer, new TouchDownPointer(pointer, new Point(x, y), view));
 
-		// Logger.LogCat("GL_Listner => onTouchDownBase : " + view.getName());
-		startLongClickTimer(pointer, x, y);
+		// chk if LongClickable
+		if (view.isLongClickable())
+		{
+			startLongClickTimer(pointer, x, y);
+		}
+		else
+		{
+			cancelLongClickTimer();
+		}
 
 		return true;
 	}

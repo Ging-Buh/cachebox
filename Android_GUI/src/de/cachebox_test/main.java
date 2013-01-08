@@ -290,9 +290,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// private Threads
 	Thread threadReceiveShortLog;
-	Thread threadUp;
-	Thread threadDown;
-	Thread threadMove;
+
 	Thread threadReloadSelectedCacheInfo;
 
 	// Powermanager
@@ -1802,50 +1800,23 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 
-		if (threadUp == null) threadUp = new Thread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex),
-						0);
-			}
-		});
-
-		if (threadDown == null) threadDown = new Thread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-						event.getPointerId(pointerIndex), 0);
-			}
-		});
-
-		if (threadMove == null) threadMove = new Thread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-						event.getPointerId(pointerIndex));
-			}
-		});
-
 		try
 		{
 			switch (action & MotionEvent.ACTION_MASK)
 			{
 			case MotionEvent.ACTION_POINTER_DOWN:
 			case MotionEvent.ACTION_DOWN:
-				threadDown.run();
+				glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+						event.getPointerId(pointerIndex), 0);
 				break;
 			case MotionEvent.ACTION_MOVE:
-				threadMove.run();
+				glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+						event.getPointerId(pointerIndex));
 				break;
 			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_UP:
-				threadUp.run();
+				glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex),
+						0);
 				break;
 			}
 		}

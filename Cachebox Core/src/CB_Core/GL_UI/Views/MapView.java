@@ -397,16 +397,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		resize(rec.getWidth(), rec.getHeight());
 
-		this.setOnLongClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				// CB_AllContextMenuHandler.showMapViewGLContextMenu();
-				return true;
-			}
-		});
 		center.setLatitude(Config.settings.MapInitLatitude.getValue());
 		center.setLongitude(Config.settings.MapInitLongitude.getValue());
 		aktZoom = Config.settings.lastZoomLevel.getValue();
