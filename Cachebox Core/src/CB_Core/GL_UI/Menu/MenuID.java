@@ -178,5 +178,6 @@ public class MenuID
 	public static final int MI_MAP_HILL_SHADING = 151;
 
 	public static final int MI_COMPASS_SHOW = 152;
+	public static final int MI_RELOAD_SPOILER = 153;
 
 }

@@ -141,13 +141,15 @@ public class QuickButtonItem extends ListViewItemBase
 		}
 		else if (mAction.getName().toLowerCase().equals("spoiler"))
 		{
+			boolean hasSpoiler = false;
+			if (GlobalCore.getSelectedCache() != null) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
 
-			if (mAction.getEnabled() && spoilerState != 1)
+			if (hasSpoiler && spoilerState != 1)
 			{
 				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(18)));
 				spoilerState = 1;
 			}
-			else if (!mAction.getEnabled() && spoilerState != 0)
+			else if (!hasSpoiler && spoilerState != 0)
 			{
 				Sprite sprite = new Sprite(SpriteCache.Icons.get(18));
 				sprite.setColor(DISABLE_COLOR);
