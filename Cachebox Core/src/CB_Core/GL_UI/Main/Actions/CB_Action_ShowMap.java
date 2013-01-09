@@ -11,6 +11,7 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.GL_UI.Menu.OptionMenu;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
@@ -121,7 +122,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 	public void showMapViewLayerMenu()
 	{
-		Menu icm = new Menu("MapViewShowLayerContextMenu");
+		OptionMenu icm = new OptionMenu("MapViewShowLayerContextMenu");
 
 		icm.addItemClickListner(onItemClickListner);
 		MenuItem mi;
