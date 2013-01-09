@@ -28,24 +28,29 @@ public class CachListChangedEventList
 		}
 	}
 
+	private static Thread threadCall;
+
 	public static void Call()
 	{
 
 		if (Energy.DisplayOff()) return;
 
-		Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
-
-		if (cache != null) Database.Data.Query.remove(cache);
-
-		// add Parking Cache
-		if (Config.settings.ParkingLatitude.getValue() != 0)
+		synchronized (Database.Data.Query)
 		{
-			cache = new Cache(Config.settings.ParkingLatitude.getValue(), Config.settings.ParkingLongitude.getValue(), "My Parking area",
-					CacheTypes.MyParking, "CBPark");
-			Database.Data.Query.add(0, cache);
-		}
+			Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
 
-		Thread thread = new Thread(new Runnable()
+			if (cache != null) Database.Data.Query.remove(cache);
+
+			// add Parking Cache
+			if (Config.settings.ParkingLatitude.getValue() != 0)
+			{
+				cache = new Cache(Config.settings.ParkingLatitude.getValue(), Config.settings.ParkingLongitude.getValue(),
+						"My Parking area", CacheTypes.MyParking, "CBPark");
+				Database.Data.Query.add(0, cache);
+			}
+
+		}
+		if (threadCall == null) threadCall = new Thread(new Runnable()
 		{
 
 			@Override
@@ -55,6 +60,7 @@ public class CachListChangedEventList
 				{
 					for (CacheListChangedEventListner event : list)
 					{
+						if (event == null) continue;
 						event.CacheListChangedEvent();
 					}
 				}
@@ -62,7 +68,7 @@ public class CachListChangedEventList
 			}
 		});
 
-		thread.run();
+		threadCall.run();
 
 	}
 

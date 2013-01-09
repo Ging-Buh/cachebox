@@ -663,12 +663,14 @@ public class FieldNotesView extends V_ListView
 							Config.AcceptChanges();
 							// jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
 							// damit das Smiley Symbol aus der Map und der CacheList verschwindet
-							Cache tc = Database.Data.Query.GetCacheById(cache.Id);
-							if (tc != null)
+							synchronized (Database.Data.Query)
 							{
-								tc.Found = false;
+								Cache tc = Database.Data.Query.GetCacheById(cache.Id);
+								if (tc != null)
+								{
+									tc.Found = false;
+								}
 							}
-
 						}
 					}
 					lFieldNotes.DeleteFieldNote(aktFieldNote.Id, aktFieldNote.type);
@@ -763,7 +765,10 @@ public class FieldNotesView extends V_ListView
 			return;
 		}
 
-		cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+		synchronized (Database.Data.Query)
+		{
+			cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
+		}
 
 		if (cache == null)
 		{

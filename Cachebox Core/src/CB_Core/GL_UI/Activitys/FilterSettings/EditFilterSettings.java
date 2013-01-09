@@ -297,11 +297,14 @@ public class EditFilterSettings extends ActivityBase
 			{
 				try
 				{
-					String sqlWhere = props.getSqlWhere();
-					Logger.General("Main.ApplyFilter: " + sqlWhere);
-					Database.Data.Query.clear();
-					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					synchronized (Database.Data.Query)
+					{
+						String sqlWhere = props.getSqlWhere();
+						Logger.General("Main.ApplyFilter: " + sqlWhere);
+						Database.Data.Query.clear();
+						CacheListDAO cacheListDAO = new CacheListDAO();
+						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					}
 					CachListChangedEventList.Call();
 					pd.dismis();
 					TabMainView.that.filterSetChanged();

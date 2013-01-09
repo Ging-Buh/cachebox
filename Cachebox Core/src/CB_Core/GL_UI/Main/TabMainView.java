@@ -585,19 +585,22 @@ public class TabMainView extends MainViewBase
 		// ##################################
 		// Set new list size at context menu
 		// ##################################
-
-		int filterCount = Database.Data.Query.size();
-
-		if (Database.Data.Query.GetCacheByGcCode("CBPark") != null) --filterCount;
-
-		int DBCount = Database.Data.getCacheCountInDB();
-		String Filtert = "";
-		if (filterCount != DBCount)
+		String Name = "";
+		synchronized (Database.Data.Query)
 		{
-			Filtert = String.valueOf(filterCount) + "/";
-		}
+			int filterCount = Database.Data.Query.size();
 
-		String Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
+			if (Database.Data.Query.GetCacheByGcCode("CBPark") != null) --filterCount;
+
+			int DBCount = Database.Data.getCacheCountInDB();
+			String Filtert = "";
+			if (filterCount != DBCount)
+			{
+				Filtert = String.valueOf(filterCount) + "/";
+			}
+
+			Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
+		}
 		actionShowCacheList.setNameExtention(Name);
 	}
 

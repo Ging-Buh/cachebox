@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
@@ -16,7 +18,7 @@ import CB_Core.Types.Waypoint;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
-public class MapViewCacheList
+public class MapViewCacheList implements CacheListChangedEventListner
 {
 	private int maxZoomLevel;
 	private queueProcessor queueProcessor = null;
@@ -48,6 +50,9 @@ public class MapViewCacheList
 		this.maxZoomLevel = maxZoomLevel;
 
 		StartQueueProcessor();
+
+		// register as CacheListChangedEventListner
+		CachListChangedEventList.Add(this);
 
 	}
 
@@ -145,7 +150,7 @@ public class MapViewCacheList
 
 							// move selected WPI to last
 							int index = tmplist.indexOf(selectedWP);
-							tmplist.MoveItemLast(index);
+							if (index >= 0 && index <= tmplist.size()) tmplist.MoveItemLast(index);
 
 							list.clear();
 							list = tmplist;
@@ -362,9 +367,11 @@ public class MapViewCacheList
 
 	MapViewCacheListUpdateData savedQuery = null;
 
+	MapViewCacheListUpdateData LastUpdateData = null;
+
 	public void update(MapViewCacheListUpdateData data)
 	{
-
+		LastUpdateData = data;
 		this.showAllWaypoints = data.showAllWaypoints;
 		this.hideMyFinds = data.hideMyFinds;
 
@@ -427,6 +434,16 @@ public class MapViewCacheList
 		public Sprite Icon;
 		public Sprite UnderlayIcon;
 		public Sprite OverlayIcon;
+	}
+
+	@Override
+	public void CacheListChangedEvent()
+	{
+		if (LastUpdateData != null)
+		{
+			LastUpdateData.doNotCheck = true;
+			update(LastUpdateData);
+		}
 	};
 
 }

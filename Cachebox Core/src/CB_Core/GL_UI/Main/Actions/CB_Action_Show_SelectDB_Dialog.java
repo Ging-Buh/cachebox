@@ -80,28 +80,30 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
 				Logger.General("Main.ApplyFilter: " + sqlWhere);
-
-				Database.Data.Query.clear();
-				Database.Data.Close();
-				Database.Data.StartUp(Config.settings.DatabasePath.getValue());
-
-				CacheListDAO cacheListDAO = new CacheListDAO();
-				cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-
-				GlobalCore.setSelectedCache(null);
-				GlobalCore.setSelectedWaypoint(null, null);
-				CachListChangedEventList.Call();
-
-				// set last selected Cache
-				String sGc = Config.settings.LastSelectedCache.getValue();
-				if (sGc != null && !sGc.equals(""))
+				synchronized (Database.Data.Query)
 				{
-					for (Cache c : Database.Data.Query)
+					Database.Data.Query.clear();
+					Database.Data.Close();
+					Database.Data.StartUp(Config.settings.DatabasePath.getValue());
+
+					CacheListDAO cacheListDAO = new CacheListDAO();
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+
+					GlobalCore.setSelectedCache(null);
+					GlobalCore.setSelectedWaypoint(null, null);
+					CachListChangedEventList.Call();
+
+					// set last selected Cache
+					String sGc = Config.settings.LastSelectedCache.getValue();
+					if (sGc != null && !sGc.equals(""))
 					{
-						if (c.GcCode.equalsIgnoreCase(sGc))
+						for (Cache c : Database.Data.Query)
 						{
-							GlobalCore.setSelectedCache(c);
-							break;
+							if (c.GcCode.equalsIgnoreCase(sGc))
+							{
+								GlobalCore.setSelectedCache(c);
+								break;
+							}
 						}
 					}
 				}

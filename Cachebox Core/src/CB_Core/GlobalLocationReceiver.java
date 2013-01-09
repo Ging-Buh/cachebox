@@ -166,7 +166,10 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 			{
 				if (GlobalCore.getSelectedCache() == null)
 				{
-					Database.Data.Query.Resort();
+					synchronized (Database.Data.Query)
+					{
+						Database.Data.Query.Resort();
+					}
 				}
 				initialResortAfterFirstFixCompleted = true;
 			}

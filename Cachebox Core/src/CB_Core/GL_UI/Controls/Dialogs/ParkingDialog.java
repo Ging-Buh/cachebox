@@ -91,11 +91,14 @@ public class ParkingDialog extends ButtonDialog
 		this.addChild(layout);
 
 		// chk disable select and delete Button
-		Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
-		if (cache == null)
+		synchronized (Database.Data.Query)
 		{
-			btSelectWP.disable();
-			btDeleteP.disable();
+			Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+			if (cache == null)
+			{
+				btSelectWP.disable();
+				btDeleteP.disable();
+			}
 		}
 
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
@@ -130,9 +133,11 @@ public class ParkingDialog extends ButtonDialog
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
-
-				if (cache != null) GlobalCore.setSelectedCache(cache);
+				synchronized (Database.Data.Query)
+				{
+					Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+					if (cache != null) GlobalCore.setSelectedCache(cache);
+				}
 				close();
 				return true;
 			}

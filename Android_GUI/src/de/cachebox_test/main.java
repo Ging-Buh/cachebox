@@ -2112,18 +2112,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		showView(ViewConst.TB_LIST_VIEW);
 	}
 
-	private void switchAutoResort()
-	{
-		GlobalCore.autoResort = !(GlobalCore.autoResort);
-
-		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
-
-		if (GlobalCore.autoResort)
-		{
-			Database.Data.Query.Resort();
-		}
-	}
-
 	private void NavigateTo()
 	{
 		if (GlobalCore.getSelectedCache() != null)

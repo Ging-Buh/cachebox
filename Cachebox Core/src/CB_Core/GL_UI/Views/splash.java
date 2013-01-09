@@ -393,9 +393,11 @@ public class splash extends TabMainView
 		GlobalCore.Categories = new Categories();
 		Database.Data.GPXFilenameUpdateCacheCount();
 
-		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-
+		synchronized (Database.Data.Query)
+		{
+			CacheListDAO cacheListDAO = new CacheListDAO();
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+		}
 		CachListChangedEventList.Call();
 
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
@@ -442,28 +444,31 @@ public class splash extends TabMainView
 
 		if (GlobalCore.restartCache != null)
 		{
-			Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
-			if (GlobalCore.restartWaypoint != null && c != null && c.waypoints != null)
+			synchronized (Database.Data.Query)
 			{
-				Waypoint w = null;
-
-				for (Waypoint wp : c.waypoints)
+				Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
+				if (GlobalCore.restartWaypoint != null && c != null && c.waypoints != null)
 				{
-					if (wp.GcCode.equalsIgnoreCase(GlobalCore.restartWaypoint))
-					{
-						w = wp;
-					}
-				}
+					Waypoint w = null;
 
-				GlobalCore.setSelectedWaypoint(c, w);
-			}
-			else
-			{
-				GlobalCore.setSelectedCache(c);
+					for (Waypoint wp : c.waypoints)
+					{
+						if (wp.GcCode.equalsIgnoreCase(GlobalCore.restartWaypoint))
+						{
+							w = wp;
+						}
+					}
+
+					GlobalCore.setSelectedWaypoint(c, w);
+				}
+				else
+				{
+					GlobalCore.setSelectedCache(c);
+				}
 			}
 
 		}
-		GL.that.setIsInitial();
+		GL.setIsInitial();
 	}
 
 	public void dispose()

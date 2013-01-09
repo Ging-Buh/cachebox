@@ -302,8 +302,10 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	public void refreshText()
 	{
+		if (WP == null || CachesFoundLabel == null) return;
 		CachesFoundLabel
 				.setText(GlobalCore.Translations.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()));
+
 		if (GlobalCore.getSelectedCache() != null) if (GlobalCore.getSelectedWaypoint() != null)
 		{
 			WP.setText(GlobalCore.getSelectedWaypoint().GcCode);

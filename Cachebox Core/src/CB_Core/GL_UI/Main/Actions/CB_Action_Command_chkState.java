@@ -58,22 +58,26 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 		@Override
 		public void run()
 		{
-			if (Database.Data.Query == null || Database.Data.Query.size() == 0) return;
-
 			ArrayList<Cache> chkList = new ArrayList<Cache>();
-			Iterator<Cache> cIterator = Database.Data.Query.iterator();
 
-			ChangedCount = 0;
-
-			if (cIterator != null && cIterator.hasNext())
+			synchronized (Database.Data.Query)
 			{
-				do
-				{
-					chkList.add(cIterator.next());
-				}
-				while (cIterator.hasNext());
-			}
+				if (Database.Data.Query == null || Database.Data.Query.size() == 0) return;
 
+				Iterator<Cache> cIterator = Database.Data.Query.iterator();
+
+				ChangedCount = 0;
+
+				if (cIterator != null && cIterator.hasNext())
+				{
+					do
+					{
+						chkList.add(cIterator.next());
+					}
+					while (cIterator.hasNext());
+				}
+
+			}
 			float ProgressInkrement = 100.0f / (chkList.size() / BlockSize);
 
 			// in Blöcke Teilen
@@ -173,8 +177,12 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			if (result != -1)
 			{
 				pd.close();
-				GL_MsgBox.Show(GlobalCore.Translations.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),
-						GlobalCore.Translations.Get("chkState"), MessageBoxIcon.None);
+				synchronized (Database.Data.Query)
+				{
+					GL_MsgBox.Show(GlobalCore.Translations.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),
+							GlobalCore.Translations.Get("chkState"), MessageBoxIcon.None);
+				}
+
 			}
 		}
 	};
