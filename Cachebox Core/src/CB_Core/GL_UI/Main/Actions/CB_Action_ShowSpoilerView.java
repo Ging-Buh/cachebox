@@ -10,6 +10,7 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.SpoilerView;
+import CB_Core.Import.Importer;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -96,7 +97,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 			switch (((MenuItem) v).getMenuItemId())
 			{
 			case MenuID.MI_RELOAD_SPOILER:
-				// TODO implement Reload Spoiler
+				Importer.ImportSpoiler();
 				return true;
 			}
 			return false;
