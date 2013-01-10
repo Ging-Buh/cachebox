@@ -167,7 +167,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 *            Longitude
 	 * @return double
 	 */
-	public static double LongitudeToTileX(int zoom, double longitude)
+	public static double LongitudeToTileX(double zoom, double longitude)
 	{
 		return (longitude + 180.0) / 360.0 * Math.pow(2, zoom);
 	}
@@ -181,7 +181,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 *            Latitude
 	 * @return double
 	 */
-	public static double LatitudeToTileY(int zoom, double latitude)
+	public static double LatitudeToTileY(double zoom, double latitude)
 	{
 		double latRad = latitude * Math.PI / 180.0;
 
@@ -191,7 +191,7 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Berechnet aus der übergebenen OSM-X-Koordinate den entsprechenden Längengrad
 	 */
-	public static double TileXToLongitude(int zoom, double x)
+	public static double TileXToLongitude(double zoom, double x)
 	{
 
 		return -180.0 + (360.0 * x) / Math.pow(2, zoom);
@@ -200,7 +200,7 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Berechnet aus der übergebenen OSM-Y-Koordinate den entsprechenden Breitengrad
 	 */
-	public static double TileYToLatitude(int zoom, double y)
+	public static double TileYToLatitude(double zoom, double y)
 	{
 		double xNom = Math.exp(2 * Math.PI) - Math.exp(4 * Math.PI * Math.pow(2, -zoom) * y);
 		double xDen = Math.exp(2 * Math.PI) + Math.exp(4 * Math.PI * Math.pow(2, -zoom) * y);

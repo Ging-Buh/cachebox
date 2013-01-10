@@ -151,6 +151,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(MapView.that.showDirektLine);
 
+		mi = icm.addItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "ShowAccuracyCircle");
+		mi.setCheckable(true);
+		mi.setChecked(MapView.that.showAccuracyCircle);
+
 		icm.show();
 	}
 
@@ -203,6 +207,9 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 			case MenuID.MI_SHOW_DIRECT_LINE:
 				MapView.that.showDirektLine = !MapView.that.showDirektLine;
+
+			case MenuID.MI_SHOW_ACCURACY_CIRCLE:
+				MapView.that.showAccuracyCircle = !MapView.that.showAccuracyCircle;
 				return true;
 
 			case MenuID.MI_CENTER_WP:

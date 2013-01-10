@@ -748,7 +748,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		mSats = GPS.getSatAndFix();
 
 		mAccuracy = String.valueOf((int) location.getAccuracy());
-		mAlt = GlobalCore.Locator.getAltString();
+		mAlt = GlobalCore.Locator.getAltStringWithCorection();
 		mLatitude = GlobalCore.FormatLatitudeDM(location.getLatitude());
 		mLongitude = GlobalCore.FormatLongitudeDM(location.getLongitude());
 

@@ -139,11 +139,17 @@ public class Locator
 		return altitude - altCorrection;
 	}
 
+	public String getAltStringWithCorection()
+	{
+		String result = getAltString();
+		if (altCorrection > 0) result += " (+" + String.format("%.0f", altCorrection) + " m)";
+		else if (altCorrection < 0) result += " (" + String.format("%.0f", altCorrection) + " m)";
+		return result;
+	}
+
 	public String getAltString()
 	{
 		String result = String.format("%.0f", getAlt()) + " m";
-		if (altCorrection > 0) result += " (+" + String.format("%.0f", altCorrection) + " m)";
-		else if (altCorrection < 0) result += " (" + String.format("%.0f", altCorrection) + " m)";
 		return result;
 	}
 

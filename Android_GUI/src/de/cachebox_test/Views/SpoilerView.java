@@ -199,6 +199,8 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	public void OnShow()
 	{
 		aktCache = GlobalCore.getSelectedCache();
+
+		if (aktCache == null) return;
 		lBitmaps.clear();
 		for (ImageEntry image : aktCache.SpoilerRessources())
 		{

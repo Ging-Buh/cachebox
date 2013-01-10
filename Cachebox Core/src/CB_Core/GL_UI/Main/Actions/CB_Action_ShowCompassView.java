@@ -112,6 +112,10 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.CompassShowSunMoon.getValue());
 
+		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION, "CompassShowTargetDirection");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.CompassShowTargetDirection.getValue());
+
 		icm.show();
 
 	}
@@ -162,6 +166,10 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 
 			case MenuID.MI_COMPASS_SHOW_SUN_MOON:
 				toggleSetting(Config.settings.CompassShowSunMoon);
+				return true;
+
+			case MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION:
+				toggleSetting(Config.settings.CompassShowTargetDirection);
 				return true;
 			}
 			return false;

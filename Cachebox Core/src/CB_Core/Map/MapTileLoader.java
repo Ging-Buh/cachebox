@@ -14,6 +14,8 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+
 public class MapTileLoader
 {
 	public static final int MAX_MAP_ZOOM = 22;
@@ -479,14 +481,16 @@ public class MapTileLoader
 	public long getMapTilePosFactor(float zoom)
 	{
 		long result = 1;
-
-		// for (int z = zoom; z < MAX_MAP_ZOOM; z++)
-		// {
-		// result *= 2;
-		// }
-
 		result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
+		return result;
+	}
 
+	public float convertCameraZommToFloat(OrthographicCamera cam)
+	{
+		if (cam.zoom <= 0) return 0f;
+
+		float result = 0.0f;
+		result = (float) MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));
 		return result;
 	}
 

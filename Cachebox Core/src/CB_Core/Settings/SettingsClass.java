@@ -82,6 +82,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool newInstall;
 	public SettingBool ImperialUnits;
 	public SettingBool ShowDirektLine;
+	public SettingBool ShowAccuracyCircle;
 	public SettingBool PositionMarkerTransparent;
 
 	public SettingBool DebugShowMarker;
@@ -105,6 +106,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool CompassShowWpDesc;
 	public SettingBool CompassShowSatInfos;
 	public SettingBool CompassShowSunMoon;
+	public SettingBool CompassShowTargetDirection;
 	public SettingBool DeleteLogs;
 	public SettingBool CompactDB;
 
@@ -294,6 +296,7 @@ public class SettingsClass extends SettingsList
 		addSetting(CompassShowWpDesc = new SettingBool("CompassShowWpDesc", cat, NORMAL, true, true));
 		addSetting(CompassShowSatInfos = new SettingBool("CompassShowSatInfos", cat, NORMAL, true, true));
 		addSetting(CompassShowSunMoon = new SettingBool("CompassShowSunMoon", cat, NORMAL, false, true));
+		addSetting(CompassShowTargetDirection = new SettingBool("CompassShowTargetDirection", cat, NORMAL, false, true));
 	}
 
 	private void addPositionSettings()
@@ -319,6 +322,7 @@ public class SettingsClass extends SettingsList
 		addSetting(CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", cat, NORMAL, 13, true, Level));
 
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, true));
+		addSetting(ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", cat, NORMAL, true, true));
 		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", cat, NORMAL, false, true));
 		addSetting(ShowAllWaypoints = new SettingBool("ShowAllWaypoints", cat, NORMAL, false, true));
 		addSetting(MapShowRating = new SettingBool("MapShowRating", cat, NORMAL, true, true));

@@ -23,7 +23,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 {
 	private int minzoom = 6;
 	private int maxzoom = 20;
-	private int zoom = 13;
+	private float zoom = 13;
 	private CB_RectF ScaleDrawRec;
 	private boolean isVisible = true;
 	private Date timeLastAction = new Date();
@@ -33,7 +33,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	private boolean fadeIn = false;
 	private float FadeValue = 1.0f;
 	private Sprite CachedScaleSprite = null;
-	private float diffCameraZoom = 0f;
+
 	private CB_RectF ValueRec;
 
 	private int topRow;
@@ -47,7 +47,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 	private ZoomScale THIS;
 
-	public ZoomScale(CB_RectF rec, String Name, int minzoom, int maxzoom, int zoom)
+	public ZoomScale(CB_RectF rec, String Name, int minzoom, int maxzoom, float zoom)
 	{
 		super(rec, Name);
 		this.minzoom = minzoom;
@@ -74,8 +74,8 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 		checkFade();
 
 		// Draw Scale
-		Sprite scale;
-		scale = drawSprite(ScaleDrawRec);
+
+		Sprite scale = drawSprite(ScaleDrawRec);
 		if (scale != null)
 		{
 			scale.setY(valueRecHeight / 2);
@@ -91,39 +91,18 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 			valueBack.draw(batch, FadeValue);
 		}
 
+		int intZoom = (int) zoom;
+
 		com.badlogic.gdx.graphics.Color c = Fonts.getFontColor();
 		Fonts.getNormal().setColor(c.r, c.g, c.b, FadeValue);
-		Fonts.getNormal().draw(batch, String.valueOf(zoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
+		Fonts.getNormal().draw(batch, String.valueOf(intZoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.15f);
 		Fonts.getNormal().setColor(c.r, c.g, c.b, 1f);
 
 		invalidateTextureEventList.Add(this);
 	}
 
-	public void setDiffCameraZoom(float value, boolean positive)
-	{
-
-		if (value >= 1 || value <= -1)
-		{
-			diffCameraZoom = 0;// - zoom;
-		}
-		else
-		{
-			if (positive)
-			{
-				diffCameraZoom = value;
-			}
-			else
-			{
-				diffCameraZoom = 1 + value;
-			}
-			// + zoom;
-		}
-		// Log.d("CACHEBOX", "Value=" + value + " |ZoomDiff=" + diffCameraZoom + "  |Zoom=" + zoom);
-
-	}
-
-	public void setZoom(int value)
+	public void setZoom(float value)
 	{
 		zoom = value;
 		resetFadeOut();
@@ -174,14 +153,14 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 			dist = (bottomRow - topRow) / numSteps;
 
-			y = (int) ((1 - ((float) ((zoom + diffCameraZoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
+			y = (int) ((1 - ((float) ((zoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
 
 			ValueRec = new CB_RectF(rect.getX() + GL_UISizes.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY
 					+ y, rect.getWidth(), rect.getWidth() / 2);
 		}
 		else
 		{
-			y = (int) ((1 - ((float) ((zoom + diffCameraZoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
+			y = (int) ((1 - ((float) ((zoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
 			ValueRec.setY(grundY + y);
 		}
 

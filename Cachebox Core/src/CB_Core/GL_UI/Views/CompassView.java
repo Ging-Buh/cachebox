@@ -43,7 +43,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	private ScrollBox topBox;
 	private MapView map;
 	private SatBarChart chart;
-	private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblSats, lblOwnCoords;
+	private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblSats, lblOwnCoords, lblBearing;
 
 	private Cache aktCache;
 	private Waypoint aktWaypoint;
@@ -51,7 +51,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	private float margin, attHeight, descHeight, lblHeight;
 	private double heading;
 	private boolean isInitial, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon,
-			showAnyContent;
+			showAnyContent, showTargetDirection;
 
 	public CompassView(CB_RectF rec, String Name)
 	{
@@ -155,8 +155,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			showSunMoon = Config.settings.CompassShowSunMoon.getValue();
 			ret = true;
 		}
+		if (showTargetDirection != Config.settings.CompassShowTargetDirection.getValue())
+		{
+			showTargetDirection = Config.settings.CompassShowTargetDirection.getValue();
+			ret = true;
+		}
 
-		showAnyContent = showSatInfos || showWpDesc || showCoords || showGcCode || showAtt || showIcon || showName;
+		showAnyContent = showSatInfos || showWpDesc || showCoords || showGcCode || showAtt || showIcon || showName || showTargetDirection;
 
 		return ret;
 	}
@@ -378,6 +383,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			}
 		}
 		if (showSatInfos) contentHeight += attHeight + attHeight + margin;
+		if (showTargetDirection) contentHeight += lblHeight + margin;
 
 		float topH = Math.max((this.width * 0.7f), this.height - contentHeight - SpriteCache.activityBackground.getTopHeight()
 				- SpriteCache.activityBackground.getBottomHeight());
@@ -591,6 +597,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		}
 
+		// add Target direction
+		if (showTargetDirection)
+		{
+			lblBearing = new Label("AltLabel");
+			lblBearing.setHeight(lblHeight);
+
+			topContentBox.addLast(lblBearing);
+		}
+
 		// add Attribute
 		if (showAtt)
 		{
@@ -652,6 +667,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				distance = aktWaypoint.Distance();
 			}
 			double bearing = Coordinate.Bearing(position, dest);
+
+			if (lblBearing != null)
+			{
+				String sBearing = GlobalCore.Translations.Get("directionToTarget: ") + String.format("%.0f", bearing) + "°";
+				lblBearing.setText(sBearing);
+			}
+
 			double relativeBearing = bearing - heading;
 
 			arrow.setRotate((float) -relativeBearing);

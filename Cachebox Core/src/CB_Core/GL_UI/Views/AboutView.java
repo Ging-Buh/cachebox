@@ -356,7 +356,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		{
 			Current.setText(GlobalCore.FormatLatitudeDM(GlobalCore.Locator.getLocation().getLatitude()) + " "
 					+ GlobalCore.FormatLongitudeDM(GlobalCore.Locator.getLocation().getLongitude()));
-			Gps.setText(GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " " + GlobalCore.Locator.getAltString());
+			Gps.setText(GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " " + GlobalCore.Locator.getAltStringWithCorection());
 		}
 
 		if (GlobalCore.Locator == null)

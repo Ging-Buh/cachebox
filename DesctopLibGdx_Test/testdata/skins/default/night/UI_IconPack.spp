@@ -220,169 +220,190 @@ filter: Linear,Linear
 repeat: none
 InfoPanelBack
   rotate: false
-  xy: 1, 911
+  xy: 1, 907
   size: 366, 85
   orig: 366, 85
   offset: 0, 0
   index: -1
 1to4bubble-flip
   rotate: false
-  xy: 1, 719
+  xy: 1, 715
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
 1to4bubble
   rotate: false
-  xy: 1, 527
+  xy: 1, 523
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
 5bubble-flip
   rotate: false
-  xy: 181, 719
+  xy: 181, 715
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
 5bubble
   rotate: false
-  xy: 1, 335
+  xy: 1, 331
   size: 178, 190
   orig: 178, 190
   offset: 0, 0
   index: -1
 listrec-selected
   rotate: false
-  xy: 181, 588
+  xy: 181, 584
   size: 207, 129
   orig: 207, 129
   offset: 0, 0
   index: -1
+MapScale-3
+  rotate: false
+  xy: 1, 304
+  size: 150, 25
+  orig: 150, 25
+  offset: 0, 0
+  index: -1
+MapScale-4
+  rotate: false
+  xy: 181, 557
+  size: 150, 25
+  orig: 150, 25
+  offset: 0, 0
+  index: -1
+MapScale-5
+  rotate: false
+  xy: 1, 277
+  size: 150, 25
+  orig: 150, 25
+  offset: 0, 0
+  index: -1
 btn-normal
   rotate: false
-  xy: 1, 246
+  xy: 181, 468
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 btn-pressed
   rotate: false
-  xy: 181, 499
+  xy: 1, 188
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 spinner-triangle
   rotate: false
-  xy: 1, 157
+  xy: 181, 379
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 text-field-back-focus
   rotate: false
-  xy: 87, 246
+  xy: 1, 99
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 toggle-led-gr
   rotate: false
-  xy: 181, 410
+  xy: 1, 10
   size: 84, 87
   orig: 84, 87
   offset: 0, 0
   index: -1
 db-pressed
   rotate: false
-  xy: 369, 920
+  xy: 369, 916
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 db
   rotate: false
-  xy: 267, 510
+  xy: 267, 479
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 misc-pressed
   rotate: false
-  xy: 267, 432
+  xy: 267, 401
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 misc
   rotate: false
-  xy: 1, 79
+  xy: 87, 199
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 tool-pressed
   rotate: false
-  xy: 1, 1
+  xy: 87, 121
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 tool
   rotate: false
-  xy: 87, 168
+  xy: 87, 43
   size: 88, 76
   orig: 88, 76
   offset: 0, 0
   index: -1
 day-btn-zoom-down-disabled
   rotate: false
-  xy: 181, 360
-  size: 79, 48
-  orig: 79, 48
-  offset: 0, 0
-  index: -1
-day-btn-zoom-down-normal
-  rotate: false
-  xy: 91, 118
-  size: 79, 48
-  orig: 79, 48
-  offset: 0, 0
-  index: -1
-day-btn-zoom-down-pressed
-  rotate: false
-  xy: 91, 68
-  size: 79, 48
-  orig: 79, 48
-  offset: 0, 0
-  index: -1
-day-btn-zoom-up-disabled
-  rotate: false
-  xy: 91, 18
-  size: 79, 48
-  orig: 79, 48
-  offset: 0, 0
-  index: -1
-day-btn-zoom-up-normal
-  rotate: false
-  xy: 181, 310
-  size: 79, 48
-  orig: 79, 48
-  offset: 0, 0
-  index: -1
-day-btn-zoom-up-pressed
-  rotate: false
-  xy: 173, 260
+  xy: 181, 329
   size: 79, 48
   orig: 79, 48
   offset: 0, 0
   index: -1
 zoom-back
   rotate: false
-  xy: 177, 218
+  xy: 87, 1
   size: 80, 40
   orig: 80, 40
+  offset: 0, 0
+  index: -1
+day-btn-zoom-down-normal
+  rotate: false
+  xy: 267, 351
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+day-btn-zoom-down-pressed
+  rotate: false
+  xy: 153, 279
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+day-btn-zoom-up-disabled
+  rotate: false
+  xy: 177, 229
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+day-btn-zoom-up-normal
+  rotate: false
+  xy: 177, 179
+  size: 79, 48
+  orig: 79, 48
+  offset: 0, 0
+  index: -1
+day-btn-zoom-up-pressed
+  rotate: false
+  xy: 177, 129
+  size: 79, 48
+  orig: 79, 48
   offset: 0, 0
   index: -1

@@ -434,6 +434,8 @@ public class DescriptionImageGrabber
 				ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode);
 				HashMap<String, URI> allimgDict = GroundspeakAPI.GetAllImageLinks(Config.GetAccessToken(true), gcCode);
 
+				if (allimgDict == null) return;
+
 				int i = 0;
 				for (String key : allimgDict.keySet())
 				{

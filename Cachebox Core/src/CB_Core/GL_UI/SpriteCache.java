@@ -134,6 +134,9 @@ public class SpriteCache
 	public static Drawable bar_0;
 	public static Drawable barSmall_0;
 
+	public static Drawable[] MapScale;
+	public static Sprite[] Accuracy;
+
 	public static int patch;
 
 	public static String PathDefaultAtlas;
@@ -682,6 +685,16 @@ public class SpriteCache
 			Icons.add(getThemedSprite("waypoint-list-icon")); // 56
 
 		}
+
+		MapScale = new Drawable[3];
+		MapScale[0] = new SpriteDrawable(getThemedSprite("MapScale-3"));
+		MapScale[1] = new SpriteDrawable(getThemedSprite("MapScale-4"));
+		MapScale[2] = new SpriteDrawable(getThemedSprite("MapScale-5"));
+
+		Accuracy = new Sprite[3];
+		Accuracy[0] = getThemedSprite("Accuracy-0");
+		Accuracy[1] = getThemedSprite("Accuracy-1");
+		Accuracy[2] = getThemedSprite("Accuracy-2");
 
 		loadButtnSprites();
 
