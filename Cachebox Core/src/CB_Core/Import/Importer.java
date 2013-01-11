@@ -681,7 +681,7 @@ public class Importer
 
 	private static CancelWaitDialog WD;
 
-	public static void ImportSpoiler()
+	public static CancelWaitDialog ImportSpoiler()
 	{
 
 		WD = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
@@ -705,6 +705,7 @@ public class Importer
 				WD.close();
 			}
 		});
+		return WD;
 	}
 
 }

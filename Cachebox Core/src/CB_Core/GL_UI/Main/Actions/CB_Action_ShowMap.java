@@ -311,7 +311,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	{
 		setting.setValue(!setting.getValue());
 		Config.AcceptChanges();
-		if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_SETTINGS);
+		if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
 	}
 
 }

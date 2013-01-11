@@ -1460,6 +1460,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public static int INITIAL_THEME = 2;
 	public static int INITIAL_WP_LIST = 4;
 	public static int INITIAL_ALL = 7;
+	public static int INITIAL_WITH_OUT_ZOOM = 8;
+	public static int INITIAL_SETTINGS_WITH_OUT_ZOOM = 9;
 
 	public void setNewSettings(int InitialFlags)
 	{
@@ -1476,33 +1478,36 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			if (info != null) info.setVisible(showCompass);
 
-			iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
-
-			int setAktZoom = CompassMode ? Config.settings.lastZoomLevel.getValue() : Config.settings.lastZoomLevel.getValue();
-			int setMaxZoom = CompassMode ? Config.settings.CompassMapMaxZommLevel.getValue() : Config.settings.OsmMaxLevel.getValue();
-			int setMinZoom = CompassMode ? Config.settings.CompassMapMinZoomLevel.getValue() : Config.settings.OsmMinLevel.getValue();
-
-			aktZoom = setAktZoom;
-			zoomBtn.setMaxZoom(setMaxZoom);
-			zoomBtn.setMinZoom(setMinZoom);
-			zoomBtn.setZoom(aktZoom);
-
-			zoomScale.setMaxZoom(setMaxZoom);
-			zoomScale.setMinZoom(setMinZoom);
-			// setZoomScale(aktZoom);
-
-			if (CompassMode)
+			if (!((InitialFlags & INITIAL_SETTINGS) != 0))
 			{
-				// Berechne die darstellbare Entfernung für jedes ZoomLevel
-				DistanceZoomLevel = new TreeMap<Integer, Integer>();
+				iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
-				int posiblePixel = (int) this.halfHeight;
+				int setAktZoom = CompassMode ? Config.settings.lastZoomLevel.getValue() : Config.settings.lastZoomLevel.getValue();
+				int setMaxZoom = CompassMode ? Config.settings.CompassMapMaxZommLevel.getValue() : Config.settings.OsmMaxLevel.getValue();
+				int setMinZoom = CompassMode ? Config.settings.CompassMapMinZoomLevel.getValue() : Config.settings.OsmMinLevel.getValue();
 
-				for (int i = setMaxZoom; i > setMinZoom; i--)
+				aktZoom = setAktZoom;
+				zoomBtn.setMaxZoom(setMaxZoom);
+				zoomBtn.setMinZoom(setMinZoom);
+				zoomBtn.setZoom(aktZoom);
+
+				zoomScale.setMaxZoom(setMaxZoom);
+				zoomScale.setMinZoom(setMinZoom);
+
+				if (CompassMode)
 				{
-					float PixelForZoomLevel = getPixelsPerMeter(i);
-					DistanceZoomLevel.put(i, (int) (posiblePixel / PixelForZoomLevel));
+					// Berechne die darstellbare Entfernung für jedes ZoomLevel
+					DistanceZoomLevel = new TreeMap<Integer, Integer>();
+
+					int posiblePixel = (int) this.halfHeight;
+
+					for (int i = setMaxZoom; i > setMinZoom; i--)
+					{
+						float PixelForZoomLevel = getPixelsPerMeter(i);
+						DistanceZoomLevel.put(i, (int) (posiblePixel / PixelForZoomLevel));
+					}
 				}
+
 			}
 
 			// Hill Shading ?

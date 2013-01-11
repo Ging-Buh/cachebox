@@ -5,6 +5,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
@@ -97,7 +98,21 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 			switch (((MenuItem) v).getMenuItemId())
 			{
 			case MenuID.MI_RELOAD_SPOILER:
-				Importer.ImportSpoiler();
+				Importer.ImportSpoiler().setReadyListner(new IReadyListner()
+				{
+					@Override
+					public void isReady()
+					{
+						// erst die Lokalen Images für den Cache neu laden
+						if (GlobalCore.getSelectedCache() != null)
+						{
+							GlobalCore.getSelectedCache().ReloadSpoilerRessources();
+							Execute();
+						}
+
+					}
+				});
+
 				return true;
 			}
 			return false;

@@ -284,7 +284,7 @@ public class EditFilterSettings extends ActivityBase
 
 	static WaitDialog pd;
 
-	public static void ApplyFilter(FilterProperties Props)
+	public static void ApplyFilter(final FilterProperties Props)
 	{
 
 		props = Props;
@@ -311,6 +311,10 @@ public class EditFilterSettings extends ActivityBase
 
 					// Notify Map
 					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+
+					// save Filtersettings
+					Config.settings.Filter.setValue(Props.ToString());
+					Config.AcceptChanges();
 				}
 				catch (Exception e)
 				{

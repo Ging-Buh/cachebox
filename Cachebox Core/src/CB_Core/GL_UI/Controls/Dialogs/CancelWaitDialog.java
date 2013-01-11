@@ -32,7 +32,13 @@ public class CancelWaitDialog extends WaitDialog
 		public void isCanceld();
 	}
 
+	public interface IReadyListner
+	{
+		public void isReady();
+	}
+
 	private IcancelListner cancelListner;
+	private IReadyListner readyListner;
 	private Runnable runnable;
 
 	public CancelWaitDialog(Size size, String name, IcancelListner listner, Runnable runnable)
@@ -144,10 +150,19 @@ public class CancelWaitDialog extends WaitDialog
 						cancelListner.isCanceld();
 					}
 
+					if (readyListner != null)
+					{
+						readyListner.isReady();
+					}
+
 				}
 			};
 			mRunnThread.run();
 		}
+	}
 
+	public void setReadyListner(IReadyListner ReadyListner)
+	{
+		readyListner = ReadyListner;
 	}
 }
