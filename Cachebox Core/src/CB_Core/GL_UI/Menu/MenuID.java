@@ -181,5 +181,5 @@ public class MenuID
 	public static final int MI_COMPASS_SHOW = 152;
 	public static final int MI_RELOAD_SPOILER = 153;
 	public static final int MI_SHOW_ACCURACY_CIRCLE = 154;
-
+	public static final int MI_MAP_SHOW_COMPASS = 155;
 }

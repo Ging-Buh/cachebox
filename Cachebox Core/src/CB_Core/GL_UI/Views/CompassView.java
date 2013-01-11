@@ -670,7 +670,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 			if (lblBearing != null)
 			{
-				String sBearing = GlobalCore.Translations.Get("directionToTarget: ") + String.format("%.0f", bearing) + "°";
+				double directionToTarget = 0;
+				if (bearing < 0) directionToTarget = 360 + bearing;
+				else
+					directionToTarget = bearing;
+
+				String sBearing = GlobalCore.Translations.Get("directionToTarget: ") + String.format("%.0f", directionToTarget) + "°";
 				lblBearing.setText(sBearing);
 			}
 

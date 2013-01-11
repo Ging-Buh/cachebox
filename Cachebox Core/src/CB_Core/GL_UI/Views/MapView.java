@@ -94,14 +94,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	// private GL_ZoomScale zoomScale;
 
 	// Settings values
-	public boolean showRating;
-	public boolean showDT;
-	public boolean showTitles;
-	public boolean hideMyFinds;
+	private boolean showRating;
+	private boolean showDT;
+	private boolean showTitles;
+	private boolean hideMyFinds;
 	private boolean showCompass;
-	public boolean showDirektLine;
-	public boolean showAllWaypoints;
-	public boolean showAccuracyCircle;
+	private boolean showDirektLine;
+	private boolean showAllWaypoints;
+	private boolean showAccuracyCircle;
 
 	// private boolean nightMode;
 	public int aktZoom;
@@ -435,9 +435,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CB_Core.Events.SelectedCacheEventList.Remove(this);
 		CB_Core.Events.PositionChangedEventList.Remove(this);
 		setInvisible();
-
-		saveMapSettings();
-
 	}
 
 	@Override
@@ -1476,6 +1473,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			showDirektLine = CompassMode ? false : Config.settings.ShowDirektLine.getValue();
 			showAllWaypoints = CompassMode ? false : Config.settings.ShowAllWaypoints.getValue();
 			showAccuracyCircle = CompassMode ? false : Config.settings.ShowAccuracyCircle.getValue();
+
+			if (info != null) info.setVisible(showCompass);
 
 			iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
@@ -2594,18 +2593,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			return super.doubleClick(x, y, pointer, button);
 		}
-	}
-
-	private void saveMapSettings()
-	{
-		Config.settings.MapShowRating.setValue(showRating);
-		Config.settings.MapShowDT.setValue(showDT);
-		Config.settings.MapShowTitles.setValue(showTitles);
-		Config.settings.MapHideMyFinds.setValue(hideMyFinds);
-		Config.settings.MapShowCompass.setValue(showCompass);
-		Config.settings.ShowDirektLine.setValue(showDirektLine);
-		Config.settings.ShowAllWaypoints.setValue(showAllWaypoints);
-		Config.settings.ShowAccuracyCircle.setValue(showAccuracyCircle);
 	}
 
 }
