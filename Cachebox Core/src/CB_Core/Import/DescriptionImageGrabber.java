@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -22,6 +23,7 @@ import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.Parameters;
+import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 
 public class DescriptionImageGrabber
@@ -427,9 +429,16 @@ public class DescriptionImageGrabber
 
 		if (!additionalImagesUpdated)
 		{
-			// Get additional images
+			// Get additional images (Spoiler)
 
-			// if (gcAdditionalImageDownload)
+			// Liste aller Spoiler Images für diesen Cache erstellen
+			// anhand dieser Liste kann überprüft werden, ob ein Spoiler schon geladen ist und muss nicht ein 2. mal geladen werden.
+			// Außerdem können anhand dieser Liste veraltete Spoiler identifiziert werden, die gelöscht werden können / müssen
+			String[] files = getFilesInDirectory(Config.settings.SpoilerFolder.getValue(), gcCode.substring(0, 4));
+			ArrayList<String> afiles = new ArrayList<String>();
+			for (String file : files)
+				afiles.add(file);
+
 			{
 				ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode);
 				HashMap<String, URI> allimgDict = GroundspeakAPI.GetAllImageLinks(Config.GetAccessToken(true), gcCode);
@@ -451,7 +460,15 @@ public class DescriptionImageGrabber
 					 */
 
 					String local = BuildAdditionalImageFilename(gcCode, decodedImageName, uri);
-
+					String filename = local.substring(local.lastIndexOf('/') + 1);
+					// überprüfen, ob dieser Spoiler bereits geladen wurde
+					if (afiles.contains(filename))
+					{
+						// wenn ja, dann aus der Liste der aktuell vorhandenen Spoiler entfernen und mit dem nächsten Spoiler weiter machen
+						// dieser Spoiler muss jetzt nicht mehr geladen werden da er schon vorhanden ist.
+						afiles.remove(filename);
+						continue;
+					}
 					// parent.ProgressChanged("Loading " + name + ": " + decodedImageName + " (Image " + (i + 1).ToString() + "/" +
 					// allimgDict.Count.ToString() + ")", i + 1, allimgDict.Count);
 
@@ -487,10 +504,53 @@ public class DescriptionImageGrabber
 					args.put("ImagesUpdated", additionalImagesUpdated);
 					long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
 						{ String.valueOf(id) });
+					// jetzt können noch alle "alten" Spoiler gelöscht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind, aber
+					// nicht als Link über die API gemeldet wurden
+					// Alle Spoiler in der Liste afiles sind "alte"
+					for (String file : afiles)
+					{
+						File f = new File(Config.settings.SpoilerFolder.getValue() + "/" + gcCode.substring(0, 4) + '/' + file);
+						try
+						{
+							f.delete();
+						}
+						catch (Exception ex)
+						{
+							Logger.Error("DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex.getMessage());
+						}
+					}
 				}
 
 			}
 		}
+	}
+
+	private static String[] getFilesInDirectory(String path, final String GcCode)
+	{
+		String imagePath = path + "/" + GcCode.substring(0, 4);
+		boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
+
+		if (imagePathDirExists)
+		{
+			File dir = new File(imagePath);
+			FilenameFilter filter = new FilenameFilter()
+			{
+				@Override
+				public boolean accept(File dir, String filename)
+				{
+
+					filename = filename.toLowerCase();
+					if (filename.indexOf(GcCode.toLowerCase()) == 0)
+					{
+						return true;
+					}
+					return false;
+				}
+			};
+			String[] files = dir.list(filter);
+			return files;
+		}
+		return new String[0];
 	}
 
 	public static String BuildAdditionalImageFilename(String GcCode, String ImageName, URI uri)

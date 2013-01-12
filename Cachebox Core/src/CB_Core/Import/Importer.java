@@ -469,7 +469,7 @@ public class Importer
 				String description = reader.getString(1);
 				String uri = reader.getString(4);
 
-				importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri);
+				importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
 				reader.moveToNext();
 			}
 		}
@@ -487,30 +487,38 @@ public class Importer
 	 */
 	public void importSpoilerForCacheNew(ImporterProgress ip, Cache cache)
 	{
-		importImagesForCacheNew(ip, true, false, cache.Id, cache.GcCode, cache.Name, "", "");
+		importImagesForCacheNew(ip, true, false, cache.Id, cache.GcCode, cache.Name, "", "", true);
 	}
 
+	/*
+	 * Bilderimport. Wenn descriptionImagesUpdated oder additionalImagesUpdated == false dann werden die entsprechenden Images importiert
+	 * Aber nur dann wenn CheckLocalImages dafür false liefert. wenn importAlways == true -> die Bilder werden unabhängig davon, ob schon
+	 * welche existieren importiert
+	 */
 	private void importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id,
-			String gcCode, String name, String description, String uri)
+			String gcCode, String name, String description, String uri, boolean importAlways)
 	{
 		boolean dbUpdate = false;
 
-		if (!descriptionImagesUpdated)
+		if (!importAlways)
 		{
-			descriptionImagesUpdated = CheckLocalImages(Config.settings.DescriptionImageFolder.getValue(), gcCode);
-
-			if (descriptionImagesUpdated)
+			if (!descriptionImagesUpdated)
 			{
-				dbUpdate = true;
+				descriptionImagesUpdated = CheckLocalImages(Config.settings.DescriptionImageFolder.getValue(), gcCode);
+
+				if (descriptionImagesUpdated)
+				{
+					dbUpdate = true;
+				}
 			}
-		}
-		if (!additionalImagesUpdated)
-		{
-			additionalImagesUpdated = CheckLocalImages(Config.settings.SpoilerFolder.getValue(), gcCode);
-
-			if (additionalImagesUpdated)
+			if (!additionalImagesUpdated)
 			{
-				dbUpdate = true;
+				additionalImagesUpdated = CheckLocalImages(Config.settings.SpoilerFolder.getValue(), gcCode);
+
+				if (additionalImagesUpdated)
+				{
+					dbUpdate = true;
+				}
 			}
 		}
 		if (dbUpdate)
@@ -526,6 +534,11 @@ public class Importer
 				description, uri);
 	}
 
+	/**
+	 * Überprüft, ob für den gewählten Cache die Bilder nicht geladen werden müssen
+	 * 
+	 * @return true wenn schon Images existieren und keine .changed oder .1st Datei ansonsten false
+	 */
 	private boolean CheckLocalImages(String path, final String GcCode)
 	{
 		boolean retval = true;
