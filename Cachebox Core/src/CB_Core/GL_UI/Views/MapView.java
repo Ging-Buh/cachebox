@@ -1811,12 +1811,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 			int setZoomTo = zoomBtn.getMinZoom();
 
-			for (int i = zoomBtn.getMaxZoom(); i > zoomBtn.getMinZoom(); i--)
+			if (DistanceZoomLevel != null)
 			{
-				if (distance < DistanceZoomLevel.get(i))
+				for (int i = zoomBtn.getMaxZoom(); i > zoomBtn.getMinZoom(); i--)
 				{
-					setZoomTo = i;
-					break;
+					if (distance < DistanceZoomLevel.get(i))
+					{
+						setZoomTo = i;
+						break;
+					}
 				}
 			}
 
