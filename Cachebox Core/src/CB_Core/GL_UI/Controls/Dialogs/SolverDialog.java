@@ -8,13 +8,11 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.SelectSolverFunction;
 import CB_Core.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
+import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.Label.VAlignment;
-import CB_Core.GL_UI.Controls.Linearlayout;
-import CB_Core.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ScrollBox;
@@ -23,6 +21,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Functions.Function;
@@ -37,9 +36,11 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	}
 
 	private float initialYpos;
+	private float boxYPosStart;
+	private float boxYPosStored;
 
 	private ScrollBox scrollBox2;
-	private Linearlayout mLinearLayout;
+	private Box mBox;
 	private boolean ignoreStateChange = false;
 	private MultiToggleButton btnTxt;
 	private MultiToggleButton btnFx;
@@ -110,7 +111,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		mVariableField = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		mVariableField.setText(sVar);
 		// mVariableField.setMsg("Enter formula");
-		scrollBox.addChild(mVariableField);
+		scrollBox.addLast(mVariableField);
 		y -= TextFieldHeight * 0.8;
 
 		rec = new CB_RectF(0, y, msgBoxContentSize.width, TextFieldHeight);
@@ -118,26 +119,26 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		lbGleich.setFont(Fonts.getNormal());
 		lbGleich.setText("=");
 		setBackground(SpriteCache.activityBackground);
-		scrollBox.addChild(lbGleich);
+		scrollBox.addLast(lbGleich);
 		y -= TextFieldHeight * 0.8;
 
 		// Buttons zur Auswahl des Dialog-Typs
 		float w = msgBoxContentSize.width / 5;
 		float x = 0;
 		btnTxt = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "TXT");
-		scrollBox.addChild(btnTxt);
+		scrollBox.addNext(btnTxt);
 		x += w;
 		btnFx = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "f(x)");
-		scrollBox.addChild(btnFx);
+		scrollBox.addNext(btnFx);
 		x += w;
 		btnVar = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "@");
-		scrollBox.addChild(btnVar);
+		scrollBox.addNext(btnVar);
 		x += w;
 		btnOp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "+-");
-		scrollBox.addChild(btnOp);
+		scrollBox.addNext(btnOp);
 		x += w;
 		btnWp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "$GC");
-		scrollBox.addChild(btnWp);
+		scrollBox.addLast(btnWp);
 
 		// startposition for further controls
 		this.startY = y;
@@ -196,26 +197,16 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 		// Initial LinearLayout
 		// Dieses wird nur mit der Breite Initialisiert, die Höhe ergibt sich aus dem Inhalt
-		mLinearLayout = new Linearlayout(rec.getWidth(), "SelectSolverFunction-LinearLayout");
-
+		mBox = new Box(rec.getWidth(), this.getAvailableHeight(), "SelectSolverFunction-Box");
+		float margin = GL_UISizes.margin;
+		mBox.setMargins(margin, margin);
+		mBox.initRow(true); // true= von oben nach unten
+		boxYPosStart = mBox.getYPos(); // Startposition der Controls merken
 		// damit das LinearLayout auch Events erhällt
-		mLinearLayout.setClickable(true);
-
-		mLinearLayout.setZeroPos();
-
-		// hier setzen wir ein LayoutChanged Listner, um die innere Höhe der ScrollBox bei einer veränderung der Höhe zu setzen!
-		mLinearLayout.setLayoutChangedListner(new LayoutChanged()
-		{
-			@Override
-			public void LayoutIsChanged(Linearlayout linearLayout, float newHeight)
-			{
-				mLinearLayout.setZeroPos();
-				// scrollBox2.setInerHeight(newHeight);
-			}
-		});
+		mBox.setClickable(true);
 
 		// add LinearLayout zu ScrollBox und diese zu der Activity
-		scrollBox.addChild(mLinearLayout);
+		scrollBox.addLast(mBox);
 		// scrollBox.addChild(scrollBox2);
 
 		showPage(pages.Text);
@@ -304,6 +295,10 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			hidePageWaypoint();
 			break;
 		}
+
+		// y-Position der Controls zurücksetzen
+		mBox.initRow(true, boxYPosStart);
+
 		switch (page)
 		{
 		case Text:
@@ -328,18 +323,15 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	private void hidePageWaypoint()
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	private void hidePageOperator()
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	private void hidePageVariable()
 	{
-
 	}
 
 	private void hidePageFunction()
@@ -355,8 +347,8 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		sForm += ")";
 		// Parameter entfernen
 		removeFunctionParam();
-		mLinearLayout.removeChild(tbFunction);
-		mLinearLayout.removeChild(bFunction);
+		mBox.removeChild(tbFunction);
+		mBox.removeChild(bFunction);
 		tbFunction = null;
 		bFunction = null;
 	}
@@ -367,7 +359,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		{
 			for (int i = 0; i < tbFunctionParam.length; i++)
 			{
-				mLinearLayout.removeChild(tbFunctionParam[i]);
+				mBox.removeChild(tbFunctionParam[i]);
 			}
 			tbFunctionParam = null;
 		}
@@ -375,17 +367,18 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		{
 			for (int i = 0; i < lFunctionParam.length; i++)
 			{
-				mLinearLayout.removeChild(lFunctionParam[i]);
+				mBox.removeChild(lFunctionParam[i]);
 			}
 			lFunctionParam = null;
 		}
+		mBox.initRow(true, boxYPosStored); // Position der nächsten Controls zurücksetzen
 	}
 
 	private void hidePageText()
 	{
 		// geänderten Text merken
 		sForm = mFormulaField.getText();
-		mLinearLayout.removeChild(mFormulaField);
+		mBox.removeChild(mFormulaField);
 		mFormulaField = null;
 	}
 
@@ -415,12 +408,17 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		tbFunction.setText(sForm);
 
 		tbFunction.setZeroPos();
-		mLinearLayout.addChild(tbFunction);
+		tbFunction.setWeight(0.8f);
+		mBox.addNext(tbFunction);
 		float btnWidth = TextFieldHeight * 2;
 		bFunction = new Button(scrollBox.getWidth() - scrollBox.getLeftWidth() - scrollBox.getRightWidth() - btnWidth, y, btnWidth,
 				TextFieldHeight, "SolverDialogBtnVariable");
 
 		bFunction.setText("F(x)");
+		bFunction.setWeight(0.2f);
+		mBox.addLast(bFunction);
+		boxYPosStored = mBox.getYPos(); // Y-Pos speichern damit nach dem löschen von Controls die nächsten wieder an der richtigen Stelle
+										// eingefügt werden können
 		// Funktion aufsplitten nach Funktionsname und Parameter (falls möglich!)
 		String formula = sForm.trim();
 		int posKlammerAuf = formula.indexOf("(");
@@ -444,17 +442,19 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 				// Eingabefelder für die Parameter einfügen
 				rec2.setY(rec2.getY() - TextFieldHeight * 3 / 4);
 				lFunctionParam[i] = new Label(rec2.ScaleCenter(0.6f), "LabelFunctionParam");
-				lFunctionParam[i].setVAlignment(VAlignment.BOTTOM);
-				lFunctionParam[i].setText(GlobalCore.Translations.Get("Parameter") + " " + i);
+				// lFunctionParam[i].setVAlignment(VAlignment.BOTTOM);
+				lFunctionParam[i].setText("Parameter" + " " + i);
 				lFunctionParam[i].setZeroPos();
-				mLinearLayout.addChild(lFunctionParam[i]);
+				lFunctionParam[i].setWeight(0.3f);
+				mBox.addNext(lFunctionParam[i]);
 
 				rec2.setY(rec2.getY() - lFunctionParam[i].getHeight() * 3 / 4);
 				tbFunctionParam[i] = new EditWrapedTextField(SolverDialog.this, rec2, EditWrapedTextField.TextFieldType.SingleLine,
 						"SolverDialogTextFieldParam");
 				tbFunctionParam[i].setText(parameters[i].trim());
 				tbFunctionParam[i].setZeroPos();
-				mLinearLayout.addChild(tbFunctionParam[i]);
+				tbFunctionParam[i].setWeight(0.7f);
+				mBox.addLast(tbFunctionParam[i]);
 
 			}
 		}
@@ -482,12 +482,14 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 							lFunctionParam[i] = new Label(rec, "LabelFunctionParam");
 							lFunctionParam[i].setText("Parameter " + i);
 							lFunctionParam[i].setZeroPos();
-							mLinearLayout.addChild(lFunctionParam[i]);
+							lFunctionParam[i].setWeight(0.3f);
+							mBox.addNext(lFunctionParam[i]);
 							rec.setY(rec.getY() - lFunctionParam[i].getHeight() * 3 / 4);
 							tbFunctionParam[i] = new EditWrapedTextField(SolverDialog.this, rec,
 									EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextFieldParam");
 							tbFunctionParam[i].setZeroPos();
-							mLinearLayout.addChild(tbFunctionParam[i]);
+							tbFunctionParam[i].setWeight(0.7f);
+							mBox.addLast(tbFunctionParam[i]);
 						}
 					}
 				});
@@ -495,7 +497,6 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 				return true;
 			}
 		});
-		mLinearLayout.addChild(bFunction);
 		y -= TextFieldHeight;
 	}
 
@@ -510,7 +511,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		mFormulaField = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		mFormulaField.setText(sForm);
 		mFormulaField.setZeroPos();
-		mLinearLayout.addChild(mFormulaField);
+		mBox.addLast(mFormulaField);
 		y -= TextFieldHeight;
 	}
 

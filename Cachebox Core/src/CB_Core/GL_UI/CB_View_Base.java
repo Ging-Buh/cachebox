@@ -467,6 +467,11 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		addMe(c, false);
 	}
 
+	public float getYPos()
+	{
+		return rowYPos;
+	}
+
 	// ===================================================================
 	private void addMe(GL_View_Base c, boolean lastInRow)
 	// ===================================================================
