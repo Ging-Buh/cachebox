@@ -38,53 +38,39 @@ Bubble
   orig: 438, 174
   offset: 0, 0
   index: -1
+RadioButtonBack
+  rotate: false
+  xy: 441, 863
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+RadioButtonSet
+  rotate: false
+  xy: 441, 797
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 dialog-title
   rotate: false
-  xy: 441, 911
+  xy: 441, 779
   size: 53, 16
   orig: 53, 16
   offset: 0, 0
   index: -1
 dialog-header
   rotate: false
-  xy: 441, 892
+  xy: 441, 760
   size: 51, 17
   orig: 51, 17
   offset: 0, 0
   index: -1
 dialog-footer
   rotate: false
-  xy: 441, 876
+  xy: 441, 744
   size: 51, 14
   orig: 51, 14
-  offset: 0, 0
-  index: -1
-dialog-center
-  rotate: false
-  xy: 441, 863
-  size: 51, 11
-  orig: 51, 11
-  offset: 0, 0
-  index: -1
-shaddowrect-selected
-  rotate: false
-  xy: 441, 813
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-shaddowrect
-  rotate: false
-  xy: 441, 763
-  size: 48, 48
-  orig: 48, 48
-  offset: 0, 0
-  index: -1
-large
-  rotate: false
-  xy: 441, 749
-  size: 45, 12
-  orig: 45, 12
   offset: 0, 0
   index: -1
 Bubble-selected
@@ -94,30 +80,51 @@ Bubble-selected
   orig: 438, 173
   offset: 0, 0
   index: -1
+dialog-center
+  rotate: false
+  xy: 441, 731
+  size: 51, 11
+  orig: 51, 11
+  offset: 0, 0
+  index: -1
+shaddowrect-selected
+  rotate: false
+  xy: 441, 681
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+shaddowrect
+  rotate: false
+  xy: 441, 631
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+large
+  rotate: false
+  xy: 441, 617
+  size: 45, 12
+  orig: 45, 12
+  offset: 0, 0
+  index: -1
 micro
   rotate: false
-  xy: 441, 735
+  xy: 441, 603
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
 other
   rotate: false
-  xy: 441, 721
+  xy: 441, 589
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
   index: -1
 regular
   rotate: false
-  xy: 441, 707
-  size: 45, 12
-  orig: 45, 12
-  offset: 0, 0
-  index: -1
-small
-  rotate: false
-  xy: 441, 693
+  xy: 441, 575
   size: 45, 12
   orig: 45, 12
   offset: 0, 0
@@ -127,6 +134,13 @@ BubbleOverlay
   xy: 1, 406
   size: 430, 170
   orig: 430, 170
+  offset: 0, 0
+  index: -1
+small
+  rotate: false
+  xy: 433, 561
+  size: 45, 12
+  orig: 45, 12
   offset: 0, 0
   index: -1
 splash-back

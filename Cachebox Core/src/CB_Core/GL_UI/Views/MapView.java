@@ -624,6 +624,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void renderMapTiles(SpriteBatch batch)
 	{
+		batch.disableBlending();
+
 		float faktor = camera.zoom;
 		float dx = this.ThisWorldRec.getCenterPos().x - MainViewBase.mainView.getCenterPos().x;
 		float dy = this.ThisWorldRec.getCenterPos().y - MainViewBase.mainView.getCenterPos().y;
@@ -766,6 +768,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		}
 		tilesToDraw.clear();
+		batch.enableBlending();
 		synchronized (screenCenterW)
 		{
 			for (TileGL tile : overlayToDraw.values())
@@ -1044,17 +1047,23 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 			}
 		}
-
+		outScreenDraw = 0;
 	}
 
 	private Sprite LineSprite, PointSprite;
 	private float scale;
+
+	int outScreenDraw = 0;
 
 	private void renderWPI(SpriteBatch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
 	{
 		Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
 
 		screen.y -= ySpeedVersatz;
+
+		// Don't render if outside of screen !!
+		if (screen.x < 0 - WpSize.width || screen.x > this.width + WpSize.height) return;
+		if (screen.y < 0 - WpSize.height || screen.y > this.height + WpSize.height) return;
 
 		if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
 		{

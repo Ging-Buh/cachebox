@@ -361,7 +361,6 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 
 		// first Draw Background?
-		batch.flush();
 
 		if (drawableBackground != null)
 		{
@@ -381,7 +380,6 @@ public abstract class GL_View_Base extends CB_RectF
 			}
 		}
 
-		batch.flush();
 		this.render(batch);
 		batch.flush();
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);

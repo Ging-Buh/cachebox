@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class chkBox extends Button
 {
 
-	private Drawable drawableDisabledChk;
-	private boolean isChk = false;
-	private OnCheckedChangeListener changeListner;
+	protected Drawable drawableDisabledChk;
+	protected boolean isChk = false;
+	protected OnCheckedChangeListener changeListner;
 
 	public chkBox(String name)
 	{

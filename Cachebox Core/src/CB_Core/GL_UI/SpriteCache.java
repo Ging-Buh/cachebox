@@ -117,6 +117,9 @@ public class SpriteCache
 	public static Drawable chkOnDisabled;
 	public static Drawable chkOffDisabled;
 
+	public static Drawable radioOn;
+	public static Drawable radioBack;
+
 	public static Drawable selection;
 	public static Drawable selection_set;
 	public static Drawable selection_left;
@@ -723,6 +726,9 @@ public class SpriteCache
 		chkOff = new SpriteDrawable(getThemedSprite("check-off"));
 		chkOnDisabled = new SpriteDrawable(getThemedSprite("check-disable"));
 		chkOffDisabled = new SpriteDrawable(getThemedSprite("check-off"));
+
+		radioOn = new SpriteDrawable(getThemedSprite("RadioButtonSet"));
+		radioBack = new SpriteDrawable(getThemedSprite("RadioButtonBack"));
 
 		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("text-field-back"), patch, patch, patch,
 				patch));
