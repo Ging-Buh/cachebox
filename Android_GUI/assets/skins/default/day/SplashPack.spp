@@ -1,7 +1,7 @@
 
 SplashPack.png
 format: RGBA8888
-filter: Linear,Linear
+filter: MipMapLinearNearest,Nearest
 repeat: none
 cachebox-logo
   rotate: false
