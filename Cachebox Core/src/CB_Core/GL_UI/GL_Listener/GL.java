@@ -559,10 +559,15 @@ public class GL implements ApplicationListener
 				// zu weit verschoben -> Long-Click detection stoppen
 				cancelLongClickTimer();
 				// touchDragged Event an das View, das den onTouchDown bekommen hat
-				first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+				boolean behandelt = first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 						- (int) first.view.ThisWorldRec.getY(), pointer, false);
 				// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
-
+				if (!behandelt)
+				{
+					// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
+					first.view.getParent().touchDragged(x - (int) first.view.getParent().ThisWorldRec.getX(),
+							(int) testingView.getHeight() - y - (int) first.view.getParent().ThisWorldRec.getY(), pointer, false);
+				}
 				if (touchDownPos.size() == 1)
 				{
 					if (first.kineticPan == null) first.kineticPan = new KineticPan();

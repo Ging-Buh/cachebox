@@ -18,11 +18,10 @@ import CB_Core.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.ScrollBox;
-import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
+import CB_Core.GL_UI.Controls.MessageBox.ButtonScrollDialog;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
@@ -30,7 +29,7 @@ import CB_Core.Solver.Functions.Function;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class SolverDialog extends ButtonDialog implements OnStateChangeListener, KeyboardFocusChangedEvent
+public class SolverDialog extends ButtonScrollDialog implements OnStateChangeListener, KeyboardFocusChangedEvent
 {
 	private enum pages
 	{
@@ -39,7 +38,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 
 	private float initialYpos;
 
-	private ScrollBox scrollBox;
+	private ScrollBox scrollBox2;
 	private Linearlayout mLinearLayout;
 	private boolean ignoreStateChange = false;
 	private MultiToggleButton btnTxt;
@@ -111,7 +110,7 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 		mVariableField = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		mVariableField.setText(sVar);
 		// mVariableField.setMsg("Enter formula");
-		addChild(mVariableField);
+		scrollBox.addChild(mVariableField);
 		y -= TextFieldHeight * 0.8;
 
 		rec = new CB_RectF(0, y, msgBoxContentSize.width, TextFieldHeight);
@@ -119,26 +118,26 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 		lbGleich.setFont(Fonts.getNormal());
 		lbGleich.setText("=");
 		setBackground(SpriteCache.activityBackground);
-		addChild(lbGleich);
+		scrollBox.addChild(lbGleich);
 		y -= TextFieldHeight * 0.8;
 
 		// Buttons zur Auswahl des Dialog-Typs
 		float w = msgBoxContentSize.width / 5;
 		float x = 0;
 		btnTxt = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "TXT");
-		addChild(btnTxt);
+		scrollBox.addChild(btnTxt);
 		x += w;
 		btnFx = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "f(x)");
-		addChild(btnFx);
+		scrollBox.addChild(btnFx);
 		x += w;
 		btnVar = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "@");
-		addChild(btnVar);
+		scrollBox.addChild(btnVar);
 		x += w;
 		btnOp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "+-");
-		addChild(btnOp);
+		scrollBox.addChild(btnOp);
 		x += w;
 		btnWp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "$GC");
-		addChild(btnWp);
+		scrollBox.addChild(btnWp);
 
 		// startposition for further controls
 		this.startY = y;
@@ -187,13 +186,13 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
 		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
 		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollabseBox geöffnrt oder geschlossen wird!
-		scrollBox = new ScrollBox(rec, rec.getHalfHeight(), "ScrollBox");
+		scrollBox2 = new ScrollBox(rec, rec.getHalfHeight(), "ScrollBox");
 
 		// damit die Scrollbox auch Events erhällt
-		scrollBox.setClickable(true);
+		// scrollBox2.setClickable(true);
 
 		// die ScrollBox erhält den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
-		scrollBox.setBackground(this.getBackground());
+		// scrollBox2.setBackground(this.getBackground());
 
 		// Initial LinearLayout
 		// Dieses wird nur mit der Breite Initialisiert, die Höhe ergibt sich aus dem Inhalt
@@ -211,13 +210,13 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 			public void LayoutIsChanged(Linearlayout linearLayout, float newHeight)
 			{
 				mLinearLayout.setZeroPos();
-				scrollBox.setInerHeight(newHeight);
+				// scrollBox2.setInerHeight(newHeight);
 			}
 		});
 
 		// add LinearLayout zu ScrollBox und diese zu der Activity
 		scrollBox.addChild(mLinearLayout);
-		this.addChild(scrollBox);
+		// scrollBox.addChild(scrollBox2);
 
 		showPage(pages.Text);
 	}
@@ -411,13 +410,16 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 		// initial VariableField
 		float y = startY;
 		final CB_RectF rec = new CB_RectF(0, y, msgBoxContentSize.width - TextFieldHeight * 2, TextFieldHeight);
+
 		tbFunction = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		tbFunction.setText(sForm);
+
 		tbFunction.setZeroPos();
 		mLinearLayout.addChild(tbFunction);
 		float btnWidth = TextFieldHeight * 2;
 		bFunction = new Button(scrollBox.getWidth() - scrollBox.getLeftWidth() - scrollBox.getRightWidth() - btnWidth, y, btnWidth,
 				TextFieldHeight, "SolverDialogBtnVariable");
+
 		bFunction.setText("F(x)");
 		// Funktion aufsplitten nach Funktionsname und Parameter (falls möglich!)
 		String formula = sForm.trim();
@@ -528,27 +530,15 @@ public class SolverDialog extends ButtonDialog implements OnStateChangeListener,
 	@Override
 	public void KeyboardFocusChanged(EditTextFieldBase focus)
 	{
-		Logger.LogCat("SolverDialog FocusChangedEvent");
-
-		if (focus == null)
-		{
-			this.setY(initialYpos);
-			Logger.LogCat("SolverDialog set InitialPos - noFocus");
-		}
-		else
-		{
-			float WorldY = focus.getWorldRec().getY();
-			if (UiSizes.getWindowHeight() / 2 > WorldY)
-			{
-				this.setY(UiSizes.getWindowHeight() - WorldY);
-				Logger.LogCat("SolverDialog set Pos - " + (UiSizes.getWindowHeight() - WorldY));
-			}
-			else
-			{
-				Logger.LogCat("SolverDialog dont set Pos - " + WorldY);
-			}
-		}
-
-		GL.that.renderOnce("SolverDialog Y-Pos Changed");
+		/*
+		 * Logger.LogCat("SolverDialog FocusChangedEvent");
+		 * 
+		 * if (focus == null) { this.setY(initialYpos); Logger.LogCat("SolverDialog set InitialPos - noFocus"); } else { float WorldY =
+		 * focus.getWorldRec().getY(); if (UiSizes.getWindowHeight() / 2 > WorldY) { this.setY(UiSizes.getWindowHeight() - WorldY);
+		 * Logger.LogCat("SolverDialog set Pos - " + (UiSizes.getWindowHeight() - WorldY)); } else {
+		 * Logger.LogCat("SolverDialog dont set Pos - " + WorldY); } }
+		 * 
+		 * GL.that.renderOnce("SolverDialog Y-Pos Changed");
+		 */
 	}
 }
