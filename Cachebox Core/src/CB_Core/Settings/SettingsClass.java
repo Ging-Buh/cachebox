@@ -45,6 +45,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool ImportGpx;
 	public SettingBool CacheMapData;
 	public SettingBool CacheImageData;
+	public SettingBool CacheSpoilerData;
 	public SettingBool SuppressPowerSaving;
 	public SettingBool PlaySounds;
 	// public SettingBool PopSkipOutdatedGpx;
@@ -405,6 +406,7 @@ public class SettingsClass extends SettingsList
 		addSetting(ImportGpx = new SettingBool("ImportGpx", cat, INVISIBLE, true, true));
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, true));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, true, true));
+		addSetting(CacheSpoilerData = new SettingBool("CacheSpoilerData", cat, INVISIBLE, true, true));
 		addSetting(AutoResort = new SettingBool("AutoResort", cat, INVISIBLE, false, true));
 
 		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, NEVER, true, true));

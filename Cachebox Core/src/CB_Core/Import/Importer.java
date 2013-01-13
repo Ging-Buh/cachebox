@@ -426,7 +426,7 @@ public class Importer
 		CacheInfoList.dispose();
 	}
 
-	public void importImagesNew(ImporterProgress ip)
+	public void importImagesNew(ImporterProgress ip, boolean importImages, boolean importSpoiler)
 	{
 		// Import images in WinCB style
 		String where = GlobalCore.LastFilter.getSqlWhere();
@@ -469,7 +469,18 @@ public class Importer
 				String description = reader.getString(1);
 				String uri = reader.getString(4);
 
+				if (!importImages)
+				{
+					// do not import Description Images
+					descriptionImagesUpdated = true;
+				}
+				if (!importSpoiler)
+				{
+					// do not import Spoiler Images
+					additionalImagesUpdated = true;
+				}
 				importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
+
 				reader.moveToNext();
 			}
 		}
