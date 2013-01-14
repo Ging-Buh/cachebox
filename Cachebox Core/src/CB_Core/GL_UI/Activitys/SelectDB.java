@@ -328,6 +328,7 @@ public class SelectDB extends ActivityBase
 				{
 					CacheListDAO cacheListDAO = new CacheListDAO();
 					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					Database.Data.Query.checkSelectedCacheValid();
 				}
 
 				if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return true;

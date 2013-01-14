@@ -100,4 +100,19 @@ public class CacheList extends MoveableList<Cache>
 		GlobalCore.ResortAtWork = false;
 	}
 
+	public void checkSelectedCacheValid()
+	{
+		// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
+		if ((size() > 0) && (GlobalCore.getSelectedCache() != null) && (GetCacheById(GlobalCore.getSelectedCache().Id) == null))
+		{
+			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
+			GlobalCore.setSelectedCache(get(0));
+		}
+		// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
+		if ((GlobalCore.getSelectedCache() == null) && (size() > 0))
+		{
+			GlobalCore.setSelectedCache(get(0));
+		}
+	}
+
 }

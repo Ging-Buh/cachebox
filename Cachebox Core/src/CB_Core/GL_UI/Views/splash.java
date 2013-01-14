@@ -394,6 +394,7 @@ public class splash extends TabMainView
 		{
 			CacheListDAO cacheListDAO = new CacheListDAO();
 			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+			Database.Data.Query.checkSelectedCacheValid();
 		}
 		CachListChangedEventList.Call();
 

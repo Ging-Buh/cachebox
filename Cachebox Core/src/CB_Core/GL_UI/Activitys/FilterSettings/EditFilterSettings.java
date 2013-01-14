@@ -304,6 +304,7 @@ public class EditFilterSettings extends ActivityBase
 						Database.Data.Query.clear();
 						CacheListDAO cacheListDAO = new CacheListDAO();
 						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+						Database.Data.Query.checkSelectedCacheValid();
 					}
 					CachListChangedEventList.Call();
 					pd.dismis();

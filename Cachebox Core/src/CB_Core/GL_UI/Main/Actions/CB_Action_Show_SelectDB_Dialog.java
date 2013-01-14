@@ -106,6 +106,11 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 							}
 						}
 					}
+					// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
+					if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0))
+					{
+						GlobalCore.setSelectedCache(Database.Data.Query.get(0));
+					}
 				}
 				TabMainView.that.filterSetChanged();
 
