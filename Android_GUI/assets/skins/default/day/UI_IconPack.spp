@@ -1,7 +1,7 @@
 
 UI_IconPack.png
 format: RGBA8888
-filter: MipMapLinearNearest,Nearest
+filter: Linear,Linear
 repeat: none
 button-list-back
   rotate: false
@@ -364,7 +364,7 @@ draw-line
 
 UI_IconPack2.png
 format: RGBA8888
-filter: MipMapLinearNearest,Nearest
+filter: Linear,Linear
 repeat: none
 splash-back
   rotate: false
@@ -572,7 +572,7 @@ log15icon
 
 UI_IconPack3.png
 format: RGBA8888
-filter: MipMapLinearNearest,Nearest
+filter: Linear,Linear
 repeat: none
 Bubble-selected
   rotate: false
@@ -964,7 +964,7 @@ arrow-left
 
 UI_IconPack4.png
 format: RGBA8888
-filter: MipMapLinearNearest,Nearest
+filter: Linear,Linear
 repeat: none
 InfoPanelBack
   rotate: false
@@ -1515,7 +1515,7 @@ small7yes
 
 UI_IconPack5.png
 format: RGBA8888
-filter: MipMapLinearNearest,Nearest
+filter: Linear,Linear
 repeat: none
 stars2icon
   rotate: false

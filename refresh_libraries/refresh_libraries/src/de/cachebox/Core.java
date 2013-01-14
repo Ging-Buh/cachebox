@@ -2,9 +2,14 @@ package de.cachebox;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +23,7 @@ import java.util.zip.ZipFile;
 
 import javax.swing.JFileChooser;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Util.Downloader;
 
@@ -821,8 +827,8 @@ public class Core implements ApplicationListener
 		textureSettings.stripWhitespaceX = false;
 		textureSettings.stripWhitespaceY = false;
 		textureSettings.alphaThreshold = 0;
-		textureSettings.filterMin = TextureFilter.MipMapLinearNearest;
-		textureSettings.filterMag = TextureFilter.Nearest;
+		textureSettings.filterMin = TextureFilter.Linear;
+		textureSettings.filterMag = TextureFilter.Linear;
 		textureSettings.wrapX = TextureWrap.ClampToEdge;
 		textureSettings.wrapY = TextureWrap.ClampToEdge;
 		textureSettings.format = Format.RGBA8888;
@@ -837,6 +843,7 @@ public class Core implements ApplicationListener
 		String inputFolder = imageWorkPath + "\\LibgdxPacker\\default\\input\\day\\UI_IconPack";
 		String outputFolder = imageWorkPath + "\\LibgdxPacker\\default\\Output\\day";
 		String Name = "UI_IconPack.spp";
+		ArrayList<String> outPutFolders = new ArrayList<String>();
 
 		try
 		{
@@ -851,29 +858,104 @@ public class Core implements ApplicationListener
 		// Pack Default night
 		inputFolder = imageWorkPath + "\\LibgdxPacker\\default\\input\\night\\UI_IconPack";
 		outputFolder = imageWorkPath + "\\LibgdxPacker\\default\\Output\\night";
+		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
 		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
 
 		// Pack small day
 		inputFolder = imageWorkPath + "\\LibgdxPacker\\small\\input\\day\\UI_IconPack";
 		outputFolder = imageWorkPath + "\\LibgdxPacker\\small\\Output\\day";
+		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
 		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
 
 		// Pack small night
 		inputFolder = imageWorkPath + "\\LibgdxPacker\\small\\input\\night\\UI_IconPack";
 		outputFolder = imageWorkPath + "\\LibgdxPacker\\small\\Output\\night";
+		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
 		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
 
 		// Pack Default day
 		inputFolder = imageWorkPath + "\\LibgdxPacker\\default\\input\\splash";
 		outputFolder = imageWorkPath + "\\LibgdxPacker\\default\\Output\\day";
+		outPutFolders.add(outputFolder);
 		Name = "SplashPack.spp";
 		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
 
 		writeMsg("Copy Textures");
 		writeMsg("Copy: ");
+
+		// Change TexturFilter at *.spp files with in all output folder
+		String br = GlobalCore.br;
+		for (String folder : outPutFolders)
+		{
+			File dir = new File(folder);
+			File[] files = dir.listFiles(new FileFilter()
+			{
+
+				@Override
+				public boolean accept(File pathname)
+				{
+					if (pathname.getName().endsWith(".spp")) return true;
+					return false;
+				}
+			});
+
+			for (File tmp : files)
+			{
+				// now open and change Line
+				// "filter: Linear,Linear"
+				// to
+				// "filter: MipMapLinearNearest,Nearest"
+
+				BufferedReader in;
+				try
+				{
+					in = new BufferedReader(new FileReader(tmp));
+
+					String line; // a line in the file
+
+					StringBuilder builder = new StringBuilder();
+
+					while ((line = in.readLine()) != null)
+					{
+						if (line.contains("filter:"))
+						{
+							builder.append("filter: MipMapLinearNearest,Nearest" + br);
+						}
+						else
+						{
+							builder.append(line + br);
+						}
+					}
+
+					in.close();
+
+					FileWriter writer;
+
+					String newName = tmp.getAbsolutePath().replace(".spp", "_MipMap.spp");
+					File newPerformanceFile = new File(newName);
+
+					writer = new FileWriter(newPerformanceFile, false);
+					writer.write(builder.toString());
+					writer.close();
+
+				}
+				catch (FileNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+
+		}
 
 		Copy copy = new Copy(getCopyRulesTexture());
 		try

@@ -156,10 +156,12 @@ public class SpriteCache
 			Gdx.gl11.glFinish();
 		}
 
+		String TexturName = Config.settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp" : "UI_IconPack.spp";
+
 		GlobalCore.PathCustom = path + "/day/";
 		GlobalCore.PathCustomNight = path + "/night/";
-		PathCustomAtlas = path + "/day/UI_IconPack.spp";
-		PathCustomNightAtlas = path + "/night/UI_IconPack.spp";
+		PathCustomAtlas = path + "/day/" + TexturName;
+		PathCustomNightAtlas = path + "/night/" + TexturName;
 
 		String defaultPath = path;
 		int pos = defaultPath.lastIndexOf("/");
@@ -179,8 +181,8 @@ public class SpriteCache
 
 		GlobalCore.PathDefault = defaultPath + "/day/";
 		GlobalCore.PathDefaultNight = defaultPath + "/night/";
-		PathDefaultAtlas = defaultPath + "/day/UI_IconPack.spp";
-		PathDefaultNightAtlas = defaultPath + "/night/UI_IconPack.spp";
+		PathDefaultAtlas = defaultPath + "/day/" + TexturName;
+		PathDefaultNightAtlas = defaultPath + "/night/" + TexturName;
 
 		if (atlasDefault != null)
 		{

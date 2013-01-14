@@ -42,6 +42,7 @@ public class SettingsClass extends SettingsList
 
 	// Bool
 
+	public SettingBool useMipMap;
 	public SettingBool ImportGpx;
 	public SettingBool CacheMapData;
 	public SettingBool CacheImageData;
@@ -457,6 +458,7 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Skin;
 		addSetting(MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", cat, NORMAL, "", true, "xml"));
 		addSetting(MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", cat, NORMAL, "", true, "xml"));
+		addSetting(useMipMap = new SettingBool("useMipMap", cat, NORMAL, false, true));
 	}
 
 	private void addDebugSettings()

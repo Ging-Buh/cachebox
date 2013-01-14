@@ -1,7 +1,7 @@
 
 UI_IconPack.png
 format: RGBA8888
-filter: MipMapLinearNearest,Nearest
+filter: Linear,Linear
 repeat: none
 splash-back
   rotate: false
