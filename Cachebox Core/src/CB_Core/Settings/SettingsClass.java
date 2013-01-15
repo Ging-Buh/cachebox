@@ -109,6 +109,8 @@ public class SettingsClass extends SettingsList
 	public SettingBool CompassShowSatInfos;
 	public SettingBool CompassShowSunMoon;
 	public SettingBool CompassShowTargetDirection;
+	public SettingBool CompassShowSDT;
+	public SettingBool CompassShowLastFound;
 	public SettingBool DeleteLogs;
 	public SettingBool CompactDB;
 
@@ -298,6 +300,8 @@ public class SettingsClass extends SettingsList
 		addSetting(CompassShowWpDesc = new SettingBool("CompassShowWpDesc", cat, NORMAL, true, true));
 		addSetting(CompassShowSatInfos = new SettingBool("CompassShowSatInfos", cat, NORMAL, true, true));
 		addSetting(CompassShowSunMoon = new SettingBool("CompassShowSunMoon", cat, NORMAL, false, true));
+		addSetting(CompassShowSDT = new SettingBool("CompassSDT", cat, NORMAL, true, true));
+		addSetting(CompassShowLastFound = new SettingBool("CompassShowLastFound", cat, NORMAL, true, true));
 		addSetting(CompassShowTargetDirection = new SettingBool("CompassShowTargetDirection", cat, NORMAL, false, true));
 	}
 

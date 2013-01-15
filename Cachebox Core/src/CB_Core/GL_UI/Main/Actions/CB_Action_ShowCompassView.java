@@ -116,6 +116,14 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.CompassShowTargetDirection.getValue());
 
+		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_S_D_T, "CompassShowSDT");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.CompassShowSDT.getValue());
+
+		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_LAST_FOUND, "CompassShowLastFound");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.CompassShowLastFound.getValue());
+
 		icm.show();
 
 	}
@@ -170,6 +178,12 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 
 			case MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION:
 				toggleSetting(Config.settings.CompassShowTargetDirection);
+				return true;
+			case MenuID.MI_COMPASS_SHOW_S_D_T:
+				toggleSetting(Config.settings.CompassShowSDT);
+				return true;
+			case MenuID.MI_COMPASS_SHOW_LAST_FOUND:
+				toggleSetting(Config.settings.CompassShowLastFound);
 				return true;
 			}
 			return false;

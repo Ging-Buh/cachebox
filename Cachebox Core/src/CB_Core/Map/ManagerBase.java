@@ -44,7 +44,7 @@ public abstract class ManagerBase
 
 	public boolean isRenderThemeSetted()
 	{
-		if (RenderTheme != null && !RenderTheme.isEmpty()) return true;
+		if (RenderTheme != null && RenderTheme.length() > 0) return true;
 		return false;
 	}
 

@@ -33,6 +33,7 @@ import CB_Core.Types.Waypoint;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent
@@ -79,6 +80,14 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		GpsStateChangeEventList.Remove(this);
 
 		if (chart != null) chart.onHide();
+	}
+
+	@Override
+	protected void render(SpriteBatch batch)
+	{
+		super.render(batch);
+
+		if (this.getBackground() == null) Initial();
 	}
 
 	@Override
@@ -356,7 +365,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		{
 			Current.setText(GlobalCore.FormatLatitudeDM(GlobalCore.Locator.getLocation().getLatitude()) + " "
 					+ GlobalCore.FormatLongitudeDM(GlobalCore.Locator.getLocation().getLongitude()));
-			Gps.setText(GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " " + GlobalCore.Locator.getAltStringWithCorection());
+			Gps.setText(GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " "
+					+ GlobalCore.Locator.getAltStringWithCorection());
 		}
 
 		if (GlobalCore.Locator == null)

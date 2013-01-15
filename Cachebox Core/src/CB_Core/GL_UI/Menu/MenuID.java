@@ -175,11 +175,13 @@ public class MenuID
 	public static final int MI_COMPASS_SHOW_SAT_INFO = 149;
 	public static final int MI_COMPASS_SHOW_SUN_MOON = 150;
 	public static final int MI_COMPASS_SHOW_TARGET_DIRECTION = 151;
+	public static final int MI_COMPASS_SHOW_S_D_T = 152;
+	public static final int MI_COMPASS_SHOW_LAST_FOUND = 153;
 
-	public static final int MI_MAP_HILL_SHADING = 152;
+	public static final int MI_MAP_HILL_SHADING = 154;
 
-	public static final int MI_COMPASS_SHOW = 152;
-	public static final int MI_RELOAD_SPOILER = 153;
-	public static final int MI_SHOW_ACCURACY_CIRCLE = 154;
-	public static final int MI_MAP_SHOW_COMPASS = 155;
+	public static final int MI_COMPASS_SHOW = 155;
+	public static final int MI_RELOAD_SPOILER = 156;
+	public static final int MI_SHOW_ACCURACY_CIRCLE = 157;
+	public static final int MI_MAP_SHOW_COMPASS = 158;
 }
