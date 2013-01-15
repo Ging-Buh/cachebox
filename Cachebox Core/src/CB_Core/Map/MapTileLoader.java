@@ -31,6 +31,7 @@ public class MapTileLoader
 	private Lock queuedTilesLock = new ReentrantLock();
 	private Lock queuedOverlayTilesLock = new ReentrantLock();
 	private Thread queueProcessor = null;
+	private Thread queueProcessorAliveCheck = null;
 
 	int maxNumTiles = 0;
 	boolean overlay = false;
@@ -49,6 +50,38 @@ public class MapTileLoader
 			queueProcessor = new queueProcessor();
 			queueProcessor.setPriority(Thread.MIN_PRIORITY);
 			queueProcessor.start();
+
+			queueProcessorAliveCheck = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					do
+					{
+
+						try
+						{
+							Thread.sleep(1000);
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+
+						if (!queueProcessor.isAlive())
+						{
+							Logger.DEBUG("MapTileLoader Restart queueProcessor");
+							queueProcessor = new queueProcessor();
+							queueProcessor.setPriority(Thread.MIN_PRIORITY);
+							queueProcessor.start();
+						}
+					}
+					while (true);
+				}
+			});
+			queueProcessorAliveCheck.setPriority(Thread.MIN_PRIORITY);
+			queueProcessorAliveCheck.start();
 		}
 	}
 
@@ -321,7 +354,6 @@ public class MapTileLoader
 		{
 			try
 			{
-
 				do
 				{
 					queueProcessorLifeCycle = !queueProcessorLifeCycle;
