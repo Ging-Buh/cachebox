@@ -169,12 +169,12 @@ public class ParkingDialog extends ButtonDialog
 	public void dispose()
 	{
 		msgBoxContentSize = null;
-		btSetGPS.dispose();
-		btSelectWP.dispose();
-		btDeleteP.dispose();
-		lblSetGPS.dispose();
-		lblSelectWP.dispose();
-		lblDeleteP.dispose();
+		if (btSetGPS != null) btSetGPS.dispose();
+		if (btSelectWP != null) btSelectWP.dispose();
+		if (btDeleteP != null) btDeleteP.dispose();
+		if (lblSetGPS != null) lblSetGPS.dispose();
+		if (lblSelectWP != null) lblSelectWP.dispose();
+		if (lblDeleteP != null) lblDeleteP.dispose();
 		super.dispose();
 		btSetGPS = null;
 		btSelectWP = null;

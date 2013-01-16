@@ -303,10 +303,10 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	private void setYpositions()
 	{
-		CB_Logo.setY(this.height - (margin * 2) - CB_Logo.getHeight());
-		descTextView.setY(CB_Logo.getY() - margin - margin - margin - descTextView.getHeight());
-		CachesFoundLabel.setY(descTextView.getY() - CachesFoundLabel.getHeight() + margin);
-		chart.setHeight(CachesFoundLabel.getY() - Gps.getMaxY());
+		if (CB_Logo != null) CB_Logo.setY(this.height - (margin * 2) - CB_Logo.getHeight());
+		if (descTextView != null) descTextView.setY(CB_Logo.getY() - margin - margin - margin - descTextView.getHeight());
+		if (CachesFoundLabel != null) CachesFoundLabel.setY(descTextView.getY() - CachesFoundLabel.getHeight() + margin);
+		if (chart != null) chart.setHeight(CachesFoundLabel.getY() - Gps.getMaxY());
 	}
 
 	public void refreshText()
