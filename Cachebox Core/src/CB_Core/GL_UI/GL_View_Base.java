@@ -53,6 +53,10 @@ public abstract class GL_View_Base extends CB_RectF
 	private OnClickListener mOnClickListener;
 	private OnClickListener mOnLongClickListener;
 	private OnClickListener mOnDoubleClickListener;
+
+	/**
+	 * Don't use this Flag direct, use the method isClickable() </br></br> Maby a child is clickable!!
+	 */
 	private boolean isClickable = false;
 	private boolean isLongClickable = false;
 	private boolean isDoubleClickable = false;
@@ -1016,7 +1020,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		// wenn eine View clickable ist dann muß für die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
 		// innerhalb dem erstmal kein onTouchDragged aufgerufen wird
-		if (isClickable) return UiSizes.getClickToleranz();
+		if (isClickable()) return UiSizes.getClickToleranz();
 		else
 			// Wenn aber eine View nicht clickable ist dann darf der onTouchDragged sofort aufgerufen werden
 			return 1;
