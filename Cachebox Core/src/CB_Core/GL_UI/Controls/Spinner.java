@@ -30,6 +30,14 @@ public class Spinner extends Button
 
 	private selectionChangedListner mListner;
 
+	public Spinner(String Name, SpinnerAdapter adapter, selectionChangedListner listner)
+	{
+		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), Name);
+		mAdapter = adapter;
+		that = this;
+		mListner = listner;
+	}
+
 	public Spinner(float X, float Y, float Width, float Height, String Name, SpinnerAdapter adapter, selectionChangedListner listner)
 	{
 		super(X, Y, Width, Height, Name);
