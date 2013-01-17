@@ -59,14 +59,14 @@ public class Fonts
 
 		String path = Config.settings.SkinFolder.getValue();
 
-		String day_skinPath = path + "\\day\\skin.json";
+		String day_skinPath = path + "/day/skin.json";
 		Skin day_skin = new Skin(Gdx.files.absolute(day_skinPath));
 		day_fontColor = day_skin.getColor("font-color");
 		day_fontColorDisable = day_skin.getColor("font-color-disable");
 		day_fontColorHighLight = day_skin.getColor("font-color-highlight");
 		day_fontColorLink = day_skin.getColor("font-color-link");
 
-		String night_skinPath = path + "\\night\\skin.json";
+		String night_skinPath = path + "/night/skin.json";
 		Skin night_skin = new Skin(Gdx.files.absolute(night_skinPath));
 		night_fontColor = night_skin.getColor("font-color");
 		night_fontColorDisable = night_skin.getColor("font-color-disable");

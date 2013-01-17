@@ -26,11 +26,6 @@ public class devicesSizes implements Serializable
 	public float Density;
 
 	/**
-	 * Die Button Größe welche über res.values.dimen.xml festgelegt wurde. </BR> R.dimen.BtnSize
-	 */
-	public Size ButtonSize;
-
-	/**
 	 * Die Referenz Größe welche über res.values.dimen.xml festgelegt wurde.</BR> R.dimen.RefSize
 	 */
 	public int RefSize;

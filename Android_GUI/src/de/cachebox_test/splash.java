@@ -633,8 +633,6 @@ public class splash extends Activity
 
 			ui.Window = new Size(width, height);
 			ui.Density = res.getDisplayMetrics().density;
-			ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
-					(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
 			ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
 			ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
 			ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);

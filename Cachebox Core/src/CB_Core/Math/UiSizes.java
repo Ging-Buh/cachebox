@@ -28,7 +28,7 @@ import CB_Core.Log.Logger;
  */
 public class UiSizes
 {
-	private static Size QuickButton;
+	// private static Size QuickButton;
 	static Size Button;
 	private static Size QuickButtonList;
 	private static int CacheInfoHeight;
@@ -81,35 +81,28 @@ public class UiSizes
 
 		calcBase = 533.333 * scale;
 
-		// Button = new Size(96,88);
-		// QuickButtonList = new Size(460,90);
+		QuickButtonRef = 320;
+
+		margin = ini.Margin;
+
+		int b = (int) (50 * scale);
+		Button = new Size(b, b);
 
 		if (GlobalCore.isTab)
 		{
-			QuickButtonRef = 350;
-			RefWidth = 340;
+			// RefWidth LeftWidth on Tab
+			// must have place for 5 Buttons
+
+			b *= 1.2f; // But the bottom button are a little bit higher!
+
+			RefWidth = ((b + margin) * 5) + margin;
 		}
 		else
 		{
-			QuickButtonRef = 320;
 			RefWidth = windowWidth;
 		}
 
-		QuickButton = new Size((int) ((QuickButtonRef * scale) / 5), (int) (((QuickButtonRef * scale) / 5) - 5.3333f * scale));
-
-		// Button = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
-		// (int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * scale)));
-
-		Button = ini.ButtonSize.Copy();
-
 		GL_UISizes.writeDebug("Button", Button.asFloat());
-
-		if (Button.width * 7.2 >= RefWidth)
-		{
-			double s = RefWidth / Button.width / 5.3;// 3.5;
-			Button.height = (int) (Button.height * s);
-			Button.width = (int) (Button.width * s);
-		}
 
 		QuickButtonList = new Size((int) (QuickButtonRef * scale - (13.3333f * scale)), (int) (((QuickButtonRef * scale) / 5) - 4 * scale));
 
@@ -121,8 +114,6 @@ public class UiSizes
 		scaledFontSize_btn = (int) ((calcBase / ini.ButtonTextSize) * scale);
 
 		scaledIconSize = (int) ((calcBase / ini.IconSize) * scale);
-
-		margin = ini.Margin;
 
 		CornerSize = scaledRefSize_normal;
 		CacheInfoHeight = (int) (scaledRefSize_normal * 8.5);
@@ -201,16 +192,6 @@ public class UiSizes
 	{
 		float h = Button.height * 0.88f;
 		return new SizeF(h, h);
-	}
-
-	public static int getQuickButtonHeight()
-	{
-		return QuickButton.height;
-	}
-
-	public static int getQuickButtonWidth()
-	{
-		return QuickButton.width;
 	}
 
 	public static int getQuickButtonListHeight()

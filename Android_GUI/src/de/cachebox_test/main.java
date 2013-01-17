@@ -398,8 +398,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			ui.Window = new Size(savedInstanceState.getInt("WindowWidth"), savedInstanceState.getInt("WindowHeight"));
 			ui.Density = res.getDisplayMetrics().density;
-			ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
-					(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
 			ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
 			ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
 			ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);

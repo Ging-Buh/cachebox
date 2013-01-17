@@ -69,6 +69,10 @@ class Gui extends Frame implements ActionListener, WindowListener
 		add(pushButton3);
 		pushButton3.addActionListener(this); // listen for Button press
 
+		Button pushButto4 = new Button("Tab Nexus7");
+		add(pushButto4);
+		pushButto4.addActionListener(this); // listen for Button press
+
 		debugChkBox = new Checkbox("Enable Debug on Main", null, false);
 		scissorChkBox = new Checkbox("Disable scissor on Main", null, false);
 		simulateChkBox = new Checkbox("Simulate GPS from simulation.gpx", null, false);
@@ -102,9 +106,13 @@ class Gui extends Frame implements ActionListener, WindowListener
 		{
 			DesktopMain.start(iniHighPhone(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
 		}
-		if (event.getActionCommand().equals("Desctop Full"))
+		else if (event.getActionCommand().equals("Desctop Full"))
 		{
 			DesktopMain.start(iniDesktop(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+		}
+		else if (event.getActionCommand().equals("Tab Nexus7"))
+		{
+			DesktopMain.start(iniNexus7(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
 		}
 	}
 
@@ -199,13 +207,22 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
+	private static devicesSizes iniNexus7()
+	{
+
+		Size myInitialSize = new Size(1280, 703);
+		devicesSizes ui = getNexus7(myInitialSize);
+
+		return ui;
+
+	}
+
 	private static devicesSizes getLDPI(Size myInitialSize)
 	{
 		devicesSizes ui = new devicesSizes();
 
 		ui.Window = myInitialSize;
 		ui.Density = 0.75f;
-		ui.ButtonSize = new Size(40, 36);
 		ui.RefSize = 33;
 		ui.TextSize_Normal = 27;
 		ui.ButtonTextSize = 20;
@@ -224,7 +241,6 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.0f;
-		ui.ButtonSize = new Size(53, 53);
 		ui.RefSize = 54;
 		ui.TextSize_Normal = 52;
 		ui.ButtonTextSize = 50;
@@ -243,7 +259,6 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 1.5f;
-		ui.ButtonSize = new Size(65, 65);
 		ui.RefSize = 64;
 		ui.TextSize_Normal = 52;
 		ui.ButtonTextSize = 50;
@@ -262,16 +277,33 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		ui.Window = myInitialSize;
 		ui.Density = 2f;
-		ui.ButtonSize = new Size(106, 95);
 		ui.RefSize = 148;
 		ui.TextSize_Normal = 124;
 		ui.ButtonTextSize = 120;
 		ui.IconSize = 24;
-		ui.Margin = 3;
+		ui.Margin = 6;
 		ui.ArrowSizeList = 22;
 		ui.ArrowSizeMap = 36;
 		ui.TB_IconSize = 8;
 		ui.isLandscape = false;
+		return ui;
+	}
+
+	private static devicesSizes getNexus7(Size myInitialSize)
+	{
+		devicesSizes ui = new devicesSizes();
+
+		ui.Window = myInitialSize;
+		ui.Density = 1.3312501f;
+		ui.RefSize = 85;
+		ui.TextSize_Normal = 69;
+		ui.ButtonTextSize = 67;
+		ui.IconSize = 17;
+		ui.Margin = 5;
+		ui.ArrowSizeList = 15;
+		ui.ArrowSizeMap = 24;
+		ui.TB_IconSize = 11;
+		ui.isLandscape = true;
 		return ui;
 	}
 }

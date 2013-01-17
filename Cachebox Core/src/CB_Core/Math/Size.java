@@ -76,4 +76,12 @@ public class Size implements Serializable
 		String s = " " + width + "/" + height;
 		return s;
 	}
+
+	public Size scale(float f)
+	{
+		width *= f;
+		height *= f;
+
+		return this;
+	}
 }
