@@ -32,6 +32,8 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		sollwidth = rec.getWidth();
 		this.mapInstanz = mapInstanz;
 		CachedScaleSprite = null;
+		fontCache = new BitmapFontCache(Fonts.getNormal());
+		fontCache.setColor(Fonts.getFontColor());
 		invalidateTextureEventList.Add(this);
 	}
 
@@ -130,13 +132,25 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	{
 		pixelsPerMeter = mapInstanz.pixelsPerMeter;
 		drawableWidth = (int) (scaleLength * pixelsPerMeter);
-		fontCache = new BitmapFontCache(Fonts.getNormal());
-		fontCache.setColor(Fonts.getFontColor());
-		TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
-		this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
-		CachedScaleSprite = SpriteCache.MapScale[scaleUnits - 3];
-		float margin = (this.height - bounds.height) / 1.6f;
-		fontCache.setPosition(this.width - bounds.width - margin, margin);
+		if (fontCache == null)
+		{
+			fontCache = new BitmapFontCache(Fonts.getNormal());
+			fontCache.setColor(Fonts.getFontColor());
+		}
+
+		try
+		{
+			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont()
+					.getCapHeight());
+			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
+			CachedScaleSprite = SpriteCache.MapScale[scaleUnits - 3];
+			float margin = (this.height - bounds.height) / 1.6f;
+			fontCache.setPosition(this.width - bounds.width - margin, margin);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**

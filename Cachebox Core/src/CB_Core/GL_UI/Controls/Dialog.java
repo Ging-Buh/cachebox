@@ -63,6 +63,8 @@ public abstract class Dialog extends CB_View_Base
 		mHeaderHight = margin = calcHeaderHeight();
 		setFooterHeight(calcFooterHeight(false));
 
+		if (SpriteCache.Dialog.get(2) == null) return; // noch nicht initialisiert!
+
 		if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null
 				|| lastNightMode != Config.settings.nightMode.getValue())
 		{
