@@ -562,7 +562,7 @@ public class GL implements ApplicationListener
 				boolean behandelt = first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 						- (int) first.view.ThisWorldRec.getY(), pointer, false);
 				// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
-				if (!behandelt)
+				if (!behandelt && first.view.getParent() != null)
 				{
 					// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
 					first.view.getParent().touchDragged(x - (int) first.view.getParent().ThisWorldRec.getX(),

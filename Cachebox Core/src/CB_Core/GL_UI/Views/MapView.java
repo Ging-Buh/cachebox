@@ -435,6 +435,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CB_Core.Events.SelectedCacheEventList.Remove(this);
 		CB_Core.Events.PositionChangedEventList.Remove(this);
 		setInvisible();
+		onStop();// save last zoom and position
 	}
 
 	@Override
@@ -482,10 +483,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void onStop()
 	{
-		Config.settings.MapInitLatitude.setValue(center.getLatitude());
-		Config.settings.MapInitLongitude.setValue(center.getLongitude());
-		Config.settings.lastZoomLevel.setValue(aktZoom);
-		Config.settings.WriteToDB();
+		if (!CompassMode) // save last zoom and position only from Map, not from CompassMap
+		{
+			Config.settings.MapInitLatitude.setValue(center.getLatitude());
+			Config.settings.MapInitLongitude.setValue(center.getLongitude());
+			Config.settings.lastZoomLevel.setValue(aktZoom);
+			Config.settings.WriteToDB();
+		}
+
 		super.onStop();
 	}
 
@@ -528,17 +533,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (kineticZoom != null)
 		{
 			camera.zoom = kineticZoom.getAktZoom();
-
-			int zoom = MapTileLoader.MAX_MAP_ZOOM;
-			float tmpZoom = camera.zoom;
-			float faktor = 1.5f;
-			faktor = faktor - iconFactor + 1;
-			while (tmpZoom > faktor)
-			{
-				tmpZoom /= 2;
-				zoom--;
-			}
-			aktZoom = zoom;
+			float tmpZoom = mapTileLoader.convertCameraZommToFloat(camera);
+			aktZoom = (int) tmpZoom;
 
 			if (kineticZoom.getFertig())
 			{
@@ -551,7 +547,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			calcPixelsPerMeter();
 			mapScale.ZoomChanged();
-			zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
+			zoomScale.setZoom(tmpZoom);
 
 		}
 
@@ -1487,7 +1483,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			if (info != null) info.setVisible(showCompass);
 
-			if (!((InitialFlags & INITIAL_SETTINGS) != 0))
+			if (InitialFlags == INITIAL_ALL)
 			{
 				iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
@@ -1650,12 +1646,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (FileIO.FileExists(Path)) return Path;
 		return null;
-	}
-
-	public void saveToSettings()
-	{
-		Config.settings.lastZoomLevel.setValue(aktZoom);
-
 	}
 
 	private void setScreenCenter(Vector2 newCenter)
@@ -2142,12 +2132,16 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				lastDynamicZoom = camera.zoom;
 
+				float tmpZoom = mapTileLoader.convertCameraZommToFloat(camera);
+				aktZoom = (int) tmpZoom;
+
 				calcPixelsPerMeter();
 				mapScale.ZoomChanged();
+				zoomBtn.setZoom(aktZoom);
 
 				if (!CarMode && !CompassMode)
 				{
-					zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
+					zoomScale.setZoom(tmpZoom);
 					zoomScale.resetFadeOut();
 				}
 
