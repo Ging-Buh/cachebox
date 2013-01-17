@@ -898,7 +898,15 @@ public class GPXFileImporter
 				int attrGcComVal = -1;
 
 				attrGcComId = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_id"));
-				attrGcComVal = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_inc"));
+				try
+				{
+					attrGcComVal = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_inc"));
+				}
+				catch (Exception ex)
+				{
+					// if there is no given value "inc" in attribute definition this should be = 1 (gccapp gpx files)
+					attrGcComVal = 1;
+				}
 
 				if (attrGcComId > 0 && attrGcComVal != -1)
 				{
@@ -950,7 +958,15 @@ public class GPXFileImporter
 				String attrValue = values.get("cache_log_" + String.valueOf(i) + "_id");
 				if (attrValue != null)
 				{
-					log.Id = Long.parseLong(attrValue);
+					try
+					{
+						log.Id = Long.parseLong(attrValue);
+					}
+					catch (Exception ex)
+					{
+						// Cache ID konnte nicht als Zahl interpretiert werden -> in eine eindeutige Zahl wandeln
+						log.Id = Cache.GenerateCacheId(attrValue);
+					}
 				}
 
 				if (values.containsKey("cache_log_" + String.valueOf(i) + "_date"))
