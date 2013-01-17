@@ -68,10 +68,13 @@ public class QuickButtonList extends H_ListView
 		{
 			for (GL_View_Base btn : this.childs)
 			{
-				btn.onTouchUp(x, y, pointer, button);
-				if (btn.contains(x, y))
+				if (btn != null)
 				{
-					return btn.click(x, y, pointer, button);
+					btn.onTouchUp(x, y, pointer, button);
+					if (btn.contains(x, y))
+					{
+						return btn.click(x, y, pointer, button);
+					}
 				}
 			}
 		}
@@ -85,7 +88,7 @@ public class QuickButtonList extends H_ListView
 		{
 			for (GL_View_Base btn : this.childs)
 			{
-				btn.onTouchDown(x, y, pointer, button);
+				if (btn != null) btn.onTouchDown(x, y, pointer, button);
 			}
 		}
 		return super.onTouchDown(x, y, pointer, button);
@@ -98,7 +101,7 @@ public class QuickButtonList extends H_ListView
 		{
 			for (GL_View_Base btn : this.childs)
 			{
-				btn.onTouchUp(x, y, pointer, button);
+				if (btn != null) btn.onTouchUp(x, y, pointer, button);
 			}
 		}
 		return super.onTouchUp(x, y, pointer, button);
@@ -115,7 +118,7 @@ public class QuickButtonList extends H_ListView
 			{
 				for (GL_View_Base btn : this.childs)
 				{
-					btn.onTouchDragged(x, y, pointer, KineticPan);
+					if (btn != null) btn.onTouchDragged(x, y, pointer, KineticPan);
 				}
 			}
 			catch (ConcurrentModificationException e)

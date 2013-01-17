@@ -184,4 +184,6 @@ public class MenuID
 	public static final int MI_RELOAD_SPOILER = 156;
 	public static final int MI_SHOW_ACCURACY_CIRCLE = 157;
 	public static final int MI_MAP_SHOW_COMPASS = 158;
+
+	public static int AID_SHOW_FILTER_DIALOG = 159;
 }

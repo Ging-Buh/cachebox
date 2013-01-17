@@ -141,7 +141,7 @@ public enum QuickActions
 		case 10:
 			return action_Search;
 		case 11:
-			return action_Filtersettings;
+			return TabMainView.actionShowFilter;
 		case 12:
 			return action_SwitchAutoResort;
 		case 13:
@@ -224,9 +224,6 @@ public enum QuickActions
 
 		action_Search = new CB_Action_Show_Search();
 
-		action_Filtersettings = new CB_Action_ShowActivity("filtersettings", MenuID.AID_SHOW_FILTER_SETTINGS, ViewConst.FILTER_SETTINGS,
-				SpriteCache.Icons.get(13));
-
 		// action_ScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
 	}
@@ -237,7 +234,6 @@ public enum QuickActions
 	private static CB_Action action_Voicerec;
 	private static CB_Action action_Search;
 
-	private static CB_Action action_Filtersettings;
 	// private static CB_Action action_ScreenLock;
 
 	private static CB_Action action_SwitchAutoResort = new CB_Action_switch_Autoresort();
