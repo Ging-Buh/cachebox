@@ -287,27 +287,8 @@ public class CategorieListViewItem extends ListViewItemBackground
 				chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 
 			}
-
 			chkOff.draw(batch);
 		}
-
-		boolean rClick = false;
-		if (this.isPressed)
-		{
-			rClick = rBounds.contains(this.lastItemTouchPos);
-
-			if (rClick) Clicked = true;
-		}
-		else
-		{
-			if (Clicked && this.categorieEntry.getItemType() != FilterSetListView.COLLABSE_BUTTON_ITEM)
-			{
-				Clicked = false;
-				rClick = rBounds.contains(this.lastItemTouchPos);
-				if (rClick) stateClick();
-			}
-		}
-
 	}
 
 	private void drawThreeStateItem(SpriteBatch batch)
@@ -320,9 +301,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 			if (chkOn == null)
 			{
 				chkOn = SpriteCache.getThemedSprite("check-on");
-
 				chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
-
 			}
 
 			chkOn.draw(batch);
@@ -332,31 +311,10 @@ public class CategorieListViewItem extends ListViewItemBackground
 			if (chkNo == null)
 			{
 				chkNo = SpriteCache.getThemedSprite("delete-icon");
-
 				chkNo.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
-
 			}
-
 			chkNo.draw(batch);
 		}
-
-		boolean rClick = false;
-		if (this.isPressed)
-		{
-			rClick = rBounds.contains(this.lastItemTouchPos);
-
-			if (rClick) Clicked = true;
-		}
-		else
-		{
-			if (Clicked)
-			{
-				Clicked = false;
-				rClick = rBounds.contains(this.lastItemTouchPos);
-				if (rClick) stateClick();
-			}
-		}
-
 	}
 
 	private void drawIcon(SpriteBatch batch)
@@ -391,19 +349,16 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 	public void plusClick()
 	{
-		isPressed = false;
 		this.categorieEntry.plusClick();
 	}
 
 	public void minusClick()
 	{
-		isPressed = false;
 		this.categorieEntry.minusClick();
 	}
 
 	public void stateClick()
 	{
-		isPressed = false;
 		this.categorieEntry.stateClick();
 	}
 

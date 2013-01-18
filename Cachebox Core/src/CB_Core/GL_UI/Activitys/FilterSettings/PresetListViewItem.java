@@ -17,9 +17,7 @@ public class PresetListViewItem extends ListViewItemBackground
 	public PresetListViewItem(CB_RectF rec, int Index, PresetEntry fne)
 	{
 		super(rec, Index, fne.getName());
-
 		this.mPresetEntry = fne;
-
 	}
 
 	BitmapFontCache EntryName;
@@ -29,15 +27,12 @@ public class PresetListViewItem extends ListViewItemBackground
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-
-		boolean PresetEquelsFilter = false;
 		if (EditFilterSettings.tmpFilterProps != null)
 		{
 			if (chkPresetFilter(mPresetEntry.getPresetString(), EditFilterSettings.tmpFilterProps.ToString()))
 			{
 				if (!EditFilterSettings.tmpFilterProps.isExtendsFilter())
 				{
-					PresetEquelsFilter = true;
 					isSelected = true;
 				}
 				else
