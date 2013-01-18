@@ -1592,10 +1592,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					if (themePath != null && Config.settings.nightMode.getValue()) useInvertNightTheme = true;
 				}
 
-				if (themePath == null)
-				{
-					themePath = Config.settings.MapsforgeDayTheme.getValue();
-				}
+				// Ich denke das ist zuviel, wenn jetzt noch kein Theme Pfad gefunden wurde,
+				// Koomt es hier nur zu eine FileNotFound Exception (Longri)
+				// if (themePath == null)
+				// {
+				// themePath = Config.settings.MapsforgeDayTheme.getValue();
+				// }
 
 			}
 
