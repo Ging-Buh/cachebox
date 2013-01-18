@@ -860,12 +860,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// if Dialog or Activity shown, close that first
 				if (GL.that.closeShownDialog()) return true;
 
-				if (SpriteCache.Dialog.get(2) != null)
+				if (SpriteCache.Dialog != null && SpriteCache.Dialog.get(2) != null)
 				{
 					// SHOW Close Dialog only if SpriteCache initialized
 					if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
+					return true;
 				}
-				return true;
+
 			}
 
 		}

@@ -116,20 +116,29 @@ public class AndroidManager extends ManagerBase
 
 			if (RenderThemeChanged || jobParameters == null)
 			{
+
 				try
 				{
 					Logger.DEBUG("Suche RenderTheme: " + RenderTheme);
-					File file = new File(RenderTheme);
-					if (file.exists())
-					{
-						Logger.DEBUG("RenderTheme found!");
-						JobTheme jobTheme = new ExternalRenderTheme(file);
-						jobParameters = new JobParameters(jobTheme, DEFAULT_TEXT_SCALE);
-					}
-					else
+					if (RenderTheme == null)
 					{
 						Logger.DEBUG("RenderTheme not found!");
 						jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
+					}
+					else
+					{
+						File file = new File(RenderTheme);
+						if (file.exists())
+						{
+							Logger.DEBUG("RenderTheme found!");
+							JobTheme jobTheme = new ExternalRenderTheme(file);
+							jobParameters = new JobParameters(jobTheme, DEFAULT_TEXT_SCALE);
+						}
+						else
+						{
+							Logger.DEBUG("RenderTheme not found!");
+							jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
+						}
 					}
 
 				}
