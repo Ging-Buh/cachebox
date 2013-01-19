@@ -24,6 +24,7 @@ import CB_Core.Locator.Locator;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
+import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -76,12 +77,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			chart.setDrawWithAlpha(false);
 		}
 
-		if (chkSettingChanges())
-		{
-			this.removeChilds();
-			createControls();
-			Layout();
-		}
 		PositionChangedEventList.Add(this);
 		if (map != null) map.onShow();
 
@@ -101,81 +96,57 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	protected void Initial()
 	{
 		if (isInitial) return;
-		chkSettingChanges();
+		readSettings();
+		registerSetingsChangedListners();
 		createControls();
 		Layout();
 		isInitial = true;
 	}
 
-	private boolean chkSettingChanges()
+	private void registerSetingsChangedListners()
 	{
-		boolean ret = false;
+		Config.settings.CompassShowMap.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowWP_Name.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowWP_Icon.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowAttributes.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowGcCode.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowCoords.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowWpDesc.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowSatInfos.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowSunMoon.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowTargetDirection.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowSDT.addChangedEventListner(SettingChangedListner);
+		Config.settings.CompassShowLastFound.addChangedEventListner(SettingChangedListner);
+	}
 
-		if (showMap != Config.settings.CompassShowMap.getValue())
+	iChanged SettingChangedListner = new iChanged()
+	{
+		@Override
+		public void isChanged()
 		{
-			showMap = Config.settings.CompassShowMap.getValue();
-			ret = true;
+			readSettings();
+			createControls();
+			Layout();
 		}
-		if (showName != Config.settings.CompassShowWP_Name.getValue())
-		{
-			showName = Config.settings.CompassShowWP_Name.getValue();
-			ret = true;
-		}
-		if (showIcon != Config.settings.CompassShowWP_Icon.getValue())
-		{
-			showIcon = Config.settings.CompassShowWP_Icon.getValue();
-			ret = true;
-		}
-		if (showAtt != Config.settings.CompassShowAttributes.getValue())
-		{
-			showAtt = Config.settings.CompassShowAttributes.getValue();
-			ret = true;
-		}
-		if (showGcCode != Config.settings.CompassShowGcCode.getValue())
-		{
-			showGcCode = Config.settings.CompassShowGcCode.getValue();
-			ret = true;
-		}
-		if (showCoords != Config.settings.CompassShowCoords.getValue())
-		{
-			showCoords = Config.settings.CompassShowCoords.getValue();
-			ret = true;
-		}
-		if (showWpDesc != Config.settings.CompassShowWpDesc.getValue())
-		{
-			showWpDesc = Config.settings.CompassShowWpDesc.getValue();
-			ret = true;
-		}
-		if (showSatInfos != Config.settings.CompassShowSatInfos.getValue())
-		{
-			showSatInfos = Config.settings.CompassShowSatInfos.getValue();
-			ret = true;
-		}
-		if (showSunMoon != Config.settings.CompassShowSunMoon.getValue())
-		{
-			showSunMoon = Config.settings.CompassShowSunMoon.getValue();
-			ret = true;
-		}
-		if (showTargetDirection != Config.settings.CompassShowTargetDirection.getValue())
-		{
-			showTargetDirection = Config.settings.CompassShowTargetDirection.getValue();
-			ret = true;
-		}
-		if (showSDT != Config.settings.CompassShowSDT.getValue())
-		{
-			showSDT = Config.settings.CompassShowSDT.getValue();
-			ret = true;
-		}
-		if (showLastFound != Config.settings.CompassShowLastFound.getValue())
-		{
-			showLastFound = Config.settings.CompassShowLastFound.getValue();
-			ret = true;
-		}
+	};
 
-		showAnyContent = showSatInfos || showWpDesc || showCoords || showGcCode || showAtt || showIcon || showName || showTargetDirection
-				|| showSDT || showLastFound;
+	private void readSettings()
+	{
+		showMap = Config.settings.CompassShowMap.getValue();
+		showName = Config.settings.CompassShowWP_Name.getValue();
+		showIcon = Config.settings.CompassShowWP_Icon.getValue();
+		showAtt = Config.settings.CompassShowAttributes.getValue();
+		showGcCode = Config.settings.CompassShowGcCode.getValue();
+		showCoords = Config.settings.CompassShowCoords.getValue();
+		showWpDesc = Config.settings.CompassShowWpDesc.getValue();
+		showSatInfos = Config.settings.CompassShowSatInfos.getValue();
+		showSunMoon = Config.settings.CompassShowSunMoon.getValue();
+		showTargetDirection = Config.settings.CompassShowTargetDirection.getValue();
+		showSDT = Config.settings.CompassShowSDT.getValue();
+		showLastFound = Config.settings.CompassShowLastFound.getValue();
 
-		return ret;
+		showAnyContent = showMap || showName || showIcon || showAtt || showGcCode || showCoords || showWpDesc || showSatInfos
+				|| showSunMoon || showTargetDirection || showSDT || showLastFound;
 	}
 
 	@Override
@@ -721,16 +692,21 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 			double relativeBearing = bearing - heading;
 
-			arrow.setRotate((float) -relativeBearing);
-			scale.setRotate((float) heading);
-			TextBounds bounds = lblDistance.setText(UnitFormatter.DistanceString(distance));
-
-			float labelWidth = bounds.width + (6 * margin);
-
-			if (showMap)
+			if (arrow != null) arrow.setRotate((float) -relativeBearing);
+			if (scale != null) scale.setRotate((float) heading);
+			if (lblDistance != null)
 			{
-				distanceBack.setWidth(labelWidth);
-				distanceBack.setX(rightBox.getHalfWidth() - distanceBack.getHalfWidth());
+				TextBounds bounds = lblDistance.setText(UnitFormatter.DistanceString(distance));
+				float labelWidth = bounds.width + (6 * margin);
+				if (showMap)
+				{
+					if (distanceBack != null)
+					{
+						distanceBack.setWidth(labelWidth);
+						distanceBack.setX(rightBox.getHalfWidth() - distanceBack.getHalfWidth());
+					}
+				}
+
 			}
 
 			if (lblAccuracy != null)
@@ -743,7 +719,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				lblAlt.setText(GlobalCore.Translations.Get("alt") + locator.getAltString());
 			}
 
-			if (showSunMoon) setMoonSunPos();
+			if (showSunMoon)
+			{
+				if (Moon != null && Sun != null) setMoonSunPos();
+			}
 
 			GL.that.renderOnce("Compass-PositionChanged");
 		}

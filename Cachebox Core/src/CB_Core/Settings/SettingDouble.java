@@ -6,9 +6,9 @@ public class SettingDouble extends SettingBase
 	protected double defaultValue;
 	protected double lastValue;
 
-	public SettingDouble(String name, SettingCategory category, SettingModus modus, double defaultValue, boolean global)
+	public SettingDouble(String name, SettingCategory category, SettingModus modus, double defaultValue, SettingStoreType StoreType)
 	{
-		super(name, category, modus, global);
+		super(name, category, modus, StoreType);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}

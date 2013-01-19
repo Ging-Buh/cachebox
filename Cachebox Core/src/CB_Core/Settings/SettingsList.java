@@ -100,17 +100,22 @@ public class SettingsList extends HashMap<String, SettingBase>
 			{
 				SettingBase setting = it.next();
 				if (!setting.isDirty()) continue; // is not changed -> do not
-													// need to be stored
 
-				if (setting.getGlobal())
+				switch (setting.getStoreType().ordinal())
 				{
+				case 0: // Global
 					dao.WriteToDatabase(Database.Settings, setting);
+					break;
+
+				case 1:
+					if (Data != null) dao.WriteToDatabase(Data, setting);
+					break;
+
+				case 2:
+					dao.WriteToPlatformSettings(setting);
+					break;
 				}
 
-				else
-				{
-					if (Data != null) dao.WriteToDatabase(Data, setting);
-				}
 				// remember that this setting now is stored
 				setting.clearDirty();
 
@@ -133,9 +138,21 @@ public class SettingsList extends HashMap<String, SettingBase>
 		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
 		{
 			SettingBase setting = it.next();
-			if (setting.getGlobal()) dao.ReadFromDatabase(Database.Settings, setting);
-			else
+
+			switch (setting.getStoreType().ordinal())
+			{
+			case 0: // Global
+				dao.ReadFromDatabase(Database.Settings, setting);
+				break;
+
+			case 1:
 				dao.ReadFromDatabase(Database.Data, setting);
+				break;
+
+			case 2:
+				dao.ReadFromPlatformSetting(setting);
+				break;
+			}
 		}
 		isLoaded = true;
 	}

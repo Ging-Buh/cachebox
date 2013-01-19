@@ -51,6 +51,7 @@ import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.Events.platformConector.IsetKeybordFocus;
 import CB_Core.Events.platformConector.IsetScreenLockTime;
+import CB_Core.Events.platformConector.iPlatformSettings;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
@@ -81,6 +82,10 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Settings.SettingBase;
+import CB_Core.Settings.SettingBool;
+import CB_Core.Settings.SettingInt;
+import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -97,6 +102,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -3282,6 +3288,57 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
+		platformConector.setPlatformSettings(new iPlatformSettings()
+		{
+
+			@Override
+			public void Write(SettingBase setting)
+			{
+				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
+				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
+
+				if (setting instanceof SettingBool)
+				{
+					androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString)
+				{
+					androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
+				}
+				else if (setting instanceof SettingInt)
+				{
+					androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				androidSettingEditor.commit();
+			}
+
+			@Override
+			public void Read(SettingBase setting)
+			{
+				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
+
+				if (setting instanceof SettingString)
+				{
+					String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
+					((SettingString) setting).setValue(value);
+				}
+				else if (setting instanceof SettingBool)
+				{
+					boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				}
+				else if (setting instanceof SettingInt)
+				{
+					int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+			}
+		});
+
 	}
 
 	IgetFileReturnListner getFileReturnListner = null;
@@ -3290,6 +3347,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	// #########################################################
 
 	// ########### Reload CacheInfo ##########################
+
+	private SharedPreferences androidSetting;
+	private SharedPreferences.Editor androidSettingEditor;
 
 	private static ProgressDialog waitPD;
 

@@ -59,6 +59,7 @@ import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingLongString;
 import CB_Core.Settings.SettingModus;
+import CB_Core.Settings.SettingStoreType;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
 import CB_Core.TranslationEngine.LangStrings.Langs;
@@ -236,7 +237,7 @@ public class SettingsActivity extends ActivityBase
 		{
 
 			SettingsListButtonLangSpinner lang = new SettingsListButtonLangSpinner("Lang", SettingCategory.Button, SettingModus.Normal,
-					true);
+					SettingStoreType.Global);
 			CB_View_Base langView = getLangSpinnerView(lang);
 
 			addControlToLinearLayout(langView, margin);
@@ -261,7 +262,7 @@ public class SettingsActivity extends ActivityBase
 
 				SettingCategory cat = iteratorCat.next();
 				SettingsListCategoryButton catBtn = new SettingsListCategoryButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
-						true);
+						SettingStoreType.Global);
 
 				final CB_View_Base btn = getView(catBtn, 1);
 
@@ -286,7 +287,7 @@ public class SettingsActivity extends ActivityBase
 				if (cat == SettingCategory.Login)
 				{
 					SettingsListGetApiButton lgIn = new SettingsListGetApiButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
-							true);
+							SettingStoreType.Global);
 					final CB_View_Base btnLgIn = getView(lgIn, 1);
 					lay.addChild(btnLgIn);
 					entrieCount++;
@@ -303,7 +304,7 @@ public class SettingsActivity extends ActivityBase
 				if (cat == SettingCategory.Debug)
 				{
 					SettingsListCategoryButton disp = new SettingsListCategoryButton("DebugDisplayInfo", SettingCategory.Button,
-							SettingModus.Normal, true);
+							SettingModus.Normal, SettingStoreType.Global);
 					final CB_View_Base btnDisp = getView(disp, 1);
 
 					btnDisp.setSize(itemRec);
@@ -315,7 +316,7 @@ public class SettingsActivity extends ActivityBase
 				if (cat == SettingCategory.Skin)
 				{
 					SettingsListButtonSkinSpinner skin = new SettingsListButtonSkinSpinner("Skin", SettingCategory.Button,
-							SettingModus.Normal, true);
+							SettingModus.Normal, SettingStoreType.Global);
 					CB_View_Base skinView = getSkinSpinnerView(skin);
 					lay.addChild(skinView);
 					entrieCount++;

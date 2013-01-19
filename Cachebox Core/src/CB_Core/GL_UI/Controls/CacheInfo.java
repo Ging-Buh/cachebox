@@ -266,6 +266,11 @@ public class CacheInfo extends CB_View_Base
 					mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
 				}
 			}
+			else
+			{
+				mTBSprite = null;
+				mTB_FontCache = null;
+			}
 		}
 
 		Vector2 mSpriteCachePos = new Vector2(0, height - mTop - mIconSize);

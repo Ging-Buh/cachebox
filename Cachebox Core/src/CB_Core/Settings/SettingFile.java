@@ -4,14 +4,15 @@ public class SettingFile extends SettingLongString
 {
 	private String ext = "*";
 
-	public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, boolean global)
+	public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType)
 	{
-		super(name, category, modus, defaultValue, global);
+		super(name, category, modus, defaultValue, StoreType);
 	}
 
-	public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, boolean global, String ext)
+	public SettingFile(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType,
+			String ext)
 	{
-		super(name, category, modus, defaultValue, global);
+		super(name, category, modus, defaultValue, StoreType);
 		this.ext = ext;
 	}
 

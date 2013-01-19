@@ -6,9 +6,9 @@ public class SettingEncryptedString extends SettingLongString
 {
 	// im value intern ist die Einstellung verschlüsselt abgespeichert
 	// so wie sie dann in die DB geschrieben wird.
-	public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue, boolean global)
+	public SettingEncryptedString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType)
 	{
-		super(name, category, modus, defaultValue, global);
+		super(name, category, modus, defaultValue, StoreType);
 	}
 
 	// liefert die Einstellung im Klartext

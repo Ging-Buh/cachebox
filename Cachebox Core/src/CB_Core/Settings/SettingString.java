@@ -6,9 +6,9 @@ public class SettingString extends SettingBase
 	protected String defaultValue;
 	protected String lastValue;
 
-	public SettingString(String name, SettingCategory category, SettingModus modus, String defaultValue, boolean global)
+	public SettingString(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType)
 	{
-		super(name, category, modus, global);
+		super(name, category, modus, StoreType);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}
@@ -25,13 +25,6 @@ public class SettingString extends SettingBase
 
 	public void setValue(String value)
 	{
-
-		if (value == null)
-		{
-			int i = 0;
-			i++;
-		}
-
 		if (this.value.equals(value)) return;
 		this.value = value;
 		setDirty();

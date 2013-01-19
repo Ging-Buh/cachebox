@@ -208,7 +208,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public GL_View_Base addChildDirekt(final GL_View_Base view)
 	{
-		if (childs == null) return null;
+		if (childs == null || view == null) return null;
 		synchronized (childs)
 		{
 			if (!childs.contains(view)) childs.add(view);
@@ -219,7 +219,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public GL_View_Base addChildDirektLast(final GL_View_Base view)
 	{
-		if (childs == null) return null;
+		if (childs == null || view == null) return null;
 		synchronized (childs)
 		{
 			if (!childs.contains(view)) childs.add(0, view);
@@ -239,7 +239,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public void removeChildsDirekt(GL_View_Base view)
 	{
-		if (childs == null) return;
+		if (childs == null || view == null) return;
 		synchronized (childs)
 		{
 			if (childs.contains(view)) childs.remove(view);

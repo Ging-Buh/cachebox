@@ -56,7 +56,6 @@ import de.cachebox_test.DB.AndroidDB;
 
 public class splash extends Activity
 {
-	public static final String PREFS_NAME = "DroidCacheboxPrefsFile";
 
 	public static Activity mainActivity;
 	final Context context = this;
@@ -169,17 +168,6 @@ public class splash extends Activity
 
 		if (mOriantationRestart) return; // wait for result
 
-		// Thread thread = new Thread()
-		// {
-		// @Override
-		// public void run()
-		// {
-		// Initial();
-		// }
-		// };
-		//
-		// thread.start();
-		//
 	}
 
 	@Override
@@ -188,7 +176,7 @@ public class splash extends Activity
 		super.onStart();
 
 		// first, try to find stored preferences of workPath
-		SharedPreferences settings = this.getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		workPath = settings.getString("WorkPath", "");
 		boolean askAgain = settings.getBoolean("AskAgain", true);
 
@@ -408,7 +396,7 @@ public class splash extends Activity
 
 	private void saveWorkPath(boolean askAgain)
 	{
-		SharedPreferences settings = this.getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		// We need an Editor object to make preference changes.
 		// All objects are from android.context.Context
 		SharedPreferences.Editor editor = settings.edit();

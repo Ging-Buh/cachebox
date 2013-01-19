@@ -3,6 +3,7 @@ package CB_Core.Events;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.GpsStatus;
+import CB_Core.Settings.SettingBase;
 
 public class platformConector
 {
@@ -362,6 +363,34 @@ public class platformConector
 	{
 		if (CallUrlListner != null) CallUrlListner.call(url);
 	}
+
 	// ----------------------------------------
+
+	// ------ setPlatformSetting ------
+	public interface iPlatformSettings
+	{
+		public void Read(SettingBase setting);
+
+		public void Write(SettingBase setting);
+	}
+
+	public static iPlatformSettings platformSettingsListner;
+
+	public static void setPlatformSettings(iPlatformSettings listner)
+	{
+		platformSettingsListner = listner;
+	}
+
+	public static void ReadSetting(SettingBase setting)
+	{
+		if (platformSettingsListner != null) platformSettingsListner.Read(setting);
+	}
+
+	public static void WriteSetting(SettingBase setting)
+	{
+		if (platformSettingsListner != null) platformSettingsListner.Write(setting);
+	}
+
+	// -----------------------------------------
 
 }

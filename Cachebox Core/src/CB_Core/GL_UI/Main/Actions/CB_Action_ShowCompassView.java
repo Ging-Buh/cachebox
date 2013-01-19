@@ -194,7 +194,6 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 	{
 		setting.setValue(!setting.getValue());
 		Config.AcceptChanges();
-		if (CompassView.that != null && CompassView.that.isVisible()) CompassView.that.onShow();
 	}
 
 }

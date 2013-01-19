@@ -5,9 +5,10 @@ public class SettingIntArray extends SettingInt
 
 	private Integer values[];
 
-	public SettingIntArray(String name, SettingCategory category, SettingModus modus, int defaultValue, boolean global, Integer arr[])
+	public SettingIntArray(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType,
+			Integer arr[])
 	{
-		super(name, category, modus, defaultValue, global);
+		super(name, category, modus, defaultValue, StoreType);
 		values = arr;
 	}
 
@@ -18,8 +19,6 @@ public class SettingIntArray extends SettingInt
 
 	public int getIndex()
 	{
-		int index = 0;
-
 		for (int i = 0; i < values.length; i++)
 		{
 			if (values[i] == value) return i;
