@@ -12,6 +12,9 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.mapgenerator.JobParameters;
 import org.mapsforge.android.maps.mapgenerator.JobTheme;
@@ -355,7 +358,12 @@ public class AndroidManager extends ManagerBase
 		}
 
 		// Kachel laden
-		HttpClient httpclient = new DefaultHttpClient();
+
+		// set the connection timeout value to 15 seconds (15000 milliseconds)
+		final HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, 15000);
+
+		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		HttpResponse response = null;
 
 		try

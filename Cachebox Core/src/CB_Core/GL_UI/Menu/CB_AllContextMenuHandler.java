@@ -27,7 +27,7 @@ public class CB_AllContextMenuHandler
 		mi = icm.addItem(MenuID.MI_DESCRIPTION, "Description", SpriteCache.Icons.get(20));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "reload_CacheInfo", SpriteCache.Icons.get(35));
+		mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", SpriteCache.Icons.get(35));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
 		mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCache.BigIcons.get(16));
