@@ -823,32 +823,35 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 							ip.setJobMax("importGC", downloadPqList.size());
 
-							do
+							if (iterator != null && iterator.hasNext())
 							{
-								if (importCancel)
+								do
 								{
-									importCanceld();
-									return;
-								}
-
-								PQ pq = iterator.next();
-
-								if (pq.downloadAvible)
-								{
-									ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
-									try
+									if (importCancel)
 									{
-										PocketQuery.DownloadSinglePocketQuery(pq);
+										importCanceld();
+										return;
 									}
-									catch (OutOfMemoryError e)
-									{
-										Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
-										e.printStackTrace();
-									}
-								}
 
+									PQ pq = iterator.next();
+
+									if (pq.downloadAvible)
+									{
+										ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
+										try
+										{
+											PocketQuery.DownloadSinglePocketQuery(pq);
+										}
+										catch (OutOfMemoryError e)
+										{
+											Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
+											e.printStackTrace();
+										}
+									}
+
+								}
+								while (iterator.hasNext());
 							}
-							while (iterator.hasNext());
 
 							if (downloadPqList.size() == 0)
 							{
