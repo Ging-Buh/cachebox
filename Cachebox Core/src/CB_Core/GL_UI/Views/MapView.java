@@ -1618,6 +1618,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 
 			}
+			else
+			{
+				// set Theme to null
+				ManagerBase.Manager.setRenderTheme(null);
+			}
 
 			// Initial_all wird vom Constructor der MapView übergeben. Beim Constructor müssen die Texturen nicht ungültig gemacht werden
 			if (InitialFlags != INITIAL_ALL) invalidateTexture();
