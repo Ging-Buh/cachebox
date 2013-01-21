@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -221,6 +223,34 @@ public class SpriteCache
 	public static Sprite getThemedSprite(String name)
 	{
 		return getThemedSprite(name, 1.0f);
+	}
+
+	public static Skin night_skin;
+	public static Skin day_skin;
+
+	public static Color getThemedColor(String Name)
+	{
+		String path = Config.settings.SkinFolder.getValue();
+
+		if (day_skin == null)
+		{
+			String day_skinPath = path + "/day/skin.json";
+			day_skin = new Skin(Gdx.files.absolute(day_skinPath));
+		}
+		if (night_skin == null)
+		{
+			String night_skinPath = path + "/night/skin.json";
+			night_skin = new Skin(Gdx.files.absolute(night_skinPath));
+		}
+		if (Config.settings.nightMode.getValue())
+		{
+			return night_skin.getColor(Name);
+		}
+		else
+		{
+			return day_skin.getColor(Name);
+		}
+
 	}
 
 	public static Sprite getThemedSprite(String name, float scale)
@@ -714,7 +744,7 @@ public class SpriteCache
 		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("activity-back"), patch, patch, patch, patch));
 		activityBorderMask = new NinePatchDrawable(
 				new NinePatch(SpriteCache.getThemedSprite("activity-border"), patch, patch, patch, patch));
-		ListBack = new NinePatchDrawable(new NinePatch(getThemedSprite("background"), 1, 1, 1, 1));
+		ListBack = new ColorDrawable(getThemedColor("background"));
 		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
 		AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
 		InfoBack = new NinePatchDrawable(new NinePatch(getThemedSprite("InfoPanelBack"), patch, patch, patch, patch));

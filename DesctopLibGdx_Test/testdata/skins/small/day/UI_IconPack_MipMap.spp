@@ -1140,13 +1140,6 @@ track-point
   orig: 6, 6
   offset: 0, 0
   index: -1
-background
-  rotate: false
-  xy: 247, 7
-  size: 5, 5
-  orig: 5, 5
-  offset: 0, 0
-  index: -1
 small1no
   rotate: false
   xy: 279, 335
@@ -1229,6 +1222,13 @@ stars0small
   xy: 324, 3
   size: 24, 5
   orig: 24, 5
+  offset: 0, 0
+  index: -1
+pixel2x2
+  rotate: false
+  xy: 293, 652
+  size: 2, 2
+  orig: 2, 2
   offset: 0, 0
   index: -1
 

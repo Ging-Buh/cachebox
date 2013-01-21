@@ -24,13 +24,6 @@ selection-input-icon
   orig: 5, 8
   offset: 0, 0
   index: -1
-background
-  rotate: false
-  xy: 483, 963
-  size: 10, 10
-  orig: 10, 10
-  offset: 0, 0
-  index: -1
 Bubble
   rotate: false
   xy: 1, 753

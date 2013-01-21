@@ -402,13 +402,6 @@ dialog-center
   orig: 26, 6
   offset: 0, 0
   index: -1
-background
-  rotate: false
-  xy: 158, 719
-  size: 10, 10
-  orig: 10, 10
-  offset: 0, 0
-  index: -1
 selection-input-icon
   rotate: false
   xy: 136, 542

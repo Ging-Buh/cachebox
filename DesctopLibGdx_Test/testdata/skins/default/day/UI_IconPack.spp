@@ -165,6 +165,13 @@ draw-point
   orig: 3, 3
   offset: 0, 0
   index: -1
+pixel2x2
+  rotate: false
+  xy: 507, 83
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
 track-line
   rotate: false
   xy: 503, 242
@@ -310,13 +317,6 @@ Selection
   xy: 363, 2
   size: 16, 13
   orig: 16, 13
-  offset: 0, 0
-  index: -1
-background
-  rotate: false
-  xy: 381, 5
-  size: 10, 10
-  orig: 10, 10
   offset: 0, 0
   index: -1
 import

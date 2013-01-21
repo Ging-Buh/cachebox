@@ -49,7 +49,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -174,17 +173,6 @@ public class GL implements ApplicationListener
 		GL_UISizes.initial(width, height);
 
 		Initialize();
-
-		Pixmap p = new Pixmap(4, 4, Pixmap.Format.RGBA8888);
-		Pixmap.setBlending(Blending.None);
-		p.setColor(1.0f, 1.0f, 0.0f, 1.0f);
-		p.drawRectangle(0, 0, 4, 4);
-		p.setColor(0f, 0.0f, 0.0f, 1.0f);
-		p.drawRectangle(1, 1, 2, 2);
-		FpsInfoTexture = new Texture(p);
-		FpsInfoSprite = new Sprite(FpsInfoTexture, 4, 4);
-		p.dispose();
-		FpsInfoSprite.setSize(4, 4);
 
 		GlobalCore.receiver = new GlobalLocationReceiver();
 		debugWriteSpriteCount = Config.settings.DebugSpriteBatchCountBuffer.getValue();
@@ -345,7 +333,20 @@ public class GL implements ApplicationListener
 
 			float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
 
-			batch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
+			if (FpsInfoSprite != null)
+			{
+				batch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
+			}
+			else
+			{
+				if (SpriteCache.day_skin != null)// SpriteCache is initial
+				{
+					FpsInfoSprite = new Sprite(SpriteCache.getThemedSprite("pixel2x2"));
+					FpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
+					FpsInfoSprite.setSize(4, 4);
+				}
+			}
+
 			FpsInfoPos++;
 			if (FpsInfoPos > 60)
 			{
