@@ -14,9 +14,11 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1371;
+	public static final int CurrentRevision = 1372;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
+
+	public static final boolean disableHillShadingForRelease = true;
 
 	public static final String br = System.getProperty("line.separator");
 	public static final String AboutMsg = "Team Cachebox (2011-2013)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"

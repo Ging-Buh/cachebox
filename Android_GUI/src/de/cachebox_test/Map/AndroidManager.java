@@ -361,7 +361,7 @@ public class AndroidManager extends ManagerBase
 
 		// set the connection timeout value to 15 seconds (15000 milliseconds)
 		final HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, 15000);
+		HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
 
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		HttpResponse response = null;

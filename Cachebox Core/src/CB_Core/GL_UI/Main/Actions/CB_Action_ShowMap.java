@@ -71,9 +71,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		mi = icm.addItem(MenuID.MI_LAYER, "Layer");
 
-		mi = icm.addItem(MenuID.MI_MAP_HILL_SHADING, "HillShade");
-		mi.setCheckable(true);
-		mi.setChecked(MapView.that.GetHillShade());
+		if (!GlobalCore.disableHillShadingForRelease)
+		{
+			mi = icm.addItem(MenuID.MI_MAP_HILL_SHADING, "HillShade");
+			mi.setCheckable(true);
+			mi.setChecked(MapView.that.GetHillShade());
+		}
 
 		mi = icm.addItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass");
 		mi.setCheckable(true);

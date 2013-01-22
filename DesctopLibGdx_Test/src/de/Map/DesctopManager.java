@@ -19,8 +19,12 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Map.BoundingBox;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
@@ -37,7 +41,8 @@ public class DesctopManager extends ManagerBase
 		// Layers.add(new Layer("MapsForge", "MapsForge", ""));
 		Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
 		Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/"));
-		Layers.add(new Layer("HillShade", "HillShade", "http://129.206.74.245:8004/tms_hs.ashx"));
+		if (!GlobalCore.disableHillShadingForRelease) Layers.add(new Layer("HillShade", "HillShade",
+				"http://129.206.74.245:8004/tms_hs.ashx"));
 		// Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
 	}
 
@@ -121,8 +126,11 @@ public class DesctopManager extends ManagerBase
 		}
 
 		// Kachel laden
-		HttpClient httpclient = new DefaultHttpClient();
+		// set the connection timeout value to 15 seconds (15000 milliseconds)
+		final HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
 
+		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		HttpResponse response = null;
 
 		try
