@@ -61,6 +61,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MapView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent
 {
+	public static final boolean debug = false;
+
 	public static MapView that = null; // für Zugriff aus Listeners heraus auf this
 	private final int ZoomTime = 1000;
 
@@ -427,6 +429,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 		setVisible();
 		SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+
+		zoomScale.resetFadeOut();
+		inputState = InputState.Idle;
+
+		lastDynamicZoom = zoomBtn.getZoom();
+
+		kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(),
+				System.currentTimeMillis() + 200);
+		GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
+		GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
+		calcPixelsPerMeter();
+
 	}
 
 	@Override
@@ -533,8 +547,19 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (kineticZoom != null)
 		{
 			camera.zoom = kineticZoom.getAktZoom();
-			float tmpZoom = mapTileLoader.convertCameraZommToFloat(camera);
-			aktZoom = (int) tmpZoom;
+			// float tmpZoom = mapTileLoader.convertCameraZommToFloat(camera);
+			// aktZoom = (int) tmpZoom;
+
+			int zoom = MapTileLoader.MAX_MAP_ZOOM;
+			float tmpZoom = camera.zoom;
+			float faktor = 1.5f;
+			faktor = faktor - iconFactor + 1;
+			while (tmpZoom > faktor)
+			{
+				tmpZoom /= 2;
+				zoom--;
+			}
+			aktZoom = zoom;
 
 			if (kineticZoom.getFertig())
 			{
@@ -547,7 +572,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			calcPixelsPerMeter();
 			mapScale.ZoomChanged();
-			zoomScale.setZoom(tmpZoom);
+			zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
 
 		}
 
@@ -760,6 +785,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					float xSize = tile.texture.getWidth() * posFactor;
 					float ySize = tile.texture.getHeight() * posFactor;
 					batch.draw(tile.texture, (float) xPos, (float) yPos, xSize, ySize);
+
 				}
 			}
 		}
@@ -1452,12 +1478,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				}
 			}
-
-			// Größe des Maßstabes berechnen etc...
-			// zoomChanged();
 		}
 
 		setNewSettings(INITIAL_ALL);
+
 	}
 
 	public static int INITIAL_NEW_SETTINGS = 3;
@@ -2139,8 +2163,16 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				lastDynamicZoom = camera.zoom;
 
-				float tmpZoom = mapTileLoader.convertCameraZommToFloat(camera);
-				aktZoom = (int) tmpZoom;
+				int zoom = MapTileLoader.MAX_MAP_ZOOM;
+				float tmpZoom = camera.zoom;
+				float faktor = 1.5f;
+				faktor = faktor - iconFactor + 1;
+				while (tmpZoom > faktor)
+				{
+					tmpZoom /= 2;
+					zoom--;
+				}
+				aktZoom = zoom;
 
 				calcPixelsPerMeter();
 				mapScale.ZoomChanged();
@@ -2148,7 +2180,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				if (!CarMode && !CompassMode)
 				{
-					zoomScale.setZoom(tmpZoom);
+					zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
 					zoomScale.resetFadeOut();
 				}
 
