@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1375;
+	public static final int CurrentRevision = 1376;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -36,7 +36,7 @@ public class GlobalCore
 	public static Coordinate LastPosition = new Coordinate();
 	// public static Coordinate Marker = new Coordinate();
 	public static boolean ResortAtWork = false;
-	public static final int LatestDatabaseChange = 1022;
+	public static final int LatestDatabaseChange = 1023;
 	public static final int LatestDatabaseFieldNoteChange = 1003;
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;

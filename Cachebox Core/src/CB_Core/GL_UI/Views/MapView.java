@@ -428,17 +428,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingHeight = mapIntHeight;
 		}
 		setVisible();
-		SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
-		zoomScale.resetFadeOut();
-		inputState = InputState.Idle;
+		int zoom = MapTileLoader.MAX_MAP_ZOOM;
+		float tmpZoom = camera.zoom;
+		float faktor = 1.5f;
+		faktor = faktor - iconFactor + 1;
+		while (tmpZoom > faktor)
+		{
+			tmpZoom /= 2;
+			zoom--;
+		}
+		aktZoom = zoom;
 
-		lastDynamicZoom = zoomBtn.getZoom();
-
-		kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(),
-				System.currentTimeMillis() + 200);
-		GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-		GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 		calcPixelsPerMeter();
 
 	}
