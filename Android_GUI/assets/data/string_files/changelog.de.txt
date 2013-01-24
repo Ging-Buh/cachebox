@@ -1,6 +1,15 @@
 
 Versions Änderungen:
 
+Version : 0.5.1390
+	• Fix Nexus 7 Start Probleme
+	• AboutView auf OpenGL-Version geändert
+	• Import Optimiert PQ, Spoiler, Unterstützung für GCAPP
+	• Mehr Informationen im Kompass 
+	• Viele arbeiten zur Leistungsoptimierung
+	• Viele arbeiten für Stabilität!
+	• Viele Bugfixes
+	
 Version : 0.5.1298
 	• Fix UI Handling bei schnellen Eingaben
 	• Fix Problem mit leerer PQ Liste
