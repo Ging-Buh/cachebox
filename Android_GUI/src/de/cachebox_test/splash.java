@@ -11,6 +11,7 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
@@ -42,6 +43,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -79,9 +82,11 @@ public class splash extends Activity
 
 		setContentView(R.layout.splash);
 
-		GlobalCore.displayDensity = this.getResources().getDisplayMetrics().density;
-		int h = this.getResources().getDisplayMetrics().heightPixels;
-		int w = this.getResources().getDisplayMetrics().widthPixels;
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+
+		GlobalCore.displayDensity = displaymetrics.density;
+		int h = displaymetrics.heightPixels;
+		int w = displaymetrics.widthPixels;
 
 		int sw = h > w ? w : h;
 		sw /= GlobalCore.displayDensity;
@@ -89,8 +94,17 @@ public class splash extends Activity
 		// check if tablet
 		GlobalCore.isTab = sw > 400 ? true : false;
 
+		int dpH = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, h, displaymetrics);
+		int dpW = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, w, displaymetrics);
+
+		if (dpH * dpW >= 960 * 720) GlobalCore.displayType = DisplayType.xLarge;
+		else if (dpH * dpW >= 640 * 480) GlobalCore.displayType = DisplayType.Large;
+		else if (dpH * dpW >= 470 * 320) GlobalCore.displayType = DisplayType.Normal;
+		else
+			GlobalCore.displayType = DisplayType.Small;
+
 		// chek if use small skin
-		GlobalCore.useSmallSkin = sw < 200 ? true : false;
+		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
 
 		// get parameters
 		final Bundle extras = getIntent().getExtras();
