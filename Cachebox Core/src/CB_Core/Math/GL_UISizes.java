@@ -39,7 +39,7 @@ public class GL_UISizes implements SizeChangedEvent
 		Logger.DEBUG("Initial UISizes => " + width + "/" + height);
 		Logger.DEBUG("DPI = " + DPI);
 
-		defaultDPI = (float) Config.settings.MapViewFontFaktor.getDefaultValue();
+		defaultDPI = (float) Config.settings.MapViewDPIFaktor.getDefaultValue();
 
 		if (DPI != (float) Config.settings.MapViewDPIFaktor.getValue()
 				|| FontFaktor != (float) Config.settings.MapViewFontFaktor.getValue())

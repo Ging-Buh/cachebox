@@ -106,6 +106,8 @@ public class GL implements ApplicationListener
 	private Timer longClickTimer;
 	private Texture FpsInfoTexture;
 	private Sprite FpsInfoSprite, mDarknesSprite;
+	private Pixmap mDarknesPixmap;
+	private Texture mDarknesTexture;
 	protected EditWrapedTextField keyboardFocus;
 
 	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
@@ -405,6 +407,8 @@ public class GL implements ApplicationListener
 	@Override
 	public void dispose()
 	{
+		disposeTexture();
+
 		SpriteCache.destroyCache();
 		try
 		{
@@ -755,22 +759,38 @@ public class GL implements ApplicationListener
 		addRenderView(child, FRAME_RATE_FAST_ACTION);
 	}
 
+	private void disposeTexture()
+	{
+		if (mDarknesPixmap != null) mDarknesPixmap.dispose();
+		if (mDarknesTexture != null) mDarknesTexture.dispose();
+		mDarknesPixmap = null;
+		mDarknesTexture = null;
+		mDarknesSprite = null;
+	}
+
 	private void drawDarknessSprite()
 	{
 		if (mDarknesSprite == null)
 		{
-			int w = CB_View_Base.getNextHighestPO2((int) width);
-			int h = CB_View_Base.getNextHighestPO2((int) height);
-			Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			if (Config.settings.nightMode.getValue()) p.setColor(0.07f, 0f, 0f, 0.96f);
+
+			disposeTexture();
+
+			// int w = CB_View_Base.getNextHighestPO2((int) width);
+			// int h = CB_View_Base.getNextHighestPO2((int) height);
+
+			int w = 2;
+			int h = 2;
+
+			mDarknesPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+			if (Config.settings.nightMode.getValue()) mDarknesPixmap.setColor(0.07f, 0f, 0f, 0.96f);
 			else
-				p.setColor(0f, 0.1f, 0f, 0.9f);
+				mDarknesPixmap.setColor(0f, 0.1f, 0f, 0.9f);
 
-			p.fillRectangle(0, 0, width, height);
+			mDarknesPixmap.fillRectangle(0, 0, width, height);
 
-			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+			mDarknesTexture = new Texture(mDarknesPixmap, Pixmap.Format.RGBA8888, false);
 
-			mDarknesSprite = new Sprite(tex, (int) width, (int) height);
+			mDarknesSprite = new Sprite(mDarknesTexture, (int) width, (int) height);
 		}
 
 		if (mDarknesSprite != null) mDarknesSprite.draw(batch, darknesAlpha);

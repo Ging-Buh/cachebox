@@ -67,11 +67,13 @@ public class GradiantFill
 
 	private float Direction;
 
-	private TextureRegion tex;
+	private TextureRegion mTextureRegion;
+	private Pixmap mPixmap;
+	private Texture mTexture;
 
 	public TextureRegion getTexture()
 	{
-		return tex;
+		return mTextureRegion;
 	}
 
 	public GradiantStopList stops = new GradiantStopList();
@@ -114,6 +116,8 @@ public class GradiantFill
 
 		if (stops.size() <= 1) return;
 
+		disposeTexture();
+
 		ArrayList<Color> colorArray = new ArrayList<Color>();
 
 		// calc line steps
@@ -126,25 +130,23 @@ public class GradiantFill
 
 		int w = getNextHighestPO2((int) colorArray.size());
 		int h = 2;
-		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+		mPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 
 		int index = 0;
 
 		for (Color color : colorArray)
 		{
 
-			p.setColor(color);
-			p.drawLine(index, 0, index, 2);
+			mPixmap.setColor(color);
+			mPixmap.drawLine(index, 0, index, 2);
 
 			index++;
 
 		}
 
-		Texture texture = new Texture(p);
+		mTexture = new Texture(mPixmap);
 
-		tex = new TextureRegion(texture, colorArray.size(), 2);
-
-		p.dispose();
+		mTextureRegion = new TextureRegion(mTexture, colorArray.size(), 2);
 
 	}
 
@@ -201,4 +203,20 @@ public class GradiantFill
 	{
 		return Direction;
 	}
+
+	public void dispose()
+	{
+		disposeTexture();
+
+	}
+
+	private void disposeTexture()
+	{
+		if (mPixmap != null) mPixmap.dispose();
+		if (mTexture != null) mTexture.dispose();
+		mPixmap = null;
+		mTexture = null;
+		mTextureRegion = null;
+	}
+
 }

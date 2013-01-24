@@ -82,7 +82,7 @@ public class splash extends Activity
 
 		setContentView(R.layout.splash);
 
-		DisplayMetrics displaymetrics = new DisplayMetrics();
+		DisplayMetrics displaymetrics = this.getResources().getDisplayMetrics();
 
 		GlobalCore.displayDensity = displaymetrics.density;
 		int h = displaymetrics.heightPixels;

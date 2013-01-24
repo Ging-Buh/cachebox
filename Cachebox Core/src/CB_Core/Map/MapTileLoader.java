@@ -535,8 +535,7 @@ public class MapTileLoader
 		{
 			bytes = ManagerBase.Manager.LoadInvertedPixmap(CurrentLayer, desc);
 		}
-		// byte[] bytes = MapManagerEventPtr.OnGetMapTile(CurrentLayer, desc);
-		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));
+
 		if (bytes != null && bytes.length > 0)
 		{
 			tileState = TileGL.TileState.Present;

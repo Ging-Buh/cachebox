@@ -54,6 +54,10 @@ public abstract class GL_View_Base extends CB_RectF
 	private OnClickListener mOnLongClickListener;
 	private OnClickListener mOnDoubleClickListener;
 
+	private Pixmap debugRegPixmap = null;
+	private Texture debugRegTexture = null;
+	private Sprite DebugSprite = null;
+
 	/**
 	 * Don't use this Flag direct, use the method isClickable() </br></br> Maby a child is clickable!!
 	 */
@@ -74,7 +78,6 @@ public abstract class GL_View_Base extends CB_RectF
 	protected GL_View_Base parent;
 	protected static int nDepthCounter = 0;
 
-	private Sprite debugRec = null;
 	private boolean enabled = true;
 
 	private float Weight = 1;
@@ -439,10 +442,10 @@ public abstract class GL_View_Base extends CB_RectF
 		if (debug)
 		{
 
-			if (debugRec != null)
+			if (DebugSprite != null)
 			{
 				batch.flush();
-				debugRec.draw(batch);
+				DebugSprite.draw(batch);
 
 			}
 
@@ -460,17 +463,17 @@ public abstract class GL_View_Base extends CB_RectF
 
 	private void writeDebug()
 	{
-		if (debugRec == null)
+		if (DebugSprite == null)
 		{
 			int w = getNextHighestPO2((int) width);
 			int h = getNextHighestPO2((int) height);
-			Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			p.setColor(1f, 0f, 0f, 1f);
-			p.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
+			debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+			debugRegPixmap.setColor(1f, 0f, 0f, 1f);
+			debugRegPixmap.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
 
-			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+			debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
 
-			debugRec = new Sprite(tex, (int) width, (int) height);
+			DebugSprite = new Sprite(debugRegTexture, (int) width, (int) height);
 
 			// Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + nDepthCounter + " ]----------");
 			// Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
@@ -536,7 +539,7 @@ public abstract class GL_View_Base extends CB_RectF
 	public void resize(float width, float height)
 	{
 		onRezised(this);
-		debugRec = null;
+		DebugSprite = null;
 
 		// Eine Größenänderung an die Childs Melden
 		if (childs != null && childs.size() > 0)
@@ -854,7 +857,30 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
-	public abstract void dispose();
+	public void dispose()
+	{
+		DebugSprite = null;
+
+		try
+		{
+			if (debugRegTexture != null) debugRegTexture.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		try
+		{
+			if (debugRegPixmap != null) debugRegPixmap.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		debugRegPixmap = null;
+		debugRegTexture = null;
+	}
 
 	/**
 	 * Interface definition for a callback to be invoked when a view is clicked.
