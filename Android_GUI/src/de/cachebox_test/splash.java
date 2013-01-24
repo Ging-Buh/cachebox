@@ -52,6 +52,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.cachebox_test.Components.copyAssetFolder;
@@ -71,6 +73,7 @@ public class splash extends Activity
 	String GpxPath = null;
 
 	String workPath;
+	boolean posibleTabletLayout;
 
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
@@ -107,7 +110,7 @@ public class splash extends Activity
 		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
 
 		// chk if tabletLayout posible
-		boolean posibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
+		posibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
 
 		// get parameters
 		final Bundle extras = getIntent().getExtras();
@@ -196,6 +199,7 @@ public class splash extends Activity
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		workPath = settings.getString("WorkPath", "");
 		boolean askAgain = settings.getBoolean("AskAgain", true);
+		boolean useTabletLayout = settings.getBoolean("UseTabletLayout", false);
 
 		if ((workPath.length() == 0) || (askAgain))
 		{
@@ -272,10 +276,12 @@ public class splash extends Activity
 				externalSd = prev + "/sdcard/CacheBox";
 			}
 			final String externalSd2 = externalSd;
+			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
 
-			if ((externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath)))
+			if (hasExtSd || (posibleTabletLayout))
 			{
 				// externe SD wurde gefunden != internal
+				// oder Tablet Layout möglich
 				// -> Auswahldialog anzeigen
 				try
 				{
@@ -283,6 +289,30 @@ public class splash extends Activity
 					dialog.setContentView(R.layout.sdselectdialog);
 					TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
 					title.setText(title.getText() + "\n ");
+					TextView tbLayout = (TextView) dialog.findViewById(R.id.select_sd_layout);
+					tbLayout.setText("\nLayout");
+
+					final RadioGroup rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup);
+					final RadioButton rbHandyLayout = (RadioButton) dialog.findViewById(R.id.select_sd_handylayout);
+					final RadioButton rbTabletLayout = (RadioButton) dialog.findViewById(R.id.select_sd_tabletlayout);
+					rbHandyLayout.setText("Handy-Layout");
+					rbTabletLayout.setText("Tablet-Layout");
+					if (!posibleTabletLayout)
+					{
+						rgLayout.setVisibility(RadioGroup.INVISIBLE);
+						rbHandyLayout.setChecked(true);
+					}
+					else
+					{
+						if (useTabletLayout)
+						{
+							rbTabletLayout.setChecked(true);
+						}
+						else
+						{
+							rbHandyLayout.setChecked(true);
+						}
+					}
 					final CheckBox cbAskAgain = (CheckBox) dialog.findViewById(R.id.select_sd_askagain);
 					cbAskAgain.setChecked(askAgain);
 					Button buttonI = (Button) dialog.findViewById(R.id.button1);
@@ -305,7 +335,8 @@ public class splash extends Activity
 								public void run()
 								{
 									boolean askAgain = cbAskAgain.isChecked();
-									saveWorkPath(askAgain);
+									boolean useTabletLayout = rbTabletLayout.isChecked();
+									saveWorkPath(askAgain, useTabletLayout);
 									dialog.dismiss();
 									startInitial();
 								}
@@ -315,6 +346,10 @@ public class splash extends Activity
 					});
 					Button buttonE = (Button) dialog.findViewById(R.id.button2);
 					buttonE.setText("External SD\n\n" + externalSd);
+					if (!hasExtSd)
+					{
+						buttonE.setVisibility(Button.INVISIBLE);
+					}
 					buttonE.setOnClickListener(new OnClickListener()
 					{
 						@Override
@@ -334,7 +369,8 @@ public class splash extends Activity
 								{
 									workPath = externalSd2;
 									boolean askAgain = cbAskAgain.isChecked();
-									saveWorkPath(askAgain);
+									boolean useTabletLayout = rbTabletLayout.isChecked();
+									saveWorkPath(askAgain, useTabletLayout);
 									startInitial();
 								}
 							};
@@ -411,7 +447,7 @@ public class splash extends Activity
 		return false;
 	}
 
-	private void saveWorkPath(boolean askAgain)
+	private void saveWorkPath(boolean askAgain, boolean useTabletLayout)
 	{
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		// We need an Editor object to make preference changes.
@@ -419,6 +455,7 @@ public class splash extends Activity
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString("WorkPath", workPath);
 		editor.putBoolean("AskAgain", askAgain);
+		editor.putBoolean("UseTabletLayout", useTabletLayout);
 		// Commit the edits!
 		editor.commit();
 	}

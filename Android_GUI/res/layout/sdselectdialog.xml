@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <TextView
         android:id="@+id/select_sd_title"
         android:layout_width="match_parent"
@@ -12,19 +12,47 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/Day_Background"
         android:textSize="20dip" />
-
+
     <Button
         android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button" />
-
+    
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button" />
-
+
+    <RadioGroup
+        android:id="@+id/select_sd_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/select_sd_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/selectSdCard"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/Day_Background"
+            android:textSize="20dip" />
+
+        <RadioButton
+            android:id="@+id/select_sd_handylayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="RadioButton" />
+
+        <RadioButton
+            android:id="@+id/select_sd_tabletlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RadioButton" />
+	</RadioGroup>
+	
     <CheckBox
         android:id="@+id/select_sd_askagain"
         android:layout_width="match_parent"
