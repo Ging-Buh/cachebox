@@ -39,6 +39,8 @@ public class GL_UISizes implements SizeChangedEvent
 		Logger.DEBUG("Initial UISizes => " + width + "/" + height);
 		Logger.DEBUG("DPI = " + DPI);
 
+		defaultDPI = (float) Config.settings.MapViewFontFaktor.getDefaultValue();
+
 		if (DPI != (float) Config.settings.MapViewDPIFaktor.getValue()
 				|| FontFaktor != (float) Config.settings.MapViewFontFaktor.getValue())
 		{
@@ -122,6 +124,11 @@ public class GL_UISizes implements SizeChangedEvent
 	 * Dpi Faktor, welcher über die Settings eingestellt werden kann und mit dem HandyDisplay Wert vorbelegt ist. (HD2= 1.5)
 	 */
 	public static float DPI;
+
+	/**
+	 * DPI Wert des Displays, kann nicht über die Settings verändert werden
+	 */
+	public static float defaultDPI;
 
 	/**
 	 * Die Font Größe wird über den DPI Faktor berechnet und kann über den FontFaktor zusätzlich beeinflusst werden.
@@ -284,12 +291,12 @@ public class GL_UISizes implements SizeChangedEvent
 			UI_Right.setWidth(frameRightWidth);
 		}
 
-		infoShadowHeight = (float) (3.333333 * DPI);
+		infoShadowHeight = (float) (3.333333 * defaultDPI);
 		Info.setSize((float) (UiSizes.RefWidth - UiSizes.getButtonWidth() - (margin * 3)), UiSizes.getButtonHeight());
 		Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
 		halfCompass = Compass.getHeight() / 2;
 		Toggle.setSize(UiSizes.getButtonWidth(), UiSizes.getButtonHeight());
-		ZoomBtn.setSize((float) (158 * DPI), 48 * DPI);
+		ZoomBtn.setSize((float) (158 * defaultDPI), 48 * defaultDPI);
 		PosMarkerSize = (float) (46.666667 * DPI);
 		halfPosMarkerSize = PosMarkerSize / 2;
 
@@ -300,7 +307,7 @@ public class GL_UISizes implements SizeChangedEvent
 		WPSizes = new SizeF[]
 			{ new SizeF(13 * DPI, 13 * DPI), new SizeF(20 * DPI, 20 * DPI), new SizeF(32 * DPI, 32 * DPI) };
 
-		Bubble.setSize((float) 273.3333334 * DPI, (float) 113.333334 * DPI);
+		Bubble.setSize((float) 273.3333334 * defaultDPI, (float) 113.333334 * defaultDPI);
 		halfBubble = Bubble.width / 2;
 		bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
 

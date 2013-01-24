@@ -106,6 +106,9 @@ public class splash extends Activity
 		// chek if use small skin
 		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
 
+		// chk if tabletLayout posible
+		boolean posibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
+
 		// get parameters
 		final Bundle extras = getIntent().getExtras();
 		final Uri uri = getIntent().getData();
