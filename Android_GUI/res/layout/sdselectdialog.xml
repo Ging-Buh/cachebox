@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button" />
-
+<!-- 
     <RadioGroup
         android:id="@+id/select_sd_radiogroup"
         android:layout_width="match_parent"
@@ -52,7 +52,8 @@
             android:layout_height="wrap_content"
             android:text="RadioButton" />
 	</RadioGroup>
-	
+-->	
+
     <CheckBox
         android:id="@+id/select_sd_askagain"
         android:layout_width="match_parent"

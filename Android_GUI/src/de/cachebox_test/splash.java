@@ -51,8 +51,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.cachebox_test.Components.copyAssetFolder;
@@ -75,6 +73,7 @@ public class splash extends Activity
 
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
+	private boolean isLandscape = false;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -103,6 +102,11 @@ public class splash extends Activity
 		else if (dpH * dpW >= 470 * 320) GlobalCore.displayType = DisplayType.Normal;
 		else
 			GlobalCore.displayType = DisplayType.Small;
+
+		// überprüfen, ob ADB im Hochformat oder Querformat gestartet wurde.
+		// Hochformat -> Handymodus
+		// Querformat -> Tablet-Modus
+		if (w > h) isLandscape = true;
 
 		// chek if use small skin
 		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
@@ -287,30 +291,15 @@ public class splash extends Activity
 					dialog.setContentView(R.layout.sdselectdialog);
 					TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
 					title.setText(title.getText() + "\n ");
-					TextView tbLayout = (TextView) dialog.findViewById(R.id.select_sd_layout);
-					tbLayout.setText("\nLayout");
-
-					final RadioGroup rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup);
-					final RadioButton rbHandyLayout = (RadioButton) dialog.findViewById(R.id.select_sd_handylayout);
-					final RadioButton rbTabletLayout = (RadioButton) dialog.findViewById(R.id.select_sd_tabletlayout);
-					rbHandyLayout.setText("Handy-Layout");
-					rbTabletLayout.setText("Tablet-Layout");
-					if (!GlobalCore.posibleTabletLayout)
-					{
-						rgLayout.setVisibility(RadioGroup.INVISIBLE);
-						rbHandyLayout.setChecked(true);
-					}
-					else
-					{
-						if (GlobalCore.isTab)
-						{
-							rbTabletLayout.setChecked(true);
-						}
-						else
-						{
-							rbHandyLayout.setChecked(true);
-						}
-					}
+					/*
+					 * TextView tbLayout = (TextView) dialog.findViewById(R.id.select_sd_layout); tbLayout.setText("\nLayout"); final
+					 * RadioGroup rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup); final RadioButton rbHandyLayout =
+					 * (RadioButton) dialog.findViewById(R.id.select_sd_handylayout); final RadioButton rbTabletLayout = (RadioButton)
+					 * dialog.findViewById(R.id.select_sd_tabletlayout); rbHandyLayout.setText("Handy-Layout");
+					 * rbTabletLayout.setText("Tablet-Layout"); if (!GlobalCore.posibleTabletLayout) {
+					 * rgLayout.setVisibility(RadioGroup.INVISIBLE); rbHandyLayout.setChecked(true); } else { if (GlobalCore.isTab) {
+					 * rbTabletLayout.setChecked(true); } else { rbHandyLayout.setChecked(true); } }
+					 */
 					final CheckBox cbAskAgain = (CheckBox) dialog.findViewById(R.id.select_sd_askagain);
 					cbAskAgain.setChecked(askAgain);
 					Button buttonI = (Button) dialog.findViewById(R.id.button1);
@@ -333,8 +322,8 @@ public class splash extends Activity
 								public void run()
 								{
 									boolean askAgain = cbAskAgain.isChecked();
-									boolean useTabletLayout = rbTabletLayout.isChecked();
-									saveWorkPath(askAgain, useTabletLayout);
+									// boolean useTabletLayout = rbTabletLayout.isChecked();
+									saveWorkPath(askAgain/* , useTabletLayout */);
 									dialog.dismiss();
 									startInitial();
 								}
@@ -367,8 +356,8 @@ public class splash extends Activity
 								{
 									workPath = externalSd2;
 									boolean askAgain = cbAskAgain.isChecked();
-									boolean useTabletLayout = rbTabletLayout.isChecked();
-									saveWorkPath(askAgain, useTabletLayout);
+									// boolean useTabletLayout = rbTabletLayout.isChecked();
+									saveWorkPath(askAgain/* , useTabletLayout */);
 									startInitial();
 								}
 							};
@@ -445,10 +434,10 @@ public class splash extends Activity
 		return false;
 	}
 
-	private void saveWorkPath(boolean askAgain, boolean useTabletLayout)
+	private void saveWorkPath(boolean askAgain/* , boolean useTabletLayout */)
 	{
 
-		GlobalCore.isTab = useTabletLayout;
+		GlobalCore.isTab = isLandscape;
 
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		// We need an Editor object to make preference changes.
@@ -456,7 +445,7 @@ public class splash extends Activity
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString("WorkPath", workPath);
 		editor.putBoolean("AskAgain", askAgain);
-		editor.putBoolean("UseTabletLayout", useTabletLayout);
+		editor.putBoolean("UseTabletLayout", isLandscape);
 		// Commit the edits!
 		editor.commit();
 	}
