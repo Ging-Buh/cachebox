@@ -116,6 +116,7 @@ public class SettingsClass extends SettingsList
 
 	public SettingBool RememberAsk_API_Coast;
 	public SettingBool AskAgain;
+	public SettingBool UseTabletLayout;
 	public SettingBool FireMapQueueProcessorExceptions;
 	public SettingBool DebugSpriteBatchCountBuffer;
 
@@ -471,6 +472,11 @@ public class SettingsClass extends SettingsList
 	private void addSkinSettings()
 	{
 		SettingCategory cat = SettingCategory.Skin;
+
+		// entscheiden ob UseTabletLayout als Settings Eintrag angezeigt wird
+		SettingModus setMod = GlobalCore.posibleTabletLayout ? NORMAL : NEVER;
+
+		addSetting(UseTabletLayout = new SettingBool("UseTabletLayout", cat, setMod, false, SettingStoreType.Platform));
 		addSetting(MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", cat, NORMAL, "", SettingStoreType.Global, "xml"));
 		addSetting(MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", cat, NORMAL, "", SettingStoreType.Global, "xml"));
 		addSetting(useMipMap = new SettingBool("useMipMap", cat, NORMAL, false, SettingStoreType.Global));
@@ -496,7 +502,7 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.RememberAsk;
 
 		addSetting(RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", cat, NORMAL, false, SettingStoreType.Global));
-		addSetting(AskAgain = new SettingBool("AskAgain", cat, NORMAL, false, SettingStoreType.Platform));
+		addSetting(AskAgain = new SettingBool("AskAgain", cat, NORMAL, true, SettingStoreType.Platform));
 
 	}
 

@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1379;
+	public static final int CurrentRevision = 1380;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -87,6 +87,8 @@ public class GlobalCore
 	public static boolean useSmallSkin = false;
 
 	public static DisplayType displayType = DisplayType.Normal;
+
+	public static boolean posibleTabletLayout;
 
 	public static LangStrings Translations = new LangStrings();
 

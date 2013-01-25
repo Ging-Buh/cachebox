@@ -235,6 +235,7 @@ public class CreditsView extends CB_View_Base
 		list.add(new Person("arbor95", Job.developer));
 		list.add(new Person("droogi", Job.tester));
 		list.add(new Person("droogi", Job.localization));
+		list.add(new Person("jGda", Job.localization));
 		list.add(new Person("Teleskopix", Job.tester));
 		list.add(new Person("hulkman", Job.localization));
 		list.add(new Person("Lady-in-blue", Job.tester));

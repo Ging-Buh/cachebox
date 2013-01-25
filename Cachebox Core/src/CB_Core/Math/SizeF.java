@@ -24,14 +24,14 @@ package CB_Core.Math;
  */
 public class SizeF
 {
-	public float width;
-	public float height;
+	public float width = 0;
+	public float height = 0;
 
-	public float halfWidth;
-	public float halfHeight;
+	public float halfWidth = 0;
+	public float halfHeight = 0;
 
-	public float Width4_8;
-	public float Height4_8;
+	public float Width4_8 = 0;
+	public float Height4_8 = 0;
 
 	/**
 	 * Constructor

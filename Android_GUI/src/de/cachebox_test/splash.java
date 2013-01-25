@@ -44,7 +44,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -73,7 +72,6 @@ public class splash extends Activity
 	String GpxPath = null;
 
 	String workPath;
-	boolean posibleTabletLayout;
 
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
@@ -97,8 +95,8 @@ public class splash extends Activity
 		// check if tablet
 		GlobalCore.isTab = sw > 400 ? true : false;
 
-		int dpH = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, h, displaymetrics);
-		int dpW = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, w, displaymetrics);
+		int dpH = (int) (h / GlobalCore.displayDensity + 0.5);
+		int dpW = (int) (w / GlobalCore.displayDensity + 0.5);
 
 		if (dpH * dpW >= 960 * 720) GlobalCore.displayType = DisplayType.xLarge;
 		else if (dpH * dpW >= 640 * 480) GlobalCore.displayType = DisplayType.Large;
@@ -110,7 +108,7 @@ public class splash extends Activity
 		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
 
 		// chk if tabletLayout posible
-		posibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
+		GlobalCore.posibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
 
 		// get parameters
 		final Bundle extras = getIntent().getExtras();
@@ -199,7 +197,7 @@ public class splash extends Activity
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		workPath = settings.getString("WorkPath", "");
 		boolean askAgain = settings.getBoolean("AskAgain", true);
-		boolean useTabletLayout = settings.getBoolean("UseTabletLayout", false);
+		GlobalCore.isTab = settings.getBoolean("UseTabletLayout", false);
 
 		if ((workPath.length() == 0) || (askAgain))
 		{
@@ -278,7 +276,7 @@ public class splash extends Activity
 			final String externalSd2 = externalSd;
 			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
 
-			if (hasExtSd || (posibleTabletLayout))
+			if (hasExtSd || (GlobalCore.posibleTabletLayout))
 			{
 				// externe SD wurde gefunden != internal
 				// oder Tablet Layout möglich
@@ -297,14 +295,14 @@ public class splash extends Activity
 					final RadioButton rbTabletLayout = (RadioButton) dialog.findViewById(R.id.select_sd_tabletlayout);
 					rbHandyLayout.setText("Handy-Layout");
 					rbTabletLayout.setText("Tablet-Layout");
-					if (!posibleTabletLayout)
+					if (!GlobalCore.posibleTabletLayout)
 					{
 						rgLayout.setVisibility(RadioGroup.INVISIBLE);
 						rbHandyLayout.setChecked(true);
 					}
 					else
 					{
-						if (useTabletLayout)
+						if (GlobalCore.isTab)
 						{
 							rbTabletLayout.setChecked(true);
 						}
@@ -449,6 +447,9 @@ public class splash extends Activity
 
 	private void saveWorkPath(boolean askAgain, boolean useTabletLayout)
 	{
+
+		GlobalCore.isTab = useTabletLayout;
+
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		// We need an Editor object to make preference changes.
 		// All objects are from android.context.Context
@@ -533,15 +534,6 @@ public class splash extends Activity
 				e.printStackTrace();
 			}
 
-		}
-
-		if (FileIO.FileExists(workPath + "/.forcePhone"))
-		{
-			GlobalCore.isTab = false;
-		}
-		else if (FileIO.FileExists(workPath + "/.forceTablet"))
-		{
-			GlobalCore.isTab = true;
 		}
 
 		if (GlobalCore.isTab)
@@ -652,6 +644,54 @@ public class splash extends Activity
 			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
 			Config.settings.newInstall.setValue(true);
 			Config.AcceptChanges();
+
+			File CreateFile;
+
+			// create .nomedia Files
+			try
+			{
+				CreateFile = new File(workPath + "/data/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
+				CreateFile = new File(workPath + "/skins/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
+				CreateFile = new File(workPath + "/repository/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
+				CreateFile = new File(workPath + "/cache/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
 		}
 		else
 		{
