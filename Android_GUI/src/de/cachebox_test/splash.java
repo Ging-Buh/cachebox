@@ -108,6 +108,12 @@ public class splash extends Activity
 		// Querformat -> Tablet-Modus
 		if (w > h) isLandscape = true;
 
+		// Porträt erzwingen wenn Normal oder Small display
+		if (isLandscape && (GlobalCore.displayType == DisplayType.Normal || GlobalCore.displayType == DisplayType.Small))
+		{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
+
 		// chek if use small skin
 		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
 
@@ -441,7 +447,7 @@ public class splash extends Activity
 	private void saveWorkPath(boolean askAgain/* , boolean useTabletLayout */)
 	{
 
-		GlobalCore.isTab = isLandscape;
+		// GlobalCore.isTab = isLandscape;
 
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		// We need an Editor object to make preference changes.
