@@ -1129,7 +1129,7 @@ public class GL implements ApplicationListener
 			startTs = System.currentTimeMillis();
 			int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 
-			endTs = startTs + 500 + abstand * 20 / anzPoints;
+			endTs = startTs + 1000 + abstand * 40 / anzPoints;
 			// endTs = startTs + 2000; // Povisorisch
 			started = true;
 		}
@@ -1144,7 +1144,8 @@ public class GL implements ApplicationListener
 			long aktTs = System.currentTimeMillis();
 			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
 			// Logger.LogCat("Faktor: " + faktor);
-			faktor = com.badlogic.gdx.math.Interpolation.pow3Out.apply(faktor);
+			faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
+			faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
 			// Logger.LogCat("Faktor2: " + faktor);
 			if (faktor >= 1)
 			{
