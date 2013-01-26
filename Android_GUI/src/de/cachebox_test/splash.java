@@ -447,7 +447,7 @@ public class splash extends Activity
 	private void saveWorkPath(boolean askAgain/* , boolean useTabletLayout */)
 	{
 
-		// GlobalCore.isTab = isLandscape;
+		if (GlobalCore.displayType == DisplayType.Large || GlobalCore.displayType == DisplayType.xLarge) GlobalCore.isTab = isLandscape;
 
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		// We need an Editor object to make preference changes.
