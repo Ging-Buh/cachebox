@@ -104,7 +104,6 @@ public class GL implements ApplicationListener
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
 	private Stage mStage;
 	private Timer longClickTimer;
-	private Texture FpsInfoTexture;
 	private Sprite FpsInfoSprite, mDarknesSprite;
 	private Pixmap mDarknesPixmap;
 	private Texture mDarknesTexture;
@@ -268,7 +267,16 @@ public class GL implements ApplicationListener
 			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		}
 
-		batch.begin();
+		try
+		{
+			batch.begin();
+		}
+		catch (java.lang.IllegalStateException e)
+		{
+			batch.flush();
+			batch.end();
+			batch.begin();
+		}
 		batch.setProjectionMatrix(prjMatrix.Matrix());
 
 		// if Tablet, so the Activity is smaller the screen size
@@ -480,18 +488,12 @@ public class GL implements ApplicationListener
 		return height;
 	}
 
-	private long downTime = 0;
-
 	// TouchEreignisse die von der View gesendet werden
 	// hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
 		misTouchDown = true;
 		touchDraggedActive = false;
-
-		// TODO lösche Debug code ######
-		downTime = System.currentTimeMillis();
-		// ##############################
 
 		GL_View_Base view = null;
 
@@ -590,11 +592,6 @@ public class GL implements ApplicationListener
 
 	public boolean onTouchUpBase(int x, int y, int pointer, int button)
 	{
-
-		// TODO lösche Debug code ######
-		if (System.currentTimeMillis() - downTime < 10) Logger.DEBUG("onTouchUp<10ms nach touchDown");
-		// ##############################
-
 		misTouchDown = false;
 		cancelLongClickTimer();
 

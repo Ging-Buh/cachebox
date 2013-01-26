@@ -208,7 +208,6 @@ public class GL_MsgBox extends Dialog
 
 	private boolean ButtonClick(int button)
 	{
-		GL.that.closeDialog(that);
 
 		// wenn Dies eine Remember MsgBox ist, überprüfen wir ob das remember gesetzt ist
 		if (rememberSeting != null)
@@ -221,8 +220,14 @@ public class GL_MsgBox extends Dialog
 			}
 		}
 
-		if (mMsgBoxClickListner != null) return mMsgBoxClickListner.onClick(button);
-		return false;
+		boolean retValue = false;
+
+		if (mMsgBoxClickListner != null)
+		{
+			retValue = mMsgBoxClickListner.onClick(button);
+		}
+		GL.that.closeDialog(that);
+		return retValue;
 	}
 
 	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon)
