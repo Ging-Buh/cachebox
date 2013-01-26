@@ -215,7 +215,14 @@ public class Label extends CB_View_Base
 			// TODO: handle exception
 		}
 
-		fontPropertyChanged();
+		try
+		{
+			fontPropertyChanged();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		return bounds;
 	}
