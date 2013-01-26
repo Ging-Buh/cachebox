@@ -158,6 +158,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	Timer myTimer;
 
 	boolean useNewInput = true;
+	Cache lastSelectedCache = null;
+	Waypoint lastSelectedWaypoint = null;
 
 	public MapView(CB_RectF rec, boolean compassMode, String Name)
 	{
@@ -431,6 +433,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingWidth = mapIntWidth;
 			drawingHeight = mapIntHeight;
 		}
+		SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		setVisible();
 
 		int zoom = MapTileLoader.MAX_MAP_ZOOM;
@@ -2393,6 +2396,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// xxx if (Global.autoResort) return;
 		// Logger.DEBUG("Cache Changed Event");
 		if (cache == null) return;
+		if ((cache == lastSelectedCache) && (waypoint == lastSelectedWaypoint)) return;
+		lastSelectedCache = cache;
+		lastSelectedWaypoint = waypoint;
 		/*
 		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
 		 */

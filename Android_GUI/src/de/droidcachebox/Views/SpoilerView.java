@@ -90,10 +90,10 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	public void onItemSelected(AdapterView<?> parent, View v, int position, long id)
 	{
 		if (aktCache == null) return;
-		String filename = GlobalCore.getSelectedCache().SpoilerRessources().get(position).Name;
+		String filename = GlobalCore.getSelectedCache().getSpoilerRessources().get(position).Name;
 
 		spoilerFilename.setText(filename);
-		String file = GlobalCore.getSelectedCache().SpoilerRessources().get(position).LocalPath;
+		String file = GlobalCore.getSelectedCache().getSpoilerRessources().get(position).LocalPath;
 
 		String html = "<html><body><div style=\"width: 100%;\"><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"file://"
 				+ file + "\"></img></div></body></html>";
@@ -111,7 +111,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		public int getCount()
 		{
 			if (aktCache == null) return 0;
-			if (aktCache.SpoilerExists()) return aktCache.SpoilerRessources().size();
+			if (aktCache.SpoilerExists()) return aktCache.getSpoilerRessources().size();
 			else
 				return 0;
 			// return mThumbIds.length;
@@ -202,7 +202,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 
 		if (aktCache == null) return;
 		lBitmaps.clear();
-		for (ImageEntry image : aktCache.SpoilerRessources())
+		for (ImageEntry image : aktCache.getSpoilerRessources())
 		{
 			try
 			{

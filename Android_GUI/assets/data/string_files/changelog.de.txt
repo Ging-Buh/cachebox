@@ -9,7 +9,7 @@ Version : 0.5.1390
 	• Mehr Informationen im Kompass 
 	• Viele arbeiten zur Leistungsoptimierung
 	• Viele arbeiten für Stabilität!
-	• Viele gemeldete Fehler, Danke an alle!
+	• Viele gemeldete Fehler behoben, Danke an alle!
 	
 Version : 0.5.1298
 	• Fix UI Handling bei schnellen Eingaben

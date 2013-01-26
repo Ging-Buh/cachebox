@@ -384,7 +384,7 @@ public class Cache implements Comparable<Cache>
 	 * 
 	 * @return ArrayList of String
 	 */
-	public ArrayList<ImageEntry> SpoilerRessources()
+	public ArrayList<ImageEntry> getSpoilerRessources()
 	{
 		if (spoilerRessources == null)
 		{
@@ -412,8 +412,8 @@ public class Cache implements Comparable<Cache>
 	 */
 	public boolean SpoilerExists()
 	{
-		if (SpoilerRessources() == null) return false;
-		return SpoilerRessources().size() > 0;
+		if (spoilerRessources == null) ReloadSpoilerRessources();
+		return spoilerRessources.size() > 0;
 	}
 
 	public void ReloadSpoilerRessources()
@@ -446,9 +446,8 @@ public class Cache implements Comparable<Cache>
 			@Override
 			public boolean accept(File dir, String filename)
 			{
-
 				filename = filename.toLowerCase();
-				if (filename.indexOf(GcCode.toLowerCase()) == 0)
+				if (filename.indexOf(GcCode.toLowerCase()) >= 0)
 				{
 					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png")
 							|| filename.endsWith(".gif")) return true;
