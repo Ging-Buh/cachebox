@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.Config;
+import CB_Core.Disable;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
 import CB_Core.GL_UI.CB_View_Base;
@@ -71,7 +72,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		mi = icm.addItem(MenuID.MI_LAYER, "Layer");
 
-		if (!GlobalCore.disableHillShadingForRelease)
+		if (!Disable.HillShading)
 		{
 			mi = icm.addItem(MenuID.MI_MAP_HILL_SHADING, "HillShade");
 			mi.setCheckable(true);

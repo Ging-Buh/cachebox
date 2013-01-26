@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import CB_Core.Config;
+import CB_Core.Disable;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
@@ -303,8 +304,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			if (mapTileLoader.CurrentLayer == null) mapTileLoader.CurrentLayer = ManagerBase.Manager.GetLayerByName(
 					(currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
-			if (mapTileLoader.CurrentOverlayLayer == null) mapTileLoader.CurrentOverlayLayer = ManagerBase.Manager.GetLayerByName(
-					"HillShade", "HillShade", "");
+			if (!Disable.HillShading)
+			{
+				if (mapTileLoader.CurrentOverlayLayer == null) mapTileLoader.CurrentOverlayLayer = ManagerBase.Manager.GetLayerByName(
+						"HillShade", "HillShade", "");
+			}
 		}
 
 		mapIntWidth = (int) rec.getWidth();

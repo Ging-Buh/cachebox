@@ -103,7 +103,7 @@ public class splash extends Activity
 		else
 			GlobalCore.displayType = DisplayType.Small;
 
-		// überprüfen, ob ADB im Hochformat oder Querformat gestartet wurde.
+		// überprüfen, ob ACB im Hochformat oder Querformat gestartet wurde.
 		// Hochformat -> Handymodus
 		// Querformat -> Tablet-Modus
 		if (w > h) isLandscape = true;
@@ -201,7 +201,6 @@ public class splash extends Activity
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		workPath = settings.getString("WorkPath", "");
 		boolean askAgain = settings.getBoolean("AskAgain", true);
-		GlobalCore.isTab = settings.getBoolean("UseTabletLayout", false);
 
 		if ((workPath.length() == 0) || (askAgain))
 		{
@@ -270,6 +269,11 @@ public class splash extends Activity
 			{
 				// Asus Transformer
 				externalSd = "/Removable/MicroSD/CacheBox";
+			}
+			else if (testExtSdPath("/ext_sd"))
+			{
+				// ODYS Motion
+				externalSd = "/ext_sd/CacheBox";
 			}
 			else if (testExtSdPath(prev + "/sdcard"))
 			{
@@ -445,7 +449,7 @@ public class splash extends Activity
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString("WorkPath", workPath);
 		editor.putBoolean("AskAgain", askAgain);
-		editor.putBoolean("UseTabletLayout", isLandscape);
+		// editor.putBoolean("UseTabletLayout", isLandscape);
 		// Commit the edits!
 		editor.commit();
 	}

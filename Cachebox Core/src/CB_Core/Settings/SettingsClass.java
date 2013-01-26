@@ -1,6 +1,7 @@
 package CB_Core.Settings;
 
 import CB_Core.Config;
+import CB_Core.Disable;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 
@@ -116,7 +117,7 @@ public class SettingsClass extends SettingsList
 
 	public SettingBool RememberAsk_API_Coast;
 	public SettingBool AskAgain;
-	public SettingBool UseTabletLayout;
+
 	public SettingBool FireMapQueueProcessorExceptions;
 	public SettingBool DebugSpriteBatchCountBuffer;
 
@@ -348,7 +349,9 @@ public class SettingsClass extends SettingsList
 		addSetting(MapNorthOriented = new SettingBool("MapNorthOriented", cat, NORMAL, true, SettingStoreType.Global));
 		addSetting(LastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", cat, INVISIBLE, 0, SettingStoreType.Global));
 
-		addSetting(MapHillShading = new SettingBool("MapHillShading", cat, NORMAL, false, SettingStoreType.Global));
+		// entscheiden ob MapHillShading als Settings Eintrag angezeigt wird
+		SettingModus setMod = !Disable.HillShading ? NORMAL : NEVER;
+		addSetting(MapHillShading = new SettingBool("MapHillShading", cat, setMod, false, SettingStoreType.Global));
 
 		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", cat, EXPERT, "Mapnik", SettingStoreType.Global));
 
@@ -473,10 +476,6 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Skin;
 
-		// entscheiden ob UseTabletLayout als Settings Eintrag angezeigt wird
-		SettingModus setMod = GlobalCore.posibleTabletLayout ? NORMAL : NEVER;
-
-		addSetting(UseTabletLayout = new SettingBool("UseTabletLayout", cat, setMod, false, SettingStoreType.Platform));
 		addSetting(MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", cat, NORMAL, "", SettingStoreType.Global, "xml"));
 		addSetting(MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", cat, NORMAL, "", SettingStoreType.Global, "xml"));
 		addSetting(useMipMap = new SettingBool("useMipMap", cat, NORMAL, false, SettingStoreType.Global));
