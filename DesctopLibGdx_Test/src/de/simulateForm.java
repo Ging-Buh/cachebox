@@ -1,6 +1,7 @@
 package de;
 
 import java.awt.Button;
+import java.awt.Checkbox;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -39,6 +40,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	private Label lblGPX, lblSetSpeed;
 	private TextField txt, speedTxt;
 	private Button pushButton5, sendSpeed;
+	private static Checkbox chekRealSpeed;
 	private static float speed = 50;
 
 	public simulateForm(String s)
@@ -72,8 +74,8 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		add(pushButton5);
 		pushButton5.addActionListener(this); // listen for Button press
 
-		lblSetSpeed = new Label("set Speed               ");
-		add(lblSetSpeed);
+		chekRealSpeed = new Checkbox("Simulate real speed");
+		add(chekRealSpeed);
 
 		speedTxt = new TextField();
 		speedTxt.addActionListener(this);
@@ -301,7 +303,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		long nextTimeStamp = (simulationRoute.Points.get(trackPointIndex + 1).TimeStamp.getTime() - simulationRoute.Points
 				.get(trackPointIndex).TimeStamp.getTime());
 
-		nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen
+		if (!chekRealSpeed.getState()) nextTimeStamp /= 8; // ein wenig schneller ablaufen lassen?
 
 		if (nextTimeStamp < 0) nextTimeStamp = 10;
 
@@ -322,7 +324,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 				PositionChangedEventList.PositionChanged(Loc);
 				PositionChangedEventList.Orientation((float) trk.Direction);
-
+				GlobalCore.LastValidPosition = Loc.getLocation();
 				if (trackPointIndex < trackPointIndexEnd - 2)
 				{
 					trackPointIndex++;
@@ -333,5 +335,4 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		timer.schedule(task, nextTimeStamp);
 
 	}
-
 }

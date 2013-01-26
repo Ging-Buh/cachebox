@@ -271,7 +271,11 @@ public class CB_Button extends Button implements OnClickListener
 		// wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausführen
 		if (!actionExecuted)
 		{
-			return mOnLongClickListener.onClick(v, x, y, pointer, button);
+			OnClickListener listner = this.getOnLongClickListner();
+			if (listner != null)
+			{
+				return listner.onClick(v, x, y, pointer, button);
+			}
 		}
 
 		return true;

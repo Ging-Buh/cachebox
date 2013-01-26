@@ -18,6 +18,7 @@ public abstract class ListViewItemBase extends CB_View_Base
 	{
 		super(rec, Name);
 		mIndex = Index;
+		this.setClickable(true);
 	}
 
 	protected int mIndex;
@@ -28,5 +29,26 @@ public abstract class ListViewItemBase extends CB_View_Base
 	}
 
 	public boolean isSelected = false;
+
+	// @Override
+	// public boolean onTouchDown(int x, int y, int pointer, int button)
+	// {
+	//
+	// return true;
+	// }
+	//
+	// @Override
+	// public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	// {
+	//
+	// return true;
+	// }
+	//
+	// @Override
+	// public boolean onTouchUp(int x, int y, int pointer, int button)
+	// {
+	//
+	// return true;
+	// }
 
 }

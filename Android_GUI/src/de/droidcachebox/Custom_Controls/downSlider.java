@@ -604,71 +604,64 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	public void ActionUp() // Slider zurück scrolllen lassen
 	{
-		Thread t = new Thread()
+
+		if (main.mainActivity != null)
 		{
-			public void run()
+			((main) main.mainActivity).runOnUiThread(new Runnable()
 			{
-				if (main.mainActivity != null)
+				@Override
+				public void run()
 				{
-					((main) main.mainActivity).runOnUiThread(new Runnable()
+
+					boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
+
+					// check if QuickButtonList snap in
+					if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow)
 					{
-						@Override
-						public void run()
+						QuickButtonHeight = QuickButtonMaxHeight;
+						Config.settings.quickButtonLastShow.setValue(true);
+						Config.AcceptChanges();
+					}
+					else
+					{
+						QuickButtonHeight = 0;
+						Config.settings.quickButtonLastShow.setValue(false);
+						Config.AcceptChanges();
+					}
+
+					((main) main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
+
+					if (swipeUp || swipeDown)
+					{
+						if (swipeUp)
 						{
-
-							boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
-
-							// check if QuickButtonList snap in
-							if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow)
-							{
-								QuickButtonHeight = QuickButtonMaxHeight;
-								Config.settings.quickButtonLastShow.setValue(true);
-								Config.AcceptChanges();
-							}
-							else
-							{
-								QuickButtonHeight = 0;
-								Config.settings.quickButtonLastShow.setValue(false);
-								Config.AcceptChanges();
-							}
-
-							((main) main.mainActivity).setQuickButtonHeight(QuickButtonHeight);
-
-							if (swipeUp || swipeDown)
-							{
-								if (swipeUp)
-								{
-									startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
-								}
-								else
-								{
-									startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
-								}
-								swipeUp = swipeDown = false;
-
-							}
-							else
-							{
-								if (yPos > height * 0.7)
-								{
-									startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
-								}
-								else
-								{
-									startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
-									// isVisible=false;
-								}
-							}
-
-							invalidate();
-
+							startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
 						}
-					});
-				}
-			}
-		};
+						else
+						{
+							startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
+						}
+						swipeUp = swipeDown = false;
 
-		t.start();
+					}
+					else
+					{
+						if (yPos > height * 0.7)
+						{
+							startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
+						}
+						else
+						{
+							startAnimationTo(QuickButtonShow ? QuickButtonHeight : 0);
+							// isVisible=false;
+						}
+					}
+
+					invalidate();
+
+				}
+			});
+		}
 
 	}
 
@@ -686,64 +679,53 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	public void setCache_onUI(final Cache cache, final Waypoint waypoint)
 	{
 
-		Thread t = new Thread()
+		if (mCache == cache && mWaypoint == waypoint) return;
+
+		((main) main.mainActivity).runOnUiThread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
-				if (main.mainActivity != null)
+				mCache = cache;
+				mWaypoint = waypoint;
+
+				attCompleadHeight = 0;
+				CacheInfoHeight = 0;
+				WPInfoHeight = 0;
+				topCalc = 0;
+
+				int TextWidth = downSlider.Me.width - downSlider.Me.imgSize;
+
+				Rect bounds = new Rect();
+				WPLayoutTextPaint = new TextPaint();
+				WPLayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
+				WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
+				LineSep = bounds.height() / 3;
+
+				String Clue = "";
+				if (mWaypoint != null)
 				{
-					((main) main.mainActivity).runOnUiThread(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							mCache = cache;
-							mWaypoint = waypoint;
-
-							attCompleadHeight = 0;
-							CacheInfoHeight = 0;
-							WPInfoHeight = 0;
-							topCalc = 0;
-
-							int TextWidth = downSlider.Me.width - downSlider.Me.imgSize;
-
-							Rect bounds = new Rect();
-							WPLayoutTextPaint = new TextPaint();
-							WPLayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
-							WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
-							LineSep = bounds.height() / 3;
-
-							String Clue = "";
-							if (mWaypoint != null)
-							{
-								if (waypoint.Clue != null) Clue = waypoint.Clue;
-								WPLayoutTextPaint.setAntiAlias(true);
-								WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-								WPLayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
-										+ GlobalCore.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth,
-										Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-								WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL,
-										1.0f, 0.0f, false);
-								WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
-										false);
-								WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
-								WPLayoutTextPaintBold.setFakeBoldText(true);
-								WPLayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, WPLayoutTextPaintBold, TextWidth,
-										Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-								WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight()
-										+ WPLayoutClue.getHeight() + WPLayoutName.getHeight();
-							}
-
-							downSlider.Me.invalidate();
-
-						}
-					});
+					if (waypoint.Clue != null) Clue = waypoint.Clue;
+					WPLayoutTextPaint.setAntiAlias(true);
+					WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
+					WPLayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
+							+ GlobalCore.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth,
+							Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+					WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
+							false);
+					WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+					WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
+					WPLayoutTextPaintBold.setFakeBoldText(true);
+					WPLayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, WPLayoutTextPaintBold, TextWidth,
+							Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+					WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight()
+							+ WPLayoutName.getHeight();
 				}
+
+				downSlider.Me.invalidate();
+
 			}
-		};
-
-		t.start();
-
+		});
 	}
 
 	private Boolean isVisible = false;
@@ -766,7 +748,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		mSats = GPS.getSatAndFix();
 
 		mAccuracy = String.valueOf((int) location.getAccuracy());
-		mAlt = GlobalCore.Locator.getAltString();
+		mAlt = GlobalCore.Locator.getAltStringWithCorection();
 		mLatitude = GlobalCore.FormatLatitudeDM(location.getLatitude());
 		mLongitude = GlobalCore.FormatLongitudeDM(location.getLongitude());
 

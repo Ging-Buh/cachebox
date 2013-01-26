@@ -98,6 +98,13 @@ public class ColorPicker extends ActivityBase
 
 	}
 
+	@Override
+	public void dispose()
+	{
+		gradiantWhite.dispose();
+		gradiantBlack.dispose();
+	}
+
 	private void createColorPreviewLine()
 	{
 		CB_RectF rec = new CB_RectF(0, bOK.getMaxY() + margin, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight());

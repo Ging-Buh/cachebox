@@ -112,123 +112,140 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 
 	}
 
-	private void newLocationReceived(Locator location)
+	Thread newLocationThread;
+
+	private void newLocationReceived(final Locator location)
 	{
-		try
+		if (newLocationThread == null) newLocationThread = new Thread(new Runnable()
 		{
 
-			if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid && location.getProvider().equalsIgnoreCase(GPS_PROVIDER))
+			@Override
+			public void run()
 			{
-				initialFixSoundCompleted = true;
-				if (GPS_Fix != null && !GPS_Fix.isPlaying())
+				try
 				{
-					Logger.LogCat("Play Fix");
-					GPS_Fix.play();
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
-			e.printStackTrace();
-		}
 
-		try
-		{
-			if (PlaySounds && !approachSoundCompleted)
-			{
-				if (GlobalCore.getSelectedCache() != null)
-				{
-					float distance = GlobalCore.getSelectedCache().Distance(false);
-					if (GlobalCore.getSelectedWaypoint() != null)
+					if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid
+							&& location.getProvider().equalsIgnoreCase(GPS_PROVIDER))
 					{
-						distance = GlobalCore.getSelectedWaypoint().Distance();
-					}
-
-					if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
-					{
-						if (Approach != null) Approach.play();
-						approachSoundCompleted = true;
-
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
-			{
-				if (GlobalCore.getSelectedCache() == null)
-				{
-					Database.Data.Query.Resort();
-				}
-				initialResortAfterFirstFixCompleted = true;
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			// schau die 50 nächsten Caches durch, wenn einer davon näher ist
-			// als der aktuell nächste -> umsortieren und raus
-			// only when showing Map or cacheList
-			if (!GlobalCore.ResortAtWork)
-			{
-				if (GlobalCore.autoResort)
-				{
-					int z = 0;
-					if (!(GlobalCore.NearestCache() == null))
-					{
-						boolean resort = false;
-						if (GlobalCore.NearestCache().Found)
+						initialFixSoundCompleted = true;
+						if (GPS_Fix != null && !GPS_Fix.isPlaying())
 						{
-							resort = true;
+							Logger.LogCat("Play Fix");
+							GPS_Fix.play();
 						}
-						else
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.Error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
+					e.printStackTrace();
+				}
+
+				try
+				{
+					if (PlaySounds && !approachSoundCompleted)
+					{
+						if (GlobalCore.getSelectedCache() != null)
 						{
-							for (Cache cache : Database.Data.Query)
+							float distance = GlobalCore.getSelectedCache().Distance(false);
+							if (GlobalCore.getSelectedWaypoint() != null)
 							{
-								z++;
-								if (z >= 50) return;
-								if (cache.Archived) continue;
-								if (!cache.Available) continue;
-								if (cache.Found) continue;
-								if (cache.ImTheOwner()) continue;
-								if (cache.Type == CacheTypes.Mystery) if (!cache.CorrectedCoordiantesOrMysterySolved()) continue;
-								if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
+								distance = GlobalCore.getSelectedWaypoint().Distance();
+							}
+
+							if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
+							{
+								if (Approach != null) Approach.play();
+								approachSoundCompleted = true;
+
+							}
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.Error("GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", e);
+					e.printStackTrace();
+				}
+
+				try
+				{
+					if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
+					{
+						if (GlobalCore.getSelectedCache() == null)
+						{
+							synchronized (Database.Data.Query)
+							{
+								Database.Data.Query.Resort();
+							}
+						}
+						initialResortAfterFirstFixCompleted = true;
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.Error("GlobalLocationReceiver",
+							"if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
+					e.printStackTrace();
+				}
+
+				try
+				{
+					// schau die 50 nächsten Caches durch, wenn einer davon näher ist
+					// als der aktuell nächste -> umsortieren und raus
+					// only when showing Map or cacheList
+					if (!GlobalCore.ResortAtWork)
+					{
+						if (GlobalCore.autoResort)
+						{
+							int z = 0;
+							if (!(GlobalCore.NearestCache() == null))
+							{
+								boolean resort = false;
+								if (GlobalCore.NearestCache().Found)
 								{
 									resort = true;
-									break;
+								}
+								else
+								{
+									for (Cache cache : Database.Data.Query)
+									{
+										z++;
+										if (z >= 50) return;
+										if (cache.Archived) continue;
+										if (!cache.Available) continue;
+										if (cache.Found) continue;
+										if (cache.ImTheOwner()) continue;
+										if (cache.Type == CacheTypes.Mystery) if (!cache.CorrectedCoordiantesOrMysterySolved()) continue;
+										if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
+										{
+											resort = true;
+											break;
+										}
+									}
+								}
+								if (resort)
+								{
+									Database.Data.Query.Resort();
+
+									if (AutoResort != null) AutoResort.play();
+									return;
 								}
 							}
 						}
-						if (resort)
-						{
-							Database.Data.Query.Resort();
-
-							if (AutoResort != null) AutoResort.play();
-							return;
-						}
 					}
 				}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("GlobalLocationReceiver", "Resort", e);
-			e.printStackTrace();
-		}
+				catch (Exception e)
+				{
+					Logger.Error("GlobalLocationReceiver", "Resort", e);
+					e.printStackTrace();
+				}
 
+			}
+		});
+
+		newLocationThread.run();
 	}
 
 	@Override
@@ -245,6 +262,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 	public static void resetApprouch()
 	{
 		approachSoundCompleted = false;
+		GlobalCore.switchToCompassCompleted = false;
 	}
 
 }

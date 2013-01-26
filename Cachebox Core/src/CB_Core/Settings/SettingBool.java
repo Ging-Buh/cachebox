@@ -6,9 +6,9 @@ public class SettingBool extends SettingBase
 	protected boolean defaultValue;
 	protected boolean lastValue;
 
-	public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, boolean global)
+	public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType)
 	{
-		super(name, category, modus, global);
+		super(name, category, modus, StoreType);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}

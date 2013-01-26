@@ -284,7 +284,7 @@ public class EditFilterSettings extends ActivityBase
 
 	static WaitDialog pd;
 
-	public static void ApplyFilter(FilterProperties Props)
+	public static void ApplyFilter(final FilterProperties Props)
 	{
 
 		props = Props;
@@ -297,17 +297,25 @@ public class EditFilterSettings extends ActivityBase
 			{
 				try
 				{
-					String sqlWhere = props.getSqlWhere();
-					Logger.General("Main.ApplyFilter: " + sqlWhere);
-					Database.Data.Query.clear();
-					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					synchronized (Database.Data.Query)
+					{
+						String sqlWhere = props.getSqlWhere();
+						Logger.General("Main.ApplyFilter: " + sqlWhere);
+						Database.Data.Query.clear();
+						CacheListDAO cacheListDAO = new CacheListDAO();
+						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+						Database.Data.Query.checkSelectedCacheValid();
+					}
 					CachListChangedEventList.Call();
 					pd.dismis();
 					TabMainView.that.filterSetChanged();
 
 					// Notify Map
 					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+
+					// save Filtersettings
+					Config.settings.Filter.setValue(Props.ToString());
+					Config.AcceptChanges();
 				}
 				catch (Exception e)
 				{

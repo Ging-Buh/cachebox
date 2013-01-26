@@ -45,16 +45,22 @@ public class Layer
 
 	public String GetUrl(Descriptor desc)
 	{
-		return Url + desc.Zoom + "/" + desc.X + "/" + desc.Y + ".png";
+		if (desc == null) return null;
+		if (Name.contains("HillShade")) return Url + "?x=" + desc.X + "&y=" + desc.Y + "&z=" + desc.Zoom;
+		else
+			return Url + desc.Zoom + "/" + desc.X + "/" + desc.Y + ".png";
 	}
 
 	public String GetLocalFilename(Descriptor desc)
 	{
+		if (desc == null) return null;
 		return GetLocalPath(desc) + "/" + desc.Y + ".png";
 	}
 
 	public String GetLocalPath(Descriptor desc)
 	{
+		if (desc == null) return null;
+
 		return Config.settings.TileCacheFolder.getValue() + "/" + Name + "/" + desc.Zoom + "/" + desc.X;
 	}
 }

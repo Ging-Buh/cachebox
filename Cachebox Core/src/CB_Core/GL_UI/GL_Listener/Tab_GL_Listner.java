@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.GL_Listener;
 
+import CB_Core.Config;
 import CB_Core.Events.KeyCodes;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.KeyEventListner;
@@ -24,7 +25,15 @@ public class Tab_GL_Listner extends GL
 
 		if (batch == null)
 		{
-			batch = new SpriteBatch();
+			if (Config.settings.DebugSpriteBatchCountBuffer.getValue())
+			{
+				// for Debug set to max!
+				batch = new SpriteBatch(10000);
+			}
+			else
+			{
+				batch = new SpriteBatch(SPRITE_BATCH_BUFFER);
+			}
 		}
 
 		if (child == null)
@@ -95,7 +104,6 @@ public class Tab_GL_Listner extends GL
 	{
 		MainViewBase altSplash = child;
 		child = new TabMainView(0, 0, width, height, "TabMainView");
-
 		altSplash.dispose();
 		altSplash = null;
 

@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import CB_Core.DB.Database;
+import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -8,7 +9,12 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.RadioButton;
+import CB_Core.GL_UI.Controls.RadioGroup;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -58,19 +64,45 @@ public class TestView extends CB_View_Base
 		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), wrappedTextField.getY()
 				- Dialog.margin - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
-		btnSetting.setText("Delete old Logs");
+		btnSetting.setText("Remember MsgBox");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				Database.Data.DeleteOldLogs();
+				GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"),
+						MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, click, Config.settings.RememberAsk_API_Coast);
 				return true;
 			}
 		});
 
 		this.addChild(btnSetting);
+
+		RadioButton rb = new RadioButton("Test");
+		rb.setPos(50, 50);
+		rb.setWidth(this.width - rb.getX());
+		rb.setText("Option 1");
+		this.addChild(rb);
+
+		this.addChild(btnSetting);
+
+		RadioButton rb2 = new RadioButton("Test");
+		rb2.setPos(50, rb.getMaxY() + UiSizes.getMargin());
+		rb2.setWidth(this.width - rb.getX());
+		rb2.setText("Option 2");
+		this.addChild(rb2);
+
+		RadioButton rb3 = new RadioButton("Test");
+		rb3.setPos(50, rb2.getMaxY() + UiSizes.getMargin());
+		rb3.setWidth(this.width - rb.getX());
+		rb3.setText("Option 3");
+		this.addChild(rb3);
+
+		RadioGroup Group = new RadioGroup();
+		Group.add(rb);
+		Group.add(rb2);
+		Group.add(rb3);
 
 		requestLayout();
 

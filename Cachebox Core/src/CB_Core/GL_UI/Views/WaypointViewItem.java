@@ -65,10 +65,10 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		{
 			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
-			batch.begin();
+			batch.flush();
 
 			this.render(batch);
-			batch.end();
+			batch.flush();
 
 			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 		}

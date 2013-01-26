@@ -273,11 +273,37 @@ public class CategorieListView extends V_ListView
 		@Override
 		public boolean onClick(GL_View_Base v, int lastTouchX, int lastTouchY, int pointer, int button)
 		{
-
 			CB_RectF HitRec = v.copy();
+			HitRec.setY(0);
 
-			CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), HitRec.getMaxY(), HitRec.getMaxX(), HitRec.getY());
-			CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), HitRec.getMaxY(), HitRec.getHeight(), HitRec.getY());
+			CB_RectF plusBtnHitRec = new CB_RectF(HitRec.getWidth() - HitRec.getHeight(), 0, HitRec.getHeight(), HitRec.getMaxY());
+			CB_RectF minusBtnHitRec = new CB_RectF(HitRec.getX(), 0, HitRec.getHeight(), HitRec.getMaxY());
+
+			float lastItemTouchX = ((CategorieListViewItem) v).lastItemTouchPos.x;
+			float lastItemTouchY = ((CategorieListViewItem) v).lastItemTouchPos.y;
+
+			if (plusBtnHitRec.contains(lastItemTouchX, lastItemTouchY))
+			{
+				((CategorieListViewItem) v).plusClick();
+				if (lCategories != null)
+				{
+					for (CategorieEntry tmp : lCategories)
+					{
+						GpxFilename file = tmp.getFile();
+						if (file != null)
+						{
+							tmp.setState(file.Checked ? 1 : 0);
+						}
+
+					}
+				}
+				SetCategory();
+			}
+			else if (minusBtnHitRec.contains(lastItemTouchX, lastItemTouchY))
+			{
+				((CategorieListViewItem) v).minusClick();
+				SetCategory();
+			}
 
 			SetCategory();
 
@@ -468,7 +494,7 @@ public class CategorieListView extends V_ListView
 					}
 				}
 
-				return false;
+				return true;
 			}
 		});
 

@@ -12,12 +12,17 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
 
 public abstract class ManagerBase
 {
+	protected final int CONECTION_TIME_OUT = 15000;
+
 	public static boolean RenderThemeChanged = true;
 
 	public static ManagerBase Manager = null;
@@ -40,6 +45,12 @@ public abstract class ManagerBase
 	{
 		RenderTheme = theme;
 		RenderThemeChanged = true;
+	}
+
+	public boolean isRenderThemeSetted()
+	{
+		if (RenderTheme != null && RenderTheme.length() > 0) return true;
+		return false;
 	}
 
 	public PackBase CreatePack(String file) throws IOException
@@ -177,7 +188,11 @@ public abstract class ManagerBase
 		}
 
 		// Kachel laden
-		HttpClient httpclient = new DefaultHttpClient();
+		// set the connection timeout value to 15 seconds (15000 milliseconds)
+		final HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
+
+		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		HttpResponse response = null;
 
 		try

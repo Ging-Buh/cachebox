@@ -77,9 +77,4 @@ public class Sample_Control extends GL_View_Base
 	{
 	}
 
-	@Override
-	protected void renderWithoutScissor(SpriteBatch batch)
-	{
-	}
-
 }

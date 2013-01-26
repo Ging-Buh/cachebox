@@ -83,6 +83,11 @@ public class ButtonDialog extends Dialog
 		// setFooterHeight(80);
 	}
 
+	public ButtonDialog(CB_RectF rec, String Name)
+	{
+		super(rec, Name);
+	}
+
 	@Override
 	protected void Initial()
 	{

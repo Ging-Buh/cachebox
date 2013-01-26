@@ -16,6 +16,7 @@ import CB_Core.Plattform;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.ICallUrl;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IQuit;
 import CB_Core.Events.platformConector.IgetFileListner;
@@ -50,7 +51,7 @@ public class DesktopMain
 		new DesktopLogger();
 
 		InitalConfig();
-
+		Config.settings.ReadFromDB();
 		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
 
 		GL_View_Base.debug = debug;
@@ -95,7 +96,7 @@ public class DesktopMain
 		}
 		else
 		{
-			new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height, false);
+			new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height, true);
 		}
 
 		Timer timer = new Timer();
@@ -228,6 +229,36 @@ public class DesktopMain
 		DesktopClipboard dcb = new DesktopClipboard();
 
 		if (dcb != null) GlobalCore.setDefaultClipboard(dcb);
+
+		platformConector.setCallUrlListner(new ICallUrl()
+		{
+
+			@Override
+			public void call(String url)
+			{
+				java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+				if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE))
+				{
+
+					System.err.println("Desktop doesn't support the browse action (fatal)");
+					System.exit(1);
+				}
+
+				try
+				{
+
+					java.net.URI uri = new java.net.URI(url);
+					desktop.browse(uri);
+				}
+				catch (Exception e)
+				{
+
+					System.err.println(e.getMessage());
+				}
+
+			}
+		});
 
 	}
 

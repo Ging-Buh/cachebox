@@ -1,14 +1,19 @@
 package CB_Core.Settings;
 
+import java.util.ArrayList;
+
 public class SettingBase implements Comparable<SettingBase>
 {
+	public interface iChanged
+	{
+		public void isChanged();
+	}
+
+	protected ArrayList<iChanged> ChangedEventList = new ArrayList<SettingBase.iChanged>();
 	protected SettingCategory category;
 	protected String name;
 	protected SettingModus modus;
-	/**
-	 * true, if this setting should be stored in global setting database, otherwise in local database file
-	 */
-	protected boolean global;
+	protected SettingStoreType storeType;
 
 	/**
 	 * saves whether this setting is changed and needs to be saved
@@ -18,15 +23,31 @@ public class SettingBase implements Comparable<SettingBase>
 	private static int indexCount = 0;
 	private int index = -1;
 
-	public SettingBase(String name, SettingCategory category, SettingModus modus, boolean global)
+	public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType)
 	{
 		this.name = name;
 		this.category = category;
 		this.modus = modus;
-		this.global = global;
+		this.storeType = StoreType;
 		dirty = false;
 
 		index = indexCount++;
+	}
+
+	public void addChangedEventListner(iChanged listner)
+	{
+		synchronized (ChangedEventList)
+		{
+			if (!ChangedEventList.contains(listner)) ChangedEventList.add(listner);
+		}
+	}
+
+	public void removeChangedEventListner(iChanged listner)
+	{
+		synchronized (ChangedEventList)
+		{
+			ChangedEventList.remove(listner);
+		}
 	}
 
 	public boolean isDirty()
@@ -37,6 +58,7 @@ public class SettingBase implements Comparable<SettingBase>
 	public void setDirty()
 	{
 		dirty = true;
+		fireChangedEvent();
 	}
 
 	public void clearDirty()
@@ -54,9 +76,9 @@ public class SettingBase implements Comparable<SettingBase>
 		return category;
 	}
 
-	public boolean getGlobal()
+	public SettingStoreType getStoreType()
 	{
-		return global;
+		return storeType;
 	}
 
 	public SettingModus getModus()
@@ -93,5 +115,17 @@ public class SettingBase implements Comparable<SettingBase>
 	public int compareTo(SettingBase o)
 	{
 		return (this.index < o.index ? -1 : (this.index == o.index ? 0 : 1));
+	}
+
+	private void fireChangedEvent()
+	{
+		synchronized (ChangedEventList)
+		{
+			for (iChanged event : ChangedEventList)
+			{
+				event.isChanged();
+			}
+		}
+
 	}
 }

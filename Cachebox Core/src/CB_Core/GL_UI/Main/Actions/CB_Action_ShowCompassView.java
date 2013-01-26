@@ -9,6 +9,7 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.GL_UI.Menu.OptionMenu;
 import CB_Core.GL_UI.Views.CompassView;
 import CB_Core.Settings.SettingBool;
 
@@ -64,6 +65,17 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		icm.addItemClickListner(onItemClickListner);
 		MenuItem mi;
 
+		mi = icm.addItem(MenuID.MI_COMPASS_SHOW, "view");
+
+		return icm;
+	}
+
+	private void showOtionMenu()
+	{
+		OptionMenu icm = new OptionMenu("menu_compassView");
+		icm.addItemClickListner(onItemClickListner);
+		MenuItem mi;
+
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_MAP, "CompassShowMap");
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.CompassShowMap.getValue());
@@ -100,7 +112,20 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.CompassShowSunMoon.getValue());
 
-		return icm;
+		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION, "CompassShowTargetDirection");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.CompassShowTargetDirection.getValue());
+
+		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_S_D_T, "CompassShowSDT");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.CompassShowSDT.getValue());
+
+		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_LAST_FOUND, "CompassShowLastFound");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.CompassShowLastFound.getValue());
+
+		icm.show();
+
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()
@@ -112,6 +137,9 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 
 			switch (((MenuItem) v).getMenuItemId())
 			{
+			case MenuID.MI_COMPASS_SHOW:
+				showOtionMenu();
+				return true;
 			case MenuID.MI_COMPASS_SHOW_MAP:
 				toggleSetting(Config.settings.CompassShowMap);
 				return true;
@@ -147,6 +175,16 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 			case MenuID.MI_COMPASS_SHOW_SUN_MOON:
 				toggleSetting(Config.settings.CompassShowSunMoon);
 				return true;
+
+			case MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION:
+				toggleSetting(Config.settings.CompassShowTargetDirection);
+				return true;
+			case MenuID.MI_COMPASS_SHOW_S_D_T:
+				toggleSetting(Config.settings.CompassShowSDT);
+				return true;
+			case MenuID.MI_COMPASS_SHOW_LAST_FOUND:
+				toggleSetting(Config.settings.CompassShowLastFound);
+				return true;
 			}
 			return false;
 		}
@@ -156,7 +194,6 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 	{
 		setting.setValue(!setting.getValue());
 		Config.AcceptChanges();
-		if (CompassView.that != null && CompassView.that.isVisible()) CompassView.that.onShow();
 	}
 
 }

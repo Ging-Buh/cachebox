@@ -48,6 +48,7 @@ public class NumPad extends CB_View_Base
 	private Button btn_9;
 	private Button btn_Dot;
 	private Button btn_Del;
+	private Button btn_Bck;
 	private Button btn_left;
 	private Button btn_right;
 	private Button btn_OK;
@@ -87,6 +88,7 @@ public class NumPad extends CB_View_Base
 		this.addChild(btn_9);
 		this.addChild(btn_0);
 		this.addChild(btn_Del);
+		this.addChild(btn_Bck);
 		this.addChild(btn_4);
 		this.addChild(btn_5);
 		this.addChild(btn_6);
@@ -104,37 +106,32 @@ public class NumPad extends CB_View_Base
 		btn_left.setX(center - btn_left.getWidth());
 		btn_right.setX(center);
 
-		// third line
+		//
 		float y = btn_left.getMaxY();
+		btn_0.setPos(left + btn_0.getWidth(), y);
+		btn_Del.setPos(btn_0.getMaxX() + btn_0.getWidth(), y);
+		btn_Bck.setPos(btn_Del.getMaxX(), y);
+		if (mType == Type.withDot || mType == Type.withOkCancel || mType == Type.withDoubleDotOkCancel)
+		{
+			btn_Dot.setPos(btn_0.getMaxX(), y);
+			this.addChild(btn_Dot);
+		}
+
+		// third line
+		y = btn_0.getMaxY();
 		btn_7.setPos(left, y);
 		btn_8.setPos(btn_7.getMaxX(), y);
 		btn_9.setPos(btn_8.getMaxX(), y);
-		btn_0.setPos(btn_9.getMaxX(), y);
-		btn_Del.setPos(btn_0.getMaxX(), y);
 
 		y = btn_7.getMaxY();
 		btn_4.setPos(left, y);
 		btn_5.setPos(btn_4.getMaxX(), y);
 		btn_6.setPos(btn_5.getMaxX(), y);
 
-		if (mType == Type.withDot || mType == Type.withOkCancel || mType == Type.withDoubleDotOkCancel)
-		{
-			btn_Dot.setPos(btn_6.getMaxX(), y);
-			this.addChild(btn_Dot);
-		}
-
 		if (mType == Type.withOkCancel || mType == Type.withoutDotOkCancel || mType == Type.withDoubleDotOkCancel)
 		{
-			if (mType == Type.withOkCancel || mType == Type.withDot || mType == Type.withDoubleDotOkCancel)
-			{
-				btn_Cancel.setPos(btn_Dot.getMaxX(), y);
-				this.addChild(btn_Cancel);
-			}
-			else
-			{
-				btn_Cancel.setPos(btn_6.getMaxX(), y);
-				this.addChild(btn_Cancel);
-			}
+			btn_Cancel.setPos(btn_6.getMaxX(), y);
+			this.addChild(btn_Cancel);
 		}
 
 		y = btn_4.getMaxY();
@@ -155,7 +152,7 @@ public class NumPad extends CB_View_Base
 
 		this.setOnClickListener(clickListner);
 
-		float btnHeight = this.height / 4f;
+		float btnHeight = this.height / 5f;
 		float btnWidth = this.width / 5f;
 		float minValue = Math.min(btnHeight, btnWidth);
 
@@ -176,20 +173,13 @@ public class NumPad extends CB_View_Base
 
 		btn_Dot = new Button(btnRec, "btn Dot");
 		btn_Del = new Button(btnRec, "btn Del");
+		btn_Bck = new Button(btnRec, "btn_Bck");
 
 		btn_left = new Button(btnRecHalfWide, "btn left");
 		btn_right = new Button(btnRecHalfWide, "btn right");
 
 		btn_OK = new Button(btnRecWide, "btn OK");
-
-		if (mType == Type.withoutDotOkCancel)
-		{
-			btn_Cancel = new Button(btnRecWide, "btn Cancel");
-		}
-		else
-		{
-			btn_Cancel = new Button(btnRec, "btn Cancel");
-		}
+		btn_Cancel = new Button(btnRecWide, "btn Cancel");
 
 		// set captions
 		btn_0.setText("0");
@@ -208,6 +198,7 @@ public class NumPad extends CB_View_Base
 			btn_Dot.setText(".");
 
 		btn_Del.setText("Del");
+		btn_Bck.setText("Back");
 		btn_OK.setText(GlobalCore.Translations.Get("ok"));
 		btn_Cancel.setText(GlobalCore.Translations.Get("cancel"));
 		btn_left.setText("<");
@@ -227,21 +218,6 @@ public class NumPad extends CB_View_Base
 
 		btn_left.setOnClickListener(clickListner);
 		btn_right.setOnClickListener(clickListner);
-
-		btn_0.setOnDoubleClickListener(doubleClickListner);
-		btn_1.setOnDoubleClickListener(doubleClickListner);
-		btn_2.setOnDoubleClickListener(doubleClickListner);
-		btn_3.setOnDoubleClickListener(doubleClickListner);
-		btn_4.setOnDoubleClickListener(doubleClickListner);
-		btn_5.setOnDoubleClickListener(doubleClickListner);
-		btn_6.setOnDoubleClickListener(doubleClickListner);
-		btn_7.setOnDoubleClickListener(doubleClickListner);
-		btn_8.setOnDoubleClickListener(doubleClickListner);
-		btn_9.setOnDoubleClickListener(doubleClickListner);
-		btn_Dot.setOnDoubleClickListener(doubleClickListner);
-
-		btn_left.setOnDoubleClickListener(doubleClickListner);
-		btn_right.setOnDoubleClickListener(doubleClickListner);
 
 		btn_OK.setOnClickListener(new OnClickListener()
 		{
@@ -290,6 +266,22 @@ public class NumPad extends CB_View_Base
 			}
 		});
 
+		btn_Bck.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				if (mKeyPressedListner != null)
+				{
+					platformConector.vibrate();
+					mKeyPressedListner.KeyPressed("B");
+					return true;
+				}
+				return false;
+			}
+		});
+
 	}
 
 	@Override
@@ -299,32 +291,6 @@ public class NumPad extends CB_View_Base
 	}
 
 	OnClickListener clickListner = new OnClickListener()
-	{
-
-		@Override
-		public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button)
-		{
-			if (v instanceof Button)
-			{
-				Thread t = new Thread(new Runnable()
-				{
-
-					@Override
-					public void run()
-					{
-						if (mKeyPressedListner != null)
-						{
-							mKeyPressedListner.KeyPressed(((Button) v).getText());
-						}
-					}
-				});
-				t.start();
-			}
-			return true;
-		}
-	};
-
-	OnClickListener doubleClickListner = new OnClickListener()
 	{
 
 		@Override
@@ -394,6 +360,9 @@ public class NumPad extends CB_View_Base
 
 			case 'D':
 				focusedTextField.keyTyped(EditWrapedTextField.DELETE);
+				break;
+			case 'B':
+				focusedTextField.keyTyped(EditWrapedTextField.BACKSPACE);
 				break;
 
 			default:

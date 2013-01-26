@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import de.droidcachebox.Global;
+import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Ui.ActivityUtils;
 
@@ -89,20 +90,28 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(final Cache cache, Waypoint waypoint)
 	{
-		if (aktCache != cache)
+		main.mainActivity.runOnUiThread(new Runnable()
 		{
-			// Wwenn der aktuelle Cache geändert wurde, Telefonjokerliste löschen
-			aktCache = cache;
-			Global.Jokers.ClearList();
-			this.setAdapter(null);
-			lvAdapter = new CustomAdapter(getContext(), cache);
-			this.setAdapter(lvAdapter);
-			lvAdapter.notifyDataSetChanged();
-		}
-		else
-			invalidate();
+			@Override
+			public void run()
+			{
+				if (aktCache != cache)
+				{
+					// Wwenn der aktuelle Cache geändert wurde, Telefonjokerliste löschen
+					aktCache = cache;
+					Global.Jokers.ClearList();
+					JokerView.this.setAdapter(null);
+					lvAdapter = new CustomAdapter(getContext(), cache);
+					JokerView.this.setAdapter(lvAdapter);
+					lvAdapter.notifyDataSetChanged();
+				}
+				else
+					invalidate();
+			}
+		});
+
 	}
 
 	public void ActivityResult(int requestCode, int resultCode, Intent data)

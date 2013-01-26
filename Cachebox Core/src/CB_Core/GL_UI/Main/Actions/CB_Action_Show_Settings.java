@@ -2,7 +2,6 @@ package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
-import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.Menu.MenuID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -32,11 +31,8 @@ public class CB_Action_Show_Settings extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		SettingsActivity set = new SettingsActivity();
-		set.show();
-
+		if (settingsDialog == null) settingsDialog = new SettingsActivity();
+		settingsDialog.show();
 	}
-
-	WaitDialog wd;
 
 }

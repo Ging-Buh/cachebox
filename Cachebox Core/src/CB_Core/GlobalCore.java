@@ -2,6 +2,7 @@ package CB_Core;
 
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector;
+import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.TranslationEngine.LangStrings;
@@ -14,12 +15,12 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1298;
+	public static final int CurrentRevision = 1387;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Beta";
 
 	public static final String br = System.getProperty("line.separator");
-	public static final String AboutMsg = "Team Cachebox (2011-2012)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
+	public static final String AboutMsg = "Team Cachebox (2011-2013)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
 			+ br + "Groundspeak Inc. Used with permission";
 	public static final String splashMsg = AboutMsg + br + br + br + "POWERED BY:";
 
@@ -34,7 +35,7 @@ public class GlobalCore
 	public static Coordinate LastPosition = new Coordinate();
 	// public static Coordinate Marker = new Coordinate();
 	public static boolean ResortAtWork = false;
-	public static final int LatestDatabaseChange = 1022;
+	public static final int LatestDatabaseChange = 1023;
 	public static final int LatestDatabaseFieldNoteChange = 1003;
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
@@ -82,6 +83,10 @@ public class GlobalCore
 	public static boolean isTab = false;
 
 	public static boolean useSmallSkin = false;
+
+	public static DisplayType displayType = DisplayType.Normal;
+
+	public static boolean posibleTabletLayout;
 
 	public static LangStrings Translations = new LangStrings();
 
@@ -277,8 +282,14 @@ public class GlobalCore
 		return ret;
 	}
 
+	private static boolean isTestVersionCheked = false;
+	private static boolean isTestVersion = false;
+
 	public static boolean isTestVersion()
 	{
-		return VersionPrefix.contains("Test");
+		if (isTestVersionCheked) return isTestVersion;
+		isTestVersion = VersionPrefix.contains("Test");
+		isTestVersionCheked = true;
+		return isTestVersion;
 	}
 }

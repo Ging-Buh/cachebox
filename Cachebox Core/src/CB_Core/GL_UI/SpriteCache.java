@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -117,6 +119,9 @@ public class SpriteCache
 	public static Drawable chkOnDisabled;
 	public static Drawable chkOffDisabled;
 
+	public static Drawable radioOn;
+	public static Drawable radioBack;
+
 	public static Drawable selection;
 	public static Drawable selection_set;
 	public static Drawable selection_left;
@@ -134,6 +139,9 @@ public class SpriteCache
 	public static Drawable bar_0;
 	public static Drawable barSmall_0;
 
+	public static Drawable[] MapScale;
+	public static Sprite[] Accuracy;
+
 	public static int patch;
 
 	public static String PathDefaultAtlas;
@@ -150,10 +158,12 @@ public class SpriteCache
 			Gdx.gl11.glFinish();
 		}
 
+		String TexturName = Config.settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp" : "UI_IconPack.spp";
+
 		GlobalCore.PathCustom = path + "/day/";
 		GlobalCore.PathCustomNight = path + "/night/";
-		PathCustomAtlas = path + "/day/UI_IconPack.spp";
-		PathCustomNightAtlas = path + "/night/UI_IconPack.spp";
+		PathCustomAtlas = path + "/day/" + TexturName;
+		PathCustomNightAtlas = path + "/night/" + TexturName;
 
 		String defaultPath = path;
 		int pos = defaultPath.lastIndexOf("/");
@@ -173,8 +183,8 @@ public class SpriteCache
 
 		GlobalCore.PathDefault = defaultPath + "/day/";
 		GlobalCore.PathDefaultNight = defaultPath + "/night/";
-		PathDefaultAtlas = defaultPath + "/day/UI_IconPack.spp";
-		PathDefaultNightAtlas = defaultPath + "/night/UI_IconPack.spp";
+		PathDefaultAtlas = defaultPath + "/day/" + TexturName;
+		PathDefaultNightAtlas = defaultPath + "/night/" + TexturName;
 
 		if (atlasDefault != null)
 		{
@@ -213,6 +223,34 @@ public class SpriteCache
 	public static Sprite getThemedSprite(String name)
 	{
 		return getThemedSprite(name, 1.0f);
+	}
+
+	public static Skin night_skin;
+	public static Skin day_skin;
+
+	public static Color getThemedColor(String Name)
+	{
+		String path = Config.settings.SkinFolder.getValue();
+
+		if (day_skin == null)
+		{
+			String day_skinPath = path + "/day/skin.json";
+			day_skin = new Skin(Gdx.files.absolute(day_skinPath));
+		}
+		if (night_skin == null)
+		{
+			String night_skinPath = path + "/night/skin.json";
+			night_skin = new Skin(Gdx.files.absolute(night_skinPath));
+		}
+		if (Config.settings.nightMode.getValue())
+		{
+			return night_skin.getColor(Name);
+		}
+		else
+		{
+			return day_skin.getColor(Name);
+		}
+
 	}
 
 	public static Sprite getThemedSprite(String name, float scale)
@@ -683,6 +721,16 @@ public class SpriteCache
 
 		}
 
+		MapScale = new Drawable[3];
+		MapScale[0] = new SpriteDrawable(getThemedSprite("MapScale-3"));
+		MapScale[1] = new SpriteDrawable(getThemedSprite("MapScale-4"));
+		MapScale[2] = new SpriteDrawable(getThemedSprite("MapScale-5"));
+
+		Accuracy = new Sprite[3];
+		Accuracy[0] = getThemedSprite("Accuracy-0");
+		Accuracy[1] = getThemedSprite("Accuracy-1");
+		Accuracy[2] = getThemedSprite("Accuracy-2");
+
 		loadButtnSprites();
 
 		createDrawables();
@@ -696,7 +744,7 @@ public class SpriteCache
 		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("activity-back"), patch, patch, patch, patch));
 		activityBorderMask = new NinePatchDrawable(
 				new NinePatch(SpriteCache.getThemedSprite("activity-border"), patch, patch, patch, patch));
-		ListBack = new NinePatchDrawable(new NinePatch(getThemedSprite("background"), 1, 1, 1, 1));
+		ListBack = new ColorDrawable(getThemedColor("background"));
 		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
 		AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
 		InfoBack = new NinePatchDrawable(new NinePatch(getThemedSprite("InfoPanelBack"), patch, patch, patch, patch));
@@ -710,6 +758,9 @@ public class SpriteCache
 		chkOff = new SpriteDrawable(getThemedSprite("check-off"));
 		chkOnDisabled = new SpriteDrawable(getThemedSprite("check-disable"));
 		chkOffDisabled = new SpriteDrawable(getThemedSprite("check-off"));
+
+		radioOn = new SpriteDrawable(getThemedSprite("RadioButtonSet"));
+		radioBack = new SpriteDrawable(getThemedSprite("RadioButtonBack"));
 
 		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("text-field-back"), patch, patch, patch,
 				patch));

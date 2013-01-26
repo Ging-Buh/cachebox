@@ -6,7 +6,6 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.GPS;
-import CB_Core.Locator.GpsStatus;
 import CB_Core.Locator.GpsStrength;
 import CB_Core.Math.CB_RectF;
 
@@ -16,32 +15,29 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 {
 
-	private GpsStatus mGpsStatus;
+	private boolean drawWithAlpha = false;
 	private Image[] balken = null;
 
 	public SatBarChart(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-
 	}
 
-	public void setGpsStatus(GpsStatus status)
+	public void setDrawWithAlpha(boolean value)
 	{
-		mGpsStatus = status;
+		drawWithAlpha = value;
+		redraw = true;
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-
 	}
 
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-
 		if (redraw) setSatStrength();
-
 	}
 
 	private void setSatStrength()
@@ -53,6 +49,18 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		if (small)
 		{
 			w = (this.width / 12);
+		}
+
+		// calc Colors
+		Color red = Color.RED.cpy();
+		Color grn = Color.GREEN.cpy();
+		Color gry = Color.LIGHT_GRAY.cpy();
+
+		if (drawWithAlpha)
+		{
+			red.a = 0.4f;
+			grn.a = 0.4f;
+			gry.a = 0.4f;
 		}
 
 		if (balken == null)
@@ -112,11 +120,11 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 					// // balken farbe festlegen
 					if (tmp.getFixed())
 					{
-						balken[count].setColor(Color.GREEN);
+						balken[count].setColor(grn);
 					}
 					else
 					{
-						balken[count].setColor(Color.RED);
+						balken[count].setColor(red);
 					}
 				}
 
@@ -130,7 +138,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		{
 			for (int i = count; i <= 13; i++)
 			{
-				if (balken[i] != null) balken[i].setColor(Color.LIGHT_GRAY);
+				if (balken[i] != null) balken[i].setColor(gry);
 			}
 		}
 
@@ -165,6 +173,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	{
 		super.onShow();
 		GpsStateChangeEventList.Add(this);
+		redraw = true;
 	}
 
 	@Override
@@ -172,5 +181,12 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	{
 		super.onHide();
 		GpsStateChangeEventList.Remove(this);
+	}
+
+	@Override
+	public void onRezised(CB_RectF rec)
+	{
+		super.onRezised(rec);
+		redraw = true;
 	}
 }

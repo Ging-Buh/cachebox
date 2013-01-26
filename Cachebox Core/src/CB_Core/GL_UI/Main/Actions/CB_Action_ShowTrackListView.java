@@ -241,20 +241,6 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 				case MenuID.MI_CIRCLE:
 					GenTrackCircle();
 					return true;
-				case MenuID.MI_OPENROUTE:
-
-					Thread tread = new Thread(new Runnable()
-					{
-
-						@Override
-						public void run()
-						{
-							TabMainView.actionGenerateRoute.Execute();
-						}
-					});
-					tread.start();
-
-					return true;
 				}
 				return false;
 			}
@@ -262,14 +248,15 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		cm2.addItem(MenuID.MI_P2P, "Point2Point");
 		cm2.addItem(MenuID.MI_PROJECT, "Projection");
 		cm2.addItem(MenuID.MI_CIRCLE, "Circle");
-		cm2.addItem(MenuID.MI_OPENROUTE, "OpenRoute");
 
 		cm2.show();
 	}
 
 	private void GenTrackP2P()
 	{
-		final Coordinate coord = GlobalCore.LastValidPosition;
+		Coordinate coord = GlobalCore.getSelectedCoord();
+
+		if (coord == null) coord = GlobalCore.LastValidPosition;
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("fromPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
@@ -289,8 +276,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
 						route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(),
-								dist);
+						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(),
+								startCoord.getLongitude(), dist);
 						route.TrackLength = dist[0];
 
 						route.ShowRoute = true;
@@ -304,7 +291,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 	private void GenTrackProjection()
 	{
-		final Coordinate coord = GlobalCore.LastValidPosition;
+		Coordinate coord = GlobalCore.getSelectedCoord();
+		if (coord == null) coord = GlobalCore.LastValidPosition;
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("Projection"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
@@ -324,8 +312,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
 						route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(),
-								dist);
+						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(),
+								startCoord.getLongitude(), dist);
 						route.TrackLength = dist[0];
 
 						route.ShowRoute = true;
@@ -341,7 +329,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 	private void GenTrackCircle()
 	{
-		final Coordinate coord = GlobalCore.LastValidPosition;
+		Coordinate coord = GlobalCore.getSelectedCoord();
+		if (coord == null) coord = GlobalCore.LastValidPosition;
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("centerPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()

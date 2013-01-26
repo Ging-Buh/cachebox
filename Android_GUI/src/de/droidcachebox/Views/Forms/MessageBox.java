@@ -609,9 +609,9 @@ public class MessageBox extends android.app.Dialog
 				int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
 				LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-				if (height > UiSizes.getWindowHeight() - (UiSizes.getQuickButtonHeight() * 4))
+				if (height > UiSizes.getWindowHeight() - (UiSizes.getButtonHeight() * 4))
 				{
-					height = UiSizes.getWindowHeight() - (UiSizes.getQuickButtonHeight() * 4);
+					height = UiSizes.getWindowHeight() - (UiSizes.getButtonHeight() * 4);
 					params.height = height;
 					((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
 				}

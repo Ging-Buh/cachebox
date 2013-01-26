@@ -28,6 +28,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCompassView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCreditsView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowDescriptionView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowFieldNotesView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowFilterSettings;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowJokerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowLogView;
@@ -93,6 +94,7 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_ShowSolverView actionShowSolverView;
 	private CB_Action_ShowSolverView2 actionShowSolverView2;
 	public static CB_Action_ShowSpoilerView actionShowSpoilerView;
+	public static CB_Action_ShowFilterSettings actionShowFilter = new CB_Action_ShowFilterSettings();
 	// TODO activate TB List on 0.6.x => private CB_Action_ShowTrackableListView actionShowTrackableListView;
 	public static CB_Action_ShowTrackListView actionShowTrackListView;
 	public static CB_Action_ShowWaypointView actionShowWaypointView;
@@ -585,19 +587,22 @@ public class TabMainView extends MainViewBase
 		// ##################################
 		// Set new list size at context menu
 		// ##################################
-
-		int filterCount = Database.Data.Query.size();
-
-		if (Database.Data.Query.GetCacheByGcCode("CBPark") != null) --filterCount;
-
-		int DBCount = Database.Data.getCacheCountInDB();
-		String Filtert = "";
-		if (filterCount != DBCount)
+		String Name = "";
+		synchronized (Database.Data.Query)
 		{
-			Filtert = String.valueOf(filterCount) + "/";
-		}
+			int filterCount = Database.Data.Query.size();
 
-		String Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
+			if (Database.Data.Query.GetCacheByGcCode("CBPark") != null) --filterCount;
+
+			int DBCount = Database.Data.getCacheCountInDB();
+			String Filtert = "";
+			if (filterCount != DBCount)
+			{
+				Filtert = String.valueOf(filterCount) + "/";
+			}
+
+			Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
+		}
 		actionShowCacheList.setNameExtention(Name);
 	}
 

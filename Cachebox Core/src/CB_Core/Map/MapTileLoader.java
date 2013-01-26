@@ -8,32 +8,80 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.security.auth.DestroyFailedException;
 
+import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+
 public class MapTileLoader
 {
 	public static final int MAX_MAP_ZOOM = 22;
 	public Layer CurrentLayer = null;
+	public Layer CurrentOverlayLayer = null;
 
 	protected SortedMap<Long, TileGL> loadedTiles = new TreeMap<Long, TileGL>();
+	protected SortedMap<Long, TileGL> loadedOverlayTiles = new TreeMap<Long, TileGL>();
 	final Lock loadedTilesLock = new ReentrantLock();
+	final Lock loadedOverlayTilesLock = new ReentrantLock();
 	protected SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
+	protected SortedMap<Long, Descriptor> queuedOverlayTiles = new TreeMap<Long, Descriptor>();
 	private Lock queuedTilesLock = new ReentrantLock();
+	private Lock queuedOverlayTilesLock = new ReentrantLock();
 	private Thread queueProcessor = null;
+	private Thread queueProcessorAliveCheck = null;
 
 	int maxNumTiles = 0;
+	boolean overlay = false;
 
 	public MapTileLoader()
 	{
+		this(false);
+	}
+
+	public MapTileLoader(boolean overlay)
+	{
 		super();
+		this.overlay = overlay;
 		if (queueProcessor == null)
 		{
 			queueProcessor = new queueProcessor();
 			queueProcessor.setPriority(Thread.MIN_PRIORITY);
 			queueProcessor.start();
+
+			queueProcessorAliveCheck = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					do
+					{
+
+						try
+						{
+							Thread.sleep(1000);
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+
+						if (!queueProcessor.isAlive())
+						{
+							Logger.DEBUG("MapTileLoader Restart queueProcessor");
+							queueProcessor = new queueProcessor();
+							queueProcessor.setPriority(Thread.MIN_PRIORITY);
+							queueProcessor.start();
+						}
+					}
+					while (true);
+				}
+			});
+			queueProcessorAliveCheck.setPriority(Thread.MIN_PRIORITY);
+			queueProcessorAliveCheck.start();
 		}
 	}
 
@@ -51,11 +99,20 @@ public class MapTileLoader
 	{
 		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
 
-		deleteUnusedTiles();
+		deleteUnusedTiles(loadedTiles, loadedTilesLock);
+		if (overlay)
+		{
+			deleteUnusedTiles(loadedOverlayTiles, loadedOverlayTilesLock);
+		}
 		// alle notwendigen Tiles zum Laden einstellen in die Queue
 
 		loadedTilesLock.lock();
 		queuedTilesLock.lock();
+		if (overlay)
+		{
+			loadedOverlayTilesLock.lock();
+			queuedOverlayTilesLock.lock();
+		}
 		// Queue jedesmal löschen, damit die Tiles, die eigentlich
 		// mal
 		// gebraucht wurden aber trotzdem noch nicht geladen sind
@@ -74,6 +131,22 @@ public class MapTileLoader
 		{
 			queuedTiles.remove(desc.GetHashCode());
 		}
+		if (overlay)
+		{
+			toDelete.clear();
+			for (Descriptor desc : queuedOverlayTiles.values())
+			{
+				if (desc.Data == mapView)
+				{
+					toDelete.add(desc);
+				}
+			}
+			for (Descriptor desc : toDelete)
+			{
+				queuedOverlayTiles.remove(desc.GetHashCode());
+			}
+
+		}
 		try
 		{
 			for (int i = lo.X; i <= ru.X; i++)
@@ -86,15 +159,22 @@ public class MapTileLoader
 
 					try
 					{
-						if (loadedTiles.containsKey(desc.GetHashCode()))
+						if (!loadedTiles.containsKey(desc.GetHashCode()))
 						{
-							continue; // Dieses
-										// Tile
-										// existiert
-										// schon!
+							if (!queuedTiles.containsKey(desc.GetHashCode()))
+							{
+								queueTile(desc, queuedTiles, queuedTilesLock);
+							}
 						}
-						if (queuedTiles.containsKey(desc.GetHashCode())) continue;
-						queueTile(desc);
+						if (overlay)
+						{
+							if (loadedOverlayTiles.containsKey(desc.GetHashCode()))
+							{
+								continue;
+							}
+							if (queuedOverlayTiles.containsKey(desc.GetHashCode())) continue;
+							queueTile(desc, queuedOverlayTiles, queuedOverlayTilesLock);
+						}
 					}
 					catch (Exception e)
 					{
@@ -107,10 +187,15 @@ public class MapTileLoader
 		{
 			queuedTilesLock.unlock();
 			loadedTilesLock.unlock();
+			if (overlay)
+			{
+				queuedOverlayTilesLock.unlock();
+				loadedOverlayTilesLock.unlock();
+			}
 		}
 	}
 
-	private void deleteUnusedTiles()
+	private void deleteUnusedTiles(SortedMap<Long, TileGL> loadedTiles, Lock loadedTilesLock)
 	{
 		// Ist Auslagerung überhaupt nötig?
 		if (numLoadedTiles() <= maxNumTiles) return;
@@ -166,7 +251,7 @@ public class MapTileLoader
 		if (maxNumTiles2 > maxNumTiles) maxNumTiles = maxNumTiles2;
 	}
 
-	private void queueTile(Descriptor desc)
+	private void queueTile(Descriptor desc, SortedMap<Long, Descriptor> queuedTiles, Lock queuedTilesLock)
 	{
 		queuedTilesLock.lock();
 		try
@@ -204,6 +289,29 @@ public class MapTileLoader
 		{
 			loadedTilesLock.unlock();
 		}
+		if (overlay)
+		{
+			loadedOverlayTilesLock.lock();
+			try
+			{
+				for (TileGL tile : loadedOverlayTiles.values())
+				{
+					try
+					{
+						tile.destroy();
+					}
+					catch (DestroyFailedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				loadedOverlayTiles.clear();
+			}
+			finally
+			{
+				loadedOverlayTilesLock.unlock();
+			}
+		}
 	}
 
 	public void increaseLoadedTilesAge()
@@ -213,12 +321,31 @@ public class MapTileLoader
 		{
 			tile.Age++;
 		}
+		if (overlay)
+		{
+			for (TileGL tile : loadedOverlayTiles.values())
+			{
+				tile.Age++;
+			}
+		}
 	}
 
 	public TileGL getLoadedTile(Descriptor desc)
 	{
 		return loadedTiles.get(desc.GetHashCode());
 	}
+
+	public TileGL getLoadedOverlayTile(Descriptor desc)
+	{
+		// Overlay Tiles liefern
+		if (!overlay)
+		{
+			return null;
+		}
+		return loadedOverlayTiles.get(desc.GetHashCode());
+	}
+
+	public static boolean queueProcessorLifeCycle = false;
 
 	private class queueProcessor extends Thread
 	{
@@ -227,16 +354,19 @@ public class MapTileLoader
 		{
 			try
 			{
-
 				do
 				{
+					queueProcessorLifeCycle = !queueProcessorLifeCycle;
 					Descriptor desc = null;
-					if (!Energy.DisplayOff() /* && MapView.this.isVisible() */&& queuedTiles.size() > 0)
+					if (!Energy.DisplayOff() /* && MapView.this.isVisible() */
+							&& ((queuedTiles.size() > 0) || (queuedOverlayTiles.size() > 0)))
 					{
 
 						try
 						{
+							boolean calcOverlay = false;
 							queuedTilesLock.lock();
+							if (overlay) queuedOverlayTilesLock.lock();
 							try
 							{
 								// ArrayList<KachelOrder> kOrder = new
@@ -261,7 +391,15 @@ public class MapTileLoader
 								Descriptor nearestDesc = null;
 								double nearestDist = Double.MAX_VALUE;
 								int nearestZoom = 0;
-								for (Descriptor tmpDesc : queuedTiles.values())
+								SortedMap<Long, Descriptor> tmpQueuedTiles = queuedTiles;
+								calcOverlay = false;
+								if (overlay && queuedTiles.size() == 0)
+								{
+									tmpQueuedTiles = queuedOverlayTiles;
+									calcOverlay = true; // es wird gerade ein Overlay Tile geladen
+								}
+
+								for (Descriptor tmpDesc : tmpQueuedTiles.values())
 								{
 									// zugehörige MapView aus dem Data vom Descriptor holen
 									MapView mapView = null;
@@ -307,11 +445,14 @@ public class MapTileLoader
 							finally
 							{
 								queuedTilesLock.unlock();
+								if (overlay) queuedOverlayTilesLock.unlock();
 							}
 
 							// if (desc.Zoom == zoom)
 							{
-								LoadTile(desc);
+								if (calcOverlay) LoadOverlayTile(desc);
+								else
+									LoadTile(desc);
 							}
 
 							// if (queuedTiles.size() < mapView.maxTilesPerScreen) Thread.sleep(100);
@@ -319,7 +460,12 @@ public class MapTileLoader
 						}
 						catch (Exception ex1)
 						{
+							if (Config.settings.FireMapQueueProcessorExceptions.getValue())
+							{
+								throw ex1;
+							}
 							Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
+							Thread.sleep(400);
 						}
 
 					}
@@ -333,6 +479,27 @@ public class MapTileLoader
 			catch (Exception ex3)
 			{
 				Logger.Error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
+				if (Config.settings.FireMapQueueProcessorExceptions.getValue())
+				{
+					try
+					{
+						throw new Exception(ex3);
+					}
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				try
+				{
+					Thread.sleep(400);
+				}
+				catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			finally
 			{
@@ -346,14 +513,16 @@ public class MapTileLoader
 	public long getMapTilePosFactor(float zoom)
 	{
 		long result = 1;
-
-		// for (int z = zoom; z < MAX_MAP_ZOOM; z++)
-		// {
-		// result *= 2;
-		// }
-
 		result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
+		return result;
+	}
 
+	public float convertCameraZommToFloat(OrthographicCamera cam)
+	{
+		if (cam.zoom <= 0) return 0f;
+
+		float result = 0.0f;
+		result = (float) MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));
 		return result;
 	}
 
@@ -366,8 +535,7 @@ public class MapTileLoader
 		{
 			bytes = ManagerBase.Manager.LoadInvertedPixmap(CurrentLayer, desc);
 		}
-		// byte[] bytes = MapManagerEventPtr.OnGetMapTile(CurrentLayer, desc);
-		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));
+
 		if (bytes != null && bytes.length > 0)
 		{
 			tileState = TileGL.TileState.Present;
@@ -378,6 +546,32 @@ public class MapTileLoader
 		else
 		{
 			ManagerBase.Manager.CacheTile(CurrentLayer, desc);
+		}
+
+	}
+
+	private void LoadOverlayTile(Descriptor desc)
+	{
+		TileGL.TileState tileState = TileGL.TileState.Disposed;
+
+		byte[] bytes = null;
+		if (ManagerBase.Manager != null)
+		{
+			// Load Overlay never inverted !!!
+			bytes = ManagerBase.Manager.LoadLocalPixmap(CurrentOverlayLayer, desc);
+		}
+		// byte[] bytes = MapManagerEventPtr.OnGetMapTile(CurrentLayer, desc);
+		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));
+		if (bytes != null && bytes.length > 0)
+		{
+			tileState = TileGL.TileState.Present;
+			addLoadedOverlayTile(desc, bytes, tileState);
+			// Redraw Map after a new Tile was loaded or generated
+			GL.that.renderOnce("MapTileLoader loadOverlayTile");
+		}
+		else
+		{
+			ManagerBase.Manager.CacheTile(CurrentOverlayLayer, desc);
 		}
 
 	}
@@ -418,4 +612,49 @@ public class MapTileLoader
 
 	}
 
+	private void addLoadedOverlayTile(Descriptor desc, byte[] bytes, TileGL.TileState state)
+	{
+		loadedOverlayTilesLock.lock();
+		try
+		{
+			if (loadedOverlayTiles.containsKey(desc.GetHashCode()))
+			{
+
+			}
+			else
+			{
+				TileGL tile = new TileGL(desc, bytes, state);
+				loadedOverlayTiles.put(desc.GetHashCode(), tile);
+			}
+
+		}
+		finally
+		{
+			loadedOverlayTilesLock.unlock();
+		}
+
+		queuedOverlayTilesLock.lock();
+		try
+		{
+			if (queuedOverlayTiles.containsKey(desc.GetHashCode()))
+			{
+				queuedOverlayTiles.remove(desc.GetHashCode());
+			}
+		}
+		finally
+		{
+			queuedOverlayTilesLock.unlock();
+		}
+
+	}
+
+	public void SetOverlay(boolean value)
+	{
+		overlay = value;
+	}
+
+	public boolean GetOverlay()
+	{
+		return overlay;
+	}
 }

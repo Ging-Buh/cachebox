@@ -472,53 +472,57 @@ public class SearchDialog extends PopUp_Base
 
 			boolean criterionMatches = false;
 
-			if (!mSearchAktive)
-			{
-				CacheListIterator = Database.Data.Query.iterator();
-				mSearchAktive = true;
-			}
-
-			Cache tmp = null;
-			while (CacheListIterator.hasNext() && !criterionMatches)
+			synchronized (Database.Data.Query)
 			{
 
-				tmp = CacheListIterator.next();
-
-				switch (mSearchState)
+				if (!mSearchAktive)
 				{
-				case 0:
-					criterionMatches = tmp.Name.toLowerCase().contains(searchPattern);
-					break;
-				case 1:
-					criterionMatches = tmp.GcCode.toLowerCase().contains(searchPattern);
-					break;
-				case 2:
-					criterionMatches = tmp.Owner.toLowerCase().contains(searchPattern)
-							|| tmp.PlacedBy.toLowerCase().contains(searchPattern);
-					break;
+					CacheListIterator = Database.Data.Query.iterator();
+					mSearchAktive = true;
 				}
 
-				if (!criterionMatches) mSearchIndex++;
-			}
+				Cache tmp = null;
+				while (CacheListIterator.hasNext() && !criterionMatches)
+				{
 
-			if (!criterionMatches)
-			{
-				mBtnNext.disable();
-				mSearchAktive = false;
-				GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheFound"), GlobalCore.Translations.Get("search"), MessageBoxButtons.OK,
-						MessageBoxIcon.Asterisk, null);
-			}
-			else
-			{
+					tmp = CacheListIterator.next();
 
-				Waypoint finalWp = null;
-				if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
-				if (tmp != null) GlobalCore.setSelectedWaypoint(tmp, finalWp);
-				// deactivate autoResort when Cache is selected by hand
-				GlobalCore.autoResort = false;
+					switch (mSearchState)
+					{
+					case 0:
+						criterionMatches = tmp.Name.toLowerCase().contains(searchPattern);
+						break;
+					case 1:
+						criterionMatches = tmp.GcCode.toLowerCase().contains(searchPattern);
+						break;
+					case 2:
+						criterionMatches = tmp.Owner.toLowerCase().contains(searchPattern)
+								|| tmp.PlacedBy.toLowerCase().contains(searchPattern);
+						break;
+					}
 
-				mBtnNext.enable();
+					if (!criterionMatches) mSearchIndex++;
+				}
 
+				if (!criterionMatches)
+				{
+					mBtnNext.disable();
+					mSearchAktive = false;
+					GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheFound"), GlobalCore.Translations.Get("search"),
+							MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
+				}
+				else
+				{
+
+					Waypoint finalWp = null;
+					if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
+					if (tmp != null) GlobalCore.setSelectedWaypoint(tmp, finalWp);
+					// deactivate autoResort when Cache is selected by hand
+					GlobalCore.autoResort = false;
+
+					mBtnNext.enable();
+
+				}
 			}
 		}
 		else
@@ -548,25 +552,27 @@ public class SearchDialog extends PopUp_Base
 		searchPattern = searchPattern.replace("\n", "");
 		searchPattern = searchPattern.replace("\r", "");
 
-		for (Cache cache : Database.Data.Query)
+		synchronized (Database.Data.Query)
 		{
-			boolean set = true;
-			switch (mSearchState)
+			for (Cache cache : Database.Data.Query)
 			{
-			case 0:
-				set = cache.Name.toLowerCase().contains(searchPattern);
-				break;
-			case 1:
-				set = cache.GcCode.toLowerCase().contains(searchPattern);
-				break;
-			case 2:
-				set = cache.Owner.toLowerCase().contains(searchPattern) || cache.PlacedBy.toLowerCase().contains(searchPattern);
-				break;
+				boolean set = true;
+				switch (mSearchState)
+				{
+				case 0:
+					set = cache.Name.toLowerCase().contains(searchPattern);
+					break;
+				case 1:
+					set = cache.GcCode.toLowerCase().contains(searchPattern);
+					break;
+				case 2:
+					set = cache.Owner.toLowerCase().contains(searchPattern) || cache.PlacedBy.toLowerCase().contains(searchPattern);
+					break;
+				}
+
+				cache.setSearchVisible(set);
 			}
-
-			cache.setSearchVisible(set);
 		}
-
 		CacheListView.that.getListView().setHasInvisibleItems(true);
 		CacheListView.that.CacheListChangedEvent();
 	}
@@ -574,13 +580,13 @@ public class SearchDialog extends PopUp_Base
 	private void clearSearchFilter()
 	{
 		if (!Config.settings.dynamicFilterAtSearch.getValue()) return;
-		for (Cache cache : Database.Data.Query)
+		synchronized (Database.Data.Query)
 		{
-
-			cache.setSearchVisible(true);
-
+			for (Cache cache : Database.Data.Query)
+			{
+				cache.setSearchVisible(true);
+			}
 		}
-
 		if (CacheListView.that != null)
 		{
 			CacheListView.that.getListView().setHasInvisibleItems(false);
@@ -756,34 +762,39 @@ public class SearchDialog extends PopUp_Base
 					WaypointDAO waypointDAO = new WaypointDAO();
 
 					int counter = 0;
-					for (Cache cache : apiCaches)
+
+					synchronized (Database.Data.Query)
 					{
-						counter++;
-						cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-						cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-						if (Database.Data.Query.GetCacheById(cache.Id) == null)
+
+						for (Cache cache : apiCaches)
 						{
-							Database.Data.Query.add(cache);
-
-							cacheDAO.WriteToDatabase(cache);
-
-							for (LogEntry log : apiLogs)
+							counter++;
+							cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+							cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+							if (Database.Data.Query.GetCacheById(cache.Id) == null)
 							{
-								if (log.CacheId != cache.Id) continue;
-								// Write Log to database
-								logDAO.WriteToDatabase(log);
-							}
+								Database.Data.Query.add(cache);
 
-							for (ImageEntry image : apiImages)
-							{
-								if (image.CacheId != cache.Id) continue;
-								// Write Image to database
-								imageDAO.WriteToDatabase(image, false);
-							}
+								cacheDAO.WriteToDatabase(cache);
 
-							for (Waypoint waypoint : cache.waypoints)
-							{
-								waypointDAO.WriteToDatabase(waypoint);
+								for (LogEntry log : apiLogs)
+								{
+									if (log.CacheId != cache.Id) continue;
+									// Write Log to database
+									logDAO.WriteToDatabase(log);
+								}
+
+								for (ImageEntry image : apiImages)
+								{
+									if (image.CacheId != cache.Id) continue;
+									// Write Image to database
+									imageDAO.WriteToDatabase(image, false);
+								}
+
+								for (Waypoint waypoint : cache.waypoints)
+								{
+									waypointDAO.WriteToDatabase(waypoint);
+								}
 							}
 						}
 					}

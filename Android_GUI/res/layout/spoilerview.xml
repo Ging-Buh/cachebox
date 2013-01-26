@@ -4,5 +4,5 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent" android:id="@+id/spoilerlayout">
     <Gallery android:layout_height="80dp" android:id="@+id/spoilerGallery" android:layout_alignParentTop="true" android:layout_width="match_parent"></Gallery>
-    <TextView android:layout_height="wrap_content" android:layout_below="@+id/spoilerGallery" android:text="TextView" android:layout_alignLeft="@+id/spoilerGallery" android:layout_alignRight="@+id/spoilerGallery" android:id="@+id/spoilerFilename" android:layout_width="match_parent" android:gravity="center"></TextView>
+    <TextView android:layout_height="wrap_content" android:layout_below="@+id/spoilerGallery" android:text="no spoilers" android:layout_alignLeft="@+id/spoilerGallery" android:layout_alignRight="@+id/spoilerGallery" android:id="@+id/spoilerFilename" android:layout_width="match_parent" android:gravity="center"></TextView>
 </RelativeLayout>

@@ -11,20 +11,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class chkBox extends Button
 {
 
-	private Drawable drawableDisabledChk;
-	private boolean isChk = false;
-	private OnCheckedChangeListener changeListner;
+	protected Drawable drawableDisabledChk;
+	protected boolean isChk = false;
+	protected OnCheckedChangeListener changeListner;
 
 	public chkBox(String name)
 	{
 		super(new CB_RectF(UiSizes.getChkBoxSize()), name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public chkBox(CB_RectF rec, String name)
 	{
 		super(rec, name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	@Override

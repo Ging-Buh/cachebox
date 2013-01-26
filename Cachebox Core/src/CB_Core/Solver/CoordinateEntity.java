@@ -122,7 +122,12 @@ public class CoordinateEntity extends Entity
 		waypointDAO.UpdateDatabase(dbWaypoint);
 
 		// evtl. bereits geladenen Waypoint aktualisieren
-		Cache cacheFromCacheList = Database.Data.Query.GetCacheById(dbWaypoint.CacheId);
+		Cache cacheFromCacheList;
+		synchronized (Database.Data.Query)
+		{
+			cacheFromCacheList = Database.Data.Query.GetCacheById(dbWaypoint.CacheId);
+		}
+
 		if (cacheFromCacheList != null)
 		{
 			for (Waypoint wp : cacheFromCacheList.waypoints)

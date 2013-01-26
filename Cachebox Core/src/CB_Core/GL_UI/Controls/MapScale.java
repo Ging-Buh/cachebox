@@ -2,33 +2,29 @@ package CB_Core.GL_UI.Controls;
 
 import java.text.NumberFormat;
 
-import CB_Core.Config;
 import CB_Core.UnitFormatter;
 import CB_Core.Events.invalidateTextureEvent;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class MapScale extends CB_View_Base implements invalidateTextureEvent
 {
 	private BitmapFontCache fontCache;
-	float sollwidth = 0;
+	private float sollwidth = 0;
 	private MapView mapInstanz;
-	Drawable CachedScaleSprite;
-	float drawableWidth = 0;
+	private Drawable CachedScaleSprite;
+	private float drawableWidth = 0;
+	private String distanceString;
 
 	public MapScale(CB_RectF rec, String Name, MapView mapInstanz)
 	{
@@ -36,6 +32,8 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		sollwidth = rec.getWidth();
 		this.mapInstanz = mapInstanz;
 		CachedScaleSprite = null;
+		fontCache = new BitmapFontCache(Fonts.getNormal());
+		fontCache.setColor(Fonts.getFontColor());
 		invalidateTextureEventList.Add(this);
 	}
 
@@ -107,8 +105,6 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			Logger.Error("MapView.zoomChanged()", "", exc);
 		}
 
-		String distanceString;
-
 		if (UnitFormatter.ImperialUnits)
 		{
 			NumberFormat nf = NumberFormat.getInstance();
@@ -129,61 +125,39 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			distanceString = nf.format(length) + "km";
 		}
 
-		int pos = 0;
-		int start = 1;
-		boolean N = Config.settings.nightMode.getValue();
+		ZoomChanged();
+	}
 
-		Color[] brushes = new Color[2];
-
-		brushes[0] = (N ? Color.RED : Color.BLACK);
-		brushes[1] = (N ? Color.BLACK : Color.WHITE);
-
-		int w = getNextHighestPO2((int) width);
-		int h = getNextHighestPO2((int) height);
-		// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGB565);
-
-		for (int i = 1; i <= scaleUnits; i++)
+	public void ZoomChanged()
+	{
+		pixelsPerMeter = mapInstanz.pixelsPerMeter;
+		drawableWidth = (int) (scaleLength * pixelsPerMeter);
+		if (fontCache == null)
 		{
-			pos = (int) (scaleLength * ((double) i / scaleUnits) * pixelsPerMeter);
-
-			int colorChanger = i % 2;
-
-			p.setColor(brushes[colorChanger]);
-
-			p.fillRectangle(start, 0, (int) pos, ((int) height) - 2);
-
-			start = pos;
+			fontCache = new BitmapFontCache(Fonts.getNormal());
+			fontCache.setColor(Fonts.getFontColor());
 		}
 
-		fontCache = new BitmapFontCache(Fonts.getNormal());
-		fontCache.setColor(Fonts.getFontColor());
-
-		TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
-
-		this.setWidth((float) (pos + (bounds.width * 1.3)));
-
-		p.setColor(brushes[0]);
-		p.drawRectangle(0, 0, (int) (pos), ((int) height) - 1);
-
-		if (p != null)
+		try
 		{
-			Texture tex = new Texture(p);
-			CachedScaleSprite = new TextureRegionDrawable(new TextureRegion(tex, (int) pos, (int) this.getHeight()));
-			drawableWidth = pos;
-			p.dispose();
+			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont()
+					.getCapHeight());
+			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
+			CachedScaleSprite = SpriteCache.MapScale[scaleUnits - 3];
+			float margin = (this.height - bounds.height) / 1.6f;
+			fontCache.setPosition(this.width - bounds.width - margin, margin);
 		}
-
-		float margin = (this.height - bounds.height) / 1.6f;
-		fontCache.setPosition(this.width - bounds.width - margin, margin);
-
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Zeichnet den Maßstab. pixelsPerKm muss durch zoomChanged initialisiert sein!
 	 */
 	@Override
-	protected void renderWithoutScissor(SpriteBatch batch)
+	protected void render(SpriteBatch batch)
 	{
 		if (pixelsPerMeter <= 0) return;
 		if (CachedScaleSprite == null) zoomChanged();

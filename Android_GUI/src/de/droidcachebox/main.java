@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+
 import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
@@ -35,6 +40,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.ICallUrl;
 import CB_Core.Events.platformConector.IGetApiKey;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IQuit;
@@ -45,6 +51,7 @@ import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.Events.platformConector.IsetKeybordFocus;
 import CB_Core.Events.platformConector.IsetScreenLockTime;
+import CB_Core.Events.platformConector.iPlatformSettings;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
@@ -75,6 +82,10 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Settings.SettingBase;
+import CB_Core.Settings.SettingBool;
+import CB_Core.Settings.SettingInt;
+import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
@@ -91,6 +102,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -176,7 +188,6 @@ import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Locator.GPS;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AndroidClipboard;
-import de.droidcachebox.Views.AboutView;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.JokerView;
 import de.droidcachebox.Views.NotesView;
@@ -213,7 +224,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static SpoilerView spoilerView = null; // ID 5
 	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
-	private static AboutView aboutView = null; // ID 11
 	private static JokerView jokerView = null; // ID 12
 	private static TrackableListView trackablelistView = null; // ID 14
 
@@ -283,6 +293,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private CacheNameView cacheNameView;
 
 	private ArrayList<ViewOptionsMenu> ViewList = new ArrayList<ViewOptionsMenu>();
+
+	// private Threads
+	Thread threadReceiveShortLog;
+
+	Thread threadReloadSelectedCacheInfo;
 
 	// Powermanager
 	protected PowerManager.WakeLock mWakeLock;
@@ -389,8 +404,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			ui.Window = new Size(savedInstanceState.getInt("WindowWidth"), savedInstanceState.getInt("WindowHeight"));
 			ui.Density = res.getDisplayMetrics().density;
-			ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
-					(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
 			ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
 			ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
 			ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
@@ -620,40 +633,33 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		if (GcCode != null)
 		{
-			Thread t = new Thread()
+
+			runOnUiThread(new Runnable()
 			{
+				@Override
 				public void run()
 				{
-					runOnUiThread(new Runnable()
+					if (flag)
 					{
-						@Override
-						public void run()
+						flag = false;
+
+						if (SearchDialog.that == null)
 						{
-							if (flag)
-							{
-								flag = false;
-
-								if (SearchDialog.that == null)
-								{
-									new SearchDialog();
-								}
-
-								SearchDialog.that.showNotCloseAutomaticly();
-								SearchDialog.that.addSearch(GcCode, searchMode.GcCode);
-							}
-							else
-							{
-								flag = true;
-								TabMainView.that.showCacheList();
-								startSearchTimer();
-							}
-
+							new SearchDialog();
 						}
-					});
-				}
-			};
 
-			t.start();
+						SearchDialog.that.showNotCloseAutomaticly();
+						SearchDialog.that.addSearch(GcCode, searchMode.GcCode);
+					}
+					else
+					{
+						flag = true;
+						TabMainView.that.showCacheList();
+						startSearchTimer();
+					}
+
+				}
+			});
 
 		}
 	}
@@ -673,69 +679,62 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				public void run()
 				{
 					Logger.LogCat("startGPXImport:Timer startet");
-					Thread t = new Thread()
+					runOnUiThread(new Runnable()
 					{
+						@Override
 						public void run()
 						{
-							runOnUiThread(new Runnable()
+							wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ImportGPX"), new IcancelListner()
 							{
+
+								@Override
+								public void isCanceld()
+								{
+									wd.close();
+								}
+							}, new Runnable()
+							{
+
 								@Override
 								public void run()
 								{
-									wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ImportGPX"), new IcancelListner()
-									{
+									Date ImportStart = new Date();
+									Logger.LogCat("startGPXImport:Timer startet");
+									Importer importer = new Importer();
+									ImporterProgress ip = new ImporterProgress();
+									Database.Data.beginTransaction();
 
-										@Override
-										public void isCanceld()
-										{
-											wd.close();
-										}
-									}, new Runnable()
-									{
+									importer.importGpx(GpxPath, ip);
 
-										@Override
-										public void run()
-										{
-											Date ImportStart = new Date();
-											Logger.LogCat("startGPXImport:Timer startet");
-											Importer importer = new Importer();
-											ImporterProgress ip = new ImporterProgress();
-											Database.Data.beginTransaction();
+									Database.Data.setTransactionSuccessful();
+									Database.Data.endTransaction();
 
-											importer.importGpx(GpxPath, ip);
+									// Import ready
+									wd.close();
 
-											Database.Data.setTransactionSuccessful();
-											Database.Data.endTransaction();
+									// finish close activity and notify changes
 
-											// Import ready
-											wd.close();
+									CachListChangedEventList.Call();
 
-											// finish close activity and notify changes
+									Date Importfin = new Date();
+									long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
-											CachListChangedEventList.Call();
+									String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C "
+											+ String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-											Date Importfin = new Date();
-											long ImportZeit = Importfin.getTime() - ImportStart.getTime();
+									Logger.DEBUG(Msg);
 
-											String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C "
-													+ String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
+									FilterProperties props = GlobalCore.LastFilter;
 
-											Logger.DEBUG(Msg);
+									EditFilterSettings.ApplyFilter(props);
 
-											FilterProperties props = GlobalCore.LastFilter;
-
-											EditFilterSettings.ApplyFilter(props);
-
-											GL.that.Toast(Msg, 3000);
-										}
-									});
-
+									GL.that.Toast(Msg, 3000);
 								}
 							});
-						}
-					};
 
-					t.start();
+						}
+					});
+
 				}
 			};
 			timer.schedule(task, 500);
@@ -867,12 +866,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// if Dialog or Activity shown, close that first
 				if (GL.that.closeShownDialog()) return true;
 
-				if (SpriteCache.Dialog.get(2) != null)
+				if (SpriteCache.Dialog != null && SpriteCache.Dialog.get(2) != null)
 				{
 					// SHOW Close Dialog only if SpriteCache initialized
 					if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
+					return true;
 				}
-				return true;
+
 			}
 
 		}
@@ -1447,7 +1447,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (ID == ViewConst.TB_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
 		else if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
-		else if (ID == ViewConst.ABOUT_VIEW) return aboutView = new AboutView(this, inflater);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
 		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
 		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
@@ -1528,13 +1527,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				jokerView.OnFree();
 				jokerView = null;
-			}
-			else if (aktView.equals(aboutView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				aboutView.OnFree();
-				aboutView = null;
 			}
 			else if (aktView.equals(solverView))
 			{
@@ -1730,11 +1722,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			// if (viewGL == null)
-			// {
+			boolean GL20 = checkGL20Support(this);
 
 			if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
-			gdxView = initializeForView(glListener, false);
+			gdxView = initializeForView(glListener, GL20);
 
 			Logger.DEBUG("Initial new gdxView=" + gdxView.toString());
 
@@ -1820,52 +1811,24 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 			case MotionEvent.ACTION_POINTER_DOWN:
 			case MotionEvent.ACTION_DOWN:
-				Thread threadDown = new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-								event.getPointerId(pointerIndex), 0);
-					}
-				});
-				threadDown.run();
-
+				glListener.onTouchDownBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+						event.getPointerId(pointerIndex), 0);
 				break;
 			case MotionEvent.ACTION_MOVE:
-				Thread threadMove = new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-								event.getPointerId(pointerIndex));
-					}
-				});
-				threadMove.run();
-
+				glListener.onTouchDraggedBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
+						event.getPointerId(pointerIndex));
 				break;
 			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_UP:
-
-				Thread threadUp = new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex),
-								event.getPointerId(pointerIndex), 0);
-					}
-				});
-				threadUp.run();
-
+				glListener.onTouchUpBase((int) event.getX(pointerIndex), (int) event.getY(pointerIndex), event.getPointerId(pointerIndex),
+						0);
 				break;
 			}
 		}
 		catch (Exception e)
 		{
 			Logger.Error("gdxView.OnTouchListener", "", e);
-			return false;
+			return true;
 		}
 		return true;
 	}
@@ -2154,18 +2117,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		showView(ViewConst.TB_LIST_VIEW);
 	}
 
-	private void switchAutoResort()
-	{
-		GlobalCore.autoResort = !(GlobalCore.autoResort);
-
-		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
-
-		if (GlobalCore.autoResort)
-		{
-			Database.Data.Query.Resort();
-		}
-	}
-
 	private void NavigateTo()
 	{
 		if (GlobalCore.getSelectedCache() != null)
@@ -2297,22 +2248,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void setDebugMsg(String msg)
 	{
 		debugMsg = msg;
-		Thread t = new Thread()
+
+		runOnUiThread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						debugInfoPanel.setMsg(debugMsg);
-					}
-				});
+				debugInfoPanel.setMsg(debugMsg);
 			}
-		};
-
-		t.start();
+		});
 
 	}
 
@@ -2408,7 +2352,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void receiveShortLog(String Msg)
 	{
 		debugMsg = Msg;
-		Thread t = new Thread()
+		if (threadReceiveShortLog == null) threadReceiveShortLog = new Thread()
 		{
 			public void run()
 			{
@@ -2423,7 +2367,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		};
 
-		t.start();
+		threadReceiveShortLog.run();
 
 	}
 
@@ -2478,25 +2422,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	public void setQuickButtonHeight(int value)
 	{
 		horizontalListViewHeigt = value;
-		Thread t = new Thread()
+
+		runOnUiThread(new Runnable()
 		{
+			@Override
 			public void run()
 			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						QuickButtonList.setHeight(horizontalListViewHeigt);
-						QuickButtonList.invalidate();
-						TopLayout.requestLayout();
-						frame.requestLayout();
-					}
-				});
+				QuickButtonList.setHeight(horizontalListViewHeigt);
+				QuickButtonList.invalidate();
+				TopLayout.requestLayout();
+				frame.requestLayout();
 			}
-		};
-
-		t.start();
+		});
 
 	}
 
@@ -2509,49 +2446,41 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (!GpsOn())
 			{
-				Thread t = new Thread()
+
+				runOnUiThread(new Runnable()
 				{
+					@Override
 					public void run()
 					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
-										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+						MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
+								MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+								{
+									@Override
+									public void onClick(DialogInterface dialog, int button)
+									{
+										// Behandle das ergebniss
+										switch (button)
 										{
-											@Override
-											public void onClick(DialogInterface dialog, int button)
-											{
-												// Behandle das ergebniss
-												switch (button)
-												{
-												case -1:
-													// yes open gps settings
-													Intent gpsOptionsIntent = new Intent(
-															android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+										case -1:
+											// yes open gps settings
+											Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 
-													startActivity(gpsOptionsIntent);
-													break;
-												case -2:
-													// no,
-													break;
-												case -3:
+											startActivity(gpsOptionsIntent);
+											break;
+										case -2:
+											// no,
+											break;
+										case -3:
 
-													break;
-												}
+											break;
+										}
 
-												dialog.dismiss();
-											}
+										dialog.dismiss();
+									}
 
-										});
-							}
-						});
+								});
 					}
-				};
-
-				t.start();
+				});
 
 			}
 		}
@@ -2829,7 +2758,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				}
 			};
-			t.start();
+			t.run();
 
 		}
 
@@ -2892,6 +2821,27 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return -1;
 		}
 	};
+
+	private boolean checkGL20Support(Context context)
+	{
+
+		EGL10 egl = (EGL10) EGLContext.getEGL();
+		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+
+		int[] version = new int[2];
+		egl.eglInitialize(display, version);
+
+		int EGL_OPENGL_ES2_BIT = 4;
+		int[] configAttribs =
+			{ EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4, EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+					EGL10.EGL_NONE };
+
+		EGLConfig[] configs = new EGLConfig[10];
+		int[] num_config = new int[1];
+		egl.eglChooseConfig(display, configAttribs, configs, 10, num_config);
+		egl.eglTerminate(display);
+		return num_config[0] > 0;
+	}
 
 	// #########################################################
 
@@ -3316,6 +3266,79 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 			}
 		});
+
+		platformConector.setCallUrlListner(new ICallUrl()
+		{
+
+			@Override
+			public void call(String url)
+			{
+				try
+				{
+					Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(url.trim()));
+					main.mainActivity.startActivity(browserIntent);
+				}
+				catch (Exception exc)
+				{
+					Toast.makeText(
+							main.mainActivity,
+							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim()
+									+ ")", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
+		platformConector.setPlatformSettings(new iPlatformSettings()
+		{
+
+			@Override
+			public void Write(SettingBase setting)
+			{
+				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
+				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
+
+				if (setting instanceof SettingBool)
+				{
+					androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString)
+				{
+					androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
+				}
+				else if (setting instanceof SettingInt)
+				{
+					androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				androidSettingEditor.commit();
+			}
+
+			@Override
+			public void Read(SettingBase setting)
+			{
+				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
+
+				if (setting instanceof SettingString)
+				{
+					String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
+					((SettingString) setting).setValue(value);
+				}
+				else if (setting instanceof SettingBool)
+				{
+					boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				}
+				else if (setting instanceof SettingInt)
+				{
+					int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+			}
+		});
+
 	}
 
 	IgetFileReturnListner getFileReturnListner = null;
@@ -3325,11 +3348,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	// ########### Reload CacheInfo ##########################
 
+	private SharedPreferences androidSetting;
+	private SharedPreferences.Editor androidSettingEditor;
+
 	private static ProgressDialog waitPD;
 
 	private void reloadSelectedCacheInfo()
 	{
-		Thread thread = new Thread()
+		if (threadReloadSelectedCacheInfo == null) threadReloadSelectedCacheInfo = new Thread()
 		{
 			public void run()
 			{
@@ -3378,7 +3404,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		};
 		waitPD = ProgressDialog.show(this, "", "Download Description", true);
 
-		thread.start();
+		threadReloadSelectedCacheInfo.run();
 	}
 
 	private String message = "";

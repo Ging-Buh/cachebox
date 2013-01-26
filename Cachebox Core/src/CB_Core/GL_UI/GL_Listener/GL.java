@@ -15,7 +15,6 @@ import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.GlobalCore;
 import CB_Core.GlobalLocationReceiver;
-import CB_Core.Plattform;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
@@ -39,6 +38,7 @@ import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Log.Logger;
+import CB_Core.Map.MapTileLoader;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -49,7 +49,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -64,6 +63,11 @@ public class GL implements ApplicationListener
 	public static final int FRAME_RATE_IDLE = 200;
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
+
+	/**
+	 * See http://code.google.com/p/libgdx/wiki/SpriteBatch Performance tuning
+	 */
+	protected final int SPRITE_BATCH_BUFFER = 150;
 
 	// Public Static Member
 	public static GL_Listener_Interface listenerInterface;
@@ -84,6 +88,9 @@ public class GL implements ApplicationListener
 	private float darknesAlpha = 0f;
 	private long mLongClickTime = 0, mDoubleClickTime = 500, lastClickTime = 0;
 
+	// private Threads
+	Thread threadDisposeDialog;
+
 	/**
 	 * Static for Debug
 	 */
@@ -97,8 +104,9 @@ public class GL implements ApplicationListener
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
 	private Stage mStage;
 	private Timer longClickTimer;
-	private Texture FpsInfoTexture;
 	private Sprite FpsInfoSprite, mDarknesSprite;
+	private Pixmap mDarknesPixmap;
+	private Texture mDarknesTexture;
 	protected EditWrapedTextField keyboardFocus;
 
 	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
@@ -136,6 +144,7 @@ public class GL implements ApplicationListener
 	protected SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
 	protected boolean DialogIsShown = false, ActivityIsShown = false;
 	protected int width = 0, height = 0;
+	private boolean debugWriteSpriteCount = false;
 
 	/**
 	 * Constructor
@@ -166,18 +175,8 @@ public class GL implements ApplicationListener
 
 		Initialize();
 
-		Pixmap p = new Pixmap(4, 4, Pixmap.Format.RGBA8888);
-		Pixmap.setBlending(Blending.None);
-		p.setColor(1.0f, 1.0f, 0.0f, 1.0f);
-		p.drawRectangle(0, 0, 4, 4);
-		p.setColor(0f, 0.0f, 0.0f, 1.0f);
-		p.drawRectangle(1, 1, 2, 2);
-		FpsInfoTexture = new Texture(p);
-		FpsInfoSprite = new Sprite(FpsInfoTexture, 4, 4);
-		p.dispose();
-		FpsInfoSprite.setSize(4, 4);
-
 		GlobalCore.receiver = new GlobalLocationReceiver();
+		debugWriteSpriteCount = Config.settings.DebugSpriteBatchCountBuffer.getValue();
 	}
 
 	public void RunOnGL(runOnGL run)
@@ -200,6 +199,14 @@ public class GL implements ApplicationListener
 		renderOnce("runIfInitial called");
 	}
 
+	private boolean ShaderSetted = false;
+
+	private void setShader()
+	{
+		if (Gdx.graphics.isGL20Available()) batch.setShader(SpriteBatch.createDefaultShader());
+		ShaderSetted = true;
+	}
+
 	@Override
 	public void render()
 	{
@@ -208,12 +215,16 @@ public class GL implements ApplicationListener
 
 		if (!started.get() || stopRender) return;
 
+		lastRenderBegin = System.currentTimeMillis();
+
 		if (renderStartetListner != null)
 		{
 			renderStartetListner.renderIsStartet();
 			renderStartetListner = null;
 			removeRenderView(child);
 		}
+
+		if (!ShaderSetted) setShader();
 
 		synchronized (runOnGL_List)
 		{
@@ -256,6 +267,16 @@ public class GL implements ApplicationListener
 			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		}
 
+		try
+		{
+			batch.begin();
+		}
+		catch (java.lang.IllegalStateException e)
+		{
+			batch.flush();
+			batch.end();
+			batch.begin();
+		}
 		batch.setProjectionMatrix(prjMatrix.Matrix());
 
 		// if Tablet, so the Activity is smaller the screen size
@@ -298,13 +319,6 @@ public class GL implements ApplicationListener
 			mMarkerOverlay.renderChilds(batch, prjMatrix);
 		}
 
-		// TODO switch on with test version
-		// batch.begin();
-		// batch.draw(FpsInfoSprite, FpsInfoPos, 2, 4, 4);
-		// FpsInfoPos++;
-		// if (FpsInfoPos > 60) FpsInfoPos = 0;
-		// batch.end();
-
 		GL_View_Base.debug = Config.settings.DebugMode.getValue();
 
 		if (GL_View_Base.debug && misTouchDown)
@@ -318,17 +332,56 @@ public class GL implements ApplicationListener
 				int y = this.height - first.point.y;
 				int pointSize = 20;
 
-				batch.begin();
 				batch.draw(point, x - (pointSize / 2), y - (pointSize / 2), pointSize, pointSize);
-				batch.end();
+
 			}
 
+		}
+
+		if (GlobalCore.isTestVersion())
+		{
+
+			float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
+
+			if (FpsInfoSprite != null)
+			{
+				batch.draw(FpsInfoSprite, FpsInfoPos, 2, FpsInfoSize, FpsInfoSize);
+			}
+			else
+			{
+				if (SpriteCache.day_skin != null)// SpriteCache is initial
+				{
+					FpsInfoSprite = new Sprite(SpriteCache.getThemedSprite("pixel2x2"));
+					FpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
+					FpsInfoSprite.setSize(4, 4);
+				}
+			}
+
+			FpsInfoPos++;
+			if (FpsInfoPos > 60)
+			{
+				FpsInfoPos = 0;
+			}
+
+			if (debugWriteSpriteCount)
+			{
+				renderTime = ((System.currentTimeMillis() - lastRenderBegin) + renderTime) / 2;
+				Fonts.getBubbleSmall().draw(batch,
+						"Max Sprites on Batch:" + String.valueOf(debugSpritebatchMaxCount) + "/" + String.valueOf(renderTime), width / 4,
+						20);
+				debugSpritebatchMaxCount = Math.max(debugSpritebatchMaxCount, batch.maxSpritesInBatch);
+			}
+			batch.end();
 		}
 
 		Gdx.gl.glFlush();
 		Gdx.gl.glFinish();
 
 	}
+
+	int debugSpritebatchMaxCount = 0;
+	private long lastRenderBegin = 0;
+	private long renderTime = 0;
 
 	@Override
 	public void resize(int Width, int Height)
@@ -362,6 +415,8 @@ public class GL implements ApplicationListener
 	@Override
 	public void dispose()
 	{
+		disposeTexture();
+
 		SpriteCache.destroyCache();
 		try
 		{
@@ -433,18 +488,12 @@ public class GL implements ApplicationListener
 		return height;
 	}
 
-	private long downTime = 0;
-
 	// TouchEreignisse die von der View gesendet werden
 	// hier wird entschieden, wann TouchDonw, TouchDragged, TouchUp und Clicked, LongClicked Ereignisse gesendet werden müssen
 	public boolean onTouchDownBase(int x, int y, int pointer, int button)
 	{
 		misTouchDown = true;
 		touchDraggedActive = false;
-
-		// TODO lösche Debug code ######
-		downTime = System.currentTimeMillis();
-		// ##############################
 
 		GL_View_Base view = null;
 
@@ -479,8 +528,15 @@ public class GL implements ApplicationListener
 		// down Position merken
 		touchDownPos.put(pointer, new TouchDownPointer(pointer, new Point(x, y), view));
 
-		// Logger.LogCat("GL_Listner => onTouchDownBase : " + view.getName());
-		startLongClickTimer(pointer, x, y);
+		// chk if LongClickable
+		if (view.isLongClickable())
+		{
+			startLongClickTimer(pointer, x, y);
+		}
+		else
+		{
+			cancelLongClickTimer();
+		}
 
 		return true;
 	}
@@ -494,9 +550,6 @@ public class GL implements ApplicationListener
 		{
 			// für diesen Pointer ist kein touchDownPos gespeichert ->
 			// dürfte nicht passieren!!!
-
-			// Wenn Doch, dann Logge auser auf dem Desctop, hier kommt das Event bei MouseMove
-			if (GlobalCore.platform != Plattform.Desktop) Logger.Error("onTouchDraggedBase", "Keine TouchdownPos gespeichert");
 
 			return false;
 		}
@@ -513,10 +566,15 @@ public class GL implements ApplicationListener
 				// zu weit verschoben -> Long-Click detection stoppen
 				cancelLongClickTimer();
 				// touchDragged Event an das View, das den onTouchDown bekommen hat
-				first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
+				boolean behandelt = first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 						- (int) first.view.ThisWorldRec.getY(), pointer, false);
 				// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
-
+				if (!behandelt && first.view.getParent() != null)
+				{
+					// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
+					first.view.getParent().touchDragged(x - (int) first.view.getParent().ThisWorldRec.getX(),
+							(int) testingView.getHeight() - y - (int) first.view.getParent().ThisWorldRec.getY(), pointer, false);
+				}
 				if (touchDownPos.size() == 1)
 				{
 					if (first.kineticPan == null) first.kineticPan = new KineticPan();
@@ -534,11 +592,6 @@ public class GL implements ApplicationListener
 
 	public boolean onTouchUpBase(int x, int y, int pointer, int button)
 	{
-
-		// TODO lösche Debug code ######
-		if (System.currentTimeMillis() - downTime < 10) Logger.DEBUG("onTouchUp<10ms nach touchDown");
-		// ##############################
-
 		misTouchDown = false;
 		cancelLongClickTimer();
 
@@ -548,9 +601,6 @@ public class GL implements ApplicationListener
 		{
 			// für diesen Pointer ist kein touchDownPos gespeichert ->
 			// dürfte nicht passieren!!!
-
-			// Wenn Doch, dann Logge
-			Logger.Error("onTouchDraggedBase", "Keine TouchdownPos gespeichert");
 
 			return false;
 		}
@@ -567,8 +617,8 @@ public class GL implements ApplicationListener
 				if (first.view.isClickable())
 				{
 					// Testen, ob dies ein Doppelklick ist
-					if ((System.currentTimeMillis() < lastClickTime + mDoubleClickTime) && (lastClickPoint != null)
-							&& (distance(akt, lastClickPoint) < first.view.getClickTolerance()))
+					if (first.view.isDblClickable() && (System.currentTimeMillis() < lastClickTime + mDoubleClickTime)
+							&& (lastClickPoint != null) && (distance(akt, lastClickPoint) < first.view.getClickTolerance()))
 					{
 						boolean handled = first.view.doubleClick(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight()
 								- y - (int) first.view.ThisWorldRec.getY(), pointer, button);
@@ -706,25 +756,39 @@ public class GL implements ApplicationListener
 		addRenderView(child, FRAME_RATE_FAST_ACTION);
 	}
 
+	private void disposeTexture()
+	{
+		if (mDarknesPixmap != null) mDarknesPixmap.dispose();
+		if (mDarknesTexture != null) mDarknesTexture.dispose();
+		mDarknesPixmap = null;
+		mDarknesTexture = null;
+		mDarknesSprite = null;
+	}
+
 	private void drawDarknessSprite()
 	{
 		if (mDarknesSprite == null)
 		{
-			int w = CB_View_Base.getNextHighestPO2((int) width);
-			int h = CB_View_Base.getNextHighestPO2((int) height);
-			Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			if (Config.settings.nightMode.getValue()) p.setColor(0.07f, 0f, 0f, 0.96f);
+
+			disposeTexture();
+
+			// int w = CB_View_Base.getNextHighestPO2((int) width);
+			// int h = CB_View_Base.getNextHighestPO2((int) height);
+
+			int w = 2;
+			int h = 2;
+
+			mDarknesPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+			if (Config.settings.nightMode.getValue()) mDarknesPixmap.setColor(0.07f, 0f, 0f, 0.96f);
 			else
-				p.setColor(0f, 0.1f, 0f, 0.9f);
+				mDarknesPixmap.setColor(0f, 0.1f, 0f, 0.9f);
 
-			p.fillRectangle(0, 0, width, height);
+			mDarknesPixmap.fillRectangle(0, 0, width, height);
 
-			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+			mDarknesTexture = new Texture(mDarknesPixmap, Pixmap.Format.RGBA8888, false);
 
-			mDarknesSprite = new Sprite(tex, (int) width, (int) height);
+			mDarknesSprite = new Sprite(mDarknesTexture, (int) width, (int) height);
 		}
-
-		batch.begin();
 
 		if (mDarknesSprite != null) mDarknesSprite.draw(batch, darknesAlpha);
 		if (darknesAnimationRuns)
@@ -739,7 +803,6 @@ public class GL implements ApplicationListener
 			}
 		}
 
-		batch.end();
 	}
 
 	public void Initialize()
@@ -748,7 +811,15 @@ public class GL implements ApplicationListener
 
 		if (batch == null)
 		{
-			batch = new SpriteBatch();
+			if (Config.settings.DebugSpriteBatchCountBuffer.getValue())
+			{
+				// for Debug set to max!
+				batch = new SpriteBatch(10000);
+			}
+			else
+			{
+				batch = new SpriteBatch(SPRITE_BATCH_BUFFER);
+			}
 		}
 
 		if (child == null)
@@ -1287,7 +1358,6 @@ public class GL implements ApplicationListener
 
 		ActivityIsShown = false;
 		darknesAlpha = 0f;
-		mDarknesSprite = null;// Create new Pixmap on next call
 
 		clearRenderViews();
 		renderOnce("Close Activity");
@@ -1305,6 +1375,7 @@ public class GL implements ApplicationListener
 		if (!DialogIsShown || !mDialog.getchilds().contains((dialog)))
 		{
 			if (dialog != null) dialog.dispose();
+			System.gc();
 			return;
 		}
 
@@ -1329,19 +1400,20 @@ public class GL implements ApplicationListener
 			child.invalidate();
 			DialogIsShown = false;
 			darknesAlpha = 0f;
-			mDarknesSprite = null;// Create new Pixmap on next call
 		}
 
-		Thread t = new Thread(new Runnable()
+		if (threadDisposeDialog == null) threadDisposeDialog = new Thread(new Runnable()
 		{
 
 			@Override
 			public void run()
 			{
 				if (dialog != null) dialog.dispose();
+				System.gc();
+
 			}
 		});
-		t.start();
+		threadDisposeDialog.run();
 
 		clearRenderViews();
 		if (ActivityIsShown) platformConector.showForDialog();
@@ -1487,6 +1559,8 @@ public class GL implements ApplicationListener
 
 	public void setKeyboardFocus(EditWrapedTextField view)
 	{
+		// don't set Focus to NULL?
+		if (view == null && keyboardFocus == null) return;
 
 		String sView = "NULL";
 		if (view != null) sView = view.toString();

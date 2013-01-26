@@ -62,10 +62,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private V_ListView lvPQs;
 	private Button bOK, bCancel, refreshPqList;
 	private float innerLeft, innerWidth, innerHeight, CollabseBoxHeight, CollabseBoxMaxHeight, CollabseBoxLogsMaxHeight;
-	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblMaps, lblProgressMsg, lblLogs, lblCompact;
+	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxImportMaps, checkBoxCleanLogs,
-			checkBoxCompactDB;
+	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler,
+			checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
 	private CollabseBox PQ_ListCollabseBox, LogCollabseBox;
 	private Spinner spinner;
 
@@ -282,6 +282,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private void createImageLine()
 	{
+		// Preload Description Images
 		checkBoxPreloadImages = new chkBox("Image");
 		checkBoxPreloadImages.setX(innerLeft);
 		checkBoxPreloadImages.setY(checkBoxGcVote.getY() - margin - checkBoxPreloadImages.getHeight());
@@ -293,6 +294,19 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		scrollBox.addChild(checkBoxPreloadImages);
 		scrollBox.addChild(lblImage);
+
+		// Preload Spoiler Images
+		checkBoxPreloadSpoiler = new chkBox("Image");
+		checkBoxPreloadSpoiler.setX(innerLeft);
+		checkBoxPreloadSpoiler.setY(checkBoxPreloadImages.getY() - margin - checkBoxPreloadSpoiler.getHeight());
+
+		lblSpoiler = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxPreloadSpoiler.getY(), this.innerWidth - margin * 3
+				- checkBoxPreloadSpoiler.getWidth(), checkBoxPreloadSpoiler.getHeight(), "");
+		lblSpoiler.setFont(Fonts.getNormal());
+		lblSpoiler.setText(GlobalCore.Translations.Get("PreloadSpoiler"));
+
+		scrollBox.addChild(checkBoxPreloadSpoiler);
+		scrollBox.addChild(lblSpoiler);
 	}
 
 	final boolean MAP_LINE_ACTIVE = false;
@@ -301,7 +315,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	{
 		checkBoxImportMaps = new chkBox("Image");
 		checkBoxImportMaps.setX(innerLeft);
-		checkBoxImportMaps.setY(checkBoxPreloadImages.getY() - margin - checkBoxImportMaps.getHeight());
+		checkBoxImportMaps.setY(checkBoxPreloadSpoiler.getY() - margin - checkBoxImportMaps.getHeight());
 
 		lblMaps = new Label(checkBoxImportMaps.getMaxX() + margin, checkBoxImportMaps.getY(), this.innerWidth - margin * 3
 				- checkBoxImportMaps.getWidth(), checkBoxImportMaps.getHeight(), "");
@@ -318,7 +332,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxCleanLogs = new chkBox("Image");
 		checkBoxCleanLogs.setX(innerLeft);
 
-		float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadImages.getY();
+		float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadSpoiler.getY();
 
 		checkBoxCleanLogs.setY(yPos - margin - checkBoxCleanLogs.getHeight());
 
@@ -442,7 +456,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxCompactDB.setX(innerLeft);
 		checkBoxCompactDB.setY(LogCollabseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
-		lblCompact = new Label(checkBoxPreloadImages.getMaxX() + margin, checkBoxCompactDB.getY(), this.innerWidth - margin * 3
+		lblCompact = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxCompactDB.getY(), this.innerWidth - margin * 3
 				- checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
 		lblCompact.setFont(Fonts.getNormal());
 		lblCompact.setText(GlobalCore.Translations.Get("CompactDB"));
@@ -467,6 +481,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		float yPos = MAP_LINE_ACTIVE ? lblMaps.getMaxY() : lblLogs.getMaxY();
 
+		checkBoxPreloadSpoiler.setY(yPos + margin);
+		lblSpoiler.setY(yPos + margin);
+
+		yPos = checkBoxPreloadSpoiler.getMaxY();
+
 		checkBoxPreloadImages.setY(yPos + margin);
 		lblImage.setY(yPos + margin);
 
@@ -490,6 +509,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	{
 		checkBoxImportMaps.setChecked(Config.settings.CacheMapData.getValue());
 		checkBoxPreloadImages.setChecked(Config.settings.CacheImageData.getValue());
+		checkBoxPreloadSpoiler.setChecked(Config.settings.CacheSpoilerData.getValue());
 		checkBoxImportGPX.setChecked(Config.settings.ImportGpx.getValue());
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
@@ -719,6 +739,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		Config.settings.CacheMapData.setValue(checkBoxImportMaps.isChecked());
 		Config.settings.CacheImageData.setValue(checkBoxPreloadImages.isChecked());
+		Config.settings.CacheSpoilerData.setValue(checkBoxPreloadSpoiler.isChecked());
 		Config.settings.ImportGpx.setValue(checkBoxImportGPX.isChecked());
 
 		Config.settings.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
@@ -765,9 +786,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						ip.addStep(ip.new Step("importGcVote", 4));
 					}
 
-					if (checkBoxPreloadImages.isChecked())
+					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked())
 					{
-						ip.addStep(ip.new Step("importImageUrls", 4));
+						// ip.addStep(ip.new Step("importImageUrls", 4));
 						ip.addStep(ip.new Step("importImages", 4));
 					}
 
@@ -802,32 +823,35 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 							ip.setJobMax("importGC", downloadPqList.size());
 
-							do
+							if (iterator != null && iterator.hasNext())
 							{
-								if (importCancel)
+								do
 								{
-									importCanceld();
-									return;
-								}
-
-								PQ pq = iterator.next();
-
-								if (pq.downloadAvible)
-								{
-									ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
-									try
+									if (importCancel)
 									{
-										PocketQuery.DownloadSinglePocketQuery(pq);
+										importCanceld();
+										return;
 									}
-									catch (OutOfMemoryError e)
-									{
-										Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
-										e.printStackTrace();
-									}
-								}
 
+									PQ pq = iterator.next();
+
+									if (pq.downloadAvible)
+									{
+										ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
+										try
+										{
+											PocketQuery.DownloadSinglePocketQuery(pq);
+										}
+										catch (OutOfMemoryError e)
+										{
+											Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
+											e.printStackTrace();
+										}
+									}
+
+								}
+								while (iterator.hasNext());
 							}
-							while (iterator.hasNext());
 
 							if (downloadPqList.size() == 0)
 							{
@@ -907,9 +931,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						}
 					}
 
-					if (checkBoxPreloadImages.isChecked())
+					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked())
 					{
-						importer.importImages(ip);
+						importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked());
 						if (importCancel)
 						{
 							importCanceld();
@@ -1060,7 +1084,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			}
 		};
 
-		public void renderWithoutScissor(SpriteBatch batch)
+		public void render(SpriteBatch batch)
 		{
 			if (drawableBackground != null)
 			{
@@ -1077,7 +1101,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				float g = c.g;
 				float b = c.b;
 
-				Color trans = new Color(0, 0.3f, 0, 0.25f);
+				Color trans = new Color(0, 0.3f, 0, 0.40f);
 				batch.setColor(trans);
 				back.draw(batch, 0, 0, this.width, this.height);
 

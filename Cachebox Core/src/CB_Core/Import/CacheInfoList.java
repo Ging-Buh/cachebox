@@ -211,9 +211,9 @@ public class CacheInfoList
 
 					String desImageFolder = Config.settings.DescriptionImageFolder.getValue();
 
-					CreateChangedListingFile(desImageFolder + "\\" + GcCode.substring(0, 4) + "\\" + GcCode + ".changed");
+					CreateChangedListingFile(desImageFolder + "/" + GcCode.substring(0, 4) + "/" + GcCode + ".changed");
 
-					CreateChangedListingFile(desImageFolder + "\\" + GcCode.substring(0, 4) + "\\" + GcCode + ".changed");
+					CreateChangedListingFile(desImageFolder + "/" + GcCode.substring(0, 4) + "/" + GcCode + ".changed");
 				}
 				else
 				{
@@ -282,7 +282,7 @@ public class CacheInfoList
 
 		if (!file.exists())
 		{
-			String changedFileDir = changedFileString.substring(0, changedFileString.lastIndexOf("\\"));
+			String changedFileDir = changedFileString.substring(0, changedFileString.lastIndexOf("/"));
 			File Directory = new File(changedFileDir);
 
 			if (!Directory.exists())

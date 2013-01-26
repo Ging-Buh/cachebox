@@ -11,6 +11,7 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
@@ -36,13 +37,13 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -57,7 +58,6 @@ import de.droidcachebox.DB.AndroidDB;
 
 public class splash extends Activity
 {
-	public static final String PREFS_NAME = "DroidCacheboxPrefsFile";
 
 	public static Activity mainActivity;
 	final Context context = this;
@@ -73,6 +73,7 @@ public class splash extends Activity
 
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
+	private boolean isLandscape = false;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -81,9 +82,11 @@ public class splash extends Activity
 
 		setContentView(R.layout.splash);
 
-		GlobalCore.displayDensity = this.getResources().getDisplayMetrics().density;
-		int h = this.getResources().getDisplayMetrics().heightPixels;
-		int w = this.getResources().getDisplayMetrics().widthPixels;
+		DisplayMetrics displaymetrics = this.getResources().getDisplayMetrics();
+
+		GlobalCore.displayDensity = displaymetrics.density;
+		int h = displaymetrics.heightPixels;
+		int w = displaymetrics.widthPixels;
 
 		int sw = h > w ? w : h;
 		sw /= GlobalCore.displayDensity;
@@ -91,8 +94,25 @@ public class splash extends Activity
 		// check if tablet
 		GlobalCore.isTab = sw > 400 ? true : false;
 
+		int dpH = (int) (h / GlobalCore.displayDensity + 0.5);
+		int dpW = (int) (w / GlobalCore.displayDensity + 0.5);
+
+		if (dpH * dpW >= 960 * 720) GlobalCore.displayType = DisplayType.xLarge;
+		else if (dpH * dpW >= 640 * 480) GlobalCore.displayType = DisplayType.Large;
+		else if (dpH * dpW >= 470 * 320) GlobalCore.displayType = DisplayType.Normal;
+		else
+			GlobalCore.displayType = DisplayType.Small;
+
+		// überprüfen, ob ACB im Hochformat oder Querformat gestartet wurde.
+		// Hochformat -> Handymodus
+		// Querformat -> Tablet-Modus
+		if (w > h) isLandscape = true;
+
 		// chek if use small skin
-		GlobalCore.useSmallSkin = sw < 200 ? true : false;
+		GlobalCore.useSmallSkin = GlobalCore.displayType == DisplayType.Small ? true : false;
+
+		// chk if tabletLayout posible
+		GlobalCore.posibleTabletLayout = (GlobalCore.displayType == DisplayType.xLarge || GlobalCore.displayType == DisplayType.Large);
 
 		// get parameters
 		final Bundle extras = getIntent().getExtras();
@@ -170,17 +190,6 @@ public class splash extends Activity
 
 		if (mOriantationRestart) return; // wait for result
 
-		// Thread thread = new Thread()
-		// {
-		// @Override
-		// public void run()
-		// {
-		// Initial();
-		// }
-		// };
-		//
-		// thread.start();
-		//
 	}
 
 	@Override
@@ -189,7 +198,7 @@ public class splash extends Activity
 		super.onStart();
 
 		// first, try to find stored preferences of workPath
-		SharedPreferences settings = this.getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		workPath = settings.getString("WorkPath", "");
 		boolean askAgain = settings.getBoolean("AskAgain", true);
 
@@ -261,6 +270,11 @@ public class splash extends Activity
 				// Asus Transformer
 				externalSd = "/Removable/MicroSD/CacheBox";
 			}
+			else if (testExtSdPath("/ext_sd"))
+			{
+				// ODYS Motion
+				externalSd = "/ext_sd/CacheBox";
+			}
 			else if (testExtSdPath(prev + "/sdcard"))
 			{
 				// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
@@ -268,10 +282,12 @@ public class splash extends Activity
 				externalSd = prev + "/sdcard/CacheBox";
 			}
 			final String externalSd2 = externalSd;
+			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
 
-			if ((externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath)))
+			if (hasExtSd || (GlobalCore.posibleTabletLayout))
 			{
 				// externe SD wurde gefunden != internal
+				// oder Tablet Layout möglich
 				// -> Auswahldialog anzeigen
 				try
 				{
@@ -279,6 +295,15 @@ public class splash extends Activity
 					dialog.setContentView(R.layout.sdselectdialog);
 					TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
 					title.setText(title.getText() + "\n ");
+					/*
+					 * TextView tbLayout = (TextView) dialog.findViewById(R.id.select_sd_layout); tbLayout.setText("\nLayout"); final
+					 * RadioGroup rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup); final RadioButton rbHandyLayout =
+					 * (RadioButton) dialog.findViewById(R.id.select_sd_handylayout); final RadioButton rbTabletLayout = (RadioButton)
+					 * dialog.findViewById(R.id.select_sd_tabletlayout); rbHandyLayout.setText("Handy-Layout");
+					 * rbTabletLayout.setText("Tablet-Layout"); if (!GlobalCore.posibleTabletLayout) {
+					 * rgLayout.setVisibility(RadioGroup.INVISIBLE); rbHandyLayout.setChecked(true); } else { if (GlobalCore.isTab) {
+					 * rbTabletLayout.setChecked(true); } else { rbHandyLayout.setChecked(true); } }
+					 */
 					final CheckBox cbAskAgain = (CheckBox) dialog.findViewById(R.id.select_sd_askagain);
 					cbAskAgain.setChecked(askAgain);
 					Button buttonI = (Button) dialog.findViewById(R.id.button1);
@@ -301,16 +326,21 @@ public class splash extends Activity
 								public void run()
 								{
 									boolean askAgain = cbAskAgain.isChecked();
-									saveWorkPath(askAgain);
+									// boolean useTabletLayout = rbTabletLayout.isChecked();
+									saveWorkPath(askAgain/* , useTabletLayout */);
 									dialog.dismiss();
 									startInitial();
 								}
 							};
-							thread.start();
+							thread.run();
 						}
 					});
 					Button buttonE = (Button) dialog.findViewById(R.id.button2);
 					buttonE.setText("External SD\n\n" + externalSd);
+					if (!hasExtSd)
+					{
+						buttonE.setVisibility(Button.INVISIBLE);
+					}
 					buttonE.setOnClickListener(new OnClickListener()
 					{
 						@Override
@@ -330,11 +360,12 @@ public class splash extends Activity
 								{
 									workPath = externalSd2;
 									boolean askAgain = cbAskAgain.isChecked();
-									saveWorkPath(askAgain);
+									// boolean useTabletLayout = rbTabletLayout.isChecked();
+									saveWorkPath(askAgain/* , useTabletLayout */);
 									startInitial();
 								}
 							};
-							thread.start();
+							thread.run();
 
 						}
 					});
@@ -407,14 +438,18 @@ public class splash extends Activity
 		return false;
 	}
 
-	private void saveWorkPath(boolean askAgain)
+	private void saveWorkPath(boolean askAgain/* , boolean useTabletLayout */)
 	{
-		SharedPreferences settings = this.getSharedPreferences(PREFS_NAME, 0);
+
+		GlobalCore.isTab = isLandscape;
+
+		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 		// We need an Editor object to make preference changes.
 		// All objects are from android.context.Context
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString("WorkPath", workPath);
 		editor.putBoolean("AskAgain", askAgain);
+		// editor.putBoolean("UseTabletLayout", isLandscape);
 		// Commit the edits!
 		editor.commit();
 	}
@@ -492,15 +527,6 @@ public class splash extends Activity
 				e.printStackTrace();
 			}
 
-		}
-
-		if (FileIO.FileExists(workPath + "/.forcePhone"))
-		{
-			GlobalCore.isTab = false;
-		}
-		else if (FileIO.FileExists(workPath + "/.forceTablet"))
-		{
-			GlobalCore.isTab = true;
 		}
 
 		if (GlobalCore.isTab)
@@ -611,6 +637,54 @@ public class splash extends Activity
 			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
 			Config.settings.newInstall.setValue(true);
 			Config.AcceptChanges();
+
+			File CreateFile;
+
+			// create .nomedia Files
+			try
+			{
+				CreateFile = new File(workPath + "/data/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
+				CreateFile = new File(workPath + "/skins/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
+				CreateFile = new File(workPath + "/repository/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
+				CreateFile = new File(workPath + "/cache/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
 		}
 		else
 		{
@@ -634,8 +708,6 @@ public class splash extends Activity
 
 			ui.Window = new Size(width, height);
 			ui.Density = res.getDisplayMetrics().density;
-			ui.ButtonSize = new Size(res.getDimensionPixelSize(R.dimen.BtnSize),
-					(int) ((res.getDimensionPixelSize(R.dimen.BtnSize) - 5.3333f * ui.Density)));
 			ui.RefSize = res.getDimensionPixelSize(R.dimen.RefSize);
 			ui.TextSize_Normal = res.getDimensionPixelSize(R.dimen.TextSize_normal);
 			ui.ButtonTextSize = res.getDimensionPixelSize(R.dimen.BtnTextSize);
@@ -712,11 +784,7 @@ public class splash extends Activity
 
 	private void LoadImages()
 	{
-		Resources res = getResources();
 
-		bitmap = BitmapFactory.decodeResource(res, R.drawable.splash_back);
-
-		((ImageView) findViewById(R.id.splash_BackImage)).setImageBitmap(bitmap);
 		((TextView) findViewById(R.id.splash_textViewDesc)).setVisibility(View.INVISIBLE);
 		((TextView) findViewById(R.id.splash_textViewVersion)).setVisibility(View.INVISIBLE);
 		((TextView) findViewById(R.id.splash_TextView)).setVisibility(View.INVISIBLE);

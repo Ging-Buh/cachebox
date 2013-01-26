@@ -235,7 +235,6 @@ public class Logger
 			sb.append("################  Ui Sizes ############" + br);
 			sb.append("Window = " + ui.Window.toString() + br);
 			sb.append("Density = " + ui.Density + br);
-			sb.append("ButtonSize = " + ui.ButtonSize.toString() + br);
 			sb.append("RefSize = " + ui.RefSize + br);
 			sb.append("TextSize_Normal = " + ui.TextSize_Normal + br);
 			sb.append("ButtonTextSize = " + ui.ButtonTextSize + br);

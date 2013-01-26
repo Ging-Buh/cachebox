@@ -6,8 +6,6 @@ import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,9 +20,6 @@ public class GestureHelp extends CB_View_Base
 		super(Size, Name);
 
 	}
-
-	Pixmap pixmap = null;
-	Texture tex = null;
 
 	/**
 	 * CacheID of the Cache showing Bubble

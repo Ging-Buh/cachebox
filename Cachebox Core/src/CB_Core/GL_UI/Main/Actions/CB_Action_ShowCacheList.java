@@ -7,9 +7,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.Import;
-import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
@@ -81,8 +79,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					return true;
 				case MenuID.MI_FilterSet:
 
-					EditFilterSettings edFi = new EditFilterSettings(ActivityBase.ActivityRec(), "EditCoord");
-					edFi.show();
+					TabMainView.actionShowFilter.Execute();
 
 					return true;
 				case MenuID.MI_SEARCH_LIST:

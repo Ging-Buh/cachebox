@@ -25,6 +25,8 @@ public class MenuItem extends MenuItemBase
 	protected boolean mIsChecked = false;
 	protected boolean mLeft = false;
 
+	private Image checkImage;
+
 	private int mID;
 
 	protected boolean isPressed = false;
@@ -40,6 +42,26 @@ public class MenuItem extends MenuItemBase
 	public int getMenuItemId()
 	{
 		return mID;
+	}
+
+	public void toggleCheck()
+	{
+		if (isCheckable())
+		{
+			mIsChecked = !mIsChecked;
+
+			Drawable drawable = null;
+			if (mIsChecked)
+			{
+				drawable = new SpriteDrawable(SpriteCache.ChkIcons.get(1));
+			}
+			else
+			{
+				drawable = new SpriteDrawable(SpriteCache.ChkIcons.get(0));
+			}
+
+			checkImage.setDrawable(drawable);
+		}
 	}
 
 	@Override
@@ -83,7 +105,7 @@ public class MenuItem extends MenuItemBase
 
 			rec.setHeight(rec.getWidth());
 
-			Image checkImage = new Image(rec, "MenuItemCheckImage");
+			checkImage = new Image(rec, "MenuItemCheckImage");
 
 			Drawable drawable = null;
 			if (mIsChecked)
@@ -181,8 +203,8 @@ public class MenuItem extends MenuItemBase
 		if (!mIsEnabled)
 		{
 			// lösche ClickListner
-			mOnClickListener = null;
-			mOnLongClickListener = null;
+			setOnClickListener(null);
+			setOnLongClickListener(null);
 		}
 
 		this.resetInitial();

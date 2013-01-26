@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import CB_Core.Config;
+import CB_Core.Disable;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
@@ -53,9 +54,6 @@ import CB_Core.Types.Waypoint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -64,7 +62,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MapView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent
 {
+	public static final boolean debug = false;
+
 	public static MapView that = null; // für Zugriff aus Listeners heraus auf this
+	private final int ZoomTime = 1000;
 
 	private boolean CompassMode = false;
 
@@ -80,7 +81,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected SortedMap<Integer, Integer> DistanceZoomLevel;
 
 	private Locator locator = null;
-	public static MapTileLoader mapTileLoader = new MapTileLoader();
+	public static MapTileLoader mapTileLoader = new MapTileLoader(false);
 	private boolean alignToCompass = false;
 	private boolean CarMode = false;
 
@@ -90,22 +91,21 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private Point lastMovement = new Point(0, 0);
 	private int zoomCross = 16;
 	private Vector2 myPointOnScreen;
-	private Sprite directLineOverlay;
-	private Texture directLineTexture;
-	private Texture AccuracyTexture;
 
 	private float ySpeedVersatz = 200;
 
 	// private GL_ZoomScale zoomScale;
 
 	// Settings values
-	public boolean showRating;
-	public boolean showDT;
-	public boolean showTitles;
-	public boolean hideMyFinds;
+	private boolean showRating;
+	private boolean showDT;
+	private boolean showTitles;
+	private boolean hideMyFinds;
 	private boolean showCompass;
-	public boolean showDirektLine;
-	public boolean showAllWaypoints;
+	private boolean showDirektLine;
+	private boolean showAllWaypoints;
+	private boolean showAccuracyCircle;
+
 	// private boolean nightMode;
 	public int aktZoom;
 	// private float startCameraZoom;
@@ -163,7 +163,24 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		super(rec, Name);
 		// statischen that nur setzen wenn die HauptMapView initialisiert wird
-		if (!compassMode) that = this;
+		if (!compassMode)
+		{
+			that = this;
+		}
+		else
+		{
+			this.setOnDoubleClickListener(new OnClickListener()
+			{
+
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					// Center own position!
+					setCenter(new Coordinate(GlobalCore.LastValidPosition.getLatitude(), GlobalCore.LastValidPosition.getLongitude()));
+					return true;
+				}
+			});
+		}
 
 		CompassMode = compassMode;
 
@@ -225,7 +242,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				lastDynamicZoom = zoomBtn.getZoom();
 
 				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
-						System.currentTimeMillis(), System.currentTimeMillis() + 1000);
+						System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
@@ -244,7 +261,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				lastDynamicZoom = zoomBtn.getZoom();
 
 				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
-						System.currentTimeMillis(), System.currentTimeMillis() + 1000);
+						System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
@@ -287,6 +304,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			if (mapTileLoader.CurrentLayer == null) mapTileLoader.CurrentLayer = ManagerBase.Manager.GetLayerByName(
 					(currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
+			if (!Disable.HillShading)
+			{
+				if (mapTileLoader.CurrentOverlayLayer == null) mapTileLoader.CurrentOverlayLayer = ManagerBase.Manager.GetLayerByName(
+						"HillShade", "HillShade", "");
+			}
 		}
 
 		mapIntWidth = (int) rec.getWidth();
@@ -378,16 +400,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		resize(rec.getWidth(), rec.getHeight());
 
-		this.setOnLongClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				// CB_AllContextMenuHandler.showMapViewGLContextMenu();
-				return true;
-			}
-		});
 		center.setLatitude(Config.settings.MapInitLatitude.getValue());
 		center.setLongitude(Config.settings.MapInitLongitude.getValue());
 		aktZoom = Config.settings.lastZoomLevel.getValue();
@@ -420,7 +432,20 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingHeight = mapIntHeight;
 		}
 		setVisible();
-		SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+
+		int zoom = MapTileLoader.MAX_MAP_ZOOM;
+		float tmpZoom = camera.zoom;
+		float faktor = 1.5f;
+		faktor = faktor - iconFactor + 1;
+		while (tmpZoom > faktor)
+		{
+			tmpZoom /= 2;
+			zoom--;
+		}
+		aktZoom = zoom;
+
+		calcPixelsPerMeter();
+
 	}
 
 	@Override
@@ -429,6 +454,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CB_Core.Events.SelectedCacheEventList.Remove(this);
 		CB_Core.Events.PositionChangedEventList.Remove(this);
 		setInvisible();
+		onStop();// save last zoom and position
 	}
 
 	@Override
@@ -455,7 +481,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		camera = new OrthographicCamera(MainViewBase.mainView.getWidth(), MainViewBase.mainView.getHeight());
 
 		aktZoom = zoomBtn.getZoom();
-		setZoomScale(aktZoom);
+		// setZoomScale(aktZoom);
 		camera.zoom = mapTileLoader.getMapTilePosFactor(aktZoom);
 		// endCameraZoom = camera.zoom;
 		// diffCameraZoom = 0;
@@ -476,10 +502,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void onStop()
 	{
-		Config.settings.MapInitLatitude.setValue(center.getLatitude());
-		Config.settings.MapInitLongitude.setValue(center.getLongitude());
-		Config.settings.lastZoomLevel.setValue(aktZoom);
-		Config.settings.WriteToDB();
+		if (!CompassMode) // save last zoom and position only from Map, not from CompassMap
+		{
+			Config.settings.MapInitLatitude.setValue(center.getLatitude());
+			Config.settings.MapInitLongitude.setValue(center.getLongitude());
+			Config.settings.lastZoomLevel.setValue(aktZoom);
+			Config.settings.WriteToDB();
+		}
+
 		super.onStop();
 	}
 
@@ -494,6 +524,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	}
 
 	protected SortedMap<Long, TileGL> tilesToDraw = new TreeMap<Long, TileGL>();
+	protected SortedMap<Long, TileGL> overlayToDraw = new TreeMap<Long, TileGL>();
+
+	int debugcount = 0;
 
 	@Override
 	protected void render(SpriteBatch batch)
@@ -519,6 +552,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (kineticZoom != null)
 		{
 			camera.zoom = kineticZoom.getAktZoom();
+			// float tmpZoom = mapTileLoader.convertCameraZommToFloat(camera);
+			// aktZoom = (int) tmpZoom;
 
 			int zoom = MapTileLoader.MAX_MAP_ZOOM;
 			float tmpZoom = camera.zoom;
@@ -531,10 +566,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 			aktZoom = zoom;
 
-			float diffZoom = 1 - (tmpZoom * 2);
-			// Logger.LogCat("Kinetic: " + diffZoom);
-			zoomScale.setDiffCameraZoom(diffZoom, true);
-
 			if (kineticZoom.getFertig())
 			{
 				setZoomScale(zoomBtn.getZoom());
@@ -543,6 +574,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 			else
 				reduceFps = false;
+
+			calcPixelsPerMeter();
+			mapScale.ZoomChanged();
+			zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
+
 		}
 
 		if ((kineticPan != null) && (kineticPan.started))
@@ -614,6 +650,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void renderMapTiles(SpriteBatch batch)
 	{
+		batch.disableBlending();
+
 		float faktor = camera.zoom;
 		float dx = this.ThisWorldRec.getCenterPos().x - MainViewBase.mainView.getCenterPos().x;
 		float dy = this.ThisWorldRec.getCenterPos().y - MainViewBase.mainView.getCenterPos().y;
@@ -681,9 +719,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					Descriptor desc = new Descriptor(i, j, tmpzoom);
 					TileGL tile = null;
+					TileGL tileOverlay = null;
 					try
 					{
 						tile = mapTileLoader.getLoadedTile(desc);
+						tileOverlay = mapTileLoader.getLoadedOverlayTile(desc);
 					}
 					catch (Exception ex)
 					{
@@ -694,7 +734,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						// für den richtigen aktuellen Zoom ist
 						if (tmpzoom == aktZoom) tile.Age = 0;
 
-						if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+						try
+						{
+							if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(),
+									tile);
+						}
+						catch (Exception e)
+						{
+						}
 					}
 					else if (tmpzoom == aktZoom)
 					{
@@ -707,6 +754,22 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						// Tiles gezeichnet werden (4 oder 16 oder 64...)
 						// dieser Aufruf kann auch rekursiv sein...
 						renderSmallerTiles(batch, i, j, aktZoom);
+					}
+					if (tileOverlay != null)
+					{
+						if (tmpzoom == aktZoom) tileOverlay.Age = 0;
+						try
+						{
+							if (!overlayToDraw.containsKey(tileOverlay.Descriptor.GetHashCode())) overlayToDraw.put(
+									tileOverlay.Descriptor.GetHashCode(), tileOverlay);
+						}
+						catch (Exception e)
+						{
+						}
+					}
+					else if (tmpzoom == aktZoom)
+					{
+						if (!renderBiggerOverlayTiles(batch, i, j, aktZoom)) renderSmallerOverlayTiles(batch, i, j, aktZoom);
 					}
 				}
 			}
@@ -727,10 +790,32 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					float xSize = tile.texture.getWidth() * posFactor;
 					float ySize = tile.texture.getHeight() * posFactor;
 					batch.draw(tile.texture, (float) xPos, (float) yPos, xSize, ySize);
+
 				}
 			}
 		}
 		tilesToDraw.clear();
+		batch.enableBlending();
+		synchronized (screenCenterW)
+		{
+			for (TileGL tile : overlayToDraw.values())
+			{
+				tile.createTexture();
+				if (tile.texture != null)
+				{
+					// Faktor, mit der dieses MapTile vergrößert gezeichnet
+					// werden muß
+					long posFactor = mapTileLoader.getMapTilePosFactor(tile.Descriptor.Zoom);
+
+					long xPos = (long) tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
+					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
+					float xSize = tile.texture.getWidth() * posFactor;
+					float ySize = tile.texture.getHeight() * posFactor;
+					batch.draw(tile.texture, (float) xPos, (float) yPos, xSize, ySize);
+				}
+			}
+		}
+		overlayToDraw.clear();
 
 	}
 
@@ -771,60 +856,47 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			myPointOnScreen.y -= ySpeedVersatz;
 
-			directLineOverlay = null;
-			if (directLineTexture != null) directLineTexture.dispose();
-			if (actAccuracy != locator.getLocation().Accuracy || actPixelsPerMeter != pixelsPerMeter)
+			if (showAccuracyCircle)
 			{
-				if (AccuracyTexture != null) AccuracyTexture.dispose();
-				actAccuracy = locator.getLocation().Accuracy;
-				actPixelsPerMeter = pixelsPerMeter;
 
-				int radius = (int) (pixelsPerMeter * locator.getLocation().Accuracy);
-				// Logger.LogCat("Accuracy radius " + radius);
-				// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
-				if (radius > 0 && radius < UiSizes.getSmallestWidth() && false) // TODO für Release 0.5.x ausgeschalten
+				if (actAccuracy != locator.getLocation().Accuracy || actPixelsPerMeter != pixelsPerMeter)
 				{
+					actAccuracy = locator.getLocation().Accuracy;
+					actPixelsPerMeter = pixelsPerMeter;
 
-					try
+					int radius = (int) (pixelsPerMeter * locator.getLocation().Accuracy);
+					// Logger.LogCat("Accuracy radius " + radius);
+					// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
+					if (radius > 0 && radius < UiSizes.getSmallestWidth())
 					{
-						int squaredR = radius * 2;
 
-						int w = getNextHighestPO2(squaredR);
-						int h = getNextHighestPO2(squaredR);
-						// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-						Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA4444);
-						Pixmap.setBlending(Blending.None);
-						p.setColor(0f, 0.1f, 0.4f, 0.1f);
+						try
+						{
+							int squaredR = radius * 2;
 
-						p.fillCircle(radius, radius, radius);
-						p.setColor(0f, 0f, 1f, 0.8f);
-						p.drawCircle(radius, radius, radius);
-						p.setColor(0.5f, 0.5f, 1f, 0.7f);
-						p.drawCircle(radius, radius, radius - 1);
-						p.drawCircle(radius, radius, radius + 1);
+							if (squaredR > SpriteCache.Accuracy[2].getWidth()) AccuracySprite = new Sprite(SpriteCache.Accuracy[2]);
+							else if (squaredR > SpriteCache.Accuracy[1].getWidth()) AccuracySprite = new Sprite(SpriteCache.Accuracy[1]);
+							else
+								AccuracySprite = new Sprite(SpriteCache.Accuracy[0]);
+							if (AccuracySprite != null) AccuracySprite.setSize(squaredR, squaredR);
+						}
+						catch (Exception e)
+						{
+							Logger.Error("MapView.renderPositionMarker()", "set AccuracySprite", e);
+						}
 
-						AccuracyTexture = new Texture(p);
-
-						AccuracySprite = new Sprite(AccuracyTexture, squaredR, squaredR);
-						p.dispose();
-						AccuracySprite.setSize(squaredR, squaredR);
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
 					}
 
 				}
 
-			}
+				if (AccuracySprite != null && AccuracySprite.getWidth() > GL_UISizes.PosMarkerSize)
+				{// nur wenn berechnet wurde und grösser als der PosMarker
 
-			if (AccuracySprite != null && AccuracySprite.getWidth() > GL_UISizes.PosMarkerSize)
-			{// nur wenn berechnet wurde und grösser als der PosMarker
+					float center = AccuracySprite.getWidth() / 2;
 
-				float center = AccuracySprite.getWidth() / 2;
-
-				AccuracySprite.setPosition(myPointOnScreen.x - center, myPointOnScreen.y - center);
-				AccuracySprite.draw(batch);
+					AccuracySprite.setPosition(myPointOnScreen.x - center, myPointOnScreen.y - center);
+					AccuracySprite.draw(batch);
+				}
 			}
 
 			boolean lastUsedCompass = locator.isLastUsedCompass(Locator.CompassType.Magnetic);
@@ -1002,11 +1074,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 			}
 		}
-
+		outScreenDraw = 0;
 	}
 
 	private Sprite LineSprite, PointSprite;
 	private float scale;
+
+	int outScreenDraw = 0;
 
 	private void renderWPI(SpriteBatch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
 	{
@@ -1014,28 +1088,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		screen.y -= ySpeedVersatz;
 
+		// Don't render if outside of screen !!
+		if (screen.x < 0 - WpSize.width || screen.x > this.width + WpSize.height) return;
+		if (screen.y < 0 - WpSize.height || screen.y > this.height + WpSize.height) return;
+
 		if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
 		{
-
-			// if (directLineOverlay == null)
-			// {
-			// int w = getNextHighestPO2((int) mapIntWidth);
-			// int h = getNextHighestPO2((int) mapIntHeight);
-			// Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			// p.setColor(1f, 0f, 0f, 1f);
-			// p.drawLine((int) myPointOnScreen.x, (int) myPointOnScreen.y, (int) screen.x, (int) screen.y);
-			//
-			// directLineTexture = new Texture(p, Pixmap.Format.RGBA8888, false);
-			//
-			// directLineOverlay = new Sprite(directLineTexture, (int) mapIntWidth, (int) mapIntHeight);
-			// directLineOverlay.setPosition(0, 0);
-			// directLineOverlay.flip(false, true);
-			// p.dispose();
-			//
-			// }
-			//
-			// directLineOverlay.draw(batch);
-
 			if (LineSprite == null || PointSprite == null)
 			{
 				LineSprite = SpriteCache.Arrows.get(13);
@@ -1099,9 +1157,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// Beschriftung
 		if (showTitles && (aktZoom >= 15))
 		{
-			String Name = drawAsWaypoint ? wpi.Waypoint.Description : wpi.Cache.Name;
+			String Name = drawAsWaypoint ? wpi.Waypoint.Title : wpi.Cache.Name;
 
-			float halfWidth = Fonts.getNormal().getBounds(wpi.Cache.Name).width / 2;
+			float halfWidth = Fonts.getNormal().getBounds(Name).width / 2;
 			Fonts.getNormal().draw(batch, Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
 		}
 
@@ -1157,7 +1215,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
 			// eigentlich nicht das richtige Tile ist!!!
 			// tile.Age = 0;
-			if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+			try
+			{
+				if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+			}
+			catch (Exception e)
+			{
+			}
 			return true;
 		}
 		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
@@ -1169,6 +1233,51 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// gezeichnet werden (4 oder 16 oder 64...)
 			// dieser Aufruf kann auch rekursiv sein...
 			renderBiggerTiles(batch, ii, jj, zoomzoom);
+		}
+		return false;
+	}
+
+	private boolean renderBiggerOverlayTiles(SpriteBatch batch, int i, int j, int zoom2)
+	{
+		// für den aktuellen Zoom ist kein Tile vorhanden -> kleinere
+		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
+		// von dem gefundenen Tile muß dann nur ein Ausschnitt gezeichnet werden
+		int ii = i / 2;
+		int jj = j / 2;
+		int zoomzoom = zoom2 - 1;
+
+		Descriptor desc = new Descriptor(ii, jj, zoomzoom);
+		TileGL tile = null;
+		try
+		{
+			tile = mapTileLoader.getLoadedOverlayTile(desc);
+		}
+		catch (Exception ex)
+		{
+		}
+		if (tile != null)
+		{
+			// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
+			// eigentlich nicht das richtige Tile ist!!!
+			// tile.Age = 0;
+			try
+			{
+				if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.put(tile.Descriptor.GetHashCode(), tile);
+			}
+			catch (Exception e)
+			{
+			}
+			return true;
+		}
+		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
+		{
+			// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+			// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
+			// sind...
+			// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles
+			// gezeichnet werden (4 oder 16 oder 64...)
+			// dieser Aufruf kann auch rekursiv sein...
+			renderBiggerOverlayTiles(batch, ii, jj, zoomzoom);
 		}
 		return false;
 	}
@@ -1199,7 +1308,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 				if (tile != null)
 				{
-					if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+					try
+					{
+						if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.put(tile.Descriptor.GetHashCode(), tile);
+					}
+					catch (Exception e)
+					{
+					}
 					// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
 					// eigentlich nicht das richtige Tile ist!!!
 					// tile.Age = 0;
@@ -1213,6 +1328,58 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// gezeichnet werden (4 oder 16 oder 64...)
 					// dieser Aufruf kann auch rekursiv sein...
 					renderSmallerTiles(batch, ii, jj, zoomzoom);
+				}
+			}
+		}
+	}
+
+	private void renderSmallerOverlayTiles(SpriteBatch batch, int i, int j, int zoom2)
+	{
+		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
+		// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles gezeichnet
+		// werden (4 oder 16 oder 64...)
+		int i1 = i * 2;
+		int i2 = i * 2 + 1;
+		int j1 = j * 2;
+		int j2 = j * 2 + 1;
+		int zoomzoom = zoom2 + 1;
+		for (int ii = i1; ii <= i2; ii++)
+		{
+			for (int jj = j1; jj <= j2; jj++)
+			{
+				Descriptor desc = new Descriptor(ii, jj, zoomzoom);
+				TileGL tile = null;
+				try
+				{
+					tile = mapTileLoader.getLoadedOverlayTile(desc);
+				}
+				catch (Exception ex)
+				{
+				}
+				if (tile != null)
+				{
+					try
+					{
+						if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.put(tile.Descriptor.GetHashCode(),
+								tile);
+					}
+					catch (Exception e)
+					{
+					}
+					// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
+					// eigentlich nicht das richtige Tile ist!!!
+					// tile.Age = 0;
+				}
+				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM))
+				{
+					// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+					// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
+					// sind...
+					// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles
+					// gezeichnet werden (4 oder 16 oder 64...)
+					// dieser Aufruf kann auch rekursiv sein...
+					renderSmallerOverlayTiles(batch, ii, jj, zoomzoom);
 				}
 			}
 		}
@@ -1316,12 +1483,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				}
 			}
-
-			// Größe des Maßstabes berechnen etc...
-			// zoomChanged();
 		}
 
 		setNewSettings(INITIAL_ALL);
+
 	}
 
 	public static int INITIAL_NEW_SETTINGS = 3;
@@ -1329,6 +1494,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public static int INITIAL_THEME = 2;
 	public static int INITIAL_WP_LIST = 4;
 	public static int INITIAL_ALL = 7;
+	public static int INITIAL_WITH_OUT_ZOOM = 8;
+	public static int INITIAL_SETTINGS_WITH_OUT_ZOOM = 9;
 
 	public void setNewSettings(int InitialFlags)
 	{
@@ -1341,35 +1508,46 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			showCompass = CompassMode ? false : Config.settings.MapShowCompass.getValue();
 			showDirektLine = CompassMode ? false : Config.settings.ShowDirektLine.getValue();
 			showAllWaypoints = CompassMode ? false : Config.settings.ShowAllWaypoints.getValue();
+			showAccuracyCircle = CompassMode ? false : Config.settings.ShowAccuracyCircle.getValue();
 
-			iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
+			if (info != null) info.setVisible(showCompass);
 
-			int setAktZoom = CompassMode ? Config.settings.lastZoomLevel.getValue() : Config.settings.lastZoomLevel.getValue();
-			int setMaxZoom = CompassMode ? Config.settings.CompassMapMaxZommLevel.getValue() : Config.settings.OsmMaxLevel.getValue();
-			int setMinZoom = CompassMode ? Config.settings.CompassMapMinZoomLevel.getValue() : Config.settings.OsmMinLevel.getValue();
-
-			aktZoom = setAktZoom;
-			zoomBtn.setMaxZoom(setMaxZoom);
-			zoomBtn.setMinZoom(setMinZoom);
-			zoomBtn.setZoom(aktZoom);
-
-			zoomScale.setMaxZoom(setMaxZoom);
-			zoomScale.setMinZoom(setMinZoom);
-			setZoomScale(aktZoom);
-
-			if (CompassMode)
+			if (InitialFlags == INITIAL_ALL)
 			{
-				// Berechne die darstellbare Entfernung für jedes ZoomLevel
-				DistanceZoomLevel = new TreeMap<Integer, Integer>();
+				iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
 
-				int posiblePixel = (int) this.halfHeight;
+				int setAktZoom = CompassMode ? Config.settings.lastZoomLevel.getValue() : Config.settings.lastZoomLevel.getValue();
+				int setMaxZoom = CompassMode ? Config.settings.CompassMapMaxZommLevel.getValue() : Config.settings.OsmMaxLevel.getValue();
+				int setMinZoom = CompassMode ? Config.settings.CompassMapMinZoomLevel.getValue() : Config.settings.OsmMinLevel.getValue();
 
-				for (int i = setMaxZoom; i > setMinZoom; i--)
+				aktZoom = setAktZoom;
+				zoomBtn.setMaxZoom(setMaxZoom);
+				zoomBtn.setMinZoom(setMinZoom);
+				zoomBtn.setZoom(aktZoom);
+
+				zoomScale.setMaxZoom(setMaxZoom);
+				zoomScale.setMinZoom(setMinZoom);
+
+				if (CompassMode)
 				{
-					float PixelForZoomLevel = getPixelsPerMeter(i);
-					DistanceZoomLevel.put(i, (int) (posiblePixel / PixelForZoomLevel));
+					// Berechne die darstellbare Entfernung für jedes ZoomLevel
+					DistanceZoomLevel = new TreeMap<Integer, Integer>();
+
+					int posiblePixel = (int) this.halfHeight;
+
+					for (int i = setMaxZoom; i > setMinZoom; i--)
+					{
+						float PixelForZoomLevel = getPixelsPerMeter(i);
+						DistanceZoomLevel.put(i, (int) (posiblePixel / PixelForZoomLevel));
+					}
 				}
+
 			}
+
+			// Hill Shading ?
+			mapTileLoader.SetOverlay(Config.settings.MapHillShading.getValue());
+			mapTileLoader.clearLoadedTiles();
+
 		}
 
 		if ((InitialFlags & INITIAL_THEME) != 0)
@@ -1443,17 +1621,36 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					if (themePath != null && Config.settings.nightMode.getValue()) useInvertNightTheme = true;
 				}
 
-				if (themePath == null)
-				{
-					themePath = Config.settings.MapsforgeDayTheme.getValue();
-				}
+				// Ich denke das ist zuviel, wenn jetzt noch kein Theme Pfad gefunden wurde,
+				// Koomt es hier nur zu eine FileNotFound Exception (Longri)
+				// if (themePath == null)
+				// {
+				// themePath = Config.settings.MapsforgeDayTheme.getValue();
+				// }
 
 			}
 
 			if (themePath != null)
 			{
-				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-				ManagerBase.Manager.setRenderTheme(themePath);
+				if (CompassMode)
+				{
+					if (!ManagerBase.Manager.isRenderThemeSetted())
+					{
+						ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
+						ManagerBase.Manager.setRenderTheme(themePath);
+					}
+				}
+				else
+				{
+					ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
+					ManagerBase.Manager.setRenderTheme(themePath);
+				}
+
+			}
+			else
+			{
+				// set Theme to null
+				ManagerBase.Manager.setRenderTheme(null);
 			}
 
 			// Initial_all wird vom Constructor der MapView übergeben. Beim Constructor müssen die Texturen nicht ungültig gemacht werden
@@ -1485,12 +1682,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (FileIO.FileExists(Path)) return Path;
 		return null;
-	}
-
-	public void saveToSettings()
-	{
-		Config.settings.lastZoomLevel.setValue(aktZoom);
-
 	}
 
 	private void setScreenCenter(Vector2 newCenter)
@@ -1591,31 +1782,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		this.locator = locator;
-		GlobalCore.LastValidPosition = new Coordinate(locator.getLocation().getLatitude(), locator.getLocation().getLongitude());
-		GlobalCore.LastValidPosition.setElevation(locator.getAlt());
 
 		if (info != null)
 		{
 			info.setCoord(GlobalCore.LastValidPosition);
 			info.setSpeed(locator.SpeedString());
 
-			Coordinate position = null;
-			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
-			else
-				position = new Coordinate();
-
-			float distance = -1;
-
-			// Gps empfang ?
-			if (GlobalCore.getSelectedCache() != null && position.Valid)
+			if (GlobalCore.getSelectedCoord() != null)
 			{
-				if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos);
-				else
-					distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos);
+				info.setDistance(GlobalCore.getSelectedCoord().Distance());
 			}
-			info.setDistance(distance);
-
+			// Logger.DEBUG("Map.SetDistance=" + GlobalCore.getSelectedCoord().Distance());
 		}
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().getLatitude(), locator
@@ -1642,19 +1819,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				inputState = InputState.Idle;
 
 				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
-						System.currentTimeMillis() + 1000);
-
-				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
-				// 1000);
+						System.currentTimeMillis() + ZoomTime);
 
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
 				calcPixelsPerMeter();
 			}
-
-			// Logger.LogCat("SpeedVersatz = " + String.valueOf(ySpeedVersatz) + " / 1/3=" + String.valueOf(height / 3));
-			// Logger.LogCat("MaxSpeed = " + String.valueOf(maxSpeed));
-			// Logger.LogCat("Dyn Zoom = " + String.valueOf(dynZoom));
 
 		}
 
@@ -1676,12 +1846,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 			int setZoomTo = zoomBtn.getMinZoom();
 
-			for (int i = zoomBtn.getMaxZoom(); i > zoomBtn.getMinZoom(); i--)
+			if (DistanceZoomLevel != null)
 			{
-				if (distance < DistanceZoomLevel.get(i))
+				for (int i = zoomBtn.getMaxZoom(); i > zoomBtn.getMinZoom(); i--)
 				{
-					setZoomTo = i;
-					break;
+					if (distance < DistanceZoomLevel.get(i))
+					{
+						setZoomTo = i;
+						break;
+					}
 				}
 			}
 
@@ -1692,7 +1865,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				inputState = InputState.Idle;
 
 				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(),
-						System.currentTimeMillis() + 1000);
+						System.currentTimeMillis() + ZoomTime);
 
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
@@ -1700,7 +1873,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 
 		}
-
+		GL.that.renderOnce(MapView.this.getName() + " Position Changed");
 	}
 
 	private int lastCompassMapZoom = -1;
@@ -1769,7 +1942,21 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()), this.mapHeading);
 			}
 		}
+		GL.that.renderOnce(MapView.this.getName() + " OrientationChanged");
+	}
 
+	public void SetHillShade(boolean value)
+	{
+		mapTileLoader.SetOverlay(value);
+		mapTileLoader.clearLoadedTiles();
+
+		Config.settings.MapHillShading.setValue(value);
+		Config.AcceptChanges();
+	}
+
+	public boolean GetHillShade()
+	{
+		return mapTileLoader.GetOverlay();
 	}
 
 	public void SetAlignToCompass(boolean value)
@@ -1866,7 +2053,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				inputState = InputState.Idle;
 
 				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
-						System.currentTimeMillis() + 500);
+						System.currentTimeMillis() + ZoomTime);
 
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
 				// 1000);
@@ -1979,13 +2166,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					camera.zoom = mapTileLoader.getMapTilePosFactor(zoomBtn.getMinZoom());
 				}
 
-				// endCameraZoom = camera.zoom;
-
-				System.out.println(camera.zoom);
-				int zoom = MapTileLoader.MAX_MAP_ZOOM;
-
 				lastDynamicZoom = camera.zoom;
 
+				int zoom = MapTileLoader.MAX_MAP_ZOOM;
 				float tmpZoom = camera.zoom;
 				float faktor = 1.5f;
 				faktor = faktor - iconFactor + 1;
@@ -1994,13 +2177,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					tmpZoom /= 2;
 					zoom--;
 				}
-				zoomBtn.setZoom(zoom);
-				if (!CarMode && !CompassMode) zoomScale.resetFadeOut();
-				setZoomScale(zoom);
-				zoomScale.setDiffCameraZoom(1 - (tmpZoom * 2), true);
 				aktZoom = zoom;
 
-				// debugString = currentDistance + " - " + originalDistance;
+				calcPixelsPerMeter();
+				mapScale.ZoomChanged();
+				zoomBtn.setZoom(aktZoom);
+
+				if (!CarMode && !CompassMode)
+				{
+					zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
+					zoomScale.resetFadeOut();
+				}
+
 				return false;
 			}
 
@@ -2179,11 +2367,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void calcPixelsPerMeter()
 	{
+
+		float calcZoom = mapTileLoader.convertCameraZommToFloat(camera);
+
 		Coordinate dummy = Coordinate.Project(center.getLatitude(), center.getLongitude(), 90, 1000);
-		double l1 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), center.getLongitude());
-		double l2 = Descriptor.LongitudeToTileX(zoomBtn.getZoom(), dummy.getLongitude());
+		double l1 = Descriptor.LongitudeToTileX(calcZoom, center.getLongitude());
+		double l2 = Descriptor.LongitudeToTileX(calcZoom, dummy.getLongitude());
 		double diff = Math.abs(l2 - l1);
 		pixelsPerMeter = (float) ((diff * 256) / 1000);
+
 	}
 
 	private float getPixelsPerMeter(int ZoomLevel)
@@ -2199,7 +2391,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		// xxx if (Global.autoResort) return;
-
+		// Logger.DEBUG("Cache Changed Event");
 		if (cache == null) return;
 		/*
 		 * if (InvokeRequired) { Invoke(new targetChangedDelegate(OnTargetChanged), new object[] { cache, waypoint }); return; }
@@ -2212,7 +2404,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 
-		if (togBtn.getState() > 0 && togBtn.getState() != 2) return;
+		// Ich weiß nicht mehr warum dies so drin war, aber es hat verhindert, das am ende der Methode
+		// PositionChanged(GlobalCore.Locator); Aufgerufen wurde. Damit hat sich beim wechsel des Caches die Distance nicht Aktualisiert!
+		// Deshalb habe ich es erstmal auskommentiert! ( Longri)
+		if (togBtn.getState() > 0 && togBtn.getState() != 2)
+		{
+			PositionChanged(GlobalCore.Locator);
+			return;
+		}
 
 		positionInitialized = true;
 
@@ -2434,13 +2633,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		mapTileLoader.clearLoadedTiles();
 		tilesToDraw.clear();
-		if (directLineOverlay != null) directLineOverlay.getTexture().dispose();
-		directLineOverlay = null;
-		if (directLineTexture != null) directLineTexture.dispose();
-		directLineTexture = null;
-		if (AccuracyTexture != null) AccuracyTexture.dispose();
-		AccuracyTexture = null;
-
+		mapScale.ZoomChanged();
 	}
 
 	public boolean doubleClick(int x, int y, int pointer, int button)

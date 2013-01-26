@@ -92,7 +92,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		setText("");
 		topLine = 0;
 		leftPos = 0;
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name)
@@ -106,7 +106,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		setText("");
 		topLine = 0;
 		leftPos = 0;
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name, TextFieldType type)
@@ -131,7 +131,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		setText("");
 		topLine = 0;
 		leftPos = 0;
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	@Override
@@ -710,6 +710,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
+		boolean bearbeitet = false;
 		if (mouseDown != null)
 		{
 			float oldTopLine = topLine;
@@ -735,6 +736,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						topLine = displayText.size() - maxLineCount;
 					}
 				}
+				bearbeitet = true;
 			}
 			if (!isWraped())
 			{
@@ -762,7 +764,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 			moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * lineHeight);
 		}
 		GL.that.renderOnce("EditWrapedTextField");
-		return true;
+
+		// Scrollen nach oben / unten soll möglich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
+		return bearbeitet;
 	};
 
 	private float getMaxDisplayTextWidth()

@@ -9,8 +9,6 @@ import CB_Core.Math.SizeF;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -22,10 +20,6 @@ public class InfoBubble extends CB_View_Base
 		super(Size, Name);
 		registerSkinChangedEvent();
 	}
-
-	Pixmap pixmap = null;
-	Texture tex = null;
-	// Sprite CachedContentSprite = null;
 
 	/**
 	 * CacheID of the Cache showing Bubble

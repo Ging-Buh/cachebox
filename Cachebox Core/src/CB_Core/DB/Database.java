@@ -585,7 +585,8 @@ public abstract class Database
 	public static ArrayList<LogEntry> Logs(Cache cache)
 	{
 		ArrayList<LogEntry> result = new ArrayList<LogEntry>();
-
+		if (cache == null) // if no cache is selected!
+		return result;
 		CoreCursor reader = Database.Data.rawQuery(
 				"select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc",
 				new String[]

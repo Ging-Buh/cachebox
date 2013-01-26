@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -16,16 +17,23 @@ import java.util.zip.ZipException;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.GCVoteDAO;
 import CB_Core.DAO.ImageDAO;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database.Parameters;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.Log.Logger;
+import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 
 public class Importer
@@ -418,6 +426,190 @@ public class Importer
 		CacheInfoList.dispose();
 	}
 
+	public void importImagesNew(ImporterProgress ip, boolean importImages, boolean importSpoiler)
+	{
+		// Import images in WinCB style
+		String where = GlobalCore.LastFilter.getSqlWhere();
+
+		// refresch all Image Url´s
+
+		String sql = "select Id, Description, Name, GcCode, Url, ImagesUpdated, DescriptionImagesUpdated from Caches";
+		if (where.length() > 0) sql += " where " + where;
+		CoreCursor reader = Database.Data.rawQuery(sql, null);
+
+		int cnt = -1;
+		int numCaches = reader.getCount();
+		ip.setJobMax("importImages", numCaches);
+
+		if (reader.getCount() > 0)
+		{
+			reader.moveToFirst();
+			while (reader.isAfterLast() == false)
+			{
+				cnt++;
+				long id = reader.getLong(0);
+				String name = reader.getString(2);
+				String gcCode = reader.getString(3);
+
+				ip.ProgressInkrement("importImages",
+						"Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
+
+				boolean additionalImagesUpdated = false;
+				boolean descriptionImagesUpdated = false;
+
+				if (!reader.isNull(5))
+				{
+					additionalImagesUpdated = reader.getInt(5) != 0;
+				}
+				if (!reader.isNull(6))
+				{
+					descriptionImagesUpdated = reader.getInt(6) != 0;
+				}
+
+				String description = reader.getString(1);
+				String uri = reader.getString(4);
+
+				if (!importImages)
+				{
+					// do not import Description Images
+					descriptionImagesUpdated = true;
+				}
+				if (!importSpoiler)
+				{
+					// do not import Spoiler Images
+					additionalImagesUpdated = true;
+				}
+				importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
+
+				reader.moveToNext();
+			}
+		}
+
+		reader.close();
+	}
+
+	/**
+	 * Importiert alle Spoiler Images für einen Cache (über die API-Funktion)
+	 * 
+	 * @param ip
+	 * @param id
+	 * @param gcCode
+	 * @param name
+	 */
+	public void importSpoilerForCacheNew(ImporterProgress ip, Cache cache)
+	{
+		importImagesForCacheNew(ip, true, false, cache.Id, cache.GcCode, cache.Name, "", "", true);
+	}
+
+	/*
+	 * Bilderimport. Wenn descriptionImagesUpdated oder additionalImagesUpdated == false dann werden die entsprechenden Images importiert
+	 * Aber nur dann wenn CheckLocalImages dafür false liefert. wenn importAlways == true -> die Bilder werden unabhängig davon, ob schon
+	 * welche existieren importiert
+	 */
+	private void importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id,
+			String gcCode, String name, String description, String uri, boolean importAlways)
+	{
+		boolean dbUpdate = false;
+
+		if (!importAlways)
+		{
+			if (!descriptionImagesUpdated)
+			{
+				descriptionImagesUpdated = CheckLocalImages(Config.settings.DescriptionImageFolder.getValue(), gcCode);
+
+				if (descriptionImagesUpdated)
+				{
+					dbUpdate = true;
+				}
+			}
+			if (!additionalImagesUpdated)
+			{
+				additionalImagesUpdated = CheckLocalImages(Config.settings.SpoilerFolder.getValue(), gcCode);
+
+				if (additionalImagesUpdated)
+				{
+					dbUpdate = true;
+				}
+			}
+		}
+		if (dbUpdate)
+		{
+			Parameters args = new Parameters();
+			args.put("ImagesUpdated", additionalImagesUpdated);
+			args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
+			long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+				{ String.valueOf(id) });
+		}
+
+		DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name,
+				description, uri);
+	}
+
+	/**
+	 * Überprüft, ob für den gewählten Cache die Bilder nicht geladen werden müssen
+	 * 
+	 * @return true wenn schon Images existieren und keine .changed oder .1st Datei ansonsten false
+	 */
+	private boolean CheckLocalImages(String path, final String GcCode)
+	{
+		boolean retval = true;
+
+		String imagePath = path + "/" + GcCode.substring(0, 4);
+		boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
+
+		if (imagePathDirExists)
+		{
+			File dir = new File(imagePath);
+			FilenameFilter filter = new FilenameFilter()
+			{
+				@Override
+				public boolean accept(File dir, String filename)
+				{
+
+					filename = filename.toLowerCase();
+					if (filename.indexOf(GcCode.toLowerCase()) == 0)
+					{
+						return true;
+					}
+					return false;
+				}
+			};
+			String[] files = dir.list(filter);
+
+			if (files.length > 0)
+			{
+				for (String file : files)
+				{
+					if (file.endsWith(".1st") || file.endsWith(".changed"))
+					{
+						if (file.endsWith(".changed"))
+						{
+							File f = new File(file);
+							try
+							{
+								f.delete();
+							}
+							catch (Exception ex)
+							{
+							}
+						}
+						retval = false;
+					}
+				}
+			}
+			else
+			{
+				retval = false;
+			}
+		}
+		else
+		{
+			retval = false;
+		}
+
+		return retval;
+	}
+
 	private void importApiImages(String GcCode, long ID)
 	{
 
@@ -509,6 +701,35 @@ public class Importer
 		});
 
 		return fileArray;
+	}
+
+	private static CancelWaitDialog WD;
+
+	public static CancelWaitDialog ImportSpoiler()
+	{
+
+		WD = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+		{
+
+			@Override
+			public void isCanceld()
+			{
+				// TODO Handle Cancel
+
+			}
+		}, new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				Importer importer = new Importer();
+				ImporterProgress ip = new ImporterProgress();
+				importer.importSpoilerForCacheNew(ip, GlobalCore.getSelectedCache());
+				WD.close();
+			}
+		});
+		return WD;
 	}
 
 }

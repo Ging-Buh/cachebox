@@ -6,9 +6,9 @@ public class SettingInt extends SettingBase
 	protected int defaultValue;
 	protected int lastValue;
 
-	public SettingInt(String name, SettingCategory category, SettingModus modus, int defaultValue, boolean global)
+	public SettingInt(String name, SettingCategory category, SettingModus modus, int defaultValue, SettingStoreType StoreType)
 	{
-		super(name, category, modus, global);
+		super(name, category, modus, StoreType);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
 	}

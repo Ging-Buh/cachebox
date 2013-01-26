@@ -3,6 +3,9 @@ package CB_Core.Map;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
+import CB_Core.GL_UI.Views.MapView;
+
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -23,6 +26,7 @@ public class TileGL implements Destroyable
 	// / Textur der Kachel
 	// / </summary>
 	public Texture texture = null;
+	private Pixmap pixmap;
 	private byte[] bytes;
 
 	// / <summary>
@@ -44,7 +48,17 @@ public class TileGL implements Destroyable
 		if (texture != null) return;
 		try
 		{
-			texture = new Texture(new Pixmap(bytes, 0, bytes.length));
+			pixmap = new Pixmap(bytes, 0, bytes.length);
+
+			if (MapView.debug)
+			{
+				int h = pixmap.getHeight();
+				int w = pixmap.getWidth();
+				pixmap.setColor(Color.RED);
+				pixmap.drawRectangle(0, 0, w, h);
+			}
+
+			texture = new Texture(pixmap);
 		}
 		catch (Exception ex)
 		{
@@ -60,6 +74,16 @@ public class TileGL implements Destroyable
 	@Override
 	public void destroy() throws DestroyFailedException
 	{
+
+		try
+		{
+			if (pixmap != null) pixmap.dispose();
+		}
+		catch (Exception e1)
+		{
+			e1.printStackTrace();
+		}
+
 		try
 		{
 			if (texture != null) texture.dispose();
@@ -70,6 +94,7 @@ public class TileGL implements Destroyable
 		}
 		texture = null;
 		bytes = null;
+		pixmap = null;
 	}
 
 	@Override

@@ -97,6 +97,13 @@ public class ImporterProgress
 		ProgresssChangedEventList.Call(Name, Msg, Progress);
 	}
 
+	// only change Msg or progress with out changing progress
+	public void ProgressChangeMsg(String Name, String Msg)
+	{
+		// send Progress Change Msg
+		ProgresssChangedEventList.Call(Name, Msg, getProgress());
+	}
+
 	public void setJobMax(String Name, int max)
 	{
 		for (Step job : steps)

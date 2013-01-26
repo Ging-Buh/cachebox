@@ -150,19 +150,19 @@ public class AndroidDB extends Database
 	@Override
 	public void beginTransaction()
 	{
-		myDB.beginTransaction();
+		if (myDB != null) myDB.beginTransaction();
 	}
 
 	@Override
 	public void setTransactionSuccessful()
 	{
-		myDB.setTransactionSuccessful();
+		if (myDB != null) myDB.setTransactionSuccessful();
 	}
 
 	@Override
 	public void endTransaction()
 	{
-		myDB.endTransaction();
+		if (myDB != null) myDB.endTransaction();
 	}
 
 	@Override

@@ -49,38 +49,38 @@ public class Button extends CB_View_Base
 	public Button(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public Button(CB_RectF rec, GL_View_Base parent, String name)
 	{
 		super(rec, parent, name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public Button(GL_View_Base parent, String name)
 	{
 		super(new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight()), parent, name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public Button(String name)
 	{
 		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public Button(CB_RectF rec, String name)
 	{
 		super(rec, name);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public Button(CB_RectF rec, String name, ButtonSprites sprites)
 	{
 		super(rec, name);
 		setButtonSprites(sprites);
-		this.isClickable = true;
+		this.setClickable(true);
 	}
 
 	public void setninePatch(Drawable drawable)

@@ -34,7 +34,9 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private Label lblDescMeasureCount;
 	private Label lblDescMeasureCoord;
 	private int MeasureCount = 0;
-	private Sprite drawing;
+	private Sprite drawing = null;;
+	private Pixmap drawingPixmap = null;
+	private Texture drawingTexture = null;
 	private SatBarChart chart;
 
 	private final int projectionZoom = 16;// 18;
@@ -153,9 +155,18 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	{
 		chart.dispose();
 		chart = null;
-		drawing = null;
+		disposeTexture();
 		GL.that.removeRenderView(this);
 		super.finish();
+	}
+
+	private void disposeTexture()
+	{
+		if (drawingPixmap != null) drawingPixmap.dispose();
+		if (drawingTexture != null) drawingTexture.dispose();
+		drawing = null;
+		drawingPixmap = null;
+		drawingTexture = null;
 	}
 
 	private boolean inRepaint = false;
@@ -183,16 +194,18 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		if (inRepaint) return;
 		inRepaint = true;
 
+		disposeTexture();
+
 		float innerWidth = that.width - this.getLeftWidth() - this.getRightWidth();
 
 		CB_RectF panelRec = new CB_RectF(this.getLeftWidth(), bOK.getMaxY(), innerWidth, innerWidth);
 
 		int w = getNextHighestPO2((int) panelRec.getWidth());
 		int h = getNextHighestPO2((int) panelRec.getHeight());
-		Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+		drawingPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 
-		p.setColor(Color.LIGHT_GRAY);
-		p.fillRectangle(0, 0, (int) panelRec.getWidth(), (int) panelRec.getHeight());
+		drawingPixmap.setColor(Color.LIGHT_GRAY);
+		drawingPixmap.fillRectangle(0, 0, (int) panelRec.getWidth(), (int) panelRec.getHeight());
 
 		int centerX = (int) panelRec.getHalfWidth();
 		int centerY = (int) panelRec.getHalfHeight();
@@ -247,32 +260,31 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 				x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
 				y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
 
-				p.setColor(Color.RED);
-				p.drawLine(lastX, lastY, x, y);
+				drawingPixmap.setColor(Color.RED);
+				drawingPixmap.drawLine(lastX, lastY, x, y);
 
 			}
 
-			p.setColor(Color.BLUE);
-			p.drawCircle(x, y, 4);
+			drawingPixmap.setColor(Color.BLUE);
+			drawingPixmap.drawCircle(x, y, 4);
 		}
 
 		//
 		int m2 = (int) ((4 * minPix) / metersPerTile);
 		int m4 = m2 * 2;
 
-		p.setColor(Color.BLACK);
-		p.drawCircle(centerX, centerY, m2);
-		p.drawCircle(centerX, centerY, m4);
+		drawingPixmap.setColor(Color.BLACK);
+		drawingPixmap.drawCircle(centerX, centerY, m2);
+		drawingPixmap.drawCircle(centerX, centerY, m4);
 
-		p.drawLine(centerX, 0, centerX, (int) panelRec.getHeight());
-		p.drawLine(0, centerY, (int) panelRec.getWidth(), centerY);
+		drawingPixmap.drawLine(centerX, 0, centerX, (int) panelRec.getHeight());
+		drawingPixmap.drawLine(0, centerY, (int) panelRec.getWidth(), centerY);
 
-		Texture tex = new Texture(p);
+		drawingTexture = new Texture(drawingPixmap);
 
-		drawing = new Sprite(tex, (int) panelRec.getWidth(), (int) panelRec.getHeight());
+		drawing = new Sprite(drawingTexture, (int) panelRec.getWidth(), (int) panelRec.getHeight());
 		drawing.setX(this.getLeftWidth());
 		drawing.setY(bOK.getMaxY() + this.getBottomHeight());
-		p.dispose();
 
 		inRepaint = false;
 
@@ -329,6 +341,12 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	{
 		super.onShow();
 		CB_Core.Events.PositionChangedEventList.Add(this);
+		if (chart != null)
+		{
+			chart.onShow();
+			chart.setDrawWithAlpha(false);
+		}
+
 	}
 
 	@Override
@@ -336,6 +354,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	{
 		super.onHide();
 		CB_Core.Events.PositionChangedEventList.Remove(this);
+		if (chart != null) chart.onHide();
 	}
 
 }

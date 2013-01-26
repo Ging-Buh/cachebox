@@ -275,8 +275,26 @@ public class CacheDraw
 
 		// Draw S/D/T
 		int SDTleft = left + 2;
-
-		canvas.drawText("S", SDTleft, SDTLineTop, DTPaint);
+		String CacheSize = "";
+		switch ((int) (cache.Size.ordinal()))
+		{
+		case 1:
+			CacheSize = "M"; // micro;
+			break;
+		case 2:
+			CacheSize = "S"; // small;
+			break;
+		case 3:
+			CacheSize = "R"; // regular;
+			break;
+		case 4:
+			CacheSize = "L"; // large;
+			break;
+		default:
+			CacheSize = "O"; // other;
+			break;
+		}
+		canvas.drawText(CacheSize, SDTleft, SDTLineTop, DTPaint);
 		SDTleft += UiSizes.getSpaceWidth();
 		SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.SizeIcons[(int) (cache.Size.ordinal())], SDTleft, SDTImageTop,
 				UiSizes.getScaledFontSize());

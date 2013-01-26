@@ -71,12 +71,9 @@ public class splash extends TabMainView
 			{
 			case 0:
 
-				String defaultPath = Config.settings.SkinFolder.getValue();
-				int pos = defaultPath.lastIndexOf("/");
-				defaultPath = defaultPath.substring(0, pos) + "/default";
+				String defaultPath = Config.WorkPath + "/skins/default/day/SplashPack.spp";
 
-				String path = defaultPath + "/day/SplashPack.spp";
-				atlas = new TextureAtlas(Gdx.files.absolute(path));
+				atlas = new TextureAtlas(Gdx.files.absolute(defaultPath));
 				setBackground(new SpriteDrawable(atlas.createSprite("splash-back")));
 				break;
 			case 1:
@@ -393,9 +390,12 @@ public class splash extends TabMainView
 		GlobalCore.Categories = new Categories();
 		Database.Data.GPXFilenameUpdateCacheCount();
 
-		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-
+		synchronized (Database.Data.Query)
+		{
+			CacheListDAO cacheListDAO = new CacheListDAO();
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+			Database.Data.Query.checkSelectedCacheValid();
+		}
 		CachListChangedEventList.Call();
 
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
@@ -442,28 +442,31 @@ public class splash extends TabMainView
 
 		if (GlobalCore.restartCache != null)
 		{
-			Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
-			if (GlobalCore.restartWaypoint != null && c != null && c.waypoints != null)
+			synchronized (Database.Data.Query)
 			{
-				Waypoint w = null;
-
-				for (Waypoint wp : c.waypoints)
+				Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
+				if (GlobalCore.restartWaypoint != null && c != null && c.waypoints != null)
 				{
-					if (wp.GcCode.equalsIgnoreCase(GlobalCore.restartWaypoint))
-					{
-						w = wp;
-					}
-				}
+					Waypoint w = null;
 
-				GlobalCore.setSelectedWaypoint(c, w);
-			}
-			else
-			{
-				GlobalCore.setSelectedCache(c);
+					for (Waypoint wp : c.waypoints)
+					{
+						if (wp.GcCode.equalsIgnoreCase(GlobalCore.restartWaypoint))
+						{
+							w = wp;
+						}
+					}
+
+					GlobalCore.setSelectedWaypoint(c, w);
+				}
+				else
+				{
+					GlobalCore.setSelectedCache(c);
+				}
 			}
 
 		}
-		GL.that.setIsInitial();
+		GL.setIsInitial();
 	}
 
 	public void dispose()

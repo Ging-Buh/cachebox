@@ -117,7 +117,7 @@ public abstract class ListViewBase extends CB_View_Base
 	public ListViewBase(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		isClickable = true;
+		this.setClickable(true);
 	}
 
 	public void setBaseAdapter(Adapter adapter)
@@ -320,7 +320,7 @@ public abstract class ListViewBase extends CB_View_Base
 		dDraged.setText("Draged " + mLastDragedDistance, 220, 85);
 		dFirstIndex.setText("Index " + mFirstIndex + "-" + mLastIndex, 220, 70);
 
-		batch.begin();
+		batch.flush();
 
 		debugBack.draw(batch, 210, 50, 150, 100);
 
@@ -330,7 +330,7 @@ public abstract class ListViewBase extends CB_View_Base
 		dChildCount.draw(batch);
 		dFPS.draw(batch);
 
-		batch.end();
+		batch.flush();
 	}
 
 	/**

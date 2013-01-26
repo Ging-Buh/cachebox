@@ -1,23 +1,39 @@
 package CB_Core.Events;
 
-import java.util.ArrayList;
-
 import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
+import CB_Core.Types.MoveableList;
 
 public class PositionChangedEventList
 {
-	public static ArrayList<PositionChangedEvent> list = new ArrayList<PositionChangedEvent>();
+	public static MoveableList<PositionChangedEvent> list = new MoveableList<PositionChangedEvent>();
 
 	public static void Add(PositionChangedEvent event)
 	{
 		synchronized (list)
 		{
-			if (!list.contains(event)) list.add(event);
+			if (!list.contains(event))
+			{
+				list.add(event);
+
+				// move GlobalLocationReciver at first
+				int idx = -1;
+				int count = 0;
+				for (PositionChangedEvent tmp : list)
+				{
+					if (tmp.getReceiverName().equalsIgnoreCase("GlobalLocationReceiver"))
+					{
+						idx = count;
+						break;
+					}
+					count++;
+				}
+				if (idx > 0) list.MoveItemFirst(idx);
+			}
 		}
 
 	}

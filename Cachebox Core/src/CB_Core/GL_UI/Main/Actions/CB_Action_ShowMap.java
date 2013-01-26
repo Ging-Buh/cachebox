@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.Config;
+import CB_Core.Disable;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
 import CB_Core.GL_UI.CB_View_Base;
@@ -11,9 +13,11 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.GL_UI.Menu.OptionMenu;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
+import CB_Core.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -67,6 +71,14 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		MenuItem mi;
 
 		mi = icm.addItem(MenuID.MI_LAYER, "Layer");
+
+		if (!Disable.HillShading)
+		{
+			mi = icm.addItem(MenuID.MI_MAP_HILL_SHADING, "HillShade");
+			mi.setCheckable(true);
+			mi.setChecked(MapView.that.GetHillShade());
+		}
+
 		mi = icm.addItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass");
 		mi.setCheckable(true);
 		mi.setChecked(MapView.that.GetAlignToCompass());
@@ -116,34 +128,42 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 	public void showMapViewLayerMenu()
 	{
-		Menu icm = new Menu("MapViewShowLayerContextMenu");
+		OptionMenu icm = new OptionMenu("MapViewShowLayerContextMenu");
 
 		icm.addItemClickListner(onItemClickListner);
 		MenuItem mi;
 
 		mi = icm.addItem(MenuID.MI_HIDE_FINDS, "HideFinds");
 		mi.setCheckable(true);
-		mi.setChecked(MapView.that.hideMyFinds);
+		mi.setChecked(Config.settings.MapHideMyFinds.getValue());
+
+		mi = icm.addItem(MenuID.MI_MAP_SHOW_COMPASS, "MapShowCompass");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.MapShowCompass.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints");
 		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showAllWaypoints);
+		mi.setChecked(Config.settings.ShowAllWaypoints.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_RATINGS, "ShowRatings");
 		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showRating);
+		mi.setChecked(Config.settings.MapShowRating.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_DT, "ShowDT");
 		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showDT);
+		mi.setChecked(Config.settings.MapShowDT.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_TITLE, "ShowTitle");
 		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showTitles);
+		mi.setChecked(Config.settings.MapShowTitles.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_DIRECT_LINE, "ShowDirectLine");
 		mi.setCheckable(true);
-		mi.setChecked(MapView.that.showDirektLine);
+		mi.setChecked(Config.settings.ShowDirektLine.getValue());
+
+		mi = icm.addItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "ShowAccuracyCircle");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.ShowAccuracyCircle.getValue());
 
 		icm.show();
 	}
@@ -165,34 +185,45 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				showMapViewLayerMenu();
 				return true;
 
+			case MenuID.MI_MAP_HILL_SHADING:
+				MapView.that.SetHillShade(!MapView.that.GetHillShade());
+				return true;
+
 			case MenuID.MI_ALIGN_TO_COMPSS:
 				MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());
 				return true;
 
 			case MenuID.MI_HIDE_FINDS:
-				MapView.that.hideMyFinds = !MapView.that.hideMyFinds;
-				MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+				toggleSetting(Config.settings.MapHideMyFinds);
+
 				return true;
 
 			case MenuID.MI_SHOW_ALL_WAYPOINTS:
-				MapView.that.showAllWaypoints = !MapView.that.showAllWaypoints;
-				MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+				toggleSetting(Config.settings.ShowAllWaypoints);
 				return true;
 
 			case MenuID.MI_SHOW_RATINGS:
-				MapView.that.showRating = !MapView.that.showRating;
+				toggleSetting(Config.settings.MapShowRating);
 				return true;
 
 			case MenuID.MI_SHOW_DT:
-				MapView.that.showDT = !MapView.that.showDT;
+				toggleSetting(Config.settings.MapShowDT);
 				return true;
 
 			case MenuID.MI_SHOW_TITLE:
-				MapView.that.showTitles = !MapView.that.showTitles;
+				toggleSetting(Config.settings.MapShowTitles);
 				return true;
 
 			case MenuID.MI_SHOW_DIRECT_LINE:
-				MapView.that.showDirektLine = !MapView.that.showDirektLine;
+				toggleSetting(Config.settings.ShowDirektLine);
+				return true;
+
+			case MenuID.MI_SHOW_ACCURACY_CIRCLE:
+				toggleSetting(Config.settings.ShowAccuracyCircle);
+				return true;
+
+			case MenuID.MI_MAP_SHOW_COMPASS:
+				toggleSetting(Config.settings.MapShowCompass);
 				return true;
 
 			case MenuID.MI_CENTER_WP:
@@ -279,4 +310,12 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		cm2.show();
 	}
+
+	private void toggleSetting(SettingBool setting)
+	{
+		setting.setValue(!setting.getValue());
+		Config.AcceptChanges();
+		if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_SETTINGS_WITH_OUT_ZOOM);
+	}
+
 }

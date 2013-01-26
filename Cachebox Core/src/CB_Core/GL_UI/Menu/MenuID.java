@@ -27,7 +27,7 @@ public class MenuID
 	public static final int MI_NOT_FOUND = 11;
 	public static final int MI_MAINTANCE = 12;
 	public static final int MI_NOTE = 13;
-	public static final int MI_MANAGE = 14;
+	// public static final int MI_MANAGE = 14;
 	public static final int MI_UPLOAD_FIELDNOTE = 15;
 	public static final int MI_DELETE_ALL_FIELDNOTES = 16;
 	public static final int MI_DELETE_FIELDNOTE = 17;
@@ -174,5 +174,16 @@ public class MenuID
 	public static final int MI_COMPASS_SHOW_WP_DESC = 148;
 	public static final int MI_COMPASS_SHOW_SAT_INFO = 149;
 	public static final int MI_COMPASS_SHOW_SUN_MOON = 150;
+	public static final int MI_COMPASS_SHOW_TARGET_DIRECTION = 151;
+	public static final int MI_COMPASS_SHOW_S_D_T = 152;
+	public static final int MI_COMPASS_SHOW_LAST_FOUND = 153;
 
+	public static final int MI_MAP_HILL_SHADING = 154;
+
+	public static final int MI_COMPASS_SHOW = 155;
+	public static final int MI_RELOAD_SPOILER = 156;
+	public static final int MI_SHOW_ACCURACY_CIRCLE = 157;
+	public static final int MI_MAP_SHOW_COMPASS = 158;
+
+	public static int AID_SHOW_FILTER_DIALOG = 159;
 }

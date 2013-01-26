@@ -350,10 +350,29 @@ public class Coordinate implements Serializable
 		}
 	}
 
+	/**
+	 * Returns the distance to to refer Coordinate
+	 * 
+	 * @param coord
+	 * @return
+	 */
 	public float Distance(Coordinate coord)
 	{
 		float[] dist = new float[4];
 		distanceBetween(getLatitude(), getLongitude(), coord.getLatitude(), coord.getLongitude(), dist);
+		return dist[0];
+	}
+
+	/**
+	 * Returns the distance to to last valid Position
+	 * 
+	 * @return
+	 */
+	public float Distance()
+	{
+		float[] dist = new float[4];
+		distanceBetween(getLatitude(), getLongitude(), GlobalCore.LastValidPosition.getLatitude(),
+				GlobalCore.LastValidPosition.getLongitude(), dist);
 		return dist[0];
 	}
 
@@ -562,4 +581,5 @@ public class Coordinate implements Serializable
 	{
 		Longitude = longitude;
 	}
+
 }

@@ -90,6 +90,20 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 		return false;
 	}
 
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+
+		if (isPressed)
+		{
+			isPressed = false;
+		}
+
+		GL.that.renderOnce(this.getName() + " touchDown");
+
+		return false;
+	}
+
 	public static float getLeftWidthStatic()
 	{
 		if (mBackIsInitial)

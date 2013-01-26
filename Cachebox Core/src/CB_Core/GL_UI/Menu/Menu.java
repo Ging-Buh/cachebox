@@ -5,10 +5,10 @@ import java.util.Iterator;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class Menu extends Dialog
+public class Menu extends ButtonDialog
 {
 	private static CB_RectF MENU_REC = null;
 	private static boolean sizeIsInitial = false;
@@ -44,9 +44,9 @@ public class Menu extends Dialog
 
 	private ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();
 	private V_ListView mListView;
-	private Menu that;
+	protected Menu that;
 
-	private OnClickListener MenuItemClickListner = new OnClickListener()
+	protected OnClickListener MenuItemClickListner = new OnClickListener()
 	{
 
 		@Override
@@ -271,7 +271,7 @@ public class Menu extends Dialog
 		return item;
 	}
 
-	private ArrayList<OnClickListener> mOnItemClickListner;
+	protected ArrayList<OnClickListener> mOnItemClickListner;
 
 	public void addItemClickListner(OnClickListener onItemClickListner)
 	{

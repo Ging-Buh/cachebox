@@ -12,6 +12,9 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.mapgenerator.JobParameters;
 import org.mapsforge.android.maps.mapgenerator.JobTheme;
@@ -60,6 +63,7 @@ public class AndroidManager extends ManagerBase
 		// Layers.add(new Layer("MapsForge", "MapsForge", ""));
 		Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
 		Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/"));
+		// if (!Disable.HillShading) Layers.add(new Layer("HillShade", "HillShade", "http://129.206.74.245:8004/tms_hs.ashx"));
 		// Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
 	}
 
@@ -115,20 +119,29 @@ public class AndroidManager extends ManagerBase
 
 			if (RenderThemeChanged || jobParameters == null)
 			{
+
 				try
 				{
 					Logger.DEBUG("Suche RenderTheme: " + RenderTheme);
-					File file = new File(RenderTheme);
-					if (file.exists())
-					{
-						Logger.DEBUG("RenderTheme found!");
-						JobTheme jobTheme = new ExternalRenderTheme(file);
-						jobParameters = new JobParameters(jobTheme, DEFAULT_TEXT_SCALE);
-					}
-					else
+					if (RenderTheme == null)
 					{
 						Logger.DEBUG("RenderTheme not found!");
 						jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
+					}
+					else
+					{
+						File file = new File(RenderTheme);
+						if (file.exists())
+						{
+							Logger.DEBUG("RenderTheme found!");
+							JobTheme jobTheme = new ExternalRenderTheme(file);
+							jobParameters = new JobParameters(jobTheme, DEFAULT_TEXT_SCALE);
+						}
+						else
+						{
+							Logger.DEBUG("RenderTheme not found!");
+							jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
+						}
 					}
 
 				}
@@ -326,6 +339,9 @@ public class AndroidManager extends ManagerBase
 	// / <returns></returns>
 	public boolean CacheTile(Layer layer, Descriptor tile)
 	{
+
+		if (tile == null) return false;
+
 		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen
 		// werden!
 		for (PackBase pack : mapPacks)
@@ -342,7 +358,12 @@ public class AndroidManager extends ManagerBase
 		}
 
 		// Kachel laden
-		HttpClient httpclient = new DefaultHttpClient();
+
+		// set the connection timeout value to 15 seconds (15000 milliseconds)
+		final HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, CONECTION_TIME_OUT);
+
+		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		HttpResponse response = null;
 
 		try

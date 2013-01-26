@@ -50,10 +50,24 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
-	protected OnClickListener mOnClickListener;
-	protected OnClickListener mOnLongClickListener;
-	protected OnClickListener mOnDoubleClickListener;
-	protected boolean isClickable = false;
+	private OnClickListener mOnClickListener;
+	private OnClickListener mOnLongClickListener;
+	private OnClickListener mOnDoubleClickListener;
+
+	private Pixmap debugRegPixmap = null;
+	private Texture debugRegTexture = null;
+	private Sprite DebugSprite = null;
+
+	/**
+	 * Don't use this Flag direct, use the method isClickable() </br></br> Maby a child is clickable!!
+	 */
+	private boolean isClickable = false;
+	private boolean isLongClickable = false;
+	private boolean isDoubleClickable = false;
+
+	private boolean ChildIsClickable = false;
+	private boolean ChildIsLongClickable = false;
+	private boolean ChildIsDoubleClickable = false;
 
 	protected boolean onTouchUp = false;
 	protected boolean onTouchDown = false;
@@ -64,7 +78,6 @@ public abstract class GL_View_Base extends CB_RectF
 	protected GL_View_Base parent;
 	protected static int nDepthCounter = 0;
 
-	private Sprite debugRec = null;
 	private boolean enabled = true;
 
 	private float Weight = 1;
@@ -206,7 +219,7 @@ public abstract class GL_View_Base extends CB_RectF
 				{
 					childs.add(view);
 				}
-				// }
+				chkChildClickable();
 			}
 		});
 
@@ -221,6 +234,7 @@ public abstract class GL_View_Base extends CB_RectF
 			public void run()
 			{
 				if (childs != null && childs.size() > 0) childs.remove(view);
+				chkChildClickable();
 			}
 		});
 	}
@@ -233,6 +247,7 @@ public abstract class GL_View_Base extends CB_RectF
 			public void run()
 			{
 				if (childs != null && childs.size() > 0) childs.clear();
+				chkChildClickable();
 			}
 		});
 	}
@@ -245,15 +260,43 @@ public abstract class GL_View_Base extends CB_RectF
 			public void run()
 			{
 				if (childs != null && childs.size() > 0) childs.remove(Childs);
+				chkChildClickable();
 			}
 		});
+	}
+
+	/**
+	 * Checks whether any child has the status Clickable. </br>If so, then this view must also Clickable!
+	 */
+	private void chkChildClickable()
+	{
+		boolean tmpClickable = false;
+		boolean tmpDblClickable = false;
+		boolean tmpLongClickable = false;
+		if (childs != null)
+		{
+			for (GL_View_Base tmp : childs)
+			{
+				if (tmp.isClickable()) tmpClickable = true;
+				if (tmp.isLongClickable()) tmpLongClickable = true;
+				if (tmp.isDblClickable()) tmpDblClickable = true;
+			}
+		}
+
+		ChildIsClickable = tmpClickable;
+		ChildIsDoubleClickable = tmpDblClickable;
+		ChildIsLongClickable = tmpLongClickable;
 	}
 
 	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
 
 	public void RunOnGL(runOnGL run)
 	{
-		runOnGL_List.add(run);
+		synchronized (runOnGL_List)
+		{
+			runOnGL_List.add(run);
+		}
+		GL.that.renderOnce(this.getName() + "add RunOnGL");
 	}
 
 	public float getLeftWidth()
@@ -325,34 +368,30 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 
 		// first Draw Background?
-		batch.begin();
 
 		if (drawableBackground != null)
 		{
 			drawableBackground.draw(batch, 0, 0, width, height);
 		}
 
-		batch.end();
-
-		if (runOnGL_List.size() > 0)
+		synchronized (runOnGL_List)
 		{
-			for (runOnGL run : runOnGL_List)
+			if (runOnGL_List.size() > 0)
 			{
-				if (run != null) run.run();
-			}
+				for (runOnGL run : runOnGL_List)
+				{
+					if (run != null) run.run();
+				}
 
-			runOnGL_List.clear();
+				runOnGL_List.clear();
+			}
 		}
 
-		batch.begin();
 		this.render(batch);
-		batch.end();
-
+		batch.flush();
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 
-		batch.begin();
-		this.renderWithoutScissor(batch);
-		batch.end();
+		// this.renderWithoutScissor(batch);
 
 		if (childs != null && childs.size() > 0)
 		{
@@ -392,17 +431,6 @@ public abstract class GL_View_Base extends CB_RectF
 					e.printStackTrace();
 					// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 
-					// wir müssen aber eventuell den Batch beenden?
-					try
-					{
-						batch.end();
-					}
-					catch (Exception e1)
-					{
-						// war wohl schon beendet // TODO es gibt noch keine Möglichkeit zu Testen ob ein Batch läuft!
-						e1.printStackTrace();
-					}
-
 					break;
 				}
 			}
@@ -414,11 +442,11 @@ public abstract class GL_View_Base extends CB_RectF
 		if (debug)
 		{
 
-			if (debugRec != null)
+			if (DebugSprite != null)
 			{
-				batch.begin();
-				debugRec.draw(batch);
-				batch.end();
+				batch.flush();
+				DebugSprite.draw(batch);
+
 			}
 
 		}
@@ -435,17 +463,17 @@ public abstract class GL_View_Base extends CB_RectF
 
 	private void writeDebug()
 	{
-		if (debugRec == null)
+		if (DebugSprite == null)
 		{
 			int w = getNextHighestPO2((int) width);
 			int h = getNextHighestPO2((int) height);
-			Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			p.setColor(1f, 0f, 0f, 1f);
-			p.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
+			debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+			debugRegPixmap.setColor(1f, 0f, 0f, 1f);
+			debugRegPixmap.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
 
-			Texture tex = new Texture(p, Pixmap.Format.RGBA8888, false);
+			debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
 
-			debugRec = new Sprite(tex, (int) width, (int) height);
+			DebugSprite = new Sprite(debugRegTexture, (int) width, (int) height);
 
 			// Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + nDepthCounter + " ]----------");
 			// Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
@@ -505,13 +533,13 @@ public abstract class GL_View_Base extends CB_RectF
 
 	protected abstract void render(SpriteBatch batch);
 
-	protected abstract void renderWithoutScissor(SpriteBatch batch);
+	// protected abstract void renderWithoutScissor(SpriteBatch batch);
 
 	@Override
 	public void resize(float width, float height)
 	{
 		onRezised(this);
-		debugRec = null;
+		DebugSprite = null;
 
 		// Eine Größenänderung an die Childs Melden
 		if (childs != null && childs.size() > 0)
@@ -829,7 +857,30 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
-	public abstract void dispose();
+	public void dispose()
+	{
+		DebugSprite = null;
+
+		try
+		{
+			if (debugRegTexture != null) debugRegTexture.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		try
+		{
+			if (debugRegPixmap != null) debugRegPixmap.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		debugRegPixmap = null;
+		debugRegTexture = null;
+	}
 
 	/**
 	 * Interface definition for a callback to be invoked when a view is clicked.
@@ -854,28 +905,23 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void setOnClickListener(OnClickListener l)
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
+		isClickable = l != null;
 		mOnClickListener = l;
 	}
 
-	/**
-	 * Register a callback to be invoked when this view is clicked for all events (single, double and long). If this view is not clickable,
-	 * it becomes clickable.
-	 * 
-	 * @param l
-	 *            The callback that will run
-	 * @see #setClickable(boolean)
-	 */
-	public void setAllClickListener(OnClickListener l)
+	public OnClickListener getOnClickListner()
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
-		mOnDoubleClickListener = mOnLongClickListener = mOnClickListener = l;
+		return mOnClickListener;
+	}
+
+	public OnClickListener getOnLongClickListner()
+	{
+		return mOnLongClickListener;
+	}
+
+	public OnClickListener getOnDblClickListner()
+	{
+		return mOnDoubleClickListener;
 	}
 
 	/**
@@ -887,10 +933,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void setOnLongClickListener(OnClickListener l)
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
+		isLongClickable = l != null;
 		mOnLongClickListener = l;
 	}
 
@@ -903,16 +946,26 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void setOnDoubleClickListener(OnClickListener l)
 	{
-		if (!isClickable)
-		{
-			isClickable = true;
-		}
+		isDoubleClickable = l != null;
 		mOnDoubleClickListener = l;
+	}
+
+	public boolean isDblClickable()
+	{
+		if (!this.isVisible()) return false;
+		return isDoubleClickable | ChildIsDoubleClickable;
+	}
+
+	public boolean isLongClickable()
+	{
+		if (!this.isVisible()) return false;
+		return isLongClickable | ChildIsLongClickable;
 	}
 
 	public boolean isClickable()
 	{
-		return isClickable;
+		if (!this.isVisible()) return false;
+		return isClickable | ChildIsClickable;
 	}
 
 	/**
@@ -924,6 +977,11 @@ public abstract class GL_View_Base extends CB_RectF
 	public void setClickable(boolean value)
 	{
 		isClickable = value;
+	}
+
+	public void setLongClickable(boolean value)
+	{
+		isLongClickable = value;
 	}
 
 	public void setBackground(Drawable background)
@@ -988,7 +1046,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		// wenn eine View clickable ist dann muß für die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
 		// innerhalb dem erstmal kein onTouchDragged aufgerufen wird
-		if (isClickable) return UiSizes.getClickToleranz();
+		if (isClickable()) return UiSizes.getClickToleranz();
 		else
 			// Wenn aber eine View nicht clickable ist dann darf der onTouchDragged sofort aufgerufen werden
 			return 1;

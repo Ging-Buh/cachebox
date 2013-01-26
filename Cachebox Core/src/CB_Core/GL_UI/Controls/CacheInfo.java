@@ -32,16 +32,19 @@ public class CacheInfo extends CB_View_Base
 	public static final int SHOW_LAST_FOUND = 32;
 	public static final int SHOW_ATTRIBUTES = 64;
 	public static final int SHOW_CORRDS_WITH_LINEBRAKE = 128;
+	public static final int SHOW_S_D_T = 256;
+	public static final int SHOW_VOTE = 512;
+	public static final int SHOW_ICON = 1024;
 
 	/**
 	 * SHOW_GC, SHOW_NAME, SHOW_COMPASS
 	 */
-	public static final int VIEW_MODE_CACHE_LIST = SHOW_GC + SHOW_NAME + SHOW_COMPASS; // 19;
+	public static final int VIEW_MODE_CACHE_LIST = SHOW_GC + SHOW_NAME + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 19;
 
 	/**
 	 * SHOW_COMPASS, SHOW_OWNER, SHOW_CORRDS, SHOW_GC
 	 */
-	public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_COMPASS; // 29;
+	public static final int VIEW_MODE_DESCRIPTION = SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 29;
 
 	/**
 	 * SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND
@@ -51,22 +54,39 @@ public class CacheInfo extends CB_View_Base
 	/**
 	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND, SHOW_ATTRIBUTES
 	 */
-	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_NAME; // 126
+	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_NAME
+			+ SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 126
 
 	/**
 	 * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
 	 */
-	public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS + SHOW_NAME + SHOW_COMPASS; // 11
+	public static final int VIEW_MODE_WAYPOINTS = SHOW_COORDS + SHOW_NAME + SHOW_COMPASS + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 11
 
 	/**
 	 * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
 	 */
-	public static final int VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK = SHOW_COORDS + SHOW_NAME + SHOW_CORRDS_WITH_LINEBRAKE; // 138
+	public static final int VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK = SHOW_COORDS + SHOW_NAME + SHOW_CORRDS_WITH_LINEBRAKE + SHOW_VOTE
+			+ SHOW_ICON + SHOW_S_D_T; // 138
 
 	/**
 	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS
 	 */
-	public static final int VIEW_MODE_BUBBLE = SHOW_COORDS + SHOW_OWNER + SHOW_NAME; // 30
+	public static final int VIEW_MODE_BUBBLE = SHOW_COORDS + SHOW_OWNER + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 30
+
+	/**
+	 * SHOW_S_D_T
+	 */
+	public static final int VIEW_MODE_SDT_ONLY = SHOW_S_D_T;
+
+	/**
+	 * SHOW_LAST_FOUND
+	 */
+	public static final int VIEW_MODE_LAST_FOUND_ONLY = SHOW_LAST_FOUND;
+
+	/**
+	 * SHOW_LAST_FOUND , SHOW_S_D_T
+	 */
+	public static final int VIEW_MODE_LAST_FOUND_AND_DTS = SHOW_LAST_FOUND + SHOW_S_D_T;
 
 	private static final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
 
@@ -173,88 +193,109 @@ public class CacheInfo extends CB_View_Base
 
 		// Size
 		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
+		mS_FontCache.setText("MSRLO", 0, 0);
 		mS_FontCache.setColor(Fonts.getFontColor());
-		String CacheSize = "";
-		switch ((int) (mCache.Size.ordinal()))
-		{
-		case 1:
-			CacheSize = "M"; // micro;
-			break;
-		case 2:
-			CacheSize = "S"; // small;
-			break;
-		case 3:
-			CacheSize = "R"; // regular;
-			break;
-		case 4:
-			CacheSize = "L"; // large;
-			break;
-		default:
-			CacheSize = "O"; // other;
-			break;
-		}
-		mS_FontCache.setText(CacheSize, 0, 0);
-		mBottom += mS_FontCache.getBounds().height;
-		float mSpriteBottom = mMargin;
-		mS_FontCache.setPosition(mLeft, mBottom);
-		mLeft += mS_FontCache.getBounds().width + mMargin;
 		float starHeight = mS_FontCache.getBounds().height * 1.1f;
 		mStarSize = new SizeF(starHeight * 5, starHeight);
-		mStarSize.scale(scaleFactor);
-		mSSprite = new Sprite(SpriteCache.SizesIcons.get((int) (mCache.Size.ordinal())));
-		mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
-		// Difficulty
-		mLeft += mSSprite.getWidth() + mMargin + mMargin;
-		mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
-		mD_FontCache.setColor(Fonts.getFontColor());
-		mD_FontCache.setText("D", mLeft, mBottom);
-		mLeft += mD_FontCache.getBounds().width + mMargin;
-		mDSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Difficulty * 2)));
-		mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
-		mDSprite.setRotation(0);
-		// Terrain
-		mLeft += mDSprite.getWidth() + mMargin + mMargin;
-		mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
-		mT_FontCache.setColor(Fonts.getFontColor());
-		mT_FontCache.setText("T", mLeft, mBottom);
-		mLeft += mT_FontCache.getBounds().width + mMargin;
-		mTSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Terrain * 2)));
-		mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
-		mTSprite.setRotation(0);
-		// Draw TB
-		mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
-		int numTb = mCache.NumTravelbugs;
-		if (numTb > 0)
+
+		if (ifModeFlag(SHOW_S_D_T))
 		{
-			float sizes = mStarSize.width / 2.1f;
-
-			mTBSprite = new Sprite(SpriteCache.Icons.get(36));
-			mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
-			mTBSprite.setOrigin(sizes / 2, sizes / 2);
-			mTBSprite.setRotation(90);
-
-			if (numTb > 1)
+			String CacheSize = "";
+			switch ((int) (mCache.Size.ordinal()))
 			{
-				mLeft += mTBSprite.getWidth() + mMargin;
-				mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
-				mTB_FontCache.setColor(Fonts.getFontColor());
-				mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
+			case 1:
+				CacheSize = "M"; // micro;
+				break;
+			case 2:
+				CacheSize = "S"; // small;
+				break;
+			case 3:
+				CacheSize = "R"; // regular;
+				break;
+			case 4:
+				CacheSize = "L"; // large;
+				break;
+			default:
+				CacheSize = "O"; // other;
+				break;
+			}
+			mS_FontCache.setText(CacheSize, 0, 0);
+			mBottom += mS_FontCache.getBounds().height;
+			float mSpriteBottom = mMargin;
+			mS_FontCache.setPosition(mLeft, mBottom);
+			mLeft += mS_FontCache.getBounds().width + mMargin;
+
+			mStarSize.scale(scaleFactor);
+			mSSprite = new Sprite(SpriteCache.SizesIcons.get((int) (mCache.Size.ordinal())));
+			mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+			// Difficulty
+			mLeft += mSSprite.getWidth() + mMargin + mMargin;
+			mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
+			mD_FontCache.setColor(Fonts.getFontColor());
+			mD_FontCache.setText("D", mLeft, mBottom);
+			mLeft += mD_FontCache.getBounds().width + mMargin;
+			mDSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Difficulty * 2)));
+			mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+			mDSprite.setRotation(0);
+			// Terrain
+			mLeft += mDSprite.getWidth() + mMargin + mMargin;
+			mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
+			mT_FontCache.setColor(Fonts.getFontColor());
+			mT_FontCache.setText("T", mLeft, mBottom);
+			mLeft += mT_FontCache.getBounds().width + mMargin;
+			mTSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Terrain * 2)));
+			mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+			mTSprite.setRotation(0);
+			// Draw TB
+			mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
+			int numTb = mCache.NumTravelbugs;
+			if (numTb > 0)
+			{
+				float sizes = mStarSize.width / 2.1f;
+
+				mTBSprite = new Sprite(SpriteCache.Icons.get(36));
+				mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
+				mTBSprite.setOrigin(sizes / 2, sizes / 2);
+				mTBSprite.setRotation(90);
+
+				if (numTb > 1)
+				{
+					mLeft += mTBSprite.getWidth() + mMargin;
+					mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
+					mTB_FontCache.setColor(Fonts.getFontColor());
+					mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
+				}
+			}
+			else
+			{
+				mTBSprite = null;
+				mTB_FontCache = null;
 			}
 		}
-		// Rating stars
-		mLeft = -4 * scaleFactor;
-		mIconSize = mT_FontCache.getBounds().height * 3.5f * scaleFactor;
-		mStarSize.scale(0.7f);
-		mRatingSprite = new Sprite(SpriteCache.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
-		mRatingSprite.setBounds(mLeft + mStarSize.height, height - mTop - mStarSize.width - mMargin - mMargin - mMargin, mStarSize.width,
-				mStarSize.height);
-		mRatingSprite.setOrigin(0, mStarSize.halfHeight);
-		mRatingSprite.setRotation(90);
-		mRatingSprite.setColor(gcVoteColor);
-		//
-		mLeft += starHeight;
-		Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
 
+		Vector2 mSpriteCachePos = new Vector2(0, height - mTop - mIconSize);
+
+		// Rating stars
+		if (ifModeFlag(SHOW_VOTE))
+		{
+			mLeft = -4 * scaleFactor;
+
+			mIconSize = Fonts.MeasureSmall("T").height * 3.5f * scaleFactor;
+
+			mStarSize.scale(0.7f);
+			mRatingSprite = new Sprite(SpriteCache.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
+			mRatingSprite.setBounds(mLeft + mStarSize.height, height - mTop - mStarSize.width - mMargin - mMargin - mMargin,
+					mStarSize.width, mStarSize.height);
+			mRatingSprite.setOrigin(0, mStarSize.halfHeight);
+			mRatingSprite.setRotation(90);
+			mRatingSprite.setColor(gcVoteColor);
+			//
+			mLeft += starHeight;
+			mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
+		}
+
+		if (ifModeFlag(SHOW_NAME) || ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_COORDS) || ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)
+				|| ifModeFlag(SHOW_GC) || ifModeFlag(SHOW_LAST_FOUND))
 		{// Text zusammensetzen
 
 			String br = String.format("%n");
@@ -296,6 +337,7 @@ public class CacheInfo extends CB_View_Base
 
 		}
 
+		if (ifModeFlag(SHOW_ICON))
 		{ // Icon Sprite erstellen
 
 			if (mCache.CorrectedCoordiantesOrMysterySolved())
@@ -308,9 +350,8 @@ public class CacheInfo extends CB_View_Base
 			}
 			mIconSprite.setSize(mIconSize, mIconSize);
 			mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
-		}
 
-		{// infoIcons erstellen
+			// infoIcons erstellen
 
 			float infoSize = mIconSize / 2;
 
