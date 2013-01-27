@@ -1,15 +1,15 @@
 
 Versions Änderungen:
 
-Version : 0.5.1390
-	• Fix Nexus 7 Start Probleme
-	• Add .nomedia
-	• AboutView auf OpenGL-Version geändert
-	• Import Optimiert PQ, Spoiler, Unterstützung für GCAPP
-	• Mehr Informationen im Kompass 
-	• Viele arbeiten zur Leistungsoptimierung
-	• Viele arbeiten für Stabilität!
-	• Viele gemeldete Fehler, Danke an alle!
+Version : 0.5.1400
+	• Viele gemeldete Fehler behoben, Danke an alle!
+	• Optimierung der Leistung und Stabilität
+	• Optimierung des Imports für PQs und Spoiler
+	• Unterstützung für GCAPP
+	• Erweiterte Kompassansicht
+	• AboutView auf OpenGL-Version geändert 
+	• .nomedia hinzugefügt (Fix für AndroidGalerie)
+	• Nexus 7 Start Problem gelöst
 	
 Version : 0.5.1298
 	• Fix UI Handling bei schnellen Eingaben

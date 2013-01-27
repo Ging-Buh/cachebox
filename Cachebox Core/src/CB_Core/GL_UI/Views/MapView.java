@@ -394,7 +394,16 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
+				if (infoBubble.getWaypoint() == null)
+				{
+					// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
+					Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
+					GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
+				}
+				else
+				{
+					GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
+				}
 				infoBubble.setInvisible();
 				return true;
 			}

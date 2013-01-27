@@ -1,6 +1,6 @@
 Changes:
 
-Version : 0.5.1390
+Version : 0.5.1400
 	• Fix Nexus 7 start problems
 	• Add .nomedia
 	• Change AboutView to openGL version
