@@ -1129,7 +1129,7 @@ public class GL implements ApplicationListener
 			startTs = System.currentTimeMillis();
 			int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 
-			endTs = startTs + 1000 + abstand * 40 / anzPoints;
+			endTs = startTs + 3000 + abstand * 200 / anzPoints;
 			// endTs = startTs + 2000; // Povisorisch
 			started = true;
 		}
