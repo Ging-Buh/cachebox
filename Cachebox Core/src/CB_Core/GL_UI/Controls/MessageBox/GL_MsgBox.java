@@ -219,14 +219,14 @@ public class GL_MsgBox extends Dialog
 				Config.AcceptChanges();
 			}
 		}
+		GL.that.closeDialog(that);
 
 		boolean retValue = false;
-
 		if (mMsgBoxClickListner != null)
 		{
 			retValue = mMsgBoxClickListner.onClick(button);
 		}
-		GL.that.closeDialog(that);
+
 		return retValue;
 	}
 
