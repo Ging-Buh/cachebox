@@ -1375,8 +1375,18 @@ public class GL implements ApplicationListener
 	{
 		if (!DialogIsShown || !mDialog.getchilds().contains((dialog)))
 		{
-			if (dialog != null) dialog.dispose();
-			System.gc();
+			Timer timer = new Timer();
+			TimerTask task = new TimerTask()
+			{
+				@Override
+				public void run()
+				{
+					if (dialog != null) dialog.dispose();
+					System.gc();
+				}
+			};
+			timer.schedule(task, 500);
+
 			return;
 		}
 
@@ -1403,18 +1413,28 @@ public class GL implements ApplicationListener
 			darknesAlpha = 0f;
 		}
 
-		if (threadDisposeDialog == null) threadDisposeDialog = new Thread(new Runnable()
-		{
+		// if (threadDisposeDialog == null) threadDisposeDialog = new Thread(new Runnable()
+		// {
+		// @Override
+		// public void run()
+		// {
+		// if (dialog != null) dialog.dispose();
+		// System.gc();
+		// }
+		// });
+		// threadDisposeDialog.run();
 
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask()
+		{
 			@Override
 			public void run()
 			{
 				if (dialog != null) dialog.dispose();
 				System.gc();
-
 			}
-		});
-		threadDisposeDialog.run();
+		};
+		timer.schedule(task, 500);
 
 		clearRenderViews();
 		if (ActivityIsShown) platformConector.showForDialog();

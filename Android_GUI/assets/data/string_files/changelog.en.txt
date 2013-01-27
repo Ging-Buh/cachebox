@@ -8,7 +8,7 @@ Version : 0.5.1390
 	• More information on Compass 
 	• Much work for performance
 	• Many work for stability!
-	• Fix many small reported Bugs, thanks all!
+	• Many small reported Bugs, thanks all!
 	
 Version : 0.5.1298
 	• Fix UI handling with fast input

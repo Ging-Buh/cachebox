@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1394;
+	public static final int CurrentRevision = 1398;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Beta";
 
@@ -81,6 +81,10 @@ public class GlobalCore
 	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!
 	 */
 	public static boolean isTab = false;
+
+	public static boolean forceTab = false;
+
+	public static boolean forcePhone = false;
 
 	public static boolean useSmallSkin = false;
 

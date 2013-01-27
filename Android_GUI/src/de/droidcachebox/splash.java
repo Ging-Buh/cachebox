@@ -391,6 +391,8 @@ public class splash extends Activity
 		}
 		else
 		{
+			if (GlobalCore.displayType == DisplayType.Large || GlobalCore.displayType == DisplayType.xLarge) GlobalCore.isTab = isLandscape;
+
 			// restore the saved workPath
 			// test whether workPath is available by checking the free size on the SD
 			String workPathToTest = workPath.substring(0, workPath.lastIndexOf("/"));

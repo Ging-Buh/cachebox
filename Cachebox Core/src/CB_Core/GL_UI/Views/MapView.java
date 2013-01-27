@@ -352,16 +352,17 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				else if (State == 2)
 				{
-
 					if (GlobalCore.getSelectedCache() != null)
 					{
 						if (GlobalCore.getSelectedWaypoint() != null)
 						{
-							GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+							Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
+							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
 						}
 						else
 						{
-							GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
+							Coordinate tmp = GlobalCore.getSelectedCache().Pos;
+							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
 						}
 					}
 				}
@@ -2272,13 +2273,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			{
 				if (GlobalCore.getSelectedCache() != null)
 				{
-					if (GlobalCore.getSelectedWaypoint() != null)
+					if (GlobalCore.getSelectedCache() != null)
 					{
-						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-					}
-					else
-					{
-						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
+						if (GlobalCore.getSelectedWaypoint() != null)
+						{
+							Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
+							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
+						}
+						else
+						{
+							Coordinate tmp = GlobalCore.getSelectedCache().Pos;
+							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
+						}
 					}
 					return false;
 				}
