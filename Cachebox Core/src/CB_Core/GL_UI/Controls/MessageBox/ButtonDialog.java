@@ -101,11 +101,6 @@ public class ButtonDialog extends Dialog
 		}
 	}
 
-	public String getText()
-	{
-		return label.text;
-	}
-
 	public void setText(String text)
 	{
 		label.setWrappedText(text);

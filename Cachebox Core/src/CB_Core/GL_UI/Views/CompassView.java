@@ -696,7 +696,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			if (scale != null) scale.setRotate((float) heading);
 			if (lblDistance != null)
 			{
-				TextBounds bounds = lblDistance.setText(UnitFormatter.DistanceString(distance));
+				lblDistance.setText(UnitFormatter.DistanceString(distance));
+				TextBounds bounds = lblDistance.bounds;
 				float labelWidth = bounds.width + (6 * margin);
 				if (showMap)
 				{

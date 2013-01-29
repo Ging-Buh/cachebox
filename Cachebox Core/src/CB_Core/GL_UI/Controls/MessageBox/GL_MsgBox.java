@@ -498,14 +498,9 @@ public class GL_MsgBox extends Dialog
 		}
 	}
 
-	public String getText()
+	public void setText(String text)
 	{
-		return label.text;
-	}
-
-	public TextBounds setText(String text)
-	{
-		return label.setWrappedText(text);
+		label.setWrappedText(text);
 	}
 
 	public void close()

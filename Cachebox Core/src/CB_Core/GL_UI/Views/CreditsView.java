@@ -118,7 +118,7 @@ public class CreditsView extends CB_View_Base
 		Label label = new Label(box, "");
 		box.addChild(label);
 		label.setFont(Fonts.getBig());
-		label.setText(title + ":", HAlignment.CENTER);
+		label.setText(title + ":", null, null, HAlignment.CENTER);
 		layout.addChild(box);
 	}
 
@@ -138,7 +138,7 @@ public class CreditsView extends CB_View_Base
 				{
 					Label label = new Label(box, "");
 					box.addChild(label);
-					label.setText(entry, HAlignment.CENTER);
+					label.setText(entry, null, null, HAlignment.CENTER);
 				}
 
 				layout.addChild(box);

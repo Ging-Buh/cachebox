@@ -32,11 +32,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Label extends CB_View_Base
 {
-	public BitmapFontCache cache;
-	public VAlignment valignment = VAlignment.CENTER;
-	public String text = "";
-	public TextBounds bounds;
+	private BitmapFont font;
+	private BitmapFontCache cache;
+	private VAlignment valignment = VAlignment.CENTER;
+	private HAlignment halignment = HAlignment.LEFT;
+
 	private CB_RectF innerRec;
+	private String text = "";
+	public TextBounds bounds;
 
 	private float left = 0;
 	private float right = 0;
@@ -45,14 +48,7 @@ public class Label extends CB_View_Base
 
 	private WrapType wrapType = WrapType.singleLine;
 	private int lineCount = 1;
-	private HAlignment halignment = HAlignment.LEFT;
-	private BitmapFont mBmpFont;
 	private int initialedLineCount = 0;
-
-	/**
-	 * Dieser Wert entspricht width*0.95. Damit ein TextWrap richtig dargestellt wird.
-	 */
-	private float innerWidth;
 
 	public final Color color = new Color(1, 1, 1, 1);
 
@@ -90,7 +86,6 @@ public class Label extends CB_View_Base
 		bottom = drawableBackground != null ? drawableBackground.getBottomHeight() : 0;
 
 		innerRec = new CB_RectF(left, bottom, width - right - left, height - top - bottom);
-		innerWidth = innerRec.getWidth();
 	}
 
 	@Override
@@ -134,12 +129,10 @@ public class Label extends CB_View_Base
 			x = innerRec.getWidth() - bounds.width;
 		}
 
-		VAlignment switchValue = ((valignment != null) ? valignment : VAlignment.CENTER);
-
 		if (wrapType == WrapType.singleLine)
 		{
 
-			switch (switchValue)
+			switch (valignment)
 			{
 			case TOP:
 				cache.setPosition(x, innerRec.getHeight() - bounds.height);
@@ -154,7 +147,7 @@ public class Label extends CB_View_Base
 		}
 		else
 		{
-			switch (switchValue)
+			switch (valignment)
 			{
 			case TOP:
 				cache.setPosition(x, (innerRec.getHeight() - bounds.height) + bottom);
@@ -179,29 +172,28 @@ public class Label extends CB_View_Base
 
 	private void chkCache()
 	{
-		// Initial mit Arial 18
 		if (cache == null) setFont(Fonts.getNormal());
 	}
 
 	// code from Libgdx Label
 
-	public void setText(String txt, HAlignment aligment)
+	public void setText(String text)
 	{
-		setText(txt);
-		setHAlignment(aligment);
+		setText(text, null, null, halignment);
 	}
 
-	public TextBounds setText(String text)
+	public void setText(String text, BitmapFont font, Color fontColor)
 	{
-		return setText(text, null, null);
+		setText(text, font, fontColor, halignment);
 	}
 
-	public TextBounds setText(String text, BitmapFont font, Color fontColor)
+	public void setText(String text, BitmapFont font, Color fontColor, HAlignment alignment)
 	{
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 
 		if (font != null) setFont(font);
 		if (fontColor != null) setTextColor(fontColor);
+		setHAlignment(alignment);
 		chkCache();
 		this.text = text;
 		wrapType = WrapType.singleLine;
@@ -223,8 +215,6 @@ public class Label extends CB_View_Base
 		{
 			e.printStackTrace();
 		}
-
-		return bounds;
 	}
 
 	public void setMultiLineText(String text)
@@ -241,42 +231,45 @@ public class Label extends CB_View_Base
 
 		bounds = cache.getFont().getMultiLineBounds(text);
 		// cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height);
-		bounds = cache.setMultiLineText(this.text, 0, bounds.height, innerWidth, alignment);
+		bounds = cache.setMultiLineText(this.text, 0, bounds.height, innerRec.getWidth(), alignment);
 		fontPropertyChanged();
 	}
 
-	public TextBounds setWrappedText(String text)
+	public void setWrappedText(String text)
 	{
-		return setWrappedText(text, HAlignment.LEFT);
+		setWrappedText(text, HAlignment.LEFT);
 	}
 
-	public TextBounds setWrappedText(String text, HAlignment alignment)
+	public void setWrappedText(String text, HAlignment alignment)
 	{
 		chkCache();
 		this.text = text;
 		valignment = VAlignment.TOP;
 		this.halignment = alignment;
 		wrapType = WrapType.wrapped;
-		bounds = cache.getFont().getWrappedBounds(text, innerWidth);
-		bounds = cache.setWrappedText(this.text, 0, bounds.height, innerWidth, alignment);
+		bounds = cache.getFont().getWrappedBounds(text, innerRec.getWidth());
+		bounds = cache.setWrappedText(this.text, 0, bounds.height, innerRec.getWidth(), alignment);
 		fontPropertyChanged();
-
-		return bounds;
 	}
 
 	public void setFont(BitmapFont font)
 	{
-		mBmpFont = font;
-
 		if (cache == null) initialedLineCount = 0;
-
-		cache = new BitmapFontCache(mBmpFont);
-		cache.setColor(Fonts.getFontColor());
-
-		if (lineCount != initialedLineCount) return;
-		change();
-		fontPropertyChanged();
-		initialedLineCount = lineCount;
+		if (cache == null || font != this.font)
+		{
+			this.font = font;
+			if (cache != null)
+			{
+				cache.clear(); // cache.dispose gibts nicht
+				cache = null;
+			}
+			cache = new BitmapFontCache(font, false);
+			cache.setColor(Fonts.getFontColor());
+			if (lineCount != initialedLineCount) return;
+			change();
+			fontPropertyChanged();
+			initialedLineCount = lineCount;
+		}
 	}
 
 	private void change()
@@ -298,17 +291,28 @@ public class Label extends CB_View_Base
 
 	}
 
-	public void setHAlignment(HAlignment aligment)
+	public void setHAlignment(HAlignment alignment)
 	{
-		this.halignment = aligment;
-		change();
+		if (alignment != null)
+		{
+			if (this.halignment != alignment)
+			{
+				this.halignment = alignment;
+				change();
+			}
+		}
 	}
 
-	public void setVAlignment(VAlignment aligment)
+	public void setVAlignment(VAlignment alignment)
 	{
-		if (aligment == null) return;
-		this.valignment = aligment;
-		change();
+		if (alignment != null)
+		{
+			if (this.valignment != alignment)
+			{
+				this.valignment = alignment;
+				change();
+			}
+		}
 	}
 
 	static public enum VAlignment
@@ -443,7 +447,6 @@ public class Label extends CB_View_Base
 		innerRec = null;
 		wrapType = null;
 		halignment = null;
-		mBmpFont.dispose();
 	}
 
 }
