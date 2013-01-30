@@ -186,4 +186,8 @@ public class MenuID
 	public static final int MI_MAP_SHOW_COMPASS = 158;
 
 	public static int AID_SHOW_FILTER_DIALOG = 159;
+
+	public static final int MI_EDIT_CACHE = 160;
+	public static final int MI_NEW_CACHE = 161;
+
 }

@@ -7,6 +7,8 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.EditCache;
 import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -69,6 +71,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+				EditCache editCache = null;
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case MenuID.MI_RESORT:
@@ -115,6 +118,12 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					// new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API,
 					// SpriteCache.Icons.get(35)).Execute();
 					return true;
+
+				case MenuID.MI_NEW_CACHE:
+					if (editCache == null) editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
+					editCache.Create();
+					return true;
+
 				}
 				return false;
 			}
@@ -143,6 +152,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(GlobalCore.autoResort);
 		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
+		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE");
 
 		return cm;
 	}

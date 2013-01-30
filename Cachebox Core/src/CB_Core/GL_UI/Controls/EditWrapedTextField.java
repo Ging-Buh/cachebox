@@ -9,6 +9,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -118,6 +119,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldType type, String Name)
 	{
 		this(parent, rec, Name);
+		this.type = type;
+	}
+
+	public EditWrapedTextField(String Name, TextFieldType type)
+	{
+		this(null, new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight()), Name);
 		this.type = type;
 	}
 
@@ -1706,12 +1713,15 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		StringBuilder sb = new StringBuilder();
 
-		int lastLine = displayText.size();
+		int lastLine = displayText.size() - 1;
 		int index = 0;
 		for (DisplayText dt : displayText)
 		{
 			sb.append(dt.displayText);
-			if (!dt.autoWrap && index != lastLine) sb.append(GlobalCore.br);
+			if (!dt.autoWrap && index != lastLine)
+			{
+				sb.append(GlobalCore.br);
+			}
 			index++;
 		}
 
