@@ -238,6 +238,11 @@ public class splash extends Activity
 			{
 				externalSd = prev + "/sdcard/ext_sd/CacheBox";
 			}
+			else if (testExtSdPath(prev + "/sdcard/ext_card"))
+			{
+				// Sony Xperia sola
+				externalSd = prev + "/sdcard/ext_card/CacheBox";
+			}
 			else if (testExtSdPath(prev + "/external"))
 			{
 				externalSd = prev + "/external/CacheBox";
