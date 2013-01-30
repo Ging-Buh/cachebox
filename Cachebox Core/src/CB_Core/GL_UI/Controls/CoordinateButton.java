@@ -31,6 +31,13 @@ public class CoordinateButton extends Button
 
 	}
 
+	public CoordinateButton(String name)
+	{
+		super(name);
+		mActCoord = new Coordinate();
+		this.setOnClickListener(click);
+	}
+
 	public void setCoordinateChangedListner(CoordinateChangeListner listner)
 	{
 		mCoordinateChangedListner = listner;

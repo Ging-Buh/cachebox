@@ -21,7 +21,6 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -30,7 +29,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Button extends CB_View_Base
@@ -242,15 +240,7 @@ public class Button extends CB_View_Base
 
 		if (lblTxt == null)
 		{
-
-			CB_RectF r = this.ScaleCenter(0.9f);
-
-			float l = (this.width - r.getWidth()) / 2;
-			float b = (this.height - r.getHeight()) / 2;
-
-			r.setPos(new Vector2(l, b));
-
-			lblTxt = new Label(r, this, name + "Label");
+			lblTxt = new Label(name + "Label");
 			if (font != null) mFont = font;
 			if (mFont != null)
 			{
@@ -260,18 +250,16 @@ public class Button extends CB_View_Base
 			{
 				lblTxt.setFont(Fonts.getNormal());
 			}
-
-			lblTxt.setText(Text);
-			lblTxt.setHAlignment(HAlignment.CENTER);
-			lblTxt.setVAlignment(VAlignment.CENTER);
-			this.addChild(lblTxt);
+			this.addLast(lblTxt);
 		}
 
 		if (color != null)
 		{
 			lblTxt.setTextColor(color);
 		}
-		lblTxt.setText(Text);
+
+		// lblTxt.setVAlignment(VAlignment.CENTER); ist default
+		lblTxt.setText(Text, null, null, HAlignment.CENTER);
 		GL.that.renderOnce(this.getName() + " setText2");
 	}
 
