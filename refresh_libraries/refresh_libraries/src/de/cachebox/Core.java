@@ -70,6 +70,7 @@ public class Core implements ApplicationListener
 	@Override
 	public void create()
 	{
+
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
 		margin = 10;
@@ -87,7 +88,7 @@ public class Core implements ApplicationListener
 		lblStyle.fontColor = Color.BLACK;
 		lblStyle.background = null;
 
-		LabelStyle lblOutStyle = skin.get(LabelStyle.class);
+		LabelStyle lblOutStyle = new LabelStyle(skin.get(LabelStyle.class));
 		lblOutStyle.font = font15;
 		lblOutStyle.fontColor = Color.BLACK;
 		lblOutStyle.background = new ColorDrawable(Color.WHITE);
@@ -100,6 +101,8 @@ public class Core implements ApplicationListener
 		stage.addActor(lblMsg);
 
 		lblOut = new Label("", lblOutStyle);
+		// lblOut = new Label("", lblStyle);
+		lblOut.setText(" ");
 		stage.addActor(lblOut);
 
 		btnRunLibGdx = new TextButton("", btnStyle);
@@ -133,11 +136,11 @@ public class Core implements ApplicationListener
 			WorkPathFound = true;
 			writeMsg("Trunk folder found");
 
-			File fi = new File(workPath + "/../images themes styles");
+			File fi = new File(workPath + "/LibgdxPacker");
 			if (fi.exists())
 			{
 				ImageWorkPathFound = true;
-				imageWorkPath = fi.getAbsolutePath();
+				imageWorkPath = workPath;
 			}
 			else
 				ImageWorkPathFound = false;
@@ -322,7 +325,7 @@ public class Core implements ApplicationListener
 		{
 			stage.draw();
 		}
-		catch (java.lang.StringIndexOutOfBoundsException e)
+		catch (Exception e)
 		{
 			stage.getSpriteBatch().end();
 		}
@@ -897,7 +900,11 @@ public class Core implements ApplicationListener
 				@Override
 				public boolean accept(File pathname)
 				{
-					if (pathname.getName().endsWith(".spp")) return true;
+					if (pathname.getName().endsWith(".spp"))
+					{
+						if (pathname.getName().endsWith("_MipMap.spp")) return false;
+						return true;
+					}
 					return false;
 				}
 			});

@@ -3,6 +3,8 @@ package CB_Core.GL_UI.utils;
 import CB_Core.GL_UI.SpriteCache;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -14,6 +16,8 @@ public class ColorDrawable extends EmptyDrawable
 	 */
 	private static Sprite pixelSprite;
 
+	private Texture tex;
+	private Pixmap pix;
 	private Color mColor;
 
 	public ColorDrawable(Color color)
@@ -39,8 +43,38 @@ public class ColorDrawable extends EmptyDrawable
 		}
 		else
 		{
-			pixelSprite = SpriteCache.getThemedSprite("pixel2x2");
+			try
+			{
+				pixelSprite = SpriteCache.getThemedSprite("pixel2x2");
+			}
+			catch (Exception e)
+			{
+				setSpriteFromPixMap();
+			}
 		}
+	}
+
+	private void setSpriteFromPixMap()
+	{
+		int w = 2;
+		int h = 2;
+		pix = new Pixmap(w, h, Pixmap.Format.RGB565);
+		pix.setColor(Color.WHITE);
+
+		pix.fillRectangle(0, 0, w, h);
+
+		try
+		{
+			tex = new Texture(pix);
+		}
+		catch (Exception e)
+		{
+			tex = null;
+		}
+
+		pixelSprite = new Sprite(tex);
+
+		pix.dispose();
 	}
 
 	public void setColor(Color color)
