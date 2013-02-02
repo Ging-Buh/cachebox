@@ -15,6 +15,8 @@ public class HintDialog extends GL_MsgBox
 {
 
 	static ScrollBox scrollBox;
+	static String hintTextDecoded;
+	static String hintTextEncoded;
 
 	public HintDialog(Size size, String name)
 	{
@@ -28,8 +30,8 @@ public class HintDialog extends GL_MsgBox
 	public static void show()
 	{
 		if (GlobalCore.getSelectedCache() == null) return;
-		String hintTextDecoded = GlobalCore.Rot13(GlobalCore.getSelectedCache().hint);
-		String hintTextEncoded = GlobalCore.getSelectedCache().hint;
+		hintTextDecoded = GlobalCore.Rot13(GlobalCore.getSelectedCache().hint);
+		hintTextEncoded = GlobalCore.getSelectedCache().hint;
 
 		Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
 		Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
@@ -65,7 +67,7 @@ public class HintDialog extends GL_MsgBox
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				GL_MsgBox msgBox = (GL_MsgBox) GL.that.getActDialog();
-				msgBox.setText(GlobalCore.Rot13(GlobalCore.getSelectedCache().hint));
+				msgBox.setText(GlobalCore.Rot13(msgBox.label.getText())); // toggle
 				TextBounds bounds = msgBox.label.bounds;
 				msgBox.label.setHeight(bounds.height);
 				scrollBox.setInerHeight(msgBox.label.getHeight());
