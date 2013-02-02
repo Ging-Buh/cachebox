@@ -347,7 +347,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 			@Override
 			public String getText(int index)
 			{
-				return "   " + CacheSizeNumbers[index].name();
+				return CacheSizeNumbers[index].name();
 			}
 
 			@Override
@@ -399,7 +399,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 			@Override
 			public String getText(int index)
 			{
-				return " D:" + ((index + 2.0f) / 2.0f);
+				return "D:" + ((index + 2.0f) / 2.0f);
 			}
 
 			@Override
@@ -436,7 +436,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 			@Override
 			public String getText(int index)
 			{
-				return " T:" + ((index + 2.0f) / 2.0f);
+				return "T:" + ((index + 2.0f) / 2.0f);
 			}
 
 			@Override

@@ -129,13 +129,12 @@ public class Spinner extends Button
 			String Text = mAdapter.getText(i);
 			mSelectedIndex = i;
 			this.setText(Text);
-			lblTxt.setHAlignment(HAlignment.LEFT);
-			lblTxt.setText(Text);
 
 			Drawable drw = mAdapter.getIcon(i);
 
 			if (drw != null)
 			{
+				lblTxt.setHAlignment(HAlignment.LEFT);
 				if (icon == null)
 				{
 					CB_RectF rec = (new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.7f);
@@ -154,7 +153,11 @@ public class Spinner extends Button
 
 				icon.setDrawable(drw);
 			}
-
+			else
+			{
+				lblTxt.setHAlignment(HAlignment.CENTER);
+			}
+			lblTxt.setText(Text);
 		}
 
 	}
