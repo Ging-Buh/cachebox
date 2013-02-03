@@ -104,7 +104,9 @@ public class Translation
 	 * @param StringId
 	 *            as String
 	 * @param params
-	 *            ?????
+	 *            With this a variable number of Strings can be definde Before returning the translation string there will be replaced
+	 *            predefined substrings by these parameters Example: the "{1}" will be replaced by the first param, the "{2}" by the
+	 *            second... Get("abc {1} def {3} ghi {2}", "123", "456", "789"); Result: "abc 123 def 789 ghi 456"
 	 * @return String
 	 */
 	public static String Get(String StringId, String... params)
