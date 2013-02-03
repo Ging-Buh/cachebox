@@ -332,7 +332,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				}
 			}
 
-			if (neu) reloadList();
+			reloadList();
 		}
 	};
 
