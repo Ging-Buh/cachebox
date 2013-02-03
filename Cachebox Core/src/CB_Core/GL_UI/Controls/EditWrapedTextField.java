@@ -1713,15 +1713,15 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		StringBuilder sb = new StringBuilder();
 
-		int lastLine = displayText.size() - 1;
+		int lastLine = displayText.size();
 		int index = 0;
 		for (DisplayText dt : displayText)
 		{
-			sb.append(dt.displayText);
-			if (!dt.autoWrap && index != lastLine)
+			if ((index > 0) && (!dt.autoWrap))
 			{
 				sb.append(GlobalCore.br);
 			}
+			sb.append(dt.displayText);
 			index++;
 		}
 

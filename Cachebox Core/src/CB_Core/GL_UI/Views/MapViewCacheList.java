@@ -104,7 +104,8 @@ public class MapViewCacheList implements CacheListChangedEventListner
 								boolean showWaypoints = showAllWaypoints || GlobalCore.getSelectedCache() == cache;
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
-								Waypoint fwp = null;
+								Waypoint fwp = null; // Final Waypoint
+								Waypoint swp = null; // Start Waypoint
 								// sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
 								if (showWaypoints)
 								{
@@ -122,6 +123,22 @@ public class MapViewCacheList implements CacheListChangedEventListner
 												// nehme Mystery-Final
 												MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, fwp.Pos.getLongitude());
 												MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, fwp.Pos.getLatitude());
+											}
+										}
+									}
+									if ((cache.Type == CacheTypes.Multi) || (cache.Type == CacheTypes.Mystery))
+									{
+										if (!cache.hasCorrectedCoordinates() && (fwp == null))
+										{
+											// Suche, ob zu diesem Cache ein Start-Waypoint definiert ist
+											// Wenn ja, und wenn es kein Mystery mit Final ist dann wird das CacheIcon in der Map auf diesen
+											// WP verschoben wenn der Cache nicht selected ist.
+											swp = cache.GetStartWaypoint();
+											if (swp != null)
+											{
+												// nehme Start Waypoint
+												MapX = 256 * Descriptor.LongitudeToTileX(maxZoomLevel, swp.Pos.getLongitude());
+												MapY = -256 * Descriptor.LatitudeToTileY(maxZoomLevel, swp.Pos.getLatitude());
 											}
 										}
 									}
@@ -208,7 +225,8 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			WaypointRenderInfo wpi = new WaypointRenderInfo();
 			wpi.MapX = (float) MapX;
 			wpi.MapY = (float) MapY;
-			wpi.Icon = SpriteCache.MapIcons.get(wp.Type.ordinal());
+
+			wpi.Icon = getWaypointIcon(wp);
 			wpi.Cache = cache;
 			wpi.Waypoint = wp;
 			wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint, iconSize);
@@ -221,6 +239,13 @@ public class MapViewCacheList implements CacheListChangedEventListner
 	private boolean isVisible(double x, double y)
 	{
 		return ((x >= point1.x) && (x < point2.x) && (Math.abs(y) > Math.abs(point1.y)) && (Math.abs(y) < Math.abs(point2.y)));
+	}
+
+	private Sprite getWaypointIcon(Waypoint waypoint)
+	{
+		if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart)) return SpriteCache.MapIcons.get(24);
+		else
+			return SpriteCache.MapIcons.get(waypoint.Type.ordinal());
 	}
 
 	private Sprite getCacheIcon(Cache cache, int iconSize)
@@ -242,6 +267,8 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		if (cache.ImTheOwner()) IconId = 22;
 		else if (cache.Found) IconId = 19;
 		else if ((cache.Type == CacheTypes.Mystery) && cache.CorrectedCoordiantesOrMysterySolved()) IconId = 21;
+		else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint()) IconId = 23; // Multi mit Startpunkt
+		else if ((cache.Type == CacheTypes.Mystery) && cache.HasStartWaypoint()) IconId = 25; // Mystery ohne Final aber mit Startpunkt
 		else
 			IconId = cache.Type.ordinal();
 		return SpriteCache.MapIcons.get(IconId);
@@ -260,7 +287,9 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			iconId = 0;
 			break;
 		case Multi:
-			iconId = 1;
+			if (cache.HasStartWaypoint()) iconId = 1;
+			else
+				iconId = 1;
 			break;
 		case Event:
 			iconId = 2;
@@ -280,8 +309,8 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		case Mystery:
 		{
 			if (cache.HasFinalWaypoint()) iconId = 5;
-			else
-				iconId = 4;
+			else if (cache.HasStartWaypoint()) iconId = 5;
+			iconId = 4;
 			break;
 		}
 		case Wherigo:

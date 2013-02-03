@@ -2,6 +2,7 @@ package CB_Core.GL_UI.Views;
 
 import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.Fonts;
@@ -271,7 +272,10 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
 
 			{ // Icon Sprite erstellen
-				mIconSprite = new Sprite(SpriteCache.BigIcons.get(mWaypoint.Type.ordinal()));
+				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
+				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart) mIconSprite = new Sprite(SpriteCache.BigIcons.get(23));
+				else
+					mIconSprite = new Sprite(SpriteCache.BigIcons.get(mWaypoint.Type.ordinal()));
 
 				mIconSprite.setSize(mIconSize, mIconSize);
 				mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);

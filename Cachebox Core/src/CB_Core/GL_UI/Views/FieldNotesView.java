@@ -777,8 +777,12 @@ public class FieldNotesView extends V_ListView
 		}
 
 		Waypoint finalWp = null;
-		if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
-		if (cache != null) GlobalCore.setSelectedWaypoint(cache, finalWp);
+		if (cache != null)
+		{
+			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
+			else if (cache.HasStartWaypoint()) finalWp = cache.GetStartWaypoint();
+			GlobalCore.setSelectedWaypoint(cache, finalWp);
+		}
 	}
 
 	private OnClickListener itemLogClickListner = new OnClickListener()

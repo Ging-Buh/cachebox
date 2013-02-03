@@ -485,6 +485,9 @@ public class SpriteCache
 			MapIcons.add(getThemedSprite("20"));
 			MapIcons.add(getThemedSprite("21"));
 			MapIcons.add(getThemedSprite("star"));
+			MapIcons.add(getThemedSprite("23"));
+			MapIcons.add(getThemedSprite("24"));
+			MapIcons.add(getThemedSprite("25"));
 
 		}
 
@@ -654,6 +657,9 @@ public class SpriteCache
 			BigIcons.add(getThemedSprite("log0icon")); // 19
 			BigIcons.add(getThemedSprite("my-parking")); // 20
 			BigIcons.add(getThemedSprite("big19icon")); // 21
+			BigIcons.add(getThemedSprite("big22icon")); // 22
+			BigIcons.add(getThemedSprite("big23icon")); // 23
+			BigIcons.add(getThemedSprite("big24icon")); // 24
 
 		}
 

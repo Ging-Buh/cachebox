@@ -398,6 +398,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
 					Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
+					// wenn ein Cache keine Final hat, aber einen StartWaypoint dann wird dieser gleich selektiert
+					if (waypoint == null) waypoint = infoBubble.getCache().GetStartWaypoint();
 					GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
 				}
 				else

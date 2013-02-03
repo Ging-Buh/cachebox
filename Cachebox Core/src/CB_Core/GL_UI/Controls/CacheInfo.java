@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
@@ -343,6 +344,16 @@ public class CacheInfo extends CB_View_Base
 			if (mCache.CorrectedCoordiantesOrMysterySolved())
 			{
 				mIconSprite = new Sprite(SpriteCache.BigIcons.get(21));
+			}
+			else if ((mCache.Type == CacheTypes.Multi) && mCache.HasStartWaypoint())
+			{
+				// Multi anders darstellen wenn dieser einen definierten Startpunkt hat
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(22));
+			}
+			else if ((mCache.Type == CacheTypes.Mystery) && mCache.HasStartWaypoint())
+			{
+				// Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(24));
 			}
 			else
 			{

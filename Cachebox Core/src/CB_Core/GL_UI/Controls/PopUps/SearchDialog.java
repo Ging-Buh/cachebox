@@ -515,8 +515,12 @@ public class SearchDialog extends PopUp_Base
 				{
 
 					Waypoint finalWp = null;
-					if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
-					if (tmp != null) GlobalCore.setSelectedWaypoint(tmp, finalWp);
+					if (tmp != null)
+					{
+						if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
+						else if (tmp.HasStartWaypoint()) finalWp = tmp.GetStartWaypoint();
+						GlobalCore.setSelectedWaypoint(tmp, finalWp);
+					}
 					// deactivate autoResort when Cache is selected by hand
 					GlobalCore.autoResort = false;
 

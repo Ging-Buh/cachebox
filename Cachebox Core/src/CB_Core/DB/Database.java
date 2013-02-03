@@ -295,6 +295,10 @@ public abstract class Database
 					execSQL("ALTER TABLE [TbLogs] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
 					execSQL("ALTER TABLE [Images] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
 				}
+				if (lastDatabaseSchemeVersion < 1024)
+				{
+					execSQL("ALTER TABLE [Waypoint] ADD COLUMN [IsStart] BOOLEAN DEFAULT 'false' NULL");
+				}
 
 				setTransactionSuccessful();
 			}

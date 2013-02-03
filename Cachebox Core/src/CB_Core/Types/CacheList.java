@@ -81,6 +81,13 @@ public class CacheList extends MoveableList<Cache>
 			// When the next Cache is a mystery with final waypoint
 			// -> activate the final waypoint!!!
 			Waypoint waypoint = nextCache.GetFinalWaypoint();
+			if (waypoint == null)
+			{
+				// wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat
+				// Wenn ein Cache einen Startpunkt definiert hat dann wird beim Selektieren dieses Caches gleich dieser Startpunkt
+				// selektiert
+				waypoint = nextCache.GetStartWaypoint();
+			}
 
 			// do not Change AutoResort Flag when selecting a Cache in the Resort function
 			GlobalCore.setSelectedWaypoint(nextCache, waypoint, false);

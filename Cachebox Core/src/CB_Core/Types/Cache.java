@@ -370,6 +370,35 @@ public class Cache implements Comparable<Cache>
 	}
 
 	/**
+	 * true if this is a mystery of multi with a Stage Waypoint defined as StartPoint
+	 * 
+	 * @return
+	 */
+	public boolean HasStartWaypoint()
+	{
+		return GetStartWaypoint() != null;
+	}
+
+	/**
+	 * search the start Waypoint for a multi or mystery
+	 * 
+	 * @return
+	 */
+	public Waypoint GetStartWaypoint()
+	{
+		if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery)) return null;
+
+		for (Waypoint wp : waypoints)
+		{
+			if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
+			{
+				return wp;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @return Entfernung zur aktUserPos als Float
 	 */
 	public float CachedDistance()

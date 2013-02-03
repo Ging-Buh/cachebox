@@ -39,12 +39,18 @@ public class Waypoint implements Serializable
 	// / Lösung einer QTA
 	public String Clue = "";
 
+	// True wenn dies der Startpunkt für den nächsten Besuch ist.
+	// Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert
+	// Es muss aber sichergestellt sein dass immer nur 1 Waypoint eines Caches ein Startpunkt ist!
+	public boolean IsStart = false;
+
 	public Waypoint()
 	{
 		CacheId = -1;
 		GcCode = "";
 		Pos = new Coordinate();
 		Description = "";
+		IsStart = false;
 	}
 
 	public int checkSum = 0; // for replication
@@ -63,6 +69,7 @@ public class Waypoint implements Serializable
 		IsUserWaypoint = true;
 		Clue = clue;
 		Title = title;
+		IsStart = false;
 	}
 
 	// / <summary>

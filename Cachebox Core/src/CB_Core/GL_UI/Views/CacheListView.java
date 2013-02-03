@@ -220,6 +220,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			{
 				// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
 				Waypoint waypoint = cache.GetFinalWaypoint();
+				if (waypoint == null) waypoint = cache.GetStartWaypoint();
 				GlobalCore.setSelectedWaypoint(cache, waypoint);
 			}
 			listView.setSelection(selectionIndex);
@@ -242,6 +243,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			}
 			Waypoint finalWp = null;
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
+			if (finalWp == null) finalWp = cache.GetStartWaypoint();
 			// shutdown AutoResort when selecting a cache by hand
 			GlobalCore.autoResort = false;
 			GlobalCore.setSelectedWaypoint(cache, finalWp);

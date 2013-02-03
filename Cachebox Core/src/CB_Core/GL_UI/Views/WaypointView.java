@@ -402,9 +402,16 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = waypoint;
 						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
+						if (waypoint.IsStart)
+						{
+							// Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
+							// definiert
+							// ist!!!
+							WaypointDAO wpd = new WaypointDAO();
+							wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
+						}
 						WaypointDAO waypointDAO = new WaypointDAO();
 						waypointDAO.WriteToDatabase(waypoint);
-
 						int itemCount = lvAdapter.getCount();
 						int itemSpace = that.getMaxItemCount();
 
@@ -424,7 +431,16 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						aktWaypoint.Type = waypoint.Type;
 						aktWaypoint.Pos = waypoint.Pos;
 						aktWaypoint.Description = waypoint.Description;
+						aktWaypoint.IsStart = waypoint.IsStart;
 						aktWaypoint.Clue = waypoint.Clue;
+						if (waypoint.IsStart)
+						{
+							// Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
+							// definiert
+							// ist!!!
+							WaypointDAO wpd = new WaypointDAO();
+							wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), aktWaypoint);
+						}
 						WaypointDAO waypointDAO = new WaypointDAO();
 						waypointDAO.UpdateDatabase(aktWaypoint);
 						that.setBaseAdapter(lvAdapter);
