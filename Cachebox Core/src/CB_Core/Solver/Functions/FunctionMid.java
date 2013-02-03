@@ -1,6 +1,6 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionMid extends Function
 {
@@ -13,13 +13,13 @@ public class FunctionMid extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncMid");
+		return Translation.Get("solverFuncMid");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescMid");
+		return Translation.Get("solverDescMid");
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class FunctionMid extends Function
 	{
 		if ((parameter.length < 2) || (parameter.length > 3))
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "2-3", "$solverFuncMid");
+			return Translation.Get("solverErrParamCount", "2-3", "$solverFuncMid");
 		}
 		String Wert = parameter[0].trim();
 		int iPos, iCount;
@@ -37,7 +37,7 @@ public class FunctionMid extends Function
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncMid", "2", "$Position", "$number", parameter[1]);
+			return Translation.Get("solverErrParamType", "$solverFuncMid", "2", "$Position", "$number", parameter[1]);
 		}
 		try
 		{
@@ -47,11 +47,11 @@ public class FunctionMid extends Function
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncMid", "5", "$count", "$number", parameter[2]);
+			return Translation.Get("solverErrParamType", "$solverFuncMid", "5", "$count", "$number", parameter[2]);
 		}
 		if (iPos > Wert.length())
 		{
-			return GlobalCore.Translations.Get("PosGtLength", "$solverFuncMid", String.valueOf(iPos), Wert);
+			return Translation.Get("PosGtLength", "$solverFuncMid", String.valueOf(iPos), Wert);
 		}
 		return Wert.substring(iPos - 1, iPos - 1 + iCount);
 	}

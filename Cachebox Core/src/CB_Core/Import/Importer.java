@@ -33,6 +33,7 @@ import CB_Core.GCVote.RatingData;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.Log.Logger;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 
@@ -708,7 +709,7 @@ public class Importer
 	public static CancelWaitDialog ImportSpoiler()
 	{
 
-		WD = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+		WD = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
 		{
 
 			@Override

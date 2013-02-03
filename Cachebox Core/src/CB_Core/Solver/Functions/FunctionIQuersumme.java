@@ -1,6 +1,6 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 // ************************************************************************
 // ********************** Iterierte (einstellige) Quersumme (Iterated CrossTotal) **************************
@@ -18,13 +18,13 @@ public class FunctionIQuersumme extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncICrosstotal");
+		return Translation.Get("solverFuncICrosstotal");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescICrosstotal");
+		return Translation.Get("solverDescICrosstotal");
 	}
 
 	private String Qs(String wert)
@@ -43,7 +43,7 @@ public class FunctionIQuersumme extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncICrosstotal");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncICrosstotal");
 		}
 		String wert = parameter[0].trim();
 		while (wert.length() > 1)

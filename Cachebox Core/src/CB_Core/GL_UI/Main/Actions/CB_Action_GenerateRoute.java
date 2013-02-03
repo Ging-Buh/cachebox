@@ -39,6 +39,7 @@ import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
@@ -292,7 +293,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 												@Override
 												public void run()
 												{
-													String msg = GlobalCore.Translations.Get("generateRouteLength") + sDistance;
+													String msg = Translation.Get("generateRouteLength") + sDistance;
 													GL_MsgBox.Show(msg, "OpenRouteService", MessageBoxButtons.OK,
 															MessageBoxIcon.Information, null);
 												}

@@ -40,6 +40,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
@@ -347,7 +348,7 @@ public class SearchDialog extends PopUp_Base
 		if (mTglBtnOnline.getState() == 0)
 		{
 			mBtnFilter.setImage(null);
-			mBtnFilter.setText(GlobalCore.Translations.Get("Filter"));
+			mBtnFilter.setText(Translation.Get("Filter"));
 		}
 		else
 		{
@@ -362,22 +363,19 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private void setLang()
 	{
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, GlobalCore.Translations.Get("Title"),
-				GlobalCore.Translations.Get("Title"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, GlobalCore.Translations.Get("GCCode"),
-				GlobalCore.Translations.Get("GCCode"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, GlobalCore.Translations.Get("Owner"),
-				GlobalCore.Translations.Get("Owner"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, Translation.Get("Title"), Translation.Get("Title"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, Translation.Get("GCCode"), Translation.Get("GCCode"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, Translation.Get("Owner"), Translation.Get("Owner"));
 		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOnline, "Online", "Online");
 
 		// der State muss erstmal gesetzt werden, damit die Anzeige
 		// Aktuallisiert wird
 		mTglBtnOnline.setState(0);
 
-		mBtnFilter.setText(GlobalCore.Translations.Get("Filter"));
-		mBtnSearch.setText(GlobalCore.Translations.Get("Search"));
-		mBtnNext.setText(GlobalCore.Translations.Get("Next"));
-		mBtnCancel.setText(GlobalCore.Translations.Get("abort"));
+		mBtnFilter.setText(Translation.Get("Filter"));
+		mBtnSearch.setText(Translation.Get("Search"));
+		mBtnNext.setText(Translation.Get("Next"));
+		mBtnCancel.setText(Translation.Get("abort"));
 
 	}
 
@@ -508,8 +506,8 @@ public class SearchDialog extends PopUp_Base
 				{
 					mBtnNext.disable();
 					mSearchAktive = false;
-					GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheFound"), GlobalCore.Translations.Get("search"),
-							MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
+					GL_MsgBox.Show(Translation.Get("NoCacheFound"), Translation.Get("search"), MessageBoxButtons.OK,
+							MessageBoxIcon.Asterisk, null);
 				}
 				else
 				{
@@ -606,13 +604,13 @@ public class SearchDialog extends PopUp_Base
 	{
 		if ("".equals(Config.GetAccessToken()))
 		{
-			GL_MsgBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
-					MessageBoxIcon.Exclamation, null);
+			GL_MsgBox
+					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
 		}
 		else
 		{
 
-			wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+			wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
 			{
 
 				@Override
@@ -634,8 +632,8 @@ public class SearchDialog extends PopUp_Base
 					}
 					else
 					{
-						GL_MsgBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
-								MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+						GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
+								MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
 								{
 
 									@Override
@@ -664,7 +662,7 @@ public class SearchDialog extends PopUp_Base
 
 	private void searchOnlineNow()
 	{
-		wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("searchOverAPI"), new IcancelListner()
+		wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), new IcancelListner()
 		{
 
 			@Override
@@ -942,13 +940,13 @@ public class SearchDialog extends PopUp_Base
 
 		if ("".equals(Config.GetAccessToken()))
 		{
-			GL_MsgBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
-					MessageBoxIcon.Exclamation, null);
+			GL_MsgBox
+					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
 		}
 		else
 		{
 
-			WD = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+			WD = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
 			{
 
 				@Override
@@ -979,8 +977,8 @@ public class SearchDialog extends PopUp_Base
 							@Override
 							public void run()
 							{
-								MSB = GL_MsgBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
-										MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+								MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
+										MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
 										{
 
 											@Override

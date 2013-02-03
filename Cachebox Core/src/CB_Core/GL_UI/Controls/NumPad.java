@@ -2,12 +2,12 @@ package CB_Core.GL_UI.Controls;
 
 import java.util.ArrayList;
 
-import CB_Core.GlobalCore;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.Math.CB_RectF;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.Input.Keys;
 
@@ -199,8 +199,8 @@ public class NumPad extends CB_View_Base
 
 		btn_Del.setText("Del");
 		btn_Bck.setText("Back");
-		btn_OK.setText(GlobalCore.Translations.Get("ok"));
-		btn_Cancel.setText(GlobalCore.Translations.Get("cancel"));
+		btn_OK.setText(Translation.Get("ok"));
+		btn_Cancel.setText(Translation.Get("cancel"));
 		btn_left.setText("<");
 		btn_right.setText(">");
 

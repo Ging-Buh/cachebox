@@ -27,7 +27,7 @@ import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
-import CB_Core.TranslationEngine.LangStrings;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 
@@ -150,13 +150,13 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		tvTyp = new Label(this.getLeftWidth() + margin, bCoord.getY() - margin - MeasuredLabelHeight, width - this.getLeftWidth()
 				- this.getRightWidth() - margin - cbStartPointWidth, MeasuredLabelHeight, "TypeLabel");
 		tvTyp.setFont(Fonts.getBubbleNormal());
-		tvTyp.setText(GlobalCore.Translations.Get("type"));
+		tvTyp.setText(Translation.Get("type"));
 		scrollBox.addChild(tvTyp);
 
 		tvStartPoint = new Label(tvTyp.getRight() + cbStartPointWidth * 0.33333333f, bCoord.getY() - margin - MeasuredLabelHeight,
 				cbStartPointWidth, MeasuredLabelHeight, "TypeLabel");
 		tvStartPoint.setFont(Fonts.getBubbleNormal());
-		tvStartPoint.setText(GlobalCore.Translations.Get("start"));
+		tvStartPoint.setText(Translation.Get("start"));
 		tvStartPoint.setVisible(false);
 		scrollBox.addChild(tvStartPoint);
 
@@ -240,11 +240,9 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private SpinnerAdapter getSpinerAdapter()
 	{
-		final LangStrings ls = GlobalCore.Translations;
-
 		final String[] names = new String[]
-			{ ls.Get("Reference"), ls.Get("StageofMulti"), ls.Get("Question2Answer"), ls.Get("Trailhead"), ls.Get("Parking"),
-					ls.Get("Final") };
+			{ Translation.Get("Reference"), Translation.Get("StageofMulti"), Translation.Get("Question2Answer"),
+					Translation.Get("Trailhead"), Translation.Get("Parking"), Translation.Get("Final") };
 
 		SpinnerAdapter adapter = new SpinnerAdapter()
 		{
@@ -294,7 +292,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		tvTitle = new Label(this.getLeftWidth() + margin, sType.getY() - margin - MeasuredLabelHeight, width - this.getLeftWidth()
 				- this.getRightWidth() - margin, MeasuredLabelHeight, "TitleLabel");
 		tvTitle.setFont(Fonts.getBubbleNormal());
-		tvTitle.setText(GlobalCore.Translations.Get("Title"));
+		tvTitle.setText(Translation.Get("Title"));
 		scrollBox.addChild(tvTitle);
 	}
 
@@ -315,7 +313,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		tvDescription = new Label(this.getLeftWidth() + margin, etTitle.getY() - margin - MeasuredLabelHeight, width - this.getLeftWidth()
 				- this.getRightWidth() - margin, MeasuredLabelHeight, "DescLabel");
 		tvDescription.setFont(Fonts.getBubbleNormal());
-		tvDescription.setText(GlobalCore.Translations.Get("Description"));
+		tvDescription.setText(Translation.Get("Description"));
 		scrollBox.addChild(tvDescription);
 	}
 
@@ -353,7 +351,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		tvClue = new Label(this.getLeftWidth() + margin, etDescription.getY() - margin - MeasuredLabelHeight, width - this.getLeftWidth()
 				- this.getRightWidth() - margin, MeasuredLabelHeight, "ClueLabel");
 		tvClue.setFont(Fonts.getBubbleNormal());
-		tvClue.setText(GlobalCore.Translations.Get("Clue"));
+		tvClue.setText(Translation.Get("Clue"));
 		scrollBox.addChild(tvClue);
 	}
 
@@ -393,13 +391,13 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 		btnRec.setX(bOK.getMaxX());
 		bHelp = new Button(btnRec, "HelpButton");
-		bHelp.setText(GlobalCore.Translations.Get("help"));
+		bHelp.setText(Translation.Get("help"));
 
 		btnRec.setX(bHelp.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
 
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		this.addChild(bHelp);

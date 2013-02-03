@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
@@ -14,6 +13,7 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
+import CB_Core.TranslationEngine.Translation;
 
 public class PasswortDialog extends ButtonDialog
 {
@@ -36,8 +36,7 @@ public class PasswortDialog extends ButtonDialog
 
 	public PasswortDialog(returnListner listner)
 	{
-		super(Menu.getMenuRec(), "PW-Dialog", "", GlobalCore.Translations.Get("enterPW"), MessageBoxButtons.OKCancel,
-				MessageBoxIcon.GC_Live, null);
+		super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("enterPW"), MessageBoxButtons.OKCancel, MessageBoxIcon.GC_Live, null);
 		mReturnListner = listner;
 
 		msgBoxContentSize = getContentSize();
@@ -48,7 +47,7 @@ public class PasswortDialog extends ButtonDialog
 		layout = new Linearlayout(msgBoxContentSize.width, "Layout");
 
 		Label lblName = new Label(0, 0, msgBoxContentSize.width, LabelHeight, "");
-		lblName.setText(GlobalCore.Translations.Get("LogIn"));
+		lblName.setText(Translation.Get("LogIn"));
 		layout.addChild(lblName);
 
 		CB_RectF rec = new CB_RectF(0, 0, msgBoxContentSize.width, TextFieldHeight);
@@ -57,7 +56,7 @@ public class PasswortDialog extends ButtonDialog
 		layout.addChild(editTextUser);
 
 		Label lblPW = new Label(0, 0, msgBoxContentSize.width, LabelHeight, "");
-		lblPW.setText(GlobalCore.Translations.Get("GCPW"));
+		lblPW.setText(Translation.Get("GCPW"));
 		layout.addChild(lblPW);
 
 		editTextPW = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");

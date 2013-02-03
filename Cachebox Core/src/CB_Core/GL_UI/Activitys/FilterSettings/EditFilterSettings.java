@@ -24,6 +24,7 @@ import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 public class EditFilterSettings extends ActivityBase
 {
@@ -66,9 +67,9 @@ public class EditFilterSettings extends ActivityBase
 		this.addChild(btSet);
 		this.addChild(btCat);
 
-		String sPre = GlobalCore.Translations.Get("preset");
-		String sSet = GlobalCore.Translations.Get("setting");
-		String sCat = GlobalCore.Translations.Get("category");
+		String sPre = Translation.Get("preset");
+		String sSet = Translation.Get("setting");
+		String sCat = Translation.Get("category");
 
 		MultiToggleButton.initialOn_Off_ToggleStates(btPre, sPre, sPre);
 		MultiToggleButton.initialOn_Off_ToggleStates(btSet, sSet, sSet);
@@ -168,8 +169,8 @@ public class EditFilterSettings extends ActivityBase
 		this.addChild(bCancel);
 
 		// Translations
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		ListViewRec = new CB_RectF(0, bOK.getMaxY(), this.width, btPre.getY() - bOK.getMaxY());
 
@@ -187,7 +188,7 @@ public class EditFilterSettings extends ActivityBase
 		CB_RectF rec = new CB_RectF(this.getLeftWidth(), ListViewRec.getY(), width - this.getRightWidth() - this.getLeftWidth(),
 				UiSizes.getButtonHeight());
 		btnAddPreset = new Button(rec, "AddPresetButon");
-		btnAddPreset.setText(GlobalCore.Translations.Get("AddOwnFilterPreset"));
+		btnAddPreset.setText(Translation.Get("AddOwnFilterPreset"));
 		btnAddPreset.setOnClickListener(new OnClickListener()
 		{
 
@@ -288,7 +289,7 @@ public class EditFilterSettings extends ActivityBase
 	{
 
 		props = Props;
-		pd = WaitDialog.ShowWait(GlobalCore.Translations.Get("FilterCaches"));
+		pd = WaitDialog.ShowWait(Translation.Get("FilterCaches"));
 
 		Thread thread = new Thread()
 		{
@@ -347,7 +348,7 @@ public class EditFilterSettings extends ActivityBase
 
 		if (exist)
 		{
-			GL_MsgBox.Show(GlobalCore.Translations.Get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null,
+			GL_MsgBox.Show(Translation.Get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener()
 					{
 
@@ -361,8 +362,8 @@ public class EditFilterSettings extends ActivityBase
 			return;
 		}
 
-		StringInputBox.Show(TextFieldType.SingleLine, GlobalCore.Translations.Get("NewUserPreset"),
-				GlobalCore.Translations.Get("InsNewUserPreset"), "UserPreset", new OnMsgBoxClickListener()
+		StringInputBox.Show(TextFieldType.SingleLine, Translation.Get("NewUserPreset"), Translation.Get("InsNewUserPreset"), "UserPreset",
+				new OnMsgBoxClickListener()
 				{
 
 					@Override

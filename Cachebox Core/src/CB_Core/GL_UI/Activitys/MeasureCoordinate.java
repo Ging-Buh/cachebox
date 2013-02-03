@@ -13,6 +13,7 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
@@ -66,8 +67,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		iniOkCancel();
 		iniLabels();
-		lblDescMeasureCoord.setText(GlobalCore.Translations.Get("MeasureCoord"));
-		lblDescMeasureCount.setText(GlobalCore.Translations.Get("MeasureCount"));
+		lblDescMeasureCoord.setText(Translation.Get("MeasureCoord"));
+		lblDescMeasureCount.setText(Translation.Get("MeasureCount"));
 
 		iniChart();
 
@@ -82,8 +83,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		btnRec.setX(bOK.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
 
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		this.addChild(bCancel);
@@ -117,8 +118,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private void iniLabels()
 	{
 		float y = bOK.getMaxY() + (that.width - this.getLeftWidth() - this.getRightWidth()) + (margin * 3);
-		float w = Math.max(Fonts.Measure(GlobalCore.Translations.Get("MeasureCoord")).width,
-				Fonts.Measure(GlobalCore.Translations.Get("MeasureCount")).width);
+		float w = Math.max(Fonts.Measure(Translation.Get("MeasureCoord")).width, Fonts.Measure(Translation.Get("MeasureCount")).width);
 		CB_RectF rec = new CB_RectF(this.getLeftWidth() + margin, y, w, MeasuredLabelHeight);
 		CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, width - this.getLeftWidth() - this.getRightWidth() - w - margin,
 				MeasuredLabelHeight);

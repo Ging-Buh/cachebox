@@ -1,6 +1,6 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionPrimenumber extends FunctionPrimeBase
 {
@@ -13,13 +13,13 @@ public class FunctionPrimenumber extends FunctionPrimeBase
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncPrimenumber");
+		return Translation.Get("solverFuncPrimenumber");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescPrimenumber");
+		return Translation.Get("solverDescPrimenumber");
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class FunctionPrimenumber extends FunctionPrimeBase
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncPrimenumber");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncPrimenumber");
 		}
 		String wert = parameter[0].trim();
 		int number = 0;
@@ -37,7 +37,7 @@ public class FunctionPrimenumber extends FunctionPrimeBase
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncPrimenumber", "1", "$value", "$number", parameter[0]);
+			return Translation.Get("solverErrParamType", "$solverFuncPrimenumber", "1", "$value", "$number", parameter[0]);
 		}
 		int anz = 0;
 		int akt = 0;

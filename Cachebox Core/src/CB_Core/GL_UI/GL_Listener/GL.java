@@ -43,6 +43,7 @@ import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -420,7 +421,7 @@ public class GL implements ApplicationListener
 		SpriteCache.destroyCache();
 		try
 		{
-			GlobalCore.Translations.writeMisingStringsFile();
+			Translation.writeMisingStringsFile();
 		}
 		catch (IOException e)
 		{

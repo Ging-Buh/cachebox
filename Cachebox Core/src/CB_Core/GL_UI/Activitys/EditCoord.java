@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Activitys;
 
-import CB_Core.GlobalCore;
 import CB_Core.Converter.UTMConvert;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -13,6 +12,7 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
@@ -98,8 +98,8 @@ public class EditCoord extends ActivityBase
 		this.initRow(false);
 		this.addNext(btnOK);
 		this.addLast(btnCancel);
-		btnCancel.setText(GlobalCore.Translations.Get("cancel"), font, Fonts.getFontColor());
-		btnOK.setText(GlobalCore.Translations.Get("ok"), font, Fonts.getFontColor());
+		btnCancel.setText(Translation.Get("cancel"), font, Fonts.getFontColor());
+		btnOK.setText(Translation.Get("ok"), font, Fonts.getFontColor());
 
 		pnlNumPad = new Box(this.getAvailableWidth(), this.getAvailableHeight(), "pnlNumPad");
 		this.createNumPad(pnlNumPad);

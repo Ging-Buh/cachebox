@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
@@ -15,6 +14,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -45,7 +45,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		pd = ProgressDialog.Show(GlobalCore.Translations.Get("chkState"), ChkStatRunnable);
+		pd = ProgressDialog.Show(Translation.Get("chkState"), ChkStatRunnable);
 	}
 
 	int ChangedCount = 0;
@@ -165,7 +165,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			else
 			{
 				pd.close();
-				GL_MsgBox.Show(GroundspeakAPI.LastAPIError, GlobalCore.Translations.Get("errorAPI"), MessageBoxIcon.Error);
+				GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("errorAPI"), MessageBoxIcon.Error);
 			}
 		}
 	})
@@ -179,8 +179,8 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				pd.close();
 				synchronized (Database.Data.Query)
 				{
-					GL_MsgBox.Show(GlobalCore.Translations.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),
-							GlobalCore.Translations.Get("chkState"), MessageBoxIcon.None);
+					GL_MsgBox.Show(Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),
+							Translation.Get("chkState"), MessageBoxIcon.None);
 				}
 
 			}

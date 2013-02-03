@@ -29,6 +29,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
@@ -99,8 +100,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					{
 						final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
-						StringInputBox.Show(TextFieldType.SingleLine, selectedTrackItem.getRoute().Name,
-								GlobalCore.Translations.Get("RenameTrack"), selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
+						StringInputBox.Show(TextFieldType.SingleLine, selectedTrackItem.getRoute().Name, Translation.Get("RenameTrack"),
+								selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
 								{
 
 									@Override
@@ -130,8 +131,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_LOAD:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", GlobalCore.Translations.Get("LoadTrack"),
-							GlobalCore.Translations.Get("load"), new IgetFileReturnListner()
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"),
+							Translation.Get("load"), new IgetFileReturnListner()
 							{
 								@Override
 								public void getFieleReturn(String Path)
@@ -150,8 +151,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_SAVE:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", GlobalCore.Translations.Get("SaveTrack"),
-							GlobalCore.Translations.Get("save"), new IgetFileReturnListner()
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"),
+							Translation.Get("save"), new IgetFileReturnListner()
 							{
 								TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
@@ -176,8 +177,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 						if (selectedTrackItem == null)
 						{
-							GL_MsgBox.Show(GlobalCore.Translations.Get("NoTrackSelected"), null, MessageBoxButtons.OK,
-									MessageBoxIcon.Warning, new OnMsgBoxClickListener()
+							GL_MsgBox.Show(Translation.Get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning,
+									new OnMsgBoxClickListener()
 									{
 
 										@Override
@@ -192,8 +193,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 						if (selectedTrackItem.getRoute().IsActualTrack)
 						{
-							GL_MsgBox.Show(GlobalCore.Translations.Get("IsActualTrack"), null, MessageBoxButtons.OK,
-									MessageBoxIcon.Warning, null);
+							GL_MsgBox.Show(Translation.Get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
 							return false;
 						}
 
@@ -258,7 +258,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 		if (coord == null) coord = GlobalCore.LastValidPosition;
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("fromPoint"), coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("fromPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
@@ -294,7 +294,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		Coordinate coord = GlobalCore.getSelectedCoord();
 		if (coord == null) coord = GlobalCore.LastValidPosition;
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("Projection"), coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("Projection"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
@@ -332,7 +332,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		Coordinate coord = GlobalCore.getSelectedCoord();
 		if (coord == null) coord = GlobalCore.LastValidPosition;
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("centerPoint"), coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("centerPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 

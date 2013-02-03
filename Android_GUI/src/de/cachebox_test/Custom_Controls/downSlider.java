@@ -29,6 +29,7 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.Controls.QuickButtonList;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -753,9 +754,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		mLongitude = GlobalCore.FormatLongitudeDM(location.getLongitude());
 
 		String br = String.format("%n");
-		String Text = GlobalCore.Translations.Get("current") + " " + mLatitude + " " + mLongitude + br + GlobalCore.Translations.Get("alt")
-				+ " " + mAlt + br + GlobalCore.Translations.Get("accuracy") + "  +/- " + mAccuracy + "m" + br
-				+ GlobalCore.Translations.Get("sats") + " " + mSats;
+		String Text = Translation.Get("current") + " " + mLatitude + " " + mLongitude + br + Translation.Get("alt") + " " + mAlt + br
+				+ Translation.Get("accuracy") + "  +/- " + mAccuracy + "m" + br + Translation.Get("sats") + " " + mSats;
 
 		if (GPSLayoutTextPaint == null)
 		{

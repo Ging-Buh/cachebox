@@ -27,6 +27,7 @@ import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Waypoint;
@@ -235,14 +236,8 @@ public class splash extends TabMainView
 	 */
 	private void ini_Translations()
 	{
-		try
-		{
-			GlobalCore.Translations.ReadTranslationsFile(Config.settings.Sel_LanguagePath.getValue());
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		new Translation(Config.WorkPath);
+		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
 	}
 
 	/**

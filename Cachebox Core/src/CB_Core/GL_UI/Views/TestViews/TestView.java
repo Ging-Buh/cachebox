@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Views.TestViews;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -18,6 +17,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -71,8 +71,8 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"),
-						MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, click, Config.settings.RememberAsk_API_Coast);
+				GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
+						MessageBoxIcon.GC_Live, click, Config.settings.RememberAsk_API_Coast);
 				return true;
 			}
 		});

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="TranslationEngine" size="1128,914" id="CB_Core.TranslationEngine" metadata="uml2-1.0" initialized="true" tag="1000" key="32303037303533312D313030302043425F5472616E736C6174696F6E5F426173652F4C6F6E6772695F32">
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.2/@sourceConnections.0" name="SelectedLangChangedEvent" location="170,525" size="222,106" id="CB_Core.TranslationEngine/SelectedLangChangedEvent" runTimeClassModel="SelectedLangChangedEventCalled()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="195,18">
+      <children xsi:type="editmodel:MethodEditModel" name="SelectedLangChangedEventCalled" id="CB_Core.TranslationEngine/SelectedLangChangedEvent#SelectedLangChangedEventCalled()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.4/@sourceConnections.2" name="Lang" location="390,180" size="129,103" id="CB_Core.TranslationEngine/Lang" runTimeClassModel="Lang(Ljava.lang.String;Ljava.lang.String;),name,path">
+    <children xsi:type="editmodel:CompartmentEditModel" size="80,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="name" id="CB_Core.TranslationEngine/Lang#name"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="path" id="CB_Core.TranslationEngine/Lang#path"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="54,18">
+      <children xsi:type="editmodel:MethodEditModel" name="Lang" id="CB_Core.TranslationEngine/Lang#Lang(Ljava.lang.String;Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.4/@sourceConnections.3" name="SelectedLangChangedEventList" location="170,390" size="244,103" id="CB_Core.TranslationEngine/SelectedLangChangedEventList" runTimeClassModel="Remove(LCB_Core.TranslationEngine.SelectedLangChangedEvent;),Call(),Add(LCB_Core.TranslationEngine.SelectedLangChangedEvent;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="69,54">
+      <children xsi:type="editmodel:MethodEditModel" name="Add" id="CB_Core.TranslationEngine/SelectedLangChangedEventList#Add(LCB_Core.TranslationEngine.SelectedLangChangedEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Call" id="CB_Core.TranslationEngine/SelectedLangChangedEventList#Call()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Remove" id="CB_Core.TranslationEngine/SelectedLangChangedEventList#Remove(LCB_Core.TranslationEngine.SelectedLangChangedEvent;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="CB_Core.TranslationEngine/SelectedLangChangedEventList-Standard::Call->CB_Core.TranslationEngine/SelectedLangChangedEvent*CB_Core.TranslationEngine/SelectedLangChangedEventList-Soyatec::Import->CB_Core.TranslationEngine/SelectedLangChangedEvent" source="//@children.2" target="//@children.0" targetEnd="//@children.2/@sourceConnections.0/@children.2" label="//@children.2/@sourceConnections.0/@children.0" sourceEnd="//@children.2/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="64,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="110,103" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="110,0"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.4/@sourceConnections.1" name="Translations" location="390,60" size="129,103" id="CB_Core.TranslationEngine/Translations" runTimeClassModel="translation,Translations(Ljava.lang.String;Ljava.lang.String;),idString">
+    <children xsi:type="editmodel:CompartmentEditModel" size="106,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="idString" id="CB_Core.TranslationEngine/Translations#idString"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="translation" id="CB_Core.TranslationEngine/Translations#translation"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="89,18">
+      <children xsi:type="editmodel:MethodEditModel" name="Translations" id="CB_Core.TranslationEngine/Translations#Translations(Ljava.lang.String;Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.4/@sourceConnections.0" name="Translation" location="70,55" size="161,241" id="CB_Core.TranslationEngine/Translation" runTimeClassModel="writeMisingStringsFile(),GetTextFile(Ljava.lang.String;Ljava.lang.String;),Get(Ljava.lang.String;[Ljava.lang.String;),readMissingStringsFile(),Translation(Ljava.lang.String;),Get(Ljava.lang.String;),GetLangs(Ljava.lang.String;),getLangId(),LoadTranslation(Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="138,162">
+      <children xsi:type="editmodel:MethodEditModel" name="Get" id="CB_Core.TranslationEngine/Translation#Get(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Get" id="CB_Core.TranslationEngine/Translation#Get(Ljava.lang.String;[Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="GetLangs" id="CB_Core.TranslationEngine/Translation#GetLangs(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="GetTextFile" id="CB_Core.TranslationEngine/Translation#GetTextFile(Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="LoadTranslation" id="CB_Core.TranslationEngine/Translation#LoadTranslation(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Translation" id="CB_Core.TranslationEngine/Translation#Translation(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLangId" id="CB_Core.TranslationEngine/Translation#getLangId()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="readMissingStringsFile" id="CB_Core.TranslationEngine/Translation#readMissingStringsFile()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="writeMisingStringsFile" id="CB_Core.TranslationEngine/Translation#writeMisingStringsFile()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" autoLocated="true" id="CB_Core.TranslationEngine/Translation@that+CB_Core.TranslationEngine/Translation@" source="//@children.4" target="//@children.4" targetEnd="//@children.4/@sourceConnections.0/@children.2" label="//@children.4/@sourceConnections.0/@children.0" sourceEnd="//@children.4/@sourceConnections.0/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" size="0,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" name="that" location="0,22" id="CB_Core.TranslationEngine/Translation@that+CB_Core.TranslationEngine/Translation@|CB_Core.TranslationEngine/Translation#that" anchorKind="FixedAtEdge" attachSource="true" multiplicityLabel="//@children.4/@sourceConnections.0/@children.1/@children.2" roleLabel="//@children.4/@sourceConnections.0/@children.1/@children.0" orderingLabel="//@children.4/@sourceConnections.0/@children.1/@children.1" scopeKind="1" navigable="true">
+        <children xsi:type="editmodel:LabelEditModel" name=" - that" location="35,42" size="28,14" anchorKind="FirstPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="{order}" location="29,84" size="34,14" anchorKind="FirstPart"/>
+        <children xsi:type="editmodel:LabelEditModel" name="0..1" location="45,56" size="18,14" anchorKind="FirstPart"/>
+      </children>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="20,0" id="CB_Core.TranslationEngine/Translation@that+CB_Core.TranslationEngine/Translation@|CB_Core.TranslationEngine/Translation#" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="CB_Core.TranslationEngine/Translation-Soyatec::Access->CB_Core.TranslationEngine/Translations*CB_Core.TranslationEngine/Translation-Standard::Instantiate->CB_Core.TranslationEngine/Translations*CB_Core.TranslationEngine/Translation-Soyatec::Import->CB_Core.TranslationEngine/Translations" source="//@children.4" target="//@children.3" targetEnd="//@children.4/@sourceConnections.1/@children.2" label="//@children.4/@sourceConnections.1/@children.0" sourceEnd="//@children.4/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Access, Import»" size="139,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="161,56" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,51"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="CB_Core.TranslationEngine/Translation-Standard::Instantiate->CB_Core.TranslationEngine/Lang" source="//@children.4" target="//@children.1" targetEnd="//@children.4/@sourceConnections.2/@children.2" label="//@children.4/@sourceConnections.2/@children.0" sourceEnd="//@children.4/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate»" size="61,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="161,176" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,51"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="CB_Core.TranslationEngine/Translation-Standard::Call->CB_Core.TranslationEngine/SelectedLangChangedEventList" source="//@children.4" target="//@children.2" targetEnd="//@children.4/@sourceConnections.3/@children.2" label="//@children.4/@sourceConnections.3/@children.0" sourceEnd="//@children.4/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="29,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="130,241" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="30,0"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=7;Product=eUML2"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel" gridVisibility="false">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" showPopupBars="true" showConnectionHandles="true" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" showDependencyStereotype="true" showInterfaceStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>

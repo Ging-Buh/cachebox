@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Activitys;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -15,6 +14,7 @@ import CB_Core.GL_UI.utils.GradiantFilledRectangle;
 import CB_Core.GL_UI.utils.HSV_Color;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -70,8 +70,8 @@ public class ColorPicker extends ActivityBase
 		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
 
 		// Translations
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		bOK.setOnClickListener(new OnClickListener()

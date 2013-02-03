@@ -25,6 +25,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.Coordinate;
@@ -83,8 +84,8 @@ public class SearchOverPosition extends ActivityBase
 		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
 
 		// Translations
-		bOK.setText(GlobalCore.Translations.Get("import"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("import"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		bOK.setOnClickListener(new OnClickListener()
@@ -141,14 +142,14 @@ public class SearchOverPosition extends ActivityBase
 		lblTitle = new Label(this.getLeftWidth() + margin, this.height - this.getTopHeight() - lineHeight - margin, width
 				- this.getLeftWidth() - this.getRightWidth() - margin - gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
-		lblTitle.setText(GlobalCore.Translations.Get("importCachesOverPosition"));
+		lblTitle.setText(Translation.Get("importCachesOverPosition"));
 		this.addChild(lblTitle);
 
 	}
 
 	private void createRadiusLine()
 	{
-		String sRadius = GlobalCore.Translations.Get("Radius");
+		String sRadius = Translation.Get("Radius");
 		String sEinheit = Config.settings.ImperialUnits.getValue() ? "mi" : "km";
 
 		float wRadius = Fonts.Measure(sRadius).width;
@@ -195,19 +196,19 @@ public class SearchOverPosition extends ActivityBase
 		lblOnlyAvible = new Label(checkBoxOnlyAvible, "");
 		lblOnlyAvible.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblOnlyAvible.setWidth(this.width - margin - checkBoxOnlyAvible.getMaxX() - margin);
-		lblOnlyAvible.setText(GlobalCore.Translations.Get("SearchOnlyAvible"));
+		lblOnlyAvible.setText(Translation.Get("SearchOnlyAvible"));
 		box.addChild(lblOnlyAvible);
 
 		lblExcludeHides = new Label(checkBoxExcludeHides, "");
 		lblExcludeHides.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblExcludeHides.setWidth(this.width - margin - checkBoxExcludeHides.getMaxX() - margin);
-		lblExcludeHides.setText(GlobalCore.Translations.Get("SearchWithoutOwns"));
+		lblExcludeHides.setText(Translation.Get("SearchWithoutOwns"));
 		box.addChild(lblExcludeHides);
 
 		lblExcludeFounds = new Label(checkBoxExcludeFounds, "");
 		lblExcludeFounds.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblExcludeFounds.setWidth(this.width - margin - checkBoxExcludeFounds.getMaxX() - margin);
-		lblExcludeFounds.setText(GlobalCore.Translations.Get("SearchWithoutFounds"));
+		lblExcludeFounds.setText(Translation.Get("SearchWithoutFounds"));
 		box.addChild(lblExcludeFounds);
 
 	}
@@ -222,10 +223,8 @@ public class SearchOverPosition extends ActivityBase
 		tglBtnGPS.setFont(Fonts.getSmall());
 		tglBtnMap.setFont(Fonts.getSmall());
 
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, GlobalCore.Translations.Get("FromGps"),
-				GlobalCore.Translations.Get("FromGps"));
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, GlobalCore.Translations.Get("FromMap"),
-				GlobalCore.Translations.Get("FromMap"));
+		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, Translation.Get("FromGps"), Translation.Get("FromGps"));
+		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, Translation.Get("FromMap"), Translation.Get("FromMap"));
 
 		box.addChild(tglBtnGPS);
 		box.addChild(tglBtnMap);
@@ -238,7 +237,7 @@ public class SearchOverPosition extends ActivityBase
 	{
 		CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.width - (margin * 2), lineHeight);
 		lblMarkerPos = new Label(rec, "");
-		lblMarkerPos.setText(GlobalCore.Translations.Get("CurentMarkerPos"));
+		lblMarkerPos.setText(Translation.Get("CurentMarkerPos"));
 		box.addChild(lblMarkerPos);
 
 		coordBtn = new CoordinateButton(rec, name, null);

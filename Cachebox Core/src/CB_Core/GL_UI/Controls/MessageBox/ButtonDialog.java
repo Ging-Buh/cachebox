@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Controls.MessageBox;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -18,6 +17,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -120,46 +120,46 @@ public class ButtonDialog extends Dialog
 		if (button == 0)
 		{
 			createButtons(3);
-			button1.setText(GlobalCore.Translations.Get("abort"));
-			button2.setText(GlobalCore.Translations.Get("retry"));
-			button3.setText(GlobalCore.Translations.Get("ignore"));
+			button1.setText(Translation.Get("abort"));
+			button2.setText(Translation.Get("retry"));
+			button3.setText(Translation.Get("ignore"));
 		}
 		else if (button == 1)
 		{
 			createButtons(1);
-			button1.setText(GlobalCore.Translations.Get("ok"));
+			button1.setText(Translation.Get("ok"));
 		}
 		else if (button == 2)
 		{
 			createButtons(2);
-			button1.setText(GlobalCore.Translations.Get("ok"));
-			button3.setText(GlobalCore.Translations.Get("cancel"));
+			button1.setText(Translation.Get("ok"));
+			button3.setText(Translation.Get("cancel"));
 		}
 		else if (button == 3)
 		{
 			createButtons(2);
-			button1.setText(GlobalCore.Translations.Get("retry"));
-			button3.setText(GlobalCore.Translations.Get("cancel"));
+			button1.setText(Translation.Get("retry"));
+			button3.setText(Translation.Get("cancel"));
 		}
 		else if (button == 4)
 		{
 			createButtons(2);
-			button1.setText(GlobalCore.Translations.Get("yes"));
-			button3.setText(GlobalCore.Translations.Get("no"));
+			button1.setText(Translation.Get("yes"));
+			button3.setText(Translation.Get("no"));
 		}
 		else if (button == 5)
 		{
 			createButtons(3);
-			button1.setText(GlobalCore.Translations.Get("yes"));
-			button2.setText(GlobalCore.Translations.Get("no"));
-			button3.setText(GlobalCore.Translations.Get("cancel"));
+			button1.setText(Translation.Get("yes"));
+			button2.setText(Translation.Get("no"));
+			button3.setText(Translation.Get("cancel"));
 		}
 		else if (button == 6)
 		{
 			createButtons(3);
 			button1.setInvisible();
 			button2.setInvisible();
-			button3.setText(GlobalCore.Translations.Get("cancel"));
+			button3.setText(Translation.Get("cancel"));
 		}
 		else
 		{

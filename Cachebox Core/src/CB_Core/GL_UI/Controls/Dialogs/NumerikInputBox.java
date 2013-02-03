@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.runOnGL;
@@ -14,6 +13,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.Input.Keys;
 
@@ -331,7 +331,7 @@ public class NumerikInputBox extends CB_View_Base
 
 					if (ParseError)
 					{
-						GL.that.Toast(GlobalCore.Translations.Get("wrongValueEnterd"));
+						GL.that.Toast(Translation.Get("wrongValueEnterd"));
 					}
 					else
 					{

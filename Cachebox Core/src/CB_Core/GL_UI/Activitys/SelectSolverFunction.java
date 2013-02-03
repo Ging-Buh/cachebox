@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Activitys;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
@@ -21,6 +20,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.Functions.Function;
 import CB_Core.Solver.Functions.Functions;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -75,7 +75,7 @@ public class SelectSolverFunction extends ButtonDialog
 	private void iniOkCancel()
 	{
 
-		button1.setText(GlobalCore.Translations.Get("ok"));
+		button1.setText(Translation.Get("ok"));
 		button1.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -96,7 +96,7 @@ public class SelectSolverFunction extends ButtonDialog
 				return true;
 			}
 		});
-		button3.setText(GlobalCore.Translations.Get("cancel"));
+		button3.setText(Translation.Get("cancel"));
 		button3.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -121,8 +121,8 @@ public class SelectSolverFunction extends ButtonDialog
 		// btnRec.setX(bOK.getMaxX());
 		// bCancel = new Button(btnRec, "CancelButton");
 		//
-		// bOK.setText(GlobalCore.Translations.Get("ok"));
-		// bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		// bOK.setText(Translation.Get("ok"));
+		// bCancel.setText(Translation.Get("cancel"));
 		//
 		// this.addChild(bOK);
 		// this.addChild(bCancel);
@@ -252,7 +252,7 @@ public class SelectSolverFunction extends ButtonDialog
 
 				// erstelle Category Button
 				final Button categoryButton = new Button(categoryBtnRec, "Btn-" + cat.getName());
-				categoryButton.setText(GlobalCore.Translations.Get(cat.getName()));
+				categoryButton.setText(Translation.Get(cat.getName()));
 
 				// alle Buttons müssen das Atribut Dragable habe, da sie sich in einer Dragable View befinden.
 				categoryButton.setDrageble();

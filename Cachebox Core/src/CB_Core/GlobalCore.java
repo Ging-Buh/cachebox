@@ -5,7 +5,6 @@ import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Map.RouteOverlay;
-import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -91,8 +90,6 @@ public class GlobalCore
 	public static DisplayType displayType = DisplayType.Normal;
 
 	public static boolean posibleTabletLayout;
-
-	public static LangStrings Translations = new LangStrings();
 
 	private static Cache selectedCache = null;
 	public static boolean autoResort;

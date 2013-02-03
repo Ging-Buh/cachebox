@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import CB_Core.Config;
 import CB_Core.FilterProperties;
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.List.Adapter;
@@ -16,6 +15,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -116,16 +116,15 @@ public class PresetListView extends V_ListView
 		if (lPresets != null) lPresets.clear();
 		if (lItem != null) lItem.clear();
 
-		addPresetItem(SpriteCache.getThemedSprite("earth"), GlobalCore.Translations.Get("AllCaches"), FilterProperties.presets[0]);
-		addPresetItem(SpriteCache.getThemedSprite("log0icon"), GlobalCore.Translations.Get("AllCachesToFind"), FilterProperties.presets[1]);
-		addPresetItem(SpriteCache.getThemedSprite("big0icon"), GlobalCore.Translations.Get("QuickCaches"), FilterProperties.presets[2]);
-		addPresetItem(SpriteCache.getThemedSprite("GrabTB"), GlobalCore.Translations.Get("GrabTB"), FilterProperties.presets[3]);
-		addPresetItem(SpriteCache.getThemedSprite("DropTB"), GlobalCore.Translations.Get("DropTB"), FilterProperties.presets[4]);
-		addPresetItem(SpriteCache.getThemedSprite("star"), GlobalCore.Translations.Get("Highlights"), FilterProperties.presets[5]);
-		addPresetItem(SpriteCache.getThemedSprite("favorit"), GlobalCore.Translations.Get("Favorites"), FilterProperties.presets[6]);
-		addPresetItem(SpriteCache.getThemedSprite("delete"), GlobalCore.Translations.Get("PrepareToArchive"), FilterProperties.presets[7]);
-		addPresetItem(SpriteCache.getThemedSprite("warning-icon"), GlobalCore.Translations.Get("ListingChanged"),
-				FilterProperties.presets[8]);
+		addPresetItem(SpriteCache.getThemedSprite("earth"), Translation.Get("AllCaches"), FilterProperties.presets[0]);
+		addPresetItem(SpriteCache.getThemedSprite("log0icon"), Translation.Get("AllCachesToFind"), FilterProperties.presets[1]);
+		addPresetItem(SpriteCache.getThemedSprite("big0icon"), Translation.Get("QuickCaches"), FilterProperties.presets[2]);
+		addPresetItem(SpriteCache.getThemedSprite("GrabTB"), Translation.Get("GrabTB"), FilterProperties.presets[3]);
+		addPresetItem(SpriteCache.getThemedSprite("DropTB"), Translation.Get("DropTB"), FilterProperties.presets[4]);
+		addPresetItem(SpriteCache.getThemedSprite("star"), Translation.Get("Highlights"), FilterProperties.presets[5]);
+		addPresetItem(SpriteCache.getThemedSprite("favorit"), Translation.Get("Favorites"), FilterProperties.presets[6]);
+		addPresetItem(SpriteCache.getThemedSprite("delete"), Translation.Get("PrepareToArchive"), FilterProperties.presets[7]);
+		addPresetItem(SpriteCache.getThemedSprite("warning-icon"), Translation.Get("ListingChanged"), FilterProperties.presets[8]);
 
 		// add User Presets
 		if (!Config.settings.UserFilter.getValue().equalsIgnoreCase(""))
@@ -199,8 +198,8 @@ public class PresetListView extends V_ListView
 					final int delItemIndex = ((PresetListViewItem) v).getIndex();
 
 					GL.that.closeActivity();
-					GL_MsgBox.Show(GlobalCore.Translations.Get("?DelUserPreset"), GlobalCore.Translations.Get("DelUserPreset"),
-							MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					GL_MsgBox.Show(Translation.Get("?DelUserPreset"), Translation.Get("DelUserPreset"), MessageBoxButtons.YesNo,
+							MessageBoxIcon.Question, new OnMsgBoxClickListener()
 							{
 
 								@Override

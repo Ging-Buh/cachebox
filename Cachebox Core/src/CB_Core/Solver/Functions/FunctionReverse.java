@@ -1,6 +1,6 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionReverse extends Function
 {
@@ -12,13 +12,13 @@ public class FunctionReverse extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncReverse");
+		return Translation.Get("solverFuncReverse");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescReverse");
+		return Translation.Get("solverDescReverse");
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class FunctionReverse extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncReverse");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncReverse");
 		}
 		String result = "";
 		for (char c : parameter[0].toCharArray())

@@ -31,6 +31,7 @@ import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.FieldNoteEntry;
@@ -63,7 +64,7 @@ public class FieldNotesView extends V_ListView
 		lvAdapter = new CustomAdapter(lFieldNotes);
 		this.setBaseAdapter(lvAdapter);
 
-		this.setEmptyMsg(GlobalCore.Translations.Get("EmptyFieldNotes"));
+		this.setEmptyMsg(Translation.Get("EmptyFieldNotes"));
 		firstShow = true;
 	}
 
@@ -223,8 +224,8 @@ public class FieldNotesView extends V_ListView
 	private void UploadFieldnotes()
 	{
 
-		GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"),
-				MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.settings.RememberAsk_API_Coast);
+		GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
+				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.settings.RememberAsk_API_Coast);
 
 	}
 
@@ -311,12 +312,11 @@ public class FieldNotesView extends V_ListView
 			{
 				if (!UploadMeldung.equals(""))
 				{
-					GL_MsgBox.Show(UploadMeldung, GlobalCore.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+					GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 				}
 				else
 				{
-					GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFinished"), GlobalCore.Translations.Get("uploadFieldNotes"),
-							MessageBoxIcon.GC_Live);
+					GL_MsgBox.Show(Translation.Get("uploadFinished"), Translation.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
 				}
 			}
 		};
@@ -359,8 +359,8 @@ public class FieldNotesView extends V_ListView
 
 		if (cache == null)
 		{
-			GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("thisNotWork"), MessageBoxButtons.OK,
-					MessageBoxIcon.Error, null);
+			GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error,
+					null);
 			return;
 		}
 
@@ -370,13 +370,13 @@ public class FieldNotesView extends V_ListView
 
 			if (type == 1)
 			{
-				GL_MsgBox.Show(GlobalCore.Translations.Get("My_Parking_Area_Found"), GlobalCore.Translations.Get("thisNotWork"),
-						MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+				GL_MsgBox.Show(Translation.Get("My_Parking_Area_Found"), Translation.Get("thisNotWork"), MessageBoxButtons.OK,
+						MessageBoxIcon.Information, null);
 			}
 			else if (type == 2)
 			{
-				GL_MsgBox.Show(GlobalCore.Translations.Get("My_Parking_Area_DNF"), GlobalCore.Translations.Get("thisNotWork"),
-						MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+				GL_MsgBox.Show(Translation.Get("My_Parking_Area_DNF"), Translation.Get("thisNotWork"), MessageBoxButtons.OK,
+						MessageBoxIcon.Error, null);
 			}
 
 			return;
@@ -636,8 +636,8 @@ public class FieldNotesView extends V_ListView
 
 		if (cache == null)
 		{
-			String message = GlobalCore.Translations.Get("cacheOtherDb", aktFieldNote.CacheName);
-			message += "\n" + GlobalCore.Translations.Get("fieldNoteNoDelete");
+			String message = Translation.Get("cacheOtherDb", aktFieldNote.CacheName);
+			message += "\n" + Translation.Get("fieldNoteNoDelete");
 			GL_MsgBox.Show(message);
 			return;
 		}
@@ -695,11 +695,10 @@ public class FieldNotesView extends V_ListView
 
 		};
 
-		String message = GlobalCore.Translations.Get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
-		if (aktFieldNote.type == 1) message += GlobalCore.Translations.Get("confirmFieldnoteDeletionRst");
+		String message = Translation.Get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
+		if (aktFieldNote.type == 1) message += Translation.Get("confirmFieldnoteDeletionRst");
 
-		GL_MsgBox.Show(message, GlobalCore.Translations.Get("deleteFieldnote"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
-				dialogClickListener);
+		GL_MsgBox.Show(message, Translation.Get("deleteFieldnote"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, dialogClickListener);
 
 	}
 
@@ -738,9 +737,8 @@ public class FieldNotesView extends V_ListView
 
 			}
 		};
-		String message = GlobalCore.Translations.Get("DeleteAllFieldNotesQuestion");
-		GL_MsgBox.Show(message, GlobalCore.Translations.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
-				dialogClickListener);
+		String message = Translation.Get("DeleteAllFieldNotesQuestion");
+		GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener);
 
 	}
 
@@ -759,8 +757,8 @@ public class FieldNotesView extends V_ListView
 
 		if (cache == null)
 		{
-			String message = GlobalCore.Translations.Get("cacheOtherDb", aktFieldNote.CacheName);
-			message += "\n" + GlobalCore.Translations.Get("fieldNoteNoSelect");
+			String message = Translation.Get("cacheOtherDb", aktFieldNote.CacheName);
+			message += "\n" + Translation.Get("fieldNoteNoSelect");
 			GL_MsgBox.Show(message);
 			return;
 		}

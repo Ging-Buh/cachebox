@@ -8,6 +8,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.Size;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 
@@ -39,7 +40,7 @@ public class HintDialog extends GL_MsgBox
 		Size maxTextSize = decodedSize.height > encodedSize.height ? decodedSize : encodedSize;
 
 		GL_MsgBox msgBox = new GL_MsgBox(maxTextSize, "MsgBox");
-		msgBox.setTitle(GlobalCore.Translations.Get("hint"));
+		msgBox.setTitle(Translation.Get("hint"));
 		msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
 		msgBox.mMsgBoxClickListner = null;
 
@@ -57,8 +58,8 @@ public class HintDialog extends GL_MsgBox
 
 		msgBox.addChild(scrollBox);
 
-		msgBox.button3.setText(GlobalCore.Translations.Get("close"));
-		msgBox.button1.setText(GlobalCore.Translations.Get("decode"));
+		msgBox.button3.setText(Translation.Get("close"));
+		msgBox.button1.setText(Translation.Get("decode"));
 
 		msgBox.button1.setOnClickListener(new OnClickListener()
 		{

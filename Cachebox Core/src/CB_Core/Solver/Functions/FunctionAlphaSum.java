@@ -1,6 +1,6 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionAlphaSum extends Function
 {
@@ -13,13 +13,13 @@ public class FunctionAlphaSum extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncAlphaSum");
+		return Translation.Get("solverFuncAlphaSum");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescAlphaSum");
+		return Translation.Get("solverDescAlphaSum");
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class FunctionAlphaSum extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncAlphaSum");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncAlphaSum");
 		}
 		int result = 0;
 		if (parameter[0].length() == 0) return "0";

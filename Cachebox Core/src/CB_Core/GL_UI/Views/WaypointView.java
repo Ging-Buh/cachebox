@@ -28,6 +28,7 @@ import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -370,7 +371,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		if (coord == null) coord = GlobalCore.LastValidPosition;
 		if ((coord == null) || (!coord.Valid)) coord = GlobalCore.getSelectedCache().Pos;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
-				GlobalCore.getSelectedCache().Id, "", GlobalCore.Translations.Get("wyptDefTitle"));
+				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
 		editWP(newWP);
 
 	}
@@ -454,8 +455,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	private void deleteWP()
 	{
-		GL_MsgBox.Show(GlobalCore.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", GlobalCore.Translations.Get("!DelWP"),
-				MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question, new OnMsgBoxClickListener()
 				{
 
 					@Override

@@ -1,6 +1,6 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionQuersumme extends Function
 {
@@ -15,13 +15,13 @@ public class FunctionQuersumme extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncCrosstotal");
+		return Translation.Get("solverFuncCrosstotal");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescCrosstotal");
+		return Translation.Get("solverDescCrosstotal");
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class FunctionQuersumme extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncCrosstotal");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncCrosstotal");
 		}
 		String wert = parameter[0].trim();
 		int result = 0;

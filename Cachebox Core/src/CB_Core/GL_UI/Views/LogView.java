@@ -15,6 +15,7 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
@@ -67,7 +68,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		lvAdapter = new CustomAdapter();
 		this.setBaseAdapter(lvAdapter);
 
-		this.setEmptyMsg(GlobalCore.Translations.Get("EmptyLogList"));
+		this.setEmptyMsg(Translation.Get("EmptyLogList"));
 
 		this.scrollTo(0);
 	}

@@ -28,7 +28,7 @@ import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_Core.GL_UI.Controls.SpinnerAdapter;
 import CB_Core.Math.CB_RectF;
-import CB_Core.TranslationEngine.LangStrings;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 
@@ -41,7 +41,6 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 	// Allgemein
 	private BitmapFont CompassFont = Fonts.getCompass();
 	private BitmapFont BigFont = Fonts.getBig();
-	private final LangStrings tl = GlobalCore.Translations;
 	private final CacheTypes[] CacheTypNumbers = new CacheTypes[]
 		{ CacheTypes.Traditional, // = 0,
 				CacheTypes.Multi, // = 1,
@@ -92,8 +91,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 		this.initRow(false);
 		this.addNext(btnOK);
 		this.addLast(btnCancel);
-		btnCancel.setText(tl.Get("cancel"), CompassFont, Fonts.getFontColor());
-		btnOK.setText(tl.Get("ok"), CompassFont, Fonts.getFontColor());
+		btnCancel.setText(Translation.Get("cancel"), CompassFont, Fonts.getFontColor());
+		btnOK.setText(Translation.Get("ok"), CompassFont, Fonts.getFontColor());
 		mainPanel = new Box(this.getAvailableWidth(), this.getAvailableHeight(), "mainPanel");
 		this.addLast(mainPanel);
 		mainPanel_Y = mainPanel.getY();

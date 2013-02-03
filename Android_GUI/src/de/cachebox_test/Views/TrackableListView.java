@@ -1,10 +1,10 @@
 package de.cachebox_test.Views;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.DAO.TrackableListDAO;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.TbList;
 import android.app.Activity;
 import android.content.Context;
@@ -236,7 +236,7 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 	{
 		LoaderThread = new loaderThread();
 		LoaderThread.execute("");
-		pd = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("loadingTrackables"), "Groundspeak API", MessageBoxButtons.Cancel,
+		pd = PleaseWaitMessageBox.Show(Translation.Get("loadingTrackables"), "Groundspeak API", MessageBoxButtons.Cancel,
 				MessageBoxIcon.GC_Live, CancelClickListner);
 	}
 
@@ -257,7 +257,7 @@ public class TrackableListView extends ListView implements ViewOptionsMenu
 			case 2:
 			{
 				pd.dismiss();
-				MessageBox.Show(GlobalCore.Translations.Get("errorAPI"), GlobalCore.Translations.Get("Error"), MessageBoxIcon.Error);
+				MessageBox.Show(Translation.Get("errorAPI"), Translation.Get("Error"), MessageBoxIcon.Error);
 				break;
 			}
 

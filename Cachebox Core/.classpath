@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="lib/xpp3-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-freetype.jar"/>
 	<classpathentry kind="lib" path="lib/gdx.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -2,7 +2,6 @@ package de;
 
 import java.awt.Frame;
 import java.io.File;
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,6 +27,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.GpsStatus;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -335,14 +335,59 @@ public class DesktopMain
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
-		try
-		{
-			GlobalCore.Translations.ReadTranslationsFile(Config.settings.Sel_LanguagePath.getValue());
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		// // copy AssetFolder only if Rev-Number changed, like at new installation
+		// if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		// // if (true)
+		// {
+		//
+		// // Copy!!
+		// File workJar = new File("./DCB.jar");
+		// if (workJar.exists())
+		// {
+		// try
+		// {
+		// UnZip.extractFolder(workJar.getAbsolutePath());
+		// }
+		// catch (ZipException e)
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// catch (IOException e)
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		//
+		// // Copy DCB/cachebox to cachebox
+		// ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
+		// rules.add(new CopyRule("./DCB/cachebox", "./"));
+		// Copy copy = new Copy(rules);
+		// try
+		// {
+		// copy.Run();
+		// }
+		// catch (IOException e)
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		//
+		// CopyUtil.deleteDir(new File("./DCB"));
+		//
+		// }
+		// Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
+		// Config.settings.newInstall.setValue(true);
+		// Config.AcceptChanges();
+		// }
+		// else
+		// {
+		// Config.settings.newInstall.setValue(false);
+		// Config.AcceptChanges();
+		// }
+
+		new Translation(Config.WorkPath);
+		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
 
 	}
 

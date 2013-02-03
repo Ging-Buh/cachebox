@@ -22,6 +22,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
@@ -38,8 +39,8 @@ public class DeleteDialog extends ButtonDialog
 
 	public DeleteDialog()
 	{
-		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Delete-Dialog", "", GlobalCore.Translations
-				.Get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
+		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.Get("DeleteCaches"),
+				MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
 		// initial VariableField
@@ -83,9 +84,9 @@ public class DeleteDialog extends ButtonDialog
 		lblDelArchived.setFont(Fonts.getSmall());
 		lblDelFounds.setFont(Fonts.getSmall());
 
-		lblDelArchived.setWrappedText(GlobalCore.Translations.Get("DelArchived"), HAlignment.CENTER);
-		lblDelFilter.setWrappedText(GlobalCore.Translations.Get("DelActFilter"), HAlignment.CENTER);
-		lblDelFounds.setWrappedText(GlobalCore.Translations.Get("DelFound"), HAlignment.CENTER);
+		lblDelArchived.setWrappedText(Translation.Get("DelArchived"), HAlignment.CENTER);
+		lblDelFilter.setWrappedText(Translation.Get("DelActFilter"), HAlignment.CENTER);
+		lblDelFounds.setWrappedText(Translation.Get("DelFound"), HAlignment.CENTER);
 
 		box2.addChild(lblDelFilter);
 		box2.addChild(lblDelArchived);
@@ -106,7 +107,7 @@ public class DeleteDialog extends ButtonDialog
 			{
 				close();
 
-				wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("DelActFilter"), new IcancelListner()
+				wd = CancelWaitDialog.ShowWait(Translation.Get("DelActFilter"), new IcancelListner()
 				{
 
 					@Override
@@ -130,7 +131,7 @@ public class DeleteDialog extends ButtonDialog
 						GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0]);
 						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);// all Caches
 
-						String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
+						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
 					}
 				});
@@ -146,7 +147,7 @@ public class DeleteDialog extends ButtonDialog
 			{
 				close();
 
-				wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("DelArchived"), new IcancelListner()
+				wd = CancelWaitDialog.ShowWait(Translation.Get("DelArchived"), new IcancelListner()
 				{
 
 					@Override
@@ -169,7 +170,7 @@ public class DeleteDialog extends ButtonDialog
 
 						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
 
-						String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
+						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
 					}
 				});
@@ -185,7 +186,7 @@ public class DeleteDialog extends ButtonDialog
 			{
 				close();
 
-				wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("DelFound"), new IcancelListner()
+				wd = CancelWaitDialog.ShowWait(Translation.Get("DelFound"), new IcancelListner()
 				{
 
 					@Override
@@ -207,7 +208,7 @@ public class DeleteDialog extends ButtonDialog
 
 						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
 
-						String msg = GlobalCore.Translations.Get("DeletedCaches", String.valueOf(nun));
+						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
 					}
 				});

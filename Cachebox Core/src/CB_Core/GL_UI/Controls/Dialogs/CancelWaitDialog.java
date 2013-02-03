@@ -2,7 +2,6 @@ package CB_Core.GL_UI.Controls.Dialogs;
 
 import java.util.Timer;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
@@ -14,6 +13,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -62,7 +62,7 @@ public class CancelWaitDialog extends WaitDialog
 			{
 				if (wd.mRunnThread != null) wd.mRunnThread.Cancel();
 				wd.button3.disable();
-				wd.button3.setText(GlobalCore.Translations.Get("waitForCancel"));
+				wd.button3.setText(Translation.Get("waitForCancel"));
 				return false;
 			}
 		};

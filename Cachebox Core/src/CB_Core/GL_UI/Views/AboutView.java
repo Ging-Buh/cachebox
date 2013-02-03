@@ -28,6 +28,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Locator.GPS;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
@@ -125,8 +126,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("LoadFounds"), GlobalCore.Translations.Get("AdjustFinds"),
-						MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
+				GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo,
+						MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
 						{
 
 							@Override
@@ -137,7 +138,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 								{
 								case 1:
 
-									pd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("LoadFounds"), new IcancelListner()
+									pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), new IcancelListner()
 									{
 
 										@Override
@@ -157,8 +158,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 											if (transFounds > -1)
 											{
-												String Text = GlobalCore.Translations.Get("FoundsSetTo", String.valueOf(transFounds));
-												GL_MsgBox.Show(Text, GlobalCore.Translations.Get("LoadFinds!"), MessageBoxButtons.OK,
+												String Text = Translation.Get("FoundsSetTo", String.valueOf(transFounds));
+												GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK,
 														MessageBoxIcon.GC_Live, null);
 
 												Config.settings.FoundOffset.setValue(transFounds);
@@ -167,17 +168,16 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 											}
 											else
 											{
-												GL_MsgBox.Show(GlobalCore.Translations.Get("LogInErrorLoadFinds"), "",
-														MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+												GL_MsgBox.Show(Translation.Get("LogInErrorLoadFinds"), "", MessageBoxButtons.OK,
+														MessageBoxIcon.GC_Live, null);
 											}
 										}
 									});
 
 									break;
 								case 3:
-									NumerikInputBox.Show(GlobalCore.Translations.Get("TelMeFounds"),
-											GlobalCore.Translations.Get("AdjustFinds"), CB_Core.Config.settings.FoundOffset.getValue(),
-											DialogListner);
+									NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"),
+											CB_Core.Config.settings.FoundOffset.getValue(), DialogListner);
 									break;
 
 								}
@@ -202,23 +202,23 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		CB_RectF lblRec = new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight() / 2.5f);
 
 		lblGPS = new Label(lblRec, "lblGPS");
-		lblGPS.setText(GlobalCore.Translations.Get("gps"));
+		lblGPS.setText(Translation.Get("gps"));
 		leftMaxWidth = Math.max(leftMaxWidth, lblGPS.bounds.width);
 
 		lblAccuracy = new Label(lblRec, "lblAccuracy");
-		lblAccuracy.setText(GlobalCore.Translations.Get("accuracy"));
+		lblAccuracy.setText(Translation.Get("accuracy"));
 		leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.bounds.width);
 
 		lblWP = new Label(lblRec, "lblWP");
-		lblWP.setText(GlobalCore.Translations.Get("waypoint"));
+		lblWP.setText(Translation.Get("waypoint"));
 		leftMaxWidth = Math.max(leftMaxWidth, lblWP.bounds.width);
 
 		lblCoord = new Label(lblRec, "lblCord");
-		lblCoord.setText(GlobalCore.Translations.Get("coordinate"));
+		lblCoord.setText(Translation.Get("coordinate"));
 		leftMaxWidth = Math.max(leftMaxWidth, lblCoord.bounds.width);
 
 		lblCurrent = new Label(lblRec, "lblCurrent");
-		lblCurrent.setText(GlobalCore.Translations.Get("current"));
+		lblCurrent.setText(Translation.Get("current"));
 		leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.bounds.width);
 
 		// set all lbl to the same max width + margin
@@ -317,8 +317,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	public void refreshText()
 	{
 		if (WP == null || CachesFoundLabel == null) return;
-		CachesFoundLabel
-				.setText(GlobalCore.Translations.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()));
+		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()));
 
 		if (GlobalCore.getSelectedCache() != null) if (GlobalCore.getSelectedWaypoint() != null)
 		{
@@ -370,13 +369,12 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		{
 			Current.setText(GlobalCore.FormatLatitudeDM(GlobalCore.Locator.getLocation().getLatitude()) + " "
 					+ GlobalCore.FormatLongitudeDM(GlobalCore.Locator.getLocation().getLongitude()));
-			Gps.setText(GPS.getSatAndFix() + "   " + GlobalCore.Translations.Get("alt") + " "
-					+ GlobalCore.Locator.getAltStringWithCorection());
+			Gps.setText(GPS.getSatAndFix() + "   " + Translation.Get("alt") + " " + GlobalCore.Locator.getAltStringWithCorection());
 		}
 
 		if (GlobalCore.Locator == null)
 		{
-			Gps.setText(GlobalCore.Translations.Get("not_detected"));
+			Gps.setText(Translation.Get("not_detected"));
 			return;
 		}
 	}

@@ -15,7 +15,6 @@
  */
 package CB_Core.GL_UI.Main.Actions.QuickButton;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -27,6 +26,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.Math.CB_RectF;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.MoveableList;
 
 /**
@@ -169,47 +169,47 @@ public enum QuickActions
 		switch (id)
 		{
 		case 0:
-			return GlobalCore.Translations.Get("Description");
+			return Translation.Get("Description");
 		case 1:
-			return GlobalCore.Translations.Get("Waypoints");
+			return Translation.Get("Waypoints");
 		case 2:
-			return GlobalCore.Translations.Get("ShowLogs");
+			return Translation.Get("ShowLogs");
 		case 3:
-			return GlobalCore.Translations.Get("Map");
+			return Translation.Get("Map");
 		case 4:
-			return GlobalCore.Translations.Get("Compass");
+			return Translation.Get("Compass");
 		case 5:
-			return GlobalCore.Translations.Get("cacheList");
+			return Translation.Get("cacheList");
 		case 6:
-			return GlobalCore.Translations.Get("Tracks");
+			return Translation.Get("Tracks");
 		case 7:
-			return GlobalCore.Translations.Get("TakePhoto");
+			return Translation.Get("TakePhoto");
 		case 8:
-			return GlobalCore.Translations.Get("RecVideo");
+			return Translation.Get("RecVideo");
 		case 9:
-			return GlobalCore.Translations.Get("VoiceRec");
+			return Translation.Get("VoiceRec");
 		case 10:
-			return GlobalCore.Translations.Get("Search");
+			return Translation.Get("Search");
 		case 11:
-			return GlobalCore.Translations.Get("filter");
+			return Translation.Get("filter");
 		case 12:
-			return GlobalCore.Translations.Get("AutoResort");
+			return Translation.Get("AutoResort");
 		case 13:
-			return GlobalCore.Translations.Get("Solver");
+			return Translation.Get("Solver");
 		case 14:
-			return GlobalCore.Translations.Get("spoiler");
+			return Translation.Get("spoiler");
 		case 15:
-			return GlobalCore.Translations.Get("hint");
+			return Translation.Get("hint");
 		case 16:
-			return GlobalCore.Translations.Get("MyParking");
+			return Translation.Get("MyParking");
 		case 17:
-			return GlobalCore.Translations.Get("DayNight");
+			return Translation.Get("DayNight");
 		case 18:
-			return GlobalCore.Translations.Get("Fieldnotes");
+			return Translation.Get("Fieldnotes");
 		case 19:
-			return GlobalCore.Translations.Get("QuickFieldNote");
+			return Translation.Get("QuickFieldNote");
 			// case 12:
-			// return GlobalCore.Translations.Get("screenlock");
+			// return Translation.Get("screenlock");
 		}
 		return "empty";
 	}

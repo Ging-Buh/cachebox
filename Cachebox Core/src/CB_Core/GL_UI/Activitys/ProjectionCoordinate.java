@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Activitys;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
@@ -12,6 +11,7 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 
 public class ProjectionCoordinate extends ActivityBase
@@ -123,7 +123,7 @@ public class ProjectionCoordinate extends ActivityBase
 				- this.getLeftWidth() - this.getRightWidth(), MeasuredLabelHeight);
 
 		lblP2P = new Label(labelRec, "lblBearing");
-		lblP2P.setText(GlobalCore.Translations.Get("toPoint"));
+		lblP2P.setText(Translation.Get("toPoint"));
 		this.addChild(lblP2P);
 
 		CB_RectF rec = new CB_RectF(this.getLeftWidth(), lblP2P.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
@@ -147,8 +147,8 @@ public class ProjectionCoordinate extends ActivityBase
 	private void iniTextFields()
 	{
 		// measure label width
-		String sBearing = GlobalCore.Translations.Get("Bearing");
-		String sDistance = radius ? "Radius" : GlobalCore.Translations.Get("Distance");
+		String sBearing = Translation.Get("Bearing");
+		String sDistance = radius ? "Radius" : Translation.Get("Distance");
 		String sUnit = ImperialUnits ? "yd" : "m";
 
 		float wB = Fonts.Measure(sBearing).width;
@@ -200,8 +200,8 @@ public class ProjectionCoordinate extends ActivityBase
 		btnRec.setX(bOK.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
 
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		this.addChild(bCancel);

@@ -86,7 +86,7 @@ import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingString;
-import CB_Core.TranslationEngine.SelectedLangChangedEventList;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -578,16 +578,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				String LangId = getString(R.string.langId);
 				try
 				{
-					Welcome = GlobalCore.Translations.getTextFile("welcome", LangId);
+					Welcome = Translation.GetTextFile("welcome", LangId);
 
-					Welcome += GlobalCore.Translations.getTextFile("changelog", LangId);
+					Welcome += Translation.GetTextFile("changelog", LangId);
 				}
 				catch (IOException e1)
 				{
 					e1.printStackTrace();
 				}
 
-				MessageBox.Show(Welcome, GlobalCore.Translations.Get("welcome"), MessageBoxIcon.None);
+				MessageBox.Show(Welcome, Translation.Get("welcome"), MessageBoxIcon.None);
 
 			}
 
@@ -684,7 +684,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						@Override
 						public void run()
 						{
-							wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ImportGPX"), new IcancelListner()
+							wd = CancelWaitDialog.ShowWait(Translation.Get("ImportGPX"), new IcancelListner()
 							{
 
 								@Override
@@ -1088,8 +1088,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (pWaitD == null)
 		{
 
-			pWaitD = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("waitForGL"), "", MessageBoxButtons.NOTHING,
-					MessageBoxIcon.None, null);
+			pWaitD = PleaseWaitMessageBox.Show(Translation.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
 			stopped = false;
 
 			GL.that.RunIfInitial(new runOnGL()
@@ -1275,7 +1274,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				SelectedCacheEventList.list.clear();
 				PositionEventList.list.clear();
 				SelectedCacheEventList.list.clear();
-				SelectedLangChangedEventList.list.clear();
 				CachListChangedEventList.list.clear();
 				if (aktView != null)
 				{
@@ -2079,7 +2077,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					{
 						Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
 						// Log.d("DroidCachebox", ioEx.getMessage());
-						GL_MsgBox.Show(GlobalCore.Translations.Get("internetError"));
+						GL_MsgBox.Show(Translation.Get("internetError"));
 					}
 					catch (Exception ex)
 					{
@@ -2090,7 +2088,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				if (Global.Jokers.isEmpty())
 				{
-					GL_MsgBox.Show(GlobalCore.Translations.Get("noJokers"));
+					GL_MsgBox.Show(Translation.Get("noJokers"));
 				}
 				else
 				{
@@ -2452,8 +2450,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					@Override
 					public void run()
 					{
-						MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
-								MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+						MessageBox.Show(Translation.Get("GPSon?"), Translation.Get("GPSoff"), MessageBoxButtons.YesNo,
+								MessageBoxIcon.Question, new DialogInterface.OnClickListener()
 								{
 									@Override
 									public void onClick(DialogInterface dialog, int button)
@@ -2529,8 +2527,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void askToGetApiKey()
 	{
-		MessageBox.Show(GlobalCore.Translations.Get("wantApi"), GlobalCore.Translations.Get("welcome"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener()
+		MessageBox.Show(Translation.Get("wantApi"), Translation.Get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+				new DialogInterface.OnClickListener()
 				{
 					@Override
 					public void onClick(DialogInterface dialog, int button)
@@ -3280,10 +3278,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				catch (Exception exc)
 				{
-					Toast.makeText(
-							main.mainActivity,
-							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim()
-									+ ")", Toast.LENGTH_SHORT).show();
+					Toast.makeText(main.mainActivity,
+							Translation.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim() + ")",
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -3422,15 +3419,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 2:
 			{
 				waitPD.dismiss();
-				GL_MsgBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, null);
+				GL_MsgBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
 				break;
 			}
 			case 3:
 			{
 				waitPD.dismiss();
-				GL_MsgBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, DownloadCacheDialogResult);
+				GL_MsgBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+						DownloadCacheDialogResult);
 				break;
 			}
 			case 4:
@@ -3465,8 +3461,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
 						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-						GL_MsgBox.Show(s, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-								MessageBoxIcon.Powerd_by_GC_Live, null);
+						GL_MsgBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
 					}
 				}
 				break;

@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
@@ -31,7 +32,7 @@ public class TrackRecorder
 	public static void StartRecording()
 	{
 
-		GlobalCore.AktuelleRoute = new RouteOverlay.Track(GlobalCore.Translations.Get("actualTrack"), Color.BLUE);
+		GlobalCore.AktuelleRoute = new RouteOverlay.Track(Translation.Get("actualTrack"), Color.BLUE);
 		GlobalCore.AktuelleRoute.ShowRoute = true;
 		GlobalCore.AktuelleRoute.IsActualTrack = true;
 		GlobalCore.aktuelleRouteCount = 0;
@@ -127,9 +128,9 @@ public class TrackRecorder
 
 		if (gpxfile == null) return;
 
-		String xml = "<wpt lat=\"" + String.valueOf(coordinate.getLatitude()) + "\" lon=\"" + String.valueOf(coordinate.getLongitude()) + "\">\n"
-				+ "   <ele>" + String.valueOf(GlobalCore.LastValidPosition.getElevation()) + "</ele>\n" + "   <time>" + timestamp + "</time>\n"
-				+ "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
+		String xml = "<wpt lat=\"" + String.valueOf(coordinate.getLatitude()) + "\" lon=\"" + String.valueOf(coordinate.getLongitude())
+				+ "\">\n" + "   <ele>" + String.valueOf(GlobalCore.LastValidPosition.getElevation()) + "</ele>\n" + "   <time>" + timestamp
+				+ "</time>\n" + "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
 
 		RandomAccessFile rand;
 		try
@@ -290,7 +291,7 @@ public class TrackRecorder
 		if (GlobalCore.AktuelleRoute != null)
 		{
 			GlobalCore.AktuelleRoute.IsActualTrack = false;
-			GlobalCore.AktuelleRoute.Name = GlobalCore.Translations.Get("recordetTrack");
+			GlobalCore.AktuelleRoute.Name = Translation.Get("recordetTrack");
 		}
 		pauseRecording = false;
 		recording = false;

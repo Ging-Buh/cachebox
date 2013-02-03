@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GlobalCore;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
@@ -25,6 +24,7 @@ import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Functions.Function;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -78,7 +78,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	public SolverDialog(CB_RectF rec, String name, String SolverString)
 	{
-		super(rec, name, "Solver", GlobalCore.Translations.Get("solver_formula"), MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
+		super(rec, name, "Solver", Translation.Get("solver_formula"), MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
 		mSolverString = SolverString;
 		ignoreStateChange = false;
 		page = pages.Nothing;
@@ -143,38 +143,38 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		// startposition for further controls
 		this.startY = y;
 
-		String caption = GlobalCore.Translations.Get("TXT");
+		String caption = Translation.Get("TXT");
 		btnTxt.setText(caption);
 		btnTxt.addState(caption, Color.GRAY);
 		btnTxt.addState(caption, Color.GREEN);
 		btnTxt.setOnStateChangedListner(this);
 
-		caption = GlobalCore.Translations.Get("f(x)");
+		caption = Translation.Get("f(x)");
 		btnFx.setText(caption);
 		btnFx.addState(caption, Color.GRAY);
 		btnFx.addState(caption, Color.GREEN);
 		btnFx.setOnStateChangedListner(this);
 
-		caption = GlobalCore.Translations.Get("@");
+		caption = Translation.Get("@");
 		btnVar.setText(caption);
 		btnVar.addState(caption, Color.GRAY);
 		btnVar.addState(caption, Color.GREEN);
 		btnVar.setOnStateChangedListner(this);
 
-		caption = GlobalCore.Translations.Get("+-*/");
+		caption = Translation.Get("+-*/");
 		btnOp.setText(caption);
 		btnOp.addState(caption, Color.GRAY);
 		btnOp.addState(caption, Color.GREEN);
 		btnOp.setOnStateChangedListner(this);
 
-		caption = GlobalCore.Translations.Get("$GC");
+		caption = Translation.Get("$GC");
 		btnWp.setText(caption);
 		btnWp.addState(caption, Color.GRAY);
 		btnWp.addState(caption, Color.GREEN);
 		btnWp.setOnStateChangedListner(this);
 
-		button3.setText(GlobalCore.Translations.Get("close"));
-		button1.setText(GlobalCore.Translations.Get("ok"));
+		button3.setText(Translation.Get("close"));
+		button1.setText(Translation.Get("ok"));
 
 		button1.setOnClickListener(OnOkClickListner);
 

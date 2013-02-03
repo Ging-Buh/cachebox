@@ -25,6 +25,7 @@ import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
@@ -71,7 +72,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (emptyMsg == null)
 			{
 				emptyMsg = new BitmapFontCache(Fonts.getBig());
-				TextBounds bounds = emptyMsg.setWrappedText(GlobalCore.Translations.Get("EmptyCacheList"), 0, 0, this.width);
+				TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.width);
 				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);

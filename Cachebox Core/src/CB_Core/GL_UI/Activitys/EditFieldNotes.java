@@ -10,7 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
@@ -36,6 +35,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.FieldNoteEntry;
 
 import com.badlogic.gdx.math.Vector2;
@@ -109,11 +109,11 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
 				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UiSizes.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
-		bOK.setText(GlobalCore.Translations.Get("ok"));
+		bOK.setText(Translation.Get("ok"));
 
 		btnRec.setX(bOK.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		this.addChild(bCancel);
@@ -151,9 +151,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 					}
 					catch (ParseException e)
 					{
-						final GL_MsgBox msg = GL_MsgBox.Show(GlobalCore.Translations.Get("wrongDate"),
-								GlobalCore.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error,
-								new OnMsgBoxClickListener()
+						final GL_MsgBox msg = GL_MsgBox.Show(Translation.Get("wrongDate"), Translation.Get("Error"), MessageBoxButtons.OK,
+								MessageBoxIcon.Error, new OnMsgBoxClickListener()
 								{
 
 									@Override
@@ -251,14 +250,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniDate()
 	{
-		LabelWidth = Math.max(Fonts.Measure(GlobalCore.Translations.Get("date")).width,
-				Fonts.Measure(GlobalCore.Translations.Get("time")).width);
+		LabelWidth = Math.max(Fonts.Measure(Translation.Get("date")).width, Fonts.Measure(Translation.Get("time")).width);
 		LabelWidth *= 1.3;// use Big Font
 
 		lblDate = new Label(secondTab, tvFounds.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(),
 				"");
 		lblDate.setFont(Fonts.getBig());
-		lblDate.setText(GlobalCore.Translations.Get("date") + ":");
+		lblDate.setText(Translation.Get("date") + ":");
 		scrollBox.addChild(lblDate);
 		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin
 				- this.getRightWidth(), UiSizes.getButtonHeight());
@@ -272,7 +270,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 		lblTime = new Label(secondTab, lblDate.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(), "");
 		lblTime.setFont(Fonts.getBig());
-		lblTime.setText(GlobalCore.Translations.Get("time") + ":");
+		lblTime.setText(Translation.Get("time") + ":");
 		scrollBox.addChild(lblTime);
 		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin
 				- this.getRightWidth(), UiSizes.getButtonHeight());
@@ -288,7 +286,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		{
 			float itemHeight = UiSizes.getButtonHeight() * 1.1f;
 
-			FilterSetEntry tmp = new FilterSetEntry(GlobalCore.Translations.Get("maxRating"), SpriteCache.Stars.toArray(),
+			FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCache.Stars.toArray(),
 					FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
 			GcVote = new FilterSetListViewItem(new CB_RectF(this.getLeftWidth(), lblTime.getY() - itemHeight - margin, this.width
 					- this.getLeftWidth() - this.getRightWidth(), itemHeight), 0, tmp);

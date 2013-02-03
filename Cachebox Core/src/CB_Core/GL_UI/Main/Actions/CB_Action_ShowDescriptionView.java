@@ -19,6 +19,7 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.DescriptionView;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -84,8 +85,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 				case MenuID.MI_FAVORIT:
 					if (GlobalCore.getSelectedCache() == null)
 					{
-						GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("Error"),
-								MessageBoxIcon.Error);
+						GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
 						return true;
 					}
 
@@ -98,12 +98,11 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 					if (GlobalCore.getSelectedCache() == null)
 					{
-						GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("Error"),
-								MessageBoxIcon.Error);
+						GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
 						return true;
 					}
 
-					wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ReloadCacheAPI"), new IcancelListner()
+					wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), new IcancelListner()
 					{
 
 						@Override

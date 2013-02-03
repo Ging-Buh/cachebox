@@ -2,7 +2,7 @@ package CB_Core.Solver;
 
 import java.util.ArrayList;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class ZuweisungEntity extends Entity
 {
@@ -55,7 +55,7 @@ public class ZuweisungEntity extends Entity
 				if (!(isBuchstabe || isZahl)) ungueltig = true;
 				firstChar = false;
 			}
-			if (ungueltig) return GlobalCore.Translations.Get("InvalidVariableName", lLinks);
+			if (ungueltig) return Translation.Get("InvalidVariableName", lLinks);
 			// lLinks ist gueltiger Variablenname
 			if (!Solver.Variablen.containsKey(lLinks))
 			{
@@ -75,7 +75,7 @@ public class ZuweisungEntity extends Entity
 			return ((CoordinateEntity) links).SetCoordinate(lRechts);
 		}
 		else
-			return GlobalCore.Translations.Get("LeftMustBeAVariable", lLinks);
+			return Translation.Get("LeftMustBeAVariable", lLinks);
 	}
 
 	@Override

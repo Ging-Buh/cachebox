@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Views;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
@@ -17,6 +16,7 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -113,7 +113,7 @@ public class CreditsView extends CB_View_Base
 
 	private void captioned(String title)
 	{
-		title = GlobalCore.Translations.Get(title);
+		title = Translation.Get(title);
 		Box box = new Box(new CB_RectF(0, 0, this.width, lineHeight * 1.2f), "");
 		Label label = new Label(box, "");
 		box.addChild(label);

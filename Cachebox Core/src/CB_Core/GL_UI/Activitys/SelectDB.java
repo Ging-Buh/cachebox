@@ -28,6 +28,7 @@ import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Categories;
 
 public class SelectDB extends ActivityBase
@@ -105,8 +106,8 @@ public class SelectDB extends ActivityBase
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				stopTimer();
-				StringInputBox.Show(TextFieldType.SingleLine, GlobalCore.Translations.Get("NewDB"),
-						GlobalCore.Translations.Get("InsNewDBName"), "NewDB", DialogListnerNewDB);
+				StringInputBox.Show(TextFieldType.SingleLine, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB",
+						DialogListnerNewDB);
 				return true;
 			}
 		});
@@ -162,16 +163,16 @@ public class SelectDB extends ActivityBase
 		});
 
 		// Translations
-		bNew.setText(GlobalCore.Translations.Get("NewDB"));
-		bSelect.setText(GlobalCore.Translations.Get("confirm"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
-		bAutostart.setText(GlobalCore.Translations.Get("StartWithoutSelection"));
+		bNew.setText(Translation.Get("NewDB"));
+		bSelect.setText(Translation.Get("confirm"));
+		bCancel.setText(Translation.Get("cancel"));
+		bAutostart.setText(Translation.Get("StartWithoutSelection"));
 
 		autoStartTime = Config.settings.MultiDBAutoStartTime.getValue();
 		if (autoStartTime > 0)
 		{
 			autoStartCounter = autoStartTime;
-			bAutostart.setText(autoStartCounter + " " + GlobalCore.Translations.Get("confirm"));
+			bAutostart.setText(autoStartCounter + " " + Translation.Get("confirm"));
 			setAutoStartText();
 			if ((autoStartTime > 0) && (AktFile != null))
 			{
@@ -199,7 +200,7 @@ public class SelectDB extends ActivityBase
 			else
 			{
 				autoStartCounter--;
-				bAutostart.setText(autoStartCounter + "    " + GlobalCore.Translations.Get("confirm"));
+				bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
 			}
 		}
 	};
@@ -388,13 +389,10 @@ public class SelectDB extends ActivityBase
 
 	private void setAutoStartText()
 	{
-		if (autoStartTime < 0) bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + " "
-				+ GlobalCore.Translations.Get("StartWithoutSelection"));
-		else if (autoStartTime == 0) bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + " "
-				+ GlobalCore.Translations.Get("AutoStartDisabled"));
+		if (autoStartTime < 0) bAutostart.setText(Translation.Get("AutoStart") + " " + Translation.Get("StartWithoutSelection"));
+		else if (autoStartTime == 0) bAutostart.setText(Translation.Get("AutoStart") + " " + Translation.Get("AutoStartDisabled"));
 		else
-			bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + " "
-					+ GlobalCore.Translations.Get("AutoStartTime", String.valueOf(autoStartTime)));
+			bAutostart.setText(Translation.Get("AutoStart") + " " + Translation.Get("AutoStartTime", String.valueOf(autoStartTime)));
 	}
 
 	public class CustomAdapter implements Adapter
@@ -451,7 +449,7 @@ public class SelectDB extends ActivityBase
 	private void stopTimer()
 	{
 		if (updateTimer != null) updateTimer.cancel();
-		bAutostart.setText(GlobalCore.Translations.Get("confirm"));
+		bAutostart.setText(Translation.Get("confirm"));
 	}
 
 	private ReturnListner returnListner;
@@ -471,12 +469,12 @@ public class SelectDB extends ActivityBase
 	private void showSelectionMenu()
 	{
 		final String[] cs = new String[6];
-		cs[0] = GlobalCore.Translations.Get("StartWithoutSelection");
-		cs[1] = GlobalCore.Translations.Get("AutoStartDisabled");
-		cs[2] = GlobalCore.Translations.Get("AutoStartTime", "5");
-		cs[3] = GlobalCore.Translations.Get("AutoStartTime", "10");
-		cs[4] = GlobalCore.Translations.Get("AutoStartTime", "25");
-		cs[5] = GlobalCore.Translations.Get("AutoStartTime", "60");
+		cs[0] = Translation.Get("StartWithoutSelection");
+		cs[1] = Translation.Get("AutoStartDisabled");
+		cs[2] = Translation.Get("AutoStartTime", "5");
+		cs[3] = Translation.Get("AutoStartTime", "10");
+		cs[4] = Translation.Get("AutoStartTime", "25");
+		cs[5] = Translation.Get("AutoStartTime", "60");
 
 		Menu cm = new Menu("MiscContextMenu");
 

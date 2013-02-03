@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -20,6 +19,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -42,7 +42,7 @@ public class RouteDialog extends ButtonDialog
 
 	public RouteDialog(returnListner listner)
 	{
-		super(Menu.getMenuRec(), "PW-Dialog", "", GlobalCore.Translations.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
+		super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
 		mReturnListner = listner;
 
 		msgBoxContentSize = getContentSize();
@@ -87,7 +87,7 @@ public class RouteDialog extends ButtonDialog
 
 		Label lblPW = new Label(chkTmc.getMaxX() + margin, 0, innerWidth - chkTmc.getWidth() - margin, chkTmc.getHeight(), "");
 		lblPW.setVAlignment(VAlignment.CENTER);
-		lblPW.setText(GlobalCore.Translations.Get("UseTmc"));
+		lblPW.setText(Translation.Get("UseTmc"));
 		box2.addChild(lblPW);
 
 		layout.addChild(box2);

@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Controls.Dialogs;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.GlobalCore;
 import CB_Core.Events.ProgressChangedEvent;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.Fonts;
@@ -18,6 +17,7 @@ import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 
 public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 {
@@ -37,7 +37,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 			{
 				ProgressThread.Cancel();
 				button3.disable();
-				button3.setText(GlobalCore.Translations.Get("waitForCancel"));
+				button3.setText(Translation.Get("waitForCancel"));
 				return true;
 			}
 		});

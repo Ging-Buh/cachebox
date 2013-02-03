@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Activitys.settings;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -24,6 +23,7 @@ import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.MoveableList;
 
 import com.badlogic.gdx.graphics.Color;
@@ -125,7 +125,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 					.getActionEnumById(item.ordinal()).getIcon()), true);
 		}
 
-		icm.setPrompt(GlobalCore.Translations.Get("selectQuickButtemItem"));
+		icm.setPrompt(Translation.Get("selectQuickButtemItem"));
 
 		icm.show();
 

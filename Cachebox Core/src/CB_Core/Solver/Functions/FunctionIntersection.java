@@ -1,6 +1,6 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 
 public class FunctionIntersection extends Function
@@ -15,13 +15,13 @@ public class FunctionIntersection extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncIntersection");
+		return Translation.Get("solverFuncIntersection");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescIntersection");
+		return Translation.Get("solverDescIntersection");
 	}
 
 	@Override
@@ -29,13 +29,13 @@ public class FunctionIntersection extends Function
 	{
 		if (parameter.length != 4)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "4", "$solverFuncIntersection");
+			return Translation.Get("solverErrParamCount", "4", "$solverFuncIntersection");
 		}
 		Coordinate[] coord = new Coordinate[4];
 		for (int i = 0; i < 4; i++)
 		{
 			coord[i] = new Coordinate(parameter[i]);
-			if (!coord[i].Valid) return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncIntersection", String.valueOf(i + 1),
+			if (!coord[i].Valid) return Translation.Get("solverErrParamType", "$solverFuncIntersection", String.valueOf(i + 1),
 					"$coordinate", "$coordinate", parameter[i]);
 		}
 		try
@@ -46,7 +46,7 @@ public class FunctionIntersection extends Function
 		{
 			String s = coord[0].FormatCoordinate() + " / " + coord[1].FormatCoordinate() + " -> " + coord[2].FormatCoordinate() + " / "
 					+ coord[3].FormatCoordinate();
-			return GlobalCore.Translations.Get("StdError", "$solverFuncIntersection", ex.getMessage(), s);
+			return Translation.Get("StdError", "$solverFuncIntersection", ex.getMessage(), s);
 		}
 	}
 

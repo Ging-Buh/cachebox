@@ -27,6 +27,7 @@ import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.app.Dialog;
@@ -731,6 +732,9 @@ public class splash extends Activity
 			ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
 			ui.isLandscape = false;
 		}
+
+		new Translation(Config.WorkPath);
+
 		UiSizes.initial(ui);
 		Global.Paints.init(this);
 		Global.InitIcons(this);

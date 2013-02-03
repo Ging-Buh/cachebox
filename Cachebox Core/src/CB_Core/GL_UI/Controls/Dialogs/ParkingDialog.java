@@ -17,6 +17,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -33,7 +34,7 @@ public class ParkingDialog extends ButtonDialog
 
 	public ParkingDialog()
 	{
-		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Parking-Dialog", "", GlobalCore.Translations
+		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation
 				.Get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
@@ -78,9 +79,9 @@ public class ParkingDialog extends ButtonDialog
 		lblSelectWP.setFont(Fonts.getSmall());
 		lblDeleteP.setFont(Fonts.getSmall());
 
-		lblSelectWP.setWrappedText(GlobalCore.Translations.Get("My_Parking_Area_select"), HAlignment.CENTER);
-		lblSetGPS.setWrappedText(GlobalCore.Translations.Get("My_Parking_Area_Add"), HAlignment.CENTER);
-		lblDeleteP.setWrappedText(GlobalCore.Translations.Get("My_Parking_Area_Del"), HAlignment.CENTER);
+		lblSelectWP.setWrappedText(Translation.Get("My_Parking_Area_select"), HAlignment.CENTER);
+		lblSetGPS.setWrappedText(Translation.Get("My_Parking_Area_Add"), HAlignment.CENTER);
+		lblDeleteP.setWrappedText(Translation.Get("My_Parking_Area_Del"), HAlignment.CENTER);
 
 		box2.addChild(lblSetGPS);
 		box2.addChild(lblSelectWP);

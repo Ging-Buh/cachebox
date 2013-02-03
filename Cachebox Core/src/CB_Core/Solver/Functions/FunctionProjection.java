@@ -1,6 +1,6 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Coordinate;
 
 public class FunctionProjection extends Function
@@ -15,13 +15,13 @@ public class FunctionProjection extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncProjection");
+		return Translation.Get("solverFuncProjection");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescProjection");
+		return Translation.Get("solverDescProjection");
 	}
 
 	@Override
@@ -29,14 +29,13 @@ public class FunctionProjection extends Function
 	{
 		if (parameter.length != 3)
 		{
-			String s = GlobalCore.Translations.Get("solverErrParamCount", "3", "$solverFuncProjection");
+			String s = Translation.Get("solverErrParamCount", "3", "$solverFuncProjection");
 			return s;
 		}
 		Coordinate coord = new Coordinate(parameter[0]);
 		if (!coord.Valid)
 		{
-			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncProjection", "1", "$coordinate", "$coordinate",
-					parameter[0]);
+			return Translation.Get("solverErrParamType", "$solverFuncProjection", "1", "$coordinate", "$coordinate", parameter[0]);
 		}
 		double distance;
 		double angle;
@@ -46,7 +45,7 @@ public class FunctionProjection extends Function
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncProjection", "2", "$distance", "$number", parameter[1]);
+			return Translation.Get("solverErrParamType", "$solverFuncProjection", "2", "$distance", "$number", parameter[1]);
 		}
 		try
 		{
@@ -54,11 +53,11 @@ public class FunctionProjection extends Function
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncProjection", "3", "$angle", "$number", parameter[2]);
+			return Translation.Get("solverErrParamType", "$solverFuncProjection", "3", "$angle", "$number", parameter[2]);
 		}
 
 		Coordinate result = Coordinate.Project(coord.getLatitude(), coord.getLongitude(), angle, distance);
-		if (!result.Valid) return GlobalCore.Translations.Get("InvalidCoordinate", "$solverFuncProjection",
+		if (!result.Valid) return Translation.Get("InvalidCoordinate", "$solverFuncProjection",
 				"Lat: " + String.valueOf(coord.getLatitude()) + ", Lon: " + String.valueOf(coord.getLongitude()));
 		return result.FormatCoordinate();
 	}

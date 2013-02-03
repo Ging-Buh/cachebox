@@ -25,6 +25,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Settings.SettingBase.iChanged;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
@@ -686,7 +687,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				else
 					directionToTarget = bearing;
 
-				String sBearing = GlobalCore.Translations.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
+				String sBearing = Translation.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
 				lblBearing.setText(sBearing);
 			}
 
@@ -717,7 +718,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 			if (showSatInfos && lblAlt != null && locator != null)
 			{
-				lblAlt.setText(GlobalCore.Translations.Get("alt") + locator.getAltString());
+				lblAlt.setText(Translation.Get("alt") + locator.getAltString());
 			}
 
 			if (showSunMoon)
