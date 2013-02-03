@@ -120,6 +120,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		btnCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(btnMenu);
+		btnMenu.setText("...");
 		btnMenu.setOnClickListener(new OnClickListener()
 		{
 
