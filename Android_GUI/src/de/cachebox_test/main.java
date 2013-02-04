@@ -2444,7 +2444,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (!GpsOn())
 			{
-
+				if (!Translation.isInitial())
+				{
+					new Translation(Config.WorkPath);
+					Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
+				}
 				runOnUiThread(new Runnable()
 				{
 					@Override

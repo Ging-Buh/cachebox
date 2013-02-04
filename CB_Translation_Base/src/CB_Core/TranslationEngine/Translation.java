@@ -167,9 +167,16 @@ public class Translation
 		return that.getTextFile(Name, overrideLangId);
 	}
 
-	// #######################################################################
-	// Private access
-	// #######################################################################
+	/**
+	 * Returns true if Translation initial and reference language is loaded
+	 * 
+	 * @return boolean
+	 */
+	public static boolean isInitial()
+	{
+		if (that != null && that.mRefTranslation != null && that.mRefTranslation.size() > 0) return true;
+		return false;
+	}
 
 	// #######################################################################
 	// Private access

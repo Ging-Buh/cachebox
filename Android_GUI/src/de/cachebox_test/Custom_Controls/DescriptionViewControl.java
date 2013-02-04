@@ -179,7 +179,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 						@Override
 						public void run()
 						{
-							scrollTo(scrollPos.x, scrollPos.y);
+							myScrollTo(scrollPos.x, scrollPos.y);
 						}
 					});
 				}
@@ -539,9 +539,19 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		scrollPos = pos;
 	}
 
+	private boolean myScroll = false;
+
+	private void myScrollTo(int x, int y)
+	{
+		myScroll = true;
+		scrollTo(x, y);
+	}
+
 	@Override
 	public void scrollTo(int x, int y)
 	{
+		if (!myScroll) return;
+		myScroll = false;
 		if (firstLoadReady) super.scrollTo(x, y);
 	}
 
