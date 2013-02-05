@@ -279,11 +279,7 @@ public class TrackRecorder
 
 	public static void PauseRecording()
 	{
-		if (!pauseRecording)
-		{
-			pauseRecording = true;
-			// updateRecorderButtonAccessibility();
-		}
+		pauseRecording = !pauseRecording;
 	}
 
 	public static void StopRecording()
