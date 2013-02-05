@@ -227,7 +227,8 @@ public class Core implements ApplicationListener
 		for (String lang : allLangs)
 		{
 			rules.add(new CopyRule(cs + lang, workPath + "\\Android_GUI\\assets\\data\\lang"));
-			rules.add(new CopyRule(cs + lang, workPath + "\\DesctopLibGdx_Test\\testdata\\data\\lang"));
+			rules.add(new CopyRule(cs + lang, workPath + "\\DesctopLibGdx_Test\\cachebox\\data\\lang"));
+			rules.add(new CopyRule(cs + lang, workPath + "\\DesctopLibGdx_Test\\assets\\cachebox\\data\\lang"));
 		}
 
 		return rules;
@@ -930,10 +931,19 @@ public class Core implements ApplicationListener
 		rules.add(new CopyRule(cs + "\\LibgdxPacker\\small\\Output\\night", workPath + "\\Android_GUI\\assets\\skins\\small"));
 
 		// for Desktop Proj
-		rules.add(new CopyRule(cs + "\\LibgdxPacker\\default\\Output\\day", workPath + "\\DesctopLibGdx_Test\\testdata\\skins\\default"));
-		rules.add(new CopyRule(cs + "\\LibgdxPacker\\small\\Output\\day", workPath + "\\DesctopLibGdx_Test\\testdata\\skins\\small"));
-		rules.add(new CopyRule(cs + "\\LibgdxPacker\\default\\Output\\night", workPath + "\\DesctopLibGdx_Test\\testdata\\skins\\default"));
-		rules.add(new CopyRule(cs + "\\LibgdxPacker\\small\\Output\\night", workPath + "\\DesctopLibGdx_Test\\testdata\\skins\\small"));
+		rules.add(new CopyRule(cs + "\\LibgdxPacker\\default\\Output\\day", workPath + "\\DesctopLibGdx_Test\\cachebox\\skins\\default"));
+		rules.add(new CopyRule(cs + "\\LibgdxPacker\\small\\Output\\day", workPath + "\\DesctopLibGdx_Test\\cachebox\\skins\\small"));
+		rules.add(new CopyRule(cs + "\\LibgdxPacker\\default\\Output\\night", workPath + "\\DesctopLibGdx_Test\\cachebox\\skins\\default"));
+		rules.add(new CopyRule(cs + "\\LibgdxPacker\\small\\Output\\night", workPath + "\\DesctopLibGdx_Test\\cachebox\\skins\\small"));
+
+		// for Desktop Proj (asset)
+		rules.add(new CopyRule(cs + "\\LibgdxPacker\\default\\Output\\day", workPath
+				+ "\\DesctopLibGdx_Test\\assets\\cachebox\\skins\\default"));
+		rules.add(new CopyRule(cs + "\\LibgdxPacker\\small\\Output\\day", workPath + "\\DesctopLibGdx_Test\\assets\\cachebox\\skins\\small"));
+		rules.add(new CopyRule(cs + "\\LibgdxPacker\\default\\Output\\night", workPath
+				+ "\\DesctopLibGdx_Test\\assets\\cachebox\\skins\\default"));
+		rules.add(new CopyRule(cs + "\\LibgdxPacker\\small\\Output\\night", workPath
+				+ "\\DesctopLibGdx_Test\\assets\\cachebox\\skins\\small"));
 
 		return rules;
 	}
