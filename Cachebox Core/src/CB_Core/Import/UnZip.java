@@ -16,7 +16,15 @@ import java.util.zip.ZipFile;
 public class UnZip
 {
 
-	static public void extractFolder(String zipFile) throws ZipException, IOException
+	/**
+	 * Extract the given ZIP-File
+	 * 
+	 * @param zipFile
+	 * @return Extracted Folder Path as String
+	 * @throws ZipException
+	 * @throws IOException
+	 */
+	static public String extractFolder(String zipFile) throws ZipException, IOException
 	{
 		System.out.println("extract => " + zipFile);
 		int BUFFER = 2048;
@@ -73,5 +81,7 @@ public class UnZip
 			}
 		}
 		zip.close();
+
+		return newPath;
 	}
 }

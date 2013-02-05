@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.zip.ZipException;
@@ -34,46 +35,73 @@ class Ex_1
 		DesktopMain.InitalConfig();
 		Config.settings.ReadFromDB();
 
+		File Dir = new File("./");
+		final String[] files;
+
+		files = Dir.list(new FilenameFilter()
+		{
+
+			@Override
+			public boolean accept(File dir, String filename)
+			{
+				if (filename.contains("DCB") && filename.endsWith("jar")) return true;
+				return false;
+			}
+		});
+
 		// copy AssetFolder only if Rev-Number changed, like at new installation
-		if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		if (files.length > 0 && Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
 		{
 
 			// Copy!!
-			File workJar = new File("./DCB.jar");
-			if (workJar.exists())
+
+			try
 			{
-				try
-				{
-					UnZip.extractFolder(workJar.getAbsolutePath());
-				}
-				catch (ZipException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
-				// Copy DCB/cachebox to cachebox
-				ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
-				rules.add(new CopyRule("./DCB/cachebox", "./"));
-				Copy copy = new Copy(rules);
-				try
+				String ExtractFolder = "";
+				File workJar = new File(files[0]);
+				if (workJar.exists())
 				{
-					copy.Run();
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					try
+					{
+						ExtractFolder = UnZip.extractFolder(workJar.getAbsolutePath());
+					}
+					catch (ZipException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
-				FileIO.deleteDir(new File("./DCB"));
+					// Copy DCB/cachebox to cachebox
 
+					ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
+
+					rules.add(new CopyRule(ExtractFolder + "/cachebox", "./"));
+					Copy copy = new Copy(rules);
+					try
+					{
+						copy.Run();
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					FileIO.deleteDir(new File(ExtractFolder));
+
+				}
 			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+
 			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
 			Config.settings.newInstall.setValue(true);
 			Config.AcceptChanges();
@@ -84,14 +112,17 @@ class Ex_1
 			Config.AcceptChanges();
 		}
 
-		File workJar = new File("./DCB.jar");
-		if (workJar.exists())
+		if (files.length > 0)
 		{
-			// don't show Luncher
-			final Gui screen = new Gui("Device Launcher");
-			screen.setSize(250, 500);
-			screen.setVisible(true);
-			DesktopMain.start(Gui.iniPhone(), false, false, true, screen);
+			File workJar = new File(files[0]);
+			if (workJar.exists())
+			{
+				// don't show Luncher
+				final Gui screen = new Gui("Device Launcher");
+				screen.setSize(250, 500);
+				screen.setVisible(true);
+				DesktopMain.start(Gui.iniPhone(), false, false, true, screen);
+			}
 		}
 		else
 		{
