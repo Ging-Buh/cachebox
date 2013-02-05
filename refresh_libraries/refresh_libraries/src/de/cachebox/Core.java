@@ -5,14 +5,12 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,6 +24,9 @@ import javax.swing.JFileChooser;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Util.Downloader;
+import CB_Core.Util.CopyHelper.Copy;
+import CB_Core.Util.CopyHelper.Copy.CopyMsg;
+import CB_Core.Util.CopyHelper.CopyRule;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -161,7 +162,7 @@ public class Core implements ApplicationListener
 		// Path to extracted LibGdx.zip
 		String cs = workPath + "\\" + "libgdx-nightly-latest\\";
 
-		ArrayList<CopyRule> rules = new ArrayList<Core.CopyRule>();
+		ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
 
 		// for Android Proj
 		rules.add(new CopyRule(cs + "gdx.jar", workPath + "\\Android_GUI\\libs"));
@@ -221,7 +222,7 @@ public class Core implements ApplicationListener
 			}
 		});
 
-		ArrayList<CopyRule> rules = new ArrayList<Core.CopyRule>();
+		ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
 
 		for (String lang : allLangs)
 		{
@@ -508,7 +509,14 @@ public class Core implements ApplicationListener
 		Copy copy = new Copy(getCopyRulesLibGdx());
 		try
 		{
-			copy.Run();
+			copy.Run(new CopyMsg()
+			{
+				@Override
+				public void Msg(String msg)
+				{
+					writeMsg(msg, true);
+				}
+			});
 		}
 		catch (IOException e)
 		{
@@ -608,7 +616,14 @@ public class Core implements ApplicationListener
 		Copy copy = new Copy(getCopyRulesTranslations());
 		try
 		{
-			copy.Run();
+			copy.Run(new CopyMsg()
+			{
+				@Override
+				public void Msg(String msg)
+				{
+					writeMsg(msg, true);
+				}
+			});
 		}
 		catch (IOException e)
 		{
@@ -641,93 +656,6 @@ public class Core implements ApplicationListener
 
 		// The directory is now empty so delete it
 		return dir.delete();
-	}
-
-	private class CopyRule
-	{
-		File sourcePath;
-		File targetPath;
-		String Name;
-
-		CopyRule(String source, String target)
-		{
-			sourcePath = new File(source);
-			Name = sourcePath.getName();
-			targetPath = new File(target + "\\" + Name);
-		}
-
-	}
-
-	private class Copy
-	{
-		ArrayList<CopyRule> mRules;
-
-		Copy(ArrayList<CopyRule> rules)
-		{
-			mRules = rules;
-		}
-
-		void Run() throws IOException
-		{
-			for (CopyRule rule : mRules)
-			{
-				writeMsg("Copy: " + rule.Name, true);
-				copyFolder(rule.sourcePath, rule.targetPath);
-			}
-
-		}
-	}
-
-	public static void copyFolder(File src, File dest) throws IOException
-	{
-
-		if (src.isDirectory())
-		{
-
-			// if directory not exists, create it
-			if (!dest.exists())
-			{
-				dest.mkdir();
-			}
-
-			// list all the directory contents
-			String files[] = src.list();
-
-			for (String file : files)
-			{
-				if (file.contains(".svn")) continue;
-				// construct the src and dest file structure
-				File srcFile = new File(src, file);
-				File destFile = new File(dest, file);
-				// recursive copy
-				copyFolder(srcFile, destFile);
-			}
-
-		}
-		else
-		{
-
-			File parent = new File(dest.getParent());
-
-			if (!parent.exists()) parent.mkdir();
-
-			// if file, then copy it
-			// Use bytes stream to support all file types
-			InputStream in = new FileInputStream(src);
-			FileOutputStream out = new FileOutputStream(dest);
-
-			byte[] buffer = new byte[1024];
-
-			int length;
-			// copy the file content in bytes
-			while ((length = in.read(buffer)) > 0)
-			{
-				out.write(buffer, 0, length);
-			}
-
-			in.close();
-			out.close();
-		}
 	}
 
 	private void unzip(String strZipFile)
@@ -967,7 +895,14 @@ public class Core implements ApplicationListener
 		Copy copy = new Copy(getCopyRulesTexture());
 		try
 		{
-			copy.Run();
+			copy.Run(new CopyMsg()
+			{
+				@Override
+				public void Msg(String msg)
+				{
+					writeMsg(msg, true);
+				}
+			});
 		}
 		catch (IOException e)
 		{
@@ -986,7 +921,7 @@ public class Core implements ApplicationListener
 		// Path to extracted LibGdx.zip
 		String cs = imageWorkPath;
 
-		ArrayList<CopyRule> rules = new ArrayList<Core.CopyRule>();
+		ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
 
 		// for Android Proj
 		rules.add(new CopyRule(cs + "\\LibgdxPacker\\default\\Output\\day", workPath + "\\Android_GUI\\assets\\skins\\default"));

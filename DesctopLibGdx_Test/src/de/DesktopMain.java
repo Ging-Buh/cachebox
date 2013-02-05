@@ -96,7 +96,22 @@ public class DesktopMain
 		}
 		else
 		{
-			new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height, true);
+
+			LwjglApplicationConfiguration lwjglAppCfg = new LwjglApplicationConfiguration();
+			DisplayMode dispMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
+
+			lwjglAppCfg.setFromDisplayMode(dispMode);
+			lwjglAppCfg.fullscreen = false;
+			lwjglAppCfg.resizable = false;
+			lwjglAppCfg.useGL20 = true;
+			lwjglAppCfg.width = ui.Window.width;
+			lwjglAppCfg.height = ui.Window.height;
+			lwjglAppCfg.title = "DCB Desctop Cachebox";
+			// lwjglAppCfg.addIcon("CB_Icon.png", FileType.Internal);
+
+			// new LwjglApplication(CB_UI, "DCB Desctop Cachebox", ui.Window.width, ui.Window.height, true);
+			LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
+			// App.getGraphics().setContinuousRendering(false);
 		}
 
 		Timer timer = new Timer();
@@ -265,12 +280,6 @@ public class DesktopMain
 	private static void Run(boolean simulate)
 	{
 		CB_UI.onStart();
-		// // CB_UI.setGLViewID(ViewConst.MAP_CONTROL_TEST_VIEW);
-		// CB_UI.setGLViewID(ViewConst.TEST_VIEW);
-		// // CB_UI.setGLViewID(ViewConst.CREDITS_VIEW);
-		// // CB_UI.setGLViewID(ViewConst.GL_MAP_VIEW);
-		// // CB_UI.setGLViewID(ViewConst.ViewConst.ABOUT_VIEW);
-		// CB_UI.setGLViewID(ViewConst.TEST_LIST_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
 
@@ -299,7 +308,7 @@ public class DesktopMain
 		if (Config.settings != null && Config.settings.isLoaded()) return;
 
 		// Read Config
-		String workPath = "./testdata";
+		String workPath = "./cachebox";
 
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
@@ -334,57 +343,6 @@ public class DesktopMain
 		}
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
-
-		// // copy AssetFolder only if Rev-Number changed, like at new installation
-		// if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
-		// // if (true)
-		// {
-		//
-		// // Copy!!
-		// File workJar = new File("./DCB.jar");
-		// if (workJar.exists())
-		// {
-		// try
-		// {
-		// UnZip.extractFolder(workJar.getAbsolutePath());
-		// }
-		// catch (ZipException e)
-		// {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// catch (IOException e)
-		// {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// // Copy DCB/cachebox to cachebox
-		// ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
-		// rules.add(new CopyRule("./DCB/cachebox", "./"));
-		// Copy copy = new Copy(rules);
-		// try
-		// {
-		// copy.Run();
-		// }
-		// catch (IOException e)
-		// {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// CopyUtil.deleteDir(new File("./DCB"));
-		//
-		// }
-		// Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
-		// Config.settings.newInstall.setValue(true);
-		// Config.AcceptChanges();
-		// }
-		// else
-		// {
-		// Config.settings.newInstall.setValue(false);
-		// Config.AcceptChanges();
-		// }
 
 		new Translation(Config.WorkPath);
 		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());

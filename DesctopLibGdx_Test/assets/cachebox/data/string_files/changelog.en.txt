@@ -1,0 +1,106 @@
+Changes:
+
+Version : 0.5.1400
+	• Fix Nexus 7 start problems
+	• Add .nomedia
+	• Change AboutView to openGL version
+	• Optimized import PQ, Spoiler add support for GCAPP
+	• More information on Compass 
+	• Much work for performance
+	• Many work for stability!
+	• Many small reported Bugs, thanks all!
+	
+Version : 0.5.1298
+	• Fix UI handling with fast input
+	• Fix problem with empty PQ list
+	• Fix OutOfMemory exception with PQ download
+	• Fix exception with handling of empty Cache list
+	• Fix a problem with closing wait dialog
+	
+Version : 0.5.1285
+	• Fix the start on a Nexus 7
+	• Option to delete older log's
+	• Adjustable compass layout
+	• Compress the DB after importing
+	• Fix the Download Description for Basic Member
+	• Fix some minor bugs
+
+Version : 0.5.1258
+	• Revised Coordinate Input
+	• Use of the GS-API V6
+	• Fix some minor bugs
+
+Version : 0.5.1237
+	• Fix  java.lang.NullPointerException at (DescriptionViewControl.java:297)
+	• Fix Show Keyboard problem at API-Login with Android Level <11
+
+Version : 0.5.1235
+	• Fix hardware filter for Google play
+	• Fix some minor bugs
+
+Version : 0.5.1213
+	• Complete reworking of the UI on the basis of openGL
+	• Save park bay coordinates
+	• Quicker GPS Fixed
+	• Save own filters Presets
+	• Support of Mapsforge 0.3. x maps
+	• Load/Save/Rename/Color of tracks
+	• OpenRouteService to WP
+	• Support of external SD's
+	• Gesture control
+	• Delete Caches from data base
+	• Import reworks
+	• Car-Mode for Map
+
+Version: 0.4.593
+	• Download of PQ through the GC-API
+	• Import of GPX files completely reworked
+	• removed unit tests from core 
+	• Settings revised 
+	• Download GC-Vote
+	• Categories for GPX import
+	• more texts for the translations
+	• Api search through position of GPS,
+	  map or manual co-ordinates input
+	• Option to change the view
+	  to the compass when appoaching the cache
+	• Layout adaptations for different 
+	  display resolutions
+	• Import of description images 
+
+Version: 0.3.484
+	• Construction of the 
+	  Api Key's changed
+	• API looks for name, 
+	  GC code and Owner
+	• several new Solver functions
+	• Reworking of the attributes
+	• Attributes in the Slider inserted
+	• Treatment of a Misterys with 
+	  0 co-ordinates as unsolved
+	• Compass needle to Community 
+	  version changed
+	• Screenlock release reworks 
+	  in MapView
+	• Mistakes repaired ()
+
+
+Version: 0.2.453
+	• Activation of the Groundspeak APi
+	• check the Cache status about 
+	  the API (Filterselection)
+	• Fair GPS co-ordinates 
+	  (average for the time)
+	• more translations
+	• load track file with choice dialog
+	• pair of smaller mistakes repaired.
+
+
+Version: 0.1.433
+	• Binding of the Groundspeak API 
+	  (Unfortunately, not yet 
+	  from GS released!)
+	• Import GPX
+	• Search in local Cache list
+	• many colors for the night mode
+	• many mistakes repaired
