@@ -308,9 +308,9 @@ public class DesktopMain
 		if (Config.settings != null && Config.settings.isLoaded()) return;
 
 		// Read Config
-		String workPath = "./cachebox";
+		String workPath = ".\\cachebox";
 
-		Config.Initialize(workPath, workPath + "/cachebox.config");
+		Config.Initialize(workPath, workPath + "\\cachebox.config");
 
 		// hier muss die Config Db initialisiert werden
 		try
@@ -322,7 +322,7 @@ public class DesktopMain
 			e.printStackTrace();
 		}
 
-		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+		Database.Settings.StartUp(Config.WorkPath + "\\User\\Config.db3");
 
 		try
 		{
@@ -341,8 +341,8 @@ public class DesktopMain
 		{
 			e.printStackTrace();
 		}
-		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
-		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+		if (!FileIO.DirectoryExists(Config.WorkPath + "\\User")) return;
+		Database.FieldNotes.StartUp(Config.WorkPath + "\\User\\FieldNotes.db3");
 
 		new Translation(Config.WorkPath);
 		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
