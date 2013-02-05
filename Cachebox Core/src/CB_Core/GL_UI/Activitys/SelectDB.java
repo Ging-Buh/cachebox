@@ -332,8 +332,8 @@ public class SelectDB extends ActivityBase
 					Database.Data.Query.checkSelectedCacheValid();
 				}
 
-				if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return true;
-				Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+				if (!FileIO.DirectoryExists(Config.WorkPath + "\\User")) return true;
+				Database.FieldNotes.StartUp(Config.WorkPath + "\\User\\FieldNotes.db3");
 
 				Config.AcceptChanges();
 				AktFile = new File(database);

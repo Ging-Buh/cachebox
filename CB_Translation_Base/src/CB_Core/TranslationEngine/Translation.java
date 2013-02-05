@@ -204,14 +204,14 @@ public class Translation
 		if (mRefTranslation == null)
 		{
 			int pos = FilePath.lastIndexOf("lang") + 4;
-			String LangFileName = FilePath.substring(0, pos) + "/en-GB/strings.ini";
+			String LangFileName = FilePath.substring(0, pos) + "\\en-GB\\strings.ini";
 			mRefTranslation = ReadFile(LangFileName);
 		}
 
 		mStringList = ReadFile(FilePath);
 
 		String tmp = FilePath;
-		int pos2 = tmp.lastIndexOf("/") + 1;
+		int pos2 = tmp.lastIndexOf("\\") + 1;
 		tmp = FilePath.substring(pos2);
 		mLangID = tmp.replace(".lan", "");
 
@@ -348,9 +348,9 @@ public class Translation
 		{
 			try
 			{
-				tmp = FilePath + "/" + tmp;
+				tmp = FilePath + "\\" + tmp;
 
-				String stringFile = tmp + "/strings.ini";
+				String stringFile = tmp + "\\strings.ini";
 
 				if (FileUtil.FileExists(stringFile))
 				{
@@ -371,7 +371,7 @@ public class Translation
 
 	private void writeMisingStrings() throws IOException
 	{
-		File file = new File(mWorkPath + "/debug.txt");
+		File file = new File(mWorkPath + "\\debug.txt");
 
 		if (file.exists())
 		{
@@ -415,7 +415,7 @@ public class Translation
 
 	private void readMissing() throws IOException
 	{
-		File file = new File(mWorkPath + "/debug.txt");
+		File file = new File(mWorkPath + "\\debug.txt");
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line;
 
@@ -443,11 +443,11 @@ public class Translation
 
 	private String getTextFile(String Name, String overrideLangId) throws IOException
 	{
-		String FilePath = mWorkPath + "/data/string_files/" + Name + "." + overrideLangId + ".txt";
+		String FilePath = mWorkPath + "\\data\\string_files\\" + Name + "." + overrideLangId + ".txt";
 
 		if (!FileUtil.FileExists(FilePath))
 		{
-			FilePath = mWorkPath + "/data/string_files/" + Name + ".en.txt";
+			FilePath = mWorkPath + "\\data\\string_files\\" + Name + ".en.txt";
 			if (!FileUtil.FileExists(FilePath))
 			{
 				return "File not found => " + Name;
