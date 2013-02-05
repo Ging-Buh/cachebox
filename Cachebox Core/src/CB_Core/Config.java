@@ -144,18 +144,18 @@ public class Config
 
 	public static void validateDefaultConfigFile()
 	{
-		validateSetting("LanguagePath", WorkPath + "/data/lang");
-		validateSetting("Sel_LanguagePath", WorkPath + "/data/lang/en.lan");
-		validateSetting("DatabasePath", WorkPath + "/cachebox.db3");
-		validateSetting("TileCacheFolder", WorkPath + "/cache");
-		validateSetting("PocketQueryFolder", WorkPath + "/PocketQuery");
-		validateSetting("DescriptionImageFolder", WorkPath + "/repository/images");
-		validateSetting("MapPackFolder", WorkPath + "/repository/maps");
-		validateSetting("SpoilerFolder", WorkPath + "/repository/spoilers");
-		validateSetting("UserImageFolder", WorkPath + "/User/Media");
-		validateSetting("TrackFolder", WorkPath + "/User/Tracks");
+		validateSetting("LanguagePath", WorkPath + "\\data\\lang");
+		validateSetting("Sel_LanguagePath", WorkPath + "\\data\\lang\\en.lan");
+		validateSetting("DatabasePath", WorkPath + "\\cachebox.db3");
+		validateSetting("TileCacheFolder", WorkPath + "\\cache");
+		validateSetting("PocketQueryFolder", WorkPath + "\\PocketQuery");
+		validateSetting("DescriptionImageFolder", WorkPath + "\\repository\\images");
+		validateSetting("MapPackFolder", WorkPath + "\\repository\\maps");
+		validateSetting("SpoilerFolder", WorkPath + "\\repository\\spoilers");
+		validateSetting("UserImageFolder", WorkPath + "\\User\\Media");
+		validateSetting("TrackFolder", WorkPath + "\\User\\Tracks");
 
-		validateSetting("FieldNotesGarminPath", WorkPath + "/User/geocache_visits.txt");
+		validateSetting("FieldNotesGarminPath", WorkPath + "\\User\\geocache_visits.txt");
 
 		validateSetting("SaveFieldNotesHtml", "true");
 
