@@ -310,7 +310,8 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		{
 			if (cache.HasFinalWaypoint()) iconId = 5;
 			else if (cache.HasStartWaypoint()) iconId = 5;
-			iconId = 4;
+			else
+				iconId = 4;
 			break;
 		}
 		case Wherigo:
