@@ -35,7 +35,7 @@ class Ex_1
 		DesktopMain.InitalConfig();
 		Config.settings.ReadFromDB();
 
-		File Dir = new File(".\\");
+		File Dir = new File("./");
 		final String[] files;
 
 		files = Dir.list(new FilenameFilter()
@@ -81,7 +81,7 @@ class Ex_1
 
 					ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
 
-					rules.add(new CopyRule(ExtractFolder + "\\cachebox", ".\\"));
+					rules.add(new CopyRule(ExtractFolder + "/cachebox", "./"));
 					Copy copy = new Copy(rules);
 					try
 					{

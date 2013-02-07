@@ -41,7 +41,7 @@ public class CopyRule
 	{
 		sourcePath = new File(source);
 		Name = sourcePath.getName();
-		targetPath = new File(target + "\\" + Name);
+		targetPath = new File(target + "/" + Name);
 	}
 
 }
