@@ -7,7 +7,9 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
@@ -34,10 +36,14 @@ public class EditFilterSettings extends ActivityBase
 	private MultiToggleButton btPre;
 	private MultiToggleButton btSet;
 	private MultiToggleButton btCat;
+	private MultiToggleButton btTxt;
+
+	private Box contentBox;
 
 	public PresetListView lvPre;
 	private FilterSetListView lvSet;
 	private CategorieListView lvCat;
+	private TextFilterView vTxt;
 	private Button btnAddPreset;
 	public static FilterProperties tmpFilterProps;
 	private CB_RectF ListViewRec;
@@ -51,29 +57,75 @@ public class EditFilterSettings extends ActivityBase
 
 		tmpFilterProps = GlobalCore.LastFilter;
 
-		float innerWidth = this.width - this.getLeftWidth() - this.getLeftWidth();
-		CB_RectF MTBRec = new CB_RectF(this.getLeftWidth(), this.height - this.getLeftWidth() - UiSizes.getButtonHeight(), innerWidth / 3,
-				UiSizes.getButtonHeight());
+		float innerWidth = this.width - this.getLeftWidth();
+
+		Button bOK = new Button(this.getLeftWidth() / 2, this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
+
+		bOK.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				lvCat.SetCategory();
+				GlobalCore.LastFilter = tmpFilterProps;
+				ApplyFilter(GlobalCore.LastFilter);
+
+				// Save selected filter
+				Config.settings.Filter.setValue(GlobalCore.LastFilter.ToString());
+				Config.AcceptChanges();
+				finish();
+				return true;
+			}
+		});
+
+		this.addChild(bOK);
+
+		Button bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+
+		bCancel.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				finish();
+				return true;
+			}
+		});
+
+		this.addChild(bCancel);
+
+		float topButtonY = this.height - this.getLeftWidth() - UiSizes.getButtonHeight();
+
+		contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.width, topButtonY - bOK.getMaxY()), "contentBox");
+		contentBox.setBackground(SpriteCache.activityBackground);
+		this.addChild(contentBox);
+
+		CB_RectF MTBRec = new CB_RectF(this.getLeftWidth() / 2, topButtonY, innerWidth / 4, UiSizes.getButtonHeight());
 
 		btPre = new MultiToggleButton(MTBRec, "btPre");
 		btSet = new MultiToggleButton(MTBRec, "btSet");
 		btCat = new MultiToggleButton(MTBRec, "btCat");
+		btTxt = new MultiToggleButton(MTBRec, "btTxt");
 
-		btPre.setX(this.getLeftWidth());
+		// btPre.setX(this.getLeftWidth());
 		btSet.setX(btPre.getMaxX());
 		btCat.setX(btSet.getMaxX());
+		btTxt.setX(btCat.getMaxX());
 
 		this.addChild(btPre);
 		this.addChild(btSet);
 		this.addChild(btCat);
+		this.addChild(btTxt);
 
 		String sPre = Translation.Get("preset");
 		String sSet = Translation.Get("setting");
 		String sCat = Translation.Get("category");
+		String sTxt = Translation.Get("text");
 
 		MultiToggleButton.initialOn_Off_ToggleStates(btPre, sPre, sPre);
 		MultiToggleButton.initialOn_Off_ToggleStates(btSet, sSet, sSet);
 		MultiToggleButton.initialOn_Off_ToggleStates(btCat, sCat, sCat);
+		MultiToggleButton.initialOn_Off_ToggleStates(btTxt, sTxt, sTxt);
 
 		btPre.setOnClickListener(new OnClickListener()
 		{
@@ -132,52 +184,26 @@ public class EditFilterSettings extends ActivityBase
 				if (State == 1) switchVisibility(2);
 			}
 		});
-
-		Button bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-
-		bOK.setOnClickListener(new OnClickListener()
+		btTxt.setOnStateChangedListner(new OnStateChangeListener()
 		{
 			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public void onStateChange(GL_View_Base v, int State)
 			{
-				lvCat.SetCategory();
-				GlobalCore.LastFilter = tmpFilterProps;
-				ApplyFilter(GlobalCore.LastFilter);
-
-				// Save selected filter
-				Config.settings.Filter.setValue(GlobalCore.LastFilter.ToString());
-				Config.AcceptChanges();
-				finish();
-				return true;
+				if (State == 1) switchVisibility(3);
 			}
 		});
-
-		this.addChild(bOK);
-
-		Button bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
-
-		bCancel.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				finish();
-				return true;
-			}
-		});
-
-		this.addChild(bCancel);
 
 		// Translations
 		bOK.setText(Translation.Get("ok"));
 		bCancel.setText(Translation.Get("cancel"));
 
-		ListViewRec = new CB_RectF(0, bOK.getMaxY(), this.width, btPre.getY() - bOK.getMaxY());
+		ListViewRec = new CB_RectF(0, margin, this.width, btPre.getY() - bOK.getMaxY() - margin - margin);
 
 		initialPresets();
 		initialSettings();
 		initialCategorieView();
 		fillListViews();
+		initialTextView();
 
 		switchVisibility(0);
 
@@ -185,7 +211,7 @@ public class EditFilterSettings extends ActivityBase
 
 	private void initialPresets()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), ListViewRec.getY(), width - this.getRightWidth() - this.getLeftWidth(),
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), margin, width - this.getRightWidth() - this.getLeftWidth(),
 				UiSizes.getButtonHeight());
 		btnAddPreset = new Button(rec, "AddPresetButon");
 		btnAddPreset.setText(Translation.Get("AddOwnFilterPreset"));
@@ -199,27 +225,33 @@ public class EditFilterSettings extends ActivityBase
 				return true;
 			}
 		});
-		this.addChild(btnAddPreset);
+		contentBox.addChild(btnAddPreset);
 
 		CB_RectF preRec = new CB_RectF(ListViewRec);
 		preRec.setHeight(ListViewRec.getHeight() - UiSizes.getButtonHeight() - margin);
 		preRec.setY(btnAddPreset.getMaxY() + margin);
 
 		lvPre = new PresetListView(preRec);
-		this.addChild(lvPre);
+		contentBox.addChild(lvPre);
 	}
 
 	private void initialSettings()
 	{
 		lvSet = new FilterSetListView(ListViewRec);
-		this.addChild(lvSet);
+		contentBox.addChild(lvSet);
 
 	}
 
 	private void initialCategorieView()
 	{
 		lvCat = new CategorieListView(ListViewRec);
-		this.addChild(lvCat);
+		contentBox.addChild(lvCat);
+	}
+
+	private void initialTextView()
+	{
+		vTxt = new TextFilterView(ListViewRec, "TextFilterView");
+		contentBox.addChild(vTxt);
 	}
 
 	private void fillListViews()
@@ -233,6 +265,7 @@ public class EditFilterSettings extends ActivityBase
 			lvSet.setInvisible();
 			lvPre.setVisible();
 			lvCat.setInvisible();
+			vTxt.setInvisible();
 			btnAddPreset.setVisible();
 			if (lvCat != null) lvCat.SetCategory();
 			lvPre.onShow();
@@ -243,6 +276,7 @@ public class EditFilterSettings extends ActivityBase
 			lvPre.setInvisible();
 			lvSet.setVisible();
 			lvCat.setInvisible();
+			vTxt.setInvisible();
 			btnAddPreset.setInvisible();
 			if (lvCat != null) lvCat.SetCategory();
 			lvSet.onShow();
@@ -252,9 +286,20 @@ public class EditFilterSettings extends ActivityBase
 			lvPre.setInvisible();
 			lvSet.setInvisible();
 			lvCat.setVisible();
+			vTxt.setInvisible();
 			btnAddPreset.setInvisible();
 			lvCat.onShow();
 		}
+		if (btTxt.getState() == 1)
+		{
+			lvPre.setInvisible();
+			lvSet.setInvisible();
+			lvCat.setInvisible();
+			vTxt.setVisible();
+			btnAddPreset.setInvisible();
+			vTxt.onShow();
+		}
+
 	}
 
 	private void switchVisibility(int state)
@@ -264,18 +309,28 @@ public class EditFilterSettings extends ActivityBase
 			btPre.setState(1);
 			btSet.setState(0);
 			btCat.setState(0);
+			btTxt.setState(0);
 		}
 		if (state == 1)
 		{
 			btPre.setState(0);
 			btSet.setState(1);
 			btCat.setState(0);
+			btTxt.setState(0);
 		}
 		if (state == 2)
 		{
 			btPre.setState(0);
 			btSet.setState(0);
 			btCat.setState(1);
+			btTxt.setState(0);
+		}
+		if (state == 3)
+		{
+			btPre.setState(0);
+			btSet.setState(0);
+			btCat.setState(0);
+			btTxt.setState(1);
 		}
 
 		switchVisibility();

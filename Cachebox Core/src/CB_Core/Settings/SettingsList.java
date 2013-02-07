@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import CB_Core.DB.Database;
 
-public class SettingsList extends HashMap<String, SettingBase>
+public abstract class SettingsList extends HashMap<String, SettingBase>
 {
 	/**
 	 * 
