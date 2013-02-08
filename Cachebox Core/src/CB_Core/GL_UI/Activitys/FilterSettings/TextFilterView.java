@@ -18,6 +18,7 @@ package CB_Core.GL_UI.Activitys.FilterSettings;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -32,9 +33,13 @@ import CB_Core.TranslationEngine.Translation;
 public class TextFilterView extends CB_View_Base
 {
 
+	public static TextFilterView that;
+
 	public TextFilterView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+
+		that = this;
 
 		float margin = UiSizes.getMargin() * 2;
 		float btnWidth = (this.width - (margin * 7)) / 3;
@@ -74,11 +79,26 @@ public class TextFilterView extends CB_View_Base
 		mEingabe.setText("");
 		mEingabe.setPos(margin, mTglBtnTitle.getY() - margin - mEingabe.getHeight());
 
+		mBtnClear = new Button("clear");
+		mBtnClear.setY(mEingabe.getY() - margin - mBtnClear.getHeight());
+		mBtnClear.setX(this.width - margin - mBtnClear.getWidth());
+		mBtnClear.setText(Translation.Get("clear"));
+		mBtnClear.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				mEingabe.setText("");
+				return true;
+			}
+		});
+
 		// Controls zum Dialog hinzufügen
 		this.addChild(mTglBtnTitle);
 		this.addChild(mTglBtnGc);
 		this.addChild(mTglBtnOwner);
 		this.addChild(mEingabe);
+		this.addChild(mBtnClear);
 
 		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, Translation.Get("Title"), Translation.Get("Title"));
 		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, Translation.Get("GCCode"), Translation.Get("GCCode"));
@@ -120,6 +140,11 @@ public class TextFilterView extends CB_View_Base
 		switchFilterMode(0);
 
 	}
+
+	/**
+	 * Clear button, for clearing text input
+	 */
+	private Button mBtnClear;
 
 	/**
 	 * Option Title, der drei Optionen Title/GC-Code/Owner
@@ -195,6 +220,40 @@ public class TextFilterView extends CB_View_Base
 			mTglBtnOwner.setState(1);
 		}
 
+	}
+
+	/**
+	 * Returns the text from EditTextField </br> Formated to lower case!
+	 * 
+	 * @return String
+	 */
+	public String getFilterString()
+	{
+		return mEingabe.getText().toLowerCase();
+	}
+
+	/**
+	 * Returns the selected Filter state!</br> 0 = Title </br> 1 = GcCode </br> 2 = Owner </br>
+	 * 
+	 * @return
+	 */
+	public int getFilterState()
+	{
+		return maktFilterMode;
+	}
+
+	/**
+	 * Sets the filter to the EditText Field and activate the given filterstate
+	 * 
+	 * @param filter
+	 *            String for EditTextField
+	 * @param filterState
+	 *            Filter state!</br> 0 = Title </br> 1 = GcCode </br> 2 = Owner </br>
+	 */
+	public void setFilterString(String filter, int filterState)
+	{
+		mEingabe.setText(filter);
+		switchFilterMode(filterState);
 	}
 
 }

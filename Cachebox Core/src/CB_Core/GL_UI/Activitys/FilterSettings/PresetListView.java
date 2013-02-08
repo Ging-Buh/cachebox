@@ -184,6 +184,8 @@ public class PresetListView extends V_ListView
 
 					}
 
+					// reset TxtFilter
+					TextFilterView.that.setFilterString("", 0);
 					return true;
 
 				}

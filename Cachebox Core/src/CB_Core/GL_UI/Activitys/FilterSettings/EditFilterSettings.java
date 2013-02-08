@@ -68,6 +68,23 @@ public class EditFilterSettings extends ActivityBase
 			{
 				lvCat.SetCategory();
 				GlobalCore.LastFilter = tmpFilterProps;
+
+				// Text Filter ?
+				String txtFilter = vTxt.getFilterString();
+				if (txtFilter.length() > 0)
+				{
+					int FilterMode = vTxt.getFilterState();
+					if (FilterMode == 0) GlobalCore.LastFilter.filterName = txtFilter;
+					else if (FilterMode == 1) GlobalCore.LastFilter.filterGcCode = txtFilter;
+					else if (FilterMode == 2) GlobalCore.LastFilter.filterOwner = txtFilter;
+				}
+				else
+				{
+					GlobalCore.LastFilter.filterName = "";
+					GlobalCore.LastFilter.filterGcCode = "";
+					GlobalCore.LastFilter.filterOwner = "";
+				}
+
 				ApplyFilter(GlobalCore.LastFilter);
 
 				// Save selected filter
@@ -456,4 +473,15 @@ public class EditFilterSettings extends ActivityBase
 				});
 	}
 
+	@Override
+	public void onShow()
+	{
+		// Load and set TxtFilter
+		if (vTxt != null)
+		{
+			if (GlobalCore.LastFilter.filterName.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterName, 0);
+			else if (GlobalCore.LastFilter.filterGcCode.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterGcCode, 1);
+			else if (GlobalCore.LastFilter.filterOwner.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterOwner, 2);
+		}
+	}
 }
