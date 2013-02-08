@@ -34,17 +34,13 @@ public class MapTileLoader
 	private Thread queueProcessorAliveCheck = null;
 
 	int maxNumTiles = 0;
-	boolean overlay = false;
+
+	// boolean overlay = false;
 
 	public MapTileLoader()
 	{
-		this(false);
-	}
-
-	public MapTileLoader(boolean overlay)
-	{
 		super();
-		this.overlay = overlay;
+		// this.overlay = overlay;
 		if (queueProcessor == null)
 		{
 			queueProcessor = new queueProcessor();
@@ -100,7 +96,7 @@ public class MapTileLoader
 		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
 
 		deleteUnusedTiles(loadedTiles, loadedTilesLock);
-		if (overlay)
+		if (CurrentOverlayLayer != null)
 		{
 			deleteUnusedTiles(loadedOverlayTiles, loadedOverlayTilesLock);
 		}
@@ -108,7 +104,7 @@ public class MapTileLoader
 
 		loadedTilesLock.lock();
 		queuedTilesLock.lock();
-		if (overlay)
+		if (CurrentOverlayLayer != null)
 		{
 			loadedOverlayTilesLock.lock();
 			queuedOverlayTilesLock.lock();
@@ -131,7 +127,7 @@ public class MapTileLoader
 		{
 			queuedTiles.remove(desc.GetHashCode());
 		}
-		if (overlay)
+		if (CurrentOverlayLayer != null)
 		{
 			toDelete.clear();
 			for (Descriptor desc : queuedOverlayTiles.values())
@@ -166,7 +162,7 @@ public class MapTileLoader
 								queueTile(desc, queuedTiles, queuedTilesLock);
 							}
 						}
-						if (overlay)
+						if (CurrentOverlayLayer != null)
 						{
 							if (loadedOverlayTiles.containsKey(desc.GetHashCode()))
 							{
@@ -187,7 +183,7 @@ public class MapTileLoader
 		{
 			queuedTilesLock.unlock();
 			loadedTilesLock.unlock();
-			if (overlay)
+			if (CurrentOverlayLayer != null)
 			{
 				queuedOverlayTilesLock.unlock();
 				loadedOverlayTilesLock.unlock();
@@ -289,7 +285,7 @@ public class MapTileLoader
 		{
 			loadedTilesLock.unlock();
 		}
-		if (overlay)
+		if (CurrentOverlayLayer != null)
 		{
 			loadedOverlayTilesLock.lock();
 			try
@@ -321,7 +317,7 @@ public class MapTileLoader
 		{
 			tile.Age++;
 		}
-		if (overlay)
+		if (CurrentOverlayLayer != null)
 		{
 			for (TileGL tile : loadedOverlayTiles.values())
 			{
@@ -338,7 +334,7 @@ public class MapTileLoader
 	public TileGL getLoadedOverlayTile(Descriptor desc)
 	{
 		// Overlay Tiles liefern
-		if (!overlay)
+		if (CurrentOverlayLayer == null)
 		{
 			return null;
 		}
@@ -366,7 +362,7 @@ public class MapTileLoader
 						{
 							boolean calcOverlay = false;
 							queuedTilesLock.lock();
-							if (overlay) queuedOverlayTilesLock.lock();
+							if (CurrentOverlayLayer != null) queuedOverlayTilesLock.lock();
 							try
 							{
 								// ArrayList<KachelOrder> kOrder = new
@@ -393,7 +389,7 @@ public class MapTileLoader
 								int nearestZoom = 0;
 								SortedMap<Long, Descriptor> tmpQueuedTiles = queuedTiles;
 								calcOverlay = false;
-								if (overlay && queuedTiles.size() == 0)
+								if (CurrentOverlayLayer != null && queuedTiles.size() == 0)
 								{
 									tmpQueuedTiles = queuedOverlayTiles;
 									calcOverlay = true; // es wird gerade ein Overlay Tile geladen
@@ -445,14 +441,16 @@ public class MapTileLoader
 							finally
 							{
 								queuedTilesLock.unlock();
-								if (overlay) queuedOverlayTilesLock.unlock();
+								if (CurrentOverlayLayer != null) queuedOverlayTilesLock.unlock();
 							}
 
 							// if (desc.Zoom == zoom)
 							{
-								if (calcOverlay) LoadOverlayTile(desc);
-								else
+								if (calcOverlay && CurrentOverlayLayer != null) LoadOverlayTile(desc);
+								else if (CurrentLayer != null)
+								{
 									LoadTile(desc);
+								}
 							}
 
 							// if (queuedTiles.size() < mapView.maxTilesPerScreen) Thread.sleep(100);
@@ -554,6 +552,8 @@ public class MapTileLoader
 	{
 		TileGL.TileState tileState = TileGL.TileState.Disposed;
 
+		if (CurrentOverlayLayer == null) return;
+
 		byte[] bytes = null;
 		if (ManagerBase.Manager != null)
 		{
@@ -648,13 +648,13 @@ public class MapTileLoader
 
 	}
 
-	public void SetOverlay(boolean value)
-	{
-		overlay = value;
-	}
-
-	public boolean GetOverlay()
-	{
-		return overlay;
-	}
+	// public void SetOverlay(boolean value)
+	// {
+	// overlay = value;
+	// }
+	//
+	// public boolean GetOverlay()
+	// {
+	// return overlay;
+	// }
 }

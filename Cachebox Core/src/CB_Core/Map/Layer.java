@@ -5,6 +5,13 @@ import CB_Core.Config;
 public class Layer
 {
 
+	public enum Type
+	{
+		normal, overlay
+	}
+
+	private Type mLayerType = Type.normal;
+
 	public String Name = "";
 
 	public String FriendlyName = "";
@@ -13,11 +20,12 @@ public class Layer
 
 	public boolean isMapsForge = false;
 
-	public Layer(String name, String friendlyName, String url)
+	public Layer(Type LayerType, String name, String friendlyName, String url)
 	{
 		Name = name;
 		FriendlyName = friendlyName;
 		Url = url;
+		mLayerType = LayerType;
 	}
 
 	public boolean DownloadTile(Descriptor desc)
@@ -62,5 +70,10 @@ public class Layer
 		if (desc == null) return null;
 
 		return Config.settings.TileCacheFolder.getValue() + "/" + Name + "/" + desc.Zoom + "/" + desc.X;
+	}
+
+	public boolean isOverlay()
+	{
+		return mLayerType == Type.overlay;
 	}
 }

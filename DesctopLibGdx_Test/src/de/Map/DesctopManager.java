@@ -27,6 +27,7 @@ import CB_Core.FileIO;
 import CB_Core.Map.BoundingBox;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
+import CB_Core.Map.Layer.Type;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Map.PackBase;
 
@@ -38,9 +39,10 @@ public class DesctopManager extends ManagerBase
 		// for the Access to the manager in the CB_Core
 		CB_Core.Map.ManagerBase.Manager = this;
 		// Layers.add(new Layer("MapsForge", "MapsForge", ""));
-		Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
-		Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/"));
-		// if (!Disable.HillShading) Layers.add(new Layer("HillShade", "HillShade", "http://129.206.74.245:8004/tms_hs.ashx"));
+		Layers.add(new Layer(Type.normal, "Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
+		Layers.add(new Layer(Type.normal, "OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/"));
+		Layers.add(new Layer(Type.overlay, "HillShade", "HillShade", "http://129.206.74.245:8004/tms_hs.ashx"));
+		Layers.add(new Layer(Type.overlay, "Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
 		// Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
 	}
 

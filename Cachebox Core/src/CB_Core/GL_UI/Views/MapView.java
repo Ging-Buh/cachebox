@@ -8,7 +8,6 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import CB_Core.Config;
-import CB_Core.Disable;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
@@ -81,7 +80,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected SortedMap<Integer, Integer> DistanceZoomLevel;
 
 	private Locator locator = null;
-	public static MapTileLoader mapTileLoader = new MapTileLoader(false);
+	public static MapTileLoader mapTileLoader = new MapTileLoader();
 	private boolean alignToCompass = false;
 	private boolean CarMode = false;
 
@@ -306,11 +305,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			if (mapTileLoader.CurrentLayer == null) mapTileLoader.CurrentLayer = ManagerBase.Manager.GetLayerByName(
 					(currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
-			if (!Disable.HillShading)
-			{
-				if (mapTileLoader.CurrentOverlayLayer == null) mapTileLoader.CurrentOverlayLayer = ManagerBase.Manager.GetLayerByName(
-						"HillShade", "HillShade", "");
-			}
+		}
+
+		String currentOverlayLayerName = Config.settings.CurrentMapOverlayLayer.getValue();
+		if (ManagerBase.Manager != null)
+		{
+			if (mapTileLoader.CurrentOverlayLayer == null && currentOverlayLayerName.length() > 0) mapTileLoader.CurrentOverlayLayer = ManagerBase.Manager
+					.GetLayerByName(currentOverlayLayerName, currentOverlayLayerName, "");
 		}
 
 		mapIntWidth = (int) rec.getWidth();
@@ -530,11 +531,31 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	public void SetCurrentLayer(Layer newLayer)
 	{
-		Config.settings.CurrentMapLayer.setValue(newLayer.Name);
+		if (newLayer == null)
+		{
+			Config.settings.CurrentMapLayer.setValue("");
+		}
+		else
+		{
+			Config.settings.CurrentMapLayer.setValue(newLayer.Name);
+		}
 		Config.AcceptChanges();
-
 		mapTileLoader.CurrentLayer = newLayer;
+		mapTileLoader.clearLoadedTiles();
+	}
 
+	public void SetCurrentOverlayLayer(Layer newLayer)
+	{
+		if (newLayer == null)
+		{
+			Config.settings.CurrentMapOverlayLayer.setValue("");
+		}
+		else
+		{
+			Config.settings.CurrentMapOverlayLayer.setValue(newLayer.Name);
+		}
+		Config.AcceptChanges();
+		mapTileLoader.CurrentOverlayLayer = newLayer;
 		mapTileLoader.clearLoadedTiles();
 	}
 
@@ -1558,11 +1579,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 
 			}
-
-			// Hill Shading ?
-			mapTileLoader.SetOverlay(Config.settings.MapHillShading.getValue());
-			mapTileLoader.clearLoadedTiles();
-
 		}
 
 		if ((InitialFlags & INITIAL_THEME) != 0)
@@ -1958,20 +1974,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		}
 		GL.that.renderOnce(MapView.this.getName() + " OrientationChanged");
-	}
-
-	public void SetHillShade(boolean value)
-	{
-		mapTileLoader.SetOverlay(value);
-		mapTileLoader.clearLoadedTiles();
-
-		Config.settings.MapHillShading.setValue(value);
-		Config.AcceptChanges();
-	}
-
-	public boolean GetHillShade()
-	{
-		return mapTileLoader.GetOverlay();
 	}
 
 	public void SetAlignToCompass(boolean value)

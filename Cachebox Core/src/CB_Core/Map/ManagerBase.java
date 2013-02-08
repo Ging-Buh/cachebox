@@ -18,6 +18,7 @@ import org.apache.http.params.HttpParams;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.Map.Layer.Type;
 
 public abstract class ManagerBase
 {
@@ -90,7 +91,7 @@ public abstract class ManagerBase
 			if (layer.Name.equalsIgnoreCase(Name)) return layer;
 		}
 
-		Layer newLayer = new Layer(Name, Name, url);
+		Layer newLayer = new Layer(Type.normal, Name, Name, url);
 		Layers.add(newLayer);
 
 		return newLayer;
@@ -141,6 +142,7 @@ public abstract class ManagerBase
 
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{
+		if (layer == null) return null;
 		// Vorerst nur im Pack suchen
 		// Kachel im Pack suchen
 		long cachedTileAge = 0;
@@ -172,6 +174,9 @@ public abstract class ManagerBase
 	// / <returns></returns>
 	public boolean CacheTile(Layer layer, Descriptor tile)
 	{
+
+		if (layer == null) return false;
+
 		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen
 		// werden!
 		for (PackBase pack : mapPacks)

@@ -24,6 +24,7 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
+import CB_Core.Map.Layer.Type;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -416,7 +417,7 @@ public class splash extends TabMainView
 							.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
 					{
-						Layer layer = new Layer(file, file, "");
+						Layer layer = new Layer(Type.normal, file, file, "");
 						layer.isMapsForge = true;
 						ManagerBase.Manager.Layers.add(layer);
 					}

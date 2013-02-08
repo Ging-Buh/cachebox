@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.Config;
-import CB_Core.Disable;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
 import CB_Core.GL_UI.CB_View_Base;
@@ -72,13 +71,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		mi = icm.addItem(MenuID.MI_LAYER, "Layer");
 
-		if (!Disable.HillShading)
-		{
-			mi = icm.addItem(MenuID.MI_MAP_HILL_SHADING, "HillShade");
-			mi.setCheckable(true);
-			mi.setChecked(MapView.that.GetHillShade());
-		}
-
 		mi = icm.addItem(MenuID.MI_ALIGN_TO_COMPSS, "AlignToCompass");
 		mi.setCheckable(true);
 		mi.setChecked(MapView.that.GetAlignToCompass());
@@ -87,14 +79,14 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		// mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
 		mi = icm.addItem(MenuID.MI_SETTINGS, "settings", SpriteCache.Icons.get(26));
-		mi = icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
+		// mi = icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
 		mi = icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
-		mi = icm.addItem(MenuID.MI_TREC_REC, "TrackRec");
+		// mi = icm.addItem(MenuID.MI_TREC_REC, "TrackRec");
 
 		return icm;
 	}
 
-	public void showMapLayerMenu()
+	private void showMapLayerMenu()
 	{
 		Menu icm = new Menu("MapViewShowLayerContextMenu");
 
@@ -104,8 +96,63 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+
+				if (((MenuItem) v).getMenuItemId() == MenuID.MI_MAPVIEW_OVERLAY_VIEW)
+				{
+					showMapOverlayMenu();
+					return true;
+				}
+
 				Layer layer = (Layer) ((MenuItem) v).getData();
 				TabMainView.mapView.SetCurrentLayer(layer);
+				return true;
+			}
+		});
+		MenuItem mi;
+
+		mi = icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
+
+		int Index = 0;
+		for (Layer layer : ManagerBase.Manager.Layers)
+		{
+			if (!layer.isOverlay())
+			{
+				mi = icm.addItem(Index++, "", layer.Name);
+				mi.setData(layer);
+				mi.setCheckable(true);
+				if (layer == MapView.mapTileLoader.CurrentLayer)
+				{
+					mi.setChecked(true);
+				}
+			}
+		}
+
+		icm.show();
+	}
+
+	private void showMapOverlayMenu()
+	{
+		final OptionMenu icm = new OptionMenu("MapViewShowMapOverlayMenu");
+
+		icm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				Layer layer = (Layer) ((MenuItem) v).getData();
+				if (layer == MapView.mapTileLoader.CurrentOverlayLayer)
+				{
+					// switch off Overlay
+					TabMainView.mapView.SetCurrentOverlayLayer(null);
+				}
+				else
+				{
+					TabMainView.mapView.SetCurrentOverlayLayer(layer);
+				}
+				// Refresh menu
+				icm.close();
+				showMapOverlayMenu();
 				return true;
 			}
 		});
@@ -114,19 +161,22 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		int Index = 0;
 		for (Layer layer : ManagerBase.Manager.Layers)
 		{
-			mi = icm.addItem(Index++, "", layer.Name);
-			mi.setData(layer);
-			mi.setCheckable(true);
-			if (layer == MapView.mapTileLoader.CurrentLayer)
+			if (layer.isOverlay())
 			{
-				mi.setChecked(true);
+				mi = icm.addItem(Index++, "", layer.Name);
+				mi.setData(layer);
+				mi.setCheckable(true);
+				if (layer == MapView.mapTileLoader.CurrentOverlayLayer)
+				{
+					mi.setChecked(true);
+				}
 			}
 		}
 
 		icm.show();
 	}
 
-	public void showMapViewLayerMenu()
+	private void showMapViewLayerMenu()
 	{
 		OptionMenu icm = new OptionMenu("MapViewShowLayerContextMenu");
 
@@ -183,10 +233,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 			case MenuID.MI_MAPVIEW_VIEW:
 				showMapViewLayerMenu();
-				return true;
-
-			case MenuID.MI_MAP_HILL_SHADING:
-				MapView.that.SetHillShade(!MapView.that.GetHillShade());
 				return true;
 
 			case MenuID.MI_ALIGN_TO_COMPSS:

@@ -8,6 +8,6 @@ package CB_Core;
  */
 public class Disable
 {
-	public final static boolean HillShading = false;
+	// public final static boolean HillShading = false;
 
 }

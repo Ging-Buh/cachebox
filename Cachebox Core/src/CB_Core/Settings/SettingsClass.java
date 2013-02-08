@@ -1,7 +1,6 @@
 package CB_Core.Settings;
 
 import CB_Core.Config;
-import CB_Core.Disable;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 
@@ -60,8 +59,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool MapShowCompass;
 	public SettingBool CompassNorthOriented;
 	public SettingBool MapNorthOriented;
-	public SettingBool MapHillShading;
-	// public SettingBool ResortRepaint;
+
 	public SettingBool GCAutoSyncCachesFound;
 	public SettingBool GCAdditionalImageDownload;
 	public SettingBool AutoResort;
@@ -156,6 +154,7 @@ public class SettingsClass extends SettingsList
 
 	// String
 	public SettingString CurrentMapLayer;
+	public SettingString CurrentMapOverlayLayer;
 	public SettingString LastSelectedCache;
 	public SettingString NavigationProvider;
 	public SettingString FoundTemplate;
@@ -349,11 +348,8 @@ public class SettingsClass extends SettingsList
 		addSetting(MapNorthOriented = new SettingBool("MapNorthOriented", cat, NORMAL, true, SettingStoreType.Global));
 		addSetting(LastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", cat, INVISIBLE, 0, SettingStoreType.Global));
 
-		// entscheiden ob MapHillShading als Settings Eintrag angezeigt wird
-		SettingModus setMod = !Disable.HillShading ? NORMAL : NEVER;
-		addSetting(MapHillShading = new SettingBool("MapHillShading", cat, setMod, false, SettingStoreType.Global));
-
 		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", cat, EXPERT, "Mapnik", SettingStoreType.Global));
+		addSetting(CurrentMapOverlayLayer = new SettingString("CurrentMapOverlayLayer", cat, EXPERT, "", SettingStoreType.Global));
 
 		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", cat, INVISIBLE, 10000, SettingStoreType.Global));
 		addSetting(lastZoomLevel = new SettingInt("lastZoomLevel", cat, INVISIBLE, 14, SettingStoreType.Global));

@@ -178,8 +178,6 @@ public class MenuID
 	public static final int MI_COMPASS_SHOW_S_D_T = 152;
 	public static final int MI_COMPASS_SHOW_LAST_FOUND = 153;
 
-	public static final int MI_MAP_HILL_SHADING = 154;
-
 	public static final int MI_COMPASS_SHOW = 155;
 	public static final int MI_RELOAD_SPOILER = 156;
 	public static final int MI_SHOW_ACCURACY_CIRCLE = 157;
@@ -189,5 +187,5 @@ public class MenuID
 
 	public static final int MI_EDIT_CACHE = 160;
 	public static final int MI_NEW_CACHE = 161;
-
+	public static final int MI_MAPVIEW_OVERLAY_VIEW = 162;
 }
