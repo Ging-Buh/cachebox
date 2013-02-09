@@ -413,13 +413,20 @@ public class splash extends TabMainView
 			{
 				for (String file : files)
 				{
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack")) ManagerBase.Manager
-							.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
+					{
+						ManagerBase.Manager.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
+					}
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
 					{
 						Layer layer = new Layer(Type.normal, file, file, "");
 						layer.isMapsForge = true;
 						ManagerBase.Manager.Layers.add(layer);
+					}
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml"))
+					{
+						ManagerBase.Manager.LoadTMS(Config.settings.MapPackFolder.getValue() + "/" + file);
+
 					}
 				}
 			}

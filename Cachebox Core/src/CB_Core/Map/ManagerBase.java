@@ -36,7 +36,7 @@ public abstract class ManagerBase
 
 	public ArrayList<PackBase> mapPacks = new ArrayList<PackBase>();
 
-	public ArrayList<String> mapsForgeMaps = new ArrayList<String>();
+	public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
 
 	public ArrayList<Layer> Layers = new ArrayList<Layer>();
 
@@ -326,4 +326,22 @@ public abstract class ManagerBase
 		0.0f, 0.0f, -1.5f, 0.0f, 0.f, /* */
 		0.0f, 0.0f, 0.0f, 0.0f, 255f };
 
+	public void LoadTMS(String string)
+	{
+		try
+		{
+			TmsMap tmsMap = new TmsMap(string);
+			if ((tmsMap.name == null) || (tmsMap.url == null))
+			{
+				return;
+			}
+			tmsMaps.add(tmsMap);
+			Layers.add(new TmsLayer(Type.normal, tmsMap));
+		}
+		catch (Exception ex)
+		{
+
+		}
+
+	}
 }
