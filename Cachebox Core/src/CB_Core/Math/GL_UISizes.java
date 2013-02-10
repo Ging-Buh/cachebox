@@ -84,7 +84,7 @@ public class GL_UISizes implements SizeChangedEvent
 		{
 			calcSizes();
 
-			Fonts.LoadCalcFonts();
+			Fonts.loadFonts();
 
 			calcPos();
 

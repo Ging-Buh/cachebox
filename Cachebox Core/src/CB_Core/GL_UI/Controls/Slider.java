@@ -123,7 +123,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		if (cache != null)
 		{
-			mLblCacheName.setText(cache.Name);
+			mLblCacheName.setText(cache.Name, Fonts.getBig(), Fonts.getFontColor());
 		}
 
 	}

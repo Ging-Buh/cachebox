@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -50,10 +54,10 @@ public class Fonts
 	/**
 	 * Lädt die verwendeten Bitmap Fonts und berechnet die entsprechenden Größen
 	 */
-	public static void LoadCalcFonts()
+	public static void loadFonts()
 	{
 
-		Logger.DEBUG("Fonts.LoadCalcFonts()");
+		Logger.DEBUG("Fonts.loadFonts()");
 
 		double density = UiSizes.getScale();
 
@@ -75,8 +79,9 @@ public class Fonts
 		night_fontColorHighLight = night_skin.getColor("font-color-highlight");
 		night_fontColorLink = night_skin.getColor("font-color-link");
 
-		// get the first founded ttf-font
+		// get the first found ttf-font
 		File skinDir = new File(path);
+
 		String FontName = null;
 		String[] ttfFonts = skinDir.list(new FilenameFilter()
 		{
@@ -105,17 +110,16 @@ public class Fonts
 			});
 			FontName = defaultTtfFonts[0];
 		}
-
 		String ttfPath = path + "/" + FontName;
+		Logger.DEBUG("from " + ttfPath);
+
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute(ttfPath));
-
-		compass = generator.generateFont((int) (FONT_SIZE_COMPASS_DISTANCE * density));
-		big = generator.generateFont((int) (FONT_SIZE_BIG * density));
-		normal = generator.generateFont((int) (FONT_SIZE_NORMAL * density));
-		small = generator.generateFont((int) (FONT_SIZE_SMALL * density));
-		normalBubble = generator.generateFont((int) (FONT_SIZE_NORMAL * density * 0.8));
-		smallBubble = generator.generateFont((int) (FONT_SIZE_NORMAL * density * 0.8));
-
+		compass = loadFontFromFile(generator, (int) (FONT_SIZE_COMPASS_DISTANCE * density));
+		big = loadFontFromFile(generator, (int) (FONT_SIZE_BIG * density));
+		normal = loadFontFromFile(generator, (int) (FONT_SIZE_NORMAL * density));
+		small = loadFontFromFile(generator, (int) (FONT_SIZE_SMALL * density));
+		normalBubble = loadFontFromFile(generator, (int) (FONT_SIZE_NORMAL * density * 0.8));
+		smallBubble = loadFontFromFile(generator, (int) (FONT_SIZE_NORMAL * density * 0.8));
 		generator.dispose();
 	}
 
@@ -229,5 +233,39 @@ public class Fonts
 		TextBounds bounds = measureNormalCache.setWrappedText(txt, 0, 0, width);
 
 		return bounds;
+	}
+
+	private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale)
+	{
+		String path = Config.settings.SkinFolder.getValue() + "/fonts";
+		String fontPath = null;
+		for (int i = 0; i < 46; i++)
+		{
+			if ((scale - i > 0) && FileIO.FileExists(path + "/" + String.valueOf(scale - i) + ".fnt"))
+			{
+				fontPath = path + "/" + String.valueOf(Math.abs(scale - i)) + ".fnt";
+				break;
+			}
+			else if (FileIO.FileExists(path + "/" + String.valueOf(scale + i) + ".fnt"))
+			{
+				fontPath = path + "/" + String.valueOf(scale + i) + ".fnt";
+				break;
+			}
+		}
+		if (fontPath == null)
+		{
+			Logger.DEBUG("load font for scale " + scale);
+			return generator.generateFont(scale);
+		}
+		else
+		{
+			Logger.DEBUG("load font for scale " + scale + " from " + fontPath);
+			// automatic load of png does not work on Android, so
+			// return new BitmapFont(Gdx.files.absolute(fontPath),false);
+			Texture tex = new Texture(Gdx.files.absolute(fontPath.replace(".fnt", ".png")));
+			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			TextureRegion region = new TextureRegion(tex);
+			return new BitmapFont(Gdx.files.absolute(fontPath), region, false);
+		}
 	}
 }

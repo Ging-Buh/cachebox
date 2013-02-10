@@ -476,6 +476,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 			{
 				textField.setFocus(true);
 				scrollToY(textField);
+				textField.setCursorPosition(textField.getText().length());
 			}
 
 		});
