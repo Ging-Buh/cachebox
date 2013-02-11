@@ -2,6 +2,8 @@ package CB_Core.Settings;
 
 public class SettingString extends SettingBase
 {
+	public static final String STRING_SPLITTER = "¡";
+
 	protected String value;
 	protected String defaultValue;
 	protected String lastValue;

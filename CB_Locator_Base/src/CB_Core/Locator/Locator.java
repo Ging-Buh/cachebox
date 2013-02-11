@@ -4,26 +4,26 @@ import CB_Core.Locator.Location.ProviderType;
 import CB_Core.Locator.Events.GPS_FallBackEventList;
 
 /**
- * @author  Longri_2
+ * @author Longri_2
  */
 public class Locator
 {
 	/**
-	 * @author   Longri_2
+	 * @author Longri_2
 	 */
 	public enum CompassType
 	{
 		/**
-		 * @uml.property  name="gPS"
-		 * @uml.associationEnd  
+		 * @uml.property name="gPS"
+		 * @uml.associationEnd
 		 */
 		GPS, /**
-		 * @uml.property  name="magnetic"
-		 * @uml.associationEnd  
+		 * @uml.property name="magnetic"
+		 * @uml.associationEnd
 		 */
 		Magnetic, /**
-		 * @uml.property  name="unknown"
-		 * @uml.associationEnd  
+		 * @uml.property name="unknown"
+		 * @uml.associationEnd
 		 */
 		unknown
 	};
@@ -34,8 +34,8 @@ public class Locator
 	private static final int NETWORK_POSITION_TIME = 120000;
 
 	/**
-	 * @uml.property  name="that"
-	 * @uml.associationEnd  
+	 * @uml.property name="that"
+	 * @uml.associationEnd
 	 */
 	private static Locator that;
 
@@ -45,7 +45,7 @@ public class Locator
 	private static boolean mUseMagneticCompass = false;
 	private static int mMagneticCompassLevel = 5;
 	/**
-	 * @uml.property  name="displayOff"
+	 * @uml.property name="displayOff"
 	 */
 	private static boolean DisplayOff = false;
 
@@ -67,7 +67,7 @@ public class Locator
 	/**
 	 * Set Display Off. </br>Only events with priority High will fire!
 	 */
-	public void setDisplayOff()
+	public static void setDisplayOff()
 	{
 		DisplayOff = true;
 	}
@@ -75,15 +75,16 @@ public class Locator
 	/**
 	 * Set Display on. </br> All events will fire!
 	 */
-	public void setDisplayOn()
+	public static void setDisplayOn()
 	{
 		DisplayOff = false;
 	}
 
 	/**
 	 * Returns True if the flag for DisplayOff is True!
+	 * 
 	 * @return
-	 * @uml.property  name="displayOff"
+	 * @uml.property name="displayOff"
 	 */
 	public static boolean isDisplayOff()
 	{
@@ -96,7 +97,7 @@ public class Locator
 	 * @param value
 	 *            as long
 	 */
-	public void setMinUpdateTime(Long value)
+	public static void setMinUpdateTime(Long value)
 	{
 		minGpsUpdateTime = value;
 	}
@@ -271,8 +272,9 @@ public class Locator
 
 	/**
 	 * Set the alt correction value
-	 * @param  value
-	 * @uml.property  name="altCorrection"
+	 * 
+	 * @param value
+	 * @uml.property name="altCorrection"
 	 */
 	public static void setAltCorrection(double value)
 	{
@@ -294,8 +296,9 @@ public class Locator
 
 	/**
 	 * Returns the speed value of the last valid Location
+	 * 
 	 * @return
-	 * @uml.property  name="speed"
+	 * @uml.property name="speed"
 	 */
 	public static double getSpeed()
 	{
@@ -405,24 +408,24 @@ public class Locator
 	// member are private for synchronized access
 	private boolean hasSpeed = false;
 	/**
-	 * @uml.property  name="mLastFineLocation"
-	 * @uml.associationEnd  
+	 * @uml.property name="mLastFineLocation"
+	 * @uml.associationEnd
 	 */
 	private Location mLastFineLocation;
 	/**
-	 * @uml.property  name="mLastNetworkPosition"
-	 * @uml.associationEnd  
+	 * @uml.property name="mLastNetworkPosition"
+	 * @uml.associationEnd
 	 */
 	private Location mLastNetworkPosition;
 	/**
-	 * @uml.property  name="speed"
+	 * @uml.property name="speed"
 	 */
 	private float speed = 0;
 	private float mlastMagneticHeading = 0;
 	private float mlastGPSHeading = 0;
 	/**
-	 * @uml.property  name="mLastUsedCompassType"
-	 * @uml.associationEnd  
+	 * @uml.property name="mLastUsedCompassType"
+	 * @uml.associationEnd
 	 */
 	private final CompassType mLastUsedCompassType = CompassType.unknown;
 

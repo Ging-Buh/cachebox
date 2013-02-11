@@ -28,6 +28,7 @@ import CB_Core.Map.Layer.Type;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
@@ -373,6 +374,28 @@ public class splash extends TabMainView
 	 */
 	private void ini_CacheDB()
 	{
+
+		// chk if exist filter preset splitter "#" and Replace
+		String ConfigPreset = Config.settings.UserFilter.getValue();
+		if (ConfigPreset.endsWith("#"))
+		{
+			// Preset implements old splitter, replaced!
+
+			ConfigPreset = ConfigPreset.substring(0, ConfigPreset.length() - 1) + SettingString.STRING_SPLITTER;
+
+			boolean replace = true;
+			while (replace)
+			{
+				String newConfigPreset = ReplaceSpliter(ConfigPreset);
+				if (newConfigPreset == null) replace = false;
+				else
+					ConfigPreset = newConfigPreset;
+			}
+			;
+			Config.settings.UserFilter.setValue(ConfigPreset);
+			Config.AcceptChanges();
+		}
+
 		String database = Config.settings.DatabasePath.getValue();
 		Database.Data.StartUp(database);
 
@@ -397,6 +420,31 @@ public class splash extends TabMainView
 		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
+	}
+
+	private String ReplaceSpliter(String ConfigPreset)
+	{
+		try
+		{
+			int pos = ConfigPreset.indexOf("#");
+			int pos2 = ConfigPreset.indexOf(";", pos);
+
+			String PresetName = (String) ConfigPreset.subSequence(pos + 1, pos2);
+			if (!PresetName.contains(","))
+			{
+				String s1 = (String) ConfigPreset.subSequence(0, pos);
+				String s2 = (String) ConfigPreset.subSequence(pos2, ConfigPreset.length());
+
+				ConfigPreset = s1 + SettingString.STRING_SPLITTER + PresetName + s2;
+				return ConfigPreset;
+			}
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+
+		return null;
 	}
 
 	/**

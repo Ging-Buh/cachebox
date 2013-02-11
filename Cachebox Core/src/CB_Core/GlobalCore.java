@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1432;
+	public static final int CurrentRevision = 1435;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 

@@ -15,6 +15,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -129,13 +130,20 @@ public class PresetListView extends V_ListView
 		// add User Presets
 		if (!Config.settings.UserFilter.getValue().equalsIgnoreCase(""))
 		{
-			String userEntrys[] = Config.settings.UserFilter.getValue().split("#");
-			for (String entry : userEntrys)
+			String userEntrys[] = Config.settings.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+			try
 			{
-				int pos = entry.indexOf(";");
-				String name = entry.substring(0, pos);
-				String filter = entry.substring(pos + 1);
-				addPresetItem(SpriteCache.getThemedSprite("userdata"), name, filter);
+				for (String entry : userEntrys)
+				{
+					int pos = entry.indexOf(";");
+					String name = entry.substring(0, pos);
+					String filter = entry.substring(pos + 1);
+					addPresetItem(SpriteCache.getThemedSprite("userdata"), name, filter);
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 		}
 
@@ -175,12 +183,19 @@ public class PresetListView extends V_ListView
 					else
 					{
 						// User Preset
-						String userEntrys[] = Config.settings.UserFilter.getValue().split("#");
-						int i = itemIndex - FilterProperties.presets.length;
+						try
+						{
+							String userEntrys[] = Config.settings.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+							int i = itemIndex - FilterProperties.presets.length;
 
-						int pos = userEntrys[i].indexOf(";");
-						String filter = userEntrys[i].substring(pos + 1);
-						EditFilterSettings.tmpFilterProps = new FilterProperties(filter);
+							int pos = userEntrys[i].indexOf(";");
+							String filter = userEntrys[i].substring(pos + 1);
+							EditFilterSettings.tmpFilterProps = new FilterProperties(filter);
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
 
 					}
 
@@ -217,18 +232,26 @@ public class PresetListView extends V_ListView
 										}
 										else
 										{
-											String userEntrys[] = Config.settings.UserFilter.getValue().split("#");
-
-											int i = FilterProperties.presets.length;
-											String newUserEntris = "";
-											for (String entry : userEntrys)
+											try
 											{
-												if (i++ != delItemIndex) newUserEntris += entry + "#";
+												String userEntrys[] = Config.settings.UserFilter.getValue().split(
+														SettingString.STRING_SPLITTER);
+
+												int i = FilterProperties.presets.length;
+												String newUserEntris = "";
+												for (String entry : userEntrys)
+												{
+													if (i++ != delItemIndex) newUserEntris += entry + SettingString.STRING_SPLITTER;
+												}
+												Config.settings.UserFilter.setValue(newUserEntris);
+												Config.AcceptChanges();
+												EditFilterSettings.that.lvPre.fillPresetList();
+												EditFilterSettings.that.lvPre.notifyDataSetChanged();
 											}
-											Config.settings.UserFilter.setValue(newUserEntris);
-											Config.AcceptChanges();
-											EditFilterSettings.that.lvPre.fillPresetList();
-											EditFilterSettings.that.lvPre.notifyDataSetChanged();
+											catch (Exception e)
+											{
+												e.printStackTrace();
+											}
 
 										}
 										EditFilterSettings.that.show();
