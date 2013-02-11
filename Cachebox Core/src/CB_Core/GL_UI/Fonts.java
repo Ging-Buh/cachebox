@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 
@@ -237,18 +238,19 @@ public class Fonts
 
 	private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale)
 	{
-		String path = Config.settings.SkinFolder.getValue() + "/fonts";
+		String fs = GlobalCore.fs;
+		String path = Config.settings.SkinFolder.getValue() + fs + "fonts";
 		String fontPath = null;
 		for (int i = 0; i < 46; i++)
 		{
-			if ((scale - i > 0) && FileIO.FileExists(path + "/" + String.valueOf(scale - i) + ".fnt"))
+			if ((scale - i > 0) && FileIO.FileExists(path + fs + String.valueOf(scale - i) + ".fnt"))
 			{
-				fontPath = path + "/" + String.valueOf(Math.abs(scale - i)) + ".fnt";
+				fontPath = path + fs + String.valueOf(Math.abs(scale - i)) + ".fnt";
 				break;
 			}
-			else if (FileIO.FileExists(path + "/" + String.valueOf(scale + i) + ".fnt"))
+			else if (FileIO.FileExists(path + fs + String.valueOf(scale + i) + ".fnt"))
 			{
-				fontPath = path + "/" + String.valueOf(scale + i) + ".fnt";
+				fontPath = path + fs + String.valueOf(scale + i) + ".fnt";
 				break;
 			}
 		}

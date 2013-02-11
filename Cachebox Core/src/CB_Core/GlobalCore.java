@@ -19,6 +19,8 @@ public class GlobalCore
 	public static final String VersionPrefix = "Test";
 
 	public static final String br = System.getProperty("line.separator");
+	public static final String fs = System.getProperty("file.separator");
+	public static final String ps = System.getProperty("path.separator");
 	public static final String AboutMsg = "Team Cachebox (2011-2013)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
 			+ br + "Groundspeak Inc. Used with permission";
 	public static final String splashMsg = AboutMsg + br + br + br + "POWERED BY:";
