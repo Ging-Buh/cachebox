@@ -10,6 +10,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.ProgresssChangedEventList;
+import CB_Core.Events.platformConector;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -25,6 +26,8 @@ import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
+import CB_Core.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -210,10 +213,18 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
+		Cache cache = GlobalCore.getSelectedCache();
+
 		cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
 		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
-		cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
-		cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
+
+		// Aktueller Cache ist kein Munzee dann weitere Menüeinträge freigeben
+		if (cache.Type.name() != "Munzee")
+		{
+			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
+			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
+		}
+
 		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(35));
 		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
 
@@ -379,6 +390,41 @@ public class FieldNotesView extends V_ListView
 						MessageBoxIcon.Error, null);
 			}
 
+			return;
+		}
+
+		// Munzee found?
+		if (cache.Type.name() == "Munzee")
+		{
+
+			if (type == 1)
+			{
+				// Found it! -> Munzee als gefunden markieren
+				if (!GlobalCore.getSelectedCache().Found)
+				{
+					GlobalCore.getSelectedCache().Found = true;
+					CacheDAO cacheDAO = new CacheDAO();
+					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
+					pop.show(PopUp_Base.SHOW_TIME_SHORT);
+					platformConector.vibrate();
+				}
+			}
+			else if (type == 2)
+			{
+				// DidNotFound -> Munzee als nicht gefunden markieren
+				if (GlobalCore.getSelectedCache().Found)
+				{
+					GlobalCore.getSelectedCache().Found = false;
+					CacheDAO cacheDAO = new CacheDAO();
+					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
+					pop2.show(PopUp_Base.SHOW_TIME_SHORT);
+					platformConector.vibrate();
+				}
+			}
+
+			if (that != null) that.notifyDataSetChanged();
 			return;
 		}
 
