@@ -264,11 +264,12 @@ public class MapViewCacheList implements CacheListChangedEventListner
 	private Sprite getMapIcon(Cache cache)
 	{
 		int IconId;
-		if (cache.ImTheOwner()) IconId = 22;
+		if (cache.ImTheOwner()) IconId = 26;
 		else if (cache.Found) IconId = 19;
 		else if ((cache.Type == CacheTypes.Mystery) && cache.CorrectedCoordiantesOrMysterySolved()) IconId = 21;
 		else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint()) IconId = 23; // Multi mit Startpunkt
 		else if ((cache.Type == CacheTypes.Mystery) && cache.HasStartWaypoint()) IconId = 25; // Mystery ohne Final aber mit Startpunkt
+		else if ((cache.Type == CacheTypes.Munzee)) IconId = 22;
 		else
 			IconId = cache.Type.ordinal();
 		return SpriteCache.MapIcons.get(IconId);
@@ -317,6 +318,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		case Wherigo:
 			iconId = 4;
 			break;
+
 		default:
 			iconId = 0;
 		}
@@ -327,6 +329,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		if (cache.Archived || !cache.Available) iconId += 8;
 
 		if (cache.Type == CacheTypes.MyParking) iconId = 16;
+		if (cache.Type == CacheTypes.Munzee) iconId = 17;
 
 		return SpriteCache.MapIconsSmall.get(iconId);
 

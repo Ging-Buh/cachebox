@@ -23,6 +23,7 @@ public enum CacheTypes
 	Final, // = 18,
 	Cache, // = 19,
 	MyParking, // = 20
+	Munzee, // 21
 	;
 
 	/**
@@ -37,18 +38,19 @@ public enum CacheTypes
 		if (string.contains("-")) string = string.substring(0, string.indexOf("-"));
 
 		// Replace some opencaching.de / geotoad cache types
-		if (string.toLowerCase().equals("unknown")) string = "Mystery";
-		if (string.toLowerCase().equals("multicache")) string = "Multi";
-		if (string.toLowerCase().equals("whereigo")) // note the additional "e"
+		if (string.toLowerCase().contains("unknown")) string = "Mystery";
+		if (string.toLowerCase().contains("multicache")) string = "Multi";
+		if (string.toLowerCase().contains("whereigo")) // note the additional "e"
 		string = "Wherigo";
-		if (string.toLowerCase().equals("other")) string = "Mystery";
-		if (string.toLowerCase().equals("earthcache")) string = "Earth";
-		if (string.toLowerCase().equals("webcam")) string = "Camera";
-		if (string.toLowerCase().equals("question")) string = "MultiQuestion";
-		if (string.toLowerCase().equals("reference")) string = "ReferencePoint";
-		if (string.toLowerCase().equals("parking")) string = "ParkingArea";
-		if (string.toLowerCase().equals("stages")) string = "MultiStage";
-
+		if (string.toLowerCase().contains("other")) string = "Mystery";
+		if (string.toLowerCase().contains("earthcache")) string = "Earth";
+		if (string.toLowerCase().contains("webcam")) string = "Camera";
+		if (string.toLowerCase().contains("question")) string = "MultiQuestion";
+		if (string.toLowerCase().contains("reference")) string = "ReferencePoint";
+		if (string.toLowerCase().contains("parking")) string = "ParkingArea";
+		if (string.toLowerCase().contains("stages")) string = "MultiStage";
+		if (string.toLowerCase().contains("munzee")) string = "Munzee";
+		if (string.toLowerCase().contains("mega")) string = "MegaEvent";
 		// If no cache type is given, use "Unknown"
 		if (string.length() == 0) string = "Unknown";
 

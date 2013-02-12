@@ -107,19 +107,26 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		synchronized (Database.Data.Query)
 		{
-			lvAdapter = new CustomAdapter(Database.Data.Query);
-			listView.setBaseAdapter(lvAdapter);
-
-			int itemCount = Database.Data.Query.size();
-			int itemSpace = listView.getMaxItemCount();
-
-			if (itemSpace >= itemCount)
+			try
 			{
-				listView.setUndragable();
+				lvAdapter = new CustomAdapter(Database.Data.Query);
+				listView.setBaseAdapter(lvAdapter);
+
+				int itemCount = Database.Data.Query.size();
+				int itemSpace = listView.getMaxItemCount();
+
+				if (itemSpace >= itemCount)
+				{
+					listView.setUndragable();
+				}
+				else
+				{
+					listView.setDragable();
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				listView.setDragable();
+				e.printStackTrace();
 			}
 		}
 		TimerTask task = new TimerTask()

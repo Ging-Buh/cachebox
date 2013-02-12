@@ -355,6 +355,10 @@ public class CacheInfo extends CB_View_Base
 				// Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
 				mIconSprite = new Sprite(SpriteCache.BigIcons.get(24));
 			}
+			else if (mCache.Type == CacheTypes.Munzee)
+			{
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(25));
+			}
 			else
 			{
 				mIconSprite = new Sprite(SpriteCache.BigIcons.get(mCache.Type.ordinal()));

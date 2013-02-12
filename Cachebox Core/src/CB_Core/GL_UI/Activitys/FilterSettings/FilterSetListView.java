@@ -302,6 +302,7 @@ public class FilterSetListView extends V_ListView
 		Types.addChild(addFilterSetItem(SpriteCache.BigIcons.get(8), "Virtual Cache", CHECK_ITEM));
 		Types.addChild(addFilterSetItem(SpriteCache.BigIcons.get(9), "Letterbox", CHECK_ITEM));
 		Types.addChild(addFilterSetItem(SpriteCache.BigIcons.get(10), "Wherigo", CHECK_ITEM));
+		Types.addChild(addFilterSetItem(SpriteCache.BigIcons.get(25), "Munzee", CHECK_ITEM));
 
 		// add Attributes
 		Attr = addFilterSetCollabseItem(null, "Attributes", COLLABSE_BUTTON_ITEM);
@@ -467,7 +468,7 @@ public class FilterSetListView extends V_ListView
 		minRating.setValue(props.MinRating);
 		maxRating.setValue(props.MaxRating);
 
-		for (int i = 0; i < 11; i++)
+		for (int i = 0; i < props.cacheTypes.length; i++)
 			Types.getChild(i).setValue(props.cacheTypes[i]);
 
 		for (int i = 0; i < Attr.getChildLength(); i++)
@@ -499,7 +500,7 @@ public class FilterSetListView extends V_ListView
 		props.MinRating = minRating.getValue();
 		props.MaxRating = maxRating.getValue();
 
-		for (int i = 0; i < 11; i++)
+		for (int i = 0; i < props.cacheTypes.length; i++)
 			props.cacheTypes[i] = Types.getChild(i).getBoolean();
 
 		for (int i = 0; i < Attr.getChildLength(); i++)

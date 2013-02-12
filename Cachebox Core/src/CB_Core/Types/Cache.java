@@ -105,11 +105,11 @@ public class Cache implements Comparable<Cache>
 	/**
 	 * Schwierigkeit des Caches
 	 */
-	public float Difficulty;
+	public float Difficulty = 0;
 	/**
 	 * Geländebewertung
 	 */
-	public float Terrain;
+	public float Terrain = 0;
 	/**
 	 * Wurde der Cache archiviert?
 	 */

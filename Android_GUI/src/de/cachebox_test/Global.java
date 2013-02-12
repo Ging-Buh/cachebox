@@ -435,7 +435,8 @@ public class Global
 					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
 					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
 					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
-					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), getDrawable(R.drawable.my_parking, res), };
+					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), getDrawable(R.drawable.my_parking, res),
+					getDrawable(R.drawable.big_21, res), };
 
 		BtnIcons = new Drawable[]
 			{ getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),// 0

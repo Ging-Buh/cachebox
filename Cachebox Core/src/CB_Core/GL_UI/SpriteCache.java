@@ -430,6 +430,7 @@ public class SpriteCache
 			MapIconsSmall.add(getThemedSprite("small6no"));
 			MapIconsSmall.add(getThemedSprite("small7no"));
 			MapIconsSmall.add(getThemedSprite("20"));
+			MapIconsSmall.add(getThemedSprite("22"));
 
 		}
 
@@ -484,10 +485,11 @@ public class SpriteCache
 			MapIcons.add(getThemedSprite("19"));
 			MapIcons.add(getThemedSprite("20"));
 			MapIcons.add(getThemedSprite("21"));
-			MapIcons.add(getThemedSprite("star"));
+			MapIcons.add(getThemedSprite("22"));
 			MapIcons.add(getThemedSprite("23"));
 			MapIcons.add(getThemedSprite("24"));
 			MapIcons.add(getThemedSprite("25"));
+			MapIcons.add(getThemedSprite("star"));
 
 		}
 
@@ -660,6 +662,7 @@ public class SpriteCache
 			BigIcons.add(getThemedSprite("big22icon")); // 22
 			BigIcons.add(getThemedSprite("big23icon")); // 23
 			BigIcons.add(getThemedSprite("big24icon")); // 24
+			BigIcons.add(getThemedSprite("big21icon")); // 25
 
 		}
 
@@ -724,6 +727,7 @@ public class SpriteCache
 			Icons.add(getThemedSprite("FieldNote")); // 54
 			Icons.add(getThemedSprite("fieldnote-list-icon")); // 55
 			Icons.add(getThemedSprite("waypoint-list-icon")); // 56
+			Icons.add(getThemedSprite("add_cache_icon")); // 57
 
 		}
 

@@ -861,6 +861,7 @@ public class GPXFileImporter
 		if (values.containsKey("cache_type"))
 		{
 			cache.Type = CacheTypes.parseString(values.get("cache_type"));
+			if (cache.GcCode.indexOf("MZ") == 0) cache.Type = CacheTypes.Munzee;
 		}
 
 		if (values.containsKey("cache_container"))
@@ -870,12 +871,28 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_difficulty"))
 		{
-			cache.Difficulty = Float.parseFloat(values.get("cache_difficulty"));
+			try
+			{
+				cache.Difficulty = Float.parseFloat(values.get("cache_difficulty"));
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			if (cache.Difficulty < 0) cache.Difficulty = 0f;
 		}
 
 		if (values.containsKey("cache_terrain"))
 		{
-			cache.Terrain = Float.parseFloat(values.get("cache_terrain"));
+			try
+			{
+				cache.Terrain = Float.parseFloat(values.get("cache_terrain"));
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			if (cache.Terrain < 0) cache.Terrain = 0f;
 		}
 
 		if (values.containsKey("cache_country"))
@@ -890,35 +907,42 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_attributes_count"))
 		{
-			int count = Integer.parseInt(values.get("cache_attributes_count"));
-
-			for (int i = 1; i <= count; i++)
+			try
 			{
-				int attrGcComId = -1;
-				int attrGcComVal = -1;
+				int count = Integer.parseInt(values.get("cache_attributes_count"));
 
-				attrGcComId = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_id"));
-				try
+				for (int i = 1; i <= count; i++)
 				{
-					attrGcComVal = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_inc"));
-				}
-				catch (Exception ex)
-				{
-					// if there is no given value "inc" in attribute definition this should be = 1 (gccapp gpx files)
-					attrGcComVal = 1;
-				}
+					int attrGcComId = -1;
+					int attrGcComVal = -1;
 
-				if (attrGcComId > 0 && attrGcComVal != -1)
-				{
-					if (attrGcComVal > 0)
+					attrGcComId = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_id"));
+					try
 					{
-						cache.addAttributePositive(Attributes.getAttributeEnumByGcComId(attrGcComId));
+						attrGcComVal = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_inc"));
 					}
-					else
+					catch (Exception ex)
 					{
-						cache.addAttributeNegative(Attributes.getAttributeEnumByGcComId(attrGcComId));
+						// if there is no given value "inc" in attribute definition this should be = 1 (gccapp gpx files)
+						attrGcComVal = 1;
+					}
+
+					if (attrGcComId > 0 && attrGcComVal != -1)
+					{
+						if (attrGcComVal > 0)
+						{
+							cache.addAttributePositive(Attributes.getAttributeEnumByGcComId(attrGcComId));
+						}
+						else
+						{
+							cache.addAttributeNegative(Attributes.getAttributeEnumByGcComId(attrGcComId));
+						}
 					}
 				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 
 		}
@@ -950,52 +974,59 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_logs_count"))
 		{
-			int count = Integer.parseInt(values.get("cache_logs_count"));
-
-			for (int i = 1; i <= count; i++)
+			try
 			{
-				log.CacheId = cache.Id;
-				String attrValue = values.get("cache_log_" + String.valueOf(i) + "_id");
-				if (attrValue != null)
+				int count = Integer.parseInt(values.get("cache_logs_count"));
+
+				for (int i = 1; i <= count; i++)
 				{
-					try
+					log.CacheId = cache.Id;
+					String attrValue = values.get("cache_log_" + String.valueOf(i) + "_id");
+					if (attrValue != null)
 					{
-						log.Id = Long.parseLong(attrValue);
+						try
+						{
+							log.Id = Long.parseLong(attrValue);
+						}
+						catch (Exception ex)
+						{
+							// Cache ID konnte nicht als Zahl interpretiert werden -> in eine eindeutige Zahl wandeln
+							log.Id = Cache.GenerateCacheId(attrValue);
+						}
 					}
-					catch (Exception ex)
+
+					if (values.containsKey("cache_log_" + String.valueOf(i) + "_date"))
 					{
-						// Cache ID konnte nicht als Zahl interpretiert werden -> in eine eindeutige Zahl wandeln
-						log.Id = Cache.GenerateCacheId(attrValue);
+						log.Timestamp = parseDate(values.get("cache_log_" + String.valueOf(i) + "_date"));
 					}
-				}
 
-				if (values.containsKey("cache_log_" + String.valueOf(i) + "_date"))
-				{
-					log.Timestamp = parseDate(values.get("cache_log_" + String.valueOf(i) + "_date"));
-				}
+					if (values.containsKey("cache_log_" + String.valueOf(i) + "_finder"))
+					{
+						log.Finder = values.get("cache_log_" + String.valueOf(i) + "_finder");
+					}
 
-				if (values.containsKey("cache_log_" + String.valueOf(i) + "_finder"))
-				{
-					log.Finder = values.get("cache_log_" + String.valueOf(i) + "_finder");
-				}
+					if (values.containsKey("cache_log_" + String.valueOf(i) + "_text"))
+					{
+						log.Comment = values.get("cache_log_" + String.valueOf(i) + "_text");
+					}
 
-				if (values.containsKey("cache_log_" + String.valueOf(i) + "_text"))
-				{
-					log.Comment = values.get("cache_log_" + String.valueOf(i) + "_text");
-				}
+					if (values.containsKey("cache_log_" + String.valueOf(i) + "_type"))
+					{
+						log.Type = LogTypes.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
+					}
 
-				if (values.containsKey("cache_log_" + String.valueOf(i) + "_type"))
-				{
-					log.Type = LogTypes.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
-				}
+					if (log != null)
+					{
+						LogCount++;
+						mImportHandler.handleLog(log);
+					}
 
-				if (log != null)
-				{
-					LogCount++;
-					mImportHandler.handleLog(log);
+					log.clear();
 				}
-
-				log.clear();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 
 		}
