@@ -45,19 +45,27 @@ public class GpsStateChangeEventList
 			@Override
 			public void run()
 			{
-				synchronized (list)
+				try
 				{
-					long thradStart = System.currentTimeMillis();
-					count++;
-					for (GpsStateChangeEvent event : list)
+					synchronized (list)
 					{
+						long thradStart = System.currentTimeMillis();
+						count++;
+						for (GpsStateChangeEvent event : list)
+						{
 
-						FireEvent(event);
+							FireEvent(event);
 
+						}
+						if (count > 10) count = 0;
+
+						maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
 					}
-					if (count > 10) count = 0;
-
-					maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
+				}
+				catch (Exception e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
 			}

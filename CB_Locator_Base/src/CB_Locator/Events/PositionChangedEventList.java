@@ -9,7 +9,7 @@ import CB_Locator.Events.PositionChangedEvent.Priority;
 
 public class PositionChangedEventList
 {
-	public static ArrayList<PositionChangedEvent> list = new ArrayList<PositionChangedEvent>();
+	private static ArrayList<PositionChangedEvent> list = new ArrayList<PositionChangedEvent>();
 
 	public static void Add(PositionChangedEvent event)
 	{
@@ -67,21 +67,29 @@ public class PositionChangedEventList
 			{
 				synchronized (list)
 				{
-					for (PositionChangedEvent event : list)
+					try
 					{
-						// If display is switched off fire only events with high priority!
-						if (Locator.isDisplayOff()
-								&& !(event.getPriority() == Priority.High || event.getReceiverName().equalsIgnoreCase("Core.MainViewBase"))) continue;
-						try
+						for (PositionChangedEvent event : list)
 						{
-							event.PositionChanged();
+							// If display is switched off fire only events with high priority!
+							if (Locator.isDisplayOff()
+									&& !(event.getPriority() == Priority.High || event.getReceiverName().equalsIgnoreCase("Core.MainViewBase"))) continue;
+							try
+							{
+								event.PositionChanged();
+							}
+							catch (Exception e)
+							{
+								// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(location)", event.getReceiverName(),
+								// e);
+								e.printStackTrace();
+							}
 						}
-						catch (Exception e)
-						{
-							// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(location)", event.getReceiverName(),
-							// e);
-							e.printStackTrace();
-						}
+					}
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}

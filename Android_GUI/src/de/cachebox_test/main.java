@@ -90,9 +90,11 @@ import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Locator.GPS;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
+import CB_Locator.Events.GpsStateChangeEventList;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -3742,7 +3744,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
 
 			GpsStatus status = null;
-			locationManager.getGpsStatus(status);
+			status = locationManager.getGpsStatus(status);
 
 			CB_Locator.GpsStatus coreStatus = new CB_Locator.GpsStatus();
 
@@ -3763,6 +3765,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				index++;
 			}
 
+			GPS.setStatus(coreStatus);
+
 			// if no sat using for satFix fall back to Network position
 			if (SatFixcount < 3) CB_Locator.Locator.FallBack2Network();
 
@@ -3773,5 +3777,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			break;
 
 		}
+		GpsStateChangeEventList.Call();
 	}
 }

@@ -53,7 +53,7 @@ public class GPS
 		return String.valueOf(mSatVisible) + "/" + String.valueOf(mSatFixed);
 	}
 
-	public void setStatus(GpsStatus status)
+	public static void setStatus(GpsStatus status)
 	{
 		if (status == null) return;
 
