@@ -43,11 +43,12 @@ import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -686,7 +687,7 @@ public class SearchDialog extends PopUp_Base
 				}
 				else
 				{
-					searchCoord = GlobalCore.LastValidPosition;
+					searchCoord = Locator.getCoordinate();
 				}
 
 				if (searchCoord == null)

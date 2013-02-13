@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -76,20 +77,22 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
-import CB_Core.Locator.Locator;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase;
+import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Location.ProviderType;
+import CB_Locator.Locator;
+import CB_Locator.Locator.CompassType;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -183,9 +186,7 @@ import de.cachebox_test.Custom_Controls.Mic_On_Flash;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.cachebox_test.DB.AndroidDB;
-import de.cachebox_test.Events.PositionEventList;
 import de.cachebox_test.Events.ViewOptionsMenu;
-import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.DescriptionView;
@@ -200,7 +201,7 @@ import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
-		GpsStatus.NmeaListener, ILog, KeyboardFocusChangedEvent
+		GpsStatus.NmeaListener, GpsStatus.Listener, ILog, KeyboardFocusChangedEvent
 {
 
 	private static ServiceConnection mConnection;
@@ -252,7 +253,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static String mediaTimeString = null;
 	private static String basename = null;
 	private static String mediaCacheName = null;
-	private static Coordinate mediaCoordinate = null;
+	private static CB_Locator.Location mediaCoordinate = null;
 
 	private static Boolean mVoiceRecIsStart = false;
 	/*
@@ -798,42 +799,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
-	public void newLocationReceived(Location location)
-	{
-
-		if (!location.hasBearing())
-		{
-			location.setBearing(compassHeading);
-		}
-
-		try
-		{
-			PositionEventList.Call(location);
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "PositionEventList.Call(location)", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			InfoDownSlider.setNewLocation(GlobalCore.LastPosition);
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "InfoDownSlider.setNewLocation(location)", e);
-			e.printStackTrace();
-		}
-
-	}
-
 	@Override
 	public void onLocationChanged(Location location)
 	{
+		ProviderType provider = ProviderType.NULL;
 
-		newLocationReceived(location);
+		if (location.getProvider().toLowerCase(new Locale("en")).contains("gps")) provider = ProviderType.GPS;
+		if (location.getProvider().toLowerCase(new Locale("en")).contains("network")) provider = ProviderType.Network;
 
+		CB_Locator.Locator.setNewLocation(new CB_Locator.Location(location.getLatitude(), location.getLongitude(), location.getAccuracy(),
+				location.hasSpeed(), location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), provider));
 	}
 
 	@Override
@@ -916,8 +891,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
 						// die Koordinaten nach der Aufnahme verwendet werden.
 						mediaTimeString = Global.GetTrackDateTimeString();
-						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", GlobalCore.LastValidPosition,
-								mediaTimeString);
+						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg",
+								CB_Locator.Locator.getLastSavedFineLocation(), mediaTimeString);
 
 						TabMainView.that.reloadSprites(false);
 
@@ -1272,7 +1247,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				GlobalCore.setSelectedCache(null);
 				SelectedCacheEventList.list.clear();
-				PositionEventList.list.clear();
 				SelectedCacheEventList.list.clear();
 				CachListChangedEventList.list.clear();
 				if (aktView != null)
@@ -1346,14 +1320,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
 			{
-				// do whatever you need to do here
 				Energy.setDisplayOff();
+				CB_Locator.Locator.setDisplayOff();
 				wasScreenOn = false;
 			}
 			else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
 			{
-				// and do whatever you need to do here
 				Energy.setDisplayOn();
+				CB_Locator.Locator.setDisplayOn();
 				wasScreenOn = true;
 			}
 		}
@@ -1401,18 +1375,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		public void onSensorChanged(SensorEvent event)
 		{
-
-			if (GlobalCore.Locator == null)
-			{
-				GlobalCore.Locator = new Locator();
-			}
-
 			try
 			{
 				mCompassValues = event.values;
 				compassHeading = mCompassValues[0];
 
-				PositionEventList.Call(mCompassValues[0], "CompassValue");
+				CB_Locator.Locator.setHeading(compassHeading, CompassType.Magnetic);
 			}
 			catch (Exception e)
 			{
@@ -1687,12 +1655,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			criteria.setCostAllowed(true);
 			criteria.setPowerRequirement(Criteria.POWER_LOW);
 
-			// Global.Locator = new Locator();
-			// locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-			// 1000, 1, this);
-			// locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-			// 1000, 10, this);
-
 			/*
 			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
 			 * genauigkeit, darher reicht es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe
@@ -1706,7 +1668,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
 
 			locationManager.addNmeaListener(this);
-			locationManager.addGpsStatusListener(new GPS.GpsStatusListener(locationManager));
+			locationManager.addGpsStatusListener(this);
 		}
 		catch (Exception e)
 		{
@@ -1913,7 +1875,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Da ein Video keine Momentaufnahme ist, muss die Zeit und die
 		// Koordinaten beim Start der Aufnahme verwendet werden.
 		mediaTimeString = Global.GetTrackDateTimeString();
-		mediaCoordinate = GlobalCore.LastValidPosition;
+		mediaCoordinate = Locator.getLocation(ProviderType.GPS);
 
 		ContentValues values = new ContentValues();
 		values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");
@@ -1975,7 +1937,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 			// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die
 			// Koordinaten beim Start der Aufnahme verwendet werden.
-			TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", GlobalCore.LastValidPosition,
+			TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", Locator.getLocation(ProviderType.GPS),
 					Global.GetTrackDateTimeString());
 			Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
@@ -2299,7 +2261,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					double altCorrection = Double.valueOf(s[11]);
 					if (altCorrection == 0) return;
 					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
-					GlobalCore.Locator.altCorrection = altCorrection;
+					Locator.setAltCorrection(altCorrection);
 					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
 					// Höhenkorrektur ändert sich normalerweise nicht, einmal
 					// auslesen reicht...
@@ -2515,19 +2477,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	// }
 
 	private static View[] balken = null;
-
-	public static void setSatStrength()
-	{
-		try
-		{
-			de.cachebox_test.Locator.GPS.setSatStrength(strengthLayout, balken);
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.setSatStrength()", "de.cachebox_test.Locator.GPS.setSatStrength()", e);
-			e.printStackTrace();
-		}
-	}
 
 	private void askToGetApiKey()
 	{
@@ -2854,6 +2803,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		GlobalCore.platform = Plattform.Android;
 
+		initialLocatorBase();
+
 		platformConector.setisOnlineListner(new IHardwarStateListner()
 		{
 			/*
@@ -2884,35 +2835,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				main.vibrate();
 			}
 
-			@SuppressWarnings("unused")
-			@Override
-			public CB_Core.Locator.GpsStatus getGpsStatus()
-			{
-				GpsStatus status = null;
-				locationManager.getGpsStatus(status);
-
-				CB_Core.Locator.GpsStatus coreStatus = new CB_Core.Locator.GpsStatus();
-
-				int index = 0;
-				if (status == null) return null;
-				for (GpsSatellite sat : status.getSatellites())
-				{
-					CB_Core.Locator.GpsSatellite coreSat = new CB_Core.Locator.GpsSatellite(sat.getPrn());
-					coreSat.setSnr(sat.getSnr());
-					coreSat.setElevation(sat.getElevation());
-					coreSat.setAzimuth(sat.getAzimuth());
-					coreStatus.setSatelite(index, coreSat);
-					index++;
-				}
-
-				return coreStatus;
-			}
-
-			@Override
-			public float getCompassHeading()
-			{
-				return compassHeading;
-			}
 		});
 
 		platformConector.setShowViewListner(new IShowViewListner()
@@ -3736,4 +3658,120 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
+	/**
+	 * Initial all Locator functions
+	 */
+	private void initialLocatorBase()
+	{
+		// ##########################################################
+		// initial Locator with saved Location
+		// ##########################################################
+		double latitude = Config.settings.MapInitLatitude.getValue();
+		double longitude = Config.settings.MapInitLongitude.getValue();
+		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
+
+		CB_Locator.Location initialLocation;
+
+		if (provider == ProviderType.Saved)
+		{
+			initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
+		}
+		else
+		{
+			initialLocation = CB_Locator.Location.NULL_LOCATION;
+		}
+
+		new CB_Locator.Locator(initialLocation);
+
+		// ##########################################################
+		// initial settings changed handling
+		// ##########################################################
+
+		// Use Imperial units?
+		CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+		Config.settings.ImperialUnits.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+			}
+		});
+
+		// GPS update time?
+		CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+		Config.settings.gpsUpdateTime.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+			}
+		});
+
+		// Use magnetic Compass?
+		CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+		Config.settings.HardwareCompass.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+			}
+		});
+
+		// Magnetic compass level
+		CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+		Config.settings.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+			}
+		});
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public void onGpsStatusChanged(int event)
+	{
+		switch (event)
+		{
+		case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+
+			GpsStatus status = null;
+			locationManager.getGpsStatus(status);
+
+			CB_Locator.GpsStatus coreStatus = new CB_Locator.GpsStatus();
+
+			int index = 0;
+			if (status == null) return;
+
+			int SatFixcount = 0;
+
+			for (GpsSatellite sat : status.getSatellites())
+			{
+				if (sat.usedInFix()) SatFixcount++;
+
+				CB_Locator.GpsSatellite coreSat = new CB_Locator.GpsSatellite(sat.getPrn());
+				coreSat.setSnr(sat.getSnr());
+				coreSat.setElevation(sat.getElevation());
+				coreSat.setAzimuth(sat.getAzimuth());
+				coreStatus.setSatelite(index, coreSat);
+				index++;
+			}
+
+			// if no sat using for satFix fall back to Network position
+			if (SatFixcount < 3) CB_Locator.Locator.FallBack2Network();
+
+			break;
+		case GpsStatus.GPS_EVENT_FIRST_FIX:
+			// Do something.
+
+			break;
+
+		}
+	}
 }

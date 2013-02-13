@@ -11,7 +11,6 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
-import CB_Core.Events.PositionChangedEvent;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.invalidateTextureEvent;
 import CB_Core.Events.invalidateTextureEventList;
@@ -31,7 +30,6 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.MainViewBase;
 import CB_Core.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_Core.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
-import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
@@ -47,8 +45,11 @@ import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -79,7 +80,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	protected SortedMap<Integer, Integer> DistanceZoomLevel;
 
-	private Locator locator = null;
 	public static MapTileLoader mapTileLoader = new MapTileLoader();
 	private boolean alignToCompass = false;
 	private boolean CarMode = false;
@@ -177,7 +177,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 				{
 					// Center own position!
-					setCenter(new Coordinate(GlobalCore.LastValidPosition.getLatitude(), GlobalCore.LastValidPosition.getLongitude()));
+					setCenter(Locator.getCoordinate());
 					return true;
 				}
 			});
@@ -369,7 +369,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 				else if (State > 0)
 				{
-					setCenter(new Coordinate(GlobalCore.LastValidPosition.getLatitude(), GlobalCore.LastValidPosition.getLongitude()));
+					setCenter(Locator.getCoordinate());
 				}
 
 				if (State != 4)
@@ -435,8 +435,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public void onShow()
 	{
 		CB_Core.Events.SelectedCacheEventList.Add(this);
-		CB_Core.Events.PositionChangedEventList.Add(this);
-		PositionChanged(GlobalCore.Locator);
+		PositionChangedEventList.Add(this);
+		PositionChanged();
 
 		alignToCompass = CompassMode ? true : !Config.settings.MapNorthOriented.getValue();
 
@@ -468,7 +468,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public void onHide()
 	{
 		CB_Core.Events.SelectedCacheEventList.Remove(this);
-		CB_Core.Events.PositionChangedEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
 		setInvisible();
 		onStop();// save last zoom and position
 	}
@@ -568,12 +568,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected void render(SpriteBatch batch)
 	{
 
-		if (Config.settings.MoveMapCenterWithSpeed.getValue() && CarMode && this.locator != null && this.locator.hasSpeed())
+		if (Config.settings.MoveMapCenterWithSpeed.getValue() && CarMode && Locator.hasSpeed())
 		{
 
 			double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
 
-			double percent = this.locator.SpeedOverGround() / maxSpeed;
+			double percent = Locator.SpeedOverGround() / maxSpeed;
 
 			float diff = (float) ((height) / 3 * percent);
 			if (diff > height / 3) diff = height / 3;
@@ -879,86 +879,82 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private void renderPositionMarker(SpriteBatch batch)
 	{
-		if (locator != null)
+		PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getLongitude()),
+				Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, Locator.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
+				MapTileLoader.MAX_MAP_ZOOM);
+
+		Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
+
+		myPointOnScreen = worldToScreen(vPoint);
+
+		myPointOnScreen.y -= ySpeedVersatz;
+
+		if (showAccuracyCircle)
 		{
-			PointD point = Descriptor.ToWorld(
-					Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, GlobalCore.LastValidPosition.getLongitude()),
-					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, GlobalCore.LastValidPosition.getLatitude()),
-					MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
-			Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
-
-			myPointOnScreen = worldToScreen(vPoint);
-
-			myPointOnScreen.y -= ySpeedVersatz;
-
-			if (showAccuracyCircle)
+			if (actAccuracy != Locator.getCoordinate().Accuracy || actPixelsPerMeter != pixelsPerMeter)
 			{
+				actAccuracy = Locator.getCoordinate().Accuracy;
+				actPixelsPerMeter = pixelsPerMeter;
 
-				if (actAccuracy != locator.getLocation().Accuracy || actPixelsPerMeter != pixelsPerMeter)
+				int radius = (int) (pixelsPerMeter * Locator.getCoordinate().Accuracy);
+				// Logger.LogCat("Accuracy radius " + radius);
+				// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
+				if (radius > 0 && radius < UiSizes.getSmallestWidth())
 				{
-					actAccuracy = locator.getLocation().Accuracy;
-					actPixelsPerMeter = pixelsPerMeter;
 
-					int radius = (int) (pixelsPerMeter * locator.getLocation().Accuracy);
-					// Logger.LogCat("Accuracy radius " + radius);
-					// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
-					if (radius > 0 && radius < UiSizes.getSmallestWidth())
+					try
 					{
+						int squaredR = radius * 2;
 
-						try
-						{
-							int squaredR = radius * 2;
-
-							if (squaredR > SpriteCache.Accuracy[2].getWidth()) AccuracySprite = new Sprite(SpriteCache.Accuracy[2]);
-							else if (squaredR > SpriteCache.Accuracy[1].getWidth()) AccuracySprite = new Sprite(SpriteCache.Accuracy[1]);
-							else
-								AccuracySprite = new Sprite(SpriteCache.Accuracy[0]);
-							if (AccuracySprite != null) AccuracySprite.setSize(squaredR, squaredR);
-						}
-						catch (Exception e)
-						{
-							Logger.Error("MapView.renderPositionMarker()", "set AccuracySprite", e);
-						}
-
+						if (squaredR > SpriteCache.Accuracy[2].getWidth()) AccuracySprite = new Sprite(SpriteCache.Accuracy[2]);
+						else if (squaredR > SpriteCache.Accuracy[1].getWidth()) AccuracySprite = new Sprite(SpriteCache.Accuracy[1]);
+						else
+							AccuracySprite = new Sprite(SpriteCache.Accuracy[0]);
+						if (AccuracySprite != null) AccuracySprite.setSize(squaredR, squaredR);
+					}
+					catch (Exception e)
+					{
+						Logger.Error("MapView.renderPositionMarker()", "set AccuracySprite", e);
 					}
 
 				}
 
-				if (AccuracySprite != null && AccuracySprite.getWidth() > GL_UISizes.PosMarkerSize)
-				{// nur wenn berechnet wurde und grösser als der PosMarker
-
-					float center = AccuracySprite.getWidth() / 2;
-
-					AccuracySprite.setPosition(myPointOnScreen.x - center, myPointOnScreen.y - center);
-					AccuracySprite.draw(batch);
-				}
 			}
 
-			boolean lastUsedCompass = locator.isLastUsedCompass(Locator.CompassType.Magnetic);
-			boolean Transparency = Config.settings.PositionMarkerTransparent.getValue();
-			// int arrowId = lastUsedCompass ? (Transparency ? 2 : 0) :
-			// (Transparency ? 3 : 1);
-			int arrowId = 0;
-			if (lastUsedCompass)
-			{
-				arrowId = Transparency ? 1 : 0;
+			if (AccuracySprite != null && AccuracySprite.getWidth() > GL_UISizes.PosMarkerSize)
+			{// nur wenn berechnet wurde und grösser als der PosMarker
+
+				float center = AccuracySprite.getWidth() / 2;
+
+				AccuracySprite.setPosition(myPointOnScreen.x - center, myPointOnScreen.y - center);
+				AccuracySprite.draw(batch);
 			}
-			else
-			{
-				arrowId = Transparency ? 3 : 2;
-			}
-
-			if (CarMode) arrowId = 15;
-
-			Sprite arrow = SpriteCache.Arrows.get(arrowId);
-			arrow.setRotation(-arrowHeading);
-			arrow.setBounds(myPointOnScreen.x - GL_UISizes.halfPosMarkerSize, myPointOnScreen.y - GL_UISizes.halfPosMarkerSize,
-					GL_UISizes.PosMarkerSize, GL_UISizes.PosMarkerSize);
-			arrow.setOrigin(GL_UISizes.halfPosMarkerSize, GL_UISizes.halfPosMarkerSize);
-			arrow.draw(batch);
-
 		}
+
+		boolean lastUsedCompass = Locator.UseMagneticCompass();
+		boolean Transparency = Config.settings.PositionMarkerTransparent.getValue();
+		// int arrowId = lastUsedCompass ? (Transparency ? 2 : 0) :
+		// (Transparency ? 3 : 1);
+		int arrowId = 0;
+		if (lastUsedCompass)
+		{
+			arrowId = Transparency ? 1 : 0;
+		}
+		else
+		{
+			arrowId = Transparency ? 3 : 2;
+		}
+
+		if (CarMode) arrowId = 15;
+
+		Sprite arrow = SpriteCache.Arrows.get(arrowId);
+		arrow.setRotation(-arrowHeading);
+		arrow.setBounds(myPointOnScreen.x - GL_UISizes.halfPosMarkerSize, myPointOnScreen.y - GL_UISizes.halfPosMarkerSize,
+				GL_UISizes.PosMarkerSize, GL_UISizes.PosMarkerSize);
+		arrow.setOrigin(GL_UISizes.halfPosMarkerSize, GL_UISizes.halfPosMarkerSize);
+		arrow.draw(batch);
+
 	}
 
 	private Sprite AccuracySprite;
@@ -1468,9 +1464,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			else
 			{
 				// GPS-Position bekannt?
-				if (GlobalCore.LastValidPosition.Valid)
+				if (Locator.Valid())
 				{
-					setCenter(new Coordinate(GlobalCore.LastValidPosition));
+					setCenter(Locator.getCoordinate());
 					positionInitialized = true;
 				}
 				else
@@ -1801,23 +1797,19 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
-		if (locator == null) return;
-		if (locator.getLocation() == null) return;
 
 		if (CarMode)
 		{
 			// im CarMode keine Netzwerk Koordinaten zulassen
-			if (!locator.isGPSprovided()) return;
+			if (!Locator.isGPSprovided()) return;
 		}
-
-		this.locator = locator;
 
 		if (info != null)
 		{
-			info.setCoord(GlobalCore.LastValidPosition);
-			info.setSpeed(locator.SpeedString());
+			info.setCoord(Locator.getCoordinate());
+			info.setSpeed(Locator.SpeedString());
 
 			if (GlobalCore.getSelectedCoord() != null)
 			{
@@ -1826,8 +1818,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// Logger.DEBUG("Map.SetDistance=" + GlobalCore.getSelectedCoord().Distance());
 		}
 
-		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(new Coordinate(locator.getLocation().getLatitude(), locator
-				.getLocation().getLongitude()));
+		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(Locator.getCoordinate());
 
 		if (togBtn.getState() == 4 && Config.settings.dynamicZoom.getValue())
 		{
@@ -1837,7 +1828,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			int maxZoom = Config.settings.dynamicZoomLevelMax.getValue();
 			int minZoom = Config.settings.dynamicZoomLevelMin.getValue();
 
-			double percent = this.locator.SpeedOverGround() / maxSpeed;
+			double percent = Locator.SpeedOverGround() / maxSpeed;
 
 			float dynZoom = (float) (maxZoom - ((maxZoom - minZoom) * percent));
 			if (dynZoom > maxZoom) dynZoom = maxZoom;
@@ -1864,9 +1855,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// Berechne den Zoom so, dass eigene Position und WP auf der Map zu sehen sind.
 			Coordinate position = null;
 			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
-			else
-				position = new Coordinate();
+			position = Locator.getCoordinate();
 
 			float distance = -1;
 			if (GlobalCore.getSelectedCache() != null && position.Valid)
@@ -1911,21 +1900,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private float lastDynamicZoom = -1;
 
 	@Override
-	public void OrientationChanged(float heading)
+	public void OrientationChanged()
 	{
-		if (GlobalCore.Locator == null) return;
 
-		if (this.locator != null)
-		{
-			heading = this.locator.getHeading();
-		}
-		else
-		{
-			heading = GlobalCore.Locator.getHeading();
-		}
+		float heading = Locator.getHeading();
 
 		// im CarMode keine Richtungs Änderungen unter 20kmh
-		if (CarMode && GlobalCore.Locator.SpeedOverGround() < 20) heading = this.mapHeading;
+		if (CarMode && Locator.SpeedOverGround() < 20) heading = this.mapHeading;
 
 		if (alignToCompass || CarMode)
 		{
@@ -1961,16 +1942,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			Coordinate position = null;
 			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-			if (GlobalCore.LastValidPosition != null) position = GlobalCore.LastValidPosition;
-			else
-				position = new Coordinate();
+			position = Locator.getCoordinate();
+
 			if (GlobalCore.getSelectedCache() != null)
 			{
 				Coordinate cache = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
 						.getSelectedCache().Pos;
 				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.getLatitude(),
 						cache.getLongitude());
-				info.setBearing((float) (bearing - GlobalCore.Locator.getHeading()), this.mapHeading);
+				info.setBearing((float) (bearing - Locator.getHeading()), this.mapHeading);
 			}
 		}
 		GL.that.renderOnce(MapView.this.getName() + " OrientationChanged");
@@ -2434,7 +2414,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// Deshalb habe ich es erstmal auskommentiert! ( Longri)
 		if (togBtn.getState() > 0 && togBtn.getState() != 2)
 		{
-			PositionChanged(GlobalCore.Locator);
+			PositionChanged();
 			return;
 		}
 
@@ -2461,7 +2441,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		Timer timer = new Timer();
 		timer.schedule(task, 2000);
-		PositionChanged(GlobalCore.Locator);
+		PositionChanged();
 	}
 
 	protected class KineticPan
@@ -2673,6 +2653,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			return super.doubleClick(x, y, pointer, button);
 		}
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Normal;
 	}
 
 }

@@ -40,7 +40,8 @@ import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -89,14 +90,14 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 	private void GenOpenRoute()
 	{
 
-		if ((GlobalCore.Locator == null && !GlobalCore.LastValidPosition.Valid) || !GlobalCore.Locator.isGPSprovided())
+		if (!Locator.isGPSprovided())
 		{
 			GL_MsgBox.Show("GPS ungültig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 			return;
 		}
 		else
 		{
-			start = GlobalCore.LastValidPosition;
+			start = Locator.getCoordinate();
 		}
 
 		if (GlobalCore.getSelectedWaypoint() != null)

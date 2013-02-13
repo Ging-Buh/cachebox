@@ -1,7 +1,9 @@
 package CB_Core.Types;
 
 import junit.framework.TestCase;
-import CB_Core.GlobalCore;
+import CB_Locator.Coordinate;
+import CB_Locator.Location;
+import CB_Locator.Location.ProviderType;
 
 public class CacheTest extends TestCase
 {
@@ -38,12 +40,12 @@ public class CacheTest extends TestCase
 		// Vorsicht - hier wird nur die Objekt-Referenz gesetzt...
 		mCache.Pos = coordinate1;
 
-		Coordinate coordinate2 = new Coordinate();
-		assertTrue("Objekt muss konstruierbar sein", coordinate2 != null);
-		coordinate2.setLatitude(49.427700);
-		coordinate2.setLongitude(6.204300);
+		// Initial Locator
+		new CB_Locator.Locator(Location.NULL_LOCATION);
 
-		GlobalCore.LastValidPosition = coordinate2;
+		// Set Location
+		CB_Locator.Locator.setNewLocation(new CB_Locator.Location(49.427700, 6.204300, 100, false, 0, false, 0, 0,
+				ProviderType.GPS));
 
 		// Distanzberechnung
 		float distance = mCache.Distance(true);

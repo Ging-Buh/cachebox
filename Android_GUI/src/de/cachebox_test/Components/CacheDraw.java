@@ -10,9 +10,10 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -365,10 +366,10 @@ public class CacheDraw
 	private static void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec)
 	{
 
-		if (GlobalCore.LastValidPosition.Valid)
+		if (Locator.Valid())
 		{
-			Coordinate position = GlobalCore.LastValidPosition;
-			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
+			Coordinate position = Locator.getCoordinate();
+			double heading = Locator.getHeading();
 			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.Pos.getLatitude(),
 					cache.Pos.getLongitude());
 			double cacheBearing = bearing - heading;
@@ -378,12 +379,13 @@ public class CacheDraw
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec, Waypoint waypoint)
 	{
-		if (GlobalCore.LastValidPosition.Valid)
+		if (Locator.Valid())
 		{
-			Coordinate position = GlobalCore.LastValidPosition;
-			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
+			Coordinate position = Locator.getCoordinate();
+			double heading = Locator.getHeading();
 			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), waypoint.Pos.getLatitude(),
 					waypoint.Pos.getLongitude());
 			double waypointBearing = bearing - heading;

@@ -5,8 +5,6 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -20,16 +18,18 @@ import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.Controls.SatBarChart;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.Locator;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import CB_Core.Util.Astronomy;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -81,7 +81,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		PositionChangedEventList.Add(this);
 		if (map != null) map.onShow();
 
-		PositionChanged(null); // PositionChanged() use only last valid positions
+		PositionChanged();
 	}
 
 	@Override
@@ -660,85 +660,83 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		if (aktCache == null) return;
 
-		if (GlobalCore.Locator != null && GlobalCore.Locator.getLocation() != null)
+		Coordinate position = Locator.getCoordinate();
+		heading = Locator.getHeading();
+
+		if (lblOwnCoords != null) lblOwnCoords.setText(position.FormatCoordinate());
+
+		Coordinate dest = aktCache.Pos;
+		float distance = aktCache.Distance(false);
+		if (aktWaypoint != null)
 		{
-			Coordinate position = GlobalCore.Locator.getLocation();
-			heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
-
-			if (lblOwnCoords != null) lblOwnCoords.setText(position.FormatCoordinate());
-
-			Coordinate dest = aktCache.Pos;
-			float distance = aktCache.Distance(false);
-			if (aktWaypoint != null)
-			{
-				dest = aktWaypoint.Pos;
-				distance = aktWaypoint.Distance();
-			}
-			double bearing = Coordinate.Bearing(position, dest);
-
-			if (lblBearing != null)
-			{
-				double directionToTarget = 0;
-				if (bearing < 0) directionToTarget = 360 + bearing;
-				else
-					directionToTarget = bearing;
-
-				String sBearing = Translation.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
-				lblBearing.setText(sBearing);
-			}
-
-			double relativeBearing = bearing - heading;
-
-			if (arrow != null) arrow.setRotate((float) -relativeBearing);
-			if (scale != null) scale.setRotate((float) heading);
-			if (lblDistance != null)
-			{
-				lblDistance.setText(UnitFormatter.DistanceString(distance));
-				TextBounds bounds = lblDistance.bounds;
-				float labelWidth = bounds.width + (6 * margin);
-				if (showMap)
-				{
-					if (distanceBack != null)
-					{
-						distanceBack.setWidth(labelWidth);
-						distanceBack.setX(rightBox.getHalfWidth() - distanceBack.getHalfWidth());
-					}
-				}
-
-			}
-
-			if (lblAccuracy != null)
-			{
-				lblAccuracy.setText("  +/- " + String.valueOf((int) position.getAccuracy()) + "m  ");
-			}
-
-			if (showSatInfos && lblAlt != null && locator != null)
-			{
-				lblAlt.setText(Translation.Get("alt") + locator.getAltString());
-			}
-
-			if (showSunMoon)
-			{
-				if (Moon != null && Sun != null) setMoonSunPos();
-			}
-
-			GL.that.renderOnce("Compass-PositionChanged");
+			dest = aktWaypoint.Pos;
+			distance = aktWaypoint.Distance();
 		}
+		double bearing = Coordinate.Bearing(position, dest);
+
+		if (lblBearing != null)
+		{
+			double directionToTarget = 0;
+			if (bearing < 0) directionToTarget = 360 + bearing;
+			else
+				directionToTarget = bearing;
+
+			String sBearing = Translation.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
+			lblBearing.setText(sBearing);
+		}
+
+		double relativeBearing = bearing - heading;
+
+		if (arrow != null) arrow.setRotate((float) -relativeBearing);
+		if (scale != null) scale.setRotate((float) heading);
+		if (lblDistance != null)
+		{
+			lblDistance.setText(UnitFormatter.DistanceString(distance));
+			TextBounds bounds = lblDistance.bounds;
+			float labelWidth = bounds.width + (6 * margin);
+			if (showMap)
+			{
+				if (distanceBack != null)
+				{
+					distanceBack.setWidth(labelWidth);
+					distanceBack.setX(rightBox.getHalfWidth() - distanceBack.getHalfWidth());
+				}
+			}
+
+		}
+
+		if (lblAccuracy != null)
+		{
+			lblAccuracy.setText("  +/- " + String.valueOf((int) position.getAccuracy()) + "m  ");
+		}
+
+		if (showSatInfos && lblAlt != null)
+		{
+			lblAlt.setText(Translation.Get("alt") + Locator.getAltString());
+		}
+
+		if (showSunMoon)
+		{
+			if (Moon != null && Sun != null) setMoonSunPos();
+		}
+
+		GL.that.renderOnce("Compass-PositionChanged");
+
 	}
 
 	@Override
-	public void OrientationChanged(float Heading)
+	public void OrientationChanged()
 	{
 		if (aktCache == null) return;
 
-		if (GlobalCore.LastValidPosition.Valid)
+		if (Locator.Valid())
 		{
-			Coordinate position = GlobalCore.LastValidPosition;
-			heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
+			Coordinate position = Locator.getCoordinate();
+			heading = Locator.getHeading();
 
 			Coordinate dest = aktCache.Pos;
 			float distance = aktCache.Distance(false);
@@ -770,9 +768,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		// chk instanzes
 		if (Sun == null || Moon == null) return;
 
-		if (GlobalCore.Locator != null && GlobalCore.LastValidPosition != null)
+		if (Locator.Valid())
 		{
-			double julianDate = Astronomy.UtcToJulianDate(new Date());
+
+			Date now = new Date();
+
+			double julianDate = Astronomy.UtcToJulianDate(now);
 			float centerX = frame.getCenterPos().x;
 			float centerY = frame.getCenterPos().y;
 			float radius = frame.getHalfWidth() + Sun.getHalfHeight() + (Sun.getHalfHeight() / 4);
@@ -783,7 +784,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			// ##################
 			Coordinate eclipticMoon = Astronomy.EclipticCoordinatesMoon(julianDate);
 			Coordinate equatorialMoon = Astronomy.EclipticToEquatorial(eclipticMoon, julianDate);
-			Coordinate azymuthMoon = Astronomy.EquatorialToAzymuth(GlobalCore.LastValidPosition, julianDate, equatorialMoon);
+			Coordinate azymuthMoon = Astronomy.EquatorialToAzymuth(Locator.getCoordinate(), julianDate, equatorialMoon);
 
 			if (azymuthMoon.getLatitude() >= 0)
 			{
@@ -803,7 +804,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			// ##################
 			Coordinate eclipticSun = Astronomy.EclipticCoordinatesSun(julianDate);
 			Coordinate equatorialSun = Astronomy.EclipticToEquatorial(eclipticSun, julianDate);
-			Coordinate azymuthSun = Astronomy.EquatorialToAzymuth(GlobalCore.LastValidPosition, julianDate, equatorialSun);
+			Coordinate azymuthSun = Astronomy.EquatorialToAzymuth(Locator.getCoordinate(), julianDate, equatorialSun);
 
 			if (azymuthSun.getLatitude() >= 0)
 			{
@@ -817,6 +818,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				Sun.setInvisible();
 			}
 		}
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.High;
 	}
 
 }

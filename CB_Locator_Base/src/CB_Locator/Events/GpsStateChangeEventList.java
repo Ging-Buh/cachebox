@@ -1,8 +1,8 @@
-package CB_Core.Locator.Events;
+package CB_Locator.Events;
 
 import java.util.ArrayList;
 
-import CB_Core.Locator.Locator;
+import CB_Locator.Locator;
 
 public class GpsStateChangeEventList
 {

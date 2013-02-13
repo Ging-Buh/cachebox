@@ -33,8 +33,8 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public class SolverView2 extends V_ListView implements SelectedCacheEvent
 {

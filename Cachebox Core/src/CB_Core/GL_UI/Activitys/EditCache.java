@@ -30,7 +30,8 @@ import CB_Core.GL_UI.Controls.SpinnerAdapter;
 import CB_Core.Math.CB_RectF;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -186,8 +187,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 		newValues.Size = CacheSizes.micro;
 		newValues.Difficulty = 1;
 		newValues.Terrain = 1;
-		newValues.Pos = GlobalCore.LastValidPosition;
-		if (!newValues.Pos.Valid) newValues.Pos = GlobalCore.LastPosition;
+		newValues.Pos = Locator.getLocation().toCordinate();
 		if (!newValues.Pos.Valid) newValues.Pos = GlobalCore.getSelectedCoord();
 		// GC - Code bestimmen für freies CWxxxx = CustomWaypint
 		String prefix = "CW";

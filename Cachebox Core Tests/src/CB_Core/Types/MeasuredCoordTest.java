@@ -17,6 +17,7 @@
 package CB_Core.Types;
 
 import junit.framework.TestCase;
+import CB_Locator.Coordinate;
 
 /**
  * Test Klasse zum testen des Typs MeasuredCoord

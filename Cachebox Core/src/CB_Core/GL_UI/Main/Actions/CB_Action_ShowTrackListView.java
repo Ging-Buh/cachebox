@@ -30,7 +30,8 @@ import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -256,7 +257,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	{
 		Coordinate coord = GlobalCore.getSelectedCoord();
 
-		if (coord == null) coord = GlobalCore.LastValidPosition;
+		if (coord == null) coord = Locator.getCoordinate();
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("fromPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
@@ -292,7 +293,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private void GenTrackProjection()
 	{
 		Coordinate coord = GlobalCore.getSelectedCoord();
-		if (coord == null) coord = GlobalCore.LastValidPosition;
+		if (coord == null) coord = Locator.getCoordinate();
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("Projection"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
@@ -330,7 +331,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private void GenTrackCircle()
 	{
 		Coordinate coord = GlobalCore.getSelectedCoord();
-		if (coord == null) coord = GlobalCore.LastValidPosition;
+		if (coord == null) coord = Locator.getCoordinate();
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("centerPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()

@@ -24,7 +24,7 @@ import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.PolylineReduction;
 import CB_Core.Math.UiSizes;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;

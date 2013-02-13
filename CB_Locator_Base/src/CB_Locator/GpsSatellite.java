@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package CB_Core.Locator;
+package CB_Locator;
 
 /**
  * This class represents the current state of a GPS satellite. This class is used in conjunction with the {@link GpsStatus} class.

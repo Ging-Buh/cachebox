@@ -1,4 +1,4 @@
-package CB_Core.Locator.Events;
+package CB_Locator.Events;
 
 public interface PositionChangedEvent
 {

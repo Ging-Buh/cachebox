@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import CB_Core.GlobalCore;
+import CB_Locator.Coordinate;
 
 /**
  * Eine ArrayList<MeasuredCoord> welche die gemessenen Koordinaten aufnimmt, sortiert, Ausreißer eliminiert und über die Methode

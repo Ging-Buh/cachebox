@@ -2,7 +2,6 @@ package CB_Core.Events;
 
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.GpsStatus;
 import CB_Core.Settings.SettingBase;
 
 public class platformConector
@@ -90,9 +89,6 @@ public class platformConector
 
 		void vibrate();
 
-		float getCompassHeading();
-
-		GpsStatus getGpsStatus();
 	}
 
 	private static IHardwarStateListner hardwareListner;
@@ -140,26 +136,6 @@ public class platformConector
 		}
 
 		return false;
-	}
-
-	public static GpsStatus getGpsStatus()
-	{
-		if (hardwareListner != null)
-		{
-			return hardwareListner.getGpsStatus();
-		}
-
-		return null;
-	}
-
-	public static float getCompassHeading()
-	{
-		if (hardwareListner != null)
-		{
-			return hardwareListner.getCompassHeading();
-		}
-
-		return -1;
 	}
 
 	private static KeyEventListner mKeyListner;

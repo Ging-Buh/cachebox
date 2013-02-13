@@ -25,12 +25,14 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.GPS;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Locator.GPS;
+import CB_Locator.Locator;
+import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -356,26 +358,23 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	@Override
 	public void GpsStateChanged()
 	{
-		if ((GlobalCore.Locator != null) && (GlobalCore.Locator.getLocation() != null) && (GlobalCore.Locator.getLocation().hasAccuracy()))
+		if (Locator.getCoordinate().hasAccuracy())
 		{
-			int radius = (int) GlobalCore.Locator.getLocation().getAccuracy();
-			Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + GlobalCore.Locator.ProviderString() + ")");
+			int radius = (int) Locator.getCoordinate().getAccuracy();
+			Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Locator.getProvider().toString() + ")");
 		}
 		else
 		{
 			Accuracy.setText("");
 		}
-		if ((GlobalCore.Locator != null) && GlobalCore.Locator.getLocation() != null)
+		if (Locator.getProvider() == ProviderType.GPS || Locator.getProvider() == ProviderType.Network)
 		{
-			Current.setText(GlobalCore.FormatLatitudeDM(GlobalCore.Locator.getLocation().getLatitude()) + " "
-					+ GlobalCore.FormatLongitudeDM(GlobalCore.Locator.getLocation().getLongitude()));
-			Gps.setText(GPS.getSatAndFix() + "   " + Translation.Get("alt") + " " + GlobalCore.Locator.getAltStringWithCorection());
+			Current.setText(GlobalCore.FormatLatitudeDM(Locator.getLatitude()) + " " + GlobalCore.FormatLongitudeDM(Locator.getLongitude()));
+			Gps.setText(GPS.getSatAndFix() + "   " + Translation.Get("alt") + " " + Locator.getAltStringWithCorection());
 		}
-
-		if (GlobalCore.Locator == null)
+		else
 		{
 			Gps.setText(Translation.Get("not_detected"));
-			return;
 		}
 	}
 

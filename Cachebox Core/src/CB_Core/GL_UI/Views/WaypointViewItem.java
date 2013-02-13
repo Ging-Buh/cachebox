@@ -1,21 +1,20 @@
 package CB_Core.GL_UI.Views;
 
-import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
-import CB_Core.Locator.Locator;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -122,7 +121,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 			arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
-			if (GlobalCore.LastValidPosition == null || GlobalCore.Locator == null)
+			if (Locator.Valid())
 			{
 				arrow.setColor(DISABLE_COLOR);
 				setDistanceString("---");
@@ -154,15 +153,15 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	private void setActLocator()
 	{
-		if (GlobalCore.LastValidPosition.Valid)
+		if (Locator.Valid())
 		{
 
 			double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
 			double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
 			float distance = (mWaypoint == null) ? mCache.Distance(true) : mWaypoint.Distance();
 
-			Coordinate position = GlobalCore.LastValidPosition;
-			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
+			Coordinate position = Locator.getCoordinate();
+			double heading = Locator.getHeading();
 			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), lat, lon);
 			double cacheBearing = -(bearing - heading);
 			setDistanceString(UnitFormatter.DistanceString(distance));
@@ -235,13 +234,13 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		setActLocator();
 	}
 
 	@Override
-	public void OrientationChanged(float heading)
+	public void OrientationChanged()
 	{
 		setActLocator();
 	}
@@ -323,5 +322,11 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 		}
 
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Low;
 	}
 }

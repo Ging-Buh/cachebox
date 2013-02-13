@@ -6,7 +6,7 @@ import CB_Core.GL_UI.Activitys.EditCoord;
 import CB_Core.GL_UI.Activitys.EditCoord.ReturnListner;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 

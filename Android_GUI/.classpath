@@ -11,5 +11,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

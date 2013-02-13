@@ -8,9 +8,9 @@ import CB_Core.Config;
 import CB_Core.InitTestDBs;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
+import CB_Locator.Coordinate;
 
 /**
  * Enthält die Tests um die Caches zu einer bestimmten Position über die API abzufragen

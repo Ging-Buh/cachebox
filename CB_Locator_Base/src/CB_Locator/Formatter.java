@@ -1,4 +1,4 @@
-package CB_Core.Locator;
+package CB_Locator;
 
 public class Formatter
 {

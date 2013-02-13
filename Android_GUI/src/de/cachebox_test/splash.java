@@ -28,7 +28,6 @@ import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.Coordinate;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -740,13 +739,6 @@ public class splash extends Activity
 		Global.InitIcons(this);
 
 		new de.cachebox_test.Map.AndroidManager();
-
-		double lat = Config.settings.MapInitLatitude.getValue();
-		double lon = Config.settings.MapInitLongitude.getValue();
-		if ((lat != -1000) && (lon != -1000))
-		{
-			GlobalCore.LastValidPosition = new Coordinate(lat, lon);
-		}
 
 		Initial2();
 	}

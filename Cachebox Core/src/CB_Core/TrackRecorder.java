@@ -13,7 +13,10 @@ import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
+import CB_Locator.Location;
+import CB_Locator.Locator;
+import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -27,7 +30,7 @@ public class TrackRecorder
 	public static boolean recording = false;
 
 	// / Letzte aufgezeichnete Position des Empfängers
-	public static Coordinate LastRecordedPosition = new Coordinate();
+	public static Location LastRecordedPosition = Location.NULL_LOCATION;
 
 	public static void StartRecording()
 	{
@@ -110,10 +113,10 @@ public class TrackRecorder
 	private static boolean mustWriteMedia = false;
 	static String mFriendlyName = "";
 	static String mMediaPath = "";
-	static Coordinate mMediaCoord = null;
+	static Location mMediaCoord = null;
 	static String mTimestamp = "";
 
-	public static void AnnotateMedia(final String friendlyName, final String mediaPath, final Coordinate coordinate, final String timestamp)
+	public static void AnnotateMedia(final String friendlyName, final String mediaPath, final Location location, final String timestamp)
 	{
 		writeAnnotateMedia = true;
 
@@ -121,16 +124,16 @@ public class TrackRecorder
 		{
 			mFriendlyName = friendlyName;
 			mMediaPath = mediaPath;
-			mMediaCoord = coordinate;
+			mMediaCoord = location;
 			mTimestamp = timestamp;
 			mustWriteMedia = true;
 		}
 
 		if (gpxfile == null) return;
 
-		String xml = "<wpt lat=\"" + String.valueOf(coordinate.getLatitude()) + "\" lon=\"" + String.valueOf(coordinate.getLongitude())
-				+ "\">\n" + "   <ele>" + String.valueOf(GlobalCore.LastValidPosition.getElevation()) + "</ele>\n" + "   <time>" + timestamp
-				+ "</time>\n" + "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
+		String xml = "<wpt lat=\"" + String.valueOf(location.getLatitude()) + "\" lon=\"" + String.valueOf(location.getLongitude())
+				+ "\">\n" + "   <ele>" + String.valueOf(location.getAltitude()) + "</ele>\n" + "   <time>" + timestamp + "</time>\n"
+				+ "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
 
 		RandomAccessFile rand;
 		try
@@ -180,20 +183,21 @@ public class TrackRecorder
 	private static boolean mustRecPos = false;
 	private static boolean writePos = false;
 
+	private final static ProviderType GPS = ProviderType.GPS;
+
 	public static void recordPosition()
 	{
 
-		if (gpxfile == null || pauseRecording || (GlobalCore.Locator == null && !GlobalCore.LastValidPosition.Valid)
-				|| !GlobalCore.Locator.isGPSprovided()) return;
+		if (gpxfile == null || pauseRecording || !Locator.isGPSprovided()) return;
 
 		if (writeAnnotateMedia)
 		{
 			mustRecPos = true;
 		}
 
-		if (!LastRecordedPosition.Valid) // Warte bis 2 gültige Koordinaten vorliegen
+		if (LastRecordedPosition.getProviderType() != ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
 		{
-			LastRecordedPosition = GlobalCore.LastValidPosition;
+			LastRecordedPosition = Locator.getLocation(GPS);
 		}
 		else
 		{
@@ -205,22 +209,22 @@ public class TrackRecorder
 			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
 			float[] dist = new float[4];
 
-			Coordinate.distanceBetween(LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(),
-					GlobalCore.LastValidPosition.getLatitude(), GlobalCore.LastValidPosition.getLongitude(), dist);
+			Coordinate.distanceBetween(LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS),
+					Locator.getLongitude(GPS), dist);
 			float cachedDistance = dist[0];
 
 			if (cachedDistance > GlobalCore.TrackDistance)
 			{
 				StringBuilder sb = new StringBuilder();
 
-				sb.append("<trkpt lat=\"" + String.valueOf(GlobalCore.LastValidPosition.getLatitude()) + "\" lon=\""
-						+ String.valueOf(GlobalCore.LastValidPosition.getLongitude()) + "\">\n");
-				sb.append("   <ele>" + String.valueOf(GlobalCore.LastValidPosition.getElevation()) + "</ele>\n");
+				sb.append("<trkpt lat=\"" + String.valueOf(Locator.getLatitude()) + "\" lon=\"" + String.valueOf(Locator.getLongitude(GPS))
+						+ "\">\n");
+				sb.append("   <ele>" + String.valueOf(Locator.getAlt()) + "</ele>\n");
 				sb.append("   <time>" + GetDateTimeString() + "</time>\n");
-				sb.append("   <course>" + String.valueOf(GlobalCore.Locator.getHeading()) + "</course>\n");
-				sb.append("   <speed>" + String.valueOf(GlobalCore.Locator.SpeedOverGround()) + "</speed>\n");
+				sb.append("   <course>" + String.valueOf(Locator.getHeading(GPS)) + "</course>\n");
+				sb.append("   <speed>" + String.valueOf(Locator.SpeedOverGround()) + "</speed>\n");
 				sb.append("</trkpt>\n");
-				AltDiff = Math.abs(LastRecordedPosition.getElevation() - GlobalCore.LastValidPosition.getElevation());
+				AltDiff = Math.abs(LastRecordedPosition.getAltitude() - Locator.getAlt());
 				RandomAccessFile rand;
 				try
 				{
@@ -254,8 +258,8 @@ public class TrackRecorder
 					CB_Core.Log.Logger.Error("Trackrecorder", "IOException", e);
 				}
 
-				NewPoint = new TrackPoint(GlobalCore.LastValidPosition.getLongitude(), GlobalCore.LastValidPosition.getLatitude(),
-						GlobalCore.LastValidPosition.getElevation(), GlobalCore.Locator.getHeading(), new Date());
+				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(GPS),
+						new Date());
 
 				GlobalCore.AktuelleRoute.Points.add(NewPoint);
 
@@ -263,7 +267,7 @@ public class TrackRecorder
 				if (TrackListView.that != null) TrackListView.that.notifyActTrackChanged();
 
 				RouteOverlay.RoutesChanged();
-				LastRecordedPosition = GlobalCore.LastValidPosition;
+				LastRecordedPosition = Locator.getLocation(GPS);
 				GlobalCore.AktuelleRoute.TrackLength += cachedDistance;
 				GlobalCore.AktuelleRoute.AltitudeDifference += AltDiff;
 				writePos = false;

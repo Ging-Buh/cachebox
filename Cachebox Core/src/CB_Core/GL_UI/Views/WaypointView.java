@@ -30,8 +30,9 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent
 {
@@ -368,7 +369,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			return;
 		}
 		Coordinate coord = GlobalCore.getSelectedCoord();
-		if (coord == null) coord = GlobalCore.LastValidPosition;
+		if (coord == null) coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.Valid)) coord = GlobalCore.getSelectedCache().Pos;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
 				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
@@ -500,7 +501,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	{
 		createNewWaypoint = true;
 
-		final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : GlobalCore.LastValidPosition;
+		final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getCoordinate();
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()

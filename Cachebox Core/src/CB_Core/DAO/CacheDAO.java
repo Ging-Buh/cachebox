@@ -20,11 +20,11 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.DLong;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public class CacheDAO
 {

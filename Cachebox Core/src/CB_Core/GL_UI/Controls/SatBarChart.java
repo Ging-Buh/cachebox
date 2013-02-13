@@ -5,9 +5,9 @@ import CB_Core.Events.GpsStateChangeEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.GPS;
-import CB_Core.Locator.GpsStrength;
 import CB_Core.Math.CB_RectF;
+import CB_Locator.GPS;
+import CB_Locator.GpsStrength;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

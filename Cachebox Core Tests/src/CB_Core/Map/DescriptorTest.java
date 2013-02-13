@@ -2,9 +2,9 @@ package CB_Core.Map;
 
 import junit.framework.TestCase;
 import CB_Core.Map.Descriptor.PointD;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
+import CB_Locator.Coordinate;
 
 public class DescriptorTest extends TestCase
 {

@@ -29,9 +29,7 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.Controls.QuickButtonList;
 import CB_Core.Math.CB_Rect;
 import CB_Core.Math.UiSizes;
-import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
@@ -40,7 +38,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -53,7 +50,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Components.CacheDraw.DrawStyle;
-import de.cachebox_test.Locator.GPS;
 import de.cachebox_test.Ui.ActivityUtils;
 
 public final class downSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent
@@ -443,8 +439,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		CB_Rect DrawingRec = new CB_Rect(5, 5, width - 5, GPSInfoHeight - 5);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.ListBackground));
 
-		main.setSatStrength();
-
 		Bitmap b = Bitmap.createBitmap(main.strengthLayout.getMeasuredWidth(), main.strengthLayout.getMeasuredHeight(),
 				Bitmap.Config.ARGB_8888);
 		Canvas c = new Canvas(b);
@@ -530,9 +524,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		int InfoBeginnAt = Config.settings.quickButtonShow.getValue() ? QuickButtonMaxHeight : 0;
 		if (yPos > InfoBeginnAt)
 		{
-			if (!isVisible) startUpdateTimer();
 			isVisible = true;
-
 		}
 		else
 		{
@@ -561,37 +553,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			}
 		});
 	}
-
-	private void startUpdateTimer()
-	{
-		handler.postDelayed(task, 400);
-	}
-
-	Handler handler = new Handler();
-	Runnable task = new Runnable()
-	{
-
-		@Override
-		public void run()
-		{
-			Coordinate location = null;
-			if (GlobalCore.Locator != null)
-			{
-				location = GlobalCore.Locator.getLocation();
-			}
-			// Location location = ((main)
-			// main.mainActivity).locationManager.getLastKnownLocation(provider);
-
-			if (location != null)
-			{
-				setNewLocation(location);
-
-				// getAllSatellites();
-
-				if (isVisible) handler.postDelayed(task, 1200);
-			}
-		}
-	};
 
 	public int getPos()
 	{
@@ -740,38 +701,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	private StaticLayout GPSLayout;
 
-	public void setNewLocation(Coordinate location)
-	{
-
-		if (this.width == 0) return;
-
-		// mSats = String.valueOf(location.getExtras().getInt("satellites"));
-		mSats = GPS.getSatAndFix();
-
-		mAccuracy = String.valueOf((int) location.getAccuracy());
-		mAlt = GlobalCore.Locator.getAltStringWithCorection();
-		mLatitude = GlobalCore.FormatLatitudeDM(location.getLatitude());
-		mLongitude = GlobalCore.FormatLongitudeDM(location.getLongitude());
-
-		String br = String.format("%n");
-		String Text = Translation.Get("current") + " " + mLatitude + " " + mLongitude + br + Translation.Get("alt") + " " + mAlt + br
-				+ Translation.Get("accuracy") + "  +/- " + mAccuracy + "m" + br + Translation.Get("sats") + " " + mSats;
-
-		if (GPSLayoutTextPaint == null)
-		{
-			GPSLayoutTextPaint = new TextPaint();
-			GPSLayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
-			GPSLayoutTextPaint.setAntiAlias(true);
-			GPSLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-		}
-
-		int TextWidth = this.width - this.imgSize;
-		GPSLayout = new StaticLayout(Text, GPSLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-		GPSInfoHeight = (mLatitude.equals("")) ? 0 : (LineSep * 4) + GPSLayout.getHeight();
-
-		this.invalidate();
-	}
-
 	private boolean AnimationIsRunning = false;
 	private final int AnimationTime = 50;
 	private final double AnimationMulti = 1.4;
@@ -787,7 +716,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (yPos > newYPos) AnimationDirection = -1;
 		else
 			AnimationDirection = 1;
-		handler.postDelayed(AnimationTask, AnimationTime);
+
 	}
 
 	Runnable AnimationTask = new Runnable()
@@ -818,7 +747,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				else
 				{
 					setPos_onUI(newValue);
-					handler.postDelayed(AnimationTask, AnimationTime);
 				}
 			}
 			else
@@ -840,7 +768,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 					else
 					{
 						setPos_onUI(newValue);
-						handler.postDelayed(AnimationTask, AnimationTime);
+
 					}
 				}
 

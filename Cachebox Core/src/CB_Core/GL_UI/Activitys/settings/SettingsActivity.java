@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
@@ -65,6 +64,7 @@ import CB_Core.TranslationEngine.Lang;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.TranslationEngine.Translation;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -940,8 +940,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						info += "Width= " + String.valueOf(UiSizes.getWindowWidth()) + GlobalCore.br;
 						info += "Scale= " + String.valueOf(UiSizes.getScale()) + GlobalCore.br;
 						info += "FontSize= " + String.valueOf(UiSizes.getScaledFontSize()) + GlobalCore.br;
-
-						info += "GPS Thread Time= " + String.valueOf(PositionChangedEventList.maxEventListTime) + GlobalCore.br;
 						info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
 						info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime)
 								+ GlobalCore.br;

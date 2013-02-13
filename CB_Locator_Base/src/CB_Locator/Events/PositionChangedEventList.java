@@ -1,11 +1,11 @@
-package CB_Core.Locator.Events;
+package CB_Locator.Events;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import CB_Core.Locator.Locator;
-import CB_Core.Locator.Events.PositionChangedEvent.Priority;
+import CB_Locator.Locator;
+import CB_Locator.Events.PositionChangedEvent.Priority;
 
 public class PositionChangedEventList
 {
@@ -51,7 +51,7 @@ public class PositionChangedEventList
 
 	private static long lastPositionChanged = 0;
 
-	public static void PositionChanged(final Locator locator)
+	public static void PositionChanged()
 	{
 		minPosEventTime = Math.min(minPosEventTime, System.currentTimeMillis() - lastPosTime);
 		lastPosTime = System.currentTimeMillis();
@@ -93,7 +93,7 @@ public class PositionChangedEventList
 
 	private static long lastOrintationChangedEvent = 0;
 
-	public static void Orientation(final float heading)
+	public static void OrientationChanged()
 	{
 
 		if (Locator.isDisplayOff()) return; // Hier braucht niemand ein OriantationChangedEvent

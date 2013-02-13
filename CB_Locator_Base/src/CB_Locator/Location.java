@@ -14,73 +14,76 @@
  * limitations under the License.
  */
 
-package CB_Core.Locator;
+package CB_Locator;
 
 import java.util.Date;
 
 /**
  * Represented a GPS Signal with all given Informations like Position, Speed, accuracy, altitude, bearing, Sats
- * @author  Longri
+ * 
+ * @author Longri
  */
 public class Location
 {
 
 	/**
-	 * @author   Longri_2
+	 * @author Longri_2
 	 */
 	public enum ProviderType
 	{
 		/**
-		 * @uml.property  name="gPS"
-		 * @uml.associationEnd  
+		 * @uml.property name="gPS"
+		 * @uml.associationEnd
 		 */
 		GPS, /**
-		 * @uml.property  name="network"
-		 * @uml.associationEnd  
+		 * @uml.property name="network"
+		 * @uml.associationEnd
 		 */
 		Network, /**
-		 * @uml.property  name="saved"
-		 * @uml.associationEnd  
+		 * @uml.property name="saved"
+		 * @uml.associationEnd
 		 */
 		Saved, /**
-		 * @uml.property  name="nULL"
-		 * @uml.associationEnd  
+		 * @uml.property name="nULL"
+		 * @uml.associationEnd
 		 */
-		NULL
+		NULL,
+
+		any
 	}
 
 	/**
-	 * @uml.property  name="hasSpeed"
+	 * @uml.property name="hasSpeed"
 	 */
 	private boolean hasSpeed = false;
 	/**
-	 * @uml.property  name="speed"
+	 * @uml.property name="speed"
 	 */
 	private float speed = 0;
 	/**
-	 * @uml.property  name="hasBearing"
+	 * @uml.property name="hasBearing"
 	 */
 	private boolean hasBearing = false;
 	/**
-	 * @uml.property  name="bearing"
+	 * @uml.property name="bearing"
 	 */
 	private float bearing = 0;
 	/**
-	 * @uml.property  name="altitude"
+	 * @uml.property name="altitude"
 	 */
 	private float altitude = 0;
 	/**
-	 * @uml.property  name="position"
-	 * @uml.associationEnd  
+	 * @uml.property name="position"
+	 * @uml.associationEnd
 	 */
 	private Coordinate Position = new Coordinate();
 	/**
-	 * @uml.property  name="provider"
-	 * @uml.associationEnd  
+	 * @uml.property name="provider"
+	 * @uml.associationEnd
 	 */
 	private ProviderType provider = ProviderType.NULL;
 	/**
-	 * @uml.property  name="timeStamp"
+	 * @uml.property name="timeStamp"
 	 */
 	private Date TimeStamp;
 
@@ -102,8 +105,8 @@ public class Location
 	 * @param altitude
 	 * @param provider
 	 */
-	public Location(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing,
-			float bearing, double altitude, ProviderType provider)
+	public Location(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing, float bearing,
+			double altitude, ProviderType provider)
 	{
 		synchronized (this)
 		{
@@ -119,8 +122,9 @@ public class Location
 
 	/**
 	 * Constant Location with all values are 0 ore false!</br> ProviderType is ProviderType.NULL
-	 * @uml.property  name="nULL_LOCATION"
-	 * @uml.associationEnd  
+	 * 
+	 * @uml.property name="nULL_LOCATION"
+	 * @uml.associationEnd
 	 */
 	public static final Location NULL_LOCATION = new Location();
 
@@ -136,8 +140,9 @@ public class Location
 
 	/**
 	 * Returns the Timestamp of this location
-	 * @return  Timestamp as date
-	 * @uml.property  name="timeStamp"
+	 * 
+	 * @return Timestamp as date
+	 * @uml.property name="timeStamp"
 	 */
 	public Date getTimeStamp()
 	{
@@ -166,8 +171,9 @@ public class Location
 
 	/**
 	 * Returns True if this Location have a bearing Value
-	 * @return  boolean
-	 * @uml.property  name="hasBearing"
+	 * 
+	 * @return boolean
+	 * @uml.property name="hasBearing"
 	 */
 	public boolean getHasBearing()
 	{
@@ -176,8 +182,9 @@ public class Location
 
 	/**
 	 * Returns the bearing of this location as float
-	 * @return  float
-	 * @uml.property  name="bearing"
+	 * 
+	 * @return float
+	 * @uml.property name="bearing"
 	 */
 	public float getBearing()
 	{
@@ -186,8 +193,9 @@ public class Location
 
 	/**
 	 * Returns True if this Location have a Speed Value
-	 * @return  boolean
-	 * @uml.property  name="hasSpeed"
+	 * 
+	 * @return boolean
+	 * @uml.property name="hasSpeed"
 	 */
 	public boolean getHasSpeed()
 	{
@@ -196,8 +204,9 @@ public class Location
 
 	/**
 	 * Returns the speed of this location as float (kmh)
-	 * @return  float
-	 * @uml.property  name="speed"
+	 * 
+	 * @return float
+	 * @uml.property name="speed"
 	 */
 	public float getSpeed()
 	{
@@ -206,12 +215,18 @@ public class Location
 
 	/**
 	 * Returns the Altitude of this location as float (m)
+	 * 
 	 * @return
-	 * @uml.property  name="altitude"
+	 * @uml.property name="altitude"
 	 */
 	public float getAltitude()
 	{
 		return altitude;
+	}
+
+	public Coordinate toCordinate()
+	{
+		return new Coordinate(this.Position);
 	}
 
 }

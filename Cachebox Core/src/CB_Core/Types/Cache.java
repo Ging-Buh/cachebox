@@ -7,12 +7,13 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
-import CB_Core.GlobalCore;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 public class Cache implements Comparable<Cache>
 {
@@ -522,7 +523,7 @@ public class Cache implements Comparable<Cache>
 	 */
 	public float Distance(boolean useFinal)
 	{
-		Coordinate fromPos = GlobalCore.LastValidPosition;
+		Coordinate fromPos = Locator.getCoordinate();
 		Waypoint waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
 		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die

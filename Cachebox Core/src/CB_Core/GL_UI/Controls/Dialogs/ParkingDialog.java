@@ -19,6 +19,7 @@ import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
@@ -111,17 +112,11 @@ public class ParkingDialog extends ButtonDialog
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (GlobalCore.LastValidPosition != null)
-				{
-					CB_Core.Config.settings.ParkingLatitude.setValue(GlobalCore.LastValidPosition.getLatitude());
-					CB_Core.Config.settings.ParkingLongitude.setValue(GlobalCore.LastValidPosition.getLongitude());
-					CB_Core.Config.AcceptChanges();
-					CachListChangedEventList.Call();
-				}
-				else
-				{
-					// TODO MsgBox no Valid Positions
-				}
+
+				CB_Core.Config.settings.ParkingLatitude.setValue(Locator.getLatitude());
+				CB_Core.Config.settings.ParkingLongitude.setValue(Locator.getLongitude());
+				CB_Core.Config.AcceptChanges();
+				CachListChangedEventList.Call();
 
 				close();
 				return true;

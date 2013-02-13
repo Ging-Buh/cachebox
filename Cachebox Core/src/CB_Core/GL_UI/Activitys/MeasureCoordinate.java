@@ -1,22 +1,23 @@
 package CB_Core.GL_UI.Activitys;
 
-import CB_Core.GlobalCore;
-import CB_Core.Events.PositionChangedEvent;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.SatBarChart;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.Locator;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -58,7 +59,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		that = this;
 
-		MeasuredCoord.Referenz = GlobalCore.LastValidPosition;
+		MeasuredCoord.Referenz = Locator.getCoordinate(ProviderType.GPS);
 
 		if (MeasuredCoord.Referenz == null)
 		{
@@ -294,7 +295,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		if (mMeasureList == null)
 		{
@@ -307,8 +308,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		if (MeasureCount == 0) lblMeasureCoord.setText("");
 
 		MeasureCount++;
-		mMeasureList.add(new MeasuredCoord(locator.getLocation().getLatitude(), locator.getLocation().getLongitude(), locator.getLocation()
-				.getAccuracy()));
+		mMeasureList.add(new MeasuredCoord(Locator.getLocation(ProviderType.GPS).toCordinate()));
 
 		lblMeasureCount.setText(String.valueOf(MeasureCount) + "/" + String.valueOf(mMeasureList.size()));
 
@@ -325,12 +325,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	}
 
 	@Override
-	public void OrientationChanged(float heading)
-	{
-		// interesiert nicht
-	}
-
-	@Override
 	public String getReceiverName()
 	{
 		return "MeasureCoordinate";
@@ -340,7 +334,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	public void onShow()
 	{
 		super.onShow();
-		CB_Core.Events.PositionChangedEventList.Add(this);
+		PositionChangedEventList.Add(this);
 		if (chart != null)
 		{
 			chart.onShow();
@@ -353,8 +347,19 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	public void onHide()
 	{
 		super.onHide();
-		CB_Core.Events.PositionChangedEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
 		if (chart != null) chart.onHide();
+	}
+
+	@Override
+	public void OrientationChanged()
+	{
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Normal;
 	}
 
 }

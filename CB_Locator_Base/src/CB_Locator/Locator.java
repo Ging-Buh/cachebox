@@ -1,15 +1,16 @@
-package CB_Core.Locator;
+package CB_Locator;
 
-import CB_Core.Locator.Location.ProviderType;
-import CB_Core.Locator.Events.GPS_FallBackEventList;
+import CB_Locator.Events.GPS_FallBackEventList;
+import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Location.ProviderType;
 
 /**
- * @author Longri_2
+ * @author Longri
  */
 public class Locator
 {
 	/**
-	 * @author Longri_2
+	 * @author Longri
 	 */
 	public enum CompassType
 	{
@@ -62,6 +63,8 @@ public class Locator
 	public Locator(Location initialLocation)
 	{
 		that = this;
+		if (initialLocation == null) initialLocation = Location.NULL_LOCATION;
+		setNewLocation(initialLocation);
 	}
 
 	/**
@@ -147,28 +150,18 @@ public class Locator
 			switch (type)
 			{
 			case Saved:
-				that.mLastNetworkPosition = location;
+				that.mSaveLocation = location;
 				that.hasSpeed = false;
 				that.speed = 0;
 				break;
 			case Network:
-				that.mLastNetworkPosition = location;
-
-				// chk if last FineLocation older 2min?
-				if (that.mLastFineLocation != null)
-				{
-					if ((java.lang.System.currentTimeMillis() - that.mLastFineLocation.getTimeStamp().getTime()) > NETWORK_POSITION_TIME)
-					{
-						// fall back to Network Position
-						that.mLastFineLocation = null;
-						that.hasSpeed = false;
-						that.speed = 0;
-						GPS_FallBackEventList.Call();
-					}
-				}
+				that.mNetworkPosition = location;
+				that.hasSpeed = false;
+				that.speed = 0;
 				break;
 			case GPS:
-				that.mLastFineLocation = location;
+				that.mFineLocation = location;
+				that.mLastSavedFineLocation = location;
 				that.hasSpeed = location.getHasSpeed();
 				that.speed = location.getSpeed();
 				if (location.getHasBearing())
@@ -178,6 +171,21 @@ public class Locator
 				;
 				break;
 			}
+			PositionChangedEventList.PositionChanged();
+			PositionChangedEventList.OrientationChanged();
+		}
+	}
+
+	/**
+	 * Returns the last saved fine location (from GPS) or null !
+	 * 
+	 * @return
+	 */
+	public static Location getLastSavedFineLocation()
+	{
+		synchronized (that)
+		{
+			return that.mLastSavedFineLocation;
 		}
 	}
 
@@ -188,7 +196,18 @@ public class Locator
 	 */
 	public static double getLatitude()
 	{
-		return getLocation().getLatitude();
+		return getLatitude(ProviderType.any);
+	}
+
+	/**
+	 * Returns the last Latitude from the last position of the given ProviderType
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static double getLatitude(ProviderType type)
+	{
+		return getLocation(type).getLatitude();
 	}
 
 	/**
@@ -198,7 +217,18 @@ public class Locator
 	 */
 	public static double getLongitude()
 	{
-		return getLocation().getLongitude();
+		return getLongitude(ProviderType.any);
+	}
+
+	/**
+	 * Returns the last Longitude from the last position of the given ProviderType
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static double getLongitude(ProviderType type)
+	{
+		return getLocation(type).getLongitude();
 	}
 
 	/**
@@ -208,12 +238,68 @@ public class Locator
 	 */
 	public static Location getLocation()
 	{
+		return getLocation(ProviderType.any);
+	}
+
+	/**
+	 * Returns the last valid position of the given ProviderType
+	 */
+	public static Location getLocation(ProviderType type)
+	{
 		synchronized (that)
 		{
-			if (that.mLastFineLocation != null) return that.mLastFineLocation;
-			if (that.mLastNetworkPosition != null) return that.mLastNetworkPosition;
+
+			if (type == ProviderType.any)
+			{
+				if (that.mFineLocation != null) return that.mFineLocation;
+				if (that.mNetworkPosition != null) return that.mNetworkPosition;
+				return Location.NULL_LOCATION;
+			}
+			else if (type == ProviderType.GPS)
+			{
+				return that.mLastSavedFineLocation;
+			}
+			else if (type == ProviderType.Network)
+			{
+				return that.mNetworkPosition;
+			}
+			else if (type == ProviderType.Saved)
+			{
+				return that.mSaveLocation;
+			}
 			return Location.NULL_LOCATION;
 		}
+	}
+
+	/**
+	 * Returns the last valid position.</br> 1. Gps</br> 2. Network</br> 3. Saved</br>
+	 * 
+	 * @return
+	 */
+	public static Coordinate getCoordinate()
+	{
+		return getLocation(ProviderType.any).toCordinate();
+	}
+
+	/**
+	 * Returns True if the saved Location != ProviderType.NULL
+	 * 
+	 * @return
+	 */
+	public static boolean Valid()
+	{
+		return getLocation().getProviderType() != ProviderType.NULL;
+	}
+
+	/**
+	 * Returns the last valid position of the given ProviderType
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static Coordinate getCoordinate(ProviderType type)
+	{
+		return getLocation(type).toCordinate();
 	}
 
 	/**
@@ -279,6 +365,18 @@ public class Locator
 	public static void setAltCorrection(double value)
 	{
 		altCorrection = value;
+	}
+
+	/**
+	 * Call this if GPS state changed to no sat have a fix
+	 */
+	public static void FallBack2Network()
+	{
+		synchronized (that)
+		{
+			that.mFineLocation = null;
+		}
+		GPS_FallBackEventList.Call();
 	}
 
 	/**
@@ -374,8 +472,22 @@ public class Locator
 	 */
 	public static float getHeading()
 	{
+		return getHeading(ProviderType.any);
+	}
+
+	/**
+	 * Returns the last saved heading of the given ProviderType
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public static float getHeading(ProviderType type)
+	{
 		synchronized (that)
 		{
+
+			if (type == ProviderType.GPS) return that.mlastGPSHeading;
+
 			if (UseMagneticCompass())
 			{
 				return that.mlastMagneticHeading;
@@ -403,20 +515,34 @@ public class Locator
 		{
 			that.mlastMagneticHeading = heading;
 		}
+
+		// set last used compass Type
+
+		if ((type == CompassType.GPS && SpeedOverGround() > mMagneticCompassLevel) || !mUseMagneticCompass) that.mLastUsedCompassType = CompassType.GPS;
+		else
+			that.mLastUsedCompassType = CompassType.Magnetic;
+
+		PositionChangedEventList.OrientationChanged();
 	}
 
 	// member are private for synchronized access
 	private boolean hasSpeed = false;
 	/**
-	 * @uml.property name="mLastFineLocation"
+	 * @uml.property name="mFineLocation"
 	 * @uml.associationEnd
 	 */
-	private Location mLastFineLocation;
+	private Location mFineLocation;
+
+	private Location mLastSavedFineLocation;
+
 	/**
-	 * @uml.property name="mLastNetworkPosition"
+	 * @uml.property name="mNetworkPosition"
 	 * @uml.associationEnd
 	 */
-	private Location mLastNetworkPosition;
+	private Location mNetworkPosition;
+
+	private Location mSaveLocation;
+
 	/**
 	 * @uml.property name="speed"
 	 */
@@ -427,6 +553,6 @@ public class Locator
 	 * @uml.property name="mLastUsedCompassType"
 	 * @uml.associationEnd
 	 */
-	private final CompassType mLastUsedCompassType = CompassType.unknown;
+	private CompassType mLastUsedCompassType = CompassType.unknown;
 
 }

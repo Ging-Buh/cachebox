@@ -10,8 +10,8 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public class WaypointDAO
 {

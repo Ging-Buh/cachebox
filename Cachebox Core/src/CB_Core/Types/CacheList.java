@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
+import CB_Locator.Locator;
 
 public class CacheList extends MoveableList<Cache>
 {
@@ -33,7 +34,7 @@ public class CacheList extends MoveableList<Cache>
 
 	public void Resort()
 	{
-		if (GlobalCore.LastValidPosition == null) return;
+		if (!Locator.Valid()) return;
 
 		GlobalCore.ResortAtWork = true;
 		// Alle Distanzen aktualisieren

@@ -7,8 +7,6 @@ import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -21,7 +19,6 @@ import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
-import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -29,6 +26,8 @@ import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -378,13 +377,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		GL.that.renderOnce("Core.CacheListView");
 	}
 
 	@Override
-	public void OrientationChanged(float heading)
+	public void OrientationChanged()
 	{
 		GL.that.renderOnce("Core.CacheListView");
 	}
@@ -421,6 +420,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	public V_ListView getListView()
 	{
 		return listView;
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Normal;
 	}
 
 }

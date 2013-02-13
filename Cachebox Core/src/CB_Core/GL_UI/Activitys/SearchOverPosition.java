@@ -28,10 +28,11 @@ import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -278,7 +279,7 @@ public class SearchOverPosition extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				actSearchPos = GlobalCore.LastPosition;
+				actSearchPos = Locator.getCoordinate();
 				setToggleBtnState(0);
 				return true;
 			}
@@ -328,7 +329,7 @@ public class SearchOverPosition extends ActivityBase
 		}
 		else
 		{
-			actSearchPos = GlobalCore.LastPosition;
+			actSearchPos = Locator.getCoordinate();
 			searcheState = 0;
 		}
 

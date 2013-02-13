@@ -24,10 +24,11 @@ import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.GpsStatus;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.TranslationEngine.Translation;
+import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -83,6 +84,8 @@ public class DesktopMain
 		GlobalCore.isTab = sw > 400 ? true : false;
 
 		UiSizes.initial(ui);
+
+		initialLocatorBase();
 
 		// TODO Activate Full Screen
 		if (false)
@@ -149,18 +152,6 @@ public class DesktopMain
 
 			}
 
-			@Override
-			public GpsStatus getGpsStatus()
-			{
-
-				return null;
-			}
-
-			@Override
-			public float getCompassHeading()
-			{
-				return compassheading;
-			}
 		});
 
 		platformConector.setGetFileListner(new IgetFileListner()
@@ -347,6 +338,81 @@ public class DesktopMain
 		new Translation(Config.WorkPath);
 		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
 
+	}
+
+	/**
+	 * Initial all Locator functions
+	 */
+	private static void initialLocatorBase()
+	{
+		// ##########################################################
+		// initial Locator with saved Location
+		// ##########################################################
+		double latitude = Config.settings.MapInitLatitude.getValue();
+		double longitude = Config.settings.MapInitLongitude.getValue();
+		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
+
+		CB_Locator.Location initialLocation;
+
+		if (provider == ProviderType.Saved)
+		{
+			initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
+		}
+		else
+		{
+			initialLocation = CB_Locator.Location.NULL_LOCATION;
+		}
+
+		new CB_Locator.Locator(initialLocation);
+
+		// ##########################################################
+		// initial settings changed handling
+		// ##########################################################
+
+		// Use Imperial units?
+		CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+		Config.settings.ImperialUnits.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+			}
+		});
+
+		// GPS update time?
+		CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+		Config.settings.gpsUpdateTime.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+			}
+		});
+
+		// Use magnetic Compass?
+		CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+		Config.settings.HardwareCompass.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+			}
+		});
+
+		// Magnetic compass level
+		CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+		Config.settings.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+			}
+		});
 	}
 
 }

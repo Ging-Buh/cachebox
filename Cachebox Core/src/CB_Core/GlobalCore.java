@@ -6,15 +6,15 @@ import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.utils.Clipboard;
 
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1438;
+	public static final int CurrentRevision = 1439;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -29,20 +29,12 @@ public class GlobalCore
 	public static String restartCache;
 	public static String restartWaypoint;
 
-	// / <summary>
-	// / Letzte bekannte Position
-	// / </summary>
-	public static Coordinate LastValidPosition = new Coordinate();
-	public static Coordinate LastPosition = new Coordinate();
-	// public static Coordinate Marker = new Coordinate();
 	public static boolean ResortAtWork = false;
 	public static final int LatestDatabaseChange = 1024;
 	public static final int LatestDatabaseFieldNoteChange = 1003;
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
 	public static Plattform platform = Plattform.undef;
-
-	public static CB_Core.Locator.Locator Locator = null;
 
 	// ######### theme Path ###############
 	public static String PathDefault;

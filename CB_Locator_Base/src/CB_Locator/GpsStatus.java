@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package CB_Core.Locator;
+package CB_Locator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * This class represents the current state of the GPS engine. This class is used in conjunction with the  {@link Listener}  interface.
+ * This class represents the current state of the GPS engine. This class is used in conjunction with the {@link Listener} interface.
  */
 public final class GpsStatus
 {
@@ -29,22 +29,22 @@ public final class GpsStatus
 	/* These package private values are modified by the LocationManager class */
 	private int mTimeToFirstFix;
 	/**
-	 * @uml.property  name="mSatellites"
-	 * @uml.associationEnd  multiplicity="(0 -1)"
+	 * @uml.property name="mSatellites"
+	 * @uml.associationEnd multiplicity="(0 -1)"
 	 */
-	private GpsSatellite mSatellites[] = new GpsSatellite[NUM_SATELLITES];
+	private final GpsSatellite mSatellites[] = new GpsSatellite[NUM_SATELLITES];
 
 	/**
-	 * @author  Longri_2
+	 * @author Longri_2
 	 */
 	private final class SatelliteIterator implements Iterator<GpsSatellite>
 	{
 
 		/**
-		 * @uml.property  name="mSatellites"
-		 * @uml.associationEnd  multiplicity="(0 -1)"
+		 * @uml.property name="mSatellites"
+		 * @uml.associationEnd multiplicity="(0 -1)"
 		 */
-		private GpsSatellite[] mSatellites;
+		private final GpsSatellite[] mSatellites;
 		int mIndex = 0;
 
 		SatelliteIterator(GpsSatellite[] satellites)
@@ -52,6 +52,7 @@ public final class GpsStatus
 			mSatellites = satellites;
 		}
 
+		@Override
 		public boolean hasNext()
 		{
 			for (int i = mIndex; i < mSatellites.length; i++)
@@ -64,6 +65,7 @@ public final class GpsStatus
 			return false;
 		}
 
+		@Override
 		public GpsSatellite next()
 		{
 			while (mIndex < mSatellites.length)
@@ -77,14 +79,16 @@ public final class GpsStatus
 			throw new NoSuchElementException();
 		}
 
+		@Override
 		public void remove()
 		{
 			throw new UnsupportedOperationException();
 		}
 	}
 
-	private Iterable<GpsSatellite> mSatelliteList = new Iterable<GpsSatellite>()
+	private final Iterable<GpsSatellite> mSatelliteList = new Iterable<GpsSatellite>()
 	{
+		@Override
 		public Iterator<GpsSatellite> iterator()
 		{
 			return new SatelliteIterator(mSatellites);
@@ -231,7 +235,7 @@ public final class GpsStatus
 		return NUM_SATELLITES;
 	}
 
-	public void setSatelite(int index, CB_Core.Locator.GpsSatellite coreSat)
+	public void setSatelite(int index, GpsSatellite coreSat)
 	{
 		mSatellites[index] = coreSat;
 	}

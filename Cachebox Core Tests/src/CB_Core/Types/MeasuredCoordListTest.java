@@ -19,6 +19,7 @@ package CB_Core.Types;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
+import CB_Locator.Coordinate;
 
 /**
  * Test Klasse zum testen der MeasuredCoordList

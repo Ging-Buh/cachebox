@@ -2,13 +2,15 @@ package CB_Core;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Locator.Locator;
+import CB_Locator.Events.GPS_FallBackEvent;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -18,7 +20,7 @@ import com.badlogic.gdx.audio.Music;
  * 
  * @author Longri
  */
-public class GlobalLocationReceiver implements PositionChangedEvent
+public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBackEvent
 {
 
 	public final static String GPS_PROVIDER = "gps";
@@ -63,59 +65,10 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 	private static boolean PlaySounds = false;
 
 	@Override
-	public void PositionChanged(Locator location)
+	public void PositionChanged()
 	{
 
 		PlaySounds = Config.settings.PlaySounds.getValue();
-
-		try
-		{
-			if (location.getProvider().equalsIgnoreCase(GPS_PROVIDER)) // Neue Position von GPS-Empfänger
-			{
-				newLocationReceived(location);
-				GPSTimeStamp = java.lang.System.currentTimeMillis();
-				return;
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("GlobalLocationReceiver", "GPS_PROVIDER", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			// Neue Position vom Netzwerk
-			if (location.getProvider().equalsIgnoreCase(NETWORK_PROVIDER))
-			{
-				// Wenn 10 Sekunden kein GPS Signal
-				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime)
-				{
-					NetworkPositionTime = 90000;
-					newLocationReceived(location);
-					if (initialFixSoundCompleted)
-					{
-						// Global.PlaySound("GPS_lose.ogg");
-						GPS_lose.play();
-						initialFixSoundCompleted = false;
-					}
-
-					GL.that.Toast("Network-Position", Toast.LENGTH_LONG);
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("GlobalLocationReceiver", "NETWORK_PROVIDER", e);
-			e.printStackTrace();
-		}
-
-	}
-
-	Thread newLocationThread;
-
-	private void newLocationReceived(final Locator location)
-	{
 		if (newLocationThread == null) newLocationThread = new Thread(new Runnable()
 		{
 
@@ -125,11 +78,10 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 				try
 				{
 
-					if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid
-							&& location.getProvider().equalsIgnoreCase(GPS_PROVIDER))
+					if (!initialFixSoundCompleted && Locator.isGPSprovided())
 					{
 						initialFixSoundCompleted = true;
-						if (GPS_Fix != null && !GPS_Fix.isPlaying())
+						if (PlaySounds && GPS_Fix != null && !GPS_Fix.isPlaying())
 						{
 							Logger.LogCat("Play Fix");
 							GPS_Fix.play();
@@ -171,7 +123,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 
 				try
 				{
-					if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
+					if (!initialResortAfterFirstFixCompleted && Locator.getProvider() != ProviderType.NULL)
 					{
 						if (GlobalCore.getSelectedCache() == null)
 						{
@@ -246,12 +198,10 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 		});
 
 		newLocationThread.run();
+
 	}
 
-	@Override
-	public void OrientationChanged(float heading)
-	{
-	}
+	Thread newLocationThread;
 
 	@Override
 	public String getReceiverName()
@@ -263,6 +213,29 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 	{
 		approachSoundCompleted = false;
 		GlobalCore.switchToCompassCompleted = false;
+	}
+
+	@Override
+	public void FallBackToNetworkProvider()
+	{
+		if (initialFixSoundCompleted)
+		{
+			if (GPS_lose != null) GPS_lose.play();
+			initialFixSoundCompleted = false;
+		}
+
+		GL.that.Toast("Network-Position", Toast.LENGTH_LONG);
+	}
+
+	@Override
+	public void OrientationChanged()
+	{
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.High;
 	}
 
 }

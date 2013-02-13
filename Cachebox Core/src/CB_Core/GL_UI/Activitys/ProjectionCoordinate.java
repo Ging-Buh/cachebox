@@ -12,7 +12,7 @@ import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
 
 public class ProjectionCoordinate extends ActivityBase
 {

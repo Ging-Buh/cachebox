@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package CB_Core.Locator;
+package CB_Locator;
 
 import java.util.ArrayList;
 import java.util.Collections;

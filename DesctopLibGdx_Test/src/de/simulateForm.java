@@ -17,15 +17,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.Events.GpsStateChangeEventList;
-import CB_Core.Events.PositionChangedEventList;
-import CB_Core.Locator.GPS;
-import CB_Core.Locator.GpsStrength;
-import CB_Core.Locator.Locator;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
+import CB_Locator.GPS;
+import CB_Locator.GpsStrength;
+import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -170,11 +168,11 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 			Coordinate pos = new Coordinate(txt.getText());
 			if (pos != null)
 			{
-				Locator Loc = new Locator();
+
 				Bearing += 5;
-				Loc.setLocation(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true, Bearing, 95, "GPS");
-				PositionChangedEventList.PositionChanged(Loc);
-				GlobalCore.LastValidPosition = Loc.getLocation();
+
+				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2,
+						true, Bearing, 95, ProviderType.GPS));
 
 				ArrayList<GpsStrength> satList = new ArrayList<GpsStrength>();
 
@@ -267,7 +265,6 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 
 	private static boolean BreakSimulate = false;
 
-	private static Locator lastLoc;
 	private static boolean NetworkSend = false;
 
 	private static void runSimulation()
@@ -277,19 +274,6 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		{
 			if (!NetworkSend)
 			{
-				if (lastLoc != null)
-				{
-					lastLoc.setProvider("network");
-					try
-					{
-						Thread.sleep(10000);
-					}
-					catch (InterruptedException e)
-					{
-						e.printStackTrace();
-					}
-					PositionChangedEventList.PositionChanged(lastLoc);
-				}
 
 				NetworkSend = true;
 			}
@@ -315,16 +299,11 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 			{
 				TrackPoint trk = simulationRoute.Points.get(trackPointIndex);
 				Coordinate pos = new Coordinate(trk.Y, trk.X);
-				Locator Loc = new Locator();
+				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true,
+						speed, true, (float) trk.Direction, 95, ProviderType.GPS));
 
-				Loc.setLocation(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true, (float) trk.Direction, 95, "GPS");
 				DesktopMain.compassheading = (float) trk.Direction;
 
-				lastLoc = Loc;
-
-				PositionChangedEventList.PositionChanged(Loc);
-				PositionChangedEventList.Orientation((float) trk.Direction);
-				GlobalCore.LastValidPosition = Loc.getLocation();
 				if (trackPointIndex < trackPointIndexEnd - 2)
 				{
 					trackPointIndex++;

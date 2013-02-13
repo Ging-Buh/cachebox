@@ -8,8 +8,8 @@ import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public class CoordinateEntity extends Entity
 {

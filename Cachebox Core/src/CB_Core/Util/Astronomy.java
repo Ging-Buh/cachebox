@@ -3,7 +3,7 @@ package CB_Core.Util;
 import java.util.Calendar;
 import java.util.Date;
 
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
 
 public class Astronomy
 {

@@ -1,10 +1,12 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
 
 public class FunctionDistance extends Function
 {
+
+	private static final long serialVersionUID = -7861925988066369903L;
 
 	public FunctionDistance()
 	{

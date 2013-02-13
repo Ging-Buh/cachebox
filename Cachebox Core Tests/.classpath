@@ -16,5 +16,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.8-20111025.014814-1.jar"/>
 	<classpathentry kind="lib" path="/Cachebox Core/lib/gdx.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Base"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

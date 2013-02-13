@@ -1,4 +1,4 @@
-package CB_Core.Locator;
+package CB_Locator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
