@@ -10,8 +10,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -90,7 +92,7 @@ import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import CB_Locator.GPS;
+import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
@@ -3735,47 +3737,53 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void onGpsStatusChanged(int event)
 	{
-		switch (event)
+		if (locationManager == null) return;
+
+		if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS)
 		{
-		case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+			GpsStatus status = locationManager.getGpsStatus(null);
+			Iterator<GpsSatellite> statusIterator = status.getSatellites().iterator();
 
-			GpsStatus status = null;
-			status = locationManager.getGpsStatus(status);
-
-			CB_Locator.GpsStatus coreStatus = new CB_Locator.GpsStatus();
-
-			int index = 0;
-			if (status == null) return;
-
-			int SatFixcount = 0;
-
-			for (GpsSatellite sat : status.getSatellites())
+			int satellites = 0;
+			int fixed = 0;
+			ArrayList<GpsStrength> SatList = new ArrayList<GpsStrength>();
+			ArrayList<CB_Locator.GpsStrength> coreSatList = new ArrayList<CB_Locator.GpsStrength>();
+			while (statusIterator.hasNext())
 			{
-				if (sat.usedInFix()) SatFixcount++;
+				GpsSatellite sat = statusIterator.next();
+				if (sat.usedInFix() == true)
+				{
+					fixed++;
+				}
+				satellites++;
 
-				CB_Locator.GpsSatellite coreSat = new CB_Locator.GpsSatellite(sat.getPrn());
-				coreSat.setSnr(sat.getSnr());
-				coreSat.setElevation(sat.getElevation());
-				coreSat.setAzimuth(sat.getAzimuth());
-				coreStatus.setSatelite(index, coreSat);
-				index++;
+				// satellite signal strength
+
+				if (sat.usedInFix())
+				{
+					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
+					SatList.add(new GpsStrength(true, sat.getSnr()));
+					coreSatList.add(new GpsStrength(true, sat.getSnr()));
+				}
+				else
+				{
+					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr());
+					SatList.add(new GpsStrength(false, sat.getSnr()));
+					coreSatList.add(new GpsStrength(false, sat.getSnr()));
+				}
+
 			}
 
-			GPS.setStatus(coreStatus);
+			Collections.sort(SatList);
+			Collections.sort(coreSatList);
 
-			// if no sat using for satFix fall back to Network position
-			if (SatFixcount < 3) CB_Locator.Locator.FallBack2Network();
-
-			break;
-		case GpsStatus.GPS_EVENT_FIRST_FIX:
-			// Do something.
-
-			break;
-
+			CB_Locator.GPS.setSatFixes(fixed);
+			CB_Locator.GPS.setSatVisible(satellites);
+			CB_Locator.GPS.setSatList(coreSatList);
+			GpsStateChangeEventList.Call();
 		}
 		GpsStateChangeEventList.Call();
 	}
