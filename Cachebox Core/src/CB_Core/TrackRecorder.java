@@ -197,7 +197,7 @@ public class TrackRecorder
 			mustRecPos = true;
 		}
 
-		if (LastRecordedPosition.getProviderType() != ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
+		if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
 		{
 			LastRecordedPosition = Locator.getLocation(GPS);
 		}

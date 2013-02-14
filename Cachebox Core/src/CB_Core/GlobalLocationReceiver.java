@@ -6,11 +6,11 @@ import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Events.GPS_FallBackEvent;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
-import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -34,12 +34,6 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	private Music GPS_Fix;
 	private Music Approach;
 	private Music AutoResort;
-
-	/*
-	 * Wenn 10 Sekunden kein gültiges GPS Signal gefunden wird. Aber nur beim Ersten mal. Danach warten wir lieber 90 sec
-	 */
-	private int NetworkPositionTime = 10000;
-	private static long GPSTimeStamp = 0;
 
 	public GlobalLocationReceiver()
 	{
