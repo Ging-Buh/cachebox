@@ -33,13 +33,15 @@ import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Events.GpsStateChangeEvent;
 import CB_Locator.Events.GpsStateChangeEventList;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent
+public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent
 {
 	Label descTextView, CachesFoundLabel, WP, Coord, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
 	Image CB_Logo;
@@ -64,6 +66,9 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		// add Event Handler
 		SelectedCacheEventList.Add(this);
 		GpsStateChangeEventList.Add(this);
+		PositionChangedEventList.Add(this);
+
+		PositionChanged();
 
 		if (!this.isInitial) Initial();
 
@@ -81,6 +86,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		// remove Event Handler
 		SelectedCacheEventList.Remove(this);
 		GpsStateChangeEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
 
 		if (chart != null) chart.onHide();
 	}
@@ -390,6 +396,29 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 				refreshText();
 			}
 		});
+	}
+
+	@Override
+	public void PositionChanged()
+	{
+		GpsStateChanged();
+	}
+
+	@Override
+	public void OrientationChanged()
+	{
+	}
+
+	@Override
+	public String getReceiverName()
+	{
+		return "AboutView";
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Low;
 	}
 
 }

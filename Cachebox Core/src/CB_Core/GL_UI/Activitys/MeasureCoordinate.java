@@ -14,10 +14,10 @@ import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import CB_Locator.Coordinate;
+import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
-import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -41,7 +41,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private Texture drawingTexture = null;
 	private SatBarChart chart;
 
-	private final int projectionZoom = 16;// 18;
+	private final int projectionZoom = 18;// 18;
 	// Erdradius / anzahl Kacheln = Meter pro Kachel
 	private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
 
@@ -154,7 +154,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	@Override
 	protected void finish()
 	{
-		chart.dispose();
+		if (chart != null) chart.dispose();
 		chart = null;
 		disposeTexture();
 		GL.that.removeRenderView(this);
@@ -163,8 +163,22 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	private void disposeTexture()
 	{
-		if (drawingPixmap != null) drawingPixmap.dispose();
-		if (drawingTexture != null) drawingTexture.dispose();
+		try
+		{
+			if (drawingPixmap != null) drawingPixmap.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			if (drawingTexture != null) drawingTexture.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		drawing = null;
 		drawingPixmap = null;
 		drawingTexture = null;
@@ -239,7 +253,10 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 			double maxPeak = Math.max(peakX, peakY);
 
-			double factor = (maxPeak > 0) ? (double) minPix / maxPeak : 1;
+			double factor = 1;
+			if (maxPeak > 0) factor = minPix / maxPeak;
+
+			factor /= 2;
 
 			int x = (int) centerX;
 			int y = (int) centerY;

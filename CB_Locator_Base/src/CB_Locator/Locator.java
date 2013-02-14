@@ -296,7 +296,9 @@ public class Locator
 	 */
 	public static Coordinate getCoordinate(ProviderType type)
 	{
-		return getLocation(type).toCordinate();
+		Location loc = getLocation(type);
+		if (loc == null) return null;
+		return loc.toCordinate();
 	}
 
 	/**
