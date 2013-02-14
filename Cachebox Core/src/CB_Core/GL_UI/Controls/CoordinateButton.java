@@ -69,7 +69,7 @@ public class CoordinateButton extends Button
 			@Override
 			public void returnCoord(Coordinate coord)
 			{
-				if (coord != null && coord.Valid)
+				if (coord != null && coord.isValid())
 				{
 					mActCoord = coord;
 					if (mCoordinateChangedListner != null) mCoordinateChangedListner.coordinateChanged(coord);

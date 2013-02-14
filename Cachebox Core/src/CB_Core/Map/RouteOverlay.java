@@ -334,12 +334,12 @@ public class RouteOverlay
 									lastAcceptedCoordinate.getElevation(), lastAcceptedDirection, lastAcceptedTime));
 
 							// Calculate the length of a Track
-							if (!FromPosition.Valid)
+							if (!FromPosition.isValid())
 							{
 								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
 								FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
 								FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
-								FromPosition.Valid = true;
+								FromPosition.setValid(true);
 							}
 							else
 							{

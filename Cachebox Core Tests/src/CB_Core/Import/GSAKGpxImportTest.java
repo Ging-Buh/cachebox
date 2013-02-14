@@ -51,7 +51,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 52.579333);
 		assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 13.40545);
-		assertTrue("Pos ist ungültig", cache.Pos.Valid);
+		assertTrue("Pos ist ungültig", cache.Pos.isValid());
 
 		assertEquals("GcCode falsch", "GC1XCEW", cache.GcCode);
 		assertEquals("DateHidden falsch", "Mon Aug 17 08:00:00 CEST 2009", cache.DateHidden.toString());

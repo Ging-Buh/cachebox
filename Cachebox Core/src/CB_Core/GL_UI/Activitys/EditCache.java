@@ -188,7 +188,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 		newValues.Difficulty = 1;
 		newValues.Terrain = 1;
 		newValues.Pos = Locator.getLocation().toCordinate();
-		if (!newValues.Pos.Valid) newValues.Pos = GlobalCore.getSelectedCoord();
+		if (!newValues.Pos.isValid()) newValues.Pos = GlobalCore.getSelectedCoord();
 		// GC - Code bestimmen für freies CWxxxx = CustomWaypint
 		String prefix = "CW";
 		int count = 0;

@@ -50,7 +50,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		if (this.size() == 0)
 		{
 			ret = new Coordinate(0, 0);
-			ret.Valid = false;
+			ret.setValid(false);
 
 			return ret;
 		}
@@ -69,7 +69,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		while (iterator.hasNext());
 
 		ret = new Coordinate(sumLatitude / this.size(), sumLongitude / this.size());
-		ret.Valid = true;
+		ret.setValid(true);
 
 		return ret;
 	}
@@ -153,7 +153,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 	public String toString()
 	{
 		String ret = "";
-		if (this.getAccuWeightedAverageCoord().Valid)
+		if (this.getAccuWeightedAverageCoord().isValid())
 		{
 			ret = GlobalCore.FormatLatitudeDM(this.getAccuWeightedAverageCoord().getLatitude()) + " / "
 					+ GlobalCore.FormatLongitudeDM(this.getAccuWeightedAverageCoord().getLongitude());

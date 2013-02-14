@@ -38,7 +38,7 @@ public class FunctionCrossbearing extends Function
 		for (int i = 0; i < 2; i++)
 		{
 			coord[i] = new Coordinate(parameter[i * 2]);
-			if (!coord[i].Valid) return Translation.Get("solverErrParamType", "$solverFuncCrossbearing", String.valueOf(i * 2 + 1),
+			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncCrossbearing", String.valueOf(i * 2 + 1),
 					"$coordinate", "$coordinate", parameter[i * 2]);
 			try
 			{

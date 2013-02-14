@@ -88,7 +88,7 @@ public class CoordinateEntity extends Entity
 	{
 		if (Solver.isError(sCoord)) return sCoord;
 		Coordinate coord = new Coordinate(sCoord);
-		if (!coord.Valid) return Translation.Get("InvalidCoordinate", "SetCoordinate", sCoord);
+		if (!coord.isValid()) return Translation.Get("InvalidCoordinate", "SetCoordinate", sCoord);
 		WaypointDAO waypointDAO = new WaypointDAO();
 		Waypoint dbWaypoint = null;
 		// Suchen, ob dieser Waypoint bereits vorhanden ist.

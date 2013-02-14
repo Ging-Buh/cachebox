@@ -27,7 +27,7 @@ public class Location
 {
 
 	/**
-	 * @author Longri_2
+	 * @author Longri
 	 */
 	public enum ProviderType
 	{

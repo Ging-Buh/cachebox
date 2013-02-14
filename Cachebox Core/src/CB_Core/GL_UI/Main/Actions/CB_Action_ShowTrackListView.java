@@ -361,10 +361,10 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 							route.Points.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
 
-							if (!LastCoord.Valid)
+							if (!LastCoord.isValid())
 							{
 								LastCoord = Projektion;
-								LastCoord.Valid = true;
+								LastCoord.setValid(true);
 							}
 							else
 							{
@@ -372,7 +372,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 										LastCoord.getLongitude(), dist);
 								route.TrackLength += dist[0];
 								LastCoord = Projektion;
-								LastCoord.Valid = true;
+								LastCoord.setValid(true);
 							}
 
 						}

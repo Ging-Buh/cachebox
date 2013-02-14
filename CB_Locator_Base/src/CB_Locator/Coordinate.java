@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * @author  Longri_2
+ * @author Longri_2
  */
 public class Coordinate implements Serializable
 {
@@ -12,25 +12,26 @@ public class Coordinate implements Serializable
 	private static final long serialVersionUID = 1235642315487L;
 	private static final String br = System.getProperty("line.separator");
 
-	public boolean Valid;
+	private boolean Valid;
 	/**
-	 * @uml.property  name="latitude"
+	 * @uml.property name="latitude"
 	 */
 	private double Latitude = 0;
 	/**
-	 * @uml.property  name="longitude"
+	 * @uml.property name="longitude"
 	 */
 	private double Longitude = 0;
 	/**
-	 * @uml.property  name="elevation"
+	 * @uml.property name="elevation"
 	 */
 	private double Elevation = 0;
 
 	/**
 	 * Die Genauigkeit dieser Coordinate! Wird beim Messen benutzt
-	 * @uml.property  name="accuracy"
+	 * 
+	 * @uml.property name="accuracy"
 	 */
-	public int Accuracy = -1;
+	private int Accuracy = -1;
 
 	// Cache the inputs and outputs of computeDistanceAndBearing
 	// so calls to distanceTo() and bearingTo() can share work
@@ -62,7 +63,7 @@ public class Coordinate implements Serializable
 		this.setLatitude(latitude);
 		this.setLongitude(longitude);
 		this.setElevation(0);
-		Accuracy = accuracy;
+		this.Accuracy = accuracy;
 		Valid = true;
 	}
 
@@ -71,7 +72,13 @@ public class Coordinate implements Serializable
 		this.setLatitude(parent.getLatitude());
 		this.setLongitude(parent.getLongitude());
 		this.setElevation(parent.getElevation());
+		this.Accuracy = parent.getAccuracy();
 		this.Valid = parent.Valid;
+	}
+
+	public boolean isValid()
+	{
+		return Valid;
 	}
 
 	public boolean hasAccuracy()
@@ -82,7 +89,7 @@ public class Coordinate implements Serializable
 
 	/**
 	 * @return
-	 * @uml.property  name="accuracy"
+	 * @uml.property name="accuracy"
 	 */
 	public int getAccuracy()
 	{
@@ -565,7 +572,7 @@ public class Coordinate implements Serializable
 
 	/**
 	 * @return
-	 * @uml.property  name="elevation"
+	 * @uml.property name="elevation"
 	 */
 	public double getElevation()
 	{
@@ -574,7 +581,7 @@ public class Coordinate implements Serializable
 
 	/**
 	 * @param elevation
-	 * @uml.property  name="elevation"
+	 * @uml.property name="elevation"
 	 */
 	public void setElevation(double elevation)
 	{
@@ -583,7 +590,7 @@ public class Coordinate implements Serializable
 
 	/**
 	 * @return
-	 * @uml.property  name="latitude"
+	 * @uml.property name="latitude"
 	 */
 	public double getLatitude()
 	{
@@ -592,7 +599,7 @@ public class Coordinate implements Serializable
 
 	/**
 	 * @param latitude
-	 * @uml.property  name="latitude"
+	 * @uml.property name="latitude"
 	 */
 	public void setLatitude(double latitude)
 	{
@@ -601,7 +608,7 @@ public class Coordinate implements Serializable
 
 	/**
 	 * @return
-	 * @uml.property  name="longitude"
+	 * @uml.property name="longitude"
 	 */
 	public double getLongitude()
 	{
@@ -610,11 +617,16 @@ public class Coordinate implements Serializable
 
 	/**
 	 * @param longitude
-	 * @uml.property  name="longitude"
+	 * @uml.property name="longitude"
 	 */
 	public void setLongitude(double longitude)
 	{
 		Longitude = longitude;
+	}
+
+	public void setValid(boolean b)
+	{
+		Valid = b;
 	}
 
 }

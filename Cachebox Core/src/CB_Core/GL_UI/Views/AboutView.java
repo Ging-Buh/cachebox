@@ -365,7 +365,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		}
 		else
 		{
-			Accuracy.setText("");
+			Accuracy.setText("?");
 		}
 		if (Locator.getProvider() == ProviderType.GPS || Locator.getProvider() == ProviderType.Network)
 		{

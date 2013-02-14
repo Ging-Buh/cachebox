@@ -1052,7 +1052,7 @@ public class EditCoord extends ActivityBase
 		}
 
 		Coordinate newCoord = new Coordinate(scoord);
-		if (newCoord.Valid)
+		if (newCoord.isValid())
 		{
 			coord = newCoord;
 			return true;

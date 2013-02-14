@@ -37,7 +37,7 @@ public class FunctionIntersection extends Function
 		for (int i = 0; i < 4; i++)
 		{
 			coord[i] = new Coordinate(parameter[i]);
-			if (!coord[i].Valid) return Translation.Get("solverErrParamType", "$solverFuncIntersection", String.valueOf(i + 1),
+			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncIntersection", String.valueOf(i + 1),
 					"$coordinate", "$coordinate", parameter[i]);
 		}
 		try

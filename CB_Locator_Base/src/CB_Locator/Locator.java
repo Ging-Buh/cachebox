@@ -1,8 +1,8 @@
 package CB_Locator;
 
+import CB_Locator.Location.ProviderType;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEventList;
-import CB_Locator.Location.ProviderType;
 
 /**
  * @author Longri
@@ -22,17 +22,14 @@ public class Locator
 		 * @uml.property name="magnetic"
 		 * @uml.associationEnd
 		 */
-		Magnetic, /**
-		 * @uml.property name="unknown"
-		 * @uml.associationEnd
-		 */
-		unknown
+		Magnetic,
+
+		any
 	};
 
 	// #################################
 	// Private Static Member
 	// #################################
-	private static final int NETWORK_POSITION_TIME = 120000;
 
 	/**
 	 * @uml.property name="that"
@@ -155,7 +152,7 @@ public class Locator
 				that.speed = 0;
 				break;
 			case Network:
-				that.mNetworkPosition = location;
+				that.mNetworkLocation = location;
 				that.hasSpeed = false;
 				that.speed = 0;
 				break;
@@ -252,7 +249,7 @@ public class Locator
 			if (type == ProviderType.any)
 			{
 				if (that.mFineLocation != null) return that.mFineLocation;
-				if (that.mNetworkPosition != null) return that.mNetworkPosition;
+				if (that.mNetworkLocation != null) return that.mNetworkLocation;
 				return Location.NULL_LOCATION;
 			}
 			else if (type == ProviderType.GPS)
@@ -261,7 +258,7 @@ public class Locator
 			}
 			else if (type == ProviderType.Network)
 			{
-				return that.mNetworkPosition;
+				return that.mNetworkLocation;
 			}
 			else if (type == ProviderType.Saved)
 			{
@@ -288,7 +285,7 @@ public class Locator
 	 */
 	public static boolean Valid()
 	{
-		return getLocation().getProviderType() != ProviderType.NULL;
+		return getLocation().getProviderType() == ProviderType.GPS || getLocation().getProviderType() == ProviderType.Network;
 	}
 
 	/**
@@ -472,7 +469,7 @@ public class Locator
 	 */
 	public static float getHeading()
 	{
-		return getHeading(ProviderType.any);
+		return getHeading(CompassType.any);
 	}
 
 	/**
@@ -481,12 +478,13 @@ public class Locator
 	 * @param type
 	 * @return
 	 */
-	public static float getHeading(ProviderType type)
+	public static float getHeading(CompassType type)
 	{
 		synchronized (that)
 		{
 
-			if (type == ProviderType.GPS) return that.mlastGPSHeading;
+			if (type == CompassType.GPS || !mUseMagneticCompass) return that.mlastGPSHeading;
+			if (type == CompassType.Magnetic) return that.mlastGPSHeading;
 
 			if (UseMagneticCompass())
 			{
@@ -518,9 +516,14 @@ public class Locator
 
 		// set last used compass Type
 
-		if ((type == CompassType.GPS && SpeedOverGround() > mMagneticCompassLevel) || !mUseMagneticCompass) that.mLastUsedCompassType = CompassType.GPS;
+		if ((that.mlastGPSHeading > -1 && SpeedOverGround() > mMagneticCompassLevel) || !mUseMagneticCompass)
+		{
+			that.mLastUsedCompassType = CompassType.GPS;
+		}
 		else
+		{
 			that.mLastUsedCompassType = CompassType.Magnetic;
+		}
 
 		PositionChangedEventList.OrientationChanged();
 	}
@@ -539,7 +542,7 @@ public class Locator
 	 * @uml.property name="mNetworkPosition"
 	 * @uml.associationEnd
 	 */
-	private Location mNetworkPosition;
+	private Location mNetworkLocation;
 
 	private Location mSaveLocation;
 
@@ -548,11 +551,11 @@ public class Locator
 	 */
 	private float speed = 0;
 	private float mlastMagneticHeading = 0;
-	private float mlastGPSHeading = 0;
+	private float mlastGPSHeading = -1;
 	/**
 	 * @uml.property name="mLastUsedCompassType"
 	 * @uml.associationEnd
 	 */
-	private CompassType mLastUsedCompassType = CompassType.unknown;
+	private CompassType mLastUsedCompassType = CompassType.any;
 
 }

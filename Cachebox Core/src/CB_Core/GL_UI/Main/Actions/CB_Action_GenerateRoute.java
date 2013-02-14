@@ -259,11 +259,11 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														lastAcceptedCoordinate.getLatitude(), 0, 0, null));
 
 												// Calculate the length of a Track
-												if (!FromPosition.Valid)
+												if (!FromPosition.isValid())
 												{
 													FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
 													FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
-													FromPosition.Valid = true;
+													FromPosition.setValid(true);
 												}
 												else
 												{

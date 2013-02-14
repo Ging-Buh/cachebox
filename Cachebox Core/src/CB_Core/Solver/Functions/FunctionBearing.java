@@ -36,8 +36,8 @@ public class FunctionBearing extends Function
 		for (int i = 0; i < 2; i++)
 		{
 			coord[i] = new Coordinate(parameter[i]);
-			if (!coord[i].Valid) return Translation.Get("solverErrParamType", "$solverFuncBearing", String.valueOf(i + 1), "$coordinate",
-					"$coordinate", parameter[i]);
+			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncBearing", String.valueOf(i + 1),
+					"$coordinate", "$coordinate", parameter[i]);
 		}
 		try
 		{

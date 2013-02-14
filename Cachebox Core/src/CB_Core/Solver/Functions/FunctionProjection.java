@@ -35,7 +35,7 @@ public class FunctionProjection extends Function
 			return s;
 		}
 		Coordinate coord = new Coordinate(parameter[0]);
-		if (!coord.Valid)
+		if (!coord.isValid())
 		{
 			return Translation.Get("solverErrParamType", "$solverFuncProjection", "1", "$coordinate", "$coordinate", parameter[0]);
 		}
@@ -59,7 +59,7 @@ public class FunctionProjection extends Function
 		}
 
 		Coordinate result = Coordinate.Project(coord.getLatitude(), coord.getLongitude(), angle, distance);
-		if (!result.Valid) return Translation.Get("InvalidCoordinate", "$solverFuncProjection",
+		if (!result.isValid()) return Translation.Get("InvalidCoordinate", "$solverFuncProjection",
 				"Lat: " + String.valueOf(coord.getLatitude()) + ", Lon: " + String.valueOf(coord.getLongitude()));
 		return result.FormatCoordinate();
 	}

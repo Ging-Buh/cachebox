@@ -15,8 +15,9 @@ import CB_Core.Map.RouteOverlay;
 import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Coordinate;
 import CB_Locator.Location;
-import CB_Locator.Locator;
 import CB_Locator.Location.ProviderType;
+import CB_Locator.Locator;
+import CB_Locator.Locator.CompassType;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -184,6 +185,7 @@ public class TrackRecorder
 	private static boolean writePos = false;
 
 	private final static ProviderType GPS = ProviderType.GPS;
+	private final static CompassType _GPS = CompassType.GPS;
 
 	public static void recordPosition()
 	{
@@ -221,7 +223,7 @@ public class TrackRecorder
 						+ "\">\n");
 				sb.append("   <ele>" + String.valueOf(Locator.getAlt()) + "</ele>\n");
 				sb.append("   <time>" + GetDateTimeString() + "</time>\n");
-				sb.append("   <course>" + String.valueOf(Locator.getHeading(GPS)) + "</course>\n");
+				sb.append("   <course>" + String.valueOf(Locator.getHeading(_GPS)) + "</course>\n");
 				sb.append("   <speed>" + String.valueOf(Locator.SpeedOverGround()) + "</speed>\n");
 				sb.append("</trkpt>\n");
 				AltDiff = Math.abs(LastRecordedPosition.getAltitude() - Locator.getAlt());
@@ -258,7 +260,7 @@ public class TrackRecorder
 					CB_Core.Log.Logger.Error("Trackrecorder", "IOException", e);
 				}
 
-				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(GPS),
+				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(_GPS),
 						new Date());
 
 				GlobalCore.AktuelleRoute.Points.add(NewPoint);

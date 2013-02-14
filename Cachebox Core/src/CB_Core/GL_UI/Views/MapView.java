@@ -892,12 +892,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (showAccuracyCircle)
 		{
 
-			if (actAccuracy != Locator.getCoordinate().Accuracy || actPixelsPerMeter != pixelsPerMeter)
+			if (actAccuracy != Locator.getCoordinate().getAccuracy() || actPixelsPerMeter != pixelsPerMeter)
 			{
-				actAccuracy = Locator.getCoordinate().Accuracy;
+				actAccuracy = Locator.getCoordinate().getAccuracy();
 				actPixelsPerMeter = pixelsPerMeter;
 
-				int radius = (int) (pixelsPerMeter * Locator.getCoordinate().Accuracy);
+				int radius = (int) (pixelsPerMeter * Locator.getCoordinate().getAccuracy());
 				// Logger.LogCat("Accuracy radius " + radius);
 				// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
 				if (radius > 0 && radius < UiSizes.getSmallestWidth())
@@ -1858,7 +1858,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			position = Locator.getCoordinate();
 
 			float distance = -1;
-			if (GlobalCore.getSelectedCache() != null && position.Valid)
+			if (GlobalCore.getSelectedCache() != null && position.isValid())
 			{
 				if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos);
 				else

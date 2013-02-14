@@ -390,7 +390,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				text = text.substring(text.indexOf("=") + 1);
 			}
 			Coordinate result = new Coordinate(text);
-			if (!result.Valid)
+			if (!result.isValid())
 			{
 				// Zweizeilig versuchen
 				SolverZeile zeile2 = solver.get(mSelectedIndex + 1);
@@ -398,7 +398,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				if (text2.contains("=")) text2 = text2.substring(text2.indexOf("=") + 1);
 				result = new Coordinate(text + " " + text2);
 			}
-			if (result.Valid) return result;
+			if (result.isValid()) return result;
 			else
 				return null;
 		}

@@ -270,7 +270,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 			Coordinate newCoord = Coordinate.Project(coord.getLatitude(), coord.getLongitude(), Bearing, Distance);
 
-			if (newCoord.Valid)
+			if (newCoord.isValid())
 			{
 				projCoord = newCoord;
 				return true;
