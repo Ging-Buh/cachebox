@@ -58,7 +58,7 @@ public class CancelWaitDialog extends WaitDialog
 		{
 
 			@Override
-			public boolean onClick(int which)
+			public boolean onClick(int which, Object data)
 			{
 				if (wd.mRunnThread != null) wd.mRunnThread.Cancel();
 				wd.button3.disable();

@@ -506,7 +506,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						{
 
 							@Override
-							public boolean onClick(int which)
+							public boolean onClick(int which, Object data)
 							{
 								String text = StringInputBox.editText.getText().toString();
 								if (which == GL_MsgBox.BUTTON_POSITIVE)
@@ -1273,7 +1273,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	{
 
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
 			show();
 			return true;

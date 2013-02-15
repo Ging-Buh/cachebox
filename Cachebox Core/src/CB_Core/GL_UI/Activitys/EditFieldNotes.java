@@ -156,7 +156,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 								{
 
 									@Override
-									public boolean onClick(int which)
+									public boolean onClick(int which, Object data)
 									{
 										Timer runTimer = new Timer();
 										TimerTask task = new TimerTask()

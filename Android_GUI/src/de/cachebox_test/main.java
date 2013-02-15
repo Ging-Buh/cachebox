@@ -3362,7 +3362,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 4:
 			{
 				waitPD.dismiss();
-				DownloadCacheDialogResult.onClick(-1);
+				DownloadCacheDialogResult.onClick(-1, null);
 				break;
 			}
 			}
@@ -3372,7 +3372,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private OnMsgBoxClickListener DownloadCacheDialogResult = new OnMsgBoxClickListener()
 	{
 		@Override
-		public boolean onClick(int button)
+		public boolean onClick(int button, Object data)
 		{
 			switch (button)
 			{

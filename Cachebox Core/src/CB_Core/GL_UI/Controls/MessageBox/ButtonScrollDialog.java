@@ -268,7 +268,7 @@ public class ButtonScrollDialog extends Dialog
 	private boolean ButtonClick(int button)
 	{
 		GL.that.closeDialog(this);
-		if (mMsgBoxClickListner != null) return mMsgBoxClickListner.onClick(button);
+		if (mMsgBoxClickListner != null) return mMsgBoxClickListner.onClick(button, data);
 		return false;
 	}
 

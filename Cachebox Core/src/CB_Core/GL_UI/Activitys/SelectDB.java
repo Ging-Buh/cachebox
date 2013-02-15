@@ -15,7 +15,7 @@ import CB_Core.DB.Database;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
-import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
+import CB_Core.GL_UI.Controls.Dialogs.NewDB_InputBox;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
@@ -106,7 +106,7 @@ public class SelectDB extends ActivityBase
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				stopTimer();
-				StringInputBox.Show(TextFieldType.SingleLine, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB",
+				NewDB_InputBox.Show(TextFieldType.SingleLine, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB",
 						DialogListnerNewDB);
 				return true;
 			}
@@ -302,9 +302,9 @@ public class SelectDB extends ActivityBase
 	{
 
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
-			String text = StringInputBox.editText.getText();
+			String NewDB_Name = NewDB_InputBox.editText.getText();
 			// Behandle das ergebniss
 			switch (which)
 			{
@@ -317,9 +317,28 @@ public class SelectDB extends ActivityBase
 
 				// initialize Database
 
-				Config.settings.DatabasePath.setValue(Config.WorkPath + "/" + text + ".db3");
+				Config.settings.DatabasePath.setValue(Config.WorkPath + "/" + NewDB_Name + ".db3");
 				String database = Config.settings.DatabasePath.getValue();
 				Database.Data.StartUp(database);
+
+				// OwnRepository?
+				if (data != null && ((Boolean) data) == false)
+				{
+					String folder = "?\\" + NewDB_Name + "\\";
+
+					Config.settings.DescriptionImageFolder.setValue(folder + "Images");
+					Config.settings.MapPackFolder.setValue(folder + "Maps");
+					Config.settings.SpoilerFolder.setValue(folder + "Spoilers");
+					Config.settings.TileCacheFolder.setValue(folder + "Cache");
+					Config.AcceptChanges();
+
+					// Create Folder?
+					createFolder(Config.settings.DescriptionImageFolder.getValue());
+					createFolder(Config.settings.MapPackFolder.getValue());
+					createFolder(Config.settings.SpoilerFolder.getValue());
+					createFolder(Config.settings.TileCacheFolder.getValue());
+				}
+
 				Config.AcceptChanges();
 
 				GlobalCore.Categories = new Categories();
@@ -351,6 +370,15 @@ public class SelectDB extends ActivityBase
 			return true;
 		}
 	};
+
+	private void createFolder(String path)
+	{
+		File dir = new File(path);
+		if (!dir.exists())
+		{
+			dir.mkdirs();
+		}
+	}
 
 	protected void selectDB()
 	{

@@ -139,7 +139,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 						{
 
 							@Override
-							public boolean onClick(int which)
+							public boolean onClick(int which, Object data)
 							{
 								// Behandle das ergebniss
 								switch (which)

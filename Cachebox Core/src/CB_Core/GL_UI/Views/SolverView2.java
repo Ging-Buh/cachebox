@@ -357,7 +357,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	final OnMsgBoxClickListener deleteListener = new OnMsgBoxClickListener()
 	{
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
 			if (which == 1)
 			{

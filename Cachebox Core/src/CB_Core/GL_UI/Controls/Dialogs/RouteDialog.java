@@ -102,7 +102,7 @@ public class RouteDialog extends ButtonDialog
 		{
 
 			@Override
-			public boolean onClick(int which)
+			public boolean onClick(int which, Object data)
 			{
 				if (which == BUTTON_POSITIVE)
 				{

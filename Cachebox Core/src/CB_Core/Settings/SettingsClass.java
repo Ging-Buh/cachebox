@@ -382,13 +382,13 @@ public class SettingsClass extends SettingsList
 		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", cat, NORMAL, Work + "/User/Media", SettingStoreType.Global));
 		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, EXPERT, Work + "/data/lang", SettingStoreType.Global));
 		addSetting(SoundPath = new SettingFolder("SoundPath", cat, EXPERT, Work + "/data/sound", SettingStoreType.Global));
-		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/cache", SettingStoreType.Global));
 		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, NORMAL, Work + "/PocketQuery", SettingStoreType.Global));
 
 		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, EXPERT, Work + "/repository/images",
-				SettingStoreType.Global));
-		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", SettingStoreType.Global));
-		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers", SettingStoreType.Global));
+				SettingStoreType.Local));
+		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", SettingStoreType.Local));
+		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers", SettingStoreType.Local));
+		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/repository/cache", SettingStoreType.Local));
 
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", SettingStoreType.Global));
 

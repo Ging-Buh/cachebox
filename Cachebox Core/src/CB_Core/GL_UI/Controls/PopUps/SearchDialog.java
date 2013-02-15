@@ -638,7 +638,7 @@ public class SearchDialog extends PopUp_Base
 								{
 
 									@Override
-									public boolean onClick(int which)
+									public boolean onClick(int which, Object data)
 									{
 										if (which == GL_MsgBox.BUTTON_POSITIVE) searchOnlineNow();
 										else
@@ -983,7 +983,7 @@ public class SearchDialog extends PopUp_Base
 										{
 
 											@Override
-											public boolean onClick(int which)
+											public boolean onClick(int which, Object data)
 											{
 												closeMsgBox();
 												if (which == GL_MsgBox.BUTTON_POSITIVE)

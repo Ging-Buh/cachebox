@@ -461,7 +461,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				{
 
 					@Override
-					public boolean onClick(int which)
+					public boolean onClick(int which, Object data)
 					{
 						switch (which)
 						{

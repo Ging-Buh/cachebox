@@ -425,7 +425,7 @@ public class EditFilterSettings extends ActivityBase
 					{
 
 						@Override
-						public boolean onClick(int which)
+						public boolean onClick(int which, Object data)
 						{
 							that.show();
 							return true;
@@ -439,7 +439,7 @@ public class EditFilterSettings extends ActivityBase
 				{
 
 					@Override
-					public boolean onClick(int which)
+					public boolean onClick(int which, Object data)
 					{
 						String text = StringInputBox.editText.getText();
 						// Behandle das ergebniss

@@ -243,7 +243,7 @@ public class FieldNotesView extends V_ListView
 	private final GL_MsgBox.OnMsgBoxClickListener UploadFieldnotesDialogListner = new GL_MsgBox.OnMsgBoxClickListener()
 	{
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
 			switch (which)
 			{
@@ -691,7 +691,7 @@ public class FieldNotesView extends V_ListView
 		GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener()
 		{
 			@Override
-			public boolean onClick(int which)
+			public boolean onClick(int which, Object data)
 			{
 				switch (which)
 				{
@@ -753,7 +753,7 @@ public class FieldNotesView extends V_ListView
 		GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener()
 		{
 			@Override
-			public boolean onClick(int which)
+			public boolean onClick(int which, Object data)
 			{
 				switch (which)
 				{

@@ -106,7 +106,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 								{
 
 									@Override
-									public boolean onClick(int which)
+									public boolean onClick(int which, Object data)
 									{
 										String text = StringInputBox.editText.getText();
 										// Behandle das ergebniss
@@ -183,7 +183,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 									{
 
 										@Override
-										public boolean onClick(int which)
+										public boolean onClick(int which, Object data)
 										{
 											// hier brauchen wir nichts machen!
 											return true;

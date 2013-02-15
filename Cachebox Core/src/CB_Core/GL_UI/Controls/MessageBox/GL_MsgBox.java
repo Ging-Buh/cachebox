@@ -115,7 +115,7 @@ public class GL_MsgBox extends Dialog
 			// Wir liefern nur ein On Click auf den OK Button zurück!
 			if (Listener != null)
 			{
-				Listener.onClick(BUTTON_POSITIVE);
+				Listener.onClick(BUTTON_POSITIVE, null);
 			}
 			return null;
 		}
@@ -145,7 +145,7 @@ public class GL_MsgBox extends Dialog
 			// Wir liefern nur ein On Click auf den OK Button zurück!
 			if (Listener != null)
 			{
-				Listener.onClick(BUTTON_POSITIVE);
+				Listener.onClick(BUTTON_POSITIVE, null);
 			}
 			return null;
 		}
@@ -190,7 +190,7 @@ public class GL_MsgBox extends Dialog
 		 *            The button that was clicked ( the position of the item clicked.
 		 * @return
 		 */
-		public boolean onClick(int which);
+		public boolean onClick(int which, Object data);
 	}
 
 	public GL_MsgBox(CB_RectF rec, String Name)
@@ -224,7 +224,7 @@ public class GL_MsgBox extends Dialog
 		boolean retValue = false;
 		if (mMsgBoxClickListner != null)
 		{
-			retValue = mMsgBoxClickListner.onClick(button);
+			retValue = mMsgBoxClickListner.onClick(button, that.data);
 		}
 
 		return retValue;
@@ -388,40 +388,37 @@ public class GL_MsgBox extends Dialog
 	{
 		setButtonListner();
 
+		// Calc Button width
+		float btnWidth = ((msgBox.width) / 3f) - margin;
+
 		float buttonY = 7.5f;
 
-		float buttonX_R = msgBox.width - UiSizes.getButtonWidthWide() - margin;
+		float buttonX_R = msgBox.width - btnWidth - margin;
 		float buttonX_L = margin;
-		float buttonX_C = (msgBox.width - UiSizes.getButtonWidthWide()) / 2;
-
+		float buttonX_C = msgBox.width - ((btnWidth + margin) * 2);
 		switch (anzahl)
 		{
 		case 1:
-			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button(new CB_RectF(buttonX_C, buttonY, btnWidth, UiSizes.getButtonHeight()), "positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
 			msgBox.addFooterChild(button1);
 			break;
 		case 2:
-			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button(new CB_RectF(buttonX_C, buttonY, btnWidth, UiSizes.getButtonHeight()), "positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
 			msgBox.addFooterChild(button1);
-			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"negativeButton");
+			button3 = new Button(new CB_RectF(buttonX_R, buttonY, btnWidth, UiSizes.getButtonHeight()), "negativeButton");
 			button3.setOnClickListener(negativeButtonClickListener);
 			msgBox.addFooterChild(button3);
 			break;
 		case 3:
-			button1 = new Button(new CB_RectF(buttonX_L, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button(new CB_RectF(buttonX_L, buttonY, btnWidth, UiSizes.getButtonHeight()), "positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
 			msgBox.addFooterChild(button1);
-			button2 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"negativeButton");
+			button2 = new Button(new CB_RectF(buttonX_C, buttonY, btnWidth, UiSizes.getButtonHeight()), "negativeButton");
 			button2.setOnClickListener(neutralButtonClickListener);
 			msgBox.addFooterChild(button2);
-			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), "neutralButton");
+			button3 = new Button(new CB_RectF(buttonX_R, buttonY, btnWidth, UiSizes.getButtonHeight()), "neutralButton");
 			button3.setOnClickListener(negativeButtonClickListener);
 			msgBox.addFooterChild(button3);
 			break;

@@ -38,6 +38,7 @@ public abstract class Dialog extends CB_View_Base
 	private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
 
 	protected boolean dontRenderDialogBackground = false;
+	protected Object data;
 	static protected NinePatch mTitle9patch;
 	static protected NinePatch mHeader9patch;
 	static protected NinePatch mCenter9patch;

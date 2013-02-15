@@ -31,7 +31,7 @@ public class CB_Action_ShowQuit extends CB_Action
 				{
 
 					@Override
-					public boolean onClick(int which)
+					public boolean onClick(int which, Object data)
 					{
 						askIsShown = false;
 						if (which == GL_MsgBox.BUTTON_POSITIVE)

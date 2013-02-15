@@ -38,6 +38,7 @@ public class ButtonDialog extends Dialog
 	protected Button button2;
 	protected Button button3;
 	protected Label label;
+	protected Object data;
 
 	protected OnMsgBoxClickListener mMsgBoxClickListner;
 
@@ -256,7 +257,7 @@ public class ButtonDialog extends Dialog
 	private boolean ButtonClick(int button)
 	{
 		GL.that.closeDialog(this);
-		if (mMsgBoxClickListner != null) return mMsgBoxClickListner.onClick(button);
+		if (mMsgBoxClickListner != null) return mMsgBoxClickListner.onClick(button, data);
 		return false;
 	}
 

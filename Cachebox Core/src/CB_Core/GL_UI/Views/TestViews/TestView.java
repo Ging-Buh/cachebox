@@ -112,7 +112,7 @@ public class TestView extends CB_View_Base
 	{
 
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
 
 			return false;
