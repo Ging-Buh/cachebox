@@ -143,7 +143,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 										}
 									}
 								}
-								if (isVisible(MapX, MapY))
+								if (isVisible(MapX, MapY) || (GlobalCore.getSelectedCache() == cache))
 								{
 									// sichtbaren Cache/Mystery-Final hinzufügen
 									WaypointRenderInfo wpi = new WaypointRenderInfo();
@@ -220,7 +220,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		// im Bild ?
 		double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
 		double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
-		if (isVisible(MapX, MapY))
+		if (isVisible(MapX, MapY) || (GlobalCore.getSelectedWaypoint() == wp))
 		{
 			WaypointRenderInfo wpi = new WaypointRenderInfo();
 			wpi.MapX = (float) MapX;

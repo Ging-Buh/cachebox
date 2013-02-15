@@ -1120,10 +1120,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		screen.y -= ySpeedVersatz;
 
-		// Don't render if outside of screen !!
-		if (screen.x < 0 - WpSize.width || screen.x > this.width + WpSize.height) return;
-		if (screen.y < 0 - WpSize.height || screen.y > this.height + WpSize.height) return;
-
 		if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
 		{
 			if (LineSprite == null || PointSprite == null)
@@ -1139,6 +1135,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			DrawUtils.drawSpriteLine(batch, LineSprite, PointSprite, scale, myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y);
 
 		}
+
+		// Don't render if outside of screen !!
+		if (screen.x < 0 - WpSize.width || screen.x > this.width + WpSize.height) return;
+		if (screen.y < 0 - WpSize.height || screen.y > this.height + WpSize.height) return;
 
 		float NameYMovement = 0;
 
