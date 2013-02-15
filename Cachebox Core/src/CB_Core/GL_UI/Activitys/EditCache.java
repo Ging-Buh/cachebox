@@ -73,10 +73,10 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 	private Spinner cacheDifficulty;
 	private Spinner cacheTerrain;
 	private CoordinateButton cacheCoords;
-	private EditWrapedTextField cacheCode;
-	private EditWrapedTextField cacheTitle;
-	private EditWrapedTextField cacheOwner;
-	private EditWrapedTextField cacheDescription;
+	private EditWrapedTextField cacheCode; // SingleLine
+	private EditWrapedTextField cacheTitle; // MultiLine
+	private EditWrapedTextField cacheOwner; // SingleLine
+	private EditWrapedTextField cacheDescription; // MultiLineWraped
 	// private long cacheGPXFilename_Id;
 	private OnscreenKeyboard keyboard;
 

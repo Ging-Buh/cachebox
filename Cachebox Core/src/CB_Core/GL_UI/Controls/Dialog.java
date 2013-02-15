@@ -22,9 +22,9 @@ public abstract class Dialog extends CB_View_Base
 {
 
 	private String mTitle;
+	public Label titleLabel;
 	private Box mContent;
 	private ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
-	private Label titleLabel;
 
 	/**
 	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields

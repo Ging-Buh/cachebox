@@ -360,7 +360,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	/**
 	 ** start objects at this y Position, direction true = topdown
 	 **/
-	// TODO ob beliebige Position richtig funktioniert bleibt noch zu prüfen
 	public void initRow(boolean direction, float y)
 	{
 		if (this.row == null)
