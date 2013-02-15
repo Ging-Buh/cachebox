@@ -422,10 +422,10 @@ public class SettingsClass extends SettingsList
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, SettingStoreType.Global));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, true, SettingStoreType.Global));
 		addSetting(CacheSpoilerData = new SettingBool("CacheSpoilerData", cat, INVISIBLE, true, SettingStoreType.Global));
-		addSetting(AutoResort = new SettingBool("AutoResort", cat, INVISIBLE, false, SettingStoreType.Global));
+		addSetting(AutoResort = new SettingBool("AutoResort", cat, NEVER, false, SettingStoreType.Global));
 
 		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, NEVER, true, SettingStoreType.Global));
-		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, INVISIBLE, true, SettingStoreType.Global));
+		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, NEVER, true, SettingStoreType.Global));
 
 		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NEVER, true, SettingStoreType.Global));
 
