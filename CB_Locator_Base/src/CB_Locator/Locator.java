@@ -1,5 +1,7 @@
 package CB_Locator;
 
+import java.util.Date;
+
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEventList;
@@ -153,14 +155,21 @@ public class Locator
 				break;
 			case Network:
 				that.mNetworkLocation = location;
-				that.hasSpeed = false;
-				that.speed = 0;
+				// reset Speed only if last Speed value old
+				long time = new Date().getTime();
+				if (that.mTimeStampSpeed + (minGpsUpdateTime * 3) < time)
+				{
+					that.hasSpeed = false;
+					that.speed = 0;
+				}
+
 				break;
 			case GPS:
 				that.mFineLocation = location;
 				that.mLastSavedFineLocation = location;
 				that.hasSpeed = location.getHasSpeed();
 				that.speed = location.getSpeed();
+				that.mTimeStampSpeed = (new Date()).getTime();
 				if (location.getHasBearing())
 				{
 					setHeading(location.getBearing(), CompassType.GPS);
@@ -554,6 +563,7 @@ public class Locator
 	private float speed = 0;
 	private float mlastMagneticHeading = 0;
 	private float mlastGPSHeading = -1;
+	private long mTimeStampSpeed = (new Date().getTime());
 	/**
 	 * @uml.property name="mLastUsedCompassType"
 	 * @uml.associationEnd

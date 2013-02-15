@@ -3784,6 +3784,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			CB_Locator.GPS.setSatVisible(satellites);
 			CB_Locator.GPS.setSatList(coreSatList);
 			GpsStateChangeEventList.Call();
+
+			if (fixed < 3) Locator.FallBack2Network();
 		}
 		GpsStateChangeEventList.Call();
 	}

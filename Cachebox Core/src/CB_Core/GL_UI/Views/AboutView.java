@@ -367,20 +367,21 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		if (Locator.getCoordinate().hasAccuracy())
 		{
 			int radius = (int) Locator.getCoordinate().getAccuracy();
-			Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Locator.getProvider().toString() + ")");
+			if (Accuracy != null) Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Locator.getProvider().toString() + ")");
 		}
 		else
 		{
-			Accuracy.setText("?");
+			if (Accuracy != null) Accuracy.setText("?");
 		}
 		if (Locator.getProvider() == ProviderType.GPS || Locator.getProvider() == ProviderType.Network)
 		{
-			Current.setText(GlobalCore.FormatLatitudeDM(Locator.getLatitude()) + " " + GlobalCore.FormatLongitudeDM(Locator.getLongitude()));
-			Gps.setText(GPS.getSatAndFix() + "   " + Translation.Get("alt") + " " + Locator.getAltStringWithCorection());
+			if (Current != null) Current.setText(GlobalCore.FormatLatitudeDM(Locator.getLatitude()) + " "
+					+ GlobalCore.FormatLongitudeDM(Locator.getLongitude()));
+			if (Gps != null) Gps.setText(GPS.getSatAndFix() + "   " + Translation.Get("alt") + " " + Locator.getAltStringWithCorection());
 		}
 		else
 		{
-			Gps.setText(Translation.Get("not_detected"));
+			if (Gps != null) Gps.setText(Translation.Get("not_detected"));
 		}
 	}
 
