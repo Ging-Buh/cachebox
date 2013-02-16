@@ -17,13 +17,27 @@ public class SettingsDAO
 	{
 		try
 		{
-			String dbString = "";
+			String dbString = null;
 
-			if (setting instanceof SettingLongString) dbString = database.ReadConfigLongString(setting.name);
-			else
+			if (setting instanceof SettingLongString)
+			{
+				dbString = database.ReadConfigLongString(setting.name);
+			}
+
+			if (dbString == null)
+			{
 				dbString = database.ReadConfigString(setting.name);
+			}
 
-			setting.fromDBString(dbString);
+			if (dbString == null)
+			{
+				setting.loadDefault();
+			}
+			else
+			{
+				setting.fromDBString(dbString);
+			}
+
 			setting.clearDirty();
 		}
 		catch (Exception ex)
