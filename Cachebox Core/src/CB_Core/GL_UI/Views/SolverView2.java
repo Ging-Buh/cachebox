@@ -269,6 +269,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
+		if (cache == this.cache) return; // Cache hat sich nicht geändert!
 		// Solver speichern
 		if (this.cache != null) Database.SetSolver(this.cache, solver.getSolverString());
 		// nächsten Cache laden

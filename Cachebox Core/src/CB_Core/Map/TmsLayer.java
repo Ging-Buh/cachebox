@@ -13,6 +13,8 @@ public class TmsLayer extends Layer
 	@Override
 	public String GetUrl(Descriptor desc)
 	{
+		if (desc == null) return null;
+
 		String url = tmsMap.url;
 		url = url.replace("{$x}", String.valueOf(desc.X));
 		url = url.replace("{$y}", String.valueOf(desc.Y));

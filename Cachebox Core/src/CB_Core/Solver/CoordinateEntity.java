@@ -2,6 +2,7 @@ package CB_Core.Solver;
 
 import java.util.ArrayList;
 
+import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.CoreCursor;
@@ -141,9 +142,17 @@ public class CoordinateEntity extends Entity
 				}
 			}
 			if (CB_Core.GlobalCore.getSelectedCache().Id == cacheFromCacheList.Id)
-
-			// Views.WaypointView.View.Refresh();
-			;
+			{
+				// Views.WaypointView.View.Refresh();
+				if (GlobalCore.getSelectedWaypoint() == null)
+				{
+					GlobalCore.setSelectedCache(GlobalCore.getSelectedCache());
+				}
+				else
+				{
+					GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+				}
+			}
 
 		}
 		return gcCode + "=" + coord.FormatCoordinate();

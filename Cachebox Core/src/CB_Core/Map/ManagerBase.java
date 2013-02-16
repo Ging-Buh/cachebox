@@ -344,4 +344,18 @@ public abstract class ManagerBase
 		}
 
 	}
+
+	public void LoadBSH(String string)
+	{
+		try
+		{
+			BshLayer layer = new BshLayer(Type.normal, string);
+			Layers.add(layer);
+		}
+		catch (Exception ex)
+		{
+
+		}
+
+	}
 }

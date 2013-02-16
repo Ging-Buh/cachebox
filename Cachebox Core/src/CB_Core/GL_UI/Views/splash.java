@@ -476,6 +476,10 @@ public class splash extends TabMainView
 						ManagerBase.Manager.LoadTMS(Config.settings.MapPackFolder.getValue() + "/" + file);
 
 					}
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh"))
+					{
+						ManagerBase.Manager.LoadBSH(Config.settings.MapPackFolder.getValue() + "/" + file);
+					}
 				}
 			}
 		}
