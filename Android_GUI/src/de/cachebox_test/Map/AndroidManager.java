@@ -106,7 +106,14 @@ public class AndroidManager extends ManagerBase
 
 			if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
 			{
+				RenderThemeChanged = true;
 				mapFile = new File(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name);
+
+				if (!mapFile.exists())
+				{
+					mapFile = new File(CB_Core.Config.settings.MapPackFolder.getDefaultValue() + "/" + layer.Name);
+				}
+
 				mapDatabase = new MapDatabase();
 				mapDatabase.closeFile();
 				mapDatabase.openFile(mapFile);

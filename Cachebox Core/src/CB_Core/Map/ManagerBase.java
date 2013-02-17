@@ -1,6 +1,7 @@
 package CB_Core.Map;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -357,5 +358,64 @@ public abstract class ManagerBase
 
 		}
 
+	}
+
+	public void initialMapPacks()
+	{
+		ManagerBase.Manager.Layers.clear();
+
+		File dirOwnRepo = new File(Config.settings.MapPackFolder.getValue());
+		File dirDefaultRepo = new File(Config.settings.MapPackFolder.getDefaultValue());
+
+		String[] OwnFiles = dirOwnRepo.list();
+		String[] DefaultFiles = dirDefaultRepo.list();
+
+		ArrayList<String> files = new ArrayList<String>();
+
+		if (OwnFiles != null && OwnFiles.length > 0)
+		{
+			for (String tmp : OwnFiles)
+			{
+				files.add(tmp);
+			}
+		}
+
+		if (DefaultFiles != null && DefaultFiles.length > 0)
+		{
+			for (String tmp : DefaultFiles)
+			{
+				files.add(tmp);
+			}
+		}
+
+		if (!(files == null))
+		{
+			if (files.size() > 0)
+			{
+				for (String file : files)
+				{
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
+					{
+						ManagerBase.Manager.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
+					}
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
+					{
+						Layer layer = new Layer(Type.normal, file, file, "");
+						layer.isMapsForge = true;
+						ManagerBase.Manager.Layers.add(layer);
+					}
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml"))
+					{
+						ManagerBase.Manager.LoadTMS(Config.settings.MapPackFolder.getValue() + "/" + file);
+
+					}
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh"))
+					{
+						ManagerBase.Manager.LoadBSH(Config.settings.MapPackFolder.getValue() + "/" + file);
+					}
+				}
+			}
+		}
+		Descriptor.Init();
 	}
 }

@@ -26,6 +26,7 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
@@ -404,6 +405,9 @@ public class SelectDB extends ActivityBase
 
 		// reload settings for get filter form selected DB
 		Config.settings.ReadFromDB();
+
+		ManagerBase.Manager.initialMapPacks();
+
 		finish();
 		if (returnListner != null) returnListner.back();
 

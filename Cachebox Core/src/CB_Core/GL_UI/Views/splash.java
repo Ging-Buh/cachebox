@@ -22,9 +22,6 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.Logger;
-import CB_Core.Map.Descriptor;
-import CB_Core.Map.Layer;
-import CB_Core.Map.Layer.Type;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
@@ -453,37 +450,7 @@ public class splash extends TabMainView
 	 */
 	private void ini_MapPaks()
 	{
-		File dir = new File(Config.settings.MapPackFolder.getValue());
-		String[] files = dir.list();
-		if (!(files == null))
-		{
-			if (files.length > 0)
-			{
-				for (String file : files)
-				{
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
-					{
-						ManagerBase.Manager.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
-					}
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
-					{
-						Layer layer = new Layer(Type.normal, file, file, "");
-						layer.isMapsForge = true;
-						ManagerBase.Manager.Layers.add(layer);
-					}
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml"))
-					{
-						ManagerBase.Manager.LoadTMS(Config.settings.MapPackFolder.getValue() + "/" + file);
-
-					}
-					if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh"))
-					{
-						ManagerBase.Manager.LoadBSH(Config.settings.MapPackFolder.getValue() + "/" + file);
-					}
-				}
-			}
-		}
-		Descriptor.Init();
+		ManagerBase.Manager.initialMapPacks();
 	}
 
 	/**
