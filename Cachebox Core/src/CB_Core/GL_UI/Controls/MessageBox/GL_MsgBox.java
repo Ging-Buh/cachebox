@@ -363,6 +363,7 @@ public class GL_MsgBox extends Dialog
 			button1 = new Button("positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
 			msgBox.initRow(false, margin);
+			msgBox.setBorders(margin, margin);
 			msgBox.addLast(button1);
 			break;
 		case 2:
@@ -371,6 +372,7 @@ public class GL_MsgBox extends Dialog
 			button3 = new Button("negativeButton");
 			button3.setOnClickListener(negativeButtonClickListener);
 			msgBox.initRow(false, margin);
+			msgBox.setBorders(margin, margin);
 			msgBox.addNext(button1);
 			msgBox.addLast(button3);
 			break;
@@ -382,6 +384,7 @@ public class GL_MsgBox extends Dialog
 			button3 = new Button("neutralButton");
 			button3.setOnClickListener(negativeButtonClickListener);
 			msgBox.initRow(false, margin);
+			msgBox.setBorders(margin, margin);
 			msgBox.addNext(button1);
 			msgBox.addNext(button2);
 			msgBox.addLast(button3);
