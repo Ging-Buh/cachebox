@@ -3445,6 +3445,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				{
 					GL.that.setKeyboardFocus(null);
 					KeyboardWasClosed = true;
+					gdxView.requestFocus();
 					return true;
 				}
 				return super.onKeyPreIme(keyCode, event);
