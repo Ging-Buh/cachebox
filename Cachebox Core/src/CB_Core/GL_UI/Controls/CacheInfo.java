@@ -144,20 +144,27 @@ public class CacheInfo extends CB_View_Base
 	{
 		super.render(batch);
 
-		if (mIconSprite != null) mIconSprite.draw(batch);
-		if (mFoundOwnerSprite != null) mFoundOwnerSprite.draw(batch);
-		if (mRatingSprite != null) mRatingSprite.draw(batch);
-		if (mS_FontCache != null) mS_FontCache.draw(batch);
-		if (mD_FontCache != null) mD_FontCache.draw(batch);
-		if (mT_FontCache != null) mT_FontCache.draw(batch);
-		if (mTB_FontCache != null) mTB_FontCache.draw(batch);
-		if (mSSprite != null) mSSprite.draw(batch);
-		if (mDSprite != null) mDSprite.draw(batch);
-		if (mTSprite != null) mTSprite.draw(batch);
-		if (mTBSprite != null) mTBSprite.draw(batch);
-		if (mInfo_FontCache != null) mInfo_FontCache.draw(batch);
-		if (mFavoriteSprite != null) mFavoriteSprite.draw(batch);
-		if (mAvailableSprite != null) mAvailableSprite.draw(batch);
+		try
+		{
+			if (mIconSprite != null) mIconSprite.draw(batch);
+			if (mFoundOwnerSprite != null) mFoundOwnerSprite.draw(batch);
+			if (mRatingSprite != null) mRatingSprite.draw(batch);
+			if (mS_FontCache != null) mS_FontCache.draw(batch);
+			if (mD_FontCache != null) mD_FontCache.draw(batch);
+			if (mT_FontCache != null) mT_FontCache.draw(batch);
+			if (mTB_FontCache != null) mTB_FontCache.draw(batch);
+			if (mSSprite != null) mSSprite.draw(batch);
+			if (mDSprite != null) mDSprite.draw(batch);
+			if (mTSprite != null) mTSprite.draw(batch);
+			if (mTBSprite != null) mTBSprite.draw(batch);
+			if (mInfo_FontCache != null) mInfo_FontCache.draw(batch);
+			if (mFavoriteSprite != null) mFavoriteSprite.draw(batch);
+			if (mAvailableSprite != null) mAvailableSprite.draw(batch);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override

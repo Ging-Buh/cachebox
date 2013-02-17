@@ -250,7 +250,7 @@ public class GL_MsgBox extends Dialog
 
 	public void setButtonCaptions(MessageBoxButtons buttons)
 	{
-		BitmapFont font = Fonts.getCompass();
+		BitmapFont font = Fonts.getNormal();
 		Color color = Fonts.getFontColor();
 		int button = buttons.ordinal();
 		if (button == MessageBoxButtons.AbortRetryIgnore.ordinal())

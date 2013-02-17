@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 {
 	// Allgemein
-	private BitmapFont CompassFont = Fonts.getCompass();
+	private BitmapFont CompassFont = Fonts.getNormal();
 	private BitmapFont BigFont = Fonts.getBig();
 	private final CacheTypes[] CacheTypNumbers = new CacheTypes[]
 		{ CacheTypes.Traditional, // = 0,

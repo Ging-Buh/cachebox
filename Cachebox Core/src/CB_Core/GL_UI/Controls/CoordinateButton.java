@@ -96,6 +96,7 @@ public class CoordinateButton extends Button
 	public void setCoordinate(Coordinate coord)
 	{
 		mActCoord = coord;
+		if (mActCoord == null) mActCoord = new Coordinate();
 		setText();
 	}
 

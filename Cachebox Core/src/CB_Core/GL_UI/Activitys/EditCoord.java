@@ -28,7 +28,7 @@ public class EditCoord extends ActivityBase
 	private ReturnListner mReturnListner;
 
 	// Allgemein
-	private BitmapFont font = Fonts.getCompass();
+	private BitmapFont font = Fonts.getNormal();
 
 	private MultiToggleButton bDec;
 	private MultiToggleButton bMin;
