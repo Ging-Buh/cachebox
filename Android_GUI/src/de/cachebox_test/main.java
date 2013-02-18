@@ -990,6 +990,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 			});
 
+			Config.AcceptChanges();
+
 		}
 
 		if (aktView != null) aktView.ActivityResult(requestCode, resultCode, data);

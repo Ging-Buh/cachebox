@@ -323,7 +323,8 @@ public class FieldNotesView extends V_ListView
 			{
 				if (!UploadMeldung.equals(""))
 				{
-					GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+					if (!CB_Core.Api.GroundspeakAPI.isValidAPI_Key()) GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"),
+							MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 				}
 				else
 				{

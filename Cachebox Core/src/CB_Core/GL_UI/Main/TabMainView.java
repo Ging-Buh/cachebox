@@ -7,6 +7,8 @@ import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
+import CB_Core.Api.API_ErrorEventHandler;
+import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.DB.Database;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
@@ -16,6 +18,10 @@ import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action_GenerateRoute;
@@ -70,6 +76,7 @@ import CB_Core.Map.RouteOverlay;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -141,6 +148,7 @@ public class TabMainView extends MainViewBase
 
 		that = (TabMainView) (mainView = this);
 		GL.that.addRenderView(this, GL.FRAME_RATE_IDLE);
+
 	}
 
 	@Override
@@ -161,6 +169,9 @@ public class TabMainView extends MainViewBase
 
 	private void ini()
 	{
+
+		API_ErrorEventHandlerList.addHandler(handler);
+
 		Logger.LogCat("Start TabMainView-Initial");
 
 		actionShowMap = new CB_Action_ShowMap();
@@ -616,4 +627,27 @@ public class TabMainView extends MainViewBase
 		if (childs == null) return;
 		super.renderChilds(batch, parentInfo);
 	}
+
+	private API_ErrorEventHandler handler = new API_ErrorEventHandler()
+	{
+
+		@Override
+		public void InvalidAPI_Key()
+		{
+			String Msg = Translation.Get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
+			Msg += Translation.Get("wantApi");
+
+			GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
+			{
+
+				@Override
+				public boolean onClick(int which, Object data)
+				{
+					if (which == GL_MsgBox.BUTTON_POSITIVE) platformConector.callGetApiKeyt();
+					return true;
+				}
+			});
+		}
+	};
+
 }

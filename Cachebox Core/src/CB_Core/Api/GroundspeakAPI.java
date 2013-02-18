@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.ImageDAO;
@@ -93,6 +94,9 @@ public class GroundspeakAPI
 	 */
 	public static int CreateFieldNoteAndPublish(String accessToken, String cacheCode, int wptLogTypeId, Date dateLogged, String note)
 	{
+
+		if (chkMemperShip(accessToken)) return -1;
+
 		try
 		{
 			HttpPost httppost = new HttpPost(GS_LIVE_URL + "CreateFieldNoteAndPublish?format=json");
@@ -162,6 +166,9 @@ public class GroundspeakAPI
 	 */
 	public static int GetCachesFound(String accessToken)
 	{
+
+		if (chkMemperShip(accessToken)) return -1;
+
 		try
 		{
 			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetYourUserProfile?format=json");
@@ -225,6 +232,9 @@ public class GroundspeakAPI
 	 */
 	public static int GetMembershipType(String accessToken)
 	{
+
+		API_isChacked = true;
+
 		try
 		{
 			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetYourUserProfile?format=json");
@@ -255,6 +265,7 @@ public class GroundspeakAPI
 					JSONObject memberType = (JSONObject) user.getJSONObject("MemberType");
 					int memberTypeId = memberType.getInt("MemberTypeId");
 					MemberName = user.getString("UserName");
+					membershipType = memberTypeId;
 					// Zurücksetzen, falls ein anderer User gewählt wurde
 					return memberTypeId;
 				}
@@ -292,7 +303,7 @@ public class GroundspeakAPI
 	 */
 	public static int GetGeocacheStatus(String accessToken, ArrayList<Cache> caches)
 	{
-
+		if (chkMemperShip(accessToken)) return -1;
 		try
 		{
 			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetGeocacheStatus?format=json");
@@ -382,7 +393,7 @@ public class GroundspeakAPI
 	 */
 	public static int GetCacheLimits(String accessToken)
 	{
-
+		if (chkMemperShip(accessToken)) return -1;
 		LastAPIError = "";
 		// zum Abfragen der CacheLimits einfach nach einem Cache suchen, der
 		// nicht existiert.
@@ -586,6 +597,8 @@ public class GroundspeakAPI
 	 */
 	public static int getMyTbList(String accessToken, TbList list)
 	{
+		if (chkMemperShip(accessToken)) return -1;
+
 		try
 		{
 			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetUsersTrackables?format=json");
@@ -656,6 +669,8 @@ public class GroundspeakAPI
 	 */
 	public static int getImagesForGeocache(String accessToken, String cacheCode, ArrayList<String> images)
 	{
+		if (chkMemperShip(accessToken)) return -1;
+
 		try
 		{
 			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
@@ -709,6 +724,8 @@ public class GroundspeakAPI
 
 	public static HashMap<String, URI> GetAllImageLinks(String accessToken, String cacheCode)
 	{
+		if (chkMemperShip(accessToken)) return null;
+
 		HashMap<String, URI> list = new HashMap<String, URI>();
 		try
 		{
@@ -869,6 +886,34 @@ public class GroundspeakAPI
 		string += "}";
 
 		return string;
+	}
+
+	private static boolean API_isChacked = false;
+
+	private static boolean chkMemperShip(String accessToken)
+	{
+		boolean isValid = false;
+		if (API_isChacked) isValid = membershipType > 0;
+		if (!isValid) GetMembershipType(accessToken);
+
+		isValid = membershipType > 0;
+		if (!isValid)
+		{
+			API_ErrorEventHandlerList.callInvalidApiKey();
+		}
+
+		API_isChacked = true;
+		return !isValid;
+	}
+
+	public static boolean isValidAPI_Key()
+	{
+		if (API_isChacked) return membershipType > 0;
+
+		chkMemperShip(Config.GetAccessToken());
+
+		return membershipType > 0;
+
 	}
 
 }
