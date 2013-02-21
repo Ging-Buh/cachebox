@@ -450,19 +450,28 @@ public class Cache implements Comparable<Cache>
 	{
 		spoilerRessources = new ArrayList<ImageEntry>();
 
+		// from own Repository
 		String path = Config.settings.SpoilerFolder.getValue();
 		String directory = path + "/" + GcCode.substring(0, 4);
-
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
+		// from global Repository
+		path = Config.settings.SpoilerFolder.getDefaultValue();
+		directory = path + "/" + GcCode.substring(0, 4);
+		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+
+		// from own Repository
 		path = Config.settings.DescriptionImageFolder.getValue();
 		directory = path + "/" + GcCode.substring(0, 4);
+		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
+		// from global Repository
+		path = Config.settings.DescriptionImageFolder.getDefaultValue();
+		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Add own taken photo
 		directory = Config.settings.UserImageFolder.getValue();
-
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 	}
 

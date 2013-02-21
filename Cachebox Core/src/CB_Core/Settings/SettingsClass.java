@@ -128,6 +128,13 @@ public class SettingsClass extends SettingsList
 	public SettingInt LongClicktime;
 	public SettingInt VibrateTime;
 
+	public SettingInt FONT_SIZE_COMPASS_DISTANCE;
+	public SettingInt FONT_SIZE_BIG;
+	public SettingInt FONT_SIZE_NORMAL;
+	public SettingInt FONT_SIZE_NORMAL_BUBBLE;
+	public SettingInt FONT_SIZE_SMALL;
+	public SettingInt FONT_SIZE_SMALL_BUBBLE;
+
 	// public SettingInt OsmCoverage;
 	public SettingInt FoundOffset;
 	public SettingInt MapMaxCachesLabel;
@@ -475,6 +482,13 @@ public class SettingsClass extends SettingsList
 		addSetting(MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", cat, NORMAL, "", SettingStoreType.Global, "xml"));
 		addSetting(MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", cat, NORMAL, "", SettingStoreType.Global, "xml"));
 		addSetting(useMipMap = new SettingBool("useMipMap", cat, NORMAL, false, SettingStoreType.Global));
+
+		addSetting(FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", cat, EXPERT, 27, SettingStoreType.Global));
+		addSetting(FONT_SIZE_BIG = new SettingInt("FONT_SIZE_BIG", cat, EXPERT, 18, SettingStoreType.Global));
+		addSetting(FONT_SIZE_NORMAL = new SettingInt("FONT_SIZE_NORMAL", cat, EXPERT, 15, SettingStoreType.Global));
+		addSetting(FONT_SIZE_NORMAL_BUBBLE = new SettingInt("FONT_SIZE_NORMAL_BUBBLE", cat, EXPERT, 14, SettingStoreType.Global));
+		addSetting(FONT_SIZE_SMALL = new SettingInt("FONT_SIZE_SMALL", cat, EXPERT, 13, SettingStoreType.Global));
+		addSetting(FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", cat, EXPERT, 11, SettingStoreType.Global));
 	}
 
 	private void addDebugSettings()

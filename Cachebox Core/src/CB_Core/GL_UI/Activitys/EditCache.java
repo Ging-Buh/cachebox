@@ -11,7 +11,6 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Box;
@@ -33,15 +32,12 @@ import CB_Core.Types.Cache;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 {
 	// Allgemein
-	private BitmapFont CompassFont = Fonts.getNormal();
-	private BitmapFont BigFont = Fonts.getBig();
 	private final CacheTypes[] CacheTypNumbers = new CacheTypes[]
 		{ CacheTypes.Traditional, // = 0,
 				CacheTypes.Multi, // = 1,
@@ -92,15 +88,15 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 		this.initRow(false);
 		this.addNext(btnOK);
 		this.addLast(btnCancel);
-		btnCancel.setText(Translation.Get("cancel"), CompassFont, Fonts.getFontColor());
-		btnOK.setText(Translation.Get("ok"), CompassFont, Fonts.getFontColor());
+		btnCancel.setText(Translation.Get("cancel"));
+		btnOK.setText(Translation.Get("ok"));
 		mainPanel = new Box(this.getAvailableWidth(), this.getAvailableHeight(), "mainPanel");
 		this.addLast(mainPanel);
 		mainPanel_Y = mainPanel.getY();
 		// --- Code
 		cacheCode = new EditWrapedTextField("cacheCode", TextFieldType.SingleLine);
 		TextFieldStyle s = cacheCode.getStyle();
-		s.font = CompassFont;
+
 		cacheCode.setStyle(s);
 		mainPanel.addLast(cacheCode);
 		registerTextField(cacheCode);
@@ -109,30 +105,24 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 		// mainPanel.addNext(lblType, 0.2f);
 		// lblType.setText(tl.Get("type"));
 		cacheTyp = new Spinner("cacheTyp", cacheTypList(), cacheTypSelection());
-		cacheTyp.setFont(BigFont);
 		mainPanel.addNext(cacheTyp);
 		// --- Difficulty
 		cacheDifficulty = new Spinner("cacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
-		cacheDifficulty.setFont(BigFont);
 		mainPanel.addLast(cacheDifficulty, 0.3f);
 		// --- Size
 		cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
-		cacheSize.setFont(BigFont);
 		mainPanel.addNext(cacheSize);
 		// --- Terrain
 		cacheTerrain = new Spinner("cacheTerrain", cacheTerrainList(), cacheTerrainSelection());
-		cacheTerrain.setFont(BigFont);
 		mainPanel.addLast(cacheTerrain, 0.3f);
 		// --- Title
 		cacheTitle = new EditWrapedTextField(this, cacheTyp.copy(), TextFieldType.MultiLine, "cacheTitle");
 		s = cacheTitle.getStyle();
-		s.font = BigFont;
 		cacheTitle.setStyle(s);
 		mainPanel.addLast(cacheTitle);
 		registerTextField(cacheTitle);
 		// --- Coords
 		cacheCoords = new CoordinateButton("cacheCoords");
-		cacheCoords.setFont(BigFont);
 		setCacheCoordsChangeListner();
 		mainPanel.addLast(cacheCoords);
 		// --- Owner

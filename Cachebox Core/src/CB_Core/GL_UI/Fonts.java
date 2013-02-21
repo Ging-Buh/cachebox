@@ -38,12 +38,12 @@ public class Fonts
 	private static Color night_fontColorHighLight;
 	private static Color night_fontColorLink;
 
-	private static int FONT_SIZE_COMPASS_DISTANCE = 28;
-	private static int FONT_SIZE_BIG = 20;
-	private static int FONT_SIZE_NORMAL = 16;
+	private static int FONT_SIZE_COMPASS_DISTANCE = 27;
+	private static int FONT_SIZE_BIG = 18;
+	private static int FONT_SIZE_NORMAL = 15;
 	private static int FONT_SIZE_NORMAL_BUBBLE = 14;
-	private static int FONT_SIZE_SMALL = 12;
-	private static int FONT_SIZE_SMALL_BUBBLE = 10;
+	private static int FONT_SIZE_SMALL = 13;
+	private static int FONT_SIZE_SMALL_BUBBLE = 11;
 
 	private static BitmapFont compass;
 	private static BitmapFont big;
@@ -117,12 +117,12 @@ public class Fonts
 		Logger.DEBUG("from " + ttfPath);
 
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute(ttfPath));
-		compass = loadFontFromFile(generator, (int) (FONT_SIZE_COMPASS_DISTANCE * density));
-		big = loadFontFromFile(generator, (int) (FONT_SIZE_BIG * density));
-		normal = loadFontFromFile(generator, (int) (FONT_SIZE_NORMAL * density));
-		small = loadFontFromFile(generator, (int) (FONT_SIZE_SMALL * density));
-		normalBubble = loadFontFromFile(generator, (int) (FONT_SIZE_NORMAL_BUBBLE * density));
-		smallBubble = loadFontFromFile(generator, (int) (FONT_SIZE_SMALL_BUBBLE * density));
+		compass = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_COMPASS_DISTANCE.getValue() * density));
+		big = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_BIG.getValue() * density));
+		normal = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_NORMAL.getValue() * density));
+		small = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_SMALL.getValue() * density));
+		normalBubble = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_NORMAL_BUBBLE.getValue() * density));
+		smallBubble = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_SMALL_BUBBLE.getValue() * density));
 		generator.dispose();
 	}
 

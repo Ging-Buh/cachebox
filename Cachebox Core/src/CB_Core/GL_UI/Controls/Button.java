@@ -248,7 +248,7 @@ public class Button extends CB_View_Base
 			}
 			else
 			{
-				lblTxt.setFont(Fonts.getNormal());
+				lblTxt.setFont(Fonts.getBig());
 			}
 			this.addLast(lblTxt);
 		}
