@@ -43,14 +43,17 @@ import CB_Core.Types.Waypoint;
 
 public class FieldNotesView extends V_ListView
 {
+	private static FieldNoteList lFieldNotes;
+
 	public static FieldNotesView that;
 	public static FieldNoteEntry aktFieldNote;
-	// private static int aktFieldNoteIndex = -1;
-	static FieldNoteList lFieldNotes;
-	CustomAdapter lvAdapter;
 	public static CB_RectF ItemRec;
-
 	public static boolean firstShow = true;
+
+	private Boolean ThreadCancel = false;
+	private String UploadMeldung = "";
+	private boolean API_Key_error = false;
+	private CustomAdapter lvAdapter;
 
 	public FieldNotesView(CB_RectF rec, String Name)
 	{
@@ -284,6 +287,7 @@ public class FieldNotesView extends V_ListView
 				if (anzahl > 0)
 				{
 					UploadMeldung = "";
+					API_Key_error = false;
 					for (FieldNoteEntry fieldNote : lFieldNotes)
 					{
 						if (fieldNote.uploaded) continue;
@@ -298,8 +302,10 @@ public class FieldNotesView extends V_ListView
 							sendCacheVote(fieldNote);
 						}
 
-						if (CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode, fieldNote.getGcUploadId(),
-								fieldNote.timestamp, fieldNote.comment) != 0)
+						int ret = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode,
+								fieldNote.getGcUploadId(), fieldNote.timestamp, fieldNote.comment);
+
+						if (ret == -1)
 						{
 							UploadMeldung += fieldNote.gcCode + "\n" + CB_Core.Api.GroundspeakAPI.LastAPIError + "\n";
 						}
@@ -307,6 +313,16 @@ public class FieldNotesView extends V_ListView
 						{
 							fieldNote.uploaded = true;
 							fieldNote.UpdateDatabase();
+							if (ret != -10)
+							{
+								fieldNote.uploaded = true;
+								fieldNote.UpdateDatabase();
+							}
+							else
+							{
+								API_Key_error = true;
+								UploadMeldung = "error";
+							}
 						}
 						count++;
 					}
@@ -321,14 +337,18 @@ public class FieldNotesView extends V_ListView
 			@Override
 			public void RunnableReady(boolean canceld)
 			{
-				if (!UploadMeldung.equals(""))
+				if (!canceld)
 				{
-					if (!CB_Core.Api.GroundspeakAPI.isValidAPI_Key()) GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"),
-							MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-				}
-				else
-				{
-					GL_MsgBox.Show(Translation.Get("uploadFinished"), Translation.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+
+					if (!UploadMeldung.equals(""))
+					{
+						if (!API_Key_error) GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK,
+								MessageBoxIcon.Error, null);
+					}
+					else
+					{
+						GL_MsgBox.Show(Translation.Get("uploadFinished"), Translation.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+					}
 				}
 			}
 		};
@@ -355,10 +375,6 @@ public class FieldNotesView extends V_ListView
 			UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";
 		}
 	}
-
-	private Boolean ThreadCancel = false;
-
-	private String UploadMeldung = "";
 
 	public static void addNewFieldnote(int type)
 	{

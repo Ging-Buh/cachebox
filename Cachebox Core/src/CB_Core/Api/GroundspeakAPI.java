@@ -95,7 +95,7 @@ public class GroundspeakAPI
 	public static int CreateFieldNoteAndPublish(String accessToken, String cacheCode, int wptLogTypeId, Date dateLogged, String note)
 	{
 
-		if (chkMemperShip(accessToken)) return -1;
+		if (chkMemperShip(accessToken)) return -10;
 
 		try
 		{
@@ -890,7 +890,24 @@ public class GroundspeakAPI
 
 	private static boolean API_isChacked = false;
 
+	/**
+	 * Returns True if the APY-Key INVALID
+	 * 
+	 * @param accessToken
+	 * @return
+	 */
 	private static boolean chkMemperShip(String accessToken)
+	{
+		return chkMemperShip(accessToken, false);
+	}
+
+	/**
+	 * Returns True if the APY-Key INVALID
+	 * 
+	 * @param accessToken
+	 * @return
+	 */
+	private static boolean chkMemperShip(String accessToken, boolean withoutMsg)
 	{
 		boolean isValid = false;
 		if (API_isChacked) isValid = membershipType > 0;
@@ -899,7 +916,7 @@ public class GroundspeakAPI
 		isValid = membershipType > 0;
 		if (!isValid)
 		{
-			API_ErrorEventHandlerList.callInvalidApiKey();
+			if (!withoutMsg) API_ErrorEventHandlerList.callInvalidApiKey();
 		}
 
 		API_isChacked = true;
@@ -908,9 +925,14 @@ public class GroundspeakAPI
 
 	public static boolean isValidAPI_Key()
 	{
+		return isValidAPI_Key(false);
+	}
+
+	public static boolean isValidAPI_Key(boolean withoutMsg)
+	{
 		if (API_isChacked) return membershipType > 0;
 
-		chkMemperShip(Config.GetAccessToken());
+		chkMemperShip(Config.GetAccessToken(), withoutMsg);
 
 		return membershipType > 0;
 

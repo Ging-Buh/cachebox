@@ -165,7 +165,6 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			else
 			{
 				pd.close();
-				GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("errorAPI"), MessageBoxIcon.Error);
 			}
 		}
 	})

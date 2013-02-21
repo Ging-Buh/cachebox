@@ -174,13 +174,6 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 												Config.AcceptChanges();
 												AboutView.this.refreshText();
 											}
-											else
-											{
-												// Fehler Meldung kommt vom Error Handler
-
-												// GL_MsgBox.Show(Translation.Get("LogInErrorLoadFinds"), "", MessageBoxButtons.OK,
-												// MessageBoxIcon.GC_Live, null);
-											}
 										}
 									});
 

@@ -603,7 +603,7 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private void searchAPI()
 	{
-		if ("".equals(Config.GetAccessToken()))
+		if (!GroundspeakAPI.isValidAPI_Key(true))
 		{
 			GL_MsgBox
 					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
@@ -939,7 +939,7 @@ public class SearchDialog extends PopUp_Base
 	private void askPremium()
 	{
 
-		if ("".equals(Config.GetAccessToken()))
+		if (!GroundspeakAPI.isValidAPI_Key(true))
 		{
 			GL_MsgBox
 					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
