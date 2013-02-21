@@ -6,9 +6,11 @@ import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Locator.GPS;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Events.GPS_FallBackEvent;
+import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 
@@ -39,7 +41,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	{
 
 		PositionChangedEventList.Add(this);
-
+		GPS_FallBackEventList.Add(this);
 		String path = Config.settings.SoundPath.getValue();
 
 		try
@@ -69,24 +71,6 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 			@Override
 			public void run()
 			{
-				try
-				{
-
-					if (!initialFixSoundCompleted && Locator.isGPSprovided())
-					{
-						initialFixSoundCompleted = true;
-						if (PlaySounds && GPS_Fix != null && !GPS_Fix.isPlaying())
-						{
-							Logger.LogCat("Play Fix");
-							GPS_Fix.play();
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					Logger.Error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
-					e.printStackTrace();
-				}
 
 				try
 				{
@@ -210,18 +194,6 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	}
 
 	@Override
-	public void FallBackToNetworkProvider()
-	{
-		if (initialFixSoundCompleted)
-		{
-			if (GPS_lose != null) GPS_lose.play();
-			initialFixSoundCompleted = false;
-		}
-
-		GL.that.Toast("Network-Position", Toast.LENGTH_LONG);
-	}
-
-	@Override
 	public void OrientationChanged()
 	{
 	}
@@ -235,6 +207,53 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	@Override
 	public void SpeedChanged()
 	{
+	}
+
+	@Override
+	public void Fix()
+	{
+		PlaySounds = Config.settings.PlaySounds.getValue();
+
+		try
+		{
+
+			if (!initialFixSoundCompleted && Locator.isGPSprovided() && GPS.getFixedSats() > 3)
+			{
+				if (GPS_Fix != null && !GPS_Fix.isPlaying())
+				{
+					Logger.LogCat("Play Fix");
+					if (PlaySounds) GPS_Fix.play();
+					initialFixSoundCompleted = true;
+					loseSoundCompleated = false;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			Logger.Error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
+			e.printStackTrace();
+		}
+
+	}
+
+	boolean loseSoundCompleated = false;
+
+	@Override
+	public void FallBackToNetworkProvider()
+	{
+		PlaySounds = Config.settings.PlaySounds.getValue();
+
+		if (initialFixSoundCompleted && !loseSoundCompleated)
+		{
+			if (GPS_lose != null && !GPS_lose.isPlaying())
+			{
+				if (PlaySounds) GPS_lose.play();
+			}
+			loseSoundCompleated = true;
+			initialFixSoundCompleted = false;
+		}
+
+		GL.that.Toast("Network-Position", Toast.LENGTH_LONG);
 	}
 
 }

@@ -44,6 +44,7 @@ public class Locator
 	private static boolean mUseImperialUnits = false;
 	private static boolean mUseMagneticCompass = false;
 	private static int mMagneticCompassLevel = 5;
+	private static boolean fix = false;
 	/**
 	 * @uml.property name="displayOff"
 	 */
@@ -64,6 +65,11 @@ public class Locator
 		that = this;
 		if (initialLocation == null) initialLocation = Location.NULL_LOCATION;
 		setNewLocation(initialLocation);
+	}
+
+	public static boolean isFixed()
+	{
+		return fix;
 	}
 
 	/**
@@ -165,6 +171,7 @@ public class Locator
 
 				break;
 			case GPS:
+
 				that.mFineLocation = location;
 				that.mLastSavedFineLocation = location;
 				that.hasSpeed = location.getHasSpeed();
@@ -174,7 +181,13 @@ public class Locator
 				{
 					setHeading(location.getBearing(), CompassType.GPS);
 				}
-				;
+
+				if (!fix && location != null)
+				{
+					fix = true;
+					GPS_FallBackEventList.CallFix();
+				}
+
 				break;
 			}
 
@@ -378,6 +391,8 @@ public class Locator
 		altCorrection = value;
 	}
 
+	static long lastFixLose = 0;
+
 	/**
 	 * Call this if GPS state changed to no sat have a fix
 	 */
@@ -385,9 +400,11 @@ public class Locator
 	{
 		synchronized (that)
 		{
+			lastFixLose = System.currentTimeMillis();
+			fix = false;
 			that.mFineLocation = null;
 		}
-		GPS_FallBackEventList.Call();
+		GPS_FallBackEventList.CallFallBack();
 	}
 
 	/**

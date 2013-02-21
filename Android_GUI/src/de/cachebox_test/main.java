@@ -3755,16 +3755,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			while (statusIterator.hasNext())
 			{
 				GpsSatellite sat = statusIterator.next();
-				if (sat.usedInFix() == true)
-				{
-					fixed++;
-				}
 				satellites++;
 
 				// satellite signal strength
 
 				if (sat.usedInFix())
 				{
+					fixed++;
 					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
 					SatList.add(new GpsStrength(true, sat.getSnr()));
 					coreSatList.add(new GpsStrength(true, sat.getSnr()));
@@ -3785,9 +3782,28 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			CB_Locator.GPS.setSatVisible(satellites);
 			CB_Locator.GPS.setSatList(coreSatList);
 			GpsStateChangeEventList.Call();
+			if (fixed < 3 && (Locator.isFixed()))
+			{
 
-			if (fixed < 3) Locator.FallBack2Network();
+				if (!losseChek)
+				{
+					Timer timer = new Timer();
+					TimerTask task = new TimerTask()
+					{
+						@Override
+						public void run()
+						{
+							if (CB_Locator.GPS.getFixedSats() < 3) Locator.FallBack2Network();
+							losseChek = false;
+						}
+					};
+					timer.schedule(task, 1000);
+				}
+
+			}
 		}
-		GpsStateChangeEventList.Call();
+
 	}
+
+	private boolean losseChek = false;
 }
