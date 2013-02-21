@@ -398,6 +398,20 @@ public class splash extends TabMainView
 
 		Config.settings.ReadFromDB();
 
+		// OwnRepository?
+		String fs = GlobalCore.fs;
+		String folder = Config.WorkPath + "/Repositories/" + FileIO.GetFileNameWithoutExtension(database) + "/";
+		folder = folder.replace("/", fs);
+		File dir = new File(folder);
+		if (dir.exists())
+		{
+			Config.settings.DescriptionImageFolder.setValue(folder + "Images");
+			Config.settings.MapPackFolder.setValue(folder + "Maps");
+			Config.settings.SpoilerFolder.setValue(folder + "Spoilers");
+			Config.settings.TileCacheFolder.setValue(folder + "Cache");
+			Config.AcceptChanges();
+		}
+
 		String FilterString = Config.settings.Filter.getValue();
 		GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
 				FilterString);

@@ -38,13 +38,6 @@ public class Fonts
 	private static Color night_fontColorHighLight;
 	private static Color night_fontColorLink;
 
-	private static int FONT_SIZE_COMPASS_DISTANCE = 27;
-	private static int FONT_SIZE_BIG = 18;
-	private static int FONT_SIZE_NORMAL = 15;
-	private static int FONT_SIZE_NORMAL_BUBBLE = 14;
-	private static int FONT_SIZE_SMALL = 13;
-	private static int FONT_SIZE_SMALL_BUBBLE = 11;
-
 	private static BitmapFont compass;
 	private static BitmapFont big;
 	private static BitmapFont normal;
@@ -241,7 +234,7 @@ public class Fonts
 	private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale)
 	{
 		String fs = GlobalCore.fs;
-		String path = Config.settings.SkinFolder.getValue() + fs + "fonts";
+		String path = Config.settings.SkinFolder.getValue().replace("/", fs) + fs + "fonts";
 		String fontPath = null;
 		for (int i = 0; i < 46; i++)
 		{
