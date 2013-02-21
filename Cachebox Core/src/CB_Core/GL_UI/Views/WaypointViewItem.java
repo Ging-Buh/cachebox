@@ -166,18 +166,14 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			double cacheBearing = -(bearing - heading);
 			setDistanceString(UnitFormatter.DistanceString(distance));
 
-			if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
+			arrow.setRotation((float) cacheBearing);
+			if (arrow.getColor() == DISABLE_COLOR)
 			{
-				arrow.setRotation((float) cacheBearing);
-				if (arrow.getColor() == DISABLE_COLOR)
-				{
-					float size = this.height / 2.3f;
-					arrow = new Sprite(SpriteCache.Arrows.get(0));
-					arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-					arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-				}
+				float size = this.height / 2.3f;
+				arrow = new Sprite(SpriteCache.Arrows.get(0));
+				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 			}
-
 		}
 	}
 
@@ -328,5 +324,10 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	public Priority getPriority()
 	{
 		return Priority.Low;
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
 	}
 }

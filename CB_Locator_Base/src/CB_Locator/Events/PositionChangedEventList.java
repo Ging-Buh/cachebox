@@ -51,6 +51,11 @@ public class PositionChangedEventList
 
 	private static long lastPositionChanged = 0;
 
+	private static long lastOrintationChangedEvent = 0;
+	private static Thread OrientationChangedThread;
+	private static Thread PositionChangedThread;
+	private static Thread SpeedChangedThread;
+
 	public static void PositionChanged()
 	{
 		minPosEventTime = Math.min(minPosEventTime, System.currentTimeMillis() - lastPosTime);
@@ -59,7 +64,7 @@ public class PositionChangedEventList
 		if (lastPositionChanged != 0 && lastPositionChanged > System.currentTimeMillis() - Locator.getMinUpdateTime()) return;
 		lastPositionChanged = System.currentTimeMillis();
 
-		Thread thread = new Thread(new Runnable()
+		if (PositionChangedThread == null) PositionChangedThread = new Thread(new Runnable()
 		{
 
 			@Override
@@ -72,15 +77,15 @@ public class PositionChangedEventList
 						for (PositionChangedEvent event : list)
 						{
 							// If display is switched off fire only events with high priority!
-							if (Locator.isDisplayOff()
-									&& !(event.getPriority() == Priority.High || event.getReceiverName().equalsIgnoreCase("Core.MainViewBase"))) continue;
+							if (Locator.isDisplayOff() && (event.getPriority() != Priority.High)) continue;
 							try
 							{
 								event.PositionChanged();
 							}
 							catch (Exception e)
 							{
-								// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(location)", event.getReceiverName(),
+								// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(location)",
+								// event.getReceiverName(),
 								// e);
 								e.printStackTrace();
 							}
@@ -95,11 +100,9 @@ public class PositionChangedEventList
 			}
 		});
 
-		thread.run();
+		PositionChangedThread.run();
 
 	}
-
-	private static long lastOrintationChangedEvent = 0;
 
 	public static void OrientationChanged()
 	{
@@ -112,13 +115,12 @@ public class PositionChangedEventList
 		if (lastOrintationChangedEvent != 0 && lastOrintationChangedEvent > System.currentTimeMillis() - Locator.getMinUpdateTime()) return;
 		lastOrintationChangedEvent = System.currentTimeMillis();
 
-		Thread thread = new Thread(new Runnable()
+		if (OrientationChangedThread == null) OrientationChangedThread = new Thread(new Runnable()
 		{
 
 			@Override
 			public void run()
 			{
-				long thradStart = System.currentTimeMillis();
 				synchronized (list)
 				{
 					for (PositionChangedEvent event : list)
@@ -136,8 +138,37 @@ public class PositionChangedEventList
 				}
 			}
 		});
+		OrientationChangedThread.run();
+	}
 
-		thread.run();
+	public static void SpeedChanged()
+	{
 
+		if (Locator.isDisplayOff()) return; // Hier braucht niemand ein SpeedChangedEvent
+
+		if (SpeedChangedThread == null) SpeedChangedThread = new Thread(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				synchronized (list)
+				{
+					for (PositionChangedEvent event : list)
+					{
+						try
+						{
+							event.SpeedChanged();
+						}
+						catch (Exception e)
+						{
+							// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		SpeedChangedThread.run();
 	}
 }

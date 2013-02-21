@@ -177,6 +177,8 @@ public class Locator
 				;
 				break;
 			}
+
+			PositionChangedEventList.SpeedChanged();
 			PositionChangedEventList.PositionChanged();
 			PositionChangedEventList.OrientationChanged();
 		}
@@ -259,6 +261,7 @@ public class Locator
 			{
 				if (that.mFineLocation != null) return that.mFineLocation;
 				if (that.mNetworkLocation != null) return that.mNetworkLocation;
+				if (that.mSaveLocation != null) return that.mSaveLocation;
 				return Location.NULL_LOCATION;
 			}
 			else if (type == ProviderType.GPS)

@@ -18,6 +18,11 @@ public interface PositionChangedEvent
 	public abstract void OrientationChanged();
 
 	/**
+	 * Speed is changed! Get the new Speed from Locator!!!
+	 */
+	public abstract void SpeedChanged();
+
+	/**
 	 * Return the Name of this Receiver, for Debug
 	 * 
 	 * @return

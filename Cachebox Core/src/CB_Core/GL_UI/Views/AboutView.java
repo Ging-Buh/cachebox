@@ -417,4 +417,9 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		return Priority.Low;
 	}
 
+	@Override
+	public void SpeedChanged()
+	{
+	}
+
 }

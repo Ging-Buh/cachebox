@@ -1809,7 +1809,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if (info != null)
 		{
 			info.setCoord(Locator.getCoordinate());
-			info.setSpeed(Locator.SpeedString());
 
 			if (GlobalCore.getSelectedCoord() != null)
 			{
@@ -1819,36 +1818,6 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		if (togBtn.getState() > 0 && togBtn.getState() != 2) setCenter(Locator.getCoordinate());
-
-		if (togBtn.getState() == 4 && Config.settings.dynamicZoom.getValue())
-		{
-			// calculate dynamic Zoom
-
-			double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
-			int maxZoom = Config.settings.dynamicZoomLevelMax.getValue();
-			int minZoom = Config.settings.dynamicZoomLevelMin.getValue();
-
-			double percent = Locator.SpeedOverGround() / maxSpeed;
-
-			float dynZoom = (float) (maxZoom - ((maxZoom - minZoom) * percent));
-			if (dynZoom > maxZoom) dynZoom = maxZoom;
-			if (dynZoom < minZoom) dynZoom = minZoom;
-
-			if (lastDynamicZoom != dynZoom)
-			{
-				lastDynamicZoom = dynZoom;
-				zoomBtn.setZoom((int) lastDynamicZoom);
-				inputState = InputState.Idle;
-
-				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
-						System.currentTimeMillis() + ZoomTime);
-
-				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
-				calcPixelsPerMeter();
-			}
-
-		}
 
 		if (CompassMode)
 		{
@@ -2659,6 +2628,45 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	public Priority getPriority()
 	{
 		return Priority.Normal;
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
+		if (info != null)
+		{
+			info.setSpeed(Locator.SpeedString());
+
+			if (togBtn.getState() == 4 && Config.settings.dynamicZoom.getValue())
+			{
+				// calculate dynamic Zoom
+
+				double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
+				int maxZoom = Config.settings.dynamicZoomLevelMax.getValue();
+				int minZoom = Config.settings.dynamicZoomLevelMin.getValue();
+
+				double percent = Locator.SpeedOverGround() / maxSpeed;
+
+				float dynZoom = (float) (maxZoom - ((maxZoom - minZoom) * percent));
+				if (dynZoom > maxZoom) dynZoom = maxZoom;
+				if (dynZoom < minZoom) dynZoom = minZoom;
+
+				if (lastDynamicZoom != dynZoom)
+				{
+					lastDynamicZoom = dynZoom;
+					zoomBtn.setZoom((int) lastDynamicZoom);
+					inputState = InputState.Idle;
+
+					kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(lastDynamicZoom),
+							System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+
+					GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
+					GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
+					calcPixelsPerMeter();
+				}
+			}
+		}
+
 	}
 
 }

@@ -1668,9 +1668,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			 * gesunden Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
-			long updateTime = Config.settings.gpsUpdateTime.getValue();
-
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, this);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
 
 			locationManager.addNmeaListener(this);

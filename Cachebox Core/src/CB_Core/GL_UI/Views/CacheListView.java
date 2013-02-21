@@ -428,4 +428,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		return Priority.Normal;
 	}
 
+	@Override
+	public void SpeedChanged()
+	{
+	}
+
 }

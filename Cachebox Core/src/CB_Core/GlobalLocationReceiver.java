@@ -232,4 +232,9 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 		return Priority.High;
 	}
 
+	@Override
+	public void SpeedChanged()
+	{
+	}
+
 }

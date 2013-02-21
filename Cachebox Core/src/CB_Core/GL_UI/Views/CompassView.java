@@ -826,4 +826,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		return Priority.High;
 	}
 
+	@Override
+	public void SpeedChanged()
+	{
+	}
+
 }

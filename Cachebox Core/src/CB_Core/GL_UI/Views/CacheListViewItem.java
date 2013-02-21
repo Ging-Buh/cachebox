@@ -217,4 +217,9 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		return Priority.Normal;
 	}
 
+	@Override
+	public void SpeedChanged()
+	{
+	}
+
 }

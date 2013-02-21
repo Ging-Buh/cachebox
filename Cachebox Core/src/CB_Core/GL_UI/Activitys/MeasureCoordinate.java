@@ -379,4 +379,9 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		return Priority.Normal;
 	}
 
+	@Override
+	public void SpeedChanged()
+	{
+	}
+
 }
