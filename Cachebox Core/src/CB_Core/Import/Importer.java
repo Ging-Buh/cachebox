@@ -351,10 +351,13 @@ public class Importer
 		int counter = 0;
 		for (String gccode : gcCodes)
 		{
-			importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
-			ip.ProgressInkrement("importImageUrls",
-					"get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")",
-					false);
+			if (gccode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+			{
+				importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
+				ip.ProgressInkrement("importImageUrls",
+						"get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")",
+						false);
+			}
 		}
 
 		ImageDAO imageDAO = new ImageDAO();
@@ -405,14 +408,20 @@ public class Importer
 
 				i++;
 
-				ip.ProgressInkrement("importImages",
-						"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
+				if (gccode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+				{
+					ip.ProgressInkrement("importImages",
+							"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
+				}
 			}
 
 			if (downloadedImage)
 			{
-				ip.ProgressInkrement("importImages",
-						"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
+				if (gccode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+				{
+					ip.ProgressInkrement("importImages",
+							"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
+				}
 
 			}
 			if (!downloadFaild)
@@ -452,37 +461,41 @@ public class Importer
 				String name = reader.getString(2);
 				String gcCode = reader.getString(3);
 
-				ip.ProgressInkrement("importImages",
-						"Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
-
-				boolean additionalImagesUpdated = false;
-				boolean descriptionImagesUpdated = false;
-
-				if (!reader.isNull(5))
+				if (gcCode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 				{
-					additionalImagesUpdated = reader.getInt(5) != 0;
-				}
-				if (!reader.isNull(6))
-				{
-					descriptionImagesUpdated = reader.getInt(6) != 0;
-				}
+					ip.ProgressInkrement("importImages",
+							"Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
 
-				String description = reader.getString(1);
-				String uri = reader.getString(4);
+					boolean additionalImagesUpdated = false;
+					boolean descriptionImagesUpdated = false;
 
-				if (!importImages)
-				{
-					// do not import Description Images
-					descriptionImagesUpdated = true;
-				}
-				if (!importSpoiler)
-				{
-					// do not import Spoiler Images
-					additionalImagesUpdated = true;
-				}
-				importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
+					if (!reader.isNull(5))
+					{
+						additionalImagesUpdated = reader.getInt(5) != 0;
+					}
+					if (!reader.isNull(6))
+					{
+						descriptionImagesUpdated = reader.getInt(6) != 0;
+					}
 
-				reader.moveToNext();
+					String description = reader.getString(1);
+					String uri = reader.getString(4);
+
+					if (!importImages)
+					{
+						// do not import Description Images
+						descriptionImagesUpdated = true;
+					}
+					if (!importSpoiler)
+					{
+						// do not import Spoiler Images
+						additionalImagesUpdated = true;
+					}
+					importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri,
+							false);
+
+					reader.moveToNext();
+				}
 			}
 		}
 
@@ -617,29 +630,34 @@ public class Importer
 		ImportHandler importHandler = new ImportHandler();
 		LinkedList<String> allImages = new LinkedList<String>();
 		ArrayList<String> apiImages = new ArrayList<String>();
-		GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(true), GcCode, apiImages);
-		for (String image : apiImages)
+
+		if (GcCode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 		{
-			if (image.contains("/log/")) continue; // do not import log-images
-			if (!allImages.contains(image)) allImages.add(image);
+			GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(true), GcCode, apiImages);
+			for (String image : apiImages)
+			{
+				if (image.contains("/log/")) continue; // do not import log-images
+				if (!allImages.contains(image)) allImages.add(image);
+			}
+			while (allImages != null && allImages.size() > 0)
+			{
+				String url;
+				url = allImages.poll();
+
+				ImageEntry image = new ImageEntry();
+
+				image.CacheId = ID;
+				image.GcCode = GcCode;
+				image.Name = url.substring(url.lastIndexOf("/") + 1);
+				image.Description = "";
+				image.ImageUrl = url;
+				image.IsCacheImage = true;
+
+				importHandler.handleImage(image, true);
+
+			}
 		}
-		while (allImages != null && allImages.size() > 0)
-		{
-			String url;
-			url = allImages.poll();
 
-			ImageEntry image = new ImageEntry();
-
-			image.CacheId = ID;
-			image.GcCode = GcCode;
-			image.Name = url.substring(url.lastIndexOf("/") + 1);
-			image.Description = "";
-			image.ImageUrl = url;
-			image.IsCacheImage = true;
-
-			importHandler.handleImage(image, true);
-
-		}
 	}
 
 	public void importMaps()
