@@ -325,22 +325,19 @@ public class SelectDB extends ActivityBase
 				// OwnRepository?
 				if (data != null && ((Boolean) data) == false)
 				{
-					String fs = GlobalCore.fs;
-					String folder = Config.WorkPath + "/Repositories/" + NewDB_Name + "/";
-					folder = folder.replace("/", fs);
-					if (FileIO.DirectoryExists(folder)) // wird angelegt
-					{
-						Config.settings.DescriptionImageFolder.setValue(folder + "Images");
-						Config.settings.MapPackFolder.setValue(folder + "Maps");
-						Config.settings.SpoilerFolder.setValue(folder + "Spoilers");
-						Config.settings.TileCacheFolder.setValue(folder + "Cache");
-						Config.AcceptChanges();
-						// Create subFolders
-						createFolder(Config.settings.DescriptionImageFolder.getValue());
-						createFolder(Config.settings.MapPackFolder.getValue());
-						createFolder(Config.settings.SpoilerFolder.getValue());
-						createFolder(Config.settings.TileCacheFolder.getValue());
-					}
+					String folder = "?\\" + NewDB_Name + "\\";
+
+					Config.settings.DescriptionImageFolder.setValue(folder + "Images");
+					Config.settings.MapPackFolder.setValue(folder + "Maps");
+					Config.settings.SpoilerFolder.setValue(folder + "Spoilers");
+					Config.settings.TileCacheFolder.setValue(folder + "Cache");
+					Config.AcceptChanges();
+
+					// Create Folder?
+					createFolder(Config.settings.DescriptionImageFolder.getValue());
+					createFolder(Config.settings.MapPackFolder.getValue());
+					createFolder(Config.settings.SpoilerFolder.getValue());
+					createFolder(Config.settings.TileCacheFolder.getValue());
 				}
 
 				Config.AcceptChanges();

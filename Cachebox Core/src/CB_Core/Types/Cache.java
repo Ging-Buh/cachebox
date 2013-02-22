@@ -455,8 +455,8 @@ public class Cache implements Comparable<Cache>
 		String directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
-		// from global Repository
-		path = Config.settings.SpoilerFolder.getDefaultValue();
+		// from own Repository
+		path = Config.settings.DescriptionImageFolder.getValue();
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
@@ -465,10 +465,18 @@ public class Cache implements Comparable<Cache>
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
-		// from global Repository
-		path = Config.settings.DescriptionImageFolder.getDefaultValue();
-		directory = path + "/" + GcCode.substring(0, 4);
-		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+		if (!Config.settings.SpoilerFolder.getDefaultValue().equalsIgnoreCase(Config.settings.SpoilerFolder.getValue()))
+		{
+			// from global Repository
+			path = Config.settings.SpoilerFolder.getDefaultValue();
+			directory = path + "/" + GcCode.substring(0, 4);
+			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+
+			// from global Repository
+			path = Config.settings.DescriptionImageFolder.getDefaultValue();
+			directory = path + "/" + GcCode.substring(0, 4);
+			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+		}
 
 		// Add own taken photo
 		directory = Config.settings.UserImageFolder.getValue();
