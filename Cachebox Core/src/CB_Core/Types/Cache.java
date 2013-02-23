@@ -460,11 +460,6 @@ public class Cache implements Comparable<Cache>
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
-		// from own Repository
-		path = Config.settings.DescriptionImageFolder.getValue();
-		directory = path + "/" + GcCode.substring(0, 4);
-		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-
 		if (!Config.settings.SpoilerFolder.getDefaultValue().equalsIgnoreCase(Config.settings.SpoilerFolder.getValue()))
 		{
 			// from global Repository
@@ -486,7 +481,7 @@ public class Cache implements Comparable<Cache>
 	private void reloadSpoilerResourcesFromPath(String directory, ArrayList<ImageEntry> spoilerResources)
 	{
 		if (!FileIO.DirectoryExists(directory)) return;
-
+		// Logger.DEBUG("Loading spoilers from " + directory);
 		File dir = new File(directory);
 		FilenameFilter filter = new FilenameFilter()
 		{

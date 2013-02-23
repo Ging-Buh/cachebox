@@ -325,7 +325,7 @@ public class SelectDB extends ActivityBase
 				// OwnRepository?
 				if (data != null && ((Boolean) data) == false)
 				{
-					String folder = "?\\" + NewDB_Name + "\\";
+					String folder = "?/" + NewDB_Name + "/";
 
 					Config.settings.DescriptionImageFolder.setValue(folder + "Images");
 					Config.settings.MapPackFolder.setValue(folder + "Maps");

@@ -1,9 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
-import java.io.File;
-
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
@@ -74,21 +71,6 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			public void run()
 			{
 				Config.settings.ReadFromDB();
-
-				// OwnRepository?
-				String fs = GlobalCore.fs;
-				String folder = Config.WorkPath + "/Repositories/"
-						+ FileIO.GetFileNameWithoutExtension(Config.settings.DatabasePath.getValue()) + "/";
-				folder = folder.replace("/", fs);
-				File dir = new File(folder);
-				if (dir.exists())
-				{
-					Config.settings.DescriptionImageFolder.setValue(folder + "Images");
-					Config.settings.MapPackFolder.setValue(folder + "Maps");
-					Config.settings.SpoilerFolder.setValue(folder + "Spoilers");
-					Config.settings.TileCacheFolder.setValue(folder + "Cache");
-					Config.AcceptChanges();
-				}
 
 				GlobalCore.Categories = new Categories();
 				GlobalCore.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(
