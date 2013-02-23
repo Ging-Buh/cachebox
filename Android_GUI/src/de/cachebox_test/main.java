@@ -396,7 +396,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			// hier muss die Config Db initialisiert werden
 			Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-			if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+			if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 			Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 			// initialize Database
 			Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
@@ -1818,7 +1818,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// define the file-name to save photo taken by Camera activity
 		String directory = Config.settings.UserImageFolder.getValue();
-		if (!FileIO.DirectoryExists(directory))
+		if (!FileIO.createDirectory(directory))
 		{
 			// Log.d("DroidCachebox", "Media-Folder does not exist...");
 			return;
@@ -1853,7 +1853,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// define the file-name to save video taken by Camera activity
 		String directory = Config.settings.UserImageFolder.getValue();
-		if (!FileIO.DirectoryExists(directory))
+		if (!FileIO.createDirectory(directory))
 		{
 			// Log.d("DroidCachebox", "Media-Folder does not exist...");
 			return;
@@ -1902,7 +1902,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			// define the file-name to save voice taken by activity
 			String directory = Config.settings.UserImageFolder.getValue();
-			if (!FileIO.DirectoryExists(directory))
+			if (!FileIO.createDirectory(directory))
 			{
 				// Log.d("DroidCachebox", "Media-Folder does not exist...");
 				return;

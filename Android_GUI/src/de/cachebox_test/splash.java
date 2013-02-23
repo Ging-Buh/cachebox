@@ -562,7 +562,7 @@ public class splash extends Activity
 
 		// hier muss die Config Db initialisiert werden
 		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 
 		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
