@@ -291,7 +291,7 @@ public class DesktopMain
 	}
 
 	/**
-	 * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
+	 * Initialisiert die Config fï¿½r die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
 	 */
 	public static void InitalConfig()
 	{
@@ -332,7 +332,7 @@ public class DesktopMain
 		{
 			e.printStackTrace();
 		}
-		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
 		new Translation(Config.WorkPath);

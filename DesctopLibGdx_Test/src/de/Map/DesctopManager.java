@@ -101,7 +101,7 @@ public class DesctopManager extends ManagerBase
 	}
 
 	// / <summary>
-	// / Läd die Kachel mit dem übergebenen Descriptor
+	// / Lï¿½d die Kachel mit dem ï¿½bergebenen Descriptor
 	// / </summary>
 	// / <param name="layer"></param>
 	// / <param name="tile"></param>
@@ -110,7 +110,7 @@ public class DesctopManager extends ManagerBase
 	{
 		if (tile == null) return false;
 
-		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen
+		// Gibts die Kachel schon in einem Mappack? Dann kann sie ï¿½bersprungen
 		// werden!
 		for (PackBase pack : mapPacks)
 			if (pack.Layer == layer) if (pack.Contains(tile) != null) return true;
@@ -119,7 +119,7 @@ public class DesctopManager extends ManagerBase
 		String path = layer.GetLocalPath(tile);
 		String url = layer.GetUrl(tile);
 
-		// Falls Kachel schon geladen wurde, kann sie übersprungen werden
+		// Falls Kachel schon geladen wurde, kann sie ï¿½bersprungen werden
 		synchronized (this)
 		{
 			if (FileIO.FileExists(filename)) return true;
@@ -148,7 +148,7 @@ public class DesctopManager extends ManagerBase
 				// Verzeichnis anlegen
 				synchronized (this)
 				{
-					if (!FileIO.DirectoryExists(path)) return false;
+					if (!FileIO.createDirectory(path)) return false;
 				}
 				// Datei schreiben
 				synchronized (this)

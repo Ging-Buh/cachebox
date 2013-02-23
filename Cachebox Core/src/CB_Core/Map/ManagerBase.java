@@ -19,6 +19,7 @@ import org.apache.http.params.HttpParams;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.Log.Logger;
 import CB_Core.Map.Layer.Type;
 
 public abstract class ManagerBase
@@ -366,9 +367,9 @@ public abstract class ManagerBase
 
 		File dirOwnRepo = new File(Config.settings.MapPackFolder.getValue());
 		File dirDefaultRepo = new File(Config.settings.MapPackFolder.getDefaultValue());
+		Logger.DEBUG("ManagerBase looks for map in " + dirOwnRepo + " and " + dirDefaultRepo);
 
 		String[] OwnFiles = dirOwnRepo.list();
-		String[] DefaultFiles = dirDefaultRepo.list();
 
 		ArrayList<String> files = new ArrayList<String>();
 
@@ -380,11 +381,15 @@ public abstract class ManagerBase
 			}
 		}
 
-		if (DefaultFiles != null && DefaultFiles.length > 0)
+		if (!dirOwnRepo.getName().equalsIgnoreCase(dirDefaultRepo.getName()))
 		{
-			for (String tmp : DefaultFiles)
+			String[] DefaultFiles = dirDefaultRepo.list();
+			if (DefaultFiles != null && DefaultFiles.length > 0)
 			{
-				files.add(tmp);
+				for (String tmp : DefaultFiles)
+				{
+					files.add(tmp);
+				}
 			}
 		}
 
@@ -394,6 +399,7 @@ public abstract class ManagerBase
 			{
 				for (String file : files)
 				{
+					Logger.DEBUG("ManagerBase found map " + file);
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
 					{
 						ManagerBase.Manager.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
