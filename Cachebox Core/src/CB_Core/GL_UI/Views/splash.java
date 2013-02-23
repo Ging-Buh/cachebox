@@ -414,7 +414,7 @@ public class splash extends TabMainView
 		}
 		CachListChangedEventList.Call();
 
-		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
 	}

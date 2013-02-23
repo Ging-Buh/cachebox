@@ -569,7 +569,7 @@ public class Importer
 		boolean retval = true;
 
 		String imagePath = path + "/" + GcCode.substring(0, 4);
-		boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
+		boolean imagePathDirExists = FileIO.createDirectory(imagePath);
 
 		if (imagePathDirExists)
 		{
@@ -683,7 +683,7 @@ public class Importer
 		}
 		else
 		{
-			FileIO.DirectoryExists(directoryPath);
+			FileIO.createDirectory(directoryPath);
 			files = FileIO.recursiveDirectoryReader(new File(directoryPath), files);
 		}
 

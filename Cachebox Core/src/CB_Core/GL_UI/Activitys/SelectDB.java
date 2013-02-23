@@ -334,10 +334,10 @@ public class SelectDB extends ActivityBase
 					Config.AcceptChanges();
 
 					// Create Folder?
-					createFolder(Config.settings.DescriptionImageFolder.getValue());
-					createFolder(Config.settings.MapPackFolder.getValue());
-					createFolder(Config.settings.SpoilerFolder.getValue());
-					createFolder(Config.settings.TileCacheFolder.getValue());
+					FileIO.createDirectory(Config.settings.DescriptionImageFolder.getValue());
+					FileIO.createDirectory(Config.settings.MapPackFolder.getValue());
+					FileIO.createDirectory(Config.settings.SpoilerFolder.getValue());
+					FileIO.createDirectory(Config.settings.TileCacheFolder.getValue());
 				}
 
 				Config.AcceptChanges();
@@ -352,7 +352,7 @@ public class SelectDB extends ActivityBase
 					Database.Data.Query.checkSelectedCacheValid();
 				}
 
-				if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return true;
+				if (!FileIO.createDirectory(Config.WorkPath + "/User")) return true;
 				Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
 				Config.AcceptChanges();
@@ -371,15 +371,6 @@ public class SelectDB extends ActivityBase
 			return true;
 		}
 	};
-
-	private void createFolder(String path)
-	{
-		File dir = new File(path);
-		if (!dir.exists())
-		{
-			dir.mkdirs();
-		}
-	}
 
 	protected void selectDB()
 	{

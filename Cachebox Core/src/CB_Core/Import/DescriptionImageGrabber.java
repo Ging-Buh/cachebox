@@ -234,7 +234,7 @@ public class DescriptionImageGrabber
 		{
 			String localDir = local.substring(0, local.lastIndexOf("/"));
 
-			if (!FileIO.DirectoryExists(localDir)) return false;
+			if (!FileIO.createDirectory(localDir)) return false;
 
 			URL aURL = new URL(uri.replace("&amp;", "&"));
 
@@ -528,7 +528,7 @@ public class DescriptionImageGrabber
 	private static String[] getFilesInDirectory(String path, final String GcCode)
 	{
 		String imagePath = path + "/" + GcCode.substring(0, 4);
-		boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
+		boolean imagePathDirExists = FileIO.createDirectory(imagePath);
 
 		if (imagePathDirExists)
 		{

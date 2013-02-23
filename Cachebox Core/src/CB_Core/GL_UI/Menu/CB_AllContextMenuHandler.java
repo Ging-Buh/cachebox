@@ -7,6 +7,7 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.DeleteSelectedCache;
 import CB_Core.GL_UI.Activitys.EditCache;
 import CB_Core.GL_UI.Controls.Dialogs.HintDialog;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -78,6 +79,9 @@ public class CB_AllContextMenuHandler
 		mi = icm.addItem(MenuID.MI_EDIT_CACHE, "MI_EDIT_CACHE");
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
+		mi = icm.addItem(MenuID.MI_DELETE_CACHE, "MI_DELETE_CACHE");
+		if (selectedCacheIsNull) mi.setEnabled(false);
+
 		icm.show();
 
 	}
@@ -127,6 +131,10 @@ public class CB_AllContextMenuHandler
 			case MenuID.MI_EDIT_CACHE:
 				if (editCache == null) editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
 				editCache.Update(GlobalCore.getSelectedCache());
+				return true;
+
+			case MenuID.MI_DELETE_CACHE:
+				DeleteSelectedCache.Execute();
 				return true;
 
 			default:

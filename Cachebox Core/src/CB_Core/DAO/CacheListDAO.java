@@ -159,7 +159,7 @@ public class CacheListDAO
 	 * @param list
 	 */
 
-	private void delCacheImages(ArrayList<String> list)
+	public void delCacheImages(ArrayList<String> list)
 	{
 		String spoilerpath = Config.settings.SpoilerFolder.getValue();
 		String imagespath = Config.settings.DescriptionImageFolder.getValue();
@@ -173,7 +173,7 @@ public class CacheListDAO
 		{
 			final String GcCode = iterator.next();
 			String directory = path + "/" + GcCode.substring(0, 4);
-			if (!FileIO.DirectoryExists(directory)) continue;
+			if (!FileIO.createDirectory(directory)) continue;
 			File dir = new File(directory);
 			FilenameFilter filter = new FilenameFilter()
 			{
@@ -192,7 +192,7 @@ public class CacheListDAO
 				File file = new File(filename);
 				if (file.exists())
 				{
-					file.delete();
+					if (!file.delete()) Logger.DEBUG("Error deleting : " + filename);
 				}
 			}
 		}

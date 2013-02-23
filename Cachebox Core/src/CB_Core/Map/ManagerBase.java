@@ -216,7 +216,7 @@ public abstract class ManagerBase
 				// Verzeichnis anlegen
 				synchronized (this)
 				{
-					if (!FileIO.DirectoryExists(path)) return false;
+					if (!FileIO.createDirectory(path)) return false;
 				}
 				// Datei schreiben
 				synchronized (this)

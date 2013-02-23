@@ -494,7 +494,7 @@ public class TabMainView extends MainViewBase
 	private void autoLoadTrack()
 	{
 		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
-		if (FileIO.DirectoryExists(trackPath))
+		if (FileIO.createDirectory(trackPath))
 		{
 			File dir = new File(trackPath);
 			String[] files = dir.list();

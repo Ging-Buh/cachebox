@@ -44,7 +44,7 @@ public class TrackRecorder
 		GlobalCore.AktuelleRoute.AltitudeDifference = 0;
 
 		String directory = Config.settings.TrackFolder.getValue();
-		if (!FileIO.DirectoryExists(directory)) return;
+		if (!FileIO.createDirectory(directory)) return;
 
 		if (gpxfile == null)
 		{

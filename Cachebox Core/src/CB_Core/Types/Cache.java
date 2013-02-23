@@ -480,7 +480,7 @@ public class Cache implements Comparable<Cache>
 
 	private void reloadSpoilerResourcesFromPath(String directory, ArrayList<ImageEntry> spoilerResources)
 	{
-		if (!FileIO.DirectoryExists(directory)) return;
+		if (!FileIO.createDirectory(directory)) return;
 		// Logger.DEBUG("Loading spoilers from " + directory);
 		File dir = new File(directory);
 		FilenameFilter filter = new FilenameFilter()

@@ -31,9 +31,9 @@ public class FileIO
 	 * 
 	 * @param folder
 	 *            Pfad des Ordners
-	 * @return true wenn er exestiert oder Angelegt wurde. false wenn das Anlegen nicht Funktioniert hat.
+	 * @return true, wenn er existiert oder angelegt wurde. false, wenn das Anlegen nicht funktioniert hat.
 	 */
-	public static boolean DirectoryExists(String folder)
+	public static boolean createDirectory(String folder)
 	{
 		File f = new File(folder);
 		if (f.isDirectory()) return true;
@@ -144,7 +144,7 @@ public class FileIO
 		{
 			String localDir = local.substring(0, local.lastIndexOf("/"));
 
-			if (!FileIO.DirectoryExists(localDir)) return false;
+			if (!FileIO.createDirectory(localDir)) return false;
 
 			URL aURL = new URL(uri.replace("&amp;", "&"));
 
