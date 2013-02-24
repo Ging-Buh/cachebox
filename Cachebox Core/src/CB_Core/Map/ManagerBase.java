@@ -19,7 +19,6 @@ import org.apache.http.params.HttpParams;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
-import CB_Core.Log.Logger;
 import CB_Core.Map.Layer.Type;
 
 public abstract class ManagerBase
@@ -40,7 +39,9 @@ public abstract class ManagerBase
 
 	public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
 
-	public ArrayList<Layer> Layers = new ArrayList<Layer>();
+	private ArrayList<Layer> Layers = new ArrayList<Layer>();
+
+	private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
 
 	protected String RenderTheme;
 
@@ -54,6 +55,13 @@ public abstract class ManagerBase
 	{
 		if (RenderTheme != null && RenderTheme.length() > 0) return true;
 		return false;
+	}
+
+	public ManagerBase()
+	{
+		// for the Access to the manager in the CB_Core
+		CB_Core.Map.ManagerBase.Manager = this;
+
 	}
 
 	public PackBase CreatePack(String file) throws IOException
@@ -363,16 +371,14 @@ public abstract class ManagerBase
 
 	public void initialMapPacks()
 	{
-		ManagerBase.Manager.Layers.clear();
+		Layers.clear();
 
-		File dirOwnRepo = new File(Config.settings.MapPackFolder.getValue());
-		File dirDefaultRepo = new File(Config.settings.MapPackFolder.getDefaultValue());
-		Logger.DEBUG("ManagerBase looks for map in " + dirOwnRepo + " and " + dirDefaultRepo);
-
-		String[] OwnFiles = dirOwnRepo.list();
-
+		// add default layer
+		Layers.addAll(DEFAULT_LAYER);
 		ArrayList<String> files = new ArrayList<String>();
 
+		File dirOwnRepo = new File(Config.settings.MapPackFolder.getValue());
+		String[] OwnFiles = dirOwnRepo.list();
 		if (OwnFiles != null && OwnFiles.length > 0)
 		{
 			for (String tmp : OwnFiles)
@@ -381,15 +387,23 @@ public abstract class ManagerBase
 			}
 		}
 
-		if (!dirOwnRepo.getName().equalsIgnoreCase(dirDefaultRepo.getName()))
+		File dirDefaultRepo = new File(Config.settings.MapPackFolder.getDefaultValue());
+		String[] DefaultFiles = dirDefaultRepo.list();
+		if (DefaultFiles != null && DefaultFiles.length > 0)
 		{
-			String[] DefaultFiles = dirDefaultRepo.list();
-			if (DefaultFiles != null && DefaultFiles.length > 0)
+			for (String tmp : DefaultFiles)
 			{
-				for (String tmp : DefaultFiles)
-				{
-					files.add(tmp);
-				}
+				files.add(tmp);
+			}
+		}
+
+		File dirGlobalRepo = new File(Config.settings.MapPackFolder.getDefaultValue());
+		String[] GlobalFiles = dirGlobalRepo.list();
+		if (GlobalFiles != null && GlobalFiles.length > 0)
+		{
+			for (String tmp : GlobalFiles)
+			{
+				files.add(tmp);
 			}
 		}
 
@@ -399,7 +413,6 @@ public abstract class ManagerBase
 			{
 				for (String file : files)
 				{
-					Logger.DEBUG("ManagerBase found map " + file);
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
 					{
 						ManagerBase.Manager.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
@@ -424,4 +437,10 @@ public abstract class ManagerBase
 		}
 		Descriptor.Init();
 	}
+
+	public ArrayList<Layer> getLayers()
+	{
+		return Layers;
+	}
+
 }

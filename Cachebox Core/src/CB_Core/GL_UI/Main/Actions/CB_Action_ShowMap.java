@@ -113,7 +113,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi = icm.addItem(MenuID.MI_MAPVIEW_OVERLAY_VIEW, "overlays");
 
 		int Index = 0;
-		for (Layer layer : ManagerBase.Manager.Layers)
+		for (Layer layer : ManagerBase.Manager.getLayers())
 		{
 			if (!layer.isOverlay())
 			{
@@ -159,7 +159,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		MenuItem mi;
 
 		int Index = 0;
-		for (Layer layer : ManagerBase.Manager.Layers)
+		for (Layer layer : ManagerBase.Manager.getLayers())
 		{
 			if (layer.isOverlay())
 			{

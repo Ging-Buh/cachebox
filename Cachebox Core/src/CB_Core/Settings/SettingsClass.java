@@ -29,6 +29,7 @@ public class SettingsClass extends SettingsList
 	public SettingFolder PocketQueryFolder;
 	public SettingFolder DescriptionImageFolder;
 	public SettingFolder MapPackFolder;
+	public SettingFolder GlobalMapPackFolder;
 	public SettingFolder SpoilerFolder;
 	public SettingFolder TrackFolder;
 	public SettingFolder SkinFolder;
@@ -396,6 +397,9 @@ public class SettingsClass extends SettingsList
 		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", SettingStoreType.Local));
 		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers", SettingStoreType.Local));
 		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/repository/cache", SettingStoreType.Local));
+
+		addSetting(GlobalMapPackFolder = new SettingFolder("GlobalMapPackFolder", cat, NORMAL, Work + "/repository/maps",
+				SettingStoreType.Global));
 
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", SettingStoreType.Global));
 
