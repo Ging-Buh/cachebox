@@ -619,8 +619,11 @@ public class FieldNotesView extends V_ListView
 				lFieldNotes.add(0, fieldNote);
 
 				// eine evtl. vorhandene FieldNote /DNF löschen
-				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
-				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 2);
+				if (fieldNote.type == 1 || fieldNote.type == 2)
+				{
+					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
+					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 2);
+				}
 
 				fieldNote.WriteToDatabase();
 				aktFieldNote = fieldNote;
