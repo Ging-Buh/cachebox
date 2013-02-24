@@ -617,6 +617,11 @@ public class FieldNotesView extends V_ListView
 
 				// neue FieldNote
 				lFieldNotes.add(0, fieldNote);
+
+				// eine evtl. vorhandene FieldNote /DNF löschen
+				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
+				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 2);
+
 				fieldNote.WriteToDatabase();
 				aktFieldNote = fieldNote;
 				if (fieldNote.type == 1)
@@ -630,8 +635,7 @@ public class FieldNotesView extends V_ListView
 						Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
 						Config.AcceptChanges();
 					}
-					// und eine evtl. vorhandene FieldNote FoundIt löschen
-					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 2);
+
 				}
 				else if (fieldNote.type == 2)
 				{
