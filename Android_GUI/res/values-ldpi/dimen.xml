@@ -8,7 +8,7 @@
 	<dimen name="ArrowSize_Map">18dip</dimen>
 	<dimen name="TB_icon_Size">20dip</dimen>
 
-	<dimen name="BtnSize">53dip</dimen>
+	
 	<dimen name="BtnTextSize">27dip</dimen>
 	<dimen name="IconSize">11dip</dimen>
 	<dimen name="Margin">3dip</dimen>
@@ -17,8 +17,5 @@
 	<dimen name="MsgBoxIconMinWidth">60dip</dimen>
 	<dimen name="MsgBoxIconMinHeight">60dip</dimen>
 
-	<dimen name="ambilwarna_hsvHeight">240dp</dimen>
-	<dimen name="ambilwarna_hsvWidth">240dp</dimen>
-	<dimen name="ambilwarna_hueWidth">30dp</dimen>
-	<dimen name="ambilwarna_spacer">8dp</dimen>
+	
 </resources>

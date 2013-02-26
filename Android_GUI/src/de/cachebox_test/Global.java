@@ -258,7 +258,6 @@ public class Global
 	 */
 	public static Drawable[] LogIcons = null;
 	public static Drawable[] Arrows = null;
-	public static Drawable[] ChkIcons = null;
 	public static Drawable[] BtnIcons = null;
 
 	// New Map Icons
@@ -417,10 +416,6 @@ public class Global
 		SizeIcons = new Drawable[]
 			{ getDrawable(R.drawable.other, res), getDrawable(R.drawable.micro, res), getDrawable(R.drawable.small, res),
 					getDrawable(R.drawable.regular, res), getDrawable(R.drawable.large, res) };
-
-		ChkIcons = new Drawable[]
-			{ getDrawable(R.drawable.day_btn_check_off, R.drawable.night_btn_check_off, res),
-					getDrawable(R.drawable.day_btn_check_on, R.drawable.night_btn_check_on, res), };
 
 		iniNormalIcons(res);
 
