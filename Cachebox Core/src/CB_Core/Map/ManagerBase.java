@@ -383,7 +383,8 @@ public abstract class ManagerBase
 		{
 			for (String tmp : OwnFiles)
 			{
-				files.add(tmp);
+				String FilePath = dirOwnRepo + "/" + tmp;
+				if (!files.contains(FilePath)) files.add(FilePath);
 			}
 		}
 
@@ -393,7 +394,8 @@ public abstract class ManagerBase
 		{
 			for (String tmp : DefaultFiles)
 			{
-				files.add(tmp);
+				String FilePath = dirDefaultRepo + "/" + tmp;
+				if (!files.contains(FilePath)) files.add(FilePath);
 			}
 		}
 
@@ -403,7 +405,8 @@ public abstract class ManagerBase
 		{
 			for (String tmp : GlobalFiles)
 			{
-				files.add(tmp);
+				String FilePath = dirGlobalRepo + "/" + tmp;
+				if (!files.contains(FilePath)) files.add(FilePath);
 			}
 		}
 
@@ -415,22 +418,24 @@ public abstract class ManagerBase
 				{
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
 					{
-						ManagerBase.Manager.LoadMapPack(Config.settings.MapPackFolder.getValue() + "/" + file);
+						ManagerBase.Manager.LoadMapPack(file);
 					}
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
 					{
-						Layer layer = new Layer(Type.normal, file, file, "");
+
+						String Name = FileIO.GetFileNameWithoutExtension(file);
+						Layer layer = new Layer(Type.normal, Name, Name, file);
 						layer.isMapsForge = true;
 						ManagerBase.Manager.Layers.add(layer);
 					}
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml"))
 					{
-						ManagerBase.Manager.LoadTMS(Config.settings.MapPackFolder.getValue() + "/" + file);
+						ManagerBase.Manager.LoadTMS(file);
 
 					}
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh"))
 					{
-						ManagerBase.Manager.LoadBSH(Config.settings.MapPackFolder.getValue() + "/" + file);
+						ManagerBase.Manager.LoadBSH(file);
 					}
 				}
 			}
