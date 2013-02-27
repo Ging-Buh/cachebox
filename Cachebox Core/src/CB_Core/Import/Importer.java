@@ -529,7 +529,14 @@ public class Importer
 		{
 			if (!descriptionImagesUpdated)
 			{
-				descriptionImagesUpdated = CheckLocalImages(Config.settings.DescriptionImageFolder.getValue(), gcCode);
+				if (Config.settings.DescriptionImageFolderLocal.getValue().length() > 0)
+				{
+					descriptionImagesUpdated = CheckLocalImages(Config.settings.DescriptionImageFolderLocal.getValue(), gcCode);
+				}
+				else
+				{
+					descriptionImagesUpdated = CheckLocalImages(Config.settings.DescriptionImageFolder.getValue(), gcCode);
+				}
 
 				if (descriptionImagesUpdated)
 				{
@@ -538,7 +545,14 @@ public class Importer
 			}
 			if (!additionalImagesUpdated)
 			{
-				additionalImagesUpdated = CheckLocalImages(Config.settings.SpoilerFolder.getValue(), gcCode);
+				if (Config.settings.SpoilerFolderLocal.getValue().length() > 0)
+				{
+					additionalImagesUpdated = CheckLocalImages(Config.settings.SpoilerFolderLocal.getValue(), gcCode);
+				}
+				else
+				{
+					additionalImagesUpdated = CheckLocalImages(Config.settings.SpoilerFolder.getValue(), gcCode);
+				}
 
 				if (additionalImagesUpdated)
 				{

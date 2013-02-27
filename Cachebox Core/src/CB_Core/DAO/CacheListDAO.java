@@ -162,7 +162,12 @@ public class CacheListDAO
 	public void delCacheImages(ArrayList<String> list)
 	{
 		String spoilerpath = Config.settings.SpoilerFolder.getValue();
+		if (Config.settings.SpoilerFolderLocal.getValue().length() > 0) spoilerpath = Config.settings.SpoilerFolderLocal.getValue();
+
 		String imagespath = Config.settings.DescriptionImageFolder.getValue();
+		if (Config.settings.DescriptionImageFolderLocal.getValue().length() > 0) imagespath = Config.settings.DescriptionImageFolderLocal
+				.getValue();
+
 		delCacheImagesByPath(spoilerpath, list);
 		delCacheImagesByPath(imagespath, list);
 	}
@@ -180,7 +185,6 @@ public class CacheListDAO
 				@Override
 				public boolean accept(File dir, String filename)
 				{
-
 					filename = filename.toLowerCase();
 					return (filename.indexOf(GcCode.toLowerCase()) == 0);
 				}

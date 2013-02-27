@@ -327,17 +327,17 @@ public class SelectDB extends ActivityBase
 				{
 					String folder = "?/" + NewDB_Name + "/";
 
-					Config.settings.DescriptionImageFolder.setValue(folder + "Images");
-					Config.settings.MapPackFolder.setValue(folder + "Maps");
-					Config.settings.SpoilerFolder.setValue(folder + "Spoilers");
-					Config.settings.TileCacheFolder.setValue(folder + "Cache");
+					Config.settings.DescriptionImageFolderLocal.setValue(folder + "Images");
+					Config.settings.MapPackFolderLocal.setValue(folder + "Maps");
+					Config.settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
+					Config.settings.TileCacheFolderLocal.setValue(folder + "Cache");
 					Config.AcceptChanges();
 
 					// Create Folder?
-					FileIO.createDirectory(Config.settings.DescriptionImageFolder.getValue());
-					FileIO.createDirectory(Config.settings.MapPackFolder.getValue());
-					FileIO.createDirectory(Config.settings.SpoilerFolder.getValue());
-					FileIO.createDirectory(Config.settings.TileCacheFolder.getValue());
+					FileIO.createDirectory(Config.settings.DescriptionImageFolderLocal.getValue());
+					FileIO.createDirectory(Config.settings.MapPackFolderLocal.getValue());
+					FileIO.createDirectory(Config.settings.SpoilerFolderLocal.getValue());
+					FileIO.createDirectory(Config.settings.TileCacheFolderLocal.getValue());
 				}
 
 				Config.AcceptChanges();

@@ -26,11 +26,14 @@ public class SettingsClass extends SettingsList
 	public SettingFolder LanguagePath;
 	public SettingFolder SoundPath;
 	public SettingFolder TileCacheFolder;
+	public SettingFolder TileCacheFolderLocal;
 	public SettingFolder PocketQueryFolder;
 	public SettingFolder DescriptionImageFolder;
+	public SettingFolder DescriptionImageFolderLocal;
 	public SettingFolder MapPackFolder;
-	public SettingFolder GlobalMapPackFolder;
+	public SettingFolder MapPackFolderLocal;
 	public SettingFolder SpoilerFolder;
+	public SettingFolder SpoilerFolderLocal;
 	public SettingFolder TrackFolder;
 	public SettingFolder SkinFolder;
 
@@ -42,7 +45,6 @@ public class SettingsClass extends SettingsList
 	public SettingFile MapsforgeNightTheme;
 
 	// Bool
-
 	public SettingBool useMipMap;
 	public SettingBool ImportGpx;
 	public SettingBool CacheMapData;
@@ -393,13 +395,17 @@ public class SettingsClass extends SettingsList
 		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, NORMAL, Work + "/PocketQuery", SettingStoreType.Global));
 
 		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, EXPERT, Work + "/repository/images",
-				SettingStoreType.Local));
-		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", SettingStoreType.Local));
-		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers", SettingStoreType.Local));
-		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/repository/cache", SettingStoreType.Local));
-
-		addSetting(GlobalMapPackFolder = new SettingFolder("GlobalMapPackFolder", cat, NORMAL, Work + "/repository/maps",
 				SettingStoreType.Global));
+		addSetting(DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", cat, NEVER, "", SettingStoreType.Local));
+
+		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers", SettingStoreType.Global));
+		addSetting(SpoilerFolderLocal = new SettingFolder("SpoilerFolder", cat, NEVER, "", SettingStoreType.Local));
+
+		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/repository/cache", SettingStoreType.Global));
+		addSetting(TileCacheFolderLocal = new SettingFolder("TileCacheFolder", cat, NEVER, "", SettingStoreType.Local));
+
+		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", SettingStoreType.Global));
+		addSetting(MapPackFolderLocal = new SettingFolder("MapPackFolder", cat, NEVER, "", SettingStoreType.Local));
 
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", SettingStoreType.Global));
 

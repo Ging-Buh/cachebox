@@ -105,6 +105,8 @@ public class DescriptionImageGrabber
 	public static String BuildImageFilename(String GcCode, URI uri)
 	{
 		String imagePath = Config.settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
+		if (Config.settings.DescriptionImageFolderLocal.getValue().length() > 0) imagePath = Config.settings.DescriptionImageFolderLocal
+				.getValue();
 
 		// String uriName = url.Substring(url.LastIndexOf('/') + 1);
 		// int idx = uri.AbsolutePath.LastIndexOf('.');
@@ -435,8 +437,11 @@ public class DescriptionImageGrabber
 			// anhand dieser Liste kann überprüft werden, ob ein Spoiler schon geladen ist und muss nicht ein 2. mal geladen werden.
 			// Außerdem können anhand dieser Liste veraltete Spoiler identifiziert werden, die gelöscht werden können / müssen
 			String[] files = getFilesInDirectory(Config.settings.SpoilerFolder.getValue(), gcCode.substring(0, 4));
+			String[] filesLocal = getFilesInDirectory(Config.settings.SpoilerFolderLocal.getValue(), gcCode.substring(0, 4));
 			ArrayList<String> afiles = new ArrayList<String>();
 			for (String file : files)
+				afiles.add(file);
+			for (String file : filesLocal)
 				afiles.add(file);
 
 			{
@@ -556,6 +561,9 @@ public class DescriptionImageGrabber
 	public static String BuildAdditionalImageFilename(String GcCode, String ImageName, URI uri)
 	{
 		String imagePath = Config.settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
+
+		if (Config.settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = Config.settings.SpoilerFolderLocal.getValue() + "/"
+				+ GcCode.substring(0, 4);
 
 		ImageName = ImageName.replace("[/:*?\"<>|]", "");
 		ImageName = ImageName.replace("\\", "");

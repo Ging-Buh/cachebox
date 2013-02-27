@@ -69,7 +69,10 @@ public class Layer
 	{
 		if (desc == null) return null;
 
-		return Config.settings.TileCacheFolder.getValue() + "/" + Name + "/" + desc.Zoom + "/" + desc.X;
+		String TileCacheFolder = Config.settings.TileCacheFolder.getValue();
+		if (Config.settings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = Config.settings.TileCacheFolderLocal.getValue();
+
+		return TileCacheFolder + "/" + Name + "/" + desc.Zoom + "/" + desc.X;
 	}
 
 	public boolean isOverlay()

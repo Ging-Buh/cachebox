@@ -377,7 +377,7 @@ public abstract class ManagerBase
 		Layers.addAll(DEFAULT_LAYER);
 		ArrayList<String> files = new ArrayList<String>();
 
-		File dirOwnRepo = new File(Config.settings.MapPackFolder.getValue());
+		File dirOwnRepo = new File(Config.settings.MapPackFolderLocal.getValue());
 		String[] OwnFiles = dirOwnRepo.list();
 		if (OwnFiles != null && OwnFiles.length > 0)
 		{
