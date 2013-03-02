@@ -298,6 +298,7 @@ public class splash extends TabMainView
 			directoryDescriptionImageFolder.mkdir();
 		}
 		String MapPackFolder = Config.settings.MapPackFolder.getValue();
+		Logger.DEBUG("global Maps are in: " + MapPackFolder);
 		File directoryMapPackFolder = new File(MapPackFolder);
 		if (!directoryMapPackFolder.exists())
 		{

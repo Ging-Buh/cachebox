@@ -445,6 +445,7 @@ public class SearchDialog extends PopUp_Base
 		// close the virtual keyboard
 		// InputMethodManager mgr = (InputMethodManager) mPtrMain.getSystemService(Context.INPUT_METHOD_SERVICE);
 		// mgr.hideSoftInputFromWindow(mEingabe.getWindowToken(), 0);
+		mEingabe.getOnscreenKeyboard().show(false);
 	}
 
 	/**
