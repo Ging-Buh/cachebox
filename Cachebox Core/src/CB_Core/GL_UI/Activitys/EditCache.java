@@ -9,15 +9,13 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.KeyboardFocusChangedEvent;
-import CB_Core.Events.KeyboardFocusChangedEventList;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldStyle;
@@ -35,7 +33,8 @@ import CB_Locator.Locator;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
+public class EditCache extends ActivityBase
+// implements KeyboardFocusChangedEvent
 {
 	// Allgemein
 	private final CacheTypes[] CacheTypNumbers = new CacheTypes[]
@@ -96,7 +95,8 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 		// --- Code
 		cacheCode = new EditWrapedTextField("cacheCode", TextFieldType.SingleLine);
 		TextFieldStyle s = cacheCode.getStyle();
-
+		s.font = Fonts.getCompass();
+		s.fontColor = Fonts.getHighLightFontColor();
 		cacheCode.setStyle(s);
 		mainPanel.addLast(cacheCode);
 		registerTextField(cacheCode);
@@ -118,6 +118,7 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 		// --- Title
 		cacheTitle = new EditWrapedTextField(this, cacheTyp.copy(), TextFieldType.MultiLine, "cacheTitle");
 		s = cacheTitle.getStyle();
+		s.font = Fonts.getBig();
 		cacheTitle.setStyle(s);
 		mainPanel.addLast(cacheTitle);
 		registerTextField(cacheTitle);
@@ -468,7 +469,6 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 				scrollToY(textField);
 				textField.setCursorPosition(textField.getText().length());
 			}
-
 		});
 		allTextFields.add(textField);
 	}
@@ -477,26 +477,11 @@ public class EditCache extends ActivityBase implements KeyboardFocusChangedEvent
 	{
 		mainPanel.setY(mainPanel_Y + mainPanel.getHeight() - textField.getY() - textField.getHeight());
 	}
-
-	@Override
-	public void onShow()
-	{
-		KeyboardFocusChangedEventList.Add(this);
-	}
-
-	@Override
-	public void onHide()
-	{
-		KeyboardFocusChangedEventList.Remove(this);
-	}
-
-	@Override
-	public void KeyboardFocusChanged(EditTextFieldBase focus)
-	{
-		if (focus == null)
-		{
-			mainPanel.setY(mainPanel_Y);
-		}
-	}
-
+	/*
+	 * @Override public void onShow() { KeyboardFocusChangedEventList.Add(this); }
+	 * 
+	 * @Override public void onHide() { KeyboardFocusChangedEventList.Remove(this); }
+	 * 
+	 * @Override public void KeyboardFocusChanged(EditTextFieldBase focus) { if (focus == null) { mainPanel.setY(mainPanel_Y); } }
+	 */
 }
