@@ -16,7 +16,6 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldStyle;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -72,8 +71,6 @@ public class EditCache extends ActivityBase
 	private EditWrapedTextField cacheTitle; // MultiLine
 	private EditWrapedTextField cacheOwner; // SingleLine
 	private EditWrapedTextField cacheDescription; // MultiLineWraped
-	// private long cacheGPXFilename_Id;
-	private OnscreenKeyboard keyboard;
 
 	// ctor
 	public EditCache(CB_RectF rec, String Name)
@@ -96,7 +93,6 @@ public class EditCache extends ActivityBase
 		cacheCode = new EditWrapedTextField("cacheCode", TextFieldType.SingleLine);
 		TextFieldStyle s = cacheCode.getStyle();
 		s.font = Fonts.getCompass();
-		s.fontColor = Fonts.getHighLightFontColor();
 		cacheCode.setStyle(s);
 		mainPanel.addLast(cacheCode);
 		registerTextField(cacheCode);
@@ -140,7 +136,6 @@ public class EditCache extends ActivityBase
 		mainPanel.addLast(cacheDescription);
 		registerTextField(cacheDescription);
 
-		keyboard = new DefaultOnscreenKeyboard();
 		this.setOnClickListener(new OnClickListener()
 		{
 
@@ -149,10 +144,9 @@ public class EditCache extends ActivityBase
 			{
 				for (EditWrapedTextField tmp : allTextFields)
 				{
+					tmp.getOnscreenKeyboard().show(false);
 					tmp.resetFocus();
 				}
-
-				keyboard.show(false);
 				mainPanel.setY(mainPanel_Y);
 				return true;
 			}

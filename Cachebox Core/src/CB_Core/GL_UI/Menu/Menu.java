@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Menu;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
@@ -236,31 +235,12 @@ public class Menu extends ButtonDialog
 	{
 		layout();
 		// wenn irgent ein Item Chackable ist, dann alle Titles Einrücken.
-		boolean oneIsChakable = false;
-		for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();)
-		{
-			MenuItemBase tmp = iterator.next();
-			if (tmp instanceof MenuItem)
-			{
-				if (((MenuItem) tmp).isCheckable())
-				{
-					oneIsChakable = true;
-					break;
-				}
-			}
-		}
-		if (oneIsChakable)
-		{
-			for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();)
-			{
-				MenuItemBase tmp = iterator.next();
-				if (tmp instanceof MenuItem)
-				{
-					((MenuItem) tmp).setLeft(true);
-				}
-			}
-		}
-
+		/*
+		 * boolean oneIsChakable = false; for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();) { MenuItemBase tmp
+		 * = iterator.next(); if (tmp instanceof MenuItem) { if (((MenuItem) tmp).isCheckable()) { oneIsChakable = true; break; } } } if
+		 * (oneIsChakable) { for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();) { MenuItemBase tmp =
+		 * iterator.next(); if (tmp instanceof MenuItem) { ((MenuItem) tmp).setLeft(true); } } }
+		 */
 		GL.that.showDialog(this);
 
 	}

@@ -72,7 +72,8 @@ public class MenuItem extends MenuItemBase
 
 		boolean hasIcon = (mIcon != null);
 
-		float left = (mIsCheckable || mLeft) ? this.height * 0.97f : this.height * 0.2f;
+		// float left = (mIsCheckable || mLeft) ? this.height * 0.97f : this.height * 0.2f;
+		float left = this.height * 0.2f;
 		float right = hasIcon ? this.height : 0;
 		float labelWidth = (this.width - right - left) * 0.97f;
 
@@ -101,7 +102,15 @@ public class MenuItem extends MenuItemBase
 
 		if (mIsCheckable)
 		{
-			CB_RectF rec = new CB_RectF(0, 0, this.height, this.height).ScaleCenter(0.75f);
+			CB_RectF rec;
+			if (hasIcon)
+			{
+				rec = new CB_RectF(this.width - 2 * this.height, 0, this.height, this.height).ScaleCenter(0.75f);
+			}
+			else
+			{
+				rec = new CB_RectF(this.width - this.height, 0, this.height, this.height); // .ScaleCenter(0.75f);
+			}
 
 			rec.setHeight(rec.getWidth());
 
