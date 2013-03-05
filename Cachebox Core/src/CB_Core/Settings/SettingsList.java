@@ -85,20 +85,17 @@ public abstract class SettingsList extends ArrayList<SettingBase>
 		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
 		{
 			SettingBase setting = it.next();
-
-			switch (setting.getStoreType().ordinal())
+			if (SettingStoreType.Local == setting.getStoreType())
 			{
-			case 0: // Global
-				dao.ReadFromDatabase(Database.Settings, setting);
-				break;
-
-			case 1:
 				dao.ReadFromDatabase(Database.Data, setting);
-				break;
-
-			case 2:
+			}
+			else if (SettingStoreType.Global == setting.getStoreType())
+			{
+				dao.ReadFromDatabase(Database.Settings, setting);
+			}
+			else if (SettingStoreType.Platform == setting.getStoreType())
+			{
 				dao.ReadFromPlatformSetting(setting);
-				break;
 			}
 		}
 		isLoaded = true;

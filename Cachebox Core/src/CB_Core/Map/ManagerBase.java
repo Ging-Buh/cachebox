@@ -19,6 +19,7 @@ import org.apache.http.params.HttpParams;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.Log.Logger;
 import CB_Core.Map.Layer.Type;
 
 public abstract class ManagerBase
@@ -377,6 +378,7 @@ public abstract class ManagerBase
 		Layers.addAll(DEFAULT_LAYER);
 		ArrayList<String> files = new ArrayList<String>();
 
+		Logger.DEBUG("dirOwnRepo = " + Config.settings.MapPackFolderLocal.getValue());
 		File dirOwnRepo = new File(Config.settings.MapPackFolderLocal.getValue());
 		String[] OwnFiles = dirOwnRepo.list();
 		if (OwnFiles != null && OwnFiles.length > 0)
@@ -388,6 +390,7 @@ public abstract class ManagerBase
 			}
 		}
 
+		Logger.DEBUG("dirDefaultRepo = " + Config.settings.MapPackFolder.getDefaultValue());
 		File dirDefaultRepo = new File(Config.settings.MapPackFolder.getDefaultValue());
 		String[] DefaultFiles = dirDefaultRepo.list();
 		if (DefaultFiles != null && DefaultFiles.length > 0)
@@ -399,7 +402,8 @@ public abstract class ManagerBase
 			}
 		}
 
-		File dirGlobalRepo = new File(Config.settings.MapPackFolder.getDefaultValue());
+		Logger.DEBUG("dirGlobalRepo = " + Config.settings.MapPackFolder.getValue());
+		File dirGlobalRepo = new File(Config.settings.MapPackFolder.getValue());
 		String[] GlobalFiles = dirGlobalRepo.list();
 		if (GlobalFiles != null && GlobalFiles.length > 0)
 		{

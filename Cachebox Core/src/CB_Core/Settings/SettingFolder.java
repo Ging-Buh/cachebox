@@ -1,6 +1,7 @@
 package CB_Core.Settings;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 
 public class SettingFolder extends SettingLongString
 {
@@ -13,26 +14,23 @@ public class SettingFolder extends SettingLongString
 	@Override
 	public String getValue()
 	{
-		return replasePathSaperator(value);
+		return replacePathSaperator(value);
 	}
 
 	@Override
 	public String getDefaultValue()
 	{
-		return replasePathSaperator(defaultValue);
+		return replacePathSaperator(defaultValue);
 	}
 
-	private String replasePathSaperator(String rep)
+	private String replacePathSaperator(String rep)
 	{
 		if (rep.startsWith("?"))
 		{
-			rep = Config.WorkPath + "/Repositories" + rep.substring(1);
+			rep = Config.WorkPath + GlobalCore.fs + "Repositories" + rep.substring(1);
 		}
-
-		if (rep.contains("\\"))
-		{
-			rep = rep.replace("\\", "/");
-		}
+		rep = rep.replace("\\", GlobalCore.fs);
+		rep = rep.replace("/", GlobalCore.fs);
 		return rep;
 	}
 

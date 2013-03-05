@@ -70,10 +70,7 @@ public class splash extends TabMainView
 			switch (step)
 			{
 			case 0:
-
-				String defaultPath = Config.WorkPath + "/skins/default/day/SplashPack.spp";
-
-				atlas = new TextureAtlas(Gdx.files.absolute(defaultPath));
+				atlas = new TextureAtlas(Gdx.files.absolute(Config.WorkPath + "/skins/default/day/SplashPack.spp"));
 				setBackground(new SpriteDrawable(atlas.createSprite("splash-back")));
 				break;
 			case 1:
@@ -93,7 +90,7 @@ public class splash extends TabMainView
 				progress.setProgress(30, "check directoiries");
 				break;
 			case 5:
-				ini_Dir();
+				ini_Dirs();
 				progress.setProgress(40, "Select DB");
 				break;
 			case 6:
@@ -224,6 +221,7 @@ public class splash extends TabMainView
 	 */
 	private void ini_Config()
 	{
+		Logger.DEBUG("ini_Config");
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 		Config.settings.ReadFromDB();
 		Config.AcceptChanges();
@@ -235,6 +233,7 @@ public class splash extends TabMainView
 	 */
 	private void ini_Translations()
 	{
+		Logger.DEBUG("ini_Translations");
 		new Translation(Config.WorkPath);
 		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
 	}
@@ -245,6 +244,7 @@ public class splash extends TabMainView
 	 */
 	private void ini_Sprites()
 	{
+		Logger.DEBUG("ini_Sprites");
 		SpriteCache.LoadSprites(false);
 	}
 
@@ -252,64 +252,18 @@ public class splash extends TabMainView
 	 * Step 5 <br>
 	 * chk directories
 	 */
-	private void ini_Dir()
+	private void ini_Dirs()
 	{
-		String PocketQueryFolder = Config.settings.PocketQueryFolder.getValue();
-		File directoryPocketQueryFolder = new File(PocketQueryFolder);
-		if (!directoryPocketQueryFolder.exists())
-		{
-			directoryPocketQueryFolder.mkdir();
-		}
-		String TileCacheFolder = Config.settings.TileCacheFolder.getValue();
-		File directoryTileCacheFolder = new File(TileCacheFolder);
-		if (!directoryTileCacheFolder.exists())
-		{
-			directoryTileCacheFolder.mkdir();
-		}
-		String User = workPath + "/User";
-		File directoryUser = new File(User);
-		if (!directoryUser.exists())
-		{
-			directoryUser.mkdir();
-		}
-		String TrackFolder = Config.settings.TrackFolder.getValue();
-		File directoryTrackFolder = new File(TrackFolder);
-		if (!directoryTrackFolder.exists())
-		{
-			directoryTrackFolder.mkdir();
-		}
-		String UserImageFolder = Config.settings.UserImageFolder.getValue();
-		File directoryUserImageFolder = new File(UserImageFolder);
-		if (!directoryUserImageFolder.exists())
-		{
-			directoryUserImageFolder.mkdir();
-		}
-
-		String repository = workPath + "/repository";
-		File directoryrepository = new File(repository);
-		if (!directoryrepository.exists())
-		{
-			directoryrepository.mkdir();
-		}
-		String DescriptionImageFolder = Config.settings.DescriptionImageFolder.getValue();
-		File directoryDescriptionImageFolder = new File(DescriptionImageFolder);
-		if (!directoryDescriptionImageFolder.exists())
-		{
-			directoryDescriptionImageFolder.mkdir();
-		}
-		String MapPackFolder = Config.settings.MapPackFolder.getValue();
-		Logger.DEBUG("global Maps are in: " + MapPackFolder);
-		File directoryMapPackFolder = new File(MapPackFolder);
-		if (!directoryMapPackFolder.exists())
-		{
-			directoryMapPackFolder.mkdir();
-		}
-		String SpoilerFolder = Config.settings.SpoilerFolder.getValue();
-		File directorySpoilerFolder = new File(SpoilerFolder);
-		if (!directorySpoilerFolder.exists())
-		{
-			directorySpoilerFolder.mkdir();
-		}
+		Logger.DEBUG("ini_Dirs");
+		ini_Dir(Config.settings.PocketQueryFolder.getValue());
+		ini_Dir(Config.settings.TileCacheFolder.getValue());
+		ini_Dir(workPath + "/User");
+		ini_Dir(Config.settings.TrackFolder.getValue());
+		ini_Dir(Config.settings.UserImageFolder.getValue());
+		ini_Dir(workPath + "/repository");
+		ini_Dir(Config.settings.DescriptionImageFolder.getValue());
+		ini_Dir(Config.settings.MapPackFolder.getValue());
+		ini_Dir(Config.settings.SpoilerFolder.getValue());
 
 		// prevent mediascanner to parse all the images in the cachebox folder
 		File nomedia = new File(workPath, ".nomedia");
@@ -327,12 +281,22 @@ public class splash extends TabMainView
 		}
 	}
 
+	private void ini_Dir(String Folder)
+	{
+		File ff = new File(Folder);
+		if (!ff.exists())
+		{
+			ff.mkdir();
+		}
+	}
+
 	/**
 	 * Step 5 <br>
 	 * show select DB Dialog
 	 */
 	private void ini_SelectDB()
 	{
+		Logger.DEBUG("ini_SelectDB");
 		// search number of DB3 files
 		FileList fileList = null;
 		try
@@ -372,7 +336,7 @@ public class splash extends TabMainView
 	 */
 	private void ini_CacheDB()
 	{
-
+		Logger.DEBUG("ini_CacheDB");
 		// chk if exist filter preset splitter "#" and Replace
 		String ConfigPreset = Config.settings.UserFilter.getValue();
 		if (ConfigPreset.endsWith("#"))
@@ -451,6 +415,7 @@ public class splash extends TabMainView
 	 */
 	private void ini_MapPaks()
 	{
+		Logger.DEBUG("ini_MapPaks");
 		ManagerBase.Manager.initialMapPacks();
 	}
 
@@ -460,6 +425,7 @@ public class splash extends TabMainView
 	 */
 	private void ini_TabMainView()
 	{
+		Logger.DEBUG("ini_TabMainView");
 		GL.that.removeRenderView(this);
 		((Tab_GL_Listner) GL.that).switchToTabMainView();
 

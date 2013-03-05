@@ -506,9 +506,7 @@ public class Importer
 	 * Importiert alle Spoiler Images für einen Cache (über die API-Funktion)
 	 * 
 	 * @param ip
-	 * @param id
-	 * @param gcCode
-	 * @param name
+	 * @param cache
 	 */
 	public void importSpoilerForCacheNew(ImporterProgress ip, Cache cache)
 	{
