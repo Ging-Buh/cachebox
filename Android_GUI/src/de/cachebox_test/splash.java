@@ -585,7 +585,7 @@ public class splash extends Activity
 		{
 			Config.readConfigFile(/* getAssets() */);
 
-			for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+			for (Iterator<SettingBase> it = Config.settings.iterator(); it.hasNext();)
 			{
 				SettingBase setting = it.next();
 
