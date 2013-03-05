@@ -48,22 +48,18 @@ public abstract class SettingsList extends ArrayList<SettingBase>
 				SettingBase setting = it.next();
 				if (!setting.isDirty()) continue; // is not changed -> do not
 
-				switch (setting.getStoreType().ordinal())
+				if (SettingStoreType.Local == setting.getStoreType())
 				{
-				case 0: // Global
-					dao.WriteToDatabase(Database.Settings, setting);
-					break;
-
-				case 1:
 					if (Data != null) dao.WriteToDatabase(Data, setting);
-					break;
-
-				case 2:
-					dao.WriteToPlatformSettings(setting);
-					break;
 				}
-
-				// remember that this setting now is stored
+				else if (SettingStoreType.Global == setting.getStoreType())
+				{
+					dao.WriteToDatabase(Database.Settings, setting);
+				}
+				else if (SettingStoreType.Platform == setting.getStoreType())
+				{
+					dao.WriteToPlatformSettings(setting);
+				}
 				setting.clearDirty();
 
 			}
