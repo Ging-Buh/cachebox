@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.Config;
+import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.CB_View_Base;
@@ -10,6 +11,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditCache;
 import CB_Core.GL_UI.Activitys.Import;
+import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
@@ -81,9 +83,11 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					}
 					return true;
 				case MenuID.MI_FilterSet:
-
 					TabMainView.actionShowFilter.Execute();
-
+					return true;
+				case MenuID.MI_RESET_FILTER:
+					GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0]);
+					EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
 					return true;
 				case MenuID.MI_SEARCH_LIST:
 
@@ -145,6 +149,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		MenuItem mi;
 		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCache.Icons.get(39));
 		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCache.Icons.get(13));
+		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCache.Icons.get(13));
 		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCache.Icons.get(12));
 		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(40));
 		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(41));
@@ -153,7 +158,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		mi.setChecked(GlobalCore.autoResort);
 		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
 		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCache.Icons.get(57));
-
 		return cm;
 	}
 

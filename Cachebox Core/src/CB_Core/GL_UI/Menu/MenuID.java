@@ -189,4 +189,5 @@ public class MenuID
 	public static final int MI_NEW_CACHE = 161;
 	public static final int MI_MAPVIEW_OVERLAY_VIEW = 162;
 	public static final int MI_DELETE_CACHE = 163;
+	public static final int MI_RESET_FILTER = 164;
 }
