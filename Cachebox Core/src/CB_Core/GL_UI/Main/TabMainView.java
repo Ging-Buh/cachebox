@@ -317,6 +317,7 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
+		btn2.addAction(new CB_ActionButton(actionDelCaches, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
@@ -330,7 +331,6 @@ public class TabMainView extends MainViewBase
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
 		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
-		btn4.addAction(new CB_ActionButton(actionDelCaches, false));
 		btn4.addAction(new CB_ActionButton(actionParking, false));
 		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
@@ -414,6 +414,7 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
+		btn2.addAction(new CB_ActionButton(actionDelCaches, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, true, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
@@ -425,7 +426,6 @@ public class TabMainView extends MainViewBase
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
 		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
-		btn4.addAction(new CB_ActionButton(actionDelCaches, false));
 		btn4.addAction(new CB_ActionButton(actionParking, false));
 		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
 		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));

@@ -390,9 +390,10 @@ public class SettingsClass extends SettingsList
 		String Work = Config.WorkPath;
 
 		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", cat, NORMAL, Work + "/User/Media", SettingStoreType.Global));
-		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, EXPERT, Work + "/data/lang", SettingStoreType.Global));
-		addSetting(SoundPath = new SettingFolder("SoundPath", cat, EXPERT, Work + "/data/sound", SettingStoreType.Global));
-		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, NORMAL, Work + "/PocketQuery", SettingStoreType.Global));
+		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, NEVER, Work + "/data/lang", SettingStoreType.Global));
+		addSetting(SoundPath = new SettingFolder("SoundPath", cat, INVISIBLE, Work + "/data/sound", SettingStoreType.Global));
+		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, INVISIBLE, Work + "/PocketQuery",
+				SettingStoreType.Global));
 
 		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, EXPERT, Work + "/repository/images",
 				SettingStoreType.Global));
@@ -409,9 +410,9 @@ public class SettingsClass extends SettingsList
 
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", SettingStoreType.Global));
 
-		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, INVISIBLE, Work + "/data/lang/en-GB/strings.ini",
+		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, NEVER, Work + "/data/lang/en-GB/strings.ini",
 				SettingStoreType.Global, "lan"));
-		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, EXPERT, Work + "/cachebox.db3", SettingStoreType.Global, "db3"));
+		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, NEVER, Work + "/cachebox.db3", SettingStoreType.Global, "db3"));
 		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, INVISIBLE, Work + "/User/geocache_visits.txt",
 				SettingStoreType.Global));
 

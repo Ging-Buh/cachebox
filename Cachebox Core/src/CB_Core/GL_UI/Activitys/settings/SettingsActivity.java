@@ -81,7 +81,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	/***
 	 * Enthält den Key des zu Editierenden Wertes der SettingsList
 	 */
-	public static String EditKey = "";
+	public static int EditKey = -1;
 
 	private Linearlayout LinearLayout;
 
@@ -258,7 +258,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 			ArrayList<SettingBase> SortedSettingList = new ArrayList<SettingBase>();// Config.settings.values().toArray();
 
-			for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+			for (Iterator<SettingBase> it = Config.settings.iterator(); it.hasNext();)
 			{
 				SortedSettingList.add(it.next());
 			}
@@ -495,7 +495,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 
 				TextFieldType type;
 
@@ -514,7 +514,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 									SettingString value = (SettingString) Config.settings.get(EditKey);
 
 									// api ohne lineBreak
-									if (EditKey.equalsIgnoreCase("GcAPI"))
+									if (value.getName().equalsIgnoreCase("GcAPI"))
 									{
 										text = text.replace("\r", "");
 										text = text.replace("\n", "");
@@ -696,7 +696,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 
 				// Show NumPad Int Edit
 				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
@@ -756,7 +756,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 
 				// Show NumPad Int Edit
 				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
@@ -817,7 +817,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 				File file = new File(SB.getValue());
 
 				String ApsolutePath = "";
@@ -872,7 +872,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 				File file = new File(SB.getValue());
 
 				String Path = file.getParent();
@@ -994,7 +994,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 
 				String Value = intToTime(SB.getValue());
 				String[] s = Value.split(":");

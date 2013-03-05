@@ -1,11 +1,11 @@
 package CB_Core.Settings;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.DB.Database;
 
-public abstract class SettingsList extends HashMap<String, SettingBase>
+public abstract class SettingsList extends ArrayList<SettingBase>
 {
 	/**
 	 * 
@@ -19,62 +19,9 @@ public abstract class SettingsList extends HashMap<String, SettingBase>
 		return isLoaded;
 	}
 
-	public boolean getBool(String key)
-	{
-		if (this.containsKey(key))
-		{
-			SettingBase setting = this.get(key);
-			if (setting instanceof SettingBool)
-			{
-				return ((SettingBool) setting).getValue();
-			}
-		}
-		return false;
-	}
-
-	public String getString(String key)
-	{
-		if (this.containsKey(key))
-		{
-			SettingBase setting = this.get(key);
-			if (setting instanceof SettingString)
-			{
-				return ((SettingString) setting).getValue();
-			}
-		}
-		return "";
-
-	}
-
-	public int getInt(String key)
-	{
-		if (this.containsKey(key))
-		{
-			SettingBase setting = this.get(key);
-			if (setting instanceof SettingInt)
-			{
-				return ((SettingInt) setting).getValue();
-			}
-		}
-		return 0;
-	}
-
-	public double getDouble(String key)
-	{
-		if (this.containsKey(key))
-		{
-			SettingBase setting = this.get(key);
-			if (setting instanceof SettingDouble)
-			{
-				return ((SettingDouble) setting).getValue();
-			}
-		}
-		return 0;
-	}
-
 	public void addSetting(SettingBase setting)
 	{
-		this.put(setting.getName(), setting);
+		this.add(setting);
 	}
 
 	public void WriteToDB()
@@ -96,7 +43,7 @@ public abstract class SettingsList extends HashMap<String, SettingBase>
 
 		try
 		{
-			for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
+			for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
 			{
 				SettingBase setting = it.next();
 				if (!setting.isDirty()) continue; // is not changed -> do not
@@ -135,7 +82,7 @@ public abstract class SettingsList extends HashMap<String, SettingBase>
 	{
 		// Read from DB
 		SettingsDAO dao = new SettingsDAO();
-		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
+		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
 		{
 			SettingBase setting = it.next();
 
@@ -159,7 +106,7 @@ public abstract class SettingsList extends HashMap<String, SettingBase>
 
 	public void LoadFromLastValue()
 	{
-		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
+		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
 		{
 			SettingBase setting = it.next();
 			setting.loadFromLastValue();
@@ -168,7 +115,7 @@ public abstract class SettingsList extends HashMap<String, SettingBase>
 
 	public void SaveToLastValue()
 	{
-		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
+		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
 		{
 			SettingBase setting = it.next();
 			setting.saveToLastValue();
@@ -177,7 +124,7 @@ public abstract class SettingsList extends HashMap<String, SettingBase>
 
 	public void LoadAllDefaultValues()
 	{
-		for (Iterator<SettingBase> it = this.values().iterator(); it.hasNext();)
+		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
 		{
 			SettingBase setting = it.next();
 			setting.loadDefault();
