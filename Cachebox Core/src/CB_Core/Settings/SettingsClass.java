@@ -19,7 +19,9 @@ public class SettingsClass extends SettingsList
 
 	// Invisible
 	public SettingLongString Filter;
+	public SettingLongString FilterNew;
 	public SettingLongString UserFilter;
+	public SettingLongString UserFilterNew;
 
 	// Folder
 	public SettingFolder UserImageFolder;
@@ -256,6 +258,8 @@ public class SettingsClass extends SettingsList
 
 		addSetting(Filter = new SettingLongString("Filter", cat, NEVER, FilterProperties.presets[0].toString(), SettingStoreType.Local));
 		addSetting(UserFilter = new SettingLongString("UserFilter", cat, NEVER, "", SettingStoreType.Global));
+		addSetting(FilterNew = new SettingLongString("FilterNew", cat, NEVER, "", SettingStoreType.Local));
+		addSetting(UserFilterNew = new SettingLongString("UserFilterNew", cat, NEVER, "", SettingStoreType.Global));
 		addSetting(LastSelectedCache = new SettingString("LastSelectedCache", cat, NORMAL, "", SettingStoreType.Local));
 		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, SettingStoreType.Global));
 		addSetting(TrackDistance = new SettingIntArray("TrackDistance", cat, NORMAL, 3, SettingStoreType.Global, TrackDistanceArray));

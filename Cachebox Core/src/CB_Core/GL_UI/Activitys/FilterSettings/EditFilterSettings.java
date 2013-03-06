@@ -87,8 +87,8 @@ public class EditFilterSettings extends ActivityBase
 
 				ApplyFilter(GlobalCore.LastFilter);
 
-				// Save selected filter
-				Config.settings.Filter.setValue(GlobalCore.LastFilter.ToString());
+				// Save selected filter (new JSON Format)
+				Config.settings.FilterNew.setValue(GlobalCore.LastFilter.ToString());
 				Config.AcceptChanges();
 				finish();
 				return true;
@@ -386,8 +386,8 @@ public class EditFilterSettings extends ActivityBase
 					// Notify Map
 					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 
-					// save Filtersettings
-					Config.settings.Filter.setValue(Props.ToString());
+					// save Filtersettings im neuen JSON Format
+					Config.settings.FilterNew.setValue(Props.ToString());
 					Config.AcceptChanges();
 				}
 				catch (Exception e)
@@ -411,7 +411,7 @@ public class EditFilterSettings extends ActivityBase
 		String existName = "";
 		for (PresetListViewItem v : lvPre.lItem)
 		{
-			if (PresetListViewItem.chkPresetFilter(v.getEntry().getPresetString(), tmpFilterProps.ToString()))
+			if (PresetListViewItem.chkPresetFilter(v.getEntry().getFilterProperties(), tmpFilterProps))
 			{
 				exist = true;
 				existName = v.getEntry().getName();

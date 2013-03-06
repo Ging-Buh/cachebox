@@ -33,13 +33,14 @@ public class PresetListView extends V_ListView
 	{
 		private String mName;
 		private Sprite mIcon;
-		private String mPresetString;
+		private FilterProperties filterProperties;
 
-		public PresetEntry(String Name, Sprite Icon, String PresetString)
+		public PresetEntry(String Name, Sprite Icon, FilterProperties PresetFilter)
 		{
 			mName = Name;
 			mIcon = Icon;
-			mPresetString = PresetString;
+			// mPresetString = PresetString;
+			filterProperties = PresetFilter;
 		}
 
 		public String getName()
@@ -52,9 +53,14 @@ public class PresetListView extends V_ListView
 			return mIcon;
 		}
 
-		public String getPresetString()
+		public FilterProperties getFilterProperties()
 		{
-			return mPresetString;
+			return filterProperties;
+		}
+
+		public void setFilterProperties(FilterProperties filterProperties)
+		{
+			this.filterProperties = filterProperties;
 		}
 	}
 
@@ -138,7 +144,7 @@ public class PresetListView extends V_ListView
 					int pos = entry.indexOf(";");
 					String name = entry.substring(0, pos);
 					String filter = entry.substring(pos + 1);
-					addPresetItem(SpriteCache.getThemedSprite("userdata"), name, filter);
+					addPresetItem(SpriteCache.getThemedSprite("userdata"), name, new FilterProperties(filter));
 				}
 			}
 			catch (Exception e)
@@ -178,7 +184,7 @@ public class PresetListView extends V_ListView
 
 					if (itemIndex < FilterProperties.presets.length)
 					{
-						EditFilterSettings.tmpFilterProps = new FilterProperties(FilterProperties.presets[itemIndex]);
+						EditFilterSettings.tmpFilterProps = new FilterProperties(FilterProperties.presets[itemIndex].ToString());
 					}
 					else
 					{
@@ -278,10 +284,10 @@ public class PresetListView extends V_ListView
 		}
 	}
 
-	private void addPresetItem(Sprite Icon, String Name, String PresetString)
+	private void addPresetItem(Sprite Icon, String Name, FilterProperties PresetFilter)
 	{
 		if (lPresets == null) lPresets = new ArrayList<PresetListView.PresetEntry>();
-		lPresets.add(new PresetEntry(Name, Icon, PresetString));
+		lPresets.add(new PresetEntry(Name, Icon, PresetFilter));
 	}
 
 	@Override

@@ -587,7 +587,7 @@ public class TabMainView extends MainViewBase
 	public void filterSetChanged()
 	{
 		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.ToString().equals(""))
-				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter.ToString()))
+				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter))
 				&& !GlobalCore.LastFilter.isExtendsFilter())
 		{
 			CacheListButton.setButtonSprites(SpriteCache.CacheList);

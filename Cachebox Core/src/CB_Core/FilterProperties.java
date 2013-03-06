@@ -2,6 +2,10 @@ package CB_Core;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import CB_Core.Log.Logger;
 import CB_Core.Types.DLong;
 
@@ -41,34 +45,52 @@ public class FilterProperties
 
 	public float MaxRating = 5;
 
-	public static final String[] presets = new String[]
+	public static final FilterProperties[] presets = new FilterProperties[]
 		{
 				// All Caches
-				"0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				// "0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// All Caches to find
-				"-1,-1,-1,-1,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				// "-1,-1,-1,-1,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// Quick Cache
-				"-1,-1,-1,-1,0,0,0,0,0,0.0,2.5,0.0,2.5,0.0,4.0,0.0,5.0,true,false,false,true,true,false,false,false,false,false,false,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,2.5,0.0,2.5,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,true,true,false,false,false,false,false,false,true\",\"filtername\":\"\"}"),
+				// "-1,-1,-1,-1,0,0,0,0,0,0.0,2.5,0.0,2.5,0.0,4.0,0.0,5.0,true,false,false,true,true,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// Fetch some Travelbugs
-				"-1,-1,0,0,1,0,0,0,0,0.0,3.0,0.0,3.0,0.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,0,0,1,0,0,0,0,0.0,3.0,0.0,3.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true\",\"filtername\":\"\"}"),
+				// "-1,-1,0,0,1,0,0,0,0,0.0,3.0,0.0,3.0,0.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// Drop off Travelbugs
-				"-1,-1,0,0,0,0,0,0,0,0.0,3.0,0.0,3.0,2.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,0,0,0,0,0,0,0,0.0,3.0,0.0,3.0,2.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true\",\"filtername\":\"\"}"),
+				// "-1,-1,0,0,0,0,0,0,0,0.0,3.0,0.0,3.0,2.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// Highlights
-				"-1,-1,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,3.5,5.0,true,true,true,true,true,true,true,true,true,true,true,false,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,3.5,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				// "-1,-1,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,3.5,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// Favoriten
-				"0,0,0,0,0,1,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,1,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				// "0,0,0,0,0,1,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// prepare to archive
-				"0,0,-1,-1,0,-1,-1,-1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,",
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,-1,-1,0,-1,-1,-1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				// "0,0,-1,-1,0,-1,-1,-1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// Listing Changed
-				"0,0,0,0,0,0,0,1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"
+				new FilterProperties(
+						"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}")
+		// "0,0,0,0,0,0,0,1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,")
 
 		};
 
@@ -145,6 +167,64 @@ public class FilterProperties
 		}
 		result += seperator + tempCategory;
 
+		JSONObject json = new JSONObject();
+		try
+		{
+			// add Cache properties
+			json.put(
+					"caches",
+					String.valueOf(Finds) + seperator + String.valueOf(NotAvailable) + seperator + String.valueOf(Archived) + seperator
+							+ String.valueOf(Own) + seperator + String.valueOf(ContainsTravelbugs) + seperator + String.valueOf(Favorites)
+							+ seperator + String.valueOf(HasUserData) + seperator + String.valueOf(ListingChanged) + seperator
+							+ String.valueOf(WithManualWaypoint) + seperator + String.valueOf(MinDifficulty) + seperator
+							+ String.valueOf(MaxDifficulty) + seperator + String.valueOf(MinTerrain) + seperator
+							+ String.valueOf(MaxTerrain) + seperator + String.valueOf(MinContainerSize) + seperator
+							+ String.valueOf(MaxContainerSize) + seperator + String.valueOf(MinRating) + seperator
+							+ String.valueOf(MaxRating));
+			// add Cache Types
+			String tmp = "";
+			for (int i = 0; i < cacheTypes.length; i++)
+			{
+				if (tmp.length() > 0) tmp += seperator;
+				tmp += String.valueOf(cacheTypes[i]);
+			}
+			json.put("types", tmp);
+			// add Cache Attributes
+			tmp = "";
+			for (int i = 0; i < attributesFilter.length; i++)
+			{
+				if (tmp.length() > 0) tmp += seperator;
+				tmp += String.valueOf(attributesFilter[i]);
+			}
+			json.put("attributes", tmp);
+			// GPX Filenames
+			tmp = "";
+			for (int i = 0; i <= GPXFilenameIds.size() - 1; i++)
+			{
+				tmp += GPXseperator + String.valueOf(GPXFilenameIds.get(i));
+			}
+			json.put("gpxfilenameids", tmp);
+			// Filter Name
+			json.put("filtername", filterName);
+			// Filter GCCode
+			json.put("filtergc", filterGcCode);
+			// Filter Owner
+			json.put("filterowner", filterOwner);
+			// Categories
+			tmp = "";
+			for (long i : Categories)
+			{
+				tmp += GPXseperator + i;
+			}
+			json.put("categories", tmp);
+
+			result = json.toString();
+		}
+		catch (JSONException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return result;
 	}
 
@@ -159,6 +239,82 @@ public class FilterProperties
 
 	public FilterProperties(String serialization)
 	{
+		// Try to parse as JSon
+		JSONTokener tokener = new JSONTokener(serialization);
+		try
+		{
+			JSONObject json = (JSONObject) tokener.nextValue();
+			String caches = json.getString("caches");
+			String[] parts = caches.split(seperator);
+			int cnt = 0;
+			Finds = Integer.parseInt(parts[cnt++]);
+			NotAvailable = Integer.parseInt(parts[cnt++]);
+			Archived = Integer.parseInt(parts[cnt++]);
+			Own = Integer.parseInt(parts[cnt++]);
+			ContainsTravelbugs = Integer.parseInt(parts[cnt++]);
+			Favorites = Integer.parseInt(parts[cnt++]);
+			HasUserData = Integer.parseInt(parts[cnt++]);
+			ListingChanged = Integer.parseInt(parts[cnt++]);
+			WithManualWaypoint = Integer.parseInt(parts[cnt++]);
+			MinDifficulty = Float.parseFloat(parts[cnt++]);
+			MaxDifficulty = Float.parseFloat(parts[cnt++]);
+			MinTerrain = Float.parseFloat(parts[cnt++]);
+			MaxTerrain = Float.parseFloat(parts[cnt++]);
+			MinContainerSize = Float.parseFloat(parts[cnt++]);
+			MaxContainerSize = Float.parseFloat(parts[cnt++]);
+			MinRating = Float.parseFloat(parts[cnt++]);
+			MaxRating = Float.parseFloat(parts[cnt++]);
+
+			String types = json.getString("types");
+			parts = types.split(seperator);
+			cnt = 0;
+			for (int i = 0; i < cacheTypes.length; i++)
+				cacheTypes[i] = Boolean.parseBoolean(parts[cnt++]);
+
+			String attributes = json.getString("attributes");
+			parts = attributes.split(seperator);
+			cnt = 0;
+			for (int i = 0; i < attributesFilter.length; i++)
+				attributesFilter[i] = Integer.parseInt(parts[cnt++]);
+
+			String gpxfilenames = json.getString("gpxfilenameids");
+			parts = gpxfilenames.split(seperator);
+			cnt = 0;
+			if (parts.length > cnt)
+			{
+				String tempGPX = parts[cnt++];
+				String[] partsGPX = new String[] {};
+				partsGPX = tempGPX.split(GPXseperator);
+				for (int i = 1; i < partsGPX.length; i++)
+				{
+					GPXFilenameIds.add(Long.parseLong(partsGPX[i]));
+				}
+			}
+
+			filterName = json.getString("filtername");
+
+			filterGcCode = json.getString("filtergc");
+
+			filterOwner = json.getString("filterowner");
+
+			String filtercategories = json.getString("categories");
+			if (filtercategories.length() > 0)
+			{
+				String tempGPX = filtercategories;
+				String[] partsGPX = new String[] {};
+				partsGPX = tempGPX.split(GPXseperator);
+				for (int i = 1; i < partsGPX.length; i++)
+				{
+					Categories.add(Long.parseLong(partsGPX[i]));
+				}
+			}
+			return;
+		}
+		catch (Exception e)
+		{
+			// Filter ist noch in alten Einstellungen gegeben...
+		}
+
 		try
 		{
 			String[] parts = serialization.split(seperator);
@@ -181,11 +337,13 @@ public class FilterProperties
 			MinRating = Float.parseFloat(parts[cnt++]);
 			MaxRating = Float.parseFloat(parts[cnt++]);
 
-			for (int i = 0; i < cacheTypes.length; i++)
+			for (int i = 0; i < 11; i++)
 				cacheTypes[i] = Boolean.parseBoolean(parts[cnt++]);
 
 			for (int i = 0; i < attributesFilter.length; i++)
-				attributesFilter[i] = Integer.parseInt(parts[cnt++]);
+			{
+				if (parts.length > cnt) attributesFilter[i] = Integer.parseInt(parts[cnt++]);
+			}
 
 			GPXFilenameIds.clear();
 
@@ -354,7 +512,51 @@ public class FilterProperties
 		return retString;
 	}
 
-	/*
-	 * public override int GetHashCode() { return SqlWhere.GetHashCode(); }
+	/**
+	 * Filter miteinander vergleichen wobei Category Einstellungen ignoriert werden sollen
+	 * 
+	 * @param filter
+	 * @return
 	 */
+	public boolean equals(FilterProperties filter)
+	{
+		if (Finds != filter.Finds) return false;
+		if (NotAvailable != filter.NotAvailable) return false;
+		if (Archived != filter.Archived) return false;
+		if (Own != filter.Own) return false;
+		if (ContainsTravelbugs != filter.ContainsTravelbugs) return false;
+		if (Favorites != filter.Favorites) return false;
+		if (HasUserData != filter.HasUserData) return false;
+		if (ListingChanged != filter.ListingChanged) return false;
+		if (WithManualWaypoint != filter.WithManualWaypoint) return false;
+		if (MinDifficulty != filter.MinDifficulty) return false;
+		if (MaxDifficulty != filter.MaxDifficulty) return false;
+		if (MinTerrain != filter.MinTerrain) return false;
+		if (MaxTerrain != filter.MaxTerrain) return false;
+		if (MinContainerSize != filter.MinContainerSize) return false;
+		if (MaxContainerSize != filter.MaxContainerSize) return false;
+		if (MinRating != filter.MinRating) return false;
+		if (MaxRating != filter.MaxRating) return false;
+
+		for (int i = 0; i < cacheTypes.length; i++)
+		{
+			if (filter.cacheTypes.length <= i) break;
+			if (filter.cacheTypes[i] != this.cacheTypes[i]) return false; // nicht gleich!!!
+		}
+		for (int i = 0; i < attributesFilter.length; i++)
+		{
+			if (filter.attributesFilter.length <= i) break;
+			if (filter.attributesFilter[i] != this.attributesFilter[i]) return false; // nicht gleich!!!
+		}
+		if (GPXFilenameIds.size() != filter.GPXFilenameIds.size()) return false;
+		for (Long gid : GPXFilenameIds)
+		{
+			if (!filter.GPXFilenameIds.contains(gid)) return false;
+		}
+		if (!filterOwner.equals(filter.filterOwner)) return false;
+		if (!filterGcCode.equals(filter.filterGcCode)) return false;
+		if (!filterName.equals(filter.filterName)) return false;
+
+		return true;
+	}
 }

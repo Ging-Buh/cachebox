@@ -359,9 +359,19 @@ public class splash extends TabMainView
 
 		Config.settings.ReadFromDB();
 
-		String FilterString = Config.settings.Filter.getValue();
-		GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0]) : new FilterProperties(
-				FilterString);
+		// zuerst den FilterString im neuen JSON Format laden versuchen
+		String FilterString = Config.settings.FilterNew.getValue();
+		if (FilterString.length() > 0)
+		{
+			GlobalCore.LastFilter = new FilterProperties(FilterString);
+		}
+		else
+		{
+			// Falls kein Neuer gefunden wurde -> das alte Format versuchen
+			FilterString = Config.settings.Filter.getValue();
+			GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].ToString())
+					: new FilterProperties(FilterString);
+		}
 		String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
 
 		GlobalCore.Categories = new Categories();
