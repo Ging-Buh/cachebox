@@ -42,6 +42,11 @@ public abstract class Database
 		return newDB;
 	}
 
+	public String getDatabasePath()
+	{
+		return databasePath;
+	}
+
 	public enum DatabaseType
 	{
 		CacheBox, FieldNotes, Settings
@@ -77,6 +82,16 @@ public abstract class Database
 
 	public boolean StartUp(String databasePath)
 	{
+		try
+		{
+			Logger.DEBUG("DB Startup : " + databasePath);
+		}
+		catch (Exception e)
+		{
+			// gibt beim splash - Start: NPE in Translation.readMissingStringsFile
+			// Nachfolgende Starts sollten aber protokolliert werden
+		}
+
 		this.databasePath = databasePath;
 
 		Initialize();

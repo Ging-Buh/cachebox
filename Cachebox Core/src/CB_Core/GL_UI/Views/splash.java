@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.FileList;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
@@ -45,7 +44,6 @@ public class splash extends TabMainView
 	{
 		super(X, Y, Width, Height, Name);
 		GL.that.addRenderView(this, GL.FRAME_RATE_IDLE);
-		workPath = Config.WorkPath;
 	}
 
 	TextureAtlas atlas;
@@ -58,7 +56,6 @@ public class splash extends TabMainView
 	int step = 0;
 	boolean switcher = false;
 	boolean breakForWait = false;
-	String workPath;
 
 	@Override
 	protected void Initial()
@@ -257,16 +254,16 @@ public class splash extends TabMainView
 		Logger.DEBUG("ini_Dirs");
 		ini_Dir(Config.settings.PocketQueryFolder.getValue());
 		ini_Dir(Config.settings.TileCacheFolder.getValue());
-		ini_Dir(workPath + "/User");
+		ini_Dir(Config.WorkPath + "/User");
 		ini_Dir(Config.settings.TrackFolder.getValue());
 		ini_Dir(Config.settings.UserImageFolder.getValue());
-		ini_Dir(workPath + "/repository");
+		ini_Dir(Config.WorkPath + "/repository");
 		ini_Dir(Config.settings.DescriptionImageFolder.getValue());
 		ini_Dir(Config.settings.MapPackFolder.getValue());
 		ini_Dir(Config.settings.SpoilerFolder.getValue());
 
 		// prevent mediascanner to parse all the images in the cachebox folder
-		File nomedia = new File(workPath, ".nomedia");
+		File nomedia = new File(Config.WorkPath, ".nomedia");
 		if (!nomedia.exists())
 		{
 			try
@@ -348,7 +345,7 @@ public class splash extends TabMainView
 			boolean replace = true;
 			while (replace)
 			{
-				String newConfigPreset = ReplaceSpliter(ConfigPreset);
+				String newConfigPreset = ReplaceSplitter(ConfigPreset);
 				if (newConfigPreset == null) replace = false;
 				else
 					ConfigPreset = newConfigPreset;
@@ -358,8 +355,7 @@ public class splash extends TabMainView
 			Config.AcceptChanges();
 		}
 
-		String database = Config.settings.DatabasePath.getValue();
-		Database.Data.StartUp(database);
+		Database.Data.StartUp(Config.settings.DatabasePath.getValue());
 
 		Config.settings.ReadFromDB();
 
@@ -377,14 +373,14 @@ public class splash extends TabMainView
 			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 			Database.Data.Query.checkSelectedCacheValid();
 		}
+
 		CachListChangedEventList.Call();
 
-		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
 	}
 
-	private String ReplaceSpliter(String ConfigPreset)
+	private String ReplaceSplitter(String ConfigPreset)
 	{
 		try
 		{
@@ -445,11 +441,12 @@ public class splash extends TabMainView
 							w = wp;
 						}
 					}
-
+					Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.GcCode + " from restartCache + WP.");
 					GlobalCore.setSelectedWaypoint(c, w);
 				}
 				else
 				{
+					Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.GcCode + " from restartCache.");
 					GlobalCore.setSelectedCache(c);
 				}
 			}

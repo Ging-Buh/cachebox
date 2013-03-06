@@ -306,10 +306,10 @@ public class SelectDB extends ActivityBase
 		public boolean onClick(int which, Object data)
 		{
 			String NewDB_Name = NewDB_InputBox.editText.getText();
-			// Behandle das ergebniss
+			// Behandle das Ergebnis
 			switch (which)
 			{
-			case 1: // ok Clicket
+			case 1: // ok clicked
 
 				String FilterString = Config.settings.Filter.getValue();
 				GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
@@ -318,8 +318,8 @@ public class SelectDB extends ActivityBase
 
 				// initialize Database
 
-				Config.settings.DatabasePath.setValue(Config.WorkPath + "/" + NewDB_Name + ".db3");
-				String database = Config.settings.DatabasePath.getValue();
+				String database = Config.WorkPath + GlobalCore.fs + NewDB_Name + ".db3";
+				Config.settings.DatabasePath.setValue(database);
 				Database.Data.StartUp(database);
 
 				// OwnRepository?
@@ -360,7 +360,7 @@ public class SelectDB extends ActivityBase
 				selectDB();
 
 				break;
-			case 2: // cancel clicket
+			case 2: // cancel clicked
 				that.show();
 				break;
 			case 3:

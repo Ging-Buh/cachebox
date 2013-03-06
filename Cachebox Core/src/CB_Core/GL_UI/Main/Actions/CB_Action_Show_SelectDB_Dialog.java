@@ -45,6 +45,15 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
+
+		if (GlobalCore.getSelectedCache() != null)
+		{
+			// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
+			Config.settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+			Config.AcceptChanges();
+			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+		}
+
 		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
 		selectDBDialog.setReturnListner(new ReturnListner()
 		{
@@ -64,54 +73,56 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	{
 		wd = WaitDialog.ShowWait("Load DB ...");
 
+		Logger.DEBUG("\r\nSwitch DB");
 		Thread thread = new Thread(new Runnable()
 		{
 
 			@Override
 			public void run()
 			{
+				Database.Data.Query.clear();
+				Database.Data.Close();
+				Database.Data.StartUp(Config.settings.DatabasePath.getValue());
+
 				Config.settings.ReadFromDB();
 
+				String FilterString = Config.settings.Filter.getValue();
+				GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
+						: new FilterProperties(FilterString);
+				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
 				GlobalCore.Categories = new Categories();
-				GlobalCore.LastFilter = (Config.settings.Filter.getValue().length() == 0) ? new FilterProperties(
-						FilterProperties.presets[0]) : new FilterProperties(Config.settings.Filter.getValue());
-				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
 				Database.Data.GPXFilenameUpdateCacheCount();
 
-				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
-				Logger.General("Main.ApplyFilter: " + sqlWhere);
 				synchronized (Database.Data.Query)
 				{
-					Database.Data.Query.clear();
-					Database.Data.Close();
-					Database.Data.StartUp(Config.settings.DatabasePath.getValue());
-
 					CacheListDAO cacheListDAO = new CacheListDAO();
 					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+				}
 
-					GlobalCore.setSelectedCache(null);
-					GlobalCore.setSelectedWaypoint(null, null);
-					CachListChangedEventList.Call();
-
-					// set last selected Cache
-					String sGc = Config.settings.LastSelectedCache.getValue();
-					if (sGc != null && !sGc.equals(""))
+				// set selectedCache from lastselected Cache
+				GlobalCore.setSelectedCache(null);
+				String sGc = Config.settings.LastSelectedCache.getValue();
+				if (sGc != null && !sGc.equals(""))
+				{
+					for (Cache c : Database.Data.Query)
 					{
-						for (Cache c : Database.Data.Query)
+						if (c.GcCode.equalsIgnoreCase(sGc))
 						{
-							if (c.GcCode.equalsIgnoreCase(sGc))
-							{
-								GlobalCore.setSelectedCache(c);
-								break;
-							}
+							Logger.DEBUG("returnFromSelectDB:Set selectedCache to " + c.GcCode + " from lastSaved.");
+							GlobalCore.setSelectedCache(c);
+							break;
 						}
 					}
-					// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
-					if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0))
-					{
-						GlobalCore.setSelectedCache(Database.Data.Query.get(0));
-					}
 				}
+				// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
+				if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0))
+				{
+					Logger.DEBUG("Set selectedCache to " + Database.Data.Query.get(0).GcCode + " from firstInDB");
+					GlobalCore.setSelectedCache(Database.Data.Query.get(0));
+				}
+
+				CachListChangedEventList.Call();
+
 				TabMainView.that.filterSetChanged();
 
 				wd.dismis();

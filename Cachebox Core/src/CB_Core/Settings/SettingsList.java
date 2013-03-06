@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.DB.Database;
+import CB_Core.Log.Logger;
 
 public abstract class SettingsList extends ArrayList<SettingBase>
 {
@@ -77,6 +78,16 @@ public abstract class SettingsList extends ArrayList<SettingBase>
 	public void ReadFromDB()
 	{
 		// Read from DB
+		try
+		{
+			Logger.DEBUG("Reading global settings: " + Database.Settings.getDatabasePath());
+			Logger.DEBUG("and local settings: " + Database.Data.getDatabasePath());
+		}
+		catch (Exception e)
+		{
+			// gibt beim splash - Start: NPE in Translation.readMissingStringsFile
+			// Nachfolgende Starts sollten aber protokolliert werden
+		}
 		SettingsDAO dao = new SettingsDAO();
 		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
 		{

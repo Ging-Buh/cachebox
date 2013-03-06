@@ -173,6 +173,7 @@ public class TabMainView extends MainViewBase
 		API_ErrorEventHandlerList.addHandler(handler);
 
 		Logger.LogCat("Start TabMainView-Initial");
+		Logger.DEBUG("Start TabMainView-Initial");
 
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
@@ -233,6 +234,7 @@ public class TabMainView extends MainViewBase
 				{
 					if (c.GcCode.equalsIgnoreCase(sGc))
 					{
+						Logger.DEBUG("TabMainView: Set selectedCache to " + c.GcCode + " from lastSaved.");
 						GlobalCore.setSelectedCache(c);
 						break;
 					}

@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Log.Logger;
 import CB_Locator.Locator;
 
 public class CacheList extends MoveableList<Cache>
@@ -114,12 +115,14 @@ public class CacheList extends MoveableList<Cache>
 		if ((size() > 0) && (GlobalCore.getSelectedCache() != null) && (GetCacheById(GlobalCore.getSelectedCache().Id) == null))
 		{
 			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
+			Logger.DEBUG("Change SelectedCache from " + GlobalCore.getSelectedCache().GcCode + "to" + get(0).GcCode);
 			GlobalCore.setSelectedCache(get(0));
 		}
 		// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 		if ((GlobalCore.getSelectedCache() == null) && (size() > 0))
 		{
 			GlobalCore.setSelectedCache(get(0));
+			Logger.DEBUG("Set SelectedCache to " + get(0).GcCode + " first in List.");
 		}
 	}
 

@@ -21,6 +21,7 @@ public class CacheListDAO
 {
 	public CacheList ReadCacheList(CacheList cacheList, String where)
 	{
+		Logger.DEBUG("ReadCacheList 1.Waypoints");
 		SortedMap<Long, ArrayList<Waypoint>> waypoints;
 		waypoints = new TreeMap<Long, ArrayList<Waypoint>>();
 		// zuerst alle Waypoints einlesen
@@ -32,7 +33,7 @@ public class CacheListDAO
 						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint order by CacheId",
 						null);
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false)
+		while (!reader.isAfterLast())
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
 			Waypoint wp = waypointDAO.getWaypoint(reader);
@@ -48,6 +49,7 @@ public class CacheListDAO
 		}
 		reader.close();
 
+		Logger.DEBUG("ReadCacheList 2.Caches");
 		try
 		{
 			reader = Database.Data
@@ -63,7 +65,7 @@ public class CacheListDAO
 		reader.moveToFirst();
 
 		CacheDAO cacheDAO = new CacheDAO();
-		while (reader.isAfterLast() == false)
+		while (!reader.isAfterLast())
 		{
 			Cache cache = cacheDAO.ReadFromCursor(reader);
 
@@ -80,9 +82,9 @@ public class CacheListDAO
 			reader.moveToNext();
 
 		}
-
 		reader.close();
-		// Query.Sort();
+
+		Logger.DEBUG("ReadCacheList 3.Sorting");
 		try
 		{
 			Collections.sort(cacheList);
@@ -91,7 +93,7 @@ public class CacheListDAO
 		{
 			Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
 		}
-
+		Logger.DEBUG("ReadCacheList 4. ready");
 		return cacheList;
 	}
 

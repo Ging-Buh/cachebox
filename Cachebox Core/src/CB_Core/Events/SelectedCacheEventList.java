@@ -2,7 +2,6 @@ package CB_Core.Events;
 
 import java.util.ArrayList;
 
-import CB_Core.Config;
 import CB_Core.GlobalLocationReceiver;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -68,8 +67,9 @@ public class SelectedCacheEventList
 						}
 
 						// save last selected Cache in to DB
-						Config.settings.LastSelectedCache.setValue(cache.GcCode);
-						Config.AcceptChanges();
+						// nur beim Verlassen des Programms und DB-Wechsel
+						// Config.settings.LastSelectedCache.setValue(cache.GcCode);
+						// Config.AcceptChanges();
 					}
 				}
 			});
