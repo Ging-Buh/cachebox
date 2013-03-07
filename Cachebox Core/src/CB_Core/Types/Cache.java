@@ -293,6 +293,12 @@ public class Cache implements Comparable<Cache>
 	 */
 	public Cache()
 	{
+		this.DateHidden = new Date();
+		this.NumTravelbugs = 0;
+		this.Difficulty = 0;
+		this.Terrain = 0;
+		this.Size = CacheSizes.other;
+		this.Available = true;
 		waypoints = new ArrayList<Waypoint>();
 	}
 

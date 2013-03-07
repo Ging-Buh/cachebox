@@ -221,8 +221,8 @@ public class FieldNotesView extends V_ListView
 		cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
 		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
 
-		// Aktueller Cache ist kein Munzee dann weitere Menüeinträge freigeben
-		if (cache.Type.name() != "Munzee")
+		// Aktueller Cache ist ist von geocaching.com dann weitere Menüeinträge freigeben
+		if (cache.GcCode.toLowerCase().startsWith("gc"))
 		{
 			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
 			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
@@ -410,13 +410,13 @@ public class FieldNotesView extends V_ListView
 			return;
 		}
 
-		// Munzee found?
-		if (cache.Type.name() == "Munzee")
+		// GC fremder Cache gefunden?
+		if (!cache.GcCode.toLowerCase().startsWith("gc"))
 		{
 
 			if (type == 1)
 			{
-				// Found it! -> Munzee als gefunden markieren
+				// Found it! -> fremden Cache als gefunden markieren
 				if (!GlobalCore.getSelectedCache().Found)
 				{
 					GlobalCore.getSelectedCache().Found = true;
@@ -429,7 +429,7 @@ public class FieldNotesView extends V_ListView
 			}
 			else if (type == 2)
 			{
-				// DidNotFound -> Munzee als nicht gefunden markieren
+				// DidNotFound -> fremden Cache als nicht gefunden markieren
 				if (GlobalCore.getSelectedCache().Found)
 				{
 					GlobalCore.getSelectedCache().Found = false;

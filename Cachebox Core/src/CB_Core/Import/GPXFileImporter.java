@@ -149,7 +149,10 @@ public class GPXFileImporter
 				}
 				else
 				{
-					if (values.get("wpt_type").startsWith("Geocache|"))
+					String MeinType;
+					MeinType = values.get("wpt_type");
+
+					if (MeinType.startsWith("Geocache"))
 					{
 						try
 						{
@@ -173,7 +176,6 @@ public class GPXFileImporter
 							errors++;
 							Logger.Error("GPXFileImporter", "CreateWaypoint", e);
 						}
-
 					}
 				}
 
@@ -196,6 +198,10 @@ public class GPXFileImporter
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
 				values.put("wpt_type", text);
+
+				String MeinType;
+				MeinType = values.get("wpt_type");
+				MeinType = MeinType + "Ä";
 			}
 		});
 
@@ -258,7 +264,14 @@ public class GPXFileImporter
 			@Override
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
-				values.put("wpt_sym", text);
+				if (text.startsWith("Default"))
+				{
+					values.put("wpt_sym", "Geocache"); // nötig im GPX von Navicache.com einzulesen
+				}
+				else
+				{
+					values.put("wpt_sym", text);
+				}
 			}
 		});
 
@@ -802,6 +815,10 @@ public class GPXFileImporter
 		{
 			cache.DateHidden = parseDate(values.get("wpt_time"));
 		}
+		else
+		{
+			cache.DateHidden = new Date();
+		}
 
 		if (values.containsKey("wpt_url"))
 		{
@@ -813,9 +830,9 @@ public class GPXFileImporter
 			cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
 		}
 
+		// Achtung!!! cache_attribute_id wird nirgends gebildet????
 		if (values.containsKey("cache_attribute_id"))
 		{
-
 			cache.GcId = values.get("cache_attribute_id");
 		}
 
@@ -830,6 +847,10 @@ public class GPXFileImporter
 				cache.Available = false;
 			}
 		}
+		else
+		{
+			cache.Available = true;
+		}
 
 		if (values.containsKey("cache_attribute_archived"))
 		{
@@ -842,10 +863,18 @@ public class GPXFileImporter
 				cache.Archived = false;
 			}
 		}
+		else
+		{
+			cache.Archived = false;
+		}
 
 		if (values.containsKey("cache_name"))
 		{
 			cache.Name = values.get("cache_name");
+		}
+		else if (values.containsKey("wpt_desc")) // kein Name gefunden? Dann versuche den WP-Namen
+		{
+			cache.Name = values.get("wpt_desc");
 		}
 
 		if (values.containsKey("cache_placed_by"))
@@ -863,10 +892,18 @@ public class GPXFileImporter
 			cache.Type = CacheTypes.parseString(values.get("cache_type"));
 			if (cache.GcCode.indexOf("MZ") == 0) cache.Type = CacheTypes.Munzee;
 		}
+		else
+		{
+			cache.Type = CacheTypes.Traditional;
+		}
 
 		if (values.containsKey("cache_container"))
 		{
 			cache.Size = CacheSizes.parseString(values.get("cache_container"));
+		}
+		else
+		{
+			cache.Size = CacheSizes.other;
 		}
 
 		if (values.containsKey("cache_difficulty"))
