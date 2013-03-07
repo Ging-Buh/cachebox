@@ -17,11 +17,14 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
 import CB_Core.Import.DescriptionImageGrabber;
+import CB_Core.Import.Importer;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.DLong;
@@ -251,11 +254,12 @@ public class SearchForGeocaches
 				{
 					result = "";
 					JSONArray caches = json.getJSONArray("Geocaches");
-
+					Logger.DEBUG("got " + caches.length() + " Caches from gc");
 					for (int i = 0; i < caches.length(); i++)
 					{
 						JSONObject jCache = (JSONObject) caches.get(i);
 						String gcCode = jCache.getString("Code");
+						Logger.DEBUG("handling " + gcCode);
 						String name = jCache.getString("Name");
 						result += gcCode + " - " + name + "\n";
 
@@ -410,6 +414,7 @@ public class SearchForGeocaches
 							}
 
 							// insert Images
+							int imageListSizeOrg = imageList.size();
 							JSONArray images = jCache.getJSONArray("Images");
 							for (int j = 0; j < images.length(); j++)
 							{
@@ -427,9 +432,16 @@ public class SearchForGeocaches
 
 								imageList.add(image);
 							}
+							int imageListSizeGC = images.length();
 
 							// insert images from Cache description
 							LinkedList<String> allImages = DescriptionImageGrabber.GetAllImages(cache);
+							int imageListSizeGrabbed = 0;
+
+							if (allImages != null && allImages.size() > 0)
+							{
+								imageListSizeGrabbed = allImages.size();
+							}
 
 							while (allImages != null && allImages.size() > 0)
 							{
@@ -460,6 +472,8 @@ public class SearchForGeocaches
 								}
 
 							}
+							Logger.DEBUG("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/"
+									+ imageListSizeGC + "/" + imageListSizeGrabbed + ")");
 
 							// insert Waypoints
 							JSONArray waypoints = jCache.getJSONArray("AdditionalWaypoints");
@@ -484,6 +498,21 @@ public class SearchForGeocaches
 								waypoint.Clue = jWaypoints.getString("Comment");
 
 								cache.waypoints.add(waypoint);
+							}
+
+							// Spoiler aktualisieren
+							if (GlobalCore.getSelectedCache().GcCode.equals(cache.GcCode))
+							{
+								Importer.ImportSpoiler().setReadyListner(new IReadyListner()
+								{
+									@Override
+									public void isReady()
+									{
+										{
+											GlobalCore.getSelectedCache().ReloadSpoilerRessources();
+										}
+									}
+								});
 							}
 						}
 

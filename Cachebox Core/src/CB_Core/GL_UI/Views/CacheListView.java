@@ -269,14 +269,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		public CustomAdapter(CacheList cacheList)
 		{
-			Logger.DEBUG("CacheList new Custom Adapter");
 			synchronized (cacheList)
 			{
 				this.cacheList = cacheList;
 
 				Count = cacheList.size();
 			}
-
+			Logger.DEBUG("CacheListView ctor CustomAdapter " + Count + " Caches");
 		}
 
 		public int getCount()
