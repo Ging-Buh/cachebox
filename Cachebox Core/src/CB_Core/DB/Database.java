@@ -358,6 +358,13 @@ public abstract class Database
 					execSQL("CREATE INDEX [trackableid_idx] ON [TbLogs] ([TrackableId] ASC);");
 					execSQL("CREATE INDEX [trackablecacheid_idx] ON [TBLOGS] ([CacheId] ASC);");
 				}
+				if (lastDatabaseSchemeVersion < 1005)
+				{
+					execSQL("ALTER TABLE [Trackable] ADD COLUMN [TypeName] ntext NULL");
+					execSQL("ALTER TABLE [Trackable] ADD COLUMN [LastVisit] datetime NULL");
+					execSQL("ALTER TABLE [Trackable] ADD COLUMN [Home] ntext NULL");
+					execSQL("ALTER TABLE [Trackable] ADD COLUMN [TravelDistance] integer default 0");
+				}
 				setTransactionSuccessful();
 			}
 			catch (Exception exc)
