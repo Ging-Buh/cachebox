@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1490;
+	public static final int CurrentRevision = 1493;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -131,7 +131,6 @@ public class GlobalCore
 		{
 			// switch off auto select
 			GlobalCore.autoResort = false;
-			Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 		}
 	}
 

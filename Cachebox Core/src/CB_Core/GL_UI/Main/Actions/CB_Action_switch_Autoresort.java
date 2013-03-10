@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Main.Actions;
 
-import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.SpriteCache;
@@ -32,7 +31,6 @@ public class CB_Action_switch_Autoresort extends CB_ActionCommand
 	public void Execute()
 	{
 		GlobalCore.autoResort = !(GlobalCore.autoResort);
-		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 		if (GlobalCore.autoResort)
 		{
 			synchronized (Database.Data.Query)

@@ -108,7 +108,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					return true;
 				case MenuID.MI_AUTO_RESORT:
 					GlobalCore.autoResort = !(GlobalCore.autoResort);
-					Config.settings.AutoResort.setValue(GlobalCore.autoResort);
 					if (GlobalCore.autoResort)
 					{
 						synchronized (Database.Data.Query)

@@ -67,7 +67,7 @@ public class SettingsClass extends SettingsList
 
 	public SettingBool GCAutoSyncCachesFound;
 	public SettingBool GCAdditionalImageDownload;
-	public SettingBool AutoResort;
+	public SettingBool StartWithAutoSelect;
 	public SettingBool FieldnotesUploadAll;
 	public SettingBool MultiDBAsk;
 	// public SettingBool AllowLandscape;
@@ -260,8 +260,8 @@ public class SettingsClass extends SettingsList
 		addSetting(UserFilter = new SettingLongString("UserFilter", cat, NEVER, "", SettingStoreType.Global));
 		addSetting(FilterNew = new SettingLongString("FilterNew", cat, NEVER, "", SettingStoreType.Local));
 		addSetting(UserFilterNew = new SettingLongString("UserFilterNew", cat, NEVER, "", SettingStoreType.Global));
-		addSetting(LastSelectedCache = new SettingString("LastSelectedCache", cat, NORMAL, "", SettingStoreType.Local));
-		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, SettingStoreType.Global));
+		addSetting(LastSelectedCache = new SettingString("LastSelectedCache", cat, NEVER, "", SettingStoreType.Local));
+		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NEVER, 0, SettingStoreType.Global));
 		addSetting(TrackDistance = new SettingIntArray("TrackDistance", cat, NORMAL, 3, SettingStoreType.Global, TrackDistanceArray));
 		addSetting(SoundApproachDistance = new SettingIntArray("SoundApproachDistance", cat, NORMAL, 50, SettingStoreType.Global, approach));
 		addSetting(TrackRecorderStartup = new SettingBool("TrackRecorderStartup", cat, NORMAL, false, SettingStoreType.Global));
@@ -283,6 +283,7 @@ public class SettingsClass extends SettingsList
 		addSetting(VibrateTime = new SettingInt("VibrateTime", cat, NORMAL, 20, SettingStoreType.Global));
 		addSetting(LongClicktime = new SettingInt("LongClicktime", cat, NORMAL, 600, SettingStoreType.Global));
 		addSetting(dynamicFilterAtSearch = new SettingBool("dynamicFilterAtSearch", cat, NEVER, true, SettingStoreType.Global));
+		addSetting(StartWithAutoSelect = new SettingBool("StartWithAutoSelect", cat, EXPERT, false, SettingStoreType.Global));
 
 	}
 
@@ -444,7 +445,6 @@ public class SettingsClass extends SettingsList
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, SettingStoreType.Global));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, true, SettingStoreType.Global));
 		addSetting(CacheSpoilerData = new SettingBool("CacheSpoilerData", cat, INVISIBLE, true, SettingStoreType.Global));
-		addSetting(AutoResort = new SettingBool("AutoResort", cat, NEVER, false, SettingStoreType.Global));
 
 		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, NEVER, true, SettingStoreType.Global));
 		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, NEVER, true, SettingStoreType.Global));
