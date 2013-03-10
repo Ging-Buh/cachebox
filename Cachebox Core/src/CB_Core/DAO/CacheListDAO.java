@@ -3,7 +3,6 @@ package CB_Core.DAO;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -84,16 +83,17 @@ public class CacheListDAO
 		}
 		reader.close();
 
-		Logger.DEBUG("ReadCacheList 3.Sorting");
+		// do it manual (or automated after fix), got hanging app on startup
+		// Logger.DEBUG("ReadCacheList 3.Sorting");
 		try
 		{
-			Collections.sort(cacheList);
+			// Collections.sort(cacheList);
 		}
 		catch (Exception e)
 		{
-			Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
+			// Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
 		}
-		Logger.DEBUG("ReadCacheList 4. ready");
+		// Logger.DEBUG("ReadCacheList 4. ready");
 		return cacheList;
 	}
 
