@@ -128,12 +128,12 @@ public class QuickButtonItem extends ListViewItemBase
 
 		if (mAction.getName().equals("AutoResort"))
 		{
-			if (GlobalCore.autoResort && autoResortState != 1)
+			if (GlobalCore.getAutoResort() && autoResortState != 1)
 			{
 				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(15)));
 				autoResortState = 1;
 			}
-			else if (!GlobalCore.autoResort && autoResortState != 0)
+			else if (!GlobalCore.getAutoResort() && autoResortState != 0)
 			{
 				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(16)));
 				autoResortState = 0;

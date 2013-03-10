@@ -127,7 +127,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 					// only when showing Map or cacheList
 					if (!GlobalCore.ResortAtWork)
 					{
-						if (GlobalCore.autoResort)
+						if (GlobalCore.getAutoResort())
 						{
 							int z = 0;
 							if (!(GlobalCore.NearestCache() == null))

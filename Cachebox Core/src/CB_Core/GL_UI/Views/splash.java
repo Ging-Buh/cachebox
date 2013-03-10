@@ -463,8 +463,6 @@ public class splash extends TabMainView
 
 		}
 		GL.setIsInitial();
-
-		GlobalCore.autoResort = Config.settings.StartWithAutoSelect.getValue();
 	}
 
 	public void dispose()

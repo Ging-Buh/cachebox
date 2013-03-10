@@ -235,12 +235,14 @@ public class TabMainView extends MainViewBase
 					if (c.GcCode.equalsIgnoreCase(sGc))
 					{
 						Logger.DEBUG("TabMainView: Set selectedCache to " + c.GcCode + " from lastSaved.");
-						GlobalCore.setSelectedCache(c);
+						GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
 						break;
 					}
 				}
 			}
 		}
+
+		GlobalCore.setAutoResort(Config.settings.StartWithAutoSelect.getValue());
 
 		platformConector.FirstShow();
 		filterSetChanged();

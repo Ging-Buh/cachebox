@@ -107,8 +107,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					TabMainView.actionShowSelectDbDialog.Execute();
 					return true;
 				case MenuID.MI_AUTO_RESORT:
-					GlobalCore.autoResort = !(GlobalCore.autoResort);
-					if (GlobalCore.autoResort)
+					GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
+					if (GlobalCore.getAutoResort())
 					{
 						synchronized (Database.Data.Query)
 						{
@@ -154,7 +154,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(41));
 		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
 		mi.setCheckable(true);
-		mi.setChecked(GlobalCore.autoResort);
+		mi.setChecked(GlobalCore.getAutoResort());
 		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
 		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCache.Icons.get(57));
 		return cm;

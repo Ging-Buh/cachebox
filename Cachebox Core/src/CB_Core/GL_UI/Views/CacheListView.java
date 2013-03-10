@@ -252,7 +252,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 			if (finalWp == null) finalWp = cache.GetStartWaypoint();
 			// shutdown AutoResort when selecting a cache by hand
-			GlobalCore.autoResort = false;
+			GlobalCore.setAutoResort(false);
 			GlobalCore.setSelectedWaypoint(cache, finalWp);
 
 			invalidate();

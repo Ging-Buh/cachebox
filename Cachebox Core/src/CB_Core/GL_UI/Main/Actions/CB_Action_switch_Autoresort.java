@@ -30,8 +30,8 @@ public class CB_Action_switch_Autoresort extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		GlobalCore.autoResort = !(GlobalCore.autoResort);
-		if (GlobalCore.autoResort)
+		GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
+		if (GlobalCore.getAutoResort())
 		{
 			synchronized (Database.Data.Query)
 			{

@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1493;
+	public static final int CurrentRevision = 1494;
 	public static final String CurrentVersion = "0.5.";
 	public static final String VersionPrefix = "Test";
 
@@ -86,7 +86,7 @@ public class GlobalCore
 	public static boolean posibleTabletLayout;
 
 	private static Cache selectedCache = null;
-	public static boolean autoResort;
+	private static boolean autoResort;
 
 	public static FilterProperties LastFilter = null;
 
@@ -130,7 +130,7 @@ public class GlobalCore
 		if (changeAutoResort)
 		{
 			// switch off auto select
-			GlobalCore.autoResort = false;
+			GlobalCore.setAutoResort(false);
 		}
 	}
 
@@ -274,6 +274,16 @@ public class GlobalCore
 		}
 
 		return ret;
+	}
+
+	public static boolean getAutoResort()
+	{
+		return autoResort;
+	}
+
+	public static void setAutoResort(boolean value)
+	{
+		GlobalCore.autoResort = value;
 	}
 
 	private static boolean isTestVersionCheked = false;

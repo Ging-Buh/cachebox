@@ -134,6 +134,8 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 					GlobalCore.setSelectedCache(Database.Data.Query.get(0));
 				}
 
+				GlobalCore.setAutoResort(Config.settings.StartWithAutoSelect.getValue());
+
 				CachListChangedEventList.Call();
 
 				TabMainView.that.filterSetChanged();

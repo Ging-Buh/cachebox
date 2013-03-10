@@ -522,7 +522,7 @@ public class SearchDialog extends PopUp_Base
 						GlobalCore.setSelectedWaypoint(tmp, finalWp);
 					}
 					// deactivate autoResort when Cache is selected by hand
-					GlobalCore.autoResort = false;
+					GlobalCore.setAutoResort(false);
 
 					mBtnNext.enable();
 
