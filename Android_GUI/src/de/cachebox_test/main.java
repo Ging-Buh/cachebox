@@ -3649,7 +3649,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				if (focus != null)
 				{
-					// ;
+					mTextField.setVisibility(View.INVISIBLE);// ;
 				}
 				else
 				{
