@@ -313,6 +313,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		this.yMargin = yMargin;
 	}
 
+	public float getYmargin()
+	{
+		return this.yMargin;
+	}
+
+	public float getXmargin()
+	{
+		return this.xMargin;
+	}
+
 	/**
 	 ** no borders to use on this (page), if you want
 	 **/

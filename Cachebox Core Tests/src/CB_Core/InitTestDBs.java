@@ -34,7 +34,7 @@ public class InitTestDBs
 		{
 			e.printStackTrace();
 		}
-		if (!FileIO.DirectoryExists(Config.WorkPath)) return;
+		if (!FileIO.createDirectory(Config.WorkPath)) return;
 		Database.Settings.StartUp(Config.WorkPath + "/Config.db3");
 		Config.settings.ReadFromDB();
 	}

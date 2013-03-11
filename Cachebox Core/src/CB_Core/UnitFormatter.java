@@ -1,10 +1,9 @@
 package CB_Core;
 
-
 public class UnitFormatter
 {
 
-	public static boolean ImperialUnits = Config.settings.ImperialUnits.getValue();
+	// public static boolean ImperialUnits = Config.settings.ImperialUnits.getValue();
 
 	// / <summary>
 	// / Erzeugt eine für den Menschen lesbare Form der Distanz
@@ -13,7 +12,7 @@ public class UnitFormatter
 	// / <returns></returns>
 	public static String DistanceString(float distance)
 	{
-		if (ImperialUnits) return DistanceStringImperial(distance);
+		if (Config.settings.ImperialUnits.getValue()) return DistanceStringImperial(distance);
 		else
 			return DistanceStringMetric(distance);
 	}
@@ -54,7 +53,7 @@ public class UnitFormatter
 
 	public static String SpeedString(float kmh)
 	{
-		if (ImperialUnits) return SpeedStringImperial(kmh);
+		if (Config.settings.ImperialUnits.getValue()) return SpeedStringImperial(kmh);
 		else
 			return SpeedStringMetric(kmh);
 	}

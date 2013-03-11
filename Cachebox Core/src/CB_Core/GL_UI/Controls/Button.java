@@ -238,20 +238,23 @@ public class Button extends CB_View_Base
 			return;
 		}
 
-		if (lblTxt == null)
+		if (lblTxt != null)
 		{
-			lblTxt = new Label(name + "Label");
-			if (font != null) mFont = font;
-			if (mFont != null)
-			{
-				lblTxt.setFont(mFont);
-			}
-			else
-			{
-				lblTxt.setFont(Fonts.getBig());
-			}
-			this.addLast(lblTxt);
+			this.removeChild(lblTxt);
 		}
+
+		lblTxt = new Label(name + "Label");
+		if (font != null) mFont = font;
+		if (mFont != null)
+		{
+			lblTxt.setFont(mFont);
+		}
+		else
+		{
+			lblTxt.setFont(Fonts.getBig());
+		}
+		this.initRow(false);
+		this.addLast(lblTxt);
 
 		if (color != null)
 		{
@@ -325,6 +328,20 @@ public class Button extends CB_View_Base
 	{
 		isDisabled = !value;
 
+	}
+
+	@Override
+	public void setWidth(float Width)
+	{
+		super.setWidth(Width);
+		setText(getText());
+	}
+
+	@Override
+	public void setHeight(float Height)
+	{
+		super.setHeight(Height);
+		setText(getText());
 	}
 
 }

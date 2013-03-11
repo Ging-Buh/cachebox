@@ -355,7 +355,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 					}
 					else
 						font.setColor(0.7f, 0.7f, 0.7f, 1f);
-					BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 					font.draw(batch, messageText, x + bgLeftWidth, y + textY);
 				}
 			}

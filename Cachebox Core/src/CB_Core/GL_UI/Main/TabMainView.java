@@ -15,6 +15,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
+import CB_Core.GL_UI.Activitys.TB_Details;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
@@ -46,6 +47,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView2;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackableListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Delete_Dialog;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Parking_Dialog;
@@ -91,7 +93,7 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_ShowCacheList actionShowCacheList;
 
 	private CB_Action_ShowAbout actionShowAboutView;
-
+	public static TB_Details TB_Details;
 	private CB_Action_ShowCreditsView actionShowCreditsView;
 	public static CB_Action_ShowDescriptionView actionShowDescriptionView;
 	public static CB_Action_ShowFieldNotesView actionShowFieldNotesView;
@@ -102,7 +104,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowSolverView2 actionShowSolverView2;
 	public static CB_Action_ShowSpoilerView actionShowSpoilerView;
 	public static CB_Action_ShowFilterSettings actionShowFilter = new CB_Action_ShowFilterSettings();
-	// TODO activate TB List on 0.6.x => private CB_Action_ShowTrackableListView actionShowTrackableListView;
+	private CB_Action_ShowTrackableListView actionShowTrackableListView;
 	public static CB_Action_ShowTrackListView actionShowTrackListView;
 	public static CB_Action_ShowWaypointView actionShowWaypointView;
 	public static CB_Action_Show_Settings actionShowSettings;
@@ -190,7 +192,7 @@ public class TabMainView extends MainViewBase
 		actionShowSolverView = new CB_Action_ShowSolverView();
 		actionShowSolverView2 = new CB_Action_ShowSolverView2();
 		actionShowSpoilerView = new CB_Action_ShowSpoilerView();
-		// TODO activate TB List on 0.6.x => actionShowTrackableListView = new CB_Action_ShowTrackableListView();
+		actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
 		if (GlobalCore.isTestVersion()) actionTestView = new CB_Action_ShowTestView();
@@ -296,7 +298,7 @@ public class TabMainView extends MainViewBase
 		actionShowSolverView.setTab(this, Tab);
 		actionShowSolverView2.setTab(this, Tab);
 		actionShowSpoilerView.setTab(this, Tab);
-		// TODO activate TB List on 0.6.x => actionShowTrackableListView.setTab(this, Tab);
+		actionShowTrackableListView.setTab(this, Tab);
 		actionShowTrackListView.setTab(this, Tab);
 		actionShowWaypointView.setTab(this, Tab);
 		actionNavigateTo1.setTab(this, Tab);
@@ -311,8 +313,7 @@ public class TabMainView extends MainViewBase
 		// Actions den Buttons zuweisen
 
 		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
-		// TODO activate TB List on 0.6.x => CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false,
-		// GestureDirection.Right));
+		CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
 		CacheListButton.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
 
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
@@ -394,7 +395,7 @@ public class TabMainView extends MainViewBase
 		actionShowWaypointView.setTab(this, Tab);
 		actionShowAboutView.setTab(this, Tab);
 		actionShowCreditsView.setTab(this, Tab);
-		// TODO activate TB List on 0.6.x =>actionShowTrackableListView.setTab(this, Tab);
+		actionShowTrackableListView.setTab(this, Tab);
 		actionShowTrackListView.setTab(this, Tab);
 		actionShowCompassView.setTab(this, Tab);
 		actionShowLogView.setTab(this, Tab);
@@ -411,7 +412,7 @@ public class TabMainView extends MainViewBase
 
 		// Actions den Buttons zuweisen
 		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true));
-		// TODO activate TB List on 0.6.x =>CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false));
+		CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false));
 		CacheListButton.addAction(new CB_ActionButton(actionShowTrackListView, false));
 
 		btn2.addAction(new CB_ActionButton(actionShowWaypointView, true, GestureDirection.Right));

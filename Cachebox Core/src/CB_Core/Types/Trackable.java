@@ -5,9 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
+import CB_Core.UnitFormatter;
 import CB_Core.DB.CoreCursor;
 import CB_Core.Log.Logger;
 
@@ -19,6 +22,7 @@ public class Trackable implements Comparable<Trackable>
 	private String GcCode = "";
 	private long CacheId;
 	private String CurrentGoal = "";
+	private String CurrentGeocacheCode = "";
 	private String CurrentOwnerName = "";
 	private Date DateCreated;
 	private String Description;
@@ -27,6 +31,24 @@ public class Trackable implements Comparable<Trackable>
 	private String Name = "";
 	private String OwnerName = "";
 	private String Url = "";
+	private String TypeName = "";
+
+	// TODO must load info (the GS_API gives no info about this)
+	private Date lastVisit;
+	private String Home = "";
+	private int TravelDistance;
+
+	public Trackable()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
+	public Trackable(String Name, String IconUrl, String desc)
+	{
+		this.Name = Name;
+		this.IconUrl = IconUrl;
+		this.Description = desc;
+	}
 
 	/**
 	 * DAO Constructor <br>
@@ -47,7 +69,7 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e1)
 			{
-				 
+
 				e1.printStackTrace();
 			}
 			try
@@ -56,7 +78,7 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e1)
 			{
-				 
+
 				e1.printStackTrace();
 			}
 			try
@@ -65,26 +87,26 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e)
 			{
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 			String sDate = reader.getString(6);
-			DateFormat iso8601Format = new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss");
+			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			try
 			{
 				DateCreated = iso8601Format.parse(sDate);
 			}
 			catch (ParseException e)
 			{
+				e.printStackTrace();
 			}
-			
+
 			try
 			{
 				Description = reader.getString(7).trim();
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 			try
@@ -93,7 +115,7 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 			try
@@ -102,7 +124,7 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 			try
@@ -111,7 +133,7 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 			try
@@ -120,7 +142,7 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 			try
@@ -129,15 +151,25 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
+			try
+			{
+				TypeName = reader.getString(13).trim();
+			}
+			catch (Exception e1)
+			{
+
+				e1.printStackTrace();
+			}
+
 		}
 		catch (Exception e)
 		{
-			
+
 		}
-		
+
 	}
 
 	public Trackable(JSONObject JObj)
@@ -149,7 +181,6 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
 			e.printStackTrace();
 		}
 		try
@@ -158,7 +189,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		try
@@ -167,7 +198,6 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
 			e.printStackTrace();
 		}
 		try
@@ -176,7 +206,6 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
 			e.printStackTrace();
 		}
 
@@ -188,7 +217,6 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
 			e.printStackTrace();
 		}
 		try
@@ -209,7 +237,6 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
 			e.printStackTrace();
 		}
 		try
@@ -218,17 +245,35 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
 			e.printStackTrace();
 		}
-		// ImageUrl = JObj.getString("CachesLeft");
+
+		JSONArray jArray;
+		JSONObject jImage;
+		try
+		{
+			jArray = JObj.getJSONArray("Images");
+
+			if (jArray.length() > 0)
+			{
+				ImageUrl = jArray.getJSONObject(0).getString("Url");
+			}
+
+			// JObj.getJSONObject("Images");
+			// ImageUrl = JObj.getString("Url");
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
+
 		try
 		{
 			Name = JObj.getString("Name");
 		}
 		catch (JSONException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		try
@@ -238,7 +283,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		try
@@ -247,7 +292,23 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			 
+
+			e.printStackTrace();
+		}
+		try
+		{
+			TypeName = JObj.getString("TBTypeName");
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			TypeName = JObj.getString("TBTypeName");
+		}
+		catch (JSONException e)
+		{
 			e.printStackTrace();
 		}
 
@@ -256,6 +317,55 @@ public class Trackable implements Comparable<Trackable>
 	/*
 	 * Getter
 	 */
+
+	final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yyyy");
+
+	public String getTravelDistance()
+	{
+		return UnitFormatter.DistanceString(TravelDistance);
+	}
+
+	public String getBirth()
+	{
+		if (DateCreated == null) return "";
+		return postFormater.format(DateCreated);
+	}
+
+	public String getCurrentGeocacheCode()
+	{
+		return CurrentGeocacheCode;
+	}
+
+	public String getHome()
+	{
+		return Home;
+	}
+
+	public String getLastVisit()
+	{
+		if (lastVisit == null) return "";
+		return postFormater.format(lastVisit);
+	}
+
+	public String getTypeName()
+	{
+		return TypeName;
+	}
+
+	public String getOwner()
+	{
+		return OwnerName;
+	}
+
+	public String getIconUrl()
+	{
+		return IconUrl;
+	}
+
+	public String getImageUrl()
+	{
+		return ImageUrl;
+	}
 
 	public long getId()
 	{
@@ -279,7 +389,7 @@ public class Trackable implements Comparable<Trackable>
 
 	public String getCurrentGoal()
 	{
-		return CurrentGoal;
+		return Jsoup.parse(CurrentGoal).text();
 	}
 
 	public String getCurrentOwner()
@@ -294,7 +404,7 @@ public class Trackable implements Comparable<Trackable>
 
 	public String getDescription()
 	{
-		return Description;
+		return Jsoup.parse(Description).text();
 	}
 
 	public String getName()

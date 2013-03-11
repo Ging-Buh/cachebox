@@ -2,7 +2,7 @@ package CB_Core.GL_UI.Controls;
 
 import java.text.NumberFormat;
 
-import CB_Core.UnitFormatter;
+import CB_Core.Config;
 import CB_Core.Events.invalidateTextureEvent;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -87,7 +87,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			int idx = 0;
 			while (scaleSize < (sollwidth * 0.45))
 			{
-				scaleLength = multiplyer * scaleSteps[idx] * ((UnitFormatter.ImperialUnits) ? 1.6093 : 1);
+				scaleLength = multiplyer * scaleSteps[idx] * ((Config.settings.ImperialUnits.getValue()) ? 1.6093 : 1);
 				scaleUnits = scaleNumUnits[idx];
 
 				scaleSize = pixelsPerMeter * scaleLength;
@@ -105,7 +105,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			Logger.Error("MapView.zoomChanged()", "", exc);
 		}
 
-		if (UnitFormatter.ImperialUnits)
+		if (Config.settings.ImperialUnits.getValue())
 		{
 			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(2);

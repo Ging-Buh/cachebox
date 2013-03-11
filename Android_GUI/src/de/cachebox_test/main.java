@@ -76,6 +76,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL.renderStartet;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -198,7 +199,6 @@ import de.cachebox_test.Views.JokerView;
 import de.cachebox_test.Views.NotesView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
-import de.cachebox_test.Views.TrackableListView;
 import de.cachebox_test.Views.ViewGL;
 import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -1417,8 +1417,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return ViewList.get(ID.getID());
 		}
 
-		if (ID == ViewConst.TB_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
-		else if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
+		if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
 		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
 		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
@@ -1490,8 +1489,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				// Instanz löschenn
 				aktView = null;
-				trackablelistView.OnFree();
-				trackablelistView = null;
 			}
 			else if (aktView.equals(jokerView))
 			{

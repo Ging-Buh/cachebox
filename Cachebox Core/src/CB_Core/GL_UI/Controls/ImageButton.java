@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -43,6 +44,11 @@ public class ImageButton extends Button
 		image.setDrawable(drawable);
 	}
 
+	public void setImage(Sprite sprite)
+	{
+		image.setSprite(sprite);
+	}
+
 	public void setImageRotation(Float angle)
 	{
 		mAngle = angle;
@@ -75,5 +81,10 @@ public class ImageButton extends Button
 	{
 		image.dispose();
 		super.dispose();
+	}
+
+	public void clearImage()
+	{
+		image.clearImage();
 	}
 }

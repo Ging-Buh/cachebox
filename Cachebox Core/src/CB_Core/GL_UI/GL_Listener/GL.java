@@ -295,6 +295,7 @@ public class GL implements ApplicationListener
 
 		if (ActivityIsShown && !GlobalCore.isTab)
 		{
+			drawDarknessSprite();
 			mActivity.renderChilds(batch, prjMatrix);
 		}
 
@@ -1310,13 +1311,10 @@ public class GL implements ApplicationListener
 			closePopUp(aktPopUp);
 		}
 
-		if (GlobalCore.isTab)
-		{
-			// register render view to darknes animation ready.
-			// use TabMainView to register
-			addRenderView(TabMainView.that, FRAME_RATE_ACTION);
-			darknesAnimationRuns = true;
-		}
+		// register render view to darknes animation ready.
+		// use TabMainView to register
+		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
+		darknesAnimationRuns = true;
 
 		// Center activity on Screen
 		float x = (width - activity.getWidth()) / 2;

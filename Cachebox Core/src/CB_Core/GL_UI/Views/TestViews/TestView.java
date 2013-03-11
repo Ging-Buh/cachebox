@@ -1,23 +1,20 @@
 package CB_Core.GL_UI.Views.TestViews;
 
-import CB_Core.Config;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.TB_Details;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.RadioButton;
 import CB_Core.GL_UI.Controls.RadioGroup;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
-import CB_Core.TranslationEngine.Translation;
+import CB_Core.Types.Trackable;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -64,15 +61,20 @@ public class TestView extends CB_View_Base
 		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), wrappedTextField.getY()
 				- Dialog.margin - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
 
-		btnSetting.setText("Remember MsgBox");
+		btnSetting.setText("Show TB");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
-						MessageBoxIcon.GC_Live, click, Config.settings.RememberAsk_API_Coast);
+
+				String beschreibung = "Das ist die Beschreibung des TB's, welche noch aus HTML formatiert werden muss!";
+
+				Trackable tb = new Trackable("MyTb", "http://www.geocaching.com/images/wpttypes/21.gif", beschreibung);
+
+				TB_Details details = new TB_Details();
+				details.show(tb);
 				return true;
 			}
 		});

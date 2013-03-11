@@ -348,7 +348,7 @@ public class SearchDialog extends PopUp_Base
 	{
 		if (mTglBtnOnline.getState() == 0)
 		{
-			mBtnFilter.setImage(null);
+			mBtnFilter.clearImage();
 			mBtnFilter.setText(Translation.Get("Filter"));
 		}
 		else

@@ -16,13 +16,21 @@
 
 package CB_Core.GL_UI.Controls;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import CB_Core.Config;
+import CB_Core.FileIO;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Util.Downloader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -38,6 +46,8 @@ public class Image extends CB_View_Base
 
 	private float mRotate = 0;
 	private Color mColor = new Color(1, 1, 1, 1);
+	float spriteWidth = -1;
+	float spriteHeight = -1;
 
 	public Image(float X, float Y, float Width, float Height, String Name)
 	{
@@ -76,7 +86,26 @@ public class Image extends CB_View_Base
 
 		if (mDrawable != null)
 		{
-			mDrawable.draw(batch, 0, 0, width, height);
+
+			float drawwidth = width;
+			float drawHeight = height;
+			float drawX = 0;
+			float drawY = 0;
+
+			if (spriteWidth > 0 && spriteHeight > 0)
+			{
+				float proportionWidth = width / spriteWidth;
+				float proportionHeight = height / spriteHeight;
+
+				float proportion = Math.min(proportionWidth, proportionHeight);
+
+				drawwidth = spriteWidth * proportion;
+				drawHeight = spriteHeight * proportion;
+				drawX = (width - drawwidth) / 2;
+				drawY = (height - drawHeight) / 2;
+			}
+
+			mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
 
 		}
 		else if (mPath != null && !mPath.equals(""))
@@ -84,12 +113,33 @@ public class Image extends CB_View_Base
 			try
 			{
 
-				// Logger.LogCat("Load GL Image Texture Path= " + mPath);
+				mImageTex = new Texture(Gdx.files.absolute(mPath));
+				Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
 
-				mImageTex = new Texture(Gdx.files.internal(mPath));
-				mDrawable = new SpriteDrawable(new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex));
+				spriteWidth = sprite.getWidth();
+				spriteHeight = sprite.getHeight();
 
-				mDrawable.draw(batch, 0, 0, width, height);
+				mDrawable = new SpriteDrawable(sprite);
+
+				float drawwidth = width;
+				float drawHeight = height;
+				float drawX = 0;
+				float drawY = 0;
+
+				if (spriteWidth > 0 && spriteHeight > 0)
+				{
+					float proportionWidth = width / spriteWidth;
+					float proportionHeight = height / spriteHeight;
+
+					float proportion = Math.min(proportionWidth, proportionHeight);
+
+					drawwidth = spriteWidth * proportion;
+					drawHeight = spriteHeight * proportion;
+					drawX = (width - drawwidth) / 2;
+					drawY = (height - drawHeight) / 2;
+				}
+
+				mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
 
 			}
 			catch (Exception e)
@@ -193,4 +243,78 @@ public class Image extends CB_View_Base
 			mColor = color;
 	}
 
+	/**
+	 * Sets a Image URl and Downlowd this Image if this don't exist on Cache
+	 * 
+	 * @param iconUrl
+	 */
+	public void setImageURL(String iconUrl)
+	{
+		if (iconUrl == null) return;
+		if (iconUrl.length() == 0) return;
+
+		final String CachePath = Config.settings.TileCacheFolder.getValue();
+
+		// Search first slash after Http or www
+		int slashPos = -1;
+		slashPos = iconUrl.indexOf("http");
+		if (slashPos == -1) slashPos = iconUrl.indexOf("www");
+		if (slashPos == -1) return; // invalid URL
+		slashPos += 7;
+		slashPos = iconUrl.indexOf("/", slashPos);
+
+		final String LocalPath = iconUrl.substring(slashPos);
+
+		// check if Image exist on Cache
+		if (FileIO.FileExists(CachePath + LocalPath))
+		{
+			setImage(CachePath + LocalPath);
+			return;
+		}
+
+		// TODO put this in to Thread and Play Load Animation
+
+		// Download Image to Cache
+		try
+		{
+			final Downloader dl = new Downloader(new URL(iconUrl), new File(CachePath + LocalPath));
+
+			Thread DLThread = new Thread(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					dl.run();
+					setImage(CachePath + LocalPath);
+				}
+			});
+
+			DLThread.run();
+		}
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	public void setSprite(Sprite sprite)
+	{
+		spriteWidth = sprite.getWidth();
+		spriteHeight = sprite.getHeight();
+		mDrawable = new SpriteDrawable(sprite);
+	}
+
+	public void clearImage()
+	{
+		mDrawable = null;
+		mColor = new Color(1, 1, 1, 1);
+		mPath = null;
+		mScale = 1;
+		setOriginCenter();
+	}
 }

@@ -177,17 +177,17 @@ public class Label extends CB_View_Base
 
 	// code from Libgdx Label
 
-	public void setText(String text)
+	public TextBounds setText(String text)
 	{
-		setText(text, null, null, halignment);
+		return setText(text, null, null, halignment);
 	}
 
-	public void setText(String text, BitmapFont font, Color fontColor)
+	public TextBounds setText(String text, BitmapFont font, Color fontColor)
 	{
-		setText(text, font, fontColor, halignment);
+		return setText(text, font, fontColor, halignment);
 	}
 
-	public void setText(String text, BitmapFont font, Color fontColor, HAlignment alignment)
+	public TextBounds setText(String text, BitmapFont font, Color fontColor, HAlignment alignment)
 	{
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 
@@ -215,14 +215,16 @@ public class Label extends CB_View_Base
 		{
 			e.printStackTrace();
 		}
+
+		return bounds;
 	}
 
-	public void setMultiLineText(String text)
+	public TextBounds setMultiLineText(String text)
 	{
-		setMultiLineText(text, HAlignment.LEFT);
+		return setMultiLineText(text, HAlignment.LEFT);
 	}
 
-	public void setMultiLineText(String text, HAlignment alignment)
+	public TextBounds setMultiLineText(String text, HAlignment alignment)
 	{
 		chkCache();
 		this.text = text;
@@ -233,15 +235,18 @@ public class Label extends CB_View_Base
 		// cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height);
 		bounds = cache.setMultiLineText(this.text, 0, bounds.height, innerRec.getWidth(), alignment);
 		fontPropertyChanged();
+
+		return bounds;
 	}
 
-	public void setWrappedText(String text)
+	public TextBounds setWrappedText(String text)
 	{
-		setWrappedText(text, HAlignment.LEFT);
+		return setWrappedText(text, HAlignment.LEFT);
 	}
 
-	public void setWrappedText(String text, HAlignment alignment)
+	public TextBounds setWrappedText(String text, HAlignment alignment)
 	{
+		if (text == null) return new TextBounds();
 		chkCache();
 		this.text = text;
 		valignment = VAlignment.TOP;
@@ -250,6 +255,7 @@ public class Label extends CB_View_Base
 		bounds = cache.getFont().getWrappedBounds(text, innerRec.getWidth());
 		bounds = cache.setWrappedText(this.text, 0, bounds.height, innerRec.getWidth(), alignment);
 		fontPropertyChanged();
+		return bounds;
 	}
 
 	public void setFont(BitmapFont font)
