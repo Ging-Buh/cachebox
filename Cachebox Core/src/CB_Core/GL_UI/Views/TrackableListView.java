@@ -52,6 +52,13 @@ public class TrackableListView extends CB_View_Base
 
 	}
 
+	public void reloadTB_List()
+	{
+		TB_List = TrackableListDAO.ReadTbList("");
+		lvAdapter = new CustomAdapter();
+		listView.setBaseAdapter(lvAdapter);
+	}
+
 	@Override
 	public void onHide()
 	{

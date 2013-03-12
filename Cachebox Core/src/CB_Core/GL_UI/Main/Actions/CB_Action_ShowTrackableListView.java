@@ -94,7 +94,11 @@ public class CB_Action_ShowTrackableListView extends CB_Action_ShowView
 							TbList searchList = new TbList();
 							result = CB_Core.Api.GroundspeakAPI.getMyTbList(Config.GetAccessToken(), searchList);
 
-							if (result == 0) searchList.writeToDB();
+							if (result == 0)
+							{
+								searchList.writeToDB();
+								TrackableListView.that.reloadTB_List();
+							}
 
 							wd.close();
 						}

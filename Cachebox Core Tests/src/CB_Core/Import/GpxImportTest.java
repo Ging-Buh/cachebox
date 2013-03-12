@@ -21,6 +21,8 @@ public class GpxImportTest extends TestCase
 	public static void testGpxImport() throws Exception
 	{
 
+		InitTestDBs.InitalConfig();
+
 		// initialize Database
 		String database = "./testdata/test.db3";
 		InitTestDBs.InitTestDB(database);
