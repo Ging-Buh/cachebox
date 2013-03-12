@@ -94,6 +94,7 @@ public class GPXFileImporter
 		ruleList = createWPTRules(ruleList);
 		ruleList = createGroundspeakRules(ruleList);
 		ruleList = createGSAKRules(ruleList);
+		ruleList = createTerraRules(ruleList);
 
 		@SuppressWarnings("unchecked")
 		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
@@ -149,10 +150,7 @@ public class GPXFileImporter
 				}
 				else
 				{
-					String MeinType;
-					MeinType = values.get("wpt_type");
-
-					if (MeinType.startsWith("Geocache"))
+					if (values.get("wpt_type").startsWith("Geocache"))
 					{
 						try
 						{
@@ -197,11 +195,14 @@ public class GPXFileImporter
 			@Override
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
-				values.put("wpt_type", text);
-
-				String MeinType;
-				MeinType = values.get("wpt_type");
-				MeinType = MeinType + "Ä";
+				if (text.startsWith("TerraCache|Classic Cache"))
+				{
+					values.put("wpt_type", "Geocache|Traditional Cache"); // nötig um GPX von TerraCaching.com einzulesen
+				}
+				else
+				{
+					values.put("wpt_type", text);
+				}
 			}
 		});
 
@@ -266,7 +267,7 @@ public class GPXFileImporter
 			{
 				if (text.startsWith("Default"))
 				{
-					values.put("wpt_sym", "Geocache"); // nötig im GPX von Navicache.com einzulesen
+					values.put("wpt_sym", "Geocache"); // nötig um GPX von Navicache.com einzulesen
 				}
 				else
 				{
@@ -791,6 +792,125 @@ public class GPXFileImporter
 		return ruleList;
 	}
 
+	private List<IRule<Map<String, String>>> createTerraRules(List<IRule<Map<String, String>>> ruleList) throws Exception
+	{
+
+		// Terra Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/terra:terracache/terra:name")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_name", text);
+			}
+		});
+
+		// Cache Rules for GPX from Terracaching.com
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/terra:terracache/terra:owner")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_owner", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/terra:terracache/terra:description")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_long_description", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/terra:terracache/terra:hint")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_encoded_hints", text);
+			}
+		});
+
+		// Log Rules
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
+				{
+					if (values.containsKey("cache_logs_count")) values.put("cache_logs_count",
+							String.valueOf((Integer.parseInt(values.get("cache_logs_count")) + 1)));
+					else
+						values.put("cache_logs_count", "1");
+				}
+
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log", "id")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_log_" + values.get("cache_logs_count") + "_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log/terra:date")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_date", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log/terra:user")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_finder", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log/terra:type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				if (text.startsWith("find")) // Umcodieren auf groundspeak style
+				{
+					text = "Found it"; // Evtl. ist noch eine Umcodierung für "nicht gefunden" nötig
+				}
+
+				values.put("cache_log_" + values.get("cache_logs_count") + "_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log/terra:entry")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_text", text);
+			}
+		});
+
+		return ruleList;
+	}
+
 	private void createCache(Map<String, String> values) throws Exception
 	{
 
@@ -828,12 +948,6 @@ public class GPXFileImporter
 		if (values.containsKey("wpt_sym"))
 		{
 			cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
-		}
-
-		// Achtung!!! cache_attribute_id wird nirgends gebildet????
-		if (values.containsKey("cache_attribute_id"))
-		{
-			cache.GcId = values.get("cache_attribute_id");
 		}
 
 		if (values.containsKey("cache_attribute_available"))
