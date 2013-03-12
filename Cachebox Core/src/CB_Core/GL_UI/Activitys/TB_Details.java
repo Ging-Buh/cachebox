@@ -153,7 +153,7 @@ public class TB_Details extends ActivityBase
 		AboutThisItem.setHeight(Math.max(minBoxHeight, (lblAboutDesc.getHeight() + (margin * 4) + ImageHeight)));
 		AboutThisItem.initRow();
 		AboutThisItem.setMargins(0, margin * 3);
-		AboutThisItem.addLast(image);
+		if (ImageHeight > 0) AboutThisItem.addLast(image);
 		AboutThisItem.addLast(lblAboutDesc);
 
 		lblGoal.setFont(Fonts.getSmall());

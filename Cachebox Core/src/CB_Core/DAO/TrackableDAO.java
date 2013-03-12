@@ -48,7 +48,7 @@ public class TrackableDAO
 
 		try
 		{
-			Database.FieldNotes.update("Trackable", args, "GcCode=" + trackable.getGcCode(), null);
+			Database.FieldNotes.update("Trackable", args, "GcCode='" + trackable.getGcCode() + "'", null);
 		}
 		catch (Exception exc)
 		{

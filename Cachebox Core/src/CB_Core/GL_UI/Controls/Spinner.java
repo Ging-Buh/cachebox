@@ -150,7 +150,13 @@ public class Spinner extends Button
 
 					lblTxt.setX(icon.getMaxX() + margin);
 				}
+				float margin = UiSizes.getMargin();
 
+				icon.setX(margin * 2);
+
+				this.addChild(icon);
+
+				lblTxt.setX(icon.getMaxX() + margin);
 				icon.setDrawable(drw);
 			}
 			else
