@@ -23,6 +23,7 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_Core.GL_UI.Controls.SpinnerAdapter;
+import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
@@ -241,9 +242,12 @@ public class EditCache extends ActivityBase
 				{
 					cache = aktCache;
 					update = true;
-					if (!(cache.Pos.equals(newValues.Pos)))
+					if (newValues.Type == CacheTypes.Mystery)
 					{
-						cache.setCorrectedCoordinates(true);
+						if (!(cache.Pos.equals(newValues.Pos)))
+						{
+							cache.setCorrectedCoordinates(true);
+						}
 					}
 				}
 				cache.GcCode = gcc;
@@ -265,6 +269,8 @@ public class EditCache extends ActivityBase
 					Database.Data.Query.add(cache);
 					cacheDAO.WriteToDatabase(cache);
 					CachListChangedEventList.Call();
+					GlobalCore.setSelectedCache(cache);
+					CacheListView.that.setSelectedCacheVisible();
 				}
 				finish();
 				return true;
