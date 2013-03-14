@@ -21,6 +21,7 @@ import org.json.JSONTokener;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -349,7 +350,24 @@ public class SearchForGeocaches
 					}
 					cache.Difficulty = (float) jCache.getDouble("Difficulty");
 					cache.setFavorit(false);
-					cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
+
+					Cache tmpCache = Database.Data.Query.GetCacheByGcCode(gcCode); // Ein evtl. vorhandenen "Found" nicht überschreiben
+					if (tmpCache != null)
+					{
+						if (!tmpCache.Found)
+						{
+							cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
+						}
+						else
+						{
+							cache.Found = true;
+						}
+					}
+					else
+					{
+						cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
+					}
+
 					cache.GcCode = jCache.getString("Code");
 					try
 					{
