@@ -180,7 +180,7 @@ public class CacheListDAO
 		{
 			final String GcCode = iterator.next();
 			String directory = path + "/" + GcCode.substring(0, 4);
-			if (!FileIO.createDirectory(directory)) continue;
+			if (!FileIO.DirectoryExists(directory)) continue;
 			File dir = new File(directory);
 			FilenameFilter filter = new FilenameFilter()
 			{
