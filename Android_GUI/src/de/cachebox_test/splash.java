@@ -689,6 +689,17 @@ public class splash extends Activity
 
 			try
 			{
+				CreateFile = new File(workPath + "/Repositories/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
 				CreateFile = new File(workPath + "/cache/.nomedia");
 				CreateFile.getParentFile().mkdirs();
 				CreateFile.createNewFile();
