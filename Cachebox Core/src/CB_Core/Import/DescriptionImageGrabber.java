@@ -533,7 +533,7 @@ public class DescriptionImageGrabber
 	private static String[] getFilesInDirectory(String path, final String GcCode)
 	{
 		String imagePath = path + "/" + GcCode.substring(0, 4);
-		boolean imagePathDirExists = FileIO.createDirectory(imagePath);
+		boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
 
 		if (imagePathDirExists)
 		{
