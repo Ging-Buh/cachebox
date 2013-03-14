@@ -44,6 +44,13 @@ public class FileIO
 		}
 	}
 
+	public static boolean DirectoryExists(String folder)
+	{
+		File f = new File(folder);
+		if (f.isDirectory()) return true;
+		return false;
+	}
+
 	public static String GetFileExtension(String filename)
 	{
 		int dotposition = filename.lastIndexOf(".");
