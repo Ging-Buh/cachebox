@@ -19,6 +19,7 @@ package CB_Core.GL_UI.Controls;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
@@ -26,12 +27,18 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Util.Downloader;
+import CB_Texturepacker.Settings;
+import CB_Texturepacker.TexturePacker_Base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -141,6 +148,18 @@ public class Image extends CB_View_Base
 
 				mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
 
+			}
+			catch (com.badlogic.gdx.utils.GdxRuntimeException e)
+			{
+				Sprite spt = tryToLoadFromCreatetdAtlas(mPath);
+				if (spt != null)
+				{
+					setSprite(spt);
+				}
+				else
+				{
+					packImagesToTextureAtlas(mPath);
+				}
 			}
 			catch (Exception e)
 			{
@@ -316,5 +335,102 @@ public class Image extends CB_View_Base
 		mPath = null;
 		mScale = 1;
 		setOriginCenter();
+	}
+
+	private boolean isPacking = false;
+
+	/**
+	 * Pack the images from Folder into a Atlas and Load the Image from Atlas
+	 */
+	private void packImagesToTextureAtlas(String ImagePath)
+	{
+		if (isPacking) return;
+		isPacking = true;
+
+		Settings textureSettings = new Settings();
+
+		textureSettings.pot = true;
+		textureSettings.paddingX = 2;
+		textureSettings.paddingY = 2;
+		textureSettings.duplicatePadding = true;
+		textureSettings.edgePadding = true;
+		textureSettings.rotation = false;
+		textureSettings.minWidth = 16;
+		textureSettings.minHeight = 16;
+		textureSettings.maxWidth = 2048;
+		textureSettings.maxHeight = 2048;
+		textureSettings.stripWhitespaceX = false;
+		textureSettings.stripWhitespaceY = false;
+		textureSettings.alphaThreshold = 0;
+		textureSettings.filterMin = TextureFilter.Linear;
+		textureSettings.filterMag = TextureFilter.Linear;
+		textureSettings.wrapX = TextureWrap.ClampToEdge;
+		textureSettings.wrapY = TextureWrap.ClampToEdge;
+		textureSettings.format = Format.RGBA8888;
+		textureSettings.alias = true;
+		textureSettings.outputFormat = "png";
+		textureSettings.jpegQuality = 0.9f;
+		textureSettings.ignoreBlankImages = true;
+		textureSettings.fast = false;
+		textureSettings.debug = false;
+
+		String inputFolder = FileIO.GetDirectoryName(ImagePath);
+		String outputFolder = Config.settings.TileCacheFolder.getValue();
+		String Name = getCachedAtlasName(inputFolder);
+
+		try
+		{
+			TexturePacker_Base.process(textureSettings, inputFolder, outputFolder, Name);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		Sprite spt = tryToLoadFromCreatetdAtlas(ImagePath);
+		if (spt != null) setSprite(spt);
+
+		isPacking = false;
+	}
+
+	private String getCachedAtlasName(String inputFolder)
+	{
+		String Name = inputFolder.replace("/", "_");
+		Name = Name.replace("\\", "_");
+		Name = Name.replace(".", "");
+		Name = Name + ".spp";
+		return Name;
+	}
+
+	private HashMap<String, TextureAtlas> Atlanten;
+
+	private Sprite tryToLoadFromCreatetdAtlas(String ImagePath)
+	{
+		if (Atlanten == null) Atlanten = new HashMap<String, TextureAtlas>();
+
+		String inputFolder = FileIO.GetDirectoryName(ImagePath);
+		String ImageName = FileIO.GetFileNameWithoutExtension(ImagePath);
+		String Name = getCachedAtlasName(inputFolder);
+
+		String AtlasPath = Config.settings.TileCacheFolder.getValue() + "/" + Name;
+		if (!FileIO.FileExists(AtlasPath)) return null;
+		TextureAtlas atlas;
+		if (Atlanten.containsKey(AtlasPath))
+		{
+			atlas = Atlanten.get(AtlasPath);
+		}
+		else
+		{
+			atlas = new TextureAtlas(Gdx.files.absolute(AtlasPath));
+			Atlanten.put(AtlasPath, atlas);
+		}
+
+		Sprite tmp = null;
+		if (atlas != null)
+		{
+			tmp = atlas.createSprite(ImageName);
+		}
+		return tmp;
+
 	}
 }

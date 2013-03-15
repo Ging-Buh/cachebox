@@ -48,7 +48,7 @@ public class TrackableListView extends CB_View_Base
 	{
 		if (TB_List == null) TB_List = TrackableListDAO.ReadTbList("");
 		lvAdapter = new CustomAdapter();
-		listView.setBaseAdapter(lvAdapter);
+		if (listView != null) listView.setBaseAdapter(lvAdapter);
 
 	}
 
@@ -56,7 +56,7 @@ public class TrackableListView extends CB_View_Base
 	{
 		TB_List = TrackableListDAO.ReadTbList("");
 		lvAdapter = new CustomAdapter();
-		listView.setBaseAdapter(lvAdapter);
+		if (listView != null) listView.setBaseAdapter(lvAdapter);
 	}
 
 	@Override

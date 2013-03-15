@@ -98,6 +98,7 @@ import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Locator.Events.GpsStateChangeEventList;
+import CB_Texturepacker.Android_Packer;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -524,6 +525,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Config.settings.DebugMode.setValue(false);
 		Config.AcceptChanges();
+
+		// Initial Android TexturePacker
+		new Android_Packer();
 
 		initialLocationManager();
 

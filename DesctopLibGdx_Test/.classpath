@@ -16,5 +16,6 @@
 	<classpathentry exported="true" kind="lib" path="Lib/gdx-freetype.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Texturepacker_Desctop"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

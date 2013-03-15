@@ -29,6 +29,7 @@ import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Location.ProviderType;
+import CB_Texturepacker.Desctop_Packer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -50,6 +51,9 @@ public class DesktopMain
 		GlobalCore.platform = Plattform.Desktop;
 		frame.setVisible(false);
 		new DesktopLogger();
+
+		// Initial Desctop TexturePacker
+		new Desctop_Packer();
 
 		InitalConfig();
 		Config.settings.ReadFromDB();
