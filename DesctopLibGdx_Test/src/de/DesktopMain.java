@@ -24,6 +24,7 @@ import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase.iChanged;
@@ -117,8 +118,33 @@ public class DesktopMain
 			// lwjglAppCfg.addIcon("CB_Icon.png", FileType.Internal);
 
 			// new LwjglApplication(CB_UI, "DCB Desctop Cachebox", ui.Window.width, ui.Window.height, true);
-			LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
-			// App.getGraphics().setContinuousRendering(false);
+			final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
+			App.getGraphics().setContinuousRendering(false);
+
+			CB_UI.listenerInterface = new GL_Listener_Interface()
+			{
+
+				@Override
+				public void RequestRender(String requestName)
+				{
+					App.getGraphics().requestRendering();
+
+				}
+
+				@Override
+				public void RenderDirty()
+				{
+					App.getGraphics().setContinuousRendering(false);
+
+				}
+
+				@Override
+				public void RenderContinous()
+				{
+					App.getGraphics().setContinuousRendering(true);
+
+				}
+			};
 		}
 
 		Timer timer = new Timer();
