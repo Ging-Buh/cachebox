@@ -56,10 +56,11 @@ public class HSV_Color extends Color
 	}
 
 	@Override
-	public void clamp()
+	public Color clamp()
 	{
-		super.clamp();
 		calculateHSV();
+		return super.clamp();
+
 	}
 
 	private void calculateHSV()

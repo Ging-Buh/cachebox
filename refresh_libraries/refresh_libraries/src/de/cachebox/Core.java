@@ -170,16 +170,17 @@ public class Core implements ApplicationListener
 		rules.add(new CopyRule(cs + "armeabi", workPath + "\\Android_GUI\\libs"));
 		rules.add(new CopyRule(cs + "armeabi-v7a", workPath + "\\Android_GUI\\libs"));
 
-		rules.add(new CopyRule(cs + "\\extensions\\armeabi-v7a\\libgdx-freetype.so", workPath + "\\Android_GUI\\libs\\armeabi-v7a"));
-		rules.add(new CopyRule(cs + "\\extensions\\armeabi\\libgdx-freetype.so", workPath + "\\Android_GUI\\libs\\armeabi"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype.jar", workPath + "\\Android_GUI\\libs"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\armeabi-v7a\\libgdx-freetype.so", workPath
+				+ "\\Android_GUI\\libs\\armeabi-v7a"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\armeabi\\libgdx-freetype.so", workPath + "\\Android_GUI\\libs\\armeabi"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype.jar", workPath + "\\Android_GUI\\libs"));
 
 		// ############################################################################################################################
 
 		// for Core Proj
 		rules.add(new CopyRule(cs + "gdx.jar", workPath + "\\Cachebox Core\\lib"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype.jar", workPath + "\\Cachebox Core\\lib"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype-natives.jar", workPath + "\\Cachebox Core\\lib"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype.jar", workPath + "\\Cachebox Core\\lib"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype-natives.jar", workPath + "\\Cachebox Core\\lib"));
 
 		// ############################################################################################################################
 
@@ -187,20 +188,23 @@ public class Core implements ApplicationListener
 		rules.add(new CopyRule(cs + "gdx-natives.jar", workPath + "\\DesctopLibGdx_Test\\lib"));
 		rules.add(new CopyRule(cs + "gdx-backend-lwjgl-natives.jar", workPath + "\\DesctopLibGdx_Test\\lib"));
 		rules.add(new CopyRule(cs + "gdx-backend-lwjgl.jar", workPath + "\\DesctopLibGdx_Test\\lib"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype.jar", workPath + "\\DesctopLibGdx_Test\\lib"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype-natives.jar", workPath + "\\DesctopLibGdx_Test\\lib"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype.jar", workPath + "\\DesctopLibGdx_Test\\lib"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype-natives.jar", workPath + "\\DesctopLibGdx_Test\\lib"));
 
 		// for refresh_libraries
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-tools.jar", workPath + "\\refresh_libraries\\refresh_libraries\\libs"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype.jar", workPath + "\\refresh_libraries\\refresh_libraries\\libs"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype-natives.jar", workPath + "\\refresh_libraries\\refresh_libraries\\libs"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-tools\\gdx-tools.jar", workPath + "\\refresh_libraries\\refresh_libraries\\libs"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype.jar", workPath
+				+ "\\refresh_libraries\\refresh_libraries\\libs"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype-natives.jar", workPath
+				+ "\\refresh_libraries\\refresh_libraries\\libs"));
 		rules.add(new CopyRule(cs + "gdx.jar", workPath + "\\refresh_libraries\\refresh_libraries\\libs"));
 
 		rules.add(new CopyRule(cs + "gdx-natives.jar", workPath + "\\refresh_libraries\\refresh_libraries-desktop\\libs"));
 		rules.add(new CopyRule(cs + "gdx-backend-lwjgl-natives.jar", workPath + "\\refresh_libraries\\refresh_libraries-desktop\\libs"));
 		rules.add(new CopyRule(cs + "gdx-backend-lwjgl.jar", workPath + "\\refresh_libraries\\refresh_libraries-desktop\\libs"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype.jar", workPath + "\\refresh_libraries\\refresh_libraries-desktop\\libs"));
-		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype-natives.jar", workPath
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype.jar", workPath
+				+ "\\refresh_libraries\\refresh_libraries-desktop\\libs"));
+		rules.add(new CopyRule(cs + "\\extensions\\gdx-freetype\\gdx-freetype-natives.jar", workPath
 				+ "\\refresh_libraries\\refresh_libraries-desktop\\libs"));
 
 		return rules;
