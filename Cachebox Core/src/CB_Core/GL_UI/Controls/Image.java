@@ -24,6 +24,9 @@ import java.util.HashMap;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GL_UI.CB_View_Base;
+import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.runOnGL;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Util.Downloader;
@@ -50,11 +53,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  */
 public class Image extends CB_View_Base
 {
+	static Drawable waitDrawable;
+	static float waitWidth;
+	static float waitHeight;
+	static int animateRotateValue = 0;
+	static long lastAniTime = -1;
+	static final float frameDuration = 60;
 
 	private float mRotate = 0;
 	private Color mColor = new Color(1, 1, 1, 1);
-	float spriteWidth = -1;
-	float spriteHeight = -1;
+	private float spriteWidth = -1;
+	private float spriteHeight = -1;
+	private boolean inLoad = false;
+	private boolean ImageLoadError = false;
+
+	private int State = 0;
 
 	public Image(float X, float Y, float Width, float Height, String Name)
 	{
@@ -69,6 +82,43 @@ public class Image extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
+		if (ImageLoadError)
+		{
+			// TODO Draw error Image
+
+		}
+
+		if (State == 3)
+		{
+			try
+			{
+
+				mImageTex = new Texture(Gdx.files.absolute(mPath));
+				Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
+
+				spriteWidth = sprite.getWidth();
+				spriteHeight = sprite.getHeight();
+
+				setSprite(sprite);
+
+			}
+			catch (com.badlogic.gdx.utils.GdxRuntimeException e)
+			{
+				State = 4;
+			}
+			catch (Exception e)
+			{
+				ImageLoadError = true;
+				Logger.LogCat("E Load GL Image" + e.getMessage());
+				e.printStackTrace();
+			}
+			return;
+		}
+
+		if (State == 4) ThreadLoad();
+
+		if (State == 6) setAtlas(this.AtlasPath, this.ImgName);
+
 		Color altColor = batch.getColor().cpy();
 
 		batch.setColor(mColor);
@@ -93,7 +143,7 @@ public class Image extends CB_View_Base
 
 		if (mDrawable != null)
 		{
-
+			inLoad = false;
 			float drawwidth = width;
 			float drawHeight = height;
 			float drawX = 0;
@@ -115,57 +165,50 @@ public class Image extends CB_View_Base
 			mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
 
 		}
-		else if (mPath != null && !mPath.equals(""))
-		{ // das laden darf erst hier passieren, damit es aus dem GL_Thread herraus läuft.
-			try
+		else if (inLoad)
+		{
+
+			if (waitDrawable == null)
 			{
-
-				mImageTex = new Texture(Gdx.files.absolute(mPath));
-				Sprite sprite = new com.badlogic.gdx.graphics.g2d.Sprite(mImageTex);
-
-				spriteWidth = sprite.getWidth();
-				spriteHeight = sprite.getHeight();
-
-				mDrawable = new SpriteDrawable(sprite);
-
-				float drawwidth = width;
-				float drawHeight = height;
-				float drawX = 0;
-				float drawY = 0;
-
-				if (spriteWidth > 0 && spriteHeight > 0)
-				{
-					float proportionWidth = width / spriteWidth;
-					float proportionHeight = height / spriteHeight;
-
-					float proportion = Math.min(proportionWidth, proportionHeight);
-
-					drawwidth = spriteWidth * proportion;
-					drawHeight = spriteHeight * proportion;
-					drawX = (width - drawwidth) / 2;
-					drawY = (height - drawHeight) / 2;
-				}
-
-				mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
-
+				Sprite tmp = SpriteCache.Icons.get(51);
+				waitDrawable = new SpriteDrawable(tmp);
+				waitWidth = tmp.getWidth();
+				waitHeight = tmp.getHeight();
 			}
-			catch (com.badlogic.gdx.utils.GdxRuntimeException e)
-			{
-				Sprite spt = tryToLoadFromCreatetdAtlas(mPath);
-				if (spt != null)
-				{
-					setSprite(spt);
-				}
-				else
-				{
-					packImagesToTextureAtlas(mPath);
-				}
-			}
-			catch (Exception e)
-			{
-				Logger.LogCat("E Load GL Image" + e.getMessage());
-				e.printStackTrace();
-			}
+
+			animateRotateValue += (Gdx.graphics.getDeltaTime() * 100) / frameDuration;
+
+			if (animateRotateValue > 360) animateRotateValue = 0;
+
+			// Draw wait sprite
+			isRotated = true;
+
+			Matrix4 matrix = new Matrix4();
+
+			matrix.idt();
+			matrix.translate(mOriginX, mOriginY, 0);
+			matrix.rotate(0, 0, 1, animateRotateValue);
+			matrix.scale(mScale, mScale, 1);
+			matrix.translate(-mOriginX, -mOriginY, 0);
+			batch.setTransformMatrix(matrix);
+
+			float drawwidth = width;
+			float drawHeight = height;
+			float drawX = 0;
+			float drawY = 0;
+
+			float proportionWidth = width / waitWidth;
+			float proportionHeight = height / waitHeight;
+
+			float proportion = Math.min(proportionWidth, proportionHeight);
+
+			drawwidth = waitWidth * proportion;
+			drawHeight = waitHeight * proportion;
+			drawX = (width - drawwidth) / 2;
+			drawY = (height - drawHeight) / 2;
+
+			waitDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
+			GL.that.renderOnce("Image Loading Animation");
 		}
 
 		batch.setColor(altColor);
@@ -185,32 +228,79 @@ public class Image extends CB_View_Base
 
 	}
 
+	private Thread loadingThread;
+
+	private void ThreadLoad()
+	{
+		State = 5;
+		if (isPacking) return;
+
+		if (loadingThread != null)
+		{
+			if (loadingThread.getState() != Thread.State.TERMINATED) return;
+			else
+				loadingThread = null;
+		}
+
+		loadingThread = new Thread(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				Sprite spt = tryToLoadFromCreatetdAtlas(mPath);
+
+				if (spt != null)
+				{
+					setSprite(spt);
+				}
+				else
+				{
+					packImagesToTextureAtlas(mPath);
+				}
+
+			}
+		});
+
+		if (loadingThread.getState() == Thread.State.NEW) loadingThread.start();
+	}
+
 	private String mPath;
 	private Texture mImageTex = null;
 	Drawable mDrawable = null;
 
 	public void setImage(String Path)
 	{
-
+		State = 3;
 		mPath = Path;
 		if (mDrawable != null)
 		{
 			dispose();
 			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
 		}
-
+		GL.that.renderOnce("Image");
 	}
 
 	public void setDrawable(Drawable drawable)
 	{
 		mDrawable = drawable;
+		inLoad = false;
+		GL.that.renderOnce("Image");
 	}
 
 	public void dispose()
 	{
-		if (mImageTex != null) mImageTex.dispose();
-		mImageTex = null;
-		mDrawable = null;
+		GL.that.RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				if (mImageTex != null) mImageTex.dispose();
+				mImageTex = null;
+				mDrawable = null;
+			}
+		});
 	}
 
 	public void setRotate(float Rotate)
@@ -262,70 +352,93 @@ public class Image extends CB_View_Base
 			mColor = color;
 	}
 
+	private Thread ImageDownloadThread;
+
 	/**
 	 * Sets a Image URl and Downlowd this Image if this don't exist on Cache
 	 * 
 	 * @param iconUrl
 	 */
-	public void setImageURL(String iconUrl)
+	public void setImageURL(final String iconUrl)
 	{
 		if (iconUrl == null) return;
 		if (iconUrl.length() == 0) return;
 
-		final String CachePath = Config.settings.TileCacheFolder.getValue();
-
-		// Search first slash after Http or www
-		int slashPos = -1;
-		slashPos = iconUrl.indexOf("http");
-		if (slashPos == -1) slashPos = iconUrl.indexOf("www");
-		if (slashPos == -1) return; // invalid URL
-		slashPos += 7;
-		slashPos = iconUrl.indexOf("/", slashPos);
-
-		final String LocalPath = iconUrl.substring(slashPos);
-
-		// check if Image exist on Cache
-		if (FileIO.FileExists(CachePath + LocalPath))
+		if (ImageDownloadThread != null)
 		{
-			setImage(CachePath + LocalPath);
-			return;
+			if (ImageDownloadThread.getState() != Thread.State.TERMINATED) return;
+			else
+				ImageDownloadThread = null;
 		}
 
-		// TODO put this in to Thread and Play Load Animation
-
-		// Download Image to Cache
-		try
+		ImageDownloadThread = new Thread(new Runnable()
 		{
-			final Downloader dl = new Downloader(new URL(iconUrl), new File(CachePath + LocalPath));
 
-			Thread DLThread = new Thread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
+				final String CachePath = Config.settings.TileCacheFolder.getValue();
+
+				// Search first slash after Http or www
+				int slashPos = -1;
+				slashPos = iconUrl.indexOf("http");
+				if (slashPos == -1) slashPos = iconUrl.indexOf("www");
+				if (slashPos == -1) return; // invalid URL
+				slashPos += 7;
+				slashPos = iconUrl.indexOf("/", slashPos);
+
+				final String LocalPath = iconUrl.substring(slashPos);
+
+				// check if Image exist on Cache
+				if (FileIO.FileExists(CachePath + LocalPath))
 				{
-					dl.run();
 					setImage(CachePath + LocalPath);
+					return;
 				}
-			});
 
-			DLThread.run();
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+				inLoad = true;
 
+				// Download Image to Cache
+				try
+				{
+					final Downloader dl = new Downloader(new URL(iconUrl), new File(CachePath + LocalPath));
+
+					Thread DLThread = new Thread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							dl.run();
+							inLoad = false;
+							setImage(CachePath + LocalPath);
+						}
+					});
+
+					DLThread.run();
+				}
+				catch (MalformedURLException e)
+				{
+					e.printStackTrace();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+		ImageDownloadThread.start();
+
+		GL.that.renderOnce("Image");
 	}
 
 	public void setSprite(Sprite sprite)
 	{
+		State = 7;
+		inLoad = false;
 		spriteWidth = sprite.getWidth();
 		spriteHeight = sprite.getHeight();
 		mDrawable = new SpriteDrawable(sprite);
+		GL.that.renderOnce("Image");
 	}
 
 	public void clearImage()
@@ -391,6 +504,7 @@ public class Image extends CB_View_Base
 		if (spt != null) setSprite(spt);
 
 		isPacking = false;
+		GL.that.renderOnce("Image");
 	}
 
 	private String getCachedAtlasName(String inputFolder)
@@ -406,23 +520,26 @@ public class Image extends CB_View_Base
 
 	private Sprite tryToLoadFromCreatetdAtlas(String ImagePath)
 	{
+
 		if (Atlanten == null) Atlanten = new HashMap<String, TextureAtlas>();
 
 		String inputFolder = FileIO.GetDirectoryName(ImagePath);
 		String ImageName = FileIO.GetFileNameWithoutExtension(ImagePath);
 		String Name = getCachedAtlasName(inputFolder);
 
-		String AtlasPath = Config.settings.TileCacheFolder.getValue() + "/" + Name;
+		final String AtlasPath = Config.settings.TileCacheFolder.getValue() + "/" + Name;
 		if (!FileIO.FileExists(AtlasPath)) return null;
-		TextureAtlas atlas;
+		TextureAtlas atlas = null;
 		if (Atlanten.containsKey(AtlasPath))
 		{
 			atlas = Atlanten.get(AtlasPath);
 		}
 		else
 		{
-			atlas = new TextureAtlas(Gdx.files.absolute(AtlasPath));
-			Atlanten.put(AtlasPath, atlas);
+			this.AtlasPath = AtlasPath;
+			this.ImgName = ImageName;
+			State = 5;
+
 		}
 
 		Sprite tmp = null;
@@ -432,5 +549,23 @@ public class Image extends CB_View_Base
 		}
 		return tmp;
 
+	}
+
+	private String AtlasPath;
+	private String ImgName;
+
+	private void setAtlas(String atlasPath, String imgName)
+	{
+		State = 7;
+		TextureAtlas atlas = new TextureAtlas(Gdx.files.absolute(atlasPath));
+		Atlanten.put(atlasPath, atlas);
+
+		Sprite tmp = null;
+		if (atlas != null)
+		{
+			tmp = atlas.createSprite(imgName);
+		}
+
+		if (tmp != null) setSprite(tmp);
 	}
 }

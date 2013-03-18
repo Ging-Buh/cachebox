@@ -260,6 +260,8 @@ public class TB_Details extends ActivityBase
 		AboutThisItem.setX(0);
 		GoalThisItem.setX(0);
 		DetailThisItem.setX(0);
+		GL.that.renderOnce("TB_details Layout");
+		GL.that.addRenderView(this, GL.FRAME_RATE_FAST_ACTION);
 	}
 
 }

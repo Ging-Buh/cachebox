@@ -65,6 +65,7 @@ public class ImageProcessor implements IImageprozessor
 		{
 			// image = ImageIO.read(file);
 			image = BitmapFactory.decodeFile(file.getAbsolutePath());
+			image.prepareToDraw();
 		}
 		catch (Exception ex)
 		{
@@ -163,8 +164,13 @@ public class ImageProcessor implements IImageprozessor
 	{
 		// WritableRaster alphaRaster = source.getAlphaRaster();
 
-		if (!source.hasAlpha() || (!settings.stripWhitespaceX && !settings.stripWhitespaceY)) return new Rect(source, 0, 0,
-				source.getWidth(), source.getHeight());
+		if (!source.hasAlpha() || (!settings.stripWhitespaceX && !settings.stripWhitespaceY))
+		{
+			System.out.println("Return new Rect" + source.getWidth() + ":" + source.getHeight() + " === " + 0 + "," + 0 + "/"
+					+ source.getWidth() + "," + source.getHeight());
+			return new Rect(source, 0, 0, source.getWidth(), source.getHeight());
+		}
+
 		final int[] a = new int[4];
 		int top = 0;
 		int bottom = source.getHeight();
@@ -224,10 +230,22 @@ public class ImageProcessor implements IImageprozessor
 		int newHeight = bottom - top;
 		if (newWidth <= 0 || newHeight <= 0)
 		{
-			if (settings.ignoreBlankImages) return null;
+			if (settings.ignoreBlankImages)
+			{
+				System.out.println("Return Rect = NULL (ignoreBlankImages)");
+				return null;
+			}
 			else
+			{
+				System.out.println("Return Rect = emptyImage (!ignoreBlankImages)");
 				return new Rect(emptyImage, 0, 0, 1, 1);
+			}
+
 		}
+
+		System.out.println("Return new Rect" + source.getWidth() + ":" + source.getHeight() + " === " + left + "," + top + "/" + newWidth
+				+ "," + newHeight);
+		source.prepareToDraw();
 		return new Rect(source, left, top, newWidth, newHeight);
 	}
 
@@ -421,15 +439,15 @@ public class ImageProcessor implements IImageprozessor
 				g.drawBitmap(image, 0, 0, new Paint());
 				// newImage.getGraphics().drawImage(image, 0, 0, null);
 				image = newImage;
+
+				System.out.println("ImageProzessor Redraw Image ARGB_8888");
 			}
 			// WritableRaster raster = image.getRaster();
 			int[] pixels = new int[width * height];
+			image.getPixels(pixels, 0, width, 0, 0, width, height);
+
 			for (int y = 0; y < height; y++)
 			{
-
-				// image.getDataElements(0, y, width, 1, pixels);
-				image.getPixels(pixels, 0, width, 0, y, width, height);
-
 				for (int x = 0; x < width; x++)
 				{
 					int rgba = pixels[x];

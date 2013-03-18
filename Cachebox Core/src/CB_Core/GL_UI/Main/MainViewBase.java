@@ -102,7 +102,7 @@ public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 	@Override
 	public Priority getPriority()
 	{
-		return Priority.High;
+		return Priority.Normal;
 	}
 
 	@Override

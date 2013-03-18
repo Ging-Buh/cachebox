@@ -24,8 +24,8 @@ public class PositionChangedEventList
 					@Override
 					public int compare(PositionChangedEvent arg0, PositionChangedEvent arg1)
 					{
-						int o1 = arg0.getPriority().ordinal();
-						int o2 = arg1.getPriority().ordinal();
+						int o2 = arg0.getPriority().ordinal();
+						int o1 = arg1.getPriority().ordinal();
 						return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
 					}
 				});
@@ -64,6 +64,13 @@ public class PositionChangedEventList
 		if (lastPositionChanged != 0 && lastPositionChanged > System.currentTimeMillis() - Locator.getMinUpdateTime()) return;
 		lastPositionChanged = System.currentTimeMillis();
 
+		if (PositionChangedThread != null)
+		{
+			if (PositionChangedThread.getState() != Thread.State.TERMINATED) return;
+			else
+				PositionChangedThread = null;
+		}
+
 		if (PositionChangedThread == null) PositionChangedThread = new Thread(new Runnable()
 		{
 
@@ -100,7 +107,7 @@ public class PositionChangedEventList
 			}
 		});
 
-		PositionChangedThread.run();
+		PositionChangedThread.start();
 
 	}
 
@@ -114,6 +121,13 @@ public class PositionChangedEventList
 
 		if (lastOrintationChangedEvent != 0 && lastOrintationChangedEvent > System.currentTimeMillis() - Locator.getMinUpdateTime()) return;
 		lastOrintationChangedEvent = System.currentTimeMillis();
+
+		if (OrientationChangedThread != null)
+		{
+			if (OrientationChangedThread.getState() != Thread.State.TERMINATED) return;
+			else
+				OrientationChangedThread = null;
+		}
 
 		if (OrientationChangedThread == null) OrientationChangedThread = new Thread(new Runnable()
 		{

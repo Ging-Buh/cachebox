@@ -11,8 +11,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.PaintDrawable;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.MathUtils;
@@ -114,6 +112,11 @@ public class Android_Packer extends TexturePacker_Base
 
 			System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 
+			Paint pMag = new Paint();
+			pMag.setColor(Color.MAGENTA);
+			pMag.setStrokeWidth(0);
+			pMag.setStyle(Paint.Style.STROKE);
+
 			for (Rect_Base rect : page.outputRects)
 			{
 				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
@@ -128,8 +131,8 @@ public class Android_Packer extends TexturePacker_Base
 				// BufferedImage image = rect.image;
 				Bitmap image = (Bitmap) rect.image;
 
-				android.graphics.Rect src = new Rect();
-				android.graphics.Rect dst = new Rect();
+				android.graphics.Rect src = new android.graphics.Rect();
+				android.graphics.Rect dst = new android.graphics.Rect();
 				Paint p = new Paint();
 
 				if (settings.duplicatePadding)
@@ -176,7 +179,8 @@ public class Android_Packer extends TexturePacker_Base
 
 				}
 
-				g.drawBitmap(image, rectX, rectY, p);
+				System.out.println("Writing " + rect.name + "x,y: " + rectX + "," + rectY);
+				g.drawBitmap(image, rectX, rectY, null);
 
 				if (rect.rotated)
 				{
@@ -187,17 +191,15 @@ public class Android_Packer extends TexturePacker_Base
 				}
 				if (settings.debug)
 				{
-					p.setColor(Color.MAGENTA);
-					new PaintDrawable(Color.MAGENTA);
-					g.drawRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1, p);
+					// p.setColor(Color.MAGENTA);
+
+					g.drawRect(rectX, rectY, rect.width - settings.paddingX - 1 + rectX, rect.height - settings.paddingY - 1 + rectY, pMag);
 				}
 			}
 
 			if (settings.debug)
 			{
-				Paint p = new Paint();
-				p.setColor(Color.MAGENTA);
-				g.drawRect(0, 0, width - 1, height - 1, p);
+				g.drawRect(0, 0, width - 1, height - 1, pMag);
 			}
 
 			try

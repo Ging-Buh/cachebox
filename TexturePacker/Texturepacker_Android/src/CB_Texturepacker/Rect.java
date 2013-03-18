@@ -8,7 +8,9 @@ class Rect extends Rect_Base
 
 	Rect(Bitmap source, int left, int top, int newWidth, int newHeight)
 	{
-		image = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
+		// image = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
+
+		image = source.copy(source.getConfig(), true);
 
 		offsetX = left;
 		offsetY = top;
