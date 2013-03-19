@@ -885,19 +885,26 @@ public class SearchDialog extends PopUp_Base
 	@Override
 	public void onShow()
 	{
-		if (GlobalCore.isTab)
+		try
 		{
-			// TODO searchDialog plaziere rechts neben der Cache List
-		}
-		else
-		{
-			if (CacheListView.that != null)
+			if (GlobalCore.isTab)
 			{
-				setY(CacheListView.that.getMaxY() - this.height);
-				CacheListView.that.setTopPlaceHolder(this.height);
+				// TODO searchDialog plaziere rechts neben der Cache List
 			}
+			else
+			{
+				if (CacheListView.that != null)
+				{
+					setY(CacheListView.that.getMaxY() - this.height);
+					CacheListView.that.setTopPlaceHolder(this.height);
+				}
+			}
+			if (!GL.that.PopUpIsShown()) that.showNotCloseAutomaticly();
 		}
-		if (!GL.that.PopUpIsShown()) that.showNotCloseAutomaticly();
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		Slider.that.registerPosChangedEvent(listner);
 	}

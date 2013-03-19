@@ -10,12 +10,19 @@ public class GpsStateChangeEventList
 
 	public static void Add(GpsStateChangeEvent event)
 	{
-		list.add(event);
+		synchronized (list)
+		{
+			if (!list.contains(event)) list.add(event);
+		}
+
 	}
 
 	public static void Remove(GpsStateChangeEvent event)
 	{
-		list.remove(event);
+		synchronized (list)
+		{
+			list.remove(event);
+		}
 	}
 
 	private static int count = 0;
@@ -27,52 +34,64 @@ public class GpsStateChangeEventList
 	public static long maxEventListTime = 0;
 	private static long lastChanged = 0;
 
+	static Thread threadCall;
+
 	public static void Call()
 	{
-
-		minEventTime = Math.min(minEventTime, System.currentTimeMillis() - lastTime);
-		lastTime = System.currentTimeMillis();
-
-		if (lastChanged != 0 && lastChanged > System.currentTimeMillis() - Locator.getMinUpdateTime())
-		{
-			return;
-		}
-		lastChanged = System.currentTimeMillis();
-
-		Thread thread = new Thread(new Runnable()
+		synchronized (list)
 		{
 
-			@Override
-			public void run()
+			minEventTime = Math.min(minEventTime, System.currentTimeMillis() - lastTime);
+			lastTime = System.currentTimeMillis();
+
+			if (lastChanged != 0 && lastChanged > System.currentTimeMillis() - Locator.getMinUpdateTime())
 			{
-				try
-				{
-					synchronized (list)
-					{
-						long thradStart = System.currentTimeMillis();
-						count++;
-						for (GpsStateChangeEvent event : list)
-						{
-
-							FireEvent(event);
-
-						}
-						if (count > 10) count = 0;
-
-						maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
-					}
-				}
-				catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
+				return;
 			}
-		});
+			lastChanged = System.currentTimeMillis();
 
-		thread.run();
+			if (threadCall != null)
+			{
+				if (threadCall.getState() != Thread.State.TERMINATED) return;
+				else
+					threadCall = null;
+			}
 
+			threadCall = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					try
+					{
+						synchronized (list)
+						{
+							long thradStart = System.currentTimeMillis();
+							count++;
+							for (GpsStateChangeEvent event : list)
+							{
+
+								FireEvent(event);
+
+							}
+							if (count > 10) count = 0;
+
+							maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
+						}
+					}
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
+
+			threadCall.run();
+
+		}
 	}
 
 	private static void FireEvent(GpsStateChangeEvent event)

@@ -94,25 +94,10 @@ public class V_ListView extends ListViewBase
 		mPos = value;
 
 		// addVisibleItems();
-		addVisibleItemsThread(Kinetic);
+		addVisibleItems(Kinetic);
 		mMustSetPos = false;
 		mMustSetPosKinetic = false;
 
-	}
-
-	protected void addVisibleItemsThread(final boolean Kinetic)
-	{
-		Thread th = new Thread(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				addVisibleItems(Kinetic);
-			}
-		});
-
-		th.run();
 	}
 
 	/**

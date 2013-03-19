@@ -50,10 +50,16 @@ public class SelectedCacheEventList
 
 		if (change) GlobalLocationReceiver.resetApprouch();
 
-		// Aufruf aus in einen neuen Thread packen
+		if (selectChangeThread != null)
+		{
+			if (selectChangeThread.getState() != Thread.State.TERMINATED) return;
+			else
+				selectChangeThread = null;
+		}
+
 		if (cache != null)
 		{
-			Thread thread = new Thread(new Runnable()
+			selectChangeThread = new Thread(new Runnable()
 			{
 
 				@Override
@@ -74,8 +80,10 @@ public class SelectedCacheEventList
 				}
 			});
 
-			thread.run();
+			selectChangeThread.start();
 		}
 
 	}
+
+	static Thread selectChangeThread;
 }

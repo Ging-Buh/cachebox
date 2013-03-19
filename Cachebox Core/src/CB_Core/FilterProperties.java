@@ -135,41 +135,45 @@ public class FilterProperties
 	 */
 	public String ToString()
 	{
-		String result = String.valueOf(Finds) + seperator + String.valueOf(NotAvailable) + seperator + String.valueOf(Archived) + seperator
-				+ String.valueOf(Own) + seperator + String.valueOf(ContainsTravelbugs) + seperator + String.valueOf(Favorites) + seperator
-				+ String.valueOf(HasUserData) + seperator + String.valueOf(ListingChanged) + seperator + String.valueOf(WithManualWaypoint)
-				+ seperator + String.valueOf(MinDifficulty) + seperator + String.valueOf(MaxDifficulty) + seperator
-				+ String.valueOf(MinTerrain) + seperator + String.valueOf(MaxTerrain) + seperator + String.valueOf(MinContainerSize)
-				+ seperator + String.valueOf(MaxContainerSize) + seperator + String.valueOf(MinRating) + seperator
-				+ String.valueOf(MaxRating);
+		String result = "";
 
-		for (int i = 0; i < cacheTypes.length; i++)
-			result += seperator + String.valueOf(cacheTypes[i]);
-
-		for (int i = 0; i < attributesFilter.length; i++)
-			result += seperator + String.valueOf(attributesFilter[i]);
-
-		String tempGPX = "";
-		for (int i = 0; i <= GPXFilenameIds.size() - 1; i++)
-		{
-			tempGPX += GPXseperator + String.valueOf(GPXFilenameIds.get(i));
-		}
-
-		result += seperator + tempGPX;
-		result += seperator + filterName;
-		result += seperator + filterGcCode;
-		result += seperator + filterOwner;
-
-		String tempCategory = "";
-		for (long i : Categories)
-		{
-			tempCategory += GPXseperator + i;
-		}
-		result += seperator + tempCategory;
-
-		JSONObject json = new JSONObject();
 		try
 		{
+
+			result = String.valueOf(Finds) + seperator + String.valueOf(NotAvailable) + seperator + String.valueOf(Archived) + seperator
+					+ String.valueOf(Own) + seperator + String.valueOf(ContainsTravelbugs) + seperator + String.valueOf(Favorites)
+					+ seperator + String.valueOf(HasUserData) + seperator + String.valueOf(ListingChanged) + seperator
+					+ String.valueOf(WithManualWaypoint) + seperator + String.valueOf(MinDifficulty) + seperator
+					+ String.valueOf(MaxDifficulty) + seperator + String.valueOf(MinTerrain) + seperator + String.valueOf(MaxTerrain)
+					+ seperator + String.valueOf(MinContainerSize) + seperator + String.valueOf(MaxContainerSize) + seperator
+					+ String.valueOf(MinRating) + seperator + String.valueOf(MaxRating);
+
+			for (int i = 0; i < cacheTypes.length; i++)
+				result += seperator + String.valueOf(cacheTypes[i]);
+
+			for (int i = 0; i < attributesFilter.length; i++)
+				result += seperator + String.valueOf(attributesFilter[i]);
+
+			String tempGPX = "";
+			for (int i = 0; i <= GPXFilenameIds.size() - 1; i++)
+			{
+				tempGPX += GPXseperator + String.valueOf(GPXFilenameIds.get(i));
+			}
+
+			result += seperator + tempGPX;
+			result += seperator + filterName;
+			result += seperator + filterGcCode;
+			result += seperator + filterOwner;
+
+			String tempCategory = "";
+			for (long i : Categories)
+			{
+				tempCategory += GPXseperator + i;
+			}
+			result += seperator + tempCategory;
+
+			JSONObject json = new JSONObject();
+
 			// add Cache properties
 			json.put(
 					"caches",

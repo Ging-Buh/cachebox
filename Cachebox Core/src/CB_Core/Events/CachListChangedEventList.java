@@ -50,6 +50,14 @@ public class CachListChangedEventList
 			}
 
 		}
+
+		if (threadCall != null)
+		{
+			if (threadCall.getState() != Thread.State.TERMINATED) return;
+			else
+				threadCall = null;
+		}
+
 		if (threadCall == null) threadCall = new Thread(new Runnable()
 		{
 
@@ -68,7 +76,7 @@ public class CachListChangedEventList
 			}
 		});
 
-		threadCall.run();
+		threadCall.start();
 
 	}
 

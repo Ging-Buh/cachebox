@@ -65,6 +65,14 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	{
 
 		PlaySounds = Config.settings.PlaySounds.getValue();
+
+		if (newLocationThread != null)
+		{
+			if (newLocationThread.getState() != Thread.State.TERMINATED) return;
+			else
+				newLocationThread = null;
+		}
+
 		if (newLocationThread == null) newLocationThread = new Thread(new Runnable()
 		{
 
@@ -175,7 +183,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 			}
 		});
 
-		newLocationThread.run();
+		newLocationThread.start();
 
 	}
 
