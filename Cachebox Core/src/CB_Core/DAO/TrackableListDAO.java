@@ -58,4 +58,12 @@ public class TrackableListDAO
 		return trackableList;
 	}
 
+	/**
+	 * Deleate all TBs
+	 */
+	public static void clearDB()
+	{
+		long ret = Database.FieldNotes.delete("Trackable", "", null);
+	}
+
 }

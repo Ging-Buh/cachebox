@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.Config;
+import CB_Core.DAO.TrackableListDAO;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
@@ -96,6 +97,7 @@ public class CB_Action_ShowTrackableListView extends CB_Action_ShowView
 
 							if (result == 0)
 							{
+								TrackableListDAO.clearDB();
 								searchList.writeToDB();
 								TrackableListView.that.reloadTB_List();
 							}
