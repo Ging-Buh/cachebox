@@ -303,5 +303,10 @@ public class PresetListView extends V_ListView
 		{
 			((ListViewItemBase) item).isSelected = false;
 		}
+
+		this.setBaseAdapter(null);
+		lvAdapter = new CustomAdapter(lPresets);
+		this.setBaseAdapter(lvAdapter);
+
 	}
 }

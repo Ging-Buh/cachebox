@@ -189,7 +189,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 					}
 					else
 					{
-						Thread.sleep(50);
+						Thread.sleep(100);
 					}
 				}
 				while (true);

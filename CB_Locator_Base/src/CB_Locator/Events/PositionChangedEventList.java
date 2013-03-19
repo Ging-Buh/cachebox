@@ -52,9 +52,6 @@ public class PositionChangedEventList
 	private static long lastPositionChanged = 0;
 
 	private static long lastOrintationChangedEvent = 0;
-	private static Thread OrientationChangedThread;
-	private static Thread PositionChangedThread;
-	private static Thread SpeedChangedThread;
 
 	public static void PositionChanged()
 	{
@@ -64,50 +61,33 @@ public class PositionChangedEventList
 		if (lastPositionChanged != 0 && lastPositionChanged > System.currentTimeMillis() - Locator.getMinUpdateTime()) return;
 		lastPositionChanged = System.currentTimeMillis();
 
-		if (PositionChangedThread != null)
+		synchronized (list)
 		{
-			if (PositionChangedThread.getState() != Thread.State.TERMINATED) return;
-			else
-				PositionChangedThread = null;
-		}
-
-		if (PositionChangedThread == null) PositionChangedThread = new Thread(new Runnable()
-		{
-
-			@Override
-			public void run()
+			try
 			{
-				synchronized (list)
+				for (PositionChangedEvent event : list)
 				{
+					// If display is switched off fire only events with high priority!
+					if (Locator.isDisplayOff() && (event.getPriority() != Priority.High)) continue;
 					try
 					{
-						for (PositionChangedEvent event : list)
-						{
-							// If display is switched off fire only events with high priority!
-							if (Locator.isDisplayOff() && (event.getPriority() != Priority.High)) continue;
-							try
-							{
-								event.PositionChanged();
-							}
-							catch (Exception e)
-							{
-								// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(location)",
-								// event.getReceiverName(),
-								// e);
-								e.printStackTrace();
-							}
-						}
+						event.PositionChanged();
 					}
 					catch (Exception e)
 					{
-						// TODO Auto-generated catch block
+						// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(location)",
+						// event.getReceiverName(),
+						// e);
 						e.printStackTrace();
 					}
 				}
 			}
-		});
-
-		PositionChangedThread.start();
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -122,37 +102,21 @@ public class PositionChangedEventList
 		if (lastOrintationChangedEvent != 0 && lastOrintationChangedEvent > System.currentTimeMillis() - Locator.getMinUpdateTime()) return;
 		lastOrintationChangedEvent = System.currentTimeMillis();
 
-		if (OrientationChangedThread != null)
+		synchronized (list)
 		{
-			if (OrientationChangedThread.getState() != Thread.State.TERMINATED) return;
-			else
-				OrientationChangedThread = null;
-		}
-
-		if (OrientationChangedThread == null) OrientationChangedThread = new Thread(new Runnable()
-		{
-
-			@Override
-			public void run()
+			for (PositionChangedEvent event : list)
 			{
-				synchronized (list)
+				try
 				{
-					for (PositionChangedEvent event : list)
-					{
-						try
-						{
-							event.OrientationChanged();
-						}
-						catch (Exception e)
-						{
-							// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
-							e.printStackTrace();
-						}
-					}
+					event.OrientationChanged();
+				}
+				catch (Exception e)
+				{
+					// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					e.printStackTrace();
 				}
 			}
-		});
-		OrientationChangedThread.start();
+		}
 	}
 
 	public static void SpeedChanged()
@@ -160,29 +124,21 @@ public class PositionChangedEventList
 
 		if (Locator.isDisplayOff()) return; // Hier braucht niemand ein SpeedChangedEvent
 
-		if (SpeedChangedThread == null) SpeedChangedThread = new Thread(new Runnable()
+		synchronized (list)
 		{
-
-			@Override
-			public void run()
+			for (PositionChangedEvent event : list)
 			{
-				synchronized (list)
+				try
 				{
-					for (PositionChangedEvent event : list)
-					{
-						try
-						{
-							event.SpeedChanged();
-						}
-						catch (Exception e)
-						{
-							// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
-							e.printStackTrace();
-						}
-					}
+					event.SpeedChanged();
+				}
+				catch (Exception e)
+				{
+					// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					e.printStackTrace();
 				}
 			}
-		});
-		SpeedChangedThread.run();
+		}
+
 	}
 }

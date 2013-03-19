@@ -238,7 +238,6 @@ public class GL implements ApplicationListener
 
 				runOnGL_List.clear();
 			}
-
 		}
 
 		if (ifAllInitial)

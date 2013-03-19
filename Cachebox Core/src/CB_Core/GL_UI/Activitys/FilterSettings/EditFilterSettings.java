@@ -476,6 +476,13 @@ public class EditFilterSettings extends ActivityBase
 	@Override
 	public void onShow()
 	{
+		tmpFilterProps = GlobalCore.LastFilter;
+
+		if (lvPre != null)
+		{
+			lvPre.notifyDataSetChanged();
+		}
+
 		// Load and set TxtFilter
 		if (vTxt != null)
 		{
