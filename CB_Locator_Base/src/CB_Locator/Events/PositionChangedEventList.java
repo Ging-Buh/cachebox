@@ -152,7 +152,7 @@ public class PositionChangedEventList
 				}
 			}
 		});
-		OrientationChangedThread.run();
+		OrientationChangedThread.start();
 	}
 
 	public static void SpeedChanged()

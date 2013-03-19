@@ -868,31 +868,37 @@ public class GL implements ApplicationListener
 
 	public void addRenderView(GL_View_Base view, int delay)
 	{
-		if (!view.isVisible())
+		synchronized (renderViews)
+		{
+			if (!view.isVisible())
+			{
+				if (renderViews.containsKey(view))
+				{
+					renderViews.remove(view);
+					calcNewRenderSpeed();
+					if (listenerInterface != null) listenerInterface.RequestRender("");
+				}
+				return;
+			}
+			if (renderViews.containsKey(view))
+			{
+				renderViews.remove(view);
+			}
+			renderViews.put(view, delay);
+			calcNewRenderSpeed();
+			if (listenerInterface != null) listenerInterface.RequestRender("");
+		}
+	}
+
+	public void removeRenderView(GL_View_Base view)
+	{
+		synchronized (renderViews)
 		{
 			if (renderViews.containsKey(view))
 			{
 				renderViews.remove(view);
 				calcNewRenderSpeed();
-				if (listenerInterface != null) listenerInterface.RequestRender("");
 			}
-			return;
-		}
-		if (renderViews.containsKey(view))
-		{
-			renderViews.remove(view);
-		}
-		renderViews.put(view, delay);
-		calcNewRenderSpeed();
-		if (listenerInterface != null) listenerInterface.RequestRender("");
-	}
-
-	public void removeRenderView(GL_View_Base view)
-	{
-		if (renderViews.containsKey(view))
-		{
-			renderViews.remove(view);
-			calcNewRenderSpeed();
 		}
 	}
 
@@ -915,16 +921,20 @@ public class GL implements ApplicationListener
 
 	private void calcNewRenderSpeed()
 	{
-		int minDelay = 0;
-		Iterator<Integer> it = renderViews.values().iterator();
-		while (it.hasNext())
+		synchronized (renderViews)
 		{
-			int delay = it.next();
-			if (delay > minDelay) minDelay = delay;
+			int minDelay = 0;
+			Iterator<Integer> it = renderViews.values().iterator();
+			while (it.hasNext())
+			{
+				int delay = it.next();
+				if (delay > minDelay) minDelay = delay;
+			}
+			if (minDelay == 0) stopTimer();
+			else
+				startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
 		}
-		if (minDelay == 0) stopTimer();
-		else
-			startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
+
 	}
 
 	private void startLongClickTimer(final int pointer, final int x, final int y)
@@ -1539,9 +1549,11 @@ public class GL implements ApplicationListener
 
 	public void clearRenderViews()
 	{
-		stopTimer();
-		renderViews.clear();
-
+		synchronized (renderViews)
+		{
+			stopTimer();
+			renderViews.clear();
+		}
 	}
 
 	/**
