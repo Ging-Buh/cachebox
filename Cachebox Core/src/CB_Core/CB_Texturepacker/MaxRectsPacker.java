@@ -1,4 +1,4 @@
-package CB_Texturepacker;
+package CB_Core.CB_Texturepacker;
 
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.

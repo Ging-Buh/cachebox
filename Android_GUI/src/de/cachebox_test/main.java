@@ -98,7 +98,6 @@ import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Locator.Events.GpsStateChangeEventList;
-import CB_Texturepacker.Android_Packer;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -186,6 +185,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.NotifyService.LocalBinder;
+import de.cachebox_test.CB_Texturepacker.Android_Packer;
 import de.cachebox_test.Components.CacheNameView;
 import de.cachebox_test.Custom_Controls.DebugInfoPanel;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;

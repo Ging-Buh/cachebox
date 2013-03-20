@@ -1,4 +1,4 @@
-package CB_Texturepacker;
+package CB_Core.CB_Texturepacker;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,7 @@ public abstract class Rect_Base
 		height = freeNode.height;
 	}
 
-	Rect_Base(Rect_Base freeNode)
+	protected Rect_Base(Rect_Base freeNode)
 	{
 		setSize(freeNode);
 	}

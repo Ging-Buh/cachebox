@@ -1,4 +1,4 @@
-package CB_Texturepacker;
+package de.cachebox_test.CB_Texturepacker;
 
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import CB_Core.CB_Texturepacker.IImageprozessor;
+import CB_Core.CB_Texturepacker.Rect_Base;
+import CB_Core.CB_Texturepacker.Settings;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;

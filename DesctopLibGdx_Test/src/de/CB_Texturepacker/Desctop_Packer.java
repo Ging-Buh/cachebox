@@ -1,4 +1,4 @@
-package CB_Texturepacker;
+package de.CB_Texturepacker;
 
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
@@ -28,6 +28,12 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+
+import CB_Core.CB_Texturepacker.MaxRectsPacker;
+import CB_Core.CB_Texturepacker.Page;
+import CB_Core.CB_Texturepacker.Rect_Base;
+import CB_Core.CB_Texturepacker.Settings;
+import CB_Core.CB_Texturepacker.TexturePacker_Base;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.MathUtils;
@@ -67,7 +73,7 @@ public class Desctop_Packer extends TexturePacker_Base
 		new Rect();
 	}
 
-	void writeImages(File outputDir, Array<Page> pages, String packFileName)
+	public void writeImages(File outputDir, Array<Page> pages, String packFileName)
 	{
 		String imageName = packFileName;
 		int dotIndex = imageName.lastIndexOf('.');

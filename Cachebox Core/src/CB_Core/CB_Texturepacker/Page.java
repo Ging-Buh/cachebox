@@ -1,9 +1,9 @@
-package CB_Texturepacker;
+package CB_Core.CB_Texturepacker;
 
 import com.badlogic.gdx.utils.Array;
 
 /** @author Nathan Sweet */
-class Page
+public class Page
 {
 	public String imageName;
 	public Array<Rect_Base> outputRects, remainingRects;

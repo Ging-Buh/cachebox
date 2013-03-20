@@ -1,4 +1,4 @@
-package CB_Texturepacker;
+package CB_Core.CB_Texturepacker;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package CB_Texturepacker;
+package de.CB_Texturepacker;
 
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
@@ -29,6 +29,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
+
+import CB_Core.CB_Texturepacker.IImageprozessor;
+import CB_Core.CB_Texturepacker.Rect_Base;
+import CB_Core.CB_Texturepacker.Settings;
 
 import com.badlogic.gdx.utils.Array;
 

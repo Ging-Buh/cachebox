@@ -30,7 +30,6 @@ import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Location.ProviderType;
-import CB_Texturepacker.Desctop_Packer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -38,6 +37,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+import de.CB_Texturepacker.Desctop_Packer;
 import de.Map.DesctopManager;
 
 public class DesktopMain

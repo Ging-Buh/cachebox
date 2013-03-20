@@ -13,6 +13,5 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
 	<classpathentry exported="true" kind="lib" path="libs/jsoup-1.7.2.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Texturepacker_Android"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -1,4 +1,4 @@
-package CB_Texturepacker;
+package CB_Core.CB_Texturepacker;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,7 +30,7 @@ public abstract class TexturePacker_Base
 		}
 	}
 
-	abstract void writeImages(File outputDir, Array<Page> pages, String packFileName);
+	public abstract void writeImages(File outputDir, Array<Page> pages, String packFileName);
 
 	// abstract void writePackFile(File outputDir, Array<Page> pages, String packFileName) throws IOException;
 

@@ -1,17 +1,17 @@
-package CB_Texturepacker;
+package de.CB_Texturepacker;
 
-import android.graphics.Bitmap;
+import java.awt.image.BufferedImage;
+
+import CB_Core.CB_Texturepacker.Rect_Base;
 
 /** @author Nathan Sweet */
 class Rect extends Rect_Base
 {
 
-	Rect(Bitmap source, int left, int top, int newWidth, int newHeight)
+	Rect(BufferedImage source, int left, int top, int newWidth, int newHeight)
 	{
-		// image = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
-
-		image = source.copy(source.getConfig(), true);
-
+		image = new BufferedImage(source.getColorModel(), source.getRaster()
+				.createWritableChild(left, top, newWidth, newHeight, 0, 0, null), source.getColorModel().isAlphaPremultiplied(), null);
 		offsetX = left;
 		offsetY = top;
 		originalWidth = source.getWidth();
@@ -33,13 +33,13 @@ class Rect extends Rect_Base
 	@Override
 	public int getWidth()
 	{
-		return ((Bitmap) image).getWidth();
+		return ((BufferedImage) image).getWidth();
 	}
 
 	@Override
 	public int getHeight()
 	{
-		return ((Bitmap) image).getHeight();
+		return ((BufferedImage) image).getHeight();
 	}
 
 	@Override

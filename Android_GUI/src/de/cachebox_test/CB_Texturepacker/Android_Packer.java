@@ -1,10 +1,15 @@
-package CB_Texturepacker;
+package de.cachebox_test.CB_Texturepacker;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import CB_Core.CB_Texturepacker.MaxRectsPacker;
+import CB_Core.CB_Texturepacker.Page;
+import CB_Core.CB_Texturepacker.Rect_Base;
+import CB_Core.CB_Texturepacker.Settings;
+import CB_Core.CB_Texturepacker.TexturePacker_Base;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
@@ -19,7 +24,6 @@ import com.badlogic.gdx.utils.Array;
 /** @author Nathan Sweet ; Longri */
 public class Android_Packer extends TexturePacker_Base
 {
-
 	@Override
 	public TexturePacker_Base getInstanz(File rootDir, Settings settings)
 	{
@@ -50,7 +54,7 @@ public class Android_Packer extends TexturePacker_Base
 		new Rect();
 	}
 
-	void writeImages(File outputDir, Array<Page> pages, String packFileName)
+	public void writeImages(File outputDir, Array<Page> pages, String packFileName)
 	{
 		String imageName = packFileName;
 		int dotIndex = imageName.lastIndexOf('.');

@@ -23,6 +23,8 @@ import java.util.HashMap;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.CB_Texturepacker.Settings;
+import CB_Core.CB_Texturepacker.TexturePacker_Base;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
@@ -30,8 +32,6 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Util.Downloader;
-import CB_Texturepacker.Settings;
-import CB_Texturepacker.TexturePacker_Base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
