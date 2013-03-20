@@ -558,7 +558,7 @@ public class SelectDB extends ActivityBase
 		cm.addItem(MenuID.MI_25, cs[4], true);
 		cm.addItem(MenuID.MI_60, cs[5], true);
 
-		cm.show();
+		cm.Show();
 	}
 
 }

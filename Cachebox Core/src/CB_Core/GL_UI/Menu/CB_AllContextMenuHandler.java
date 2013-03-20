@@ -87,7 +87,7 @@ public class CB_AllContextMenuHandler
 		mi = icm.addItem(MenuID.MI_DELETE_CACHE, "MI_DELETE_CACHE");
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		icm.show();
+		icm.Show();
 
 	}
 

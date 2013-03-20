@@ -728,6 +728,11 @@ public class SpriteCache
 			Icons.add(getThemedSprite("fieldnote-list-icon")); // 55
 			Icons.add(getThemedSprite("waypoint-list-icon")); // 56
 			Icons.add(getThemedSprite("add_cache_icon")); // 57
+			Icons.add(getThemedSprite("tb-discover")); // 58
+			Icons.add(getThemedSprite("tb-drop")); // 59
+			Icons.add(getThemedSprite("tb-grab")); // 60
+			Icons.add(getThemedSprite("tb-picked")); // 61
+			Icons.add(getThemedSprite("tb-visit")); // 62
 
 		}
 

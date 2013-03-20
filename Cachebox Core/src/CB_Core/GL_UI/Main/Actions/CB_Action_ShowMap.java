@@ -127,7 +127,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 			}
 		}
 
-		icm.show();
+		icm.Show();
 	}
 
 	private void showMapOverlayMenu()
@@ -173,7 +173,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 			}
 		}
 
-		icm.show();
+		icm.Show();
 	}
 
 	private void showMapViewLayerMenu()
@@ -215,7 +215,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.ShowAccuracyCircle.getValue());
 
-		icm.show();
+		icm.Show();
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()
@@ -354,7 +354,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi = cm2.addItem(STOP, "stop");
 		mi.setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
 
-		cm2.show();
+		cm2.Show();
 	}
 
 	private void toggleSetting(SettingBool setting)

@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Activitys;
 
+import CB_Core.Config;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -9,6 +10,8 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.Menu.Menu;
+import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
@@ -60,13 +63,13 @@ public class TB_Details extends ActivityBase
 		});
 
 		btnAction = new Button("Action");
-		btnAction.setText(Translation.Get("Action"));
+		btnAction.setText(Translation.Get("TB_Log"));
 		btnAction.setOnClickListener(new OnClickListener()
 		{
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// TB_Details.this.finish();
+				showLogMenu();
 				return true;
 			}
 		});
@@ -263,5 +266,32 @@ public class TB_Details extends ActivityBase
 		GL.that.renderOnce("TB_details Layout");
 		GL.that.addRenderView(this, GL.FRAME_RATE_FAST_ACTION);
 	}
+
+	private void showLogMenu()
+	{
+		boolean isInventory = TB.getCurrentOwner().equalsIgnoreCase(Config.settings.GcLogin.getValue());
+
+		final Menu cm = new Menu("TBLogContextMenu");
+		cm.setOnClickListener(menuItemClickListner);
+
+		if (!isInventory) cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", SpriteCache.Icons.get(58));
+		if (isInventory) cm.addItem(MenuID.MI_TB_VISIT, "visit", SpriteCache.Icons.get(62));
+		if (isInventory) cm.addItem(MenuID.MI_TB_DROPPED, "dropped", SpriteCache.Icons.get(59));
+		if (!isInventory) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", SpriteCache.Icons.get(60));
+		if (!isInventory) cm.addItem(MenuID.MI_TB_PICKED, "picked", SpriteCache.Icons.get(61));
+
+		cm.Show();
+	}
+
+	private OnClickListener menuItemClickListner = new OnClickListener()
+	{
+
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		{
+			// TODO Auto-generated method stub
+			return false;
+		}
+	};
 
 }

@@ -83,7 +83,7 @@ public class FieldNotesView extends V_ListView
 		if (firstShow)
 		{
 			firstShow = false;
-			getContextMenu().show();
+			getContextMenu().Show();
 		}
 
 	}
@@ -893,7 +893,7 @@ public class FieldNotesView extends V_ListView
 			cm.addItem(MenuID.MI_EDIT_FIELDNOTE, "edit");
 			cm.addItem(MenuID.MI_DELETE_FIELDNOTE, "delete");
 
-			cm.show();
+			cm.Show();
 			return true;
 		}
 	};

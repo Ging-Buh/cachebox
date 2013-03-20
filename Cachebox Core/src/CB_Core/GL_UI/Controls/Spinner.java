@@ -101,7 +101,7 @@ public class Spinner extends Button
 					icm.setPrompt(prompt);
 				}
 
-				icm.show();
+				icm.Show();
 				return true;
 			}
 		});

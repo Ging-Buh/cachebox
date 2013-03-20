@@ -231,7 +231,8 @@ public class Menu extends ButtonDialog
 		mListView.notifyDataSetChanged();
 	}
 
-	public void show()
+	@Override
+	public void Show()
 	{
 		layout();
 		// wenn irgent ein Item Chackable ist, dann alle Titles Einrücken.
@@ -241,7 +242,7 @@ public class Menu extends ButtonDialog
 		 * (oneIsChakable) { for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();) { MenuItemBase tmp =
 		 * iterator.next(); if (tmp instanceof MenuItem) { ((MenuItem) tmp).setLeft(true); } } }
 		 */
-		GL.that.showDialog(this);
+		super.Show();
 
 	}
 

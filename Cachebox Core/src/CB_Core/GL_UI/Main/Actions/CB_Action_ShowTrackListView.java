@@ -250,7 +250,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		cm2.addItem(MenuID.MI_PROJECT, "Projection");
 		cm2.addItem(MenuID.MI_CIRCLE, "Circle");
 
-		cm2.show();
+		cm2.Show();
 	}
 
 	private void GenTrackP2P()

@@ -163,7 +163,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				icm.setPrompt(Translation.Get("changeSettingsVisibility"));
 
-				icm.show();
+				icm.Show();
 				return true;
 			}
 		});

@@ -127,7 +127,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 
 		icm.setPrompt(Translation.Get("selectQuickButtemItem"));
 
-		icm.show();
+		icm.Show();
 
 	}
 

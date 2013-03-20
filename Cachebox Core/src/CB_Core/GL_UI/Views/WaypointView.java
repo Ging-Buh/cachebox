@@ -157,7 +157,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			}
 
 			setSelection(selectionIndex);
-			getContextMenu().show();
+			getContextMenu().Show();
 			return true;
 		}
 	};

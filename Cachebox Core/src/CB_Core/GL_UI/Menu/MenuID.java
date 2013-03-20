@@ -192,4 +192,9 @@ public class MenuID
 	public static final int MI_RESET_FILTER = 164;
 
 	public static final int MI_REFRECH_TB_LIST = 165;
+	public static final int MI_TB_DISCOVERED = 166;
+	public static final int MI_TB_DROPPED = 166;
+	public static final int MI_TB_PICKED = 167;
+	public static final int MI_TB_VISIT = 168;
+	public static final int MI_TB_GRABBED = 169;
 }

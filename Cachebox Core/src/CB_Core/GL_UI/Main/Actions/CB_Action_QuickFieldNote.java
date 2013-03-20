@@ -77,7 +77,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 		cm.addItem(MenuID.MI_QUICK_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
 		cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
 
-		cm.show();
+		cm.Show();
 
 	}
 

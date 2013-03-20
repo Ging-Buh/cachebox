@@ -48,7 +48,7 @@ public abstract class CB_Action_ShowView extends CB_Action
 
 		if (cm == null) return false;
 
-		cm.show();
+		cm.Show();
 		return true;
 	}
 

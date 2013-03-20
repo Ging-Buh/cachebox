@@ -75,6 +75,6 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 		mi = cm2.addItem(MenuID.MI_STOP, "stop");
 		mi.setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
 
-		cm2.show();
+		cm2.Show();
 	}
 }

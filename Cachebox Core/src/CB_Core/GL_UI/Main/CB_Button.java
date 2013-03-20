@@ -122,7 +122,7 @@ public class CB_Button extends Button implements OnClickListener
 
 			if (mButtonActions.size() > 1)
 			{
-				getLongClickMenu().show();
+				getLongClickMenu().Show();
 			}
 			else if (mButtonActions.size() == 1)
 			{
@@ -241,7 +241,7 @@ public class CB_Button extends Button implements OnClickListener
 
 							compoundMenu.reorganizeIndexes();
 
-							compoundMenu.show();
+							compoundMenu.Show();
 
 							return true;
 						}

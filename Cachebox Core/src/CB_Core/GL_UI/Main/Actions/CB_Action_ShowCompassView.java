@@ -124,7 +124,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.CompassShowLastFound.getValue());
 
-		icm.show();
+		icm.Show();
 
 	}
 
