@@ -1,11 +1,10 @@
 package CB_Core.GL_UI.Views;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.TemplateFormatter;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -503,22 +502,22 @@ public class FieldNotesView extends V_ListView
 		case 1:
 			if (!cache.Found) newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.FoundTemplate.getValue(),
-					newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
+					Config.settings.FoundTemplate.getValue(), newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 			// nicht gefunden war -> foundNumber um 1 erhöhen
 			break;
 		case 2:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.DNFTemplate.getValue(),
-					newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
+					Config.settings.DNFTemplate.getValue(), newFieldNote);
 			break;
 		case 3:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
 					Config.settings.NeedsMaintenanceTemplate.getValue(), newFieldNote);
 			break;
 		case 4:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.AddNoteTemplate.getValue(),
-					newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
+					Config.settings.AddNoteTemplate.getValue(), newFieldNote);
 			break;
 		}
 
@@ -661,24 +660,6 @@ public class FieldNotesView extends V_ListView
 			that.notifyDataSetChanged();
 		}
 	};
-
-	private static String ReplaceTemplate(String template, FieldNoteEntry fieldNote)
-	{
-		DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
-		String stime = iso8601Format.format(fieldNote.timestamp);
-		iso8601Format = new SimpleDateFormat("dd-MM-yyyy");
-		String sdate = iso8601Format.format(fieldNote.timestamp);
-
-		template = template.replace("<br>", "\n");
-		template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
-		template = template.replace("##date##", sdate);
-		template = template.replace("##time##", stime);
-		template = template.replace("##owner##", GlobalCore.getSelectedCache().Owner);
-		template = template.replace("##gcusername##", Config.settings.GcLogin.getValue());
-		// template = template.replace("##gcvote##",
-		// comboBoxVote.SelectedIndex.ToString());
-		return template;
-	}
 
 	static EditFieldNotes efnActivity;
 

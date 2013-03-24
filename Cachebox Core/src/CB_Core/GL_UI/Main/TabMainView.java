@@ -15,7 +15,6 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
-import CB_Core.GL_UI.Activitys.TB_Details;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
@@ -93,7 +92,6 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_ShowCacheList actionShowCacheList;
 
 	private CB_Action_ShowAbout actionShowAboutView;
-	public static TB_Details TB_Details;
 	private CB_Action_ShowCreditsView actionShowCreditsView;
 	public static CB_Action_ShowDescriptionView actionShowDescriptionView;
 	public static CB_Action_ShowFieldNotesView actionShowFieldNotesView;

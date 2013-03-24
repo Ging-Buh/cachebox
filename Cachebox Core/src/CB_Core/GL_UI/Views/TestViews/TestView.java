@@ -71,8 +71,8 @@ public class TestView extends CB_View_Base
 
 				Trackable tb = new Trackable("MyTb", "http://www.geocaching.com/images/wpttypes/21.gif", beschreibung);
 
-				TB_Details details = new TB_Details();
-				details.show(tb);
+				if (TB_Details.that == null) new TB_Details();
+				TB_Details.that.Show(tb);
 				return true;
 			}
 		});

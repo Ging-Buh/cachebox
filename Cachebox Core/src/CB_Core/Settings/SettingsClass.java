@@ -9,6 +9,15 @@ public class SettingsClass extends SettingsList
 
 	private static final long serialVersionUID = 7330937438116889415L;
 
+	private final String FOUND = "<br>###finds##, ##time##, Found it with Cachebox!";
+	private final String DNF = "<br>##time##. Logged it with Cachebox!";
+	private final String LOG = "Logged it with Cachebox!";
+	private final String DISCOVERD = "<br> ##time##, Discoverd it with Cachebox!";
+	private final String VISITED = "<br> ##time##, Visited it with Cachebox!";
+	private final String DROPPED = "<br> ##time##, Dropped off with Cachebox!";
+	private final String PICKED = "<br> ##time##, Picked it with Cachebox!";
+	private final String GRABED = "<br> ##time##, Grabed it with Cachebox!";
+
 	// Settings Compass
 	public SettingBool HardwareCompass;
 	public SettingInt HardwareCompassLevel;
@@ -173,6 +182,12 @@ public class SettingsClass extends SettingsList
 	public SettingString DNFTemplate;
 	public SettingString NeedsMaintenanceTemplate;
 	public SettingString AddNoteTemplate;
+	public SettingString DiscoverdTemplate;
+	public SettingString VisitedTemplate;
+	public SettingString DroppedTemplate;
+	public SettingString GrabbedTemplate;
+	public SettingString PickedTemplate;
+
 	public SettingString SpoilersDescriptionTags;
 	public SettingString quickButtonList;
 	public SettingString GcLogin;
@@ -291,14 +306,15 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Templates;
 
-		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", cat, NORMAL,
-				"<br>###finds##, ##time##, Found it with DroidCachebox!", SettingStoreType.Global));
-		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", cat, NORMAL, "<br>##time##. Logged it with DroidCachebox!",
-				SettingStoreType.Global));
-		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", cat, NORMAL,
-				"Logged it with DroidCachebox!", SettingStoreType.Global));
-		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", cat, NORMAL, "Logged it with DroidCachebox!",
-				SettingStoreType.Global));
+		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", cat, NORMAL, FOUND, SettingStoreType.Global));
+		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", cat, NORMAL, DNF, SettingStoreType.Global));
+		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", cat, NORMAL, LOG, SettingStoreType.Global));
+		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", cat, NORMAL, LOG, SettingStoreType.Global));
+		addSetting(DiscoverdTemplate = new SettingLongString("DiscoverdTemplate", cat, NORMAL, DISCOVERD, SettingStoreType.Global));
+		addSetting(VisitedTemplate = new SettingLongString("VisitedTemplate", cat, NORMAL, VISITED, SettingStoreType.Global));
+		addSetting(DroppedTemplate = new SettingLongString("DroppedTemplate", cat, NORMAL, DROPPED, SettingStoreType.Global));
+		addSetting(GrabbedTemplate = new SettingLongString("GrabbedTemplate", cat, NORMAL, GRABED, SettingStoreType.Global));
+		addSetting(PickedTemplate = new SettingLongString("PickedTemplate", cat, NORMAL, PICKED, SettingStoreType.Global));
 	}
 
 	private void addGpsSettings()

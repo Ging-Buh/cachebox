@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Activitys;
 
 import CB_Core.Config;
+import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -12,6 +13,7 @@ import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
+import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
@@ -22,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 
 public class TB_Details extends ActivityBase
 {
+	public static TB_Details that;
 	private float innerLeft, innerWidth, innerHeight;
 	private ScrollBox scrollBox;
 	private Button btnClose, btnAction;
@@ -34,12 +37,12 @@ public class TB_Details extends ActivityBase
 
 	public TB_Details()
 	{
-		super(ActivityRec(), "importActivity");
-
+		super(ActivityRec(), "TB_Detail_Activity");
 		createControls();
+		that = this;
 	}
 
-	public void show(Trackable TB)
+	public void Show(Trackable TB)
 	{
 		this.TB = TB;
 		layout();
@@ -272,7 +275,7 @@ public class TB_Details extends ActivityBase
 		boolean isInventory = TB.getCurrentOwner().equalsIgnoreCase(Config.settings.GcLogin.getValue());
 
 		final Menu cm = new Menu("TBLogContextMenu");
-		cm.setOnClickListener(menuItemClickListner);
+		cm.addItemClickListner(menuItemClickListner);
 
 		if (!isInventory) cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", SpriteCache.Icons.get(58));
 		if (isInventory) cm.addItem(MenuID.MI_TB_VISIT, "visit", SpriteCache.Icons.get(62));
@@ -289,8 +292,31 @@ public class TB_Details extends ActivityBase
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			// TODO Auto-generated method stub
-			return false;
+			if (TB_Log.that == null) new TB_Log();
+			switch (((MenuItem) v).getMenuItemId())
+			{
+
+			case MenuID.MI_TB_DISCOVERED:
+				TB_Log.that.Show(TB, LogTypes.discovered);
+				break;
+
+			case MenuID.MI_TB_VISIT:
+				TB_Log.that.Show(TB, LogTypes.visited);
+				break;
+
+			case MenuID.MI_TB_DROPPED:
+				TB_Log.that.Show(TB, LogTypes.dropped_off);
+				break;
+
+			case MenuID.MI_TB_GRABBED:
+				TB_Log.that.Show(TB, LogTypes.grab_it);
+				break;
+
+			case MenuID.MI_TB_PICKED:
+				TB_Log.that.Show(TB, LogTypes.retrieve);
+				break;
+			}
+			return true;
 		}
 	};
 

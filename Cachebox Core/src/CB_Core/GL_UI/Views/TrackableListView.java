@@ -17,7 +17,6 @@ import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
@@ -123,7 +122,7 @@ public class TrackableListView extends CB_View_Base
 							if (tb != null)
 							{
 								TB_Details details = new TB_Details();
-								details.show(tb);
+								details.Show(tb);
 							}
 							else
 							{
@@ -192,8 +191,8 @@ public class TrackableListView extends CB_View_Base
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 				{
-					if (TabMainView.TB_Details == null) TabMainView.TB_Details = new TB_Details();
-					TabMainView.TB_Details.show(TB_List.get(position));
+					if (TB_Details.that == null) new TB_Details();
+					TB_Details.that.Show(TB_List.get(position));
 					return true;
 				}
 			});
