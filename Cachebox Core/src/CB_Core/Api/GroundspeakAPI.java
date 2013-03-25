@@ -882,7 +882,7 @@ public class GroundspeakAPI
 			if (aktCache == null)
 			{
 				Database.Data.Query.add(cache);
-				cacheDAO.WriteToDatabase(cache);
+				// cacheDAO.WriteToDatabase(cache);
 			}
 			else
 			{
@@ -890,7 +890,12 @@ public class GroundspeakAPI
 				// Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
 				// Database.Data.Query.add(cache);
 				aktCache.copyFrom(cache);
-				cacheDAO.UpdateDatabase(cache);
+				// cacheDAO.UpdateDatabase(cache);
+			}
+			// Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen
+			if (!cacheDAO.UpdateDatabase(cache))
+			{
+				cacheDAO.WriteToDatabase(cache);
 			}
 
 			for (LogEntry log : apiLogs)
@@ -912,7 +917,10 @@ public class GroundspeakAPI
 			for (Waypoint waypoint : cache.waypoints)
 			{
 
-				waypointDAO.WriteToDatabase(waypoint);
+				if (!waypointDAO.UpdateDatabase(waypoint))
+				{
+					waypointDAO.WriteToDatabase(waypoint);
+				}
 			}
 
 		}

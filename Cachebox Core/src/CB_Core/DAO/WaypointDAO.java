@@ -35,11 +35,14 @@ public class WaypointDAO
 		try
 		{
 			Database.Data.insert("Waypoint", args);
-
-			args = new Parameters();
-			args.put("hasUserData", true);
-			Database.Data.update("Caches", args, "Id = ?", new String[]
-				{ String.valueOf(WP.CacheId) });
+			if (WP.IsUserWaypoint)
+			{
+				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist!!!
+				args = new Parameters();
+				args.put("hasUserData", true);
+				Database.Data.update("Caches", args, "Id = ?", new String[]
+					{ String.valueOf(WP.CacheId) });
+			}
 		}
 		catch (Exception exc)
 		{
@@ -48,8 +51,9 @@ public class WaypointDAO
 		}
 	}
 
-	public void UpdateDatabase(Waypoint WP)
+	public boolean UpdateDatabase(Waypoint WP)
 	{
+		boolean result = false;
 		int newCheckSum = createCheckSum(WP);
 		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
 		if (newCheckSum != WP.checkSum)
@@ -68,28 +72,33 @@ public class WaypointDAO
 			args.put("isStart", WP.IsStart);
 			try
 			{
-				Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.GcCode + "\"", null);
+				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.GcCode + "\"", null);
+				if (count > 0) result = true;
 			}
 			catch (Exception exc)
 			{
-				return;
+				result = false;
 
 			}
 
-			args = new Parameters();
-			args.put("hasUserData", true);
-			try
+			if (WP.IsUserWaypoint)
 			{
-				Database.Data.update("Caches", args, "Id = ?", new String[]
-					{ String.valueOf(WP.CacheId) });
+				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. über API)
+				args = new Parameters();
+				args.put("hasUserData", true);
+				try
+				{
+					Database.Data.update("Caches", args, "Id = ?", new String[]
+						{ String.valueOf(WP.CacheId) });
+				}
+				catch (Exception exc)
+				{
+					return result;
+				}
 			}
-			catch (Exception exc)
-			{
-				return;
-			}
-
 			WP.checkSum = newCheckSum;
 		}
+		return result;
 	}
 
 	public Waypoint getWaypoint(CoreCursor reader)

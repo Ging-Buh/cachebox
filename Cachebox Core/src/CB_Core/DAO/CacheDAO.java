@@ -212,7 +212,7 @@ public class CacheDAO
 		}
 	}
 
-	public void UpdateDatabase(Cache cache)
+	public boolean UpdateDatabase(Cache cache)
 	{
 
 		Parameters args = new Parameters();
@@ -289,10 +289,12 @@ public class CacheDAO
 		{
 			long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
 				{ String.valueOf(cache.Id) });
+			return ret > 0;
 		}
 		catch (Exception exc)
 		{
 			Logger.Error("Update Cache", "", exc);
+			return false;
 
 		}
 	}

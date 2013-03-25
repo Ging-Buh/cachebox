@@ -21,6 +21,7 @@ import org.json.JSONTokener;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
@@ -39,6 +40,29 @@ import CB_Locator.Coordinate;
 
 public class SearchForGeocaches
 {
+	private static Boolean LoadFoundFromDB(String sql) // Found-Status aus Datenbank auslesen
+	{
+		CoreCursor reader = Database.Data.rawQuery(sql, null);
+		try
+		{
+			reader.moveToFirst();
+			while (!reader.isAfterLast())
+			{
+				if (reader.getInt(0) != 0)
+				{ // gefunden. Suche abbrechen
+					return true;
+				}
+				reader.moveToNext();
+			}
+		}
+		finally
+		{
+			reader.close();
+		}
+
+		return false;
+	}
+
 	public static class Search
 	{
 		public int number;
@@ -351,21 +375,15 @@ public class SearchForGeocaches
 					cache.Difficulty = (float) jCache.getDouble("Difficulty");
 					cache.setFavorit(false);
 
-					Cache tmpCache = Database.Data.Query.GetCacheByGcCode(gcCode); // Ein evtl. vorhandenen "Found" nicht überschreiben
-					if (tmpCache != null)
+					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+					Boolean Found = LoadFoundFromDB("select found from Caches where GcCode = \"" + gcCode + "\"");
+					if (!Found)
 					{
-						if (!tmpCache.Found)
-						{
-							cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
-						}
-						else
-						{
-							cache.Found = true;
-						}
+						cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
 					}
 					else
 					{
-						cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
+						cache.Found = true;
 					}
 
 					cache.GcCode = jCache.getString("Code");
