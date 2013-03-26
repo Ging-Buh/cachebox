@@ -8,7 +8,10 @@ public class SettingsDAO
 	public void WriteToDatabase(Database database, SettingBase setting)
 	{
 		String dbString = setting.toDBString();
-		if (setting instanceof SettingLongString) database.WriteConfigLongString(setting.name, dbString);
+		if (setting instanceof SettingLongString)
+		{
+			database.WriteConfigLongString(setting.name, dbString);
+		}
 		else
 			database.WriteConfigString(setting.name, dbString);
 	}

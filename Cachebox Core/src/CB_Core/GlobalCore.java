@@ -226,7 +226,7 @@ public class GlobalCore
 	{
 		if (Config.GetAccessToken().length() == 0)
 		{
-			Logger.General("global.APIisOnline() -Invalid AccessToken");
+			Logger.General("GlobalCore.APIisOnline() - no GC - API AccessToken");
 			return false;
 		}
 		if (platformConector.isOnline())
@@ -243,7 +243,7 @@ public class GlobalCore
 	{
 		if (Config.settings.GcJoker.getValue().length() == 0)
 		{
-			Logger.General("global.APIisOnline() -Invalid Joker");
+			Logger.General("GlobalCore.JokerisOnline() - no Joker Password");
 			return false;
 		}
 		if (platformConector.isOnline())

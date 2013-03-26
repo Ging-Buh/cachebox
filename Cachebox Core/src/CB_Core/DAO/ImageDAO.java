@@ -57,6 +57,11 @@ public class ImageDAO
 		return images;
 	}
 
+	public void deleteImagesForCache(String GcCode)
+	{
+		Database.Data.execSQL("DELETE from Images where GcCode = '" + GcCode + "'");
+	}
+
 	public ArrayList<ImageEntry> getDescriptionImagesForCache(String GcCode)
 	{
 		ArrayList<ImageEntry> images = new ArrayList<ImageEntry>();

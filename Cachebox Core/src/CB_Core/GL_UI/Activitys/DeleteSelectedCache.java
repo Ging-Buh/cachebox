@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
+import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
@@ -23,6 +24,8 @@ public class DeleteSelectedCache
 		dao.delCacheImages(GcCodeList);
 		GcCodeList = null;
 		dao = null;
+		ImageDAO imageDAO = new ImageDAO();
+		imageDAO.deleteImagesForCache(GlobalCore.getSelectedCache().GcCode);
 		// Waypoints
 		Logger.DEBUG("Delete Waypoints");
 		for (Waypoint wp : GlobalCore.getSelectedCache().waypoints)
