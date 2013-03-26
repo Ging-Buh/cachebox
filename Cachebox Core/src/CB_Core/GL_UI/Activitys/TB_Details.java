@@ -15,7 +15,7 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Trackable;
 
@@ -81,7 +81,7 @@ public class TB_Details extends ActivityBase
 		scrollBox.setHeight(this.height - (btnClose.getHeight() - margin) * 2.5f);
 		scrollBox.setBackground(SpriteCache.activityBackground);
 
-		CB_RectF iconRec = new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight());
+		CB_RectF iconRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight());
 		iconRec = iconRec.ScaleCenter(0.8f);
 
 		icon = new Image(iconRec, "Icon");

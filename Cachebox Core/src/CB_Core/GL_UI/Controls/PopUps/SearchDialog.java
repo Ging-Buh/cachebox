@@ -39,6 +39,7 @@ import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
@@ -145,14 +146,14 @@ public class SearchDialog extends PopUp_Base
 
 		that = this;
 
-		this.setSize(UiSizes.getCacheListItemSize().asFloat());
+		this.setSize(UiSizes.that.getCacheListItemSize().asFloat());
 
 		if (GlobalCore.isTab)
 		{
 			this.setBackground(SpriteCache.activityBackground);
 			this.setWidth(this.width * 1.4f);
-			this.setX((UiSizes.getWindowWidth() / 2) - this.halfWidth);
-			this.setY((UiSizes.getWindowHeight() / 2) - this.halfHeight);
+			this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.halfWidth);
+			this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.halfHeight);
 		}
 		else
 		{
@@ -160,11 +161,11 @@ public class SearchDialog extends PopUp_Base
 		}
 		// initial Buttons
 
-		float margin = UiSizes.getMargin();
+		float margin = UI_Size_Base.that.getMargin();
 		if (GlobalCore.isTab) margin *= 2;
 		float btnWidth = (this.width - (margin * 7)) / 4;
 
-		CB_RectF rec = new CB_RectF(0, 0, btnWidth, UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());
 
 		mTglBtnTitle = new MultiToggleButton(rec, "mTglBtnTitle");
 		mTglBtnGc = new MultiToggleButton(rec, "mTglBtnGc");

@@ -34,7 +34,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.FieldNoteEntry;
 
@@ -107,7 +107,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UiSizes.getButtonHeight());
+				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 		bOK.setText(Translation.Get("ok"));
 
@@ -231,8 +231,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniImage()
 	{
-		ivTyp = new Image(this.getLeftWidth() + margin, tvCacheName.getY() - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
-				UiSizes.getButtonHeight(), "");
+		ivTyp = new Image(this.getLeftWidth() + margin, tvCacheName.getY() - margin - UI_Size_Base.that.getButtonHeight(),
+				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
 		scrollBox.addChild(ivTyp);
 
 		secondTab = ivTyp.getMaxX() + (margin * 3);
@@ -240,8 +240,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniFoundLabel()
 	{
-		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UiSizes.getButtonHeight(), width - secondTab - this.getRightWidth() - margin,
-				UiSizes.getButtonHeight(), "CacheNameLabel");
+		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UI_Size_Base.that.getButtonHeight(), width - secondTab - this.getRightWidth()
+				- margin, UI_Size_Base.that.getButtonHeight(), "CacheNameLabel");
 		tvFounds.setFont(Fonts.getBig());
 		scrollBox.addChild(tvFounds);
 	}
@@ -253,13 +253,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		LabelWidth = Math.max(Fonts.Measure(Translation.Get("date")).width, Fonts.Measure(Translation.Get("time")).width);
 		LabelWidth *= 1.3;// use Big Font
 
-		lblDate = new Label(secondTab, tvFounds.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(),
-				"");
+		lblDate = new Label(secondTab, tvFounds.getY() - UI_Size_Base.that.getButtonHeight() - (margin * 3), LabelWidth,
+				UI_Size_Base.that.getButtonHeight(), "");
 		lblDate.setFont(Fonts.getBig());
 		lblDate.setText(Translation.Get("date") + ":");
 		scrollBox.addChild(lblDate);
 		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 
 		tvDate = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvDate);
@@ -268,12 +268,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private void iniTime()
 	{
 
-		lblTime = new Label(secondTab, lblDate.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(), "");
+		lblTime = new Label(secondTab, lblDate.getY() - UI_Size_Base.that.getButtonHeight() - (margin * 3), LabelWidth,
+				UI_Size_Base.that.getButtonHeight(), "");
 		lblTime.setFont(Fonts.getBig());
 		lblTime.setText(Translation.Get("time") + ":");
 		scrollBox.addChild(lblTime);
 		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 
 		tvTime = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvTime);
@@ -284,7 +285,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 		if (!Config.settings.GcVotePassword.getEncryptedValue().equalsIgnoreCase(""))
 		{
-			float itemHeight = UiSizes.getButtonHeight() * 1.1f;
+			float itemHeight = UI_Size_Base.that.getButtonHeight() * 1.1f;
 
 			FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCache.Stars.toArray(),
 					FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
@@ -300,13 +301,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		CB_RectF rec;
 		if (GcVote != null)
 		{
-			rec = new CB_RectF(this.getLeftWidth(), GcVote.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-					- this.getRightWidth(), UiSizes.getButtonHeight());
+			rec = new CB_RectF(this.getLeftWidth(), GcVote.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+					- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		}
 		else
 		{
-			rec = new CB_RectF(this.getLeftWidth(), lblTime.getY() - UiSizes.getButtonHeight() - margin, width - this.getLeftWidth()
-					- this.getRightWidth(), UiSizes.getButtonHeight());
+			rec = new CB_RectF(this.getLeftWidth(), lblTime.getY() - UI_Size_Base.that.getButtonHeight() - margin, width
+					- this.getLeftWidth() - this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		}
 
 		etComment = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "DescTextField");
@@ -316,7 +317,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
-		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
+		descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
 		etComment.setHeight(descriptionHeight);
 		if (GcVote != null)
 		{
@@ -391,7 +392,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 
-		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
+		descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
 
 		etComment.setHeight(descriptionHeight);
 

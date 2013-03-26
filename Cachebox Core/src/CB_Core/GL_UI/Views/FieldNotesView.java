@@ -32,7 +32,7 @@ import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
@@ -58,7 +58,7 @@ public class FieldNotesView extends V_ListView
 	{
 		super(rec, Name);
 		that = this;
-		ItemRec = new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() * 1.1f);
+		ItemRec = new CB_RectF(0, 0, this.width, UI_Size_Base.that.getButtonHeight() * 1.1f);
 
 		setBackground(SpriteCache.ListBack);
 
@@ -154,8 +154,8 @@ public class FieldNotesView extends V_ListView
 
 		private float MeasureItemHeight(FieldNoteEntry fne)
 		{
-			float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
-			float cacheIfoHeight = (UiSizes.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Measure("T").height;
+			float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.margin);
+			float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Measure("T").height;
 			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic()
 					- ListViewItemBackground.getRightWidthStatic() - (Dialog.margin * 2);
 

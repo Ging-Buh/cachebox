@@ -15,7 +15,7 @@ import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -34,7 +34,7 @@ public class CreditsView extends CB_View_Base
 		super(rec, Name);
 		this.setBackground(SpriteCache.AboutBack);
 
-		ref = UiSizes.getWindowHeight() / 13;
+		ref = UI_Size_Base.that.getWindowHeight() / 13;
 		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 

@@ -18,7 +18,7 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -55,7 +55,7 @@ public class RouteDialog extends ButtonDialog
 		layout.setX(0);
 		// layout.setBackground(new ColorDrawable(Color.GREEN));
 
-		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UiSizes.getButtonHeight() * 2);
+		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
 
 		btMotoWay = new ImageMultiToggleButton(MTBRec, "btMotoWay");
 		btCycleWay = new ImageMultiToggleButton(MTBRec, "btCycleWay");
@@ -69,7 +69,7 @@ public class RouteDialog extends ButtonDialog
 		btCycleWay.setX(btMotoWay.getMaxX());
 		btFootWay.setX(btCycleWay.getMaxX());
 
-		Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight() * 2), "");
+		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
 		box.addChild(btMotoWay);
 		box.addChild(btCycleWay);
@@ -81,7 +81,7 @@ public class RouteDialog extends ButtonDialog
 		MultiToggleButton.initialOn_Off_ToggleStates(btCycleWay, "", "");
 		MultiToggleButton.initialOn_Off_ToggleStates(btFootWay, "", "");
 
-		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight()), "");
+		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
 		chkTmc = new chkBox("TMC");
 		box2.addChild(chkTmc);
 

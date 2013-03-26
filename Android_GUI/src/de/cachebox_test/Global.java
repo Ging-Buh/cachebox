@@ -7,7 +7,7 @@ import java.util.TimeZone;
 
 import CB_Core.Config;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.JokerList;
 import CB_Core.Types.MoveableList;
 import android.content.Context;
@@ -303,7 +303,7 @@ public class Global
 			// calc sizes
 
 			measurePaint = new Paint();
-			measurePaint.setTextSize(UiSizes.getScaledFontSize());
+			measurePaint.setTextSize(UI_Size_Base.that.getScaledFontSize());
 
 			ListBackground = new Paint();
 			Night.ListBackground_second = new Paint();

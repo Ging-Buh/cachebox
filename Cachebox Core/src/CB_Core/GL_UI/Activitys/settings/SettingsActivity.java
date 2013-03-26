@@ -45,7 +45,7 @@ import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListGetApiButton;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
@@ -98,10 +98,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		this.setLongClickable(true);
 		Config.settings.SaveToLastValue();
 		ButtonRec = new CB_RectF(this.getLeftWidth(), 0, this.width - this.drawableBackground.getLeftWidth()
-				- this.drawableBackground.getRightWidth(), UiSizes.getButtonHeight());
+				- this.drawableBackground.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 
 		itemRec = new CB_RectF(this.getLeftWidth(), 0, ButtonRec.getWidth() - this.getLeftWidth() - this.getRightWidth(),
-				UiSizes.getButtonHeight());
+				UI_Size_Base.that.getButtonHeight());
 
 		createButtons();
 		fillContent();
@@ -109,11 +109,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	private void createButtons()
 	{
-		float btnW = (innerWidth - UiSizes.getButtonWidth()) / 2;
+		float btnW = (innerWidth - UI_Size_Base.that.getButtonWidth()) / 2;
 
-		btnOk = new Button(this.getLeftWidth(), this.getBottomHeight(), btnW, UiSizes.getButtonHeight(), "OK Button");
-		btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UiSizes.getButtonWidth(), UiSizes.getButtonHeight(), "Menu Button");
-		btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UiSizes.getButtonHeight(), "Cancel Button");
+		btnOk = new Button(this.getLeftWidth(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
+		btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(),
+				UI_Size_Base.that.getButtonHeight(), "Menu Button");
+		btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
 		// Translations
 		btnOk.setText(Translation.Get("save"));
@@ -936,10 +937,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						String info = "";
 
 						info += "Density= " + String.valueOf(GL_UISizes.DPI) + GlobalCore.br;
-						info += "Height= " + String.valueOf(UiSizes.getWindowHeight()) + GlobalCore.br;
-						info += "Width= " + String.valueOf(UiSizes.getWindowWidth()) + GlobalCore.br;
-						info += "Scale= " + String.valueOf(UiSizes.getScale()) + GlobalCore.br;
-						info += "FontSize= " + String.valueOf(UiSizes.getScaledFontSize()) + GlobalCore.br;
+						info += "Height= " + String.valueOf(UI_Size_Base.that.getWindowHeight()) + GlobalCore.br;
+						info += "Width= " + String.valueOf(UI_Size_Base.that.getWindowWidth()) + GlobalCore.br;
+						info += "Scale= " + String.valueOf(UI_Size_Base.that.getScale()) + GlobalCore.br;
+						info += "FontSize= " + String.valueOf(UI_Size_Base.that.getScaledFontSize()) + GlobalCore.br;
 						info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
 						info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime)
 								+ GlobalCore.br;

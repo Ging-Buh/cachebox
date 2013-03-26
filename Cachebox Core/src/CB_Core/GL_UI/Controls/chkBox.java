@@ -3,7 +3,7 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -17,7 +17,7 @@ public class chkBox extends Button
 
 	public chkBox(String name)
 	{
-		super(new CB_RectF(UiSizes.getChkBoxSize()), name);
+		super(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name);
 		this.setClickable(true);
 	}
 

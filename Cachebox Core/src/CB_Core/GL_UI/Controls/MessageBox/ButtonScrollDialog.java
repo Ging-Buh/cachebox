@@ -17,7 +17,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -79,8 +79,8 @@ public class ButtonScrollDialog extends Dialog
 		// die ScrollBox erhält den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
 		scrollBox.setBackground(this.getBackground());
 
-		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
-				UiSizes.getButtonHeight());
+		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(),
+				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		if (icon != MessageBoxIcon.None && icon != null)
 		{
@@ -90,7 +90,7 @@ public class ButtonScrollDialog extends Dialog
 		}
 
 		label = new Label(contentSize.getBounds(), "MsgBoxLabel");
-		label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getButtonHeight());
+		label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
 		label.setX(imageRec.getMaxX() + 5);
 		label.setY(-margin);
 		label.setWrappedText(msg);
@@ -186,38 +186,39 @@ public class ButtonScrollDialog extends Dialog
 
 		float buttonY = margin;
 
-		float buttonX_R = width - UiSizes.getButtonWidthWide() - margin;
+		float buttonX_R = width - UI_Size_Base.that.getButtonWidthWide() - margin;
 		float buttonX_L = margin;
-		float buttonX_C = (width - UiSizes.getButtonWidthWide()) / 2;
+		float buttonX_C = (width - UI_Size_Base.that.getButtonWidthWide()) / 2;
 
 		switch (anzahl)
 		{
 		case 1:
-			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UI_Size_Base.that.getButtonWidthWide(),
+					UI_Size_Base.that.getButtonHeight()), "positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
 			addFooterChild(button1);
 			break;
 		case 2:
-			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UI_Size_Base.that.getButtonWidthWide(),
+					UI_Size_Base.that.getButtonHeight()), "positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
 			addFooterChild(button1);
-			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"negativeButton");
+			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UI_Size_Base.that.getButtonWidthWide(),
+					UI_Size_Base.that.getButtonHeight()), "negativeButton");
 			button3.setOnClickListener(negativeButtonClickListener);
 			addFooterChild(button3);
 			break;
 		case 3:
-			button1 = new Button(new CB_RectF(buttonX_L, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button(new CB_RectF(buttonX_L, buttonY, UI_Size_Base.that.getButtonWidthWide(),
+					UI_Size_Base.that.getButtonHeight()), "positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
 			addFooterChild(button1);
-			button2 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"negativeButton");
+			button2 = new Button(new CB_RectF(buttonX_C, buttonY, UI_Size_Base.that.getButtonWidthWide(),
+					UI_Size_Base.that.getButtonHeight()), "negativeButton");
 			button2.setOnClickListener(neutralButtonClickListener);
 			addFooterChild(button2);
-			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), "neutralButton");
+			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UI_Size_Base.that.getButtonWidthWide(),
+					UI_Size_Base.that.getButtonHeight()), "neutralButton");
 			button3.setOnClickListener(negativeButtonClickListener);
 			addFooterChild(button3);
 			break;
@@ -343,16 +344,16 @@ public class ButtonScrollDialog extends Dialog
 
 	protected static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon)
 	{
-		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
+		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
 
-		if (Width * 1.2 < UiSizes.getWindowWidth()) Width *= 1.2f;
+		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
 
-		float MsgWidth = (Width * 0.95f) - 5 - UiSizes.getButtonHeight();
+		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
 
 		TextBounds bounds = Fonts.MeasureWrapped(Text, MsgWidth);
 		float MeasuredTextHeight = bounds.height + (margin * 2);
 
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UiSizes.getButtonHeight()) : (int) MeasuredTextHeight);
+		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UI_Size_Base.that.getButtonHeight()) : (int) MeasuredTextHeight);
 
 		if (hasTitle)
 		{
@@ -363,7 +364,7 @@ public class ButtonScrollDialog extends Dialog
 		Height += calcFooterHeight(hasButtons);
 		Height += calcHeaderHeight();
 
-		Height = (int) Math.max(Height, UiSizes.getButtonHeight() * 2.5f);
+		Height = (int) Math.max(Height, UI_Size_Base.that.getButtonHeight() * 2.5f);
 
 		Size ret = new Size((int) Width, Height);
 		return ret;

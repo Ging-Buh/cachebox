@@ -4,7 +4,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.Point;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -29,7 +29,7 @@ public class SelectionMarker extends CB_View_Base
 
 		super(0, 0, 10, 10, "");
 
-		float Height = UiSizes.getButtonHeight();
+		float Height = UI_Size_Base.that.getButtonHeight();
 
 		this.setSize(Height, Height);
 

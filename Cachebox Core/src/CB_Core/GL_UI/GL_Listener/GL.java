@@ -42,7 +42,7 @@ import CB_Core.Map.MapTileLoader;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -79,13 +79,16 @@ public class GL implements ApplicationListener
 	private static long timerValue;
 
 	// Private Static Member
-	private static AtomicBoolean started = new AtomicBoolean(false);
-	private static boolean misTouchDown = false;
+	public static AtomicBoolean started = new AtomicBoolean(false);
+	public static boolean misTouchDown = false;
 
 	// private Member
-	private boolean touchDraggedActive = false, ToastIsShown = false, stopRender = false, darknesAnimationRuns = false,
-			MarkerIsShown = false;
-	private int FpsInfoPos = 0;
+	private boolean touchDraggedActive = false;
+	protected boolean ToastIsShown = false;
+	protected boolean stopRender = false;
+	private boolean darknesAnimationRuns = false;
+	protected boolean MarkerIsShown = false;
+	protected int FpsInfoPos = 0;
 	private float darknesAlpha = 0f;
 	private long mLongClickTime = 0, mDoubleClickTime = 500, lastClickTime = 0;
 
@@ -97,7 +100,7 @@ public class GL implements ApplicationListener
 	 */
 	protected static HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
 	private Point lastClickPoint = null;
-	private ParentInfo prjMatrix;
+	protected ParentInfo prjMatrix;
 	private CB_View_Base actActivity;
 	private Dialog actDialog;
 	private ArrayList<Dialog> dialogHistory = new ArrayList<Dialog>();
@@ -105,15 +108,16 @@ public class GL implements ApplicationListener
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
 	private Stage mStage;
 	private Timer longClickTimer;
-	private Sprite FpsInfoSprite, mDarknesSprite;
+	protected Sprite FpsInfoSprite;
+	private Sprite mDarknesSprite;
 	private Pixmap mDarknesPixmap;
 	private Texture mDarknesTexture;
 	protected EditWrapedTextField keyboardFocus;
 
-	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
-	private static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
+	protected ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
+	public static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
 
-	private static boolean ifAllInitial = false;
+	public static boolean ifAllInitial = false;
 
 	public static void setIsInitial()
 	{
@@ -133,11 +137,11 @@ public class GL implements ApplicationListener
 	/**
 	 * Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	 */
-	private SortedMap<Integer, TouchDownPointer> touchDownPos = Collections
+	protected SortedMap<Integer, TouchDownPointer> touchDownPos = Collections
 			.synchronizedSortedMap((new TreeMap<Integer, TouchDownPointer>()));
 
 	// private Listner
-	private renderStartet renderStartetListner = null;
+	protected renderStartet renderStartetListner = null;
 
 	// Protected Member
 	protected MainViewBase child;
@@ -145,7 +149,7 @@ public class GL implements ApplicationListener
 	protected SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
 	protected boolean DialogIsShown = false, ActivityIsShown = false;
 	protected int width = 0, height = 0;
-	private boolean debugWriteSpriteCount = false;
+	protected boolean debugWriteSpriteCount = false;
 
 	/**
 	 * Constructor
@@ -200,9 +204,9 @@ public class GL implements ApplicationListener
 		renderOnce("runIfInitial called");
 	}
 
-	private boolean ShaderSetted = false;
+	protected boolean ShaderSetted = false;
 
-	private void setShader()
+	protected void setShader()
 	{
 		if (Gdx.graphics.isGL20Available()) batch.setShader(SpriteBatch.createDefaultShader());
 		ShaderSetted = true;
@@ -380,9 +384,9 @@ public class GL implements ApplicationListener
 
 	}
 
-	int debugSpritebatchMaxCount = 0;
-	private long lastRenderBegin = 0;
-	private long renderTime = 0;
+	protected int debugSpritebatchMaxCount = 0;
+	protected long lastRenderBegin = 0;
+	protected long renderTime = 0;
 
 	@Override
 	public void resize(int Width, int Height)
@@ -766,7 +770,7 @@ public class GL implements ApplicationListener
 		mDarknesSprite = null;
 	}
 
-	private void drawDarknessSprite()
+	protected void drawDarknessSprite()
 	{
 		if (mDarknesSprite == null)
 		{
@@ -844,7 +848,7 @@ public class GL implements ApplicationListener
 		initialMarkerOverlay();
 	}
 
-	private void initialMarkerOverlay()
+	protected void initialMarkerOverlay()
 	{
 		mMarkerOverlay = new Box(new CB_RectF(0, 0, width, height), "MarkerOverlay");
 		selectionMarkerCenter = new SelectionMarker(SelectionMarker.Type.Center);
@@ -1002,9 +1006,9 @@ public class GL implements ApplicationListener
 		return (int) Math.round(Math.sqrt(Math.pow(x1 - x1, 2) + Math.pow(y1 - y2, 2)));
 	}
 
-	private class TouchDownPointer
+	public class TouchDownPointer
 	{
-		private Point point;
+		public Point point;
 		private int pointer;
 		private GL_View_Base view;
 		private KineticPan kineticPan;
@@ -1519,7 +1523,7 @@ public class GL implements ApplicationListener
 	{
 		if (mStage == null)
 		{// initial a virtual stage
-			mStage = new Stage(UiSizes.getWindowWidth(), UiSizes.getWindowHeight(), false);
+			mStage = new Stage(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), false);
 		}
 	}
 

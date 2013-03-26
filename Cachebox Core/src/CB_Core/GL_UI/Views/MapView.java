@@ -43,7 +43,7 @@ import CB_Core.Map.TileGL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -900,7 +900,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				int radius = (int) (pixelsPerMeter * Locator.getCoordinate().getAccuracy());
 				// Logger.LogCat("Accuracy radius " + radius);
 				// Logger.LogCat("pixelsPerMeter " + pixelsPerMeter);
-				if (radius > 0 && radius < UiSizes.getSmallestWidth())
+				if (radius > 0 && radius < UI_Size_Base.that.getSmallestWidth())
 				{
 
 					try
@@ -1126,7 +1126,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			{
 				LineSprite = SpriteCache.Arrows.get(13);
 				PointSprite = SpriteCache.Arrows.get(14);
-				scale = 0.8f * UiSizes.getScale();
+				scale = 0.8f * UI_Size_Base.that.getScale();
 			}
 
 			LineSprite.setColor(Color.RED);

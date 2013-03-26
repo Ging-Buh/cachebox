@@ -245,7 +245,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		{
 			if (solver == null) return null;
 			SolverZeile solverZeile = solver.get(position);
-			SolverViewItem v = new SolverViewItem(UiSizes.getCacheListItemRec().asFloat(), position, solverZeile);
+			SolverViewItem v = new SolverViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, solverZeile);
 			v.setClickable(true);
 			v.setOnClickListener(onItemClickListner);
 			v.setOnLongClickListener(onItemLongClickListner);
@@ -261,7 +261,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			// SolverZeile solverZeile = solver.get(position);
 			// if (solverZeile.Solution.length() == 0) return UiSizes.getCacheListItemRec().getHeight();
 			// else
-			return UiSizes.getCacheListItemRec().getHeight();
+			return UiSizes.that.getCacheListItemRec().getHeight();
 		}
 
 	}

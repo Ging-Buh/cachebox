@@ -16,7 +16,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
@@ -49,7 +49,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 		this.addChild(progressMessageTextView);
 
 		CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width,
-				UiSizes.getButtonHeight() * 0.75f);
+				UI_Size_Base.that.getButtonHeight() * 0.75f);
 
 		progressBar = new ProgressBar(rec, "");
 		progressBar.setProgress(0);

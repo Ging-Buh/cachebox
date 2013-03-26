@@ -302,7 +302,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 				if (!cache.isSearchVisible()) return null;
 
-				CacheListViewItem v = new CacheListViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache);
+				CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
 				v.setClickable(true);
 				v.setOnClickListener(onItemClickListner);
 				v.setOnLongClickListener(onItemLongClickListner);
@@ -325,7 +325,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (!cache.isSearchVisible()) return 0;
 
 				// alle Items haben die gleiche Größe (Höhe)
-				return UiSizes.getCacheListItemRec().getHeight();
+				return UiSizes.that.getCacheListItemRec().getHeight();
 			}
 
 		}

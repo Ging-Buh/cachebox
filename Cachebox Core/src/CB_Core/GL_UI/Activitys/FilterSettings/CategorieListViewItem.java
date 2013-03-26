@@ -9,7 +9,7 @@ import CB_Core.GL_UI.Activitys.FilterSettings.CategorieListView.CategorieEntry;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.GpxFilename;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -151,13 +151,13 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 			EntryName = new BitmapFontCache(Fonts.getNormal());
 			EntryName.setColor(Fonts.getFontColor());
-			EntryName.setMultiLineText(Name, left + UiSizes.getMargin(), top);
+			EntryName.setMultiLineText(Name, left + UI_Size_Base.that.getMargin(), top);
 
 			top = margin + margin + Fonts.MeasureSmall(Count).height;
 
 			EntryDate = new BitmapFontCache(Fonts.getSmall());
 			EntryDate.setColor(Fonts.getFontColor());
-			EntryDate.setMultiLineText(Date, left + UiSizes.getMargin(), top);
+			EntryDate.setMultiLineText(Date, left + UI_Size_Base.that.getMargin(), top);
 
 			float measure = Fonts.Measure(Count).width;
 			EntryCount = new BitmapFontCache(Fonts.getSmall());
@@ -221,7 +221,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 	private void drawPin(SpriteBatch batch)
 	{
-		margin = UiSizes.getMargin();
+		margin = UI_Size_Base.that.getMargin();
 		float iconHeight = this.height * 0.6f;
 		float iconWidth = iconHeight;
 
@@ -230,7 +230,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 			if (sPinOn == null)
 			{
 				sPinOn = SpriteCache.getThemedSprite("pin-icon");
-				sPinOn.setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
+				sPinOn.setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			}
 
 			sPinOn.draw(batch);
@@ -240,13 +240,13 @@ public class CategorieListViewItem extends ListViewItemBackground
 			if (sPinOff == null)
 			{
 				sPinOff = SpriteCache.getThemedSprite("pin-icon-disable");
-				sPinOff.setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
+				sPinOff.setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			}
 			sPinOff.draw(batch);
 
 		}
 
-		left += iconWidth + UiSizes.getMargin();
+		left += iconWidth + UI_Size_Base.that.getMargin();
 
 	}
 

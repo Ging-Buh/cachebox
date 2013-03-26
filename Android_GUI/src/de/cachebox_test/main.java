@@ -83,6 +83,7 @@ import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase;
@@ -362,8 +363,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
 		savedInstanceState.putString("WorkPath", Config.WorkPath);
 
-		savedInstanceState.putInt("WindowWidth", UiSizes.ui.Window.width);
-		savedInstanceState.putInt("WindowHeight", UiSizes.ui.Window.height);
+		savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.ui.Window.width);
+		savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
 
 		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().GcCode);
 		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint",
@@ -420,7 +421,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
 			ui.isLandscape = false;
 
-			UiSizes.initial(ui);
+			new UiSizes();
+
+			UI_Size_Base.that.initial(ui);
 
 			Global.Paints.init(this);
 			Global.InitIcons(this);
@@ -507,7 +510,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		glListener = new Tab_GL_Listner(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
+		glListener = new Tab_GL_Listner(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
 
 		int Time = Config.settings.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
@@ -560,7 +563,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		downSlider.isInitial = false;
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes.that
 				.getQuickButtonListHeight() : 0;
 
 		setQuickButtonHeight(sollHeight);
@@ -1136,7 +1139,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes.that
 				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;

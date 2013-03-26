@@ -14,6 +14,7 @@ import CB_Core.DB.Database.DatabaseType;
 import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase;
@@ -745,7 +746,9 @@ public class splash extends Activity
 
 		new Translation(Config.WorkPath);
 
-		UiSizes.initial(ui);
+		new UiSizes();
+		UI_Size_Base.that.initial(ui);
+
 		Global.Paints.init(this);
 		Global.InitIcons(this);
 

@@ -11,7 +11,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -282,8 +282,8 @@ public abstract class EditTextFieldBase extends CB_View_Base
 		CB_RectF world = getWorldRec();
 
 		// not enough place on Top?
-		float windowH = UiSizes.getWindowHeight();
-		float windowW = UiSizes.getWindowWidth();
+		float windowH = UI_Size_Base.that.getWindowHeight();
+		float windowW = UI_Size_Base.that.getWindowWidth();
 		float worldY = world.getY();
 
 		if (popUp.getHeight() + worldY > windowH * 0.8f)

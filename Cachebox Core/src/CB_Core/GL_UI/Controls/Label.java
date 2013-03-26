@@ -20,7 +20,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -73,7 +73,7 @@ public class Label extends CB_View_Base
 	public Label(String name)
 	{
 
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), name);
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), name);
 
 	}
 

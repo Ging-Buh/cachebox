@@ -13,7 +13,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.Input.Keys;
@@ -59,7 +59,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		Label label = new Label("MsgBoxLabel");
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
 		msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
 
 		msgBox.setMargins(0, margin);
@@ -109,7 +109,7 @@ public class NumerikInputBox extends CB_View_Base
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -179,7 +179,7 @@ public class NumerikInputBox extends CB_View_Base
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 

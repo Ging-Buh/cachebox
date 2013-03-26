@@ -18,7 +18,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Settings.SettingBool;
 import CB_Core.TranslationEngine.Translation;
 
@@ -140,15 +140,15 @@ public class GL_MsgBox extends Dialog
 
 		SizeF contentSize = msgBox.getContentSize();
 
-		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
-				UiSizes.getButtonHeight());
+		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(),
+				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		Image iconImage = new Image(imageRec, "MsgBoxIcon");
 		if (icon != MessageBoxIcon.None) iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
 		msgBox.addChild(iconImage);
 
 		msgBox.label = new Label(contentSize.getBounds(), "MsgBoxLabel");
-		msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getButtonHeight());
+		msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
 		msgBox.label.setX(imageRec.getMaxX() + 5);
 		msgBox.label.setY(0);
 		msgBox.label.setWrappedText(msg);
@@ -217,16 +217,16 @@ public class GL_MsgBox extends Dialog
 
 	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember)
 	{
-		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
+		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
 
-		if (Width * 1.2 < UiSizes.getWindowWidth()) Width *= 1.2f;
+		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
 
-		float MsgWidth = (Width * 0.95f) - 5 - UiSizes.getButtonHeight();
+		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
 
 		TextBounds bounds = Fonts.MeasureWrapped(Text, MsgWidth);
 		float MeasuredTextHeight = bounds.height + (margin * 2);
 
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UiSizes.getButtonHeight()) : (int) MeasuredTextHeight);
+		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UI_Size_Base.that.getButtonHeight()) : (int) MeasuredTextHeight);
 
 		if (hasTitle)
 		{
@@ -235,14 +235,14 @@ public class GL_MsgBox extends Dialog
 			Height += margin * 2;
 		}
 		Height += calcFooterHeight(hasButtons);
-		if (hasRemember) Height += UiSizes.getChkBoxSize().height;
+		if (hasRemember) Height += UI_Size_Base.that.getChkBoxSize().height;
 		Height += calcHeaderHeight();
 
 		// min Height festlegen
-		Height = (int) Math.max(Height, UiSizes.getButtonHeight() * 2.5f);
+		Height = (int) Math.max(Height, UI_Size_Base.that.getButtonHeight() * 2.5f);
 
 		// max Height festlegen
-		Height = (int) Math.min(Height, UiSizes.getWindowHeight() * 0.95f);
+		Height = (int) Math.min(Height, UI_Size_Base.that.getWindowHeight() * 0.95f);
 
 		Size ret = new Size((int) Width, Height);
 		return ret;

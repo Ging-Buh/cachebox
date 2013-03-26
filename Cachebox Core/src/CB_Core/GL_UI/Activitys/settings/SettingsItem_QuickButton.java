@@ -22,6 +22,7 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.MoveableList;
@@ -103,7 +104,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 
 				QuickActions type = AllActionList.get(selected);
 
-				float itemHeight = UiSizes.getQuickButtonListHeight() * 0.93f;
+				float itemHeight = UiSizes.that.getQuickButtonListHeight() * 0.93f;
 
 				QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, itemHeight, itemHeight), tmpQuickList.size(), QuickActions
 						.getActionEnumById(type.ordinal()), QuickActions.getName(type.ordinal()), type);
@@ -338,7 +339,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 		@Override
 		public float getItemSize(int position)
 		{
-			return UiSizes.getButtonHeight();
+			return UI_Size_Base.that.getButtonHeight();
 		}
 
 		@Override

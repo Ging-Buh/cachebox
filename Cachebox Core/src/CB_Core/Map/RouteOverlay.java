@@ -23,7 +23,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.PolylineReduction;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
@@ -520,7 +520,7 @@ public class RouteOverlay
 				float overlap = rt.overlap;
 				ArrowSprite.setColor(rt.mColor);
 				PointSprite.setColor(rt.mColor);
-				float scale = UiSizes.getScale();
+				float scale = UI_Size_Base.that.getScale();
 
 				for (int ii = 0; ii < rt.Points.size() - 1; ii++)
 				{

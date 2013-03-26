@@ -62,7 +62,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		// its right size.
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		cacheInfo.setHeight(UiSizes.getCacheInfoHeight());
+		cacheInfo.setHeight(UiSizes.that.getCacheInfoHeight());
 
 	}
 

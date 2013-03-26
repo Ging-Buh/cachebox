@@ -7,7 +7,7 @@ import java.util.Iterator;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.MoveableList;
 
 import com.badlogic.gdx.Gdx;
@@ -1046,7 +1046,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		// wenn eine View clickable ist dann muß für die Verschiebung (onTouchDragged) ein gewisser Toleranzbereich definiert werden,
 		// innerhalb dem erstmal kein onTouchDragged aufgerufen wird
-		if (isClickable()) return UiSizes.getClickToleranz();
+		if (isClickable()) return UI_Size_Base.that.getClickToleranz();
 		else
 			// Wenn aber eine View nicht clickable ist dann darf der onTouchDragged sofort aufgerufen werden
 			return 1;

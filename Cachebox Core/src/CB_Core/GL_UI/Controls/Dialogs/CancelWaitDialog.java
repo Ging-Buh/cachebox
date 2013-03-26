@@ -12,7 +12,7 @@ import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -84,7 +84,7 @@ public class CancelWaitDialog extends WaitDialog
 
 		SizeF contentSize = waitDialog.getContentSize();
 
-		CB_RectF imageRec = new CB_RectF(0, 0, UiSizes.getButtonHeight(), UiSizes.getButtonHeight());
+		CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		iconImage = new Image(imageRec, "MsgBoxIcon");
 		iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(51)));
@@ -92,7 +92,7 @@ public class CancelWaitDialog extends WaitDialog
 		waitDialog.addChild(iconImage);
 
 		waitDialog.label = new Label(contentSize.getBounds(), "MsgBoxLabel");
-		waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UiSizes.getButtonHeight());
+		waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
 		waitDialog.label.setX(imageRec.getMaxX() + margin);
 		waitDialog.label.setWrappedText(msg);
 

@@ -4,7 +4,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -68,10 +68,10 @@ public class GestureHelp extends CB_View_Base
 	@Override
 	public void setPos(float x, float y)
 	{
-		if (x + width > UiSizes.getWindowWidth())
+		if (x + width > UI_Size_Base.that.getWindowWidth())
 		{
 			UseLastBtnBackground = true;
-			x = UiSizes.getWindowWidth() - width;
+			x = UI_Size_Base.that.getWindowWidth() - width;
 		}
 
 		super.setPos(x, y);

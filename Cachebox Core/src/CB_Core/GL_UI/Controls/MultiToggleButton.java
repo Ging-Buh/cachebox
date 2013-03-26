@@ -22,7 +22,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -50,7 +50,7 @@ public class MultiToggleButton extends Button
 
 	public MultiToggleButton(String Name)
 	{
-		super(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight(), Name);
+		super(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), Name);
 	}
 
 	private States aktState;

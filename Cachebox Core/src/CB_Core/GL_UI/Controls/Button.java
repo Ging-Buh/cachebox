@@ -23,7 +23,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -58,13 +58,13 @@ public class Button extends CB_View_Base
 
 	public Button(GL_View_Base parent, String name)
 	{
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight()), parent, name);
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight()), parent, name);
 		this.setClickable(true);
 	}
 
 	public Button(String name)
 	{
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), name);
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), name);
 		this.setClickable(true);
 	}
 

@@ -24,7 +24,7 @@ import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
@@ -66,7 +66,7 @@ public class SearchOverPosition extends ActivityBase
 	{
 		super(ActivityRec(), "searchOverPosActivity");
 		that = this;
-		lineHeight = UiSizes.getButtonHeight();
+		lineHeight = UI_Size_Base.that.getButtonHeight();
 
 		createOkCancelBtn();
 		createBox();
@@ -81,8 +81,8 @@ public class SearchOverPosition extends ActivityBase
 
 	private void createOkCancelBtn()
 	{
-		bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
 		// Translations
 		bOK.setText(Translation.Get("import"));
@@ -133,7 +133,7 @@ public class SearchOverPosition extends ActivityBase
 	private void createTitleLine()
 	{
 
-		float lineHeight = UiSizes.getButtonHeight() * 0.75f;
+		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
 		gsLogo = new Image(width - this.getLeftWidth() - this.getRightWidth() - margin - lineHeight, this.height - this.getTopHeight()
 				- lineHeight - margin, lineHeight, lineHeight, "");
@@ -162,7 +162,7 @@ public class SearchOverPosition extends ActivityBase
 		lblRadius.setText(sRadius);
 		box.addChild(lblRadius);
 
-		CB_RectF rec = new CB_RectF(lblRadius.getMaxX() + margin, y, UiSizes.getButtonWidthWide(), lineHeight);
+		CB_RectF rec = new CB_RectF(lblRadius.getMaxX() + margin, y, UI_Size_Base.that.getButtonWidthWide(), lineHeight);
 		Radius = new EditWrapedTextField(this, rec, "");
 		box.addChild(Radius);
 
@@ -216,10 +216,10 @@ public class SearchOverPosition extends ActivityBase
 
 	private void createToggleButtonLine()
 	{
-		float y = lblExcludeFounds.getY() - margin - UiSizes.getButtonHeight();
+		float y = lblExcludeFounds.getY() - margin - UI_Size_Base.that.getButtonHeight();
 
-		tglBtnGPS = new MultiToggleButton(this.getLeftWidth(), y, innerWidth / 2, UiSizes.getButtonHeight(), "");
-		tglBtnMap = new MultiToggleButton(tglBtnGPS.getMaxX(), y, innerWidth / 2, UiSizes.getButtonHeight(), "");
+		tglBtnGPS = new MultiToggleButton(this.getLeftWidth(), y, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "");
+		tglBtnMap = new MultiToggleButton(tglBtnGPS.getMaxX(), y, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "");
 
 		tglBtnGPS.setFont(Fonts.getSmall());
 		tglBtnMap.setFont(Fonts.getSmall());

@@ -19,7 +19,7 @@ package de.cachebox_test.Views.Forms;
 import CB_Core.Config;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import android.app.Activity;
 import android.app.Dialog;
@@ -715,7 +715,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (UiSizes.getScaledFontSize_btn()));
+				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (UI_Size_Base.that.getScaledFontSize_btn()));
 			}
 			else
 			{
@@ -786,15 +786,16 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 			if (message != null)
 			{
 				((TextView) layout.findViewById(R.id.message)).setText(message);
-				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (UiSizes.getScaledFontSize_small()));
+				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (UI_Size_Base.that.getScaledFontSize_small()));
 
-				((TextView) layout.findViewById(R.id.message)).measure(UiSizes.getWindowWidth() - 100, UiSizes.getWindowHeight() - 100);
+				((TextView) layout.findViewById(R.id.message)).measure(UI_Size_Base.that.getWindowWidth() - 100,
+						UI_Size_Base.that.getWindowHeight() - 100);
 				int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
 				LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-				if (height > UiSizes.getWindowHeight() - (UiSizes.getButtonHeight() * 4))
+				if (height > UI_Size_Base.that.getWindowHeight() - (UI_Size_Base.that.getButtonHeight() * 4))
 				{
-					height = UiSizes.getWindowHeight() - (UiSizes.getButtonHeight() * 4);
+					height = UI_Size_Base.that.getWindowHeight() - (UI_Size_Base.that.getButtonHeight() * 4);
 					params.height = height;
 					((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
 				}

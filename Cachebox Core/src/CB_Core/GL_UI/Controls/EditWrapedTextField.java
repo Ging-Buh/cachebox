@@ -9,7 +9,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -124,7 +124,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	public EditWrapedTextField(String Name, TextFieldType type)
 	{
-		this(null, new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight()), Name);
+		this(null, new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight()), Name);
 		this.type = type;
 	}
 

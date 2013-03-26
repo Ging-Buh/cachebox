@@ -11,7 +11,7 @@ import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -333,7 +333,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public static float calcFooterHeight(boolean hasButtons)
 	{
-		return hasButtons ? UiSizes.getButtonHeight() + margin + margin : calcHeaderHeight();
+		return hasButtons ? UI_Size_Base.that.getButtonHeight() + margin + margin : calcHeaderHeight();
 	}
 
 	public void setWidth(float Width)

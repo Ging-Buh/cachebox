@@ -88,7 +88,8 @@ public class DesktopMain
 		// chek if tablet
 		GlobalCore.isTab = sw > 400 ? true : false;
 
-		UiSizes.initial(ui);
+		new UiSizes();
+		UiSizes.that.initial(ui);
 
 		initialLocatorBase();
 

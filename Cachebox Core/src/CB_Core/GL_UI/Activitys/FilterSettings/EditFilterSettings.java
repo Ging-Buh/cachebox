@@ -25,7 +25,7 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 public class EditFilterSettings extends ActivityBase
@@ -53,13 +53,14 @@ public class EditFilterSettings extends ActivityBase
 		super(rec, Name);
 		that = this;
 		ItemRec = new CB_RectF(this.getLeftWidth(), 0, this.width - this.getLeftWidth() - this.getRightWidth(),
-				UiSizes.getButtonHeight() * 1.1f);
+				UI_Size_Base.that.getButtonHeight() * 1.1f);
 
 		tmpFilterProps = GlobalCore.LastFilter;
 
 		float innerWidth = this.width - this.getLeftWidth();
 
-		Button bOK = new Button(this.getLeftWidth() / 2, this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
+		Button bOK = new Button(this.getLeftWidth() / 2, this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(),
+				"OK Button");
 
 		bOK.setOnClickListener(new OnClickListener()
 		{
@@ -97,7 +98,8 @@ public class EditFilterSettings extends ActivityBase
 
 		this.addChild(bOK);
 
-		Button bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		Button bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(),
+				"Cancel Button");
 
 		bCancel.setOnClickListener(new OnClickListener()
 		{
@@ -111,13 +113,13 @@ public class EditFilterSettings extends ActivityBase
 
 		this.addChild(bCancel);
 
-		float topButtonY = this.height - this.getLeftWidth() - UiSizes.getButtonHeight();
+		float topButtonY = this.height - this.getLeftWidth() - UI_Size_Base.that.getButtonHeight();
 
 		contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.width, topButtonY - bOK.getMaxY()), "contentBox");
 		contentBox.setBackground(SpriteCache.activityBackground);
 		this.addChild(contentBox);
 
-		CB_RectF MTBRec = new CB_RectF(this.getLeftWidth() / 2, topButtonY, innerWidth / 4, UiSizes.getButtonHeight());
+		CB_RectF MTBRec = new CB_RectF(this.getLeftWidth() / 2, topButtonY, innerWidth / 4, UI_Size_Base.that.getButtonHeight());
 
 		btPre = new MultiToggleButton(MTBRec, "btPre");
 		btSet = new MultiToggleButton(MTBRec, "btSet");
@@ -229,7 +231,7 @@ public class EditFilterSettings extends ActivityBase
 	private void initialPresets()
 	{
 		CB_RectF rec = new CB_RectF(this.getLeftWidth(), margin, width - this.getRightWidth() - this.getLeftWidth(),
-				UiSizes.getButtonHeight());
+				UI_Size_Base.that.getButtonHeight());
 		btnAddPreset = new Button(rec, "AddPresetButon");
 		btnAddPreset.setText(Translation.Get("AddOwnFilterPreset"));
 		btnAddPreset.setOnClickListener(new OnClickListener()
@@ -245,7 +247,7 @@ public class EditFilterSettings extends ActivityBase
 		contentBox.addChild(btnAddPreset);
 
 		CB_RectF preRec = new CB_RectF(ListViewRec);
-		preRec.setHeight(ListViewRec.getHeight() - UiSizes.getButtonHeight() - margin);
+		preRec.setHeight(ListViewRec.getHeight() - UI_Size_Base.that.getButtonHeight() - margin);
 		preRec.setY(btnAddPreset.getMaxY() + margin);
 
 		lvPre = new PresetListView(preRec);

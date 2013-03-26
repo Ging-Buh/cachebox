@@ -8,7 +8,7 @@ import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -339,7 +339,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		{
 			float iconHeight = this.halfHeight * 0.8f;
 			float iconWidth = iconHeight * 5;
-			mFilterSetEntry.getIcon().setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
+			mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			mFilterSetEntry.getIcon().draw(batch);
 			// top += UiSizes.getIconSize() / 1.5;
 		}
@@ -352,9 +352,9 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		{
 			float iconHeight = this.height * 0.8f;
 			float iconWidth = iconHeight;
-			mFilterSetEntry.getIcon().setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
+			mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			mFilterSetEntry.getIcon().draw(batch);
-			left += iconWidth + UiSizes.getMargin() + getLeftWidth();
+			left += iconWidth + UI_Size_Base.that.getMargin() + getLeftWidth();
 		}
 
 	}

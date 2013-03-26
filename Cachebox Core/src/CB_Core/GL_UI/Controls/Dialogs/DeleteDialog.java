@@ -21,7 +21,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -52,7 +52,7 @@ public class DeleteDialog extends ButtonDialog
 		layout.setX(0);
 		// layout.setBackground(new ColorDrawable(Color.GREEN));
 
-		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UiSizes.getButtonHeight() * 2);
+		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
 
 		btDelFilter = new ImageButton(MTBRec, "btSetGPS");
 		btDelArchived = new ImageButton(MTBRec, "btSelectWP");
@@ -66,7 +66,7 @@ public class DeleteDialog extends ButtonDialog
 		btDelArchived.setX(btDelFilter.getMaxX());
 		btDelFounds.setX(btDelArchived.getMaxX());
 
-		Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight() * 2), "");
+		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
 		box.addChild(btDelFilter);
 		box.addChild(btDelArchived);
@@ -74,7 +74,7 @@ public class DeleteDialog extends ButtonDialog
 
 		layout.addChild(box);
 
-		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight() * 2), "");
+		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
 		lblDelFilter = new Label(btDelFilter.ScaleCenter(0.8f), "lblSetGPS");
 		lblDelArchived = new Label(btDelArchived.ScaleCenter(0.8f), "lblSetGPS");

@@ -22,7 +22,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.utils.ColorDrawable;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -497,7 +497,7 @@ public class SpriteCache
 		synchronized (Arrows)
 		{
 
-			float scale = UiSizes.getScale();
+			float scale = UI_Size_Base.that.getScale();
 
 			Arrows.clear();
 			Arrows.add(getThemedSprite("arrow-Compass")); // 0

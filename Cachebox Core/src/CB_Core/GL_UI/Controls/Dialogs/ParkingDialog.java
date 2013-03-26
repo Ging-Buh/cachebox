@@ -16,7 +16,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Locator.Locator;
@@ -48,7 +48,7 @@ public class ParkingDialog extends ButtonDialog
 		layout.setX(0);
 		// layout.setBackground(new ColorDrawable(Color.GREEN));
 
-		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UiSizes.getButtonHeight() * 2);
+		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
 
 		btSetGPS = new ImageButton(MTBRec, "btSetGPS");
 		btSelectWP = new ImageButton(MTBRec, "btSelectWP");
@@ -62,7 +62,7 @@ public class ParkingDialog extends ButtonDialog
 		btSelectWP.setX(btSetGPS.getMaxX());
 		btDeleteP.setX(btSelectWP.getMaxX());
 
-		Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight() * 2), "");
+		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
 		box.addChild(btSetGPS);
 		box.addChild(btSelectWP);
@@ -70,7 +70,7 @@ public class ParkingDialog extends ButtonDialog
 
 		layout.addChild(box);
 
-		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight() * 2), "");
+		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
 		lblSetGPS = new Label(btSetGPS.ScaleCenter(0.8f), "lblSetGPS");
 		lblSelectWP = new Label(btSelectWP.ScaleCenter(0.8f), "lblSetGPS");

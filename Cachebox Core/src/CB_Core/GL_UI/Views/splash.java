@@ -23,7 +23,7 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.Logger;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
@@ -127,7 +127,7 @@ public class splash extends TabMainView
 	private void ini_Progressbar()
 	{
 
-		float ref = UiSizes.getWindowHeight() / 13;
+		float ref = UI_Size_Base.that.getWindowHeight() / 13;
 		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");

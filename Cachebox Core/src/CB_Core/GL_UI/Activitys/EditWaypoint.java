@@ -26,7 +26,7 @@ import CB_Core.GL_UI.Controls.SpinnerAdapter;
 import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -127,8 +127,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniCoordButton()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvCacheName.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvCacheName.getY() - UI_Size_Base.that.getButtonHeight(), width
+				- this.getLeftWidth() - this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		bCoord = new CoordinateButton(rec, "CoordButton", waypoint.Pos);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -146,7 +146,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniLabelTyp()
 	{
-		cbStartPointWidth = UiSizes.getButtonHeight() * 1.5f;
+		cbStartPointWidth = UI_Size_Base.that.getButtonHeight() * 1.5f;
 		tvTyp = new Label(this.getLeftWidth() + margin, bCoord.getY() - margin - MeasuredLabelHeight, width - this.getLeftWidth()
 				- this.getRightWidth() - margin - cbStartPointWidth, MeasuredLabelHeight, "TypeLabel");
 		tvTyp.setFont(Fonts.getBubbleNormal());
@@ -164,8 +164,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniTypeSpinner()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvTyp.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth() - cbStartPointWidth, UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvTyp.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+				- this.getRightWidth() - cbStartPointWidth, UI_Size_Base.that.getButtonHeight());
 		sType = new Spinner(rec, "CoordButton", getSpinerAdapter(), new selectionChangedListner()
 		{
 
@@ -201,8 +201,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		});
 
 		// CheckBox for the selection whether this WP is the startpoint of the cache
-		rec = new CB_RectF(sType.getRight() + cbStartPointWidth * 0.33333333f, tvTyp.getY() - UiSizes.getButtonHeight(),
-				cbStartPointWidth / 2, UiSizes.getButtonHeight());
+		rec = new CB_RectF(sType.getRight() + cbStartPointWidth * 0.33333333f, tvTyp.getY() - UI_Size_Base.that.getButtonHeight(),
+				cbStartPointWidth / 2, UI_Size_Base.that.getButtonHeight());
 		cbStartPoint = new chkBox(rec, "CheckBoxStartPoint");
 		cbStartPoint.setVisible(false);
 
@@ -298,8 +298,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniTitleTextField()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvTitle.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvTitle.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		etTitle = new EditWrapedTextField(this, rec, "TitleTextField");
 
 		String txt = (waypoint.Title == null) ? "" : waypoint.Title;
@@ -319,8 +319,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniTitleTextDesc()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvDescription.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvDescription.getY() - UI_Size_Base.that.getButtonHeight(), width
+				- this.getLeftWidth() - this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		etDescription = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "DescTextField");
 
 		String txt = (waypoint.Description == null) ? "" : waypoint.Description;
@@ -357,8 +357,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniTitleTextClue()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvClue.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), tvClue.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		etClue = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "ClueTextField");
 
 		String txt = (waypoint.Clue == null) ? "" : waypoint.Clue;
@@ -386,7 +386,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 3, UiSizes.getButtonHeight());
+				(this.width - this.getLeftWidth() - this.getRightWidth()) / 3, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 
 		btnRec.setX(bOK.getMaxX());
@@ -500,8 +500,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMeasuredHeight() + rand);
 		float clueHeight = Math.min(maxTextFieldHeight, etClue.getMeasuredHeight() + rand);
 
-		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
-		clueHeight = Math.max(clueHeight, UiSizes.getButtonHeight());
+		descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
+		clueHeight = Math.max(clueHeight, UI_Size_Base.that.getButtonHeight());
 
 		etDescription.setHeight(descriptionHeight);
 		etClue.setHeight(clueHeight);

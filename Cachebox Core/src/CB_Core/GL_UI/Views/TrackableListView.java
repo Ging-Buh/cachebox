@@ -18,6 +18,7 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.TbList;
@@ -150,7 +151,7 @@ public class TrackableListView extends CB_View_Base
 	private void Layout()
 	{
 		searchBox.setY(this.height - searchBox.getHeight());
-		listView.setHeight(this.height - searchBox.getHeight() - UiSizes.getMargin());
+		listView.setHeight(this.height - searchBox.getHeight() - UI_Size_Base.that.getMargin());
 		listView.notifyDataSetChanged();
 	}
 
@@ -185,7 +186,8 @@ public class TrackableListView extends CB_View_Base
 		@Override
 		public ListViewItemBase getView(final int position)
 		{
-			TrackableListViewItem v = new TrackableListViewItem(UiSizes.getCacheListItemRec().asFloat(), position, TB_List.get(position));
+			TrackableListViewItem v = new TrackableListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position,
+					TB_List.get(position));
 			v.setOnClickListener(new OnClickListener()
 			{
 				@Override
@@ -203,7 +205,7 @@ public class TrackableListView extends CB_View_Base
 		@Override
 		public float getItemSize(int position)
 		{
-			return UiSizes.getCacheListItemRec().getHeight();
+			return UiSizes.that.getCacheListItemRec().getHeight();
 		}
 
 	}

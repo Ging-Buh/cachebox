@@ -220,7 +220,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			{
 				if (position == 0)
 				{
-					WaypointViewItem v = new WaypointViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache, null);
+					WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, null);
 					v.setClickable(true);
 					v.setOnClickListener(onItemClickListner);
 					v.setOnLongClickListener(onItemLongClickListner);
@@ -229,7 +229,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				else
 				{
 					Waypoint waypoint = cache.waypoints.get(position - 1);
-					WaypointViewItem v = new WaypointViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache, waypoint);
+					WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, waypoint);
 					v.setClickable(true);
 					v.setOnClickListener(onItemClickListner);
 					v.setOnLongClickListener(onItemLongClickListner);
@@ -244,7 +244,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		public float getItemSize(int position)
 		{
 			// alle Items haben die gleiche Größe (Höhe)
-			return UiSizes.getCacheListItemRec().getHeight();
+			return UiSizes.that.getCacheListItemRec().getHeight();
 		}
 
 	}

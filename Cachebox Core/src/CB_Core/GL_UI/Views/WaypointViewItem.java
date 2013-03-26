@@ -105,7 +105,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 				return;
 			}
 
-			info = new extendedCacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
+			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 			info.setZeroPos();
 			info.setViewMode(ViewMode);
 
@@ -257,7 +257,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	{
 		if (mWaypoint != null)
 		{
-			float scaleFactor = width / UiSizes.getCacheListItemRec().getWidth();
+			float scaleFactor = width / UiSizes.that.getCacheListItemRec().getWidth();
 			float mLeft = 3 * scaleFactor;
 			float mTop = 3 * scaleFactor;
 			mMargin = mLeft;

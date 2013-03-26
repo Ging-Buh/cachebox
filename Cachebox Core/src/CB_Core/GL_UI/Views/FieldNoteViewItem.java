@@ -10,7 +10,7 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.FieldNoteEntry;
 
 import com.badlogic.gdx.graphics.Color;
@@ -41,7 +41,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		this.fieldnote = fieldnote;
 		mBackIsInitial = false;
 		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
-		headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
+		headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.margin);
 
 		iniImage();
 		iniFoundLabel();
@@ -54,8 +54,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniImage()
 	{
-		ivTyp = new Image(getLeftWidth(), this.height - (headHeight / 2) - (UiSizes.getButtonHeight() / 1.5f / 2),
-				UiSizes.getButtonHeight() / 1.5f, UiSizes.getButtonHeight() / 1.5f, "");
+		ivTyp = new Image(getLeftWidth(), this.height - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2),
+				UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
 		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(fieldnote.typeIcon)));
 		secondTab = ivTyp.getMaxX() + (Dialog.margin * 2);
@@ -95,8 +95,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniCacheTypeImage()
 	{
-		ivCacheType = new Image(getLeftWidth() + Dialog.margin, this.height - headHeight - (UiSizes.getButtonHeight()) - Dialog.margin,
-				UiSizes.getButtonHeight(), UiSizes.getButtonHeight(), "");
+		ivCacheType = new Image(getLeftWidth() + Dialog.margin, this.height - headHeight - (UI_Size_Base.that.getButtonHeight())
+				- Dialog.margin, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
 		this.addChild(ivCacheType);
 		ivCacheType.setDrawable(new SpriteDrawable(SpriteCache.BigIcons.get(fieldnote.cacheType)));
 		secondTab = ivTyp.getMaxX() + (Dialog.margin * 3);

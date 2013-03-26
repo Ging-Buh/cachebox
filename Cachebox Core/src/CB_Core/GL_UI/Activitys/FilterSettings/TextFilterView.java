@@ -24,7 +24,7 @@ import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 /**
@@ -41,10 +41,10 @@ public class TextFilterView extends CB_View_Base
 
 		that = this;
 
-		float margin = UiSizes.getMargin() * 2;
+		float margin = UI_Size_Base.that.getMargin() * 2;
 		float btnWidth = (this.width - (margin * 7)) / 3;
 
-		CB_RectF btnRrec = new CB_RectF(0, 0, btnWidth, UiSizes.getButtonHeight());
+		CB_RectF btnRrec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());
 
 		mTglBtnTitle = new MultiToggleButton(btnRrec, "mTglBtnTitle");
 		mTglBtnGc = new MultiToggleButton(btnRrec, "mTglBtnGc");

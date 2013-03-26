@@ -16,7 +16,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.Functions.Function;
 import CB_Core.Solver.Functions.Functions;
@@ -46,10 +46,10 @@ public class SelectSolverFunction extends ButtonDialog
 
 		// Grössen für die CategoryButtons und ItemButtons berechnen!
 		categoryBtnRec = new CB_RectF(this.getLeftWidth(), 0, this.width - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth()
-				- this.getLeftWidth() - this.getRightWidth(), UiSizes.getButtonHeight());
+				- this.getLeftWidth() - this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 
 		itemBtnRec = new CB_RectF(this.getLeftWidth(), 0, categoryBtnRec.getWidth() - this.getLeftWidth() - this.getRightWidth(),
-				UiSizes.getButtonHeight());
+				UI_Size_Base.that.getButtonHeight());
 
 		// Initialisiert die unteren Buttons für Ok/Cancel
 		iniOkCancel();
@@ -67,9 +67,9 @@ public class SelectSolverFunction extends ButtonDialog
 
 	public static CB_RectF ActivityRec()
 	{
-		float w = Math.min(UiSizes.getSmallestWidth(), UiSizes.getWindowHeight() * 0.66f);
+		float w = Math.min(UI_Size_Base.that.getSmallestWidth(), UI_Size_Base.that.getWindowHeight() * 0.66f);
 
-		return new CB_RectF(0, 0, w, (int) (UiSizes.getWindowHeight() * 0.95));
+		return new CB_RectF(0, 0, w, (int) (UI_Size_Base.that.getWindowHeight() * 0.95));
 	}
 
 	private void iniOkCancel()
@@ -173,7 +173,7 @@ public class SelectSolverFunction extends ButtonDialog
 	private void iniDescLabel()
 	{
 		// rechteck für Label erstellen
-		CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.width, UiSizes.getButtonHeight() * 1.5f);
+		CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.width, UI_Size_Base.that.getButtonHeight() * 1.5f);
 
 		desc = new Label(rec, "description");
 

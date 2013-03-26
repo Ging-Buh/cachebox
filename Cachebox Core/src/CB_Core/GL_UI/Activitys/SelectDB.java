@@ -28,6 +28,7 @@ import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Categories;
@@ -77,8 +78,8 @@ public class SelectDB extends ActivityBase
 			index++;
 		}
 
-		lvFiles = new V_ListView(new CB_RectF(this.getLeftWidth(), this.getBottomHeight() + UiSizes.getButtonHeight() * 2, width
-				- this.getLeftWidth() - this.getRightWidth(), height - (UiSizes.getButtonHeight() * 2) - this.getTopHeight()
+		lvFiles = new V_ListView(new CB_RectF(this.getLeftWidth(), this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, width
+				- this.getLeftWidth() - this.getRightWidth(), height - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight()
 				- this.getBottomHeight()), "DB File ListView");
 
 		lvAdapter = new CustomAdapter(files);
@@ -88,12 +89,14 @@ public class SelectDB extends ActivityBase
 
 		float btWidth = (width - this.getLeftWidth() - this.getRightWidth()) / 3;
 
-		bNew = new Button(new CB_RectF(this.getLeftWidth(), this.getBottomHeight(), btWidth, UiSizes.getButtonHeight()), "selectDB.bNew");
-		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UiSizes.getButtonHeight()), "selectDB.bSelect");
-		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UiSizes.getButtonHeight()),
+		bNew = new Button(new CB_RectF(this.getLeftWidth(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
+				"selectDB.bNew");
+		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
+				"selectDB.bSelect");
+		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
 				"selectDB.bCancel");
 		bAutostart = new Button(new CB_RectF(this.getLeftWidth(), bNew.getMaxY(), width - this.getLeftWidth() - this.getRightWidth(),
-				UiSizes.getButtonHeight()), "selectDB.bAutostart");
+				UI_Size_Base.that.getButtonHeight()), "selectDB.bAutostart");
 
 		this.addChild(bSelect);
 		this.addChild(bNew);
@@ -437,7 +440,7 @@ public class SelectDB extends ActivityBase
 		public CustomAdapter(FileList files)
 		{
 			this.files = files;
-			recItem = UiSizes.getCacheListItemRec().asFloat();
+			recItem = UiSizes.that.getCacheListItemRec().asFloat();
 			recItem.setHeight(recItem.getHeight() * 0.8f);
 			recItem.setWidth(width - getLeftWidth() - getRightWidth() - (margin * 1.5f));
 		}

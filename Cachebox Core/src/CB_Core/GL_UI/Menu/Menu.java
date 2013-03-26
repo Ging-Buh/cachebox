@@ -12,7 +12,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -70,10 +70,11 @@ public class Menu extends ButtonDialog
 		super(getMenuRec(), Name);
 		that = this;
 
-		if (ItemHeight == -1f) ItemHeight = UiSizes.getButtonHeight();
+		if (ItemHeight == -1f) ItemHeight = UI_Size_Base.that.getButtonHeight();
 
-		MENU_REC = new CB_RectF(new SizeF((GlobalCore.isTab ? UiSizes.getWindowHeight() : UiSizes.getWindowWidth()) * 0.83f, mHeaderHight
-				+ getFooterHeight() + (margin * 2)));
+		MENU_REC = new CB_RectF(new SizeF(
+				(GlobalCore.isTab ? UI_Size_Base.that.getWindowHeight() : UI_Size_Base.that.getWindowWidth()) * 0.83f, mHeaderHight
+						+ getFooterHeight() + (margin * 2)));
 
 		this.setRec(MENU_REC);
 
@@ -201,11 +202,11 @@ public class Menu extends ButtonDialog
 			higherValue += item.getHeight() + mListView.getDividerHeight();
 		}
 
-		higherValue = Math.min(higherValue, UiSizes.getWindowHeight() * 0.95f);
+		higherValue = Math.min(higherValue, UI_Size_Base.that.getWindowHeight() * 0.95f);
 
-		if (higherValue > UiSizes.getWindowHeight() * 0.95f)
+		if (higherValue > UI_Size_Base.that.getWindowHeight() * 0.95f)
 		{
-			higherValue = UiSizes.getWindowHeight() * 0.95f;
+			higherValue = UI_Size_Base.that.getWindowHeight() * 0.95f;
 		}
 
 		float MenuWidth = GL_UISizes.UI_Left.getWidth();

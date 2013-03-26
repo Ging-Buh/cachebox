@@ -192,7 +192,7 @@ public class CacheInfo extends CB_View_Base
 
 		this.removeChilds();
 
-		float scaleFactor = width / UiSizes.getCacheListItemRec().getWidth();
+		float scaleFactor = width / UiSizes.that.getCacheListItemRec().getWidth();
 		mMargin = 3 * scaleFactor;
 
 		float mLeft = mMargin;

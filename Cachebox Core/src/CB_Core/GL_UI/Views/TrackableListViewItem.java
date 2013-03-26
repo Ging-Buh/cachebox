@@ -4,7 +4,7 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.Trackable;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -24,8 +24,8 @@ public class TrackableListViewItem extends ListViewItemBackground
 		img.setImageURL(TB.getIconUrl());
 		this.addChild(img);
 
-		lblName = new Label(img.getMaxX() + UiSizes.getMargin(), img.getY(), this.width - img.getMaxX() - UiSizes.getMargin(),
-				img.getHeight(), "Label Name");
+		lblName = new Label(img.getMaxX() + UI_Size_Base.that.getMargin(), img.getY(), this.width - img.getMaxX()
+				- UI_Size_Base.that.getMargin(), img.getHeight(), "Label Name");
 		lblName.setWrappedText(TB.getName());
 		this.addChild(lblName);
 	}

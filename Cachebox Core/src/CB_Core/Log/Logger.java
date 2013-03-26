@@ -25,7 +25,7 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.devicesSizes;
 import CB_Core.TranslationEngine.Translation;
 
@@ -225,7 +225,7 @@ public class Logger
 		{
 			// schreibe UI Sizes als erstes in die dbug.txt
 			String br = GlobalCore.br;
-			devicesSizes ui = UiSizes.ui;
+			devicesSizes ui = UI_Size_Base.that.ui;
 
 			if (ui == null) return; // Bin noch nicht soweit!
 

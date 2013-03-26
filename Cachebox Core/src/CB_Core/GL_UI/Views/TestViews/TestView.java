@@ -11,7 +11,7 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.Trackable;
 
 import com.badlogic.gdx.Gdx;
@@ -41,8 +41,8 @@ public class TestView extends CB_View_Base
 
 		setBackground(SpriteCache.ListBack);
 
-		CB_RectF TextFieldRec = new CB_RectF(0, this.height - (UiSizes.getButtonHeight() * 3), UiSizes.getButtonWidth() * 6,
-				UiSizes.getButtonHeight() * 3);
+		CB_RectF TextFieldRec = new CB_RectF(0, this.height - (UI_Size_Base.that.getButtonHeight() * 3),
+				UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
 
 		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(this, TextFieldRec, EditWrapedTextField.getDefaultStyle(), "",
 				EditWrapedTextField.TextFieldType.MultiLineWraped);
@@ -56,8 +56,9 @@ public class TestView extends CB_View_Base
 		// ####################################################
 
 		// Setting Button
-		Button btnSetting = new Button(this.width - Dialog.margin - (UiSizes.getButtonWidthWide() * 2), wrappedTextField.getY()
-				- Dialog.margin - UiSizes.getButtonHeight(), UiSizes.getButtonWidthWide() * 2, UiSizes.getButtonHeight(), "");
+		Button btnSetting = new Button(this.width - Dialog.margin - (UI_Size_Base.that.getButtonWidthWide() * 2), wrappedTextField.getY()
+				- Dialog.margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonWidthWide() * 2,
+				UI_Size_Base.that.getButtonHeight(), "");
 
 		btnSetting.setText("Show TB");
 		btnSetting.setOnClickListener(new OnClickListener()

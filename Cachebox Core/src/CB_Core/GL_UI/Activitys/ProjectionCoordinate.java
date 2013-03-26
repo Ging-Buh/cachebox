@@ -10,7 +10,7 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Coordinate;
 
@@ -98,8 +98,8 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniCoordButton()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), Title.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), Title.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		bCoord = new CoordinateButton(rec, "CoordButton", coord);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -126,8 +126,8 @@ public class ProjectionCoordinate extends ActivityBase
 		lblP2P.setText(Translation.Get("toPoint"));
 		this.addChild(lblP2P);
 
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), lblP2P.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord);
 
 		bCoord2.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -194,7 +194,7 @@ public class ProjectionCoordinate extends ActivityBase
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UiSizes.getButtonHeight());
+				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 
 		btnRec.setX(bOK.getMaxX());

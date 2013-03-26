@@ -22,7 +22,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Solver.Functions.Function;
 import CB_Core.TranslationEngine.Translation;
 
@@ -125,19 +125,19 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		// Buttons zur Auswahl des Dialog-Typs
 		float w = msgBoxContentSize.width / 5;
 		float x = 0;
-		btnTxt = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "TXT");
+		btnTxt = new MultiToggleButton(x, y, w, UI_Size_Base.that.getButtonHeight(), "TXT");
 		scrollBox.addNext(btnTxt);
 		x += w;
-		btnFx = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "f(x)");
+		btnFx = new MultiToggleButton(x, y, w, UI_Size_Base.that.getButtonHeight(), "f(x)");
 		scrollBox.addNext(btnFx);
 		x += w;
-		btnVar = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "@");
+		btnVar = new MultiToggleButton(x, y, w, UI_Size_Base.that.getButtonHeight(), "@");
 		scrollBox.addNext(btnVar);
 		x += w;
-		btnOp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "+-");
+		btnOp = new MultiToggleButton(x, y, w, UI_Size_Base.that.getButtonHeight(), "+-");
 		scrollBox.addNext(btnOp);
 		x += w;
-		btnWp = new MultiToggleButton(x, y, w, UiSizes.getButtonHeight(), "$GC");
+		btnWp = new MultiToggleButton(x, y, w, UI_Size_Base.that.getButtonHeight(), "$GC");
 		scrollBox.addLast(btnWp);
 
 		// startposition for further controls

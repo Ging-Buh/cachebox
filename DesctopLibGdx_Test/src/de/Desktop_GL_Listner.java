@@ -108,7 +108,7 @@ public class Desktop_GL_Listner extends Tab_GL_Listner implements InputProcessor
 	public boolean scrolled(int amount)
 	{
 
-		int scrollSize = (UiSizes.getClickToleranz() + 10) * amount;
+		int scrollSize = (UiSizes.that.getClickToleranz() + 10) * amount;
 
 		int Pointer = (scrollSize > 0) ? GL_View_Base.MOUSE_WHEEL_POINTER_UP : GL_View_Base.MOUSE_WHEEL_POINTER_DOWN;
 

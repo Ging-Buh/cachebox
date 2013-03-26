@@ -1,7 +1,7 @@
 package de.cachebox_test.Views;
 
 import CB_Core.Math.CB_Rect;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.Cache;
 import CB_Core.Types.JokerEntry;
 import android.content.Context;
@@ -54,7 +54,7 @@ public class JokerViewItem extends View
 
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
+		LayoutTextPaint.setTextSize((float) (UI_Size_Base.that.getScaledFontSize() * 1.3));
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LineSep = bounds.height() / 3;
 

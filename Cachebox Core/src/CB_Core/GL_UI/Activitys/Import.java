@@ -49,7 +49,7 @@ import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.Color;
@@ -93,7 +93,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	{
 		super(ActivityRec(), "importActivity");
 		innerWidth = this.width - this.getLeftWidth() - this.getLeftWidth();
-		CollabseBoxMaxHeight = CollabseBoxHeight = UiSizes.getButtonHeight() * 6;
+		CollabseBoxMaxHeight = CollabseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
 		innerHeight = 1000;
 		scrollBox = new ScrollBox(ActivityRec(), innerHeight, "ScrollBox");
 		this.addChild(scrollBox);
@@ -133,8 +133,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private void createOkCancelBtn()
 	{
-		bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
 		// Translations
 		bOK.setText(Translation.Get("import"));
@@ -172,7 +172,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	{
 		// Title+Progressbar
 
-		float lineHeight = UiSizes.getButtonHeight() * 0.75f;
+		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
 		lblTitle = new Label(this.getLeftWidth() + margin, this.height - this.getTopHeight() - lineHeight - margin, width
 				- this.getLeftWidth() - this.getRightWidth() - margin, lineHeight, "TitleLabel");
@@ -644,7 +644,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			final PQ pq = PqList.get(position);
 			if (itemRec == null)
 			{
-				itemHeight = UiSizes.getChkBoxSize().height + UiSizes.getChkBoxSize().halfHeight;
+				itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
 				float itemWidth = PQ_ListCollabseBox.getWidth() - PQ_ListCollabseBox.getLeftWidth() - PQ_ListCollabseBox.getRightWidth();
 
 				itemRec = new CB_RectF(new SizeF(itemWidth, itemHeight));
@@ -657,7 +657,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		@Override
 		public float getItemSize(int position)
 		{
-			if (itemHeight == -1) itemHeight = UiSizes.getChkBoxSize().height + UiSizes.getChkBoxSize().halfHeight;
+			if (itemHeight == -1) itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
 			return itemHeight;
 		}
 

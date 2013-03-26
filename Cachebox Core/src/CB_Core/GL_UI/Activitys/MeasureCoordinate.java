@@ -9,7 +9,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
@@ -78,7 +78,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UiSizes.getButtonHeight());
+				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 
 		btnRec.setX(bOK.getMaxX());

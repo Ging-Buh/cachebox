@@ -24,7 +24,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -105,8 +105,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		this.removeChilds();
 
 		this.setBackground(SpriteCache.AboutBack);
-		float ref = UiSizes.getWindowHeight() / 13;
-		margin = UiSizes.getMargin();
+		float ref = UI_Size_Base.that.getWindowHeight() / 13;
+		margin = UI_Size_Base.that.getMargin();
 		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref - margin, ref * 5,
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
@@ -202,7 +202,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	private void createTable()
 	{
 		float leftMaxWidth = 0;
-		CB_RectF lblRec = new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight() / 2.5f);
+		CB_RectF lblRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight() / 2.5f);
 
 		lblGPS = new Label(lblRec, "lblGPS");
 		lblGPS.setText(Translation.Get("gps"));

@@ -6,7 +6,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -21,7 +21,7 @@ public class CopiePastePopUp extends PopUp_Base
 
 	public CopiePastePopUp(String Name, final EditTextFieldBase textField)
 	{
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidth() * 3.2f, UiSizes.getButtonHeight() * 1.5f), Name);
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 3.2f, UI_Size_Base.that.getButtonHeight() * 1.5f), Name);
 
 		int p = SpriteCache.patch;
 
@@ -29,7 +29,7 @@ public class CopiePastePopUp extends PopUp_Base
 
 		this.setClickable(true);
 
-		CB_RectF rec = new CB_RectF(0, 0, UiSizes.getButtonHeight(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		btnPaste = new ImageButton(rec, "PasteButton");
 		btnPaste.setFont(Fonts.getBubbleNormal());

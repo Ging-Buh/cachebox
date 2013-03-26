@@ -5,7 +5,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -32,7 +32,7 @@ public class Spinner extends Button
 
 	public Spinner(String Name, SpinnerAdapter adapter, selectionChangedListner listner)
 	{
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), Name);
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), Name);
 		mAdapter = adapter;
 		that = this;
 		mListner = listner;
@@ -142,7 +142,7 @@ public class Spinner extends Button
 					icon = new Image(rec, "");
 					icon.setY(this.halfHeight - icon.getHalfHeight());
 
-					float margin = UiSizes.getMargin();
+					float margin = UI_Size_Base.that.getMargin();
 
 					icon.setX(margin * 2);
 
@@ -150,7 +150,7 @@ public class Spinner extends Button
 
 					lblTxt.setX(icon.getMaxX() + margin);
 				}
-				float margin = UiSizes.getMargin();
+				float margin = UI_Size_Base.that.getMargin();
 
 				icon.setX(margin * 2);
 

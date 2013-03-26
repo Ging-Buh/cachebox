@@ -6,7 +6,7 @@ import java.util.TimerTask;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -15,7 +15,8 @@ public class QuickFieldNoteFeedbackPopUp extends PopUp_Base
 
 	public QuickFieldNoteFeedbackPopUp(boolean found)
 	{
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidth() * 2.5f, UiSizes.getButtonWidth() * 2.5f), "QuickFieldnoteFeedback");
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 2.5f, UI_Size_Base.that.getButtonWidth() * 2.5f),
+				"QuickFieldnoteFeedback");
 
 		if (found)
 		{

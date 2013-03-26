@@ -3,7 +3,6 @@ package CB_Core.GL_UI;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
@@ -45,24 +44,37 @@ public class Fonts
 	private static BitmapFont normalBubble;
 	private static BitmapFont smallBubble;
 
+	private static Settings cfg;
+
 	// private static BitmapFont night_fontAB17_out;
+
+	public class Settings
+	{
+		public String SkinFolder;
+		public String DefaultSkinFolder;
+		public boolean Nightmode = false;
+		public int SizeBiggest = 27;
+		public int SizeBig = 18;
+		public int SizeNormal = 15;
+		public int SizeNormalbubble = 14;
+		public int SizeSmall = 13;
+		public int SizeSmallBubble = 11;
+	}
 
 	/**
 	 * Lädt die verwendeten Bitmap Fonts und berechnet die entsprechenden Größen
 	 */
-	public static void loadFonts()
+	public static void loadFonts(Settings config)
 	{
-
+		cfg = config;
 		Logger.DEBUG("Fonts.loadFonts()");
 
-		double density = UiSizes.getScale();
+		// double density = UiSizes.that.getScale();
 
-		String path = Config.settings.SkinFolder.getValue();
-
-		String day_skinPath = path + "/day/skin.json";
+		String day_skinPath = cfg.SkinFolder + "/day/skin.json";
 		Skin day_skin = new Skin(Gdx.files.absolute(day_skinPath));
 
-		String night_skinPath = path + "/night/skin.json";
+		String night_skinPath = cfg.SkinFolder + "/night/skin.json";
 		Skin night_skin = new Skin(Gdx.files.absolute(night_skinPath));
 
 		day_fontColor = day_skin.getColor("font-color");
@@ -76,7 +88,7 @@ public class Fonts
 		night_fontColorLink = night_skin.getColor("font-color-link");
 
 		// get the first found ttf-font
-		File skinDir = new File(path);
+		File skinDir = new File(cfg.SkinFolder);
 
 		String FontName = null;
 		String[] ttfFonts = skinDir.list(new FilenameFilter()
@@ -93,8 +105,8 @@ public class Fonts
 		if (FontName == null)
 		{
 			// no skin font found, use default font
-			path = Config.settings.SkinFolder.getDefaultValue();
-			File defaultSkinDir = new File(path);
+
+			File defaultSkinDir = new File(cfg.DefaultSkinFolder);
 			String[] defaultTtfFonts = defaultSkinDir.list(new FilenameFilter()
 			{
 				@Override
@@ -106,16 +118,18 @@ public class Fonts
 			});
 			FontName = defaultTtfFonts[0];
 		}
-		String ttfPath = path + "/" + FontName;
+		String ttfPath = cfg.DefaultSkinFolder + "/" + FontName;
 		Logger.DEBUG("from " + ttfPath);
 
+		double density = UiSizes.that.getScale();
+
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.absolute(ttfPath));
-		compass = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_COMPASS_DISTANCE.getValue() * density));
-		big = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_BIG.getValue() * density));
-		normal = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_NORMAL.getValue() * density));
-		small = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_SMALL.getValue() * density));
-		normalBubble = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_NORMAL_BUBBLE.getValue() * density));
-		smallBubble = loadFontFromFile(generator, (int) (Config.settings.FONT_SIZE_SMALL_BUBBLE.getValue() * density));
+		compass = loadFontFromFile(generator, (int) (cfg.SizeBiggest * density));
+		big = loadFontFromFile(generator, (int) (cfg.SizeBig * density));
+		normal = loadFontFromFile(generator, (int) (cfg.SizeNormal * density));
+		small = loadFontFromFile(generator, (int) (cfg.SizeSmall * density));
+		normalBubble = loadFontFromFile(generator, (int) (cfg.SizeNormalbubble * density));
+		smallBubble = loadFontFromFile(generator, (int) (cfg.SizeSmallBubble * density));
 		generator.dispose();
 	}
 
@@ -127,22 +141,22 @@ public class Fonts
 
 	public static Color getFontColor()
 	{
-		return Config.settings.nightMode.getValue() ? night_fontColor : day_fontColor;
+		return cfg.Nightmode ? night_fontColor : day_fontColor;
 	}
 
 	public static Color getDisableFontColor()
 	{
-		return Config.settings.nightMode.getValue() ? night_fontColorDisable : day_fontColorDisable;
+		return cfg.Nightmode ? night_fontColorDisable : day_fontColorDisable;
 	}
 
 	public static Color getHighLightFontColor()
 	{
-		return Config.settings.nightMode.getValue() ? night_fontColorHighLight : day_fontColorHighLight;
+		return cfg.Nightmode ? night_fontColorHighLight : day_fontColorHighLight;
 	}
 
 	public static Color getLinkFontColor()
 	{
-		return Config.settings.nightMode.getValue() ? night_fontColorLink : day_fontColorLink;
+		return cfg.Nightmode ? night_fontColorLink : day_fontColorLink;
 	}
 
 	public static void dispose()
@@ -234,7 +248,7 @@ public class Fonts
 	private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale)
 	{
 		String fs = GlobalCore.fs;
-		String path = Config.settings.SkinFolder.getValue().replace("/", fs) + fs + "fonts";
+		String path = cfg.SkinFolder.replace("/", fs) + fs + "fonts";
 		String fontPath = null;
 		for (int i = 0; i < 46; i++)
 		{
@@ -264,5 +278,10 @@ public class Fonts
 			TextureRegion region = new TextureRegion(tex);
 			return new BitmapFont(Gdx.files.absolute(fontPath), region, false);
 		}
+	}
+
+	public static void setNightMode(boolean value)
+	{
+		cfg.Nightmode = value;
 	}
 }

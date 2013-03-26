@@ -26,6 +26,7 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.Controls.QuickButtonList;
 import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
@@ -128,7 +129,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	 */
 	private int measure(int measureSpec)
 	{
-		QuickButtonMaxHeight = UiSizes.getQuickButtonListHeight();
+		QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight();
 		int result = 0;
 		int specSize = MeasureSpec.getSize(measureSpec);
 		result = specSize;
@@ -185,7 +186,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				if (drag)
 				{
 					int value = Y - 25;// y - 25 minus halbe Button Höhe
-					int buttom = (int) (height - (UiSizes.getScaledRefSize_normal() * 2.2));
+					int buttom = (int) (height - (UI_Size_Base.that.getScaledRefSize_normal() * 2.2));
 					if (value > buttom) value = buttom - 1;
 
 					setPos(value);
@@ -241,20 +242,20 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			yPos = QuickButtonHeight = Config.settings.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
 		}
 
-		float FSize = ((float) (UiSizes.getScaledFontSize_big() * 1.3));
+		float FSize = ((float) (UI_Size_Base.that.getScaledFontSize_big() * 1.3));
 
 		if (paint == null || Config.settings.nightMode.getValue() != initialNight)
 		{
 			paint = new Paint();
 			paint.setColor(Global.getColor(R.attr.TextColor));
-			paint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
+			paint.setTextSize((float) (UI_Size_Base.that.getScaledFontSize() * 1.3));
 			paint.setAntiAlias(true);
 			initialNight = Config.settings.nightMode.getValue();
 		}
 
 		final Drawable Slide = Global.BtnIcons[0];
 
-		mBtnRec.set(-10, yPos - 2, width + 10, (int) (yPos + 2 + UiSizes.getScaledRefSize_normal() * 3.3));
+		mBtnRec.set(-10, yPos - 2, width + 10, (int) (yPos + 2 + UI_Size_Base.that.getScaledRefSize_normal() * 3.3));
 		Slide.setBounds(mBtnRec);
 		Slide.draw(canvas);
 
@@ -346,19 +347,19 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			int lines = 0;
 			if (iterator != null && iterator.hasNext())
 			{
-				if (attHeight == -1) attHeight = (int) (UiSizes.getIconSize() * 0.75);
+				if (attHeight == -1) attHeight = (int) (UI_Size_Base.that.getIconSize() * 0.75);
 
 				lines = 1 + (mCache.getAttributes().size() / 8);
 				attCompleadHeight = (int) (lines * attHeight * 1.3);
 
 			}
 
-			if (attLineHeight == -1) attLineHeight = attHeight + (UiSizes.getScaledFontSize() / 3);
+			if (attLineHeight == -1) attLineHeight = attHeight + (UI_Size_Base.that.getScaledFontSize() / 3);
 
 			if (CacheInfoHeight == 0)
 			{
 				CacheInfoHeight = (int) (FSize * 9) + attCompleadHeight;
-				topCalc = (int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + UiSizes.getScaledFontSize());
+				topCalc = (int) (CacheInfoHeight - (attLineHeight * lines) - attLineHeight + UI_Size_Base.that.getScaledFontSize());
 			}
 
 			versatz += CacheInfoHeight;
@@ -424,7 +425,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		int iconWidth = 0;
 		// draw icon
 		if (((int) mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length) iconWidth = ActivityUtils.PutImageTargetHeight(canvas,
-				Global.CacheIconsBig[(int) mWaypoint.Type.ordinal()], UiSizes.getHalfCornerSize(), UiSizes.getCornerSize(), imgSize);
+				Global.CacheIconsBig[(int) mWaypoint.Type.ordinal()], UiSizes.that.getHalfCornerSize(), UiSizes.that.getCornerSize(),
+				imgSize);
 
 		// draw Text info
 		left += iconWidth;
@@ -459,8 +461,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		int iconWidth = 0;
 		// draw icon
-		iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], UiSizes.getHalfCornerSize(), UiSizes.getCornerSize(),
-				imgSize);
+		iconWidth = ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[30], UiSizes.that.getHalfCornerSize(),
+				UiSizes.that.getCornerSize(), imgSize);
 
 		// draw Text info
 		left += iconWidth;
@@ -624,7 +626,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 						}
 						else
 						{
-							startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
+							startAnimationTo((int) (height - (UI_Size_Base.that.getScaledFontSize() * 2.2)));
 						}
 						swipeUp = swipeDown = false;
 
@@ -633,7 +635,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 					{
 						if (yPos > height * 0.7)
 						{
-							startAnimationTo((int) (height - (UiSizes.getScaledFontSize() * 2.2)));
+							startAnimationTo((int) (height - (UI_Size_Base.that.getScaledFontSize() * 2.2)));
 						}
 						else
 						{
@@ -683,7 +685,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 				Rect bounds = new Rect();
 				WPLayoutTextPaint = new TextPaint();
-				WPLayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
+				WPLayoutTextPaint.setTextSize((float) (UI_Size_Base.that.getScaledFontSize() * 1.3));
 				WPLayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 				LineSep = bounds.height() / 3;
 
@@ -744,7 +746,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (GPSLayoutTextPaint == null)
 		{
 			GPSLayoutTextPaint = new TextPaint();
-			GPSLayoutTextPaint.setTextSize((float) (UiSizes.getScaledFontSize() * 1.3));
+			GPSLayoutTextPaint.setTextSize((float) (UI_Size_Base.that.getScaledFontSize() * 1.3));
 			GPSLayoutTextPaint.setAntiAlias(true);
 			GPSLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
 		}
