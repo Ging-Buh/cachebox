@@ -22,7 +22,6 @@ public class CategorieListViewItem extends ListViewItemBackground
 {
 	public CategorieEntry categorieEntry;
 	public Vector2 lastItemTouchPos;
-	private boolean Clicked = false;
 
 	private BitmapFontCache EntryName;
 	private BitmapFontCache EntryDate;

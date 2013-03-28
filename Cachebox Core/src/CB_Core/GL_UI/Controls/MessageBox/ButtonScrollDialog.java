@@ -27,8 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class ButtonScrollDialog extends Dialog
 {
 
-	private ButtonScrollDialog that;
-
 	public final int BUTTON_POSITIVE = 1;
 	public final int BUTTON_NEUTRAL = 2;
 	public final int BUTTON_NEGATIVE = 3;
@@ -59,12 +57,10 @@ public class ButtonScrollDialog extends Dialog
 			OnMsgBoxClickListener Listener)
 	{
 		super(rec, Name);
-		that = this;
 		setTitle(title);
 		setButtonCaptions(buttons);
 		SizeF contentSize = getContentSize();
 
-		float restPlatz = contentSize.height;
 		rec = new CB_RectF(10, 80, contentSize.width + 10, contentSize.height);
 		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
 		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.

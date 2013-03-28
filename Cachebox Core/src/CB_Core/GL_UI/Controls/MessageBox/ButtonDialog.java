@@ -26,8 +26,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class ButtonDialog extends Dialog
 {
 
-	private ButtonDialog that;
-
 	public final int BUTTON_POSITIVE = 1;
 	public final int BUTTON_NEUTRAL = 2;
 	public final int BUTTON_NEGATIVE = 3;
@@ -58,7 +56,6 @@ public class ButtonDialog extends Dialog
 			OnMsgBoxClickListener Listener)
 	{
 		super(rec, Name);
-		that = this;
 		setTitle(title);
 		setButtonCaptions(buttons);
 		SizeF contentSize = getContentSize();

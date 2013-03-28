@@ -22,8 +22,6 @@ public class CB_Action_ShowQuit extends CB_Action
 		super("quit", MenuID.AID_SHOW_QUIT);
 	}
 
-	private static boolean askIsShown = false;
-
 	@Override
 	public void Execute()
 	{
@@ -36,7 +34,6 @@ public class CB_Action_ShowQuit extends CB_Action
 					@Override
 					public boolean onClick(int which, Object data)
 					{
-						askIsShown = false;
 						if (which == GL_MsgBox.BUTTON_POSITIVE)
 						{
 							if (GlobalCore.getSelectedCache() != null)
@@ -52,7 +49,6 @@ public class CB_Action_ShowQuit extends CB_Action
 						return true;
 					}
 				});
-		askIsShown = true;
 	}
 
 	@Override
