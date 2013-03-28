@@ -4,6 +4,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionReverse extends Function
 {
+	private static final long serialVersionUID = 9169402073615894654L;
+
 	public FunctionReverse()
 	{
 		Names.add(new LacalNames("Reverse", "en"));

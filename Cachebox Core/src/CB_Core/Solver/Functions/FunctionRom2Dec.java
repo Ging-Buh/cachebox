@@ -4,6 +4,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionRom2Dec extends Function
 {
+	private static final long serialVersionUID = 3808926872593878660L;
+
 	public FunctionRom2Dec()
 	{
 		Names.add(new LacalNames("Rom2Dec", "en"));

@@ -4,6 +4,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionRound extends Function
 {
+	private static final long serialVersionUID = 3669660135984610039L;
+
 	public FunctionRound()
 	{
 		Names.add(new LacalNames("Round", "en"));

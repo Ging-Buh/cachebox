@@ -4,6 +4,7 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionMid extends Function
 {
+	private static final long serialVersionUID = 3727854231542597267L;
 
 	public FunctionMid()
 	{

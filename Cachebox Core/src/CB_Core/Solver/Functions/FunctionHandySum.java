@@ -4,6 +4,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionHandySum extends Function
 {
+	private static final long serialVersionUID = -9107479222557989258L;
+
 	public FunctionHandySum()
 	{
 		Names.add(new LacalNames("PhoneSum", "en"));

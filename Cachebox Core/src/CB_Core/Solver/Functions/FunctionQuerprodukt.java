@@ -4,6 +4,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionQuerprodukt extends Function
 {
+	private static final long serialVersionUID = 8720582376213442054L;
+
 	public FunctionQuerprodukt()
 	{
 		Names.add(new LacalNames("Crossproduct", "en"));

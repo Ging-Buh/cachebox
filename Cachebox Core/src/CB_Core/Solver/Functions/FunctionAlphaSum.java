@@ -4,6 +4,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionAlphaSum extends Function
 {
+	private static final long serialVersionUID = -6962880870313633795L;
+
 	public FunctionAlphaSum()
 	{
 		Names.add(new LacalNames("AlphaSum", "en"));

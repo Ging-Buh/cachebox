@@ -7,8 +7,7 @@ import CB_Core.Solver.TempEntity;
 
 public class FunctionCategories extends TreeMap<String, Functions>
 {
-
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4054421409675901933L;
 
 	public FunctionCategories()
 	{

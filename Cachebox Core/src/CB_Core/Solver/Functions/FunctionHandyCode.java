@@ -4,6 +4,9 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionHandyCode extends Function
 {
+
+	private static final long serialVersionUID = -270660378762802943L;
+
 	public FunctionHandyCode()
 	{
 		Names.add(new LacalNames("PhoneCode", "en"));

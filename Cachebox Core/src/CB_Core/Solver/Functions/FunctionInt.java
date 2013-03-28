@@ -4,6 +4,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionInt extends Function
 {
+	private static final long serialVersionUID = -4677935521343499858L;
+
 	public FunctionInt()
 	{
 		Names.add(new LacalNames("Int", "en"));

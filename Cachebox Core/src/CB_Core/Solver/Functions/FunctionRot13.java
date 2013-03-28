@@ -5,6 +5,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionRot13 extends Function
 {
+	private static final long serialVersionUID = 172122667088261676L;
+
 	public FunctionRot13()
 	{
 		Names.add(new LacalNames("Rot13", "en"));

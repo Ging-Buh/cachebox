@@ -4,6 +4,8 @@ import CB_Core.TranslationEngine.Translation;
 
 public class FunctionPrimeIndex extends FunctionPrimeBase
 {
+	private static final long serialVersionUID = -3417894947271978934L;
+
 	public FunctionPrimeIndex()
 	{
 		Names.add(new LacalNames("PrimeIndex", "en"));
