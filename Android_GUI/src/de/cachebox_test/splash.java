@@ -744,7 +744,7 @@ public class splash extends Activity
 			ui.isLandscape = false;
 		}
 
-		new Translation(Config.WorkPath);
+		new Translation(Config.WorkPath, false);
 
 		new UiSizes();
 		UI_Size_Base.that.initial(ui);

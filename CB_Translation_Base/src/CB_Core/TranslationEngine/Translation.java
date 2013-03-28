@@ -29,6 +29,9 @@ import java.util.Iterator;
 
 import CB_Core.FileUtil;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
 /**
  * @author Longri
  */
@@ -40,6 +43,8 @@ public class Translation
 	 * @uml.associationEnd
 	 */
 	private static Translation that;
+
+	private boolean Internal = false;
 
 	private final String BR;
 	private ArrayList<Translations> mStringList;
@@ -53,14 +58,17 @@ public class Translation
 	 * Constructor
 	 * 
 	 * @param WorkPath
+	 * @param internal
+	 *            true for loading from asset
 	 */
-	public Translation(String WorkPath)
+	public Translation(String WorkPath, boolean internal)
 	{
 		that = this;
 		mWorkPath = WorkPath;
 		BR = System.getProperty("line.separator");
 		mStringList = new ArrayList<Translations>();
 		mMissingStringList = new ArrayList<Translations>();
+		Internal = internal;
 	}
 
 	// #######################################################################
@@ -218,30 +226,78 @@ public class Translation
 		SelectedLangChangedEventList.Call();
 	}
 
-	private ArrayList<Translations> ReadFile(String FilePath) throws IOException
+	// private ArrayList<Translations> ReadFile(String FilePath) throws IOException
+	// {
+	//
+	// ArrayList<Translations> Temp = new ArrayList<Translations>();
+	// String line;
+	//
+	// // get Encoding
+	//
+	// BufferedReader reader;
+	// reader = new BufferedReader(new FileReader(FilePath));
+	// String encoding = reader.readLine().trim();
+	//
+	// BufferedReader Filereader;
+	// if (encoding == "utf8")
+	// {
+	// Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath), "UTF8"));
+	// }
+	// else
+	// {
+	// Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath)));
+	// }
+	// // Read and display lines from the file until the end of
+	// // the file is reached:
+	// while ((line = Filereader.readLine()) != null)
+	// {
+	// int pos;
+	//
+	// // skip empty lines
+	// if (line == "")
+	// {
+	// continue;
+	// }
+	//
+	// // skip comment line
+	// pos = line.indexOf("//");
+	// if (pos > -1)
+	// {
+	// continue;
+	// }
+	//
+	// // skip line without value
+	// pos = line.indexOf("=");
+	// if (pos == -1)
+	// {
+	// continue;
+	// }
+	//
+	// String readID = line.substring(0, pos);
+	// String readTransl = line.substring(pos + 1);
+	// String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
+	// Temp.add(new Translations(readID.trim(), ReplacedRead));
+	// }
+	//
+	// reader.close();
+	// Filereader.close();
+	// return Temp;
+	// }
+
+	private ArrayList<Translations> ReadFile(String FilePath)
 	{
 
 		ArrayList<Translations> Temp = new ArrayList<Translations>();
-		String line;
 
 		// get Encoding
 
-		BufferedReader reader;
-		reader = new BufferedReader(new FileReader(FilePath));
-		String encoding = reader.readLine().trim();
+		FileHandle file = Internal ? Gdx.files.internal(FilePath) : Gdx.files.absolute(FilePath);
 
-		BufferedReader Filereader;
-		if (encoding == "utf8")
-		{
-			Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath), "UTF8"));
-		}
-		else
-		{
-			Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath)));
-		}
-		// Read and display lines from the file until the end of
-		// the file is reached:
-		while ((line = Filereader.readLine()) != null)
+		String text = file.readString();
+
+		String[] lines = text.split("\n");
+
+		for (String line : lines)
 		{
 			int pos;
 
@@ -271,8 +327,6 @@ public class Translation
 			Temp.add(new Translations(readID.trim(), ReplacedRead));
 		}
 
-		reader.close();
-		Filereader.close();
 		return Temp;
 	}
 

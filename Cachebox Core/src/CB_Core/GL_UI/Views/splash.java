@@ -231,7 +231,7 @@ public class splash extends TabMainView
 	private void ini_Translations()
 	{
 		Logger.DEBUG("ini_Translations");
-		new Translation(Config.WorkPath);
+		new Translation(Config.WorkPath, false);
 		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
 	}
 

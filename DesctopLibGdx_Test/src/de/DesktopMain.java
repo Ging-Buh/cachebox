@@ -28,7 +28,6 @@ import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase.iChanged;
-import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.Gdx;
@@ -366,8 +365,8 @@ public class DesktopMain
 		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
-		new Translation(Config.WorkPath);
-		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
+		// new Translation(Config.WorkPath, false);
+		// Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
 
 	}
 

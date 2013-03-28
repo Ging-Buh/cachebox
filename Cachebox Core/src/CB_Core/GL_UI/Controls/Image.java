@@ -28,6 +28,8 @@ import CB_Core.CB_Texturepacker.TexturePacker_Base;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
+import CB_Core.GL_UI.Controls.Animation.RotateAnimation;
+import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
@@ -53,12 +55,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  */
 public class Image extends CB_View_Base
 {
-	static Drawable waitDrawable;
-	static float waitWidth;
-	static float waitHeight;
-	static int animateRotateValue = 0;
-	static long lastAniTime = -1;
-	static final float frameDuration = 60;
+
+	private RotateAnimation Wait;
 
 	private float mRotate = 0;
 	private Color mColor = new Color(1, 1, 1, 1);
@@ -143,6 +141,12 @@ public class Image extends CB_View_Base
 
 		if (mDrawable != null)
 		{
+			if (Wait != null)
+			{
+				GL.that.removeRenderView(Wait);
+				this.removeChild(Wait);
+				Wait = null;
+			}
 			inLoad = false;
 			float drawwidth = width;
 			float drawHeight = height;
@@ -167,47 +171,16 @@ public class Image extends CB_View_Base
 		}
 		else if (inLoad)
 		{
-
-			if (waitDrawable == null)
+			if (Wait == null)
 			{
-				Sprite tmp = SpriteCache.Icons.get(51);
-				waitDrawable = new SpriteDrawable(tmp);
-				waitWidth = tmp.getWidth();
-				waitHeight = tmp.getHeight();
+				Wait = new RotateAnimation(0, 0, this.width, this.height, "ImageWaitAnimation");
+				Wait.setSprite(SpriteCache.Icons.get(26));
+				Wait.setOrigin(this.halfWidth, this.halfHeight);
+				Wait.play(WaitDialog.WAIT_DURATION);
+				GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
+				this.addChild(Wait);
 			}
 
-			animateRotateValue += (Gdx.graphics.getDeltaTime() * 100) / frameDuration;
-
-			if (animateRotateValue > 360) animateRotateValue = 0;
-
-			// Draw wait sprite
-			isRotated = true;
-
-			Matrix4 matrix = new Matrix4();
-
-			matrix.idt();
-			matrix.translate(mOriginX, mOriginY, 0);
-			matrix.rotate(0, 0, 1, animateRotateValue);
-			matrix.scale(mScale, mScale, 1);
-			matrix.translate(-mOriginX, -mOriginY, 0);
-			batch.setTransformMatrix(matrix);
-
-			float drawwidth = width;
-			float drawHeight = height;
-			float drawX = 0;
-			float drawY = 0;
-
-			float proportionWidth = width / waitWidth;
-			float proportionHeight = height / waitHeight;
-
-			float proportion = Math.min(proportionWidth, proportionHeight);
-
-			drawwidth = waitWidth * proportion;
-			drawHeight = waitHeight * proportion;
-			drawX = (width - drawwidth) / 2;
-			drawY = (height - drawHeight) / 2;
-
-			waitDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
 			GL.that.renderOnce("Image Loading Animation");
 		}
 
@@ -217,13 +190,10 @@ public class Image extends CB_View_Base
 			Matrix4 matrix = new Matrix4();
 
 			matrix.idt();
-			// matrix.translate(mOriginX, mOriginY, 0);
 			matrix.rotate(0, 0, 1, 0);
 			matrix.scale(1, 1, 1);
-			// matrix.translate(-mOriginX, -mOriginY, 0);
 
 			batch.setTransformMatrix(matrix);
-
 		}
 
 	}

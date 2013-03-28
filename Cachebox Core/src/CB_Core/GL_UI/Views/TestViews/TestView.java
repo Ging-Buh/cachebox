@@ -120,7 +120,7 @@ public class TestView extends CB_View_Base
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			if (testImg != null) TestView.this.removeChild(testImg);
-			testImg = new Image(50, 50, 100, 100, "");
+			testImg = new Image(50, 50, 300, 500, "");
 			testImg.setImageURL("http://img.geocaching.com/track/display/2190cf73-ecab-468a-a61a-611c123e567a.jpg");
 			TestView.this.addChild(testImg);
 			return false;

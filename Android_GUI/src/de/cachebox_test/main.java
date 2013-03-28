@@ -2416,7 +2416,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				if (!Translation.isInitial())
 				{
-					new Translation(Config.WorkPath);
+					new Translation(Config.WorkPath, false);
 					Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
 				}
 				runOnUiThread(new Runnable()

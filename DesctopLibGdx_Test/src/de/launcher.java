@@ -89,7 +89,6 @@ class Ex_1
 					}
 					catch (IOException e)
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 

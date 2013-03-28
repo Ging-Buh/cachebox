@@ -212,6 +212,13 @@ public class GL implements ApplicationListener
 		ShaderSetted = true;
 	}
 
+	protected float stateTime = 0;
+
+	public float getStateTime()
+	{
+		return stateTime;
+	}
+
 	@Override
 	public void render()
 	{
@@ -219,6 +226,8 @@ public class GL implements ApplicationListener
 		if (Energy.DisplayOff()) return;
 
 		if (!started.get() || stopRender) return;
+
+		stateTime += Gdx.graphics.getDeltaTime();
 
 		lastRenderBegin = System.currentTimeMillis();
 
