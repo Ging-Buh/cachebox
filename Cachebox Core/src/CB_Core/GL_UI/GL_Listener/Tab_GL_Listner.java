@@ -1,5 +1,8 @@
 package CB_Core.GL_UI.GL_Listener;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.Config;
 import CB_Core.Events.KeyCodes;
 import CB_Core.Events.platformConector;
@@ -76,6 +79,27 @@ public class Tab_GL_Listner extends GL
 
 				// WeiterLeiten an EditTextView, welches den Focus Hat
 				if (keyboardFocus != null && keyboardFocus.keyTyped(character)) return true;
+
+				// if key back and no Dialog or activity is shown ask for close CB
+				if (character == KeyCodes.KEYCODE_BACK)
+				{
+					// run with litle delay
+
+					TimerTask tk = new TimerTask()
+					{
+
+						@Override
+						public void run()
+						{
+							TabMainView.actionClose.Execute();
+						}
+					};
+
+					Timer timer = new Timer();
+					timer.schedule(tk, 600);
+
+					return true;
+				}
 
 				return false;
 

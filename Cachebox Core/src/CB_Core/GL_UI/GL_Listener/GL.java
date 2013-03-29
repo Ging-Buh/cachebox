@@ -1728,4 +1728,18 @@ public class GL implements ApplicationListener
 		return false;
 	}
 
+	public boolean isShownDialogActivity()
+	{
+		if (DialogIsShown)
+		{
+			return true;
+		}
+
+		if (ActivityIsShown)
+		{
+
+			return true;
+		}
+		return false;
+	}
 }

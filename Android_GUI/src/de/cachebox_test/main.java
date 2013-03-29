@@ -37,6 +37,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.KeyCodes;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
@@ -99,6 +100,7 @@ import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Locator.Events.GpsStateChangeEventList;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -206,6 +208,7 @@ import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
+@SuppressLint("HandlerLeak")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, GpsStatus.Listener, ILog, KeyboardFocusChangedEvent
 {
@@ -1071,7 +1074,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showWaitToRenderStartet()
 	{
-		if (!GL.that.isInitial()) return;
+		if (!GL.isInitial()) return;
 
 		if (pWaitD == null)
 		{
@@ -1222,6 +1225,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		KeyboardFocusChangedEventList.Remove(this);
 	}
 
+	@SuppressLint("Wakelock")
 	@Override
 	public void onDestroy()
 	{
@@ -2079,12 +2083,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
-	private void showTbList()
-	{
-		// MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
-		showView(ViewConst.TB_LIST_VIEW);
-	}
-
 	private void NavigateTo()
 	{
 		if (GlobalCore.getSelectedCache() != null)
@@ -2177,20 +2175,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 
 		}
-	}
-
-	private void addCache()
-	{
-		/*
-		 * String accessToken = Config.settings.GcAPI"); ArrayList<String> caches = new ArrayList<String>(); caches.add("GC2XVHW");
-		 * caches.add("GC1T2XP"); caches.add("GC1090W"); caches.clear(); for (int i = 0; i < 100; i++) { caches.add("GC2XV" + i); }
-		 * CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);
-		 */
-
-		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config.GetAccessToken());
-		if (status != 0) GL_MsgBox.Show(CB_Core.Api.GroundspeakAPI.LastAPIError);
-
-		GL_MsgBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
 	}
 
 	/*
@@ -2469,22 +2453,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		boolean GpsOn = locManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		return GpsOn;
 	}
-
-	// @Override
-	// public void GpsStateChanged()
-	// {
-	// try
-	// {
-	// setSatStrength();
-	// }
-	// catch (Exception e)
-	// {
-	// Logger.Error("main.GpsStateChanged()", "setSatStrength()", e);
-	// e.printStackTrace();
-	// }
-	// }
-
-	private static View[] balken = null;
 
 	private void askToGetApiKey()
 	{
@@ -3180,7 +3148,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					}
 					catch (Exception ex)
 					{
-						String s = ex.getMessage();
 					}
 				}
 				else
@@ -3433,7 +3400,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private String beforeS;
 	private int beforeStart;
 	private int beforeCount;
-	private int beforeAfter;
+	// private int beforeAfter;
 	private boolean KeyboardWasClosed = false;
 
 	private void initialHiddenEditText()
@@ -3447,9 +3414,37 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 				{
+
+					// if no Keybord focus send BeckKey to GL
+
+					if (GL.that.getKeyboardFocus() == null && !KeyboardWasClosed)
+					{
+						if (GL.that.isShownDialogActivity())
+						{
+							GL.that.closeShownDialog();
+							KeyboardWasClosed = true;
+							return true;
+						}
+						CB_Core.Events.platformConector.sendKey((char) KeyCodes.KEYCODE_BACK);
+						return true;
+					}
+
 					GL.that.setKeyboardFocus(null);
 					KeyboardWasClosed = true;
-					gdxView.requestFocus();
+
+					TimerTask tk = new TimerTask()
+					{
+
+						@Override
+						public void run()
+						{
+							KeyboardWasClosed = false;
+						}
+					};
+
+					Timer timer = new Timer();
+					timer.schedule(tk, 1000);
+
 					return true;
 				}
 				return super.onKeyPreIme(keyCode, event);
@@ -3537,7 +3532,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				catch (Exception e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return false;
 				}
@@ -3604,7 +3598,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				beforeS = s.toString();
 				beforeStart = start;
 				beforeCount = count;
-				beforeAfter = after;
+				// beforeAfter = after;
 			}
 
 			@Override
