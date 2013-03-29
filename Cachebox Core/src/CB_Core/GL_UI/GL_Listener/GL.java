@@ -102,7 +102,7 @@ public class GL implements ApplicationListener
 	private Point lastClickPoint = null;
 	protected ParentInfo prjMatrix;
 	private CB_View_Base actActivity;
-	private Dialog actDialog;
+	public Dialog actDialog;
 	private ArrayList<Dialog> dialogHistory = new ArrayList<Dialog>();
 	private PopUp_Base aktPopUp = null;
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;

@@ -8,6 +8,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.Translation;
@@ -22,12 +23,16 @@ public class CB_Action_ShowQuit extends CB_Action
 		super("quit", MenuID.AID_SHOW_QUIT);
 	}
 
+	static GL_MsgBox msg;
+
 	@Override
 	public void Execute()
 	{
 		// if (askIsShown) return;
 
-		GL_MsgBox.Show(Translation.Get("QuitReally"), Translation.Get("Quit?"), MessageBoxButtons.OKCancel, MessageBoxIcon.Stop,
+		if (msg != null && GL.that.actDialog == msg) return;
+
+		msg = GL_MsgBox.Show(Translation.Get("QuitReally"), Translation.Get("Quit?"), MessageBoxButtons.OKCancel, MessageBoxIcon.Stop,
 				new OnMsgBoxClickListener()
 				{
 
