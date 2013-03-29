@@ -18,6 +18,7 @@ import CB_Core.Types.Waypoint;
 
 public class CacheListDAO
 {
+
 	public CacheList ReadCacheList(CacheList cacheList, String where)
 	{
 		Logger.DEBUG("ReadCacheList 1.Waypoints");
@@ -172,6 +173,14 @@ public class CacheListDAO
 
 		delCacheImagesByPath(spoilerpath, list);
 		delCacheImagesByPath(imagespath, list);
+
+		ImageDAO imageDAO = new ImageDAO();
+		for (Iterator<String> iterator = list.iterator(); iterator.hasNext();)
+		{
+			final String GcCode = iterator.next();
+			imageDAO.deleteImagesForCache(GcCode);
+		}
+		imageDAO = null;
 	}
 
 	private void delCacheImagesByPath(String path, ArrayList<String> list)

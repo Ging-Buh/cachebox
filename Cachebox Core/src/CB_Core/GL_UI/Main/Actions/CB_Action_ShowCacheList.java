@@ -127,6 +127,9 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					editCache.Create();
 					return true;
 
+				case MenuID.AID_SHOW_DELETE_DIALOG:
+					TabMainView.actionDelCaches.Execute();
+					return true;
 				}
 				return false;
 			}
@@ -157,6 +160,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		mi.setChecked(GlobalCore.getAutoResort());
 		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
 		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCache.Icons.get(57));
+		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCache.Icons.get(28));
 		return cm;
 	}
 

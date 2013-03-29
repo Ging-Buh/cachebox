@@ -4,7 +4,6 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
-import CB_Core.DB.Database;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -224,7 +223,8 @@ public class DeleteDialog extends ButtonDialog
 		dao.ClearOrphanedLogs();
 
 		// compact DB
-		Database.Data.execSQL("vacuum");
+		// hanging
+		// Database.Data.execSQL("vacuum");
 
 	}
 
