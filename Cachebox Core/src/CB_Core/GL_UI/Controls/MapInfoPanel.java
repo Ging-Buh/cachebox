@@ -68,7 +68,7 @@ public class MapInfoPanel extends CB_View_Base
 
 	public void setBearing(float Heading, float Bearing)
 	{
-		if (aktHeading == Heading) return;
+		if ((aktHeading == Heading) && (aktBearing == Bearing)) return;
 		aktHeading = Heading;
 		aktBearing = Bearing;
 		if (arrow != null && compas_scale != null)

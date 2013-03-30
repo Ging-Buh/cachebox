@@ -1919,7 +1919,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 						.getSelectedCache().Pos;
 				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.getLatitude(),
 						cache.getLongitude());
-				info.setBearing((float) (bearing - Locator.getHeading()), this.mapHeading);
+				info.setBearing((float) (bearing - Locator.getHeading() - arrowHeading), Locator.getHeading());
 			}
 		}
 		GL.that.renderOnce(MapView.this.getName() + " OrientationChanged");
