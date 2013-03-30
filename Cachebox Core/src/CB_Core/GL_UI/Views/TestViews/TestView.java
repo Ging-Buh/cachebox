@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Views.TestViews;
 
+import CB_Core.Energy;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -119,11 +120,14 @@ public class TestView extends CB_View_Base
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			if (testImg != null) TestView.this.removeChild(testImg);
-			testImg = new Image(50, 50, 300, 500, "");
-			testImg.setImageURL("http://img.geocaching.com/track/display/2190cf73-ecab-468a-a61a-611c123e567a.jpg");
-			TestView.this.addChild(testImg);
-			return false;
+			// if (testImg != null) TestView.this.removeChild(testImg);
+			// testImg = new Image(50, 50, 300, 500, "");
+			// testImg.setImageURL("http://img.geocaching.com/track/display/2190cf73-ecab-468a-a61a-611c123e567a.jpg");
+			// TestView.this.addChild(testImg);
+			if (Energy.DisplayOff()) Energy.setDisplayOn();
+			else
+				Energy.setDisplayOff();
+			return true;
 		}
 
 	};
