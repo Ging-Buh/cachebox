@@ -31,8 +31,6 @@ public class CB_Action_ShowQuit extends CB_Action
 	{
 		// if (askIsShown) return;
 
-		CB_Core.Log.Logger.setDebug(true);
-
 		if (msg != null && GL.that.actDialog == msg) return;
 
 		msg = GL_MsgBox.Show(Translation.Get("QuitReally"), Translation.Get("Quit?"), MessageBoxButtons.OKCancel, MessageBoxIcon.Stop,
