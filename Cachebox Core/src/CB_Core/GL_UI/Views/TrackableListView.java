@@ -6,6 +6,7 @@ import CB_Core.DAO.TrackableListDAO;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.TB_Details;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -92,7 +93,7 @@ public class TrackableListView extends CB_View_Base
 		searchBox.addNext(txtSearch);
 
 		btnSearch.setWeight(-1);
-		btnSearch.setImage(SpriteCache.Icons.get(27));
+		btnSearch.setImage(SpriteCache.Icons.get(IconName.lupe_27.ordinal()));
 		btnSearch.setOnClickListener(new OnClickListener()
 		{
 			@Override

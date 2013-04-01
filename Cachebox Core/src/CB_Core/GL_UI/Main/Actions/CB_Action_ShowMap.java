@@ -7,6 +7,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
@@ -52,7 +53,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(5);
+		return SpriteCache.Icons.get(IconName.map_5.ordinal());
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi = icm.addItem(MenuID.MI_CENTER_WP, "CenterWP");
 
 		// mi = icm.addItem(MI_SMOOTH_SCROLLING, "SmoothScrolling");
-		mi = icm.addItem(MenuID.MI_SETTINGS, "settings", SpriteCache.Icons.get(26));
+		mi = icm.addItem(MenuID.MI_SETTINGS, "settings", SpriteCache.Icons.get(IconName.settings_26.ordinal()));
 		// mi = icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
 		mi = icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
 		// mi = icm.addItem(MenuID.MI_TREC_REC, "TrackRec");

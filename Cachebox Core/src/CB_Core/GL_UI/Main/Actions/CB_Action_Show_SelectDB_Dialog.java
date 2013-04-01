@@ -7,6 +7,7 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.SelectDB;
 import CB_Core.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
@@ -37,7 +38,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(41);
+		return SpriteCache.Icons.get(IconName.manageDB_41.ordinal());
 	}
 
 	SelectDB selectDBDialog;

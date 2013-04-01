@@ -76,6 +76,74 @@ public class SpriteCache
 	public static ArrayList<Sprite> ZoomBtn = null;
 	public static Sprite ZoomValueBack = null;
 	public static ArrayList<Sprite> BigIcons = null;
+
+	public static enum IconName
+	{
+		btnNormal_0,
+		button_1,
+		doc_2,
+		big16_3,
+		list_4,
+		map_5,
+		compass_6,
+		cacheList_7,
+		trackList_8,
+		log10_9,
+		video_10,
+		voiceRec_11,
+		lupe_12,
+		filter_13,
+		lock_14,
+		autoSelectOn_15,
+		autoSelectOff_16,
+		solver_17,
+		images_18,
+		hint_19,
+		doc_20, // 20 doppelt
+		list_21, // 21 doppelt
+		images_22, // 22 doppelt
+		note_23, // 23
+		solver_24, // 24 doppelt
+		jokerPhone_25, // 25
+		settings_26, // 26
+		lupe_27, // 27 doppelt
+		delete_28, // 28
+		voiceRec_29, // 29 doppelt
+		satellite_30, // 30
+		close_31, // 31
+		info_32, // 32
+		warning_33, // 33
+		help_34, // 34
+		GCLive_35, // 35
+		tb_36, // 36
+		menu_37, // 37
+		tbList_38, // 38
+		sort_39, // 39
+		import_40, // 40
+		manageDB_41, // 41
+		favorit_42, // 42
+		star_43, // 43
+		disabled_44, // 44
+		log11_45, // 45
+		navigate_46, // 46
+		log10_47, // 47 doppelt
+		DayNight_48, // 48
+		cb_49, // 49
+		userdata_50, // 50
+		daySpinner_51, // 51
+		add_52, // 52
+		targetDay_53, // 53
+		fieldNote_54, // 54
+		fieldNoteList_55, // 55
+		waypointList_56, // 56
+		addCache_57, // 57
+		tbDiscover_58, // 58
+		tbDrop_59, // 59
+		tbGrab_60, // 60
+		tbPicked_61, // 61
+		tbVisit_62 // 62
+	}
+
 	public static ArrayList<Sprite> Icons = null;
 	public static ArrayList<Sprite> ChkIcons = null;
 	public static ArrayList<Sprite> Dialog = null;

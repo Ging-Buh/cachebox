@@ -14,6 +14,7 @@ import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_Core.GL_UI.Controls.Slider;
@@ -197,12 +198,15 @@ public class TabMainView extends MainViewBase
 		actionShowSettings = new CB_Action_Show_Settings();
 
 		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
-				SpriteCache.Icons.get(46));
+				SpriteCache.Icons.get(IconName.navigate_46.ordinal()));
 
 		actionRecTrack = new CB_Action_RecTrack();
-		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
-		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCache.Icons.get(47));
-		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
+		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC,
+				SpriteCache.Icons.get(IconName.voiceRec_11.ordinal()));
+		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
+				SpriteCache.Icons.get(IconName.log10_47.ordinal()));
+		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC,
+				SpriteCache.Icons.get(IconName.video_10.ordinal()));
 
 		actionDayNight = new CB_Action_switch_DayNight();
 		// actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));

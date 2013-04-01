@@ -9,6 +9,7 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
@@ -261,7 +262,7 @@ public class CacheInfo extends CB_View_Base
 			{
 				float sizes = mStarSize.width / 2.1f;
 
-				mTBSprite = new Sprite(SpriteCache.Icons.get(36));
+				mTBSprite = new Sprite(SpriteCache.Icons.get(IconName.tb_36.ordinal()));
 				mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
 				mTBSprite.setOrigin(sizes / 2, sizes / 2);
 				mTBSprite.setRotation(90);
@@ -383,7 +384,7 @@ public class CacheInfo extends CB_View_Base
 			}
 			else if (mCache.ImTheOwner())
 			{
-				mFoundOwnerSprite = new Sprite(SpriteCache.Icons.get(43));
+				mFoundOwnerSprite = new Sprite(SpriteCache.Icons.get(IconName.star_43.ordinal()));
 			}
 			if (mFoundOwnerSprite != null)
 			{
@@ -393,18 +394,18 @@ public class CacheInfo extends CB_View_Base
 
 			if (mCache.Favorit())
 			{
-				mFavoriteSprite = new Sprite(SpriteCache.Icons.get(42));
+				mFavoriteSprite = new Sprite(SpriteCache.Icons.get(IconName.favorit_42.ordinal()));
 				mFavoriteSprite.setSize(infoSize, infoSize);
 				mFavoriteSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y + infoSize);
 			}
 
 			if (mCache.Archived)
 			{
-				mAvailableSprite = new Sprite(SpriteCache.Icons.get(45));
+				mAvailableSprite = new Sprite(SpriteCache.Icons.get(IconName.log11_45.ordinal()));
 			}
 			else if (!mCache.Available)
 			{
-				mAvailableSprite = new Sprite(SpriteCache.Icons.get(44));
+				mAvailableSprite = new Sprite(SpriteCache.Icons.get(IconName.disabled_44.ordinal()));
 			}
 			if (mAvailableSprite != null)
 			{

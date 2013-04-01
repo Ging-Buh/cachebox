@@ -10,6 +10,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -52,7 +53,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(2);
+		return SpriteCache.Icons.get(IconName.doc_2.ordinal());
 	}
 
 	@Override
@@ -154,7 +155,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		boolean isSelected = (GlobalCore.getSelectedCache() != null);
 
-		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCache.Icons.get(42));
+		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCache.Icons.get(IconName.favorit_42.ordinal()));
 		mi.setCheckable(true);
 		if (isSelected)
 		{
@@ -165,7 +166,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 			mi.setEnabled(false);
 		}
 
-		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCache.Icons.get(35));
+		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
 		mi.setEnabled(isSelected);
 		return cm;
 	}

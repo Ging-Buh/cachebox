@@ -16,6 +16,7 @@
 package CB_Core.GL_UI.Main.Actions.QuickButton;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Main.Actions.CB_Action;
@@ -216,11 +217,14 @@ public enum QuickActions
 
 	public static void InitialActions()
 	{
-		action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCache.Icons.get(47));
+		action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
+				SpriteCache.Icons.get(IconName.log10_47.ordinal()));
 
-		action_TakeVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
+		action_TakeVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC,
+				SpriteCache.Icons.get(IconName.video_10.ordinal()));
 
-		action_Voicerec = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
+		action_Voicerec = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC,
+				SpriteCache.Icons.get(IconName.voiceRec_11.ordinal()));
 
 		action_Search = new CB_Action_Show_Search();
 

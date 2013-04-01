@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
@@ -55,7 +56,7 @@ public class WaitDialog extends ButtonDialog
 		CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		waitDialog.iconImage = new RotateAnimation(imageRec, "MsgBoxIcon");
-		waitDialog.iconImage.setSprite(SpriteCache.Icons.get(26));
+		waitDialog.iconImage.setSprite(SpriteCache.Icons.get(IconName.settings_26.ordinal()));
 		waitDialog.iconImage.setOrigin(waitDialog.halfWidth, waitDialog.halfHeight);
 		waitDialog.iconImage.play(WAIT_DURATION);
 		waitDialog.iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());

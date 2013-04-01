@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
 import CB_Core.GL_UI.Menu.MenuID;
 
@@ -23,7 +24,7 @@ public class CB_Action_Show_Settings extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(26);
+		return SpriteCache.Icons.get(IconName.settings_26.ordinal());
 	}
 
 	SettingsActivity settingsDialog;

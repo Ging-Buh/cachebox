@@ -27,6 +27,7 @@ import CB_Core.CB_Texturepacker.Settings;
 import CB_Core.CB_Texturepacker.TexturePacker_Base;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Animation.RotateAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
@@ -174,7 +175,7 @@ public class Image extends CB_View_Base
 			if (Wait == null)
 			{
 				Wait = new RotateAnimation(0, 0, this.width, this.height, "ImageWaitAnimation");
-				Wait.setSprite(SpriteCache.Icons.get(26));
+				Wait.setSprite(SpriteCache.Icons.get(IconName.settings_26.ordinal()));
 				Wait.setOrigin(this.halfWidth, this.halfHeight);
 				Wait.play(WaitDialog.WAIT_DURATION);
 				GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);

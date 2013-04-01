@@ -61,7 +61,7 @@ public abstract class Dialog extends CB_View_Base
 	public Dialog(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		mHeaderHight = margin = calcHeaderHeight();
+		mHeaderHight = calcHeaderHeight();
 		setFooterHeight(calcFooterHeight(false));
 
 		try

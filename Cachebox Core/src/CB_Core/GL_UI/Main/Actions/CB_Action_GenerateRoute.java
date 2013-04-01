@@ -25,6 +25,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -65,7 +66,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(8);
+		return SpriteCache.Icons.get(IconName.trackList_8.ordinal());
 	}
 
 	@Override

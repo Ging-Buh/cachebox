@@ -6,6 +6,7 @@ import java.util.Iterator;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Label;
@@ -147,8 +148,8 @@ public class SettingsItem_QuickButton extends CB_View_Base
 
 		up.setImage(new SpriteDrawable(SpriteCache.Arrows.get(11)));
 		down.setImage(new SpriteDrawable(SpriteCache.Arrows.get(11)));
-		del.setImage(new SpriteDrawable(SpriteCache.Icons.get(28)));
-		add.setImage(new SpriteDrawable(SpriteCache.Icons.get(52)));
+		del.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.delete_28.ordinal())));
+		add.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.add_52.ordinal())));
 
 		up.setImageScale(0.7f);
 		down.setImageScale(0.7f);

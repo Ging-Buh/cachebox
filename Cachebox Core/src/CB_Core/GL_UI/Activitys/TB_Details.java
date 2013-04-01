@@ -5,6 +5,7 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Image;
@@ -278,11 +279,11 @@ public class TB_Details extends ActivityBase
 		final Menu cm = new Menu("TBLogContextMenu");
 		cm.addItemClickListner(menuItemClickListner);
 
-		if (!isInventory) cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", SpriteCache.Icons.get(58));
-		if (isInventory) cm.addItem(MenuID.MI_TB_VISIT, "visit", SpriteCache.Icons.get(62));
-		if (isInventory) cm.addItem(MenuID.MI_TB_DROPPED, "dropped", SpriteCache.Icons.get(59));
-		if (!isInventory) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", SpriteCache.Icons.get(60));
-		if (!isInventory) cm.addItem(MenuID.MI_TB_PICKED, "picked", SpriteCache.Icons.get(61));
+		if (!isInventory) cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", SpriteCache.Icons.get(IconName.tbDiscover_58.ordinal()));
+		if (isInventory) cm.addItem(MenuID.MI_TB_VISIT, "visit", SpriteCache.Icons.get(IconName.tbVisit_62.ordinal()));
+		if (isInventory) cm.addItem(MenuID.MI_TB_DROPPED, "dropped", SpriteCache.Icons.get(IconName.tbDrop_59.ordinal()));
+		if (!isInventory) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", SpriteCache.Icons.get(IconName.tbGrab_60.ordinal()));
+		if (!isInventory) cm.addItem(MenuID.MI_TB_PICKED, "picked", SpriteCache.Icons.get(IconName.tbPicked_61.ordinal()));
 
 		cm.Show();
 	}

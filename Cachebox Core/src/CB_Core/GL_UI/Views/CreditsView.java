@@ -6,6 +6,7 @@ import java.util.Collections;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
@@ -223,7 +224,7 @@ public class CreditsView extends CB_View_Base
 
 		list.add(new Person("hannes!", Job.idea, "2009-2011"));
 		list.add(new Person("Stonefinger", Job.designer));
-		list.add(new Person("Groundspeak API", Job.service, SpriteCache.Icons.get(35)));
+		list.add(new Person("Groundspeak API", Job.service, SpriteCache.Icons.get(IconName.GCLive_35.ordinal())));
 		list.add(new Person(null, Job.library, SpriteCache.getThemedSprite("libgdx")));// Name at Logo image
 		list.add(new Person("Mapsforge", Job.library, SpriteCache.getThemedSprite("mapsforge_logo")));
 		list.add(new Person("OpenRouteService.org", Job.service, SpriteCache.getThemedSprite("openrouteservice_logo")));

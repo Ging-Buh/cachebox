@@ -8,6 +8,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
@@ -218,13 +219,11 @@ public class GL_MsgBox extends Dialog
 	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember)
 	{
 		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
-
 		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
 
 		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
 
-		TextBounds bounds = Fonts.MeasureWrapped(Text, MsgWidth);
-		float MeasuredTextHeight = bounds.height + (margin * 2);
+		float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 2);
 
 		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UI_Size_Base.that.getButtonHeight()) : (int) MeasuredTextHeight);
 
@@ -252,45 +251,44 @@ public class GL_MsgBox extends Dialog
 	{
 		BitmapFont font = Fonts.getBig();
 		Color color = Fonts.getFontColor();
-		int button = buttons.ordinal();
-		if (button == MessageBoxButtons.AbortRetryIgnore.ordinal())
+		if (buttons == MessageBoxButtons.AbortRetryIgnore)
 		{
 			createButtons(this, 3);
 			button1.setText(Translation.Get("abort"), font, color);
 			button2.setText(Translation.Get("retry"), font, color);
 			button3.setText(Translation.Get("ignore"), font, color);
 		}
-		else if (button == MessageBoxButtons.OK.ordinal())
+		else if (buttons == MessageBoxButtons.OK)
 		{
 			createButtons(this, 1);
 			button1.setText(Translation.Get("ok"), font, color);
 		}
-		else if (button == MessageBoxButtons.OKCancel.ordinal())
+		else if (buttons == MessageBoxButtons.OKCancel)
 		{
 			createButtons(this, 2);
 			button1.setText(Translation.Get("ok"), font, color);
 			button3.setText(Translation.Get("cancel"), font, color);
 		}
-		else if (button == MessageBoxButtons.RetryCancel.ordinal())
+		else if (buttons == MessageBoxButtons.RetryCancel)
 		{
 			createButtons(this, 2);
 			button1.setText(Translation.Get("retry"), font, color);
 			button3.setText(Translation.Get("cancel"), font, color);
 		}
-		else if (button == MessageBoxButtons.YesNo.ordinal())
+		else if (buttons == MessageBoxButtons.YesNo)
 		{
 			createButtons(this, 2);
 			button1.setText(Translation.Get("yes"), font, color);
 			button3.setText(Translation.Get("no"), font, color);
 		}
-		else if (button == MessageBoxButtons.YesNoCancel.ordinal())
+		else if (buttons == MessageBoxButtons.YesNoCancel)
 		{
 			createButtons(this, 3);
 			button1.setText(Translation.Get("yes"), font, color);
 			button2.setText(Translation.Get("no"), font, color);
 			button3.setText(Translation.Get("cancel"), font, color);
 		}
-		else if (button == MessageBoxButtons.Cancel.ordinal())
+		else if (buttons == MessageBoxButtons.Cancel)
 		{
 			createButtons(this, 3);
 			button1.setInvisible();
@@ -299,7 +297,6 @@ public class GL_MsgBox extends Dialog
 		}
 		else
 		{
-			// no Buttons
 			this.setFooterHeight(calcFooterHeight(false));
 		}
 	}
@@ -312,39 +309,38 @@ public class GL_MsgBox extends Dialog
 		switch (msgIcon.ordinal())
 		{
 		case 0:
-			icon = SpriteCache.Icons.get(32);
+			icon = SpriteCache.Icons.get(IconName.info_32.ordinal());
 			break;
 		case 1:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 2:
-			icon = SpriteCache.Icons.get(33);
+			icon = SpriteCache.Icons.get(IconName.warning_33.ordinal());
 			break;
 		case 3:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 4:
-			icon = SpriteCache.Icons.get(32);
+			icon = SpriteCache.Icons.get(IconName.info_32.ordinal());
 			break;
 		case 5:
 			icon = null;
 			break;
 		case 6:
-			icon = SpriteCache.Icons.get(34);
+			icon = SpriteCache.Icons.get(IconName.help_34.ordinal());
 			break;
 		case 7:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 8:
-			icon = SpriteCache.Icons.get(33);
+			icon = SpriteCache.Icons.get(IconName.warning_33.ordinal());
 			break;
 		case 9:
-			icon = SpriteCache.Icons.get(35);
+			icon = SpriteCache.Icons.get(IconName.GCLive_35.ordinal());
 			break;
 		case 10:
-			icon = SpriteCache.Icons.get(35);
+			icon = SpriteCache.Icons.get(IconName.GCLive_35.ordinal());
 			break;
-
 		default:
 			icon = null;
 

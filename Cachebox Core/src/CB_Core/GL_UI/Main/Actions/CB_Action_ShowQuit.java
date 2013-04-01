@@ -4,6 +4,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -29,6 +30,8 @@ public class CB_Action_ShowQuit extends CB_Action
 	public void Execute()
 	{
 		// if (askIsShown) return;
+
+		CB_Core.Log.Logger.setDebug(true);
 
 		if (msg != null && GL.that.actDialog == msg) return;
 
@@ -65,6 +68,6 @@ public class CB_Action_ShowQuit extends CB_Action
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(31);
+		return SpriteCache.Icons.get(IconName.close_31.ordinal());
 	}
 }

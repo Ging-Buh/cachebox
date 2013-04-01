@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.MenuID;
@@ -46,6 +47,6 @@ public class CB_Action_Show_Search extends CB_Action
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(27);
+		return SpriteCache.Icons.get(IconName.lupe_27.ordinal());
 	}
 }

@@ -20,6 +20,7 @@ import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.Box;
@@ -1053,7 +1054,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			CB_RectF imageRec = new CB_RectF(this.halfWidth - halfSize, this.halfHeight - halfSize, size, size);
 
 			iconImage = new Image(imageRec, "MsgBoxIcon");
-			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(51)));
+			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.daySpinner_51.ordinal())));
 			iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
 
 			this.addChild(iconImage);

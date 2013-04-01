@@ -7,6 +7,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
@@ -287,37 +288,37 @@ public class ButtonDialog extends Dialog
 		switch (msgIcon.ordinal())
 		{
 		case 0:
-			icon = SpriteCache.Icons.get(32);
+			icon = SpriteCache.Icons.get(IconName.info_32.ordinal());
 			break;
 		case 1:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 2:
-			icon = SpriteCache.Icons.get(33);
+			icon = SpriteCache.Icons.get(IconName.warning_33.ordinal());
 			break;
 		case 3:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 4:
-			icon = SpriteCache.Icons.get(32);
+			icon = SpriteCache.Icons.get(IconName.info_32.ordinal());
 			break;
 		case 5:
 			icon = null;
 			break;
 		case 6:
-			icon = SpriteCache.Icons.get(34);
+			icon = SpriteCache.Icons.get(IconName.help_34.ordinal());
 			break;
 		case 7:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 8:
-			icon = SpriteCache.Icons.get(33);
+			icon = SpriteCache.Icons.get(IconName.warning_33.ordinal());
 			break;
 		case 9:
-			icon = SpriteCache.Icons.get(35);
+			icon = SpriteCache.Icons.get(IconName.GCLive_35.ordinal());
 			break;
 		case 10:
-			icon = SpriteCache.Icons.get(35);
+			icon = SpriteCache.Icons.get(IconName.GCLive_35.ordinal());
 			break;
 
 		default:

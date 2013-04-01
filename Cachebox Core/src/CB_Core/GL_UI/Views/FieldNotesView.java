@@ -14,6 +14,7 @@ import CB_Core.GCVote.GCVote;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.EditFieldNotes;
 import CB_Core.GL_UI.Activitys.EditFieldNotes.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialog;
@@ -227,7 +228,7 @@ public class FieldNotesView extends V_ListView
 			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
 		}
 
-		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(35));
+		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
 		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
 
 		return cm;

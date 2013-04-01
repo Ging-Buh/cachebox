@@ -7,6 +7,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.GestureHelp;
 import CB_Core.GL_UI.GL_Listener.GL;
@@ -316,7 +317,7 @@ public class CB_Button extends Button implements OnClickListener
 				float iconHeight = this.height / 2.3f;
 				float Versatz = this.height / 38f;
 
-				menuSprite = new Sprite(SpriteCache.Icons.get(37));
+				menuSprite = new Sprite(SpriteCache.Icons.get(IconName.menu_37.ordinal()));
 				menuSprite.setBounds(this.width - iconWidth - Versatz, Versatz, iconWidth, iconHeight);
 			}
 

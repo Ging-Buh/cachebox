@@ -2,6 +2,7 @@ package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.LogView;
@@ -34,7 +35,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(4);
+		return SpriteCache.Icons.get(IconName.list_4.ordinal());
 	}
 
 	@Override

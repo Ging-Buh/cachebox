@@ -9,6 +9,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -37,7 +38,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(35);
+		return SpriteCache.Icons.get(IconName.GCLive_35.ordinal());
 	}
 
 	private ProgressDialog pd;

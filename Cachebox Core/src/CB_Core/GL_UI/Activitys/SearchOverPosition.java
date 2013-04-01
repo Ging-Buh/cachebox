@@ -12,6 +12,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
@@ -137,7 +138,7 @@ public class SearchOverPosition extends ActivityBase
 
 		gsLogo = new Image(width - this.getLeftWidth() - this.getRightWidth() - margin - lineHeight, this.height - this.getTopHeight()
 				- lineHeight - margin, lineHeight, lineHeight, "");
-		gsLogo.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(35)));
+		gsLogo.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.GCLive_35.ordinal())));
 		this.addChild(gsLogo);
 
 		lblTitle = new Label(this.getLeftWidth() + margin, this.height - this.getTopHeight() - lineHeight - margin, width
@@ -511,7 +512,7 @@ public class SearchOverPosition extends ActivityBase
 			CB_RectF imageRec = new CB_RectF(this.halfWidth - halfSize, this.halfHeight - halfSize, size, size);
 
 			iconImage = new Image(imageRec, "MsgBoxIcon");
-			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(51)));
+			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.daySpinner_51.ordinal())));
 			iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
 
 			this.addChild(iconImage);

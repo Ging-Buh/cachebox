@@ -279,19 +279,19 @@ public class CacheDraw
 
 		// Draw S/D/T
 		int SDTleft = left + 2;
-		String CacheSize = "";
-		switch ((int) (cache.Size.ordinal()))
+		String CacheSize;
+		switch (cache.Size)
 		{
-		case 1:
+		case micro:
 			CacheSize = "M"; // micro;
 			break;
-		case 2:
+		case small:
 			CacheSize = "S"; // small;
 			break;
-		case 3:
+		case regular:
 			CacheSize = "R"; // regular;
 			break;
-		case 4:
+		case large:
 			CacheSize = "L"; // large;
 			break;
 		default:

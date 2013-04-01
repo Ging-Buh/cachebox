@@ -16,6 +16,7 @@ import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.SearchOverPosition;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
@@ -355,7 +356,7 @@ public class SearchDialog extends PopUp_Base
 		else
 		{
 
-			mBtnFilter.setImage(new SpriteDrawable(SpriteCache.Icons.get(53)));
+			mBtnFilter.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.targetDay_53.ordinal())));
 			mBtnFilter.setText("");
 		}
 	}

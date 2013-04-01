@@ -2,6 +2,7 @@ package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Dialogs.HintDialog;
 import CB_Core.GL_UI.Menu.MenuID;
 
@@ -34,6 +35,6 @@ public class CB_Action_ShowHint extends CB_Action
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(19);
+		return SpriteCache.Icons.get(IconName.hint_19.ordinal());
 	}
 }

@@ -8,6 +8,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditCache;
 import CB_Core.GL_UI.Activitys.Import;
@@ -53,7 +54,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(7);
+		return SpriteCache.Icons.get(IconName.cacheList_7.ordinal());
 	}
 
 	@Override
@@ -149,18 +150,18 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		}
 
 		MenuItem mi;
-		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCache.Icons.get(39));
-		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCache.Icons.get(13));
-		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCache.Icons.get(13));
-		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCache.Icons.get(12));
-		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(40));
-		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(41));
+		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCache.Icons.get(IconName.sort_39.ordinal()));
+		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCache.Icons.get(IconName.filter_13.ordinal()));
+		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCache.Icons.get(IconName.filter_13.ordinal()));
+		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCache.Icons.get(IconName.lupe_12.ordinal()));
+		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(IconName.import_40.ordinal()));
+		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(IconName.manageDB_41.ordinal()));
 		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
 		mi.setCheckable(true);
 		mi.setChecked(GlobalCore.getAutoResort());
-		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
-		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCache.Icons.get(57));
-		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCache.Icons.get(28));
+		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
+		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCache.Icons.get(IconName.addCache_57.ordinal()));
+		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCache.Icons.get(IconName.delete_28.ordinal()));
 		return cm;
 	}
 

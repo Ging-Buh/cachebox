@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Menu.MenuID;
@@ -24,7 +25,7 @@ public class CB_Action_ShowFilterSettings extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(13);
+		return SpriteCache.Icons.get(IconName.filter_13.ordinal());
 	}
 
 	EditFilterSettings edFi;

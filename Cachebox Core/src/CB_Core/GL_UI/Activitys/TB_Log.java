@@ -5,6 +5,7 @@ import CB_Core.TemplateFormatter;
 import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -104,23 +105,23 @@ public class TB_Log extends ActivityBase
 		switch (this.LT)
 		{
 		case discovered:
-			btnAction.setImage(SpriteCache.Icons.get(58));
+			btnAction.setImage(SpriteCache.Icons.get(IconName.tbDiscover_58.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.DiscoverdTemplate.getValue(), TB));
 			break;
 		case visited:
-			btnAction.setImage(SpriteCache.Icons.get(62));
+			btnAction.setImage(SpriteCache.Icons.get(IconName.tbVisit_62.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.VisitedTemplate.getValue(), TB));
 			break;
 		case dropped_off:
-			btnAction.setImage(SpriteCache.Icons.get(59));
+			btnAction.setImage(SpriteCache.Icons.get(IconName.tbDrop_59.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.DroppedTemplate.getValue(), TB));
 			break;
 		case grab_it:
-			btnAction.setImage(SpriteCache.Icons.get(60));
+			btnAction.setImage(SpriteCache.Icons.get(IconName.tbGrab_60.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.GrabbedTemplate.getValue(), TB));
 			break;
 		case retrieve:
-			btnAction.setImage(SpriteCache.Icons.get(61));
+			btnAction.setImage(SpriteCache.Icons.get(IconName.tbPicked_61.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.PickedTemplate.getValue(), TB));
 			break;
 		}

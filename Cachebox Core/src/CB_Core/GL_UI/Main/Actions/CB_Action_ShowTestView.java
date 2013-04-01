@@ -2,6 +2,7 @@ package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.TestViews.TestView;
@@ -34,7 +35,7 @@ public class CB_Action_ShowTestView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(25);
+		return SpriteCache.Icons.get(IconName.jokerPhone_25.ordinal());
 	}
 
 	@Override
