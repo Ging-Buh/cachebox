@@ -21,7 +21,6 @@ import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
-import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -356,8 +355,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	}
 
 	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
-
-	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
 	public void registerTextField(final EditWrapedTextField textField)
 	{

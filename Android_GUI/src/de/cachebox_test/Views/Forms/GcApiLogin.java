@@ -3,6 +3,7 @@ package de.cachebox_test.Views.Forms;
 import CB_Core.Config;
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Ui.ActivityUtils;
 
+@SuppressLint("HandlerLeak")
 public class GcApiLogin extends Activity
 {
 	private static GcApiLogin gcApiLogin;
@@ -241,7 +243,15 @@ public class GcApiLogin extends Activity
 					// store the encrypted AccessToken in the Config file
 					// wir bekommen den Key schon verschlüsselt, deshalb muss er
 					// nicht noch einmal verschlüsselt werden!
-					Config.settings.GcAPI.setEncryptedValue(accessToken);
+					if (Config.settings.StagingAPI.getValue())
+					{
+						Config.settings.GcAPIStaging.setEncryptedValue(accessToken);
+					}
+					else
+					{
+						Config.settings.GcAPI.setEncryptedValue(accessToken);
+					}
+
 					Config.AcceptChanges();
 
 					String act = Config.GetAccessToken();

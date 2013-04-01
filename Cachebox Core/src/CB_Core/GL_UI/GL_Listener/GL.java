@@ -47,10 +47,12 @@ import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -352,6 +354,18 @@ public class GL implements ApplicationListener
 
 		}
 
+		if (Config.settings.StagingAPI.getValue())
+		{
+			if (StagingFont == null)
+			{
+				StagingFont = new BitmapFontCache(Fonts.getCompass());
+				StagingFont.setColor(Color.RED);
+				StagingFont.setPosition(100, 120);
+				StagingFont.addText("Using Staging Server", 70, 50);
+			}
+			if (StagingFont != null) StagingFont.draw(batch);
+		}
+
 		if (GlobalCore.isTestVersion())
 		{
 
@@ -365,6 +379,7 @@ public class GL implements ApplicationListener
 			{
 				if (SpriteCache.day_skin != null)// SpriteCache is initial
 				{
+
 					FpsInfoSprite = new Sprite(SpriteCache.getThemedSprite("pixel2x2"));
 					FpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
 					FpsInfoSprite.setSize(4, 4);
@@ -392,6 +407,8 @@ public class GL implements ApplicationListener
 		Gdx.gl.glFinish();
 
 	}
+
+	private BitmapFontCache StagingFont;
 
 	protected int debugSpritebatchMaxCount = 0;
 	protected long lastRenderBegin = 0;

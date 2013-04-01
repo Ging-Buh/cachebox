@@ -55,7 +55,18 @@ public class API_Button extends Button
 		{
 			Drawable drw;
 
-			if (Config.settings.GcAPI.getValue().equals(""))
+			boolean Entry = false;
+
+			if (Config.settings.StagingAPI.getValue())
+			{
+				if (!Config.settings.GcAPIStaging.getValue().equals("")) Entry = true;
+			}
+			else
+			{
+				if (!Config.settings.GcAPI.getValue().equals("")) Entry = true;
+			}
+
+			if (Entry)
 			{
 				drw = new SpriteDrawable(SpriteCache.getThemedSprite("chk-icon-disable"));
 			}

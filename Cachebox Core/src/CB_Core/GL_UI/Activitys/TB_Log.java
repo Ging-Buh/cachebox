@@ -125,4 +125,16 @@ public class TB_Log extends ActivityBase
 			break;
 		}
 	}
+
+	private void LogNow()
+	{
+
+		/**
+		 * Muss je nach LogType leer oder gefüllt sein
+		 */
+		String cacheCode = "";
+
+		// GroundspeakAPI.createTrackableLog(accessToken, TB, cacheCode, LogTypeId, dateLogged, note);
+
+	}
 }

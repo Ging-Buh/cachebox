@@ -482,7 +482,16 @@ public class Config
 	 */
 	public static String GetAccessToken(boolean Url_Codiert)
 	{
-		String act = settings.GcAPI.getValue();
+		String act = "";
+		if (settings.StagingAPI.getValue())
+		{
+			act = settings.GcAPIStaging.getValue();
+		}
+		else
+		{
+			act = settings.GcAPI.getValue();
+		}
+
 		// Prüfen, ob das AccessToken für ACB ist!!!
 		if (!(act.startsWith("A"))) return "";
 		String result = act.substring(1, act.length());

@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.Color;
 
 public class SelectSolverFunction extends ButtonDialog
 {
-	private Button bOK, bCancel;
 	private Label desc;
 	private IFunctionResult mResultListner;
 	private ScrollBox scrollBox;

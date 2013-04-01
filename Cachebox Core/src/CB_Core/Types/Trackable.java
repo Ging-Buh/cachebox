@@ -32,6 +32,7 @@ public class Trackable implements Comparable<Trackable>
 	private String OwnerName = "";
 	private String Url = "";
 	private String TypeName = "";
+	private String TrackingNumber = "";
 
 	// TODO must load info (the GS_API gives no info about this)
 	private Date lastVisit;
@@ -40,7 +41,6 @@ public class Trackable implements Comparable<Trackable>
 
 	public Trackable()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	public Trackable(String Name, String IconUrl, String desc)
@@ -249,7 +249,6 @@ public class Trackable implements Comparable<Trackable>
 		}
 
 		JSONArray jArray;
-		JSONObject jImage;
 		try
 		{
 			jArray = JObj.getJSONArray("Images");
@@ -258,9 +257,6 @@ public class Trackable implements Comparable<Trackable>
 			{
 				ImageUrl = jArray.getJSONObject(0).getString("Url");
 			}
-
-			// JObj.getJSONObject("Images");
-			// ImageUrl = JObj.getString("Url");
 		}
 		catch (JSONException e)
 		{
@@ -417,9 +413,19 @@ public class Trackable implements Comparable<Trackable>
 		return Url;
 	}
 
+	public String getTrackingNumber()
+	{
+		return this.TrackingNumber;
+	}
+
 	/*
 	 * Setter
 	 */
+
+	public void setTrackingNumber(String trackingNumber)
+	{
+		this.TrackingNumber = trackingNumber;
+	}
 
 	/*
 	 * Methods

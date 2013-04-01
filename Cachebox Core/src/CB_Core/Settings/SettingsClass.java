@@ -99,6 +99,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool ShowDirektLine;
 	public SettingBool ShowAccuracyCircle;
 	public SettingBool PositionMarkerTransparent;
+	public SettingBool StagingAPI;
 
 	public SettingBool DebugShowMarker;
 	public SettingBool ImportRatings;
@@ -197,6 +198,7 @@ public class SettingsClass extends SettingsList
 
 	// Decrypt
 	public SettingEncryptedString GcAPI;
+	public SettingEncryptedString GcAPIStaging;
 	public SettingEncryptedString GcVotePassword;
 
 	// Enums
@@ -399,6 +401,8 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Login;
 
 		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, INVISIBLE, "", SettingStoreType.Global));
+		addSetting(GcAPIStaging = new SettingEncryptedString("GcAPIStaging", cat, INVISIBLE, "", SettingStoreType.Global));
+
 		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", cat, NORMAL, "", SettingStoreType.Global));
 		addSetting(GcLogin = new SettingString("GcLogin", cat, NORMAL, "", SettingStoreType.Global));
 		addSetting(GcJoker = new SettingString("GcJoker", cat, NORMAL, "", SettingStoreType.Global));
@@ -534,6 +538,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, EXPERT, false, SettingStoreType.Global));
 		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, EXPERT, "", SettingStoreType.Global));
 		addSetting(DebugSpriteBatchCountBuffer = new SettingBool("DebugSpriteBatchCountBuffer", cat, EXPERT, false, SettingStoreType.Global));
+		addSetting(StagingAPI = new SettingBool("StagingAPI", cat, EXPERT, false, SettingStoreType.Global));
 
 	}
 

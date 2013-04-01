@@ -25,14 +25,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 public class TB_Details extends ActivityBase
 {
 	public static TB_Details that;
-	private float innerLeft, innerWidth, innerHeight;
+	private float innerHeight;
 	private ScrollBox scrollBox;
 	private Button btnClose, btnAction;
 	private Trackable TB;
 	private Image icon, image;
 	private Label lblName, lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
 	private Label lblTypeName, lblTbCode, lblOwner, lbllastVisit, lblHome, lblBirth, lblTravelDistance;
-	private Label TypeName, TbCode, Owner, lastVisit, Home, Birth, TravelDistance;
+	private Label TypeName, TbCode, Owner, Birth, lastVisit, Home, TravelDistance; // TODO Visit,Home und Distance müssen noch angezeigt
+																					// werden!
 	private Box AboutThisItem, GoalThisItem, DetailThisItem;
 
 	public TB_Details()

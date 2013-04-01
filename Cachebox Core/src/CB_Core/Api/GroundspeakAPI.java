@@ -43,6 +43,7 @@ import CB_Core.Types.Waypoint;
 public class GroundspeakAPI
 {
 	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
+	public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/LiveV6/geocaching.svc/";
 
 	public static String LastAPIError = "";
 	public static boolean CacheStatusValid = false;
@@ -658,6 +659,7 @@ public class GroundspeakAPI
 		return (-1);
 	}
 
+	@SuppressWarnings("unused")
 	public static Trackable getTBbyTreckNumber(String accessToken, String TrackingNumber)
 	{
 		if (chkMemperShip(accessToken)) return null;
@@ -683,7 +685,9 @@ public class GroundspeakAPI
 					for (int ii = 0; ii < jTrackables.length(); ii++)
 					{
 						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
-						return new Trackable(jTrackable);
+						Trackable ret = new Trackable(jTrackable);
+						ret.setTrackingNumber(TrackingNumber);
+						return ret;
 					}
 				}
 				else
@@ -998,6 +1002,79 @@ public class GroundspeakAPI
 
 		return membershipType > 0;
 
+	}
+
+	/**
+	 * GS LogTypeId's:</br>4 - Post Note </br>14 - Place in a cache </br>16 - Mark as missing </br>19 - Grab </br>48 - Discover </br>69 -
+	 * Move to collection </br>70 - Move to inventory </br>75 - Visit
+	 * 
+	 * @return
+	 */
+	public static int createTrackableLog(String accessToken, Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note)
+	{
+		if (chkMemperShip(accessToken)) return -10;
+
+		if (cacheCode != null) cacheCode = "";
+
+		try
+		{
+			HttpPost httppost = new HttpPost(GS_LIVE_URL + "CreateFieldNoteAndPublish?format=json");
+			String requestString = "";
+			requestString = "{";
+			requestString += "\"AccessToken\":\"" + accessToken + "\",";
+			requestString += "\"CacheCode\":\"" + cacheCode + "\",";
+			requestString += "\"LogType\":" + String.valueOf(LogTypeId) + ",";
+			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
+			requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
+			requestString += "\"TravelBugCode\":" + String.valueOf(TB.getGcCode()) + ",";
+			requestString += "\"TrackingNumber\"" + String.valueOf(TB.getTrackingNumber()) + ",";
+			requestString += "}";
+
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
+
+			// Execute HTTP Post Request
+			String result = Execute(httppost);
+
+			// Parse JSON Result
+			try
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					result = "";
+					LastAPIError = "";
+				}
+				else
+				{
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					result += status.getString("StatusMessage") + "\n";
+					result += status.getString("ExceptionDetails");
+					LastAPIError = result;
+					return -1;
+				}
+
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
+				LastAPIError = e.getMessage();
+				return -1;
+			}
+
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			Logger.Error("UploadFieldNotesAPI", "Error", ex);
+			LastAPIError = ex.getMessage();
+			return -1;
+		}
+
+		LastAPIError = "";
+		return 0;
 	}
 
 }

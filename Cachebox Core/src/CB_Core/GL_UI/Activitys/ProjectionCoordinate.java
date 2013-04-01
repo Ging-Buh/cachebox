@@ -16,7 +16,6 @@ import CB_Locator.Coordinate;
 
 public class ProjectionCoordinate extends ActivityBase
 {
-	private Coordinate cancelCoord;
 	private Coordinate coord;
 	private Coordinate projCoord;
 
@@ -65,7 +64,6 @@ public class ProjectionCoordinate extends ActivityBase
 	{
 		super(rec, Name);
 		coord = Coord;
-		cancelCoord = Coord.copy();
 		radius = (type == Type.circle);
 		p2p = (type == Type.p2p);
 		mReturnListner = listner;
