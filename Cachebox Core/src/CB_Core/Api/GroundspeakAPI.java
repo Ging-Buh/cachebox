@@ -98,9 +98,11 @@ public class GroundspeakAPI
 
 		if (chkMemperShip(accessToken)) return -10;
 
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "CreateFieldNoteAndPublish?format=json");
+			HttpPost httppost = new HttpPost(URL + "CreateFieldNoteAndPublish?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -169,10 +171,11 @@ public class GroundspeakAPI
 	{
 
 		if (chkMemperShip(accessToken)) return -1;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetYourUserProfile?format=json");
+			HttpPost httppost = new HttpPost(URL + "GetYourUserProfile?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -236,9 +239,11 @@ public class GroundspeakAPI
 
 		API_isChacked = true;
 
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetYourUserProfile?format=json");
+			HttpPost httppost = new HttpPost(URL + "GetYourUserProfile?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -305,9 +310,12 @@ public class GroundspeakAPI
 	public static int GetGeocacheStatus(String accessToken, ArrayList<Cache> caches)
 	{
 		if (chkMemperShip(accessToken)) return -1;
+
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetGeocacheStatus?format=json");
+			HttpPost httppost = new HttpPost(URL + "GetGeocacheStatus?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -395,13 +403,16 @@ public class GroundspeakAPI
 	public static int GetCacheLimits(String accessToken)
 	{
 		if (chkMemperShip(accessToken)) return -1;
+
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		LastAPIError = "";
 		// zum Abfragen der CacheLimits einfach nach einem Cache suchen, der
 		// nicht existiert.
 		// dadurch wird der Zähler nicht erhöht, die Limits aber zurückgegeben.
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "SearchForGeocaches?format=json");
+			HttpPost httppost = new HttpPost(URL + "SearchForGeocaches?format=json");
 
 			JSONObject request = new JSONObject();
 			request.put("AccessToken", accessToken);
@@ -599,10 +610,11 @@ public class GroundspeakAPI
 	public static int getMyTbList(String accessToken, TbList list)
 	{
 		if (chkMemperShip(accessToken)) return -1;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetUsersTrackables?format=json");
+			HttpPost httppost = new HttpPost(URL + "GetUsersTrackables?format=json");
 
 			JSONObject request = new JSONObject();
 			request.put("AccessToken", accessToken);
@@ -663,10 +675,11 @@ public class GroundspeakAPI
 	public static Trackable getTBbyTreckNumber(String accessToken, String TrackingNumber)
 	{
 		if (chkMemperShip(accessToken)) return null;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
-			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetTrackablesByTrackingNumber?AccessToken=" + accessToken + "&trackingNumber="
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + accessToken + "&trackingNumber="
 					+ TrackingNumber + "&format=json");
 
 			String result = Execute(httppost);
@@ -729,9 +742,11 @@ public class GroundspeakAPI
 	{
 		if (chkMemperShip(accessToken)) return -1;
 
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
 					+ "&format=json");
 
 			String result = Execute(httppost);
@@ -783,11 +798,11 @@ public class GroundspeakAPI
 	public static HashMap<String, URI> GetAllImageLinks(String accessToken, String cacheCode)
 	{
 		if (chkMemperShip(accessToken)) return null;
-
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 		HashMap<String, URI> list = new HashMap<String, URI>();
 		try
 		{
-			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
 					+ "&format=json");
 
 			String result = Execute(httppost);
@@ -1013,12 +1028,12 @@ public class GroundspeakAPI
 	public static int createTrackableLog(String accessToken, Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note)
 	{
 		if (chkMemperShip(accessToken)) return -10;
-
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 		if (cacheCode != null) cacheCode = "";
 
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "CreateFieldNoteAndPublish?format=json");
+			HttpPost httppost = new HttpPost(URL + "CreateFieldNoteAndPublish?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
