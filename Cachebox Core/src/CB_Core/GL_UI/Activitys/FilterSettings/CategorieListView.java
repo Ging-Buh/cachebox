@@ -367,7 +367,7 @@ public class CategorieListView extends V_ListView
 
 		for (Category cat : GlobalCore.Categories)
 		{
-			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCache.Icons.get(IconName..ordinal()), cat,
+			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCache.Icons.get(IconName.doc_20.ordinal()), cat,
 					COLLABSE_BUTTON_ITEM);
 
 			for (GpxFilename File : cat)
