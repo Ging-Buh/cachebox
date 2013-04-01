@@ -524,7 +524,7 @@ public class FieldNotesView extends V_ListView
 
 		if (!witoutShowEdit)
 		{
-			efnActivity = new EditFieldNotes(newFieldNote, returnListner);
+			efnActivity = new EditFieldNotes(newFieldNote, returnListner, true);
 			efnActivity.show();
 		}
 		else
@@ -604,7 +604,7 @@ public class FieldNotesView extends V_ListView
 	{
 
 		@Override
-		public void returnedFieldNote(FieldNoteEntry fieldNote)
+		public void returnedFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote)
 		{
 
 			FieldNotesView.firstShow = false;
@@ -615,46 +615,53 @@ public class FieldNotesView extends V_ListView
 			if (fieldNote != null)
 			{
 
-				// neue FieldNote
-				lFieldNotes.add(0, fieldNote);
-
-				// eine evtl. vorhandene FieldNote /DNF löschen
-				if (fieldNote.type == 1 || fieldNote.type == 2)
+				if (isNewFieldNote)
 				{
-					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
-					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 2);
+					// nur, wenn eine FieldNote neu angelegt wurde
+					// neue FieldNote
+					lFieldNotes.add(0, fieldNote);
+
+					// eine evtl. vorhandene FieldNote /DNF löschen
+					if (fieldNote.type == 1 || fieldNote.type == 2)
+					{
+						lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, 1);
+						lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, 2);
+					}
 				}
 
 				fieldNote.WriteToDatabase();
 				aktFieldNote = fieldNote;
-				if (fieldNote.type == 1)
-				{
-					// Found it! -> Cache als gefunden markieren
-					if (!GlobalCore.getSelectedCache().Found)
-					{
-						GlobalCore.getSelectedCache().Found = true;
-						CacheDAO cacheDAO = new CacheDAO();
-						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-						Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
-						Config.AcceptChanges();
-					}
 
-				}
-				else if (fieldNote.type == 2)
+				if (isNewFieldNote)
 				{
-					// DidNotFound -> Cache als nicht gefunden markieren
-					if (GlobalCore.getSelectedCache().Found)
-					{
-						GlobalCore.getSelectedCache().Found = false;
-						CacheDAO cacheDAO = new CacheDAO();
-						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-						Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
-						Config.AcceptChanges();
-					}
-					// und eine evtl. vorhandene FieldNote FoundIt löschen
-					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
-				}
+					// nur, wenn eine FieldNote neu angelegt wurde
+					// wenn eine FieldNote neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
+					// SelectedCache eine fieldNote angelegt wird
+					if (fieldNote.type == 1)
+					{ // Found it! -> Cache als gefunden markieren
+						if (!GlobalCore.getSelectedCache().Found)
+						{
+							GlobalCore.getSelectedCache().Found = true;
+							CacheDAO cacheDAO = new CacheDAO();
+							cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+							Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
+							Config.AcceptChanges();
+						}
 
+					}
+					else if (fieldNote.type == 2)
+					{ // DidNotFound -> Cache als nicht gefunden markieren
+						if (GlobalCore.getSelectedCache().Found)
+						{
+							GlobalCore.getSelectedCache().Found = false;
+							CacheDAO cacheDAO = new CacheDAO();
+							cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+							Config.AcceptChanges();
+						} // und eine evtl. vorhandene FieldNote FoundIt löschen
+						lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
+					}
+				}
 				FieldNoteList.CreateVisitsTxt();
 
 			}
@@ -666,7 +673,7 @@ public class FieldNotesView extends V_ListView
 
 	private void editFieldNote()
 	{
-		efnActivity = new EditFieldNotes(aktFieldNote, returnListner);
+		efnActivity = new EditFieldNotes(aktFieldNote, returnListner, false);
 		efnActivity.show();
 	}
 

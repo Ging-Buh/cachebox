@@ -161,6 +161,7 @@ public class FieldNoteEntry implements Serializable
 	public void WriteToDatabase()
 	{
 		Parameters args = new Parameters();
+		if (Id >= 0) args.put("id", Id); // bei Update!!!
 		args.put("cacheid", CacheId);
 		args.put("gccode", gcCode);
 		args.put("name", CacheName);
@@ -177,7 +178,7 @@ public class FieldNoteEntry implements Serializable
 
 		try
 		{
-			Database.FieldNotes.insert("Fieldnotes", args);
+			Database.FieldNotes.insertWithConflictReplace("Fieldnotes", args);
 		}
 		catch (Exception exc)
 		{

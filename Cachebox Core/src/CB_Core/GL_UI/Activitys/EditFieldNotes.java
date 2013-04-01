@@ -56,18 +56,20 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private Label lblTime = null;
 	private Box scrollBox = null;
 	FilterSetListViewItem GcVote;
+	private boolean isNewFieldNote = false;
 
 	public interface ReturnListner
 	{
-		public void returnedFieldNote(FieldNoteEntry fn);
+		public void returnedFieldNote(FieldNoteEntry fn, boolean isNewFieldNote);
 	}
 
 	private ReturnListner mReturnListner;
 
-	public EditFieldNotes(FieldNoteEntry note, ReturnListner listner)
+	public EditFieldNotes(FieldNoteEntry note, ReturnListner listner, boolean isNewFieldNote)
 	{
 		super(ActivityBase.ActivityRec(), "");
 
+		this.isNewFieldNote = isNewFieldNote;
 		mReturnListner = listner;
 		fieldNote = note;
 		altfieldNote = note.copy();
@@ -196,7 +198,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 						fieldNote.UpdateDatabase();
 					}
 
-					mReturnListner.returnedFieldNote(fieldNote);
+					mReturnListner.returnedFieldNote(fieldNote, isNewFieldNote);
 				}
 				finish();
 				return true;
@@ -209,7 +211,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (mReturnListner != null) mReturnListner.returnedFieldNote(null);
+				if (mReturnListner != null) mReturnListner.returnedFieldNote(null, false);
 				finish();
 				return true;
 			}
