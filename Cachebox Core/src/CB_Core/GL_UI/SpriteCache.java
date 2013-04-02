@@ -79,37 +79,37 @@ public class SpriteCache
 
 	public static enum IconName
 	{
-		btnNormal_0,
-		button_1,
+		btnNormal_0, // not used
+		button_1, // not used
 		doc_2,
-		big16_3,
-		list_4,
-		map_5,
-		compass_6,
-		cacheList_7,
-		trackList_8,
-		log10_9,
-		video_10,
-		voiceRec_11,
-		lupe_12,
-		filter_13,
-		lock_14,
-		autoSelectOn_15,
-		autoSelectOff_16,
-		solver_17,
-		images_18,
-		hint_19,
-		doc_20, // 20 doppelt
-		list_21, // 21 doppelt
-		images_22, // 22 doppelt
-		note_23, // 23
-		solver_24, // 24 doppelt
-		jokerPhone_25, // 25
-		settings_26, // 26
-		lupe_27, // 27 doppelt
-		delete_28, // 28
-		voiceRec_29, // 29 doppelt
-		satellite_30, // 30
+		big16_3, // not used
+		list_4, // CB_Action_ShowLogView
+		map_5, // CB_Action_ShowMap
+		compass_6, // CB_Action_ShowCompassView
+		cacheList_7, // CB_Action_ShowCacheList
+		trackList_8, // CB_Action_GenerateRoute, CB_Action_RecTrack, CB_Action_ShowTrackListView
+		log10_9, // not used, doppelt
+		video_10, // QuickActions/CB_Action_ShowActivity/RecVideo, TabMainView/CB_Action_ShowActivity/RecVideo
+		voiceRec_11, // QuickActions/CB_Action_ShowActivity/VoiceRec, TabMainView/CB_Action_ShowActivity/VoiceRec
+		lupe_12, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_SEARCH_LIST
+		filter_13, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_FilterSet MI_RESET_FILTER, CB_Action_ShowFilterSettings
+		lock_14, // not used
+		autoSelectOn_15, // QuickButtonItem
+		autoSelectOff_16, // QuickButtonItem, CB_Action_switch_Autoresort
+		solver_17, // CB_Action_ShowSolverView, CB_Action_ShowSolverView2
+		images_18, // CB_Action_ShowSpoilerView, QuickButtonItem
+		hint_19, // CB_Action_ShowHint, QuickButtonItem, showBtnCacheContextMenu
+		doc_20, // 20 doppelt, CategorieListView
+		list_21, // 21 doppelt, showBtnCacheContextMenu
+		images_22, // 22 doppelt, showBtnCacheContextMenu
+		note_23, // 23 not used
+		solver_24, // 24 doppelt, showBtnCacheContextMenu
+		jokerPhone_25, // 25 CB_Action_ShowJokerView, CB_Action_ShowTestView, showBtnCacheContextMenu
+		settings_26, // 26 Image
+		lupe_27, // 27 doppelt, CB_Action_Show_Search, TrackableListView
+		delete_28, // 28 SettingsItem_QuickButton, CB_Action_Show_Delete_Dialog, CB_Action_ShowCacheList,
+		voiceRec_29, // 29 not used, doppelt
+		satellite_30, // 30 not used,
 		close_31, // 31
 		info_32, // 32
 		warning_33, // 33
@@ -126,7 +126,7 @@ public class SpriteCache
 		disabled_44, // 44
 		log11_45, // 45
 		navigate_46, // 46
-		log10_47, // 47 doppelt
+		log10_47, // QuickActions/CB_Action_ShowActivity/TakePhoto, TabMainView/CB_Action_ShowActivity/TakePhoto
 		DayNight_48, // 48
 		cb_49, // 49
 		userdata_50, // 50

@@ -550,6 +550,8 @@ public class Cache implements Comparable<Cache>
 		// the final not the the cache coordinates
 		Coordinate toPos = Pos;
 		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+		// sinnvolles Final
+		if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
 		float[] dist = new float[4];
 		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
 		cachedDistance = dist[0];

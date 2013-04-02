@@ -33,7 +33,7 @@ public class CB_AllContextMenuHandler
 		mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCache.BigIcons.get(IconName.autoSelectOff_16.ordinal()));
+		mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCache.BigIcons.get(16));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
 		mi = icm.addItem(MenuID.MI_SHOW_LOGS, "ShowLogs", SpriteCache.Icons.get(IconName.list_21.ordinal()));
