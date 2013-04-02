@@ -27,6 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import CB_Core.Config;
+
 /**
  * Diese Klasse stellt eine verbindung zu Team-Cachebox.de her und gibt dort hinterlegte Informationen zurük. (GCAuth url ; Versionsnummer)
  * 
@@ -36,6 +38,7 @@ public class CB_Api
 {
 
 	private static final String CB_API_URL_GET_URLS = "http://team-cachebox.de/CB_API/index.php?get=url_ACB";
+	private static final String CB_API_URL_GET_URLS_Staging = "http://team-cachebox.de/CB_API/index.php?get=url_ACB_Staging";
 
 	/**
 	 * Gibt die bei Team-Cachebox.de hinterlegte GC Auth url zurück
@@ -49,7 +52,7 @@ public class CB_Api
 		try
 		{
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(CB_API_URL_GET_URLS);
+			HttpPost httppost = new HttpPost(Config.settings.StagingAPI.getValue() ? CB_API_URL_GET_URLS_Staging : CB_API_URL_GET_URLS);
 
 			httppost.setHeader("Accept", "application/json");
 			httppost.setHeader("Content-type", "application/json");
