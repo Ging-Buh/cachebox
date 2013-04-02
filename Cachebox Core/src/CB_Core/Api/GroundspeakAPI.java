@@ -43,7 +43,7 @@ import CB_Core.Types.Waypoint;
 public class GroundspeakAPI
 {
 	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
-	public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/LiveV6/geocaching.svc/";
+	public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
 
 	public static String LastAPIError = "";
 	public static boolean CacheStatusValid = false;

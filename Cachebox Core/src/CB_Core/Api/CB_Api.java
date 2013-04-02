@@ -72,6 +72,7 @@ public class CB_Api
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
+				if (Config.settings.StagingAPI.getValue()) return json.getString("GcAuth_ACB_Staging");
 				return json.getString("GcAuth_ACB");
 
 			}
