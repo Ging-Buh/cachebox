@@ -189,6 +189,8 @@ public class Locator
 				}
 
 				break;
+			default:
+				break;
 			}
 
 			PositionChangedEventList.SpeedChanged();

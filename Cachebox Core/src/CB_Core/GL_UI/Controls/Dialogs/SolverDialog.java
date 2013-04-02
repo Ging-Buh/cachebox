@@ -294,6 +294,8 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		case Waypoint:
 			hidePageWaypoint();
 			break;
+		default:
+			break;
 		}
 
 		// y-Position der Controls zurücksetzen
@@ -315,6 +317,8 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			break;
 		case Waypoint:
 			showPageWaypoint();
+			break;
+		default:
 			break;
 		}
 		this.page = page;

@@ -124,6 +124,8 @@ public class TB_Log extends ActivityBase
 			btnAction.setImage(SpriteCache.Icons.get(IconName.tbPicked_61.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.PickedTemplate.getValue(), TB));
 			break;
+		default:
+			break;
 		}
 	}
 
