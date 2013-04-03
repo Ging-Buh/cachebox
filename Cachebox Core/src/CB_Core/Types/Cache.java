@@ -410,9 +410,14 @@ public class Cache implements Comparable<Cache>
 	 */
 	public float CachedDistance()
 	{
-		if (cachedDistance != 0) return cachedDistance;
+		if (cachedDistance != 0)
+		{
+			return cachedDistance;
+		}
 		else
+		{
 			return Distance(true);
+		}
 	}
 
 	/**
@@ -541,7 +546,11 @@ public class Cache implements Comparable<Cache>
 	 */
 	public float Distance(boolean useFinal)
 	{
-		Coordinate fromPos = Locator.getCoordinate();
+		return Distance(useFinal, Locator.getCoordinate());
+	}
+
+	public float Distance(boolean useFinal, Coordinate fromPos)
+	{
 		Waypoint waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
 		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
@@ -549,13 +558,16 @@ public class Cache implements Comparable<Cache>
 		// If a mystery has a final waypoint, the distance will be calculated to
 		// the final not the the cache coordinates
 		Coordinate toPos = Pos;
-		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
-		// sinnvolles Final
-		if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
+		if (waypoint != null)
+		{
+			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			// nur sinnvolles Final, sonst vom Cache
+			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
+		}
 		float[] dist = new float[4];
 		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
 		cachedDistance = dist[0];
-		return (float) cachedDistance;
+		return cachedDistance;
 	}
 
 	public boolean isAttributePositiveSet(Attributes attribute)
