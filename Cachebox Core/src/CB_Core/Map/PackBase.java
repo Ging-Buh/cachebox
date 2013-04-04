@@ -187,7 +187,6 @@ public class PackBase implements Comparable<PackBase>
 			BoundingBoxes.get(i).Write(writer);
 
 		// Indexe erzeugen
-		int cnt = 0;
 		for (int i = 0; i < BoundingBoxes.size(); i++)
 		{
 			BoundingBox bbox = BoundingBoxes.get(i);
@@ -229,7 +228,6 @@ public class PackBase implements Comparable<PackBase>
 		writer.writeLong(offset);
 
 		// So, und nun kopieren wir noch den Mist rein
-		cnt = 0;
 		for (int i = 0; i < BoundingBoxes.size() && !Cancel; i++)
 		{
 			BoundingBox bbox = BoundingBoxes.get(i);
