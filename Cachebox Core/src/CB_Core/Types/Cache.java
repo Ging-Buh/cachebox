@@ -603,8 +603,8 @@ public class Cache implements Comparable<Cache>
 	@Override
 	public int compareTo(Cache c2)
 	{
-		float dist1 = this.CachedDistance();
-		float dist2 = c2.CachedDistance();
+		float dist1 = this.cachedDistance;
+		float dist2 = c2.cachedDistance;
 		return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
 	}
 

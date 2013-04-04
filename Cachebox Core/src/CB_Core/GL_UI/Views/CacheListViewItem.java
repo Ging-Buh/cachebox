@@ -130,6 +130,13 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 			}
 		}
+		else
+		{
+			if (mCache.cachedDistance >= 0) // (mCache.cachedDistance > 0)|| mCache == GlobalCore.getSelectedCache())
+			{
+				setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
+			}
+		}
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Collections;
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
+import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 
 public class CacheList extends MoveableList<Cache>
@@ -35,13 +36,34 @@ public class CacheList extends MoveableList<Cache>
 
 	public void Resort()
 	{
-		if (!Locator.Valid()) return;
-
 		GlobalCore.ResortAtWork = true;
+		boolean LocatorValid = Locator.Valid();
 		// Alle Distanzen aktualisieren
-		for (Cache cache : this)
+		if (LocatorValid)
 		{
-			cache.Distance(true);
+			for (Cache cache : this)
+			{
+				cache.Distance(true);
+			}
+		}
+		else
+		{
+			// sort after Distance from selected Cache
+			Coordinate fromPos = GlobalCore.getSelectedCoord();
+			// avoid "illegal waypoint"
+			if (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)
+			{
+				fromPos = GlobalCore.getSelectedCache().Pos;
+			}
+			if (fromPos == null)
+			{
+				GlobalCore.ResortAtWork = false;
+				return;
+			}
+			for (Cache cache : this)
+			{
+				cache.Distance(true, fromPos);
+			}
 		}
 
 		Collections.sort(this);
