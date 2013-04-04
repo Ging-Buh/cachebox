@@ -53,7 +53,8 @@ public class Bug384 extends TestCase
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
+		// String result =
+		CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
 
 		Cache c = apiCaches.get(0);
 		Waypoint w = c.waypoints.get(0);

@@ -126,7 +126,7 @@ public class GSAKGpxImportTest extends TestCase
 		attributes.remove(Attributes.getAttributeEnumByGcComId(66));
 
 		// Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
-		Iterator RestInterator = attributes.iterator();
+		Iterator<Attributes> RestInterator = attributes.iterator();
 
 		while (RestInterator.hasNext())
 		{

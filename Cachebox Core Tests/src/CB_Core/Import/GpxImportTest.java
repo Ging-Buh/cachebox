@@ -90,8 +90,8 @@ public class GpxImportTest extends TestCase
 		PositvieList.add(Attributes.Ticks);
 		PositvieList.add(Attributes.Hunting);
 
-		Iterator positiveInterator = PositvieList.iterator();
-		Iterator negativeInterator = NegativeList.iterator();
+		Iterator<Attributes> positiveInterator = PositvieList.iterator();
+		Iterator<Attributes> negativeInterator = NegativeList.iterator();
 
 		while (positiveInterator.hasNext())
 		{
@@ -132,7 +132,7 @@ public class GpxImportTest extends TestCase
 		attributes.remove(Attributes.getAttributeEnumByGcComId(66));
 
 		// Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
-		Iterator RestInterator = attributes.iterator();
+		Iterator<Attributes> RestInterator = attributes.iterator();
 
 		while (RestInterator.hasNext())
 		{

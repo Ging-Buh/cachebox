@@ -42,7 +42,7 @@ import com.thebuzzmedia.sjxp.rule.IRule;
  * COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR ANY CORPORATE OR COMMERCIAL
  * PURPOSE.
  */
-public class main extends JFrame
+public class lunch extends JFrame
 {
 
 	{
@@ -92,7 +92,7 @@ public class main extends JFrame
 			{
 				try
 				{
-					main frame = new main();
+					lunch frame = new lunch();
 					frame.setVisible(true);
 				}
 				catch (Exception e)
@@ -106,7 +106,7 @@ public class main extends JFrame
 	/**
 	 * Create the frame.
 	 */
-	public main()
+	public lunch()
 	{
 		setTitle("Rename Cachebox Workspce for Release");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -328,14 +328,14 @@ public class main extends JFrame
 	private JScrollPane jScrollPane1;
 	private JTextArea jTextArea1;
 	private static String currentPackageName;
-	private static String currentVerNumber;
-	private static String currentPrafix;
+	// private static String currentVerNumber;
+	// private static String currentPrafix;
 	private static String currentIcon;
 	private static String currentMainfestVersionString;
 
 	private static String newPackageName;
-	private static String newVerNumber;
-	private static String newPrafix;
+	// private static String newVerNumber;
+	// private static String newPrafix;
 	private static String newIcon;
 	private static String newMainfestVersionString;
 
@@ -705,8 +705,8 @@ public class main extends JFrame
 
 	private void addMsg(String msg)
 	{
-		String alt = jTextArea1.getText();
-		alt += msg + String.format("%n");
+		// String alt = jTextArea1.getText();
+		// alt += msg + String.format("%n");
 
 		int x;
 		jTextArea1.selectAll();

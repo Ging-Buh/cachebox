@@ -62,7 +62,8 @@ public class searchForGeoCache_Test extends TestCase
 		searchC.pos = searchCoord;
 		searchC.distanceInMeters = 500000;
 		searchC.number = 50;
-		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
+		// String result =
+		CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
 
 		assertFalse("Keine Caches gefunden", apiCaches.size() < 1);
 
@@ -81,7 +82,8 @@ public class searchForGeoCache_Test extends TestCase
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
+		// String result =
+		CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
 
 		boolean Assert = false;
 		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).GcCode.equalsIgnoreCase("GC2TZPJ"))
@@ -111,7 +113,8 @@ public class searchForGeoCache_Test extends TestCase
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
+		// String result =
+		CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
 
 		boolean Assert = false;
 		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).GcCode.equalsIgnoreCase("GC2NFTY"))
@@ -140,7 +143,8 @@ public class searchForGeoCache_Test extends TestCase
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-		String result = CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
+		// String result =
+		CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages, 0);
 
 		boolean Assert = false;
 		if (apiCaches != null && apiCaches.size() > 0)
@@ -169,7 +173,8 @@ public class searchForGeoCache_Test extends TestCase
 
 		chkList.add(c);
 
-		int result = GroundspeakAPI.GetGeocacheStatus(accessToken, chkList);
+		// int result =
+		GroundspeakAPI.GetGeocacheStatus(accessToken, chkList);
 
 		boolean Assert = false;
 
@@ -186,7 +191,8 @@ public class searchForGeoCache_Test extends TestCase
 		chkList.clear();
 		chkList.add(cacheNew);
 
-		result = GroundspeakAPI.GetGeocacheStatus(accessToken, chkList);
+		// result =
+		GroundspeakAPI.GetGeocacheStatus(accessToken, chkList);
 
 		for (Cache cache : chkList)
 		{

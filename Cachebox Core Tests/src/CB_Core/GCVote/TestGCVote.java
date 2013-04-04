@@ -7,7 +7,7 @@ public class TestGCVote extends TestCase
 
 	public static void testGCVote() throws Exception
 	{
-		RatingData rating = GCVote.GetRating("", "", "GC2A1CX");
+		// RatingData rating = GCVote.GetRating("", "", "GC2A1CX");
 
 	}
 
