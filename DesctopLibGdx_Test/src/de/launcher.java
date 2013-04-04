@@ -44,6 +44,7 @@ class Ex_1
 			@Override
 			public boolean accept(File dir, String filename)
 			{
+				if (filename.contains("src")) return true;
 				if (filename.contains("DCB") && filename.endsWith("jar")) return true;
 				return false;
 			}
@@ -52,53 +53,89 @@ class Ex_1
 		// copy AssetFolder only if Rev-Number changed, like at new installation
 		if (files.length > 0 && Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
 		{
+			File workJar = new File(files[0]);
 
-			// Copy!!
-
-			try
+			if (workJar.getAbsolutePath().contains("src"))
 			{
-
-				String ExtractFolder = "";
-				File workJar = new File(files[0]);
-				if (workJar.exists())
+				// Copy from assets Folder!!
+				try
 				{
-					try
-					{
-						ExtractFolder = UnZip.extractFolder(workJar.getAbsolutePath());
-					}
-					catch (ZipException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					catch (IOException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					// Copy DCB/cachebox to cachebox
-
+					File Dir2 = new File("../Android_GUI/assets/");
+					final String[] files2;
 					ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
 
-					rules.add(new CopyRule(ExtractFolder + "/cachebox", "./"));
+					files2 = Dir2.list();
+
+					for (String file : files2)
+					{
+						rules.add(new CopyRule("../Android_GUI/assets/" + file, "./cachebox"));
+					}
+
 					Copy copy = new Copy(rules);
 					try
 					{
 						copy.Run();
+
 					}
 					catch (IOException e)
 					{
 						e.printStackTrace();
 					}
 
-					FileIO.deleteDir(new File(ExtractFolder));
-
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
 				}
 			}
-			catch (Exception e)
+			else
 			{
-				e.printStackTrace();
+				// Copy from Jar!!
+				try
+				{
+
+					String ExtractFolder = "";
+
+					if (workJar.exists())
+					{
+						try
+						{
+							ExtractFolder = UnZip.extractFolder(workJar.getAbsolutePath());
+						}
+						catch (ZipException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+						// Copy DCB/cachebox to cachebox
+
+						ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
+
+						rules.add(new CopyRule(ExtractFolder + "/cachebox", "./"));
+						Copy copy = new Copy(rules);
+						try
+						{
+							copy.Run();
+						}
+						catch (IOException e)
+						{
+							e.printStackTrace();
+						}
+
+						FileIO.deleteDir(new File(ExtractFolder));
+
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 
 			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
@@ -111,7 +148,7 @@ class Ex_1
 			Config.AcceptChanges();
 		}
 
-		if (files.length > 0)
+		if (files.length > 0 && !files[0].contains("src"))
 		{
 			File workJar = new File(files[0]);
 			if (workJar.exists())
