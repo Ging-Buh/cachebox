@@ -268,27 +268,17 @@ public class Fonts
 	private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale)
 	{
 		String fs = GlobalCore.fs;
-		String path = cfg.SkinFolder.replace("/", fs) + fs + "fonts";
-		String fontPath = null;
-		for (int i = 0; i < 46; i++)
+		// fonts-Verzeichnis "global" im cachebox/skins
+		String path = cfg.SkinFolder.replace("/", fs) + fs + ".." + fs + "fonts";
+		String fontPath = path + fs + String.valueOf(scale) + ".fnt";
+		if (!FileIO.FileExists(fontPath))
 		{
-			if ((scale - i > 0) && FileIO.FileExists(path + fs + String.valueOf(scale - i) + ".fnt"))
-			{
-				fontPath = path + fs + String.valueOf(Math.abs(scale - i)) + ".fnt";
-				break;
-			}
-			else if (FileIO.FileExists(path + fs + String.valueOf(scale + i) + ".fnt"))
-			{
-				fontPath = path + fs + String.valueOf(scale + i) + ".fnt";
-				break;
-			}
+			// oder fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
+			path = cfg.SkinFolder.replace("/", fs) + fs + "fonts";
+			fontPath = path + fs + String.valueOf(scale) + ".fnt";
 		}
-		if (fontPath == null)
-		{
-			Logger.DEBUG("load font for scale " + scale);
-			return generator.generateFont(scale);
-		}
-		else
+		// Wenn der font nicht vorberechnet ist, dann wird er generiert
+		if (FileIO.FileExists(fontPath))
 		{
 			Logger.DEBUG("load font for scale " + scale + " from " + fontPath);
 			// automatic load of png does not work on Android, so
@@ -297,6 +287,11 @@ public class Fonts
 			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			TextureRegion region = new TextureRegion(tex);
 			return new BitmapFont(Gdx.files.absolute(fontPath), region, false);
+		}
+		else
+		{
+			Logger.DEBUG("generate font for scale " + scale);
+			return generator.generateFont(scale);
 		}
 	}
 
