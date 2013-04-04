@@ -1353,7 +1353,7 @@ public class Base64
 		byte[] b4 = new byte[4]; // Four byte buffer from source, eliminating white space
 		int b4Posn = 0; // Keep track of four byte input buffer
 		byte sbiDecode = 0; // Special value from DECODABET
-		long count = 0;
+
 		for (int i = firstPos; i <= lastPos; i++)
 		{
 			char si = data.charAt(i);
@@ -1383,7 +1383,6 @@ public class Base64
 						outBuffPosn += decode4to3(b4, 0, outBuff, outBuffPosn, NO_OPTIONS);
 						// in outBuff there are outBuffPosn bytes which have to be written into the output Stream
 						os.write(outBuff, 0, outBuffPosn);
-						count += outBuffPosn;
 						b4Posn = 0;
 
 						// If that was the equals sign, break out of 'for' loop
@@ -1429,7 +1428,6 @@ public class Base64
 		byte[] b4 = new byte[4]; // Four byte buffer from source, eliminating white space
 		int b4Posn = 0; // Keep track of four byte input buffer
 		byte sbiDecode = 0; // Special value from DECODABET
-		long count = 0;
 		do
 		{
 			buffPos++;
@@ -1466,7 +1464,6 @@ public class Base64
 						outBuffPosn += decode4to3(b4, 0, outBuff, outBuffPosn, NO_OPTIONS);
 						// in outBuff there are outBuffPosn bytes which have to be written into the output Stream
 						os.write(outBuff, 0, outBuffPosn);
-						count += outBuffPosn;
 						b4Posn = 0;
 
 						// If that was the equals sign, break out of 'for' loop
