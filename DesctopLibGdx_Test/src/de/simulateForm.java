@@ -35,7 +35,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	 */
 	private static final long serialVersionUID = -3001260409970853805L;
 
-	private Label lblGPX, lblSetSpeed;
+	private Label lblGPX;
 	private TextField txt, speedTxt;
 	private Button pushButton5, sendSpeed;
 	private static Checkbox chekRealSpeed;
@@ -150,7 +150,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 	{
 		if (event.getActionCommand().equals("Load GPX"))
 		{
-			FileDialog filedia = new FileDialog(this, "Öffnen");
+			FileDialog filedia = new FileDialog(this, "ï¿½ffnen");
 			// filedia.setDirectory(initialPath);
 			filedia.setFile("*.gpx");
 			filedia.show();

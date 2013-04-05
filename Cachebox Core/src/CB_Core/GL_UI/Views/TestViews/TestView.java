@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class TestView extends CB_View_Base
 {
 
-	private CB_Core.GL_UI.Controls.EditWrapedTextField textField;
 	private CB_Core.GL_UI.Controls.EditWrapedTextField wrappedTextField;
 
 	public static final String br = System.getProperty("line.separator");

@@ -1,13 +1,11 @@
 package CB_Core.Solver;
 
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class SolverZeile
 {
-	private Solver solver;
 	private String text;
 	private String orgText;
 	private EntityList entities = new EntityList();
@@ -15,7 +13,6 @@ public class SolverZeile
 
 	public SolverZeile(Solver solver, String text)
 	{
-		this.solver = solver;
 		this.text = text;
 		this.orgText = text;
 	}
@@ -41,8 +38,6 @@ public class SolverZeile
 			}
 			else
 			{
-				// Rest als tempvar einfuegen
-				String var = entities.Insert(text);
 				break;
 			}
 		}
@@ -502,7 +497,6 @@ public class SolverZeile
 				try
 				{
 					String sz = s;
-					DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 					char sep = '.';
 					sz = sz.replace('.', sep);
 					sz = sz.replace(',', sep);

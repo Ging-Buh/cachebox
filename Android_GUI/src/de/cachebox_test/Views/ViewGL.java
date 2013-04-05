@@ -42,8 +42,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 		}
 		catch (Exception ex)
 		{
-			int i = 0;
-			i++;
 		}
 	}
 

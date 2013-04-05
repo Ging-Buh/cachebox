@@ -373,8 +373,6 @@ public class DescriptionImageGrabber
 	public static void GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated,
 			long id, String gcCode, String name, String description, String url)
 	{
-		boolean importLogImages = false;
-
 		boolean imageLoadError = false;
 
 		if (!descriptionImagesUpdated)
@@ -383,21 +381,13 @@ public class DescriptionImageGrabber
 
 			LinkedList<URI> imgUris = GetImageUris(description, url);
 
-			int i = 0;
 			for (URI uri : imgUris)
 			{
-				/*
-				 * if (uri..IsFile) continue; if (uri.IsLoopback) continue; if (uri.IsUnc) continue;
-				 */
 				String local = BuildImageFilename(gcCode, uri);
 
 				ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode + " - Download: " + uri);
 
-				// parent.ProgressChanged("Loading " + name + " (Image " + (i + 1).ToString() + "/" + imgUris.Count.ToString() + ")", i + 1,
-				// imgUris.Count);
-
 				// build URL
-
 				for (int j = 0; j < 1 /* && !parent.Cancel */; j++)
 				{
 					if (Download(uri.toString(), local))
@@ -408,14 +398,9 @@ public class DescriptionImageGrabber
 					}
 					else
 					{
-						// parent.ReportUncriticalError(uri + " failed to load");
-
 						imageLoadError = HandleMissingImages(imageLoadError, uri, local);
-
 					}
-
 				}
-				i++;
 			}
 
 			descriptionImagesUpdated = true;
@@ -450,7 +435,6 @@ public class DescriptionImageGrabber
 
 				if (allimgDict == null) return;
 
-				int i = 0;
 				for (String key : allimgDict.keySet())
 				{
 					URI uri = allimgDict.get(key);
@@ -459,10 +443,6 @@ public class DescriptionImageGrabber
 					ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode + " - Download: " + uri);
 
 					String decodedImageName = key;
-
-					/*
-					 * if (uri.IsFile) continue; if (uri.IsLoopback) continue; if (uri.IsUnc) continue;
-					 */
 
 					String local = BuildAdditionalImageFilename(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);
@@ -474,31 +454,22 @@ public class DescriptionImageGrabber
 						afiles.remove(filename);
 						continue;
 					}
-					// parent.ProgressChanged("Loading " + name + ": " + decodedImageName + " (Image " + (i + 1).ToString() + "/" +
-					// allimgDict.Count.ToString() + ")", i + 1, allimgDict.Count);
 
 					// build URL
-
 					for (int j = 0; j < 1 /* && !parent.Cancel */; j++)
 					{
 						if (Download(uri.toString(), local))
 						{
 							// Next image
 							DeleteMissingImageInformation(local);
-							// parent.PerformMemoryTest(Config.GetString("SpoilerFolder"), 1024);
 							break;
 						}
 						else
 						{
-							// parent.ReportUncriticalError(uri + " failed to load");
-
 							imageLoadError = HandleMissingImages(imageLoadError, uri, local);
-
 						}
-
 						System.gc();
 					}
-					i++;
 				}
 
 				additionalImagesUpdated = true;
@@ -583,7 +554,6 @@ public class DescriptionImageGrabber
 			File file = new File(local + "_broken_link.txt");
 			if (!file.exists())
 			{
-				File file1 = new File(local + ".1st");
 				if (file.exists())
 				{
 					// After first try, we can be sure that the image cannot be loaded.
