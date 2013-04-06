@@ -82,9 +82,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 	{
 		Menu icm = new Menu("menu_compassView");
 		icm.addItemClickListner(onItemClickListner);
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
+		icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
 
 		return icm;
 	}

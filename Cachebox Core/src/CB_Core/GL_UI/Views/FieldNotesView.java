@@ -453,7 +453,6 @@ public class FieldNotesView extends V_ListView
 			// und gegebenenfalls diese ändern und keine neue anlegen
 			// gilt nur für Found It! und DNF.
 			// needMaintance oder Note können zusätzlich angelegt werden
-			int index = 0;
 
 			if (lFieldNotes == null)
 			{
@@ -471,9 +470,7 @@ public class FieldNotesView extends V_ListView
 					newFieldNote.DeleteFromDatabase();
 					newFieldNote.timestamp = new Date();
 					aktFieldNote = newFieldNote;
-					// aktFieldNoteIndex = index;
 				}
-				index++;
 			}
 		}
 

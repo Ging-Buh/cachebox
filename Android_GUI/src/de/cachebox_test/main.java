@@ -218,7 +218,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static Service myNotifyService;
 	private static BroadcastReceiver mReceiver;
 	public boolean KeybordShown = false;
-
+	private static RelativeLayout Baselayout;
 	public HorizontalListView QuickButtonList;
 
 	private static hiddenTextField mTextField;
@@ -1642,7 +1642,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
 
-		// searchLayout = (LinearLayout) this.findViewById(R.id.searchDialog);
+		Baselayout = (RelativeLayout) findViewById(R.id.layoutTextField);
 
 	}
 
@@ -3128,10 +3128,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							@Override
 							public void run()
 							{
+								initialHiddenEditText();
 								mTextField.setVisibility(View.VISIBLE);
-								mTextField.requestFocus();
-								((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mTextField,
-										InputMethodManager.SHOW_FORCED);
+								Baselayout.post(new Runnable()
+								{
+									public void run()
+									{
+										InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+										inputMethodManager.toggleSoftInputFromWindow(mTextField.getApplicationWindowToken(),
+												InputMethodManager.SHOW_FORCED, 0);
+										mTextField.requestFocus();
+									}
+								});
 								Timer timer = new Timer();
 								TimerTask task = new TimerTask()
 								{
@@ -3148,6 +3156,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					}
 					catch (Exception ex)
 					{
+						Logger.Error("main", "Show Keyboard", ex);
 					}
 				}
 				else
@@ -3159,6 +3168,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
 									mTextField.getWindowToken(), 0);
 							KeybordShown = false;
+
+							Baselayout.removeView(mTextField);
+							mTextField = null;
+
 						}
 					});
 
@@ -3610,9 +3623,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		mTextField.setBackgroundDrawable(null);
 		mTextField.setClickable(false);
 
-		RelativeLayout layout = (RelativeLayout) findViewById(R.id.layoutTextField);
-
-		layout.addView(mTextField);
+		Baselayout.addView(mTextField);
 
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTextField.getLayoutParams();
 		params.height = 1;

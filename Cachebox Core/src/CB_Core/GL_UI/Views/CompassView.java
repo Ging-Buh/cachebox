@@ -46,7 +46,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	private ScrollBox topBox;
 	private MapView map;
 	private SatBarChart chart;
-	private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblSats, lblOwnCoords, lblBearing;
+	private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblOwnCoords, lblBearing;
 	private CacheInfo SDT;
 	private Cache aktCache;
 	private Waypoint aktWaypoint;
@@ -739,11 +739,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			heading = Locator.getHeading();
 
 			Coordinate dest = aktCache.Pos;
-			float distance = aktCache.Distance(false);
 			if (aktWaypoint != null)
 			{
 				dest = aktWaypoint.Pos;
-				distance = aktWaypoint.Distance();
 			}
 			double bearing = Coordinate.Bearing(position, dest);
 			double relativeBearing = bearing - heading;

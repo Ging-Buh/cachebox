@@ -365,7 +365,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 			@Override
 			public void show(boolean arg0)
 			{
-				textField.setFocus(true);
 				scrollToY(textField.getY(), textField.getMaxY());
 			}
 		});

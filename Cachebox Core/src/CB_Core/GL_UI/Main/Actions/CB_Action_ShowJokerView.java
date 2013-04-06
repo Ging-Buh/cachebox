@@ -30,6 +30,7 @@ public class CB_Action_ShowJokerView extends CB_Action_ShowView
 	@Override
 	public boolean getEnabled()
 	{
+		if (GlobalCore.getSelectedCache() == null) return false;
 		if (GlobalCore.getSelectedCache().GcCode.startsWith("GC")) // GC-Joker nur zulässig wenn es ein Cache von geocaching.com ist
 		{
 			return GlobalCore.JokerisOnline();

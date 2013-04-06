@@ -64,9 +64,8 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 	{
 		Menu icm = new Menu("menu_compassView");
 		icm.addItemClickListner(onItemClickListner);
-		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_COMPASS_SHOW, "view");
+		icm.addItem(MenuID.MI_COMPASS_SHOW, "view");
 
 		return icm;
 	}

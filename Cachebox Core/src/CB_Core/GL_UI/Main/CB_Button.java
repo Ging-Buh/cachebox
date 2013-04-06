@@ -183,13 +183,10 @@ public class CB_Button extends Button implements OnClickListener
 			}
 		});
 
-		int index = 0;
-
 		for (CB_ActionButton ba : mButtonActions)
 		{
 			CB_Action action = ba.getAction();
 			if (action == null) continue;
-			// MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
 			MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
 			mi.setEnabled(action.getEnabled());
 			mi.setCheckable(action.getIsCheckable());

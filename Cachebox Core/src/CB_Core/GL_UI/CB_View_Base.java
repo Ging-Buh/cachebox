@@ -242,7 +242,14 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		if (childs == null || view == null) return;
 		synchronized (childs)
 		{
-			if (childs.contains(view)) childs.remove(view);
+			try
+			{
+				if (childs.contains(view)) childs.remove(view);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -251,7 +258,14 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		if (childs == null) return;
 		synchronized (childs)
 		{
-			childs.remove(childs);
+			try
+			{
+				childs.remove(childs);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
