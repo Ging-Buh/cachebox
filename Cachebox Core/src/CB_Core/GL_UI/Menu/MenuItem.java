@@ -2,19 +2,18 @@ package CB_Core.GL_UI.Menu;
 
 import java.awt.Menu;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MenuItem extends MenuItemBase
 {
-	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
 	private String mTitle;
 	private boolean mIsEnabled = true;
@@ -94,7 +93,7 @@ public class MenuItem extends MenuItemBase
 			iconImage.setDrawable(mIcon);
 			if (!mIsEnabled)
 			{
-				iconImage.setColor(DISABLE_COLOR);
+				iconImage.setColor(Fonts.getDisableFontColor());
 			}
 
 			this.addChild(iconImage);
@@ -134,7 +133,7 @@ public class MenuItem extends MenuItemBase
 		if (mTitle != null) mLabel.setText(mTitle);
 		if (!mIsEnabled)
 		{
-			mLabel.setTextColor(DISABLE_COLOR);
+			mLabel.setTextColor(Fonts.getDisableFontColor());
 		}
 
 		this.addChild(mLabel);
