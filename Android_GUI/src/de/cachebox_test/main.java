@@ -3165,12 +3165,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					{
 						public void run()
 						{
-							((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-									mTextField.getWindowToken(), 0);
-							KeybordShown = false;
+							if (mTextField != null)
+							{
+								((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+										mTextField.getWindowToken(), 0);
+								KeybordShown = false;
 
-							Baselayout.removeView(mTextField);
-							mTextField = null;
+								Baselayout.removeView(mTextField);
+								mTextField = null;
+							}
 
 						}
 					});

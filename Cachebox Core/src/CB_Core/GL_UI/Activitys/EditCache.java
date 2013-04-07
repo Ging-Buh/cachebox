@@ -465,7 +465,6 @@ public class EditCache extends ActivityBase
 			@Override
 			public void show(boolean arg0)
 			{
-				textField.setFocus(true);
 				scrollToY(textField);
 				textField.setCursorPosition(textField.getText().length());
 			}
@@ -477,11 +476,5 @@ public class EditCache extends ActivityBase
 	{
 		mainPanel.setY(mainPanel_Y + mainPanel.getHeight() - textField.getY() - textField.getHeight());
 	}
-	/*
-	 * @Override public void onShow() { KeyboardFocusChangedEventList.Add(this); }
-	 * 
-	 * @Override public void onHide() { KeyboardFocusChangedEventList.Remove(this); }
-	 * 
-	 * @Override public void KeyboardFocusChanged(EditTextFieldBase focus) { if (focus == null) { mainPanel.setY(mainPanel_Y); } }
-	 */
+
 }

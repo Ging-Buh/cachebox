@@ -1623,6 +1623,9 @@ public class GL implements ApplicationListener
 		// don't set Focus to NULL?
 		if (view == null && keyboardFocus == null) return;
 
+		// Don't open KeyBoard if Keybord is Showing
+		boolean dontOpenKeybord = keyboardFocus != null;
+
 		String sView = "NULL";
 		if (view != null) sView = view.toString();
 		Logger.LogCat("GL => set KeyBoardFocus to " + sView);
@@ -1635,11 +1638,21 @@ public class GL implements ApplicationListener
 
 		if (keyboardFocus != null)
 		{
-			if (!keyboardFocus.dontShowKeyBoard()) platformConector.callsetKeybordFocus(true);
+			if (!keyboardFocus.dontShowKeyBoard())
+			{
+				if (!dontOpenKeybord)
+				{
+					platformConector.callsetKeybordFocus(true);
+				}
+			}
 		}
 		else
 		{
-			platformConector.callsetKeybordFocus(false);
+			if (dontOpenKeybord)
+			{
+				platformConector.callsetKeybordFocus(false);
+			}
+
 		}
 	}
 
