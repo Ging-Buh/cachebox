@@ -80,7 +80,8 @@ public class GroundspeakAPI
 
 	public static String ConvertNotes(String note)
 	{
-		return note.replace("\n", "\\n");
+		String result = note.replace("\r", "");
+		return result.replace("\n", "\\n");
 	}
 
 	/**
