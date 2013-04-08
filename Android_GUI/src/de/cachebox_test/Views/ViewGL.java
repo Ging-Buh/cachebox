@@ -45,6 +45,11 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 		}
 	}
 
+	public ViewGL(Context context)
+	{
+		super(context);
+	}
+
 	@Override
 	public boolean ItemSelected(MenuItem item)
 	{
@@ -212,7 +217,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 		}
 		catch (Exception ex)
 		{
-			String s = ex.getMessage();
+			ex.printStackTrace();
 		}
 	}
 

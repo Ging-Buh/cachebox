@@ -135,8 +135,6 @@ public class DesctopManager extends ManagerBase
 				response.getEntity().writeTo(out);
 				out.close();
 
-				String responseString = out.toString();
-
 				// Verzeichnis anlegen
 				synchronized (this)
 				{

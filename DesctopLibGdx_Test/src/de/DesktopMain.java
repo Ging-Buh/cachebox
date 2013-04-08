@@ -46,6 +46,7 @@ public class DesktopMain
 
 	static float compassheading = -1;
 
+	@SuppressWarnings("unused")
 	public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame)
 	{
 		GlobalCore.platform = Plattform.Desktop;
@@ -115,13 +116,11 @@ public class DesktopMain
 			lwjglAppCfg.width = ui.Window.width;
 			lwjglAppCfg.height = ui.Window.height;
 			lwjglAppCfg.title = "DCB Desctop Cachebox";
-			// lwjglAppCfg.addIcon("CB_Icon.png", FileType.Internal);
 
-			// new LwjglApplication(CB_UI, "DCB Desctop Cachebox", ui.Window.width, ui.Window.height, true);
 			final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
 			App.getGraphics().setContinuousRendering(false);
 
-			CB_UI.listenerInterface = new GL_Listener_Interface()
+			GL.listenerInterface = new GL_Listener_Interface()
 			{
 
 				@Override

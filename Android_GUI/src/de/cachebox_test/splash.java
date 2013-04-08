@@ -29,6 +29,7 @@ import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
 import CB_Core.TranslationEngine.Translation;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -57,6 +58,8 @@ import android.widget.Toast;
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
 
+@SuppressLint(
+	{ "SdCardPath", "DefaultLocale" })
 public class splash extends Activity
 {
 
@@ -76,6 +79,7 @@ public class splash extends Activity
 	private static devicesSizes ui;
 	private boolean isLandscape = false;
 
+	@SuppressLint("DefaultLocale")
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -387,12 +391,19 @@ public class splash extends Activity
 				}
 				catch (Exception ex)
 				{
-					String x = ex.getMessage();
+					ex.printStackTrace();
 				}
 			}
 			else
 			{
-				startInitial();
+				try
+				{
+					startInitial();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		else

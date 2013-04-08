@@ -54,10 +54,7 @@ public class Pack extends PackBase
 		}
 		catch (Exception exc)
 		{
-			String s = exc.getMessage();
-			/*
-			 * #if DEBUG Global.AddLog("Pack.LoadFromBoundingBox: Out of memory!" + exc.ToString()); Global.AddMemoryLog(); #endif
-			 */
+			exc.printStackTrace();
 		}
 
 		return null;

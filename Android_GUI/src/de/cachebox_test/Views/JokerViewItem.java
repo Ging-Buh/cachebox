@@ -21,7 +21,7 @@ public class JokerViewItem extends View
 {
 	private Cache cache;
 	private JokerEntry joker;
-	private int mAscent;
+	// private int mAscent;
 	private int width;
 	private int height;
 	private boolean BackColorChanger = false;
@@ -116,38 +116,38 @@ public class JokerViewItem extends View
 		return result;
 	}
 
-	/**
-	 * Determines the height of this view
-	 * 
-	 * @param measureSpec
-	 *            A measureSpec packed into an int
-	 * @return The height of the view, honoring constraints from measureSpec
-	 */
-	private int measureHeight(int measureSpec)
-	{
-		int result = 0;
-		int specMode = MeasureSpec.getMode(measureSpec);
-		int specSize = MeasureSpec.getSize(measureSpec);
-
-		mAscent = (int) Global.Paints.measurePaint.ascent();
-		if (specMode == MeasureSpec.EXACTLY)
-		{
-			// We were told how big to be
-			result = specSize;
-		}
-		else
-		{
-			// Measure the text (beware: ascent is a negative number)
-			result = (int) (-mAscent + Global.Paints.measurePaint.descent()) + getPaddingTop() + getPaddingBottom();
-			if (specMode == MeasureSpec.AT_MOST)
-			{
-				// Respect AT_MOST value if that was what is called for by
-				// measureSpec
-				result = Math.min(result, specSize);
-			}
-		}
-		return result;
-	}
+	// /**
+	// * Determines the height of this view
+	// *
+	// * @param measureSpec
+	// * A measureSpec packed into an int
+	// * @return The height of the view, honoring constraints from measureSpec
+	// */
+	// private int measureHeight(int measureSpec)
+	// {
+	// int result = 0;
+	// int specMode = MeasureSpec.getMode(measureSpec);
+	// int specSize = MeasureSpec.getSize(measureSpec);
+	//
+	// mAscent = (int) Global.Paints.measurePaint.ascent();
+	// if (specMode == MeasureSpec.EXACTLY)
+	// {
+	// // We were told how big to be
+	// result = specSize;
+	// }
+	// else
+	// {
+	// // Measure the text (beware: ascent is a negative number)
+	// result = (int) (-mAscent + Global.Paints.measurePaint.descent()) + getPaddingTop() + getPaddingBottom();
+	// if (specMode == MeasureSpec.AT_MOST)
+	// {
+	// // Respect AT_MOST value if that was what is called for by
+	// // measureSpec
+	// result = Math.min(result, specSize);
+	// }
+	// }
+	// return result;
+	// }
 
 	/**
 	 * Render the text

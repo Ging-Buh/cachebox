@@ -74,7 +74,6 @@ public class ImageProcessor implements IImageprozessor
 		{
 			throw new RuntimeException("Error reading image: " + file, ex);
 		}
-		if (image == null) throw new RuntimeException("Unable to read image: " + file);
 
 		// Strip root dir off front of image path.
 		String name = file.getAbsolutePath().replace('\\', '/');

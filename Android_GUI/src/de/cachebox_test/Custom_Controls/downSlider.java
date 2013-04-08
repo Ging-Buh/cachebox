@@ -36,6 +36,7 @@ import CB_Locator.GPS;
 import CB_Locator.Locator;
 import CB_Locator.Events.GpsStateChangeEvent;
 import CB_Locator.Events.GpsStateChangeEventList;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
@@ -109,8 +110,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	private static downSlider Me;
 
-	private boolean nextMeasureCloseKeyboard = false;
-
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
@@ -148,7 +147,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	public static boolean isInitial = false;
 	private boolean drag;
 	private boolean ButtonDrag;
-	private int lastDragYPos = 0;
+	// private int lastDragYPos = 0;
 	private boolean swipeUp = false;
 	private boolean swipeDown = false;
 
@@ -216,6 +215,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 	};
 
+	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
