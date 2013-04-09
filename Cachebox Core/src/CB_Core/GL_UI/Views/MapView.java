@@ -303,8 +303,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
 		if (ManagerBase.Manager != null)
 		{
-			if (mapTileLoader.CurrentLayer == null) mapTileLoader.CurrentLayer = ManagerBase.Manager.GetLayerByName(
-					(currentLayerName == "") ? "Mapnik" : currentLayerName, currentLayerName, "");
+			if (mapTileLoader.CurrentLayer == null)
+			{
+				mapTileLoader.CurrentLayer = ManagerBase.Manager.GetLayerByName(currentLayerName, currentLayerName, "");
+			}
 		}
 
 		String currentOverlayLayerName = Config.settings.CurrentMapOverlayLayer.getValue();

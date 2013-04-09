@@ -44,6 +44,8 @@ public abstract class ManagerBase
 
 	private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
 
+	private boolean mayAddLayer = false; // add only during startup (GetLayerByName)
+
 	protected String RenderTheme;
 
 	public void setRenderTheme(String theme)
@@ -95,17 +97,24 @@ public abstract class ManagerBase
 
 	public Layer GetLayerByName(String Name, String friendlyName, String url)
 	{
-		if (Name == "OSM") Name = "Mapnik";
+		if (Name == "OSM" || Name == "") Name = "Mapnik";
 
 		for (Layer layer : Layers)
 		{
 			if (layer.Name.equalsIgnoreCase(Name)) return layer;
 		}
 
-		Layer newLayer = new Layer(Type.normal, Name, Name, url);
-		Layers.add(newLayer);
-
-		return newLayer;
+		if (mayAddLayer)
+		{
+			Layer newLayer = new Layer(Type.normal, Name, Name, url);
+			Layers.add(newLayer);
+			return newLayer;
+		}
+		else
+		{
+			Config.settings.CurrentMapLayer.setValue(Layers.get(0).Name);
+			return Layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
+		}
 	}
 
 	public byte[] LoadInvertedPixmap(Layer layer, Descriptor desc)
@@ -370,49 +379,49 @@ public abstract class ManagerBase
 
 	}
 
+	private void getFiles(ArrayList<String> files, ArrayList<String> mapnames, String directory)
+	{
+		File dir = new File(directory);
+		String[] dirFiles = dir.list();
+		if (dirFiles != null && dirFiles.length > 0)
+		{
+			for (String tmp : dirFiles)
+			{
+				String FilePath = directory + "/" + tmp;
+				String ttt = tmp.toLowerCase();
+				if (ttt.endsWith("pack") || ttt.endsWith("map") || ttt.endsWith("xml") || ttt.endsWith("bsh"))
+				{
+					if (!mapnames.contains(tmp))
+					{
+						files.add(FilePath);
+						mapnames.add(tmp);
+						Logger.DEBUG("add: " + tmp);
+					}
+				}
+			}
+		}
+	}
+
 	public void initialMapPacks()
 	{
 		Layers.clear();
 
+		mayAddLayer = true;
+
 		// add default layer
 		Layers.addAll(DEFAULT_LAYER);
+
 		ArrayList<String> files = new ArrayList<String>();
+		ArrayList<String> mapnames = new ArrayList<String>();
 
-		Logger.DEBUG("dirOwnRepo = " + Config.settings.MapPackFolderLocal.getValue());
-		File dirOwnRepo = new File(Config.settings.MapPackFolderLocal.getValue());
-		String[] OwnFiles = dirOwnRepo.list();
-		if (OwnFiles != null && OwnFiles.length > 0)
-		{
-			for (String tmp : OwnFiles)
-			{
-				String FilePath = dirOwnRepo + "/" + tmp;
-				if (!files.contains(FilePath)) files.add(FilePath);
-			}
-		}
+		Logger.DEBUG("dirOwnMaps = " + Config.settings.MapPackFolderLocal.getValue());
+		getFiles(files, mapnames, Config.settings.MapPackFolderLocal.getValue());
 
-		Logger.DEBUG("dirDefaultRepo = " + Config.settings.MapPackFolder.getDefaultValue());
-		File dirDefaultRepo = new File(Config.settings.MapPackFolder.getDefaultValue());
-		String[] DefaultFiles = dirDefaultRepo.list();
-		if (DefaultFiles != null && DefaultFiles.length > 0)
-		{
-			for (String tmp : DefaultFiles)
-			{
-				String FilePath = dirDefaultRepo + "/" + tmp;
-				if (!files.contains(FilePath)) files.add(FilePath);
-			}
-		}
+		Logger.DEBUG("dirDefaultMaps = " + Config.settings.MapPackFolder.getDefaultValue());
+		getFiles(files, mapnames, Config.settings.MapPackFolder.getDefaultValue());
 
-		Logger.DEBUG("dirGlobalRepo = " + Config.settings.MapPackFolder.getValue());
-		File dirGlobalRepo = new File(Config.settings.MapPackFolder.getValue());
-		String[] GlobalFiles = dirGlobalRepo.list();
-		if (GlobalFiles != null && GlobalFiles.length > 0)
-		{
-			for (String tmp : GlobalFiles)
-			{
-				String FilePath = dirGlobalRepo + "/" + tmp;
-				if (!files.contains(FilePath)) files.add(FilePath);
-			}
-		}
+		Logger.DEBUG("dirGlobalMaps = " + Config.settings.MapPackFolder.getValue());
+		getFiles(files, mapnames, Config.settings.MapPackFolder.getValue());
 
 		if (!(files == null))
 		{
@@ -435,7 +444,6 @@ public abstract class ManagerBase
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml"))
 					{
 						ManagerBase.Manager.LoadTMS(file);
-
 					}
 					if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh"))
 					{
@@ -445,6 +453,7 @@ public abstract class ManagerBase
 			}
 		}
 		Descriptor.Init();
+		mayAddLayer = false;
 	}
 
 	public ArrayList<Layer> getLayers()
