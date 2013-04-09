@@ -1033,11 +1033,11 @@ public class GroundspeakAPI
 	{
 		if (chkMemperShip(accessToken)) return -10;
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
-		if (cacheCode != null) cacheCode = "";
+		if (cacheCode == null) cacheCode = "";
 
 		try
 		{
-			HttpPost httppost = new HttpPost(URL + "CreateFieldNoteAndPublish?format=json");
+			HttpPost httppost = new HttpPost(URL + "CreateTrackableLog?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -1045,8 +1045,8 @@ public class GroundspeakAPI
 			requestString += "\"LogType\":" + String.valueOf(LogTypeId) + ",";
 			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
 			requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
-			requestString += "\"TravelBugCode\":" + String.valueOf(TB.getGcCode()) + ",";
-			requestString += "\"TrackingNumber\"" + String.valueOf(TB.getTrackingNumber()) + ",";
+			requestString += "\"TravelBugCode\":\"" + String.valueOf(TB.getGcCode()) + "\",";
+			requestString += "\"TrackingNumber\":\"" + String.valueOf(TB.getTrackingNumber()) + "\"";
 			requestString += "}";
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));

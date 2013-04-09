@@ -126,7 +126,8 @@ public class FieldNoteEntry implements Serializable
 	 * FoundIt | 1 |2| <br>
 	 * DNF | 2| 3| <br>
 	 * Note | 4|4| <br>
-	 * Need Archived | |7| Bei uns nicht vorgesehen Need Maintenance |3|45| <br>
+	 * Need Archived | |7| Bei uns nicht vorgesehen <br>
+	 * Need Maintenance |3|45| <br>
 	 * 
 	 * @return
 	 */

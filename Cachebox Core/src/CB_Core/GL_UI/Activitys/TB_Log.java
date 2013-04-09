@@ -1,11 +1,16 @@
 package CB_Core.GL_UI.Activitys;
 
+import java.util.Date;
+
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.TemplateFormatter;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -13,6 +18,11 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -67,7 +77,7 @@ public class TB_Log extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-
+				LogNow();
 				return true;
 			}
 		});
@@ -129,15 +139,60 @@ public class TB_Log extends ActivityBase
 		}
 	}
 
+	static WaitDialog wd;
+
 	private void LogNow()
 	{
+
+		// Temp Msg Box nur Staging-Server
+		if (!Config.settings.StagingAPI.getValue())
+		{
+			GL_MsgBox.Show("Logging of TB `s is still in the testing phase!", "not possible", MessageBoxIcon.Stop);
+			return;
+		}
 
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		String cacheCode = "";
+		final String cacheCode = (LT == LogTypes.dropped_off || LT == LogTypes.visited) ? GlobalCore.getSelectedCache().GcCode : "";
 
-		// GroundspeakAPI.createTrackableLog(accessToken, TB, cacheCode, LogTypeId, dateLogged, note);
+		wd = CancelWaitDialog.ShowWait("Upload Log", new IcancelListner()
+		{
+
+			@Override
+			public void isCanceld()
+			{
+				// TODO Auto-generated method stub
+
+			}
+		}, new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				GroundspeakAPI.LastAPIError = "";
+				GroundspeakAPI.createTrackableLog(Config.GetAccessToken(), TB, cacheCode, LogTypes.CB_LogType2GC(LT), new Date(),
+						edit.getText());
+
+				if (GroundspeakAPI.LastAPIError.length() > 0)
+				{
+					GL.that.RunOnGL(new runOnGL()
+					{
+
+						@Override
+						public void run()
+						{
+							GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error);
+						}
+					});
+
+				}
+
+				if (wd != null) wd.close();
+				TB_Log.this.finish();
+			}
+		});
 
 	}
 }
