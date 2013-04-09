@@ -222,7 +222,7 @@ public class FieldNotesView extends V_ListView
 		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
 
 		// Aktueller Cache ist ist von geocaching.com dann weitere Menüeinträge freigeben
-		if (cache.GcCode.toLowerCase().startsWith("gc"))
+		if (cache != null && cache.GcCode.toLowerCase().startsWith("gc"))
 		{
 			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
 			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));

@@ -30,7 +30,15 @@ public class TemplateFormatter
 		template = template.replace("<br>", "\n");
 		template = template.replace("##date##", sdate);
 		template = template.replace("##time##", stime);
-		template = template.replace("##owner##", GlobalCore.getSelectedCache().Owner);
+		if (GlobalCore.getSelectedCache() != null)
+		{
+			template = template.replace("##owner##", GlobalCore.getSelectedCache().Owner);
+		}
+		else
+		{
+			template = template.replace("##owner##", "????????");
+		}
+
 		template = template.replace("##gcusername##", Config.settings.GcLogin.getValue());
 
 		return template;
