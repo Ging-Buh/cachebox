@@ -549,7 +549,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", cat, NORMAL, false, SettingStoreType.Global));
 		addSetting(AskAgain = new SettingBool("AskAgain", cat, NORMAL, true, SettingStoreType.Platform));
-		addSetting(RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", cat, NORMAL, true, SettingStoreType.Global));
+		addSetting(RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", cat, NORMAL, false, SettingStoreType.Global));
 
 	}
 
