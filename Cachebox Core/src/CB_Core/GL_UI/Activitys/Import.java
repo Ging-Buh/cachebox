@@ -11,6 +11,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DB.Database;
@@ -43,6 +44,10 @@ import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
@@ -79,7 +84,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	// private int LogImports;
 	// private int CacheImports;
 
-	private Boolean importCancel = false;
+	private static Boolean importCancel = false;
 	private Boolean importStarted = false;
 
 	private ArrayList<PQ> PqList;
@@ -89,6 +94,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private ScrollBox scrollBox;
 	private disable dis;
+
+	public static boolean isCanceld()
+	{
+		return importCancel;
+	}
 
 	public Import()
 	{
@@ -160,7 +170,23 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			{
 				if (importCancel) return true;
 
-				if (importStarted) cancelImport();
+				if (importStarted)
+				{
+					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("Cancel Import"), MessageBoxButtons.YesNo,
+							MessageBoxIcon.Stop, new OnMsgBoxClickListener()
+							{
+
+								@Override
+								public boolean onClick(int which, Object data)
+								{
+									if (which == GL_MsgBox.BUTTON_POSITIVE)
+									{
+										cancelImport();
+									}
+									return true;
+								}
+							});
+				}
 				else
 					finish();
 				return true;
@@ -517,10 +543,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
 
-		if ((Config.settings.GcAPI.getValue() != null) && (Config.settings.GcAPI.getValue().length() > 0))
+		if (GroundspeakAPI.isValidAPI_Key(true))
 		{
 			checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
 			checkImportPQfromGC.setEnabled(true);
+			checkBoxPreloadSpoiler.setEnable(true);
+			lblSpoiler.setTextColor(Fonts.getFontColor());
 			if (checkImportPQfromGC.isChecked())
 			{
 				PQ_ListCollabseBox.setAnimationHeight(CollabseBoxMaxHeight);
@@ -534,7 +562,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		{
 			checkImportPQfromGC.setChecked(false);
 			checkImportPQfromGC.setEnabled(false);
-
+			checkBoxPreloadSpoiler.setEnable(false);
+			lblSpoiler.setTextColor(Fonts.getDisableFontColor());
 			checkImportPQfromGC.setHeight(0);
 			CollabseBoxHeight = 0;
 			lblPQ.setHeight(0);
@@ -733,7 +762,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	{
 		// disable btn
 		bOK.disable();
-
+		importCancel = false;
 		// disable UI
 		dis = new disable(scrollBox);
 		dis.setBackground(getBackground());
@@ -1018,9 +1047,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		importCancel = true;
 		thread.interrupt();
 		thread = null;
-
 		importStarted = false;
-
+		this.finish();
 	}
 
 	@Override

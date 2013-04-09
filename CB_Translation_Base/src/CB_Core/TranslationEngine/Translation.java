@@ -82,6 +82,7 @@ public class Translation
 	 */
 	public static void LoadTranslation(String LangPath)
 	{
+		if (that == null) return;
 		that.mInitialLangPath = LangPath;
 
 		try
@@ -103,6 +104,7 @@ public class Translation
 	 */
 	public static String Get(String StringId)
 	{
+		if (that == null) return "Translation not initial";
 		return that.get(StringId);
 	}
 
@@ -119,6 +121,7 @@ public class Translation
 	 */
 	public static String Get(String StringId, String... params)
 	{
+		if (that == null) return "Translation not initial";
 		return that.get(StringId, params);
 	}
 
@@ -131,6 +134,7 @@ public class Translation
 	 */
 	public static ArrayList<Lang> GetLangs(String FilePath)
 	{
+		if (that == null) return null;
 		return that.getLangs(FilePath);
 	}
 
@@ -141,6 +145,7 @@ public class Translation
 	 */
 	public static String getLangId()
 	{
+		if (that == null) return "Translation not initial";
 		return that.mLangID;
 	}
 
@@ -151,7 +156,7 @@ public class Translation
 	 */
 	public static void writeMisingStringsFile() throws IOException
 	{
-		that.writeMisingStrings();
+		if (that != null) that.writeMisingStrings();
 	}
 
 	/**
@@ -159,7 +164,7 @@ public class Translation
 	 */
 	public static void readMissingStringsFile() throws IOException
 	{
-		that.readMissing();
+		if (that != null) that.readMissing();
 	}
 
 	/**
@@ -172,6 +177,7 @@ public class Translation
 	 */
 	public static String GetTextFile(String Name, String overrideLangId) throws IOException
 	{
+		if (that == null) return "Translation not initial";
 		return that.getTextFile(Name, overrideLangId);
 	}
 
@@ -225,64 +231,6 @@ public class Translation
 
 		SelectedLangChangedEventList.Call();
 	}
-
-	// private ArrayList<Translations> ReadFile(String FilePath) throws IOException
-	// {
-	//
-	// ArrayList<Translations> Temp = new ArrayList<Translations>();
-	// String line;
-	//
-	// // get Encoding
-	//
-	// BufferedReader reader;
-	// reader = new BufferedReader(new FileReader(FilePath));
-	// String encoding = reader.readLine().trim();
-	//
-	// BufferedReader Filereader;
-	// if (encoding == "utf8")
-	// {
-	// Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath), "UTF8"));
-	// }
-	// else
-	// {
-	// Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath)));
-	// }
-	// // Read and display lines from the file until the end of
-	// // the file is reached:
-	// while ((line = Filereader.readLine()) != null)
-	// {
-	// int pos;
-	//
-	// // skip empty lines
-	// if (line == "")
-	// {
-	// continue;
-	// }
-	//
-	// // skip comment line
-	// pos = line.indexOf("//");
-	// if (pos > -1)
-	// {
-	// continue;
-	// }
-	//
-	// // skip line without value
-	// pos = line.indexOf("=");
-	// if (pos == -1)
-	// {
-	// continue;
-	// }
-	//
-	// String readID = line.substring(0, pos);
-	// String readTransl = line.substring(pos + 1);
-	// String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
-	// Temp.add(new Translations(readID.trim(), ReplacedRead));
-	// }
-	//
-	// reader.close();
-	// Filereader.close();
-	// return Temp;
-	// }
 
 	private ArrayList<Translations> ReadFile(String FilePath)
 	{

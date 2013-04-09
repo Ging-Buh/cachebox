@@ -653,7 +653,7 @@ public class TabMainView extends MainViewBase
 					if (which == GL_MsgBox.BUTTON_POSITIVE) platformConector.callGetApiKeyt();
 					return true;
 				}
-			});
+			}, Config.settings.RememberAsk_Get_API_Key);
 		}
 	};
 

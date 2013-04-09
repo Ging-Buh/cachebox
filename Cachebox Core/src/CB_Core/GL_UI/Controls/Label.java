@@ -50,23 +50,26 @@ public class Label extends CB_View_Base
 	private int lineCount = 1;
 	private int initialedLineCount = 0;
 
-	public final Color color = new Color(1, 1, 1, 1);
+	public Color mColor = new Color(1, 1, 1, 1);
 
 	public Label(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
+		mColor = Fonts.getFontColor();
 		calcInnerRec();
 	}
 
 	public Label(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		mColor = Fonts.getFontColor();
 		calcInnerRec();
 	}
 
 	public Label(CB_RectF rec, GL_View_Base Parent, String Name)
 	{
 		super(rec, Parent, Name);
+		mColor = Fonts.getFontColor();
 		calcInnerRec();
 	}
 
@@ -74,7 +77,7 @@ public class Label extends CB_View_Base
 	{
 
 		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), name);
-
+		mColor = Fonts.getFontColor();
 	}
 
 	private void calcInnerRec()
@@ -270,7 +273,7 @@ public class Label extends CB_View_Base
 				cache = null;
 			}
 			cache = new BitmapFontCache(font, false);
-			cache.setColor(Fonts.getFontColor());
+			cache.setColor(mColor);
 			if (lineCount != initialedLineCount) return;
 			change();
 			fontPropertyChanged();
@@ -379,7 +382,10 @@ public class Label extends CB_View_Base
 
 	public void setTextColor(Color color)
 	{
-		if (cache != null) cache.setColor(color);
+		mColor = color;
+		cache = null;
+		chkCache();
+		change();
 	}
 
 	public String getText()
@@ -418,7 +424,7 @@ public class Label extends CB_View_Base
 
 	public BitmapFont getFont()
 	{
-		return cache.getFont();
+		return this.font;
 	}
 
 	/**

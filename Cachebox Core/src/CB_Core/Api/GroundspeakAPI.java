@@ -238,7 +238,7 @@ public class GroundspeakAPI
 	public static int GetMembershipType(String accessToken)
 	{
 
-		API_isChacked = true;
+		API_isCheked = true;
 
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
@@ -970,7 +970,7 @@ public class GroundspeakAPI
 		return string;
 	}
 
-	private static boolean API_isChacked = false;
+	private static boolean API_isCheked = false;
 
 	/**
 	 * Returns True if the APY-Key INVALID
@@ -992,16 +992,19 @@ public class GroundspeakAPI
 	private static boolean chkMemperShip(String accessToken, boolean withoutMsg)
 	{
 		boolean isValid = false;
-		if (API_isChacked) isValid = membershipType > 0;
-		if (!isValid) GetMembershipType(accessToken);
+		if (API_isCheked) isValid = membershipType > 0;
+		if (accessToken.length() > 0)
+		{
+			if (!isValid) GetMembershipType(accessToken);
+			isValid = membershipType > 0;
+		}
 
-		isValid = membershipType > 0;
 		if (!isValid)
 		{
 			if (!withoutMsg) API_ErrorEventHandlerList.callInvalidApiKey();
 		}
 
-		API_isChacked = true;
+		API_isCheked = true;
 		return !isValid;
 	}
 
@@ -1012,7 +1015,7 @@ public class GroundspeakAPI
 
 	public static boolean isValidAPI_Key(boolean withoutMsg)
 	{
-		if (API_isChacked) return membershipType > 0;
+		if (API_isCheked) return membershipType > 0;
 
 		chkMemperShip(Config.GetAccessToken(), withoutMsg);
 

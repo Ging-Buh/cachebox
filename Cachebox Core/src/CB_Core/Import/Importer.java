@@ -30,6 +30,7 @@ import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
+import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.Log.Logger;
@@ -353,7 +354,10 @@ public class Importer
 		{
 			if (gccode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 			{
-				importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
+
+				// API zugriff nur mit gültigem API Key
+
+				if (GroundspeakAPI.isValidAPI_Key(true)) importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
 				ip.ProgressInkrement("importImageUrls",
 						"get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")",
 						false);
@@ -451,10 +455,12 @@ public class Importer
 		int numCaches = reader.getCount();
 		ip.setJobMax("importImages", numCaches);
 
+		boolean canceld = false;
+
 		if (reader.getCount() > 0)
 		{
 			reader.moveToFirst();
-			while (reader.isAfterLast() == false)
+			while (reader.isAfterLast() == false && !canceld)
 			{
 				cnt++;
 				long id = reader.getLong(0);
@@ -493,9 +499,9 @@ public class Importer
 					}
 					importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri,
 							false);
-
-					reader.moveToNext();
 				}
+				canceld = Import.isCanceld();
+				reader.moveToNext();
 			}
 		}
 
@@ -563,7 +569,7 @@ public class Importer
 			Parameters args = new Parameters();
 			args.put("ImagesUpdated", additionalImagesUpdated);
 			args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-			long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+			Database.Data.update("Caches", args, "Id = ?", new String[]
 				{ String.valueOf(id) });
 		}
 

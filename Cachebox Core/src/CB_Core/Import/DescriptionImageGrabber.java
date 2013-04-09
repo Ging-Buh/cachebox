@@ -330,14 +330,13 @@ public class DescriptionImageGrabber
 
 		LinkedList<URI> images = new LinkedList<URI>();
 
-		URI baseUri;
+		// chk baseUrl
 		try
 		{
-			baseUri = URI.create(baseUrl);
+			URI.create(baseUrl);
 		}
 		catch (Exception exc)
 		{
-			baseUri = null;
 			return images;
 		}
 
@@ -409,7 +408,7 @@ public class DescriptionImageGrabber
 			{
 				Parameters args = new Parameters();
 				args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-				long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+				Database.Data.update("Caches", args, "Id = ?", new String[]
 					{ String.valueOf(id) });
 			}
 		}
@@ -478,7 +477,7 @@ public class DescriptionImageGrabber
 				{
 					Parameters args = new Parameters();
 					args.put("ImagesUpdated", additionalImagesUpdated);
-					long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+					Database.Data.update("Caches", args, "Id = ?", new String[]
 						{ String.valueOf(id) });
 					// jetzt können noch alle "alten" Spoiler gelöscht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind, aber
 					// nicht als Link über die API gemeldet wurden
