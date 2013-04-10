@@ -174,6 +174,39 @@ public class TrackableListView extends CB_View_Base
 		listView.notifyDataSetChanged();
 	}
 
+	public void RefreshTbList()
+	{
+		wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), new IcancelListner()
+		{
+
+			@Override
+			public void isCanceld()
+			{
+				// TODO Auto-generated method stub
+
+			}
+		}, new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				int result = -1;
+				TbList searchList = new TbList();
+				result = CB_Core.Api.GroundspeakAPI.getMyTbList(Config.GetAccessToken(), searchList);
+
+				if (result == 0)
+				{
+					TrackableListDAO.clearDB();
+					searchList.writeToDB();
+					TrackableListView.that.reloadTB_List();
+				}
+
+				wd.close();
+			}
+		});
+	}
+
 	public class CustomAdapter implements Adapter
 	{
 

@@ -248,7 +248,6 @@ public enum LogTypes
 			return move_to_collection;
 		case 70:
 			return move_to_inventory;
-
 		case 75:
 			return visited;
 		}
@@ -270,6 +269,9 @@ public enum LogTypes
 
 		case note:
 			return 4;
+
+		case retrieve:
+			return 13;
 
 		case dropped_off:
 			return 14;

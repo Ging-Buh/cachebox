@@ -24,6 +24,7 @@ import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
@@ -154,7 +155,8 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		final String cacheCode = (LT == LogTypes.dropped_off || LT == LogTypes.visited) ? GlobalCore.getSelectedCache().GcCode : "";
+		final String cacheCode = (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore
+				.getSelectedCache().GcCode : "";
 
 		wd = CancelWaitDialog.ShowWait("Upload Log", new IcancelListner()
 		{
@@ -191,6 +193,21 @@ public class TB_Log extends ActivityBase
 
 				if (wd != null) wd.close();
 				TB_Log.this.finish();
+
+				// Refresh TB List after Droped Off or Picked or Grabed
+				if (LT == LogTypes.dropped_off || LT == LogTypes.retrieve || LT == LogTypes.grab_it)
+				{
+					GL.that.RunOnGL(new runOnGL()
+					{
+
+						@Override
+						public void run()
+						{
+							TrackableListView.that.RefreshTbList();
+						}
+					});
+				}
+
 			}
 		});
 
