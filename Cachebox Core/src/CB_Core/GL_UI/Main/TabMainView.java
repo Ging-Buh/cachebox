@@ -103,7 +103,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowSolverView2 actionShowSolverView2;
 	public static CB_Action_ShowSpoilerView actionShowSpoilerView;
 	public static CB_Action_ShowFilterSettings actionShowFilter = new CB_Action_ShowFilterSettings();
-	private CB_Action_ShowTrackableListView actionShowTrackableListView;
+	public static CB_Action_ShowTrackableListView actionShowTrackableListView;
 	public static CB_Action_ShowTrackListView actionShowTrackListView;
 	public static CB_Action_ShowWaypointView actionShowWaypointView;
 	public static CB_Action_Show_Settings actionShowSettings;

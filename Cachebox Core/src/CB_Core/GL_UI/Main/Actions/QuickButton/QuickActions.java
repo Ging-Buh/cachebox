@@ -57,7 +57,8 @@ public enum QuickActions
 	Day_Night, // 17
 	FieldNotes, // 18
 	QuickFieldNotes, // 19
-	// ScreenLock, // 20
+	TrackableListView, // 20
+	// ScreenLock, // 21
 
 	empty, ;
 
@@ -159,8 +160,8 @@ public enum QuickActions
 			return TabMainView.actionShowFieldNotesView;
 		case 19:
 			return TabMainView.actionQuickFieldNote;
-			// case 12:
-			// return action_ScreenLock;
+		case 20:
+			return TabMainView.actionShowTrackableListView;
 		}
 		return null;
 	}
@@ -209,8 +210,8 @@ public enum QuickActions
 			return Translation.Get("Fieldnotes");
 		case 19:
 			return Translation.Get("QuickFieldNote");
-			// case 12:
-			// return Translation.Get("screenlock");
+		case 20:
+			return Translation.Get("TBList");
 		}
 		return "empty";
 	}

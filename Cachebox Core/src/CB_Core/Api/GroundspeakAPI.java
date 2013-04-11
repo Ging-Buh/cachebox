@@ -730,6 +730,64 @@ public class GroundspeakAPI
 		return null;
 	}
 
+	@SuppressWarnings("unused")
+	public static Trackable getTBbyTbCode(String accessToken, String TrackingNumber)
+	{
+		if (chkMemperShip(accessToken)) return null;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
+		try
+		{
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + accessToken + "&tbCode=" + TrackingNumber
+					+ "&format=json");
+
+			String result = Execute(httppost);
+
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					LastAPIError = "";
+					JSONArray jTrackables = json.getJSONArray("Trackables");
+
+					for (int ii = 0; ii < jTrackables.length(); ii++)
+					{
+						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
+						Trackable ret = new Trackable(jTrackable);
+						ret.setTrackingNumber(TrackingNumber);
+						return ret;
+					}
+				}
+				else
+				{
+					LastAPIError = "";
+					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					LastAPIError += status.getString("StatusMessage") + "\n";
+					LastAPIError += status.getString("ExceptionDetails");
+
+					return null;
+				}
+
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			return null;
+		}
+
+		return null;
+	}
+
 	/**
 	 * Ruft die Liste der Bilder ab, die in einem Cache sind
 	 * 

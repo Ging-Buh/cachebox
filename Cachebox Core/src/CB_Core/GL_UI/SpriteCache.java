@@ -141,7 +141,8 @@ public class SpriteCache
 		tbDrop_59, // 59
 		tbGrab_60, // 60
 		tbPicked_61, // 61
-		tbVisit_62 // 62
+		tbVisit_62, // 62
+		tbNote_63 // 63
 	}
 
 	public static ArrayList<Sprite> Icons = null;
@@ -801,6 +802,7 @@ public class SpriteCache
 			Icons.add(getThemedSprite("tb-grab")); // 60
 			Icons.add(getThemedSprite("tb-picked")); // 61
 			Icons.add(getThemedSprite("tb-visit")); // 62
+			Icons.add(getThemedSprite("tb-note")); // 63
 
 		}
 

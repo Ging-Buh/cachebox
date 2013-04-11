@@ -135,6 +135,10 @@ public class TB_Log extends ActivityBase
 			btnAction.setImage(SpriteCache.Icons.get(IconName.tbPicked_61.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.PickedTemplate.getValue(), TB));
 			break;
+		case note:
+			btnAction.setImage(SpriteCache.Icons.get(IconName.tbNote_63.ordinal()));
+			edit.setText("");
+			break;
 		default:
 			break;
 		}
@@ -210,6 +214,37 @@ public class TB_Log extends ActivityBase
 
 			}
 		});
+
+	}
+
+	@Override
+	public void dispose()
+	{
+		that = null;
+		TB = null;
+
+		if (btnClose != null) btnClose.dispose();
+		btnClose = null;
+
+		if (btnAction != null) btnAction.dispose();
+		btnAction = null;
+
+		if (icon != null) icon.dispose();
+		icon = null;
+
+		if (lblName != null) lblName.dispose();
+		btnAction = null;
+
+		if (lblName != null) lblName.dispose();
+		btnAction = null;
+
+		if (contentBox != null) contentBox.dispose();
+		contentBox = null;
+
+		if (edit != null) edit.dispose();
+		edit = null;
+
+		LT = null;
 
 	}
 }

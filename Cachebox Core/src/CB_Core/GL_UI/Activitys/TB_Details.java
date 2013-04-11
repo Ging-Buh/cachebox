@@ -284,6 +284,7 @@ public class TB_Details extends ActivityBase
 		if (isInventory) cm.addItem(MenuID.MI_TB_DROPPED, "dropped", SpriteCache.Icons.get(IconName.tbDrop_59.ordinal()));
 		if (!isInventory) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", SpriteCache.Icons.get(IconName.tbGrab_60.ordinal()));
 		if (!isInventory) cm.addItem(MenuID.MI_TB_PICKED, "picked", SpriteCache.Icons.get(IconName.tbPicked_61.ordinal()));
+		cm.addItem(MenuID.MI_TB_NOTE, "note", SpriteCache.Icons.get(IconName.tbNote_63.ordinal()));
 
 		cm.Show();
 	}
@@ -316,6 +317,10 @@ public class TB_Details extends ActivityBase
 
 			case MenuID.MI_TB_PICKED:
 				TB_Log.that.Show(TB, LogTypes.retrieve);
+				break;
+
+			case MenuID.MI_TB_NOTE:
+				TB_Log.that.Show(TB, LogTypes.note);
 				break;
 			}
 			return true;

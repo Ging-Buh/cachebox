@@ -29,6 +29,7 @@ public class ImageButton extends Button
 	protected void render(SpriteBatch batch)
 	{
 		super.render(batch);
+
 		if (isDisabled)
 		{
 			image.setColor(new Color(1f, 1f, 1f, 0.5f));
@@ -39,20 +40,30 @@ public class ImageButton extends Button
 		}
 	}
 
+	private void chkImagePos()
+	{
+		// chk image Pos
+		CB_RectF thisRec = this.copy();
+		thisRec.setPos(0, 0);
+		image.setRec(thisRec.ScaleCenter(0.8f * mScale));
+	}
+
 	public void setImage(Drawable drawable)
 	{
 		image.setDrawable(drawable);
+		chkImagePos();
 	}
 
 	public void setImage(Sprite sprite)
 	{
 		image.setSprite(sprite);
+		chkImagePos();
 	}
 
 	public void setImageRotation(Float angle)
 	{
 		mAngle = angle;
-		image.setRec(this.ScaleCenter(0.8f * mScale));
+		chkImagePos();
 		image.setRotate(angle);
 		image.setOrigin(image.getHalfWidth(), image.getHalfHeight());
 	}
@@ -63,7 +74,7 @@ public class ImageButton extends Button
 	public void setImageScale(float scale)
 	{
 		mScale = scale;
-		image.setRec(this.ScaleCenter(0.8f * mScale));
+		chkImagePos();
 		image.setRotate(mAngle);
 		image.setOrigin(image.getHalfWidth(), image.getHalfHeight());
 	}
@@ -71,7 +82,7 @@ public class ImageButton extends Button
 	@Override
 	public void resize(float width, float height)
 	{
-		image.setRec(this.ScaleCenter(0.8f * mScale));
+		chkImagePos();
 		image.setRotate(mAngle);
 		image.setOrigin(image.getHalfWidth(), image.getHalfHeight());
 	}

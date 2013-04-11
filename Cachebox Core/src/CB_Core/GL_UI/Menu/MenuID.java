@@ -197,4 +197,5 @@ public class MenuID
 	public static final int MI_TB_PICKED = 168;
 	public static final int MI_TB_VISIT = 169;
 	public static final int MI_TB_GRABBED = 170;
+	public static final int MI_TB_NOTE = 171;
 }
