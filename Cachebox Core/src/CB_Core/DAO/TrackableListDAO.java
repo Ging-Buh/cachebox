@@ -63,7 +63,7 @@ public class TrackableListDAO
 	 */
 	public static void clearDB()
 	{
-		long ret = Database.FieldNotes.delete("Trackable", "", null);
+		Database.FieldNotes.delete("Trackable", "", null);
 	}
 
 }

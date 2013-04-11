@@ -186,7 +186,7 @@ public class CacheDAO
 
 		try
 		{
-			long ret = Database.Data.insert("Caches", args);
+			Database.Data.insert("Caches", args);
 
 		}
 		catch (Exception exc)

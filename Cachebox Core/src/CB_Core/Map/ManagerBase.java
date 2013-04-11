@@ -230,8 +230,6 @@ public abstract class ManagerBase
 				response.getEntity().writeTo(out);
 				out.close();
 
-				String responseString = out.toString();
-
 				// Verzeichnis anlegen
 				synchronized (this)
 				{

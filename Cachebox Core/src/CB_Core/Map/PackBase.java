@@ -236,9 +236,8 @@ public class PackBase implements Comparable<PackBase>
 			{
 				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++)
 				{
-					String local = Layer.GetLocalFilename(new Descriptor(x, y, bbox.Zoom));
 					/*
-					 * Stream imageStream = null;
+					 * String local = Layer.GetLocalFilename(new Descriptor(x, y, bbox.Zoom)); Stream imageStream = null;
 					 * 
 					 * if (!File.Exists(local) || File.GetCreationTime(local) < MaxAge) if (!Layer.DownloadTile(new Descriptor(x, y,
 					 * bbox.Zoom))) continue;
@@ -298,7 +297,6 @@ public class PackBase implements Comparable<PackBase>
 		}
 		catch (Exception exc)
 		{
-			String s = exc.getMessage();
 			/*
 			 * #if DEBUG Global.AddLog("Pack.LoadFromBoundingBox: Out of memory!" + exc.ToString()); Global.AddMemoryLog(); #endif
 			 */

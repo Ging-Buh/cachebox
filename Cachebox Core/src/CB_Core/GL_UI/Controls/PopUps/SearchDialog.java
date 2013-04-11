@@ -831,9 +831,6 @@ public class SearchDialog extends PopUp_Base
 	{
 		String searchPattern = mEingabe.getText().toLowerCase();
 
-		String where = "";
-		if (GlobalCore.LastFilter.toString().length() > 0) where = " AND (";
-
 		GlobalCore.LastFilter.filterName = "";
 		GlobalCore.LastFilter.filterGcCode = "";
 		GlobalCore.LastFilter.filterOwner = "";
@@ -844,8 +841,6 @@ public class SearchDialog extends PopUp_Base
 
 		ApplyFilter();
 	}
-
-	private FilterProperties props;
 
 	public void ApplyFilter()
 	{

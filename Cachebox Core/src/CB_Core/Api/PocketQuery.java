@@ -269,7 +269,6 @@ public class PocketQuery
 					}
 					catch (Exception ex)
 					{
-						String s = ex.getMessage();
 					}
 
 					// fs.write(resultByte);
