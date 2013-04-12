@@ -284,18 +284,23 @@ public class splash extends Activity
 			else if (testExtSdPath("/Removable/MicroSD"))
 			{
 				// Asus Transformer
-				externalSd = "/Removable/MicroSD/CacheBox";
+				externalSd = prev + "/Removable/MicroSD/CacheBox";
 			}
 			else if (testExtSdPath("/ext_sd"))
 			{
 				// ODYS Motion
-				externalSd = "/ext_sd/CacheBox";
+				externalSd = prev + "/ext_sd/CacheBox";
 			}
 			else if (testExtSdPath(prev + "/sdcard"))
 			{
 				// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
 				// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
 				externalSd = prev + "/sdcard/CacheBox";
+			}
+			else if (testExtSdPath("/sdcard/tflash"))
+			{
+				// Car Radio
+				externalSd = prev + "/sdcard/tflash/CacheBox";
 			}
 			final String externalSd2 = externalSd;
 			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
