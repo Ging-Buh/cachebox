@@ -932,7 +932,10 @@ public class SearchDialog extends PopUp_Base
 			}
 			else
 			{
-				setY(CacheListView.that.getMaxY() - that.height);
+				if (CacheListView.that != null)
+				{
+					setY(CacheListView.that.getMaxY() - that.height);
+				}
 			}
 
 		}
