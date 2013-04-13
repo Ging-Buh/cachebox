@@ -502,7 +502,7 @@ public class Trackable implements Comparable<Trackable>
 
 		if (ID == 4) return true; // Note
 
-		if (CurrentGeocacheCode != null && CurrentGeocacheCode.length() > 0)
+		if (CurrentGeocacheCode != null && CurrentGeocacheCode.length() > 0 && !CurrentGeocacheCode.equalsIgnoreCase("null"))
 		{
 			// TB in Cache
 			if (ID == 16) return true;

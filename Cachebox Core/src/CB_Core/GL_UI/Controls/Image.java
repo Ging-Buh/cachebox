@@ -509,8 +509,7 @@ public class Image extends CB_View_Base
 		{
 			this.AtlasPath = AtlasPath;
 			this.ImgName = ImageName;
-			State = 5;
-
+			State = 6;
 		}
 
 		Sprite tmp = null;
