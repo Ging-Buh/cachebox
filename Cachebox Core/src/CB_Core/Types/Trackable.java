@@ -34,7 +34,6 @@ public class Trackable implements Comparable<Trackable>
 	private String OwnerName = "";
 	private String Url = "";
 	private String TypeName = "";
-	private String TrackingNumber = "";
 	private String TrackingCode;
 
 	// TODO must load info (the GS_API gives no info about this)
@@ -417,7 +416,7 @@ public class Trackable implements Comparable<Trackable>
 
 	public String getTrackingNumber()
 	{
-		return this.TrackingNumber;
+		return this.TrackingCode;
 	}
 
 	/*

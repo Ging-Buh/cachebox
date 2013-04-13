@@ -25,6 +25,7 @@ import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase.iChanged;
@@ -52,6 +53,7 @@ public class DesktopMain
 		GlobalCore.platform = Plattform.Desktop;
 		frame.setVisible(false);
 		new DesktopLogger();
+		Logger.setDebug(true);
 
 		// Initial Desctop TexturePacker
 		new Desctop_Packer();

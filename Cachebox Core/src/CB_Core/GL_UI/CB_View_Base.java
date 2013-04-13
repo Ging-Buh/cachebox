@@ -318,6 +318,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	private float topYAdd;
 	private float bottomYAdd = -1;
 
+	public float getRowYPos()
+	{
+		return rowYPos;
+	}
+
+	public void setRowYPos(float YPos)
+	{
+		rowYPos = YPos;
+	}
+
 	/**
 	 ** setting the margins between the added objects
 	 **/

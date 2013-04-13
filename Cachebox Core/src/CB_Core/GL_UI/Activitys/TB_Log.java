@@ -31,6 +31,8 @@ import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Trackable;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+
 public class TB_Log extends ActivityBase
 {
 	public static TB_Log that;
@@ -142,27 +144,31 @@ public class TB_Log extends ActivityBase
 			String msg = "";
 			if (LT == LogTypes.discovered)
 			{
-				msg = Translation.Get("discoveredAt") + " " + c.Name;
+				msg = Translation.Get("discoveredAt") + ": " + GlobalCore.br + c.Name;
 			}
 			if (LT == LogTypes.visited)
 			{
-				msg = Translation.Get("visitedAt") + " " + c.Name;
+				msg = Translation.Get("visitedAt") + ": " + GlobalCore.br + c.Name;
 			}
 			if (LT == LogTypes.dropped_off)
 			{
-				msg = Translation.Get("dropped_offAt") + " " + c.Name;
+				msg = Translation.Get("dropped_offAt") + ": " + GlobalCore.br + c.Name;
 			}
 			if (LT == LogTypes.retrieve)
 			{
-				msg = Translation.Get("retrieveAt") + " " + c.Name;
+				msg = Translation.Get("retrieveAt") + ": " + GlobalCore.br + c.Name;
 			}
 
 			CacheIcon.setSprite(SpriteCache.BigIcons.get(c.Type.ordinal()));
 
-			lblPlaced.setWidth(contentBox.getAvailableWidth() - CacheIcon.getWidth());
-			lblPlaced.setWrappedText(msg);
+			lblPlaced.setWidth(contentBox.getAvailableWidth() - CacheIcon.getWidth() - (margin * 3));
+			TextBounds bo = lblPlaced.setWrappedText(msg);
+			lblPlaced.setHeight(bo.height + lblPlaced.getTopHeight() + lblPlaced.getBottomHeight());
 
-			contentBox.setMargins(margin, margin);
+			contentBox.setMargins(margin, margin * 3);
+			contentBox.setBorders(contentBox.getLeftWidth(), contentBox.getRightWidth());
+			contentBox.setRowYPos(contentBox.getRowYPos() - (margin * 3));
+
 			contentBox.addNext(CacheIcon);
 			contentBox.addLast(lblPlaced);
 
@@ -211,11 +217,11 @@ public class TB_Log extends ActivityBase
 	{
 
 		// Temp Msg Box nur Staging-Server
-		if (!Config.settings.StagingAPI.getValue())
-		{
-			GL_MsgBox.Show("Logging of TB `s is still in the testing phase!", "not possible", MessageBoxIcon.Stop);
-			return;
-		}
+		// if (!Config.settings.StagingAPI.getValue())
+		// {
+		// GL_MsgBox.Show("Logging of TB `s is still in the testing phase!", "not possible", MessageBoxIcon.Stop);
+		// return;
+		// }
 
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
