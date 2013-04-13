@@ -34,8 +34,6 @@ public class GpsStateChangeEventList
 	public static long maxEventListTime = 0;
 	private static long lastChanged = 0;
 
-	static Thread threadCall;
-
 	public static void Call()
 	{
 		synchronized (list)
@@ -50,46 +48,28 @@ public class GpsStateChangeEventList
 			}
 			lastChanged = System.currentTimeMillis();
 
-			if (threadCall != null)
+			try
 			{
-				if (threadCall.getState() != Thread.State.TERMINATED) return;
-				else
-					threadCall = null;
-			}
-
-			threadCall = new Thread(new Runnable()
-			{
-
-				@Override
-				public void run()
+				synchronized (list)
 				{
-					try
+					long thradStart = System.currentTimeMillis();
+					count++;
+					for (GpsStateChangeEvent event : list)
 					{
-						synchronized (list)
-						{
-							long thradStart = System.currentTimeMillis();
-							count++;
-							for (GpsStateChangeEvent event : list)
-							{
 
-								FireEvent(event);
+						FireEvent(event);
 
-							}
-							if (count > 10) count = 0;
-
-							maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
-						}
 					}
-					catch (Exception e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					if (count > 10) count = 0;
 
+					maxEventListTime = Math.max(maxEventListTime, System.currentTimeMillis() - thradStart);
 				}
-			});
-
-			threadCall.run();
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 	}

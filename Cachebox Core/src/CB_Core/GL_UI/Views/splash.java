@@ -433,7 +433,7 @@ public class splash extends TabMainView
 	{
 		Logger.DEBUG("ini_TabMainView");
 		GL.that.removeRenderView(this);
-		((Tab_GL_Listner) GL.that).switchToTabMainView();
+		((Tab_GL_Listner) GL.that).switchToMainView(new TabMainView(0, 0, width, height, "TabMainView"));
 
 		if (GlobalCore.restartCache != null)
 		{

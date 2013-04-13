@@ -522,7 +522,13 @@ public class Trackable implements Comparable<Trackable>
 		}
 
 		// TB at other Person
-		if (ID == 16 || ID == 19 || ID == 48 || ID == 69 || ID == 70) return true;
+
+		// User entered TB-Code and not TrackingCode he can´t Grabbed or Discover
+		if (TrackingCode != null && TrackingCode.length() > 0)
+		{
+			if (ID == 19 || ID == 48) return true;
+		}
+		if (ID == 16 || ID == 69 || ID == 70) return true;
 
 		return false;
 	}

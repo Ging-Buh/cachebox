@@ -124,10 +124,10 @@ public class Tab_GL_Listner extends GL
 
 	}
 
-	public void switchToTabMainView()
+	public void switchToMainView(MainViewBase view)
 	{
 		MainViewBase altSplash = child;
-		child = new TabMainView(0, 0, width, height, "TabMainView");
+		child = view;
 		altSplash.dispose();
 		altSplash = null;
 
