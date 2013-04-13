@@ -268,15 +268,21 @@ public class Fonts
 	private static BitmapFont loadFontFromFile(FreeTypeFontGenerator generator, int scale)
 	{
 		String fs = GlobalCore.fs;
-		// fonts-Verzeichnis "global" im cachebox/skins
-		String path = cfg.SkinFolder.replace("/", fs) + fs + ".." + fs + "fonts";
-		String fontPath = path + fs + String.valueOf(scale) + ".fnt";
-		if (!FileIO.FileExists(fontPath))
+		String fontPath = "";
+		// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
+		String path = cfg.SkinFolder.replace("/", fs) + fs + "fonts";
+		if (FileIO.DirectoryExists(path))
 		{
-			// oder fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
-			path = cfg.SkinFolder.replace("/", fs) + fs + "fonts";
+			// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
 			fontPath = path + fs + String.valueOf(scale) + ".fnt";
 		}
+		else
+		{
+			// fonts-Verzeichnis "global" im cachebox/skins
+			path = cfg.SkinFolder.replace("/", fs) + fs + ".." + fs + "fonts";
+			fontPath = path + fs + String.valueOf(scale) + ".fnt";
+		}
+
 		// Wenn der font nicht vorberechnet ist, dann wird er generiert
 		if (FileIO.FileExists(fontPath))
 		{
