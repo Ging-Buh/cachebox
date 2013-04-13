@@ -84,7 +84,16 @@ public class Image extends CB_View_Base
 		if (ImageLoadError)
 		{
 			// TODO Draw error Image
+			if (Wait != null)
+			{
+				GL.that.removeRenderView(Wait);
+				this.removeChild(Wait);
+				Wait = null;
+			}
 
+			setSprite(SpriteCache.Icons.get(IconName.delete_28.ordinal()));
+			ImageLoadError = false;
+			return;
 		}
 
 		if (State == 3)
@@ -381,6 +390,15 @@ public class Image extends CB_View_Base
 						{
 							dl.run();
 							inLoad = false;
+
+							// chk if Download complied
+							if (!FileIO.FileExists(CachePath + LocalPath))
+							{
+								// Download Error
+								ImageLoadError = true;
+								return;
+							}
+
 							setImage(CachePath + LocalPath);
 						}
 					});
