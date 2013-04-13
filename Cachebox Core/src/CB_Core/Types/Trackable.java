@@ -10,8 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
+import CB_Core.Config;
 import CB_Core.UnitFormatter;
 import CB_Core.DB.CoreCursor;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Log.Logger;
 
 public class Trackable implements Comparable<Trackable>
@@ -33,6 +35,7 @@ public class Trackable implements Comparable<Trackable>
 	private String Url = "";
 	private String TypeName = "";
 	private String TrackingNumber = "";
+	private String TrackingCode;
 
 	// TODO must load info (the GS_API gives no info about this)
 	private Date lastVisit;
@@ -194,7 +197,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		try
 		{
-			CacheId = JObj.getInt("CacheID");
+			CurrentGeocacheCode = JObj.getString("CurrentGeocacheCode");
 		}
 		catch (JSONException e)
 		{
@@ -307,7 +310,6 @@ public class Trackable implements Comparable<Trackable>
 		{
 			e.printStackTrace();
 		}
-
 	}
 
 	/*
@@ -422,9 +424,9 @@ public class Trackable implements Comparable<Trackable>
 	 * Setter
 	 */
 
-	public void setTrackingNumber(String trackingNumber)
+	public void setTrackingCode(String trackingCode)
 	{
-		this.TrackingNumber = trackingNumber;
+		this.TrackingCode = trackingCode;
 	}
 
 	/*
@@ -466,4 +468,63 @@ public class Trackable implements Comparable<Trackable>
 		return Name.compareToIgnoreCase(T2.Name);
 	}
 
+	/**
+	 * Returns True if a LogType possible <br>
+	 * <br>
+	 * Possible LogTypes for TB in Cache: <br>
+	 * 4 - Post Note <br>
+	 * 13 - Retrieve It from a Cache <br>
+	 * 14 - Place in a cache <br>
+	 * 16 - Mark as missing <br>
+	 * 48 - Discover <br>
+	 * <br>
+	 * Possible LogTypes for TB at other Person: <br>
+	 * 4 - Post Note <br>
+	 * 16 - Mark as missing <br>
+	 * 19 - Grab <br>
+	 * 48 - Discover <br>
+	 * 69 - Move to collection <br>
+	 * 70 - Move to inventory <br>
+	 * <br>
+	 * Possible LogTypes for TB at my inventory: <br>
+	 * 4 - Post Note <br>
+	 * 14 - Place in a cache <br>
+	 * 16 - Mark as missing<br>
+	 * 69 - Move to collection <br>
+	 * 70 - Move to inventory <br>
+	 * 75 - Visit<br>
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public boolean isLogTypePosible(LogTypes type)
+	{
+		int ID = type.getGcLogTypeId();
+
+		if (ID == 4) return true; // Note
+
+		if (CurrentGeocacheCode != null && CurrentGeocacheCode.length() > 0)
+		{
+			// TB in Cache
+			if (ID == 16) return true;
+
+			// the next LogTypes only possible if User has entered the Trackingnumber
+			if (!(TrackingCode != null && TrackingCode.length() > 0)) return false;
+			if (ID == 13 || /* ID == 14 || */ID == 48) return true; // TODO ist es Sinnvoll einen TB aus einem Cache in einen Cache zu
+																	// Packen?? ID 14 ist Laut GS erlaubt!
+			return false;
+		}
+
+		if (CurrentOwnerName.equalsIgnoreCase(Config.settings.GcLogin.getValue()))
+		{
+			// TB in Inventory
+			if (ID == 14 || ID == 16 || ID == 69 || ID == 70 || ID == 75) return true;
+			return false;
+		}
+
+		// TB at other Person
+		if (ID == 16 || ID == 19 || ID == 48 || ID == 69 || ID == 70) return true;
+
+		return false;
+	}
 }

@@ -12,7 +12,7 @@ public class SettingsClass extends SettingsList
 	private final String FOUND = "<br>###finds##, ##time##, Found it with Cachebox!";
 	private final String DNF = "<br>##time##. Logged it with Cachebox!";
 	private final String LOG = "Logged it with Cachebox!";
-	private final String DISCOVERD = "<br> ##time##, Discoverd it with Cachebox!";
+	private final String DISCOVERD = "<br> ##time##, Discovered it with Cachebox!";
 	private final String VISITED = "<br> ##time##, Visited it with Cachebox!";
 	private final String DROPPED = "<br> ##time##, Dropped off with Cachebox!";
 	private final String PICKED = "<br> ##time##, Picked it with Cachebox!";

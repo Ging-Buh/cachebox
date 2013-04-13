@@ -28,6 +28,7 @@ import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
+import CB_Core.Types.Cache;
 import CB_Core.Types.Trackable;
 
 public class TB_Log extends ActivityBase
@@ -36,8 +37,8 @@ public class TB_Log extends ActivityBase
 	private Trackable TB;
 	private Button btnClose;
 	private ImageButton btnAction;
-	private Image icon;
-	private Label lblName;
+	private Image icon, CacheIcon;
+	private Label lblName, lblPlaced;
 	private Box contentBox;
 	private LogTypes LT;
 	private EditWrapedTextField edit;
@@ -94,9 +95,13 @@ public class TB_Log extends ActivityBase
 		icon.setWeight(-1);
 		lblName = new Label(iconRec, "Name");
 
+		CacheIcon = new Image(iconRec, "CacheIcon");
+		CacheIcon.setWeight(-1);
+		lblPlaced = new Label(iconRec, "CacheName");
+
 		edit = new EditWrapedTextField("LogInput", TextFieldType.MultiLineWraped);
 		edit.setWidth(contentBox.getWidth() - contentBox.getLeftWidth() - contentBox.getRightWidth());
-		edit.setHeight(contentBox.getHeight());
+		edit.setHeight(contentBox.getHalfHeight());
 	}
 
 	private void layout()
@@ -106,7 +111,63 @@ public class TB_Log extends ActivityBase
 		this.addNext(btnAction);
 		this.addLast(btnClose);
 		this.addLast(contentBox);
-		contentBox.addChild(edit);
+		contentBox.initRow(true, contentBox.getHeight());
+		contentBox.setNoBorders();
+		contentBox.setMargins(0, 0);
+		contentBox.addLast(edit);
+
+		// Show Selected Cache for LogTypes discovered/visited/dropped_off/retrieve
+		if (LT == LogTypes.discovered || LT == LogTypes.visited || LT == LogTypes.dropped_off || LT == LogTypes.retrieve)
+		{
+
+			Cache c = GlobalCore.getSelectedCache();
+			if (c == null)
+			{
+				// Log Inposible, close Activity and give a Message
+				final String errorMsg = Translation.Get("NoCacheSelect");
+				this.finish();
+
+				GL.that.RunOnGL(new runOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						GL_MsgBox.Show(errorMsg, "", MessageBoxIcon.Error);
+					}
+				});
+				return;
+			}
+
+			String msg = "";
+			if (LT == LogTypes.discovered)
+			{
+				msg = Translation.Get("discoveredAt") + " " + c.Name;
+			}
+			if (LT == LogTypes.visited)
+			{
+				msg = Translation.Get("visitedAt") + " " + c.Name;
+			}
+			if (LT == LogTypes.dropped_off)
+			{
+				msg = Translation.Get("dropped_offAt") + " " + c.Name;
+			}
+			if (LT == LogTypes.retrieve)
+			{
+				msg = Translation.Get("retrieveAt") + " " + c.Name;
+			}
+
+			CacheIcon.setSprite(SpriteCache.BigIcons.get(c.Type.ordinal()));
+
+			lblPlaced.setWidth(contentBox.getAvailableWidth() - CacheIcon.getWidth());
+			lblPlaced.setWrappedText(msg);
+
+			contentBox.setMargins(margin, margin);
+			contentBox.addNext(CacheIcon);
+			contentBox.addLast(lblPlaced);
+
+		}
+
 		this.setMargins(margin * 2, 0);
 		this.addNext(icon);
 		icon.setImageURL(TB.getIconUrl());

@@ -673,7 +673,7 @@ public class GroundspeakAPI
 	}
 
 	@SuppressWarnings("unused")
-	public static Trackable getTBbyTreckNumber(String accessToken, String TrackingNumber)
+	public static Trackable getTBbyTreckNumber(String accessToken, String TrackingCode)
 	{
 		if (chkMemperShip(accessToken)) return null;
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
@@ -681,7 +681,7 @@ public class GroundspeakAPI
 		try
 		{
 			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + accessToken + "&trackingNumber="
-					+ TrackingNumber + "&format=json");
+					+ TrackingCode + "&format=json");
 
 			String result = Execute(httppost);
 
@@ -700,7 +700,7 @@ public class GroundspeakAPI
 					{
 						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
 						Trackable ret = new Trackable(jTrackable);
-						ret.setTrackingNumber(TrackingNumber);
+						ret.setTrackingCode(TrackingCode);
 						return ret;
 					}
 				}
@@ -758,7 +758,6 @@ public class GroundspeakAPI
 					{
 						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
 						Trackable ret = new Trackable(jTrackable);
-						ret.setTrackingNumber(TrackingNumber);
 						return ret;
 					}
 				}

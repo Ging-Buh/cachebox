@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Activitys;
 
-import CB_Core.Config;
 import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -157,6 +156,10 @@ public class TB_Details extends ActivityBase
 			ImageHeight = image.getHeight();
 			image.setImageURL(ImgUrl);
 		}
+		else
+		{
+			image.setHeight(0);
+		}
 
 		AboutThisItem.setHeight(Math.max(minBoxHeight, (lblAboutDesc.getHeight() + (margin * 4) + ImageHeight)));
 		AboutThisItem.initRow();
@@ -274,17 +277,26 @@ public class TB_Details extends ActivityBase
 
 	private void showLogMenu()
 	{
-		boolean isInventory = TB.getCurrentOwner().equalsIgnoreCase(Config.settings.GcLogin.getValue());
 
 		final Menu cm = new Menu("TBLogContextMenu");
 		cm.addItemClickListner(menuItemClickListner);
 
-		if (!isInventory) cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", SpriteCache.Icons.get(IconName.tbDiscover_58.ordinal()));
-		if (isInventory) cm.addItem(MenuID.MI_TB_VISIT, "visit", SpriteCache.Icons.get(IconName.tbVisit_62.ordinal()));
-		if (isInventory) cm.addItem(MenuID.MI_TB_DROPPED, "dropped", SpriteCache.Icons.get(IconName.tbDrop_59.ordinal()));
-		if (!isInventory) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", SpriteCache.Icons.get(IconName.tbGrab_60.ordinal()));
-		if (!isInventory) cm.addItem(MenuID.MI_TB_PICKED, "picked", SpriteCache.Icons.get(IconName.tbPicked_61.ordinal()));
 		cm.addItem(MenuID.MI_TB_NOTE, "note", SpriteCache.Icons.get(IconName.tbNote_63.ordinal()));
+
+		if (TB.isLogTypePosible(LogTypes.discovered)) cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered",
+				SpriteCache.Icons.get(IconName.tbDiscover_58.ordinal()));
+
+		if (TB.isLogTypePosible(LogTypes.visited)) cm.addItem(MenuID.MI_TB_VISIT, "visit",
+				SpriteCache.Icons.get(IconName.tbVisit_62.ordinal()));
+
+		if (TB.isLogTypePosible(LogTypes.dropped_off)) cm.addItem(MenuID.MI_TB_DROPPED, "dropped",
+				SpriteCache.Icons.get(IconName.tbDrop_59.ordinal()));
+
+		if (TB.isLogTypePosible(LogTypes.grab_it)) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed",
+				SpriteCache.Icons.get(IconName.tbGrab_60.ordinal()));
+
+		if (TB.isLogTypePosible(LogTypes.retrieve)) cm.addItem(MenuID.MI_TB_PICKED, "picked",
+				SpriteCache.Icons.get(IconName.tbPicked_61.ordinal()));
 
 		cm.Show();
 	}

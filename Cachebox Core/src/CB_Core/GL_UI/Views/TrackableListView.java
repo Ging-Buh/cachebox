@@ -99,7 +99,7 @@ public class TrackableListView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				final String TBCode = txtSearch.getText();
+				final String TBCode = txtSearch.getText().trim();
 				if (TBCode.length() > 0)
 				{
 					wd = CancelWaitDialog.ShowWait(Translation.Get("search"), new IcancelListner()

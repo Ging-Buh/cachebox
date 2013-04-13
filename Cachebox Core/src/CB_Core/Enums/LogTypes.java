@@ -255,9 +255,14 @@ public enum LogTypes
 		return note;
 	}
 
+	public int getGcLogTypeId()
+	{
+		return CB_LogType2GC(this);
+	}
+
 	/**
-	 * GS LogTypeId's:</br>4 - Post Note </br>14 - Place in a cache </br>16 - Mark as missing </br>19 - Grab </br>48 - Discover </br>69 -
-	 * Move to collection </br>70 - Move to inventory </br>75 - Visit
+	 * GS LogTypeId's:</br>4 - Post Note </br>13 - Retrieve It from a Cache </br>14 - Place in a cache </br>16 - Mark as missing </br>19 -
+	 * Grab </br>48 - Discover </br>69 - Move to collection </br>70 - Move to inventory </br>75 - Visit
 	 * 
 	 * @param value
 	 * @return
