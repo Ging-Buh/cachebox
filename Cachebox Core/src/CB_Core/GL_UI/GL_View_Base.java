@@ -570,12 +570,19 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (childs != null && childs.size() > 0)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			try
 			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-				GL_View_Base view = iterator.next();
-				if (view != null) view.onShow();
+				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				{
+					// alle renderChilds() der in dieser GL_View_Base
+					// enthaltenen Childs auf rufen.
+					GL_View_Base view = iterator.next();
+					if (view != null) view.onShow();
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 		}
 
@@ -585,12 +592,19 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (childs != null && childs.size() > 0)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			try
 			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-				GL_View_Base view = iterator.next();
-				if (view != null) view.onHide();
+				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				{
+					// alle renderChilds() der in dieser GL_View_Base
+					// enthaltenen Childs auf rufen.
+					GL_View_Base view = iterator.next();
+					if (view != null) view.onHide();
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 		}
 
@@ -600,12 +614,19 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (childs != null && childs.size() > 0)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			try
 			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-				GL_View_Base view = iterator.next();
-				view.onStop();
+				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				{
+					// alle renderChilds() der in dieser GL_View_Base
+					// enthaltenen Childs auf rufen.
+					GL_View_Base view = iterator.next();
+					view.onStop();
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 		}
 	}
@@ -615,34 +636,41 @@ public abstract class GL_View_Base extends CB_RectF
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
 		boolean behandelt = false;
-		if (childs != null && childs.size() > 0)
+		try
 		{
-			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+			if (childs != null && childs.size() > 0)
 			{
-				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
-				GL_View_Base view = iterator.next();
-
-				if (view == null || !view.isClickable()) continue;
-				// Invisible Views can not be clicked!
-				if (!view.isVisible()) continue;
-
-				if (view.contains(x, y))
+				for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 				{
-					// touch innerhalb des Views
-					// -> Klick an das View weitergeben
-					behandelt = view.click(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+					// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+					GL_View_Base view = iterator.next();
+
+					if (view == null || !view.isClickable()) continue;
+					// Invisible Views can not be clicked!
+					if (!view.isVisible()) continue;
+
+					if (view.contains(x, y))
+					{
+						// touch innerhalb des Views
+						// -> Klick an das View weitergeben
+						behandelt = view.click(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+					}
 				}
 			}
-		}
-		if (!behandelt)
-		{
-			// kein Klick in einem untergeordnetem View
-			// -> hier behandeln
-			if (mOnClickListener != null)
+			if (!behandelt)
 			{
-				behandelt = mOnClickListener.onClick(this, x, y, pointer, button);
-			}
+				// kein Klick in einem untergeordnetem View
+				// -> hier behandeln
+				if (mOnClickListener != null)
+				{
+					behandelt = mOnClickListener.onClick(this, x, y, pointer, button);
+				}
 
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		return behandelt;
 	}
@@ -652,34 +680,41 @@ public abstract class GL_View_Base extends CB_RectF
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
 		boolean behandelt = false;
-		if (childs != null && childs.size() > 0)
+		try
 		{
-			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+			if (childs != null && childs.size() > 0)
 			{
-				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
-				GL_View_Base view = iterator.next();
-
-				if (view == null || !view.isClickable()) continue;
-				// Invisible Views can not be clicked!
-				if (!view.isVisible()) continue;
-
-				if (view.contains(x, y))
+				for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 				{
-					// touch innerhalb des Views
-					// -> Klick an das View weitergeben
-					behandelt = view.doubleClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+					// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+					GL_View_Base view = iterator.next();
+
+					if (view == null || !view.isClickable()) continue;
+					// Invisible Views can not be clicked!
+					if (!view.isVisible()) continue;
+
+					if (view.contains(x, y))
+					{
+						// touch innerhalb des Views
+						// -> Klick an das View weitergeben
+						behandelt = view.doubleClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+					}
 				}
 			}
-		}
-		if (!behandelt)
-		{
-			// kein Klick in einem untergeordnetem View
-			// -> hier behandeln
-			if (mOnDoubleClickListener != null)
+			if (!behandelt)
 			{
-				behandelt = mOnDoubleClickListener.onClick(this, x, y, pointer, button);
-			}
+				// kein Klick in einem untergeordnetem View
+				// -> hier behandeln
+				if (mOnDoubleClickListener != null)
+				{
+					behandelt = mOnDoubleClickListener.onClick(this, x, y, pointer, button);
+				}
 
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		return behandelt;
 	}
@@ -690,32 +725,39 @@ public abstract class GL_View_Base extends CB_RectF
 		// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
 		boolean behandelt = false;
 
-		if (childs != null && childs.size() > 0)
+		try
 		{
-			for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
+			if (childs != null && childs.size() > 0)
 			{
-				// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
-				GL_View_Base view = iterator.next();
-
-				if (view == null || !view.isClickable()) continue;
-
-				if (view.contains(x, y))
+				for (Iterator<GL_View_Base> iterator = childs.reverseIterator(); iterator.hasNext();)
 				{
-					// touch innerhalb des Views
-					// -> Klick an das View weitergeben
-					behandelt = view.longClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+					// Child View suchen, innerhalb derer Bereich der touchDown statt gefunden hat.
+					GL_View_Base view = iterator.next();
+
+					if (view == null || !view.isClickable()) continue;
+
+					if (view.contains(x, y))
+					{
+						// touch innerhalb des Views
+						// -> Klick an das View weitergeben
+						behandelt = view.longClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+					}
 				}
 			}
-		}
-		if (!behandelt)
-		{
-			// kein Klick in einem untergeordnetem View
-			// -> hier behandeln
-			if (mOnLongClickListener != null)
+			if (!behandelt)
 			{
-				behandelt = mOnLongClickListener.onClick(this, x, y, pointer, button);
-			}
+				// kein Klick in einem untergeordnetem View
+				// -> hier behandeln
+				if (mOnLongClickListener != null)
+				{
+					behandelt = mOnLongClickListener.onClick(this, x, y, pointer, button);
+				}
 
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		return behandelt;
 	}
