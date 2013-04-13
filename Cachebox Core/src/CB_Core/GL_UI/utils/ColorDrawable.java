@@ -46,6 +46,7 @@ public class ColorDrawable extends EmptyDrawable
 			try
 			{
 				pixelSprite = SpriteCache.getThemedSprite("pixel2x2");
+				if (pixelSprite == null) setSpriteFromPixMap();
 			}
 			catch (Exception e)
 			{
