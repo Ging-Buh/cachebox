@@ -38,6 +38,8 @@ public class SolverZeile
 			}
 			else
 			{
+				// Rest als tempvar einfuegen
+				entities.Insert(text);
 				break;
 			}
 		}
