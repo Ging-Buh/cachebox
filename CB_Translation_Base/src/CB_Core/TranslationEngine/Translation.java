@@ -217,8 +217,11 @@ public class Translation
 
 		if (mRefTranslation == null)
 		{
+			String FileName = FileUtil.GetFileName(FilePath);
+
 			int pos = FilePath.lastIndexOf("lang") + 4;
-			String LangFileName = FilePath.substring(0, pos) + "/en-GB/strings.ini";
+			String LangFileName = FilePath.substring(0, pos) + "/en-GB/" + FileName;
+
 			mRefTranslation = ReadFile(LangFileName);
 		}
 
