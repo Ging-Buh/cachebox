@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-
 public class FileUtil
 {
 	/**
@@ -43,6 +42,26 @@ public class FileUtil
 		int dotposition = filename.lastIndexOf(".");
 		String ext = filename.substring(dotposition + 1, filename.length());
 		return ext;
+	}
+
+	public static void deleteFolder(File folder)
+	{
+		File[] files = folder.listFiles();
+		if (files != null)
+		{ // some JVMs return null for empty dirs
+			for (File f : files)
+			{
+				if (f.isDirectory())
+				{
+					deleteFolder(f);
+				}
+				else
+				{
+					f.delete();
+				}
+			}
+		}
+		folder.delete();
 	}
 
 	public static String GetFileNameWithoutExtension(String filename)
@@ -132,7 +151,6 @@ public class FileUtil
 		return str;
 	}
 
-	
 	/**
 	 * Gibt eine ArrayList<File> zurück, die alle Files mit der Endung gpx enthält.
 	 * 
