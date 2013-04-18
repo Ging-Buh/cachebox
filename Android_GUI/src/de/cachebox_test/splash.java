@@ -286,7 +286,7 @@ public class splash extends Activity
 				// Asus Transformer
 				externalSd = prev + "/Removable/MicroSD/CacheBox";
 			}
-			else if (testExtSdPath("/ext_sd"))
+			else if (testExtSdPath("/mnt/ext_sd"))
 			{
 				// ODYS Motion
 				externalSd = prev + "/ext_sd/CacheBox";
