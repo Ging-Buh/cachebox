@@ -3623,7 +3623,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		mTextField.setBackgroundDrawable(null);
+		// mTextField.setBackgroundDrawable(null);
 		mTextField.setClickable(false);
 
 		Baselayout.addView(mTextField);
