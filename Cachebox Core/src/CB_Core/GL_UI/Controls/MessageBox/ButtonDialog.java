@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
@@ -15,12 +14,10 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -49,8 +46,8 @@ public class ButtonDialog extends Dialog
 	public ButtonDialog(String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon,
 			OnMsgBoxClickListener Listener)
 	{
-		this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), (icon != MessageBoxIcon.None)).getBounds().asFloat(), Name,
-				msg, title, buttons, icon, Listener);
+		this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(),
+				Name, msg, title, buttons, icon, Listener);
 	}
 
 	public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon,
@@ -327,34 +324,6 @@ public class ButtonDialog extends Dialog
 		}
 
 		return icon;
-	}
-
-	protected static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon)
-	{
-		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
-
-		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
-
-		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
-
-		TextBounds bounds = Fonts.MeasureWrapped(Text, MsgWidth);
-		float MeasuredTextHeight = bounds.height + (margin * 2);
-
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UI_Size_Base.that.getButtonHeight()) : (int) MeasuredTextHeight);
-
-		if (hasTitle)
-		{
-			TextBounds titleBounds = Fonts.Measure("T");
-			Height += (titleBounds.height * 3);
-			Height += margin * 2;
-		}
-		Height += calcFooterHeight(hasButtons);
-		Height += calcHeaderHeight();
-
-		Height = (int) Math.max(Height, UI_Size_Base.that.getButtonHeight() * 2.5f);
-
-		Size ret = new Size((int) Width, Height);
-		return ret;
 	}
 
 }

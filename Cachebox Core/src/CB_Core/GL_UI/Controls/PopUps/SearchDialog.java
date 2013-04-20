@@ -124,11 +124,6 @@ public class SearchDialog extends PopUp_Base
 	private EditWrapedTextField mEingabe;
 
 	/**
-	 * enthält den Index des element der CacheListe, an der die Suche steht
-	 */
-	private int mSearchIndex = -1;
-
-	/**
 	 * Enthält einen Iterator der aktuell durschten CacheList
 	 */
 	private Iterator<Cache> CacheListIterator = null;
@@ -293,7 +288,6 @@ public class SearchDialog extends PopUp_Base
 			{
 				closeSoftKeyPad();
 				mSearchAktive = false;
-				mSearchIndex = -1;
 				searchNow(false);
 				return true;
 			}
@@ -418,8 +412,6 @@ public class SearchDialog extends PopUp_Base
 
 	private void textBox_TextChanged()
 	{
-		// reset SearchIndex, because of text changed.
-		mSearchIndex = -1;
 
 		boolean isText = mEingabe.getText().length() != 0;
 		mBtnSearch.setEnable(isText);
@@ -462,8 +454,6 @@ public class SearchDialog extends PopUp_Base
 		if (ignoreOnlineSearch || mTglBtnOnline.getState() == 0)
 		{
 
-			mSearchIndex++;
-
 			// Replase LineBreaks
 
 			String searchPattern = mEingabe.getText().toLowerCase();
@@ -502,8 +492,6 @@ public class SearchDialog extends PopUp_Base
 								|| tmp.PlacedBy.toLowerCase().contains(searchPattern);
 						break;
 					}
-
-					if (!criterionMatches) mSearchIndex++;
 				}
 
 				if (!criterionMatches)
@@ -886,7 +874,11 @@ public class SearchDialog extends PopUp_Base
 		{
 			if (GlobalCore.isTab)
 			{
-				// TODO searchDialog plaziere rechts neben der Cache List
+				if (CacheListView.that != null)
+				{
+					setY(CacheListView.that.getMaxY() - this.height);
+
+				}
 			}
 			else
 			{

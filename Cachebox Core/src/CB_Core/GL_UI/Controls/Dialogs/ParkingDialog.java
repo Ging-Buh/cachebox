@@ -35,7 +35,7 @@ public class ParkingDialog extends ButtonDialog
 
 	public ParkingDialog()
 	{
-		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation
+		super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation
 				.Get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();

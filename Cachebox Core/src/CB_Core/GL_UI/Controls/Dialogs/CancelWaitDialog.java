@@ -73,7 +73,7 @@ public class CancelWaitDialog extends WaitDialog
 
 		if (msg == null) msg = "";
 
-		Size size = calcMsgBoxSize(msg, false, false, true);
+		Size size = calcMsgBoxSize(msg, false, false, true, false);
 
 		CancelWaitDialog waitDialog = new CancelWaitDialog(size, "WaitDialog", listner, runnable);
 		waitDialog.setTitle("");

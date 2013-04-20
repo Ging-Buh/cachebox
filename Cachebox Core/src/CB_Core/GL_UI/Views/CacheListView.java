@@ -180,7 +180,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (ca == GlobalCore.getSelectedCache())
 				{
 					listView.setSelection(id);
-					if (!(first <= id && last >= id)) listView.scrollToItem(id - pos);
+					if (!(first <= id && last >= id) || (searchPlaceholder < 0)) listView.scrollToItem(id - pos);
 					break;
 				}
 				id++;
@@ -200,7 +200,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		CachListChangedEventList.Remove(this);
 		PositionChangedEventList.Remove(this);
 
-		if (searchPlaceholder > 0)
+		if (searchPlaceholder < 0)
 		{
 			// Blende Search Dialog aus
 			SearchDialog.that.close();
@@ -398,7 +398,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	{
 		super.onRezised(rec);
 		listView.setSize(rec);
-		listView.setHeight(rec.getHeight() - searchPlaceholder);
+		listView.setHeight(rec.getHeight() + searchPlaceholder);
 		listView.setZeroPos();
 	}
 
@@ -406,13 +406,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public void setTopPlaceHolder(float PlaceHoldHeight)
 	{
-		searchPlaceholder = PlaceHoldHeight;
+		searchPlaceholder = -PlaceHoldHeight;
 		onRezised(this);
 	}
 
 	public void resetPlaceHolder()
 	{
-		searchPlaceholder = 0;
+		searchPlaceholder = -searchPlaceholder;
 		onRezised(this);
 	}
 

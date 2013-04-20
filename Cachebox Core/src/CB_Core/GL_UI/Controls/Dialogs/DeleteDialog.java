@@ -38,8 +38,8 @@ public class DeleteDialog extends ButtonDialog
 
 	public DeleteDialog()
 	{
-		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.Get("DeleteCaches"),
-				MessageBoxButtons.Cancel, null, null);
+		super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation
+				.Get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
 		// initial VariableField

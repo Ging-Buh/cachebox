@@ -10,6 +10,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 
@@ -54,7 +55,7 @@ public abstract class Dialog extends CB_View_Base
 	protected float mHeaderHight = 10f;
 	protected float mFooterHeight = 10f;
 
-	public static float margin = 5f;
+	public static float margin = -1;
 
 	public static boolean lastNightMode = false;
 
@@ -63,6 +64,8 @@ public abstract class Dialog extends CB_View_Base
 		super(rec, Name);
 		mHeaderHight = calcHeaderHeight();
 		setFooterHeight(calcFooterHeight(false));
+
+		if (margin == -1) margin = UI_Size_Base.that.getMargin();
 
 		try
 		{
@@ -226,8 +229,10 @@ public abstract class Dialog extends CB_View_Base
 
 			if (titleLabel != null && childs.contains(titleLabel)) childs.remove(titleLabel);
 
-			titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - bounds.height - (margin * 3), mTitleWidth - (4.1666f * pW),
-					(5.16666f * pW)), "DialogTitleLabel");
+			float lblHeight = bounds.height + (2 * margin);
+			float centerYpos = (mTitleHeight / 2) + (lblHeight / 2) + margin;
+			titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - centerYpos, mTitleWidth - (4.1666f * pW), lblHeight),
+					"DialogTitleLabel");
 			titleLabel.setFont(Fonts.getNormal());
 			titleLabel.setText(mTitle);
 
@@ -237,7 +242,7 @@ public abstract class Dialog extends CB_View_Base
 		}
 
 		mContent.setWidth(this.width * 0.95f);
-		mContent.setHeight(this.height - mHeaderHight - getFooterHeight() - mTitleHeight - margin);
+		mContent.setHeight((this.height - mHeaderHight - getFooterHeight() - mTitleHeight - margin));
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
 		float centerversatzY = getFooterHeight();// this.halfHeight - mContent.getHalfHeight();
 		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
@@ -333,7 +338,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public static float calcFooterHeight(boolean hasButtons)
 	{
-		return hasButtons ? UI_Size_Base.that.getButtonHeight() + margin + margin : calcHeaderHeight();
+		return hasButtons ? UI_Size_Base.that.getButtonHeight() + margin : calcHeaderHeight();
 	}
 
 	public void setWidth(float Width)
@@ -400,6 +405,40 @@ public abstract class Dialog extends CB_View_Base
 	{
 		this.mFooterHeight = FooterHeight;
 		reziseContentBox();
+	}
+
+	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember)
+	{
+		if (margin == -1) margin = UI_Size_Base.that.getMargin();
+
+		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
+		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
+
+		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
+
+		float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 4);
+
+		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UI_Size_Base.that.getButtonHeight() + (margin * 4))
+				: (int) MeasuredTextHeight);
+
+		if (hasTitle)
+		{
+			TextBounds titleBounds = Fonts.Measure("T");
+			Height += (titleBounds.height * 3);
+			Height += margin * 2;
+		}
+		Height += calcFooterHeight(hasButtons);
+		if (hasRemember) Height += UI_Size_Base.that.getChkBoxSize().height;
+		Height += calcHeaderHeight();
+
+		// min Height festlegen
+		Height = (int) Math.max(Height, UI_Size_Base.that.getButtonHeight() * 2.5f);
+
+		// max Height festlegen
+		Height = (int) Math.min(Height, UI_Size_Base.that.getWindowHeight() * 0.95f);
+
+		Size ret = new Size((int) Width, Height);
+		return ret;
 	}
 
 }

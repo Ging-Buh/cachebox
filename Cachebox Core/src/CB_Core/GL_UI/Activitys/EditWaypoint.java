@@ -386,21 +386,21 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 3, UI_Size_Base.that.getButtonHeight());
+				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 
 		btnRec.setX(bOK.getMaxX());
 		bHelp = new Button(btnRec, "HelpButton");
 		bHelp.setText(Translation.Get("help"));
 
-		btnRec.setX(bHelp.getMaxX());
+		btnRec.setX(bOK.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
 
 		bOK.setText(Translation.Get("ok"));
 		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
-		this.addChild(bHelp);
+		// this.addChild(bHelp);
 		this.addChild(bCancel);
 
 		bOK.setOnClickListener(new OnClickListener()

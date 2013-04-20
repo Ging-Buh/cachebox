@@ -25,7 +25,6 @@ import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -214,37 +213,6 @@ public class GL_MsgBox extends Dialog
 	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon)
 	{
 		return calcMsgBoxSize(Text, hasTitle, hasButtons, hasIcon, false);
-	}
-
-	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember)
-	{
-		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
-		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
-
-		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
-
-		float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 2);
-
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UI_Size_Base.that.getButtonHeight()) : (int) MeasuredTextHeight);
-
-		if (hasTitle)
-		{
-			TextBounds titleBounds = Fonts.Measure("T");
-			Height += (titleBounds.height * 3);
-			Height += margin * 2;
-		}
-		Height += calcFooterHeight(hasButtons);
-		if (hasRemember) Height += UI_Size_Base.that.getChkBoxSize().height;
-		Height += calcHeaderHeight();
-
-		// min Height festlegen
-		Height = (int) Math.max(Height, UI_Size_Base.that.getButtonHeight() * 2.5f);
-
-		// max Height festlegen
-		Height = (int) Math.min(Height, UI_Size_Base.that.getWindowHeight() * 0.95f);
-
-		Size ret = new Size((int) Width, Height);
-		return ret;
 	}
 
 	public void setButtonCaptions(MessageBoxButtons buttons)

@@ -46,7 +46,7 @@ public class WaitDialog extends ButtonDialog
 	protected static WaitDialog createDialog(String msg)
 	{
 
-		Size size = calcMsgBoxSize(msg, false, false, true);
+		Size size = calcMsgBoxSize(msg, false, false, true, false);
 
 		WaitDialog waitDialog = new WaitDialog(size, "WaitDialog");
 		waitDialog.setTitle("");
