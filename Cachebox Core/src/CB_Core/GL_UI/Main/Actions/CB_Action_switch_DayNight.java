@@ -2,7 +2,6 @@ package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
-import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.MenuID;
 
@@ -32,7 +31,7 @@ public class CB_Action_switch_DayNight extends CB_ActionCommand
 	public void Execute()
 	{
 		TabMainView.that.switchDayNight();
-		new CB_Action_ShowActivity("DayNight", MenuID.AID_DAY_NIGHT, ViewConst.DAY_NIGHT, SpriteCache.Icons.get(IconName.DayNight_48
-				.ordinal())).Execute();
+		// new CB_Action_ShowActivity("DayNight", MenuID.AID_DAY_NIGHT, ViewConst.DAY_NIGHT, SpriteCache.Icons.get(IconName.DayNight_48
+		// .ordinal())).Execute();
 	}
 }

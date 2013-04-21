@@ -27,6 +27,7 @@ public class ActivityBase extends Dialog
 		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 		MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
 		ButtonHeight = UI_Size_Base.that.getButtonHeight();
+		this.registerSkinChangedEvent();
 	}
 
 	@Override

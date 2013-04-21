@@ -28,7 +28,7 @@ public class EditCoord extends ActivityBase
 	private ReturnListner mReturnListner;
 
 	// Allgemein
-	private BitmapFont font = Fonts.getBig();
+	private BitmapFont font;
 
 	private MultiToggleButton bDec;
 	private MultiToggleButton bMin;
@@ -71,7 +71,7 @@ public class EditCoord extends ActivityBase
 	public EditCoord(CB_RectF rec, String Name, Coordinate Coord, ReturnListner returnListner)
 	{
 		super(rec, Name);
-
+		font = Fonts.getBig();
 		coord = Coord;
 		cancelCoord = coord.copy();
 		mReturnListner = returnListner;

@@ -35,7 +35,6 @@ import CB_Core.GL_UI.Controls.SelectionMarker;
 import CB_Core.GL_UI.Controls.SelectionMarker.Type;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
-import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Log.Logger;
 import CB_Core.Map.MapTileLoader;
@@ -43,6 +42,7 @@ import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UI_Size_Base;
+import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -181,7 +181,14 @@ public class GL implements ApplicationListener
 		GL_UISizes.initial(width, height);
 
 		Initialize();
-
+		Config.settings.nightMode.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				mDarknesSprite = null;// for new creation with changed color
+			}
+		});
 		GlobalCore.receiver = new GlobalLocationReceiver();
 		debugWriteSpriteCount = Config.settings.DebugSpriteBatchCountBuffer.getValue();
 	}
@@ -800,24 +807,11 @@ public class GL implements ApplicationListener
 	{
 		if (mDarknesSprite == null)
 		{
-
 			disposeTexture();
-
-			// int w = CB_View_Base.getNextHighestPO2((int) width);
-			// int h = CB_View_Base.getNextHighestPO2((int) height);
-
-			int w = 2;
-			int h = 2;
-
-			mDarknesPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			if (Config.settings.nightMode.getValue()) mDarknesPixmap.setColor(0.07f, 0f, 0f, 0.96f);
-			else
-				mDarknesPixmap.setColor(0f, 0.1f, 0f, 0.9f);
-
+			mDarknesPixmap = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
+			mDarknesPixmap.setColor(Fonts.getDarknesColor());
 			mDarknesPixmap.fillRectangle(0, 0, width, height);
-
 			mDarknesTexture = new Texture(mDarknesPixmap, Pixmap.Format.RGBA8888, false);
-
 			mDarknesSprite = new Sprite(mDarknesTexture, (int) width, (int) height);
 		}
 
@@ -829,9 +823,8 @@ public class GL implements ApplicationListener
 			{
 				darknesAlpha = 1f;
 				darknesAnimationRuns = false;
-				// unregister TabmainView, we have register on ShowDialog for the animation time
-				removeRenderView(TabMainView.that);
 			}
+			renderOnce("Darknes Animation");
 		}
 
 	}
@@ -1332,9 +1325,6 @@ public class GL implements ApplicationListener
 
 		platformConector.showForDialog();
 
-		// register render view to darknes animation ready.
-		// use TabMainView to register
-		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
 		renderOnce("ShowDialog");
 		Logger.LogCat("ShowDialog: " + actDialog.toString());
 	}
@@ -1350,9 +1340,6 @@ public class GL implements ApplicationListener
 			closePopUp(aktPopUp);
 		}
 
-		// register render view to darknes animation ready.
-		// use TabMainView to register
-		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
 		darknesAnimationRuns = true;
 
 		// Center activity on Screen
@@ -1772,4 +1759,5 @@ public class GL implements ApplicationListener
 		}
 		return false;
 	}
+
 }

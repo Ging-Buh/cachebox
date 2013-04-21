@@ -30,6 +30,39 @@ public class CreditsView extends CB_View_Base
 	private ScrollBox scrollBox;
 	private Linearlayout layout;
 
+	private ArrayList<Person> getPersons()
+	{
+		ArrayList<Person> list = new ArrayList<CreditsView.Person>();
+
+		list.add(new Person("hannes!", Job.idea, "2009-2011"));
+		list.add(new Person("Stonefinger", Job.designer));
+		list.add(new Person("Groundspeak API", Job.service, SpriteCache.Icons.get(IconName.GCLive_35.ordinal())));
+		list.add(new Person(null, Job.library, SpriteCache.getThemedSprite("libgdx")));// Name at Logo image
+		list.add(new Person("Mapsforge", Job.library, SpriteCache.getThemedSprite("mapsforge_logo")));
+		list.add(new Person("OpenRouteService.org", Job.service, SpriteCache.getThemedSprite("openrouteservice_logo")));
+		list.add(new Person("OpenStreetMap", Job.service, SpriteCache.getThemedSprite("osm_logo")));
+		list.add(new Person("Ging-Buh", Job.developer));
+		list.add(new Person("Longri", Job.developer));
+		list.add(new Person("ersthelfer", Job.developer));
+		list.add(new Person("arbor95", Job.developer));
+		list.add(new Person("droogi", Job.tester));
+		list.add(new Person("droogi", Job.localization));
+		list.add(new Person("jGda", Job.localization));
+		list.add(new Person("Teleskopix", Job.tester));
+		list.add(new Person("hulkman", Job.localization));
+		list.add(new Person("Lady-in-blue", Job.tester));
+		list.add(new Person("Koblenzer", Job.tester));
+		list.add(new Person("GeoSilverio", Job.tester));
+		list.add(new Person("GeoPfaff", Job.tester));
+		list.add(new Person("Homer-S", Job.tester));
+		list.add(new Person("Mozartkugel", Job.tester));
+		list.add(new Person("millimeterfuchser", Job.tester));
+
+		Collections.sort(list);
+
+		return list;
+	}
+
 	public CreditsView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
@@ -216,40 +249,6 @@ public class CreditsView extends CB_View_Base
 			return this.name.compareToIgnoreCase(o.name);
 		}
 
-	}
-
-	private ArrayList<Person> getPersons()
-	{
-		ArrayList<Person> list = new ArrayList<CreditsView.Person>();
-
-		list.add(new Person("hannes!", Job.idea, "2009-2011"));
-		list.add(new Person("Stonefinger", Job.designer));
-		list.add(new Person("Groundspeak API", Job.service, SpriteCache.Icons.get(IconName.GCLive_35.ordinal())));
-		list.add(new Person(null, Job.library, SpriteCache.getThemedSprite("libgdx")));// Name at Logo image
-		list.add(new Person("Mapsforge", Job.library, SpriteCache.getThemedSprite("mapsforge_logo")));
-		list.add(new Person("OpenRouteService.org", Job.service, SpriteCache.getThemedSprite("openrouteservice_logo")));
-		list.add(new Person("OpenStreetMap", Job.service, SpriteCache.getThemedSprite("osm_logo")));
-		list.add(new Person("Faktor zwei", Job.sponsor, SpriteCache.getThemedSprite("FXzwei")));
-		list.add(new Person("Ging-Buh", Job.developer));
-		list.add(new Person("Longri", Job.developer));
-		list.add(new Person("ersthelfer", Job.developer));
-		list.add(new Person("arbor95", Job.developer));
-		list.add(new Person("droogi", Job.tester));
-		list.add(new Person("droogi", Job.localization));
-		list.add(new Person("jGda", Job.localization));
-		list.add(new Person("Teleskopix", Job.tester));
-		list.add(new Person("hulkman", Job.localization));
-		list.add(new Person("Lady-in-blue", Job.tester));
-		list.add(new Person("Koblenzer", Job.tester));
-		list.add(new Person("GeoSilverio", Job.tester));
-		list.add(new Person("GeoPfaff", Job.tester));
-		list.add(new Person("Homer-S", Job.tester));
-		list.add(new Person("Mozartkugel", Job.tester));
-		list.add(new Person("millimeterfuchser", Job.tester));
-
-		Collections.sort(list);
-
-		return list;
 	}
 
 }

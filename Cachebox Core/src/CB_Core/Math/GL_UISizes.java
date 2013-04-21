@@ -96,6 +96,7 @@ public class GL_UISizes implements SizeChangedEvent
 			cfg.SizeNormalbubble = Config.settings.FONT_SIZE_NORMAL_BUBBLE.getValue();
 			cfg.SizeSmall = Config.settings.FONT_SIZE_SMALL.getValue();
 			cfg.SizeSmallBubble = Config.settings.FONT_SIZE_SMALL_BUBBLE.getValue();
+			cfg.Nightmode = Config.settings.nightMode.getValue();
 
 			Config.settings.nightMode.addChangedEventListner(new iChanged()
 			{
@@ -104,7 +105,6 @@ public class GL_UISizes implements SizeChangedEvent
 				public void isChanged()
 				{
 					Fonts.setNightMode(Config.settings.nightMode.getValue());
-
 				}
 			});
 

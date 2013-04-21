@@ -106,6 +106,19 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		createButtons();
 		fillContent();
+		resortList();
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		super.SkinIsChanged();
+		this.removeChild(btnOk);
+		this.removeChild(btnCancel);
+		this.removeChild(btnMenu);
+		createButtons();
+		fillContent();
+		resortList();
 	}
 
 	private void createButtons()
@@ -1298,7 +1311,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	public void resortList()
 	{
-		show();
+		// show();
 
 		float scrollPos = scrollBox.getScrollY();
 		scrollBox = null;

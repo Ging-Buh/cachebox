@@ -144,9 +144,11 @@ public class CB_Button extends Button implements OnClickListener
 			if (help != null)
 			{
 				CB_RectF rec = CB_Button.this.ThisWorldRec;
-
-				help.setPos(rec.getX(), rec.getMaxY());
-				GL.that.Toast(help, 2000);
+				if (rec != null)
+				{
+					help.setPos(rec.getX(), rec.getMaxY());
+					GL.that.Toast(help, 2000);
+				}
 			}
 
 			return true;

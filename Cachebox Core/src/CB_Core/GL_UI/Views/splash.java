@@ -48,7 +48,7 @@ public class splash extends TabMainView
 
 	TextureAtlas atlas;
 	ProgressBar progress;
-	Image CB_Logo, OSM_Logo, Route_Logo, Mapsforge_Logo, LibGdx_Logo, FX2_Logo, GC_Logo;
+	Image CB_Logo, OSM_Logo, Route_Logo, Mapsforge_Logo, LibGdx_Logo, GC_Logo;
 
 	Label descTextView;
 	SelectDB selectDBDialog;
@@ -169,9 +169,6 @@ public class splash extends TabMainView
 		Mapsforge_Logo = new Image(rec_Mapsforge_Logo, "Mapsforge_Logo");
 		Mapsforge_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("mapsforge_logo")));
 
-		FX2_Logo = new Image(rec_FX2_Logo, "FX2_Logo");
-		FX2_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("FXzwei")));
-
 		LibGdx_Logo = new Image(rec_LibGdx_Logo, "LibGdx_Logo");
 		LibGdx_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("libgdx")));
 
@@ -182,15 +179,13 @@ public class splash extends TabMainView
 		OSM_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("osm_logo")));
 
 		float yPos = descTextView.getY() - GC_Logo.getHeight();
-		float xPos = (this.width - (ref * 2) - GC_Logo.getWidth() - Mapsforge_Logo.getWidth() - FX2_Logo.getWidth()) / 2;
+		float xPos = (this.width - ref - GC_Logo.getWidth() - Mapsforge_Logo.getWidth()) / 2;
 
 		GC_Logo.setPos(xPos, yPos);
 		xPos += GC_Logo.getWidth() + ref;
 
 		Mapsforge_Logo.setPos(xPos, yPos);
 		xPos += Mapsforge_Logo.getWidth() + ref;
-
-		FX2_Logo.setPos(xPos, yPos);
 
 		yPos -= GC_Logo.getHeight();// + refHeight;
 		LibGdx_Logo.setPos(this.halfWidth - LibGdx_Logo.getHalfWidth(), yPos);
@@ -205,7 +200,6 @@ public class splash extends TabMainView
 
 		this.addChild(GC_Logo);
 		this.addChild(Mapsforge_Logo);
-		this.addChild(FX2_Logo);
 		this.addChild(LibGdx_Logo);
 		this.addChild(Route_Logo);
 		this.addChild(OSM_Logo);
@@ -486,7 +480,6 @@ public class splash extends TabMainView
 		if (selectDBDialog != null) selectDBDialog.dispose();
 		if (descTextView != null) descTextView.dispose();
 		if (GC_Logo != null) GC_Logo.dispose();
-		if (FX2_Logo != null) FX2_Logo.dispose();
 		if (LibGdx_Logo != null) LibGdx_Logo.dispose();
 		if (Mapsforge_Logo != null) Mapsforge_Logo.dispose();
 		if (CB_Logo != null) CB_Logo.dispose();
@@ -496,7 +489,6 @@ public class splash extends TabMainView
 		selectDBDialog = null;
 		descTextView = null;
 		GC_Logo = null;
-		FX2_Logo = null;
 		LibGdx_Logo = null;
 		Mapsforge_Logo = null;
 		CB_Logo = null;

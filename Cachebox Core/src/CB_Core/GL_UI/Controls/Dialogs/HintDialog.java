@@ -8,12 +8,9 @@ import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.TranslationEngine.Translation;
-
-import com.badlogic.gdx.graphics.Color;
 
 public class HintDialog extends GL_MsgBox
 {
@@ -56,8 +53,6 @@ public class HintDialog extends GL_MsgBox
 		msgBox.label = new Label(rec, "MsgBoxLabel");
 		msgBox.label.setZeroPos();
 		msgBox.label.setWrappedText(hintTextDecoded);
-
-		msgBox.label.setBackground(new ColorDrawable(Color.RED));
 
 		// label in Scrollbox verpacken
 		scrollBox.addChild(msgBox.label);
