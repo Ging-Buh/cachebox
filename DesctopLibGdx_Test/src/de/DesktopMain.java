@@ -365,10 +365,6 @@ public class DesktopMain
 		}
 		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
-
-		// new Translation(Config.WorkPath, false);
-		// Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
-
 	}
 
 	/**

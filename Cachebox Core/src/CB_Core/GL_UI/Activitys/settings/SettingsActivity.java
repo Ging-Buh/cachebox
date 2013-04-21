@@ -2,6 +2,7 @@ package CB_Core.GL_UI.Activitys.settings;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -1117,7 +1118,21 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					if (selected.equals(tmp.Name))
 					{
 						Config.settings.Sel_LanguagePath.setValue(tmp.Path);
-						Translation.LoadTranslation(tmp.Path);
+						try
+						{
+							Translation.LoadTranslation(tmp.Path);
+						}
+						catch (Exception e)
+						{
+							try
+							{
+								Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getDefaultValue());
+							}
+							catch (IOException e1)
+							{
+								e1.printStackTrace();
+							}
+						}
 						break;
 					}
 

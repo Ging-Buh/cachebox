@@ -79,20 +79,14 @@ public class Translation
 	 * Load the Translation from File
 	 * 
 	 * @param LangPath
+	 * @throws IOException
 	 */
-	public static void LoadTranslation(String LangPath)
+	public static void LoadTranslation(String LangPath) throws IOException
 	{
 		if (that == null) return;
 		that.mInitialLangPath = LangPath;
 
-		try
-		{
-			that.ReadTranslationsFile(that.mInitialLangPath);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		that.ReadTranslationsFile(that.mInitialLangPath);
 	}
 
 	/**

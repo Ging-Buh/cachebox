@@ -83,10 +83,10 @@ public class Label extends CB_View_Base
 	private void calcInnerRec()
 	{
 
-		left = drawableBackground != null ? drawableBackground.getLeftWidth() : 0;
-		right = drawableBackground != null ? drawableBackground.getRightWidth() : 0;
-		top = drawableBackground != null ? drawableBackground.getTopHeight() : 0;
-		bottom = drawableBackground != null ? drawableBackground.getBottomHeight() : 0;
+		left = drawableBackground != null ? drawableBackground.getLeftWidth() : 1;
+		right = drawableBackground != null ? drawableBackground.getRightWidth() : 1;
+		top = drawableBackground != null ? drawableBackground.getTopHeight() : 1;
+		bottom = drawableBackground != null ? drawableBackground.getBottomHeight() : 1;
 
 		innerRec = new CB_RectF(left, bottom, width - right - left, height - top - bottom);
 	}
@@ -138,7 +138,7 @@ public class Label extends CB_View_Base
 			switch (valignment)
 			{
 			case TOP:
-				cache.setPosition(x, innerRec.getHeight() - bounds.height);
+				cache.setPosition(x, innerRec.getHeight() - bounds.height - 1);
 				break;
 			case CENTER:
 				cache.setPosition(x, (innerRec.getHeight() - bounds.height) / 2);
@@ -153,7 +153,7 @@ public class Label extends CB_View_Base
 			switch (valignment)
 			{
 			case TOP:
-				cache.setPosition(x, (innerRec.getHeight() - bounds.height) + bottom);
+				cache.setPosition(x, ((innerRec.getHeight() - bounds.height) + bottom) - 2);
 				break;
 			case CENTER:
 				cache.setPosition(x, ((innerRec.getHeight() - bounds.height) / 2) + bottom);

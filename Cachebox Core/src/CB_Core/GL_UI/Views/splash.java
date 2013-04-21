@@ -232,7 +232,21 @@ public class splash extends TabMainView
 	{
 		Logger.DEBUG("ini_Translations");
 		new Translation(Config.WorkPath, false);
-		Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
+		try
+		{
+			Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getDefaultValue());
+			}
+			catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
+		}
 	}
 
 	/**

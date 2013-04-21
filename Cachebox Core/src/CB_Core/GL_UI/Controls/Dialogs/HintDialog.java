@@ -1,16 +1,19 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.utils.ColorDrawable;
+import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.TranslationEngine.Translation;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.Color;
 
 public class HintDialog extends GL_MsgBox
 {
@@ -44,13 +47,17 @@ public class HintDialog extends GL_MsgBox
 		msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
 		msgBox.mMsgBoxClickListner = null;
 
-		scrollBox = new ScrollBox(msgBox.getContentSize().getBounds(), 100, "");
+		CB_RectF rec = msgBox.getContentSize().getBounds();
+		scrollBox = new ScrollBox(rec, 100, "");
 
-		msgBox.label = new Label(msgBox.getContentSize().getBounds(), "MsgBoxLabel");
+		float lblHeigt = Fonts.MeasureWrapped(hintTextDecoded, rec.getWidth()).height + (2 * margin);
+		rec.setHeight(lblHeigt);
+
+		msgBox.label = new Label(rec, "MsgBoxLabel");
 		msgBox.label.setZeroPos();
 		msgBox.label.setWrappedText(hintTextDecoded);
-		TextBounds bounds = msgBox.label.bounds;
-		msgBox.label.setHeight(bounds.height);
+
+		msgBox.label.setBackground(new ColorDrawable(Color.RED));
 
 		// label in Scrollbox verpacken
 		scrollBox.addChild(msgBox.label);
@@ -68,9 +75,14 @@ public class HintDialog extends GL_MsgBox
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				GL_MsgBox msgBox = (GL_MsgBox) GL.that.getActDialog();
-				msgBox.setText(GlobalCore.Rot13(msgBox.label.getText())); // toggle
-				TextBounds bounds = msgBox.label.bounds;
-				msgBox.label.setHeight(bounds.height);
+				CB_RectF rec = msgBox.getContentSize().getBounds();
+
+				String txt = GlobalCore.Rot13(msgBox.label.getText());
+
+				float lblHeigt = Fonts.MeasureWrapped(txt, rec.getWidth()).height + (2 * margin);
+				msgBox.label.setZeroPos();
+				msgBox.label.setWrappedText(txt);
+				msgBox.label.setHeight(lblHeigt);
 				scrollBox.setInerHeight(msgBox.label.getHeight());
 				return true;
 			}
