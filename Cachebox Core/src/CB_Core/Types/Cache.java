@@ -476,13 +476,11 @@ public class Cache implements Comparable<Cache>
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
-		if (!Config.settings.SpoilerFolder.getDefaultValue().equalsIgnoreCase(Config.settings.SpoilerFolder.getValue()))
-		{
-			// from globalUser changed Repository
-			path = Config.settings.SpoilerFolder.getDefaultValue();
-			directory = path + "/" + GcCode.substring(0, 4);
-			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-		}
+		// Spoilers are always loaden from global Repository too
+		// from globalUser changed Repository
+		path = Config.settings.SpoilerFolder.getDefaultValue();
+		directory = path + "/" + GcCode.substring(0, 4);
+		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Add own taken photo
 		directory = Config.settings.UserImageFolder.getValue();
