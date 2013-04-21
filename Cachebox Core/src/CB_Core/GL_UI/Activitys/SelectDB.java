@@ -333,6 +333,7 @@ public class SelectDB extends ActivityBase
 
 				String database = Config.WorkPath + GlobalCore.fs + NewDB_Name + ".db3";
 				Config.settings.DatabasePath.setValue(database);
+				Database.Data.Close();
 				Database.Data.StartUp(database);
 
 				// OwnRepository?
