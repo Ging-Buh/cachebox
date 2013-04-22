@@ -16,7 +16,6 @@ import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class EditCoord extends ActivityBase
 {
@@ -28,7 +27,6 @@ public class EditCoord extends ActivityBase
 	private ReturnListner mReturnListner;
 
 	// Allgemein
-	private BitmapFont font;
 
 	private MultiToggleButton bDec;
 	private MultiToggleButton bMin;
@@ -71,7 +69,6 @@ public class EditCoord extends ActivityBase
 	public EditCoord(CB_RectF rec, String Name, Coordinate Coord, ReturnListner returnListner)
 	{
 		super(rec, Name);
-		font = Fonts.getBig();
 		coord = Coord;
 		cancelCoord = coord.copy();
 		mReturnListner = returnListner;
@@ -80,10 +77,6 @@ public class EditCoord extends ActivityBase
 		bMin = new MultiToggleButton("bMin");
 		bSec = new MultiToggleButton("bSec");
 		bUtm = new MultiToggleButton("bUtm");
-		((Button) bDec).setFont(font);
-		((Button) bMin).setFont(font);
-		((Button) bSec).setFont(font);
-		((Button) bUtm).setFont(font);
 		this.addNext(bDec);
 		this.addNext(bMin);
 		this.addNext(bSec);
@@ -98,8 +91,8 @@ public class EditCoord extends ActivityBase
 		this.initRow(false);
 		this.addNext(btnOK);
 		this.addLast(btnCancel);
-		btnCancel.setText(Translation.Get("cancel"), font, Fonts.getFontColor());
-		btnOK.setText(Translation.Get("ok"), font, Fonts.getFontColor());
+		btnCancel.setText(Translation.Get("cancel"), Fonts.getFontColor());
+		btnOK.setText(Translation.Get("ok"), Fonts.getFontColor());
 
 		pnlNumPad = new Box(this.getAvailableWidth(), this.getAvailableHeight(), "pnlNumPad");
 		this.createNumPad(pnlNumPad);
@@ -248,10 +241,10 @@ public class EditCoord extends ActivityBase
 		}
 		panel.addLast(lbl3, 0.5f);
 
-		lbl1.setText("°", font, Fonts.getFontColor());
-		lbl2.setText(".", font, Fonts.getFontColor());
-		lbl3.setText("°", font, Fonts.getFontColor());
-		lbl4.setText(".", font, Fonts.getFontColor());
+		lbl1.setText("°", Fonts.getFontColor());
+		lbl2.setText(".", Fonts.getFontColor());
+		lbl3.setText("°", Fonts.getFontColor());
+		lbl4.setText(".", Fonts.getFontColor());
 		this.setClickHandlers(this.btnDLat, this.btnDLon);
 	}
 
@@ -296,10 +289,10 @@ public class EditCoord extends ActivityBase
 		panel.addNext(this.btnDMLon[7]);
 		panel.addLast(this.btnDMLon[8]);
 
-		lbl1.setText("°", font, Fonts.getFontColor());
-		lbl2.setText(".", font, Fonts.getFontColor());
-		lbl3.setText("°", font, Fonts.getFontColor());
-		lbl4.setText(".", font, Fonts.getFontColor());
+		lbl1.setText("°", Fonts.getFontColor());
+		lbl2.setText(".", Fonts.getFontColor());
+		lbl3.setText("°", Fonts.getFontColor());
+		lbl4.setText(".", Fonts.getFontColor());
 		this.setClickHandlers(this.btnDMLat, this.btnDMLon);
 	}
 
@@ -334,10 +327,10 @@ public class EditCoord extends ActivityBase
 		panel.addLast(this.btnDMSLat[9]);
 		// panel.addLast(lblseclat);// leave it because of small screen size
 
-		lbldeglat.setText("°", font, Fonts.getFontColor());
-		lblminlat.setText("'", font, Fonts.getFontColor());
-		lblpntlat.setText(".", font, Fonts.getFontColor());
-		lblseclat.setText("\"", font, Fonts.getFontColor());
+		lbldeglat.setText("°", Fonts.getFontColor());
+		lblminlat.setText("'", Fonts.getFontColor());
+		lblpntlat.setText(".", Fonts.getFontColor());
+		lblseclat.setText("\"", Fonts.getFontColor());
 
 		// Lon
 		Label lbldeglon = new Label("lbldeglon");
@@ -359,10 +352,10 @@ public class EditCoord extends ActivityBase
 		panel.addLast(this.btnDMSLon[9]);
 		// panel.addLast(lblseclon); // leave it because of small screen size
 
-		lbldeglon.setText("°", font, Fonts.getFontColor());
-		lblminlon.setText("'", font, Fonts.getFontColor());
-		lblpntlon.setText(".", font, Fonts.getFontColor());
-		lblseclon.setText("\"", font, Fonts.getFontColor());
+		lbldeglon.setText("°", Fonts.getFontColor());
+		lblminlon.setText("'", Fonts.getFontColor());
+		lblpntlon.setText(".", Fonts.getFontColor());
+		lblseclon.setText("\"", Fonts.getFontColor());
 		this.setClickHandlers(this.btnDMSLat, this.btnDMSLon);
 	}
 
@@ -667,7 +660,7 @@ public class EditCoord extends ActivityBase
 		panel.addLast(btnNumpad[3]);
 		for (int i = 0; i < 10; i++)
 		{
-			btnNumpad[i].setText(String.format("%1d", i), font, Fonts.getFontColor());
+			btnNumpad[i].setText(String.format("%1d", i), Fonts.getFontColor());
 		}
 		panel.adjustHeight();
 	}
@@ -677,19 +670,19 @@ public class EditCoord extends ActivityBase
 		int f = them.focus;
 		if (f < 6) // 0..5
 		{
-			them.btnUTMLon[f].setText(value, font, Fonts.getFontColor());
+			them.btnUTMLon[f].setText(value, Fonts.getFontColor());
 		}
 		else
 		{
 			f = f - 6; // 6..13
 			if (f < 8)
 			{
-				them.btnUTMLat[f].setText(value, font, Fonts.getFontColor());
+				them.btnUTMLat[f].setText(value, Fonts.getFontColor());
 			}
 			else
 			{
 				f = f - 8; // 14,15 -- > 0,1 (16 -> 2 ist zoneletter)
-				them.btnUTMZone[f].setText(value, font, Fonts.getFontColor());
+				them.btnUTMZone[f].setText(value, Fonts.getFontColor());
 			}
 		}
 		them.setNextUTMFocus(); // weiter zum nächsten Eingabebutton
@@ -730,7 +723,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%09.5f", Math.abs(coord.getLatitude())).replace(",", ".").replace(".", "");
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnDLat[i].setText(s.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnDLat[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
 			}
 			this.btnDLat[1].setInvisible(); // nur 2 Stellen Grad
 			// Lon
@@ -740,7 +733,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%09.5f", Math.abs(coord.getLongitude())).replace(",", ".").replace(".", "");
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnDLon[i].setText(s.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnDLon[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
 			}
 
 			this.focus = this.setFocus(this.btnDLat, this.btnDLon, 4); // erste Nachkommastelle N / S
@@ -768,7 +761,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnDMLat[i].setText(s.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnDMLat[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
 			}
 			this.btnDMLat[1].setInvisible(); // nur 2 Stellen Grad
 			// Lon
@@ -783,7 +776,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnDMLon[i].setText(s.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnDMLon[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
 			}
 
 			this.focus = this.setFocus(this.btnDMLat, this.btnDMLon, 6); // erste Nachkommastelle N / S
@@ -816,7 +809,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%02d", (int) (0.5 + (sec - (int) sec) * 100)); // gerundet
 			for (int i = 0; i < 10; i++)
 			{
-				this.btnDMSLat[i].setText(s.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnDMSLat[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
 			}
 			this.btnDMSLat[1].setInvisible(); // nur 2 Stellen Grad
 
@@ -836,7 +829,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%02d", (int) (0.5 + (sec - (int) sec) * 100)); // gerundet
 			for (int i = 0; i < 10; i++)
 			{
-				this.btnDMSLon[i].setText(s.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnDMSLon[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
 			}
 
 			this.focus = this.setFocus(this.btnDMSLat, this.btnDMSLon, 6); // erste Nachkommastelle N / S
@@ -858,25 +851,25 @@ public class EditCoord extends ActivityBase
 			String UTMZoneLetter = convert.sUtmLetterActual(coord.getLatitude());
 			for (int i = 0; i < nording.length(); i++)
 			{
-				this.btnUTMLat[i].setText(nording.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnUTMLat[i].setText(nording.substring(i, (i + 1)), Fonts.getFontColor());
 			}
 			for (int i = nording.length(); i < 8; i++)
 			{
-				this.btnUTMLat[i].setText("", font, Fonts.getFontColor());
+				this.btnUTMLat[i].setText("", Fonts.getFontColor());
 			}
 			for (int i = 0; i < easting.length(); i++)
 			{
-				this.btnUTMLon[i].setText(easting.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnUTMLon[i].setText(easting.substring(i, (i + 1)), Fonts.getFontColor());
 			}
 			for (int i = easting.length(); i < 8; i++)
 			{
-				this.btnUTMLon[i].setText("", font, Fonts.getFontColor());
+				this.btnUTMLon[i].setText("", Fonts.getFontColor());
 			}
 			for (int i = 0; i < 2; i++)
 			{
-				this.btnUTMZone[i].setText(zone.substring(i, (i + 1)), font, Fonts.getFontColor());
+				this.btnUTMZone[i].setText(zone.substring(i, (i + 1)), Fonts.getFontColor());
 			}
-			this.btnUTMZone[2].setText(UTMZoneLetter, font, Fonts.getFontColor());
+			this.btnUTMZone[2].setText(UTMZoneLetter, Fonts.getFontColor());
 
 			this.setUTMFocus(0);
 
@@ -894,20 +887,20 @@ public class EditCoord extends ActivityBase
 		// highlighted to normal
 		if (this.focus < nrOfButtons)
 		{
-			bLat[this.focus].setText(bLat[this.focus].getText(), font, Fonts.getFontColor());
+			bLat[this.focus].setText(bLat[this.focus].getText(), Fonts.getFontColor());
 		}
 		else
 		{
-			bLon[this.focus - nrOfButtons].setText(bLon[this.focus - nrOfButtons].getText(), font, Fonts.getFontColor());
+			bLon[this.focus - nrOfButtons].setText(bLon[this.focus - nrOfButtons].getText(), Fonts.getFontColor());
 		}
 		// normal to highlighted showing next input change
 		if (newFocus < nrOfButtons)
 		{
-			bLat[newFocus].setText(bLat[newFocus].getText(), font, Fonts.getHighLightFontColor());
+			bLat[newFocus].setText(bLat[newFocus].getText(), Fonts.getHighLightFontColor());
 		}
 		else
 		{
-			bLon[newFocus - nrOfButtons].setText(bLon[newFocus - nrOfButtons].getText(), font, Fonts.getHighLightFontColor());
+			bLon[newFocus - nrOfButtons].setText(bLon[newFocus - nrOfButtons].getText(), Fonts.getHighLightFontColor());
 		}
 		return newFocus;
 	}
@@ -969,19 +962,19 @@ public class EditCoord extends ActivityBase
 	{
 		if (f < 6)
 		{
-			this.btnUTMLon[f].setText(this.btnUTMLon[f].getText(), font, c);
+			this.btnUTMLon[f].setText(this.btnUTMLon[f].getText(), c);
 		}
 		else
 		{
 			f = f - 6;
 			if (f < 8)
 			{
-				this.btnUTMLat[f].setText(this.btnUTMLat[f].getText(), font, c);
+				this.btnUTMLat[f].setText(this.btnUTMLat[f].getText(), c);
 			}
 			else
 			{
 				f = f - 8;
-				this.btnUTMZone[f].setText(this.btnUTMZone[f].getText(), font, c);
+				this.btnUTMZone[f].setText(this.btnUTMZone[f].getText(), c);
 			}
 		}
 	}

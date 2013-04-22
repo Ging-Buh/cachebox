@@ -32,7 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Label extends CB_View_Base
 {
-	private BitmapFont font;
+	private BitmapFont mFont;
 	private BitmapFontCache cache;
 	private VAlignment valignment = VAlignment.CENTER;
 	private HAlignment halignment = HAlignment.LEFT;
@@ -175,7 +175,17 @@ public class Label extends CB_View_Base
 
 	private void chkCache()
 	{
-		if (cache == null) setFont(Fonts.getNormal());
+		if (cache == null)
+		{
+			if (this.mFont == null)
+			{
+				setFont(Fonts.getNormal());
+			}
+			else
+			{
+				setFont(mFont);
+			}
+		}
 	}
 
 	// code from Libgdx Label
@@ -183,6 +193,11 @@ public class Label extends CB_View_Base
 	public TextBounds setText(String text)
 	{
 		return setText(text, null, null, halignment);
+	}
+
+	public void setText(String Text, Color color)
+	{
+		setText(Text, null, color, halignment);
 	}
 
 	public TextBounds setText(String text, BitmapFont font, Color fontColor)
@@ -264,9 +279,9 @@ public class Label extends CB_View_Base
 	public void setFont(BitmapFont font)
 	{
 		if (cache == null) initialedLineCount = 0;
-		if (cache == null || font != this.font)
+		if (cache == null || font != this.mFont)
 		{
-			this.font = font;
+			this.mFont = font;
 			if (cache != null)
 			{
 				cache.clear(); // cache.dispose gibts nicht
@@ -424,7 +439,7 @@ public class Label extends CB_View_Base
 
 	public BitmapFont getFont()
 	{
-		return this.font;
+		return this.mFont;
 	}
 
 	/**
