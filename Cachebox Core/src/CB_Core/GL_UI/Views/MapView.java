@@ -2096,8 +2096,18 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					int dxr = (int) (Math.cos(angle) * dx + Math.sin(angle) * dy);
 					int dyr = (int) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
 					debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
-					screenCenterT.x += (long) (dxr * faktor);
-					screenCenterT.y += (long) (dyr * faktor);
+
+					// Pan stufenlos anpassen an den aktuell gültigen Zoomfaktor
+					float tmpZoom = camera.zoom;
+					float ffaktor = 1.5f;
+					ffaktor = ffaktor - iconFactor + 1;
+					while (tmpZoom > ffaktor)
+					{
+						tmpZoom /= 2;
+					}
+
+					screenCenterT.x += (long) (dxr * faktor * tmpZoom);
+					screenCenterT.y += (long) (dyr * faktor * tmpZoom);
 				}
 				calcCenter();
 

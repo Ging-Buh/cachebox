@@ -1094,6 +1094,7 @@ public class GL implements ApplicationListener
 		private boolean fertig;
 		// benutze den Abstand der letzten 5 Positionsänderungen
 		final int anzPoints = 6;
+		int anzPointsUsed = 0;
 		private int[] x = new int[anzPoints];
 		private int[] y = new int[anzPoints];
 		private long[] ts = new long[anzPoints];
@@ -1115,10 +1116,22 @@ public class GL implements ApplicationListener
 				y[i] = 0;
 				ts[i] = 0;
 			}
+			anzPointsUsed = 0;
 		}
 
 		public void setLast(long aktTs, int aktX, int aktY)
 		{
+			if ((anzPointsUsed > 0) && (ts[0] < aktTs - 500))
+			{
+				// wenn seit der letzten Verschiebung mehr Zeit Vergangen ist -> bisherige gemerkte Verschiebungen löschen
+				anzPointsUsed = 0;
+				started = false;
+				return;
+			}
+
+			anzPointsUsed++;
+			Logger.LogCat("AnzUsedPoints: " + anzPointsUsed);
+			if (anzPointsUsed > anzPoints) anzPointsUsed = anzPoints;
 			for (int i = anzPoints - 2; i >= 0; i--)
 			{
 				x[i + 1] = x[i];
@@ -1135,15 +1148,16 @@ public class GL implements ApplicationListener
 				if (y[i] == 0) y[i] = y[i - 1];
 				if (ts[i] == 0) ts[i] = ts[i - 1];
 			}
-			diffX = x[anzPoints - 1] - aktX;
-			diffY = aktY - y[anzPoints - 1];
-			diffTs = aktTs - ts[anzPoints - 1];
+			diffX = x[anzPointsUsed - 1] - aktX;
+			diffY = aktY - y[anzPointsUsed - 1];
+			diffTs = aktTs - ts[anzPointsUsed - 1];
 
 			if (diffTs > 0)
 			{
-				diffX = (int) (diffX * FRAME_RATE_ACTION / diffTs);
-				diffY = (int) (diffY * FRAME_RATE_ACTION / diffTs);
+				diffX = (int) ((float) diffX / FRAME_RATE_ACTION * diffTs);
+				diffY = (int) ((float) diffY / FRAME_RATE_ACTION * diffTs);
 			}
+			Logger.LogCat("diffx = " + diffX + " - diffy = " + diffY);
 
 			// debugString = x[2] + " - " + x[1] + " - " + x[0];
 		}
@@ -1160,11 +1174,20 @@ public class GL implements ApplicationListener
 
 		public void start()
 		{
+			anzPointsUsed = Math.max(anzPointsUsed, 1);
+			if (ts[0] < System.currentTimeMillis() - 200)
+			{
+				// kinematisches Scrollen nur, wenn seit der letzten Verschiebung kaum Zeit vergangen ist
+				fertig = true;
+				return;
+			}
 			startTs = System.currentTimeMillis();
 			int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 
-			endTs = startTs + 3000 + abstand * 200 / anzPoints;
-			// endTs = startTs + 2000; // Povisorisch
+			endTs = startTs + 1000 + abstand * 15 / anzPointsUsed;
+			// if (endTs > startTs + 6000) endTs = startTs + 6000; // max. Zeit festlegen
+			Logger.LogCat("endTs - startTs: " + String.valueOf(endTs - startTs));
+			// endTs = startTs + 5000;
 			started = true;
 		}
 
@@ -1173,13 +1196,14 @@ public class GL implements ApplicationListener
 
 		public Point getAktPan()
 		{
+			anzPointsUsed = Math.max(anzPointsUsed, 1);
 			Point result = new Point(0, 0);
 
 			long aktTs = System.currentTimeMillis();
 			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
 			// Logger.LogCat("Faktor: " + faktor);
 			faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
-			faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
+			// faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
 			// Logger.LogCat("Faktor2: " + faktor);
 			if (faktor >= 1)
 			{
@@ -1187,16 +1211,16 @@ public class GL implements ApplicationListener
 				faktor = 1;
 			}
 
-			result.x = (int) (diffX / anzPoints * (1 - faktor)) + lastX;
-			result.y = (int) (diffY / anzPoints * (1 - faktor)) + lastY;
+			result.x = (int) ((float) diffX / anzPointsUsed * (1 - faktor)) + lastX;
+			result.y = (int) ((float) diffY / anzPointsUsed * (1 - faktor)) + lastY;
 
 			if ((result.x == lastX) && (result.y == lastY))
 			{
 				// wenn keine Nennenswerten Änderungen mehr gemacht werden dann einfach auf fertig schalten
 				fertig = true;
 				faktor = 1;
-				result.x = (int) (diffX / anzPoints * (1 - faktor)) + lastX;
-				result.y = (int) (diffY / anzPoints * (1 - faktor)) + lastY;
+				result.x = (int) ((float) diffX / anzPointsUsed * (1 - faktor)) + lastX;
+				result.y = (int) ((float) diffY / anzPointsUsed * (1 - faktor)) + lastY;
 			}
 			double abstand = distance(lastX, lastY, result.x, result.y);
 			if (abstand > MAX_KINETIC_SCROLL_DISTANCE)
