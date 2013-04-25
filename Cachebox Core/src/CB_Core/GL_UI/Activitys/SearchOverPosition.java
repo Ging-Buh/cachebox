@@ -12,6 +12,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
@@ -24,13 +25,15 @@ import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -64,7 +67,7 @@ public class SearchOverPosition extends ActivityBase
 	{
 		super(ActivityRec(), "searchOverPosActivity");
 		that = this;
-		lineHeight = UiSizes.getButtonHeight();
+		lineHeight = UI_Size_Base.that.getButtonHeight();
 
 		createOkCancelBtn();
 		createBox();
@@ -79,12 +82,12 @@ public class SearchOverPosition extends ActivityBase
 
 	private void createOkCancelBtn()
 	{
-		bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
+		bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+		bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
 		// Translations
-		bOK.setText(GlobalCore.Translations.Get("import"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("import"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		bOK.setOnClickListener(new OnClickListener()
@@ -131,24 +134,24 @@ public class SearchOverPosition extends ActivityBase
 	private void createTitleLine()
 	{
 
-		float lineHeight = UiSizes.getButtonHeight() * 0.75f;
+		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
 		gsLogo = new Image(width - this.getLeftWidth() - this.getRightWidth() - margin - lineHeight, this.height - this.getTopHeight()
 				- lineHeight - margin, lineHeight, lineHeight, "");
-		gsLogo.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(35)));
+		gsLogo.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.GCLive_35.ordinal())));
 		this.addChild(gsLogo);
 
 		lblTitle = new Label(this.getLeftWidth() + margin, this.height - this.getTopHeight() - lineHeight - margin, width
 				- this.getLeftWidth() - this.getRightWidth() - margin - gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
-		lblTitle.setText(GlobalCore.Translations.Get("importCachesOverPosition"));
+		lblTitle.setText(Translation.Get("importCachesOverPosition"));
 		this.addChild(lblTitle);
 
 	}
 
 	private void createRadiusLine()
 	{
-		String sRadius = GlobalCore.Translations.Get("Radius");
+		String sRadius = Translation.Get("Radius");
 		String sEinheit = Config.settings.ImperialUnits.getValue() ? "mi" : "km";
 
 		float wRadius = Fonts.Measure(sRadius).width;
@@ -160,7 +163,7 @@ public class SearchOverPosition extends ActivityBase
 		lblRadius.setText(sRadius);
 		box.addChild(lblRadius);
 
-		CB_RectF rec = new CB_RectF(lblRadius.getMaxX() + margin, y, UiSizes.getButtonWidthWide(), lineHeight);
+		CB_RectF rec = new CB_RectF(lblRadius.getMaxX() + margin, y, UI_Size_Base.that.getButtonWidthWide(), lineHeight);
 		Radius = new EditWrapedTextField(this, rec, "");
 		box.addChild(Radius);
 
@@ -195,37 +198,35 @@ public class SearchOverPosition extends ActivityBase
 		lblOnlyAvible = new Label(checkBoxOnlyAvible, "");
 		lblOnlyAvible.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblOnlyAvible.setWidth(this.width - margin - checkBoxOnlyAvible.getMaxX() - margin);
-		lblOnlyAvible.setText(GlobalCore.Translations.Get("SearchOnlyAvible"));
+		lblOnlyAvible.setText(Translation.Get("SearchOnlyAvible"));
 		box.addChild(lblOnlyAvible);
 
 		lblExcludeHides = new Label(checkBoxExcludeHides, "");
 		lblExcludeHides.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblExcludeHides.setWidth(this.width - margin - checkBoxExcludeHides.getMaxX() - margin);
-		lblExcludeHides.setText(GlobalCore.Translations.Get("SearchWithoutOwns"));
+		lblExcludeHides.setText(Translation.Get("SearchWithoutOwns"));
 		box.addChild(lblExcludeHides);
 
 		lblExcludeFounds = new Label(checkBoxExcludeFounds, "");
 		lblExcludeFounds.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblExcludeFounds.setWidth(this.width - margin - checkBoxExcludeFounds.getMaxX() - margin);
-		lblExcludeFounds.setText(GlobalCore.Translations.Get("SearchWithoutFounds"));
+		lblExcludeFounds.setText(Translation.Get("SearchWithoutFounds"));
 		box.addChild(lblExcludeFounds);
 
 	}
 
 	private void createToggleButtonLine()
 	{
-		float y = lblExcludeFounds.getY() - margin - UiSizes.getButtonHeight();
+		float y = lblExcludeFounds.getY() - margin - UI_Size_Base.that.getButtonHeight();
 
-		tglBtnGPS = new MultiToggleButton(this.getLeftWidth(), y, innerWidth / 2, UiSizes.getButtonHeight(), "");
-		tglBtnMap = new MultiToggleButton(tglBtnGPS.getMaxX(), y, innerWidth / 2, UiSizes.getButtonHeight(), "");
+		tglBtnGPS = new MultiToggleButton(this.getLeftWidth(), y, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "");
+		tglBtnMap = new MultiToggleButton(tglBtnGPS.getMaxX(), y, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "");
 
 		tglBtnGPS.setFont(Fonts.getSmall());
 		tglBtnMap.setFont(Fonts.getSmall());
 
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, GlobalCore.Translations.Get("FromGps"),
-				GlobalCore.Translations.Get("FromGps"));
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, GlobalCore.Translations.Get("FromMap"),
-				GlobalCore.Translations.Get("FromMap"));
+		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, Translation.Get("FromGps"), Translation.Get("FromGps"));
+		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, Translation.Get("FromMap"), Translation.Get("FromMap"));
 
 		box.addChild(tglBtnGPS);
 		box.addChild(tglBtnMap);
@@ -238,7 +239,7 @@ public class SearchOverPosition extends ActivityBase
 	{
 		CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.width - (margin * 2), lineHeight);
 		lblMarkerPos = new Label(rec, "");
-		lblMarkerPos.setText(GlobalCore.Translations.Get("CurentMarkerPos"));
+		lblMarkerPos.setText(Translation.Get("CurentMarkerPos"));
 		box.addChild(lblMarkerPos);
 
 		coordBtn = new CoordinateButton(rec, name, null);
@@ -279,7 +280,7 @@ public class SearchOverPosition extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				actSearchPos = GlobalCore.LastPosition;
+				actSearchPos = Locator.getCoordinate();
 				setToggleBtnState(0);
 				return true;
 			}
@@ -329,7 +330,7 @@ public class SearchOverPosition extends ActivityBase
 		}
 		else
 		{
-			actSearchPos = GlobalCore.LastPosition;
+			actSearchPos = Locator.getCoordinate();
 			searcheState = 0;
 		}
 
@@ -511,7 +512,7 @@ public class SearchOverPosition extends ActivityBase
 			CB_RectF imageRec = new CB_RectF(this.halfWidth - halfSize, this.halfHeight - halfSize, size, size);
 
 			iconImage = new Image(imageRec, "MsgBoxIcon");
-			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(51)));
+			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.daySpinner_51.ordinal())));
 			iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
 
 			this.addChild(iconImage);

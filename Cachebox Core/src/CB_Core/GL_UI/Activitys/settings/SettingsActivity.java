@@ -9,7 +9,6 @@ import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
@@ -47,7 +46,7 @@ import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListCategoryButton;
 import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListGetApiButton;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
@@ -62,11 +61,15 @@ import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingStoreType;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
-import CB_Core.TranslationEngine.LangStrings.Langs;
+import CB_Core.TranslationEngine.Lang;
+import CB_Core.TranslationEngine.SelectedLangChangedEvent;
+import CB_Core.TranslationEngine.SelectedLangChangedEventList;
+import CB_Core.TranslationEngine.Translation;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class SettingsActivity extends ActivityBase
+public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent
 {
 
 	public static SettingsActivity that;
@@ -79,7 +82,7 @@ public class SettingsActivity extends ActivityBase
 	/***
 	 * Enthält den Key des zu Editierenden Wertes der SettingsList
 	 */
-	public static String EditKey = "";
+	public static int EditKey = -1;
 
 	private Linearlayout LinearLayout;
 
@@ -87,31 +90,52 @@ public class SettingsActivity extends ActivityBase
 	{
 		super(ActivityBase.ActivityRec(), "Settings");
 		that = this;
+		initial();
+		SelectedLangChangedEventList.Add(this);
+	}
+
+	private void initial()
+	{
 		this.setLongClickable(true);
 		Config.settings.SaveToLastValue();
 		ButtonRec = new CB_RectF(this.getLeftWidth(), 0, this.width - this.drawableBackground.getLeftWidth()
-				- this.drawableBackground.getRightWidth(), UiSizes.getButtonHeight());
+				- this.drawableBackground.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 
 		itemRec = new CB_RectF(this.getLeftWidth(), 0, ButtonRec.getWidth() - this.getLeftWidth() - this.getRightWidth(),
-				UiSizes.getButtonHeight());
+				UI_Size_Base.that.getButtonHeight());
 
 		createButtons();
 		fillContent();
+		resortList();
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		super.SkinIsChanged();
+		this.removeChild(btnOk);
+		this.removeChild(btnCancel);
+		this.removeChild(btnMenu);
+		createButtons();
+		fillContent();
+		resortList();
 	}
 
 	private void createButtons()
 	{
-		float btnW = (innerWidth - UiSizes.getButtonWidth()) / 2;
+		float btnW = (innerWidth - UI_Size_Base.that.getButtonWidth()) / 2;
 
-		btnOk = new Button(this.getLeftWidth(), this.getBottomHeight(), btnW, UiSizes.getButtonHeight(), "OK Button");
-		btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UiSizes.getButtonWidth(), UiSizes.getButtonHeight(), "Menu Button");
-		btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UiSizes.getButtonHeight(), "Cancel Button");
+		btnOk = new Button(this.getLeftWidth(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
+		btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(),
+				UI_Size_Base.that.getButtonHeight(), "Menu Button");
+		btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
 		// Translations
-		btnOk.setText(GlobalCore.Translations.Get("save"));
-		btnCancel.setText(GlobalCore.Translations.Get("cancel"));
+		btnOk.setText(Translation.Get("save"));
+		btnCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(btnMenu);
+		btnMenu.setText("...");
 		btnMenu.setOnClickListener(new OnClickListener()
 		{
 
@@ -152,9 +176,9 @@ public class SettingsActivity extends ActivityBase
 				mi.setCheckable(true);
 				mi.setChecked(Config.settings.SettingsShowAll.getValue());
 
-				icm.setPrompt(GlobalCore.Translations.Get("changeSettingsVisibility"));
+				icm.setPrompt(Translation.Get("changeSettingsVisibility"));
 
-				icm.show();
+				icm.Show();
 				return true;
 			}
 		});
@@ -249,7 +273,7 @@ public class SettingsActivity extends ActivityBase
 
 			ArrayList<SettingBase> SortedSettingList = new ArrayList<SettingBase>();// Config.settings.values().toArray();
 
-			for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+			for (Iterator<SettingBase> it = Config.settings.iterator(); it.hasNext();)
 			{
 				SortedSettingList.add(it.next());
 			}
@@ -476,7 +500,7 @@ public class SettingsActivity extends ActivityBase
 	private CB_View_Base getStringView(final SettingString SB, int backgroundChanger)
 	{
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = GlobalCore.Translations.Get(SB.getName());
+		final String trans = Translation.Get(SB.getName());
 		item.setName(trans);
 		item.setDefault(SB.getValue());
 
@@ -486,7 +510,7 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 
 				TextFieldType type;
 
@@ -497,7 +521,7 @@ public class SettingsActivity extends ActivityBase
 						{
 
 							@Override
-							public boolean onClick(int which)
+							public boolean onClick(int which, Object data)
 							{
 								String text = StringInputBox.editText.getText().toString();
 								if (which == GL_MsgBox.BUTTON_POSITIVE)
@@ -505,7 +529,7 @@ public class SettingsActivity extends ActivityBase
 									SettingString value = (SettingString) Config.settings.get(EditKey);
 
 									// api ohne lineBreak
-									if (EditKey.equalsIgnoreCase("GcAPI"))
+									if (value.getName().equalsIgnoreCase("GcAPI"))
 									{
 										text = text.replace("\r", "");
 										text = text.replace("\n", "");
@@ -534,7 +558,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return true;
 			}
@@ -550,7 +574,7 @@ public class SettingsActivity extends ActivityBase
 
 		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
 
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setName(Translation.Get(SB.getName()));
 
 		final Spinner spinner = item.getSpinner();
 
@@ -598,7 +622,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -613,7 +637,7 @@ public class SettingsActivity extends ActivityBase
 
 		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
 
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setName(Translation.Get(SB.getName()));
 
 		final Spinner spinner = item.getSpinner();
 
@@ -661,7 +685,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -676,7 +700,7 @@ public class SettingsActivity extends ActivityBase
 	{
 
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = GlobalCore.Translations.Get(SB.getName());
+		final String trans = Translation.Get(SB.getName());
 
 		item.setName(trans);
 		item.setDefault(String.valueOf(SB.getValue()));
@@ -687,7 +711,7 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 
 				// Show NumPad Int Edit
 				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
@@ -724,7 +748,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -737,7 +761,7 @@ public class SettingsActivity extends ActivityBase
 	private CB_View_Base getDblView(final SettingDouble SB, int backgroundChanger)
 	{
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = GlobalCore.Translations.Get(SB.getName());
+		final String trans = Translation.Get(SB.getName());
 		item.setName(trans);
 		item.setDefault(String.valueOf(SB.getValue()));
 
@@ -747,7 +771,7 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 
 				// Show NumPad Int Edit
 				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
@@ -783,7 +807,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -799,7 +823,7 @@ public class SettingsActivity extends ActivityBase
 
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setName(Translation.Get(SB.getName()));
 		item.setDefault(SB.getValue());
 
 		item.setOnClickListener(new OnClickListener()
@@ -808,14 +832,14 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 				File file = new File(SB.getValue());
 
 				String ApsolutePath = "";
 				if (file != null) ApsolutePath = file.getAbsolutePath();
 
-				platformConector.getFolder(ApsolutePath, GlobalCore.Translations.Get("select_folder"),
-						GlobalCore.Translations.Get("select"), new IgetFolderReturnListner()
+				platformConector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"),
+						new IgetFolderReturnListner()
 						{
 
 							@Override
@@ -839,7 +863,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -854,7 +878,7 @@ public class SettingsActivity extends ActivityBase
 	{
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setName(Translation.Get(SB.getName()));
 		item.setDefault(SB.getValue());
 
 		item.setOnClickListener(new OnClickListener()
@@ -863,15 +887,15 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 				File file = new File(SB.getValue());
 
 				String Path = file.getParent();
 
 				if (Path == null) Path = "";
 
-				platformConector.getFile(Path, SB.getExt(), GlobalCore.Translations.Get("select_file"),
-						GlobalCore.Translations.Get("select"), new IgetFileReturnListner()
+				platformConector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"),
+						new IgetFileReturnListner()
 						{
 
 							@Override
@@ -895,7 +919,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -912,7 +936,7 @@ public class SettingsActivity extends ActivityBase
 
 		btn.setDrageble();
 
-		btn.setText(GlobalCore.Translations.Get(SB.getName()));
+		btn.setText(Translation.Get(SB.getName()));
 
 		if (SB.getName().equals("DebugDisplayInfo"))
 		{
@@ -927,12 +951,10 @@ public class SettingsActivity extends ActivityBase
 						String info = "";
 
 						info += "Density= " + String.valueOf(GL_UISizes.DPI) + GlobalCore.br;
-						info += "Height= " + String.valueOf(UiSizes.getWindowHeight()) + GlobalCore.br;
-						info += "Width= " + String.valueOf(UiSizes.getWindowWidth()) + GlobalCore.br;
-						info += "Scale= " + String.valueOf(UiSizes.getScale()) + GlobalCore.br;
-						info += "FontSize= " + String.valueOf(UiSizes.getScaledFontSize()) + GlobalCore.br;
-
-						info += "GPS Thread Time= " + String.valueOf(PositionChangedEventList.maxEventListTime) + GlobalCore.br;
+						info += "Height= " + String.valueOf(UI_Size_Base.that.getWindowHeight()) + GlobalCore.br;
+						info += "Width= " + String.valueOf(UI_Size_Base.that.getWindowWidth()) + GlobalCore.br;
+						info += "Scale= " + String.valueOf(UI_Size_Base.that.getScale()) + GlobalCore.br;
+						info += "FontSize= " + String.valueOf(UI_Size_Base.that.getScaledFontSize()) + GlobalCore.br;
 						info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
 						info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime)
 								+ GlobalCore.br;
@@ -956,7 +978,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -977,7 +999,7 @@ public class SettingsActivity extends ActivityBase
 	{
 
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
-		final String trans = GlobalCore.Translations.Get(SB.getName());
+		final String trans = Translation.Get(SB.getName());
 		item.setName(trans);
 		item.setDefault(intToTime(SB.getValue()));
 
@@ -987,7 +1009,7 @@ public class SettingsActivity extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				EditKey = SB.getName();
+				EditKey = Config.settings.indexOf(SB);
 
 				String Value = intToTime(SB.getValue());
 				String[] s = Value.split(":");
@@ -1030,7 +1052,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return false;
 			}
@@ -1050,11 +1072,11 @@ public class SettingsActivity extends ActivityBase
 		return String.valueOf(minutes) + ":" + String.valueOf(seconds);
 	}
 
-	ArrayList<Langs> Sprachen;
+	ArrayList<Lang> Sprachen;
 
 	private CB_View_Base getLangSpinnerView(final SettingsListButtonLangSpinner SB)
 	{
-		Sprachen = GlobalCore.Translations.GetLangs(Config.settings.LanguagePath.getValue());
+		Sprachen = Translation.GetLangs(Config.settings.LanguagePath.getValue());
 
 		if (Sprachen == null || Sprachen.size() == 0) return null;
 
@@ -1064,7 +1086,7 @@ public class SettingsActivity extends ActivityBase
 
 		File file1 = new File(Config.settings.Sel_LanguagePath.getValue());
 
-		for (Langs tmp : Sprachen)
+		for (Lang tmp : Sprachen)
 		{
 			File file2 = new File(tmp.Path);
 			if (file1.getAbsoluteFile().compareTo(file2.getAbsoluteFile()) == 0)
@@ -1104,18 +1126,25 @@ public class SettingsActivity extends ActivityBase
 			public void selectionChanged(int index)
 			{
 				String selected = items[index];
-				for (Langs tmp : Sprachen)
+				for (Lang tmp : Sprachen)
 				{
 					if (selected.equals(tmp.Name))
 					{
 						Config.settings.Sel_LanguagePath.setValue(tmp.Path);
 						try
 						{
-							GlobalCore.Translations.ReadTranslationsFile(tmp.Path);
+							Translation.LoadTranslation(tmp.Path);
 						}
-						catch (IOException e)
+						catch (Exception e)
 						{
-							e.printStackTrace();
+							try
+							{
+								Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getDefaultValue());
+							}
+							catch (IOException e1)
+							{
+								e1.printStackTrace();
+							}
 						}
 						break;
 					}
@@ -1126,7 +1155,7 @@ public class SettingsActivity extends ActivityBase
 
 		spinner.setSelection(selection);
 
-		spinner.setPrompt(GlobalCore.Translations.Get("SelectLanguage"));
+		spinner.setPrompt(Translation.Get("SelectLanguage"));
 
 		spinner.setDrageble();
 
@@ -1223,7 +1252,7 @@ public class SettingsActivity extends ActivityBase
 
 		spinner.setSelection(selection);
 
-		spinner.setPrompt(GlobalCore.Translations.Get("SelectSkin"));
+		spinner.setPrompt(Translation.Get("SelectSkin"));
 
 		spinner.setDrageble();
 
@@ -1235,7 +1264,7 @@ public class SettingsActivity extends ActivityBase
 
 		SettingsItem_Bool item = new SettingsItem_Bool(itemRec, backgroundChanger, SB.getName());
 
-		item.setName(GlobalCore.Translations.Get(SB.getName()));
+		item.setName(Translation.Get(SB.getName()));
 		item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
 
 		chkBox chk = item.getCheckBox();
@@ -1258,7 +1287,7 @@ public class SettingsActivity extends ActivityBase
 			{
 				// zeige Beschreibung der Einstellung
 
-				GL_MsgBox.Show(GlobalCore.Translations.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
 
 				return true;
 			}
@@ -1273,7 +1302,7 @@ public class SettingsActivity extends ActivityBase
 	{
 
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
 			show();
 			return true;
@@ -1282,7 +1311,7 @@ public class SettingsActivity extends ActivityBase
 
 	public void resortList()
 	{
-		show();
+		// show();
 
 		float scrollPos = scrollBox.getScrollY();
 		scrollBox = null;
@@ -1290,6 +1319,12 @@ public class SettingsActivity extends ActivityBase
 
 		fillContent();
 		scrollBox.scrollTo(scrollPos);
+	}
+
+	@Override
+	public void SelectedLangChangedEventCalled()
+	{
+		initial();
 	}
 
 }

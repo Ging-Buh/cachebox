@@ -25,6 +25,7 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -39,7 +40,9 @@ import CB_Core.GL_UI.Views.TrackListView;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
-import CB_Core.Types.Coordinate;
+import CB_Core.TranslationEngine.Translation;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -63,7 +66,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(8);
+		return SpriteCache.Icons.get(IconName.trackList_8.ordinal());
 	}
 
 	@Override
@@ -88,14 +91,14 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 	private void GenOpenRoute()
 	{
 
-		if ((GlobalCore.Locator == null && !GlobalCore.LastValidPosition.Valid) || !GlobalCore.Locator.isGPSprovided())
+		if (!Locator.isGPSprovided())
 		{
 			GL_MsgBox.Show("GPS ungültig", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 			return;
 		}
 		else
 		{
-			start = GlobalCore.LastValidPosition;
+			start = Locator.getCoordinate();
 		}
 
 		if (GlobalCore.getSelectedWaypoint() != null)
@@ -257,11 +260,11 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														lastAcceptedCoordinate.getLatitude(), 0, 0, null));
 
 												// Calculate the length of a Track
-												if (!FromPosition.Valid)
+												if (!FromPosition.isValid())
 												{
 													FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
 													FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
-													FromPosition.Valid = true;
+													FromPosition.setValid(true);
 												}
 												else
 												{
@@ -292,7 +295,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 												@Override
 												public void run()
 												{
-													String msg = GlobalCore.Translations.Get("generateRouteLength") + sDistance;
+													String msg = Translation.Get("generateRouteLength") + sDistance;
 													GL_MsgBox.Show(msg, "OpenRouteService", MessageBoxButtons.OK,
 															MessageBoxIcon.Information, null);
 												}

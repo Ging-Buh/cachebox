@@ -21,16 +21,14 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Button extends CB_View_Base
@@ -60,13 +58,13 @@ public class Button extends CB_View_Base
 
 	public Button(GL_View_Base parent, String name)
 	{
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidth(), UiSizes.getButtonHeight()), parent, name);
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight()), parent, name);
 		this.setClickable(true);
 	}
 
 	public Button(String name)
 	{
-		super(new CB_RectF(0, 0, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), name);
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), name);
 		this.setClickable(true);
 	}
 
@@ -240,39 +238,38 @@ public class Button extends CB_View_Base
 			return;
 		}
 
-		if (lblTxt == null)
+		if (lblTxt != null)
 		{
-
-			CB_RectF r = this.ScaleCenter(0.9f);
-
-			float l = (this.width - r.getWidth()) / 2;
-			float b = (this.height - r.getHeight()) / 2;
-
-			r.setPos(new Vector2(l, b));
-
-			lblTxt = new Label(r, this, name + "Label");
-			if (font != null) mFont = font;
-			if (mFont != null)
-			{
-				lblTxt.setFont(mFont);
-			}
-			else
-			{
-				lblTxt.setFont(Fonts.getNormal());
-			}
-
-			lblTxt.setText(Text);
-			lblTxt.setHAlignment(HAlignment.CENTER);
-			lblTxt.setVAlignment(VAlignment.CENTER);
-			this.addChild(lblTxt);
+			this.removeChild(lblTxt);
 		}
+
+		lblTxt = new Label(name + "Label");
+		if (font != null) mFont = font;
+		if (mFont != null)
+		{
+			lblTxt.setFont(mFont);
+		}
+		else
+		{
+			mFont = Fonts.getBig();
+			lblTxt.setFont(mFont);
+		}
+		this.initRow(false);
+		this.addLast(lblTxt);
 
 		if (color != null)
 		{
 			lblTxt.setTextColor(color);
 		}
-		lblTxt.setText(Text);
+
+		// lblTxt.setVAlignment(VAlignment.CENTER); ist default
+		lblTxt.setText(Text, mFont, color, HAlignment.CENTER);
 		GL.that.renderOnce(this.getName() + " setText2");
+	}
+
+	public void setText(String Text, Color color)
+	{
+		setText(Text, null, color);
 	}
 
 	public void setText(String Text)
@@ -337,6 +334,20 @@ public class Button extends CB_View_Base
 	{
 		isDisabled = !value;
 
+	}
+
+	@Override
+	public void setWidth(float Width)
+	{
+		super.setWidth(Width);
+		setText(getText());
+	}
+
+	@Override
+	public void setHeight(float Height)
+	{
+		super.setHeight(Height);
+		setText(getText());
 	}
 
 }

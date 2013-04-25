@@ -6,7 +6,7 @@ import CB_Core.GL_UI.Activitys.EditCoord;
 import CB_Core.GL_UI.Activitys.EditCoord.ReturnListner;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -29,6 +29,13 @@ public class CoordinateButton extends Button
 		setText();
 		this.setOnClickListener(click);
 
+	}
+
+	public CoordinateButton(String name)
+	{
+		super(name);
+		mActCoord = new Coordinate();
+		this.setOnClickListener(click);
 	}
 
 	public void setCoordinateChangedListner(CoordinateChangeListner listner)
@@ -62,7 +69,7 @@ public class CoordinateButton extends Button
 			@Override
 			public void returnCoord(Coordinate coord)
 			{
-				if (coord != null && coord.Valid)
+				if (coord != null && coord.isValid())
 				{
 					mActCoord = coord;
 					if (mCoordinateChangedListner != null) mCoordinateChangedListner.coordinateChanged(coord);
@@ -89,6 +96,7 @@ public class CoordinateButton extends Button
 	public void setCoordinate(Coordinate coord)
 	{
 		mActCoord = coord;
+		if (mActCoord == null) mActCoord = new Coordinate();
 		setText();
 	}
 

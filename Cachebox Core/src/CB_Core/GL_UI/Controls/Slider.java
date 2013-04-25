@@ -80,13 +80,13 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		SelectedCacheEventList.Add(this);
 		this.setClickable(true);
 
-		QuickButtonMaxHeight = UiSizes.getQuickButtonListHeight();
+		QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight();
 
 		quickButtonList = new QuickButtonList(new CB_RectF(0, this.height - QuickButtonMaxHeight, this.width, QuickButtonMaxHeight),
 				"QuickButtonList");
 		this.addChild(quickButtonList);
 
-		mSlideBox = new Box(new CB_RectF(-15, 100, this.width + 30, UiSizes.getInfoSliderHeight()), "SlideBox");
+		mSlideBox = new Box(new CB_RectF(-15, 100, this.width + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
 		mSlideBox.setBackground(SpriteCache.ProgressBack);
 		mLblCacheName = new Label(new CB_RectF(20, 0, this.width - 30, mSlideBox.getHeight()), "CacheNameLbl");
 		mLblCacheName.setPos(30, 0);
@@ -123,7 +123,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		if (cache != null)
 		{
-			mLblCacheName.setText(cache.Name);
+			mLblCacheName.setText(cache.Name, Fonts.getBig(), Fonts.getFontColor());
 		}
 
 	}

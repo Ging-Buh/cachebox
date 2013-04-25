@@ -15,6 +15,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Log.Logger;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.app.ProgressDialog;
@@ -98,7 +99,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 				final String attr = url.substring(pos + 1, url.length() - 1);
 
-				MessageBox.Show(GlobalCore.Translations.Get(attr));
+				MessageBox.Show(Translation.Get(attr));
 				return true;
 			}
 			else if (url.contains("fake://fake.de/download"))
@@ -178,7 +179,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 						@Override
 						public void run()
 						{
-							scrollTo(scrollPos.x, scrollPos.y);
+							myScrollTo(scrollPos.x, scrollPos.y);
 						}
 					});
 				}
@@ -204,15 +205,14 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			case 2:
 			{
 				pd.dismiss();
-				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, null);
+				MessageBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
 				break;
 			}
 			case 3:
 			{
 				pd.dismiss();
-				MessageBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, DownloadCacheDialogResult);
+				MessageBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+						DownloadCacheDialogResult);
 				break;
 			}
 			case 4:
@@ -248,8 +248,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
 						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-						MessageBox.Show(s, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-								MessageBoxIcon.Powerd_by_GC_Live, null);
+						MessageBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
 					}
 				}
 				break;
@@ -272,9 +271,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			String html = "";
 			if (cache.ApiStatus == 1)// GC.com API lite
 			{ // Load Standard HTML
-				String nodesc = GlobalCore.Translations.Get("GC_NoDescription");
+				String nodesc = Translation.Get("GC_NoDescription");
 				html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
-						+ GlobalCore.Translations.Get("GC_DownloadDescription") + " \"></form>";
+						+ Translation.Get("GC_DownloadDescription") + " \"></form>";
 			}
 			else
 			{
@@ -540,9 +539,19 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		scrollPos = pos;
 	}
 
+	private boolean myScroll = false;
+
+	private void myScrollTo(int x, int y)
+	{
+		myScroll = true;
+		scrollTo(x, y);
+	}
+
 	@Override
 	public void scrollTo(int x, int y)
 	{
+		if (!myScroll) return;
+		myScroll = false;
 		if (firstLoadReady) super.scrollTo(x, y);
 	}
 

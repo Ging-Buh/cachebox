@@ -19,9 +19,9 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public abstract class Database
 {
@@ -40,6 +40,11 @@ public abstract class Database
 	public boolean isDbNew()
 	{
 		return newDB;
+	}
+
+	public String getDatabasePath()
+	{
+		return databasePath;
 	}
 
 	public enum DatabaseType
@@ -77,6 +82,16 @@ public abstract class Database
 
 	public boolean StartUp(String databasePath)
 	{
+		try
+		{
+			Logger.DEBUG("DB Startup : " + databasePath);
+		}
+		catch (Exception e)
+		{
+			// gibt beim splash - Start: NPE in Translation.readMissingStringsFile
+			// Nachfolgende Starts sollten aber protokolliert werden
+		}
+
 		this.databasePath = databasePath;
 
 		Initialize();
@@ -295,6 +310,10 @@ public abstract class Database
 					execSQL("ALTER TABLE [TbLogs] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
 					execSQL("ALTER TABLE [Images] ALTER COLUMN [GcCode] nvarchar(15) NOT NULL; ");
 				}
+				if (lastDatabaseSchemeVersion < 1024)
+				{
+					execSQL("ALTER TABLE [Waypoint] ADD COLUMN [IsStart] BOOLEAN DEFAULT 'false' NULL");
+				}
 
 				setTransactionSuccessful();
 			}
@@ -330,6 +349,21 @@ public abstract class Database
 				if (lastDatabaseSchemeVersion < 1003)
 				{
 					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [GC_Vote] integer default 0");
+				}
+				if (lastDatabaseSchemeVersion < 1004)
+				{
+					execSQL("CREATE TABLE [Trackable] ([Id] integer not null primary key autoincrement, [Archived] bit NULL, [GcCode] nvarchar (15) NULL, [CacheId] bigint NULL, [CurrentGoal] ntext, [CurrentOwnerName] nvarchar (255) NULL, [DateCreated] datetime NULL, [Description] ntext, [IconUrl] nvarchar (255) NULL, [ImageUrl] nvarchar (255) NULL, [name] nvarchar (255) NULL, [OwnerName] nvarchar (255), [Url] nvarchar (255) NULL);");
+					execSQL("CREATE INDEX [cacheid_idx] ON [Trackable] ([CacheId] ASC);");
+					execSQL("CREATE TABLE [TbLogs] ([Id] integer not null primary key autoincrement, [TrackableId] integer not NULL, [CacheID] bigint NULL, [GcCode] nvarchar (15) NULL, [LogIsEncoded] bit NULL DEFAULT 0, [LogText] ntext, [LogTypeId] bigint NULL, [LoggedByName] nvarchar (255) NULL, [Visited] datetime NULL);");
+					execSQL("CREATE INDEX [trackableid_idx] ON [TbLogs] ([TrackableId] ASC);");
+					execSQL("CREATE INDEX [trackablecacheid_idx] ON [TBLOGS] ([CacheId] ASC);");
+				}
+				if (lastDatabaseSchemeVersion < 1005)
+				{
+					execSQL("ALTER TABLE [Trackable] ADD COLUMN [TypeName] ntext NULL");
+					execSQL("ALTER TABLE [Trackable] ADD COLUMN [LastVisit] datetime NULL");
+					execSQL("ALTER TABLE [Trackable] ADD COLUMN [Home] ntext NULL");
+					execSQL("ALTER TABLE [Trackable] ADD COLUMN [TravelDistance] integer default 0");
 				}
 				setTransactionSuccessful();
 			}

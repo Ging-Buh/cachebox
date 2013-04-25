@@ -2,6 +2,8 @@ package CB_Core.Solver.Functions;
 
 public abstract class FunctionPrimeBase extends Function
 {
+	private static final long serialVersionUID = 4014109046993845632L;
+
 	protected boolean IsPrimeNumber(long testNumber)
 	{
 		if (testNumber < 2) return false;

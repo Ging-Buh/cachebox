@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Core.GlobalCore;
 import CB_Core.Solver.EntityList;
 import CB_Core.Solver.FunctionEntity;
 import CB_Core.Solver.TempEntity;
+import CB_Core.TranslationEngine.Translation;
 
 public abstract class Function implements Serializable
 {
@@ -20,8 +20,10 @@ public abstract class Function implements Serializable
 	}
 
 	public ArrayList<LacalNames> Names = new ArrayList<LacalNames>();
-    public abstract int getAnzParam();
-    public abstract boolean needsTextArgument();
+
+	public abstract int getAnzParam();
+
+	public abstract boolean needsTextArgument();
 
 	public String Description()
 	{
@@ -30,8 +32,9 @@ public abstract class Function implements Serializable
 
 	public class LacalNames implements Serializable
 	{
-		
+
 		private static final long serialVersionUID = 2806640831319814402L;
+
 		public LacalNames(String name, String local)
 		{
 			Name = name;
@@ -52,64 +55,65 @@ public abstract class Function implements Serializable
 
 	public abstract String Calculate(String[] parameter);
 
-	
 	public String getShortcut()
 	{
-		String ret="abcdefghijklmnopqrstuvwxyz";
-		String retEN="abcdefghijklmnopqrstuvwxyz";
-		String local=GlobalCore.Translations.getLangId();
+		String ret = "abcdefghijklmnopqrstuvwxyz";
+		String retEN = "abcdefghijklmnopqrstuvwxyz";
+		String local = Translation.getLangId();
 		Iterator<LacalNames> iterator = Names.iterator();
 		do
 		{
 			LacalNames tmp = iterator.next();
-			if(tmp.Local.equalsIgnoreCase(local))
+			if (tmp.Local.equalsIgnoreCase(local))
 			{
-				if(tmp.Name.length()<ret.length())ret=tmp.Name;
+				if (tmp.Name.length() < ret.length()) ret = tmp.Name;
 			}
-			else if(tmp.Local.equalsIgnoreCase("en"))
+			else if (tmp.Local.equalsIgnoreCase("en"))
 			{
-				if(tmp.Name.length()<retEN.length())retEN=tmp.Name;
+				if (tmp.Name.length() < retEN.length()) retEN = tmp.Name;
 			}
-			
-		}while(iterator.hasNext());
-		
-		if(ret.equalsIgnoreCase("abcdefghijklmnopqrstuvwxyz"))
+
+		}
+		while (iterator.hasNext());
+
+		if (ret.equalsIgnoreCase("abcdefghijklmnopqrstuvwxyz"))
 		{
 			return retEN;
 		}
-		
-		return ret;	
+
+		return ret;
 	}
-	
+
 	public String getLongLocalName()
 	{
-		String ret="";
-		String retEN="";
-		String local=GlobalCore.Translations.getLangId();
+		String ret = "";
+		String retEN = "";
+		String local = Translation.getLangId();
 		Iterator<LacalNames> iterator = Names.iterator();
 		do
 		{
 			LacalNames tmp = iterator.next();
-			if(tmp.Local.equalsIgnoreCase(local))
+			if (tmp.Local.equalsIgnoreCase(local))
 			{
-				if(tmp.Name.length()>ret.length())ret=tmp.Name;
+				if (tmp.Name.length() > ret.length()) ret = tmp.Name;
 			}
-			else if(tmp.Local.equalsIgnoreCase("en"))
+			else if (tmp.Local.equalsIgnoreCase("en"))
 			{
-				if(tmp.Name.length()>retEN.length())retEN=tmp.Name;
+				if (tmp.Name.length() > retEN.length()) retEN = tmp.Name;
 			}
-			
-		}while(iterator.hasNext());
-		
-		if(ret.equalsIgnoreCase(""))
+
+		}
+		while (iterator.hasNext());
+
+		if (ret.equalsIgnoreCase(""))
 		{
 			return retEN;
 		}
-		
-		return ret;	
+
+		return ret;
 	}
-	
- 	private boolean checkIsFunction(String function, TempEntity tEntity, EntityList entities)
+
+	private boolean checkIsFunction(String function, TempEntity tEntity, EntityList entities)
 	{
 		try
 		{

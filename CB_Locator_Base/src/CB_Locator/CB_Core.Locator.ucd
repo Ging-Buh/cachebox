@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" size="1299,2546" id="CB_Core.Locator" metadata="uml2-1.0" initialized="true" scrolledY="873" tag="1000" key="32303037303533312D313030302043425F4C6F6361746F725F426173652F486F6570666E6572">
+  <children xsi:type="editmodel:ClassEditModel" name="Coordinate" location="50,957" size="685,499" id="CB_Core.Locator/Coordinate" runTimeClassModel="hasAccuracy(),valid,Intersection(LCB_Core.Locator.Coordinate;LCB_Core.Locator.Coordinate;LCB_Core.Locator.Coordinate;LCB_Core.Locator.Coordinate;),FormatCoordinateLineBreake(),Project(DDDD),equals(LCB_Core.Locator.Coordinate;),Coordinate(DDI),elevation,Coordinate(DD),Distance(LCB_Core.Locator.Coordinate;),Project(LCB_Core.Locator.Coordinate;DD),bearingTo(LCB_Core.Locator.Coordinate;),Bearing(LCB_Core.Locator.Coordinate;LCB_Core.Locator.Coordinate;),Coordinate(LCB_Core.Locator.Coordinate;),Crossbearing(LCB_Core.Locator.Coordinate;DLCB_Core.Locator.Coordinate;D),longitude,latitude,Coordinate(),accuracy,FormatCoordinate(),Coordinate(Ljava.lang.String;),Distance(),Bearing(DDDD),distanceBetween(DDDD[F),copy()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="100,90">
+      <children xsi:type="editmodel:AttributeEditModel" name="accuracy" id="CB_Core.Locator/Coordinate#accuracy"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="elevation" id="CB_Core.Locator/Coordinate#elevation"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="latitude" id="CB_Core.Locator/Coordinate#latitude"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="longitude" id="CB_Core.Locator/Coordinate#longitude"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="valid" id="CB_Core.Locator/Coordinate#valid"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="662,360">
+      <children xsi:type="editmodel:MethodEditModel" name="Bearing" id="CB_Core.Locator/Coordinate#Bearing(DDDD)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Bearing" id="CB_Core.Locator/Coordinate#Bearing(LCB_Core.Locator.Coordinate;LCB_Core.Locator.Coordinate;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Coordinate" id="CB_Core.Locator/Coordinate#Coordinate()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Coordinate" id="CB_Core.Locator/Coordinate#Coordinate(DDI)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Coordinate" id="CB_Core.Locator/Coordinate#Coordinate(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Coordinate" id="CB_Core.Locator/Coordinate#Coordinate(LCB_Core.Locator.Coordinate;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Coordinate" id="CB_Core.Locator/Coordinate#Coordinate(DD)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Crossbearing" id="CB_Core.Locator/Coordinate#Crossbearing(LCB_Core.Locator.Coordinate;DLCB_Core.Locator.Coordinate;D)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Distance" id="CB_Core.Locator/Coordinate#Distance()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Distance" id="CB_Core.Locator/Coordinate#Distance(LCB_Core.Locator.Coordinate;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="FormatCoordinate" id="CB_Core.Locator/Coordinate#FormatCoordinate()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="FormatCoordinateLineBreake" id="CB_Core.Locator/Coordinate#FormatCoordinateLineBreake()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Intersection" id="CB_Core.Locator/Coordinate#Intersection(LCB_Core.Locator.Coordinate;LCB_Core.Locator.Coordinate;LCB_Core.Locator.Coordinate;LCB_Core.Locator.Coordinate;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Project" id="CB_Core.Locator/Coordinate#Project(DDDD)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Project" id="CB_Core.Locator/Coordinate#Project(LCB_Core.Locator.Coordinate;DD)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="bearingTo" id="CB_Core.Locator/Coordinate#bearingTo(LCB_Core.Locator.Coordinate;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="copy" id="CB_Core.Locator/Coordinate#copy()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="distanceBetween" id="CB_Core.Locator/Coordinate#distanceBetween(DDDD[F)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" id="CB_Core.Locator/Coordinate#equals(LCB_Core.Locator.Coordinate;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hasAccuracy" id="CB_Core.Locator/Coordinate#hasAccuracy()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Formatter" location="50,2048" size="476,121" id="CB_Core.Locator/Formatter" runTimeClassModel="FormatLongitudeDM(D),FormatLatitudeDM(D),FormatDM(DLjava.lang.String;Ljava.lang.String;),SpeedString(FZ)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="453,72">
+      <children xsi:type="editmodel:MethodEditModel" name="FormatDM" id="CB_Core.Locator/Formatter#FormatDM(DLjava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="FormatLatitudeDM" id="CB_Core.Locator/Formatter#FormatLatitudeDM(D)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="FormatLongitudeDM" id="CB_Core.Locator/Formatter#FormatLongitudeDM(D)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="SpeedString" id="CB_Core.Locator/Formatter#SpeedString(FZ)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="GPS" location="576,2048" size="290,193" id="CB_Core.Locator/GPS" runTimeClassModel="getVisibleSats(),setSatList(Ljava.util.ArrayList;),setStatus(LCB_Core.Locator.GpsStatus;),setSatFixes(I),getSatList(),setSatVisible(I),getSatAndFix(),getFixedSats()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="267,144">
+      <children xsi:type="editmodel:MethodEditModel" name="getFixedSats" id="CB_Core.Locator/GPS#getFixedSats()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSatAndFix" id="CB_Core.Locator/GPS#getSatAndFix()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSatList" id="CB_Core.Locator/GPS#getSatList()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getVisibleSats" id="CB_Core.Locator/GPS#getVisibleSats()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setSatFixes" id="CB_Core.Locator/GPS#setSatFixes(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setSatList" id="CB_Core.Locator/GPS#setSatList(Ljava.util.ArrayList;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setSatVisible" id="CB_Core.Locator/GPS#setSatVisible(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setStatus" id="CB_Core.Locator/GPS#setStatus(LCB_Core.Locator.GpsStatus;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Location" location="50,50" size="960,420" id="CB_Core.Locator/Location" runTimeClassModel="getProviderType(),timeStamp,speed,hasBearing,altitude,toCordinate(),getLongitude(),bearing,getLatitude(),Location(DDFZFZFDLCB_Core.Locator.Location.ProviderType;),hasSpeed,CB_Core.Locator.Location.ProviderType,nULL_LOCATION">
+    <children xsi:type="editmodel:CompartmentEditModel" size="118,108">
+      <children xsi:type="editmodel:AttributeEditModel" name="altitude" id="CB_Core.Locator/Location#altitude"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="bearing" id="CB_Core.Locator/Location#bearing"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="hasBearing" id="CB_Core.Locator/Location#hasBearing"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="hasSpeed" id="CB_Core.Locator/Location#hasSpeed"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="speed" id="CB_Core.Locator/Location#speed"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="timeStamp" id="CB_Core.Locator/Location#timeStamp"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="937,108">
+      <children xsi:type="editmodel:MethodEditModel" name="Location" id="CB_Core.Locator/Location#Location(DDFZFZFDLCB_Core.Locator.Location.ProviderType;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Location" id="CB_Core.Locator/Location#Location()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLatitude" id="CB_Core.Locator/Location#getLatitude()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLongitude" id="CB_Core.Locator/Location#getLongitude()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getProviderType" id="CB_Core.Locator/Location#getProviderType()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toCordinate" id="CB_Core.Locator/Location#toCordinate()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="126,145">
+      <children xsi:type="editmodel:EnumerationEditModel" name="ProviderType" size="126,143" id="CB_Core.Locator/Location$ProviderType" runTimeClassModel="any%,Saved%,Network%,NULL%,GPS%">
+        <children xsi:type="editmodel:CompartmentEditModel" size="60,90">
+          <children xsi:type="editmodel:EnumerationLiteralEditModel" name="Saved" id="CB_Core.Locator/Location$ProviderType#Saved%"/>
+          <children xsi:type="editmodel:EnumerationLiteralEditModel" name="Network" id="CB_Core.Locator/Location$ProviderType#Network%"/>
+          <children xsi:type="editmodel:EnumerationLiteralEditModel" name="NULL" id="CB_Core.Locator/Location$ProviderType#NULL%"/>
+          <children xsi:type="editmodel:EnumerationLiteralEditModel" name="GPS" id="CB_Core.Locator/Location$ProviderType#GPS%"/>
+          <children xsi:type="editmodel:EnumerationLiteralEditModel" name="any" id="CB_Core.Locator/Location$ProviderType#any%"/>
+        </children>
+        <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+      </children>
+    </children>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="GpsSatellite" location="556,1589" size="209,409" id="CB_Core.Locator/GpsSatellite" runTimeClassModel="setSnr(F),mPrn,setElevation(F),mElevation,mHasEphemeris,getSnr(),getElevation(),hasAlmanac(),mAzimuth,mValid,GpsSatellite(I),mSnr,hasEphemeris(),usedInFix(),mUsedInFix,setAzimuth(F),getAzimuth(),mHasAlmanac,getPrn(),setStatus(LCB_Core.Locator.GpsSatellite;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="140,144">
+      <children xsi:type="editmodel:AttributeEditModel" name="mAzimuth" id="CB_Core.Locator/GpsSatellite#mAzimuth"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="mElevation" id="CB_Core.Locator/GpsSatellite#mElevation"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="mHasAlmanac" id="CB_Core.Locator/GpsSatellite#mHasAlmanac"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="mHasEphemeris" id="CB_Core.Locator/GpsSatellite#mHasEphemeris"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="mPrn" id="CB_Core.Locator/GpsSatellite#mPrn"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="mSnr" id="CB_Core.Locator/GpsSatellite#mSnr"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="mUsedInFix" id="CB_Core.Locator/GpsSatellite#mUsedInFix"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="mValid" id="CB_Core.Locator/GpsSatellite#mValid"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="186,216">
+      <children xsi:type="editmodel:MethodEditModel" name="GpsSatellite" id="CB_Core.Locator/GpsSatellite#GpsSatellite(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getAzimuth" id="CB_Core.Locator/GpsSatellite#getAzimuth()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getElevation" id="CB_Core.Locator/GpsSatellite#getElevation()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPrn" id="CB_Core.Locator/GpsSatellite#getPrn()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSnr" id="CB_Core.Locator/GpsSatellite#getSnr()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hasAlmanac" id="CB_Core.Locator/GpsSatellite#hasAlmanac()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hasEphemeris" id="CB_Core.Locator/GpsSatellite#hasEphemeris()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setAzimuth" id="CB_Core.Locator/GpsSatellite#setAzimuth(F)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setElevation" id="CB_Core.Locator/GpsSatellite#setElevation(F)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setSnr" id="CB_Core.Locator/GpsSatellite#setSnr(F)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setStatus" id="CB_Core.Locator/GpsSatellite#setStatus(LCB_Core.Locator.GpsSatellite;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="usedInFix" id="CB_Core.Locator/GpsSatellite#usedInFix()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="GpsStatus" location="50,466" size="806,441" id="CB_Core.Locator/GpsStatus" runTimeClassModel="gPS_EVENT_STARTED,CB_Core.Locator.GpsStatus.NmeaListener,getMaxSatellites(),getTimeToFirstFix(),getSatellites(),gPS_EVENT_FIRST_FIX,GpsStatus(),CB_Core.Locator.GpsStatus.Listener,gPS_EVENT_STOPPED,setSatelite(ILCB_Core.Locator.GpsSatellite;),setStatus(LCB_Core.Locator.GpsStatus;),setTimeToFirstFix(I),gPS_EVENT_SATELLITE_STATUS,setStatus(I[I[F[F[FIII)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="199,72">
+      <children xsi:type="editmodel:AttributeEditModel" name="gPS_EVENT_FIRST_FIX" id="CB_Core.Locator/GpsStatus#gPS_EVENT_FIRST_FIX"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="gPS_EVENT_SATELLITE_STATUS" id="CB_Core.Locator/GpsStatus#gPS_EVENT_SATELLITE_STATUS"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="gPS_EVENT_STARTED" id="CB_Core.Locator/GpsStatus#gPS_EVENT_STARTED"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="gPS_EVENT_STOPPED" id="CB_Core.Locator/GpsStatus#gPS_EVENT_STOPPED"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="783,144">
+      <children xsi:type="editmodel:MethodEditModel" name="GpsStatus" id="CB_Core.Locator/GpsStatus#GpsStatus()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getMaxSatellites" id="CB_Core.Locator/GpsStatus#getMaxSatellites()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSatellites" id="CB_Core.Locator/GpsStatus#getSatellites()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTimeToFirstFix" id="CB_Core.Locator/GpsStatus#getTimeToFirstFix()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setSatelite" id="CB_Core.Locator/GpsStatus#setSatelite(ILCB_Core.Locator.GpsSatellite;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setStatus" id="CB_Core.Locator/GpsStatus#setStatus(LCB_Core.Locator.GpsStatus;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setStatus" id="CB_Core.Locator/GpsStatus#setStatus(I[I[F[F[FIII)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setTimeToFirstFix" id="CB_Core.Locator/GpsStatus#setTimeToFirstFix(I)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="299,166">
+      <children xsi:type="editmodel:InterfaceEditModel" name="Listener" size="214,81" id="CB_Core.Locator/GpsStatus$Listener" runTimeClassModel="onGpsStatusChanged(I)">
+        <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+        <children xsi:type="editmodel:CompartmentEditModel" size="191,18">
+          <children xsi:type="editmodel:MethodEditModel" name="onGpsStatusChanged" id="CB_Core.Locator/GpsStatus$Listener#onGpsStatusChanged(I)"/>
+        </children>
+        <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+        <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+      </children>
+      <children xsi:type="editmodel:InterfaceEditModel" name="NmeaListener" size="299,81" id="CB_Core.Locator/GpsStatus$NmeaListener" runTimeClassModel="onNmeaReceived(JLjava.lang.String;)">
+        <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+        <children xsi:type="editmodel:CompartmentEditModel" size="276,18">
+          <children xsi:type="editmodel:MethodEditModel" name="onNmeaReceived" id="CB_Core.Locator/GpsStatus$NmeaListener#onNmeaReceived(JLjava.lang.String;)"/>
+        </children>
+        <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+        <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+      </children>
+    </children>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="GpsStrength" location="50,2291" size="263,121" id="CB_Core.Locator/GpsStrength" runTimeClassModel="getFixed(),compareTo(LCB_Core.Locator.GpsStrength;),GpsStrength(ZF),getStrength()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="240,72">
+      <children xsi:type="editmodel:MethodEditModel" name="GpsStrength" id="CB_Core.Locator/GpsStrength#GpsStrength(ZF)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="compareTo" id="CB_Core.Locator/GpsStrength#compareTo(LCB_Core.Locator.GpsStrength;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getFixed" id="CB_Core.Locator/GpsStrength#getFixed()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getStrength" id="CB_Core.Locator/GpsStrength#getStrength()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Locator" location="785,957" size="295,744" id="CB_Core.Locator/Locator" runTimeClassModel="setDisplayOn(),setHardwareCompassLevel(I),getAltString(),getCoordinate(),getLongitude(),getLatitude(),isDisplayOff(),getAlt(),getProvider(),CB_Core.Locator.Locator.CompassType,isGPSprovided(),hasSpeed(),SpeedOverGround(),getCoordinate(LCB_Core.Locator.Location.ProviderType;),setUseHardwareCompass(Z),getHeading(),Valid(),Locator(LCB_Core.Locator.Location;),SpeedString(),getLocation(),getHeading(LCB_Core.Locator.Location.ProviderType;),setMinUpdateTime(Ljava.lang.Long;),getSpeed(),setNewLocation(LCB_Core.Locator.Location;),getLocation(LCB_Core.Locator.Location.ProviderType;),getAltStringWithCorection(),setHeading(FLCB_Core.Locator.Locator.CompassType;),getLongitude(LCB_Core.Locator.Location.ProviderType;),getLatitude(LCB_Core.Locator.Location.ProviderType;),getLastSavedFineLocation(),setUseImperialUnits(Z),FallBack2Network(),setAltCorrection(D),setDisplayOff(),getMinUpdateTime(),UseMagneticCompass()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="272,576">
+      <children xsi:type="editmodel:MethodEditModel" name="Locator" id="CB_Core.Locator/Locator#Locator(LCB_Core.Locator.Location;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="SpeedOverGround" id="CB_Core.Locator/Locator#SpeedOverGround()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="SpeedString" id="CB_Core.Locator/Locator#SpeedString()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="UseMagneticCompass" id="CB_Core.Locator/Locator#UseMagneticCompass()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getAlt" id="CB_Core.Locator/Locator#getAlt()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getAltString" id="CB_Core.Locator/Locator#getAltString()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getAltStringWithCorection" id="CB_Core.Locator/Locator#getAltStringWithCorection()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getHeading" id="CB_Core.Locator/Locator#getHeading()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLatitude" id="CB_Core.Locator/Locator#getLatitude()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLocation" id="CB_Core.Locator/Locator#getLocation()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLongitude" id="CB_Core.Locator/Locator#getLongitude()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getMinUpdateTime" id="CB_Core.Locator/Locator#getMinUpdateTime()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getProvider" id="CB_Core.Locator/Locator#getProvider()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hasSpeed" id="CB_Core.Locator/Locator#hasSpeed()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isGPSprovided" id="CB_Core.Locator/Locator#isGPSprovided()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDisplayOff" id="CB_Core.Locator/Locator#setDisplayOff()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDisplayOn" id="CB_Core.Locator/Locator#setDisplayOn()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setHardwareCompassLevel" id="CB_Core.Locator/Locator#setHardwareCompassLevel(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setHeading" id="CB_Core.Locator/Locator#setHeading(FLCB_Core.Locator.Locator.CompassType;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setMinUpdateTime" id="CB_Core.Locator/Locator#setMinUpdateTime(Ljava.lang.Long;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setNewLocation" id="CB_Core.Locator/Locator#setNewLocation(LCB_Core.Locator.Location;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setUseHardwareCompass" id="CB_Core.Locator/Locator#setUseHardwareCompass(Z)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setUseImperialUnits" id="CB_Core.Locator/Locator#setUseImperialUnits(Z)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="FallBack2Network" id="CB_Core.Locator/Locator#FallBack2Network()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="Valid" id="CB_Core.Locator/Locator#Valid()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLastSavedFineLocation" id="CB_Core.Locator/Locator#getLastSavedFineLocation()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLongitude" id="CB_Core.Locator/Locator#getLongitude(LCB_Core.Locator.Location.ProviderType;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLatitude" id="CB_Core.Locator/Locator#getLatitude(LCB_Core.Locator.Location.ProviderType;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getCoordinate" id="CB_Core.Locator/Locator#getCoordinate(LCB_Core.Locator.Location.ProviderType;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getLocation" id="CB_Core.Locator/Locator#getLocation(LCB_Core.Locator.Location.ProviderType;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getCoordinate" id="CB_Core.Locator/Locator#getCoordinate()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getHeading" id="CB_Core.Locator/Locator#getHeading(LCB_Core.Locator.Location.ProviderType;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="129,109">
+      <children xsi:type="editmodel:EnumerationEditModel" name="CompassType" size="129,107" id="CB_Core.Locator/Locator$CompassType" runTimeClassModel="unknown%,Magnetic%,GPS%">
+        <children xsi:type="editmodel:CompartmentEditModel" size="64,54">
+          <children xsi:type="editmodel:EnumerationLiteralEditModel" name="Magnetic" id="CB_Core.Locator/Locator$CompassType#Magnetic%"/>
+          <children xsi:type="editmodel:EnumerationLiteralEditModel" name="GPS" id="CB_Core.Locator/Locator$CompassType#GPS%"/>
+          <children xsi:type="editmodel:EnumerationLiteralEditModel" name="unknown" id="CB_Core.Locator/Locator$CompassType#unknown%"/>
+        </children>
+        <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+      </children>
+    </children>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="UTMConvert" location="50,1589" size="456,337" id="CB_Core.Locator/UTMConvert" runTimeClassModel="dLon,iGetUtmZone(DD),dCvtDeg2Rad,dEquatorialRadius,uTMNorthing,uTMEasting,dLat,dScaleFactor,iUTM2LatLon(DDLjava.lang.String;),sUtmZone,iLatLon2UTM(DD),eccSquared,iUTM_Zone_Num,dSet_CentralMeridian_from_UtmZone(I),dCvtRad2Deg,sUtmLetterActual(D)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="143,198">
+      <children xsi:type="editmodel:AttributeEditModel" name="dCvtDeg2Rad" id="CB_Core.Locator/UTMConvert#dCvtDeg2Rad"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="dCvtRad2Deg" id="CB_Core.Locator/UTMConvert#dCvtRad2Deg"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="dEquatorialRadius" id="CB_Core.Locator/UTMConvert#dEquatorialRadius"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="dLat" id="CB_Core.Locator/UTMConvert#dLat"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="dLon" id="CB_Core.Locator/UTMConvert#dLon"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="dScaleFactor" id="CB_Core.Locator/UTMConvert#dScaleFactor"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="eccSquared" id="CB_Core.Locator/UTMConvert#eccSquared"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="iUTM_Zone_Num" id="CB_Core.Locator/UTMConvert#iUTM_Zone_Num"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="sUtmZone" id="CB_Core.Locator/UTMConvert#sUtmZone"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="uTMEasting" id="CB_Core.Locator/UTMConvert#uTMEasting"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="uTMNorthing" id="CB_Core.Locator/UTMConvert#uTMNorthing"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="433,90">
+      <children xsi:type="editmodel:MethodEditModel" name="dSet_CentralMeridian_from_UtmZone" id="CB_Core.Locator/UTMConvert#dSet_CentralMeridian_from_UtmZone(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="iGetUtmZone" id="CB_Core.Locator/UTMConvert#iGetUtmZone(DD)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="iLatLon2UTM" id="CB_Core.Locator/UTMConvert#iLatLon2UTM(DD)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="iUTM2LatLon" id="CB_Core.Locator/UTMConvert#iUTM2LatLon(DDLjava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="sUtmLetterActual" id="CB_Core.Locator/UTMConvert#sUtmLetterActual(D)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=1;Product=eUML2" autoName="false"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel" gridVisibility="false">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" showPopupBars="true" showConnectionHandles="true" showMethodsParameterTypes="true" showMethodsReturnType="true" showMethodsParameterNames="true" showMethodsParameterKinds="true" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" showDependencyStereotype="true" showInterfaceStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showProtectedMethods="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showProtectedInnerClasses="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>

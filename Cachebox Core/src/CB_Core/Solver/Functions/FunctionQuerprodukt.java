@@ -1,9 +1,11 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionQuerprodukt extends Function
 {
+	private static final long serialVersionUID = 8720582376213442054L;
+
 	public FunctionQuerprodukt()
 	{
 		Names.add(new LacalNames("Crossproduct", "en"));
@@ -15,13 +17,13 @@ public class FunctionQuerprodukt extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncCrossproduct");
+		return Translation.Get("solverFuncCrossproduct");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescCrossprocuct");
+		return Translation.Get("solverDescCrossprocuct");
 	}
 
 	@Override
@@ -29,7 +31,7 @@ public class FunctionQuerprodukt extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncCrossproduct");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncCrossproduct");
 		}
 		String wert = parameter[0].trim();
 		int result = 1;

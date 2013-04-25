@@ -14,7 +14,6 @@ public class StringInputBox extends GL_MsgBox
 	public StringInputBox(Size size, String name)
 	{
 		super(size, name);
-
 	}
 
 	public static EditWrapedTextField editText;

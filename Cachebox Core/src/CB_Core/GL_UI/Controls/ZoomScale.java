@@ -255,7 +255,14 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 				cancelTimerToFadeOut();
 			}
 		};
-		timer.schedule(task, timeToFadeOut);
+		try
+		{
+			timer.schedule(task, timeToFadeOut);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void checkFade()

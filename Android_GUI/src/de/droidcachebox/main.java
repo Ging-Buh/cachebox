@@ -10,9 +10,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,6 +37,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.KeyCodes;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
@@ -73,23 +77,30 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL.renderStartet;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
-import CB_Core.Locator.Locator;
 import CB_Core.Log.ILog;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase;
+import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingString;
-import CB_Core.TranslationEngine.SelectedLangChangedEventList;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.GpsStrength;
+import CB_Locator.Location.ProviderType;
+import CB_Locator.Locator;
+import CB_Locator.Locator.CompassType;
+import CB_Locator.Events.GpsStateChangeEventList;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -177,15 +188,14 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.CB_PlugIn.IPlugIn;
 import de.droidcachebox.NotifyService.LocalBinder;
+import de.droidcachebox.CB_Texturepacker.Android_Packer;
 import de.droidcachebox.Components.CacheNameView;
 import de.droidcachebox.Custom_Controls.DebugInfoPanel;
 import de.droidcachebox.Custom_Controls.Mic_On_Flash;
 import de.droidcachebox.Custom_Controls.downSlider;
 import de.droidcachebox.Custom_Controls.QuickButtonList.HorizontalListView;
 import de.droidcachebox.DB.AndroidDB;
-import de.droidcachebox.Events.PositionEventList;
 import de.droidcachebox.Events.ViewOptionsMenu;
-import de.droidcachebox.Locator.GPS;
 import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AndroidClipboard;
 import de.droidcachebox.Views.DescriptionView;
@@ -193,14 +203,14 @@ import de.droidcachebox.Views.JokerView;
 import de.droidcachebox.Views.NotesView;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
-import de.droidcachebox.Views.TrackableListView;
 import de.droidcachebox.Views.ViewGL;
 import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 
+@SuppressLint("HandlerLeak")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
-		GpsStatus.NmeaListener, ILog, KeyboardFocusChangedEvent
+		GpsStatus.NmeaListener, GpsStatus.Listener, ILog, KeyboardFocusChangedEvent
 {
 
 	private static ServiceConnection mConnection;
@@ -208,7 +218,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static Service myNotifyService;
 	private static BroadcastReceiver mReceiver;
 	public boolean KeybordShown = false;
-
+	private static RelativeLayout Baselayout;
 	public HorizontalListView QuickButtonList;
 
 	private static hiddenTextField mTextField;
@@ -252,7 +262,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static String mediaTimeString = null;
 	private static String basename = null;
 	private static String mediaCacheName = null;
-	private static Coordinate mediaCoordinate = null;
+	private static CB_Locator.Location mediaCoordinate = null;
 
 	private static Boolean mVoiceRecIsStart = false;
 	/*
@@ -356,8 +366,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
 		savedInstanceState.putString("WorkPath", Config.WorkPath);
 
-		savedInstanceState.putInt("WindowWidth", UiSizes.ui.Window.width);
-		savedInstanceState.putInt("WindowHeight", UiSizes.ui.Window.height);
+		savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.ui.Window.width);
+		savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
 
 		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().GcCode);
 		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint",
@@ -391,7 +401,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			// hier muss die Config Db initialisiert werden
 			Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-			if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+			if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 			Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 			// initialize Database
 			Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
@@ -414,7 +424,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
 			ui.isLandscape = false;
 
-			UiSizes.initial(ui);
+			new UiSizes();
+
+			UI_Size_Base.that.initial(ui);
 
 			Global.Paints.init(this);
 			Global.InitIcons(this);
@@ -501,7 +513,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		glListener = new Tab_GL_Listner(UiSizes.getWindowWidth(), UiSizes.getWindowHeight());
+		glListener = new Tab_GL_Listner(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
 
 		int Time = Config.settings.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
@@ -519,6 +531,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Config.settings.DebugMode.setValue(false);
 		Config.AcceptChanges();
+
+		// Initial Android TexturePacker
+		new Android_Packer();
 
 		initialLocationManager();
 
@@ -551,7 +566,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		downSlider.isInitial = false;
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes.that
 				.getQuickButtonListHeight() : 0;
 
 		setQuickButtonHeight(sollHeight);
@@ -578,16 +593,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				String LangId = getString(R.string.langId);
 				try
 				{
-					Welcome = GlobalCore.Translations.getTextFile("welcome", LangId);
+					Welcome = Translation.GetTextFile("welcome", LangId);
 
-					Welcome += GlobalCore.Translations.getTextFile("changelog", LangId);
+					Welcome += Translation.GetTextFile("changelog", LangId);
 				}
 				catch (IOException e1)
 				{
 					e1.printStackTrace();
 				}
 
-				MessageBox.Show(Welcome, GlobalCore.Translations.Get("welcome"), MessageBoxIcon.None);
+				MessageBox.Show(Welcome, Translation.Get("welcome"), MessageBoxIcon.None);
 
 			}
 
@@ -684,7 +699,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						@Override
 						public void run()
 						{
-							wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("ImportGPX"), new IcancelListner()
+							wd = CancelWaitDialog.ShowWait(Translation.Get("ImportGPX"), new IcancelListner()
 							{
 
 								@Override
@@ -798,42 +813,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
-	public void newLocationReceived(Location location)
-	{
-
-		if (!location.hasBearing())
-		{
-			location.setBearing(compassHeading);
-		}
-
-		try
-		{
-			PositionEventList.Call(location);
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "PositionEventList.Call(location)", e);
-			e.printStackTrace();
-		}
-
-		try
-		{
-			InfoDownSlider.setNewLocation(GlobalCore.LastPosition);
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.newLocationReceived()", "InfoDownSlider.setNewLocation(location)", e);
-			e.printStackTrace();
-		}
-
-	}
-
 	@Override
 	public void onLocationChanged(Location location)
 	{
+		ProviderType provider = ProviderType.NULL;
 
-		newLocationReceived(location);
+		if (location.getProvider().toLowerCase(new Locale("en")).contains("gps")) provider = ProviderType.GPS;
+		if (location.getProvider().toLowerCase(new Locale("en")).contains("network")) provider = ProviderType.Network;
 
+		CB_Locator.Locator.setNewLocation(new CB_Locator.Location(location.getLatitude(), location.getLongitude(), location.getAccuracy(),
+				location.hasSpeed(), location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), provider));
 	}
 
 	@Override
@@ -916,8 +905,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
 						// die Koordinaten nach der Aufnahme verwendet werden.
 						mediaTimeString = Global.GetTrackDateTimeString();
-						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", GlobalCore.LastValidPosition,
-								mediaTimeString);
+						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg",
+								CB_Locator.Locator.getLastSavedFineLocation(), mediaTimeString);
 
 						TabMainView.that.reloadSprites(false);
 
@@ -1011,6 +1000,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 			});
 
+			Config.AcceptChanges();
+
 		}
 
 		if (aktView != null) aktView.ActivityResult(requestCode, resultCode, data);
@@ -1083,13 +1074,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void showWaitToRenderStartet()
 	{
-		if (!GL.that.isInitial()) return;
+		if (!GL.isInitial()) return;
 
 		if (pWaitD == null)
 		{
 
-			pWaitD = PleaseWaitMessageBox.Show(GlobalCore.Translations.Get("waitForGL"), "", MessageBoxButtons.NOTHING,
-					MessageBoxIcon.None, null);
+			pWaitD = PleaseWaitMessageBox.Show(Translation.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
 			stopped = false;
 
 			GL.that.RunIfInitial(new runOnGL()
@@ -1152,7 +1142,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes
+		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes.that
 				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
@@ -1235,6 +1225,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		KeyboardFocusChangedEventList.Remove(this);
 	}
 
+	@SuppressLint("Wakelock")
 	@Override
 	public void onDestroy()
 	{
@@ -1273,9 +1264,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				GlobalCore.setSelectedCache(null);
 				SelectedCacheEventList.list.clear();
-				PositionEventList.list.clear();
 				SelectedCacheEventList.list.clear();
-				SelectedLangChangedEventList.list.clear();
 				CachListChangedEventList.list.clear();
 				if (aktView != null)
 				{
@@ -1348,14 +1337,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
 			{
-				// do whatever you need to do here
 				Energy.setDisplayOff();
+				CB_Locator.Locator.setDisplayOff();
 				wasScreenOn = false;
 			}
 			else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
 			{
-				// and do whatever you need to do here
 				Energy.setDisplayOn();
+				CB_Locator.Locator.setDisplayOn();
 				wasScreenOn = true;
 			}
 		}
@@ -1403,18 +1392,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		public void onSensorChanged(SensorEvent event)
 		{
-
-			if (GlobalCore.Locator == null)
-			{
-				GlobalCore.Locator = new Locator();
-			}
-
 			try
 			{
 				mCompassValues = event.values;
 				compassHeading = mCompassValues[0];
 
-				PositionEventList.Call(mCompassValues[0], "CompassValue");
+				CB_Locator.Locator.setHeading(compassHeading, CompassType.Magnetic);
 			}
 			catch (Exception e)
 			{
@@ -1445,8 +1428,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return ViewList.get(ID.getID());
 		}
 
-		if (ID == ViewConst.TB_LIST_VIEW) return trackablelistView = new TrackableListView(this, this);
-		else if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
+		if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
 		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
 		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
@@ -1518,8 +1500,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				// Instanz löschenn
 				aktView = null;
-				trackablelistView.OnFree();
-				trackablelistView = null;
 			}
 			else if (aktView.equals(jokerView))
 			{
@@ -1662,7 +1642,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
 
-		// searchLayout = (LinearLayout) this.findViewById(R.id.searchDialog);
+		Baselayout = (RelativeLayout) findViewById(R.id.layoutTextField);
 
 	}
 
@@ -1689,12 +1669,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			criteria.setCostAllowed(true);
 			criteria.setPowerRequirement(Criteria.POWER_LOW);
 
-			// Global.Locator = new Locator();
-			// locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-			// 1000, 1, this);
-			// locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-			// 1000, 10, this);
-
 			/*
 			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
 			 * genauigkeit, darher reicht es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe
@@ -1702,13 +1676,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			 * gesunden Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
-			long updateTime = Config.settings.gpsUpdateTime.getValue();
-
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, this);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
 
 			locationManager.addNmeaListener(this);
-			locationManager.addGpsStatusListener(new GPS.GpsStatusListener(locationManager));
+			locationManager.addGpsStatusListener(this);
 		}
 		catch (Exception e)
 		{
@@ -1854,7 +1826,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// define the file-name to save photo taken by Camera activity
 		String directory = Config.settings.UserImageFolder.getValue();
-		if (!FileIO.DirectoryExists(directory))
+		if (!FileIO.createDirectory(directory))
 		{
 			// Log.d("DroidCachebox", "Media-Folder does not exist...");
 			return;
@@ -1889,7 +1861,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		// define the file-name to save video taken by Camera activity
 		String directory = Config.settings.UserImageFolder.getValue();
-		if (!FileIO.DirectoryExists(directory))
+		if (!FileIO.createDirectory(directory))
 		{
 			// Log.d("DroidCachebox", "Media-Folder does not exist...");
 			return;
@@ -1915,7 +1887,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Da ein Video keine Momentaufnahme ist, muss die Zeit und die
 		// Koordinaten beim Start der Aufnahme verwendet werden.
 		mediaTimeString = Global.GetTrackDateTimeString();
-		mediaCoordinate = GlobalCore.LastValidPosition;
+		mediaCoordinate = Locator.getLocation(ProviderType.GPS);
 
 		ContentValues values = new ContentValues();
 		values.put(MediaStore.Video.Media.TITLE, "captureTemp.mp4");
@@ -1938,7 +1910,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			// define the file-name to save voice taken by activity
 			String directory = Config.settings.UserImageFolder.getValue();
-			if (!FileIO.DirectoryExists(directory))
+			if (!FileIO.createDirectory(directory))
 			{
 				// Log.d("DroidCachebox", "Media-Folder does not exist...");
 				return;
@@ -1977,7 +1949,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 			// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die
 			// Koordinaten beim Start der Aufnahme verwendet werden.
-			TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", GlobalCore.LastValidPosition,
+			TrackRecorder.AnnotateMedia(basename + ".wav", relativPath + "/" + basename + ".wav", Locator.getLocation(ProviderType.GPS),
 					Global.GetTrackDateTimeString());
 			Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
@@ -2079,7 +2051,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					{
 						Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
 						// Log.d("DroidCachebox", ioEx.getMessage());
-						GL_MsgBox.Show(GlobalCore.Translations.Get("internetError"));
+						GL_MsgBox.Show(Translation.Get("internetError"));
 					}
 					catch (Exception ex)
 					{
@@ -2090,7 +2062,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				if (Global.Jokers.isEmpty())
 				{
-					GL_MsgBox.Show(GlobalCore.Translations.Get("noJokers"));
+					GL_MsgBox.Show(Translation.Get("noJokers"));
 				}
 				else
 				{
@@ -2109,12 +2081,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 		thread.start();
 
-	}
-
-	private void showTbList()
-	{
-		// MessageBox.Show("comming soon", "sorry", MessageBoxIcon.Asterisk);
-		showView(ViewConst.TB_LIST_VIEW);
 	}
 
 	private void NavigateTo()
@@ -2211,20 +2177,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
-	private void addCache()
-	{
-		/*
-		 * String accessToken = Config.settings.GcAPI"); ArrayList<String> caches = new ArrayList<String>(); caches.add("GC2XVHW");
-		 * caches.add("GC1T2XP"); caches.add("GC1090W"); caches.clear(); for (int i = 0; i < 100; i++) { caches.add("GC2XV" + i); }
-		 * CB_Core.Api.GroundspeakAPI.GetGeocacheStatus(accessToken, caches);
-		 */
-
-		int status = CB_Core.Api.GroundspeakAPI.GetCacheLimits(Config.GetAccessToken());
-		if (status != 0) GL_MsgBox.Show(CB_Core.Api.GroundspeakAPI.LastAPIError);
-
-		GL_MsgBox.Show("Cache hinzufügen ist noch nicht implementiert!", "Sorry", MessageBoxIcon.Asterisk);
-	}
-
 	/*
 	 * Setter
 	 */
@@ -2301,7 +2253,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					double altCorrection = Double.valueOf(s[11]);
 					if (altCorrection == 0) return;
 					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
-					GlobalCore.Locator.altCorrection = altCorrection;
+					Locator.setAltCorrection(altCorrection);
 					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
 					// Höhenkorrektur ändert sich normalerweise nicht, einmal
 					// auslesen reicht...
@@ -2446,14 +2398,32 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (!GpsOn())
 			{
-
+				if (!Translation.isInitial())
+				{
+					new Translation(Config.WorkPath, false);
+					try
+					{
+						Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
+					}
+					catch (Exception e)
+					{
+						try
+						{
+							Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getDefaultValue());
+						}
+						catch (IOException e1)
+						{
+							e1.printStackTrace();
+						}
+					}
+				}
 				runOnUiThread(new Runnable()
 				{
 					@Override
 					public void run()
 					{
-						MessageBox.Show(GlobalCore.Translations.Get("GPSon?"), GlobalCore.Translations.Get("GPSoff"),
-								MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+						MessageBox.Show(Translation.Get("GPSon?"), Translation.Get("GPSoff"), MessageBoxButtons.YesNo,
+								MessageBoxIcon.Question, new DialogInterface.OnClickListener()
 								{
 									@Override
 									public void onClick(DialogInterface dialog, int button)
@@ -2498,39 +2468,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		return GpsOn;
 	}
 
-	// @Override
-	// public void GpsStateChanged()
-	// {
-	// try
-	// {
-	// setSatStrength();
-	// }
-	// catch (Exception e)
-	// {
-	// Logger.Error("main.GpsStateChanged()", "setSatStrength()", e);
-	// e.printStackTrace();
-	// }
-	// }
-
-	private static View[] balken = null;
-
-	public static void setSatStrength()
-	{
-		try
-		{
-			de.droidcachebox.Locator.GPS.setSatStrength(strengthLayout, balken);
-		}
-		catch (Exception e)
-		{
-			Logger.Error("main.setSatStrength()", "de.droidcachebox.Locator.GPS.setSatStrength()", e);
-			e.printStackTrace();
-		}
-	}
-
 	private void askToGetApiKey()
 	{
-		MessageBox.Show(GlobalCore.Translations.Get("wantApi"), GlobalCore.Translations.Get("welcome"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.GC_Live, new DialogInterface.OnClickListener()
+		MessageBox.Show(Translation.Get("wantApi"), Translation.Get("welcome"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live,
+				new DialogInterface.OnClickListener()
 				{
 					@Override
 					public void onClick(DialogInterface dialog, int button)
@@ -2852,6 +2793,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		GlobalCore.platform = Plattform.Android;
 
+		initialLocatorBase();
+
 		platformConector.setisOnlineListner(new IHardwarStateListner()
 		{
 			/*
@@ -2882,35 +2825,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				main.vibrate();
 			}
 
-			@SuppressWarnings("unused")
-			@Override
-			public CB_Core.Locator.GpsStatus getGpsStatus()
-			{
-				GpsStatus status = null;
-				locationManager.getGpsStatus(status);
-
-				CB_Core.Locator.GpsStatus coreStatus = new CB_Core.Locator.GpsStatus();
-
-				int index = 0;
-				if (status == null) return null;
-				for (GpsSatellite sat : status.getSatellites())
-				{
-					CB_Core.Locator.GpsSatellite coreSat = new CB_Core.Locator.GpsSatellite(sat.getPrn());
-					coreSat.setSnr(sat.getSnr());
-					coreSat.setElevation(sat.getElevation());
-					coreSat.setAzimuth(sat.getAzimuth());
-					coreStatus.setSatelite(index, coreSat);
-					index++;
-				}
-
-				return coreStatus;
-			}
-
-			@Override
-			public float getCompassHeading()
-			{
-				return compassHeading;
-			}
 		});
 
 		platformConector.setShowViewListner(new IShowViewListner()
@@ -3228,10 +3142,18 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							@Override
 							public void run()
 							{
+								initialHiddenEditText();
 								mTextField.setVisibility(View.VISIBLE);
-								mTextField.requestFocus();
-								((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(mTextField,
-										InputMethodManager.SHOW_FORCED);
+								Baselayout.post(new Runnable()
+								{
+									public void run()
+									{
+										InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+										inputMethodManager.toggleSoftInputFromWindow(mTextField.getApplicationWindowToken(),
+												InputMethodManager.SHOW_FORCED, 0);
+										mTextField.requestFocus();
+									}
+								});
 								Timer timer = new Timer();
 								TimerTask task = new TimerTask()
 								{
@@ -3248,7 +3170,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					}
 					catch (Exception ex)
 					{
-						String s = ex.getMessage();
+						Logger.Error("main", "Show Keyboard", ex);
 					}
 				}
 				else
@@ -3257,9 +3179,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					{
 						public void run()
 						{
-							((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-									mTextField.getWindowToken(), 0);
-							KeybordShown = false;
+							if (mTextField != null)
+							{
+								((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+										mTextField.getWindowToken(), 0);
+								KeybordShown = false;
+
+								Baselayout.removeView(mTextField);
+								mTextField = null;
+							}
+
 						}
 					});
 
@@ -3280,10 +3209,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				catch (Exception exc)
 				{
-					Toast.makeText(
-							main.mainActivity,
-							GlobalCore.Translations.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim()
-									+ ")", Toast.LENGTH_SHORT).show();
+					Toast.makeText(main.mainActivity,
+							Translation.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim() + ")",
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -3422,21 +3350,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			case 2:
 			{
 				waitPD.dismiss();
-				GL_MsgBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, null);
+				GL_MsgBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
 				break;
 			}
 			case 3:
 			{
 				waitPD.dismiss();
-				GL_MsgBox.Show(message, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-						MessageBoxIcon.Powerd_by_GC_Live, DownloadCacheDialogResult);
+				GL_MsgBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
+						DownloadCacheDialogResult);
 				break;
 			}
 			case 4:
 			{
 				waitPD.dismiss();
-				DownloadCacheDialogResult.onClick(-1);
+				DownloadCacheDialogResult.onClick(-1, null);
 				break;
 			}
 			}
@@ -3446,7 +3373,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private OnMsgBoxClickListener DownloadCacheDialogResult = new OnMsgBoxClickListener()
 	{
 		@Override
-		public boolean onClick(int button)
+		public boolean onClick(int button, Object data)
 		{
 			switch (button)
 			{
@@ -3465,8 +3392,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
 						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
 
-						GL_MsgBox.Show(s, GlobalCore.Translations.Get("GC_title"), MessageBoxButtons.OKCancel,
-								MessageBoxIcon.Powerd_by_GC_Live, null);
+						GL_MsgBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
 					}
 				}
 				break;
@@ -3504,7 +3430,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private String beforeS;
 	private int beforeStart;
 	private int beforeCount;
-	private int beforeAfter;
+	// private int beforeAfter;
 	private boolean KeyboardWasClosed = false;
 
 	private void initialHiddenEditText()
@@ -3518,8 +3444,37 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
 				{
+
+					// if no Keybord focus send BeckKey to GL
+
+					if (GL.that.getKeyboardFocus() == null && !KeyboardWasClosed)
+					{
+						if (GL.that.isShownDialogActivity())
+						{
+							GL.that.closeShownDialog();
+							KeyboardWasClosed = true;
+							return true;
+						}
+						CB_Core.Events.platformConector.sendKey((char) KeyCodes.KEYCODE_BACK);
+						return true;
+					}
+
 					GL.that.setKeyboardFocus(null);
 					KeyboardWasClosed = true;
+
+					TimerTask tk = new TimerTask()
+					{
+
+						@Override
+						public void run()
+						{
+							KeyboardWasClosed = false;
+						}
+					};
+
+					Timer timer = new Timer();
+					timer.schedule(tk, 1000);
+
 					return true;
 				}
 				return super.onKeyPreIme(keyCode, event);
@@ -3607,7 +3562,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				catch (Exception e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					return false;
 				}
@@ -3674,7 +3628,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				beforeS = s.toString();
 				beforeStart = start;
 				beforeCount = count;
-				beforeAfter = after;
+				// beforeAfter = after;
 			}
 
 			@Override
@@ -3683,12 +3637,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		mTextField.setBackgroundDrawable(null);
+		// mTextField.setBackgroundDrawable(null);
 		mTextField.setClickable(false);
 
-		RelativeLayout layout = (RelativeLayout) findViewById(R.id.layoutTextField);
-
-		layout.addView(mTextField);
+		Baselayout.addView(mTextField);
 
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTextField.getLayoutParams();
 		params.height = 1;
@@ -3726,7 +3678,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				if (focus != null)
 				{
-					// ;
+					mTextField.setVisibility(View.INVISIBLE);// ;
 				}
 				else
 				{
@@ -3737,4 +3689,147 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	}
 
+	/**
+	 * Initial all Locator functions
+	 */
+	private void initialLocatorBase()
+	{
+		// ##########################################################
+		// initial Locator with saved Location
+		// ##########################################################
+		double latitude = Config.settings.MapInitLatitude.getValue();
+		double longitude = Config.settings.MapInitLongitude.getValue();
+		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
+
+		CB_Locator.Location initialLocation;
+
+		if (provider == ProviderType.Saved)
+		{
+			initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
+		}
+		else
+		{
+			initialLocation = CB_Locator.Location.NULL_LOCATION;
+		}
+
+		new CB_Locator.Locator(initialLocation);
+
+		// ##########################################################
+		// initial settings changed handling
+		// ##########################################################
+
+		// Use Imperial units?
+		CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+		Config.settings.ImperialUnits.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+			}
+		});
+
+		// GPS update time?
+		CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+		Config.settings.gpsUpdateTime.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+			}
+		});
+
+		// Use magnetic Compass?
+		CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+		Config.settings.HardwareCompass.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+			}
+		});
+
+		// Magnetic compass level
+		CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+		Config.settings.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+			}
+		});
+	}
+
+	@Override
+	public void onGpsStatusChanged(int event)
+	{
+		if (locationManager == null) return;
+
+		if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS)
+		{
+			GpsStatus status = locationManager.getGpsStatus(null);
+			Iterator<GpsSatellite> statusIterator = status.getSatellites().iterator();
+
+			int satellites = 0;
+			int fixed = 0;
+			ArrayList<GpsStrength> SatList = new ArrayList<GpsStrength>();
+			ArrayList<CB_Locator.GpsStrength> coreSatList = new ArrayList<CB_Locator.GpsStrength>();
+			while (statusIterator.hasNext())
+			{
+				GpsSatellite sat = statusIterator.next();
+				satellites++;
+
+				// satellite signal strength
+
+				if (sat.usedInFix())
+				{
+					fixed++;
+					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
+					SatList.add(new GpsStrength(true, sat.getSnr()));
+					coreSatList.add(new GpsStrength(true, sat.getSnr()));
+				}
+				else
+				{
+					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr());
+					SatList.add(new GpsStrength(false, sat.getSnr()));
+					coreSatList.add(new GpsStrength(false, sat.getSnr()));
+				}
+
+			}
+
+			Collections.sort(SatList);
+			Collections.sort(coreSatList);
+
+			CB_Locator.GPS.setSatFixes(fixed);
+			CB_Locator.GPS.setSatVisible(satellites);
+			CB_Locator.GPS.setSatList(coreSatList);
+			GpsStateChangeEventList.Call();
+			if (fixed < 3 && (Locator.isFixed()))
+			{
+
+				if (!losseChek)
+				{
+					Timer timer = new Timer();
+					TimerTask task = new TimerTask()
+					{
+						@Override
+						public void run()
+						{
+							if (CB_Locator.GPS.getFixedSats() < 3) Locator.FallBack2Network();
+							losseChek = false;
+						}
+					};
+					timer.schedule(task, 1000);
+				}
+
+			}
+		}
+
+	}
+
+	private boolean losseChek = false;
 }

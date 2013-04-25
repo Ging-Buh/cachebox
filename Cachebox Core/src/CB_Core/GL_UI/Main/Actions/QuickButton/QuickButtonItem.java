@@ -19,6 +19,7 @@ package CB_Core.GL_UI.Main.Actions.QuickButton;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
@@ -128,14 +129,14 @@ public class QuickButtonItem extends ListViewItemBase
 
 		if (mAction.getName().equals("AutoResort"))
 		{
-			if (GlobalCore.autoResort && autoResortState != 1)
+			if (GlobalCore.getAutoResort() && autoResortState != 1)
 			{
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(15)));
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.autoSelectOn_15.ordinal())));
 				autoResortState = 1;
 			}
-			else if (!GlobalCore.autoResort && autoResortState != 0)
+			else if (!GlobalCore.getAutoResort() && autoResortState != 0)
 			{
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(16)));
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.autoSelectOff_16.ordinal())));
 				autoResortState = 0;
 			}
 		}
@@ -146,12 +147,12 @@ public class QuickButtonItem extends ListViewItemBase
 
 			if (hasSpoiler && spoilerState != 1)
 			{
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(18)));
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.images_18.ordinal())));
 				spoilerState = 1;
 			}
 			else if (!hasSpoiler && spoilerState != 0)
 			{
-				Sprite sprite = new Sprite(SpriteCache.Icons.get(18));
+				Sprite sprite = new Sprite(SpriteCache.Icons.get(IconName.images_18.ordinal()));
 				sprite.setColor(DISABLE_COLOR);
 				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
 				spoilerState = 0;
@@ -162,12 +163,12 @@ public class QuickButtonItem extends ListViewItemBase
 
 			if (mAction.getEnabled() && hintState != 1)
 			{
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(19)));
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.hint_19.ordinal())));
 				hintState = 1;
 			}
 			else if (!mAction.getEnabled() && hintState != 0)
 			{
-				Sprite sprite = new Sprite(SpriteCache.Icons.get(19));
+				Sprite sprite = new Sprite(SpriteCache.Icons.get(IconName.hint_19.ordinal()));
 				sprite.setColor(DISABLE_COLOR);
 				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
 				hintState = 0;

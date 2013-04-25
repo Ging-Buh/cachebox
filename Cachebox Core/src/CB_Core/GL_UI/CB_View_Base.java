@@ -242,7 +242,14 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		if (childs == null || view == null) return;
 		synchronized (childs)
 		{
-			if (childs.contains(view)) childs.remove(view);
+			try
+			{
+				if (childs.contains(view)) childs.remove(view);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -251,7 +258,14 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		if (childs == null) return;
 		synchronized (childs)
 		{
-			childs.remove(childs);
+			try
+			{
+				childs.remove(childs);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -304,6 +318,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	private float topYAdd;
 	private float bottomYAdd = -1;
 
+	public float getRowYPos()
+	{
+		return rowYPos;
+	}
+
+	public void setRowYPos(float YPos)
+	{
+		rowYPos = YPos;
+	}
+
 	/**
 	 ** setting the margins between the added objects
 	 **/
@@ -311,6 +335,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	{
 		this.xMargin = xMargin;
 		this.yMargin = yMargin;
+	}
+
+	public float getYmargin()
+	{
+		return this.yMargin;
+	}
+
+	public float getXmargin()
+	{
+		return this.xMargin;
 	}
 
 	/**
@@ -360,7 +394,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	/**
 	 ** start objects at this y Position, direction true = topdown
 	 **/
-	// TODO ob beliebige Position richtig funktioniert bleibt noch zu prüfen
 	public void initRow(boolean direction, float y)
 	{
 		if (this.row == null)
@@ -510,8 +543,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			float objectWidth = (this.width - this.leftBorder - this.rightBorder - unWeightedSize) / weightedSize - this.xMargin;
 			for (GL_View_Base g : this.row)
 			{
-				Boolean unWeighted = g.getWeight() == -1;
-				if (!unWeighted) g.setWidth(objectWidth * g.getWeight());
+				if (g.getWeight() != -1) g.setWidth(objectWidth * g.getWeight());
 				g.setPos(rowXPos, this.rowYPos);
 				rowXPos = rowXPos + g.getWidth() + this.xMargin;
 				this.addChildDirekt(g);

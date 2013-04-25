@@ -1,19 +1,20 @@
 package CB_Core.GL_UI.Views;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.TemplateFormatter;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.ProgresssChangedEventList;
+import CB_Core.Events.platformConector;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.EditFieldNotes;
 import CB_Core.GL_UI.Activitys.EditFieldNotes.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialog;
@@ -25,12 +26,15 @@ import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
+import CB_Core.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.FieldNoteEntry;
@@ -39,20 +43,23 @@ import CB_Core.Types.Waypoint;
 
 public class FieldNotesView extends V_ListView
 {
+	private static FieldNoteList lFieldNotes;
+
 	public static FieldNotesView that;
 	public static FieldNoteEntry aktFieldNote;
-	// private static int aktFieldNoteIndex = -1;
-	static FieldNoteList lFieldNotes;
-	CustomAdapter lvAdapter;
 	public static CB_RectF ItemRec;
-
 	public static boolean firstShow = true;
+
+	private Boolean ThreadCancel = false;
+	private String UploadMeldung = "";
+	private boolean API_Key_error = false;
+	private CustomAdapter lvAdapter;
 
 	public FieldNotesView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		that = this;
-		ItemRec = new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() * 1.1f);
+		ItemRec = new CB_RectF(0, 0, this.width, UI_Size_Base.that.getButtonHeight() * 1.1f);
 
 		setBackground(SpriteCache.ListBack);
 
@@ -63,7 +70,7 @@ public class FieldNotesView extends V_ListView
 		lvAdapter = new CustomAdapter(lFieldNotes);
 		this.setBaseAdapter(lvAdapter);
 
-		this.setEmptyMsg(GlobalCore.Translations.Get("EmptyFieldNotes"));
+		this.setEmptyMsg(Translation.Get("EmptyFieldNotes"));
 		firstShow = true;
 	}
 
@@ -76,7 +83,7 @@ public class FieldNotesView extends V_ListView
 		if (firstShow)
 		{
 			firstShow = false;
-			getContextMenu().show();
+			getContextMenu().Show();
 		}
 
 	}
@@ -148,10 +155,10 @@ public class FieldNotesView extends V_ListView
 
 		private float MeasureItemHeight(FieldNoteEntry fne)
 		{
-			float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
-			float cacheIfoHeight = (UiSizes.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Measure("T").height;
+			float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.getMargin());
+			float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + Dialog.getMargin() + Fonts.Measure("T").height;
 			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic()
-					- ListViewItemBackground.getRightWidthStatic() - (Dialog.margin * 2);
+					- ListViewItemBackground.getRightWidthStatic() - (Dialog.getMargin() * 2);
 
 			float mh = 0;
 			try
@@ -167,7 +174,7 @@ public class FieldNotesView extends V_ListView
 				e.printStackTrace();
 			}
 
-			float commentHeight = (Dialog.margin * 3) + mh;
+			float commentHeight = (Dialog.getMargin() * 3) + mh;
 
 			return headHeight + cacheIfoHeight + commentHeight;
 		}
@@ -209,11 +216,19 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
+		Cache cache = GlobalCore.getSelectedCache();
+
 		cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
 		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
-		cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
-		cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
-		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(35));
+
+		// Aktueller Cache ist ist von geocaching.com dann weitere Menüeinträge freigeben
+		if (cache != null && cache.GcCode.toLowerCase().startsWith("gc"))
+		{
+			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
+			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
+		}
+
+		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
 		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
 
 		return cm;
@@ -223,15 +238,15 @@ public class FieldNotesView extends V_ListView
 	private void UploadFieldnotes()
 	{
 
-		GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFieldNotes?"), GlobalCore.Translations.Get("uploadFieldNotes"),
-				MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.settings.RememberAsk_API_Coast);
+		GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
+				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.settings.RememberAsk_API_Coast);
 
 	}
 
 	private final GL_MsgBox.OnMsgBoxClickListener UploadFieldnotesDialogListner = new GL_MsgBox.OnMsgBoxClickListener()
 	{
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
 			switch (which)
 			{
@@ -272,6 +287,7 @@ public class FieldNotesView extends V_ListView
 				if (anzahl > 0)
 				{
 					UploadMeldung = "";
+					API_Key_error = false;
 					for (FieldNoteEntry fieldNote : lFieldNotes)
 					{
 						if (fieldNote.uploaded) continue;
@@ -286,8 +302,10 @@ public class FieldNotesView extends V_ListView
 							sendCacheVote(fieldNote);
 						}
 
-						if (CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode, fieldNote.getGcUploadId(),
-								fieldNote.timestamp, fieldNote.comment) != 0)
+						int ret = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode,
+								fieldNote.getGcUploadId(), fieldNote.timestamp, fieldNote.comment);
+
+						if (ret == -1)
 						{
 							UploadMeldung += fieldNote.gcCode + "\n" + CB_Core.Api.GroundspeakAPI.LastAPIError + "\n";
 						}
@@ -295,6 +313,16 @@ public class FieldNotesView extends V_ListView
 						{
 							fieldNote.uploaded = true;
 							fieldNote.UpdateDatabase();
+							if (ret != -10)
+							{
+								fieldNote.uploaded = true;
+								fieldNote.UpdateDatabase();
+							}
+							else
+							{
+								API_Key_error = true;
+								UploadMeldung = "error";
+							}
 						}
 						count++;
 					}
@@ -309,14 +337,18 @@ public class FieldNotesView extends V_ListView
 			@Override
 			public void RunnableReady(boolean canceld)
 			{
-				if (!UploadMeldung.equals(""))
+				if (!canceld)
 				{
-					GL_MsgBox.Show(UploadMeldung, GlobalCore.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-				}
-				else
-				{
-					GL_MsgBox.Show(GlobalCore.Translations.Get("uploadFinished"), GlobalCore.Translations.Get("uploadFieldNotes"),
-							MessageBoxIcon.GC_Live);
+
+					if (!UploadMeldung.equals(""))
+					{
+						if (!API_Key_error) GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK,
+								MessageBoxIcon.Error, null);
+					}
+					else
+					{
+						GL_MsgBox.Show(Translation.Get("uploadFinished"), Translation.Get("uploadFieldNotes"), MessageBoxIcon.GC_Live);
+					}
 				}
 			}
 		};
@@ -344,10 +376,6 @@ public class FieldNotesView extends V_ListView
 		}
 	}
 
-	private Boolean ThreadCancel = false;
-
-	private String UploadMeldung = "";
-
 	public static void addNewFieldnote(int type)
 	{
 		addNewFieldnote(type, false);
@@ -359,8 +387,8 @@ public class FieldNotesView extends V_ListView
 
 		if (cache == null)
 		{
-			GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheSelect"), GlobalCore.Translations.Get("thisNotWork"), MessageBoxButtons.OK,
-					MessageBoxIcon.Error, null);
+			GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error,
+					null);
 			return;
 		}
 
@@ -370,15 +398,50 @@ public class FieldNotesView extends V_ListView
 
 			if (type == 1)
 			{
-				GL_MsgBox.Show(GlobalCore.Translations.Get("My_Parking_Area_Found"), GlobalCore.Translations.Get("thisNotWork"),
-						MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+				GL_MsgBox.Show(Translation.Get("My_Parking_Area_Found"), Translation.Get("thisNotWork"), MessageBoxButtons.OK,
+						MessageBoxIcon.Information, null);
 			}
 			else if (type == 2)
 			{
-				GL_MsgBox.Show(GlobalCore.Translations.Get("My_Parking_Area_DNF"), GlobalCore.Translations.Get("thisNotWork"),
-						MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+				GL_MsgBox.Show(Translation.Get("My_Parking_Area_DNF"), Translation.Get("thisNotWork"), MessageBoxButtons.OK,
+						MessageBoxIcon.Error, null);
 			}
 
+			return;
+		}
+
+		// GC fremder Cache gefunden?
+		if (!cache.GcCode.toLowerCase().startsWith("gc"))
+		{
+
+			if (type == 1)
+			{
+				// Found it! -> fremden Cache als gefunden markieren
+				if (!GlobalCore.getSelectedCache().Found)
+				{
+					GlobalCore.getSelectedCache().Found = true;
+					CacheDAO cacheDAO = new CacheDAO();
+					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
+					pop.show(PopUp_Base.SHOW_TIME_SHORT);
+					platformConector.vibrate();
+				}
+			}
+			else if (type == 2)
+			{
+				// DidNotFound -> fremden Cache als nicht gefunden markieren
+				if (GlobalCore.getSelectedCache().Found)
+				{
+					GlobalCore.getSelectedCache().Found = false;
+					CacheDAO cacheDAO = new CacheDAO();
+					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
+					pop2.show(PopUp_Base.SHOW_TIME_SHORT);
+					platformConector.vibrate();
+				}
+			}
+
+			if (that != null) that.notifyDataSetChanged();
 			return;
 		}
 
@@ -390,7 +453,6 @@ public class FieldNotesView extends V_ListView
 			// und gegebenenfalls diese ändern und keine neue anlegen
 			// gilt nur für Found It! und DNF.
 			// needMaintance oder Note können zusätzlich angelegt werden
-			int index = 0;
 
 			if (lFieldNotes == null)
 			{
@@ -408,9 +470,7 @@ public class FieldNotesView extends V_ListView
 					newFieldNote.DeleteFromDatabase();
 					newFieldNote.timestamp = new Date();
 					aktFieldNote = newFieldNote;
-					// aktFieldNoteIndex = index;
 				}
-				index++;
 			}
 		}
 
@@ -440,28 +500,28 @@ public class FieldNotesView extends V_ListView
 		case 1:
 			if (!cache.Found) newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.FoundTemplate.getValue(),
-					newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
+					Config.settings.FoundTemplate.getValue(), newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 			// nicht gefunden war -> foundNumber um 1 erhöhen
 			break;
 		case 2:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.DNFTemplate.getValue(),
-					newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
+					Config.settings.DNFTemplate.getValue(), newFieldNote);
 			break;
 		case 3:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
 					Config.settings.NeedsMaintenanceTemplate.getValue(), newFieldNote);
 			break;
 		case 4:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = ReplaceTemplate(Config.settings.AddNoteTemplate.getValue(),
-					newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
+					Config.settings.AddNoteTemplate.getValue(), newFieldNote);
 			break;
 		}
 
 		if (!witoutShowEdit)
 		{
-			efnActivity = new EditFieldNotes(newFieldNote, returnListner);
+			efnActivity = new EditFieldNotes(newFieldNote, returnListner, true);
 			efnActivity.show();
 		}
 		else
@@ -541,7 +601,7 @@ public class FieldNotesView extends V_ListView
 	{
 
 		@Override
-		public void returnedFieldNote(FieldNoteEntry fieldNote)
+		public void returnedFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote)
 		{
 
 			FieldNotesView.firstShow = false;
@@ -552,39 +612,53 @@ public class FieldNotesView extends V_ListView
 			if (fieldNote != null)
 			{
 
-				// neue FieldNote
-				lFieldNotes.add(0, fieldNote);
-				fieldNote.WriteToDatabase();
-				aktFieldNote = fieldNote;
-				if (fieldNote.type == 1)
+				if (isNewFieldNote)
 				{
-					// Found it! -> Cache als gefunden markieren
-					if (!GlobalCore.getSelectedCache().Found)
+					// nur, wenn eine FieldNote neu angelegt wurde
+					// neue FieldNote
+					lFieldNotes.add(0, fieldNote);
+
+					// eine evtl. vorhandene FieldNote /DNF löschen
+					if (fieldNote.type == 1 || fieldNote.type == 2)
 					{
-						GlobalCore.getSelectedCache().Found = true;
-						CacheDAO cacheDAO = new CacheDAO();
-						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-						Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
-						Config.AcceptChanges();
+						lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, 1);
+						lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, 2);
 					}
-					// und eine evtl. vorhandene FieldNote FoundIt löschen
-					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 2);
-				}
-				else if (fieldNote.type == 2)
-				{
-					// DidNotFound -> Cache als nicht gefunden markieren
-					if (GlobalCore.getSelectedCache().Found)
-					{
-						GlobalCore.getSelectedCache().Found = false;
-						CacheDAO cacheDAO = new CacheDAO();
-						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-						Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
-						Config.AcceptChanges();
-					}
-					// und eine evtl. vorhandene FieldNote FoundIt löschen
-					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
 				}
 
+				fieldNote.WriteToDatabase();
+				aktFieldNote = fieldNote;
+
+				if (isNewFieldNote)
+				{
+					// nur, wenn eine FieldNote neu angelegt wurde
+					// wenn eine FieldNote neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
+					// SelectedCache eine fieldNote angelegt wird
+					if (fieldNote.type == 1)
+					{ // Found it! -> Cache als gefunden markieren
+						if (!GlobalCore.getSelectedCache().Found)
+						{
+							GlobalCore.getSelectedCache().Found = true;
+							CacheDAO cacheDAO = new CacheDAO();
+							cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+							Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
+							Config.AcceptChanges();
+						}
+
+					}
+					else if (fieldNote.type == 2)
+					{ // DidNotFound -> Cache als nicht gefunden markieren
+						if (GlobalCore.getSelectedCache().Found)
+						{
+							GlobalCore.getSelectedCache().Found = false;
+							CacheDAO cacheDAO = new CacheDAO();
+							cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+							Config.AcceptChanges();
+						} // und eine evtl. vorhandene FieldNote FoundIt löschen
+						lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, 1);
+					}
+				}
 				FieldNoteList.CreateVisitsTxt();
 
 			}
@@ -592,29 +666,11 @@ public class FieldNotesView extends V_ListView
 		}
 	};
 
-	private static String ReplaceTemplate(String template, FieldNoteEntry fieldNote)
-	{
-		DateFormat iso8601Format = new SimpleDateFormat("HH:mm");
-		String stime = iso8601Format.format(fieldNote.timestamp);
-		iso8601Format = new SimpleDateFormat("dd-MM-yyyy");
-		String sdate = iso8601Format.format(fieldNote.timestamp);
-
-		template = template.replace("<br>", "\n");
-		template = template.replace("##finds##", String.valueOf(fieldNote.foundNumber));
-		template = template.replace("##date##", sdate);
-		template = template.replace("##time##", stime);
-		template = template.replace("##owner##", GlobalCore.getSelectedCache().Owner);
-		template = template.replace("##gcusername##", Config.settings.GcLogin.getValue());
-		// template = template.replace("##gcvote##",
-		// comboBoxVote.SelectedIndex.ToString());
-		return template;
-	}
-
 	static EditFieldNotes efnActivity;
 
 	private void editFieldNote()
 	{
-		efnActivity = new EditFieldNotes(aktFieldNote, returnListner);
+		efnActivity = new EditFieldNotes(aktFieldNote, returnListner, false);
 		efnActivity.show();
 	}
 
@@ -636,8 +692,8 @@ public class FieldNotesView extends V_ListView
 
 		if (cache == null)
 		{
-			String message = GlobalCore.Translations.Get("cacheOtherDb", aktFieldNote.CacheName);
-			message += "\n" + GlobalCore.Translations.Get("fieldNoteNoDelete");
+			String message = Translation.Get("cacheOtherDb", aktFieldNote.CacheName);
+			message += "\n" + Translation.Get("fieldNoteNoDelete");
 			GL_MsgBox.Show(message);
 			return;
 		}
@@ -645,7 +701,7 @@ public class FieldNotesView extends V_ListView
 		GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener()
 		{
 			@Override
-			public boolean onClick(int which)
+			public boolean onClick(int which, Object data)
 			{
 				switch (which)
 				{
@@ -695,11 +751,10 @@ public class FieldNotesView extends V_ListView
 
 		};
 
-		String message = GlobalCore.Translations.Get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
-		if (aktFieldNote.type == 1) message += GlobalCore.Translations.Get("confirmFieldnoteDeletionRst");
+		String message = Translation.Get("confirmFieldnoteDeletion", aktFieldNote.typeString, aktFieldNote.CacheName);
+		if (aktFieldNote.type == 1) message += Translation.Get("confirmFieldnoteDeletionRst");
 
-		GL_MsgBox.Show(message, GlobalCore.Translations.Get("deleteFieldnote"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
-				dialogClickListener);
+		GL_MsgBox.Show(message, Translation.Get("deleteFieldnote"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, dialogClickListener);
 
 	}
 
@@ -708,7 +763,7 @@ public class FieldNotesView extends V_ListView
 		GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener()
 		{
 			@Override
-			public boolean onClick(int which)
+			public boolean onClick(int which, Object data)
 			{
 				switch (which)
 				{
@@ -738,9 +793,8 @@ public class FieldNotesView extends V_ListView
 
 			}
 		};
-		String message = GlobalCore.Translations.Get("DeleteAllFieldNotesQuestion");
-		GL_MsgBox.Show(message, GlobalCore.Translations.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
-				dialogClickListener);
+		String message = Translation.Get("DeleteAllFieldNotesQuestion");
+		GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener);
 
 	}
 
@@ -759,8 +813,8 @@ public class FieldNotesView extends V_ListView
 
 		if (cache == null)
 		{
-			String message = GlobalCore.Translations.Get("cacheOtherDb", aktFieldNote.CacheName);
-			message += "\n" + GlobalCore.Translations.Get("fieldNoteNoSelect");
+			String message = Translation.Get("cacheOtherDb", aktFieldNote.CacheName);
+			message += "\n" + Translation.Get("fieldNoteNoSelect");
 			GL_MsgBox.Show(message);
 			return;
 		}
@@ -777,8 +831,12 @@ public class FieldNotesView extends V_ListView
 		}
 
 		Waypoint finalWp = null;
-		if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
-		if (cache != null) GlobalCore.setSelectedWaypoint(cache, finalWp);
+		if (cache != null)
+		{
+			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
+			else if (cache.HasStartWaypoint()) finalWp = cache.GetStartWaypoint();
+			GlobalCore.setSelectedWaypoint(cache, finalWp);
+		}
 	}
 
 	private OnClickListener itemLogClickListner = new OnClickListener()
@@ -821,7 +879,7 @@ public class FieldNotesView extends V_ListView
 			cm.addItem(MenuID.MI_EDIT_FIELDNOTE, "edit");
 			cm.addItem(MenuID.MI_DELETE_FIELDNOTE, "delete");
 
-			cm.show();
+			cm.Show();
 			return true;
 		}
 	};

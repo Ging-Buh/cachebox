@@ -6,10 +6,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_Core.Log.Logger;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.JokerList;
 import CB_Core.Types.MoveableList;
 import android.content.Context;
@@ -25,10 +23,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnPreparedListener;
-import android.view.Menu;
-import android.view.MenuItem;
 import de.CB_PlugIn.IPlugIn;
 
 public class Global
@@ -264,7 +258,6 @@ public class Global
 	 */
 	public static Drawable[] LogIcons = null;
 	public static Drawable[] Arrows = null;
-	public static Drawable[] ChkIcons = null;
 	public static Drawable[] BtnIcons = null;
 
 	// New Map Icons
@@ -310,7 +303,7 @@ public class Global
 			// calc sizes
 
 			measurePaint = new Paint();
-			measurePaint.setTextSize(UiSizes.getScaledFontSize());
+			measurePaint.setTextSize(UI_Size_Base.that.getScaledFontSize());
 
 			ListBackground = new Paint();
 			Night.ListBackground_second = new Paint();
@@ -424,10 +417,6 @@ public class Global
 			{ getDrawable(R.drawable.other, res), getDrawable(R.drawable.micro, res), getDrawable(R.drawable.small, res),
 					getDrawable(R.drawable.regular, res), getDrawable(R.drawable.large, res) };
 
-		ChkIcons = new Drawable[]
-			{ getDrawable(R.drawable.day_btn_check_off, R.drawable.night_btn_check_off, res),
-					getDrawable(R.drawable.day_btn_check_on, R.drawable.night_btn_check_on, res), };
-
 		iniNormalIcons(res);
 
 	}
@@ -441,7 +430,8 @@ public class Global
 					getDrawable(R.drawable.big_9, res), getDrawable(R.drawable.big_10, res), getDrawable(R.drawable.big_11, res),
 					getDrawable(R.drawable.big_12, res), getDrawable(R.drawable.big_13, res), getDrawable(R.drawable.big_14, res),
 					getDrawable(R.drawable.big_15, res), getDrawable(R.drawable.big_16, res), getDrawable(R.drawable.big_17, res),
-					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), getDrawable(R.drawable.my_parking, res), };
+					getDrawable(R.drawable.big_18, res), getDrawable(R.drawable.big_19, res), getDrawable(R.drawable.my_parking, res),
+					getDrawable(R.drawable.big_21, res), };
 
 		BtnIcons = new Drawable[]
 			{ getDrawable(R.drawable.day_btn_default_normal, R.drawable.night_btn_default_normal, res),// 0
@@ -567,53 +557,6 @@ public class Global
 	public static int getColor(int attrResid)
 	{
 		return (int) themeStyles.getColor(Arrays.binarySearch(colorAttrs, attrResid), 0);
-	}
-
-	public static void PlaySound(String soundFile)
-	{
-		if (!Config.settings.PlaySounds.getValue()) return;
-		MediaPlayer mp = new MediaPlayer();
-		mp.setOnPreparedListener(new OnPreparedListener()
-		{
-			@Override
-			public void onPrepared(MediaPlayer mp)
-			{
-				mp.start();
-			}
-		});
-		try
-		{
-			mp.setDataSource(Config.WorkPath + "/data/sound/" + soundFile);
-			mp.prepare();
-		}
-		catch (Exception e)
-		{
-			Logger.Error("Global.PlaySound()", Config.WorkPath + "/data/sound/" + soundFile, e);
-			e.printStackTrace();
-		}
-	}
-
-	public static MenuItem TranslateMenuItem(Menu menu, int id, String StringId)
-	{
-		return TranslateMenuItem(menu, id, StringId, "");
-	}
-
-	public static MenuItem TranslateMenuItem(Menu menu, int id, String StringId, String zusatz)
-	{
-		MenuItem mi = menu.findItem(id);
-		try
-		{
-			if (mi != null)
-			{
-				String trans = GlobalCore.Translations.Get(StringId) + zusatz;
-				mi.setTitle(trans);
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("Global.TranslateMenuItem()", "", e);
-		}
-		return mi;
 	}
 
 	public static int TranslateColorToInt(com.badlogic.gdx.graphics.Color color)

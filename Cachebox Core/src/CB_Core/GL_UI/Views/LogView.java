@@ -14,7 +14,8 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
@@ -28,7 +29,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 	{
 		super(rec, Name);
 		that = this;
-		ItemRec = (new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
+		ItemRec = (new CB_RectF(0, 0, this.width, UI_Size_Base.that.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
 		setBackground(SpriteCache.ListBack);
 
 		this.setBaseAdapter(null);
@@ -67,7 +68,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		lvAdapter = new CustomAdapter();
 		this.setBaseAdapter(lvAdapter);
 
-		this.setEmptyMsg(GlobalCore.Translations.Get("EmptyLogList"));
+		this.setEmptyMsg(Translation.Get("EmptyLogList"));
 
 		this.scrollTo(0);
 	}
@@ -107,12 +108,12 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 
 	private float MeasureItemHeight(LogEntry logEntry)
 	{
-		float headHeight = (UiSizes.getButtonHeight() / 1.5f) + (Dialog.margin);
+		float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.getMargin());
 
 		float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic()
-				- (Dialog.margin * 2);
+				- (Dialog.getMargin() * 2);
 
-		float commentHeight = (Dialog.margin * 4) + Fonts.MeasureWrapped(logEntry.Comment, mesurdWidth).height;
+		float commentHeight = (Dialog.getMargin() * 4) + Fonts.MeasureWrapped(logEntry.Comment, mesurdWidth).height;
 
 		return headHeight + commentHeight;
 	}

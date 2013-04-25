@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Activitys;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
@@ -11,12 +10,12 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
-import CB_Core.Types.Coordinate;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
+import CB_Locator.Coordinate;
 
 public class ProjectionCoordinate extends ActivityBase
 {
-	private Coordinate cancelCoord;
 	private Coordinate coord;
 	private Coordinate projCoord;
 
@@ -65,7 +64,6 @@ public class ProjectionCoordinate extends ActivityBase
 	{
 		super(rec, Name);
 		coord = Coord;
-		cancelCoord = Coord.copy();
 		radius = (type == Type.circle);
 		p2p = (type == Type.p2p);
 		mReturnListner = listner;
@@ -98,8 +96,8 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniCoordButton()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), Title.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), Title.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		bCoord = new CoordinateButton(rec, "CoordButton", coord);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -123,11 +121,11 @@ public class ProjectionCoordinate extends ActivityBase
 				- this.getLeftWidth() - this.getRightWidth(), MeasuredLabelHeight);
 
 		lblP2P = new Label(labelRec, "lblBearing");
-		lblP2P.setText(GlobalCore.Translations.Get("toPoint"));
+		lblP2P.setText(Translation.Get("toPoint"));
 		this.addChild(lblP2P);
 
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), lblP2P.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord);
 
 		bCoord2.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -147,8 +145,8 @@ public class ProjectionCoordinate extends ActivityBase
 	private void iniTextFields()
 	{
 		// measure label width
-		String sBearing = GlobalCore.Translations.Get("Bearing");
-		String sDistance = radius ? "Radius" : GlobalCore.Translations.Get("Distance");
+		String sBearing = Translation.Get("Bearing");
+		String sDistance = radius ? "Radius" : Translation.Get("Distance");
 		String sUnit = ImperialUnits ? "yd" : "m";
 
 		float wB = Fonts.Measure(sBearing).width;
@@ -194,14 +192,14 @@ public class ProjectionCoordinate extends ActivityBase
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UiSizes.getButtonHeight());
+				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 
 		btnRec.setX(bOK.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
 
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		this.addChild(bCancel);
@@ -270,7 +268,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 			Coordinate newCoord = Coordinate.Project(coord.getLatitude(), coord.getLongitude(), Bearing, Distance);
 
-			if (newCoord.Valid)
+			if (newCoord.isValid())
 			{
 				projCoord = newCoord;
 				return true;

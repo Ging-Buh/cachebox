@@ -7,9 +7,10 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public class CoordinateEntity extends Entity
 {
@@ -79,7 +80,7 @@ public class CoordinateEntity extends Entity
 		if (coord == null)
 		// gesuchter Waypoint ist kein Cache-Waypoint, jetzt in Waypoint-Tabelle danach suchen
 		coord = LoadFromDB("select GcCode, Latitude, Longitude from Waypoint where GcCode = \"" + this.gcCode + "\"");
-		if (coord == null) return GlobalCore.Translations.Get("CacheOrWaypointNotFound", gcCode);
+		if (coord == null) return Translation.Get("CacheOrWaypointNotFound", gcCode);
 		else
 			return coord.FormatCoordinate();
 	}
@@ -88,17 +89,18 @@ public class CoordinateEntity extends Entity
 	{
 		if (Solver.isError(sCoord)) return sCoord;
 		Coordinate coord = new Coordinate(sCoord);
-		if (!coord.Valid) return GlobalCore.Translations.Get("InvalidCoordinate", "SetCoordinate", sCoord);
+		if (!coord.isValid()) return Translation.Get("InvalidCoordinate", "SetCoordinate", sCoord);
 		WaypointDAO waypointDAO = new WaypointDAO();
 		Waypoint dbWaypoint = null;
 		// Suchen, ob dieser Waypoint bereits vorhanden ist.
-		CoreCursor reader = Database.Data.rawQuery(
-				"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title from Waypoint where GcCode = \""
-						+ this.gcCode + "\"", null);
+		CoreCursor reader = Database.Data
+				.rawQuery(
+						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint where GcCode = \""
+								+ this.gcCode + "\"", null);
 		try
 		{
 			reader.moveToFirst();
-			if (reader.isAfterLast()) return GlobalCore.Translations.Get("CacheOrWaypointNotFound", this.gcCode);
+			if (reader.isAfterLast()) return Translation.Get("CacheOrWaypointNotFound", this.gcCode);
 			dbWaypoint = waypointDAO.getWaypoint(reader);
 		}
 		finally
@@ -115,7 +117,7 @@ public class CoordinateEntity extends Entity
 			// sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
 			// String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
 			// MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
-			return GlobalCore.Translations.Get("solverErrDiffCache", coord.FormatCoordinate(), dbWaypoint.Title, cache.Name);
+			return Translation.Get("solverErrDiffCache", coord.FormatCoordinate(), dbWaypoint.Title, cache.Name);
 		}
 		dbWaypoint.Pos.setLatitude(coord.getLatitude());
 		dbWaypoint.Pos.setLongitude(coord.getLongitude());
@@ -140,9 +142,17 @@ public class CoordinateEntity extends Entity
 				}
 			}
 			if (CB_Core.GlobalCore.getSelectedCache().Id == cacheFromCacheList.Id)
-
-			// Views.WaypointView.View.Refresh();
-			;
+			{
+				// Views.WaypointView.View.Refresh();
+				if (GlobalCore.getSelectedWaypoint() == null)
+				{
+					GlobalCore.setSelectedCache(GlobalCore.getSelectedCache());
+				}
+				else
+				{
+					GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+				}
+			}
 
 		}
 		return gcCode + "=" + coord.FormatCoordinate();

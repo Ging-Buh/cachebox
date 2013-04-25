@@ -6,6 +6,7 @@ import java.util.Iterator;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -366,11 +367,12 @@ public class CategorieListView extends V_ListView
 
 		for (Category cat : GlobalCore.Categories)
 		{
-			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCache.Icons.get(20), cat, COLLABSE_BUTTON_ITEM);
+			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCache.Icons.get(IconName.doc_20.ordinal()), cat,
+					COLLABSE_BUTTON_ITEM);
 
 			for (GpxFilename File : cat)
 			{
-				CollapseItem.addChild(addCategorieItem(Index++, SpriteCache.Icons.get(20), File, CHECK_ITEM));
+				CollapseItem.addChild(addCategorieItem(Index++, SpriteCache.Icons.get(IconName.doc_20.ordinal()), File, CHECK_ITEM));
 			}
 		}
 

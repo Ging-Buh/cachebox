@@ -3,10 +3,10 @@ package CB_Core.GL_UI.Views;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
@@ -16,7 +16,8 @@ import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -29,12 +30,45 @@ public class CreditsView extends CB_View_Base
 	private ScrollBox scrollBox;
 	private Linearlayout layout;
 
+	private ArrayList<Person> getPersons()
+	{
+		ArrayList<Person> list = new ArrayList<CreditsView.Person>();
+
+		list.add(new Person("hannes!", Job.idea, "2009-2011"));
+		list.add(new Person("Stonefinger", Job.designer));
+		list.add(new Person("Groundspeak API", Job.service, SpriteCache.Icons.get(IconName.GCLive_35.ordinal())));
+		list.add(new Person(null, Job.library, SpriteCache.getThemedSprite("libgdx")));// Name at Logo image
+		list.add(new Person("Mapsforge", Job.library, SpriteCache.getThemedSprite("mapsforge_logo")));
+		list.add(new Person("OpenRouteService.org", Job.service, SpriteCache.getThemedSprite("openrouteservice_logo")));
+		list.add(new Person("OpenStreetMap", Job.service, SpriteCache.getThemedSprite("osm_logo")));
+		list.add(new Person("Ging-Buh", Job.developer));
+		list.add(new Person("Longri", Job.developer));
+		list.add(new Person("ersthelfer", Job.developer));
+		list.add(new Person("arbor95", Job.developer));
+		list.add(new Person("droogi", Job.tester));
+		list.add(new Person("droogi", Job.localization));
+		list.add(new Person("jGda", Job.localization));
+		list.add(new Person("Teleskopix", Job.tester));
+		list.add(new Person("hulkman", Job.localization));
+		list.add(new Person("Lady-in-blue", Job.tester));
+		list.add(new Person("Koblenzer", Job.tester));
+		list.add(new Person("GeoSilverio", Job.tester));
+		list.add(new Person("GeoPfaff", Job.tester));
+		list.add(new Person("Homer-S", Job.tester));
+		list.add(new Person("Mozartkugel", Job.tester));
+		list.add(new Person("millimeterfuchser", Job.tester));
+
+		Collections.sort(list);
+
+		return list;
+	}
+
 	public CreditsView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		this.setBackground(SpriteCache.AboutBack);
 
-		ref = UiSizes.getWindowHeight() / 13;
+		ref = UI_Size_Base.that.getWindowHeight() / 13;
 		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 
@@ -67,7 +101,7 @@ public class CreditsView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		margin = Menu.margin;
+		margin = Menu.getMargin();
 
 		lineHeight = Fonts.Measure("Tg").height * 1.6f;
 		layout.removeChilds();
@@ -113,12 +147,12 @@ public class CreditsView extends CB_View_Base
 
 	private void captioned(String title)
 	{
-		title = GlobalCore.Translations.Get(title);
+		title = Translation.Get(title);
 		Box box = new Box(new CB_RectF(0, 0, this.width, lineHeight * 1.2f), "");
 		Label label = new Label(box, "");
 		box.addChild(label);
 		label.setFont(Fonts.getBig());
-		label.setText(title + ":", HAlignment.CENTER);
+		label.setText(title + ":", null, null, HAlignment.CENTER);
 		layout.addChild(box);
 	}
 
@@ -138,7 +172,7 @@ public class CreditsView extends CB_View_Base
 				{
 					Label label = new Label(box, "");
 					box.addChild(label);
-					label.setText(entry, HAlignment.CENTER);
+					label.setText(entry, null, null, HAlignment.CENTER);
 				}
 
 				layout.addChild(box);
@@ -215,40 +249,6 @@ public class CreditsView extends CB_View_Base
 			return this.name.compareToIgnoreCase(o.name);
 		}
 
-	}
-
-	private ArrayList<Person> getPersons()
-	{
-		ArrayList<Person> list = new ArrayList<CreditsView.Person>();
-
-		list.add(new Person("hannes!", Job.idea, "2009-2011"));
-		list.add(new Person("Stonefinger", Job.designer));
-		list.add(new Person("Groundspeak API", Job.service, SpriteCache.Icons.get(35)));
-		list.add(new Person(null, Job.library, SpriteCache.getThemedSprite("libgdx")));// Name at Logo image
-		list.add(new Person("Mapsforge", Job.library, SpriteCache.getThemedSprite("mapsforge_logo")));
-		list.add(new Person("OpenRouteService.org", Job.service, SpriteCache.getThemedSprite("openrouteservice_logo")));
-		list.add(new Person("OpenStreetMap", Job.service, SpriteCache.getThemedSprite("osm_logo")));
-		list.add(new Person("Faktor zwei", Job.sponsor, SpriteCache.getThemedSprite("FXzwei")));
-		list.add(new Person("Ging-Buh", Job.developer));
-		list.add(new Person("Longri", Job.developer));
-		list.add(new Person("ersthelfer", Job.developer));
-		list.add(new Person("arbor95", Job.developer));
-		list.add(new Person("droogi", Job.tester));
-		list.add(new Person("droogi", Job.localization));
-		list.add(new Person("jGda", Job.localization));
-		list.add(new Person("Teleskopix", Job.tester));
-		list.add(new Person("hulkman", Job.localization));
-		list.add(new Person("Lady-in-blue", Job.tester));
-		list.add(new Person("Koblenzer", Job.tester));
-		list.add(new Person("GeoSilverio", Job.tester));
-		list.add(new Person("GeoPfaff", Job.tester));
-		list.add(new Person("Homer-S", Job.tester));
-		list.add(new Person("Mozartkugel", Job.tester));
-		list.add(new Person("millimeterfuchser", Job.tester));
-
-		Collections.sort(list);
-
-		return list;
 	}
 
 }

@@ -248,11 +248,59 @@ public enum LogTypes
 			return move_to_collection;
 		case 70:
 			return move_to_inventory;
-
 		case 75:
 			return visited;
 		}
 
 		return note;
+	}
+
+	public int getGcLogTypeId()
+	{
+		return CB_LogType2GC(this);
+	}
+
+	/**
+	 * GS LogTypeId's:</br>4 - Post Note </br>13 - Retrieve It from a Cache </br>14 - Place in a cache </br>16 - Mark as missing </br>19 -
+	 * Grab </br>48 - Discover </br>69 - Move to collection </br>70 - Move to inventory </br>75 - Visit
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static int CB_LogType2GC(LogTypes value)
+	{
+		switch (value)
+		{
+
+		case note:
+			return 4;
+
+		case retrieve:
+			return 13;
+
+		case dropped_off:
+			return 14;
+
+		case mark_missing:
+			return 16;
+
+		case grab_it:
+			return 19;
+
+		case discovered:
+			return 48;
+
+		case move_to_collection:
+			return 69;
+
+		case move_to_inventory:
+			return 70;
+
+		case visited:
+			return 75;
+
+		}
+
+		return 4;
 	}
 }

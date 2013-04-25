@@ -160,6 +160,7 @@ public class QuickButtonList extends H_ListView
 		@Override
 		public int getCount()
 		{
+			if (quickButtonList == null) return 0;
 			return quickButtonList.size();
 		}
 

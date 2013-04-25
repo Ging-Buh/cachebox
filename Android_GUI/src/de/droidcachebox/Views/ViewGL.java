@@ -42,9 +42,12 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 		}
 		catch (Exception ex)
 		{
-			int i = 0;
-			i++;
 		}
+	}
+
+	public ViewGL(Context context)
+	{
+		super(context);
 	}
 
 	@Override
@@ -214,7 +217,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 		}
 		catch (Exception ex)
 		{
-			String s = ex.getMessage();
+			ex.printStackTrace();
 		}
 	}
 

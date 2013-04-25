@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Main.Actions;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Views.JokerView;
@@ -29,13 +30,21 @@ public class CB_Action_ShowJokerView extends CB_Action_ShowView
 	@Override
 	public boolean getEnabled()
 	{
-		return GlobalCore.JokerisOnline();
+		if (GlobalCore.getSelectedCache() == null) return false;
+		if (GlobalCore.getSelectedCache().GcCode.startsWith("GC")) // GC-Joker nur zulässig wenn es ein Cache von geocaching.com ist
+		{
+			return GlobalCore.JokerisOnline();
+		}
+		else
+		{
+			return (false);
+		}
 	}
 
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(25);
+		return SpriteCache.Icons.get(IconName.jokerPhone_25.ordinal());
 	}
 
 	@Override

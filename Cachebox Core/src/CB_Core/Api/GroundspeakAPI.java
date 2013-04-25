@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.ImageDAO;
@@ -42,6 +43,7 @@ import CB_Core.Types.Waypoint;
 public class GroundspeakAPI
 {
 	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
+	public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
 
 	public static String LastAPIError = "";
 	public static boolean CacheStatusValid = false;
@@ -78,7 +80,8 @@ public class GroundspeakAPI
 
 	public static String ConvertNotes(String note)
 	{
-		return note.replace("\n", "\\n");
+		String result = note.replace("\r", "");
+		return result.replace("\n", "\\n");
 	}
 
 	/**
@@ -93,9 +96,14 @@ public class GroundspeakAPI
 	 */
 	public static int CreateFieldNoteAndPublish(String accessToken, String cacheCode, int wptLogTypeId, Date dateLogged, String note)
 	{
+
+		if (chkMemperShip(accessToken)) return -10;
+
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "CreateFieldNoteAndPublish?format=json");
+			HttpPost httppost = new HttpPost(URL + "CreateFieldNoteAndPublish?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -162,9 +170,13 @@ public class GroundspeakAPI
 	 */
 	public static int GetCachesFound(String accessToken)
 	{
+
+		if (chkMemperShip(accessToken)) return -1;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetYourUserProfile?format=json");
+			HttpPost httppost = new HttpPost(URL + "GetYourUserProfile?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -225,9 +237,14 @@ public class GroundspeakAPI
 	 */
 	public static int GetMembershipType(String accessToken)
 	{
+
+		API_isCheked = true;
+
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetYourUserProfile?format=json");
+			HttpPost httppost = new HttpPost(URL + "GetYourUserProfile?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -255,6 +272,7 @@ public class GroundspeakAPI
 					JSONObject memberType = (JSONObject) user.getJSONObject("MemberType");
 					int memberTypeId = memberType.getInt("MemberTypeId");
 					MemberName = user.getString("UserName");
+					membershipType = memberTypeId;
 					// Zurücksetzen, falls ein anderer User gewählt wurde
 					return memberTypeId;
 				}
@@ -292,10 +310,13 @@ public class GroundspeakAPI
 	 */
 	public static int GetGeocacheStatus(String accessToken, ArrayList<Cache> caches)
 	{
+		if (chkMemperShip(accessToken)) return -1;
+
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetGeocacheStatus?format=json");
+			HttpPost httppost = new HttpPost(URL + "GetGeocacheStatus?format=json");
 			String requestString = "";
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + accessToken + "\",";
@@ -382,6 +403,9 @@ public class GroundspeakAPI
 	 */
 	public static int GetCacheLimits(String accessToken)
 	{
+		if (chkMemperShip(accessToken)) return -1;
+
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		LastAPIError = "";
 		// zum Abfragen der CacheLimits einfach nach einem Cache suchen, der
@@ -389,7 +413,7 @@ public class GroundspeakAPI
 		// dadurch wird der Zähler nicht erhöht, die Limits aber zurückgegeben.
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "SearchForGeocaches?format=json");
+			HttpPost httppost = new HttpPost(URL + "SearchForGeocaches?format=json");
 
 			JSONObject request = new JSONObject();
 			request.put("AccessToken", accessToken);
@@ -586,9 +610,12 @@ public class GroundspeakAPI
 	 */
 	public static int getMyTbList(String accessToken, TbList list)
 	{
+		if (chkMemperShip(accessToken)) return -1;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpPost httppost = new HttpPost(GS_LIVE_URL + "GetUsersTrackables?format=json");
+			HttpPost httppost = new HttpPost(URL + "GetUsersTrackables?format=json");
 
 			JSONObject request = new JSONObject();
 			request.put("AccessToken", accessToken);
@@ -645,6 +672,121 @@ public class GroundspeakAPI
 		return (-1);
 	}
 
+	@SuppressWarnings("unused")
+	public static Trackable getTBbyTreckNumber(String accessToken, String TrackingCode)
+	{
+		if (chkMemperShip(accessToken)) return null;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
+		try
+		{
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + accessToken + "&trackingNumber="
+					+ TrackingCode + "&format=json");
+
+			String result = Execute(httppost);
+
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					LastAPIError = "";
+					JSONArray jTrackables = json.getJSONArray("Trackables");
+
+					for (int ii = 0; ii < jTrackables.length(); ii++)
+					{
+						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
+						Trackable ret = new Trackable(jTrackable);
+						ret.setTrackingCode(TrackingCode);
+						return ret;
+					}
+				}
+				else
+				{
+					LastAPIError = "";
+					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					LastAPIError += status.getString("StatusMessage") + "\n";
+					LastAPIError += status.getString("ExceptionDetails");
+
+					return null;
+				}
+
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			return null;
+		}
+
+		return null;
+	}
+
+	@SuppressWarnings("unused")
+	public static Trackable getTBbyTbCode(String accessToken, String TrackingNumber)
+	{
+		if (chkMemperShip(accessToken)) return null;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
+		try
+		{
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + accessToken + "&tbCode=" + TrackingNumber
+					+ "&format=json");
+
+			String result = Execute(httppost);
+
+			try
+			// Parse JSON Result
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					LastAPIError = "";
+					JSONArray jTrackables = json.getJSONArray("Trackables");
+
+					for (int ii = 0; ii < jTrackables.length(); ii++)
+					{
+						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
+						Trackable ret = new Trackable(jTrackable);
+						return ret;
+					}
+				}
+				else
+				{
+					LastAPIError = "";
+					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					LastAPIError += status.getString("StatusMessage") + "\n";
+					LastAPIError += status.getString("ExceptionDetails");
+
+					return null;
+				}
+
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			return null;
+		}
+
+		return null;
+	}
+
 	/**
 	 * Ruft die Liste der Bilder ab, die in einem Cache sind
 	 * 
@@ -656,9 +798,13 @@ public class GroundspeakAPI
 	 */
 	public static int getImagesForGeocache(String accessToken, String cacheCode, ArrayList<String> images)
 	{
+		if (chkMemperShip(accessToken)) return -1;
+
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+
 		try
 		{
-			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
 					+ "&format=json");
 
 			String result = Execute(httppost);
@@ -709,10 +855,12 @@ public class GroundspeakAPI
 
 	public static HashMap<String, URI> GetAllImageLinks(String accessToken, String cacheCode)
 	{
+		if (chkMemperShip(accessToken)) return null;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 		HashMap<String, URI> list = new HashMap<String, URI>();
 		try
 		{
-			HttpGet httppost = new HttpGet(GS_LIVE_URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
 					+ "&format=json");
 
 			String result = Execute(httppost);
@@ -808,10 +956,11 @@ public class GroundspeakAPI
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+			Cache altCache = Database.Data.Query.GetCacheById(cache.Id);
 			if (aktCache == null)
 			{
 				Database.Data.Query.add(cache);
-				cacheDAO.WriteToDatabase(cache);
+				// cacheDAO.WriteToDatabase(cache);
 			}
 			else
 			{
@@ -819,7 +968,12 @@ public class GroundspeakAPI
 				// Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
 				// Database.Data.Query.add(cache);
 				aktCache.copyFrom(cache);
-				cacheDAO.UpdateDatabase(cache);
+				// cacheDAO.UpdateDatabase(cache);
+			}
+			// Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen
+			if (!cacheDAO.UpdateDatabase(cache))
+			{
+				cacheDAO.WriteToDatabase(cache);
 			}
 
 			for (LogEntry log : apiLogs)
@@ -840,8 +994,29 @@ public class GroundspeakAPI
 
 			for (Waypoint waypoint : cache.waypoints)
 			{
+				boolean update = true;
 
-				waypointDAO.WriteToDatabase(waypoint);
+				// dont refresh wp if aktCache.wp is user changed
+				if (altCache != null)
+				{
+					for (Waypoint wp : altCache.waypoints)
+					{
+						if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
+						{
+							if (wp.IsUserWaypoint) update = false;
+							break;
+						}
+					}
+				}
+
+				if (update)
+				{
+					if (!waypointDAO.UpdateDatabase(waypoint))
+					{
+						waypointDAO.WriteToDatabase(waypoint);
+					}
+				}
+
 			}
 
 		}
@@ -869,6 +1044,132 @@ public class GroundspeakAPI
 		string += "}";
 
 		return string;
+	}
+
+	private static boolean API_isCheked = false;
+
+	/**
+	 * Returns True if the APY-Key INVALID
+	 * 
+	 * @param accessToken
+	 * @return
+	 */
+	private static boolean chkMemperShip(String accessToken)
+	{
+		return chkMemperShip(accessToken, false);
+	}
+
+	/**
+	 * Returns True if the APY-Key INVALID
+	 * 
+	 * @param accessToken
+	 * @return
+	 */
+	private static boolean chkMemperShip(String accessToken, boolean withoutMsg)
+	{
+		boolean isValid = false;
+		if (API_isCheked) isValid = membershipType > 0;
+		if (accessToken.length() > 0)
+		{
+			if (!isValid) GetMembershipType(accessToken);
+			isValid = membershipType > 0;
+		}
+
+		if (!isValid)
+		{
+			if (!withoutMsg) API_ErrorEventHandlerList.callInvalidApiKey();
+		}
+
+		API_isCheked = true;
+		return !isValid;
+	}
+
+	public static boolean isValidAPI_Key()
+	{
+		return isValidAPI_Key(false);
+	}
+
+	public static boolean isValidAPI_Key(boolean withoutMsg)
+	{
+		if (API_isCheked) return membershipType > 0;
+
+		chkMemperShip(Config.GetAccessToken(), withoutMsg);
+
+		return membershipType > 0;
+
+	}
+
+	/**
+	 * GS LogTypeId's:</br>4 - Post Note </br>14 - Place in a cache </br>16 - Mark as missing </br>19 - Grab </br>48 - Discover </br>69 -
+	 * Move to collection </br>70 - Move to inventory </br>75 - Visit
+	 * 
+	 * @return
+	 */
+	public static int createTrackableLog(String accessToken, Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note)
+	{
+		if (chkMemperShip(accessToken)) return -10;
+		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		if (cacheCode == null) cacheCode = "";
+
+		try
+		{
+			HttpPost httppost = new HttpPost(URL + "CreateTrackableLog?format=json");
+			String requestString = "";
+			requestString = "{";
+			requestString += "\"AccessToken\":\"" + accessToken + "\",";
+			requestString += "\"CacheCode\":\"" + cacheCode + "\",";
+			requestString += "\"LogType\":" + String.valueOf(LogTypeId) + ",";
+			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
+			requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
+			requestString += "\"TravelBugCode\":\"" + String.valueOf(TB.getGcCode()) + "\",";
+			requestString += "\"TrackingNumber\":\"" + String.valueOf(TB.getTrackingNumber()) + "\"";
+			requestString += "}";
+
+			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
+
+			// Execute HTTP Post Request
+			String result = Execute(httppost);
+
+			// Parse JSON Result
+			try
+			{
+				JSONTokener tokener = new JSONTokener(result);
+				JSONObject json = (JSONObject) tokener.nextValue();
+				JSONObject status = json.getJSONObject("Status");
+				if (status.getInt("StatusCode") == 0)
+				{
+					result = "";
+					LastAPIError = "";
+				}
+				else
+				{
+					result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+					result += status.getString("StatusMessage") + "\n";
+					result += status.getString("ExceptionDetails");
+					LastAPIError = result;
+					return -1;
+				}
+
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
+				LastAPIError = e.getMessage();
+				return -1;
+			}
+
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+			Logger.Error("UploadFieldNotesAPI", "Error", ex);
+			LastAPIError = ex.getMessage();
+			return -1;
+		}
+
+		LastAPIError = "";
+		return 0;
 	}
 
 }

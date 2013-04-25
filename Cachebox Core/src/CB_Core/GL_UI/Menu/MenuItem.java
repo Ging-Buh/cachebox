@@ -2,19 +2,18 @@ package CB_Core.GL_UI.Menu;
 
 import java.awt.Menu;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MenuItem extends MenuItemBase
 {
-	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
 	private String mTitle;
 	private boolean mIsEnabled = true;
@@ -72,7 +71,8 @@ public class MenuItem extends MenuItemBase
 
 		boolean hasIcon = (mIcon != null);
 
-		float left = (mIsCheckable || mLeft) ? this.height * 0.97f : this.height * 0.2f;
+		// float left = (mIsCheckable || mLeft) ? this.height * 0.97f : this.height * 0.2f;
+		float left = this.height * 0.2f;
 		float right = hasIcon ? this.height : 0;
 		float labelWidth = (this.width - right - left) * 0.97f;
 
@@ -93,7 +93,7 @@ public class MenuItem extends MenuItemBase
 			iconImage.setDrawable(mIcon);
 			if (!mIsEnabled)
 			{
-				iconImage.setColor(DISABLE_COLOR);
+				iconImage.setColor(Fonts.getDisableFontColor());
 			}
 
 			this.addChild(iconImage);
@@ -101,7 +101,15 @@ public class MenuItem extends MenuItemBase
 
 		if (mIsCheckable)
 		{
-			CB_RectF rec = new CB_RectF(0, 0, this.height, this.height).ScaleCenter(0.75f);
+			CB_RectF rec;
+			if (hasIcon)
+			{
+				rec = new CB_RectF(this.width - 2 * this.height, 0, this.height, this.height).ScaleCenter(0.75f);
+			}
+			else
+			{
+				rec = new CB_RectF(this.width - this.height, 0, this.height, this.height); // .ScaleCenter(0.75f);
+			}
 
 			rec.setHeight(rec.getWidth());
 
@@ -125,7 +133,7 @@ public class MenuItem extends MenuItemBase
 		if (mTitle != null) mLabel.setText(mTitle);
 		if (!mIsEnabled)
 		{
-			mLabel.setTextColor(DISABLE_COLOR);
+			mLabel.setTextColor(Fonts.getDisableFontColor());
 		}
 
 		this.addChild(mLabel);

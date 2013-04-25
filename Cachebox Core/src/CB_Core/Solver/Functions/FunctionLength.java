@@ -1,9 +1,11 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionLength extends Function
 {
+	private static final long serialVersionUID = -7915834072364391848L;
+
 	public FunctionLength()
 	{
 		Names.add(new LacalNames("Length", "en"));
@@ -15,13 +17,13 @@ public class FunctionLength extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncLength");
+		return Translation.Get("solverFuncLength");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescLength");
+		return Translation.Get("solverDescLength");
 	}
 
 	@Override
@@ -29,7 +31,7 @@ public class FunctionLength extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncLength");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncLength");
 		}
 		return String.valueOf(parameter[0].length());
 	}

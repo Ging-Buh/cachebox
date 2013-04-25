@@ -1,11 +1,12 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.runOnGL;
+import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
@@ -13,7 +14,8 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.Input.Keys;
 
@@ -32,11 +34,15 @@ public class NumerikInputBox extends CB_View_Base
 
 	private static type mType;
 
-	public static EditWrapedTextField editText;
+	private static EditWrapedTextField editText;
+
 	public static returnValueListner mReturnListner;
 	public static returnValueListnerDouble mReturnListnerDouble;
 	public static returnValueListnerTime mReturnListnerTime;
 
+	/**
+	 ** show msgbox for input of int
+	 **/
 	public static GL_MsgBox Show(String msg, String title, int initialValue, returnValueListner Listner)
 	{
 		mReturnListner = Listner;
@@ -44,28 +50,38 @@ public class NumerikInputBox extends CB_View_Base
 
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
-		float margin = GL_MsgBox.margin;
+		float margin = Dialog.getMargin();
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
-		msgBox.setTitle(title);
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
-
-		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
-
-		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
-
-		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
-		editText.dontShowSoftKeyBoardOnFocus();
-		editText.setZeroPos();
-		editText.setY(margin * 3);
-		editText.setText(String.valueOf(initialValue));
-		editText.setCursorPosition((String.valueOf(initialValue)).length());
-
+		editText = new EditWrapedTextField("editText", TextFieldType.SingleLine);
 		float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
 		float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
-
 		editText.setHeight(topBottom + SingleLineHeight);
 
+		Label label = new Label("MsgBoxLabel");
+
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
+		msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
+
+		msgBox.setMargins(0, margin);
+		msgBox.setBorders(margin, margin);
+		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, getkeyListner(msgBox));
+		msgBox.initRow(false, margin);
+		msgBox.addLast(numPad);
+		msgBox.setFooterHeight(msgBox.getYPos() + margin);
+
+		msgBox.addLast(editText);
+		msgBox.addLast(label);
+		msgBox.adjustHeight();
+
+		msgBox.setTitle(title);
+		msgBox.setHeight(msgBox.getHeight() + 2 * msgBox.titleLabel.getHeight()); // 2 * = gemogelt
+
+		label.setWrappedText(msg);
+		editText.setText(String.valueOf(initialValue));
+
+		editText.setCursorPosition((String.valueOf(initialValue)).length());
+		editText.dontShowSoftKeyBoardOnFocus();
 		editText.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
 
@@ -77,42 +93,24 @@ public class NumerikInputBox extends CB_View_Base
 		});
 		editText.setFocus();
 
-		CB_RectF LabelRec = msgBox.getContentSize().getBounds();
-		LabelRec.setHeight(LabelRec.getHeight() - textFieldRec.getHeight());
-
-		Label label = new Label(LabelRec, "MsgBoxLabel");
-		label.setZeroPos();
-		label.setY(editText.getMaxY() + margin);
-		label.setWrappedText(msg);
-		msgBox.addChild(label);
-
-		msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + numPadRec.getHeight());
-
-		msgBox.addChild(editText);
-
-		// ######### NumPad ################
-
-		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, getkeyListner(msgBox));
-		numPad.setY(margin);
-		msgBox.addFooterChild(numPad);
-		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
-
 		GL.that.showDialog(msgBox);
-
 		return msgBox;
 	}
 
+	/**
+	 ** show msgbox for input of double
+	 **/
 	public static GL_MsgBox Show(String msg, String title, double initialValue, returnValueListnerDouble Listner)
 	{
 		mReturnListnerDouble = Listner;
 		mType = type.doubleType;
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
-		float margin = GL_MsgBox.margin;
+		float margin = Dialog.getMargin();
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -158,14 +156,19 @@ public class NumerikInputBox extends CB_View_Base
 
 		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withOkCancel, getkeyListner(msgBox));
 		numPad.setY(margin);
-		msgBox.addFooterChild(numPad);
-		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
+
+		msgBox.initRow(false, margin);
+		msgBox.addLast(numPad);
+		msgBox.setFooterHeight(msgBox.getYPos() + margin);
 
 		GL.that.showDialog(msgBox);
 
 		return msgBox;
 	}
 
+	/**
+	 ** show msgbox for input of min + sec (int)
+	 **/
 	public static GL_MsgBox Show(String msg, String title, int initialMin, int initialSec, returnValueListnerTime Listner)
 	{
 		mReturnListnerTime = Listner;
@@ -173,11 +176,11 @@ public class NumerikInputBox extends CB_View_Base
 
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
-		float margin = GL_MsgBox.margin;
+		float margin = Dialog.getMargin();
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
-		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UiSizes.getButtonHeight() * 6);
+		CB_RectF numPadRec = new CB_RectF(0, 0, msgBoxSize.width, UI_Size_Base.that.getButtonHeight() * 6);
 
 		CB_RectF textFieldRec = msgBox.getContentSize().getBounds();
 
@@ -226,8 +229,10 @@ public class NumerikInputBox extends CB_View_Base
 
 		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withDoubleDotOkCancel, getkeyListner(msgBox));
 		numPad.setY(margin);
-		msgBox.addFooterChild(numPad);
-		msgBox.setFooterHeight(numPad.getHeight() + (margin * 2));
+
+		msgBox.initRow(false, margin);
+		msgBox.addLast(numPad);
+		msgBox.setFooterHeight(msgBox.getYPos() + margin);
 
 		GL.that.showDialog(msgBox);
 
@@ -331,7 +336,7 @@ public class NumerikInputBox extends CB_View_Base
 
 					if (ParseError)
 					{
-						GL.that.Toast(GlobalCore.Translations.Get("wrongValueEnterd"));
+						GL.that.Toast(Translation.Get("wrongValueEnterd"));
 					}
 					else
 					{

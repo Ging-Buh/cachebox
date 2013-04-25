@@ -17,10 +17,10 @@
 package de.droidcachebox.Views.Forms;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -194,14 +194,13 @@ public class MessageBox extends android.app.Dialog
 		{
 		case DialogID.MSG_BOX_1:
 			MessageBox.Builder customBuilder = new MessageBox.Builder(getActivity());
-			customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(GlobalCore.Translations.Get("ok"), listner);
+			customBuilder.setTitle("").setMessage(b.getString("msg")).setPositiveButton(Translation.Get("ok"), listner);
 			dialog = customBuilder.create();
 			break;
 
 		case DialogID.MSG_BOX_2:
 			MessageBox.Builder customBuilder2 = new MessageBox.Builder(getActivity());
-			customBuilder2.setTitle(b.getString("title")).setMessage(b.getString("msg"))
-					.setPositiveButton(GlobalCore.Translations.Get("ok"), listner);
+			customBuilder2.setTitle(b.getString("title")).setMessage(b.getString("msg")).setPositiveButton(Translation.Get("ok"), listner);
 			dialog = customBuilder2.create();
 			break;
 
@@ -246,39 +245,39 @@ public class MessageBox extends android.app.Dialog
 		int button = b.getInt("buttons");
 		if (button == 0)
 		{
-			button1 = GlobalCore.Translations.Get("abort");
-			button2 = GlobalCore.Translations.Get("retry");
-			button3 = GlobalCore.Translations.Get("ignore");
+			button1 = Translation.Get("abort");
+			button2 = Translation.Get("retry");
+			button3 = Translation.Get("ignore");
 		}
 		else if (button == 1)
 		{
-			button1 = GlobalCore.Translations.Get("ok");
+			button1 = Translation.Get("ok");
 			button2 = "";
 			button3 = "";
 		}
 		else if (button == 2)
 		{
-			button1 = GlobalCore.Translations.Get("ok");
+			button1 = Translation.Get("ok");
 			button2 = "";
-			button3 = GlobalCore.Translations.Get("cancel");
+			button3 = Translation.Get("cancel");
 		}
 		else if (button == 3)
 		{
-			button1 = GlobalCore.Translations.Get("retry");
+			button1 = Translation.Get("retry");
 			button2 = "";
-			button3 = GlobalCore.Translations.Get("cancel");
+			button3 = Translation.Get("cancel");
 		}
 		else if (button == 4)
 		{
-			button1 = GlobalCore.Translations.Get("yes");
+			button1 = Translation.Get("yes");
 			button2 = "";
-			button3 = GlobalCore.Translations.Get("no");
+			button3 = Translation.Get("no");
 		}
 		else if (button == 5)
 		{
-			button1 = GlobalCore.Translations.Get("yes");
-			button2 = GlobalCore.Translations.Get("no");
-			button3 = GlobalCore.Translations.Get("cancel");
+			button1 = Translation.Get("yes");
+			button2 = Translation.Get("no");
+			button3 = Translation.Get("cancel");
 		}
 	}
 
@@ -532,7 +531,7 @@ public class MessageBox extends android.app.Dialog
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (UiSizes.getScaledFontSize_btn()));
+				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (UI_Size_Base.that.getScaledFontSize_btn()));
 			}
 			else
 			{
@@ -603,15 +602,16 @@ public class MessageBox extends android.app.Dialog
 			if (message != null)
 			{
 				((TextView) layout.findViewById(R.id.message)).setText(message);
-				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (UiSizes.getScaledFontSize_btn()));
+				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (UI_Size_Base.that.getScaledFontSize_btn()));
 
-				((TextView) layout.findViewById(R.id.message)).measure(UiSizes.getWindowWidth() - 100, UiSizes.getWindowHeight() - 100);
+				((TextView) layout.findViewById(R.id.message)).measure(UI_Size_Base.that.getWindowWidth() - 100,
+						UI_Size_Base.that.getWindowHeight() - 100);
 				int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
 				LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-				if (height > UiSizes.getWindowHeight() - (UiSizes.getButtonHeight() * 4))
+				if (height > UI_Size_Base.that.getWindowHeight() - (UI_Size_Base.that.getButtonHeight() * 4))
 				{
-					height = UiSizes.getWindowHeight() - (UiSizes.getButtonHeight() * 4);
+					height = UI_Size_Base.that.getWindowHeight() - (UI_Size_Base.that.getButtonHeight() * 4);
 					params.height = height;
 					((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
 				}

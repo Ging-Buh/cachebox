@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -19,7 +18,8 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -42,7 +42,7 @@ public class RouteDialog extends ButtonDialog
 
 	public RouteDialog(returnListner listner)
 	{
-		super(Menu.getMenuRec(), "PW-Dialog", "", GlobalCore.Translations.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
+		super(Menu.getMenuRec(), "PW-Dialog", "", Translation.Get("RouteToWaypoit"), MessageBoxButtons.OKCancel, null, null);
 		mReturnListner = listner;
 
 		msgBoxContentSize = getContentSize();
@@ -55,7 +55,7 @@ public class RouteDialog extends ButtonDialog
 		layout.setX(0);
 		// layout.setBackground(new ColorDrawable(Color.GREEN));
 
-		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UiSizes.getButtonHeight() * 2);
+		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
 
 		btMotoWay = new ImageMultiToggleButton(MTBRec, "btMotoWay");
 		btCycleWay = new ImageMultiToggleButton(MTBRec, "btCycleWay");
@@ -69,7 +69,7 @@ public class RouteDialog extends ButtonDialog
 		btCycleWay.setX(btMotoWay.getMaxX());
 		btFootWay.setX(btCycleWay.getMaxX());
 
-		Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight() * 2), "");
+		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
 		box.addChild(btMotoWay);
 		box.addChild(btCycleWay);
@@ -81,13 +81,13 @@ public class RouteDialog extends ButtonDialog
 		MultiToggleButton.initialOn_Off_ToggleStates(btCycleWay, "", "");
 		MultiToggleButton.initialOn_Off_ToggleStates(btFootWay, "", "");
 
-		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight()), "");
+		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
 		chkTmc = new chkBox("TMC");
 		box2.addChild(chkTmc);
 
 		Label lblPW = new Label(chkTmc.getMaxX() + margin, 0, innerWidth - chkTmc.getWidth() - margin, chkTmc.getHeight(), "");
 		lblPW.setVAlignment(VAlignment.CENTER);
-		lblPW.setText(GlobalCore.Translations.Get("UseTmc"));
+		lblPW.setText(Translation.Get("UseTmc"));
 		box2.addChild(lblPW);
 
 		layout.addChild(box2);
@@ -102,7 +102,7 @@ public class RouteDialog extends ButtonDialog
 		{
 
 			@Override
-			public boolean onClick(int which)
+			public boolean onClick(int which, Object data)
 			{
 				if (which == BUTTON_POSITIVE)
 				{

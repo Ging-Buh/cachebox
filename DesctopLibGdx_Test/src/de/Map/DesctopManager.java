@@ -35,13 +35,7 @@ public class DesctopManager extends ManagerBase
 
 	public DesctopManager()
 	{
-		// for the Access to the manager in the CB_Core
-		CB_Core.Map.ManagerBase.Manager = this;
-		// Layers.add(new Layer("MapsForge", "MapsForge", ""));
-		Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
-		Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/"));
-		// if (!Disable.HillShading) Layers.add(new Layer("HillShade", "HillShade", "http://129.206.74.245:8004/tms_hs.ashx"));
-		// Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
+		super();
 	}
 
 	@Override
@@ -99,7 +93,7 @@ public class DesctopManager extends ManagerBase
 	}
 
 	// / <summary>
-	// / Läd die Kachel mit dem übergebenen Descriptor
+	// / Lï¿½d die Kachel mit dem ï¿½bergebenen Descriptor
 	// / </summary>
 	// / <param name="layer"></param>
 	// / <param name="tile"></param>
@@ -108,7 +102,7 @@ public class DesctopManager extends ManagerBase
 	{
 		if (tile == null) return false;
 
-		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen
+		// Gibts die Kachel schon in einem Mappack? Dann kann sie ï¿½bersprungen
 		// werden!
 		for (PackBase pack : mapPacks)
 			if (pack.Layer == layer) if (pack.Contains(tile) != null) return true;
@@ -117,7 +111,7 @@ public class DesctopManager extends ManagerBase
 		String path = layer.GetLocalPath(tile);
 		String url = layer.GetUrl(tile);
 
-		// Falls Kachel schon geladen wurde, kann sie übersprungen werden
+		// Falls Kachel schon geladen wurde, kann sie ï¿½bersprungen werden
 		synchronized (this)
 		{
 			if (FileIO.FileExists(filename)) return true;
@@ -141,12 +135,10 @@ public class DesctopManager extends ManagerBase
 				response.getEntity().writeTo(out);
 				out.close();
 
-				String responseString = out.toString();
-
 				// Verzeichnis anlegen
 				synchronized (this)
 				{
-					if (!FileIO.DirectoryExists(path)) return false;
+					if (!FileIO.createDirectory(path)) return false;
 				}
 				// Datei schreiben
 				synchronized (this)

@@ -6,7 +6,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 public class ActivityBase extends Dialog
 {
@@ -26,7 +26,8 @@ public class ActivityBase extends Dialog
 		innerWidth = this.width - this.getLeftWidth() - this.getRightWidth();
 		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
 		MeasuredLabelHeightBig = Fonts.MeasureBig("T").height * 1.5f;
-		ButtonHeight = UiSizes.getButtonHeight();
+		ButtonHeight = UI_Size_Base.that.getButtonHeight();
+		this.registerSkinChangedEvent();
 	}
 
 	@Override
@@ -86,9 +87,9 @@ public class ActivityBase extends Dialog
 
 	public static CB_RectF ActivityRec()
 	{
-		float w = Math.min(UiSizes.getSmallestWidth(), UiSizes.getWindowHeight() * 0.66f);
+		float w = Math.min(UI_Size_Base.that.getSmallestWidth(), UI_Size_Base.that.getWindowHeight() * 0.66f);
 
-		return new CB_RectF(0, 0, w, UiSizes.getWindowHeight());
+		return new CB_RectF(0, 0, w, UI_Size_Base.that.getWindowHeight());
 	}
 
 }

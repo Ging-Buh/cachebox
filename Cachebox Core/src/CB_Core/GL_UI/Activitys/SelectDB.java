@@ -15,7 +15,7 @@ import CB_Core.DB.Database;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
-import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
+import CB_Core.GL_UI.Controls.Dialogs.NewDB_InputBox;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
@@ -26,8 +26,11 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
+import CB_Core.Map.ManagerBase;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Categories;
 
 public class SelectDB extends ActivityBase
@@ -75,8 +78,8 @@ public class SelectDB extends ActivityBase
 			index++;
 		}
 
-		lvFiles = new V_ListView(new CB_RectF(this.getLeftWidth(), this.getBottomHeight() + UiSizes.getButtonHeight() * 2, width
-				- this.getLeftWidth() - this.getRightWidth(), height - (UiSizes.getButtonHeight() * 2) - this.getTopHeight()
+		lvFiles = new V_ListView(new CB_RectF(this.getLeftWidth(), this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, width
+				- this.getLeftWidth() - this.getRightWidth(), height - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight()
 				- this.getBottomHeight()), "DB File ListView");
 
 		lvAdapter = new CustomAdapter(files);
@@ -86,12 +89,14 @@ public class SelectDB extends ActivityBase
 
 		float btWidth = (width - this.getLeftWidth() - this.getRightWidth()) / 3;
 
-		bNew = new Button(new CB_RectF(this.getLeftWidth(), this.getBottomHeight(), btWidth, UiSizes.getButtonHeight()), "selectDB.bNew");
-		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UiSizes.getButtonHeight()), "selectDB.bSelect");
-		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UiSizes.getButtonHeight()),
+		bNew = new Button(new CB_RectF(this.getLeftWidth(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
+				"selectDB.bNew");
+		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
+				"selectDB.bSelect");
+		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
 				"selectDB.bCancel");
 		bAutostart = new Button(new CB_RectF(this.getLeftWidth(), bNew.getMaxY(), width - this.getLeftWidth() - this.getRightWidth(),
-				UiSizes.getButtonHeight()), "selectDB.bAutostart");
+				UI_Size_Base.that.getButtonHeight()), "selectDB.bAutostart");
 
 		this.addChild(bSelect);
 		this.addChild(bNew);
@@ -105,8 +110,8 @@ public class SelectDB extends ActivityBase
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				stopTimer();
-				StringInputBox.Show(TextFieldType.SingleLine, GlobalCore.Translations.Get("NewDB"),
-						GlobalCore.Translations.Get("InsNewDBName"), "NewDB", DialogListnerNewDB);
+				NewDB_InputBox.Show(TextFieldType.SingleLine, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB",
+						DialogListnerNewDB);
 				return true;
 			}
 		});
@@ -162,16 +167,16 @@ public class SelectDB extends ActivityBase
 		});
 
 		// Translations
-		bNew.setText(GlobalCore.Translations.Get("NewDB"));
-		bSelect.setText(GlobalCore.Translations.Get("confirm"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
-		bAutostart.setText(GlobalCore.Translations.Get("StartWithoutSelection"));
+		bNew.setText(Translation.Get("NewDB"));
+		bSelect.setText(Translation.Get("confirm"));
+		bCancel.setText(Translation.Get("cancel"));
+		bAutostart.setText(Translation.Get("StartWithoutSelection"));
 
 		autoStartTime = Config.settings.MultiDBAutoStartTime.getValue();
 		if (autoStartTime > 0)
 		{
 			autoStartCounter = autoStartTime;
-			bAutostart.setText(autoStartCounter + " " + GlobalCore.Translations.Get("confirm"));
+			bAutostart.setText(autoStartCounter + " " + Translation.Get("confirm"));
 			setAutoStartText();
 			if ((autoStartTime > 0) && (AktFile != null))
 			{
@@ -199,7 +204,7 @@ public class SelectDB extends ActivityBase
 			else
 			{
 				autoStartCounter--;
-				bAutostart.setText(autoStartCounter + "    " + GlobalCore.Translations.Get("confirm"));
+				bAutostart.setText(autoStartCounter + "    " + Translation.Get("confirm"));
 			}
 		}
 	};
@@ -301,24 +306,54 @@ public class SelectDB extends ActivityBase
 	{
 
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
-			String text = StringInputBox.editText.getText();
-			// Behandle das ergebniss
+			String NewDB_Name = NewDB_InputBox.editText.getText();
+			// Behandle das Ergebnis
 			switch (which)
 			{
-			case 1: // ok Clicket
+			case 1: // ok clicked
 
-				String FilterString = Config.settings.Filter.getValue();
-				GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0])
-						: new FilterProperties(FilterString);
+				// zuerst den FilterString im neuen JSON Format laden versuchen
+				String FilterString = Config.settings.FilterNew.getValue();
+				if (FilterString.length() > 0)
+				{
+					GlobalCore.LastFilter = new FilterProperties(FilterString);
+				}
+				else
+				{
+					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
+					FilterString = Config.settings.Filter.getValue();
+					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].ToString())
+							: new FilterProperties(FilterString);
+				}
 				String sqlWhere = GlobalCore.LastFilter.getSqlWhere();
 
 				// initialize Database
 
-				Config.settings.DatabasePath.setValue(Config.WorkPath + "/" + text + ".db3");
-				String database = Config.settings.DatabasePath.getValue();
+				String database = Config.WorkPath + GlobalCore.fs + NewDB_Name + ".db3";
+				Config.settings.DatabasePath.setValue(database);
+				Database.Data.Close();
 				Database.Data.StartUp(database);
+
+				// OwnRepository?
+				if (data != null && ((Boolean) data) == false)
+				{
+					String folder = "?/" + NewDB_Name + "/";
+
+					Config.settings.DescriptionImageFolderLocal.setValue(folder + "Images");
+					Config.settings.MapPackFolderLocal.setValue(folder + "Maps");
+					Config.settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
+					Config.settings.TileCacheFolderLocal.setValue(folder + "Cache");
+					Config.AcceptChanges();
+
+					// Create Folder?
+					FileIO.createDirectory(Config.settings.DescriptionImageFolderLocal.getValue());
+					FileIO.createDirectory(Config.settings.MapPackFolderLocal.getValue());
+					FileIO.createDirectory(Config.settings.SpoilerFolderLocal.getValue());
+					FileIO.createDirectory(Config.settings.TileCacheFolderLocal.getValue());
+				}
+
 				Config.AcceptChanges();
 
 				GlobalCore.Categories = new Categories();
@@ -331,7 +366,7 @@ public class SelectDB extends ActivityBase
 					Database.Data.Query.checkSelectedCacheValid();
 				}
 
-				if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return true;
+				if (!FileIO.createDirectory(Config.WorkPath + "/User")) return true;
 				Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
 
 				Config.AcceptChanges();
@@ -339,7 +374,7 @@ public class SelectDB extends ActivityBase
 				selectDB();
 
 				break;
-			case 2: // cancel clicket
+			case 2: // cancel clicked
 				that.show();
 				break;
 			case 3:
@@ -375,6 +410,9 @@ public class SelectDB extends ActivityBase
 
 		// reload settings for get filter form selected DB
 		Config.settings.ReadFromDB();
+
+		ManagerBase.Manager.initialMapPacks();
+
 		finish();
 		if (returnListner != null) returnListner.back();
 
@@ -388,13 +426,10 @@ public class SelectDB extends ActivityBase
 
 	private void setAutoStartText()
 	{
-		if (autoStartTime < 0) bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + " "
-				+ GlobalCore.Translations.Get("StartWithoutSelection"));
-		else if (autoStartTime == 0) bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + " "
-				+ GlobalCore.Translations.Get("AutoStartDisabled"));
+		if (autoStartTime < 0) bAutostart.setText(Translation.Get("StartWithoutSelection"));
+		else if (autoStartTime == 0) bAutostart.setText(Translation.Get("AutoStartDisabled"));
 		else
-			bAutostart.setText(GlobalCore.Translations.Get("AutoStart") + " "
-					+ GlobalCore.Translations.Get("AutoStartTime", String.valueOf(autoStartTime)));
+			bAutostart.setText(Translation.Get("AutoStartTime", String.valueOf(autoStartTime)));
 	}
 
 	public class CustomAdapter implements Adapter
@@ -406,7 +441,7 @@ public class SelectDB extends ActivityBase
 		public CustomAdapter(FileList files)
 		{
 			this.files = files;
-			recItem = UiSizes.getCacheListItemRec().asFloat();
+			recItem = UiSizes.that.getCacheListItemRec().asFloat();
 			recItem.setHeight(recItem.getHeight() * 0.8f);
 			recItem.setWidth(width - getLeftWidth() - getRightWidth() - (margin * 1.5f));
 		}
@@ -451,7 +486,7 @@ public class SelectDB extends ActivityBase
 	private void stopTimer()
 	{
 		if (updateTimer != null) updateTimer.cancel();
-		bAutostart.setText(GlobalCore.Translations.Get("confirm"));
+		// bAutostart.setText(Translation.Get("confirm"));
 	}
 
 	private ReturnListner returnListner;
@@ -471,12 +506,12 @@ public class SelectDB extends ActivityBase
 	private void showSelectionMenu()
 	{
 		final String[] cs = new String[6];
-		cs[0] = GlobalCore.Translations.Get("StartWithoutSelection");
-		cs[1] = GlobalCore.Translations.Get("AutoStartDisabled");
-		cs[2] = GlobalCore.Translations.Get("AutoStartTime", "5");
-		cs[3] = GlobalCore.Translations.Get("AutoStartTime", "10");
-		cs[4] = GlobalCore.Translations.Get("AutoStartTime", "25");
-		cs[5] = GlobalCore.Translations.Get("AutoStartTime", "60");
+		cs[0] = Translation.Get("StartWithoutSelection");
+		cs[1] = Translation.Get("AutoStartDisabled");
+		cs[2] = Translation.Get("AutoStartTime", "5");
+		cs[3] = Translation.Get("AutoStartTime", "10");
+		cs[4] = Translation.Get("AutoStartTime", "25");
+		cs[5] = Translation.Get("AutoStartTime", "60");
 
 		Menu cm = new Menu("MiscContextMenu");
 
@@ -527,7 +562,7 @@ public class SelectDB extends ActivityBase
 		cm.addItem(MenuID.MI_25, cs[4], true);
 		cm.addItem(MenuID.MI_60, cs[5], true);
 
-		cm.show();
+		cm.Show();
 	}
 
 }

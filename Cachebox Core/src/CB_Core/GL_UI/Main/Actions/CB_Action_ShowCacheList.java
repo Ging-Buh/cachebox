@@ -1,13 +1,18 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.Config;
+import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.EditCache;
 import CB_Core.GL_UI.Activitys.Import;
+import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
@@ -49,7 +54,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(7);
+		return SpriteCache.Icons.get(IconName.cacheList_7.ordinal());
 	}
 
 	@Override
@@ -69,6 +74,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+				EditCache editCache = null;
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case MenuID.MI_RESORT:
@@ -78,9 +84,11 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					}
 					return true;
 				case MenuID.MI_FilterSet:
-
 					TabMainView.actionShowFilter.Execute();
-
+					return true;
+				case MenuID.MI_RESET_FILTER:
+					GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0].ToString());
+					EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
 					return true;
 				case MenuID.MI_SEARCH_LIST:
 
@@ -100,9 +108,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					TabMainView.actionShowSelectDbDialog.Execute();
 					return true;
 				case MenuID.MI_AUTO_RESORT:
-					GlobalCore.autoResort = !(GlobalCore.autoResort);
-					Config.settings.AutoResort.setValue(GlobalCore.autoResort);
-					if (GlobalCore.autoResort)
+					GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
+					if (GlobalCore.getAutoResort())
 					{
 						synchronized (Database.Data.Query)
 						{
@@ -114,6 +121,15 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					new CB_Action_Command_chkState().Execute();
 					// new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API,
 					// SpriteCache.Icons.get(35)).Execute();
+					return true;
+
+				case MenuID.MI_NEW_CACHE:
+					if (editCache == null) editCache = new EditCache(ActivityBase.ActivityRec(), "editCache");
+					editCache.Create();
+					return true;
+
+				case MenuID.AID_SHOW_DELETE_DIALOG:
+					TabMainView.actionDelCaches.Execute();
 					return true;
 				}
 				return false;
@@ -134,16 +150,18 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		}
 
 		MenuItem mi;
-		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCache.Icons.get(39));
-		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCache.Icons.get(13));
-		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCache.Icons.get(12));
-		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(40));
-		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(41));
+		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCache.Icons.get(IconName.sort_39.ordinal()));
+		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCache.Icons.get(IconName.filter_13.ordinal()));
+		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCache.Icons.get(IconName.filter_13.ordinal()));
+		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCache.Icons.get(IconName.lupe_12.ordinal()));
+		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(IconName.import_40.ordinal()));
+		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(IconName.manageDB_41.ordinal()));
 		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
 		mi.setCheckable(true);
-		mi.setChecked(GlobalCore.autoResort);
-		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(35));
-
+		mi.setChecked(GlobalCore.getAutoResort());
+		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
+		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCache.Icons.get(IconName.addCache_57.ordinal()));
+		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCache.Icons.get(IconName.delete_28.ordinal()));
 		return cm;
 	}
 

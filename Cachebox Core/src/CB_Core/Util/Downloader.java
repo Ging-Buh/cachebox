@@ -40,8 +40,6 @@ import java.util.regex.Pattern;
  */
 public class Downloader implements Runnable
 {
-	/** wait interval in milliseconds (100) */
-	private static final long WAIT_INTERVAL_MILLISECONDS = 100L;
 
 	/** buffer size in number of bytes (1024) */
 	private static final int BUFFER_SIZE = 1024;

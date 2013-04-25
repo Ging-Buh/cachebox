@@ -3,10 +3,10 @@ package CB_Core.GL_UI.Activitys.settings;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Label;
@@ -23,7 +23,9 @@ import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.MoveableList;
 
 import com.badlogic.gdx.graphics.Color;
@@ -103,7 +105,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 
 				QuickActions type = AllActionList.get(selected);
 
-				float itemHeight = UiSizes.getQuickButtonListHeight() * 0.93f;
+				float itemHeight = UiSizes.that.getQuickButtonListHeight() * 0.93f;
 
 				QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, itemHeight, itemHeight), tmpQuickList.size(), QuickActions
 						.getActionEnumById(type.ordinal()), QuickActions.getName(type.ordinal()), type);
@@ -125,9 +127,9 @@ public class SettingsItem_QuickButton extends CB_View_Base
 					.getActionEnumById(item.ordinal()).getIcon()), true);
 		}
 
-		icm.setPrompt(GlobalCore.Translations.Get("selectQuickButtemItem"));
+		icm.setPrompt(Translation.Get("selectQuickButtemItem"));
 
-		icm.show();
+		icm.Show();
 
 	}
 
@@ -146,8 +148,8 @@ public class SettingsItem_QuickButton extends CB_View_Base
 
 		up.setImage(new SpriteDrawable(SpriteCache.Arrows.get(11)));
 		down.setImage(new SpriteDrawable(SpriteCache.Arrows.get(11)));
-		del.setImage(new SpriteDrawable(SpriteCache.Icons.get(28)));
-		add.setImage(new SpriteDrawable(SpriteCache.Icons.get(52)));
+		del.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.delete_28.ordinal())));
+		add.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.add_52.ordinal())));
 
 		up.setImageScale(0.7f);
 		down.setImageScale(0.7f);
@@ -338,7 +340,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 		@Override
 		public float getItemSize(int position)
 		{
-			return UiSizes.getButtonHeight();
+			return UI_Size_Base.that.getButtonHeight();
 		}
 
 		@Override

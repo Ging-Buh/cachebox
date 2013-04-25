@@ -31,9 +31,9 @@ public class FileIO
 	 * 
 	 * @param folder
 	 *            Pfad des Ordners
-	 * @return true wenn er exestiert oder Angelegt wurde. false wenn das Anlegen nicht Funktioniert hat.
+	 * @return true, wenn er existiert oder angelegt wurde. false, wenn das Anlegen nicht funktioniert hat.
 	 */
-	public static boolean DirectoryExists(String folder)
+	public static boolean createDirectory(String folder)
 	{
 		File f = new File(folder);
 		if (f.isDirectory()) return true;
@@ -42,6 +42,13 @@ public class FileIO
 			// have the object build the directory structure, if needed.
 			return f.mkdirs();
 		}
+	}
+
+	public static boolean DirectoryExists(String folder)
+	{
+		File f = new File(folder);
+		if (f.isDirectory()) return true;
+		return false;
 	}
 
 	public static String GetFileExtension(String filename)
@@ -144,7 +151,7 @@ public class FileIO
 		{
 			String localDir = local.substring(0, local.lastIndexOf("/"));
 
-			if (!FileIO.DirectoryExists(localDir)) return false;
+			if (!FileIO.createDirectory(localDir)) return false;
 
 			URL aURL = new URL(uri.replace("&amp;", "&"));
 
@@ -202,7 +209,6 @@ public class FileIO
 			@Override
 			public boolean accept(File dir, String filename)
 			{
-
 				return filename.contains("." + Endung);
 			}
 		});
@@ -224,6 +230,51 @@ public class FileIO
 
 		}
 		return files;
+	}
+
+	public static void deleteDir(File file)
+	{
+		if (file.isDirectory())
+		{
+
+			// directory is empty, then delete it
+			if (file.list().length == 0)
+			{
+
+				file.delete();
+				System.out.println("Directory is deleted : " + file.getAbsolutePath());
+
+			}
+			else
+			{
+
+				// list all the directory contents
+				String files[] = file.list();
+
+				for (String temp : files)
+				{
+					// construct the file structure
+					File fileDelete = new File(file, temp);
+
+					// recursive delete
+					deleteDir(fileDelete);
+				}
+
+				// check the directory again, if empty then delete it
+				if (file.list().length == 0)
+				{
+					file.delete();
+					System.out.println("Directory is deleted : " + file.getAbsolutePath());
+				}
+			}
+
+		}
+		else
+		{
+			// if file, then delete it
+			file.delete();
+			System.out.println("File is deleted : " + file.getAbsolutePath());
+		}
 	}
 
 }

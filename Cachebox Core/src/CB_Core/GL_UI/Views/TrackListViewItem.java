@@ -1,6 +1,5 @@
 package CB_Core.GL_UI.Views;
 
-import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
@@ -13,6 +12,7 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.CB_RectF;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -133,8 +133,8 @@ public class TrackListViewItem extends ListViewItemBackground
 
 			CB_RectF rec = new CB_RectF(left, 0, this.width - left - height - 10, this.height / 2);
 			EntryLength = new Label(rec, "");
-			EntryLength.setText(GlobalCore.Translations.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength)
-					+ " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
+			EntryLength.setText(Translation.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / "
+					+ UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 
 			this.addChild(EntryLength);
 		}
@@ -159,7 +159,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 		colorReck.draw(batch);
 
-		left += lBounds.getWidth() + Dialog.margin;
+		left += lBounds.getWidth() + Dialog.getMargin();
 
 	}
 
@@ -241,7 +241,7 @@ public class TrackListViewItem extends ListViewItemBackground
 	public void notifyTrackChanged(Track route)
 	{
 		mRoute = route;
-		if (EntryLength != null) EntryLength.setText(GlobalCore.Translations.Get("length") + ": "
+		if (EntryLength != null) EntryLength.setText(Translation.Get("length") + ": "
 				+ UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / "
 				+ UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 

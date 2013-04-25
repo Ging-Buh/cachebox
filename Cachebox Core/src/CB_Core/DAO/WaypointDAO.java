@@ -9,8 +9,9 @@ import CB_Core.DB.Database.Parameters;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Replication.Replication;
-import CB_Core.Types.Coordinate;
+import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public class WaypointDAO
 {
@@ -29,15 +30,19 @@ public class WaypointDAO
 		args.put("userwaypoint", WP.IsUserWaypoint);
 		args.put("clue", WP.Clue);
 		args.put("title", WP.Title);
+		args.put("isStart", WP.IsStart);
 
 		try
 		{
 			Database.Data.insert("Waypoint", args);
-
-			args = new Parameters();
-			args.put("hasUserData", true);
-			Database.Data.update("Caches", args, "Id = ?", new String[]
-				{ String.valueOf(WP.CacheId) });
+			if (WP.IsUserWaypoint)
+			{
+				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist!!!
+				args = new Parameters();
+				args.put("hasUserData", true);
+				Database.Data.update("Caches", args, "Id = ?", new String[]
+					{ String.valueOf(WP.CacheId) });
+			}
 		}
 		catch (Exception exc)
 		{
@@ -46,8 +51,9 @@ public class WaypointDAO
 		}
 	}
 
-	public void UpdateDatabase(Waypoint WP)
+	public boolean UpdateDatabase(Waypoint WP)
 	{
+		boolean result = false;
 		int newCheckSum = createCheckSum(WP);
 		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
 		if (newCheckSum != WP.checkSum)
@@ -63,30 +69,36 @@ public class WaypointDAO
 			args.put("userwaypoint", WP.IsUserWaypoint);
 			args.put("clue", WP.Clue);
 			args.put("title", WP.Title);
+			args.put("isStart", WP.IsStart);
 			try
 			{
-				Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.GcCode + "\"", null);
+				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.GcCode + "\"", null);
+				if (count > 0) result = true;
 			}
 			catch (Exception exc)
 			{
-				return;
+				result = false;
 
 			}
 
-			args = new Parameters();
-			args.put("hasUserData", true);
-			try
+			if (WP.IsUserWaypoint)
 			{
-				Database.Data.update("Caches", args, "Id = ?", new String[]
-					{ String.valueOf(WP.CacheId) });
+				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. über API)
+				args = new Parameters();
+				args.put("hasUserData", true);
+				try
+				{
+					Database.Data.update("Caches", args, "Id = ?", new String[]
+						{ String.valueOf(WP.CacheId) });
+				}
+				catch (Exception exc)
+				{
+					return result;
+				}
 			}
-			catch (Exception exc)
-			{
-				return;
-			}
-
 			WP.checkSum = newCheckSum;
 		}
+		return result;
 	}
 
 	public Waypoint getWaypoint(CoreCursor reader)
@@ -104,8 +116,8 @@ public class WaypointDAO
 		WP.Clue = reader.getString(8);
 		if (WP.Clue != null) WP.Clue = WP.Clue.trim();
 		WP.Title = reader.getString(9).trim();
+		WP.IsStart = reader.getInt(10) == 1;
 		WP.checkSum = createCheckSum(WP);
-
 		return WP;
 	}
 
@@ -119,6 +131,7 @@ public class WaypointDAO
 		sCheckSum += WP.Type.ordinal();
 		sCheckSum += WP.Clue;
 		sCheckSum += WP.Title;
+		if (WP.IsStart) sCheckSum += "1";
 		return (int) GlobalCore.sdbm(sCheckSum);
 	}
 
@@ -156,6 +169,7 @@ public class WaypointDAO
 		args.put("userwaypoint", WP.IsUserWaypoint);
 		args.put("clue", WP.Clue);
 		args.put("title", WP.Title);
+		args.put("isStart", WP.IsStart);
 
 		try
 		{
@@ -172,4 +186,23 @@ public class WaypointDAO
 
 		}
 	}
+
+	// Hier wird überprüft, ob für diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurückgesetzt
+	// Damit kann bei der Definition eines neuen Start-Waypoints vorher der alte entfernt werden damit sichergestellt ist dass ein Cache nur
+	// 1 Start-Waypoint hat
+	public void ResetStartWaypoint(Cache cache, Waypoint except)
+	{
+		// TODO Auto-generated method stub
+		for (Waypoint wp : cache.waypoints)
+		{
+			if (except == wp) continue;
+			if (wp.IsStart)
+			{
+				wp.IsStart = false;
+				WaypointDAO waypointDAO = new WaypointDAO();
+				waypointDAO.UpdateDatabase(wp);
+			}
+		}
+	}
+
 }

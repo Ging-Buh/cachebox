@@ -7,7 +7,6 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 
 	private ArrayList<String> values;
 
-	private EnumTyp myDefaultEnum;
 	private EnumTyp myEnum;
 
 	@SuppressWarnings("rawtypes")
@@ -16,7 +15,6 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 	{
 		super(name, category, modus, defaultValue.name(), StoreType);
 		myEnum = enu;
-		myDefaultEnum = defaultValue;
 
 		values = new ArrayList<String>();
 

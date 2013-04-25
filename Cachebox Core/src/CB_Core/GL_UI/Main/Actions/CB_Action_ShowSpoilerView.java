@@ -5,6 +5,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
@@ -51,12 +52,12 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 
 		if (hasSpoiler && spoilerState != 1)
 		{
-			SpoilerIcon = SpriteCache.Icons.get(18);
+			SpoilerIcon = SpriteCache.Icons.get(IconName.images_18.ordinal());
 			spoilerState = 1;
 		}
 		else if (!hasSpoiler && spoilerState != 0)
 		{
-			SpoilerIcon = new Sprite(SpriteCache.Icons.get(18));
+			SpoilerIcon = new Sprite(SpriteCache.Icons.get(IconName.images_18.ordinal()));
 			SpoilerIcon.setColor(DISABLE_COLOR);
 			spoilerState = 0;
 		}
@@ -81,9 +82,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 	{
 		Menu icm = new Menu("menu_compassView");
 		icm.addItemClickListner(onItemClickListner);
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
+		icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
 
 		return icm;
 	}

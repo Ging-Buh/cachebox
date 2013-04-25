@@ -43,9 +43,9 @@ public class TrackableListDAO
 	public static TbList ReadTbList(String where)
 	{
 		TbList trackableList = new TbList();
-		CoreCursor reader = Database.Data
+		CoreCursor reader = Database.FieldNotes
 				.rawQuery(
-						"select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url   from Trackable",
+						"select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable",
 						null);
 		reader.moveToFirst();
 
@@ -56,6 +56,14 @@ public class TrackableListDAO
 		}
 		reader.close();
 		return trackableList;
+	}
+
+	/**
+	 * Deleate all TBs
+	 */
+	public static void clearDB()
+	{
+		Database.FieldNotes.delete("Trackable", "", null);
 	}
 
 }

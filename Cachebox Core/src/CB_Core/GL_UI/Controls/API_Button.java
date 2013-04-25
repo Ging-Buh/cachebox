@@ -8,6 +8,7 @@ import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -38,7 +39,7 @@ public class API_Button extends Button
 
 	private void setText()
 	{
-		this.setText(GlobalCore.Translations.Get("getApiKey"));
+		this.setText(Translation.Get("getApiKey"));
 	}
 
 	@Override
@@ -54,7 +55,18 @@ public class API_Button extends Button
 		{
 			Drawable drw;
 
-			if (Config.settings.GcAPI.getValue().equals(""))
+			boolean Entry = false;
+
+			if (Config.settings.StagingAPI.getValue())
+			{
+				if (!Config.settings.GcAPIStaging.getValue().equals("")) Entry = true;
+			}
+			else
+			{
+				if (!Config.settings.GcAPI.getValue().equals("")) Entry = true;
+			}
+
+			if (Entry)
 			{
 				drw = new SpriteDrawable(SpriteCache.getThemedSprite("chk-icon-disable"));
 			}

@@ -126,7 +126,8 @@ public class FieldNoteEntry implements Serializable
 	 * FoundIt | 1 |2| <br>
 	 * DNF | 2| 3| <br>
 	 * Note | 4|4| <br>
-	 * Need Archived | |7| Bei uns nicht vorgesehen Need Maintenance |3|45| <br>
+	 * Need Archived | |7| Bei uns nicht vorgesehen <br>
+	 * Need Maintenance |3|45| <br>
 	 * 
 	 * @return
 	 */
@@ -161,6 +162,7 @@ public class FieldNoteEntry implements Serializable
 	public void WriteToDatabase()
 	{
 		Parameters args = new Parameters();
+		if (Id >= 0) args.put("id", Id); // bei Update!!!
 		args.put("cacheid", CacheId);
 		args.put("gccode", gcCode);
 		args.put("name", CacheName);
@@ -177,7 +179,7 @@ public class FieldNoteEntry implements Serializable
 
 		try
 		{
-			Database.FieldNotes.insert("Fieldnotes", args);
+			Database.FieldNotes.insertWithConflictReplace("Fieldnotes", args);
 		}
 		catch (Exception exc)
 		{

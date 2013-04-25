@@ -33,8 +33,8 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public class SolverView2 extends V_ListView implements SelectedCacheEvent
 {
@@ -171,7 +171,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			setSelection(selectionIndex);
 
 			Menu cm = getContextMenu();
-			cm.show();
+			cm.Show();
 
 			return true;
 		}
@@ -245,7 +245,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		{
 			if (solver == null) return null;
 			SolverZeile solverZeile = solver.get(position);
-			SolverViewItem v = new SolverViewItem(UiSizes.getCacheListItemRec().asFloat(), position, solverZeile);
+			SolverViewItem v = new SolverViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, solverZeile);
 			v.setClickable(true);
 			v.setOnClickListener(onItemClickListner);
 			v.setOnLongClickListener(onItemLongClickListner);
@@ -261,7 +261,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			// SolverZeile solverZeile = solver.get(position);
 			// if (solverZeile.Solution.length() == 0) return UiSizes.getCacheListItemRec().getHeight();
 			// else
-			return UiSizes.getCacheListItemRec().getHeight();
+			return UiSizes.that.getCacheListItemRec().getHeight();
 		}
 
 	}
@@ -269,6 +269,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
+		if (cache == this.cache) return; // Cache hat sich nicht geändert!
 		// Solver speichern
 		if (this.cache != null) Database.SetSolver(this.cache, solver.getSolverString());
 		// nächsten Cache laden
@@ -332,7 +333,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				}
 			}
 
-			if (neu) reloadList();
+			reloadList();
 		}
 	};
 
@@ -357,7 +358,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	final OnMsgBoxClickListener deleteListener = new OnMsgBoxClickListener()
 	{
 		@Override
-		public boolean onClick(int which)
+		public boolean onClick(int which, Object data)
 		{
 			if (which == 1)
 			{
@@ -390,7 +391,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				text = text.substring(text.indexOf("=") + 1);
 			}
 			Coordinate result = new Coordinate(text);
-			if (!result.Valid)
+			if (!result.isValid())
 			{
 				// Zweizeilig versuchen
 				SolverZeile zeile2 = solver.get(mSelectedIndex + 1);
@@ -398,7 +399,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				if (text2.contains("=")) text2 = text2.substring(text2.indexOf("=") + 1);
 				result = new Coordinate(text + " " + text2);
 			}
-			if (result.Valid) return result;
+			if (result.isValid()) return result;
 			else
 				return null;
 		}

@@ -12,17 +12,161 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.zip.ZipException;
 
+import CB_Core.Config;
+import CB_Core.FileIO;
+import CB_Core.GlobalCore;
+import CB_Core.Import.UnZip;
 import CB_Core.Math.Size;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Util.CopyHelper.Copy;
+import CB_Core.Util.CopyHelper.CopyRule;
 
 class Ex_1
 {
 	public static void main(String[] args)
 	{
-		final Gui screen = new Gui("Device Launcher");
-		screen.setSize(250, 500);
-		screen.setVisible(true);
+
+		DesktopMain.InitalConfig();
+		Config.settings.ReadFromDB();
+
+		File Dir = new File("./");
+		final String[] files;
+
+		files = Dir.list(new FilenameFilter()
+		{
+
+			@Override
+			public boolean accept(File dir, String filename)
+			{
+				if (filename.contains("src")) return true;
+				if (filename.contains("DCB") && filename.endsWith("jar")) return true;
+				return false;
+			}
+		});
+
+		// copy AssetFolder only if Rev-Number changed, like at new installation
+		if (files.length > 0 && Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		{
+			File workJar = new File(files[0]);
+
+			if (workJar.getAbsolutePath().contains("src"))
+			{
+				// Copy from assets Folder!!
+				try
+				{
+					File Dir2 = new File("../Android_GUI/assets/");
+					final String[] files2;
+					ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
+
+					files2 = Dir2.list();
+
+					for (String file : files2)
+					{
+						rules.add(new CopyRule("../Android_GUI/assets/" + file, "./cachebox"));
+					}
+
+					Copy copy = new Copy(rules);
+					try
+					{
+						copy.Run();
+
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				// Copy from Jar!!
+				try
+				{
+
+					String ExtractFolder = "";
+
+					if (workJar.exists())
+					{
+						try
+						{
+							ExtractFolder = UnZip.extractFolder(workJar.getAbsolutePath());
+						}
+						catch (ZipException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+						// Copy DCB/cachebox to cachebox
+
+						ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
+
+						rules.add(new CopyRule(ExtractFolder + "/cachebox", "./"));
+						Copy copy = new Copy(rules);
+						try
+						{
+							copy.Run();
+						}
+						catch (IOException e)
+						{
+							e.printStackTrace();
+						}
+
+						FileIO.deleteDir(new File(ExtractFolder));
+
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+
+			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
+			Config.settings.newInstall.setValue(true);
+			Config.AcceptChanges();
+		}
+		else
+		{
+			Config.settings.newInstall.setValue(false);
+			Config.AcceptChanges();
+		}
+
+		if (files.length > 0 && !files[0].contains("src"))
+		{
+			File workJar = new File(files[0]);
+			if (workJar.exists())
+			{
+				// don't show Luncher
+				final Gui screen = new Gui("Device Launcher");
+				screen.setSize(250, 500);
+				screen.setVisible(true);
+				DesktopMain.start(Gui.iniPhone(), false, false, true, screen);
+			}
+		}
+		else
+		{
+			final Gui screen = new Gui("Device Launcher");
+			screen.setSize(250, 500);
+			screen.setVisible(true);
+		}
+
 	}
 } // class Ex_1
 
@@ -33,7 +177,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Checkbox debugChkBox;
+	static Checkbox debugChkBox;
 	Checkbox scissorChkBox;
 	Checkbox simulateChkBox;
 
@@ -146,7 +290,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 	{
 	}
 
-	private static devicesSizes iniDesktop()
+	public static devicesSizes iniDesktop()
 	{
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -158,7 +302,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	private static devicesSizes iniPhone()
+	public static devicesSizes iniPhone()
 	{
 		Size myInitialSize = new Size(480, 772);
 		devicesSizes ui = getHDPI(myInitialSize);
@@ -167,7 +311,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	private static devicesSizes iniTab()
+	public static devicesSizes iniTab()
 	{
 
 		Size myInitialSize = new Size(1280, 752);
@@ -177,7 +321,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	private static devicesSizes iniPad10()
+	public static devicesSizes iniPad10()
 	{
 
 		Size myInitialSize = new Size(1024, 768);
@@ -187,7 +331,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	private static devicesSizes iniLowPhone()
+	public static devicesSizes iniLowPhone()
 	{
 
 		Size myInitialSize = new Size(240, 381);
@@ -197,7 +341,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	private static devicesSizes iniHighPhone()
+	public static devicesSizes iniHighPhone()
 	{
 
 		Size myInitialSize = new Size(720, 1230);
@@ -207,7 +351,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	private static devicesSizes iniNexus7()
+	public static devicesSizes iniNexus7()
 	{
 
 		Size myInitialSize = new Size(1280, 703);
@@ -217,7 +361,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 	}
 
-	private static devicesSizes getLDPI(Size myInitialSize)
+	public static devicesSizes getLDPI(Size myInitialSize)
 	{
 		devicesSizes ui = new devicesSizes();
 
@@ -235,7 +379,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	private static devicesSizes getMDPI(Size myInitialSize)
+	public static devicesSizes getMDPI(Size myInitialSize)
 	{
 		devicesSizes ui = new devicesSizes();
 
@@ -253,7 +397,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	private static devicesSizes getHDPI(Size myInitialSize)
+	public static devicesSizes getHDPI(Size myInitialSize)
 	{
 		devicesSizes ui = new devicesSizes();
 
@@ -271,7 +415,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	private static devicesSizes getXHDPI(Size myInitialSize)
+	public static devicesSizes getXHDPI(Size myInitialSize)
 	{
 		devicesSizes ui = new devicesSizes();
 
@@ -289,7 +433,7 @@ class Gui extends Frame implements ActionListener, WindowListener
 		return ui;
 	}
 
-	private static devicesSizes getNexus7(Size myInitialSize)
+	public static devicesSizes getNexus7(Size myInitialSize)
 	{
 		devicesSizes ui = new devicesSizes();
 

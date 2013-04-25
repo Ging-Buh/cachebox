@@ -11,6 +11,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Solver.Functions.Function;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -186,13 +187,13 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	private void setLang()
 	{
 
-		bSolve.setText(GlobalCore.Translations.Get("Solve"));
-		bFunct.setText(GlobalCore.Translations.Get("Funct."));
-		bSelect.setText(GlobalCore.Translations.Get("Select."));
+		bSolve.setText(Translation.Get("Solve"));
+		bFunct.setText(Translation.Get("Funct."));
+		bSelect.setText(Translation.Get("Select."));
 
-		bLeft.setText(GlobalCore.Translations.Get("LeftWindow"));
-		bMiddle.setText(GlobalCore.Translations.Get("BothWindow"));
-		bRight.setText(GlobalCore.Translations.Get("RightWindow"));
+		bLeft.setText(Translation.Get("LeftWindow"));
+		bMiddle.setText(Translation.Get("BothWindow"));
+		bRight.setText(Translation.Get("RightWindow"));
 	}
 
 	protected void solve()
@@ -224,8 +225,8 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 				message += s;
 			}
 
-			MessageBox.Show(GlobalCore.Translations.Get("insertVars") + "\n" + message, GlobalCore.Translations.Get("missingVars"),
-					MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk, DialogListner);
+			MessageBox.Show(Translation.Get("insertVars") + "\n" + message, Translation.Get("missingVars"), MessageBoxButtons.YesNo,
+					MessageBoxIcon.Asterisk, DialogListner);
 		}
 
 	}

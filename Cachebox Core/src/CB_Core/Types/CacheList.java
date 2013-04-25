@@ -4,6 +4,9 @@ import java.util.Collections;
 
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Log.Logger;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 public class CacheList extends MoveableList<Cache>
 {
@@ -33,13 +36,34 @@ public class CacheList extends MoveableList<Cache>
 
 	public void Resort()
 	{
-		if (GlobalCore.LastValidPosition == null) return;
-
 		GlobalCore.ResortAtWork = true;
+		boolean LocatorValid = Locator.Valid();
 		// Alle Distanzen aktualisieren
-		for (Cache cache : this)
+		if (LocatorValid)
 		{
-			cache.Distance(true);
+			for (Cache cache : this)
+			{
+				cache.Distance(true);
+			}
+		}
+		else
+		{
+			// sort after Distance from selected Cache
+			Coordinate fromPos = GlobalCore.getSelectedCoord();
+			// avoid "illegal waypoint"
+			if (fromPos.getLatitude() == 0 && fromPos.getLongitude() == 0)
+			{
+				fromPos = GlobalCore.getSelectedCache().Pos;
+			}
+			if (fromPos == null)
+			{
+				GlobalCore.ResortAtWork = false;
+				return;
+			}
+			for (Cache cache : this)
+			{
+				cache.Distance(true, fromPos);
+			}
 		}
 
 		Collections.sort(this);
@@ -81,6 +105,13 @@ public class CacheList extends MoveableList<Cache>
 			// When the next Cache is a mystery with final waypoint
 			// -> activate the final waypoint!!!
 			Waypoint waypoint = nextCache.GetFinalWaypoint();
+			if (waypoint == null)
+			{
+				// wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat
+				// Wenn ein Cache einen Startpunkt definiert hat dann wird beim Selektieren dieses Caches gleich dieser Startpunkt
+				// selektiert
+				waypoint = nextCache.GetStartWaypoint();
+			}
 
 			// do not Change AutoResort Flag when selecting a Cache in the Resort function
 			GlobalCore.setSelectedWaypoint(nextCache, waypoint, false);
@@ -106,12 +137,14 @@ public class CacheList extends MoveableList<Cache>
 		if ((size() > 0) && (GlobalCore.getSelectedCache() != null) && (GetCacheById(GlobalCore.getSelectedCache().Id) == null))
 		{
 			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
+			Logger.DEBUG("Change SelectedCache from " + GlobalCore.getSelectedCache().GcCode + "to" + get(0).GcCode);
 			GlobalCore.setSelectedCache(get(0));
 		}
 		// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 		if ((GlobalCore.getSelectedCache() == null) && (size() > 0))
 		{
 			GlobalCore.setSelectedCache(get(0));
+			Logger.DEBUG("Set SelectedCache to " + get(0).GcCode + " first in List.");
 		}
 	}
 

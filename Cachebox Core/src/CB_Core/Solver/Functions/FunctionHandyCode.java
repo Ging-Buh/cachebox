@@ -1,9 +1,12 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionHandyCode extends Function
 {
+
+	private static final long serialVersionUID = -270660378762802943L;
+
 	public FunctionHandyCode()
 	{
 		Names.add(new LacalNames("PhoneCode", "en"));
@@ -15,13 +18,13 @@ public class FunctionHandyCode extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncPhoneCode");
+		return Translation.Get("solverFuncPhoneCode");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescPhoneCode");
+		return Translation.Get("solverDescPhoneCode");
 	}
 
 	@Override
@@ -29,7 +32,7 @@ public class FunctionHandyCode extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncPhoneCode");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncPhoneCode");
 		}
 		String wert = parameter[0].trim().toLowerCase();
 		if (wert.length() == 0) return "0";

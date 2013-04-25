@@ -9,6 +9,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -118,6 +119,12 @@ public class EditWrapedTextField extends EditTextFieldBase
 	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldType type, String Name)
 	{
 		this(parent, rec, Name);
+		this.type = type;
+	}
+
+	public EditWrapedTextField(String Name, TextFieldType type)
+	{
+		this(null, new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight()), Name);
 		this.type = type;
 	}
 
@@ -347,8 +354,10 @@ public class EditWrapedTextField extends EditTextFieldBase
 								style.messageFontColor.a);
 					}
 					else
+					{
 						font.setColor(0.7f, 0.7f, 0.7f, 1f);
-					BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
+					}
+
 					font.draw(batch, messageText, x + bgLeftWidth, y + textY);
 				}
 			}
@@ -358,7 +367,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 				textY += lineHeight * topLine;
 				for (DisplayText dt : displayText)
 				{
-					// font.draw(batch, dt.getDisplayText(), x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
 					font.draw(batch, dt.getDisplayText(), x + bgLeftWidth - leftPos, y + textY + mouseTempMove);
 					textY -= lineHeight;
 				}
@@ -368,22 +376,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 				if (cursorOn && cursorPatch != null)
 				{
-					// DisplayText dt = displayText.get(cursorLine);
-					// float xpos = 0;
-					//
-					// if (cursor < dt.glyphPositions.size)
-					// {
-					// xpos = dt.glyphPositions.get(cursor);
-					// }
-					// else if (dt.glyphPositions.size == 0)
-					// {
-					// xpos = 0;
-					// }
-					// else
-					// {
-					// xpos = dt.glyphPositions.get(dt.glyphPositions.size - 1); // letztes Zeichen
-					// }
-					float xpos = getCursorX();
+					getCursorX();
 					textY = (int) height - bgTopHeight + font.getDescent();
 
 					cursorHeight = font.getLineHeight() + font.getDescent() / 2;
@@ -494,10 +487,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 			if (prevDt != null)
 			{
 				// Restlichen Platz suchen
-				float len = prevDt.getWidth();
 				float rest = maxWidth - prevDt.getWidth(); // Restlicher Platz der vorherigen Zeile
 				// Breite des ersten Wortes incl. abschlieﬂendem Leerzeichen suchen
-				float posWord = 0;
+
 				int idWord = 0;
 				for (int i = 0; i < dt.displayText.length(); i++)
 				{
@@ -507,7 +499,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 					// ist
 					if ((c == ' ') && (pos <= rest))
 					{
-						posWord = pos;
 						idWord = i + 1;
 					}
 					else if (pos > rest)
@@ -638,7 +629,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 		if ((nextDt != null) && (nextDt.autoWrap))
 		{
 			// Breite des ersten Wortes incl. abschlieﬂendem Leerzeichen suchen
-			float posWord = 0;
 			int idWord = 0;
 			for (int i = 0; i < nextDt.displayText.length(); i++)
 			{
@@ -647,7 +637,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 				// Pr¸fen, ob aktuelles Zeichen ein Leerzeichen ist und ob das Ende nicht weiter als "rest" vom Start der Linie entfernt ist
 				if ((c == ' ') && (pos <= rest))
 				{
-					posWord = pos;
 					idWord = i + 1;
 				}
 				else if (pos > rest)
@@ -1025,8 +1014,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	public boolean keyDown(int keycode)
 	{
-		final BitmapFont font = style.font;
-
 		displayTextLock.lock();
 		try
 		{
@@ -1590,39 +1577,24 @@ public class EditWrapedTextField extends EditTextFieldBase
 				if (filter != null && !filter.acceptChar(this, character)) return true;
 			}
 
-			{
-				// Auskommentiert, weil hier das n‰chste LibGdx-TextField den Focus erhalten soll.
-
-				// if (character == TAB || character == ENTER_ANDROID) next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)
-				// || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-
-			}
-
 			if (font.containsCharacter(character))
 			{
 				if (selection != null) delete();
-				// if (!hasSelection)
 				{
-					dt.displayText = dt.displayText.substring(0, cursor.pos) + character
-							+ dt.displayText.substring(cursor.pos, dt.displayText.length());
-					updateDisplayText(dt, true);
-					cursor.pos++;
-					checkCursorVisible(true);
+					try
+					{
+						dt.displayText = dt.displayText.substring(0, cursor.pos) + character
+								+ dt.displayText.substring(cursor.pos, dt.displayText.length());
+						updateDisplayText(dt, true);
+						cursor.pos++;
+						checkCursorVisible(true);
+					}
+					catch (Exception e)
+					{
+						return false;
+					}
 				}
-				// else
-				// {
-				// int minIndex = Math.min(cursor, selectionStart);
-				// int maxIndex = Math.max(cursor, selectionStart);
-				//
-				// text = (minIndex > 0 ? text.substring(0, minIndex) : "")
-				// + (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-				// cursor = minIndex;
-				// text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
-				// // updateDisplayText();
-				// cursor++;
-				// checkCursorVisible(true);
-				// clearSelection();
-				// }
+
 				GL.that.renderOnce("EditWrapedTextField");
 			}
 			sendKeyTyped(character);
@@ -1706,12 +1678,15 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		StringBuilder sb = new StringBuilder();
 
-		int lastLine = displayText.size();
+		displayText.size();
 		int index = 0;
 		for (DisplayText dt : displayText)
 		{
+			if ((index > 0) && (!dt.autoWrap))
+			{
+				sb.append(GlobalCore.br);
+			}
 			sb.append(dt.displayText);
-			if (!dt.autoWrap && index != lastLine) sb.append(GlobalCore.br);
 			index++;
 		}
 

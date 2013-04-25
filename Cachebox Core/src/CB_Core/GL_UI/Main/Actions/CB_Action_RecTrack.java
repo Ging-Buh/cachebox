@@ -4,6 +4,7 @@ import CB_Core.TrackRecorder;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -27,7 +28,7 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(8);
+		return SpriteCache.Icons.get(IconName.trackList_8.ordinal());
 	}
 
 	@Override
@@ -75,6 +76,6 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 		mi = cm2.addItem(MenuID.MI_STOP, "stop");
 		mi.setEnabled(TrackRecorder.recording | TrackRecorder.pauseRecording);
 
-		cm2.show();
+		cm2.Show();
 	}
 }

@@ -271,11 +271,18 @@ public abstract class ListViewBase extends CB_View_Base
 
 		if (this.mBaseAdapter == null || this.mBaseAdapter.getCount() == 0)
 		{
-			if (emptyMsg == null && mEmptyMsg != null)
+			try
 			{
-				emptyMsg = new BitmapFontCache(Fonts.getBig());
-				TextBounds bounds = emptyMsg.setWrappedText(mEmptyMsg, 0, 0, this.width);
-				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
+				if (emptyMsg == null && mEmptyMsg != null)
+				{
+					emptyMsg = new BitmapFontCache(Fonts.getBig());
+					TextBounds bounds = emptyMsg.setWrappedText(mEmptyMsg, 0, 0, this.width);
+					emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
 		}

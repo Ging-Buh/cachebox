@@ -147,14 +147,4 @@ public class copyAssetFolder
 
 	}
 
-	private void makeDir(String Dir)
-	{
-		String[] dir = Dir.split("/");
-		String dirReady = "";
-		for (String tmp : dir)
-		{
-
-		}
-	}
-
 }

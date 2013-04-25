@@ -2,7 +2,6 @@ package de;
 
 import java.awt.Frame;
 import java.io.File;
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,9 +24,12 @@ import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.GpsStatus;
+import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Settings.SettingBase.iChanged;
+import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -35,6 +37,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+import de.CB_Texturepacker.Desctop_Packer;
 import de.Map.DesctopManager;
 
 public class DesktopMain
@@ -44,11 +47,16 @@ public class DesktopMain
 
 	static float compassheading = -1;
 
+	@SuppressWarnings("unused")
 	public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame)
 	{
 		GlobalCore.platform = Plattform.Desktop;
 		frame.setVisible(false);
 		new DesktopLogger();
+		Logger.setDebug(true);
+
+		// Initial Desctop TexturePacker
+		new Desctop_Packer();
 
 		InitalConfig();
 		Config.settings.ReadFromDB();
@@ -82,7 +90,10 @@ public class DesktopMain
 		// chek if tablet
 		GlobalCore.isTab = sw > 400 ? true : false;
 
-		UiSizes.initial(ui);
+		new UiSizes();
+		UiSizes.that.initial(ui);
+
+		initialLocatorBase();
 
 		// TODO Activate Full Screen
 		if (false)
@@ -96,7 +107,45 @@ public class DesktopMain
 		}
 		else
 		{
-			new LwjglApplication(CB_UI, "Game", ui.Window.width, ui.Window.height, true);
+
+			LwjglApplicationConfiguration lwjglAppCfg = new LwjglApplicationConfiguration();
+			DisplayMode dispMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
+
+			lwjglAppCfg.setFromDisplayMode(dispMode);
+			lwjglAppCfg.fullscreen = false;
+			lwjglAppCfg.resizable = false;
+			lwjglAppCfg.useGL20 = true;
+			lwjglAppCfg.width = ui.Window.width;
+			lwjglAppCfg.height = ui.Window.height;
+			lwjglAppCfg.title = "DCB Desctop Cachebox";
+
+			final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
+			App.getGraphics().setContinuousRendering(false);
+
+			GL.listenerInterface = new GL_Listener_Interface()
+			{
+
+				@Override
+				public void RequestRender(String requestName)
+				{
+					App.getGraphics().requestRendering();
+
+				}
+
+				@Override
+				public void RenderDirty()
+				{
+					App.getGraphics().setContinuousRendering(false);
+
+				}
+
+				@Override
+				public void RenderContinous()
+				{
+					App.getGraphics().setContinuousRendering(true);
+
+				}
+			};
 		}
 
 		Timer timer = new Timer();
@@ -134,18 +183,6 @@ public class DesktopMain
 
 			}
 
-			@Override
-			public GpsStatus getGpsStatus()
-			{
-
-				return null;
-			}
-
-			@Override
-			public float getCompassHeading()
-			{
-				return compassheading;
-			}
 		});
 
 		platformConector.setGetFileListner(new IgetFileListner()
@@ -265,12 +302,6 @@ public class DesktopMain
 	private static void Run(boolean simulate)
 	{
 		CB_UI.onStart();
-		// // CB_UI.setGLViewID(ViewConst.MAP_CONTROL_TEST_VIEW);
-		// CB_UI.setGLViewID(ViewConst.TEST_VIEW);
-		// // CB_UI.setGLViewID(ViewConst.CREDITS_VIEW);
-		// // CB_UI.setGLViewID(ViewConst.GL_MAP_VIEW);
-		// // CB_UI.setGLViewID(ViewConst.ViewConst.ABOUT_VIEW);
-		// CB_UI.setGLViewID(ViewConst.TEST_LIST_VIEW);
 
 		Gdx.input.setInputProcessor((InputProcessor) CB_UI);
 
@@ -291,7 +322,7 @@ public class DesktopMain
 	}
 
 	/**
-	 * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
+	 * Initialisiert die Config fï¿½r die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
 	 */
 	public static void InitalConfig()
 	{
@@ -299,7 +330,7 @@ public class DesktopMain
 		if (Config.settings != null && Config.settings.isLoaded()) return;
 
 		// Read Config
-		String workPath = "./testdata";
+		String workPath = "./cachebox";
 
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
@@ -332,18 +363,83 @@ public class DesktopMain
 		{
 			e.printStackTrace();
 		}
-		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");
+	}
 
-		try
+	/**
+	 * Initial all Locator functions
+	 */
+	private static void initialLocatorBase()
+	{
+		// ##########################################################
+		// initial Locator with saved Location
+		// ##########################################################
+		double latitude = Config.settings.MapInitLatitude.getValue();
+		double longitude = Config.settings.MapInitLongitude.getValue();
+		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
+
+		CB_Locator.Location initialLocation;
+
+		if (provider == ProviderType.Saved)
 		{
-			GlobalCore.Translations.ReadTranslationsFile(Config.settings.Sel_LanguagePath.getValue());
+			initialLocation = new CB_Locator.Location(latitude, longitude, 0, false, 0, false, 0, 0, provider);
 		}
-		catch (IOException e)
+		else
 		{
-			e.printStackTrace();
+			initialLocation = CB_Locator.Location.NULL_LOCATION;
 		}
 
+		new CB_Locator.Locator(initialLocation);
+
+		// ##########################################################
+		// initial settings changed handling
+		// ##########################################################
+
+		// Use Imperial units?
+		CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+		Config.settings.ImperialUnits.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+			}
+		});
+
+		// GPS update time?
+		CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+		Config.settings.gpsUpdateTime.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+			}
+		});
+
+		// Use magnetic Compass?
+		CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+		Config.settings.HardwareCompass.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+			}
+		});
+
+		// Magnetic compass level
+		CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+		Config.settings.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+			}
+		});
 	}
 
 }

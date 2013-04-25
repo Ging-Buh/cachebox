@@ -7,6 +7,7 @@ import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_Core.GL_UI.Menu.Menu;
@@ -33,7 +34,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(54);
+		return SpriteCache.Icons.get(IconName.fieldNote_54.ordinal());
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 		cm.addItem(MenuID.MI_QUICK_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
 		cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
 
-		cm.show();
+		cm.Show();
 
 	}
 

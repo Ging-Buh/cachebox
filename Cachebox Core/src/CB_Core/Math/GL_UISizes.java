@@ -3,7 +3,9 @@ package CB_Core.Math;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.Fonts.Settings;
 import CB_Core.Log.Logger;
+import CB_Core.Settings.SettingBase.iChanged;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Vector2;
@@ -84,7 +86,29 @@ public class GL_UISizes implements SizeChangedEvent
 		{
 			calcSizes();
 
-			Fonts.LoadCalcFonts();
+			Settings cfg = new Fonts().new Settings();
+			cfg.SkinFolder = Config.settings.SkinFolder.getValue();
+			cfg.DefaultSkinFolder = Config.settings.SkinFolder.getDefaultValue();
+
+			cfg.SizeBiggest = Config.settings.FONT_SIZE_COMPASS_DISTANCE.getValue();
+			cfg.SizeBig = Config.settings.FONT_SIZE_BIG.getValue();
+			cfg.SizeNormal = Config.settings.FONT_SIZE_NORMAL.getValue();
+			cfg.SizeNormalbubble = Config.settings.FONT_SIZE_NORMAL_BUBBLE.getValue();
+			cfg.SizeSmall = Config.settings.FONT_SIZE_SMALL.getValue();
+			cfg.SizeSmallBubble = Config.settings.FONT_SIZE_SMALL_BUBBLE.getValue();
+			cfg.Nightmode = Config.settings.nightMode.getValue();
+
+			Config.settings.nightMode.addChangedEventListner(new iChanged()
+			{
+
+				@Override
+				public void isChanged()
+				{
+					Fonts.setNightMode(Config.settings.nightMode.getValue());
+				}
+			});
+
+			Fonts.loadFonts(cfg);
 
 			calcPos();
 
@@ -265,9 +289,9 @@ public class GL_UISizes implements SizeChangedEvent
 	{
 		Logger.DEBUG("GL_UISizes.calcSizes()");
 		// größe der Frames berechnen
-		int frameLeftwidth = UiSizes.RefWidth;
+		int frameLeftwidth = UI_Size_Base.that.RefWidth;
 
-		int WindowWidth = UiSizes.getWindowWidth();
+		int WindowWidth = UI_Size_Base.that.getWindowWidth();
 		int frameRightWidth = WindowWidth - frameLeftwidth;
 
 		if (frameLeftwidth < 400)
@@ -281,7 +305,7 @@ public class GL_UISizes implements SizeChangedEvent
 
 		margin = (float) (6.6666667 * DPI);
 
-		frameHeight = UiSizes.getWindowHeight() - convertDip2Pix(35) - BottomButtonHeight;
+		frameHeight = UI_Size_Base.that.getWindowHeight() - convertDip2Pix(35) - BottomButtonHeight;
 
 		UI_Left = new CB_RectF(0, convertDip2Pix(65), frameLeftwidth, frameHeight);
 		UI_Right = UI_Left.copy();
@@ -292,10 +316,11 @@ public class GL_UISizes implements SizeChangedEvent
 		}
 
 		infoShadowHeight = (float) (3.333333 * defaultDPI);
-		Info.setSize((float) (UiSizes.RefWidth - UiSizes.getButtonWidth() - (margin * 3)), UiSizes.getButtonHeight());
+		Info.setSize((float) (UI_Size_Base.that.RefWidth - UI_Size_Base.that.getButtonWidth() - (margin * 3)),
+				UI_Size_Base.that.getButtonHeight());
 		Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
 		halfCompass = Compass.getHeight() / 2;
-		Toggle.setSize(UiSizes.getButtonWidth(), UiSizes.getButtonHeight());
+		Toggle.setSize(UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight());
 		ZoomBtn.setSize((float) (158 * defaultDPI), 48 * defaultDPI);
 		PosMarkerSize = (float) (46.666667 * DPI);
 		halfPosMarkerSize = PosMarkerSize / 2;
@@ -345,7 +370,7 @@ public class GL_UISizes implements SizeChangedEvent
 	public static int convertDip2Pix(float dips)
 	{
 		// Converting dips to pixels
-		if (scale == 0) scale = UiSizes.getScale();
+		if (scale == 0) scale = UI_Size_Base.that.getScale();
 		return Math.round(dips * scale);
 	}
 

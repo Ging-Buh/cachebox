@@ -1,10 +1,12 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
-import CB_Core.Types.Coordinate;
+import CB_Core.TranslationEngine.Translation;
+import CB_Locator.Coordinate;
 
 public class FunctionBearing extends Function
 {
+
+	private static final long serialVersionUID = -85879423478038052L;
 
 	public FunctionBearing()
 	{
@@ -14,13 +16,13 @@ public class FunctionBearing extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncBearing");
+		return Translation.Get("solverFuncBearing");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescBearing");
+		return Translation.Get("solverDescBearing");
 	}
 
 	@Override
@@ -28,13 +30,13 @@ public class FunctionBearing extends Function
 	{
 		if (parameter.length != 2)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "2", "$solverFuncBearing");
+			return Translation.Get("solverErrParamCount", "2", "$solverFuncBearing");
 		}
 		Coordinate[] coord = new Coordinate[2];
 		for (int i = 0; i < 2; i++)
 		{
 			coord[i] = new Coordinate(parameter[i]);
-			if (!coord[i].Valid) return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncBearing", String.valueOf(i + 1),
+			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncBearing", String.valueOf(i + 1),
 					"$coordinate", "$coordinate", parameter[i]);
 		}
 		try
@@ -45,8 +47,8 @@ public class FunctionBearing extends Function
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("StdError", "$solverFuncBearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> "
-					+ coord[1].FormatCoordinate());
+			return Translation.Get("StdError", "$solverFuncBearing", ex.getMessage(),
+					coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
 		}
 	}
 

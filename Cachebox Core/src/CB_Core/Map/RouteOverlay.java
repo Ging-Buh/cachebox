@@ -23,8 +23,8 @@ import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.PolylineReduction;
-import CB_Core.Math.UiSizes;
-import CB_Core.Types.Coordinate;
+import CB_Core.Math.UI_Size_Base;
+import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -334,12 +334,12 @@ public class RouteOverlay
 									lastAcceptedCoordinate.getElevation(), lastAcceptedDirection, lastAcceptedTime));
 
 							// Calculate the length of a Track
-							if (!FromPosition.Valid)
+							if (!FromPosition.isValid())
 							{
 								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
 								FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
 								FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
-								FromPosition.Valid = true;
+								FromPosition.setValid(true);
 							}
 							else
 							{
@@ -395,10 +395,6 @@ public class RouteOverlay
 			final int hour = Integer.parseInt(dateString.substring(11, 13));
 			final int minute = Integer.parseInt(dateString.substring(14, 16));
 			final int second = Integer.parseInt(dateString.substring(17, 19));
-
-			final String reconstruct = year + "-" + (month < 10 ? "0" : "") + month + "-" + (day < 10 ? "0" : "") + day + "T"
-					+ (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute + ":" + (second < 10 ? "0" : "") + second
-					+ "Z";
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.set(Calendar.YEAR, year);
@@ -520,7 +516,7 @@ public class RouteOverlay
 				float overlap = rt.overlap;
 				ArrowSprite.setColor(rt.mColor);
 				PointSprite.setColor(rt.mColor);
-				float scale = UiSizes.getScale();
+				float scale = UI_Size_Base.that.getScale();
 
 				for (int ii = 0; ii < rt.Points.size() - 1; ii++)
 				{

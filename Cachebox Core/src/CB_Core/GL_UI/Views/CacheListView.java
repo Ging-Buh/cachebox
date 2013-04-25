@@ -7,8 +7,6 @@ import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -21,13 +19,15 @@ import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.CB_AllContextMenuHandler;
-import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -47,6 +47,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		super(rec, Name);
 		registerSkinChangedEvent();
 		CachListChangedEventList.Add(this);
+		SelectedCacheEventList.Add(this);
 		that = this;
 		listView = new V_ListView(rec, Name);
 		listView.setZeroPos();
@@ -71,7 +72,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (emptyMsg == null)
 			{
 				emptyMsg = new BitmapFontCache(Fonts.getBig());
-				TextBounds bounds = emptyMsg.setWrappedText(GlobalCore.Translations.Get("EmptyCacheList"), 0, 0, this.width);
+				TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.width);
 				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
@@ -100,25 +101,30 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		Logger.LogCat("CacheList onShow");
 		setBackground(SpriteCache.ListBack);
 
-		CachListChangedEventList.Add(this);
-		SelectedCacheEventList.Add(this);
 		PositionChangedEventList.Add(this);
 
 		synchronized (Database.Data.Query)
 		{
-			lvAdapter = new CustomAdapter(Database.Data.Query);
-			listView.setBaseAdapter(lvAdapter);
-
-			int itemCount = Database.Data.Query.size();
-			int itemSpace = listView.getMaxItemCount();
-
-			if (itemSpace >= itemCount)
+			try
 			{
-				listView.setUndragable();
+				lvAdapter = new CustomAdapter(Database.Data.Query);
+				listView.setBaseAdapter(lvAdapter);
+
+				int itemCount = Database.Data.Query.size();
+				int itemSpace = listView.getMaxItemCount();
+
+				if (itemSpace >= itemCount)
+				{
+					listView.setUndragable();
+				}
+				else
+				{
+					listView.setDragable();
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				listView.setDragable();
+				e.printStackTrace();
 			}
 		}
 		TimerTask task = new TimerTask()
@@ -161,7 +167,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	 */
 	public void setSelectedCacheVisible(int pos)
 	{
-		if (!listView.isDrageble()) return;
 		int id = 0;
 		int first = listView.getFirstVisiblePosition();
 		int last = listView.getLastVisiblePosition();
@@ -173,7 +178,10 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (ca == GlobalCore.getSelectedCache())
 				{
 					listView.setSelection(id);
-					if (!(first <= id && last >= id)) listView.scrollToItem(id - pos);
+					if (!listView.isDrageble())
+					{
+						if (!(first <= id && last >= id) || (searchPlaceholder < 0)) listView.scrollToItem(id - pos);
+					}
 					break;
 				}
 				id++;
@@ -189,11 +197,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	{
 		isShown = false;
 		Logger.LogCat("CacheList onHide");
-		SelectedCacheEventList.Remove(this);
-		CachListChangedEventList.Remove(this);
 		PositionChangedEventList.Remove(this);
 
-		if (searchPlaceholder > 0)
+		if (searchPlaceholder < 0)
 		{
 			// Blende Search Dialog aus
 			SearchDialog.that.close();
@@ -220,6 +226,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			{
 				// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
 				Waypoint waypoint = cache.GetFinalWaypoint();
+				if (waypoint == null) waypoint = cache.GetStartWaypoint();
 				GlobalCore.setSelectedWaypoint(cache, waypoint);
 			}
 			listView.setSelection(selectionIndex);
@@ -242,8 +249,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			}
 			Waypoint finalWp = null;
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
+			if (finalWp == null) finalWp = cache.GetStartWaypoint();
 			// shutdown AutoResort when selecting a cache by hand
-			GlobalCore.autoResort = false;
+			GlobalCore.setAutoResort(false);
 			GlobalCore.setSelectedWaypoint(cache, finalWp);
 
 			invalidate();
@@ -260,14 +268,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		public CustomAdapter(CacheList cacheList)
 		{
-			Logger.DEBUG("CacheList new Custom Adapter");
 			synchronized (cacheList)
 			{
 				this.cacheList = cacheList;
 
 				Count = cacheList.size();
 			}
-
+			Logger.DEBUG("CacheListView ctor CustomAdapter " + Count + " Caches");
 		}
 
 		public int getCount()
@@ -294,7 +301,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 				if (!cache.isSearchVisible()) return null;
 
-				CacheListViewItem v = new CacheListViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache);
+				CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
 				v.setClickable(true);
 				v.setOnClickListener(onItemClickListner);
 				v.setOnLongClickListener(onItemLongClickListner);
@@ -317,7 +324,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (!cache.isSearchVisible()) return 0;
 
 				// alle Items haben die gleiche Größe (Höhe)
-				return UiSizes.getCacheListItemRec().getHeight();
+				return UiSizes.that.getCacheListItemRec().getHeight();
 			}
 
 		}
@@ -327,7 +334,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void CacheListChangedEvent()
 	{
-		Logger.DEBUG("CacheListChangetEvent on Cache List");
+		Logger.DEBUG("CacheListChangedEvent on Cache List");
 		listView.setBaseAdapter(null);
 		synchronized (Database.Data.Query)
 		{
@@ -368,13 +375,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		GL.that.renderOnce("Core.CacheListView");
 	}
 
 	@Override
-	public void OrientationChanged(float heading)
+	public void OrientationChanged()
 	{
 		GL.that.renderOnce("Core.CacheListView");
 	}
@@ -390,7 +397,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	{
 		super.onRezised(rec);
 		listView.setSize(rec);
-		listView.setHeight(rec.getHeight() - searchPlaceholder);
+		listView.setHeight(rec.getHeight() + searchPlaceholder);
 		listView.setZeroPos();
 	}
 
@@ -398,19 +405,30 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public void setTopPlaceHolder(float PlaceHoldHeight)
 	{
-		searchPlaceholder = PlaceHoldHeight;
+		searchPlaceholder = -PlaceHoldHeight;
 		onRezised(this);
 	}
 
 	public void resetPlaceHolder()
 	{
-		searchPlaceholder = 0;
+		searchPlaceholder = -searchPlaceholder;
 		onRezised(this);
 	}
 
 	public V_ListView getListView()
 	{
 		return listView;
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Normal;
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
 	}
 
 }

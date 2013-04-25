@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Dialogs.DeleteDialog;
 import CB_Core.GL_UI.Menu.MenuID;
 
@@ -26,7 +27,7 @@ public class CB_Action_Show_Delete_Dialog extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(28);
+		return SpriteCache.Icons.get(IconName.delete_28.ordinal());
 	}
 
 	@Override

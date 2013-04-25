@@ -7,6 +7,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.GestureHelp;
 import CB_Core.GL_UI.GL_Listener.GL;
@@ -122,7 +123,7 @@ public class CB_Button extends Button implements OnClickListener
 
 			if (mButtonActions.size() > 1)
 			{
-				getLongClickMenu().show();
+				getLongClickMenu().Show();
 			}
 			else if (mButtonActions.size() == 1)
 			{
@@ -143,9 +144,11 @@ public class CB_Button extends Button implements OnClickListener
 			if (help != null)
 			{
 				CB_RectF rec = CB_Button.this.ThisWorldRec;
-
-				help.setPos(rec.getX(), rec.getMaxY());
-				GL.that.Toast(help, 2000);
+				if (rec != null)
+				{
+					help.setPos(rec.getX(), rec.getMaxY());
+					GL.that.Toast(help, 2000);
+				}
 			}
 
 			return true;
@@ -182,13 +185,10 @@ public class CB_Button extends Button implements OnClickListener
 			}
 		});
 
-		int index = 0;
-
 		for (CB_ActionButton ba : mButtonActions)
 		{
 			CB_Action action = ba.getAction();
 			if (action == null) continue;
-			// MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
 			MenuItem mi = cm.addItem(action.getId(), action.getName(), action.getNameExtention());
 			mi.setEnabled(action.getEnabled());
 			mi.setCheckable(action.getIsCheckable());
@@ -241,7 +241,7 @@ public class CB_Button extends Button implements OnClickListener
 
 							compoundMenu.reorganizeIndexes();
 
-							compoundMenu.show();
+							compoundMenu.Show();
 
 							return true;
 						}
@@ -316,7 +316,7 @@ public class CB_Button extends Button implements OnClickListener
 				float iconHeight = this.height / 2.3f;
 				float Versatz = this.height / 38f;
 
-				menuSprite = new Sprite(SpriteCache.Icons.get(37));
+				menuSprite = new Sprite(SpriteCache.Icons.get(IconName.menu_37.ordinal()));
 				menuSprite.setBounds(this.width - iconWidth - Versatz, Versatz, iconWidth, iconHeight);
 			}
 

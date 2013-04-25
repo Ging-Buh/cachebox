@@ -1,10 +1,12 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
-import CB_Core.Types.Coordinate;
+import CB_Core.TranslationEngine.Translation;
+import CB_Locator.Coordinate;
 
 public class FunctionCrossbearing extends Function
 {
+
+	private static final long serialVersionUID = 4233730654010706806L;
 
 	public FunctionCrossbearing()
 	{
@@ -15,13 +17,13 @@ public class FunctionCrossbearing extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncCrossbearing");
+		return Translation.Get("solverFuncCrossbearing");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescCrossbearing");
+		return Translation.Get("solverDescCrossbearing");
 	}
 
 	@Override
@@ -29,23 +31,23 @@ public class FunctionCrossbearing extends Function
 	{
 		if (parameter.length != 4)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "4", "$solverFuncBearing");
+			return Translation.Get("solverErrParamCount", "4", "$solverFuncBearing");
 		}
 		Coordinate[] coord = new Coordinate[2];
 		double[] angle = new double[2];
 		for (int i = 0; i < 2; i++)
 		{
 			coord[i] = new Coordinate(parameter[i * 2]);
-			if (!coord[i].Valid) return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncCrossbearing",
-					String.valueOf(i * 2 + 1), "$coordinate", "$coordinate", parameter[i * 2]);
+			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncCrossbearing", String.valueOf(i * 2 + 1),
+					"$coordinate", "$coordinate", parameter[i * 2]);
 			try
 			{
 				angle[i] = Double.valueOf(parameter[i * 2 + 1]);
 			}
 			catch (Exception ex)
 			{
-				return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncCrossbearing", String.valueOf(i * 2 + 2), "$angle",
-						"$number", parameter[i * 2 + 1]);
+				return Translation.Get("solverErrParamType", "$solverFuncCrossbearing", String.valueOf(i * 2 + 2), "$angle", "$number",
+						parameter[i * 2 + 1]);
 			}
 		}
 
@@ -55,8 +57,8 @@ public class FunctionCrossbearing extends Function
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("StdError", "$solverFuncCrossbearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> "
-					+ coord[1].FormatCoordinate());
+			return Translation.Get("StdError", "$solverFuncCrossbearing", ex.getMessage(),
+					coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
 		}
 	}
 

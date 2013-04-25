@@ -1,9 +1,11 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionPi extends Function
 {
+	private static final long serialVersionUID = -5961548229978339692L;
+
 	public FunctionPi()
 	{
 		Names.add(new LacalNames("Pi", "en"));
@@ -12,20 +14,19 @@ public class FunctionPi extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncPi");
+		return Translation.Get("solverFuncPi");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescPi");
+		return Translation.Get("solverDescPi");
 	}
 
 	@Override
 	public String Calculate(String[] parameter)
 	{
-		if ((parameter.length != 1) || (parameter[0].trim() != "")) return GlobalCore.Translations.Get("solverErrParamCount", "0",
-				"$solverFuncPi");
+		if ((parameter.length != 1) || (parameter[0].trim() != "")) return Translation.Get("solverErrParamCount", "0", "$solverFuncPi");
 		return String.valueOf(Math.PI);
 	}
 

@@ -2,6 +2,7 @@ package de.droidcachebox.Custom_Controls;
 
 import CB_Core.Config;
 import CB_Core.Math.CB_Rect;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -134,11 +135,11 @@ public final class DebugInfoPanel extends View
 		this.height = measure(heightMeasureSpec);
 		Rect bounds = new Rect();
 		LayoutTextPaint = new TextPaint();
-		LayoutTextPaint.setTextSize(UiSizes.getScaledFontSize());
+		LayoutTextPaint.setTextSize(UI_Size_Base.that.getScaledFontSize());
 		LayoutTextPaint.getTextBounds("T", 0, 1, bounds);
 		LayoutTextPaint.setColor(Color.WHITE);
 		LineSep = bounds.height() / 3;
-		ContentWidth = width - (UiSizes.getCornerSize() * 2);
+		ContentWidth = width - (UiSizes.that.getCornerSize() * 2);
 
 		LayoutMemInfo = new StaticLayout("1. Zeile " + String.format("%n") + "2.Zeile" + String.format("%n") + "3.Zeile", LayoutTextPaint,
 				ContentWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -193,7 +194,7 @@ public final class DebugInfoPanel extends View
 		CB_Rect DrawingRec = new CB_Rect(0, 0, width, height);
 		ActivityUtils.drawFillRoundRecWithBorder(canvas, DrawingRec, 2, LineColor, Global.getColor(R.attr.SlideDownBackColor));
 
-		left = top = UiSizes.getCornerSize();
+		left = top = UiSizes.that.getCornerSize();
 
 		if (Config.settings.DebugMemory.getValue()) drawMemInfo(canvas);
 
@@ -247,7 +248,6 @@ public final class DebugInfoPanel extends View
 		@Override
 		public void onTick(long millisUntilFinished)
 		{
-			 
 
 		}
 	}

@@ -7,12 +7,13 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
-import CB_Core.GlobalCore;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 public class Cache implements Comparable<Cache>
 {
@@ -105,11 +106,11 @@ public class Cache implements Comparable<Cache>
 	/**
 	 * Schwierigkeit des Caches
 	 */
-	public float Difficulty;
+	public float Difficulty = 0;
 	/**
 	 * Geländebewertung
 	 */
-	public float Terrain;
+	public float Terrain = 0;
 	/**
 	 * Wurde der Cache archiviert?
 	 */
@@ -292,6 +293,12 @@ public class Cache implements Comparable<Cache>
 	 */
 	public Cache()
 	{
+		this.DateHidden = new Date();
+		this.NumTravelbugs = 0;
+		this.Difficulty = 0;
+		this.Terrain = 0;
+		this.Size = CacheSizes.other;
+		this.Available = true;
 		waypoints = new ArrayList<Waypoint>();
 	}
 
@@ -370,13 +377,47 @@ public class Cache implements Comparable<Cache>
 	}
 
 	/**
+	 * true if this is a mystery of multi with a Stage Waypoint defined as StartPoint
+	 * 
+	 * @return
+	 */
+	public boolean HasStartWaypoint()
+	{
+		return GetStartWaypoint() != null;
+	}
+
+	/**
+	 * search the start Waypoint for a multi or mystery
+	 * 
+	 * @return
+	 */
+	public Waypoint GetStartWaypoint()
+	{
+		if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery)) return null;
+
+		for (Waypoint wp : waypoints)
+		{
+			if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
+			{
+				return wp;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @return Entfernung zur aktUserPos als Float
 	 */
 	public float CachedDistance()
 	{
-		if (cachedDistance != 0) return cachedDistance;
+		if (cachedDistance != 0)
+		{
+			return cachedDistance;
+		}
 		else
+		{
 			return Distance(true);
+		}
 	}
 
 	/**
@@ -420,26 +461,36 @@ public class Cache implements Comparable<Cache>
 	{
 		spoilerRessources = new ArrayList<ImageEntry>();
 
-		String path = Config.settings.SpoilerFolder.getValue();
-		String directory = path + "/" + GcCode.substring(0, 4);
+		String directory = "";
 
-		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+		// from own Repository
+		String path = Config.settings.SpoilerFolderLocal.getValue();
+		if (path != null && path.length() > 0)
+		{
+			directory = path + "/" + GcCode.substring(0, 4);
+			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+		}
 
+		// from Global Repository
 		path = Config.settings.DescriptionImageFolder.getValue();
 		directory = path + "/" + GcCode.substring(0, 4);
+		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
+		// Spoilers are always loaden from global Repository too
+		// from globalUser changed Repository
+		path = Config.settings.SpoilerFolder.getDefaultValue();
+		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Add own taken photo
 		directory = Config.settings.UserImageFolder.getValue();
-
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 	}
 
 	private void reloadSpoilerResourcesFromPath(String directory, ArrayList<ImageEntry> spoilerResources)
 	{
 		if (!FileIO.DirectoryExists(directory)) return;
-
+		// Logger.DEBUG("Loading spoilers from " + directory);
 		File dir = new File(directory);
 		FilenameFilter filter = new FilenameFilter()
 		{
@@ -493,7 +544,11 @@ public class Cache implements Comparable<Cache>
 	 */
 	public float Distance(boolean useFinal)
 	{
-		Coordinate fromPos = GlobalCore.LastValidPosition;
+		return Distance(useFinal, Locator.getCoordinate());
+	}
+
+	public float Distance(boolean useFinal, Coordinate fromPos)
+	{
 		Waypoint waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
 		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
@@ -501,11 +556,16 @@ public class Cache implements Comparable<Cache>
 		// If a mystery has a final waypoint, the distance will be calculated to
 		// the final not the the cache coordinates
 		Coordinate toPos = Pos;
-		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+		if (waypoint != null)
+		{
+			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			// nur sinnvolles Final, sonst vom Cache
+			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
+		}
 		float[] dist = new float[4];
 		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
 		cachedDistance = dist[0];
-		return (float) cachedDistance;
+		return cachedDistance;
 	}
 
 	public boolean isAttributePositiveSet(Attributes attribute)
@@ -541,8 +601,8 @@ public class Cache implements Comparable<Cache>
 	@Override
 	public int compareTo(Cache c2)
 	{
-		float dist1 = this.CachedDistance();
-		float dist2 = c2.CachedDistance();
+		float dist1 = this.cachedDistance;
+		float dist2 = c2.cachedDistance;
 		return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
 	}
 

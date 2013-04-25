@@ -4,14 +4,14 @@ import java.util.Date;
 
 public class TrackableLogEntry
 {
-	private int Id;
-	private long TrackableId;
-	private long CacheId;
-	private String GcCode;      
-	private boolean LogIsEncoded; 
-	private String LogText;
-	private int LogTypeId;
-	private String LoggedByName;
-	private Date visitDate;
+	protected int Id;
+	protected long TrackableId;
+	protected long CacheId;
+	protected String GcCode;
+	protected boolean LogIsEncoded;
+	protected String LogText;
+	protected int LogTypeId;
+	protected String LoggedByName;
+	protected Date visitDate;
 
 }

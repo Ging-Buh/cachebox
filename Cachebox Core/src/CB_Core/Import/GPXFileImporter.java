@@ -18,10 +18,10 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.XMLParserException;
@@ -94,6 +94,7 @@ public class GPXFileImporter
 		ruleList = createWPTRules(ruleList);
 		ruleList = createGroundspeakRules(ruleList);
 		ruleList = createGSAKRules(ruleList);
+		ruleList = createTerraRules(ruleList);
 
 		@SuppressWarnings("unchecked")
 		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
@@ -149,7 +150,7 @@ public class GPXFileImporter
 				}
 				else
 				{
-					if (values.get("wpt_type").startsWith("Geocache|"))
+					if (values.get("wpt_type").startsWith("Geocache"))
 					{
 						try
 						{
@@ -173,7 +174,6 @@ public class GPXFileImporter
 							errors++;
 							Logger.Error("GPXFileImporter", "CreateWaypoint", e);
 						}
-
 					}
 				}
 
@@ -195,7 +195,14 @@ public class GPXFileImporter
 			@Override
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
-				values.put("wpt_type", text);
+				if (text.startsWith("TerraCache|Classic Cache"))
+				{
+					values.put("wpt_type", "Geocache|Traditional Cache"); // nötig um GPX von TerraCaching.com einzulesen
+				}
+				else
+				{
+					values.put("wpt_type", text);
+				}
 			}
 		});
 
@@ -258,7 +265,14 @@ public class GPXFileImporter
 			@Override
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
-				values.put("wpt_sym", text);
+				if (text.startsWith("Default"))
+				{
+					values.put("wpt_sym", "Geocache"); // nötig um GPX von Navicache.com einzulesen
+				}
+				else
+				{
+					values.put("wpt_sym", text);
+				}
 			}
 		});
 
@@ -778,6 +792,125 @@ public class GPXFileImporter
 		return ruleList;
 	}
 
+	private List<IRule<Map<String, String>>> createTerraRules(List<IRule<Map<String, String>>> ruleList) throws Exception
+	{
+
+		// Terra Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/terra:terracache/terra:name")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_name", text);
+			}
+		});
+
+		// Cache Rules for GPX from Terracaching.com
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/terra:terracache/terra:owner")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_owner", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/terra:terracache/terra:description")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_long_description", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/terra:terracache/terra:hint")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_encoded_hints", text);
+			}
+		});
+
+		// Log Rules
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
+				{
+					if (values.containsKey("cache_logs_count")) values.put("cache_logs_count",
+							String.valueOf((Integer.parseInt(values.get("cache_logs_count")) + 1)));
+					else
+						values.put("cache_logs_count", "1");
+				}
+
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log", "id")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_log_" + values.get("cache_logs_count") + "_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log/terra:date")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_date", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log/terra:user")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_finder", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log/terra:type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				if (text.startsWith("find")) // Umcodieren auf groundspeak style
+				{
+					text = "Found it"; // Evtl. ist noch eine Umcodierung für "nicht gefunden" nötig
+				}
+
+				values.put("cache_log_" + values.get("cache_logs_count") + "_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/terra:terracache/terra:logs/terra:log/terra:entry")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_text", text);
+			}
+		});
+
+		return ruleList;
+	}
+
 	private void createCache(Map<String, String> values) throws Exception
 	{
 
@@ -802,6 +935,10 @@ public class GPXFileImporter
 		{
 			cache.DateHidden = parseDate(values.get("wpt_time"));
 		}
+		else
+		{
+			cache.DateHidden = new Date();
+		}
 
 		if (values.containsKey("wpt_url"))
 		{
@@ -811,12 +948,6 @@ public class GPXFileImporter
 		if (values.containsKey("wpt_sym"))
 		{
 			cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
-		}
-
-		if (values.containsKey("cache_attribute_id"))
-		{
-
-			cache.GcId = values.get("cache_attribute_id");
 		}
 
 		if (values.containsKey("cache_attribute_available"))
@@ -830,6 +961,10 @@ public class GPXFileImporter
 				cache.Available = false;
 			}
 		}
+		else
+		{
+			cache.Available = true;
+		}
 
 		if (values.containsKey("cache_attribute_archived"))
 		{
@@ -842,10 +977,18 @@ public class GPXFileImporter
 				cache.Archived = false;
 			}
 		}
+		else
+		{
+			cache.Archived = false;
+		}
 
 		if (values.containsKey("cache_name"))
 		{
 			cache.Name = values.get("cache_name");
+		}
+		else if (values.containsKey("wpt_desc")) // kein Name gefunden? Dann versuche den WP-Namen
+		{
+			cache.Name = values.get("wpt_desc");
 		}
 
 		if (values.containsKey("cache_placed_by"))
@@ -861,21 +1004,46 @@ public class GPXFileImporter
 		if (values.containsKey("cache_type"))
 		{
 			cache.Type = CacheTypes.parseString(values.get("cache_type"));
+			if (cache.GcCode.indexOf("MZ") == 0) cache.Type = CacheTypes.Munzee;
+		}
+		else
+		{
+			cache.Type = CacheTypes.Traditional;
 		}
 
 		if (values.containsKey("cache_container"))
 		{
 			cache.Size = CacheSizes.parseString(values.get("cache_container"));
 		}
+		else
+		{
+			cache.Size = CacheSizes.other;
+		}
 
 		if (values.containsKey("cache_difficulty"))
 		{
-			cache.Difficulty = Float.parseFloat(values.get("cache_difficulty"));
+			try
+			{
+				cache.Difficulty = Float.parseFloat(values.get("cache_difficulty"));
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			if (cache.Difficulty < 0) cache.Difficulty = 0f;
 		}
 
 		if (values.containsKey("cache_terrain"))
 		{
-			cache.Terrain = Float.parseFloat(values.get("cache_terrain"));
+			try
+			{
+				cache.Terrain = Float.parseFloat(values.get("cache_terrain"));
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			if (cache.Terrain < 0) cache.Terrain = 0f;
 		}
 
 		if (values.containsKey("cache_country"))
@@ -890,35 +1058,42 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_attributes_count"))
 		{
-			int count = Integer.parseInt(values.get("cache_attributes_count"));
-
-			for (int i = 1; i <= count; i++)
+			try
 			{
-				int attrGcComId = -1;
-				int attrGcComVal = -1;
+				int count = Integer.parseInt(values.get("cache_attributes_count"));
 
-				attrGcComId = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_id"));
-				try
+				for (int i = 1; i <= count; i++)
 				{
-					attrGcComVal = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_inc"));
-				}
-				catch (Exception ex)
-				{
-					// if there is no given value "inc" in attribute definition this should be = 1 (gccapp gpx files)
-					attrGcComVal = 1;
-				}
+					int attrGcComId = -1;
+					int attrGcComVal = -1;
 
-				if (attrGcComId > 0 && attrGcComVal != -1)
-				{
-					if (attrGcComVal > 0)
+					attrGcComId = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_id"));
+					try
 					{
-						cache.addAttributePositive(Attributes.getAttributeEnumByGcComId(attrGcComId));
+						attrGcComVal = Integer.parseInt(values.get("cache_attribute_" + String.valueOf(i) + "_inc"));
 					}
-					else
+					catch (Exception ex)
 					{
-						cache.addAttributeNegative(Attributes.getAttributeEnumByGcComId(attrGcComId));
+						// if there is no given value "inc" in attribute definition this should be = 1 (gccapp gpx files)
+						attrGcComVal = 1;
+					}
+
+					if (attrGcComId > 0 && attrGcComVal != -1)
+					{
+						if (attrGcComVal > 0)
+						{
+							cache.addAttributePositive(Attributes.getAttributeEnumByGcComId(attrGcComId));
+						}
+						else
+						{
+							cache.addAttributeNegative(Attributes.getAttributeEnumByGcComId(attrGcComId));
+						}
 					}
 				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 
 		}
@@ -950,52 +1125,59 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_logs_count"))
 		{
-			int count = Integer.parseInt(values.get("cache_logs_count"));
-
-			for (int i = 1; i <= count; i++)
+			try
 			{
-				log.CacheId = cache.Id;
-				String attrValue = values.get("cache_log_" + String.valueOf(i) + "_id");
-				if (attrValue != null)
+				int count = Integer.parseInt(values.get("cache_logs_count"));
+
+				for (int i = 1; i <= count; i++)
 				{
-					try
+					log.CacheId = cache.Id;
+					String attrValue = values.get("cache_log_" + String.valueOf(i) + "_id");
+					if (attrValue != null)
 					{
-						log.Id = Long.parseLong(attrValue);
+						try
+						{
+							log.Id = Long.parseLong(attrValue);
+						}
+						catch (Exception ex)
+						{
+							// Cache ID konnte nicht als Zahl interpretiert werden -> in eine eindeutige Zahl wandeln
+							log.Id = Cache.GenerateCacheId(attrValue);
+						}
 					}
-					catch (Exception ex)
+
+					if (values.containsKey("cache_log_" + String.valueOf(i) + "_date"))
 					{
-						// Cache ID konnte nicht als Zahl interpretiert werden -> in eine eindeutige Zahl wandeln
-						log.Id = Cache.GenerateCacheId(attrValue);
+						log.Timestamp = parseDate(values.get("cache_log_" + String.valueOf(i) + "_date"));
 					}
-				}
 
-				if (values.containsKey("cache_log_" + String.valueOf(i) + "_date"))
-				{
-					log.Timestamp = parseDate(values.get("cache_log_" + String.valueOf(i) + "_date"));
-				}
+					if (values.containsKey("cache_log_" + String.valueOf(i) + "_finder"))
+					{
+						log.Finder = values.get("cache_log_" + String.valueOf(i) + "_finder");
+					}
 
-				if (values.containsKey("cache_log_" + String.valueOf(i) + "_finder"))
-				{
-					log.Finder = values.get("cache_log_" + String.valueOf(i) + "_finder");
-				}
+					if (values.containsKey("cache_log_" + String.valueOf(i) + "_text"))
+					{
+						log.Comment = values.get("cache_log_" + String.valueOf(i) + "_text");
+					}
 
-				if (values.containsKey("cache_log_" + String.valueOf(i) + "_text"))
-				{
-					log.Comment = values.get("cache_log_" + String.valueOf(i) + "_text");
-				}
+					if (values.containsKey("cache_log_" + String.valueOf(i) + "_type"))
+					{
+						log.Type = LogTypes.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
+					}
 
-				if (values.containsKey("cache_log_" + String.valueOf(i) + "_type"))
-				{
-					log.Type = LogTypes.parseString(values.get("cache_log_" + String.valueOf(i) + "_type"));
-				}
+					if (log != null)
+					{
+						LogCount++;
+						mImportHandler.handleLog(log);
+					}
 
-				if (log != null)
-				{
-					LogCount++;
-					mImportHandler.handleLog(log);
+					log.clear();
 				}
-
-				log.clear();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 
 		}

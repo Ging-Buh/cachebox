@@ -16,6 +16,7 @@ import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.SearchOverPosition;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
@@ -39,14 +40,17 @@ import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -120,11 +124,6 @@ public class SearchDialog extends PopUp_Base
 	private EditWrapedTextField mEingabe;
 
 	/**
-	 * enthält den Index des element der CacheListe, an der die Suche steht
-	 */
-	private int mSearchIndex = -1;
-
-	/**
 	 * Enthält einen Iterator der aktuell durschten CacheList
 	 */
 	private Iterator<Cache> CacheListIterator = null;
@@ -143,14 +142,14 @@ public class SearchDialog extends PopUp_Base
 
 		that = this;
 
-		this.setSize(UiSizes.getCacheListItemSize().asFloat());
+		this.setSize(UiSizes.that.getCacheListItemSize().asFloat());
 
 		if (GlobalCore.isTab)
 		{
 			this.setBackground(SpriteCache.activityBackground);
 			this.setWidth(this.width * 1.4f);
-			this.setX((UiSizes.getWindowWidth() / 2) - this.halfWidth);
-			this.setY((UiSizes.getWindowHeight() / 2) - this.halfHeight);
+			this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.halfWidth);
+			this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.halfHeight);
 		}
 		else
 		{
@@ -158,11 +157,11 @@ public class SearchDialog extends PopUp_Base
 		}
 		// initial Buttons
 
-		float margin = UiSizes.getMargin();
+		float margin = UI_Size_Base.that.getMargin();
 		if (GlobalCore.isTab) margin *= 2;
 		float btnWidth = (this.width - (margin * 7)) / 4;
 
-		CB_RectF rec = new CB_RectF(0, 0, btnWidth, UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());
 
 		mTglBtnTitle = new MultiToggleButton(rec, "mTglBtnTitle");
 		mTglBtnGc = new MultiToggleButton(rec, "mTglBtnGc");
@@ -289,7 +288,6 @@ public class SearchDialog extends PopUp_Base
 			{
 				closeSoftKeyPad();
 				mSearchAktive = false;
-				mSearchIndex = -1;
 				searchNow(false);
 				return true;
 			}
@@ -346,13 +344,13 @@ public class SearchDialog extends PopUp_Base
 	{
 		if (mTglBtnOnline.getState() == 0)
 		{
-			mBtnFilter.setImage(null);
-			mBtnFilter.setText(GlobalCore.Translations.Get("Filter"));
+			mBtnFilter.clearImage();
+			mBtnFilter.setText(Translation.Get("Filter"));
 		}
 		else
 		{
 
-			mBtnFilter.setImage(new SpriteDrawable(SpriteCache.Icons.get(53)));
+			mBtnFilter.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.targetDay_53.ordinal())));
 			mBtnFilter.setText("");
 		}
 	}
@@ -362,22 +360,19 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private void setLang()
 	{
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, GlobalCore.Translations.Get("Title"),
-				GlobalCore.Translations.Get("Title"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, GlobalCore.Translations.Get("GCCode"),
-				GlobalCore.Translations.Get("GCCode"));
-		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, GlobalCore.Translations.Get("Owner"),
-				GlobalCore.Translations.Get("Owner"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, Translation.Get("Title"), Translation.Get("Title"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, Translation.Get("GCCode"), Translation.Get("GCCode"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, Translation.Get("Owner"), Translation.Get("Owner"));
 		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOnline, "Online", "Online");
 
 		// der State muss erstmal gesetzt werden, damit die Anzeige
 		// Aktuallisiert wird
 		mTglBtnOnline.setState(0);
 
-		mBtnFilter.setText(GlobalCore.Translations.Get("Filter"));
-		mBtnSearch.setText(GlobalCore.Translations.Get("Search"));
-		mBtnNext.setText(GlobalCore.Translations.Get("Next"));
-		mBtnCancel.setText(GlobalCore.Translations.Get("abort"));
+		mBtnFilter.setText(Translation.Get("Filter"));
+		mBtnSearch.setText(Translation.Get("Search"));
+		mBtnNext.setText(Translation.Get("Next"));
+		mBtnCancel.setText(Translation.Get("abort"));
 
 	}
 
@@ -417,8 +412,6 @@ public class SearchDialog extends PopUp_Base
 
 	private void textBox_TextChanged()
 	{
-		// reset SearchIndex, because of text changed.
-		mSearchIndex = -1;
 
 		boolean isText = mEingabe.getText().length() != 0;
 		mBtnSearch.setEnable(isText);
@@ -446,6 +439,7 @@ public class SearchDialog extends PopUp_Base
 		// close the virtual keyboard
 		// InputMethodManager mgr = (InputMethodManager) mPtrMain.getSystemService(Context.INPUT_METHOD_SERVICE);
 		// mgr.hideSoftInputFromWindow(mEingabe.getWindowToken(), 0);
+		mEingabe.getOnscreenKeyboard().show(false);
 	}
 
 	/**
@@ -459,8 +453,6 @@ public class SearchDialog extends PopUp_Base
 
 		if (ignoreOnlineSearch || mTglBtnOnline.getState() == 0)
 		{
-
-			mSearchIndex++;
 
 			// Replase LineBreaks
 
@@ -500,25 +492,27 @@ public class SearchDialog extends PopUp_Base
 								|| tmp.PlacedBy.toLowerCase().contains(searchPattern);
 						break;
 					}
-
-					if (!criterionMatches) mSearchIndex++;
 				}
 
 				if (!criterionMatches)
 				{
 					mBtnNext.disable();
 					mSearchAktive = false;
-					GL_MsgBox.Show(GlobalCore.Translations.Get("NoCacheFound"), GlobalCore.Translations.Get("search"),
-							MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
+					GL_MsgBox.Show(Translation.Get("NoCacheFound"), Translation.Get("search"), MessageBoxButtons.OK,
+							MessageBoxIcon.Asterisk, null);
 				}
 				else
 				{
 
 					Waypoint finalWp = null;
-					if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
-					if (tmp != null) GlobalCore.setSelectedWaypoint(tmp, finalWp);
+					if (tmp != null)
+					{
+						if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
+						else if (tmp.HasStartWaypoint()) finalWp = tmp.GetStartWaypoint();
+						GlobalCore.setSelectedWaypoint(tmp, finalWp);
+					}
 					// deactivate autoResort when Cache is selected by hand
-					GlobalCore.autoResort = false;
+					GlobalCore.setAutoResort(false);
 
 					mBtnNext.enable();
 
@@ -600,15 +594,15 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private void searchAPI()
 	{
-		if ("".equals(Config.GetAccessToken()))
+		if (!GroundspeakAPI.isValidAPI_Key(true))
 		{
-			GL_MsgBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
-					MessageBoxIcon.Exclamation, null);
+			GL_MsgBox
+					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
 		}
 		else
 		{
 
-			wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+			wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
 			{
 
 				@Override
@@ -630,12 +624,12 @@ public class SearchDialog extends PopUp_Base
 					}
 					else
 					{
-						GL_MsgBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
-								MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+						GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
+								MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
 								{
 
 									@Override
-									public boolean onClick(int which)
+									public boolean onClick(int which, Object data)
 									{
 										if (which == GL_MsgBox.BUTTON_POSITIVE) searchOnlineNow();
 										else
@@ -660,7 +654,7 @@ public class SearchDialog extends PopUp_Base
 
 	private void searchOnlineNow()
 	{
-		wd = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("searchOverAPI"), new IcancelListner()
+		wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), new IcancelListner()
 		{
 
 			@Override
@@ -684,7 +678,7 @@ public class SearchDialog extends PopUp_Base
 				}
 				else
 				{
-					searchCoord = GlobalCore.LastValidPosition;
+					searchCoord = Locator.getCoordinate();
 				}
 
 				if (searchCoord == null)
@@ -825,9 +819,6 @@ public class SearchDialog extends PopUp_Base
 	{
 		String searchPattern = mEingabe.getText().toLowerCase();
 
-		String where = "";
-		if (GlobalCore.LastFilter.toString().length() > 0) where = " AND (";
-
 		GlobalCore.LastFilter.filterName = "";
 		GlobalCore.LastFilter.filterGcCode = "";
 		GlobalCore.LastFilter.filterOwner = "";
@@ -838,8 +829,6 @@ public class SearchDialog extends PopUp_Base
 
 		ApplyFilter();
 	}
-
-	private FilterProperties props;
 
 	public void ApplyFilter()
 	{
@@ -881,19 +870,30 @@ public class SearchDialog extends PopUp_Base
 	@Override
 	public void onShow()
 	{
-		if (GlobalCore.isTab)
+		try
 		{
-			// TODO searchDialog plaziere rechts neben der Cache List
-		}
-		else
-		{
-			if (CacheListView.that != null)
+			if (GlobalCore.isTab)
 			{
-				setY(CacheListView.that.getMaxY() - this.height);
-				CacheListView.that.setTopPlaceHolder(this.height);
+				if (CacheListView.that != null)
+				{
+					setY(CacheListView.that.getMaxY() - this.height);
+
+				}
 			}
+			else
+			{
+				if (CacheListView.that != null)
+				{
+					setY(CacheListView.that.getMaxY() - this.height);
+					CacheListView.that.setTopPlaceHolder(this.height);
+				}
+			}
+			if (!GL.that.PopUpIsShown()) that.showNotCloseAutomaticly();
 		}
-		if (!GL.that.PopUpIsShown()) that.showNotCloseAutomaticly();
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		Slider.that.registerPosChangedEvent(listner);
 	}
@@ -924,7 +924,10 @@ public class SearchDialog extends PopUp_Base
 			}
 			else
 			{
-				setY(CacheListView.that.getMaxY() - that.height);
+				if (CacheListView.that != null)
+				{
+					setY(CacheListView.that.getMaxY() - that.height);
+				}
 			}
 
 		}
@@ -936,15 +939,15 @@ public class SearchDialog extends PopUp_Base
 	private void askPremium()
 	{
 
-		if ("".equals(Config.GetAccessToken()))
+		if (!GroundspeakAPI.isValidAPI_Key(true))
 		{
-			GL_MsgBox.Show(GlobalCore.Translations.Get("apiKeyNeeded"), GlobalCore.Translations.Get("Clue"), MessageBoxButtons.OK,
-					MessageBoxIcon.Exclamation, null);
+			GL_MsgBox
+					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
 		}
 		else
 		{
 
-			WD = CancelWaitDialog.ShowWait(GlobalCore.Translations.Get("chkApiState"), new IcancelListner()
+			WD = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
 			{
 
 				@Override
@@ -975,12 +978,12 @@ public class SearchDialog extends PopUp_Base
 							@Override
 							public void run()
 							{
-								MSB = GL_MsgBox.Show(GlobalCore.Translations.Get("GC_basic"), GlobalCore.Translations.Get("GC_title"),
-										MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+								MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
+										MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
 										{
 
 											@Override
-											public boolean onClick(int which)
+											public boolean onClick(int which, Object data)
 											{
 												closeMsgBox();
 												if (which == GL_MsgBox.BUTTON_POSITIVE)

@@ -58,13 +58,7 @@ public class AndroidManager extends ManagerBase
 
 	public AndroidManager()
 	{
-		// for the Access to the manager in the CB_Core
-		CB_Core.Map.ManagerBase.Manager = this;
-		// Layers.add(new Layer("MapsForge", "MapsForge", ""));
-		Layers.add(new Layer("Mapnik", "Mapnik", "http://a.tile.openstreetmap.org/"));
-		Layers.add(new Layer("OSM Cycle Map", "Open Cycle Map", "http://c.tile.opencyclemap.org/cycle/"));
-		// if (!Disable.HillShading) Layers.add(new Layer("HillShade", "HillShade", "http://129.206.74.245:8004/tms_hs.ashx"));
-		// Layers.add(new Layer("TilesAtHome", "Osmarender", "http://a.tah.openstreetmap.org/Tiles/tile/"));
+		super();
 	}
 
 	/*
@@ -104,7 +98,9 @@ public class AndroidManager extends ManagerBase
 
 			if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
 			{
-				mapFile = new File(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name);
+				RenderThemeChanged = true;
+				mapFile = new File(layer.Url);
+
 				mapDatabase = new MapDatabase();
 				mapDatabase.closeFile();
 				mapDatabase.openFile(mapFile);
@@ -381,7 +377,7 @@ public class AndroidManager extends ManagerBase
 				// Verzeichnis anlegen
 				synchronized (this)
 				{
-					if (!FileIO.DirectoryExists(path)) return false;
+					if (!FileIO.createDirectory(path)) return false;
 				}
 				// Datei schreiben
 				synchronized (this)

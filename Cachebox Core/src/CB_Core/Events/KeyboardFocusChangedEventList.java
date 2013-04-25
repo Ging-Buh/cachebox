@@ -31,6 +31,13 @@ public class KeyboardFocusChangedEventList
 
 	public static void Call(final EditTextFieldBase focus)
 	{
+		if (threadKeyboardFocusChangedEvent != null)
+		{
+			if (threadKeyboardFocusChangedEvent.getState() != Thread.State.TERMINATED) return;
+			else
+				threadKeyboardFocusChangedEvent = null;
+		}
+
 		if (threadKeyboardFocusChangedEvent == null) threadKeyboardFocusChangedEvent = new Thread(new Runnable()
 		{
 			@Override

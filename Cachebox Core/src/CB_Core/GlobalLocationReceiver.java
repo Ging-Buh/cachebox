@@ -2,13 +2,17 @@ package CB_Core;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
+import CB_Locator.GPS;
+import CB_Locator.Location.ProviderType;
+import CB_Locator.Locator;
+import CB_Locator.Events.GPS_FallBackEvent;
+import CB_Locator.Events.GPS_FallBackEventList;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -18,7 +22,7 @@ import com.badlogic.gdx.audio.Music;
  * 
  * @author Longri
  */
-public class GlobalLocationReceiver implements PositionChangedEvent
+public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBackEvent
 {
 
 	public final static String GPS_PROVIDER = "gps";
@@ -33,17 +37,11 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 	private Music Approach;
 	private Music AutoResort;
 
-	/*
-	 * Wenn 10 Sekunden kein gültiges GPS Signal gefunden wird. Aber nur beim Ersten mal. Danach warten wir lieber 90 sec
-	 */
-	private int NetworkPositionTime = 10000;
-	private static long GPSTimeStamp = 0;
-
 	public GlobalLocationReceiver()
 	{
 
 		PositionChangedEventList.Add(this);
-
+		GPS_FallBackEventList.Add(this);
 		String path = Config.settings.SoundPath.getValue();
 
 		try
@@ -63,84 +61,24 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 	private static boolean PlaySounds = false;
 
 	@Override
-	public void PositionChanged(Locator location)
+	public void PositionChanged()
 	{
 
 		PlaySounds = Config.settings.PlaySounds.getValue();
 
-		try
+		if (newLocationThread != null)
 		{
-			if (location.getProvider().equalsIgnoreCase(GPS_PROVIDER)) // Neue Position von GPS-Empfänger
-			{
-				newLocationReceived(location);
-				GPSTimeStamp = java.lang.System.currentTimeMillis();
-				return;
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("GlobalLocationReceiver", "GPS_PROVIDER", e);
-			e.printStackTrace();
+			if (newLocationThread.getState() != Thread.State.TERMINATED) return;
+			else
+				newLocationThread = null;
 		}
 
-		try
-		{
-			// Neue Position vom Netzwerk
-			if (location.getProvider().equalsIgnoreCase(NETWORK_PROVIDER))
-			{
-				// Wenn 10 Sekunden kein GPS Signal
-				if ((java.lang.System.currentTimeMillis() - GPSTimeStamp) > NetworkPositionTime)
-				{
-					NetworkPositionTime = 90000;
-					newLocationReceived(location);
-					if (initialFixSoundCompleted)
-					{
-						// Global.PlaySound("GPS_lose.ogg");
-						GPS_lose.play();
-						initialFixSoundCompleted = false;
-					}
-
-					GL.that.Toast("Network-Position", Toast.LENGTH_LONG);
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("GlobalLocationReceiver", "NETWORK_PROVIDER", e);
-			e.printStackTrace();
-		}
-
-	}
-
-	Thread newLocationThread;
-
-	private void newLocationReceived(final Locator location)
-	{
 		if (newLocationThread == null) newLocationThread = new Thread(new Runnable()
 		{
 
 			@Override
 			public void run()
 			{
-				try
-				{
-
-					if (!initialFixSoundCompleted && GlobalCore.LastValidPosition.Valid
-							&& location.getProvider().equalsIgnoreCase(GPS_PROVIDER))
-					{
-						initialFixSoundCompleted = true;
-						if (GPS_Fix != null && !GPS_Fix.isPlaying())
-						{
-							Logger.LogCat("Play Fix");
-							GPS_Fix.play();
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					Logger.Error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
-					e.printStackTrace();
-				}
 
 				try
 				{
@@ -171,7 +109,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 
 				try
 				{
-					if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)
+					if (!initialResortAfterFirstFixCompleted && Locator.getProvider() != ProviderType.NULL)
 					{
 						if (GlobalCore.getSelectedCache() == null)
 						{
@@ -197,7 +135,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 					// only when showing Map or cacheList
 					if (!GlobalCore.ResortAtWork)
 					{
-						if (GlobalCore.autoResort)
+						if (GlobalCore.getAutoResort())
 						{
 							int z = 0;
 							if (!(GlobalCore.NearestCache() == null))
@@ -245,13 +183,11 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 			}
 		});
 
-		newLocationThread.run();
+		newLocationThread.start();
+
 	}
 
-	@Override
-	public void OrientationChanged(float heading)
-	{
-	}
+	Thread newLocationThread;
 
 	@Override
 	public String getReceiverName()
@@ -263,6 +199,69 @@ public class GlobalLocationReceiver implements PositionChangedEvent
 	{
 		approachSoundCompleted = false;
 		GlobalCore.switchToCompassCompleted = false;
+	}
+
+	@Override
+	public void OrientationChanged()
+	{
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.High;
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
+	}
+
+	@Override
+	public void Fix()
+	{
+		PlaySounds = Config.settings.PlaySounds.getValue();
+
+		try
+		{
+
+			if (!initialFixSoundCompleted && Locator.isGPSprovided() && GPS.getFixedSats() > 3)
+			{
+				if (GPS_Fix != null && !GPS_Fix.isPlaying())
+				{
+					Logger.LogCat("Play Fix");
+					if (PlaySounds) GPS_Fix.play();
+					initialFixSoundCompleted = true;
+					loseSoundCompleated = false;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			Logger.Error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
+			e.printStackTrace();
+		}
+
+	}
+
+	boolean loseSoundCompleated = false;
+
+	@Override
+	public void FallBackToNetworkProvider()
+	{
+		PlaySounds = Config.settings.PlaySounds.getValue();
+
+		if (initialFixSoundCompleted && !loseSoundCompleated)
+		{
+			if (GPS_lose != null && !GPS_lose.isPlaying())
+			{
+				if (PlaySounds) GPS_lose.play();
+			}
+			loseSoundCompleated = true;
+			initialFixSoundCompleted = false;
+		}
+
+		GL.that.Toast("Network-Position", Toast.LENGTH_LONG);
 	}
 
 }

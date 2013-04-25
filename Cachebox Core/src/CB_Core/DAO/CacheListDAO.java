@@ -3,7 +3,6 @@ package CB_Core.DAO;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -19,8 +18,10 @@ import CB_Core.Types.Waypoint;
 
 public class CacheListDAO
 {
+
 	public CacheList ReadCacheList(CacheList cacheList, String where)
 	{
+		Logger.DEBUG("ReadCacheList 1.Waypoints");
 		SortedMap<Long, ArrayList<Waypoint>> waypoints;
 		waypoints = new TreeMap<Long, ArrayList<Waypoint>>();
 		// zuerst alle Waypoints einlesen
@@ -29,10 +30,10 @@ public class CacheListDAO
 
 		CoreCursor reader = Database.Data
 				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title from Waypoint order by CacheId",
+						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint order by CacheId",
 						null);
 		reader.moveToFirst();
-		while (reader.isAfterLast() == false)
+		while (!reader.isAfterLast())
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
 			Waypoint wp = waypointDAO.getWaypoint(reader);
@@ -48,6 +49,7 @@ public class CacheListDAO
 		}
 		reader.close();
 
+		Logger.DEBUG("ReadCacheList 2.Caches");
 		try
 		{
 			reader = Database.Data
@@ -63,7 +65,7 @@ public class CacheListDAO
 		reader.moveToFirst();
 
 		CacheDAO cacheDAO = new CacheDAO();
-		while (reader.isAfterLast() == false)
+		while (!reader.isAfterLast())
 		{
 			Cache cache = cacheDAO.ReadFromCursor(reader);
 
@@ -80,18 +82,19 @@ public class CacheListDAO
 			reader.moveToNext();
 
 		}
-
 		reader.close();
-		// Query.Sort();
+
+		// do it manual (or automated after fix), got hanging app on startup
+		// Logger.DEBUG("ReadCacheList 3.Sorting");
 		try
 		{
-			Collections.sort(cacheList);
+			// Collections.sort(cacheList);
 		}
 		catch (Exception e)
 		{
-			Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
+			// Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
 		}
-
+		// Logger.DEBUG("ReadCacheList 4. ready");
 		return cacheList;
 	}
 
@@ -159,12 +162,25 @@ public class CacheListDAO
 	 * @param list
 	 */
 
-	private void delCacheImages(ArrayList<String> list)
+	public void delCacheImages(ArrayList<String> list)
 	{
 		String spoilerpath = Config.settings.SpoilerFolder.getValue();
+		if (Config.settings.SpoilerFolderLocal.getValue().length() > 0) spoilerpath = Config.settings.SpoilerFolderLocal.getValue();
+
 		String imagespath = Config.settings.DescriptionImageFolder.getValue();
+		if (Config.settings.DescriptionImageFolderLocal.getValue().length() > 0) imagespath = Config.settings.DescriptionImageFolderLocal
+				.getValue();
+
 		delCacheImagesByPath(spoilerpath, list);
 		delCacheImagesByPath(imagespath, list);
+
+		ImageDAO imageDAO = new ImageDAO();
+		for (Iterator<String> iterator = list.iterator(); iterator.hasNext();)
+		{
+			final String GcCode = iterator.next();
+			imageDAO.deleteImagesForCache(GcCode);
+		}
+		imageDAO = null;
 	}
 
 	private void delCacheImagesByPath(String path, ArrayList<String> list)
@@ -180,7 +196,6 @@ public class CacheListDAO
 				@Override
 				public boolean accept(File dir, String filename)
 				{
-
 					filename = filename.toLowerCase();
 					return (filename.indexOf(GcCode.toLowerCase()) == 0);
 				}
@@ -192,7 +207,7 @@ public class CacheListDAO
 				File file = new File(filename);
 				if (file.exists())
 				{
-					file.delete();
+					if (!file.delete()) Logger.DEBUG("Error deleting : " + filename);
 				}
 			}
 		}

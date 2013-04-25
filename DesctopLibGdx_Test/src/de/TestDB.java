@@ -259,7 +259,8 @@ public class TestDB extends Database
 				st.setObject(j, entry.getValue());
 			}
 
-			return st.executeUpdate();
+			// return st.executeUpdate();
+			return st.execute() ? 0 : 1;
 
 		}
 		catch (SQLException e)

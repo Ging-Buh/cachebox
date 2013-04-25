@@ -3,13 +3,12 @@ package CB_Core.GL_UI.Main;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowCompassView;
-import CB_Core.Locator.Locator;
 import CB_Core.Log.Logger;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 {
@@ -35,7 +34,7 @@ public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		try
 		{
@@ -62,12 +61,6 @@ public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 				GlobalCore.switchToCompassCompleted = true;
 			}
 		}
-	}
-
-	@Override
-	public void OrientationChanged(float heading)
-	{
-
 	}
 
 	@Override
@@ -103,8 +96,23 @@ public class MainViewBase extends CB_View_Base implements PositionChangedEvent
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.High;
+	}
+
+	@Override
+	public void OrientationChanged()
+	{
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
 	}
 
 }

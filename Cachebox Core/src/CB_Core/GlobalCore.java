@@ -5,21 +5,22 @@ import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Map.RouteOverlay;
-import CB_Core.TranslationEngine.LangStrings;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.utils.Clipboard;
 
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1400;
-	public static final String CurrentVersion = "0.5.";
+	public static final int CurrentRevision = 1597;
+	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "Beta";
 
 	public static final String br = System.getProperty("line.separator");
+	public static final String fs = System.getProperty("file.separator");
+	// public static final String ps = System.getProperty("path.separator");
 	public static final String AboutMsg = "Team Cachebox (2011-2013)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
 			+ br + "Groundspeak Inc. Used with permission";
 	public static final String splashMsg = AboutMsg + br + br + br + "POWERED BY:";
@@ -28,20 +29,12 @@ public class GlobalCore
 	public static String restartCache;
 	public static String restartWaypoint;
 
-	// / <summary>
-	// / Letzte bekannte Position
-	// / </summary>
-	public static Coordinate LastValidPosition = new Coordinate();
-	public static Coordinate LastPosition = new Coordinate();
-	// public static Coordinate Marker = new Coordinate();
 	public static boolean ResortAtWork = false;
-	public static final int LatestDatabaseChange = 1023;
-	public static final int LatestDatabaseFieldNoteChange = 1003;
+	public static final int LatestDatabaseChange = 1024;
+	public static final int LatestDatabaseFieldNoteChange = 1005;
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
 	public static Plattform platform = Plattform.undef;
-
-	public static CB_Core.Locator.Locator Locator = null;
 
 	// ######### theme Path ###############
 	public static String PathDefault;
@@ -92,10 +85,8 @@ public class GlobalCore
 
 	public static boolean posibleTabletLayout;
 
-	public static LangStrings Translations = new LangStrings();
-
 	private static Cache selectedCache = null;
-	public static boolean autoResort;
+	private static boolean autoResort;
 
 	public static FilterProperties LastFilter = null;
 
@@ -139,8 +130,7 @@ public class GlobalCore
 		if (changeAutoResort)
 		{
 			// switch off auto select
-			GlobalCore.autoResort = false;
-			Config.settings.AutoResort.setValue(GlobalCore.autoResort);
+			GlobalCore.setAutoResort(false);
 		}
 	}
 
@@ -236,7 +226,7 @@ public class GlobalCore
 	{
 		if (Config.GetAccessToken().length() == 0)
 		{
-			Logger.General("global.APIisOnline() -Invalid AccessToken");
+			Logger.General("GlobalCore.APIisOnline() - no GC - API AccessToken");
 			return false;
 		}
 		if (platformConector.isOnline())
@@ -253,7 +243,7 @@ public class GlobalCore
 	{
 		if (Config.settings.GcJoker.getValue().length() == 0)
 		{
-			Logger.General("global.APIisOnline() -Invalid Joker");
+			Logger.General("GlobalCore.JokerisOnline() - no Joker Password");
 			return false;
 		}
 		if (platformConector.isOnline())
@@ -284,6 +274,16 @@ public class GlobalCore
 		}
 
 		return ret;
+	}
+
+	public static boolean getAutoResort()
+	{
+		return autoResort;
+	}
+
+	public static void setAutoResort(boolean value)
+	{
+		GlobalCore.autoResort = value;
 	}
 
 	private static boolean isTestVersionCheked = false;

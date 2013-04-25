@@ -2,7 +2,7 @@ package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -16,11 +16,11 @@ public class RadioButton extends chkBox
 	public RadioButton(String Name)
 	{
 		super(Name);
-		radioBack = new Image(new CB_RectF(UiSizes.getChkBoxSize()), name);
+		radioBack = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name);
 		radioBack.setDrawable(SpriteCache.radioBack);
 		this.addChild(radioBack);
 
-		radioSet = new Image(new CB_RectF(UiSizes.getChkBoxSize()), name);
+		radioSet = new Image(new CB_RectF(UI_Size_Base.that.getChkBoxSize()), name);
 		radioSet.setDrawable(SpriteCache.radioOn);
 		this.addChild(radioSet);
 	}
@@ -35,7 +35,7 @@ public class RadioButton extends chkBox
 	{
 		if (lblTxt != null && lblTxt.getX() < radioBack.getMaxX())
 		{
-			lblTxt.setX(radioBack.getMaxX() + UiSizes.getMargin());
+			lblTxt.setX(radioBack.getMaxX() + UI_Size_Base.that.getMargin());
 		}
 
 		if (isChk && !radioSet.isVisible())

@@ -1,7 +1,6 @@
 package CB_Core.Settings;
 
 import CB_Core.Config;
-import CB_Core.Disable;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 
@@ -9,6 +8,15 @@ public class SettingsClass extends SettingsList
 {
 
 	private static final long serialVersionUID = 7330937438116889415L;
+
+	private final String FOUND = "<br>###finds##, ##time##, Found it with Cachebox!";
+	private final String DNF = "<br>##time##. Logged it with Cachebox!";
+	private final String LOG = "Logged it with Cachebox!";
+	private final String DISCOVERD = "<br> ##time##, Discovered it with Cachebox!";
+	private final String VISITED = "<br> ##time##, Visited it with Cachebox!";
+	private final String DROPPED = "<br> ##time##, Dropped off with Cachebox!";
+	private final String PICKED = "<br> ##time##, Picked it with Cachebox!";
+	private final String GRABED = "<br> ##time##, Grabed it with Cachebox!";
 
 	// Settings Compass
 	public SettingBool HardwareCompass;
@@ -20,17 +28,23 @@ public class SettingsClass extends SettingsList
 
 	// Invisible
 	public SettingLongString Filter;
+	public SettingLongString FilterNew;
 	public SettingLongString UserFilter;
+	public SettingLongString UserFilterNew;
 
 	// Folder
 	public SettingFolder UserImageFolder;
 	public SettingFolder LanguagePath;
 	public SettingFolder SoundPath;
 	public SettingFolder TileCacheFolder;
+	public SettingFolder TileCacheFolderLocal;
 	public SettingFolder PocketQueryFolder;
 	public SettingFolder DescriptionImageFolder;
+	public SettingFolder DescriptionImageFolderLocal;
 	public SettingFolder MapPackFolder;
+	public SettingFolder MapPackFolderLocal;
 	public SettingFolder SpoilerFolder;
+	public SettingFolder SpoilerFolderLocal;
 	public SettingFolder TrackFolder;
 	public SettingFolder SkinFolder;
 
@@ -42,7 +56,6 @@ public class SettingsClass extends SettingsList
 	public SettingFile MapsforgeNightTheme;
 
 	// Bool
-
 	public SettingBool useMipMap;
 	public SettingBool ImportGpx;
 	public SettingBool CacheMapData;
@@ -60,11 +73,10 @@ public class SettingsClass extends SettingsList
 	public SettingBool MapShowCompass;
 	public SettingBool CompassNorthOriented;
 	public SettingBool MapNorthOriented;
-	public SettingBool MapHillShading;
-	// public SettingBool ResortRepaint;
+
 	public SettingBool GCAutoSyncCachesFound;
 	public SettingBool GCAdditionalImageDownload;
-	public SettingBool AutoResort;
+	public SettingBool StartWithAutoSelect;
 	public SettingBool FieldnotesUploadAll;
 	public SettingBool MultiDBAsk;
 	// public SettingBool AllowLandscape;
@@ -87,6 +99,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool ShowDirektLine;
 	public SettingBool ShowAccuracyCircle;
 	public SettingBool PositionMarkerTransparent;
+	public SettingBool StagingAPI;
 
 	public SettingBool DebugShowMarker;
 	public SettingBool ImportRatings;
@@ -117,6 +130,7 @@ public class SettingsClass extends SettingsList
 
 	public SettingBool RememberAsk_API_Coast;
 	public SettingBool AskAgain;
+	public SettingBool RememberAsk_Get_API_Key;
 
 	public SettingBool FireMapQueueProcessorExceptions;
 	public SettingBool DebugSpriteBatchCountBuffer;
@@ -129,6 +143,13 @@ public class SettingsClass extends SettingsList
 	public SettingInt MapIniHeight;
 	public SettingInt LongClicktime;
 	public SettingInt VibrateTime;
+
+	public SettingInt FONT_SIZE_COMPASS_DISTANCE;
+	public SettingInt FONT_SIZE_BIG;
+	public SettingInt FONT_SIZE_NORMAL;
+	public SettingInt FONT_SIZE_NORMAL_BUBBLE;
+	public SettingInt FONT_SIZE_SMALL;
+	public SettingInt FONT_SIZE_SMALL_BUBBLE;
 
 	// public SettingInt OsmCoverage;
 	public SettingInt FoundOffset;
@@ -156,12 +177,19 @@ public class SettingsClass extends SettingsList
 
 	// String
 	public SettingString CurrentMapLayer;
+	public SettingString CurrentMapOverlayLayer;
 	public SettingString LastSelectedCache;
 	public SettingString NavigationProvider;
 	public SettingString FoundTemplate;
 	public SettingString DNFTemplate;
 	public SettingString NeedsMaintenanceTemplate;
 	public SettingString AddNoteTemplate;
+	public SettingString DiscoverdTemplate;
+	public SettingString VisitedTemplate;
+	public SettingString DroppedTemplate;
+	public SettingString GrabbedTemplate;
+	public SettingString PickedTemplate;
+
 	public SettingString SpoilersDescriptionTags;
 	public SettingString quickButtonList;
 	public SettingString GcLogin;
@@ -171,6 +199,7 @@ public class SettingsClass extends SettingsList
 
 	// Decrypt
 	public SettingEncryptedString GcAPI;
+	public SettingEncryptedString GcAPIStaging;
 	public SettingEncryptedString GcVotePassword;
 
 	// Enums
@@ -247,8 +276,10 @@ public class SettingsClass extends SettingsList
 
 		addSetting(Filter = new SettingLongString("Filter", cat, NEVER, FilterProperties.presets[0].toString(), SettingStoreType.Local));
 		addSetting(UserFilter = new SettingLongString("UserFilter", cat, NEVER, "", SettingStoreType.Global));
-		addSetting(LastSelectedCache = new SettingString("LastSelectedCache", cat, NORMAL, "", SettingStoreType.Local));
-		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NORMAL, 0, SettingStoreType.Global));
+		addSetting(FilterNew = new SettingLongString("FilterNew", cat, NEVER, "", SettingStoreType.Local));
+		addSetting(UserFilterNew = new SettingLongString("UserFilterNew", cat, NEVER, "", SettingStoreType.Global));
+		addSetting(LastSelectedCache = new SettingString("LastSelectedCache", cat, NEVER, "", SettingStoreType.Local));
+		addSetting(FoundOffset = new SettingInt("FoundOffset", cat, NEVER, 0, SettingStoreType.Global));
 		addSetting(TrackDistance = new SettingIntArray("TrackDistance", cat, NORMAL, 3, SettingStoreType.Global, TrackDistanceArray));
 		addSetting(SoundApproachDistance = new SettingIntArray("SoundApproachDistance", cat, NORMAL, 50, SettingStoreType.Global, approach));
 		addSetting(TrackRecorderStartup = new SettingBool("TrackRecorderStartup", cat, NORMAL, false, SettingStoreType.Global));
@@ -270,6 +301,7 @@ public class SettingsClass extends SettingsList
 		addSetting(VibrateTime = new SettingInt("VibrateTime", cat, NORMAL, 20, SettingStoreType.Global));
 		addSetting(LongClicktime = new SettingInt("LongClicktime", cat, NORMAL, 600, SettingStoreType.Global));
 		addSetting(dynamicFilterAtSearch = new SettingBool("dynamicFilterAtSearch", cat, NEVER, true, SettingStoreType.Global));
+		addSetting(StartWithAutoSelect = new SettingBool("StartWithAutoSelect", cat, EXPERT, false, SettingStoreType.Global));
 
 	}
 
@@ -277,14 +309,15 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Templates;
 
-		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", cat, NORMAL,
-				"<br>###finds##, ##time##, Found it with DroidCachebox!", SettingStoreType.Global));
-		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", cat, NORMAL, "<br>##time##. Logged it with DroidCachebox!",
-				SettingStoreType.Global));
-		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", cat, NORMAL,
-				"Logged it with DroidCachebox!", SettingStoreType.Global));
-		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", cat, NORMAL, "Logged it with DroidCachebox!",
-				SettingStoreType.Global));
+		addSetting(FoundTemplate = new SettingLongString("FoundTemplate", cat, NORMAL, FOUND, SettingStoreType.Global));
+		addSetting(DNFTemplate = new SettingLongString("DNFTemplate", cat, NORMAL, DNF, SettingStoreType.Global));
+		addSetting(NeedsMaintenanceTemplate = new SettingLongString("NeedsMaintenanceTemplate", cat, NORMAL, LOG, SettingStoreType.Global));
+		addSetting(AddNoteTemplate = new SettingLongString("AddNoteTemplate", cat, NORMAL, LOG, SettingStoreType.Global));
+		addSetting(DiscoverdTemplate = new SettingLongString("DiscoverdTemplate", cat, NORMAL, DISCOVERD, SettingStoreType.Global));
+		addSetting(VisitedTemplate = new SettingLongString("VisitedTemplate", cat, NORMAL, VISITED, SettingStoreType.Global));
+		addSetting(DroppedTemplate = new SettingLongString("DroppedTemplate", cat, NORMAL, DROPPED, SettingStoreType.Global));
+		addSetting(GrabbedTemplate = new SettingLongString("GrabbedTemplate", cat, NORMAL, GRABED, SettingStoreType.Global));
+		addSetting(PickedTemplate = new SettingLongString("PickedTemplate", cat, NORMAL, PICKED, SettingStoreType.Global));
 	}
 
 	private void addGpsSettings()
@@ -349,11 +382,8 @@ public class SettingsClass extends SettingsList
 		addSetting(MapNorthOriented = new SettingBool("MapNorthOriented", cat, NORMAL, true, SettingStoreType.Global));
 		addSetting(LastMapToggleBtnState = new SettingInt("LastMapToggleBtnState", cat, INVISIBLE, 0, SettingStoreType.Global));
 
-		// entscheiden ob MapHillShading als Settings Eintrag angezeigt wird
-		SettingModus setMod = !Disable.HillShading ? NORMAL : NEVER;
-		addSetting(MapHillShading = new SettingBool("MapHillShading", cat, setMod, false, SettingStoreType.Global));
-
 		addSetting(CurrentMapLayer = new SettingString("CurrentMapLayer", cat, EXPERT, "Mapnik", SettingStoreType.Global));
+		addSetting(CurrentMapOverlayLayer = new SettingString("CurrentMapOverlayLayer", cat, EXPERT, "", SettingStoreType.Global));
 
 		addSetting(MapMaxCachesDisplay_config = new SettingInt("MapMaxCachesDisplay_config", cat, INVISIBLE, 10000, SettingStoreType.Global));
 		addSetting(lastZoomLevel = new SettingInt("lastZoomLevel", cat, INVISIBLE, 14, SettingStoreType.Global));
@@ -372,6 +402,8 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Login;
 
 		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, INVISIBLE, "", SettingStoreType.Global));
+		addSetting(GcAPIStaging = new SettingEncryptedString("GcAPIStaging", cat, INVISIBLE, "", SettingStoreType.Global));
+
 		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", cat, NORMAL, "", SettingStoreType.Global));
 		addSetting(GcLogin = new SettingString("GcLogin", cat, NORMAL, "", SettingStoreType.Global));
 		addSetting(GcJoker = new SettingString("GcJoker", cat, NORMAL, "", SettingStoreType.Global));
@@ -384,21 +416,29 @@ public class SettingsClass extends SettingsList
 		String Work = Config.WorkPath;
 
 		addSetting(UserImageFolder = new SettingFolder("UserImageFolder", cat, NORMAL, Work + "/User/Media", SettingStoreType.Global));
-		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, EXPERT, Work + "/data/lang", SettingStoreType.Global));
-		addSetting(SoundPath = new SettingFolder("SoundPath", cat, EXPERT, Work + "/data/sound", SettingStoreType.Global));
-		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/cache", SettingStoreType.Global));
-		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, NORMAL, Work + "/PocketQuery", SettingStoreType.Global));
+		addSetting(LanguagePath = new SettingFolder("LanguagePath", cat, NEVER, Work + "/data/lang", SettingStoreType.Global));
+		addSetting(SoundPath = new SettingFolder("SoundPath", cat, INVISIBLE, Work + "/data/sound", SettingStoreType.Global));
+		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, INVISIBLE, Work + "/PocketQuery",
+				SettingStoreType.Global));
 
 		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, EXPERT, Work + "/repository/images",
 				SettingStoreType.Global));
-		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", SettingStoreType.Global));
+		addSetting(DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", cat, NEVER, "", SettingStoreType.Local));
+
 		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers", SettingStoreType.Global));
+		addSetting(SpoilerFolderLocal = new SettingFolder("SpoilerFolder", cat, NEVER, "", SettingStoreType.Local));
+
+		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/repository/cache", SettingStoreType.Global));
+		addSetting(TileCacheFolderLocal = new SettingFolder("TileCacheFolder", cat, NEVER, "", SettingStoreType.Local));
+
+		addSetting(MapPackFolder = new SettingFolder("MapPackFolder", cat, NORMAL, Work + "/repository/maps", SettingStoreType.Global));
+		addSetting(MapPackFolderLocal = new SettingFolder("MapPackFolder", cat, NEVER, "", SettingStoreType.Local));
 
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", SettingStoreType.Global));
 
-		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, INVISIBLE, Work + "/data/lang/en-GB/strings.ini",
+		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, NEVER, Work + "/data/lang/en-GB/strings.ini",
 				SettingStoreType.Global, "lan"));
-		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, EXPERT, Work + "/cachebox.db3", SettingStoreType.Global, "db3"));
+		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, NEVER, Work + "/cachebox.db3", SettingStoreType.Global, "db3"));
 		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, INVISIBLE, Work + "/User/geocache_visits.txt",
 				SettingStoreType.Global));
 
@@ -426,10 +466,9 @@ public class SettingsClass extends SettingsList
 		addSetting(CacheMapData = new SettingBool("CacheMapData", cat, INVISIBLE, false, SettingStoreType.Global));
 		addSetting(CacheImageData = new SettingBool("CacheImageData", cat, INVISIBLE, true, SettingStoreType.Global));
 		addSetting(CacheSpoilerData = new SettingBool("CacheSpoilerData", cat, INVISIBLE, true, SettingStoreType.Global));
-		addSetting(AutoResort = new SettingBool("AutoResort", cat, INVISIBLE, false, SettingStoreType.Global));
 
 		addSetting(ImportLayerOsm = new SettingBool("ImportLayerOsm", cat, NEVER, true, SettingStoreType.Global));
-		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, INVISIBLE, true, SettingStoreType.Global));
+		addSetting(GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", cat, NEVER, true, SettingStoreType.Global));
 
 		addSetting(MultiDBAsk = new SettingBool("MultiDBAsk", cat, NEVER, true, SettingStoreType.Global));
 
@@ -479,6 +518,13 @@ public class SettingsClass extends SettingsList
 		addSetting(MapsforgeDayTheme = new SettingFile("MapsforgeDayTheme", cat, NORMAL, "", SettingStoreType.Global, "xml"));
 		addSetting(MapsforgeNightTheme = new SettingFile("MapsforgeNightTheme", cat, NORMAL, "", SettingStoreType.Global, "xml"));
 		addSetting(useMipMap = new SettingBool("useMipMap", cat, NORMAL, false, SettingStoreType.Global));
+
+		addSetting(FONT_SIZE_COMPASS_DISTANCE = new SettingInt("FONT_SIZE_COMPASS_DISTANCE", cat, EXPERT, 27, SettingStoreType.Global));
+		addSetting(FONT_SIZE_BIG = new SettingInt("FONT_SIZE_BIG", cat, EXPERT, 18, SettingStoreType.Global));
+		addSetting(FONT_SIZE_NORMAL = new SettingInt("FONT_SIZE_NORMAL", cat, EXPERT, 15, SettingStoreType.Global));
+		addSetting(FONT_SIZE_NORMAL_BUBBLE = new SettingInt("FONT_SIZE_NORMAL_BUBBLE", cat, EXPERT, 14, SettingStoreType.Global));
+		addSetting(FONT_SIZE_SMALL = new SettingInt("FONT_SIZE_SMALL", cat, EXPERT, 13, SettingStoreType.Global));
+		addSetting(FONT_SIZE_SMALL_BUBBLE = new SettingInt("FONT_SIZE_SMALL_BUBBLE", cat, EXPERT, 11, SettingStoreType.Global));
 	}
 
 	private void addDebugSettings()
@@ -493,6 +539,7 @@ public class SettingsClass extends SettingsList
 		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, EXPERT, false, SettingStoreType.Global));
 		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, EXPERT, "", SettingStoreType.Global));
 		addSetting(DebugSpriteBatchCountBuffer = new SettingBool("DebugSpriteBatchCountBuffer", cat, EXPERT, false, SettingStoreType.Global));
+		addSetting(StagingAPI = new SettingBool("StagingAPI", cat, EXPERT, false, SettingStoreType.Global));
 
 	}
 
@@ -502,6 +549,7 @@ public class SettingsClass extends SettingsList
 
 		addSetting(RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", cat, NORMAL, false, SettingStoreType.Global));
 		addSetting(AskAgain = new SettingBool("AskAgain", cat, NORMAL, true, SettingStoreType.Platform));
+		addSetting(RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", cat, NORMAL, false, SettingStoreType.Global));
 
 	}
 

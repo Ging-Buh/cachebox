@@ -105,6 +105,8 @@ public class DescriptionImageGrabber
 	public static String BuildImageFilename(String GcCode, URI uri)
 	{
 		String imagePath = Config.settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
+		if (Config.settings.DescriptionImageFolderLocal.getValue().length() > 0) imagePath = Config.settings.DescriptionImageFolderLocal
+				.getValue();
 
 		// String uriName = url.Substring(url.LastIndexOf('/') + 1);
 		// int idx = uri.AbsolutePath.LastIndexOf('.');
@@ -234,7 +236,7 @@ public class DescriptionImageGrabber
 		{
 			String localDir = local.substring(0, local.lastIndexOf("/"));
 
-			if (!FileIO.DirectoryExists(localDir)) return false;
+			if (!FileIO.createDirectory(localDir)) return false;
 
 			URL aURL = new URL(uri.replace("&amp;", "&"));
 
@@ -328,14 +330,13 @@ public class DescriptionImageGrabber
 
 		LinkedList<URI> images = new LinkedList<URI>();
 
-		URI baseUri;
+		// chk baseUrl
 		try
 		{
-			baseUri = URI.create(baseUrl);
+			URI.create(baseUrl);
 		}
 		catch (Exception exc)
 		{
-			baseUri = null;
 			return images;
 		}
 
@@ -371,8 +372,6 @@ public class DescriptionImageGrabber
 	public static void GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated,
 			long id, String gcCode, String name, String description, String url)
 	{
-		boolean importLogImages = false;
-
 		boolean imageLoadError = false;
 
 		if (!descriptionImagesUpdated)
@@ -381,21 +380,13 @@ public class DescriptionImageGrabber
 
 			LinkedList<URI> imgUris = GetImageUris(description, url);
 
-			int i = 0;
 			for (URI uri : imgUris)
 			{
-				/*
-				 * if (uri..IsFile) continue; if (uri.IsLoopback) continue; if (uri.IsUnc) continue;
-				 */
 				String local = BuildImageFilename(gcCode, uri);
 
 				ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode + " - Download: " + uri);
 
-				// parent.ProgressChanged("Loading " + name + " (Image " + (i + 1).ToString() + "/" + imgUris.Count.ToString() + ")", i + 1,
-				// imgUris.Count);
-
 				// build URL
-
 				for (int j = 0; j < 1 /* && !parent.Cancel */; j++)
 				{
 					if (Download(uri.toString(), local))
@@ -406,14 +397,9 @@ public class DescriptionImageGrabber
 					}
 					else
 					{
-						// parent.ReportUncriticalError(uri + " failed to load");
-
 						imageLoadError = HandleMissingImages(imageLoadError, uri, local);
-
 					}
-
 				}
-				i++;
 			}
 
 			descriptionImagesUpdated = true;
@@ -422,7 +408,7 @@ public class DescriptionImageGrabber
 			{
 				Parameters args = new Parameters();
 				args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-				long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+				Database.Data.update("Caches", args, "Id = ?", new String[]
 					{ String.valueOf(id) });
 			}
 		}
@@ -435,8 +421,11 @@ public class DescriptionImageGrabber
 			// anhand dieser Liste kann überprüft werden, ob ein Spoiler schon geladen ist und muss nicht ein 2. mal geladen werden.
 			// Außerdem können anhand dieser Liste veraltete Spoiler identifiziert werden, die gelöscht werden können / müssen
 			String[] files = getFilesInDirectory(Config.settings.SpoilerFolder.getValue(), gcCode.substring(0, 4));
+			String[] filesLocal = getFilesInDirectory(Config.settings.SpoilerFolderLocal.getValue(), gcCode.substring(0, 4));
 			ArrayList<String> afiles = new ArrayList<String>();
 			for (String file : files)
+				afiles.add(file);
+			for (String file : filesLocal)
 				afiles.add(file);
 
 			{
@@ -445,7 +434,6 @@ public class DescriptionImageGrabber
 
 				if (allimgDict == null) return;
 
-				int i = 0;
 				for (String key : allimgDict.keySet())
 				{
 					URI uri = allimgDict.get(key);
@@ -454,10 +442,6 @@ public class DescriptionImageGrabber
 					ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode + " - Download: " + uri);
 
 					String decodedImageName = key;
-
-					/*
-					 * if (uri.IsFile) continue; if (uri.IsLoopback) continue; if (uri.IsUnc) continue;
-					 */
 
 					String local = BuildAdditionalImageFilename(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);
@@ -469,31 +453,22 @@ public class DescriptionImageGrabber
 						afiles.remove(filename);
 						continue;
 					}
-					// parent.ProgressChanged("Loading " + name + ": " + decodedImageName + " (Image " + (i + 1).ToString() + "/" +
-					// allimgDict.Count.ToString() + ")", i + 1, allimgDict.Count);
 
 					// build URL
-
 					for (int j = 0; j < 1 /* && !parent.Cancel */; j++)
 					{
 						if (Download(uri.toString(), local))
 						{
 							// Next image
 							DeleteMissingImageInformation(local);
-							// parent.PerformMemoryTest(Config.GetString("SpoilerFolder"), 1024);
 							break;
 						}
 						else
 						{
-							// parent.ReportUncriticalError(uri + " failed to load");
-
 							imageLoadError = HandleMissingImages(imageLoadError, uri, local);
-
 						}
-
 						System.gc();
 					}
-					i++;
 				}
 
 				additionalImagesUpdated = true;
@@ -502,7 +477,7 @@ public class DescriptionImageGrabber
 				{
 					Parameters args = new Parameters();
 					args.put("ImagesUpdated", additionalImagesUpdated);
-					long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
+					Database.Data.update("Caches", args, "Id = ?", new String[]
 						{ String.valueOf(id) });
 					// jetzt können noch alle "alten" Spoiler gelöscht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind, aber
 					// nicht als Link über die API gemeldet wurden
@@ -557,6 +532,9 @@ public class DescriptionImageGrabber
 	{
 		String imagePath = Config.settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
 
+		if (Config.settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = Config.settings.SpoilerFolderLocal.getValue() + "/"
+				+ GcCode.substring(0, 4);
+
 		ImageName = ImageName.replace("[/:*?\"<>|]", "");
 		ImageName = ImageName.replace("\\", "");
 		ImageName = ImageName.replace("\n", "");
@@ -575,7 +553,6 @@ public class DescriptionImageGrabber
 			File file = new File(local + "_broken_link.txt");
 			if (!file.exists())
 			{
-				File file1 = new File(local + ".1st");
 				if (file.exists())
 				{
 					// After first try, we can be sure that the image cannot be loaded.

@@ -16,7 +16,7 @@ public class OptionMenu extends Menu
 		{
 
 			@Override
-			public boolean onClick(int which)
+			public boolean onClick(int which, Object data)
 			{
 				GL.that.closeDialog(that);
 				return true;

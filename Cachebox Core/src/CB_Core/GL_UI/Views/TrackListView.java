@@ -13,7 +13,8 @@ import CB_Core.GL_UI.Views.TrackListViewItem.RouteChangedListner;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.math.Vector2;
@@ -31,9 +32,9 @@ public class TrackListView extends V_ListView
 		super(rec, Name);
 		that = this;
 
-		ItemRec = new CB_RectF(0, 0, this.width, UiSizes.getButtonHeight() * 1.1f);
+		ItemRec = new CB_RectF(0, 0, this.width, UI_Size_Base.that.getButtonHeight() * 1.1f);
 
-		this.setEmptyMsg(GlobalCore.Translations.Get("EmptyTrackList"));
+		this.setEmptyMsg(Translation.Get("EmptyTrackList"));
 
 		setBackground(SpriteCache.ListBack);
 

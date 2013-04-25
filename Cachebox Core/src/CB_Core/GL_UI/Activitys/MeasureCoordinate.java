@@ -1,21 +1,23 @@
 package CB_Core.GL_UI.Activitys;
 
-import CB_Core.GlobalCore;
-import CB_Core.Events.PositionChangedEvent;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.SatBarChart;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Locator.Locator;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
-import CB_Core.Types.Coordinate;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
+import CB_Locator.Coordinate;
+import CB_Locator.Location.ProviderType;
+import CB_Locator.Locator;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -39,7 +41,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private Texture drawingTexture = null;
 	private SatBarChart chart;
 
-	private final int projectionZoom = 16;// 18;
+	private final int projectionZoom = 18;// 18;
 	// Erdradius / anzahl Kacheln = Meter pro Kachel
 	private final double metersPerTile = 6378137.0 / Math.pow(2, projectionZoom);
 
@@ -57,7 +59,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		that = this;
 
-		MeasuredCoord.Referenz = GlobalCore.LastValidPosition;
+		MeasuredCoord.Referenz = Locator.getCoordinate(ProviderType.GPS);
 
 		if (MeasuredCoord.Referenz == null)
 		{
@@ -66,8 +68,8 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		iniOkCancel();
 		iniLabels();
-		lblDescMeasureCoord.setText(GlobalCore.Translations.Get("MeasureCoord"));
-		lblDescMeasureCount.setText(GlobalCore.Translations.Get("MeasureCount"));
+		lblDescMeasureCoord.setText(Translation.Get("MeasureCoord"));
+		lblDescMeasureCount.setText(Translation.Get("MeasureCount"));
 
 		iniChart();
 
@@ -76,14 +78,14 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UiSizes.getButtonHeight());
+				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 
 		btnRec.setX(bOK.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
 
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		this.addChild(bCancel);
@@ -117,8 +119,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private void iniLabels()
 	{
 		float y = bOK.getMaxY() + (that.width - this.getLeftWidth() - this.getRightWidth()) + (margin * 3);
-		float w = Math.max(Fonts.Measure(GlobalCore.Translations.Get("MeasureCoord")).width,
-				Fonts.Measure(GlobalCore.Translations.Get("MeasureCount")).width);
+		float w = Math.max(Fonts.Measure(Translation.Get("MeasureCoord")).width, Fonts.Measure(Translation.Get("MeasureCount")).width);
 		CB_RectF rec = new CB_RectF(this.getLeftWidth() + margin, y, w, MeasuredLabelHeight);
 		CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, width - this.getLeftWidth() - this.getRightWidth() - w - margin,
 				MeasuredLabelHeight);
@@ -153,7 +154,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	@Override
 	protected void finish()
 	{
-		chart.dispose();
+		if (chart != null) chart.dispose();
 		chart = null;
 		disposeTexture();
 		GL.that.removeRenderView(this);
@@ -162,8 +163,22 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	private void disposeTexture()
 	{
-		if (drawingPixmap != null) drawingPixmap.dispose();
-		if (drawingTexture != null) drawingTexture.dispose();
+		try
+		{
+			if (drawingPixmap != null) drawingPixmap.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			if (drawingTexture != null) drawingTexture.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		drawing = null;
 		drawingPixmap = null;
 		drawingTexture = null;
@@ -238,7 +253,10 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 			double maxPeak = Math.max(peakX, peakY);
 
-			double factor = (maxPeak > 0) ? (double) minPix / maxPeak : 1;
+			double factor = 1;
+			if (maxPeak > 0) factor = minPix / maxPeak;
+
+			factor /= 2;
 
 			int x = (int) centerX;
 			int y = (int) centerY;
@@ -294,7 +312,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		if (mMeasureList == null)
 		{
@@ -307,8 +325,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		if (MeasureCount == 0) lblMeasureCoord.setText("");
 
 		MeasureCount++;
-		mMeasureList.add(new MeasuredCoord(locator.getLocation().getLatitude(), locator.getLocation().getLongitude(), locator.getLocation()
-				.getAccuracy()));
+		mMeasureList.add(new MeasuredCoord(Locator.getLocation(ProviderType.GPS).toCordinate()));
 
 		lblMeasureCount.setText(String.valueOf(MeasureCount) + "/" + String.valueOf(mMeasureList.size()));
 
@@ -325,12 +342,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	}
 
 	@Override
-	public void OrientationChanged(float heading)
-	{
-		// interesiert nicht
-	}
-
-	@Override
 	public String getReceiverName()
 	{
 		return "MeasureCoordinate";
@@ -340,7 +351,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	public void onShow()
 	{
 		super.onShow();
-		CB_Core.Events.PositionChangedEventList.Add(this);
+		PositionChangedEventList.Add(this);
 		if (chart != null)
 		{
 			chart.onShow();
@@ -353,8 +364,24 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	public void onHide()
 	{
 		super.onHide();
-		CB_Core.Events.PositionChangedEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
 		if (chart != null) chart.onHide();
+	}
+
+	@Override
+	public void OrientationChanged()
+	{
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Normal;
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
 	}
 
 }

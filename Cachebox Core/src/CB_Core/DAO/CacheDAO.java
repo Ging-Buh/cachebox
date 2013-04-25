@@ -20,11 +20,11 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.DLong;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 
 public class CacheDAO
 {
@@ -186,7 +186,7 @@ public class CacheDAO
 
 		try
 		{
-			long ret = Database.Data.insert("Caches", args);
+			Database.Data.insert("Caches", args);
 
 		}
 		catch (Exception exc)
@@ -212,7 +212,7 @@ public class CacheDAO
 		}
 	}
 
-	public void UpdateDatabase(Cache cache)
+	public boolean UpdateDatabase(Cache cache)
 	{
 
 		Parameters args = new Parameters();
@@ -289,10 +289,12 @@ public class CacheDAO
 		{
 			long ret = Database.Data.update("Caches", args, "Id = ?", new String[]
 				{ String.valueOf(cache.Id) });
+			return ret > 0;
 		}
 		catch (Exception exc)
 		{
 			Logger.Error("Update Cache", "", exc);
+			return false;
 
 		}
 	}
@@ -468,7 +470,19 @@ public class CacheDAO
 					for (Waypoint waypoint : newCache.waypoints)
 					{
 
-						waypointDAO.WriteToDatabase(waypoint);
+						boolean update = true;
+
+						// dont refresh wp if aktCache.wp is user changed
+						for (Waypoint wp : aktCache.waypoints)
+						{
+							if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
+							{
+								if (wp.IsUserWaypoint) update = false;
+								break;
+							}
+						}
+
+						if (update) waypointDAO.WriteToDatabase(waypoint);
 					}
 
 					ImageDAO imageDAO = new ImageDAO();

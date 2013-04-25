@@ -8,7 +8,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -68,7 +68,7 @@ public class MapInfoPanel extends CB_View_Base
 
 	public void setBearing(float Heading, float Bearing)
 	{
-		if (aktHeading == Heading) return;
+		if ((aktHeading == Heading) && (aktBearing == Bearing)) return;
 		aktHeading = Heading;
 		aktBearing = Bearing;
 		if (arrow != null && compas_scale != null)

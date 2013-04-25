@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
@@ -19,10 +19,12 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Settings.SettingBool;
+import CB_Core.TranslationEngine.Translation;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -46,7 +48,7 @@ public class GL_MsgBox extends Dialog
 
 	public Label label;
 
-	protected SettingBool rememberSeting = null;
+	protected SettingBool rememberSetting = null;
 	protected chkBox chkRemember;
 
 	// **************************************************
@@ -66,31 +68,9 @@ public class GL_MsgBox extends Dialog
 		return Show(msg, title, MessageBoxButtons.OK, icon, null, null);
 	}
 
-	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, OnMsgBoxClickListener Listener)
-	{
-		return Show(msg, title, buttons, Listener, null);
-	}
-
 	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener)
 	{
 		return Show(msg, title, buttons, icon, Listener, null);
-	}
-
-	// ++++++++++++++++++++++
-
-	public static GL_MsgBox Show(String msg, OnMsgBoxClickListener Listener, SettingBool remember)
-	{
-		return Show(msg, "", Listener, remember);
-	}
-
-	public static GL_MsgBox Show(String msg, String title, OnMsgBoxClickListener Listener, SettingBool remember)
-	{
-		return Show(msg, title, MessageBoxButtons.OK, Listener, remember);
-	}
-
-	public static GL_MsgBox Show(String msg, String title, MessageBoxIcon icon, SettingBool remember)
-	{
-		return Show(msg, title, MessageBoxButtons.OK, icon, null, remember);
 	}
 
 	public static GL_MsgBox Show(String msg)
@@ -115,14 +95,14 @@ public class GL_MsgBox extends Dialog
 			// Wir liefern nur ein On Click auf den OK Button zurück!
 			if (Listener != null)
 			{
-				Listener.onClick(BUTTON_POSITIVE);
+				Listener.onClick(BUTTON_POSITIVE, null);
 			}
 			return null;
 		}
 
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)),
 				"MsgBox" + title);
-		msgBox.rememberSeting = remember;
+		msgBox.rememberSetting = remember;
 		msgBox.mMsgBoxClickListner = Listener;
 		msgBox.setButtonCaptions(buttons);
 		msgBox.setTitle(title);
@@ -145,14 +125,14 @@ public class GL_MsgBox extends Dialog
 			// Wir liefern nur ein On Click auf den OK Button zurück!
 			if (Listener != null)
 			{
-				Listener.onClick(BUTTON_POSITIVE);
+				Listener.onClick(BUTTON_POSITIVE, null);
 			}
 			return null;
 		}
 
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)),
 				"MsgBox" + title);
-		msgBox.rememberSeting = remember;
+		msgBox.rememberSetting = remember;
 		msgBox.mMsgBoxClickListner = Listener;
 		msgBox.setTitle(title);
 
@@ -160,15 +140,15 @@ public class GL_MsgBox extends Dialog
 
 		SizeF contentSize = msgBox.getContentSize();
 
-		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
-				UiSizes.getButtonHeight());
+		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(),
+				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		Image iconImage = new Image(imageRec, "MsgBoxIcon");
 		if (icon != MessageBoxIcon.None) iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
 		msgBox.addChild(iconImage);
 
 		msgBox.label = new Label(contentSize.getBounds(), "MsgBoxLabel");
-		msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UiSizes.getButtonHeight());
+		msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
 		msgBox.label.setX(imageRec.getMaxX() + 5);
 		msgBox.label.setY(0);
 		msgBox.label.setWrappedText(msg);
@@ -190,7 +170,7 @@ public class GL_MsgBox extends Dialog
 		 *            The button that was clicked ( the position of the item clicked.
 		 * @return
 		 */
-		public boolean onClick(int which);
+		public boolean onClick(int which, Object data);
 	}
 
 	public GL_MsgBox(CB_RectF rec, String Name)
@@ -210,12 +190,12 @@ public class GL_MsgBox extends Dialog
 	{
 
 		// wenn Dies eine Remember MsgBox ist, überprüfen wir ob das remember gesetzt ist
-		if (rememberSeting != null)
+		if (rememberSetting != null)
 		{
 			if (chkRemember.isChecked())
 			{
 				// User hat Remember aktiviert, was hier abgespeichert wird!
-				rememberSeting.setValue(true);
+				rememberSetting.setValue(true);
 				Config.AcceptChanges();
 			}
 		}
@@ -224,7 +204,7 @@ public class GL_MsgBox extends Dialog
 		boolean retValue = false;
 		if (mMsgBoxClickListner != null)
 		{
-			retValue = mMsgBoxClickListner.onClick(button);
+			retValue = mMsgBoxClickListner.onClick(button, that.data);
 		}
 
 		return retValue;
@@ -235,102 +215,56 @@ public class GL_MsgBox extends Dialog
 		return calcMsgBoxSize(Text, hasTitle, hasButtons, hasIcon, false);
 	}
 
-	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember)
-	{
-		float Width = (((UiSizes.getButtonWidthWide() + margin) * 3) + margin);
-
-		if (Width * 1.2 < UiSizes.getWindowWidth()) Width *= 1.2f;
-
-		float MsgWidth = (Width * 0.95f) - 5 - UiSizes.getButtonHeight();
-
-		TextBounds bounds = Fonts.MeasureWrapped(Text, MsgWidth);
-		float MeasuredTextHeight = bounds.height + (margin * 2);
-
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UiSizes.getButtonHeight()) : (int) MeasuredTextHeight);
-
-		if (hasTitle)
-		{
-			TextBounds titleBounds = Fonts.Measure("T");
-			Height += (titleBounds.height * 3);
-			Height += margin * 2;
-		}
-		Height += calcFooterHeight(hasButtons);
-		if (hasRemember) Height += UiSizes.getChkBoxSize().height;
-		Height += calcHeaderHeight();
-
-		// min Height festlegen
-		Height = (int) Math.max(Height, UiSizes.getButtonHeight() * 2.5f);
-
-		// max Height festlegen
-		Height = (int) Math.min(Height, UiSizes.getWindowHeight() * 0.95f);
-
-		Size ret = new Size((int) Width, Height);
-		return ret;
-	}
-
-	public void addFooterChild(CB_View_Base view)
-	{
-		FooterItems.add(view);
-
-		float maxItemY = 0;
-
-		for (CB_View_Base item : FooterItems)
-		{
-			if (item.getMaxY() > maxItemY) maxItemY = item.getMaxY();
-		}
-		mFooterHeight = maxItemY + margin;
-	}
-
 	public void setButtonCaptions(MessageBoxButtons buttons)
 	{
-		int button = buttons.ordinal();
-		if (button == 0)
+		BitmapFont font = Fonts.getBig();
+		Color color = Fonts.getFontColor();
+		if (buttons == MessageBoxButtons.AbortRetryIgnore)
 		{
 			createButtons(this, 3);
-			button1.setText(GlobalCore.Translations.Get("abort"));
-			button2.setText(GlobalCore.Translations.Get("retry"));
-			button3.setText(GlobalCore.Translations.Get("ignore"));
+			button1.setText(Translation.Get("abort"), font, color);
+			button2.setText(Translation.Get("retry"), font, color);
+			button3.setText(Translation.Get("ignore"), font, color);
 		}
-		else if (button == 1)
+		else if (buttons == MessageBoxButtons.OK)
 		{
 			createButtons(this, 1);
-			button1.setText(GlobalCore.Translations.Get("ok"));
+			button1.setText(Translation.Get("ok"), font, color);
 		}
-		else if (button == 2)
+		else if (buttons == MessageBoxButtons.OKCancel)
 		{
 			createButtons(this, 2);
-			button1.setText(GlobalCore.Translations.Get("ok"));
-			button3.setText(GlobalCore.Translations.Get("cancel"));
+			button1.setText(Translation.Get("ok"), font, color);
+			button3.setText(Translation.Get("cancel"), font, color);
 		}
-		else if (button == 3)
+		else if (buttons == MessageBoxButtons.RetryCancel)
 		{
 			createButtons(this, 2);
-			button1.setText(GlobalCore.Translations.Get("retry"));
-			button3.setText(GlobalCore.Translations.Get("cancel"));
+			button1.setText(Translation.Get("retry"), font, color);
+			button3.setText(Translation.Get("cancel"), font, color);
 		}
-		else if (button == 4)
+		else if (buttons == MessageBoxButtons.YesNo)
 		{
 			createButtons(this, 2);
-			button1.setText(GlobalCore.Translations.Get("yes"));
-			button3.setText(GlobalCore.Translations.Get("no"));
+			button1.setText(Translation.Get("yes"), font, color);
+			button3.setText(Translation.Get("no"), font, color);
 		}
-		else if (button == 5)
+		else if (buttons == MessageBoxButtons.YesNoCancel)
 		{
 			createButtons(this, 3);
-			button1.setText(GlobalCore.Translations.Get("yes"));
-			button2.setText(GlobalCore.Translations.Get("no"));
-			button3.setText(GlobalCore.Translations.Get("cancel"));
+			button1.setText(Translation.Get("yes"), font, color);
+			button2.setText(Translation.Get("no"), font, color);
+			button3.setText(Translation.Get("cancel"), font, color);
 		}
-		else if (button == 6)
+		else if (buttons == MessageBoxButtons.Cancel)
 		{
 			createButtons(this, 3);
 			button1.setInvisible();
 			button2.setInvisible();
-			button3.setText(GlobalCore.Translations.Get("cancel"));
+			button3.setText(Translation.Get("cancel"), font, color);
 		}
 		else
 		{
-			// no Buttons
 			this.setFooterHeight(calcFooterHeight(false));
 		}
 	}
@@ -343,39 +277,38 @@ public class GL_MsgBox extends Dialog
 		switch (msgIcon.ordinal())
 		{
 		case 0:
-			icon = SpriteCache.Icons.get(32);
+			icon = SpriteCache.Icons.get(IconName.info_32.ordinal());
 			break;
 		case 1:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 2:
-			icon = SpriteCache.Icons.get(33);
+			icon = SpriteCache.Icons.get(IconName.warning_33.ordinal());
 			break;
 		case 3:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 4:
-			icon = SpriteCache.Icons.get(32);
+			icon = SpriteCache.Icons.get(IconName.info_32.ordinal());
 			break;
 		case 5:
 			icon = null;
 			break;
 		case 6:
-			icon = SpriteCache.Icons.get(34);
+			icon = SpriteCache.Icons.get(IconName.help_34.ordinal());
 			break;
 		case 7:
-			icon = SpriteCache.Icons.get(31);
+			icon = SpriteCache.Icons.get(IconName.close_31.ordinal());
 			break;
 		case 8:
-			icon = SpriteCache.Icons.get(33);
+			icon = SpriteCache.Icons.get(IconName.warning_33.ordinal());
 			break;
 		case 9:
-			icon = SpriteCache.Icons.get(35);
+			icon = SpriteCache.Icons.get(IconName.GCLive_35.ordinal());
 			break;
 		case 10:
-			icon = SpriteCache.Icons.get(35);
+			icon = SpriteCache.Icons.get(IconName.GCLive_35.ordinal());
 			break;
-
 		default:
 			icon = null;
 
@@ -386,73 +319,59 @@ public class GL_MsgBox extends Dialog
 
 	protected void createButtons(GL_MsgBox msgBox, int anzahl)
 	{
-		setButtonListner();
-
-		float buttonY = 7.5f;
-
-		float buttonX_R = msgBox.width - UiSizes.getButtonWidthWide() - margin;
-		float buttonX_L = margin;
-		float buttonX_C = (msgBox.width - UiSizes.getButtonWidthWide()) / 2;
+		setButtonListener();
 
 		switch (anzahl)
 		{
 		case 1:
-			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button("positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
-			msgBox.addFooterChild(button1);
+			msgBox.initRow(false, margin);
+			msgBox.setBorders(margin, margin);
+			msgBox.addLast(button1);
 			break;
 		case 2:
-			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button("positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
-			msgBox.addFooterChild(button1);
-			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"negativeButton");
+			button3 = new Button("negativeButton");
 			button3.setOnClickListener(negativeButtonClickListener);
-			msgBox.addFooterChild(button3);
+			msgBox.initRow(false, margin);
+			msgBox.setBorders(margin, margin);
+			msgBox.addNext(button1);
+			msgBox.addLast(button3);
 			break;
 		case 3:
-			button1 = new Button(new CB_RectF(buttonX_L, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"positiveButton");
+			button1 = new Button("positiveButton");
 			button1.setOnClickListener(positiveButtonClickListener);
-			msgBox.addFooterChild(button1);
-			button2 = new Button(new CB_RectF(buttonX_C, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()),
-					"negativeButton");
+			button2 = new Button("negativeButton");
 			button2.setOnClickListener(neutralButtonClickListener);
-			msgBox.addFooterChild(button2);
-			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UiSizes.getButtonWidthWide(), UiSizes.getButtonHeight()), "neutralButton");
+			button3 = new Button("neutralButton");
 			button3.setOnClickListener(negativeButtonClickListener);
-			msgBox.addFooterChild(button3);
+			msgBox.initRow(false, margin);
+			msgBox.setBorders(margin, margin);
+			msgBox.addNext(button1);
+			msgBox.addNext(button2);
+			msgBox.addLast(button3);
 			break;
-
 		}
 
-		float calcedFooterHeight = calcFooterHeight(true);
-
-		// add Remember line?
-
-		if (rememberSeting != null)
+		if (rememberSetting != null)
 		{
 			chkRemember = new chkBox("remember");
-			chkRemember.setChecked(rememberSeting.getValue());
-			chkRemember.setPos(buttonX_L, button1.getMaxY());
-			msgBox.addFooterChild(chkRemember);
+			msgBox.setBorders(chkRemember.getHeight() / 2f, 0);
+			msgBox.setMargins(chkRemember.getHeight() / 2f, 0);
+			msgBox.addNext(chkRemember, chkRemember.getHeight() * 2f / msgBox.getWidth());
+			Label lbl = new Label("lbl");
+			msgBox.addLast(lbl);
 
-			Label lbl = new Label(chkRemember.getMaxX() + margin, chkRemember.getY(), this.width - chkRemember.getMaxX(),
-					chkRemember.getHeight(), "");
-
-			lbl.setText(GlobalCore.Translations.Get("remember"));
-
-			msgBox.addFooterChild(lbl);
-
-			calcedFooterHeight += chkRemember.getHeight() + margin;
+			chkRemember.setChecked(rememberSetting.getValue());
+			lbl.setText(Translation.Get("remember"));
 		}
 
-		msgBox.setFooterHeight(calcedFooterHeight);
+		msgBox.setFooterHeight(msgBox.getYPos() + margin);
 	}
 
-	private void setButtonListner()
+	private void setButtonListener()
 	{
 		positiveButtonClickListener = new OnClickListener()
 		{
@@ -498,14 +417,9 @@ public class GL_MsgBox extends Dialog
 		}
 	}
 
-	public String getText()
+	public void setText(String text)
 	{
-		return label.text;
-	}
-
-	public TextBounds setText(String text)
-	{
-		return label.setWrappedText(text);
+		label.setWrappedText(text);
 	}
 
 	public void close()
@@ -543,7 +457,7 @@ public class GL_MsgBox extends Dialog
 
 		label = null;
 
-		rememberSeting = null;
+		rememberSetting = null;
 		chkRemember = null;
 
 		super.dispose();

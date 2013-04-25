@@ -1,6 +1,7 @@
 package CB_Core.Map;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import org.apache.http.params.HttpParams;
 
 import CB_Core.Config;
 import CB_Core.FileIO;
+import CB_Core.Log.Logger;
+import CB_Core.Map.Layer.Type;
 
 public abstract class ManagerBase
 {
@@ -35,9 +38,13 @@ public abstract class ManagerBase
 
 	public ArrayList<PackBase> mapPacks = new ArrayList<PackBase>();
 
-	public ArrayList<String> mapsForgeMaps = new ArrayList<String>();
+	public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
 
-	public ArrayList<Layer> Layers = new ArrayList<Layer>();
+	private ArrayList<Layer> Layers = new ArrayList<Layer>();
+
+	private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
+
+	private boolean mayAddLayer = false; // add only during startup (GetLayerByName)
 
 	protected String RenderTheme;
 
@@ -51,6 +58,13 @@ public abstract class ManagerBase
 	{
 		if (RenderTheme != null && RenderTheme.length() > 0) return true;
 		return false;
+	}
+
+	public ManagerBase()
+	{
+		// for the Access to the manager in the CB_Core
+		CB_Core.Map.ManagerBase.Manager = this;
+
 	}
 
 	public PackBase CreatePack(String file) throws IOException
@@ -83,17 +97,24 @@ public abstract class ManagerBase
 
 	public Layer GetLayerByName(String Name, String friendlyName, String url)
 	{
-		if (Name == "OSM") Name = "Mapnik";
+		if (Name == "OSM" || Name == "") Name = "Mapnik";
 
 		for (Layer layer : Layers)
 		{
 			if (layer.Name.equalsIgnoreCase(Name)) return layer;
 		}
 
-		Layer newLayer = new Layer(Name, Name, url);
-		Layers.add(newLayer);
-
-		return newLayer;
+		if (mayAddLayer)
+		{
+			Layer newLayer = new Layer(Type.normal, Name, Name, url);
+			Layers.add(newLayer);
+			return newLayer;
+		}
+		else
+		{
+			Config.settings.CurrentMapLayer.setValue(Layers.get(0).Name);
+			return Layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
+		}
 	}
 
 	public byte[] LoadInvertedPixmap(Layer layer, Descriptor desc)
@@ -141,6 +162,7 @@ public abstract class ManagerBase
 
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{
+		if (layer == null) return null;
 		// Vorerst nur im Pack suchen
 		// Kachel im Pack suchen
 		long cachedTileAge = 0;
@@ -172,6 +194,9 @@ public abstract class ManagerBase
 	// / <returns></returns>
 	public boolean CacheTile(Layer layer, Descriptor tile)
 	{
+
+		if (layer == null) return false;
+
 		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen
 		// werden!
 		for (PackBase pack : mapPacks)
@@ -205,12 +230,10 @@ public abstract class ManagerBase
 				response.getEntity().writeTo(out);
 				out.close();
 
-				String responseString = out.toString();
-
 				// Verzeichnis anlegen
 				synchronized (this)
 				{
-					if (!FileIO.DirectoryExists(path)) return false;
+					if (!FileIO.createDirectory(path)) return false;
 				}
 				// Datei schreiben
 				synchronized (this)
@@ -320,5 +343,120 @@ public abstract class ManagerBase
 		0.0f, -1.5f, 0.0f, 0.0f, 200.0f, /* */
 		0.0f, 0.0f, -1.5f, 0.0f, 0.f, /* */
 		0.0f, 0.0f, 0.0f, 0.0f, 255f };
+
+	public void LoadTMS(String string)
+	{
+		try
+		{
+			TmsMap tmsMap = new TmsMap(string);
+			if ((tmsMap.name == null) || (tmsMap.url == null))
+			{
+				return;
+			}
+			tmsMaps.add(tmsMap);
+			Layers.add(new TmsLayer(Type.normal, tmsMap));
+		}
+		catch (Exception ex)
+		{
+
+		}
+
+	}
+
+	public void LoadBSH(String string)
+	{
+		try
+		{
+			BshLayer layer = new BshLayer(Type.normal, string);
+			Layers.add(layer);
+		}
+		catch (Exception ex)
+		{
+
+		}
+
+	}
+
+	private void getFiles(ArrayList<String> files, ArrayList<String> mapnames, String directory)
+	{
+		File dir = new File(directory);
+		String[] dirFiles = dir.list();
+		if (dirFiles != null && dirFiles.length > 0)
+		{
+			for (String tmp : dirFiles)
+			{
+				String FilePath = directory + "/" + tmp;
+				String ttt = tmp.toLowerCase();
+				if (ttt.endsWith("pack") || ttt.endsWith("map") || ttt.endsWith("xml") || ttt.endsWith("bsh"))
+				{
+					if (!mapnames.contains(tmp))
+					{
+						files.add(FilePath);
+						mapnames.add(tmp);
+						Logger.DEBUG("add: " + tmp);
+					}
+				}
+			}
+		}
+	}
+
+	public void initialMapPacks()
+	{
+		Layers.clear();
+
+		mayAddLayer = true;
+
+		// add default layer
+		Layers.addAll(DEFAULT_LAYER);
+
+		ArrayList<String> files = new ArrayList<String>();
+		ArrayList<String> mapnames = new ArrayList<String>();
+
+		Logger.DEBUG("dirOwnMaps = " + Config.settings.MapPackFolderLocal.getValue());
+		getFiles(files, mapnames, Config.settings.MapPackFolderLocal.getValue());
+
+		Logger.DEBUG("dirDefaultMaps = " + Config.settings.MapPackFolder.getDefaultValue());
+		getFiles(files, mapnames, Config.settings.MapPackFolder.getDefaultValue());
+
+		Logger.DEBUG("dirGlobalMaps = " + Config.settings.MapPackFolder.getValue());
+		getFiles(files, mapnames, Config.settings.MapPackFolder.getValue());
+
+		if (!(files == null))
+		{
+			if (files.size() > 0)
+			{
+				for (String file : files)
+				{
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("pack"))
+					{
+						ManagerBase.Manager.LoadMapPack(file);
+					}
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("map"))
+					{
+
+						String Name = FileIO.GetFileNameWithoutExtension(file);
+						Layer layer = new Layer(Type.normal, Name, Name, file);
+						layer.isMapsForge = true;
+						ManagerBase.Manager.Layers.add(layer);
+					}
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("xml"))
+					{
+						ManagerBase.Manager.LoadTMS(file);
+					}
+					if (FileIO.GetFileExtension(file).equalsIgnoreCase("bsh"))
+					{
+						ManagerBase.Manager.LoadBSH(file);
+					}
+				}
+			}
+		}
+		Descriptor.Init();
+		mayAddLayer = false;
+	}
+
+	public ArrayList<Layer> getLayers()
+	{
+		return Layers;
+	}
 
 }

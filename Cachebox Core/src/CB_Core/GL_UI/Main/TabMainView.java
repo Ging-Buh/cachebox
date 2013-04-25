@@ -7,15 +7,23 @@ import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
+import CB_Core.Api.API_ErrorEventHandler;
+import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.DB.Database;
+import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_Core.GL_UI.Main.Actions.CB_Action_GenerateRoute;
@@ -40,6 +48,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSolverView2;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTestView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackListView;
+import CB_Core.GL_UI.Main.Actions.CB_Action_ShowTrackableListView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowWaypointView;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Delete_Dialog;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Parking_Dialog;
@@ -70,6 +79,7 @@ import CB_Core.Map.RouteOverlay;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -84,7 +94,6 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_ShowCacheList actionShowCacheList;
 
 	private CB_Action_ShowAbout actionShowAboutView;
-
 	private CB_Action_ShowCreditsView actionShowCreditsView;
 	public static CB_Action_ShowDescriptionView actionShowDescriptionView;
 	public static CB_Action_ShowFieldNotesView actionShowFieldNotesView;
@@ -95,7 +104,7 @@ public class TabMainView extends MainViewBase
 	private CB_Action_ShowSolverView2 actionShowSolverView2;
 	public static CB_Action_ShowSpoilerView actionShowSpoilerView;
 	public static CB_Action_ShowFilterSettings actionShowFilter = new CB_Action_ShowFilterSettings();
-	// TODO activate TB List on 0.6.x => private CB_Action_ShowTrackableListView actionShowTrackableListView;
+	public static CB_Action_ShowTrackableListView actionShowTrackableListView;
 	public static CB_Action_ShowTrackListView actionShowTrackListView;
 	public static CB_Action_ShowWaypointView actionShowWaypointView;
 	public static CB_Action_Show_Settings actionShowSettings;
@@ -141,6 +150,7 @@ public class TabMainView extends MainViewBase
 
 		that = (TabMainView) (mainView = this);
 		GL.that.addRenderView(this, GL.FRAME_RATE_IDLE);
+
 	}
 
 	@Override
@@ -161,7 +171,11 @@ public class TabMainView extends MainViewBase
 
 	private void ini()
 	{
+
+		API_ErrorEventHandlerList.addHandler(handler);
+
 		Logger.LogCat("Start TabMainView-Initial");
+		Logger.DEBUG("Start TabMainView-Initial");
 
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
@@ -178,19 +192,22 @@ public class TabMainView extends MainViewBase
 		actionShowSolverView = new CB_Action_ShowSolverView();
 		actionShowSolverView2 = new CB_Action_ShowSolverView2();
 		actionShowSpoilerView = new CB_Action_ShowSpoilerView();
-		// TODO activate TB List on 0.6.x => actionShowTrackableListView = new CB_Action_ShowTrackableListView();
+		actionShowTrackableListView = new CB_Action_ShowTrackableListView();
 		actionShowTrackListView = new CB_Action_ShowTrackListView();
 		actionShowWaypointView = new CB_Action_ShowWaypointView();
 		if (GlobalCore.isTestVersion()) actionTestView = new CB_Action_ShowTestView();
 		actionShowSettings = new CB_Action_Show_Settings();
 
 		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
-				SpriteCache.Icons.get(46));
+				SpriteCache.Icons.get(IconName.navigate_46.ordinal()));
 
 		actionRecTrack = new CB_Action_RecTrack();
-		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCache.Icons.get(11));
-		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCache.Icons.get(47));
-		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCache.Icons.get(10));
+		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC,
+				SpriteCache.Icons.get(IconName.voiceRec_11.ordinal()));
+		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
+				SpriteCache.Icons.get(IconName.log10_47.ordinal()));
+		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC,
+				SpriteCache.Icons.get(IconName.video_10.ordinal()));
 
 		actionDayNight = new CB_Action_switch_DayNight();
 		// actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
@@ -222,12 +239,15 @@ public class TabMainView extends MainViewBase
 				{
 					if (c.GcCode.equalsIgnoreCase(sGc))
 					{
-						GlobalCore.setSelectedCache(c);
+						Logger.DEBUG("TabMainView: Set selectedCache to " + c.GcCode + " from lastSaved.");
+						GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
 						break;
 					}
 				}
 			}
 		}
+
+		GlobalCore.setAutoResort(Config.settings.StartWithAutoSelect.getValue());
 
 		platformConector.FirstShow();
 		filterSetChanged();
@@ -244,7 +264,7 @@ public class TabMainView extends MainViewBase
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		rec.setHeight(this.height - UiSizes.getInfoSliderHeight());
+		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
@@ -281,7 +301,7 @@ public class TabMainView extends MainViewBase
 		actionShowSolverView.setTab(this, Tab);
 		actionShowSolverView2.setTab(this, Tab);
 		actionShowSpoilerView.setTab(this, Tab);
-		// TODO activate TB List on 0.6.x => actionShowTrackableListView.setTab(this, Tab);
+		actionShowTrackableListView.setTab(this, Tab);
 		actionShowTrackListView.setTab(this, Tab);
 		actionShowWaypointView.setTab(this, Tab);
 		actionNavigateTo1.setTab(this, Tab);
@@ -296,8 +316,7 @@ public class TabMainView extends MainViewBase
 		// Actions den Buttons zuweisen
 
 		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
-		// TODO activate TB List on 0.6.x => CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false,
-		// GestureDirection.Right));
+		CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
 		CacheListButton.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
 
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
@@ -306,6 +325,7 @@ public class TabMainView extends MainViewBase
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 		btn2.addAction(new CB_ActionButton(actionShowSpoilerView, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
+		// btn2.addAction(new CB_ActionButton(actionDelCaches, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowMap, true, GestureDirection.Up));
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, false, GestureDirection.Right));
@@ -319,20 +339,19 @@ public class TabMainView extends MainViewBase
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
 		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
-		btn4.addAction(new CB_ActionButton(actionDelCaches, false));
 		btn4.addAction(new CB_ActionButton(actionParking, false));
 		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
 		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));
 
-		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
+		btn5.addAction(new CB_ActionButton(actionShowAboutView, false, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 		btn5.addAction(new CB_ActionButton(actionDayNight, false));
 		// btn5.addAction(new CB_ActionButton(actionScreenLock, false));
 		btn5.addAction(new CB_ActionButton(actionClose, false, GestureDirection.Down));
 
-		btn5.performClick();// actionShowAboutView.Execute();
+		actionShowAboutView.Execute();
 	}
 
 	private void addTabletTabs()
@@ -351,7 +370,7 @@ public class TabMainView extends MainViewBase
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		rec.setHeight(this.height - UiSizes.getInfoSliderHeight());
+		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
@@ -379,7 +398,7 @@ public class TabMainView extends MainViewBase
 		actionShowWaypointView.setTab(this, Tab);
 		actionShowAboutView.setTab(this, Tab);
 		actionShowCreditsView.setTab(this, Tab);
-		// TODO activate TB List on 0.6.x =>actionShowTrackableListView.setTab(this, Tab);
+		actionShowTrackableListView.setTab(this, Tab);
 		actionShowTrackListView.setTab(this, Tab);
 		actionShowCompassView.setTab(this, Tab);
 		actionShowLogView.setTab(this, Tab);
@@ -396,13 +415,14 @@ public class TabMainView extends MainViewBase
 
 		// Actions den Buttons zuweisen
 		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true));
-		// TODO activate TB List on 0.6.x =>CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false));
+		CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false));
 		CacheListButton.addAction(new CB_ActionButton(actionShowTrackListView, false));
 
 		btn2.addAction(new CB_ActionButton(actionShowWaypointView, true, GestureDirection.Right));
 		btn2.addAction(new CB_ActionButton(actionShowLogView, false, GestureDirection.Down));
 		btn2.addAction(new CB_ActionButton(actionShowHint, false));
 		btn2.addAction(new CB_ActionButton(actionShowNotesView, false));
+		// btn2.addAction(new CB_ActionButton(actionDelCaches, false));
 
 		btn3.addAction(new CB_ActionButton(actionShowCompassView, true, GestureDirection.Right));
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
@@ -414,19 +434,18 @@ public class TabMainView extends MainViewBase
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
 		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
-		btn4.addAction(new CB_ActionButton(actionDelCaches, false));
 		btn4.addAction(new CB_ActionButton(actionParking, false));
 		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
 		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));
 
-		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
+		btn5.addAction(new CB_ActionButton(actionShowAboutView, false, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 		btn5.addAction(new CB_ActionButton(actionDayNight, false));
 		// btn5.addAction(new CB_ActionButton(actionScreenLock, false));
 		btn5.addAction(new CB_ActionButton(actionClose, false));
 
-		btn5.performClick();// actionShowAboutView.Execute();
+		actionShowAboutView.Execute();
 	}
 
 	private void addRightForTabletsTab()
@@ -440,7 +459,7 @@ public class TabMainView extends MainViewBase
 		rec.setX(GL_UISizes.UI_Left.getWidth());
 		rec.setY(0);
 
-		rec.setHeight(this.height - UiSizes.getInfoSliderHeight());
+		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
 
 		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
 
@@ -477,13 +496,13 @@ public class TabMainView extends MainViewBase
 
 		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
 
-		btn3.performClick();// actionShowMap.Execute();
+		actionShowMap.Execute();
 	}
 
 	private void autoLoadTrack()
 	{
 		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
-		if (FileIO.DirectoryExists(trackPath))
+		if (FileIO.createDirectory(trackPath))
 		{
 			File dir = new File(trackPath);
 			String[] files = dir.list();
@@ -532,41 +551,49 @@ public class TabMainView extends MainViewBase
 		// chk if initial
 		if (!isInitial) Initial();
 
-		GL.that.StopRender();
-		if (switchDayNight) Config.changeDayNight();
-		ManagerBase.RenderThemeChanged = true;
-		GL.that.onStop();
-
-		SpriteCache.LoadSprites(true);
-		GL.that.onStart();
-		CallSkinChanged();
-
-		this.removeChilds();
-
-		CB_Button.reloadMenuSprite();
-		if (GlobalCore.isTab) addTabletTabs();
-		else
-			addPhoneTab();
-
-		// add Slider as last
-		Slider slider = new Slider(this, "Slider");
-		this.addChild(slider);
-
-		String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
-
-		GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
-
-		platformConector.DayNightSwitched();
-
-		synchronized (childs)
+		try
 		{
-			for (GL_View_Base view : this.childs)
+			GL.that.StopRender();
+			if (switchDayNight) Config.changeDayNight();
+			ManagerBase.RenderThemeChanged = true;
+			GL.that.onStop();
+
+			SpriteCache.LoadSprites(true);
+			GL.that.onStart();
+			CallSkinChanged();
+
+			this.removeChilds();
+
+			CB_Button.reloadMenuSprite();
+			if (GlobalCore.isTab) addTabletTabs();
+			else
+				addPhoneTab();
+
+			// add Slider as last
+			Slider slider = new Slider(this, "Slider");
+			this.addChild(slider);
+
+			String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
+
+			GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
+
+			platformConector.DayNightSwitched();
+
+			synchronized (childs)
 			{
-				if (view instanceof CB_TabView)
+				for (GL_View_Base view : this.childs)
 				{
-					((CB_TabView) view).SkinIsChanged();
+					if (view instanceof CB_TabView)
+					{
+						((CB_TabView) view).SkinIsChanged();
+					}
 				}
 			}
+			invalidateTextureEventList.Call();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		GL.that.RestartRender();
 	}
@@ -574,7 +601,7 @@ public class TabMainView extends MainViewBase
 	public void filterSetChanged()
 	{
 		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.ToString().equals(""))
-				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter.ToString()))
+				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter))
 				&& !GlobalCore.LastFilter.isExtendsFilter())
 		{
 			CacheListButton.setButtonSprites(SpriteCache.CacheList);
@@ -616,4 +643,27 @@ public class TabMainView extends MainViewBase
 		if (childs == null) return;
 		super.renderChilds(batch, parentInfo);
 	}
+
+	private API_ErrorEventHandler handler = new API_ErrorEventHandler()
+	{
+
+		@Override
+		public void InvalidAPI_Key()
+		{
+			String Msg = Translation.Get("apiKeyNeeded") + GlobalCore.br + GlobalCore.br;
+			Msg += Translation.Get("wantApi");
+
+			GL_MsgBox.Show(Msg, Translation.Get("errorAPI"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
+			{
+
+				@Override
+				public boolean onClick(int which, Object data)
+				{
+					if (which == GL_MsgBox.BUTTON_POSITIVE) platformConector.callGetApiKeyt();
+					return true;
+				}
+			}, Config.settings.RememberAsk_Get_API_Key);
+		}
+	};
+
 }

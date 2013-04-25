@@ -22,7 +22,7 @@ import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.utils.ColorDrawable;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -76,6 +76,75 @@ public class SpriteCache
 	public static ArrayList<Sprite> ZoomBtn = null;
 	public static Sprite ZoomValueBack = null;
 	public static ArrayList<Sprite> BigIcons = null;
+
+	public static enum IconName
+	{
+		btnNormal_0, // not used
+		button_1, // not used
+		doc_2,
+		big16_3, // not used
+		list_4, // CB_Action_ShowLogView
+		map_5, // CB_Action_ShowMap
+		compass_6, // CB_Action_ShowCompassView
+		cacheList_7, // CB_Action_ShowCacheList
+		trackList_8, // CB_Action_GenerateRoute, CB_Action_RecTrack, CB_Action_ShowTrackListView
+		log10_9, // not used, doppelt
+		video_10, // QuickActions/CB_Action_ShowActivity/RecVideo, TabMainView/CB_Action_ShowActivity/RecVideo
+		voiceRec_11, // QuickActions/CB_Action_ShowActivity/VoiceRec, TabMainView/CB_Action_ShowActivity/VoiceRec
+		lupe_12, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_SEARCH_LIST
+		filter_13, // CB_Action_ShowCacheList/getContextMenu/MenuID.MI_FilterSet MI_RESET_FILTER, CB_Action_ShowFilterSettings
+		lock_14, // not used
+		autoSelectOn_15, // QuickButtonItem
+		autoSelectOff_16, // QuickButtonItem, CB_Action_switch_Autoresort
+		solver_17, // CB_Action_ShowSolverView, CB_Action_ShowSolverView2
+		images_18, // CB_Action_ShowSpoilerView, QuickButtonItem
+		hint_19, // CB_Action_ShowHint, QuickButtonItem, showBtnCacheContextMenu
+		doc_20, // 20 doppelt, CategorieListView
+		list_21, // 21 doppelt, showBtnCacheContextMenu
+		images_22, // 22 doppelt, showBtnCacheContextMenu
+		note_23, // 23 not used
+		solver_24, // 24 doppelt, showBtnCacheContextMenu
+		jokerPhone_25, // 25 CB_Action_ShowJokerView, CB_Action_ShowTestView, showBtnCacheContextMenu
+		settings_26, // 26 Image
+		lupe_27, // 27 doppelt, CB_Action_Show_Search, TrackableListView
+		delete_28, // 28 SettingsItem_QuickButton, CB_Action_Show_Delete_Dialog, CB_Action_ShowCacheList,
+		voiceRec_29, // 29 not used, doppelt
+		satellite_30, // 30 not used,
+		close_31, // 31
+		info_32, // 32
+		warning_33, // 33
+		help_34, // 34
+		GCLive_35, // 35
+		tb_36, // 36
+		menu_37, // 37
+		tbList_38, // 38
+		sort_39, // 39
+		import_40, // 40
+		manageDB_41, // 41
+		favorit_42, // 42
+		star_43, // 43
+		disabled_44, // 44
+		log11_45, // 45
+		navigate_46, // 46
+		log10_47, // QuickActions/CB_Action_ShowActivity/TakePhoto, TabMainView/CB_Action_ShowActivity/TakePhoto
+		DayNight_48, // 48
+		cb_49, // 49
+		userdata_50, // 50
+		daySpinner_51, // 51
+		add_52, // 52
+		targetDay_53, // 53
+		fieldNote_54, // 54
+		fieldNoteList_55, // 55
+		waypointList_56, // 56
+		addCache_57, // 57
+		tbDiscover_58, // 58
+		tbDrop_59, // 59
+		tbGrab_60, // 60
+		tbPicked_61, // 61
+		tbVisit_62, // 62
+		tbNote_63 // 63
+	}
+
 	public static ArrayList<Sprite> Icons = null;
 	public static ArrayList<Sprite> ChkIcons = null;
 	public static ArrayList<Sprite> Dialog = null;
@@ -430,6 +499,7 @@ public class SpriteCache
 			MapIconsSmall.add(getThemedSprite("small6no"));
 			MapIconsSmall.add(getThemedSprite("small7no"));
 			MapIconsSmall.add(getThemedSprite("20"));
+			MapIconsSmall.add(getThemedSprite("22"));
 
 		}
 
@@ -484,6 +554,10 @@ public class SpriteCache
 			MapIcons.add(getThemedSprite("19"));
 			MapIcons.add(getThemedSprite("20"));
 			MapIcons.add(getThemedSprite("21"));
+			MapIcons.add(getThemedSprite("22"));
+			MapIcons.add(getThemedSprite("23"));
+			MapIcons.add(getThemedSprite("24"));
+			MapIcons.add(getThemedSprite("25"));
 			MapIcons.add(getThemedSprite("star"));
 
 		}
@@ -492,7 +566,7 @@ public class SpriteCache
 		synchronized (Arrows)
 		{
 
-			float scale = UiSizes.getScale();
+			float scale = UI_Size_Base.that.getScale();
 
 			Arrows.clear();
 			Arrows.add(getThemedSprite("arrow-Compass")); // 0
@@ -654,6 +728,10 @@ public class SpriteCache
 			BigIcons.add(getThemedSprite("log0icon")); // 19
 			BigIcons.add(getThemedSprite("my-parking")); // 20
 			BigIcons.add(getThemedSprite("big19icon")); // 21
+			BigIcons.add(getThemedSprite("big22icon")); // 22
+			BigIcons.add(getThemedSprite("big23icon")); // 23
+			BigIcons.add(getThemedSprite("big24icon")); // 24
+			BigIcons.add(getThemedSprite("big21icon")); // 25
 
 		}
 
@@ -718,6 +796,13 @@ public class SpriteCache
 			Icons.add(getThemedSprite("FieldNote")); // 54
 			Icons.add(getThemedSprite("fieldnote-list-icon")); // 55
 			Icons.add(getThemedSprite("waypoint-list-icon")); // 56
+			Icons.add(getThemedSprite("add_cache_icon")); // 57
+			Icons.add(getThemedSprite("tb-discover")); // 58
+			Icons.add(getThemedSprite("tb-drop")); // 59
+			Icons.add(getThemedSprite("tb-grab")); // 60
+			Icons.add(getThemedSprite("tb-picked")); // 61
+			Icons.add(getThemedSprite("tb-visit")); // 62
+			Icons.add(getThemedSprite("tb-note")); // 63
 
 		}
 

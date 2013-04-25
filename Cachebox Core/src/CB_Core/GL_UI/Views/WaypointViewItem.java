@@ -1,20 +1,20 @@
 package CB_Core.GL_UI.Views;
 
-import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
-import CB_Core.Locator.Locator;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -105,7 +105,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 				return;
 			}
 
-			info = new extendedCacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
+			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 			info.setZeroPos();
 			info.setViewMode(ViewMode);
 
@@ -121,7 +121,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 			arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
-			if (GlobalCore.LastValidPosition == null || GlobalCore.Locator == null)
+			if (Locator.Valid())
 			{
 				arrow.setColor(DISABLE_COLOR);
 				setDistanceString("---");
@@ -153,31 +153,27 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	private void setActLocator()
 	{
-		if (GlobalCore.LastValidPosition.Valid)
+		if (Locator.Valid())
 		{
 
 			double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
 			double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
 			float distance = (mWaypoint == null) ? mCache.Distance(true) : mWaypoint.Distance();
 
-			Coordinate position = GlobalCore.LastValidPosition;
-			double heading = (GlobalCore.Locator != null) ? GlobalCore.Locator.getHeading() : 0;
+			Coordinate position = Locator.getCoordinate();
+			double heading = Locator.getHeading();
 			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), lat, lon);
 			double cacheBearing = -(bearing - heading);
 			setDistanceString(UnitFormatter.DistanceString(distance));
 
-			if (ViewMode != CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
+			arrow.setRotation((float) cacheBearing);
+			if (arrow.getColor() == DISABLE_COLOR)
 			{
-				arrow.setRotation((float) cacheBearing);
-				if (arrow.getColor() == DISABLE_COLOR)
-				{
-					float size = this.height / 2.3f;
-					arrow = new Sprite(SpriteCache.Arrows.get(0));
-					arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-					arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
-				}
+				float size = this.height / 2.3f;
+				arrow = new Sprite(SpriteCache.Arrows.get(0));
+				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 			}
-
 		}
 	}
 
@@ -234,13 +230,13 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		setActLocator();
 	}
 
 	@Override
-	public void OrientationChanged(float heading)
+	public void OrientationChanged()
 	{
 		setActLocator();
 	}
@@ -261,7 +257,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	{
 		if (mWaypoint != null)
 		{
-			float scaleFactor = width / UiSizes.getCacheListItemRec().getWidth();
+			float scaleFactor = width / UiSizes.that.getCacheListItemRec().getWidth();
 			float mLeft = 3 * scaleFactor;
 			float mTop = 3 * scaleFactor;
 			mMargin = mLeft;
@@ -271,7 +267,10 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
 
 			{ // Icon Sprite erstellen
-				mIconSprite = new Sprite(SpriteCache.BigIcons.get(mWaypoint.Type.ordinal()));
+				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
+				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart) mIconSprite = new Sprite(SpriteCache.BigIcons.get(23));
+				else
+					mIconSprite = new Sprite(SpriteCache.BigIcons.get(mWaypoint.Type.ordinal()));
 
 				mIconSprite.setSize(mIconSize, mIconSize);
 				mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
@@ -319,5 +318,16 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 		}
 
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Low;
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
 	}
 }

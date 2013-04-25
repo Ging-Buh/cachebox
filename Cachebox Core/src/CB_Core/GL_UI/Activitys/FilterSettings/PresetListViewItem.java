@@ -1,11 +1,12 @@
 package CB_Core.GL_UI.Activitys.FilterSettings;
 
+import CB_Core.FilterProperties;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Activitys.FilterSettings.PresetListView.PresetEntry;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,7 +30,7 @@ public class PresetListViewItem extends ListViewItemBackground
 	{
 		if (EditFilterSettings.tmpFilterProps != null)
 		{
-			if (chkPresetFilter(mPresetEntry.getPresetString(), EditFilterSettings.tmpFilterProps.ToString()))
+			if (chkPresetFilter(mPresetEntry.getFilterProperties(), EditFilterSettings.tmpFilterProps))
 			{
 				if (!EditFilterSettings.tmpFilterProps.isExtendsFilter())
 				{
@@ -72,9 +73,9 @@ public class PresetListViewItem extends ListViewItemBackground
 		{
 			float iconHeight = this.height * 0.8f;
 			float iconWidth = iconHeight;
-			mPresetEntry.getIcon().setBounds(left, UiSizes.getMargin(), iconWidth, iconHeight);
+			mPresetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			mPresetEntry.getIcon().draw(batch);
-			left += iconWidth + UiSizes.getMargin() + getLeftWidth();
+			left += iconWidth + UI_Size_Base.that.getMargin() + getLeftWidth();
 		}
 	}
 
@@ -87,32 +88,34 @@ public class PresetListViewItem extends ListViewItemBackground
 	 *            Der Filter String, mit dem das Preset verglichen werden soll.
 	 * @return true wenn gleichheit
 	 */
-	public static boolean chkPresetFilter(String presetString, String filterString)
+	public static boolean chkPresetFilter(FilterProperties presetFilter, FilterProperties filter)
 	{
-		// exclude Category filter, cut String after 85 comma
-		String probs = filterString;
-		String[] commaSplit = probs.split(",");
-		probs = "";
-		if (commaSplit.length < 85) return false;
-		for (int i = 0; i < 85; i++)
-		{
-			probs += commaSplit[i] + ",";
-		}
-
-		probs += ",,,,";
-
-		String preset = presetString;
-		commaSplit = preset.split(",");
-		preset = "";
-		if (commaSplit.length < 85) return false;
-		for (int i = 0; i < 85; i++)
-		{
-			preset += commaSplit[i] + ",";
-		}
-
-		preset += ",,,,";
-
-		return probs.equals(preset);
+		return (presetFilter.equals(filter));
+		//
+		// // exclude Category filter, cut String after 85 comma
+		// String probs = filterString;
+		// String[] commaSplit = probs.split(",");
+		// probs = "";
+		// if (commaSplit.length < 85) return false;
+		// for (int i = 0; i < 85; i++)
+		// {
+		// probs += commaSplit[i] + ",";
+		// }
+		//
+		// probs += ",,,,";
+		//
+		// String preset = presetString;
+		// commaSplit = preset.split(",");
+		// preset = "";
+		// if (commaSplit.length < 85) return false;
+		// for (int i = 0; i < 85; i++)
+		// {
+		// preset += commaSplit[i] + ",";
+		// }
+		//
+		// preset += ",,,,";
+		//
+		// return probs.equals(preset);
 	}
 
 	@Override

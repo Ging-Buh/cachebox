@@ -35,21 +35,24 @@ import CB_Core.GL_UI.Controls.SelectionMarker;
 import CB_Core.GL_UI.Controls.SelectionMarker.Type;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
-import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Log.Logger;
 import CB_Core.Map.MapTileLoader;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.Settings.SettingBase.iChanged;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -78,13 +81,16 @@ public class GL implements ApplicationListener
 	private static long timerValue;
 
 	// Private Static Member
-	private static AtomicBoolean started = new AtomicBoolean(false);
-	private static boolean misTouchDown = false;
+	public static AtomicBoolean started = new AtomicBoolean(false);
+	public static boolean misTouchDown = false;
 
 	// private Member
-	private boolean touchDraggedActive = false, ToastIsShown = false, stopRender = false, darknesAnimationRuns = false,
-			MarkerIsShown = false;
-	private int FpsInfoPos = 0;
+	private boolean touchDraggedActive = false;
+	protected boolean ToastIsShown = false;
+	protected boolean stopRender = false;
+	private boolean darknesAnimationRuns = false;
+	protected boolean MarkerIsShown = false;
+	protected int FpsInfoPos = 0;
 	private float darknesAlpha = 0f;
 	private long mLongClickTime = 0, mDoubleClickTime = 500, lastClickTime = 0;
 
@@ -96,23 +102,24 @@ public class GL implements ApplicationListener
 	 */
 	protected static HashMap<GL_View_Base, Integer> renderViews = new HashMap<GL_View_Base, Integer>();
 	private Point lastClickPoint = null;
-	private ParentInfo prjMatrix;
+	protected ParentInfo prjMatrix;
 	private CB_View_Base actActivity;
-	private Dialog actDialog;
+	public Dialog actDialog;
 	private ArrayList<Dialog> dialogHistory = new ArrayList<Dialog>();
 	private PopUp_Base aktPopUp = null;
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
 	private Stage mStage;
 	private Timer longClickTimer;
-	private Sprite FpsInfoSprite, mDarknesSprite;
+	protected Sprite FpsInfoSprite;
+	private Sprite mDarknesSprite;
 	private Pixmap mDarknesPixmap;
 	private Texture mDarknesTexture;
 	protected EditWrapedTextField keyboardFocus;
 
-	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
-	private static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
+	protected ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
+	public static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
 
-	private static boolean ifAllInitial = false;
+	public static boolean ifAllInitial = false;
 
 	public static void setIsInitial()
 	{
@@ -132,11 +139,11 @@ public class GL implements ApplicationListener
 	/**
 	 * Zwischenspeicher für die touchDown Positionen der einzelnen Finger
 	 */
-	private SortedMap<Integer, TouchDownPointer> touchDownPos = Collections
+	protected SortedMap<Integer, TouchDownPointer> touchDownPos = Collections
 			.synchronizedSortedMap((new TreeMap<Integer, TouchDownPointer>()));
 
 	// private Listner
-	private renderStartet renderStartetListner = null;
+	protected renderStartet renderStartetListner = null;
 
 	// Protected Member
 	protected MainViewBase child;
@@ -144,7 +151,7 @@ public class GL implements ApplicationListener
 	protected SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
 	protected boolean DialogIsShown = false, ActivityIsShown = false;
 	protected int width = 0, height = 0;
-	private boolean debugWriteSpriteCount = false;
+	protected boolean debugWriteSpriteCount = false;
 
 	/**
 	 * Constructor
@@ -174,7 +181,14 @@ public class GL implements ApplicationListener
 		GL_UISizes.initial(width, height);
 
 		Initialize();
-
+		Config.settings.nightMode.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				mDarknesSprite = null;// for new creation with changed color
+			}
+		});
 		GlobalCore.receiver = new GlobalLocationReceiver();
 		debugWriteSpriteCount = Config.settings.DebugSpriteBatchCountBuffer.getValue();
 	}
@@ -199,12 +213,19 @@ public class GL implements ApplicationListener
 		renderOnce("runIfInitial called");
 	}
 
-	private boolean ShaderSetted = false;
+	protected boolean ShaderSetted = false;
 
-	private void setShader()
+	protected void setShader()
 	{
 		if (Gdx.graphics.isGL20Available()) batch.setShader(SpriteBatch.createDefaultShader());
 		ShaderSetted = true;
+	}
+
+	protected float stateTime = 0;
+
+	public float getStateTime()
+	{
+		return stateTime;
 	}
 
 	@Override
@@ -214,6 +235,8 @@ public class GL implements ApplicationListener
 		if (Energy.DisplayOff()) return;
 
 		if (!started.get() || stopRender) return;
+
+		stateTime += Gdx.graphics.getDeltaTime();
 
 		lastRenderBegin = System.currentTimeMillis();
 
@@ -237,7 +260,6 @@ public class GL implements ApplicationListener
 
 				runOnGL_List.clear();
 			}
-
 		}
 
 		if (ifAllInitial)
@@ -294,6 +316,7 @@ public class GL implements ApplicationListener
 
 		if (ActivityIsShown && !GlobalCore.isTab)
 		{
+			drawDarknessSprite();
 			mActivity.renderChilds(batch, prjMatrix);
 		}
 
@@ -338,6 +361,18 @@ public class GL implements ApplicationListener
 
 		}
 
+		if (Config.settings.StagingAPI.getValue())
+		{
+			if (StagingFont == null)
+			{
+				StagingFont = new BitmapFontCache(Fonts.getCompass());
+				StagingFont.setColor(Color.RED);
+				StagingFont.setPosition(100, 120);
+				StagingFont.addText("Using Staging Server", 70, 50);
+			}
+			if (StagingFont != null) StagingFont.draw(batch);
+		}
+
 		if (GlobalCore.isTestVersion())
 		{
 
@@ -351,6 +386,7 @@ public class GL implements ApplicationListener
 			{
 				if (SpriteCache.day_skin != null)// SpriteCache is initial
 				{
+
 					FpsInfoSprite = new Sprite(SpriteCache.getThemedSprite("pixel2x2"));
 					FpsInfoSprite.setColor(1.0f, 1.0f, 0.0f, 1.0f);
 					FpsInfoSprite.setSize(4, 4);
@@ -379,9 +415,11 @@ public class GL implements ApplicationListener
 
 	}
 
-	int debugSpritebatchMaxCount = 0;
-	private long lastRenderBegin = 0;
-	private long renderTime = 0;
+	private BitmapFontCache StagingFont;
+
+	protected int debugSpritebatchMaxCount = 0;
+	protected long lastRenderBegin = 0;
+	protected long renderTime = 0;
 
 	@Override
 	public void resize(int Width, int Height)
@@ -420,7 +458,7 @@ public class GL implements ApplicationListener
 		SpriteCache.destroyCache();
 		try
 		{
-			GlobalCore.Translations.writeMisingStringsFile();
+			Translation.writeMisingStringsFile();
 		}
 		catch (IOException e)
 		{
@@ -466,6 +504,7 @@ public class GL implements ApplicationListener
 		stopTimer();
 		if (listenerInterface != null) listenerInterface.RenderContinous();
 		child.onStop();
+		toast = null; // regenerate toast control
 	}
 
 	public static boolean getIsTouchDown()
@@ -765,28 +804,15 @@ public class GL implements ApplicationListener
 		mDarknesSprite = null;
 	}
 
-	private void drawDarknessSprite()
+	protected void drawDarknessSprite()
 	{
 		if (mDarknesSprite == null)
 		{
-
 			disposeTexture();
-
-			// int w = CB_View_Base.getNextHighestPO2((int) width);
-			// int h = CB_View_Base.getNextHighestPO2((int) height);
-
-			int w = 2;
-			int h = 2;
-
-			mDarknesPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			if (Config.settings.nightMode.getValue()) mDarknesPixmap.setColor(0.07f, 0f, 0f, 0.96f);
-			else
-				mDarknesPixmap.setColor(0f, 0.1f, 0f, 0.9f);
-
+			mDarknesPixmap = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
+			mDarknesPixmap.setColor(Fonts.getDarknesColor());
 			mDarknesPixmap.fillRectangle(0, 0, width, height);
-
 			mDarknesTexture = new Texture(mDarknesPixmap, Pixmap.Format.RGBA8888, false);
-
 			mDarknesSprite = new Sprite(mDarknesTexture, (int) width, (int) height);
 		}
 
@@ -798,9 +824,8 @@ public class GL implements ApplicationListener
 			{
 				darknesAlpha = 1f;
 				darknesAnimationRuns = false;
-				// unregister TabmainView, we have register on ShowDialog for the animation time
-				removeRenderView(TabMainView.that);
 			}
+			renderOnce("Darknes Animation");
 		}
 
 	}
@@ -843,7 +868,7 @@ public class GL implements ApplicationListener
 		initialMarkerOverlay();
 	}
 
-	private void initialMarkerOverlay()
+	protected void initialMarkerOverlay()
 	{
 		mMarkerOverlay = new Box(new CB_RectF(0, 0, width, height), "MarkerOverlay");
 		selectionMarkerCenter = new SelectionMarker(SelectionMarker.Type.Center);
@@ -866,31 +891,37 @@ public class GL implements ApplicationListener
 
 	public void addRenderView(GL_View_Base view, int delay)
 	{
-		if (!view.isVisible())
+		synchronized (renderViews)
+		{
+			if (!view.isVisible())
+			{
+				if (renderViews.containsKey(view))
+				{
+					renderViews.remove(view);
+					calcNewRenderSpeed();
+					if (listenerInterface != null) listenerInterface.RequestRender("");
+				}
+				return;
+			}
+			if (renderViews.containsKey(view))
+			{
+				renderViews.remove(view);
+			}
+			renderViews.put(view, delay);
+			calcNewRenderSpeed();
+			if (listenerInterface != null) listenerInterface.RequestRender("");
+		}
+	}
+
+	public void removeRenderView(GL_View_Base view)
+	{
+		synchronized (renderViews)
 		{
 			if (renderViews.containsKey(view))
 			{
 				renderViews.remove(view);
 				calcNewRenderSpeed();
-				if (listenerInterface != null) listenerInterface.RequestRender("");
 			}
-			return;
-		}
-		if (renderViews.containsKey(view))
-		{
-			renderViews.remove(view);
-		}
-		renderViews.put(view, delay);
-		calcNewRenderSpeed();
-		if (listenerInterface != null) listenerInterface.RequestRender("");
-	}
-
-	public void removeRenderView(GL_View_Base view)
-	{
-		if (renderViews.containsKey(view))
-		{
-			renderViews.remove(view);
-			calcNewRenderSpeed();
 		}
 	}
 
@@ -913,16 +944,20 @@ public class GL implements ApplicationListener
 
 	private void calcNewRenderSpeed()
 	{
-		int minDelay = 0;
-		Iterator<Integer> it = renderViews.values().iterator();
-		while (it.hasNext())
+		synchronized (renderViews)
 		{
-			int delay = it.next();
-			if (delay > minDelay) minDelay = delay;
+			int minDelay = 0;
+			Iterator<Integer> it = renderViews.values().iterator();
+			while (it.hasNext())
+			{
+				int delay = it.next();
+				if (delay > minDelay) minDelay = delay;
+			}
+			if (minDelay == 0) stopTimer();
+			else
+				startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
 		}
-		if (minDelay == 0) stopTimer();
-		else
-			startTimer(minDelay, "GL_Listner calcNewRenderSpeed()");
+
 	}
 
 	private void startLongClickTimer(final int pointer, final int x, final int y)
@@ -991,9 +1026,9 @@ public class GL implements ApplicationListener
 		return (int) Math.round(Math.sqrt(Math.pow(x1 - x1, 2) + Math.pow(y1 - y2, 2)));
 	}
 
-	private class TouchDownPointer
+	public class TouchDownPointer
 	{
-		private Point point;
+		public Point point;
 		private int pointer;
 		private GL_View_Base view;
 		private KineticPan kineticPan;
@@ -1060,6 +1095,7 @@ public class GL implements ApplicationListener
 		private boolean fertig;
 		// benutze den Abstand der letzten 5 Positionsänderungen
 		final int anzPoints = 6;
+		int anzPointsUsed = 0;
 		private int[] x = new int[anzPoints];
 		private int[] y = new int[anzPoints];
 		private long[] ts = new long[anzPoints];
@@ -1081,10 +1117,22 @@ public class GL implements ApplicationListener
 				y[i] = 0;
 				ts[i] = 0;
 			}
+			anzPointsUsed = 0;
 		}
 
 		public void setLast(long aktTs, int aktX, int aktY)
 		{
+			if ((anzPointsUsed > 0) && (ts[0] < aktTs - 500))
+			{
+				// wenn seit der letzten Verschiebung mehr Zeit Vergangen ist -> bisherige gemerkte Verschiebungen löschen
+				anzPointsUsed = 0;
+				started = false;
+				return;
+			}
+
+			anzPointsUsed++;
+			Logger.LogCat("AnzUsedPoints: " + anzPointsUsed);
+			if (anzPointsUsed > anzPoints) anzPointsUsed = anzPoints;
 			for (int i = anzPoints - 2; i >= 0; i--)
 			{
 				x[i + 1] = x[i];
@@ -1101,15 +1149,16 @@ public class GL implements ApplicationListener
 				if (y[i] == 0) y[i] = y[i - 1];
 				if (ts[i] == 0) ts[i] = ts[i - 1];
 			}
-			diffX = x[anzPoints - 1] - aktX;
-			diffY = aktY - y[anzPoints - 1];
-			diffTs = aktTs - ts[anzPoints - 1];
+			diffX = x[anzPointsUsed - 1] - aktX;
+			diffY = aktY - y[anzPointsUsed - 1];
+			diffTs = aktTs - ts[anzPointsUsed - 1];
 
 			if (diffTs > 0)
 			{
-				diffX = (int) (diffX * FRAME_RATE_ACTION / diffTs);
-				diffY = (int) (diffY * FRAME_RATE_ACTION / diffTs);
+				diffX = (int) ((float) diffX / FRAME_RATE_ACTION * diffTs);
+				diffY = (int) ((float) diffY / FRAME_RATE_ACTION * diffTs);
 			}
+			Logger.LogCat("diffx = " + diffX + " - diffy = " + diffY);
 
 			// debugString = x[2] + " - " + x[1] + " - " + x[0];
 		}
@@ -1126,11 +1175,20 @@ public class GL implements ApplicationListener
 
 		public void start()
 		{
+			anzPointsUsed = Math.max(anzPointsUsed, 1);
+			if (ts[0] < System.currentTimeMillis() - 200)
+			{
+				// kinematisches Scrollen nur, wenn seit der letzten Verschiebung kaum Zeit vergangen ist
+				fertig = true;
+				return;
+			}
 			startTs = System.currentTimeMillis();
 			int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 
-			endTs = startTs + 3000 + abstand * 200 / anzPoints;
-			// endTs = startTs + 2000; // Povisorisch
+			endTs = startTs + 1000 + abstand * 15 / anzPointsUsed;
+			// if (endTs > startTs + 6000) endTs = startTs + 6000; // max. Zeit festlegen
+			Logger.LogCat("endTs - startTs: " + String.valueOf(endTs - startTs));
+			// endTs = startTs + 5000;
 			started = true;
 		}
 
@@ -1139,13 +1197,14 @@ public class GL implements ApplicationListener
 
 		public Point getAktPan()
 		{
+			anzPointsUsed = Math.max(anzPointsUsed, 1);
 			Point result = new Point(0, 0);
 
 			long aktTs = System.currentTimeMillis();
 			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
 			// Logger.LogCat("Faktor: " + faktor);
 			faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
-			faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
+			// faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
 			// Logger.LogCat("Faktor2: " + faktor);
 			if (faktor >= 1)
 			{
@@ -1153,16 +1212,16 @@ public class GL implements ApplicationListener
 				faktor = 1;
 			}
 
-			result.x = (int) (diffX / anzPoints * (1 - faktor)) + lastX;
-			result.y = (int) (diffY / anzPoints * (1 - faktor)) + lastY;
+			result.x = (int) ((float) diffX / anzPointsUsed * (1 - faktor)) + lastX;
+			result.y = (int) ((float) diffY / anzPointsUsed * (1 - faktor)) + lastY;
 
 			if ((result.x == lastX) && (result.y == lastY))
 			{
 				// wenn keine Nennenswerten Änderungen mehr gemacht werden dann einfach auf fertig schalten
 				fertig = true;
 				faktor = 1;
-				result.x = (int) (diffX / anzPoints * (1 - faktor)) + lastX;
-				result.y = (int) (diffY / anzPoints * (1 - faktor)) + lastY;
+				result.x = (int) ((float) diffX / anzPointsUsed * (1 - faktor)) + lastX;
+				result.y = (int) ((float) diffY / anzPointsUsed * (1 - faktor)) + lastY;
 			}
 			double abstand = distance(lastX, lastY, result.x, result.y);
 			if (abstand > MAX_KINETIC_SCROLL_DISTANCE)
@@ -1232,7 +1291,7 @@ public class GL implements ApplicationListener
 		float x = (width - dialog.getWidth()) / 2;
 		float y = (height - dialog.getHeight()) / 2;
 
-		if (atTop) y = height - dialog.getHeight() - (Dialog.margin * 4);
+		if (atTop) y = height - dialog.getHeight() - (Dialog.getMargin() * 4);
 
 		dialog.setPos(x, y);
 
@@ -1291,9 +1350,6 @@ public class GL implements ApplicationListener
 
 		platformConector.showForDialog();
 
-		// register render view to darknes animation ready.
-		// use TabMainView to register
-		addRenderView(TabMainView.that, FRAME_RATE_ACTION);
 		renderOnce("ShowDialog");
 		Logger.LogCat("ShowDialog: " + actDialog.toString());
 	}
@@ -1309,13 +1365,7 @@ public class GL implements ApplicationListener
 			closePopUp(aktPopUp);
 		}
 
-		if (GlobalCore.isTab)
-		{
-			// register render view to darknes animation ready.
-			// use TabMainView to register
-			addRenderView(TabMainView.that, FRAME_RATE_ACTION);
-			darknesAnimationRuns = true;
-		}
+		darknesAnimationRuns = true;
 
 		// Center activity on Screen
 		float x = (width - activity.getWidth()) / 2;
@@ -1499,7 +1549,7 @@ public class GL implements ApplicationListener
 		}
 		toast.setText(string);
 
-		float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 3);
+		float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (toast.getMargin() * 2);
 		toast.setWidth(measuredWidth);
 
 		toast.setPos((width / 2) - (measuredWidth / 2), GL_UISizes.BottomButtonHeight * 1.3f);
@@ -1511,7 +1561,7 @@ public class GL implements ApplicationListener
 	{
 		if (mStage == null)
 		{// initial a virtual stage
-			mStage = new Stage(UiSizes.getWindowWidth(), UiSizes.getWindowHeight(), false);
+			mStage = new Stage(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), false);
 		}
 	}
 
@@ -1540,9 +1590,11 @@ public class GL implements ApplicationListener
 
 	public void clearRenderViews()
 	{
-		stopTimer();
-		renderViews.clear();
-
+		synchronized (renderViews)
+		{
+			stopTimer();
+			renderViews.clear();
+		}
 	}
 
 	/**
@@ -1583,6 +1635,9 @@ public class GL implements ApplicationListener
 		// don't set Focus to NULL?
 		if (view == null && keyboardFocus == null) return;
 
+		// Don't open KeyBoard if Keybord is Showing
+		boolean dontOpenKeybord = keyboardFocus != null;
+
 		String sView = "NULL";
 		if (view != null) sView = view.toString();
 		Logger.LogCat("GL => set KeyBoardFocus to " + sView);
@@ -1595,11 +1650,21 @@ public class GL implements ApplicationListener
 
 		if (keyboardFocus != null)
 		{
-			if (!keyboardFocus.dontShowKeyBoard()) platformConector.callsetKeybordFocus(true);
+			if (!keyboardFocus.dontShowKeyBoard())
+			{
+				if (!dontOpenKeybord)
+				{
+					platformConector.callsetKeybordFocus(true);
+				}
+			}
 		}
 		else
 		{
-			platformConector.callsetKeybordFocus(false);
+			if (dontOpenKeybord)
+			{
+				platformConector.callsetKeybordFocus(false);
+			}
+
 		}
 	}
 
@@ -1702,6 +1767,21 @@ public class GL implements ApplicationListener
 			return true;
 		}
 
+		return false;
+	}
+
+	public boolean isShownDialogActivity()
+	{
+		if (DialogIsShown)
+		{
+			return true;
+		}
+
+		if (ActivityIsShown)
+		{
+
+			return true;
+		}
 		return false;
 	}
 

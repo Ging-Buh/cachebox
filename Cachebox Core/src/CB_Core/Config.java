@@ -204,7 +204,7 @@ public class Config
 		validateSetting("mapMaxCachesDisplayLarge_config", "75");
 		// validateSetting("Filter", PresetListView.presets[0].toString());
 		validateSetting("ZoomCross", "16");
-		// validateSetting("TomTomExportFolder", Global.AppPath + "\\user");
+		// validateSetting("TomTomExportFolder", Global.AppPath + "/user");
 		validateSetting("GCAutoSyncCachesFound", "true");
 		validateSetting("GCAdditionalImageDownload", "false");
 		validateSetting("GCRequestDelay", "10");
@@ -242,7 +242,7 @@ public class Config
 		validateSetting("SearchOnlyAvible", "true");
 
 		// validateSetting("OtherRepositoriesFolder", Global.AppPath +
-		// "\\Repositories");
+		// "/Repositories");
 
 		AcceptChanges();
 	}
@@ -482,7 +482,16 @@ public class Config
 	 */
 	public static String GetAccessToken(boolean Url_Codiert)
 	{
-		String act = settings.GcAPI.getValue();
+		String act = "";
+		if (settings.StagingAPI.getValue())
+		{
+			act = settings.GcAPIStaging.getValue();
+		}
+		else
+		{
+			act = settings.GcAPI.getValue();
+		}
+
 		// Prüfen, ob das AccessToken für ACB ist!!!
 		if (!(act.startsWith("A"))) return "";
 		String result = act.substring(1, act.length());

@@ -14,6 +14,7 @@ import CB_Core.DB.Database.DatabaseType;
 import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase;
@@ -27,7 +28,8 @@ import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
-import CB_Core.Types.Coordinate;
+import CB_Core.TranslationEngine.Translation;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -56,6 +58,8 @@ import android.widget.Toast;
 import de.droidcachebox.Components.copyAssetFolder;
 import de.droidcachebox.DB.AndroidDB;
 
+@SuppressLint(
+	{ "SdCardPath", "DefaultLocale" })
 public class splash extends Activity
 {
 
@@ -75,6 +79,7 @@ public class splash extends Activity
 	private static devicesSizes ui;
 	private boolean isLandscape = false;
 
+	@SuppressLint("DefaultLocale")
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -238,6 +243,11 @@ public class splash extends Activity
 			{
 				externalSd = prev + "/sdcard/ext_sd/CacheBox";
 			}
+			else if (testExtSdPath(prev + "/ext_card"))
+			{
+				// Sony Xperia sola
+				externalSd = prev + "/ext_card/CacheBox";
+			}
 			else if (testExtSdPath(prev + "/external"))
 			{
 				externalSd = prev + "/external/CacheBox";
@@ -274,12 +284,17 @@ public class splash extends Activity
 			else if (testExtSdPath("/Removable/MicroSD"))
 			{
 				// Asus Transformer
-				externalSd = "/Removable/MicroSD/CacheBox";
+				externalSd = prev + "/Removable/MicroSD/CacheBox";
 			}
-			else if (testExtSdPath("/ext_sd"))
+			else if (testExtSdPath("/mnt/ext_sd"))
 			{
 				// ODYS Motion
-				externalSd = "/ext_sd/CacheBox";
+				externalSd = prev + "/ext_sd/CacheBox";
+			}
+			else if (testExtSdPath("/sdcard/tflash"))
+			{
+				// Car Radio
+				externalSd = prev + "/sdcard/tflash/CacheBox";
 			}
 			else if (testExtSdPath(prev + "/sdcard"))
 			{
@@ -287,6 +302,7 @@ public class splash extends Activity
 				// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
 				externalSd = prev + "/sdcard/CacheBox";
 			}
+
 			final String externalSd2 = externalSd;
 			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
 
@@ -381,12 +397,19 @@ public class splash extends Activity
 				}
 				catch (Exception ex)
 				{
-					String x = ex.getMessage();
+					ex.printStackTrace();
 				}
 			}
 			else
 			{
-				startInitial();
+				try
+				{
+					startInitial();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		else
@@ -557,7 +580,7 @@ public class splash extends Activity
 
 		// hier muss die Config Db initialisiert werden
 		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
-		if (!FileIO.DirectoryExists(Config.WorkPath + "/User")) return;
+		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 
 		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
@@ -580,7 +603,7 @@ public class splash extends Activity
 		{
 			Config.readConfigFile(/* getAssets() */);
 
-			for (Iterator<SettingBase> it = Config.settings.values().iterator(); it.hasNext();)
+			for (Iterator<SettingBase> it = Config.settings.iterator(); it.hasNext();)
 			{
 				SettingBase setting = it.next();
 
@@ -684,6 +707,17 @@ public class splash extends Activity
 
 			try
 			{
+				CreateFile = new File(workPath + "/Repositories/.nomedia");
+				CreateFile.getParentFile().mkdirs();
+				CreateFile.createNewFile();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			try
+			{
 				CreateFile = new File(workPath + "/cache/.nomedia");
 				CreateFile.getParentFile().mkdirs();
 				CreateFile.createNewFile();
@@ -726,18 +760,16 @@ public class splash extends Activity
 			ui.TB_IconSize = res.getDimensionPixelSize(R.dimen.TB_icon_Size);
 			ui.isLandscape = false;
 		}
-		UiSizes.initial(ui);
+
+		new Translation(Config.WorkPath, false);
+
+		new UiSizes();
+		UI_Size_Base.that.initial(ui);
+
 		Global.Paints.init(this);
 		Global.InitIcons(this);
 
 		new de.droidcachebox.Map.AndroidManager();
-
-		double lat = Config.settings.MapInitLatitude.getValue();
-		double lon = Config.settings.MapInitLongitude.getValue();
-		if ((lat != -1000) && (lon != -1000))
-		{
-			GlobalCore.LastValidPosition = new Coordinate(lat, lon);
-		}
 
 		Initial2();
 	}

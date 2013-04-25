@@ -4,6 +4,7 @@ import CB_Core.GlobalCore;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import android.content.Context;
@@ -61,7 +62,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		// its right size.
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		cacheInfo.setHeight(UiSizes.getCacheInfoHeight());
+		cacheInfo.setHeight(UiSizes.that.getCacheInfoHeight());
 
 	}
 
@@ -90,8 +91,8 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	{
 		String html = "</br>"
 
-		+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
-				+ GlobalCore.Translations.Get("GC_DownloadDescription") + " \"></form>";
+		+ "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" " + Translation.Get("GC_DownloadDescription")
+				+ " \"></form>";
 
 		WebControl.loadDataWithBaseURL("fake://fake.de/download", html, "text/html", "utf-8", null);
 	}

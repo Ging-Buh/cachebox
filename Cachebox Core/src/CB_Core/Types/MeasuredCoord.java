@@ -16,12 +16,11 @@
 
 package CB_Core.Types;
 
-import CB_Core.GlobalCore;
+import CB_Locator.Coordinate;
 
 /**
  * Ein Koordinaten Typ, der speziell zum Messen einer Koordinaten Reihe da ist. <br>
- * Dieser Typ implementiert das Comparable Interface um einen Vergleich über die
- * Distanz zur Referenz Koordinate zu ermöglichen.
+ * Dieser Typ implementiert das Comparable Interface um einen Vergleich über die Distanz zur Referenz Koordinate zu ermöglichen.
  * 
  * @author Longri
  */
@@ -33,8 +32,7 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 
 	/**
 	 * Die Referenz Coordinate, auf die sich der Vergleich bezieht. <br>
-	 * Je grösser der Abstand zur Referenz Coordinate desto höher der Index in
-	 * einer Liste.
+	 * Je grösser der Abstand zur Referenz Coordinate desto höher der Index in einer Liste.
 	 */
 	public static Coordinate Referenz;
 
@@ -50,6 +48,13 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 		Latitude = latitude;
 		Longitude = longitude;
 		Accuracy = accuracy;
+	}
+
+	public MeasuredCoord(Coordinate coord)
+	{
+		Latitude = coord.getLatitude();
+		Longitude = coord.getLongitude();
+		Accuracy = coord.getAccuracy();
 	}
 
 	/**
@@ -116,8 +121,7 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	public float Distance()
 	{
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(this.Latitude, this.Longitude,
-				Referenz.getLatitude(), Referenz.getLongitude(), dist);
+		Coordinate.distanceBetween(this.Latitude, this.Longitude, Referenz.getLatitude(), Referenz.getLongitude(), dist);
 
 		return (float) dist[0];
 	}

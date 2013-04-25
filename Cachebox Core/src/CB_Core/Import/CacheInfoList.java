@@ -211,6 +211,9 @@ public class CacheInfoList
 
 					String desImageFolder = Config.settings.DescriptionImageFolder.getValue();
 
+					if (Config.settings.DescriptionImageFolderLocal.getValue().length() > 0) desImageFolder = Config.settings.DescriptionImageFolderLocal
+							.getValue();
+
 					CreateChangedListingFile(desImageFolder + "/" + GcCode.substring(0, 4) + "/" + GcCode + ".changed");
 
 					CreateChangedListingFile(desImageFolder + "/" + GcCode.substring(0, 4) + "/" + GcCode + ".changed");

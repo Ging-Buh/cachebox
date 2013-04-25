@@ -4,10 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UiSizes;
@@ -143,20 +145,27 @@ public class CacheInfo extends CB_View_Base
 	{
 		super.render(batch);
 
-		if (mIconSprite != null) mIconSprite.draw(batch);
-		if (mFoundOwnerSprite != null) mFoundOwnerSprite.draw(batch);
-		if (mRatingSprite != null) mRatingSprite.draw(batch);
-		if (mS_FontCache != null) mS_FontCache.draw(batch);
-		if (mD_FontCache != null) mD_FontCache.draw(batch);
-		if (mT_FontCache != null) mT_FontCache.draw(batch);
-		if (mTB_FontCache != null) mTB_FontCache.draw(batch);
-		if (mSSprite != null) mSSprite.draw(batch);
-		if (mDSprite != null) mDSprite.draw(batch);
-		if (mTSprite != null) mTSprite.draw(batch);
-		if (mTBSprite != null) mTBSprite.draw(batch);
-		if (mInfo_FontCache != null) mInfo_FontCache.draw(batch);
-		if (mFavoriteSprite != null) mFavoriteSprite.draw(batch);
-		if (mAvailableSprite != null) mAvailableSprite.draw(batch);
+		try
+		{
+			if (mIconSprite != null) mIconSprite.draw(batch);
+			if (mFoundOwnerSprite != null) mFoundOwnerSprite.draw(batch);
+			if (mRatingSprite != null) mRatingSprite.draw(batch);
+			if (mS_FontCache != null) mS_FontCache.draw(batch);
+			if (mD_FontCache != null) mD_FontCache.draw(batch);
+			if (mT_FontCache != null) mT_FontCache.draw(batch);
+			if (mTB_FontCache != null) mTB_FontCache.draw(batch);
+			if (mSSprite != null) mSSprite.draw(batch);
+			if (mDSprite != null) mDSprite.draw(batch);
+			if (mTSprite != null) mTSprite.draw(batch);
+			if (mTBSprite != null) mTBSprite.draw(batch);
+			if (mInfo_FontCache != null) mInfo_FontCache.draw(batch);
+			if (mFavoriteSprite != null) mFavoriteSprite.draw(batch);
+			if (mAvailableSprite != null) mAvailableSprite.draw(batch);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -184,7 +193,7 @@ public class CacheInfo extends CB_View_Base
 
 		this.removeChilds();
 
-		float scaleFactor = width / UiSizes.getCacheListItemRec().getWidth();
+		float scaleFactor = width / UiSizes.that.getCacheListItemRec().getWidth();
 		mMargin = 3 * scaleFactor;
 
 		float mLeft = mMargin;
@@ -253,7 +262,7 @@ public class CacheInfo extends CB_View_Base
 			{
 				float sizes = mStarSize.width / 2.1f;
 
-				mTBSprite = new Sprite(SpriteCache.Icons.get(36));
+				mTBSprite = new Sprite(SpriteCache.Icons.get(IconName.tb_36.ordinal()));
 				mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
 				mTBSprite.setOrigin(sizes / 2, sizes / 2);
 				mTBSprite.setRotation(90);
@@ -344,6 +353,20 @@ public class CacheInfo extends CB_View_Base
 			{
 				mIconSprite = new Sprite(SpriteCache.BigIcons.get(21));
 			}
+			else if ((mCache.Type == CacheTypes.Multi) && mCache.HasStartWaypoint())
+			{
+				// Multi anders darstellen wenn dieser einen definierten Startpunkt hat
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(22));
+			}
+			else if ((mCache.Type == CacheTypes.Mystery) && mCache.HasStartWaypoint())
+			{
+				// Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(24));
+			}
+			else if (mCache.Type == CacheTypes.Munzee)
+			{
+				mIconSprite = new Sprite(SpriteCache.BigIcons.get(25));
+			}
 			else
 			{
 				mIconSprite = new Sprite(SpriteCache.BigIcons.get(mCache.Type.ordinal()));
@@ -361,7 +384,7 @@ public class CacheInfo extends CB_View_Base
 			}
 			else if (mCache.ImTheOwner())
 			{
-				mFoundOwnerSprite = new Sprite(SpriteCache.Icons.get(43));
+				mFoundOwnerSprite = new Sprite(SpriteCache.Icons.get(IconName.star_43.ordinal()));
 			}
 			if (mFoundOwnerSprite != null)
 			{
@@ -371,18 +394,18 @@ public class CacheInfo extends CB_View_Base
 
 			if (mCache.Favorit())
 			{
-				mFavoriteSprite = new Sprite(SpriteCache.Icons.get(42));
+				mFavoriteSprite = new Sprite(SpriteCache.Icons.get(IconName.favorit_42.ordinal()));
 				mFavoriteSprite.setSize(infoSize, infoSize);
 				mFavoriteSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y + infoSize);
 			}
 
 			if (mCache.Archived)
 			{
-				mAvailableSprite = new Sprite(SpriteCache.Icons.get(45));
+				mAvailableSprite = new Sprite(SpriteCache.Icons.get(IconName.log11_45.ordinal()));
 			}
 			else if (!mCache.Available)
 			{
-				mAvailableSprite = new Sprite(SpriteCache.Icons.get(44));
+				mAvailableSprite = new Sprite(SpriteCache.Icons.get(IconName.disabled_44.ordinal()));
 			}
 			if (mAvailableSprite != null)
 			{

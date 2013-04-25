@@ -1,9 +1,11 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionRound extends Function
 {
+	private static final long serialVersionUID = 3669660135984610039L;
+
 	public FunctionRound()
 	{
 		Names.add(new LacalNames("Round", "en"));
@@ -13,13 +15,13 @@ public class FunctionRound extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncRound");
+		return Translation.Get("solverFuncRound");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescRound");
+		return Translation.Get("solverDescRound");
 	}
 
 	@Override
@@ -27,7 +29,7 @@ public class FunctionRound extends Function
 	{
 		if (parameter.length != 2)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "2", "$solverFuncRound");
+			return Translation.Get("solverErrParamCount", "2", "$solverFuncRound");
 		}
 		double number = 0;
 		try
@@ -36,7 +38,7 @@ public class FunctionRound extends Function
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncRound", "1", "$value", "$number", parameter[0]);
+			return Translation.Get("solverErrParamType", "$solverFuncRound", "1", "$value", "$number", parameter[0]);
 		}
 		int digits = 0;
 		try
@@ -45,7 +47,7 @@ public class FunctionRound extends Function
 		}
 		catch (Exception ex)
 		{
-			return GlobalCore.Translations.Get("solverErrParamType", "$solverFuncRound", "2", "$value", "$number", parameter[1]);
+			return Translation.Get("solverErrParamType", "$solverFuncRound", "2", "$value", "$number", parameter[1]);
 		}
 		return String.format("%." + String.valueOf(digits) + "f", number);
 	}

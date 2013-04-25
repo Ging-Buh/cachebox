@@ -10,6 +10,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
@@ -29,7 +30,9 @@ import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Map.RouteOverlay;
 import CB_Core.Map.RouteOverlay.Track;
-import CB_Core.Types.Coordinate;
+import CB_Core.TranslationEngine.Translation;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -62,7 +65,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(8);
+		return SpriteCache.Icons.get(IconName.trackList_8.ordinal());
 	}
 
 	@Override
@@ -99,12 +102,12 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					{
 						final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
-						StringInputBox.Show(TextFieldType.SingleLine, selectedTrackItem.getRoute().Name,
-								GlobalCore.Translations.Get("RenameTrack"), selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
+						StringInputBox.Show(TextFieldType.SingleLine, selectedTrackItem.getRoute().Name, Translation.Get("RenameTrack"),
+								selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
 								{
 
 									@Override
-									public boolean onClick(int which)
+									public boolean onClick(int which, Object data)
 									{
 										String text = StringInputBox.editText.getText();
 										// Behandle das ergebniss
@@ -130,8 +133,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_LOAD:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", GlobalCore.Translations.Get("LoadTrack"),
-							GlobalCore.Translations.Get("load"), new IgetFileReturnListner()
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"),
+							Translation.Get("load"), new IgetFileReturnListner()
 							{
 								@Override
 								public void getFieleReturn(String Path)
@@ -150,8 +153,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_SAVE:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", GlobalCore.Translations.Get("SaveTrack"),
-							GlobalCore.Translations.Get("save"), new IgetFileReturnListner()
+					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"),
+							Translation.Get("save"), new IgetFileReturnListner()
 							{
 								TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
@@ -176,12 +179,12 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 						if (selectedTrackItem == null)
 						{
-							GL_MsgBox.Show(GlobalCore.Translations.Get("NoTrackSelected"), null, MessageBoxButtons.OK,
-									MessageBoxIcon.Warning, new OnMsgBoxClickListener()
+							GL_MsgBox.Show(Translation.Get("NoTrackSelected"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning,
+									new OnMsgBoxClickListener()
 									{
 
 										@Override
-										public boolean onClick(int which)
+										public boolean onClick(int which, Object data)
 										{
 											// hier brauchen wir nichts machen!
 											return true;
@@ -192,8 +195,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 						if (selectedTrackItem.getRoute().IsActualTrack)
 						{
-							GL_MsgBox.Show(GlobalCore.Translations.Get("IsActualTrack"), null, MessageBoxButtons.OK,
-									MessageBoxIcon.Warning, null);
+							GL_MsgBox.Show(Translation.Get("IsActualTrack"), null, MessageBoxButtons.OK, MessageBoxIcon.Warning, null);
 							return false;
 						}
 
@@ -249,16 +251,16 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 		cm2.addItem(MenuID.MI_PROJECT, "Projection");
 		cm2.addItem(MenuID.MI_CIRCLE, "Circle");
 
-		cm2.show();
+		cm2.Show();
 	}
 
 	private void GenTrackP2P()
 	{
 		Coordinate coord = GlobalCore.getSelectedCoord();
 
-		if (coord == null) coord = GlobalCore.LastValidPosition;
+		if (coord == null) coord = Locator.getCoordinate();
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("fromPoint"), coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("fromPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
@@ -292,9 +294,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private void GenTrackProjection()
 	{
 		Coordinate coord = GlobalCore.getSelectedCoord();
-		if (coord == null) coord = GlobalCore.LastValidPosition;
+		if (coord == null) coord = Locator.getCoordinate();
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("Projection"), coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("Projection"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
@@ -330,9 +332,9 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 	private void GenTrackCircle()
 	{
 		Coordinate coord = GlobalCore.getSelectedCoord();
-		if (coord == null) coord = GlobalCore.LastValidPosition;
+		if (coord == null) coord = Locator.getCoordinate();
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), GlobalCore.Translations.Get("centerPoint"), coord,
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), Translation.Get("centerPoint"), coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
@@ -360,10 +362,10 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 
 							route.Points.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
 
-							if (!LastCoord.Valid)
+							if (!LastCoord.isValid())
 							{
 								LastCoord = Projektion;
-								LastCoord.Valid = true;
+								LastCoord.setValid(true);
 							}
 							else
 							{
@@ -371,7 +373,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 										LastCoord.getLongitude(), dist);
 								route.TrackLength += dist[0];
 								LastCoord = Projektion;
-								LastCoord.Valid = true;
+								LastCoord.setValid(true);
 							}
 
 						}

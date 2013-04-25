@@ -16,8 +16,10 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
+import CB_Locator.Locator;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
@@ -33,7 +35,7 @@ public class ParkingDialog extends ButtonDialog
 
 	public ParkingDialog()
 	{
-		super((calcMsgBoxSize("Text", true, true, false)).getBounds().asFloat(), "Parking-Dialog", "", GlobalCore.Translations
+		super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Parking-Dialog", "", Translation
 				.Get("My_Parking_Area_Title"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
@@ -46,7 +48,7 @@ public class ParkingDialog extends ButtonDialog
 		layout.setX(0);
 		// layout.setBackground(new ColorDrawable(Color.GREEN));
 
-		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UiSizes.getButtonHeight() * 2);
+		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
 
 		btSetGPS = new ImageButton(MTBRec, "btSetGPS");
 		btSelectWP = new ImageButton(MTBRec, "btSelectWP");
@@ -60,7 +62,7 @@ public class ParkingDialog extends ButtonDialog
 		btSelectWP.setX(btSetGPS.getMaxX());
 		btDeleteP.setX(btSelectWP.getMaxX());
 
-		Box box = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight() * 2), "");
+		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
 		box.addChild(btSetGPS);
 		box.addChild(btSelectWP);
@@ -68,7 +70,7 @@ public class ParkingDialog extends ButtonDialog
 
 		layout.addChild(box);
 
-		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UiSizes.getButtonHeight() * 2), "");
+		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
 
 		lblSetGPS = new Label(btSetGPS.ScaleCenter(0.8f), "lblSetGPS");
 		lblSelectWP = new Label(btSelectWP.ScaleCenter(0.8f), "lblSetGPS");
@@ -78,9 +80,9 @@ public class ParkingDialog extends ButtonDialog
 		lblSelectWP.setFont(Fonts.getSmall());
 		lblDeleteP.setFont(Fonts.getSmall());
 
-		lblSelectWP.setWrappedText(GlobalCore.Translations.Get("My_Parking_Area_select"), HAlignment.CENTER);
-		lblSetGPS.setWrappedText(GlobalCore.Translations.Get("My_Parking_Area_Add"), HAlignment.CENTER);
-		lblDeleteP.setWrappedText(GlobalCore.Translations.Get("My_Parking_Area_Del"), HAlignment.CENTER);
+		lblSelectWP.setWrappedText(Translation.Get("My_Parking_Area_select"), HAlignment.CENTER);
+		lblSetGPS.setWrappedText(Translation.Get("My_Parking_Area_Add"), HAlignment.CENTER);
+		lblDeleteP.setWrappedText(Translation.Get("My_Parking_Area_Del"), HAlignment.CENTER);
 
 		box2.addChild(lblSetGPS);
 		box2.addChild(lblSelectWP);
@@ -110,17 +112,11 @@ public class ParkingDialog extends ButtonDialog
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (GlobalCore.LastValidPosition != null)
-				{
-					CB_Core.Config.settings.ParkingLatitude.setValue(GlobalCore.LastValidPosition.getLatitude());
-					CB_Core.Config.settings.ParkingLongitude.setValue(GlobalCore.LastValidPosition.getLongitude());
-					CB_Core.Config.AcceptChanges();
-					CachListChangedEventList.Call();
-				}
-				else
-				{
-					// TODO MsgBox no Valid Positions
-				}
+
+				CB_Core.Config.settings.ParkingLatitude.setValue(Locator.getLatitude());
+				CB_Core.Config.settings.ParkingLongitude.setValue(Locator.getLongitude());
+				CB_Core.Config.AcceptChanges();
+				CachListChangedEventList.Call();
 
 				close();
 				return true;

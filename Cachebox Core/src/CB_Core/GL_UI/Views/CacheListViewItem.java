@@ -1,19 +1,18 @@
 package CB_Core.GL_UI.Views;
 
-import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
-import CB_Core.Events.PositionChangedEvent;
-import CB_Core.Events.PositionChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.CacheInfo;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
-import CB_Core.Locator.Locator;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -71,7 +70,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	{
 		super(rec, Index, cache.Name);
 		mCache = cache;
-		info = new extendedCacheInfo(UiSizes.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
+		info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 		info.setZeroPos();
 		distance.setColor(Fonts.getFontColor());
 		this.addChild(info);
@@ -82,7 +81,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 		arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
-		if (GlobalCore.LastValidPosition == null || GlobalCore.Locator == null)
+		if (!Locator.Valid())
 		{
 			arrow.setColor(DISABLE_COLOR);
 			setDistanceString("---");
@@ -114,9 +113,9 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 		// Logger.LogCat("CacheListItem set ActLocator");
 
-		if (GlobalCore.LastValidPosition.Valid)
+		if (Locator.Valid())
 		{
-			Coordinate position = GlobalCore.LastValidPosition;
+			Coordinate position = Locator.getCoordinate();
 
 			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), mCache.Latitude(), mCache.Longitude());
 			double cacheBearing = -(bearing - heading);
@@ -129,6 +128,13 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 				arrow = new Sprite(SpriteCache.Arrows.get(0));
 				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+			}
+		}
+		else
+		{
+			if (mCache.cachedDistance >= 0) // (mCache.cachedDistance > 0)|| mCache == GlobalCore.getSelectedCache())
+			{
+				setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
 			}
 		}
 	}
@@ -188,15 +194,15 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	}
 
 	@Override
-	public void PositionChanged(Locator locator)
+	public void PositionChanged()
 	{
 		setActLocator();
 	}
 
 	@Override
-	public void OrientationChanged(float heading)
+	public void OrientationChanged()
 	{
-		this.heading = heading;
+		this.heading = Locator.getHeading();
 		setActLocator();
 	}
 
@@ -210,6 +216,17 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	protected void SkinIsChanged()
 	{
 
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.Normal;
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
 	}
 
 }

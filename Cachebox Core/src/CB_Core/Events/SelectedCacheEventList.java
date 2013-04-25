@@ -2,7 +2,6 @@ package CB_Core.Events;
 
 import java.util.ArrayList;
 
-import CB_Core.Config;
 import CB_Core.GlobalLocationReceiver;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -51,10 +50,16 @@ public class SelectedCacheEventList
 
 		if (change) GlobalLocationReceiver.resetApprouch();
 
-		// Aufruf aus in einen neuen Thread packen
+		if (selectChangeThread != null)
+		{
+			if (selectChangeThread.getState() != Thread.State.TERMINATED) return;
+			else
+				selectChangeThread = null;
+		}
+
 		if (cache != null)
 		{
-			Thread thread = new Thread(new Runnable()
+			selectChangeThread = new Thread(new Runnable()
 			{
 
 				@Override
@@ -68,14 +73,17 @@ public class SelectedCacheEventList
 						}
 
 						// save last selected Cache in to DB
-						Config.settings.LastSelectedCache.setValue(cache.GcCode);
-						Config.AcceptChanges();
+						// nur beim Verlassen des Programms und DB-Wechsel
+						// Config.settings.LastSelectedCache.setValue(cache.GcCode);
+						// Config.AcceptChanges();
 					}
 				}
 			});
 
-			thread.run();
+			selectChangeThread.start();
 		}
 
 	}
+
+	static Thread selectChangeThread;
 }

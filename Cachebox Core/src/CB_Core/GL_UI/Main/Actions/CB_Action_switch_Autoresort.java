@@ -1,9 +1,9 @@
 package CB_Core.GL_UI.Main.Actions;
 
-import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Menu.MenuID;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -25,15 +25,14 @@ public class CB_Action_switch_Autoresort extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(16);
+		return SpriteCache.Icons.get(IconName.autoSelectOff_16.ordinal());
 	}
 
 	@Override
 	public void Execute()
 	{
-		GlobalCore.autoResort = !(GlobalCore.autoResort);
-		Config.settings.AutoResort.setValue(GlobalCore.autoResort);
-		if (GlobalCore.autoResort)
+		GlobalCore.setAutoResort(!(GlobalCore.getAutoResort()));
+		if (GlobalCore.getAutoResort())
 		{
 			synchronized (Database.Data.Query)
 			{

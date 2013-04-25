@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Menu;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
@@ -13,7 +12,8 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -70,10 +70,11 @@ public class Menu extends ButtonDialog
 		super(getMenuRec(), Name);
 		that = this;
 
-		if (ItemHeight == -1f) ItemHeight = UiSizes.getButtonHeight();
+		if (ItemHeight == -1f) ItemHeight = UI_Size_Base.that.getButtonHeight();
 
-		MENU_REC = new CB_RectF(new SizeF((GlobalCore.isTab ? UiSizes.getWindowHeight() : UiSizes.getWindowWidth()) * 0.83f, mHeaderHight
-				+ getFooterHeight() + (margin * 2)));
+		MENU_REC = new CB_RectF(new SizeF(
+				(GlobalCore.isTab ? UI_Size_Base.that.getWindowHeight() : UI_Size_Base.that.getWindowWidth()) * 0.83f, mHeaderHight
+						+ getFooterHeight() + (margin * 2)));
 
 		this.setRec(MENU_REC);
 
@@ -178,7 +179,7 @@ public class Menu extends ButtonDialog
 		}
 		else
 		{
-			trans = GlobalCore.Translations.Get(StringId) + anhang;
+			trans = Translation.Get(StringId) + anhang;
 		}
 
 		if (withoutTranslation) trans = StringId;
@@ -201,11 +202,11 @@ public class Menu extends ButtonDialog
 			higherValue += item.getHeight() + mListView.getDividerHeight();
 		}
 
-		higherValue = Math.min(higherValue, UiSizes.getWindowHeight() * 0.95f);
+		higherValue = Math.min(higherValue, UI_Size_Base.that.getWindowHeight() * 0.95f);
 
-		if (higherValue > UiSizes.getWindowHeight() * 0.95f)
+		if (higherValue > UI_Size_Base.that.getWindowHeight() * 0.95f)
 		{
-			higherValue = UiSizes.getWindowHeight() * 0.95f;
+			higherValue = UI_Size_Base.that.getWindowHeight() * 0.95f;
 		}
 
 		float MenuWidth = GL_UISizes.UI_Left.getWidth();
@@ -231,36 +232,18 @@ public class Menu extends ButtonDialog
 		mListView.notifyDataSetChanged();
 	}
 
-	public void show()
+	@Override
+	public void Show()
 	{
 		layout();
 		// wenn irgent ein Item Chackable ist, dann alle Titles Einrücken.
-		boolean oneIsChakable = false;
-		for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();)
-		{
-			MenuItemBase tmp = iterator.next();
-			if (tmp instanceof MenuItem)
-			{
-				if (((MenuItem) tmp).isCheckable())
-				{
-					oneIsChakable = true;
-					break;
-				}
-			}
-		}
-		if (oneIsChakable)
-		{
-			for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();)
-			{
-				MenuItemBase tmp = iterator.next();
-				if (tmp instanceof MenuItem)
-				{
-					((MenuItem) tmp).setLeft(true);
-				}
-			}
-		}
-
-		GL.that.showDialog(this);
+		/*
+		 * boolean oneIsChakable = false; for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();) { MenuItemBase tmp
+		 * = iterator.next(); if (tmp instanceof MenuItem) { if (((MenuItem) tmp).isCheckable()) { oneIsChakable = true; break; } } } if
+		 * (oneIsChakable) { for (Iterator<MenuItemBase> iterator = mItems.iterator(); iterator.hasNext();) { MenuItemBase tmp =
+		 * iterator.next(); if (tmp instanceof MenuItem) { ((MenuItem) tmp).setLeft(true); } } }
+		 */
+		super.Show();
 
 	}
 

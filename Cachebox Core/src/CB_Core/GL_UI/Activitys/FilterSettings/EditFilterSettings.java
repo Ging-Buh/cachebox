@@ -7,7 +7,9 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
@@ -23,7 +25,8 @@ import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 
 public class EditFilterSettings extends ActivityBase
 {
@@ -33,10 +36,14 @@ public class EditFilterSettings extends ActivityBase
 	private MultiToggleButton btPre;
 	private MultiToggleButton btSet;
 	private MultiToggleButton btCat;
+	private MultiToggleButton btTxt;
+
+	private Box contentBox;
 
 	public PresetListView lvPre;
 	private FilterSetListView lvSet;
 	private CategorieListView lvCat;
+	private TextFilterView vTxt;
 	private Button btnAddPreset;
 	public static FilterProperties tmpFilterProps;
 	private CB_RectF ListViewRec;
@@ -46,33 +53,98 @@ public class EditFilterSettings extends ActivityBase
 		super(rec, Name);
 		that = this;
 		ItemRec = new CB_RectF(this.getLeftWidth(), 0, this.width - this.getLeftWidth() - this.getRightWidth(),
-				UiSizes.getButtonHeight() * 1.1f);
+				UI_Size_Base.that.getButtonHeight() * 1.1f);
 
 		tmpFilterProps = GlobalCore.LastFilter;
 
-		float innerWidth = this.width - this.getLeftWidth() - this.getLeftWidth();
-		CB_RectF MTBRec = new CB_RectF(this.getLeftWidth(), this.height - this.getLeftWidth() - UiSizes.getButtonHeight(), innerWidth / 3,
-				UiSizes.getButtonHeight());
+		float innerWidth = this.width - this.getLeftWidth();
+
+		Button bOK = new Button(this.getLeftWidth() / 2, this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(),
+				"OK Button");
+
+		bOK.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				lvCat.SetCategory();
+				GlobalCore.LastFilter = tmpFilterProps;
+
+				// Text Filter ?
+				String txtFilter = vTxt.getFilterString();
+				if (txtFilter.length() > 0)
+				{
+					int FilterMode = vTxt.getFilterState();
+					if (FilterMode == 0) GlobalCore.LastFilter.filterName = txtFilter;
+					else if (FilterMode == 1) GlobalCore.LastFilter.filterGcCode = txtFilter;
+					else if (FilterMode == 2) GlobalCore.LastFilter.filterOwner = txtFilter;
+				}
+				else
+				{
+					GlobalCore.LastFilter.filterName = "";
+					GlobalCore.LastFilter.filterGcCode = "";
+					GlobalCore.LastFilter.filterOwner = "";
+				}
+
+				ApplyFilter(GlobalCore.LastFilter);
+
+				// Save selected filter (new JSON Format)
+				Config.settings.FilterNew.setValue(GlobalCore.LastFilter.ToString());
+				Config.AcceptChanges();
+				finish();
+				return true;
+			}
+		});
+
+		this.addChild(bOK);
+
+		Button bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UI_Size_Base.that.getButtonHeight(),
+				"Cancel Button");
+
+		bCancel.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				finish();
+				return true;
+			}
+		});
+
+		this.addChild(bCancel);
+
+		float topButtonY = this.height - this.getLeftWidth() - UI_Size_Base.that.getButtonHeight();
+
+		contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.width, topButtonY - bOK.getMaxY()), "contentBox");
+		contentBox.setBackground(SpriteCache.activityBackground);
+		this.addChild(contentBox);
+
+		CB_RectF MTBRec = new CB_RectF(this.getLeftWidth() / 2, topButtonY, innerWidth / 4, UI_Size_Base.that.getButtonHeight());
 
 		btPre = new MultiToggleButton(MTBRec, "btPre");
 		btSet = new MultiToggleButton(MTBRec, "btSet");
 		btCat = new MultiToggleButton(MTBRec, "btCat");
+		btTxt = new MultiToggleButton(MTBRec, "btTxt");
 
-		btPre.setX(this.getLeftWidth());
+		// btPre.setX(this.getLeftWidth());
 		btSet.setX(btPre.getMaxX());
 		btCat.setX(btSet.getMaxX());
+		btTxt.setX(btCat.getMaxX());
 
 		this.addChild(btPre);
 		this.addChild(btSet);
 		this.addChild(btCat);
+		this.addChild(btTxt);
 
-		String sPre = GlobalCore.Translations.Get("preset");
-		String sSet = GlobalCore.Translations.Get("setting");
-		String sCat = GlobalCore.Translations.Get("category");
+		String sPre = Translation.Get("preset");
+		String sSet = Translation.Get("setting");
+		String sCat = Translation.Get("category");
+		String sTxt = Translation.Get("text");
 
 		MultiToggleButton.initialOn_Off_ToggleStates(btPre, sPre, sPre);
 		MultiToggleButton.initialOn_Off_ToggleStates(btSet, sSet, sSet);
 		MultiToggleButton.initialOn_Off_ToggleStates(btCat, sCat, sCat);
+		MultiToggleButton.initialOn_Off_ToggleStates(btTxt, sTxt, sTxt);
 
 		btPre.setOnClickListener(new OnClickListener()
 		{
@@ -131,52 +203,26 @@ public class EditFilterSettings extends ActivityBase
 				if (State == 1) switchVisibility(2);
 			}
 		});
-
-		Button bOK = new Button(this.getLeftWidth(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "OK Button");
-
-		bOK.setOnClickListener(new OnClickListener()
+		btTxt.setOnStateChangedListner(new OnStateChangeListener()
 		{
 			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			public void onStateChange(GL_View_Base v, int State)
 			{
-				lvCat.SetCategory();
-				GlobalCore.LastFilter = tmpFilterProps;
-				ApplyFilter(GlobalCore.LastFilter);
-
-				// Save selected filter
-				Config.settings.Filter.setValue(GlobalCore.LastFilter.ToString());
-				Config.AcceptChanges();
-				finish();
-				return true;
+				if (State == 1) switchVisibility(3);
 			}
 		});
-
-		this.addChild(bOK);
-
-		Button bCancel = new Button(bOK.getMaxX(), this.getLeftWidth(), innerWidth / 2, UiSizes.getButtonHeight(), "Cancel Button");
-
-		bCancel.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				finish();
-				return true;
-			}
-		});
-
-		this.addChild(bCancel);
 
 		// Translations
-		bOK.setText(GlobalCore.Translations.Get("ok"));
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bOK.setText(Translation.Get("ok"));
+		bCancel.setText(Translation.Get("cancel"));
 
-		ListViewRec = new CB_RectF(0, bOK.getMaxY(), this.width, btPre.getY() - bOK.getMaxY());
+		ListViewRec = new CB_RectF(0, margin, this.width, btPre.getY() - bOK.getMaxY() - margin - margin);
 
 		initialPresets();
 		initialSettings();
 		initialCategorieView();
 		fillListViews();
+		initialTextView();
 
 		switchVisibility(0);
 
@@ -184,10 +230,10 @@ public class EditFilterSettings extends ActivityBase
 
 	private void initialPresets()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), ListViewRec.getY(), width - this.getRightWidth() - this.getLeftWidth(),
-				UiSizes.getButtonHeight());
+		CB_RectF rec = new CB_RectF(this.getLeftWidth(), margin, width - this.getRightWidth() - this.getLeftWidth(),
+				UI_Size_Base.that.getButtonHeight());
 		btnAddPreset = new Button(rec, "AddPresetButon");
-		btnAddPreset.setText(GlobalCore.Translations.Get("AddOwnFilterPreset"));
+		btnAddPreset.setText(Translation.Get("AddOwnFilterPreset"));
 		btnAddPreset.setOnClickListener(new OnClickListener()
 		{
 
@@ -198,27 +244,33 @@ public class EditFilterSettings extends ActivityBase
 				return true;
 			}
 		});
-		this.addChild(btnAddPreset);
+		contentBox.addChild(btnAddPreset);
 
 		CB_RectF preRec = new CB_RectF(ListViewRec);
-		preRec.setHeight(ListViewRec.getHeight() - UiSizes.getButtonHeight() - margin);
+		preRec.setHeight(ListViewRec.getHeight() - UI_Size_Base.that.getButtonHeight() - margin);
 		preRec.setY(btnAddPreset.getMaxY() + margin);
 
 		lvPre = new PresetListView(preRec);
-		this.addChild(lvPre);
+		contentBox.addChild(lvPre);
 	}
 
 	private void initialSettings()
 	{
 		lvSet = new FilterSetListView(ListViewRec);
-		this.addChild(lvSet);
+		contentBox.addChild(lvSet);
 
 	}
 
 	private void initialCategorieView()
 	{
 		lvCat = new CategorieListView(ListViewRec);
-		this.addChild(lvCat);
+		contentBox.addChild(lvCat);
+	}
+
+	private void initialTextView()
+	{
+		vTxt = new TextFilterView(ListViewRec, "TextFilterView");
+		contentBox.addChild(vTxt);
 	}
 
 	private void fillListViews()
@@ -232,6 +284,7 @@ public class EditFilterSettings extends ActivityBase
 			lvSet.setInvisible();
 			lvPre.setVisible();
 			lvCat.setInvisible();
+			vTxt.setInvisible();
 			btnAddPreset.setVisible();
 			if (lvCat != null) lvCat.SetCategory();
 			lvPre.onShow();
@@ -242,6 +295,7 @@ public class EditFilterSettings extends ActivityBase
 			lvPre.setInvisible();
 			lvSet.setVisible();
 			lvCat.setInvisible();
+			vTxt.setInvisible();
 			btnAddPreset.setInvisible();
 			if (lvCat != null) lvCat.SetCategory();
 			lvSet.onShow();
@@ -251,9 +305,20 @@ public class EditFilterSettings extends ActivityBase
 			lvPre.setInvisible();
 			lvSet.setInvisible();
 			lvCat.setVisible();
+			vTxt.setInvisible();
 			btnAddPreset.setInvisible();
 			lvCat.onShow();
 		}
+		if (btTxt.getState() == 1)
+		{
+			lvPre.setInvisible();
+			lvSet.setInvisible();
+			lvCat.setInvisible();
+			vTxt.setVisible();
+			btnAddPreset.setInvisible();
+			vTxt.onShow();
+		}
+
 	}
 
 	private void switchVisibility(int state)
@@ -263,18 +328,28 @@ public class EditFilterSettings extends ActivityBase
 			btPre.setState(1);
 			btSet.setState(0);
 			btCat.setState(0);
+			btTxt.setState(0);
 		}
 		if (state == 1)
 		{
 			btPre.setState(0);
 			btSet.setState(1);
 			btCat.setState(0);
+			btTxt.setState(0);
 		}
 		if (state == 2)
 		{
 			btPre.setState(0);
 			btSet.setState(0);
 			btCat.setState(1);
+			btTxt.setState(0);
+		}
+		if (state == 3)
+		{
+			btPre.setState(0);
+			btSet.setState(0);
+			btCat.setState(0);
+			btTxt.setState(1);
 		}
 
 		switchVisibility();
@@ -288,7 +363,7 @@ public class EditFilterSettings extends ActivityBase
 	{
 
 		props = Props;
-		pd = WaitDialog.ShowWait(GlobalCore.Translations.Get("FilterCaches"));
+		pd = WaitDialog.ShowWait(Translation.Get("FilterCaches"));
 
 		Thread thread = new Thread()
 		{
@@ -313,8 +388,8 @@ public class EditFilterSettings extends ActivityBase
 					// Notify Map
 					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 
-					// save Filtersettings
-					Config.settings.Filter.setValue(Props.ToString());
+					// save Filtersettings im neuen JSON Format
+					Config.settings.FilterNew.setValue(Props.ToString());
 					Config.AcceptChanges();
 				}
 				catch (Exception e)
@@ -338,7 +413,7 @@ public class EditFilterSettings extends ActivityBase
 		String existName = "";
 		for (PresetListViewItem v : lvPre.lItem)
 		{
-			if (PresetListViewItem.chkPresetFilter(v.getEntry().getPresetString(), tmpFilterProps.ToString()))
+			if (PresetListViewItem.chkPresetFilter(v.getEntry().getFilterProperties(), tmpFilterProps))
 			{
 				exist = true;
 				existName = v.getEntry().getName();
@@ -347,12 +422,12 @@ public class EditFilterSettings extends ActivityBase
 
 		if (exist)
 		{
-			GL_MsgBox.Show(GlobalCore.Translations.Get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null,
+			GL_MsgBox.Show(Translation.Get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null,
 					MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener()
 					{
 
 						@Override
-						public boolean onClick(int which)
+						public boolean onClick(int which, Object data)
 						{
 							that.show();
 							return true;
@@ -361,12 +436,12 @@ public class EditFilterSettings extends ActivityBase
 			return;
 		}
 
-		StringInputBox.Show(TextFieldType.SingleLine, GlobalCore.Translations.Get("NewUserPreset"),
-				GlobalCore.Translations.Get("InsNewUserPreset"), "UserPreset", new OnMsgBoxClickListener()
+		StringInputBox.Show(TextFieldType.SingleLine, Translation.Get("NewUserPreset"), Translation.Get("InsNewUserPreset"), "UserPreset",
+				new OnMsgBoxClickListener()
 				{
 
 					@Override
-					public boolean onClick(int which)
+					public boolean onClick(int which, Object data)
 					{
 						String text = StringInputBox.editText.getText();
 						// Behandle das ergebniss
@@ -400,4 +475,22 @@ public class EditFilterSettings extends ActivityBase
 				});
 	}
 
+	@Override
+	public void onShow()
+	{
+		tmpFilterProps = GlobalCore.LastFilter;
+
+		if (lvPre != null)
+		{
+			lvPre.notifyDataSetChanged();
+		}
+
+		// Load and set TxtFilter
+		if (vTxt != null)
+		{
+			if (GlobalCore.LastFilter.filterName.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterName, 0);
+			else if (GlobalCore.LastFilter.filterGcCode.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterGcCode, 1);
+			else if (GlobalCore.LastFilter.filterOwner.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterOwner, 2);
+		}
+	}
 }

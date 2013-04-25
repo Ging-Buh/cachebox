@@ -1,9 +1,11 @@
 package CB_Core.Solver.Functions;
 
-import CB_Core.GlobalCore;
+import CB_Core.TranslationEngine.Translation;
 
 public class FunctionHandySum extends Function
 {
+	private static final long serialVersionUID = -9107479222557989258L;
+
 	public FunctionHandySum()
 	{
 		Names.add(new LacalNames("PhoneSum", "en"));
@@ -15,13 +17,13 @@ public class FunctionHandySum extends Function
 	@Override
 	public String getName()
 	{
-		return GlobalCore.Translations.Get("solverFuncPhoneSum");
+		return Translation.Get("solverFuncPhoneSum");
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return GlobalCore.Translations.Get("solverDescPhoneSum");
+		return Translation.Get("solverDescPhoneSum");
 	}
 
 	@Override
@@ -29,7 +31,7 @@ public class FunctionHandySum extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return GlobalCore.Translations.Get("solverErrParamCount", "1", "$solverFuncPhoneSum");
+			return Translation.Get("solverErrParamCount", "1", "$solverFuncPhoneSum");
 		}
 		int result = 0;
 		String wert = parameter[0].toLowerCase();

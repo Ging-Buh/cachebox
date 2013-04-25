@@ -3,8 +3,9 @@ package CB_Core.Types;
 import java.io.Serializable;
 import java.util.Date;
 
-import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 public class Waypoint implements Serializable
 {
@@ -39,12 +40,18 @@ public class Waypoint implements Serializable
 	// / Lösung einer QTA
 	public String Clue = "";
 
+	// True wenn dies der Startpunkt für den nächsten Besuch ist.
+	// Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert
+	// Es muss aber sichergestellt sein dass immer nur 1 Waypoint eines Caches ein Startpunkt ist!
+	public boolean IsStart = false;
+
 	public Waypoint()
 	{
 		CacheId = -1;
 		GcCode = "";
 		Pos = new Coordinate();
 		Description = "";
+		IsStart = false;
 	}
 
 	public int checkSum = 0; // for replication
@@ -63,6 +70,7 @@ public class Waypoint implements Serializable
 		IsUserWaypoint = true;
 		Clue = clue;
 		Title = title;
+		IsStart = false;
 	}
 
 	// / <summary>
@@ -70,7 +78,7 @@ public class Waypoint implements Serializable
 	// / </summary>
 	public float Distance()
 	{
-		Coordinate fromPos = GlobalCore.LastValidPosition;
+		Coordinate fromPos = Locator.getLocation().toCordinate();
 		float[] dist = new float[4];
 		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(), Pos.getLongitude(), dist);
 		return dist[0];

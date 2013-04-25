@@ -10,7 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
@@ -22,7 +21,6 @@ import CB_Core.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
-import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
@@ -35,7 +33,8 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.UiSizes;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.FieldNoteEntry;
 
 import com.badlogic.gdx.math.Vector2;
@@ -57,18 +56,20 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private Label lblTime = null;
 	private Box scrollBox = null;
 	FilterSetListViewItem GcVote;
+	private boolean isNewFieldNote = false;
 
 	public interface ReturnListner
 	{
-		public void returnedFieldNote(FieldNoteEntry fn);
+		public void returnedFieldNote(FieldNoteEntry fn, boolean isNewFieldNote);
 	}
 
 	private ReturnListner mReturnListner;
 
-	public EditFieldNotes(FieldNoteEntry note, ReturnListner listner)
+	public EditFieldNotes(FieldNoteEntry note, ReturnListner listner, boolean isNewFieldNote)
 	{
 		super(ActivityBase.ActivityRec(), "");
 
+		this.isNewFieldNote = isNewFieldNote;
 		mReturnListner = listner;
 		fieldNote = note;
 		altfieldNote = note.copy();
@@ -107,13 +108,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UiSizes.getButtonHeight());
+				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
-		bOK.setText(GlobalCore.Translations.Get("ok"));
+		bOK.setText(Translation.Get("ok"));
 
 		btnRec.setX(bOK.getMaxX());
 		bCancel = new Button(btnRec, "CancelButton");
-		bCancel.setText(GlobalCore.Translations.Get("cancel"));
+		bCancel.setText(Translation.Get("cancel"));
 
 		this.addChild(bOK);
 		this.addChild(bCancel);
@@ -151,13 +152,12 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 					}
 					catch (ParseException e)
 					{
-						final GL_MsgBox msg = GL_MsgBox.Show(GlobalCore.Translations.Get("wrongDate"),
-								GlobalCore.Translations.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error,
-								new OnMsgBoxClickListener()
+						final GL_MsgBox msg = GL_MsgBox.Show(Translation.Get("wrongDate"), Translation.Get("Error"), MessageBoxButtons.OK,
+								MessageBoxIcon.Error, new OnMsgBoxClickListener()
 								{
 
 									@Override
-									public boolean onClick(int which)
+									public boolean onClick(int which, Object data)
 									{
 										Timer runTimer = new Timer();
 										TimerTask task = new TimerTask()
@@ -198,7 +198,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 						fieldNote.UpdateDatabase();
 					}
 
-					mReturnListner.returnedFieldNote(fieldNote);
+					mReturnListner.returnedFieldNote(fieldNote, isNewFieldNote);
 				}
 				finish();
 				return true;
@@ -211,7 +211,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (mReturnListner != null) mReturnListner.returnedFieldNote(null);
+				if (mReturnListner != null) mReturnListner.returnedFieldNote(null, false);
 				finish();
 				return true;
 			}
@@ -232,8 +232,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniImage()
 	{
-		ivTyp = new Image(this.getLeftWidth() + margin, tvCacheName.getY() - margin - UiSizes.getButtonHeight(), UiSizes.getButtonHeight(),
-				UiSizes.getButtonHeight(), "");
+		ivTyp = new Image(this.getLeftWidth() + margin, tvCacheName.getY() - margin - UI_Size_Base.that.getButtonHeight(),
+				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
 		scrollBox.addChild(ivTyp);
 
 		secondTab = ivTyp.getMaxX() + (margin * 3);
@@ -241,8 +241,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniFoundLabel()
 	{
-		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UiSizes.getButtonHeight(), width - secondTab - this.getRightWidth() - margin,
-				UiSizes.getButtonHeight(), "CacheNameLabel");
+		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UI_Size_Base.that.getButtonHeight(), width - secondTab - this.getRightWidth()
+				- margin, UI_Size_Base.that.getButtonHeight(), "CacheNameLabel");
 		tvFounds.setFont(Fonts.getBig());
 		scrollBox.addChild(tvFounds);
 	}
@@ -251,17 +251,16 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniDate()
 	{
-		LabelWidth = Math.max(Fonts.Measure(GlobalCore.Translations.Get("date")).width,
-				Fonts.Measure(GlobalCore.Translations.Get("time")).width);
+		LabelWidth = Math.max(Fonts.Measure(Translation.Get("date")).width, Fonts.Measure(Translation.Get("time")).width);
 		LabelWidth *= 1.3;// use Big Font
 
-		lblDate = new Label(secondTab, tvFounds.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(),
-				"");
+		lblDate = new Label(secondTab, tvFounds.getY() - UI_Size_Base.that.getButtonHeight() - (margin * 3), LabelWidth,
+				UI_Size_Base.that.getButtonHeight(), "");
 		lblDate.setFont(Fonts.getBig());
-		lblDate.setText(GlobalCore.Translations.Get("date") + ":");
+		lblDate.setText(Translation.Get("date") + ":");
 		scrollBox.addChild(lblDate);
 		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 
 		tvDate = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvDate);
@@ -270,12 +269,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private void iniTime()
 	{
 
-		lblTime = new Label(secondTab, lblDate.getY() - UiSizes.getButtonHeight() - (margin * 3), LabelWidth, UiSizes.getButtonHeight(), "");
+		lblTime = new Label(secondTab, lblDate.getY() - UI_Size_Base.that.getButtonHeight() - (margin * 3), LabelWidth,
+				UI_Size_Base.that.getButtonHeight(), "");
 		lblTime.setFont(Fonts.getBig());
-		lblTime.setText(GlobalCore.Translations.Get("time") + ":");
+		lblTime.setText(Translation.Get("time") + ":");
 		scrollBox.addChild(lblTime);
 		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin
-				- this.getRightWidth(), UiSizes.getButtonHeight());
+				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 
 		tvTime = new EditWrapedTextField(this, rec, "");
 		scrollBox.addChild(tvTime);
@@ -286,9 +286,9 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 		if (!Config.settings.GcVotePassword.getEncryptedValue().equalsIgnoreCase(""))
 		{
-			float itemHeight = UiSizes.getButtonHeight() * 1.1f;
+			float itemHeight = UI_Size_Base.that.getButtonHeight() * 1.1f;
 
-			FilterSetEntry tmp = new FilterSetEntry(GlobalCore.Translations.Get("maxRating"), SpriteCache.Stars.toArray(),
+			FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCache.Stars.toArray(),
 					FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
 			GcVote = new FilterSetListViewItem(new CB_RectF(this.getLeftWidth(), lblTime.getY() - itemHeight - margin, this.width
 					- this.getLeftWidth() - this.getRightWidth(), itemHeight), 0, tmp);
@@ -302,13 +302,13 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		CB_RectF rec;
 		if (GcVote != null)
 		{
-			rec = new CB_RectF(this.getLeftWidth(), GcVote.getY() - UiSizes.getButtonHeight(), width - this.getLeftWidth()
-					- this.getRightWidth(), UiSizes.getButtonHeight());
+			rec = new CB_RectF(this.getLeftWidth(), GcVote.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
+					- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		}
 		else
 		{
-			rec = new CB_RectF(this.getLeftWidth(), lblTime.getY() - UiSizes.getButtonHeight() - margin, width - this.getLeftWidth()
-					- this.getRightWidth(), UiSizes.getButtonHeight());
+			rec = new CB_RectF(this.getLeftWidth(), lblTime.getY() - UI_Size_Base.that.getButtonHeight() - margin, width
+					- this.getLeftWidth() - this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
 		}
 
 		etComment = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "DescTextField");
@@ -318,7 +318,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		float maxTextFieldHeight = this.height / 2.3f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
-		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
+		descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
 		etComment.setHeight(descriptionHeight);
 		if (GcVote != null)
 		{
@@ -358,8 +358,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
 
-	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
-
 	public void registerTextField(final EditWrapedTextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
@@ -367,7 +365,6 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 			@Override
 			public void show(boolean arg0)
 			{
-				textField.setFocus(true);
 				scrollToY(textField.getY(), textField.getMaxY());
 			}
 		});
@@ -393,7 +390,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 
-		descriptionHeight = Math.max(descriptionHeight, UiSizes.getButtonHeight());
+		descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
 
 		etComment.setHeight(descriptionHeight);
 

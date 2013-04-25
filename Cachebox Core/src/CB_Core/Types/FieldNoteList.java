@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
+import CB_Core.Log.Logger;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry>
 {
@@ -41,7 +42,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		}
 		catch (Exception exc)
 		{
-			String s = exc.getMessage();
+			Logger.Error("FieldNoteList", "LoadFieldNotes", exc);
 		}
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
@@ -85,7 +86,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		}
 		catch (IOException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		;

@@ -28,9 +28,11 @@ import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UiSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Coordinate;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent
 {
@@ -155,7 +157,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			}
 
 			setSelection(selectionIndex);
-			getContextMenu().show();
+			getContextMenu().Show();
 			return true;
 		}
 	};
@@ -218,7 +220,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			{
 				if (position == 0)
 				{
-					WaypointViewItem v = new WaypointViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache, null);
+					WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, null);
 					v.setClickable(true);
 					v.setOnClickListener(onItemClickListner);
 					v.setOnLongClickListener(onItemLongClickListner);
@@ -227,7 +229,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				else
 				{
 					Waypoint waypoint = cache.waypoints.get(position - 1);
-					WaypointViewItem v = new WaypointViewItem(UiSizes.getCacheListItemRec().asFloat(), position, cache, waypoint);
+					WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, waypoint);
 					v.setClickable(true);
 					v.setOnClickListener(onItemClickListner);
 					v.setOnLongClickListener(onItemLongClickListner);
@@ -242,7 +244,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		public float getItemSize(int position)
 		{
 			// alle Items haben die gleiche Größe (Höhe)
-			return UiSizes.getCacheListItemRec().getHeight();
+			return UiSizes.that.getCacheListItemRec().getHeight();
 		}
 
 	}
@@ -367,10 +369,10 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			return;
 		}
 		Coordinate coord = GlobalCore.getSelectedCoord();
-		if (coord == null) coord = GlobalCore.LastValidPosition;
-		if ((coord == null) || (!coord.Valid)) coord = GlobalCore.getSelectedCache().Pos;
+		if (coord == null) coord = Locator.getCoordinate();
+		if ((coord == null) || (!coord.isValid())) coord = GlobalCore.getSelectedCache().Pos;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
-				GlobalCore.getSelectedCache().Id, "", GlobalCore.Translations.Get("wyptDefTitle"));
+				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
 		editWP(newWP);
 
 	}
@@ -402,9 +404,16 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = waypoint;
 						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
+						if (waypoint.IsStart)
+						{
+							// Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
+							// definiert
+							// ist!!!
+							WaypointDAO wpd = new WaypointDAO();
+							wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
+						}
 						WaypointDAO waypointDAO = new WaypointDAO();
 						waypointDAO.WriteToDatabase(waypoint);
-
 						int itemCount = lvAdapter.getCount();
 						int itemSpace = that.getMaxItemCount();
 
@@ -424,7 +433,20 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						aktWaypoint.Type = waypoint.Type;
 						aktWaypoint.Pos = waypoint.Pos;
 						aktWaypoint.Description = waypoint.Description;
+						aktWaypoint.IsStart = waypoint.IsStart;
 						aktWaypoint.Clue = waypoint.Clue;
+
+						// set waypoint as UserWaypoint, because waypoint is changed by user
+						aktWaypoint.IsUserWaypoint = true;
+
+						if (waypoint.IsStart)
+						{
+							// Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
+							// definiert
+							// ist!!!
+							WaypointDAO wpd = new WaypointDAO();
+							wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), aktWaypoint);
+						}
 						WaypointDAO waypointDAO = new WaypointDAO();
 						waypointDAO.UpdateDatabase(aktWaypoint);
 						that.setBaseAdapter(lvAdapter);
@@ -438,12 +460,12 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	private void deleteWP()
 	{
-		GL_MsgBox.Show(GlobalCore.Translations.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", GlobalCore.Translations.Get("!DelWP"),
-				MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question, new OnMsgBoxClickListener()
 				{
 
 					@Override
-					public boolean onClick(int which)
+					public boolean onClick(int which, Object data)
 					{
 						switch (which)
 						{
@@ -483,7 +505,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	{
 		createNewWaypoint = true;
 
-		final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : GlobalCore.LastValidPosition;
+		final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getCoordinate();
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord,
 				new CB_Core.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
