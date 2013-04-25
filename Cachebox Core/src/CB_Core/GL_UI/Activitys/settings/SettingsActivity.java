@@ -835,20 +835,43 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				EditKey = Config.settings.indexOf(SB);
 				File file = new File(SB.getValue());
 
-				String ApsolutePath = "";
-				if (file != null) ApsolutePath = file.getAbsolutePath();
+				final String ApsolutePath = (file != null) ? file.getAbsolutePath() : "";
 
-				platformConector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"),
-						new IgetFolderReturnListner()
+				Menu icm = new Menu("FileactionMenu");
+				icm.addItemClickListner(new OnClickListener()
+				{
+
+					@Override
+					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+					{
+						switch (((MenuItem) v).getMenuItemId())
 						{
+						case MenuID.MI_SELECT_PATH:
+							platformConector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"),
+									new IgetFolderReturnListner()
+									{
 
-							@Override
-							public void getFolderReturn(String Path)
-							{
-								SB.setValue(Path);
-								resortList();
-							}
-						});
+										@Override
+										public void getFolderReturn(String Path)
+										{
+											SB.setValue(Path);
+											resortList();
+										}
+									});
+							return true;
+
+						case MenuID.MI_CLEAR_PATH:
+							SB.setValue("");
+							resortList();
+							return true;
+						}
+						return true;
+					}
+				});
+
+				icm.addItem(MenuID.MI_SELECT_PATH, "select_folder");
+				icm.addItem(MenuID.MI_CLEAR_PATH, "ClearPath");
+				icm.Show();
 
 				return true;
 			}
@@ -890,22 +913,42 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				EditKey = Config.settings.indexOf(SB);
 				File file = new File(SB.getValue());
 
-				String Path = file.getParent();
+				final String Path = (file.getParent() != null) ? file.getParent() : "";
 
-				if (Path == null) Path = "";
+				Menu icm = new Menu("FileactionMenu");
+				icm.addItemClickListner(new OnClickListener()
+				{
 
-				platformConector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"),
-						new IgetFileReturnListner()
+					@Override
+					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+					{
+						switch (((MenuItem) v).getMenuItemId())
 						{
+						case MenuID.MI_SELECT_PATH:
+							platformConector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"),
+									new IgetFileReturnListner()
+									{
+										@Override
+										public void getFieleReturn(String Path)
+										{
+											SB.setValue(Path);
+											resortList();
+										}
+									});
+							return true;
 
-							@Override
-							public void getFieleReturn(String Path)
-							{
-								SB.setValue(Path);
-								resortList();
-							}
-						});
+						case MenuID.MI_CLEAR_PATH:
+							SB.setValue("");
+							resortList();
+							return true;
+						}
+						return true;
+					}
+				});
 
+				icm.addItem(MenuID.MI_SELECT_PATH, "select_file");
+				icm.addItem(MenuID.MI_CLEAR_PATH, "ClearPath");
+				icm.Show();
 				return true;
 			}
 

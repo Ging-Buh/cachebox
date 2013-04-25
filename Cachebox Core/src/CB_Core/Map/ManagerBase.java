@@ -136,16 +136,16 @@ public abstract class ManagerBase
 		return tmp;
 	}
 
-	protected boolean useInvertedNightTheme;
+	private boolean useInvertedNightTheme;
 
 	public void setUseInvertedNightTheme(boolean value)
 	{
 		useInvertedNightTheme = value;
 	}
 
-	protected boolean mapsforgeNightThemeExist()
+	private boolean mapsforgeNightThemeExist()
 	{
-		return false;
+		return !useInvertedNightTheme;
 	}
 
 	public class ImageData

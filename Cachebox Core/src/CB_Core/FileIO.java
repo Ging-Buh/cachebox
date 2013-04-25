@@ -54,7 +54,12 @@ public class FileIO
 	public static String GetFileExtension(String filename)
 	{
 		int dotposition = filename.lastIndexOf(".");
-		String ext = filename.substring(dotposition + 1, filename.length());
+		String ext = "";
+		if (dotposition > -1)
+		{
+			ext = filename.substring(dotposition + 1, filename.length());
+		}
+
 		return ext;
 	}
 
