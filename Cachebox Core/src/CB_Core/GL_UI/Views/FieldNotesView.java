@@ -155,10 +155,10 @@ public class FieldNotesView extends V_ListView
 
 		private float MeasureItemHeight(FieldNoteEntry fne)
 		{
-			float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.margin);
-			float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + Dialog.margin + Fonts.Measure("T").height;
+			float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.getMargin());
+			float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + Dialog.getMargin() + Fonts.Measure("T").height;
 			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic()
-					- ListViewItemBackground.getRightWidthStatic() - (Dialog.margin * 2);
+					- ListViewItemBackground.getRightWidthStatic() - (Dialog.getMargin() * 2);
 
 			float mh = 0;
 			try
@@ -174,7 +174,7 @@ public class FieldNotesView extends V_ListView
 				e.printStackTrace();
 			}
 
-			float commentHeight = (Dialog.margin * 3) + mh;
+			float commentHeight = (Dialog.getMargin() * 3) + mh;
 
 			return headHeight + cacheIfoHeight + commentHeight;
 		}

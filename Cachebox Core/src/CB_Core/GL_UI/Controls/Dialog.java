@@ -55,7 +55,7 @@ public abstract class Dialog extends CB_View_Base
 	protected float mHeaderHight = 10f;
 	protected float mFooterHeight = 10f;
 
-	public static float margin = -1;
+	protected static float margin = -1;
 
 	public static boolean lastNightMode = false;
 
@@ -92,6 +92,35 @@ public abstract class Dialog extends CB_View_Base
 			lastNightMode = Config.settings.nightMode.getValue();
 		}
 
+	}
+
+	public static float getMargin()
+	{
+		return margin;
+	}
+
+	@Override
+	public float getLeftWidth()
+	{
+		return mCenter9patch.getLeftWidth();
+	}
+
+	@Override
+	public float getBottomHeight()
+	{
+		return mFooter9patch.getBottomHeight();
+	}
+
+	@Override
+	public float getRightWidth()
+	{
+		return mCenter9patch.getRightWidth();
+	}
+
+	@Override
+	public float getTopHeight()
+	{
+		return mHeader9patch.getTopHeight();
 	}
 
 	@Override

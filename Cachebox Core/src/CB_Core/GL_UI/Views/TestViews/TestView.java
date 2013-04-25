@@ -56,9 +56,9 @@ public class TestView extends CB_View_Base
 		// ####################################################
 
 		// Setting Button
-		Button btnSetting = new Button(this.width - Dialog.margin - (UI_Size_Base.that.getButtonWidthWide() * 2), wrappedTextField.getY()
-				- Dialog.margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonWidthWide() * 2,
-				UI_Size_Base.that.getButtonHeight(), "");
+		Button btnSetting = new Button(this.width - Dialog.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2),
+				wrappedTextField.getY() - Dialog.getMargin() - UI_Size_Base.that.getButtonHeight(),
+				UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
 
 		btnSetting.setText("Show TB");
 		btnSetting.setOnClickListener(new OnClickListener()

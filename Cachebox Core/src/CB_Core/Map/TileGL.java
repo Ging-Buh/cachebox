@@ -3,6 +3,8 @@ package CB_Core.Map;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
+import CB_Core.GL_UI.runOnGL;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
 
 import com.badlogic.gdx.graphics.Color;
@@ -75,26 +77,37 @@ public class TileGL implements Destroyable
 	public void destroy() throws DestroyFailedException
 	{
 
-		try
-		{
-			if (pixmap != null) pixmap.dispose();
-		}
-		catch (Exception e1)
-		{
-			e1.printStackTrace();
-		}
+		// must run on GL thrad
 
-		try
+		GL.that.RunOnGL(new runOnGL()
 		{
-			if (texture != null) texture.dispose();
-		}
-		catch (java.lang.NullPointerException e)
-		{
-			e.printStackTrace();
-		}
-		texture = null;
-		bytes = null;
-		pixmap = null;
+
+			@Override
+			public void run()
+			{
+				try
+				{
+					if (pixmap != null) pixmap.dispose();
+				}
+				catch (Exception e1)
+				{
+					e1.printStackTrace();
+				}
+
+				try
+				{
+					if (texture != null) texture.dispose();
+				}
+				catch (java.lang.NullPointerException e)
+				{
+					e.printStackTrace();
+				}
+				texture = null;
+				bytes = null;
+				pixmap = null;
+			}
+		});
+
 	}
 
 	@Override

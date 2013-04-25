@@ -435,6 +435,10 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						aktWaypoint.Description = waypoint.Description;
 						aktWaypoint.IsStart = waypoint.IsStart;
 						aktWaypoint.Clue = waypoint.Clue;
+
+						// set waypoint as UserWaypoint, because waypoint is changed by user
+						aktWaypoint.IsUserWaypoint = true;
+
 						if (waypoint.IsStart)
 						{
 							// Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt

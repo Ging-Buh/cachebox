@@ -7,6 +7,8 @@ import CB_Core.GlobalCore;
 import CB_Core.UnitFormatter;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.invalidateTextureEvent;
+import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
@@ -36,7 +38,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent
+public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent
 {
 	public static CompassView that;
 	private CB_RectF imageRec;
@@ -61,6 +63,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		super(rec, Name);
 		margin = GL_UISizes.margin;
 		SelectedCacheEventList.Add(this);
+		invalidateTextureEventList.Add(this);
 		that = this;
 		aktCache = GlobalCore.getSelectedCache();
 		aktWaypoint = GlobalCore.getSelectedWaypoint();
@@ -827,6 +830,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	@Override
 	public void SpeedChanged()
 	{
+	}
+
+	@Override
+	public void invalidateTexture()
+	{
+		createControls();
+		Layout();
 	}
 
 }

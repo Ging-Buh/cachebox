@@ -956,6 +956,7 @@ public class GroundspeakAPI
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+			Cache altCache = Database.Data.Query.GetCacheById(cache.Id);
 			if (aktCache == null)
 			{
 				Database.Data.Query.add(cache);
@@ -993,11 +994,29 @@ public class GroundspeakAPI
 
 			for (Waypoint waypoint : cache.waypoints)
 			{
+				boolean update = true;
 
-				if (!waypointDAO.UpdateDatabase(waypoint))
+				// dont refresh wp if aktCache.wp is user changed
+				if (altCache != null)
 				{
-					waypointDAO.WriteToDatabase(waypoint);
+					for (Waypoint wp : altCache.waypoints)
+					{
+						if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
+						{
+							if (wp.IsUserWaypoint) update = false;
+							break;
+						}
+					}
 				}
+
+				if (update)
+				{
+					if (!waypointDAO.UpdateDatabase(waypoint))
+					{
+						waypointDAO.WriteToDatabase(waypoint);
+					}
+				}
+
 			}
 
 		}

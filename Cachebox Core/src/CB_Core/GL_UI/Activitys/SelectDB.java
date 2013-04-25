@@ -426,10 +426,10 @@ public class SelectDB extends ActivityBase
 
 	private void setAutoStartText()
 	{
-		if (autoStartTime < 0) bAutostart.setText(Translation.Get("AutoStart") + " " + Translation.Get("StartWithoutSelection"));
-		else if (autoStartTime == 0) bAutostart.setText(Translation.Get("AutoStart") + " " + Translation.Get("AutoStartDisabled"));
+		if (autoStartTime < 0) bAutostart.setText(Translation.Get("StartWithoutSelection"));
+		else if (autoStartTime == 0) bAutostart.setText(Translation.Get("AutoStartDisabled"));
 		else
-			bAutostart.setText(Translation.Get("AutoStart") + " " + Translation.Get("AutoStartTime", String.valueOf(autoStartTime)));
+			bAutostart.setText(Translation.Get("AutoStartTime", String.valueOf(autoStartTime)));
 	}
 
 	public class CustomAdapter implements Adapter
@@ -486,7 +486,7 @@ public class SelectDB extends ActivityBase
 	private void stopTimer()
 	{
 		if (updateTimer != null) updateTimer.cancel();
-		bAutostart.setText(Translation.Get("confirm"));
+		// bAutostart.setText(Translation.Get("confirm"));
 	}
 
 	private ReturnListner returnListner;

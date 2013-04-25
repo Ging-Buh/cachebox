@@ -470,7 +470,19 @@ public class CacheDAO
 					for (Waypoint waypoint : newCache.waypoints)
 					{
 
-						waypointDAO.WriteToDatabase(waypoint);
+						boolean update = true;
+
+						// dont refresh wp if aktCache.wp is user changed
+						for (Waypoint wp : aktCache.waypoints)
+						{
+							if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
+							{
+								if (wp.IsUserWaypoint) update = false;
+								break;
+							}
+						}
+
+						if (update) waypointDAO.WriteToDatabase(waypoint);
 					}
 
 					ImageDAO imageDAO = new ImageDAO();

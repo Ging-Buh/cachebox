@@ -159,7 +159,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 		colorReck.draw(batch);
 
-		left += lBounds.getWidth() + Dialog.margin;
+		left += lBounds.getWidth() + Dialog.getMargin();
 
 	}
 

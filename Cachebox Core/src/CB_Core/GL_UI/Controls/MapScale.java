@@ -173,6 +173,8 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			CachedScaleSprite = null;
 		}
 		generatedZomm = -1;
+
+		fontCache.setColor(Fonts.getFontColor());
 	}
 
 }

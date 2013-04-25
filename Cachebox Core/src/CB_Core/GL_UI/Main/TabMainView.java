@@ -10,6 +10,7 @@ import CB_Core.TrackRecorder;
 import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.DB.Database;
+import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
@@ -550,41 +551,49 @@ public class TabMainView extends MainViewBase
 		// chk if initial
 		if (!isInitial) Initial();
 
-		GL.that.StopRender();
-		if (switchDayNight) Config.changeDayNight();
-		ManagerBase.RenderThemeChanged = true;
-		GL.that.onStop();
-
-		SpriteCache.LoadSprites(true);
-		GL.that.onStart();
-		CallSkinChanged();
-
-		this.removeChilds();
-
-		CB_Button.reloadMenuSprite();
-		if (GlobalCore.isTab) addTabletTabs();
-		else
-			addPhoneTab();
-
-		// add Slider as last
-		Slider slider = new Slider(this, "Slider");
-		this.addChild(slider);
-
-		String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
-
-		GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
-
-		platformConector.DayNightSwitched();
-
-		synchronized (childs)
+		try
 		{
-			for (GL_View_Base view : this.childs)
+			GL.that.StopRender();
+			if (switchDayNight) Config.changeDayNight();
+			ManagerBase.RenderThemeChanged = true;
+			GL.that.onStop();
+
+			SpriteCache.LoadSprites(true);
+			GL.that.onStart();
+			CallSkinChanged();
+
+			this.removeChilds();
+
+			CB_Button.reloadMenuSprite();
+			if (GlobalCore.isTab) addTabletTabs();
+			else
+				addPhoneTab();
+
+			// add Slider as last
+			Slider slider = new Slider(this, "Slider");
+			this.addChild(slider);
+
+			String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
+
+			GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
+
+			platformConector.DayNightSwitched();
+
+			synchronized (childs)
 			{
-				if (view instanceof CB_TabView)
+				for (GL_View_Base view : this.childs)
 				{
-					((CB_TabView) view).SkinIsChanged();
+					if (view instanceof CB_TabView)
+					{
+						((CB_TabView) view).SkinIsChanged();
+					}
 				}
 			}
+			invalidateTextureEventList.Call();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		GL.that.RestartRender();
 	}

@@ -101,7 +101,7 @@ public class CreditsView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		margin = Menu.margin;
+		margin = Menu.getMargin();
 
 		lineHeight = Fonts.Measure("Tg").height * 1.6f;
 		layout.removeChilds();

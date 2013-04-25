@@ -504,6 +504,7 @@ public class GL implements ApplicationListener
 		stopTimer();
 		if (listenerInterface != null) listenerInterface.RenderContinous();
 		child.onStop();
+		toast = null; // regenerate toast control
 	}
 
 	public static boolean getIsTouchDown()
@@ -1290,7 +1291,7 @@ public class GL implements ApplicationListener
 		float x = (width - dialog.getWidth()) / 2;
 		float y = (height - dialog.getHeight()) / 2;
 
-		if (atTop) y = height - dialog.getHeight() - (Dialog.margin * 4);
+		if (atTop) y = height - dialog.getHeight() - (Dialog.getMargin() * 4);
 
 		dialog.setPos(x, y);
 
@@ -1548,7 +1549,7 @@ public class GL implements ApplicationListener
 		}
 		toast.setText(string);
 
-		float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 3);
+		float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (toast.getMargin() * 2);
 		toast.setWidth(measuredWidth);
 
 		toast.setPos((width / 2) - (measuredWidth / 2), GL_UISizes.BottomButtonHeight * 1.3f);

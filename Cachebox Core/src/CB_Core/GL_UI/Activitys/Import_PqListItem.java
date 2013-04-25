@@ -37,7 +37,7 @@ public class Import_PqListItem extends ListViewItemBackground
 		lblInfo.setText(dateString + "  " + FileSize + Count);
 
 		chk = new chkBox("");
-		chk.setX(this.width - getRightWidth() - chk.getWidth() - Dialog.margin);
+		chk.setX(this.width - getRightWidth() - chk.getWidth() - Dialog.getMargin());
 		chk.setY(this.halfHeight - chk.getHalfHeight());
 		chk.setChecked(pq.downloadAvible);
 		chk.setOnCheckedChangeListener(new OnCheckedChangeListener()

@@ -24,23 +24,13 @@ public class invalidateTextureEventList
 
 	public static void Call()
 	{
-		Thread thread = new Thread(new Runnable()
+
+		synchronized (list)
 		{
-
-			@Override
-			public void run()
+			for (invalidateTextureEvent event : list)
 			{
-				synchronized (list)
-				{
-					for (invalidateTextureEvent event : list)
-					{
-						event.invalidateTexture();
-					}
-				}
+				event.invalidateTexture();
 			}
-		});
-
-		thread.run();
-
+		}
 	}
 }

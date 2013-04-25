@@ -21,7 +21,14 @@ public class GPS_FallBackEventList
 
 		for (GPS_FallBackEvent event : list)
 		{
-			event.FallBackToNetworkProvider();
+			try
+			{
+				event.FallBackToNetworkProvider();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -31,7 +38,14 @@ public class GPS_FallBackEventList
 
 		for (GPS_FallBackEvent event : list)
 		{
-			event.Fix();
+			try
+			{
+				event.Fix();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 	}

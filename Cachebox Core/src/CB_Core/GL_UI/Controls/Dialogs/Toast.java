@@ -27,7 +27,6 @@ public class Toast extends Dialog
 		super.RemoveChildsFromOverlay();
 		super.addChildToOverlay(mTextField);
 
-		registerSkinChangedEvent();
 	}
 
 	@Override
@@ -51,15 +50,6 @@ public class Toast extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		mTextField = new Label(this, "Toast.Label");
-		mTextField.setHAlignment(HAlignment.CENTER);
-		mTextField.setVAlignment(VAlignment.CENTER);
-
-		mTextField.setZeroPos();
-
-		super.RemoveChildsFromOverlay();
-		super.addChildToOverlay(mTextField);
-
 	}
 
 }

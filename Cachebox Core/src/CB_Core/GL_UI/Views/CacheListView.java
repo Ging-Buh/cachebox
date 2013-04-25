@@ -47,6 +47,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		super(rec, Name);
 		registerSkinChangedEvent();
 		CachListChangedEventList.Add(this);
+		SelectedCacheEventList.Add(this);
 		that = this;
 		listView = new V_ListView(rec, Name);
 		listView.setZeroPos();
@@ -100,8 +101,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		Logger.LogCat("CacheList onShow");
 		setBackground(SpriteCache.ListBack);
 
-		CachListChangedEventList.Add(this);
-		SelectedCacheEventList.Add(this);
 		PositionChangedEventList.Add(this);
 
 		synchronized (Database.Data.Query)
@@ -168,7 +167,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	 */
 	public void setSelectedCacheVisible(int pos)
 	{
-		if (!listView.isDrageble()) return;
 		int id = 0;
 		int first = listView.getFirstVisiblePosition();
 		int last = listView.getLastVisiblePosition();
@@ -180,7 +178,10 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (ca == GlobalCore.getSelectedCache())
 				{
 					listView.setSelection(id);
-					if (!(first <= id && last >= id) || (searchPlaceholder < 0)) listView.scrollToItem(id - pos);
+					if (!listView.isDrageble())
+					{
+						if (!(first <= id && last >= id) || (searchPlaceholder < 0)) listView.scrollToItem(id - pos);
+					}
 					break;
 				}
 				id++;
@@ -196,8 +197,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	{
 		isShown = false;
 		Logger.LogCat("CacheList onHide");
-		SelectedCacheEventList.Remove(this);
-		CachListChangedEventList.Remove(this);
 		PositionChangedEventList.Remove(this);
 
 		if (searchPlaceholder < 0)
