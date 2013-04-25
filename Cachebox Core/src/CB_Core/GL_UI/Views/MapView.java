@@ -44,6 +44,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
+import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -186,6 +187,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CompassMode = compassMode;
 
 		invalidateTextureEventList.Add(this);
+		Config.settings.MapsforgeDayTheme.addChangedEventListner(themeChangedEventHandler);
+		Config.settings.MapsforgeNightTheme.addChangedEventListner(themeChangedEventHandler);
 		registerSkinChangedEvent();
 		setBackground(SpriteCache.ListBack);
 		int maxNumTiles = 0;
@@ -432,6 +435,16 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 	}
+
+	private iChanged themeChangedEventHandler = new iChanged()
+	{
+
+		@Override
+		public void isChanged()
+		{
+			MapView.this.invalidateTexture();
+		}
+	};
 
 	@Override
 	public void onShow()
@@ -1646,16 +1659,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				if (themePath == null)
 				{
+					if (Config.settings.nightMode.getValue()) useInvertNightTheme = true;
 					themePath = ifThemeExist(Config.settings.MapsforgeDayTheme.getValue());
-					if (themePath != null && Config.settings.nightMode.getValue()) useInvertNightTheme = true;
-				}
 
-				// Ich denke das ist zuviel, wenn jetzt noch kein Theme Pfad gefunden wurde,
-				// Koomt es hier nur zu eine FileNotFound Exception (Longri)
-				// if (themePath == null)
-				// {
-				// themePath = Config.settings.MapsforgeDayTheme.getValue();
-				// }
+				}
 
 			}
 
@@ -1679,11 +1686,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			else
 			{
 				// set Theme to null
+				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
 				ManagerBase.Manager.setRenderTheme(null);
 			}
-
-			// Initial_all wird vom Constructor der MapView übergeben. Beim Constructor müssen die Texturen nicht ungültig gemacht werden
-			if (InitialFlags != INITIAL_ALL) invalidateTexture();
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0)
@@ -1709,7 +1714,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	private String ifThemeExist(String Path)
 	{
-		if (FileIO.FileExists(Path)) return Path;
+		if (FileIO.FileExists(Path) && FileIO.GetFileExtension(Path).contains("xml")) return Path;
 		return null;
 	}
 
@@ -2617,6 +2622,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void invalidateTexture()
 	{
+		setNewSettings(INITIAL_THEME);
 		mapTileLoader.clearLoadedTiles();
 		tilesToDraw.clear();
 		mapScale.ZoomChanged();

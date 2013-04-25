@@ -80,13 +80,6 @@ public class AndroidManager extends ManagerBase
 	}
 
 	@Override
-	protected boolean mapsforgeNightThemeExist()
-	{
-		File file = new File(CB_Core.Config.settings.MapsforgeNightTheme.getValue());
-		return file.exists();
-	}
-
-	@Override
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{
 		// Mapsforge 3.0
