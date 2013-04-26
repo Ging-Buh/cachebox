@@ -81,6 +81,12 @@ public class Coordinate implements Serializable
 		return Valid;
 	}
 
+	public boolean isZero()
+	{
+		if (!isValid()) return false;
+		return ((Latitude == 0) && (Longitude == 0));
+	}
+
 	public boolean hasAccuracy()
 	{
 		if (Accuracy == -1) return false;
