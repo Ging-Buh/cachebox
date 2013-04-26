@@ -16,6 +16,7 @@ public class HSV_Color extends Color
 	public HSV_Color(Color color)
 	{
 		super(color);
+		clamp();
 	}
 
 	public HSV_Color(String hex)
@@ -58,8 +59,10 @@ public class HSV_Color extends Color
 	@Override
 	public Color clamp()
 	{
+		Color ret = super.clamp();
+
 		calculateHSV();
-		return super.clamp();
+		return ret;
 
 	}
 
