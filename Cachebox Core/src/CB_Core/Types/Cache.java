@@ -368,6 +368,7 @@ public class Cache implements Comparable<Cache>
 		{
 			if (wp.Type == CacheTypes.Final)
 			{
+				if (wp.Pos.isZero()) continue;
 				return wp;
 			}
 		}
