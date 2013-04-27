@@ -349,7 +349,7 @@ public abstract class ListViewBase extends CB_View_Base
 		// Logger.LogCat("chkSlideBack()");
 		if (!mIsDrageble)
 		{
-			// startAnimationtoTop();
+			startAnimationtoTop();
 			return;
 		}
 		if (mPos > 0) startAnimationtoTop();
