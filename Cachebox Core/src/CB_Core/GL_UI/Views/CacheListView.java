@@ -142,6 +142,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 					listView.setSelection(0);
 
 				resetInitial();
+				listView.chkSlideBack();
 			}
 		};
 
@@ -411,7 +412,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public void resetPlaceHolder()
 	{
-		searchPlaceholder = -searchPlaceholder;
+		searchPlaceholder = 0;
 		onRezised(this);
 	}
 

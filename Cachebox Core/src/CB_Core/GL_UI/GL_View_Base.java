@@ -538,7 +538,13 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void resize(float width, float height)
 	{
-		onRezised(this);
+		try
+		{
+			onRezised(this);
+		}
+		catch (Exception e1)
+		{
+		}
 		DebugSprite = null;
 
 		// Eine Größenänderung an die Childs Melden
@@ -557,7 +563,6 @@ public abstract class GL_View_Base extends CB_RectF
 			catch (ConcurrentModificationException e)
 			{
 				e.printStackTrace();
-				// keine ahnung was ich machen soll, wen dieser fehler auftritt!
 			}
 		}
 	}
