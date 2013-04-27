@@ -1,18 +1,25 @@
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditCoord;
 import CB_Core.GL_UI.Activitys.EditCoord.ReturnListner;
+import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.interfaces.ICopyPaste;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Clipboard;
 
-public class CoordinateButton extends Button
+public class CoordinateButton extends Button implements ICopyPaste
 {
-	Coordinate mActCoord;
+	protected Coordinate mActCoord;
+	protected CopiePastePopUp popUp;
+	protected Clipboard clipboard;
 
 	public interface CoordinateChangeListner
 	{
@@ -28,7 +35,8 @@ public class CoordinateButton extends Button
 		mActCoord = coord;
 		setText();
 		this.setOnClickListener(click);
-
+		this.setOnLongClickListener(longCLick);
+		clipboard = GlobalCore.getDefaultClipboard();
 	}
 
 	public CoordinateButton(String name)
@@ -36,6 +44,8 @@ public class CoordinateButton extends Button
 		super(name);
 		mActCoord = new Coordinate();
 		this.setOnClickListener(click);
+		this.setOnLongClickListener(longCLick);
+		clipboard = GlobalCore.getDefaultClipboard();
 	}
 
 	public void setCoordinateChangedListner(CoordinateChangeListner listner)
@@ -88,7 +98,17 @@ public class CoordinateButton extends Button
 		{
 			if (edCo == null) initialEdCo();
 			GL.that.showActivity(edCo);
+			return true;
+		}
+	};
 
+	OnClickListener longCLick = new OnClickListener()
+	{
+
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		{
+			showPopUp(x, y);
 			return true;
 		}
 	};
@@ -110,4 +130,73 @@ public class CoordinateButton extends Button
 		super.performClick();
 	}
 
+	protected void showPopUp(int x, int y)
+	{
+		if ((popUp != null) && (popUp.getchilds() == null)) popUp = null;
+		if (popUp == null)
+		{
+			popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), this);
+		}
+
+		float noseOffset = popUp.getHalfWidth() / 2;
+
+		CB_RectF world = getWorldRec();
+
+		// not enough place on Top?
+		float windowH = UI_Size_Base.that.getWindowHeight();
+		float windowW = UI_Size_Base.that.getWindowWidth();
+		float worldY = world.getY();
+
+		if (popUp.getHeight() + worldY > windowH * 0.8f)
+		{
+			popUp.flipX();
+			worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
+		}
+
+		x += world.getX() - noseOffset;
+
+		if (x < 0) x = 0;
+		if (x + popUp.getWidth() > windowW) x = (int) (windowW - popUp.getWidth());
+
+		y += worldY + (popUp.getHeight() * 0.2f);
+		popUp.show(x, y);
+	}
+
+	@Override
+	public void pasteFromClipboard()
+	{
+		if (clipboard == null) return;
+		String content = clipboard.getContents();
+		Coordinate cor = null;
+		if (content != null)
+		{
+			try
+			{
+				cor = new Coordinate(content);
+			}
+			catch (Exception e)
+			{
+			}
+
+			if (cor != null) this.setCoordinate(cor);
+		}
+
+	}
+
+	@Override
+	public void copyToClipboard()
+	{
+		if (clipboard == null) return;
+		clipboard.setContents(this.getText());
+	}
+
+	@Override
+	public void cutToClipboard()
+	{
+		if (clipboard == null) return;
+		clipboard.setContents(this.getText());
+		Coordinate cor = new Coordinate("N 0° 0.00 / E 0° 0.00");
+		cor.setValid(false);
+		this.setCoordinate(cor);
+	}
 }

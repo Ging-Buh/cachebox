@@ -1314,18 +1314,13 @@ public class EditWrapedTextField extends EditTextFieldBase
 	@Override
 	public void copyToClipboard()
 	{
+		if (clipboard == null) return;
 		if (selection != null)
 		{
 			String content = "";
 			content = this.getSelectedText();
 			clipboard.setContents(content);
 		}
-		// if (hasSelection && clipboard != null)
-		// {
-		// int minIndex = Math.min(cursor, selectionStart);
-		// int maxIndex = Math.max(cursor, selectionStart);
-		// clipboard.setContents(text.substring(minIndex, maxIndex));
-		// }
 	}
 
 	@Override

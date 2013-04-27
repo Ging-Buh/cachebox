@@ -10,6 +10,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.interfaces.ICopyPaste;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 
@@ -20,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 
-public abstract class EditTextFieldBase extends CB_View_Base
+public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPaste
 {
 	static public final char BACKSPACE = 8;
 	static public final char ENTER_DESKTOP = '\r';
