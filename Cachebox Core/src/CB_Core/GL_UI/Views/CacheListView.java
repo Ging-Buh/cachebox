@@ -178,7 +178,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (ca == GlobalCore.getSelectedCache())
 				{
 					listView.setSelection(id);
-					if (!listView.isDrageble())
+					if (listView.isDrageble())
 					{
 						if (!(first <= id && last >= id) || (searchPlaceholder < 0)) listView.scrollToItem(id - pos);
 					}

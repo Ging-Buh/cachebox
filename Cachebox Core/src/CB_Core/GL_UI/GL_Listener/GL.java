@@ -1248,6 +1248,7 @@ public class GL implements ApplicationListener
 		popUp.setY(y);
 
 		CB_View_Base aktView = DialogIsShown ? mDialog : child;
+		if (ActivityIsShown) aktView = mActivity;
 
 		aktView.addChild(popUp);
 		aktPopUp = popUp;
@@ -1258,6 +1259,8 @@ public class GL implements ApplicationListener
 	public void closePopUp(PopUp_Base popUp)
 	{
 		CB_View_Base aktView = DialogIsShown ? mDialog : child;
+		if (ActivityIsShown) aktView = mActivity;
+
 		aktView.removeChild(popUp);
 		if (aktPopUp != null) aktPopUp.onHide();
 		aktPopUp = null;

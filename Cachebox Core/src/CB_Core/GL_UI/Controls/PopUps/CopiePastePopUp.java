@@ -3,8 +3,8 @@ package CB_Core.GL_UI.Controls.PopUps;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.ImageButton;
+import CB_Core.GL_UI.interfaces.ICopyPaste;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 
@@ -19,7 +19,7 @@ public class CopiePastePopUp extends PopUp_Base
 	private ImageButton btnCut;
 	private ImageButton btnPaste;
 
-	public CopiePastePopUp(String Name, final EditTextFieldBase textField)
+	public CopiePastePopUp(String Name, final ICopyPaste copyPasteControl)
 	{
 		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 3.2f, UI_Size_Base.that.getButtonHeight() * 1.5f), Name);
 
@@ -43,7 +43,7 @@ public class CopiePastePopUp extends PopUp_Base
 			{
 				// Logger.LogCat("Paste Button Clicked");
 				close();
-				textField.pasteFromClipboard();
+				copyPasteControl.pasteFromClipboard();
 				return false;
 			}
 		});
@@ -62,7 +62,7 @@ public class CopiePastePopUp extends PopUp_Base
 			{
 				// Logger.LogCat("Copy Button Clicked");
 				close();
-				textField.copyToClipboard();
+				copyPasteControl.copyToClipboard();
 				return false;
 			}
 		});
@@ -81,7 +81,7 @@ public class CopiePastePopUp extends PopUp_Base
 			{
 				// Logger.LogCat("Cut Button Clicked");
 				close();
-				textField.cutToClipboard();
+				copyPasteControl.cutToClipboard();
 				return false;
 			}
 		});
