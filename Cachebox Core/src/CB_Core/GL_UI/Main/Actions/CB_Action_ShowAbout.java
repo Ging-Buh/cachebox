@@ -48,7 +48,7 @@ public class CB_Action_ShowAbout extends CB_Action_ShowView
 	@Override
 	public boolean HasContextMenu()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

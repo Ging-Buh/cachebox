@@ -222,27 +222,31 @@ public class CB_Button extends Button implements OnClickListener
 						{
 							// das View Context Menü mit dem LongKlick Menü zusammen führen!
 
-							Menu viewContextMenu = aktActionView.getContextMenu();
-
 							// Menu zusammen stellen!
 							// zuerst das View Context Menu
 							Menu compoundMenu = new Menu("compoundMenu");
 
-							compoundMenu.addItems(viewContextMenu.getItems());
-
-							compoundMenu.addItemClickListner(viewContextMenu.getItemClickListner());
-
-							// add divider
-							compoundMenu.addDivider();
+							Menu viewContextMenu = aktActionView.getContextMenu();
+							if (viewContextMenu != null)
+							{
+								compoundMenu.addItems(viewContextMenu.getItems());
+								compoundMenu.addItemClickListner(viewContextMenu.getItemClickListner());
+								// add divider
+								compoundMenu.addDivider();
+							}
 
 							Menu LongClickMenu = getLongClickMenu();
-							compoundMenu.addItems(LongClickMenu.getItems());
-							compoundMenu.addItemClickListner(LongClickMenu.getItemClickListner());
+							if (LongClickMenu != null)
+							{
+								compoundMenu.addItems(LongClickMenu.getItems());
+								compoundMenu.addItemClickListner(LongClickMenu.getItemClickListner());
 
-							compoundMenu.reorganizeIndexes();
+							}
 
-							compoundMenu.Show();
-
+							if (compoundMenu.reorganizeIndexes() > 0)
+							{
+								compoundMenu.Show();
+							}
 							return true;
 						}
 

@@ -344,7 +344,7 @@ public class TabMainView extends MainViewBase
 		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
 		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));
 
-		btn5.addAction(new CB_ActionButton(actionShowAboutView, false, GestureDirection.Up));
+		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 		btn5.addAction(new CB_ActionButton(actionDayNight, false));
@@ -438,7 +438,7 @@ public class TabMainView extends MainViewBase
 		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
 		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));
 
-		btn5.addAction(new CB_ActionButton(actionShowAboutView, false, GestureDirection.Up));
+		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
 		btn5.addAction(new CB_ActionButton(actionShowSettings, false, GestureDirection.Left));
 		btn5.addAction(new CB_ActionButton(actionDayNight, false));

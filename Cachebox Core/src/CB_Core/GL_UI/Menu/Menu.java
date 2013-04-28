@@ -324,14 +324,14 @@ public class Menu extends ButtonDialog
 	/**
 	 * Die indexes der Items werden neu erstellt.
 	 */
-	public void reorganizeIndexes()
+	public int reorganizeIndexes()
 	{
 		int Index = 0;
 		for (MenuItemBase item : mItems)
 		{
 			item.setIndex(Index++);
 		}
-
+		return Index;
 	}
 
 }
