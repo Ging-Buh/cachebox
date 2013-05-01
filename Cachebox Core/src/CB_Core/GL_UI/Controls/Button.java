@@ -243,24 +243,12 @@ public class Button extends CB_View_Base
 			this.removeChild(lblTxt);
 		}
 
-		lblTxt = new Label(name + "Label");
-		if (font != null) mFont = font;
-		if (mFont != null)
-		{
-			lblTxt.setFont(mFont);
-		}
-		else
-		{
-			mFont = Fonts.getBig();
-			lblTxt.setFont(mFont);
-		}
+		lblTxt = new Label(this.getName() + "Label");
 		this.initRow(false);
-		this.addLast(lblTxt);
+		this.addLast(lblTxt); // first add Label, to get width, then set Text of label
 
-		if (color != null)
-		{
-			lblTxt.setTextColor(color);
-		}
+		if (font != null) mFont = font;
+		if (mFont == null) mFont = Fonts.getBig();
 
 		// lblTxt.setVAlignment(VAlignment.CENTER); ist default
 		lblTxt.setText(Text, mFont, color, HAlignment.CENTER);
