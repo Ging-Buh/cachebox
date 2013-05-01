@@ -872,23 +872,19 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
-	private Sprite crossLine = null;
+	// private Sprite crossLine = null;
 
 	@SuppressWarnings("unused")
 	private void renderDebugInfo(SpriteBatch batch)
 	{
-		if (crossLine == null)
-		{
-			crossLine = SpriteCache.Arrows.get(13);
-			Color col = new Color(0.5f, 0.5f, 0.5f, 0.1f);
-
-			crossLine.setColor(col);
-		}
-		scale = 0.2f * UI_Size_Base.that.getScale();
-
-		DrawUtils.drawSpriteLine(batch, crossLine, scale, 0, drawingHeight / 2, drawingWidth, drawingHeight / 2);
-		DrawUtils.drawSpriteLine(batch, crossLine, scale, drawingWidth / 2, 0, drawingWidth / 2, drawingHeight);
-
+		/*
+		 * if (crossLine == null) { crossLine = SpriteCache.Arrows.get(13); Color col = new Color(0.5f, 0.5f, 0.5f, 0.1f);
+		 * 
+		 * crossLine.setColor(col); } scale = 0.2f * UI_Size_Base.that.getScale();
+		 * 
+		 * DrawUtils.drawSpriteLine(batch, crossLine, scale, 0, drawingHeight / 2, drawingWidth, drawingHeight / 2);
+		 * DrawUtils.drawSpriteLine(batch, crossLine, scale, drawingWidth / 2, 0, drawingWidth / 2, drawingHeight);
+		 */
 		if (true) return;
 
 		str = debugString;
