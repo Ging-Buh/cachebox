@@ -12,6 +12,7 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEvent;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -352,10 +353,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 					// Car mode
 					CarMode = true;
-					setNewSettings(INITIAL_THEME);
+					invalidateTexture();
 
 				}
-
 				else if (State == 2)
 				{
 					if (GlobalCore.getSelectedCache() != null)
@@ -381,8 +381,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					if (!wasCarMode) return; // brauchen wir nicht noch einmal machen
 					CarMode = false;
-
-					setNewSettings(INITIAL_THEME);
+					invalidateTexture();
 				}
 
 			}
@@ -492,7 +491,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void dispose()
 	{
-
+		// remove eventHandler
+		invalidateTextureEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
+		SelectedCacheEventList.Remove(this);
 	}
 
 	@Override
@@ -1701,6 +1703,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
 				ManagerBase.Manager.setRenderTheme(null);
 			}
+
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0)
