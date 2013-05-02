@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
@@ -23,8 +22,6 @@ import CB_Core.Math.UI_Size_Base;
 import CB_Core.Settings.SettingBool;
 import CB_Core.TranslationEngine.Translation;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -217,51 +214,49 @@ public class GL_MsgBox extends Dialog
 
 	public void setButtonCaptions(MessageBoxButtons buttons)
 	{
-		BitmapFont font = Fonts.getBig();
-		Color color = Fonts.getFontColor();
 		if (buttons == MessageBoxButtons.AbortRetryIgnore)
 		{
 			createButtons(this, 3);
-			button1.setText(Translation.Get("abort"), font, color);
-			button2.setText(Translation.Get("retry"), font, color);
-			button3.setText(Translation.Get("ignore"), font, color);
+			button1.setText(Translation.Get("abort"));
+			button2.setText(Translation.Get("retry"));
+			button3.setText(Translation.Get("ignore"));
 		}
 		else if (buttons == MessageBoxButtons.OK)
 		{
 			createButtons(this, 1);
-			button1.setText(Translation.Get("ok"), font, color);
+			button1.setText(Translation.Get("ok"));
 		}
 		else if (buttons == MessageBoxButtons.OKCancel)
 		{
 			createButtons(this, 2);
-			button1.setText(Translation.Get("ok"), font, color);
-			button3.setText(Translation.Get("cancel"), font, color);
+			button1.setText(Translation.Get("ok"));
+			button3.setText(Translation.Get("cancel"));
 		}
 		else if (buttons == MessageBoxButtons.RetryCancel)
 		{
 			createButtons(this, 2);
-			button1.setText(Translation.Get("retry"), font, color);
-			button3.setText(Translation.Get("cancel"), font, color);
+			button1.setText(Translation.Get("retry"));
+			button3.setText(Translation.Get("cancel"));
 		}
 		else if (buttons == MessageBoxButtons.YesNo)
 		{
 			createButtons(this, 2);
-			button1.setText(Translation.Get("yes"), font, color);
-			button3.setText(Translation.Get("no"), font, color);
+			button1.setText(Translation.Get("yes"));
+			button3.setText(Translation.Get("no"));
 		}
 		else if (buttons == MessageBoxButtons.YesNoCancel)
 		{
 			createButtons(this, 3);
-			button1.setText(Translation.Get("yes"), font, color);
-			button2.setText(Translation.Get("no"), font, color);
-			button3.setText(Translation.Get("cancel"), font, color);
+			button1.setText(Translation.Get("yes"));
+			button2.setText(Translation.Get("no"));
+			button3.setText(Translation.Get("cancel"));
 		}
 		else if (buttons == MessageBoxButtons.Cancel)
 		{
 			createButtons(this, 3);
 			button1.setInvisible();
 			button2.setInvisible();
-			button3.setText(Translation.Get("cancel"), font, color);
+			button3.setText(Translation.Get("cancel"));
 		}
 		else
 		{

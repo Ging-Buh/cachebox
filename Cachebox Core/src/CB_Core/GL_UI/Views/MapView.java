@@ -12,6 +12,7 @@ import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.Events.SelectedCacheEvent;
+import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEvent;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -352,10 +353,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 					// Car mode
 					CarMode = true;
-					setNewSettings(INITIAL_THEME);
+					invalidateTexture();
 
 				}
-
 				else if (State == 2)
 				{
 					if (GlobalCore.getSelectedCache() != null)
@@ -381,8 +381,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				{
 					if (!wasCarMode) return; // brauchen wir nicht noch einmal machen
 					CarMode = false;
-
-					setNewSettings(INITIAL_THEME);
+					invalidateTexture();
 				}
 
 			}
@@ -467,7 +466,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		int zoom = MapTileLoader.MAX_MAP_ZOOM;
 		float tmpZoom = camera.zoom;
 		float faktor = 1.5f;
-		faktor = faktor - iconFactor + 1;
+		// faktor = faktor - iconFactor + 1;
+		faktor = faktor / iconFactor;
 		while (tmpZoom > faktor)
 		{
 			tmpZoom /= 2;
@@ -491,7 +491,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	public void dispose()
 	{
-
+		// remove eventHandler
+		invalidateTextureEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
+		SelectedCacheEventList.Remove(this);
 	}
 
 	@Override
@@ -609,7 +612,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			int zoom = MapTileLoader.MAX_MAP_ZOOM;
 			float tmpZoom = camera.zoom;
 			float faktor = 1.5f;
-			faktor = faktor - iconFactor + 1;
+			// faktor = faktor - iconFactor + 1;
+			faktor = faktor / iconFactor;
 			while (tmpZoom > faktor)
 			{
 				tmpZoom /= 2;
@@ -870,9 +874,19 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
+	// private Sprite crossLine = null;
+
 	@SuppressWarnings("unused")
 	private void renderDebugInfo(SpriteBatch batch)
 	{
+		/*
+		 * if (crossLine == null) { crossLine = SpriteCache.Arrows.get(13); Color col = new Color(0.5f, 0.5f, 0.5f, 0.1f);
+		 * 
+		 * crossLine.setColor(col); } scale = 0.2f * UI_Size_Base.that.getScale();
+		 * 
+		 * DrawUtils.drawSpriteLine(batch, crossLine, scale, 0, drawingHeight / 2, drawingWidth, drawingHeight / 2);
+		 * DrawUtils.drawSpriteLine(batch, crossLine, scale, drawingWidth / 2, 0, drawingWidth / 2, drawingHeight);
+		 */
 		if (true) return;
 
 		str = debugString;
@@ -1689,6 +1703,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
 				ManagerBase.Manager.setRenderTheme(null);
 			}
+
 		}
 
 		if ((InitialFlags & INITIAL_WP_LIST) != 0)
@@ -2105,7 +2120,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// Pan stufenlos anpassen an den aktuell gültigen Zoomfaktor
 					float tmpZoom = camera.zoom;
 					float ffaktor = 1.5f;
-					ffaktor = ffaktor - iconFactor + 1;
+					// ffaktor = ffaktor - iconFactor + 1;
+					ffaktor = ffaktor / iconFactor;
 					while (tmpZoom > ffaktor)
 					{
 						tmpZoom /= 2;
@@ -2154,7 +2170,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				int zoom = MapTileLoader.MAX_MAP_ZOOM;
 				float tmpZoom = camera.zoom;
 				float faktor = 1.5f;
-				faktor = faktor - iconFactor + 1;
+				// faktor = faktor - iconFactor + 1;
+				faktor = faktor / iconFactor;
 				while (tmpZoom > faktor)
 				{
 					tmpZoom /= 2;

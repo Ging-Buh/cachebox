@@ -222,7 +222,7 @@ public class SelectSolverFunction extends ButtonDialog
 			public void LayoutIsChanged(Linearlayout linearLayout, float newHeight)
 			{
 				mLinearLayout.setZeroPos();
-				scrollBox.setInerHeight(newHeight);
+				scrollBox.setInnerHeight(newHeight);
 			}
 		});
 
@@ -360,7 +360,7 @@ public class SelectSolverFunction extends ButtonDialog
 							mLinearLayout.layout();
 
 							// mLinearLayout.setZeroPos();
-							// scrollBox.setInerHeight(mLinearLayout.getHeight());
+							// scrollBox.setInnerHeight(mLinearLayout.getHeight());
 						}
 					});
 

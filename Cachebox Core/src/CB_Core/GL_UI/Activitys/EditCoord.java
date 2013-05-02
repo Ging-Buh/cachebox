@@ -91,8 +91,8 @@ public class EditCoord extends ActivityBase
 		this.initRow(false);
 		this.addNext(btnOK);
 		this.addLast(btnCancel);
-		btnCancel.setText(Translation.Get("cancel"), Fonts.getFontColor());
-		btnOK.setText(Translation.Get("ok"), Fonts.getFontColor());
+		btnCancel.setText(Translation.Get("cancel"));
+		btnOK.setText(Translation.Get("ok"));
 
 		pnlNumPad = new Box(this.getAvailableWidth(), this.getAvailableHeight(), "pnlNumPad");
 		this.createNumPad(pnlNumPad);
@@ -241,10 +241,10 @@ public class EditCoord extends ActivityBase
 		}
 		panel.addLast(lbl3, 0.5f);
 
-		lbl1.setText("°", Fonts.getFontColor());
-		lbl2.setText(".", Fonts.getFontColor());
-		lbl3.setText("°", Fonts.getFontColor());
-		lbl4.setText(".", Fonts.getFontColor());
+		lbl1.setText("°", Fonts.getBig(), Fonts.getFontColor());
+		lbl2.setText(".", Fonts.getBig(), Fonts.getFontColor());
+		lbl3.setText("°", Fonts.getBig(), Fonts.getFontColor());
+		lbl4.setText(".", Fonts.getBig(), Fonts.getFontColor());
 		this.setClickHandlers(this.btnDLat, this.btnDLon);
 	}
 
@@ -289,10 +289,10 @@ public class EditCoord extends ActivityBase
 		panel.addNext(this.btnDMLon[7]);
 		panel.addLast(this.btnDMLon[8]);
 
-		lbl1.setText("°", Fonts.getFontColor());
-		lbl2.setText(".", Fonts.getFontColor());
-		lbl3.setText("°", Fonts.getFontColor());
-		lbl4.setText(".", Fonts.getFontColor());
+		lbl1.setText("°", Fonts.getBig(), Fonts.getFontColor());
+		lbl2.setText(".", Fonts.getBig(), Fonts.getFontColor());
+		lbl3.setText("°", Fonts.getBig(), Fonts.getFontColor());
+		lbl4.setText(".", Fonts.getBig(), Fonts.getFontColor());
 		this.setClickHandlers(this.btnDMLat, this.btnDMLon);
 	}
 
@@ -327,10 +327,10 @@ public class EditCoord extends ActivityBase
 		panel.addLast(this.btnDMSLat[9]);
 		// panel.addLast(lblseclat);// leave it because of small screen size
 
-		lbldeglat.setText("°", Fonts.getFontColor());
-		lblminlat.setText("'", Fonts.getFontColor());
-		lblpntlat.setText(".", Fonts.getFontColor());
-		lblseclat.setText("\"", Fonts.getFontColor());
+		lbldeglat.setText("°", Fonts.getBig(), Fonts.getFontColor());
+		lblminlat.setText("'", Fonts.getBig(), Fonts.getFontColor());
+		lblpntlat.setText(".", Fonts.getBig(), Fonts.getFontColor());
+		lblseclat.setText("\"", Fonts.getBig(), Fonts.getFontColor());
 
 		// Lon
 		Label lbldeglon = new Label("lbldeglon");
@@ -352,10 +352,10 @@ public class EditCoord extends ActivityBase
 		panel.addLast(this.btnDMSLon[9]);
 		// panel.addLast(lblseclon); // leave it because of small screen size
 
-		lbldeglon.setText("°", Fonts.getFontColor());
-		lblminlon.setText("'", Fonts.getFontColor());
-		lblpntlon.setText(".", Fonts.getFontColor());
-		lblseclon.setText("\"", Fonts.getFontColor());
+		lbldeglon.setText("°", Fonts.getBig(), Fonts.getFontColor());
+		lblminlon.setText("'", Fonts.getBig(), Fonts.getFontColor());
+		lblpntlon.setText(".", Fonts.getBig(), Fonts.getFontColor());
+		lblseclon.setText("\"", Fonts.getBig(), Fonts.getFontColor());
 		this.setClickHandlers(this.btnDMSLat, this.btnDMSLon);
 	}
 
@@ -660,7 +660,7 @@ public class EditCoord extends ActivityBase
 		panel.addLast(btnNumpad[3]);
 		for (int i = 0; i < 10; i++)
 		{
-			btnNumpad[i].setText(String.format("%1d", i), Fonts.getFontColor());
+			btnNumpad[i].setText(String.format("%1d", i));
 		}
 		panel.adjustHeight();
 	}
@@ -670,19 +670,19 @@ public class EditCoord extends ActivityBase
 		int f = them.focus;
 		if (f < 6) // 0..5
 		{
-			them.btnUTMLon[f].setText(value, Fonts.getFontColor());
+			them.btnUTMLon[f].setText(value);
 		}
 		else
 		{
 			f = f - 6; // 6..13
 			if (f < 8)
 			{
-				them.btnUTMLat[f].setText(value, Fonts.getFontColor());
+				them.btnUTMLat[f].setText(value);
 			}
 			else
 			{
 				f = f - 8; // 14,15 -- > 0,1 (16 -> 2 ist zoneletter)
-				them.btnUTMZone[f].setText(value, Fonts.getFontColor());
+				them.btnUTMZone[f].setText(value);
 			}
 		}
 		them.setNextUTMFocus(); // weiter zum nächsten Eingabebutton
@@ -723,7 +723,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%09.5f", Math.abs(coord.getLatitude())).replace(",", ".").replace(".", "");
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnDLat[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnDLat[i].setText(s.substring(i, (i + 1)));
 			}
 			this.btnDLat[1].setInvisible(); // nur 2 Stellen Grad
 			// Lon
@@ -733,7 +733,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%09.5f", Math.abs(coord.getLongitude())).replace(",", ".").replace(".", "");
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnDLon[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnDLon[i].setText(s.substring(i, (i + 1)));
 			}
 
 			this.focus = this.setFocus(this.btnDLat, this.btnDLon, 4); // erste Nachkommastelle N / S
@@ -761,7 +761,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnDMLat[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnDMLat[i].setText(s.substring(i, (i + 1)));
 			}
 			this.btnDMLat[1].setInvisible(); // nur 2 Stellen Grad
 			// Lon
@@ -776,7 +776,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%03d", (int) (0.5 + (min - (int) min) * 1000)); // gerundet
 			for (int i = 0; i < 9; i++)
 			{
-				this.btnDMLon[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnDMLon[i].setText(s.substring(i, (i + 1)));
 			}
 
 			this.focus = this.setFocus(this.btnDMLat, this.btnDMLon, 6); // erste Nachkommastelle N / S
@@ -809,7 +809,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%02d", (int) (0.5 + (sec - (int) sec) * 100)); // gerundet
 			for (int i = 0; i < 10; i++)
 			{
-				this.btnDMSLat[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnDMSLat[i].setText(s.substring(i, (i + 1)));
 			}
 			this.btnDMSLat[1].setInvisible(); // nur 2 Stellen Grad
 
@@ -829,7 +829,7 @@ public class EditCoord extends ActivityBase
 			s = s + String.format("%02d", (int) (0.5 + (sec - (int) sec) * 100)); // gerundet
 			for (int i = 0; i < 10; i++)
 			{
-				this.btnDMSLon[i].setText(s.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnDMSLon[i].setText(s.substring(i, (i + 1)));
 			}
 
 			this.focus = this.setFocus(this.btnDMSLat, this.btnDMSLon, 6); // erste Nachkommastelle N / S
@@ -851,25 +851,25 @@ public class EditCoord extends ActivityBase
 			String UTMZoneLetter = convert.sUtmLetterActual(coord.getLatitude());
 			for (int i = 0; i < nording.length(); i++)
 			{
-				this.btnUTMLat[i].setText(nording.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnUTMLat[i].setText(nording.substring(i, (i + 1)));
 			}
 			for (int i = nording.length(); i < 8; i++)
 			{
-				this.btnUTMLat[i].setText("", Fonts.getFontColor());
+				this.btnUTMLat[i].setText("");
 			}
 			for (int i = 0; i < easting.length(); i++)
 			{
-				this.btnUTMLon[i].setText(easting.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnUTMLon[i].setText(easting.substring(i, (i + 1)));
 			}
 			for (int i = easting.length(); i < 8; i++)
 			{
-				this.btnUTMLon[i].setText("", Fonts.getFontColor());
+				this.btnUTMLon[i].setText("");
 			}
 			for (int i = 0; i < 2; i++)
 			{
-				this.btnUTMZone[i].setText(zone.substring(i, (i + 1)), Fonts.getFontColor());
+				this.btnUTMZone[i].setText(zone.substring(i, (i + 1)));
 			}
-			this.btnUTMZone[2].setText(UTMZoneLetter, Fonts.getFontColor());
+			this.btnUTMZone[2].setText(UTMZoneLetter);
 
 			this.setUTMFocus(0);
 
@@ -887,11 +887,11 @@ public class EditCoord extends ActivityBase
 		// highlighted to normal
 		if (this.focus < nrOfButtons)
 		{
-			bLat[this.focus].setText(bLat[this.focus].getText(), Fonts.getFontColor());
+			bLat[this.focus].setText(bLat[this.focus].getText());
 		}
 		else
 		{
-			bLon[this.focus - nrOfButtons].setText(bLon[this.focus - nrOfButtons].getText(), Fonts.getFontColor());
+			bLon[this.focus - nrOfButtons].setText(bLon[this.focus - nrOfButtons].getText());
 		}
 		// normal to highlighted showing next input change
 		if (newFocus < nrOfButtons)

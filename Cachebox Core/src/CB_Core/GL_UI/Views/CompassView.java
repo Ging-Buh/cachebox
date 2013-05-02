@@ -414,7 +414,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			this.addChild(rightBox);
 			this.addChild(rightBoxMask);
 
-			map = new MapView(rightBox, true, "CompassMap");
+			if (map == null) map = new MapView(rightBox, true, "CompassMap");
 			map.setZeroPos();
 			rightBox.addChild(map);
 
@@ -643,7 +643,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		}
 
 		topBox.addChild(topContentBox);
-		topBox.setInerHeight(contentHeight);
+		topBox.setInnerHeight(contentHeight);
 		topBox.scrollTo(0);
 		setCache(GlobalCore.getSelectedCache());
 		// setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());

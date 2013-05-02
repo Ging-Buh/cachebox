@@ -118,9 +118,9 @@ public class TrackableListView extends CB_View_Base
 						public void run()
 						{
 
-							Trackable tb = GroundspeakAPI.getTBbyTreckNumber(Config.GetAccessToken(), TBCode);
+							Trackable tb = GroundspeakAPI.getTBbyTreckNumber(Config.GetAccessToken(true), TBCode);
 
-							if (tb == null) tb = GroundspeakAPI.getTBbyTbCode(Config.GetAccessToken(), TBCode);
+							if (tb == null) tb = GroundspeakAPI.getTBbyTbCode(Config.GetAccessToken(true), TBCode);
 
 							wd.close();
 							if (tb != null)

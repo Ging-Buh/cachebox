@@ -531,7 +531,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		lblPQ.setY(PQ_ListCollabseBox.getMaxY() + margin);
 
 		innerHeight = lblPQ.getMaxY() + margin;
-		scrollBox.setInerHeight(innerHeight);
+		scrollBox.setInnerHeight(innerHeight);
 	}
 
 	private void initialForm()

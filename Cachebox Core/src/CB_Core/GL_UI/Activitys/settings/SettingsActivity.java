@@ -302,7 +302,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						LinearLayout.layout();
 
 						LinearLayout.setZeroPos();
-						scrollBox.setInerHeight(LinearLayout.getHeight());
+						scrollBox.setInnerHeight(LinearLayout.getHeight());
 
 					}
 				});
@@ -435,7 +435,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		LinearLayout.addChild(view, itemMargin);
 		LinearLayout.setZeroPos();
-		scrollBox.setInerHeight(LinearLayout.getHeight());
+		scrollBox.setInnerHeight(LinearLayout.getHeight());
 
 	}
 

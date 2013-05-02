@@ -2,6 +2,8 @@ package CB_Core.Events;
 
 import java.util.ArrayList;
 
+import CB_Core.Log.Logger;
+
 public class invalidateTextureEventList
 {
 	public static ArrayList<invalidateTextureEvent> list = new ArrayList<invalidateTextureEvent>();
@@ -25,12 +27,19 @@ public class invalidateTextureEventList
 	public static void Call()
 	{
 
-		synchronized (list)
+		try
 		{
-			for (invalidateTextureEvent event : list)
+			synchronized (list)
 			{
-				event.invalidateTexture();
+				for (invalidateTextureEvent event : list)
+				{
+					if (event != null) event.invalidateTexture();
+				}
 			}
+		}
+		catch (Exception e)
+		{
+			Logger.Error("invalidateTextureEventList", "Call()", e);
 		}
 	}
 }

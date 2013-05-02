@@ -30,8 +30,8 @@ public abstract class Dialog extends CB_View_Base
 	/**
 	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
 	 */
-	private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>(); // TODO das Handling der Marker in den Dialogen
-																							// überarbeiten!
+	private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>();
+	// TODO das Handling der Marker in den Dialogen überarbeiten!
 
 	/**
 	 * Overlay über alles wird als letztes Gerändert

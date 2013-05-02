@@ -75,7 +75,7 @@ public class ScrollBox extends CB_View_Base
 		Layout();
 	}
 
-	public void setInerHeight(float height)
+	public void setInnerHeight(float height)
 	{
 		innerHeight = height;
 		Layout();
