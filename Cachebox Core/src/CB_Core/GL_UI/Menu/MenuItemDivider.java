@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Menu;
 
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.DialogElement;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 
@@ -33,7 +34,7 @@ public class MenuItemDivider extends MenuItemBase
 	{
 		if (Image == null)
 		{
-			Sprite s = SpriteCache.Dialog.get(4);
+			Sprite s = SpriteCache.Dialog.get(DialogElement.divider.ordinal());
 			spriteHeight = s.getHeight();
 			spriteWidth = s.getWidth();
 			Image = new NinePatchDrawable(new NinePatch(s, 1, 1, 1, 1));

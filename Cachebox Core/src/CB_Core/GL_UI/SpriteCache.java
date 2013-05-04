@@ -145,6 +145,15 @@ public class SpriteCache
 		tbNote_63 // 63
 	}
 
+	public static enum DialogElement
+	{
+		header, // 0
+		center, // 1
+		footer, // 2
+		title, // 3
+		divider // 4
+	}
+
 	public static ArrayList<Sprite> Icons = null;
 	public static ArrayList<Sprite> ChkIcons = null;
 	public static ArrayList<Sprite> Dialog = null;

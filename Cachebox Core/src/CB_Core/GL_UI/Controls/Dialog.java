@@ -9,6 +9,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.DialogElement;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
@@ -69,7 +70,7 @@ public abstract class Dialog extends CB_View_Base
 
 		try
 		{
-			if (SpriteCache.Dialog.get(2) == null) return;// noch nicht initialisiert!
+			if (SpriteCache.Dialog.get(DialogElement.footer.ordinal()) == null) return;// noch nicht initialisiert!
 		}
 		catch (Exception e)
 		{
@@ -80,12 +81,12 @@ public abstract class Dialog extends CB_View_Base
 				|| lastNightMode != Config.settings.nightMode.getValue())
 		{
 			// calcBase
-			pW = (int) (SpriteCache.Dialog.get(2).getWidth() / 8);
+			pW = (int) (SpriteCache.Dialog.get(DialogElement.footer.ordinal()).getWidth() / 8);
 
-			mTitle9patch = new NinePatch(SpriteCache.Dialog.get(3), pW, (pW * 12 / 8), pW, pW);
-			mHeader9patch = new NinePatch(SpriteCache.Dialog.get(0), pW, pW, pW, 3);
-			mCenter9patch = new NinePatch(SpriteCache.Dialog.get(1), pW, pW, 1, 1);
-			mFooter9patch = new NinePatch(SpriteCache.Dialog.get(2), pW, pW, 3, pW);
+			mTitle9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.title.ordinal()), pW, (pW * 12 / 8), pW, pW);
+			mHeader9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.header.ordinal()), pW, pW, pW, 3);
+			mCenter9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
+			mFooter9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.footer.ordinal()), pW, pW, 3, pW);
 
 			mTitleVersatz = (float) pW;
 
@@ -283,24 +284,35 @@ public abstract class Dialog extends CB_View_Base
 
 		batch.flush();
 
-		if (mHeader9patch != null && !dontRenderDialogBackground) mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHight,
-				this.width, mHeaderHight);
-		if (mFooter9patch != null && !dontRenderDialogBackground) mFooter9patch.draw(batch, 0, 0, this.width, getFooterHeight() + 2);
-
-		if (mCenter9patch != null && !dontRenderDialogBackground) mCenter9patch.draw(batch, 0, getFooterHeight(), this.width, (this.height
-				- getFooterHeight() - mHeaderHight - mTitleHeight) + 3.5f);
+		if (mHeader9patch != null && !dontRenderDialogBackground)
+		{
+			mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHight, this.width, mHeaderHight);
+		}
+		if (mFooter9patch != null && !dontRenderDialogBackground)
+		{
+			mFooter9patch.draw(batch, 0, 0, this.width, getFooterHeight() + 2);
+		}
+		if (mCenter9patch != null && !dontRenderDialogBackground)
+		{
+			mCenter9patch.draw(batch, 0, getFooterHeight(), this.width,
+					(this.height - getFooterHeight() - mHeaderHight - mTitleHeight) + 3.5f);
+		}
 
 		if (mHasTitle)
 		{
 			if (mTitleWidth < this.width)
 			{
-				if (mTitle9patch != null && !dontRenderDialogBackground) mTitle9patch.draw(batch, 0, this.height - mTitleHeight
-						- mTitleVersatz, mTitleWidth, mTitleHeight);
+				if (mTitle9patch != null && !dontRenderDialogBackground)
+				{
+					mTitle9patch.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+				}
 			}
 			else
 			{
-				if (mHeader9patch != null && !dontRenderDialogBackground) mHeader9patch.draw(batch, 0, this.height - mTitleHeight
-						- mTitleVersatz, mTitleWidth, mTitleHeight);
+				if (mHeader9patch != null && !dontRenderDialogBackground)
+				{
+					mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+				}
 			}
 		}
 
