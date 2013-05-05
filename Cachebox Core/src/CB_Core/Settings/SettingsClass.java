@@ -98,6 +98,7 @@ public class SettingsClass extends SettingsList
 	public SettingBool ImperialUnits;
 	public SettingBool ShowDirektLine;
 	public SettingBool ShowAccuracyCircle;
+	public SettingBool ShowMapCenterCross;
 	public SettingBool PositionMarkerTransparent;
 	public SettingBool StagingAPI;
 
@@ -369,6 +370,7 @@ public class SettingsClass extends SettingsList
 		addSetting(CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", cat, NORMAL, 20, SettingStoreType.Global, Level));
 		addSetting(CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", cat, NORMAL, 13, SettingStoreType.Global, Level));
 
+		addSetting(ShowMapCenterCross = new SettingBool("ShowMapCenterCross", cat, NORMAL, true, SettingStoreType.Global));
 		addSetting(ShowDirektLine = new SettingBool("ShowDirektLine", cat, NORMAL, false, SettingStoreType.Global));
 		addSetting(ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", cat, NORMAL, true, SettingStoreType.Global));
 		addSetting(MapHideMyFinds = new SettingBool("MapHideMyFinds", cat, NORMAL, false, SettingStoreType.Global));

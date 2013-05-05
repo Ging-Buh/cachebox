@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
@@ -216,6 +215,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.settings.ShowAccuracyCircle.getValue());
 
+		mi = icm.addItem(MenuID.MI_SHOW_CENTERCROSS, "ShowCenterCross");
+		mi.setCheckable(true);
+		mi.setChecked(Config.settings.ShowMapCenterCross.getValue());
+
 		icm.Show();
 	}
 
@@ -269,23 +272,30 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				toggleSetting(Config.settings.ShowAccuracyCircle);
 				return true;
 
+			case MenuID.MI_SHOW_CENTERCROSS:
+				toggleSetting(Config.settings.ShowMapCenterCross);
+				return true;
+
 			case MenuID.MI_MAP_SHOW_COMPASS:
 				toggleSetting(Config.settings.MapShowCompass);
 				return true;
 
 			case MenuID.MI_CENTER_WP:
-				if (GlobalCore.getSelectedCache() != null)
+				// if (GlobalCore.getSelectedCache() != null)
+				// {
+				// if (GlobalCore.getSelectedWaypoint() != null)
+				// {
+				// GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+				// }
+				// else
+				// {
+				// GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
+				// }
+				// }
+				if (MapView.that != null)
 				{
-					if (GlobalCore.getSelectedWaypoint() != null)
-					{
-						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-					}
-					else
-					{
-						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
-					}
+					MapView.that.createWaypointAtCenter();
 				}
-
 				return true;
 
 			case MenuID.MI_SETTINGS:
