@@ -25,6 +25,7 @@ import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -41,6 +42,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  */
 public class SpriteCache
 {
+
+	private static boolean loadFromAsset = false;
+
 	public static class SpriteList extends ArrayList<Sprite>
 	{
 		private static final long serialVersionUID = 1L;
@@ -288,14 +292,29 @@ public class SpriteCache
 			atlasCustomtNight = null;
 		}
 
-		if (FileIO.FileExists(PathDefaultAtlas)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefaultAtlas));
-		if (FileIO.FileExists(PathDefaultNightAtlas)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNightAtlas));
-
-		if (!PathDefaultAtlas.equals(PathCustomAtlas))
+		if (!loadFromAsset)
 		{
-			if (FileIO.FileExists(PathCustomAtlas)) atlasCustom = new TextureAtlas(Gdx.files.absolute(PathCustomAtlas));
-			if (FileIO.FileExists(PathCustomNightAtlas)) atlasCustomtNight = new TextureAtlas(Gdx.files.absolute(PathCustomNightAtlas));
+			if (FileIO.FileExists(PathDefaultAtlas)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefaultAtlas));
+			if (FileIO.FileExists(PathDefaultNightAtlas)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNightAtlas));
+
+			if (!PathDefaultAtlas.equals(PathCustomAtlas))
+			{
+				if (FileIO.FileExists(PathCustomAtlas)) atlasCustom = new TextureAtlas(Gdx.files.absolute(PathCustomAtlas));
+				if (FileIO.FileExists(PathCustomNightAtlas)) atlasCustomtNight = new TextureAtlas(Gdx.files.absolute(PathCustomNightAtlas));
+			}
 		}
+		else
+		{
+			atlasDefault = new TextureAtlas(Gdx.files.internal(PathDefaultAtlas));
+			atlasDefaultNight = new TextureAtlas(Gdx.files.internal(PathDefaultNightAtlas));
+
+			if (!PathDefaultAtlas.equals(PathCustomAtlas))
+			{
+				atlasCustom = new TextureAtlas(Gdx.files.internal(PathCustomAtlas));
+				atlasCustomtNight = new TextureAtlas(Gdx.files.internal(PathCustomNightAtlas));
+			}
+		}
+
 	}
 
 	public static Sprite getThemedSprite(String name)
@@ -313,12 +332,14 @@ public class SpriteCache
 		if (day_skin == null)
 		{
 			String day_skinPath = path + "/day/skin.json";
-			day_skin = new Skin(Gdx.files.absolute(day_skinPath));
+			FileHandle fd = loadFromAsset ? Gdx.files.internal(day_skinPath) : Gdx.files.absolute(day_skinPath);
+			day_skin = new Skin(fd);
 		}
 		if (night_skin == null)
 		{
 			String night_skinPath = path + "/night/skin.json";
-			night_skin = new Skin(Gdx.files.absolute(night_skinPath));
+			FileHandle fd = loadFromAsset ? Gdx.files.internal(night_skinPath) : Gdx.files.absolute(night_skinPath);
+			night_skin = new Skin(fd);
 		}
 		if (Config.settings.nightMode.getValue())
 		{
@@ -452,7 +473,16 @@ public class SpriteCache
 	}
 
 	/**
-	 * Load the Sprites from recorce
+	 * Load the Sprites from recourse
+	 */
+	public static void LoadSpritesFromAsset(boolean reload)
+	{
+		loadFromAsset = true;
+		LoadSprites(reload);
+	}
+
+	/**
+	 * Load the Sprites from recourse
 	 */
 	public static void LoadSprites(boolean reload)
 	{

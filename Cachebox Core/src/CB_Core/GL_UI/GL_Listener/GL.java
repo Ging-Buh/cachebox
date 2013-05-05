@@ -806,6 +806,7 @@ public class GL implements ApplicationListener
 
 	protected void drawDarknessSprite()
 	{
+		if (batch == null) return;
 		if (mDarknesSprite == null)
 		{
 			disposeTexture();

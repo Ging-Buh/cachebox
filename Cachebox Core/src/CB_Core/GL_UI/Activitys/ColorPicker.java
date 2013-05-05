@@ -91,6 +91,7 @@ public class ColorPicker extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+				if (mReturnListner != null) mReturnListner.returnColor(null);
 				finish();
 				return true;
 			}
@@ -329,6 +330,21 @@ public class ColorPicker extends ActivityBase
 		}
 
 		return false;
+	}
+
+	public void setRerurnListner(IReturnListner iReturnListner)
+	{
+		mReturnListner = iReturnListner;
+	}
+
+	public void setColor(Color color)
+	{
+		actColor = InitialColor = new HSV_Color(color);
+		hueChanged();
+
+		moveCursor();
+		moveTarget();
+		lastColorBox.setBackground(new ColorDrawable(InitialColor));
 	}
 
 }

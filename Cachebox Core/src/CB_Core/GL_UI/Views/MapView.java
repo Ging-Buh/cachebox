@@ -893,13 +893,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			{
 				if (crossLine == null)
 				{
-					crossLine = SpriteCache.Arrows.get(13);
-					crossLine.setScale(0.5f);
-					Color col = new Color(0.5f, 0.5f, 0.5f, 0.3f);
-
-					crossLine.setColor(col);
+					crossLine = SpriteCache.getThemedSprite("pixel2x2");
+					crossLine.setScale(UI_Size_Base.that.getScale());
+					crossLine.setColor(Fonts.getCrossColor());
 				}
-				scale = 0.2f * UI_Size_Base.that.getScale();
+				scale = UI_Size_Base.that.getScale();
 
 				int crossSize = Math.min(mapIntHeight / 3, mapIntWidth / 3) / 2;
 				DrawUtils.drawSpriteLine(batch, crossLine, scale, mapIntWidth / 2 - crossSize, mapIntHeight / 2, mapIntWidth / 2
@@ -2665,6 +2663,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		mapTileLoader.clearLoadedTiles();
 		tilesToDraw.clear();
 		mapScale.ZoomChanged();
+		crossLine = null;
 	}
 
 	public boolean doubleClick(int x, int y, int pointer, int button)
