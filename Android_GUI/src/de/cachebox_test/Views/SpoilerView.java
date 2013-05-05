@@ -1,8 +1,11 @@
 package de.cachebox_test.Views;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
+import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.iStartPictureApp;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
@@ -12,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
+import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
 public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener
@@ -39,6 +44,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	TextView spoilerFilename;
 	WebView spoilerImage;
 	ArrayList<Bitmap> lBitmaps;
+	String fileName;
 
 	public SpoilerView(Context context, LayoutInflater inflater)
 	{
@@ -70,6 +76,18 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		g.setOnItemSelectedListener(this);
 
 		spoilerFilename.setTextColor(Color.BLACK);
+
+		platformConector.setStartPictureApp(new iStartPictureApp()
+		{
+			@Override
+			public void Start()
+			{
+				Uri uriToImage = Uri.fromFile(new File(fileName));
+				Intent shareIntent = new Intent(Intent.ACTION_VIEW);
+				shareIntent.setDataAndType(uriToImage, "image/*");
+				main.mainActivity.startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.app_name)));
+			}
+		});
 	}
 
 	@Override
@@ -99,6 +117,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 				+ file + "\"></img></div></body></html>";
 		spoilerImage.loadDataWithBaseURL("fake://not/needed", html, "text/html", "utf-8", "");
 
+		fileName = file;
 	}
 
 	public class ImageAdapter extends BaseAdapter

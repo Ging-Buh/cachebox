@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
@@ -83,6 +84,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 		Menu icm = new Menu("menu_compassView");
 		icm.addItemClickListner(onItemClickListner);
 		icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
+		icm.addItem(MenuID.MI_START_PICTUREAPP, "startPictureApp");
 
 		return icm;
 	}
@@ -112,6 +114,9 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 					}
 				});
 
+				return true;
+			case MenuID.MI_START_PICTUREAPP:
+				platformConector.StartPictureApp();
 				return true;
 			}
 			return false;

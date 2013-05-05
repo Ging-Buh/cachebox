@@ -201,5 +201,6 @@ public class MenuID
 	public static final int MI_SELECT_PATH = 172;
 	public static final int MI_CLEAR_PATH = 173;
 	public static final int MI_SHOW_CENTERCROSS = 174;
+	public static final int MI_START_PICTUREAPP = 175;
 
 }
