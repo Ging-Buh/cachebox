@@ -311,10 +311,9 @@ public class FieldNotesView extends V_ListView
 						}
 						else
 						{
-							fieldNote.uploaded = true;
-							fieldNote.UpdateDatabase();
 							if (ret != -10)
 							{
+								// set fieldnote as uploaded only when upload was working
 								fieldNote.uploaded = true;
 								fieldNote.UpdateDatabase();
 							}
