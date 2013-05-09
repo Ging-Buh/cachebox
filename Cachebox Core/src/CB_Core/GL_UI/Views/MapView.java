@@ -27,6 +27,7 @@ import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Controls.InfoBubble;
 import CB_Core.GL_UI.Controls.MapInfoPanel;
+import CB_Core.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_Core.GL_UI.Controls.MapScale;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
@@ -1850,7 +1851,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if (info != null)
 		{
-			info.setCoord(Locator.getCoordinate());
+			info.setCoord(Locator.getCoordinate(), CoordType.GPS);
 
 			if (GlobalCore.getSelectedCoord() != null)
 			{

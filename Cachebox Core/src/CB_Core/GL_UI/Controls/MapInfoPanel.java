@@ -10,6 +10,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Locator.Coordinate;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -19,6 +20,7 @@ public class MapInfoPanel extends CB_View_Base
 	private Image compass_frame;
 	private Image compas_scale;
 	private Image arrow;
+	private Image CoordSymbol;
 	private Label lblSpeed;
 	private Label lblDistance;
 	private Label lblLatitude;
@@ -26,12 +28,40 @@ public class MapInfoPanel extends CB_View_Base
 
 	private Coordinate aktCoord;
 
-	public void setCoord(Coordinate Coord)
+	private CoordType lastCoordType = CoordType.NULL;
+
+	public enum CoordType
+	{
+		NULL, GPS, Cache, Map
+	}
+
+	public void setCoord(Coordinate Coord, CoordType type)
 	{
 		if (Coord != null && lblLatitude != null && lblLongitude != null)
 		{
 			if (aktCoord == null || !aktCoord.equals(Coord))
 			{
+
+				if (lastCoordType != type)
+				{
+					lastCoordType = type;
+					switch (type)
+					{
+					case Cache:
+						CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("cache-icon")));
+						break;
+					case GPS:
+						CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("satellite")));
+						break;
+					case Map:
+						CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("map")));
+						break;
+					case NULL:
+						CoordSymbol.setDrawable(null);
+						break;
+					}
+				}
+
 				aktCoord = Coord;
 				lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.getLatitude()));
 				lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.getLongitude()));
@@ -77,6 +107,12 @@ public class MapInfoPanel extends CB_View_Base
 			compas_scale.setRotate(Bearing);
 			GL.that.renderOnce(this.getName() + " setBearing");
 		}
+	}
+
+	@Override
+	protected void render(SpriteBatch batch)
+	{
+		super.render(batch);
 	}
 
 	public MapInfoPanel(CB_RectF rec, String Name)
@@ -130,15 +166,20 @@ public class MapInfoPanel extends CB_View_Base
 
 		lblLatitude = new Label(this.ScaleCenter(0.4f), "lblLatitude");
 		lblLatitude.setFont(Fonts.getSmall());
-		lblLatitude.setPos(new Vector2(this.width - lblLatitude.getWidth(), CompassRec.getWidth() / 2));
+		lblLatitude.setPos(new Vector2(this.width - lblLatitude.getWidth() - this.getRightWidth(), CompassRec.getWidth() / 2));
 		lblLatitude.setText("---");
 		this.addChild(lblLatitude);
 
 		lblLongitude = new Label(this.ScaleCenter(0.4f), "lblLongitude");
 		lblLongitude.setFont(Fonts.getSmall());
-		lblLongitude.setPos(new Vector2(this.width - lblLongitude.getWidth(), this.height * 0.1f));
+		lblLongitude.setPos(new Vector2(this.width - lblLongitude.getWidth() - this.getRightWidth(), this.height * 0.1f));
 		lblLongitude.setText("---");
 		this.addChild(lblLongitude);
+
+		CoordSymbol = new Image((new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.5f), "CoordSymbol");
+		CoordSymbol.setX(this.width - CoordSymbol.getWidth() - (this.getRightWidth() / 3));
+		CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("cache-icon")));
+		this.addChild(CoordSymbol);
 	}
 
 	@Override

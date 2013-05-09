@@ -3150,9 +3150,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									public void run()
 									{
 										InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-										inputMethodManager.toggleSoftInputFromWindow(mTextField.getApplicationWindowToken(),
-												InputMethodManager.SHOW_FORCED, 0);
-										mTextField.requestFocus();
+										if (inputMethodManager != null)
+										{
+											inputMethodManager.toggleSoftInputFromWindow(mTextField.getApplicationWindowToken(),
+													InputMethodManager.SHOW_FORCED, 0);
+											mTextField.requestFocus();
+										}
+
 									}
 								});
 								Timer timer = new Timer();
@@ -3698,8 +3702,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// ##########################################################
 		// initial Locator with saved Location
 		// ##########################################################
-		double latitude = Config.settings.MapInitLatitude.getValue();
-		double longitude = Config.settings.MapInitLongitude.getValue();
+		double latitude = -1000;
+		double longitude = -1000;
+
+		if (Config.settings != null)
+		{
+			try
+			{
+				latitude = Config.settings.MapInitLatitude.getValue();
+				longitude = Config.settings.MapInitLongitude.getValue();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+
 		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
 
 		CB_Locator.Location initialLocation;
