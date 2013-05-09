@@ -349,8 +349,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public void onStateChange(GL_View_Base v, int State)
 			{
-
 				boolean wasCarMode = CarMode;
+				info.setCoordType(CoordType.Map);
 
 				Config.settings.LastMapToggleBtnState.setValue(State);
 				Config.AcceptChanges();
@@ -362,7 +362,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// Car mode
 					CarMode = true;
 					invalidateTexture();
-
+					info.setCoordType(CoordType.GPS);
 				}
 				else if (State == 2)
 				{
@@ -379,10 +379,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
 						}
 					}
+					info.setCoordType(CoordType.Cache);
 				}
 				else if (State > 0)
 				{
 					setCenter(Locator.getCoordinate());
+					info.setCoordType(CoordType.GPS);
 				}
 
 				if (State != 4)
@@ -396,6 +398,24 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		});
 		togBtn.registerSkinChangedEvent();
 		togBtn.setState(CompassMode ? 1 : Config.settings.LastMapToggleBtnState.getValue(), true);
+		switch (Config.settings.LastMapToggleBtnState.getValue())
+		{
+		case 0:
+			info.setCoordType(CoordType.Map);
+			break;
+		case 1:
+			info.setCoordType(CoordType.GPS);
+			break;
+		case 2:
+			info.setCoordType(CoordType.Cache);
+			break;
+		case 3:
+			info.setCoordType(CoordType.GPS);
+			break;
+		case 4:
+			info.setCoordType(CoordType.GPS);
+			break;
+		}
 
 		if (!CompassMode) this.addChild(togBtn);
 
@@ -429,6 +449,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		center.setLatitude(Config.settings.MapInitLatitude.getValue());
 		center.setLongitude(Config.settings.MapInitLongitude.getValue());
+		// Info aktualisieren
+		info.setCoord(center);
 		aktZoom = Config.settings.lastZoomLevel.getValue();
 		zoomBtn.setZoom(aktZoom);
 		calcPixelsPerMeter();
@@ -1778,7 +1800,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			if (center == value) return;
 
 			center = value;
-
+			info.setCoord(center);
 			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()),
 					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
 					MapTileLoader.MAX_MAP_ZOOM);
@@ -1851,7 +1873,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if (info != null)
 		{
-			info.setCoord(Locator.getCoordinate(), CoordType.GPS);
+			if (center != null)
+			{
+				info.setCoord(center);
+			}
 
 			if (GlobalCore.getSelectedCoord() != null)
 			{
@@ -2387,6 +2412,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		center = new Coordinate(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(
 				MapTileLoader.MAX_MAP_ZOOM, point.X));
+		info.setCoord(center);
 	}
 
 	public float pixelsPerMeter = 0;

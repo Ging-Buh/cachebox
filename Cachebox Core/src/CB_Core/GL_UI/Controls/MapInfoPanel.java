@@ -35,39 +35,47 @@ public class MapInfoPanel extends CB_View_Base
 		NULL, GPS, Cache, Map
 	}
 
-	public void setCoord(Coordinate Coord, CoordType type)
+	public void setCoord(Coordinate Coord)
 	{
 		if (Coord != null && lblLatitude != null && lblLongitude != null)
 		{
 			if (aktCoord == null || !aktCoord.equals(Coord))
 			{
-
-				if (lastCoordType != type)
-				{
-					lastCoordType = type;
-					switch (type)
-					{
-					case Cache:
-						CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("cache-icon")));
-						break;
-					case GPS:
-						CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("satellite")));
-						break;
-					case Map:
-						CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("map")));
-						break;
-					case NULL:
-						CoordSymbol.setDrawable(null);
-						break;
-					}
-				}
-
 				aktCoord = Coord;
 				lblLatitude.setText(GlobalCore.FormatLatitudeDM(Coord.getLatitude()));
 				lblLongitude.setText(GlobalCore.FormatLongitudeDM(Coord.getLongitude()));
 				GL.that.renderOnce(this.getName() + " setCoord");
 			}
 
+		}
+	}
+
+	public void setCoordType(CoordType type)
+	{
+		if (CoordSymbol == null)
+		{
+			// store type in lastCoordType to be initialized later
+			lastCoordType = type;
+			return;
+		}
+		if (lastCoordType != type)
+		{
+			lastCoordType = type;
+			switch (type)
+			{
+			case Cache:
+				CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("cache-icon")));
+				break;
+			case GPS:
+				CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("satellite")));
+				break;
+			case Map:
+				CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("map")));
+				break;
+			case NULL:
+				CoordSymbol.setDrawable(null);
+				break;
+			}
 		}
 	}
 
@@ -180,6 +188,9 @@ public class MapInfoPanel extends CB_View_Base
 		CoordSymbol.setX(this.width - CoordSymbol.getWidth() - (this.getRightWidth() / 3));
 		CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("cache-icon")));
 		this.addChild(CoordSymbol);
+		CoordType tmp = lastCoordType;
+		lastCoordType = CoordType.NULL;
+		setCoordType(tmp);
 	}
 
 	@Override
