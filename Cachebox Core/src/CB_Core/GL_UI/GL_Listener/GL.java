@@ -86,6 +86,7 @@ public class GL implements ApplicationListener
 
 	// private Member
 	private boolean touchDraggedActive = false;
+	private Point touchDraggedCorrect = new Point(0, 0);
 	protected boolean ToastIsShown = false;
 	protected boolean stopRender = false;
 	private boolean darknesAnimationRuns = false;
@@ -600,6 +601,12 @@ public class GL implements ApplicationListener
 			Point akt = new Point(x, y);
 			if (touchDraggedActive || (distance(akt, first.point) > first.view.getClickTolerance()))
 			{
+				if (!touchDraggedActive)
+				{
+					touchDraggedCorrect = new Point(x - first.point.x, y - first.point.y);
+				}
+				x -= touchDraggedCorrect.x;
+				y -= touchDraggedCorrect.y;
 				// merken, dass das Dragging aktiviert wurde, bis der Finger wieder losgelassen wird
 				touchDraggedActive = true;
 				// zu weit verschoben -> Long-Click detection stoppen
@@ -607,7 +614,7 @@ public class GL implements ApplicationListener
 				// touchDragged Event an das View, das den onTouchDown bekommen hat
 				boolean behandelt = first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 						- (int) first.view.ThisWorldRec.getY(), pointer, false);
-				// Logger.LogCat("GL_Listner => onTouchDraggedBase : " + first.view.getName());
+				Logger.LogCat("GL_Listner => onTouchDraggedBase : " + behandelt);
 				if (!behandelt && first.view.getParent() != null)
 				{
 					// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
@@ -993,7 +1000,7 @@ public class GL implements ApplicationListener
 				}
 			}
 		};
-		longClickTimer.schedule(task, mLongClickTime);
+		longClickTimer.schedule(task, mLongClickTime * 010);
 	}
 
 	private void cancelLongClickTimer()

@@ -2111,7 +2111,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				Point p = fingerDown.get(pointer);
 				if (p != null)
 				{
-					if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
+					// if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10)) // this check is not necessary because this is already
+					// checked in GL.java
 					{
 						inputState = InputState.Pan;
 						// GL_Listener.glListener.addRenderView(this, frameRateAction);
