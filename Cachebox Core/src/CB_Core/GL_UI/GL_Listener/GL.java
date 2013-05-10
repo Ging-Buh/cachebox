@@ -534,6 +534,7 @@ public class GL implements ApplicationListener
 	{
 		misTouchDown = true;
 		touchDraggedActive = false;
+		touchDraggedCorrect = new Point(0, 0);
 
 		GL_View_Base view = null;
 
@@ -601,6 +602,9 @@ public class GL implements ApplicationListener
 			Point akt = new Point(x, y);
 			if (touchDraggedActive || (distance(akt, first.point) > first.view.getClickTolerance()))
 			{
+				// Nachdem die ClickToleranz überschritten wurde wird jetzt hier die Verschiebung gemerkt.
+				// Diese wird dann immer von den Positionen abgezogen, damit der erste Sprung bei der Verschiebung nachem die Toleranz
+				// überschriten wurde nicht mehr auftritt.
 				if (!touchDraggedActive)
 				{
 					touchDraggedCorrect = new Point(x - first.point.x, y - first.point.y);
@@ -684,6 +688,11 @@ public class GL implements ApplicationListener
 						lastClickPoint = akt;
 					}
 				}
+			}
+			else
+			{
+				x -= touchDraggedCorrect.x;
+				y -= touchDraggedCorrect.y;
 			}
 		}
 		catch (Exception e)
@@ -1000,7 +1009,7 @@ public class GL implements ApplicationListener
 				}
 			}
 		};
-		longClickTimer.schedule(task, mLongClickTime * 010);
+		longClickTimer.schedule(task, mLongClickTime);
 	}
 
 	private void cancelLongClickTimer()
