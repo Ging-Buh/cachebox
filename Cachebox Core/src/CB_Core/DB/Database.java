@@ -586,18 +586,25 @@ public abstract class Database
 
 	public static String GetSolver(Cache cache)
 	{
-		String resultString = "";
-		CoreCursor c = Database.Data.rawQuery("select Solver from Caches where Id=?", new String[]
-			{ String.valueOf(cache.Id) });
-		c.moveToFirst();
-		while (c.isAfterLast() == false)
+		try
 		{
-			resultString = c.getString(0);
-			break;
+			String resultString = "";
+			CoreCursor c = Database.Data.rawQuery("select Solver from Caches where Id=?", new String[]
+				{ String.valueOf(cache.Id) });
+			c.moveToFirst();
+			while (c.isAfterLast() == false)
+			{
+				resultString = c.getString(0);
+				break;
+			}
+			;
+			cache.noteCheckSum = (int) GlobalCore.sdbm(resultString);
+			return resultString;
 		}
-		;
-		cache.noteCheckSum = (int) GlobalCore.sdbm(resultString);
-		return resultString;
+		catch (Exception ex)
+		{
+			return "";
+		}
 	}
 
 	public static void SetSolver(Cache cache, String value)
