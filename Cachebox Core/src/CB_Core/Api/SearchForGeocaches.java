@@ -415,6 +415,7 @@ public class SearchForGeocaches
 					}
 					catch (Exception e1)
 					{
+						Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.GcCode, e1);
 						cache.longDescription = "";
 					}
 					if (jCache.getBoolean("LongDescriptionIsHtml") == false)
@@ -443,6 +444,7 @@ public class SearchForGeocaches
 					}
 					catch (Exception e)
 					{
+						Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.GcCode, e);
 						cache.shortDescription = "";
 					}
 					if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
