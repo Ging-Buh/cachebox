@@ -184,7 +184,7 @@ public class MapInfoPanel extends CB_View_Base
 		lblLongitude.setText("---");
 		this.addChild(lblLongitude);
 
-		CoordSymbol = new Image((new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.5f), "CoordSymbol");
+		CoordSymbol = new Image((new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.62f), "CoordSymbol");
 		CoordSymbol.setX(this.width - CoordSymbol.getWidth() - (this.getRightWidth() / 3));
 		CoordSymbol.setDrawable(new SpriteDrawable(SpriteCache.getThemedSprite("cache-icon")));
 		this.addChild(CoordSymbol);

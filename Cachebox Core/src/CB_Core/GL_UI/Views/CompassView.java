@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Views;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import CB_Core.Config;
@@ -326,7 +327,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		scale.setOriginCenter();
 		arrow.setOriginCenter();
 
-		if (showSunMoon) setMoonSunPos();
+		if (showSunMoon) try
+		{
+			setMoonSunPos();
+		}
+		catch (ParseException e)
+		{
+		}
 		if (showSatInfos && showCoords && !showGcCode)
 		{
 			chart.setHeight((lblHeight + margin) * 2.3f + (lblHeight + margin));
@@ -724,7 +731,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		if (showSunMoon)
 		{
-			if (Moon != null && Sun != null) setMoonSunPos();
+			if (Moon != null && Sun != null) try
+			{
+				setMoonSunPos();
+			}
+			catch (ParseException e)
+			{
+			}
 		}
 
 		GL.that.renderOnce("Compass-PositionChanged");
@@ -751,7 +764,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			arrow.setRotate((float) -relativeBearing);
 			scale.setRotate((float) heading);
 
-			if (showSunMoon) setMoonSunPos();
+			if (showSunMoon) try
+			{
+				setMoonSunPos();
+			}
+			catch (ParseException e)
+			{
+			}
 
 			GL.that.renderOnce("Compass-OrientationChanged");
 		}
@@ -763,7 +782,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		return "CompassView";
 	}
 
-	private void setMoonSunPos()
+	private void setMoonSunPos() throws ParseException
 	{
 
 		// chk instanzes
@@ -773,8 +792,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		{
 
 			Date now = new Date();
+			Date UtcNow = new Date(Astronomy.getUtcTime(now.getTime()));
 
-			double julianDate = Astronomy.UtcToJulianDate(now);
+			double julianDate = Astronomy.UtcToJulianDate(UtcNow);
 			float centerX = frame.getCenterPos().x;
 			float centerY = frame.getCenterPos().y;
 			float radius = frame.getHalfWidth() + Sun.getHalfHeight() + (Sun.getHalfHeight() / 4);
