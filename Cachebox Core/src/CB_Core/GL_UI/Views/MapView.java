@@ -15,6 +15,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.WaypointListChangedEventList;
 import CB_Core.Events.invalidateTextureEvent;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -2792,6 +2793,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					}
 					WaypointDAO waypointDAO = new WaypointDAO();
 					waypointDAO.WriteToDatabase(waypoint);
+
+					// informiere WaypointListView über Änderung
+					WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
+					GL.that.renderOnce("newWP_CenterMap");
 				}
 			}
 		}, true);

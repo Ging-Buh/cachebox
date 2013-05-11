@@ -281,17 +281,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				return true;
 
 			case MenuID.MI_CENTER_WP:
-				// if (GlobalCore.getSelectedCache() != null)
-				// {
-				// if (GlobalCore.getSelectedWaypoint() != null)
-				// {
-				// GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-				// }
-				// else
-				// {
-				// GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
-				// }
-				// }
 				if (MapView.that != null)
 				{
 					MapView.that.createWaypointAtCenter();
