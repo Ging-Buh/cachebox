@@ -79,7 +79,6 @@ public class AndroidManager extends ManagerBase
 		return LoadLocalBitmap(GetLayerByName(layer, layer, ""), desc);
 	}
 
-	
 	@Override
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{

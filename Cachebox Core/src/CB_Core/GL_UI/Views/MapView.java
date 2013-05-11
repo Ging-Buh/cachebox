@@ -10,9 +10,12 @@ import java.util.TreeMap;
 import CB_Core.Config;
 import CB_Core.FileIO;
 import CB_Core.GlobalCore;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
+import CB_Core.Events.WaypointListChangedEventList;
 import CB_Core.Events.invalidateTextureEvent;
 import CB_Core.Events.invalidateTextureEventList;
 import CB_Core.GL_UI.CB_View_Base;
@@ -20,8 +23,12 @@ import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.EditWaypoint;
+import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Controls.InfoBubble;
 import CB_Core.GL_UI.Controls.MapInfoPanel;
+import CB_Core.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_Core.GL_UI.Controls.MapScale;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
@@ -46,6 +53,7 @@ import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.Settings.SettingBase.iChanged;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -106,6 +114,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	private boolean showDirektLine;
 	private boolean showAllWaypoints;
 	private boolean showAccuracyCircle;
+	private boolean showMapCenterCross;
 
 	// private boolean nightMode;
 	public int aktZoom;
@@ -341,8 +350,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			@Override
 			public void onStateChange(GL_View_Base v, int State)
 			{
-
 				boolean wasCarMode = CarMode;
+				info.setCoordType(CoordType.Map);
 
 				Config.settings.LastMapToggleBtnState.setValue(State);
 				Config.AcceptChanges();
@@ -354,7 +363,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					// Car mode
 					CarMode = true;
 					invalidateTexture();
-
+					info.setCoordType(CoordType.GPS);
 				}
 				else if (State == 2)
 				{
@@ -371,10 +380,12 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
 						}
 					}
+					info.setCoordType(CoordType.Cache);
 				}
 				else if (State > 0)
 				{
 					setCenter(Locator.getCoordinate());
+					info.setCoordType(CoordType.GPS);
 				}
 
 				if (State != 4)
@@ -388,6 +399,24 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		});
 		togBtn.registerSkinChangedEvent();
 		togBtn.setState(CompassMode ? 1 : Config.settings.LastMapToggleBtnState.getValue(), true);
+		switch (Config.settings.LastMapToggleBtnState.getValue())
+		{
+		case 0:
+			info.setCoordType(CoordType.Map);
+			break;
+		case 1:
+			info.setCoordType(CoordType.GPS);
+			break;
+		case 2:
+			info.setCoordType(CoordType.Cache);
+			break;
+		case 3:
+			info.setCoordType(CoordType.GPS);
+			break;
+		case 4:
+			info.setCoordType(CoordType.GPS);
+			break;
+		}
 
 		if (!CompassMode) this.addChild(togBtn);
 
@@ -421,6 +450,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		center.setLatitude(Config.settings.MapInitLatitude.getValue());
 		center.setLongitude(Config.settings.MapInitLongitude.getValue());
+		// Info aktualisieren
+		info.setCoord(center);
 		aktZoom = Config.settings.lastZoomLevel.getValue();
 		zoomBtn.setZoom(aktZoom);
 		calcPixelsPerMeter();
@@ -874,19 +905,31 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
-	// private Sprite crossLine = null;
+	private Sprite crossLine = null;
 
 	@SuppressWarnings("unused")
 	private void renderDebugInfo(SpriteBatch batch)
 	{
-		/*
-		 * if (crossLine == null) { crossLine = SpriteCache.Arrows.get(13); Color col = new Color(0.5f, 0.5f, 0.5f, 0.1f);
-		 * 
-		 * crossLine.setColor(col); } scale = 0.2f * UI_Size_Base.that.getScale();
-		 * 
-		 * DrawUtils.drawSpriteLine(batch, crossLine, scale, 0, drawingHeight / 2, drawingWidth, drawingHeight / 2);
-		 * DrawUtils.drawSpriteLine(batch, crossLine, scale, drawingWidth / 2, 0, drawingWidth / 2, drawingHeight);
-		 */
+
+		if (showMapCenterCross)
+		{
+			if (togBtn.getState() == 0)
+			{
+				if (crossLine == null)
+				{
+					crossLine = SpriteCache.getThemedSprite("pixel2x2");
+					crossLine.setScale(UI_Size_Base.that.getScale());
+					crossLine.setColor(Fonts.getCrossColor());
+				}
+				scale = UI_Size_Base.that.getScale();
+
+				int crossSize = Math.min(mapIntHeight / 3, mapIntWidth / 3) / 2;
+				DrawUtils.drawSpriteLine(batch, crossLine, scale, mapIntWidth / 2 - crossSize, mapIntHeight / 2, mapIntWidth / 2
+						+ crossSize, mapIntHeight / 2);
+				DrawUtils.drawSpriteLine(batch, crossLine, scale, mapIntWidth / 2, mapIntHeight / 2 - crossSize, mapIntWidth / 2,
+						mapIntHeight / 2 + crossSize);
+			}
+		}
 		if (true) return;
 
 		str = debugString;
@@ -1570,6 +1613,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			showDirektLine = CompassMode ? false : Config.settings.ShowDirektLine.getValue();
 			showAllWaypoints = CompassMode ? false : Config.settings.ShowAllWaypoints.getValue();
 			showAccuracyCircle = CompassMode ? false : Config.settings.ShowAccuracyCircle.getValue();
+			showMapCenterCross = CompassMode ? false : Config.settings.ShowMapCenterCross.getValue();
 
 			if (info != null) info.setVisible(showCompass);
 
@@ -1757,7 +1801,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			if (center == value) return;
 
 			center = value;
-
+			info.setCoord(center);
 			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()),
 					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
 					MapTileLoader.MAX_MAP_ZOOM);
@@ -1830,7 +1874,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if (info != null)
 		{
-			info.setCoord(Locator.getCoordinate());
+			if (center != null)
+			{
+				info.setCoord(center);
+			}
 
 			if (GlobalCore.getSelectedCoord() != null)
 			{
@@ -2065,7 +2112,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				Point p = fingerDown.get(pointer);
 				if (p != null)
 				{
-					if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10))
+					// if ((Math.abs(p.x - x) > 10) || (Math.abs(p.y - y) > 10)) // this check is not necessary because this is already
+					// checked in GL.java
 					{
 						inputState = InputState.Pan;
 						// GL_Listener.glListener.addRenderView(this, frameRateAction);
@@ -2366,6 +2414,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		center = new Coordinate(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(
 				MapTileLoader.MAX_MAP_ZOOM, point.X));
+		info.setCoord(center);
 	}
 
 	public float pixelsPerMeter = 0;
@@ -2643,6 +2692,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		mapTileLoader.clearLoadedTiles();
 		tilesToDraw.clear();
 		mapScale.ZoomChanged();
+		crossLine = null;
 	}
 
 	public boolean doubleClick(int x, int y, int pointer, int button)
@@ -2701,6 +2751,56 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				}
 			}
 		}
+
+	}
+
+	// Create new Waypoint at screen center
+	public void createWaypointAtCenter()
+	{
+		String newGcCode = "";
+		try
+		{
+			newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+		}
+		catch (Exception e)
+		{
+			return;
+		}
+		Coordinate coord = center;
+		if ((coord == null) || (!coord.isValid())) coord = Locator.getCoordinate();
+		if ((coord == null) || (!coord.isValid())) return;
+		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
+				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+
+		EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", newWP, new ReturnListner()
+		{
+
+			@Override
+			public void returnedWP(Waypoint waypoint)
+			{
+				if (waypoint != null)
+				{
+
+					GlobalCore.getSelectedCache().waypoints.add(waypoint);
+					GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), waypoint);
+					if (waypoint.IsStart)
+					{
+						// Es muss hier sichergestellt sein dass dieser Waypoint der einzige dieses Caches ist, der als Startpunkt
+						// definiert
+						// ist!!!
+						WaypointDAO wpd = new WaypointDAO();
+						wpd.ResetStartWaypoint(GlobalCore.getSelectedCache(), waypoint);
+					}
+					WaypointDAO waypointDAO = new WaypointDAO();
+					waypointDAO.WriteToDatabase(waypoint);
+
+					// informiere WaypointListView über Änderung
+					WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
+					GL.that.renderOnce("newWP_CenterMap");
+				}
+			}
+		}, true);
+		EdWp.show();
 
 	}
 

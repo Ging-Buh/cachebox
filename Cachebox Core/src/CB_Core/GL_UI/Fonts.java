@@ -32,12 +32,14 @@ public class Fonts
 	private static Color day_fontColorHighLight;
 	private static Color day_fontColorLink;
 	private static Color day_darknesColor;
+	private static Color day_crossColor;
 
 	private static Color night_fontColor;
 	private static Color night_fontColorDisable;
 	private static Color night_fontColorHighLight;
 	private static Color night_fontColorLink;
 	private static Color night_darknesColor;
+	private static Color night_crossColor;
 
 	private static BitmapFont compass;
 	private static BitmapFont big;
@@ -94,12 +96,14 @@ public class Fonts
 		day_fontColorHighLight = day_skin.getColor("font-color-highlight");
 		day_fontColorLink = day_skin.getColor("font-color-link");
 		day_darknesColor = day_skin.getColor("darknes");
+		day_crossColor = day_skin.getColor("cross");
 
 		night_fontColor = night_skin.getColor("font-color");
 		night_fontColorDisable = night_skin.getColor("font-color-disable");
 		night_fontColorHighLight = night_skin.getColor("font-color-highlight");
 		night_fontColorLink = night_skin.getColor("font-color-link");
 		night_darknesColor = night_skin.getColor("darknes");
+		night_crossColor = night_skin.getColor("cross");
 
 		FreeTypeFontGenerator generator = null;
 
@@ -186,6 +190,11 @@ public class Fonts
 	public static Color getDarknesColor()
 	{
 		return cfg.Nightmode ? night_darknesColor : day_darknesColor;
+	}
+
+	public static Color getCrossColor()
+	{
+		return cfg.Nightmode ? night_crossColor : day_crossColor;
 	}
 
 	public static void dispose()
@@ -314,4 +323,5 @@ public class Fonts
 	{
 		cfg.Nightmode = value;
 	}
+
 }

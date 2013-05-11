@@ -57,6 +57,7 @@ import CB_Core.Events.platformConector.IsetKeybordFocus;
 import CB_Core.Events.platformConector.IsetScreenLockTime;
 import CB_Core.Events.platformConector.iPlatformSettings;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.DialogElement;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
@@ -855,7 +856,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				// if Dialog or Activity shown, close that first
 				if (GL.that.closeShownDialog()) return true;
 
-				if (SpriteCache.Dialog != null && SpriteCache.Dialog.get(2) != null)
+				if (SpriteCache.Dialog != null && SpriteCache.Dialog.get(DialogElement.footer.ordinal()) != null)
 				{
 					// SHOW Close Dialog only if SpriteCache initialized
 					if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
@@ -3149,9 +3150,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									public void run()
 									{
 										InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-										inputMethodManager.toggleSoftInputFromWindow(mTextField.getApplicationWindowToken(),
-												InputMethodManager.SHOW_FORCED, 0);
-										mTextField.requestFocus();
+										if (inputMethodManager != null)
+										{
+											inputMethodManager.toggleSoftInputFromWindow(mTextField.getApplicationWindowToken(),
+													InputMethodManager.SHOW_FORCED, 0);
+											mTextField.requestFocus();
+										}
+
 									}
 								});
 								Timer timer = new Timer();
@@ -3697,8 +3702,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// ##########################################################
 		// initial Locator with saved Location
 		// ##########################################################
-		double latitude = Config.settings.MapInitLatitude.getValue();
-		double longitude = Config.settings.MapInitLongitude.getValue();
+		double latitude = -1000;
+		double longitude = -1000;
+
+		if (Config.settings != null)
+		{
+			try
+			{
+				latitude = Config.settings.MapInitLatitude.getValue();
+				longitude = Config.settings.MapInitLongitude.getValue();
+			}
+			catch (Exception e)
+			{
+			}
+		}
+
 		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
 
 		CB_Locator.Location initialLocation;

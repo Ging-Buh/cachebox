@@ -322,7 +322,7 @@ public class DesktopMain
 	}
 
 	/**
-	 * Initialisiert die Config f�r die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
+	 * Initialisiert die Config für die Tests! initialisiert wird die Config mit der unter Testdata abgelegten config.db3
 	 */
 	public static void InitalConfig()
 	{

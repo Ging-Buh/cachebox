@@ -369,4 +369,23 @@ public class platformConector
 
 	// -----------------------------------------
 
+	// ----- startPictureApp -----
+	public interface iStartPictureApp
+	{
+		public void Start();
+	}
+
+	public static iStartPictureApp startPictureApp;
+
+	public static void setStartPictureApp(iStartPictureApp listener)
+	{
+		startPictureApp = listener;
+	}
+
+	public static void StartPictureApp()
+	{
+		if (startPictureApp != null) startPictureApp.Start();
+	}
+	// -----------------------------------------
+
 }

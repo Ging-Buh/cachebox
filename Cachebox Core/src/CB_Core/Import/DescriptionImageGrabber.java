@@ -420,8 +420,8 @@ public class DescriptionImageGrabber
 			// Liste aller Spoiler Images für diesen Cache erstellen
 			// anhand dieser Liste kann überprüft werden, ob ein Spoiler schon geladen ist und muss nicht ein 2. mal geladen werden.
 			// Außerdem können anhand dieser Liste veraltete Spoiler identifiziert werden, die gelöscht werden können / müssen
-			String[] files = getFilesInDirectory(Config.settings.SpoilerFolder.getValue(), gcCode.substring(0, 4));
-			String[] filesLocal = getFilesInDirectory(Config.settings.SpoilerFolderLocal.getValue(), gcCode.substring(0, 4));
+			String[] files = getFilesInDirectory(Config.settings.SpoilerFolder.getValue(), gcCode);
+			String[] filesLocal = getFilesInDirectory(Config.settings.SpoilerFolderLocal.getValue(), gcCode);
 			ArrayList<String> afiles = new ArrayList<String>();
 			for (String file : files)
 				afiles.add(file);

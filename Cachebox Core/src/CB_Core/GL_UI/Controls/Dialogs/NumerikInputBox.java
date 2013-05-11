@@ -65,21 +65,25 @@ public class NumerikInputBox extends CB_View_Base
 
 		msgBox.setMargins(0, margin);
 		msgBox.setBorders(margin, margin);
+
 		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, getkeyListner(msgBox));
+
 		msgBox.initRow(false, margin);
 		msgBox.addLast(numPad);
-		msgBox.setFooterHeight(msgBox.getYPos() + margin);
 
+		msgBox.setFooterHeight(msgBox.getYPos() + margin);
 		msgBox.addLast(editText);
+
 		msgBox.addLast(label);
+
 		msgBox.adjustHeight();
 
 		msgBox.setTitle(title);
 		msgBox.setHeight(msgBox.getHeight() + 2 * msgBox.titleLabel.getHeight()); // 2 * = gemogelt
 
 		label.setWrappedText(msg);
-		editText.setText(String.valueOf(initialValue));
 
+		editText.setText(String.valueOf(initialValue));
 		editText.setCursorPosition((String.valueOf(initialValue)).length());
 		editText.dontShowSoftKeyBoardOnFocus();
 		editText.setOnscreenKeyboard(new OnscreenKeyboard()

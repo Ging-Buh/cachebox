@@ -299,6 +299,9 @@ public enum LogTypes
 		case visited:
 			return 75;
 
+		default:
+			break;
+
 		}
 
 		return 4;

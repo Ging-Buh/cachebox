@@ -1,7 +1,9 @@
 package CB_Core.Util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import CB_Locator.Coordinate;
 
@@ -30,6 +32,35 @@ public class Astronomy
 
 		return Math.floor(365.25 * jahr) + Math.floor(30.6001 * (monat + 1.0)) - 15 + 1720996.5 + day + (double) hour / 24.0
 				+ (double) minute / 1440 + (double) second / 86400.0;
+	}
+
+	public static long getUtcTime(long time)
+	{
+		System.out.println("Time=" + time);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		Date dbefore = new Date(time);
+		System.out.println("Date before conversion=" + format.format(dbefore));
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(time);
+		TimeZone timezone = c.getTimeZone();
+		int offset = timezone.getRawOffset();
+		if (timezone.inDaylightTime(new Date()))
+		{
+			offset = offset + timezone.getDSTSavings();
+		}
+		int offsetHrs = offset / 1000 / 60 / 60;
+		int offsetMins = offset / 1000 / 60 % 60;
+
+		System.out.println("offset: " + offsetHrs);
+		System.out.println("offset: " + offsetMins);
+
+		c.add(Calendar.HOUR_OF_DAY, (-offsetHrs));
+		c.add(Calendar.MINUTE, (-offsetMins));
+
+		System.out.println("Date after conversion: " + format.format(c.getTime()));
+		System.out.println("Time converted=" + c.getTime().getTime());
+		return c.getTime().getTime();
+
 	}
 
 	public static Coordinate EclipticToEquatorial(Coordinate eclipticCoordinate, double julianDate)
