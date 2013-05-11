@@ -84,7 +84,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 		Menu icm = new Menu("menu_compassView");
 		icm.addItemClickListner(onItemClickListner);
 		icm.addItem(MenuID.MI_RELOAD_SPOILER, "reloadSpoiler");
-		icm.addItem(MenuID.MI_START_PICTUREAPP, "startPictureApp");
+		icm.addItem(MenuID.MI_START_PICTUREAPP, "startPictureApp", SpriteCache.getThemedSprite("image-export"));
 
 		return icm;
 	}
