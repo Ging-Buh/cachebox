@@ -356,7 +356,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		return cm;
 	}
 
-	private void addWP()
+	public void addWP()
 	{
 		createNewWaypoint = true;
 		String newGcCode = "";

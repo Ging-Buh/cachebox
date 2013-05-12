@@ -203,4 +203,6 @@ public class MenuID
 	public static final int MI_SHOW_CENTERCROSS = 174;
 	public static final int MI_START_PICTUREAPP = 175;
 
+	public static final int AID_ADD_WP = 176;
+
 }

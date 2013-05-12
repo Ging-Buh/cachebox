@@ -88,6 +88,9 @@ public class TabMainView extends MainViewBase
 {
 	public static TabMainView that;
 
+	public static CB_TabView LeftTab;
+	public static CB_TabView RightTab;
+
 	private CB_Action_ShowTestView actionTestView;
 	private CB_Action_ShowHint actionShowHint;
 	public static CB_Action_ShowMap actionShowMap;
@@ -101,7 +104,7 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_ShowLogView actionShowLogView;
 	private CB_Action_ShowNotesView actionShowNotesView;
 	public static CB_Action_ShowSolverView actionShowSolverView;
-	private CB_Action_ShowSolverView2 actionShowSolverView2;
+	public static CB_Action_ShowSolverView2 actionShowSolverView2;
 	public static CB_Action_ShowSpoilerView actionShowSpoilerView;
 	public static CB_Action_ShowFilterSettings actionShowFilter = new CB_Action_ShowFilterSettings();
 	public static CB_Action_ShowTrackableListView actionShowTrackableListView;
@@ -267,7 +270,7 @@ public class TabMainView extends MainViewBase
 		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
-		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
+		LeftTab = new CB_TabView(rec, "Phone Tab");
 
 		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
@@ -282,34 +285,34 @@ public class TabMainView extends MainViewBase
 		btnList.addButton(btn4);
 		btnList.addButton(btn5);
 
-		Tab.addButtonList(btnList);
+		LeftTab.addButtonList(btnList);
 
-		this.addChild(Tab);
+		this.addChild(LeftTab);
 
 		// Tab den entsprechneden Actions zuweisen
-		actionShowMap.setTab(this, Tab);
-		actionShowCacheList.setTab(this, Tab);
+		actionShowMap.setTab(this, LeftTab);
+		actionShowCacheList.setTab(this, LeftTab);
 
-		actionShowAboutView.setTab(this, Tab);
-		actionShowCompassView.setTab(this, Tab);
-		actionShowCreditsView.setTab(this, Tab);
-		actionShowDescriptionView.setTab(this, Tab);
-		actionShowFieldNotesView.setTab(this, Tab);
-		actionShowJokerView.setTab(this, Tab);
-		actionShowLogView.setTab(this, Tab);
-		actionShowNotesView.setTab(this, Tab);
-		actionShowSolverView.setTab(this, Tab);
-		actionShowSolverView2.setTab(this, Tab);
-		actionShowSpoilerView.setTab(this, Tab);
-		actionShowTrackableListView.setTab(this, Tab);
-		actionShowTrackListView.setTab(this, Tab);
-		actionShowWaypointView.setTab(this, Tab);
-		actionNavigateTo1.setTab(this, Tab);
+		actionShowAboutView.setTab(this, LeftTab);
+		actionShowCompassView.setTab(this, LeftTab);
+		actionShowCreditsView.setTab(this, LeftTab);
+		actionShowDescriptionView.setTab(this, LeftTab);
+		actionShowFieldNotesView.setTab(this, LeftTab);
+		actionShowJokerView.setTab(this, LeftTab);
+		actionShowLogView.setTab(this, LeftTab);
+		actionShowNotesView.setTab(this, LeftTab);
+		actionShowSolverView.setTab(this, LeftTab);
+		actionShowSolverView2.setTab(this, LeftTab);
+		actionShowSpoilerView.setTab(this, LeftTab);
+		actionShowTrackableListView.setTab(this, LeftTab);
+		actionShowTrackListView.setTab(this, LeftTab);
+		actionShowWaypointView.setTab(this, LeftTab);
+		actionNavigateTo1.setTab(this, LeftTab);
 
-		actionRecVoice.setTab(this, Tab);
-		actionRecPicture.setTab(this, Tab);
-		actionRecVideo.setTab(this, Tab);
-		if (GlobalCore.isTestVersion()) actionTestView.setTab(this, Tab);
+		actionRecVoice.setTab(this, LeftTab);
+		actionRecPicture.setTab(this, LeftTab);
+		actionRecVideo.setTab(this, LeftTab);
+		if (GlobalCore.isTestVersion()) actionTestView.setTab(this, LeftTab);
 
 		// actionScreenLock.setTab(this, Tab);
 
@@ -373,7 +376,7 @@ public class TabMainView extends MainViewBase
 		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
-		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
+		LeftTab = new CB_TabView(rec, "Phone Tab");
 
 		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
@@ -388,28 +391,28 @@ public class TabMainView extends MainViewBase
 		btnList.addButton(btn4);
 		btnList.addButton(btn5);
 
-		Tab.addButtonList(btnList);
+		LeftTab.addButtonList(btnList);
 
-		this.addChild(Tab);
+		this.addChild(LeftTab);
 		// Tab.ShowView(new AboutView(this, "AboutView"));
 
 		// Tab den entsprechneden Actions zuweisen
-		actionShowCacheList.setTab(this, Tab);
-		actionShowWaypointView.setTab(this, Tab);
-		actionShowAboutView.setTab(this, Tab);
-		actionShowCreditsView.setTab(this, Tab);
-		actionShowTrackableListView.setTab(this, Tab);
-		actionShowTrackListView.setTab(this, Tab);
-		actionShowCompassView.setTab(this, Tab);
-		actionShowLogView.setTab(this, Tab);
-		actionShowFieldNotesView.setTab(this, Tab);
-		actionShowJokerView.setTab(this, Tab);
-		actionShowNotesView.setTab(this, Tab);
-		actionNavigateTo1.setTab(this, Tab);
+		actionShowCacheList.setTab(this, LeftTab);
+		actionShowWaypointView.setTab(this, LeftTab);
+		actionShowAboutView.setTab(this, LeftTab);
+		actionShowCreditsView.setTab(this, LeftTab);
+		actionShowTrackableListView.setTab(this, LeftTab);
+		actionShowTrackListView.setTab(this, LeftTab);
+		actionShowCompassView.setTab(this, LeftTab);
+		actionShowLogView.setTab(this, LeftTab);
+		actionShowFieldNotesView.setTab(this, LeftTab);
+		actionShowJokerView.setTab(this, LeftTab);
+		actionShowNotesView.setTab(this, LeftTab);
+		actionNavigateTo1.setTab(this, LeftTab);
 
-		actionRecVoice.setTab(this, Tab);
-		actionRecPicture.setTab(this, Tab);
-		actionRecVideo.setTab(this, Tab);
+		actionRecVoice.setTab(this, LeftTab);
+		actionRecPicture.setTab(this, LeftTab);
+		actionRecVideo.setTab(this, LeftTab);
 
 		// actionScreenLock.setTab(this, Tab);
 
@@ -461,7 +464,7 @@ public class TabMainView extends MainViewBase
 
 		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
 
-		CB_TabView Tab = new CB_TabView(rec, "Phone Tab");
+		RightTab = new CB_TabView(rec, "Phone Tab");
 
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
 		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
@@ -473,18 +476,18 @@ public class TabMainView extends MainViewBase
 		btnList.addButton(btn3);
 		btnList.addButton(btn4);
 
-		Tab.addButtonList(btnList);
+		RightTab.addButtonList(btnList);
 
-		this.addChild(Tab);
+		this.addChild(RightTab);
 
 		// Tab den entsprechneden Actions zuweisen
-		actionShowMap.setTab(this, Tab);
-		actionShowSolverView.setTab(this, Tab);
-		actionShowSolverView2.setTab(this, Tab);
-		actionShowDescriptionView.setTab(this, Tab);
-		actionNavigateTo2.setTab(this, Tab);
-		if (GlobalCore.isTestVersion()) actionTestView.setTab(this, Tab);
-		actionShowSpoilerView.setTab(this, Tab);
+		actionShowMap.setTab(this, RightTab);
+		actionShowSolverView.setTab(this, RightTab);
+		actionShowSolverView2.setTab(this, RightTab);
+		actionShowDescriptionView.setTab(this, RightTab);
+		actionNavigateTo2.setTab(this, RightTab);
+		if (GlobalCore.isTestVersion()) actionTestView.setTab(this, RightTab);
+		actionShowSpoilerView.setTab(this, RightTab);
 
 		// Actions den Buttons zuweisen
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true));

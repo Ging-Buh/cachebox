@@ -23,6 +23,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Search;
+import CB_Core.GL_UI.Main.Actions.CB_Action_add_WP;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_Core.GL_UI.Menu.MenuID;
@@ -58,6 +59,8 @@ public enum QuickActions
 	FieldNotes, // 18
 	QuickFieldNotes, // 19
 	TrackableListView, // 20
+	addWP, // 21
+	Solver2, // 22
 	// ScreenLock, // 21
 
 	empty, ;
@@ -162,6 +165,10 @@ public enum QuickActions
 			return TabMainView.actionQuickFieldNote;
 		case 20:
 			return TabMainView.actionShowTrackableListView;
+		case 21:
+			return action_add_WP;
+		case 22:
+			return TabMainView.actionShowSolverView2;
 		}
 		return null;
 	}
@@ -212,6 +219,10 @@ public enum QuickActions
 			return Translation.Get("QuickFieldNote");
 		case 20:
 			return Translation.Get("TBList");
+		case 21:
+			return Translation.Get("addWaypoint");
+		case 22:
+			return Translation.Get("Solver") + " 2";
 		}
 		return "empty";
 	}
@@ -228,7 +239,7 @@ public enum QuickActions
 				SpriteCache.Icons.get(IconName.voiceRec_11.ordinal()));
 
 		action_Search = new CB_Action_Show_Search();
-
+		action_add_WP = new CB_Action_add_WP();
 		// action_ScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
 
 	}
@@ -238,7 +249,7 @@ public enum QuickActions
 
 	private static CB_Action action_Voicerec;
 	private static CB_Action action_Search;
-
+	private static CB_Action_add_WP action_add_WP;
 	// private static CB_Action action_ScreenLock;
 
 	private static CB_Action action_SwitchAutoResort = new CB_Action_switch_Autoresort();

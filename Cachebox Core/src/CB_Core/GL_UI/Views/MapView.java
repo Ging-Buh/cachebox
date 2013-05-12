@@ -2804,4 +2804,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	}
 
+	public int getState()
+	{
+		return togBtn.getState();
+	}
+
 }
