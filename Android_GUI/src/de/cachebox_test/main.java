@@ -78,7 +78,6 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL.renderStartet;
 import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
-import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -236,7 +235,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
 	private static JokerView jokerView = null; // ID 12
-	private static TrackableListView trackablelistView = null; // ID 14
 
 	/**
 	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
@@ -1497,12 +1495,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				this.onPause();
 			}
 
-			if (aktView.equals(trackablelistView))
-			{
-				// Instanz löschenn
-				aktView = null;
-			}
-			else if (aktView.equals(jokerView))
+			if (aktView.equals(jokerView))
 			{
 				// Instanz löschenn
 				aktView = null;
@@ -3715,6 +3708,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			catch (Exception e)
 			{
 			}
+		}
+		else
+		{
+			// reload config
+			// TODO
 		}
 
 		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;

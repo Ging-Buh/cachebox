@@ -66,7 +66,7 @@ public abstract class Dialog extends CB_View_Base
 		mHeaderHight = calcHeaderHeight();
 		setFooterHeight(calcFooterHeight(false));
 
-		if (margin == -1) margin = UI_Size_Base.that.getMargin();
+		if (margin <= 0) margin = UI_Size_Base.that.getMargin();
 
 		try
 		{
@@ -239,6 +239,8 @@ public abstract class Dialog extends CB_View_Base
 	protected void reziseContentBox()
 	{
 
+		if (margin <= 0) margin = UI_Size_Base.that.getMargin();
+
 		if (mContent == null)
 		{
 			this.initialDialog();
@@ -259,7 +261,7 @@ public abstract class Dialog extends CB_View_Base
 
 			if (titleLabel != null && childs.contains(titleLabel)) childs.remove(titleLabel);
 
-			float lblHeight = bounds.height + (2 * margin);
+			float lblHeight = bounds.height + (3 * margin);
 			float centerYpos = (mTitleHeight / 2) + (lblHeight / 2) + margin;
 			titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - centerYpos, mTitleWidth - (4.1666f * pW), lblHeight),
 					"DialogTitleLabel");
@@ -379,6 +381,8 @@ public abstract class Dialog extends CB_View_Base
 
 	public static float calcFooterHeight(boolean hasButtons)
 	{
+		if (margin <= 0) margin = UI_Size_Base.that.getMargin();
+
 		return hasButtons ? UI_Size_Base.that.getButtonHeight() + margin : calcHeaderHeight();
 	}
 
@@ -450,7 +454,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public static Size calcMsgBoxSize(String Text, boolean hasTitle, boolean hasButtons, boolean hasIcon, boolean hasRemember)
 	{
-		if (margin == -1) margin = UI_Size_Base.that.getMargin();
+		if (margin <= 0) margin = UI_Size_Base.that.getMargin();
 
 		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
 		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
