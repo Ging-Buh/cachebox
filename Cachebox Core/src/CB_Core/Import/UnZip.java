@@ -34,7 +34,7 @@ public class UnZip
 		String newPath = zipFile.substring(0, zipFile.length() - 4);
 
 		new File(newPath).mkdir();
-		Enumeration zipFileEntries = zip.entries();
+		Enumeration<?> zipFileEntries = zip.entries();
 
 		// Process each entry
 		while (zipFileEntries.hasMoreElements())

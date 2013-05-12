@@ -33,11 +33,11 @@ import com.badlogic.gdx.utils.SerializationException;
 public class TexturePackerFileProcessor extends FileProcessor
 {
 	private final Settings defaultSettings;
-	private ObjectMap<File, Settings> dirToSettings = new ObjectMap();
+	private ObjectMap<File, Settings> dirToSettings = new ObjectMap<File, Settings>();
 	private Json json = new Json();
 	private String packFileName;
 	private File root;
-	ArrayList<File> ignoreDirs = new ArrayList();
+	ArrayList<File> ignoreDirs = new ArrayList<File>();
 
 	public TexturePackerFileProcessor()
 	{
@@ -60,7 +60,7 @@ public class TexturePackerFileProcessor extends FileProcessor
 		root = inputFile;
 
 		// Collect pack.json setting files.
-		final ArrayList<File> settingsFiles = new ArrayList();
+		final ArrayList<File> settingsFiles = new ArrayList<File>();
 		FileProcessor settingsProcessor = new FileProcessor()
 		{
 			protected void processFile(Entry inputFile) throws Exception

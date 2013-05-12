@@ -334,7 +334,7 @@ public class MaxRectsPacker
 				h = Math.max(h, rect.y + rect.height);
 			}
 			Page result = new Page();
-			result.outputRects = new Array(usedRectangles);
+			result.outputRects = new Array<Rect_Base>(usedRectangles);
 			result.occupancy = getOccupancy();
 			result.width = w;
 			result.height = h;

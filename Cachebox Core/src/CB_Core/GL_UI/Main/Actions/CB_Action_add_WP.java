@@ -13,7 +13,7 @@ public class CB_Action_add_WP extends CB_ActionCommand
 
 	public CB_Action_add_WP()
 	{
-		super("RecTrack", MenuID.AID_ADD_WP);
+		super("addWP", MenuID.AID_ADD_WP);
 	}
 
 	@Override

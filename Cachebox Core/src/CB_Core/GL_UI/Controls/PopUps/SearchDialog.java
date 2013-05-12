@@ -60,19 +60,9 @@ public class SearchDialog extends PopUp_Base
 	public static SearchDialog that;
 
 	/**
-	 * True, wenn der Searchdialog sichtbar ist.
-	 */
-	private boolean mIsVisible = true;
-
-	/**
 	 * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen werden kann.
 	 */
 	private boolean mSearchAktive = false;
-
-	/**
-	 * True, wenn die QuickButtonList beim öffnen dieses Dialogs aufgeklappt war.
-	 */
-	private boolean mQuickButtonListWasShow;
 
 	/*
 	 * Buttons
@@ -526,50 +516,50 @@ public class SearchDialog extends PopUp_Base
 
 	}
 
-	/**
-	 * setzt bei Eingabe eines Zeichens die CacheListItems auf Sichtbar oder unsichtbar
-	 */
-	private void filterSearchByTextChnge()
-	{
-		if (!Config.settings.dynamicFilterAtSearch.getValue()) return;
-		if (CacheListView.that == null) return;
-		if (mTglBtnOnline.getState() == 1)
-		{
-			// nicht bei Online Suche
-			clearSearchFilter();
-			return;
-		}
-
-		String searchPattern = mEingabe.getText().toLowerCase();
-
-		// Replase LineBreaks
-		searchPattern = searchPattern.replace("\n", "");
-		searchPattern = searchPattern.replace("\r", "");
-
-		synchronized (Database.Data.Query)
-		{
-			for (Cache cache : Database.Data.Query)
-			{
-				boolean set = true;
-				switch (mSearchState)
-				{
-				case 0:
-					set = cache.Name.toLowerCase().contains(searchPattern);
-					break;
-				case 1:
-					set = cache.GcCode.toLowerCase().contains(searchPattern);
-					break;
-				case 2:
-					set = cache.Owner.toLowerCase().contains(searchPattern) || cache.PlacedBy.toLowerCase().contains(searchPattern);
-					break;
-				}
-
-				cache.setSearchVisible(set);
-			}
-		}
-		CacheListView.that.getListView().setHasInvisibleItems(true);
-		CacheListView.that.CacheListChangedEvent();
-	}
+	// /**
+	// * setzt bei Eingabe eines Zeichens die CacheListItems auf Sichtbar oder unsichtbar
+	// */
+	// private void filterSearchByTextChnge()
+	// {
+	// if (!Config.settings.dynamicFilterAtSearch.getValue()) return;
+	// if (CacheListView.that == null) return;
+	// if (mTglBtnOnline.getState() == 1)
+	// {
+	// // nicht bei Online Suche
+	// clearSearchFilter();
+	// return;
+	// }
+	//
+	// String searchPattern = mEingabe.getText().toLowerCase();
+	//
+	// // Replase LineBreaks
+	// searchPattern = searchPattern.replace("\n", "");
+	// searchPattern = searchPattern.replace("\r", "");
+	//
+	// synchronized (Database.Data.Query)
+	// {
+	// for (Cache cache : Database.Data.Query)
+	// {
+	// boolean set = true;
+	// switch (mSearchState)
+	// {
+	// case 0:
+	// set = cache.Name.toLowerCase().contains(searchPattern);
+	// break;
+	// case 1:
+	// set = cache.GcCode.toLowerCase().contains(searchPattern);
+	// break;
+	// case 2:
+	// set = cache.Owner.toLowerCase().contains(searchPattern) || cache.PlacedBy.toLowerCase().contains(searchPattern);
+	// break;
+	// }
+	//
+	// cache.setSearchVisible(set);
+	// }
+	// }
+	// CacheListView.that.getListView().setHasInvisibleItems(true);
+	// CacheListView.that.CacheListChangedEvent();
+	// }
 
 	private void clearSearchFilter()
 	{

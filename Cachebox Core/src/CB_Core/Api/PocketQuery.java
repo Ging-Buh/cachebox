@@ -263,8 +263,8 @@ public class PocketQuery
 
 					try
 					{
-						int firstZipPos = result.indexOf("\"ZippedFile\":\"") + 14;
-						int lastZipPos = result.indexOf("\"", firstZipPos + 1) - 1;
+						// int firstZipPos = result.indexOf("\"ZippedFile\":\"") + 14;
+						// int lastZipPos = result.indexOf("\"", firstZipPos + 1) - 1;
 						CB_Core.Converter.Base64.decodeStreamToStream(inputStream, buff, buffLen, buffCount, buffPos, bfs);
 					}
 					catch (Exception ex)

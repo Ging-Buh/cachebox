@@ -38,7 +38,7 @@ public class ZoomButtons extends CB_View_Base
 	private int zoom = 13;
 	private CB_RectF HitRecUp;
 	private CB_RectF HitRecDown;
-	private CB_RectF BtnDrawRec;
+	// private CB_RectF BtnDrawRec;
 
 	private Date timeLastAction = new Date();
 	private final int timeToFadeOut = 13000; // 7Sec

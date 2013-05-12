@@ -47,7 +47,7 @@ public class TmsMap
 			@Override
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
-				String layerName = text;
+				// String layerName = text;
 			}
 		});
 
@@ -56,7 +56,7 @@ public class TmsMap
 			@Override
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
-				String tileType = text;
+				// String tileType = text;
 			}
 		});
 

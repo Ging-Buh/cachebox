@@ -165,7 +165,7 @@ public class PackBase implements Comparable<PackBase>
 	// / <param name="writer"></param>
 	public void Write(DataOutputStream writer) throws IOException
 	{
-		int numTilesTotal = NumTilesTotal();
+		// int numTilesTotal = NumTilesTotal();
 
 		// Header
 		writeString(Layer.Name, writer, 32);

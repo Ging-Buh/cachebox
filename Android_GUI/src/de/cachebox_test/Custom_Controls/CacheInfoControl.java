@@ -36,11 +36,11 @@ public final class CacheInfoControl extends View
 	 */
 
 	private Cache aktCache;
-	private int lineHeight = 37;
-	private int imgSize = 37;
+	// private int lineHeight = 37;
+	// private int imgSize = 37;
 	private int height;
 	private int width;
-	private int rightBorder;
+	// private int rightBorder;
 	private int ownBackgroundColor;
 	private Boolean useOwnBackColor = false;
 
@@ -62,31 +62,31 @@ public final class CacheInfoControl extends View
 		this.width = measureWidth(widthMeasureSpec);
 
 		// this.height = (int) chosenHeight - this.width;
-		this.imgSize = (int) (this.height / 1.2);
-		this.lineHeight = (int) this.height / 3;
-		this.rightBorder = (int) (this.width / 6);
+		// this.imgSize = (int) (this.height / 1.2);
+		// this.lineHeight = (int) this.height / 3;
+		// this.rightBorder = (int) (this.width / 6);
 
 		// setMeasuredDimension(chosenDimension, chosenDimension);
 		setMeasuredDimension(this.width, this.height);
 	}
 
-	private int chooseDimension(int mode, int size)
-	{
-		if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY)
-		{
-			return size;
-		}
-		else
-		{ // (mode == MeasureSpec.UNSPECIFIED)
-			return getPreferredSize();
-		}
-	}
+	// private int chooseDimension(int mode, int size)
+	// {
+	// if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY)
+	// {
+	// return size;
+	// }
+	// else
+	// { // (mode == MeasureSpec.UNSPECIFIED)
+	// return getPreferredSize();
+	// }
+	// }
 
 	// in case there is no size specified
-	private int getPreferredSize()
-	{
-		return 300;
-	}
+	// private int getPreferredSize()
+	// {
+	// return 300;
+	// }
 
 	/**
 	 * Determines the width of this view

@@ -43,9 +43,9 @@ public class GcApiLogin
 	public static int STATE_GET_API_URL = 1;
 	public static int STATE_GET_OAUTH_PAGE = 1;
 
-	private int State = 0;
-
-	private int Error = 0;
+	// private int State = 0;
+	//
+	// private int Error = 0;
 
 	public GcApiLogin()
 	{
@@ -97,7 +97,7 @@ public class GcApiLogin
 			@Override
 			public void run()
 			{
-				State = 0;
+				// State = 0;
 				String GC_AuthUrl;
 
 				if (Config.settings.OverrideUrl.getValue().equals(""))
@@ -111,7 +111,7 @@ public class GcApiLogin
 
 				if (GC_AuthUrl.equals(""))
 				{
-					Error = ERROR_API_URL_NOT_FOUND;
+					// Error = ERROR_API_URL_NOT_FOUND;
 					return;
 				}
 
@@ -368,7 +368,7 @@ public class GcApiLogin
 		// now we have the LogIn Page
 
 		// we neat the __VIEWSTATE
-		final String ViewState = "";
+		// final String ViewState = "";
 
 		// id="__VIEWSTATE" value="
 		int pos1 = page.indexOf("id=\"__VIEWSTATE\" value=\"") + 24;

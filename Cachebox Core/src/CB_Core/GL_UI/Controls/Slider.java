@@ -19,7 +19,6 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -348,30 +347,30 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	}
 
-	private void renderDebugInfo(SpriteBatch batch)
-	{
-		if (false) return;
-
-		String str = String.valueOf(debugInt);
-		Fonts.getNormal().draw(batch, str, 20, 120);
-
-		str = "fps: " + Gdx.graphics.getFramesPerSecond();
-		Fonts.getNormal().draw(batch, str, 20, 100);
-
-		str = String.valueOf(touchYoffset);
-		Fonts.getNormal().draw(batch, str, 20, 80);
-
-		// str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
-		// Fonts.getNormal().draw(batch, str, 20, 60);
-		//
-		// str = "TrackPoi: " + RouteOverlay.AllTrackPoints + " -  " + RouteOverlay.ReduceTrackPoints + " [" + RouteOverlay.DrawedLineCount
-		// + "]";
-		// Fonts.getNormal().draw(batch, str, 20, 40);
-		//
-		// str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-		// Fonts.getNormal().draw(batch, str, 20, 20);
-
-	}
+	// private void renderDebugInfo(SpriteBatch batch)
+	// {
+	// if (false) return;
+	//
+	// String str = String.valueOf(debugInt);
+	// Fonts.getNormal().draw(batch, str, 20, 120);
+	//
+	// str = "fps: " + Gdx.graphics.getFramesPerSecond();
+	// Fonts.getNormal().draw(batch, str, 20, 100);
+	//
+	// str = String.valueOf(touchYoffset);
+	// Fonts.getNormal().draw(batch, str, 20, 80);
+	//
+	// // str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
+	// // Fonts.getNormal().draw(batch, str, 20, 60);
+	// //
+	// // str = "TrackPoi: " + RouteOverlay.AllTrackPoints + " -  " + RouteOverlay.ReduceTrackPoints + " [" + RouteOverlay.DrawedLineCount
+	// // + "]";
+	// // Fonts.getNormal().draw(batch, str, 20, 40);
+	// //
+	// // str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
+	// // Fonts.getNormal().draw(batch, str, 20, 20);
+	//
+	// }
 
 	public static void setAndroidSliderPos(int pos)
 	{

@@ -30,20 +30,21 @@ import de.cachebox_test.Ui.ActivityUtils;
 public final class DebugInfoPanel extends View
 {
 	private ActivityManager activityManager;
-	private android.app.ActivityManager.MemoryInfo memoryInfo;
+
+	// private android.app.ActivityManager.MemoryInfo memoryInfo;
 
 	public DebugInfoPanel(Context context)
 	{
 		super(context);
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-		memoryInfo = new ActivityManager.MemoryInfo();
+		// memoryInfo = new ActivityManager.MemoryInfo();
 	}
 
 	public DebugInfoPanel(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-		memoryInfo = new ActivityManager.MemoryInfo();
+		// memoryInfo = new ActivityManager.MemoryInfo();
 
 		setOnTouchListener(new OnTouchListener()
 		{

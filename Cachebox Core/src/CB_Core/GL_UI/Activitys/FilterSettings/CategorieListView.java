@@ -45,7 +45,7 @@ public class CategorieListView extends V_ListView
 		private static int IdCounter;
 
 		private double mNumerickMax;
-		private double mNumerickMin;
+		// private double mNumerickMin;
 		private double mNumerickStep;
 		private double mNumerickState;
 
@@ -74,7 +74,7 @@ public class CategorieListView extends V_ListView
 			mFile = file;
 			mIconArray = Icons;
 			mItemType = itemType;
-			mNumerickMin = min;
+			// mNumerickMin = min;
 			mNumerickMax = max;
 			mNumerickState = iniValue;
 			mNumerickStep = Step;
@@ -392,25 +392,26 @@ public class CategorieListView extends V_ListView
 
 	}
 
-	private CategorieListViewItem addCategorieItem(int Index, Sprite[] Icons, GpxFilename file, int ItemType, double i, double j, double k,
-			double f)
-	{
-
-		if (lCategories == null)
-		{
-			lCategories = new ArrayList<CategorieListView.CategorieEntry>();
-			lCategorieListViewItems = new ArrayList<CategorieListViewItem>();
-		}
-		CategorieEntry tmp = new CategorieEntry(file, Icons, ItemType, i, j, k, f);
-		lCategories.add(tmp);
-
-		CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
-		// inital mit INVISIBLE
-		v.setInvisible();
-		lCategorieListViewItems.add(v);
-		return v;
-
-	}
+	// private CategorieListViewItem addCategorieItem(int Index, Sprite[] Icons, GpxFilename file, int ItemType, double i, double j, double
+	// k,
+	// double f)
+	// {
+	//
+	// if (lCategories == null)
+	// {
+	// lCategories = new ArrayList<CategorieListView.CategorieEntry>();
+	// lCategorieListViewItems = new ArrayList<CategorieListViewItem>();
+	// }
+	// CategorieEntry tmp = new CategorieEntry(file, Icons, ItemType, i, j, k, f);
+	// lCategories.add(tmp);
+	//
+	// CategorieListViewItem v = new CategorieListViewItem(EditFilterSettings.ItemRec, Index, tmp);
+	// // inital mit INVISIBLE
+	// v.setInvisible();
+	// lCategorieListViewItems.add(v);
+	// return v;
+	//
+	// }
 
 	private CategorieListViewItem addCategorieItem(int Index, Sprite Icon, GpxFilename file, int ItemType)
 	{

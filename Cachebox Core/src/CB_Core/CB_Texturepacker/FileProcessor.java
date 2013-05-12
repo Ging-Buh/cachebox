@@ -207,7 +207,7 @@ public class FileProcessor
 			ArrayList<Entry> entries = dirToEntries.get(dir);
 			if (entries == null)
 			{
-				entries = new ArrayList();
+				entries = new ArrayList<Entry>();
 				dirToEntries.put(dir, entries);
 			}
 		}

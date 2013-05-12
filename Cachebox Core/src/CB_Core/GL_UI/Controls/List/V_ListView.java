@@ -106,6 +106,7 @@ public class V_ListView extends ListViewBase
 	 * 
 	 * @param Kinetic
 	 */
+	@SuppressWarnings("unchecked")
 	protected void addVisibleItems(boolean Kinetic)
 	{
 		if (mBaseAdapter == null) return;

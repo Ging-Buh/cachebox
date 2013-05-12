@@ -134,7 +134,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		// platformConector.hideView(ViewConst.SOLVER_VIEW);
 		// CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Remove(this);
-		Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+		if (GlobalCore.getSelectedCache() != null) Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 	}
 
 	@Override
@@ -210,7 +210,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			}
 		});
 
-		MenuItem mi;
 		cm.addItem(MenuID.MI_CHANGE_LINE, "editLine");
 		cm.addItem(MenuID.MI_INSERT_LINE, "addLine");
 		cm.addItem(MenuID.MI_DELETE_LINE, "delLine");

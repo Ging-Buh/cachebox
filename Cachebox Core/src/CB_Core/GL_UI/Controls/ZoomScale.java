@@ -42,7 +42,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	private int bottomRow = 1;
 	private int centerColumn;
 	private int halfWidth;
-	private float dist = 20;
+	// private float dist = 20;
 	private int lineHeight = 10;
 	private float numSteps;
 	private float grundY;
@@ -153,7 +153,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 			numSteps = maxzoom - minzoom;
 			grundY = rect.getY() - halfWidth;
 
-			dist = (bottomRow - topRow) / numSteps;
+			// dist = (bottomRow - topRow) / numSteps;
 
 			y = (int) ((1 - ((float) ((zoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
 
