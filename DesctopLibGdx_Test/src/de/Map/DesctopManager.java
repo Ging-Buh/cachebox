@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -33,8 +34,11 @@ import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
+import org.xml.sax.SAXException;
 
 import CB_Core.FileIO;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
 import CB_Core.Map.Descriptor;
@@ -121,6 +125,34 @@ public class DesctopManager extends ManagerBase
 					Logger.Error("Load RenderTheme", "Error loading RenderTheme!", e);
 					renderTheme = InternalRenderTheme.OSMARENDER;
 				}
+
+				// Check RenderTheme valid
+				try
+				{
+					RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, renderTheme);
+				}
+				catch (SAXException e)
+				{
+					String ErrorMsg = e.getMessage();
+					GL.that.Toast(ErrorMsg, 5000);
+					Logger.Error("databaseRenderer: ", ErrorMsg);
+					renderTheme = InternalRenderTheme.OSMARENDER;
+				}
+				catch (ParserConfigurationException e)
+				{
+					String ErrorMsg = e.getMessage();
+					GL.that.Toast(ErrorMsg, 5000);
+					Logger.Error("databaseRenderer: ", ErrorMsg);
+					renderTheme = InternalRenderTheme.OSMARENDER;
+				}
+				catch (IOException e)
+				{
+					String ErrorMsg = e.getMessage();
+					GL.that.Toast(ErrorMsg, 5000);
+					Logger.Error("databaseRenderer: ", ErrorMsg);
+					renderTheme = InternalRenderTheme.OSMARENDER;
+				}
+
 				databaseRenderer = null;
 				RenderThemeChanged = false;
 			}
