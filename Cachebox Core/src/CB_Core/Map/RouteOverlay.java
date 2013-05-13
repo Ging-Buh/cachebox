@@ -300,7 +300,7 @@ public class RouteOverlay
 
 						}
 
-						if (line.indexOf("</ele>") > -1)
+						if ((line.indexOf("</ele>") > -1) & IStrkptORrtept)
 						{
 							// Elevation lesen
 							int couIdx = line.indexOf("<ele>") + 5;
