@@ -67,7 +67,24 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	public void render(SpriteBatch batch)
 	{
 		// if Track List empty, draw empty Msg
-		if (lvAdapter == null || lvAdapter.getCount() == 0)
+		try
+		{
+			if (lvAdapter == null || lvAdapter.getCount() == 0)
+			{
+				if (emptyMsg == null)
+				{
+					emptyMsg = new BitmapFontCache(Fonts.getBig());
+					TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.width);
+					emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
+				}
+				if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
+			}
+			else
+			{
+				super.render(batch);
+			}
+		}
+		catch (Exception e)
 		{
 			if (emptyMsg == null)
 			{
@@ -76,10 +93,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
-		}
-		else
-		{
-			super.render(batch);
 		}
 	}
 
