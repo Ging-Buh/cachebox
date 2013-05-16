@@ -26,7 +26,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.MoveableList;
+import CB_Core.Util.MoveableList;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;

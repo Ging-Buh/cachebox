@@ -12,8 +12,8 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
-import CB_Core.Types.MoveableList;
 import CB_Core.Types.Waypoint;
+import CB_Core.Util.MoveableList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;

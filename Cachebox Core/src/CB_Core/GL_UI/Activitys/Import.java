@@ -8,7 +8,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
@@ -57,6 +56,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
+import CB_Core.Util.FileIO;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

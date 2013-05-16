@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
@@ -29,6 +28,7 @@ import CB_Core.Settings.SettingIntArray;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
 import CB_Core.TranslationEngine.Translation;
+import CB_Core.Util.FileIO;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;

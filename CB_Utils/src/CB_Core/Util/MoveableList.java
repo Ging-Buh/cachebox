@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package CB_Core.Types;
+package CB_Core.Util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -279,6 +279,7 @@ public class MoveableList<T> extends ArrayList<T>
 		return iterator;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public MoveableList<T> clone()
 	{

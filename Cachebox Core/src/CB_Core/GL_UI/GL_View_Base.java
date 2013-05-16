@@ -8,7 +8,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
-import CB_Core.Types.MoveableList;
+import CB_Core.Util.MoveableList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

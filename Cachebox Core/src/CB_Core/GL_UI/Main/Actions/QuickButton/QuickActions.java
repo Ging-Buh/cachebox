@@ -29,7 +29,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.Math.CB_RectF;
 import CB_Core.TranslationEngine.Translation;
-import CB_Core.Types.MoveableList;
+import CB_Core.Util.MoveableList;
 
 /**
  * Enthält die Actions Möglichkeiten für die Quick Buttons

@@ -19,10 +19,10 @@ package CB_Core.GL_UI;
 import java.util.ArrayList;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.UI_Size_Base;
+import CB_Core.Util.FileIO;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

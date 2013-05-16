@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
-import CB_Core.FileIO;
+import CB_Core.Util.FileIO;
 
 /**
  * Enthält die Tests zum Entpacken von Zip Files

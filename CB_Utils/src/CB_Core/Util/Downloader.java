@@ -308,6 +308,7 @@ public class Downloader implements Runnable
 	/**
 	 * Start downloading the remote resource. The target object should not be accessed until after calling waitUntilCompleted().
 	 */
+	@Override
 	public void run()
 	{
 		synchronized (stateLock)

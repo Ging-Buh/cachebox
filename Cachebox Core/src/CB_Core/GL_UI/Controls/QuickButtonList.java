@@ -12,7 +12,7 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Types.MoveableList;
+import CB_Core.Util.MoveableList;
 
 public class QuickButtonList extends H_ListView
 {

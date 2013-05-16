@@ -1,4 +1,4 @@
-package CB_Core;
+package CB_Core.Util;
 
 import java.io.BufferedInputStream;
 import java.io.File;

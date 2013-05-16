@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Main;
 import java.io.File;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.TrackRecorder;
@@ -81,6 +80,7 @@ import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
+import CB_Core.Util.FileIO;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

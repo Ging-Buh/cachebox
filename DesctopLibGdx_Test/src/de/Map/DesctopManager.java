@@ -37,7 +37,6 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.xml.sax.SAXException;
 
-import CB_Core.FileIO;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
@@ -45,6 +44,7 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Map.PackBase;
+import CB_Core.Util.FileIO;
 
 public class DesctopManager extends ManagerBase
 {

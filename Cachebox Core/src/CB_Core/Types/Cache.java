@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Util.FileIO;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 

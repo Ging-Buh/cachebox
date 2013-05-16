@@ -28,7 +28,6 @@ import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
 import CB_Core.Energy;
-import CB_Core.FileIO;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
@@ -95,6 +94,7 @@ import CB_Core.Settings.SettingString;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Core.Util.FileIO;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;

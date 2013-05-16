@@ -7,7 +7,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Types.MoveableList;
+import CB_Core.Util.MoveableList;
 
 public class Linearlayout extends CB_View_Base
 {

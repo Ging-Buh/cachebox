@@ -3,7 +3,7 @@ package CB_Core.GL_UI.Controls;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Types.MoveableList;
+import CB_Core.Util.MoveableList;
 
 /**
  * Eine CollabsBox mit LinearLayout

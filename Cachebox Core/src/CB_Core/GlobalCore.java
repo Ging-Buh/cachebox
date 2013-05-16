@@ -1,10 +1,18 @@
 package CB_Core;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
+import CB_Core.Log.Logger.iCreateDebugWithHeader;
 import CB_Core.Map.RouteOverlay;
+import CB_Core.Math.UI_Size_Base;
+import CB_Core.Math.devicesSizes;
+import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -42,6 +50,99 @@ public class GlobalCore
 	public static String PathDefaultNight;
 	public static String PathCustomNight;
 	// ######################################
+
+	// ###########create instance#############
+	public final static GlobalCore INSTANCE = new GlobalCore();
+
+	/**
+	 * nur True beim ersten schreiben! Dann müssen erst die Missing Lang Strings eingelesen werden!
+	 */
+	private static boolean firstWrite = true;
+
+	private GlobalCore()
+	{
+		Logger.setCreateDebugWithHeader(new iCreateDebugWithHeader()
+		{
+			@Override
+			public void CreateDebugWithHeader(File DebugFile)
+			{
+				if (Config.settings.newInstall.getValue())
+				{
+					DebugFile.delete();
+					Config.settings.newInstall.setValue(false);
+				}
+
+				String Msg = "";
+
+				if (!DebugFile.exists())
+				{
+					// schreibe UI Sizes als erstes in die dbug.txt
+					devicesSizes ui = UI_Size_Base.that.ui;
+
+					if (ui == null) return; // Bin noch nicht soweit!
+
+					StringBuilder sb = new StringBuilder();
+					sb.append("###################################" + br);
+					sb.append("##  CB Version: " + GlobalCore.getVersionString() + "         ##" + br);
+					sb.append("###################################" + br + br + br);
+					sb.append("################  Ui Sizes ############" + br);
+					sb.append("Window = " + ui.Window.toString() + br);
+					sb.append("Density = " + ui.Density + br);
+					sb.append("RefSize = " + ui.RefSize + br);
+					sb.append("TextSize_Normal = " + ui.TextSize_Normal + br);
+					sb.append("ButtonTextSize = " + ui.ButtonTextSize + br);
+					sb.append("IconSize = " + ui.IconSize + br);
+					sb.append("Margin = " + ui.Margin + br);
+					sb.append("ArrowSizeList = " + ui.ArrowSizeList + br);
+					sb.append("ArrowSizeMap = " + ui.ArrowSizeMap + br);
+					sb.append("TB_IconSize = " + ui.TB_IconSize + br);
+					sb.append("isLandscape = " + ui.isLandscape + br);
+					sb.append("    " + br);
+					sb.append("MapViewDPIFaktor = " + Config.settings.MapViewDPIFaktor.getValue() + br);
+					sb.append("MapViewFontFaktor = " + Config.settings.MapViewFontFaktor.getValue() + br);
+					sb.append("#######################################" + br + br);
+
+					sb.append("##########  Missing Lang Strings ######" + br);
+
+					sb.append("#######################################" + br + br);
+
+					Msg = sb.toString();
+
+					FileWriter writer;
+					try
+					{
+						writer = new FileWriter(DebugFile, true);
+						writer.write(Msg);
+						writer.close();
+					}
+					catch (IOException e)
+					{
+
+						e.printStackTrace();
+					}
+
+				}
+				else
+				{
+					if (firstWrite)
+					{
+						try
+						{
+							Translation.readMissingStringsFile();
+						}
+						catch (IOException e)
+						{
+							e.printStackTrace();
+						}
+						firstWrite = false;
+					}
+				}
+
+			}
+		});
+	}
+
+	// #######################################
 
 	public static RouteOverlay.Track AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;

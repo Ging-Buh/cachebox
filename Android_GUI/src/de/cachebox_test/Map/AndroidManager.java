@@ -28,13 +28,13 @@ import org.mapsforge.android.maps.rendertheme.InternalRenderTheme;
 import org.mapsforge.core.Tile;
 import org.mapsforge.map.reader.MapDatabase;
 
-import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Map.PackBase;
+import CB_Core.Util.FileIO;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 

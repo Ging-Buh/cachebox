@@ -9,7 +9,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
 import CB_Core.DB.Database;
@@ -29,6 +28,7 @@ import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase.iChanged;
+import CB_Core.Util.FileIO;
 import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.Gdx;

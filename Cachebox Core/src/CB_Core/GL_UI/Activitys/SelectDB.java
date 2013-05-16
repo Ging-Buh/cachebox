@@ -6,8 +6,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
-import CB_Core.FileList;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
@@ -32,6 +30,8 @@ import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Categories;
+import CB_Core.Util.FileIO;
+import CB_Core.Util.FileList;
 
 public class SelectDB extends ActivityBase
 {

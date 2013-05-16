@@ -3,7 +3,7 @@ package CB_Core.Map;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import CB_Core.FileIO;
+import CB_Core.Util.FileIO;
 import bsh.EvalError;
 import bsh.Interpreter;
 

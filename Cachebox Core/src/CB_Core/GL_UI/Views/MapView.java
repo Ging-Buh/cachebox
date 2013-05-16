@@ -8,7 +8,6 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
@@ -56,6 +55,7 @@ import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Core.Util.FileIO;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;

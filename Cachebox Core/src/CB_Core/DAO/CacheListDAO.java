@@ -8,13 +8,13 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
+import CB_Core.Util.FileIO;
 
 public class CacheListDAO
 {

@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.zip.ZipException;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery.PQ;
@@ -37,6 +36,7 @@ import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
+import CB_Core.Util.FileIO;
 
 public class Importer
 {

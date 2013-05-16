@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import org.apache.http.util.EncodingUtils;
 
-import CB_Core.FileIO;
+import CB_Core.Util.FileIO;
 
 public class PackBase implements Comparable<PackBase>
 {

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.SpriteCache;
@@ -24,6 +23,7 @@ import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.PolylineReduction;
 import CB_Core.Math.UI_Size_Base;
+import CB_Core.Util.FileIO;
 import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;

@@ -23,12 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import CB_Core.Config;
-import CB_Core.GlobalCore;
-import CB_Core.Math.UI_Size_Base;
-import CB_Core.Math.devicesSizes;
-import CB_Core.TranslationEngine.Translation;
-
 /**
  * Der Logger basiert auf einem Interface als CallBack und kann damit auch von nicht GUI Klassen implementiert werden, damit sie einen
  * Fehler Melden können. Wenn keine GUI zur Darstellung diese Meldung empfängt, ist es halt so. Also benutzt so häufig wie möglich den
@@ -41,6 +35,17 @@ public class Logger
 
 	private static Boolean mDebug = false;
 	private static ArrayList<ILog> list = new ArrayList<ILog>();
+	private static String mDebugFilePath = "";
+
+	public static void setDebugFilePath(String DebugFilePath)
+	{
+		mDebugFilePath = DebugFilePath;
+	}
+
+	public static String getDebugFilePath()
+	{
+		return mDebugFilePath;
+	}
 
 	/**
 	 * Wird der Debug-Modus aktiviert (true), werden alle Meldungen weitergeleitet. Ansonsten werden die Debug Meldungen unterdrückt.
@@ -103,7 +108,7 @@ public class Logger
 	 * } 
 	 * <span style=' color: Blue;'>catch</span> (Exception e) 
 	 * {
-	 *     Log.Error(<span style=' color: Maroon;'>"Global.PlaySound()"</span>, Config.WorkPath + <span style=' color: Maroon;'>"/data/sound/"</span> + soundFile ,e);
+	 *     Logger.Error(<span style=' color: Maroon;'>"Global.PlaySound()"</span>, Config.WorkPath + <span style=' color: Maroon;'>"/data/sound/"</span> + soundFile ,e);
 	 *     e.printStackTrace();
 	 * }
 	 * </pre>
@@ -206,72 +211,23 @@ public class Logger
 
 	}
 
-	/**
-	 * nur True beim ersten schreiben! Dann müssen erst die Missing Lang Strings eingelesen werden!
-	 */
-	private static boolean firstWrite = true;
+	public interface iCreateDebugWithHeader
+	{
+		public void CreateDebugWithHeader(File DebugFile);
+	}
+
+	private static iCreateDebugWithHeader mCreateDebugWithHeader = null;
+
+	public static void setCreateDebugWithHeader(iCreateDebugWithHeader CreateDebugWithHeader)
+	{
+		mCreateDebugWithHeader = CreateDebugWithHeader;
+	}
 
 	private static void writeDebugMsgtoFile(String Msg)
 	{
-		File file = new File(Config.WorkPath + "/debug.txt");
+		File file = new File(mDebugFilePath);
 
-		if (Config.settings.newInstall.getValue())
-		{
-			file.delete();
-			Config.settings.newInstall.setValue(false);
-		}
-
-		if (!file.exists())
-		{
-			// schreibe UI Sizes als erstes in die dbug.txt
-			String br = GlobalCore.br;
-			devicesSizes ui = UI_Size_Base.that.ui;
-
-			if (ui == null) return; // Bin noch nicht soweit!
-
-			StringBuilder sb = new StringBuilder();
-			sb.append("###################################" + br);
-			sb.append("##  CB Version: " + GlobalCore.getVersionString() + "         ##" + br);
-			sb.append("###################################" + br + br + br);
-			sb.append("################  Ui Sizes ############" + br);
-			sb.append("Window = " + ui.Window.toString() + br);
-			sb.append("Density = " + ui.Density + br);
-			sb.append("RefSize = " + ui.RefSize + br);
-			sb.append("TextSize_Normal = " + ui.TextSize_Normal + br);
-			sb.append("ButtonTextSize = " + ui.ButtonTextSize + br);
-			sb.append("IconSize = " + ui.IconSize + br);
-			sb.append("Margin = " + ui.Margin + br);
-			sb.append("ArrowSizeList = " + ui.ArrowSizeList + br);
-			sb.append("ArrowSizeMap = " + ui.ArrowSizeMap + br);
-			sb.append("TB_IconSize = " + ui.TB_IconSize + br);
-			sb.append("isLandscape = " + ui.isLandscape + br);
-			sb.append("    " + br);
-			sb.append("MapViewDPIFaktor = " + Config.settings.MapViewDPIFaktor.getValue() + br);
-			sb.append("MapViewFontFaktor = " + Config.settings.MapViewFontFaktor.getValue() + br);
-			sb.append("#######################################" + br + br);
-
-			sb.append("##########  Missing Lang Strings ######" + br);
-
-			sb.append("#######################################" + br + br);
-
-			Msg = sb.toString() + Msg;
-
-		}
-		else
-		{
-			if (firstWrite)
-			{
-				try
-				{
-					Translation.readMissingStringsFile();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-				firstWrite = false;
-			}
-		}
+		if (mCreateDebugWithHeader != null) mCreateDebugWithHeader.CreateDebugWithHeader(file);
 
 		FileWriter writer;
 		try

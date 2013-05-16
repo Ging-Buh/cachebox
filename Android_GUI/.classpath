@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="libs/gdx.jar"/>
 	<classpathentry kind="lib" path="libs/jsoup-1.7.2.jar"/>
 	<classpathentry kind="lib" path="libs/mapsforge-map-0.3.0-jar-with-dependencies.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

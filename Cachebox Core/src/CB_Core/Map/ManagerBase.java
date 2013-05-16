@@ -18,9 +18,9 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Layer.Type;
+import CB_Core.Util.FileIO;
 
 public abstract class ManagerBase
 {

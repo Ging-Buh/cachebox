@@ -15,9 +15,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.InitTestDBs;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Util.FileIO;
 
 /**
  * Der Test ist kein Wirklicher Test. Hier werden die GS Attribute Herrunter geladen und es wird die "Attributes.java" daraus generiert.
@@ -107,7 +107,7 @@ public class GenAttributes extends TestCase
 			}
 			catch (JSONException e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 

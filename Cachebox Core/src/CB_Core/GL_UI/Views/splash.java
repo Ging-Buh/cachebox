@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import CB_Core.Config;
-import CB_Core.FileList;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
@@ -29,6 +28,7 @@ import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Waypoint;
+import CB_Core.Util.FileList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;

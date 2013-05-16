@@ -19,7 +19,7 @@ package CB_Core.Math;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Core.Types.MoveableList;
+import CB_Core.Util.MoveableList;
 
 import com.badlogic.gdx.math.Vector2;
 

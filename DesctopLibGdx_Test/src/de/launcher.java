@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.zip.ZipException;
 
 import CB_Core.Config;
-import CB_Core.FileIO;
 import CB_Core.GlobalCore;
 import CB_Core.Import.UnZip;
 import CB_Core.Math.Size;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Util.FileIO;
 import CB_Core.Util.CopyHelper.Copy;
 import CB_Core.Util.CopyHelper.CopyRule;
 
