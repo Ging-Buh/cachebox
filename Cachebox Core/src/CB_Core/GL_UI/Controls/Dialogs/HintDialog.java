@@ -10,6 +10,7 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 public class HintDialog extends GL_MsgBox
@@ -31,15 +32,17 @@ public class HintDialog extends GL_MsgBox
 	public static void show()
 	{
 		if (GlobalCore.getSelectedCache() == null) return;
-		hintTextDecoded = GlobalCore.Rot13(GlobalCore.getSelectedCache().hint);
-		hintTextEncoded = GlobalCore.getSelectedCache().hint;
+		hintTextDecoded = GlobalCore.Rot13(GlobalCore.getSelectedCache().hint) + "\n ";
+		hintTextEncoded = GlobalCore.getSelectedCache().hint + "\n ";
 
 		Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
 		Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
 
 		Size maxTextSize = decodedSize.height > encodedSize.height ? decodedSize : encodedSize;
+		maxTextSize.width = UI_Size_Base.that.getWindowWidth();
 
 		GL_MsgBox msgBox = new GL_MsgBox(maxTextSize, "MsgBox");
+		GL_MsgBox.margin = 0f;
 		msgBox.setTitle(Translation.Get("hint"));
 		msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
 		msgBox.mMsgBoxClickListner = null;
