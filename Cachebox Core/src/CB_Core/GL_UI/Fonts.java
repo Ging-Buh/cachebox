@@ -255,7 +255,7 @@ public class Fonts
 		if (txt == null || txt.equals("")) txt = "text";
 		if (measureNormalCache == null) measureNormalCache = new BitmapFontCache(Fonts.getNormal());
 		TextBounds bounds = measureNormalCache.setText(txt, 0, 0);
-
+		bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
 		return bounds;
 	}
 
@@ -263,7 +263,7 @@ public class Fonts
 	{
 		if (measureSmallCache == null) measureSmallCache = new BitmapFontCache(Fonts.getSmall());
 		TextBounds bounds = measureSmallCache.setText(txt, 0, 0);
-
+		bounds.height = bounds.height - measureSmallCache.getFont().getDescent();
 		return bounds;
 	}
 
@@ -271,7 +271,7 @@ public class Fonts
 	{
 		if (measureBigCache == null) measureBigCache = new BitmapFontCache(Fonts.getBig());
 		TextBounds bounds = measureBigCache.setText(txt, 0, 0);
-
+		bounds.height = bounds.height - measureBigCache.getFont().getDescent();
 		return bounds;
 	}
 
@@ -279,7 +279,7 @@ public class Fonts
 	{
 		if (measureNormalCache == null) measureNormalCache = new BitmapFontCache(Fonts.getNormal());
 		TextBounds bounds = measureNormalCache.setWrappedText(txt, 0, 0, width);
-
+		bounds.height = bounds.height - measureNormalCache.getFont().getDescent();
 		return bounds;
 	}
 
