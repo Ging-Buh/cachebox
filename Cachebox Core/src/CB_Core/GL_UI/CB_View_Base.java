@@ -285,26 +285,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		return getName() + " X,Y/Width,Height = " + this.Pos.x + "," + this.Pos.y + "/" + this.width + "," + this.height;
 	}
 
-	public float getLeftWidth()
-	{
-		return drawableBackground != null ? drawableBackground.getLeftWidth() : 0;
-	}
-
-	public float getBottomHeight()
-	{
-		return drawableBackground != null ? drawableBackground.getBottomHeight() : 0;
-	}
-
-	public float getRightWidth()
-	{
-		return drawableBackground != null ? drawableBackground.getRightWidth() : 0;
-	}
-
-	public float getTopHeight()
-	{
-		return drawableBackground != null ? drawableBackground.getTopHeight() : 0;
-	}
-
 	// Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
 	// the position and width (stretched equally on this) of the objects is calculated automatically
 	private MoveableList<GL_View_Base> row;
@@ -425,7 +405,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	/**
-	 ** get available height (not filled with objects)
+	 ** get available width (not filled with objects)
 	 **/
 	public float getAvailableWidth()
 	{
