@@ -387,12 +387,11 @@ public class CB_RectF
 
 	public static CB_RectF ScaleCenter(CB_RectF rectangle, float ScaleFactor)
 	{
-		float newWidth = (int) (rectangle.getWidth() * ScaleFactor);
-		float newHeight = (int) (rectangle.getHeight() * ScaleFactor);
+		float newWidth = rectangle.getWidth() * ScaleFactor;
+		float newHeight = rectangle.getHeight() * ScaleFactor;
 		float newX = rectangle.Pos.x + ((rectangle.getWidth() - newWidth) / 2);
 		float newY = rectangle.Pos.y + ((rectangle.getHeight() - newHeight) / 2);
 		return new CB_RectF(newX, newY, newWidth, newHeight);
-
 	}
 
 	/**
