@@ -129,7 +129,12 @@ public class GL_MsgBox extends Dialog
 
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)),
 				"MsgBox" + title);
-		margin = 0f;
+
+		float m = UI_Size_Base.that.getMargin();
+		Dialog.margin = m;
+		msgBox.setX(m);
+		msgBox.setWidth(UI_Size_Base.that.getWindowWidth() - 2 * m);
+
 		msgBox.rememberSetting = remember;
 		msgBox.mMsgBoxClickListner = Listener;
 		msgBox.setTitle(title);

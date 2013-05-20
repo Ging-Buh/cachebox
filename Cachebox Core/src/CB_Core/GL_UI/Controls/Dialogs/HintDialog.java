@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls.Dialogs;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -39,10 +40,12 @@ public class HintDialog extends GL_MsgBox
 		Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
 
 		Size maxTextSize = decodedSize.height > encodedSize.height ? decodedSize : encodedSize;
-		maxTextSize.width = UI_Size_Base.that.getWindowWidth();
+		float m = UI_Size_Base.that.getMargin();
+		maxTextSize.width = UI_Size_Base.that.getWindowWidth() - (int) (2 * m);
 
 		GL_MsgBox msgBox = new GL_MsgBox(maxTextSize, "MsgBox");
-		GL_MsgBox.margin = 0f;
+		Dialog.margin = m;
+		msgBox.setX(m);
 		msgBox.setTitle(Translation.Get("hint"));
 		msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
 		msgBox.mMsgBoxClickListner = null;

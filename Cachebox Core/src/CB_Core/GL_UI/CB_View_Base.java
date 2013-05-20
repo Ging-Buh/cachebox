@@ -295,6 +295,8 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	private float yMargin = 0;
 	private float leftBorder;
 	private float rightBorder;
+	private float topBorder;
+	private float bottomBorder;
 	private float topYAdd;
 	private float bottomYAdd = -1;
 
@@ -360,14 +362,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void initRow(boolean direction)
 	{
+		this.topBorder = this.getTopHeight();
+		this.bottomBorder = this.getBottomHeight(); // this.BottomHeight;
 		if (direction)
 		{
-			initRow(direction, this.height - this.getTopHeight());
+			initRow(direction, this.height - this.topBorder);
 		}
 		else
 		{
 			// starting at 0
-			initRow(direction, this.getBottomHeight()); // this.BottomHeight;
+			initRow(direction, this.bottomBorder);
 		}
 	}
 
@@ -387,18 +391,20 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		this.rowYPos = y;
 		this.leftBorder = this.getLeftWidth();
 		this.rightBorder = this.getRightWidth();
+		this.topBorder = this.getTopHeight();
+		this.bottomBorder = this.getBottomHeight(); // this.BottomHeight;
 		if (bottomYAdd < 0)
 		{
 			// nur beim ersten Mal, sonst müssen die Werte erhalten bleiben
 			if (direction)
 			{
-				this.bottomYAdd = this.getBottomHeight();
+				this.bottomYAdd = this.bottomBorder;
 				this.topYAdd = y;
 			}
 			else
 			{
 				this.bottomYAdd = y;
-				this.topYAdd = this.height - this.getTopHeight();
+				this.topYAdd = this.height - this.topBorder;
 			}
 		}
 		this.topdown = direction;
