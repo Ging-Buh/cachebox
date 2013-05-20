@@ -81,6 +81,7 @@ public class GroundspeakAPI
 	public static String ConvertNotes(String note)
 	{
 		String result = note.replace("\r", "");
+		result = result.replace("\"", "\\\"");
 		return result.replace("\n", "\\n");
 	}
 
