@@ -57,7 +57,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		ivTyp = new Image(getLeftWidth(), this.height - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2),
 				UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
-		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(fieldnote.typeIcon)));
+		ivTyp.setDrawable(fieldnote.getTypeIcon());
 		secondTab = ivTyp.getMaxX() + (Dialog.getMargin() * 2);
 	}
 
@@ -67,7 +67,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 				- Dialog.getMargin(), MeasuredLabelHeight, "");
 		lblFounds.setFont(Fonts.getNormal());
 		lblFounds.setText(fieldnote.typeString);
-		this.addChild(lblFounds);
+		// this.addChild(lblFounds);
 	}
 
 	private void iniDateLabel()
@@ -87,7 +87,8 @@ public class FieldNoteViewItem extends ListViewItemBackground
 			e.printStackTrace();
 		}
 
-		lblDate = new Label(this.width - getRightWidth() - DateLength, lblFounds.getY(), DateLength, MeasuredLabelHeight, "");
+		lblDate = new Label(this.width - getRightWidth() - DateLength, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2),
+				DateLength, MeasuredLabelHeight, "");
 		lblDate.setFont(Fonts.getNormal());
 		lblDate.setText(dateString);
 		this.addChild(lblDate);
@@ -98,7 +99,16 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		ivCacheType = new Image(getLeftWidth() + Dialog.getMargin(), this.height - headHeight - (UI_Size_Base.that.getButtonHeight())
 				- Dialog.getMargin(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
 		this.addChild(ivCacheType);
-		ivCacheType.setDrawable(new SpriteDrawable(SpriteCache.BigIcons.get(fieldnote.cacheType)));
+
+		if (fieldnote.isTbFieldNote)
+		{
+			ivCacheType.setImageURL(fieldnote.TbIconUrl);
+		}
+		else
+		{
+			ivCacheType.setDrawable(new SpriteDrawable(SpriteCache.BigIcons.get(fieldnote.cacheType)));
+		}
+
 		secondTab = ivTyp.getMaxX() + (Dialog.getMargin() * 3);
 
 	}
@@ -108,7 +118,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		lblCacheName = new Label(ivCacheType.getMaxX() + Dialog.getMargin(), this.height - headHeight - MeasuredLabelHeight
 				- Dialog.getMargin(), this.width - ivCacheType.getMaxX() - (Dialog.getMargin() * 2), MeasuredLabelHeight, "");
 		lblCacheName.setFont(Fonts.getNormal());
-		lblCacheName.setText(fieldnote.CacheName);
+		lblCacheName.setText(fieldnote.isTbFieldNote ? fieldnote.TbName : fieldnote.CacheName);
 		this.addChild(lblCacheName);
 
 	}

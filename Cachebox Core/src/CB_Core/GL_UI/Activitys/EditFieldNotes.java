@@ -38,7 +38,6 @@ import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.FieldNoteEntry;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class EditFieldNotes extends ActivityBase implements KeyboardFocusChangedEvent
 {
@@ -49,6 +48,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private Label tvCacheName = null;
 	private EditWrapedTextField etComment = null;
 	private Image ivTyp = null;
+	private Image ivTbIcon = null;
 	private Label tvFounds = null;
 	private EditWrapedTextField tvDate = null;
 	private EditWrapedTextField tvTime = null;
@@ -92,17 +92,19 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void setDefaultValues()
 	{
-		tvCacheName.setText(fieldNote.CacheName);
+		tvCacheName.setText(fieldNote.isTbFieldNote ? fieldNote.TbName : fieldNote.CacheName);
 
-		tvFounds.setText("Founds: #" + fieldNote.foundNumber);
+		if (fieldNote.isTbFieldNote) tvFounds.setText("");
+		else
+			tvFounds.setText("Founds: #" + fieldNote.foundNumber);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd");
 		String sDate = iso8601Format.format(fieldNote.timestamp);
 		tvDate.setText(sDate);
 		iso8601Format = new SimpleDateFormat("HH:mm");
 		String sTime = iso8601Format.format(fieldNote.timestamp);
 		tvTime.setText(sTime);
-
-		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(fieldNote.typeIcon)));
+		ivTyp.setDrawable(fieldNote.getTypeIcon());
+		if (fieldNote.isTbFieldNote) ivTbIcon.setImageURL(fieldNote.TbIconUrl);
 	}
 
 	private void iniOkCancel()
@@ -235,6 +237,10 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		ivTyp = new Image(this.getLeftWidth() + margin, tvCacheName.getY() - margin - UI_Size_Base.that.getButtonHeight(),
 				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
 		scrollBox.addChild(ivTyp);
+
+		ivTbIcon = new Image(ivTyp.getMaxX() + (margin * 3), tvCacheName.getY() - margin - UI_Size_Base.that.getButtonHeight(),
+				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
+		scrollBox.addChild(ivTbIcon);
 
 		secondTab = ivTyp.getMaxX() + (margin * 3);
 	}

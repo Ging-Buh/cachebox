@@ -4,6 +4,8 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RadioButton extends chkBox
@@ -75,8 +77,22 @@ public class RadioButton extends chkBox
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
+	@Override
+	public void setText(String Text, Color color)
+	{
+		setText(Text, null, color, HAlignment.LEFT);
+	}
+
+	@Override
+	public void setText(String Text)
+	{
+		setText(Text, null, null, HAlignment.LEFT);
+	}
+
+	public void setText(String Text, HAlignment alignment)
+	{
+		setText(Text, null, null, alignment);
+	}
 }

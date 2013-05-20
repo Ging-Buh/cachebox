@@ -262,27 +262,6 @@ public class Config
 	public static void AcceptChanges()
 	{
 		settings.WriteToDB();
-		// BufferedWriter myFilewriter;
-		// try
-		// {
-		// myFilewriter = new BufferedWriter(new FileWriter(ConfigName));
-		//
-		// for (String key : keyLookup.keySet())
-		// {
-		//
-		// myFilewriter.write(key + "=" + keyLookup.get(key));
-		// myFilewriter.newLine();
-		//
-		// }
-		// myFilewriter.close();
-		// }
-		// catch (IOException e)
-		// {
-		// Logger.Error("WriteConfig", "Error when writing cachebox.config!",
-		// e);
-		// e.printStackTrace();
-		// }
-
 	}
 
 	public static String GetStringEncrypted(String key)

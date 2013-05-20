@@ -10,6 +10,8 @@ import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Image;
+import CB_Core.GL_UI.Controls.RadioButton;
+import CB_Core.GL_UI.Controls.RadioGroup;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -82,30 +84,30 @@ public class TestView extends CB_View_Base
 
 		this.addChild(btnSetting);
 
-		// RadioButton rb = new RadioButton("Test");
-		// rb.setPos(50, 50);
-		// rb.setWidth(this.width - rb.getX());
-		// rb.setText("Option 1");
-		// this.addChild(rb);
-		//
-		// this.addChild(btnSetting);
-		//
-		// RadioButton rb2 = new RadioButton("Test");
-		// rb2.setPos(50, rb.getMaxY() + UiSizes.getMargin());
-		// rb2.setWidth(this.width - rb.getX());
-		// rb2.setText("Option 2");
-		// this.addChild(rb2);
-		//
-		// RadioButton rb3 = new RadioButton("Test");
-		// rb3.setPos(50, rb2.getMaxY() + UiSizes.getMargin());
-		// rb3.setWidth(this.width - rb.getX());
-		// rb3.setText("Option 3");
-		// this.addChild(rb3);
-		//
-		// RadioGroup Group = new RadioGroup();
-		// Group.add(rb);
-		// Group.add(rb2);
-		// Group.add(rb3);
+		RadioButton rb = new RadioButton("Test");
+		rb.setPos(50, 50);
+		rb.setWidth(this.width - rb.getX());
+		rb.setText("Option 1");
+		this.addChild(rb);
+
+		this.addChild(btnSetting);
+
+		RadioButton rb2 = new RadioButton("Test");
+		rb2.setPos(50, rb.getMaxY() + Dialog.getMargin());
+		rb2.setWidth(this.width - rb.getX());
+		rb2.setText("Option 2");
+		this.addChild(rb2);
+
+		RadioButton rb3 = new RadioButton("Test");
+		rb3.setPos(50, rb2.getMaxY() + Dialog.getMargin());
+		rb3.setWidth(this.width - rb.getX());
+		rb3.setText("Option 3");
+		this.addChild(rb3);
+
+		RadioGroup Group = new RadioGroup();
+		Group.add(rb);
+		Group.add(rb2);
+		Group.add(rb3);
 
 		requestLayout();
 

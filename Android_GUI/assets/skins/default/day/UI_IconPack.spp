@@ -348,18 +348,11 @@ log16icon
   orig: 16, 16
   offset: 0, 0
   index: -1
-log17icon
+small1yes
   rotate: false
-  xy: 295, 2
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-large
-  rotate: false
-  xy: 313, 6
-  size: 45, 12
-  orig: 45, 12
+  xy: 295, 3
+  size: 15, 15
+  orig: 15, 15
   offset: 0, 0
   index: -1
 stars0small
@@ -425,9 +418,16 @@ stars4small
   orig: 48, 10
   offset: 0, 0
   index: -1
+large
+  rotate: false
+  xy: 312, 6
+  size: 45, 12
+  orig: 45, 12
+  offset: 0, 0
+  index: -1
 menu-divider
   rotate: false
-  xy: 360, 2
+  xy: 359, 2
   size: 30, 4
   orig: 30, 4
   offset: 0, 0
@@ -514,11 +514,11 @@ Selection-Left
   orig: 16, 30
   offset: 0, 0
   index: -1
-log18icon
+Selection
   rotate: false
-  xy: 403, 3
-  size: 16, 16
-  orig: 16, 16
+  xy: 403, 6
+  size: 16, 13
+  orig: 16, 13
   offset: 0, 0
   index: -1
 FieldNote
@@ -856,35 +856,35 @@ activity-back
   orig: 84, 87
   offset: 0, 0
   index: -1
-small1yes
+small2no
   rotate: false
   xy: 403, 276
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small2no
+small2yes
   rotate: false
   xy: 420, 276
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small2yes
+small3no
   rotate: false
   xy: 437, 276
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small3no
+small3yes
   rotate: false
   xy: 454, 276
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-small3yes
+small4no
   rotate: false
   xy: 471, 276
   size: 15, 15
@@ -898,65 +898,51 @@ target-arrow
   orig: 21, 64
   offset: 0, 0
   index: -1
-small4no
+small4yes
   rotate: false
   xy: 488, 276
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
-log19icon
-  rotate: false
-  xy: 482, 192
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-log20icon
-  rotate: false
-  xy: 482, 174
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-log21icon
-  rotate: false
-  xy: 482, 156
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-Selection
-  rotate: false
-  xy: 489, 367
-  size: 16, 13
-  orig: 16, 13
-  offset: 0, 0
-  index: -1
-small4yes
-  rotate: false
-  xy: 489, 350
-  size: 15, 15
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
 small5no
   rotate: false
-  xy: 489, 333
+  xy: 482, 193
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5solved-no
   rotate: false
-  xy: 489, 316
+  xy: 482, 176
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 small5solved
   rotate: false
-  xy: 489, 299
+  xy: 482, 159
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+small5yes
+  rotate: false
+  xy: 489, 365
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+small7no
+  rotate: false
+  xy: 489, 348
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+small7yes
+  rotate: false
+  xy: 489, 331
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
@@ -1384,27 +1370,6 @@ arrow-up
   xy: 382, 204
   size: 32, 11
   orig: 32, 11
-  offset: 0, 0
-  index: -1
-small5yes
-  rotate: false
-  xy: 458, 1
-  size: 15, 15
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
-small7no
-  rotate: false
-  xy: 475, 1
-  size: 15, 15
-  orig: 15, 15
-  offset: 0, 0
-  index: -1
-small7yes
-  rotate: false
-  xy: 492, 1
-  size: 15, 15
-  orig: 15, 15
   offset: 0, 0
   index: -1
 

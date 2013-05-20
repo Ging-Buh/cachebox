@@ -52,14 +52,17 @@ public class DesktopMain
 	{
 		GlobalCore.platform = Plattform.Desktop;
 		frame.setVisible(false);
-		new DesktopLogger();
-		Logger.setDebug(true);
 
 		// Initial Desctop TexturePacker
 		new Desctop_Packer();
 
 		InitalConfig();
 		Config.settings.ReadFromDB();
+
+		new DesktopLogger();
+		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
+		Logger.setDebug(true);
+
 		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
 
 		GL_View_Base.debug = debug;

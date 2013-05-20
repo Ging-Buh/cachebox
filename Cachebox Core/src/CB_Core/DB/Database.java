@@ -365,6 +365,14 @@ public abstract class Database
 					execSQL("ALTER TABLE [Trackable] ADD COLUMN [Home] ntext NULL");
 					execSQL("ALTER TABLE [Trackable] ADD COLUMN [TravelDistance] integer default 0");
 				}
+				if (lastDatabaseSchemeVersion < 1006)
+				{
+					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [TbFieldNote] BOOLEAN DEFAULT 'false' NULL");
+					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [TbName] nvarchar (255)  NULL");
+					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [TbIconUrl] nvarchar (255)  NULL");
+					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [TravelBugCode] nvarchar (15)  NULL");
+					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [TrackingNumber] nvarchar (15)  NULL");
+				}
 				setTransactionSuccessful();
 			}
 			catch (Exception exc)

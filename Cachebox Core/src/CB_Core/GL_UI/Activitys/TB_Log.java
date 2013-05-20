@@ -18,6 +18,8 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.RadioButton;
+import CB_Core.GL_UI.Controls.RadioGroup;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
@@ -29,6 +31,7 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
+import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.Trackable;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -44,6 +47,8 @@ public class TB_Log extends ActivityBase
 	private Box contentBox;
 	private LogTypes LT;
 	private EditWrapedTextField edit;
+	private RadioButton rbDirectLog;
+	private RadioButton rbOnlyFieldNote;
 
 	public TB_Log()
 	{
@@ -104,6 +109,24 @@ public class TB_Log extends ActivityBase
 		edit = new EditWrapedTextField("LogInput", TextFieldType.MultiLineWraped);
 		edit.setWidth(contentBox.getWidth() - contentBox.getLeftWidth() - contentBox.getRightWidth());
 		edit.setHeight(contentBox.getHalfHeight());
+
+		rbDirectLog = new RadioButton("direct_Log");
+		rbOnlyFieldNote = new RadioButton("only_FieldNote");
+
+		rbDirectLog.setText(Translation.Get("directLog"));
+		rbOnlyFieldNote.setText(Translation.Get("onlyFieldNote"));
+
+		RadioGroup Group = new RadioGroup();
+		Group.add(rbOnlyFieldNote);
+		Group.add(rbDirectLog);
+		if (Config.settings.TB_DirectLog.getValue())
+		{
+			rbDirectLog.setChecked(true);
+		}
+		else
+		{
+			rbOnlyFieldNote.setChecked(true);
+		}
 	}
 
 	private void layout()
@@ -117,6 +140,8 @@ public class TB_Log extends ActivityBase
 		contentBox.setNoBorders();
 		contentBox.setMargins(0, 0);
 		contentBox.addLast(edit);
+		contentBox.addLast(rbDirectLog);
+		contentBox.addLast(rbOnlyFieldNote);
 
 		// Show Selected Cache for LogTypes discovered/visited/dropped_off/retrieve
 		if (LT == LogTypes.discovered || LT == LogTypes.visited || LT == LogTypes.dropped_off || LT == LogTypes.retrieve)
@@ -215,19 +240,14 @@ public class TB_Log extends ActivityBase
 
 	private void LogNow()
 	{
+		if (rbDirectLog.isChecked()) logOnline();
+		else
+			createFieldNote();
 
-		// Temp Msg Box nur Staging-Server
-		// if (!Config.settings.StagingAPI.getValue())
-		// {
-		// GL_MsgBox.Show("Logging of TB `s is still in the testing phase!", "not possible", MessageBoxIcon.Stop);
-		// return;
-		// }
+	}
 
-		/**
-		 * Muss je nach LogType leer oder gefüllt sein
-		 */
-		final String cacheCode = (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore
-				.getSelectedCache().GcCode : "";
+	private void logOnline()
+	{
 
 		wd = CancelWaitDialog.ShowWait("Upload Log", new IcancelListner()
 		{
@@ -245,7 +265,7 @@ public class TB_Log extends ActivityBase
 			public void run()
 			{
 				GroundspeakAPI.LastAPIError = "";
-				GroundspeakAPI.createTrackableLog(Config.GetAccessToken(), TB, cacheCode, LogTypes.CB_LogType2GC(LT), new Date(),
+				GroundspeakAPI.createTrackableLog(Config.GetAccessToken(), TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(),
 						edit.getText());
 
 				if (GroundspeakAPI.LastAPIError.length() > 0)
@@ -282,6 +302,71 @@ public class TB_Log extends ActivityBase
 			}
 		});
 
+	}
+
+	private void createFieldNote()
+	{
+		FieldNoteEntry newFieldNote;
+		newFieldNote = new FieldNoteEntry(LT);
+		newFieldNote.CacheName = getCache_Name();
+		newFieldNote.gcCode = getCache_GcCode();
+		newFieldNote.foundNumber = Config.settings.FoundOffset.getValue();
+		newFieldNote.timestamp = new Date();
+		newFieldNote.CacheId = getCache_ID();
+		newFieldNote.comment = edit.getText();
+		newFieldNote.CacheUrl = getCache_URL();
+		newFieldNote.cacheType = getCache_Type();
+		newFieldNote.isTbFieldNote = true;
+		newFieldNote.TbName = TB.getName();
+		newFieldNote.TbIconUrl = TB.getIconUrl();
+		newFieldNote.TravelBugCode = TB.getGcCode();
+		newFieldNote.TrackingNumber = TB.getTrackingNumber();
+		newFieldNote.fillType();
+		newFieldNote.WriteToDatabase();
+
+		TB_Log.this.finish();
+	}
+
+	private String getCache_GcCode()
+	{
+		/**
+		 * Muss je nach LogType leer oder gefüllt sein
+		 */
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().GcCode
+				: "";
+	}
+
+	private String getCache_Name()
+	{
+		/**
+		 * Muss je nach LogType leer oder gefüllt sein
+		 */
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Name : "";
+	}
+
+	private long getCache_ID()
+	{
+		/**
+		 * Muss je nach LogType leer oder gefüllt sein
+		 */
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Id : -1;
+	}
+
+	private String getCache_URL()
+	{
+		/**
+		 * Muss je nach LogType leer oder gefüllt sein
+		 */
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Url : "";
+	}
+
+	private int getCache_Type()
+	{
+		/**
+		 * Muss je nach LogType leer oder gefüllt sein
+		 */
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Type
+				.ordinal() : -1;
 	}
 
 	@Override

@@ -25,9 +25,13 @@ public class API_ErrorEventHandlerList
 	}
 
 	private static Thread threadCall;
+	private static long lastCall;
+	private static final long MIN_CALL_TIME = 5000;
 
 	public static void callInvalidApiKey()
 	{
+		if (lastCall != 0 && lastCall > System.currentTimeMillis() - MIN_CALL_TIME) return;
+		lastCall = System.currentTimeMillis();
 
 		if (threadCall == null) threadCall = new Thread(new Runnable()
 		{

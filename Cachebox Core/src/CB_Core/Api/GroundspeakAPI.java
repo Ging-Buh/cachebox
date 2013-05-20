@@ -1099,13 +1099,13 @@ public class GroundspeakAPI
 
 	}
 
-	/**
-	 * GS LogTypeId's:</br>4 - Post Note </br>14 - Place in a cache </br>16 - Mark as missing </br>19 - Grab </br>48 - Discover </br>69 -
-	 * Move to collection </br>70 - Move to inventory </br>75 - Visit
-	 * 
-	 * @return
-	 */
 	public static int createTrackableLog(String accessToken, Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note)
+	{
+		return createTrackableLog(accessToken, TB.getGcCode(), TB.getTrackingNumber(), cacheCode, LogTypeId, dateLogged, note);
+	}
+
+	public static int createTrackableLog(String accessToken, String TbCode, String TrackingNummer, String cacheCode, int LogTypeId,
+			Date dateLogged, String note)
 	{
 		if (chkMemperShip(accessToken)) return -10;
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
@@ -1121,8 +1121,8 @@ public class GroundspeakAPI
 			requestString += "\"LogType\":" + String.valueOf(LogTypeId) + ",";
 			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
 			requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
-			requestString += "\"TravelBugCode\":\"" + String.valueOf(TB.getGcCode()) + "\",";
-			requestString += "\"TrackingNumber\":\"" + String.valueOf(TB.getTrackingNumber()) + "\"";
+			requestString += "\"TravelBugCode\":\"" + String.valueOf(TbCode) + "\",";
+			requestString += "\"TrackingNumber\":\"" + String.valueOf(TrackingNummer) + "\"";
 			requestString += "}";
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));

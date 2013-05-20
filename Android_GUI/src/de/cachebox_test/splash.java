@@ -531,6 +531,9 @@ public class splash extends Activity
 	private void Initial()
 	{
 		// Jetzt ist der workPath erstmal festgelegt.
+
+		Logger.setDebugFilePath(workPath + "/debug.txt");
+
 		// Zur Kompatibilität mit älteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{

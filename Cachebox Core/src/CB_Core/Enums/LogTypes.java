@@ -30,6 +30,26 @@ public enum LogTypes
 	visited, // 25
 	;
 
+	/**
+	 * Returns True if the log type a TB Log
+	 * 
+	 * @return
+	 */
+	public boolean isTbLog()
+	{
+		int t = this.ordinal();
+		if (t == 17) return true;
+		if (t == 18) return true;
+		if (t == 19) return true;
+		if (t == 20) return true;
+		if (t == 21) return true;
+		if (t == 22) return true;
+		if (t == 23) return true;
+		if (t == 25) return true;
+
+		return false;
+	}
+
 	public static LogTypes parseString(String text)
 	{
 		if (text.equalsIgnoreCase("found it"))
@@ -189,7 +209,6 @@ public enum LogTypes
 	{
 		switch (value)
 		{
-
 		case 1:
 			return unarchive;
 		case 2:
@@ -200,10 +219,8 @@ public enum LogTypes
 			return note;
 		case 5:
 			return archived;
-
 		case 7:
 			return needs_archived;
-
 		case 9:
 			return will_attend;
 		case 10:
@@ -216,15 +233,12 @@ public enum LogTypes
 			return retrieve;
 		case 14:
 			return dropped_off;
-
 		case 16:
 			return mark_missing;
-
 		case 18:
 			return reviewer_note;
 		case 19:
 			return grab_it;
-
 		case 22:
 			return temporarily_disabled;
 		case 23:
@@ -233,7 +247,6 @@ public enum LogTypes
 			return published;
 		case 25:
 			return retract;
-
 		case 45:
 			return needs_maintenance;
 		case 46:
@@ -271,31 +284,60 @@ public enum LogTypes
 	{
 		switch (value)
 		{
-
+		case unarchive:
+			return 1;
+		case found:
+			return 2;
+		case didnt_find:
+			return 3;
 		case note:
 			return 4;
-
+		case archived:
+			return 5;
+		case needs_archived:
+			return 7;
+		case will_attend:
+			return 9;
+		case attended:
+			return 10;
+		case webcam_photo_taken:
+			return 11;
+			// GC hat unarchive doppelt, wir nutzen nur [1]
+			// case unarchive:
+			// return 12;
 		case retrieve:
 			return 13;
-
 		case dropped_off:
 			return 14;
-
 		case mark_missing:
 			return 16;
-
+		case reviewer_note:
+			return 18;
 		case grab_it:
 			return 19;
-
+		case temporarily_disabled:
+			return 22;
+		case enabled:
+			return 23;
+		case published:
+			return 24;
+		case retract:
+			return 25;
+		case needs_maintenance:
+			return 45;
+		case owner_maintenance:
+			return 46;
+		case update_coord:
+			return 47;
 		case discovered:
 			return 48;
-
+			// GC hat reviewer_note doppelt, wir nutzen nur [18]
+			// case reviewer_note:
+			// return 68;
 		case move_to_collection:
 			return 69;
-
 		case move_to_inventory:
 			return 70;
-
 		case visited:
 			return 75;
 
@@ -305,5 +347,74 @@ public enum LogTypes
 		}
 
 		return 4;
+	}
+
+	@Override
+	public String toString()
+	{
+
+		switch (this)
+		{
+		case unarchive:
+			return "unarchive";
+		case found:
+			return "Found it";
+		case didnt_find:
+			return "Didn't find it";
+		case note:
+			return "note";
+		case archived:
+			return "archived";
+		case needs_archived:
+			return "needs_archived";
+		case will_attend:
+			return "will_attend";
+		case attended:
+			return "attended";
+		case webcam_photo_taken:
+			return "webcam_photo_taken";
+			// GC hat unarchive doppelt, wir nutzen nur [1]
+			// case unarchive:
+			// return 12;
+		case retrieve:
+			return "retrieve";
+		case dropped_off:
+			return "dropped_off";
+		case mark_missing:
+			return "mark_missing";
+		case reviewer_note:
+			return "reviewer_note";
+		case grab_it:
+			return "grab_it";
+		case temporarily_disabled:
+			return "temporarily_disabled";
+		case enabled:
+			return "enabled";
+		case published:
+			return "published";
+		case retract:
+			return "retract";
+		case needs_maintenance:
+			return "needs_maintenance";
+		case owner_maintenance:
+			return "owner_maintenance";
+		case update_coord:
+			return "update_coord";
+		case discovered:
+			return "discovered";
+			// GC hat reviewer_note doppelt, wir nutzen nur [18]
+			// case reviewer_note:
+			// return 68;
+		case move_to_collection:
+			return "move_to_collection";
+		case move_to_inventory:
+			return "move_to_inventory";
+		case visited:
+			return "visited";
+
+		default:
+			return "";
+
+		}
 	}
 }

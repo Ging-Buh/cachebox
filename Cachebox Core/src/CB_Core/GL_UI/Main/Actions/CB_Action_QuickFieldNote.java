@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
 import CB_Core.GlobalCore;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.platformConector;
@@ -51,7 +52,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case MenuID.MI_QUICK_FOUND:
-					FieldNotesView.addNewFieldnote(1, true);
+					FieldNotesView.addNewFieldnote(LogTypes.found, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
 					// damit die Icons in der Map aktualisiert werden
@@ -61,7 +62,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 					platformConector.vibrate();
 					return true;
 				case MenuID.MI_QUICK_NOT_FOUND:
-					FieldNotesView.addNewFieldnote(2, true);
+					FieldNotesView.addNewFieldnote(LogTypes.didnt_find, true);
 					if (FieldNotesView.that != null) FieldNotesView.that.notifyDataSetChanged();
 					CachListChangedEventList.Call(); // damit der Status geändert wird
 					// damit die Icons in der Map aktualisiert werden

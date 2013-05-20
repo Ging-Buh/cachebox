@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import CB_Core.Config;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Log.Logger;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry>
@@ -30,7 +31,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 	public void LoadFieldNotes(String where, String order)
 	{
 		this.clear();
-		String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote from FieldNotes";
+		String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber from FieldNotes";
 		if (!where.equals("")) sql += " where " + where;
 		if (order == "") sql += " order by FoundNumber DESC, Timestamp DESC";
 		else
@@ -63,9 +64,6 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		FieldNoteList lFieldNotes = new FieldNoteList();
 		lFieldNotes.LoadFieldNotes("", "Timestamp ASC");
 
-		String[] types = new String[]
-			{ "", "Found it", "Didn't find it", "Needs Maintenance", "Write Note" };
-
 		String dirFileName = Config.settings.FieldNotesGarminPath.getValue();
 
 		File txtFile = new File(dirFileName);
@@ -76,7 +74,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 
 			for (FieldNoteEntry fieldNote : lFieldNotes)
 			{
-				String log = fieldNote.gcCode + "," + fieldNote.GetDateTimeString() + "," + types[fieldNote.type] + ",\""
+				String log = fieldNote.gcCode + "," + fieldNote.GetDateTimeString() + "," + fieldNote.type.toString() + ",\""
 						+ fieldNote.comment + "\"\n";
 				writer.write(log + "\n");
 
@@ -92,7 +90,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		;
 	}
 
-	public void DeleteFieldNoteByCacheId(long cacheId, int type)
+	public void DeleteFieldNoteByCacheId(long cacheId, LogTypes type)
 	{
 		int foundNumber = 0;
 		FieldNoteEntry fne = null;
@@ -106,14 +104,14 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		}
 		if (fne != null)
 		{
-			if (fne.type == 1) foundNumber = fne.foundNumber;
+			if (fne.type == LogTypes.found) foundNumber = fne.foundNumber;
 			this.remove(fne);
 			fne.DeleteFromDatabase();
 		}
 		decreaseFoundNumber(foundNumber);
 	}
 
-	public void DeleteFieldNote(long id, int type)
+	public void DeleteFieldNote(long id, LogTypes type)
 	{
 		int foundNumber = 0;
 		FieldNoteEntry fne = null;
@@ -127,7 +125,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		}
 		if (fne != null)
 		{
-			if (fne.type == 1) foundNumber = fne.foundNumber;
+			if (fne.type == LogTypes.found) foundNumber = fne.foundNumber;
 			this.remove(fne);
 			fne.DeleteFromDatabase();
 		}
@@ -141,7 +139,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 			// alle FoundNumbers anpassen, die größer sind
 			for (FieldNoteEntry fn : this)
 			{
-				if ((fn.type == 1) && (fn.foundNumber > deletedFoundNumber))
+				if ((fn.type == LogTypes.found) && (fn.foundNumber > deletedFoundNumber))
 				{
 					int oldFoundNumber = fn.foundNumber;
 					fn.foundNumber--;

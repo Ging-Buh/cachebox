@@ -135,6 +135,7 @@ public class SettingsClass extends SettingsList
 
 	public SettingBool FireMapQueueProcessorExceptions;
 	public SettingBool DebugSpriteBatchCountBuffer;
+	public SettingBool TB_DirectLog;
 
 	// int
 	public SettingInt LogMaxMonthAge;
@@ -495,6 +496,8 @@ public class SettingsClass extends SettingsList
 		addSetting(hasFTF_PlugIn = new SettingBool("hasFTF_PlugIn", cat, NEVER, false, SettingStoreType.Global));
 		addSetting(FireMapQueueProcessorExceptions = new SettingBool("FireMapQueueProcessorExceptions", cat, INVISIBLE, false,
 				SettingStoreType.Global));
+		addSetting(TB_DirectLog = new SettingBool("TB_DirectLog", cat, NEVER, true, SettingStoreType.Platform));
+
 	}
 
 	private void addAPISettings()

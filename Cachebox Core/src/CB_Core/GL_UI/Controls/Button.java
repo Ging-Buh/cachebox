@@ -224,6 +224,11 @@ public class Button extends CB_View_Base
 
 	public void setText(String Text, BitmapFont font, Color color)
 	{
+		setText(Text, font, color, HAlignment.CENTER);
+	}
+
+	public void setText(String Text, BitmapFont font, Color color, HAlignment alignment)
+	{
 		if (Text == null || Text.equals(""))
 		{
 			if (lblTxt != null)
@@ -251,7 +256,7 @@ public class Button extends CB_View_Base
 		if (mFont == null) mFont = Fonts.getBig();
 
 		// lblTxt.setVAlignment(VAlignment.CENTER); ist default
-		lblTxt.setText(Text, mFont, color, HAlignment.CENTER);
+		lblTxt.setText(Text, mFont, color, alignment);
 		GL.that.renderOnce(this.getName() + " setText2");
 	}
 

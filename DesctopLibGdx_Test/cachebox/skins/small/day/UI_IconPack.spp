@@ -2881,93 +2881,79 @@ log17icon
   orig: 16, 16
   offset: 0, 0
   index: -1
-log18icon
+log19icon
   rotate: false
   xy: 349, 30
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-log19icon
+log20icon
   rotate: false
   xy: 367, 48
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-log20icon
+log6icon
   rotate: false
   xy: 385, 66
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-log21icon
+logicon
   rotate: false
   xy: 367, 30
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-log6icon
+pin-icon-disable
   rotate: false
   xy: 385, 48
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-logicon
+pin-icon
   rotate: false
   xy: 385, 30
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-pin-icon-disable
+rec-pause
   rotate: false
   xy: 259, 12
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-pin-icon
+rec-stop
   rotate: false
   xy: 277, 12
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-rec-pause
-  rotate: false
-  xy: 295, 12
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
-rec-stop
-  rotate: false
-  xy: 313, 12
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: -1
 ambilwarna-arrow-down
   rotate: false
-  xy: 331, 13
+  xy: 295, 13
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 ambilwarna-arrow-right
   rotate: false
-  xy: 348, 13
+  xy: 312, 13
   size: 15, 15
   orig: 15, 15
   offset: 0, 0
   index: -1
 12
   rotate: false
-  xy: 365, 14
+  xy: 329, 14
   size: 14, 14
   orig: 14, 14
   offset: 0, 0

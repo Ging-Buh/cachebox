@@ -510,11 +510,12 @@ public class SpriteCache
 			LogIcons.add(getThemedSprite("log14icon"));
 			LogIcons.add(getThemedSprite("log15icon"));
 			LogIcons.add(getThemedSprite("log16icon"));
-			LogIcons.add(getThemedSprite("log17icon"));
-			LogIcons.add(getThemedSprite("log18icon"));
-			LogIcons.add(getThemedSprite("log19icon"));
-			LogIcons.add(getThemedSprite("log20icon"));
-			LogIcons.add(getThemedSprite("log21icon"));
+			LogIcons.add(getThemedSprite("tb-picked"));
+			LogIcons.add(getThemedSprite("tb-drop"));
+			LogIcons.add(getThemedSprite("tb-grab"));
+			LogIcons.add(getThemedSprite("tb-discover"));
+			LogIcons.add(getThemedSprite("tb-visit"));
+			LogIcons.add(getThemedSprite("tb-note"));
 		}
 
 		if (MapIconsSmall == null) MapIconsSmall = new ArrayList<Sprite>();

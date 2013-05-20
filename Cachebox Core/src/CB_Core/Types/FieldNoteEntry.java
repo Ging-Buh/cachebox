@@ -10,9 +10,17 @@ import java.util.TimeZone;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.Parameters;
+import CB_Core.Enums.LogTypes;
+import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.SpriteCache.IconName;
+
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class FieldNoteEntry implements Serializable
 {
+
 	/**
 	 * 
 	 */
@@ -23,7 +31,7 @@ public class FieldNoteEntry implements Serializable
 	public String gcCode;
 	public Date timestamp;
 	public String typeString;
-	public int type;
+	public LogTypes type;
 	public int cacheType;
 	public String comment;
 	public int foundNumber;
@@ -32,6 +40,11 @@ public class FieldNoteEntry implements Serializable
 	public int typeIcon;
 	public boolean uploaded;
 	public int gc_Vote;
+	public boolean isTbFieldNote = false;
+	public String TbName;
+	public String TbIconUrl;
+	public String TravelBugCode;
+	public String TrackingNumber;
 
 	public FieldNoteEntry(FieldNoteEntry fne)
 	{
@@ -49,21 +62,26 @@ public class FieldNoteEntry implements Serializable
 		this.typeIcon = fne.typeIcon;
 		this.uploaded = fne.uploaded;
 		this.gc_Vote = fne.gc_Vote;
+		this.isTbFieldNote = fne.isTbFieldNote;
+		this.TbName = fne.TbName;
+		this.TbIconUrl = fne.TbIconUrl;
+		this.TravelBugCode = fne.TravelBugCode;
+		this.TrackingNumber = fne.TrackingNumber;
 	}
 
-	public FieldNoteEntry(int type)
+	public FieldNoteEntry(LogTypes Type)
 	{
 		Id = -1;
-		this.type = type;
+		this.type = Type;
 		fillType();
 	}
 
 	public FieldNoteEntry(CoreCursor reader)
 	{
 		CacheId = reader.getLong(0);
-		Id = reader.getLong(8);
 		gcCode = reader.getString(1).trim();
-
+		CacheName = reader.getString(2);
+		cacheType = reader.getInt(3);
 		String sDate = reader.getString(4);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try
@@ -74,77 +92,46 @@ public class FieldNoteEntry implements Serializable
 		{
 		}
 		if (timestamp == null) timestamp = new Date();
-
-		type = reader.getInt(5);
-		cacheType = reader.getInt(3);
-		comment = reader.getString(7);
+		type = LogTypes.GC2CB_LogType(reader.getInt(5));
 		foundNumber = reader.getInt(6);
-		CacheName = reader.getString(2);
+		comment = reader.getString(7);
+		Id = reader.getLong(8);
 		CacheUrl = reader.getString(9);
 		uploaded = reader.getInt(10) != 0;
 		gc_Vote = reader.getInt(11);
-
+		isTbFieldNote = reader.getInt(12) != 0;
+		TbName = reader.getString(13);
+		TbIconUrl = reader.getString(14);
+		TravelBugCode = reader.getString(15);
+		TrackingNumber = reader.getString(16);
 		fillType();
 
 	}
 
 	public void fillType()
 	{
-		if (type == 1)
+		typeIcon = type.getIconID();
+
+		if (type == LogTypes.found)
 		{
 			typeString = "#" + foundNumber + " - Found it!";
-			typeIcon = 0;
 			if (cacheType == 5 || cacheType == 6 || cacheType == 7) typeString = "Attended";
 			if (cacheType == 3) typeString = "Webcam Photo Taken";
 		}
 
-		if (type == 2)
+		if (type == LogTypes.didnt_find)
 		{
 			typeString = "Did not find!";
-			typeIcon = 1;
 		}
 
-		if (type == 3)
+		if (type == LogTypes.needs_maintenance)
 		{
 			typeString = "Needs Maintenance";
-			typeIcon = 5;
 		}
 
-		if (type == 4)
+		if (type == LogTypes.note)
 		{
 			typeString = "Write Note";
-			typeIcon = 2;
-		}
-	}
-
-	/**
-	 * Unsere ID entspricht nicht der ID von GC beim Upload über die API. <br>
-	 * Diese Funktion liefert die Korregierten Werte! <br>
-	 * <br>
-	 * Name | Unsere ID | zu sendende ID | Bemerkung <br>
-	 * <br>
-	 * FoundIt | 1 |2| <br>
-	 * DNF | 2| 3| <br>
-	 * Note | 4|4| <br>
-	 * Need Archived | |7| Bei uns nicht vorgesehen <br>
-	 * Need Maintenance |3|45| <br>
-	 * 
-	 * @return
-	 */
-	public int getGcUploadId()
-	{
-		switch (type)
-		{
-		case 1:
-			return 2;
-		case 2:
-			return 3;
-		case 3:
-			return 45;
-		case 4:
-			return 4;
-		default:
-			return 4;
 		}
 	}
 
@@ -169,14 +156,18 @@ public class FieldNoteEntry implements Serializable
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String stimestamp = iso8601Format.format(timestamp);
 		args.put("timestamp", stimestamp);
-		args.put("type", type);
+		args.put("type", type.getGcLogTypeId());
 		args.put("foundnumber", foundNumber);
 		args.put("comment", comment);
 		args.put("cachetype", cacheType);
 		args.put("url", CacheUrl);
 		args.put("Uploaded", uploaded);
 		args.put("gc_Vote", gc_Vote);
-
+		args.put("TbFieldNote", isTbFieldNote);
+		args.put("TbName", TbName);
+		args.put("TbIconUrl", TbIconUrl);
+		args.put("TravelBugCode", TravelBugCode);
+		args.put("TrackingNumber", TrackingNumber);
 		try
 		{
 			Database.FieldNotes.insertWithConflictReplace("Fieldnotes", args);
@@ -186,9 +177,10 @@ public class FieldNoteEntry implements Serializable
 			return;
 		}
 		// search FieldNote Id
-		CoreCursor reader = Database.FieldNotes.rawQuery(
-				"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote from FieldNotes where GcCode='"
-						+ gcCode + "' and type=" + type, null);
+		CoreCursor reader = Database.FieldNotes
+				.rawQuery(
+						"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber from FieldNotes where GcCode='"
+								+ gcCode + "' and type=" + type.getGcLogTypeId(), null);
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
 		{
@@ -209,14 +201,18 @@ public class FieldNoteEntry implements Serializable
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String stimestamp = iso8601Format.format(timestamp);
 		args.put("timestamp", stimestamp);
-		args.put("type", type);
+		args.put("type", type.getGcLogTypeId());
 		args.put("foundnumber", foundNumber);
 		args.put("comment", comment);
 		args.put("cachetype", cacheType);
 		args.put("url", CacheUrl);
 		args.put("Uploaded", uploaded);
 		args.put("gc_Vote", gc_Vote);
-
+		args.put("TbFieldNote", isTbFieldNote);
+		args.put("TbName", TbName);
+		args.put("TbIconUrl", TbIconUrl);
+		args.put("TravelBugCode", TravelBugCode);
+		args.put("TrackingNumber", TrackingNumber);
 		try
 		{
 			long count = Database.FieldNotes.update("FieldNotes", args, "id=" + Id, null);
@@ -258,8 +254,33 @@ public class FieldNoteEntry implements Serializable
 		if (this.typeIcon != fne.typeIcon) ret = false;
 		if (this.uploaded != fne.uploaded) ret = false;
 		if (this.gc_Vote != fne.gc_Vote) ret = false;
+		if (this.isTbFieldNote != fne.isTbFieldNote) ret = false;
+		if (this.TravelBugCode != fne.TravelBugCode) ret = false;
+		if (this.TrackingNumber != fne.TrackingNumber) ret = false;
 
 		return ret;
+	}
+
+	public Drawable getTypeIcon()
+	{
+		if (isTbFieldNote)
+		{
+
+			Sprite spr = null;
+
+			if (type == LogTypes.discovered) spr = SpriteCache.Icons.get(IconName.tbDiscover_58.ordinal());
+			if (type == LogTypes.dropped_off) spr = SpriteCache.Icons.get(IconName.tbDrop_59.ordinal());
+			if (type == LogTypes.grab_it) spr = SpriteCache.Icons.get(IconName.tbGrab_60.ordinal());
+			if (type == LogTypes.retrieve) spr = SpriteCache.Icons.get(IconName.tbPicked_61.ordinal());
+			if (type == LogTypes.visited) spr = SpriteCache.Icons.get(IconName.tbVisit_62.ordinal());
+			if (type == LogTypes.note) spr = SpriteCache.Icons.get(IconName.tbNote_63.ordinal());
+			if (spr == null) return null;
+			return new SpriteDrawable(spr);
+		}
+		else
+		{
+			return new SpriteDrawable(SpriteCache.LogIcons.get(typeIcon));
+		}
 	}
 
 	public FieldNoteEntry copy()
