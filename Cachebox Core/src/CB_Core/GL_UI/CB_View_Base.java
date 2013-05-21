@@ -15,11 +15,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
 
-	// protected float LeftWidth; // linker Rand
-	// protected float RightWidth; // rechter Rand
-	// protected float TopHeight; // oberer Rand
-	// protected float BottomHeight; // unterer Rand
-
 	// # Constructors
 
 	public CB_View_Base(String Name)
@@ -300,11 +295,17 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	private float topYAdd;
 	private float bottomYAdd = -1;
 
+	/**
+	 ** next objects are added at this Y - Position (== used Height if bottomUP)
+	 **/
 	public float getRowYPos()
 	{
 		return rowYPos;
 	}
 
+	/**
+	 ** next objects are added at this Y - Position
+	 **/
 	public void setRowYPos(float YPos)
 	{
 		rowYPos = YPos;
@@ -317,16 +318,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	{
 		this.xMargin = xMargin;
 		this.yMargin = yMargin;
-	}
-
-	public float getYmargin()
-	{
-		return this.yMargin;
-	}
-
-	public float getXmargin()
-	{
-		return this.xMargin;
 	}
 
 	/**
@@ -457,6 +448,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void addLast(GL_View_Base c)
 	{
+		this.Weight = 1f;
 		addMe(c, true);
 	}
 
@@ -465,6 +457,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void addNext(GL_View_Base c)
 	{
+		this.Weight = 1f;
 		addMe(c, false);
 	}
 
@@ -473,7 +466,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void addLast(GL_View_Base c, float Weight)
 	{
-		c.setWeight(Weight);
+		this.Weight = Weight;
 		addMe(c, true);
 	}
 
@@ -482,7 +475,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void addNext(GL_View_Base c, float Weight)
 	{
-		c.setWeight(Weight);
+		this.Weight = Weight;
 		addMe(c, false);
 	}
 
@@ -496,7 +489,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	// ===================================================================
 	{
 		if (this.row == null) this.initRow();
-		if (c != null) row.add(c);
+		if (c != null) this.row.add(c);
 		if (lastInRow)
 		{
 			// Determine this.rowMaxHeight
@@ -511,30 +504,50 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			}
 			// Determine width of objects from number of objects in row
 			float rowXPos = this.leftBorder;
-			float weightedSize = 0;
-			float unWeightedSize = 0;
+			float weightedAnz = 0;
+			float fixedWidthSum = 0;
+			float percentWidthSum = 0;
+			float widthToFill = this.width - this.leftBorder - this.rightBorder;
 			for (GL_View_Base g : this.row)
 			{
-				float we = g.getWeight();
-				if (we != -1)
+				if (g.Weight > 0)
 				{
-					weightedSize += g.getWeight();
+					weightedAnz += g.Weight;
 				}
 				else
 				{
-					unWeightedSize += g.getWidth();
+					if (g.Weight == -1)
+					{
+						fixedWidthSum += g.getWidth() + this.xMargin; // xMargin is added to each object
+					}
+					else
+					{
+						// Prozentuale Breite des Objekts bzgl widthToFill
+						percentWidthSum += Math.abs(g.Weight) * widthToFill;
+					}
 				}
 
 			}
-			float objectWidth = (this.width - this.leftBorder - this.rightBorder - unWeightedSize) / weightedSize - this.xMargin;
+			float objectWidth = (widthToFill - percentWidthSum - fixedWidthSum) / weightedAnz - this.xMargin;
 			for (GL_View_Base g : this.row)
 			{
-				if (g.getWeight() != -1) g.setWidth(objectWidth * g.getWeight());
+				if (g.Weight > 0)
+				{
+					g.setWidth(objectWidth * g.Weight);
+				}
+				else
+				{
+					if (g.Weight > -1)
+					{
+						g.setWidth(Math.abs(g.Weight) * widthToFill - this.xMargin);
+					}
+				}
 				g.setPos(rowXPos, this.rowYPos);
-				rowXPos = rowXPos + g.getWidth() + this.xMargin;
 				this.addChildDirekt(g);
+				// next object at x
+				rowXPos = rowXPos + g.getWidth() + this.xMargin;
 			}
-			//
+			// next row objects at y
 			if (this.topdown)
 			{
 				this.rowYPos = this.rowYPos - this.yMargin;

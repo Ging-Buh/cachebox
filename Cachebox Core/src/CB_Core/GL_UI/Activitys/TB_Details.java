@@ -264,9 +264,10 @@ public class TB_Details extends ActivityBase
 		scrollBox.addLast(lblGoal);
 		scrollBox.setMargins(margin, margin);
 		scrollBox.addLast(DetailThisItem);
-		float ScrollBoxInnerHeight = AboutThisItem.getHeight() + lblAbout.getHeight() + GoalThisItem.getHeight() + lblGoal.getHeight()
-				+ DetailThisItem.getHeight() + (scrollBox.getYmargin() * 7);
-		scrollBox.setInnerHeight(ScrollBoxInnerHeight);
+		// float ScrollBoxInnerHeight = AboutThisItem.getHeight() + lblAbout.getHeight() + GoalThisItem.getHeight() + lblGoal.getHeight()
+		// + DetailThisItem.getHeight() + (scrollBox.getYmargin() * 7);
+		// scrollBox.setInnerHeight(ScrollBoxInnerHeight);
+		scrollBox.setInnerHeight(scrollBox.getRowYPos());
 		scrollBox.setX(0);
 		AboutThisItem.setX(0);
 		GoalThisItem.setX(0);

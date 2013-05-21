@@ -80,7 +80,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	private boolean enabled = true;
 
-	private float Weight = 1;
+	protected float Weight = 1f;
 
 	// # Constructors
 
