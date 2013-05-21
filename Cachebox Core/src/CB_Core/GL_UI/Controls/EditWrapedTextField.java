@@ -186,67 +186,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 		return style;
 	}
 
-	private void calculateOffsets()
-	{
-		if (true) return;
-		// float position = glyphPositions.get(cursor);
-		// float distance = position - Math.abs(renderOffset);
-		// float visibleWidth = width;
-		// if (style.background != null) visibleWidth -= style.background.this.LeftWidth + style.background.RightWidth;
-
-		// check whether the cursor left the left or right side of
-		// the visible area and adjust renderoffset.
-		// if (distance <= 0)
-		// {
-		// if (cursor > 0) renderOffset = -glyphPositions.get(cursor - 1);
-		// else
-		// renderOffset = 0;
-		// }
-		// else
-		// {
-		// if (distance > visibleWidth)
-		// {
-		// renderOffset -= distance - visibleWidth;
-		// }
-		// }
-		//
-		// // calculate first visible char based on render offset
-		// visibleTextStart = 0;
-		// textOffset = 0;
-		// float start = Math.abs(renderOffset);
-		// int len = glyphPositions.size;
-		// float startPos = 0;
-		// for (int i = 0; i < len; i++)
-		// {
-		// if (glyphPositions.items[i] >= start)
-		// {
-		// visibleTextStart = i;
-		// startPos = glyphPositions.items[i];
-		// textOffset = glyphPositions.items[visibleTextStart] - start;
-		// break;
-		// }
-		// }
-		//
-		// // calculate last visible char based on visible width and render offset
-		// visibleTextEnd = Math.min(displayText.get(cursorLine).getDisplayText().length(), cursor + 1);
-		// for (; visibleTextEnd <= displayText.get(cursorLine).getDisplayText().length(); visibleTextEnd++)
-		// {
-		// if (glyphPositions.items[visibleTextEnd] - startPos > visibleWidth) break;
-		// }
-		// visibleTextEnd = Math.max(0, visibleTextEnd - 1);
-		//
-		// // calculate selection x position and width
-		// if (hasSelection)
-		// {
-		// int minIndex = Math.min(cursor, selectionStart);
-		// int maxIndex = Math.max(cursor, selectionStart);
-		// float minX = Math.max(glyphPositions.get(minIndex), glyphPositions.get(visibleTextStart));
-		// float maxX = Math.min(glyphPositions.get(maxIndex), glyphPositions.get(visibleTextEnd));
-		// selectionX = minX;
-		// selectionWidth = maxX - minX;
-		// }
-	}
-
 	@Override
 	protected void render(SpriteBatch batch)
 	{
@@ -317,13 +256,6 @@ public class EditWrapedTextField extends EditTextFieldBase
 			textY = (int) height /*- textHeight*/- bgTopHeight + font.getDescent();
 			maxLineCount = (height - bgTopHeight - bgBottomHeight - lineHeight / 2) / lineHeight;
 			maxTextWidth = width - bgLeftWidth - bgRightWidth;
-			calculateOffsets();
-
-			// if (focused && hasSelection && selection != null)
-			// {
-			// selection.draw(batch, x + selectionX + bgLeftWidth + renderOffset, y + textY - textHeight - font.getDescent() / 2,
-			// selectionWidth, textHeight);
-			// }
 
 			if (selection != null)
 			{
@@ -1436,11 +1368,16 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	public boolean keyTyped(char character)
 	{
+		return keyTyped(character, false);
+	}
+
+	public boolean keyTyped(char character, boolean ignoreFocus)
+	{
 		final BitmapFont font = style.font;
 		DisplayText dt = getAktDisplayText();
 		if (dt == null || disabled) return false;
 
-		if (GL.that.hasFocus(this))
+		if (GL.that.hasFocus(this) || ignoreFocus)
 		{
 			if (character == BACKSPACE)
 			{
@@ -1650,21 +1587,26 @@ public class EditWrapedTextField extends EditTextFieldBase
 			if (font.containsCharacter(c) || (c == '\n')) buffer.append(c);
 		}
 
-		String bText = buffer.toString();
-
 		// replace lineBreaks
-		this.text = bText.replace("\r\n", "\r");
+		String bText = buffer.toString().replace("\r\n", "\r");
 
-		updateDisplayTextList();
+		displayText.clear();
+		DisplayText newDt = new DisplayText("", true, style.font);
+		displayText.add(newDt);
+
 		cursor.pos = 0;
-		checkCursorVisible(true);
-		clearSelection();
+		cursor.line = 0;
 
-		textHeight = -font.getDescent() * 2;
-		for (DisplayText dt : displayText)
+		this.text = "";
+
+		for (int i = 0; i < bText.length(); i++)
 		{
-			dt.calcTextBounds(font);
+			char c = bText.charAt(i);
+			keyTyped(c, true);
 		}
+
+		setCursorPosition(0);
+		setCursorLine(0, true);
 	}
 
 	/** @return Never null, might be an empty string. */

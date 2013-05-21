@@ -17,6 +17,7 @@ import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -78,15 +79,7 @@ public class TrackableListView extends CB_View_Base
 		searchBox.setHeight(btnSearch.getHeight() + searchBox.getTopHeight() + searchBox.getBottomHeight());
 		this.addChild(searchBox);
 
-		// Label sLbl = new Label("");
-		// sLbl.setHeight(Fonts.MeasureSmall("Tg").height);
-		// sLbl.setFont(Fonts.getSmall());
-		// sLbl.setText(Translation.Get("SearchTB_Code"));
-		// sLbl.setY(searchBox.getHeight() - sLbl.getHeight());
-		// sLbl.setX(searchBox.getLeftWidth());
-
 		searchBox.initRow(true);
-		// searchBox.addLast(sLbl);
 
 		txtSearch = new EditWrapedTextField("SearchInput", TextFieldType.SingleLine);
 		txtSearch.setMessageText(Translation.Get("SearchTB_Code"));
@@ -114,14 +107,28 @@ public class TrackableListView extends CB_View_Base
 					}, new Runnable()
 					{
 
+						@SuppressWarnings("unused")
 						@Override
 						public void run()
 						{
 
-							Trackable tb = GroundspeakAPI.getTBbyTreckNumber(Config.GetAccessToken(true), TBCode);
+							Trackable tb = null;
+							int result = GroundspeakAPI.getTBbyTreckNumber(Config.GetAccessToken(true), TBCode, tb);
 
-							if (tb == null) tb = GroundspeakAPI.getTBbyTbCode(Config.GetAccessToken(true), TBCode);
+							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+							{
+								GL.that.Toast(ConnectionError.INSTANCE);
+								wd.close();
+								return;
+							}
 
+							result = GroundspeakAPI.getTBbyTbCode(Config.GetAccessToken(true), TBCode, tb);
+							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+							{
+								GL.that.Toast(ConnectionError.INSTANCE);
+								wd.close();
+								return;
+							}
 							wd.close();
 							if (tb != null)
 							{

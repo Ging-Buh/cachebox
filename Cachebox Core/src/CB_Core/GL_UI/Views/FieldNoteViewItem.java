@@ -24,14 +24,12 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	private static NinePatch backheader;
 	private FieldNoteEntry fieldnote;
 	private Image ivTyp;
-	private Label lblFounds;
 	private Label lblDate;
 	private Image ivCacheType;
 	private Label lblCacheName;
 	private Label lblGcCode;
 	private Label lblComment;
 
-	private float secondTab = 0;
 	private static float MeasuredLabelHeight = 0;
 
 	public FieldNoteViewItem(CB_RectF rec, int Index, FieldNoteEntry fieldnote)
@@ -44,7 +42,6 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.getMargin());
 
 		iniImage();
-		iniFoundLabel();
 		iniDateLabel();
 		iniCacheTypeImage();
 		iniCacheNameLabel();
@@ -58,16 +55,6 @@ public class FieldNoteViewItem extends ListViewItemBackground
 				UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
 		ivTyp.setDrawable(fieldnote.getTypeIcon());
-		secondTab = ivTyp.getMaxX() + (Dialog.getMargin() * 2);
-	}
-
-	private void iniFoundLabel()
-	{
-		lblFounds = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab - getRightWidth()
-				- Dialog.getMargin(), MeasuredLabelHeight, "");
-		lblFounds.setFont(Fonts.getNormal());
-		lblFounds.setText(fieldnote.typeString);
-		// this.addChild(lblFounds);
 	}
 
 	private void iniDateLabel()
@@ -108,9 +95,6 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		{
 			ivCacheType.setDrawable(new SpriteDrawable(SpriteCache.BigIcons.get(fieldnote.cacheType)));
 		}
-
-		secondTab = ivTyp.getMaxX() + (Dialog.getMargin() * 3);
-
 	}
 
 	private void iniCacheNameLabel()

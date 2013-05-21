@@ -377,7 +377,7 @@ public abstract class ListViewBase extends CB_View_Base
 		scrollTo(0);
 	}
 
-	private void startAnimationToBottom()
+	protected void startAnimationToBottom()
 	{
 		if (mBaseAdapter == null) return;
 		mBottomAnimation = true;

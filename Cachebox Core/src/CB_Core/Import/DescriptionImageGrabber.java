@@ -369,6 +369,7 @@ public class DescriptionImageGrabber
 		return images;
 	}
 
+	@SuppressWarnings("unused")
 	public static void GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated,
 			long id, String gcCode, String name, String description, String url)
 	{
@@ -430,7 +431,9 @@ public class DescriptionImageGrabber
 
 			{
 				ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode);
-				HashMap<String, URI> allimgDict = GroundspeakAPI.GetAllImageLinks(Config.GetAccessToken(true), gcCode);
+				HashMap<String, URI> allimgDict = new HashMap<String, URI>();
+
+				int result = GroundspeakAPI.GetAllImageLinks(Config.GetAccessToken(true), gcCode, allimgDict);
 
 				if (allimgDict == null) return;
 

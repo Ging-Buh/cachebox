@@ -166,6 +166,8 @@ public class SettingsClass extends SettingsList
 	public SettingInt dynamicZoomLevelMax;
 	public SettingInt dynamicZoomLevelMin;
 	public SettingInt gpsUpdateTime;
+	public SettingInt conection_timeout;
+	public SettingInt socket_timeout;
 
 	public SettingTime ScreenLock;
 
@@ -497,6 +499,9 @@ public class SettingsClass extends SettingsList
 		addSetting(FireMapQueueProcessorExceptions = new SettingBool("FireMapQueueProcessorExceptions", cat, INVISIBLE, false,
 				SettingStoreType.Global));
 		addSetting(TB_DirectLog = new SettingBool("TB_DirectLog", cat, NEVER, true, SettingStoreType.Platform));
+
+		addSetting(conection_timeout = new SettingInt("conection_timeout", cat, INVISIBLE, 5000, SettingStoreType.Global));
+		addSetting(socket_timeout = new SettingInt("socket_timeout", cat, INVISIBLE, 30000, SettingStoreType.Global));
 
 	}
 

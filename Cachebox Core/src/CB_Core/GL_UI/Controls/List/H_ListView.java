@@ -248,7 +248,18 @@ public class H_ListView extends ListViewBase
 		}
 
 		if (mBaseAdapter.getCount() <= mSelectedIndex) setSelection(mBaseAdapter.getCount() - 1);
+	}
 
+	@Override
+	public void chkSlideBack()
+	{
+		if (!mIsDrageble)
+		{
+			startAnimationToBottom();
+			return;
+		}
+		if (mPos > 0) startAnimationtoTop();
+		else if (mPos < mcalcAllSizeBase) startAnimationToBottom();
 	}
 
 }

@@ -3,7 +3,9 @@ package CB_Core.Api;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,12 +14,15 @@ import java.util.TimeZone;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +49,11 @@ public class GroundspeakAPI
 {
 	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
 	public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
+
+	public static final int IO = 0;
+	public static final int ERROR = -1;
+	public static final int CONNECTION_TIMEOUT = -2;
+	public static final int API_ERROR = -3;
 
 	public static String LastAPIError = "";
 	public static boolean CacheStatusValid = false;
@@ -97,8 +107,8 @@ public class GroundspeakAPI
 	 */
 	public static int CreateFieldNoteAndPublish(String accessToken, String cacheCode, int wptLogTypeId, Date dateLogged, String note)
 	{
-
-		if (chkMemperShip(accessToken)) return -10;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
 
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
@@ -151,12 +161,25 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			Logger.Error("UploadFieldNotesAPI", "Error", ex);
-			LastAPIError = ex.getMessage();
-			return -1;
+			Logger.Error("UploadFieldNotesAPI", "ConnectTimeoutException", e);
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("UploadFieldNotesAPI", "UnsupportedEncodingException", e);
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("UploadFieldNotesAPI", "ClientProtocolException", e);
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("UploadFieldNotesAPI", "IOException", e);
+			return ERROR;
 		}
 
 		LastAPIError = "";
@@ -172,7 +195,9 @@ public class GroundspeakAPI
 	public static int GetCachesFound(String accessToken)
 	{
 
-		if (chkMemperShip(accessToken)) return -1;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
+
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
@@ -221,13 +246,28 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			return (-1);
+			Logger.Error("GetCachesFound", "ConnectTimeoutException", e);
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("GetCachesFound", "UnsupportedEncodingException", e);
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("GetCachesFound", "ClientProtocolException", e);
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("GetCachesFound", "IOException", e);
+			return ERROR;
 		}
 
-		return (-1);
+		return (ERROR);
 	}
 
 	/**
@@ -238,9 +278,7 @@ public class GroundspeakAPI
 	 */
 	public static int GetMembershipType(String accessToken)
 	{
-
-		API_isCheked = true;
-
+		if (API_isCheked) return membershipType;
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
@@ -274,6 +312,7 @@ public class GroundspeakAPI
 					int memberTypeId = memberType.getInt("MemberTypeId");
 					MemberName = user.getString("UserName");
 					membershipType = memberTypeId;
+					API_isCheked = true;
 					// Zurücksetzen, falls ein anderer User gewählt wurde
 					return memberTypeId;
 				}
@@ -283,23 +322,44 @@ public class GroundspeakAPI
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 
-					return (-1);
+					Logger.Error("GetMembershipType", "API-Error");
+					API_isCheked = false;
+					return API_ERROR;
 				}
 
 			}
 			catch (JSONException e)
 			{
-				e.printStackTrace();
+				Logger.Error("GetMembershipType", "JSONException", e);
+				API_isCheked = false;
+				return API_ERROR;
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			return (-1);
+			Logger.Error("GetMembershipType", "ConnectTimeoutException", e);
+			API_isCheked = false;
+			return CONNECTION_TIMEOUT;
 		}
-
-		return (-1);
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("GetMembershipType", "UnsupportedEncodingException", e);
+			API_isCheked = false;
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("GetMembershipType", "ClientProtocolException", e);
+			API_isCheked = false;
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("GetMembershipType", "IOException", e);
+			API_isCheked = false;
+			return ERROR;
+		}
 	}
 
 	/**
@@ -311,7 +371,8 @@ public class GroundspeakAPI
 	 */
 	public static int GetGeocacheStatus(String accessToken, ArrayList<Cache> caches)
 	{
-		if (chkMemperShip(accessToken)) return -1;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
 
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
@@ -387,10 +448,25 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			return (-1);
+			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("GetGeocacheStatus", "IOException", e);
+			return ERROR;
 		}
 
 		return (-1);
@@ -404,7 +480,8 @@ public class GroundspeakAPI
 	 */
 	public static int GetCacheLimits(String accessToken)
 	{
-		if (chkMemperShip(accessToken)) return -1;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
 
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
@@ -415,30 +492,30 @@ public class GroundspeakAPI
 		try
 		{
 			HttpPost httppost = new HttpPost(URL + "SearchForGeocaches?format=json");
-
-			JSONObject request = new JSONObject();
-			request.put("AccessToken", accessToken);
-			request.put("IsLight", false);
-			request.put("StartIndex", 0);
-			request.put("MaxPerPage", 1);
-			request.put("GeocacheLogCount", 0);
-			request.put("TrackableLogCount", 0);
-			JSONObject requestcc = new JSONObject();
-			JSONArray requesta = new JSONArray();
-			requesta.put("GCZZZZZ");
-			requestcc.put("CacheCodes", requesta);
-			request.put("CacheCode", requestcc);
-
-			String requestString = request.toString();
-
-			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
-
-			// Execute HTTP Post Request
-			String result = Execute(httppost);
-
-			// Parse JSON Result
 			try
 			{
+				JSONObject request = new JSONObject();
+				request.put("AccessToken", accessToken);
+				request.put("IsLight", false);
+				request.put("StartIndex", 0);
+				request.put("MaxPerPage", 1);
+				request.put("GeocacheLogCount", 0);
+				request.put("TrackableLogCount", 0);
+				JSONObject requestcc = new JSONObject();
+				JSONArray requesta = new JSONArray();
+				requesta.put("GCZZZZZ");
+				requestcc.put("CacheCodes", requesta);
+				request.put("CacheCode", requestcc);
+
+				String requestString = request.toString();
+
+				httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
+
+				// Execute HTTP Post Request
+				String result = Execute(httppost);
+
+				// Parse JSON Result
+
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				int status = checkCacheStatus(json, false);
@@ -456,11 +533,25 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			LastAPIError = "API Error: " + ex.getMessage();
-			return -1;
+			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("GetGeocacheStatus", "IOException", e);
+			return ERROR;
 		}
 	}
 
@@ -611,27 +702,28 @@ public class GroundspeakAPI
 	 */
 	public static int getMyTbList(String accessToken, TbList list)
 	{
-		if (chkMemperShip(accessToken)) return -1;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
+
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
 			HttpPost httppost = new HttpPost(URL + "GetUsersTrackables?format=json");
-
-			JSONObject request = new JSONObject();
-			request.put("AccessToken", accessToken);
-			request.put("MaxPerPage", 30);
-
-			String requestString = request.toString();
-
-			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
-
-			// Execute HTTP Post Request
-			String result = Execute(httppost);
-
 			try
-			// Parse JSON Result
 			{
+				JSONObject request = new JSONObject();
+				request.put("AccessToken", accessToken);
+				request.put("MaxPerPage", 30);
+
+				String requestString = request.toString();
+
+				httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
+
+				// Execute HTTP Post Request
+				String result = Execute(httppost);
+
+				// Parse JSON Result
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				JSONObject status = json.getJSONObject("Status");
@@ -664,19 +756,35 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			return (-1);
+			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("GetGeocacheStatus", "IOException", e);
+			return ERROR;
 		}
 
 		return (-1);
 	}
 
-	@SuppressWarnings("unused")
-	public static Trackable getTBbyTreckNumber(String accessToken, String TrackingCode)
+	public static int getTBbyTreckNumber(String accessToken, String TrackingCode, Trackable TB)
 	{
-		if (chkMemperShip(accessToken)) return null;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
+
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
@@ -697,12 +805,12 @@ public class GroundspeakAPI
 					LastAPIError = "";
 					JSONArray jTrackables = json.getJSONArray("Trackables");
 
-					for (int ii = 0; ii < jTrackables.length(); ii++)
+					for (int i = 0; i < jTrackables.length();)
 					{
-						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
-						Trackable ret = new Trackable(jTrackable);
-						ret.setTrackingCode(TrackingCode);
-						return ret;
+						JSONObject jTrackable = (JSONObject) jTrackables.get(i);
+						TB = new Trackable(jTrackable);
+						TB.setTrackingCode(TrackingCode);
+						return IO;
 					}
 				}
 				else
@@ -711,8 +819,8 @@ public class GroundspeakAPI
 					LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
 					LastAPIError += status.getString("StatusMessage") + "\n";
 					LastAPIError += status.getString("ExceptionDetails");
-
-					return null;
+					TB = null;
+					return ERROR;
 				}
 
 			}
@@ -722,19 +830,40 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			return null;
+			Logger.Error("getTBbyTreckNumber", "ConnectTimeoutException", e);
+			TB = null;
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("getTBbyTreckNumber", "UnsupportedEncodingException", e);
+			TB = null;
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("getTBbyTreckNumber", "ClientProtocolException", e);
+			TB = null;
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("getTBbyTreckNumber", "IOException", e);
+			TB = null;
+			return ERROR;
 		}
 
-		return null;
+		TB = null;
+		return ERROR;
 	}
 
-	@SuppressWarnings("unused")
-	public static Trackable getTBbyTbCode(String accessToken, String TrackingNumber)
+	public static int getTBbyTbCode(String accessToken, String TrackingNumber, Trackable TB)
 	{
-		if (chkMemperShip(accessToken)) return null;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
+
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
@@ -755,11 +884,11 @@ public class GroundspeakAPI
 					LastAPIError = "";
 					JSONArray jTrackables = json.getJSONArray("Trackables");
 
-					for (int ii = 0; ii < jTrackables.length(); ii++)
+					for (int ii = 0; ii < jTrackables.length();)
 					{
 						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
-						Trackable ret = new Trackable(jTrackable);
-						return ret;
+						TB = new Trackable(jTrackable);
+						return IO;
 					}
 				}
 				else
@@ -769,7 +898,7 @@ public class GroundspeakAPI
 					LastAPIError += status.getString("StatusMessage") + "\n";
 					LastAPIError += status.getString("ExceptionDetails");
 
-					return null;
+					return ERROR;
 				}
 
 			}
@@ -779,13 +908,34 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			return null;
+			Logger.Error("getTBbyTbCode", "ConnectTimeoutException", e);
+			TB = null;
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("getTBbyTbCode", "UnsupportedEncodingException", e);
+			TB = null;
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("getTBbyTbCode", "ClientProtocolException", e);
+			TB = null;
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("getTBbyTbCode", "IOException", e);
+			TB = null;
+			return ERROR;
 		}
 
-		return null;
+		TB = null;
+		return ERROR;
+
 	}
 
 	/**
@@ -799,7 +949,8 @@ public class GroundspeakAPI
 	 */
 	public static int getImagesForGeocache(String accessToken, String cacheCode, ArrayList<String> images)
 	{
-		if (chkMemperShip(accessToken)) return -1;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
 
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
@@ -845,20 +996,37 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			return (-1);
+			Logger.Error("getImagesForGeocache", "ConnectTimeoutException", e);
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("getImagesForGeocache", "UnsupportedEncodingException", e);
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("getImagesForGeocache", "ClientProtocolException", e);
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("getImagesForGeocache", "IOException", e);
+			return ERROR;
 		}
 
 		return (-1);
 	}
 
-	public static HashMap<String, URI> GetAllImageLinks(String accessToken, String cacheCode)
+	public static int GetAllImageLinks(String accessToken, String cacheCode, HashMap<String, URI> list)
 	{
-		if (chkMemperShip(accessToken)) return null;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
+
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
-		HashMap<String, URI> list = new HashMap<String, URI>();
+		if (list == null) list = new HashMap<String, URI>();
 		try
 		{
 			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + accessToken + "&CacheCode=" + cacheCode
@@ -882,7 +1050,7 @@ public class GroundspeakAPI
 						JSONObject jImage = (JSONObject) jImages.get(ii);
 						list.put(jImage.getString("Name"), new URI(jImage.getString("Url")));
 					}
-					return list;
+					return IO;
 				}
 				else
 				{
@@ -891,23 +1059,48 @@ public class GroundspeakAPI
 					LastAPIError += status.getString("StatusMessage") + "\n";
 					LastAPIError += status.getString("ExceptionDetails");
 
-					return null;
+					list = null;
+					return ERROR;
 				}
 
 			}
 			catch (JSONException e)
 			{
-				e.printStackTrace();
+				Logger.Error("getTBbyTbCode", "JSONException", e);
+			}
+			catch (URISyntaxException e)
+			{
+				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			return null;
+			Logger.Error("getTBbyTbCode", "ConnectTimeoutException", e);
+			list = null;
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("getTBbyTbCode", "UnsupportedEncodingException", e);
+			list = null;
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("getTBbyTbCode", "ClientProtocolException", e);
+			list = null;
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("getTBbyTbCode", "IOException", e);
+			list = null;
+			return ERROR;
 		}
 
-		return null;
+		list = null;
+		return ERROR;
 	}
 
 	/**
@@ -920,15 +1113,27 @@ public class GroundspeakAPI
 	 * @throws IOException
 	 * @throws ClientProtocolException
 	 */
-	public static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException
+	public static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException, ConnectTimeoutException
 	{
 		httprequest.setHeader("Accept", "application/json");
 		httprequest.setHeader("Content-type", "application/json");
 
 		// Execute HTTP Post Request
 		String result = "";
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpResponse response = httpclient.execute(httprequest);
+
+		HttpParams httpParameters = new BasicHttpParams();
+		// Set the timeout in milliseconds until a connection is established.
+		// The default value is zero, that means the timeout is not used.
+
+		HttpConnectionParams.setConnectionTimeout(httpParameters, Config.settings.conection_timeout.getValue());
+		// Set the default socket timeout (SO_TIMEOUT)
+		// in milliseconds which is the timeout for waiting for data.
+
+		HttpConnectionParams.setSoTimeout(httpParameters, Config.settings.socket_timeout.getValue());
+
+		DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+
+		HttpResponse response = httpClient.execute(httprequest);
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		String line = "";
@@ -1055,7 +1260,7 @@ public class GroundspeakAPI
 	 * @param accessToken
 	 * @return
 	 */
-	private static boolean chkMemperShip(String accessToken)
+	private static int chkMemperShip(String accessToken)
 	{
 		return chkMemperShip(accessToken, false);
 	}
@@ -1064,25 +1269,35 @@ public class GroundspeakAPI
 	 * Returns True if the APY-Key INVALID
 	 * 
 	 * @param accessToken
-	 * @return
+	 * @return 0=false 1=true
 	 */
-	private static boolean chkMemperShip(String accessToken, boolean withoutMsg)
+	private static int chkMemperShip(String accessToken, boolean withoutMsg)
 	{
 		boolean isValid = false;
-		if (API_isCheked) isValid = membershipType > 0;
+		if (API_isCheked)
+		{
+			isValid = membershipType > 0;
+			return isValid ? 0 : 1;
+		}
+		int ret = 0;
 		if (accessToken.length() > 0)
 		{
-			if (!isValid) GetMembershipType(accessToken);
+
+			if (!isValid)
+			{
+				ret = GetMembershipType(accessToken);
+				if (ret < 0) return ret;
+			}
 			isValid = membershipType > 0;
 		}
 
-		if (!isValid)
+		if (!isValid && ret != CONNECTION_TIMEOUT)
 		{
 			if (!withoutMsg) API_ErrorEventHandlerList.callInvalidApiKey();
 		}
 
-		API_isCheked = true;
-		return !isValid;
+		if (ret != CONNECTION_TIMEOUT) API_isCheked = true;
+		return isValid ? 0 : 1;
 	}
 
 	public static boolean isValidAPI_Key()
@@ -1108,7 +1323,8 @@ public class GroundspeakAPI
 	public static int createTrackableLog(String accessToken, String TbCode, String TrackingNummer, String cacheCode, int LogTypeId,
 			Date dateLogged, String note)
 	{
-		if (chkMemperShip(accessToken)) return -10;
+		int chk = chkMemperShip(accessToken);
+		if (chk < 0) return chk;
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 		if (cacheCode == null) cacheCode = "";
 
@@ -1161,12 +1377,25 @@ public class GroundspeakAPI
 			}
 
 		}
-		catch (Exception ex)
+		catch (ConnectTimeoutException e)
 		{
-			System.out.println(ex.getMessage());
-			Logger.Error("UploadFieldNotesAPI", "Error", ex);
-			LastAPIError = ex.getMessage();
-			return -1;
+			Logger.Error("createTrackableLog", "ConnectTimeoutException", e);
+			return CONNECTION_TIMEOUT;
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			Logger.Error("createTrackableLog", "UnsupportedEncodingException", e);
+			return ERROR;
+		}
+		catch (ClientProtocolException e)
+		{
+			Logger.Error("createTrackableLog", "ClientProtocolException", e);
+			return ERROR;
+		}
+		catch (IOException e)
+		{
+			Logger.Error("createTrackableLog", "IOException", e);
+			return ERROR;
 		}
 
 		LastAPIError = "";

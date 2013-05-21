@@ -28,23 +28,23 @@ public class FieldNoteEntry implements Serializable
 
 	public long Id;
 	public long CacheId;
-	public String gcCode;
+	public String gcCode = "";
 	public Date timestamp;
-	public String typeString;
+	public String typeString = "";
 	public LogTypes type;
 	public int cacheType;
-	public String comment;
+	public String comment = "";
 	public int foundNumber;
-	public String CacheName;
-	public String CacheUrl;
+	public String CacheName = "";
+	public String CacheUrl = "";
 	public int typeIcon;
 	public boolean uploaded;
 	public int gc_Vote;
 	public boolean isTbFieldNote = false;
-	public String TbName;
-	public String TbIconUrl;
-	public String TravelBugCode;
-	public String TrackingNumber;
+	public String TbName = "";
+	public String TbIconUrl = "";
+	public String TravelBugCode = "";
+	public String TrackingNumber = "";
 
 	public FieldNoteEntry(FieldNoteEntry fne)
 	{

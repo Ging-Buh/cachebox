@@ -40,6 +40,11 @@ public class Toast extends Dialog
 		mTextField.setText(txt);
 	}
 
+	public void setWrappedText(String txt)
+	{
+		mTextField.setWrappedText(txt, HAlignment.CENTER);
+	}
+
 	@Override
 	public void setWidth(float width)
 	{
