@@ -5,6 +5,7 @@ import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
+import CB_Core.GL_UI.Controls.Animation.AnimationBase;
 import CB_Core.GL_UI.Controls.Animation.RotateAnimation;
 import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -20,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class WaitDialog extends ButtonDialog
 {
 	public static final int WAIT_DURATION = 2000;
-	RotateAnimation iconImage;
+	AnimationBase iconImage;
 	WaitDialog that;
 
 	public WaitDialog(Size size, String name)
@@ -56,10 +57,10 @@ public class WaitDialog extends ButtonDialog
 		CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		waitDialog.iconImage = new RotateAnimation(imageRec, "MsgBoxIcon");
-		waitDialog.iconImage.setSprite(SpriteCache.Icons.get(IconName.settings_26.ordinal()));
-		waitDialog.iconImage.setOrigin(waitDialog.halfWidth, waitDialog.halfHeight);
+		((RotateAnimation) waitDialog.iconImage).setSprite(SpriteCache.Icons.get(IconName.settings_26.ordinal()));
+		((RotateAnimation) waitDialog.iconImage).setOrigin(waitDialog.halfWidth, waitDialog.halfHeight);
 		waitDialog.iconImage.play(WAIT_DURATION);
-		waitDialog.iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
+		((RotateAnimation) waitDialog.iconImage).setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
 		waitDialog.addChild(waitDialog.iconImage);
 
 		waitDialog.label = new Label(contentSize.getBounds(), "MsgBoxLabel");

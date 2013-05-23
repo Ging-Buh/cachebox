@@ -220,7 +220,14 @@ public class GL_MsgBox extends Dialog
 
 	public void setButtonCaptions(MessageBoxButtons buttons)
 	{
-		if (buttons == MessageBoxButtons.AbortRetryIgnore)
+		if (buttons == MessageBoxButtons.YesNoRetry)
+		{
+			createButtons(this, 3);
+			button1.setText(Translation.Get("yes"));
+			button2.setText(Translation.Get("no"));
+			button3.setText(Translation.Get("retry"));
+		}
+		else if (buttons == MessageBoxButtons.AbortRetryIgnore)
 		{
 			createButtons(this, 3);
 			button1.setText(Translation.Get("abort"));

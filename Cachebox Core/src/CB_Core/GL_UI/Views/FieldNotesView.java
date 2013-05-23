@@ -28,8 +28,10 @@ import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
@@ -304,28 +306,35 @@ public class FieldNotesView extends V_ListView
 							sendCacheVote(fieldNote);
 						}
 
-						int ret = 0;
+						int result = 0;
 
 						if (fieldNote.isTbFieldNote)
 						{
-							ret = GroundspeakAPI.createTrackableLog(Config.GetAccessToken(), fieldNote.TravelBugCode,
+							result = GroundspeakAPI.createTrackableLog(Config.GetAccessToken(), fieldNote.TravelBugCode,
 									fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type),
 									fieldNote.timestamp, fieldNote.comment);
 						}
 						else
 						{
 
-							ret = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode,
+							result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode,
 									fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment);
 						}
 
-						if (ret == -1)
+						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+						{
+							GL.that.Toast(ConnectionError.INSTANCE);
+							PD.close();
+							return;
+						}
+
+						if (result == -1)
 						{
 							UploadMeldung += fieldNote.gcCode + "\n" + CB_Core.Api.GroundspeakAPI.LastAPIError + "\n";
 						}
 						else
 						{
-							if (ret != -10)
+							if (result != -10)
 							{
 								// set fieldnote as uploaded only when upload was working
 								fieldNote.uploaded = true;

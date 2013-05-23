@@ -44,6 +44,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
+import CB_Core.Util.ByRef;
 
 public class GroundspeakAPI
 {
@@ -148,7 +149,7 @@ public class GroundspeakAPI
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 					LastAPIError = result;
-					return -1;
+					return ERROR;
 				}
 
 			}
@@ -157,7 +158,7 @@ public class GroundspeakAPI
 				e.printStackTrace();
 				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
 				LastAPIError = e.getMessage();
-				return -1;
+				return ERROR;
 			}
 
 		}
@@ -183,7 +184,7 @@ public class GroundspeakAPI
 		}
 
 		LastAPIError = "";
-		return 0;
+		return IO;
 	}
 
 	/**
@@ -236,7 +237,7 @@ public class GroundspeakAPI
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 
-					return (-1);
+					return ERROR;
 				}
 
 			}
@@ -555,33 +556,33 @@ public class GroundspeakAPI
 		}
 	}
 
-	// liest den Status aus dem gegebenen json Object aus.
-	static int checkStatus(JSONObject json)
-	{
-		LastAPIError = "";
-		try
-		{
-			JSONObject status = json.getJSONObject("Status");
-			if (status.getInt("StatusCode") == 0)
-			{
-				return 0;
-			}
-			else
-			{
-				LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-				LastAPIError += status.getString("StatusMessage") + "\n";
-				LastAPIError += status.getString("ExceptionDetails");
-				return status.getInt("StatusCode");
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-			LastAPIError = "API Error: " + e.getMessage();
-			return -3;
-		}
-	}
+	// // liest den Status aus dem gegebenen json Object aus.
+	// static int checkStatus(JSONObject json)
+	// {
+	// LastAPIError = "";
+	// try
+	// {
+	// JSONObject status = json.getJSONObject("Status");
+	// if (status.getInt("StatusCode") == 0)
+	// {
+	// return 0;
+	// }
+	// else
+	// {
+	// LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+	// LastAPIError += status.getString("StatusMessage") + "\n";
+	// LastAPIError += status.getString("ExceptionDetails");
+	// return status.getInt("StatusCode");
+	// }
+	// }
+	// catch (Exception e)
+	// {
+	// e.printStackTrace();
+	// System.out.println(e.getMessage());
+	// LastAPIError = "API Error: " + e.getMessage();
+	// return -3;
+	// }
+	// }
 
 	// liest den CacheStatus aus dem gegebenen json Object aus.
 	// darin ist gespeichert, wie viele Full Caches schon geladen wurden und wie
@@ -780,7 +781,7 @@ public class GroundspeakAPI
 		return (-1);
 	}
 
-	public static int getTBbyTreckNumber(String accessToken, String TrackingCode, Trackable TB)
+	public static int getTBbyTreckNumber(String accessToken, String TrackingCode, ByRef<Trackable> TB)
 	{
 		int chk = chkMemperShip(accessToken);
 		if (chk < 0) return chk;
@@ -808,8 +809,8 @@ public class GroundspeakAPI
 					for (int i = 0; i < jTrackables.length();)
 					{
 						JSONObject jTrackable = (JSONObject) jTrackables.get(i);
-						TB = new Trackable(jTrackable);
-						TB.setTrackingCode(TrackingCode);
+						TB.set(new Trackable(jTrackable));
+						TB.get().setTrackingCode(TrackingCode);
 						return IO;
 					}
 				}
@@ -859,7 +860,7 @@ public class GroundspeakAPI
 		return ERROR;
 	}
 
-	public static int getTBbyTbCode(String accessToken, String TrackingNumber, Trackable TB)
+	public static int getTBbyTbCode(String accessToken, String TrackingNumber, ByRef<Trackable> TB)
 	{
 		int chk = chkMemperShip(accessToken);
 		if (chk < 0) return chk;
@@ -887,7 +888,7 @@ public class GroundspeakAPI
 					for (int ii = 0; ii < jTrackables.length();)
 					{
 						JSONObject jTrackable = (JSONObject) jTrackables.get(ii);
-						TB = new Trackable(jTrackable);
+						TB.set(new Trackable(jTrackable));
 						return IO;
 					}
 				}

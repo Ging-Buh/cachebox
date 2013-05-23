@@ -22,6 +22,8 @@ import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.Parameters;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Util.FileIO;
@@ -434,6 +436,12 @@ public class DescriptionImageGrabber
 				HashMap<String, URI> allimgDict = new HashMap<String, URI>();
 
 				int result = GroundspeakAPI.GetAllImageLinks(Config.GetAccessToken(true), gcCode, allimgDict);
+
+				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+				{
+					GL.that.Toast(ConnectionError.INSTANCE);
+					return;
+				}
 
 				if (allimgDict == null) return;
 

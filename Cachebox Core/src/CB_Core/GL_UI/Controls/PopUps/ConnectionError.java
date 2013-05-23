@@ -1,5 +1,8 @@
 package CB_Core.GL_UI.Controls.PopUps;
 
+import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.Dialog;
+import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -9,6 +12,8 @@ public class ConnectionError extends Toast
 {
 	public static ConnectionError INSTANCE = new ConnectionError();
 
+	private Image mIcon;
+
 	private ConnectionError()
 	{
 
@@ -16,12 +21,21 @@ public class ConnectionError extends Toast
 
 		float wh = UI_Size_Base.that.getButtonWidth() * 2.5f;
 
-		CB_RectF posRec = new CB_RectF((UI_Size_Base.that.getWindowWidth() / 2) - (wh / 2), UI_Size_Base.that.getWindowHeight() / 2, wh, wh);
+		CB_RectF posRec = new CB_RectF((UI_Size_Base.that.getWindowWidth() / 2) - (wh / 2), UI_Size_Base.that.getWindowHeight() - wh
+				- Dialog.getMargin(), wh, wh);
 
 		this.setRec(posRec);
 
+		this.mTextField.setHeight(this.halfHeight);
+		this.mTextField.setZeroPos();
+		this.mTextField.setWidth(this.width * 0.8f);
+		this.mTextField.setX(this.halfWidth - mTextField.getHalfWidth());
 		this.setWrappedText(Translation.Get("ConnectionError"));
 
+		this.mIcon = new Image(0, 0, width, halfHeight, "ImageIcon");
+		this.mIcon.setSprite(SpriteCache.getThemedSprite("connection-error"));
+		this.mIcon.setY(halfHeight);
+		super.addChildToOverlay(mIcon);
 	}
 
 	@Override

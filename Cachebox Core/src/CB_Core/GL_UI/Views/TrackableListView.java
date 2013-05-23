@@ -14,6 +14,7 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -25,6 +26,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
+import CB_Core.Util.ByRef;
 
 public class TrackableListView extends CB_View_Base
 {
@@ -95,7 +97,7 @@ public class TrackableListView extends CB_View_Base
 				final String TBCode = txtSearch.getText().trim();
 				if (TBCode.length() > 0)
 				{
-					wd = CancelWaitDialog.ShowWait(Translation.Get("search"), new IcancelListner()
+					wd = DownloadWaitDialog.ShowWait(Translation.Get("search"), new IcancelListner()
 					{
 
 						@Override
@@ -113,7 +115,8 @@ public class TrackableListView extends CB_View_Base
 						{
 
 							Trackable tb = null;
-							int result = GroundspeakAPI.getTBbyTreckNumber(Config.GetAccessToken(true), TBCode, tb);
+							ByRef<Trackable> ref = new ByRef<Trackable>(tb);
+							int result = GroundspeakAPI.getTBbyTreckNumber(Config.GetAccessToken(true), TBCode, ref);
 
 							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 							{
@@ -122,7 +125,7 @@ public class TrackableListView extends CB_View_Base
 								return;
 							}
 
-							result = GroundspeakAPI.getTBbyTbCode(Config.GetAccessToken(true), TBCode, tb);
+							result = GroundspeakAPI.getTBbyTbCode(Config.GetAccessToken(true), TBCode, new ByRef<Trackable>(tb));
 							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 							{
 								GL.that.Toast(ConnectionError.INSTANCE);
@@ -130,6 +133,10 @@ public class TrackableListView extends CB_View_Base
 								return;
 							}
 							wd.close();
+
+							// get RefValue
+							tb = ref.get();
+
 							if (tb != null)
 							{
 								TB_Details details = new TB_Details();
@@ -185,7 +192,7 @@ public class TrackableListView extends CB_View_Base
 
 	public void RefreshTbList()
 	{
-		wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), new IcancelListner()
+		wd = DownloadWaitDialog.ShowWait(Translation.Get("RefreshInventory"), new IcancelListner()
 		{
 
 			@Override
@@ -204,11 +211,16 @@ public class TrackableListView extends CB_View_Base
 				TbList searchList = new TbList();
 				result = CB_Core.Api.GroundspeakAPI.getMyTbList(Config.GetAccessToken(), searchList);
 
-				if (result == 0)
+				if (result == GroundspeakAPI.IO)
 				{
 					TrackableListDAO.clearDB();
 					searchList.writeToDB();
 					TrackableListView.that.reloadTB_List();
+				}
+
+				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+				{
+					GL.that.Toast(ConnectionError.INSTANCE);
 				}
 
 				wd.close();

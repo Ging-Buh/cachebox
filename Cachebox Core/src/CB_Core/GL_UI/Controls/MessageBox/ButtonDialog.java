@@ -30,13 +30,13 @@ public class ButtonDialog extends Dialog
 
 	private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
-	protected Button button1;
-	protected Button button2;
-	protected Button button3;
+	public Button button1;
+	public Button button2;
+	public Button button3;
 	protected Label label;
 	protected Object data;
 
-	protected OnMsgBoxClickListener mMsgBoxClickListner;
+	public OnMsgBoxClickListener mMsgBoxClickListner;
 
 	protected OnClickListener positiveButtonClickListener;
 

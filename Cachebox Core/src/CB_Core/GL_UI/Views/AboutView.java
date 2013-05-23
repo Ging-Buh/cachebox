@@ -16,12 +16,14 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.SatBarChart;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
@@ -148,7 +150,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 								{
 								case 1:
 
-									pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), new IcancelListner()
+									pd = DownloadWaitDialog.ShowWait(Translation.Get("LoadFounds"), new IcancelListner()
 									{
 
 										@Override
@@ -175,6 +177,10 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 												Config.settings.FoundOffset.setValue(transFounds);
 												Config.AcceptChanges();
 												AboutView.this.refreshText();
+											}
+											if (transFounds == GroundspeakAPI.CONNECTION_TIMEOUT)
+											{
+												GL.that.Toast(ConnectionError.INSTANCE);
 											}
 										}
 									});

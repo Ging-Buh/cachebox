@@ -200,7 +200,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		try
 		{

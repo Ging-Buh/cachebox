@@ -29,6 +29,7 @@ import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.RouteDialog;
 import CB_Core.GL_UI.Controls.Dialogs.RouteDialog.returnListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -130,7 +131,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 					@Override
 					public void run()
 					{
-						wd = CancelWaitDialog.ShowWait("generateRoute", new IcancelListner()
+						wd = DownloadWaitDialog.ShowWait("generateRoute", new IcancelListner()
 						{
 
 							@Override

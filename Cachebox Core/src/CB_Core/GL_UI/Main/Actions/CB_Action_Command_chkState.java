@@ -13,6 +13,8 @@ import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Core.TranslationEngine.Translation;
@@ -134,6 +136,11 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 					// result = GroundspeakAPI.GetGeocacheStatus("WERTWEE", chkList100);
 					result = GroundspeakAPI.GetGeocacheStatus(Config.GetAccessToken(), chkList100);
 					if (result == -1) break;// API Error
+					if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+					{
+						GL.that.Toast(ConnectionError.INSTANCE);
+						break;
+					}
 					addedReturnList.addAll(chkList100);
 					start += BlockSize + 1;
 					stop += BlockSize + 1;

@@ -32,7 +32,6 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Plattform;
 import CB_Core.TrackRecorder;
-import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
@@ -68,7 +67,6 @@ import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
@@ -102,7 +100,6 @@ import CB_Locator.Locator.CompassType;
 import CB_Locator.Events.GpsStateChangeEventList;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -142,9 +139,7 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
@@ -2866,11 +2861,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
 
-						if (viewID == ViewConst.RELOAD_CACHE)
-						{
-							reloadSelectedCacheInfo();
-						}
-						else if (viewID == ViewConst.JOKER_VIEW)
+						if (viewID == ViewConst.JOKER_VIEW)
 						{
 							showJoker();
 						}
@@ -3276,128 +3267,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private SharedPreferences androidSetting;
 	private SharedPreferences.Editor androidSettingEditor;
-
-	private static ProgressDialog waitPD;
-
-	private void reloadSelectedCacheInfo()
-	{
-		if (threadReloadSelectedCacheInfo == null) threadReloadSelectedCacheInfo = new Thread()
-		{
-			public void run()
-			{
-
-				String accessToken = Config.GetAccessToken();
-				if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
-				{
-					int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);
-					if (result != 0)
-					{
-						onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(1));
-						return;
-					}
-				}
-				if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
-				{
-					String s = "Download limit is reached!\n";
-					s += "You have downloaded the full cache details of " + CB_Core.Api.GroundspeakAPI.MaxCacheCount
-							+ " caches in the last 24 hours.\n";
-					if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10) s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
-
-					message = s;
-
-					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(2));
-
-					return;
-				}
-
-				if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
-				{
-					String s = "Download Details of this cache?\n";
-					s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
-					s += "Actual Downloads: " + CB_Core.Api.GroundspeakAPI.CurrentCacheCount + "\n";
-					s += "Max. Downloads in 24h: " + CB_Core.Api.GroundspeakAPI.MaxCacheCount;
-					message = s;
-					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(3));
-					return;
-				}
-				else
-				{
-					// call the download directly
-					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(4));
-					return;
-				}
-			}
-		};
-		waitPD = ProgressDialog.show(this, "", "Download Description", true);
-
-		threadReloadSelectedCacheInfo.run();
-	}
-
-	private String message = "";
-	private Handler onlineReloadReadyHandler = new Handler()
-	{
-		public void handleMessage(Message msg)
-		{
-			switch (msg.what)
-			{
-			case 1:
-			{
-				waitPD.dismiss();
-				break;
-			}
-			case 2:
-			{
-				waitPD.dismiss();
-				GL_MsgBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
-				break;
-			}
-			case 3:
-			{
-				waitPD.dismiss();
-				GL_MsgBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
-						DownloadCacheDialogResult);
-				break;
-			}
-			case 4:
-			{
-				waitPD.dismiss();
-				DownloadCacheDialogResult.onClick(-1, null);
-				break;
-			}
-			}
-		}
-	};
-
-	private OnMsgBoxClickListener DownloadCacheDialogResult = new OnMsgBoxClickListener()
-	{
-		@Override
-		public boolean onClick(int button, Object data)
-		{
-			switch (button)
-			{
-			case -1:
-				CacheDAO dao = new CacheDAO();
-				Cache newCache = dao.LoadApiDetails(GlobalCore.getSelectedCache());
-				if (newCache != null)
-				{
-					GlobalCore.setSelectedCache(newCache);
-
-					// hier ist kein AccessToke mehr notwendig, da diese Info
-					// bereits im Cache sein muss!
-					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(""))
-					{
-						String s = "Download successful!\n";
-						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
-						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
-
-						GL_MsgBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
-					}
-				}
-				break;
-			}
-			return true;
-		}
-	};
 
 	// #########################################################
 	public void GetApiAuth()

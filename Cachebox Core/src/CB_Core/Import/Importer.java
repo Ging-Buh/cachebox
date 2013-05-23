@@ -32,6 +32,9 @@ import CB_Core.GCVote.RatingData;
 import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
@@ -651,28 +654,37 @@ public class Importer
 
 		if (GcCode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 		{
-			GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(true), GcCode, apiImages);
-			for (String image : apiImages)
+			int result = GroundspeakAPI.getImagesForGeocache(Config.GetAccessToken(true), GcCode, apiImages);
+
+			if (result == GroundspeakAPI.IO)
 			{
-				if (image.contains("/log/")) continue; // do not import log-images
-				if (!allImages.contains(image)) allImages.add(image);
+				for (String image : apiImages)
+				{
+					if (image.contains("/log/")) continue; // do not import log-images
+					if (!allImages.contains(image)) allImages.add(image);
+				}
+				while (allImages != null && allImages.size() > 0)
+				{
+					String url;
+					url = allImages.poll();
+
+					ImageEntry image = new ImageEntry();
+
+					image.CacheId = ID;
+					image.GcCode = GcCode;
+					image.Name = url.substring(url.lastIndexOf("/") + 1);
+					image.Description = "";
+					image.ImageUrl = url;
+					image.IsCacheImage = true;
+
+					importHandler.handleImage(image, true);
+
+				}
 			}
-			while (allImages != null && allImages.size() > 0)
+
+			if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 			{
-				String url;
-				url = allImages.poll();
-
-				ImageEntry image = new ImageEntry();
-
-				image.CacheId = ID;
-				image.GcCode = GcCode;
-				image.Name = url.substring(url.lastIndexOf("/") + 1);
-				image.Description = "";
-				image.ImageUrl = url;
-				image.IsCacheImage = true;
-
-				importHandler.handleImage(image, true);
-
+				GL.that.Toast(ConnectionError.INSTANCE);
 			}
 		}
 
@@ -747,7 +759,7 @@ public class Importer
 	public static CancelWaitDialog ImportSpoiler()
 	{
 
-		WD = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
+		WD = DownloadWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
 		{
 
 			@Override

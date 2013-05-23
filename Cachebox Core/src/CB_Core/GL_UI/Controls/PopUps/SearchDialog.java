@@ -30,6 +30,7 @@ import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Slider.YPositionChanged;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -592,7 +593,7 @@ public class SearchDialog extends PopUp_Base
 		else
 		{
 
-			wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
+			wd = DownloadWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
 			{
 
 				@Override
@@ -644,7 +645,7 @@ public class SearchDialog extends PopUp_Base
 
 	private void searchOnlineNow()
 	{
-		wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), new IcancelListner()
+		wd = DownloadWaitDialog.ShowWait(Translation.Get("searchOverAPI"), new IcancelListner()
 		{
 
 			@Override
@@ -937,7 +938,7 @@ public class SearchDialog extends PopUp_Base
 		else
 		{
 
-			WD = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
+			WD = DownloadWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
 			{
 
 				@Override

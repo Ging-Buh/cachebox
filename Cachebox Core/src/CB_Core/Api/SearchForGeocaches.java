@@ -1,19 +1,15 @@
 package CB_Core.Api;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +24,8 @@ import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Import.Importer;
 import CB_Core.Log.Logger;
@@ -113,9 +111,6 @@ public class SearchForGeocaches
 			apiStatus = 1;
 		}
 
-		// try
-		// {
-		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost("https://api.groundspeak.com/LiveV5/Geocaching.svc/SearchForGeocaches?format=json");
 
 		String requestString = "";
@@ -277,44 +272,25 @@ public class SearchForGeocaches
 		httppost.setHeader("Content-type", "application/json");
 
 		// Execute HTTP Post Request
-		HttpResponse response = null;
 		try
 		{
-			response = httpclient.execute(httppost);
+			result = GroundspeakAPI.Execute(httppost);
 		}
-		catch (ClientProtocolException e2)
+		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("SearchForGeocaches:ClientProtocolException", e2.getMessage());
-		}
-		catch (IOException e2)
-		{
-			Logger.Error("SearchForGeocaches:IOException", e2.getMessage());
-		}
+			Logger.Error("SearchForGeocaches:ConnectTimeoutException", e.getMessage());
+			GL.that.Toast(ConnectionError.INSTANCE);
 
-		BufferedReader rd = null;
-		try
-		{
-			rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			return "";
+
 		}
-		catch (IllegalStateException e2)
+		catch (ClientProtocolException e)
 		{
-			Logger.Error("SearchForGeocaches:IllegalStateException", e2.getMessage());
+			Logger.Error("SearchForGeocaches:ClientProtocolException", e.getMessage());
 		}
-		catch (IOException e2)
+		catch (IOException e)
 		{
-			Logger.Error("SearchForGeocaches:IOException:BufferedReader", e2.getMessage());
-		}
-		String line = "";
-		try
-		{
-			while ((line = rd.readLine()) != null)
-			{
-				result += line + "\n";
-			}
-		}
-		catch (IOException e2)
-		{
-			Logger.Error("SearchForGeocaches:IOException:rd.readLine", e2.getMessage());
+			Logger.Error("SearchForGeocaches:IOException", e.getMessage());
 		}
 
 		// Parse JSON Result
@@ -621,15 +597,6 @@ public class SearchForGeocaches
 
 			e.printStackTrace();
 		}
-
-		// }
-		// catch (Exception ex)
-		// {
-		// Logger.Error("SearchForGeocaches", ex.getMessage(), ex);
-		// // System.out.println(ex.getMessage());
-		// Logger.LogCat(ex.getMessage());
-		// return "API Error: " + ex.getMessage();
-		// }
 
 		return result;
 	}

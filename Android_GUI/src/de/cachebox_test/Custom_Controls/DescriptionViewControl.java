@@ -8,16 +8,20 @@ import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Log.Logger;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,6 +40,8 @@ import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
 
+@SuppressLint(
+	{ "HandlerLeak", "SetJavaScriptEnabled" })
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 {
 
@@ -117,6 +123,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 							if (result != 0)
 							{
 								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
+								return;
+							}
+
+							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+							{
+								GL.that.Toast(ConnectionError.INSTANCE);
 								return;
 							}
 						}

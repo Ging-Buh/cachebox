@@ -20,11 +20,14 @@ import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.RadioButton;
 import CB_Core.GL_UI.Controls.RadioGroup;
-import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.Math.CB_RectF;
@@ -249,7 +252,7 @@ public class TB_Log extends ActivityBase
 	private void logOnline()
 	{
 
-		wd = CancelWaitDialog.ShowWait("Upload Log", new IcancelListner()
+		wd = DownloadWaitDialog.ShowWait("Upload Log", new IcancelListner()
 		{
 
 			@Override
@@ -265,8 +268,38 @@ public class TB_Log extends ActivityBase
 			public void run()
 			{
 				GroundspeakAPI.LastAPIError = "";
-				GroundspeakAPI.createTrackableLog(Config.GetAccessToken(), TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(),
-						edit.getText());
+				int result = GroundspeakAPI.createTrackableLog(Config.GetAccessToken(), TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT),
+						new Date(), edit.getText());
+
+				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+				{
+					GL.that.Toast(ConnectionError.INSTANCE);
+					if (wd != null) wd.close();
+					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"),
+							MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+							{
+
+								@Override
+								public boolean onClick(int which, Object data)
+								{
+									switch (which)
+									{
+									case GL_MsgBox.BUTTON_NEGATIVE:
+										logOnline();
+										return true;
+
+									case GL_MsgBox.BUTTON_NEUTRAL:
+										return true;
+
+									case GL_MsgBox.BUTTON_POSITIVE:
+										createFieldNote();
+										return true;
+									}
+									return true;
+								}
+							});
+					return;
+				}
 
 				if (GroundspeakAPI.LastAPIError.length() > 0)
 				{
@@ -279,7 +312,6 @@ public class TB_Log extends ActivityBase
 							GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error);
 						}
 					});
-
 				}
 
 				if (wd != null) wd.close();

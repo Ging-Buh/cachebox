@@ -12,7 +12,7 @@ public class Toast extends Dialog
 	public static final int LENGTH_SHORT = 1500;
 	public static final int LENGTH_LONG = 3000;
 
-	public Label mTextField;
+	protected Label mTextField;
 
 	public Toast(CB_RectF rec, String Name)
 	{
