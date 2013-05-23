@@ -275,6 +275,10 @@ public class SearchForGeocaches
 		try
 		{
 			result = GroundspeakAPI.Execute(httppost);
+			if (result.contains("The service is unavailable"))
+			{
+				return "The service is unavailable";
+			}
 		}
 		catch (ConnectTimeoutException e)
 		{

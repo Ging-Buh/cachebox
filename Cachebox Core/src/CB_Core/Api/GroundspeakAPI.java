@@ -54,6 +54,7 @@ public class GroundspeakAPI
 	public static final int IO = 0;
 	public static final int ERROR = -1;
 	public static final int CONNECTION_TIMEOUT = -2;
+	public static final int API_IS_UNAVAILABLE = -2; // TODO Create ErorMsg for this
 	public static final int API_ERROR = -3;
 
 	public static String LastAPIError = "";
@@ -131,6 +132,11 @@ public class GroundspeakAPI
 
 			// Execute HTTP Post Request
 			String result = Execute(httppost);
+
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
 
 			// Parse JSON Result
 			try
@@ -217,6 +223,11 @@ public class GroundspeakAPI
 			// Execute HTTP Post Request
 			String result = Execute(httppost);
 
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
+
 			try
 			// Parse JSON Result
 			{
@@ -297,6 +308,10 @@ public class GroundspeakAPI
 
 			// Execute HTTP Post Request
 			String result = Execute(httppost);
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
 
 			try
 			// Parse JSON Result
@@ -399,7 +414,10 @@ public class GroundspeakAPI
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			String result = Execute(httppost);
-
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
 			try
 			// Parse JSON Result
 			{
@@ -514,7 +532,10 @@ public class GroundspeakAPI
 
 				// Execute HTTP Post Request
 				String result = Execute(httppost);
-
+				if (result.contains("The service is unavailable"))
+				{
+					return API_IS_UNAVAILABLE;
+				}
 				// Parse JSON Result
 
 				JSONTokener tokener = new JSONTokener(result);
@@ -555,34 +576,6 @@ public class GroundspeakAPI
 			return ERROR;
 		}
 	}
-
-	// // liest den Status aus dem gegebenen json Object aus.
-	// static int checkStatus(JSONObject json)
-	// {
-	// LastAPIError = "";
-	// try
-	// {
-	// JSONObject status = json.getJSONObject("Status");
-	// if (status.getInt("StatusCode") == 0)
-	// {
-	// return 0;
-	// }
-	// else
-	// {
-	// LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-	// LastAPIError += status.getString("StatusMessage") + "\n";
-	// LastAPIError += status.getString("ExceptionDetails");
-	// return status.getInt("StatusCode");
-	// }
-	// }
-	// catch (Exception e)
-	// {
-	// e.printStackTrace();
-	// System.out.println(e.getMessage());
-	// LastAPIError = "API Error: " + e.getMessage();
-	// return -3;
-	// }
-	// }
 
 	// liest den CacheStatus aus dem gegebenen json Object aus.
 	// darin ist gespeichert, wie viele Full Caches schon geladen wurden und wie
@@ -724,6 +717,11 @@ public class GroundspeakAPI
 				// Execute HTTP Post Request
 				String result = Execute(httppost);
 
+				if (result.contains("The service is unavailable"))
+				{
+					return API_IS_UNAVAILABLE;
+				}
+
 				// Parse JSON Result
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
@@ -794,7 +792,10 @@ public class GroundspeakAPI
 					+ TrackingCode + "&format=json");
 
 			String result = Execute(httppost);
-
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
 			try
 			// Parse JSON Result
 			{
@@ -873,7 +874,10 @@ public class GroundspeakAPI
 					+ "&format=json");
 
 			String result = Execute(httppost);
-
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
 			try
 			// Parse JSON Result
 			{
@@ -961,7 +965,10 @@ public class GroundspeakAPI
 					+ "&format=json");
 
 			String result = Execute(httppost);
-
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
 			try
 			// Parse JSON Result
 			{
@@ -1034,7 +1041,10 @@ public class GroundspeakAPI
 					+ "&format=json");
 
 			String result = Execute(httppost);
-
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
 			try
 			// Parse JSON Result
 			{
@@ -1347,7 +1357,10 @@ public class GroundspeakAPI
 
 			// Execute HTTP Post Request
 			String result = Execute(httppost);
-
+			if (result.contains("The service is unavailable"))
+			{
+				return API_IS_UNAVAILABLE;
+			}
 			// Parse JSON Result
 			try
 			{
