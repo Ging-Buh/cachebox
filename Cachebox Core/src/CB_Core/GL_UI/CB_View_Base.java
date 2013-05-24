@@ -528,7 +528,11 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 				}
 
 			}
-			float objectWidth = (widthToFill - percentWidthSum - fixedWidthSum) / weightedAnz - this.xMargin;
+			float objectWidth = 0;
+			if (weightedAnz != 0)
+			{
+				objectWidth = (widthToFill - percentWidthSum - fixedWidthSum) / weightedAnz - this.xMargin;
+			}
 			for (GL_View_Base g : this.row)
 			{
 				if (g.Weight > 0)
