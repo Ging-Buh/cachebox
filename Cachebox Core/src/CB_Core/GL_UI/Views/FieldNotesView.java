@@ -547,6 +547,8 @@ public class FieldNotesView extends V_ListView
 			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
 					Config.settings.AddNoteTemplate.getValue(), newFieldNote);
 			break;
+		default:
+			break;
 		}
 
 		if (!witoutShowEdit)
