@@ -310,12 +310,17 @@ public class Fonts
 			Texture tex = new Texture(Gdx.files.absolute(fontPath.replace(".fnt", ".png")));
 			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			TextureRegion region = new TextureRegion(tex);
-			return new BitmapFont(Gdx.files.absolute(fontPath), region, false);
+			BitmapFont ret = new BitmapFont(Gdx.files.absolute(fontPath), region, false);
+			return ret;
 		}
 		else
 		{
 			Logger.DEBUG("generate font for scale " + scale);
-			return generator.generateFont(scale);
+			BitmapFont ret = generator.generateFont(scale);
+			TextureRegion region = ret.getRegion();
+			Texture tex = region.getTexture();
+			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			return ret;
 		}
 	}
 
