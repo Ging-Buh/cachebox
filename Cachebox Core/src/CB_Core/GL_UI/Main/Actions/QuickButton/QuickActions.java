@@ -61,6 +61,7 @@ public enum QuickActions
 	TrackableListView, // 20
 	addWP, // 21
 	Solver2, // 22
+	Notesview, // 23
 	// ScreenLock, // 21
 
 	empty, ;
@@ -169,6 +170,8 @@ public enum QuickActions
 			return action_add_WP;
 		case 22:
 			return TabMainView.actionShowSolverView2;
+		case 23:
+			return TabMainView.actionShowNotesView;
 		}
 		return null;
 	}
@@ -223,6 +226,8 @@ public enum QuickActions
 			return Translation.Get("addWaypoint");
 		case 22:
 			return Translation.Get("Solver") + " 2";
+		case 23:
+			return Translation.Get("Notes");
 		}
 		return "empty";
 	}

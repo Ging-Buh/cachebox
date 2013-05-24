@@ -13,6 +13,7 @@ import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.MenuID;
@@ -139,6 +140,11 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 					if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 					{
 						GL.that.Toast(ConnectionError.INSTANCE);
+						break;
+					}
+					if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+					{
+						GL.that.Toast(ApiUnavailable.INSTANCE);
 						break;
 					}
 					addedReturnList.addAll(chkList100);

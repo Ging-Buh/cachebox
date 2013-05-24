@@ -28,6 +28,7 @@ import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
@@ -324,6 +325,12 @@ public class FieldNotesView extends V_ListView
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 						{
 							GL.that.Toast(ConnectionError.INSTANCE);
+							PD.close();
+							return;
+						}
+						if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+						{
+							GL.that.Toast(ApiUnavailable.INSTANCE);
 							PD.close();
 							return;
 						}

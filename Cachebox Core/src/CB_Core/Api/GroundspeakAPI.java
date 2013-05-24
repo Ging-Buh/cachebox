@@ -54,8 +54,8 @@ public class GroundspeakAPI
 	public static final int IO = 0;
 	public static final int ERROR = -1;
 	public static final int CONNECTION_TIMEOUT = -2;
-	public static final int API_IS_UNAVAILABLE = -2; // TODO Create ErorMsg for this
 	public static final int API_ERROR = -3;
+	public static final int API_IS_UNAVAILABLE = -4;
 
 	public static String LastAPIError = "";
 	public static boolean CacheStatusValid = false;
@@ -865,7 +865,6 @@ public class GroundspeakAPI
 	{
 		int chk = chkMemperShip(accessToken);
 		if (chk < 0) return chk;
-
 		String URL = Config.settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try

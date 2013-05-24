@@ -22,6 +22,7 @@ import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.Parameters;
+import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
@@ -440,6 +441,12 @@ public class DescriptionImageGrabber
 				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 				{
 					GL.that.Toast(ConnectionError.INSTANCE);
+					return;
+				}
+
+				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+				{
+					GL.that.Toast(ApiUnavailable.INSTANCE);
 					return;
 				}
 

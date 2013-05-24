@@ -829,7 +829,7 @@ public class SpriteCache
 			Icons.add(getThemedSprite("log10icon")); // 47
 			Icons.add(getThemedSprite("d-n")); // 48
 			Icons.add(getThemedSprite("cb")); // 49
-			Icons.add(getThemedSprite("userdata")); // 50
+			Icons.add(getThemedSprite("note-icon")); // 50
 			Icons.add(getThemedSprite("day-spinner")); // 51
 			Icons.add(getThemedSprite("add-icon")); // 52
 			Icons.add(getThemedSprite("target-day")); // 53

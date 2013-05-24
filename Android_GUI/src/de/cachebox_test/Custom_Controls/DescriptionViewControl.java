@@ -14,6 +14,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Import.DescriptionImageGrabber;
@@ -129,6 +130,11 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 							{
 								GL.that.Toast(ConnectionError.INSTANCE);
+								return;
+							}
+							if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+							{
+								GL.that.Toast(ApiUnavailable.INSTANCE);
 								return;
 							}
 						}

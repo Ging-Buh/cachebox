@@ -18,6 +18,7 @@ import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
+import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
@@ -124,6 +125,12 @@ public class TrackableListView extends CB_View_Base
 								wd.close();
 								return;
 							}
+							if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+							{
+								GL.that.Toast(ApiUnavailable.INSTANCE);
+								wd.close();
+								return;
+							}
 
 							result = GroundspeakAPI.getTBbyTbCode(Config.GetAccessToken(true), TBCode, new ByRef<Trackable>(tb));
 							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
@@ -132,6 +139,14 @@ public class TrackableListView extends CB_View_Base
 								wd.close();
 								return;
 							}
+
+							if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+							{
+								GL.that.Toast(ApiUnavailable.INSTANCE);
+								wd.close();
+								return;
+							}
+
 							wd.close();
 
 							// get RefValue
@@ -221,6 +236,11 @@ public class TrackableListView extends CB_View_Base
 				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 				{
 					GL.that.Toast(ConnectionError.INSTANCE);
+				}
+
+				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+				{
+					GL.that.Toast(ApiUnavailable.INSTANCE);
 				}
 
 				wd.close();

@@ -23,6 +23,7 @@ import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
@@ -50,7 +51,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	Image CB_Logo;
 	float margin;
 	private SatBarChart chart;
-	private int transFounds = -1;
+	private int result = -1;
 	CancelWaitDialog pd;
 	AboutView Me;
 
@@ -165,22 +166,26 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 										@Override
 										public void run()
 										{
-											transFounds = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
+											result = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
 											pd.close();
 
-											if (transFounds > -1)
+											if (result > -1)
 											{
-												String Text = Translation.Get("FoundsSetTo", String.valueOf(transFounds));
+												String Text = Translation.Get("FoundsSetTo", String.valueOf(result));
 												GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK,
 														MessageBoxIcon.GC_Live, null);
 
-												Config.settings.FoundOffset.setValue(transFounds);
+												Config.settings.FoundOffset.setValue(result);
 												Config.AcceptChanges();
 												AboutView.this.refreshText();
 											}
-											if (transFounds == GroundspeakAPI.CONNECTION_TIMEOUT)
+											if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 											{
 												GL.that.Toast(ConnectionError.INSTANCE);
+											}
+											if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+											{
+												GL.that.Toast(ApiUnavailable.INSTANCE);
 											}
 										}
 									});

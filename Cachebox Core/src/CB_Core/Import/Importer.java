@@ -33,6 +33,7 @@ import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
+import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
@@ -685,6 +686,10 @@ public class Importer
 			if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 			{
 				GL.that.Toast(ConnectionError.INSTANCE);
+			}
+			if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+			{
+				GL.that.Toast(ApiUnavailable.INSTANCE);
 			}
 		}
 

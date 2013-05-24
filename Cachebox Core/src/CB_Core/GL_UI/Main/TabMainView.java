@@ -102,7 +102,7 @@ public class TabMainView extends MainViewBase
 	public static CB_Action_ShowFieldNotesView actionShowFieldNotesView;
 	public static CB_Action_ShowJokerView actionShowJokerView;
 	public static CB_Action_ShowLogView actionShowLogView;
-	private CB_Action_ShowNotesView actionShowNotesView;
+	public static CB_Action_ShowNotesView actionShowNotesView;
 	public static CB_Action_ShowSolverView actionShowSolverView;
 	public static CB_Action_ShowSolverView2 actionShowSolverView2;
 	public static CB_Action_ShowSpoilerView actionShowSpoilerView;
