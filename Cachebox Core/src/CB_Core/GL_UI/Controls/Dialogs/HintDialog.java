@@ -11,7 +11,6 @@ import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
-import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 public class HintDialog extends GL_MsgBox
@@ -36,16 +35,15 @@ public class HintDialog extends GL_MsgBox
 		hintTextDecoded = GlobalCore.Rot13(GlobalCore.getSelectedCache().hint) + "\n ";
 		hintTextEncoded = GlobalCore.getSelectedCache().hint + "\n ";
 
+		// nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
+		// !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
+		Dialog.margin = 5;
 		Size decodedSize = calcMsgBoxSize(hintTextDecoded, true, true, false);
 		Size encodedSize = calcMsgBoxSize(hintTextEncoded, true, true, false);
 
 		Size maxTextSize = decodedSize.height > encodedSize.height ? decodedSize : encodedSize;
-		float m = UI_Size_Base.that.getMargin();
-		maxTextSize.width = UI_Size_Base.that.getWindowWidth() - (int) (2 * m);
 
 		GL_MsgBox msgBox = new GL_MsgBox(maxTextSize, "MsgBox");
-		Dialog.margin = m;
-		msgBox.setX(m);
 		msgBox.setTitle(Translation.Get("hint"));
 		msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
 		msgBox.mMsgBoxClickListner = null;

@@ -127,13 +127,11 @@ public class GL_MsgBox extends Dialog
 			return null;
 		}
 
+		// nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
+		// !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
+		Dialog.margin = 5;
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)),
 				"MsgBox" + title);
-
-		float m = UI_Size_Base.that.getMargin();
-		Dialog.margin = m;
-		msgBox.setX(m);
-		msgBox.setWidth(UI_Size_Base.that.getWindowWidth() - 2 * m);
 
 		msgBox.rememberSetting = remember;
 		msgBox.mMsgBoxClickListner = Listener;
