@@ -218,24 +218,19 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		CB_RectF lblRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight() / 2.5f);
 
 		lblGPS = new Label(lblRec, "lblGPS");
-		lblGPS.setText(Translation.Get("gps"));
-		leftMaxWidth = Math.max(leftMaxWidth, lblGPS.bounds.width);
+		leftMaxWidth = Math.max(leftMaxWidth, lblGPS.setText(Translation.Get("gps")).width);
 
 		lblAccuracy = new Label(lblRec, "lblAccuracy");
-		lblAccuracy.setText(Translation.Get("accuracy"));
-		leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.bounds.width);
+		leftMaxWidth = Math.max(leftMaxWidth, lblAccuracy.setText(Translation.Get("accuracy")).width);
 
 		lblWP = new Label(lblRec, "lblWP");
-		lblWP.setText(Translation.Get("waypoint"));
-		leftMaxWidth = Math.max(leftMaxWidth, lblWP.bounds.width);
+		leftMaxWidth = Math.max(leftMaxWidth, lblWP.setText(Translation.Get("waypoint")).width);
 
 		lblCoord = new Label(lblRec, "lblCord");
-		lblCoord.setText(Translation.Get("coordinate"));
-		leftMaxWidth = Math.max(leftMaxWidth, lblCoord.bounds.width);
+		leftMaxWidth = Math.max(leftMaxWidth, lblCoord.setText(Translation.Get("coordinate")).width);
 
 		lblCurrent = new Label(lblRec, "lblCurrent");
-		lblCurrent.setText(Translation.Get("current"));
-		leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.bounds.width);
+		leftMaxWidth = Math.max(leftMaxWidth, lblCurrent.setText(Translation.Get("current")).width);
 
 		// set all lbl to the same max width + margin
 		leftMaxWidth += margin;

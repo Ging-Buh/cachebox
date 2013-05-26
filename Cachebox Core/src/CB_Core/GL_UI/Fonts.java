@@ -288,7 +288,7 @@ public class Fonts
 		String fs = GlobalCore.fs;
 		String fontPath = "";
 		// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
-		String path = cfg.SkinFolder.replace("/", fs) + fs + "fonts";
+		String path = cfg.SkinFolder.replace("/", fs) + fs + "fnts";
 		if (FileIO.DirectoryExists(path))
 		{
 			// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
@@ -297,7 +297,7 @@ public class Fonts
 		else
 		{
 			// fonts-Verzeichnis "global" im cachebox/skins
-			path = cfg.SkinFolder.replace("/", fs) + fs + ".." + fs + "fonts";
+			path = cfg.SkinFolder.replace("/", fs) + fs + ".." + fs + "fnts";
 			fontPath = path + fs + String.valueOf(scale) + ".fnt";
 		}
 

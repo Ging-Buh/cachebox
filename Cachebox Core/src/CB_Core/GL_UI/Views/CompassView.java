@@ -36,7 +36,6 @@ import CB_Locator.Events.PositionChangedEventList;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent
@@ -705,9 +704,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (scale != null) scale.setRotate((float) heading);
 		if (lblDistance != null)
 		{
-			lblDistance.setText(UnitFormatter.DistanceString(distance));
-			TextBounds bounds = lblDistance.bounds;
-			float labelWidth = bounds.width + (6 * margin);
+			float labelWidth = lblDistance.setText(UnitFormatter.DistanceString(distance)).width + (6 * margin);
 			if (showMap)
 			{
 				if (distanceBack != null)

@@ -17,19 +17,16 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	// # Constructors
 
+	public CB_View_Base()
+	{
+		super();
+	}
+
 	public CB_View_Base(String Name)
 	{
 		super(Name);
 	}
 
-	/**
-	 * Constructor fuer ein neues GL_View_Base mit Angabe der linken unteren Ecke und der Hoehe und Breite
-	 * 
-	 * @param X
-	 * @param Y
-	 * @param Width
-	 * @param Height
-	 */
 	public CB_View_Base(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);

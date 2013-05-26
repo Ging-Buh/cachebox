@@ -39,7 +39,7 @@ public class Label extends CB_View_Base
 
 	private CB_RectF innerRec;
 	private String text = "";
-	public TextBounds bounds;
+	private TextBounds bounds;
 
 	private float left = 0;
 	private float right = 0;

@@ -43,8 +43,6 @@ public abstract class GL_View_Base extends CB_RectF
 
 	protected Drawable drawableBackground;
 
-	protected GL_View_Base Me;
-
 	/**
 	 * Enthaelt alle GL_Views innerhalb dieser Gl_View
 	 */
@@ -84,9 +82,13 @@ public abstract class GL_View_Base extends CB_RectF
 
 	// # Constructors
 
+	public GL_View_Base()
+	{
+		name = "" + this.hashCode();
+	}
+
 	public GL_View_Base(String Name)
 	{
-		Me = this;
 		name = Name;
 	}
 
@@ -101,7 +103,6 @@ public abstract class GL_View_Base extends CB_RectF
 	public GL_View_Base(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height);
-		Me = this;
 		name = Name;
 
 	}
@@ -109,7 +110,6 @@ public abstract class GL_View_Base extends CB_RectF
 	public GL_View_Base(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
 	{
 		super(X, Y, Width, Height);
-		Me = this;
 		parent = Parent;
 		name = Name;
 
@@ -118,7 +118,6 @@ public abstract class GL_View_Base extends CB_RectF
 	public GL_View_Base(CB_RectF rec, String Name)
 	{
 		super(rec);
-		Me = this;
 		name = Name;
 
 	}
@@ -126,7 +125,6 @@ public abstract class GL_View_Base extends CB_RectF
 	public GL_View_Base(CB_RectF rec, GL_View_Base Parent, String Name)
 	{
 		super(rec);
-		Me = this;
 		parent = Parent;
 		name = Name;
 
@@ -135,7 +133,6 @@ public abstract class GL_View_Base extends CB_RectF
 	public GL_View_Base(SizeF size, String Name)
 	{
 		super(0, 0, size.width, size.height);
-		Me = this;
 		name = Name;
 
 	}
