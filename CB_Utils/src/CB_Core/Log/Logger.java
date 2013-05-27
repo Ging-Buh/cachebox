@@ -225,6 +225,8 @@ public class Logger
 
 	private static void writeDebugMsgtoFile(String Msg)
 	{
+		if(mDebugFilePath==null)return;
+		
 		File file = new File(mDebugFilePath);
 
 		if (mCreateDebugWithHeader != null) mCreateDebugWithHeader.CreateDebugWithHeader(file);

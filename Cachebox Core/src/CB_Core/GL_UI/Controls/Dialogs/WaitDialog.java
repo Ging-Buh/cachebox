@@ -1,12 +1,10 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.Controls.Animation.AnimationBase;
-import CB_Core.GL_UI.Controls.Animation.RotateAnimation;
+import CB_Core.GL_UI.Controls.Animation.WorkAnimation;
 import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
@@ -20,8 +18,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class WaitDialog extends ButtonDialog
 {
-	public static final int WAIT_DURATION = 2000;
-	AnimationBase iconImage;
+	AnimationBase animation;
 	WaitDialog that;
 
 	public WaitDialog(Size size, String name)
@@ -44,6 +41,23 @@ public class WaitDialog extends ButtonDialog
 		return wd;
 	}
 
+	public void setAnimation(final AnimationBase Animation)
+	{
+		GL.that.RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				WaitDialog.this.removeChild(WaitDialog.this.animation);
+				CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+				WaitDialog.this.animation = Animation.INSTANCE(imageRec);
+				WaitDialog.this.addChild(WaitDialog.this.animation);
+			}
+		});
+
+	}
+
 	protected static WaitDialog createDialog(String msg)
 	{
 
@@ -55,13 +69,8 @@ public class WaitDialog extends ButtonDialog
 		SizeF contentSize = waitDialog.getContentSize();
 
 		CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
-
-		waitDialog.iconImage = new RotateAnimation(imageRec, "MsgBoxIcon");
-		((RotateAnimation) waitDialog.iconImage).setSprite(SpriteCache.Icons.get(IconName.settings_26.ordinal()));
-		((RotateAnimation) waitDialog.iconImage).setOrigin(waitDialog.halfWidth, waitDialog.halfHeight);
-		waitDialog.iconImage.play(WAIT_DURATION);
-		((RotateAnimation) waitDialog.iconImage).setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
-		waitDialog.addChild(waitDialog.iconImage);
+		waitDialog.animation = WorkAnimation.GetINSTANCE(imageRec);
+		waitDialog.addChild(waitDialog.animation);
 
 		waitDialog.label = new Label(contentSize.getBounds(), "MsgBoxLabel");
 		waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
@@ -81,9 +90,9 @@ public class WaitDialog extends ButtonDialog
 			waitDialog.label.setVAlignment(VAlignment.TOP);
 		}
 
-		float imageYPos = (contentSize.height < (waitDialog.iconImage.getHeight() * 1.7)) ? contentSize.halfHeight
-				- waitDialog.iconImage.getHalfHeight() : contentSize.height - waitDialog.iconImage.getHeight() - margin;
-		waitDialog.iconImage.setY(imageYPos);
+		float imageYPos = (contentSize.height < (waitDialog.animation.getHeight() * 1.7)) ? contentSize.halfHeight
+				- waitDialog.animation.getHalfHeight() : contentSize.height - waitDialog.animation.getHeight() - margin;
+		waitDialog.animation.setY(imageYPos);
 
 		waitDialog.addChild(waitDialog.label);
 		waitDialog.setButtonCaptions(MessageBoxButtons.NOTHING);
@@ -111,7 +120,7 @@ public class WaitDialog extends ButtonDialog
 	@Override
 	public void dispose()
 	{
-		this.removeChild(iconImage);
+		this.removeChild(animation);
 
 		super.dispose();
 		Logger.LogCat("WaitDialog.disposed");

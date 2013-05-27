@@ -20,8 +20,9 @@ import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.RadioButton;
 import CB_Core.GL_UI.Controls.RadioGroup;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -253,7 +254,7 @@ public class TB_Log extends ActivityBase
 	private void logOnline()
 	{
 
-		wd = DownloadWaitDialog.ShowWait("Upload Log", new IcancelListner()
+		wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListner()
 		{
 
 			@Override

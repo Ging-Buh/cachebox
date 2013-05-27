@@ -28,8 +28,8 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
-import CB_Core.GL_UI.Controls.Animation.RotateAnimation;
-import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
+import CB_Core.GL_UI.Controls.Animation.AnimationBase;
+import CB_Core.GL_UI.Controls.Animation.WorkAnimation;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
@@ -57,7 +57,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class Image extends CB_View_Base
 {
 
-	private RotateAnimation Wait;
+	private AnimationBase Wait;
 
 	private float mRotate = 0;
 	private Color mColor = new Color(1, 1, 1, 1);
@@ -183,10 +183,8 @@ public class Image extends CB_View_Base
 		{
 			if (Wait == null)
 			{
-				Wait = new RotateAnimation(0, 0, this.width, this.height, "ImageWaitAnimation");
-				Wait.setSprite(SpriteCache.Icons.get(IconName.settings_26.ordinal()));
-				Wait.setOrigin(this.halfWidth, this.halfHeight);
-				Wait.play(WaitDialog.WAIT_DURATION);
+				CB_RectF animationRec = new CB_RectF(0, 0, this.width, this.height);
+				Wait = WorkAnimation.GetINSTANCE(animationRec);
 				GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
 				this.addChild(Wait);
 			}

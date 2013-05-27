@@ -1,8 +1,13 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.GroundspeakAPI.IChkRedyHandler;
 import CB_Core.DB.Database;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
@@ -118,9 +123,28 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					}
 					return true;
 				case MenuID.MI_CHK_STATE_API:
-					new CB_Action_Command_chkState().Execute();
-					// new CB_Action_ShowActivity("chkState", MI_CHK_STATE_API, ViewConst.CHK_STATE_API,
-					// SpriteCache.Icons.get(35)).Execute();
+					// First check API-Key with visual Feedback
+					GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
+					{
+
+						@Override
+						public void chekReady()
+						{
+							TimerTask tt = new TimerTask()
+							{
+
+								@Override
+								public void run()
+								{
+									new CB_Action_Command_chkState().Execute();
+								}
+							};
+							new CB_Action_Command_chkState().Execute();
+							Timer t = new Timer();
+							t.schedule(tt, 400);
+						}
+					});
+
 					return true;
 
 				case MenuID.MI_NEW_CACHE:

@@ -12,9 +12,9 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.ImageButton;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -98,7 +98,7 @@ public class TrackableListView extends CB_View_Base
 				final String TBCode = txtSearch.getText().trim();
 				if (TBCode.length() > 0)
 				{
-					wd = DownloadWaitDialog.ShowWait(Translation.Get("search"), new IcancelListner()
+					wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 					{
 
 						@Override
@@ -207,7 +207,7 @@ public class TrackableListView extends CB_View_Base
 
 	public void RefreshTbList()
 	{
-		wd = DownloadWaitDialog.ShowWait(Translation.Get("RefreshInventory"), new IcancelListner()
+		wd = CancelWaitDialog.ShowWait(Translation.Get("RefreshInventory"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 		{
 
 			@Override

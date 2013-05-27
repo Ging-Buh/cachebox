@@ -10,6 +10,7 @@ import CB_Core.DB.Database;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -49,7 +50,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		pd = ProgressDialog.Show(Translation.Get("chkState"), ChkStatRunnable);
+		pd = ProgressDialog.Show(Translation.Get("chkState"), DownloadAnimation.GetINSTANCE(), ChkStatRunnable);
 	}
 
 	int ChangedCount = 0;
@@ -189,7 +190,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 		{
 			if (result != -1)
 			{
-				pd.close();
+				GL.that.closeAllDialogs();
 				synchronized (Database.Data.Query)
 				{
 					GL_MsgBox.Show(Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),

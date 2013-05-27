@@ -48,10 +48,14 @@ public abstract class AnimationBase extends CB_View_Base
 
 	protected abstract void render(SpriteBatch batch);
 
-	public abstract void play(int duration);
+	public abstract void play();
 
 	public abstract void stop();
 
 	public abstract void pause();
+
+	public abstract AnimationBase INSTANCE();
+
+	public abstract AnimationBase INSTANCE(CB_RectF rec);
 
 }

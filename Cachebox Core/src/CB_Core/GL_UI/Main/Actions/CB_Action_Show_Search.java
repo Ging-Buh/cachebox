@@ -1,5 +1,7 @@
 package CB_Core.GL_UI.Main.Actions;
 
+import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.GroundspeakAPI.IChkRedyHandler;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
@@ -22,20 +24,30 @@ public class CB_Action_Show_Search extends CB_Action
 	public void Execute()
 	{
 
-		if (MapView.that == null || !MapView.that.isVisible())
+		// zuerst API Key überprüfen mit anzeige von Wait Animation
+		GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
 		{
-			if (CacheListView.that == null || !CacheListView.that.isVisible())
+
+			@Override
+			public void chekReady()
 			{
-				TabMainView.actionShowCacheList.Execute();
+				if (MapView.that == null || !MapView.that.isVisible())
+				{
+					if (CacheListView.that == null || !CacheListView.that.isVisible())
+					{
+						TabMainView.actionShowCacheList.Execute();
+					}
+				}
+
+				if (SearchDialog.that == null)
+				{
+					new SearchDialog();
+				}
+
+				SearchDialog.that.showNotCloseAutomaticly();
 			}
-		}
+		});
 
-		if (SearchDialog.that == null)
-		{
-			new SearchDialog();
-		}
-
-		SearchDialog.that.showNotCloseAutomaticly();
 	}
 
 	@Override

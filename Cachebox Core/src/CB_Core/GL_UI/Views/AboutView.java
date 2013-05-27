@@ -14,9 +14,9 @@ import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.SatBarChart;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_Core.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -151,44 +151,45 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 								{
 								case 1:
 
-									pd = DownloadWaitDialog.ShowWait(Translation.Get("LoadFounds"), new IcancelListner()
-									{
-
-										@Override
-										public void isCanceld()
-										{
-											// TODO Auto-generated method stub
-
-										}
-									}, new Runnable()
-									{
-
-										@Override
-										public void run()
-										{
-											result = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
-											pd.close();
-
-											if (result > -1)
+									pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(),
+											new IcancelListner()
 											{
-												String Text = Translation.Get("FoundsSetTo", String.valueOf(result));
-												GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK,
-														MessageBoxIcon.GC_Live, null);
 
-												Config.settings.FoundOffset.setValue(result);
-												Config.AcceptChanges();
-												AboutView.this.refreshText();
-											}
-											if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+												@Override
+												public void isCanceld()
+												{
+													// TODO Auto-generated method stub
+
+												}
+											}, new Runnable()
 											{
-												GL.that.Toast(ConnectionError.INSTANCE);
-											}
-											if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
-											{
-												GL.that.Toast(ApiUnavailable.INSTANCE);
-											}
-										}
-									});
+
+												@Override
+												public void run()
+												{
+													result = GroundspeakAPI.GetCachesFound(Config.GetAccessToken());
+													pd.close();
+
+													if (result > -1)
+													{
+														String Text = Translation.Get("FoundsSetTo", String.valueOf(result));
+														GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK,
+																MessageBoxIcon.GC_Live, null);
+
+														Config.settings.FoundOffset.setValue(result);
+														Config.AcceptChanges();
+														AboutView.this.refreshText();
+													}
+													if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+													{
+														GL.that.Toast(ConnectionError.INSTANCE);
+													}
+													if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+													{
+														GL.that.Toast(ApiUnavailable.INSTANCE);
+													}
+												}
+											});
 
 									break;
 								case 3:

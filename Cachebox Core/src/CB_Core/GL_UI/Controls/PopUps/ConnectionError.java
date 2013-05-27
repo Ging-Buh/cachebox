@@ -3,6 +3,7 @@ package CB_Core.GL_UI.Controls.PopUps;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
+import CB_Core.GL_UI.Controls.QuickButtonList;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -34,7 +35,8 @@ public class ConnectionError extends Toast
 
 		this.mIcon = new Image(0, 0, width, halfHeight, "ImageIcon");
 		this.mIcon.setSprite(SpriteCache.getThemedSprite("connection-error"));
-		this.mIcon.setY(halfHeight);
+		float top = QuickButtonList.that.getY();
+		this.setY(top - UI_Size_Base.that.getButtonHeight() - this.getHeight());
 		super.addChildToOverlay(mIcon);
 	}
 

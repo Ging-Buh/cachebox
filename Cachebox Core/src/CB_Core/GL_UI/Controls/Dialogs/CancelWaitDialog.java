@@ -1,10 +1,9 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
-import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Label.VAlignment;
-import CB_Core.GL_UI.Controls.Animation.RotateAnimation;
+import CB_Core.GL_UI.Controls.Animation.AnimationBase;
+import CB_Core.GL_UI.Controls.Animation.WorkAnimation;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.interfaces.RunnableReadyHandler;
@@ -48,8 +47,16 @@ public class CancelWaitDialog extends WaitDialog
 
 	public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, Runnable runnable)
 	{
+		return ShowWait(Msg, WorkAnimation.GetINSTANCE(), listner, runnable);
+	}
+
+	public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListner listner, Runnable runnable)
+	{
 		final CancelWaitDialog wd = createDialog(Msg, listner, runnable);
 
+		CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+		Animation.setRec(animationRec);
+		wd.animation = Animation;
 		wd.setButtonCaptions(MessageBoxButtons.Cancel);
 		wd.mMsgBoxClickListner = new GL_MsgBox.OnMsgBoxClickListener()
 		{
@@ -64,6 +71,12 @@ public class CancelWaitDialog extends WaitDialog
 			}
 		};
 
+		SizeF contentSize = wd.getContentSize();
+		float imageYPos = (contentSize.height < (wd.animation.getHeight() * 1.7)) ? contentSize.halfHeight - wd.animation.getHalfHeight()
+				: contentSize.height - wd.animation.getHeight() - margin;
+		wd.animation.setY(imageYPos);
+		wd.addChild(wd.animation);
+		wd.animation.play();
 		wd.Show();
 		return wd;
 	}
@@ -83,13 +96,6 @@ public class CancelWaitDialog extends WaitDialog
 
 		CB_RectF imageRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
-		waitDialog.iconImage = new RotateAnimation(imageRec, "MsgBoxIcon");
-		((RotateAnimation) waitDialog.iconImage).setSprite(SpriteCache.Icons.get(IconName.settings_26.ordinal()));
-		((RotateAnimation) waitDialog.iconImage).setOrigin(waitDialog.halfWidth, waitDialog.halfHeight);
-		waitDialog.iconImage.play(WAIT_DURATION);
-		((RotateAnimation) waitDialog.iconImage).setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
-		waitDialog.addChild(waitDialog.iconImage);
-
 		waitDialog.label = new Label(contentSize.getBounds(), "MsgBoxLabel");
 		waitDialog.label.setWidth(contentSize.getBounds().getWidth() - margin - margin - margin - UI_Size_Base.that.getButtonHeight());
 		waitDialog.label.setX(imageRec.getMaxX() + margin);
@@ -107,10 +113,6 @@ public class CancelWaitDialog extends WaitDialog
 		{
 			waitDialog.label.setVAlignment(VAlignment.TOP);
 		}
-
-		float imageYPos = (contentSize.height < (waitDialog.iconImage.getHeight() * 1.7)) ? contentSize.halfHeight
-				- waitDialog.iconImage.getHalfHeight() : contentSize.height - waitDialog.iconImage.getHeight() - margin;
-		waitDialog.iconImage.setY(imageYPos);
 
 		waitDialog.addChild(waitDialog.label);
 

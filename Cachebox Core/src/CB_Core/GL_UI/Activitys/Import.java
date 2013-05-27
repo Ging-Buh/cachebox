@@ -11,6 +11,7 @@ import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.GroundspeakAPI.IChkRedyHandler;
 import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DB.Database;
@@ -19,17 +20,14 @@ import CB_Core.Events.ProgressChangedEvent;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
+import CB_Core.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
-import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollabseBox;
 import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.ScrollBox;
@@ -58,10 +56,7 @@ import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Util.FileIO;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Import extends ActivityBase implements ProgressChangedEvent
 {
@@ -93,7 +88,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private float itemHeight = -1;
 
 	private ScrollBox scrollBox;
-	private disable dis;
+	private ImportAnimation dis;
 
 	public static boolean isCanceld()
 	{
@@ -542,66 +537,74 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
 
-		if (GroundspeakAPI.isValidAPI_Key(true))
+		// First check API-Key with visual Feedback
+		GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
 		{
-			checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
-			checkImportPQfromGC.setEnabled(true);
-			checkBoxPreloadSpoiler.setEnable(true);
-			lblSpoiler.setTextColor(Fonts.getFontColor());
-			if (checkImportPQfromGC.isChecked())
+
+			@Override
+			public void chekReady()
 			{
-				PQ_ListCollabseBox.setAnimationHeight(CollabseBoxMaxHeight);
+				if (GroundspeakAPI.isValidAPI_Key(true))
+				{
+					checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
+					checkImportPQfromGC.setEnabled(true);
+					checkBoxPreloadSpoiler.setEnable(true);
+					lblSpoiler.setTextColor(Fonts.getFontColor());
+					if (checkImportPQfromGC.isChecked())
+					{
+						PQ_ListCollabseBox.setAnimationHeight(CollabseBoxMaxHeight);
+					}
+					else
+					{
+						PQ_ListCollabseBox.setAnimationHeight(0);
+					}
+				}
+				else
+				{
+					checkImportPQfromGC.setChecked(false);
+					checkImportPQfromGC.setEnabled(false);
+					checkBoxPreloadSpoiler.setEnable(false);
+					lblSpoiler.setTextColor(Fonts.getDisableFontColor());
+					checkImportPQfromGC.setHeight(0);
+					CollabseBoxHeight = 0;
+					lblPQ.setHeight(0);
+
+				}
+
+				if (checkImportPQfromGC.isChecked() == true)
+				{
+					checkBoxImportGPX.setChecked(true);
+					checkBoxImportGPX.setEnabled(false);
+				}
+
+				PQ_ListCollabseBox.setAnimationListner(Animationlistner);
+				LogCollabseBox.setAnimationListner(Animationlistner);
+
+				checkBoxCleanLogs.setChecked(Config.settings.DeleteLogs.getValue());
+				checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
+
+				if (checkBoxCleanLogs.isChecked())
+				{
+					LogCollabseBox.setAnimationHeight(CollabseBoxLogsMaxHeight);
+
+					// validate value
+					int value = Config.settings.LogMaxMonthAge.getValue();
+					if (value > 6)
+					{
+						Config.settings.LogMaxMonthAge.setValue(6);
+						Config.AcceptChanges();
+					}
+
+					spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
+				}
+				else
+				{
+					LogCollabseBox.setAnimationHeight(0);
+				}
+
+				checkBoxCompactDB.setChecked(Config.settings.CompactDB.getValue());
 			}
-			else
-			{
-				PQ_ListCollabseBox.setAnimationHeight(0);
-			}
-		}
-		else
-		{
-			checkImportPQfromGC.setChecked(false);
-			checkImportPQfromGC.setEnabled(false);
-			checkBoxPreloadSpoiler.setEnable(false);
-			lblSpoiler.setTextColor(Fonts.getDisableFontColor());
-			checkImportPQfromGC.setHeight(0);
-			CollabseBoxHeight = 0;
-			lblPQ.setHeight(0);
-
-		}
-
-		if (checkImportPQfromGC.isChecked() == true)
-		{
-			checkBoxImportGPX.setChecked(true);
-			checkBoxImportGPX.setEnabled(false);
-		}
-
-		PQ_ListCollabseBox.setAnimationListner(Animationlistner);
-		LogCollabseBox.setAnimationListner(Animationlistner);
-
-		checkBoxCleanLogs.setChecked(Config.settings.DeleteLogs.getValue());
-		checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
-
-		if (checkBoxCleanLogs.isChecked())
-		{
-			LogCollabseBox.setAnimationHeight(CollabseBoxLogsMaxHeight);
-
-			// validate value
-			int value = Config.settings.LogMaxMonthAge.getValue();
-			if (value > 6)
-			{
-				Config.settings.LogMaxMonthAge.setValue(6);
-				Config.AcceptChanges();
-			}
-
-			spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
-		}
-		else
-		{
-			LogCollabseBox.setAnimationHeight(0);
-		}
-
-		checkBoxCompactDB.setChecked(Config.settings.CompactDB.getValue());
-
+		});
 	}
 
 	animatetHeightChangedListner Animationlistner = new animatetHeightChangedListner()
@@ -763,7 +766,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		bOK.disable();
 		importCancel = false;
 		// disable UI
-		dis = new disable(scrollBox);
+		dis = new ImportAnimation(scrollBox);
 		dis.setBackground(getBackground());
 
 		this.addChild(dis, false);
@@ -854,6 +857,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 							ip.setJobMax("importGC", downloadPqList.size());
 
+							dis.setAnimationType(AnimationType.Download);
+
 							if (iterator != null && iterator.hasNext())
 							{
 								do
@@ -890,6 +895,9 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 							}
 						}
 					}
+
+					dis.setAnimationType(AnimationType.Work);
+
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte
 					if (checkBoxImportGPX.isChecked() && directory.exists())
@@ -943,6 +951,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 					if (checkBoxGcVote.isChecked())
 					{
+						dis.setAnimationType(AnimationType.Download);
 						Database.Data.beginTransaction();
 						try
 						{
@@ -954,6 +963,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						{
 							exc.printStackTrace();
 						}
+						dis.setAnimationType(AnimationType.Work);
 						Database.Data.endTransaction();
 						if (importCancel)
 						{
@@ -964,12 +974,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked())
 					{
+						dis.setAnimationType(AnimationType.Download);
 						importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked());
 						if (importCancel)
 						{
 							importCanceld();
 							return;
 						}
+						dis.setAnimationType(AnimationType.Work);
 					}
 
 					Thread.sleep(1000);
@@ -1017,7 +1029,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						+ "L in " + String.valueOf(ImportZeit);
 
 				Logger.DEBUG(Msg);
-				// MessageBox.Show("Import fertig! " + Msg);
 
 				FilterProperties props = GlobalCore.LastFilter;
 
@@ -1065,119 +1076,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				if (!Message.equals("")) pgBar.setText(Message);
 			}
 		});
-
-	}
-
-	private class disable extends Box
-	{
-
-		public disable(CB_RectF rec)
-		{
-			super(rec, "");
-
-			float size = rec.getHalfWidth() / 2;
-			float halfSize = rec.getHalfWidth() / 4;
-
-			CB_RectF imageRec = new CB_RectF(this.halfWidth - halfSize, this.halfHeight - halfSize, size, size);
-
-			iconImage = new Image(imageRec, "MsgBoxIcon");
-			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.daySpinner_51.ordinal())));
-			iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
-
-			this.addChild(iconImage);
-
-			rotateAngle = 0;
-
-			RotateTimer = new Timer();
-
-			RotateTimer.schedule(rotateTimertask, 60, 60);
-
-		}
-
-		private Drawable back;
-		private Image iconImage;
-
-		Timer RotateTimer;
-		float rotateAngle = 0;
-		TimerTask rotateTimertask = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				if (iconImage != null)
-				{
-					rotateAngle += 5;
-					if (rotateAngle > 360) rotateAngle = 0;
-					iconImage.setRotate(rotateAngle);
-					GL.that.renderOnce("WaitRotateAni");
-				}
-			}
-		};
-
-		public void render(SpriteBatch batch)
-		{
-			if (drawableBackground != null)
-			{
-				back = drawableBackground;
-				drawableBackground = null;
-			}
-
-			if (back != null)
-			{
-				Color c = batch.getColor();
-
-				float a = c.a;
-				float r = c.r;
-				float g = c.g;
-				float b = c.b;
-
-				Color trans = new Color(0, 0.3f, 0, 0.40f);
-				batch.setColor(trans);
-				back.draw(batch, 0, 0, this.width, this.height);
-
-				batch.setColor(new Color(r, g, b, a));
-
-			}
-		}
-
-		@Override
-		public void onHide()
-		{
-			RotateTimer.cancel();
-			iconImage.dispose();
-		}
-
-		// alle Touch events abfangen
-
-		@Override
-		public boolean onTouchDown(int x, int y, int pointer, int button)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean onLongClick(int x, int y, int pointer, int button)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean onTouchUp(int x, int y, int pointer, int button)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean click(int x, int y, int pointer, int button)
-		{
-			return true;
-		}
 
 	}
 

@@ -7,6 +7,7 @@ import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.GroundspeakAPI.IChkRedyHandler;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.ImageDAO;
@@ -28,9 +29,9 @@ import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.Slider;
 import CB_Core.GL_UI.Controls.Slider.YPositionChanged;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -593,7 +594,7 @@ public class SearchDialog extends PopUp_Base
 		else
 		{
 
-			wd = DownloadWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
+			wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListner()
 			{
 
 				@Override
@@ -645,7 +646,7 @@ public class SearchDialog extends PopUp_Base
 
 	private void searchOnlineNow()
 	{
-		wd = DownloadWaitDialog.ShowWait(Translation.Get("searchOverAPI"), new IcancelListner()
+		wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 		{
 
 			@Override
@@ -924,75 +925,82 @@ public class SearchDialog extends PopUp_Base
 		}
 	};
 
-	CancelWaitDialog WD;
 	GL_MsgBox MSB;
 
 	private void askPremium()
 	{
 
-		if (!GroundspeakAPI.isValidAPI_Key(true))
-		{
-			GL_MsgBox
-					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
-		}
-		else
+		// First check API-Key with visual Feedback
+		GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
 		{
 
-			WD = DownloadWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
+			@Override
+			public void chekReady()
 			{
-
-				@Override
-				public void isCanceld()
+				if (!GroundspeakAPI.isValidAPI_Key(true))
 				{
-					// TODO Handle Cancel
-
+					GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation, null);
 				}
-			}, new Runnable()
-			{
-
-				@Override
-				public void run()
+				else
 				{
-					int ret = GroundspeakAPI.GetMembershipType(Config.GetAccessToken());
-					if (ret == 3)
+					wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 					{
-						// searchOnlineNow();
-						showTargetApiDialog();
-					}
-					else
-					{
-						closeWD();
 
-						GL.that.RunOnGL(new runOnGL()
+						@Override
+						public void isCanceld()
 						{
+							// TODO Handle Cancel
 
-							@Override
-							public void run()
+						}
+					}, new Runnable()
+					{
+
+						@Override
+						public void run()
+						{
+							int ret = GroundspeakAPI.GetMembershipType(Config.GetAccessToken());
+							if (ret == 3)
 							{
-								MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
-										MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
-										{
-
-											@Override
-											public boolean onClick(int which, Object data)
-											{
-												closeMsgBox();
-												if (which == GL_MsgBox.BUTTON_POSITIVE)
-												{
-													showTargetApiDialog();
-												}
-
-												return true;
-											}
-										});
+								// searchOnlineNow();
+								showTargetApiDialog();
 							}
-						});
+							else
+							{
+								closeWD();
 
-					}
+								GL.that.RunOnGL(new runOnGL()
+								{
+
+									@Override
+									public void run()
+									{
+										MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"),
+												MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+												{
+
+													@Override
+													public boolean onClick(int which, Object data)
+													{
+														closeMsgBox();
+														if (which == GL_MsgBox.BUTTON_POSITIVE)
+														{
+															showTargetApiDialog();
+														}
+
+														return true;
+													}
+												});
+									}
+								});
+
+							}
+						}
+					});
+
 				}
-			});
-
-		}
+			}
+		});
 
 	}
 
@@ -1003,7 +1011,7 @@ public class SearchDialog extends PopUp_Base
 
 	private void closeWD()
 	{
-		if (WD != null) WD.close();
+		if (wd != null) wd.close();
 	}
 
 	private void showTargetApiDialog()
@@ -1051,8 +1059,7 @@ public class SearchDialog extends PopUp_Base
 	@Override
 	public void dispose()
 	{
-		super.dispose();
-		that = null;
+		// do nothing is static dialog
 	}
 
 }

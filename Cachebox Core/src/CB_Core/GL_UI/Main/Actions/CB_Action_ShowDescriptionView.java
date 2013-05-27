@@ -11,9 +11,9 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -104,7 +104,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						return true;
 					}
 
-					wd = DownloadWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), new IcancelListner()
+					wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 					{
 
 						@Override

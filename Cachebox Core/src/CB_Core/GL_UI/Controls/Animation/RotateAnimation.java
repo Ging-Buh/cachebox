@@ -9,13 +9,15 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class RotateAnimation extends AnimationBase
+public abstract class RotateAnimation extends AnimationBase
 {
 	private float mOriginX;
 	private float mOriginY;
 	private float mScale = 1f;
 	private float animateRotateValue = 0;
 	private Drawable mDrawable;
+
+	protected static final int ANIMATION_DURATION = 2000;
 
 	public RotateAnimation(float X, float Y, float Width, float Height, String Name)
 	{
@@ -30,7 +32,7 @@ public class RotateAnimation extends AnimationBase
 	/**
 	 * Time for 360°
 	 */
-	public void play(int duration)
+	protected void play(int duration)
 	{
 		this.mDuration = duration;
 		mPlaying = true;

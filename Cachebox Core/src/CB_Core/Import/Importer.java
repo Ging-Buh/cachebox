@@ -30,9 +30,9 @@ import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
 import CB_Core.GL_UI.Activitys.Import;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_Core.GL_UI.Controls.Dialogs.DownloadWaitDialog;
 import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
@@ -759,12 +759,11 @@ public class Importer
 		return fileArray;
 	}
 
-	private static CancelWaitDialog WD;
+	private static CancelWaitDialog wd;
 
 	public static CancelWaitDialog ImportSpoiler()
 	{
-
-		WD = DownloadWaitDialog.ShowWait(Translation.Get("chkApiState"), new IcancelListner()
+		wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 		{
 
 			@Override
@@ -782,10 +781,10 @@ public class Importer
 				Importer importer = new Importer();
 				ImporterProgress ip = new ImporterProgress();
 				importer.importSpoilerForCacheNew(ip, GlobalCore.getSelectedCache());
-				WD.close();
+				wd.close();
 			}
 		});
-		return WD;
+		return wd;
 	}
 
 }

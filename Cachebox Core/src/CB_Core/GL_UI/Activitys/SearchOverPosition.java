@@ -1,8 +1,6 @@
 package CB_Core.GL_UI.Activitys;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
@@ -13,6 +11,7 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
+import CB_Core.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
@@ -22,7 +21,6 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.chkBox;
-import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -35,9 +33,6 @@ import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SearchOverPosition extends ActivityBase
@@ -52,7 +47,7 @@ public class SearchOverPosition extends ActivityBase
 	private MultiToggleButton tglBtnGPS, tglBtnMap;
 	private Coordinate actSearchPos;
 	private volatile Thread thread;
-	private disable dis;
+	private ImportAnimation dis;
 	private Box box;
 	private boolean importRuns = false;
 
@@ -416,7 +411,7 @@ public class SearchOverPosition extends ActivityBase
 		bOK.disable();
 
 		// disable UI
-		dis = new disable(box);
+		dis = new ImportAnimation(box);
 		dis.setBackground(getBackground());
 
 		this.addChild(dis, false);
@@ -458,8 +453,10 @@ public class SearchOverPosition extends ActivityBase
 								searchC.pos = actSearchPos;
 								searchC.distanceInMeters = Config.settings.lastSearchRadius.getValue() * 1000;
 								searchC.number = 50;
+								dis.setAnimationType(AnimationType.Download);
 								CB_Core.Api.SearchForGeocaches.SearchForGeocachesJSON(accessToken, searchC, apiCaches, apiLogs, apiImages,
 										gpxFilename.Id);
+								dis.setAnimationType(AnimationType.Work);
 								if (apiCaches.size() > 0)
 								{
 									GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
@@ -496,119 +493,6 @@ public class SearchOverPosition extends ActivityBase
 
 		thread.setPriority(Thread.MAX_PRIORITY);
 		thread.start();
-
-	}
-
-	private class disable extends Box
-	{
-
-		public disable(CB_RectF rec)
-		{
-			super(rec, "");
-
-			float size = rec.getHalfWidth() / 2;
-			float halfSize = rec.getHalfWidth() / 4;
-
-			CB_RectF imageRec = new CB_RectF(this.halfWidth - halfSize, this.halfHeight - halfSize, size, size);
-
-			iconImage = new Image(imageRec, "MsgBoxIcon");
-			iconImage.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.daySpinner_51.ordinal())));
-			iconImage.setOrigin(imageRec.getHalfWidth(), imageRec.getHalfHeight());
-
-			this.addChild(iconImage);
-
-			rotateAngle = 0;
-
-			RotateTimer = new Timer();
-
-			RotateTimer.schedule(rotateTimertask, 60, 60);
-
-		}
-
-		private Drawable back;
-		private Image iconImage;
-
-		Timer RotateTimer;
-		float rotateAngle = 0;
-		TimerTask rotateTimertask = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				if (iconImage != null)
-				{
-					rotateAngle += 5;
-					if (rotateAngle > 360) rotateAngle = 0;
-					iconImage.setRotate(rotateAngle);
-					GL.that.renderOnce("WaitRotateAni");
-				}
-			}
-		};
-
-		public void render(SpriteBatch batch)
-		{
-			if (drawableBackground != null)
-			{
-				back = drawableBackground;
-				drawableBackground = null;
-			}
-
-			if (back != null)
-			{
-				Color c = batch.getColor();
-
-				float a = c.a;
-				float r = c.r;
-				float g = c.g;
-				float b = c.b;
-
-				Color trans = new Color(0, 0.3f, 0, 0.40f);
-				batch.setColor(trans);
-				back.draw(batch, 0, 0, this.width, this.height);
-
-				batch.setColor(new Color(r, g, b, a));
-
-			}
-		}
-
-		@Override
-		public void onHide()
-		{
-			RotateTimer.cancel();
-			iconImage.dispose();
-		}
-
-		// alle Touch events abfangen
-
-		@Override
-		public boolean onTouchDown(int x, int y, int pointer, int button)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean onLongClick(int x, int y, int pointer, int button)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean onTouchUp(int x, int y, int pointer, int button)
-		{
-			return true;
-		}
-
-		@Override
-		public boolean click(int x, int y, int pointer, int button)
-		{
-			return true;
-		}
 
 	}
 

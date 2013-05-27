@@ -36,6 +36,9 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
@@ -1273,6 +1276,42 @@ public class GroundspeakAPI
 	private static int chkMemperShip(String accessToken)
 	{
 		return chkMemperShip(accessToken, false);
+	}
+
+	public interface IChkRedyHandler
+	{
+		public void chekReady();
+	}
+
+	public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler)
+	{
+		if (!API_isCheked)
+		{
+			CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner()
+			{
+
+				@Override
+				public void isCanceld()
+				{
+					// TODO Auto-generated method stub
+
+				}
+			}, new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					chkMemperShip(Config.GetAccessToken());
+					handler.chekReady();
+				}
+			});
+		}
+		else
+		{
+			handler.chekReady();
+		}
+
 	}
 
 	/**

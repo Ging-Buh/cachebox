@@ -10,6 +10,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
+import CB_Core.GL_UI.Controls.Animation.AnimationBase;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
@@ -21,6 +22,13 @@ import CB_Core.TranslationEngine.Translation;
 
 public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 {
+	private Label messageTextView;
+	private Label progressMessageTextView;
+	private ProgressBar progressBar;
+	private static RunnableReadyHandler ProgressThread;
+	private static String titleText;
+	private static ProgressDialog that;
+	private AnimationBase animation;
 	public float measuredLabelHeight = 0;
 
 	public ProgressDialog(Size size, String name)
@@ -61,16 +69,45 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 
 	}
 
-	private Label messageTextView;
-	private Label progressMessageTextView;
-	private ProgressBar progressBar;
-	private static RunnableReadyHandler ProgressThread;
-	private static String titleText;
-	private static ProgressDialog that;
+	public void setAnimation(final AnimationBase Animation)
+	{
+		GL.that.RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				ProgressDialog.this.removeChild(ProgressDialog.this.animation);
+				CB_RectF imageRec = new CB_RectF(0, progressBar.getMaxY() + margin, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that
+						.getButtonHeight());
+				ProgressDialog.this.animation = Animation.INSTANCE(imageRec);
+				ProgressDialog.this.addChild(ProgressDialog.this.animation);
+			}
+		});
+
+	}
+
+	public static ProgressDialog Show(String title, AnimationBase Animation, RunnableReadyHandler RunThread)
+	{
+		ProgressDialog PD = createProgressDialog(title, true, RunThread);
+		PD.setAnimation(Animation);
+
+		GL.that.showDialog(PD);
+
+		return PD;
+	}
 
 	public static ProgressDialog Show(String title, RunnableReadyHandler RunThread)
 	{
 
+		ProgressDialog PD = createProgressDialog(title, false, RunThread);
+		GL.that.showDialog(PD);
+
+		return PD;
+	}
+
+	private static ProgressDialog createProgressDialog(String title, boolean withAnimation, RunnableReadyHandler RunThread)
+	{
 		if (ProgressThread != null)
 		{
 			ProgressThread = null;
@@ -80,13 +117,13 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 		ProgressThread = RunThread;
 		titleText = title;
 
-		ProgressDialog PD = new ProgressDialog(calcMsgBoxSize(title, true, true, true), "");
+		ProgressDialog PD = new ProgressDialog(calcMsgBoxSize(title, true, true, true), title);
 
-		PD.setHeight(PD.getHeight() + (PD.measuredLabelHeight * 2f));
+		float h = withAnimation ? UI_Size_Base.that.getButtonHeight() / 2 : 0;
+
+		PD.setHeight(PD.getHeight() + (PD.measuredLabelHeight * 2f) + h);
 
 		PD.setTitle(titleText);
-		GL.that.showDialog(PD);
-
 		return PD;
 	}
 

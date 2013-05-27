@@ -1434,6 +1434,12 @@ public class GL implements ApplicationListener
 		renderOnce("Close Activity");
 	}
 
+	public void closeAllDialogs()
+	{
+		dialogHistory.clear();
+		if (actDialog != null) closeDialog(actDialog);
+	}
+
 	public void closeDialog(CB_View_Base dialog)
 	{
 		if (dialog instanceof ActivityBase) throw new IllegalArgumentException(

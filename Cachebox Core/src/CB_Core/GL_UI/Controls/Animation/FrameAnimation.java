@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class FrameAnimation extends AnimationBase
+public abstract class FrameAnimation extends AnimationBase
 {
 	ArrayList<Drawable> frames;
 
@@ -96,7 +96,7 @@ public class FrameAnimation extends AnimationBase
 		GL.that.renderOnce("FrameAnimation-" + name);
 	}
 
-	public void play(int duration)
+	protected void play(int duration)
 	{
 		this.mDuration = duration;
 		mPlaying = true;
