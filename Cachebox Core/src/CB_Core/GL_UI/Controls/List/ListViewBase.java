@@ -234,7 +234,7 @@ public abstract class ListViewBase extends CB_View_Base
 	protected abstract void calcDefaultPosList();
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 		// setBaseAdapter(mBaseAdapter);
 

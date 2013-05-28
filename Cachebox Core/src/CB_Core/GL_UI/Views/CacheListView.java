@@ -407,9 +407,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
-		super.onRezised(rec);
+		super.onResized(rec);
 		listView.setSize(rec);
 		listView.setHeight(rec.getHeight() + searchPlaceholder);
 		listView.setZeroPos();
@@ -420,13 +420,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	public void setTopPlaceHolder(float PlaceHoldHeight)
 	{
 		searchPlaceholder = -PlaceHoldHeight;
-		onRezised(this);
+		onResized(this);
 	}
 
 	public void resetPlaceHolder()
 	{
 		searchPlaceholder = 0;
-		onRezised(this);
+		onResized(this);
 	}
 
 	public V_ListView getListView()

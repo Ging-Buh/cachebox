@@ -529,7 +529,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 		// wenn sich die Größe nicht geändert hat, brauchen wir nicht zu machen!
 		if (rec.getWidth() == this.mapIntWidth && rec.getHeight() == this.mapIntHeight)

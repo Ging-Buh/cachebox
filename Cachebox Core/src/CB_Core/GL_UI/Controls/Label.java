@@ -388,35 +388,6 @@ public class Label extends CB_View_Base
 		return text;
 	}
 
-	@Override
-	protected void Initial()
-	{
-
-	}
-
-	@Override
-	protected void SkinIsChanged()
-	{
-		initLabel();
-		makeText();
-	}
-
-	@Override
-	public void setWidth(float Width)
-	{
-		super.setWidth(Width);
-		calcInnerRec();
-		if (text.length() > 0) makeText();
-	}
-
-	@Override
-	public void setHeight(float Height)
-	{
-		super.setHeight(Height);
-		calcInnerRec();
-		if (text.length() > 0) makeText();
-	}
-
 	public int getLineCount()
 	{
 		if (bounds == null) return 0;
@@ -445,8 +416,23 @@ public class Label extends CB_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	protected void Initial()
 	{
+
+	}
+
+	@Override
+	protected void SkinIsChanged()
+	{
+		initLabel();
+		makeText();
+	}
+
+	@Override
+	public void onResized(CB_RectF rec)
+	{
+		// wird automatisch aufgerufen,
+		// wenn setWidth oder setHeight, ...
 		calcInnerRec();
 		makeText();
 	}

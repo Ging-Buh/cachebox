@@ -287,9 +287,9 @@ public class Menu extends ButtonDialog
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
-		super.onRezised(rec);
+		super.onResized(rec);
 		if (mListView != null)
 		{
 			mListView.setSize(this.getContentSize());

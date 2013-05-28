@@ -537,7 +537,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		try
 		{
-			onRezised(this);
+			onResized(this);
 		}
 		catch (Exception e1)
 		{
@@ -564,7 +564,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 	}
 
-	public abstract void onRezised(CB_RectF rec);
+	public abstract void onResized(CB_RectF rec);
 
 	public abstract void onParentRezised(CB_RectF rec);
 

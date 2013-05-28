@@ -127,10 +127,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg, HAlignment.CENTER);
 		this.addChild(descTextView);
 
-		CachesFoundLabel = new Label("CachesFoundLabel");
-		CachesFoundLabel.setWidth(this.width);
-		CachesFoundLabel.setTextColor(Fonts.getLinkFontColor());
-		CachesFoundLabel.setHAlignment(HAlignment.CENTER);
+		CachesFoundLabel = new Label(0, 0, this.width, UI_Size_Base.that.getButtonHeight(), "CachesFoundLabel");
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
 		{
@@ -305,9 +302,9 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
-		super.onRezised(rec);
+		super.onResized(rec);
 		setYpositions();
 	}
 
@@ -329,7 +326,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	public void refreshText()
 	{
 		if (WP == null || CachesFoundLabel == null) return;
-		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()));
+		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()), null,
+				Fonts.getLinkFontColor(), HAlignment.CENTER);
 
 		if (GlobalCore.getSelectedCache() != null) if (GlobalCore.getSelectedWaypoint() != null)
 		{

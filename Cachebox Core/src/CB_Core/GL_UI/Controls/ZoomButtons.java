@@ -59,14 +59,14 @@ public class ZoomButtons extends CB_View_Base
 	public ZoomButtons(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-		onRezised(this);
+		onResized(this);
 		resetFadeOut();
 	}
 
 	public ZoomButtons(CB_RectF rec, GL_View_Base view, String name)
 	{
 		super(rec, view, name);
-		onRezised(this);
+		onResized(this);
 		resetFadeOut();
 	}
 
@@ -401,7 +401,7 @@ public class ZoomButtons extends CB_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 		// rect auf Teilen in zwei gleich groﬂe
 		HitRecUp = rec.copy();

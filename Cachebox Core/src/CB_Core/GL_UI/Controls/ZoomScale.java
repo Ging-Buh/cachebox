@@ -336,7 +336,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 		// Logger.LogCat("ZoomScale Rezised");
 		ScaleDrawRec = null;

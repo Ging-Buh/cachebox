@@ -93,7 +93,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	protected abstract void Initial();
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 
 	}

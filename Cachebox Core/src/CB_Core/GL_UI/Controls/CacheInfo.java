@@ -439,7 +439,7 @@ public class CacheInfo extends CB_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 		if (cacheIsInitial) requestLayout();
 	}

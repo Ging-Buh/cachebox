@@ -82,7 +82,7 @@ public class ScrollBox extends CB_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 		lv.setSize(rec);
 		item.setWidth(rec.getWidth());

@@ -656,7 +656,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 		createControls();
 		Layout();

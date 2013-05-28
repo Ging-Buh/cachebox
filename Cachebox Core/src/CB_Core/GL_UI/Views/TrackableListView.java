@@ -194,9 +194,9 @@ public class TrackableListView extends CB_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
-		super.onRezised(rec);
+		super.onResized(rec);
 		Layout();
 	}
 

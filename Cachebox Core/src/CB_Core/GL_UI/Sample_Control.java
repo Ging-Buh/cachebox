@@ -26,7 +26,7 @@ public class Sample_Control extends GL_View_Base
 	}
 
 	@Override
-	public void onRezised(CB_RectF rec)
+	public void onResized(CB_RectF rec)
 	{
 	}
 
