@@ -95,7 +95,8 @@ public class CB_RectF
 	 */
 	public CB_RectF(float X, float Y, float Width, float Height)
 	{
-		this.Pos = new Vector2(X, Y);
+		this.Pos.x = X;
+		this.Pos.y = Y;
 		this.width = Width;
 		this.height = Height;
 		calcCrossCorner();
@@ -103,7 +104,8 @@ public class CB_RectF
 
 	public CB_RectF(CB_RectF rec)
 	{
-		this.Pos = new Vector2(rec.Pos.x, rec.Pos.y);
+		this.Pos.x = rec.Pos.x;
+		this.Pos.y = rec.Pos.y;
 		this.width = rec.width;
 		this.height = rec.height;
 		calcCrossCorner();
