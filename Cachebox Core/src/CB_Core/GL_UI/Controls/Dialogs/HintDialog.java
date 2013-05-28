@@ -13,6 +13,8 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.TranslationEngine.Translation;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+
 public class HintDialog extends GL_MsgBox
 {
 
@@ -55,8 +57,7 @@ public class HintDialog extends GL_MsgBox
 		rec.setHeight(lblHeigt);
 
 		msgBox.label = new Label(rec, "MsgBoxLabel");
-		msgBox.label.setZeroPos();
-		msgBox.label.setWrappedText(hintTextDecoded);
+		msgBox.label.setWrappedText(hintTextDecoded, Fonts.getBig(), Fonts.getFontColor(), HAlignment.LEFT);
 
 		// label in Scrollbox verpacken
 		scrollBox.addChild(msgBox.label);
