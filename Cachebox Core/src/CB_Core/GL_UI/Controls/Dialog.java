@@ -15,6 +15,7 @@ import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -266,6 +267,7 @@ public abstract class Dialog extends CB_View_Base
 			titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - centerYpos, mTitleWidth - (4.1666f * pW), lblHeight),
 					"DialogTitleLabel");
 			titleLabel.setFont(Fonts.getNormal());
+			titleLabel.setHAlignment(HAlignment.CENTER);
 			titleLabel.setText(mTitle);
 
 			bounds = null;
