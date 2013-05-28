@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
@@ -158,9 +159,9 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				ProgresssChangedEventList.Call("", (int) progress);
 
 			}
-			while (chkList100.size() == BlockSize + 1);
+			while (chkList100.size() == BlockSize + 1 && !cancelThread);
 
-			if (result == 0)
+			if (result == 0 && !cancelThread)
 			{
 				Database.Data.beginTransaction();
 
@@ -168,10 +169,18 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				CacheDAO dao = new CacheDAO();
 				do
 				{
+					try
+					{
+						Thread.sleep(10);
+					}
+					catch (InterruptedException e)
+					{
+						cancelThread = true;
+					}
 					Cache writeTmp = iterator.next();
 					if (dao.UpdateDatabaseCacheState(writeTmp)) ChangedCount++;
 				}
-				while (iterator.hasNext());
+				while (iterator.hasNext() && !cancelThread);
 
 				Database.Data.setTransactionSuccessful();
 				Database.Data.endTransaction();
@@ -188,12 +197,14 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 		@Override
 		public void RunnableReady(boolean canceld)
 		{
+			String sCanceld = canceld ? Translation.Get("isCanceld") + GlobalCore.br : "";
+
 			if (result != -1)
 			{
 				GL.that.closeAllDialogs();
 				synchronized (Database.Data.Query)
 				{
-					GL_MsgBox.Show(Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),
+					GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),
 							Translation.Get("chkState"), MessageBoxIcon.None);
 				}
 

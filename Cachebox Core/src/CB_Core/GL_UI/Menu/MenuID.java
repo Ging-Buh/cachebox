@@ -204,5 +204,5 @@ public class MenuID
 	public static final int MI_START_PICTUREAPP = 175;
 
 	public static final int AID_ADD_WP = 176;
-
+	public static final int AID_UPLOAD_FIELD_NOTE = 177;
 }

@@ -146,7 +146,8 @@ public class SpriteCache
 		tbGrab_60, // 60
 		tbPicked_61, // 61
 		tbVisit_62, // 62
-		tbNote_63 // 63
+		tbNote_63, // 63
+		uploadFieldNote_64 // 63
 	}
 
 	public static enum DialogElement
@@ -843,7 +844,7 @@ public class SpriteCache
 			Icons.add(getThemedSprite("tb-picked")); // 61
 			Icons.add(getThemedSprite("tb-visit")); // 62
 			Icons.add(getThemedSprite("tb-note")); // 63
-
+			Icons.add(getThemedSprite("upload-fieldnote")); // 64
 		}
 
 		MapScale = new Drawable[3];

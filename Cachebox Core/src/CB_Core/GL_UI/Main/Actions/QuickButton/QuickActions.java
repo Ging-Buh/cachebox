@@ -23,6 +23,7 @@ import CB_Core.GL_UI.Main.Actions.CB_Action;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_Core.GL_UI.Main.Actions.CB_Action_ShowHint;
 import CB_Core.GL_UI.Main.Actions.CB_Action_Show_Search;
+import CB_Core.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_Core.GL_UI.Main.Actions.CB_Action_add_WP;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_Core.GL_UI.Main.Actions.CB_Action_switch_DayNight;
@@ -62,6 +63,7 @@ public enum QuickActions
 	addWP, // 21
 	Solver2, // 22
 	Notesview, // 23
+	uploadFieldNote, // 24
 	// ScreenLock, // 21
 
 	empty, ;
@@ -172,6 +174,8 @@ public enum QuickActions
 			return TabMainView.actionShowSolverView2;
 		case 23:
 			return TabMainView.actionShowNotesView;
+		case 24:
+			return CB_Action_UploadFieldNote.INSTANCE;
 		}
 		return null;
 	}
@@ -228,6 +232,8 @@ public enum QuickActions
 			return Translation.Get("Solver") + " 2";
 		case 23:
 			return Translation.Get("Notes");
+		case 24:
+			return Translation.Get("uploadFieldNotes");
 		}
 		return "empty";
 	}

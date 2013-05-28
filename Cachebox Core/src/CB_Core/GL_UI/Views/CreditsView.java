@@ -57,6 +57,7 @@ public class CreditsView extends CB_View_Base
 		list.add(new Person("Homer-S", Job.tester));
 		list.add(new Person("Mozartkugel", Job.tester));
 		list.add(new Person("millimeterfuchser", Job.tester));
+		list.add(new Person("Larsie", Job.designer));
 
 		Collections.sort(list);
 
