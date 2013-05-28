@@ -150,8 +150,7 @@ public class GL_MsgBox extends Dialog
 
 		msgBox.label = new Label(contentSize.getBounds(), "MsgBoxLabel");
 		msgBox.label.setWidth(contentSize.getBounds().getWidth() - 5 - UI_Size_Base.that.getButtonHeight());
-		msgBox.label.setX(imageRec.getMaxX() + 5);
-		msgBox.label.setY(0);
+		msgBox.label.setPos(imageRec.getMaxX() + 5, 0);
 		msgBox.label.setWrappedText(msg);
 		msgBox.addChild(msgBox.label);
 

@@ -1,10 +1,8 @@
 package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.CB_View_Base;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
-import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
@@ -25,11 +23,7 @@ public class ProgressBar extends CB_View_Base
 		super(rec, Name);
 
 		label = new Label(this, "ProgressLabel");
-		label.setZeroPos();
-		label.setFont(Fonts.getNormal());
-		label.setText("");
 		label.setHAlignment(HAlignment.CENTER);
-		label.setVAlignment(VAlignment.CENTER);
 
 		this.addChild(label);
 
