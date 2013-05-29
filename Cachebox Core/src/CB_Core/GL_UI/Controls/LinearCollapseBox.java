@@ -10,11 +10,11 @@ import CB_Core.Util.MoveableList;
  * 
  * @author Longri
  */
-public class LinearCollabseBox extends CollabseBox
+public class LinearCollapseBox extends CollapseBox
 {
 	private Linearlayout linearLayout;
 
-	public LinearCollabseBox(CB_RectF rec, String Name)
+	public LinearCollapseBox(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		linearLayout = new Linearlayout(rec.getWidth(), "LinearLayout-" + Name);

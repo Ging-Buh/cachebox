@@ -186,7 +186,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		rec = new CB_RectF(0, y - restPlatz, msgBoxContentSize.width, restPlatz);
 		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
 		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
-		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollabseBox geöffnrt oder geschlossen wird!
+		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollapseBox geöffnrt oder geschlossen wird!
 		scrollBox2 = new ScrollBox(rec, rec.getHalfHeight(), "ScrollBox");
 
 		// damit die Scrollbox auch Events erhällt

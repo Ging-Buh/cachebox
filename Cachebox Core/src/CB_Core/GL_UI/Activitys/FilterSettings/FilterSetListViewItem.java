@@ -66,7 +66,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (this.mFilterSetEntry.getItemType() != FilterSetListView.COLLABSE_BUTTON_ITEM)
+		if (this.mFilterSetEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM)
 		{
 			super.render(batch);
 		}
@@ -83,8 +83,8 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		switch (this.mFilterSetEntry.getItemType())
 		{
-		case FilterSetListView.COLLABSE_BUTTON_ITEM:
-			drawCollabseButtonItem(batch);
+		case FilterSetListView.COLLAPSE_BUTTON_ITEM:
+			drawCollapseButtonItem(batch);
 			break;
 		case FilterSetListView.CHECK_ITEM:
 			drawChkItem(batch);
@@ -139,7 +139,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	private static Sprite chkOn;
 	private static Sprite chkNo;
 
-	private void drawCollabseButtonItem(SpriteBatch batch)
+	private void drawCollapseButtonItem(SpriteBatch batch)
 	{
 
 		if (this.isPressed)

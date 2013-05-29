@@ -5,9 +5,9 @@ import java.util.Iterator;
 
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
+import CB_Core.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.LinearCollabseBox;
+import CB_Core.GL_UI.Controls.LinearCollapseBox;
 import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_Core.GL_UI.Controls.ScrollBox;
@@ -196,7 +196,7 @@ public class SelectSolverFunction extends ButtonDialog
 
 		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
 		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
-		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollabseBox geöffnrt oder geschlossen wird!
+		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollapseBox geöffnrt oder geschlossen wird!
 		scrollBox = new ScrollBox(rec, rec.getHalfHeight(), "ScrollBox");
 
 		// damit die Scrollbox auch Events erhällt
@@ -259,9 +259,9 @@ public class SelectSolverFunction extends ButtonDialog
 				categoryButton.setColorFilter(new Color(1f, 0.8f, 0.0f, 1));
 
 				// erstelle Category Box
-				final LinearCollabseBox lay = new LinearCollabseBox(categoryBtnRec, "CollabsBox-" + cat.getName());
+				final LinearCollapseBox lay = new LinearCollapseBox(categoryBtnRec, "CollabsBox-" + cat.getName());
 
-				// die CollabseBox mit einem Rahmen versehen
+				// die CollapseBox mit einem Rahmen versehen
 				lay.setBackground(this.getBackground());
 
 				lay.setClickable(true);
@@ -320,7 +320,7 @@ public class SelectSolverFunction extends ButtonDialog
 							}
 						});
 
-						// den Function Button der Collabse Box hinzufügen
+						// den Function Button der Collapse Box hinzufügen
 						lay.addChild(btnFct);
 						EntryCount++; // Den Function Zähler erhöhen;
 
@@ -339,22 +339,22 @@ public class SelectSolverFunction extends ButtonDialog
 					// Den Category Button zum LinearLayout hinzufügen mit einem normalen Abstand zum darüberliegendem Control
 					mLinearLayout.addChild(categoryButton, margin);
 
-					// die Collabse noch Schliessen, bevor sie zum LinearLayout hinzugefügt wird.
+					// die Collapse noch Schliessen, bevor sie zum LinearLayout hinzugefügt wird.
 					// Da wir hier aber keine Animation haben wollen, setzen wir die AnimationsHöhe auf null und rufen nicht die Methode
 					// Collapse() auf, da diese eine Animation starten würde.
 					lay.setAnimationHeight(0f);
 
-					// Die mit den Functions Buttons gefüllte CollabseBox zum LinearLayout hinzufügen mit keinem Abstand zum
+					// Die mit den Functions Buttons gefüllte CollapseBox zum LinearLayout hinzufügen mit keinem Abstand zum
 					// darüberliegendem
 					// Category Button!
 					mLinearLayout.addChild(lay, margin);
 
-					// Wenn die CollabseBox ihre größe verändert, muss dies noch dem LinearLayout mitgeteilt werden und auch der ScrollBox,
+					// Wenn die CollapseBox ihre größe verändert, muss dies noch dem LinearLayout mitgeteilt werden und auch der ScrollBox,
 					// dass sich die innere Höhe geändert hat!
 					lay.setAnimationListner(new animatetHeightChangedListner()
 					{
 						@Override
-						public void animatetHeightCanged(float Height)
+						public void animatedHeightChanged(float Height)
 						{
 							mLinearLayout.layout();
 

@@ -21,7 +21,7 @@ public class CategorieListView extends V_ListView
 {
 
 	public static CategorieEntry aktCategorieEntry;
-	public static final int COLLABSE_BUTTON_ITEM = 0;
+	public static final int COLLAPSE_BUTTON_ITEM = 0;
 	public static final int CHECK_ITEM = 1;
 	public static final int THREE_STATE_ITEM = 2;
 	public static final int NUMERICK_ITEM = 3;
@@ -137,7 +137,7 @@ public class CategorieListView extends V_ListView
 		public void plusClick()
 		{
 
-			if (mItemType == COLLABSE_BUTTON_ITEM)
+			if (mItemType == COLLAPSE_BUTTON_ITEM)
 			{
 				// collabs Button chk clicked
 				int State = mCat.getChek();
@@ -171,7 +171,7 @@ public class CategorieListView extends V_ListView
 
 		public void minusClick()
 		{
-			if (mItemType == COLLABSE_BUTTON_ITEM)
+			if (mItemType == COLLAPSE_BUTTON_ITEM)
 			{
 				// Collabs Button Pin Clicked
 				this.mCat.pinned = !this.mCat.pinned;
@@ -188,7 +188,7 @@ public class CategorieListView extends V_ListView
 		{
 
 			mState += 1;
-			if (mItemType == CategorieListView.CHECK_ITEM || mItemType == CategorieListView.COLLABSE_BUTTON_ITEM)
+			if (mItemType == CategorieListView.CHECK_ITEM || mItemType == CategorieListView.COLLAPSE_BUTTON_ITEM)
 			{
 				if (mState > 1) mState = 0;
 			}
@@ -368,7 +368,7 @@ public class CategorieListView extends V_ListView
 		for (Category cat : GlobalCore.Categories)
 		{
 			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCache.Icons.get(IconName.doc_20.ordinal()), cat,
-					COLLABSE_BUTTON_ITEM);
+					COLLAPSE_BUTTON_ITEM);
 
 			for (GpxFilename File : cat)
 			{
@@ -458,7 +458,7 @@ public class CategorieListView extends V_ListView
 				float lastTouchX = ((CategorieListViewItem) v).lastItemTouchPos.x;
 				float lastTouchY = ((CategorieListViewItem) v).lastItemTouchPos.y;
 
-				if (((CategorieListViewItem) v).getCategorieEntry().getItemType() == COLLABSE_BUTTON_ITEM)
+				if (((CategorieListViewItem) v).getCategorieEntry().getItemType() == COLLAPSE_BUTTON_ITEM)
 				{
 					if (plusBtnHitRec.contains(lastTouchX, lastTouchY))
 					{
@@ -484,7 +484,7 @@ public class CategorieListView extends V_ListView
 					}
 					else
 					{
-						collabseButton_Clicked((CategorieListViewItem) v);
+						collapseButton_Clicked((CategorieListViewItem) v);
 						notifyDataSetChanged();
 					}
 
@@ -504,7 +504,7 @@ public class CategorieListView extends V_ListView
 		return v;
 	}
 
-	private void collabseButton_Clicked(CategorieListViewItem item)
+	private void collapseButton_Clicked(CategorieListViewItem item)
 	{
 		item.toggleChildeViewState();
 		this.notifyDataSetChanged();

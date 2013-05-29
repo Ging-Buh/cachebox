@@ -65,7 +65,7 @@ public class ButtonScrollDialog extends Dialog
 		rec = new CB_RectF(10, 80, contentSize.width + 10, contentSize.height);
 		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
 		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
-		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollabseBox geöffnrt oder geschlossen wird!
+		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollapseBox geöffnrt oder geschlossen wird!
 		scrollBox = new ScrollBox(rec, rec.getHeight(), "ScrollBox");
 		scrollBox.setMargins(margin, margin);
 		scrollBox.initRow(true); // true= von oben nach unten

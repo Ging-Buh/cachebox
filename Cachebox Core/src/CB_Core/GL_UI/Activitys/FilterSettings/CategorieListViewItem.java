@@ -83,7 +83,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (this.categorieEntry.getItemType() != FilterSetListView.COLLABSE_BUTTON_ITEM) super.render(batch);
+		if (this.categorieEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM) super.render(batch);
 
 		if (isPressed)
 		{
@@ -112,8 +112,8 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 		switch (this.categorieEntry.getItemType())
 		{
-		case FilterSetListView.COLLABSE_BUTTON_ITEM:
-			drawCollabseButtonItem(batch);
+		case FilterSetListView.COLLAPSE_BUTTON_ITEM:
+			drawCollapseButtonItem(batch);
 			break;
 		case FilterSetListView.CHECK_ITEM:
 			drawChkItem(batch);
@@ -185,7 +185,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 	private static NinePatch btnBack;
 	private static NinePatch btnBack_pressed;
 
-	private void drawCollabseButtonItem(SpriteBatch batch)
+	private void drawCollapseButtonItem(SpriteBatch batch)
 	{
 
 		if (this.isPressed)
@@ -256,7 +256,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		drawIcon(batch);
 		drawRightChkBox(batch);
 		int ChkState = 0;
-		if (this.categorieEntry.getItemType() == FilterSetListView.COLLABSE_BUTTON_ITEM)
+		if (this.categorieEntry.getItemType() == FilterSetListView.COLLAPSE_BUTTON_ITEM)
 		{
 			ChkState = this.categorieEntry.getCat().getChek();
 		}

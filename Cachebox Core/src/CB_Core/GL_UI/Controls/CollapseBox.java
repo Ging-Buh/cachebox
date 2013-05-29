@@ -6,26 +6,26 @@ import java.util.TimerTask;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 
-public class CollabseBox extends Box
+public class CollapseBox extends Box
 {
-	private CollabseBox that;
+	private CollapseBox that;
 
 	private float maxHeight = -1;
-	private boolean collabse = false;
+	private boolean collapse = false;
 
 	private float mAnimationTarget = 0;
 	private Timer mAnimationTimer;
 	private long ANIMATION_TICK = 50;
-	private boolean collabseAnimation = false;
+	private boolean collapseAnimation = false;
 
 	private animatetHeightChangedListner listner;
 
 	public interface animatetHeightChangedListner
 	{
-		public void animatetHeightCanged(float Height);
+		public void animatedHeightChanged(float Height);
 	}
 
-	public CollabseBox(CB_RectF rec, String Name)
+	public CollapseBox(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		maxHeight = rec.getHeight();
@@ -34,27 +34,27 @@ public class CollabseBox extends Box
 
 	public void Toggle()
 	{
-		if (collabse)
+		if (collapse)
 		{
 			expand();
 		}
 		else
 		{
-			collabse();
+			collapse();
 		}
 	}
 
-	public void collabse()
+	public void collapse()
 	{
-		if (collabse) return;
-		collabseAnimation = true;
+		if (collapse) return;
+		collapseAnimation = true;
 		animateTo(0);
 	}
 
 	public void expand()
 	{
-		if (!collabse) return;
-		collabseAnimation = false;
+		if (!collapse) return;
+		collapseAnimation = false;
 		animateTo(maxHeight);
 	}
 
@@ -81,12 +81,12 @@ public class CollabseBox extends Box
 			private void TimerMethod()
 			{
 				float newPos = that.getHeight() - ((that.getHeight() - mAnimationTarget) / 2);
-				if ((collabseAnimation && mAnimationTarget + 1.5 > that.getHeight())
-						|| (!collabseAnimation && mAnimationTarget - 1.5 < that.getHeight()))
+				if ((collapseAnimation && mAnimationTarget + 1.5 > that.getHeight())
+						|| (!collapseAnimation && mAnimationTarget - 1.5 < that.getHeight()))
 				{
 					setAnimationHeight(mAnimationTarget);
 					stopTimer();
-					collabse = (mAnimationTarget == 0) ? true : false;
+					collapse = (mAnimationTarget == 0) ? true : false;
 					return;
 				}
 
@@ -115,9 +115,9 @@ public class CollabseBox extends Box
 	public void setAnimationHeight(float Height)
 	{
 		super.setHeight(Height);
-		collabse = (Height == 0);
-		if (listner != null) listner.animatetHeightCanged(Height);
-		GL.that.renderOnce("CollabseBox.setAnimationHeight");
+		collapse = (Height == 0);
+		if (listner != null) listner.animatedHeightChanged(Height);
+		GL.that.renderOnce("CollapseBox.setAnimationHeight");
 	}
 
 }

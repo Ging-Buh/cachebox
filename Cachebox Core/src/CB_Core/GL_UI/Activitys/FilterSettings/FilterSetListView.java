@@ -20,7 +20,7 @@ public class FilterSetListView extends V_ListView
 {
 
 	public static FilterSetEntry aktFilterSetEntry;
-	public static final int COLLABSE_BUTTON_ITEM = 0;
+	public static final int COLLAPSE_BUTTON_ITEM = 0;
 	public static final int CHECK_ITEM = 1;
 	public static final int THREE_STATE_ITEM = 2;
 	public static final int NUMERICK_ITEM = 3;
@@ -254,7 +254,7 @@ public class FilterSetListView extends V_ListView
 	{
 
 		// add General
-		FilterSetListViewItem General = addFilterSetCollabseItem(null, Translation.Get("General"), COLLABSE_BUTTON_ITEM);
+		FilterSetListViewItem General = addFilterSetCollapseItem(null, Translation.Get("General"), COLLAPSE_BUTTON_ITEM);
 		NotAvailable = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("disabled"), Translation.Get("disabled"),
 				THREE_STATE_ITEM));
 		Archived = General.addChild(addFilterSetItem(SpriteCache.getThemedSprite("not-available"), Translation.Get("archived"),
@@ -273,7 +273,7 @@ public class FilterSetListView extends V_ListView
 				THREE_STATE_ITEM));
 
 		// add D/T
-		FilterSetListViewItem DT = addFilterSetCollabseItem(null, "D / T" + String.format("%n") + "GC-Vote", COLLABSE_BUTTON_ITEM);
+		FilterSetListViewItem DT = addFilterSetCollapseItem(null, "D / T" + String.format("%n") + "GC-Vote", COLLAPSE_BUTTON_ITEM);
 		minDifficulty = DT.addChild(addFilterSetItem(SpriteCache.Stars.toArray(), Translation.Get("minDifficulty"), NUMERICK_ITEM, 1, 5, 1,
 				0.5f));
 		maxDifficulty = DT.addChild(addFilterSetItem(SpriteCache.Stars.toArray(), Translation.Get("maxDifficulty"), NUMERICK_ITEM, 1, 5, 5,
@@ -290,7 +290,7 @@ public class FilterSetListView extends V_ListView
 		maxRating = DT.addChild(addFilterSetItem(SpriteCache.Stars.toArray(), Translation.Get("maxRating"), NUMERICK_ITEM, 0, 5, 5, 0.5f));
 
 		// add CacheTypes
-		Types = addFilterSetCollabseItem(null, "Cache Types", COLLABSE_BUTTON_ITEM);
+		Types = addFilterSetCollapseItem(null, "Cache Types", COLLAPSE_BUTTON_ITEM);
 		Types.addChild(addFilterSetItem(SpriteCache.BigIcons.get(0), "Traditional", CHECK_ITEM));
 		Types.addChild(addFilterSetItem(SpriteCache.BigIcons.get(1), "Multi-Cache", CHECK_ITEM));
 		Types.addChild(addFilterSetItem(SpriteCache.BigIcons.get(2), "Mystery", CHECK_ITEM));
@@ -305,7 +305,7 @@ public class FilterSetListView extends V_ListView
 		Types.addChild(addFilterSetItem(SpriteCache.BigIcons.get(25), "Munzee", CHECK_ITEM));
 
 		// add Attributes
-		Attr = addFilterSetCollabseItem(null, "Attributes", COLLABSE_BUTTON_ITEM);
+		Attr = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
 		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-1-1Icon"), Translation.Get("att_1_1"), THREE_STATE_ITEM));
 		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-2-1Icon"), Translation.Get("att_2_1"), THREE_STATE_ITEM));
 		Attr.addChild(addFilterSetItem(SpriteCache.getThemedSprite("att-3-1Icon"), Translation.Get("att_3_1"), THREE_STATE_ITEM));
@@ -413,7 +413,7 @@ public class FilterSetListView extends V_ListView
 		return v;
 	}
 
-	private FilterSetListViewItem addFilterSetCollabseItem(Sprite Icon, String Name, int ItemType)
+	private FilterSetListViewItem addFilterSetCollapseItem(Sprite Icon, String Name, int ItemType)
 	{
 		if (lFilterSets == null)
 		{
@@ -432,7 +432,7 @@ public class FilterSetListView extends V_ListView
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				collabseButton_Clicked((FilterSetListViewItem) v);
+				collapseButton_Clicked((FilterSetListViewItem) v);
 				return false;
 			}
 		});
@@ -440,7 +440,7 @@ public class FilterSetListView extends V_ListView
 		return v;
 	}
 
-	private void collabseButton_Clicked(FilterSetListViewItem item)
+	private void collapseButton_Clicked(FilterSetListViewItem item)
 	{
 		item.toggleChildeViewState();
 		this.notifyDataSetChanged();

@@ -17,9 +17,9 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.API_Button;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.CollabseBox.animatetHeightChangedListner;
+import CB_Core.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
-import CB_Core.GL_UI.Controls.LinearCollabseBox;
+import CB_Core.GL_UI.Controls.LinearCollapseBox;
 import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.QuickButtonList;
 import CB_Core.GL_UI.Controls.ScrollBox;
@@ -289,13 +289,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				final CB_View_Base btn = getView(catBtn, 1);
 
 				// add Cat einträge
-				final LinearCollabseBox lay = new LinearCollabseBox(btn, "");
+				final LinearCollapseBox lay = new LinearCollapseBox(btn, "");
 				lay.setClickable(true);
 				lay.setAnimationListner(new animatetHeightChangedListner()
 				{
 
 					@Override
-					public void animatetHeightCanged(float Height)
+					public void animatedHeightChanged(float Height)
 					{
 						LinearLayout.layout();
 
@@ -305,14 +305,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					}
 				});
 
-				int entrieCount = 0;
+				int entryCount = 0;
 				if (cat == SettingCategory.Login)
 				{
 					SettingsListGetApiButton lgIn = new SettingsListGetApiButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
 							SettingStoreType.Global);
 					final CB_View_Base btnLgIn = getView(lgIn, 1);
 					lay.addChild(btnLgIn);
-					entrieCount++;
+					entryCount++;
 				}
 
 				if (cat == SettingCategory.QuickList)
@@ -320,7 +320,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 					final SettingsItem_QuickButton btnLgIn = new SettingsItem_QuickButton(itemRec, "QuickButtonEditor");
 					lay.addChild(btnLgIn);
-					entrieCount++;
+					entryCount++;
 				}
 
 				if (cat == SettingCategory.Debug)
@@ -332,7 +332,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					btnDisp.setSize(itemRec);
 
 					lay.addChild(btnDisp);
-					entrieCount++;
+					entryCount++;
 				}
 
 				if (cat == SettingCategory.Skin)
@@ -341,7 +341,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 							SettingModus.Normal, SettingStoreType.Global);
 					CB_View_Base skinView = getSkinSpinnerView(skin);
 					lay.addChild(skinView);
-					entrieCount++;
+					entryCount++;
 				}
 
 				Boolean expandLayout = false;
@@ -368,7 +368,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 							}
 
 							lay.addChild(view);
-							entrieCount++;
+							entryCount++;
 							if (settingItem.getName().equals(EditKey))
 							{
 								expandLayout = true;
@@ -378,7 +378,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					}
 				}
 
-				if (entrieCount > 0)
+				if (entryCount > 0)
 				{
 
 					lay.setBackground(this.getBackground());// Activity Background
