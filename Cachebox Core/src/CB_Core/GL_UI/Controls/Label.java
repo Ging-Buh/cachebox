@@ -46,23 +46,15 @@ public class Label extends CB_View_Base
 
 	private BitmapFontCache TextObject;
 
-	private String text = "";
+	private String mText = "";
 	private BitmapFont mFont;
 	private Color mColor;
-	private VAlignment valignment = VAlignment.CENTER;
-	private HAlignment halignment = HAlignment.LEFT;
+	private VAlignment mVAlignment = VAlignment.CENTER;
+	private HAlignment mHAlignment = HAlignment.LEFT;
 
 	private TextBounds bounds;
 
-	private float leftBorder;
-	private float rightBorder;
-	private float topBorder;
-	private float bottomBorder;
-	private float availableWidth;
-	private float availableHeight;
-
 	private WrapType wrapType = WrapType.singleLine;
-	private int lineCount = 1;
 
 	public Label(float X, float Y, float Width, float Height, String Name)
 	{
@@ -94,18 +86,7 @@ public class Label extends CB_View_Base
 		mColor = Fonts.getFontColor();
 		TextObject = new BitmapFontCache(mFont, false);
 		TextObject.setColor(mColor);
-		bounds = TextObject.setText(text, 0, mFont.getCapHeight());
-		calcInnerRec();
-	}
-
-	private void calcInnerRec()
-	{
-		leftBorder = drawableBackground != null ? drawableBackground.getLeftWidth() : 0;
-		rightBorder = drawableBackground != null ? drawableBackground.getRightWidth() : 0;
-		topBorder = drawableBackground != null ? drawableBackground.getTopHeight() : 0;
-		bottomBorder = drawableBackground != null ? drawableBackground.getBottomHeight() : 0;
-		availableWidth = width - rightBorder - leftBorder;
-		availableHeight = height - topBorder - bottomBorder;
+		bounds = TextObject.setText(mText, 0, mFont.getCapHeight());
 	}
 
 	@Override
@@ -129,17 +110,17 @@ public class Label extends CB_View_Base
 	{
 		wrapType = WrapType.singleLine;
 		makeTextObject();
-		bounds = mFont.getBounds(text);
+		bounds = mFont.getBounds(mText);
 		try
 		{
-			bounds = TextObject.setText(text, 0, bounds.height);
+			bounds = TextObject.setText(mText, 0, bounds.height);
 		}
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + wrapType + "/" + halignment + "/" + valignment + ") " + bounds.width + "," + bounds.height + " \""
-					+ text + "\"");
+			Logger.DEBUG(this + " (" + wrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \""
+					+ mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -148,17 +129,17 @@ public class Label extends CB_View_Base
 	{
 		wrapType = WrapType.multiLine;
 		makeTextObject();
-		bounds = mFont.getMultiLineBounds(text);
+		bounds = mFont.getMultiLineBounds(mText);
 		try
 		{
-			bounds = TextObject.setMultiLineText(text, 0, bounds.height, bounds.width, halignment);
+			bounds = TextObject.setMultiLineText(mText, 0, bounds.height, bounds.width, mHAlignment);
 		}
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + wrapType + "/" + halignment + "/" + valignment + ") " + bounds.width + "," + bounds.height + " \""
-					+ text + "\"");
+			Logger.DEBUG(this + " (" + wrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \""
+					+ mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -167,17 +148,17 @@ public class Label extends CB_View_Base
 	{
 		wrapType = WrapType.wrapped;
 		makeTextObject();
-		bounds = mFont.getWrappedBounds(text, availableWidth);
+		bounds = mFont.getWrappedBounds(mText, innerWidth);
 		try
 		{
-			bounds = TextObject.setWrappedText(text, 0, bounds.height, bounds.width, halignment);
+			bounds = TextObject.setWrappedText(mText, 0, bounds.height, bounds.width, mHAlignment);
 		}
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + wrapType + "/" + halignment + "/" + valignment + ") " + bounds.width + "," + bounds.height + " \""
-					+ text + "\"");
+			Logger.DEBUG(this + " (" + wrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \""
+					+ mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -197,25 +178,25 @@ public class Label extends CB_View_Base
 	private void setTextPosition()
 	{
 		float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begründet
-		if (availableWidth > bounds.width)
+		if (innerWidth > bounds.width)
 		{
-			if (halignment == HAlignment.CENTER)
+			if (mHAlignment == HAlignment.CENTER)
 			{
-				xPosition = (availableWidth - bounds.width) / 2f;
+				xPosition = (innerWidth - bounds.width) / 2f;
 			}
-			else if (halignment == HAlignment.RIGHT)
+			else if (mHAlignment == HAlignment.RIGHT)
 			{
-				xPosition = availableWidth - bounds.width;
+				xPosition = innerWidth - bounds.width;
 			}
 		}
 		float yPosition = 0; // VAlignment.BOTTOM
-		switch (valignment)
+		switch (mVAlignment)
 		{
 		case TOP:
-			yPosition = availableHeight - bounds.height - mFont.getAscent();
+			yPosition = innerHeight - bounds.height - mFont.getAscent();
 			break;
 		case CENTER:
-			yPosition = (availableHeight - bounds.height - mFont.getAscent()) / 2f;
+			yPosition = (innerHeight - bounds.height - mFont.getAscent()) / 2f;
 			break;
 		}
 		TextObject.setPosition(xPosition, yPosition);
@@ -247,128 +228,93 @@ public class Label extends CB_View_Base
 		return setText(Text, null, color, null);
 	}
 
-	public TextBounds setText(String text, BitmapFont font, Color fontColor)
+	public TextBounds setText(String text, BitmapFont Font, Color fontColor)
 	{
-		return setText(text, font, fontColor, null);
+		return setText(text, Font, fontColor, null);
 	}
 
-	public TextBounds setText(String _text, BitmapFont font, Color fontColor, HAlignment alignment)
+	public TextBounds setText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment)
 	{
-		if (_text == null) _text = "";
-		text = _text;
-		if (font != null) mFont = font;
+		if (text == null) text = "";
+		mText = text;
+		if (Font != null) mFont = Font;
 		if (fontColor != null) mColor = fontColor;
-		if (alignment != null) halignment = alignment;
+		if (HAlignment != null) mHAlignment = HAlignment;
 		setText();
 		return bounds;
 	}
 
-	public TextBounds setMultiLineText(String _text)
+	public TextBounds setMultiLineText(String text)
 	{
-		return setMultiLineText(_text, HAlignment.LEFT);
+		return setMultiLineText(text, HAlignment.LEFT);
 	}
 
-	public TextBounds setMultiLineText(String _text, HAlignment alignment)
+	public TextBounds setMultiLineText(String text, HAlignment HAlignment)
 	{
-		if (_text == null) _text = "";
-		text = _text;
-		if (alignment != null) halignment = alignment;
-		valignment = VAlignment.TOP;
+		if (text == null) text = "";
+		mText = text;
+		if (HAlignment != null) mHAlignment = HAlignment;
+		mVAlignment = VAlignment.TOP;
 		setMultiLineText();
 		return bounds;
 	}
 
-	public TextBounds setWrappedText(String _text)
+	public TextBounds setWrappedText(String text)
 	{
-		return setWrappedText(_text, null, null, HAlignment.LEFT);
+		return setWrappedText(text, null, null, HAlignment.LEFT);
 	}
 
-	public TextBounds setWrappedText(String _text, HAlignment alignment)
+	public TextBounds setWrappedText(String text, HAlignment HAlignment)
 	{
-		return setWrappedText(_text, null, null, alignment);
+		return setWrappedText(text, null, null, HAlignment);
 	}
 
-	public TextBounds setWrappedText(String _text, BitmapFont font, Color fontColor, HAlignment alignment)
+	public TextBounds setWrappedText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment)
 	{
-		if (_text == null) _text = "";
-		text = _text;
-		if (font != null) mFont = font;
+		if (text == null) text = "";
+		mText = text;
+		if (Font != null) mFont = Font;
 		if (fontColor != null) mColor = fontColor;
-		if (alignment != null) halignment = alignment;
-		valignment = VAlignment.TOP;
+		if (HAlignment != null) mHAlignment = HAlignment;
+		mVAlignment = VAlignment.TOP;
 		setWrappedText();
 		return bounds;
 	}
 
-	public void setFont(BitmapFont font)
+	public void setFont(BitmapFont Font)
 	{
-		if (font != null)
+		if (Font != null)
 		{
-			if (font != mFont)
+			if (Font != mFont)
 			{
-				mFont = font;
+				mFont = Font;
 				makeText();
 			}
 		}
 	}
 
-	public void setHAlignment(HAlignment alignment)
+	public void setHAlignment(HAlignment HAlignment)
 	{
-		if (alignment != null)
+		if (HAlignment != null)
 		{
-			if (halignment != alignment)
+			if (mHAlignment != HAlignment)
 			{
-				halignment = alignment;
+				mHAlignment = HAlignment;
 				makeText();
 			}
 		}
 	}
 
-	public void setVAlignment(VAlignment alignment)
+	public void setVAlignment(VAlignment VAlignment)
 	{
-		if (alignment != null)
+		if (VAlignment != null)
 		{
-			if (valignment != alignment)
+			if (mVAlignment != VAlignment)
 			{
-				valignment = alignment;
+				mVAlignment = VAlignment;
 				makeText();
 			}
 		}
-	}
-
-	public void setTextMarginLeft(float _left)
-	{
-		leftBorder = _left;
-		calcInnerRec();
-		makeText();
-	}
-
-	public void setTextMarginBottom(float _bottom)
-	{
-		bottomBorder = _bottom;
-		calcInnerRec();
-		makeText();
-	}
-
-	public void setTextMarginTop(float _top)
-	{
-		topBorder = _top;
-		calcInnerRec();
-		makeText();
-	}
-
-	public void setTextMarginRight(float _right)
-	{
-		rightBorder = _right;
-		calcInnerRec();
-		makeText();
-	}
-
-	public void setTextMargin(float value)
-	{
-		rightBorder = leftBorder = topBorder = bottomBorder = value;
-		calcInnerRec();
-		makeText();
 	}
 
 	public void setTextColor(Color color)
@@ -385,14 +331,13 @@ public class Label extends CB_View_Base
 
 	public String getText()
 	{
-		return text;
+		return mText;
 	}
 
 	public int getLineCount()
 	{
 		if (bounds == null) return 0;
-		lineCount = (int) (bounds.height / mFont.getCapHeight());
-		return lineCount;
+		return (int) (bounds.height / mFont.getCapHeight());
 	}
 
 	public BitmapFont getFont()
@@ -433,7 +378,6 @@ public class Label extends CB_View_Base
 	{
 		// wird automatisch aufgerufen,
 		// wenn setWidth oder setHeight, ...
-		calcInnerRec();
 		makeText();
 	}
 
@@ -441,7 +385,6 @@ public class Label extends CB_View_Base
 	public void setBackground(Drawable background)
 	{
 		super.setBackground(background);
-		calcInnerRec();
 		makeText();
 	}
 
@@ -449,9 +392,9 @@ public class Label extends CB_View_Base
 	public void dispose()
 	{
 		TextObject = null;
-		valignment = null;
-		halignment = null;
-		text = null;
+		mVAlignment = null;
+		mHAlignment = null;
+		mText = null;
 		bounds = null;
 	}
 

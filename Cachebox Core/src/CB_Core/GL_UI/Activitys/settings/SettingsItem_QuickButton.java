@@ -274,7 +274,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 
 	private void layout()
 	{
-		float btnLeft = this.width - this.getRightWidth() - up.getWidth();
+		float btnLeft = this.width - rightBorder - up.getWidth();
 		float margin = up.getHalfHeight() / 2;
 
 		add.setX(btnLeft);

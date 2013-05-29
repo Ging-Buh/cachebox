@@ -13,10 +13,10 @@ public class SettingsItem_Bool extends SettingsItemBase
 		super(rec, Index, Name);
 
 		Check = new chkBox("");
-		Check.setX(this.width - this.getRightWidth() - Check.getWidth());
+		Check.setX(this.width - rightBorder - Check.getWidth());
 		Check.setY(this.halfHeight - Check.getHalfHeight());
 
-		lblName.setWidth(lblName.getWidth() - Check.getWidth() - this.getRightWidth());
+		lblName.setWidth(lblName.getWidth() - Check.getWidth() - rightBorder);
 
 		lblDefault.setWidth(lblName.getWidth());
 

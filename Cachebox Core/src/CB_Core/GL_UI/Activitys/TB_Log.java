@@ -112,7 +112,7 @@ public class TB_Log extends ActivityBase
 		lblPlaced = new Label(iconRec, "CacheName");
 
 		edit = new EditWrapedTextField("LogInput", TextFieldType.MultiLineWraped);
-		edit.setWidth(contentBox.getWidth() - contentBox.getLeftWidth() - contentBox.getRightWidth());
+		edit.setWidth(contentBox.getInnerWidth());
 		edit.setHeight(contentBox.getHalfHeight());
 
 		rbDirectLog = new RadioButton("direct_Log");
@@ -191,12 +191,11 @@ public class TB_Log extends ActivityBase
 
 			CacheIcon.setSprite(SpriteCache.BigIcons.get(c.Type.ordinal()));
 
-			lblPlaced.setWidth(contentBox.getAvailableWidth() - CacheIcon.getWidth() - (margin * 3));
+			lblPlaced.setWidth(contentBox.getInnerWidth() - CacheIcon.getWidth() - (margin * 3));
 			TextBounds bo = lblPlaced.setWrappedText(msg);
 			lblPlaced.setHeight(bo.height + lblPlaced.getTopHeight() + lblPlaced.getBottomHeight());
 
 			contentBox.setMargins(margin, margin * 3);
-			contentBox.setBorders(contentBox.getLeftWidth(), contentBox.getRightWidth());
 			contentBox.setRowYPos(contentBox.getRowYPos() - (margin * 3));
 
 			contentBox.addNext(CacheIcon);

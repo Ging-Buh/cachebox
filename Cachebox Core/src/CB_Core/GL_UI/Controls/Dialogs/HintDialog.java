@@ -61,7 +61,7 @@ public class HintDialog extends GL_MsgBox
 
 		// label in Scrollbox verpacken
 		scrollBox.addChild(msgBox.label);
-		scrollBox.setInnerHeight(msgBox.label.getHeight());
+		scrollBox.setVirtualHeight(msgBox.label.getHeight());
 
 		msgBox.addChild(scrollBox);
 
@@ -83,7 +83,7 @@ public class HintDialog extends GL_MsgBox
 				msgBox.label.setZeroPos();
 				msgBox.label.setWrappedText(txt);
 				msgBox.label.setHeight(lblHeigt);
-				scrollBox.setInnerHeight(msgBox.label.getHeight());
+				scrollBox.setVirtualHeight(msgBox.label.getHeight());
 				return true;
 			}
 		});

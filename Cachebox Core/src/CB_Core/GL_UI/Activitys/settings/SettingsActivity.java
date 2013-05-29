@@ -98,11 +98,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	{
 		this.setLongClickable(true);
 		Config.settings.SaveToLastValue();
-		ButtonRec = new CB_RectF(this.getLeftWidth(), 0, this.width - this.drawableBackground.getLeftWidth()
-				- this.drawableBackground.getRightWidth(), UI_Size_Base.that.getButtonHeight());
+		ButtonRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.that.getButtonHeight());
 
-		itemRec = new CB_RectF(this.getLeftWidth(), 0, ButtonRec.getWidth() - this.getLeftWidth() - this.getRightWidth(),
-				UI_Size_Base.that.getButtonHeight());
+		itemRec = new CB_RectF(leftBorder, 0, ButtonRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.that.getButtonHeight());
 
 		createButtons();
 		fillContent();
@@ -125,7 +123,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	{
 		float btnW = (innerWidth - UI_Size_Base.that.getButtonWidth()) / 2;
 
-		btnOk = new Button(this.getLeftWidth(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
+		btnOk = new Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
 		btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(),
 				UI_Size_Base.that.getButtonHeight(), "Menu Button");
 		btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
@@ -302,7 +300,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						LinearLayout.layout();
 
 						LinearLayout.setZeroPos();
-						scrollBox.setInnerHeight(LinearLayout.getHeight());
+						scrollBox.setVirtualHeight(LinearLayout.getHeight());
 
 					}
 				});
@@ -435,7 +433,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		LinearLayout.addChild(view, itemMargin);
 		LinearLayout.setZeroPos();
-		scrollBox.setInnerHeight(LinearLayout.getHeight());
+		scrollBox.setVirtualHeight(LinearLayout.getHeight());
 
 	}
 

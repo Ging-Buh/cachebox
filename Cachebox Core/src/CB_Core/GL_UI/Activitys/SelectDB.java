@@ -78,25 +78,24 @@ public class SelectDB extends ActivityBase
 			index++;
 		}
 
-		lvFiles = new V_ListView(new CB_RectF(this.getLeftWidth(), this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, width
-				- this.getLeftWidth() - this.getRightWidth(), height - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight()
-				- this.getBottomHeight()), "DB File ListView");
+		lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2,
+				innerWidth, height - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()),
+				"DB File ListView");
 
 		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
 
 		this.addChild(lvFiles);
 
-		float btWidth = (width - this.getLeftWidth() - this.getRightWidth()) / 3;
+		float btWidth = innerWidth / 3;
 
-		bNew = new Button(new CB_RectF(this.getLeftWidth(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
-				"selectDB.bNew");
+		bNew = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bNew");
 		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
 				"selectDB.bSelect");
 		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
 				"selectDB.bCancel");
-		bAutostart = new Button(new CB_RectF(this.getLeftWidth(), bNew.getMaxY(), width - this.getLeftWidth() - this.getRightWidth(),
-				UI_Size_Base.that.getButtonHeight()), "selectDB.bAutostart");
+		bAutostart = new Button(new CB_RectF(leftBorder, bNew.getMaxY(), innerWidth, UI_Size_Base.that.getButtonHeight()),
+				"selectDB.bAutostart");
 
 		this.addChild(bSelect);
 		this.addChild(bNew);

@@ -20,7 +20,7 @@ public class TrackableListViewItem extends ListViewItemBackground
 
 		float hw = this.getHeight() - this.getTopHeight() - this.getBottomHeight();
 
-		img = new Image(this.getLeftWidth(), this.getBottomHeight(), hw, hw, "IconImage");
+		img = new Image(leftBorder, this.getBottomHeight(), hw, hw, "IconImage");
 		img.setImageURL(TB.getIconUrl());
 		this.addChild(img);
 

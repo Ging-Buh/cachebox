@@ -296,28 +296,96 @@ public abstract class GL_View_Base extends CB_RectF
 		GL.that.renderOnce(this.getName() + "add RunOnGL");
 	}
 
+	protected float leftBorder = 0;
+	protected float rightBorder = 0;
+	protected float topBorder = 0;
+	protected float bottomBorder = 0;
+	protected float innerWidth = width;
+	protected float innerHeight = height;
+
+	/**
+	 ** setting the drawableBackground and changes the Borders (do own Borders afterwards)
+	 **/
+	public void setBackground(Drawable background)
+	{
+		drawableBackground = background;
+		if (background != null)
+		{
+			leftBorder = background.getLeftWidth();
+			rightBorder = background.getRightWidth();
+			topBorder = background.getTopHeight();
+			bottomBorder = background.getBottomHeight(); // this.BottomHeight;
+		}
+		else
+		{
+			leftBorder = 0;
+			rightBorder = 0;
+			topBorder = 0;
+			bottomBorder = 0; // this.BottomHeight;
+		}
+		innerWidth = width - leftBorder - rightBorder;
+		innerHeight = height - topBorder - bottomBorder;
+	}
+
+	/**
+	 ** no borders to use on this (page), if you want
+	 **/
+	public void setNoBorders()
+	{
+		leftBorder = 0f;
+		rightBorder = 0f;
+		innerWidth = width;
+	}
+
+	/**
+	 ** setting the borders to use on this (page), if you want
+	 **/
+	public void setBorders(float l, float r)
+	{
+		leftBorder = l;
+		rightBorder = r;
+		innerWidth = width - l - r;
+	}
+
+	public Drawable getBackground()
+	{
+		return drawableBackground;
+	}
+
 	public float getLeftWidth()
 	{
-		if (drawableBackground != null) return drawableBackground.getLeftWidth();
-		return 0;
+		return leftBorder;
 	}
 
 	public float getRightWidth()
 	{
-		if (drawableBackground != null) return drawableBackground.getRightWidth();
-		return 0;
+		return rightBorder;
 	}
 
 	public float getTopHeight()
 	{
-		if (drawableBackground != null) return drawableBackground.getTopHeight();
-		return 0;
+		return topBorder;
 	}
 
 	public float getBottomHeight()
 	{
-		if (drawableBackground != null) return drawableBackground.getBottomHeight();
-		return 0;
+		return bottomBorder;
+	}
+
+	/**
+	 ** get available width (not filled with objects)
+	 **/
+	public float getInnerWidth()
+	{
+		return innerWidth;
+	}
+
+	/**
+	 ** get available height (not filled with objects)
+	 **/
+	public float getInnerHeight()
+	{
+		return innerHeight;
 	}
 
 	/**
@@ -537,6 +605,8 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		try
 		{
+			innerWidth = width - leftBorder - rightBorder;
+			innerHeight = height - topBorder - bottomBorder;
 			onResized(this);
 		}
 		catch (Exception e1)
@@ -1026,16 +1096,6 @@ public abstract class GL_View_Base extends CB_RectF
 	public void setLongClickable(boolean value)
 	{
 		isLongClickable = value;
-	}
-
-	public void setBackground(Drawable background)
-	{
-		drawableBackground = background;
-	}
-
-	public Drawable getBackground()
-	{
-		return drawableBackground;
 	}
 
 	public String getName()

@@ -94,11 +94,11 @@ public class EditCoord extends ActivityBase
 		btnCancel.setText(Translation.Get("cancel"));
 		btnOK.setText(Translation.Get("ok"));
 
-		pnlNumPad = new Box(this.getAvailableWidth(), this.getAvailableHeight(), "pnlNumPad");
+		pnlNumPad = new Box(innerWidth, this.getAvailableHeight(), "pnlNumPad");
 		this.createNumPad(pnlNumPad);
 		this.addLast(pnlNumPad);
 
-		this.pnlD = new Box(this.getAvailableWidth(), this.getAvailableHeight(), "pnlD");
+		this.pnlD = new Box(innerWidth, this.getAvailableHeight(), "pnlD");
 		this.createD(this.pnlD);
 		this.addLast(this.pnlD);
 
@@ -380,7 +380,7 @@ public class EditCoord extends ActivityBase
 		Label lUtmZ = new Label("lUtmZ"); // Zone
 
 		// Lon
-		Box pnlOstwert = new Box(panel.getAvailableWidth(), this.btnUTMLon[0].getHeight(), "pnlOstwert");
+		Box pnlOstwert = new Box(panel.getInnerWidth(), this.btnUTMLon[0].getHeight(), "pnlOstwert");
 		panel.addNext(lUtmO, 0.2f);
 		panel.addLast(pnlOstwert); // erst die Breite bestimmen und dann darauf verteilen
 		for (int i = 0; i < 7; i++)
@@ -390,7 +390,7 @@ public class EditCoord extends ActivityBase
 		pnlOstwert.addLast(this.btnUTMLon[7]);
 
 		// Lat
-		Box pnlNordwert = new Box(panel.getAvailableWidth(), this.btnUTMLat[0].getHeight(), "pnlNordwert");
+		Box pnlNordwert = new Box(panel.getInnerWidth(), this.btnUTMLat[0].getHeight(), "pnlNordwert");
 		pnlNordwert.adjustHeight();
 		panel.addNext(lUtmN, 0.2f);
 		panel.addLast(pnlNordwert); // erst die Breite bestimmen und dann darauf verteilen
@@ -401,7 +401,7 @@ public class EditCoord extends ActivityBase
 		pnlNordwert.addLast(this.btnUTMLat[7]);
 
 		// Zone
-		Box pnlZone = new Box(panel.getAvailableWidth(), btnUTMZone[0].getHeight(), "pnlZone");
+		Box pnlZone = new Box(panel.getInnerWidth(), btnUTMZone[0].getHeight(), "pnlZone");
 		panel.addNext(lUtmZ, 0.2f);
 		panel.addLast(pnlZone); // erst die Breite bestimmen und dann darauf verteilen
 		pnlZone.addNext(btnUTMZone[0]);

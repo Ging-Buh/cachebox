@@ -87,7 +87,7 @@ public class EditCache extends ActivityBase
 		this.addLast(btnCancel);
 		btnCancel.setText(Translation.Get("cancel"));
 		btnOK.setText(Translation.Get("ok"));
-		mainPanel = new Box(this.getAvailableWidth(), this.getAvailableHeight(), "mainPanel");
+		mainPanel = new Box(innerWidth, getAvailableHeight(), "mainPanel");
 		this.addLast(mainPanel);
 		mainPanel_Y = mainPanel.getY();
 		// --- Code

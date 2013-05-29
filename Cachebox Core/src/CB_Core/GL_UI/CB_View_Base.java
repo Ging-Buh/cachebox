@@ -278,17 +278,13 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	// Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
-	// the position and width (stretched equally on this) of the objects is calculated automatically
+	// the position and width (stretched equally, weighted or percentual on this) of the objects is calculated automatically
 	private MoveableList<GL_View_Base> row;
 	private boolean topdown = true; // false = bottomup
 	private float rowYPos = 0;
 	private float rowMaxHeight = 0;
 	private float xMargin = 0;
 	private float yMargin = 0;
-	private float leftBorder;
-	private float rightBorder;
-	private float topBorder;
-	private float bottomBorder;
 	private float topYAdd;
 	private float bottomYAdd = -1;
 
@@ -318,26 +314,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	/**
-	 ** no borders to use on this (page), if you want
-	 **/
-	public void setNoBorders()
-	{
-		if (this.row == null) this.initRow();
-		this.leftBorder = 0f;
-		this.rightBorder = 0f;
-	}
-
-	/**
-	 ** setting the borders to use on this (page), if you want
-	 **/
-	public void setBorders(float l, float r)
-	{
-		if (this.row == null) this.initRow();
-		this.leftBorder = l;
-		this.rightBorder = r;
-	}
-
-	/**
 	 ** start objects at top
 	 **/
 	public void initRow()
@@ -350,8 +326,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void initRow(boolean direction)
 	{
-		this.topBorder = this.getTopHeight();
-		this.bottomBorder = this.getBottomHeight(); // this.BottomHeight;
 		if (direction)
 		{
 			initRow(direction, this.height - this.topBorder);
@@ -377,10 +351,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			this.row.clear();
 		}
 		this.rowYPos = y;
-		this.leftBorder = this.getLeftWidth();
-		this.rightBorder = this.getRightWidth();
-		this.topBorder = this.getTopHeight();
-		this.bottomBorder = this.getBottomHeight(); // this.BottomHeight;
 		if (bottomYAdd < 0)
 		{
 			// nur beim ersten Mal, sonst müssen die Werte erhalten bleiben
@@ -399,16 +369,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	/**
-	 ** get available width (not filled with objects)
-	 **/
-	public float getAvailableWidth()
-	{
-		if (this.row == null) this.initRow();
-		return this.width - this.leftBorder - this.rightBorder;
-	}
-
-	/**
-	 ** get available height (not filled with objects)
+	 ** get innerHeight - Height of all placed objects
 	 **/
 	public float getAvailableHeight()
 	{
@@ -445,7 +406,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void addLast(GL_View_Base c)
 	{
-		this.Weight = 1f;
+		c.Weight = 1f;
 		addMe(c, true);
 	}
 
@@ -454,7 +415,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void addNext(GL_View_Base c)
 	{
-		this.Weight = 1f;
+		c.Weight = 1f;
 		addMe(c, false);
 	}
 
@@ -463,7 +424,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void addLast(GL_View_Base c, float Weight)
 	{
-		this.Weight = Weight;
+		c.Weight = Weight;
 		addMe(c, true);
 	}
 
@@ -472,7 +433,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void addNext(GL_View_Base c, float Weight)
 	{
-		this.Weight = Weight;
+		c.Weight = Weight;
 		addMe(c, false);
 	}
 

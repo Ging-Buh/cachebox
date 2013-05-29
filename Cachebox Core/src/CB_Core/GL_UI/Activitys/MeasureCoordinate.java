@@ -77,8 +77,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	private void iniOkCancel()
 	{
-		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
+		CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 
 		btnRec.setX(bOK.getMaxX());
@@ -118,11 +117,10 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	private void iniLabels()
 	{
-		float y = bOK.getMaxY() + (that.width - this.getLeftWidth() - this.getRightWidth()) + (margin * 3);
+		float y = bOK.getMaxY() + innerWidth + (margin * 3);
 		float w = Math.max(Fonts.Measure(Translation.Get("MeasureCoord")).width, Fonts.Measure(Translation.Get("MeasureCount")).width);
-		CB_RectF rec = new CB_RectF(this.getLeftWidth() + margin, y, w, MeasuredLabelHeight);
-		CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, width - this.getLeftWidth() - this.getRightWidth() - w - margin,
-				MeasuredLabelHeight);
+		CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
+		CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
 
 		lblDescMeasureCount = new Label(rec, "");
 
@@ -143,10 +141,10 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 	private void iniChart()
 	{
-		float w = this.width - this.getLeftWidth() - this.getRightWidth() - margin - margin;
+		float w = innerWidth - margin - margin;
 		float h = this.height - lblDescMeasureCoord.getMaxY() - this.getTopHeight() - margin;
 
-		CB_RectF rec = new CB_RectF(this.getLeftWidth() + margin, lblDescMeasureCoord.getMaxY() + margin, w, h);
+		CB_RectF rec = new CB_RectF(leftBorder + margin, lblDescMeasureCoord.getMaxY() + margin, w, h);
 		chart = new SatBarChart(rec, "");
 		this.addChild(chart);
 	}
@@ -211,9 +209,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		disposeTexture();
 
-		float innerWidth = that.width - this.getLeftWidth() - this.getRightWidth();
-
-		CB_RectF panelRec = new CB_RectF(this.getLeftWidth(), bOK.getMaxY(), innerWidth, innerWidth);
+		CB_RectF panelRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, innerWidth);
 
 		int w = getNextHighestPO2((int) panelRec.getWidth());
 		int h = getNextHighestPO2((int) panelRec.getHeight());
@@ -301,7 +297,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		drawingTexture = new Texture(drawingPixmap);
 
 		drawing = new Sprite(drawingTexture, (int) panelRec.getWidth(), (int) panelRec.getHeight());
-		drawing.setX(this.getLeftWidth());
+		drawing.setX(leftBorder);
 		drawing.setY(bOK.getMaxY() + this.getBottomHeight());
 
 		inRepaint = false;

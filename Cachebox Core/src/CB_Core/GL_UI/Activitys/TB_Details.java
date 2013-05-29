@@ -141,10 +141,10 @@ public class TB_Details extends ActivityBase
 				+ SpriteCache.activityBackground.getTopHeight();
 
 		lblAbout.setFont(Fonts.getSmall());
-		AboutThisItem.setWidth(scrollBox.getWidth() - scrollBox.getLeftWidth() - scrollBox.getRightWidth());
+		AboutThisItem.setWidth(scrollBox.getInnerWidth());
 		TextBounds bounds = lblAbout.setText(Translation.Get("AboutThisItem"), null, null, HAlignment.LEFT);
 		lblAbout.setHeight(bounds.height + margin);
-		lblAboutDesc.setWidth(AboutThisItem.getWidth() - AboutThisItem.getLeftWidth() - AboutThisItem.getRightWidth());
+		lblAboutDesc.setWidth(AboutThisItem.getInnerWidth());
 		bounds = lblAboutDesc.setWrappedText(TB.getDescription());
 		lblAboutDesc.setHeight(bounds.height + margin + margin);
 
@@ -168,17 +168,17 @@ public class TB_Details extends ActivityBase
 		AboutThisItem.addLast(lblAboutDesc);
 
 		lblGoal.setFont(Fonts.getSmall());
-		GoalThisItem.setWidth(scrollBox.getWidth() - scrollBox.getLeftWidth() - scrollBox.getRightWidth());
+		GoalThisItem.setWidth(scrollBox.getInnerWidth());
 		bounds = lblGoal.setText(Translation.Get("GoalThisItem"), null, null, HAlignment.LEFT);
 		lblGoal.setHeight(bounds.height + margin);
-		lblGoalDesc.setWidth(GoalThisItem.getWidth() - GoalThisItem.getLeftWidth() - GoalThisItem.getRightWidth());
+		lblGoalDesc.setWidth(GoalThisItem.getInnerWidth());
 		bounds = lblGoalDesc.setWrappedText(TB.getCurrentGoal());
 		lblGoalDesc.setHeight(bounds.height + margin + margin);
 		GoalThisItem.setHeight(Math.max(minBoxHeight, (lblGoalDesc.getHeight() + margin + margin)));
 		GoalThisItem.initRow();
 		GoalThisItem.addLast(lblGoalDesc);
 
-		DetailThisItem.setWidth(scrollBox.getWidth() - scrollBox.getLeftWidth() - scrollBox.getRightWidth());
+		DetailThisItem.setWidth(scrollBox.getInnerWidth());
 
 		float maxWidth = 0;
 
@@ -266,8 +266,8 @@ public class TB_Details extends ActivityBase
 		scrollBox.addLast(DetailThisItem);
 		// float ScrollBoxInnerHeight = AboutThisItem.getHeight() + lblAbout.getHeight() + GoalThisItem.getHeight() + lblGoal.getHeight()
 		// + DetailThisItem.getHeight() + (scrollBox.getYmargin() * 7);
-		// scrollBox.setInnerHeight(ScrollBoxInnerHeight);
-		scrollBox.setInnerHeight(scrollBox.getRowYPos());
+		// scrollBox.setVirtualHeight(ScrollBoxInnerHeight);
+		scrollBox.setVirtualHeight(scrollBox.getRowYPos());
 		scrollBox.setX(0);
 		AboutThisItem.setX(0);
 		GoalThisItem.setX(0);

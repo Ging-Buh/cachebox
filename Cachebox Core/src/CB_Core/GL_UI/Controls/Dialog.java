@@ -89,6 +89,13 @@ public abstract class Dialog extends CB_View_Base
 			mCenter9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
 			mFooter9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.footer.ordinal()), pW, pW, 3, pW);
 
+			leftBorder = mCenter9patch.getLeftWidth();
+			rightBorder = mCenter9patch.getRightWidth();
+			topBorder = mHeader9patch.getTopHeight();
+			bottomBorder = mFooter9patch.getBottomHeight();
+			innerWidth = width - leftBorder - rightBorder;
+			innerHeight = height - topBorder - bottomBorder;
+
 			mTitleVersatz = (float) pW;
 
 			lastNightMode = Config.settings.nightMode.getValue();
@@ -99,30 +106,6 @@ public abstract class Dialog extends CB_View_Base
 	public static float getMargin()
 	{
 		return margin;
-	}
-
-	@Override
-	public float getLeftWidth()
-	{
-		return mCenter9patch.getLeftWidth();
-	}
-
-	@Override
-	public float getBottomHeight()
-	{
-		return mFooter9patch.getBottomHeight();
-	}
-
-	@Override
-	public float getRightWidth()
-	{
-		return mCenter9patch.getRightWidth();
-	}
-
-	@Override
-	public float getTopHeight()
-	{
-		return mHeader9patch.getTopHeight();
 	}
 
 	@Override

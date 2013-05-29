@@ -91,7 +91,7 @@ public class CreditsView extends CB_View_Base
 			@Override
 			public void LayoutIsChanged(Linearlayout linearLayout, float newHeight)
 			{
-				scrollBox.setInnerHeight(newHeight);
+				scrollBox.setVirtualHeight(newHeight);
 			}
 		});
 

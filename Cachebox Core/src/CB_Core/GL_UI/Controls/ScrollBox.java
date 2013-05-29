@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class ScrollBox extends CB_View_Base
 {
 	private V_ListView lv;
-	private float innerHeight;
+	private float virtualHeight;
 	private ListViewItemBase item;
 	private CustomAdapter thisAdapter;
 
@@ -24,11 +24,11 @@ public class ScrollBox extends CB_View_Base
 		super.render(batch);
 	}
 
-	public ScrollBox(CB_RectF rec, float innerHeight, String Name)
+	public ScrollBox(CB_RectF rec, float virtualHeight, String Name)
 	{
 		super(rec, Name);
 
-		this.innerHeight = innerHeight;
+		this.virtualHeight = virtualHeight;
 
 		lv = new V_ListView(rec, "ListView-" + Name);
 		lv.setClickable(true);
@@ -48,7 +48,7 @@ public class ScrollBox extends CB_View_Base
 			}
 		};
 
-		item.setHeight(innerHeight);
+		item.setHeight(virtualHeight);
 		item.setClickable(true);
 		thisAdapter = new CustomAdapter();
 		lv.setDisposeFlag(false);
@@ -60,11 +60,9 @@ public class ScrollBox extends CB_View_Base
 
 	private void Layout()
 	{
-		lv.setWidth(this.width - this.getLeftWidth() - this.getRightWidth());
-		lv.setHeight(this.height - this.getTopHeight() - this.getBottomHeight());
-		lv.setX(this.getLeftWidth());
-		lv.setY(this.getBottomHeight());
-		item.setHeight(innerHeight);
+		lv.setSize(innerWidth, innerHeight);
+		lv.setPos(leftBorder, bottomBorder);
+		item.setHeight(virtualHeight);
 		lv.notifyDataSetChanged();
 	}
 
@@ -75,17 +73,17 @@ public class ScrollBox extends CB_View_Base
 		Layout();
 	}
 
-	public void setInnerHeight(float height)
+	public void setVirtualHeight(float virtualHeight)
 	{
-		innerHeight = height;
+		this.virtualHeight = virtualHeight;
 		Layout();
 	}
 
 	@Override
 	public void onResized(CB_RectF rec)
 	{
-		lv.setSize(rec);
-		item.setWidth(rec.getWidth());
+		lv.setSize(innerWidth, innerHeight);
+		item.setWidth(innerWidth);
 	}
 
 	public class CustomAdapter implements Adapter

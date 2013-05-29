@@ -398,7 +398,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topBox.setBackground(SpriteCache.activityBackground);
 
 		topContentBox = new Box(topBox, "topContent");
-		topContentBox.setWidth(topBox.getAvailableWidth());
+		topContentBox.setWidth(topBox.getInnerWidth());
 
 		attHeight = (this.width / 9) - margin;
 		CB_RectF attRec = new CB_RectF(0, 0, attHeight, attHeight);
@@ -586,7 +586,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			chart = new SatBarChart(attRec, "");
 			chart.setHeight((lblHeight + margin) * 2.3f);
 
-			float chartWidth = topContentBox.getAvailableWidth() - mesuredCoorWidth - margin;
+			float chartWidth = topContentBox.getInnerWidth() - mesuredCoorWidth - margin;
 			chart.setWeight(-1);
 			chart.setWidth(chartWidth);
 			topContentBox.addLast(chart);
@@ -632,7 +632,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		{
 			att = new Image[20];
 
-			int attLineBreak = (int) (topContentBox.getAvailableWidth() / (attHeight + margin)) - 2;
+			int attLineBreak = (int) (topContentBox.getInnerWidth() / (attHeight + margin)) - 2;
 			for (int i = 0; i < 20; i++)
 			{
 				att[i] = new Image(attRec, "");
@@ -649,7 +649,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		}
 
 		topBox.addChild(topContentBox);
-		topBox.setInnerHeight(contentHeight);
+		topBox.setVirtualHeight(contentHeight);
 		topBox.scrollTo(0);
 		setCache(GlobalCore.getSelectedCache());
 		// setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());

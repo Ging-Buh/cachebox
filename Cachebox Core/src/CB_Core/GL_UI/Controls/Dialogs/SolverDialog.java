@@ -197,7 +197,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 		// Initial LinearLayout
 		// Dieses wird nur mit der Breite Initialisiert, die Höhe ergibt sich aus dem Inhalt
-		mBox = new Box(rec.getWidth(), this.getAvailableHeight(), "SelectSolverFunction-Box");
+		mBox = new Box(rec.getWidth(), innerHeight, "SelectSolverFunction-Box");
 		float margin = GL_UISizes.margin;
 		mBox.setMargins(margin, margin);
 		mBox.initRow(true); // true= von oben nach unten
@@ -415,8 +415,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		tbFunction.setWeight(0.8f);
 		mBox.addNext(tbFunction);
 		float btnWidth = TextFieldHeight * 2;
-		bFunction = new Button(scrollBox.getWidth() - scrollBox.getLeftWidth() - scrollBox.getRightWidth() - btnWidth, y, btnWidth,
-				TextFieldHeight, "SolverDialogBtnVariable");
+		bFunction = new Button(scrollBox.getInnerWidth() - btnWidth, y, btnWidth, TextFieldHeight, "SolverDialogBtnVariable");
 
 		bFunction.setText("F(x)");
 		bFunction.setWeight(0.2f);
@@ -511,7 +510,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		// if (true) return;
 		// initial FormulaField
 		float y = startY;
-		CB_RectF rec = new CB_RectF(0, y, scrollBox.getWidth() - scrollBox.getLeftWidth() - scrollBox.getRightWidth(), TextFieldHeight);
+		CB_RectF rec = new CB_RectF(0, y, scrollBox.getInnerWidth(), TextFieldHeight);
 		mFormulaField = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		mFormulaField.setText(sForm);
 		mFormulaField.setZeroPos();

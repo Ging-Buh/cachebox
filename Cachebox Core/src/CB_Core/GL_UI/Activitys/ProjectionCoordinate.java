@@ -86,8 +86,8 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniCacheNameLabel()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth() + margin, height - this.getTopHeight() - MeasuredLabelHeight, width
-				- this.getLeftWidth() - this.getRightWidth() - margin, MeasuredLabelHeight);
+		CB_RectF rec = new CB_RectF(leftBorder + margin, height - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
+				MeasuredLabelHeight);
 
 		Title = new Label(rec, "CacheNameLabel");
 		Title.setText(this.name);
@@ -96,8 +96,8 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniCoordButton()
 	{
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), Title.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
+				UI_Size_Base.that.getButtonHeight());
 		bCoord = new CoordinateButton(rec, "CoordButton", coord);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -117,15 +117,15 @@ public class ProjectionCoordinate extends ActivityBase
 	private void iniCoordButton2()
 	{
 
-		CB_RectF labelRec = new CB_RectF(this.getLeftWidth() + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, this.width
-				- this.getLeftWidth() - this.getRightWidth(), MeasuredLabelHeight);
+		CB_RectF labelRec = new CB_RectF(leftBorder + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth,
+				MeasuredLabelHeight);
 
 		lblP2P = new Label(labelRec, "lblBearing");
 		lblP2P.setText(Translation.Get("toPoint"));
 		this.addChild(lblP2P);
 
-		CB_RectF rec = new CB_RectF(this.getLeftWidth(), lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), width - this.getLeftWidth()
-				- this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
+				UI_Size_Base.that.getButtonHeight());
 		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord);
 
 		bCoord2.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -155,9 +155,9 @@ public class ProjectionCoordinate extends ActivityBase
 
 		float y = bCoord.getY() - ButtonHeight;
 		float eWidth = Fonts.Measure(sUnit).width;
-		CB_RectF labelRec = new CB_RectF(this.getLeftWidth(), y, wMax, ButtonHeight);
-		CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, width - this.getLeftWidth() - this.getRightWidth()
-				- labelRec.getWidth() - eWidth - (margin * 2), ButtonHeight);
+		CB_RectF labelRec = new CB_RectF(leftBorder, y, wMax, ButtonHeight);
+		CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2),
+				ButtonHeight);
 		CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
 		lblBearing = new Label(labelRec, "lblBearing");
@@ -191,8 +191,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniOkCancel()
 	{
-		CB_RectF btnRec = new CB_RectF(this.getLeftWidth(), this.getBottomHeight(),
-				(this.width - this.getLeftWidth() - this.getRightWidth()) / 2, UI_Size_Base.that.getButtonHeight());
+		CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
 		bOK = new Button(btnRec, "OkButton");
 
 		btnRec.setX(bOK.getMaxX());
@@ -233,8 +232,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniNumPad()
 	{
-		CB_RectF numRec = new CB_RectF(this.getLeftWidth(), bOK.getMaxY(), width - this.getLeftWidth() - this.getRightWidth(),
-				lblDistance.getY() - bOK.getMaxY());
+		CB_RectF numRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, lblDistance.getY() - bOK.getMaxY());
 		numPad = new NumPad(numRec, "numPad", NumPad.Type.withDot);
 
 		numPad.registerTextField(valueDistance);

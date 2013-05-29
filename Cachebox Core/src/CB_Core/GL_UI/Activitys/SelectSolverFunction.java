@@ -44,11 +44,10 @@ public class SelectSolverFunction extends ButtonDialog
 		mResultListner = resultListner;
 
 		// Grössen für die CategoryButtons und ItemButtons berechnen!
-		categoryBtnRec = new CB_RectF(this.getLeftWidth(), 0, this.width - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth()
-				- this.getLeftWidth() - this.getRightWidth(), UI_Size_Base.that.getButtonHeight());
-
-		itemBtnRec = new CB_RectF(this.getLeftWidth(), 0, categoryBtnRec.getWidth() - this.getLeftWidth() - this.getRightWidth(),
+		categoryBtnRec = new CB_RectF(leftBorder, 0, innerWidth - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth(),
 				UI_Size_Base.that.getButtonHeight());
+
+		itemBtnRec = new CB_RectF(leftBorder, 0, categoryBtnRec.getWidth() - leftBorder - rightBorder, UI_Size_Base.that.getButtonHeight());
 
 		// Initialisiert die unteren Buttons für Ok/Cancel
 		iniOkCancel();
@@ -222,7 +221,7 @@ public class SelectSolverFunction extends ButtonDialog
 			public void LayoutIsChanged(Linearlayout linearLayout, float newHeight)
 			{
 				mLinearLayout.setZeroPos();
-				scrollBox.setInnerHeight(newHeight);
+				scrollBox.setVirtualHeight(newHeight);
 			}
 		});
 
@@ -360,7 +359,7 @@ public class SelectSolverFunction extends ButtonDialog
 							mLinearLayout.layout();
 
 							// mLinearLayout.setZeroPos();
-							// scrollBox.setInnerHeight(mLinearLayout.getHeight());
+							// scrollBox.setVirtualHeight(mLinearLayout.getHeight());
 						}
 					});
 
