@@ -195,7 +195,6 @@ import de.cachebox_test.Ui.ActivityUtils;
 import de.cachebox_test.Ui.AndroidClipboard;
 import de.cachebox_test.Views.DescriptionView;
 import de.cachebox_test.Views.JokerView;
-import de.cachebox_test.Views.NotesView;
 import de.cachebox_test.Views.SolverView;
 import de.cachebox_test.Views.SpoilerView;
 import de.cachebox_test.Views.ViewGL;
@@ -227,7 +226,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static DescriptionView descriptionView = null; // ID 4
 	private static SpoilerView spoilerView = null; // ID 5
-	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
 	private static JokerView jokerView = null; // ID 12
 
@@ -1280,7 +1278,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				ViewList.clear();
 				viewGL = null;
-				notesView = null;
 				jokerView = null;
 				descriptionView = null;
 				mainActivity = null;
@@ -1424,7 +1421,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
-		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
 		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
 		else if (ID == ViewConst.DESCRIPTION_VIEW)
 		{
@@ -1503,13 +1499,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				solverView.OnFree();
 				solverView = null;
-			}
-			else if (aktView.equals(notesView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				notesView.OnFree();
-				notesView = null;
 			}
 			else if (aktView.equals(spoilerView))
 			{
@@ -3543,6 +3532,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void run()
 			{
+
+				if (mTextField == null)
+				{
+					initialHiddenEditText();
+				}
+
 				if (focus != null)
 				{
 					mTextField.setVisibility(View.INVISIBLE);// ;

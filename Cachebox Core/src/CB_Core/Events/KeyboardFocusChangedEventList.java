@@ -27,36 +27,16 @@ public class KeyboardFocusChangedEventList
 		}
 	}
 
-	static Thread threadKeyboardFocusChangedEvent;
-
 	public static void Call(final EditTextFieldBase focus)
 	{
-		if (threadKeyboardFocusChangedEvent != null)
+		synchronized (list)
 		{
-			if (threadKeyboardFocusChangedEvent.getState() != Thread.State.TERMINATED) return;
-			else
-				threadKeyboardFocusChangedEvent = null;
-		}
-
-		if (threadKeyboardFocusChangedEvent == null) threadKeyboardFocusChangedEvent = new Thread(new Runnable()
-		{
-			@Override
-			public void run()
+			for (KeyboardFocusChangedEvent event : list)
 			{
-				synchronized (list)
-				{
-					for (KeyboardFocusChangedEvent event : list)
-					{
-						Logger.LogCat("FocusChangedEventList fire to " + event.toString());
-						event.KeyboardFocusChanged(focus);
-					}
-				}
-
+				Logger.LogCat("FocusChangedEventList fire to " + event.toString());
+				event.KeyboardFocusChanged(focus);
 			}
-		});
-
-		threadKeyboardFocusChangedEvent.run();
-
+		}
 	}
 
 }
