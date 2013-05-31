@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -452,7 +453,38 @@ public abstract class GL_View_Base extends CB_RectF
 			}
 		}
 
+		// set rotation
+		boolean isRotated = false;
+
+		if (mRotate != 0 || mScale != 1)
+		{
+			isRotated = true;
+
+			Matrix4 matrix = new Matrix4();
+
+			matrix.idt();
+			matrix.translate(mOriginX, mOriginY, 0);
+			matrix.rotate(0, 0, 1, mRotate);
+			matrix.scale(mScale, mScale, 1);
+			matrix.translate(-mOriginX, -mOriginY, 0);
+
+			batch.setTransformMatrix(matrix);
+		}
+
 		this.render(batch);
+
+		// reverse rotation
+		if (isRotated)
+		{
+			Matrix4 matrix = new Matrix4();
+
+			matrix.idt();
+			matrix.rotate(0, 0, 1, 0);
+			matrix.scale(1, 1, 1);
+
+			batch.setTransformMatrix(matrix);
+		}
+
 		batch.flush();
 		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 
@@ -598,7 +630,40 @@ public abstract class GL_View_Base extends CB_RectF
 
 	protected abstract void render(SpriteBatch batch);
 
-	// protected abstract void renderWithoutScissor(SpriteBatch batch);
+	// ########################
+	// Rotate Property
+	// ########################
+	protected float mRotate = 0;
+	protected float mOriginX;
+	protected float mOriginY;
+	protected float mScale = 1f;
+
+	public void setRotate(float Rotate)
+	{
+		mRotate = Rotate;
+	}
+
+	public void setOrigin(float originX, float originY)
+	{
+		mOriginX = originX;
+		mOriginY = originY;
+	}
+
+	public void setOriginCenter()
+	{
+		mOriginX = this.halfWidth;
+		mOriginY = this.halfHeight;
+	}
+
+	/**
+	 * setzt den Scale Factor des dargestellten Images, wobei die Größe nicht verändert wird. Ist das Image größer, wird es abgeschnitten
+	 * 
+	 * @param value
+	 */
+	public void setScale(float value)
+	{
+		mScale = value;
+	}
 
 	@Override
 	public void resize(float width, float height)

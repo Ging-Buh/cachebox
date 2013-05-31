@@ -231,8 +231,13 @@ public class CB_Button extends Button implements OnClickListener
 							{
 								compoundMenu.addItems(viewContextMenu.getItems());
 								compoundMenu.addItemClickListner(viewContextMenu.getItemClickListner());
+
 								// add divider
 								compoundMenu.addDivider();
+
+								// add MoreMenu
+								compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(),
+										viewContextMenu.getTextRightMoreMenu());
 							}
 
 							Menu LongClickMenu = getLongClickMenu();

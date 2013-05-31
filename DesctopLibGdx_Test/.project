@@ -18,7 +18,7 @@
 		<link>
 			<name>assets</name>
 			<type>2</type>
-			<location>../Android_GUI/assets</location>
+			<locationURI>Android_GUI/assets</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

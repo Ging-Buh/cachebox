@@ -205,4 +205,11 @@ public class MenuID
 
 	public static final int AID_ADD_WP = 176;
 	public static final int AID_UPLOAD_FIELD_NOTE = 177;
+
+	public static final int MI_ENABLED = 178;
+	public static final int MI_TEMPORARILY_DISABLED = 179;
+	public static final int MI_OWNER_MAINTENANCE = 180;
+	public static final int MI_ATTENDED = 181;
+	public static final int MI_WEBCAM_FOTO_TAKEN = 182;
+	public static final int MI_REVIEWER_NOTE = 183;
 }

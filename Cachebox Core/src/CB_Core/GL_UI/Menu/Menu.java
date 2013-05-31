@@ -3,19 +3,26 @@ package CB_Core.GL_UI.Menu;
 import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.Button;
+import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -23,6 +30,18 @@ public class Menu extends ButtonDialog
 {
 	private static CB_RectF MENU_REC = null;
 	private static boolean sizeIsInitial = false;
+	private Menu mMoreMenu = null;
+	private boolean mMoreMenuVisible = false;
+	private Button mMoreMenuToggleButton;
+	private Label mMoreMenuLabel;
+	private int mAnimationState = 0;// 0=stop 1=to left 2= to right
+	protected static final int ANIMATION_DURATION = 1200;
+	private static float mMoreMenuToggleButtonWidth = -1;
+	private float animateStartTime;
+	private boolean isMoreMenu = false;
+	private String mMoreMenuTextRight = "";
+	private String mMoreMenuTextLeft = "";
+	private Menu mParentMenu;
 
 	private static void initialSize()
 	{
@@ -53,6 +72,7 @@ public class Menu extends ButtonDialog
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			GL.that.closeDialog(that);
+			if (isMoreMenu) GL.that.closeDialog(mParentMenu);
 			if (mOnItemClickListner != null)
 			{
 				for (OnClickListener tmp : mOnItemClickListner)
@@ -77,27 +97,194 @@ public class Menu extends ButtonDialog
 						+ getFooterHeight() + (margin * 2)));
 
 		this.setRec(MENU_REC);
-
 		mListView = new V_ListView(this, "MenuList");
 		mListView.setSize(this.getContentSize());
-		// mListView.setWidth(this.width - Left - Right);
-		// mListView.setHeight(this.height);
-
 		mListView.setZeroPos();
-		this.addChild(mListView);
+		this.addChild(mMoreMenu);
+	}
+
+	public void addMoreMenu(Menu menu, String TextLeft, String TextRight)
+	{
+		if (menu == null)
+		{
+			mMoreMenuTextRight = "";
+			mMoreMenuTextLeft = "";
+			mMoreMenu = null;
+			return;
+		}
+		mMoreMenuTextRight = TextRight;
+		mMoreMenuTextLeft = TextLeft;
+		mMoreMenu = menu;
+		mMoreMenu.isMoreMenu = true;
+		mMoreMenu.setParrentMenu(this);
+	}
+
+	public Menu getMoreMenu()
+	{
+		return mMoreMenu;
+	}
+
+	public String getTextLeftMoreMenu()
+	{
+		return mMoreMenuTextLeft;
+	}
+
+	public String getTextRightMoreMenu()
+	{
+		return mMoreMenuTextRight;
+	}
+
+	private void setParrentMenu(Menu menu)
+	{
+		mParentMenu = menu;
+	}
+
+	private void toggleMoreMenu()
+	{
+		mMoreMenuVisible = !mMoreMenuVisible;
+		if (mMoreMenuVisible)
+		{
+			showMoreMenu();
+		}
+		else
+		{
+			hideMoreMenu();
+		}
+		animateStartTime = GL.that.getStateTime();
+	}
+
+	private void showMoreMenu()
+	{
+		mMoreMenu.setVisible(true);
+		mAnimationState = 1;
+		mMoreMenu.setWidth(0);
+		setMoreMenuPos();
+	}
+
+	private void hideMoreMenu()
+	{
+		mAnimationState = 2;
+		mMoreMenu.setWidth(this.width);
+		setMoreMenuPos();
+	}
+
+	private void setMoreMenuPos()
+	{
+		float buttonX = 0;
+		mMoreMenu.setX(this.width - mMoreMenu.width - this.getLeftWidth());
+		if (mMoreMenu.isVisible())
+		{
+			buttonX = mMoreMenuToggleButton.getWidth() * 0.3f;
+			mMoreMenuToggleButton.setX(mMoreMenu.getX() - buttonX);
+			mMoreMenuLabel.setX(mMoreMenuToggleButton.getX() + margin * 2);
+			mMoreMenuLabel.setText(mMoreMenuTextLeft, Fonts.getSmall(), Fonts.getFontColor(), HAlignment.CENTER);
+		}
+		else
+		{
+			buttonX = mMoreMenuToggleButton.getWidth() * 0.7f;
+			mMoreMenuToggleButton.setX(mMoreMenu.getX() - buttonX);
+			mMoreMenuLabel.setX(mMoreMenuToggleButton.getX() - margin * 3);
+			mMoreMenuLabel.setText(mMoreMenuTextRight, Fonts.getSmall(), Fonts.getFontColor(), HAlignment.CENTER);
+		}
 
 	}
 
 	@Override
 	protected void Initial()
 	{
+		if (mMoreMenuToggleButtonWidth == -1)
+		{
+			float mesuredLblHeigt = Fonts.MeasureSmall("T").height;
+			mMoreMenuToggleButtonWidth = SpriteCache.btn.getLeftWidth() + SpriteCache.btn.getRightWidth() + mesuredLblHeigt + margin;
+		}
+
 		mListView.setSize(this.getContentSize());
 
 		this.addChild(mListView);
 		mListView.setBaseAdapter(new CustomAdapter());
 
+		if (mMoreMenu != null)
+		{
+			mMoreMenu.Initial();
+			mMoreMenu.setVisible(false);
+			mMoreMenu.setZeroPos();
+			mMoreMenu.setHeight(this.height);
+			mMoreMenu.setWidth(0);
+			mMoreMenu.setY(0 - this.getFooterHeight());
+			this.addChild(mMoreMenu);
+
+			mMoreMenuToggleButton = new Button("toggle");
+			mMoreMenuToggleButton.setWidth(mMoreMenuToggleButtonWidth);
+			mMoreMenuToggleButton.setHeight(this.getContentSize().height);
+			mMoreMenuToggleButton.setY(0);
+			this.addChild(mMoreMenuToggleButton);
+			mMoreMenuToggleButton.setOnClickListener(new OnClickListener()
+			{
+
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					toggleMoreMenu();
+					return true;
+				}
+			});
+
+			mMoreMenuLabel = new Label(mMoreMenuToggleButton, "MoreLabel");
+			mMoreMenuLabel.setOriginCenter();
+			mMoreMenuLabel.setRotate(90);
+			mMoreMenuLabel.setX(10);
+			mMoreMenuLabel.setText("Test Text");
+			this.addChild(mMoreMenuLabel);
+		}
+
 		super.Initial();
 		super.initialDialog();
+		if (mMoreMenu != null)
+		{
+			mListView.setWidth(this.getContentSize().width - mMoreMenuToggleButton.getHalfWidth());
+			setMoreMenuPos();
+		}
+	}
+
+	@Override
+	public void render(SpriteBatch batch)
+	{
+		super.render(batch);
+
+		// Animation calculation
+		if (mAnimationState > 0)
+		{
+			float targetValue = this.getWidth() * 1.5f;
+
+			float animateValue = (1 + ((int) ((GL.that.getStateTime() - animateStartTime) * 1000) % ANIMATION_DURATION)
+					/ (ANIMATION_DURATION / targetValue));
+
+			Logger.DEBUG("AnimateValue= " + animateValue + "/" + this.getWidth());
+
+			if (mAnimationState == 1)
+			{
+				if (animateValue >= this.getWidth() - 10)
+				{
+					animateValue = this.getWidth();
+					mAnimationState = 0;
+				}
+				mMoreMenu.setWidth(animateValue);
+			}
+			else
+			{
+				if (animateValue >= this.getWidth() - 10)
+				{
+					animateValue = this.getWidth();
+					mMoreMenu.setVisible(false);
+					mAnimationState = 0;
+				}
+				mMoreMenu.setWidth(this.getWidth() - animateValue);
+			}
+
+			setMoreMenuPos();
+			GL.that.renderOnce("MoreMenuAnimation");
+		}
+
 	}
 
 	public class CustomAdapter implements Adapter
@@ -290,10 +477,14 @@ public class Menu extends ButtonDialog
 	public void onResized(CB_RectF rec)
 	{
 		super.onResized(rec);
+
+		float WithOffset = isMoreMenu ? mMoreMenuToggleButtonWidth / 2 : 0;
+
 		if (mListView != null)
 		{
-			mListView.setSize(this.getContentSize());
+			mListView.setSize(this.getContentSize().width - WithOffset, this.getContentSize().height);
 			mListView.setZeroPos();
+			mListView.setX(WithOffset);
 		}
 	}
 
@@ -332,6 +523,20 @@ public class Menu extends ButtonDialog
 			item.setIndex(Index++);
 		}
 		return Index;
+	}
+
+	@Override
+	public float getLeftWidth()
+	{
+		if (leftBorder == 0) leftBorder = (this.getWidth() - this.getContentSize().width) / 2;
+		return leftBorder;
+	}
+
+	@Override
+	public float getRightWidth()
+	{
+		if (rightBorder == 0) rightBorder = (this.getWidth() - this.getContentSize().width) / 2;
+		return rightBorder;
 	}
 
 }
