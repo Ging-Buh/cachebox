@@ -213,38 +213,28 @@ public class EditCoord extends ActivityBase
 			this.btnDLon[i] = new Button(this, "btnDLon" + i);
 		}
 
-		Label lbl1 = new Label("lbl1");
-		Label lbl2 = new Label("lbl2");
-		Label lbl3 = new Label("lbl3");
-		Label lbl4 = new Label("lbl4");
-
 		// Lat
 		for (int i = 0; i < 4; i++)
 		{
 			panel.addNext(this.btnDLat[i]);
 		}
-		panel.addNext(lbl2, 0.5f); // [.]
+		panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f); // [.]
 		for (int i = 4; i < 9; i++)
 		{
 			panel.addNext(this.btnDLat[i]);
 		}
-		panel.addLast(lbl1, 0.5f);
+		panel.addLast(new Label("°").setFont(Fonts.getBig()), 0.5f);
 		// Lon
 		for (int i = 0; i < 4; i++)
 		{
 			panel.addNext(this.btnDLon[i]);
 		}
-		panel.addNext(lbl4, 0.5f);
+		panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
 		for (int i = 4; i < 9; i++)
 		{
 			panel.addNext(this.btnDLon[i]);
 		}
-		panel.addLast(lbl3, 0.5f);
-
-		lbl1.setText("°", Fonts.getBig(), Fonts.getFontColor());
-		lbl2.setText(".", Fonts.getBig(), Fonts.getFontColor());
-		lbl3.setText("°", Fonts.getBig(), Fonts.getFontColor());
-		lbl4.setText(".", Fonts.getBig(), Fonts.getFontColor());
+		panel.addLast(new Label("°").setFont(Fonts.getBig()), 0.5f);
 		this.setClickHandlers(this.btnDLat, this.btnDLon);
 	}
 
@@ -259,20 +249,15 @@ public class EditCoord extends ActivityBase
 			this.btnDMLon[i] = new Button(this, "btnDMLon" + i);
 		}
 
-		Label lbl1 = new Label("lbl1");
-		Label lbl2 = new Label("lbl2");
-		Label lbl3 = new Label("lbl3");
-		Label lbl4 = new Label("lbl4");
-
 		// Lat
 		for (int i = 0; i < 4; i++)
 		{
 			panel.addNext(this.btnDMLat[i]);
 		}
-		panel.addNext(lbl1, 0.5f);
+		panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMLat[4]);
 		panel.addNext(this.btnDMLat[5]);
-		panel.addNext(lbl2, 0.5f);
+		panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMLat[6]);
 		panel.addNext(this.btnDMLat[7]);
 		panel.addLast(this.btnDMLat[8]);
@@ -281,18 +266,14 @@ public class EditCoord extends ActivityBase
 		{
 			panel.addNext(this.btnDMLon[i]);
 		}
-		panel.addNext(lbl3, 0.5f);
+		panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMLon[4]);
 		panel.addNext(this.btnDMLon[5]);
-		panel.addNext(lbl4, 0.5f);
+		panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMLon[6]);
 		panel.addNext(this.btnDMLon[7]);
 		panel.addLast(this.btnDMLon[8]);
 
-		lbl1.setText("°", Fonts.getBig(), Fonts.getFontColor());
-		lbl2.setText(".", Fonts.getBig(), Fonts.getFontColor());
-		lbl3.setText("°", Fonts.getBig(), Fonts.getFontColor());
-		lbl4.setText(".", Fonts.getBig(), Fonts.getFontColor());
 		this.setClickHandlers(this.btnDMLat, this.btnDMLon);
 	}
 
@@ -308,54 +289,39 @@ public class EditCoord extends ActivityBase
 		}
 
 		// Lat
-		Label lbldeglat = new Label("lbldeglat");
-		Label lblminlat = new Label("lblminlat");
-		Label lblpntlat = new Label("lblpntlat");
-		Label lblseclat = new Label("lblseclat");
 		for (int i = 0; i < 4; i++)
 		{
 			panel.addNext(this.btnDMSLat[i]);
 		}
-		panel.addNext(lbldeglat, 0.5f);
+		panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMSLat[4]);
 		panel.addNext(this.btnDMSLat[5]);
-		panel.addNext(lblminlat, 0.5f);
+		panel.addNext(new Label("'").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMSLat[6]);
 		panel.addNext(this.btnDMSLat[7]);
-		panel.addNext(lblpntlat, 0.5f);
+		panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMSLat[8]);
 		panel.addLast(this.btnDMSLat[9]);
-		// panel.addLast(lblseclat);// leave it because of small screen size
-
-		lbldeglat.setText("°", Fonts.getBig(), Fonts.getFontColor());
-		lblminlat.setText("'", Fonts.getBig(), Fonts.getFontColor());
-		lblpntlat.setText(".", Fonts.getBig(), Fonts.getFontColor());
-		lblseclat.setText("\"", Fonts.getBig(), Fonts.getFontColor());
+		// leave it because of small screen size
+		// panel.addLast(new Label("\"").setFont(Fonts.getBig()));
 
 		// Lon
-		Label lbldeglon = new Label("lbldeglon");
-		Label lblminlon = new Label("lblminlon");
-		Label lblpntlon = new Label("lblpntlon");
-		Label lblseclon = new Label("lblseclon");
 		for (int i = 0; i < 4; i++)
 		{
 			panel.addNext(this.btnDMSLon[i]);
 		}
-		panel.addNext(lbldeglon, 0.5f);
+		panel.addNext(new Label("°").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMSLon[4]);
 		panel.addNext(this.btnDMSLon[5]);
-		panel.addNext(lblminlon, 0.5f);
+		panel.addNext(new Label("'").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMSLon[6]);
 		panel.addNext(this.btnDMSLon[7]);
-		panel.addNext(lblpntlon, 0.5f);
+		panel.addNext(new Label(".").setFont(Fonts.getBig()), 0.5f);
 		panel.addNext(this.btnDMSLon[8]);
 		panel.addLast(this.btnDMSLon[9]);
-		// panel.addLast(lblseclon); // leave it because of small screen size
+		// leave it because of small screen size
+		// panel.addLast(new Label("\"").setFont(Fonts.getBig()));
 
-		lbldeglon.setText("°", Fonts.getBig(), Fonts.getFontColor());
-		lblminlon.setText("'", Fonts.getBig(), Fonts.getFontColor());
-		lblpntlon.setText(".", Fonts.getBig(), Fonts.getFontColor());
-		lblseclon.setText("\"", Fonts.getBig(), Fonts.getFontColor());
 		this.setClickHandlers(this.btnDMSLat, this.btnDMSLon);
 	}
 
@@ -375,13 +341,10 @@ public class EditCoord extends ActivityBase
 		{
 			this.btnUTMZone[i] = new Button(this, "btnUTMZone" + i);
 		}
-		Label lUtmO = new Label("lUtmO"); // Ostwert
-		Label lUtmN = new Label("lUtmN"); // Nordwert
-		Label lUtmZ = new Label("lUtmZ"); // Zone
 
 		// Lon
 		Box pnlOstwert = new Box(panel.getInnerWidth(), this.btnUTMLon[0].getHeight(), "pnlOstwert");
-		panel.addNext(lUtmO, 0.2f);
+		panel.addNext(new Label("OstW"), -0.2f);// no Translation
 		panel.addLast(pnlOstwert); // erst die Breite bestimmen und dann darauf verteilen
 		for (int i = 0; i < 7; i++)
 		{
@@ -392,7 +355,7 @@ public class EditCoord extends ActivityBase
 		// Lat
 		Box pnlNordwert = new Box(panel.getInnerWidth(), this.btnUTMLat[0].getHeight(), "pnlNordwert");
 		pnlNordwert.adjustHeight();
-		panel.addNext(lUtmN, 0.2f);
+		panel.addNext(new Label("NordW"), -0.2f);// no Translation
 		panel.addLast(pnlNordwert); // erst die Breite bestimmen und dann darauf verteilen
 		for (int i = 0; i < 7; i++)
 		{
@@ -402,7 +365,7 @@ public class EditCoord extends ActivityBase
 
 		// Zone
 		Box pnlZone = new Box(panel.getInnerWidth(), btnUTMZone[0].getHeight(), "pnlZone");
-		panel.addNext(lUtmZ, 0.2f);
+		panel.addNext(new Label("Zone"), -0.2f);// no Translation
 		panel.addLast(pnlZone); // erst die Breite bestimmen und dann darauf verteilen
 		pnlZone.addNext(btnUTMZone[0]);
 		pnlZone.addNext(btnUTMZone[1]);
@@ -412,9 +375,6 @@ public class EditCoord extends ActivityBase
 		btnUTMLon[6].setInvisible();
 		btnUTMLon[7].setInvisible();
 		btnUTMZone[3].setInvisible();
-		lUtmO.setText("OstW"); // no Translation
-		lUtmN.setText("NordW"); // no Translation
-		lUtmZ.setText("Zone"); // no Translation
 
 		this.setUTMClickHandlers(this.btnUTMLat, this.btnUTMLon, this.btnUTMZone);
 	}

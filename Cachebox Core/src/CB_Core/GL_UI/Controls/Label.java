@@ -18,7 +18,6 @@ package CB_Core.GL_UI.Controls;
 
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.Log.Logger;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -56,6 +55,19 @@ public class Label extends CB_View_Base
 
 	private WrapType wrapType = WrapType.singleLine;
 
+	public Label()
+	{
+		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
+		initLabel();
+	}
+
+	public Label(String Text)
+	{
+		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label " + Text);
+		mText = Text;
+		initLabel();
+	}
+
 	public Label(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
@@ -65,18 +77,6 @@ public class Label extends CB_View_Base
 	public Label(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		initLabel();
-	}
-
-	public Label(CB_RectF rec, GL_View_Base Parent, String Name)
-	{
-		super(rec, Parent, Name);
-		initLabel();
-	}
-
-	public Label(String name)
-	{
-		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), name);
 		initLabel();
 	}
 
@@ -281,7 +281,7 @@ public class Label extends CB_View_Base
 		return bounds;
 	}
 
-	public void setFont(BitmapFont Font)
+	public Label setFont(BitmapFont Font)
 	{
 		if (Font != null)
 		{
@@ -291,9 +291,10 @@ public class Label extends CB_View_Base
 				makeText();
 			}
 		}
+		return this;
 	}
 
-	public void setHAlignment(HAlignment HAlignment)
+	public Label setHAlignment(HAlignment HAlignment)
 	{
 		if (HAlignment != null)
 		{
@@ -303,9 +304,10 @@ public class Label extends CB_View_Base
 				makeText();
 			}
 		}
+		return this;
 	}
 
-	public void setVAlignment(VAlignment VAlignment)
+	public Label setVAlignment(VAlignment VAlignment)
 	{
 		if (VAlignment != null)
 		{
@@ -315,9 +317,10 @@ public class Label extends CB_View_Base
 				makeText();
 			}
 		}
+		return this;
 	}
 
-	public void setTextColor(Color color)
+	public Label setTextColor(Color color)
 	{
 		if (color != null)
 		{
@@ -327,6 +330,7 @@ public class Label extends CB_View_Base
 				makeText();
 			}
 		}
+		return this;
 	}
 
 	public String getText()
@@ -348,7 +352,7 @@ public class Label extends CB_View_Base
 	/**
 	 * setzt die Höhe des Labels auf die gemessene Höhe!
 	 */
-	public void setMeasuredHeight()
+	public Label setMeasuredHeight()
 	{
 		// float m = mFont.getCapHeight() + mFont.getAscent() - mFont.getDescent();
 		// compare to mFont.getLineHeight()
@@ -358,12 +362,13 @@ public class Label extends CB_View_Base
 		{
 			setHeight(bounds.height + mFont.getAscent() - mFont.getDescent());
 		}
+		return this;
 	}
 
 	@Override
 	protected void Initial()
 	{
-
+		// must implement Initial
 	}
 
 	@Override

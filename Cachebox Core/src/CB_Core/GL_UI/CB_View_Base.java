@@ -401,6 +401,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	// Note: Final Position and Size of objects is done on addLast
 	// Note: Changing of objects (depending on final Position or Size) must be done after addLast
 	// Examples: setting Text of a Button, ....
+	// Now, after rework of Label, this is no longer true. Text will be set correctly (independent of call order)
 	/**
 	 ** Add the object at the end of the current row. the current row will be ended after the object is added.
 	 **/
