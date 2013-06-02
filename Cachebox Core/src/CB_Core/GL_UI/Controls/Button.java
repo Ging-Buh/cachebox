@@ -62,9 +62,10 @@ public class Button extends CB_View_Base
 		this.setClickable(true);
 	}
 
-	public Button(String name)
+	public Button(String text)
 	{
-		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), name);
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), "Button " + text);
+		this.setText(text);
 		this.setClickable(true);
 	}
 
