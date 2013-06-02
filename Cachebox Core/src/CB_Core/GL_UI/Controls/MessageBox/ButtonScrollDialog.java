@@ -125,50 +125,35 @@ public class ButtonScrollDialog extends Dialog
 	{
 		if (buttons == null) buttons = MessageBoxButtons.NOTHING;
 
-		int button = buttons.ordinal();
-		if (button == 0)
+		if (buttons == MessageBoxButtons.AbortRetryIgnore)
 		{
-			createButtons(3);
-			button1.setText(Translation.Get("abort"));
-			button2.setText(Translation.Get("retry"));
-			button3.setText(Translation.Get("ignore"));
+			createButtons(3, Translation.Get("abort"), Translation.Get("retry"), Translation.Get("ignore"));
 		}
-		else if (button == 1)
+		else if (buttons == MessageBoxButtons.OK)
 		{
-			createButtons(1);
-			button1.setText(Translation.Get("ok"));
+			createButtons(1, Translation.Get("ok"), "", "");
 		}
-		else if (button == 2)
+		else if (buttons == MessageBoxButtons.OKCancel)
 		{
-			createButtons(2);
-			button1.setText(Translation.Get("ok"));
-			button3.setText(Translation.Get("cancel"));
+			createButtons(2, Translation.Get("ok"), "", Translation.Get("cancel"));
 		}
-		else if (button == 3)
+		else if (buttons == MessageBoxButtons.RetryCancel)
 		{
-			createButtons(2);
-			button1.setText(Translation.Get("retry"));
-			button3.setText(Translation.Get("cancel"));
+			createButtons(2, Translation.Get("retry"), "", Translation.Get("cancel"));
 		}
-		else if (button == 4)
+		else if (buttons == MessageBoxButtons.YesNo)
 		{
-			createButtons(2);
-			button1.setText(Translation.Get("yes"));
-			button3.setText(Translation.Get("no"));
+			createButtons(2, Translation.Get("yes"), "", Translation.Get("no"));
 		}
-		else if (button == 5)
+		else if (buttons == MessageBoxButtons.YesNoCancel)
 		{
-			createButtons(3);
-			button1.setText(Translation.Get("yes"));
-			button2.setText(Translation.Get("no"));
-			button3.setText(Translation.Get("cancel"));
+			createButtons(3, Translation.Get("yes"), Translation.Get("no"), Translation.Get("cancel"));
 		}
-		else if (button == 6)
+		else if (buttons == MessageBoxButtons.Cancel)
 		{
-			createButtons(3);
+			createButtons(3, "", "", Translation.Get("cancel"));
 			button1.setInvisible();
 			button2.setInvisible();
-			button3.setText(Translation.Get("cancel"));
 		}
 		else
 		{
@@ -177,52 +162,48 @@ public class ButtonScrollDialog extends Dialog
 		}
 	}
 
-	protected void createButtons(int anzahl)
+	protected void createButtons(int anzahl, String t1, String t2, String t3)
 	{
 		setButtonListner();
 
-		float buttonY = margin;
-
-		float buttonX_R = width - UI_Size_Base.that.getButtonWidthWide() - margin;
-		float buttonX_L = margin;
-		float buttonX_C = (width - UI_Size_Base.that.getButtonWidthWide()) / 2;
+		this.setBorders(margin, margin);
+		this.setMargins(margin, margin);
+		this.initRow(false, margin);
 
 		switch (anzahl)
 		{
 		case 1:
-			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UI_Size_Base.that.getButtonWidthWide(),
-					UI_Size_Base.that.getButtonHeight()), "positiveButton");
+			button1 = new Button(t1);
+			this.addLast(button1);
 			button1.setOnClickListener(positiveButtonClickListener);
-			addFooterChild(button1);
+			// addFooterChild(button1);
 			break;
 		case 2:
-			button1 = new Button(new CB_RectF(buttonX_C, buttonY, UI_Size_Base.that.getButtonWidthWide(),
-					UI_Size_Base.that.getButtonHeight()), "positiveButton");
+			button1 = new Button(t1);
+			button3 = new Button(t3);
+			this.addNext(button1);
+			this.addLast(button3);
 			button1.setOnClickListener(positiveButtonClickListener);
-			addFooterChild(button1);
-			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UI_Size_Base.that.getButtonWidthWide(),
-					UI_Size_Base.that.getButtonHeight()), "negativeButton");
 			button3.setOnClickListener(negativeButtonClickListener);
-			addFooterChild(button3);
+			// addFooterChild(button1);
+			// addFooterChild(button3);
 			break;
 		case 3:
-			button1 = new Button(new CB_RectF(buttonX_L, buttonY, UI_Size_Base.that.getButtonWidthWide(),
-					UI_Size_Base.that.getButtonHeight()), "positiveButton");
+			button1 = new Button(t1);
+			button2 = new Button(t2);
+			button3 = new Button(t3);
+			this.addNext(button1);
+			this.addNext(button2);
+			this.addLast(button3);
 			button1.setOnClickListener(positiveButtonClickListener);
-			addFooterChild(button1);
-			button2 = new Button(new CB_RectF(buttonX_C, buttonY, UI_Size_Base.that.getButtonWidthWide(),
-					UI_Size_Base.that.getButtonHeight()), "negativeButton");
 			button2.setOnClickListener(neutralButtonClickListener);
-			addFooterChild(button2);
-			button3 = new Button(new CB_RectF(buttonX_R, buttonY, UI_Size_Base.that.getButtonWidthWide(),
-					UI_Size_Base.that.getButtonHeight()), "neutralButton");
 			button3.setOnClickListener(negativeButtonClickListener);
-			addFooterChild(button3);
+			// addFooterChild(button1);
+			// addFooterChild(button2);
+			// addFooterChild(button3);
 			break;
-
 		}
-
-		setFooterHeight(calcFooterHeight(true));
+		setFooterHeight(this.height - this.getAvailableHeight());
 	}
 
 	public void addFooterChild(CB_View_Base view)
