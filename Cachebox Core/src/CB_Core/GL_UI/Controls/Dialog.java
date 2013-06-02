@@ -23,7 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Dialog extends CB_View_Base
 {
-
+	private boolean contentSizeIsCalculated = false;
 	private String mTitle;
 	public Label titleLabel;
 	private Box mContent;
@@ -89,17 +89,17 @@ public abstract class Dialog extends CB_View_Base
 			mCenter9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
 			mFooter9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.footer.ordinal()), pW, pW, 3, pW);
 
-			leftBorder = mCenter9patch.getLeftWidth();
-			rightBorder = mCenter9patch.getRightWidth();
-			topBorder = mHeader9patch.getTopHeight();
-			bottomBorder = mFooter9patch.getBottomHeight();
-			innerWidth = width - leftBorder - rightBorder;
-			innerHeight = height - topBorder - bottomBorder;
-
 			mTitleVersatz = (float) pW;
 
 			lastNightMode = Config.settings.nightMode.getValue();
 		}
+
+		leftBorder = mCenter9patch.getLeftWidth();
+		rightBorder = mCenter9patch.getRightWidth();
+		topBorder = mHeader9patch.getTopHeight();
+		bottomBorder = mFooter9patch.getBottomHeight();
+		innerWidth = width - leftBorder - rightBorder;
+		innerHeight = height - topBorder - bottomBorder;
 
 	}
 
@@ -263,6 +263,8 @@ public abstract class Dialog extends CB_View_Base
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
 		float centerversatzY = getFooterHeight();// this.halfHeight - mContent.getHalfHeight();
 		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
+
+		contentSizeIsCalculated = true;
 	}
 
 	@Override
@@ -349,7 +351,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public SizeF getContentSize()
 	{
-		reziseContentBox();
+		if (!contentSizeIsCalculated) reziseContentBox();
 		return mContent.getSize();
 	}
 
