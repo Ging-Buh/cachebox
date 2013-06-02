@@ -83,13 +83,9 @@ public abstract class GL_View_Base extends CB_RectF
 
 	// # Constructors
 
-	public GL_View_Base()
-	{
-		name = "" + this.hashCode();
-	}
-
 	public GL_View_Base(String Name)
 	{
+		super();
 		name = Name;
 	}
 

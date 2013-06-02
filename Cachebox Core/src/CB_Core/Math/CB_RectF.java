@@ -83,6 +83,7 @@ public class CB_RectF
 		this.Pos.y = 0F;
 		this.height = size.height;
 		this.width = size.width;
+		calcCrossCorner();
 	}
 
 	/**
