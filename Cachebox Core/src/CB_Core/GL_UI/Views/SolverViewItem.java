@@ -1,18 +1,17 @@
 package CB_Core.GL_UI.Views;
 
-import CB_Core.GL_UI.Fonts;
+import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.Label.VAlignment;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Solver.SolverZeile;
-
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SolverViewItem extends ListViewItemBackground
 {
 	protected boolean isPressed = false;
 	protected SolverZeile solverZeile;
+	Label lblSolverZeile;
 
 	public SolverViewItem(CB_RectF rec, int Index, SolverZeile solverZeile)
 	{
@@ -20,38 +19,19 @@ public class SolverViewItem extends ListViewItemBackground
 		this.solverZeile = solverZeile;
 	}
 
-	private BitmapFont mBitmapFont = Fonts.getNormal();
-	private BitmapFont mBitmapFontSmall = Fonts.getSmall();
-	private BitmapFontCache mS_FontCache;
-	private BitmapFontCache mS_FontCacheResult;
-
 	@Override
 	protected void Initial()
 	{
-		super.Initial();
-
-		mS_FontCache = new BitmapFontCache(mBitmapFont);
-		mS_FontCache.setColor(Fonts.getFontColor());
-		mS_FontCache.setText(solverZeile.getOrgText(), getLeftWidth(), this.height - getTopHeight());
-
-		mS_FontCacheResult = new BitmapFontCache(mBitmapFont);
-		mS_FontCacheResult.setText(solverZeile.Solution, getLeftWidth() * 3, getBottomHeight() * 2);
-		mS_FontCacheResult.setColor(Fonts.getFontColor());
-	}
-
-	@Override
-	protected void render(SpriteBatch batch)
-	{
-		super.render(batch);
-		if (mS_FontCache != null) mS_FontCache.draw(batch);
-		if (mS_FontCacheResult != null) mS_FontCacheResult.draw(batch);
+		lblSolverZeile = new Label();
+		lblSolverZeile.setHeight(this.height);
+		lblSolverZeile.setMultiLineText(solverZeile.getOrgText() + "\n" + solverZeile.Solution, null, null, null, VAlignment.CENTER);
+		this.setBorders(UI_Size_Base.that.getMargin(), UI_Size_Base.that.getMargin());
+		this.addLast(lblSolverZeile);
 	}
 
 	@Override
 	public void dispose()
 	{
-		mS_FontCache = null;
-		mS_FontCacheResult = null;
 	}
 
 	@Override

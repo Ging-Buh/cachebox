@@ -246,15 +246,22 @@ public class Label extends CB_View_Base
 
 	public TextBounds setMultiLineText(String text)
 	{
-		return setMultiLineText(text, HAlignment.LEFT);
+		return setMultiLineText(text, null, null, HAlignment.LEFT, VAlignment.TOP);
 	}
 
 	public TextBounds setMultiLineText(String text, HAlignment HAlignment)
 	{
+		return setMultiLineText(text, null, null, HAlignment, VAlignment.TOP);
+	}
+
+	public TextBounds setMultiLineText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment, VAlignment VAlignment)
+	{
 		if (text == null) text = "";
 		mText = text;
+		if (Font != null) mFont = Font;
+		if (fontColor != null) mColor = fontColor;
 		if (HAlignment != null) mHAlignment = HAlignment;
-		mVAlignment = VAlignment.TOP;
+		if (VAlignment != null) mVAlignment = VAlignment;
 		setMultiLineText();
 		return bounds;
 	}
