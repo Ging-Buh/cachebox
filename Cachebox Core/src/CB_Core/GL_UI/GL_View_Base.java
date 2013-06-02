@@ -39,6 +39,8 @@ public abstract class GL_View_Base extends CB_RectF
 	public static boolean debug = false;
 	public static boolean disableScissor = false;
 
+	public boolean withoutScissor = false;
+
 	// # private Member
 	protected String name = "";
 
@@ -401,11 +403,13 @@ public abstract class GL_View_Base extends CB_RectF
 			CalcMyInfoForChild();
 		}
 
-		if (intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0) return; // hier gibt es nichts zu rendern
-
-		if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
-		Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
-				(int) intersectRec.getHeight() + 1);
+		if (!withoutScissor)
+		{
+			if (intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0) return; // hier gibt es nichts zu rendern
+			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
+					(int) intersectRec.getHeight() + 1);
+		}
 
 		float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
 
@@ -589,6 +593,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public CB_RectF getWorldRec()
 	{
+		if (ThisWorldRec == null) return new CB_RectF();
 		return ThisWorldRec.copy();
 	}
 
@@ -672,6 +677,8 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (Exception e1)
 		{
+			int i = 0;
+			i = i + 1;
 		}
 		DebugSprite = null;
 

@@ -177,7 +177,7 @@ public class FieldNotesView extends V_ListView
 
 	public Menu getContextMenu()
 	{
-		Menu cm = new Menu("CacheListContextMenu");
+		Menu cm = new Menu("FieldNoteContextMenu");
 
 		cm.addItemClickListner(new OnClickListener()
 		{
@@ -234,7 +234,7 @@ public class FieldNotesView extends V_ListView
 
 	private Menu getSecondMenu()
 	{
-		Menu sm = new Menu("CacheListContextMenu");
+		Menu sm = new Menu("FieldNoteContextMenu/2");
 
 		sm.addItemClickListner(new OnClickListener()
 		{
@@ -273,6 +273,98 @@ public class FieldNotesView extends V_ListView
 		sm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCache.getThemedSprite("log9icon"));
 		sm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCache.getThemedSprite("log10icon"));
 		sm.addItem(MenuID.MI_REVIEWER_NOTE, "reviewerNote", SpriteCache.getThemedSprite("log12icon"));
+
+		sm.addMoreMenu(getThirdMenu(), Translation.Get("defaultLogTypes"), Translation.Get("moreLogTypes"));
+
+		return sm;
+	}
+
+	private Menu get4Menu()
+	{
+		Menu sm = new Menu("FieldNoteContextMenu/4");
+
+		sm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switch (((MenuItem) v).getMenuItemId())
+				{
+				case MenuID.MI_ENABLED:
+					addNewFieldnote(LogTypes.enabled);
+					return true;
+				case MenuID.MI_TEMPORARILY_DISABLED:
+					addNewFieldnote(LogTypes.temporarily_disabled);
+					return true;
+				case MenuID.MI_OWNER_MAINTENANCE:
+					addNewFieldnote(LogTypes.owner_maintenance);
+					return true;
+				case MenuID.MI_ATTENDED:
+					addNewFieldnote(LogTypes.attended);
+					return true;
+				case MenuID.MI_WEBCAM_FOTO_TAKEN:
+					addNewFieldnote(LogTypes.webcam_photo_taken);
+					return true;
+				case MenuID.MI_REVIEWER_NOTE:
+					addNewFieldnote(LogTypes.reviewer_note);
+					return true;
+				}
+				return false;
+			}
+		});
+
+		sm.addItem(MenuID.MI_ENABLED, "enabled", SpriteCache.getThemedSprite("log4icon"));
+		sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", SpriteCache.getThemedSprite("log6icon"));
+		sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", SpriteCache.getThemedSprite("log7icon"));
+		sm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCache.getThemedSprite("log9icon"));
+		sm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCache.getThemedSprite("log10icon"));
+		sm.addItem(MenuID.MI_REVIEWER_NOTE, "reviewerNote", SpriteCache.getThemedSprite("log12icon"));
+
+		return sm;
+	}
+
+	private Menu getThirdMenu()
+	{
+		Menu sm = new Menu("FieldNoteContextMenu/3");
+
+		sm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switch (((MenuItem) v).getMenuItemId())
+				{
+				case MenuID.MI_ENABLED:
+					addNewFieldnote(LogTypes.enabled);
+					return true;
+				case MenuID.MI_TEMPORARILY_DISABLED:
+					addNewFieldnote(LogTypes.temporarily_disabled);
+					return true;
+				case MenuID.MI_OWNER_MAINTENANCE:
+					addNewFieldnote(LogTypes.owner_maintenance);
+					return true;
+				case MenuID.MI_ATTENDED:
+					addNewFieldnote(LogTypes.attended);
+					return true;
+				case MenuID.MI_WEBCAM_FOTO_TAKEN:
+					addNewFieldnote(LogTypes.webcam_photo_taken);
+					return true;
+				case MenuID.MI_REVIEWER_NOTE:
+					addNewFieldnote(LogTypes.reviewer_note);
+					return true;
+				}
+				return false;
+			}
+		});
+
+		sm.addItem(MenuID.MI_ENABLED, "enabled", SpriteCache.getThemedSprite("log4icon"));
+		sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", SpriteCache.getThemedSprite("log6icon"));
+		sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", SpriteCache.getThemedSprite("log7icon"));
+
+		sm.addMoreMenu(get4Menu(), "4Likns", "4rechts");
+
 		return sm;
 	}
 

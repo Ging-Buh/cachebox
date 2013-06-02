@@ -40,7 +40,6 @@ class Ex_1
 
 		files = Dir.list(new FilenameFilter()
 		{
-
 			@Override
 			public boolean accept(File dir, String filename)
 			{

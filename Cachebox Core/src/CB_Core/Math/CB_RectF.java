@@ -559,5 +559,4 @@ public class CB_RectF
 		this.Pos.y = y;
 		calcCrossCorner();
 	}
-
 }

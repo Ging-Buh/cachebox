@@ -885,6 +885,11 @@ public class GL implements ApplicationListener
 		initialMarkerOverlay();
 	}
 
+	public CB_View_Base getDialogLayer()
+	{
+		return mDialog;
+	}
+
 	protected void initialMarkerOverlay()
 	{
 		mMarkerOverlay = new Box(new CB_RectF(0, 0, width, height), "MarkerOverlay");
