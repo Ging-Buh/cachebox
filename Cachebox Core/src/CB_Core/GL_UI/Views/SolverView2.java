@@ -13,7 +13,7 @@ import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
-import CB_Core.GL_UI.Controls.Dialogs.SolverDialog.SloverBackStringListner;
+import CB_Core.GL_UI.Controls.Dialogs.SolverDialog.SolverBackStringListner;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -297,7 +297,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 	boolean neu = false;
 
-	final SloverBackStringListner backListner = new SloverBackStringListner()
+	final SolverBackStringListner backListner = new SolverBackStringListner()
 	{
 
 		@Override

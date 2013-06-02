@@ -32,6 +32,7 @@ public class SolverViewItem extends ListViewItemBackground
 	@Override
 	public void dispose()
 	{
+		lblSolverZeile = null;
 	}
 
 	@Override

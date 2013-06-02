@@ -66,7 +66,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	// Controls for OperatorView
 	// Controls for WaypointView
 
-	public interface SloverBackStringListner
+	public interface SolverBackStringListner
 	{
 		public void BackString(String backString);
 	}
@@ -74,7 +74,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	private EditWrapedTextField mVariableField;
 	private String mSolverString;
 
-	private SloverBackStringListner mBackStringListner;
+	private SolverBackStringListner mBackStringListner;
 
 	public SolverDialog(CB_RectF rec, String name, String SolverString)
 	{
@@ -229,7 +229,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		}
 	};
 
-	public void show(SloverBackStringListner listner)
+	public void show(SolverBackStringListner listner)
 	{
 		mBackStringListner = listner;
 		initialLayout();
