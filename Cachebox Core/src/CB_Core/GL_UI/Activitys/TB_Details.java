@@ -20,7 +20,6 @@ import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Trackable;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 
 public class TB_Details extends ActivityBase
 {
@@ -142,11 +141,11 @@ public class TB_Details extends ActivityBase
 
 		lblAbout.setFont(Fonts.getSmall());
 		AboutThisItem.setWidth(scrollBox.getInnerWidth());
-		TextBounds bounds = lblAbout.setText(Translation.Get("AboutThisItem"), null, null, HAlignment.LEFT);
-		lblAbout.setHeight(bounds.height + margin);
+		lblAbout.setText(Translation.Get("AboutThisItem"), null, null, HAlignment.LEFT);
+		lblAbout.setHeight(lblAbout.getTextHeight() + margin);
 		lblAboutDesc.setWidth(AboutThisItem.getInnerWidth());
-		bounds = lblAboutDesc.setWrappedText(TB.getDescription());
-		lblAboutDesc.setHeight(bounds.height + margin + margin);
+		lblAboutDesc.setWrappedText(TB.getDescription());
+		lblAboutDesc.setHeight(lblAboutDesc.getTextHeight() + margin + margin);
 
 		String ImgUrl = TB.getImageUrl();
 		float ImageHeight = 0;
@@ -169,11 +168,11 @@ public class TB_Details extends ActivityBase
 
 		lblGoal.setFont(Fonts.getSmall());
 		GoalThisItem.setWidth(scrollBox.getInnerWidth());
-		bounds = lblGoal.setText(Translation.Get("GoalThisItem"), null, null, HAlignment.LEFT);
-		lblGoal.setHeight(bounds.height + margin);
+		lblGoal.setText(Translation.Get("GoalThisItem"), null, null, HAlignment.LEFT);
+		lblGoal.setHeight(lblGoal.getTextHeight() + margin);
 		lblGoalDesc.setWidth(GoalThisItem.getInnerWidth());
-		bounds = lblGoalDesc.setWrappedText(TB.getCurrentGoal());
-		lblGoalDesc.setHeight(bounds.height + margin + margin);
+		lblGoalDesc.setWrappedText(TB.getCurrentGoal());
+		lblGoalDesc.setHeight(lblGoalDesc.getTextHeight() + margin + margin);
 		GoalThisItem.setHeight(Math.max(minBoxHeight, (lblGoalDesc.getHeight() + margin + margin)));
 		GoalThisItem.initRow();
 		GoalThisItem.addLast(lblGoalDesc);
@@ -183,17 +182,20 @@ public class TB_Details extends ActivityBase
 		float maxWidth = 0;
 
 		lblTypeName.setHeight(minBoxHeight);
-		maxWidth = Math.max(maxWidth, lblTypeName.setText(Translation.Get("TB_Type"), Fonts.getSmall(), Fonts.getDisableFontColor()).width);
+		maxWidth = Math.max(maxWidth, lblTypeName.setText(Translation.Get("TB_Type"), Fonts.getSmall(), Fonts.getDisableFontColor())
+				.getTextWidth());
 		TypeName.setHeight(minBoxHeight);
 		TypeName.setText(TB.getTypeName());
 
 		lblTbCode.setHeight(minBoxHeight);
-		maxWidth = Math.max(maxWidth, lblTbCode.setText(Translation.Get("TB_Code"), Fonts.getSmall(), Fonts.getDisableFontColor()).width);
+		maxWidth = Math.max(maxWidth, lblTbCode.setText(Translation.Get("TB_Code"), Fonts.getSmall(), Fonts.getDisableFontColor())
+				.getTextWidth());
 		TbCode.setHeight(minBoxHeight);
 		TbCode.setText(TB.getGcCode());
 
 		lblOwner.setHeight(minBoxHeight);
-		maxWidth = Math.max(maxWidth, lblOwner.setText(Translation.Get("TB_Owner"), Fonts.getSmall(), Fonts.getDisableFontColor()).width);
+		maxWidth = Math.max(maxWidth, lblOwner.setText(Translation.Get("TB_Owner"), Fonts.getSmall(), Fonts.getDisableFontColor())
+				.getTextWidth());
 		Owner.setHeight(minBoxHeight);
 		Owner.setText(TB.getOwner());
 
@@ -209,7 +211,8 @@ public class TB_Details extends ActivityBase
 		// Home.setText(TB.getHome());
 
 		lblBirth.setHeight(minBoxHeight);
-		maxWidth = Math.max(maxWidth, lblBirth.setText(Translation.Get("TB_Birth"), Fonts.getSmall(), Fonts.getDisableFontColor()).width);
+		maxWidth = Math.max(maxWidth, lblBirth.setText(Translation.Get("TB_Birth"), Fonts.getSmall(), Fonts.getDisableFontColor())
+				.getTextWidth());
 		Birth.setHeight(minBoxHeight);
 		Birth.setText(TB.getBirth());
 

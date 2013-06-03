@@ -198,7 +198,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight,
 				"TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
-		float lblWidth = lblTitle.setText(Translation.Get("import")).width;
+		float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 		this.addChild(lblTitle);
 
 		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth,

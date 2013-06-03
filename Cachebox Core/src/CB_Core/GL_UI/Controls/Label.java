@@ -218,22 +218,22 @@ public class Label extends CB_View_Base
 		}
 	}
 
-	public TextBounds setText(String text)
+	public Label setText(String text)
 	{
 		return setText(text, null, null, null);
 	}
 
-	public TextBounds setText(String Text, Color color)
+	public Label setText(String Text, Color color)
 	{
 		return setText(Text, null, color, null);
 	}
 
-	public TextBounds setText(String text, BitmapFont Font, Color fontColor)
+	public Label setText(String text, BitmapFont Font, Color fontColor)
 	{
 		return setText(text, Font, fontColor, null);
 	}
 
-	public TextBounds setText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment)
+	public Label setText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment)
 	{
 		if (text == null) text = "";
 		mText = text;
@@ -241,20 +241,20 @@ public class Label extends CB_View_Base
 		if (fontColor != null) mColor = fontColor;
 		if (HAlignment != null) mHAlignment = HAlignment;
 		setText();
-		return bounds;
+		return this;
 	}
 
-	public TextBounds setMultiLineText(String text)
+	public Label setMultiLineText(String text)
 	{
 		return setMultiLineText(text, null, null, HAlignment.LEFT, VAlignment.TOP);
 	}
 
-	public TextBounds setMultiLineText(String text, HAlignment HAlignment)
+	public Label setMultiLineText(String text, HAlignment HAlignment)
 	{
 		return setMultiLineText(text, null, null, HAlignment, VAlignment.TOP);
 	}
 
-	public TextBounds setMultiLineText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment, VAlignment VAlignment)
+	public Label setMultiLineText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment, VAlignment VAlignment)
 	{
 		if (text == null) text = "";
 		mText = text;
@@ -263,20 +263,20 @@ public class Label extends CB_View_Base
 		if (HAlignment != null) mHAlignment = HAlignment;
 		if (VAlignment != null) mVAlignment = VAlignment;
 		setMultiLineText();
-		return bounds;
+		return this;
 	}
 
-	public TextBounds setWrappedText(String text)
+	public Label setWrappedText(String text)
 	{
 		return setWrappedText(text, null, null, HAlignment.LEFT);
 	}
 
-	public TextBounds setWrappedText(String text, HAlignment HAlignment)
+	public Label setWrappedText(String text, HAlignment HAlignment)
 	{
 		return setWrappedText(text, null, null, HAlignment);
 	}
 
-	public TextBounds setWrappedText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment)
+	public Label setWrappedText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment)
 	{
 		if (text == null) text = "";
 		mText = text;
@@ -285,7 +285,7 @@ public class Label extends CB_View_Base
 		if (HAlignment != null) mHAlignment = HAlignment;
 		mVAlignment = VAlignment.TOP;
 		setWrappedText();
-		return bounds;
+		return this;
 	}
 
 	public Label setFont(BitmapFont Font)

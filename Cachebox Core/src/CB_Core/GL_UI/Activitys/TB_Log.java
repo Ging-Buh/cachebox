@@ -39,8 +39,6 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.Trackable;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-
 public class TB_Log extends ActivityBase
 {
 	public static TB_Log that;
@@ -192,8 +190,8 @@ public class TB_Log extends ActivityBase
 			CacheIcon.setSprite(SpriteCache.BigIcons.get(c.Type.ordinal()));
 
 			lblPlaced.setWidth(contentBox.getInnerWidth() - CacheIcon.getWidth() - (margin * 3));
-			TextBounds bo = lblPlaced.setWrappedText(msg);
-			lblPlaced.setHeight(bo.height + lblPlaced.getTopHeight() + lblPlaced.getBottomHeight());
+			lblPlaced.setWrappedText(msg);
+			lblPlaced.setHeight(lblPlaced.getTextHeight() + lblPlaced.getTopHeight() + lblPlaced.getBottomHeight());
 
 			contentBox.setMargins(margin, margin * 3);
 			contentBox.setRowYPos(contentBox.getRowYPos() - (margin * 3));
