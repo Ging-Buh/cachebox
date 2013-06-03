@@ -356,20 +356,22 @@ public class Label extends CB_View_Base
 		return mFont;
 	}
 
-	/**
-	 * setzt die Höhe des Labels auf die gemessene Höhe!
-	 */
-	public Label setMeasuredHeight()
+	public float getTextHeight()
 	{
-		// float m = mFont.getCapHeight() + mFont.getAscent() - mFont.getDescent();
-		// compare to mFont.getLineHeight()
-		// float h = m * (bounds.height / mFont.getCapHeight()) * 1.1f;
-		// setHeight(h);
 		if (bounds != null)
 		{
-			setHeight(bounds.height + mFont.getAscent() - mFont.getDescent());
+			return bounds.height + mFont.getAscent() - mFont.getDescent();
 		}
-		return this;
+		return 0f;
+	}
+
+	public float getTextWidth()
+	{
+		if (bounds != null)
+		{
+			return bounds.width;
+		}
+		return 0f;
 	}
 
 	@Override

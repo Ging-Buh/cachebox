@@ -43,14 +43,14 @@ public class SettingsItemBase extends ListViewItemBackground
 	public void setName(String name)
 	{
 		lblName.setWrappedText(name);
-		lblName.setMeasuredHeight();
+		lblName.setHeight(lblName.getTextHeight());
 		layout();
 	}
 
 	public void setDefault(String def)
 	{
 		lblDefault.setWrappedText(def);
-		lblDefault.setMeasuredHeight();
+		lblDefault.setHeight(lblDefault.getTextHeight());
 		layout();
 	}
 
