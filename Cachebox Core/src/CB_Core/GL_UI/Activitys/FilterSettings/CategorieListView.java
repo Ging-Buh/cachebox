@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Core.GlobalCore;
+import CB_Core.DAO.CategoryDAO;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
@@ -174,7 +175,9 @@ public class CategorieListView extends V_ListView
 			if (mItemType == COLLAPSE_BUTTON_ITEM)
 			{
 				// Collabs Button Pin Clicked
-				this.mCat.pinned = !this.mCat.pinned;
+				CategoryDAO dao = new CategoryDAO();
+				dao.SetPinned(this.mCat, !this.mCat.pinned);
+				// this.mCat.pinned = !this.mCat.pinned;
 
 			}
 			else
