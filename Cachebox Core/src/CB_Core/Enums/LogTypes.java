@@ -38,14 +38,40 @@ public enum LogTypes
 	public boolean isTbLog()
 	{
 		int t = this.ordinal();
-		if (t == 17) return true;
-		if (t == 18) return true;
-		if (t == 19) return true;
-		if (t == 20) return true;
-		if (t == 21) return true;
-		if (t == 22) return true;
-		if (t == 23) return true;
-		if (t == 25) return true;
+		if (t == 17) return true; // retrieve
+		if (t == 18) return true; // dropped_off
+		if (t == 19) return true; // mark_missing
+		if (t == 20) return true; // grab_it
+		if (t == 21) return true; // discovered
+		if (t == 22) return true; // move_to_collection
+		if (t == 23) return true; // move_to_inventory
+		if (t == 25) return true; // visited
+
+		return false;
+	}
+
+	/**
+	 * Returns True if the log type possible to direct online Log
+	 * 
+	 * @return
+	 */
+	public boolean isDirectLogType()
+	{
+		int t = this.ordinal();
+		if (t == 4) return true; // enabled
+		if (t == 5) return true; // needs_maintenance
+		if (t == 6) return true; // temporarily_disabled
+		if (t == 7) return true; // owner_maintenance
+		if (t == 8) return true; // will_attend
+
+		if (t == 17) return true; // retrieve
+		if (t == 18) return true; // dropped_off
+		if (t == 19) return true; // mark_missing
+		if (t == 20) return true; // grab_it
+		if (t == 21) return true; // discovered
+		if (t == 22) return true; // move_to_collection
+		if (t == 23) return true; // move_to_inventory
+		if (t == 25) return true; // visited
 
 		return false;
 	}

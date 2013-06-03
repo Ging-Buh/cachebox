@@ -127,9 +127,9 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 						}
 						else
 						{
-
+							boolean dl = fieldNote.isDirectLog;
 							result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(accessToken, fieldNote.gcCode,
-									fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment);
+									fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl);
 						}
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)

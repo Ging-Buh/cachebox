@@ -45,6 +45,7 @@ public class FieldNoteEntry implements Serializable
 	public String TbIconUrl = "";
 	public String TravelBugCode = "";
 	public String TrackingNumber = "";
+	public boolean isDirectLog = false;
 
 	public FieldNoteEntry(FieldNoteEntry fne)
 	{
@@ -67,6 +68,7 @@ public class FieldNoteEntry implements Serializable
 		this.TbIconUrl = fne.TbIconUrl;
 		this.TravelBugCode = fne.TravelBugCode;
 		this.TrackingNumber = fne.TrackingNumber;
+		this.isDirectLog = fne.isDirectLog;
 	}
 
 	public FieldNoteEntry(LogTypes Type)
@@ -104,6 +106,7 @@ public class FieldNoteEntry implements Serializable
 		TbIconUrl = reader.getString(14);
 		TravelBugCode = reader.getString(15);
 		TrackingNumber = reader.getString(16);
+		isDirectLog = reader.getInt(17) != 0;
 		fillType();
 
 	}
@@ -168,6 +171,7 @@ public class FieldNoteEntry implements Serializable
 		args.put("TbIconUrl", TbIconUrl);
 		args.put("TravelBugCode", TravelBugCode);
 		args.put("TrackingNumber", TrackingNumber);
+		args.put("directLog", isDirectLog);
 		try
 		{
 			Database.FieldNotes.insertWithConflictReplace("Fieldnotes", args);
@@ -179,7 +183,7 @@ public class FieldNoteEntry implements Serializable
 		// search FieldNote Id
 		CoreCursor reader = Database.FieldNotes
 				.rawQuery(
-						"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber from FieldNotes where GcCode='"
+						"select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes where GcCode='"
 								+ gcCode + "' and type=" + type.getGcLogTypeId(), null);
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
@@ -213,6 +217,7 @@ public class FieldNoteEntry implements Serializable
 		args.put("TbIconUrl", TbIconUrl);
 		args.put("TravelBugCode", TravelBugCode);
 		args.put("TrackingNumber", TrackingNumber);
+		args.put("directLog", isDirectLog);
 		try
 		{
 			long count = Database.FieldNotes.update("FieldNotes", args, "id=" + Id, null);
@@ -257,6 +262,7 @@ public class FieldNoteEntry implements Serializable
 		if (this.isTbFieldNote != fne.isTbFieldNote) ret = false;
 		if (this.TravelBugCode != fne.TravelBugCode) ret = false;
 		if (this.TrackingNumber != fne.TrackingNumber) ret = false;
+		if (this.isDirectLog != fne.isDirectLog) ret = false;
 
 		return ret;
 	}

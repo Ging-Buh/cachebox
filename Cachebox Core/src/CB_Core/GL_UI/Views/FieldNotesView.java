@@ -5,6 +5,7 @@ import java.util.Date;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.TemplateFormatter;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -14,18 +15,27 @@ import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.EditFieldNotes;
 import CB_Core.GL_UI.Activitys.EditFieldNotes.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialog;
+import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_Core.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
+import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.GL_UI.Menu.MenuID;
@@ -47,7 +57,7 @@ public class FieldNotesView extends V_ListView
 	public static FieldNoteEntry aktFieldNote;
 	public static CB_RectF ItemRec;
 	public static boolean firstShow = true;
-
+	private static WaitDialog wd;
 	private CustomAdapter lvAdapter;
 
 	public FieldNotesView(CB_RectF rec, String Name)
@@ -213,10 +223,28 @@ public class FieldNotesView extends V_ListView
 
 		Cache cache = GlobalCore.getSelectedCache();
 
-		cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
+		// Found je nach CacheType
+		switch (cache.Type)
+		{
+		case MegaEvent:
+			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCache.getThemedSprite("log8icon"));
+			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCache.getThemedSprite("log9icon"));
+			break;
+		case Event:
+			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCache.getThemedSprite("log8icon"));
+			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCache.getThemedSprite("log9icon"));
+			break;
+		case Camera:
+			cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCache.getThemedSprite("log10icon"));
+			break;
+		default:
+			cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
+			break;
+		}
+
 		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
 
-		// Aktueller Cache ist ist von geocaching.com dann weitere Menüeinträge freigeben
+		// Aktueller Cache ist von geocaching.com dann weitere Menüeinträge freigeben
 		if (cache != null && cache.GcCode.toLowerCase().startsWith("gc"))
 		{
 			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
@@ -226,7 +254,7 @@ public class FieldNotesView extends V_ListView
 		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(IconName.uploadFieldNote_64.ordinal()));
 		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
 
-		cm.addMoreMenu(getSecondMenu(), Translation.Get("defaultLogTypes"), Translation.Get("moreLogTypes"));
+		cm.addMoreMenu(getSecondMenu(), Translation.Get("defaultLogTypes"), Translation.Get("ownerLogTypes"));
 
 		return cm;
 
@@ -235,7 +263,8 @@ public class FieldNotesView extends V_ListView
 	private Menu getSecondMenu()
 	{
 		Menu sm = new Menu("FieldNoteContextMenu/2");
-
+		MenuItem mi;
+		boolean IM_owner = GlobalCore.getSelectedCache().ImTheOwner();
 		sm.addItemClickListner(new OnClickListener()
 		{
 
@@ -267,103 +296,12 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
-		sm.addItem(MenuID.MI_ENABLED, "enabled", SpriteCache.getThemedSprite("log4icon"));
-		sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", SpriteCache.getThemedSprite("log6icon"));
-		sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", SpriteCache.getThemedSprite("log7icon"));
-		sm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCache.getThemedSprite("log9icon"));
-		sm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCache.getThemedSprite("log10icon"));
-		sm.addItem(MenuID.MI_REVIEWER_NOTE, "reviewerNote", SpriteCache.getThemedSprite("log12icon"));
-
-		sm.addMoreMenu(getThirdMenu(), Translation.Get("defaultLogTypes"), Translation.Get("moreLogTypes"));
-
-		return sm;
-	}
-
-	private Menu get4Menu()
-	{
-		Menu sm = new Menu("FieldNoteContextMenu/4");
-
-		sm.addItemClickListner(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				switch (((MenuItem) v).getMenuItemId())
-				{
-				case MenuID.MI_ENABLED:
-					addNewFieldnote(LogTypes.enabled);
-					return true;
-				case MenuID.MI_TEMPORARILY_DISABLED:
-					addNewFieldnote(LogTypes.temporarily_disabled);
-					return true;
-				case MenuID.MI_OWNER_MAINTENANCE:
-					addNewFieldnote(LogTypes.owner_maintenance);
-					return true;
-				case MenuID.MI_ATTENDED:
-					addNewFieldnote(LogTypes.attended);
-					return true;
-				case MenuID.MI_WEBCAM_FOTO_TAKEN:
-					addNewFieldnote(LogTypes.webcam_photo_taken);
-					return true;
-				case MenuID.MI_REVIEWER_NOTE:
-					addNewFieldnote(LogTypes.reviewer_note);
-					return true;
-				}
-				return false;
-			}
-		});
-
-		sm.addItem(MenuID.MI_ENABLED, "enabled", SpriteCache.getThemedSprite("log4icon"));
-		sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", SpriteCache.getThemedSprite("log6icon"));
-		sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", SpriteCache.getThemedSprite("log7icon"));
-		sm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCache.getThemedSprite("log9icon"));
-		sm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCache.getThemedSprite("log10icon"));
-		sm.addItem(MenuID.MI_REVIEWER_NOTE, "reviewerNote", SpriteCache.getThemedSprite("log12icon"));
-
-		return sm;
-	}
-
-	private Menu getThirdMenu()
-	{
-		Menu sm = new Menu("FieldNoteContextMenu/3");
-
-		sm.addItemClickListner(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				switch (((MenuItem) v).getMenuItemId())
-				{
-				case MenuID.MI_ENABLED:
-					addNewFieldnote(LogTypes.enabled);
-					return true;
-				case MenuID.MI_TEMPORARILY_DISABLED:
-					addNewFieldnote(LogTypes.temporarily_disabled);
-					return true;
-				case MenuID.MI_OWNER_MAINTENANCE:
-					addNewFieldnote(LogTypes.owner_maintenance);
-					return true;
-				case MenuID.MI_ATTENDED:
-					addNewFieldnote(LogTypes.attended);
-					return true;
-				case MenuID.MI_WEBCAM_FOTO_TAKEN:
-					addNewFieldnote(LogTypes.webcam_photo_taken);
-					return true;
-				case MenuID.MI_REVIEWER_NOTE:
-					addNewFieldnote(LogTypes.reviewer_note);
-					return true;
-				}
-				return false;
-			}
-		});
-
-		sm.addItem(MenuID.MI_ENABLED, "enabled", SpriteCache.getThemedSprite("log4icon"));
-		sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", SpriteCache.getThemedSprite("log6icon"));
-		sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", SpriteCache.getThemedSprite("log7icon"));
-
-		sm.addMoreMenu(get4Menu(), "4Likns", "4rechts");
+		mi = sm.addItem(MenuID.MI_ENABLED, "enabled", SpriteCache.getThemedSprite("log4icon"));
+		mi.setEnabled(IM_owner);
+		mi = sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", SpriteCache.getThemedSprite("log6icon"));
+		mi.setEnabled(IM_owner);
+		mi = sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", SpriteCache.getThemedSprite("log7icon"));
+		mi.setEnabled(IM_owner);
 
 		return sm;
 	}
@@ -565,70 +503,193 @@ public class FieldNotesView extends V_ListView
 	{
 
 		@Override
-		public void returnedFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote)
+		public void returnedFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote, boolean directlog)
+		{
+			addOrChangeFieldNote(fieldNote, isNewFieldNote, directlog);
+		}
+
+	};
+
+	private static void addOrChangeFieldNote(FieldNoteEntry fieldNote, boolean isNewFieldNote, boolean directLog)
+	{
+
+		if (directLog)
+		{
+			// try to direct upload
+			logOnline(fieldNote, isNewFieldNote);
+			return;
+		}
+
+		FieldNotesView.firstShow = false;
+
+		efnActivity.dispose();
+		efnActivity = null;
+
+		if (fieldNote != null)
 		{
 
-			FieldNotesView.firstShow = false;
-
-			efnActivity.dispose();
-			efnActivity = null;
-
-			if (fieldNote != null)
+			if (isNewFieldNote)
 			{
+				// nur, wenn eine FieldNote neu angelegt wurde
+				// neue FieldNote
+				lFieldNotes.add(0, fieldNote);
 
-				if (isNewFieldNote)
+				// eine evtl. vorhandene FieldNote /DNF löschen
+				if (fieldNote.type == LogTypes.found || fieldNote.type == LogTypes.didnt_find)
 				{
-					// nur, wenn eine FieldNote neu angelegt wurde
-					// neue FieldNote
-					lFieldNotes.add(0, fieldNote);
+					lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.found);
+					lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.didnt_find);
+				}
+			}
 
-					// eine evtl. vorhandene FieldNote /DNF löschen
-					if (fieldNote.type == LogTypes.found || fieldNote.type == LogTypes.didnt_find)
+			fieldNote.WriteToDatabase();
+			aktFieldNote = fieldNote;
+
+			if (isNewFieldNote)
+			{
+				// nur, wenn eine FieldNote neu angelegt wurde
+				// wenn eine FieldNote neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
+				// SelectedCache eine fieldNote angelegt wird
+				if (fieldNote.type == LogTypes.found)
+				{ // Found it! -> Cache als gefunden markieren
+					if (!GlobalCore.getSelectedCache().Found)
 					{
-						lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.found);
-						lFieldNotes.DeleteFieldNoteByCacheId(fieldNote.CacheId, LogTypes.didnt_find);
+						GlobalCore.getSelectedCache().Found = true;
+						CacheDAO cacheDAO = new CacheDAO();
+						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+						Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
+						Config.AcceptChanges();
 					}
+
 				}
-
-				fieldNote.WriteToDatabase();
-				aktFieldNote = fieldNote;
-
-				if (isNewFieldNote)
-				{
-					// nur, wenn eine FieldNote neu angelegt wurde
-					// wenn eine FieldNote neu angelegt werden soll dann kann hier auf SelectedCache zugegriffen werden, da nur für den
-					// SelectedCache eine fieldNote angelegt wird
-					if (fieldNote.type == LogTypes.found)
-					{ // Found it! -> Cache als gefunden markieren
-						if (!GlobalCore.getSelectedCache().Found)
-						{
-							GlobalCore.getSelectedCache().Found = true;
-							CacheDAO cacheDAO = new CacheDAO();
-							cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-							Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
-							Config.AcceptChanges();
-						}
-
-					}
-					else if (fieldNote.type == LogTypes.didnt_find)
-					{ // DidNotFound -> Cache als nicht gefunden markieren
-						if (GlobalCore.getSelectedCache().Found)
-						{
-							GlobalCore.getSelectedCache().Found = false;
-							CacheDAO cacheDAO = new CacheDAO();
-							cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
-							Config.AcceptChanges();
-						} // und eine evtl. vorhandene FieldNote FoundIt löschen
-						lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
-					}
+				else if (fieldNote.type == LogTypes.didnt_find)
+				{ // DidNotFound -> Cache als nicht gefunden markieren
+					if (GlobalCore.getSelectedCache().Found)
+					{
+						GlobalCore.getSelectedCache().Found = false;
+						CacheDAO cacheDAO = new CacheDAO();
+						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
+						Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+						Config.AcceptChanges();
+					} // und eine evtl. vorhandene FieldNote FoundIt löschen
+					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
 				}
-				FieldNoteList.CreateVisitsTxt();
+			}
+			FieldNoteList.CreateVisitsTxt();
+
+		}
+		that.notifyDataSetChanged();
+	}
+
+	private static void logOnline(final FieldNoteEntry fieldNote, final boolean isNewFieldNote)
+	{
+
+		wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListner()
+		{
+
+			@Override
+			public void isCanceld()
+			{
+				// TODO Auto-generated method stub
 
 			}
-			that.notifyDataSetChanged();
-		}
-	};
+		}, new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				GroundspeakAPI.LastAPIError = "";
+
+				boolean dl = fieldNote.isDirectLog;
+				int result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(Config.GetAccessToken(), fieldNote.gcCode,
+						fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl);
+
+				if (result == GroundspeakAPI.IO)
+				{
+					fieldNote.uploaded = true;
+
+					// after direct Log create a fieldNote with uploded state
+					addOrChangeFieldNote(fieldNote, isNewFieldNote, false);
+				}
+
+				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+				{
+					GL.that.Toast(ConnectionError.INSTANCE);
+					if (wd != null) wd.close();
+					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"),
+							MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+							{
+
+								@Override
+								public boolean onClick(int which, Object data)
+								{
+									switch (which)
+									{
+									case GL_MsgBox.BUTTON_NEGATIVE:
+										addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
+										return true;
+
+									case GL_MsgBox.BUTTON_NEUTRAL:
+										return true;
+
+									case GL_MsgBox.BUTTON_POSITIVE:
+										addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
+										return true;
+									}
+									return true;
+								}
+							});
+					return;
+				}
+				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+				{
+					GL.that.Toast(ApiUnavailable.INSTANCE);
+					if (wd != null) wd.close();
+					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"),
+							MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+							{
+
+								@Override
+								public boolean onClick(int which, Object data)
+								{
+									switch (which)
+									{
+									case GL_MsgBox.BUTTON_NEGATIVE:
+										addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
+										return true;
+
+									case GL_MsgBox.BUTTON_NEUTRAL:
+										return true;
+
+									case GL_MsgBox.BUTTON_POSITIVE:
+										addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
+										return true;
+									}
+									return true;
+								}
+							});
+					return;
+				}
+
+				if (GroundspeakAPI.LastAPIError.length() > 0)
+				{
+					GL.that.RunOnGL(new runOnGL()
+					{
+
+						@Override
+						public void run()
+						{
+							GL_MsgBox.Show(GroundspeakAPI.LastAPIError, Translation.Get("Error"), MessageBoxIcon.Error);
+						}
+					});
+				}
+
+				if (wd != null) wd.close();
+			}
+		});
+
+	}
 
 	static EditFieldNotes efnActivity;
 

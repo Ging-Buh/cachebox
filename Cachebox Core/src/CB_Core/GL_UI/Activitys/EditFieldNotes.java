@@ -27,6 +27,8 @@ import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.RadioButton;
+import CB_Core.GL_UI.Controls.RadioGroup;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -58,9 +60,12 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	FilterSetListViewItem GcVote;
 	private boolean isNewFieldNote = false;
 
+	private RadioButton rbDirectLog;
+	private RadioButton rbOnlyFieldNote;
+
 	public interface ReturnListner
 	{
-		public void returnedFieldNote(FieldNoteEntry fn, boolean isNewFieldNote);
+		public void returnedFieldNote(FieldNoteEntry fn, boolean isNewFieldNote, boolean directlog);
 	}
 
 	private ReturnListner mReturnListner;
@@ -83,7 +88,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		iniTime();
 		iniGC_VoteItem();
 		iniCommentTextField();
-
+		if (note.type.isDirectLogType()) iniOptions(note, isNewFieldNote);// show only if possible
 		iniTextfieldFocus();
 
 		setDefaultValues();
@@ -128,6 +133,16 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 			{
 				if (mReturnListner != null)
 				{
+
+					if (fieldNote.type.isDirectLogType())
+					{
+						fieldNote.isDirectLog = rbDirectLog.isChecked();
+					}
+					else
+					{
+						fieldNote.isDirectLog = false;
+					}
+
 					fieldNote.comment = etComment.getText();
 					if (GcVote != null)
 					{
@@ -199,7 +214,10 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 						fieldNote.UpdateDatabase();
 					}
 
-					mReturnListner.returnedFieldNote(fieldNote, isNewFieldNote);
+					boolean dl = false;
+					if (fieldNote.isDirectLog) dl = true;
+
+					mReturnListner.returnedFieldNote(fieldNote, isNewFieldNote, dl);
 				}
 				finish();
 				return true;
@@ -212,7 +230,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (mReturnListner != null) mReturnListner.returnedFieldNote(null, false);
+				if (mReturnListner != null) mReturnListner.returnedFieldNote(null, false, false);
 				finish();
 				return true;
 			}
@@ -320,7 +338,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		etComment.setText(fieldNote.comment);
 
 		// set Size to linecount
-		float maxTextFieldHeight = this.height / 2.3f;
+		float maxTextFieldHeight = this.height / 2.5f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 		descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
@@ -351,6 +369,54 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		});
 
 		scrollBox.addChild(etComment);
+
+	}
+
+	private void iniOptions(FieldNoteEntry note, boolean isNewFieldNote)
+	{
+		rbDirectLog = new RadioButton("direct_Log");
+		rbOnlyFieldNote = new RadioButton("only_FieldNote");
+
+		rbDirectLog.setText(Translation.Get("directLog"));
+		rbOnlyFieldNote.setText(Translation.Get("onlyFieldNote"));
+
+		RadioGroup Group = new RadioGroup();
+		Group.add(rbOnlyFieldNote);
+		Group.add(rbDirectLog);
+
+		// layout
+		rbDirectLog.setWidth(scrollBox.getWidth());
+		rbOnlyFieldNote.setWidth(scrollBox.getWidth());
+
+		rbDirectLog.setY(etComment.getY() - margin - rbDirectLog.getHeight());
+		rbOnlyFieldNote.setY(rbDirectLog.getY() - margin - rbOnlyFieldNote.getHeight());
+
+		scrollBox.addChild(rbDirectLog);
+		scrollBox.addChild(rbOnlyFieldNote);
+
+		if (isNewFieldNote)
+		{
+			// Choice last selection
+			if (Config.settings.TB_DirectLog.getValue())
+			{
+				rbDirectLog.setChecked(true);
+			}
+			else
+			{
+				rbOnlyFieldNote.setChecked(true);
+			}
+		}
+		else
+		{
+			if (note.isDirectLog)
+			{
+				rbDirectLog.setChecked(true);
+			}
+			else
+			{
+				rbOnlyFieldNote.setChecked(true);
+			}
+		}
 
 	}
 
@@ -391,7 +457,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void layoutTextFields()
 	{
-		float maxTextFieldHeight = this.height / 2.3f;
+		float maxTextFieldHeight = this.height / 2.5f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 
@@ -407,6 +473,9 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		{
 			etComment.setY(lblTime.getY() - descriptionHeight - margin);
 		}
+
+		if (rbDirectLog != null) rbDirectLog.setY(etComment.getY() - margin - rbDirectLog.getHeight());
+		if (rbOnlyFieldNote != null) rbOnlyFieldNote.setY(rbDirectLog.getY() - margin - rbOnlyFieldNote.getHeight());
 
 		scrollToY(etComment.getY(), etComment.getMaxY());
 

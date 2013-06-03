@@ -31,7 +31,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 	public void LoadFieldNotes(String where, String order)
 	{
 		this.clear();
-		String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber from FieldNotes";
+		String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes";
 		if (!where.equals("")) sql += " where " + where;
 		if (order == "") sql += " order by FoundNumber DESC, Timestamp DESC";
 		else

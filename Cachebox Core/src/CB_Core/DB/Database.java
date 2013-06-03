@@ -373,6 +373,10 @@ public abstract class Database
 					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [TravelBugCode] nvarchar (15)  NULL");
 					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [TrackingNumber] nvarchar (15)  NULL");
 				}
+				if (lastDatabaseSchemeVersion < 1007)
+				{
+					execSQL("ALTER TABLE [FieldNotes] ADD COLUMN [directLog] BOOLEAN DEFAULT 'false' NULL");
+				}
 				setTransactionSuccessful();
 			}
 			catch (Exception exc)

@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1693;
+	public static final int CurrentRevision = 1694;
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "Test";
 
@@ -39,7 +39,7 @@ public class GlobalCore
 
 	public static boolean ResortAtWork = false;
 	public static final int LatestDatabaseChange = 1024;
-	public static final int LatestDatabaseFieldNoteChange = 1006;
+	public static final int LatestDatabaseFieldNoteChange = 1007;
 	public static final int LatestDatabaseSettingsChange = 1002;
 	public static double displayDensity = 1;
 	public static Plattform platform = Plattform.undef;

@@ -110,7 +110,8 @@ public class GroundspeakAPI
 	 * @param note
 	 * @return
 	 */
-	public static int CreateFieldNoteAndPublish(String accessToken, String cacheCode, int wptLogTypeId, Date dateLogged, String note)
+	public static int CreateFieldNoteAndPublish(String accessToken, String cacheCode, int wptLogTypeId, Date dateLogged, String note,
+			boolean directLog)
 	{
 		int chk = chkMemperShip(accessToken);
 		if (chk < 0) return chk;
@@ -127,7 +128,15 @@ public class GroundspeakAPI
 			requestString += "\"WptLogTypeId\":" + String.valueOf(wptLogTypeId) + ",";
 			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
 			requestString += "\"Note\":\"" + ConvertNotes(note) + "\",";
-			requestString += "\"PromoteToLog\":false,";
+			if (directLog)
+			{
+				requestString += "\"PromoteToLog\":true,";
+			}
+			else
+			{
+				requestString += "\"PromoteToLog\":false,";
+			}
+
 			requestString += "\"FavoriteThisCache\":false";
 			requestString += "}";
 
