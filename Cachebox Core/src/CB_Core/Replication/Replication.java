@@ -190,6 +190,7 @@ public class Replication
 					val.put("ChangeType", changeType.ordinal());
 					val.put("WpCoordCheckSum", oldCheckSum);
 					val.put("WpGcCode", WpGcCode);
+					Database.Data.insert("Replication", val);
 				}
 				else
 				{
