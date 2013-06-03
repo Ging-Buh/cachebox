@@ -15,6 +15,7 @@ import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.GlobalCore;
 import CB_Core.GlobalLocationReceiver;
+import CB_Core.Events.KeyCodes;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
@@ -35,18 +36,21 @@ import CB_Core.GL_UI.Controls.SelectionMarker;
 import CB_Core.GL_UI.Controls.SelectionMarker.Type;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_Core.GL_UI.Main.MainViewBase;
+import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Log.Logger;
 import CB_Core.Map.MapTileLoader;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
-import CB_Core.Math.UI_Size_Base;
+import CB_Core.Math.UiSizes;
 import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -57,9 +61,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class GL implements ApplicationListener
+public class GL implements ApplicationListener, InputProcessor
 {
 	// Public Static Constants
 	public static final int MAX_KINETIC_SCROLL_DISTANCE = 100;
@@ -109,7 +112,6 @@ public class GL implements ApplicationListener
 	private ArrayList<Dialog> dialogHistory = new ArrayList<Dialog>();
 	private PopUp_Base aktPopUp = null;
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
-	private Stage mStage;
 	private Timer longClickTimer;
 	protected Sprite FpsInfoSprite;
 	private Sprite mDarknesSprite;
@@ -154,11 +156,15 @@ public class GL implements ApplicationListener
 	protected int width = 0, height = 0;
 	protected boolean debugWriteSpriteCount = false;
 
+	private TabMainView mSplash, mMainView;
+
 	/**
 	 * Constructor
 	 */
-	public GL(int initalWidth, int initialHeight)
+	public GL(int initalWidth, int initialHeight, TabMainView splash, TabMainView mainView)
 	{
+		mSplash = splash;
+		mMainView = mainView;
 		that = this;
 		width = initalWidth;
 		height = initialHeight;
@@ -177,8 +183,6 @@ public class GL implements ApplicationListener
 	@Override
 	public void create()
 	{
-		// Logger.LogCat("GL_Listner => Create");
-
 		GL_UISizes.initial(width, height);
 
 		Initialize();
@@ -192,6 +196,8 @@ public class GL implements ApplicationListener
 		});
 		GlobalCore.receiver = new GlobalLocationReceiver();
 		debugWriteSpriteCount = Config.settings.DebugSpriteBatchCountBuffer.getValue();
+		Gdx.input.setInputProcessor(this);
+		Gdx.input.setCatchBackKey(true);
 	}
 
 	public void RunOnGL(runOnGL run)
@@ -866,7 +872,7 @@ public class GL implements ApplicationListener
 
 		if (child == null)
 		{
-			child = new MainViewBase(0, 0, width, height, "MainView");
+			child = mSplash;
 			child.setClickable(true);
 		}
 
@@ -882,7 +888,6 @@ public class GL implements ApplicationListener
 			mActivity.setClickable(true);
 		}
 
-		initialMarkerOverlay();
 	}
 
 	public CB_View_Base getDialogLayer()
@@ -1494,17 +1499,6 @@ public class GL implements ApplicationListener
 			darknesAlpha = 0f;
 		}
 
-		// if (threadDisposeDialog == null) threadDisposeDialog = new Thread(new Runnable()
-		// {
-		// @Override
-		// public void run()
-		// {
-		// if (dialog != null) dialog.dispose();
-		// System.gc();
-		// }
-		// });
-		// threadDisposeDialog.run();
-
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask()
 		{
@@ -1588,20 +1582,6 @@ public class GL implements ApplicationListener
 		Toast(toast, length);
 	}
 
-	private void chkStageInitial()
-	{
-		if (mStage == null)
-		{// initial a virtual stage
-			mStage = new Stage(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), false);
-		}
-	}
-
-	public boolean scrolled(int amount)
-	{
-		chkStageInitial();
-		return mStage.scrolled(amount);
-	}
-
 	/**
 	 * Stopt den Rendervorgang bis er durch RestartRender() wieder gestartet wird
 	 */
@@ -1639,26 +1619,6 @@ public class GL implements ApplicationListener
 			return true;
 		}
 		return false;
-	}
-
-	// TextFiled Methodes
-
-	public boolean keyDown(int keycode)
-	{
-		chkStageInitial();
-		return mStage.keyDown(keycode);
-	}
-
-	public boolean keyTyped(char character)
-	{
-		chkStageInitial();
-		return mStage.keyTyped(character);
-	}
-
-	public boolean keyUp(int keycode)
-	{
-		chkStageInitial();
-		return mStage.keyUp(keycode);
 	}
 
 	public void setKeyboardFocus(EditWrapedTextField view)
@@ -1814,6 +1774,118 @@ public class GL implements ApplicationListener
 			return true;
 		}
 		return false;
+	}
+
+	public void switchToMainView()
+	{
+		MainViewBase altSplash = child;
+		child = mMainView;
+		altSplash.dispose();
+		altSplash = null;
+		initialMarkerOverlay();
+	}
+
+	// ##########################################
+	// Imput Listner
+	// ##########################################
+
+	@Override
+	public boolean touchDown(int x, int y, int pointer, int button)
+	{
+		return this.onTouchDownBase(x, y, pointer, button);
+
+	}
+
+	@Override
+	public boolean touchDragged(int x, int y, int pointer)
+	{
+		return onTouchDraggedBase(x, y, pointer);
+	}
+
+	private int MouseX = 0;
+	private int MouseY = 0;
+
+	@Override
+	public boolean mouseMoved(int x, int y)
+	{
+		MouseX = x;
+		MouseY = y;
+		return onTouchDraggedBase(x, y, -1);
+	}
+
+	@Override
+	public boolean touchUp(int x, int y, int pointer, int button)
+	{
+		return onTouchUpBase(x, y, pointer, button);
+
+	}
+
+	@Override
+	public boolean keyTyped(char character)
+	{
+		if (DialogIsShown && character == KeyCodes.KEYCODE_BACK)
+		{
+			closeDialog(mDialog);
+			return true; // behandelt!
+		}
+
+		if (ActivityIsShown && character == KeyCodes.KEYCODE_BACK)
+		{
+			closeActivity();
+			return true; // behandelt!
+		}
+
+		// WeiterLeiten an EditTextView, welches den Focus Hat
+		if (keyboardFocus != null && keyboardFocus.keyTyped(character)) return true;
+
+		return false;
+
+	}
+
+	@Override
+	public boolean keyUp(int KeyCode)
+	{
+		if (KeyCode == Input.Keys.BACK)
+		{
+			if (isShownDialogActivity())
+			{
+				closeShownDialog();
+			}
+			else
+			{
+				TabMainView.actionClose.Execute();
+			}
+			return true;
+		}
+
+		// WeiterLeiten an EditTextView, welches den Focus Hat
+		if (keyboardFocus != null && keyboardFocus.keyUp(KeyCode)) return true;
+		return false;
+	}
+
+	@Override
+	public boolean keyDown(int keycode)
+	{
+		// WeiterLeiten an EditTextView, welches den Focus Hat
+		if (keyboardFocus != null && keyboardFocus.keyDown(keycode)) return true;
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount)
+	{
+
+		int scrollSize = (UiSizes.that.getClickToleranz() + 10) * amount;
+
+		int Pointer = (scrollSize > 0) ? GL_View_Base.MOUSE_WHEEL_POINTER_UP : GL_View_Base.MOUSE_WHEEL_POINTER_DOWN;
+
+		this.onTouchDownBase(MouseX, MouseY, Pointer, -1);
+
+		this.onTouchDraggedBase(MouseX - scrollSize, MouseY - scrollSize, Pointer);
+
+		this.onTouchUpBase(MouseX - scrollSize, MouseY - scrollSize, Pointer, -1);
+
+		return true;
 	}
 
 }

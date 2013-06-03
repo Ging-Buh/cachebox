@@ -17,7 +17,6 @@ import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.Log.Logger;
 import CB_Core.Map.ManagerBase;
@@ -43,7 +42,6 @@ public class splash extends TabMainView
 	public splash(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-		GL.that.addRenderView(this, GL.FRAME_RATE_IDLE);
 	}
 
 	TextureAtlas atlas;
@@ -441,7 +439,7 @@ public class splash extends TabMainView
 	{
 		Logger.DEBUG("ini_TabMainView");
 		GL.that.removeRenderView(this);
-		((Tab_GL_Listner) GL.that).switchToMainView(new TabMainView(0, 0, width, height, "TabMainView"));
+		GL.that.switchToMainView();
 
 		if (GlobalCore.restartCache != null)
 		{

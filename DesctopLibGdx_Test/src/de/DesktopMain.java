@@ -24,6 +24,8 @@ import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Views.splash;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
@@ -63,7 +65,13 @@ public class DesktopMain
 		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
 		Logger.setDebug(true);
 
-		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
+		// create new splash
+		splash sp = new splash(0, 0, ui.Window.width, ui.Window.height, "Splash");
+
+		// create new mainView
+		TabMainView ma = new TabMainView(0, 0, ui.Window.width, ui.Window.height, "mainView");
+
+		CB_UI = new GL(ui.Window.width, ui.Window.height, sp, ma);
 
 		GL_View_Base.debug = debug;
 		GL_View_Base.disableScissor = scissor;

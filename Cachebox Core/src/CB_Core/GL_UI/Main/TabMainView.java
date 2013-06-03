@@ -152,8 +152,6 @@ public class TabMainView extends MainViewBase
 		super(X, Y, Width, Height, Name);
 
 		that = (TabMainView) (mainView = this);
-		GL.that.addRenderView(this, GL.FRAME_RATE_IDLE);
-
 	}
 
 	@Override

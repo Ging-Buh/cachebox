@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.Log.Logger;
 
+import com.badlogic.gdx.Gdx;
+
 public class KeyboardFocusChangedEventList
 {
 	public static ArrayList<KeyboardFocusChangedEvent> list = new ArrayList<KeyboardFocusChangedEvent>();
@@ -29,6 +31,14 @@ public class KeyboardFocusChangedEventList
 
 	public static void Call(final EditTextFieldBase focus)
 	{
+		if (focus != null)
+		{
+			Gdx.input.setOnscreenKeyboardVisible(true);
+		}
+		else
+		{
+			Gdx.input.setOnscreenKeyboardVisible(false);
+		}
 		synchronized (list)
 		{
 			for (KeyboardFocusChangedEvent event : list)

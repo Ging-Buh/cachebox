@@ -35,9 +35,6 @@ import CB_Core.TrackRecorder;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.KeyCodes;
-import CB_Core.Events.KeyboardFocusChangedEvent;
-import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEventList;
@@ -51,11 +48,9 @@ import CB_Core.Events.platformConector.IgetFileListner;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
-import CB_Core.Events.platformConector.IsetKeybordFocus;
 import CB_Core.Events.platformConector.IsetScreenLockTime;
 import CB_Core.Events.platformConector.iPlatformSettings;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.SpriteCache.DialogElement;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
 import CB_Core.GL_UI.ViewID.UI_Pos;
@@ -63,7 +58,6 @@ import CB_Core.GL_UI.ViewID.UI_Type;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
-import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -73,8 +67,8 @@ import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog.searchMode;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.GL_Listener.GL.renderStartet;
-import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
 import CB_Core.GL_UI.Main.TabMainView;
+import CB_Core.GL_UI.Views.splash;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -120,8 +114,6 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -144,13 +136,9 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.ClipboardManager;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -158,18 +146,12 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewParent;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -204,18 +186,15 @@ import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
 @SuppressLint("HandlerLeak")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
-		GpsStatus.NmeaListener, GpsStatus.Listener, ILog, KeyboardFocusChangedEvent
+		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
 
 	private static ServiceConnection mConnection;
 	private static Intent serviceIntent;
 	private static Service myNotifyService;
 	private static BroadcastReceiver mReceiver;
-	public boolean KeybordShown = false;
 	private static RelativeLayout Baselayout;
 	public HorizontalListView QuickButtonList;
-
-	private static hiddenTextField mTextField;
 
 	/*
 	 * private static member
@@ -505,7 +484,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		glListener = new Tab_GL_Listner(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
+		// create new splash
+		splash sp = new splash(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "Splash");
+
+		// create new mainView
+		TabMainView ma = new TabMainView(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "mainView");
+
+		glListener = new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), sp, ma);
 
 		int Time = Config.settings.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
@@ -615,9 +600,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
 		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
-
-		// initial hidden EditText
-		initialHiddenEditText();
 	}
 
 	boolean flag = false;
@@ -830,34 +812,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras)
 	{
-	}
-
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event)
-	{
-		if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
-		{
-			if (KeyboardWasClosed)
-			{
-				KeyboardWasClosed = false;
-				return true;
-			}
-			else
-			{
-				// if Dialog or Activity shown, close that first
-				if (GL.that.closeShownDialog()) return true;
-
-				if (SpriteCache.Dialog != null && SpriteCache.Dialog.get(DialogElement.footer.ordinal()) != null)
-				{
-					// SHOW Close Dialog only if SpriteCache initialized
-					if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
-					return true;
-				}
-
-			}
-
-		}
-		return super.dispatchKeyEvent(event);
 	}
 
 	@Override
@@ -1165,9 +1119,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Logger.Error("onResume", "initialOnTouchListner", e);
 		}
 
-		// register KeyboardFocusChangedEvent
-		KeyboardFocusChangedEventList.Add(this);
-
 		// Initial PlugIn
 		fillPluginList();
 		bindPluginServices();
@@ -1212,9 +1163,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
 			this.mWakeLock.acquire();
 		}
-
-		// unregister KeyboardFocusChangedEvent
-		KeyboardFocusChangedEventList.Remove(this);
 	}
 
 	@SuppressLint("Wakelock")
@@ -3100,80 +3048,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		platformConector.setsetKeybordFocusListner(new IsetKeybordFocus()
-		{
-
-			@Override
-			public void setKeybordFocus(boolean value)
-			{
-				// Iniitial HiddenTextField
-				if (value)
-				{
-					try
-					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								initialHiddenEditText();
-								mTextField.setVisibility(View.VISIBLE);
-								Baselayout.post(new Runnable()
-								{
-									public void run()
-									{
-										InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-										if (inputMethodManager != null)
-										{
-											inputMethodManager.toggleSoftInputFromWindow(mTextField.getApplicationWindowToken(),
-													InputMethodManager.SHOW_FORCED, 0);
-											mTextField.requestFocus();
-										}
-
-									}
-								});
-								Timer timer = new Timer();
-								TimerTask task = new TimerTask()
-								{
-									@Override
-									public void run()
-									{
-										KeybordShown = true;
-									}
-								};
-								timer.schedule(task, 500);
-
-							}
-						});
-					}
-					catch (Exception ex)
-					{
-						Logger.Error("main", "Show Keyboard", ex);
-					}
-				}
-				else
-				{
-					runOnUiThread(new Runnable()
-					{
-						public void run()
-						{
-							if (mTextField != null)
-							{
-								((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-										mTextField.getWindowToken(), 0);
-								KeybordShown = false;
-
-								Baselayout.removeView(mTextField);
-								mTextField = null;
-							}
-
-						}
-					});
-
-				}
-			}
-		});
-
 		platformConector.setCallUrlListner(new ICallUrl()
 		{
 
@@ -3265,291 +3139,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	// ###########################################################
-
-	private class hiddenTextField extends EditText
-	{
-		public hiddenTextField(Context context)
-		{
-			super(context);
-		}
-
-		@Override
-		protected void onDraw(Canvas canvas)
-		{
-			canvas.drawColor(Color.TRANSPARENT);
-
-			// Debug
-			// canvas.drawColor(Color.argb(100, 255, 0, 0));
-		}
-	}
-
-	private String beforeS;
-	private int beforeStart;
-	private int beforeCount;
-	// private int beforeAfter;
-	private boolean KeyboardWasClosed = false;
-
-	private void initialHiddenEditText()
-	{
-		// mTextField = new hiddenTextField(this);
-
-		mTextField = new hiddenTextField(inflater.getContext())
-		{
-			@Override
-			public boolean onKeyPreIme(int keyCode, KeyEvent event)
-			{
-				if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
-				{
-
-					// if no Keybord focus send BeckKey to GL
-
-					if (GL.that.getKeyboardFocus() == null && !KeyboardWasClosed)
-					{
-						if (GL.that.isShownDialogActivity())
-						{
-							GL.that.closeShownDialog();
-							KeyboardWasClosed = true;
-							return true;
-						}
-						CB_Core.Events.platformConector.sendKey((char) KeyCodes.KEYCODE_BACK);
-						return true;
-					}
-
-					GL.that.setKeyboardFocus(null);
-					KeyboardWasClosed = true;
-
-					TimerTask tk = new TimerTask()
-					{
-
-						@Override
-						public void run()
-						{
-							KeyboardWasClosed = false;
-						}
-					};
-
-					Timer timer = new Timer();
-					timer.schedule(tk, 1000);
-
-					return true;
-				}
-				return super.onKeyPreIme(keyCode, event);
-			}
-		};
-
-		mTextField.setRawInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-
-		mTextField.setOnFocusChangeListener(new OnFocusChangeListener()
-		{
-			@Override
-			public void onFocusChange(View v, boolean hasFocus)
-			{
-				if (!mTextField.hasFocus()) mTextField.requestFocus();
-			}
-		});
-
-		mTextField.setOnKeyListener(new OnKeyListener()
-		{
-
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event)
-			{
-				// nach GL umleiten
-				boolean handeld = false;
-
-				if (event.getAction() == KeyEvent.ACTION_UP && getNumericValueFromKeyCode(keyCode) != null)
-				{
-					return CB_Core.Events.platformConector.sendKey((Character) getNumericValueFromKeyCode(keyCode));
-				}
-
-				if (event.getAction() == KeyEvent.ACTION_DOWN)
-				{
-					if (keyCode == 66)// Enter
-					{
-
-						return true;
-					}
-					else if (keyCode == 67)// Enter
-					{
-
-						return true;
-					}
-					else
-					{
-						handeld = CB_Core.Events.platformConector.sendKeyDown(keyCode);
-					}
-
-				}
-				else if (event.getAction() == KeyEvent.ACTION_UP)
-				{
-					if (keyCode == 66)// Enter
-					{
-						handeld = CB_Core.Events.platformConector.sendKey('\n');
-						return handeld;
-					}
-					else if (keyCode == 67)// Enter
-					{
-						// Back
-						char BACKSPACE = 8;
-						return CB_Core.Events.platformConector.sendKey(BACKSPACE);
-					}
-					else
-					{
-						handeld = CB_Core.Events.platformConector.sendKeyUp(keyCode);
-					}
-				}
-
-				return handeld;
-			}
-
-		});
-
-		mTextField.setOnEditorActionListener(new OnEditorActionListener()
-		{
-
-			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
-			{
-				try
-				{
-					boolean handeld = CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode());
-					// boolean handeld2 = CB_Core.Events.platformConector.sendKey(chr);
-					return handeld;
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-					return false;
-				}
-
-			}
-		});
-
-		mTextField.addTextChangedListener(new TextWatcher()
-		{
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count)
-			{
-				// int BreakPoint = 1;
-				// if (BreakPoint == 1) BreakPoint++;
-				String newText = s.toString().substring(start, start + count);
-				String oldText = beforeS.substring(beforeStart, beforeStart + beforeCount);
-
-				// OldText mit newText vergleichen. Alle Zeichen, die in oldText stehen, in newText aber nicht mehr drin sind im Editor
-				// löschen
-				for (int i = beforeCount; i >= 0; i--)
-				{
-					if (newText.length() < i)
-					{
-						// 1 Zeichen aus dem Editor muß mit Sicherheit gelöscht werden!
-						char BACKSPACE = 8;
-						CB_Core.Events.platformConector.sendKey(BACKSPACE);
-						System.out.println("DEL");
-					}
-					else
-					{
-						// oldText mit newText vergleichen und zwar immer von Anfang an bis zu i
-						String tmpNew = newText.substring(0, i);
-						String tmpOld = oldText.substring(0, i);
-						if (tmpOld.equals(tmpNew))
-						{
-							// bis i ist alles gleiche -> nichts mehr muß gelöscht werden
-							// Neue Zeichen können eingefügt werden, und zwar ab dem Zeichen i in newText
-							for (int j = i; j < newText.length(); j++)
-							{
-								System.out.println("NEW: " + newText.charAt(j));
-
-								CB_Core.Events.platformConector.sendKey(newText.charAt(j));
-							}
-							// Fertig
-							break;
-						}
-						else
-						{
-							// bis i sind noch Unterschiede -> ein Zeichen löschen
-							System.out.println("DEL");
-							char BACKSPACE = 8;
-							CB_Core.Events.platformConector.sendKey(BACKSPACE);
-						}
-					}
-				}
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after)
-			{
-				// int BreakPoint = 1;
-				// if (BreakPoint == 1) BreakPoint++;
-				beforeS = s.toString();
-				beforeStart = start;
-				beforeCount = count;
-				// beforeAfter = after;
-			}
-
-			@Override
-			public void afterTextChanged(Editable s)
-			{
-			}
-		});
-
-		// mTextField.setBackgroundDrawable(null);
-		mTextField.setClickable(false);
-
-		Baselayout.addView(mTextField);
-
-		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTextField.getLayoutParams();
-		params.height = 1;
-
-		// params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-
-		mTextField.setLayoutParams(params);
-
-	}
-
-	protected Object getNumericValueFromKeyCode(int keyCode)
-	{
-		if (keyCode == KeyEvent.KEYCODE_0) return '0';
-		if (keyCode == KeyEvent.KEYCODE_1) return '1';
-		if (keyCode == KeyEvent.KEYCODE_2) return '2';
-		if (keyCode == KeyEvent.KEYCODE_3) return '3';
-		if (keyCode == KeyEvent.KEYCODE_4) return '4';
-		if (keyCode == KeyEvent.KEYCODE_5) return '5';
-		if (keyCode == KeyEvent.KEYCODE_6) return '6';
-		if (keyCode == KeyEvent.KEYCODE_7) return '7';
-		if (keyCode == KeyEvent.KEYCODE_8) return '8';
-		if (keyCode == KeyEvent.KEYCODE_9) return '9';
-
-		return null;
-	}
-
-	@Override
-	public void KeyboardFocusChanged(final EditTextFieldBase focus)
-	{
-		this.runOnUiThread(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-
-				if (mTextField == null)
-				{
-					initialHiddenEditText();
-				}
-
-				if (focus != null)
-				{
-					mTextField.setVisibility(View.INVISIBLE);// ;
-				}
-				else
-				{
-					mTextField.setVisibility(View.GONE);
-				}
-			}
-		});
-
-	}
 
 	/**
 	 * Initial all Locator functions
