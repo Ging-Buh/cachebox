@@ -15,7 +15,6 @@ import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,7 +24,7 @@ public abstract class Dialog extends CB_View_Base
 {
 	private boolean contentSizeIsCalculated = false;
 	private String mTitle;
-	public Label titleLabel;
+	private Label titleLabel;
 	private Box mContent;
 	private ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
 
@@ -232,30 +231,27 @@ public abstract class Dialog extends CB_View_Base
 		}
 
 		mTitleHeight = 0;
-
 		if (mTitle != null && !mTitle.equals(""))
 		{
 			mHasTitle = true;
 
-			TextBounds bounds = Fonts.Measure(mTitle);
-			mTitleWidth = bounds.width + (6.666f * pW);
-			if (mTitleWidth > this.width) mTitleWidth = this.width;// - (1.666f * pW);
-
-			mTitleHeight = bounds.height * 3f;
-
-			if (titleLabel != null && childs.contains(titleLabel)) childs.remove(titleLabel);
-
-			float lblHeight = bounds.height + (3 * margin);
-			float centerYpos = (mTitleHeight / 2) + (lblHeight / 2) + margin;
-			titleLabel = new Label(new CB_RectF((1.666f * pW), this.height - centerYpos, mTitleWidth - (4.1666f * pW), lblHeight),
-					"DialogTitleLabel");
-			titleLabel.setFont(Fonts.getNormal());
-			titleLabel.setHAlignment(HAlignment.CENTER);
-			titleLabel.setText(mTitle);
-
-			bounds = null;
-			super.addChildDirekt(titleLabel);
-
+			if (titleLabel == null)
+			{
+				titleLabel = new Label(mTitle);
+			}
+			else
+			{
+				if (!titleLabel.getText().equals(mTitle))
+				{
+					titleLabel.setText(mTitle);
+				}
+			}
+			titleLabel.setWidth(titleLabel.getTextWidth() + leftBorder + rightBorder);
+			this.initRow();
+			this.addLast(titleLabel, FIXED);
+			mTitleHeight = titleLabel.getHeight();
+			mTitleWidth = titleLabel.getWidth();
+			mTitleWidth += rightBorder; // sonst sieht es blöd aus
 		}
 
 		mContent.setWidth(this.width * 0.95f);
