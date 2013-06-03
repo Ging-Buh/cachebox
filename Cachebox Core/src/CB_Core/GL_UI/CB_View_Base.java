@@ -281,6 +281,9 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	private float yMargin = 0;
 	private float topYAdd;
 	private float bottomYAdd = -1;
+	public static final int FIXED = -1;
+	public static final boolean TOPDOWN = true;
+	public static final boolean BOTTOMUP = false;
 
 	/**
 	 ** next objects are added at this Y - Position (== used Height if bottomUP)
@@ -312,7 +315,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	 **/
 	public void initRow()
 	{
-		initRow(true);
+		initRow(TOPDOWN);
 	}
 
 	/**
@@ -469,7 +472,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 				}
 				else
 				{
-					if (g.Weight == -1)
+					if (g.Weight == FIXED)
 					{
 						fixedWidthSum += g.getWidth() + this.xMargin; // xMargin is added to each object
 					}
@@ -494,7 +497,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 				}
 				else
 				{
-					if (g.Weight > -1)
+					if (g.Weight > FIXED)
 					{
 						g.setWidth(Math.abs(g.Weight) * widthToFill - this.xMargin);
 					}

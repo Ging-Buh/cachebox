@@ -88,7 +88,7 @@ public class EditCoord extends ActivityBase
 
 		Button btnOK = new Button("btnOK");
 		Button btnCancel = new Button("btnCancel");
-		this.initRow(false);
+		this.initRow(BOTTOMUP);
 		this.addNext(btnOK);
 		this.addLast(btnCancel);
 		btnCancel.setText(Translation.Get("cancel"));
@@ -605,7 +605,7 @@ public class EditCoord extends ActivityBase
 			}
 		});
 
-		panel.initRow(false);
+		panel.initRow(BOTTOMUP);
 		panel.addNext(dummy1); // dummy links
 		panel.addNext(btnNumpad[0]);
 		panel.addLast(Leertaste); // Leertaste rechts, nur bei UTM-Eingabe sichtbar

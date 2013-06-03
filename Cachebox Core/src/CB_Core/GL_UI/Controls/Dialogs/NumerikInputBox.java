@@ -68,7 +68,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withoutDotOkCancel, getkeyListner(msgBox));
 
-		msgBox.initRow(false, margin);
+		msgBox.initRow(BOTTOMUP, margin);
 		msgBox.addLast(numPad);
 
 		msgBox.setFooterHeight(msgBox.getYPos() + margin);
@@ -79,7 +79,7 @@ public class NumerikInputBox extends CB_View_Base
 		msgBox.adjustHeight();
 
 		msgBox.setTitle(title);
-		msgBox.setHeight(msgBox.getHeight() + 2 * msgBox.titleLabel.getHeight()); // 2 * = gemogelt
+		msgBox.setHeight(msgBox.getHeight() + 2 * SingleLineHeight);
 
 		label.setWrappedText(msg);
 
@@ -161,7 +161,7 @@ public class NumerikInputBox extends CB_View_Base
 		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withOkCancel, getkeyListner(msgBox));
 		numPad.setY(margin);
 
-		msgBox.initRow(false, margin);
+		msgBox.initRow(BOTTOMUP, margin);
 		msgBox.addLast(numPad);
 		msgBox.setFooterHeight(msgBox.getYPos() + margin);
 
@@ -234,7 +234,7 @@ public class NumerikInputBox extends CB_View_Base
 		NumPad numPad = new NumPad(numPadRec, "NumPad", NumPad.Type.withDoubleDotOkCancel, getkeyListner(msgBox));
 		numPad.setY(margin);
 
-		msgBox.initRow(false, margin);
+		msgBox.initRow(BOTTOMUP, margin);
 		msgBox.addLast(numPad);
 		msgBox.setFooterHeight(msgBox.getYPos() + margin);
 

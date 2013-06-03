@@ -250,7 +250,7 @@ public class Button extends CB_View_Base
 		}
 
 		lblTxt = new Label(this.getName() + "Label");
-		this.initRow(false);
+		this.initRow(BOTTOMUP);
 		this.addLast(lblTxt); // first add Label, to get width, then set Text of label
 
 		if (font != null) mFont = font;

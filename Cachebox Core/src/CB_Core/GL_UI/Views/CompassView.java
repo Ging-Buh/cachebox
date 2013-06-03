@@ -463,7 +463,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		margin = GL_UISizes.margin;
 
 		topContentBox.setMargins(margin, margin);
-		topContentBox.initRow(true);
+		topContentBox.initRow();
 
 		imageRec = (new CB_RectF(0, 0, width, width)).ScaleCenter(0.6f);
 		this.setBackground(SpriteCache.ListBack);

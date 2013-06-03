@@ -155,7 +155,7 @@ public class ButtonDialog extends Dialog
 
 		this.setBorders(margin, margin);
 		this.setMargins(margin, margin);
-		this.initRow(false);
+		this.initRow(BOTTOMUP);
 
 		switch (anzahl)
 		{

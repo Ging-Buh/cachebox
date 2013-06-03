@@ -82,7 +82,7 @@ public class TrackableListView extends CB_View_Base
 		searchBox.setHeight(btnSearch.getHeight() + searchBox.getTopHeight() + searchBox.getBottomHeight());
 		this.addChild(searchBox);
 
-		searchBox.initRow(true);
+		searchBox.initRow();
 
 		txtSearch = new EditWrapedTextField("SearchInput", TextFieldType.SingleLine);
 		txtSearch.setMessageText(Translation.Get("SearchTB_Code"));

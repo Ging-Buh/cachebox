@@ -82,7 +82,7 @@ public class EditCache extends ActivityBase
 		btnOKClickHandler();
 		btnCancel = new Button("btnCancel");
 		btnCancelClickHandler();
-		this.initRow(false);
+		this.initRow(BOTTOMUP);
 		this.addNext(btnOK);
 		this.addLast(btnCancel);
 		btnCancel.setText(Translation.Get("cancel"));

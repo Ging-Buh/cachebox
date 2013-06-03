@@ -123,7 +123,7 @@ public class TB_Details extends ActivityBase
 	private void layout()
 	{
 		this.removeChilds();
-		this.initRow(false);
+		this.initRow(BOTTOMUP);
 		this.addNext(btnAction);
 		this.addLast(btnClose);
 		this.addLast(scrollBox);
@@ -253,7 +253,7 @@ public class TB_Details extends ActivityBase
 		// DetailThisItem.addNext(lblTravelDistance);
 		// DetailThisItem.addLast(TravelDistance);
 
-		scrollBox.initRow(false);
+		scrollBox.initRow(BOTTOMUP);
 		scrollBox.setMargins(margin, 0);
 		scrollBox.addLast(AboutThisItem);
 		scrollBox.setMargins(margin, margin * 2);

@@ -200,7 +200,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		mBox = new Box(rec.getWidth(), innerHeight, "SelectSolverFunction-Box");
 		float margin = GL_UISizes.margin;
 		mBox.setMargins(margin, margin);
-		mBox.initRow(true); // true= von oben nach unten
+		mBox.initRow();
 		boxYPosStart = mBox.getYPos(); // Startposition der Controls merken
 		// damit das LinearLayout auch Events erhällt
 		mBox.setClickable(true);
@@ -299,7 +299,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		}
 
 		// y-Position der Controls zurücksetzen
-		mBox.initRow(true, boxYPosStart);
+		mBox.initRow(TOPDOWN, boxYPosStart);
 
 		switch (page)
 		{
@@ -375,7 +375,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			}
 			lFunctionParam = null;
 		}
-		mBox.initRow(true, boxYPosStored); // Position der nächsten Controls zurücksetzen
+		mBox.initRow(TOPDOWN, boxYPosStored); // Position der nächsten Controls zurücksetzen
 	}
 
 	private void hidePageText()
