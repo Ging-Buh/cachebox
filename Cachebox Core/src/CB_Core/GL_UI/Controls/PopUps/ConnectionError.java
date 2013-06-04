@@ -23,7 +23,7 @@ public class ConnectionError extends Toast
 		float wh = UI_Size_Base.that.getButtonWidth() * 2.5f;
 
 		CB_RectF posRec = new CB_RectF((UI_Size_Base.that.getWindowWidth() / 2) - (wh / 2), UI_Size_Base.that.getWindowHeight() - wh
-				- Dialog.getMargin(), wh, wh);
+				- Dialog.margin, wh, wh);
 
 		this.setRec(posRec);
 

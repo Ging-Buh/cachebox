@@ -13,7 +13,6 @@ import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.Linearlayout.LayoutChanged;
 import CB_Core.GL_UI.Controls.ScrollBox;
-import CB_Core.GL_UI.Menu.Menu;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UI_Size_Base;
@@ -102,7 +101,7 @@ public class CreditsView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		margin = Menu.getMargin();
+		margin = UI_Size_Base.that.getMargin();
 
 		lineHeight = Fonts.Measure("Tg").height * 1.6f;
 		layout.removeChilds();

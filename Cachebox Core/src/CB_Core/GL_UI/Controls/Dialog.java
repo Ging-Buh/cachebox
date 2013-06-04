@@ -102,11 +102,6 @@ public abstract class Dialog extends CB_View_Base
 
 	}
 
-	public static float getMargin()
-	{
-		return margin;
-	}
-
 	@Override
 	public GL_View_Base addChild(GL_View_Base view)
 	{

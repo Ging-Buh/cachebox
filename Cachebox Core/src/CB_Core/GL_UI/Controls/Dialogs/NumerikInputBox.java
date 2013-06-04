@@ -3,7 +3,6 @@ package CB_Core.GL_UI.Controls.Dialogs;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.runOnGL;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
@@ -50,7 +49,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
-		float margin = Dialog.getMargin();
+		float margin = UI_Size_Base.that.getMargin();
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 
 		editText = new EditWrapedTextField("editText", TextFieldType.SingleLine);
@@ -110,7 +109,7 @@ public class NumerikInputBox extends CB_View_Base
 		mType = type.doubleType;
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
-		float margin = Dialog.getMargin();
+		float margin = UI_Size_Base.that.getMargin();
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 
@@ -180,7 +179,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize(msg, true, true, false);
 
-		float margin = Dialog.getMargin();
+		float margin = UI_Size_Base.that.getMargin();
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 		msgBox.setTitle(title);
 

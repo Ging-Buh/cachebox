@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
@@ -36,7 +35,7 @@ public class LogViewItem extends ListViewItemBackground
 		this.logEntry = logEntry;
 		mBackIsInitial = false;
 		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
-		headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.getMargin());
+		headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (UI_Size_Base.that.getMargin());
 
 		iniImage();
 		iniFoundLabel();
@@ -50,13 +49,13 @@ public class LogViewItem extends ListViewItemBackground
 				UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
 		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(logEntry.Type.getIconID())));
-		secondTab = ivTyp.getMaxX() + (Dialog.getMargin() * 2);
+		secondTab = ivTyp.getMaxX() + (UI_Size_Base.that.getMargin() * 2);
 	}
 
 	private void iniFoundLabel()
 	{
 		lblFoundByName = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab
-				- getRightWidth() - Dialog.getMargin(), MeasuredLabelHeight, "");
+				- getRightWidth() - UI_Size_Base.that.getMargin(), MeasuredLabelHeight, "");
 		lblFoundByName.setFont(Fonts.getNormal());
 		lblFoundByName.setText(logEntry.Finder);
 		this.addChild(lblFoundByName);
@@ -78,8 +77,8 @@ public class LogViewItem extends ListViewItemBackground
 
 	private void iniCommentLabel()
 	{
-		lblComment = new Label(getLeftWidth(), 0, this.width - getLeftWidthStatic() - getRightWidthStatic() - (Dialog.getMargin() * 2),
-				this.height - headHeight - Dialog.getMargin(), "");
+		lblComment = new Label(getLeftWidth(), 0, this.width - getLeftWidthStatic() - getRightWidthStatic()
+				- (UI_Size_Base.that.getMargin() * 2), this.height - headHeight - UI_Size_Base.that.getMargin(), "");
 		lblComment.setFont(Fonts.getNormal());
 		lblComment.setWrappedText(logEntry.Comment);
 		this.addChild(lblComment);

@@ -7,7 +7,6 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.TB_Details;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.RadioButton;
@@ -58,8 +57,8 @@ public class TestView extends CB_View_Base
 		// ####################################################
 
 		// Setting Button
-		Button btnSetting = new Button(this.width - Dialog.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2),
-				wrappedTextField.getY() - Dialog.getMargin() - UI_Size_Base.that.getButtonHeight(),
+		Button btnSetting = new Button(this.width - UI_Size_Base.that.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2),
+				wrappedTextField.getY() - UI_Size_Base.that.getMargin() - UI_Size_Base.that.getButtonHeight(),
 				UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
 
 		btnSetting.setText("Show TB");
@@ -93,13 +92,13 @@ public class TestView extends CB_View_Base
 		this.addChild(btnSetting);
 
 		RadioButton rb2 = new RadioButton("Test");
-		rb2.setPos(50, rb.getMaxY() + Dialog.getMargin());
+		rb2.setPos(50, rb.getMaxY() + UI_Size_Base.that.getMargin());
 		rb2.setWidth(this.width - rb.getX());
 		rb2.setText("Option 2");
 		this.addChild(rb2);
 
 		RadioButton rb3 = new RadioButton("Test");
-		rb3.setPos(50, rb2.getMaxY() + Dialog.getMargin());
+		rb3.setPos(50, rb2.getMaxY() + UI_Size_Base.that.getMargin());
 		rb3.setWidth(this.width - rb.getX());
 		rb3.setText("Option 3");
 		this.addChild(rb3);

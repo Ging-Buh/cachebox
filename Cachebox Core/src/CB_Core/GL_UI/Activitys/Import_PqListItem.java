@@ -5,12 +5,12 @@ import java.text.SimpleDateFormat;
 
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.chkBox;
 import CB_Core.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 
 public class Import_PqListItem extends ListViewItemBackground
 {
@@ -37,7 +37,7 @@ public class Import_PqListItem extends ListViewItemBackground
 		lblInfo.setText(dateString + "  " + FileSize + Count);
 
 		chk = new chkBox("");
-		chk.setX(this.width - getRightWidth() - chk.getWidth() - Dialog.getMargin());
+		chk.setX(this.width - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
 		chk.setY(this.halfHeight - chk.getHalfHeight());
 		chk.setChecked(pq.downloadAvible);
 		chk.setOnCheckedChangeListener(new OnCheckedChangeListener()

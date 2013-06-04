@@ -6,12 +6,12 @@ import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ColorPicker;
 import CB_Core.GL_UI.Activitys.ColorPicker.IReturnListner;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.RouteOverlay.Track;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.Color;
@@ -159,7 +159,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 		colorReck.draw(batch);
 
-		left += lBounds.getWidth() + Dialog.getMargin();
+		left += lBounds.getWidth() + UI_Size_Base.that.getMargin();
 
 	}
 

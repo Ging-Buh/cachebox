@@ -8,7 +8,6 @@ import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
@@ -108,12 +107,14 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 
 	private float MeasureItemHeight(LogEntry logEntry)
 	{
-		float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.getMargin());
+		// object ist nicht von Dialog abgeleitet, daher
+		float margin = UI_Size_Base.that.getMargin();
+		float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + margin;
 
 		float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic()
-				- (Dialog.getMargin() * 2);
+				- (margin * 2);
 
-		float commentHeight = (Dialog.getMargin() * 4) + Fonts.MeasureWrapped(logEntry.Comment, mesurdWidth).height;
+		float commentHeight = (margin * 4) + Fonts.MeasureWrapped(logEntry.Comment, mesurdWidth).height;
 
 		return headHeight + commentHeight;
 	}

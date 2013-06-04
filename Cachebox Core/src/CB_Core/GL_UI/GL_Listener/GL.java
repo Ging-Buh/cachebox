@@ -43,6 +43,7 @@ import CB_Core.Map.MapTileLoader;
 import CB_Core.Map.Point;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.TranslationEngine.Translation;
@@ -1321,7 +1322,7 @@ public class GL implements ApplicationListener, InputProcessor
 		float x = (width - dialog.getWidth()) / 2;
 		float y = (height - dialog.getHeight()) / 2;
 
-		if (atTop) y = height - dialog.getHeight() - (Dialog.getMargin() * 4);
+		if (atTop) y = height - dialog.getHeight() - (UI_Size_Base.that.getMargin() * 4);
 
 		dialog.setPos(x, y);
 
@@ -1574,7 +1575,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		toast.setText(string);
 
-		float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (Dialog.getMargin() * 2);
+		float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
 		toast.setWidth(measuredWidth);
 
 		toast.setPos((width / 2) - (measuredWidth / 2), GL_UISizes.BottomButtonHeight * 1.3f);

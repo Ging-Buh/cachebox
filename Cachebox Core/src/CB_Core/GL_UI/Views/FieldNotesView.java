@@ -18,7 +18,6 @@ import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.EditFieldNotes;
 import CB_Core.GL_UI.Activitys.EditFieldNotes.ReturnListner;
-import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -160,10 +159,10 @@ public class FieldNotesView extends V_ListView
 
 		private float MeasureItemHeight(FieldNoteEntry fne)
 		{
-			float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (Dialog.getMargin());
-			float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + Dialog.getMargin() + Fonts.Measure("T").height;
+			float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (UI_Size_Base.that.getMargin());
+			float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + UI_Size_Base.that.getMargin() + Fonts.Measure("T").height;
 			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic()
-					- ListViewItemBackground.getRightWidthStatic() - (Dialog.getMargin() * 2);
+					- ListViewItemBackground.getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2);
 
 			float mh = 0;
 			try
@@ -179,7 +178,7 @@ public class FieldNotesView extends V_ListView
 				e.printStackTrace();
 			}
 
-			float commentHeight = (Dialog.getMargin() * 3) + mh;
+			float commentHeight = (UI_Size_Base.that.getMargin() * 3) + mh;
 
 			return headHeight + cacheIfoHeight + commentHeight;
 		}
