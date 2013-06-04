@@ -271,6 +271,11 @@ public class Label extends CB_View_Base
 		return setWrappedText(text, null, null, HAlignment.LEFT);
 	}
 
+	public Label setWrappedText(String text, BitmapFont Font)
+	{
+		return setWrappedText(text, Font, null, null);
+	}
+
 	public Label setWrappedText(String text, HAlignment HAlignment)
 	{
 		return setWrappedText(text, null, null, HAlignment);

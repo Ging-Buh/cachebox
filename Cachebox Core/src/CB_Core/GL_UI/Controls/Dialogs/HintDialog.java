@@ -13,8 +13,6 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.Size;
 import CB_Core.TranslationEngine.Translation;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-
 public class HintDialog extends GL_MsgBox
 {
 
@@ -53,15 +51,13 @@ public class HintDialog extends GL_MsgBox
 		CB_RectF rec = msgBox.getContentSize().getBounds();
 		scrollBox = new ScrollBox(rec, 100, "");
 
-		float lblHeigt = Fonts.MeasureWrapped(hintTextDecoded, rec.getWidth()).height + (2 * margin);
-		rec.setHeight(lblHeigt);
-
-		msgBox.label = new Label(rec, "MsgBoxLabel");
-		msgBox.label.setWrappedText(hintTextDecoded, Fonts.getBig(), Fonts.getFontColor(), HAlignment.LEFT);
-
-		// label in Scrollbox verpacken
-		scrollBox.addChild(msgBox.label);
-		scrollBox.setVirtualHeight(msgBox.label.getHeight());
+		msgBox.label = new Label("Hint");
+		msgBox.label.setHeight(scrollBox.getHeight());
+		// damit die Breite des Labels stimmt zur Bestimmung des Umbruchs gesetzt ist
+		scrollBox.addLast(msgBox.label);
+		msgBox.label.setWrappedText(hintTextDecoded, Fonts.getBig());
+		// wenn die virtuelle Höhe > als die scrollBox Höhe - margin ist, dann wird gescrollt
+		scrollBox.setVirtualHeight(msgBox.label.getTextHeight() + 2f * margin);
 
 		msgBox.addChild(scrollBox);
 
