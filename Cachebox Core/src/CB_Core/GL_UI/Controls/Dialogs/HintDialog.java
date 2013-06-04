@@ -59,13 +59,14 @@ public class HintDialog extends GL_MsgBox
 		// damit die Breite des Labels zur Bestimmung des Umbruchs gesetzt ist:
 		scrollBox.addLast(msgBox.label);
 		msgBox.label.setWrappedText(hintTextEncoded, Fonts.getBig());
-		float lblHeigt = msgBox.label.getTextHeight();
+		float lblHeight = msgBox.label.getTextHeight();
 		msgBox.label.setWrappedText(hintTextDecoded, Fonts.getBig());
 		float lblHeigtTextDecoded = msgBox.label.getTextHeight();
-		if (lblHeigtTextDecoded > lblHeigt) lblHeigt = lblHeigtTextDecoded;
-		msgBox.label.setHeight(lblHeigt); // Damit der ganze Text drauf ist
+		if (lblHeigtTextDecoded > lblHeight) lblHeight = lblHeigtTextDecoded;
+		lblHeight = lblHeight + 2f * margin;
+		msgBox.label.setHeight(lblHeight); // Damit der ganze Text drauf ist
 		// wenn die virtuelle Höhe > als die scrollBox Höhe - margin ist, dann wird gescrollt
-		scrollBox.setVirtualHeight(lblHeigt); // nur der Label ist auf der Scrollbox
+		scrollBox.setVirtualHeight(lblHeight); // nur der Label ist auf der Scrollbox
 
 		msgBox.addChild(scrollBox);
 
