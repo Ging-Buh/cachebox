@@ -46,23 +46,28 @@ public class HintDialog extends GL_MsgBox
 		GL_MsgBox msgBox = new GL_MsgBox(maxTextSize, "MsgBox");
 		msgBox.setTitle(Translation.Get("hint"));
 		msgBox.setButtonCaptions(MessageBoxButtons.OKCancel);
+		msgBox.button3.setText(Translation.Get("close"));
+		msgBox.button1.setText(Translation.Get("decode"));
+
 		msgBox.mMsgBoxClickListner = null;
 
 		CB_RectF rec = msgBox.getContentSize().getBounds();
 		scrollBox = new ScrollBox(rec, 100, "");
 
 		msgBox.label = new Label("Hint");
-		msgBox.label.setHeight(scrollBox.getHeight());
-		// damit die Breite des Labels stimmt zur Bestimmung des Umbruchs gesetzt ist
+		scrollBox.initRow(BOTTOMUP); // damit label.Pos auf 0,0 gesetzt wird
+		// damit die Breite des Labels zur Bestimmung des Umbruchs gesetzt ist:
 		scrollBox.addLast(msgBox.label);
+		msgBox.label.setWrappedText(hintTextEncoded, Fonts.getBig());
+		float lblHeigt = msgBox.label.getTextHeight();
 		msgBox.label.setWrappedText(hintTextDecoded, Fonts.getBig());
+		float lblHeigtTextDecoded = msgBox.label.getTextHeight();
+		if (lblHeigtTextDecoded > lblHeigt) lblHeigt = lblHeigtTextDecoded;
+		msgBox.label.setHeight(lblHeigt); // Damit der ganze Text drauf ist
 		// wenn die virtuelle Höhe > als die scrollBox Höhe - margin ist, dann wird gescrollt
-		scrollBox.setVirtualHeight(msgBox.label.getTextHeight() + 2f * margin);
+		scrollBox.setVirtualHeight(lblHeigt); // nur der Label ist auf der Scrollbox
 
 		msgBox.addChild(scrollBox);
-
-		msgBox.button3.setText(Translation.Get("close"));
-		msgBox.button1.setText(Translation.Get("decode"));
 
 		msgBox.button1.setOnClickListener(new OnClickListener()
 		{
@@ -71,15 +76,7 @@ public class HintDialog extends GL_MsgBox
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				GL_MsgBox msgBox = (GL_MsgBox) GL.that.getActDialog();
-				CB_RectF rec = msgBox.getContentSize().getBounds();
-
-				String txt = GlobalCore.Rot13(msgBox.label.getText());
-
-				float lblHeigt = Fonts.MeasureWrapped(txt, rec.getWidth()).height + (2 * margin);
-				msgBox.label.setZeroPos();
-				msgBox.label.setWrappedText(txt);
-				msgBox.label.setHeight(lblHeigt);
-				scrollBox.setVirtualHeight(msgBox.label.getHeight());
+				msgBox.label.setWrappedText(GlobalCore.Rot13(msgBox.label.getText()));
 				return true;
 			}
 		});
