@@ -2,7 +2,6 @@ package de.cachebox_test.Map;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -15,18 +14,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.mapsforge.android.maps.DebugSettings;
-import org.mapsforge.android.maps.mapgenerator.JobParameters;
-import org.mapsforge.android.maps.mapgenerator.JobTheme;
-import org.mapsforge.android.maps.mapgenerator.MapGenerator;
-import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
-import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
-import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
-import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
-import org.mapsforge.android.maps.mapgenerator.databaserenderer.ExternalRenderTheme;
-import org.mapsforge.android.maps.rendertheme.InternalRenderTheme;
-import org.mapsforge.core.Tile;
-import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 
 import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
@@ -35,38 +24,14 @@ import CB_Core.Map.Layer;
 import CB_Core.Map.ManagerBase;
 import CB_Core.Map.PackBase;
 import CB_Core.Util.FileIO;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class AndroidManager extends ManagerBase
 {
-
-	MapGenerator mapGenerator = null;
-	MapDatabase mapDatabase = null;
-	DatabaseRenderer databaseRenderer = null;
-	Bitmap tileBitmap = null;
-	File mapFile = null;
-	JobParameters jobParameters = null;
-	float textScale = 1;
-	InternalRenderTheme DEFAULT_RENDER_THEME = InternalRenderTheme.OSMARENDER;
-	JobTheme jobTheme = null;
-	float DEFAULT_TEXT_SCALE = 1;
-
-	/*
-	 * public delegate void FetchAreaCallback();
-	 */
-
 	public AndroidManager()
 	{
 		super();
 	}
-
-	/*
-	 * /// <summary> /// *berprüft, ob die übergebene Kachel bei OSM überhaupt existiert /// </summary> /// <param name="desc">Deskriptor
-	 * der zu prüfenden Kachel</param> /// <returns>true, falls die Kachel existiert, sonst false</returns> public static bool
-	 * ExistsTile(Descriptor desc) { int range = (int)Math.Pow(2, desc.Zoom); return desc.X < range && desc.Y < range && desc.X >= 0 &&
-	 * desc.Y >= 0; }
-	 */
 
 	@Override
 	public PackBase CreatePack(String file) throws IOException
@@ -74,128 +39,25 @@ public class AndroidManager extends ManagerBase
 		return new Pack(this, file);
 	}
 
-	public Bitmap LoadLocalBitmap(String layer, Descriptor desc)
+	public android.graphics.Bitmap LoadLocalBitmap(String layer, Descriptor desc)
 	{
 		return LoadLocalBitmap(GetLayerByName(layer, layer, ""), desc);
 	}
 
 	@Override
+	protected GraphicFactory getGraphicFactory()
+	{
+		return AndroidGraphicFactory.INSTANCE;
+	}
+
+	@Override
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{
-		// Mapsforge 3.0
+
 		if (layer.isMapsForge)
 		{
-			byte[] result = null;
-
-			if (mapGenerator == null) mapGenerator = MapGeneratorFactory.createMapGenerator(MapGeneratorInternal.DATABASE_RENDERER);
-
-			if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
-			{
-				RenderThemeChanged = true;
-				mapFile = new File(layer.Url);
-
-				mapDatabase = new MapDatabase();
-				mapDatabase.closeFile();
-				mapDatabase.openFile(mapFile);
-				Logger.DEBUG("Open MapsForge Map: " + mapFile);
-
-				databaseRenderer = (DatabaseRenderer) mapGenerator;
-				databaseRenderer.setMapDatabase(mapDatabase);
-
-				tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
-				mapsForgeFile = layer.Name;
-			}
-
-			if (RenderThemeChanged || jobParameters == null)
-			{
-
-				try
-				{
-					Logger.DEBUG("Suche RenderTheme: " + RenderTheme);
-					if (RenderTheme == null)
-					{
-						Logger.DEBUG("RenderTheme not found!");
-						jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
-					}
-					else
-					{
-						File file = new File(RenderTheme);
-						if (file.exists())
-						{
-							Logger.DEBUG("RenderTheme found!");
-							JobTheme jobTheme = new ExternalRenderTheme(file);
-							jobParameters = new JobParameters(jobTheme, DEFAULT_TEXT_SCALE);
-						}
-						else
-						{
-							Logger.DEBUG("RenderTheme not found!");
-							jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
-						}
-					}
-
-				}
-				catch (FileNotFoundException e)
-				{
-					Logger.Error("Load RenderTheme", "Error loading RenderTheme!", e);
-					jobParameters = new JobParameters(DEFAULT_RENDER_THEME, DEFAULT_TEXT_SCALE);
-				}
-				RenderThemeChanged = false;
-			}
-
-			Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
-
-			DebugSettings debugSettings = new DebugSettings(false, false, false);
-
-			MapGeneratorJob job = new MapGeneratorJob(tile, mapFile, jobParameters, debugSettings);
-
-			try
-			{
-				if (databaseRenderer.executeJob(job, tileBitmap))
-				{
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					tileBitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
-
-					result = baos.toByteArray();
-
-					try
-					{
-						baos.close();
-					}
-					catch (IOException e)
-					{
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-
-			return result;
+			return getMapsforgePixMap(layer, desc);
 		}
-		/*
-		 * 0.2.x if (layer.isMapsForge) { if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name))) { mapDatabase = new
-		 * MapDatabase(); mapDatabase.openFile(CB_Core.Config.settings.MapPackFolder.getValue() + "/" + layer.Name); renderer = new
-		 * CanvasRenderer(); renderer.setDatabase(mapDatabase); tileBitmap = Bitmap.createBitmap(256, 256, Config.RGB_565);
-		 * renderer.setupMapGenerator(tileBitmap); mapsForgeFile = layer.Name; } Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
-		 * 
-		 * // Original value = 1.333f now 1.333 * dpiScaleFactorX from MapView
-		 * 
-		 * float DPIawareFaktor = (float) (MapView.dpiScaleFactorX * 1.333);
-		 * 
-		 * MapGeneratorJob job = new MapGeneratorJob(tile, MapViewMode.CANVAS_RENDERER, "xxx", DPIawareFaktor, false, false, false);
-		 * 
-		 * // renderer.setupMapGenerator(tileBitmap); renderer.prepareMapGeneration(); renderer.executeJob(job); // Bitmap bit =
-		 * renderer.tileBitmap.copy(Config.RGB_565, true);
-		 * 
-		 * ByteArrayOutputStream baos = new ByteArrayOutputStream(); if (main.N) { Bitmap b = Bitmap.createBitmap(256, 256, Config.RGB_565);
-		 * Canvas c = new Canvas(b); c.drawBitmap(renderer.tileBitmap, 0, 0, main.N ? Global.invertPaint : new Paint());
-		 * b.compress(Bitmap.CompressFormat.PNG, 50, baos); } else { renderer.tileBitmap.compress(Bitmap.CompressFormat.PNG, 50, baos); }
-		 * 
-		 * byte[] result = baos.toByteArray();
-		 * 
-		 * try { baos.close(); } catch (IOException e) { } return result; }
-		 */
 		try
 		{
 			// Schauen, ob Tile im Cache liegt
@@ -231,9 +93,9 @@ public class AndroidManager extends ManagerBase
 			// Falls Kachel im Cache liegt, diese von dort laden!
 			if (cachedTileAge != 0)
 			{
-				Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
+				android.graphics.Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
-				result.compress(Bitmap.CompressFormat.PNG, 100, stream);
+				result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
 				return stream.toByteArray();
 			}
 		}
@@ -258,7 +120,7 @@ public class AndroidManager extends ManagerBase
 	// private Bitmap tileBitmap = null;
 	private String mapsForgeFile = "";
 
-	public Bitmap LoadLocalBitmap(Layer layer, Descriptor desc)
+	public android.graphics.Bitmap LoadLocalBitmap(Layer layer, Descriptor desc)
 	{
 		/*
 		 * if (layer.isMapsForge) { if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name))) { mapDatabase = new
@@ -416,7 +278,7 @@ public class AndroidManager extends ManagerBase
 	@Override
 	protected ImageData getImagePixel(byte[] img)
 	{
-		Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+		android.graphics.Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
 		// Buffer dst = null;
 		int[] pixels = new int[bitmap.getWidth() * bitmap.getHeight()];
 		// bitmap.getPixels(pixels, 0, 0, 0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -434,10 +296,11 @@ public class AndroidManager extends ManagerBase
 	@Override
 	protected byte[] getImageFromData(ImageData imgData)
 	{
-		Bitmap bmp = Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height, Bitmap.Config.ARGB_8888);
+		android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height,
+				android.graphics.Bitmap.Config.ARGB_8888);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		bmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+		bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);
 		byte[] b = baos.toByteArray();
 		return b;
 	}

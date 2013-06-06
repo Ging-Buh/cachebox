@@ -19,18 +19,19 @@ package CB_Core.GL_UI;
 import java.util.ArrayList;
 
 import CB_Core.Config;
-import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Skin.CB_Skin;
+import CB_Core.GL_UI.Skin.SkinBase;
+import CB_Core.GL_UI.Skin.SkinSettings;
 import CB_Core.GL_UI.utils.ColorDrawable;
 import CB_Core.Math.UI_Size_Base;
-import CB_Core.Util.FileIO;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -42,8 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  */
 public class SpriteCache
 {
-
-	private static boolean loadFromAsset = false;
 
 	public static class SpriteList extends ArrayList<Sprite>
 	{
@@ -227,12 +226,12 @@ public class SpriteCache
 
 	public static int patch;
 
-	public static String PathDefaultAtlas;
-	public static String PathCustomAtlas;
-	public static String PathDefaultNightAtlas;
-	public static String PathCustomNightAtlas;
+	public static FileHandle FileHandleDefaultAtlas;
+	public static FileHandle FileHandleCustomAtlas;
+	public static FileHandle FileHandleDefaultNightAtlas;
+	public static FileHandle FileHandleCustomNightAtlas;
 
-	private static void setPath(String path)
+	private static void setPath(CB_Skin skin)
 	{
 
 		if (Gdx.gl11 != null)
@@ -243,31 +242,24 @@ public class SpriteCache
 
 		String TexturName = Config.settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp" : "UI_IconPack.spp";
 
-		GlobalCore.PathCustom = path + "/day/";
-		GlobalCore.PathCustomNight = path + "/night/";
-		PathCustomAtlas = path + "/day/" + TexturName;
-		PathCustomNightAtlas = path + "/night/" + TexturName;
+		FileHandleCustomAtlas = null;
+		FileHandleCustomNightAtlas = null;
 
-		String defaultPath = path;
-		int pos = defaultPath.lastIndexOf("/");
-		if (pos == -1) pos = defaultPath.lastIndexOf("\\");
-		if (GlobalCore.useSmallSkin)
+		SkinSettings skinSet = skin.getSettings();
+
+		if (skinSet.SkinFolder.type() == FileType.Absolute)
 		{
-			defaultPath = defaultPath.substring(0, pos) + "/small";
-			GlobalCore.PathCustom = "";
-			GlobalCore.PathCustomNight = "";
-			PathCustomAtlas = "";
-			PathCustomNightAtlas = "";
+			FileHandleCustomAtlas = Gdx.files.absolute(skinSet.SkinFolder + "/day/" + TexturName);
+			FileHandleCustomNightAtlas = Gdx.files.absolute(skinSet.SkinFolder + "/night/" + TexturName);
 		}
 		else
 		{
-			defaultPath = defaultPath.substring(0, pos) + "/default";
+			FileHandleCustomAtlas = Gdx.files.internal(skinSet.SkinFolder + "/day/" + TexturName);
+			FileHandleCustomNightAtlas = Gdx.files.internal(skinSet.SkinFolder + "/night/" + TexturName);
 		}
 
-		GlobalCore.PathDefault = defaultPath + "/day/";
-		GlobalCore.PathDefaultNight = defaultPath + "/night/";
-		PathDefaultAtlas = defaultPath + "/day/" + TexturName;
-		PathDefaultNightAtlas = defaultPath + "/night/" + TexturName;
+		FileHandleDefaultAtlas = Gdx.files.internal(skinSet.DefaultSkinFolder + "/day/" + TexturName);
+		FileHandleDefaultNightAtlas = Gdx.files.internal(skinSet.DefaultSkinFolder + "/night/" + TexturName);
 
 		if (atlasDefault != null)
 		{
@@ -293,64 +285,19 @@ public class SpriteCache
 			atlasCustomtNight = null;
 		}
 
-		if (!loadFromAsset)
+		atlasDefault = new TextureAtlas(FileHandleDefaultAtlas);
+		atlasDefaultNight = new TextureAtlas(FileHandleDefaultNightAtlas);
+
+		if (!FileHandleDefaultAtlas.equals(FileHandleCustomAtlas))
 		{
-			if (FileIO.FileExists(PathDefaultAtlas)) atlasDefault = new TextureAtlas(Gdx.files.absolute(PathDefaultAtlas));
-			if (FileIO.FileExists(PathDefaultNightAtlas)) atlasDefaultNight = new TextureAtlas(Gdx.files.absolute(PathDefaultNightAtlas));
-
-			if (!PathDefaultAtlas.equals(PathCustomAtlas))
-			{
-				if (FileIO.FileExists(PathCustomAtlas)) atlasCustom = new TextureAtlas(Gdx.files.absolute(PathCustomAtlas));
-				if (FileIO.FileExists(PathCustomNightAtlas)) atlasCustomtNight = new TextureAtlas(Gdx.files.absolute(PathCustomNightAtlas));
-			}
+			atlasCustom = new TextureAtlas(FileHandleCustomAtlas);
+			atlasCustomtNight = new TextureAtlas(FileHandleCustomNightAtlas);
 		}
-		else
-		{
-			atlasDefault = new TextureAtlas(Gdx.files.internal(PathDefaultAtlas));
-			atlasDefaultNight = new TextureAtlas(Gdx.files.internal(PathDefaultNightAtlas));
-
-			if (!PathDefaultAtlas.equals(PathCustomAtlas))
-			{
-				atlasCustom = new TextureAtlas(Gdx.files.internal(PathCustomAtlas));
-				atlasCustomtNight = new TextureAtlas(Gdx.files.internal(PathCustomNightAtlas));
-			}
-		}
-
 	}
 
 	public static Sprite getThemedSprite(String name)
 	{
 		return getThemedSprite(name, 1.0f);
-	}
-
-	public static Skin night_skin;
-	public static Skin day_skin;
-
-	public static Color getThemedColor(String Name)
-	{
-		String path = Config.settings.SkinFolder.getValue();
-
-		if (day_skin == null)
-		{
-			String day_skinPath = path + "/day/skin.json";
-			FileHandle fd = loadFromAsset ? Gdx.files.internal(day_skinPath) : Gdx.files.absolute(day_skinPath);
-			day_skin = new Skin(fd);
-		}
-		if (night_skin == null)
-		{
-			String night_skinPath = path + "/night/skin.json";
-			FileHandle fd = loadFromAsset ? Gdx.files.internal(night_skinPath) : Gdx.files.absolute(night_skinPath);
-			night_skin = new Skin(fd);
-		}
-		if (Config.settings.nightMode.getValue())
-		{
-			return night_skin.getColor(Name);
-		}
-		else
-		{
-			return day_skin.getColor(Name);
-		}
-
 	}
 
 	public static Sprite getThemedSprite(String name, float scale)
@@ -476,19 +423,10 @@ public class SpriteCache
 	/**
 	 * Load the Sprites from recourse
 	 */
-	public static void LoadSpritesFromAsset(boolean reload)
-	{
-		loadFromAsset = true;
-		LoadSprites(reload);
-	}
-
-	/**
-	 * Load the Sprites from recourse
-	 */
 	public static void LoadSprites(boolean reload)
 	{
 
-		if (!reload) setPath(Config.settings.SkinFolder.getValue());
+		if (!reload) setPath(CB_Skin.INSTANCE);
 
 		if (LogIcons == null) LogIcons = new ArrayList<Sprite>();
 		synchronized (LogIcons)
@@ -870,7 +808,7 @@ public class SpriteCache
 		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("activity-back"), patch, patch, patch, patch));
 		activityBorderMask = new NinePatchDrawable(
 				new NinePatch(SpriteCache.getThemedSprite("activity-border"), patch, patch, patch, patch));
-		ListBack = new ColorDrawable(getThemedColor("background"));
+		ListBack = new ColorDrawable(SkinBase.getThemedColor("background"));
 		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
 		AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
 		InfoBack = new NinePatchDrawable(new NinePatch(getThemedSprite("InfoPanelBack"), patch, patch, patch, patch));

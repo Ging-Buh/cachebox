@@ -7,13 +7,11 @@ import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -24,21 +22,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.awt.AwtGraphicFactory;
-import org.mapsforge.map.layer.renderer.DatabaseRenderer;
-import org.mapsforge.map.layer.renderer.RendererJob;
-import org.mapsforge.map.reader.MapDatabase;
-import org.mapsforge.map.rendertheme.ExternalRenderTheme;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
-import org.xml.sax.SAXException;
 
-import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.Log.Logger;
 import CB_Core.Map.BoundingBox;
 import CB_Core.Map.Descriptor;
 import CB_Core.Map.Layer;
@@ -48,16 +34,6 @@ import CB_Core.Util.FileIO;
 
 public class DesctopManager extends ManagerBase
 {
-	MapDatabase mapDatabase = null;
-	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
-	DatabaseRenderer databaseRenderer = null;
-	Bitmap tileBitmap = null;
-	File mapFile = null;
-	private String mapsForgeFile = "";
-	float textScale = 1;
-	InternalRenderTheme DEFAULT_RENDER_THEME = InternalRenderTheme.OSMARENDER;
-	float DEFAULT_TEXT_SCALE = 1;
-	XmlRenderTheme renderTheme;
 
 	public DesctopManager()
 	{
@@ -65,134 +41,18 @@ public class DesctopManager extends ManagerBase
 	}
 
 	@Override
+	protected GraphicFactory getGraphicFactory()
+	{
+		return AwtGraphicFactory.INSTANCE;
+	}
+
+	@Override
 	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
 	{
-		// Mapsforge 0.4.0
+
 		if (layer.isMapsForge)
 		{
-			byte[] result = null;
-
-			// if (mapGenerator == null) mapGenerator = MapGeneratorFactory.createMapGenerator(MapGeneratorInternal.DATABASE_RENDERER);
-
-			if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
-			{
-				RenderThemeChanged = true;
-				mapFile = new File(layer.Url);
-
-				mapDatabase = new MapDatabase();
-				mapDatabase.closeFile();
-				mapDatabase.openFile(mapFile);
-				Logger.DEBUG("Open MapsForge Map: " + mapFile);
-
-				// databaseRenderer = (DatabaseRenderer) mapGenerator;
-				// databaseRenderer.setMapDatabase(mapDatabase);
-
-				// tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Bitmap.Config.RGB_565);
-				mapsForgeFile = layer.Name;
-			}
-
-			if (RenderThemeChanged)
-			{
-
-				try
-				{
-					Logger.DEBUG("Suche RenderTheme: " + RenderTheme);
-					if (RenderTheme == null)
-					{
-						Logger.DEBUG("RenderTheme not found!");
-						renderTheme = InternalRenderTheme.OSMARENDER;
-
-					}
-					else
-					{
-						File file = new File(RenderTheme);
-						if (file.exists())
-						{
-							Logger.DEBUG("RenderTheme found!");
-							renderTheme = new ExternalRenderTheme(file);
-
-						}
-						else
-						{
-							Logger.DEBUG("RenderTheme not found!");
-							renderTheme = InternalRenderTheme.OSMARENDER;
-						}
-					}
-
-				}
-				catch (FileNotFoundException e)
-				{
-					Logger.Error("Load RenderTheme", "Error loading RenderTheme!", e);
-					renderTheme = InternalRenderTheme.OSMARENDER;
-				}
-
-				// Check RenderTheme valid
-				try
-				{
-					RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, renderTheme);
-				}
-				catch (SAXException e)
-				{
-					String ErrorMsg = e.getMessage();
-					GL.that.Toast(ErrorMsg, 5000);
-					Logger.Error("databaseRenderer: ", ErrorMsg);
-					renderTheme = InternalRenderTheme.OSMARENDER;
-				}
-				catch (ParserConfigurationException e)
-				{
-					String ErrorMsg = e.getMessage();
-					GL.that.Toast(ErrorMsg, 5000);
-					Logger.Error("databaseRenderer: ", ErrorMsg);
-					renderTheme = InternalRenderTheme.OSMARENDER;
-				}
-				catch (IOException e)
-				{
-					String ErrorMsg = e.getMessage();
-					GL.that.Toast(ErrorMsg, 5000);
-					Logger.Error("databaseRenderer: ", ErrorMsg);
-					renderTheme = InternalRenderTheme.OSMARENDER;
-				}
-
-				databaseRenderer = null;
-				RenderThemeChanged = false;
-			}
-
-			Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
-
-			// RendererJob job = new RendererJob(tile, mapFile, xmlRenderTheme, textScale) ;//new MapGeneratorJob(tile, mapFile,
-			// jobParameters, debugSettings);
-			RendererJob job = new RendererJob(tile, mapFile, renderTheme, textScale);
-
-			if (databaseRenderer == null)
-			{
-				databaseRenderer = new DatabaseRenderer(this.mapDatabase, GRAPHIC_FACTORY);
-			}
-
-			try
-			{
-				Bitmap bmp = databaseRenderer.executeJob(job);
-				if (bmp != null)
-				{
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					bmp.compress(baos);
-
-					result = baos.toByteArray();
-
-					try
-					{
-						baos.close();
-					}
-					catch (IOException e)
-					{
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-
-			return result;
+			return getMapsforgePixMap(layer, desc);
 		}
 
 		try

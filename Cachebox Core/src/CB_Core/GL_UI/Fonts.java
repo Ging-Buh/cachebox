@@ -1,14 +1,15 @@
 package CB_Core.GL_UI;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
 import CB_Core.GlobalCore;
+import CB_Core.GL_UI.Skin.SkinBase;
+import CB_Core.GL_UI.Skin.SkinSettings;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 import CB_Core.Util.FileIO;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -17,7 +18,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * Enthält die benutzten und geladenen GDX-Fonts
@@ -48,107 +48,68 @@ public class Fonts
 	private static BitmapFont normalBubble;
 	private static BitmapFont smallBubble;
 
-	private static Settings cfg;
+	private static SkinSettings cfg;
 
 	// private static BitmapFont night_fontAB17_out;
-
-	public enum FileType
-	{
-		absolute, internal;
-	}
-
-	public class Settings
-	{
-		public FileType fileType = FileType.absolute;
-
-		public String SkinFolder;
-		public String DefaultSkinFolder;
-		public boolean Nightmode = false;
-		public int SizeBiggest = 27;
-		public int SizeBig = 18;
-		public int SizeNormal = 15;
-		public int SizeNormalbubble = 14;
-		public int SizeSmall = 13;
-		public int SizeSmallBubble = 11;
-		public String InternalFont = null;
-	}
 
 	/**
 	 * Lädt die verwendeten Bitmap Fonts und berechnet die entsprechenden Größen
 	 */
-	public static void loadFonts(Settings config)
+	public static void loadFonts(SkinBase skin)
 	{
-		cfg = config;
-		Logger.DEBUG("Fonts.loadFonts()");
+		cfg = skin.getSettings();
 
-		// double density = UiSizes.that.getScale();
+		day_fontColor = SkinBase.getDaySkin().getColor("font-color");
+		day_fontColorDisable = SkinBase.getDaySkin().getColor("font-color-disable");
+		day_fontColorHighLight = SkinBase.getDaySkin().getColor("font-color-highlight");
+		day_fontColorLink = SkinBase.getDaySkin().getColor("font-color-link");
+		day_darknesColor = SkinBase.getDaySkin().getColor("darknes");
+		day_crossColor = SkinBase.getDaySkin().getColor("cross");
 
-		String day_skinPath = cfg.SkinFolder + "/day/skin.json";
-		Skin day_skin = (cfg.fileType == FileType.absolute) ? new Skin(Gdx.files.absolute(day_skinPath)) : new Skin(
-				Gdx.files.internal(day_skinPath));
-
-		String night_skinPath = cfg.SkinFolder + "/night/skin.json";
-		Skin night_skin = (cfg.fileType == FileType.absolute) ? new Skin(Gdx.files.absolute(night_skinPath)) : new Skin(
-				Gdx.files.internal(night_skinPath));
-
-		day_fontColor = day_skin.getColor("font-color");
-		day_fontColorDisable = day_skin.getColor("font-color-disable");
-		day_fontColorHighLight = day_skin.getColor("font-color-highlight");
-		day_fontColorLink = day_skin.getColor("font-color-link");
-		day_darknesColor = day_skin.getColor("darknes");
-		day_crossColor = day_skin.getColor("cross");
-
-		night_fontColor = night_skin.getColor("font-color");
-		night_fontColorDisable = night_skin.getColor("font-color-disable");
-		night_fontColorHighLight = night_skin.getColor("font-color-highlight");
-		night_fontColorLink = night_skin.getColor("font-color-link");
-		night_darknesColor = night_skin.getColor("darknes");
-		night_crossColor = night_skin.getColor("cross");
+		night_fontColor = SkinBase.getNightSkin().getColor("font-color");
+		night_fontColorDisable = SkinBase.getNightSkin().getColor("font-color-disable");
+		night_fontColorHighLight = SkinBase.getNightSkin().getColor("font-color-highlight");
+		night_fontColorLink = SkinBase.getNightSkin().getColor("font-color-link");
+		night_darknesColor = SkinBase.getNightSkin().getColor("darknes");
+		night_crossColor = SkinBase.getNightSkin().getColor("cross");
 
 		FreeTypeFontGenerator generator = null;
 
-		if (cfg.InternalFont != null)
+		// get the first found ttf-font
+		// File skinDir = new File(cfg.SkinFolder);
+
+		String FontName = null;
+		FileHandle[] ttfFonts = cfg.SkinFolder.list();
+		FileHandle font = null;
+
+		for (FileHandle file : ttfFonts)
 		{
-			generator = new FreeTypeFontGenerator(Gdx.files.internal(cfg.InternalFont));
-		}
-		else
-		{
-			// get the first found ttf-font
-			File skinDir = new File(cfg.SkinFolder);
-
-			String FontName = null;
-			String[] ttfFonts = skinDir.list(new FilenameFilter()
+			if (file.extension().equalsIgnoreCase("ttf"))
 			{
-				@Override
-				public boolean accept(File arg0, String arg1)
-				{
-					if (arg1.endsWith(".ttf")) return true;
-					return false;
-				}
-			});
-
-			if (ttfFonts != null && ttfFonts.length > 0 && ttfFonts[0] != null) FontName = ttfFonts[0];
-			if (FontName == null)
-			{
-				// no skin font found, use default font
-
-				File defaultSkinDir = new File(cfg.DefaultSkinFolder);
-				String[] defaultTtfFonts = defaultSkinDir.list(new FilenameFilter()
-				{
-					@Override
-					public boolean accept(File arg0, String arg1)
-					{
-						if (arg1.endsWith(".ttf")) return true;
-						return false;
-					}
-				});
-				FontName = defaultTtfFonts[0];
+				font = file;
+				break;
 			}
-			String ttfPath = cfg.DefaultSkinFolder + "/" + FontName;
-			Logger.DEBUG("from " + ttfPath);
-
-			generator = new FreeTypeFontGenerator(Gdx.files.absolute(ttfPath));
 		}
+
+		if (font == null || !font.exists())
+		{
+			// no skin font found, use default font
+
+			FileHandle[] ttfFontsDefault = cfg.DefaultSkinFolder.list();
+
+			for (FileHandle file : ttfFontsDefault)
+			{
+				if (file.extension().equalsIgnoreCase("ttf"))
+				{
+					font = file;
+					break;
+				}
+			}
+		}
+		String ttfPath = cfg.DefaultSkinFolder + "/" + FontName;
+		Logger.DEBUG("from " + ttfPath);
+
+		generator = new FreeTypeFontGenerator(font);
 
 		double density = UiSizes.that.getScale();
 
@@ -160,12 +121,6 @@ public class Fonts
 		smallBubble = loadFontFromFile(generator, (int) (cfg.SizeSmallBubble * density));
 		generator.dispose();
 	}
-
-	static String defaultFontPath;
-	static String defaultFontPathNight;
-
-	static String CustomFontPath;
-	static String CustomFontPathNight;
 
 	public static Color getFontColor()
 	{
@@ -288,17 +243,23 @@ public class Fonts
 		String fs = GlobalCore.fs;
 		String fontPath = "";
 		// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
-		String path = cfg.SkinFolder.replace("/", fs) + fs + "fnts";
-		if (FileIO.DirectoryExists(path))
+
+		if (cfg.SkinFolder.type() == FileType.Absolute)
 		{
-			// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
-			fontPath = path + fs + String.valueOf(scale) + ".fnt";
-		}
-		else
-		{
-			// fonts-Verzeichnis "global" im cachebox/skins
-			path = cfg.SkinFolder.replace("/", fs) + fs + ".." + fs + "fnts";
-			fontPath = path + fs + String.valueOf(scale) + ".fnt";
+			String FolderPath = cfg.SkinFolder.path();
+			String path = FolderPath.replace("/", fs) + fs + "fnts";
+			if (FileIO.DirectoryExists(path))
+			{
+				// fonts-Verzeichnis "lokal" im cachebox/skins/small oder ..normal oder christmas
+				fontPath = path + fs + String.valueOf(scale) + ".fnt";
+			}
+			else
+			{
+				// fonts-Verzeichnis "global" im cachebox/skins
+				path = FolderPath.replace("/", fs) + fs + ".." + fs + "fnts";
+				fontPath = path + fs + String.valueOf(scale) + ".fnt";
+			}
+
 		}
 
 		// Wenn der font nicht vorberechnet ist, dann wird er generiert

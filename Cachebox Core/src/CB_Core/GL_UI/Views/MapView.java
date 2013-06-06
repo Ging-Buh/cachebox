@@ -1671,15 +1671,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					}
 
 					if (themePath == null)
-					{
-						// ist ein Default night Theme enthalten
-						themePath = ifCarThemeExist(GlobalCore.PathDefaultNight);
-					}
-
-					if (themePath == null)
 					{// wenn kein Night Default skin vorhanden, dann nach einem Day DayTheme suchen, welches dann Invertiert wird!
-						themePath = ifCarThemeExist(GlobalCore.PathCustom);
-						if (themePath != null) useInvertNightTheme = true;
+						themePath = ManagerBase.INTERNAL_CAR_THEME;
+						useInvertNightTheme = true;
 					}
 
 				}
@@ -1693,15 +1687,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 				if (themePath == null)
 				{
-					// kein Spezieller CarTheme gefunden, dann Versuchen wir es mal mit den in den Settings hinterlegten Themes
-					if (Config.settings.nightMode.getValue()) themePath = ifThemeExist(Config.settings.MapsforgeNightTheme.getValue());
-
-					if (themePath == null)
-					{
-						// wenn kein Night Theme vorhanden, dann nach einem Day Theme suchen, welches dann Invertiert wird!
-						themePath = ifThemeExist(Config.settings.MapsforgeDayTheme.getValue());
-						if (themePath != null && Config.settings.nightMode.getValue()) useInvertNightTheme = true;
-					}
+					themePath = ManagerBase.INTERNAL_CAR_THEME;
 				}
 
 			}

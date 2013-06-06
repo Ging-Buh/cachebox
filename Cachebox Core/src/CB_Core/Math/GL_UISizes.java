@@ -3,7 +3,7 @@ package CB_Core.Math;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.Fonts.Settings;
+import CB_Core.GL_UI.Skin.CB_Skin;
 import CB_Core.Log.Logger;
 import CB_Core.Settings.SettingBase.iChanged;
 
@@ -86,18 +86,6 @@ public class GL_UISizes implements SizeChangedEvent
 		{
 			calcSizes();
 
-			Settings cfg = new Fonts().new Settings();
-			cfg.SkinFolder = Config.settings.SkinFolder.getValue();
-			cfg.DefaultSkinFolder = Config.settings.SkinFolder.getDefaultValue();
-
-			cfg.SizeBiggest = Config.settings.FONT_SIZE_COMPASS_DISTANCE.getValue();
-			cfg.SizeBig = Config.settings.FONT_SIZE_BIG.getValue();
-			cfg.SizeNormal = Config.settings.FONT_SIZE_NORMAL.getValue();
-			cfg.SizeNormalbubble = Config.settings.FONT_SIZE_NORMAL_BUBBLE.getValue();
-			cfg.SizeSmall = Config.settings.FONT_SIZE_SMALL.getValue();
-			cfg.SizeSmallBubble = Config.settings.FONT_SIZE_SMALL_BUBBLE.getValue();
-			cfg.Nightmode = Config.settings.nightMode.getValue();
-
 			Config.settings.nightMode.addChangedEventListner(new iChanged()
 			{
 
@@ -108,7 +96,7 @@ public class GL_UISizes implements SizeChangedEvent
 				}
 			});
 
-			Fonts.loadFonts(cfg);
+			Fonts.loadFonts(CB_Skin.INSTANCE);
 
 			calcPos();
 

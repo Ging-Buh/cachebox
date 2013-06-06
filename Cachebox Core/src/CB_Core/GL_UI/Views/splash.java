@@ -65,7 +65,7 @@ public class splash extends TabMainView
 			switch (step)
 			{
 			case 0:
-				atlas = new TextureAtlas(Gdx.files.absolute(Config.WorkPath + "/skins/default/day/SplashPack.spp"));
+				atlas = new TextureAtlas(Gdx.files.internal("skins/default/day/SplashPack.spp"));
 				setBackground(new SpriteDrawable(atlas.createSprite("splash-back")));
 				break;
 			case 1:
@@ -223,7 +223,25 @@ public class splash extends TabMainView
 	private void ini_Translations()
 	{
 		Logger.DEBUG("ini_Translations");
-		new Translation(Config.WorkPath, false);
+
+		// Load from Assets changes
+		// delete work path from settings value
+		String altValue = Config.settings.Sel_LanguagePath.getValue();
+		if (altValue.contains(Config.WorkPath))
+		{
+			String newValue = altValue.replace(Config.WorkPath + "/", "");
+			Config.settings.Sel_LanguagePath.setValue(newValue);
+			Config.AcceptChanges();
+		}
+
+		if (altValue.startsWith("/"))
+		{
+			String newValue = altValue.substring(1);
+			Config.settings.Sel_LanguagePath.setValue(newValue);
+			Config.AcceptChanges();
+		}
+
+		new Translation(Config.WorkPath, true);
 		try
 		{
 			Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());

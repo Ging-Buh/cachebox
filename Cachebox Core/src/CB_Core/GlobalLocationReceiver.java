@@ -42,14 +42,14 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 		PositionChangedEventList.Add(this);
 		GPS_FallBackEventList.Add(this);
-		String path = Config.settings.SoundPath.getValue();
+		String path = "data/sound";
 
 		try
 		{
-			Approach = Gdx.audio.newMusic(Gdx.files.absolute(path + "/Approach.ogg"));
-			GPS_Fix = Gdx.audio.newMusic(Gdx.files.absolute(path + "/GPS_Fix.ogg"));
-			GPS_lose = Gdx.audio.newMusic(Gdx.files.absolute(path + "/GPS_lose.ogg"));
-			AutoResort = Gdx.audio.newMusic(Gdx.files.absolute(path + "/AutoResort.ogg"));
+			Approach = Gdx.audio.newMusic(Gdx.files.internal(path + "/Approach.ogg"));
+			GPS_Fix = Gdx.audio.newMusic(Gdx.files.internal(path + "/GPS_Fix.ogg"));
+			GPS_lose = Gdx.audio.newMusic(Gdx.files.internal(path + "/GPS_lose.ogg"));
+			AutoResort = Gdx.audio.newMusic(Gdx.files.internal(path + "/AutoResort.ogg"));
 		}
 		catch (Exception e)
 		{

@@ -192,6 +192,17 @@ public class Translation
 
 	private String getLangNameFromFile(String FilePath) throws IOException
 	{
+		if (Internal)
+		{
+			FileHandle lang = Gdx.files.internal(FilePath);
+			String langRead = lang.readString();
+
+			String Value = langRead.substring(0, langRead.indexOf(BR));
+			int pos = Value.indexOf("=");
+			Value = Value.substring(pos + 1);
+			return Value;
+		}
+
 		BufferedReader reader;
 		reader = new BufferedReader(new FileReader(FilePath));
 		String Value = reader.readLine().trim();
@@ -338,20 +349,21 @@ public class Translation
 	{
 		ArrayList<Lang> Temp = new ArrayList<Lang>();
 
-		File Dir = new File(FilePath);
-		final String[] files;
+		FileHandle Dir = Internal ? Gdx.files.internal(FilePath) : Gdx.files.absolute(FilePath);
+		final FileHandle[] files;
 
 		files = Dir.list();
 
-		for (String tmp : files)
+		for (FileHandle tmp : files)
 		{
 			try
 			{
-				tmp = FilePath + "/" + tmp;
 
 				String stringFile = tmp + "/strings.ini";
 
-				if (FileUtil.FileExists(stringFile))
+				FileHandle langFile = Internal ? Gdx.files.internal(stringFile) : Gdx.files.absolute(stringFile);
+
+				if (langFile.exists())
 				{
 					String tmpName = getLangNameFromFile(stringFile);
 					Temp.add(new Lang(tmpName, stringFile));

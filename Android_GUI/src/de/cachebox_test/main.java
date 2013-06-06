@@ -193,7 +193,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private static Intent serviceIntent;
 	private static Service myNotifyService;
 	private static BroadcastReceiver mReceiver;
-	private static RelativeLayout Baselayout;
 	public HorizontalListView QuickButtonList;
 
 	/*
@@ -1567,8 +1566,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		cacheNameView = (CacheNameView) this.findViewById(R.id.main_cache_name_view);
 
 		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
-
-		Baselayout = (RelativeLayout) findViewById(R.id.layoutTextField);
 
 	}
 

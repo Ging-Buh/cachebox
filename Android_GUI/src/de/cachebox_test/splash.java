@@ -665,9 +665,11 @@ public class splash extends Activity
 		if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
 		// if (true)
 		{
-			// String[] exclude = new String[]{"webkit","sounds","images"};
+			String[] exclude = new String[]
+				{ "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files" };
 			copyAssetFolder myCopie = new copyAssetFolder();
-			myCopie.copyAll(getAssets(), Config.WorkPath);
+
+			myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
 			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
 			Config.settings.newInstall.setValue(true);
 			Config.AcceptChanges();

@@ -392,7 +392,7 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 			else
 			{
-				if (SpriteCache.day_skin != null)// SpriteCache is initial
+				if (SpriteCache.Stars != null)// SpriteCache is initial
 				{
 
 					FpsInfoSprite = new Sprite(SpriteCache.getThemedSprite("pixel2x2"));

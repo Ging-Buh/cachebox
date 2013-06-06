@@ -1229,9 +1229,17 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			}
 		});
 
-		final String[] items = new String[skinFolders.size()];
-		int index = 0;
+		final String[] items = new String[skinFolders.size() + 2];// + internal (default and small)
+
+		items[0] = "default";
+		items[1] = "small";
+
+		int index = 2;
 		int selection = -1;
+
+		if (Config.settings.SkinFolder.getValue().contains("default")) selection = 0;
+		if (Config.settings.SkinFolder.getValue().contains("small")) selection = 1;
+
 		for (String tmp : skinFolders)
 		{
 			if (Config.settings.SkinFolder.getValue().equals(tmp)) selection = index;
@@ -1273,20 +1281,30 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			public void selectionChanged(int index)
 			{
 				String selected = items[index];
-				for (String tmp : skinFolders)
+
+				if (selected.equals("default"))
 				{
-					// cut folder name
-					int Pos = tmp.lastIndexOf("/");
-					if (Pos == -1) Pos = tmp.lastIndexOf("\\");
-					String tmp2 = tmp.substring(Pos + 1);
-
-					if (selected.equals(tmp2))
+					Config.settings.SkinFolder.setValue("default");
+				}
+				else if (selected.equals("small"))
+				{
+					Config.settings.SkinFolder.setValue("small");
+				}
+				else
+				{
+					for (String tmp : skinFolders)
 					{
-						Config.settings.SkinFolder.setValue(tmp);
+						// cut folder name
+						int Pos = tmp.lastIndexOf("/");
+						if (Pos == -1) Pos = tmp.lastIndexOf("\\");
+						String tmp2 = tmp.substring(Pos + 1);
+						if (selected.equals(tmp2))
+						{
+							Config.settings.SkinFolder.setValue(tmp);
 
-						break;
+							break;
+						}
 					}
-
 				}
 			}
 		});
