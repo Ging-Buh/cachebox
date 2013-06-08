@@ -70,7 +70,7 @@ public class NumerikInputBox extends CB_View_Base
 		msgBox.initRow(BOTTOMUP, margin);
 		msgBox.addLast(numPad);
 
-		msgBox.setFooterHeight(msgBox.getYPos() + margin);
+		msgBox.setFooterHeight(msgBox.getHeightFromBottom());
 		msgBox.addLast(editText);
 
 		msgBox.addLast(label);
@@ -162,7 +162,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		msgBox.initRow(BOTTOMUP, margin);
 		msgBox.addLast(numPad);
-		msgBox.setFooterHeight(msgBox.getYPos() + margin);
+		msgBox.setFooterHeight(msgBox.getHeightFromBottom());
 
 		GL.that.showDialog(msgBox);
 
@@ -235,7 +235,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		msgBox.initRow(BOTTOMUP, margin);
 		msgBox.addLast(numPad);
-		msgBox.setFooterHeight(msgBox.getYPos() + margin);
+		msgBox.setFooterHeight(msgBox.getHeightFromBottom());
 
 		GL.that.showDialog(msgBox);
 

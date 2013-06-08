@@ -286,7 +286,15 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	public static final boolean BOTTOMUP = false;
 
 	/**
-	 ** next objects are added at this Y - Position (== used Height if bottomUP)
+	 ** used Height from Bottom with correct topborder
+	 **/
+	public float getHeightFromBottom()
+	{
+		return rowYPos - yMargin + topBorder;
+	}
+
+	/**
+	 ** next objects are added at this Y - Position
 	 **/
 	public float getRowYPos()
 	{
@@ -435,11 +443,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		addMe(c, false);
 	}
 
-	public float getYPos()
-	{
-		return rowYPos;
-	}
-
 	// ===================================================================
 	private void addMe(GL_View_Base c, boolean lastInRow)
 	// ===================================================================
@@ -517,6 +520,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			{
 				this.rowYPos = this.rowYPos + this.rowMaxHeight + this.yMargin;
 				this.bottomYAdd = this.rowYPos;
+				// todo vielleicht automatische Höhenanpassung von this
 			}
 			this.row.clear();
 		}

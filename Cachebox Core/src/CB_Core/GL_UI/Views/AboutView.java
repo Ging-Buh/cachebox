@@ -13,6 +13,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.SatBarChart;
 import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -127,7 +128,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg, HAlignment.CENTER);
 		this.addChild(descTextView);
 
-		CachesFoundLabel = new Label(0, 0, this.width, UI_Size_Base.that.getButtonHeight(), "CachesFoundLabel");
+		CachesFoundLabel = new Label("", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.singleLine).setHAlignment(HAlignment.CENTER);
+		CachesFoundLabel.setWidth(width);
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
 		{
@@ -259,7 +261,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		Gps = new Label(lblRec, "GPS");
 		Accuracy = new Label(lblRec, "Accuracy");
-		WP = new Label(lblRec, "WP");
+		WP = new Label("-", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.singleLine);
+		WP.setRec(lblRec);
 		Coord = new Label(lblRec, "Cord");
 		Current = new Label(lblRec, "Current");
 
@@ -271,7 +274,6 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		Current.setY(lblCurrent.getY());
 
 		// set LinkColor
-		WP.setText("-", Fonts.getNormal(), Fonts.getLinkFontColor());
 
 		WP.setOnClickListener(new OnClickListener()
 		{
@@ -326,8 +328,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	public void refreshText()
 	{
 		if (WP == null || CachesFoundLabel == null) return;
-		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()), null,
-				Fonts.getLinkFontColor(), HAlignment.CENTER);
+		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()));
 
 		if (GlobalCore.getSelectedCache() != null) if (GlobalCore.getSelectedWaypoint() != null)
 		{

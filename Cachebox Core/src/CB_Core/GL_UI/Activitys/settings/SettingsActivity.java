@@ -414,7 +414,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 			CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, this.width, this.height - btnOk.getMaxY() - margin);
 
-			scrollBox = new ScrollBox(rec, rec.getHalfHeight(), "SettingsActivity-scrollBox");
+			scrollBox = new ScrollBox(rec);
 			scrollBox.setClickable(true);
 			scrollBox.setLongClickable(true);
 			LinearLayout = new Linearlayout(ButtonRec.getWidth(), "SettingsActivity-LinearLayout");

@@ -100,7 +100,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		super(ActivityRec(), "importActivity");
 		CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
 		innerHeight = 1000;
-		scrollBox = new ScrollBox(ActivityRec(), innerHeight, "ScrollBox");
+		scrollBox = new ScrollBox(ActivityRec());
 		this.addChild(scrollBox);
 		createOkCancelBtn();
 		createTitleLine();

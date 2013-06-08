@@ -62,11 +62,11 @@ public class ButtonScrollDialog extends Dialog
 		setButtonCaptions(buttons);
 		SizeF contentSize = getContentSize();
 
-		rec = new CB_RectF(leftBorder, 80, contentSize.width - leftBorder - rightBorder, contentSize.height);
+		rec = new CB_RectF(0, 0, contentSize.width - leftBorder - rightBorder, contentSize.height);
 		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
 		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
 		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollapseBox geöffnrt oder geschlossen wird!
-		scrollBox = new ScrollBox(rec, rec.getHeight(), "ScrollBox");
+		scrollBox = new ScrollBox(rec);
 		// die ScrollBox erhält den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
 		// scrollBox.setBackground(this.getBackground());
 		scrollBox.setMargins(margin, margin);
@@ -92,8 +92,7 @@ public class ButtonScrollDialog extends Dialog
 		label.setWrappedText(msg);
 		scrollBox.addChild(label);
 		mMsgBoxClickListner = Listener;
-		FooterItems.add(scrollBox);
-		// setFooterHeight(80);
+		this.addChild(scrollBox);
 	}
 
 	@Override
@@ -202,7 +201,7 @@ public class ButtonScrollDialog extends Dialog
 			// addFooterChild(button3);
 			break;
 		}
-		setFooterHeight(this.height - this.getAvailableHeight());
+		setFooterHeight(this.getHeightFromBottom());
 	}
 
 	public void addFooterChild(CB_View_Base view)

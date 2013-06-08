@@ -190,7 +190,7 @@ public class ButtonDialog extends Dialog
 			// addFooterChild(button3);
 			break;
 		}
-		setFooterHeight(this.height - this.getAvailableHeight());
+		setFooterHeight(this.getHeightFromBottom());
 	}
 
 	public void addFooterChild(CB_View_Base view)

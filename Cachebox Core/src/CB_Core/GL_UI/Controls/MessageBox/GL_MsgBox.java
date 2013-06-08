@@ -369,7 +369,7 @@ public class GL_MsgBox extends Dialog
 			lbl.setText(Translation.Get("remember"));
 		}
 
-		msgBox.setFooterHeight(msgBox.getYPos() + margin);
+		msgBox.setFooterHeight(msgBox.getHeightFromBottom());
 	}
 
 	private void setButtonListener()

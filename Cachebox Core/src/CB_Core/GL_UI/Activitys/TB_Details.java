@@ -9,6 +9,7 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.Menu;
@@ -18,8 +19,6 @@ import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Trackable;
-
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class TB_Details extends ActivityBase
 {
@@ -77,7 +76,8 @@ public class TB_Details extends ActivityBase
 			}
 		});
 
-		scrollBox = new ScrollBox(ActivityRec(), innerHeight, "ScrollBox");
+		scrollBox = new ScrollBox(ActivityRec());
+		scrollBox.setVirtualHeight(innerHeight);
 		scrollBox.setHeight(this.height - (btnClose.getHeight() - margin) * 2.5f);
 		scrollBox.setBackground(SpriteCache.activityBackground);
 
@@ -89,22 +89,22 @@ public class TB_Details extends ActivityBase
 		lblName = new Label(iconRec, "Name");
 
 		image = new Image(iconRec, "Image");
-		lblAbout = new Label("About");
+		lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.singleLine);
 		lblAboutDesc = new Label("AboutDesc");
 		AboutThisItem = new Box(10, 10, "AboutItemBox");
 		AboutThisItem.setBackground(SpriteCache.activityBackground);
 
-		lblGoal = new Label("Goal");
+		lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.singleLine);
 		lblGoalDesc = new Label("GoalDesc");
 		GoalThisItem = new Box(10, 10, "GoalItemBox");
 		GoalThisItem.setBackground(SpriteCache.activityBackground);
 
-		lblTypeName = new Label("TypeName");
-		lblTbCode = new Label("TbCode");
-		lblOwner = new Label("Owner");
+		lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.singleLine);
+		lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.singleLine);
+		lblOwner = new Label(Translation.Get("TB_Owner"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.singleLine);
 		lbllastVisit = new Label("LastVisit");
 		lblHome = new Label("Home");
-		lblBirth = new Label("Birth");
+		lblBirth = new Label(Translation.Get("TB_Birth"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.singleLine);
 		lblTravelDistance = new Label("TravelDistance");
 
 		TypeName = new Label("TypeName");
@@ -139,9 +139,7 @@ public class TB_Details extends ActivityBase
 		float minBoxHeight = Fonts.Measure("Tg").height + SpriteCache.activityBackground.getBottomHeight()
 				+ SpriteCache.activityBackground.getTopHeight();
 
-		lblAbout.setFont(Fonts.getSmall());
 		AboutThisItem.setWidth(scrollBox.getInnerWidth());
-		lblAbout.setText(Translation.Get("AboutThisItem"), null, null, HAlignment.LEFT);
 		lblAbout.setHeight(lblAbout.getTextHeight() + margin);
 		lblAboutDesc.setWidth(AboutThisItem.getInnerWidth());
 		lblAboutDesc.setWrappedText(TB.getDescription());
@@ -166,9 +164,7 @@ public class TB_Details extends ActivityBase
 		if (ImageHeight > 0) AboutThisItem.addLast(image);
 		AboutThisItem.addLast(lblAboutDesc);
 
-		lblGoal.setFont(Fonts.getSmall());
 		GoalThisItem.setWidth(scrollBox.getInnerWidth());
-		lblGoal.setText(Translation.Get("GoalThisItem"), null, null, HAlignment.LEFT);
 		lblGoal.setHeight(lblGoal.getTextHeight() + margin);
 		lblGoalDesc.setWidth(GoalThisItem.getInnerWidth());
 		lblGoalDesc.setWrappedText(TB.getCurrentGoal());
@@ -182,20 +178,17 @@ public class TB_Details extends ActivityBase
 		float maxWidth = 0;
 
 		lblTypeName.setHeight(minBoxHeight);
-		maxWidth = Math.max(maxWidth, lblTypeName.setText(Translation.Get("TB_Type"), Fonts.getSmall(), Fonts.getDisableFontColor())
-				.getTextWidth());
+		maxWidth = Math.max(maxWidth, lblTypeName.getTextWidth());
 		TypeName.setHeight(minBoxHeight);
 		TypeName.setText(TB.getTypeName());
 
 		lblTbCode.setHeight(minBoxHeight);
-		maxWidth = Math.max(maxWidth, lblTbCode.setText(Translation.Get("TB_Code"), Fonts.getSmall(), Fonts.getDisableFontColor())
-				.getTextWidth());
+		maxWidth = Math.max(maxWidth, lblTbCode.getTextWidth());
 		TbCode.setHeight(minBoxHeight);
 		TbCode.setText(TB.getGcCode());
 
 		lblOwner.setHeight(minBoxHeight);
-		maxWidth = Math.max(maxWidth, lblOwner.setText(Translation.Get("TB_Owner"), Fonts.getSmall(), Fonts.getDisableFontColor())
-				.getTextWidth());
+		maxWidth = Math.max(maxWidth, lblOwner.getTextWidth());
 		Owner.setHeight(minBoxHeight);
 		Owner.setText(TB.getOwner());
 
@@ -211,8 +204,7 @@ public class TB_Details extends ActivityBase
 		// Home.setText(TB.getHome());
 
 		lblBirth.setHeight(minBoxHeight);
-		maxWidth = Math.max(maxWidth, lblBirth.setText(Translation.Get("TB_Birth"), Fonts.getSmall(), Fonts.getDisableFontColor())
-				.getTextWidth());
+		maxWidth = Math.max(maxWidth, lblBirth.getTextWidth());
 		Birth.setHeight(minBoxHeight);
 		Birth.setText(TB.getBirth());
 
@@ -267,10 +259,7 @@ public class TB_Details extends ActivityBase
 		scrollBox.addLast(lblGoal);
 		scrollBox.setMargins(margin, margin);
 		scrollBox.addLast(DetailThisItem);
-		// float ScrollBoxInnerHeight = AboutThisItem.getHeight() + lblAbout.getHeight() + GoalThisItem.getHeight() + lblGoal.getHeight()
-		// + DetailThisItem.getHeight() + (scrollBox.getYmargin() * 7);
-		// scrollBox.setVirtualHeight(ScrollBoxInnerHeight);
-		scrollBox.setVirtualHeight(scrollBox.getRowYPos());
+		scrollBox.setVirtualHeight(scrollBox.getHeightFromBottom());
 		scrollBox.setX(0);
 		AboutThisItem.setX(0);
 		GoalThisItem.setX(0);

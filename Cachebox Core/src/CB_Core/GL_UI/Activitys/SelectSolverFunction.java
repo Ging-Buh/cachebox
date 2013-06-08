@@ -193,11 +193,7 @@ public class SelectSolverFunction extends ButtonDialog
 		//
 		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Länge den Anzeige Bereich
 		// überschreitet!
-
-		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
-		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
-		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollapseBox geöffnrt oder geschlossen wird!
-		scrollBox = new ScrollBox(rec, rec.getHalfHeight(), "ScrollBox");
+		scrollBox = new ScrollBox(rec);
 
 		// damit die Scrollbox auch Events erhällt
 		scrollBox.setClickable(true);

@@ -87,7 +87,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 		mSlideBox = new Box(new CB_RectF(-15, 100, this.width + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
 		mSlideBox.setBackground(SpriteCache.ProgressBack);
-		mLblCacheName = new Label(new CB_RectF(20, 0, this.width - 30, mSlideBox.getHeight()), "CacheNameLbl");
+		mLblCacheName = new Label(new CB_RectF(20, 0, this.width - 30, mSlideBox.getHeight()), "CacheNameLbl").setFont(Fonts.getBig());
 		mLblCacheName.setPos(30, 0);
 		mLblCacheName.setHAlignment(HAlignment.CENTER);
 		mSlideBox.addChild(mLblCacheName);
@@ -122,7 +122,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		if (cache != null)
 		{
-			mLblCacheName.setText(cache.Name, Fonts.getBig(), Fonts.getFontColor());
+			mLblCacheName.setText(cache.Name);
 		}
 
 	}

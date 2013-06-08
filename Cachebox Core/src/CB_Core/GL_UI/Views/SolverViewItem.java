@@ -1,7 +1,8 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.Label.VAlignment;
+import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -22,9 +23,9 @@ public class SolverViewItem extends ListViewItemBackground
 	@Override
 	protected void Initial()
 	{
-		lblSolverZeile = new Label();
-		lblSolverZeile.setHeight(this.height);
-		lblSolverZeile.setMultiLineText(solverZeile.getOrgText() + "\n" + solverZeile.Solution, null, null, null, VAlignment.CENTER);
+		lblSolverZeile = new Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), Fonts.getFontColor(),
+				WrapType.multiLine);
+		lblSolverZeile.setHeight(this.height); // todo ob das immer passt?
 		this.setBorders(UI_Size_Base.that.getMargin(), UI_Size_Base.that.getMargin());
 		this.addLast(lblSolverZeile);
 	}

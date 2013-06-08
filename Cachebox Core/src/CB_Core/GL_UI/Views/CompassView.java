@@ -393,7 +393,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			topH = this.halfWidth;
 		}
 
-		topBox = new ScrollBox(new CB_RectF(0, topH, this.width, this.height - topH), topH, "top");
+		topBox = new ScrollBox(new CB_RectF(0, topH, this.width, this.height - topH));
+		topBox.setVirtualHeight(topH);
 
 		topBox.setBackground(SpriteCache.activityBackground);
 

@@ -8,7 +8,6 @@ import CB_Core.GL_UI.Controls.List.V_ListView;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Util.MoveableList;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ScrollBox extends CB_View_Base
@@ -18,22 +17,17 @@ public class ScrollBox extends CB_View_Base
 	private ListViewItemBase item;
 	private CustomAdapter thisAdapter;
 
-	@Override
-	protected void render(SpriteBatch batch)
+	public ScrollBox(CB_RectF rec)
 	{
-		super.render(batch);
-	}
+		super(rec, "ScrollBox");
 
-	public ScrollBox(CB_RectF rec, float virtualHeight, String Name)
-	{
-		super(rec, Name);
+		// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
+		virtualHeight = rec.getHeight();
 
-		this.virtualHeight = virtualHeight;
-
-		lv = new V_ListView(rec, "ListView-" + Name);
+		lv = new V_ListView(rec, "ListView-" + name);
 		lv.setClickable(true);
 
-		item = new ListViewItemBase(rec, 0, "ListViewItem-" + Name)
+		item = new ListViewItemBase(rec, 0, "ListViewItem-" + name)
 		{
 
 			@Override
@@ -73,6 +67,9 @@ public class ScrollBox extends CB_View_Base
 		Layout();
 	}
 
+	/**
+	 ** virtualHeight to take all placed objects (scrolls if > height)
+	 **/
 	public void setVirtualHeight(float virtualHeight)
 	{
 		this.virtualHeight = virtualHeight;

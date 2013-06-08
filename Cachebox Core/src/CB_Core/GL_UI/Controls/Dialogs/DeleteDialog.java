@@ -11,14 +11,12 @@ import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.Linearlayout;
+import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
-import CB_Core.Math.Size;
 import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
@@ -27,10 +25,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class DeleteDialog extends ButtonDialog
 {
-
-	private Linearlayout layout;
-
-	private float TextFieldHeight;
 	private SizeF msgBoxContentSize;
 	private ImageButton btDelFilter, btDelArchived, btDelFounds;
 	private Label lblDelFilter, lblDelArchived, lblDelFounds;
@@ -42,14 +36,8 @@ public class DeleteDialog extends ButtonDialog
 				.Get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
-		// initial VariableField
-		TextFieldHeight = Fonts.getNormal().getLineHeight() * 2.4f;
 
 		float innerWidth = msgBoxContentSize.width;
-
-		layout = new Linearlayout(innerWidth, "Layout");
-		layout.setX(0);
-		// layout.setBackground(new ColorDrawable(Color.GREEN));
 
 		CB_RectF MTBRec = new CB_RectF(0, 0, innerWidth / 3, UI_Size_Base.that.getButtonHeight() * 2);
 
@@ -61,43 +49,23 @@ public class DeleteDialog extends ButtonDialog
 		btDelArchived.setImage(SpriteCache.getSpriteDrawable("delete-archived"));
 		btDelFounds.setImage(SpriteCache.getSpriteDrawable("delete-founds"));
 
-		btDelFilter.setX(0);
-		btDelArchived.setX(btDelFilter.getMaxX());
-		btDelFounds.setX(btDelArchived.getMaxX());
+		lblDelFilter = new Label(Translation.Get("DelArchived"), Fonts.getSmall(), null, WrapType.wrapped).setHAlignment(HAlignment.CENTER);
+		lblDelArchived = new Label(Translation.Get("DelActFilter"), Fonts.getSmall(), null, WrapType.wrapped)
+				.setHAlignment(HAlignment.CENTER);
+		lblDelFounds = new Label(Translation.Get("DelFound"), Fonts.getSmall(), null, WrapType.wrapped).setHAlignment(HAlignment.CENTER);
 
-		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
+		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
+		box.initRow(BOTTOMUP);
+		box.addNext(lblDelFilter);
+		box.addNext(lblDelArchived);
+		box.addLast(lblDelFounds);
+		box.addNext(btDelFilter);
+		box.addNext(btDelArchived);
+		box.addLast(btDelFounds);
+		box.setHeight(box.getHeightFromBottom());
+		this.addChild(box);
 
-		box.addChild(btDelFilter);
-		box.addChild(btDelArchived);
-		box.addChild(btDelFounds);
-
-		layout.addChild(box);
-
-		Box box2 = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 2), "");
-
-		lblDelFilter = new Label(btDelFilter.ScaleCenter(0.8f), "lblSetGPS");
-		lblDelArchived = new Label(btDelArchived.ScaleCenter(0.8f), "lblSetGPS");
-		lblDelFounds = new Label(btDelFounds.ScaleCenter(0.8f), "lblSetGPS");
-
-		lblDelFilter.setFont(Fonts.getSmall());
-		lblDelArchived.setFont(Fonts.getSmall());
-		lblDelFounds.setFont(Fonts.getSmall());
-
-		lblDelArchived.setWrappedText(Translation.Get("DelArchived"), HAlignment.CENTER);
-		lblDelFilter.setWrappedText(Translation.Get("DelActFilter"), HAlignment.CENTER);
-		lblDelFounds.setWrappedText(Translation.Get("DelFound"), HAlignment.CENTER);
-
-		box2.addChild(lblDelFilter);
-		box2.addChild(lblDelArchived);
-		box2.addChild(lblDelFounds);
-
-		layout.addChild(box2);
-
-		this.addChild(layout);
-
-		Size msgBoxSize = GL_MsgBox.calcMsgBoxSize("teste", true, true, false);
-		msgBoxSize.height = (int) (msgBoxSize.height + layout.getHeight() - (TextFieldHeight / 2));
-		this.setSize(msgBoxSize.asFloat());
+		this.setHeight(box.getHeight() + this.getFooterHeight() + this.mTitleHeight + 3 * margin);
 
 		btDelFilter.setOnClickListener(new OnClickListener()
 		{

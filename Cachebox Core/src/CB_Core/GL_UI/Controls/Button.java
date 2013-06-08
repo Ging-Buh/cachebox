@@ -21,6 +21,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
+import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -249,15 +250,13 @@ public class Button extends CB_View_Base
 			this.removeChild(lblTxt);
 		}
 
-		lblTxt = new Label(this.getName() + "Label");
+		lblTxt = new Label(Text, mFont, color, WrapType.singleLine).setHAlignment(alignment);
 		this.initRow(BOTTOMUP);
-		this.addLast(lblTxt); // first add Label, to get width, then set Text of label
+		this.addLast(lblTxt);
 
 		if (font != null) mFont = font;
 		if (mFont == null) mFont = Fonts.getBig();
 
-		// lblTxt.setVAlignment(VAlignment.CENTER); ist default
-		lblTxt.setText(Text, mFont, color, alignment);
 		GL.that.renderOnce(this.getName() + " setText2");
 	}
 

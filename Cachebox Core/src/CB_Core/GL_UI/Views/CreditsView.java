@@ -76,7 +76,7 @@ public class CreditsView extends CB_View_Base
 		logo.setDrawable(SpriteCache.logo);
 		this.addChild(logo);
 
-		scrollBox = new ScrollBox(rec, 100, "ScrollBox");
+		scrollBox = new ScrollBox(rec);
 		scrollBox.setHeight(logo.getY() - (ref / 2));
 		scrollBox.setZeroPos();
 		// scrollBox.setBackground(new ColorDrawable(Color.RED)); //Debug
@@ -149,10 +149,10 @@ public class CreditsView extends CB_View_Base
 	{
 		title = Translation.Get(title);
 		Box box = new Box(new CB_RectF(0, 0, this.width, lineHeight * 1.2f), "");
-		Label label = new Label(box, "");
-		box.addChild(label);
+		Label label = new Label(box, title + ":");
 		label.setFont(Fonts.getBig());
-		label.setText(title + ":", null, null, HAlignment.CENTER);
+		label.setHAlignment(HAlignment.CENTER);
+		box.addChild(label);
 		layout.addChild(box);
 	}
 
@@ -170,9 +170,7 @@ public class CreditsView extends CB_View_Base
 
 				if (entry != null)
 				{
-					Label label = new Label(box, "");
-					box.addChild(label);
-					label.setText(entry, null, null, HAlignment.CENTER);
+					box.addChild(new Label(box, entry).setHAlignment(HAlignment.CENTER));
 				}
 
 				layout.addChild(box);

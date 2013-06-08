@@ -184,10 +184,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		// überschreitet!
 
 		rec = new CB_RectF(0, y - restPlatz, msgBoxContentSize.width, restPlatz);
-		// initial ScrollBox mit einer Inneren Höhe des halben rec´s.
-		// Die Innere Höhe muss angepasst werden, wenn sich die Höhe des LinearLayouts verändert hat.
-		// Entweder wenn ein Control hinzugefügt wurde oder wenn eine CollapseBox geöffnrt oder geschlossen wird!
-		scrollBox2 = new ScrollBox(rec, rec.getHalfHeight(), "ScrollBox");
+		scrollBox2 = new ScrollBox(rec);
 
 		// damit die Scrollbox auch Events erhällt
 		// scrollBox2.setClickable(true);
@@ -201,7 +198,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		float margin = GL_UISizes.margin;
 		mBox.setMargins(margin, margin);
 		mBox.initRow();
-		boxYPosStart = mBox.getYPos(); // Startposition der Controls merken
+		boxYPosStart = mBox.getRowYPos(); // Startposition der Controls merken
 		// damit das LinearLayout auch Events erhällt
 		mBox.setClickable(true);
 
@@ -420,8 +417,9 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		bFunction.setText("F(x)");
 		bFunction.setWeight(0.2f);
 		mBox.addLast(bFunction);
-		boxYPosStored = mBox.getYPos(); // Y-Pos speichern damit nach dem löschen von Controls die nächsten wieder an der richtigen Stelle
-										// eingefügt werden können
+		boxYPosStored = mBox.getRowYPos(); // Y-Pos speichern damit nach dem löschen von Controls die nächsten wieder an der
+											// richtigen Stelle
+		// eingefügt werden können
 		// Funktion aufsplitten nach Funktionsname und Parameter (falls möglich!)
 		String formula = sForm.trim();
 		int posKlammerAuf = formula.indexOf("(");

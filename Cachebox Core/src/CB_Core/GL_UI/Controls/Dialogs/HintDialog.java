@@ -1,7 +1,6 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
 import CB_Core.GlobalCore;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Label;
@@ -49,27 +48,31 @@ public class HintDialog extends GL_MsgBox
 		msgBox.button3.setText(Translation.Get("close"));
 		msgBox.button1.setText(Translation.Get("decode"));
 
-		msgBox.mMsgBoxClickListner = null;
-
 		CB_RectF rec = msgBox.getContentSize().getBounds();
-		scrollBox = new ScrollBox(rec, 100, "");
+		scrollBox = new ScrollBox(rec);
 
-		msgBox.label = new Label("Hint");
-		scrollBox.initRow(BOTTOMUP); // damit label.Pos auf 0,0 gesetzt wird
+		msgBox.label = new Label("Hint"); // oder ohne Parameter aufrufen
+		// damit label.Pos auf (leftBorder, bottomBorder) gesetzt wird (ev. 0,0)
+		scrollBox.initRow(BOTTOMUP);
 		// damit die Breite des Labels zur Bestimmung des Umbruchs gesetzt ist:
 		scrollBox.addLast(msgBox.label);
-		msgBox.label.setWrappedText(hintTextEncoded, Fonts.getBig());
+		msgBox.label.setWrappedText(hintTextEncoded); // , Fonts.getBig()
 		float lblHeight = msgBox.label.getTextHeight();
-		msgBox.label.setWrappedText(hintTextDecoded, Fonts.getBig());
+		// der decodierte Text wird per Default zuerst angezeigt
+		msgBox.label.setWrappedText(hintTextDecoded);// , Fonts.getBig()
 		float lblHeigtTextDecoded = msgBox.label.getTextHeight();
+		// Falls der decodierte Text mehr Höhe benötigt, dann diese nehmen
 		if (lblHeigtTextDecoded > lblHeight) lblHeight = lblHeigtTextDecoded;
+		// vorsichtshalber oben und unten die margin berücksichtigen
 		lblHeight = lblHeight + 2f * margin;
-		msgBox.label.setHeight(lblHeight); // Damit der ganze Text drauf ist
-		// wenn die virtuelle Höhe > als die scrollBox Höhe - margin ist, dann wird gescrollt
-		scrollBox.setVirtualHeight(lblHeight); // nur der Label ist auf der Scrollbox
+		// Anpassung der Label Höhe, damit der ganze Text drauf passt
+		msgBox.label.setHeight(lblHeight);
+		// nur der Label ist auf der Scrollbox
+		scrollBox.setVirtualHeight(lblHeight);
 
 		msgBox.addChild(scrollBox);
 
+		msgBox.mMsgBoxClickListner = null; // todo
 		msgBox.button1.setOnClickListener(new OnClickListener()
 		{
 

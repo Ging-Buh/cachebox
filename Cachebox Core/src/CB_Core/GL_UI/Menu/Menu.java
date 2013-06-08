@@ -8,6 +8,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;
@@ -265,16 +266,15 @@ public class Menu extends ButtonDialog
 				}
 			});
 
-			mMoreMenuLabel = new Label(mMoreMenuToggleButton, "MoreLabel");
-			mMoreMenuLabel.setText(mMoreMenuTextLeft, Fonts.getSmall(), Fonts.getFontColor(), HAlignment.CENTER);
-
+			mMoreMenuLabel = new Label(mMoreMenuTextRight, Fonts.getSmall(), Fonts.getFontColor(), WrapType.singleLine)
+					.setHAlignment(HAlignment.CENTER);
+			// mMoreMenuLabel.setRec(mMoreMenuToggleButton);
 			mMoreMenuLabel.setWidth(mMoreMenuToggleButton.getHeight());
 			mMoreMenuLabel.setHeight(mMoreMenuToggleButton.getWidth());
 			mMoreMenuLabel.setX(mMoreMenuToggleButton.getWidth());
 			mMoreMenuLabel.setY(0);
 			mMoreMenuLabel.setOrigin(0, 0);
 			mMoreMenuLabel.setRotate(90);
-			mMoreMenuLabel.setText(mMoreMenuTextRight);
 			mMoreMenuLabel.withoutScissor = true;
 			mMoreMenuToggleButton.addChild(mMoreMenuLabel);
 			mMoreMenuIsInitial = true;
@@ -471,7 +471,7 @@ public class Menu extends ButtonDialog
 				// ich habe hier den zusammen hang noch nicht finden können
 				mMoreMenuToggleButton.setX(getLevel0_x() - mMoreMenuToggleButton.getHalfWidth() + (margin * 2));
 
-				mMoreMenuLabel.setText(mMoreMenuTextLeft, Fonts.getSmall(), Fonts.getFontColor(), HAlignment.CENTER);
+				mMoreMenuLabel.setText(mMoreMenuTextLeft);
 				break;
 			case 1:
 				mMoreMenu.setX(this.width - mMoreMenu.width - this.getLeftWidth());

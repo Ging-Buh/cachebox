@@ -38,55 +38,72 @@ public class Label extends CB_View_Base
 		TOP, CENTER, BOTTOM
 	}
 
-	static private enum WrapType
+	static public enum WrapType
 	{
 		singleLine, multiLine, wrapped
 	}
 
-	private BitmapFontCache TextObject;
+	BitmapFontCache TextObject;
 
 	private String mText = "";
 	private BitmapFont mFont;
 	private Color mColor;
 	private VAlignment mVAlignment = VAlignment.CENTER;
 	private HAlignment mHAlignment = HAlignment.LEFT;
+	private WrapType mWwrapType = WrapType.singleLine;
 
-	private TextBounds bounds;
-
-	private WrapType wrapType = WrapType.singleLine;
+	TextBounds bounds;
 
 	public Label()
 	{
 		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
-		initLabel();
+		mFont = Fonts.getNormal();
+		mColor = Fonts.getFontColor();
+		initLabel(WrapType.singleLine);
 	}
 
 	public Label(String Text)
 	{
 		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label " + Text);
-		mText = Text;
-		initLabel();
-	}
-
-	public Label(float X, float Y, float Width, float Height, String Name)
-	{
-		super(X, Y, Width, Height, Name);
-		initLabel();
-	}
-
-	public Label(CB_RectF rec, String Name)
-	{
-		super(rec, Name);
-		initLabel();
-	}
-
-	private void initLabel()
-	{
 		mFont = Fonts.getNormal();
 		mColor = Fonts.getFontColor();
+		mText = Text == null ? "" : Text;
+		initLabel(WrapType.singleLine);
+	}
+
+	public Label(String Text, BitmapFont Font, Color fontColor, WrapType WrapType)
+	{
+		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label " + Text);
+		mFont = Font == null ? Fonts.getNormal() : Font;
+		mColor = fontColor == null ? Fonts.getFontColor() : fontColor;
+		mText = Text == null ? "" : Text;
+		initLabel(WrapType);
+	}
+
+	public Label(float X, float Y, float Width, float Height, String Text)
+	{
+		super(X, Y, Width, Height, "Label " + Text);
+		mFont = Fonts.getNormal();
+		mColor = Fonts.getFontColor();
+		mText = Text == null ? "" : Text;
+		initLabel(WrapType.singleLine);
+	}
+
+	public Label(CB_RectF rec, String Text)
+	{
+		super(rec, "Label " + Text);
+		mFont = Fonts.getNormal();
+		mColor = Fonts.getFontColor();
+		mText = Text == null ? "" : Text;
+		initLabel(WrapType.singleLine);
+	}
+
+	private void initLabel(WrapType WrapType)
+	{
 		TextObject = new BitmapFontCache(mFont, false);
 		TextObject.setColor(mColor);
-		bounds = TextObject.setText(mText, 0, mFont.getCapHeight());
+		mWwrapType = WrapType;
+		makeText();
 	}
 
 	@Override
@@ -108,7 +125,7 @@ public class Label extends CB_View_Base
 
 	private void setText()
 	{
-		wrapType = WrapType.singleLine;
+		mWwrapType = WrapType.singleLine;
 		makeTextObject();
 		bounds = mFont.getBounds(mText);
 		try
@@ -119,15 +136,15 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + wrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \""
-					+ mText + "\"");
+			Logger.DEBUG(this + " (" + mWwrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
 
 	private void setMultiLineText()
 	{
-		wrapType = WrapType.multiLine;
+		mWwrapType = WrapType.multiLine;
 		makeTextObject();
 		bounds = mFont.getMultiLineBounds(mText);
 		try
@@ -138,15 +155,15 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + wrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \""
-					+ mText + "\"");
+			Logger.DEBUG(this + " (" + mWwrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
 
 	private void setWrappedText()
 	{
-		wrapType = WrapType.wrapped;
+		mWwrapType = WrapType.wrapped;
 		makeTextObject();
 		bounds = mFont.getWrappedBounds(mText, innerWidth);
 		try
@@ -157,8 +174,8 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + wrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \""
-					+ mText + "\"");
+			Logger.DEBUG(this + " (" + mWwrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -204,7 +221,7 @@ public class Label extends CB_View_Base
 
 	private void makeText()
 	{
-		switch (wrapType)
+		switch (mWwrapType)
 		{
 		case singleLine:
 			setText();
@@ -220,48 +237,17 @@ public class Label extends CB_View_Base
 
 	public Label setText(String text)
 	{
-		return setText(text, null, null, null);
-	}
-
-	public Label setText(String Text, Color color)
-	{
-		return setText(Text, null, color, null);
-	}
-
-	public Label setText(String text, BitmapFont Font, Color fontColor)
-	{
-		return setText(text, Font, fontColor, null);
-	}
-
-	public Label setText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment)
-	{
 		if (text == null) text = "";
 		mText = text;
-		if (Font != null) mFont = Font;
-		if (fontColor != null) mColor = fontColor;
-		if (HAlignment != null) mHAlignment = HAlignment;
-		setText();
+		makeText();
 		return this;
 	}
 
 	public Label setMultiLineText(String text)
 	{
-		return setMultiLineText(text, null, null, HAlignment.LEFT, VAlignment.TOP);
-	}
-
-	public Label setMultiLineText(String text, HAlignment HAlignment)
-	{
-		return setMultiLineText(text, null, null, HAlignment, VAlignment.TOP);
-	}
-
-	public Label setMultiLineText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment, VAlignment VAlignment)
-	{
 		if (text == null) text = "";
 		mText = text;
-		if (Font != null) mFont = Font;
-		if (fontColor != null) mColor = fontColor;
-		if (HAlignment != null) mHAlignment = HAlignment;
-		if (VAlignment != null) mVAlignment = VAlignment;
+		mVAlignment = VAlignment.TOP;
 		setMultiLineText();
 		return this;
 	}
@@ -290,6 +276,19 @@ public class Label extends CB_View_Base
 		if (HAlignment != null) mHAlignment = HAlignment;
 		mVAlignment = VAlignment.TOP;
 		setWrappedText();
+		return this;
+	}
+
+	public Label setWrapType(WrapType WrapType)
+	{
+		if (WrapType != null)
+		{
+			if (WrapType != mWwrapType)
+			{
+				mWwrapType = WrapType;
+				makeText();
+			}
+		}
 		return this;
 	}
 
@@ -388,8 +387,10 @@ public class Label extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		initLabel();
-		makeText();
+		// todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
+		mFont = Fonts.getNormal();
+		mColor = Fonts.getFontColor();
+		initLabel(mWwrapType);
 	}
 
 	@Override
