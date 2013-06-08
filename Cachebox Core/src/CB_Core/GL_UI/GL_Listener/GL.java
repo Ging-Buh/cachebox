@@ -71,6 +71,8 @@ public class GL implements ApplicationListener, InputProcessor
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
 
+	private static final boolean TOUCH_DEBUG = false;
+
 	/**
 	 * See http://code.google.com/p/libgdx/wiki/SpriteBatch Performance tuning
 	 */
@@ -625,7 +627,7 @@ public class GL implements ApplicationListener, InputProcessor
 				// touchDragged Event an das View, das den onTouchDown bekommen hat
 				boolean behandelt = first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y
 						- (int) first.view.ThisWorldRec.getY(), pointer, false);
-				Logger.LogCat("GL_Listner => onTouchDraggedBase : " + behandelt);
+				if (TOUCH_DEBUG) Logger.LogCat("GL_Listner => onTouchDraggedBase : " + behandelt);
 				if (!behandelt && first.view.getParent() != null)
 				{
 					// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
@@ -704,7 +706,6 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			CB_Core.Log.Logger.Error("GL_Listner.onTouchUpBase()", "", e);
 		}
 
@@ -725,11 +726,8 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			CB_Core.Log.Logger.Error("GL_Listner.onTouchUpBase()", "", e);
 		}
-		// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
-		// glListener.onTouchUp(x, y, pointer, 0);
 
 		return true;
 	}
@@ -1159,7 +1157,7 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 
 			anzPointsUsed++;
-			Logger.LogCat("AnzUsedPoints: " + anzPointsUsed);
+			if (TOUCH_DEBUG) Logger.LogCat("AnzUsedPoints: " + anzPointsUsed);
 			if (anzPointsUsed > anzPoints) anzPointsUsed = anzPoints;
 			for (int i = anzPoints - 2; i >= 0; i--)
 			{
@@ -1186,7 +1184,7 @@ public class GL implements ApplicationListener, InputProcessor
 				diffX = (int) ((float) diffX / FRAME_RATE_ACTION * diffTs);
 				diffY = (int) ((float) diffY / FRAME_RATE_ACTION * diffTs);
 			}
-			Logger.LogCat("diffx = " + diffX + " - diffy = " + diffY);
+			if (TOUCH_DEBUG) Logger.LogCat("diffx = " + diffX + " - diffy = " + diffY);
 
 			// debugString = x[2] + " - " + x[1] + " - " + x[0];
 		}
@@ -1215,7 +1213,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 			endTs = startTs + 1000 + abstand * 15 / anzPointsUsed;
 			// if (endTs > startTs + 6000) endTs = startTs + 6000; // max. Zeit festlegen
-			Logger.LogCat("endTs - startTs: " + String.valueOf(endTs - startTs));
+			if (TOUCH_DEBUG) Logger.LogCat("endTs - startTs: " + String.valueOf(endTs - startTs));
 			// endTs = startTs + 5000;
 			started = true;
 		}

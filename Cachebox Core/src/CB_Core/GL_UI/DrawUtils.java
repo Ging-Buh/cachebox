@@ -13,7 +13,8 @@ public class DrawUtils
 	public static void drawSpriteLine(SpriteBatch batch, Sprite sprite, Sprite spriteEnd, float overlap, float x1, float y1, float x2,
 			float y2)
 	{
-		// Color debugColor = sprite.getColor();
+		// chk NPE
+		if (batch == null || sprite == null || spriteEnd == null) return;
 
 		float angle = 0; // Pi-basiert, x-Achse 0, gegen Uhrzeigersinn
 		if (x1 < x2) // 0-)90( Grad; )270(-360 Grad

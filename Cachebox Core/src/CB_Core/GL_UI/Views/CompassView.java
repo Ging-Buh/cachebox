@@ -501,11 +501,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		{
 			if (showIcon)
 			{
-				Icon = new Image(attRec, "");
-				Icon.setWeight(-1);
+				Icon = new Image(attRec, "Compass-CacheIcon");
 				if (showName)
 				{
-					topContentBox.addNext(Icon);
+					topContentBox.addNext(Icon, CB_View_Base.FIXED);
 				}
 				else
 				{
@@ -538,17 +537,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 				{
 					lblCoords = new Label("CoordsLabel");
 					lblCoords.setHeight(lblHeight);
-					lblCoords.setWeight(-1);
 					lblCoords.setWidth(mesuredCoorWidth);
-					topContentBox.addNext(lblCoords);
+					topContentBox.addNext(lblCoords, CB_View_Base.FIXED);
 				}
 				else
 				{
 					lblCoords = new Label("CoordsLabel");
 					lblCoords.setHeight(lblHeight);
-					lblCoords.setWeight(-1);
 					lblCoords.setWidth(mesuredCoorWidth);
-					topContentBox.addLast(lblCoords);
+					topContentBox.addLast(lblCoords, CB_View_Base.FIXED);
 				}
 			}
 			if (showGcCode)
@@ -587,9 +584,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			chart.setHeight((lblHeight + margin) * 2.3f);
 
 			float chartWidth = topContentBox.getInnerWidth() - mesuredCoorWidth - margin;
-			chart.setWeight(-1);
 			chart.setWidth(chartWidth);
-			topContentBox.addLast(chart);
+			topContentBox.addLast(chart, CB_View_Base.FIXED);
 
 			lblOwnCoords = new Label("OwnCoords");
 			lblOwnCoords.setHeight(lblHeight);
@@ -636,14 +632,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			for (int i = 0; i < 20; i++)
 			{
 				att[i] = new Image(attRec, "");
-				att[i].setWeight(-1);
 				if ((i < attLineBreak - 1) || (i > attLineBreak && i < 19))
 				{
-					topContentBox.addNext(att[i]);
+					topContentBox.addNext(att[i], CB_View_Base.FIXED);
 				}
 				if (i == attLineBreak || i == 19)
 				{
-					topContentBox.addLast(att[i]);
+					topContentBox.addLast(att[i], CB_View_Base.FIXED);
 				}
 			}
 		}

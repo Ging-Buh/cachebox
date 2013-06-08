@@ -200,29 +200,13 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-
-		// reset ScrollPos
-		lastScrollPos = new Point(0, 0);
+		// reset ScrollPos only if cache changed
+		if (aktCache != cache)
+		{
+			lastScrollPos = new Point(0, 0);
+		}
 
 		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
-
-		// Thread t = new Thread()
-		// {
-		// public void run()
-		// {
-		// main.mainActivity.runOnUiThread(new Runnable()
-		// {
-		// @Override
-		// public void run()
-		// {
-		// WebControl.OnShow();
-		// WebControl.invalidate();
-		// }
-		// });
-		// }
-		// };
-		//
-		// t.start();
 
 	}
 }

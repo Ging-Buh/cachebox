@@ -14,6 +14,7 @@ public class ImageButton extends Button
 	public ImageButton(String name)
 	{
 		super(name);
+		this.setText("");
 		image = new Image(this.ScaleCenter(0.8f), "");
 		this.addChild(image);
 	}
