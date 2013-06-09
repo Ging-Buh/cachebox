@@ -186,7 +186,7 @@ public class SelectSolverFunction extends ButtonDialog
 	{
 		// rechteck für die List erstellen.
 		// diese ergibt sich aus dem Platzangebot oberhalb des desc Labels
-		CB_RectF rec = new CB_RectF(0, desc.getMaxY(), desc.getWidth(), this.height - desc.getMaxY() - this.getFooterHeight());
+		CB_RectF rec = new CB_RectF(0, desc.getMaxY(), desc.getWidth(), this.height - desc.getMaxY() - mFooterHeight);
 
 		// Die Einträge der Function List werden aber nicht in einer ListView dargestellt, sondern werden in ein LinearLayout von oben nach
 		// unten geschrieben.

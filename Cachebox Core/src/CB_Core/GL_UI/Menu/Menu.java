@@ -204,7 +204,7 @@ public class Menu extends ButtonDialog
 			{
 				// new Hight calculation
 				itemsCount = mItems.size();
-				float higherValue = mTitleHeight + mHeaderHight + getFooterHeight() + (margin * 2);
+				float higherValue = mTitleHeight + mHeaderHight + mFooterHeight + (margin * 2);
 				for (MenuItemBase item : mItems)
 				{
 					higherValue += item.getHeight() + mListView.getDividerHeight();
@@ -246,14 +246,14 @@ public class Menu extends ButtonDialog
 			mMoreMenu.setZeroPos();
 			mMoreMenu.setHeight(this.height);
 			mMoreMenu.setWidth(0);
-			mMoreMenu.setY(0 - this.getFooterHeight());
+			mMoreMenu.setY(0 - mFooterHeight);
 			this.addChild(mMoreMenu);
 
 			mMoreMenuToggleButton = new Button("");
 			mMoreMenuToggleButton.setWidth(mMoreMenuToggleButtonWidth);
 			mMoreMenuToggleButton.setHeight(this.getContentSize().height);
 			float MenuY = mParentMenu != null ? mParentMenu.getY() : this.getY();
-			mMoreMenuToggleButton.setY(MenuY + this.getFooterHeight());
+			mMoreMenuToggleButton.setY(MenuY + mFooterHeight);
 			GL.that.getDialogLayer().addChild(mMoreMenuToggleButton);
 			mMoreMenuToggleButton.setOnClickListener(new OnClickListener()
 			{
@@ -293,7 +293,7 @@ public class Menu extends ButtonDialog
 	{
 		super.render(batch);
 
-		if (mAnimationState > -1) mMoreMenuToggleButton.setY(this.getWorldRec().getY() + this.getFooterHeight());
+		if (mAnimationState > -1) mMoreMenuToggleButton.setY(this.getWorldRec().getY() + mFooterHeight);
 
 		// Animation calculation
 		if (mAnimationState == 1 || mAnimationState == 2)

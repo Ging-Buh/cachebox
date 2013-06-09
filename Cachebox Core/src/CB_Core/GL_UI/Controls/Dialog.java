@@ -62,8 +62,9 @@ public abstract class Dialog extends CB_View_Base
 	public Dialog(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		// ctor without title and footer
 		mHeaderHight = calcHeaderHeight();
-		setFooterHeight(calcFooterHeight(false));
+		mFooterHeight = mHeaderHight;
 
 		if (margin <= 0) margin = UI_Size_Base.that.getMargin();
 
@@ -81,14 +82,11 @@ public abstract class Dialog extends CB_View_Base
 		{
 			// calcBase
 			pW = (int) (SpriteCache.Dialog.get(DialogElement.footer.ordinal()).getWidth() / 8);
-
 			mTitle9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.title.ordinal()), pW, (pW * 12 / 8), pW, pW);
 			mHeader9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.header.ordinal()), pW, pW, pW, 3);
 			mCenter9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.center.ordinal()), pW, pW, 1, 1);
 			mFooter9patch = new NinePatch(SpriteCache.Dialog.get(DialogElement.footer.ordinal()), pW, pW, 3, pW);
-
 			mTitleVersatz = (float) pW;
-
 			lastNightMode = Config.settings.nightMode.getValue();
 		}
 
@@ -99,6 +97,7 @@ public abstract class Dialog extends CB_View_Base
 		innerWidth = width - leftBorder - rightBorder;
 		innerHeight = height - topBorder - bottomBorder;
 
+		reziseContentBox();
 	}
 
 	@Override
@@ -243,15 +242,16 @@ public abstract class Dialog extends CB_View_Base
 			titleLabel.setWidth(titleLabel.getTextWidth() + leftBorder + rightBorder);
 			this.initRow();
 			this.addLast(titleLabel, FIXED);
+
 			mTitleHeight = titleLabel.getHeight();
 			mTitleWidth = titleLabel.getWidth();
 			mTitleWidth += rightBorder; // sonst sieht es blöd aus
 		}
 
 		mContent.setWidth(this.width * 0.95f);
-		mContent.setHeight((this.height - mHeaderHight - getFooterHeight() - mTitleHeight - margin));
+		mContent.setHeight((this.height - mHeaderHight - mFooterHeight - mTitleHeight - margin));
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
-		float centerversatzY = getFooterHeight();// this.halfHeight - mContent.getHalfHeight();
+		float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
 		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
 
 		contentSizeIsCalculated = true;
@@ -269,12 +269,11 @@ public abstract class Dialog extends CB_View_Base
 		}
 		if (mFooter9patch != null && !dontRenderDialogBackground)
 		{
-			mFooter9patch.draw(batch, 0, 0, this.width, getFooterHeight() + 2);
+			mFooter9patch.draw(batch, 0, 0, this.width, mFooterHeight + 2);
 		}
 		if (mCenter9patch != null && !dontRenderDialogBackground)
 		{
-			mCenter9patch.draw(batch, 0, getFooterHeight(), this.width,
-					(this.height - getFooterHeight() - mHeaderHight - mTitleHeight) + 3.5f);
+			mCenter9patch.draw(batch, 0, mFooterHeight, this.width, (this.height - mFooterHeight - mHeaderHight - mTitleHeight) + 3.5f);
 		}
 
 		if (mHasTitle)
@@ -379,11 +378,6 @@ public abstract class Dialog extends CB_View_Base
 	{
 		super.onResized(rec);
 		reziseContentBox();
-	}
-
-	public float getFooterHeight()
-	{
-		return mFooterHeight;
 	}
 
 	public void setFooterHeight(float FooterHeight)

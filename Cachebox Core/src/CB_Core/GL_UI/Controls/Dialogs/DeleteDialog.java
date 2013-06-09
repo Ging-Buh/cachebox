@@ -65,7 +65,7 @@ public class DeleteDialog extends ButtonDialog
 		box.setHeight(box.getHeightFromBottom());
 		this.addChild(box);
 
-		this.setHeight(box.getHeight() + this.getFooterHeight() + this.mTitleHeight + 3 * margin);
+		this.setHeight(box.getHeight() + this.mFooterHeight + this.mTitleHeight + 3 * margin);
 
 		btDelFilter.setOnClickListener(new OnClickListener()
 		{
