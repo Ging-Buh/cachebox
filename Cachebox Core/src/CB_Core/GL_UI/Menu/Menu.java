@@ -204,7 +204,7 @@ public class Menu extends ButtonDialog
 			{
 				// new Hight calculation
 				itemsCount = mItems.size();
-				float higherValue = mTitleHeight + mHeaderHight + mFooterHeight + (margin * 2);
+				float higherValue = mTitleHeight + mHeaderHeight + mFooterHeight + (margin * 2);
 				for (MenuItemBase item : mItems)
 				{
 					higherValue += item.getHeight() + mListView.getDividerHeight();

@@ -22,7 +22,6 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Dialog extends CB_View_Base
 {
-	private boolean contentSizeIsCalculated = false;
 	private String mTitle;
 	private Label titleLabel;
 	private Box mContent;
@@ -35,7 +34,7 @@ public abstract class Dialog extends CB_View_Base
 	// TODO das Handling der Marker in den Dialogen überarbeiten!
 
 	/**
-	 * Overlay über alles wird als letztes Gerändert
+	 * Overlay über alles wird als letztes Gerendert
 	 */
 	private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
 
@@ -52,7 +51,7 @@ public abstract class Dialog extends CB_View_Base
 	protected float mTitleWidth = 100;
 	protected boolean mHasTitle = false;
 
-	protected float mHeaderHight = 10f;
+	protected float mHeaderHeight = 10f;
 	protected float mFooterHeight = 10f;
 
 	protected static float margin = -1;
@@ -63,8 +62,8 @@ public abstract class Dialog extends CB_View_Base
 	{
 		super(rec, Name);
 		// ctor without title and footer
-		mHeaderHight = calcHeaderHeight();
-		mFooterHeight = mHeaderHight;
+		mHeaderHeight = calcHeaderHeight();
+		mFooterHeight = mHeaderHeight;
 
 		if (margin <= 0) margin = UI_Size_Base.that.getMargin();
 
@@ -249,12 +248,11 @@ public abstract class Dialog extends CB_View_Base
 		}
 
 		mContent.setWidth(this.width * 0.95f);
-		mContent.setHeight((this.height - mHeaderHight - mFooterHeight - mTitleHeight - margin));
+		mContent.setHeight((this.height - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
 		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
 		float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
 		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
 
-		contentSizeIsCalculated = true;
 	}
 
 	@Override
@@ -265,7 +263,7 @@ public abstract class Dialog extends CB_View_Base
 
 		if (mHeader9patch != null && !dontRenderDialogBackground)
 		{
-			mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHight, this.width, mHeaderHight);
+			mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHeight, this.width, mHeaderHeight);
 		}
 		if (mFooter9patch != null && !dontRenderDialogBackground)
 		{
@@ -273,7 +271,7 @@ public abstract class Dialog extends CB_View_Base
 		}
 		if (mCenter9patch != null && !dontRenderDialogBackground)
 		{
-			mCenter9patch.draw(batch, 0, mFooterHeight, this.width, (this.height - mFooterHeight - mHeaderHight - mTitleHeight) + 3.5f);
+			mCenter9patch.draw(batch, 0, mFooterHeight, this.width, (this.height - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
 		}
 
 		if (mHasTitle)
@@ -340,7 +338,7 @@ public abstract class Dialog extends CB_View_Base
 
 	public SizeF getContentSize()
 	{
-		if (!contentSizeIsCalculated) reziseContentBox();
+		reziseContentBox();
 		return mContent.getSize();
 	}
 
