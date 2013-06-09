@@ -213,7 +213,7 @@ public abstract class Dialog extends CB_View_Base
 		}
 	}
 
-	protected void reziseContentBox()
+	private void reziseContentBox()
 	{
 
 		if (margin <= 0) margin = UI_Size_Base.that.getMargin();

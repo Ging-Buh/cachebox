@@ -70,7 +70,6 @@ public class NewDB_InputBox extends GL_MsgBox
 			editText.setHeight(topBottom + (SingleLineHeight * 5));
 		}
 		msgBox.setHeight(msgBox.getHeight() + editText.getHeight() + (margin * 4) + chk.getHalfHeight());
-		msgBox.reziseContentBox();
 
 		LabelRec.setHeight(LabelRec.getHeight() - editText.getHeight());
 
