@@ -50,7 +50,6 @@ public abstract class Dialog extends CB_View_Base
 
 	protected float mTitleHeight = 0;
 	protected float mTitleWidth = 100;
-
 	protected boolean mHasTitle = false;
 
 	protected float mHeaderHight = 10f;
@@ -364,44 +363,6 @@ public abstract class Dialog extends CB_View_Base
 		return hasButtons ? UI_Size_Base.that.getButtonHeight() + margin : calcHeaderHeight();
 	}
 
-	public void setWidth(float Width)
-	{
-		super.setWidth(Width);
-		reziseContentBox();
-	}
-
-	public void setHeight(float Height)
-	{
-		super.setHeight(Height);
-		reziseContentBox();
-	}
-
-	public boolean setSize(SizeF Size)
-	{
-		return setSize(Size.width, Size.height);
-	}
-
-	/**
-	 * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
-	 * 
-	 * @param Width
-	 * @param Height
-	 * @return
-	 */
-	public boolean setSize(float Width, float Height)
-	{
-		boolean ret = super.setSize(Width, Height);
-		reziseContentBox();
-		return ret;
-	}
-
-	public boolean setSize(CB_RectF rec)
-	{
-		boolean ret = super.setSize(rec);
-		reziseContentBox();
-		return ret;
-	}
-
 	public void addChildToOverlay(GL_View_Base view)
 	{
 		overlay.add(view);
@@ -412,6 +373,7 @@ public abstract class Dialog extends CB_View_Base
 		overlay.clear();
 	}
 
+	// always automaticly called on changing size
 	@Override
 	public void onResized(CB_RectF rec)
 	{
