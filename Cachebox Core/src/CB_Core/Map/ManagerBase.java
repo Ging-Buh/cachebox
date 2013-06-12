@@ -487,7 +487,7 @@ public abstract class ManagerBase
 	float textScale = 1;
 	float DEFAULT_TEXT_SCALE = 1;
 
-	protected byte[] getMapsforgePixMap(Layer layer, Descriptor desc)
+	public byte[] getMapsforgePixMap(Layer layer, Descriptor desc)
 	{
 		// Mapsforge 0.4.0
 

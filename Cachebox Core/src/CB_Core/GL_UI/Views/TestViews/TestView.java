@@ -1,23 +1,30 @@
 package CB_Core.GL_UI.Views.TestViews;
 
 import CB_Core.Energy;
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.TB_Details;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.RadioButton;
 import CB_Core.GL_UI.Controls.RadioGroup;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.Map.Descriptor;
+import CB_Core.Map.Descriptor.PointD;
+import CB_Core.Map.Layer;
+import CB_Core.Map.ManagerBase;
+import CB_Core.Map.MapTileLoader;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
-import CB_Core.Types.Trackable;
+import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Enthält die TestContols
@@ -61,25 +68,17 @@ public class TestView extends CB_View_Base
 				wrappedTextField.getY() - UI_Size_Base.that.getMargin() - UI_Size_Base.that.getButtonHeight(),
 				UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
 
-		btnSetting.setText("Show TB");
+		btnSetting.setText("Performe Map");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-
-				String beschreibung = "Das ist die Beschreibung des TB's, welche noch aus HTML formatiert werden muss!";
-
-				Trackable tb = new Trackable("MyTb", "http://www.geocaching.com/images/wpttypes/21.gif", beschreibung);
-
-				if (TB_Details.that == null) new TB_Details();
-				TB_Details.that.Show(tb);
+				runMapsforgePerformanceTest();
 				return true;
 			}
 		});
-
-		btnSetting.setOnClickListener(click);
 
 		this.addChild(btnSetting);
 
@@ -209,4 +208,119 @@ public class TestView extends CB_View_Base
 
 	}
 
+	final int mapIntWidth = 3000;
+	final int mapIntHeight = 3000;
+	final Coordinate center = new Coordinate(50.44, 9.28);
+	final int drawingWidth = 3000;
+	final int drawingHeight = 3000;
+
+	float camerazoom = 10;
+
+	private void runMapsforgePerformanceTest()
+	{
+		String result = "";
+		for (int i = 7; i < 19; i++)
+		{
+			result re = runMapsforgePerformanceTest(i);
+			result += "Render " + re.count + " Tiles at Zoom " + re.zoom + " in " + re.time + " ms" + GlobalCore.br;
+		}
+
+		GL_MsgBox.Show(result);
+	}
+
+	public class result
+	{
+		public int count;
+		public long time;
+		public int zoom;
+	}
+
+	private result runMapsforgePerformanceTest(int aktZoom)
+	{
+		long start = System.currentTimeMillis();
+
+		Layer layer = ManagerBase.Manager.GetLayerByName("germany", "", "");
+		camerazoom = getMapTilePosFactor(aktZoom);
+		int tmpzoom = aktZoom;
+
+		int halfMapIntWidth = mapIntWidth / 2;
+		int halfMapIntHeight = mapIntHeight / 2;
+
+		int halfDrawingtWidth = drawingWidth / 2;
+		int halfDrawingHeight = drawingHeight / 2;
+
+		int ySpeedVersatz = 0;
+
+		Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - halfDrawingtWidth, halfMapIntHeight - halfDrawingHeight
+				- ySpeedVersatz), tmpzoom);
+		Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + halfDrawingtWidth, halfMapIntHeight + halfDrawingHeight
+				+ ySpeedVersatz), tmpzoom);
+
+		int counter = 0;
+		for (int i = lo.X; i <= ru.X; i++)
+		{
+			for (int j = lo.Y; j <= ru.Y; j++)
+			{
+				Descriptor desc = new Descriptor(i, j, tmpzoom);
+				ManagerBase.Manager.getMapsforgePixMap(layer, desc);
+				counter++;
+			}
+		}
+
+		result re = new result();
+		re.count = counter;
+		re.zoom = aktZoom;
+		re.time = System.currentTimeMillis() - start;
+		return re;
+	}
+
+	private Descriptor screenToDescriptor(Vector2 point, int zoom)
+	{
+		// World-Koordinaten in Pixel
+		Vector2 world = screenToWorld(point);
+		for (int i = MapTileLoader.MAX_MAP_ZOOM; i > zoom; i--)
+		{
+			world.x /= 2;
+			world.y /= 2;
+		}
+		world.x /= 256;
+		world.y /= 256;
+		int x = (int) world.x;
+		int y = (int) world.y;
+		Descriptor result = new Descriptor(x, y, zoom);
+		return result;
+	}
+
+	private Vector2 screenToWorld(Vector2 point)
+	{
+
+		PointD cPoint = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()),
+				Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
+				MapTileLoader.MAX_MAP_ZOOM);
+
+		Vector2 screenCenterW = new Vector2((float) cPoint.X, (float) cPoint.Y);
+
+		Vector2 result = new Vector2(0, 0);
+		try
+		{
+
+			result.x = screenCenterW.x + ((long) point.x - mapIntWidth / 2) * camerazoom;
+			result.y = screenCenterW.y + ((long) point.y - mapIntHeight / 2) * camerazoom;
+
+		}
+		catch (Exception e)
+		{
+			// wenn hier ein Fehler auftritt, dann geben wir einen Vector 0,0 zurück!
+		}
+		return result;
+	}
+
+	public static final int MAX_MAP_ZOOM = 22;
+
+	public long getMapTilePosFactor(float zoom)
+	{
+		long result = 1;
+		result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
+		return result;
+	}
 }
