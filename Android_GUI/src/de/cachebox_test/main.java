@@ -2319,11 +2319,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			if (!GpsOn())
+			if (Config.settings.Ask_Switch_GPS_ON.getValue() && !GpsOn())
 			{
 				if (!Translation.isInitial())
 				{
-					new Translation(Config.WorkPath, false);
+					new Translation(Config.WorkPath, true);
 					try
 					{
 						Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());

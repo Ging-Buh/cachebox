@@ -49,8 +49,9 @@ public class DeleteDialog extends ButtonDialog
 		btDelArchived.setImage(SpriteCache.getSpriteDrawable("delete-archived"));
 		btDelFounds.setImage(SpriteCache.getSpriteDrawable("delete-founds"));
 
-		lblDelFilter = new Label(Translation.Get("DelArchived"), Fonts.getSmall(), null, WrapType.wrapped).setHAlignment(HAlignment.CENTER);
-		lblDelArchived = new Label(Translation.Get("DelActFilter"), Fonts.getSmall(), null, WrapType.wrapped)
+		lblDelFilter = new Label(Translation.Get("DelActFilter"), Fonts.getSmall(), null, WrapType.wrapped)
+				.setHAlignment(HAlignment.CENTER);
+		lblDelArchived = new Label(Translation.Get("DelArchived"), Fonts.getSmall(), null, WrapType.wrapped)
 				.setHAlignment(HAlignment.CENTER);
 		lblDelFounds = new Label(Translation.Get("DelFound"), Fonts.getSmall(), null, WrapType.wrapped).setHAlignment(HAlignment.CENTER);
 
