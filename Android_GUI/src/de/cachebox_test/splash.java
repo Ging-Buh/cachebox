@@ -666,7 +666,7 @@ public class splash extends Activity
 		// if (true)
 		{
 			String[] exclude = new String[]
-				{ "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files" };
+				{ "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
 			copyAssetFolder myCopie = new copyAssetFolder();
 
 			myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
