@@ -1502,8 +1502,8 @@ public class GL implements ApplicationListener, InputProcessor
 				}
 			};
 			timer.schedule(task, 500);
-
-			return;
+			//
+			// return;
 		}
 
 		if (MsgToPlatformConector) platformConector.hideForDialog();
@@ -1542,7 +1542,11 @@ public class GL implements ApplicationListener, InputProcessor
 		timer.schedule(task, 500);
 
 		clearRenderViews();
-		if (ActivityIsShown) platformConector.showForDialog();
+		if (ActivityIsShown)
+		{
+			platformConector.showForDialog();
+
+		}
 		renderOnce("Close Dialog");
 	}
 
