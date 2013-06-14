@@ -375,7 +375,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		if (coord == null) coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.isValid())) coord = GlobalCore.getSelectedCache().Pos;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
-				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"), "");
+				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
 		editWP(newWP, true);
 
 	}
@@ -438,7 +438,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						aktWaypoint.Description = waypoint.Description;
 						aktWaypoint.IsStart = waypoint.IsStart;
 						aktWaypoint.Clue = waypoint.Clue;
-						aktWaypoint.UserNote = waypoint.UserNote;
 
 						// set waypoint as UserWaypoint, because waypoint is changed by user
 						aktWaypoint.IsUserWaypoint = true;
@@ -531,7 +530,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 							return;
 						}
 						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(),
-								targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert", "");
+								targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
 						GlobalCore.getSelectedCache().waypoints.add(newWP);
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = newWP;
@@ -570,7 +569,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					return;
 				}
 				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(),
-						returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured", "");
+						returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
 				GlobalCore.getSelectedCache().waypoints.add(newWP);
 				that.setBaseAdapter(lvAdapter);
 				aktWaypoint = newWP;

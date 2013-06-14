@@ -2755,7 +2755,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if ((coord == null) || (!coord.isValid())) coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.isValid())) return;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
-				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"), "");
+				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
 
 		EditWaypoint EdWp = new EditWaypoint(newWP, new ReturnListner()
 		{

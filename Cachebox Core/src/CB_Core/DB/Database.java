@@ -316,7 +316,7 @@ public abstract class Database
 				}
 				if (lastDatabaseSchemeVersion < 1025)
 				{
-					execSQL("ALTER TABLE [Waypoint] ADD COLUMN [UserNote] ntext NULL");
+					// nicht mehr benötigt execSQL("ALTER TABLE [Waypoint] ADD COLUMN [UserNote] ntext NULL");
 				}
 
 				setTransactionSuccessful();

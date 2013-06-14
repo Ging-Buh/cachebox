@@ -1251,7 +1251,7 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_desc"))
 		{
-			waypoint.Description = values.get("wpt_desc");
+			waypoint.Title = values.get("wpt_desc");
 		}
 
 		if (values.containsKey("wpt_type"))
@@ -1261,7 +1261,7 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_cmt"))
 		{
-			waypoint.Clue = values.get("wpt_cmt");
+			waypoint.Description = values.get("wpt_cmt");
 		}
 
 		currentwpt++;

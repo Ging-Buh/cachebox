@@ -548,7 +548,7 @@ public class SearchForGeocaches
 							JSONObject jWaypoints = (JSONObject) waypoints.get(j);
 							Waypoint waypoint = new Waypoint();
 							waypoint.CacheId = cache.Id;
-							waypoint.GcCode = jWaypoints.getString("Code") + cache.GcCode.substring(2, cache.GcCode.length());
+
 							try
 							{
 								waypoint.Pos = new Coordinate(jWaypoints.getDouble("Latitude"), jWaypoints.getDouble("Longitude"));
@@ -558,10 +558,20 @@ public class SearchForGeocaches
 								// no Coordinates -> Lat/Lon = 0/0
 								waypoint.Pos = new Coordinate();
 							}
-							waypoint.Title = jWaypoints.getString("Name");
-							waypoint.Description = jWaypoints.getString("Description");
+
+							// alt
+							// waypoint.Title = jWaypoints.getString("Name");
+							// waypoint.Description = jWaypoints.getString("Description");
+							// waypoint.Type = GroundspeakAPI.getCacheType(jWaypoints.getInt("WptTypeID"));
+							// waypoint.Clue = jWaypoints.getString("Comment");
+							// waypoint.GcCode = jWaypoints.getString("Code") + cache.GcCode.substring(2, cache.GcCode.length());
+
+							// new
+							waypoint.Title = jWaypoints.getString("Description");
+							waypoint.Description = jWaypoints.getString("Comment");
 							waypoint.Type = GroundspeakAPI.getCacheType(jWaypoints.getInt("WptTypeID"));
 							waypoint.Clue = jWaypoints.getString("Comment");
+							waypoint.GcCode = jWaypoints.getString("Code");
 
 							cache.waypoints.add(waypoint);
 						}

@@ -30,7 +30,7 @@ public class CacheListDAO
 
 		CoreCursor reader = Database.Data
 				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart,UserNote from Waypoint order by CacheId",
+						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint order by CacheId",
 						null);
 		reader.moveToFirst();
 		while (!reader.isAfterLast())

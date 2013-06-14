@@ -53,8 +53,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	private EditWrapedTextField etTitle = null;
 	private Label tvDescription = null;
 	private EditWrapedTextField etDescription = null;
-	private EditWrapedTextField etUserNote = null;
-	private Label tvUserNote = null;
 	private Label tvClue = null;
 	private EditWrapedTextField etClue = null;
 	private Boolean firstShow = true;
@@ -92,8 +90,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		iniLabelClue();
 		iniTitleTextClue();
 		iniOkCancel();
-		iniLabelUserNote();
-		iniUserNote();
 
 		iniTextfieldFocus();
 		layoutTextFields();
@@ -394,43 +390,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		scrollBox.addChild(etClue);
 	}
 
-	private void iniLabelUserNote()
-	{
-		tvUserNote = new Label(leftBorder + margin, etClue.getY() - margin - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight,
-				"ClueLabel");
-		tvUserNote.setFont(Fonts.getBubbleNormal());
-		tvUserNote.setText(Translation.Get("UserNote"));
-		scrollBox.addChild(tvUserNote);
-	}
-
-	private void iniUserNote()
-	{
-		CB_RectF rec = new CB_RectF(leftBorder, tvUserNote.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
-				UI_Size_Base.that.getButtonHeight());
-		etUserNote = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "UserNoteTextField");
-
-		String txt = (waypoint.UserNote == null) ? "" : waypoint.UserNote;
-
-		etUserNote.setText(txt);
-
-		etUserNote.setTextFieldListener(new TextFieldListener()
-		{
-			@Override
-			public void keyTyped(EditTextFieldBase textField, char key)
-			{
-
-			}
-
-			@Override
-			public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight)
-			{
-				layoutTextFields();
-			}
-		});
-
-		scrollBox.addChild(etUserNote);
-	}
-
 	private void iniOkCancel()
 	{
 		CB_RectF btnRec = new CB_RectF(leftBorder, this.getBottomHeight(), innerWidth / 2, UI_Size_Base.that.getButtonHeight());
@@ -463,7 +422,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 					waypoint.Description = etDescription.getText();
 					waypoint.Clue = etClue.getText();
 					waypoint.IsStart = cbStartPoint.isChecked();
-					waypoint.UserNote = etUserNote.getText();
 					mReturnListner.returnedWP(waypoint);
 				}
 
@@ -502,7 +460,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		registerTextField(etTitle);
 		registerTextField(etDescription);
 		registerTextField(etClue);
-		registerTextField(etUserNote);
 	}
 
 	private void showCbStartPoint(boolean visible)
@@ -547,15 +504,12 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		float rand = etClue.getStyle().background.getBottomHeight() + etClue.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMeasuredHeight() + rand);
 		float clueHeight = Math.min(maxTextFieldHeight, etClue.getMeasuredHeight() + rand);
-		float UserNoteHeight = Math.min(maxTextFieldHeight, etUserNote.getMeasuredHeight() + rand);
 
 		descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
 		clueHeight = Math.max(clueHeight, UI_Size_Base.that.getButtonHeight());
-		UserNoteHeight = Math.max(UserNoteHeight, UI_Size_Base.that.getButtonHeight());
 
 		etDescription.setHeight(descriptionHeight);
 		etClue.setHeight(clueHeight);
-		etUserNote.setHeight(UserNoteHeight);
 
 		virtualHeight = 0;
 		virtualHeight += tvCacheName.getHeight();
@@ -568,14 +522,12 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		virtualHeight += etDescription.getHeight();
 		virtualHeight += tvClue.getHeight();
 		virtualHeight += etClue.getHeight();
-		virtualHeight += tvUserNote.getHeight();
-		virtualHeight += etUserNote.getHeight();
 
 		virtualHeight += tvStartPoint.getHeight();
 		virtualHeight += tvCacheName.getHeight();
 		virtualHeight += sType.getHeight();
 
-		virtualHeight += 17 * margin;
+		virtualHeight += 15 * margin;
 
 		scrollBox.setVirtualHeight(virtualHeight);
 
@@ -591,8 +543,6 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		etDescription.setY(tvDescription.getY() - etDescription.getHeight() - margin);
 		tvClue.setY(etDescription.getY() - tvClue.getHeight() - margin);
 		etClue.setY(tvClue.getY() - etClue.getHeight() - margin);
-		tvUserNote.setY(etClue.getY() - tvUserNote.getHeight() - margin);
-		etUserNote.setY(tvUserNote.getY() - etUserNote.getHeight() - margin);
 	}
 
 	@Override
