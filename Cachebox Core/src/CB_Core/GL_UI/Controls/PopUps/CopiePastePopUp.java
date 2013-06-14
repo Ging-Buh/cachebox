@@ -1,12 +1,15 @@
 package CB_Core.GL_UI.Controls.PopUps;
 
+import CB_Core.GlobalCore;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.ImageButton;
+import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.interfaces.ICopyPaste;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -43,7 +46,8 @@ public class CopiePastePopUp extends PopUp_Base
 			{
 				// Logger.LogCat("Paste Button Clicked");
 				close();
-				copyPasteControl.pasteFromClipboard();
+				String Msg = copyPasteControl.pasteFromClipboard();
+				if (Msg != null) GL.that.Toast(Translation.Get("PasteFromClipboard") + GlobalCore.br + Msg);
 				return false;
 			}
 		});
@@ -62,7 +66,8 @@ public class CopiePastePopUp extends PopUp_Base
 			{
 				// Logger.LogCat("Copy Button Clicked");
 				close();
-				copyPasteControl.copyToClipboard();
+				String Msg = copyPasteControl.copyToClipboard();
+				if (Msg != null) GL.that.Toast(Translation.Get("CopyToClipboard") + GlobalCore.br + Msg);
 				return false;
 			}
 		});
@@ -81,7 +86,8 @@ public class CopiePastePopUp extends PopUp_Base
 			{
 				// Logger.LogCat("Cut Button Clicked");
 				close();
-				copyPasteControl.cutToClipboard();
+				String Msg = copyPasteControl.cutToClipboard();
+				if (Msg != null) GL.that.Toast(Translation.Get("CutToClipboard") + GlobalCore.br + Msg);
 				return false;
 			}
 		});

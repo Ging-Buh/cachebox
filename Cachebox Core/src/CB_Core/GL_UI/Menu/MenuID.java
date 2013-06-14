@@ -213,4 +213,5 @@ public class MenuID
 	public static final int MI_WEBCAM_FOTO_TAKEN = 182;
 	public static final int MI_REVIEWER_NOTE = 183;
 	public static final int MI_WILL_ATTENDED = 184;
+	public static final int MI_WP_SHOW = 185;
 }

@@ -314,6 +314,10 @@ public abstract class Database
 				{
 					execSQL("ALTER TABLE [Waypoint] ADD COLUMN [IsStart] BOOLEAN DEFAULT 'false' NULL");
 				}
+				if (lastDatabaseSchemeVersion < 1025)
+				{
+					execSQL("ALTER TABLE [Waypoint] ADD COLUMN [UserNote] ntext NULL");
+				}
 
 				setTransactionSuccessful();
 			}

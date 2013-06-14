@@ -57,6 +57,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -113,6 +114,7 @@ public class GL implements ApplicationListener, InputProcessor
 	private CB_View_Base actActivity;
 	public Dialog actDialog;
 	private ArrayList<Dialog> dialogHistory = new ArrayList<Dialog>();
+	private ArrayList<CB_View_Base> activityHistory = new ArrayList<CB_View_Base>();
 	private PopUp_Base aktPopUp = null;
 	private CB_Core.GL_UI.Controls.Dialogs.Toast toast;
 	private Timer longClickTimer;
@@ -873,18 +875,21 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			child = mSplash;
 			child.setClickable(true);
+			child.setLongClickable(true);
 		}
 
 		if (mDialog == null)
 		{
 			mDialog = new MainViewBase(0, 0, width, height, "Dialog");
 			mDialog.setClickable(true);
+			mDialog.setLongClickable(true);
 		}
 
 		if (mActivity == null)
 		{
 			mActivity = new MainViewBase(0, 0, width, height, "Dialog");
 			mActivity.setClickable(true);
+			mActivity.setLongClickable(true);
 		}
 
 	}
@@ -1003,7 +1008,7 @@ public class GL implements ApplicationListener, InputProcessor
 				Point akt = new Point(x, y);
 				if (distance(akt, first.point) < first.view.getClickTolerance())
 				{
-					if (first.view.isClickable())
+					if (first.view.isLongClickable())
 					{
 						boolean handled = first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y
 								- (int) first.view.ThisWorldRec.getY(), pointer, 0);
@@ -1335,7 +1340,7 @@ public class GL implements ApplicationListener, InputProcessor
 			actDialog.setEnabled(false);
 			// am Anfang der Liste einfügen
 			dialogHistory.add(0, actDialog);
-			// mDialog.removeChilds();
+			mDialog.removeChildsDirekt(actDialog);
 		}
 
 		actDialog = dialog;
@@ -1407,6 +1412,15 @@ public class GL implements ApplicationListener, InputProcessor
 			actDialog.onHide();
 		}
 
+		if (actActivity != null && actActivity != activity)
+		{
+			actActivity.onHide();
+			actActivity.setEnabled(false);
+			// am Anfang der Liste einfügen
+			activityHistory.add(0, actActivity);
+			mActivity.removeChildsDirekt(actActivity);
+		}
+
 		actActivity = activity;
 
 		mActivity.addChildDirekt(activity);
@@ -1427,17 +1441,31 @@ public class GL implements ApplicationListener, InputProcessor
 	public void closeActivity(boolean MsgToPlatformConector)
 	{
 		if (!ActivityIsShown) return;
-		if (MsgToPlatformConector) platformConector.hideForDialog();
-		if (actActivity != null) actActivity.onHide();
-		actActivity = null;
-		mActivity.removeChildsDirekt();
-		child.setClickable(true);
-		child.invalidate();
 
-		if (!GlobalCore.isTab) child.onShow();
+		if (activityHistory.size() > 0)
+		{
+			mActivity.removeChild(actDialog);
+			// letzten Dialog wiederherstellen
+			actActivity = activityHistory.get(0);
+			actActivity.onShow();
+			actActivity.setEnabled(true);
+			activityHistory.remove(0);
+			ActivityIsShown = true;
+			if (MsgToPlatformConector) platformConector.showForDialog();
+		}
+		else
+		{
+			actActivity = null;
+			mActivity.removeChildsDirekt();
+			child.setClickable(true);
+			child.invalidate();
+			ActivityIsShown = false;
+			darknesAlpha = 0f;
+			if (MsgToPlatformConector) platformConector.hideForDialog();
+			if (!GlobalCore.isTab) child.onShow();
+		}
 
-		ActivityIsShown = false;
-		darknesAlpha = 0f;
+		;
 
 		clearRenderViews();
 		renderOnce("Close Activity");
@@ -1447,6 +1475,9 @@ public class GL implements ApplicationListener, InputProcessor
 	{
 		dialogHistory.clear();
 		if (actDialog != null) closeDialog(actDialog);
+
+		activityHistory.clear();
+		if (actActivity != null) closeActivity(true);
 	}
 
 	public void closeDialog(CB_View_Base dialog)
@@ -1571,12 +1602,16 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			toast = new CB_Core.GL_UI.Controls.Dialogs.Toast(new CB_RectF(0, 0, 100, GL_UISizes.BottomButtonHeight / 1.5f), "StringToast");
 		}
-		toast.setText(string);
+		toast.setWrappedText(string);
 
-		float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
-		toast.setWidth(measuredWidth);
+		TextBounds bounds = Fonts.MeasureWrapped(string, UiSizes.that.getWindowWidth());
 
-		toast.setPos((width / 2) - (measuredWidth / 2), GL_UISizes.BottomButtonHeight * 1.3f);
+		// float measuredWidth = Fonts.Measure(string).width + (toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
+		float border = +(toast.getLeftWidth() * 2) + (UI_Size_Base.that.getMargin() * 2);
+		toast.setWidth(bounds.width + border);
+		toast.setHeight(bounds.height + border);
+
+		toast.setPos((width / 2) - (bounds.width / 2), GL_UISizes.BottomButtonHeight * 1.3f);
 
 		Toast(toast, length);
 	}

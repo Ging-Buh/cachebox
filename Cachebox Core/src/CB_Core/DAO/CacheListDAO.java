@@ -30,7 +30,7 @@ public class CacheListDAO
 
 		CoreCursor reader = Database.Data
 				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint order by CacheId",
+						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart,UserNote from Waypoint order by CacheId",
 						null);
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
@@ -83,6 +83,10 @@ public class CacheListDAO
 
 		}
 		reader.close();
+
+		// clear other never used WP`s from Mem
+		waypoints.clear();
+		waypoints = null;
 
 		// do it manual (or automated after fix), got hanging app on startup
 		// Logger.DEBUG("ReadCacheList 3.Sorting");

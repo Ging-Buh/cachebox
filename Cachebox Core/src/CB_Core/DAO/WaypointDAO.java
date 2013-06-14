@@ -31,6 +31,7 @@ public class WaypointDAO
 		args.put("clue", WP.Clue);
 		args.put("title", WP.Title);
 		args.put("isStart", WP.IsStart);
+		args.put("UserNote", WP.UserNote);
 
 		try
 		{
@@ -70,6 +71,7 @@ public class WaypointDAO
 			args.put("clue", WP.Clue);
 			args.put("title", WP.Title);
 			args.put("isStart", WP.IsStart);
+			args.put("UserNote", WP.UserNote);
 			try
 			{
 				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.GcCode + "\"", null);
@@ -117,6 +119,7 @@ public class WaypointDAO
 		if (WP.Clue != null) WP.Clue = WP.Clue.trim();
 		WP.Title = reader.getString(9).trim();
 		WP.IsStart = reader.getInt(10) == 1;
+		WP.UserNote = reader.getString(11);
 		WP.checkSum = createCheckSum(WP);
 		return WP;
 	}
@@ -131,6 +134,7 @@ public class WaypointDAO
 		sCheckSum += WP.Type.ordinal();
 		sCheckSum += WP.Clue;
 		sCheckSum += WP.Title;
+		sCheckSum += WP.UserNote; // TODO weiss nicht ob es sein muss? Andre
 		if (WP.IsStart) sCheckSum += "1";
 		return (int) GlobalCore.sdbm(sCheckSum);
 	}
@@ -170,7 +174,7 @@ public class WaypointDAO
 		args.put("clue", WP.Clue);
 		args.put("title", WP.Title);
 		args.put("isStart", WP.IsStart);
-
+		args.put("UserNote", WP.UserNote);
 		try
 		{
 			Database.Data.insertWithConflictReplace("Waypoint", args);

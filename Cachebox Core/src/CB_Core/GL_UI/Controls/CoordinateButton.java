@@ -10,6 +10,7 @@ import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.interfaces.ICopyPaste;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
+import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -163,9 +164,9 @@ public class CoordinateButton extends Button implements ICopyPaste
 	}
 
 	@Override
-	public void pasteFromClipboard()
+	public String pasteFromClipboard()
 	{
-		if (clipboard == null) return;
+		if (clipboard == null) return null;
 		String content = clipboard.getContents();
 		Coordinate cor = null;
 		if (content != null)
@@ -178,25 +179,38 @@ public class CoordinateButton extends Button implements ICopyPaste
 			{
 			}
 
-			if (cor != null) this.setCoordinate(cor);
+			if (cor != null)
+			{
+				this.setCoordinate(cor);
+				return content;
+			}
+			else
+			{
+				return Translation.Get("cantPaste") + GlobalCore.br + content;
+			}
 		}
-
+		else
+			return null;
 	}
 
 	@Override
-	public void copyToClipboard()
+	public String copyToClipboard()
 	{
-		if (clipboard == null) return;
-		clipboard.setContents(this.getText());
+		if (clipboard == null) return null;
+		String content = this.getText();
+		clipboard.setContents(content);
+		return content;
 	}
 
 	@Override
-	public void cutToClipboard()
+	public String cutToClipboard()
 	{
-		if (clipboard == null) return;
-		clipboard.setContents(this.getText());
+		if (clipboard == null) return null;
+		String content = this.getText();
+		clipboard.setContents(content);
 		Coordinate cor = new Coordinate("N 0° 0.00 / E 0° 0.00");
 		cor.setValid(false);
 		this.setCoordinate(cor);
+		return content;
 	}
 }

@@ -35,11 +35,6 @@ public class Toast extends Dialog
 		// tue nichts
 	}
 
-	public void setText(String txt)
-	{
-		mTextField.setText(txt);
-	}
-
 	public void setWrappedText(String txt)
 	{
 		mTextField.setWrappedText(txt, HAlignment.CENTER);
@@ -50,6 +45,15 @@ public class Toast extends Dialog
 	{
 		super.setWidth(width);
 		mTextField.setWidth(width);
+		mTextField.setZeroPos();
+	}
+
+	@Override
+	public void setHeight(float height)
+	{
+		super.setHeight(height);
+		mTextField.setHeight(height - this.topBorder - this.bottomBorder);
+		mTextField.setZeroPos();
 	}
 
 	@Override

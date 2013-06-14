@@ -22,7 +22,6 @@ import CB_Core.GL_UI.DrawUtils;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Controls.InfoBubble;
@@ -2756,9 +2755,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if ((coord == null) || (!coord.isValid())) coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.isValid())) return;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
-				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"), "");
 
-		EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", newWP, new ReturnListner()
+		EditWaypoint EdWp = new EditWaypoint(newWP, new ReturnListner()
 		{
 
 			@Override

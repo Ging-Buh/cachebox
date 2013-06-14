@@ -52,6 +52,13 @@ public class ScrollBox extends CB_View_Base
 
 	}
 
+	@Override
+	public void setBorders(float l, float r)
+	{
+		super.setBorders(l, r);
+		Layout();
+	}
+
 	private void Layout()
 	{
 		lv.setSize(innerWidth, innerHeight);

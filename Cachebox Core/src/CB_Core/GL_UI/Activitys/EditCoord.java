@@ -1,5 +1,6 @@
 package CB_Core.GL_UI.Activitys;
 
+import CB_Core.GlobalCore;
 import CB_Core.Converter.UTMConvert;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -10,21 +11,26 @@ import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_Core.GL_UI.Controls.EditWrapedTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
+import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_Core.GL_UI.GL_Listener.GL;
+import CB_Core.GL_UI.interfaces.ICopyPaste;
 import CB_Core.Math.CB_RectF;
+import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Coordinate;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Clipboard;
 
-public class EditCoord extends ActivityBase
+public class EditCoord extends ActivityBase implements ICopyPaste
 {
 	private int aktPage = -1; // Deg-Min
 	private UTMConvert convert = new UTMConvert();
-
+	private CopiePastePopUp popUp;
 	private Coordinate cancelCoord;
 	private Coordinate coord;
 	private ReturnListner mReturnListner;
+	private Clipboard clipboard;
 
 	// Allgemein
 
@@ -72,6 +78,8 @@ public class EditCoord extends ActivityBase
 		coord = Coord;
 		cancelCoord = coord.copy();
 		mReturnListner = returnListner;
+
+		clipboard = GlobalCore.getDefaultClipboard();
 
 		bDec = new MultiToggleButton("bDec");
 		bMin = new MultiToggleButton("bMin");
@@ -151,11 +159,58 @@ public class EditCoord extends ActivityBase
 			}
 		});
 
+		this.setOnLongClickListener(LongClickListner);
+
+	}
+
+	OnClickListener LongClickListner = new OnClickListener()
+	{
+		@Override
+		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+		{
+			showPopUp(x, y);
+			return true;
+		}
+	};
+
+	protected void showPopUp(int x, int y)
+	{
+		if ((popUp != null) && (popUp.getchilds() == null)) popUp = null;
+		if (popUp == null)
+		{
+			popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), this);
+		}
+
+		float noseOffset = popUp.getHalfWidth() / 2;
+
+		// Logger.LogCat("Show CopyPaste PopUp");
+
+		CB_RectF world = getWorldRec();
+
+		// not enough place on Top?
+		float windowH = UI_Size_Base.that.getWindowHeight();
+		float windowW = UI_Size_Base.that.getWindowWidth();
+		float worldY = world.getY();
+
+		if (popUp.getHeight() + worldY > windowH * 0.8f)
+		{
+			popUp.flipX();
+			worldY -= popUp.getHeight() + (popUp.getHeight() * 0.2f);
+		}
+
+		x += world.getX() - noseOffset;
+
+		if (x < 0) x = 0;
+		if (x + popUp.getWidth() > windowW) x = (int) (windowW - popUp.getWidth());
+
+		y += worldY + (popUp.getHeight() * 0.2f);
+		popUp.show(x, y);
 	}
 
 	@Override
 	protected void Initial()
 	{
+		this.pnlNumPad.setOnLongClickListener(LongClickListner);
 
 		bDec.setOnClickListener(new OnClickListener()
 		{
@@ -204,6 +259,7 @@ public class EditCoord extends ActivityBase
 
 	private void createD(Box panel)
 	{
+		panel.setOnLongClickListener(LongClickListner);
 
 		this.btnDLat = new Button[9]; // N_48[.]46270[°]
 		this.btnDLon = new Button[9]; // E009[.]28468[°]
@@ -240,6 +296,7 @@ public class EditCoord extends ActivityBase
 
 	private void createDM(Box panel)
 	{
+		panel.setOnLongClickListener(LongClickListner);
 
 		this.btnDMLat = new Button[9]; // N_48[°]29[.]369
 		this.btnDMLon = new Button[9]; // E__9[°]15[.]807
@@ -279,6 +336,7 @@ public class EditCoord extends ActivityBase
 
 	private void createDMS(Box panel)
 	{
+		panel.setOnLongClickListener(LongClickListner);
 
 		this.btnDMSLat = new Button[10]; // N_48[°]28[']56[.]16["]
 		this.btnDMSLon = new Button[10]; // E__9[°]19[']40[.]14["]
@@ -327,6 +385,7 @@ public class EditCoord extends ActivityBase
 
 	private void createUTM(Box panel)
 	{
+		panel.setOnLongClickListener(LongClickListner);
 
 		this.btnUTMLat = new Button[8]; // N < 10,000,000
 		this.btnUTMLon = new Button[8]; // E > 160,000 and < 834,000 (2 unsichtbar)
@@ -650,8 +709,6 @@ public class EditCoord extends ActivityBase
 
 	private void showPage(int newPage)
 	{
-		String s;
-
 		if (this.aktPage == newPage) return;
 
 		if (aktPage >= 0)
@@ -668,6 +725,13 @@ public class EditCoord extends ActivityBase
 		GL.that.setKeyboardFocus(null);
 		this.Leertaste.setInvisible();
 
+		setButtonValues(newPage);
+		aktPage = newPage;
+	}
+
+	private void setButtonValues(int newPage)
+	{
+		String s;
 		switch (newPage)
 		{
 		case 0:
@@ -838,7 +902,6 @@ public class EditCoord extends ActivityBase
 
 			break;
 		}
-		aktPage = newPage;
 	}
 
 	private int setFocus(Button[] bLat, Button[] bLon, int newFocus)
@@ -1012,6 +1075,58 @@ public class EditCoord extends ActivityBase
 		}
 		else
 			return false;
+	}
+
+	@Override
+	public String pasteFromClipboard()
+	{
+		if (clipboard == null) return null;
+		String content = clipboard.getContents();
+		Coordinate cor = null;
+		if (content != null)
+		{
+			try
+			{
+				cor = new Coordinate(content);
+			}
+			catch (Exception e)
+			{
+			}
+
+			if (cor != null && cor.isValid())
+			{
+				coord = cor;
+				setButtonValues(aktPage);
+				return content;
+			}
+			else
+				return Translation.Get("cantPaste") + GlobalCore.br + content;
+		}
+		return null;
+	}
+
+	@Override
+	public String copyToClipboard()
+	{
+		if (clipboard == null) return null;
+		parseView(); // setting coord
+		String content = coord.FormatCoordinate();
+		clipboard.setContents(content);
+		return content;
+	}
+
+	@Override
+	public String cutToClipboard()
+	{
+		if (clipboard == null) return null;
+		parseView(); // setting coord
+		String content = coord.FormatCoordinate();
+		clipboard.setContents(content);
+		Coordinate cor = new Coordinate("N 0° 0.00 / E 0° 0.00");
+		cor.setValid(false);
+		coord = cor;
+		setButtonValues(aktPage);
+		return content;
 	}
 
 }

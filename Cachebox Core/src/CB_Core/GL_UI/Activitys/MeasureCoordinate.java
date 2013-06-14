@@ -29,7 +29,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 {
 	private Button bOK = null;
 	private Button bCancel = null;
-	private MeasureCoordinate that;
 	private MeasuredCoordList mMeasureList = new MeasuredCoordList();
 	private Label lblMeasureCount;
 	private Label lblMeasureCoord;

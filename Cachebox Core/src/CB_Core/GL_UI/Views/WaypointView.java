@@ -319,7 +319,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		cm.addItemClickListner(new OnClickListener()
 		{
-
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
@@ -328,8 +327,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				case MenuID.MI_ADD:
 					addWP();
 					return true;
+				case MenuID.MI_WP_SHOW:
+					editWP(false);
+					return true;
 				case MenuID.MI_EDIT:
-					editWP();
+					editWP(true);
 					return true;
 				case MenuID.MI_DELETE:
 					deleteWP();
@@ -346,6 +348,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			}
 		});
 
+		if (aktWaypoint != null) cm.addItem(MenuID.MI_WP_SHOW, "show");
 		if (aktWaypoint != null) cm.addItem(MenuID.MI_EDIT, "edit");
 		cm.addItem(MenuID.MI_ADD, "addWaypoint");
 		if ((aktWaypoint != null) && (aktWaypoint.IsUserWaypoint)) cm.addItem(MenuID.MI_DELETE, "delete");
@@ -372,24 +375,24 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		if (coord == null) coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.isValid())) coord = GlobalCore.getSelectedCache().Pos;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
-				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
-		editWP(newWP);
+				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"), "");
+		editWP(newWP, true);
 
 	}
 
-	private void editWP()
+	private void editWP(boolean showCoordinateDialog)
 	{
 		if (aktWaypoint != null)
 		{
 			createNewWaypoint = false;
-			editWP(aktWaypoint);
+			editWP(aktWaypoint, showCoordinateDialog);
 		}
 	}
 
-	private void editWP(Waypoint wp)
+	private void editWP(Waypoint wp, boolean showCoordinateDialog)
 	{
 
-		EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", wp, new ReturnListner()
+		EditWaypoint EdWp = new EditWaypoint(wp, new ReturnListner()
 		{
 
 			@Override
@@ -435,6 +438,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						aktWaypoint.Description = waypoint.Description;
 						aktWaypoint.IsStart = waypoint.IsStart;
 						aktWaypoint.Clue = waypoint.Clue;
+						aktWaypoint.UserNote = waypoint.UserNote;
 
 						// set waypoint as UserWaypoint, because waypoint is changed by user
 						aktWaypoint.IsUserWaypoint = true;
@@ -453,7 +457,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					}
 				}
 			}
-		}, true);
+		}, showCoordinateDialog);
 		EdWp.show();
 
 	}
@@ -527,7 +531,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 							return;
 						}
 						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(),
-								targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
+								targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert", "");
 						GlobalCore.getSelectedCache().waypoints.add(newWP);
 						that.setBaseAdapter(lvAdapter);
 						aktWaypoint = newWP;
@@ -566,7 +570,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					return;
 				}
 				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(),
-						returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
+						returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured", "");
 				GlobalCore.getSelectedCache().waypoints.add(newWP);
 				that.setBaseAdapter(lvAdapter);
 				aktWaypoint = newWP;

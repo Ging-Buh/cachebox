@@ -2,9 +2,9 @@ package CB_Core.GL_UI.interfaces;
 
 public interface ICopyPaste
 {
-	public void pasteFromClipboard();
+	public String pasteFromClipboard();
 
-	public void copyToClipboard();
+	public String copyToClipboard();
 
-	public void cutToClipboard();
+	public String cutToClipboard();
 }

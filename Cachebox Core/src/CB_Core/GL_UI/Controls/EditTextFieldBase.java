@@ -302,11 +302,11 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 		popUp.show(x, y);
 	}
 
-	public abstract void pasteFromClipboard();
+	public abstract String pasteFromClipboard();
 
-	public abstract void copyToClipboard();
+	public abstract String copyToClipboard();
 
-	public abstract void cutToClipboard();
+	public abstract String cutToClipboard();
 
 	protected void sendKeyTyped(final char character)
 	{

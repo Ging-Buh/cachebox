@@ -1244,31 +1244,34 @@ public class EditWrapedTextField extends EditTextFieldBase
 	 * Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField.
 	 */
 	@Override
-	public void copyToClipboard()
+	public String copyToClipboard()
 	{
-		if (clipboard == null) return;
+		if (clipboard == null) return null;
 		if (selection != null)
 		{
 			String content = "";
 			content = this.getSelectedText();
 			clipboard.setContents(content);
+			return ""; // only copy Msg
 		}
+		return null;
 	}
 
 	@Override
-	public void cutToClipboard()
+	public String cutToClipboard()
 	{
-		copyToClipboard();
+		String ret = copyToClipboard();
 		delete();
+		return ret;
 	}
 
 	/**
 	 * Pastes the content of the {@link Clipboard} implementation set on this Textfield to this TextField.
 	 */
 	@Override
-	public void pasteFromClipboard()
+	public String pasteFromClipboard()
 	{
-		if (clipboard == null) return;
+		if (clipboard == null) return null;
 		if (selection != null)
 		{
 			// zuerst evtl. markierten Text löschen
@@ -1306,22 +1309,9 @@ public class EditWrapedTextField extends EditTextFieldBase
 				cursor.pos += content.length();
 				checkCursorVisible(true);
 			}
-			// else
-			// {
-			// int minIndex = Math.min(cursor, selectionStart);
-			// int maxIndex = Math.max(cursor, selectionStart);
-			//
-			// text = (minIndex > 0 ? text.substring(0, minIndex) : "")
-			// + (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-			// cursor = minIndex;
-			// text = text.substring(0, cursor) + content + text.substring(cursor, text.length());
-			// // updateDisplayText();
-			// cursor = minIndex + content.length();
-			// checkCursorVisible(true);
-			// clearSelection();
-			// }
-
+			return ""; // only paste Msg
 		}
+		return null;
 	}
 
 	private void delete()

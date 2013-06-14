@@ -17,6 +17,5 @@
 	<classpathentry kind="lib" path="libs/mapsforge-map-android-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry kind="lib" path="libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="C:/@work/Longri/Mapsforge maven/rewrite_source_Egit/mapsforge/mapsforge-map-android/target/mapsforge-map-android-0.4.0-SNAPSHOT-CACHEBOX-PATCH-sources.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

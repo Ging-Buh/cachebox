@@ -9,7 +9,6 @@ import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.WaypointListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditWaypoint;
 import CB_Core.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_Core.GL_UI.Controls.Dialogs.SolverDialog;
@@ -430,7 +429,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			{
 				return;
 			}
-			EditWaypoint EdWp = new EditWaypoint(ActivityBase.ActivityRec(), "EditWP", wp, new ReturnListner()
+			EditWaypoint EdWp = new EditWaypoint(wp, new ReturnListner()
 			{
 				@Override
 				public void returnedWP(Waypoint waypoint)
