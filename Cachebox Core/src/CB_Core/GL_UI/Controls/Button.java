@@ -250,12 +250,11 @@ public class Button extends CB_View_Base
 			this.removeChild(lblTxt);
 		}
 
+		if (font != null) mFont = font;
+		if (mFont == null) mFont = Fonts.getBig();
 		lblTxt = new Label(Text, mFont, color, WrapType.singleLine).setHAlignment(alignment);
 		this.initRow(BOTTOMUP);
 		this.addLast(lblTxt);
-
-		if (font != null) mFont = font;
-		if (mFont == null) mFont = Fonts.getBig();
 
 		GL.that.renderOnce(this.getName() + " setText2");
 	}
