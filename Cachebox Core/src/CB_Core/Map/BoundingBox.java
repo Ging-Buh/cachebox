@@ -40,7 +40,7 @@ public class BoundingBox
 		}
 		catch (IOException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		Stride = MaxX - MinX + 1;
@@ -60,16 +60,16 @@ public class BoundingBox
 	{
 		try
 		{
-			writer.writeInt(Zoom);
-			writer.writeInt(MinX);
-			writer.writeInt(MaxX);
-			writer.writeInt(MinY);
-			writer.writeInt(MaxY);
-			writer.writeLong(OffsetToIndex);
+			writer.writeInt(Integer.reverseBytes(Zoom));
+			writer.writeInt(Integer.reverseBytes(MinX));
+			writer.writeInt(Integer.reverseBytes(MaxX));
+			writer.writeInt(Integer.reverseBytes(MinY));
+			writer.writeInt(Integer.reverseBytes(MaxY));
+			writer.writeLong(Long.reverseBytes(OffsetToIndex));
 		}
 		catch (IOException e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 	}
@@ -85,7 +85,7 @@ public class BoundingBox
 		}
 		catch (IOException e)
 		{
-			 
+
 			e.printStackTrace();
 			return null;
 		}

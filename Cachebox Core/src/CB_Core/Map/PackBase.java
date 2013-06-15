@@ -1,12 +1,19 @@
 package CB_Core.Map;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.imageio.ImageIO;
 
 import org.apache.http.util.EncodingUtils;
 
@@ -70,6 +77,65 @@ public class PackBase implements Comparable<PackBase>
 
 		reader.close();
 		stream.close();
+
+	}
+
+	// unpack all files to cache
+	// extractImages();
+	@SuppressWarnings("unused")
+	private void extractImages()
+	{
+		for (BoundingBox bbox : BoundingBoxes)
+		{
+			int z = bbox.Zoom;
+			for (int x = bbox.MinX; x <= bbox.MaxX; x++)
+			{
+				for (int y = bbox.MinY; y <= bbox.MaxY; y++)
+				{
+					Descriptor desc = new Descriptor(x, y, z);
+					byte[] b = LoadFromBoundingBoxByteArray(bbox, desc);
+					String fname = Layer.GetLocalFilename(desc);
+					File ff = new File(fname);
+					if (!ff.getParentFile().exists())
+					{
+						ff.getParentFile().mkdirs();
+					}
+					try
+					{
+						FileOutputStream fos = new FileOutputStream(ff.getAbsoluteFile());
+						fos.write(b);
+						fos.close();
+					}
+					catch (Exception e)
+					{
+						// TODO: handle exception
+					}
+				}
+			}
+
+		}
+
+	}
+
+	// make a new one from the existing BoundingBoxes
+	// WritePackFromBoundingBoxes();
+	public void WritePackFromBoundingBoxes() throws IOException
+	{
+		/*
+		 * FileStream stream = new FileStream(filename, FileMode.Create); BinaryWriter writer = new BinaryWriter(stream);
+		 */
+		FileOutputStream stream = new FileOutputStream(Filename + ".new");
+		DataOutputStream writer = new DataOutputStream(stream);
+
+		Write(writer);
+		writer.flush();
+		writer.close();
+
+		if (Cancel)
+		{
+			File file = new File(Filename);
+			file.delete();
+		}
 	}
 
 	// / <summary>
@@ -171,8 +237,8 @@ public class PackBase implements Comparable<PackBase>
 		writeString(Layer.Name, writer, 32);
 		writeString(Layer.FriendlyName, writer, 128);
 		writeString(Layer.Url, writer, 256);
-		writer.writeLong(MaxAge);
-		writer.writeInt(BoundingBoxes.size());
+		writer.writeLong(Long.reverseBytes(MaxAge));
+		writer.writeInt(Integer.reverseBytes(BoundingBoxes.size()));
 
 		// Offsets berechnen
 		long offset = 32 + 128 + 256 + 8 + 4 + 8 + BoundingBoxes.size() * 28 /* BoundingBox.SizeOf */;
@@ -196,7 +262,7 @@ public class PackBase implements Comparable<PackBase>
 				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++)
 				{
 					// Offset zum Bild absaven
-					writer.writeLong(offset);
+					writer.writeLong(Long.reverseBytes(offset));
 
 					// Dateigröße ermitteln
 					String local = Layer.GetLocalFilename(new Descriptor(x, y, bbox.Zoom));
@@ -225,7 +291,7 @@ public class PackBase implements Comparable<PackBase>
 		}
 
 		// Zur Längenberechnung
-		writer.writeLong(offset);
+		writer.writeLong(Long.reverseBytes(offset));
 
 		// So, und nun kopieren wir noch den Mist rein
 		for (int i = 0; i < BoundingBoxes.size() && !Cancel; i++)
@@ -236,18 +302,18 @@ public class PackBase implements Comparable<PackBase>
 			{
 				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++)
 				{
-					/*
-					 * String local = Layer.GetLocalFilename(new Descriptor(x, y, bbox.Zoom)); Stream imageStream = null;
-					 * 
-					 * if (!File.Exists(local) || File.GetCreationTime(local) < MaxAge) if (!Layer.DownloadTile(new Descriptor(x, y,
-					 * bbox.Zoom))) continue;
-					 * 
-					 * imageStream = new FileStream(local, FileMode.Open);
-					 * 
-					 * byte[] temp = Global.ReadFully(imageStream, 32000); writer.Write(temp);
-					 * 
-					 * if (OnProgressChanged != null) OnProgressChanged("Linking package...", cnt++, numTilesTotal);
-					 */
+					String local = Layer.GetLocalFilename(new Descriptor(x, y, bbox.Zoom));
+					File f = new File(local);
+					if (!f.exists() || f.lastModified() < MaxAge) if (!Layer.DownloadTile(new Descriptor(x, y, bbox.Zoom))) continue;
+					FileInputStream imageStream = new FileInputStream(local);
+					int anzAvailable = (int) f.length();
+					byte[] temp = new byte[anzAvailable];
+					imageStream.read(temp);
+					writer.write(temp);
+					imageStream.close();
+
+					// if (OnProgressChanged != null) OnProgressChanged("Linking package...", cnt++, numTilesTotal);
+
 				}
 			}
 		}
@@ -272,7 +338,7 @@ public class PackBase implements Comparable<PackBase>
 
 			long tileOffset = Long.reverseBytes(reader.readLong());
 			long nextOffset = Long.reverseBytes(reader.readLong());
-			long length = nextOffset - tileOffset;
+			int length = (int) (nextOffset - tileOffset);
 
 			if (length == 0)
 			{
@@ -281,19 +347,41 @@ public class PackBase implements Comparable<PackBase>
 			}
 
 			stream.skip(tileOffset - offset - 16);
-			byte[] buffer = new byte[(int) length];
-			stream.read(buffer, 0, (int) length);
+			byte[] buffer = new byte[length];
+			stream.read(buffer, 0, length);
 
 			reader.close();
+
+			// check for support / conversion
+			byte[] signature = new byte[]
+				{ (byte) 137, (byte) 80, (byte) 78, (byte) 71, (byte) 13, (byte) 10, (byte) 26, (byte) 10 };
+			if (Arrays.equals(signature, get(buffer, 0, 8)))
+			{
+				// es ist ein png
+				byte BitDepth = buffer[24];
+				// byte ColourType = buffer[25];
+				// byte CompressionMethod = buffer[26];
+				// BitDepth not supported by pixmap
+				switch (BitDepth)
+				{
+				case 4:
+					// Logger.DEBUG("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
+					InputStream in = new ByteArrayInputStream(buffer);
+					BufferedImage img = ImageIO.read(in);
+					ByteArrayOutputStream bas = new ByteArrayOutputStream();
+					ImageIO.write(img, "jpg", bas);
+					byte[] data = bas.toByteArray();
+					return data;
+					// break;
+				case 8:
+					// supported
+					break;
+				default:
+					// perhaps supported
+					break;
+				}
+			}
 			return buffer;
-			// Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int)length);
-			//
-			// ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			// result.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-			// Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size());
-			// result.recycle();
-			// baos.close();
-			// return bitj;
 		}
 		catch (Exception exc)
 		{
@@ -304,6 +392,16 @@ public class PackBase implements Comparable<PackBase>
 
 		return null;
 
+	}
+
+	/**
+	 * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
+	 */
+	private static byte[] get(byte[] array, int offset, int length)
+	{
+		byte[] result = new byte[length];
+		System.arraycopy(array, offset, result, 0, length);
+		return result;
 	}
 
 	@Override

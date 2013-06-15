@@ -6,6 +6,7 @@ import javax.security.auth.Destroyable;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Views.MapView;
+import CB_Core.Log.Logger;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -48,6 +49,7 @@ public class TileGL implements Destroyable
 	public void createTexture()
 	{
 		if (texture != null) return;
+		if (bytes == null) return;
 		try
 		{
 			pixmap = new Pixmap(bytes, 0, bytes.length);
@@ -64,6 +66,7 @@ public class TileGL implements Destroyable
 		}
 		catch (Exception ex)
 		{
+			Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
 		}
 		bytes = null;
 	}

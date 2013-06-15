@@ -186,11 +186,13 @@ public abstract class ManagerBase
 			PackBase mapPack = mapPacks.get(i);
 			if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge))
 			{
-				BoundingBox bbox = mapPacks.get(i).Contains(desc);
+				BoundingBox bbox = mapPack.Contains(desc);
 
 				if (bbox != null)
 				{
-					return mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
+					byte b[] = mapPack.LoadFromBoundingBoxByteArray(bbox, desc);
+					// if (b == null) mapPacks.remove(i);
+					return b;
 				}
 			}
 		}
@@ -288,6 +290,7 @@ public abstract class ManagerBase
 		 * responseStream = null; } if (webResponse != null) { webResponse.Close(); webResponse = null; } if (webRequest != null) {
 		 * webRequest.Abort(); webRequest = null; } GC.Collect(); }
 		 */
+
 		return true;
 	}
 

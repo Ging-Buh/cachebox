@@ -261,4 +261,9 @@ public class Descriptor implements Comparable<Descriptor>
 		return 1;
 	}
 
+	@Override
+	public String toString()
+	{
+		return "X=" + this.X + " Y=" + this.Y + " Zoom=" + this.Zoom;
+	}
 }

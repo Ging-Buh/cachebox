@@ -544,6 +544,8 @@ public class MapTileLoader
 		else
 		{
 			ManagerBase.Manager.CacheTile(CurrentLayer, desc);
+			// to avoid endless trys
+			RemoveFromQueuedTiles(desc);
 		}
 
 	}
@@ -572,8 +574,25 @@ public class MapTileLoader
 		else
 		{
 			ManagerBase.Manager.CacheTile(CurrentOverlayLayer, desc);
+			// to avoid endless trys
+			RemoveFromQueuedTiles(desc);
 		}
+	}
 
+	private void RemoveFromQueuedTiles(Descriptor desc)
+	{
+		queuedTilesLock.lock();
+		try
+		{
+			if (queuedTiles.containsKey(desc.GetHashCode()))
+			{
+				queuedTiles.remove(desc.GetHashCode());
+			}
+		}
+		finally
+		{
+			queuedTilesLock.unlock();
+		}
 	}
 
 	private void addLoadedTile(Descriptor desc, byte[] bytes, TileGL.TileState state)
