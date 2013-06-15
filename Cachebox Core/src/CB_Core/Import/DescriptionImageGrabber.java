@@ -109,7 +109,7 @@ public class DescriptionImageGrabber
 	{
 		String imagePath = Config.settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
 		if (Config.settings.DescriptionImageFolderLocal.getValue().length() > 0) imagePath = Config.settings.DescriptionImageFolderLocal
-				.getValue();
+				.getValue() + "/" + GcCode.substring(0, 4);
 
 		// String uriName = url.Substring(url.LastIndexOf('/') + 1);
 		// int idx = uri.AbsolutePath.LastIndexOf('.');

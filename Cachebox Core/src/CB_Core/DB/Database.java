@@ -829,7 +829,7 @@ public abstract class Database
 		boolean found = false;
 		try
 		{
-			c = rawQuery("select Value from Config where [Key]=?", new String[]
+			c = rawQuery("select Value from Config where [Key] like ?", new String[]
 				{ key });
 		}
 		catch (Exception exc)
@@ -867,7 +867,7 @@ public abstract class Database
 		boolean found = false;
 		try
 		{
-			c = rawQuery("select LongString from Config where [Key]=?", new String[]
+			c = rawQuery("select LongString from Config where [Key] like ?", new String[]
 				{ key });
 		}
 		catch (Exception exc)
