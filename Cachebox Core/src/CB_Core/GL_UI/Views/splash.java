@@ -9,12 +9,12 @@ import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.SelectDB;
 import CB_Core.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
+import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -31,7 +31,6 @@ import CB_Core.Util.FileList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -130,14 +129,18 @@ public class splash extends TabMainView
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
-		this.addChild(CB_Logo);
+		Label dummy = new Label();
+		this.initRow();
+		this.addLast(dummy);
+		this.addNext(dummy);
+		this.addNext(CB_Logo, FIXED);
+		this.addLast(dummy);
 
 		String VersionString = GlobalCore.getVersionString();
-		TextBounds bounds = Fonts.getNormal().getMultiLineBounds(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg);
-		descTextView = new Label(0, CB_Logo.getY() - ref - bounds.height, this.width, bounds.height + 10, "DescLabel");
-		// HAlignment.CENTER funktioniert (hier) (noch) nicht, es kommt rechtsbündig raus
-		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, HAlignment.CENTER);
-		this.addChild(descTextView);
+		descTextView = new Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.multiLine)
+				.setHAlignment(HAlignment.CENTER);
+		descTextView.setHeight(descTextView.getTextHeight());
+		this.addLast(descTextView);
 
 		Drawable ProgressBack = new NinePatchDrawable(atlas.createPatch("btn-normal"));
 		Drawable ProgressFill = new NinePatchDrawable(atlas.createPatch("progress"));

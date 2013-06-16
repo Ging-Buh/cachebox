@@ -72,7 +72,6 @@ public class Pack extends PackBase
 	@Override
 	public byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc)
 	{
-		Logger.DEBUG("[Pack] LoadFromBoundingBoxByteArray");
 		try
 		{
 			if (bbox.Zoom != desc.Zoom) return null;
