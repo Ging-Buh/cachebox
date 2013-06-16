@@ -371,6 +371,7 @@ public class PackBase implements Comparable<PackBase>
 					ByteArrayOutputStream bas = new ByteArrayOutputStream();
 					ImageIO.write(img, "jpg", bas);
 					byte[] data = bas.toByteArray();
+					bas.close();
 					return data;
 					// break;
 				case 8:
@@ -397,7 +398,7 @@ public class PackBase implements Comparable<PackBase>
 	/**
 	 * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
 	 */
-	private static byte[] get(byte[] array, int offset, int length)
+	protected static byte[] get(byte[] array, int offset, int length)
 	{
 		byte[] result = new byte[length];
 		System.arraycopy(array, offset, result, 0, length);
