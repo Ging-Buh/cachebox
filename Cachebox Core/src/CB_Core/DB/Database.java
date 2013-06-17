@@ -460,7 +460,7 @@ public abstract class Database
 		CoreCursor c = null;
 		try
 		{
-			c = rawQuery("select Value from Config where [Key]=?", new String[]
+			c = rawQuery("select Value from Config where [Key] like ?", new String[]
 				{ "DatabaseSchemeVersionWin" });
 		}
 		catch (Exception exc)
@@ -493,7 +493,7 @@ public abstract class Database
 	{
 		Parameters val = new Parameters();
 		val.put("Value", latestDatabaseChange);
-		long anz = update("Config", val, "[Key]='DatabaseSchemeVersionWin'", null);
+		long anz = update("Config", val, "[Key] like 'DatabaseSchemeVersionWin'", null);
 		if (anz <= 0)
 		{
 			// Update not possible because Key does not exist
@@ -502,7 +502,7 @@ public abstract class Database
 		}
 		// for Compatibility with WinCB
 		val.put("Value", latestDatabaseChange);
-		anz = update("Config", val, "[Key]='DatabaseSchemeVersion'", null);
+		anz = update("Config", val, "[Key] like 'DatabaseSchemeVersion'", null);
 		if (anz <= 0)
 		{
 			// Update not possible because Key does not exist
@@ -800,7 +800,7 @@ public abstract class Database
 	{
 		Parameters val = new Parameters();
 		val.put("Value", value);
-		long anz = update("Config", val, "[Key]='" + key + "'", null);
+		long anz = update("Config", val, "[Key] like '" + key + "'", null);
 		if (anz <= 0)
 		{
 			// Update not possible because Key does not exist
@@ -813,7 +813,7 @@ public abstract class Database
 	{
 		Parameters val = new Parameters();
 		val.put("LongString", value);
-		long anz = update("Config", val, "[Key]='" + key + "'", null);
+		long anz = update("Config", val, "[Key] like '" + key + "'", null);
 		if (anz <= 0)
 		{
 			// Update not possible because Key does not exist
