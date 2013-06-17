@@ -298,10 +298,12 @@ public class CB_Button extends Button implements OnClickListener
 	// ---------- überschreiben des isPresed, weil dies zur Anzeige der Activen View benutzt wird ---------
 
 	protected static Sprite menuSprite;
+	protected static Sprite menuSpriteFilterd;
 
 	public static void reloadMenuSprite()
 	{
 		menuSprite = null;
+		menuSpriteFilterd = null;
 	}
 
 	@Override
@@ -318,18 +320,27 @@ public class CB_Button extends Button implements OnClickListener
 
 		if (hasContextMenu && isPressed)
 		{
+
 			// draw Menu Sprite
-			if (menuSprite == null)
+			if (menuSprite == null || menuSpriteFilterd == null)
 			{
 				float iconWidth = this.width / 5f;
 				float iconHeight = this.height / 2.3f;
-				float Versatz = this.height / 38f;
+				float VersatzX = this.height / 20f;
+				float VersatzY = this.height / 30f;
 
 				menuSprite = new Sprite(SpriteCache.Icons.get(IconName.menu_37.ordinal()));
-				menuSprite.setBounds(this.width - iconWidth - Versatz, Versatz, iconWidth, iconHeight);
+				menuSprite.setBounds(this.width - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+
+				menuSpriteFilterd = new Sprite(SpriteCache.Icons.get(IconName.menuFilterd_65.ordinal()));
+				menuSpriteFilterd.setBounds(this.width - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+
 			}
 
-			if (menuSprite != null) menuSprite.draw(batch);
+			boolean isFilterd = this == TabMainView.that.CacheListButton && TabMainView.that.isFilterd();
+
+			if (!isFilterd && menuSprite != null) menuSprite.draw(batch);
+			if (isFilterd && menuSpriteFilterd != null) menuSpriteFilterd.draw(batch);
 		}
 	}
 

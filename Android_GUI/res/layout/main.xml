@@ -21,74 +21,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        
-        
-        
-        
-        <!-- <LinearLayout
-            android:id="@+id/layoutButtons"
-            android:layout_width="match_parent"
-            android:layout_height="65dip"
-            android:layout_alignParentBottom="true"
-            android:background="?attr/BtnBackGround" >
-
-            <ImageButton
-                android:id="@+id/buttonDB"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="2dip"
-                android:layout_marginLeft="1dip"
-                android:layout_weight="1">
-                
-            </ImageButton>
-
-            <ImageButton
-                android:id="@+id/buttonCache"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="2dip"
-                android:layout_marginLeft="1dip"
-                android:layout_weight="1"
-               
-                android:text="@string/Cache" >
-            </ImageButton>
-
-            <ImageButton
-                android:id="@+id/buttonMap"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="2dip"
-                android:layout_marginLeft="1dip"
-                android:layout_weight="1"
-                
-                android:text="@string/Map" >
-            </ImageButton>
-
-            <ImageButton
-                android:id="@+id/buttonInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="2dip"
-                android:layout_marginLeft="1dip"
-                android:layout_weight="1"
-                
-                android:text="@string/Info" >
-            </ImageButton>
-
-            <ImageButton
-                android:id="@+id/buttonMisc"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="2dip"
-                android:layout_marginLeft="1dip"
-                android:layout_weight="1"
-                
-                android:text="@string/Misc" >
-            </ImageButton>
-        </LinearLayout>-->
-
-
-   <!--    android:layout_above="@+id/layoutButtons"  -->
+     
         <FrameLayout
             android:id="@+id/layoutContent"
             android:layout_width="match_parent"

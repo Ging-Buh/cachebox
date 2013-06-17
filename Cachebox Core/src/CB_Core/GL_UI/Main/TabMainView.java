@@ -361,7 +361,7 @@ public class TabMainView extends MainViewBase
 		addRightForTabletsTab();
 	}
 
-	CB_Button CacheListButton;
+	public CB_Button CacheListButton;
 
 	private void addLeftForTabletsTab()
 	{
@@ -599,6 +599,13 @@ public class TabMainView extends MainViewBase
 		GL.that.RestartRender();
 	}
 
+	private boolean isFilterd = false;
+
+	public boolean isFilterd()
+	{
+		return isFilterd;
+	}
+
 	public void filterSetChanged()
 	{
 		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.ToString().equals(""))
@@ -606,10 +613,12 @@ public class TabMainView extends MainViewBase
 				&& !GlobalCore.LastFilter.isExtendsFilter())
 		{
 			CacheListButton.setButtonSprites(SpriteCache.CacheList);
+			isFilterd = false;
 		}
 		else
 		{
 			CacheListButton.setButtonSprites(SpriteCache.CacheListFilter);
+			isFilterd = true;
 		}
 
 		// ##################################

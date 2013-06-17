@@ -56,7 +56,8 @@ public class CreditsView extends CB_View_Base
 		list.add(new Person("Homer-S", Job.tester));
 		list.add(new Person("Mozartkugel", Job.tester));
 		list.add(new Person("millimeterfuchser", Job.tester));
-		list.add(new Person("Larsie", Job.designer));
+		list.add(new Person("Larsie", Job.developmentAdvice));
+		list.add(new Person("KoiMuggele", Job.designer));
 
 		Collections.sort(list);
 
@@ -112,6 +113,10 @@ public class CreditsView extends CB_View_Base
 
 		captioned("develop");
 		addPersonToLayout(Job.developer);
+		divider();
+
+		captioned("developAdvice");
+		addPersonToLayout(Job.developmentAdvice);
 		divider();
 
 		captioned("graphic");
@@ -204,7 +209,7 @@ public class CreditsView extends CB_View_Base
 
 	public enum Job
 	{
-		idea, developer, designer, tester, sponsor, library, service, localization
+		idea, developer, designer, tester, sponsor, library, service, localization, developmentAdvice
 	}
 
 	public class Person implements Comparable<Person>
