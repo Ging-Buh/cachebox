@@ -112,6 +112,7 @@ public class H_ListView extends ListViewBase
 
 						if (itemPos <= this.width)
 						{
+							tmp.setY(this.getHalfHeight() - tmp.getHalfHeight());// center Pos
 							tmp.setX(itemPos);
 							// Logger.LogCat("Add: " + tmp.getName());
 							if (i == mSelectedIndex)

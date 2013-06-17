@@ -25,7 +25,7 @@
         
         
         
-        <LinearLayout
+        <!-- <LinearLayout
             android:id="@+id/layoutButtons"
             android:layout_width="match_parent"
             android:layout_height="65dip"
@@ -85,13 +85,14 @@
                 
                 android:text="@string/Misc" >
             </ImageButton>
-        </LinearLayout>
+        </LinearLayout>-->
 
+
+   <!--    android:layout_above="@+id/layoutButtons"  -->
         <FrameLayout
             android:id="@+id/layoutContent"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_above="@+id/layoutButtons"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/layoutTop"
             android:alwaysDrawnWithCache="true" >
@@ -144,18 +145,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-    <include
-        android:id="@+id/main_strength_control"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="85dip"
-        android:layout_marginRight="10dip"
-        layout="@layout/strength_control"
-        android:visibility="invisible" >
-    </include>
-
-    <!-- das strength_control ist invisible, weil es im main plaziert ist aber nur im sleider gezeichnet wird. -->
+    
     
    
 

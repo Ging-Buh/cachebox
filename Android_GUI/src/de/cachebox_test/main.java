@@ -547,9 +547,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		setQuickButtonHeight(sollHeight);
 
-		LinearLayout BtnLayout = (LinearLayout) this.findViewById(R.id.layoutButtons);
-		BtnLayout.setVisibility(View.INVISIBLE);
-
 		if (isFirstStart)
 		{
 			// ask for API key only if Rev-Number changed, like at new
@@ -2754,7 +2751,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 
 			@Override
-			public void show(final ViewID viewID, int x, int y, final int width, final int height)
+			public void show(final ViewID viewID, final int x, final int y, final int width, final int height)
 			{
 
 				runOnUiThread(new Runnable()
@@ -2770,19 +2767,25 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						{
 							if (viewID.getPos() == UI_Pos.Left)
 							{
-								android.view.ViewGroup.LayoutParams params = frame.getLayoutParams();
+								RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) frame.getLayoutParams();
 
 								params.height = height;
 								params.width = width;
+								params.leftMargin = 0;
+								params.topMargin = 0;
+								frame.setLayoutParams(params);
 							}
 							else
 							{
 								if (tabFrame != null)
 								{
-									android.view.ViewGroup.LayoutParams params = tabFrame.getLayoutParams();
+									RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tabFrame.getLayoutParams();
 
 									params.height = height;
 									params.width = width;
+									params.leftMargin = 0;
+									params.topMargin = 0;
+									tabFrame.setLayoutParams(params);
 								}
 							}
 						}

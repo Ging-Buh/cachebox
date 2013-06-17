@@ -3,7 +3,6 @@ package de.cachebox_test.Views;
 import CB_Core.GlobalCore;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.Math.UiSizes;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -19,8 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import de.cachebox_test.R;
 import de.cachebox_test.main;
-import de.cachebox_test.Components.CacheDraw.DrawStyle;
-import de.cachebox_test.Custom_Controls.CacheInfoControl;
 import de.cachebox_test.Custom_Controls.DescriptionViewControl;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
@@ -30,7 +27,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public Cache aktCache;
 
 	Button TestButton;
-	public CacheInfoControl cacheInfo;
+
 	public static DescriptionViewControl WebControl;
 	public static LinearLayout webViewLayout;
 
@@ -43,35 +40,28 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		RelativeLayout descriptionLayout = (RelativeLayout) inflater.inflate(R.layout.description_view, null, false);
 		this.addView(descriptionLayout);
 		webViewLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
-		cacheInfo = (CacheInfoControl) findViewById(R.id.CompassDescriptionView);
-		cacheInfo.setStyle(DrawStyle.withOwner);
+
 		WebControl = (DescriptionViewControl) findViewById(R.id.DescriptionViewControl);
 		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
-		if (main.mainActivity.getString(R.string.density).equals("ldpi"))
-		{
-			cacheInfo.setVisibility(GONE);
-		}
-
 	}
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
-		// we overriding onMeasure because this is where the application gets
-		// its right size.
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-		cacheInfo.setHeight(UiSizes.that.getCacheInfoHeight());
-
-	}
+	// @Override
+	// protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	// {
+	// // we overriding onMeasure because this is where the application gets
+	// // its right size.
+	// super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	//
+	// cacheInfo.setHeight(UiSizes.that.getCacheInfoHeight());
+	//
+	// }
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
 		if (aktCache != cache)
 		{
 			aktCache = cache;
-			cacheInfo.setCache(aktCache);
 		}
 	}
 
@@ -133,7 +123,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
 		if (!(paramsWebControl == null))
 		{
-			return this.getHeight() - cacheInfo.getHeight();
+			return this.getHeight();
 		}
 		return 0;
 	}

@@ -77,6 +77,14 @@ public class CB_TabView extends CB_View_Base
 			buttonListView.setDividerSize(sollDivider);
 		}
 
+		// Das Button Seitenverhältniss ist 88x76!
+		// Höhe der Buttons einstellen und diese Zentrieren!
+		float buttonHeight = GL_UISizes.BottomButtonHeight * 0.863f;
+		for (CB_Button btn : mButtonList.Buttons)
+		{
+			btn.setHeight(buttonHeight);
+		}
+
 	}
 
 	public class CustomAdapter implements Adapter

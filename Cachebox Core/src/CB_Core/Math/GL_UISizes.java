@@ -261,14 +261,14 @@ public class GL_UISizes implements SizeChangedEvent
 	public static float BottomButtonHeight = convertDip2Pix(65);
 	public static float TopButtonHeight = convertDip2Pix(35);
 
-	public static boolean set_Top_Buttom_Height(float Top, float Bottom)
-	{
-		if (BottomButtonHeight == Bottom && TopButtonHeight == Top) return false;
-
-		BottomButtonHeight = Bottom;
-		TopButtonHeight = Top;
-		return true;
-	}
+	// public static boolean set_Top_Buttom_Height(float Top, float Bottom)
+	// {
+	// if (BottomButtonHeight == Bottom && TopButtonHeight == Top) return false;
+	//
+	// BottomButtonHeight = Bottom;
+	// TopButtonHeight = Top;
+	// return true;
+	// }
 
 	/**
 	 * Berechnet die Größen der UI-Elemente
@@ -282,13 +282,14 @@ public class GL_UISizes implements SizeChangedEvent
 		int WindowWidth = UI_Size_Base.that.getWindowWidth();
 		int frameRightWidth = WindowWidth - frameLeftwidth;
 
+		// max 65dp
 		if (frameLeftwidth < 400)
 		{
-			BottomButtonHeight = frameLeftwidth / 5.8f;
+			BottomButtonHeight = Math.min(frameLeftwidth / 5.8f, convertDip2Pix(69));
 		}
 		else
 		{
-			BottomButtonHeight = frameLeftwidth / 5.18f;
+			BottomButtonHeight = Math.min(frameLeftwidth / 5.18f, convertDip2Pix(69));
 		}
 
 		margin = (float) (6.6666667 * DPI);
