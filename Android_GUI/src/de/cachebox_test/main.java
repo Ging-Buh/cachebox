@@ -2767,25 +2767,33 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						{
 							if (viewID.getPos() == UI_Pos.Left)
 							{
-								FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) frame.getLayoutParams();
+								RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
 
-								params.height = height;
-								params.width = width;
-								params.leftMargin = 0;
-								params.topMargin = 0;
-								frame.setLayoutParams(params);
+								paramsLeft.height = height;
+								paramsLeft.width = width;
+								paramsLeft.leftMargin = 0;
+								paramsLeft.topMargin = 0;
+								frame.setLayoutParams(paramsLeft);
 							}
 							else
 							{
 								if (tabFrame != null)
 								{
-									FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) tabFrame.getLayoutParams();
+									LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
 									params.height = height;
 									params.width = width;
 									params.leftMargin = 0;
 									params.topMargin = 0;
 									tabFrame.setLayoutParams(params);
+
+									LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame.getLayoutParams();
+
+									paramsLeft.height = height;
+									paramsLeft.width = UI_Size_Base.that.getWindowWidth() - width;
+									paramsLeft.leftMargin = 0;
+									paramsLeft.topMargin = 0;
+									frame.setLayoutParams(paramsLeft);
 								}
 							}
 						}
