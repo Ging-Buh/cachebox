@@ -2767,7 +2767,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						{
 							if (viewID.getPos() == UI_Pos.Left)
 							{
-								RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) frame.getLayoutParams();
+								FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) frame.getLayoutParams();
 
 								params.height = height;
 								params.width = width;
@@ -2779,7 +2779,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							{
 								if (tabFrame != null)
 								{
-									RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tabFrame.getLayoutParams();
+									FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) tabFrame.getLayoutParams();
 
 									params.height = height;
 									params.width = width;
