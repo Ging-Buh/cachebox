@@ -1,0 +1,153 @@
+diff --git .settings/org.eclipse.core.resources.prefs .settings/org.eclipse.core.resources.prefs
+new file mode 100644
+index 0000000..4824b80
+--- /dev/null
++++ .settings/org.eclipse.core.resources.prefs
+@@ -0,0 +1,2 @@
++eclipse.preferences.version=1
++encoding/<project>=UTF-8
+diff --git .settings/org.eclipse.m2e.core.prefs .settings/org.eclipse.m2e.core.prefs
+new file mode 100644
+index 0000000..14b697b
+--- /dev/null
++++ .settings/org.eclipse.m2e.core.prefs
+@@ -0,0 +1,4 @@
++activeProfiles=
++eclipse.preferences.version=1
++resolveWorkspaceProjects=true
++version=1
+diff --git mapsforge-core/pom.xml mapsforge-core/pom.xml
+index 29ff09b..c4320c8 100644
+--- mapsforge-core/pom.xml
++++ mapsforge-core/pom.xml
+@@ -5,7 +5,7 @@
+ 	<parent>
+ 		<groupId>org.mapsforge</groupId>
+ 		<artifactId>mapsforge</artifactId>
+-		<version>0.4.0-SNAPSHOT</version>
++		<version>0.4.0-SNAPSHOT-CACHEBOX-PATCH</version>
+ 		<relativePath>../pom.xml</relativePath>
+ 	</parent>
+ 
+diff --git mapsforge-map-android/pom.xml mapsforge-map-android/pom.xml
+index 2ce33a3..f7ce19b 100644
+--- mapsforge-map-android/pom.xml
++++ mapsforge-map-android/pom.xml
+@@ -5,7 +5,7 @@
+ 	<parent>
+ 		<groupId>org.mapsforge</groupId>
+ 		<artifactId>mapsforge</artifactId>
+-		<version>0.4.0-SNAPSHOT</version>
++		<version>0.4.0-SNAPSHOT-CACHEBOX-PATCH</version>
+ 		<relativePath>../pom.xml</relativePath>
+ 	</parent>
+ 
+diff --git mapsforge-map-awt/pom.xml mapsforge-map-awt/pom.xml
+index d137598..072853b 100644
+--- mapsforge-map-awt/pom.xml
++++ mapsforge-map-awt/pom.xml
+@@ -5,7 +5,7 @@
+ 	<parent>
+ 		<groupId>org.mapsforge</groupId>
+ 		<artifactId>mapsforge</artifactId>
+-		<version>0.4.0-SNAPSHOT</version>
++		<version>0.4.0-SNAPSHOT-CACHEBOX-PATCH</version>
+ 		<relativePath>../pom.xml</relativePath>
+ 	</parent>
+ 
+diff --git mapsforge-map-reader/pom.xml mapsforge-map-reader/pom.xml
+index 50a8911..9c3194f 100644
+--- mapsforge-map-reader/pom.xml
++++ mapsforge-map-reader/pom.xml
+@@ -5,7 +5,7 @@
+ 	<parent>
+ 		<groupId>org.mapsforge</groupId>
+ 		<artifactId>mapsforge</artifactId>
+-		<version>0.4.0-SNAPSHOT</version>
++		<version>0.4.0-SNAPSHOT-CACHEBOX-PATCH</version>
+ 		<relativePath>../pom.xml</relativePath>
+ 	</parent>
+ 
+diff --git mapsforge-map/pom.xml mapsforge-map/pom.xml
+index d7ae6d6..c786e60 100644
+--- mapsforge-map/pom.xml
++++ mapsforge-map/pom.xml
+@@ -5,7 +5,7 @@
+ 	<parent>
+ 		<groupId>org.mapsforge</groupId>
+ 		<artifactId>mapsforge</artifactId>
+-		<version>0.4.0-SNAPSHOT</version>
++		<version>0.4.0-SNAPSHOT-CACHEBOX-PATCH</version>
+ 		<relativePath>../pom.xml</relativePath>
+ 	</parent>
+ 
+diff --git mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/XmlUtils.java mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/XmlUtils.java
+index fe23d72..effd1f7 100644
+--- mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/XmlUtils.java
++++ mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/XmlUtils.java
+@@ -69,7 +69,7 @@
+ 	 * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
+ 	 */
+ 	public static int getColor(GraphicFactory graphicFactory, String colorString) {
+-		if (colorString.isEmpty() || colorString.charAt(0) != '#') {
++		if (colorString.length()==0 || colorString.charAt(0) != '#') {
+ 			throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
+ 		} else if (colorString.length() == 7) {
+ 			return getColor(graphicFactory, colorString, 255, 1);
+diff --git mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/renderinstruction/CircleBuilder.java mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/renderinstruction/CircleBuilder.java
+index 3318bc5..1d91c80 100644
+--- mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/renderinstruction/CircleBuilder.java
++++ mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/renderinstruction/CircleBuilder.java
+@@ -27,6 +27,7 @@
+  */
+ public class CircleBuilder {
+ 	static final String FILL = "fill";
++	static final String R = "r";
+ 	static final String RADIUS = "radius";
+ 	static final String SCALE_RADIUS = "scale-radius";
+ 	static final String STROKE = "stroke";
+@@ -67,7 +68,7 @@
+ 			String name = attributes.getQName(i);
+ 			String value = attributes.getValue(i);
+ 
+-			if (RADIUS.equals(name)) {
++			if (RADIUS.equals(name)||R.equals(name)) {
+ 				this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value));
+ 			} else if (SCALE_RADIUS.equals(name)) {
+ 				this.scaleRadius = Boolean.parseBoolean(value);
+diff --git mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/rule/RenderThemeBuilder.java mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/rule/RenderThemeBuilder.java
+index 59afb21..830c5a2 100644
+--- mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/rule/RenderThemeBuilder.java
++++ mapsforge-map/src/main/javorg/mapsforge/map/rendertheme/rule/RenderThemeBuilder.java
+@@ -27,7 +27,8 @@
+ 	private static final String BASE_STROKE_WIDTH = "base-stroke-width";
+ 	private static final String BASE_TEXT_SIZE = "base-text-size";
+ 	private static final String MAP_BACKGROUND = "map-background";
+-	private static final int RENDER_THEME_VERSION = 3;
++	private static final int RENDER_THEME_VERSION_1 = 1;
++	private static final int RENDER_THEME_VERSION_3 = 3;
+ 	private static final String VERSION = "version";
+ 	private static final String XMLNS = "xmlns";
+ 	private static final String XMLNS_XSI = "xmlns:xsi";
+@@ -85,7 +86,7 @@
+ 	private void validate(String elementName) throws SAXException {
+ 		XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
+ 
+-		if (this.version.intValue() != RENDER_THEME_VERSION) {
++		if (this.version.intValue() != RENDER_THEME_VERSION_3 && this.version.intValue() != RENDER_THEME_VERSION_1) {
+ 			throw new SAXException("unsupported render theme version: " + this.version);
+ 		}
+ 	}
+diff --git pom.xml pom.xml
+index 67ed5ae..26d8b8c 100644
+--- pom.xml
++++ pom.xml
+@@ -10,7 +10,7 @@
+ 
+ 	<groupId>org.mapsforge</groupId>
+ 	<artifactId>mapsforge</artifactId>
+-	<version>0.4.0-SNAPSHOT</version>
++	<version>0.4.0-SNAPSHOT-CACHEBOX-PATCH</version>
+ 	<packaging>pom</packaging>
+ 	<url>http://mapsforge.org</url>
+ 	<name>mapsforge</name>
