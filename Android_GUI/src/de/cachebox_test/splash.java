@@ -10,6 +10,8 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Core.Events.platformConector;
+import CB_Core.Events.platformConector.iPlatformSettings;
 import CB_Core.GL_UI.DisplayType;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
@@ -72,7 +74,8 @@ public class splash extends Activity
 	String guid = null;
 	String name = null;
 	String GpxPath = null;
-
+	private SharedPreferences androidSetting;
+	private SharedPreferences.Editor androidSettingEditor;
 	String workPath;
 
 	private boolean mOriantationRestart = false;
@@ -585,6 +588,58 @@ public class splash extends Activity
 		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
 		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+
+		// initialisieren der PlattformSettings
+		platformConector.setPlatformSettings(new iPlatformSettings()
+		{
+
+			@Override
+			public void Write(SettingBase setting)
+			{
+				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
+
+				if (setting instanceof SettingBool)
+				{
+					androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString)
+				{
+					androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
+				}
+				else if (setting instanceof SettingInt)
+				{
+					androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				androidSettingEditor.commit();
+			}
+
+			@Override
+			public void Read(SettingBase setting)
+			{
+				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+
+				if (setting instanceof SettingString)
+				{
+					String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
+					((SettingString) setting).setValue(value);
+				}
+				else if (setting instanceof SettingBool)
+				{
+					boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				}
+				else if (setting instanceof SettingInt)
+				{
+					int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+			}
+		});
 
 		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
 		// geschrieben werden.
