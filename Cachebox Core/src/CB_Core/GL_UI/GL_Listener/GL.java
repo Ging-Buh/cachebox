@@ -1520,7 +1520,8 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (activityHistory.size() > 0)
 		{
-			mActivity.removeChild(actDialog);
+			mActivity.removeChild(actActivity);
+			actActivity.onHide();
 			// letzten Dialog wiederherstellen
 			actActivity = activityHistory.get(0);
 			actActivity.onShow();
@@ -1531,6 +1532,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		else
 		{
+			actActivity.onHide();
 			actActivity = null;
 			mActivity.removeChildsDirekt();
 			child.setClickable(true);
@@ -1549,8 +1551,18 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public void closeAllDialogs()
 	{
+		for (Dialog view : dialogHistory)
+		{
+			view.onHide();
+		}
+
 		dialogHistory.clear();
 		if (actDialog != null) closeDialog(actDialog);
+
+		for (CB_View_Base view : activityHistory)
+		{
+			view.onHide();
+		}
 
 		activityHistory.clear();
 		if (actActivity != null) closeActivity(true);
