@@ -35,6 +35,9 @@ public class SelectionMarker extends CB_View_Base
 
 		this.type = type;
 		Initial();
+
+		if (marker == null) return;
+
 		// Orginalgröße des Marker-Sprites
 		float orgWidth = marker.getMinWidth();
 		float orgHeight = marker.getMinHeight();

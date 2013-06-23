@@ -25,6 +25,7 @@ import CB_Core.GL_UI.GL_View_Base.OnClickListener;
 import CB_Core.GL_UI.ParentInfo;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewID;
+import CB_Core.GL_UI.render3D;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
@@ -53,14 +54,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
@@ -86,6 +90,11 @@ public class GL implements ApplicationListener, InputProcessor
 	public static OrthographicCamera camera;
 	private static Timer myTimer;
 	private static long timerValue;
+
+	// 3D Parts
+	private render3D mAct3D_Render;
+	private PerspectiveCamera cam;
+	private ModelBatch modelBatch;
 
 	// Private Static Member
 	public static AtomicBoolean started = new AtomicBoolean(false);
@@ -240,6 +249,24 @@ public class GL implements ApplicationListener, InputProcessor
 		return stateTime;
 	}
 
+	public void register3D(final render3D renderView)
+	{
+		RunOnGL(new runOnGL()
+		{
+			@Override
+			public void run()
+			{
+				mAct3D_Render = renderView;
+			}
+		});
+
+	}
+
+	public void unregister3D()
+	{
+		mAct3D_Render = null;
+	}
+
 	@Override
 	public void render()
 	{
@@ -299,6 +326,37 @@ public class GL implements ApplicationListener, InputProcessor
 		else
 		{
 			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+		}
+
+		{// Render 3D
+			if (mAct3D_Render != null)
+			{
+
+				if (modelBatch == null)
+				{
+					if (Gdx.graphics.isGL20Available()) modelBatch = new ModelBatch();
+				}
+				else
+				{
+					if (mAct3D_Render.is3D_Initial())
+					{
+						Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+						Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+
+						// modify 3Dcam
+						PerspectiveCamera retCam = mAct3D_Render.get3DCamera(cam);
+						if (retCam != null) cam = retCam; // Cam modified
+						modelBatch.begin(cam);
+						mAct3D_Render.render3d(modelBatch);
+						modelBatch.end();
+					}
+					else
+					{
+						mAct3D_Render.Initial3D();
+					}
+
+				}
+			}
 		}
 
 		try
@@ -441,6 +499,12 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (child != null) child.setSize(width, height);
 		camera = new OrthographicCamera(width, height);
+		cam = new PerspectiveCamera(130f, width, height);
+		cam.position.set(10f, 10f, 10f);
+		cam.lookAt(0, 0, 0);
+		cam.near = 0.1f;
+		cam.far = 600;
+		cam.update();
 		prjMatrix = new ParentInfo(new Matrix4().setToOrtho2D(0, 0, width, height), new Vector2(0, 0), new CB_RectF(0, 0, width, height));
 
 	}
@@ -868,6 +932,18 @@ public class GL implements ApplicationListener, InputProcessor
 			else
 			{
 				batch = new SpriteBatch(SPRITE_BATCH_BUFFER);
+			}
+		}
+
+		if (modelBatch == null)
+		{
+			try
+			{
+				if (Gdx.graphics.isGL20Available()) modelBatch = new ModelBatch();
+			}
+			catch (java.lang.NoSuchFieldError e)
+			{
+				e.printStackTrace();
 			}
 		}
 
@@ -1821,6 +1897,7 @@ public class GL implements ApplicationListener, InputProcessor
 		altSplash.dispose();
 		altSplash = null;
 		initialMarkerOverlay();
+		mMainView.onShow();
 	}
 
 	// ##########################################
