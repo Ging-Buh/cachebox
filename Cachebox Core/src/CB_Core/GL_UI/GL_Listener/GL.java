@@ -677,15 +677,19 @@ public class GL implements ApplicationListener, InputProcessor
 			Point akt = new Point(x, y);
 			if (touchDraggedActive || (distance(akt, first.point) > first.view.getClickTolerance()))
 			{
-				// Nachdem die ClickToleranz überschritten wurde wird jetzt hier die Verschiebung gemerkt.
-				// Diese wird dann immer von den Positionen abgezogen, damit der erste Sprung bei der Verschiebung nachem die Toleranz
-				// überschriten wurde nicht mehr auftritt.
-				if (!touchDraggedActive)
+				if (pointer != GL_View_Base.MOUSE_WHEEL_POINTER_UP && pointer != GL_View_Base.MOUSE_WHEEL_POINTER_DOWN)
 				{
-					touchDraggedCorrect = new Point(x - first.point.x, y - first.point.y);
+					// Nachdem die ClickToleranz überschritten wurde wird jetzt hier die Verschiebung gemerkt.
+					// Diese wird dann immer von den Positionen abgezogen, damit der erste Sprung bei der Verschiebung nachem die Toleranz
+					// überschriten wurde nicht mehr auftritt.
+					if (!touchDraggedActive)
+					{
+						touchDraggedCorrect = new Point(x - first.point.x, y - first.point.y);
+					}
+					x -= touchDraggedCorrect.x;
+					y -= touchDraggedCorrect.y;
 				}
-				x -= touchDraggedCorrect.x;
-				y -= touchDraggedCorrect.y;
+
 				// merken, dass das Dragging aktiviert wurde, bis der Finger wieder losgelassen wird
 				touchDraggedActive = true;
 				// zu weit verschoben -> Long-Click detection stoppen
