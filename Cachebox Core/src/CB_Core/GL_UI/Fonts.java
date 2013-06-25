@@ -76,9 +76,7 @@ public class Fonts
 		FreeTypeFontGenerator generator = null;
 
 		// get the first found ttf-font
-		// File skinDir = new File(cfg.SkinFolder);
 
-		String FontName = null;
 		FileHandle[] ttfFonts = cfg.SkinFolder.list();
 		FileHandle font = null;
 
@@ -106,9 +104,8 @@ public class Fonts
 				}
 			}
 		}
-		String ttfPath = cfg.DefaultSkinFolder + "/" + FontName;
-		Logger.DEBUG("from " + ttfPath);
 
+		Logger.DEBUG("Generate scaled Fonts from " + font);
 		generator = new FreeTypeFontGenerator(font);
 
 		double density = UiSizes.that.getScale();

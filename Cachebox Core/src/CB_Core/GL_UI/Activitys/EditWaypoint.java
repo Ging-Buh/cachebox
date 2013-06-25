@@ -163,7 +163,8 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 		tvStartPoint = new Label(tvTyp.getRight() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth,
 				MeasuredLabelHeight, "TypeLabel");
-		tvStartPoint.setWrappedText(Translation.Get("start"), Fonts.getBubbleNormal(), HAlignment.CENTER);
+		tvStartPoint.setFont(Fonts.getBubbleNormal()).setHAlignment(HAlignment.CENTER);
+		tvStartPoint.setText(Translation.Get("start"));
 		tvStartPoint.setVisible(false);
 		scrollBox.addChild(tvStartPoint);
 

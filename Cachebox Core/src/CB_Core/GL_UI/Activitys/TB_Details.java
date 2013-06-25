@@ -29,7 +29,7 @@ public class TB_Details extends ActivityBase
 	private Trackable TB;
 	private Image icon, image;
 	private Label lblName, lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
-	private Label lblTypeName, lblTbCode, lblOwner, lbllastVisit, lblHome, lblBirth, lblTravelDistance;
+	private Label lblTypeName, lblTbCode, lblOwner, lblBirth;
 	private Label TypeName, TbCode, Owner, Birth, lastVisit, Home, TravelDistance; // TODO Visit,Home und Distance müssen noch angezeigt
 																					// werden!
 	private Box AboutThisItem, GoalThisItem, DetailThisItem;
@@ -85,27 +85,26 @@ public class TB_Details extends ActivityBase
 		iconRec = iconRec.ScaleCenter(0.8f);
 
 		icon = new Image(iconRec, "Icon");
-		icon.setWeight(-1);
 		lblName = new Label(iconRec, "Name");
 
 		image = new Image(iconRec, "Image");
-		lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.singleLine);
+		lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.SINGLELINE);
 		lblAboutDesc = new Label("AboutDesc");
 		AboutThisItem = new Box(10, 10, "AboutItemBox");
 		AboutThisItem.setBackground(SpriteCache.activityBackground);
 
-		lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.singleLine);
+		lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.SINGLELINE);
 		lblGoalDesc = new Label("GoalDesc");
 		GoalThisItem = new Box(10, 10, "GoalItemBox");
 		GoalThisItem.setBackground(SpriteCache.activityBackground);
 
-		lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.singleLine);
-		lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.singleLine);
-		lblOwner = new Label(Translation.Get("TB_Owner"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.singleLine);
-		lbllastVisit = new Label("LastVisit");
-		lblHome = new Label("Home");
-		lblBirth = new Label(Translation.Get("TB_Birth"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.singleLine);
-		lblTravelDistance = new Label("TravelDistance");
+		lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
+		lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
+		lblOwner = new Label(Translation.Get("TB_Owner"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
+		// lbllastVisit = new Label("LastVisit");
+		// lblHome = new Label("Home");
+		lblBirth = new Label(Translation.Get("TB_Birth"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
+		// lblTravelDistance = new Label("TravelDistance");
 
 		TypeName = new Label("TypeName");
 		TbCode = new Label("TbCode");
@@ -127,7 +126,7 @@ public class TB_Details extends ActivityBase
 		this.addLast(btnClose);
 		this.addLast(scrollBox);
 		this.setMargins(margin * 2, 0);
-		this.addNext(icon);
+		this.addNext(icon, FIXED);
 		icon.setImageURL(TB.getIconUrl());
 		this.addLast(lblName);
 		// lblName.setVAlignment(VAlignment.CENTER);
@@ -217,33 +216,25 @@ public class TB_Details extends ActivityBase
 		lblTypeName.setWidth(maxWidth);
 		lblTbCode.setWidth(maxWidth);
 		lblOwner.setWidth(maxWidth);
-		lbllastVisit.setWidth(maxWidth);
-		lblHome.setWidth(maxWidth);
+		// lbllastVisit.setWidth(maxWidth);
+		// lblHome.setWidth(maxWidth);
 		lblBirth.setWidth(maxWidth);
-		lblTravelDistance.setWidth(maxWidth);
-
-		lblTypeName.setWeight(-1);
-		lblTbCode.setWeight(-1);
-		lblOwner.setWeight(-1);
-		lbllastVisit.setWeight(-1);
-		lblHome.setWeight(-1);
-		lblBirth.setWeight(-1);
-		lblTravelDistance.setWeight(-1);
+		// lblTravelDistance.setWidth(maxWidth);
 
 		DetailThisItem.setHeight((lblTypeName.getHeight()) * 5);
 		DetailThisItem.initRow();
 		DetailThisItem.setMargins(margin, 0);
-		DetailThisItem.addNext(lblTypeName);
+		DetailThisItem.addNext(lblTypeName, FIXED);
 		DetailThisItem.addLast(TypeName);
-		DetailThisItem.addNext(lblTbCode);
+		DetailThisItem.addNext(lblTbCode, FIXED);
 		DetailThisItem.addLast(TbCode);
-		DetailThisItem.addNext(lblOwner);
+		DetailThisItem.addNext(lblOwner, FIXED);
 		DetailThisItem.addLast(Owner);
-		// DetailThisItem.addNext(lbllastVisit);
+		// DetailThisItem.addNext(lbllastVisit,FIXED);
 		// DetailThisItem.addLast(lastVisit);
 		// DetailThisItem.addNext(lblHome);
 		// DetailThisItem.addLast(Home);
-		DetailThisItem.addNext(lblBirth);
+		DetailThisItem.addNext(lblBirth, FIXED);
 		DetailThisItem.addLast(Birth);
 		// DetailThisItem.addNext(lblTravelDistance);
 		// DetailThisItem.addLast(TravelDistance);

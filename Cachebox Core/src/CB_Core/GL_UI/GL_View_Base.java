@@ -1305,14 +1305,4 @@ public abstract class GL_View_Base extends CB_RectF
 		thisInvalidate = true;
 	}
 
-	public float getWeight()
-	{
-		return Weight;
-	}
-
-	public void setWeight(float weight)
-	{
-		Weight = weight;
-	}
-
 }

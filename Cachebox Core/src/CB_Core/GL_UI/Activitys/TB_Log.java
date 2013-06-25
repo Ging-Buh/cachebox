@@ -102,11 +102,9 @@ public class TB_Log extends ActivityBase
 		iconRec = iconRec.ScaleCenter(0.8f);
 
 		icon = new Image(iconRec, "Icon");
-		icon.setWeight(-1);
 		lblName = new Label(iconRec, "Name");
 
 		CacheIcon = new Image(iconRec, "CacheIcon");
-		CacheIcon.setWeight(-1);
 		lblPlaced = new Label(iconRec, "CacheName");
 
 		edit = new EditWrapedTextField("LogInput", TextFieldType.MultiLineWraped);
@@ -196,17 +194,17 @@ public class TB_Log extends ActivityBase
 			contentBox.setMargins(margin, margin * 3);
 			contentBox.setRowYPos(contentBox.getRowYPos() - (margin * 3));
 
-			contentBox.addNext(CacheIcon);
+			contentBox.addNext(CacheIcon, FIXED);
 			contentBox.addLast(lblPlaced);
 
 		}
 
 		this.setMargins(margin * 2, 0);
-		this.addNext(icon);
+		this.addNext(icon, FIXED);
 		icon.setImageURL(TB.getIconUrl());
+		lblName.setWrappedText(TB.getName());
 		this.addLast(lblName);
 
-		lblName.setWrappedText(TB.getName());
 		switch (this.LT)
 		{
 		case discovered:

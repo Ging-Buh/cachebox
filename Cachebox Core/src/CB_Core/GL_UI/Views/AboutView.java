@@ -123,12 +123,12 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		TextBounds bounds = Fonts.getSmall().getMultiLineBounds(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
 		descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - bounds.height, this.width, bounds.height + margin,
 				"DescLabel");
-		descTextView.setFont(Fonts.getSmall());
+		descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
-		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg, HAlignment.CENTER);
+		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
 		this.addChild(descTextView);
 
-		CachesFoundLabel = new Label("", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.singleLine).setHAlignment(HAlignment.CENTER);
+		CachesFoundLabel = new Label("", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
 		CachesFoundLabel.setWidth(width);
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
@@ -261,7 +261,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		Gps = new Label(lblRec, "GPS");
 		Accuracy = new Label(lblRec, "Accuracy");
-		WP = new Label("-", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.singleLine);
+		WP = new Label("-", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE);
 		WP.setRec(lblRec);
 		Coord = new Label(lblRec, "Cord");
 		Current = new Label(lblRec, "Current");

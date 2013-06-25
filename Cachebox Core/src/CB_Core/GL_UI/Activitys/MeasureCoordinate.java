@@ -67,8 +67,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		iniOkCancel();
 		iniLabels();
-		lblDescMeasureCoord.setText(Translation.Get("MeasureCoord"));
-		lblDescMeasureCount.setText(Translation.Get("MeasureCount"));
 
 		iniChart();
 
@@ -121,14 +119,14 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		CB_RectF rec = new CB_RectF(leftBorder + margin, y, w, MeasuredLabelHeight);
 		CB_RectF rec2 = new CB_RectF(rec.getMaxX() + margin, y, innerWidth - w - margin, MeasuredLabelHeight);
 
-		lblDescMeasureCount = new Label(rec, "");
+		lblDescMeasureCount = new Label(rec, Translation.Get("MeasureCount"));
 
 		lblMeasureCount = new Label(rec2, "");
 
 		rec2.setY(lblMeasureCount.getMaxY() + margin);
 		rec.setY(lblMeasureCount.getMaxY() + margin);
 
-		lblDescMeasureCoord = new Label(rec, "");
+		lblDescMeasureCoord = new Label(rec, Translation.Get("MeasureCoord"));
 
 		lblMeasureCoord = new Label(rec2, "");
 

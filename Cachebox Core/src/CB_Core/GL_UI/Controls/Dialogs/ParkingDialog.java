@@ -76,13 +76,13 @@ public class ParkingDialog extends ButtonDialog
 		lblSelectWP = new Label(btSelectWP.ScaleCenter(0.8f), "lblSetGPS");
 		lblDeleteP = new Label(btDeleteP.ScaleCenter(0.8f), "lblSetGPS");
 
-		lblSetGPS.setFont(Fonts.getSmall());
-		lblSelectWP.setFont(Fonts.getSmall());
-		lblDeleteP.setFont(Fonts.getSmall());
+		lblSetGPS.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
+		lblSelectWP.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
+		lblDeleteP.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
-		lblSelectWP.setWrappedText(Translation.Get("My_Parking_Area_select"), HAlignment.CENTER);
-		lblSetGPS.setWrappedText(Translation.Get("My_Parking_Area_Add"), HAlignment.CENTER);
-		lblDeleteP.setWrappedText(Translation.Get("My_Parking_Area_Del"), HAlignment.CENTER);
+		lblSelectWP.setWrappedText(Translation.Get("My_Parking_Area_select"));
+		lblSetGPS.setWrappedText(Translation.Get("My_Parking_Area_Add"));
+		lblDeleteP.setWrappedText(Translation.Get("My_Parking_Area_Del"));
 
 		box2.addChild(lblSetGPS);
 		box2.addChild(lblSelectWP);

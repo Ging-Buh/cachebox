@@ -224,6 +224,16 @@ public class Button extends CB_View_Base
 			return super.click(x, y, pointer, button);
 	}
 
+	public void setText(String Text, Color color)
+	{
+		setText(Text, null, color);
+	}
+
+	public void setText(String Text)
+	{
+		setText(Text, null, null);
+	}
+
 	public void setText(String Text, BitmapFont font, Color color)
 	{
 		setText(Text, font, color, HAlignment.CENTER);
@@ -252,21 +262,11 @@ public class Button extends CB_View_Base
 
 		if (font != null) mFont = font;
 		if (mFont == null) mFont = Fonts.getBig();
-		lblTxt = new Label(Text, mFont, color, WrapType.singleLine).setHAlignment(alignment);
+		lblTxt = new Label(Text, mFont, color, WrapType.SINGLELINE).setHAlignment(alignment);
 		this.initRow(BOTTOMUP);
 		this.addLast(lblTxt);
 
 		GL.that.renderOnce(this.getName() + " setText2");
-	}
-
-	public void setText(String Text, Color color)
-	{
-		setText(Text, null, color);
-	}
-
-	public void setText(String Text)
-	{
-		setText(Text, null, null);
 	}
 
 	@Override

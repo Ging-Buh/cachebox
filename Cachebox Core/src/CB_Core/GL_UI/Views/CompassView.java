@@ -553,7 +553,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			{
 				lblGcCode = new Label("GcCodeLabel");
 				lblGcCode.setHeight(lblHeight);
-				lblGcCode.setWeight(1);
 				topContentBox.addLast(lblGcCode);
 			}
 		}
@@ -565,13 +564,11 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			{
 				lblAlt = new Label("AltLabel");
 				lblAlt.setHeight(lblHeight);
-				lblAlt.setWeight(0.9f);
-				topContentBox.addNext(lblAlt);
+				topContentBox.addNext(lblAlt, 0.9f);
 
 				lblAccuracy = new Label("AccuracyLabel");
-				lblAccuracy.setWeight(0.7f);
 				lblAccuracy.setHeight(lblHeight);
-				topContentBox.addNext(lblAccuracy);
+				topContentBox.addNext(lblAccuracy, 0.7f);
 
 			}
 			else

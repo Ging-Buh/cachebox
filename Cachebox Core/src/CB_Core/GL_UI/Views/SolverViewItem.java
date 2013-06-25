@@ -24,7 +24,7 @@ public class SolverViewItem extends ListViewItemBackground
 	protected void Initial()
 	{
 		lblSolverZeile = new Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), Fonts.getFontColor(),
-				WrapType.multiLine);
+				WrapType.MULTILINE);
 		lblSolverZeile.setHeight(this.height); // todo ob das immer passt?
 		this.setBorders(UI_Size_Base.that.getMargin(), UI_Size_Base.that.getMargin());
 		this.addLast(lblSolverZeile);

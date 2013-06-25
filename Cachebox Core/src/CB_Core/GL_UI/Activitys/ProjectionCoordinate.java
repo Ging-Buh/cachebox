@@ -88,9 +88,7 @@ public class ProjectionCoordinate extends ActivityBase
 	{
 		CB_RectF rec = new CB_RectF(leftBorder + margin, height - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
 				MeasuredLabelHeight);
-
-		Title = new Label(rec, "CacheNameLabel");
-		Title.setText(this.name);
+		Title = new Label(rec, this.name);
 		this.addChild(Title);
 	}
 
@@ -120,8 +118,7 @@ public class ProjectionCoordinate extends ActivityBase
 		CB_RectF labelRec = new CB_RectF(leftBorder + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth,
 				MeasuredLabelHeight);
 
-		lblP2P = new Label(labelRec, "lblBearing");
-		lblP2P.setText(Translation.Get("toPoint"));
+		lblP2P = new Label(labelRec, Translation.Get("toPoint"));
 		this.addChild(lblP2P);
 
 		CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
@@ -156,29 +153,23 @@ public class ProjectionCoordinate extends ActivityBase
 		float y = bCoord.getY() - ButtonHeight;
 		float eWidth = Fonts.Measure(sUnit).width;
 		CB_RectF labelRec = new CB_RectF(leftBorder, y, wMax, ButtonHeight);
-		CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2),
-				ButtonHeight);
+		CB_RectF textFieldRec = new CB_RectF(labelRec.getMaxX(), y, innerWidth - labelRec.getWidth() - eWidth - (margin * 2), ButtonHeight);
 		CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
-		lblBearing = new Label(labelRec, "lblBearing");
+		lblBearing = new Label(labelRec, sBearing);
 		valueBearing = new EditWrapedTextField(this, textFieldRec, "valueBearing");
-		lblBearingUnit = new Label(UnitRec, "lblBearingEinheit");
+		lblBearingUnit = new Label(UnitRec, "°");
 
 		labelRec.setY(lblBearing.getY() - ButtonHeight);
 		textFieldRec.setY(lblBearing.getY() - ButtonHeight);
 		UnitRec.setY(lblBearing.getY() - ButtonHeight);
 
-		lblDistance = new Label(labelRec, "lblBearing");
+		lblDistance = new Label(labelRec, sDistance);
 		valueDistance = new EditWrapedTextField(this, textFieldRec, "valueBearing");
-		lblDistanceUnit = new Label(UnitRec, "lblBearingEinheit");
+		lblDistanceUnit = new Label(UnitRec, sUnit);
 
-		lblBearing.setText(sBearing);
-		lblDistance.setText(sDistance);
 		valueDistance.setText("0");
 		valueBearing.setText("0");
-
-		lblBearingUnit.setText("°");
-		lblDistanceUnit.setText(sUnit);
 
 		if (!radius) this.addChild(lblBearing);
 		this.addChild(lblDistance);

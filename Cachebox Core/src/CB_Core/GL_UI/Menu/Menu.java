@@ -266,7 +266,7 @@ public class Menu extends ButtonDialog
 				}
 			});
 
-			mMoreMenuLabel = new Label(mMoreMenuTextRight, Fonts.getSmall(), Fonts.getFontColor(), WrapType.singleLine)
+			mMoreMenuLabel = new Label(mMoreMenuTextRight, Fonts.getSmall(), Fonts.getFontColor(), WrapType.SINGLELINE)
 					.setHAlignment(HAlignment.CENTER);
 			// mMoreMenuLabel.setRec(mMoreMenuToggleButton);
 			mMoreMenuLabel.setWidth(mMoreMenuToggleButton.getHeight());

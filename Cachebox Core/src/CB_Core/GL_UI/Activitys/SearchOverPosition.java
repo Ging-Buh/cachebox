@@ -190,22 +190,19 @@ public class SearchOverPosition extends ActivityBase
 		checkBoxExcludeFounds.setPos(margin, checkBoxExcludeHides.getY() - margin - checkBoxExcludeFounds.getHeight());
 		box.addChild(checkBoxExcludeFounds);
 
-		lblOnlyAvible = new Label(checkBoxOnlyAvible, "");
+		lblOnlyAvible = new Label(checkBoxOnlyAvible, Translation.Get("SearchOnlyAvible"));
 		lblOnlyAvible.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblOnlyAvible.setWidth(this.width - margin - checkBoxOnlyAvible.getMaxX() - margin);
-		lblOnlyAvible.setText(Translation.Get("SearchOnlyAvible"));
 		box.addChild(lblOnlyAvible);
 
-		lblExcludeHides = new Label(checkBoxExcludeHides, "");
+		lblExcludeHides = new Label(checkBoxExcludeHides, Translation.Get("SearchWithoutOwns"));
 		lblExcludeHides.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblExcludeHides.setWidth(this.width - margin - checkBoxExcludeHides.getMaxX() - margin);
-		lblExcludeHides.setText(Translation.Get("SearchWithoutOwns"));
 		box.addChild(lblExcludeHides);
 
-		lblExcludeFounds = new Label(checkBoxExcludeFounds, "");
+		lblExcludeFounds = new Label(checkBoxExcludeFounds, Translation.Get("SearchWithoutFounds"));
 		lblExcludeFounds.setX(checkBoxOnlyAvible.getMaxX() + margin);
 		lblExcludeFounds.setWidth(this.width - margin - checkBoxExcludeFounds.getMaxX() - margin);
-		lblExcludeFounds.setText(Translation.Get("SearchWithoutFounds"));
 		box.addChild(lblExcludeFounds);
 
 	}
@@ -233,8 +230,7 @@ public class SearchOverPosition extends ActivityBase
 	private void createCoordButton()
 	{
 		CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.width - (margin * 2), lineHeight);
-		lblMarkerPos = new Label(rec, "");
-		lblMarkerPos.setText(Translation.Get("CurentMarkerPos"));
+		lblMarkerPos = new Label(rec, Translation.Get("CurentMarkerPos"));
 		box.addChild(lblMarkerPos);
 
 		coordBtn = new CoordinateButton(rec, name, null);

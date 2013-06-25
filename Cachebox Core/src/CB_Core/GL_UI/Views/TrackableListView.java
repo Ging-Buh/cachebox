@@ -88,7 +88,6 @@ public class TrackableListView extends CB_View_Base
 		txtSearch.setMessageText(Translation.Get("SearchTB_Code"));
 		searchBox.addNext(txtSearch);
 
-		btnSearch.setWeight(-1);
 		btnSearch.setImage(SpriteCache.Icons.get(IconName.lupe_27.ordinal()));
 		btnSearch.setOnClickListener(new OnClickListener()
 		{
@@ -170,7 +169,7 @@ public class TrackableListView extends CB_View_Base
 				return true;
 			}
 		});
-		searchBox.addLast(btnSearch);
+		searchBox.addLast(btnSearch, FIXED);
 
 		listView = new V_ListView(new CB_RectF(0, 0, width, height - searchBox.getHeight()), "TB_LIstView");
 		listView.setEmptyMsg(Translation.Get("TB_List_Empty"));

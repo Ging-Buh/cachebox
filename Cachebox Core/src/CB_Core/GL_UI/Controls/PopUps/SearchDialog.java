@@ -116,7 +116,7 @@ public class SearchDialog extends PopUp_Base
 	private EditWrapedTextField mEingabe;
 
 	/**
-	 * Enthält einen Iterator der aktuell durschten CacheList
+	 * Enthält einen Iterator der aktuell durchsuchten CacheList
 	 */
 	private Iterator<Cache> CacheListIterator = null;
 

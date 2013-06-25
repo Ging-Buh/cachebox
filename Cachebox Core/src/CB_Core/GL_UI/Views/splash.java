@@ -137,7 +137,7 @@ public class splash extends TabMainView
 		this.addLast(dummy);
 
 		String VersionString = GlobalCore.getVersionString();
-		descTextView = new Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.multiLine)
+		descTextView = new Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE)
 				.setHAlignment(HAlignment.CENTER);
 		descTextView.setHeight(descTextView.getTextHeight());
 		this.addLast(descTextView);

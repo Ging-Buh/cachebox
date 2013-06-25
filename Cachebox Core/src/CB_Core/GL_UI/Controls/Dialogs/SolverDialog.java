@@ -408,15 +408,12 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		tbFunction = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
 		tbFunction.setText(sForm);
 
-		tbFunction.setZeroPos();
-		tbFunction.setWeight(0.8f);
-		mBox.addNext(tbFunction);
+		mBox.addNext(tbFunction, 0.8f);
 		float btnWidth = TextFieldHeight * 2;
 		bFunction = new Button(scrollBox.getInnerWidth() - btnWidth, y, btnWidth, TextFieldHeight, "SolverDialogBtnVariable");
 
 		bFunction.setText("F(x)");
-		bFunction.setWeight(0.2f);
-		mBox.addLast(bFunction);
+		mBox.addLast(bFunction, 0.2f);
 		boxYPosStored = mBox.getRowYPos(); // Y-Pos speichern damit nach dem löschen von Controls die nächsten wieder an der
 											// richtigen Stelle
 		// eingefügt werden können
@@ -445,17 +442,13 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 				lFunctionParam[i] = new Label(rec2.ScaleCenter(0.6f), "LabelFunctionParam");
 				// lFunctionParam[i].setVAlignment(VAlignment.BOTTOM);
 				lFunctionParam[i].setText("Parameter" + " " + i);
-				lFunctionParam[i].setZeroPos();
-				lFunctionParam[i].setWeight(0.3f);
-				mBox.addNext(lFunctionParam[i]);
+				mBox.addNext(lFunctionParam[i], 0.3f);
 
 				rec2.setY(rec2.getY() - lFunctionParam[i].getHeight() * 3 / 4);
 				tbFunctionParam[i] = new EditWrapedTextField(SolverDialog.this, rec2, EditWrapedTextField.TextFieldType.SingleLine,
 						"SolverDialogTextFieldParam");
 				tbFunctionParam[i].setText(parameters[i].trim());
-				tbFunctionParam[i].setZeroPos();
-				tbFunctionParam[i].setWeight(0.7f);
-				mBox.addLast(tbFunctionParam[i]);
+				mBox.addLast(tbFunctionParam[i], 0.7f);
 
 			}
 		}
@@ -482,15 +475,11 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 							rec.setY(rec.getY() - TextFieldHeight * 3 / 4);
 							lFunctionParam[i] = new Label(rec, "LabelFunctionParam");
 							lFunctionParam[i].setText("Parameter " + i);
-							lFunctionParam[i].setZeroPos();
-							lFunctionParam[i].setWeight(0.3f);
-							mBox.addNext(lFunctionParam[i]);
+							mBox.addNext(lFunctionParam[i], 0.3f);
 							rec.setY(rec.getY() - lFunctionParam[i].getHeight() * 3 / 4);
 							tbFunctionParam[i] = new EditWrapedTextField(SolverDialog.this, rec,
 									EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextFieldParam");
-							tbFunctionParam[i].setZeroPos();
-							tbFunctionParam[i].setWeight(0.7f);
-							mBox.addLast(tbFunctionParam[i]);
+							mBox.addLast(tbFunctionParam[i], 0.7f);
 						}
 					}
 				});

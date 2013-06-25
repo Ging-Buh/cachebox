@@ -40,69 +40,70 @@ public class Label extends CB_View_Base
 
 	static public enum WrapType
 	{
-		singleLine, multiLine, wrapped
+		SINGLELINE, MULTILINE, WRAPPED
 	}
 
 	BitmapFontCache TextObject;
 
 	private String mText = "";
-	private BitmapFont mFont;
-	private Color mColor;
+	private BitmapFont mFont = Fonts.getNormal();
+	private Color mColor = Fonts.getFontColor();
 	private VAlignment mVAlignment = VAlignment.CENTER;
 	private HAlignment mHAlignment = HAlignment.LEFT;
-	private WrapType mWwrapType = WrapType.singleLine;
+	private WrapType mWwrapType = WrapType.SINGLELINE;
 
 	TextBounds bounds;
 
+	/**
+	 * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
+	 **/
 	public Label()
 	{
 		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label");
-		mFont = Fonts.getNormal();
-		mColor = Fonts.getFontColor();
-		initLabel(WrapType.singleLine);
+		initLabel();
 	}
 
+	/**
+	 * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
+	 **/
 	public Label(String Text)
 	{
 		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label " + Text);
-		mFont = Fonts.getNormal();
-		mColor = Fonts.getFontColor();
 		mText = Text == null ? "" : Text;
-		initLabel(WrapType.singleLine);
+		initLabel();
 	}
 
+	/**
+	 * object for holding Text. default size is ButtonWidthWide x ButtonHeight from UI_Size_Base
+	 **/
 	public Label(String Text, BitmapFont Font, Color fontColor, WrapType WrapType)
 	{
 		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Label " + Text);
-		mFont = Font == null ? Fonts.getNormal() : Font;
-		mColor = fontColor == null ? Fonts.getFontColor() : fontColor;
-		mText = Text == null ? "" : Text;
-		initLabel(WrapType);
+		mText = (Text == null ? "" : Text);
+		if (Font != null) mFont = Font;
+		if (fontColor != null) mColor = fontColor;
+		if (WrapType != null) mWwrapType = WrapType;
+		initLabel();
 	}
 
 	public Label(float X, float Y, float Width, float Height, String Text)
 	{
 		super(X, Y, Width, Height, "Label " + Text);
-		mFont = Fonts.getNormal();
-		mColor = Fonts.getFontColor();
 		mText = Text == null ? "" : Text;
-		initLabel(WrapType.singleLine);
+		initLabel();
 	}
 
 	public Label(CB_RectF rec, String Text)
 	{
 		super(rec, "Label " + Text);
-		mFont = Fonts.getNormal();
-		mColor = Fonts.getFontColor();
 		mText = Text == null ? "" : Text;
-		initLabel(WrapType.singleLine);
+		initLabel();
 	}
 
-	private void initLabel(WrapType WrapType)
+	private void initLabel()
 	{
 		TextObject = new BitmapFontCache(mFont, false);
 		TextObject.setColor(mColor);
-		mWwrapType = WrapType;
 		makeText();
 	}
 
@@ -125,7 +126,7 @@ public class Label extends CB_View_Base
 
 	private void setText()
 	{
-		mWwrapType = WrapType.singleLine;
+		mWwrapType = WrapType.SINGLELINE;
 		makeTextObject();
 		bounds = mFont.getBounds(mText);
 		try
@@ -144,7 +145,7 @@ public class Label extends CB_View_Base
 
 	private void setMultiLineText()
 	{
-		mWwrapType = WrapType.multiLine;
+		mWwrapType = WrapType.MULTILINE;
 		makeTextObject();
 		bounds = mFont.getMultiLineBounds(mText);
 		try
@@ -163,7 +164,7 @@ public class Label extends CB_View_Base
 
 	private void setWrappedText()
 	{
-		mWwrapType = WrapType.wrapped;
+		mWwrapType = WrapType.WRAPPED;
 		makeTextObject();
 		bounds = mFont.getWrappedBounds(mText, innerWidth);
 		try
@@ -223,18 +224,21 @@ public class Label extends CB_View_Base
 	{
 		switch (mWwrapType)
 		{
-		case singleLine:
+		case SINGLELINE:
 			setText();
 			break;
-		case multiLine:
+		case MULTILINE:
 			setMultiLineText();
 			break;
-		case wrapped:
+		case WRAPPED:
 			setWrappedText();
 			break;
 		}
 	}
 
+	/**
+	 * setting the Text, depending on WrapType, ...
+	 **/
 	public Label setText(String text)
 	{
 		if (text == null) text = "";
@@ -243,6 +247,9 @@ public class Label extends CB_View_Base
 		return this;
 	}
 
+	/**
+	 * setting the Text. new line is GlobalCore.br
+	 **/
 	public Label setMultiLineText(String text)
 	{
 		if (text == null) text = "";
@@ -252,33 +259,13 @@ public class Label extends CB_View_Base
 		return this;
 	}
 
+	/**
+	 * setting the Text. new Line wrap determined by width
+	 **/
 	public Label setWrappedText(String text)
-	{
-		return setWrappedText(text, null, null, HAlignment.LEFT);
-	}
-
-	public Label setWrappedText(String text, BitmapFont Font)
-	{
-		return setWrappedText(text, Font, null, null);
-	}
-
-	public Label setWrappedText(String text, BitmapFont Font, HAlignment HAlignment)
-	{
-		return setWrappedText(text, Font, null, HAlignment);
-	}
-
-	public Label setWrappedText(String text, HAlignment HAlignment)
-	{
-		return setWrappedText(text, null, null, HAlignment);
-	}
-
-	public Label setWrappedText(String text, BitmapFont Font, Color fontColor, HAlignment HAlignment)
 	{
 		if (text == null) text = "";
 		mText = text;
-		if (Font != null) mFont = Font;
-		if (fontColor != null) mColor = fontColor;
-		if (HAlignment != null) mHAlignment = HAlignment;
 		mVAlignment = VAlignment.TOP;
 		setWrappedText();
 		return this;
@@ -395,7 +382,7 @@ public class Label extends CB_View_Base
 		// todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
 		mFont = Fonts.getNormal();
 		mColor = Fonts.getFontColor();
-		initLabel(mWwrapType);
+		initLabel();
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class Toast extends Dialog
 
 	public void setWrappedText(String txt)
 	{
-		mTextField.setWrappedText(txt, HAlignment.CENTER);
+		mTextField.setWrappedText(txt);
 	}
 
 	@Override
