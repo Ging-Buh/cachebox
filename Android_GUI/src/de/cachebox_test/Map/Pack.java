@@ -1,11 +1,9 @@
 package de.cachebox_test.Map;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 
 import CB_Core.Log.Logger;
@@ -117,7 +115,6 @@ public class Pack extends PackBase
 				{
 				case 4:
 					// Logger.DEBUG("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
-					InputStream in = new ByteArrayInputStream(buffer);
 					Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int) buffer.length);
 					ByteArrayOutputStream bas = new ByteArrayOutputStream();
 					result.compress(Bitmap.CompressFormat.JPEG, 80, bas);
