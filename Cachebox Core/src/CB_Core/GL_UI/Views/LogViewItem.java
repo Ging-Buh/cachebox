@@ -55,9 +55,7 @@ public class LogViewItem extends ListViewItemBackground
 	private void iniFoundLabel()
 	{
 		lblFoundByName = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab
-				- getRightWidth() - UI_Size_Base.that.getMargin(), MeasuredLabelHeight, "");
-		lblFoundByName.setFont(Fonts.getNormal());
-		lblFoundByName.setText(logEntry.Finder);
+				- getRightWidth() - UI_Size_Base.that.getMargin(), MeasuredLabelHeight, logEntry.Finder);
 		this.addChild(lblFoundByName);
 	}
 
@@ -69,9 +67,7 @@ public class LogViewItem extends ListViewItemBackground
 		float DateLength = Fonts.Measure(dateString).width;
 
 		lblDate = new Label(this.width - getRightWidth() - DateLength, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2),
-				DateLength, MeasuredLabelHeight, "");
-		lblDate.setFont(Fonts.getNormal());
-		lblDate.setText(dateString);
+				DateLength, MeasuredLabelHeight, dateString);
 		this.addChild(lblDate);
 	}
 
@@ -79,10 +75,8 @@ public class LogViewItem extends ListViewItemBackground
 	{
 		lblComment = new Label(getLeftWidth(), 0, this.width - getLeftWidthStatic() - getRightWidthStatic()
 				- (UI_Size_Base.that.getMargin() * 2), this.height - headHeight - UI_Size_Base.that.getMargin(), "");
-		lblComment.setFont(Fonts.getNormal());
 		lblComment.setWrappedText(logEntry.Comment);
 		this.addChild(lblComment);
-
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.SelectionMarker;
 import CB_Core.GL_UI.Controls.SelectionMarker.Type;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
@@ -131,7 +131,7 @@ public class GL implements ApplicationListener, InputProcessor
 	private Sprite mDarknesSprite;
 	private Pixmap mDarknesPixmap;
 	private Texture mDarknesTexture;
-	protected EditWrapedTextField keyboardFocus;
+	protected EditTextField keyboardFocus;
 
 	protected ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
 	public static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
@@ -1751,7 +1751,7 @@ public class GL implements ApplicationListener, InputProcessor
 		return false;
 	}
 
-	public void setKeyboardFocus(EditWrapedTextField view)
+	public void setKeyboardFocus(EditTextField view)
 	{
 		// don't set Focus to NULL?
 		if (view == null && keyboardFocus == null) return;
@@ -1789,7 +1789,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 	}
 
-	public EditWrapedTextField getKeyboardFocus()
+	public EditTextField getKeyboardFocus()
 	{
 		return keyboardFocus;
 	}

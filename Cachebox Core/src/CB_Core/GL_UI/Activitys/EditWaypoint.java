@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.WrapType;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
@@ -16,8 +17,7 @@ import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Controls.Spinner;
@@ -50,11 +50,11 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	private Label tvTyp = null;
 	private Label tvStartPoint = null;
 	private Label tvTitle = null;
-	private EditWrapedTextField etTitle = null;
+	private EditTextField etTitle = null;
 	private Label tvDescription = null;
-	private EditWrapedTextField etDescription = null;
+	private EditTextField etDescription = null;
 	private Label tvClue = null;
-	private EditWrapedTextField etClue = null;
+	private EditTextField etClue = null;
 	private Boolean firstShow = true;
 	// damit kann festgelegt werden, ob beim Start des WaypointDialogs gleich der Coordinaten-Dialog gezeigt werden soll oder nicht.
 	private Boolean showCoordinateDialog = false;
@@ -105,7 +105,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				for (EditWrapedTextField tmp : allTextFields)
+				for (EditTextField tmp : allTextFields)
 				{
 					tmp.resetFocus();
 				}
@@ -308,7 +308,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	{
 		CB_RectF rec = new CB_RectF(leftBorder, tvTitle.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		etTitle = new EditWrapedTextField(this, rec, "TitleTextField");
+		etTitle = new EditTextField(rec, this);
 
 		String txt = (waypoint.Title == null) ? "" : waypoint.Title;
 
@@ -329,7 +329,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	{
 		CB_RectF rec = new CB_RectF(leftBorder, tvDescription.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		etDescription = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "DescTextField");
+		etDescription = new EditTextField(this, rec, WrapType.WRAPPED, "DescTextField");
 
 		String txt = (waypoint.Description == null) ? "" : waypoint.Description;
 
@@ -367,7 +367,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	{
 		CB_RectF rec = new CB_RectF(leftBorder, tvClue.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		etClue = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "ClueTextField");
+		etClue = new EditTextField(this, rec, WrapType.WRAPPED, "ClueTextField");
 
 		String txt = (waypoint.Clue == null) ? "" : waypoint.Clue;
 
@@ -469,11 +469,11 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		cbStartPoint.setVisible(visible);
 	}
 
-	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
+	private ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
 
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
-	public void registerTextField(final EditWrapedTextField textField)
+	public void registerTextField(final EditTextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{

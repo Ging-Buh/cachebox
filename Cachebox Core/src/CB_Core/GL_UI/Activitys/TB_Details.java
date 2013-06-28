@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Activitys;
 
 import CB_Core.Enums.LogTypes;
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -9,7 +10,6 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.GL_UI.Menu.Menu;
@@ -30,8 +30,8 @@ public class TB_Details extends ActivityBase
 	private Image icon, image;
 	private Label lblName, lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
 	private Label lblTypeName, lblTbCode, lblOwner, lblBirth;
-	private Label TypeName, TbCode, Owner, Birth, lastVisit, Home, TravelDistance; // TODO Visit,Home und Distance müssen noch angezeigt
-																					// werden!
+	// TODO Visit,Home und Distance müssen noch angezeigt werden!
+	private Label TypeName, TbCode, Owner, Birth, lastVisit, Home, TravelDistance;
 	private Box AboutThisItem, GoalThisItem, DetailThisItem;
 
 	public TB_Details()

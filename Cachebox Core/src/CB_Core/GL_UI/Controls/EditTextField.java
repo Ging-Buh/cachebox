@@ -5,6 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Core.GlobalCore;
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Map.Point;
@@ -22,12 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 
-public class EditWrapedTextField extends EditTextFieldBase
+public class EditTextField extends EditTextFieldBase
 {
-	public enum TextFieldType
-	{
-		SingleLine, MultiLine, MultiLineWraped
-	}
 
 	public static final char BACKSPACE = 8;
 	public static final char ENTER_DESKTOP = '\r';
@@ -81,64 +78,75 @@ public class EditWrapedTextField extends EditTextFieldBase
 	float bgTopHeight = 0;
 	float bgBottomHeight = 0;
 
-	protected TextFieldType type = TextFieldType.SingleLine;
+	private WrapType mWrapType = WrapType.SINGLELINE;
 
-	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, String Name)
+	public EditTextField()
 	{
-		super(parent, rec, Name);
-		this.style = getDefaultStyle();
-		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
-		setCursorLine(0, true);
-		lineHeight = style.font.getLineHeight();
-		setText("");
-		topLine = 0;
-		leftPos = 0;
-		this.setClickable(true);
+		super(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), null, "EditTextField");
+		initEditTextField();
 	}
 
-	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name)
+	public EditTextField(CB_View_Base parent)
 	{
-		super(parent, rec, Name);
-		if (style == null) throw new IllegalArgumentException("style cannot be null.");
-		this.style = style;
-		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
-		setCursorLine(0, true);
-		lineHeight = style.font.getLineHeight();
-		setText("");
-		topLine = 0;
-		leftPos = 0;
-		this.setClickable(true);
+		super(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), parent, "EditTextField");
+		initEditTextField();
 	}
 
-	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name, TextFieldType type)
+	public EditTextField(float Width, float Height, CB_View_Base parent)
+	{
+		super(0, 0, Width, Height, parent, "EditTextField");
+		initEditTextField();
+	}
+
+	public EditTextField(CB_RectF rec, CB_View_Base parent)
+	{
+		super(rec, parent, "EditTextField");
+		initEditTextField();
+	}
+
+	public EditTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name)
+	{
+		super(rec, parent, Name);
+		if (style != null) this.style = style;
+		initEditTextField();
+	}
+
+	public EditTextField(CB_View_Base parent, CB_RectF rec, TextFieldStyle style, String Name, WrapType WrapType)
 	{
 		this(parent, rec, style, Name);
-		this.type = type;
+		if (WrapType != null) this.mWrapType = WrapType;
 	}
 
-	public EditWrapedTextField(CB_View_Base parent, CB_RectF rec, TextFieldType type, String Name)
+	public EditTextField(CB_View_Base parent, CB_RectF rec, WrapType WrapType, String Name)
 	{
-		this(parent, rec, Name);
-		this.type = type;
+		super(rec, parent, Name);
+		if (WrapType != null) this.mWrapType = WrapType;
+		initEditTextField();
 	}
 
-	public EditWrapedTextField(String Name, TextFieldType type)
+	private void initEditTextField()
 	{
-		this(null, new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight()), Name);
-		this.type = type;
-	}
-
-	public EditWrapedTextField()
-	{
-		super(null, new CB_RectF(), "");
 		this.style = getDefaultStyle();
-		displayText = new ArrayList<EditWrapedTextField.DisplayText>();
+		displayText = new ArrayList<EditTextField.DisplayText>();
 		setCursorLine(0, true);
 		lineHeight = style.font.getLineHeight();
 		setText("");
 		topLine = 0;
 		leftPos = 0;
 		this.setClickable(true);
+	}
+
+	public EditTextField setWrapType(WrapType WrapType)
+	{
+		if (WrapType != null)
+		{
+			if (WrapType != mWrapType)
+			{
+				mWrapType = WrapType;
+				// todo ? make corresponding changes;
+			}
+		}
+		return this;
 	}
 
 	@Override
@@ -213,7 +221,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					bgRightWidth = style.background.getRightWidth();
 					bgTopHeight = style.background.getTopHeight();
 					bgBottomHeight = style.background.getBottomHeight();
-					if (type == TextFieldType.SingleLine)
+					if (mWrapType == WrapType.SINGLELINE)
 					{
 						bgTopHeight = (height - lineHeight) / 2;
 						bgBottomHeight = (height - lineHeight) / 2;
@@ -230,7 +238,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					bgRightWidth = style.background.getRightWidth();
 					bgTopHeight = style.background.getTopHeight();
 					bgBottomHeight = style.background.getBottomHeight();
-					if (type == TextFieldType.SingleLine)
+					if (mWrapType == WrapType.SINGLELINE)
 					{
 						bgTopHeight = (height - lineHeight) / 2;
 						bgBottomHeight = (height - lineHeight) / 2;
@@ -684,7 +692,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 			}
 			moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * lineHeight);
 		}
-		GL.that.renderOnce("EditWrapedTextField");
+		GL.that.renderOnce("EditTextField");
 
 		// Scrollen nach oben / unten soll möglich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
 		return bearbeitet;
@@ -758,7 +766,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		cursor.pos = newCursor.pos;
 		setCursorLine(newCursor.line, true);
-		GL.that.renderOnce("EditWrapedTextField");
+		GL.that.renderOnce("EditTextField");
 		showSelectionMarker(SelectionMarker.Type.Center);
 		return true;
 	}
@@ -1055,7 +1063,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						clearSelection();
 					}
 				}
-				GL.that.renderOnce("EditWrapedTextField");
+				GL.that.renderOnce("EditTextField");
 
 				return true;
 			}
@@ -1388,7 +1396,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							updateDisplayText(dt, true);
 							cursor.pos--;
 							checkCursorVisible(true);
-							GL.that.renderOnce("EditWrapedTextField");
+							GL.that.renderOnce("EditTextField");
 							sendKeyTyped(character);
 							return true;
 						}
@@ -1407,7 +1415,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 								int lineCount = displayText.size();
 								sendLineCountChanged(lineCount, lineHeight * lineCount);
 							}
-							GL.that.renderOnce("EditWrapedTextField");
+							GL.that.renderOnce("EditTextField");
 							sendKeyTyped(character);
 							return true;
 						}
@@ -1432,7 +1440,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 						dt.displayText = dt.displayText.substring(0, cursor.pos)
 								+ dt.displayText.substring(cursor.pos + 1, dt.displayText.length());
 						updateDisplayText(dt, true);
-						GL.that.renderOnce("EditWrapedTextField");
+						GL.that.renderOnce("EditTextField");
 						sendKeyTyped(character);
 						return true;
 					}
@@ -1446,7 +1454,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 							displayText.remove(dt2);
 							dt.displayText += dt2.displayText;
 							updateDisplayText(dt, true);
-							GL.that.renderOnce("EditWrapedTextField");
+							GL.that.renderOnce("EditTextField");
 						}
 						sendKeyTyped(character);
 						return true;
@@ -1517,7 +1525,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 					}
 				}
 
-				GL.that.renderOnce("EditWrapedTextField");
+				GL.that.renderOnce("EditTextField");
 			}
 			sendKeyTyped(character);
 			if (passwordMode) updateDisplayTextList();
@@ -1529,14 +1537,14 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 	private boolean isMultiLine()
 	{
-		if ((type == TextFieldType.MultiLine) || (type == TextFieldType.MultiLineWraped)) return true;
+		if ((mWrapType == WrapType.MULTILINE) || (mWrapType == WrapType.WRAPPED)) return true;
 		else
 			return false;
 	}
 
 	private boolean isWraped()
 	{
-		return type == TextFieldType.MultiLineWraped;
+		return mWrapType == WrapType.WRAPPED;
 	}
 
 	/**
@@ -1619,7 +1627,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 
 		String ret = sb.toString();
 
-		if (this.type == TextFieldType.SingleLine)
+		if (this.mWrapType == WrapType.SINGLELINE)
 		{
 			ret = ret.replace("\n", "");
 			ret = ret.replace("\r", "");
@@ -1660,7 +1668,7 @@ public class EditWrapedTextField extends EditTextFieldBase
 		}
 		String ret = sb.toString();
 
-		if (this.type == TextFieldType.SingleLine)
+		if (this.mWrapType == WrapType.SINGLELINE)
 		{
 			ret = ret.replace("\n", "");
 			ret = ret.replace("\r", "");

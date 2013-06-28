@@ -16,6 +16,7 @@
 
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.Log.Logger;
@@ -38,11 +39,6 @@ public class Label extends CB_View_Base
 		TOP, CENTER, BOTTOM
 	}
 
-	static public enum WrapType
-	{
-		SINGLELINE, MULTILINE, WRAPPED
-	}
-
 	BitmapFontCache TextObject;
 
 	private String mText = "";
@@ -50,7 +46,7 @@ public class Label extends CB_View_Base
 	private Color mColor = Fonts.getFontColor();
 	private VAlignment mVAlignment = VAlignment.CENTER;
 	private HAlignment mHAlignment = HAlignment.LEFT;
-	private WrapType mWwrapType = WrapType.SINGLELINE;
+	private WrapType mWrapType = WrapType.SINGLELINE;
 
 	TextBounds bounds;
 
@@ -82,7 +78,7 @@ public class Label extends CB_View_Base
 		mText = (Text == null ? "" : Text);
 		if (Font != null) mFont = Font;
 		if (fontColor != null) mColor = fontColor;
-		if (WrapType != null) mWwrapType = WrapType;
+		if (WrapType != null) mWrapType = WrapType;
 		initLabel();
 	}
 
@@ -126,7 +122,7 @@ public class Label extends CB_View_Base
 
 	private void setText()
 	{
-		mWwrapType = WrapType.SINGLELINE;
+		mWrapType = WrapType.SINGLELINE;
 		makeTextObject();
 		bounds = mFont.getBounds(mText);
 		try
@@ -137,7 +133,7 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWwrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
 					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
@@ -145,7 +141,7 @@ public class Label extends CB_View_Base
 
 	private void setMultiLineText()
 	{
-		mWwrapType = WrapType.MULTILINE;
+		mWrapType = WrapType.MULTILINE;
 		makeTextObject();
 		bounds = mFont.getMultiLineBounds(mText);
 		try
@@ -156,7 +152,7 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWwrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
 					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
@@ -164,7 +160,7 @@ public class Label extends CB_View_Base
 
 	private void setWrappedText()
 	{
-		mWwrapType = WrapType.WRAPPED;
+		mWrapType = WrapType.WRAPPED;
 		makeTextObject();
 		bounds = mFont.getWrappedBounds(mText, innerWidth);
 		try
@@ -175,7 +171,7 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWwrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
 					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
@@ -222,7 +218,7 @@ public class Label extends CB_View_Base
 
 	private void makeText()
 	{
-		switch (mWwrapType)
+		switch (mWrapType)
 		{
 		case SINGLELINE:
 			setText();
@@ -275,9 +271,9 @@ public class Label extends CB_View_Base
 	{
 		if (WrapType != null)
 		{
-			if (WrapType != mWwrapType)
+			if (WrapType != mWrapType)
 			{
-				mWwrapType = WrapType;
+				mWrapType = WrapType;
 				makeText();
 			}
 		}

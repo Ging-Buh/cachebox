@@ -2,12 +2,13 @@ package CB_Core.GL_UI.Views.TestViews;
 
 import CB_Core.Energy;
 import CB_Core.GlobalCore;
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.RadioButton;
 import CB_Core.GL_UI.Controls.RadioGroup;
@@ -34,7 +35,7 @@ import com.badlogic.gdx.math.Vector2;
 public class TestView extends CB_View_Base
 {
 
-	private CB_Core.GL_UI.Controls.EditWrapedTextField wrappedTextField;
+	private CB_Core.GL_UI.Controls.EditTextField wrappedTextField;
 
 	public static final String br = System.getProperty("line.separator");
 
@@ -52,8 +53,8 @@ public class TestView extends CB_View_Base
 		CB_RectF TextFieldRec = new CB_RectF(0, this.height - (UI_Size_Base.that.getButtonHeight() * 3),
 				UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
 
-		wrappedTextField = new CB_Core.GL_UI.Controls.EditWrapedTextField(this, TextFieldRec, EditWrapedTextField.getDefaultStyle(), "",
-				EditWrapedTextField.TextFieldType.MultiLineWraped);
+		wrappedTextField = new CB_Core.GL_UI.Controls.EditTextField(TextFieldRec, this).setWrapType(WrapType.WRAPPED);
+		wrappedTextField.setStyle(EditTextField.getDefaultStyle());
 		wrappedTextField.setText(splashMsg);
 		// wrappedTextField.setText("");
 

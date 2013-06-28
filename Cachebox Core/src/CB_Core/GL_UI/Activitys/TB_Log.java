@@ -7,14 +7,14 @@ import CB_Core.GlobalCore;
 import CB_Core.TemplateFormatter;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.LogTypes;
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Label;
@@ -49,7 +49,7 @@ public class TB_Log extends ActivityBase
 	private Label lblName, lblPlaced;
 	private Box contentBox;
 	private LogTypes LT;
-	private EditWrapedTextField edit;
+	private EditTextField edit;
 	private RadioButton rbDirectLog;
 	private RadioButton rbOnlyFieldNote;
 
@@ -107,7 +107,7 @@ public class TB_Log extends ActivityBase
 		CacheIcon = new Image(iconRec, "CacheIcon");
 		lblPlaced = new Label(iconRec, "CacheName");
 
-		edit = new EditWrapedTextField("LogInput", TextFieldType.MultiLineWraped);
+		edit = new EditTextField().setWrapType(WrapType.WRAPPED);
 		edit.setWidth(contentBox.getInnerWidth());
 		edit.setHeight(contentBox.getHalfHeight());
 

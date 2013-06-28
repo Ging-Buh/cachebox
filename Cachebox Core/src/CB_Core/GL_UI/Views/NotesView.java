@@ -2,14 +2,14 @@ package CB_Core.GL_UI.Views;
 
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
+import CB_Core.Enums.WrapType;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Types.Cache;
@@ -18,7 +18,7 @@ import CB_Core.Types.Waypoint;
 public class NotesView extends CB_View_Base implements SelectedCacheEvent
 {
 	NotesView that;
-	EditWrapedTextField edNotes;
+	EditTextField edNotes;
 	Cache aktCache;
 	boolean mustLoadNotes;
 
@@ -27,7 +27,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent
 		super(rec, Name);
 		that = this;
 		mustLoadNotes = true;
-		edNotes = new EditWrapedTextField(this, this, TextFieldType.MultiLineWraped, "Note");
+		edNotes = new EditTextField(this, this, WrapType.WRAPPED, "Note");
 		edNotes.setZeroPos();
 		this.addChild(edNotes);
 		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());

@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.Config;
+import CB_Core.Enums.WrapType;
 import CB_Core.Events.KeyboardFocusChangedEvent;
 import CB_Core.Events.KeyboardFocusChangedEventList;
 import CB_Core.GL_UI.Fonts;
@@ -23,8 +24,7 @@ import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.RadioButton;
@@ -48,12 +48,12 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private Button bOK = null;
 	private Button bCancel = null;
 	private Label tvCacheName = null;
-	private EditWrapedTextField etComment = null;
+	private EditTextField etComment = null;
 	private Image ivTyp = null;
 	private Image ivTbIcon = null;
 	private Label tvFounds = null;
-	private EditWrapedTextField tvDate = null;
-	private EditWrapedTextField tvTime = null;
+	private EditTextField tvDate = null;
+	private EditTextField tvTime = null;
 	private Label lblDate = null;
 	private Label lblTime = null;
 	private Box scrollBox = null;
@@ -285,7 +285,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin - rightBorder,
 				UI_Size_Base.that.getButtonHeight());
 
-		tvDate = new EditWrapedTextField(this, rec, "");
+		tvDate = new EditTextField(rec, this);
 		scrollBox.addChild(tvDate);
 	}
 
@@ -300,7 +300,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin - rightBorder,
 				UI_Size_Base.that.getButtonHeight());
 
-		tvTime = new EditWrapedTextField(this, rec, "");
+		tvTime = new EditTextField(rec, this);
 		scrollBox.addChild(tvTime);
 	}
 
@@ -334,7 +334,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 					UI_Size_Base.that.getButtonHeight());
 		}
 
-		etComment = new EditWrapedTextField(this, rec, TextFieldType.MultiLineWraped, "DescTextField");
+		etComment = new EditTextField(this, rec, WrapType.WRAPPED, "DescTextField");
 		etComment.setText(fieldNote.comment);
 
 		// set Size to linecount
@@ -427,9 +427,9 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		registerTextField(tvTime);
 	}
 
-	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
+	private ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
 
-	public void registerTextField(final EditWrapedTextField textField)
+	public void registerTextField(final EditTextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{

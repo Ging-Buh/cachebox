@@ -3,12 +3,12 @@ package CB_Core.GL_UI.Menu;
 import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.List.Adapter;
 import CB_Core.GL_UI.Controls.List.ListViewItemBase;
 import CB_Core.GL_UI.Controls.List.V_ListView;

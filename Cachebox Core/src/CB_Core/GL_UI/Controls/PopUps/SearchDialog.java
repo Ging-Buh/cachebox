@@ -14,6 +14,7 @@ import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
+import CB_Core.Enums.WrapType;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
@@ -24,7 +25,7 @@ import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.Slider;
@@ -113,7 +114,7 @@ public class SearchDialog extends PopUp_Base
 	/**
 	 * Such Eingabe Feld
 	 */
-	private EditWrapedTextField mEingabe;
+	private EditTextField mEingabe;
 
 	/**
 	 * Enthält einen Iterator der aktuell durchsuchten CacheList
@@ -169,7 +170,7 @@ public class SearchDialog extends PopUp_Base
 
 		rec.setWidth(this.width - (margin * 2));
 
-		mEingabe = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "");
+		mEingabe = new EditTextField(this, rec, WrapType.SINGLELINE, "");
 
 		mEingabe.setTextFieldListener(new TextFieldListener()
 		{

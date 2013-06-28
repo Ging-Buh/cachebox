@@ -8,18 +8,18 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.WrapType;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldStyle;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
+import CB_Core.GL_UI.Controls.ScrollBox;
 import CB_Core.GL_UI.Controls.Spinner;
 import CB_Core.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_Core.GL_UI.Controls.SpinnerAdapter;
@@ -59,7 +59,7 @@ public class EditCache extends ActivityBase
 
 	private Cache cache;
 	private Cache newValues;
-	private Box mainPanel;
+	private ScrollBox mainPanel;
 	private float mainPanel_Y;
 	private Button btnOK;
 	private Button btnCancel;
@@ -68,35 +68,56 @@ public class EditCache extends ActivityBase
 	private Spinner cacheDifficulty;
 	private Spinner cacheTerrain;
 	private CoordinateButton cacheCoords;
-	private EditWrapedTextField cacheCode; // SingleLine
-	private EditWrapedTextField cacheTitle; // MultiLine
-	private EditWrapedTextField cacheOwner; // SingleLine
-	private EditWrapedTextField cacheDescription; // MultiLineWraped
+	private EditTextField cacheCode; // SingleLine
+	private EditTextField cacheTitle; // MultiLine
+	private EditTextField cacheOwner; // SingleLine
+	private EditTextField cacheDescription; // MultiLineWraped
 
 	// ctor
 	public EditCache(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
 		// das übliche
-		btnOK = new Button("btnOK");
+		btnOK = new Button(Translation.Get("ok"));
 		btnOKClickHandler();
-		btnCancel = new Button("btnCancel");
+		btnCancel = new Button(Translation.Get("cancel"));
 		btnCancelClickHandler();
 		this.initRow(BOTTOMUP);
 		this.addNext(btnOK);
 		this.addLast(btnCancel);
-		btnCancel.setText(Translation.Get("cancel"));
-		btnOK.setText(Translation.Get("ok"));
-		mainPanel = new Box(innerWidth, getAvailableHeight(), "mainPanel");
+		mainPanel = new ScrollBox(innerWidth, getAvailableHeight()); // (innerWidth, getAvailableHeight(), "mainPanel");
 		this.addLast(mainPanel);
-		mainPanel_Y = mainPanel.getY();
-		// --- Code
-		cacheCode = new EditWrapedTextField("cacheCode", TextFieldType.SingleLine);
-		TextFieldStyle s = cacheCode.getStyle();
-		s.font = Fonts.getCompass();
-		cacheCode.setStyle(s);
-		mainPanel.addLast(cacheCode);
-		registerTextField(cacheCode);
+		mainPanel.initRow(BOTTOMUP);
+		// --- Description
+		cacheDescription = new EditTextField(this).setWrapType(WrapType.WRAPPED);
+		cacheDescription.setHeight(mainPanel.getAvailableHeight() / 2);
+		mainPanel.addLast(cacheDescription);
+		registerTextField(cacheDescription);
+		// --- Hint
+		// --- Notes
+		// --- Status
+		// --- versteckt am
+		// --- Owner
+		cacheOwner = new EditTextField(this);
+		mainPanel.addLast(cacheOwner);
+		registerTextField(cacheOwner);
+		// --- Coords
+		cacheCoords = new CoordinateButton("cacheCoords");
+		setCacheCoordsChangeListner();
+		mainPanel.addLast(cacheCoords);
+		// --- Title
+		cacheTitle = (new EditTextField(this)).setWrapType(WrapType.MULTILINE);
+		TextFieldStyle s = cacheTitle.getStyle();
+		s.font = Fonts.getBig();
+		cacheTitle.setStyle(s);
+		mainPanel.addLast(cacheTitle);
+		registerTextField(cacheTitle);
+		// --- Size
+		cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
+		mainPanel.addNext(cacheSize);
+		// --- Terrain
+		cacheTerrain = new Spinner("cacheTerrain", cacheTerrainList(), cacheTerrainSelection());
+		mainPanel.addLast(cacheTerrain, 0.3f);
 		// --- Type
 		// Label lblType = new Label("lblType");
 		// mainPanel.addNext(lblType, 0.2f);
@@ -106,36 +127,14 @@ public class EditCache extends ActivityBase
 		// --- Difficulty
 		cacheDifficulty = new Spinner("cacheDifficulty", cacheDifficultyList(), cacheDifficultySelection());
 		mainPanel.addLast(cacheDifficulty, 0.3f);
-		// --- Size
-		cacheSize = new Spinner("cacheSize", cacheSizeList(), cacheSizeSelection());
-		mainPanel.addNext(cacheSize);
-		// --- Terrain
-		cacheTerrain = new Spinner("cacheTerrain", cacheTerrainList(), cacheTerrainSelection());
-		mainPanel.addLast(cacheTerrain, 0.3f);
-		// --- Title
-		cacheTitle = new EditWrapedTextField(this, cacheTyp.copy(), TextFieldType.MultiLine, "cacheTitle");
-		s = cacheTitle.getStyle();
-		s.font = Fonts.getBig();
-		cacheTitle.setStyle(s);
-		mainPanel.addLast(cacheTitle);
-		registerTextField(cacheTitle);
-		// --- Coords
-		cacheCoords = new CoordinateButton("cacheCoords");
-		setCacheCoordsChangeListner();
-		mainPanel.addLast(cacheCoords);
-		// --- Owner
-		cacheOwner = new EditWrapedTextField(this, cacheTyp.copy(), TextFieldType.SingleLine, "cacheOwner");
-		mainPanel.addLast(cacheOwner);
-		registerTextField(cacheOwner);
-		// --- versteckt am
-		// --- Status
-		// --- Notes
-		// --- Hint
-		// --- Description
-		cacheDescription = new EditWrapedTextField(this, cacheTyp.copy(), TextFieldType.MultiLineWraped, "cacheDescription");
-		cacheDescription.setHeight(mainPanel.getAvailableHeight());
-		mainPanel.addLast(cacheDescription);
-		registerTextField(cacheDescription);
+		// --- Code
+		cacheCode = new EditTextField();
+		s.font = Fonts.getCompass();
+		cacheCode.setStyle(s);
+		mainPanel.addLast(cacheCode);
+		registerTextField(cacheCode);
+
+		mainPanel.setVirtualHeight(mainPanel.getHeightFromBottom());
 
 		this.setOnClickListener(new OnClickListener()
 		{
@@ -143,12 +142,11 @@ public class EditCache extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				for (EditWrapedTextField tmp : allTextFields)
+				for (EditTextField tmp : allTextFields)
 				{
 					tmp.getOnscreenKeyboard().show(false);
 					tmp.resetFocus();
 				}
-				mainPanel.setY(mainPanel_Y);
 				return true;
 			}
 		});
@@ -456,9 +454,9 @@ public class EditCache extends ActivityBase
 		};
 	}
 
-	private ArrayList<EditWrapedTextField> allTextFields = new ArrayList<EditWrapedTextField>();
+	private ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
 
-	public void registerTextField(final EditWrapedTextField textField)
+	public void registerTextField(final EditTextField textField)
 	{
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
@@ -472,9 +470,9 @@ public class EditCache extends ActivityBase
 		allTextFields.add(textField);
 	}
 
-	private void scrollToY(final EditWrapedTextField textField)
+	private void scrollToY(final EditTextField textField)
 	{
-		mainPanel.setY(mainPanel_Y + mainPanel.getHeight() - textField.getY() - textField.getHeight());
+		mainPanel.scrollTo(-mainPanel.getVirtualHeight() + textField.getY() + textField.getHeight());
 	}
 
 }

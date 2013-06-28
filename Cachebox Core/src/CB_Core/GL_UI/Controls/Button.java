@@ -16,12 +16,12 @@
 
 package CB_Core.GL_UI.Controls;
 
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.ButtonSprites;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -59,13 +59,13 @@ public class Button extends CB_View_Base
 
 	public Button(GL_View_Base parent, String name)
 	{
-		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight()), parent, name);
+		super(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), parent, name);
 		this.setClickable(true);
 	}
 
 	public Button(String text)
 	{
-		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight()), "Button " + text);
+		super(0, 0, UI_Size_Base.that.getButtonWidthWide(), UI_Size_Base.that.getButtonHeight(), "Button " + text);
 		this.setText(text);
 		this.setClickable(true);
 	}

@@ -6,7 +6,7 @@ import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.Math.CB_RectF;
@@ -22,11 +22,11 @@ public class ProjectionCoordinate extends ActivityBase
 	private double Bearing;
 	private double Distance;
 
-	private EditWrapedTextField valueBearing = null;
+	private EditTextField valueBearing = null;
 	private Label lblBearing = null;
 	private Label lblP2P = null;
 	private Label lblBearingUnit = null;
-	private EditWrapedTextField valueDistance = null;
+	private EditTextField valueDistance = null;
 	private Label lblDistance = null;
 	private Label lblDistanceUnit = null;
 
@@ -157,7 +157,7 @@ public class ProjectionCoordinate extends ActivityBase
 		CB_RectF UnitRec = new CB_RectF(textFieldRec.getMaxX(), y, eWidth, ButtonHeight);
 
 		lblBearing = new Label(labelRec, sBearing);
-		valueBearing = new EditWrapedTextField(this, textFieldRec, "valueBearing");
+		valueBearing = new EditTextField(textFieldRec, this);
 		lblBearingUnit = new Label(UnitRec, "°");
 
 		labelRec.setY(lblBearing.getY() - ButtonHeight);
@@ -165,7 +165,7 @@ public class ProjectionCoordinate extends ActivityBase
 		UnitRec.setY(lblBearing.getY() - ButtonHeight);
 
 		lblDistance = new Label(labelRec, sDistance);
-		valueDistance = new EditWrapedTextField(this, textFieldRec, "valueBearing");
+		valueDistance = new EditTextField(textFieldRec, this);
 		lblDistanceUnit = new Label(UnitRec, sUnit);
 
 		valueDistance.setText("0");

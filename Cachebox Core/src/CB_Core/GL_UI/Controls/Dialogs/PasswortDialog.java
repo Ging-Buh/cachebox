@@ -1,7 +1,8 @@
 package CB_Core.GL_UI.Controls.Dialogs;
 
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.Fonts;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.MessageBox.ButtonDialog;
@@ -18,8 +19,8 @@ import CB_Core.TranslationEngine.Translation;
 public class PasswortDialog extends ButtonDialog
 {
 
-	public EditWrapedTextField editTextUser;
-	public EditWrapedTextField editTextPW;
+	public EditTextField editTextUser;
+	public EditTextField editTextPW;
 
 	private Linearlayout layout;
 
@@ -52,14 +53,14 @@ public class PasswortDialog extends ButtonDialog
 
 		CB_RectF rec = new CB_RectF(0, 0, msgBoxContentSize.width, TextFieldHeight);
 
-		editTextUser = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
+		editTextUser = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
 		layout.addChild(editTextUser);
 
 		Label lblPW = new Label(0, 0, msgBoxContentSize.width, LabelHeight, "");
 		lblPW.setText(Translation.Get("GCPW"));
 		layout.addChild(lblPW);
 
-		editTextPW = new EditWrapedTextField(this, rec, EditWrapedTextField.TextFieldType.SingleLine, "SolverDialogTextField");
+		editTextPW = new EditTextField(this, rec, WrapType.SINGLELINE, "SolverDialogTextField");
 
 		// TODO set PW-Mode => hat noch einen Fehler
 		// editTextPW.setPasswordMode();

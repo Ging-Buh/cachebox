@@ -27,7 +27,7 @@ import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollapseBox;
 import CB_Core.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.ScrollBox;
@@ -434,7 +434,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		lblButKeepLeast.setText(Translation.Get("ButKeepLeast"));
 		LogCollapseBox.addChild(lblButKeepLeast);
 
-		final EditWrapedTextField input = new EditWrapedTextField(LogCollapseBox, checkBoxCleanLogs.ScaleCenter(2), "InputTextField");
+		final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox);
 		input.setHeight(SmallLineHeight * 2.5f);
 		input.setText(String.valueOf(Config.settings.LogMinCount.getValue()));
 		input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());

@@ -32,10 +32,19 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
 	public EditTextFieldBase that;
 
-	public EditTextFieldBase(CB_View_Base parent, CB_RectF rec, String Name)
+	public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name)
 	{
 		super(rec, Name);
 		this.parent = parent;
+		that = this;
+		registerPopUpLongClick();
+
+		clipboard = GlobalCore.getDefaultClipboard();
+	}
+
+	public EditTextFieldBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
+	{
+		super(X, Y, Width, Height, Parent, Name);
 		that = this;
 		registerPopUpLongClick();
 

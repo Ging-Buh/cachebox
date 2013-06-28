@@ -8,7 +8,7 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.PopUps.CopiePastePopUp;
@@ -937,7 +937,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 		this.focus = setFocus(bLat, bLon, nextFocus);
 	}
 
-	private EditWrapedTextField invisibleTextField = new EditWrapedTextField();
+	private EditTextField invisibleTextField = new EditTextField();
 	private final String utmTest = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 
 	private void setUTMFocus(int newFocus)

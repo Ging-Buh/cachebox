@@ -4,8 +4,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.GL_UI.Controls.NumPad.keyEventListner;
@@ -33,7 +32,7 @@ public class NumerikInputBox extends CB_View_Base
 
 	private static type mType;
 
-	private static EditWrapedTextField editText;
+	private static EditTextField editText;
 
 	public static returnValueListner mReturnListner;
 	public static returnValueListnerDouble mReturnListnerDouble;
@@ -52,7 +51,7 @@ public class NumerikInputBox extends CB_View_Base
 		float margin = UI_Size_Base.that.getMargin();
 		GL_MsgBox msgBox = new GL_MsgBox(msgBoxSize, "MsgBox");
 
-		editText = new EditWrapedTextField("editText", TextFieldType.SingleLine);
+		editText = new EditTextField();
 		float topBottom = editText.getStyle().background.getTopHeight() + editText.getStyle().background.getBottomHeight();
 		float SingleLineHeight = editText.getFont().getLineHeight() + (editText.getFont().getAscent() * 4);
 		editText.setHeight(topBottom + SingleLineHeight);
@@ -119,7 +118,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText = new EditTextField(textFieldRec, msgBox);
 		editText.dontShowSoftKeyBoardOnFocus();
 		editText.setZeroPos();
 		editText.setY(margin * 3);
@@ -189,7 +188,7 @@ public class NumerikInputBox extends CB_View_Base
 
 		textFieldRec.setHeight(Fonts.getNormal().getLineHeight() * 1.6f);
 
-		editText = new EditWrapedTextField(msgBox, textFieldRec, "MsgBoxLabel");
+		editText = new EditTextField(textFieldRec, msgBox);
 		editText.dontShowSoftKeyBoardOnFocus();
 		editText.setZeroPos();
 		editText.setY(margin * 3);
@@ -383,10 +382,10 @@ public class NumerikInputBox extends CB_View_Base
 					break;
 
 				case 'D':
-					editText.keyTyped(EditWrapedTextField.DELETE);
+					editText.keyTyped(EditTextField.DELETE);
 					break;
 				case 'B':
-					editText.keyTyped(EditWrapedTextField.BACKSPACE);
+					editText.keyTyped(EditTextField.BACKSPACE);
 					break;
 
 				default:

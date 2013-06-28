@@ -16,7 +16,7 @@ public class SelectionMarker extends CB_View_Base
 		Center, Left, Right
 	}
 
-	// protected EditWrapedTextField textField;
+	// protected EditTextField textField;
 	protected Type type;
 	protected Drawable marker;
 	// Breite des Markers
@@ -112,7 +112,7 @@ public class SelectionMarker extends CB_View_Base
 		if ((pointer == 0) && (touchDownPos != null) && (!KineticPan))
 		{
 			// Korrektur der Position
-			EditWrapedTextField tv = GL.that.getKeyboardFocus();
+			EditTextField tv = GL.that.getKeyboardFocus();
 			if (tv != null)
 			{
 				x -= tv.ThisWorldRec.getX();
@@ -161,7 +161,7 @@ public class SelectionMarker extends CB_View_Base
 	// move absolute
 	public void moveTo(float x, float y)
 	{
-		EditWrapedTextField tv = GL.that.getKeyboardFocus();
+		EditTextField tv = GL.that.getKeyboardFocus();
 		if (tv != null)
 		{
 			x += tv.ThisWorldRec.getX();

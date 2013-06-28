@@ -16,12 +16,13 @@
 
 package CB_Core.GL_UI.Activitys.FilterSettings;
 
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
@@ -58,7 +59,7 @@ public class TextFilterView extends CB_View_Base
 
 		btnRrec.setWidth(this.width - (margin * 2));
 
-		mEingabe = new EditWrapedTextField(this, btnRrec, EditWrapedTextField.TextFieldType.SingleLine, "");
+		mEingabe = new EditTextField(this, btnRrec, WrapType.SINGLELINE, "");
 
 		mEingabe.setTextFieldListener(new TextFieldListener()
 		{
@@ -164,7 +165,7 @@ public class TextFilterView extends CB_View_Base
 	/**
 	 * Eingabe Feld
 	 */
-	private EditWrapedTextField mEingabe;
+	private EditTextField mEingabe;
 
 	@Override
 	protected void Initial()

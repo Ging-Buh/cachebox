@@ -5,13 +5,13 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
+import CB_Core.Enums.WrapType;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
 import CB_Core.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
@@ -432,7 +432,7 @@ public class EditFilterSettings extends ActivityBase
 			return;
 		}
 
-		StringInputBox.Show(TextFieldType.SingleLine, Translation.Get("NewUserPreset"), Translation.Get("InsNewUserPreset"), "UserPreset",
+		StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("NewUserPreset"), Translation.Get("InsNewUserPreset"), "UserPreset",
 				new OnMsgBoxClickListener()
 				{
 

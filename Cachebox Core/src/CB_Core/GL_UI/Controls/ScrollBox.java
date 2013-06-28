@@ -20,14 +20,24 @@ public class ScrollBox extends CB_View_Base
 	public ScrollBox(CB_RectF rec)
 	{
 		super(rec, "ScrollBox");
+		initScrollBox();
+	}
 
+	public ScrollBox(float Width, float Height)
+	{
+		super(0, 0, Width, Height, "ScrollBox");
+		initScrollBox();
+	}
+
+	private void initScrollBox()
+	{
 		// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
-		virtualHeight = rec.getHeight();
+		virtualHeight = this.height;
 
-		lv = new V_ListView(rec, "ListView-" + name);
+		lv = new V_ListView(this, "ListView-" + name);
 		lv.setClickable(true);
 
-		item = new ListViewItemBase(rec, 0, "ListViewItem-" + name)
+		item = new ListViewItemBase(this, 0, "ListViewItem-" + name)
 		{
 
 			@Override
@@ -49,7 +59,6 @@ public class ScrollBox extends CB_View_Base
 		lv.setBaseAdapter(thisAdapter);
 		Layout();
 		this.childs.add(lv);
-
 	}
 
 	@Override
@@ -81,6 +90,11 @@ public class ScrollBox extends CB_View_Base
 	{
 		this.virtualHeight = virtualHeight;
 		Layout();
+	}
+
+	public float getVirtualHeight()
+	{
+		return virtualHeight;
 	}
 
 	@Override

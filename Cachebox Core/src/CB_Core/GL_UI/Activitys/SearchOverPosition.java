@@ -16,7 +16,7 @@ import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.Image;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.MultiToggleButton;
@@ -42,7 +42,7 @@ public class SearchOverPosition extends ActivityBase
 	private Image gsLogo;
 	private CoordinateButton coordBtn;
 	private chkBox checkBoxExcludeFounds, checkBoxOnlyAvible, checkBoxExcludeHides;
-	private EditWrapedTextField Radius;
+	private EditTextField Radius;
 	private float lineHeight;
 	private MultiToggleButton tglBtnGPS, tglBtnMap;
 	private Coordinate actSearchPos;
@@ -159,7 +159,7 @@ public class SearchOverPosition extends ActivityBase
 		box.addChild(lblRadius);
 
 		CB_RectF rec = new CB_RectF(lblRadius.getMaxX() + margin, y, UI_Size_Base.that.getButtonWidthWide(), lineHeight);
-		Radius = new EditWrapedTextField(this, rec, "");
+		Radius = new EditTextField(rec, this);
 		box.addChild(Radius);
 
 		lblRadiusEinheit = new Label(Radius.getMaxX(), y, wEinheit, lineHeight, "");

@@ -1,8 +1,8 @@
 package CB_Core.GL_UI.Views;
 
+import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.Controls.Label;
-import CB_Core.GL_UI.Controls.Label.WrapType;
 import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;

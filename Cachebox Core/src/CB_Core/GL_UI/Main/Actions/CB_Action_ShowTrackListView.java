@@ -4,6 +4,7 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Enums.WrapType;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.GL_UI.CB_View_Base;
@@ -14,7 +15,6 @@ import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate;
 import CB_Core.GL_UI.Activitys.ProjectionCoordinate.Type;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
@@ -102,7 +102,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					{
 						final TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
 
-						StringInputBox.Show(TextFieldType.SingleLine, selectedTrackItem.getRoute().Name, Translation.Get("RenameTrack"),
+						StringInputBox.Show(WrapType.SINGLELINE, selectedTrackItem.getRoute().Name, Translation.Get("RenameTrack"),
 								selectedTrackItem.getRoute().Name, new OnMsgBoxClickListener()
 								{
 

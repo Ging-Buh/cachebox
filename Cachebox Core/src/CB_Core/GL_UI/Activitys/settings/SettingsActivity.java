@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Enums.WrapType;
 import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
@@ -18,7 +19,6 @@ import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.API_Button;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
 import CB_Core.GL_UI.Controls.LinearCollapseBox;
 import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.QuickButtonList;
@@ -510,9 +510,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			{
 				EditKey = Config.settings.indexOf(SB);
 
-				TextFieldType type;
+				WrapType type;
 
-				type = (SB instanceof SettingLongString) ? TextFieldType.MultiLineWraped : TextFieldType.SingleLine;
+				type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
 
 				StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(),
 						new OnMsgBoxClickListener()

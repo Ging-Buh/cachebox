@@ -9,8 +9,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.TB_Details;
 import CB_Core.GL_UI.Controls.Box;
-import CB_Core.GL_UI.Controls.EditWrapedTextField;
-import CB_Core.GL_UI.Controls.EditWrapedTextField.TextFieldType;
+import CB_Core.GL_UI.Controls.EditTextField;
 import CB_Core.GL_UI.Controls.ImageButton;
 import CB_Core.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -36,7 +35,7 @@ public class TrackableListView extends CB_View_Base
 	private CustomAdapter lvAdapter;
 	private TbList TB_List;
 	private Box searchBox;
-	private EditWrapedTextField txtSearch;
+	private EditTextField txtSearch;
 	private ImageButton btnSearch;
 	private CancelWaitDialog wd;
 
@@ -84,7 +83,7 @@ public class TrackableListView extends CB_View_Base
 
 		searchBox.initRow();
 
-		txtSearch = new EditWrapedTextField("SearchInput", TextFieldType.SingleLine);
+		txtSearch = new EditTextField();
 		txtSearch.setMessageText(Translation.Get("SearchTB_Code"));
 		searchBox.addNext(txtSearch);
 
