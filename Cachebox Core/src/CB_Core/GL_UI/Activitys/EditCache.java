@@ -60,7 +60,6 @@ public class EditCache extends ActivityBase
 	private Cache cache;
 	private Cache newValues;
 	private ScrollBox mainPanel;
-	private float mainPanel_Y;
 	private Button btnOK;
 	private Button btnCancel;
 	private Spinner cacheTyp;

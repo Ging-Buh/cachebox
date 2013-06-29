@@ -390,7 +390,14 @@ public abstract class ListViewBase extends CB_View_Base
 
 		if (i < getMaxItemCount()) i = getMaxItemCount();
 
-		if (i >= 0 && i < mPosDefault.size()) setListPos(mPosDefault.get(i), false);
+		if (i >= 0 && i < mPosDefault.size())
+		{
+			setListPos(mPosDefault.get(i), false);
+		}
+		else
+		{
+			setListPos(mPosDefault.get(mPosDefault.size() - 1), false);
+		}
 	}
 
 	public void scrollTo(float Pos)
