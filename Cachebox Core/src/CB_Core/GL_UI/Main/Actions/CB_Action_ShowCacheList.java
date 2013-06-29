@@ -17,6 +17,7 @@ import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditCache;
 import CB_Core.GL_UI.Activitys.Import;
+import CB_Core.GL_UI.Activitys.SyncActivity;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
@@ -109,6 +110,10 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					Import imp = new Import();
 					imp.show();
 					return true;
+				case MenuID.MI_SYNC:
+					SyncActivity sync = new SyncActivity();
+					sync.show();
+					return true;
 				case MenuID.MI_MANAGE_DB:
 					TabMainView.actionShowSelectDbDialog.Execute();
 					return true;
@@ -179,6 +184,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCache.Icons.get(IconName.filter_13.ordinal()));
 		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCache.Icons.get(IconName.lupe_12.ordinal()));
 		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(IconName.import_40.ordinal()));
+		if (SyncActivity.RELEASED) cm.addItem(MenuID.MI_SYNC, "sync", SpriteCache.Icons.get(IconName.import_40.ordinal()));
 		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(IconName.manageDB_41.ordinal()));
 		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
 		mi.setCheckable(true);
