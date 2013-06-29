@@ -375,11 +375,13 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			ActivityIsShown = false;
 			platformConector.hideForDialog();
+			renderOnce("");
 		}
 		if (DialogIsShown && mDialog.getCildCount() <= 0)
 		{
 			DialogIsShown = false;
 			platformConector.hideForDialog();
+			renderOnce("");
 		}
 
 		// if Tablet, so the Activity is smaller the screen size
