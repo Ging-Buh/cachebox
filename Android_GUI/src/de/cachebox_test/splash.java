@@ -213,6 +213,7 @@ public class splash extends Activity
 
 		// first, try to find stored preferences of workPath
 		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
+
 		workPath = settings.getString("WorkPath", "");
 		boolean askAgain = settings.getBoolean("AskAgain", true);
 

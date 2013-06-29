@@ -31,7 +31,7 @@ public class KeyboardFocusChangedEventList
 
 	public static void Call(final EditTextFieldBase focus)
 	{
-		if (focus != null)
+		if (focus != null && !focus.dontShowKeyBoard())
 		{
 			Gdx.input.setOnscreenKeyboardVisible(true);
 		}

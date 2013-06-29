@@ -31,8 +31,8 @@ import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
-import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditTextFieldBase;
 import CB_Core.GL_UI.Controls.SelectionMarker;
 import CB_Core.GL_UI.Controls.SelectionMarker.Type;
 import CB_Core.GL_UI.Controls.PopUps.PopUp_Base;
@@ -1758,6 +1758,11 @@ public class GL implements ApplicationListener, InputProcessor
 
 		// Don't open KeyBoard if Keybord is Showing
 		boolean dontOpenKeybord = keyboardFocus != null;
+
+		if (view != null && view.dontShowKeyBoard())
+		{
+			dontOpenKeybord = true;
+		}
 
 		String sView = "NULL";
 		if (view != null) sView = view.toString();

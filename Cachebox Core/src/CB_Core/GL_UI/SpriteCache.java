@@ -232,7 +232,7 @@ public class SpriteCache
 	public static FileHandle FileHandleDefaultNightAtlas;
 	public static FileHandle FileHandleCustomNightAtlas;
 
-	private static void setPath(CB_Skin skin)
+	protected static void setPath(CB_Skin skin)
 	{
 
 		if (Gdx.gl11 != null)
@@ -340,7 +340,7 @@ public class SpriteCache
 		return tmp;
 	}
 
-	public static NinePatch getThemedPatch(String name)
+	protected static NinePatch getThemedPatch(String name)
 	{
 		NinePatch tmp = null;
 		if (Config.settings.nightMode.getValue())
@@ -377,7 +377,7 @@ public class SpriteCache
 		return tmp;
 	}
 
-	private static Sprite setNightColorMatrixSprite(String name, TextureAtlas atlas)
+	protected static Sprite setNightColorMatrixSprite(String name, TextureAtlas atlas)
 	{
 		Sprite tmp = null;
 		tmp = createSprite(atlas, name);
@@ -389,7 +389,7 @@ public class SpriteCache
 		return tmp;
 	}
 
-	private static NinePatch setNightColorMatrixPatch(String name, TextureAtlas atlas)
+	protected static NinePatch setNightColorMatrixPatch(String name, TextureAtlas atlas)
 	{
 		NinePatch tmp = null;
 		tmp = createPatch(atlas, name);
@@ -401,7 +401,7 @@ public class SpriteCache
 		return tmp;
 	}
 
-	private static Sprite createSprite(TextureAtlas atlas, String name)
+	protected static Sprite createSprite(TextureAtlas atlas, String name)
 	{
 		Sprite tmp = null;
 		if (atlas != null)
@@ -411,7 +411,7 @@ public class SpriteCache
 		return tmp;
 	}
 
-	private static NinePatch createPatch(TextureAtlas atlas, String name)
+	protected static NinePatch createPatch(TextureAtlas atlas, String name)
 	{
 		NinePatch tmp = null;
 		if (atlas != null)
@@ -803,7 +803,7 @@ public class SpriteCache
 
 	}
 
-	private static void createDrawables()
+	protected static void createDrawables()
 	{
 		patch = (SpriteCache.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
 
@@ -861,7 +861,7 @@ public class SpriteCache
 		return new SpriteDrawable(getThemedSprite(name));
 	}
 
-	private static void loadButtnSprites()
+	protected static void loadButtnSprites()
 	{
 		CacheList = new ButtonSprites(getThemedSprite("db"), getThemedSprite("db-pressed"));
 		CacheListFilter = new ButtonSprites(getThemedSprite("db-filter-active"), getThemedSprite("db-pressed-filter-active"));

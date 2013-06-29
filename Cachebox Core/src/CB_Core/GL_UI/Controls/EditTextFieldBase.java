@@ -30,6 +30,8 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	static public final char DELETE = 127;
 	static public final char BULLET = 149;
 
+	protected boolean dontShowKeyBoard = false;
+
 	public EditTextFieldBase that;
 
 	public EditTextFieldBase(CB_RectF rec, CB_View_Base parent, String Name)
@@ -352,4 +354,18 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
 	}
 
+	public void dontShowSoftKeyBoardOnFocus()
+	{
+		dontShowSoftKeyBoardOnFocus(true);
+	}
+
+	public void dontShowSoftKeyBoardOnFocus(boolean value)
+	{
+		dontShowKeyBoard = value;
+	}
+
+	public boolean dontShowKeyBoard()
+	{
+		return dontShowKeyBoard;
+	}
 }

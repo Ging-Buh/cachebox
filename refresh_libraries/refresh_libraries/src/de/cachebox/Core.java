@@ -65,7 +65,7 @@ public class Core implements ApplicationListener
 	private String workPath = "/";
 	private String imageWorkPath = "/";
 
-	private boolean WorkPathFound = false;
+	private int WorkPathFound = 0;
 	private boolean ImageWorkPathFound = false;
 
 	@Override
@@ -134,27 +134,28 @@ public class Core implements ApplicationListener
 			btnRunLibGdx.setText("download and copy latest LibGdx (nightly)");
 			btnRunLibGdx.removeListener(selectTrunkListner);
 			btnRunLibGdx.addListener(runListnerLibGdx);
-			WorkPathFound = true;
+			WorkPathFound = 1;
 			writeMsg("Trunk folder found");
-
-			File fi = new File(workPath + "/LibgdxPacker");
-			if (fi.exists())
-			{
-				ImageWorkPathFound = true;
-				imageWorkPath = workPath;
-			}
-			else
-				ImageWorkPathFound = false;
-			layout();
 		}
 		else
 		{
 			btnRunLibGdx.setText("select 'Trunk' folder");
 			btnRunLibGdx.addListener(selectTrunkListner);
-			WorkPathFound = false;
+			WorkPathFound = 0;
 			writeMsg("Trunk folder not found, please select");
-			layout();
 		}
+
+		File fi = new File(workPath + "/LibgdxPacker");
+		if (fi.exists())
+		{
+			ImageWorkPathFound = true;
+			imageWorkPath = workPath;
+			WorkPathFound++;
+		}
+		else
+			ImageWorkPathFound = false;
+
+		layout();
 	}
 
 	private ArrayList<CopyRule> getCopyRulesLibGdx()
@@ -362,7 +363,7 @@ public class Core implements ApplicationListener
 		lblMsg.setText(Msg);
 		lblMsg.setPosition(0, h - lblMsg.getHeight());
 
-		if (WorkPathFound)
+		if (WorkPathFound > 0)
 		{
 			btnRunTranslations.setVisible(true);
 			if (ImageWorkPathFound) btnRunTexturePacker.setVisible(true);
