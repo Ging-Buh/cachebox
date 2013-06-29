@@ -10,8 +10,6 @@ import java.util.TimerTask;
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
-import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.GroundspeakAPI.IChkRedyHandler;
 import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DB.Database;
@@ -26,8 +24,8 @@ import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollapseBox;
 import CB_Core.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
-import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.ProgressBar;
 import CB_Core.GL_UI.Controls.ScrollBox;
@@ -537,73 +535,86 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
 
 		// First check API-Key with visual Feedback
-		GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
+		// GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
+		// {
+		//
+		// @Override
+		// public void chekReady()
+		// {
+		// if (GroundspeakAPI.isValidAPI_Key(true))
+		// {
+		// checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
+		// checkImportPQfromGC.setEnabled(true);
+		// checkBoxPreloadSpoiler.setEnable(true);
+		// lblSpoiler.setTextColor(Fonts.getFontColor());
+		// if (checkImportPQfromGC.isChecked())
+		// {
+		// PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
+		// }
+		// else
+		// {
+		// PQ_ListCollapseBox.setAnimationHeight(0);
+		// }
+		// }
+		// else
+		// {
+		// checkImportPQfromGC.setChecked(false);
+		// checkImportPQfromGC.setEnabled(false);
+		// checkBoxPreloadSpoiler.setEnable(false);
+		// lblSpoiler.setTextColor(Fonts.getDisableFontColor());
+		// checkImportPQfromGC.setHeight(0);
+		// CollapseBoxHeight = 0;
+		// lblPQ.setHeight(0);
+		// }
+		// }
+		// });
+
+		checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
+		checkImportPQfromGC.setEnabled(true);
+		checkBoxPreloadSpoiler.setEnable(true);
+		lblSpoiler.setTextColor(Fonts.getFontColor());
+		if (checkImportPQfromGC.isChecked())
 		{
+			PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
+		}
+		else
+		{
+			PQ_ListCollapseBox.setAnimationHeight(0);
+		}
 
-			@Override
-			public void chekReady()
+		if (checkImportPQfromGC.isChecked() == true)
+		{
+			checkBoxImportGPX.setChecked(true);
+			checkBoxImportGPX.setEnabled(false);
+		}
+
+		PQ_ListCollapseBox.setAnimationListner(Animationlistner);
+		LogCollapseBox.setAnimationListner(Animationlistner);
+
+		checkBoxCleanLogs.setChecked(Config.settings.DeleteLogs.getValue());
+		checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
+
+		if (checkBoxCleanLogs.isChecked())
+		{
+			LogCollapseBox.setAnimationHeight(CollapseBoxLogsMaxHeight);
+
+			// validate value
+			int value = Config.settings.LogMaxMonthAge.getValue();
+			if (value > 6)
 			{
-				if (GroundspeakAPI.isValidAPI_Key(true))
-				{
-					checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
-					checkImportPQfromGC.setEnabled(true);
-					checkBoxPreloadSpoiler.setEnable(true);
-					lblSpoiler.setTextColor(Fonts.getFontColor());
-					if (checkImportPQfromGC.isChecked())
-					{
-						PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
-					}
-					else
-					{
-						PQ_ListCollapseBox.setAnimationHeight(0);
-					}
-				}
-				else
-				{
-					checkImportPQfromGC.setChecked(false);
-					checkImportPQfromGC.setEnabled(false);
-					checkBoxPreloadSpoiler.setEnable(false);
-					lblSpoiler.setTextColor(Fonts.getDisableFontColor());
-					checkImportPQfromGC.setHeight(0);
-					CollapseBoxHeight = 0;
-					lblPQ.setHeight(0);
-
-				}
-
-				if (checkImportPQfromGC.isChecked() == true)
-				{
-					checkBoxImportGPX.setChecked(true);
-					checkBoxImportGPX.setEnabled(false);
-				}
-
-				PQ_ListCollapseBox.setAnimationListner(Animationlistner);
-				LogCollapseBox.setAnimationListner(Animationlistner);
-
-				checkBoxCleanLogs.setChecked(Config.settings.DeleteLogs.getValue());
-				checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
-
-				if (checkBoxCleanLogs.isChecked())
-				{
-					LogCollapseBox.setAnimationHeight(CollapseBoxLogsMaxHeight);
-
-					// validate value
-					int value = Config.settings.LogMaxMonthAge.getValue();
-					if (value > 6)
-					{
-						Config.settings.LogMaxMonthAge.setValue(6);
-						Config.AcceptChanges();
-					}
-
-					spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
-				}
-				else
-				{
-					LogCollapseBox.setAnimationHeight(0);
-				}
-
-				checkBoxCompactDB.setChecked(Config.settings.CompactDB.getValue());
+				Config.settings.LogMaxMonthAge.setValue(6);
+				Config.AcceptChanges();
 			}
-		});
+
+			spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
+		}
+		else
+		{
+			LogCollapseBox.setAnimationHeight(0);
+		}
+
+		checkBoxCompactDB.setChecked(Config.settings.CompactDB.getValue());
+
 	}
 
 	animatetHeightChangedListner Animationlistner = new animatetHeightChangedListner()

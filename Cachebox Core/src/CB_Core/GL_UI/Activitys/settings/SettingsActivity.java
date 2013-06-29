@@ -369,7 +369,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 							lay.addChild(view);
 							entryCount++;
-							if (settingItem.getName().equals(EditKey))
+							Config.settings.indexOf(settingItem);
+							if (Config.settings.indexOf(settingItem) == EditKey)
 							{
 								expandLayout = true;
 							}

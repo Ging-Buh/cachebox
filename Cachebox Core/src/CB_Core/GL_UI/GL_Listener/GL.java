@@ -371,6 +371,17 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		batch.setProjectionMatrix(prjMatrix.Matrix());
 
+		if (ActivityIsShown && mActivity.getCildCount() <= 0)
+		{
+			ActivityIsShown = false;
+			platformConector.hideForDialog();
+		}
+		if (DialogIsShown && mDialog.getCildCount() <= 0)
+		{
+			DialogIsShown = false;
+			platformConector.hideForDialog();
+		}
+
 		// if Tablet, so the Activity is smaller the screen size
 		// render childs and darkness Sprite
 		if (GlobalCore.isTab)
@@ -1547,8 +1558,6 @@ public class GL implements ApplicationListener, InputProcessor
 			if (!GlobalCore.isTab) child.onShow();
 		}
 
-		;
-
 		clearRenderViews();
 		renderOnce("Close Activity");
 	}
@@ -1570,6 +1579,9 @@ public class GL implements ApplicationListener, InputProcessor
 
 		activityHistory.clear();
 		if (actActivity != null) closeActivity(true);
+
+		ActivityIsShown = false;
+		DialogIsShown = false;
 	}
 
 	public void closeDialog(CB_View_Base dialog)
