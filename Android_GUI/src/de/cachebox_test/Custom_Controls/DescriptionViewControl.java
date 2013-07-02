@@ -9,7 +9,7 @@ import java.util.TimerTask;
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Api.SearchForGeocaches;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -117,10 +117,9 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 					public void run()
 					{
 
-						String accessToken = Config.GetAccessToken();
 						if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
 						{
-							int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);
+							int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits();
 							if (result != 0)
 							{
 								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
@@ -152,7 +151,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 							return;
 						}
 
-						if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
+						if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember())
 						{
 							String s = "Download Details of this cache?\n";
 							s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
@@ -251,16 +250,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			switch (button)
 			{
 			case -1:
-				CacheDAO dao = new CacheDAO();
-				Cache newCache = dao.LoadApiDetails(aktCache);
+				Cache newCache = SearchForGeocaches.LoadApiDetails(aktCache);
 				if (newCache != null)
 				{
 					aktCache = newCache;
 					setCache(newCache);
 
-					// hier ist kein AccessToke mehr notwendig, da diese Info
-					// bereits im Cache sein muss!
-					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(""))
+					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember())
 					{
 						String s = "Download successful!\n";
 						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";

@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import CB_Core.GlobalCore;
-import CB_Core.UnitFormatter;
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Math.CB_Rect;
@@ -13,6 +12,7 @@ import CB_Core.Math.UiSizes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Core.Util.UnitFormatter;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import android.graphics.Bitmap;

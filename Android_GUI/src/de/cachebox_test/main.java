@@ -79,7 +79,6 @@ import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
 import CB_Core.Settings.SettingBase;
-import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingInt;
 import CB_Core.Settings.SettingString;
@@ -87,6 +86,7 @@ import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Core.Util.FileIO;
+import CB_Core.Util.iChanged;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -188,6 +188,8 @@ import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
+
+	public static FilterProperties test = new FilterProperties();
 
 	private static ServiceConnection mConnection;
 	private static Intent serviceIntent;

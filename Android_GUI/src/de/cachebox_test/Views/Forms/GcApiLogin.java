@@ -257,7 +257,7 @@ public class GcApiLogin extends Activity
 					String act = Config.GetAccessToken();
 					if (act.length() > 0)
 					{
-						int status = GroundspeakAPI.GetMembershipType(act);
+						int status = GroundspeakAPI.GetMembershipType();
 						if (status >= 0)
 						{
 

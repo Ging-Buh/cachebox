@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding=".svn/" kind="src" path="src"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Cachebox Core"/>
-	<classpathentry exported="true" kind="lib" path="/Cachebox Core/lib/sjxp-2.2.jar" sourcepath="C:/Users/dirkr/workspace/sjxp-2.2-sources.jar"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="src" path="CoreSrc"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
-	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
-	<classpathentry kind="lib" path="libs/gdx-freetype.jar"/>
-	<classpathentry kind="lib" path="libs/gdx.jar"/>
-	<classpathentry kind="lib" path="libs/jsoup-1.7.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jsoup-1.7.2.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
-	<classpathentry kind="lib" path="libs/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-android-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mapsforge-map-android-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI"/>
+	<classpathentry exported="true" kind="lib" path="/CB_UI/lib/sjxp-2.2.jar" sourcepath="C:/Users/dirkr/workspace/sjxp-2.2-sources.jar"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="lib" path="/CB_Core/lib/bsh-core-2.0b4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

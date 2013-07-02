@@ -29,8 +29,8 @@ import CB_Core.GL_UI.Views.splash;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
-import CB_Core.Settings.SettingBase.iChanged;
 import CB_Core.Util.FileIO;
+import CB_Core.Util.iChanged;
 import CB_Locator.Location.ProviderType;
 
 import com.badlogic.gdx.Gdx;

@@ -17,6 +17,7 @@
 package CB_Core.Util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 /// <summary>
@@ -70,6 +71,37 @@ import java.util.Iterator;
 public class MoveableList<T> extends ArrayList<T>
 {
 
+	protected ArrayList<iChanged> ChangedEventList = new ArrayList<iChanged>();
+
+	protected void fireChangedEvent()
+	{
+		if (dontFireEvent) return;
+		synchronized (ChangedEventList)
+		{
+			for (iChanged event : ChangedEventList)
+			{
+				event.isChanged();
+			}
+		}
+
+	}
+
+	public void addChangedEventListner(iChanged listner)
+	{
+		synchronized (ChangedEventList)
+		{
+			if (!ChangedEventList.contains(listner)) ChangedEventList.add(listner);
+		}
+	}
+
+	public void removeChangedEventListner(iChanged listner)
+	{
+		synchronized (ChangedEventList)
+		{
+			ChangedEventList.remove(listner);
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -82,6 +114,83 @@ public class MoveableList<T> extends ArrayList<T>
 		this.remove(CutItem);
 		this.add(InsertItem, CutItemInfo);
 
+		fireChangedEvent();
+
+	}
+
+	private boolean dontFireEvent = false;
+
+	public void beginnTransaction()
+	{
+		dontFireEvent = true;
+	}
+
+	public void endTransaction()
+	{
+		dontFireEvent = false;
+		fireChangedEvent();
+	}
+
+	@Override
+	public boolean add(T t)
+	{
+		boolean ret = super.add(t);
+		fireChangedEvent();
+		return ret;
+	}
+
+	@Override
+	public void add(int index, T t)
+	{
+		super.add(index, t);
+		fireChangedEvent();
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends T> t)
+	{
+		boolean ret = super.addAll(t);
+		fireChangedEvent();
+		return ret;
+	}
+
+	@Override
+	public boolean addAll(int index, Collection<? extends T> t)
+	{
+		boolean ret = super.addAll(index, t);
+		fireChangedEvent();
+		return ret;
+	}
+
+	@Override
+	public void clear()
+	{
+		super.clear();
+		fireChangedEvent();
+	}
+
+	@Override
+	public T remove(int index)
+	{
+		T ret = super.remove(index);
+		fireChangedEvent();
+		return ret;
+	}
+
+	@Override
+	public boolean remove(Object o)
+	{
+		boolean ret = super.remove(o);
+		fireChangedEvent();
+		return ret;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> t)
+	{
+		boolean ret = super.removeAll(t);
+		fireChangedEvent();
+		return ret;
 	}
 
 	// / <summary>

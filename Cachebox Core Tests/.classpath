@@ -18,5 +18,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Base"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

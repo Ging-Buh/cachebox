@@ -4,7 +4,7 @@
 	<classpathentry exported="true" kind="lib" path="Lib/sqlite-jdbc-3.7.8-20111025.014814-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/gdx-natives.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Cachebox Core"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI"/>
 	<classpathentry exported="true" kind="lib" path="Lib/log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/httpclient-4.0-alpha1.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/httpcore-4.0-alpha5.jar"/>
@@ -23,5 +23,6 @@
 	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry excluding="**" kind="src" path="data"/>
 	<classpathentry excluding="**" kind="src" path="skins"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

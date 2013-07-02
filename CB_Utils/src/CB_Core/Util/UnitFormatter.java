@@ -79,5 +79,54 @@ public class UnitFormatter
 	{
 		return String.format("%.2f mph", kmh / 1.6093f);
 	}
+	
+	static String FormatDM(double coord, String positiveDirection, String negativeDirection)
+	{
+		int deg = (int) coord;
+		double frac = coord - deg;
+		double min = frac * 60;
+
+		String result = Math.abs(deg) + "\u00B0  " + String.format("%.3f", Math.abs(min));
+
+		result += " ";
+
+		if (coord < 0) result += negativeDirection;
+		else
+			result += positiveDirection;
+
+		return result;
+	}
+
+	public static String FormatLatitudeDM(double latitude)
+	{
+		return FormatDM(latitude, "N", "S");
+	}
+
+	public static String FormatLongitudeDM(double longitude)
+	{
+		return FormatDM(longitude, "E", "W");
+	}
+
+	public static String Rot13(String message)
+	{
+		String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String lookup = "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM";
+
+		String result = "";
+
+		for (int i = 0; i < message.length(); i++)
+		{
+			String curChar = message.substring(i, i + 1);
+			int idx = alphabet.indexOf(curChar);
+
+			if (idx < 0) result += curChar;
+			else
+				result += lookup.substring(idx, idx + 1);
+		}
+
+		return result;
+
+	}
+
 
 }
