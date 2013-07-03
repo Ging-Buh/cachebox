@@ -1,7 +1,5 @@
 package CB_Core.GL_UI.Main.Actions;
 
-import CB_Core.GlobalCore;
-import CB_Core.GlobalCore.IChkRedyHandler;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
@@ -24,29 +22,20 @@ public class CB_Action_Show_Search extends CB_Action
 	public void Execute()
 	{
 
-		// zuerst API Key überprüfen mit anzeige von Wait Animation
-		GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
+		if (MapView.that == null || !MapView.that.isVisible())
 		{
-
-			@Override
-			public void chekReady()
+			if (CacheListView.that == null || !CacheListView.that.isVisible())
 			{
-				if (MapView.that == null || !MapView.that.isVisible())
-				{
-					if (CacheListView.that == null || !CacheListView.that.isVisible())
-					{
-						TabMainView.actionShowCacheList.Execute();
-					}
-				}
-
-				if (SearchDialog.that == null)
-				{
-					new SearchDialog();
-				}
-
-				SearchDialog.that.showNotCloseAutomaticly();
+				TabMainView.actionShowCacheList.Execute();
 			}
-		});
+		}
+
+		if (SearchDialog.that == null)
+		{
+			new SearchDialog();
+		}
+
+		SearchDialog.that.showNotCloseAutomaticly();
 
 	}
 

@@ -56,7 +56,6 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SearchDialog extends PopUp_Base
@@ -588,10 +587,24 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private void searchAPI()
 	{
-		if (!GroundspeakAPI.isValidAPI_Key(true))
+		int ret = GroundspeakAPI.isValidAPI_Key(true);
+
+		if (ret > 0)
 		{
 			GL_MsgBox
 					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
+		}
+		else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
+		{
+			GL.that.RunOnGL(new runOnGL()
+			{
+
+				@Override
+				public void run()
+				{
+					GL_MsgBox.Show(Translation.Get("noInet"), Translation.Get("InetClue"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+				}
+			});
 		}
 		else
 		{
@@ -615,6 +628,19 @@ public class SearchDialog extends PopUp_Base
 					{
 						closeWaitDialog();
 						searchOnlineNow();
+					}
+					else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
+					{
+						GL.that.RunOnGL(new runOnGL()
+						{
+
+							@Override
+							public void run()
+							{
+								GL_MsgBox.Show(Translation.Get("noInet"), Translation.Get("InetClue"), MessageBoxButtons.OK,
+										MessageBoxIcon.Error, null);
+							}
+						});
 					}
 					else
 					{
@@ -662,8 +688,6 @@ public class SearchDialog extends PopUp_Base
 			@Override
 			public void run()
 			{
-				String accessToken = Config.GetAccessToken();
-
 				Coordinate searchCoord = null;
 
 				if (MapView.that != null && MapView.that.isVisible())
@@ -939,10 +963,33 @@ public class SearchDialog extends PopUp_Base
 			@Override
 			public void chekReady()
 			{
-				if (!GroundspeakAPI.isValidAPI_Key(true))
+				int ret = GroundspeakAPI.isValidAPI_Key(true);
+
+				if (ret > 0)
 				{
-					GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK,
-							MessageBoxIcon.Exclamation, null);
+					GL.that.RunOnGL(new runOnGL()
+					{
+
+						@Override
+						public void run()
+						{
+							GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK,
+									MessageBoxIcon.Exclamation, null);
+						}
+					});
+
+				}
+				else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
+				{
+					GL.that.RunOnGL(new runOnGL()
+					{
+						@Override
+						public void run()
+						{
+							GL_MsgBox.Show(Translation.Get("noInetMsg"), Translation.Get("noInetTitle"), MessageBoxButtons.OK,
+									MessageBoxIcon.Error, null);
+						}
+					});
 				}
 				else
 				{
@@ -1028,34 +1075,6 @@ public class SearchDialog extends PopUp_Base
 			}
 		});
 
-	}
-
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		lastPoint = new Vector2(this.Pos.x, this.Pos.y);
-		return true;
-	}
-
-	private Vector2 lastPoint;
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
-	{
-
-		// TODO SearchDialog verschiebbar machen auf dem Tablett
-
-		// if (KineticPan) return true;
-		//
-		// int dx = (int) (lastPoint.x - x);
-		// int dy = (int) (y - lastPoint.y);
-		//
-		// this.setX(this.getX() + dx);
-		// this.setY(this.getY() + dy);
-		//
-		// lastPoint.x = this.getX();
-		// lastPoint.y = this.getY();
-		return true;
 	}
 
 	@Override

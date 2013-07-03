@@ -404,10 +404,17 @@ public class GroundspeakAPI
 		}
 		catch (IOException e)
 		{
+			if (e.toString().contains("UnknownHostException"))
+			{
+				Logger.Error("GetMembershipType", "ConnectTimeoutException", e);
+				API_isCheked = false;
+				return CONNECTION_TIMEOUT;
+			}
 			Logger.Error("GetMembershipType", "IOException", e);
 			API_isCheked = false;
 			return ERROR;
 		}
+
 	}
 
 	/**
@@ -1398,22 +1405,22 @@ public class GroundspeakAPI
 		}
 
 		if (ret != CONNECTION_TIMEOUT) API_isCheked = true;
+		else
+			return CONNECTION_TIMEOUT;
+
 		return isValid ? 0 : 1;
 	}
 
-	public static boolean isValidAPI_Key()
+	public static int isValidAPI_Key()
 	{
 		return isValidAPI_Key(false);
 	}
 
-	public static boolean isValidAPI_Key(boolean withoutMsg)
+	public static int isValidAPI_Key(boolean withoutMsg)
 	{
-		if (API_isCheked) return membershipType > 0;
+		if (API_isCheked) return membershipType;
 
-		chkMemperShip(withoutMsg);
-
-		return membershipType > 0;
-
+		return chkMemperShip(withoutMsg);
 	}
 
 	/**

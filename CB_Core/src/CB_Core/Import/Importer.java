@@ -402,11 +402,14 @@ public class Importer
 
 				// API zugriff nur mit gültigem API Key
 
-				if (GroundspeakAPI.isValidAPI_Key(true))
+				int retChk = GroundspeakAPI.isValidAPI_Key(true);
+
+				if (retChk > 0)
 				{
 					ret = importApiImages(gccode, CacheInfoList.getIDfromGcCode(gccode));
 					if (ret < 0) return ret;
 				}
+
 				ip.ProgressInkrement("importImageUrls",
 						"get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")",
 						false);
