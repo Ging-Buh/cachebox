@@ -965,7 +965,7 @@ public class SearchDialog extends PopUp_Base
 			{
 				int ret = GroundspeakAPI.isValidAPI_Key(true);
 
-				if (ret > 0)
+				if (ret == 0)
 				{
 					GL.that.RunOnGL(new runOnGL()
 					{

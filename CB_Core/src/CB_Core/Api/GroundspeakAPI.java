@@ -1394,6 +1394,7 @@ public class GroundspeakAPI
 			if (!isValid)
 			{
 				ret = GetMembershipType();
+				isValid = membershipType > 0;
 				if (ret < 0) return ret;
 			}
 			isValid = membershipType > 0;
