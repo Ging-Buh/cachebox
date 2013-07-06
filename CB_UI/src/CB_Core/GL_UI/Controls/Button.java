@@ -39,7 +39,9 @@ public class Button extends CB_View_Base
 	protected Drawable drawableNormal;
 	protected Drawable drawablePressed;
 	protected Drawable drawableDisabled;
+	protected Drawable drawableFocused;
 
+	protected boolean isFocused = false;
 	protected boolean isPressed = false;
 	protected boolean isDisabled = false;
 	protected Label lblTxt;
@@ -105,6 +107,7 @@ public class Button extends CB_View_Base
 			drawableNormal = sprites.getNormal();
 			drawablePressed = sprites.getPressed();
 			drawableDisabled = sprites.getDisabled();
+			drawableFocused = sprites.getFocus();
 		}
 	}
 
@@ -125,7 +128,7 @@ public class Button extends CB_View_Base
 			}
 		}
 
-		if (!isPressed && !isDisabled)
+		if (!isPressed && !isDisabled && !isFocused)
 		{
 			if (drawableNormal != null)
 			{
@@ -142,6 +145,18 @@ public class Button extends CB_View_Base
 			if (drawablePressed != null)
 			{
 				drawablePressed.draw(batch, 0, 0, width, height);
+			}
+			else
+			{
+				Initial();
+				GL.that.renderOnce(this.getName() + " render");
+			}
+		}
+		else if (isFocused)
+		{
+			if (drawableFocused != null)
+			{
+				drawableFocused.draw(batch, 0, 0, width, height);
 			}
 			else
 			{
@@ -284,6 +299,10 @@ public class Button extends CB_View_Base
 		{
 			drawableDisabled = SpriteCache.btnDisabled;
 		}
+		if (drawableFocused == null)
+		{
+			drawableFocused = SpriteCache.btnPressed;
+		}
 
 	}
 
@@ -340,6 +359,16 @@ public class Button extends CB_View_Base
 	{
 		super.setHeight(Height);
 		setText(getText());
+	}
+
+	public void setFocus(boolean value)
+	{
+		isFocused = value;
+	}
+
+	public boolean isFocused()
+	{
+		return isFocused;
 	}
 
 }

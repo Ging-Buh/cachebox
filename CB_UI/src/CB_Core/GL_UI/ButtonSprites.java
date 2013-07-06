@@ -17,6 +17,7 @@ public class ButtonSprites
 	Drawable mPressed;
 	Drawable mNormal;
 	Drawable mDisabled;
+	Drawable mFocus;
 
 	public Drawable getPressed()
 	{
@@ -31,6 +32,11 @@ public class ButtonSprites
 	public Drawable getDisabled()
 	{
 		return mDisabled;
+	}
+
+	public Drawable getFocus()
+	{
+		return mFocus;
 	}
 
 	/**
@@ -75,6 +81,15 @@ public class ButtonSprites
 		mDisabled = new NinePatchDrawable(new NinePatch(atlas.findRegion(Disabled), left, right, top, bottom));
 	}
 
+	public ButtonSprites(TextureAtlas atlas, String Normal, String Pressed, String Disabled, String Focus, int left, int right, int top,
+			int bottom)
+	{
+		mPressed = new NinePatchDrawable(new NinePatch(atlas.findRegion(Pressed), left, right, top, bottom));
+		mNormal = new NinePatchDrawable(new NinePatch(atlas.findRegion(Normal), left, right, top, bottom));
+		mDisabled = new NinePatchDrawable(new NinePatch(atlas.findRegion(Disabled), left, right, top, bottom));
+		mFocus = new NinePatchDrawable(new NinePatch(atlas.findRegion(Focus), left, right, top, bottom));
+	}
+
 	/**
 	 * Inintialisiert die ninePatchSprites mit den Werten 0,0,0,0
 	 * 
@@ -89,6 +104,14 @@ public class ButtonSprites
 	{
 		mPressed = new SpriteDrawable(Pressed);
 		mNormal = new SpriteDrawable(Normal);
+	}
+
+	public ButtonSprites(Sprite Normal, Sprite Pressed, Sprite Disabled, Sprite Focus)
+	{
+		mPressed = new SpriteDrawable(Pressed);
+		mNormal = new SpriteDrawable(Normal);
+		mDisabled = new SpriteDrawable(Disabled);
+		mFocus = new SpriteDrawable(Focus);
 	}
 
 	/**
@@ -116,5 +139,6 @@ public class ButtonSprites
 		mPressed = null;
 		mNormal = null;
 		mDisabled = null;
+		mFocus = null;
 	}
 }
