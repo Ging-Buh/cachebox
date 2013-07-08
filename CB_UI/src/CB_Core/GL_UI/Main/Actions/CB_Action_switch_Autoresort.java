@@ -37,8 +37,12 @@ public class CB_Action_switch_Autoresort extends CB_ActionCommand
 		{
 			synchronized (Database.Data.Query)
 			{
-				Database.Data.Query.Resort(GlobalCore.getSelectedCoord(),
-						new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+				CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(),
+						GlobalCore.getSelectedWaypoint()));
+
+				GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+				GlobalCore.NearestCache(ret.getCache());
+				ret.dispose();
 			}
 		}
 	}

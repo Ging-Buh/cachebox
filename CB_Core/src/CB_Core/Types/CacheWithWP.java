@@ -7,28 +7,28 @@ package CB_Core.Types;
  */
 public class CacheWithWP
 {
-	private Cache c;
-	private Waypoint wp;
+	private Cache cache;
+	private Waypoint waypoint;
 
 	public CacheWithWP(Cache cache, Waypoint waypoint)
 	{
-		cache = c;
-		wp = waypoint;
+		this.cache = cache;
+		this.waypoint = waypoint;
 	}
 
 	public void dispose()
 	{
-		c = null;
-		wp = null;
+		this.cache = null;
+		this.waypoint = null;
 	}
 
 	public Cache getCache()
 	{
-		return c;
+		return this.cache;
 	}
 
 	public Waypoint getWaypoint()
 	{
-		return wp;
+		return this.waypoint;
 	}
 }
