@@ -135,7 +135,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					{
 
 						@Override
-						public void chekReady()
+						public void chekReady(int MemberType)
 						{
 							TimerTask tt = new TimerTask()
 							{

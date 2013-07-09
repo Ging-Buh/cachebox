@@ -7,6 +7,7 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
+import CB_Core.GL_UI.runOnGL;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.Dialog;
 import CB_Core.GL_UI.Controls.Image;
@@ -254,7 +255,16 @@ public class ButtonDialog extends Dialog
 
 	public void Show()
 	{
-		GL.that.showDialog(this);
+		GL.that.RunOnGL(new runOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				GL.that.showDialog(ButtonDialog.this);
+			}
+		});
+
 	}
 
 	private Sprite getIcon(MessageBoxIcon msgIcon)

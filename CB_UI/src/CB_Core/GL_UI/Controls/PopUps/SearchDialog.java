@@ -587,93 +587,115 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private void searchAPI()
 	{
-		int ret = GroundspeakAPI.isValidAPI_Key(true);
 
-		if (ret > 0)
-		{
-			GL_MsgBox
-					.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
-		}
-		else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
-		{
-			GL.that.RunOnGL(new runOnGL()
-			{
-
-				@Override
-				public void run()
-				{
-					GL_MsgBox.Show(Translation.Get("noInet"), Translation.Get("InetClue"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
-				}
-			});
-		}
-		else
+		GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
 		{
 
-			wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListner()
+			@Override
+			public void chekReady(int MemberTypeId)
 			{
+				int ret = GroundspeakAPI.isValidAPI_Key(true);
 
-				@Override
-				public void isCanceld()
+				if (ret == 0)
 				{
-					closeWaitDialog();
-				}
-			}, new Runnable()
-			{
-
-				@Override
-				public void run()
-				{
-					int ret = GroundspeakAPI.GetMembershipType();
-					if (ret == 3)
+					GL.that.RunOnGL(new runOnGL()
 					{
-						closeWaitDialog();
-						searchOnlineNow();
-					}
-					else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
-					{
-						GL.that.RunOnGL(new runOnGL()
+
+						@Override
+						public void run()
 						{
+							GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK,
+									MessageBoxIcon.Exclamation, null);
+						}
+					});
 
-							@Override
-							public void run()
-							{
-								GL_MsgBox.Show(Translation.Get("noInet"), Translation.Get("InetClue"), MessageBoxButtons.OK,
-										MessageBoxIcon.Error, null);
-							}
-						});
-					}
-					else
+				}
+				else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
+				{
+					GL.that.RunOnGL(new runOnGL()
 					{
-						GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
-								MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+
+						@Override
+						public void run()
+						{
+							GL_MsgBox.Show(Translation.Get("noInet"), Translation.Get("InetClue"), MessageBoxButtons.OK,
+									MessageBoxIcon.Error, null);
+						}
+					});
+				}
+				else
+				{
+
+					wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListner()
+					{
+
+						@Override
+						public void isCanceld()
+						{
+							closeWaitDialog();
+						}
+					}, new Runnable()
+					{
+
+						@Override
+						public void run()
+						{
+							int ret = GroundspeakAPI.GetMembershipType();
+							if (ret == 3)
+							{
+								// closeWaitDialog();
+								searchOnlineNow();
+							}
+							else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
+							{
+								GL.that.RunOnGL(new runOnGL()
 								{
 
 									@Override
-									public boolean onClick(int which, Object data)
+									public void run()
 									{
-										if (which == GL_MsgBox.BUTTON_POSITIVE) searchOnlineNow();
-										else
-											closeWaitDialog();
-										return true;
+										GL_MsgBox.Show(Translation.Get("noInet"), Translation.Get("InetClue"), MessageBoxButtons.OK,
+												MessageBoxIcon.Error, null);
 									}
 								});
-					}
+							}
+							else
+							{
+								GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
+										MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+										{
+
+											@Override
+											public boolean onClick(int which, Object data)
+											{
+												if (which == GL_MsgBox.BUTTON_POSITIVE) searchOnlineNow();
+												else
+													closeWaitDialog();
+												return true;
+											}
+										});
+							}
+
+						}
+					});
 
 				}
-			});
+			}
+		});
 
-		}
 	}
 
 	CancelWaitDialog wd = null;
 
 	private void closeWaitDialog()
 	{
+		Logger.DEBUG("SEARCH Close WD");
 		if (wd != null) wd.close();
 	}
 
 	private void searchOnlineNow()
 	{
+		Logger.DEBUG("SEARCH Show WD searchOverAPI");
 		wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 		{
 
@@ -688,6 +710,7 @@ public class SearchDialog extends PopUp_Base
 			@Override
 			public void run()
 			{
+				Logger.DEBUG("SEARCH Run search overAPI");
 				Coordinate searchCoord = null;
 
 				if (MapView.that != null && MapView.that.isVisible())
@@ -825,6 +848,7 @@ public class SearchDialog extends PopUp_Base
 					}
 
 				}
+				Logger.DEBUG("SEARCH Run search overAPI ready");
 				closeWaitDialog();
 			}
 		});
@@ -961,10 +985,10 @@ public class SearchDialog extends PopUp_Base
 		{
 
 			@Override
-			public void chekReady()
+			public void chekReady(int MemberType)
 			{
 				int ret = GroundspeakAPI.isValidAPI_Key(true);
-
+				Logger.DEBUG("SEARCH isValidAPI_Key ret=" + ret);
 				if (ret == 0)
 				{
 					GL.that.RunOnGL(new runOnGL()
@@ -973,6 +997,7 @@ public class SearchDialog extends PopUp_Base
 						@Override
 						public void run()
 						{
+
 							GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK,
 									MessageBoxIcon.Exclamation, null);
 						}
@@ -993,6 +1018,7 @@ public class SearchDialog extends PopUp_Base
 				}
 				else
 				{
+					Logger.DEBUG("SEARCH show WD chkApiState ");
 					wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 					{
 
@@ -1008,6 +1034,7 @@ public class SearchDialog extends PopUp_Base
 						@Override
 						public void run()
 						{
+							Logger.DEBUG("SEARCH run WD chkApiState ");
 							int ret = GroundspeakAPI.GetMembershipType();
 							if (ret == 3)
 							{

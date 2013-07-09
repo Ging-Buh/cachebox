@@ -1409,7 +1409,7 @@ public class GroundspeakAPI
 		else
 			return CONNECTION_TIMEOUT;
 
-		return isValid ? 0 : 1;
+		return ret;
 	}
 
 	public static int isValidAPI_Key()

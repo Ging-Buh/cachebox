@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1751;
+	public static final int CurrentRevision = 1753;
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "Test";
 
@@ -391,7 +391,7 @@ public class GlobalCore
 
 	public interface IChkRedyHandler
 	{
-		public void chekReady();
+		public void chekReady(int MemberTypeId);
 	}
 
 	public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler)
@@ -413,14 +413,14 @@ public class GlobalCore
 				@Override
 				public void run()
 				{
-					GroundspeakAPI.chkMemperShip(false);
-					handler.chekReady();
+					int ret = GroundspeakAPI.chkMemperShip(false);
+					handler.chekReady(ret);
 				}
 			});
 		}
 		else
 		{
-			handler.chekReady();
+			handler.chekReady(GroundspeakAPI.GetMembershipType());
 		}
 
 	}
