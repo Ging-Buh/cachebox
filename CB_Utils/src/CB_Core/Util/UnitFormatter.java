@@ -79,8 +79,8 @@ public class UnitFormatter
 	{
 		return String.format("%.2f mph", kmh / 1.6093f);
 	}
-	
-	static String FormatDM(double coord, String positiveDirection, String negativeDirection)
+
+	private static String FormatDM(double coord, String positiveDirection, String negativeDirection)
 	{
 		int deg = (int) coord;
 		double frac = coord - deg;
@@ -127,6 +127,5 @@ public class UnitFormatter
 		return result;
 
 	}
-
 
 }
