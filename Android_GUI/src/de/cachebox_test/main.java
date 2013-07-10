@@ -189,8 +189,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
 
-	public static FilterProperties test = new FilterProperties();
-
 	private static ServiceConnection mConnection;
 	private static Intent serviceIntent;
 	private static Service myNotifyService;

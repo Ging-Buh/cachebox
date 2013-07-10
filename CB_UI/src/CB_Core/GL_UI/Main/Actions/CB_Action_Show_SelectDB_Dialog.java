@@ -100,7 +100,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				{
 					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
 					FilterString = Config.settings.Filter.getValue();
-					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].ToString())
+					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString())
 							: new FilterProperties(FilterString);
 				}
 				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);

@@ -323,7 +323,7 @@ public class SelectDB extends ActivityBase
 				{
 					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
 					FilterString = Config.settings.Filter.getValue();
-					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].ToString())
+					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString())
 							: new FilterProperties(FilterString);
 				}
 				String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue());

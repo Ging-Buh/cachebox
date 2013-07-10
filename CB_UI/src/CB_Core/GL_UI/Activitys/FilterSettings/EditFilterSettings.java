@@ -87,7 +87,7 @@ public class EditFilterSettings extends ActivityBase
 				ApplyFilter(GlobalCore.LastFilter);
 
 				// Save selected filter (new JSON Format)
-				Config.settings.FilterNew.setValue(GlobalCore.LastFilter.ToString());
+				Config.settings.FilterNew.setValue(GlobalCore.LastFilter.toString());
 				Config.AcceptChanges();
 				finish();
 				return true;
@@ -385,7 +385,7 @@ public class EditFilterSettings extends ActivityBase
 					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 
 					// save Filtersettings im neuen JSON Format
-					Config.settings.FilterNew.setValue(Props.ToString());
+					Config.settings.FilterNew.setValue(Props.toString());
 					Config.AcceptChanges();
 				}
 				catch (Exception e)
@@ -445,7 +445,7 @@ public class EditFilterSettings extends ActivityBase
 						{
 						case 1: // ok Clicket
 							String uF = Config.settings.UserFilter.getValue();
-							String aktFilter = tmpFilterProps.ToString();
+							String aktFilter = tmpFilterProps.toString();
 
 							// Category Filterungen aus Filter entfernen
 							int pos = aktFilter.indexOf("^");

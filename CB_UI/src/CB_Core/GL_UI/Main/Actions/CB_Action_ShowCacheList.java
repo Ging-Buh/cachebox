@@ -94,7 +94,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					TabMainView.actionShowFilter.Execute();
 					return true;
 				case MenuID.MI_RESET_FILTER:
-					GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0].ToString());
+					GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0].toString());
 					EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
 					return true;
 				case MenuID.MI_SEARCH_LIST:

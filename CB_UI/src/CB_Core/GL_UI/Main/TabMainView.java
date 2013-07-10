@@ -661,7 +661,7 @@ public class TabMainView extends MainViewBase
 
 	public void filterSetChanged()
 	{
-		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.ToString().equals(""))
+		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.toString().equals(""))
 				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter))
 				&& !GlobalCore.LastFilter.isExtendsFilter())
 		{

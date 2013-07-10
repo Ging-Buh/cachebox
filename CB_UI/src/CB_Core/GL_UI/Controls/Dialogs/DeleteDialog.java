@@ -99,7 +99,7 @@ public class DeleteDialog extends ButtonDialog
 						wd.close();
 
 						// reset Filter
-						GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0].ToString());
+						GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0].toString());
 						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);// all Caches
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));

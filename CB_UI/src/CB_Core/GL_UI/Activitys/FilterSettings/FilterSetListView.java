@@ -244,7 +244,7 @@ public class FilterSetListView extends V_ListView
 	public void onShow()
 	{
 		super.onShow();
-		if (EditFilterSettings.tmpFilterProps != null && !EditFilterSettings.tmpFilterProps.ToString().equals(""))
+		if (EditFilterSettings.tmpFilterProps != null && !EditFilterSettings.tmpFilterProps.toString().equals(""))
 		{
 			LoadFilterProperties(EditFilterSettings.tmpFilterProps);
 		}
@@ -507,6 +507,8 @@ public class FilterSetListView extends V_ListView
 		{
 			if (i < props.attributesFilter.length) props.attributesFilter[i] = Attr.getChild(i).getChecked();
 		}
+
+		// TODO at Categorie
 
 		return props;
 	}

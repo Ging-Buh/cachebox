@@ -184,7 +184,7 @@ public class PresetListView extends V_ListView
 
 					if (itemIndex < FilterProperties.presets.length)
 					{
-						EditFilterSettings.tmpFilterProps = new FilterProperties(FilterProperties.presets[itemIndex].ToString());
+						EditFilterSettings.tmpFilterProps = new FilterProperties(FilterProperties.presets[itemIndex].toString());
 					}
 					else
 					{
