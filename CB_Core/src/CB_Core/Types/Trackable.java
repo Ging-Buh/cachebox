@@ -40,10 +40,20 @@ public class Trackable implements Comparable<Trackable>
 	private String Home = "";
 	private int TravelDistance;
 
+	/**
+	 * <img src="doc-files/1.png"/>
+	 */
 	public Trackable()
 	{
 	}
 
+	/**
+	 * <img src="doc-files/1.png"/>
+	 * 
+	 * @param Name
+	 * @param IconUrl
+	 * @param desc
+	 */
 	public Trackable(String Name, String IconUrl, String desc)
 	{
 		this.Name = Name;
@@ -53,7 +63,7 @@ public class Trackable implements Comparable<Trackable>
 
 	/**
 	 * DAO Constructor <br>
-	 * Der Constructor, der ein Trackable über eine DB Abfrage erstellt!
+	 * Der Constructor, der ein Trackable über eine DB Abfrage erstellt! <img src="doc-files/1.png"/>
 	 * 
 	 * @param dao
 	 */
@@ -173,6 +183,9 @@ public class Trackable implements Comparable<Trackable>
 
 	}
 
+	/**
+	 * <img src="doc-files/1.png"/>
+	 */
 	public Trackable(JSONObject JObj)
 	{
 
