@@ -35,7 +35,7 @@
 		<link>
 			<name>CoreSrc</name>
 			<type>2</type>
-			<location>C:/@work/Longri/SVN&apos;s/Cachebox/trunk/CB_Core/src</location>
+			<locationURI>PARENT-1-PROJECT_LOC/CB_Core/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
