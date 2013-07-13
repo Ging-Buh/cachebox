@@ -495,7 +495,7 @@ public class Cache implements Comparable<Cache>
 
 		// Spoilers are always loaden from global Repository too
 		// from globalUser changed Repository
-		path = CoreSettingsForward.DefaultSpoilerFolder;
+		path = CoreSettingsForward.SpoilerFolder;
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
