@@ -368,4 +368,21 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 	{
 		return dontShowKeyBoard;
 	}
+
+	public interface iBecomsFocus
+	{
+		public void BecomsFocus();
+	}
+
+	protected iBecomsFocus mBecomsFocusListner;
+
+	public void setBecomsFocusListner(iBecomsFocus BecomsFocusListner)
+	{
+		mBecomsFocusListner = BecomsFocusListner;
+	}
+
+	public void BecomsFocus()
+	{
+		if (mBecomsFocusListner != null) mBecomsFocusListner.BecomsFocus();
+	}
 }

@@ -1785,6 +1785,11 @@ public class GL implements ApplicationListener, InputProcessor
 		// fire event
 		KeyboardFocusChangedEventList.Call(view);
 
+		if (view != null && view != keyboardFocus)
+		{
+			view.BecomsFocus();
+		}
+
 		keyboardFocus = view;
 		hideMarker();
 

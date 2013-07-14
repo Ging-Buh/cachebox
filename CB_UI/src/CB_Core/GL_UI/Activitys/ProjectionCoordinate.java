@@ -7,6 +7,7 @@ import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CoordinateButton;
 import CB_Core.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
 import CB_Core.GL_UI.Controls.EditTextField;
+import CB_Core.GL_UI.Controls.EditTextFieldBase.iBecomsFocus;
 import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.NumPad;
 import CB_Core.Math.CB_RectF;
@@ -178,6 +179,26 @@ public class ProjectionCoordinate extends ActivityBase
 		if (!radius) this.addChild(lblBearingUnit);
 		this.addChild(lblDistanceUnit);
 
+		valueDistance.setBecomsFocusListner(new iBecomsFocus()
+		{
+
+			@Override
+			public void BecomsFocus()
+			{
+				numPad.registerTextField(valueDistance);
+			}
+		});
+
+		valueBearing.setBecomsFocusListner(new iBecomsFocus()
+		{
+
+			@Override
+			public void BecomsFocus()
+			{
+				numPad.registerTextField(valueBearing);
+			}
+		});
+
 	}
 
 	private void iniOkCancel()
@@ -225,10 +246,6 @@ public class ProjectionCoordinate extends ActivityBase
 	{
 		CB_RectF numRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, lblDistance.getY() - bOK.getMaxY());
 		numPad = new NumPad(numRec, "numPad", NumPad.Type.withDot);
-
-		numPad.registerTextField(valueDistance);
-		numPad.registerTextField(valueBearing);
-
 		this.addChild(numPad);
 	}
 

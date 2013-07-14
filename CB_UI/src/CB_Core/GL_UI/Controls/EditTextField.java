@@ -1833,7 +1833,10 @@ public class EditTextField extends EditTextFieldBase
 	public void setFocus(boolean value)
 	{
 		hasFocus = value;
-		if (value == true) GL.that.setKeyboardFocus(this);
+		if (value == true)
+		{
+			GL.that.setKeyboardFocus(this);
+		}
 		else
 		{
 			if (GL.that.getKeyboardFocus() == this) GL.that.setKeyboardFocus(null);

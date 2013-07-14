@@ -1,7 +1,5 @@
 package CB_Core.GL_UI.Controls;
 
-import java.util.ArrayList;
-
 import CB_Core.Events.platformConector;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
@@ -318,11 +316,11 @@ public class NumPad extends CB_View_Base
 
 	// ######## Register TextFields
 
-	private ArrayList<EditTextField> allTextFields = new ArrayList<EditTextField>();
 	private EditTextField focusedTextField = null;
 
 	public void registerTextField(final EditTextField textField)
 	{
+		focusedTextField = textField;
 		textField.setOnscreenKeyboard(new OnscreenKeyboard()
 		{
 			@Override
@@ -334,7 +332,6 @@ public class NumPad extends CB_View_Base
 		});
 
 		textField.dontShowSoftKeyBoardOnFocus();
-		allTextFields.add(textField);
 	}
 
 	keyEventListner ownKeyListner = new keyEventListner()
