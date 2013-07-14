@@ -5,6 +5,8 @@ import java.util.Date;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
+import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Events.invalidateTextureEvent;
@@ -38,7 +40,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent
+public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent,
+		CacheListChangedEventListner
 {
 	public static CompassView that;
 	private CB_RectF imageRec;
@@ -63,6 +66,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		super(rec, Name);
 		margin = GL_UISizes.margin;
 		SelectedCacheEventList.Add(this);
+		CachListChangedEventList.Add(this);
 		invalidateTextureEventList.Add(this);
 		that = this;
 		aktCache = GlobalCore.getSelectedCache();
@@ -161,7 +165,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private void setWP(Cache c, Waypoint wp)
 	{
-		boolean resetControls = false; // sett if WP desc changed
+		boolean resetControls = false; // Set if WP desk changed
 
 		if (wp != null)
 		{
@@ -847,6 +851,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 		createControls();
 		Layout();
+	}
+
+	@Override
+	public void CacheListChangedEvent()
+	{
+		setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 
 }

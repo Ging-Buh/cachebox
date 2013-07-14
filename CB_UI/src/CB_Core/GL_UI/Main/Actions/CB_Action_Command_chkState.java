@@ -3,10 +3,13 @@ package CB_Core.GL_UI.Main.Actions;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.SpriteCache.IconName;
@@ -185,10 +188,8 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				Database.Data.endTransaction();
 
 			}
-			else
-			{
-				pd.close();
-			}
+			pd.close();
+
 		}
 	})
 	{
@@ -200,7 +201,16 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 
 			if (result != -1)
 			{
-				GL.that.closeAllDialogs();
+
+				// Reload result from DB
+				synchronized (Database.Data.Query)
+				{
+					String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue());
+					CacheListDAO cacheListDAO = new CacheListDAO();
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+				}
+
+				CachListChangedEventList.Call();
 				synchronized (Database.Data.Query)
 				{
 					GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),

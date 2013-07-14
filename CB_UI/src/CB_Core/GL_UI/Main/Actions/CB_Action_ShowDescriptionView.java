@@ -6,6 +6,9 @@ import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CacheListDAO;
+import CB_Core.DB.Database;
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.GL_View_Base.OnClickListener;
@@ -119,8 +122,6 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						@Override
 						public void run()
 						{
-							String accessToken = Config.GetAccessToken();
-
 							CB_Core.Api.SearchForGeocaches.SearchGC searchC = new CB_Core.Api.SearchForGeocaches.SearchGC();
 							searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
 
@@ -139,10 +140,20 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							}
 							catch (InterruptedException e)
 							{
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 
+							// Reload result from DB
+							synchronized (Database.Data.Query)
+							{
+								String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue());
+								CacheListDAO cacheListDAO = new CacheListDAO();
+								cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+							}
+
+							CachListChangedEventList.Call();
+
+							CachListChangedEventList.Call();
 							wd.close();
 						}
 					});

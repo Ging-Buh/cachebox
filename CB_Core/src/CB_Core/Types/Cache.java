@@ -325,6 +325,7 @@ public class Cache implements Comparable<Cache>
 		this.Size = CacheSizes.other;
 		this.Available = true;
 		waypoints = new ArrayList<Waypoint>();
+		AttributeList = null;
 	}
 
 	/*
@@ -726,6 +727,8 @@ public class Cache implements Comparable<Cache>
 		longDescription = "";
 		myCache = -1;
 		gcLogin = null;
+		if (AttributeList != null) AttributeList.clear();
+		AttributeList = null;
 	}
 
 	private boolean isSearchVisible = true;
@@ -766,6 +769,8 @@ public class Cache implements Comparable<Cache>
 	// this is used after actualization of cache with API
 	public void copyFrom(Cache cache)
 	{
+		if (AttributeList != null) AttributeList.clear();
+		AttributeList = null;
 		this.MapX = cache.MapX;
 		this.MapY = cache.MapY;
 		this.Name = cache.Name;
