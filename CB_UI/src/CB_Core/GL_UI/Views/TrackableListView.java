@@ -129,7 +129,7 @@ public class TrackableListView extends CB_View_Base
 								return;
 							}
 
-							result = GroundspeakAPI.getTBbyTbCode(TBCode, new ByRef<Trackable>(tb));
+							result = GroundspeakAPI.getTBbyTbCode(TBCode, ref);
 							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 							{
 								GL.that.Toast(ConnectionError.INSTANCE);
