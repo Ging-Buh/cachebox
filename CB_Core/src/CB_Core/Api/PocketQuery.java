@@ -266,7 +266,7 @@ public class PocketQuery
 					GroundspeakAPI.LastAPIError = "";
 					SimpleDateFormat postFormater = new SimpleDateFormat("yyyyMMddHHmmss");
 					String dateString = postFormater.format(pocketQuery.DateLastGenerated);
-					String local = PqFolder + pocketQuery.Name + "_" + dateString + ".zip";
+					String local = PqFolder + "/" + pocketQuery.Name + "_" + dateString + ".zip";
 
 					// String test = json.getString("ZippedFile");
 
