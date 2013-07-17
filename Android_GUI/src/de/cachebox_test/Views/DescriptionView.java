@@ -61,7 +61,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
-		if (cache == null) return;
+		if (cache == null || WebControl == null) return;
 		if (aktCache != cache)
 		{
 			aktCache = cache;
@@ -141,6 +141,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void OnHide()
 	{
+		CachListChangedEventList.Remove(this);
 
 		// save last ScrollPos
 
@@ -155,8 +156,6 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 			WebControl.destroy();
 			WebControl = null;
 		}
-
-		CachListChangedEventList.Remove(this);
 
 	}
 
