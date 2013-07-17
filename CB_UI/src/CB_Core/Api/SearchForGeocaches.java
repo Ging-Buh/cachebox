@@ -43,7 +43,7 @@ import CB_Locator.Coordinate;
 
 public class SearchForGeocaches
 {
-	private static Boolean LoadFoundFromDB(String sql) // Found-Status aus Datenbank auslesen
+	private static Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
 	{
 		CoreCursor reader = Database.Data.rawQuery(sql, null);
 		try
@@ -361,7 +361,7 @@ public class SearchForGeocaches
 					cache.setFavorit(false);
 
 					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
-					Boolean Found = LoadFoundFromDB("select found from Caches where GcCode = \"" + gcCode + "\"");
+					Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + gcCode + "\"");
 					if (!Found)
 					{
 						cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
@@ -446,6 +446,10 @@ public class SearchForGeocaches
 					cache.Type = GroundspeakAPI.getCacheType(jCacheType.getInt("GeocacheTypeId"));
 					cache.Url = jCache.getString("Url");
 					cache.ApiStatus = apiStatus;
+
+					// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
+					Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + gcCode + "\"");
+					cache.setFavorit(fav);
 
 					// Chk if Own or Found
 					Boolean exclude = false;

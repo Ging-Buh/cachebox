@@ -20,6 +20,11 @@ public class CacheListDAO
 
 	public CacheList ReadCacheList(CacheList cacheList, String where)
 	{
+		if (cacheList == null) return null;
+
+		// Clear List before read
+		cacheList.clear();
+
 		Logger.DEBUG("ReadCacheList 1.Waypoints");
 		SortedMap<Long, ArrayList<Waypoint>> waypoints;
 		waypoints = new TreeMap<Long, ArrayList<Waypoint>>();

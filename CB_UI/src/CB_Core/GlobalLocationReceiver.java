@@ -119,9 +119,14 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 								CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(),
 										new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
-								GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-								GlobalCore.NearestCache(ret.getCache());
-								ret.dispose();
+								if (ret != null && ret.getCache() != null)
+								{
+									GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
+									GlobalCore.NearestCache(ret.getCache());
+									ret.dispose();
+									ret = null;
+								}
+
 							}
 						}
 						initialResortAfterFirstFixCompleted = true;

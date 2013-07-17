@@ -1,6 +1,8 @@
 package de.cachebox_test.Views;
 
 import CB_Core.GlobalCore;
+import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Events.SelectedCacheEvent;
 import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.TranslationEngine.Translation;
@@ -21,7 +23,7 @@ import de.cachebox_test.main;
 import de.cachebox_test.Custom_Controls.DescriptionViewControl;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
-public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent
+public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, CacheListChangedEventListner
 {
 	Context context;
 	public Cache aktCache;
@@ -59,10 +61,13 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
+		if (cache == null) return;
 		if (aktCache != cache)
 		{
 			aktCache = cache;
 		}
+
+		WebControl.setCache(aktCache);
 	}
 
 	@Override
@@ -114,7 +119,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		SelectedCacheEventList.Add(this);
 
 		WebControl.getSettings().setBuiltInZoomControls(true);
-
+		CachListChangedEventList.Add(this);
 	}
 
 	public int getHeightForWebViewSpacious()
@@ -150,6 +155,8 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 			WebControl.destroy();
 			WebControl = null;
 		}
+
+		CachListChangedEventList.Remove(this);
 
 	}
 
@@ -198,5 +205,11 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
 		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
+	}
+
+	@Override
+	public void CacheListChangedEvent()
+	{
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 }
