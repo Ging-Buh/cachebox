@@ -23,7 +23,7 @@ import CB_Core.DAO.GCVoteDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.Parameters;
+import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;

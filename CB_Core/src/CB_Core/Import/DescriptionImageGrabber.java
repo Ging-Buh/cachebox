@@ -20,7 +20,7 @@ import org.apache.http.util.ByteArrayBuffer;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.Parameters;
+import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Util.FileIO;

@@ -9,7 +9,7 @@ import java.util.Date;
 import CB_Core.CoreSettingsForward;
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.Parameters;
+import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Log.Logger;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;

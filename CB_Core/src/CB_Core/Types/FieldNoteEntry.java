@@ -9,7 +9,7 @@ import java.util.TimeZone;
 
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.Parameters;
+import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Enums.LogTypes;
 
 public class FieldNoteEntry implements Serializable

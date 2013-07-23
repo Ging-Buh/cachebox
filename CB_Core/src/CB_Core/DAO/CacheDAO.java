@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.Parameters;
+import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;

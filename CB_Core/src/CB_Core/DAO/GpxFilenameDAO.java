@@ -7,7 +7,7 @@ import java.util.Date;
 
 import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database.Parameters;
+import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Types.GpxFilename;
 
 public class GpxFilenameDAO
