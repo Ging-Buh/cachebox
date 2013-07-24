@@ -1,6 +1,6 @@
 package CB_Core.Settings;
 
-import CB_Core.Config;
+import CB_Core.Config_Core;
 
 public class SettingEncryptedString extends SettingLongString
 {
@@ -16,7 +16,7 @@ public class SettingEncryptedString extends SettingLongString
 	{
 		if (value == null) return value;
 		else
-			return Config.decrypt(this.value);
+			return Config_Core.decrypt(this.value);
 	}
 
 	// Liefert die verschlüsselte Einstellung zurück
@@ -28,7 +28,7 @@ public class SettingEncryptedString extends SettingLongString
 	// liefert den Standardwert im Klartext
 	public String getDefaultValue()
 	{
-		return Config.decrypt(this.defaultValue);
+		return Config_Core.decrypt(this.defaultValue);
 	}
 
 	// liefert den verschlüsselten Standadwert
@@ -42,7 +42,7 @@ public class SettingEncryptedString extends SettingLongString
 	public void setValue(String value)
 	{
 		String encrypted = "";
-		if (value.length() > 0) encrypted = Config.encrypt(value);
+		if (value.length() > 0) encrypted = Config_Core.encrypt(value);
 		if ((this.value != null) && (this.value.equals(encrypted))) return;
 		this.value = encrypted;
 		setDirty();

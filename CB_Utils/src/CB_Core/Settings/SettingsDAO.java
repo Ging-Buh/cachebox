@@ -1,11 +1,10 @@
 package CB_Core.Settings;
 
-import CB_Core.DB.Database;
-import CB_Core.Events.platformConector;
+import CB_Core.DB.Database_Core;
 
 public class SettingsDAO
 {
-	public void WriteToDatabase(Database database, SettingBase setting)
+	public void WriteToDatabase(Database_Core database, SettingBase setting)
 	{
 		String dbString = setting.toDBString();
 		if (setting instanceof SettingLongString)
@@ -16,7 +15,7 @@ public class SettingsDAO
 			database.WriteConfigString(setting.name, dbString);
 	}
 
-	public void ReadFromDatabase(Database database, SettingBase setting)
+	public void ReadFromDatabase(Database_Core database, SettingBase setting)
 	{
 		try
 		{
@@ -51,19 +50,11 @@ public class SettingsDAO
 
 	public void WriteToPlatformSettings(SettingBase setting)
 	{
-		platformConector.WriteSetting(setting);
+		// to use the PlatformSettings -> a new class must be generated on base of this
 	}
 
 	public void ReadFromPlatformSetting(SettingBase setting)
 	{
-		try
-		{
-			platformConector.ReadSetting(setting);
-			setting.clearDirty();
-		}
-		catch (Exception e)
-		{
-			setting.loadDefault();
-		}
+		// to use the PlatformSettings -> a new class must be generated on base of this
 	}
 }

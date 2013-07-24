@@ -1,7 +1,6 @@
 package CB_Core.Settings;
 
-import CB_Core.Config;
-import CB_Core.GlobalCore;
+import CB_Core.Config_Core;
 
 public class SettingFolder extends SettingLongString
 {
@@ -27,10 +26,10 @@ public class SettingFolder extends SettingLongString
 	{
 		if (rep.startsWith("?"))
 		{
-			rep = Config.WorkPath + GlobalCore.fs + "Repositories" + rep.substring(1);
+			rep = Config_Core.WorkPath + System.getProperty("file.separator") + "Repositories" + rep.substring(1);
 		}
-		rep = rep.replace("\\", GlobalCore.fs);
-		rep = rep.replace("/", GlobalCore.fs);
+		rep = rep.replace("\\", System.getProperty("file.separator"));
+		rep = rep.replace("/", System.getProperty("file.separator"));
 		return rep;
 	}
 

@@ -3,6 +3,8 @@ package CB_Core.Settings;
 import CB_Core.Config;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.DB.Database;
+import CB_Core.DB.Database_Core;
 
 public class SettingsClass extends SettingsList
 {
@@ -562,4 +564,22 @@ public class SettingsClass extends SettingsList
 		addSetting(Ask_Switch_GPS_ON = new SettingBool("Ask_Switch_GPS_ON", cat, NORMAL, true, SettingStoreType.Platform));
 	}
 
+	@Override
+	protected Database_Core getSettingsDB()
+	{
+		return Database.Settings;
+	}
+
+	@Override
+	protected Database_Core getDataDB()
+	{
+		return Database.Data;
+	}
+
+	@Override
+	protected SettingsDAO createSettingsDAO()
+	{
+		// this is necessary to use the platform settings
+		return new SettingsDAO_UI();
+	}
 }
