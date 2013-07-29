@@ -443,7 +443,7 @@ public class SettingsClass extends SettingsList
 		addSetting(TrackFolder = new SettingFolder("TrackFolder", cat, NORMAL, Work + "/User/Tracks", SettingStoreType.Global));
 
 		addSetting(Sel_LanguagePath = new SettingFile("Sel_LanguagePath", cat, NEVER, "data/lang/en-GB/strings.ini",
-				SettingStoreType.Global, "lan"));
+				SettingStoreType.Platform, "lan"));
 		addSetting(DatabasePath = new SettingFile("DatabasePath", cat, NEVER, Work + "/cachebox.db3", SettingStoreType.Global, "db3"));
 		addSetting(FieldNotesGarminPath = new SettingFile("FieldNotesGarminPath", cat, INVISIBLE, Work + "/User/geocache_visits.txt",
 				SettingStoreType.Global));

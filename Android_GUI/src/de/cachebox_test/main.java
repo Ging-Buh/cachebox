@@ -49,7 +49,6 @@ import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.Events.platformConector.IsetScreenLockTime;
-import CB_Core.Events.platformConector.iPlatformSettings;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.ViewConst;
 import CB_Core.GL_UI.ViewID;
@@ -78,6 +77,8 @@ import CB_Core.Math.Size;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Settings.PlatformSettings;
+import CB_Core.Settings.PlatformSettings.iPlatformSettings;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingInt;
@@ -3090,7 +3091,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		platformConector.setPlatformSettings(new iPlatformSettings()
+		PlatformSettings.setPlatformSettings(new iPlatformSettings()
 		{
 
 			@Override
@@ -3118,7 +3119,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 
 			@Override
-			public void Read(SettingBase setting)
+			public SettingBase Read(SettingBase setting)
 			{
 				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
 
@@ -3138,6 +3139,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					((SettingInt) setting).setValue(value);
 				}
 				setting.clearDirty();
+				return setting;
 			}
 		});
 

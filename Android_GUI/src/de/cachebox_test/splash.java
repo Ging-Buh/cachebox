@@ -4,20 +4,27 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
+
+import org.openintents.intents.FileManagerIntents;
 
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
-import CB_Core.Events.platformConector;
-import CB_Core.Events.platformConector.iPlatformSettings;
+import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.DisplayType;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Log.Logger;
 import CB_Core.Math.Size;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Settings.PlatformSettings;
+import CB_Core.Settings.PlatformSettings.iPlatformSettings;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingDouble;
@@ -35,9 +42,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -50,22 +60,31 @@ import android.os.StatFs;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidFiles;
+
 import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
+import de.cachebox_test.Views.Forms.MessageBox;
 
 @SuppressLint(
 	{ "SdCardPath", "DefaultLocale" })
 public class splash extends Activity
 {
 
-	public static Activity mainActivity;
+	public static Activity splashActivity;
 	final Context context = this;
 	Handler handler;
 	Bitmap bitmap;
@@ -77,6 +96,12 @@ public class splash extends Activity
 	private SharedPreferences androidSetting;
 	private SharedPreferences.Editor androidSettingEditor;
 	String workPath;
+	IgetFolderReturnListner getFolderReturnListner;
+	int AdditionalWorkPathCount;
+	SharedPreferences AndroidSettings;
+	MessageBox msg;
+
+	ArrayList<String> AdditionalWorkPathArray;
 
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
@@ -192,7 +217,7 @@ public class splash extends Activity
 			}
 		}
 
-		mainActivity = this;
+		splashActivity = this;
 
 		LoadImages();
 
@@ -211,13 +236,75 @@ public class splash extends Activity
 	{
 		super.onStart();
 
+		// initial GDX
+		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useGL20 = true;
+		// Gdx.graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+		// : config.resolutionStrategy);
+		// LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		// Gdx.input = new AndroidInput(main.mainActivity, inflater.getContext(), null, config);
+
 		// first, try to find stored preferences of workPath
-		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
+		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
-		workPath = settings.getString("WorkPath", "");
-		boolean askAgain = settings.getBoolean("AskAgain", true);
+		workPath = AndroidSettings.getString("WorkPath", "");
+		boolean askAgain = AndroidSettings.getBoolean("AskAgain", true);
 
-		if ((workPath.length() == 0) || (askAgain))
+		Global.initTheme(context);
+		Global.InitIcons(this);
+
+		String LangPath = AndroidSettings.getString("Sel_LanguagePath", "");
+		if (LangPath.length() == 0)
+		{
+			// set default lang
+
+			String locale = Locale.getDefault().getLanguage();
+			if (locale.contains("de"))
+			{
+				LangPath = "data/lang/de/strings.ini";
+			}
+			else if (locale.contains("cs"))
+			{
+				LangPath = "data/lang/cs/strings.ini";
+			}
+			else if (locale.contains("cs"))
+			{
+				LangPath = "data/lang/cs/strings.ini";
+			}
+			else if (locale.contains("fr"))
+			{
+				LangPath = "data/lang/fr/strings.ini";
+			}
+			else if (locale.contains("nl"))
+			{
+				LangPath = "data/lang/nl/strings.ini";
+			}
+			else if (locale.contains("pl"))
+			{
+				LangPath = "data/lang/pl/strings.ini";
+			}
+			else if (locale.contains("pt"))
+			{
+				LangPath = "data/lang/pt/strings.ini";
+			}
+			else
+			{
+				LangPath = "data/lang/en-GB/strings.ini";
+			}
+		}
+
+		new Translation(workPath, true);
+		try
+		{
+			Translation.LoadTranslation(LangPath);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		if ((askAgain))
 		{
 			// no saved workPath found -> search sd-cards and if more than 1 is found give the user the possibility to select one
 
@@ -396,6 +483,148 @@ public class splash extends Activity
 						}
 					});
 
+					// Set max height of ScrollView
+					ScrollView sv = (ScrollView) dialog.findViewById(R.id.scrollView);
+					// TODO set max
+					LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.scrollViewLinearLayout);
+
+					// add all Buttons for created Workspaces
+
+					AdditionalWorkPathArray = getAdditionalWorkPathArray();
+
+					for (final String AddWorkPath : AdditionalWorkPathArray)
+					{
+
+						final String Name = FileIO.GetFileNameWithoutExtension(AddWorkPath);
+
+						Button buttonW = new Button(context);
+						buttonW.setText(Name + "\n\n" + AddWorkPath);
+
+						buttonW.setOnLongClickListener(new OnLongClickListener()
+						{
+
+							@Override
+							public boolean onLongClick(View v)
+							{
+
+								// setting the MassageBox then the UI_sizes are not initial in this moment
+								Resources res = splash.this.getResources();
+								float scale = res.getDisplayMetrics().density;
+								float calcBase = 533.333f * scale;
+
+								FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
+								int width = frame.getMeasuredWidth();
+								int height = frame.getMeasuredHeight();
+
+								MessageBox.Builder.WindowWidth = width;
+								MessageBox.Builder.WindowHeight = height;
+								MessageBox.Builder.textSize = (calcBase / res.getDimensionPixelSize(R.dimen.BtnTextSize)) * scale;
+								MessageBox.Builder.ButtonHeight = (int) (50 * scale);
+
+								// Ask before delete
+								msg = (MessageBox) MessageBox.Show("Wont delete Workpath\n\n" + Name, "Delete Workpath",
+										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+										{
+
+											@Override
+											public void onClick(DialogInterface dialog, int which)
+											{
+												if (which == MessageBox.BUTTON_POSITIVE)
+												{
+													// Delete this Workpath only from Settings don't delete any File
+													deleteWorkPath(AddWorkPath);
+												}
+												// Start again to exclude the old Folder
+												msg.dismiss();
+												onStart();
+											}
+
+										});
+
+								dialog.dismiss();
+								return true;
+							}
+						});
+
+						buttonW.setOnClickListener(new OnClickListener()
+						{
+							@Override
+							public void onClick(View v)
+							{
+								// close select dialog
+								dialog.dismiss();
+
+								// show please wait dialog
+								showPleaseWaitDialog();
+
+								// use external SD -> change workPath
+								Thread thread = new Thread()
+								{
+									@Override
+									public void run()
+									{
+										workPath = AddWorkPath;
+										boolean askAgain = cbAskAgain.isChecked();
+										// boolean useTabletLayout = rbTabletLayout.isChecked();
+										saveWorkPath(askAgain/* , useTabletLayout */);
+										startInitial();
+									}
+								};
+								thread.run();
+
+							}
+						});
+
+						ll.addView(buttonW);
+					}
+
+					Button buttonC = (Button) dialog.findViewById(R.id.buttonCreateWorkspace);
+					buttonC.setText("Create new Workspace!");
+					buttonC.setOnClickListener(new OnClickListener()
+					{
+
+						@Override
+						public void onClick(View v)
+						{
+							// close select dialog
+							dialog.dismiss();
+
+							getFolderReturnListner = new IgetFolderReturnListner()
+							{
+
+								@Override
+								public void getFolderReturn(String Path)
+								{
+									AdditionalWorkPathArray.add(Path);
+									writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+									// Start again to include the new Folder
+									onStart();
+								}
+							};
+
+							Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
+
+							// Construct URI from file name.
+							File file = new File("");
+							intent.setData(Uri.fromFile(file));
+
+							// Set fancy title and button (optional)
+							intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select a Folder");
+							intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "select");
+
+							try
+							{
+								splash.this.startActivityForResult(intent,
+										Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR);
+							}
+							catch (ActivityNotFoundException e)
+							{
+								// No compatible file manager was found.
+								Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
+							}
+						}
+					});
+
 					dialog.show();
 
 				}
@@ -436,13 +665,79 @@ public class splash extends Activity
 			if (bytesAvailable == 0)
 			{
 				// there is a workPath stored but this workPath is not available at the moment (maybe SD is removed)
-				Toast.makeText(mainActivity, "WorkPath " + workPath + " is not available!\nMaybe SD-Card is removed?", Toast.LENGTH_LONG)
+				Toast.makeText(splashActivity, "WorkPath " + workPath + " is not available!\nMaybe SD-Card is removed?", Toast.LENGTH_LONG)
 						.show();
 				finish();
 				return;
 			}
 
 			startInitial();
+		}
+
+	}
+
+	private ArrayList<String> getAdditionalWorkPathArray()
+	{
+		ArrayList<String> retList = new ArrayList<String>();
+		AdditionalWorkPathCount = AndroidSettings.getInt("AdditionalWorkPathCount", 0);
+		for (int i = 0; i < AdditionalWorkPathCount; i++)
+		{
+			retList.add(AndroidSettings.getString("AdditionalWorkPath" + String.valueOf(i), ""));
+		}
+		return retList;
+	}
+
+	private void writeAdditionalWorkPathArray(ArrayList<String> list)
+	{
+		Editor editor = AndroidSettings.edit();
+
+		// first remove all
+		for (int i = 0; i < AdditionalWorkPathCount; i++)
+		{
+			String delWorkPath = "AdditionalWorkPath" + String.valueOf(i);
+			editor.remove(delWorkPath);
+		}
+		editor.commit();
+
+		int index = 0;
+		for (String workpath : list)
+		{
+			String addWorkPath = "AdditionalWorkPath" + String.valueOf(index);
+			editor.putString(addWorkPath, workpath);
+			index++;
+		}
+		AdditionalWorkPathCount = index;
+		editor.putInt("AdditionalWorkPathCount", AdditionalWorkPathCount);
+		editor.commit();
+	}
+
+	private void deleteWorkPath(String addWorkPath)
+	{
+		int index = AdditionalWorkPathArray.indexOf(addWorkPath);
+		if (index >= 0) AdditionalWorkPathArray.remove(index);
+		writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
+		{
+			if (resultCode == android.app.Activity.RESULT_OK && data != null)
+			{
+				// obtain the filename
+				Uri fileUri = data.getData();
+				if (fileUri != null)
+				{
+					String filePath = fileUri.getPath();
+					if (filePath != null)
+					{
+						if (getFolderReturnListner != null) getFolderReturnListner.getFolderReturn(filePath);
+					}
+				}
+			}
+			return;
+
 		}
 
 	}
@@ -498,7 +793,7 @@ public class splash extends Activity
 			// versionTextView = null;
 			// myTextView = null;
 			// descTextView = null;
-			mainActivity = null;
+			splashActivity = null;
 
 		}
 		super.onDestroy();
@@ -591,7 +886,7 @@ public class splash extends Activity
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 
 		// initialisieren der PlattformSettings
-		platformConector.setPlatformSettings(new iPlatformSettings()
+		PlatformSettings.setPlatformSettings(new iPlatformSettings()
 		{
 
 			@Override
@@ -619,7 +914,7 @@ public class splash extends Activity
 			}
 
 			@Override
-			public void Read(SettingBase setting)
+			public SettingBase Read(SettingBase setting)
 			{
 				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
 
@@ -639,6 +934,7 @@ public class splash extends Activity
 					((SettingInt) setting).setValue(value);
 				}
 				setting.clearDirty();
+				return setting;
 			}
 		});
 
@@ -822,13 +1118,12 @@ public class splash extends Activity
 			ui.isLandscape = false;
 		}
 
-		new Translation(Config.WorkPath, false);
+		// new Translation(Config.WorkPath, false);
 
 		new UiSizes();
 		UI_Size_Base.that.initial(ui);
 
 		Global.Paints.init(this);
-		Global.InitIcons(this);
 
 		new de.cachebox_test.Map.AndroidManager();
 

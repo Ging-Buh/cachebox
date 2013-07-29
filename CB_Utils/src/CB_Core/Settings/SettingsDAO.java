@@ -15,7 +15,7 @@ public class SettingsDAO
 			database.WriteConfigString(setting.name, dbString);
 	}
 
-	public void ReadFromDatabase(Database_Core database, SettingBase setting)
+	public SettingBase ReadFromDatabase(Database_Core database, SettingBase setting)
 	{
 		try
 		{
@@ -46,15 +46,19 @@ public class SettingsDAO
 		{
 			setting.loadDefault();
 		}
+
+		return setting;
 	}
 
 	public void WriteToPlatformSettings(SettingBase setting)
 	{
 		// to use the PlatformSettings -> a new class must be generated on base of this
+		PlatformSettings.WriteSetting(setting);
 	}
 
-	public void ReadFromPlatformSetting(SettingBase setting)
+	public SettingBase ReadFromPlatformSetting(SettingBase setting)
 	{
-		// to use the PlatformSettings -> a new class must be generated on base of this
+		setting = PlatformSettings.ReadSetting(setting);
+		return setting;
 	}
 }
