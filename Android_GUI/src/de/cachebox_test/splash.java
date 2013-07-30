@@ -407,7 +407,7 @@ public class splash extends Activity
 					final Dialog dialog = new Dialog(context);
 					dialog.setContentView(R.layout.sdselectdialog);
 					TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
-					title.setText(title.getText() + "\n ");
+					title.setText(Translation.Get("selectWorkSpace") + "\n\n");
 					/*
 					 * TextView tbLayout = (TextView) dialog.findViewById(R.id.select_sd_layout); tbLayout.setText("\nLayout"); final
 					 * RadioGroup rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup); final RadioButton rbHandyLayout =
@@ -418,6 +418,7 @@ public class splash extends Activity
 					 * rbTabletLayout.setChecked(true); } else { rbHandyLayout.setChecked(true); } }
 					 */
 					final CheckBox cbAskAgain = (CheckBox) dialog.findViewById(R.id.select_sd_askagain);
+					cbAskAgain.setText(Translation.Get("AskAgain"));
 					cbAskAgain.setChecked(askAgain);
 					Button buttonI = (Button) dialog.findViewById(R.id.button1);
 					buttonI.setText("Internal SD\n\n" + workPath);
@@ -522,8 +523,9 @@ public class splash extends Activity
 								MessageBox.Builder.ButtonHeight = (int) (50 * scale);
 
 								// Ask before delete
-								msg = (MessageBox) MessageBox.Show("Wont delete Workpath\n\n" + Name, "Delete Workpath",
-										MessageBoxButtons.YesNo, MessageBoxIcon.Question, new DialogInterface.OnClickListener()
+								msg = (MessageBox) MessageBox.Show(Translation.Get("shuredeleteWorkspace", Name),
+										Translation.Get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+										new DialogInterface.OnClickListener()
 										{
 
 											@Override
@@ -579,7 +581,7 @@ public class splash extends Activity
 					}
 
 					Button buttonC = (Button) dialog.findViewById(R.id.buttonCreateWorkspace);
-					buttonC.setText("Create new Workspace!");
+					buttonC.setText(Translation.Get("createWorkSpace"));
 					buttonC.setOnClickListener(new OnClickListener()
 					{
 

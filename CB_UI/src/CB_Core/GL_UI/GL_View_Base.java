@@ -1166,6 +1166,11 @@ public abstract class GL_View_Base extends CB_RectF
 		isLongClickable = value;
 	}
 
+	public void setDoubleClickable(boolean value)
+	{
+		isDoubleClickable = value;
+	}
+
 	public String getName()
 	{
 		return name;

@@ -1372,7 +1372,7 @@ public class GL implements ApplicationListener, InputProcessor
 		popUp.setY(y);
 
 		CB_View_Base aktView = DialogIsShown ? mDialog : child;
-		if (ActivityIsShown) aktView = mActivity;
+		if (ActivityIsShown && !DialogIsShown) aktView = mActivity;
 
 		aktView.addChild(popUp);
 		aktPopUp = popUp;

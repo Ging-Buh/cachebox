@@ -42,6 +42,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 		registerPopUpLongClick();
 
 		clipboard = GlobalCore.getDefaultClipboard();
+		this.setDoubleClickable(true);
 	}
 
 	public EditTextFieldBase(float X, float Y, float Width, float Height, GL_View_Base Parent, String Name)
@@ -51,6 +52,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 		registerPopUpLongClick();
 
 		clipboard = GlobalCore.getDefaultClipboard();
+		this.setDoubleClickable(true);
 	}
 
 	public abstract boolean keyTyped(char character);
