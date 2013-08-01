@@ -313,12 +313,12 @@ public class CB_Button extends Button implements OnClickListener
 
 		if (aktActionView != null && aktActionView.getView() != null)
 		{
-			isPressed = aktActionView.getView().isVisible();
+			isFocused = aktActionView.getView().isVisible();
 			hasContextMenu = aktActionView.HasContextMenu();
 		}
 		super.render(batch);
 
-		if (hasContextMenu && isPressed)
+		if (hasContextMenu && isFocused)
 		{
 
 			// draw Menu Sprite

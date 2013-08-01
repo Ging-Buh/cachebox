@@ -108,10 +108,10 @@ public class ButtonSprites
 
 	public ButtonSprites(Sprite Normal, Sprite Pressed, Sprite Disabled, Sprite Focus)
 	{
-		mPressed = new SpriteDrawable(Pressed);
-		mNormal = new SpriteDrawable(Normal);
-		mDisabled = new SpriteDrawable(Disabled);
-		mFocus = new SpriteDrawable(Focus);
+		if (Pressed != null) mPressed = new SpriteDrawable(Pressed);
+		if (Normal != null) mNormal = new SpriteDrawable(Normal);
+		if (Disabled != null) mDisabled = new SpriteDrawable(Disabled);
+		if (Focus != null) mFocus = new SpriteDrawable(Focus);
 	}
 
 	/**

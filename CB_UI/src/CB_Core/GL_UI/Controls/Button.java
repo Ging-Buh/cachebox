@@ -25,6 +25,7 @@ import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
+import CB_Core.Util.MoveableList;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -40,6 +41,7 @@ public class Button extends CB_View_Base
 	protected Drawable drawablePressed;
 	protected Drawable drawableDisabled;
 	protected Drawable drawableFocused;
+	protected MoveableList<Drawable> DrawableOverlayList = new MoveableList<Drawable>();
 
 	protected boolean isFocused = false;
 	protected boolean isPressed = false;
@@ -116,6 +118,16 @@ public class Button extends CB_View_Base
 		mFont = font;
 	}
 
+	public void addOverlayDrawable(Drawable drawable)
+	{
+		DrawableOverlayList.add(drawable);
+	}
+
+	public void removeOverlayDrawable(Drawable drawable)
+	{
+		DrawableOverlayList.remove(drawable);
+	}
+
 	@Override
 	protected void render(SpriteBatch batch)
 	{
@@ -175,6 +187,11 @@ public class Button extends CB_View_Base
 				Initial();
 				GL.that.renderOnce(this.getName() + " render");
 			}
+		}
+
+		for (Drawable drw : DrawableOverlayList)
+		{
+			drw.draw(batch, 0, 0, width, height);
 		}
 
 	}

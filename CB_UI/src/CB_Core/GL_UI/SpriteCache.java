@@ -863,13 +863,14 @@ public class SpriteCache
 
 	protected static void loadButtnSprites()
 	{
-		CacheList = new ButtonSprites(getThemedSprite("db"), getThemedSprite("db-pressed"));
-		CacheListFilter = new ButtonSprites(getThemedSprite("db-filter-active"), getThemedSprite("db-pressed-filter-active"));
-		Cache = new ButtonSprites(getThemedSprite("cache"), getThemedSprite("cache-pressed"));
-		Nav = new ButtonSprites(getThemedSprite("Nav"), getThemedSprite("Nav-pressed"));
-		Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool-pressed"));
-		Misc = new ButtonSprites(getThemedSprite("misc"), getThemedSprite("misc-pressed"));
-		QuickButton = new ButtonSprites(getThemedSprite("button"), getThemedSprite("btn-pressed"));
+		CacheList = new ButtonSprites(getThemedSprite("db"), getThemedSprite("db-pressed"), null, getThemedSprite("db-pressed"));
+		CacheListFilter = new ButtonSprites(getThemedSprite("db-filter-active"), getThemedSprite("db-pressed-filter-active"), null,
+				getThemedSprite("db-pressed-filter-active"));
+		Cache = new ButtonSprites(getThemedSprite("cache"), getThemedSprite("cache-pressed"), null, getThemedSprite("cache-pressed"));
+		Nav = new ButtonSprites(getThemedSprite("Nav"), getThemedSprite("Nav-pressed"), null, getThemedSprite("Nav-pressed"));
+		Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool-pressed"), null, getThemedSprite("tool-pressed"));
+		Misc = new ButtonSprites(getThemedSprite("misc"), getThemedSprite("misc-pressed"), null, getThemedSprite("misc-pressed"));
+		QuickButton = new ButtonSprites(getThemedSprite("button"), getThemedSprite("btn-pressed"), null, getThemedSprite("btn-pressed"));
 
 	}
 
