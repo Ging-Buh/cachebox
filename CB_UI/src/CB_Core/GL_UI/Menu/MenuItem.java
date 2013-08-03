@@ -1,7 +1,5 @@
 package CB_Core.GL_UI.Menu;
 
-import java.awt.Menu;
-
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.SpriteCache;
 import CB_Core.GL_UI.Controls.Image;

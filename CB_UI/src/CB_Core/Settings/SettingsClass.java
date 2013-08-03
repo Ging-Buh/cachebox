@@ -408,12 +408,12 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Login;
 
-		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, INVISIBLE, "", SettingStoreType.Global));
-		addSetting(GcAPIStaging = new SettingEncryptedString("GcAPIStaging", cat, INVISIBLE, "", SettingStoreType.Global));
+		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, INVISIBLE, "", SettingStoreType.Platform));
+		addSetting(GcAPIStaging = new SettingEncryptedString("GcAPIStaging", cat, INVISIBLE, "", SettingStoreType.Platform));
 
-		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", cat, NORMAL, "", SettingStoreType.Global));
-		addSetting(GcLogin = new SettingString("GcLogin", cat, NORMAL, "", SettingStoreType.Global));
-		addSetting(GcJoker = new SettingString("GcJoker", cat, NORMAL, "", SettingStoreType.Global));
+		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", cat, NORMAL, "", SettingStoreType.Platform));
+		addSetting(GcLogin = new SettingString("GcLogin", cat, NORMAL, "", SettingStoreType.Platform));
+		addSetting(GcJoker = new SettingString("GcJoker", cat, NORMAL, "", SettingStoreType.Platform));
 	}
 
 	private void addFolderSettings()

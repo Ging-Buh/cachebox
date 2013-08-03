@@ -199,6 +199,12 @@ public class FieldNotesView extends V_ListView
 				case MenuID.MI_FOUND:
 					addNewFieldnote(LogTypes.found);
 					return true;
+				case MenuID.MI_ATTENDED:
+					addNewFieldnote(LogTypes.attended);
+					return true;
+				case MenuID.MI_WILL_ATTENDED:
+					addNewFieldnote(LogTypes.will_attend);
+					return true;
 				case MenuID.MI_NOT_FOUND:
 					addNewFieldnote(LogTypes.didnt_find);
 					return true;
