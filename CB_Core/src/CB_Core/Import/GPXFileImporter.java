@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import CB_Core.StaticFinal;
+import CB_Core.DB.CoreCursor;
+import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -964,9 +966,22 @@ public class GPXFileImporter
 			cache.Url = values.get("wpt_url");
 		}
 
+		// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
+		Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + cache.GcCode + "\"");
+		cache.setFavorit(fav);
+
 		if (values.containsKey("wpt_sym"))
 		{
-			cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
+			// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+			Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + cache.GcCode + "\"");
+			if (!Found)
+			{
+				cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
+			}
+			else
+			{
+				cache.Found = true;
+			}
 		}
 
 		if (values.containsKey("cache_attribute_available"))
@@ -1335,6 +1350,29 @@ public class GPXFileImporter
 		{
 		}
 		return date;
+	}
+
+	private static Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
+	{
+		CoreCursor reader = Database.Data.rawQuery(sql, null);
+		try
+		{
+			reader.moveToFirst();
+			while (!reader.isAfterLast())
+			{
+				if (reader.getInt(0) != 0)
+				{ // gefunden. Suche abbrechen
+					return true;
+				}
+				reader.moveToNext();
+			}
+		}
+		finally
+		{
+			reader.close();
+		}
+
+		return false;
 	}
 
 }
