@@ -5,6 +5,7 @@ import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.Enums.WrapType;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
@@ -96,6 +97,7 @@ public class DeleteDialog extends ButtonDialog
 								Config.settings.SpoilerFolder.getValue(), Config.settings.SpoilerFolderLocal.getValue(),
 								Config.settings.DescriptionImageFolder.getValue(), Config.settings.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
+						cleanupWaypoints();
 						wd.close();
 
 						// reset Filter
@@ -138,6 +140,7 @@ public class DeleteDialog extends ButtonDialog
 								Config.settings.DescriptionImageFolder.getValue(), Config.settings.DescriptionImageFolderLocal.getValue());
 
 						cleanupLogs();
+						cleanupWaypoints();
 						wd.close();
 
 						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
@@ -177,6 +180,7 @@ public class DeleteDialog extends ButtonDialog
 						long nun = dao.DelFound(Config.settings.SpoilerFolder.getValue(), Config.settings.SpoilerFolderLocal.getValue(),
 								Config.settings.DescriptionImageFolder.getValue(), Config.settings.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
+						cleanupWaypoints();
 						wd.close();
 
 						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
@@ -195,11 +199,12 @@ public class DeleteDialog extends ButtonDialog
 	{
 		LogDAO dao = new LogDAO();
 		dao.ClearOrphanedLogs();
+	}
 
-		// compact DB
-		// hanging
-		// Database.Data.execSQL("vacuum");
-
+	private void cleanupWaypoints()
+	{
+		WaypointDAO dao = new WaypointDAO();
+		dao.ClearOrphanedWaypoints();
 	}
 
 	@Override

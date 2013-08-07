@@ -568,20 +568,10 @@ public class SearchForGeocaches
 								waypoint.Pos = new Coordinate();
 							}
 
-							// alt
-							// waypoint.Title = jWaypoints.getString("Name");
-							// waypoint.Description = jWaypoints.getString("Description");
-							// waypoint.Type = GroundspeakAPI.getCacheType(jWaypoints.getInt("WptTypeID"));
-							// waypoint.Clue = jWaypoints.getString("Comment");
-							// waypoint.GcCode = jWaypoints.getString("Code") + cache.GcCode.substring(2, cache.GcCode.length());
-
-							// new
 							waypoint.Title = jWaypoints.getString("Description");
 							waypoint.Description = jWaypoints.getString("Comment");
 							waypoint.Type = GroundspeakAPI.getCacheType(jWaypoints.getInt("WptTypeID"));
-							waypoint.Clue = jWaypoints.getString("Comment");
 							waypoint.GcCode = jWaypoints.getString("Code");
-
 							cache.waypoints.add(waypoint);
 						}
 

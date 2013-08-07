@@ -12,7 +12,6 @@ import CB_Core.GL_UI.Controls.List.ListViewItemBackground;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.FieldNoteEntry;
-import android.graphics.Paint;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -163,10 +162,10 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		super.Initial();
 	}
 
-	// static Member
-	public static Paint Linepaint;
-	public static Paint KopfPaint;
-	public static Paint TextPaint;
+	// // static Member
+	// public static Paint Linepaint;
+	// public static Paint KopfPaint;
+	// public static Paint TextPaint;
 	private static float headHeight;
 
 	public static BitmapFontCache cacheNamePaint;

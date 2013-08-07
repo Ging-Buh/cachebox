@@ -206,4 +206,13 @@ public class WaypointDAO
 		}
 	}
 
+	/**
+	 * Delete all Logs without exist Cache
+	 */
+	public void ClearOrphanedWaypoints()
+	{
+		String SQL = "DELETE  FROM  Waypoint WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Waypoint.CacheId = c.Id)";
+		Database.Data.execSQL(SQL);
+	}
+
 }
