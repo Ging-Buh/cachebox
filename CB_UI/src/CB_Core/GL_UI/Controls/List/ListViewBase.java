@@ -84,6 +84,16 @@ public abstract class ListViewBase extends CB_View_Base
 	protected float mMustSetPosValue = 0;
 	protected ArrayList<Float> mPosDefault;
 
+	public ArrayList<Float> getItemPosList()
+	{
+		return mPosDefault;
+	}
+
+	public float getAllItemSize()
+	{
+		return mcalcAllSizeBase;
+	}
+
 	/**
 	 * Wenn True, werden die Items beim verlassen des sichtbaren Bereiches Disposed und auf NULL gesetzt.
 	 */

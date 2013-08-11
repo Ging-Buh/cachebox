@@ -24,8 +24,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import org.openintents.intents.FileManagerIntents;
-
 import CB_Core.Config;
 import CB_Core.Energy;
 import CB_Core.FilterProperties;
@@ -44,9 +42,7 @@ import CB_Core.Events.platformConector.IGetApiKey;
 import CB_Core.Events.platformConector.IHardwarStateListner;
 import CB_Core.Events.platformConector.IQuit;
 import CB_Core.Events.platformConector.IShowViewListner;
-import CB_Core.Events.platformConector.IgetFileListner;
 import CB_Core.Events.platformConector.IgetFileReturnListner;
-import CB_Core.Events.platformConector.IgetFolderListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.Events.platformConector.IsetScreenLockTime;
 import CB_Core.GL_UI.SpriteCache;
@@ -96,7 +92,6 @@ import CB_Locator.Events.GpsStateChangeEventList;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.Service;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -863,22 +858,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
 		{
-			if (resultCode == android.app.Activity.RESULT_OK && data != null)
-			{
-				// obtain the filename
-				Uri fileUri = data.getData();
-				if (fileUri != null)
-				{
-					String filePath = fileUri.getPath();
-					if (filePath != null)
-					{
-						if (getFileReturnListner != null) getFileReturnListner.getFieleReturn(filePath);
-						if (getFolderReturnListner != null) getFolderReturnListner.getFolderReturn(filePath);
-					}
-				}
-			}
+			CB_Android_FileExplorer.test(requestCode, resultCode, data);
 			return;
-
 		}
 
 		// Intent Result Record Video
@@ -2977,69 +2958,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (cm != null) GlobalCore.setDefaultClipboard(acb);
 
-		platformConector.setGetFileListner(new IgetFileListner()
-		{
-
-			@Override
-			public void getFile(String initialPath, String extension, String TitleText, String ButtonText,
-					IgetFileReturnListner returnListner)
-			{
-				getFileReturnListner = returnListner;
-				getFolderReturnListner = null;
-
-				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
-
-				// Construct URI from file name.
-				File file = new File(initialPath);
-				intent.setData(Uri.fromFile(file));
-
-				// Set fancy title and button (optional)
-				intent.putExtra(FileManagerIntents.EXTRA_TITLE, TitleText);
-				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, ButtonText);
-
-				try
-				{
-					main.mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR);
-				}
-				catch (ActivityNotFoundException e)
-				{
-					// No compatible file manager was found.
-					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-				}
-
-			}
-		});
-
-		platformConector.setGetFolderListner(new IgetFolderListner()
-		{
-
-			@Override
-			public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner)
-			{
-				getFileReturnListner = null;
-				getFolderReturnListner = returnListner;
-
-				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
-
-				// Construct URI from file name.
-				File file = new File(initialPath);
-				intent.setData(Uri.fromFile(file));
-
-				// Set fancy title and button (optional)
-				intent.putExtra(FileManagerIntents.EXTRA_TITLE, TitleText);
-				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, ButtonText);
-
-				try
-				{
-					main.mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR);
-				}
-				catch (ActivityNotFoundException e)
-				{
-					// No compatible file manager was found.
-					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
+		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
+		platformConector.setGetFileListner(fileExplorer);
+		platformConector.setGetFolderListner(fileExplorer);
 
 		platformConector.setQuitListner(new IQuit()
 		{

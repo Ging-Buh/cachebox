@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 
-import org.openintents.intents.FileManagerIntents;
-
 import CB_Core.Config;
 import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Core.Events.platformConector;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.DisplayType;
 import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -42,7 +41,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -253,6 +251,10 @@ public class splash extends Activity
 
 		Global.initTheme(context);
 		Global.InitIcons(this);
+
+		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
+		platformConector.setGetFileListner(fileExplorer);
+		platformConector.setGetFolderListner(fileExplorer);
 
 		String LangPath = AndroidSettings.getString("Sel_LanguagePath", "");
 		if (LangPath.length() == 0)
@@ -588,7 +590,6 @@ public class splash extends Activity
 					{
 						// close select dialog
 						dialog.dismiss();
-
 						getFolderReturnListner = new IgetFolderReturnListner()
 						{
 
@@ -602,25 +603,8 @@ public class splash extends Activity
 							}
 						};
 
-						Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
+						platformConector.getFolder("", Translation.Get("select_folder"), Translation.Get("select"), getFolderReturnListner);
 
-						// Construct URI from file name.
-						File file = new File("");
-						intent.setData(Uri.fromFile(file));
-
-						// Set fancy title and button (optional)
-						intent.putExtra(FileManagerIntents.EXTRA_TITLE, "Select a Folder");
-						intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, "select");
-
-						try
-						{
-							splash.this.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR);
-						}
-						catch (ActivityNotFoundException e)
-						{
-							// No compatible file manager was found.
-							Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-						}
 					}
 				});
 
