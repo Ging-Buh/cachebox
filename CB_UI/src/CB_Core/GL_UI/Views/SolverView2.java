@@ -52,7 +52,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		 * this.addChild(lblDummy);
 		 */
 
-		cache = GlobalCore.getSelectedCache();
+		// cache = GlobalCore.getSelectedCache();
+		cache = null;
 	}
 
 	@Override
@@ -64,9 +65,11 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 		setBackground(SpriteCache.ListBack);
 
-		cache = GlobalCore.getSelectedCache();
-
-		intiList();
+		if (GlobalCore.getSelectedCache() != cache)
+		{
+			cache = GlobalCore.getSelectedCache();
+			intiList();
+		}
 	}
 
 	private void intiList()
