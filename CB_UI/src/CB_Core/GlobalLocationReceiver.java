@@ -2,6 +2,8 @@ package CB_Core;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.GL_UI.SoundCache;
+import CB_Core.GL_UI.SoundCache.Sounds;
 import CB_Core.GL_UI.Controls.Dialogs.Toast;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Log.Logger;
@@ -14,9 +16,6 @@ import CB_Locator.Events.GPS_FallBackEvent;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 
 /**
  * Empfängt alle Positions Änderungen und sortiert Liste oder spielt Sounds ab.
@@ -33,24 +32,14 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	private boolean initialFixSoundCompleted = false;
 	private static boolean approachSoundCompleted = false;
 
-	private Music GPS_lose;
-	private Music GPS_Fix;
-	private Music Approach;
-	private Music AutoResort;
-
 	public GlobalLocationReceiver()
 	{
 
 		PositionChangedEventList.Add(this);
 		GPS_FallBackEventList.Add(this);
-		String path = "data/sound";
-
 		try
 		{
-			Approach = Gdx.audio.newMusic(Gdx.files.internal(path + "/Approach.ogg"));
-			GPS_Fix = Gdx.audio.newMusic(Gdx.files.internal(path + "/GPS_Fix.ogg"));
-			GPS_lose = Gdx.audio.newMusic(Gdx.files.internal(path + "/GPS_lose.ogg"));
-			AutoResort = Gdx.audio.newMusic(Gdx.files.internal(path + "/AutoResort.ogg"));
+			SoundCache.loadSounds();
 		}
 		catch (Exception e)
 		{
@@ -95,7 +84,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 							if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
 							{
-								if (Approach != null) Approach.play();
+								SoundCache.play(Sounds.Approach);
 								approachSoundCompleted = true;
 
 							}
@@ -183,7 +172,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 									GlobalCore.NearestCache(ret.getCache());
 									ret.dispose();
 
-									if (AutoResort != null) AutoResort.play();
+									SoundCache.play(Sounds.AutoResort);
 									return;
 								}
 							}
@@ -243,13 +232,12 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 			if (!initialFixSoundCompleted && Locator.isGPSprovided() && GPS.getFixedSats() > 3)
 			{
-				if (GPS_Fix != null && !GPS_Fix.isPlaying())
-				{
-					Logger.LogCat("Play Fix");
-					if (PlaySounds) GPS_Fix.play();
-					initialFixSoundCompleted = true;
-					loseSoundCompleated = false;
-				}
+
+				Logger.LogCat("Play Fix");
+				if (PlaySounds) SoundCache.play(Sounds.GPS_Fix);
+				initialFixSoundCompleted = true;
+				loseSoundCompleated = false;
+
 			}
 		}
 		catch (Exception e)
@@ -269,10 +257,9 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 		if (initialFixSoundCompleted && !loseSoundCompleated)
 		{
-			if (GPS_lose != null && !GPS_lose.isPlaying())
-			{
-				if (PlaySounds) GPS_lose.play();
-			}
+
+			if (PlaySounds) SoundCache.play(Sounds.GPS_lose);
+
 			loseSoundCompleated = true;
 			initialFixSoundCompleted = false;
 		}

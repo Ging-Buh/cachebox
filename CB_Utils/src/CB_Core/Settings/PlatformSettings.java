@@ -5,9 +5,10 @@ public class PlatformSettings
 	// ------ setPlatformSetting ------
 	public interface iPlatformSettings
 	{
-		public SettingBase Read(SettingBase setting);
+		public SettingBase<?> Read(SettingBase<?> setting);
 
-		public void Write(SettingBase setting);
+		public void Write(SettingBase<?> setting);
+
 	}
 
 	public static iPlatformSettings platformSettingsListner;
@@ -17,13 +18,13 @@ public class PlatformSettings
 		platformSettingsListner = listner;
 	}
 
-	public static SettingBase ReadSetting(SettingBase setting)
+	public static SettingBase<?> ReadSetting(SettingBase<?> setting)
 	{
 		if (platformSettingsListner != null) setting = platformSettingsListner.Read(setting);
 		return setting;
 	}
 
-	public static void WriteSetting(SettingBase setting)
+	public static <T> void WriteSetting(SettingBase<T> setting)
 	{
 		if (platformSettingsListner != null) platformSettingsListner.Write(setting);
 	}

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import CB_Core.Util.iChanged;
 
-public class SettingBase implements Comparable<SettingBase>
+public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 {
 
 	protected ArrayList<iChanged> ChangedEventList = new ArrayList<iChanged>();
@@ -12,6 +12,10 @@ public class SettingBase implements Comparable<SettingBase>
 	protected String name;
 	protected SettingModus modus;
 	protected SettingStoreType storeType;
+
+	protected T value;
+	protected T defaultValue;
+	protected T lastValue;
 
 	/**
 	 * saves whether this setting is changed and needs to be saved
@@ -84,33 +88,12 @@ public class SettingBase implements Comparable<SettingBase>
 		return modus;
 	}
 
-	public String toDBString()
-	{
-		return "";
-	}
+	public abstract String toDBString();
 
-	public boolean fromDBString(String dbString)
-	{
-		return false;
-	}
-
-	public void loadDefault()
-	{
-
-	}
-
-	public void saveToLastValue()
-	{
-
-	}
-
-	public void loadFromLastValue()
-	{
-
-	}
+	public abstract boolean fromDBString(String dbString);
 
 	@Override
-	public int compareTo(SettingBase o)
+	public int compareTo(SettingBase<T> o)
 	{
 		return (this.index < o.index ? -1 : (this.index == o.index ? 0 : 1));
 	}
@@ -126,4 +109,38 @@ public class SettingBase implements Comparable<SettingBase>
 		}
 
 	}
+
+	public T getValue()
+	{
+		return value;
+	}
+
+	public T getDefaultValue()
+	{
+		return defaultValue;
+	}
+
+	public void setValue(T value)
+	{
+		if (this.value.equals(value)) return;
+		this.value = value;
+		setDirty();
+	}
+
+	public void loadDefault()
+	{
+		value = defaultValue;
+	}
+
+	public void saveToLastValue()
+	{
+		lastValue = value;
+	}
+
+	public void loadFromLastValue()
+	{
+		if (lastValue == null) throw new IllegalArgumentException("You have never saved the last value! Call SaveToLastValue()");
+		value = lastValue;
+	}
+
 }

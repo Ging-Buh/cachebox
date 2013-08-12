@@ -6,7 +6,7 @@ import java.util.Iterator;
 import CB_Core.DB.Database_Core;
 import CB_Core.Log.Logger;
 
-public abstract class SettingsList extends ArrayList<SettingBase>
+public abstract class SettingsList extends ArrayList<SettingBase<?>>
 {
 	/**
 	 * 
@@ -20,7 +20,7 @@ public abstract class SettingsList extends ArrayList<SettingBase>
 		return isLoaded;
 	}
 
-	public void addSetting(SettingBase setting)
+	public void addSetting(SettingBase<?> setting)
 	{
 		this.add(setting);
 	}
@@ -53,9 +53,9 @@ public abstract class SettingsList extends ArrayList<SettingBase>
 
 		try
 		{
-			for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
+			for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext();)
 			{
-				SettingBase setting = it.next();
+				SettingBase<?> setting = it.next();
 				if (!setting.isDirty()) continue; // is not changed -> do not
 
 				if (SettingStoreType.Local == setting.getStoreType())
@@ -98,9 +98,9 @@ public abstract class SettingsList extends ArrayList<SettingBase>
 			// Nachfolgende Starts sollten aber protokolliert werden
 		}
 		SettingsDAO dao = new SettingsDAO();
-		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
+		for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext();)
 		{
-			SettingBase setting = it.next();
+			SettingBase<?> setting = it.next();
 			if (SettingStoreType.Local == setting.getStoreType())
 			{
 				dao.ReadFromDatabase(getDataDB(), setting);
@@ -119,27 +119,27 @@ public abstract class SettingsList extends ArrayList<SettingBase>
 
 	public void LoadFromLastValue()
 	{
-		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
+		for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext();)
 		{
-			SettingBase setting = it.next();
+			SettingBase<?> setting = it.next();
 			setting.loadFromLastValue();
 		}
 	}
 
 	public void SaveToLastValue()
 	{
-		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
+		for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext();)
 		{
-			SettingBase setting = it.next();
+			SettingBase<?> setting = it.next();
 			setting.saveToLastValue();
 		}
 	}
 
 	public void LoadAllDefaultValues()
 	{
-		for (Iterator<SettingBase> it = this.iterator(); it.hasNext();)
+		for (Iterator<SettingBase<?>> it = this.iterator(); it.hasNext();)
 		{
-			SettingBase setting = it.next();
+			SettingBase<?> setting = it.next();
 			setting.loadDefault();
 		}
 	}

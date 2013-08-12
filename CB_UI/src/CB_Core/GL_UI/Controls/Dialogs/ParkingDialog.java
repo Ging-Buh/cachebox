@@ -145,8 +145,8 @@ public class ParkingDialog extends ButtonDialog
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				CB_Core.Config.settings.ParkingLatitude.setValue(0);
-				CB_Core.Config.settings.ParkingLongitude.setValue(0);
+				CB_Core.Config.settings.ParkingLatitude.setValue(0.0);
+				CB_Core.Config.settings.ParkingLongitude.setValue(0.0);
 				CB_Core.Config.AcceptChanges();
 				CachListChangedEventList.Call();
 				close();

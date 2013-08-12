@@ -4,7 +4,7 @@ import CB_Core.DB.Database_Core;
 
 public class SettingsDAO
 {
-	public void WriteToDatabase(Database_Core database, SettingBase setting)
+	public void WriteToDatabase(Database_Core database, SettingBase<?> setting)
 	{
 		String dbString = setting.toDBString();
 		if (setting instanceof SettingLongString)
@@ -15,7 +15,7 @@ public class SettingsDAO
 			database.WriteConfigString(setting.name, dbString);
 	}
 
-	public SettingBase ReadFromDatabase(Database_Core database, SettingBase setting)
+	public SettingBase<?> ReadFromDatabase(Database_Core database, SettingBase<?> setting)
 	{
 		try
 		{
@@ -50,13 +50,13 @@ public class SettingsDAO
 		return setting;
 	}
 
-	public void WriteToPlatformSettings(SettingBase setting)
+	public void WriteToPlatformSettings(SettingBase<?> setting)
 	{
 		// to use the PlatformSettings -> a new class must be generated on base of this
 		PlatformSettings.WriteSetting(setting);
 	}
 
-	public SettingBase ReadFromPlatformSetting(SettingBase setting)
+	public SettingBase<?> ReadFromPlatformSetting(SettingBase<?> setting)
 	{
 		setting = PlatformSettings.ReadSetting(setting);
 		return setting;

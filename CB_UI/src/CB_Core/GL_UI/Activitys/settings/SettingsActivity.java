@@ -269,9 +269,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			// CB_View_Base quickView = getButtonView(quick, 0);
 			// addControlToLinearLayout(quickView, margin);
 
-			ArrayList<SettingBase> SortedSettingList = new ArrayList<SettingBase>();// Config.settings.values().toArray();
+			ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<SettingBase<?>>();// Config.settings.values().toArray();
 
-			for (Iterator<SettingBase> it = Config.settings.iterator(); it.hasNext();)
+			for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext();)
 			{
 				SortedSettingList.add(it.next());
 			}
@@ -347,9 +347,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				Boolean expandLayout = false;
 
 				// int layoutHeight = 0;
-				for (Iterator<SettingBase> it = SortedSettingList.iterator(); it.hasNext();)
+				for (Iterator<SettingBase<?>> it = SortedSettingList.iterator(); it.hasNext();)
 				{
-					SettingBase settingItem = it.next();
+					SettingBase<?> settingItem = it.next();
 					if (settingItem.getCategory().name().equals(cat.name()))
 					{
 						// item nur zur Liste Hinzufügen, wenn der
@@ -438,7 +438,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	}
 
-	private CB_View_Base getView(SettingBase SB, int BackgroundChanger)
+	private CB_View_Base getView(SettingBase<?> SB, int BackgroundChanger)
 	{
 		if (SB instanceof SettingBool)
 		{

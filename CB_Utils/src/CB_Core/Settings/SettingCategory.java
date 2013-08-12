@@ -21,7 +21,8 @@ public enum SettingCategory
 	RememberAsk("RememberAsk"),
 	Debug("Debug"),
 	Button("Button"),
-	Positions("Positions"), ;
+	Positions("Positions"),
+	Sounds("Sounds"), ;
 
 	private String langString;
 

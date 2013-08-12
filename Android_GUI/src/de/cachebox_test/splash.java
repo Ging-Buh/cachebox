@@ -885,7 +885,7 @@ public class splash extends Activity
 			}
 
 			@Override
-			public SettingBase Read(SettingBase setting)
+			public SettingBase<?> Read(SettingBase<?> setting)
 			{
 				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
 
@@ -929,9 +929,9 @@ public class splash extends Activity
 		{
 			Config.readConfigFile(/* getAssets() */);
 
-			for (Iterator<SettingBase> it = Config.settings.iterator(); it.hasNext();)
+			for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext();)
 			{
-				SettingBase setting = it.next();
+				SettingBase<?> setting = it.next();
 
 				if (setting instanceof SettingBool)
 				{

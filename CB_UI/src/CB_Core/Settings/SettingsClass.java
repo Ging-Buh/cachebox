@@ -178,7 +178,7 @@ public class SettingsClass extends SettingsList
 	public SettingDouble MapInitLongitude;
 	public SettingDouble ParkingLatitude;
 	public SettingDouble ParkingLongitude;
-	public SettingDouble MapViewDPIFaktor;
+	public SettingFloat MapViewDPIFaktor;
 	public SettingDouble MapViewFontFaktor;
 
 	// String
@@ -222,6 +222,12 @@ public class SettingsClass extends SettingsList
 	public SettingIntArray CompassMapMaxZommLevel;
 	public SettingIntArray CompassMapMinZoomLevel;
 
+	public SettingsAudio GlobalVolume;
+	public SettingsAudio Approach;
+	public SettingsAudio GPS_lose;
+	public SettingsAudio GPS_Fix;
+	public SettingsAudio AutoResort;
+
 	public Integer Level[] = new Integer[21];
 	public Integer CrossLevel[] = new Integer[8];
 	public Integer[] approach = new Integer[]
@@ -261,6 +267,7 @@ public class SettingsClass extends SettingsList
 		addDebugSettings();
 		addPositionSettings();
 		addRememberAsk();
+		addSoundSettings();
 	}
 
 	private void addCarModeSettings()
@@ -296,7 +303,7 @@ public class SettingsClass extends SettingsList
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, SettingStoreType.Global));
 		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NEVER, 60000, SettingStoreType.Global));
 
-		addSetting(MapViewDPIFaktor = new SettingDouble("MapViewDPIFaktor", SettingCategory.Map, EXPERT, GlobalCore.displayDensity,
+		addSetting(MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", SettingCategory.Map, EXPERT, (float) GlobalCore.displayDensity,
 				SettingStoreType.Global));
 		addSetting(MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, NEVER, 1.0, SettingStoreType.Global));// TODO
 																																			// 0.6
@@ -562,6 +569,32 @@ public class SettingsClass extends SettingsList
 		addSetting(AskAgain = new SettingBool("AskAgain", cat, NORMAL, true, SettingStoreType.Platform));
 		addSetting(RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", cat, NORMAL, true, SettingStoreType.Global));
 		addSetting(Ask_Switch_GPS_ON = new SettingBool("Ask_Switch_GPS_ON", cat, NORMAL, true, SettingStoreType.Platform));
+	}
+
+	private void addSoundSettings()
+	{
+		SettingCategory cat = SettingCategory.Sounds;
+
+		// GlobalVolume;
+		Audio aud = new Audio("", false, false, 1.0f);
+		addSetting(GlobalVolume = new SettingsAudio("GlobalVolume", cat, NORMAL, aud, SettingStoreType.Global));
+
+		// Approach;
+		Audio aud2 = new Audio("sound/Approach.ogg", false, false, 1.0f);
+		addSetting(Approach = new SettingsAudio("Approach", cat, NORMAL, aud2, SettingStoreType.Global));
+
+		// GPS_lose;
+		Audio aud3 = new Audio("sound/GPS_lose.ogg", false, false, 1.0f);
+		addSetting(GPS_lose = new SettingsAudio("GPS_lose", cat, NORMAL, aud3, SettingStoreType.Global));
+
+		// GPS_Fix;
+		Audio aud4 = new Audio("sound/GPS_Fix.ogg", false, false, 1.0f);
+		addSetting(GPS_Fix = new SettingsAudio("GPS_Fix", cat, NORMAL, aud4, SettingStoreType.Global));
+
+		// AutoResort;
+		Audio aud5 = new Audio("sound/AutoResort.ogg", false, false, 1.0f);
+		addSetting(AutoResort = new SettingsAudio("AutoResort", cat, NORMAL, aud5, SettingStoreType.Global));
+
 	}
 
 	@Override

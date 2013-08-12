@@ -1,33 +1,13 @@
 package CB_Core.Settings;
 
-public class SettingBool extends SettingBase
+public class SettingBool extends SettingBase<Boolean>
 {
-	protected boolean value;
-	protected boolean defaultValue;
-	protected boolean lastValue;
 
 	public SettingBool(String name, SettingCategory category, SettingModus modus, boolean defaultValue, SettingStoreType StoreType)
 	{
 		super(name, category, modus, StoreType);
 		this.defaultValue = defaultValue;
 		this.value = defaultValue;
-	}
-
-	public boolean getValue()
-	{
-		return value;
-	}
-
-	public boolean getDefaultValue()
-	{
-		return defaultValue;
-	}
-
-	public void setValue(boolean value)
-	{
-		if (this.value == value) return;
-		this.value = value;
-		setDirty();
 	}
 
 	@Override
@@ -50,23 +30,4 @@ public class SettingBool extends SettingBase
 			return false;
 		}
 	}
-
-	@Override
-	public void loadDefault()
-	{
-		value = defaultValue;
-	}
-
-	@Override
-	public void saveToLastValue()
-	{
-		lastValue = value;
-	}
-
-	@Override
-	public void loadFromLastValue()
-	{
-		value = lastValue;
-	}
-
 }

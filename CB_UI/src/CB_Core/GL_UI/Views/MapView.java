@@ -333,7 +333,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		drawingWidth = mapIntWidth;
 		drawingHeight = mapIntHeight;
 
-		iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
+		iconFactor = Config.settings.MapViewDPIFaktor.getValue();
 
 		togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 

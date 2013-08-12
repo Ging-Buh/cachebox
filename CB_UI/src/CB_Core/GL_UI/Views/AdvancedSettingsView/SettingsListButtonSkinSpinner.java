@@ -10,13 +10,27 @@ import CB_Core.Settings.SettingStoreType;
  * 
  * @author Longri
  */
-public class SettingsListButtonSkinSpinner extends SettingBase
+public class SettingsListButtonSkinSpinner<T> extends SettingBase<T>
 {
 
 	public SettingsListButtonSkinSpinner(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType)
 	{
 		super(name, category, modus, StoreType);
 
+	}
+
+	@Override
+	public String toDBString()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean fromDBString(String dbString)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

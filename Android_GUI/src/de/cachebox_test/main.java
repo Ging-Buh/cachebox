@@ -3016,7 +3016,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 
 			@Override
-			public void Write(SettingBase setting)
+			public void Write(SettingBase<?> setting)
 			{
 				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
 				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
@@ -3040,7 +3040,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 
 			@Override
-			public SettingBase Read(SettingBase setting)
+			public SettingBase<?> Read(SettingBase<?> setting)
 			{
 				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
 
