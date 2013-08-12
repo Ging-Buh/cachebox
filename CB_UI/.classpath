@@ -24,5 +24,14 @@
 	<classpathentry kind="lib" path="lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Core"/>
 	<classpathentry kind="lib" path="lib/bsh-core-2.0b4.jar"/>
+	<classpathentry kind="src" path="/CB_Rpc"/>
+	<classpathentry kind="lib" path="C:/Android/android-sdk/platforms/android-8/android.jar" sourcepath="/CB_Rpc">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Android/android-sdk/docs/reference"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="nonaccessible" pattern="com/android/internal/**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

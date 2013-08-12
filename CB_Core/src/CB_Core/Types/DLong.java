@@ -1,7 +1,10 @@
 package CB_Core.Types;
 
-public class DLong
+import java.io.Serializable;
+
+public class DLong implements Serializable
 {
+	private static final long serialVersionUID = -3369610485833873224L;
 	public static final long UL1 = 1l;
 	private long low;
 	private long high;

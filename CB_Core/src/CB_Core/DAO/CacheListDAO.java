@@ -20,6 +20,16 @@ public class CacheListDAO
 
 	public CacheList ReadCacheList(CacheList cacheList, String where)
 	{
+		return ReadCacheList(cacheList, "", where, false);
+	}
+
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where)
+	{
+		return ReadCacheList(cacheList, join, where, false);
+	}
+
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription)
+	{
 		if (cacheList == null) return null;
 
 		// Clear List before read
@@ -56,10 +66,13 @@ public class CacheListDAO
 		Logger.DEBUG("ReadCacheList 2.Caches");
 		try
 		{
-			reader = Database.Data
-					.rawQuery(
-							"select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches "
-									+ ((where.length() > 0) ? "where " + where : where), null);
+			String sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint";
+			if (withDescription)
+			{
+				sql += ", Description";
+			}
+			sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
+			reader = Database.Data.rawQuery(sql, null);
 
 		}
 		catch (Exception e)
@@ -71,7 +84,7 @@ public class CacheListDAO
 		CacheDAO cacheDAO = new CacheDAO();
 		while (!reader.isAfterLast())
 		{
-			Cache cache = cacheDAO.ReadFromCursor(reader);
+			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription);
 
 			cacheList.add(cache);
 			if (waypoints.containsKey(cache.Id))

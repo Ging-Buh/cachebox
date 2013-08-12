@@ -1,12 +1,15 @@
 package CB_Core.Types;
 
+import java.io.Serializable;
 import java.net.URI;
 
 import CB_Core.DB.CoreCursor;
 import CB_Core.Import.DescriptionImageGrabber;
 
-public class ImageEntry
+public class ImageEntry implements Serializable
 {
+
+	private static final long serialVersionUID = 4216092006574290607L;
 
 	/**
 	 * Beschreibung des Bildes

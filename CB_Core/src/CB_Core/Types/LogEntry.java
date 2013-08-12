@@ -1,11 +1,14 @@
 package CB_Core.Types;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import CB_Core.Enums.LogTypes;
 
-public class LogEntry
+public class LogEntry implements Serializable
 {
+
+	private static final long serialVersionUID = -4269566289864187308L;
 
 	/**
 	 * Benutzername des Loggers

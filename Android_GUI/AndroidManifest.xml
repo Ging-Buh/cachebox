@@ -90,8 +90,8 @@
 			
 			
 			
-		</activity><activity android:name=".Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
-		<service android:name="NotifyService"></service>
+		</activity><activity android:name="de.cachebox_test.Views.Forms.GcApiLogin" android:screenOrientation="behind" android:theme="@style/Theme_day_transparent"></activity>
+		<service android:name="de.cachebox_test.NotifyService"></service>
 		
  
 	</application>

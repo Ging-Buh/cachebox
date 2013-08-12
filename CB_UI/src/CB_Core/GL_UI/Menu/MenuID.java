@@ -215,4 +215,7 @@ public class MenuID
 	public static final int MI_WILL_ATTENDED = 184;
 	public static final int MI_WP_SHOW = 185;
 	public static final int MI_SYNC = 186;
+
+	// Rpc
+	public static final int MI_RpcGetExportList = 187;
 }

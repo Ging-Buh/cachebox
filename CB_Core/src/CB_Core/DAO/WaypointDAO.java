@@ -29,6 +29,7 @@ public class WaypointDAO
 		args.put("type", WP.Type.ordinal());
 		args.put("syncexclude", WP.IsSyncExcluded);
 		args.put("userwaypoint", WP.IsUserWaypoint);
+		if (WP.Clue == null) WP.Clue = "";
 		args.put("clue", WP.Clue);
 		args.put("title", WP.Title);
 		args.put("isStart", WP.IsStart);

@@ -17,7 +17,9 @@ import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Activitys.EditCache;
 import CB_Core.GL_UI.Activitys.Import;
 import CB_Core.GL_UI.Activitys.SyncActivity;
+import CB_Core.GL_UI.Activitys.APIs.ShowAPIImportList;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
+import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
 import CB_Core.GL_UI.Main.TabMainView;
 import CB_Core.GL_UI.Menu.Menu;
@@ -25,6 +27,8 @@ import CB_Core.GL_UI.Menu.MenuID;
 import CB_Core.GL_UI.Menu.MenuItem;
 import CB_Core.GL_UI.Views.CacheListView;
 import CB_Core.Types.CacheWithWP;
+import CB_RpcCore.ClientCB.RpcClientCB;
+import cb_rpc.Functions.RpcAnswer;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -162,6 +166,17 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 				case MenuID.AID_SHOW_DELETE_DIALOG:
 					TabMainView.actionDelCaches.Execute();
 					return true;
+				case MenuID.MI_RpcGetExportList:
+					RpcClientCB rpc = new RpcClientCB();
+					RpcAnswer answer = rpc.getExportList();
+					if (answer != null)
+					{
+						GL_MsgBox.Show("RpcAntwort: " + answer.toString());
+					}
+
+					ShowAPIImportList impApi = new ShowAPIImportList();
+					impApi.show();
+					return true;
 				}
 				return false;
 			}
@@ -194,6 +209,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
 		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCache.Icons.get(IconName.addCache_57.ordinal()));
 		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCache.Icons.get(IconName.delete_28.ordinal()));
+		cm.addItem(MenuID.MI_RpcGetExportList, "RPC-GetExportList", SpriteCache.Icons.get(IconName.list_21.ordinal()));
 		return cm;
 	}
 

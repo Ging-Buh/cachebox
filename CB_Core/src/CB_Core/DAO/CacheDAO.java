@@ -30,6 +30,11 @@ public class CacheDAO
 
 	public Cache ReadFromCursor(CoreCursor reader)
 	{
+		return ReadFromCursor(reader, false);
+	}
+
+	public Cache ReadFromCursor(CoreCursor reader, boolean withDescription)
+	{
 		try
 		{
 			Cache cache = new Cache();
@@ -98,6 +103,10 @@ public class CacheDAO
 			else
 				cache.hint = "";
 
+			if (withDescription)
+			{
+				cache.longDescription = reader.getString(31);
+			}
 			return cache;
 		}
 		catch (Exception exc)

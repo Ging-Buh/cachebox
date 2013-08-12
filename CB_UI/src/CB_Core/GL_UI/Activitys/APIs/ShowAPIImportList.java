@@ -1,4 +1,4 @@
-package CB_Core.GL_UI.Activitys;
+package CB_Core.GL_UI.Activitys.APIs;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,8 +20,10 @@ import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GL_UI.Fonts;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.runOnGL;
+import CB_Core.GL_UI.Activitys.ActivityBase;
+import CB_Core.GL_UI.Activitys.ImportAnimation;
 import CB_Core.GL_UI.Activitys.ImportAnimation.AnimationType;
-import CB_Core.GL_UI.Activitys.APIs.ImportAPIListItem;
+import CB_Core.GL_UI.Activitys.Import_PqListItem;
 import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollapseBox;
@@ -49,7 +51,6 @@ import CB_Core.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_Core.GL_UI.Controls.PopUps.ConnectionError;
 import CB_Core.GL_UI.GL_Listener.GL;
 import CB_Core.Import.GPXFileImporter;
-import CB_Core.Import.ImportCBServer;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Log.Logger;
@@ -58,23 +59,20 @@ import CB_Core.Math.SizeF;
 import CB_Core.Math.UI_Size_Base;
 import CB_Core.TranslationEngine.Translation;
 import CB_Core.Util.FileIO;
-import CB_RpcCore.ClientCB.RpcClientCB;
-import CB_RpcCore.Functions.RpcAnswer_GetExportList;
-import cb_rpc.Functions.RpcAnswer;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class Import extends ActivityBase implements ProgressChangedEvent
+public class ShowAPIImportList extends ActivityBase implements ProgressChangedEvent
 {
 
-	private V_ListView lvPQs, lvCBServer;
-	private Button bOK, bCancel, refreshPqList, refreshCBServerList;
+	private V_ListView lvPQs;
+	private Button bOK, bCancel, refreshPqList;
 	private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
-	private Label lblTitle, lblPQ, lblCBServer, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
+	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages,
-			checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
-	private CollapseBox PQ_ListCollapseBox, CBServerCollapseBox, LogCollapseBox;
+	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler,
+			checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
+	private CollapseBox PQ_ListCollapseBox, LogCollapseBox;
 	private Spinner spinner;
 
 	private Timer mAnimationTimer;
@@ -89,10 +87,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private Boolean importStarted = false;
 
 	private ArrayList<PQ> PqList;
-	private ArrayList<RpcAnswer_GetExportList.ListItem> cbServerExportList;
 
 	private CB_RectF itemRec;
-	private CB_RectF itemRecCBServer;
 	private float itemHeight = -1;
 
 	private ScrollBox scrollBox;
@@ -103,7 +99,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		return importCancel;
 	}
 
-	public Import()
+	public ShowAPIImportList()
 	{
 		super(ActivityRec(), "importActivity");
 		CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
@@ -116,9 +112,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.setY(bOK.getMaxY() + margin);
 		scrollBox.setBackground(this.getBackground());
 		createPQLines();
-		createCBServerLines();
 		createPqCollapseBox();
-		createCBServerCollapseBox();
 		createGpxLine();
 		createGcVoteLine();
 		createImageLine();
@@ -248,26 +242,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.addChild(lblPQ);
 	}
 
-	private void createCBServerLines()
-	{
-
-		innerLeft = margin;
-
-		checkImportFromCBServer = new chkBox("CBServer");
-		checkImportFromCBServer.setX(innerLeft);
-		checkImportFromCBServer.setY(innerHeight - checkImportFromCBServer.getHeight());
-		checkImportFromCBServer.setVisible(false);
-		checkImportFromCBServer.setHeight(1);
-		lblCBServer = new Label(checkImportFromCBServer.getMaxX() + margin, checkImportFromCBServer.getY(), innerWidth - margin * 3
-				- checkImportFromCBServer.getWidth(), checkImportFromCBServer.getHeight(), "");
-		lblCBServer.setFont(Fonts.getNormal());
-		lblCBServer.setText(Translation.Get("FromCBServer"));
-		lblCBServer.setVisible(false);
-		lblCBServer.setHeight(1);
-		scrollBox.addChild(checkImportFromCBServer);
-		scrollBox.addChild(lblCBServer);
-	}
-
 	private void createPqCollapseBox()
 	{
 		CB_RectF rec = new CB_RectF(lblPQ.getX(), lblPQ.getY() - CollapseBoxHeight - margin, lblPQ.getWidth(), CollapseBoxHeight);
@@ -300,40 +274,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		PQ_ListCollapseBox.addChild(refreshPqList);
 
 		scrollBox.addChild(PQ_ListCollapseBox);
-	}
-
-	private void createCBServerCollapseBox()
-	{
-		CB_RectF rec = new CB_RectF(lblPQ.getX(), lblPQ.getY() - CollapseBoxHeight - margin, lblPQ.getWidth(), CollapseBoxHeight);
-
-		CBServerCollapseBox = new CollapseBox(rec, "CBServerCollapse");
-		CBServerCollapseBox.setBackground(this.getBackground());
-
-		refreshCBServerList = new Button(name);
-		refreshCBServerList.setWidth(PQ_ListCollapseBox.getWidth() - margin - margin);
-		refreshCBServerList.setX(margin);
-		refreshCBServerList.setY(margin);
-		refreshCBServerList.setText(Translation.Get("refreshCBServerList"));
-		refreshCBServerList.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				refreshCBServerList();
-				return true;
-			}
-		});
-
-		lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, CBServerCollapseBox.getWidth(),
-				CBServerCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
-
-		lvCBServer.setEmptyMsg(Translation.Get("EmptyCBServerList"));
-
-		CBServerCollapseBox.addChild(lvCBServer);
-		CBServerCollapseBox.addChild(refreshCBServerList);
-
-		scrollBox.addChild(CBServerCollapseBox);
 	}
 
 	private void createGpxLine()
@@ -581,12 +521,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxImportGPX.setY(lblGcVote.getMaxY() + margin);
 		lblGPX.setY(lblGcVote.getMaxY() + margin);
 
-		CBServerCollapseBox.setY(checkBoxImportGPX.getMaxY() + margin);
-
-		checkImportFromCBServer.setY(CBServerCollapseBox.getMaxY() + margin);
-		lblCBServer.setY(CBServerCollapseBox.getMaxY() + margin);
-
-		PQ_ListCollapseBox.setY(lblCBServer.getMaxY() + margin);
+		PQ_ListCollapseBox.setY(checkBoxImportGPX.getMaxY() + margin);
 		// PQ_ListCollapseBox.setHeight(CollapseBoxHeight);
 
 		checkImportPQfromGC.setY(PQ_ListCollapseBox.getMaxY() + margin);
@@ -603,7 +538,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxPreloadSpoiler.setChecked(Config.settings.CacheSpoilerData.getValue());
 		checkBoxImportGPX.setChecked(Config.settings.ImportGpx.getValue());
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
-		checkImportFromCBServer.setOnCheckedChangeListener(checkImportFromCBServer_CheckStateChanged);
 		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
 
 		// First check API-Key with visual Feedback
@@ -654,15 +588,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			PQ_ListCollapseBox.setAnimationHeight(0);
 		}
 
-		if (checkImportFromCBServer.isChecked())
-		{
-			CBServerCollapseBox.setAnimationHeight(CollapseBoxHeight);
-		}
-		else
-		{
-			CBServerCollapseBox.setAnimationHeight(0);
-		}
-
 		if (checkImportPQfromGC.isChecked() == true)
 		{
 			checkBoxImportGPX.setChecked(true);
@@ -670,7 +595,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		}
 
 		PQ_ListCollapseBox.setAnimationListner(Animationlistner);
-		CBServerCollapseBox.setAnimationListner(Animationlistner);
 		LogCollapseBox.setAnimationListner(Animationlistner);
 
 		checkBoxCleanLogs.setChecked(Config.settings.DeleteLogs.getValue());
@@ -748,22 +672,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		}
 	};
 
-	private OnCheckedChangeListener checkImportFromCBServer_CheckStateChanged = new OnCheckedChangeListener()
-	{
-		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked)
-		{
-			if (checkImportFromCBServer.isChecked())
-			{
-				CBServerCollapseBox.expand();
-			}
-			else
-			{
-				CBServerCollapseBox.collapse();
-			}
-		}
-	};
-
 	public class CustomAdapter implements Adapter
 	{
 
@@ -791,45 +699,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			}
 
 			return new Import_PqListItem(itemRec, position, pq);
-
-		}
-
-		@Override
-		public float getItemSize(int position)
-		{
-			if (itemHeight == -1) itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
-			return itemHeight;
-		}
-
-	}
-
-	public class CustomAdapterCBServer implements Adapter
-	{
-
-		public CustomAdapterCBServer()
-		{
-		}
-
-		public int getCount()
-		{
-			if (cbServerExportList != null) return cbServerExportList.size();
-			else
-				return 0;
-		}
-
-		@Override
-		public ListViewItemBase getView(int position)
-		{
-			final RpcAnswer_GetExportList.ListItem it = cbServerExportList.get(position);
-			if (itemRecCBServer == null)
-			{
-				itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
-				float itemWidth = CBServerCollapseBox.getInnerWidth();
-
-				itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
-			}
-
-			return new ImportAPIListItem(itemRecCBServer, position, it);
 
 		}
 
@@ -898,82 +767,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	}
 
-	private void refreshCBServerList()
-	{
-
-		lvCBServer.setBaseAdapter(null);
-		lvCBServer.notifyDataSetChanged();
-		refreshCBServerList.disable();
-
-		Thread thread = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				// PqList = new ArrayList<PQ>();
-				// PocketQuery.GetPocketQueryList(PqList);
-				RpcClientCB rpc = new RpcClientCB();
-				RpcAnswer answer = rpc.getExportList();
-
-				if (answer != null)
-				{
-					if (answer instanceof RpcAnswer_GetExportList)
-					{
-						cbServerExportList = ((RpcAnswer_GetExportList) answer).getList();
-						GL_MsgBox.Show("RpcAntwort: " + answer.toString());
-					}
-					else
-					{
-						cbServerExportList = null;
-					}
-				}
-				else
-				{
-					cbServerExportList = null;
-				}
-
-				lvCBServer.setBaseAdapter(new CustomAdapterCBServer());
-				lvCBServer.notifyDataSetChanged();
-
-				stopTimer();
-				lvCBServer.setEmptyMsg(Translation.Get("EmptyCBServerList"));
-
-				refreshCBServerList.enable();
-			}
-
-		};
-
-		thread.start();
-
-		mAnimationTimer = new Timer();
-		mAnimationTimer.schedule(new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				TimerMethod();
-			}
-
-			private void TimerMethod()
-			{
-				animationValue++;
-
-				if (animationValue > 5) animationValue = 0;
-
-				String s = "";
-				for (int i = 0; i < animationValue; i++)
-				{
-					s += ".";
-				}
-
-				lvCBServer.setEmptyMsg(Translation.Get("LoadCBServerList") + s);
-
-			}
-
-		}, 0, ANIMATION_TICK);
-
-	}
-
 	private void stopTimer()
 	{
 		if (mAnimationTimer != null)
@@ -1030,10 +823,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 					if (checkImportPQfromGC.isChecked())
 					{
 						ip.addStep(ip.new Step("importGC", 4));
-					}
-					if (checkImportFromCBServer.isChecked())
-					{
-						ip.addStep(ip.new Step("importCBServer", 4));
 					}
 					if (checkBoxImportGPX.isChecked())
 					{
@@ -1174,39 +963,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 							tmp.delete();
 						}
 
-					}
-
-					if (checkImportFromCBServer.isChecked())
-					{
-						// Import from CBServer
-						System.gc();
-						ImportCBServer importCBServer = new ImportCBServer();
-
-						long startTime = System.currentTimeMillis();
-
-						Database.Data.beginTransaction();
-						try
-						{
-
-							importCBServer.importCBServer(cbServerExportList, ip);
-
-							Database.Data.setTransactionSuccessful();
-						}
-						catch (Exception exc)
-						{
-							exc.printStackTrace();
-						}
-						Database.Data.endTransaction();
-
-						if (importCancel)
-						{
-							importCanceld();
-							return;
-						}
-
-						Logger.LogCat("Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
-
-						System.gc();
 					}
 
 					if (checkBoxGcVote.isChecked())

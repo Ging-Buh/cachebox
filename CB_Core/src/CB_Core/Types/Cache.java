@@ -2,6 +2,7 @@ package CB_Core.Types;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,8 +16,10 @@ import CB_Core.Util.FileIO;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 
-public class Cache implements Comparable<Cache>
+public class Cache implements Comparable<Cache>, Serializable
 {
+	private static final long serialVersionUID = 1015307624242318838L;
+
 	/*
 	 * Private Member
 	 */

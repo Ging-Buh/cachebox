@@ -37,5 +37,10 @@
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CB_Core/src</locationURI>
 		</link>
+		<link>
+			<name>RpcSrc</name>
+			<type>2</type>
+			<location>D:/WinCachebox/Cachebox/CB_Server_GIT/CB_Rpc/src</location>
+		</link>
 	</linkedResources>
 </projectDescription>

@@ -11,5 +11,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/httpcore-4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpmime-4.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-lang-2.4.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Rpc"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
