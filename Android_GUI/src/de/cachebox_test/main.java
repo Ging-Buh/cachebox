@@ -858,7 +858,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
 		{
-			CB_Android_FileExplorer.test(requestCode, resultCode, data);
+			CB_Android_FileExplorer.onActivityResult(requestCode, resultCode, data);
 			return;
 		}
 
