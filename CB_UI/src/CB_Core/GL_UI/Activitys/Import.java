@@ -67,6 +67,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class Import extends ActivityBase implements ProgressChangedEvent
 {
 
+	final boolean MAP_LINE_ACTIVE = false;
+	final boolean CBS_LINE_ACTIVE = false;
+
 	private V_ListView lvPQs, lvCBServer;
 	private Button bOK, bCancel, refreshPqList, refreshCBServerList;
 	private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
@@ -256,14 +259,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkImportFromCBServer = new chkBox("CBServer");
 		checkImportFromCBServer.setX(innerLeft);
 		checkImportFromCBServer.setY(innerHeight - checkImportFromCBServer.getHeight());
-		checkImportFromCBServer.setVisible(false);
-		checkImportFromCBServer.setHeight(1);
+		if (!CBS_LINE_ACTIVE) checkImportFromCBServer.setVisible(false);
+		if (!CBS_LINE_ACTIVE) checkImportFromCBServer.setHeight(0);
 		lblCBServer = new Label(checkImportFromCBServer.getMaxX() + margin, checkImportFromCBServer.getY(), innerWidth - margin * 3
 				- checkImportFromCBServer.getWidth(), checkImportFromCBServer.getHeight(), "");
 		lblCBServer.setFont(Fonts.getNormal());
 		lblCBServer.setText(Translation.Get("FromCBServer"));
-		lblCBServer.setVisible(false);
-		lblCBServer.setHeight(1);
+		if (!CBS_LINE_ACTIVE) lblCBServer.setVisible(false);
+		if (!CBS_LINE_ACTIVE) lblCBServer.setHeight(0);
 		scrollBox.addChild(checkImportFromCBServer);
 		scrollBox.addChild(lblCBServer);
 	}
@@ -394,8 +397,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.addChild(checkBoxPreloadSpoiler);
 		scrollBox.addChild(lblSpoiler);
 	}
-
-	final boolean MAP_LINE_ACTIVE = false;
 
 	private void createMapLine()
 	{
