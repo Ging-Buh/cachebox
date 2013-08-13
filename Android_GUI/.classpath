@@ -22,5 +22,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="lib" path="/CB_Core/lib/bsh-core-2.0b4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

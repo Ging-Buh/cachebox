@@ -4,6 +4,8 @@ import java.awt.Frame;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -29,6 +31,12 @@ import CB_Core.GL_UI.Views.splash;
 import CB_Core.Log.Logger;
 import CB_Core.Math.UiSizes;
 import CB_Core.Math.devicesSizes;
+import CB_Core.Settings.PlatformSettings;
+import CB_Core.Settings.PlatformSettings.iPlatformSettings;
+import CB_Core.Settings.SettingBase;
+import CB_Core.Settings.SettingBool;
+import CB_Core.Settings.SettingInt;
+import CB_Core.Settings.SettingString;
 import CB_Core.Util.FileIO;
 import CB_Core.Util.iChanged;
 import CB_Locator.Location.ProviderType;
@@ -46,8 +54,9 @@ public class DesktopMain
 {
 
 	static GL CB_UI;
-
 	static float compassheading = -1;
+	// Retrieve the user preference node for the package com.mycompany
+	static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
 
 	@SuppressWarnings("unused")
 	public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame)
@@ -60,6 +69,63 @@ public class DesktopMain
 
 		InitalConfig();
 		Config.settings.ReadFromDB();
+
+		PlatformSettings.setPlatformSettings(new iPlatformSettings()
+		{
+
+			@Override
+			public void Write(SettingBase<?> setting)
+			{
+
+				if (setting instanceof SettingBool)
+				{
+					prefs.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString)
+				{
+					prefs.put(setting.getName(), ((SettingString) setting).getValue());
+				}
+				else if (setting instanceof SettingInt)
+				{
+					prefs.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				try
+				{
+					prefs.flush();
+				}
+				catch (BackingStoreException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+
+			@Override
+			public SettingBase<?> Read(SettingBase<?> setting)
+			{
+				if (setting instanceof SettingString)
+				{
+					String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
+					((SettingString) setting).setValue(value);
+				}
+				else if (setting instanceof SettingBool)
+				{
+					boolean value = prefs.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				}
+				else if (setting instanceof SettingInt)
+				{
+					int value = prefs.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+				return setting;
+			}
+		});
 
 		new DesktopLogger();
 		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
