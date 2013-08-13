@@ -44,10 +44,10 @@ public class SettingsAudio extends SettingBase<Audio>
 	public boolean fromDBString(String dbString)
 	{
 		String[] values = dbString.split("#");
-		value.mPath = values[0];
-		value.mVolume = Float.parseFloat(values[1]);
-		value.mMute = Boolean.parseBoolean(values[2]);
-		value.mClass_Absolute = Boolean.parseBoolean(values[3]);
+		value.mPath = values[1];
+		value.mVolume = Float.parseFloat(values[2]);
+		value.mMute = Boolean.parseBoolean(values[3]);
+		value.mClass_Absolute = Boolean.parseBoolean(values[4]);
 		return false;
 	}
 

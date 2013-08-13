@@ -17,8 +17,11 @@ import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.API_Button;
+import CB_Core.GL_UI.Controls.Box;
 import CB_Core.GL_UI.Controls.Button;
 import CB_Core.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_Core.GL_UI.Controls.FloatControl;
+import CB_Core.GL_UI.Controls.Label;
 import CB_Core.GL_UI.Controls.LinearCollapseBox;
 import CB_Core.GL_UI.Controls.Linearlayout;
 import CB_Core.GL_UI.Controls.QuickButtonList;
@@ -47,6 +50,7 @@ import CB_Core.GL_UI.Views.AdvancedSettingsView.SettingsListGetApiButton;
 import CB_Core.Math.CB_RectF;
 import CB_Core.Math.GL_UISizes;
 import CB_Core.Math.UI_Size_Base;
+import CB_Core.Settings.Audio;
 import CB_Core.Settings.SettingBase;
 import CB_Core.Settings.SettingBool;
 import CB_Core.Settings.SettingCategory;
@@ -61,12 +65,14 @@ import CB_Core.Settings.SettingModus;
 import CB_Core.Settings.SettingStoreType;
 import CB_Core.Settings.SettingString;
 import CB_Core.Settings.SettingTime;
+import CB_Core.Settings.SettingsAudio;
 import CB_Core.TranslationEngine.Lang;
 import CB_Core.TranslationEngine.SelectedLangChangedEvent;
 import CB_Core.TranslationEngine.SelectedLangChangedEventList;
 import CB_Core.TranslationEngine.Translation;
 import CB_Locator.Events.PositionChangedEventList;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent
@@ -344,6 +350,30 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					entryCount++;
 				}
 
+				if (cat == SettingCategory.Sounds)
+				{
+					CB_RectF rec = itemRec.copy();
+					Box lblBox = new Box(rec, "LabelBox");
+
+					CB_RectF rec2 = rec.copy();
+					rec2.setWidth(rec.getWidth() - (rec.getLeft() * 2));
+					rec2.setHeight(rec.getHalfHeight());
+
+					Label lblVolume = new Label(itemRec, "Volume");
+					Label lblMute = new Label(itemRec, "Mute");
+
+					lblVolume.setZeroPos();
+					lblMute.setZeroPos();
+
+					lblMute.setHAlignment(HAlignment.RIGHT);
+
+					lblBox.addChild(lblMute);
+					lblBox.addChild(lblVolume);
+
+					lay.addChild(lblBox);
+					entryCount++;
+				}
+
 				Boolean expandLayout = false;
 
 				// int layoutHeight = 0;
@@ -491,6 +521,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		else if (SB instanceof SettingsListButtonSkinSpinner)
 		{
 			return getSkinSpinnerView((SettingsListButtonSkinSpinner) SB);
+		}
+		else if (SB instanceof SettingsAudio)
+		{
+			return getAudioView((SettingsAudio) SB, BackgroundChanger);
 		}
 
 		return null;
@@ -1035,6 +1069,59 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		apiBtn = new API_Button(itemRec);
 		apiBtn.setImage();
 		return apiBtn;
+	}
+
+	private CB_View_Base getAudioView(final SettingsAudio SB, int backgroundChanger)
+	{
+
+		boolean full = Config.settings.SettingsShowExpert.getValue() || Config.settings.SettingsShowAll.getValue();
+
+		SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, new FloatControl.iValueChanged()
+		{
+
+			@Override
+			public void ValueChanged(int value)
+			{
+				Audio aud = new Audio(SB.getValue());
+				aud.mVolume = (float) value / 100f;
+				SB.setValue(aud);
+			}
+		});
+
+		item.setName(Translation.Get(SB.getName()));
+		item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
+		item.setVolume((int) SB.getValue().mVolume * 100);
+		chkBox chk = item.getCheckBox();
+
+		chk.setChecked(SB.getValue().mMute);
+		chk.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
+			@Override
+			public void onCheckedChanged(chkBox view, boolean isChecked)
+			{
+				Audio aud = SB.getValue();
+				aud.mMute = isChecked;
+				SB.setValue(aud);
+			}
+		});
+
+		item.setOnLongClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+
+				return true;
+			}
+
+		});
+
+		return item;
+
 	}
 
 	private CB_View_Base getTimeView(final SettingTime SB, int backgroundChanger)

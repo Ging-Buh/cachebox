@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class ProgressBar extends CB_View_Base
 {
 	private int progress = 0;
-	private float progressDrawWidth = 0;
+	protected float progressDrawWidth = 0;
 	private Drawable progressFill;
 	private Label label;
 	private String msg = "";
@@ -51,19 +51,29 @@ public class ProgressBar extends CB_View_Base
 
 	}
 
-	public void setProgress(int value)
+	/**
+	 * @param value
+	 * @return the pos of Progress end
+	 */
+	public float setProgress(int value)
 	{
 		progress = value;
 		if (progress > 100) progress = 100;
 		progressDrawWidth = (width / 100) * progress;
 		GL.that.renderOnce("ProgressBar state changed");
+		return progressDrawWidth;
 	}
 
-	public void setProgress(int value, final String Msg)
+	/**
+	 * @param value
+	 * @param Msg
+	 * @return the pos of Progress end
+	 */
+	public float setProgress(int value, final String Msg)
 	{
 		msg = Msg;
 
-		setProgress(value);
+		float ret = setProgress(value);
 
 		this.RunOnGL(new runOnGL()
 		{
@@ -75,7 +85,7 @@ public class ProgressBar extends CB_View_Base
 			}
 		});
 
-		GL.that.renderOnce("ProgressBar state changed");
+		return ret;
 	}
 
 	public void setProgressFill(Drawable drawable)
@@ -103,6 +113,11 @@ public class ProgressBar extends CB_View_Base
 	{
 		msg = message;
 		label.setText(msg);
+	}
+
+	public int getProgress()
+	{
+		return progress;
 	}
 
 }
