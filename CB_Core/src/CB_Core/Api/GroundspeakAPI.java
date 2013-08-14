@@ -1153,7 +1153,24 @@ public class GroundspeakAPI
 					for (int ii = 0; ii < jImages.length(); ii++)
 					{
 						JSONObject jImage = (JSONObject) jImages.get(ii);
-						list.put(jImage.getString("Name"), new URI(jImage.getString("Url")));
+						String name = jImage.getString("Name");
+						String uri = jImage.getString("Url");
+						// ignore log images
+						if (uri.startsWith("http://img.geocaching.com/cache/log")) continue; // LOG-Image
+						// Check for duplicate name
+						if (list.containsKey(name))
+						{
+							for (int nr = 1; nr < 10; nr++)
+							{
+								if (list.containsKey(name + "_" + nr))
+								{
+									continue; // Name already exists
+								}
+								name += "_" + nr;
+								break;
+							}
+						}
+						list.put(name, new URI(uri));
 					}
 					return IO;
 				}
