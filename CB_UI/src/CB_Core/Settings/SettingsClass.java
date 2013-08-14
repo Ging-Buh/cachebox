@@ -63,12 +63,10 @@ public class SettingsClass extends SettingsList
 	public SettingBool CacheImageData;
 	public SettingBool CacheSpoilerData;
 	public SettingBool SuppressPowerSaving;
-	public SettingBool PlaySounds;
-	// public SettingBool PopSkipOutdatedGpx;
+
 	public SettingBool MapShowRating;
 	public SettingBool MapShowDT;
 	public SettingBool MapShowTitles;
-	// public SettingBool ShowKeypad;
 	public SettingBool ImportLayerOsm;
 	public SettingBool TrackRecorderStartup;
 	public SettingBool MapShowCompass;
@@ -225,8 +223,8 @@ public class SettingsClass extends SettingsList
 	public SettingsAudio GlobalVolume;
 	public SettingsAudio Approach;
 	public SettingsAudio GPS_lose;
-	public SettingsAudio GPS_Fix;
-	public SettingsAudio AutoResort;
+	public SettingsAudio GPS_fix;
+	public SettingsAudio AutoResortSound;
 
 	public Integer Level[] = new Integer[21];
 	public Integer CrossLevel[] = new Integer[8];
@@ -259,6 +257,7 @@ public class SettingsClass extends SettingsList
 		addGpsSettings();
 		addCompassSettings();
 		addMiscSettings();
+		addSoundSettings();
 		addTemplateSettings();
 		addInternalSettings();
 		addAPISettings();
@@ -267,7 +266,7 @@ public class SettingsClass extends SettingsList
 		addDebugSettings();
 		addPositionSettings();
 		addRememberAsk();
-		addSoundSettings();
+
 	}
 
 	private void addCarModeSettings()
@@ -298,7 +297,6 @@ public class SettingsClass extends SettingsList
 		addSetting(TrackRecorderStartup = new SettingBool("TrackRecorderStartup", cat, NORMAL, false, SettingStoreType.Global));
 		addSetting(DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", cat, NORMAL, false, SettingStoreType.Global));
 		addSetting(switchViewApproach = new SettingBool("switchViewApproach", cat, NORMAL, false, SettingStoreType.Global));
-		addSetting(PlaySounds = new SettingBool("PlaySounds", cat, NORMAL, true, SettingStoreType.Global));
 		addSetting(SuppressPowerSaving = new SettingBool("SuppressPowerSaving", cat, NORMAL, true, SettingStoreType.Global));
 		addSetting(ImperialUnits = new SettingBool("ImperialUnits", cat, NORMAL, false, SettingStoreType.Global));
 		addSetting(ScreenLock = new SettingTime("ScreenLock", cat, NEVER, 60000, SettingStoreType.Global));
@@ -576,7 +574,7 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Sounds;
 
 		// GlobalVolume;
-		Audio aud = new Audio("", false, false, 1.0f);
+		Audio aud = new Audio("sound/Approach.ogg", false, false, 1.0f);
 		addSetting(GlobalVolume = new SettingsAudio("GlobalVolume", cat, NORMAL, aud, SettingStoreType.Global));
 
 		// Approach;
@@ -589,11 +587,11 @@ public class SettingsClass extends SettingsList
 
 		// GPS_Fix;
 		Audio aud4 = new Audio("sound/GPS_Fix.ogg", false, false, 1.0f);
-		addSetting(GPS_Fix = new SettingsAudio("GPS_Fix", cat, NORMAL, aud4, SettingStoreType.Global));
+		addSetting(GPS_fix = new SettingsAudio("GPS_fix", cat, NORMAL, aud4, SettingStoreType.Global));
 
 		// AutoResort;
 		Audio aud5 = new Audio("sound/AutoResort.ogg", false, false, 1.0f);
-		addSetting(AutoResort = new SettingsAudio("AutoResort", cat, NORMAL, aud5, SettingStoreType.Global));
+		addSetting(AutoResortSound = new SettingsAudio("AutoResortSound", cat, NORMAL, aud5, SettingStoreType.Global));
 
 	}
 

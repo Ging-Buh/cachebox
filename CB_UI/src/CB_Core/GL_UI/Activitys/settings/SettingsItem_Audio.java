@@ -23,7 +23,8 @@ public class SettingsItem_Audio extends SettingsItemBase
 	{
 		super(rec, Index, Name);
 
-		if (full) this.setHeight(rec.getHeight() * 2);
+		// TODO add option for load SoundFile
+		// if (full) this.setHeight(rec.getHeight() * 2);
 
 		Check = new chkBox("");
 		Check.setX(this.width - rightBorder - Check.getWidth());
@@ -83,4 +84,21 @@ public class SettingsItem_Audio extends SettingsItemBase
 		volumeControl.setProgress(value);
 	}
 
+	public void setMuteDisabeld(boolean checked)
+	{
+		// Set VolumeControl to disabled
+		volumeControl.disable(checked);
+	}
+
+	public void disable()
+	{
+		volumeControl.disable(true);
+		Check.disable();
+	}
+
+	public void enable()
+	{
+		if (!Check.isChecked()) volumeControl.disable(false);
+		Check.enable();
+	}
 }

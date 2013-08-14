@@ -192,6 +192,7 @@ public class SpriteCache
 	public static Drawable InfoBack;
 	public static Drawable ProgressBack;
 	public static Drawable ProgressFill;
+	public static Drawable ProgressDisabled;
 	public static Drawable btn;
 	public static Drawable btnPressed;
 	public static Drawable btnDisabled;
@@ -816,6 +817,8 @@ public class SpriteCache
 		InfoBack = new NinePatchDrawable(new NinePatch(getThemedSprite("InfoPanelBack"), patch, patch, patch, patch));
 		ProgressBack = new NinePatchDrawable(new NinePatch(ToggleBtn.get(0), patch, patch, patch, patch));
 		ProgressFill = new NinePatchDrawable(new NinePatch(SpriteCache.Progress, patch - 1, patch - 1, patch - 1, patch - 1));
+		ProgressDisabled = new NinePatchDrawable(new NinePatch(getThemedSprite("progress-disabled"), patch - 1, patch - 1, patch - 1,
+				patch - 1));
 		btn = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-normal"), patch, patch, patch, patch));
 		btnPressed = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-pressed"), patch, patch, patch, patch));
 		btnDisabled = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-disabled"), patch, patch, patch, patch));

@@ -57,12 +57,14 @@ public class FloatControl extends CB_View_Base
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
+		if (slideButton.isDisabled()) return false;
 		return true;
 	}
 
 	@Override
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
+		if (slideButton.isDisabled()) return false;
 		if (!KineticPan)
 		{
 			int progress = (int) (100 / (width / x));
@@ -75,8 +77,24 @@ public class FloatControl extends CB_View_Base
 	@Override
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
+		if (slideButton.isDisabled()) return false;
 		if (changeListner != null) changeListner.ValueChanged(progressbar.getProgress());
 		return true;
+	}
+
+	public void disable(boolean checked)
+	{
+		if (checked)
+		{
+			slideButton.disable();
+			progressbar.disable();
+		}
+		else
+		{
+			slideButton.enable();
+			progressbar.enable();
+		}
+
 	}
 
 }

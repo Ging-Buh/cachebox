@@ -54,7 +54,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	public void PositionChanged()
 	{
 
-		PlaySounds = Config.settings.PlaySounds.getValue();
+		PlaySounds = !Config.settings.GlobalVolume.getValue().Mute;
 
 		if (newLocationThread != null)
 		{
@@ -172,7 +172,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 									GlobalCore.NearestCache(ret.getCache());
 									ret.dispose();
 
-									SoundCache.play(Sounds.AutoResort);
+									SoundCache.play(Sounds.AutoResortSound);
 									return;
 								}
 							}
@@ -225,7 +225,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	@Override
 	public void Fix()
 	{
-		PlaySounds = Config.settings.PlaySounds.getValue();
+		PlaySounds = !Config.settings.GlobalVolume.getValue().Mute;
 
 		try
 		{
@@ -234,7 +234,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 			{
 
 				Logger.LogCat("Play Fix");
-				if (PlaySounds) SoundCache.play(Sounds.GPS_Fix);
+				if (PlaySounds) SoundCache.play(Sounds.GPS_fix);
 				initialFixSoundCompleted = true;
 				loseSoundCompleated = false;
 
@@ -253,7 +253,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	@Override
 	public void FallBackToNetworkProvider()
 	{
-		PlaySounds = Config.settings.PlaySounds.getValue();
+		PlaySounds = !Config.settings.GlobalVolume.getValue().Mute;
 
 		if (initialFixSoundCompleted && !loseSoundCompleated)
 		{

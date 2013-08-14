@@ -19,7 +19,7 @@ public class SettingsAudio extends SettingBase<Audio>
 	{
 		super(name, category, modus, StoreType);
 		this.defaultValue = defaultValue;
-		this.value = defaultValue;
+		this.value = new Audio(defaultValue);
 	}
 
 	@Override
@@ -33,10 +33,10 @@ public class SettingsAudio extends SettingBase<Audio>
 	public String toDBString()
 	{
 		String ret = "";
-		ret += "#" + value.mPath;
-		ret += "#" + String.valueOf(value.mVolume);
-		ret += "#" + String.valueOf(value.mMute);
-		ret += "#" + String.valueOf(value.mClass_Absolute);
+		ret += "#" + value.Path;
+		ret += "#" + String.valueOf(value.Volume);
+		ret += "#" + String.valueOf(value.Mute);
+		ret += "#" + String.valueOf(value.Class_Absolute);
 		return ret;
 	}
 
@@ -44,10 +44,10 @@ public class SettingsAudio extends SettingBase<Audio>
 	public boolean fromDBString(String dbString)
 	{
 		String[] values = dbString.split("#");
-		value.mPath = values[1];
-		value.mVolume = Float.parseFloat(values[2]);
-		value.mMute = Boolean.parseBoolean(values[3]);
-		value.mClass_Absolute = Boolean.parseBoolean(values[4]);
+		value.Path = values[1];
+		value.Volume = Float.parseFloat(values[2]);
+		value.Mute = Boolean.parseBoolean(values[3]);
+		value.Class_Absolute = Boolean.parseBoolean(values[4]);
 		return false;
 	}
 

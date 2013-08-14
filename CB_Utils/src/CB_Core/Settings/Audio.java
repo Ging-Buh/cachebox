@@ -10,24 +10,24 @@ public class Audio
 	public Audio(String path, boolean absolute, boolean mute, float volume)
 	{
 		super();
-		this.mPath = path;
-		this.mClass_Absolute = absolute;
-		this.mMute = mute;
-		this.mVolume = volume;
+		this.Path = path;
+		this.Class_Absolute = absolute;
+		this.Mute = mute;
+		this.Volume = volume;
 	}
 
 	public Audio(Audio value)
 	{
-		mPath = value.mPath;
-		mVolume = value.mVolume;
-		mMute = value.mMute;
-		mClass_Absolute = value.mClass_Absolute;
+		Path = value.Path;
+		Volume = value.Volume;
+		Mute = value.Mute;
+		Class_Absolute = value.Class_Absolute;
 	}
 
-	public String mPath;
-	public float mVolume;
-	public boolean mMute;
-	public boolean mClass_Absolute;
+	public String Path;
+	public float Volume;
+	public boolean Mute;
+	public boolean Class_Absolute;
 
 	@Override
 	public boolean equals(Object obj)
@@ -37,10 +37,10 @@ public class Audio
 		{
 			ret = true;
 			Audio aud = (Audio) obj;
-			if (!mPath.equalsIgnoreCase(aud.mPath)) ret = false;
-			if (mClass_Absolute != aud.mClass_Absolute) ret = false;
-			if (mMute != aud.mMute) ret = false;
-			if (mVolume != aud.mVolume) ret = false;
+			if (!Path.equalsIgnoreCase(aud.Path)) ret = false;
+			if (Class_Absolute != aud.Class_Absolute) ret = false;
+			if (Mute != aud.Mute) ret = false;
+			if (Volume != aud.Volume) ret = false;
 		}
 
 		return ret;

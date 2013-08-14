@@ -14,9 +14,10 @@ public class ProgressBar extends CB_View_Base
 {
 	private int progress = 0;
 	protected float progressDrawWidth = 0;
-	private Drawable progressFill;
+	private Drawable progressFill, progressFillDisabled;
 	private Label label;
 	private String msg = "";
+	private boolean isDisabled = false;
 
 	public ProgressBar(CB_RectF rec, String Name)
 	{
@@ -40,6 +41,11 @@ public class ProgressBar extends CB_View_Base
 		if (progressFill == null)
 		{
 			progressFill = SpriteCache.ProgressFill;
+		}
+
+		if (progressFillDisabled == null)
+		{
+			progressFillDisabled = SpriteCache.ProgressDisabled;
 		}
 
 		GL.that.renderOnce("InitialProgressBar reday");
@@ -93,17 +99,36 @@ public class ProgressBar extends CB_View_Base
 		progressFill = drawable;
 	}
 
+	public void setProgressFillDisabled(Drawable drawable)
+	{
+		progressFillDisabled = drawable;
+	}
+
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		if (progressFill == null) Initial();
+		if (progressFill == null || progressFillDisabled == null) Initial();
 
-		if (progressFill != null)
+		if (!isDisabled)
 		{
-			float patch = progressFill.getLeftWidth() + progressFill.getRightWidth();
-			if (progressDrawWidth >= patch)
+			if (progressFill != null)
 			{
-				progressFill.draw(batch, 0, 0, progressDrawWidth, height);
+				float patch = progressFill.getLeftWidth() + progressFill.getRightWidth();
+				if (progressDrawWidth >= patch)
+				{
+					progressFill.draw(batch, 0, 0, progressDrawWidth, height);
+				}
+			}
+		}
+		else
+		{
+			if (progressFillDisabled != null)
+			{
+				float patch = progressFillDisabled.getLeftWidth() + progressFillDisabled.getRightWidth();
+				if (progressDrawWidth >= patch)
+				{
+					progressFillDisabled.draw(batch, 0, 0, progressDrawWidth, height);
+				}
 			}
 		}
 		super.render(batch);
@@ -118,6 +143,21 @@ public class ProgressBar extends CB_View_Base
 	public int getProgress()
 	{
 		return progress;
+	}
+
+	public void enable()
+	{
+		isDisabled = false;
+	}
+
+	public void disable()
+	{
+		isDisabled = true;
+	}
+
+	public boolean isDisabled()
+	{
+		return isDisabled;
 	}
 
 }

@@ -15,6 +15,8 @@ import CB_Core.Events.platformConector.IgetFileReturnListner;
 import CB_Core.Events.platformConector.IgetFolderReturnListner;
 import CB_Core.GL_UI.CB_View_Base;
 import CB_Core.GL_UI.GL_View_Base;
+import CB_Core.GL_UI.SoundCache;
+import CB_Core.GL_UI.SoundCache.Sounds;
 import CB_Core.GL_UI.Activitys.ActivityBase;
 import CB_Core.GL_UI.Controls.API_Button;
 import CB_Core.GL_UI.Controls.Box;
@@ -359,8 +361,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					rec2.setWidth(rec.getWidth() - (rec.getLeft() * 2));
 					rec2.setHeight(rec.getHalfHeight());
 
-					Label lblVolume = new Label(itemRec, "Volume");
-					Label lblMute = new Label(itemRec, "Mute");
+					Label lblVolume = new Label(itemRec, Translation.Get("Volume"));
+					Label lblMute = new Label(itemRec, Translation.Get("Mute"));
 
 					lblVolume.setZeroPos();
 					lblMute.setZeroPos();
@@ -434,6 +436,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		}
 
+		setVolumeState(Config.settings.GlobalVolume.getValue().Mute);
 		apiBtn.setImage();
 
 	}
@@ -1071,39 +1074,68 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		return apiBtn;
 	}
 
+	/**
+	 * List of audio settings which can mute with GlobalVolume settings
+	 */
+	ArrayList<SettingsItem_Audio> audioSettingsList;
+
 	private CB_View_Base getAudioView(final SettingsAudio SB, int backgroundChanger)
 	{
 
 		boolean full = Config.settings.SettingsShowExpert.getValue() || Config.settings.SettingsShowAll.getValue();
+		final String AudioName = SB.getName();
+		final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full,
+				new FloatControl.iValueChanged()
+				{
 
-		SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, new FloatControl.iValueChanged()
-		{
+					@Override
+					public void ValueChanged(int value)
+					{
+						Audio aud = new Audio(SB.getValue());
+						aud.Volume = (float) value / 100f;
+						SB.setValue(aud);
 
-			@Override
-			public void ValueChanged(int value)
-			{
-				Audio aud = new Audio(SB.getValue());
-				aud.mVolume = (float) value / 100f;
-				SB.setValue(aud);
-			}
-		});
+						// play Audio now
+
+						if (AudioName.equalsIgnoreCase("GlobalVolume")) SoundCache.play(Sounds.Global, true);
+						if (AudioName.equalsIgnoreCase("Approach")) SoundCache.play(Sounds.Approach);
+						if (AudioName.equalsIgnoreCase("GPS_lose")) SoundCache.play(Sounds.GPS_lose);
+						if (AudioName.equalsIgnoreCase("GPS_fix")) SoundCache.play(Sounds.GPS_fix);
+						if (AudioName.equalsIgnoreCase("AutoResortSound")) SoundCache.play(Sounds.AutoResortSound);
+					}
+				});
 
 		item.setName(Translation.Get(SB.getName()));
 		item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
-		item.setVolume((int) SB.getValue().mVolume * 100);
+		item.setVolume((int) (SB.getValue().Volume * 100));
 		chkBox chk = item.getCheckBox();
 
-		chk.setChecked(SB.getValue().mMute);
+		if (!AudioName.contains("Global"))
+		{
+			if (audioSettingsList == null) audioSettingsList = new ArrayList<SettingsItem_Audio>();
+			audioSettingsList.add(item);
+		}
+
+		chk.setChecked(SB.getValue().Mute);
 		chk.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
 			@Override
 			public void onCheckedChanged(chkBox view, boolean isChecked)
 			{
-				Audio aud = SB.getValue();
-				aud.mMute = isChecked;
+				Audio aud = new Audio(SB.getValue());
+				aud.Mute = isChecked;
 				SB.setValue(aud);
+				item.setMuteDisabeld(isChecked);
+				if (AudioName.contains("Global"))
+				{
+					// Enable or disable all other
+					setVolumeState(isChecked);
+				}
 			}
+
 		});
+
+		item.setMuteDisabeld(chk.isChecked());
 
 		item.setOnLongClickListener(new OnClickListener()
 		{
@@ -1122,6 +1154,24 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		return item;
 
+	}
+
+	private void setVolumeState(boolean globalEnabled)
+	{
+		if (audioSettingsList != null)
+		{
+			for (SettingsItem_Audio it : audioSettingsList)
+			{
+				if (globalEnabled)
+				{
+					it.disable();
+				}
+				else
+				{
+					it.enable();
+				}
+			}
+		}
 	}
 
 	private CB_View_Base getTimeView(final SettingTime SB, int backgroundChanger)
