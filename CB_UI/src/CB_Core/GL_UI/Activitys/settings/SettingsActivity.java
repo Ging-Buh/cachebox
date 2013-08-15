@@ -266,8 +266,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		if (iteratorCat != null && iteratorCat.hasNext())
 		{
 
-			SettingsListButtonLangSpinner lang = new SettingsListButtonLangSpinner("Lang", SettingCategory.Button, SettingModus.Normal,
-					SettingStoreType.Global);
+			SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button,
+					SettingModus.Normal, SettingStoreType.Global);
 			CB_View_Base langView = getLangSpinnerView(lang);
 
 			addControlToLinearLayout(langView, margin);
@@ -291,8 +291,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				int position = 0;
 
 				SettingCategory cat = iteratorCat.next();
-				SettingsListCategoryButton catBtn = new SettingsListCategoryButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
-						SettingStoreType.Global);
+				SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button,
+						SettingModus.Normal, SettingStoreType.Global);
 
 				final CB_View_Base btn = getView(catBtn, 1);
 
@@ -316,8 +316,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				int entryCount = 0;
 				if (cat == SettingCategory.Login)
 				{
-					SettingsListGetApiButton lgIn = new SettingsListGetApiButton(cat.name(), SettingCategory.Button, SettingModus.Normal,
-							SettingStoreType.Global);
+					SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button,
+							SettingModus.Normal, SettingStoreType.Global);
 					final CB_View_Base btnLgIn = getView(lgIn, 1);
 					lay.addChild(btnLgIn);
 					entryCount++;
@@ -333,7 +333,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				if (cat == SettingCategory.Debug)
 				{
-					SettingsListCategoryButton disp = new SettingsListCategoryButton("DebugDisplayInfo", SettingCategory.Button,
+					SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button,
 							SettingModus.Normal, SettingStoreType.Global);
 					final CB_View_Base btnDisp = getView(disp, 1);
 
@@ -345,7 +345,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				if (cat == SettingCategory.Skin)
 				{
-					SettingsListButtonSkinSpinner skin = new SettingsListButtonSkinSpinner("Skin", SettingCategory.Button,
+					SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button,
 							SettingModus.Normal, SettingStoreType.Global);
 					CB_View_Base skinView = getSkinSpinnerView(skin);
 					lay.addChild(skinView);
@@ -511,19 +511,19 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		}
 		else if (SB instanceof SettingsListCategoryButton)
 		{
-			return getButtonView((SettingsListCategoryButton) SB, BackgroundChanger);
+			return getButtonView((SettingsListCategoryButton<?>) SB, BackgroundChanger);
 		}
 		else if (SB instanceof SettingsListGetApiButton)
 		{
-			return getApiKeyButtonView((SettingsListGetApiButton) SB, BackgroundChanger);
+			return getApiKeyButtonView((SettingsListGetApiButton<?>) SB, BackgroundChanger);
 		}
 		else if (SB instanceof SettingsListButtonLangSpinner)
 		{
-			return getLangSpinnerView((SettingsListButtonLangSpinner) SB);
+			return getLangSpinnerView((SettingsListButtonLangSpinner<?>) SB);
 		}
 		else if (SB instanceof SettingsListButtonSkinSpinner)
 		{
-			return getSkinSpinnerView((SettingsListButtonSkinSpinner) SB);
+			return getSkinSpinnerView((SettingsListButtonSkinSpinner<?>) SB);
 		}
 		else if (SB instanceof SettingsAudio)
 		{
@@ -1009,7 +1009,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	}
 
-	private CB_View_Base getButtonView(final SettingsListCategoryButton SB, int backgroundChanger)
+	private CB_View_Base getButtonView(final SettingsListCategoryButton<?> SB, int backgroundChanger)
 	{
 		Button btn = new Button(ButtonRec, "Button");
 
@@ -1067,7 +1067,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		return btn;
 	}
 
-	private CB_View_Base getApiKeyButtonView(final SettingsListGetApiButton SB, int backgroundChanger)
+	private CB_View_Base getApiKeyButtonView(final SettingsListGetApiButton<?> SB, int backgroundChanger)
 	{
 		apiBtn = new API_Button(itemRec);
 		apiBtn.setImage();
@@ -1253,7 +1253,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	ArrayList<Lang> Sprachen;
 
-	private CB_View_Base getLangSpinnerView(final SettingsListButtonLangSpinner SB)
+	private CB_View_Base getLangSpinnerView(final SettingsListButtonLangSpinner<?> SB)
 	{
 		Sprachen = Translation.GetLangs(Config.settings.LanguagePath.getValue());
 
@@ -1341,7 +1341,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		return spinner;
 	}
 
-	private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner SB)
+	private CB_View_Base getSkinSpinnerView(final SettingsListButtonSkinSpinner<?> SB)
 	{
 
 		String SkinFolder = Config.WorkPath + "/skins";

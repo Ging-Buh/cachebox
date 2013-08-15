@@ -77,25 +77,12 @@ public class Fonts
 
 		// get the first found ttf-font
 
-		FileHandle[] ttfFonts = cfg.SkinFolder.list();
 		FileHandle font = null;
 
-		for (FileHandle file : ttfFonts)
+		if (cfg.SkinFolder.isDirectory())
 		{
-			if (file.extension().equalsIgnoreCase("ttf"))
-			{
-				font = file;
-				break;
-			}
-		}
-
-		if (font == null || !font.exists())
-		{
-			// no skin font found, use default font
-
-			FileHandle[] ttfFontsDefault = cfg.DefaultSkinFolder.list();
-
-			for (FileHandle file : ttfFontsDefault)
+			FileHandle[] ttfFonts = cfg.SkinFolder.list();
+			for (FileHandle file : ttfFonts)
 			{
 				if (file.extension().equalsIgnoreCase("ttf"))
 				{
@@ -103,6 +90,12 @@ public class Fonts
 					break;
 				}
 			}
+		}
+
+		if (font == null || !font.exists())
+		{
+			// no skin font found, use default font
+			font = GlobalCore.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
 		}
 
 		Logger.DEBUG("Generate scaled Fonts from " + font);

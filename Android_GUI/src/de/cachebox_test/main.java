@@ -150,6 +150,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
@@ -2316,7 +2317,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				if (!Translation.isInitial())
 				{
-					new Translation(Config.WorkPath, true);
+					new Translation(Config.WorkPath, FileType.Internal);
 					try
 					{
 						Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());

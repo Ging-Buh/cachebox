@@ -574,23 +574,23 @@ public class SettingsClass extends SettingsList
 		SettingCategory cat = SettingCategory.Sounds;
 
 		// GlobalVolume;
-		Audio aud = new Audio("sound/Approach.ogg", false, false, 1.0f);
+		Audio aud = new Audio("data/sound/Approach.ogg", false, false, 1.0f);
 		addSetting(GlobalVolume = new SettingsAudio("GlobalVolume", cat, NORMAL, aud, SettingStoreType.Global));
 
 		// Approach;
-		Audio aud2 = new Audio("sound/Approach.ogg", false, false, 1.0f);
+		Audio aud2 = new Audio("data/sound/Approach.ogg", false, false, 1.0f);
 		addSetting(Approach = new SettingsAudio("Approach", cat, NORMAL, aud2, SettingStoreType.Global));
 
 		// GPS_lose;
-		Audio aud3 = new Audio("sound/GPS_lose.ogg", false, false, 1.0f);
+		Audio aud3 = new Audio("data/sound/GPS_lose.ogg", false, false, 1.0f);
 		addSetting(GPS_lose = new SettingsAudio("GPS_lose", cat, NORMAL, aud3, SettingStoreType.Global));
 
 		// GPS_Fix;
-		Audio aud4 = new Audio("sound/GPS_Fix.ogg", false, false, 1.0f);
+		Audio aud4 = new Audio("data/sound/GPS_Fix.ogg", false, false, 1.0f);
 		addSetting(GPS_fix = new SettingsAudio("GPS_fix", cat, NORMAL, aud4, SettingStoreType.Global));
 
 		// AutoResort;
-		Audio aud5 = new Audio("sound/AutoResort.ogg", false, false, 1.0f);
+		Audio aud5 = new Audio("data/sound/AutoResort.ogg", false, false, 1.0f);
 		addSetting(AutoResortSound = new SettingsAudio("AutoResortSound", cat, NORMAL, aud5, SettingStoreType.Global));
 
 	}

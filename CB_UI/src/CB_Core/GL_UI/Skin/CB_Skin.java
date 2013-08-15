@@ -1,6 +1,7 @@
 package CB_Core.GL_UI.Skin;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -17,11 +18,12 @@ public abstract class CB_Skin extends SkinBase
 			FileHandle fh;
 			if (Config.settings.SkinFolder.getValue().contains("default"))
 			{
-				fh = Gdx.files.internal("skins/default");
+				// fh = Gdx.files.internal("skins/default");
+				fh = GlobalCore.getInternalFileHandle("skins/default");
 			}
 			else if (Config.settings.SkinFolder.getValue().contains("small"))
 			{
-				fh = Gdx.files.internal("skins/small");
+				fh = GlobalCore.getInternalFileHandle("skins/small");
 			}
 			else
 			{
@@ -29,7 +31,7 @@ public abstract class CB_Skin extends SkinBase
 			}
 
 			cfg.SkinFolder = fh;
-			cfg.DefaultSkinFolder = Gdx.files.internal("skins/default");
+			cfg.DefaultSkinFolder = GlobalCore.getInternalFileHandle("skins/default");
 
 			cfg.SizeBiggest = Config.settings.FONT_SIZE_COMPASS_DISTANCE.getValue();
 			cfg.SizeBig = Config.settings.FONT_SIZE_BIG.getValue();

@@ -28,12 +28,14 @@ import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class GlobalCore
 {
 
-	public static final int CurrentRevision = 1788;
+	public static final int CurrentRevision = 1789;
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "Test";
 
@@ -60,6 +62,20 @@ public class GlobalCore
 
 	// ###########create instance#############
 	public final static GlobalCore INSTANCE = new GlobalCore();
+
+	public static FileHandle getInternalFileHandle(String path)
+	{
+		if (GlobalCore.platform == Plattform.undef) throw new IllegalArgumentException("Platform not def");
+
+		if (GlobalCore.platform == Plattform.Android)
+		{
+			return Gdx.files.internal(path);
+		}
+		else
+		{
+			return Gdx.files.classpath(path);
+		}
+	}
 
 	/**
 	 * nur True beim ersten schreiben! Dann müssen erst die Missing Lang Strings eingelesen werden!

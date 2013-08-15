@@ -1,6 +1,7 @@
 package CB_Core.GL_UI;
 
 import CB_Core.Config;
+import CB_Core.GlobalCore;
 import CB_Core.Log.Logger;
 import CB_Core.Settings.SettingsAudio;
 import CB_Core.Util.iChanged;
@@ -96,12 +97,18 @@ public class SoundCache
 	private static Music getMusikFromSetting(SettingsAudio set)
 	{
 		String path = set.getValue().Path;
-		FileHandle handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : Gdx.files.classpath(path);
+
+		FileHandle handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : GlobalCore.getInternalFileHandle(path);
 
 		if (handle == null || !handle.exists() || handle.isDirectory() || path.length() == 0)
 		{
 			path = set.getDefaultValue().Path;
-			handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : Gdx.files.classpath(path);
+			handle = set.getValue().Class_Absolute ? Gdx.files.absolute(path) : GlobalCore.getInternalFileHandle(path);
+			if (handle != null && handle.exists())
+			{
+				set.loadDefault();
+				set.setDirty();
+			}
 		}
 
 		if (handle == null || !handle.exists())

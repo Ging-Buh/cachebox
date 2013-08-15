@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import CB_Core.FileUtil;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -44,7 +45,7 @@ public class Translation
 	 */
 	private static Translation that;
 
-	private boolean Internal = false;
+	private FileType mFiletype = FileType.Internal;
 
 	private final String BR;
 	private ArrayList<Translations> mStringList;
@@ -61,14 +62,15 @@ public class Translation
 	 * @param internal
 	 *            true for loading from asset
 	 */
-	public Translation(String WorkPath, boolean internal)
+	public Translation(String WorkPath, FileType internal)
 	{
 		that = this;
 		mWorkPath = WorkPath;
 		BR = System.getProperty("line.separator");
 		mStringList = new ArrayList<Translations>();
 		mMissingStringList = new ArrayList<Translations>();
-		Internal = internal;
+		mFiletype = internal;
+
 	}
 
 	// #######################################################################
@@ -192,24 +194,13 @@ public class Translation
 
 	private String getLangNameFromFile(String FilePath) throws IOException
 	{
-		if (Internal)
-		{
-			FileHandle lang = Gdx.files.internal(FilePath);
-			String langRead = lang.readString();
 
-			String Value = langRead.substring(0, langRead.indexOf(BR));
-			int pos = Value.indexOf("=");
-			Value = Value.substring(pos + 1);
-			return Value;
-		}
+		FileHandle lang = Gdx.files.getFileHandle(FilePath, mFiletype);
+		String langRead = lang.readString();
 
-		BufferedReader reader;
-		reader = new BufferedReader(new FileReader(FilePath));
-		String Value = reader.readLine().trim();
+		String Value = langRead.substring(0, langRead.indexOf(BR));
 		int pos = Value.indexOf("=");
 		Value = Value.substring(pos + 1);
-
-		reader.close();
 		return Value;
 	}
 
@@ -247,7 +238,7 @@ public class Translation
 
 		// get Encoding
 
-		FileHandle file = Internal ? Gdx.files.internal(FilePath) : Gdx.files.absolute(FilePath);
+		FileHandle file = Gdx.files.getFileHandle(FilePath, mFiletype);
 
 		String text = file.readString();
 
@@ -349,10 +340,24 @@ public class Translation
 	{
 		ArrayList<Lang> Temp = new ArrayList<Lang>();
 
-		FileHandle Dir = Internal ? Gdx.files.internal(FilePath) : Gdx.files.absolute(FilePath);
+		FileHandle Dir = Gdx.files.getFileHandle(FilePath, mFiletype);
 		final FileHandle[] files;
 
-		files = Dir.list();
+		if (Dir.type() == FileType.Classpath)
+		{
+			// Cannot list a classpath directory
+			// so we hardcoded the lang path
+			files = new FileHandle[]
+				{ Gdx.files.classpath("data/lang/cs"), Gdx.files.classpath("data/lang/de"), Gdx.files.classpath("data/lang/en-GB"),
+						Gdx.files.classpath("data/lang/fr"), Gdx.files.classpath("data/lang/nl"), Gdx.files.classpath("data/lang/pl"),
+						Gdx.files.classpath("data/lang/pt-PT")
+
+				};
+		}
+		else
+		{
+			files = Dir.list();
+		}
 
 		for (FileHandle tmp : files)
 		{
@@ -361,7 +366,7 @@ public class Translation
 
 				String stringFile = tmp + "/strings.ini";
 
-				FileHandle langFile = Internal ? Gdx.files.internal(stringFile) : Gdx.files.absolute(stringFile);
+				FileHandle langFile = Gdx.files.getFileHandle(stringFile, mFiletype);
 
 				if (langFile.exists())
 				{

@@ -69,6 +69,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFiles;
@@ -296,7 +297,7 @@ public class splash extends Activity
 			}
 		}
 
-		new Translation(workPath, true);
+		new Translation(workPath, FileType.Internal);
 		try
 		{
 			Translation.LoadTranslation(LangPath);

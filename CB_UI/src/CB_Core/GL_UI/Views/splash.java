@@ -7,6 +7,7 @@ import CB_Core.Config;
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.GlobalCore;
+import CB_Core.Plattform;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.WrapType;
@@ -30,6 +31,7 @@ import CB_Core.Types.Categories;
 import CB_Core.Types.Waypoint;
 import CB_Core.Util.FileList;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -245,7 +247,9 @@ public class splash extends TabMainView
 			Config.AcceptChanges();
 		}
 
-		new Translation(Config.WorkPath, true);
+		FileType fileType = (GlobalCore.platform == Plattform.Android) ? FileType.Internal : FileType.Classpath;
+
+		new Translation(Config.WorkPath, fileType);
 		try
 		{
 			Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
