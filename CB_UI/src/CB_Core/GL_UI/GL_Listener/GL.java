@@ -134,6 +134,8 @@ public class GL implements ApplicationListener, InputProcessor
 	protected EditTextField keyboardFocus;
 
 	protected ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
+	protected ArrayList<runOnGL> runOnGL_ListWaitpool = new ArrayList<runOnGL>();
+	protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
 	public static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
 
 	public static boolean ifAllInitial = false;
@@ -216,6 +218,14 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public void RunOnGL(runOnGL run)
 	{
+
+		// if in progress put into pool
+		if (isWorkOnRunOnGL.get())
+		{
+			runOnGL_ListWaitpool.add(run);
+			renderOnce("RunOnGL called");
+			return;
+		}
 		synchronized (runOnGL_List)
 		{
 			runOnGL_List.add(run);
@@ -288,6 +298,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (!ShaderSetted) setShader();
 
+		isWorkOnRunOnGL.set(true);
 		synchronized (runOnGL_List)
 		{
 			if (runOnGL_List.size() > 0)
@@ -300,6 +311,16 @@ public class GL implements ApplicationListener, InputProcessor
 				runOnGL_List.clear();
 			}
 		}
+
+		// add RunOnGlPool
+		if (runOnGL_ListWaitpool != null && runOnGL_ListWaitpool.size() > 0)
+		{
+			runOnGL_List.addAll(runOnGL_ListWaitpool);
+			runOnGL_ListWaitpool.clear();
+			this.renderOnce("RunOnGlPool added");
+		}
+
+		isWorkOnRunOnGL.set(false);
 
 		if (ifAllInitial)
 		{
