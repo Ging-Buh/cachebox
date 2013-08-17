@@ -259,8 +259,8 @@ public class Importer
 			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")",
 					false);
 
-			Boolean ret = GCVote.SendVotes(CoreSettingsForward.userName, CoreSettingsForward.GcVotePassword, info.Vote, info.URL,
-					info.GcCode);
+			Boolean ret = GCVote.SendVotes(SettingsClass_Core.settings.GcLogin.getValue(), CoreSettingsForward.GcVotePassword, info.Vote,
+					info.URL, info.GcCode);
 
 			if (ret)
 			{
@@ -311,7 +311,8 @@ public class Importer
 				idLookup.put(info.GcCode, info.Id);
 			}
 
-			ArrayList<RatingData> ratingData = GCVote.GetRating(CoreSettingsForward.userName, CoreSettingsForward.GcVotePassword, requests);
+			ArrayList<RatingData> ratingData = GCVote.GetRating(SettingsClass_Core.settings.GcLogin.getValue(),
+					CoreSettingsForward.GcVotePassword, requests);
 
 			if (ratingData == null)
 			{

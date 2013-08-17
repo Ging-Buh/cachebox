@@ -282,7 +282,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public boolean ImTheOwner()
 	{
-		String userName = CoreSettingsForward.userName.toLowerCase();
+		String userName = SettingsClass_Core.settings.GcLogin.getValue().toLowerCase();
 		if (myCache == 0) return false;
 		if (myCache == 1) return true;
 

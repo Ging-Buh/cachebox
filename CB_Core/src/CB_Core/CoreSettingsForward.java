@@ -9,13 +9,13 @@ public class CoreSettingsForward
 {
 	public static String VersionString;
 	public static boolean Staging;
-	public static String accessToken;
-	public static String accessTokenUrlCodiert;
+	// public static String accessToken;
+	// public static String accessTokenUrlCodiert;
 	public static int conectionTimeout;
 	public static int socketTimeout;
 	// public static String DescriptionImageFolder;
 	// public static String DescriptionImageFolderLocal;
-	public static String userName;
+	// public static String userName;
 	public static String GcVotePassword;
 	// public static String SpoilerFolder;
 	// public static String SpoilerFolderLocal;

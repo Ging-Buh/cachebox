@@ -179,13 +179,13 @@ public class TabMainView extends MainViewBase
 			{
 				CoreSettingsForward.VersionString = GlobalCore.getVersionString();
 				CoreSettingsForward.Staging = Config.settings.StagingAPI.getValue();
-				CoreSettingsForward.accessToken = Config.GetAccessToken();
-				CoreSettingsForward.accessTokenUrlCodiert = Config.GetAccessToken(true);
+				// CoreSettingsForward.accessToken = Config.GetAccessToken();
+				// CoreSettingsForward.accessTokenUrlCodiert = Config.GetAccessToken(true);
 				CoreSettingsForward.conectionTimeout = Config.settings.conection_timeout.getValue();
 				CoreSettingsForward.socketTimeout = Config.settings.socket_timeout.getValue();
 				// CoreSettingsForward.DescriptionImageFolder = Config.settings.DescriptionImageFolder.getValue();
 				// CoreSettingsForward.DescriptionImageFolderLocal = Config.settings.DescriptionImageFolderLocal.getValue();
-				CoreSettingsForward.userName = Config.settings.GcLogin.getValue();
+				// CoreSettingsForward.userName = Config.settings.GcLogin.getValue();
 				CoreSettingsForward.GcVotePassword = Config.settings.GcVotePassword.getValue();
 				// CoreSettingsForward.SpoilerFolder = Config.settings.SpoilerFolder.getValue();
 				// CoreSettingsForward.SpoilerFolderLocal = Config.settings.SpoilerFolderLocal.getValue();

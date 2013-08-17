@@ -37,6 +37,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
+import CB_Core.Settings.SettingsClass_Core;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -131,7 +132,7 @@ public class GroundspeakAPI
 			HttpPost httppost = new HttpPost(URL + "CreateFieldNoteAndPublish?format=json");
 			String requestString = "";
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + SettingsClass_Core.settings.GetAccessToken() + "\",";
 			requestString += "\"CacheCode\":\"" + cacheCode + "\",";
 			requestString += "\"WptLogTypeId\":" + String.valueOf(wptLogTypeId) + ",";
 			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";
@@ -238,7 +239,7 @@ public class GroundspeakAPI
 			HttpPost httppost = new HttpPost(URL + "GetYourUserProfile?format=json");
 			String requestString = "";
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + SettingsClass_Core.settings.GetAccessToken() + "\",";
 			requestString += "\"ProfileOptions\":{";
 			requestString += "}" + ",";
 			requestString += getDeviceInfoRequestString();
@@ -330,7 +331,7 @@ public class GroundspeakAPI
 			HttpPost httppost = new HttpPost(URL + "GetYourUserProfile?format=json");
 			String requestString = "";
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + SettingsClass_Core.settings.GetAccessToken() + "\",";
 			requestString += "\"ProfileOptions\":{";
 			requestString += "}" + ",";
 			requestString += getDeviceInfoRequestString();
@@ -442,7 +443,7 @@ public class GroundspeakAPI
 			HttpPost httppost = new HttpPost(URL + "GetGeocacheStatus?format=json");
 			String requestString = "";
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + SettingsClass_Core.settings.GetAccessToken() + "\",";
 			requestString += "\"CacheCodes\":[";
 
 			int i = 0;
@@ -565,7 +566,7 @@ public class GroundspeakAPI
 			try
 			{
 				JSONObject request = new JSONObject();
-				request.put("AccessToken", CoreSettingsForward.accessToken);
+				request.put("AccessToken", SettingsClass_Core.settings.GetAccessToken());
 				request.put("IsLight", false);
 				request.put("StartIndex", 0);
 				request.put("MaxPerPage", 1);
@@ -764,7 +765,7 @@ public class GroundspeakAPI
 			try
 			{
 				JSONObject request = new JSONObject();
-				request.put("AccessToken", CoreSettingsForward.accessToken);
+				request.put("AccessToken", SettingsClass_Core.settings.GetAccessToken());
 				request.put("MaxPerPage", 30);
 
 				String requestString = request.toString();
@@ -857,8 +858,8 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + CoreSettingsForward.accessTokenUrlCodiert
-					+ "&trackingNumber=" + TrackingCode + "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken="
+					+ SettingsClass_Core.settings.GetAccessToken(true) + "&trackingNumber=" + TrackingCode + "&format=json");
 
 			String result = Execute(httppost);
 			if (result.contains("The service is unavailable"))
@@ -950,7 +951,7 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + CoreSettingsForward.accessTokenUrlCodiert
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + SettingsClass_Core.settings.GetAccessToken(true)
 					+ "&tbCode=" + TrackingNumber + "&format=json");
 
 			String result = Execute(httppost);
@@ -1043,8 +1044,8 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + CoreSettingsForward.accessToken + "&CacheCode="
-					+ cacheCode + "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + SettingsClass_Core.settings.GetAccessToken()
+					+ "&CacheCode=" + cacheCode + "&format=json");
 
 			String result = Execute(httppost);
 			if (result.contains("The service is unavailable"))
@@ -1131,8 +1132,8 @@ public class GroundspeakAPI
 		if (list == null) list = new HashMap<String, URI>();
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + CoreSettingsForward.accessToken + "&CacheCode="
-					+ cacheCode + "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + SettingsClass_Core.settings.GetAccessToken()
+					+ "&CacheCode=" + cacheCode + "&format=json");
 
 			String result = Execute(httppost);
 			if (result.contains("The service is unavailable"))
@@ -1405,7 +1406,7 @@ public class GroundspeakAPI
 			return isValid ? 0 : 1;
 		}
 		int ret = 0;
-		if (CoreSettingsForward.accessToken.length() > 0)
+		if (SettingsClass_Core.settings.GetAccessToken().length() > 0)
 		{
 
 			if (!isValid)
@@ -1489,7 +1490,7 @@ public class GroundspeakAPI
 			HttpPost httppost = new HttpPost(URL + "CreateTrackableLog?format=json");
 			String requestString = "";
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + SettingsClass_Core.settings.GetAccessToken() + "\",";
 			requestString += "\"CacheCode\":\"" + cacheCode + "\",";
 			requestString += "\"LogType\":" + String.valueOf(LogTypeId) + ",";
 			requestString += "\"UTCDateLogged\":\"" + GetUTCDate(dateLogged) + "\",";

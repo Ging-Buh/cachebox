@@ -99,7 +99,7 @@ public class SettingsClass extends SettingsClass_Core
 	public SettingBool ShowAccuracyCircle;
 	public SettingBool ShowMapCenterCross;
 	public SettingBool PositionMarkerTransparent;
-	public SettingBool StagingAPI;
+	// public SettingBool StagingAPI;
 
 	public SettingBool DebugShowMarker;
 	public SettingBool ImportRatings;
@@ -555,7 +555,7 @@ public class SettingsClass extends SettingsClass_Core
 		addSetting(DebugShowLog = new SettingBool("DebugShowLog", cat, EXPERT, false, SettingStoreType.Global));
 		addSetting(OverrideUrl = new SettingString("OverrideUrl", cat, EXPERT, "", SettingStoreType.Global));
 		addSetting(DebugSpriteBatchCountBuffer = new SettingBool("DebugSpriteBatchCountBuffer", cat, EXPERT, false, SettingStoreType.Global));
-		addSetting(StagingAPI = new SettingBool("StagingAPI", cat, EXPERT, false, SettingStoreType.Global));
+		// addSetting(StagingAPI = new SettingBool("StagingAPI", cat, EXPERT, false, SettingStoreType.Global));
 
 	}
 

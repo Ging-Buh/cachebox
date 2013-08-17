@@ -11,6 +11,7 @@ public abstract class SettingsClass_Core extends SettingsList
 	public SettingString GcLogin;
 	public SettingEncryptedString GcAPI;
 	public SettingEncryptedString GcAPIStaging;
+	public SettingBool StagingAPI;
 
 	// Folder Settings
 	public SettingFolder DescriptionImageFolder;
@@ -24,6 +25,13 @@ public abstract class SettingsClass_Core extends SettingsList
 		settings = this;
 		addLogInSettings();
 		addFolderSettings();
+		addDebugSettings();
+	}
+
+	private void addDebugSettings()
+	{
+		SettingCategory cat = SettingCategory.Folder;
+		addSetting(StagingAPI = new SettingBool("StagingAPI", cat, SettingModus.Expert, false, SettingStoreType.Global));
 	}
 
 	private void addFolderSettings()
@@ -50,4 +58,53 @@ public abstract class SettingsClass_Core extends SettingsList
 		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, SettingModus.Invisible, "", SettingStoreType.Platform));
 		addSetting(GcAPIStaging = new SettingEncryptedString("GcAPIStaging", cat, SettingModus.Invisible, "", SettingStoreType.Platform));
 	}
+
+	// Read the encrypted AccessToken from the config and check wheter it is
+	// correct for Andorid CB
+
+	/**
+	 * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB
+	 * 
+	 * @return
+	 */
+	public String GetAccessToken()
+	{
+		return GetAccessToken(false);
+	}
+
+	/**
+	 * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB </br> If Url_Codiert==true so the
+	 * API-Key is URL-Codiert </br> Like replase '/' with '%2F'</br></br> This is essential for PQ-List
+	 * 
+	 * @param boolean Url_Codiert
+	 * @return
+	 */
+	public String GetAccessToken(boolean Url_Codiert)
+	{
+		String act = "";
+		if (StagingAPI.getValue())
+		{
+			act = GcAPIStaging.getValue();
+		}
+		else
+		{
+			act = GcAPI.getValue();
+		}
+
+		// Prüfen, ob das AccessToken für ACB ist!!!
+		if (!(act.startsWith("A"))) return "";
+		String result = act.substring(1, act.length());
+
+		// URL encoder
+		if (Url_Codiert)
+		{
+			result = result.replace("/", "%2F");
+			result = result.replace("\\", "%5C");
+			result = result.replace("+", "%2B");
+			result = result.replace("=", "%3D");
+		}
+
+		return result;
+	}
+
 }

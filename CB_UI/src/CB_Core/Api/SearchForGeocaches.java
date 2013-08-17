@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import CB_Core.Config;
-import CB_Core.CoreSettingsForward;
 import CB_Core.GlobalCore;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.ImageDAO;
@@ -128,7 +127,7 @@ public class SearchForGeocaches
 			JSONObject request = new JSONObject();
 			try
 			{
-				request.put("AccessToken", CoreSettingsForward.accessToken);
+				request.put("AccessToken", Config.settings.GetAccessToken());
 				request.put("IsLight", false);
 				request.put("StartIndex", 0);
 				request.put("MaxPerPage", 1);
@@ -153,7 +152,7 @@ public class SearchForGeocaches
 		{
 			SearchGCName searchC = (SearchGCName) search;
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + Config.settings.GetAccessToken() + "\",";
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium
@@ -178,7 +177,7 @@ public class SearchForGeocaches
 		{
 			SearchGCOwner searchC = (SearchGCOwner) search;
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + Config.settings.GetAccessToken() + "\",";
 
 			requestString += "\"HiddenByUsers\":{";
 			requestString += "\"UserNames\":[\"" + searchC.OwnerName + "\"]},";
@@ -207,7 +206,7 @@ public class SearchForGeocaches
 		{
 			SearchCoordinate searchC = (SearchCoordinate) search;
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + Config.settings.GetAccessToken() + "\",";
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium
@@ -227,7 +226,7 @@ public class SearchForGeocaches
 			requestString += "}";
 
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + CoreSettingsForward.accessToken + "\",";
+			requestString += "\"AccessToken\":\"" + Config.settings.GetAccessToken() + "\",";
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium
