@@ -12,6 +12,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Settings.SettingsClass_Core;
 import CB_Core.Util.FileIO;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -148,11 +149,13 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * for Replication
 	 */
 	public int noteCheckSum = 0;
+	public String tmpNote = null; // nur für den RPC-Import
 
 	/**
 	 * for Replication
 	 */
 	public int solverCheckSum = 0;
+	public String tmpSolver = null; // nur für den RPC-Import
 
 	/**
 	 * hat der Cache Clues oder Notizen erfasst
@@ -485,7 +488,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		String directory = "";
 
 		// from own Repository
-		String path = CoreSettingsForward.SpoilerFolderLocal;
+		String path = SettingsClass_Core.settings.SpoilerFolderLocal.getValue();
 		if (path != null && path.length() > 0)
 		{
 			directory = path + "/" + GcCode.substring(0, 4);
@@ -493,19 +496,22 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 
 		// from Global Repository
-		path = CoreSettingsForward.DescriptionImageFolder;
+		path = SettingsClass_Core.settings.DescriptionImageFolder.getValue();
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Spoilers are always loaden from global Repository too
 		// from globalUser changed Repository
-		path = CoreSettingsForward.SpoilerFolder;
+		path = SettingsClass_Core.settings.SpoilerFolder.getValue();
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Add own taken photo
 		directory = CoreSettingsForward.UserImageFolder;
-		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+		if (directory != null)
+		{
+			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+		}
 	}
 
 	private void reloadSpoilerResourcesFromPath(String directory, ArrayList<ImageEntry> spoilerResources)

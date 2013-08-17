@@ -68,7 +68,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 {
 
 	final boolean MAP_LINE_ACTIVE = false;
-	final boolean CBS_LINE_ACTIVE = false;
+	final boolean CBS_LINE_ACTIVE = true;
 
 	private V_ListView lvPQs, lvCBServer;
 	private Button bOK, bCancel, refreshPqList, refreshCBServerList;

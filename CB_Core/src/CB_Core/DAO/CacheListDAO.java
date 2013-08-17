@@ -69,7 +69,7 @@ public class CacheListDAO
 			String sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint";
 			if (withDescription)
 			{
-				sql += ", Description";
+				sql += ", Description, Solver, Notes";
 			}
 			sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
 			reader = Database.Data.rawQuery(sql, null);

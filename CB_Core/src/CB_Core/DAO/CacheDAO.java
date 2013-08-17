@@ -106,6 +106,8 @@ public class CacheDAO
 			if (withDescription)
 			{
 				cache.longDescription = reader.getString(31);
+				cache.tmpSolver = reader.getString(32);
+				cache.tmpNote = reader.getString(33);
 			}
 			return cache;
 		}

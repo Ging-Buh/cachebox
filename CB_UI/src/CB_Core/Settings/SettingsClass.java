@@ -6,7 +6,7 @@ import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database_Core;
 
-public class SettingsClass extends SettingsList
+public class SettingsClass extends SettingsClass_Core
 {
 
 	private static final long serialVersionUID = 7330937438116889415L;
@@ -40,12 +40,12 @@ public class SettingsClass extends SettingsList
 	public SettingFolder TileCacheFolder;
 	public SettingFolder TileCacheFolderLocal;
 	public SettingFolder PocketQueryFolder;
-	public SettingFolder DescriptionImageFolder;
-	public SettingFolder DescriptionImageFolderLocal;
+	// public SettingFolder DescriptionImageFolder;
+	// public SettingFolder DescriptionImageFolderLocal;
 	public SettingFolder MapPackFolder;
 	public SettingFolder MapPackFolderLocal;
-	public SettingFolder SpoilerFolder;
-	public SettingFolder SpoilerFolderLocal;
+	// public SettingFolder SpoilerFolder;
+	// public SettingFolder SpoilerFolderLocal;
 	public SettingFolder TrackFolder;
 	public SettingFolder SkinFolder;
 
@@ -196,14 +196,13 @@ public class SettingsClass extends SettingsList
 
 	public SettingString SpoilersDescriptionTags;
 	public SettingString quickButtonList;
-	public SettingString GcLogin;
+	// public SettingString GcLogin;
 	public SettingString GcJoker;
 	public SettingString OverrideUrl;
 	// public SettingString PopHost;
 
 	// Decrypt
-	public SettingEncryptedString GcAPI;
-	public SettingEncryptedString GcAPIStaging;
+	// public SettingEncryptedString GcAPIStaging;
 	public SettingEncryptedString GcVotePassword;
 
 	// Enums
@@ -413,11 +412,11 @@ public class SettingsClass extends SettingsList
 	{
 		SettingCategory cat = SettingCategory.Login;
 
-		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, INVISIBLE, "", SettingStoreType.Platform));
-		addSetting(GcAPIStaging = new SettingEncryptedString("GcAPIStaging", cat, INVISIBLE, "", SettingStoreType.Platform));
+		// addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, INVISIBLE, "", SettingStoreType.Platform));
+		// addSetting(GcAPIStaging = new SettingEncryptedString("GcAPIStaging", cat, INVISIBLE, "", SettingStoreType.Platform));
 
 		addSetting(GcVotePassword = new SettingEncryptedString("GcVotePassword", cat, NORMAL, "", SettingStoreType.Platform));
-		addSetting(GcLogin = new SettingString("GcLogin", cat, NORMAL, "", SettingStoreType.Platform));
+		// addSetting(GcLogin = new SettingString("GcLogin", cat, NORMAL, "", SettingStoreType.Platform));
 		addSetting(GcJoker = new SettingString("GcJoker", cat, NORMAL, "", SettingStoreType.Platform));
 	}
 
@@ -432,12 +431,13 @@ public class SettingsClass extends SettingsList
 		addSetting(PocketQueryFolder = new SettingFolder("PocketQueryFolder", cat, INVISIBLE, Work + "/PocketQuery",
 				SettingStoreType.Global));
 
-		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, EXPERT, Work + "/repository/images",
-				SettingStoreType.Global));
-		addSetting(DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", cat, NEVER, "", SettingStoreType.Local));
+		// addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, EXPERT, Work + "/repository/images",
+		// SettingStoreType.Global));
+		// addSetting(DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", cat, NEVER, "", SettingStoreType.Local));
 
-		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers", SettingStoreType.Global));
-		addSetting(SpoilerFolderLocal = new SettingFolder("SpoilerFolder", cat, NEVER, "", SettingStoreType.Local));
+		// addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, EXPERT, Work + "/repository/spoilers",
+		// SettingStoreType.Global));
+		// addSetting(SpoilerFolderLocal = new SettingFolder("SpoilerFolder", cat, NEVER, "", SettingStoreType.Local));
 
 		addSetting(TileCacheFolder = new SettingFolder("TileCacheFolder", cat, NORMAL, Work + "/repository/cache", SettingStoreType.Global));
 		addSetting(TileCacheFolderLocal = new SettingFolder("TileCacheFolder", cat, NEVER, "", SettingStoreType.Local));

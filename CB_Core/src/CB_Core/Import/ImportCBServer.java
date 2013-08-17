@@ -7,6 +7,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
@@ -86,6 +87,16 @@ public class ImportCBServer
 						System.out.println(cache.Name);
 						cache.GPXFilename_ID = gpxFilename.Id;
 						dao.WriteToDatabase(cache);
+						if ((cache.tmpNote != null) && (cache.tmpNote.length() > 0))
+						{
+							Database.SetNote(cache, cache.tmpNote);
+							cache.tmpNote = null;
+						}
+						if ((cache.tmpSolver != null) && (cache.tmpSolver.length() > 0))
+						{
+							Database.SetSolver(cache, cache.tmpSolver);
+							cache.tmpSolver = null;
+						}
 						for (Waypoint waypoint : cache.waypoints)
 						{
 							wayDao.WriteToDatabase(waypoint);

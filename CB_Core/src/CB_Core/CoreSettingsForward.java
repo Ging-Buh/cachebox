@@ -13,12 +13,12 @@ public class CoreSettingsForward
 	public static String accessTokenUrlCodiert;
 	public static int conectionTimeout;
 	public static int socketTimeout;
-	public static String DescriptionImageFolder;
-	public static String DescriptionImageFolderLocal;
+	// public static String DescriptionImageFolder;
+	// public static String DescriptionImageFolderLocal;
 	public static String userName;
 	public static String GcVotePassword;
-	public static String SpoilerFolder;
-	public static String SpoilerFolderLocal;
+	// public static String SpoilerFolder;
+	// public static String SpoilerFolderLocal;
 	public static CB_Core.Types.Categories Categories;
 	public static double ParkingLatitude;
 	public static double ParkingLongitude;

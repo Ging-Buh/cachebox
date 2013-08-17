@@ -29,6 +29,7 @@ import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
 import CB_Core.Log.Logger;
+import CB_Core.Settings.SettingsClass_Core;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Util.FileIO;
@@ -677,13 +678,13 @@ public class Importer
 		{
 			if (!descriptionImagesUpdated)
 			{
-				if (CoreSettingsForward.DescriptionImageFolderLocal.length() > 0)
+				if (SettingsClass_Core.settings.DescriptionImageFolderLocal.getValue().length() > 0)
 				{
-					descriptionImagesUpdated = CheckLocalImages(CoreSettingsForward.DescriptionImageFolderLocal, gcCode);
+					descriptionImagesUpdated = CheckLocalImages(SettingsClass_Core.settings.DescriptionImageFolderLocal.getValue(), gcCode);
 				}
 				else
 				{
-					descriptionImagesUpdated = CheckLocalImages(CoreSettingsForward.DescriptionImageFolder, gcCode);
+					descriptionImagesUpdated = CheckLocalImages(SettingsClass_Core.settings.DescriptionImageFolder.getValue(), gcCode);
 				}
 
 				if (descriptionImagesUpdated)
@@ -693,13 +694,13 @@ public class Importer
 			}
 			if (!additionalImagesUpdated)
 			{
-				if (CoreSettingsForward.SpoilerFolderLocal.length() > 0)
+				if (SettingsClass_Core.settings.SpoilerFolderLocal.getValue().length() > 0)
 				{
-					additionalImagesUpdated = CheckLocalImages(CoreSettingsForward.SpoilerFolderLocal, gcCode);
+					additionalImagesUpdated = CheckLocalImages(SettingsClass_Core.settings.SpoilerFolderLocal.getValue(), gcCode);
 				}
 				else
 				{
-					additionalImagesUpdated = CheckLocalImages(CoreSettingsForward.SpoilerFolder, gcCode);
+					additionalImagesUpdated = CheckLocalImages(SettingsClass_Core.settings.SpoilerFolder.getValue(), gcCode);
 				}
 
 				if (additionalImagesUpdated)
