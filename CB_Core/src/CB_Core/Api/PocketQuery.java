@@ -20,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.Settings.SettingsClass_Core;
 import CB_Utils.Log.Logger;
 
 /***
@@ -64,8 +63,8 @@ public class PocketQuery
 	 */
 	public static int GetPocketQueryList(ArrayList<PQ> list)
 	{
-		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryList?AccessToken="
-				+ SettingsClass_Core.settings.GetAccessToken(true) + "&format=json");
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryList?AccessToken=" + GroundspeakAPI.GetAccessToken(true)
+				+ "&format=json");
 		if (list == null) new NullArgumentException("PQ List");
 		try
 		{
@@ -156,8 +155,8 @@ public class PocketQuery
 	 */
 	public static int GetPocketQueryUri(String GUID, String Uri)
 	{
-		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryUrls?AccessToken="
-				+ SettingsClass_Core.settings.GetAccessToken() + "&PocketQueryGuid=" + GUID + "&format=json");
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryUrls?AccessToken=" + GroundspeakAPI.GetAccessToken()
+				+ "&PocketQueryGuid=" + GUID + "&format=json");
 		if (GUID == null || GUID.equals("")) new NullArgumentException("GUID");
 		try
 		{
@@ -221,7 +220,7 @@ public class PocketQuery
 	public static int DownloadSinglePocketQuery(PQ pocketQuery, String PqFolder)
 	{
 		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken="
-				+ SettingsClass_Core.settings.GetAccessToken(true) + "&PocketQueryGuid=" + pocketQuery.GUID);
+				+ GroundspeakAPI.GetAccessToken(true) + "&PocketQueryGuid=" + pocketQuery.GUID);
 
 		try
 		{

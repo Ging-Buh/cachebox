@@ -128,7 +128,7 @@ public class SearchForGeocaches
 			JSONObject request = new JSONObject();
 			try
 			{
-				request.put("AccessToken", Config.settings.GetAccessToken());
+				request.put("AccessToken", GroundspeakAPI.GetAccessToken());
 				request.put("IsLight", false);
 				request.put("StartIndex", 0);
 				request.put("MaxPerPage", 1);
@@ -153,7 +153,7 @@ public class SearchForGeocaches
 		{
 			SearchGCName searchC = (SearchGCName) search;
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + Config.settings.GetAccessToken() + "\",";
+			requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium
@@ -178,7 +178,7 @@ public class SearchForGeocaches
 		{
 			SearchGCOwner searchC = (SearchGCOwner) search;
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + Config.settings.GetAccessToken() + "\",";
+			requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
 
 			requestString += "\"HiddenByUsers\":{";
 			requestString += "\"UserNames\":[\"" + searchC.OwnerName + "\"]},";
@@ -207,7 +207,7 @@ public class SearchForGeocaches
 		{
 			SearchCoordinate searchC = (SearchCoordinate) search;
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + Config.settings.GetAccessToken() + "\",";
+			requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium
@@ -227,7 +227,7 @@ public class SearchForGeocaches
 			requestString += "}";
 
 			requestString = "{";
-			requestString += "\"AccessToken\":\"" + Config.settings.GetAccessToken() + "\",";
+			requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium

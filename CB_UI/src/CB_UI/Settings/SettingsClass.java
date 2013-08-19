@@ -2,7 +2,7 @@ package CB_UI.Settings;
 
 import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
-import CB_Core.Settings.SettingsClass_Core;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_Utils.DB.Database_Core;
@@ -23,8 +23,9 @@ import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Settings.SettingsDAO;
+import CB_Utils.Settings.SettingsList;
 
-public class SettingsClass extends SettingsClass_Core
+public class SettingsClass extends SettingsList implements CB_Core_Settings
 {
 
 	private static final long serialVersionUID = 7330937438116889415L;
@@ -283,6 +284,15 @@ public class SettingsClass extends SettingsClass_Core
 		addDebugSettings();
 		addPositionSettings();
 		addRememberAsk();
+
+		addSetting(StagingAPI);
+		addSetting(DescriptionImageFolder);
+		addSetting(DescriptionImageFolderLocal);
+		addSetting(SpoilerFolder);
+		addSetting(SpoilerFolderLocal);
+		addSetting(GcLogin);
+		addSetting(GcAPI);
+		addSetting(GcAPIStaging);
 
 	}
 
