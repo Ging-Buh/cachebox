@@ -39,7 +39,7 @@ public class TemplateFormatter
 			template = template.replace("##owner##", "????????");
 		}
 
-		template = template.replace("##gcusername##", Config.settings.GcLogin.getValue());
+		template = template.replace("##gcusername##", Config.GcLogin.getValue());
 
 		return template;
 	}

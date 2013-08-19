@@ -57,13 +57,13 @@ public class API_Button extends Button
 
 			boolean Entry = false;
 
-			if (Config.settings.StagingAPI.getValue())
+			if (Config.StagingAPI.getValue())
 			{
-				if (!Config.settings.GcAPIStaging.getValue().equals("")) Entry = true;
+				if (!Config.GcAPIStaging.getValue().equals("")) Entry = true;
 			}
 			else
 			{
-				if (!Config.settings.GcAPI.getValue().equals("")) Entry = true;
+				if (!Config.GcAPI.getValue().equals("")) Entry = true;
 			}
 
 			if (Entry)

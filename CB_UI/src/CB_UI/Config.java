@@ -5,11 +5,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import CB_Core.Settings.CB_Core_Settings;
 import CB_UI.Settings.SettingsClass;
 import CB_Utils.Config_Core;
 import CB_Utils.Log.Logger;
 
-public class Config extends Config_Core
+public class Config extends Config_Core implements CB_Core_Settings
 {
 	public static SettingsClass settings;
 
@@ -343,13 +344,13 @@ public class Config extends Config_Core
 	public static String GetAccessToken(boolean Url_Codiert)
 	{
 		String act = "";
-		if (settings.StagingAPI.getValue())
+		if (StagingAPI.getValue())
 		{
-			act = settings.GcAPIStaging.getValue();
+			act = GcAPIStaging.getValue();
 		}
 		else
 		{
-			act = settings.GcAPI.getValue();
+			act = GcAPI.getValue();
 		}
 
 		// Prüfen, ob das AccessToken für ACB ist!!!

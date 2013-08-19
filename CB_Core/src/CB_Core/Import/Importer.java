@@ -26,7 +26,7 @@ import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
-import CB_Core.Settings.SettingsClass_Core;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Utils.DB.CoreCursor;
@@ -259,8 +259,8 @@ public class Importer
 			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")",
 					false);
 
-			Boolean ret = GCVote.SendVotes(SettingsClass_Core.settings.GcLogin.getValue(), CoreSettingsForward.GcVotePassword, info.Vote,
-					info.URL, info.GcCode);
+			Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CoreSettingsForward.GcVotePassword, info.Vote, info.URL,
+					info.GcCode);
 
 			if (ret)
 			{
@@ -311,8 +311,8 @@ public class Importer
 				idLookup.put(info.GcCode, info.Id);
 			}
 
-			ArrayList<RatingData> ratingData = GCVote.GetRating(SettingsClass_Core.settings.GcLogin.getValue(),
-					CoreSettingsForward.GcVotePassword, requests);
+			ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(), CoreSettingsForward.GcVotePassword,
+					requests);
 
 			if (ratingData == null)
 			{
@@ -679,13 +679,13 @@ public class Importer
 		{
 			if (!descriptionImagesUpdated)
 			{
-				if (SettingsClass_Core.settings.DescriptionImageFolderLocal.getValue().length() > 0)
+				if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
 				{
-					descriptionImagesUpdated = CheckLocalImages(SettingsClass_Core.settings.DescriptionImageFolderLocal.getValue(), gcCode);
+					descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolderLocal.getValue(), gcCode);
 				}
 				else
 				{
-					descriptionImagesUpdated = CheckLocalImages(SettingsClass_Core.settings.DescriptionImageFolder.getValue(), gcCode);
+					descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolder.getValue(), gcCode);
 				}
 
 				if (descriptionImagesUpdated)
@@ -695,13 +695,13 @@ public class Importer
 			}
 			if (!additionalImagesUpdated)
 			{
-				if (SettingsClass_Core.settings.SpoilerFolderLocal.getValue().length() > 0)
+				if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
 				{
-					additionalImagesUpdated = CheckLocalImages(SettingsClass_Core.settings.SpoilerFolderLocal.getValue(), gcCode);
+					additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
 				}
 				else
 				{
-					additionalImagesUpdated = CheckLocalImages(SettingsClass_Core.settings.SpoilerFolder.getValue(), gcCode);
+					additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
 				}
 
 				if (additionalImagesUpdated)

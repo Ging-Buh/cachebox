@@ -14,13 +14,13 @@ import CB_UI.GL_UI.Activitys.ActivityBase;
 import CB_UI.GL_UI.Controls.Box;
 import CB_UI.GL_UI.Controls.Button;
 import CB_UI.GL_UI.Controls.MultiToggleButton;
+import CB_UI.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_UI.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
@@ -370,7 +370,7 @@ public class EditFilterSettings extends ActivityBase
 				{
 					synchronized (Database.Data.Query)
 					{
-						String sqlWhere = props.getSqlWhere(Config.settings.GcLogin.getValue());
+						String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
 						Logger.General("Main.ApplyFilter: " + sqlWhere);
 						Database.Data.Query.clear();
 						CacheListDAO cacheListDAO = new CacheListDAO();

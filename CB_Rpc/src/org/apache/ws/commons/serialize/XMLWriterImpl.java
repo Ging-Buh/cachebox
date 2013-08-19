@@ -21,8 +21,6 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.zip.GZIPOutputStream;
-
 import javax.xml.XMLConstants;
 
 

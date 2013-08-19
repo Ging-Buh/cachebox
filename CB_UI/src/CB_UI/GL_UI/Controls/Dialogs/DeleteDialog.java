@@ -93,9 +93,9 @@ public class DeleteDialog extends ButtonDialog
 					public void run()
 					{
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue()),
-								Config.settings.SpoilerFolder.getValue(), Config.settings.SpoilerFolderLocal.getValue(),
-								Config.settings.DescriptionImageFolder.getValue(), Config.settings.DescriptionImageFolderLocal.getValue());
+						long nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()),
+								Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(),
+								Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
 						cleanupWaypoints();
 						wd.close();
@@ -136,8 +136,8 @@ public class DeleteDialog extends ButtonDialog
 					public void run()
 					{
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.DelArchiv(Config.settings.SpoilerFolder.getValue(), Config.settings.SpoilerFolderLocal.getValue(),
-								Config.settings.DescriptionImageFolder.getValue(), Config.settings.DescriptionImageFolderLocal.getValue());
+						long nun = dao.DelArchiv(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(),
+								Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
 
 						cleanupLogs();
 						cleanupWaypoints();
@@ -177,8 +177,8 @@ public class DeleteDialog extends ButtonDialog
 					public void run()
 					{
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.DelFound(Config.settings.SpoilerFolder.getValue(), Config.settings.SpoilerFolderLocal.getValue(),
-								Config.settings.DescriptionImageFolder.getValue(), Config.settings.DescriptionImageFolderLocal.getValue());
+						long nun = dao.DelFound(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(),
+								Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
 						cleanupWaypoints();
 						wd.close();

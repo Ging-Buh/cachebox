@@ -11,7 +11,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Settings.SettingsClass_Core;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Utils.DB.CoreCursor;
@@ -282,7 +282,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public boolean ImTheOwner()
 	{
-		String userName = SettingsClass_Core.settings.GcLogin.getValue().toLowerCase();
+		String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase();
 		if (myCache == 0) return false;
 		if (myCache == 1) return true;
 
@@ -488,7 +488,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		String directory = "";
 
 		// from own Repository
-		String path = SettingsClass_Core.settings.SpoilerFolderLocal.getValue();
+		String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
 		if (path != null && path.length() > 0)
 		{
 			directory = path + "/" + GcCode.substring(0, 4);
@@ -496,13 +496,13 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 
 		// from Global Repository
-		path = SettingsClass_Core.settings.DescriptionImageFolder.getValue();
+		path = CB_Core_Settings.DescriptionImageFolder.getValue();
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Spoilers are always loaden from global Repository too
 		// from globalUser changed Repository
-		path = SettingsClass_Core.settings.SpoilerFolder.getValue();
+		path = CB_Core_Settings.SpoilerFolder.getValue();
 		directory = path + "/" + GcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 

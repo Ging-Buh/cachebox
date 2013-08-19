@@ -19,7 +19,7 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
-import CB_Core.Settings.SettingsClass_Core;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Log.Logger;
@@ -113,8 +113,8 @@ public class DescriptionImageGrabber
 	 */
 	public static String BuildImageFilename(String GcCode, URI uri)
 	{
-		String imagePath = SettingsClass_Core.settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
-		if (SettingsClass_Core.settings.DescriptionImageFolderLocal.getValue().length() > 0) imagePath = SettingsClass_Core.settings.DescriptionImageFolderLocal
+		String imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
+		if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.DescriptionImageFolderLocal
 				.getValue() + "/" + GcCode.substring(0, 4);
 
 		// String uriName = url.Substring(url.LastIndexOf('/') + 1);
@@ -478,8 +478,8 @@ public class DescriptionImageGrabber
 			// Liste aller Spoiler Images für diesen Cache erstellen
 			// anhand dieser Liste kann überprüft werden, ob ein Spoiler schon geladen ist und muss nicht ein 2. mal geladen werden.
 			// Außerdem können anhand dieser Liste veraltete Spoiler identifiziert werden, die gelöscht werden können / müssen
-			String[] files = getFilesInDirectory(SettingsClass_Core.settings.SpoilerFolder.getValue(), gcCode);
-			String[] filesLocal = getFilesInDirectory(SettingsClass_Core.settings.SpoilerFolderLocal.getValue(), gcCode);
+			String[] files = getFilesInDirectory(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
+			String[] filesLocal = getFilesInDirectory(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
 			ArrayList<String> afiles = new ArrayList<String>();
 			for (String file : files)
 				afiles.add(file);
@@ -554,7 +554,7 @@ public class DescriptionImageGrabber
 					// Alle Spoiler in der Liste afiles sind "alte"
 					for (String file : afiles)
 					{
-						File f = new File(SettingsClass_Core.settings.SpoilerFolder.getValue() + "/" + gcCode.substring(0, 4) + '/' + file);
+						File f = new File(CB_Core_Settings.SpoilerFolder.getValue() + "/" + gcCode.substring(0, 4) + '/' + file);
 						try
 						{
 							f.delete();
@@ -611,10 +611,10 @@ public class DescriptionImageGrabber
 	 */
 	public static String BuildAdditionalImageFilename(String GcCode, String ImageName, URI uri)
 	{
-		String imagePath = SettingsClass_Core.settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
+		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
 
-		if (SettingsClass_Core.settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = SettingsClass_Core.settings.SpoilerFolderLocal
-				.getValue() + "/" + GcCode.substring(0, 4);
+		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
+				+ GcCode.substring(0, 4);
 
 		ImageName = ImageName.replace("[/:*?\"<>|]", "");
 		ImageName = ImageName.replace("\\", "");

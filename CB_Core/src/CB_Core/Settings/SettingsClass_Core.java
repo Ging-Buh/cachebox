@@ -1,70 +1,26 @@
 package CB_Core.Settings;
 
-import CB_Utils.Config_Core;
-import CB_Utils.Settings.SettingBool;
-import CB_Utils.Settings.SettingCategory;
-import CB_Utils.Settings.SettingEncryptedString;
-import CB_Utils.Settings.SettingFolder;
-import CB_Utils.Settings.SettingModus;
-import CB_Utils.Settings.SettingStoreType;
-import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingsList;
 
-public abstract class SettingsClass_Core extends SettingsList
+public abstract class SettingsClass_Core extends SettingsList implements CB_Core_Settings
 {
 	private static final long serialVersionUID = 5099780361467147392L;
 	public static SettingsClass_Core settings = null;
-
-	// Decrypt
-	public SettingString GcLogin;
-	public SettingEncryptedString GcAPI;
-	public SettingEncryptedString GcAPIStaging;
-	public SettingBool StagingAPI;
-
-	// Folder Settings
-	public SettingFolder DescriptionImageFolder;
-	public SettingFolder DescriptionImageFolderLocal;
-	public SettingFolder SpoilerFolder;
-	public SettingFolder SpoilerFolderLocal;
 
 	public SettingsClass_Core()
 	{
 		super();
 		settings = this;
-		addLogInSettings();
-		addFolderSettings();
-		addDebugSettings();
-	}
+		addSetting(StagingAPI);
+		addSetting(DescriptionImageFolder);
+		addSetting(DescriptionImageFolderLocal);
 
-	private void addDebugSettings()
-	{
-		SettingCategory cat = SettingCategory.Folder;
-		addSetting(StagingAPI = new SettingBool("StagingAPI", cat, SettingModus.Expert, false, SettingStoreType.Global));
-	}
+		addSetting(SpoilerFolder);
+		addSetting(SpoilerFolderLocal);
 
-	private void addFolderSettings()
-	{
-		SettingCategory cat = SettingCategory.Folder;
-
-		String Work = Config_Core.WorkPath;
-
-		addSetting(DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", cat, SettingModus.Expert, Work
-				+ "/repository/images", SettingStoreType.Global));
-		addSetting(DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", cat, SettingModus.Never, "",
-				SettingStoreType.Local));
-
-		addSetting(SpoilerFolder = new SettingFolder("SpoilerFolder", cat, SettingModus.Expert, Work + "/repository/spoilers",
-				SettingStoreType.Global));
-		addSetting(SpoilerFolderLocal = new SettingFolder("SpoilerFolder", cat, SettingModus.Never, "", SettingStoreType.Local));
-	}
-
-	private void addLogInSettings()
-	{
-		SettingCategory cat = SettingCategory.Login;
-
-		addSetting(GcLogin = new SettingString("GcLogin", cat, SettingModus.Normal, "", SettingStoreType.Platform));
-		addSetting(GcAPI = new SettingEncryptedString("GcAPI", cat, SettingModus.Invisible, "", SettingStoreType.Platform));
-		addSetting(GcAPIStaging = new SettingEncryptedString("GcAPIStaging", cat, SettingModus.Invisible, "", SettingStoreType.Platform));
+		addSetting(GcLogin);
+		addSetting(GcAPI);
+		addSetting(GcAPIStaging);
 	}
 
 	// Read the encrypted AccessToken from the config and check wheter it is

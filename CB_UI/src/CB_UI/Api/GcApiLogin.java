@@ -30,8 +30,8 @@ import CB_UI.Config;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog;
 import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog;
 import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog.returnListner;
 import CB_UI.GL_UI.GL_Listener.GL;
 
@@ -729,7 +729,7 @@ public class GcApiLogin
 		// store the encrypted AccessToken in the Config file
 		// wir bekommen den Key schon verschlüsselt, deshalb muss er
 		// nicht noch einmal verschlüsselt werden!
-		Config.settings.GcAPI.setEncryptedValue(accessToken);
+		Config.GcAPI.setEncryptedValue(accessToken);
 		Config.AcceptChanges();
 
 		String act = Config.GetAccessToken();
@@ -739,7 +739,7 @@ public class GcApiLogin
 			if (status >= 0)
 			{
 
-				Config.settings.GcLogin.setValue(GroundspeakAPI.MemberName);
+				Config.GcLogin.setValue(GroundspeakAPI.MemberName);
 				Config.AcceptChanges();
 
 			}

@@ -26,33 +26,33 @@ import CB_UI.GL_UI.GL_View_Base;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Activitys.ActivityBase;
 import CB_UI.GL_UI.Activitys.ImportAnimation;
+import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.Import_PqListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
-import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.Button;
 import CB_UI.GL_UI.Controls.CollapseBox;
+import CB_UI.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI.GL_UI.Controls.EditTextField;
+import CB_UI.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI.GL_UI.Controls.Label;
 import CB_UI.GL_UI.Controls.ProgressBar;
 import CB_UI.GL_UI.Controls.ScrollBox;
 import CB_UI.GL_UI.Controls.Spinner;
+import CB_UI.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_UI.GL_UI.Controls.SpinnerAdapter;
 import CB_UI.GL_UI.Controls.chkBox;
-import CB_UI.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_UI.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_UI.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
-import CB_UI.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI.GL_UI.Controls.List.Adapter;
 import CB_UI.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI.GL_UI.Controls.List.V_ListView;
 import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Controls.PopUps.ConnectionError;
-import CB_UI.GL_UI.Controls.Spinner.selectionChangedListner;
-import CB_UI.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.SizeF;
@@ -971,7 +971,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 						Database.Data.beginTransaction();
 						try
 						{
-							importer.importGcVote(GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue()), ip);
+							importer.importGcVote(GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
 
 							Database.Data.setTransactionSuccessful();
 						}
@@ -992,7 +992,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 					{
 						dis.setAnimationType(AnimationType.Download);
 						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(),
-								GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue()));
+								GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 						{

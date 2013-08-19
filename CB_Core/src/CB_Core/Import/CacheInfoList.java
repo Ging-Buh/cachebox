@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import CB_Core.DB.Database;
-import CB_Core.Settings.SettingsClass_Core;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Utils.DB.CoreCursor;
@@ -213,14 +213,14 @@ public class CacheInfoList
 					ImagesUpdated = false;
 					DescriptionImagesUpdated = false;
 
-					if (SettingsClass_Core.settings.DescriptionImageFolderLocal.getValue().length() > 0) SettingsClass_Core.settings.DescriptionImageFolder
-							.setValue(SettingsClass_Core.settings.DescriptionImageFolderLocal.getValue());
+					if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) CB_Core_Settings.DescriptionImageFolder
+							.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
-					CreateChangedListingFile(SettingsClass_Core.settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4)
-							+ "/" + GcCode + ".changed");
+					CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
+							+ GcCode + ".changed");
 
-					CreateChangedListingFile(SettingsClass_Core.settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4)
-							+ "/" + GcCode + ".changed");
+					CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
+							+ GcCode + ".changed");
 				}
 				else
 				{
