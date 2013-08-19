@@ -1,8 +1,8 @@
 package de.cachebox_test.Views.Forms;
 
-import CB_Core.Config;
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
+import CB_UI.Config;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;

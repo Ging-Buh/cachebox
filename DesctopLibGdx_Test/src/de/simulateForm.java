@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.Config;
 import CB_Core.Map.Descriptor.TrackPoint;
-import CB_Core.Map.RouteOverlay;
 import CB_Locator.Coordinate;
 import CB_Locator.GPS;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Events.GpsStateChangeEventList;
+import CB_UI.Config;
+import CB_UI.Map.RouteOverlay;
 
 import com.badlogic.gdx.graphics.Color;
 

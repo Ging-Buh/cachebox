@@ -1,9 +1,9 @@
 package de.cachebox_test.Custom_Controls;
 
-import CB_Core.Config;
-import CB_Core.Math.CB_Rect;
-import CB_Core.Math.UI_Size_Base;
-import CB_Core.Math.UiSizes;
+import CB_UI.Config;
+import CB_UI.Math.CB_Rect;
+import CB_UI.Math.UI_Size_Base;
+import CB_UI.Math.UiSizes;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Canvas;

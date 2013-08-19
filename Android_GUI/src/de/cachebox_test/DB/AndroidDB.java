@@ -3,10 +3,10 @@ package de.cachebox_test.DB;
 import java.io.File;
 import java.util.Map.Entry;
 
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.Log.Logger;
-import CB_Core.Util.FileIO;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.Log.Logger;
+import CB_Utils.Util.FileIO;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;

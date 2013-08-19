@@ -17,13 +17,13 @@ import org.apache.http.params.HttpParams;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 
-import CB_Core.Log.Logger;
-import CB_Core.Map.BoundingBox;
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.Layer;
-import CB_Core.Map.ManagerBase;
-import CB_Core.Map.PackBase;
-import CB_Core.Util.FileIO;
+import CB_UI.Map.BoundingBox;
+import CB_UI.Map.Layer;
+import CB_UI.Map.ManagerBase;
+import CB_UI.Map.PackBase;
+import CB_Utils.Log.Logger;
+import CB_Utils.Util.FileIO;
 import android.graphics.BitmapFactory;
 
 public class AndroidManager extends ManagerBase

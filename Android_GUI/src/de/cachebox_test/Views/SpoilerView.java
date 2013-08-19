@@ -3,12 +3,12 @@ package de.cachebox_test.Views;
 import java.io.File;
 import java.util.ArrayList;
 
-import CB_Core.GlobalCore;
-import CB_Core.Events.platformConector;
-import CB_Core.Events.platformConector.iStartPictureApp;
-import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
+import CB_UI.GlobalCore;
+import CB_UI.Events.platformConector;
+import CB_UI.Events.platformConector.iStartPictureApp;
+import CB_Utils.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;

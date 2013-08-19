@@ -21,18 +21,18 @@ import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.GCVoteDAO;
 import CB_Core.DAO.ImageDAO;
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
-import CB_Core.Log.Logger;
 import CB_Core.Settings.SettingsClass_Core;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
-import CB_Core.Util.FileIO;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Log.Logger;
+import CB_Utils.Util.FileIO;
 
 public class Importer
 {

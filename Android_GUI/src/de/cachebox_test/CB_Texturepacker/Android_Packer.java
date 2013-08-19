@@ -5,11 +5,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import CB_Core.CB_Texturepacker.MaxRectsPacker;
-import CB_Core.CB_Texturepacker.Page;
-import CB_Core.CB_Texturepacker.Rect_Base;
-import CB_Core.CB_Texturepacker.Settings;
-import CB_Core.CB_Texturepacker.TexturePacker_Base;
+import CB_UI.CB_Texturepacker.MaxRectsPacker;
+import CB_UI.CB_Texturepacker.Page;
+import CB_UI.CB_Texturepacker.Rect_Base;
+import CB_UI.CB_Texturepacker.Settings;
+import CB_UI.CB_Texturepacker.TexturePacker_Base;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;

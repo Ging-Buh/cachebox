@@ -2,7 +2,7 @@ package CB_Core.Types;
 
 import java.util.ArrayList;
 
-import CB_Core.Log.Logger;
+import CB_Utils.Log.Logger;
 
 
 public class JokerList extends ArrayList<JokerEntry> {

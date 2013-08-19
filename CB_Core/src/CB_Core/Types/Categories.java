@@ -1,7 +1,7 @@
 package CB_Core.Types;
 
 import CB_Core.FilterProperties;
-import CB_Core.Util.MoveableList;
+import CB_Utils.Util.MoveableList;
 
 public class Categories extends MoveableList<Category>
 {

@@ -5,10 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
 import CB_Core.DB.Database;
-import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Import.ImporterProgress;
-import CB_Core.Log.Logger;
 import CB_Core.Types.LogEntry;
+import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Log.Logger;
 
 public class LogDAO
 {

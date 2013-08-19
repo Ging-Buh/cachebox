@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
-import CB_Core.Config;
-import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.JokerList;
-import CB_Core.Util.MoveableList;
+import CB_UI.Config;
+import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
+import CB_UI.Math.UI_Size_Base;
+import CB_Utils.Util.MoveableList;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;

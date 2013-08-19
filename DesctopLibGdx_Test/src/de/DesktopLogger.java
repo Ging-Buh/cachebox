@@ -3,7 +3,7 @@ package de;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
-import CB_Core.Log.ILog;
+import CB_Utils.Log.ILog;
 
 public class DesktopLogger implements ILog
 {
@@ -13,7 +13,7 @@ public class DesktopLogger implements ILog
 	{
 
 		BasicConfigurator.configure();
-		CB_Core.Log.Logger.Add(this);
+		CB_Utils.Log.Logger.Add(this);
 	}
 
 	@Override

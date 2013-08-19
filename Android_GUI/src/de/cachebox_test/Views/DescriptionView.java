@@ -1,13 +1,13 @@
 package de.cachebox_test.Views;
 
-import CB_Core.GlobalCore;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.GlobalCore;
+import CB_UI.Events.SelectedCacheEvent;
+import CB_UI.Events.SelectedCacheEventList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;

@@ -7,14 +7,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database_Core.Parameters;
-import CB_Core.Log.Logger;
 import CB_Core.Settings.SettingsClass_Core;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
-import CB_Core.Util.SDBM_Hash;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Log.Logger;
+import CB_Utils.Util.SDBM_Hash;
 
 public class CacheInfoList
 {

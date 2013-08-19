@@ -2,11 +2,11 @@ package CB_Core.DAO;
 
 import java.util.ArrayList;
 
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database_Core.Parameters;
-import CB_Core.Log.Logger;
 import CB_Core.Types.ImageEntry;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Log.Logger;
 
 public class ImageDAO
 {

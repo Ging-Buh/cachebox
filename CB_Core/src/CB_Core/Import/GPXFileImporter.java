@@ -11,19 +11,19 @@ import java.util.List;
 import java.util.Map;
 
 import CB_Core.StaticFinal;
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
-import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.Log.Logger;
 
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.XMLParserException;

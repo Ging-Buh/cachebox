@@ -4,8 +4,8 @@ import java.io.File;
 
 import org.openintents.intents.FileManagerIntents;
 
-import CB_Core.Events.platformConector.IgetFileReturnListner;
-import CB_Core.Events.platformConector.IgetFolderReturnListner;
+import CB_UI.Events.platformConector.IgetFileReturnListner;
+import CB_UI.Events.platformConector.IgetFolderReturnListner;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;

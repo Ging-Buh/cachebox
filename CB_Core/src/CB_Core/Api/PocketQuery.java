@@ -20,8 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.Log.Logger;
 import CB_Core.Settings.SettingsClass_Core;
+import CB_Utils.Log.Logger;
 
 /***
  * @author Longri
@@ -278,7 +278,7 @@ public class PocketQuery
 					{
 						// int firstZipPos = result.indexOf("\"ZippedFile\":\"") + 14;
 						// int lastZipPos = result.indexOf("\"", firstZipPos + 1) - 1;
-						CB_Core.Converter.Base64.decodeStreamToStream(inputStream, buff, buffLen, buffCount, buffPos, bfs);
+						CB_Utils.Converter.Base64.decodeStreamToStream(inputStream, buff, buffLen, buffCount, buffPos, bfs);
 					}
 					catch (Exception ex)
 					{

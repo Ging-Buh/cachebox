@@ -35,7 +35,6 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Settings.SettingsClass_Core;
 import CB_Core.Types.Cache;
@@ -44,7 +43,8 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
-import CB_Core.Util.ByRef;
+import CB_Utils.Log.Logger;
+import CB_Utils.Util.ByRef;
 
 public class GroundspeakAPI
 {
@@ -632,7 +632,7 @@ public class GroundspeakAPI
 	// liest den CacheStatus aus dem gegebenen json Object aus.
 	// darin ist gespeichert, wie viele Full Caches schon geladen wurden und wie
 	// viele noch frei sind
-	static int checkCacheStatus(JSONObject json, boolean isLite)
+	public static int checkCacheStatus(JSONObject json, boolean isLite)
 	{
 		LastAPIError = "";
 		try
@@ -663,7 +663,7 @@ public class GroundspeakAPI
 		}
 	}
 
-	static int getCacheSize(int containerTypeId)
+	public static int getCacheSize(int containerTypeId)
 	{
 		switch (containerTypeId)
 		{
@@ -687,7 +687,7 @@ public class GroundspeakAPI
 		}
 	}
 
-	static CacheTypes getCacheType(int apiTyp)
+	public static CacheTypes getCacheType(int apiTyp)
 	{
 		switch (apiTyp)
 		{

@@ -6,8 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.Log.Logger;
 import CB_Core.Types.DLong;
+import CB_Utils.Log.Logger;
 
 public class FilterProperties
 {

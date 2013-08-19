@@ -5,10 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
-import CB_Core.Log.Logger;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.Log.Logger;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry>
 {

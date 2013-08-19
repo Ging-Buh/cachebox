@@ -1,6 +1,14 @@
 package CB_Core.Settings;
 
-import CB_Core.Config_Core;
+import CB_Utils.Config_Core;
+import CB_Utils.Settings.SettingBool;
+import CB_Utils.Settings.SettingCategory;
+import CB_Utils.Settings.SettingEncryptedString;
+import CB_Utils.Settings.SettingFolder;
+import CB_Utils.Settings.SettingModus;
+import CB_Utils.Settings.SettingStoreType;
+import CB_Utils.Settings.SettingString;
+import CB_Utils.Settings.SettingsList;
 
 public abstract class SettingsClass_Core extends SettingsList
 {

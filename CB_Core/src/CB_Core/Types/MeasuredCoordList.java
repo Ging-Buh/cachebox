@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import CB_Core.Util.UnitFormatter;
 import CB_Locator.Coordinate;
+import CB_Utils.Util.UnitFormatter;
 
 /**
  * Eine ArrayList<MeasuredCoord> welche die gemessenen Koordinaten aufnimmt, sortiert, Ausreißer eliminiert und über die Methode

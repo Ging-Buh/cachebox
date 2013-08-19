@@ -15,10 +15,10 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import CB_Core.Config;
-import CB_Core.GlobalCore;
-import CB_Core.Math.Size;
-import CB_Core.Math.devicesSizes;
+import CB_UI.Config;
+import CB_UI.GlobalCore;
+import CB_UI.Math.Size;
+import CB_UI.Math.devicesSizes;
 
 class Ex_1
 {

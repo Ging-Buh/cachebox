@@ -1,8 +1,8 @@
 package de.cachebox_test.Views;
 
-import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_Core.Log.Logger;
+import CB_UI.GL_UI.GL_Listener.GL;
+import CB_UI.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_Utils.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;

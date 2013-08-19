@@ -2,17 +2,17 @@ package CB_Core.DAO;
 
 import java.util.Iterator;
 
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import CB_Core.Util.SDBM_Hash;
-import CB_Core.Util.UnitFormatter;
 import CB_Locator.Coordinate;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Util.SDBM_Hash;
+import CB_Utils.Util.UnitFormatter;
 
 public class WaypointDAO
 {

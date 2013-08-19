@@ -6,18 +6,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import CB_Core.Log.Logger;
-import CB_Core.Map.BoundingBox;
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.ManagerBase;
-import CB_Core.Map.PackBase;
+import CB_UI.Map.BoundingBox;
+import CB_UI.Map.ManagerBase;
+import CB_UI.Map.PackBase;
+import CB_Utils.Log.Logger;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class Pack extends PackBase
 {
 
-	public Pack(CB_Core.Map.Layer layer)
+	public Pack(CB_UI.Map.Layer layer)
 	{
 		super(layer);
 	}

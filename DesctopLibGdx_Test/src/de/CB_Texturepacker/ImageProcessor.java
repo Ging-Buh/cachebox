@@ -30,9 +30,9 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
-import CB_Core.CB_Texturepacker.IImageprozessor;
-import CB_Core.CB_Texturepacker.Rect_Base;
-import CB_Core.CB_Texturepacker.Settings;
+import CB_UI.CB_Texturepacker.IImageprozessor;
+import CB_UI.CB_Texturepacker.Rect_Base;
+import CB_UI.CB_Texturepacker.Settings;
 
 import com.badlogic.gdx.utils.Array;
 

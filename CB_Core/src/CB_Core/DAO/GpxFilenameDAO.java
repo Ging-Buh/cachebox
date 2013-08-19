@@ -5,10 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Types.GpxFilename;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.DB.Database_Core.Parameters;
 
 public class GpxFilenameDAO
 {

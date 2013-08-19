@@ -18,25 +18,25 @@ package de.cachebox_test.Custom_Controls;
 
 import java.util.Iterator;
 
-import CB_Core.Config;
-import CB_Core.Energy;
-import CB_Core.GlobalCore;
 import CB_Core.Enums.Attributes;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.GL_UI.Controls.QuickButtonList;
-import CB_Core.Math.CB_Rect;
-import CB_Core.Math.UI_Size_Base;
-import CB_Core.Math.UiSizes;
-import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import CB_Core.Util.UnitFormatter;
 import CB_Locator.Coordinate;
 import CB_Locator.GPS;
 import CB_Locator.Locator;
 import CB_Locator.Events.GpsStateChangeEvent;
 import CB_Locator.Events.GpsStateChangeEventList;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
+import CB_UI.Energy;
+import CB_UI.GlobalCore;
+import CB_UI.Events.SelectedCacheEvent;
+import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.GL_UI.Controls.QuickButtonList;
+import CB_UI.Math.CB_Rect;
+import CB_UI.Math.UI_Size_Base;
+import CB_UI.Math.UiSizes;
+import CB_Utils.Util.UnitFormatter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
@@ -273,7 +273,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (!isInitial)
 		{
 
-			if (CB_Core.GL_UI.Controls.Slider.setAndroidSliderHeight(mBtnRec.height()))
+			if (CB_UI.GL_UI.Controls.Slider.setAndroidSliderHeight(mBtnRec.height()))
 			{
 				isInitial = true;
 			}
@@ -544,7 +544,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		this.invalidate();
 
-		CB_Core.GL_UI.Controls.Slider.setAndroidSliderPos(yPos);
+		CB_UI.GL_UI.Controls.Slider.setAndroidSliderPos(yPos);
 
 	}
 

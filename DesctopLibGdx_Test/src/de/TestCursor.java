@@ -3,7 +3,7 @@ package de;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import CB_Core.DB.CoreCursor;
+import CB_Utils.DB.CoreCursor;
 
 public class TestCursor extends CoreCursor
 {

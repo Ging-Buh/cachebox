@@ -3,9 +3,9 @@ package CB_Core.Types;
 import java.util.Collections;
 
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Util.MoveableList;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Utils.Util.MoveableList;
 
 public class CacheList extends MoveableList<Cache>
 {

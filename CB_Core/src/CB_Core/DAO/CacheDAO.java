@@ -7,19 +7,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-import CB_Core.DB.CoreCursor;
 import CB_Core.DB.Database;
-import CB_Core.DB.Database_Core.Parameters;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
-import CB_Core.Log.Logger;
 import CB_Core.Map.Descriptor;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
+import CB_Utils.DB.CoreCursor;
+import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Log.Logger;
 
 public class CacheDAO
 {

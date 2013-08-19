@@ -3,8 +3,8 @@ package CB_Core.Types;
 import java.io.Serializable;
 import java.net.URI;
 
-import CB_Core.DB.CoreCursor;
 import CB_Core.Import.DescriptionImageGrabber;
+import CB_Utils.DB.CoreCursor;
 
 public class ImageEntry implements Serializable
 {

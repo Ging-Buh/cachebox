@@ -2,6 +2,8 @@ package CB_Core.Converter;
 
 import java.io.IOException;
 
+import CB_Utils.Converter.Base64;
+
 import junit.framework.TestCase;
 
 /**
