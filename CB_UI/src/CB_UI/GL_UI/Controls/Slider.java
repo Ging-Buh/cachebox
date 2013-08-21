@@ -12,7 +12,7 @@ import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.Handler;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Main.TabMainView;
@@ -86,7 +86,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		this.addChild(quickButtonList);
 
 		mSlideBox = new Box(new CB_RectF(-15, 100, this.width + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
-		mSlideBox.setBackground(SpriteCache.ProgressBack);
+		mSlideBox.setBackground(SpriteCacheBase.ProgressBack);
 		mLblCacheName = new Label(new CB_RectF(20, 0, this.width - 30, mSlideBox.getHeight()), "CacheNameLbl").setFont(Fonts.getBig());
 		mLblCacheName.setPos(30, 0);
 		mLblCacheName.setHAlignment(HAlignment.CENTER);
@@ -393,7 +393,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	@Override
 	protected void SkinIsChanged()
 	{
-		mSlideBox.setBackground(SpriteCache.ProgressBack);
+		mSlideBox.setBackground(SpriteCacheBase.ProgressBack);
 
 	}
 

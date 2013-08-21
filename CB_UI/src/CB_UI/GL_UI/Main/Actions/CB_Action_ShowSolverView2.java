@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Menu.Menu;
 import CB_UI.GL_UI.Menu.MenuID;
@@ -35,7 +35,7 @@ public class CB_Action_ShowSolverView2 extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.getThemedSprite("solver-icon-2");
+		return SpriteCacheBase.getThemedSprite("solver-icon-2");
 	}
 
 	@Override

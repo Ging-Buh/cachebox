@@ -56,9 +56,11 @@ import CB_UI.Events.platformConector.IShowViewListner;
 import CB_UI.Events.platformConector.IgetFileReturnListner;
 import CB_UI.Events.platformConector.IgetFolderReturnListner;
 import CB_UI.Events.platformConector.IsetScreenLockTime;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.ViewConst;
 import CB_UI.GL_UI.ViewID;
+import CB_UI.GL_UI.ViewID.UI_Pos;
+import CB_UI.GL_UI.ViewID.UI_Type;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
@@ -72,8 +74,6 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog.searchMode;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.GL_Listener.GL.renderStartet;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.ViewID.UI_Pos;
-import CB_UI.GL_UI.ViewID.UI_Type;
 import CB_UI.GL_UI.Views.splash;
 import CB_UI.Math.Size;
 import CB_UI.Math.UI_Size_Base;
@@ -82,11 +82,11 @@ import CB_UI.Math.devicesSizes;
 import CB_Utils.Log.ILog;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
+import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
-import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 import android.annotation.SuppressLint;
@@ -1217,7 +1217,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				Database.Data.Close();
 				Database.FieldNotes.Close();
 
-				SpriteCache.destroyCache();
+				SpriteCacheBase.destroyCache();
 
 				Database.Settings.Close();
 				super.onDestroy();
@@ -2969,6 +2969,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void Quit()
 			{
+				if (GlobalCore.getSelectedCache() != null)
+				{
+					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
+					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+					Config.AcceptChanges();
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+				}
 				finish();
 			}
 		});

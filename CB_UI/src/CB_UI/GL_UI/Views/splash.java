@@ -16,7 +16,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.Plattform;
 import CB_UI.Enums.WrapType;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_UI.GL_UI.Controls.Image;
@@ -274,7 +274,7 @@ public class splash extends TabMainView
 	private void ini_Sprites()
 	{
 		Logger.DEBUG("ini_Sprites");
-		SpriteCache.LoadSprites(false);
+		SpriteCacheBase.LoadSprites(false);
 	}
 
 	/**

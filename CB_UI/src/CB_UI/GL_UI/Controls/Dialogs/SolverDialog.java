@@ -6,7 +6,7 @@ import CB_UI.Events.KeyboardFocusChangedEvent;
 import CB_UI.Events.KeyboardFocusChangedEventList;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_UI.GL_UI.Controls.Box;
@@ -119,7 +119,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		Label lbGleich = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "=");
 		lbGleich.setFont(Fonts.getNormal());
 		lbGleich.setText("=");
-		setBackground(SpriteCache.activityBackground);
+		setBackground(SpriteCacheBase.activityBackground);
 		scrollBox.addLast(lbGleich);
 		y -= TextFieldHeight * 0.8;
 

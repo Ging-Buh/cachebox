@@ -25,5 +25,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Core"/>
 	<classpathentry kind="lib" path="lib/bsh-core-2.0b4.jar"/>
 	<classpathentry kind="src" path="/CB_Rpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

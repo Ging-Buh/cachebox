@@ -11,7 +11,6 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -30,17 +29,17 @@ import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.DrawUtils;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Controls.InfoBubble;
 import CB_UI.GL_UI.Controls.MapInfoPanel;
+import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Controls.MapScale;
 import CB_UI.GL_UI.Controls.MultiToggleButton;
+import CB_UI.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI.GL_UI.Controls.ZoomButtons;
 import CB_UI.GL_UI.Controls.ZoomScale;
-import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
-import CB_UI.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Main.MainViewBase;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
@@ -48,8 +47,6 @@ import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI.Map.Layer;
 import CB_UI.Map.ManagerBase;
 import CB_UI.Map.MapTileLoader;
-import CB_UI.Map.Point;
-import CB_UI.Map.PointL;
 import CB_UI.Map.RouteOverlay;
 import CB_UI.Map.TileGL;
 import CB_UI.Math.CB_RectF;
@@ -57,6 +54,9 @@ import CB_UI.Math.GL_UISizes;
 import CB_UI.Math.SizeF;
 import CB_UI.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
+import CB_Utils.Math.Point;
+import CB_Utils.Math.PointD;
+import CB_Utils.Math.PointL;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 
@@ -199,7 +199,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		Config.settings.MapsforgeDayTheme.addChangedEventListner(themeChangedEventHandler);
 		Config.settings.MapsforgeNightTheme.addChangedEventListner(themeChangedEventHandler);
 		registerSkinChangedEvent();
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 		int maxNumTiles = 0;
 		// calculate max Map Tile cache
 		try
@@ -916,7 +916,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			{
 				if (crossLine == null)
 				{
-					crossLine = SpriteCache.getThemedSprite("pixel2x2");
+					crossLine = SpriteCacheBase.getThemedSprite("pixel2x2");
 					crossLine.setScale(UI_Size_Base.that.getScale());
 					crossLine.setColor(Fonts.getCrossColor());
 				}
@@ -978,10 +978,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					{
 						int squaredR = radius * 2;
 
-						if (squaredR > SpriteCache.Accuracy[2].getWidth()) AccuracySprite = new Sprite(SpriteCache.Accuracy[2]);
-						else if (squaredR > SpriteCache.Accuracy[1].getWidth()) AccuracySprite = new Sprite(SpriteCache.Accuracy[1]);
+						if (squaredR > SpriteCacheBase.Accuracy[2].getWidth()) AccuracySprite = new Sprite(SpriteCacheBase.Accuracy[2]);
+						else if (squaredR > SpriteCacheBase.Accuracy[1].getWidth()) AccuracySprite = new Sprite(SpriteCacheBase.Accuracy[1]);
 						else
-							AccuracySprite = new Sprite(SpriteCache.Accuracy[0]);
+							AccuracySprite = new Sprite(SpriteCacheBase.Accuracy[0]);
 						if (AccuracySprite != null) AccuracySprite.setSize(squaredR, squaredR);
 					}
 					catch (Exception e)
@@ -1019,7 +1019,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		if (CarMode) arrowId = 15;
 
-		Sprite arrow = SpriteCache.Arrows.get(arrowId);
+		Sprite arrow = SpriteCacheBase.Arrows.get(arrowId);
 		arrow.setRotation(-arrowHeading);
 		arrow.setBounds(myPointOnScreen.x - GL_UISizes.halfPosMarkerSize, myPointOnScreen.y - GL_UISizes.halfPosMarkerSize,
 				GL_UISizes.PosMarkerSize, GL_UISizes.PosMarkerSize);
@@ -1080,7 +1080,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				direction = 180 - direction;
 
 				// draw sprite
-				Sprite arrow = SpriteCache.Arrows.get(4);
+				Sprite arrow = SpriteCacheBase.Arrows.get(4);
 				arrow.setRotation(direction);
 
 				arrow.setBounds(newTarget.x - GL_UISizes.TargetArrow.halfWidth, newTarget.y - GL_UISizes.TargetArrow.height,
@@ -1195,8 +1195,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			if (LineSprite == null || PointSprite == null)
 			{
-				LineSprite = SpriteCache.Arrows.get(13);
-				PointSprite = SpriteCache.Arrows.get(14);
+				LineSprite = SpriteCacheBase.Arrows.get(13);
+				PointSprite = SpriteCacheBase.Arrows.get(14);
 				scale = 0.8f * UI_Size_Base.that.getScale();
 			}
 
@@ -1216,7 +1216,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		if ((aktZoom >= zoomCross) && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
 		{
 			// Draw Cross and move screen vector
-			Sprite cross = SpriteCache.MapOverlay.get(3);
+			Sprite cross = SpriteCacheBase.MapOverlay.get(3);
 			cross.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
 			cross.draw(batch);
 
@@ -1248,7 +1248,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// Rating des Caches darstellen
 		if (showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (aktZoom >= 15))
 		{
-			Sprite rating = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
+			Sprite rating = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
 			rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8, WpUnderlay.width,
 					WpUnderlay.Height4_8);
 			rating.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
@@ -1269,14 +1269,14 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		// Show D/T-Rating
 		if (showDT && (!drawAsWaypoint) && (aktZoom >= 15))
 		{
-			Sprite difficulty = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Difficulty * 2, 5 * 2));
+			Sprite difficulty = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Difficulty * 2, 5 * 2));
 			difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2),
 					WpUnderlay.width, WpUnderlay.Height4_8);
 			difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			difficulty.setRotation(90);
 			difficulty.draw(batch);
 
-			Sprite terrain = SpriteCache.MapStars.get((int) Math.min(wpi.Cache.Terrain * 2, 5 * 2));
+			Sprite terrain = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Terrain * 2, 5 * 2));
 			terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width,
 					WpUnderlay.Height4_8);
 			terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
@@ -2657,7 +2657,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	@Override
 	protected void SkinIsChanged()
 	{
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, true);
 		data.hideMyFinds = this.hideMyFinds;

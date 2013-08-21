@@ -8,7 +8,7 @@ import CB_UI.Events.invalidateTextureEvent;
 import CB_UI.Events.invalidateTextureEventList;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.GL_UISizes;
@@ -88,7 +88,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 		if (ValueRec != null)
 		{
 			Sprite valueBack;
-			valueBack = SpriteCache.ZoomValueBack;
+			valueBack = SpriteCacheBase.ZoomValueBack;
 			valueBack.setBounds(ValueRec.getX() + 1.5f, ValueRec.getY(), ValueRec.getWidth(), ValueRec.getHeight());
 			valueBack.draw(batch, FadeValue);
 		}

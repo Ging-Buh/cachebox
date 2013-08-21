@@ -27,7 +27,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.Enums.WrapType;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
@@ -47,7 +47,7 @@ import CB_UI.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.GL_UI.Controls.Slider.YPositionChanged;
 import CB_UI.GL_UI.GL_Listener.GL;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GlobalCore.IChkRedyHandler;
@@ -139,14 +139,14 @@ public class SearchDialog extends PopUp_Base
 
 		if (GlobalCore.isTab)
 		{
-			this.setBackground(SpriteCache.activityBackground);
+			this.setBackground(SpriteCacheBase.activityBackground);
 			this.setWidth(this.width * 1.4f);
 			this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.halfWidth);
 			this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.halfHeight);
 		}
 		else
 		{
-			this.setBackground(SpriteCache.ListBack);
+			this.setBackground(SpriteCacheBase.ListBack);
 		}
 		// initial Buttons
 
@@ -343,7 +343,7 @@ public class SearchDialog extends PopUp_Base
 		else
 		{
 
-			mBtnFilter.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.targetDay_53.ordinal())));
+			mBtnFilter.setImage(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.targetDay_53.ordinal())));
 			mBtnFilter.setText("");
 		}
 	}

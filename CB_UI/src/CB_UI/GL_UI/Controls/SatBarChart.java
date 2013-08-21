@@ -5,7 +5,7 @@ import CB_Locator.GpsStrength;
 import CB_Locator.Events.GpsStateChangeEvent;
 import CB_Locator.Events.GpsStateChangeEventList;
 import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.Math.CB_RectF;
 
@@ -42,10 +42,10 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 
 	private void setSatStrength()
 	{
-		float minH = (SpriteCache.bar.getBottomHeight() / 2) + SpriteCache.bar.getTopHeight();
+		float minH = (SpriteCacheBase.bar.getBottomHeight() / 2) + SpriteCacheBase.bar.getTopHeight();
 
 		float w = (this.width / 14);
-		boolean small = SpriteCache.bar.getMinWidth() > w * 1.2f;
+		boolean small = SpriteCacheBase.bar.getMinWidth() > w * 1.2f;
 		if (small)
 		{
 			w = (this.width / 12);
@@ -66,7 +66,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		if (balken == null)
 		{
 
-			float iniHeight = small ? SpriteCache.barSmall.getTopHeight() : SpriteCache.bar.getTopHeight();
+			float iniHeight = small ? SpriteCacheBase.barSmall.getTopHeight() : SpriteCacheBase.bar.getTopHeight();
 
 			w += 1;
 			balken = new Image[14];
@@ -89,7 +89,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 			{
 				if (tmp != null)
 				{
-					tmp.setDrawable(small ? SpriteCache.barSmall_0 : SpriteCache.bar_0);
+					tmp.setDrawable(small ? SpriteCacheBase.barSmall_0 : SpriteCacheBase.bar_0);
 					this.addChild(tmp);
 				}
 			}
@@ -107,12 +107,12 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 
 					if (barHeight < minH)
 					{
-						barHeight = small ? SpriteCache.barSmall.getTopHeight() : SpriteCache.bar.getTopHeight();
-						balken[count].setDrawable(small ? SpriteCache.barSmall_0 : SpriteCache.bar_0);
+						barHeight = small ? SpriteCacheBase.barSmall.getTopHeight() : SpriteCacheBase.bar.getTopHeight();
+						balken[count].setDrawable(small ? SpriteCacheBase.barSmall_0 : SpriteCacheBase.bar_0);
 					}
 					else
 					{
-						balken[count].setDrawable(small ? SpriteCache.barSmall : SpriteCache.bar);
+						balken[count].setDrawable(small ? SpriteCacheBase.barSmall : SpriteCacheBase.bar);
 					}
 
 					balken[count].setHeight(barHeight);

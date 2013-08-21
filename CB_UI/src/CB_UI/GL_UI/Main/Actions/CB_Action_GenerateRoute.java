@@ -21,28 +21,28 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
-import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI.GL_UI.Controls.Dialogs.RouteDialog;
 import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI.GL_UI.Controls.Dialogs.RouteDialog;
 import CB_UI.GL_UI.Controls.Dialogs.RouteDialog.returnListner;
 import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
 import CB_UI.Map.RouteOverlay.Track;
+import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.graphics.Color;
@@ -67,7 +67,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.trackList_8.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.trackList_8.ordinal());
 	}
 
 	@Override

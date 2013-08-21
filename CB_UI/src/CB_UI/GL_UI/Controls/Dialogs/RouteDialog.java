@@ -3,7 +3,7 @@ package CB_UI.GL_UI.Controls.Dialogs;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Box;
 import CB_UI.GL_UI.Controls.ImageMultiToggleButton;
 import CB_UI.GL_UI.Controls.Label;
@@ -61,9 +61,9 @@ public class RouteDialog extends ButtonDialog
 		btCycleWay = new ImageMultiToggleButton(MTBRec, "btCycleWay");
 		btFootWay = new ImageMultiToggleButton(MTBRec, "btFootWay");
 
-		btMotoWay.setImage(new SpriteDrawable(SpriteCache.getThemedSprite("pictureBox2")));
-		btCycleWay.setImage(new SpriteDrawable(SpriteCache.getThemedSprite("pictureBox1")));
-		btFootWay.setImage(new SpriteDrawable(SpriteCache.getThemedSprite("pictureBox3")));
+		btMotoWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox2")));
+		btCycleWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox1")));
+		btFootWay.setImage(new SpriteDrawable(SpriteCacheBase.getThemedSprite("pictureBox3")));
 
 		btMotoWay.setX(0);
 		btCycleWay.setX(btMotoWay.getMaxX());

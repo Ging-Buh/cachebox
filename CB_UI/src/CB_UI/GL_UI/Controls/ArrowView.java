@@ -17,7 +17,7 @@
 package CB_UI.GL_UI.Controls;
 
 import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -52,7 +52,7 @@ public class ArrowView extends CB_View_Base
 	public void render(SpriteBatch batch)
 	{
 
-		Sprite arrow = SpriteCache.Arrows.get(0);
+		Sprite arrow = SpriteCacheBase.Arrows.get(0);
 		arrow.setRotation(0);
 		arrow.setBounds(-(width / 2), 0, width, height);
 		arrow.setOrigin(this.centerPos.x, this.centerPos.y);

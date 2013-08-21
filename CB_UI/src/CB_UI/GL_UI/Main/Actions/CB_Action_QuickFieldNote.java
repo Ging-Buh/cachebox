@@ -6,14 +6,14 @@ import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.platformConector;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
 import CB_UI.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI.GL_UI.Menu.Menu;
 import CB_UI.GL_UI.Menu.MenuID;
 import CB_UI.GL_UI.Menu.MenuItem;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.FieldNotesView;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -35,7 +35,7 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.fieldNote_54.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.fieldNote_54.ordinal());
 	}
 
 	@Override
@@ -76,8 +76,8 @@ public class CB_Action_QuickFieldNote extends CB_ActionCommand
 			}
 		});
 
-		cm.addItem(MenuID.MI_QUICK_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
-		cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
+		cm.addItem(MenuID.MI_QUICK_FOUND, "found", SpriteCacheBase.getThemedSprite("log0icon"));
+		cm.addItem(MenuID.MI_QUICK_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
 
 		cm.Show();
 

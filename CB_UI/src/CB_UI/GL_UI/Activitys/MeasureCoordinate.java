@@ -1,7 +1,6 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.PointD;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import CB_Locator.Coordinate;
@@ -18,6 +17,7 @@ import CB_UI.GL_UI.Controls.SatBarChart;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.UI_Size_Base;
+import CB_Utils.Math.PointD;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;

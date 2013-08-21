@@ -5,7 +5,7 @@ import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.ViewConst;
 import CB_UI.GL_UI.Activitys.ActivityBase;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
@@ -14,7 +14,7 @@ import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
 import CB_UI.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowActivity;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -30,13 +30,13 @@ public class CB_AllContextMenuHandler
 		icm.addItemClickListner(onItemClickListner);
 		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
+		mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCache.BigIcons.get(16));
+		mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCacheBase.BigIcons.get(16));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_SHOW_LOGS, "ShowLogs", SpriteCache.Icons.get(IconName.list_21.ordinal()));
+		mi = icm.addItem(MenuID.MI_SHOW_LOGS, "ShowLogs", SpriteCacheBase.Icons.get(IconName.list_21.ordinal()));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
 		mi = icm.addItem(MenuID.MI_HINT, "hint");
@@ -45,10 +45,10 @@ public class CB_AllContextMenuHandler
 			boolean enabled = false;
 			if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.getSelectedCache()).equals(""))) enabled = true;
 			mi.setEnabled(enabled);
-			mi.setIcon(new SpriteDrawable(SpriteCache.Icons.get(IconName.hint_19.ordinal())));
+			mi.setIcon(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
 		}
 
-		mi = icm.addItem(MenuID.MI_SPOILER, "spoiler", SpriteCache.Icons.get(IconName.images_22.ordinal()));
+		mi = icm.addItem(MenuID.MI_SPOILER, "spoiler", SpriteCacheBase.Icons.get(IconName.images_22.ordinal()));
 		if (selectedCacheIsNull)
 		{
 			mi.setEnabled(GlobalCore.getSelectedCache().SpoilerExists());
@@ -58,12 +58,12 @@ public class CB_AllContextMenuHandler
 			mi.setEnabled(false);
 		}
 
-		mi = icm.addItem(MenuID.MI_SOLVER, "Solver", SpriteCache.Icons.get(IconName.solver_24.ordinal()));
+		mi = icm.addItem(MenuID.MI_SOLVER, "Solver", SpriteCacheBase.Icons.get(IconName.solver_24.ordinal()));
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
 		if (GlobalCore.JokerisOnline())
 		{
-			mi = icm.addItem(MenuID.MI_JOKER, "joker", SpriteCache.Icons.get(IconName.jokerPhone_25.ordinal()));
+			mi = icm.addItem(MenuID.MI_JOKER, "joker", SpriteCacheBase.Icons.get(IconName.jokerPhone_25.ordinal()));
 			// Menu Item Telefonjoker enabled / disabled abhänging von gcJoker MD5
 
 			if (mi != null)
@@ -79,7 +79,7 @@ public class CB_AllContextMenuHandler
 		mi = icm.addItem(MenuID.MI_EDIT_CACHE, "MI_EDIT_CACHE");
 		if (selectedCacheIsNull) mi.setEnabled(false);
 
-		mi = icm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCache.Icons.get(IconName.favorit_42.ordinal()));
+		mi = icm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
 		mi.setCheckable(true);
 		if (selectedCacheIsNull) mi.setEnabled(false);
 		else
@@ -108,7 +108,7 @@ public class CB_AllContextMenuHandler
 
 			case MenuID.MI_RELOAD_CACHE_INFO:
 				new CB_Action_ShowActivity("reload_CacheInfo", MenuID.MI_RELOAD_CACHE_INFO, ViewConst.RELOAD_CACHE,
-						SpriteCache.Icons.get(IconName.GCLive_35.ordinal())).Execute();
+						SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())).Execute();
 				return true;
 
 			case MenuID.MI_WAYPOINTS:

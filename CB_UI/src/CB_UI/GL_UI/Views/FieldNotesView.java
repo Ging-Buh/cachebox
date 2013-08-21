@@ -19,7 +19,7 @@ import CB_UI.TemplateFormatter;
 import CB_UI.Events.platformConector;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Activitys.EditFieldNotes;
 import CB_UI.GL_UI.Activitys.EditFieldNotes.ReturnListner;
@@ -44,7 +44,7 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI.GL_UI.Menu.Menu;
 import CB_UI.GL_UI.Menu.MenuID;
 import CB_UI.GL_UI.Menu.MenuItem;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.UI_Size_Base;
 
@@ -65,7 +65,7 @@ public class FieldNotesView extends V_ListView
 		that = this;
 		ItemRec = new CB_RectF(0, 0, this.width, UI_Size_Base.that.getButtonHeight() * 1.1f);
 
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 
 		lFieldNotes = new FieldNoteList();
 		lFieldNotes.LoadFieldNotes("");
@@ -232,32 +232,32 @@ public class FieldNotesView extends V_ListView
 		switch (cache.Type)
 		{
 		case MegaEvent:
-			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCache.getThemedSprite("log8icon"));
-			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCache.getThemedSprite("log9icon"));
+			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
+			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
 			break;
 		case Event:
-			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCache.getThemedSprite("log8icon"));
-			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCache.getThemedSprite("log9icon"));
+			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
+			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
 			break;
 		case Camera:
-			cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCache.getThemedSprite("log10icon"));
+			cm.addItem(MenuID.MI_WEBCAM_FOTO_TAKEN, "webCamFotoTaken", SpriteCacheBase.getThemedSprite("log10icon"));
 			break;
 		default:
-			cm.addItem(MenuID.MI_FOUND, "found", SpriteCache.getThemedSprite("log0icon"));
+			cm.addItem(MenuID.MI_FOUND, "found", SpriteCacheBase.getThemedSprite("log0icon"));
 			break;
 		}
 
-		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCache.getThemedSprite("log1icon"));
+		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
 
 		// Aktueller Cache ist von geocaching.com dann weitere Menüeinträge freigeben
 		if (cache != null && cache.GcCode.toLowerCase().startsWith("gc"))
 		{
-			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCache.getThemedSprite("log5icon"));
-			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCache.getThemedSprite("log2icon"));
+			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCacheBase.getThemedSprite("log5icon"));
+			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCacheBase.getThemedSprite("log2icon"));
 		}
 
-		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCache.Icons.get(IconName.uploadFieldNote_64.ordinal()));
-		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCache.getThemedSprite("delete"));
+		cm.addItem(MenuID.MI_UPLOAD_FIELDNOTE, "uploadFieldNotes", SpriteCacheBase.Icons.get(IconName.uploadFieldNote_64.ordinal()));
+		cm.addItem(MenuID.MI_DELETE_ALL_FIELDNOTES, "DeleteAllNotes", SpriteCacheBase.getThemedSprite("delete"));
 
 		cm.addMoreMenu(getSecondMenu(), Translation.Get("defaultLogTypes"), Translation.Get("ownerLogTypes"));
 
@@ -301,11 +301,11 @@ public class FieldNotesView extends V_ListView
 			}
 		});
 
-		mi = sm.addItem(MenuID.MI_ENABLED, "enabled", SpriteCache.getThemedSprite("log4icon"));
+		mi = sm.addItem(MenuID.MI_ENABLED, "enabled", SpriteCacheBase.getThemedSprite("log4icon"));
 		mi.setEnabled(IM_owner);
-		mi = sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", SpriteCache.getThemedSprite("log6icon"));
+		mi = sm.addItem(MenuID.MI_TEMPORARILY_DISABLED, "temporarilyDisabled", SpriteCacheBase.getThemedSprite("log6icon"));
 		mi.setEnabled(IM_owner);
-		mi = sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", SpriteCache.getThemedSprite("log7icon"));
+		mi = sm.addItem(MenuID.MI_OWNER_MAINTENANCE, "ownerMaintenance", SpriteCacheBase.getThemedSprite("log7icon"));
 		mi.setEnabled(IM_owner);
 
 		return sm;

@@ -13,11 +13,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import CB_Core.Map.Descriptor;
-import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Locator.Coordinate;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.DrawUtils;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.utils.HSV_Color;
@@ -25,6 +24,7 @@ import CB_UI.Math.CB_RectF;
 import CB_UI.Math.PolylineReduction;
 import CB_UI.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
+import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.Color;
@@ -436,8 +436,8 @@ public class RouteOverlay
 		{
 			mColor = color;
 			Points = new ArrayList<TrackPoint>();
-			ArrowSprite = SpriteCache.Arrows.get(5);
-			PointSprite = SpriteCache.Arrows.get(10);
+			ArrowSprite = SpriteCacheBase.Arrows.get(5);
+			PointSprite = SpriteCacheBase.Arrows.get(10);
 			overlap = 0.9f;
 		}
 
@@ -446,16 +446,16 @@ public class RouteOverlay
 			mIsOpenRoute = isOpenRoute;
 			if (isOpenRoute)
 			{
-				ArrowSprite = new Sprite(SpriteCache.Arrows.get(5));
-				PointSprite = new Sprite(SpriteCache.Arrows.get(10));
+				ArrowSprite = new Sprite(SpriteCacheBase.Arrows.get(5));
+				PointSprite = new Sprite(SpriteCacheBase.Arrows.get(10));
 				ArrowSprite.scale(1.6f);
 				PointSprite.scale(0.2f);
 				overlap = 1.9f;
 			}
 			else
 			{
-				ArrowSprite = SpriteCache.Arrows.get(5);
-				PointSprite = SpriteCache.Arrows.get(10);
+				ArrowSprite = SpriteCacheBase.Arrows.get(5);
+				PointSprite = SpriteCacheBase.Arrows.get(10);
 				overlap = 0.9f;
 			}
 			mColor = color;

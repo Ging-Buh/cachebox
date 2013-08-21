@@ -2,12 +2,12 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI.GL_UI.Menu.Menu;
 import CB_UI.GL_UI.Menu.MenuID;
 import CB_UI.GL_UI.Menu.MenuItem;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -28,7 +28,7 @@ public class CB_Action_RecTrack extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.trackList_8.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.trackList_8.ordinal());
 	}
 
 	@Override

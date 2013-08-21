@@ -2,13 +2,13 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.LogTypes;
-import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.GCVote.GCVote;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -17,9 +17,9 @@ import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI.GL_UI.interfaces.RunnableReadyHandler;
+import CB_Utils.Events.ProgresssChangedEventList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -52,7 +52,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.uploadFieldNote_64.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.uploadFieldNote_64.ordinal());
 	}
 
 	private final GL_MsgBox.OnMsgBoxClickListener UploadFieldnotesDialogListner = new GL_MsgBox.OnMsgBoxClickListener()

@@ -2,7 +2,7 @@ package CB_Core.Import;
 
 import java.util.ArrayList;
 
-import CB_Core.Events.ProgresssChangedEventList;
+import CB_Utils.Events.ProgresssChangedEventList;
 
 /**
  * Verwaltet den Progress Status beim Importieren

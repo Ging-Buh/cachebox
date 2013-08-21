@@ -5,7 +5,7 @@ import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.SizeF;
 
@@ -93,7 +93,7 @@ public class InfoBubble extends CB_View_Base
 	@Override
 	protected void render(SpriteBatch batch)
 	{
-		Sprite sprite = (mCache == GlobalCore.getSelectedCache()) ? SpriteCache.Bubble.get(1) : SpriteCache.Bubble.get(0);
+		Sprite sprite = (mCache == GlobalCore.getSelectedCache()) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
 		sprite.setPosition(0, 0);
 		sprite.setSize(width, height);
 		sprite.draw(batch);

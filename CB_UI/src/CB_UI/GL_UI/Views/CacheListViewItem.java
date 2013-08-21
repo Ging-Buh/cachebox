@@ -7,7 +7,7 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.ParentInfo;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI.Math.CB_RectF;
@@ -57,7 +57,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	protected extendedCacheInfo info;
 	protected boolean isPressed = false;
 
-	private Sprite arrow = new Sprite(SpriteCache.Arrows.get(0));
+	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
 
 	// private BitmapFontCache debugIndex = new BitmapFontCache(Fonts.getSmall());
@@ -125,7 +125,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			if (arrow.getColor() == DISABLE_COLOR)
 			{
 				float size = this.height / 2.3f;
-				arrow = new Sprite(SpriteCache.Arrows.get(0));
+				arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 			}

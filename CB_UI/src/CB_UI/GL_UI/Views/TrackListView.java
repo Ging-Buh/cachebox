@@ -5,7 +5,7 @@ import java.util.Iterator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.List.Adapter;
 import CB_UI.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI.GL_UI.Controls.List.V_ListView;
@@ -36,7 +36,7 @@ public class TrackListView extends V_ListView
 
 		this.setEmptyMsg(Translation.Get("EmptyTrackList"));
 
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 
 		this.setBaseAdapter(null);
 		this.setBaseAdapter(new CustomAdapter());

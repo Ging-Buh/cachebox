@@ -14,7 +14,7 @@ import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEvent;
 import CB_UI.Events.WaypointListChangedEventList;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.ActivityBase;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.MeasureCoordinate;
@@ -49,7 +49,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		super(rec, Name);
 		that = this;
 
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 
 		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 		SelectedCacheEventList.Add(this);

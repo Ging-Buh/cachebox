@@ -5,26 +5,26 @@ import java.util.Date;
 import java.util.Timer;
 
 import CB_Core.Api.PocketQuery.PQ;
-import CB_Core.Events.ProgressChangedEvent;
-import CB_Core.Events.ProgresssChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Controls.Button;
+import CB_UI.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI.GL_UI.Controls.Label;
 import CB_UI.GL_UI.Controls.ProgressBar;
 import CB_UI.GL_UI.Controls.ScrollBox;
 import CB_UI.GL_UI.Controls.Spinner;
 import CB_UI.GL_UI.Controls.chkBox;
-import CB_UI.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI.GL_UI.Controls.List.V_ListView;
 import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.UI_Size_Base;
+import CB_Utils.Events.ProgressChangedEvent;
+import CB_Utils.Events.ProgresssChangedEventList;
 
 public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 {

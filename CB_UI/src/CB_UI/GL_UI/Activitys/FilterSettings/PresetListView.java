@@ -6,7 +6,7 @@ import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.List.Adapter;
 import CB_UI.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI.GL_UI.Controls.List.V_ListView;
@@ -123,15 +123,15 @@ public class PresetListView extends V_ListView
 		if (lPresets != null) lPresets.clear();
 		if (lItem != null) lItem.clear();
 
-		addPresetItem(SpriteCache.getThemedSprite("earth"), Translation.Get("AllCaches"), FilterProperties.presets[0]);
-		addPresetItem(SpriteCache.getThemedSprite("log0icon"), Translation.Get("AllCachesToFind"), FilterProperties.presets[1]);
-		addPresetItem(SpriteCache.getThemedSprite("big0icon"), Translation.Get("QuickCaches"), FilterProperties.presets[2]);
-		addPresetItem(SpriteCache.getThemedSprite("GrabTB"), Translation.Get("GrabTB"), FilterProperties.presets[3]);
-		addPresetItem(SpriteCache.getThemedSprite("DropTB"), Translation.Get("DropTB"), FilterProperties.presets[4]);
-		addPresetItem(SpriteCache.getThemedSprite("star"), Translation.Get("Highlights"), FilterProperties.presets[5]);
-		addPresetItem(SpriteCache.getThemedSprite("favorit"), Translation.Get("Favorites"), FilterProperties.presets[6]);
-		addPresetItem(SpriteCache.getThemedSprite("delete"), Translation.Get("PrepareToArchive"), FilterProperties.presets[7]);
-		addPresetItem(SpriteCache.getThemedSprite("warning-icon"), Translation.Get("ListingChanged"), FilterProperties.presets[8]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("earth"), Translation.Get("AllCaches"), FilterProperties.presets[0]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("log0icon"), Translation.Get("AllCachesToFind"), FilterProperties.presets[1]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("big0icon"), Translation.Get("QuickCaches"), FilterProperties.presets[2]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("GrabTB"), Translation.Get("GrabTB"), FilterProperties.presets[3]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("DropTB"), Translation.Get("DropTB"), FilterProperties.presets[4]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("star"), Translation.Get("Highlights"), FilterProperties.presets[5]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("favorit"), Translation.Get("Favorites"), FilterProperties.presets[6]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("delete"), Translation.Get("PrepareToArchive"), FilterProperties.presets[7]);
+		addPresetItem(SpriteCacheBase.getThemedSprite("warning-icon"), Translation.Get("ListingChanged"), FilterProperties.presets[8]);
 
 		// add User Presets
 		if (!Config.settings.UserFilter.getValue().equalsIgnoreCase(""))
@@ -144,7 +144,7 @@ public class PresetListView extends V_ListView
 					int pos = entry.indexOf(";");
 					String name = entry.substring(0, pos);
 					String filter = entry.substring(pos + 1);
-					addPresetItem(SpriteCache.getThemedSprite("userdata"), name, new FilterProperties(filter));
+					addPresetItem(SpriteCacheBase.getThemedSprite("userdata"), name, new FilterProperties(filter));
 				}
 			}
 			catch (Exception e)

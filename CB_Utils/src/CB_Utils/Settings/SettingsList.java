@@ -8,21 +8,27 @@ import CB_Utils.Log.Logger;
 
 public abstract class SettingsList extends ArrayList<SettingBase<?>>
 {
-	/**
-	 * 
-	 */
+	private static SettingsList that;
+
 	private static final long serialVersionUID = -969846843815877942L;
 
 	private boolean isLoaded = false;
+
+	public SettingsList()
+	{
+		that = this;
+	}
 
 	public boolean isLoaded()
 	{
 		return isLoaded;
 	}
 
-	public void addSetting(SettingBase<?> setting)
+	public static SettingBase<?> addSetting(SettingBase<?> setting)
 	{
-		this.add(setting);
+		if (that == null) return null;
+		if (!that.contains(setting)) that.add(setting);
+		return setting;
 	}
 
 	protected abstract Database_Core getSettingsDB();

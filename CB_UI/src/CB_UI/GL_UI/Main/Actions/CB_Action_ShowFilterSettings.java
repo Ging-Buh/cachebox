@@ -1,10 +1,10 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.ActivityBase;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -25,7 +25,7 @@ public class CB_Action_ShowFilterSettings extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.filter_13.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.filter_13.ordinal());
 	}
 
 	EditFilterSettings edFi;

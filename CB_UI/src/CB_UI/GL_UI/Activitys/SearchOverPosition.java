@@ -17,7 +17,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.Box;
 import CB_UI.GL_UI.Controls.Button;
@@ -28,7 +28,7 @@ import CB_UI.GL_UI.Controls.Label;
 import CB_UI.GL_UI.Controls.MultiToggleButton;
 import CB_UI.GL_UI.Controls.chkBox;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.UI_Size_Base;
@@ -133,7 +133,7 @@ public class SearchOverPosition extends ActivityBase
 
 		gsLogo = new Image(innerWidth - margin - lineHeight, this.height - this.getTopHeight() - lineHeight - margin, lineHeight,
 				lineHeight, "");
-		gsLogo.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.GCLive_35.ordinal())));
+		gsLogo.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())));
 		this.addChild(gsLogo);
 
 		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - margin

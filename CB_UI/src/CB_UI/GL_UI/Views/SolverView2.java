@@ -11,7 +11,7 @@ import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEventList;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog;
@@ -63,7 +63,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		// CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Add(this);
 
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 
 		if (GlobalCore.getSelectedCache() != cache)
 		{

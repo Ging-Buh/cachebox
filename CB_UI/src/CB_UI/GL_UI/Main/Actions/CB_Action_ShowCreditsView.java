@@ -1,10 +1,10 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.CreditsView;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -34,7 +34,7 @@ public class CB_Action_ShowCreditsView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.cb_49.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.cb_49.ordinal());
 	}
 
 	@Override

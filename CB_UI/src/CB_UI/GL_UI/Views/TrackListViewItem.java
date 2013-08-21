@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Activitys.ActivityBase;
 import CB_UI.GL_UI.Activitys.ColorPicker;
@@ -152,7 +152,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 		if (colorReck == null)
 		{
-			colorReck = SpriteCache.getThemedSprite("text-field-back");
+			colorReck = SpriteCacheBase.getThemedSprite("text-field-back");
 			colorReck.setBounds(lBounds.getX(), lBounds.getY(), lBounds.getWidth(), lBounds.getHeight());
 			colorReck.setColor(mRoute.getColor());
 		}
@@ -174,13 +174,13 @@ public class TrackListViewItem extends ListViewItemBackground
 
 		if (chkOff == null)
 		{
-			chkOff = SpriteCache.getThemedSprite("check-off");
+			chkOff = SpriteCacheBase.getThemedSprite("check-off");
 			chkOff.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 		}
 
 		if (chkOn == null)
 		{
-			chkOn = SpriteCache.getThemedSprite("check-on");
+			chkOn = SpriteCacheBase.getThemedSprite("check-on");
 			chkOn.setBounds(rChkBounds.getX(), rChkBounds.getY(), rChkBounds.getWidth(), rChkBounds.getHeight());
 		}
 

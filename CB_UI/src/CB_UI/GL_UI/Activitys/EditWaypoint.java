@@ -12,7 +12,7 @@ import CB_UI.Events.KeyboardFocusChangedEvent;
 import CB_UI.Events.KeyboardFocusChangedEventList;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Button;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.EditTextField;
@@ -267,17 +267,17 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				switch (Position)
 				{
 				case 0:
-					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.ReferencePoint.ordinal()));
+					return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.ReferencePoint.ordinal()));
 				case 1:
-					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.MultiStage.ordinal()));
+					return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.MultiStage.ordinal()));
 				case 2:
-					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.MultiQuestion.ordinal()));
+					return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.MultiQuestion.ordinal()));
 				case 3:
-					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.Trailhead.ordinal()));
+					return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.Trailhead.ordinal()));
 				case 4:
-					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.ParkingArea.ordinal()));
+					return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.ParkingArea.ordinal()));
 				case 5:
-					return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypes.Final.ordinal()));
+					return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypes.Final.ordinal()));
 
 				}
 

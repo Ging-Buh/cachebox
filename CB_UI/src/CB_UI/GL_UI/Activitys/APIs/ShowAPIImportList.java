@@ -13,8 +13,6 @@ import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.ProgressChangedEvent;
-import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
@@ -57,6 +55,8 @@ import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.SizeF;
 import CB_UI.Math.UI_Size_Base;
+import CB_Utils.Events.ProgressChangedEvent;
+import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 

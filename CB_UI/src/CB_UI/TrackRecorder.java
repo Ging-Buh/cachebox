@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import CB_Core.Map.Descriptor.TrackPoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
@@ -18,6 +17,7 @@ import CB_Locator.Locator.CompassType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
+import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.Color;

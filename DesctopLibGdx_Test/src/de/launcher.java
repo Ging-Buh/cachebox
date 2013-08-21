@@ -42,15 +42,15 @@ class Ex_1
 			}
 		});
 
-		if (files.length > 0 && Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		if (files.length > 0 && Config.installRev.getValue() < GlobalCore.CurrentRevision)
 		{
-			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
-			Config.settings.newInstall.setValue(true);
+			Config.installRev.setValue(GlobalCore.CurrentRevision);
+			Config.newInstall.setValue(true);
 			Config.AcceptChanges();
 		}
 		else
 		{
-			Config.settings.newInstall.setValue(false);
+			Config.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
 

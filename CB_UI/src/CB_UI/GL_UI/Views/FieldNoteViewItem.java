@@ -5,11 +5,11 @@ import java.text.SimpleDateFormat;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.FieldNoteEntry;
 import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Image;
 import CB_UI.GL_UI.Controls.Label;
 import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.UI_Size_Base;
 
@@ -68,18 +68,18 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 			Sprite spr = null;
 
-			if (type == LogTypes.discovered) spr = SpriteCache.Icons.get(IconName.tbDiscover_58.ordinal());
-			if (type == LogTypes.dropped_off) spr = SpriteCache.Icons.get(IconName.tbDrop_59.ordinal());
-			if (type == LogTypes.grab_it) spr = SpriteCache.Icons.get(IconName.tbGrab_60.ordinal());
-			if (type == LogTypes.retrieve) spr = SpriteCache.Icons.get(IconName.tbPicked_61.ordinal());
-			if (type == LogTypes.visited) spr = SpriteCache.Icons.get(IconName.tbVisit_62.ordinal());
-			if (type == LogTypes.note) spr = SpriteCache.Icons.get(IconName.tbNote_63.ordinal());
+			if (type == LogTypes.discovered) spr = SpriteCacheBase.Icons.get(IconName.tbDiscover_58.ordinal());
+			if (type == LogTypes.dropped_off) spr = SpriteCacheBase.Icons.get(IconName.tbDrop_59.ordinal());
+			if (type == LogTypes.grab_it) spr = SpriteCacheBase.Icons.get(IconName.tbGrab_60.ordinal());
+			if (type == LogTypes.retrieve) spr = SpriteCacheBase.Icons.get(IconName.tbPicked_61.ordinal());
+			if (type == LogTypes.visited) spr = SpriteCacheBase.Icons.get(IconName.tbVisit_62.ordinal());
+			if (type == LogTypes.note) spr = SpriteCacheBase.Icons.get(IconName.tbNote_63.ordinal());
 			if (spr == null) return null;
 			return new SpriteDrawable(spr);
 		}
 		else
 		{
-			return new SpriteDrawable(SpriteCache.LogIcons.get(fne.typeIcon));
+			return new SpriteDrawable(SpriteCacheBase.LogIcons.get(fne.typeIcon));
 		}
 	}
 
@@ -120,7 +120,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		}
 		else
 		{
-			ivCacheType.setDrawable(new SpriteDrawable(SpriteCache.BigIcons.get(fieldnote.cacheType)));
+			ivCacheType.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(fieldnote.cacheType)));
 		}
 	}
 
@@ -158,7 +158,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	@Override
 	protected void Initial()
 	{
-		backheader = new NinePatch(SpriteCache.getThemedSprite("listrec-header"), 8, 8, 8, 8);
+		backheader = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-header"), 8, 8, 8, 8);
 		super.Initial();
 	}
 

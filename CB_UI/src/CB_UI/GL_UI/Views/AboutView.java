@@ -20,7 +20,7 @@ import CB_UI.Events.platformConector;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Controls.Image;
 import CB_UI.GL_UI.Controls.Label;
@@ -110,14 +110,14 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	{
 		this.removeChilds();
 
-		this.setBackground(SpriteCache.AboutBack);
+		this.setBackground(SpriteCacheBase.AboutBack);
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
 		margin = UI_Size_Base.that.getMargin();
 		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref - margin - margin,
 				ref * 5, (ref * 5) / 4.11f);
 		Logger.DEBUG("CB_Logo" + CB_LogoRec.toString());
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
-		CB_Logo.setDrawable(new SpriteDrawable(SpriteCache.getSpriteDrawable("cachebox-logo")));
+		CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
 		this.addChild(CB_Logo);
 
 		String VersionString = GlobalCore.getVersionString();

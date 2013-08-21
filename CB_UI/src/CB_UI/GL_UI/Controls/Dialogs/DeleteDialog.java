@@ -4,13 +4,14 @@ import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.Enums.WrapType;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.Box;
 import CB_UI.GL_UI.Controls.ImageButton;
@@ -47,9 +48,9 @@ public class DeleteDialog extends ButtonDialog
 		btDelArchived = new ImageButton(MTBRec, "btSelectWP");
 		btDelFounds = new ImageButton(MTBRec, "btDeleteP");
 
-		btDelFilter.setImage(SpriteCache.getSpriteDrawable("delete-filter"));
-		btDelArchived.setImage(SpriteCache.getSpriteDrawable("delete-archived"));
-		btDelFounds.setImage(SpriteCache.getSpriteDrawable("delete-founds"));
+		btDelFilter.setImage(SpriteCacheBase.getSpriteDrawable("delete-filter"));
+		btDelArchived.setImage(SpriteCacheBase.getSpriteDrawable("delete-archived"));
+		btDelFounds.setImage(SpriteCacheBase.getSpriteDrawable("delete-founds"));
 
 		lblDelFilter = new Label(Translation.Get("DelActFilter"), Fonts.getSmall(), null, WrapType.WRAPPED)
 				.setHAlignment(HAlignment.CENTER);
@@ -93,9 +94,9 @@ public class DeleteDialog extends ButtonDialog
 					public void run()
 					{
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()),
-								Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(),
-								Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
+						long nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere(CB_Core_Settings.GcLogin.getValue()),
+								CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
+								CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
 						cleanupWaypoints();
 						wd.close();

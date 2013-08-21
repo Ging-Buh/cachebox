@@ -5,7 +5,7 @@ import CB_UI.Plattform;
 import CB_UI.Events.platformConector;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.ViewConst;
 import CB_UI.GL_UI.Controls.Label;
 import CB_UI.Math.CB_RectF;
@@ -20,7 +20,7 @@ public class SolverView extends CB_View_Base
 		Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
 		lblDummy.setFont(Fonts.getNormal());
 		lblDummy.setText("Dummy SolverView");
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 
 		if (GlobalCore.platform == Plattform.Desktop) this.addChild(lblDummy);
 

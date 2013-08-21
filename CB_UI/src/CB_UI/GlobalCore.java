@@ -16,7 +16,6 @@ import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.platformConector;
-import CB_UI.GL_UI.DisplayType;
 import CB_UI.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -29,19 +28,13 @@ import CB_UI.Math.devicesSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Clipboard;
-
-public class GlobalCore
+public class GlobalCore extends CB_UI.Global
 {
 
-	public static final int CurrentRevision = 1790;
+	public static final int CurrentRevision = 1791;
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "Test";
 
-	public static final String br = System.getProperty("line.separator");
-	public static final String fs = System.getProperty("file.separator");
 	// public static final String ps = System.getProperty("path.separator");
 	public static final String AboutMsg = "Team Cachebox (2011-2013)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
 			+ br + "Groundspeak Inc. Used with permission";
@@ -50,9 +43,6 @@ public class GlobalCore
 	public static boolean restartAfterKill = false;
 	public static String restartCache;
 	public static String restartWaypoint;
-
-	public static double displayDensity = 1;
-	public static Plattform platform = Plattform.undef;
 
 	// ######### theme Path ###############
 	public static String PathDefault;
@@ -63,20 +53,6 @@ public class GlobalCore
 
 	// ###########create instance#############
 	public final static GlobalCore INSTANCE = new GlobalCore();
-
-	public static FileHandle getInternalFileHandle(String path)
-	{
-		if (GlobalCore.platform == Plattform.undef) throw new IllegalArgumentException("Platform not def");
-
-		if (GlobalCore.platform == Plattform.Android)
-		{
-			return Gdx.files.internal(path);
-		}
-		else
-		{
-			return Gdx.files.classpath(path);
-		}
-	}
 
 	/**
 	 * nur True beim ersten schreiben! Dann müssen erst die Missing Lang Strings eingelesen werden!
@@ -122,8 +98,8 @@ public class GlobalCore
 					sb.append("TB_IconSize = " + ui.TB_IconSize + br);
 					sb.append("isLandscape = " + ui.isLandscape + br);
 					sb.append("    " + br);
-					sb.append("MapViewDPIFaktor = " + Config.settings.MapViewDPIFaktor.getValue() + br);
-					sb.append("MapViewFontFaktor = " + Config.settings.MapViewFontFaktor.getValue() + br);
+					sb.append("MapViewDPIFaktor = " + Config.MapViewDPIFaktor.getValue() + br);
+					sb.append("MapViewFontFaktor = " + Config.MapViewFontFaktor.getValue() + br);
 					sb.append("#######################################" + br + br);
 
 					sb.append("##########  Missing Lang Strings ######" + br);
@@ -175,40 +151,6 @@ public class GlobalCore
 	public static boolean switchToCompassCompleted = false;
 
 	public static GlobalLocationReceiver receiver;
-
-	private static Clipboard defaultClipBoard;
-
-	public static Clipboard getDefaultClipboard()
-	{
-		if (defaultClipBoard == null)
-		{
-			return null;
-		}
-		else
-		{
-			return defaultClipBoard;
-		}
-	}
-
-	public static void setDefaultClipboard(Clipboard clipBoard)
-	{
-		defaultClipBoard = clipBoard;
-	}
-
-	/**
-	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!
-	 */
-	public static boolean isTab = false;
-
-	public static boolean forceTab = false;
-
-	public static boolean forcePhone = false;
-
-	public static boolean useSmallSkin = false;
-
-	public static DisplayType displayType = DisplayType.Normal;
-
-	public static boolean posibleTabletLayout;
 
 	private static Cache selectedCache = null;
 	private static boolean autoResort;
@@ -354,17 +296,6 @@ public class GlobalCore
 	public static void setAutoResort(boolean value)
 	{
 		GlobalCore.autoResort = value;
-	}
-
-	private static boolean isTestVersionCheked = false;
-	private static boolean isTestVersion = false;
-
-	public static boolean isTestVersion()
-	{
-		if (isTestVersionCheked) return isTestVersion;
-		isTestVersion = VersionPrefix.contains("Test");
-		isTestVersionCheked = true;
-		return isTestVersion;
 	}
 
 	private static CancelWaitDialog wd;

@@ -16,7 +16,7 @@
 package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.ViewConst;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Main.Actions.CB_Action;
@@ -28,7 +28,7 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_add_WP;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
@@ -241,13 +241,13 @@ public enum QuickActions
 	public static void InitialActions()
 	{
 		action_TakePhoto = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
-				SpriteCache.Icons.get(IconName.log10_47.ordinal()));
+				SpriteCacheBase.Icons.get(IconName.log10_47.ordinal()));
 
 		action_TakeVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC,
-				SpriteCache.Icons.get(IconName.video_10.ordinal()));
+				SpriteCacheBase.Icons.get(IconName.video_10.ordinal()));
 
 		action_Voicerec = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC,
-				SpriteCache.Icons.get(IconName.voiceRec_11.ordinal()));
+				SpriteCacheBase.Icons.get(IconName.voiceRec_11.ordinal()));
 
 		action_Search = new CB_Action_Show_Search();
 		action_add_WP = new CB_Action_add_WP();

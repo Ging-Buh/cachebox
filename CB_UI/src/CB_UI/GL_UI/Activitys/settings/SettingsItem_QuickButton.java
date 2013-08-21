@@ -6,7 +6,7 @@ import java.util.Iterator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Box;
 import CB_UI.GL_UI.Controls.ImageButton;
 import CB_UI.GL_UI.Controls.Label;
@@ -21,7 +21,7 @@ import CB_UI.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI.GL_UI.Menu.Menu;
 import CB_UI.GL_UI.Menu.MenuItem;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.utils.ColorDrawable;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.UI_Size_Base;
@@ -146,10 +146,10 @@ public class SettingsItem_QuickButton extends CB_View_Base
 		del.setWidth(up.getHeight());
 		add.setWidth(up.getHeight());
 
-		up.setImage(new SpriteDrawable(SpriteCache.Arrows.get(11)));
-		down.setImage(new SpriteDrawable(SpriteCache.Arrows.get(11)));
-		del.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.delete_28.ordinal())));
-		add.setImage(new SpriteDrawable(SpriteCache.Icons.get(IconName.add_52.ordinal())));
+		up.setImage(new SpriteDrawable(SpriteCacheBase.Arrows.get(11)));
+		down.setImage(new SpriteDrawable(SpriteCacheBase.Arrows.get(11)));
+		del.setImage(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.delete_28.ordinal())));
+		add.setImage(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.add_52.ordinal())));
 
 		up.setImageScale(0.7f);
 		down.setImageScale(0.7f);
@@ -247,7 +247,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 	{
 		CB_RectF rec = new CB_RectF(0, 0, this.width, this.height);
 		boxForListView = new Box(rec, "");
-		boxForListView.setBackground(SpriteCache.activityBackground);
+		boxForListView.setBackground(SpriteCacheBase.activityBackground);
 
 		listView = new V_ListView(rec.copy(), "");
 		listView.setDisposeFlag(false);

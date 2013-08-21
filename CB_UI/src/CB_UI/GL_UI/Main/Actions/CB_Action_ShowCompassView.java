@@ -3,14 +3,14 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_UI.Config;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Menu.Menu;
 import CB_UI.GL_UI.Menu.MenuID;
 import CB_UI.GL_UI.Menu.MenuItem;
 import CB_UI.GL_UI.Menu.OptionMenu;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.CompassView;
 import CB_Utils.Settings.SettingBool;
 
@@ -50,7 +50,7 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.compass_6.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.compass_6.ordinal());
 	}
 
 	@Override

@@ -13,7 +13,7 @@ import CB_UI.GlobalCore;
 import CB_UI.TemplateFormatter;
 import CB_UI.Enums.WrapType;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.runOnGL;
 import CB_UI.GL_UI.Controls.Box;
 import CB_UI.GL_UI.Controls.Button;
@@ -34,7 +34,7 @@ import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI.GL_UI.GL_Listener.GL;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.TrackableListView;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.UI_Size_Base;
@@ -96,7 +96,7 @@ public class TB_Log extends ActivityBase
 
 		contentBox = new Box(ActivityRec(), "ContentBox");
 		contentBox.setHeight(this.height - (btnClose.getHeight() - margin) * 2.5f);
-		contentBox.setBackground(SpriteCache.activityBackground);
+		contentBox.setBackground(SpriteCacheBase.activityBackground);
 
 		CB_RectF iconRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight());
 		iconRec = iconRec.ScaleCenter(0.8f);
@@ -185,7 +185,7 @@ public class TB_Log extends ActivityBase
 				msg = Translation.Get("retrieveAt") + ": " + GlobalCore.br + c.Name;
 			}
 
-			CacheIcon.setSprite(SpriteCache.BigIcons.get(c.Type.ordinal()));
+			CacheIcon.setSprite(SpriteCacheBase.BigIcons.get(c.Type.ordinal()));
 
 			lblPlaced.setWidth(contentBox.getInnerWidth() - CacheIcon.getWidth() - (margin * 3));
 			lblPlaced.setWrappedText(msg);
@@ -208,27 +208,27 @@ public class TB_Log extends ActivityBase
 		switch (this.LT)
 		{
 		case discovered:
-			btnAction.setImage(SpriteCache.Icons.get(IconName.tbDiscover_58.ordinal()));
+			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbDiscover_58.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.DiscoverdTemplate.getValue(), TB));
 			break;
 		case visited:
-			btnAction.setImage(SpriteCache.Icons.get(IconName.tbVisit_62.ordinal()));
+			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbVisit_62.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.VisitedTemplate.getValue(), TB));
 			break;
 		case dropped_off:
-			btnAction.setImage(SpriteCache.Icons.get(IconName.tbDrop_59.ordinal()));
+			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbDrop_59.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.DroppedTemplate.getValue(), TB));
 			break;
 		case grab_it:
-			btnAction.setImage(SpriteCache.Icons.get(IconName.tbGrab_60.ordinal()));
+			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbGrab_60.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.GrabbedTemplate.getValue(), TB));
 			break;
 		case retrieve:
-			btnAction.setImage(SpriteCache.Icons.get(IconName.tbPicked_61.ordinal()));
+			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbPicked_61.ordinal()));
 			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.PickedTemplate.getValue(), TB));
 			break;
 		case note:
-			btnAction.setImage(SpriteCache.Icons.get(IconName.tbNote_63.ordinal()));
+			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbNote_63.ordinal()));
 			edit.setText("");
 			break;
 		default:

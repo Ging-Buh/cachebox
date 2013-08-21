@@ -16,7 +16,7 @@ import CB_UI.GlobalCore;
 import CB_UI.Enums.WrapType;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Button;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.EditTextField;
@@ -303,7 +303,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public Drawable getIcon(int index)
 			{
-				return new SpriteDrawable(SpriteCache.BigIcons.get(CacheTypNumbers[index].ordinal()));
+				return new SpriteDrawable(SpriteCacheBase.BigIcons.get(CacheTypNumbers[index].ordinal()));
 			}
 
 			@Override

@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import CB_Core.Settings.CB_Core_Settings;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI.Settings.SettingsClass;
+import CB_UI.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
 import CB_Utils.Log.Logger;
 
-public class Config extends Config_Core implements CB_Core_Settings
+public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings
 {
 	public static SettingsClass settings;
 
@@ -87,9 +89,9 @@ public class Config extends Config_Core implements CB_Core_Settings
 
 	public static void changeDayNight()
 	{
-		Boolean value = Config.settings.nightMode.getValue();
+		Boolean value = SettingsClass.nightMode.getValue();
 		value = !value;
-		Config.settings.nightMode.setValue(value);
+		SettingsClass.nightMode.setValue(value);
 		Config.AcceptChanges();
 	}
 
@@ -259,7 +261,8 @@ public class Config extends Config_Core implements CB_Core_Settings
 		keyLookup.put(key, value);
 	}
 
-	public static void AcceptChanges()
+	@Override
+	protected void acceptChanges()
 	{
 		settings.WriteToDB();
 	}
@@ -344,13 +347,13 @@ public class Config extends Config_Core implements CB_Core_Settings
 	public static String GetAccessToken(boolean Url_Codiert)
 	{
 		String act = "";
-		if (StagingAPI.getValue())
+		if (CB_Core_Settings.StagingAPI.getValue())
 		{
-			act = GcAPIStaging.getValue();
+			act = CB_Core_Settings.GcAPIStaging.getValue();
 		}
 		else
 		{
-			act = GcAPI.getValue();
+			act = CB_Core_Settings.GcAPI.getValue();
 		}
 
 		// Prüfen, ob das AccessToken für ACB ist!!!

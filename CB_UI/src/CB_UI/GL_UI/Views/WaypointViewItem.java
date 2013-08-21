@@ -9,7 +9,7 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.ParentInfo;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI.Math.CB_RectF;
@@ -35,7 +35,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 	private CB_RectF ArrowRec;
-	private Sprite arrow = new Sprite(SpriteCache.Arrows.get(0));
+	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
 	private Sprite mIconSprite;
 	private float mIconSize = 0;
@@ -170,7 +170,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			if (arrow.getColor() == DISABLE_COLOR)
 			{
 				float size = this.height / 2.3f;
-				arrow = new Sprite(SpriteCache.Arrows.get(0));
+				arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 			}
@@ -268,9 +268,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 			{ // Icon Sprite erstellen
 				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
-				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart) mIconSprite = new Sprite(SpriteCache.BigIcons.get(23));
+				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart) mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(23));
 				else
-					mIconSprite = new Sprite(SpriteCache.BigIcons.get(mWaypoint.Type.ordinal()));
+					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mWaypoint.Type.ordinal()));
 
 				mIconSprite.setSize(mIconSize, mIconSize);
 				mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);

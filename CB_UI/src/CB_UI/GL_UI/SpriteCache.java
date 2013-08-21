@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  * 
  * @author Longri
  */
-public class SpriteCache
+public class SpriteCache extends SpriteCacheBase
 {
 
 	public static class SpriteList extends ArrayList<Sprite>
@@ -806,22 +806,23 @@ public class SpriteCache
 
 	protected static void createDrawables()
 	{
-		patch = (SpriteCache.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
+		patch = (SpriteCacheBase.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
 
-		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("activity-back"), patch, patch, patch, patch));
-		activityBorderMask = new NinePatchDrawable(
-				new NinePatch(SpriteCache.getThemedSprite("activity-border"), patch, patch, patch, patch));
+		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-back"), patch, patch, patch,
+				patch));
+		activityBorderMask = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-border"), patch, patch, patch,
+				patch));
 		ListBack = new ColorDrawable(SkinBase.getThemedColor("background"));
 		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
 		AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
 		InfoBack = new NinePatchDrawable(new NinePatch(getThemedSprite("InfoPanelBack"), patch, patch, patch, patch));
 		ProgressBack = new NinePatchDrawable(new NinePatch(ToggleBtn.get(0), patch, patch, patch, patch));
-		ProgressFill = new NinePatchDrawable(new NinePatch(SpriteCache.Progress, patch - 1, patch - 1, patch - 1, patch - 1));
+		ProgressFill = new NinePatchDrawable(new NinePatch(SpriteCacheBase.Progress, patch - 1, patch - 1, patch - 1, patch - 1));
 		ProgressDisabled = new NinePatchDrawable(new NinePatch(getThemedSprite("progress-disabled"), patch - 1, patch - 1, patch - 1,
 				patch - 1));
-		btn = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-normal"), patch, patch, patch, patch));
-		btnPressed = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-pressed"), patch, patch, patch, patch));
-		btnDisabled = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("btn-disabled"), patch, patch, patch, patch));
+		btn = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), patch, patch, patch, patch));
+		btnPressed = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), patch, patch, patch, patch));
+		btnDisabled = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-disabled"), patch, patch, patch, patch));
 
 		chkOn = new SpriteDrawable(getThemedSprite("check-on"));
 		chkOff = new SpriteDrawable(getThemedSprite("check-off"));
@@ -831,10 +832,10 @@ public class SpriteCache
 		radioOn = new SpriteDrawable(getThemedSprite("RadioButtonSet"));
 		radioBack = new SpriteDrawable(getThemedSprite("RadioButtonBack"));
 
-		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("text-field-back"), patch, patch, patch,
+		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch,
 				patch));
-		textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("text-field-back-focus"), patch, patch,
-				patch, patch));
+		textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch,
+				patch, patch, patch));
 
 		selection = new SpriteDrawable(getThemedSprite("Selection"));
 		selection_set = new SpriteDrawable(getThemedSprite("Selection-set"));
@@ -852,10 +853,10 @@ public class SpriteCache
 		bar_0 = new SpriteDrawable(getThemedSprite("bar-0"));
 		barSmall_0 = new SpriteDrawable(getThemedSprite("bar-small-0"));
 
-		textFieldCursor = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("selection-input-icon"), 1, 1, 2, 2));
+		textFieldCursor = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("selection-input-icon"), 1, 1, 2, 2));
 
 		int hp = patch / 2;
-		shaddowRec = new NinePatchDrawable(new NinePatch(SpriteCache.getThemedSprite("shaddowrect"), hp, hp, hp, hp));
+		shaddowRec = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("shaddowrect"), hp, hp, hp, hp));
 
 	}
 

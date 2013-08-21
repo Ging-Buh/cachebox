@@ -7,7 +7,7 @@ import CB_UI.Plattform;
 import CB_UI.Api.GcApiLogin;
 import CB_UI.Events.platformConector;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.Math.CB_RectF;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -68,11 +68,11 @@ public class API_Button extends Button
 
 			if (Entry)
 			{
-				drw = new SpriteDrawable(SpriteCache.getThemedSprite("chk-icon-disable"));
+				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon-disable"));
 			}
 			else
 			{
-				drw = new SpriteDrawable(SpriteCache.getThemedSprite("chk-icon"));
+				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon"));
 			}
 
 			apiChk.setDrawable(drw);

@@ -11,7 +11,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.ActivityBase;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Activitys.Import;
@@ -25,7 +25,7 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Menu.Menu;
 import CB_UI.GL_UI.Menu.MenuID;
 import CB_UI.GL_UI.Menu.MenuItem;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GlobalCore.IChkRedyHandler;
 import cb_rpc.Functions.RpcAnswer;
@@ -64,7 +64,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.cacheList_7.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.cacheList_7.ordinal());
 	}
 
 	@Override
@@ -196,20 +196,20 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		}
 
 		MenuItem mi;
-		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCache.Icons.get(IconName.sort_39.ordinal()));
-		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCache.Icons.get(IconName.filter_13.ordinal()));
-		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCache.Icons.get(IconName.filter_13.ordinal()));
-		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCache.Icons.get(IconName.lupe_12.ordinal()));
-		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCache.Icons.get(IconName.import_40.ordinal()));
-		if (SyncActivity.RELEASED) cm.addItem(MenuID.MI_SYNC, "sync", SpriteCache.Icons.get(IconName.import_40.ordinal()));
-		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCache.Icons.get(IconName.manageDB_41.ordinal()));
+		cm.addItem(MenuID.MI_RESORT, "ResortList", SpriteCacheBase.Icons.get(IconName.sort_39.ordinal()));
+		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
+		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
+		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCacheBase.Icons.get(IconName.lupe_12.ordinal()));
+		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
+		if (SyncActivity.RELEASED) cm.addItem(MenuID.MI_SYNC, "sync", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
+		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCacheBase.Icons.get(IconName.manageDB_41.ordinal()));
 		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
 		mi.setCheckable(true);
 		mi.setChecked(GlobalCore.getAutoResort());
-		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
-		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCache.Icons.get(IconName.addCache_57.ordinal()));
-		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCache.Icons.get(IconName.delete_28.ordinal()));
-		cm.addItem(MenuID.MI_RpcGetExportList, "RPC-GetExportList", SpriteCache.Icons.get(IconName.list_21.ordinal()));
+		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
+		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCacheBase.Icons.get(IconName.addCache_57.ordinal()));
+		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCacheBase.Icons.get(IconName.delete_28.ordinal()));
+		cm.addItem(MenuID.MI_RpcGetExportList, "RPC-GetExportList", SpriteCacheBase.Icons.get(IconName.list_21.ordinal()));
 		return cm;
 	}
 

@@ -33,11 +33,11 @@ import CB_UI.Math.UiSizes;
 import CB_UI.Math.devicesSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
+import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
-import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 
@@ -335,6 +335,13 @@ public class DesktopMain
 			@Override
 			public void Quit()
 			{
+				if (GlobalCore.getSelectedCache() != null)
+				{
+					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
+					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+					Config.AcceptChanges();
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+				}
 				System.exit(0);
 
 			}
@@ -403,6 +410,8 @@ public class DesktopMain
 	 */
 	public static void InitalConfig()
 	{
+
+		new Config();
 
 		if (Config.settings != null && Config.settings.isLoaded()) return;
 

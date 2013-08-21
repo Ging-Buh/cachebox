@@ -15,7 +15,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -26,7 +26,7 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Menu.Menu;
 import CB_UI.GL_UI.Menu.MenuID;
 import CB_UI.GL_UI.Menu.MenuItem;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.DescriptionView;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -57,7 +57,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.doc_2.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.doc_2.ordinal());
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		boolean isSelected = (GlobalCore.getSelectedCache() != null);
 
-		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCache.Icons.get(IconName.favorit_42.ordinal()));
+		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
 		mi.setCheckable(true);
 		if (isSelected)
 		{
@@ -178,7 +178,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 			mi.setEnabled(false);
 		}
 
-		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCache.Icons.get(IconName.GCLive_35.ordinal()));
+		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
 		mi.setEnabled(isSelected);
 		return cm;
 	}

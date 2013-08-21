@@ -18,12 +18,12 @@ package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Button;
 import CB_UI.GL_UI.Controls.Image;
 import CB_UI.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI.GL_UI.Main.Actions.CB_Action;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
@@ -68,7 +68,7 @@ public class QuickButtonItem extends ListViewItemBase
 		mActionDesc = Desc;
 
 		mButton = new Button(rec, "QuickListItemButton");
-		mButton.setButtonSprites(SpriteCache.QuickButton);
+		mButton.setButtonSprites(SpriteCacheBase.QuickButton);
 		mButton.setDrageble();
 		this.addChild(mButton);
 		this.addChild(mButtonIcon);
@@ -131,12 +131,12 @@ public class QuickButtonItem extends ListViewItemBase
 		{
 			if (GlobalCore.getAutoResort() && autoResortState != 1)
 			{
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.autoSelectOn_15.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.autoSelectOn_15.ordinal())));
 				autoResortState = 1;
 			}
 			else if (!GlobalCore.getAutoResort() && autoResortState != 0)
 			{
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.autoSelectOff_16.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.autoSelectOff_16.ordinal())));
 				autoResortState = 0;
 			}
 		}
@@ -147,12 +147,12 @@ public class QuickButtonItem extends ListViewItemBase
 
 			if (hasSpoiler && spoilerState != 1)
 			{
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.images_18.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.images_18.ordinal())));
 				spoilerState = 1;
 			}
 			else if (!hasSpoiler && spoilerState != 0)
 			{
-				Sprite sprite = new Sprite(SpriteCache.Icons.get(IconName.images_18.ordinal()));
+				Sprite sprite = new Sprite(SpriteCacheBase.Icons.get(IconName.images_18.ordinal()));
 				sprite.setColor(DISABLE_COLOR);
 				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
 				spoilerState = 0;
@@ -163,12 +163,12 @@ public class QuickButtonItem extends ListViewItemBase
 
 			if (mAction.getEnabled() && hintState != 1)
 			{
-				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCache.Icons.get(IconName.hint_19.ordinal())));
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
 				hintState = 1;
 			}
 			else if (!mAction.getEnabled() && hintState != 0)
 			{
-				Sprite sprite = new Sprite(SpriteCache.Icons.get(IconName.hint_19.ordinal()));
+				Sprite sprite = new Sprite(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal()));
 				sprite.setColor(DISABLE_COLOR);
 				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
 				hintState = 0;

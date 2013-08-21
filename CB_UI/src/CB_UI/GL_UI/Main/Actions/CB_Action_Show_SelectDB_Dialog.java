@@ -9,14 +9,14 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_UI.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.Math.CB_RectF;
 import CB_Utils.Log.Logger;
 
@@ -39,7 +39,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.manageDB_41.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.manageDB_41.ordinal());
 	}
 
 	SelectDB selectDBDialog;

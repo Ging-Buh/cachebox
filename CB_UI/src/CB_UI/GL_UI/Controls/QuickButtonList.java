@@ -4,7 +4,7 @@ import java.util.ConcurrentModificationException;
 
 import CB_UI.Config;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.List.Adapter;
 import CB_UI.GL_UI.Controls.List.H_ListView;
 import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
@@ -27,7 +27,7 @@ public class QuickButtonList extends H_ListView
 		super(rec, Name);
 		that = this;
 		btnHeight = rec.getHeight() * 0.93f;
-		setBackground(SpriteCache.ButtonBack);
+		setBackground(SpriteCacheBase.ButtonBack);
 
 		CB_RectF btnRec = new CB_RectF(0, 0, btnHeight, btnHeight);
 
@@ -195,7 +195,7 @@ public class QuickButtonList extends H_ListView
 	{
 		quickButtonList = null;
 		readQuickButtonItemsList();
-		setBackground(SpriteCache.ButtonBack);
+		setBackground(SpriteCacheBase.ButtonBack);
 		reloadItems();
 		ListViewItemBackground.ResetBackground();
 	}

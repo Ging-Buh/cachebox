@@ -18,7 +18,7 @@ import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.List.Adapter;
 import CB_UI.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI.GL_UI.Controls.List.V_ListView;
@@ -112,7 +112,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		isShown = true;
 		Logger.LogCat("CacheList onShow");
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 
 		PositionChangedEventList.Add(this);
 
@@ -384,7 +384,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	protected void SkinIsChanged()
 	{
 		listView.reloadItems();
-		setBackground(SpriteCache.ListBack);
+		setBackground(SpriteCacheBase.ListBack);
 		CacheListViewItem.ResetBackground();
 	}
 

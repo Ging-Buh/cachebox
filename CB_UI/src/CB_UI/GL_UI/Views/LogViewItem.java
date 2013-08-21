@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 
 import CB_Core.Types.LogEntry;
 import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Image;
 import CB_UI.GL_UI.Controls.Label;
 import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
@@ -48,7 +48,7 @@ public class LogViewItem extends ListViewItemBackground
 		ivTyp = new Image(getLeftWidth(), this.height - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2),
 				UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
-		ivTyp.setDrawable(new SpriteDrawable(SpriteCache.LogIcons.get(logEntry.Type.getIconID())));
+		ivTyp.setDrawable(new SpriteDrawable(SpriteCacheBase.LogIcons.get(logEntry.Type.getIconID())));
 		secondTab = ivTyp.getMaxX() + (UI_Size_Base.that.getMargin() * 2);
 	}
 
@@ -82,7 +82,7 @@ public class LogViewItem extends ListViewItemBackground
 	@Override
 	protected void Initial()
 	{
-		backheader = new NinePatch(SpriteCache.getThemedSprite("listrec-header"), 8, 8, 8, 8);
+		backheader = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-header"), 8, 8, 8, 8);
 		super.Initial();
 	}
 

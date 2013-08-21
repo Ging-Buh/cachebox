@@ -8,6 +8,8 @@ import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
+import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.Energy;
@@ -17,16 +19,18 @@ import CB_UI.Events.invalidateTextureEventList;
 import CB_UI.Events.platformConector;
 import CB_UI.GL_UI.GL_View_Base;
 import CB_UI.GL_UI.ParentInfo;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.ViewConst;
 import CB_UI.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Controls.Dialogs.Toast;
 import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI.GL_UI.GL_Listener.GL;
+import CB_UI.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI.GL_UI.Main.Actions.CB_Action_GenerateRoute;
 import CB_UI.GL_UI.Main.Actions.CB_Action_QuickFieldNote;
 import CB_UI.GL_UI.Main.Actions.CB_Action_RecTrack;
@@ -43,7 +47,6 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_ShowJokerView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowLogView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowNotesView;
-import CB_UI.GL_UI.Main.Actions.CB_Action_ShowQuit;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowSolverView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowSolverView2;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowSpoilerView;
@@ -56,9 +59,7 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_Show_Parking_Dialog;
 import CB_UI.GL_UI.Main.Actions.CB_Action_Show_SelectDB_Dialog;
 import CB_UI.GL_UI.Main.Actions.CB_Action_Show_Settings;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_DayNight;
-import CB_UI.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.Views.AboutView;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.CompassView;
@@ -87,10 +88,11 @@ import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class TabMainView extends MainViewBase
+public class TabMainView extends MainViewBase implements PositionChangedEvent
 {
 	public static TabMainView that;
-
+	private static boolean TrackRecIsRegisted = false;
+	public static CB_Action_ShowCompassView actionShowCompassView;
 	public static CB_TabView LeftTab;
 	public static CB_TabView RightTab;
 
@@ -131,7 +133,6 @@ public class TabMainView extends MainViewBase
 	private CB_Action_switch_DayNight actionDayNight;
 	// private CB_Action_ShowActivity actionScreenLock;
 
-	public static CB_Action_ShowQuit actionClose = new CB_Action_ShowQuit();
 	public static MapView mapView = null;
 	public static CacheListView cacheListView = null;
 	public static AboutView aboutView = null;
@@ -153,13 +154,17 @@ public class TabMainView extends MainViewBase
 	public TabMainView(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-
+		if (!TrackRecIsRegisted) PositionChangedEventList.Add(this);
+		TrackRecIsRegisted = true;
 		that = (TabMainView) (mainView = this);
+
 	}
 
 	@Override
 	protected void Initial()
 	{
+		GlobalCore.receiver = new CB_UI.GlobalLocationReceiver();
+
 		// Wird inerhalb des ersten Render Vorgangs aufgerufen.
 
 		// eine Initialisierung der actions kommt hier zu spät, daher als Aufruf aus dem Constructor verschoben!
@@ -253,15 +258,15 @@ public class TabMainView extends MainViewBase
 		actionShowSettings = new CB_Action_Show_Settings();
 
 		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
-				SpriteCache.Icons.get(IconName.navigate_46.ordinal()));
+				SpriteCacheBase.Icons.get(IconName.navigate_46.ordinal()));
 
 		actionRecTrack = new CB_Action_RecTrack();
 		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC,
-				SpriteCache.Icons.get(IconName.voiceRec_11.ordinal()));
+				SpriteCacheBase.Icons.get(IconName.voiceRec_11.ordinal()));
 		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
-				SpriteCache.Icons.get(IconName.log10_47.ordinal()));
+				SpriteCacheBase.Icons.get(IconName.log10_47.ordinal()));
 		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC,
-				SpriteCache.Icons.get(IconName.video_10.ordinal()));
+				SpriteCacheBase.Icons.get(IconName.video_10.ordinal()));
 
 		actionDayNight = new CB_Action_switch_DayNight();
 		// actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
@@ -323,11 +328,11 @@ public class TabMainView extends MainViewBase
 
 		LeftTab = new CB_TabView(rec, "Phone Tab");
 
-		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
-		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
-		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
-		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
-		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCache.Misc);
+		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCacheBase.CacheList);
+		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCacheBase.Cache);
+		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCacheBase.Nav);
+		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
+		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCacheBase.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 		btnList.addButton(CacheListButton);
@@ -429,11 +434,11 @@ public class TabMainView extends MainViewBase
 
 		LeftTab = new CB_TabView(rec, "Phone Tab");
 
-		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCache.CacheList);
-		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
-		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
-		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
-		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCache.Misc);
+		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCacheBase.CacheList);
+		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCacheBase.Cache);
+		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCacheBase.Nav);
+		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
+		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCacheBase.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 		btnList.addButton(CacheListButton);
@@ -517,9 +522,9 @@ public class TabMainView extends MainViewBase
 
 		RightTab = new CB_TabView(rec, "Phone Tab");
 
-		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCache.Cache);
-		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCache.Nav);
-		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCache.Tool);
+		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCacheBase.Cache);
+		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCacheBase.Nav);
+		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 
@@ -612,7 +617,7 @@ public class TabMainView extends MainViewBase
 			ManagerBase.RenderThemeChanged = true;
 			GL.that.onStop();
 
-			SpriteCache.LoadSprites(true);
+			SpriteCacheBase.LoadSprites(true);
 			GL.that.onStart();
 			CallSkinChanged();
 
@@ -665,12 +670,12 @@ public class TabMainView extends MainViewBase
 				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter))
 				&& !GlobalCore.LastFilter.isExtendsFilter())
 		{
-			CacheListButton.setButtonSprites(SpriteCache.CacheList);
+			CacheListButton.setButtonSprites(SpriteCacheBase.CacheList);
 			isFilterd = false;
 		}
 		else
 		{
-			CacheListButton.setButtonSprites(SpriteCache.CacheListFilter);
+			CacheListButton.setButtonSprites(SpriteCacheBase.CacheListFilter);
 			isFilterd = true;
 		}
 
@@ -728,5 +733,57 @@ public class TabMainView extends MainViewBase
 			}, Config.settings.RememberAsk_Get_API_Key);
 		}
 	};
+
+	@Override
+	public void PositionChanged()
+	{
+		try
+		{
+			TrackRecorder.recordPosition();
+		}
+		catch (Exception e)
+		{
+			Logger.Error("Core.MainViewBase.PositionChanged()", "TrackRecorder.recordPosition()", e);
+			e.printStackTrace();
+		}
+
+		if (GlobalCore.getSelectedCache() != null)
+		{
+			float distance = GlobalCore.getSelectedCache().Distance(false);
+			if (GlobalCore.getSelectedWaypoint() != null)
+			{
+				distance = GlobalCore.getSelectedWaypoint().Distance();
+			}
+
+			if (Config.settings.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted
+					&& (distance < Config.settings.SoundApproachDistance.getValue()))
+			{
+				actionShowCompassView.Execute();
+				GlobalCore.switchToCompassCompleted = true;
+			}
+		}
+	}
+
+	@Override
+	public String getReceiverName()
+	{
+		return "Core.MainViewBase";
+	}
+
+	@Override
+	public Priority getPriority()
+	{
+		return Priority.High;
+	}
+
+	@Override
+	public void OrientationChanged()
+	{
+	}
+
+	@Override
+	public void SpeedChanged()
+	{
+	}
 
 }

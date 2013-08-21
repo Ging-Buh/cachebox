@@ -17,7 +17,7 @@ import CB_UI.Events.KeyboardFocusChangedEvent;
 import CB_UI.Events.KeyboardFocusChangedEventList;
 import CB_UI.GL_UI.Fonts;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
@@ -312,7 +312,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		{
 			float itemHeight = UI_Size_Base.that.getButtonHeight() * 1.1f;
 
-			FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCache.Stars.toArray(),
+			FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCacheBase.Stars.toArray(),
 					FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
 			GcVote = new FilterSetListViewItem(new CB_RectF(leftBorder, lblTime.getY() - itemHeight - margin, innerWidth, itemHeight), 0,
 					tmp);

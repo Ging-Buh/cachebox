@@ -8,11 +8,11 @@ import CB_Core.DAO.CategoryDAO;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.List.Adapter;
 import CB_UI.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI.GL_UI.Controls.List.V_ListView;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -370,12 +370,12 @@ public class CategorieListView extends V_ListView
 
 		for (Category cat : CoreSettingsForward.Categories)
 		{
-			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCache.Icons.get(IconName.doc_20.ordinal()), cat,
+			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCacheBase.Icons.get(IconName.doc_20.ordinal()), cat,
 					COLLAPSE_BUTTON_ITEM);
 
 			for (GpxFilename File : cat)
 			{
-				CollapseItem.addChild(addCategorieItem(Index++, SpriteCache.Icons.get(IconName.doc_20.ordinal()), File, CHECK_ITEM));
+				CollapseItem.addChild(addCategorieItem(Index++, SpriteCacheBase.Icons.get(IconName.doc_20.ordinal()), File, CHECK_ITEM));
 			}
 		}
 

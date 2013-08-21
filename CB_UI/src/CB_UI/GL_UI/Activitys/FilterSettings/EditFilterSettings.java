@@ -9,7 +9,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.Enums.WrapType;
 import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Activitys.ActivityBase;
 import CB_UI.GL_UI.Controls.Box;
 import CB_UI.GL_UI.Controls.Button;
@@ -113,7 +113,7 @@ public class EditFilterSettings extends ActivityBase
 		float topButtonY = this.height - leftBorder - UI_Size_Base.that.getButtonHeight();
 
 		contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.width, topButtonY - bOK.getMaxY()), "contentBox");
-		contentBox.setBackground(SpriteCache.activityBackground);
+		contentBox.setBackground(SpriteCacheBase.activityBackground);
 		this.addChild(contentBox);
 
 		CB_RectF MTBRec = new CB_RectF(leftBorder / 2, topButtonY, myWidth / 4, UI_Size_Base.that.getButtonHeight());

@@ -7,7 +7,7 @@ import CB_UI.Events.invalidateTextureEvent;
 import CB_UI.Events.invalidateTextureEventList;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.Math.CB_RectF;
 import CB_Utils.Log.Logger;
@@ -143,7 +143,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont()
 					.getCapHeight());
 			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
-			CachedScaleSprite = SpriteCache.MapScale[scaleUnits - 3];
+			CachedScaleSprite = SpriteCacheBase.MapScale[scaleUnits - 3];
 			float margin = (this.height - bounds.height) / 1.6f;
 			fontCache.setPosition(this.width - bounds.width - margin, margin);
 		}

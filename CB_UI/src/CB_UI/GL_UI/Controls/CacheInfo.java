@@ -10,8 +10,8 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_UI.GL_UI.CB_View_Base;
 import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCache;
-import CB_UI.GL_UI.SpriteCache.IconName;
+import CB_UI.GL_UI.SpriteCacheBase;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.Math.CB_RectF;
 import CB_UI.Math.SizeF;
 import CB_UI.Math.UiSizes;
@@ -235,7 +235,7 @@ public class CacheInfo extends CB_View_Base
 			mLeft += mS_FontCache.getBounds().width + mMargin;
 
 			mStarSize.scale(scaleFactor);
-			mSSprite = new Sprite(SpriteCache.SizesIcons.get((int) (mCache.Size.ordinal())));
+			mSSprite = new Sprite(SpriteCacheBase.SizesIcons.get((int) (mCache.Size.ordinal())));
 			mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 			// Difficulty
 			mLeft += mSSprite.getWidth() + mMargin + mMargin;
@@ -243,7 +243,7 @@ public class CacheInfo extends CB_View_Base
 			mD_FontCache.setColor(Fonts.getFontColor());
 			mD_FontCache.setText("D", mLeft, mBottom);
 			mLeft += mD_FontCache.getBounds().width + mMargin;
-			mDSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Difficulty * 2)));
+			mDSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Difficulty * 2)));
 			mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 			mDSprite.setRotation(0);
 			// Terrain
@@ -252,7 +252,7 @@ public class CacheInfo extends CB_View_Base
 			mT_FontCache.setColor(Fonts.getFontColor());
 			mT_FontCache.setText("T", mLeft, mBottom);
 			mLeft += mT_FontCache.getBounds().width + mMargin;
-			mTSprite = new Sprite(SpriteCache.Stars.get((int) (mCache.Terrain * 2)));
+			mTSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Terrain * 2)));
 			mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 			mTSprite.setRotation(0);
 			// Draw TB
@@ -262,7 +262,7 @@ public class CacheInfo extends CB_View_Base
 			{
 				float sizes = mStarSize.width / 2.1f;
 
-				mTBSprite = new Sprite(SpriteCache.Icons.get(IconName.tb_36.ordinal()));
+				mTBSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.tb_36.ordinal()));
 				mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
 				mTBSprite.setOrigin(sizes / 2, sizes / 2);
 				mTBSprite.setRotation(90);
@@ -292,7 +292,7 @@ public class CacheInfo extends CB_View_Base
 			mIconSize = Fonts.MeasureSmall("T").height * 3.5f * scaleFactor;
 
 			mStarSize.scale(0.7f);
-			mRatingSprite = new Sprite(SpriteCache.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
+			mRatingSprite = new Sprite(SpriteCacheBase.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
 			mRatingSprite.setBounds(mLeft + mStarSize.height, height - mTop - mStarSize.width - mMargin - mMargin - mMargin,
 					mStarSize.width, mStarSize.height);
 			mRatingSprite.setOrigin(0, mStarSize.halfHeight);
@@ -351,25 +351,25 @@ public class CacheInfo extends CB_View_Base
 
 			if (mCache.CorrectedCoordiantesOrMysterySolved())
 			{
-				mIconSprite = new Sprite(SpriteCache.BigIcons.get(21));
+				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(21));
 			}
 			else if ((mCache.Type == CacheTypes.Multi) && mCache.HasStartWaypoint())
 			{
 				// Multi anders darstellen wenn dieser einen definierten Startpunkt hat
-				mIconSprite = new Sprite(SpriteCache.BigIcons.get(22));
+				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(22));
 			}
 			else if ((mCache.Type == CacheTypes.Mystery) && mCache.HasStartWaypoint())
 			{
 				// Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
-				mIconSprite = new Sprite(SpriteCache.BigIcons.get(24));
+				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(24));
 			}
 			else if (mCache.Type == CacheTypes.Munzee)
 			{
-				mIconSprite = new Sprite(SpriteCache.BigIcons.get(25));
+				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(25));
 			}
 			else
 			{
-				mIconSprite = new Sprite(SpriteCache.BigIcons.get(mCache.Type.ordinal()));
+				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mCache.Type.ordinal()));
 			}
 			mIconSprite.setSize(mIconSize, mIconSize);
 			mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
@@ -380,11 +380,11 @@ public class CacheInfo extends CB_View_Base
 
 			if (mCache.Found)
 			{
-				mFoundOwnerSprite = new Sprite(SpriteCache.BigIcons.get(19));
+				mFoundOwnerSprite = new Sprite(SpriteCacheBase.BigIcons.get(19));
 			}
 			else if (mCache.ImTheOwner())
 			{
-				mFoundOwnerSprite = new Sprite(SpriteCache.Icons.get(IconName.star_43.ordinal()));
+				mFoundOwnerSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.star_43.ordinal()));
 			}
 			if (mFoundOwnerSprite != null)
 			{
@@ -394,18 +394,18 @@ public class CacheInfo extends CB_View_Base
 
 			if (mCache.Favorit())
 			{
-				mFavoriteSprite = new Sprite(SpriteCache.Icons.get(IconName.favorit_42.ordinal()));
+				mFavoriteSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
 				mFavoriteSprite.setSize(infoSize, infoSize);
 				mFavoriteSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y + infoSize);
 			}
 
 			if (mCache.Archived)
 			{
-				mAvailableSprite = new Sprite(SpriteCache.Icons.get(IconName.log11_45.ordinal()));
+				mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.log11_45.ordinal()));
 			}
 			else if (!mCache.Available)
 			{
-				mAvailableSprite = new Sprite(SpriteCache.Icons.get(IconName.disabled_44.ordinal()));
+				mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.disabled_44.ordinal()));
 			}
 			if (mAvailableSprite != null)
 			{

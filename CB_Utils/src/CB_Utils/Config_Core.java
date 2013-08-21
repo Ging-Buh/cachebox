@@ -4,11 +4,18 @@ import java.io.IOException;
 
 import CB_Utils.Converter.Base64;
 
-public class Config_Core
+public abstract class Config_Core
 {
+	static Config_Core that;
+
+	public Config_Core()
+	{
+		that = this;
+	}
+
 	public static String WorkPath = "";
 
-	static int[] Key =
+	static final int[] Key =
 		{ 128, 56, 20, 78, 33, 225 };
 
 	public static String decrypt(String value)
@@ -124,6 +131,13 @@ public class Config_Core
 			int t = (s[i] + s[j]) % 256;
 			bytes[x] = (int) (bytes[x] ^ s[t]);
 		}
+	}
+
+	protected abstract void acceptChanges();
+
+	public static void AcceptChanges()
+	{
+		that.acceptChanges();
 	}
 
 }

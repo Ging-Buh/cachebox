@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.FloatControl;
 import CB_UI.GL_UI.Controls.chkBox;
 import CB_UI.Math.CB_RectF;
@@ -38,7 +38,7 @@ public class SettingsItem_Audio extends SettingsItemBase
 		lblDefault = null;
 
 		// add volume control
-		float ProgressHeight = (SpriteCache.ProgressBack.getBottomHeight() + SpriteCache.ProgressBack.getTopHeight()) * 1.35f;
+		float ProgressHeight = (SpriteCacheBase.ProgressBack.getBottomHeight() + SpriteCacheBase.ProgressBack.getTopHeight()) * 1.35f;
 
 		CB_RectF rec2 = rec.copy();
 

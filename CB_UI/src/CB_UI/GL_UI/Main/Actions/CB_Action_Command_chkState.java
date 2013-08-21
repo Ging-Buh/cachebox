@@ -8,12 +8,12 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.ProgresssChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
+import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -22,8 +22,8 @@ import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.interfaces.RunnableReadyHandler;
+import CB_Utils.Events.ProgresssChangedEventList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -45,7 +45,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.Icons.get(IconName.GCLive_35.ordinal());
+		return SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
 	}
 
 	private ProgressDialog pd;

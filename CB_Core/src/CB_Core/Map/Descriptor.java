@@ -18,47 +18,10 @@
 
 package CB_Core.Map;
 
-import java.util.Date;
+import CB_Utils.Math.PointD;
 
 public class Descriptor implements Comparable<Descriptor>
 {
-
-	public static class PointD
-	{
-		/**
-		 * X
-		 */
-		public double X;
-
-		/**
-		 * Y
-		 */
-		public double Y;
-
-		/**
-		 * Standardkonstruktor
-		 */
-		public PointD(double x, double y)
-		{
-			this.X = x;
-			this.Y = y;
-		}
-	};
-
-	public static class TrackPoint extends PointD
-	{
-		public double Elevation;
-		public double Direction;
-		public Date TimeStamp;
-
-		public TrackPoint(double x, double y, double elevation, double direction, Date time)
-		{
-			super(x, y);
-			this.Elevation = elevation;
-			this.Direction = direction;
-			this.TimeStamp = time;
-		}
-	}
 
 	public static int[] TilesPerLine = null;
 	public static int[] TilesPerColumn = null;

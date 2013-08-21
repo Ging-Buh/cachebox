@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.Dialogs.ParkingDialog;
 import CB_UI.GL_UI.Menu.MenuID;
 
@@ -26,7 +26,7 @@ public class CB_Action_Show_Parking_Dialog extends CB_ActionCommand
 	@Override
 	public Sprite getIcon()
 	{
-		return SpriteCache.BigIcons.get(20);
+		return SpriteCacheBase.BigIcons.get(20);
 	}
 
 	@Override

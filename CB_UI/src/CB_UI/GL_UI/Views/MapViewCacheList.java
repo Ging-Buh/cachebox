@@ -11,7 +11,7 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.SpriteCache;
+import CB_UI.GL_UI.SpriteCacheBase;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.MoveableList;
 
@@ -149,7 +149,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 									WaypointRenderInfo wpi = new WaypointRenderInfo();
 									wpi.MapX = (float) MapX;
 									wpi.MapY = (float) MapY;
-									if (cache.Archived || !cache.Available) wpi.OverlayIcon = SpriteCache.MapOverlay.get(2);
+									if (cache.Archived || !cache.Available) wpi.OverlayIcon = SpriteCacheBase.MapOverlay.get(2);
 									wpi.UnderlayIcon = getUnderlayIcon(cache, null, iconSize);
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
@@ -243,9 +243,9 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 	private Sprite getWaypointIcon(Waypoint waypoint)
 	{
-		if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart)) return SpriteCache.MapIcons.get(24);
+		if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart)) return SpriteCacheBase.MapIcons.get(24);
 		else
-			return SpriteCache.MapIcons.get(waypoint.Type.ordinal());
+			return SpriteCacheBase.MapIcons.get(waypoint.Type.ordinal());
 	}
 
 	private Sprite getCacheIcon(Cache cache, int iconSize)
@@ -272,7 +272,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		else if ((cache.Type == CacheTypes.Munzee)) IconId = 22;
 		else
 			IconId = cache.Type.ordinal();
-		return SpriteCache.MapIcons.get(IconId);
+		return SpriteCacheBase.MapIcons.get(IconId);
 	}
 
 	private Sprite getSmallMapIcon(Cache cache)
@@ -331,7 +331,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		if (cache.Type == CacheTypes.MyParking) iconId = 16;
 		if (cache.Type == CacheTypes.Munzee) iconId = 17;
 
-		return SpriteCache.MapIconsSmall.get(iconId);
+		return SpriteCacheBase.MapIconsSmall.get(iconId);
 
 	}
 
@@ -347,22 +347,22 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			{
 				if ((cache == null) || (cache == GlobalCore.getSelectedCache()))
 				{
-					return SpriteCache.MapOverlay.get(1);
+					return SpriteCacheBase.MapOverlay.get(1);
 				}
 				else
 				{
-					return SpriteCache.MapOverlay.get(0);
+					return SpriteCacheBase.MapOverlay.get(0);
 				}
 			}
 			else
 			{
 				if (waypoint == GlobalCore.getSelectedWaypoint())
 				{
-					return SpriteCache.MapOverlay.get(1);
+					return SpriteCacheBase.MapOverlay.get(1);
 				}
 				else
 				{
-					return SpriteCache.MapOverlay.get(0);
+					return SpriteCacheBase.MapOverlay.get(0);
 				}
 			}
 		}
