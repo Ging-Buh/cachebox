@@ -16,10 +16,7 @@
 package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.ViewConst;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Main.Actions.CB_Action;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowHint;
 import CB_UI.GL_UI.Main.Actions.CB_Action_Show_Search;
@@ -27,9 +24,12 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI.GL_UI.Main.Actions.CB_Action_add_WP;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_DayNight;
-import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCacheBase.IconName;
-import CB_UI.Math.CB_RectF;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.ViewConst;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
 /**

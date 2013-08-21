@@ -2,8 +2,8 @@ package de.cachebox_test.Views;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.JokerEntry;
-import CB_UI.Math.CB_Rect;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.Math.CB_Rect;
+import CB_UI_Base.Math.UI_Size_Base;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;

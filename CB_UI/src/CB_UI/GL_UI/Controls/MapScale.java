@@ -3,13 +3,13 @@ package CB_UI.GL_UI.Controls;
 import java.text.NumberFormat;
 
 import CB_UI.Config;
-import CB_UI.Events.invalidateTextureEvent;
-import CB_UI.Events.invalidateTextureEventList;
-import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Views.MapView;
-import CB_UI.Math.CB_RectF;
+import CB_UI_Base.Events.invalidateTextureEvent;
+import CB_UI_Base.Events.invalidateTextureEventList;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;

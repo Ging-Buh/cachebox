@@ -12,9 +12,9 @@ import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GL_UI.SoundCache;
-import CB_UI.GL_UI.Controls.Dialogs.Toast;
-import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.SoundCache.Sounds;
+import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
 
 /**

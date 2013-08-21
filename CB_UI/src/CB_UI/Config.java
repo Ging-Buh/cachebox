@@ -8,7 +8,7 @@ import java.util.HashMap;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI.Settings.SettingsClass;
-import CB_UI.settings.CB_UI_Base_Settings;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
 import CB_Utils.Log.Logger;
 

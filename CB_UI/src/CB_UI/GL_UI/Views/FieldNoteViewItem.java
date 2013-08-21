@@ -4,14 +4,14 @@ import java.text.SimpleDateFormat;
 
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.FieldNoteEntry;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.Controls.Image;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
-import CB_UI.GL_UI.SpriteCacheBase.IconName;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;

@@ -1,10 +1,10 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.Controls.FloatControl;
-import CB_UI.GL_UI.Controls.chkBox;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UiSizes;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.FloatControl;
+import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UiSizes;
 
 public class SettingsItem_Audio extends SettingsItemBase
 {

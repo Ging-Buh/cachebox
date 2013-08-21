@@ -1,7 +1,7 @@
 package de.cachebox_test;
 
-import CB_UI.Events.platformConector.IgetFileReturnListner;
-import CB_UI.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 
 public abstract class CB_FileExplorer_Base
 {

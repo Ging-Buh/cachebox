@@ -4,16 +4,16 @@ import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
-import CB_UI.Enums.WrapType;
-import CB_UI.Events.KeyboardFocusChangedEvent;
-import CB_UI.Events.KeyboardFocusChangedEventList;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
-import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.Controls.EditTextField;
-import CB_UI.GL_UI.Controls.EditTextFieldBase;
-import CB_UI.GL_UI.GL_Listener.GL;
-import CB_UI.Math.CB_RectF;
+import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.Events.KeyboardFocusChangedEvent;
+import CB_UI_Base.Events.KeyboardFocusChangedEventList;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
 
 public class NotesView extends CB_View_Base implements SelectedCacheEvent
 {

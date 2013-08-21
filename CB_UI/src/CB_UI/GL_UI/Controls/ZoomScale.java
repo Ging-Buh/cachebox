@@ -4,14 +4,14 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_UI.Events.invalidateTextureEvent;
-import CB_UI.Events.invalidateTextureEventList;
-import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.GL_Listener.GL;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.GL_UISizes;
+import CB_UI_Base.Events.invalidateTextureEvent;
+import CB_UI_Base.Events.invalidateTextureEventList;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.GL_UISizes;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;

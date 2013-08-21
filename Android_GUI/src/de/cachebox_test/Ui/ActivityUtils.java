@@ -16,8 +16,8 @@
 
 package de.cachebox_test.Ui;
 
-import CB_UI.Math.CB_Rect;
-import CB_UI.Math.UiSizes;
+import CB_UI_Base.Math.CB_Rect;
+import CB_UI_Base.Math.UiSizes;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;

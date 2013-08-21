@@ -2,25 +2,25 @@ package CB_UI.GL_UI.Views.TestViews;
 
 import CB_Core.Map.Descriptor;
 import CB_Locator.Coordinate;
-import CB_UI.Energy;
 import CB_UI.GlobalCore;
-import CB_UI.Enums.WrapType;
-import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.Controls.Button;
-import CB_UI.GL_UI.Controls.EditTextField;
-import CB_UI.GL_UI.Controls.Image;
-import CB_UI.GL_UI.Controls.RadioButton;
-import CB_UI.GL_UI.Controls.RadioGroup;
-import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.Map.Layer;
 import CB_UI.Map.ManagerBase;
 import CB_UI.Map.MapTileLoader;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.Energy;
+import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
+import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.RadioButton;
+import CB_UI_Base.GL_UI.Controls.RadioGroup;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.PointD;
 
 import com.badlogic.gdx.Gdx;
@@ -35,7 +35,7 @@ import com.badlogic.gdx.math.Vector2;
 public class TestView extends CB_View_Base
 {
 
-	private CB_UI.GL_UI.Controls.EditTextField wrappedTextField;
+	private CB_UI_Base.GL_UI.Controls.EditTextField wrappedTextField;
 
 	public static final String br = System.getProperty("line.separator");
 
@@ -53,7 +53,7 @@ public class TestView extends CB_View_Base
 		CB_RectF TextFieldRec = new CB_RectF(0, this.height - (UI_Size_Base.that.getButtonHeight() * 3),
 				UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
 
-		wrappedTextField = new CB_UI.GL_UI.Controls.EditTextField(TextFieldRec, this).setWrapType(WrapType.WRAPPED);
+		wrappedTextField = new CB_UI_Base.GL_UI.Controls.EditTextField(TextFieldRec, this).setWrapType(WrapType.WRAPPED);
 		wrappedTextField.setStyle(EditTextField.getDefaultStyle());
 		wrappedTextField.setText(splashMsg);
 		// wrappedTextField.setText("");

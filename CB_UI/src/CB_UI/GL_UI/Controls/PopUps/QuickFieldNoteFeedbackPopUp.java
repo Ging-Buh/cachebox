@@ -3,10 +3,11 @@ package CB_UI.GL_UI.Controls.PopUps;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.GL_Listener.GL;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 

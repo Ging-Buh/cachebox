@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.Controls.Button;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.LinearCollapseBox;
-import CB_UI.GL_UI.Controls.Linearlayout;
-import CB_UI.GL_UI.Controls.ScrollBox;
-import CB_UI.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
-import CB_UI.GL_UI.Controls.Linearlayout.LayoutChanged;
-import CB_UI.GL_UI.Controls.MessageBox.ButtonDialog;
-import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI.GL_UI.GL_Listener.GL;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
 import CB_UI.Solver.Solver;
 import CB_UI.Solver.Functions.Function;
 import CB_UI.Solver.Functions.Functions;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.LinearCollapseBox;
+import CB_UI_Base.GL_UI.Controls.Linearlayout;
+import CB_UI_Base.GL_UI.Controls.ScrollBox;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.Linearlayout.LayoutChanged;
+import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
 

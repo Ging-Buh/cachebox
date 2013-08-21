@@ -1,9 +1,9 @@
 package CB_UI.GL_UI.Views.TestViews;
 
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.List.ListViewItemBase;
-import CB_UI.Math.CB_RectF;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
+import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.math.Vector2;
 

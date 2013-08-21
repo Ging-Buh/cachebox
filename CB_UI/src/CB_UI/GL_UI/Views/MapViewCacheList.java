@@ -11,7 +11,7 @@ import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.MoveableList;
 

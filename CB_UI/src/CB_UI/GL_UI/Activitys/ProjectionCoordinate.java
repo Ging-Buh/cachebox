@@ -3,17 +3,18 @@ package CB_UI.GL_UI.Activitys;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.Controls.Button;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Controls.EditTextField;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.NumPad;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_UI.GL_UI.Controls.EditTextFieldBase.iBecomsFocus;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.Activitys.ActivityBase;
+import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.NumPad;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.iBecomsFocus;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 public class ProjectionCoordinate extends ActivityBase
 {

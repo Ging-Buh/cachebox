@@ -4,17 +4,18 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEventList;
-import CB_UI.Events.platformConector;
-import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
-import CB_UI.GL_UI.GL_View_Base.OnClickListener;
-import CB_UI.GL_UI.Menu.Menu;
-import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.Menu.MenuItem;
-import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.FieldNotesView;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
+import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
+import CB_UI_Base.GL_UI.Menu.Menu;
+import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 

@@ -3,9 +3,10 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_Core.DB.Database;
 import CB_Core.Types.CacheWithWP;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
+import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 

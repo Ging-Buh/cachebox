@@ -3,11 +3,11 @@ package CB_UI.GL_UI.Controls;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.SizeF;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.SizeF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

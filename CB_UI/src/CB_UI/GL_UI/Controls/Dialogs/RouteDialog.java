@@ -1,25 +1,25 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.Controls.Box;
-import CB_UI.GL_UI.Controls.ImageMultiToggleButton;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.Linearlayout;
-import CB_UI.GL_UI.Controls.MultiToggleButton;
-import CB_UI.GL_UI.Controls.chkBox;
-import CB_UI.GL_UI.Controls.Label.VAlignment;
-import CB_UI.GL_UI.Controls.MessageBox.ButtonDialog;
-import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_UI.GL_UI.Menu.Menu;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.Size;
-import CB_UI.Math.SizeF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.ImageMultiToggleButton;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Linearlayout;
+import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
+import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
+import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Menu.Menu;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.Size;
+import CB_UI_Base.Math.SizeF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 

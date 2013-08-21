@@ -5,12 +5,12 @@ import java.util.Iterator;
 
 import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.Controls.List.Adapter;
-import CB_UI.GL_UI.Controls.List.ListViewItemBase;
-import CB_UI.GL_UI.Controls.List.V_ListView;
-import CB_UI.Math.CB_RectF;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.List.Adapter;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
+import CB_UI_Base.GL_UI.Controls.List.V_ListView;
+import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

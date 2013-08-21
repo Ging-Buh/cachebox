@@ -1,12 +1,12 @@
 package CB_UI.GL_UI.Activitys;
 
-import CB_UI.GL_UI.runOnGL;
-import CB_UI.GL_UI.Controls.Box;
-import CB_UI.GL_UI.Controls.Animation.AnimationBase;
-import CB_UI.GL_UI.Controls.Animation.DownloadAnimation;
-import CB_UI.GL_UI.Controls.Animation.WorkAnimation;
-import CB_UI.GL_UI.GL_Listener.GL;
-import CB_UI.Math.CB_RectF;
+import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.Controls.Box;
+import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
+import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
+import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

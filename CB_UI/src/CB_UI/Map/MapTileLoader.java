@@ -10,9 +10,9 @@ import javax.security.auth.DestroyFailedException;
 
 import CB_Core.Map.Descriptor;
 import CB_UI.Config;
-import CB_UI.Energy;
-import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI_Base.Energy;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;

@@ -1,9 +1,9 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
-import CB_UI.Math.CB_RectF;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
+import CB_UI_Base.Math.CB_RectF;
 
 public class SettingsItemBase extends ListViewItemBackground
 {

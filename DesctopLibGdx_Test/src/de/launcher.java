@@ -17,8 +17,8 @@ import java.io.FilenameFilter;
 
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Math.Size;
-import CB_UI.Math.devicesSizes;
+import CB_UI_Base.Math.Size;
+import CB_UI_Base.Math.devicesSizes;
 
 class Ex_1
 {

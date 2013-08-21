@@ -10,14 +10,14 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.Controls.List.Adapter;
-import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
-import CB_UI.GL_UI.Controls.List.ListViewItemBase;
-import CB_UI.GL_UI.Controls.List.V_ListView;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Controls.List.Adapter;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
+import CB_UI_Base.GL_UI.Controls.List.V_ListView;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 public class LogView extends V_ListView implements SelectedCacheEvent
 {

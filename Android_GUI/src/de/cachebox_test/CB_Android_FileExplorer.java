@@ -1,9 +1,9 @@
 package de.cachebox_test;
 
-import CB_UI.Events.platformConector.IgetFileListner;
-import CB_UI.Events.platformConector.IgetFileReturnListner;
-import CB_UI.Events.platformConector.IgetFolderListner;
-import CB_UI.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.platformConector.IgetFileListner;
+import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.platformConector.IgetFolderListner;
+import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;

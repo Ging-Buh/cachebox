@@ -1,8 +1,8 @@
 package CB_UI.GL_UI.Activitys.settings;
 
-import CB_UI.GL_UI.Controls.Spinner;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.Controls.Spinner;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 public class SettingsItemEnum extends SettingsItemBase
 {

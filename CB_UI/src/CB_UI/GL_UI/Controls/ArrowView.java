@@ -16,8 +16,8 @@
 
 package CB_UI.GL_UI.Controls;
 
-import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

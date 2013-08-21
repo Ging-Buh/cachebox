@@ -15,20 +15,20 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Events.SelectedCacheEventList;
-import CB_UI.Events.platformConector;
-import CB_UI.GL_UI.Controls.Animation.DownloadAnimation;
-import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
-import CB_UI.GL_UI.Controls.PopUps.ConnectionError;
-import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.Map.RouteOverlay;
-import CB_UI.Math.UI_Size_Base;
-import CB_UI.Math.devicesSizes;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 
-public class GlobalCore extends CB_UI.Global
+public class GlobalCore extends CB_UI_Base.Global
 {
 
 	public static final int CurrentRevision = 1791;

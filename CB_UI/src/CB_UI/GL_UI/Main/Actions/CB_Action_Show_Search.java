@@ -1,12 +1,13 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.GL_UI.SpriteCacheBase;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
+import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 

@@ -35,9 +35,9 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
-import CB_UI.GL_UI.Controls.PopUps.ConnectionError;
-import CB_UI.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
+import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.Logger;
 

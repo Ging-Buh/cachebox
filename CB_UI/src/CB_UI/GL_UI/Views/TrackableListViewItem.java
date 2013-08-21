@@ -1,11 +1,11 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Types.Trackable;
-import CB_UI.GL_UI.Controls.Image;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

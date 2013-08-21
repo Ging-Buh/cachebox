@@ -20,7 +20,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_UI.Config;
-import CB_UI.GL_UI.ViewConst;
+import CB_UI_Base.GL_UI.ViewConst;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

@@ -1,15 +1,15 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Enums.WrapType;
-import CB_UI.GL_UI.Controls.EditTextField;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.chkBox;
-import CB_UI.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_UI.GL_UI.GL_Listener.GL;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.Size;
+import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.Controls.EditTextField;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.Size;
 
 public class NewDB_InputBox extends GL_MsgBox
 {

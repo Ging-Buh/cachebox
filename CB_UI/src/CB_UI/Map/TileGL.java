@@ -4,9 +4,9 @@ import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
 import CB_Core.Map.Descriptor;
-import CB_UI.GL_UI.runOnGL;
-import CB_UI.GL_UI.GL_Listener.GL;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Color;

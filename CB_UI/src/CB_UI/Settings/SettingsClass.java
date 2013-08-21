@@ -2,7 +2,7 @@ package CB_UI.Settings;
 
 import CB_Core.DB.Database;
 import CB_Core.Settings.CB_Core_Settings;
-import CB_UI.settings.CB_UI_Base_Settings;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.DB.Database_Core;
 import CB_Utils.Settings.SettingsDAO;
 import CB_Utils.Settings.SettingsList;

@@ -2,7 +2,7 @@ package de.CB_Texturepacker;
 
 import java.awt.image.BufferedImage;
 
-import CB_UI.CB_Texturepacker.Rect_Base;
+import CB_UI_Base.CB_Texturepacker.Rect_Base;
 
 /** @author Nathan Sweet */
 class Rect extends Rect_Base

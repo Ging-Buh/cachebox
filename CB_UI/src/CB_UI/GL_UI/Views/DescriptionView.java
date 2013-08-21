@@ -1,14 +1,14 @@
 package CB_UI.GL_UI.Views;
 
 import CB_UI.GlobalCore;
-import CB_UI.Plattform;
-import CB_UI.Events.platformConector;
-import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.ViewConst;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.Math.CB_RectF;
+import CB_UI_Base.Plattform;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.ViewConst;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.Math.CB_RectF;
 
 public class DescriptionView extends CB_View_Base
 {

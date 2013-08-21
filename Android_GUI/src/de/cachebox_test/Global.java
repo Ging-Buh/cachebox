@@ -8,7 +8,7 @@ import java.util.TimeZone;
 import CB_Core.Types.JokerList;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.MoveableList;
 import android.content.Context;
 import android.content.res.Resources;

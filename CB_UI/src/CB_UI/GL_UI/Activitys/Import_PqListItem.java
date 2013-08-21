@@ -4,13 +4,13 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import CB_Core.Api.PocketQuery.PQ;
-import CB_UI.GL_UI.Fonts;
-import CB_UI.GL_UI.Controls.Label;
-import CB_UI.GL_UI.Controls.chkBox;
-import CB_UI.GL_UI.Controls.List.ListViewItemBackground;
-import CB_UI.GL_UI.Controls.chkBox.OnCheckedChangeListener;
-import CB_UI.Math.CB_RectF;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.chkBox;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
+import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
+import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.UI_Size_Base;
 
 public class Import_PqListItem extends ListViewItemBackground
 {

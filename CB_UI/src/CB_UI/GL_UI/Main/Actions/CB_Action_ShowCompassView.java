@@ -1,17 +1,18 @@
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.Config;
-import CB_UI.GL_UI.CB_View_Base;
-import CB_UI.GL_UI.GL_View_Base;
-import CB_UI.GL_UI.SpriteCacheBase;
-import CB_UI.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Menu.Menu;
-import CB_UI.GL_UI.Menu.MenuID;
-import CB_UI.GL_UI.Menu.MenuItem;
-import CB_UI.GL_UI.Menu.OptionMenu;
-import CB_UI.GL_UI.SpriteCacheBase.IconName;
 import CB_UI.GL_UI.Views.CompassView;
+import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
+import CB_UI_Base.GL_UI.Menu.Menu;
+import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_UI_Base.GL_UI.Menu.OptionMenu;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_Utils.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;

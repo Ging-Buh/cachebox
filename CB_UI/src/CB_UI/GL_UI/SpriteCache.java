@@ -19,11 +19,13 @@ package CB_UI.GL_UI;
 import java.util.ArrayList;
 
 import CB_UI.Config;
-import CB_UI.GL_UI.Skin.CB_Skin;
-import CB_UI.GL_UI.Skin.SkinBase;
-import CB_UI.GL_UI.Skin.SkinSettings;
-import CB_UI.GL_UI.utils.ColorDrawable;
-import CB_UI.Math.UI_Size_Base;
+import CB_UI_Base.GL_UI.ButtonSprites;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.Skin.CB_Skin;
+import CB_UI_Base.GL_UI.Skin.SkinBase;
+import CB_UI_Base.GL_UI.Skin.SkinSettings;
+import CB_UI_Base.GL_UI.utils.ColorDrawable;
+import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
