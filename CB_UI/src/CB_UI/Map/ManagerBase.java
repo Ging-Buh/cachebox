@@ -83,10 +83,7 @@ public abstract class ManagerBase
 
 	}
 
-	public PackBase CreatePack(String file) throws IOException
-	{
-		return new PackBase(this, file);
-	}
+	public abstract PackBase CreatePack(String file) throws IOException;
 
 	// / <summary>
 	// / Läd ein Map Pack und fügt es dem Manager hinzu
@@ -128,7 +125,7 @@ public abstract class ManagerBase
 		}
 		else
 		{
-			Config.settings.CurrentMapLayer.setValue(Layers.get(0).Name);
+			Config.CurrentMapLayer.setValue(Layers.get(0).Name);
 			return Layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
 		}
 	}
@@ -137,7 +134,7 @@ public abstract class ManagerBase
 	{
 		byte[] tmp = LoadLocalPixmap(layer, desc);
 
-		if (!Config.settings.nightMode.getValue()) return tmp;
+		if (!Config.nightMode.getValue()) return tmp;
 
 		if (layer.isMapsForge && mapsforgeNightThemeExist()) return tmp;
 
@@ -431,14 +428,14 @@ public abstract class ManagerBase
 		ArrayList<String> files = new ArrayList<String>();
 		ArrayList<String> mapnames = new ArrayList<String>();
 
-		Logger.DEBUG("dirOwnMaps = " + Config.settings.MapPackFolderLocal.getValue());
-		getFiles(files, mapnames, Config.settings.MapPackFolderLocal.getValue());
+		Logger.DEBUG("dirOwnMaps = " + Config.MapPackFolderLocal.getValue());
+		getFiles(files, mapnames, Config.MapPackFolderLocal.getValue());
 
-		Logger.DEBUG("dirDefaultMaps = " + Config.settings.MapPackFolder.getDefaultValue());
-		getFiles(files, mapnames, Config.settings.MapPackFolder.getDefaultValue());
+		Logger.DEBUG("dirDefaultMaps = " + Config.MapPackFolder.getDefaultValue());
+		getFiles(files, mapnames, Config.MapPackFolder.getDefaultValue());
 
-		Logger.DEBUG("dirGlobalMaps = " + Config.settings.MapPackFolder.getValue());
-		getFiles(files, mapnames, Config.settings.MapPackFolder.getValue());
+		Logger.DEBUG("dirGlobalMaps = " + Config.MapPackFolder.getValue());
+		getFiles(files, mapnames, Config.MapPackFolder.getValue());
 
 		if (!(files == null))
 		{

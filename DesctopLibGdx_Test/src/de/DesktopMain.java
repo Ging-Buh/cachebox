@@ -48,7 +48,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import de.CB_Texturepacker.Desctop_Packer;
-import de.Map.DesctopManager;
+import de.Map.DesktopManager;
 
 public class DesktopMain
 {
@@ -155,7 +155,7 @@ public class DesktopMain
 			Config.AcceptChanges();
 		}
 
-		new DesctopManager();
+		new DesktopManager();
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 

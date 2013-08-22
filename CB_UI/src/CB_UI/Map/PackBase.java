@@ -1,51 +1,39 @@
 package CB_UI.Map;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.imageio.ImageIO;
 
 import org.apache.http.util.EncodingUtils;
 
 import CB_Core.Map.Descriptor;
 import CB_Utils.Util.FileIO;
 
-public class PackBase implements Comparable<PackBase>
+public abstract class PackBase implements Comparable<PackBase>
 {
-	// / <summary>
-	// / Maximales Alter einer der enthaltenen Kacheln
-	// / </summary>
+
 	public long MaxAge = 0;
-
 	public static boolean Cancel = false;
-	/*
-	 * public class Pack : IComparable {
-	 * 
-	 * public delegate void ProgressChanged(String message, int count, int total); public event ProgressChanged OnProgressChanged;
-	 */
 	public Layer Layer = null;
-
-	// / <summary>
-	// / true, falls dieses Pack mit OSM-Karten überlagert werden soll
-	// / </summary>
 	public boolean IsOverlay = false;
-
-	// / <summary>
-	// / Filename des Map Packs
-	// / </summary>
 	public String Filename = "";
-
 	public ArrayList<BoundingBox> BoundingBoxes = new ArrayList<BoundingBox>();
+
+	public abstract byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc);
+
+	/**
+	 * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
+	 */
+	protected static byte[] get(byte[] array, int offset, int length)
+	{
+		byte[] result = new byte[length];
+		System.arraycopy(array, offset, result, 0, length);
+		return result;
+	}
 
 	public PackBase(Layer layer)
 	{
@@ -78,43 +66,6 @@ public class PackBase implements Comparable<PackBase>
 
 		reader.close();
 		stream.close();
-
-	}
-
-	// unpack all files to cache
-	// extractImages();
-	@SuppressWarnings("unused")
-	private void extractImages()
-	{
-		for (BoundingBox bbox : BoundingBoxes)
-		{
-			int z = bbox.Zoom;
-			for (int x = bbox.MinX; x <= bbox.MaxX; x++)
-			{
-				for (int y = bbox.MinY; y <= bbox.MaxY; y++)
-				{
-					Descriptor desc = new Descriptor(x, y, z);
-					byte[] b = LoadFromBoundingBoxByteArray(bbox, desc);
-					String fname = Layer.GetLocalFilename(desc);
-					File ff = new File(fname);
-					if (!ff.getParentFile().exists())
-					{
-						ff.getParentFile().mkdirs();
-					}
-					try
-					{
-						FileOutputStream fos = new FileOutputStream(ff.getAbsoluteFile());
-						fos.write(b);
-						fos.close();
-					}
-					catch (Exception e)
-					{
-						// TODO: handle exception
-					}
-				}
-			}
-
-		}
 
 	}
 
@@ -318,92 +269,6 @@ public class PackBase implements Comparable<PackBase>
 				}
 			}
 		}
-	}
-
-	public byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc)
-	{
-		try
-		{
-			if (bbox.Zoom != desc.Zoom) return null;
-
-			int index = (desc.Y - bbox.MinY) * bbox.Stride + (desc.X - bbox.MinX) - 1;
-			long offset = bbox.OffsetToIndex + index * 8;
-
-			FileInputStream stream = new FileInputStream(Filename);
-			/* Stream stream = new FileStream(Filename, FileMode.Open, FileAccess.Read); */
-			// stream.Seek(offset, SeekOrigin.Begin);
-			stream.skip(offset);
-
-			// BinaryReader reader = new BinaryReader(stream);
-			DataInputStream reader = new DataInputStream(stream);
-
-			long tileOffset = Long.reverseBytes(reader.readLong());
-			long nextOffset = Long.reverseBytes(reader.readLong());
-			int length = (int) (nextOffset - tileOffset);
-
-			if (length == 0)
-			{
-				reader.close();
-				return null;
-			}
-
-			stream.skip(tileOffset - offset - 16);
-			byte[] buffer = new byte[length];
-			stream.read(buffer, 0, length);
-
-			reader.close();
-
-			// check for support / conversion
-			byte[] signature = new byte[]
-				{ (byte) 137, (byte) 80, (byte) 78, (byte) 71, (byte) 13, (byte) 10, (byte) 26, (byte) 10 };
-			if (Arrays.equals(signature, get(buffer, 0, 8)))
-			{
-				// es ist ein png
-				byte BitDepth = buffer[24];
-				// byte ColourType = buffer[25];
-				// byte CompressionMethod = buffer[26];
-				// BitDepth not supported by pixmap
-				switch (BitDepth)
-				{
-				case 4:
-					// Logger.DEBUG("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
-					InputStream in = new ByteArrayInputStream(buffer);
-					BufferedImage img = ImageIO.read(in);
-					ByteArrayOutputStream bas = new ByteArrayOutputStream();
-					ImageIO.write(img, "jpg", bas);
-					byte[] data = bas.toByteArray();
-					bas.close();
-					return data;
-					// break;
-				case 8:
-					// supported
-					break;
-				default:
-					// perhaps supported
-					break;
-				}
-			}
-			return buffer;
-		}
-		catch (Exception exc)
-		{
-			/*
-			 * #if DEBUG Global.AddLog("Pack.LoadFromBoundingBox: Out of memory!" + exc.ToString()); Global.AddMemoryLog(); #endif
-			 */
-		}
-
-		return null;
-
-	}
-
-	/**
-	 * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that starts at <tt>offset</tt>.
-	 */
-	protected static byte[] get(byte[] array, int offset, int length)
-	{
-		byte[] result = new byte[length];
-		System.arraycopy(array, offset, result, 0, length);
-		return result;
 	}
 
 	@Override

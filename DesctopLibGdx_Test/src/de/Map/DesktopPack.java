@@ -1,71 +1,69 @@
-package de.cachebox_test.Map;
+package de.Map;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
+
+import javax.imageio.ImageIO;
 
 import CB_Core.Map.Descriptor;
 import CB_UI.Map.BoundingBox;
 import CB_UI.Map.ManagerBase;
 import CB_UI.Map.PackBase;
-import CB_Utils.Log.Logger;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-public class Pack extends PackBase
+public class DesktopPack extends PackBase
 {
 
-	public Pack(CB_UI.Map.Layer layer)
+	public DesktopPack(CB_UI.Map.Layer layer)
 	{
 		super(layer);
 	}
 
-	public Pack(ManagerBase manager, String file) throws IOException
+	public DesktopPack(ManagerBase manager, String file) throws IOException
 	{
 		super(manager, file);
 	}
 
-	// LoadFromBoundingBoxByteArray
-	/*
-	 * public int CompareTo(object obj) { Pack cmp = obj as Pack; if (this.MaxAge < cmp.MaxAge) return -1;
-	 * 
-	 * if (this.MaxAge > cmp.MaxAge) return 1;
-	 * 
-	 * return 0; }
-	 */
-	// / <summary>
-	// /
-	// / </summary>
-	// / <param name="bbox">Bounding Box</param>
-	// / <param name="desc">Descriptor</param>
-	// / <returns>Bitmap der Kachel</returns>
-	public Bitmap LoadFromBoundingBox(BoundingBox bbox, Descriptor desc)
-	{
-		Logger.DEBUG("LoadFromBoundingBox");
-		try
-		{
-			byte[] buffer = LoadFromBoundingBoxByteArray(bbox, desc);
-			if (buffer == null) return null;
-
-			Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int) buffer.length);
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			result.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-			Bitmap bitj = BitmapFactory.decodeByteArray(baos.toByteArray(), 0, baos.size());
-			result.recycle();
-			baos.close();
-			return bitj;
-		}
-		catch (Exception exc)
-		{
-			exc.printStackTrace();
-		}
-
-		return null;
-
-	}
+	// // unpack all files to cache
+	// // extractImages();
+	// private void extractImages()
+	// {
+	// for (BoundingBox bbox : BoundingBoxes)
+	// {
+	// int z = bbox.Zoom;
+	// for (int x = bbox.MinX; x <= bbox.MaxX; x++)
+	// {
+	// for (int y = bbox.MinY; y <= bbox.MaxY; y++)
+	// {
+	// Descriptor desc = new Descriptor(x, y, z);
+	// byte[] b = LoadFromBoundingBoxByteArray(bbox, desc);
+	// String fname = Layer.GetLocalFilename(desc);
+	// File ff = new File(fname);
+	// if (!ff.getParentFile().exists())
+	// {
+	// ff.getParentFile().mkdirs();
+	// }
+	// try
+	// {
+	// FileOutputStream fos = new FileOutputStream(ff.getAbsoluteFile());
+	// fos.write(b);
+	// fos.close();
+	// }
+	// catch (Exception e)
+	// {
+	// // TODO: handle exception
+	// }
+	// }
+	// }
+	//
+	// }
+	//
+	// }
 
 	@Override
 	public byte[] LoadFromBoundingBoxByteArray(BoundingBox bbox, Descriptor desc)
@@ -115,10 +113,10 @@ public class Pack extends PackBase
 				{
 				case 4:
 					// Logger.DEBUG("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
-					Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int) buffer.length);
+					InputStream in = new ByteArrayInputStream(buffer);
+					BufferedImage img = ImageIO.read(in);
 					ByteArrayOutputStream bas = new ByteArrayOutputStream();
-					result.compress(Bitmap.CompressFormat.JPEG, 80, bas);
-					result.recycle();
+					ImageIO.write(img, "jpg", bas);
 					byte[] data = bas.toByteArray();
 					bas.close();
 					return data;
