@@ -24,6 +24,7 @@ import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
+import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingDouble;
@@ -35,7 +36,6 @@ import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingIntArray;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingTime;
-import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Util.FileIO;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -250,7 +250,7 @@ public class splash extends Activity
 		workPath = AndroidSettings.getString("WorkPath", "");
 		boolean askAgain = AndroidSettings.getBoolean("AskAgain", true);
 
-		Global.initTheme(context);
+		Global.initTheme(this);
 		Global.InitIcons(this);
 
 		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
@@ -848,6 +848,8 @@ public class splash extends Activity
 		}
 
 		Logger.setDebug(Global.Debug);
+
+		new Config();
 
 		// Read Config
 		Config.Initialize(workPath, workPath + "/cachebox.config");

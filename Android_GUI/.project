@@ -33,9 +33,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>RpcSrc</name>
+			<name>CB_Core_src</name>
 			<type>2</type>
-			<location>D:/WinCachebox/Cachebox/CB_Server_GIT/CB_Rpc/src</location>
+			<location>C:/@work/Longri/SVN&apos;s/Cachebox/trunk/CB_Core/src</location>
 		</link>
 	</linkedResources>
 	<variableList>
