@@ -45,8 +45,8 @@ import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
-import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
+import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.Math.CB_RectF;
@@ -196,8 +196,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		CompassMode = compassMode;
 
 		invalidateTextureEventList.Add(this);
-		Config.settings.MapsforgeDayTheme.addChangedEventListner(themeChangedEventHandler);
-		Config.settings.MapsforgeNightTheme.addChangedEventListner(themeChangedEventHandler);
+		Config.MapsforgeDayTheme.addChangedEventListner(themeChangedEventHandler);
+		Config.MapsforgeNightTheme.addChangedEventListner(themeChangedEventHandler);
 		registerSkinChangedEvent();
 		setBackground(SpriteCacheBase.ListBack);
 		int maxNumTiles = 0;
@@ -312,7 +312,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		// from create
 
-		String currentLayerName = Config.settings.CurrentMapLayer.getValue();
+		String currentLayerName = Config.CurrentMapLayer.getValue();
 		if (ManagerBase.Manager != null)
 		{
 			if (mapTileLoader.CurrentLayer == null)
@@ -321,7 +321,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		}
 
-		String currentOverlayLayerName = Config.settings.CurrentMapOverlayLayer.getValue();
+		String currentOverlayLayerName = Config.CurrentMapOverlayLayer.getValue();
 		if (ManagerBase.Manager != null)
 		{
 			if (mapTileLoader.CurrentOverlayLayer == null && currentOverlayLayerName.length() > 0) mapTileLoader.CurrentOverlayLayer = ManagerBase.Manager
@@ -333,7 +333,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		drawingWidth = mapIntWidth;
 		drawingHeight = mapIntHeight;
 
-		iconFactor = Config.settings.MapViewDPIFaktor.getValue();
+		iconFactor = Config.MapViewDPIFaktor.getValue();
 
 		togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
@@ -352,7 +352,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 				boolean wasCarMode = CarMode;
 				info.setCoordType(CoordType.Map);
 
-				Config.settings.LastMapToggleBtnState.setValue(State);
+				Config.LastMapToggleBtnState.setValue(State);
 				Config.AcceptChanges();
 
 				if (State == 4)
@@ -397,8 +397,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			}
 		});
 		togBtn.registerSkinChangedEvent();
-		togBtn.setState(CompassMode ? 1 : Config.settings.LastMapToggleBtnState.getValue(), true);
-		switch (Config.settings.LastMapToggleBtnState.getValue())
+		togBtn.setState(CompassMode ? 1 : Config.LastMapToggleBtnState.getValue(), true);
+		switch (Config.LastMapToggleBtnState.getValue())
 		{
 		case 0:
 			info.setCoordType(CoordType.Map);
@@ -447,11 +447,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 		resize(rec.getWidth(), rec.getHeight());
 
-		center.setLatitude(Config.settings.MapInitLatitude.getValue());
-		center.setLongitude(Config.settings.MapInitLongitude.getValue());
+		center.setLatitude(Config.MapInitLatitude.getValue());
+		center.setLongitude(Config.MapInitLongitude.getValue());
 		// Info aktualisieren
 		info.setCoord(center);
-		aktZoom = Config.settings.lastZoomLevel.getValue();
+		aktZoom = Config.lastZoomLevel.getValue();
 		zoomBtn.setZoom(aktZoom);
 		calcPixelsPerMeter();
 		mapScale.zoomChanged();
@@ -482,7 +482,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		PositionChangedEventList.Add(this);
 		PositionChanged();
 
-		alignToCompass = CompassMode ? true : !Config.settings.MapNorthOriented.getValue();
+		alignToCompass = CompassMode ? true : !Config.MapNorthOriented.getValue();
 
 		CarMode = (togBtn.getState() == 4);
 		if (!CarMode)
@@ -553,8 +553,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		camera.position.set(0, 0, 0);
 
 		// setze Size als IniSize
-		Config.settings.MapIniWidth.setValue(mapIntWidth);
-		Config.settings.MapIniHeight.setValue(mapIntHeight);
+		Config.MapIniWidth.setValue(mapIntWidth);
+		Config.MapIniHeight.setValue(mapIntHeight);
 		Config.AcceptChanges();
 
 		// Logger.LogCat("MapView Size Changed MaxY=" + this.getMaxY());
@@ -568,9 +568,9 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (!CompassMode) // save last zoom and position only from Map, not from CompassMap
 		{
-			Config.settings.MapInitLatitude.setValue(center.getLatitude());
-			Config.settings.MapInitLongitude.setValue(center.getLongitude());
-			Config.settings.lastZoomLevel.setValue(aktZoom);
+			Config.MapInitLatitude.setValue(center.getLatitude());
+			Config.MapInitLongitude.setValue(center.getLongitude());
+			Config.lastZoomLevel.setValue(aktZoom);
 			Config.settings.WriteToDB();
 		}
 
@@ -581,11 +581,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (newLayer == null)
 		{
-			Config.settings.CurrentMapLayer.setValue("");
+			Config.CurrentMapLayer.setValue("");
 		}
 		else
 		{
-			Config.settings.CurrentMapLayer.setValue(newLayer.Name);
+			Config.CurrentMapLayer.setValue(newLayer.Name);
 		}
 		Config.AcceptChanges();
 		mapTileLoader.CurrentLayer = newLayer;
@@ -596,11 +596,11 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if (newLayer == null)
 		{
-			Config.settings.CurrentMapOverlayLayer.setValue("");
+			Config.CurrentMapOverlayLayer.setValue("");
 		}
 		else
 		{
-			Config.settings.CurrentMapOverlayLayer.setValue(newLayer.Name);
+			Config.CurrentMapOverlayLayer.setValue(newLayer.Name);
 		}
 		Config.AcceptChanges();
 		mapTileLoader.CurrentOverlayLayer = newLayer;
@@ -616,10 +616,10 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	protected void render(SpriteBatch batch)
 	{
 
-		if (Config.settings.MoveMapCenterWithSpeed.getValue() && CarMode && Locator.hasSpeed())
+		if (Config.MoveMapCenterWithSpeed.getValue() && CarMode && Locator.hasSpeed())
 		{
 
-			double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
+			double maxSpeed = Config.MoveMapCenterMaxSpeed.getValue();
 
 			double percent = Locator.SpeedOverGround() / maxSpeed;
 
@@ -1004,7 +1004,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		}
 
 		boolean lastUsedCompass = Locator.UseMagneticCompass();
-		boolean Transparency = Config.settings.PositionMarkerTransparent.getValue();
+		boolean Transparency = Config.PositionMarkerTransparent.getValue();
 		// int arrowId = lastUsedCompass ? (Transparency ? 2 : 0) :
 		// (Transparency ? 3 : 1);
 		int arrowId = 0;
@@ -1517,13 +1517,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 	public void InitializeMap()
 	{
-		zoomCross = Config.settings.ZoomCross.getValue();
-		zoomBtn.setZoom(Config.settings.lastZoomLevel.getValue());
+		zoomCross = Config.ZoomCross.getValue();
+		zoomBtn.setZoom(Config.lastZoomLevel.getValue());
 		// Bestimmung der ersten Position auf der Karte
 		if (!positionInitialized)
 		{
-			double lat = Config.settings.MapInitLatitude.getValue();
-			double lon = Config.settings.MapInitLongitude.getValue();
+			double lat = Config.MapInitLatitude.getValue();
+			double lon = Config.MapInitLongitude.getValue();
 
 			// Initialisierungskoordinaten bekannt und können übernommen werden
 			if (lat != -1000 && lon != -1000)
@@ -1604,25 +1604,25 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 	{
 		if ((InitialFlags & INITIAL_SETTINGS) != 0)
 		{
-			showRating = CompassMode ? false : Config.settings.MapShowRating.getValue();
-			showDT = CompassMode ? false : Config.settings.MapShowDT.getValue();
-			showTitles = CompassMode ? false : Config.settings.MapShowTitles.getValue();
-			hideMyFinds = Config.settings.MapHideMyFinds.getValue();
-			showCompass = CompassMode ? false : Config.settings.MapShowCompass.getValue();
-			showDirektLine = CompassMode ? false : Config.settings.ShowDirektLine.getValue();
-			showAllWaypoints = CompassMode ? false : Config.settings.ShowAllWaypoints.getValue();
-			showAccuracyCircle = CompassMode ? false : Config.settings.ShowAccuracyCircle.getValue();
-			showMapCenterCross = CompassMode ? false : Config.settings.ShowMapCenterCross.getValue();
+			showRating = CompassMode ? false : Config.MapShowRating.getValue();
+			showDT = CompassMode ? false : Config.MapShowDT.getValue();
+			showTitles = CompassMode ? false : Config.MapShowTitles.getValue();
+			hideMyFinds = Config.MapHideMyFinds.getValue();
+			showCompass = CompassMode ? false : Config.MapShowCompass.getValue();
+			showDirektLine = CompassMode ? false : Config.ShowDirektLine.getValue();
+			showAllWaypoints = CompassMode ? false : Config.ShowAllWaypoints.getValue();
+			showAccuracyCircle = CompassMode ? false : Config.ShowAccuracyCircle.getValue();
+			showMapCenterCross = CompassMode ? false : Config.ShowMapCenterCross.getValue();
 
 			if (info != null) info.setVisible(showCompass);
 
 			if (InitialFlags == INITIAL_ALL)
 			{
-				iconFactor = (float) Config.settings.MapViewDPIFaktor.getValue();
+				iconFactor = (float) Config.MapViewDPIFaktor.getValue();
 
-				int setAktZoom = CompassMode ? Config.settings.lastZoomLevel.getValue() : Config.settings.lastZoomLevel.getValue();
-				int setMaxZoom = CompassMode ? Config.settings.CompassMapMaxZommLevel.getValue() : Config.settings.OsmMaxLevel.getValue();
-				int setMinZoom = CompassMode ? Config.settings.CompassMapMinZoomLevel.getValue() : Config.settings.OsmMinLevel.getValue();
+				int setAktZoom = CompassMode ? Config.lastZoomLevel.getValue() : Config.lastZoomLevel.getValue();
+				int setMaxZoom = CompassMode ? Config.CompassMapMaxZommLevel.getValue() : Config.OsmMaxLevel.getValue();
+				int setMinZoom = CompassMode ? Config.CompassMapMinZoomLevel.getValue() : Config.OsmMinLevel.getValue();
 
 				aktZoom = setAktZoom;
 				zoomBtn.setMaxZoom(setMaxZoom);
@@ -1658,7 +1658,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			// Zustand der Karte CarMode/NormalMode
 			if (CarMode)
 			{
-				if (Config.settings.nightMode.getValue())
+				if (Config.nightMode.getValue())
 				{
 					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
 					themePath = ifCarThemeExist(GlobalCore.PathCustomNight);
@@ -1695,15 +1695,15 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			{
 
 				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
-				if (Config.settings.nightMode.getValue())
+				if (Config.nightMode.getValue())
 				{
-					themePath = ifThemeExist(Config.settings.MapsforgeNightTheme.getValue());
+					themePath = ifThemeExist(Config.MapsforgeNightTheme.getValue());
 				}
 
 				if (themePath == null)
 				{
-					if (Config.settings.nightMode.getValue()) useInvertNightTheme = true;
-					themePath = ifThemeExist(Config.settings.MapsforgeDayTheme.getValue());
+					if (Config.nightMode.getValue()) useInvertNightTheme = true;
+					themePath = ifThemeExist(Config.MapsforgeDayTheme.getValue());
 
 				}
 
@@ -1988,7 +1988,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 			drawingHeight = mapIntHeight;
 		}
 
-		Config.settings.MapNorthOriented.setValue(!alignToCompass);
+		Config.MapNorthOriented.setValue(!alignToCompass);
 		Config.AcceptChanges();
 
 	}
@@ -2056,8 +2056,8 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 
 			float zoomValue = div / 100f;
 
-			int maxZoom = Config.settings.OsmMaxLevel.getValue();
-			int minZoom = Config.settings.OsmMinLevel.getValue();
+			int maxZoom = Config.OsmMaxLevel.getValue();
+			int minZoom = Config.OsmMinLevel.getValue();
 			float dynZoom = (lastDynamicZoom - zoomValue);
 
 			if (dynZoom > maxZoom) dynZoom = maxZoom;
@@ -2707,13 +2707,13 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 		{
 			info.setSpeed(Locator.SpeedString());
 
-			if (togBtn.getState() == 4 && Config.settings.dynamicZoom.getValue())
+			if (togBtn.getState() == 4 && Config.dynamicZoom.getValue())
 			{
 				// calculate dynamic Zoom
 
-				double maxSpeed = Config.settings.MoveMapCenterMaxSpeed.getValue();
-				int maxZoom = Config.settings.dynamicZoomLevelMax.getValue();
-				int minZoom = Config.settings.dynamicZoomLevelMin.getValue();
+				double maxSpeed = Config.MoveMapCenterMaxSpeed.getValue();
+				int maxZoom = Config.dynamicZoomLevelMax.getValue();
+				int minZoom = Config.dynamicZoomLevelMin.getValue();
 
 				double percent = Locator.SpeedOverGround() / maxSpeed;
 

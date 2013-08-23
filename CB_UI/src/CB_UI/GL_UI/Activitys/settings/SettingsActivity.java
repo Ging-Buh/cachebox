@@ -15,10 +15,10 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.SoundCache;
+import CB_UI.GL_UI.SoundCache.Sounds;
 import CB_UI.GL_UI.Controls.API_Button;
 import CB_UI.GL_UI.Controls.QuickButtonList;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_UI.GL_UI.SoundCache.Sounds;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListButtonLangSpinner;
 import CB_UI.GL_UI.Views.AdvancedSettingsView.SettingsListButtonSkinSpinner;
@@ -33,24 +33,24 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.FloatControl;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.LinearCollapseBox;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
+import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
-import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerDouble;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerTime;
+import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -64,6 +64,7 @@ import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingEnum;
 import CB_Utils.Settings.SettingFile;
+import CB_Utils.Settings.SettingFloat;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingIntArray;
@@ -281,7 +282,8 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 			for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext();)
 			{
-				SortedSettingList.add(it.next());
+				SettingBase<?> setting = it.next();
+				SortedSettingList.add(setting);
 			}
 
 			Collections.sort(SortedSettingList);
@@ -492,6 +494,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		else if (SB instanceof SettingDouble)
 		{
 			return getDblView((SettingDouble) SB, BackgroundChanger);
+		}
+		else if (SB instanceof SettingFloat)
+		{
+			return getFloatView((SettingFloat) SB, BackgroundChanger);
 		}
 		else if (SB instanceof SettingFolder)
 		{
@@ -818,6 +824,66 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 							{
 								SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
 								if (SetValue != null) SetValue.setValue(value);
+								resortList();
+								// Activity wieder anzeigen
+								that.show();
+							}
+
+							@Override
+							public void cancelClicked()
+							{
+								// Activity wieder anzeigen
+								that.show();
+							}
+						});
+				return true;
+			}
+
+		});
+
+		item.setOnLongClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+
+				return false;
+			}
+
+		});
+
+		return item;
+
+	}
+
+	private CB_View_Base getFloatView(final SettingFloat SB, int backgroundChanger)
+	{
+		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
+		final String trans = Translation.Get(SB.getName());
+		item.setName(trans);
+		item.setDefault(String.valueOf(SB.getValue()));
+
+		item.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				EditKey = Config.settings.indexOf(SB);
+
+				// Show NumPad Int Edit
+				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
+						new returnValueListnerDouble()
+						{
+							@Override
+							public void returnValue(double value)
+							{
+								SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
+								if (SetValue != null) SetValue.setValue((float) value);
 								resortList();
 								// Activity wieder anzeigen
 								that.show();

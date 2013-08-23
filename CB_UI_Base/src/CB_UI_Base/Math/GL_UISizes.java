@@ -41,13 +41,12 @@ public class GL_UISizes implements SizeChangedEvent
 		Logger.DEBUG("Initial UISizes => " + width + "/" + height);
 		Logger.DEBUG("DPI = " + DPI);
 
-		defaultDPI = (float) CB_UI_Base_Settings.MapViewDPIFaktor.getDefaultValue();
+		defaultDPI = CB_UI_Base_Settings.MapViewDPIFaktor.getDefaultValue();
 
-		if (DPI != (float) CB_UI_Base_Settings.MapViewDPIFaktor.getValue()
-				|| FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue())
+		if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue())
 		{
 
-			DPI = (float) CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
+			DPI = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
 
 			Logger.DEBUG("DPI != MapViewDPIFaktor " + DPI);
 
@@ -217,10 +216,10 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	public static SizeF TargetArrow;
 
-	/**
-	 * Die Größe der D/T Wertungs Stars
-	 */
-	public static SizeF DT_Size;
+	// /**
+	// * Die Größe der D/T Wertungs Stars
+	// */
+	// public static SizeF DT_Size;
 
 	public static float margin;
 
@@ -324,7 +323,7 @@ public class GL_UISizes implements SizeChangedEvent
 		halfBubble = Bubble.width / 2;
 		bubbleCorrect.setSize((float) (6.6666667 * DPI), (float) 26.66667 * DPI);
 
-		DT_Size = new SizeF(37 * DPI, (37 * DPI * 0.2f));
+		// DT_Size = new SizeF(37 * DPI, (37 * DPI * 0.2f));
 
 	}
 

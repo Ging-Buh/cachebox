@@ -7,13 +7,13 @@ import CB_Utils.Settings.SettingsDAO;
 public class SettingsDAO_UI extends SettingsDAO
 {
 	@Override
-	public void WriteToPlatformSettings(SettingBase setting)
+	public void WriteToPlatformSettings(SettingBase<?> setting)
 	{
 		PlatformSettings.WriteSetting(setting);
 	}
 
 	@Override
-	public SettingBase ReadFromPlatformSetting(SettingBase setting)
+	public SettingBase<?> ReadFromPlatformSetting(SettingBase<?> setting)
 	{
 		try
 		{

@@ -26,6 +26,7 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingString;
@@ -219,6 +220,8 @@ public class splash extends TabMainView
 		Logger.DEBUG("ini_Config");
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 		Config.settings.ReadFromDB();
+		// now must reinitial UiSizes with reading settings values
+		GL_UISizes.initial(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
 		Config.AcceptChanges();
 	}
 

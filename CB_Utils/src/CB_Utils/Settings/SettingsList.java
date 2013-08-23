@@ -26,8 +26,25 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 
 	public static SettingBase<?> addSetting(SettingBase<?> setting)
 	{
-		if (that == null) return null;
-		if (!that.contains(setting)) that.add(setting);
+
+		if (that == null) try
+		{
+			throw new InstantiationException("Settings List not initial");
+		}
+		catch (InstantiationException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		if (!that.contains(setting))
+		{
+			that.add(setting);
+		}
+		else
+		{
+			String stop = "";
+			Logger.LogCat(stop);
+		}
 		return setting;
 	}
 

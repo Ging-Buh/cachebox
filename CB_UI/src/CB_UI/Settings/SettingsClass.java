@@ -14,6 +14,7 @@ public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_
 
 	public SettingsClass()
 	{
+		super();
 	}
 
 	@Override
