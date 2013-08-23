@@ -35,7 +35,12 @@
 		<link>
 			<name>CB_Core_src</name>
 			<type>2</type>
-			<location>C:/@work/Longri/SVN&apos;s/Cachebox/trunk/CB_Core/src</location>
+			<locationURI>PARENT-1-PROJECT_LOC/CB_Core/src</locationURI>
+		</link>
+		<link>
+			<name>CB_Rpc_src</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CB_Rpc/src</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

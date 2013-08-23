@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding=".svn/" kind="src" path="src"/>
+	<classpathentry kind="src" path="CB_Rpc_src"/>
 	<classpathentry kind="src" path="CB_Core_src"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
@@ -11,6 +12,11 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
+	<classpathentry kind="lib" path="libs/mina-core-2.0.4.jar"/>
+	<classpathentry kind="lib" path="libs/org.apache.commons.httpclient.jar"/>
+	<classpathentry kind="lib" path="libs/org.apache.commons.logging.jar"/>
+	<classpathentry kind="lib" path="libs/servlet-api-6.0.16.jar"/>
+	<classpathentry kind="lib" path="libs/slf4j-api-1.6.1.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
