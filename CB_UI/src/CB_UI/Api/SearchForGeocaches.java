@@ -244,14 +244,14 @@ public class SearchForGeocaches
 			if (searchC.excludeHides)
 			{
 				requestString += "\"NotHiddenByUsers\":{";
-				requestString += "\"UserNames\":[\"" + Config.settings.GcLogin.getValue() + "\"]";
+				requestString += "\"UserNames\":[\"" + Config.GcLogin.getValue() + "\"]";
 				requestString += "},";
 			}
 
 			if (searchC.excludeFounds)
 			{
 				requestString += "\"NotFoundByUsers\":{";
-				requestString += "\"UserNames\":[\"" + Config.settings.GcLogin.getValue() + "\"]";
+				requestString += "\"UserNames\":[\"" + Config.GcLogin.getValue() + "\"]";
 				requestString += "},";
 			}
 
@@ -358,7 +358,10 @@ public class SearchForGeocaches
 						Logger.Error("API", "SearchForGeocaches_ParseDate", exc);
 					}
 					cache.Difficulty = (float) jCache.getDouble("Difficulty");
-					cache.setFavorit(false);
+
+					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+					Boolean Favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + gcCode + "\"");
+					cache.setFavorit(Favorite);
 
 					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
 					Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + gcCode + "\"");
@@ -382,7 +385,11 @@ public class SearchForGeocaches
 						// Fehler ???
 					}
 					cache.GPXFilename_ID = gpxFilenameId;
-					cache.hasUserData = false;
+
+					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+					Boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + gcCode + "\"");
+
+					cache.hasUserData = userData;
 					try
 					{
 						cache.hint = jCache.getString("EncodedHints");
@@ -454,7 +461,7 @@ public class SearchForGeocaches
 					// Chk if Own or Found
 					Boolean exclude = false;
 					if (search.withoutFinds && cache.Found) exclude = true;
-					if (search.withoutOwn && cache.Owner.equalsIgnoreCase(Config.settings.GcLogin.getValue())) exclude = true;
+					if (search.withoutOwn && cache.Owner.equalsIgnoreCase(Config.GcLogin.getValue())) exclude = true;
 
 					if (!CacheERROR && !exclude)
 					{

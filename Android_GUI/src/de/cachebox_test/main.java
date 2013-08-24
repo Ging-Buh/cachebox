@@ -65,6 +65,8 @@ import CB_UI_Base.Events.platformConector.IsetScreenLockTime;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.ViewID;
+import CB_UI_Base.GL_UI.ViewID.UI_Pos;
+import CB_UI_Base.GL_UI.ViewID.UI_Type;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -73,8 +75,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL.renderStartet;
-import CB_UI_Base.GL_UI.ViewID.UI_Pos;
-import CB_UI_Base.GL_UI.ViewID.UI_Type;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
@@ -469,7 +469,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Logger.Add(this);
 
-		// N = Config.settings.nightMode.getValue();
+		// N = Config.nightMode.getValue();
 
 		setContentView(GlobalCore.isTab ? R.layout.tab_main : R.layout.main);
 
@@ -488,7 +488,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		glListener = new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), sp, ma);
 
-		int Time = Config.settings.ScreenLock.getValue();
+		int Time = Config.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
 		counter.start();
 
@@ -502,7 +502,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
-		Config.settings.DebugMode.setValue(false);
+		Config.DebugMode.setValue(false);
 		Config.AcceptChanges();
 
 		// Initial Android TexturePacker
@@ -539,7 +539,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		downSlider.isInitial = false;
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes.that
+		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that
 				.getQuickButtonListHeight() : 0;
 
 		setQuickButtonHeight(sollHeight);
@@ -548,7 +548,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			// ask for API key only if Rev-Number changed, like at new
 			// installation and API Key is Empty
-			if (Config.settings.newInstall.getValue() && Config.GetAccessToken().equals(""))
+			if (Config.newInstall.getValue() && Config.GetAccessToken().equals(""))
 			{
 				askToGetApiKey();
 			}
@@ -557,7 +557,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				if (!GlobalCore.restartAfterKill) chkGpsIsOn();
 			}
 
-			if (Config.settings.newInstall.getValue())
+			if (Config.newInstall.getValue())
 			{
 				String Welcome = "";
 				String LangId = getString(R.string.langId);
@@ -838,8 +838,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					public void run()
 					{
 						if (GlobalCore.getSelectedCache() != null) GlobalCore.getSelectedCache().ReloadSpoilerRessources();
-						String MediaFolder = Config.settings.UserImageFolder.getValue();
-						String TrackFolder = Config.settings.TrackFolder.getValue();
+						String MediaFolder = Config.UserImageFolder.getValue();
+						String TrackFolder = Config.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
 						// die Koordinaten nach der Aufnahme verwendet werden.
@@ -882,7 +882,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						String recordedVideoFilePath = cursor.getString(column_index_data);
 
 						String ext = FileIO.GetFileExtension(recordedVideoFilePath);
-						String MediaFolder = Config.settings.UserImageFolder.getValue();
+						String MediaFolder = Config.UserImageFolder.getValue();
 
 						// Video in Media-Ordner verschieben
 						File source = new File(recordedVideoFilePath);
@@ -893,7 +893,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							// Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: " + source.getName());
 						}
 
-						String TrackFolder = Config.settings.TrackFolder.getValue();
+						String TrackFolder = Config.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 						TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate,
 								mediaTimeString);
@@ -1067,7 +1067,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes.that
+		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that
 				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
@@ -1077,7 +1077,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		/*
 		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
 		 */
-		if (Config.settings.SuppressPowerSaving.getValue())
+		if (Config.SuppressPowerSaving.getValue())
 		{
 			Logger.DEBUG("Main=> onResume SuppressPowerSaving");
 
@@ -1136,7 +1136,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		/*
 		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
 		 */
-		if (Config.settings.SuppressPowerSaving.getValue())
+		if (Config.SuppressPowerSaving.getValue())
 		{
 			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
@@ -1294,7 +1294,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			counterStopped = true;
 			// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
 			// Das verhindert das selber aussperren!
-			if ((Config.settings.ScreenLock.getValue() / 1000 < 10)) return;
+			if ((Config.ScreenLock.getValue() / 1000 < 10)) return;
 		}
 
 		// TODO move/create ScreenLock on GDX
@@ -1523,7 +1523,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static void vibrate()
 	{
-		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(Config.settings.VibrateTime.getValue());
+		if (Config.vibrateFeedback.getValue()) vibrator.vibrate(Config.VibrateTime.getValue());
 	}
 
 	/*
@@ -1728,7 +1728,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Log.d("DroidCachebox", "Starting camera on the phone...");
 
 		// define the file-name to save photo taken by Camera activity
-		String directory = Config.settings.UserImageFolder.getValue();
+		String directory = Config.UserImageFolder.getValue();
 		if (!FileIO.createDirectory(directory))
 		{
 			// Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1763,7 +1763,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Log.d("DroidCachebox", "Starting video on the phone...");
 
 		// define the file-name to save video taken by Camera activity
-		String directory = Config.settings.UserImageFolder.getValue();
+		String directory = Config.UserImageFolder.getValue();
 		if (!FileIO.createDirectory(directory))
 		{
 			// Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1812,7 +1812,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// Log.d("DroidCachebox", "Starting voice recorder on the phone...");
 
 			// define the file-name to save voice taken by activity
-			String directory = Config.settings.UserImageFolder.getValue();
+			String directory = Config.UserImageFolder.getValue();
 			if (!FileIO.createDirectory(directory))
 			{
 				// Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1847,8 +1847,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			extAudioRecorder.prepare();
 			extAudioRecorder.start();
 
-			String MediaFolder = Config.settings.UserImageFolder.getValue();
-			String TrackFolder = Config.settings.TrackFolder.getValue();
+			String MediaFolder = Config.UserImageFolder.getValue();
+			String TrackFolder = Config.TrackFolder.getValue();
 			String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 			// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die
 			// Koordinaten beim Start der Aufnahme verwendet werden.
@@ -1890,7 +1890,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 					try
 					{
-						URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.settings.GcJoker.getValue() + "&wpt="
+						URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GcJoker.getValue() + "&wpt="
 								+ GlobalCore.getSelectedCache().GcCode);
 						URLConnection urlConnection = url.openConnection();
 						HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
@@ -2100,7 +2100,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void setDebugVisible()
 	{
-		if (Config.settings.DebugShowPanel.getValue())
+		if (Config.DebugShowPanel.getValue())
 		{
 			debugInfoPanel.setVisibility(View.VISIBLE);
 			debugInfoPanel.onShow();
@@ -2313,20 +2313,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			if (Config.settings.Ask_Switch_GPS_ON.getValue() && !GpsOn())
+			if (Config.Ask_Switch_GPS_ON.getValue() && !GpsOn())
 			{
 				if (!Translation.isInitial())
 				{
 					new Translation(Config.WorkPath, FileType.Internal);
 					try
 					{
-						Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
+						Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
 					}
 					catch (Exception e)
 					{
 						try
 						{
-							Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getDefaultValue());
+							Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
 						}
 						catch (IOException e1)
 						{
@@ -2528,8 +2528,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		List<ResolveInfo> list = packageManager.queryIntentServices(baseIntent, PackageManager.GET_RESOLVED_FILTER);
 		// Log.d(LOG_TAG, "fillPluginList: " + list);
 
-		Config.settings.hasFTF_PlugIn.setValue(false);
-		Config.settings.hasPQ_PlugIn.setValue(false);
+		Config.hasFTF_PlugIn.setValue(false);
+		Config.hasPQ_PlugIn.setValue(false);
 		int i;
 		try
 		{
@@ -2543,11 +2543,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 					if (sinfo.packageName.contains("de.CB_FTF_PlugIn")) // Don't bind, is an Widget
 					{
-						Config.settings.hasFTF_PlugIn.setValue(true);
+						Config.hasFTF_PlugIn.setValue(true);
 					}
 					else if (sinfo.packageName.contains("de.CB_PQ_PlugIn"))// Don't bind, is an Widget
 					{
-						Config.settings.hasPQ_PlugIn.setValue(true);
+						Config.hasPQ_PlugIn.setValue(true);
 					}
 					else
 					// PlugIn for Bind
@@ -2654,11 +2654,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				if (Global.iPlugin != null && Global.iPlugin[0] != null)
 				{
-					Config.settings.hasCallPermission.setValue(true);
+					Config.hasCallPermission.setValue(true);
 				}
 				else
 				{
-					Config.settings.hasCallPermission.setValue(false);
+					Config.hasCallPermission.setValue(false);
 				}
 
 				Config.AcceptChanges();
@@ -3108,8 +3108,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			try
 			{
-				latitude = Config.settings.MapInitLatitude.getValue();
-				longitude = Config.settings.MapInitLongitude.getValue();
+				latitude = Config.MapInitLatitude.getValue();
+				longitude = Config.MapInitLongitude.getValue();
 			}
 			catch (Exception e)
 			{
@@ -3141,47 +3141,47 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// ##########################################################
 
 		// Use Imperial units?
-		CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
-		Config.settings.ImperialUnits.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
+		Config.ImperialUnits.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+				CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
 			}
 		});
 
 		// GPS update time?
-		CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
-		Config.settings.gpsUpdateTime.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
+		Config.gpsUpdateTime.addChangedEventListner(new iChanged()
 		{
 
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+				CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
 			}
 		});
 
 		// Use magnetic Compass?
-		CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
-		Config.settings.HardwareCompass.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
+		Config.HardwareCompass.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+				CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
 			}
 		});
 
 		// Magnetic compass level
-		CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
-		Config.settings.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
+		Config.HardwareCompassLevel.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+				CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
 			}
 		});
 	}

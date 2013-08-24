@@ -171,8 +171,6 @@ public class CacheDAO
 			}
 		}
 
-		cache.longDescription = ""; // clear longDescription because this will
-									// be loaded from database when used
 		args.put("Url", cache.Url);
 		args.put("NumTravelbugs", cache.NumTravelbugs);
 		args.put("Rating", (int) (cache.Rating * 100));
@@ -271,8 +269,6 @@ public class CacheDAO
 			}
 		}
 
-		cache.longDescription = ""; // clear longDescription because this will
-									// be loaded from database when used
 		args.put("Url", cache.Url);
 		args.put("NumTravelbugs", cache.NumTravelbugs);
 		args.put("Rating", (int) (cache.Rating * 100));

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CategoryDAO;
+import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
@@ -22,6 +23,7 @@ import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -30,7 +32,6 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -148,7 +149,7 @@ public class SearchOverPosition extends ActivityBase
 	private void createRadiusLine()
 	{
 		String sRadius = Translation.Get("Radius");
-		String sEinheit = Config.settings.ImperialUnits.getValue() ? "mi" : "km";
+		String sEinheit = Config.ImperialUnits.getValue() ? "mi" : "km";
 
 		float wRadius = Fonts.Measure(sRadius).width;
 		float wEinheit = Fonts.Measure(sEinheit).width;
@@ -287,8 +288,8 @@ public class SearchOverPosition extends ActivityBase
 				if (MapView.that == null)
 				{
 					actSearchPos = new Coordinate();
-					actSearchPos.setLatitude(Config.settings.MapInitLatitude.getValue());
-					actSearchPos.setLongitude(Config.settings.MapInitLongitude.getValue());
+					actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
+					actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
 				}
 				else
 				{
@@ -326,10 +327,10 @@ public class SearchOverPosition extends ActivityBase
 			searcheState = 0;
 		}
 
-		checkBoxExcludeFounds.setChecked(Config.settings.SearchWithoutFounds.getValue());
-		checkBoxOnlyAvible.setChecked(Config.settings.SearchOnlyAvible.getValue());
-		checkBoxExcludeHides.setChecked(Config.settings.SearchWithoutOwns.getValue());
-		Radius.setText(String.valueOf(Config.settings.lastSearchRadius.getValue()));
+		checkBoxExcludeFounds.setChecked(Config.SearchWithoutFounds.getValue());
+		checkBoxOnlyAvible.setChecked(Config.SearchOnlyAvible.getValue());
+		checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
+		Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
 		setToggleBtnState();
 
 	}
@@ -386,9 +387,9 @@ public class SearchOverPosition extends ActivityBase
 	private void ImportNow()
 	{
 
-		Config.settings.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
-		Config.settings.SearchOnlyAvible.setValue(checkBoxOnlyAvible.isChecked());
-		Config.settings.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
+		Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
+		Config.SearchOnlyAvible.setValue(checkBoxOnlyAvible.isChecked());
+		Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
 
 		int radius = 0;
 		try
@@ -401,7 +402,7 @@ public class SearchOverPosition extends ActivityBase
 			e.printStackTrace();
 		}
 
-		if (radius != 0) Config.settings.lastSearchRadius.setValue(radius);
+		if (radius != 0) Config.lastSearchRadius.setValue(radius);
 
 		Config.AcceptChanges();
 
@@ -442,15 +443,14 @@ public class SearchOverPosition extends ActivityBase
 								ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 								CB_UI.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_UI.Api.SearchForGeocaches.SearchCoordinate();
 
-								searchC.withoutFinds = Config.settings.SearchWithoutFounds.getValue();
-								searchC.withoutOwn = Config.settings.SearchWithoutOwns.getValue();
+								searchC.withoutFinds = Config.SearchWithoutFounds.getValue();
+								searchC.withoutOwn = Config.SearchWithoutOwns.getValue();
 
 								searchC.pos = actSearchPos;
-								searchC.distanceInMeters = Config.settings.lastSearchRadius.getValue() * 1000;
+								searchC.distanceInMeters = Config.lastSearchRadius.getValue() * 1000;
 								searchC.number = 50;
 								dis.setAnimationType(AnimationType.Download);
-								CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
-										gpxFilename.Id);
+								CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
 								dis.setAnimationType(AnimationType.Work);
 								if (apiCaches.size() > 0)
 								{
@@ -465,6 +465,12 @@ public class SearchOverPosition extends ActivityBase
 				{
 					// Thread abgebrochen!
 					threadCanceld = true;
+				}
+
+				// Delete all LongDescription from Query! LongDescription is Loading by showing DescriptionView direct from DB
+				for (Cache cache : Database.Data.Query)
+				{
+					cache.longDescription = "";
 				}
 
 				if (!threadCanceld)

@@ -293,7 +293,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			{
 				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
 
-				if (!Config.settings.DescriptionNoAttributes.getValue()) html = getAttributesHtml(cache) + html;
+				if (!Config.DescriptionNoAttributes.getValue()) html = getAttributesHtml(cache) + html;
 
 				// add 2 empty lines so that the last line of description can be selected with the markers
 				html += "</br></br>";
@@ -442,7 +442,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 				// im Day Mode brauchen wir kein InvertView
 				// das sollte mehr Performance geben
-				if (Config.settings.nightMode.getValue())
+				if (Config.nightMode.getValue())
 				{
 					invertViewControl.Me.setVisibility(VISIBLE);
 				}
