@@ -1339,20 +1339,6 @@ public class GroundspeakAPI
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
-			Cache altCache = Database.Data.Query.GetCacheById(cache.Id);
-			if (aktCache == null)
-			{
-				Database.Data.Query.add(cache);
-				// cacheDAO.WriteToDatabase(cache);
-			}
-			else
-			{
-				// 2012-11-17: do not remove old instance from Query because of problems with cacheList and MapView
-				// Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
-				// Database.Data.Query.add(cache);
-				aktCache.copyFrom(cache);
-				// cacheDAO.UpdateDatabase(cache);
-			}
 			// Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen
 			if (!cacheDAO.UpdateDatabase(cache))
 			{
@@ -1380,9 +1366,9 @@ public class GroundspeakAPI
 				boolean update = true;
 
 				// dont refresh wp if aktCache.wp is user changed
-				if (altCache != null)
+				if (aktCache != null)
 				{
-					for (Waypoint wp : altCache.waypoints)
+					for (Waypoint wp : aktCache.waypoints)
 					{
 						if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
 						{
@@ -1400,6 +1386,20 @@ public class GroundspeakAPI
 					}
 				}
 
+			}
+
+			if (aktCache == null)
+			{
+				Database.Data.Query.add(cache);
+				// cacheDAO.WriteToDatabase(cache);
+			}
+			else
+			{
+				// 2012-11-17: do not remove old instance from Query because of problems with cacheList and MapView
+				// Database.Data.Query.remove(Database.Data.Query.GetCacheById(cache.Id));
+				// Database.Data.Query.add(cache);
+				aktCache.copyFrom(cache);
+				// cacheDAO.UpdateDatabase(cache);
 			}
 
 		}
