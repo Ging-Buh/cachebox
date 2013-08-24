@@ -389,26 +389,29 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						// item nur zur Liste Hinzufügen, wenn der
 						// SettingModus
 						// dies auch zu lässt.
-						if (((settingItem.getModus() == SettingModus.Normal)
-								|| (settingItem.getModus() == SettingModus.Expert && Config.settings.SettingsShowExpert.getValue()) || Config.settings.SettingsShowAll
-									.getValue()) && (settingItem.getModus() != SettingModus.Never))
+						if (settingItem.getModus() != SettingModus.develop || GlobalCore.isDevelop())
 						{
 
-							CB_View_Base view = getView(settingItem, position++);
-
-							if (view instanceof Button)
+							if (((settingItem.getModus() == SettingModus.Normal)
+									|| (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll
+										.getValue()) && (settingItem.getModus() != SettingModus.Never))
 							{
-								view.setSize(itemRec);
-							}
 
-							lay.addChild(view);
-							entryCount++;
-							Config.settings.indexOf(settingItem);
-							if (Config.settings.indexOf(settingItem) == EditKey)
-							{
-								expandLayout = true;
-							}
+								CB_View_Base view = getView(settingItem, position++);
 
+								if (view instanceof Button)
+								{
+									view.setSize(itemRec);
+								}
+
+								lay.addChild(view);
+								entryCount++;
+								Config.settings.indexOf(settingItem);
+								if (Config.settings.indexOf(settingItem) == EditKey)
+								{
+									expandLayout = true;
+								}
+							}
 						}
 					}
 				}

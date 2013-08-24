@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import cb_rpc.Settings.CB_Rpc_Settings;
+
 import CB_Core.Settings.CB_Core_Settings;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI.Settings.SettingsClass;
@@ -12,7 +14,7 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
 import CB_Utils.Log.Logger;
 
-public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings
+public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings
 {
 	public static SettingsClass settings;
 

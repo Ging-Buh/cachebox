@@ -5,5 +5,5 @@ package CB_Utils.Settings;
  */
 public enum SettingModus
 {
-	Invisible, Normal, Expert, Never
+	Invisible, Normal, Expert, Never, develop
 };

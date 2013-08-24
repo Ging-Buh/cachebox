@@ -122,7 +122,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		if (cache != null)
+		if (cache != null && mLblCacheName != null)
 		{
 			mLblCacheName.setText(cache.Name);
 		}

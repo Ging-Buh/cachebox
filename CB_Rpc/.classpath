@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/servlet-api-6.0.16.jar"/>
 	<classpathentry kind="lib" path="lib/org.apache.commons.httpclient.jar"/>
 	<classpathentry kind="lib" path="lib/org.apache.commons.logging.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

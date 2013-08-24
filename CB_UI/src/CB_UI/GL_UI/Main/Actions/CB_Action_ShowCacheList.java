@@ -9,6 +9,7 @@ import CB_Core.Types.CacheWithWP;
 import CB_RpcCore.ClientCB.RpcClientCB;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Activitys.Import;
 import CB_UI.GL_UI.Activitys.SyncActivity;
@@ -17,18 +18,18 @@ import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.CacheListView;
-import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_Utils.StringH;
 import cb_rpc.Functions.RpcAnswer;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -183,7 +184,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 			}
 		});
 
-		String DBName = Config.settings.DatabasePath.getValue();
+		String DBName = Config.DatabasePath.getValue();
 		try
 		{
 			int Pos = DBName.lastIndexOf("/");
@@ -210,7 +211,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
 		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCacheBase.Icons.get(IconName.addCache_57.ordinal()));
 		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCacheBase.Icons.get(IconName.delete_28.ordinal()));
-		cm.addItem(MenuID.MI_RpcGetExportList, "RPC-GetExportList", SpriteCacheBase.Icons.get(IconName.list_21.ordinal()));
+		if (!StringH.isEmpty(Config.CBS_IP.getValue())) cm.addItem(MenuID.MI_RpcGetExportList, "RPC-GetExportList",
+				SpriteCacheBase.Icons.get(IconName.list_21.ordinal()));
 		return cm;
 	}
 

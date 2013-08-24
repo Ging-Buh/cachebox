@@ -32,31 +32,32 @@ import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
+import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
+import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
-import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
-import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.StringH;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Logger;
@@ -69,7 +70,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 {
 
 	final boolean MAP_LINE_ACTIVE = false;
-	final boolean CBS_LINE_ACTIVE = true;
+	boolean CBS_LINE_ACTIVE = false;
 
 	private V_ListView lvPQs, lvCBServer;
 	private Button bOK, bCancel, refreshPqList, refreshCBServerList;
@@ -110,6 +111,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	public Import()
 	{
 		super(ActivityRec(), "importActivity");
+		CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
+
 		CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
 		innerHeight = 1000;
 		scrollBox = new ScrollBox(ActivityRec());
@@ -488,7 +491,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			@Override
 			public void selectionChanged(int index)
 			{
-				Config.settings.LogMaxMonthAge.setValue(index);
+				Config.LogMaxMonthAge.setValue(index);
 				Config.AcceptChanges();
 			}
 		});
@@ -502,7 +505,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		final EditTextField input = new EditTextField(checkBoxCleanLogs.ScaleCenter(2), LogCollapseBox);
 		input.setHeight(SmallLineHeight * 2.5f);
-		input.setText(String.valueOf(Config.settings.LogMinCount.getValue()));
+		input.setText(String.valueOf(Config.LogMinCount.getValue()));
 		input.setPos(margin, lblButKeepLeast.getY() - margin - input.getHeight());
 		LogCollapseBox.addChild(input);
 
@@ -514,14 +517,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			{
 				if (visible)
 				{
-					NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"),
-							Config.settings.LogMinCount.getValue(), new returnValueListner()
+					NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(),
+							new returnValueListner()
 							{
 
 								@Override
 								public void returnValue(int value)
 								{
-									Config.settings.LogMinCount.setValue(value);
+									Config.LogMinCount.setValue(value);
 									Config.AcceptChanges();
 									input.setText(String.valueOf(value));
 								}
@@ -600,13 +603,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private void initialForm()
 	{
-		checkBoxImportMaps.setChecked(Config.settings.CacheMapData.getValue());
-		checkBoxPreloadImages.setChecked(Config.settings.CacheImageData.getValue());
-		checkBoxPreloadSpoiler.setChecked(Config.settings.CacheSpoilerData.getValue());
-		checkBoxImportGPX.setChecked(Config.settings.ImportGpx.getValue());
+		checkBoxImportMaps.setChecked(Config.CacheMapData.getValue());
+		checkBoxPreloadImages.setChecked(Config.CacheImageData.getValue());
+		checkBoxPreloadSpoiler.setChecked(Config.CacheSpoilerData.getValue());
+		checkBoxImportGPX.setChecked(Config.ImportGpx.getValue());
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkImportFromCBServer.setOnCheckedChangeListener(checkImportFromCBServer_CheckStateChanged);
-		checkBoxGcVote.setChecked(Config.settings.ImportRatings.getValue());
+		checkBoxGcVote.setChecked(Config.ImportRatings.getValue());
 
 		// First check API-Key with visual Feedback
 		// GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
@@ -617,7 +620,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		// {
 		// if (GroundspeakAPI.isValidAPI_Key(true))
 		// {
-		// checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
+		// checkImportPQfromGC.setChecked(Config.ImportPQsFromGeocachingCom.getValue());
 		// checkImportPQfromGC.setEnabled(true);
 		// checkBoxPreloadSpoiler.setEnable(true);
 		// lblSpoiler.setTextColor(Fonts.getFontColor());
@@ -643,7 +646,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		// }
 		// });
 
-		checkImportPQfromGC.setChecked(Config.settings.ImportPQsFromGeocachingCom.getValue());
+		checkImportPQfromGC.setChecked(Config.ImportPQsFromGeocachingCom.getValue());
 		checkImportPQfromGC.setEnabled(true);
 		checkBoxPreloadSpoiler.setEnable(true);
 		lblSpoiler.setTextColor(Fonts.getFontColor());
@@ -675,7 +678,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		CBServerCollapseBox.setAnimationListner(Animationlistner);
 		LogCollapseBox.setAnimationListner(Animationlistner);
 
-		checkBoxCleanLogs.setChecked(Config.settings.DeleteLogs.getValue());
+		checkBoxCleanLogs.setChecked(Config.DeleteLogs.getValue());
 		checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
 
 		if (checkBoxCleanLogs.isChecked())
@@ -683,21 +686,21 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			LogCollapseBox.setAnimationHeight(CollapseBoxLogsMaxHeight);
 
 			// validate value
-			int value = Config.settings.LogMaxMonthAge.getValue();
+			int value = Config.LogMaxMonthAge.getValue();
 			if (value > 6)
 			{
-				Config.settings.LogMaxMonthAge.setValue(6);
+				Config.LogMaxMonthAge.setValue(6);
 				Config.AcceptChanges();
 			}
 
-			spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
+			spinner.setSelection(Config.LogMaxMonthAge.getValue());
 		}
 		else
 		{
 			LogCollapseBox.setAnimationHeight(0);
 		}
 
-		checkBoxCompactDB.setChecked(Config.settings.CompactDB.getValue());
+		checkBoxCompactDB.setChecked(Config.CompactDB.getValue());
 
 	}
 
@@ -719,14 +722,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			if (checkBoxCleanLogs.isChecked())
 			{
 				LogCollapseBox.expand();
-				spinner.setSelection(Config.settings.LogMaxMonthAge.getValue());
+				spinner.setSelection(Config.LogMaxMonthAge.getValue());
 			}
 			else
 			{
 				LogCollapseBox.collapse();
 			}
 
-			Config.settings.DeleteLogs.setValue(isChecked);
+			Config.DeleteLogs.setValue(isChecked);
 			Config.AcceptChanges();
 		}
 	};
@@ -996,16 +999,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		this.addChild(dis, false);
 
-		Config.settings.CacheMapData.setValue(checkBoxImportMaps.isChecked());
-		Config.settings.CacheImageData.setValue(checkBoxPreloadImages.isChecked());
-		Config.settings.CacheSpoilerData.setValue(checkBoxPreloadSpoiler.isChecked());
-		Config.settings.ImportGpx.setValue(checkBoxImportGPX.isChecked());
+		Config.CacheMapData.setValue(checkBoxImportMaps.isChecked());
+		Config.CacheImageData.setValue(checkBoxPreloadImages.isChecked());
+		Config.CacheSpoilerData.setValue(checkBoxPreloadSpoiler.isChecked());
+		Config.ImportGpx.setValue(checkBoxImportGPX.isChecked());
 
-		Config.settings.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
-		Config.settings.ImportRatings.setValue(checkBoxGcVote.isChecked());
-		Config.settings.CompactDB.setValue(checkBoxCompactDB.isChecked());
+		Config.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
+		Config.ImportRatings.setValue(checkBoxGcVote.isChecked());
+		Config.CompactDB.setValue(checkBoxCompactDB.isChecked());
 		Config.AcceptChanges();
-		String directoryPath = Config.settings.PocketQueryFolder.getValue();
+		String directoryPath = Config.PocketQueryFolder.getValue();
 		// chk exist import folder
 		File directory = new File(directoryPath);
 
@@ -1105,7 +1108,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 										ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
 										try
 										{
-											PocketQuery.DownloadSinglePocketQuery(pq, Config.settings.PocketQueryFolder.getValue());
+											PocketQuery.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
 										}
 										catch (OutOfMemoryError e)
 										{
@@ -1217,7 +1220,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						Database.Data.beginTransaction();
 						try
 						{
-							importer.importGcVote(GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue()), ip);
+							importer.importGcVote(GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
 
 							Database.Data.setTransactionSuccessful();
 						}
@@ -1238,7 +1241,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 					{
 						dis.setAnimationType(AnimationType.Download);
 						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(),
-								GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue()));
+								GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 						{
@@ -1267,7 +1270,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 					if (checkBoxCleanLogs.isChecked())
 					{
 						ip.setJobMax("DeleteLogs", 1);
-						Database.Data.DeleteOldLogs(Config.settings.LogMinCount.getValue(), Config.settings.LogMaxMonthAge.getValue());
+						Database.Data.DeleteOldLogs(Config.LogMinCount.getValue(), Config.LogMaxMonthAge.getValue());
 						ip.ProgressInkrement("DeleteLogs", "", true);
 					}
 

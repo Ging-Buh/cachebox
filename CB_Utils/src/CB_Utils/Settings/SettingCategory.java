@@ -8,7 +8,7 @@ public enum SettingCategory
 {
 	Login("Login"), QuickList("QuickList"), Map("Map"), Gps("Gps"), Compass("Compass"), Misc("Misc"), Sounds("Sounds"), Skin("Skin"), API(
 			"API"), Folder("Folder"), Templates("Templates"), Internal("Internal"), CarMode("CarMode"), RememberAsk("RememberAsk"), Debug(
-			"Debug"), Button("Button"), Positions("Positions"), ;
+			"Debug"), Button("Button"), Positions("Positions"), CBS("CBS"), ;
 
 	private String langString;
 

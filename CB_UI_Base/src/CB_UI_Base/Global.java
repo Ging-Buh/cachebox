@@ -1,6 +1,7 @@
 package CB_UI_Base;
 
 import CB_UI_Base.GL_UI.DisplayType;
+import CB_Utils.Config_Core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -65,5 +66,18 @@ public class Global
 		isTestVersion = VersionPrefix.contains("Test");
 		isTestVersionCheked = true;
 		return isTestVersion;
+	}
+
+	private static boolean mIsDevelop = false;
+	private static boolean mIsDevelopChecked = false;
+
+	public static boolean isDevelop()
+	{
+		if (mIsDevelopChecked) return mIsDevelop;
+
+		// Chk is Develop
+		mIsDevelop = Gdx.files.absolute(Config_Core.WorkPath + "/deve.lop").exists();
+		mIsDevelopChecked = true;
+		return mIsDevelop;
 	}
 }

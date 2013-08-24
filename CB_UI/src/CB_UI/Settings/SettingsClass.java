@@ -6,8 +6,9 @@ import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.DB.Database_Core;
 import CB_Utils.Settings.SettingsDAO;
 import CB_Utils.Settings.SettingsList;
+import cb_rpc.Settings.CB_Rpc_Settings;
 
-public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings
+public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings
 {
 
 	private static final long serialVersionUID = 7330937438116889415L;
@@ -15,6 +16,7 @@ public class SettingsClass extends SettingsList implements CB_Core_Settings, CB_
 	public SettingsClass()
 	{
 		super();
+
 	}
 
 	@Override

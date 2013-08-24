@@ -1,5 +1,7 @@
 package CB_Utils.Settings;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -17,6 +19,37 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 	public SettingsList()
 	{
 		that = this;
+
+		// add Member to list
+		Member[] mbrs = this.getClass().getFields();
+
+		for (Member mbr : mbrs)
+		{
+			if (mbr instanceof Field)
+			{
+				try
+				{
+					Object obj = ((Field) mbr).get(this);
+					if (obj instanceof SettingBase<?>)
+					{
+						add((SettingBase<?>) obj);
+					}
+				}
+				catch (IllegalArgumentException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (IllegalAccessException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+
+		mbrs = null;
 	}
 
 	public boolean isLoaded()
@@ -36,9 +69,10 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			e.printStackTrace();
 			return null;
 		}
+		that.add(setting);
 		if (!that.contains(setting))
 		{
-			that.add(setting);
+
 		}
 		else
 		{
@@ -46,6 +80,16 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			Logger.LogCat(stop);
 		}
 		return setting;
+	}
+
+	@Override
+	public boolean add(SettingBase<?> setting)
+	{
+		if (!that.contains(setting))
+		{
+			return super.add(setting);
+		}
+		return false;
 	}
 
 	protected abstract Database_Core getSettingsDB();
