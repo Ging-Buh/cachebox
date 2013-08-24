@@ -273,9 +273,13 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			for (GL_View_Base tmp : childs)
 			{
-				if (tmp.isClickable()) tmpClickable = true;
-				if (tmp.isLongClickable()) tmpLongClickable = true;
-				if (tmp.isDblClickable()) tmpDblClickable = true;
+				if (tmp != null)
+				{
+					if (tmp.isClickable()) tmpClickable = true;
+					if (tmp.isLongClickable()) tmpLongClickable = true;
+					if (tmp.isDblClickable()) tmpDblClickable = true;
+				}
+
 			}
 		}
 
@@ -284,7 +288,7 @@ public abstract class GL_View_Base extends CB_RectF
 		ChildIsLongClickable = tmpLongClickable;
 	}
 
-	private ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
+	private final ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
 
 	public void RunOnGL(runOnGL run)
 	{
@@ -1210,6 +1214,7 @@ public abstract class GL_View_Base extends CB_RectF
 		GL.that.renderOnce(this.getName() + " setZeroPos");
 	}
 
+	@Override
 	public void setPos(float x, float y)
 	{
 		super.setPos(x, y);

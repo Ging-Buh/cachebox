@@ -633,6 +633,7 @@ public class Importer
 	 */
 	public int importSpoilerForCacheNew(ImporterProgress ip, Cache cache)
 	{
+		if (cache == null) return 0;
 		return importImagesForCacheNew(ip, true, false, cache.Id, cache.GcCode, cache.Name, "", "", true);
 	}
 
