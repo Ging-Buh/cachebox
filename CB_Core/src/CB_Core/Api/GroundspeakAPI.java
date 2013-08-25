@@ -1345,6 +1345,10 @@ public class GroundspeakAPI
 				cacheDAO.WriteToDatabase(cache);
 			}
 
+			// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+			cache.longDescription = "";
+			System.gc();
+
 			for (LogEntry log : apiLogs)
 			{
 				if (log.CacheId != cache.Id) continue;

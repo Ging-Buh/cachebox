@@ -23,12 +23,12 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
-import CB_UI_Base.GL_UI.Controls.ScrollBox;
-import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldStyle;
+import CB_UI_Base.GL_UI.Controls.ScrollBox;
+import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -270,6 +270,10 @@ public class EditCache extends ActivityBase
 					GlobalCore.setSelectedCache(cache);
 					CacheListView.that.setSelectedCacheVisible();
 				}
+
+				// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+				cache.longDescription = "";
+				System.gc();
 				finish();
 				return true;
 			}

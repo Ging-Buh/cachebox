@@ -653,6 +653,10 @@ public class SearchForGeocaches
 
 					new CacheDAO().UpdateDatabase(newCache);
 
+					// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+					newCache.longDescription = "";
+					System.gc();
+
 					LogDAO logDAO = new LogDAO();
 					for (LogEntry log : apiLogs)
 					{

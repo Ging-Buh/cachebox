@@ -462,6 +462,11 @@ public class CacheDAO
 				ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.GcCode, false);
 				WriteToDatabase(cache);
 			}
+
+			// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+			cache.longDescription = "";
+			System.gc();
+
 		}
 	}
 
