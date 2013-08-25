@@ -480,7 +480,7 @@ public class EditTextField extends EditTextFieldBase
 					{
 						// cursor ist innerhalb der Zeichen, die in die vorherige Zeile verschoben werden -> Cursor in die vorherige Zeile
 						// verschieben
-						cursor.pos = prevDt.displayText.length() - 1;
+						cursor.pos = prevDt.displayText.length()/* - 1 */;
 						setCursorLine(cursor.line - 1, true);
 						// anschlieﬂende Zeile noch mal berechnen.
 						cursor.line++;
