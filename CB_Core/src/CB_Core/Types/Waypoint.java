@@ -160,4 +160,10 @@ public class Waypoint implements Serializable
 		return new Waypoint(GcCode, Type, Description, Pos.getLatitude(), Pos.getLongitude(), CacheId, Clue, Title);
 	}
 
+	@Override
+	public String toString()
+	{
+		return "WP:" + GcCode + " " + Pos.toString();
+	}
+
 }

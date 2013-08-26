@@ -14,9 +14,9 @@ import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEvent;
 import CB_UI.Events.WaypointListChangedEventList;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
+import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Activitys.MeasureCoordinate;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate;
-import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate.Type;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -25,14 +25,15 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Logger;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent
 {
@@ -296,7 +297,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			}
 		}
 		else
+		{
+			aktWaypoint = null;
 			this.setSelection(0);
+		}
+
 	}
 
 	@Override
@@ -509,6 +514,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		createNewWaypoint = true;
 
 		final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getCoordinate();
+
+		Logger.DEBUG("WaypointView.addProjection()");
+		Logger.DEBUG("   AktWaypoint:" + ((aktWaypoint == null) ? "null" : aktWaypoint.toString()));
+		Logger.DEBUG("   AktCache:" + ((aktCache == null) ? "null" : aktCache.toString()));
+		Logger.DEBUG("   using Coord:" + coord.toString());
 
 		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord,
 				new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()

@@ -840,4 +840,10 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	}
 
+	@Override
+	public String toString()
+	{
+		return "Cache:" + GcCode + " " + Pos.toString();
+	}
+
 }

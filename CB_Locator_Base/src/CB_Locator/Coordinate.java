@@ -635,4 +635,10 @@ public class Coordinate implements Serializable
 		Valid = b;
 	}
 
+	@Override
+	public String toString()
+	{
+		return FormatCoordinate();
+	}
+
 }
