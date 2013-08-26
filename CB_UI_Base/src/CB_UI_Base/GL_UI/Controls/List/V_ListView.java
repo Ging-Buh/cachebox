@@ -18,6 +18,7 @@ public class V_ListView extends ListViewBase
 
 	ArrayList<ListViewItemBase> clearList = new ArrayList<ListViewItemBase>();
 
+	@Override
 	protected void RenderThreadSetPos(float value, boolean Kinetic)
 	{
 		float distance = mPos - value;
@@ -106,6 +107,7 @@ public class V_ListView extends ListViewBase
 	 * 
 	 * @param Kinetic
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void addVisibleItems(boolean Kinetic)
 	{
@@ -173,6 +175,7 @@ public class V_ListView extends ListViewBase
 		}
 	}
 
+	@Override
 	protected void calcDefaultPosList()
 	{
 		if (mBaseAdapter == null) return; // can´t calc
@@ -298,6 +301,12 @@ public class V_ListView extends ListViewBase
 
 		if (mBaseAdapter != null && mBaseAdapter.getCount() <= mSelectedIndex) setSelection(mBaseAdapter.getCount() - 1);
 
+	}
+
+	@Override
+	protected float getListViewLength()
+	{
+		return height;
 	}
 
 }

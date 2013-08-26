@@ -24,13 +24,20 @@ public abstract class ListViewBase extends CB_View_Base
 	protected float mLastDragedDistance = 0;
 	private float mAnimationTarget = 0;
 	private Timer mAnimationTimer;
-	private long ANIMATION_TICK = 50;
+	private final long ANIMATION_TICK = 50;
 	protected Boolean mBottomAnimation = false;
 	protected int mSelectedIndex = -1;
 	protected float firstItemSize = -1;
 	protected float lastItemSize = -1;
 	protected boolean hasInvisibleItems = false;
 	protected boolean isTouch = false;
+
+	/**
+	 * Return With for horizontal and Height for vertical ListView
+	 * 
+	 * @return
+	 */
+	protected abstract float getListViewLength();
 
 	/**
 	 * Wen True, können die Items verschoben werden
@@ -371,6 +378,7 @@ public abstract class ListViewBase extends CB_View_Base
 		return mIsDrageble;
 	}
 
+	@Override
 	public abstract boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan);
 
 	@Override
@@ -396,13 +404,14 @@ public abstract class ListViewBase extends CB_View_Base
 
 	public void scrollToItem(int i)
 	{
-		if (mPosDefault == null) return;
+		if (mPosDefault == null || mBaseAdapter == null) return;
 
-		if (i < getMaxItemCount()) i = getMaxItemCount();
+		// if (i < getMaxItemCount()) i = getMaxItemCount();
+		float versatz = i < getLastVisiblePosition() ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
 
 		if (i >= 0 && i < mPosDefault.size())
 		{
-			setListPos(mPosDefault.get(i), false);
+			setListPos(mPosDefault.get(i) + versatz, false);
 		}
 		else
 		{
@@ -548,9 +557,14 @@ public abstract class ListViewBase extends CB_View_Base
 			{
 				if (this.contains(v) && v instanceof ListViewItemBase)
 				{
-					int i = ((ListViewItemBase) v).getIndex();
+					// chk for complete visible
+					if (this.contains(v.ThisWorldRec))
+					{
+						int i = ((ListViewItemBase) v).getIndex();
 
-					if (i < ret) ret = i;
+						if (i < ret) ret = i;
+					}
+
 				}
 			}
 

@@ -61,41 +61,45 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	public void onShow()
 	{
 
-		// aktuellen Waypoint in der List anzeigen
-		int first = this.getFirstVisiblePosition();
-		int last = this.getLastVisiblePosition();
+		// // aktuellen Waypoint in der List anzeigen
+		// int first = this.getFirstVisiblePosition();
+		// int last = this.getLastVisiblePosition();
+		//
+		// if (aktCache == null) return;
+		//
+		// int itemCount = aktCache.waypoints.size() + 1;
+		// int itemSpace = this.getMaxItemCount();
+		//
+		// if (itemSpace >= itemCount)
+		// {
+		// this.setUndragable();
+		// }
+		// else
+		// {
+		// this.setDragable();
+		// }
+		//
+		// if (GlobalCore.getSelectedWaypoint() != null)
+		// {
+		// aktWaypoint = GlobalCore.getSelectedWaypoint();
+		// int id = 0;
+		//
+		// for (Waypoint wp : aktCache.waypoints)
+		// {
+		// id++;
+		// if (wp == aktWaypoint)
+		// {
+		// if (!(first < id && last > id)) this.setSelection(id);
+		// break;
+		// }
+		// }
+		// }
+		// else
+		// this.setSelection(0);
 
-		if (aktCache == null) return;
+		SetSelectedCache(aktCache, aktWaypoint);
+		chkSlideBack();
 
-		int itemCount = aktCache.waypoints.size() + 1;
-		int itemSpace = this.getMaxItemCount();
-
-		if (itemSpace >= itemCount)
-		{
-			this.setUndragable();
-		}
-		else
-		{
-			this.setDragable();
-		}
-
-		if (GlobalCore.getSelectedWaypoint() != null)
-		{
-			aktWaypoint = GlobalCore.getSelectedWaypoint();
-			int id = 0;
-
-			for (Waypoint wp : aktCache.waypoints)
-			{
-				id++;
-				if (wp == aktWaypoint)
-				{
-					if (!(first < id && last > id)) this.setSelection(id);
-					break;
-				}
-			}
-		}
-		else
-			this.setSelection(0);
 	}
 
 	@Override
@@ -271,6 +275,24 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		int first = this.getFirstVisiblePosition();
 		int last = this.getLastVisiblePosition();
 
+		Logger.DEBUG("[Waypoint Select]");
+		try
+		{
+			Logger.DEBUG("First visible:[" + first + "]" + this.lvAdapter.getItem(first).toString());
+		}
+		catch (Exception e)
+		{
+			Logger.DEBUG("no firstItem with index :" + first);
+		}
+		try
+		{
+			Logger.DEBUG("Last visible:[" + last + "]" + this.lvAdapter.getItem(last).toString());
+		}
+		catch (Exception e)
+		{
+			Logger.DEBUG("no lastItem with index :" + last);
+		}
+
 		if (aktCache == null) return;
 
 		int itemCount = aktCache.waypoints.size() + 1;
@@ -296,7 +318,15 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				if (wp == aktWaypoint)
 				{
 					this.setSelection(id);
-					if (!(first < id && last > id)) this.scrollToItem(id);
+					if (this.isDrageble())
+					{
+						if (!(first <= id && last >= id))
+						{
+							this.scrollToItem(id);
+							Logger.DEBUG("Scroll to:" + id);
+						}
+					}
+
 					break;
 				}
 			}
@@ -305,6 +335,14 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		{
 			aktWaypoint = null;
 			this.setSelection(0);
+			if (this.isDrageble())
+			{
+				if (!(first <= 0 && last >= 0))
+				{
+					this.scrollToItem(0);
+					Logger.DEBUG("Scroll to:" + 0);
+				}
+			}
 		}
 
 	}

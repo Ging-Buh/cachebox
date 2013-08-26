@@ -16,6 +16,7 @@ public class H_ListView extends ListViewBase
 		super(rec, Name);
 	}
 
+	@Override
 	protected void RenderThreadSetPos(float value, boolean Kinetic)
 	{
 		float distance = mPos - value;
@@ -80,6 +81,7 @@ public class H_ListView extends ListViewBase
 
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void addVisibleItems(boolean Kinetic)
 	{
@@ -151,6 +153,7 @@ public class H_ListView extends ListViewBase
 		}
 	}
 
+	@Override
 	protected void calcDefaultPosList()
 	{
 		if (mPosDefault != null)
@@ -261,6 +264,12 @@ public class H_ListView extends ListViewBase
 		}
 		if (mPos > 0) startAnimationtoTop();
 		else if (mPos < mcalcAllSizeBase) startAnimationToBottom();
+	}
+
+	@Override
+	protected float getListViewLength()
+	{
+		return width;
 	}
 
 }
