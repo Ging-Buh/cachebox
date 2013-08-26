@@ -20,6 +20,7 @@ import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewID;
@@ -32,9 +33,8 @@ import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker;
-import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker.Type;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.Math.CB_RectF;
@@ -1626,11 +1626,12 @@ public class GL implements ApplicationListener, InputProcessor
 			mDialog.removeChild(actDialog);
 			// letzten Dialog wiederherstellen
 			actDialog = dialogHistory.get(0);
-			actDialog.onShow();
-			actDialog.setEnabled(true);
-			dialogHistory.remove(0);
-			DialogIsShown = true;
-			platformConector.showForDialog();
+			// actDialog.onShow();
+			// actDialog.setEnabled(true);
+			// dialogHistory.remove(0);
+			// DialogIsShown = true;
+			// platformConector.showForDialog();
+			showDialog(actDialog);
 		}
 		else
 		{
@@ -1717,7 +1718,8 @@ public class GL implements ApplicationListener, InputProcessor
 	{
 		if (toast == null)
 		{
-			toast = new CB_UI_Base.GL_UI.Controls.Dialogs.Toast(new CB_RectF(0, 0, 100, GL_UISizes.BottomButtonHeight / 1.5f), "StringToast");
+			toast = new CB_UI_Base.GL_UI.Controls.Dialogs.Toast(new CB_RectF(0, 0, 100, GL_UISizes.BottomButtonHeight / 1.5f),
+					"StringToast");
 		}
 		toast.setWrappedText(string);
 
