@@ -2871,37 +2871,67 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void showForDialog()
 			{
-				runOnUiThread(new Runnable()
+				Timer timer = new Timer();
+				TimerTask task = new TimerTask()
 				{
 					@Override
 					public void run()
 					{
-						if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
-						if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
-						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
-						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								// chk for timer conflict (releay set invisible)
+								// only if showing Dialog or Activity
+								if (!GL.that.isShownDialogActivity()) return;
+
+								if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
+								if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
+								if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+								if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
+							}
+						});
+
 					}
-				});
+				};
+				timer.schedule(task, 50);
 
 			}
 
 			@Override
 			public void hideForDialog()
 			{
-				runOnUiThread(new Runnable()
+
+				Timer timer = new Timer();
+				TimerTask task = new TimerTask()
 				{
 					@Override
 					public void run()
 					{
-						if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
-						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
-						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
-						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
 
-						// set position of slider
-						downSlider.ButtonShowStateChanged();
+								// chk for timer conflict (releay set invisible)
+								// only if not showing Dialog or Activity
+								if (!GL.that.isShownDialogActivity())
+								{
+									if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
+									if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
+									if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
+									if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+								}
+								// set position of slider
+								downSlider.ButtonShowStateChanged();
+							}
+						});
+
 					}
-				});
+				};
+				timer.schedule(task, 50);
 
 			}
 

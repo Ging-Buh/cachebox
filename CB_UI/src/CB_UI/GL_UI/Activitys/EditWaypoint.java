@@ -9,6 +9,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
@@ -20,15 +21,15 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
-import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.ScrollBox;
-import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
-import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.DefaultOnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
+import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.ScrollBox;
+import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
+import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
+import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -39,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEvent
 {
 
+	private boolean showWaypointListAfterFinish = false;
 	private Waypoint waypoint;
 	private CoordinateButton bCoord = null;
 	private Spinner sType = null;
@@ -70,9 +72,11 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private ReturnListner mReturnListner;
 
-	public EditWaypoint(Waypoint waypoint, ReturnListner listner, boolean showCoordinateDialog)
+	public EditWaypoint(Waypoint waypoint, ReturnListner listner, boolean showCoordinateDialog, boolean showWaypointViewAfterFinish)
 	{
 		super(ActivityRec(), "EditWpActivity");
+		this.showWaypointListAfterFinish = showWaypointViewAfterFinish;
+
 		scrollBox = new ScrollBox(ActivityRec());
 		this.addChild(scrollBox);
 		this.waypoint = waypoint;
@@ -431,6 +435,13 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 
 				finish();
+
+				// Show WP View?
+				if (showWaypointListAfterFinish)
+				{
+					if (TabMainView.actionShowWaypointView != null) TabMainView.actionShowWaypointView.CallExecute();
+				}
+
 				return true;
 			}
 		});

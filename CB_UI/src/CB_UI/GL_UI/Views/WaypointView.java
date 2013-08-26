@@ -262,6 +262,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			this.setBaseAdapter(lvAdapter);
 
 		}
+		else
+		{
+			this.notifyDataSetChanged();
+		}
+
 		// aktuellen Waypoint in der List anzeigen
 		int first = this.getFirstVisiblePosition();
 		int last = this.getLastVisiblePosition();
@@ -461,7 +466,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					}
 				}
 			}
-		}, showCoordinateDialog);
+		}, showCoordinateDialog, false);
 		EdWp.show();
 
 	}

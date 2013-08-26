@@ -2784,7 +2784,7 @@ public class MapView extends CB_View_Base implements SelectedCacheEvent, Positio
 					GL.that.renderOnce("newWP_CenterMap");
 				}
 			}
-		}, true);
+		}, true, false);
 		EdWp.show();
 
 	}
