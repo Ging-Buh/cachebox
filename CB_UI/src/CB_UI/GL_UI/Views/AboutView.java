@@ -28,13 +28,13 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListner;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -176,7 +176,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 														GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK,
 																MessageBoxIcon.GC_Live, null);
 
-														Config.settings.FoundOffset.setValue(result);
+														Config.FoundOffset.setValue(result);
 														Config.AcceptChanges();
 														AboutView.this.refreshText();
 													}
@@ -194,7 +194,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 									break;
 								case 3:
 									NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"),
-											CB_UI.Config.settings.FoundOffset.getValue(), DialogListner);
+											CB_UI.Config.FoundOffset.getValue(), DialogListner);
 									break;
 
 								}
@@ -329,7 +329,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	public void refreshText()
 	{
 		if (WP == null || CachesFoundLabel == null) return;
-		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.settings.FoundOffset.getValue()));
+		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
 
 		if (GlobalCore.getSelectedCache() != null) if (GlobalCore.getSelectedWaypoint() != null)
 		{
@@ -352,7 +352,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		@Override
 		public void returnValue(int value)
 		{
-			Config.settings.FoundOffset.setValue(value);
+			Config.FoundOffset.setValue(value);
 			Config.AcceptChanges();
 			AboutView.this.refreshText();
 		}

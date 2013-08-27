@@ -847,8 +847,6 @@ public class splash extends Activity
 
 		}
 
-		Logger.setDebug(Global.Debug);
-
 		new Config();
 
 		// Read Config

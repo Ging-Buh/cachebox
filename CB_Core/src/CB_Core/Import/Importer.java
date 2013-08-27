@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.zip.ZipException;
 
-import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheDAO;
@@ -259,8 +259,8 @@ public class Importer
 			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")",
 					false);
 
-			Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CoreSettingsForward.GcVotePassword, info.Vote, info.URL,
-					info.GcCode);
+			Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote,
+					info.URL, info.GcCode);
 
 			if (ret)
 			{
@@ -300,7 +300,7 @@ public class Importer
 					return; // Thread Canceld
 				}
 
-				if (!info.GcCode.toLowerCase().startsWith("gc"))
+				if (!info.GcCode.toLowerCase(Locale.getDefault()).startsWith("gc"))
 				{
 					ip.ProgressInkrement("importGcVote", "Not a GC.com Cache", false);
 					continue;
@@ -311,8 +311,8 @@ public class Importer
 				idLookup.put(info.GcCode, info.Id);
 			}
 
-			ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(), CoreSettingsForward.GcVotePassword,
-					requests);
+			ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(),
+					CB_Core_Settings.GcVotePassword.getValue(), requests);
 
 			if (ratingData == null)
 			{
@@ -399,7 +399,7 @@ public class Importer
 		int counter = 0;
 		for (String gccode : gcCodes)
 		{
-			if (gccode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+			if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 			{
 
 				// API zugriff nur mit gültigem API Key
@@ -466,7 +466,7 @@ public class Importer
 
 				i++;
 
-				if (gccode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+				if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 				{
 					ip.ProgressInkrement("importImages",
 							"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
@@ -475,7 +475,7 @@ public class Importer
 
 			if (downloadedImage)
 			{
-				if (gccode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+				if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 				{
 					ip.ProgressInkrement("importImages",
 							"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
@@ -556,7 +556,7 @@ public class Importer
 				String name = reader.getString(2);
 				String gcCode = reader.getString(3);
 
-				if (gcCode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+				if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 				{
 					ip.ProgressInkrement("importImages",
 							"Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
@@ -745,8 +745,8 @@ public class Importer
 				public boolean accept(File dir, String filename)
 				{
 
-					filename = filename.toLowerCase();
-					if (filename.indexOf(GcCode.toLowerCase()) == 0)
+					filename = filename.toLowerCase(Locale.getDefault());
+					if (filename.indexOf(GcCode.toLowerCase(Locale.getDefault())) == 0)
 					{
 						return true;
 					}
@@ -822,7 +822,7 @@ public class Importer
 		LinkedList<String> allImages = new LinkedList<String>();
 		ArrayList<String> apiImages = new ArrayList<String>();
 
-		if (GcCode.toLowerCase().startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
+		if (GcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 		{
 			int result = GroundspeakAPI.getImagesForGeocache(GcCode, apiImages);
 

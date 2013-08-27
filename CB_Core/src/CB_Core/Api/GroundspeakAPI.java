@@ -171,7 +171,7 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(true);
 		if (chk < 0) return chk;
 
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
@@ -278,7 +278,7 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
@@ -370,7 +370,7 @@ public class GroundspeakAPI
 	public static int GetMembershipType()
 	{
 		if (API_isCheked) return membershipType;
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
@@ -482,7 +482,7 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
@@ -600,7 +600,7 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		LastAPIError = "";
 		// zum Abfragen der CacheLimits einfach nach einem Cache suchen, der
@@ -803,7 +803,7 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
@@ -900,7 +900,7 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
@@ -993,7 +993,7 @@ public class GroundspeakAPI
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
@@ -1086,7 +1086,7 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try
 		{
@@ -1174,7 +1174,7 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 		if (list == null) list = new HashMap<String, URI>();
 		try
 		{
@@ -1289,8 +1289,8 @@ public class GroundspeakAPI
 	public static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException, ConnectTimeoutException
 	{
 
-		int conectionTimeout = CoreSettingsForward.conectionTimeout;
-		int socketTimeout = CoreSettingsForward.socketTimeout;
+		int conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+		int socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 		httprequest.setHeader("Accept", "application/json");
 		httprequest.setHeader("Content-type", "application/json");
@@ -1532,7 +1532,7 @@ public class GroundspeakAPI
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
-		String URL = CoreSettingsForward.Staging ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 		if (cacheCode == null) cacheCode = "";
 
 		try

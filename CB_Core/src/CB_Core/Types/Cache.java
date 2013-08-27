@@ -5,8 +5,8 @@ import java.io.FilenameFilter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
-import CB_Core.CoreSettingsForward;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
@@ -507,7 +507,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Add own taken photo
-		directory = CoreSettingsForward.UserImageFolder;
+		directory = CB_Core_Settings.UserImageFolder.getValue();
 		if (directory != null)
 		{
 			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
@@ -524,8 +524,8 @@ public class Cache implements Comparable<Cache>, Serializable
 			@Override
 			public boolean accept(File dir, String filename)
 			{
-				filename = filename.toLowerCase();
-				if (filename.indexOf(GcCode.toLowerCase()) >= 0)
+				filename = filename.toLowerCase(Locale.getDefault());
+				if (filename.indexOf(GcCode.toLowerCase(Locale.getDefault())) >= 0)
 				{
 					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png")
 							|| filename.endsWith(".gif")) return true;

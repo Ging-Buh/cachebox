@@ -235,18 +235,18 @@ public class splash extends TabMainView
 
 		// Load from Assets changes
 		// delete work path from settings value
-		String altValue = Config.settings.Sel_LanguagePath.getValue();
+		String altValue = Config.Sel_LanguagePath.getValue();
 		if (altValue.contains(Config.WorkPath))
 		{
 			String newValue = altValue.replace(Config.WorkPath + "/", "");
-			Config.settings.Sel_LanguagePath.setValue(newValue);
+			Config.Sel_LanguagePath.setValue(newValue);
 			Config.AcceptChanges();
 		}
 
 		if (altValue.startsWith("/"))
 		{
 			String newValue = altValue.substring(1);
-			Config.settings.Sel_LanguagePath.setValue(newValue);
+			Config.Sel_LanguagePath.setValue(newValue);
 			Config.AcceptChanges();
 		}
 
@@ -255,13 +255,13 @@ public class splash extends TabMainView
 		new Translation(Config.WorkPath, fileType);
 		try
 		{
-			Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
+			Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
 		}
 		catch (Exception e)
 		{
 			try
 			{
-				Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getDefaultValue());
+				Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
 			}
 			catch (IOException e1)
 			{
@@ -287,15 +287,15 @@ public class splash extends TabMainView
 	private void ini_Dirs()
 	{
 		Logger.DEBUG("ini_Dirs");
-		ini_Dir(Config.settings.PocketQueryFolder.getValue());
-		ini_Dir(Config.settings.TileCacheFolder.getValue());
+		ini_Dir(Config.PocketQueryFolder.getValue());
+		ini_Dir(Config.TileCacheFolder.getValue());
 		ini_Dir(Config.WorkPath + "/User");
-		ini_Dir(Config.settings.TrackFolder.getValue());
-		ini_Dir(Config.settings.UserImageFolder.getValue());
+		ini_Dir(Config.TrackFolder.getValue());
+		ini_Dir(Config.UserImageFolder.getValue());
 		ini_Dir(Config.WorkPath + "/repository");
-		ini_Dir(Config.settings.DescriptionImageFolder.getValue());
-		ini_Dir(Config.settings.MapPackFolder.getValue());
-		ini_Dir(Config.settings.SpoilerFolder.getValue());
+		ini_Dir(Config.DescriptionImageFolder.getValue());
+		ini_Dir(Config.MapPackFolder.getValue());
+		ini_Dir(Config.SpoilerFolder.getValue());
 
 		// prevent mediascanner to parse all the images in the cachebox folder
 		File nomedia = new File(Config.WorkPath, ".nomedia");
@@ -339,7 +339,7 @@ public class splash extends TabMainView
 		{
 			Logger.Error("slpash.Initial()", "search number of DB3 files", ex);
 		}
-		if ((fileList.size() > 1) && Config.settings.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill)
+		if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill)
 		{
 			breakForWait = true;
 			selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
@@ -370,7 +370,7 @@ public class splash extends TabMainView
 	{
 		Logger.DEBUG("ini_CacheDB");
 		// chk if exist filter preset splitter "#" and Replace
-		String ConfigPreset = Config.settings.UserFilter.getValue();
+		String ConfigPreset = Config.UserFilter.getValue();
 		if (ConfigPreset.endsWith("#"))
 		{
 			// Preset implements old splitter, replaced!
@@ -386,16 +386,16 @@ public class splash extends TabMainView
 					ConfigPreset = newConfigPreset;
 			}
 			;
-			Config.settings.UserFilter.setValue(ConfigPreset);
+			Config.UserFilter.setValue(ConfigPreset);
 			Config.AcceptChanges();
 		}
 
-		Database.Data.StartUp(Config.settings.DatabasePath.getValue());
+		Database.Data.StartUp(Config.DatabasePath.getValue());
 
 		Config.settings.ReadFromDB();
 
 		// zuerst den FilterString im neuen JSON Format laden versuchen
-		String FilterString = Config.settings.FilterNew.getValue();
+		String FilterString = Config.FilterNew.getValue();
 		if (FilterString.length() > 0)
 		{
 			GlobalCore.LastFilter = new FilterProperties(FilterString);
@@ -403,11 +403,11 @@ public class splash extends TabMainView
 		else
 		{
 			// Falls kein Neuer gefunden wurde -> das alte Format versuchen
-			FilterString = Config.settings.Filter.getValue();
+			FilterString = Config.Filter.getValue();
 			GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString())
 					: new FilterProperties(FilterString);
 		}
-		String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue());
+		String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 
 		CoreSettingsForward.Categories = new Categories();
 		Database.Data.GPXFilenameUpdateCacheCount();

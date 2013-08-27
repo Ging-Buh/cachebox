@@ -28,7 +28,6 @@ import de.CB_PlugIn.IPlugIn;
 public class Global
 {
 
-	public static final boolean Debug = true;
 	public static JokerList Jokers = new JokerList();
 
 	public static final String PREFS_NAME = "DroidCacheboxPrefsFile";

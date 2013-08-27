@@ -113,8 +113,8 @@ public class ParkingDialog extends ButtonDialog
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 
-				CB_UI.Config.settings.ParkingLatitude.setValue(Locator.getLatitude());
-				CB_UI.Config.settings.ParkingLongitude.setValue(Locator.getLongitude());
+				CB_UI.Config.ParkingLatitude.setValue(Locator.getLatitude());
+				CB_UI.Config.ParkingLongitude.setValue(Locator.getLongitude());
 				CB_UI.Config.AcceptChanges();
 				CachListChangedEventList.Call();
 
@@ -145,8 +145,8 @@ public class ParkingDialog extends ButtonDialog
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				CB_UI.Config.settings.ParkingLatitude.setValue(0.0);
-				CB_UI.Config.settings.ParkingLongitude.setValue(0.0);
+				CB_UI.Config.ParkingLatitude.setValue(0.0);
+				CB_UI.Config.ParkingLongitude.setValue(0.0);
 				CB_UI.Config.AcceptChanges();
 				CachListChangedEventList.Call();
 				close();

@@ -129,7 +129,6 @@ public class DesktopMain
 
 		new DesktopLogger();
 		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
-		Logger.setDebug(true);
 
 		// create new splash
 		splash sp = new splash(0, 0, ui.Window.width, ui.Window.height, "Splash");
@@ -142,16 +141,16 @@ public class DesktopMain
 		GL_View_Base.debug = debug;
 		GL_View_Base.disableScissor = scissor;
 
-		if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
 		{
 
-			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
-			Config.settings.newInstall.setValue(true);
+			Config.installRev.setValue(GlobalCore.CurrentRevision);
+			Config.newInstall.setValue(true);
 			Config.AcceptChanges();
 		}
 		else
 		{
-			Config.settings.newInstall.setValue(false);
+			Config.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
 
@@ -461,8 +460,8 @@ public class DesktopMain
 		// ##########################################################
 		// initial Locator with saved Location
 		// ##########################################################
-		double latitude = Config.settings.MapInitLatitude.getValue();
-		double longitude = Config.settings.MapInitLongitude.getValue();
+		double latitude = Config.MapInitLatitude.getValue();
+		double longitude = Config.MapInitLongitude.getValue();
 		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
 
 		CB_Locator.Location initialLocation;
@@ -483,47 +482,47 @@ public class DesktopMain
 		// ##########################################################
 
 		// Use Imperial units?
-		CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
-		Config.settings.ImperialUnits.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
+		Config.ImperialUnits.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+				CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
 			}
 		});
 
 		// GPS update time?
-		CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
-		Config.settings.gpsUpdateTime.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
+		Config.gpsUpdateTime.addChangedEventListner(new iChanged()
 		{
 
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+				CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
 			}
 		});
 
 		// Use magnetic Compass?
-		CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
-		Config.settings.HardwareCompass.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
+		Config.HardwareCompass.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+				CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
 			}
 		});
 
 		// Magnetic compass level
-		CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
-		Config.settings.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
+		Config.HardwareCompassLevel.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+				CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
 			}
 		});
 	}

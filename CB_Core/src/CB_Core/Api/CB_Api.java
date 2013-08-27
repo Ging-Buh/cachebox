@@ -27,7 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.CoreSettingsForward;
+import CB_Core.Settings.CB_Core_Settings;
 
 /**
  * Diese Klasse stellt eine verbindung zu Team-Cachebox.de her und gibt dort hinterlegte Informationen zurük. (GCAuth url ; Versionsnummer)
@@ -54,7 +54,7 @@ public class CB_Api
 		try
 		{
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(CoreSettingsForward.Staging ? CB_API_URL_GET_URLS_Staging : CB_API_URL_GET_URLS);
+			HttpPost httppost = new HttpPost(CB_Core_Settings.StagingAPI.getValue() ? CB_API_URL_GET_URLS_Staging : CB_API_URL_GET_URLS);
 
 			httppost.setHeader("Accept", "application/json");
 			httppost.setHeader("Content-type", "application/json");
@@ -74,7 +74,7 @@ public class CB_Api
 			{
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
-				if (CoreSettingsForward.Staging) return json.getString("GcAuth_ACB_Staging");
+				if (CB_Core_Settings.StagingAPI.getValue()) return json.getString("GcAuth_ACB_Staging");
 				return json.getString("GcAuth_ACB");
 
 			}

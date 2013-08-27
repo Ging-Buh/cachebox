@@ -6,7 +6,6 @@ import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingDouble;
-import CB_Utils.Settings.SettingEncryptedString;
 import CB_Utils.Settings.SettingFile;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
@@ -52,58 +51,57 @@ public interface CB_UI_Settings
 	public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel",
 			SettingCategory.Gps, NORMAL, 5, SettingStoreType.Global));
 
-	public static final SettingBool HardwareCompass = (SettingBool) SettingsList.addSetting(new SettingBool("HardwareCompass",
-			SettingCategory.Gps, NORMAL, true, SettingStoreType.Global));
+	public static final SettingBool HardwareCompass = new SettingBool("HardwareCompass", SettingCategory.Gps, NORMAL, true,
+			SettingStoreType.Global);
 
 	public static final SettingInt gpsUpdateTime = (SettingInt) SettingsList.addSetting(new SettingInt("gpsUpdateTime",
 			SettingCategory.Gps, NORMAL, 500, SettingStoreType.Global));
 
-	public static final SettingBool CompassShowMap = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowMap",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowWP_Name = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowWP_Name",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowWP_Icon = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowWP_Icon",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowAttributes = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowAttributes",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowGcCode = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowGcCode",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowCoords = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowCoords",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowWpDesc = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowWpDesc",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowSatInfos = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowSatInfos",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowSunMoon = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowSunMoon",
-			SettingCategory.Compass, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool CompassShowTargetDirection = (SettingBool) SettingsList.addSetting(new SettingBool(
-			"CompassShowTargetDirection", SettingCategory.Compass, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool CompassShowSDT = (SettingBool) SettingsList.addSetting(new SettingBool("CompassSDT",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassShowLastFound = (SettingBool) SettingsList.addSetting(new SettingBool("CompassShowLastFound",
-			SettingCategory.Compass, NORMAL, true, SettingStoreType.Global));
+	public static final SettingBool CompassShowMap = new SettingBool("CompassShowMap", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowWP_Name = new SettingBool("CompassShowWP_Name", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowWP_Icon = new SettingBool("CompassShowWP_Icon", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowAttributes = new SettingBool("CompassShowAttributes", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowGcCode = new SettingBool("CompassShowGcCode", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowCoords = new SettingBool("CompassShowCoords", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowWpDesc = new SettingBool("CompassShowWpDesc", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowSatInfos = new SettingBool("CompassShowSatInfos", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowSunMoon = new SettingBool("CompassShowSunMoon", SettingCategory.Compass, NORMAL, false,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowTargetDirection = new SettingBool("CompassShowTargetDirection", SettingCategory.Compass,
+			NORMAL, false, SettingStoreType.Global);
+	public static final SettingBool CompassShowSDT = new SettingBool("CompassSDT", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassShowLastFound = new SettingBool("CompassShowLastFound", SettingCategory.Compass, NORMAL, true,
+			SettingStoreType.Global);
 
 	public static final SettingString OverrideUrl = (SettingString) SettingsList.addSetting(new SettingString("OverrideUrl",
 			SettingCategory.Debug, EXPERT, "", SettingStoreType.Global));
 
 	// Folder
-	public static final SettingFolder UserImageFolder = (SettingFolder) SettingsList.addSetting(new SettingFolder("UserImageFolder",
-			SettingCategory.Folder, NORMAL, Work + "/User/Media", SettingStoreType.Global));
-	public static final SettingFolder LanguagePath = (SettingFolder) SettingsList.addSetting(new SettingFolder("LanguagePath",
-			SettingCategory.Folder, NEVER, "data/lang", SettingStoreType.Global));
 
-	public static final SettingFolder TileCacheFolderLocal = (SettingFolder) SettingsList.addSetting(new SettingFolder(
-			"TileCacheFolderLocal", SettingCategory.Folder, NEVER, "", SettingStoreType.Local));
-	public static final SettingFolder PocketQueryFolder = (SettingFolder) SettingsList.addSetting(new SettingFolder("PocketQueryFolder",
-			SettingCategory.Folder, INVISIBLE, Work + "/PocketQuery", SettingStoreType.Global));
+	public static final SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang",
+			SettingStoreType.Global);
 
-	public static final SettingFolder MapPackFolder = (SettingFolder) SettingsList.addSetting(new SettingFolder("MapPackFolder",
-			SettingCategory.Folder, NORMAL, Work + "/repository/maps", SettingStoreType.Global));
-	public static final SettingFolder MapPackFolderLocal = (SettingFolder) SettingsList.addSetting(new SettingFolder("MapPackFolderLocal",
-			SettingCategory.Folder, NEVER, "", SettingStoreType.Local));
+	public static final SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", SettingCategory.Folder, NEVER, "",
+			SettingStoreType.Local);
+	public static final SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, INVISIBLE, Work
+			+ "/PocketQuery", SettingStoreType.Global);
 
-	public static final SettingFolder TrackFolder = (SettingFolder) SettingsList.addSetting(new SettingFolder("TrackFolder",
-			SettingCategory.Folder, NORMAL, Work + "/User/Tracks", SettingStoreType.Global));
+	public static final SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Folder, NORMAL, Work
+			+ "/repository/maps", SettingStoreType.Global);
+	public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER, "",
+			SettingStoreType.Local);
+
+	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, NORMAL, Work + "/User/Tracks",
+			SettingStoreType.Global);
 
 	// Files
 	public static final SettingFile Sel_LanguagePath = (SettingFile) SettingsList.addSetting(new SettingFile("Sel_LanguagePath",
@@ -117,124 +115,122 @@ public interface CB_UI_Settings
 	public static final SettingFile MapsforgeNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeNightTheme",
 			SettingCategory.Skin, NORMAL, "", SettingStoreType.Global, "xml"));
 
-	public static final SettingBool MapShowRating = (SettingBool) SettingsList.addSetting(new SettingBool("MapShowRating",
-			SettingCategory.Map, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool MapShowDT = (SettingBool) SettingsList.addSetting(new SettingBool("MapShowDT", SettingCategory.Map,
-			NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool MapShowTitles = (SettingBool) SettingsList.addSetting(new SettingBool("MapShowTitles",
-			SettingCategory.Map, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool ImportLayerOsm = (SettingBool) SettingsList.addSetting(new SettingBool("ImportLayerOsm",
-			SettingCategory.Internal, NEVER, true, SettingStoreType.Global));
-	public static final SettingBool TrackRecorderStartup = (SettingBool) SettingsList.addSetting(new SettingBool("TrackRecorderStartup",
-			SettingCategory.Misc, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool MapShowCompass = (SettingBool) SettingsList.addSetting(new SettingBool("MapShowCompass",
-			SettingCategory.Map, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool CompassNorthOriented = (SettingBool) SettingsList.addSetting(new SettingBool("CompassNorthOriented",
-			SettingCategory.Map, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool MapNorthOriented = (SettingBool) SettingsList.addSetting(new SettingBool("MapNorthOriented",
-			SettingCategory.Map, NORMAL, true, SettingStoreType.Global));
+	public static final SettingBool MapShowRating = new SettingBool("MapShowRating", SettingCategory.Map, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool MapShowDT = new SettingBool("MapShowDT", SettingCategory.Map, NORMAL, true, SettingStoreType.Global);
+	public static final SettingBool MapShowTitles = new SettingBool("MapShowTitles", SettingCategory.Map, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool ImportLayerOsm = new SettingBool("ImportLayerOsm", SettingCategory.Internal, NEVER, true,
+			SettingStoreType.Global);
+	public static final SettingBool TrackRecorderStartup = new SettingBool("TrackRecorderStartup", SettingCategory.Misc, NORMAL, false,
+			SettingStoreType.Global);
+	public static final SettingBool MapShowCompass = new SettingBool("MapShowCompass", SettingCategory.Map, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool CompassNorthOriented = new SettingBool("CompassNorthOriented", SettingCategory.Map, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool MapNorthOriented = new SettingBool("MapNorthOriented", SettingCategory.Map, NORMAL, true,
+			SettingStoreType.Global);
 
-	public static final SettingBool ImportGpx = (SettingBool) SettingsList.addSetting(new SettingBool("ImportGpx", SettingCategory.API,
-			NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool CacheMapData = (SettingBool) SettingsList.addSetting(new SettingBool("CacheMapData",
-			SettingCategory.Internal, INVISIBLE, false, SettingStoreType.Global));
-	public static final SettingBool CacheImageData = (SettingBool) SettingsList.addSetting(new SettingBool("CacheImageData",
-			SettingCategory.Internal, INVISIBLE, true, SettingStoreType.Global));
-	public static final SettingBool CacheSpoilerData = (SettingBool) SettingsList.addSetting(new SettingBool("CacheSpoilerData",
-			SettingCategory.Internal, INVISIBLE, true, SettingStoreType.Global));
-	public static final SettingBool SuppressPowerSaving = (SettingBool) SettingsList.addSetting(new SettingBool("SuppressPowerSaving",
-			SettingCategory.Misc, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool GCAutoSyncCachesFound = (SettingBool) SettingsList.addSetting(new SettingBool("GCAutoSyncCachesFound",
-			SettingCategory.Internal, NEVER, true, SettingStoreType.Global));
-	public static final SettingBool GCAdditionalImageDownload = (SettingBool) SettingsList.addSetting(new SettingBool(
-			"GCAdditionalImageDownload", SettingCategory.API, EXPERT, false, SettingStoreType.Global));
-	public static final SettingBool StartWithAutoSelect = (SettingBool) SettingsList.addSetting(new SettingBool("StartWithAutoSelect",
-			SettingCategory.Misc, EXPERT, false, SettingStoreType.Global));
-	public static final SettingBool FieldnotesUploadAll = (SettingBool) SettingsList.addSetting(new SettingBool("FieldnotesUploadAll",
-			SettingCategory.API, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool MultiDBAsk = (SettingBool) SettingsList.addSetting(new SettingBool("MultiDBAsk",
-			SettingCategory.Internal, NEVER, true, SettingStoreType.Global));
-	public static final SettingBool MoveMapCenterWithSpeed = (SettingBool) SettingsList.addSetting(new SettingBool(
-			"MoveMapCenterWithSpeed", SettingCategory.CarMode, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool SearchWithoutFounds = (SettingBool) SettingsList.addSetting(new SettingBool("SearchWithoutFounds",
-			SettingCategory.API, INVISIBLE, true, SettingStoreType.Global));
-	public static final SettingBool SearchWithoutOwns = (SettingBool) SettingsList.addSetting(new SettingBool("SearchWithoutOwns",
-			SettingCategory.API, INVISIBLE, true, SettingStoreType.Global));
-	public static final SettingBool SearchOnlyAvible = (SettingBool) SettingsList.addSetting(new SettingBool("SearchOnlyAvible",
-			SettingCategory.API, INVISIBLE, true, SettingStoreType.Global));
-	public static final SettingBool quickButtonShow = (SettingBool) SettingsList.addSetting(new SettingBool("quickButtonShow",
-			SettingCategory.QuickList, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool DebugShowPanel = (SettingBool) SettingsList.addSetting(new SettingBool("DebugShowPanel",
-			SettingCategory.Debug, EXPERT, false, SettingStoreType.Global));
-	public static final SettingBool DebugMemory = (SettingBool) SettingsList.addSetting(new SettingBool("DebugMemory",
-			SettingCategory.Debug, EXPERT, false, SettingStoreType.Global));
-	public static final SettingBool DebugShowMsg = (SettingBool) SettingsList.addSetting(new SettingBool("DebugShowMsg",
-			SettingCategory.Debug, EXPERT, false, SettingStoreType.Global));
+	public static final SettingBool ImportGpx = new SettingBool("ImportGpx", SettingCategory.API, NORMAL, false, SettingStoreType.Global);
+	public static final SettingBool CacheMapData = new SettingBool("CacheMapData", SettingCategory.Internal, INVISIBLE, false,
+			SettingStoreType.Global);
+	public static final SettingBool CacheImageData = new SettingBool("CacheImageData", SettingCategory.Internal, INVISIBLE, true,
+			SettingStoreType.Global);
+	public static final SettingBool CacheSpoilerData = new SettingBool("CacheSpoilerData", SettingCategory.Internal, INVISIBLE, true,
+			SettingStoreType.Global);
+	public static final SettingBool SuppressPowerSaving = new SettingBool("SuppressPowerSaving", SettingCategory.Misc, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool GCAutoSyncCachesFound = new SettingBool("GCAutoSyncCachesFound", SettingCategory.Internal, NEVER, true,
+			SettingStoreType.Global);
+	public static final SettingBool GCAdditionalImageDownload = new SettingBool("GCAdditionalImageDownload", SettingCategory.API, EXPERT,
+			false, SettingStoreType.Global);
+	public static final SettingBool StartWithAutoSelect = new SettingBool("StartWithAutoSelect", SettingCategory.Misc, EXPERT, false,
+			SettingStoreType.Global);
+	public static final SettingBool FieldnotesUploadAll = new SettingBool("FieldnotesUploadAll", SettingCategory.API, NORMAL, false,
+			SettingStoreType.Global);
+	public static final SettingBool MultiDBAsk = new SettingBool("MultiDBAsk", SettingCategory.Internal, NEVER, true,
+			SettingStoreType.Global);
+	public static final SettingBool MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", SettingCategory.CarMode, NORMAL,
+			false, SettingStoreType.Global);
+	public static final SettingBool SearchWithoutFounds = new SettingBool("SearchWithoutFounds", SettingCategory.API, INVISIBLE, true,
+			SettingStoreType.Global);
+	public static final SettingBool SearchWithoutOwns = new SettingBool("SearchWithoutOwns", SettingCategory.API, INVISIBLE, true,
+			SettingStoreType.Global);
+	public static final SettingBool SearchOnlyAvible = new SettingBool("SearchOnlyAvible", SettingCategory.API, INVISIBLE, true,
+			SettingStoreType.Global);
+	public static final SettingBool quickButtonShow = new SettingBool("quickButtonShow", SettingCategory.QuickList, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool DebugShowPanel = new SettingBool("DebugShowPanel", SettingCategory.Debug, EXPERT, false,
+			SettingStoreType.Global);
+	public static final SettingBool DebugMemory = new SettingBool("DebugMemory", SettingCategory.Debug, EXPERT, false,
+			SettingStoreType.Global);
+	public static final SettingBool DebugShowMsg = new SettingBool("DebugShowMsg", SettingCategory.Debug, EXPERT, false,
+			SettingStoreType.Global);
 
-	public static final SettingBool DebugShowLog = (SettingBool) SettingsList.addSetting(new SettingBool("DebugShowLog",
-			SettingCategory.Debug, EXPERT, false, SettingStoreType.Global));
-	public static final SettingBool DescriptionNoAttributes = (SettingBool) SettingsList.addSetting(new SettingBool(
-			"DescriptionNoAttributes", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool quickButtonLastShow = (SettingBool) SettingsList.addSetting(new SettingBool("quickButtonLastShow",
-			SettingCategory.QuickList, INVISIBLE, false, SettingStoreType.Global));
-	public static final SettingBool newInstall = (SettingBool) SettingsList.addSetting(new SettingBool("newInstall",
-			SettingCategory.Internal, NEVER, false, SettingStoreType.Global));
-	public static final SettingBool ImperialUnits = (SettingBool) SettingsList.addSetting(new SettingBool("ImperialUnits",
-			SettingCategory.Misc, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool ShowDirektLine = (SettingBool) SettingsList.addSetting(new SettingBool("ShowDirektLine",
-			SettingCategory.Map, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool ShowAccuracyCircle = (SettingBool) SettingsList.addSetting(new SettingBool("ShowAccuracyCircle",
-			SettingCategory.Map, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool ShowMapCenterCross = (SettingBool) SettingsList.addSetting(new SettingBool("ShowMapCenterCross",
-			SettingCategory.Map, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool PositionMarkerTransparent = (SettingBool) SettingsList.addSetting(new SettingBool(
-			"PositionMarkerTransparent", SettingCategory.Map, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool DebugShowMarker = (SettingBool) SettingsList.addSetting(new SettingBool("DebugShowMarker",
-			SettingCategory.Debug, EXPERT, false, SettingStoreType.Global));
-	public static final SettingBool ImportRatings = (SettingBool) SettingsList.addSetting(new SettingBool("ImportRatings",
-			SettingCategory.API, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool ImportPQsFromGeocachingCom = (SettingBool) SettingsList.addSetting(new SettingBool(
-			"ImportPQsFromGeocachingCom", SettingCategory.API, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool SettingsShowExpert = (SettingBool) SettingsList.addSetting(new SettingBool("SettingsShowExpert",
-			SettingCategory.Internal, NEVER, false, SettingStoreType.Global));
-	public static final SettingBool SettingsShowAll = (SettingBool) SettingsList.addSetting(new SettingBool("SettingsShowAll",
-			SettingCategory.Internal, NEVER, false, SettingStoreType.Global));
-	public static final SettingBool switchViewApproach = (SettingBool) SettingsList.addSetting(new SettingBool("switchViewApproach",
-			SettingCategory.Misc, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool hasCallPermission = (SettingBool) SettingsList.addSetting(new SettingBool("hasCallPermission",
-			SettingCategory.Internal, NEVER, false, SettingStoreType.Global));
-	public static final SettingBool vibrateFeedback = (SettingBool) SettingsList.addSetting(new SettingBool("vibrateFeedback",
-			SettingCategory.Misc, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool hasPQ_PlugIn = (SettingBool) SettingsList.addSetting(new SettingBool("hasPQ_PlugIn",
-			SettingCategory.Internal, NEVER, false, SettingStoreType.Global));
-	public static final SettingBool hasFTF_PlugIn = (SettingBool) SettingsList.addSetting(new SettingBool("hasFTF_PlugIn",
-			SettingCategory.Internal, NEVER, false, SettingStoreType.Global));
-	public static final SettingBool dynamicZoom = (SettingBool) SettingsList.addSetting(new SettingBool("dynamicZoom",
-			SettingCategory.CarMode, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool dynamicFilterAtSearch = (SettingBool) SettingsList.addSetting(new SettingBool("dynamicFilterAtSearch",
-			SettingCategory.Misc, NEVER, true, SettingStoreType.Global));
-	public static final SettingBool DeleteLogs = (SettingBool) SettingsList.addSetting(new SettingBool("DeleteLogs",
-			SettingCategory.Internal, INVISIBLE, false, SettingStoreType.Global));
-	public static final SettingBool CompactDB = (SettingBool) SettingsList.addSetting(new SettingBool("CompactDB",
-			SettingCategory.Internal, INVISIBLE, false, SettingStoreType.Global));
-	public static final SettingBool RememberAsk_API_Coast = (SettingBool) SettingsList.addSetting(new SettingBool("RememberAsk_API_Coast",
-			SettingCategory.RememberAsk, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool AskAgain = (SettingBool) SettingsList.addSetting(new SettingBool("AskAgain",
-			SettingCategory.RememberAsk, NORMAL, true, SettingStoreType.Platform));
-	public static final SettingBool RememberAsk_Get_API_Key = (SettingBool) SettingsList.addSetting(new SettingBool(
-			"RememberAsk_Get_API_Key", SettingCategory.RememberAsk, NORMAL, true, SettingStoreType.Global));
-	public static final SettingBool Ask_Switch_GPS_ON = (SettingBool) SettingsList.addSetting(new SettingBool("Ask_Switch_GPS_ON",
-			SettingCategory.RememberAsk, NORMAL, true, SettingStoreType.Platform));
-	public static final SettingBool FireMapQueueProcessorExceptions = (SettingBool) SettingsList.addSetting(new SettingBool(
-			"FireMapQueueProcessorExceptions", SettingCategory.Internal, INVISIBLE, false, SettingStoreType.Global));
+	public static final SettingBool DebugShowLog = new SettingBool("DebugShowLog", SettingCategory.Debug, EXPERT, false,
+			SettingStoreType.Global);
+	public static final SettingBool DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", SettingCategory.Misc, NORMAL,
+			false, SettingStoreType.Global);
+	public static final SettingBool quickButtonLastShow = new SettingBool("quickButtonLastShow", SettingCategory.QuickList, INVISIBLE,
+			false, SettingStoreType.Global);
+	public static final SettingBool newInstall = new SettingBool("newInstall", SettingCategory.Internal, NEVER, false,
+			SettingStoreType.Global);
+	public static final SettingBool ImperialUnits = new SettingBool("ImperialUnits", SettingCategory.Misc, NORMAL, false,
+			SettingStoreType.Global);
+	public static final SettingBool ShowDirektLine = new SettingBool("ShowDirektLine", SettingCategory.Map, NORMAL, false,
+			SettingStoreType.Global);
+	public static final SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", SettingCategory.Map, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool ShowMapCenterCross = new SettingBool("ShowMapCenterCross", SettingCategory.Map, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", SettingCategory.Map, NORMAL,
+			false, SettingStoreType.Global);
+	public static final SettingBool DebugShowMarker = new SettingBool("DebugShowMarker", SettingCategory.Debug, EXPERT, false,
+			SettingStoreType.Global);
+	public static final SettingBool ImportRatings = new SettingBool("ImportRatings", SettingCategory.API, NORMAL, false,
+			SettingStoreType.Global);
+	public static final SettingBool ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", SettingCategory.API, NORMAL,
+			false, SettingStoreType.Global);
+	public static final SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", SettingCategory.Internal, NEVER, false,
+			SettingStoreType.Global);
+	public static final SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", SettingCategory.Internal, NEVER, false,
+			SettingStoreType.Global);
+	public static final SettingBool switchViewApproach = new SettingBool("switchViewApproach", SettingCategory.Misc, NORMAL, false,
+			SettingStoreType.Global);
+	public static final SettingBool hasCallPermission = new SettingBool("hasCallPermission", SettingCategory.Internal, NEVER, false,
+			SettingStoreType.Global);
+	public static final SettingBool vibrateFeedback = new SettingBool("vibrateFeedback", SettingCategory.Misc, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool hasPQ_PlugIn = new SettingBool("hasPQ_PlugIn", SettingCategory.Internal, NEVER, false,
+			SettingStoreType.Global);
+	public static final SettingBool hasFTF_PlugIn = new SettingBool("hasFTF_PlugIn", SettingCategory.Internal, NEVER, false,
+			SettingStoreType.Global);
+	public static final SettingBool dynamicZoom = new SettingBool("dynamicZoom", SettingCategory.CarMode, NORMAL, true,
+			SettingStoreType.Global);
+	public static final SettingBool dynamicFilterAtSearch = new SettingBool("dynamicFilterAtSearch", SettingCategory.Misc, NEVER, true,
+			SettingStoreType.Global);
+	public static final SettingBool DeleteLogs = new SettingBool("DeleteLogs", SettingCategory.Internal, INVISIBLE, false,
+			SettingStoreType.Global);
+	public static final SettingBool CompactDB = new SettingBool("CompactDB", SettingCategory.Internal, INVISIBLE, false,
+			SettingStoreType.Global);
+	public static final SettingBool RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", SettingCategory.RememberAsk, NORMAL,
+			false, SettingStoreType.Global);
+	public static final SettingBool AskAgain = new SettingBool("AskAgain", SettingCategory.RememberAsk, NORMAL, true,
+			SettingStoreType.Platform);
+	public static final SettingBool RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", SettingCategory.RememberAsk,
+			NORMAL, true, SettingStoreType.Global);
+	public static final SettingBool Ask_Switch_GPS_ON = new SettingBool("Ask_Switch_GPS_ON", SettingCategory.RememberAsk, NORMAL, true,
+			SettingStoreType.Platform);
+	public static final SettingBool FireMapQueueProcessorExceptions = new SettingBool("FireMapQueueProcessorExceptions",
+			SettingCategory.Internal, INVISIBLE, false, SettingStoreType.Global);
 
-	public static final SettingBool TB_DirectLog = (SettingBool) SettingsList.addSetting(new SettingBool("TB_DirectLog",
-			SettingCategory.Internal, NEVER, true, SettingStoreType.Platform));
+	public static final SettingBool TB_DirectLog = new SettingBool("TB_DirectLog", SettingCategory.Internal, NEVER, true,
+			SettingStoreType.Platform);
 
-	public static final SettingBool MapHideMyFinds = (SettingBool) SettingsList.addSetting(new SettingBool("MapHideMyFinds",
-			SettingCategory.Map, NORMAL, false, SettingStoreType.Global));
-	public static final SettingBool ShowAllWaypoints = (SettingBool) SettingsList.addSetting(new SettingBool("ShowAllWaypoints",
-			SettingCategory.Map, NORMAL, false, SettingStoreType.Global));
+	public static final SettingBool MapHideMyFinds = new SettingBool("MapHideMyFinds", SettingCategory.Map, NORMAL, false,
+			SettingStoreType.Global);
+	public static final SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", SettingCategory.Map, NORMAL, false,
+			SettingStoreType.Global);
 
 	// int
 	public static final SettingInt LogMaxMonthAge = (SettingInt) SettingsList.addSetting(new SettingInt("LogMaxMonthAge",
@@ -274,11 +270,6 @@ public interface CB_UI_Settings
 	public static final SettingInt dynamicZoomLevelMin = (SettingInt) SettingsList.addSetting(new SettingInt("dynamicZoomLevelMin",
 			SettingCategory.CarMode, NORMAL, 15, SettingStoreType.Global));
 
-	public static final SettingInt conection_timeout = (SettingInt) SettingsList.addSetting(new SettingInt("conection_timeout",
-			SettingCategory.Internal, INVISIBLE, 10000, SettingStoreType.Global));
-	public static final SettingInt socket_timeout = (SettingInt) SettingsList.addSetting(new SettingInt("socket_timeout",
-			SettingCategory.Internal, INVISIBLE, 60000, SettingStoreType.Global));
-
 	// String
 	public static final SettingString CurrentMapLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapLayer",
 			SettingCategory.Map, EXPERT, "Mapnik", SettingStoreType.Global));
@@ -314,61 +305,54 @@ public interface CB_UI_Settings
 			NORMAL, "", SettingStoreType.Platform));
 
 	// ArrayInt
-	public static final SettingIntArray ZoomCross = (SettingIntArray) SettingsList.addSetting(new SettingIntArray("ZoomCross",
-			SettingCategory.Map, NORMAL, 16, SettingStoreType.Global, CrossLevel));
-	public static final SettingIntArray SoundApproachDistance = (SettingIntArray) SettingsList.addSetting(new SettingIntArray(
-			"SoundApproachDistance", SettingCategory.Misc, NORMAL, 50, SettingStoreType.Global, approach));
-	public static final SettingIntArray TrackDistance = (SettingIntArray) SettingsList.addSetting(new SettingIntArray("TrackDistance",
-			SettingCategory.Misc, NORMAL, 3, SettingStoreType.Global, TrackDistanceArray));
-	public static final SettingIntArray OsmMinLevel = (SettingIntArray) SettingsList.addSetting(new SettingIntArray("OsmMinLevel",
-			SettingCategory.Map, NORMAL, 7, SettingStoreType.Global, Level));
-	public static final SettingIntArray OsmMaxImportLevel = (SettingIntArray) SettingsList.addSetting(new SettingIntArray(
-			"OsmMaxImportLevel", SettingCategory.Map, INVISIBLE, 16, SettingStoreType.Global, Level));
-	public static final SettingIntArray OsmMaxLevel = (SettingIntArray) SettingsList.addSetting(new SettingIntArray("OsmMaxLevel",
-			SettingCategory.Map, NORMAL, 19, SettingStoreType.Global, Level));
-	public static final SettingIntArray CompassMapMaxZommLevel = (SettingIntArray) SettingsList.addSetting(new SettingIntArray(
-			"CompassMapMaxZommLevel", SettingCategory.Map, NORMAL, 20, SettingStoreType.Global, Level));
-	public static final SettingIntArray CompassMapMinZoomLevel = (SettingIntArray) SettingsList.addSetting(new SettingIntArray(
-			"CompassMapMinZoomLevel", SettingCategory.Map, NORMAL, 13, SettingStoreType.Global, Level));
+	public static final SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", SettingCategory.Map, NORMAL, 16,
+			SettingStoreType.Global, CrossLevel);
+	public static final SettingIntArray SoundApproachDistance = new SettingIntArray("SoundApproachDistance", SettingCategory.Misc, NORMAL,
+			50, SettingStoreType.Global, approach);
+	public static final SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", SettingCategory.Misc, NORMAL, 3,
+			SettingStoreType.Global, TrackDistanceArray);
+	public static final SettingIntArray OsmMinLevel = new SettingIntArray("OsmMinLevel", SettingCategory.Map, NORMAL, 7,
+			SettingStoreType.Global, Level);
+	public static final SettingIntArray OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", SettingCategory.Map, INVISIBLE, 16,
+			SettingStoreType.Global, Level);
+	public static final SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", SettingCategory.Map, NORMAL, 19,
+			SettingStoreType.Global, Level);
+	public static final SettingIntArray CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", SettingCategory.Map, NORMAL,
+			20, SettingStoreType.Global, Level);
+	public static final SettingIntArray CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", SettingCategory.Map, NORMAL,
+			13, SettingStoreType.Global, Level);
 
 	// double
-	public static final SettingDouble MapInitLatitude = (SettingDouble) SettingsList.addSetting(new SettingDouble("MapInitLatitude",
-			SettingCategory.Positions, EXPERT, -1000, SettingStoreType.Global));
-	public static final SettingDouble MapInitLongitude = (SettingDouble) SettingsList.addSetting(new SettingDouble("MapInitLongitude",
-			SettingCategory.Positions, EXPERT, -1000, SettingStoreType.Global));
-	public static final SettingDouble ParkingLatitude = (SettingDouble) SettingsList.addSetting(new SettingDouble("ParkingLatitude",
-			SettingCategory.Positions, EXPERT, 0, SettingStoreType.Global));
-	public static final SettingDouble ParkingLongitude = (SettingDouble) SettingsList.addSetting(new SettingDouble("ParkingLongitude",
-			SettingCategory.Positions, EXPERT, 0, SettingStoreType.Global));
+	public static final SettingDouble MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Positions, EXPERT, -1000,
+			SettingStoreType.Global);
+	public static final SettingDouble MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Positions, EXPERT, -1000,
+			SettingStoreType.Global);
 
 	// longString
-	public static final SettingLongString Filter = (SettingLongString) SettingsList.addSetting(new SettingLongString("Filter",
-			SettingCategory.Misc, NEVER, FilterProperties.presets[0].toString(), SettingStoreType.Local));
-	public static final SettingLongString FilterNew = (SettingLongString) SettingsList.addSetting(new SettingLongString("FilterNew",
-			SettingCategory.Misc, NEVER, "", SettingStoreType.Local));
-	public static final SettingLongString UserFilter = (SettingLongString) SettingsList.addSetting(new SettingLongString("UserFilter",
-			SettingCategory.Misc, NEVER, "", SettingStoreType.Global));
-	public static final SettingLongString UserFilterNew = (SettingLongString) SettingsList.addSetting(new SettingLongString(
-			"UserFilterNew", SettingCategory.Misc, NEVER, "", SettingStoreType.Global));
+	public static final SettingLongString Filter = new SettingLongString("Filter", SettingCategory.Misc, NEVER,
+			FilterProperties.presets[0].toString(), SettingStoreType.Local);
+	public static final SettingLongString FilterNew = new SettingLongString("FilterNew", SettingCategory.Misc, NEVER, "",
+			SettingStoreType.Local);
+	public static final SettingLongString UserFilter = new SettingLongString("UserFilter", SettingCategory.Misc, NEVER, "",
+			SettingStoreType.Global);
+	public static final SettingLongString UserFilterNew = new SettingLongString("UserFilterNew", SettingCategory.Misc, NEVER, "",
+			SettingStoreType.Global);
 
 	public static final SettingTime ScreenLock = (SettingTime) SettingsList.addSetting(new SettingTime("ScreenLock", SettingCategory.Misc,
 			NEVER, 60000, SettingStoreType.Global));
 
-	public static final SettingEncryptedString GcVotePassword = (SettingEncryptedString) SettingsList
-			.addSetting(new SettingEncryptedString("GcVotePassword", SettingCategory.Login, NORMAL, "", SettingStoreType.Platform));
-
 	// AudioSettings
 
-	public static final SettingsAudio Approach = (SettingsAudio) SettingsList.addSetting(new SettingsAudio("Approach",
-			SettingCategory.Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global));
+	public static final SettingsAudio Approach = new SettingsAudio("Approach", SettingCategory.Sounds, NORMAL, new Audio(
+			"data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global);
 
-	public static final SettingsAudio GPS_lose = (SettingsAudio) SettingsList.addSetting(new SettingsAudio("GPS_lose",
-			SettingCategory.Sounds, NORMAL, new Audio("data/sound/GPS_lose.ogg", false, false, 1.0f), SettingStoreType.Global));
+	public static final SettingsAudio GPS_lose = new SettingsAudio("GPS_lose", SettingCategory.Sounds, NORMAL, new Audio(
+			"data/sound/GPS_lose.ogg", false, false, 1.0f), SettingStoreType.Global);
 
-	public static final SettingsAudio GPS_fix = (SettingsAudio) SettingsList.addSetting(new SettingsAudio("GPS_fix",
-			SettingCategory.Sounds, NORMAL, new Audio("data/sound/GPS_Fix.ogg", false, false, 1.0f), SettingStoreType.Global));
+	public static final SettingsAudio GPS_fix = new SettingsAudio("GPS_fix", SettingCategory.Sounds, NORMAL, new Audio(
+			"data/sound/GPS_Fix.ogg", false, false, 1.0f), SettingStoreType.Global);
 
-	public static final SettingsAudio AutoResortSound = (SettingsAudio) SettingsList.addSetting(new SettingsAudio("AutoResortSound",
-			SettingCategory.Sounds, NORMAL, new Audio("data/sound/AutoResort.ogg", false, false, 1.0f), SettingStoreType.Global));
+	public static final SettingsAudio AutoResortSound = new SettingsAudio("AutoResortSound", SettingCategory.Sounds, NORMAL, new Audio(
+			"data/sound/AutoResort.ogg", false, false, 1.0f), SettingStoreType.Global);
 
 }

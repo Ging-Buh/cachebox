@@ -69,21 +69,21 @@ import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.CB_ActionButton;
+import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI_Base.GL_UI.Main.CB_Button;
 import CB_UI_Base.GL_UI.Main.CB_ButtonList;
 import CB_UI_Base.GL_UI.Main.CB_TabView;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
-import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
@@ -170,12 +170,15 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	{
 		GlobalCore.receiver = new CB_UI.GlobalLocationReceiver();
 
-		// Wird inerhalb des ersten Render Vorgangs aufgerufen.
-
-		// eine Initialisierung der actions kommt hier zu spät, daher als Aufruf aus dem Constructor verschoben!
-
-		// Config.settings.quickButtonShow.setValue(false);
-		// Config.AcceptChanges();
+		Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
+		Config.WriteLoggerDebugMode.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
+			}
+		});
 
 		ini();
 		isInitial = true;
@@ -188,23 +191,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			public void isChanged()
 			{
 				CoreSettingsForward.VersionString = GlobalCore.getVersionString();
-				CoreSettingsForward.Staging = Config.settings.StagingAPI.getValue();
-				// CoreSettingsForward.accessToken = Config.GetAccessToken();
-				// CoreSettingsForward.accessTokenUrlCodiert = Config.GetAccessToken(true);
-				CoreSettingsForward.conectionTimeout = Config.settings.conection_timeout.getValue();
-				CoreSettingsForward.socketTimeout = Config.settings.socket_timeout.getValue();
-				// CoreSettingsForward.DescriptionImageFolder = Config.settings.DescriptionImageFolder.getValue();
-				// CoreSettingsForward.DescriptionImageFolderLocal = Config.settings.DescriptionImageFolderLocal.getValue();
-				// CoreSettingsForward.userName = Config.settings.GcLogin.getValue();
-				CoreSettingsForward.GcVotePassword = Config.settings.GcVotePassword.getValue();
-				// CoreSettingsForward.SpoilerFolder = Config.settings.SpoilerFolder.getValue();
-				// CoreSettingsForward.SpoilerFolderLocal = Config.settings.SpoilerFolderLocal.getValue();
 				CoreSettingsForward.DisplayOff = Energy.DisplayOff();
-				CoreSettingsForward.ParkingLatitude = Config.settings.ParkingLatitude.getValue();
-				CoreSettingsForward.ParkingLongitude = Config.settings.ParkingLongitude.getValue();
-				CoreSettingsForward.DefaultSpoilerFolder = Config.settings.SpoilerFolder.getDefaultValue();
-				CoreSettingsForward.UserImageFolder = Config.settings.UserImageFolder.getValue();
-
 			}
 		};
 
@@ -212,21 +199,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		settingChangedHandler.isChanged();
 
 		// add changed handler
-		Config.settings.StagingAPI.addChangedEventListner(settingChangedHandler);
-		Config.settings.GcAPIStaging.addChangedEventListner(settingChangedHandler);
-		Config.settings.GcAPI.addChangedEventListner(settingChangedHandler);
-		Config.settings.conection_timeout.addChangedEventListner(settingChangedHandler);
-		Config.settings.socket_timeout.addChangedEventListner(settingChangedHandler);
-		Config.settings.DescriptionImageFolder.addChangedEventListner(settingChangedHandler);
-		Config.settings.DescriptionImageFolderLocal.addChangedEventListner(settingChangedHandler);
-		Config.settings.GcLogin.addChangedEventListner(settingChangedHandler);
-		Config.settings.SpoilerFolder.addChangedEventListner(settingChangedHandler);
-		Config.settings.UserImageFolder.addChangedEventListner(settingChangedHandler);
-		Config.settings.ParkingLatitude.addChangedEventListner(settingChangedHandler);
-		Config.settings.GcVotePassword.addChangedEventListner(settingChangedHandler);
-		Config.settings.SpoilerFolderLocal.addChangedEventListner(settingChangedHandler);
-		Config.settings.ParkingLongitude.addChangedEventListner(settingChangedHandler);
-
 		Energy.addChangedEventListner(settingChangedHandler);
 
 	}
@@ -288,13 +260,13 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		autoLoadTrack();
 
-		if (Config.settings.TrackRecorderStartup.getValue() && platformConector.isGPSon())
+		if (Config.TrackRecorderStartup.getValue() && platformConector.isGPSon())
 		{
 			TrackRecorder.StartRecording();
 		}
 
 		// set last selected Cache
-		String sGc = Config.settings.LastSelectedCache.getValue();
+		String sGc = Config.LastSelectedCache.getValue();
 		if (sGc != null && !sGc.equals(""))
 		{
 			synchronized (Database.Data.Query)
@@ -311,7 +283,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			}
 		}
 
-		GlobalCore.setAutoResort(Config.settings.StartWithAutoSelect.getValue());
+		GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
 
 		platformConector.FirstShow();
 		filterSetChanged();
@@ -565,7 +537,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	private void autoLoadTrack()
 	{
-		String trackPath = Config.settings.TrackFolder.getValue() + "/Autoload";
+		String trackPath = Config.TrackFolder.getValue() + "/Autoload";
 		if (FileIO.createDirectory(trackPath))
 		{
 			File dir = new File(trackPath);
@@ -637,7 +609,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			Slider slider = new Slider(this, "Slider");
 			this.addChild(slider);
 
-			String state = Config.settings.nightMode.getValue() ? "Night" : "Day";
+			String state = Config.nightMode.getValue() ? "Night" : "Day";
 
 			GL.that.Toast("Switch to " + state, Toast.LENGTH_SHORT);
 
@@ -735,7 +707,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 					if (which == GL_MsgBox.BUTTON_POSITIVE) platformConector.callGetApiKeyt();
 					return true;
 				}
-			}, Config.settings.RememberAsk_Get_API_Key);
+			}, Config.RememberAsk_Get_API_Key);
 		}
 	};
 
@@ -760,8 +732,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 				distance = GlobalCore.getSelectedWaypoint().Distance();
 			}
 
-			if (Config.settings.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted
-					&& (distance < Config.settings.SoundApproachDistance.getValue()))
+			if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted
+					&& (distance < Config.SoundApproachDistance.getValue()))
 			{
 				actionShowCompassView.Execute();
 				GlobalCore.switchToCompassCompleted = true;

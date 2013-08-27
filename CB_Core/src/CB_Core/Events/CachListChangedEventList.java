@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 
 public class CachListChangedEventList
@@ -48,10 +49,10 @@ public class CachListChangedEventList
 			if (cache != null) Database.Data.Query.remove(cache);
 
 			// add Parking Cache
-			if (CoreSettingsForward.ParkingLatitude != 0)
+			if (CB_Core_Settings.ParkingLatitude.getValue() != 0)
 			{
-				cache = new Cache(CoreSettingsForward.ParkingLatitude, CoreSettingsForward.ParkingLongitude, "My Parking area",
-						CacheTypes.MyParking, "CBPark");
+				cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(),
+						"My Parking area", CacheTypes.MyParking, "CBPark");
 				Database.Data.Query.add(0, cache);
 			}
 
