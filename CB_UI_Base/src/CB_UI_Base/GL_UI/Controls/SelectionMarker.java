@@ -152,7 +152,7 @@ public class SelectionMarker extends CB_View_Base
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
 			newY = newY + height;
-			Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
+			// Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			touchDownPos = null;
 		}
 		return true;
@@ -168,8 +168,8 @@ public class SelectionMarker extends CB_View_Base
 			y += tv.ThisWorldRec.getY();
 		}
 
-		float oldX = this.Pos.x;
-		float oldY = this.Pos.y;
+		// float oldX = this.Pos.x;
+		// float oldY = this.Pos.y;
 		this.setPos(x - markerXPos, y - height);
 		// if (this.ThisWorldRec != null)
 		// {

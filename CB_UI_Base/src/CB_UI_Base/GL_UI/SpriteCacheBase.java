@@ -168,6 +168,11 @@ public class SpriteCacheBase
 	public static Drawable ListBack = null;
 	public static Drawable ButtonBack = null;
 	public static Drawable AboutBack = null;
+
+	public static Drawable Slider = null;
+	public static Drawable SliderBack = null;
+	public static Drawable SliderPushed = null;
+
 	public static Sprite Progress = null;
 	public static Sprite ambilwarna_hue = null;
 	public static Sprite ambilwarna_cursor = null;
@@ -809,9 +814,10 @@ public class SpriteCacheBase
 	{
 		patch = (SpriteCacheBase.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
 
-		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-back"), patch, patch, patch, patch));
-		activityBorderMask = new NinePatchDrawable(
-				new NinePatch(SpriteCacheBase.getThemedSprite("activity-border"), patch, patch, patch, patch));
+		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-back"), patch, patch, patch,
+				patch));
+		activityBorderMask = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-border"), patch, patch, patch,
+				patch));
 		ListBack = new ColorDrawable(SkinBase.getThemedColor("background"));
 		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
 		AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
@@ -824,6 +830,15 @@ public class SpriteCacheBase
 		btnPressed = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), patch, patch, patch, patch));
 		btnDisabled = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-disabled"), patch, patch, patch, patch));
 
+		SliderPushed = new SpriteDrawable(getThemedSprite("scrollbarPushedSlider"));
+		// SliderBack = new SpriteDrawable(getThemedSprite(????));
+
+		Sprite tmpSlider = getThemedSprite("scrollbarSlider");
+
+		int sliderPatch = (int) (tmpSlider.getWidth() / 4);
+
+		Slider = new NinePatchDrawable(new NinePatch(tmpSlider, sliderPatch, sliderPatch, sliderPatch, sliderPatch));
+
 		chkOn = new SpriteDrawable(getThemedSprite("check-on"));
 		chkOff = new SpriteDrawable(getThemedSprite("check-off"));
 		chkOnDisabled = new SpriteDrawable(getThemedSprite("check-disable"));
@@ -834,8 +849,8 @@ public class SpriteCacheBase
 
 		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch,
 				patch));
-		textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch, patch,
-				patch, patch));
+		textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch,
+				patch, patch, patch));
 
 		selection = new SpriteDrawable(getThemedSprite("Selection"));
 		selection_set = new SpriteDrawable(getThemedSprite("Selection-set"));

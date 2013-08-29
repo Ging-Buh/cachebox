@@ -9,18 +9,19 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Log.Logger;
+import CB_Utils.Util.MoveableList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class ListViewBase extends CB_View_Base
+public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent
 {
+	protected Scrollbar scrollbar;
+	protected MoveableList<GL_View_Base> noListChilds = new MoveableList<GL_View_Base>();
 	protected float mLastDragedDistance = 0;
 	private float mAnimationTarget = 0;
 	private Timer mAnimationTimer;
@@ -96,9 +97,10 @@ public abstract class ListViewBase extends CB_View_Base
 		return mPosDefault;
 	}
 
-	public float getAllItemSize()
+	@Override
+	public float getAllListSize()
 	{
-		return mcalcAllSizeBase;
+		return mAllSize;
 	}
 
 	/**
@@ -199,7 +201,7 @@ public abstract class ListViewBase extends CB_View_Base
 
 		// Position setzen, damit die items neu geladen werden
 		setListPos(mPos, false);
-
+		// Logger.DEBUG("SetListPos Relod Items");
 		GL.that.renderOnce("");
 
 	}
@@ -224,6 +226,12 @@ public abstract class ListViewBase extends CB_View_Base
 	public void setDisposeFlag(Boolean CanDispose)
 	{
 		mCanDispose = CanDispose;
+	}
+
+	@Override
+	public void setListPos(float value)
+	{
+		this.setListPos(value, false);
 	}
 
 	protected void setListPos(float value, boolean Kinetic)
@@ -268,13 +276,6 @@ public abstract class ListViewBase extends CB_View_Base
 		return true;
 	}
 
-	// Debug FontCaches
-	BitmapFontCache dPosy;
-	BitmapFontCache dDraged;
-	BitmapFontCache dFirstIndex;
-	BitmapFontCache dChildCount;
-	BitmapFontCache dFPS;
-
 	@Override
 	protected void render(SpriteBatch batch)
 	{
@@ -318,49 +319,18 @@ public abstract class ListViewBase extends CB_View_Base
 
 	}
 
-	NinePatch debugBack = new NinePatch(SpriteCacheBase.getThemedSprite("listrec-first"), 8, 8, 8, 8);
-
 	@Override
 	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
 	{
 		super.renderChilds(batch, parentInfo);
 
-		if (!debug) return;
-		// schreibe Debug
-		if (dPosy == null)
-		{
-			dPosy = new BitmapFontCache(Fonts.getSmall());
-			dDraged = new BitmapFontCache(Fonts.getSmall());
-			dFirstIndex = new BitmapFontCache(Fonts.getSmall());
-			dChildCount = new BitmapFontCache(Fonts.getSmall());
-			dFPS = new BitmapFontCache(Fonts.getSmall());
-		}
-
-		dFPS.setText("FPS:  " + Gdx.graphics.getFramesPerSecond(), 220, 140);
-
-		dChildCount.setText("ChildCount: " + childs.size(), 220, 115);
-
-		dPosy.setText("PosY= " + mPos, 220, 100);
-		dDraged.setText("Draged " + mLastDragedDistance, 220, 85);
-		dFirstIndex.setText("Index " + mFirstIndex + "-" + mLastIndex, 220, 70);
-
-		batch.flush();
-
-		debugBack.draw(batch, 210, 50, 150, 100);
-
-		dPosy.draw(batch);
-		dDraged.draw(batch);
-		dFirstIndex.draw(batch);
-		dChildCount.draw(batch);
-		dFPS.draw(batch);
-
-		batch.flush();
 	}
 
 	/**
 	 * Überprüft ob die Liste oben oder unten Platz hat und lösst eine Animation aus, in der die Liste auf die erste oder letzte Position
 	 * scrollt.
 	 */
+	@Override
 	public void chkSlideBack()
 	{
 		// Logger.LogCat("chkSlideBack()");
@@ -373,7 +343,8 @@ public abstract class ListViewBase extends CB_View_Base
 		else if (mPos < mcalcAllSizeBase) startAnimationToBottom();
 	}
 
-	public boolean isDrageble()
+	@Override
+	public boolean isDragable()
 	{
 		return mIsDrageble;
 	}
@@ -409,6 +380,8 @@ public abstract class ListViewBase extends CB_View_Base
 		// if (i < getMaxItemCount()) i = getMaxItemCount();
 		float versatz = i < getLastVisiblePosition() ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
 
+		Logger.DEBUG("SetListPos -> ScrollTO Item");
+
 		if (i >= 0 && i < mPosDefault.size())
 		{
 			setListPos(mPosDefault.get(i) + versatz, false);
@@ -441,12 +414,13 @@ public abstract class ListViewBase extends CB_View_Base
 				float newPos = mPos - ((mPos - mAnimationTarget) / 2);
 				if ((!mBottomAnimation && mAnimationTarget + 1.5 > mPos) || (mBottomAnimation && mAnimationTarget - 1.5 < mPos))
 				{
-					// Logger.LogCat("Animation Snapin");
+
 					setListPos(mAnimationTarget, true);
 					stopTimer();
 					return;
 				}
 
+				// Logger.DEBUG("Set Animatet ListPos");
 				setListPos(newPos, true);
 			}
 
@@ -586,9 +560,28 @@ public abstract class ListViewBase extends CB_View_Base
 
 	public abstract void notifyDataSetChanged();
 
+	@Override
 	public float getScrollPos()
 	{
 		return mPos;
+	}
+
+	@Override
+	public CB_View_Base getView()
+	{
+		return this;
+	}
+
+	@Override
+	public float getFirstItemSize()
+	{
+		return firstItemSize;
+	}
+
+	@Override
+	public float getLasstItemSize()
+	{
+		return lastItemSize;
 	}
 
 }

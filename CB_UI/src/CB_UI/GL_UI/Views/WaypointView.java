@@ -318,7 +318,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				if (wp == aktWaypoint)
 				{
 					this.setSelection(id);
-					if (this.isDrageble())
+					if (this.isDragable())
 					{
 						if (!(first <= id && last >= id))
 						{
@@ -335,7 +335,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		{
 			aktWaypoint = null;
 			this.setSelection(0);
-			if (this.isDrageble())
+			if (this.isDragable())
 			{
 				if (!(first <= 0 && last >= 0))
 				{

@@ -57,7 +57,6 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -309,16 +308,24 @@ public class GL implements ApplicationListener, InputProcessor
 				runOnGL_List.clear();
 			}
 		}
-
-		// add RunOnGlPool
-		if (runOnGL_ListWaitpool != null && runOnGL_ListWaitpool.size() > 0)
-		{
-			runOnGL_List.addAll(runOnGL_ListWaitpool);
-			runOnGL_ListWaitpool.clear();
-			this.renderOnce("RunOnGlPool added");
-		}
-
 		isWorkOnRunOnGL.set(false);
+		// work RunOnGlPool
+		synchronized (runOnGL_ListWaitpool)
+		{
+			if (runOnGL_ListWaitpool != null && runOnGL_ListWaitpool.size() > 0)
+			{
+				if (runOnGL_ListWaitpool.size() > 0)
+				{
+					for (runOnGL run : runOnGL_ListWaitpool)
+					{
+						if (run != null) run.run();
+					}
+
+					runOnGL_ListWaitpool.clear();
+				}
+
+			}
+		}
 
 		if (ifAllInitial)
 		{
@@ -504,8 +511,6 @@ public class GL implements ApplicationListener, InputProcessor
 		Gdx.gl.glFinish();
 
 	}
-
-	private BitmapFontCache StagingFont;
 
 	protected int debugSpritebatchMaxCount = 0;
 	protected long lastRenderBegin = 0;

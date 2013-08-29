@@ -23,6 +23,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
+import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -36,7 +37,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class CacheListView extends CB_View_Base implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent
 {
 
-	V_ListView listView;
+	private V_ListView listView;
+	private Scrollbar scrollBar;
 
 	public static CacheListView that;
 	private CustomAdapter lvAdapter;
@@ -51,7 +53,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		that = this;
 		listView = new V_ListView(rec, Name);
 		listView.setZeroPos();
+
+		scrollBar = new Scrollbar(listView);
+
 		this.addChild(listView);
+		this.addChild(scrollBar);
 	}
 
 	@Override
@@ -192,14 +198,19 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (ca == GlobalCore.getSelectedCache())
 				{
 					listView.setSelection(id);
-					if (listView.isDrageble())
+					if (listView.isDragable())
 					{
-						if (!(first <= id && last >= id) || (searchPlaceholder < 0)) listView.scrollToItem(id - pos);
+						if (!(first <= id && last >= id))
+						{
+							listView.scrollToItem(id);
+							Logger.DEBUG("Scroll to:" + id);
+						}
 					}
 					break;
 				}
 				id++;
 			}
+
 		}
 
 		listView.chkSlideBack();

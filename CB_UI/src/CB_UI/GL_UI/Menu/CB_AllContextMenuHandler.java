@@ -1,23 +1,33 @@
 package CB_UI.GL_UI.Menu;
 
+import java.util.ArrayList;
+
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Types.Cache;
+import CB_Core.Types.ImageEntry;
+import CB_Core.Types.LogEntry;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Main.Actions.CB_Action_ShowActivity;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.ViewConst;
-import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Activitys.ActivityBase;
+import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -95,6 +105,8 @@ public class CB_AllContextMenuHandler
 
 	}
 
+	static CancelWaitDialog wd;
+
 	private static OnClickListener onItemClickListner = new OnClickListener()
 	{
 
@@ -110,8 +122,57 @@ public class CB_AllContextMenuHandler
 				return true;
 
 			case MenuID.MI_RELOAD_CACHE_INFO:
-				new CB_Action_ShowActivity("reload_CacheInfo", MenuID.MI_RELOAD_CACHE_INFO, ViewConst.RELOAD_CACHE,
-						SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())).Execute();
+				wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
+				{
+
+					@Override
+					public void isCanceld()
+					{
+						// TODO Auto-generated method stub
+
+					}
+				}, new Runnable()
+				{
+
+					@Override
+					public void run()
+					{
+						CB_UI.Api.SearchForGeocaches.SearchGC searchC = new CB_UI.Api.SearchForGeocaches.SearchGC();
+						searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
+
+						searchC.number = 1;
+
+						ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+						ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+						ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+
+						CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+								GlobalCore.getSelectedCache().GPXFilename_ID);
+
+						try
+						{
+							GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+						}
+						catch (InterruptedException e)
+						{
+							e.printStackTrace();
+						}
+
+						// Reload result from DB
+						synchronized (Database.Data.Query)
+						{
+							String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+							CacheListDAO cacheListDAO = new CacheListDAO();
+							cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+						}
+
+						CachListChangedEventList.Call();
+
+						CachListChangedEventList.Call();
+						wd.close();
+					}
+				});
+
 				return true;
 
 			case MenuID.MI_WAYPOINTS:

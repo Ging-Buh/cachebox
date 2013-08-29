@@ -9,14 +9,14 @@ import CB_UI.Map.Layer;
 import CB_UI.Map.ManagerBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Menu.OptionMenu;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_Utils.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -186,39 +186,39 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 		mi = icm.addItem(MenuID.MI_HIDE_FINDS, "HideFinds");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.MapHideMyFinds.getValue());
+		mi.setChecked(Config.MapHideMyFinds.getValue());
 
 		mi = icm.addItem(MenuID.MI_MAP_SHOW_COMPASS, "MapShowCompass");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.MapShowCompass.getValue());
+		mi.setChecked(Config.MapShowCompass.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.ShowAllWaypoints.getValue());
+		mi.setChecked(Config.ShowAllWaypoints.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_RATINGS, "ShowRatings");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.MapShowRating.getValue());
+		mi.setChecked(Config.MapShowRating.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_DT, "ShowDT");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.MapShowDT.getValue());
+		mi.setChecked(Config.MapShowDT.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_TITLE, "ShowTitle");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.MapShowTitles.getValue());
+		mi.setChecked(Config.MapShowTitles.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_DIRECT_LINE, "ShowDirectLine");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.ShowDirektLine.getValue());
+		mi.setChecked(Config.ShowDirektLine.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_ACCURACY_CIRCLE, "ShowAccuracyCircle");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.ShowAccuracyCircle.getValue());
+		mi.setChecked(Config.ShowAccuracyCircle.getValue());
 
 		mi = icm.addItem(MenuID.MI_SHOW_CENTERCROSS, "ShowCenterCross");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.ShowMapCenterCross.getValue());
+		mi.setChecked(Config.ShowMapCenterCross.getValue());
 
 		icm.Show();
 	}
@@ -245,40 +245,40 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				return true;
 
 			case MenuID.MI_HIDE_FINDS:
-				toggleSetting(Config.settings.MapHideMyFinds);
+				toggleSetting(Config.MapHideMyFinds);
 
 				return true;
 
 			case MenuID.MI_SHOW_ALL_WAYPOINTS:
-				toggleSetting(Config.settings.ShowAllWaypoints);
+				toggleSetting(Config.ShowAllWaypoints);
 				return true;
 
 			case MenuID.MI_SHOW_RATINGS:
-				toggleSetting(Config.settings.MapShowRating);
+				toggleSetting(Config.MapShowRating);
 				return true;
 
 			case MenuID.MI_SHOW_DT:
-				toggleSetting(Config.settings.MapShowDT);
+				toggleSetting(Config.MapShowDT);
 				return true;
 
 			case MenuID.MI_SHOW_TITLE:
-				toggleSetting(Config.settings.MapShowTitles);
+				toggleSetting(Config.MapShowTitles);
 				return true;
 
 			case MenuID.MI_SHOW_DIRECT_LINE:
-				toggleSetting(Config.settings.ShowDirektLine);
+				toggleSetting(Config.ShowDirektLine);
 				return true;
 
 			case MenuID.MI_SHOW_ACCURACY_CIRCLE:
-				toggleSetting(Config.settings.ShowAccuracyCircle);
+				toggleSetting(Config.ShowAccuracyCircle);
 				return true;
 
 			case MenuID.MI_SHOW_CENTERCROSS:
-				toggleSetting(Config.settings.ShowMapCenterCross);
+				toggleSetting(Config.ShowMapCenterCross);
 				return true;
 
 			case MenuID.MI_MAP_SHOW_COMPASS:
-				toggleSetting(Config.settings.MapShowCompass);
+				toggleSetting(Config.MapShowCompass);
 				return true;
 
 			case MenuID.MI_CENTER_WP:

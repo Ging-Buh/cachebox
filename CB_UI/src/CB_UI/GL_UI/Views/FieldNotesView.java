@@ -25,26 +25,26 @@ import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -87,6 +87,9 @@ public class FieldNotesView extends V_ListView
 		if (firstShow)
 		{
 			firstShow = false;
+
+			// Close all opend Dialogs
+			GL.that.closeAllDialogs();
 			getContextMenu().Show();
 		}
 
@@ -186,7 +189,7 @@ public class FieldNotesView extends V_ListView
 
 	public Menu getContextMenu()
 	{
-		Menu cm = new Menu("FieldNoteContextMenu");
+		final Menu cm = new Menu("FieldNoteContextMenu");
 
 		cm.addItemClickListner(new OnClickListener()
 		{
@@ -194,6 +197,8 @@ public class FieldNotesView extends V_ListView
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
+				cm.close();
+
 				switch (((MenuItem) v).getMenuItemId())
 				{
 				case MenuID.MI_FOUND:
@@ -414,7 +419,7 @@ public class FieldNotesView extends V_ListView
 			newFieldNote = new FieldNoteEntry(type);
 			newFieldNote.CacheName = cache.Name;
 			newFieldNote.gcCode = cache.GcCode;
-			newFieldNote.foundNumber = Config.settings.FoundOffset.getValue();
+			newFieldNote.foundNumber = Config.FoundOffset.getValue();
 			newFieldNote.timestamp = new Date();
 			newFieldNote.CacheId = cache.Id;
 			newFieldNote.comment = "";
@@ -435,22 +440,22 @@ public class FieldNotesView extends V_ListView
 		case found:
 			if (!cache.Found) newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
-					Config.settings.FoundTemplate.getValue(), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(),
+					newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 			// nicht gefunden war -> foundNumber um 1 erhöhen
 			break;
 		case didnt_find:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
-					Config.settings.DNFTemplate.getValue(), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.DNFTemplate.getValue(),
+					newFieldNote);
 			break;
 		case needs_maintenance:
 			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
-					Config.settings.NeedsMaintenanceTemplate.getValue(), newFieldNote);
+					Config.NeedsMaintenanceTemplate.getValue(), newFieldNote);
 			break;
 		case note:
 			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
-					Config.settings.AddNoteTemplate.getValue(), newFieldNote);
+					Config.AddNoteTemplate.getValue(), newFieldNote);
 			break;
 		default:
 			break;
@@ -476,7 +481,7 @@ public class FieldNotesView extends V_ListView
 					GlobalCore.getSelectedCache().Found = true;
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-					Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
+					Config.FoundOffset.setValue(aktFieldNote.foundNumber);
 					Config.AcceptChanges();
 				}
 				// und eine evtl. vorhandene FieldNote DNF löschen
@@ -490,14 +495,14 @@ public class FieldNotesView extends V_ListView
 					GlobalCore.getSelectedCache().Found = false;
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-					Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+					Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
 					Config.AcceptChanges();
 				}
 				// und eine evtl. vorhandene FieldNote FoundIt löschen
 				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
 			}
 
-			FieldNoteList.CreateVisitsTxt(Config.settings.FieldNotesGarminPath.getValue());
+			FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
 
 			if (that != null) that.notifyDataSetChanged();
 
@@ -562,7 +567,7 @@ public class FieldNotesView extends V_ListView
 						GlobalCore.getSelectedCache().Found = true;
 						CacheDAO cacheDAO = new CacheDAO();
 						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-						Config.settings.FoundOffset.setValue(aktFieldNote.foundNumber);
+						Config.FoundOffset.setValue(aktFieldNote.foundNumber);
 						Config.AcceptChanges();
 					}
 
@@ -574,13 +579,13 @@ public class FieldNotesView extends V_ListView
 						GlobalCore.getSelectedCache().Found = false;
 						CacheDAO cacheDAO = new CacheDAO();
 						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
-						Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+						Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
 						Config.AcceptChanges();
 					} // und eine evtl. vorhandene FieldNote FoundIt löschen
 					lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
 				}
 			}
-			FieldNoteList.CreateVisitsTxt(Config.settings.FieldNotesGarminPath.getValue());
+			FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
 
 		}
 		that.notifyDataSetChanged();
@@ -745,7 +750,7 @@ public class FieldNotesView extends V_ListView
 							cache.Found = false;
 							CacheDAO cacheDAO = new CacheDAO();
 							cacheDAO.WriteToDatabase_Found(cache);
-							Config.settings.FoundOffset.setValue(Config.settings.FoundOffset.getValue() - 1);
+							Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
 							Config.AcceptChanges();
 							// jetzt noch diesen Cache in der aktuellen CacheListe suchen und auch da den Found-Status zurücksetzen
 							// damit das Smiley Symbol aus der Map und der CacheList verschwindet

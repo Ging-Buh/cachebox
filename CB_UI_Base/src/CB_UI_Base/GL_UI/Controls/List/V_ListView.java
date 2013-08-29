@@ -161,7 +161,7 @@ public class V_ListView extends ListViewBase
 
 				if (selectionchanged)
 				{
-					if (this.isDrageble())
+					if (this.isDragable())
 					{
 						if (!(getFirstVisiblePosition() < mSelectedIndex && getLastVisiblePosition() > mSelectedIndex)) scrollToItem(mSelectedIndex);
 					}

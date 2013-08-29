@@ -2,9 +2,9 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
-import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -97,7 +97,7 @@ public class WaitDialog extends ButtonDialog
 		waitDialog.addChild(waitDialog.label);
 		waitDialog.setButtonCaptions(MessageBoxButtons.NOTHING);
 
-		return (WaitDialog) waitDialog;
+		return waitDialog;
 
 	}
 
@@ -120,7 +120,6 @@ public class WaitDialog extends ButtonDialog
 	@Override
 	public void dispose()
 	{
-		this.removeChild(animation);
 
 		super.dispose();
 		Logger.LogCat("WaitDialog.disposed");
