@@ -27,8 +27,8 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
+import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
@@ -113,18 +113,18 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private void registerSetingsChangedListners()
 	{
-		Config.settings.CompassShowMap.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowWP_Name.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowWP_Icon.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowAttributes.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowGcCode.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowCoords.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowWpDesc.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowSatInfos.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowSunMoon.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowTargetDirection.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowSDT.addChangedEventListner(SettingChangedListner);
-		Config.settings.CompassShowLastFound.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowMap.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowWP_Name.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowWP_Icon.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowAttributes.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowGcCode.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowCoords.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowWpDesc.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowSatInfos.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowSunMoon.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowTargetDirection.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowSDT.addChangedEventListner(SettingChangedListner);
+		Config.CompassShowLastFound.addChangedEventListner(SettingChangedListner);
 	}
 
 	iChanged SettingChangedListner = new iChanged()
@@ -140,18 +140,18 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private void readSettings()
 	{
-		showMap = Config.settings.CompassShowMap.getValue();
-		showName = Config.settings.CompassShowWP_Name.getValue();
-		showIcon = Config.settings.CompassShowWP_Icon.getValue();
-		showAtt = Config.settings.CompassShowAttributes.getValue();
-		showGcCode = Config.settings.CompassShowGcCode.getValue();
-		showCoords = Config.settings.CompassShowCoords.getValue();
-		showWpDesc = Config.settings.CompassShowWpDesc.getValue();
-		showSatInfos = Config.settings.CompassShowSatInfos.getValue();
-		showSunMoon = Config.settings.CompassShowSunMoon.getValue();
-		showTargetDirection = Config.settings.CompassShowTargetDirection.getValue();
-		showSDT = Config.settings.CompassShowSDT.getValue();
-		showLastFound = Config.settings.CompassShowLastFound.getValue();
+		showMap = Config.CompassShowMap.getValue();
+		showName = Config.CompassShowWP_Name.getValue();
+		showIcon = Config.CompassShowWP_Icon.getValue();
+		showAtt = Config.CompassShowAttributes.getValue();
+		showGcCode = Config.CompassShowGcCode.getValue();
+		showCoords = Config.CompassShowCoords.getValue();
+		showWpDesc = Config.CompassShowWpDesc.getValue();
+		showSatInfos = Config.CompassShowSatInfos.getValue();
+		showSunMoon = Config.CompassShowSunMoon.getValue();
+		showTargetDirection = Config.CompassShowTargetDirection.getValue();
+		showSDT = Config.CompassShowSDT.getValue();
+		showLastFound = Config.CompassShowLastFound.getValue();
 
 		showAnyContent = showMap || showName || showIcon || showAtt || showGcCode || showCoords || showWpDesc || showSatInfos
 				|| showSunMoon || showTargetDirection || showSDT || showLastFound;

@@ -21,6 +21,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
@@ -213,7 +214,27 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		}
 
-		listView.chkSlideBack();
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				GL.that.RunOnGL(new runOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						listView.chkSlideBack();
+						GL.that.renderOnce(CacheListView.this.getName() + " setSelectedCachVisible [chkSlideBack]");
+					}
+				});
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 50);
+
 		GL.that.renderOnce(this.getName() + " setSelectedCachVisible");
 	}
 

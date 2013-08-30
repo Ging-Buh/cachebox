@@ -1072,7 +1072,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (requestName == null)
 		{
-			return;
+			requestName = "";
 		}
 
 		if (listenerInterface != null) listenerInterface.RequestRender(requestName);

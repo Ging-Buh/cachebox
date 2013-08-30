@@ -92,8 +92,11 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 				case MenuID.MI_RESORT:
 					synchronized (Database.Data.Query)
 					{
-						Database.Data.Query.Resort(GlobalCore.getSelectedCoord(),
+						CacheWithWP nearstCacheWp = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(),
 								new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+
+						GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
+						if (CacheListView.that != null) CacheListView.that.setSelectedCacheVisible();
 					}
 					return true;
 				case MenuID.MI_FilterSet:

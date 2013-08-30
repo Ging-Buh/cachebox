@@ -66,10 +66,10 @@ public class GlobalCore extends CB_UI_Base.Global
 			@Override
 			public void CreateDebugWithHeader(File DebugFile)
 			{
-				if (Config.settings.newInstall.getValue())
+				if (Config.newInstall.getValue())
 				{
 					DebugFile.delete();
-					Config.settings.newInstall.setValue(false);
+					Config.newInstall.setValue(false);
 				}
 
 				String Msg = "";
@@ -233,7 +233,7 @@ public class GlobalCore extends CB_UI_Base.Global
 	 */
 	public static boolean JokerisOnline()
 	{
-		if (Config.settings.GcJoker.getValue().length() == 0)
+		if (Config.GcJoker.getValue().length() == 0)
 		{
 			Logger.General("GlobalCore.JokerisOnline() - no Joker Password");
 			return false;
