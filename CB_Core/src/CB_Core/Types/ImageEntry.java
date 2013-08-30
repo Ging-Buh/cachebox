@@ -80,4 +80,13 @@ public class ImageEntry implements Serializable
 		LocalPath = "";
 	}
 
+	public void dispose()
+	{
+		Description = null;
+		Name = null;
+		ImageUrl = null;
+		GcCode = null;
+		LocalPath = null;
+	}
+
 }

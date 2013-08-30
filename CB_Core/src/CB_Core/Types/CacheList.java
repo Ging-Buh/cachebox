@@ -151,4 +151,19 @@ public class CacheList extends MoveableList<Cache>
 		return retValue;
 	}
 
+	/**
+	 * Removes all of the elements from this list. The list will be empty after this call returns.<br>
+	 * All Cache objects are disposed
+	 */
+	@Override
+	public void clear()
+	{
+		for (Cache cache : this)
+		{
+			cache.dispose();
+		}
+
+		super.clear();
+	}
+
 }

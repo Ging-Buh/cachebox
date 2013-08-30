@@ -133,25 +133,15 @@ public class Waypoint implements Serializable
 	public void clear()
 	{
 		CacheId = -1;
-
 		GcCode = "";
-
 		Pos = new Coordinate();
-
 		Title = "";
-
 		Description = "";
-
 		Type = null;
-
 		IsUserWaypoint = false;
-
 		IsSyncExcluded = false;
-
 		Clue = "";
-
 		checkSum = 0;
-
 		time = null;
 	}
 
@@ -164,6 +154,17 @@ public class Waypoint implements Serializable
 	public String toString()
 	{
 		return "WP:" + GcCode + " " + Pos.toString();
+	}
+
+	public void dispose()
+	{
+		GcCode = null;
+		Pos = null;
+		Title = null;
+		Description = null;
+		Type = null;
+		Clue = null;
+		time = null;
 	}
 
 }

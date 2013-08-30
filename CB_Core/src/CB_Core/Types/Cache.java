@@ -846,4 +846,45 @@ public class Cache implements Comparable<Cache>, Serializable
 		return "Cache:" + GcCode + " " + Pos.toString();
 	}
 
+	public void dispose()
+	{
+		// clear all Lists
+		if (AttributeList != null)
+		{
+			AttributeList.clear();
+			AttributeList = null;
+		}
+
+		if (spoilerRessources != null)
+		{
+			for (ImageEntry entry : spoilerRessources)
+				entry.dispose();
+			spoilerRessources.clear();
+			spoilerRessources = null;
+		}
+
+		if (waypoints != null)
+		{
+			for (Waypoint entry : waypoints)
+				entry.dispose();
+
+			waypoints.clear();
+			waypoints = null;
+		}
+
+		tmpNote = null;
+		tmpSolver = null;
+		TourName = null;
+		PlacedBy = null;
+		Owner = null;
+		DateHidden = null;
+		Url = null;
+		Country = null;
+		State = null;
+		hint = null;
+		shortDescription = null;
+		longDescription = null;
+
+	}
+
 }

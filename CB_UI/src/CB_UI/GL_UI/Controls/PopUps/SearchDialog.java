@@ -25,33 +25,33 @@ import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Controls.Slider.YPositionChanged;
 import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.MapView;
-import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
@@ -567,7 +567,7 @@ public class SearchDialog extends PopUp_Base
 
 	private void clearSearchFilter()
 	{
-		if (!Config.settings.dynamicFilterAtSearch.getValue()) return;
+		if (!Config.dynamicFilterAtSearch.getValue()) return;
 		synchronized (Database.Data.Query)
 		{
 			for (Cache cache : Database.Data.Query)

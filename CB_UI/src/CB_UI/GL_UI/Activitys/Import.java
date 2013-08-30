@@ -1140,6 +1140,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						long startTime = System.currentTimeMillis();
 
 						Database.Data.beginTransaction();
+						Database.Data.Query.clear();
 						try
 						{
 
@@ -1286,12 +1287,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				{
 					// import canceld
 					importCanceld();
+					FilterProperties props = GlobalCore.LastFilter;
+					EditFilterSettings.ApplyFilter(props);
 					return;
 				}
 
 				if (importCancel)
 				{
 					importCanceld();
+					FilterProperties props = GlobalCore.LastFilter;
+					EditFilterSettings.ApplyFilter(props);
 					return;
 				}
 
@@ -1310,7 +1315,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				Logger.DEBUG(Msg);
 
 				FilterProperties props = GlobalCore.LastFilter;
-
 				EditFilterSettings.ApplyFilter(props);
 
 				GL.that.Toast(Msg, 3000);
