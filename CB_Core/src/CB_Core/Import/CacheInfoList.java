@@ -154,6 +154,28 @@ public class CacheInfoList
 		return List.containsKey(GcCode);
 	}
 
+	public static boolean CacheIsFavoriteInDB(String GcCode)
+	{
+		if (List.containsKey(GcCode))
+		{
+			CacheInfo ci = List.get(GcCode);
+			return ci.favorite;
+		}
+		else
+			return false;
+	}
+
+	public static boolean CacheIsFoundInDB(String GcCode)
+	{
+		if (List.containsKey(GcCode))
+		{
+			CacheInfo ci = List.get(GcCode);
+			return ci.Found;
+		}
+		else
+			return false;
+	}
+
 	/**
 	 * Fügt die CacheInfo in der Liste mit dem Infos des übergebenen Caches zusammen und ändert gegebenenfalls die Changed Attribute neu!
 	 * 

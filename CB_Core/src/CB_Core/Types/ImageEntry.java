@@ -12,6 +12,11 @@ public class ImageEntry implements Serializable
 	private static final long serialVersionUID = 4216092006574290607L;
 
 	/**
+	 * Ignore Existing by Import
+	 */
+	public boolean ignoreExisting = false;
+
+	/**
 	 * Beschreibung des Bildes
 	 */
 	public String Description = "";

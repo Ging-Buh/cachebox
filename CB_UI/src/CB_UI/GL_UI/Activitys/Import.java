@@ -1271,6 +1271,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 					if (checkBoxCleanLogs.isChecked())
 					{
 						ip.setJobMax("DeleteLogs", 1);
+						ip.ProgressChangeMsg("DeleteLogs", "");
 						Database.Data.DeleteOldLogs(Config.LogMinCount.getValue(), Config.LogMaxMonthAge.getValue());
 						ip.ProgressInkrement("DeleteLogs", "", true);
 					}
@@ -1278,6 +1279,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 					if (checkBoxCompactDB.isChecked())
 					{
 						ip.setJobMax("CompactDB", 1);
+						ip.ProgressChangeMsg("CompactDB", "");
 						Database.Data.execSQL("vacuum");
 						ip.ProgressInkrement("CompactDB", "", true);
 					}

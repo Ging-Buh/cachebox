@@ -56,4 +56,12 @@ public class LogEntry implements Serializable
 		Id = -1;
 	}
 
+	public void dispose()
+	{
+		Finder = null;
+		Type = null;
+		Comment = null;
+		Timestamp = null;
+	}
+
 }

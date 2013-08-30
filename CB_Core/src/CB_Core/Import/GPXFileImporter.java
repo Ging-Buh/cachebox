@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import CB_Core.StaticFinal;
-import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -22,7 +21,6 @@ import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
-import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.Logger;
 
 import com.thebuzzmedia.sjxp.XMLParser;
@@ -967,13 +965,21 @@ public class GPXFileImporter
 		}
 
 		// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
-		Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + cache.GcCode + "\"");
+		// Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + cache.GcCode + "\"");
+
+		// Read from IndexDBList
+		boolean fav = CacheInfoList.CacheIsFavoriteInDB(cache.GcCode);
+
 		cache.setFavorit(fav);
 
 		if (values.containsKey("wpt_sym"))
 		{
 			// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
-			Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + cache.GcCode + "\"");
+			// Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + cache.GcCode + "\"");
+
+			// Read from IndexDBList
+			boolean Found = CacheInfoList.CacheIsFoundInDB(cache.GcCode);
+
 			if (!Found)
 			{
 				cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
@@ -1352,27 +1358,27 @@ public class GPXFileImporter
 		return date;
 	}
 
-	private static Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
-	{
-		CoreCursor reader = Database.Data.rawQuery(sql, null);
-		try
-		{
-			reader.moveToFirst();
-			while (!reader.isAfterLast())
-			{
-				if (reader.getInt(0) != 0)
-				{ // gefunden. Suche abbrechen
-					return true;
-				}
-				reader.moveToNext();
-			}
-		}
-		finally
-		{
-			reader.close();
-		}
-
-		return false;
-	}
+	// private static Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
+	// {
+	// CoreCursor reader = Database.Data.rawQuery(sql, null);
+	// try
+	// {
+	// reader.moveToFirst();
+	// while (!reader.isAfterLast())
+	// {
+	// if (reader.getInt(0) != 0)
+	// { // gefunden. Suche abbrechen
+	// return true;
+	// }
+	// reader.moveToNext();
+	// }
+	// }
+	// finally
+	// {
+	// reader.close();
+	// }
+	//
+	// return false;
+	// }
 
 }

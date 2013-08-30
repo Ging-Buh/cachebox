@@ -200,6 +200,7 @@ public class Importer
 
 			ip.ProgressInkrement("ImportGPX", "Import: " + File.getName(), false);
 			GPXFileImporter importer = new GPXFileImporter(File, ip);
+
 			try
 			{
 				importer.doImport(importHandler, wptCount.get(File.getAbsolutePath()));
@@ -209,6 +210,7 @@ public class Importer
 				Logger.Error("Core.Importer.ImportGpx", "importer.doImport => " + File.getAbsolutePath(), e);
 				e.printStackTrace();
 			}
+
 		}
 
 		if (FileList.length == 0)
@@ -217,6 +219,8 @@ public class Importer
 		}
 
 		importHandler.GPXFilenameUpdateCacheCount();
+
+		importHandler = null;
 
 		// Indexierte CacheInfos zurück schreiben
 		CacheInfoList.writeListToDB();

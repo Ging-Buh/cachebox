@@ -273,7 +273,6 @@ public class EditCache extends ActivityBase
 
 				// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
 				cache.longDescription = "";
-				System.gc();
 				finish();
 				return true;
 			}

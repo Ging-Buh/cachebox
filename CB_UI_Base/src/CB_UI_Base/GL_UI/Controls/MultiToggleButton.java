@@ -56,7 +56,7 @@ public class MultiToggleButton extends Button
 	private States aktState;
 	private int StateId = 0;
 	private Drawable led;
-	private ArrayList<States> State = new ArrayList<MultiToggleButton.States>();
+	private final ArrayList<States> State = new ArrayList<MultiToggleButton.States>();
 	private OnStateChangeListener mOnStateChangeListener;
 
 	/**
@@ -73,7 +73,7 @@ public class MultiToggleButton extends Button
 
 		// verschiebe Text nach oben, wegen Platz für LED
 		CB_RectF r = this.ScaleCenter(0.9f);
-		float l = (float) (r.getHeight() / 2);
+		float l = (r.getHeight() / 2);
 		lblTxt.setY(l);
 		lblTxt.setHeight(l);
 	}
@@ -153,7 +153,6 @@ public class MultiToggleButton extends Button
 		aktState = State.get(StateId);
 		this.setText(aktState.Text);
 		led = null;
-		// System.gc();
 
 		if (mOnStateChangeListener != null) mOnStateChangeListener.onStateChange(this, StateId);
 

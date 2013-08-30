@@ -1616,7 +1616,6 @@ public class GL implements ApplicationListener, InputProcessor
 				public void run()
 				{
 					if (dialog != null) dialog.dispose();
-					System.gc();
 				}
 			};
 			timer.schedule(task, 500);
@@ -1655,7 +1654,6 @@ public class GL implements ApplicationListener, InputProcessor
 			public void run()
 			{
 				if (dialog != null) dialog.dispose();
-				System.gc();
 			}
 		};
 		timer.schedule(task, 500);

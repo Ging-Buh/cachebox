@@ -1452,8 +1452,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
-		System.gc();
-
 		aktView = view;
 
 		frame.removeAllViews();
@@ -1502,8 +1500,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			aktTabView.OnHide();
 
 		}
-
-		System.gc();
 
 		aktTabView = view;
 		tabFrame.removeAllViews();

@@ -148,10 +148,26 @@ public class CacheDAO
 		args.put("Country", cache.Country);
 		args.put("State", cache.State);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String stimestamp = iso8601Format.format(cache.DateHidden);
-		args.put("DateHidden", stimestamp);
-		String firstimported = iso8601Format.format(new Date());
-		args.put("FirstImported", firstimported);
+		try
+		{
+			String stimestamp = iso8601Format.format(cache.DateHidden);
+			args.put("DateHidden", stimestamp);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try
+		{
+			String firstimported = iso8601Format.format(new Date());
+			args.put("FirstImported", firstimported);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		args.put("Hint", cache.hint);
 
 		if ((cache.shortDescription != null) && (cache.shortDescription.length() > 0))
@@ -248,8 +264,16 @@ public class CacheDAO
 		args.put("Country", cache.Country);
 		args.put("State", cache.State);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String stimestamp = iso8601Format.format(cache.DateHidden);
-		args.put("DateHidden", stimestamp);
+		try
+		{
+			String stimestamp = iso8601Format.format(cache.DateHidden);
+			args.put("DateHidden", stimestamp);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		args.put("Hint", cache.hint);
 
 		if ((cache.shortDescription != null) && (cache.shortDescription.length() > 0))
@@ -465,7 +489,6 @@ public class CacheDAO
 
 			// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
 			cache.longDescription = "";
-			System.gc();
 
 		}
 	}
