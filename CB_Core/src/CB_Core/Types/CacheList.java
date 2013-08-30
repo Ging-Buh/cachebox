@@ -161,6 +161,7 @@ public class CacheList extends MoveableList<Cache>
 		for (Cache cache : this)
 		{
 			cache.dispose();
+			cache = null;
 		}
 
 		super.clear();

@@ -100,7 +100,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	protected void Initial()
 	{
 		float initialPos = 0;
-		if (Config.settings.quickButtonShow.getValue())
+		if (Config.quickButtonShow.getValue())
 		{
 			initialPos = this.height - mSlideBox.getHeight() - QuickButtonMaxHeight;
 		}
@@ -142,7 +142,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	private void setQuickButtonListHeight()
 	{
-		if (Config.settings.quickButtonShow.getValue())
+		if (Config.quickButtonShow.getValue())
 		{
 			if (this.height - mSlideBox.getMaxY() < QuickButtonMaxHeight)
 			{
@@ -217,19 +217,19 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		// Logger.LogCat("ActionUP");
 
-		boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
+		boolean QuickButtonShow = Config.quickButtonShow.getValue();
 
 		// check if QuickButtonList snap in
 		if (this.height - mSlideBox.getMaxY() >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow)
 		{
 			QuickButtonHeight = QuickButtonMaxHeight;
-			Config.settings.quickButtonLastShow.setValue(true);
+			Config.quickButtonLastShow.setValue(true);
 			Config.AcceptChanges();
 		}
 		else
 		{
 			QuickButtonHeight = 0;
-			Config.settings.quickButtonLastShow.setValue(false);
+			Config.quickButtonLastShow.setValue(false);
 			Config.AcceptChanges();
 		}
 

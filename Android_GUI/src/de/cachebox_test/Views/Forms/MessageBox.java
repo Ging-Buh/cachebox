@@ -659,7 +659,7 @@ public class MessageBox extends android.app.Dialog
 			Resources res = context.getResources();
 
 			boolean NightMode = false;
-			if (Config.settings != null) NightMode = Config.settings.nightMode.getValue();
+			if (Config.settings != null) NightMode = Config.nightMode.getValue();
 
 			Drawable header = res.getDrawable(NightMode ? R.drawable.night_header : R.drawable.header);
 			Drawable title = res.getDrawable(NightMode ? R.drawable.night_title : R.drawable.title);

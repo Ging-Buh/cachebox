@@ -227,7 +227,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		 */
 		if (!isInitial)
 		{
-			if (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue())
+			if (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue())
 			{
 				setPos(QuickButtonMaxHeight);
 			}
@@ -240,18 +240,18 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		if (!drag && !AnimationIsRunning && !ButtonDrag)
 		{
-			yPos = QuickButtonHeight = Config.settings.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
+			yPos = QuickButtonHeight = Config.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
 		}
 
 		float FSize = ((float) (UI_Size_Base.that.getScaledFontSize_big() * 1.3));
 
-		if (paint == null || Config.settings.nightMode.getValue() != initialNight)
+		if (paint == null || Config.nightMode.getValue() != initialNight)
 		{
 			paint = new Paint();
 			paint.setColor(Global.getColor(R.attr.TextColor));
 			paint.setTextSize((float) (UI_Size_Base.that.getScaledFontSize() * 1.3));
 			paint.setAntiAlias(true);
-			initialNight = Config.settings.nightMode.getValue();
+			initialNight = Config.nightMode.getValue();
 		}
 
 		final Drawable Slide = Global.BtnIcons[0];
@@ -294,7 +294,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (mCache != null) canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
 
 		// Draw only is visible
-		if (Config.settings.quickButtonShow.getValue())
+		if (Config.quickButtonShow.getValue())
 		{
 			if (yPos <= QuickButtonMaxHeight)
 			{
@@ -320,7 +320,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		if (!Energy.SliderIsShown()) Energy.setSliderIsShown();
 
-		if (Config.settings.quickButtonShow.getValue())
+		if (Config.quickButtonShow.getValue())
 		{
 			canvas.clipRect(mBackRec);
 		}
@@ -482,7 +482,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	{
 		if (downSlider.Me != null)
 		{
-			if (Config.settings.quickButtonShow.getValue())
+			if (Config.quickButtonShow.getValue())
 			{
 				downSlider.Me.setPos_onUI(downSlider.Me.QuickButtonMaxHeight);
 			}
@@ -504,7 +504,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (Pos >= 0)
 		{
 			yPos = Pos;
-			if (Config.settings.quickButtonShow.getValue())
+			if (Config.quickButtonShow.getValue())
 			{
 				if (Pos <= QuickButtonMaxHeight)
 				{
@@ -529,7 +529,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 
 		// chk if info Visible then update info
-		int InfoBeginnAt = Config.settings.quickButtonShow.getValue() ? QuickButtonMaxHeight : 0;
+		int InfoBeginnAt = Config.quickButtonShow.getValue() ? QuickButtonMaxHeight : 0;
 		if (yPos > InfoBeginnAt)
 		{
 			if (!isVisible) startUpdateTimer();
@@ -601,19 +601,19 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				public void run()
 				{
 
-					boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
+					boolean QuickButtonShow = Config.quickButtonShow.getValue();
 
 					// check if QuickButtonList snap in
 					if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow)
 					{
 						QuickButtonHeight = QuickButtonMaxHeight;
-						Config.settings.quickButtonLastShow.setValue(true);
+						Config.quickButtonLastShow.setValue(true);
 						Config.AcceptChanges();
 					}
 					else
 					{
 						QuickButtonHeight = 0;
-						Config.settings.quickButtonLastShow.setValue(false);
+						Config.quickButtonLastShow.setValue(false);
 						Config.AcceptChanges();
 					}
 
@@ -655,7 +655,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	public static int getAktQuickButtonHeight()
 	{
-		return Config.settings.quickButtonShow.getValue() ? QuickButtonHeight : 0;
+		return Config.quickButtonShow.getValue() ? QuickButtonHeight : 0;
 	}
 
 	@Override

@@ -291,7 +291,16 @@ public class Cache implements Comparable<Cache>, Serializable
 			gcLogin = userName;
 		}
 
-		boolean ret = this.Owner.toLowerCase().equals(gcLogin);
+		boolean ret = false;
+
+		try
+		{
+			ret = this.Owner.toLowerCase().equals(gcLogin);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		myCache = ret ? 1 : 0;
 		return ret;
 	}

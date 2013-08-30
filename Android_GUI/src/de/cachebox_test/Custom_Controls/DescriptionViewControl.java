@@ -92,6 +92,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		this.getSettings().setJavaScriptEnabled(true);
 		this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
+		this.setWebViewClient(clint);
+		that = this;
 	}
 
 	WebViewClient clint = new WebViewClient()

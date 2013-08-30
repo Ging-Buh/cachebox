@@ -55,13 +55,13 @@ public class GcApiLogin extends Activity
 		{
 			String GC_AuthUrl;
 
-			if (Config.settings.OverrideUrl.getValue().equals(""))
+			if (Config.OverrideUrl.getValue().equals(""))
 			{
 				GC_AuthUrl = CB_Api.getGcAuthUrl();
 			}
 			else
 			{
-				GC_AuthUrl = Config.settings.OverrideUrl.getValue();
+				GC_AuthUrl = Config.OverrideUrl.getValue();
 			}
 
 			if (GC_AuthUrl.equals(""))
@@ -243,13 +243,13 @@ public class GcApiLogin extends Activity
 					// store the encrypted AccessToken in the Config file
 					// wir bekommen den Key schon verschlüsselt, deshalb muss er
 					// nicht noch einmal verschlüsselt werden!
-					if (Config.settings.StagingAPI.getValue())
+					if (Config.StagingAPI.getValue())
 					{
-						Config.settings.GcAPIStaging.setEncryptedValue(accessToken);
+						Config.GcAPIStaging.setEncryptedValue(accessToken);
 					}
 					else
 					{
-						Config.settings.GcAPI.setEncryptedValue(accessToken);
+						Config.GcAPI.setEncryptedValue(accessToken);
 					}
 
 					Config.AcceptChanges();
@@ -261,7 +261,7 @@ public class GcApiLogin extends Activity
 						if (status >= 0)
 						{
 
-							Config.settings.GcLogin.setValue(GroundspeakAPI.MemberName);
+							Config.GcLogin.setValue(GroundspeakAPI.MemberName);
 							Config.AcceptChanges();
 
 						}

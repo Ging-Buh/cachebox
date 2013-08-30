@@ -11,9 +11,9 @@ import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Settings.SettingString;
@@ -134,9 +134,9 @@ public class PresetListView extends V_ListView
 		addPresetItem(SpriteCacheBase.getThemedSprite("warning-icon"), Translation.Get("ListingChanged"), FilterProperties.presets[8]);
 
 		// add User Presets
-		if (!Config.settings.UserFilter.getValue().equalsIgnoreCase(""))
+		if (!Config.UserFilter.getValue().equalsIgnoreCase(""))
 		{
-			String userEntrys[] = Config.settings.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+			String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 			try
 			{
 				for (String entry : userEntrys)
@@ -191,7 +191,7 @@ public class PresetListView extends V_ListView
 						// User Preset
 						try
 						{
-							String userEntrys[] = Config.settings.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
+							String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 							int i = itemIndex - FilterProperties.presets.length;
 
 							int pos = userEntrys[i].indexOf(";");
@@ -240,8 +240,7 @@ public class PresetListView extends V_ListView
 										{
 											try
 											{
-												String userEntrys[] = Config.settings.UserFilter.getValue().split(
-														SettingString.STRING_SPLITTER);
+												String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 
 												int i = FilterProperties.presets.length;
 												String newUserEntris = "";
@@ -249,7 +248,7 @@ public class PresetListView extends V_ListView
 												{
 													if (i++ != delItemIndex) newUserEntris += entry + SettingString.STRING_SPLITTER;
 												}
-												Config.settings.UserFilter.setValue(newUserEntris);
+												Config.UserFilter.setValue(newUserEntris);
 												Config.AcceptChanges();
 												EditFilterSettings.that.lvPre.fillPresetList();
 												EditFilterSettings.that.lvPre.notifyDataSetChanged();

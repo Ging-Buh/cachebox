@@ -159,12 +159,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						switch (((MenuItem) v).getMenuItemId())
 						{
 						case MenuID.MI_SHOW_EXPERT:
-							Config.settings.SettingsShowExpert.setValue(!Config.settings.SettingsShowExpert.getValue());
+							Config.SettingsShowExpert.setValue(!Config.SettingsShowExpert.getValue());
 							resortList();
 							return true;
 
 						case MenuID.MI_SHOW_ALL:
-							Config.settings.SettingsShowAll.setValue(!Config.settings.SettingsShowAll.getValue());
+							Config.SettingsShowAll.setValue(!Config.SettingsShowAll.getValue());
 							resortList();
 							return true;
 						}
@@ -176,12 +176,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				mi = icm.addItem(MenuID.MI_SHOW_EXPERT, "Settings_Expert");
 				mi.setCheckable(true);
-				mi.setChecked(Config.settings.SettingsShowExpert.getValue());
+				mi.setChecked(Config.SettingsShowExpert.getValue());
 
 				mi = icm.addItem(MenuID.MI_SHOW_ALL, "Settings_All");
 
 				mi.setCheckable(true);
-				mi.setChecked(Config.settings.SettingsShowAll.getValue());
+				mi.setChecked(Config.SettingsShowAll.getValue());
 
 				icm.setPrompt(Translation.Get("changeSettingsVisibility"));
 
@@ -208,7 +208,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					}
 					counter++;
 				}
-				Config.settings.quickButtonList.setValue(ActionsString);
+				Config.quickButtonList.setValue(ActionsString);
 
 				Config.settings.SaveToLastValue();
 				Config.AcceptChanges();
@@ -218,7 +218,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_NEW_SETTINGS);
 
-				int Time = Config.settings.ScreenLock.getValue();
+				int Time = Config.ScreenLock.getValue();
 				platformConector.callsetScreenLockTimet(Time);
 
 				finish();
@@ -441,7 +441,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		}
 
-		setVolumeState(Config.settings.GlobalVolume.getValue().Mute);
+		setVolumeState(Config.GlobalVolume.getValue().Mute);
 		apiBtn.setImage();
 
 	}
@@ -1151,7 +1151,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	private CB_View_Base getAudioView(final SettingsAudio SB, int backgroundChanger)
 	{
 
-		boolean full = Config.settings.SettingsShowExpert.getValue() || Config.settings.SettingsShowAll.getValue();
+		boolean full = Config.SettingsShowExpert.getValue() || Config.SettingsShowAll.getValue();
 		final String AudioName = SB.getName();
 		final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full,
 				new FloatControl.iValueChanged()
@@ -1324,7 +1324,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	private CB_View_Base getLangSpinnerView(final SettingsListButtonLangSpinner<?> SB)
 	{
-		Sprachen = Translation.GetLangs(Config.settings.LanguagePath.getValue());
+		Sprachen = Translation.GetLangs(Config.LanguagePath.getValue());
 
 		if (Sprachen == null || Sprachen.size() == 0) return null;
 
@@ -1332,7 +1332,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		int index = 0;
 		int selection = -1;
 
-		File file1 = new File(Config.settings.Sel_LanguagePath.getValue());
+		File file1 = new File(Config.Sel_LanguagePath.getValue());
 
 		for (Lang tmp : Sprachen)
 		{
@@ -1378,7 +1378,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				{
 					if (selected.equals(tmp.Name))
 					{
-						Config.settings.Sel_LanguagePath.setValue(tmp.Path);
+						Config.Sel_LanguagePath.setValue(tmp.Path);
 						try
 						{
 							Translation.LoadTranslation(tmp.Path);
@@ -1387,7 +1387,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						{
 							try
 							{
-								Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getDefaultValue());
+								Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
 							}
 							catch (IOException e1)
 							{
@@ -1444,12 +1444,12 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		int index = 2;
 		int selection = -1;
 
-		if (Config.settings.SkinFolder.getValue().contains("default")) selection = 0;
-		if (Config.settings.SkinFolder.getValue().contains("small")) selection = 1;
+		if (Config.SkinFolder.getValue().contains("default")) selection = 0;
+		if (Config.SkinFolder.getValue().contains("small")) selection = 1;
 
 		for (String tmp : skinFolders)
 		{
-			if (Config.settings.SkinFolder.getValue().equals(tmp)) selection = index;
+			if (Config.SkinFolder.getValue().equals(tmp)) selection = index;
 
 			// cut folder name
 			int Pos = tmp.lastIndexOf("/");
@@ -1491,11 +1491,11 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				if (selected.equals("default"))
 				{
-					Config.settings.SkinFolder.setValue("default");
+					Config.SkinFolder.setValue("default");
 				}
 				else if (selected.equals("small"))
 				{
-					Config.settings.SkinFolder.setValue("small");
+					Config.SkinFolder.setValue("small");
 				}
 				else
 				{
@@ -1507,7 +1507,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						String tmp2 = tmp.substring(Pos + 1);
 						if (selected.equals(tmp2))
 						{
-							Config.settings.SkinFolder.setValue(tmp);
+							Config.SkinFolder.setValue(tmp);
 
 							break;
 						}

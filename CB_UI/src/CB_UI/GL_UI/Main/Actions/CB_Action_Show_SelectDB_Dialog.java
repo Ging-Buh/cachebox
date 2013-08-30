@@ -13,11 +13,11 @@ import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Logger;
 
@@ -52,7 +52,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		if (GlobalCore.getSelectedCache() != null)
 		{
 			// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-			Config.settings.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
 			Config.AcceptChanges();
 			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
 		}
@@ -85,14 +85,14 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			{
 				Database.Data.Query.clear();
 				Database.Data.Close();
-				Database.Data.StartUp(Config.settings.DatabasePath.getValue());
+				Database.Data.StartUp(Config.DatabasePath.getValue());
 
 				Config.settings.ReadFromDB();
 
 				CoreSettingsForward.Categories = new Categories();
 
 				// zuerst den FilterString im neuen JSON Format laden versuchen
-				String FilterString = Config.settings.FilterNew.getValue();
+				String FilterString = Config.FilterNew.getValue();
 				if (FilterString.length() > 0)
 				{
 					GlobalCore.LastFilter = new FilterProperties(FilterString);
@@ -100,13 +100,13 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				else
 				{
 					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
-					FilterString = Config.settings.Filter.getValue();
+					FilterString = Config.Filter.getValue();
 					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString())
 							: new FilterProperties(FilterString);
 				}
 				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
 
-				String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue());
+				String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 				Database.Data.GPXFilenameUpdateCacheCount();
 
 				synchronized (Database.Data.Query)
@@ -117,7 +117,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 				// set selectedCache from lastselected Cache
 				GlobalCore.setSelectedCache(null);
-				String sGc = Config.settings.LastSelectedCache.getValue();
+				String sGc = Config.LastSelectedCache.getValue();
 				if (sGc != null && !sGc.equals(""))
 				{
 					for (Cache c : Database.Data.Query)
@@ -137,7 +137,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 					GlobalCore.setSelectedCache(Database.Data.Query.get(0));
 				}
 
-				GlobalCore.setAutoResort(Config.settings.StartWithAutoSelect.getValue());
+				GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
 
 				CachListChangedEventList.Call();
 

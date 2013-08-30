@@ -87,7 +87,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			int idx = 0;
 			while (scaleSize < (sollwidth * 0.45))
 			{
-				scaleLength = multiplyer * scaleSteps[idx] * ((Config.settings.ImperialUnits.getValue()) ? 1.6093 : 1);
+				scaleLength = multiplyer * scaleSteps[idx] * ((Config.ImperialUnits.getValue()) ? 1.6093 : 1);
 				scaleUnits = scaleNumUnits[idx];
 
 				scaleSize = pixelsPerMeter * scaleLength;
@@ -105,7 +105,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			Logger.Error("MapView.zoomChanged()", "", exc);
 		}
 
-		if (Config.settings.ImperialUnits.getValue())
+		if (Config.ImperialUnits.getValue())
 		{
 			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(2);

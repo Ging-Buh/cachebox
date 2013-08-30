@@ -175,7 +175,7 @@ public class QuickButtonList extends H_ListView
 	{
 		if (quickButtonList == null)
 		{
-			String ConfigActionList = Config.settings.quickButtonList.getValue();
+			String ConfigActionList = Config.quickButtonList.getValue();
 			String[] ConfigList = ConfigActionList.split(",");
 			quickButtonList = QuickActions.getListFromConfig(ConfigList, btnHeight);
 		}

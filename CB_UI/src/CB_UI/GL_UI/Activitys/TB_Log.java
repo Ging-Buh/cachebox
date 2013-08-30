@@ -16,6 +16,7 @@ import CB_UI.GL_UI.Views.TrackableListView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
@@ -28,15 +29,14 @@ import CB_UI_Base.GL_UI.Controls.RadioButton;
 import CB_UI_Base.GL_UI.Controls.RadioGroup;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -121,7 +121,7 @@ public class TB_Log extends ActivityBase
 		RadioGroup Group = new RadioGroup();
 		Group.add(rbOnlyFieldNote);
 		Group.add(rbDirectLog);
-		if (Config.settings.TB_DirectLog.getValue())
+		if (Config.TB_DirectLog.getValue())
 		{
 			rbDirectLog.setChecked(true);
 		}
@@ -210,23 +210,23 @@ public class TB_Log extends ActivityBase
 		{
 		case discovered:
 			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbDiscover_58.ordinal()));
-			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.DiscoverdTemplate.getValue(), TB));
+			edit.setText(TemplateFormatter.ReplaceTemplate(Config.DiscoverdTemplate.getValue(), TB));
 			break;
 		case visited:
 			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbVisit_62.ordinal()));
-			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.VisitedTemplate.getValue(), TB));
+			edit.setText(TemplateFormatter.ReplaceTemplate(Config.VisitedTemplate.getValue(), TB));
 			break;
 		case dropped_off:
 			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbDrop_59.ordinal()));
-			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.DroppedTemplate.getValue(), TB));
+			edit.setText(TemplateFormatter.ReplaceTemplate(Config.DroppedTemplate.getValue(), TB));
 			break;
 		case grab_it:
 			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbGrab_60.ordinal()));
-			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.GrabbedTemplate.getValue(), TB));
+			edit.setText(TemplateFormatter.ReplaceTemplate(Config.GrabbedTemplate.getValue(), TB));
 			break;
 		case retrieve:
 			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbPicked_61.ordinal()));
-			edit.setText(TemplateFormatter.ReplaceTemplate(Config.settings.PickedTemplate.getValue(), TB));
+			edit.setText(TemplateFormatter.ReplaceTemplate(Config.PickedTemplate.getValue(), TB));
 			break;
 		case note:
 			btnAction.setImage(SpriteCacheBase.Icons.get(IconName.tbNote_63.ordinal()));
@@ -369,7 +369,7 @@ public class TB_Log extends ActivityBase
 		newFieldNote = new FieldNoteEntry(LT);
 		newFieldNote.CacheName = getCache_Name();
 		newFieldNote.gcCode = getCache_GcCode();
-		newFieldNote.foundNumber = Config.settings.FoundOffset.getValue();
+		newFieldNote.foundNumber = Config.FoundOffset.getValue();
 		newFieldNote.timestamp = new Date();
 		newFieldNote.CacheId = getCache_ID();
 		newFieldNote.comment = edit.getText();

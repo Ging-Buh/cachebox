@@ -994,8 +994,8 @@ public class splash extends Activity
 			copyAssetFolder myCopie = new copyAssetFolder();
 
 			myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
-			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
-			Config.settings.newInstall.setValue(true);
+			Config.installRev.setValue(GlobalCore.CurrentRevision);
+			Config.newInstall.setValue(true);
 			Config.AcceptChanges();
 
 			File CreateFile;
@@ -1059,7 +1059,7 @@ public class splash extends Activity
 		}
 		else
 		{
-			Config.settings.newInstall.setValue(false);
+			Config.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
 

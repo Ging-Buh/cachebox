@@ -366,13 +366,13 @@ public class Global
 
 		try
 		{
-			if (NightResId == -1 || !Config.settings.nightMode.getValue())
+			if (NightResId == -1 || !Config.nightMode.getValue())
 			{
 				ret = res.getDrawable(ResId);
 
 				// im Nacht Mode wird das Drawable mit einem Filter belegt, um es
 				// ein wenig abzudunkeln
-				if (Config.settings.nightMode.getValue())
+				if (Config.nightMode.getValue())
 				{
 					ret.setColorFilter(Color.argb(255, 100, 100, 100), Mode.MULTIPLY);
 				}
@@ -383,7 +383,7 @@ public class Global
 				ret = res.getDrawable(NightResId);
 			}
 
-			if (!Config.settings.nightMode.getValue())
+			if (!Config.nightMode.getValue())
 			{
 				ret.clearColorFilter();
 			}
@@ -551,7 +551,7 @@ public class Global
 		try
 		{
 			Boolean NightMode = false;
-			if (Config.settings != null) NightMode = Config.settings.nightMode.getValue();
+			if (Config.settings != null) NightMode = Config.nightMode.getValue();
 
 			context.setTheme(NightMode ? R.style.Theme_night : R.style.Theme_day);
 

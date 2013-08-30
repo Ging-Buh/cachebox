@@ -57,16 +57,16 @@ public class SelectDB extends ActivityBase
 	{
 		super(rec, Name);
 		MusstSelect = mustSelect;
-		DBPath = FileIO.GetDirectoryName(Config.settings.DatabasePath.getValue());
+		DBPath = FileIO.GetDirectoryName(Config.DatabasePath.getValue());
 
 		if (DBPath.endsWith(".db3"))
 		{
-			Config.settings.DatabasePath.setValue(DBPath);
+			Config.DatabasePath.setValue(DBPath);
 			Config.AcceptChanges();
 			DBPath = FileIO.GetDirectoryName(DBPath);
 		}
 
-		String DBFile = FileIO.GetFileName(Config.settings.DatabasePath.getValue());
+		String DBFile = FileIO.GetFileName(Config.DatabasePath.getValue());
 
 		// lvFiles = (ListView) findViewById(R.id.sdb_list);
 		final FileList files = new FileList(Config.WorkPath, "DB3", true);
@@ -172,7 +172,7 @@ public class SelectDB extends ActivityBase
 		bCancel.setText(Translation.Get("cancel"));
 		bAutostart.setText(Translation.Get("StartWithoutSelection"));
 
-		autoStartTime = Config.settings.MultiDBAutoStartTime.getValue();
+		autoStartTime = Config.MultiDBAutoStartTime.getValue();
 		if (autoStartTime > 0)
 		{
 			autoStartCounter = autoStartTime;
@@ -315,7 +315,7 @@ public class SelectDB extends ActivityBase
 			case 1: // ok clicked
 
 				// zuerst den FilterString im neuen JSON Format laden versuchen
-				String FilterString = Config.settings.FilterNew.getValue();
+				String FilterString = Config.FilterNew.getValue();
 				if (FilterString.length() > 0)
 				{
 					GlobalCore.LastFilter = new FilterProperties(FilterString);
@@ -323,16 +323,16 @@ public class SelectDB extends ActivityBase
 				else
 				{
 					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
-					FilterString = Config.settings.Filter.getValue();
+					FilterString = Config.Filter.getValue();
 					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString())
 							: new FilterProperties(FilterString);
 				}
-				String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue());
+				String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 
 				// initialize Database
 
 				String database = Config.WorkPath + GlobalCore.fs + NewDB_Name + ".db3";
-				Config.settings.DatabasePath.setValue(database);
+				Config.DatabasePath.setValue(database);
 				Database.Data.Close();
 				Database.Data.StartUp(database);
 
@@ -341,17 +341,17 @@ public class SelectDB extends ActivityBase
 				{
 					String folder = "?/" + NewDB_Name + "/";
 
-					Config.settings.DescriptionImageFolderLocal.setValue(folder + "Images");
-					Config.settings.MapPackFolderLocal.setValue(folder + "Maps");
-					Config.settings.SpoilerFolderLocal.setValue(folder + "Spoilers");
-					Config.settings.TileCacheFolderLocal.setValue(folder + "Cache");
+					Config.DescriptionImageFolderLocal.setValue(folder + "Images");
+					Config.MapPackFolderLocal.setValue(folder + "Maps");
+					Config.SpoilerFolderLocal.setValue(folder + "Spoilers");
+					Config.TileCacheFolderLocal.setValue(folder + "Cache");
 					Config.AcceptChanges();
 
 					// Create Folder?
-					FileIO.createDirectory(Config.settings.DescriptionImageFolderLocal.getValue());
-					FileIO.createDirectory(Config.settings.MapPackFolderLocal.getValue());
-					FileIO.createDirectory(Config.settings.SpoilerFolderLocal.getValue());
-					FileIO.createDirectory(Config.settings.TileCacheFolderLocal.getValue());
+					FileIO.createDirectory(Config.DescriptionImageFolderLocal.getValue());
+					FileIO.createDirectory(Config.MapPackFolderLocal.getValue());
+					FileIO.createDirectory(Config.SpoilerFolderLocal.getValue());
+					FileIO.createDirectory(Config.TileCacheFolderLocal.getValue());
 				}
 
 				Config.AcceptChanges();
@@ -394,8 +394,8 @@ public class SelectDB extends ActivityBase
 			return;
 		}
 
-		Config.settings.MultiDBAutoStartTime.setValue(autoStartTime);
-		Config.settings.MultiDBAsk.setValue(autoStartTime >= 0);
+		Config.MultiDBAutoStartTime.setValue(autoStartTime);
+		Config.MultiDBAsk.setValue(autoStartTime >= 0);
 
 		String name = AktFile.getName();
 		// Toast.makeText(getApplicationContext(), name,
@@ -405,7 +405,7 @@ public class SelectDB extends ActivityBase
 		// Toast.makeText(getApplicationContext(), path,
 		// Toast.LENGTH_SHORT).show();
 
-		Config.settings.DatabasePath.setValue(path);
+		Config.DatabasePath.setValue(path);
 		Config.AcceptChanges();
 
 		// reload settings for get filter form selected DB

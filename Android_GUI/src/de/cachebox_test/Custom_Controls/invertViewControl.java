@@ -77,7 +77,7 @@ public final class invertViewControl extends View
 
 		WebViewLayout.draw(c);
 
-		canvas.drawBitmap(b, 0, 0, Config.settings.nightMode.getValue() ? Global.invertPaint : new Paint());
+		canvas.drawBitmap(b, 0, 0, Config.nightMode.getValue() ? Global.invertPaint : new Paint());
 
 		super.onDraw(canvas);
 

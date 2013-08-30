@@ -14,6 +14,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -22,7 +23,6 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.Events.ProgresssChangedEventList;
 
@@ -206,7 +206,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				// Reload result from DB
 				synchronized (Database.Data.Query)
 				{
-					String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue());
+					String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 					CacheListDAO cacheListDAO = new CacheListDAO();
 					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 				}

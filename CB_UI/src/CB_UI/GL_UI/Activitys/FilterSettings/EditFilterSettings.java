@@ -16,13 +16,13 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
+import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -87,7 +87,7 @@ public class EditFilterSettings extends ActivityBase
 				ApplyFilter(GlobalCore.LastFilter);
 
 				// Save selected filter (new JSON Format)
-				Config.settings.FilterNew.setValue(GlobalCore.LastFilter.toString());
+				Config.FilterNew.setValue(GlobalCore.LastFilter.toString());
 				Config.AcceptChanges();
 				finish();
 				return true;
@@ -385,7 +385,7 @@ public class EditFilterSettings extends ActivityBase
 					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 
 					// save Filtersettings im neuen JSON Format
-					Config.settings.FilterNew.setValue(Props.toString());
+					Config.FilterNew.setValue(Props.toString());
 					Config.AcceptChanges();
 				}
 				catch (Exception e)
@@ -444,7 +444,7 @@ public class EditFilterSettings extends ActivityBase
 						switch (which)
 						{
 						case 1: // ok Clicket
-							String uF = Config.settings.UserFilter.getValue();
+							String uF = Config.UserFilter.getValue();
 							String aktFilter = tmpFilterProps.toString();
 
 							// Category Filterungen aus Filter entfernen
@@ -452,7 +452,7 @@ public class EditFilterSettings extends ActivityBase
 							aktFilter = aktFilter.substring(0, pos);
 
 							uF += text + ";" + aktFilter + "#";
-							Config.settings.UserFilter.setValue(uF);
+							Config.UserFilter.setValue(uF);
 							Config.AcceptChanges();
 							lvPre.fillPresetList();
 							lvPre.notifyDataSetChanged();

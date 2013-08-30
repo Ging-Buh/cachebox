@@ -32,6 +32,7 @@ import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
 import CB_UI.Map.RouteOverlay.Track;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
@@ -42,7 +43,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.UnitFormatter;
 
@@ -159,7 +159,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 										if (CycleWay) routepref = "Bicycle";
 										if (FootWay) routepref = "Pedestrian";
 
-										String Url = Config.settings.NavigationProvider.getValue();
+										String Url = Config.NavigationProvider.getValue();
 										// String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
 
 										HttpClient httpclient = new DefaultHttpClient();
