@@ -196,7 +196,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		public int getCount()
 		{
-			if (cache != null) return cache.waypoints.size() + 1;
+			if (cache != null && cache.waypoints != null) return cache.waypoints.size() + 1;
 			else
 				return 0;
 		}
