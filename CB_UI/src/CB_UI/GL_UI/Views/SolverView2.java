@@ -422,7 +422,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			wp.CacheId = GlobalCore.getSelectedCache().Id;
 			wp.setCoordinate(result);
 			wp.Type = CacheTypes.Final;
-			wp.Description = "Final";
+			wp.Title = "Final";
 			wp.IsUserWaypoint = true;
 			try
 			{
