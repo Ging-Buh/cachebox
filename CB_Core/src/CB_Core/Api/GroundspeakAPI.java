@@ -482,6 +482,15 @@ public class GroundspeakAPI
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException e1)
+		{
+			e1.printStackTrace();
+		}
+
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
 
 		try

@@ -155,9 +155,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 									new CB_Action_Command_chkState().Execute();
 								}
 							};
-							new CB_Action_Command_chkState().Execute();
 							Timer t = new Timer();
-							t.schedule(tt, 400);
+							t.schedule(tt, 100);
 						}
 					});
 
