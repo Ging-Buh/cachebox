@@ -1348,7 +1348,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
-		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
+		else if (ID == ViewConst.SPOILER_VIEW)
+		{
+			if (spoilerView == null) spoilerView = new SpoilerView(this, inflater);
+
+			return spoilerView;
+		}
+
 		else if (ID == ViewConst.DESCRIPTION_VIEW)
 		{
 			if (descriptionView != null)

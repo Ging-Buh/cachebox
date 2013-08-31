@@ -17,6 +17,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.Api.SearchForGeocaches;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
+import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
@@ -175,6 +176,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 				thread.start();
 
+				return true;
+			}
+			else if (url.startsWith("http://"))
+			{
+				// Load Url in ext Browser
+				platformConector.callUrl(url);
 				return true;
 			}
 			view.loadUrl(url);

@@ -64,6 +64,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		spoilerImage.getSettings().setUseWideViewPort(true);
 		spoilerImage.getSettings().setLoadWithOverviewMode(true);
 		spoilerImage.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
+		spoilerImage.setFocusable(false);
 
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);

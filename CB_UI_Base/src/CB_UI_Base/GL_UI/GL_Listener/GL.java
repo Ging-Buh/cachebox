@@ -410,6 +410,16 @@ public class GL implements ApplicationListener, InputProcessor
 			renderOnce("");
 		}
 
+		if (actDialog != null && actDialog.isDisposed())
+		{
+			closeDialog(actDialog);
+		}
+
+		if (actActivity != null && actActivity.isDisposed())
+		{
+			closeActivity();
+		}
+
 		// if Tablet, so the Activity is smaller the screen size
 		// render childs and darkness Sprite
 		if (Global.isTab)

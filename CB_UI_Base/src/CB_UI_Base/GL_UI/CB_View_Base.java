@@ -15,6 +15,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
 
+	private boolean isDisposed = false;
+
 	// # Constructors
 	public CB_View_Base(String Name)
 	{
@@ -50,6 +52,11 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	public void onFree()
 	{
 
+	}
+
+	public boolean isDisposed()
+	{
+		return this.isDisposed;
 	}
 
 	protected boolean isInitial = false;
@@ -164,7 +171,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 				setToNull(this);
 			}
 		}
-
+		isDisposed = true;
 	}
 
 	public static void setToNull(CB_View_Base view)
