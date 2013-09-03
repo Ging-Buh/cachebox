@@ -1,10 +1,8 @@
 package CB_UI_Base.GL_UI.Main;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.H_ListView;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -134,7 +132,7 @@ public class CB_TabView extends CB_View_Base
 		GL.that.closeAllDialogs();
 
 		// delete all Views up to the ButtonList
-		if (aktView != null)
+		if (aktView != null && aktView != view)
 		{
 			this.removeChild(aktView);
 			// aktView.onStop();
@@ -145,6 +143,8 @@ public class CB_TabView extends CB_View_Base
 		// set View size and pos
 		view.setSize(this.width, this.height - buttonListView.getHeight());
 		view.setPos(new Vector2(0, buttonListView.getHeight()));
+
+		if (aktView == view) return;
 
 		aktView = view;
 		this.addChild(aktView);
@@ -163,18 +163,37 @@ public class CB_TabView extends CB_View_Base
 	 */
 	private void sendOnShow2aktView()
 	{
-		TimerTask task = new TimerTask()
+		GL.that.RunOnGL(new runOnGL()
 		{
+
 			@Override
 			public void run()
 			{
-				if (aktView != null && aktView.isVisible()) aktView.onShow();
-				buttonListView.notifyDataSetChanged();
-			}
-		};
+				GL.that.RunOnGL(new runOnGL()
+				{
 
-		Timer timer = new Timer();
-		timer.schedule(task, 150);
+					@Override
+					public void run()
+					{
+						if (aktView != null && aktView.isVisible()) aktView.onShow();
+						buttonListView.notifyDataSetChanged();
+					}
+				});
+
+			}
+		});
+
+		// TimerTask task = new TimerTask()
+		// {
+		// @Override
+		// public void run()
+		// {
+		//
+		// }
+		// };
+		//
+		// Timer timer = new Timer();
+		// timer.schedule(task, 150);
 	}
 
 	public CB_RectF getContentRec()

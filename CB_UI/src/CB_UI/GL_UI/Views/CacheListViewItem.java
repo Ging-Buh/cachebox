@@ -66,6 +66,11 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 	private Cache mCache;
 
+	public Cache getCache()
+	{
+		return mCache;
+	}
+
 	public CacheListViewItem(CB_RectF rec, int Index, Cache cache)
 	{
 		super(rec, Index, cache.Name);

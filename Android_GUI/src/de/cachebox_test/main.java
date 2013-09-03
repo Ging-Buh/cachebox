@@ -1473,6 +1473,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		InfoDownSlider.invalidate();
 		((View) aktView).forceLayout();
 
+		if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
+		if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
+		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
+		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+
 	}
 
 	private void ShowViewGL(ViewID Id)
@@ -2803,6 +2808,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							((View) InfoDownSlider).setVisibility(View.VISIBLE);
 						}
 
+						if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
+						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
 
 						if (viewID == ViewConst.JOKER_VIEW)
@@ -2865,6 +2872,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							aktViewId = null;
 							aktView = null;
 						}
+
+						Logger.DEBUG("Hide Android view");
 					}
 				});
 
@@ -2873,32 +2882,23 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void showForDialog()
 			{
-				Timer timer = new Timer();
-				TimerTask task = new TimerTask()
+
+				runOnUiThread(new Runnable()
 				{
 					@Override
 					public void run()
 					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								// chk for timer conflict (releay set invisible)
-								// only if showing Dialog or Activity
-								if (!GL.that.isShownDialogActivity()) return;
+						// chk for timer conflict (releay set invisible)
+						// only if showing Dialog or Activity
+						if (!GL.that.isShownDialogActivity()) return;
 
-								if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
-								if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
-								if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
-								if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
-							}
-						});
-
+						if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
+						if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
+						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
+						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
+						Logger.DEBUG("Show AndroidView");
 					}
-				};
-				timer.schedule(task, 50);
-
+				});
 			}
 
 			@Override

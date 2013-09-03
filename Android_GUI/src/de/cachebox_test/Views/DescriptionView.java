@@ -145,12 +145,15 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
 		// save last ScrollPos
 
-		Point scpo = WebControl.getScrollPos();
+		if (WebControl != null)
+		{
+			Point scpo = WebControl.getScrollPos();
 
-		lastScrollPos.x = scpo.x;
-		lastScrollPos.y = scpo.y;
+			lastScrollPos.x = scpo.x;
+			lastScrollPos.y = scpo.y;
+		}
 
-		webViewLayout.removeAllViews();
+		if (webViewLayout != null) webViewLayout.removeAllViews();
 		if (WebControl != null)
 		{
 			WebControl.destroy();

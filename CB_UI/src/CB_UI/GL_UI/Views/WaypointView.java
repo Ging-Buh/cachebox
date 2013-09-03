@@ -34,6 +34,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Logger;
+import CB_Utils.Math.Point;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent
 {
@@ -272,25 +273,25 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		}
 
 		// aktuellen Waypoint in der List anzeigen
-		int first = this.getFirstVisiblePosition();
-		int last = this.getLastVisiblePosition();
+
+		Point lastAndFirst = this.getFirstAndLastVisibleIndex();
 
 		Logger.DEBUG("[Waypoint Select]");
 		try
 		{
-			Logger.DEBUG("First visible:[" + first + "]" + this.lvAdapter.getItem(first).toString());
+			Logger.DEBUG("First visible:[" + lastAndFirst.x + "]" + this.lvAdapter.getItem(lastAndFirst.x).toString());
 		}
 		catch (Exception e)
 		{
-			Logger.DEBUG("no firstItem with index :" + first);
+			Logger.DEBUG("no firstItem with index :" + lastAndFirst.x);
 		}
 		try
 		{
-			Logger.DEBUG("Last visible:[" + last + "]" + this.lvAdapter.getItem(last).toString());
+			Logger.DEBUG("Last visible:[" + lastAndFirst.y + "]" + this.lvAdapter.getItem(lastAndFirst.y).toString());
 		}
 		catch (Exception e)
 		{
-			Logger.DEBUG("no lastItem with index :" + last);
+			Logger.DEBUG("no lastItem with index :" + lastAndFirst.y);
 		}
 
 		if (aktCache == null) return;
@@ -320,7 +321,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					this.setSelection(id);
 					if (this.isDragable())
 					{
-						if (!(first <= id && last >= id))
+						if (!(lastAndFirst.x <= id && lastAndFirst.y >= id))
 						{
 							this.scrollToItem(id);
 							Logger.DEBUG("Scroll to:" + id);
@@ -337,7 +338,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			this.setSelection(0);
 			if (this.isDragable())
 			{
-				if (!(first <= 0 && last >= 0))
+				if (!(lastAndFirst.x <= 0 && lastAndFirst.y >= 0))
 				{
 					this.scrollToItem(0);
 					Logger.DEBUG("Scroll to:" + 0);

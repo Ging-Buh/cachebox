@@ -1,6 +1,7 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,6 +13,7 @@ import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Logger;
+import CB_Utils.Math.Point;
 import CB_Utils.Util.MoveableList;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -313,7 +315,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			}
 			catch (Exception e)
 			{
-				// e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 
@@ -378,17 +380,33 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		if (mPosDefault == null || mBaseAdapter == null) return;
 
 		// if (i < getMaxItemCount()) i = getMaxItemCount();
-		float versatz = i < getLastVisiblePosition() ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
 
-		Logger.DEBUG("SetListPos -> ScrollTO Item");
+		Point lastAndFirst = getFirstAndLastVisibleIndex();
 
-		if (i >= 0 && i < mPosDefault.size())
+		if (lastAndFirst.y == -1)
 		{
-			setListPos(mPosDefault.get(i) + versatz, false);
+			setListPos(0);
+			return;
 		}
-		else
+
+		float versatz = (i < lastAndFirst.y) ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
+
+		Logger.DEBUG("SetListPos -> ScrollTO Item [" + i + "]");
+
+		try
 		{
-			setListPos(mPosDefault.get(mPosDefault.size() - 1), false);
+			if (i >= 0 && i < mPosDefault.size())
+			{
+				setListPos(mPosDefault.get(i) + versatz, false);
+			}
+			else
+			{
+				setListPos(mPosDefault.get(mPosDefault.size() - 1), false);
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 
@@ -499,21 +517,58 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 	}
 
-	public int getLastVisiblePosition()
+	/**
+	 * Returns a Point<br>
+	 * x= first full visible Index<br>
+	 * y= last full visible Index<br>
+	 * 
+	 * @return
+	 */
+	public Point getFirstAndLastVisibleIndex()
 	{
-		int ret = 0;
-		boolean help = false;
+		Point ret = new Point();
 		synchronized (childs)
 		{
+
+			ArrayList<ListViewItemBase> visibleList = new ArrayList<ListViewItemBase>();
+
 			for (GL_View_Base v : childs)
 			{
-				if (!help && this.contains(v)) help = true;
-				if (help && !this.contains(v) && v instanceof ListViewItemBase)
+				if (v instanceof ListViewItemBase)
 				{
-					ret = ((ListViewItemBase) v).getIndex();
+					visibleList.add(((ListViewItemBase) v));
+				}
+			}
+
+			if (visibleList.isEmpty())
+			{
+				ret.x = -1;
+				ret.y = -1;
+				return ret;
+			}
+
+			Collections.sort(visibleList);
+			boolean foundFirstVisible = false;
+			int lastFoundedVisible = 0;
+			for (ListViewItemBase lv : visibleList)
+			{
+				if (this.ThisWorldRec.contains(lv.ThisWorldRec))
+				{
+					if (!foundFirstVisible) ret.x = lv.getIndex();
+					foundFirstVisible = true;
+					lastFoundedVisible = lv.getIndex();
+				}
+				else
+				{
+					if (!foundFirstVisible)
+					{
+						continue;
+					}
+					ret.y = lastFoundedVisible;
 					break;
 				}
 			}
+
 		}
 
 		// Logger.LogCat("getLastVisiblePosition = " + ret);
@@ -521,33 +576,36 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		return ret;
 	}
 
-	public int getFirstVisiblePosition()
-	{
-		if (mBaseAdapter == null) return 0;
-		int ret = mBaseAdapter.getCount();
-		synchronized (childs)
-		{
-			for (GL_View_Base v : childs)
-			{
-				if (this.contains(v) && v instanceof ListViewItemBase)
-				{
-					// chk for complete visible
-					if (this.contains(v.ThisWorldRec))
-					{
-						int i = ((ListViewItemBase) v).getIndex();
-
-						if (i < ret) ret = i;
-					}
-
-				}
-			}
-
-		}
-
-		// Logger.LogCat("getFirstVisiblePosition = " + ret);
-
-		return ret;
-	}
+	// public int getFirstVisiblePosition()
+	// {
+	// if (mBaseAdapter == null) return 0;
+	// synchronized (childs)
+	// {
+	//
+	// ArrayList<ListViewItemBase> visibleList = new ArrayList<ListViewItemBase>();
+	//
+	// for (GL_View_Base v : childs)
+	// {
+	// if (v instanceof ListViewItemBase)
+	// {
+	// visibleList.add(((ListViewItemBase) v));
+	// }
+	// }
+	//
+	// Collections.sort(visibleList);
+	//
+	// for (ListViewItemBase lv : visibleList)
+	// {
+	// if (this.contains(lv))
+	// {
+	// return lv.getIndex();
+	// }
+	//
+	// }
+	// }
+	//
+	// return mBaseAdapter.getCount();
+	// }
 
 	/**
 	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden können, wenn alle Items so Groß sind wie das kleinste Item in der

@@ -32,6 +32,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
 
@@ -248,10 +249,9 @@ public class SelectDB extends ActivityBase
 					lvFiles.setSelection(i);
 				}
 
-				int first = lvFiles.getFirstVisiblePosition();
-				int last = lvFiles.getLastVisiblePosition();
+				Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
 
-				if (!(first < i && last > i)) lvFiles.scrollToItem(i);
+				if (!(firstAndLast.x < i && firstAndLast.y > i)) lvFiles.scrollToItem(i);
 			}
 			catch (Exception e)
 			{

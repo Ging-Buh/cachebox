@@ -39,12 +39,20 @@ public class CB_AllContextMenuHandler
 
 		boolean selectedCacheIsNull = (GlobalCore.getSelectedCache() == null);
 
+		boolean selectedCacheIsNoGC = false;
+
+		if (!selectedCacheIsNull)
+		{
+			selectedCacheIsNoGC = !GlobalCore.getSelectedCache().GcCode.startsWith("GC");
+		}
+
 		Menu icm = new Menu("BtnCacheContextMenu");
 		icm.addItemClickListner(onItemClickListner);
 		MenuItem mi;
 
 		mi = icm.addItem(MenuID.MI_RELOAD_CACHE_INFO, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
 		if (selectedCacheIsNull) mi.setEnabled(false);
+		if (selectedCacheIsNoGC) mi.setEnabled(false);
 
 		mi = icm.addItem(MenuID.MI_WAYPOINTS, "Waypoints", SpriteCacheBase.BigIcons.get(16));
 		if (selectedCacheIsNull) mi.setEnabled(false);

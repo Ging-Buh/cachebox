@@ -7,6 +7,7 @@ import java.util.Iterator;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Math.Point;
 
 public class H_ListView extends ListViewBase
 {
@@ -142,7 +143,8 @@ public class H_ListView extends ListViewBase
 			{
 				if (this.isDragable())
 				{
-					if (!(getFirstVisiblePosition() < mSelectedIndex && getLastVisiblePosition() > mSelectedIndex)) scrollToItem(mSelectedIndex);
+					Point lastAndFirst = getFirstAndLastVisibleIndex();
+					if (!(lastAndFirst.x < mSelectedIndex && lastAndFirst.y > mSelectedIndex)) scrollToItem(mSelectedIndex);
 				}
 				else
 				{

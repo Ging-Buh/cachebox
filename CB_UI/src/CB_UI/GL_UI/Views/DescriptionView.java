@@ -1,5 +1,8 @@
 package CB_UI.GL_UI.Views;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_UI.GlobalCore;
 import CB_UI_Base.Plattform;
 import CB_UI_Base.Events.platformConector;
@@ -30,7 +33,18 @@ public class DescriptionView extends CB_View_Base
 	public void onShow()
 	{
 		// Rufe ANDROID VIEW auf
-		platformConector.showView(ViewConst.DESCRIPTION_VIEW, this.Pos.x, this.Pos.y, this.width, this.height);
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				platformConector.showView(ViewConst.DESCRIPTION_VIEW, DescriptionView.this.Pos.x, DescriptionView.this.Pos.y,
+						DescriptionView.this.width, DescriptionView.this.height);
+			}
+		};
+		timer.schedule(task, 100);
+
 	}
 
 	@Override

@@ -180,8 +180,12 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 			mi.setEnabled(false);
 		}
 
+		boolean selectedCacheIsNoGC = false;
+
+		if (isSelected) selectedCacheIsNoGC = !GlobalCore.getSelectedCache().GcCode.startsWith("GC");
 		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
-		mi.setEnabled(isSelected);
+		if (!isSelected) mi.setEnabled(false);
+		if (selectedCacheIsNoGC) mi.setEnabled(false);
 		return cm;
 	}
 

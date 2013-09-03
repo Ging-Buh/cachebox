@@ -30,6 +30,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Logger;
+import CB_Utils.Math.Point;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -172,25 +173,10 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		GL.that.renderOnce(this.getName() + " onShow()");
 	}
 
-	/**
-	 * setzt den Aktuell selectierten Cache an die 2. Pos in der Liste
-	 */
 	public void setSelectedCacheVisible()
 	{
-		int centerList = listView.getMaxItemCount() / 2;
-		setSelectedCacheVisible(-centerList);
-	}
-
-	/**
-	 * setzt den Aktuell selectierten Cache an pos
-	 * 
-	 * @param pos
-	 */
-	public void setSelectedCacheVisible(int pos)
-	{
 		int id = 0;
-		int first = listView.getFirstVisiblePosition();
-		int last = listView.getLastVisiblePosition();
+		Point firstAndLast = listView.getFirstAndLastVisibleIndex();
 
 		synchronized (Database.Data.Query)
 		{
@@ -201,7 +187,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 					listView.setSelection(id);
 					if (listView.isDragable())
 					{
-						if (!(first <= id && last >= id))
+						if (!(firstAndLast.x <= id && firstAndLast.y >= id))
 						{
 							listView.scrollToItem(id);
 							Logger.DEBUG("Scroll to:" + id);
@@ -276,6 +262,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				GlobalCore.setSelectedWaypoint(cache, waypoint);
 			}
 			listView.setSelection(selectionIndex);
+			setSelectedCacheVisible();
 			return true;
 		}
 	};
@@ -341,6 +328,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		{
 			if (cacheList == null) return null;
 
+			if (cacheList.size() < position) return null;
+
 			synchronized (cacheList)
 			{
 				Cache cache = cacheList.get(position);
@@ -400,6 +389,25 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				listView.setDragable();
 			}
 		}
+
+		if (GlobalCore.getSelectedCache() != null)
+		{
+			boolean diverend = true;
+
+			try
+			{
+				diverend = GlobalCore.getSelectedCache() != ((CacheListViewItem) listView.getSelectedItem()).getCache();
+			}
+			catch (Exception e)
+			{
+			}
+
+			if (diverend)
+			{
+				setSelectedCacheVisible();
+			}
+		}
+
 		listView.chkSlideBack();
 	}
 
@@ -408,7 +416,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	{
 		if (GlobalCore.getSelectedCache() != null)
 		{
-			setSelectedCacheVisible();
+			CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
+			if (selItem != null && GlobalCore.getSelectedCache() != selItem.getCache())
+			{
+				setSelectedCacheVisible();
+			}
 		}
 	}
 

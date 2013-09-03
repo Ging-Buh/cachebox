@@ -50,7 +50,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -343,7 +342,8 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 		}
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		if (CB_UI_Base_Settings.nightMode.getValue())
 		{
@@ -357,7 +357,6 @@ public class GL implements ApplicationListener, InputProcessor
 		{// Render 3D
 			if (mAct3D_Render != null)
 			{
-
 				if (modelBatch == null)
 				{
 					if (Gdx.graphics.isGL20Available()) modelBatch = new ModelBatch();
@@ -366,12 +365,10 @@ public class GL implements ApplicationListener, InputProcessor
 				{
 					if (mAct3D_Render.is3D_Initial())
 					{
-						Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-						Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-
 						// modify 3Dcam
 						PerspectiveCamera retCam = mAct3D_Render.get3DCamera(cam);
 						if (retCam != null) cam = retCam; // Cam modified
+						cam.update();
 						modelBatch.begin(cam);
 						mAct3D_Render.render3d(modelBatch);
 						modelBatch.end();
@@ -534,12 +531,12 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (child != null) child.setSize(width, height);
 		camera = new OrthographicCamera(width, height);
-		cam = new PerspectiveCamera(130f, width, height);
-		cam.position.set(10f, 10f, 10f);
-		cam.lookAt(0, 0, 0);
-		cam.near = 0.1f;
-		cam.far = 600;
-		cam.update();
+		// cam = new PerspectiveCamera(130f, width, height);
+		// cam.position.set(10f, 10f, 10f);
+		// cam.lookAt(0, 0, 0);
+		// cam.near = 0.1f;
+		// cam.far = 600;
+		// cam.update();
 		prjMatrix = new ParentInfo(new Matrix4().setToOrtho2D(0, 0, width, height), new Vector2(0, 0), new CB_RectF(0, 0, width, height));
 
 	}
@@ -1429,12 +1426,15 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public void showDialog(final Dialog dialog, boolean atTop)
 	{
+
 		setKeyboardFocus(null);
 
 		if (dialog instanceof ActivityBase) throw new IllegalArgumentException(
 				"don´t show an Activity as Dialog. Use \"GL_listner.showActivity()\"");
 
 		clearRenderViews();
+
+		if (dialog.isDisposed()) return;
 
 		// Center Menu on Screen
 		float x = (width - dialog.getWidth()) / 2;

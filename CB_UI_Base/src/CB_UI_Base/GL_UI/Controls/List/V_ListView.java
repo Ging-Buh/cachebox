@@ -3,10 +3,12 @@ package CB_UI_Base.GL_UI.Controls.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Math.Point;
 
 public class V_ListView extends ListViewBase
 {
@@ -94,6 +96,8 @@ public class V_ListView extends ListViewBase
 
 		mPos = value;
 
+		// Logger.DEBUG(this.name + " ListPos:" + mPos);
+
 		// addVisibleItems();
 		addVisibleItems(Kinetic);
 		mMustSetPos = false;
@@ -161,9 +165,17 @@ public class V_ListView extends ListViewBase
 
 				if (selectionchanged)
 				{
+					Point lastAndFirst = getFirstAndLastVisibleIndex();
+
+					if (lastAndFirst.y == -1)
+					{
+						scrollTo(0);
+						return;
+					}
+
 					if (this.isDragable())
 					{
-						if (!(getFirstVisiblePosition() < mSelectedIndex && getLastVisiblePosition() > mSelectedIndex)) scrollToItem(mSelectedIndex);
+						if (!(lastAndFirst.x < mSelectedIndex && lastAndFirst.y > mSelectedIndex)) scrollToItem(mSelectedIndex);
 					}
 					else
 					{
@@ -175,10 +187,22 @@ public class V_ListView extends ListViewBase
 		}
 	}
 
+	AtomicBoolean isInCalculation = new AtomicBoolean(false);
+
 	@Override
 	protected void calcDefaultPosList()
 	{
-		if (mBaseAdapter == null) return; // can´t calc
+		if (isInCalculation.get())
+		{
+
+			return;
+		}
+		isInCalculation.set(true);
+		if (mBaseAdapter == null)
+		{
+			isInCalculation.set(false);
+			return; // can´t calc
+		}
 
 		if (mPosDefault != null)
 		{
@@ -236,7 +260,7 @@ public class V_ListView extends ListViewBase
 		{
 			this.setUndragable();
 		}
-
+		isInCalculation.set(false);
 	}
 
 	@Override
