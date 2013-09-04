@@ -19,4 +19,5 @@ public interface IScrollbarParent
 	public float getLasstItemSize();
 
 	public void chkSlideBack();
+
 }

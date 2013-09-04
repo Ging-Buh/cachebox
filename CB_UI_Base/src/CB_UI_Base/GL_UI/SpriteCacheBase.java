@@ -170,7 +170,6 @@ public class SpriteCacheBase
 	public static Drawable AboutBack = null;
 
 	public static Drawable Slider = null;
-	public static Drawable SliderBack = null;
 	public static Drawable SliderPushed = null;
 
 	public static Sprite Progress = null;

@@ -94,6 +94,26 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected float mMustSetPosValue = 0;
 	protected ArrayList<Float> mPosDefault;
 
+	public interface IListPosChanged
+	{
+		public void ListPosChanged();
+	}
+
+	private final ArrayList<IListPosChanged> EventHandlerList = new ArrayList<IListPosChanged>();
+
+	public void addListPosChangedEventHandler(IListPosChanged handler)
+	{
+		if (!EventHandlerList.contains(handler)) EventHandlerList.add(handler);
+	}
+
+	protected void callListPosChangedEvent()
+	{
+		for (IListPosChanged handler : EventHandlerList)
+		{
+			if (handler != null) handler.ListPosChanged();
+		}
+	}
+
 	public ArrayList<Float> getItemPosList()
 	{
 		return mPosDefault;

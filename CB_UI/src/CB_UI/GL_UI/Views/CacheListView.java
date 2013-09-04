@@ -23,6 +23,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
+import CB_UI_Base.GL_UI.Controls.List.ListViewBase.IListPosChanged;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
@@ -56,6 +57,15 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		listView = new V_ListView(rec, Name);
 		listView.setZeroPos();
 
+		listView.addListPosChangedEventHandler(new IListPosChanged()
+		{
+
+			@Override
+			public void ListPosChanged()
+			{
+				scrollBar.ScrollPositionChanged();
+			}
+		});
 		scrollBar = new Scrollbar(listView);
 
 		this.addChild(listView);
@@ -109,7 +119,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void onShow()
 	{
-
+		scrollBar.onShow();
 		if (isShown) return;
 
 		if (searchPlaceholder > 0)
@@ -326,12 +336,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		@Override
 		public ListViewItemBase getView(int position)
 		{
-			if (cacheList == null) return null;
-
-			if (cacheList.size() < position) return null;
-
 			synchronized (cacheList)
 			{
+				if (cacheList == null) return null;
+
+				if (cacheList.size() <= position) return null;
+
 				Cache cache = cacheList.get(position);
 
 				if (!cache.isSearchVisible()) return null;
@@ -355,7 +365,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			{
 				if (cacheList.size() == 0) return 0;
 				Cache cache = cacheList.get(position);
-
+				if (cache == null) return 0;
 				if (!cache.isSearchVisible()) return 0;
 
 				// alle Items haben die gleiche Größe (Höhe)

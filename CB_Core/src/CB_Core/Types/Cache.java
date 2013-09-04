@@ -356,6 +356,8 @@ public class Cache implements Comparable<Cache>, Serializable
 
 		if (this.Type != CacheTypes.Mystery) return false;
 
+		if (this.waypoints == null || this.waypoints.size() == 0) return false;
+
 		boolean x;
 		x = false;
 
@@ -385,6 +387,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	public Waypoint GetFinalWaypoint()
 	{
 		if (this.Type != CacheTypes.Mystery) return null;
+		if (waypoints == null || waypoints.size() == 0) return null;
 
 		for (Waypoint wp : waypoints)
 		{
@@ -417,6 +420,8 @@ public class Cache implements Comparable<Cache>, Serializable
 	public Waypoint GetStartWaypoint()
 	{
 		if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery)) return null;
+
+		if (waypoints == null || waypoints.size() == 0) return null;
 
 		for (Waypoint wp : waypoints)
 		{

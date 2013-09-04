@@ -103,6 +103,8 @@ public class V_ListView extends ListViewBase
 		mMustSetPos = false;
 		mMustSetPosKinetic = false;
 
+		if (distance != 0) callListPosChangedEvent();
+
 	}
 
 	/**
@@ -115,75 +117,83 @@ public class V_ListView extends ListViewBase
 	@SuppressWarnings("unchecked")
 	protected void addVisibleItems(boolean Kinetic)
 	{
-		if (mBaseAdapter == null) return;
-		if (mPosDefault == null) calcDefaultPosList();
-		ArrayList<Float> tmpPosDefault;
-		synchronized (mPosDefault)
-		{
-			tmpPosDefault = (ArrayList<Float>) mPosDefault.clone();
-		}
-		synchronized (mBaseAdapter)
-		{
 
-			for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
+		try
+		{
+			synchronized (mBaseAdapter)
 			{
-				if (!mAddeedIndexList.contains(i))
+				if (mBaseAdapter == null) return;
+				if (mPosDefault == null) calcDefaultPosList();
+				ArrayList<Float> tmpPosDefault;
+				synchronized (mPosDefault)
 				{
-					if (tmpPosDefault.size() - 1 < i) return;
+					tmpPosDefault = (ArrayList<Float>) mPosDefault.clone();
+				}
 
-					float itemPos = tmpPosDefault.get(i);
-					itemPos -= mPos;
-
-					if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize))
+				for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
+				{
+					if (!mAddeedIndexList.contains(i))
 					{
-						ListViewItemBase tmp = mBaseAdapter.getView(i);
-						if (tmp != null)
+						if (tmpPosDefault.size() - 1 < i) return;
+
+						float itemPos = tmpPosDefault.get(i);
+						itemPos -= mPos;
+
+						if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize))
 						{
-							tmp.setY(itemPos);
-							if (i == mSelectedIndex)
+							ListViewItemBase tmp = mBaseAdapter.getView(i);
+							if (tmp != null)
 							{
-								tmp.isSelected = true;
-								tmp.resetInitial();
+								tmp.setY(itemPos);
+								if (i == mSelectedIndex)
+								{
+									tmp.isSelected = true;
+									tmp.resetInitial();
+								}
+								this.addChild(tmp);
 							}
-							this.addChild(tmp);
+
+							// Logger.LogCat("Add Item " + i);
+							mAddeedIndexList.add(i);
 						}
 
-						// Logger.LogCat("Add Item " + i);
-						mAddeedIndexList.add(i);
+						else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))
+						{
+							mLastIndex = i;
+							break;
+						}
+
 					}
 
-					else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))
+					// RenderRequest
+					GL.that.renderOnce(this.getName() + " addVisibleItems");
+
+					if (selectionchanged)
 					{
-						mLastIndex = i;
-						break;
+						Point lastAndFirst = getFirstAndLastVisibleIndex();
+
+						if (lastAndFirst.y == -1)
+						{
+							scrollTo(0);
+							return;
+						}
+
+						if (this.isDragable())
+						{
+							if (!(lastAndFirst.x < mSelectedIndex && lastAndFirst.y > mSelectedIndex)) scrollToItem(mSelectedIndex);
+						}
+						else
+						{
+							scrollTo(0);
+						}
+						selectionchanged = false;
 					}
-
-				}
-
-				// RenderRequest
-				GL.that.renderOnce(this.getName() + " addVisibleItems");
-
-				if (selectionchanged)
-				{
-					Point lastAndFirst = getFirstAndLastVisibleIndex();
-
-					if (lastAndFirst.y == -1)
-					{
-						scrollTo(0);
-						return;
-					}
-
-					if (this.isDragable())
-					{
-						if (!(lastAndFirst.x < mSelectedIndex && lastAndFirst.y > mSelectedIndex)) scrollToItem(mSelectedIndex);
-					}
-					else
-					{
-						scrollTo(0);
-					}
-					selectionchanged = false;
 				}
 			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 
