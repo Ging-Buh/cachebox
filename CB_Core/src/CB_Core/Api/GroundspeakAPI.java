@@ -783,6 +783,8 @@ public class GroundspeakAPI
 			return CacheTypes.Final;
 		case 219:
 			return CacheTypes.MultiStage;
+		case 221:
+			return CacheTypes.Trailhead;
 		case 218:
 			return CacheTypes.MultiQuestion;
 

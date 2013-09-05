@@ -156,24 +156,34 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		if (Locator.Valid())
 		{
 
-			double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
-			double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
-			float distance = (mWaypoint == null) ? mCache.Distance(true) : mWaypoint.Distance();
-
-			Coordinate position = Locator.getCoordinate();
-			double heading = Locator.getHeading();
-			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), lat, lon);
-			double cacheBearing = -(bearing - heading);
-			setDistanceString(UnitFormatter.DistanceString(distance));
-
-			arrow.setRotation((float) cacheBearing);
-			if (arrow.getColor() == DISABLE_COLOR)
+			if (mWaypoint != null && mWaypoint.Pos.isZero())
 			{
-				float size = this.height / 2.3f;
-				arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
-				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
-				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+				arrow = null;
+				setDistanceString("???");
 			}
+			else
+			{
+				double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
+				double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
+				float distance = (mWaypoint == null) ? mCache.Distance(true) : mWaypoint.Distance();
+
+				Coordinate position = Locator.getCoordinate();
+				double heading = Locator.getHeading();
+				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), lat, lon);
+				double cacheBearing = -(bearing - heading);
+				setDistanceString(UnitFormatter.DistanceString(distance));
+
+				arrow.setRotation((float) cacheBearing);
+				if (arrow.getColor().r == DISABLE_COLOR.r && arrow.getColor().g == DISABLE_COLOR.g && arrow.getColor().b == DISABLE_COLOR.b)// ignore
+																																			// alpha
+				{
+					float size = this.height / 2.3f;
+					arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
+					arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
+					arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+				}
+			}
+
 		}
 	}
 
@@ -238,6 +248,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	@Override
 	public void OrientationChanged()
 	{
+		if (mCache == null) return;
 		setActLocator();
 	}
 
@@ -268,7 +279,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 			{ // Icon Sprite erstellen
 				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
-				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart) mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(23));
+				if ((mWaypoint.Type == CacheTypes.MultiStage) && mWaypoint.IsStart) mIconSprite = new Sprite(
+						SpriteCacheBase.BigIcons.get(23));
 				else
 					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mWaypoint.Type.ordinal()));
 

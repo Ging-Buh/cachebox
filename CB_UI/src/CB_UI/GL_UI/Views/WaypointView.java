@@ -296,7 +296,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		if (aktCache == null) return;
 
-		int itemCount = aktCache.waypoints.size() + 1;
+		int itemCount = aktCache.waypoints == null ? 1 : aktCache.waypoints.size() + 1;
 		int itemSpace = this.getMaxItemCount();
 
 		if (itemSpace >= itemCount)

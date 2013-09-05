@@ -49,7 +49,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent
 {
-	Label descTextView, CachesFoundLabel, WP, Coord, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
+	Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent,
+			Current;
 	Image CB_Logo;
 	float margin;
 	private SatBarChart chart;
@@ -262,21 +263,21 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		Gps = new Label(lblRec, "GPS");
 		Accuracy = new Label(lblRec, "Accuracy");
-		WP = new Label("-", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE);
-		WP.setRec(lblRec);
-		Coord = new Label(lblRec, "Cord");
+		WaypointLabel = new Label("-", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE);
+		WaypointLabel.setRec(lblRec);
+		CoordLabel = new Label(lblRec, "Cord");
 		Current = new Label(lblRec, "Current");
 
 		// set Y Pos
 		Gps.setY(lblGPS.getY());
 		Accuracy.setY(lblAccuracy.getY());
-		WP.setY(lblWP.getY());
-		Coord.setY(lblCoord.getY());
+		WaypointLabel.setY(lblWP.getY());
+		CoordLabel.setY(lblCoord.getY());
 		Current.setY(lblCurrent.getY());
 
 		// set LinkColor
 
-		WP.setOnClickListener(new OnClickListener()
+		WaypointLabel.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
@@ -291,8 +292,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		// add to Screen
 		this.addChild(Gps);
 		this.addChild(Accuracy);
-		this.addChild(WP);
-		this.addChild(Coord);
+		this.addChild(WaypointLabel);
+		this.addChild(CoordLabel);
 		this.addChild(Current);
 
 		// create Sat Chart
@@ -328,22 +329,27 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	public void refreshText()
 	{
-		if (WP == null || CachesFoundLabel == null) return;
+		if (WaypointLabel == null || CachesFoundLabel == null) return;
 		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
 
-		if (GlobalCore.getSelectedCache() != null) if (GlobalCore.getSelectedWaypoint() != null)
-		{
-			WP.setText(GlobalCore.getSelectedWaypoint().GcCode);
-			Coord.setText(UnitFormatter.FormatLatitudeDM(GlobalCore.getSelectedWaypoint().Pos.getLatitude()) + " "
-					+ UnitFormatter.FormatLongitudeDM(GlobalCore.getSelectedWaypoint().Pos.getLongitude()));
-		}
-		else
-		{
-			WP.setText(GlobalCore.getSelectedCache().GcCode);
-			Coord.setText(UnitFormatter.FormatLatitudeDM(GlobalCore.getSelectedCache().Pos.getLatitude()) + " "
-					+ UnitFormatter.FormatLongitudeDM(GlobalCore.getSelectedCache().Pos.getLongitude()));
-		}
+		Cache selectedCache = GlobalCore.getSelectedCache();
+		Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
 
+		if (selectedCache != null)
+		{
+			if (selectedWaypoint != null)
+			{
+				WaypointLabel.setText(selectedWaypoint.GcCode);
+				CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " "
+						+ UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
+			}
+			else
+			{
+				WaypointLabel.setText(selectedCache.GcCode);
+				CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " "
+						+ UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
+			}
+		}
 		GL.that.renderOnce("About refresh Text");
 	}
 

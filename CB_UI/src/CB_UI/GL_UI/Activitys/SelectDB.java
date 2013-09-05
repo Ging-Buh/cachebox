@@ -18,11 +18,14 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.Map.ManagerBase;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
+import CB_UI_Base.GL_UI.Controls.List.ListViewBase.IListPosChanged;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
+import CB_UI_Base.GL_UI.Controls.List.Scrollbar;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -32,6 +35,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
@@ -46,6 +50,7 @@ public class SelectDB extends ActivityBase
 	private Button bCancel;
 	private Button bAutostart;
 	private V_ListView lvFiles;
+	private Scrollbar scrollbar;
 	CustomAdapter lvAdapter;
 
 	public static File AktFile = null;
@@ -88,6 +93,18 @@ public class SelectDB extends ActivityBase
 		lvFiles.setBaseAdapter(lvAdapter);
 
 		this.addChild(lvFiles);
+
+		this.scrollbar = new Scrollbar(lvFiles);
+		this.addChild(this.scrollbar);
+		this.lvFiles.addListPosChangedEventHandler(new IListPosChanged()
+		{
+
+			@Override
+			public void ListPosChanged()
+			{
+				scrollbar.ScrollPositionChanged();
+			}
+		});
 
 		float btWidth = innerWidth / 3;
 
@@ -188,6 +205,8 @@ public class SelectDB extends ActivityBase
 				stopTimer();
 		}
 
+		this.isClickable();
+
 		readCountatThread();
 	}
 
@@ -237,27 +256,12 @@ public class SelectDB extends ActivityBase
 	@Override
 	protected void Initial()
 	{
-		// Set selected item
-		for (int i = 0; i < lvAdapter.getCount(); i++)
-		{
-			File file = lvAdapter.getItem(i);
 
-			try
-			{
-				if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0)
-				{
-					lvFiles.setSelection(i);
-				}
+	}
 
-				Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
-
-				if (!(firstAndLast.x < i && firstAndLast.y > i)) lvFiles.scrollToItem(i);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
+	@Override
+	public void onShow()
+	{
 
 		int itemSpace = lvFiles.getMaxItemCount();
 
@@ -270,6 +274,92 @@ public class SelectDB extends ActivityBase
 			lvFiles.setDragable();
 		}
 
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+
+				// Set selected item
+				for (int i = 0; i < lvAdapter.getCount(); i++)
+				{
+					File file = lvAdapter.getItem(i);
+
+					try
+					{
+						if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0)
+						{
+							lvFiles.setSelection(i);
+						}
+
+						Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
+
+						if (!(firstAndLast.x < i && firstAndLast.y > i)) lvFiles.scrollToItem(i);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+
+				setSelectedItemVisible();
+
+				resetInitial();
+				lvFiles.chkSlideBack();
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 150);
+
+		GL.that.renderOnce(this.getName() + " onShow()");
+	}
+
+	private void setSelectedItemVisible()
+	{
+		int id = 0;
+		Point firstAndLast = lvFiles.getFirstAndLastVisibleIndex();
+
+		for (File file : lvAdapter.getFileList())
+		{
+			if (file.getAbsoluteFile().compareTo(AktFile.getAbsoluteFile()) == 0)
+			{
+				lvFiles.setSelection(id);
+				if (lvFiles.isDragable())
+				{
+					if (!(firstAndLast.x <= id && firstAndLast.y >= id))
+					{
+						lvFiles.scrollToItem(id);
+						Logger.DEBUG("Scroll to:" + id);
+					}
+				}
+				break;
+			}
+			id++;
+		}
+
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				GL.that.RunOnGL(new runOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						lvFiles.chkSlideBack();
+						GL.that.renderOnce(SelectDB.this.getName() + " setSelectedDBVisible [chkSlideBack]");
+					}
+				});
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 50);
+
+		GL.that.renderOnce(this.getName() + " setSelectedDBVisible");
 	}
 
 	OnClickListener onItemClickListner = new OnClickListener()
@@ -449,6 +539,11 @@ public class SelectDB extends ActivityBase
 		public void setFiles(FileList files)
 		{
 			this.files = files;
+		}
+
+		public FileList getFileList()
+		{
+			return files;
 		}
 
 		@Override

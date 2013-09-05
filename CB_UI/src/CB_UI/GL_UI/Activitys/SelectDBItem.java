@@ -45,28 +45,27 @@ public class SelectDBItem extends ListViewItemBackground
 		this.setClickable(true);
 	}
 
-	@Override
-	public boolean onTouchDown(int x, int y, int pointer, int button)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean onTouchUp(int x, int y, int pointer, int button)
-	{
-		return true;
-	}
+	// @Override
+	// public boolean onTouchDown(int x, int y, int pointer, int button)
+	// {
+	// return false;
+	// }
+	//
+	// @Override
+	// public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	// {
+	// return false;
+	// }
+	//
+	// @Override
+	// public boolean onTouchUp(int x, int y, int pointer, int button)
+	// {
+	// return true;
+	// }
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

@@ -282,7 +282,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public boolean ImTheOwner()
 	{
-		String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase();
+		String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
 		if (myCache == 0) return false;
 		if (myCache == 1) return true;
 
@@ -295,7 +295,7 @@ public class Cache implements Comparable<Cache>, Serializable
 
 		try
 		{
-			ret = this.Owner.toLowerCase().equals(gcLogin);
+			ret = this.Owner.toLowerCase(Locale.getDefault()).equals(gcLogin);
 		}
 		catch (Exception e)
 		{
@@ -481,8 +481,15 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public boolean SpoilerExists()
 	{
-		if (spoilerRessources == null) ReloadSpoilerRessources();
-		return spoilerRessources.size() > 0;
+		try
+		{
+			if (spoilerRessources == null) ReloadSpoilerRessources();
+			return spoilerRessources.size() > 0;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
 	}
 
 	/**
