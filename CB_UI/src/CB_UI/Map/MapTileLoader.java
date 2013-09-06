@@ -11,6 +11,7 @@ import javax.security.auth.DestroyFailedException;
 import CB_Core.Map.Descriptor;
 import CB_UI.Config;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.Views.MapViewBase;
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
@@ -92,7 +93,7 @@ public class MapTileLoader
 		return loadedTiles.size();
 	}
 
-	public void loadTiles(MapView mapView, Descriptor lo, Descriptor ru, int aktZoom)
+	public void loadTiles(MapViewBase mapView, Descriptor lo, Descriptor ru, int aktZoom)
 	{
 		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
 

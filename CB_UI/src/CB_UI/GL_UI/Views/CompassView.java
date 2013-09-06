@@ -49,7 +49,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private Box topContentBox, leftBox, rightBox, rightBoxMask, distanceBack;
 	private ScrollBox topBox;
-	private MapView map;
+	private MapViewBase map;
 	private SatBarChart chart;
 	private Label lblDistance, lbl_Name, lblGcCode, lblCoords, lblDesc, lblAlt, lblAccuracy, lblOwnCoords, lblBearing;
 	private CacheInfo SDT;

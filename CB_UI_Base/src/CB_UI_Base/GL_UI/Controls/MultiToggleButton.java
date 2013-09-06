@@ -84,7 +84,7 @@ public class MultiToggleButton extends Button
 		// wenn Button disabled ein Behandelt zurück schicken,
 		// damit keine weiteren Abfragen durchgereicht werden.
 		// Auch wenn dieser Button ein OnClickListner hat.
-		if (isDisabled)
+		if (isDisabled || wasLongClicked)
 		{
 			return true;
 		}
@@ -112,8 +112,18 @@ public class MultiToggleButton extends Button
 	}
 
 	@Override
+	public boolean onTouchDown(int x, int y, int pointer, int button)
+	{
+		wasLongClicked = false;
+		return super.onTouchDown(x, y, pointer, button);
+	}
+
+	boolean wasLongClicked = false;
+
+	@Override
 	public boolean longClick(int x, int y, int pointer, int button)
 	{
+		wasLongClicked = true;
 		// wenn Button disabled ein Behandelt zurück schicken,
 		// damit keine weiteren Abfragen durchgereicht werden.
 		// Auch wenn dieser Button ein OnClickListner hat.
