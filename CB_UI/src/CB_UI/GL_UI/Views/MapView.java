@@ -864,6 +864,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							Coordinate tmp = GlobalCore.getSelectedCache().Pos;
 							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
 						}
+
+						// switch map state to WP
+						togBtn.setState(2);
 					}
 					return false;
 				}
