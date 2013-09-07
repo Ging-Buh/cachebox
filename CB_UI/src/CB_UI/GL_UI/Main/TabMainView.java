@@ -104,7 +104,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	private CB_Action_ShowTestView actionTestView;
 	private CB_Action_ShowHint actionShowHint;
 	public static CB_Action_ShowMap actionShowMap;
-	public static CB_Action_ShowCacheList actionShowCacheList;
+	public static CB_Action_ShowCacheList actionShowCacheList = new CB_Action_ShowCacheList();
 
 	private CB_Action_ShowAbout actionShowAboutView;
 	private CB_Action_ShowCreditsView actionShowCreditsView;
@@ -215,7 +215,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
-		actionShowCacheList = new CB_Action_ShowCacheList();
 
 		actionShowAboutView = new CB_Action_ShowAbout();
 		actionShowCompassView = new CB_Action_ShowCompassView();
@@ -761,6 +760,11 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	@Override
 	public void SpeedChanged()
 	{
+	}
+
+	public boolean isInitial()
+	{
+		return isInitial;
 	}
 
 }

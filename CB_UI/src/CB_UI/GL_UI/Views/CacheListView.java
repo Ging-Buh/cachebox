@@ -185,51 +185,59 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public void setSelectedCacheVisible()
 	{
-		int id = 0;
-		Point firstAndLast = listView.getFirstAndLastVisibleIndex();
-
-		synchronized (Database.Data.Query)
+		listView.RunIfListInitial(new runOnGL()
 		{
-			for (Cache ca : Database.Data.Query)
-			{
-				if (ca == GlobalCore.getSelectedCache())
-				{
-					listView.setSelection(id);
-					if (listView.isDragable())
-					{
-						if (!(firstAndLast.x <= id && firstAndLast.y >= id))
-						{
-							listView.scrollToItem(id);
-							Logger.DEBUG("Scroll to:" + id);
-						}
-					}
-					break;
-				}
-				id++;
-			}
 
-		}
-
-		TimerTask task = new TimerTask()
-		{
 			@Override
 			public void run()
 			{
-				GL.that.RunOnGL(new runOnGL()
-				{
+				int id = 0;
+				Point firstAndLast = listView.getFirstAndLastVisibleIndex();
 
+				synchronized (Database.Data.Query)
+				{
+					for (Cache ca : Database.Data.Query)
+					{
+						if (ca == GlobalCore.getSelectedCache())
+						{
+							listView.setSelection(id);
+							if (listView.isDragable())
+							{
+								if (!(firstAndLast.x <= id && firstAndLast.y >= id))
+								{
+									listView.scrollToItem(id);
+									Logger.DEBUG("Scroll to:" + id);
+								}
+							}
+							break;
+						}
+						id++;
+					}
+
+				}
+
+				TimerTask task = new TimerTask()
+				{
 					@Override
 					public void run()
 					{
-						listView.chkSlideBack();
-						GL.that.renderOnce(CacheListView.this.getName() + " setSelectedCachVisible [chkSlideBack]");
-					}
-				});
-			}
-		};
+						GL.that.RunOnGL(new runOnGL()
+						{
 
-		Timer timer = new Timer();
-		timer.schedule(task, 50);
+							@Override
+							public void run()
+							{
+								listView.chkSlideBack();
+								GL.that.renderOnce(CacheListView.this.getName() + " setSelectedCachVisible [chkSlideBack]");
+							}
+						});
+					}
+				};
+
+				Timer timer = new Timer();
+				timer.schedule(task, 50);
+			}
+		});
 
 		GL.that.renderOnce(this.getName() + " setSelectedCachVisible");
 	}
@@ -429,7 +437,17 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
 			if (selItem != null && GlobalCore.getSelectedCache() != selItem.getCache())
 			{
-				setSelectedCacheVisible();
+				// TODO Run if ListView Initial and after showing
+				listView.RunIfListInitial(new runOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						setSelectedCacheVisible();
+					}
+				});
+
 			}
 		}
 	}

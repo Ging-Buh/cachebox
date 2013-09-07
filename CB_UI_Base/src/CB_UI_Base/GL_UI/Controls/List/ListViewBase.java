@@ -5,11 +5,13 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.ParentInfo;
+import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Logger;
@@ -34,6 +36,10 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected float lastItemSize = -1;
 	protected boolean hasInvisibleItems = false;
 	protected boolean isTouch = false;
+
+	protected ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
+	protected ArrayList<runOnGL> runOnGL_ListWaitpool = new ArrayList<runOnGL>();
+	protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
 
 	/**
 	 * Return With for horizontal and Height for vertical ListView
@@ -104,6 +110,24 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	public void addListPosChangedEventHandler(IListPosChanged handler)
 	{
 		if (!EventHandlerList.contains(handler)) EventHandlerList.add(handler);
+	}
+
+	public void RunIfListInitial(runOnGL run)
+	{
+
+		// if in progress put into pool
+		if (isWorkOnRunOnGL.get())
+		{
+			runOnGL_ListWaitpool.add(run);
+			GL.that.renderOnce("RunIfListInitial called");
+			return;
+		}
+		synchronized (runOnGL_List)
+		{
+			runOnGL_List.add(run);
+		}
+
+		GL.that.renderOnce("RunIfListInitial called");
 	}
 
 	protected void callListPosChangedEvent()
@@ -331,7 +355,45 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			try
 			{
 				super.render(batch);
-				if (mMustSetPos) RenderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
+				if (mMustSetPos)
+				{
+					RenderThreadSetPos(mMustSetPosValue, mMustSetPosKinetic);
+				}
+				else
+				{
+					// Run WorkPool
+					isWorkOnRunOnGL.set(true);
+					synchronized (runOnGL_List)
+					{
+						if (runOnGL_List.size() > 0)
+						{
+							for (runOnGL run : runOnGL_List)
+							{
+								if (run != null) run.run();
+							}
+
+							runOnGL_List.clear();
+						}
+					}
+					isWorkOnRunOnGL.set(false);
+					// work RunOnGlPool
+					synchronized (runOnGL_ListWaitpool)
+					{
+						if (runOnGL_ListWaitpool != null && runOnGL_ListWaitpool.size() > 0)
+						{
+							if (runOnGL_ListWaitpool.size() > 0)
+							{
+								for (runOnGL run : runOnGL_ListWaitpool)
+								{
+									if (run != null) run.run();
+								}
+
+								runOnGL_ListWaitpool.clear();
+							}
+
+						}
+					}
+				}
 			}
 			catch (Exception e)
 			{

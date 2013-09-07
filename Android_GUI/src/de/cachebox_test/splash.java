@@ -216,6 +216,33 @@ public class splash extends Activity
 			}
 		}
 
+		// if ACB running, call this instance
+		if (main.mainActivity != null)
+		{
+
+			Bundle b = new Bundle();
+			if (GcCode != null)
+			{
+
+				b.putSerializable("GcCode", GcCode);
+				b.putSerializable("name", name);
+				b.putSerializable("guid", guid);
+
+			}
+
+			if (GpxPath != null)
+			{
+				b.putSerializable("GpxPath", GpxPath);
+			}
+
+			Intent mainIntent = main.mainActivity.getIntent();
+
+			mainIntent.putExtras(b);
+
+			startActivity(mainIntent);
+			finish();
+		}
+
 		splashActivity = this;
 
 		LoadImages();
@@ -862,7 +889,7 @@ public class splash extends Activity
 		{
 
 			@Override
-			public void Write(SettingBase setting)
+			public void Write(SettingBase<?> setting)
 			{
 				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
 				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
@@ -986,7 +1013,7 @@ public class splash extends Activity
 		}
 
 		// copy AssetFolder only if Rev-Number changed, like at new installation
-		if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
 		// if (true)
 		{
 			String[] exclude = new String[]
@@ -1140,6 +1167,7 @@ public class splash extends Activity
 		b.putSerializable("UI", ui);
 		mainIntent.putExtras(b);
 		startActivity(mainIntent);
+		finish();
 	}
 
 	@Override

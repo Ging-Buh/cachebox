@@ -256,8 +256,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public downSlider InfoDownSlider;
 
-	private String GcCode = null;
-	private String GpxPath = null;
+	private String ExtSearch_GcCode = null;
+	private String ExtSearch_GpxPath = null;
 
 	private boolean mustRunSearch = false;
 
@@ -613,7 +613,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void startSearch()
 	{
-		if (GcCode != null)
+		if (ExtSearch_GcCode != null)
 		{
 
 			runOnUiThread(new Runnable()
@@ -631,7 +631,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						}
 
 						SearchDialog.that.showNotCloseAutomaticly();
-						SearchDialog.that.addSearch(GcCode, searchMode.GcCode);
+						SearchDialog.that.addSearch(ExtSearch_GcCode, searchMode.GcCode);
 					}
 					else
 					{
@@ -651,7 +651,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void startGPXImport()
 	{
 		Logger.LogCat("startGPXImport");
-		if (GpxPath != null)
+		if (ExtSearch_GpxPath != null)
 		{
 
 			Timer timer = new Timer();
@@ -686,7 +686,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									ImporterProgress ip = new ImporterProgress();
 									Database.Data.beginTransaction();
 
-									importer.importGpx(GpxPath, ip);
+									importer.importGpx(ExtSearch_GpxPath, ip);
 
 									Database.Data.setTransactionSuccessful();
 									Database.Data.endTransaction();
@@ -1105,11 +1105,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		final Bundle extras = getIntent().getExtras();
 		if (!GlobalCore.restartAfterKill && extras != null)
 		{
-			GcCode = extras.getString("GcCode");
-			GpxPath = extras.getString("GpxPath");
-			if (GpxPath != null) Logger.LogCat("GPX found: " + GpxPath);
-			mustRunSearch = true;
+			ExtSearch_GcCode = extras.getString("GcCode");
+			ExtSearch_GpxPath = extras.getString("GpxPath");
+			if (ExtSearch_GpxPath != null) Logger.LogCat("GPX found: " + ExtSearch_GpxPath);
 
+			if (ExtSearch_GcCode != null || ExtSearch_GpxPath != null)
+			{
+				mustRunSearch = true;
+
+				// ACB running call search
+				if (TabMainView.that.isInitial())
+				{
+					platformConector.FirstShow();
+				}
+			}
 		}
 
 	}
@@ -2954,8 +2963,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				if (mustRunSearch)
 				{
 					Logger.LogCat("mustRunSearch");
-					if (GcCode != null) startSearchTimer();
-					if (GpxPath != null) startGPXImport();
+					if (ExtSearch_GcCode != null) startSearchTimer();
+					if (ExtSearch_GpxPath != null) startGPXImport();
 				}
 
 			}
