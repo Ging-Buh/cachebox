@@ -17,6 +17,11 @@ import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings
 {
+	public Config(String workPath)
+	{
+		super(workPath);
+	}
+
 	public static SettingsClass settings;
 
 	public static String ConfigName = "";

@@ -874,7 +874,7 @@ public class splash extends Activity
 
 		}
 
-		new Config();
+		new Config(workPath);
 
 		// Read Config
 		Config.Initialize(workPath, workPath + "/cachebox.config");

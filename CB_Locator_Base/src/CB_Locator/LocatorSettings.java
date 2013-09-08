@@ -40,11 +40,11 @@ public interface LocatorSettings
 	public static final SettingString CurrentMapOverlayLayer = (SettingString) SettingsList.addSetting(new SettingString(
 			"CurrentMapOverlayLayer", SettingCategory.Map, EXPERT, "", SettingStoreType.Global));
 
-	public static final SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Folder, NORMAL, ""
-			+ "/repository/maps", SettingStoreType.Global);
+	public static final SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Folder, NORMAL,
+			Config_Core.WorkPath + "/repository/maps", SettingStoreType.Global);
 
-	public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER, "",
-			SettingStoreType.Local);
+	public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER,
+			Config_Core.WorkPath + "/repository/maps", SettingStoreType.Local);
 
 	public static final SettingBool FireMapQueueProcessorExceptions = new SettingBool("FireMapQueueProcessorExceptions",
 			SettingCategory.Internal, INVISIBLE, false, SettingStoreType.Global);

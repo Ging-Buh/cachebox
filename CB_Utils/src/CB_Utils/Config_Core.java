@@ -8,9 +8,10 @@ public abstract class Config_Core
 {
 	static Config_Core that;
 
-	public Config_Core()
+	public Config_Core(String workPath)
 	{
 		that = this;
+		WorkPath = workPath;
 	}
 
 	public static String WorkPath = "";

@@ -409,13 +409,13 @@ public class DesktopMain
 	 */
 	public static void InitalConfig()
 	{
+		String workPath = "./cachebox";
 
-		new Config();
+		new Config(workPath);
 
 		if (Config.settings != null && Config.settings.isLoaded()) return;
 
 		// Read Config
-		String workPath = "./cachebox";
 
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 

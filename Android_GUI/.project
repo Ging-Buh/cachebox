@@ -38,6 +38,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/CB_Core/src</locationURI>
 		</link>
 		<link>
+			<name>CB_Locator_src</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/CB_Locator_Base/src</locationURI>
+		</link>
+		<link>
 			<name>CB_Rpc_src</name>
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CB_Rpc/src</locationURI>
