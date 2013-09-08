@@ -6,10 +6,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import CB_Core.Map.Descriptor;
-import CB_UI.Map.BoundingBox;
-import CB_UI.Map.ManagerBase;
-import CB_UI.Map.PackBase;
+import CB_Locator.Map.BoundingBox;
+import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.PackBase;
 import CB_Utils.Log.Logger;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,7 +17,7 @@ import android.graphics.BitmapFactory;
 public class AndroidPack extends PackBase
 {
 
-	public AndroidPack(CB_UI.Map.Layer layer)
+	public AndroidPack(CB_Locator.Map.Layer layer)
 	{
 		super(layer);
 	}

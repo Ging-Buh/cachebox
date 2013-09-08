@@ -35,7 +35,6 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Map.Descriptor;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
@@ -43,6 +42,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
+import CB_Locator.Map.Descriptor;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
 

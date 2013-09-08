@@ -1,16 +1,15 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import CB_Core.Map.Descriptor;
 import CB_Utils.Util.FileIO;
 import bsh.EvalError;
 import bsh.Interpreter;
 
 public class BshLayer extends Layer
 {
-	private String filename;
+	private final String filename;
 
 	public BshLayer(Type LayerType, String filename)
 	{

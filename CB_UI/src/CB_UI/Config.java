@@ -5,16 +5,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import cb_rpc.Settings.CB_Rpc_Settings;
-
 import CB_Core.Settings.CB_Core_Settings;
+import CB_Locator.LocatorSettings;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI.Settings.SettingsClass;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
 import CB_Utils.Log.Logger;
+import CB_Utils.Util.iChanged;
+import cb_rpc.Settings.CB_Rpc_Settings;
 
-public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings
+public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings
 {
 	public static SettingsClass settings;
 
@@ -25,6 +26,22 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 		WorkPath = workPath;
 		ConfigName = configName;
 		settings = new SettingsClass();
+
+		// Merge DpiFactor with MapViewDpifactor
+		MapViewDPIFaktor.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				DPIFaktor.setValue(MapViewDPIFaktor.getValue());
+				// dont Safe DpiFactor! Only Use MapViewDpiFactor
+				DPIFaktor.clearDirty();
+			}
+		});
+		DPIFaktor.setValue(MapViewDPIFaktor.getValue());
+		// dont Safe DpiFactor! Only Use MapViewDpiFactor
+		DPIFaktor.clearDirty();
 	}
 
 	public static String GetString(String key)

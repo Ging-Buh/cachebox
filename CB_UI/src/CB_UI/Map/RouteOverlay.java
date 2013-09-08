@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import CB_Core.Map.Descriptor;
 import CB_Locator.Coordinate;
+import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.MapTileLoader;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.DrawUtils;

@@ -25,11 +25,11 @@ import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Logger;
@@ -294,7 +294,7 @@ public class Image extends CB_View_Base
 			@Override
 			public void run()
 			{
-				final String CachePath = CB_UI_Base_Settings.TileCacheFolder.getValue();
+				final String CachePath = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue();
 
 				// Search first slash after Http or www
 				int slashPos = -1;
@@ -414,7 +414,7 @@ public class Image extends CB_View_Base
 		textureSettings.debug = false;
 
 		String inputFolder = FileIO.GetDirectoryName(ImagePath);
-		String outputFolder = CB_UI_Base_Settings.TileCacheFolder.getValue();
+		String outputFolder = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue();
 		String Name = getCachedAtlasName(inputFolder);
 
 		try
@@ -453,7 +453,7 @@ public class Image extends CB_View_Base
 		String ImageName = FileIO.GetFileNameWithoutExtension(ImagePath);
 		String Name = getCachedAtlasName(inputFolder);
 
-		final String AtlasPath = CB_UI_Base_Settings.TileCacheFolder.getValue() + "/" + Name;
+		final String AtlasPath = CB_UI_Base_Settings.ImageCacheFolderLocal.getValue() + "/" + Name;
 		if (!FileIO.FileExists(AtlasPath)) return null;
 		TextureAtlas atlas = null;
 		if (Atlanten.containsKey(AtlasPath))

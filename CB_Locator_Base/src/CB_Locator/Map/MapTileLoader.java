@@ -1,4 +1,4 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
 import java.util.ArrayList;
 import java.util.SortedMap;
@@ -8,10 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.security.auth.DestroyFailedException;
 
-import CB_Core.Map.Descriptor;
-import CB_UI.Config;
-import CB_UI.GL_UI.Views.MapView;
-import CB_UI.GL_UI.Views.MapViewBase;
+import CB_Locator.LocatorSettings;
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
@@ -30,8 +27,8 @@ public class MapTileLoader
 	final Lock loadedOverlayTilesLock = new ReentrantLock();
 	protected SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
 	protected SortedMap<Long, Descriptor> queuedOverlayTiles = new TreeMap<Long, Descriptor>();
-	private Lock queuedTilesLock = new ReentrantLock();
-	private Lock queuedOverlayTilesLock = new ReentrantLock();
+	private final Lock queuedTilesLock = new ReentrantLock();
+	private final Lock queuedOverlayTilesLock = new ReentrantLock();
 	private Thread queueProcessor = null;
 	private Thread queueProcessorAliveCheck = null;
 
@@ -151,7 +148,7 @@ public class MapTileLoader
 			{
 				for (int j = lo.Y; j <= ru.Y; j++)
 				{
-					Descriptor desc = new Descriptor(i, j, aktZoom);
+					Descriptor desc = new Descriptor(i, j, aktZoom, lo.NightMode);
 					// speichern, zu welche MapView diesen Descriptor angefordert hat
 					desc.Data = mapView;
 
@@ -400,8 +397,8 @@ public class MapTileLoader
 								for (Descriptor tmpDesc : tmpQueuedTiles.values())
 								{
 									// zugehörige MapView aus dem Data vom Descriptor holen
-									MapView mapView = null;
-									if ((tmpDesc.Data != null) && (tmpDesc.Data instanceof MapView)) mapView = (MapView) tmpDesc.Data;
+									MapViewBase mapView = null;
+									if ((tmpDesc.Data != null) && (tmpDesc.Data instanceof MapViewBase)) mapView = (MapViewBase) tmpDesc.Data;
 									if (mapView == null) continue;
 
 									long posFactor = getMapTilePosFactor(tmpDesc.Zoom);
@@ -460,7 +457,7 @@ public class MapTileLoader
 						}
 						catch (Exception ex1)
 						{
-							if (Config.settings.FireMapQueueProcessorExceptions.getValue())
+							if (LocatorSettings.FireMapQueueProcessorExceptions.getValue())
 							{
 								throw ex1;
 							}
@@ -479,7 +476,7 @@ public class MapTileLoader
 			catch (Exception ex3)
 			{
 				Logger.Error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
-				if (Config.settings.FireMapQueueProcessorExceptions.getValue())
+				if (LocatorSettings.FireMapQueueProcessorExceptions.getValue())
 				{
 					try
 					{
@@ -520,7 +517,7 @@ public class MapTileLoader
 		if (cam.zoom <= 0) return 0f;
 
 		float result = 0.0f;
-		result = (float) MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));
+		result = MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));
 		return result;
 	}
 

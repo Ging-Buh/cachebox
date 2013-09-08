@@ -11,15 +11,15 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
-import CB_Core.Map.Descriptor;
-import CB_UI.Map.BoundingBox;
-import CB_UI.Map.ManagerBase;
-import CB_UI.Map.PackBase;
+import CB_Locator.Map.BoundingBox;
+import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.PackBase;
 
 public class DesktopPack extends PackBase
 {
 
-	public DesktopPack(CB_UI.Map.Layer layer)
+	public DesktopPack(CB_Locator.Map.Layer layer)
 	{
 		super(layer);
 	}

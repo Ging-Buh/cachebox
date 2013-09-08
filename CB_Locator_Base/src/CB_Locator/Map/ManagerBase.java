@@ -1,4 +1,4 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,9 +30,8 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.xml.sax.SAXException;
 
-import CB_Core.Map.Descriptor;
-import CB_UI.Config;
-import CB_UI.Map.Layer.Type;
+import CB_Locator.LocatorSettings;
+import CB_Locator.Map.Layer.Type;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
@@ -56,7 +55,7 @@ public abstract class ManagerBase
 
 	public ArrayList<TmsMap> tmsMaps = new ArrayList<TmsMap>();
 
-	private ArrayList<Layer> Layers = new ArrayList<Layer>();
+	private final ArrayList<Layer> Layers = new ArrayList<Layer>();
 
 	private final DefaultLayerList DEFAULT_LAYER = new DefaultLayerList();
 
@@ -79,7 +78,7 @@ public abstract class ManagerBase
 	public ManagerBase()
 	{
 		// for the Access to the manager in the CB_Core
-		CB_UI.Map.ManagerBase.Manager = this;
+		CB_Locator.Map.ManagerBase.Manager = this;
 
 	}
 
@@ -125,7 +124,7 @@ public abstract class ManagerBase
 		}
 		else
 		{
-			Config.CurrentMapLayer.setValue(Layers.get(0).Name);
+			LocatorSettings.CurrentMapLayer.setValue(Layers.get(0).Name);
 			return Layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
 		}
 	}
@@ -134,7 +133,7 @@ public abstract class ManagerBase
 	{
 		byte[] tmp = LoadLocalPixmap(layer, desc);
 
-		if (!Config.nightMode.getValue()) return tmp;
+		if (!desc.NightMode) return tmp;
 
 		if (layer.isMapsForge && mapsforgeNightThemeExist()) return tmp;
 
@@ -318,10 +317,10 @@ public abstract class ManagerBase
 		{
 			int[] color = new int[4];
 
-			color[0] = (int) (data[i] >> 24) & (0xff);
-			color[1] = (int) ((data[i] << 8) >> 24) & (0xff);
-			color[2] = (int) ((data[i] << 16) >> 24) & (0xff);
-			color[3] = (int) ((data[i] << 24) >> 24) & (0xff);
+			color[0] = (data[i] >> 24) & (0xff);
+			color[1] = ((data[i] << 8) >> 24) & (0xff);
+			color[2] = ((data[i] << 16) >> 24) & (0xff);
+			color[3] = ((data[i] << 24) >> 24) & (0xff);
 
 			int R = color[1];
 			int G = color[2];
@@ -428,14 +427,14 @@ public abstract class ManagerBase
 		ArrayList<String> files = new ArrayList<String>();
 		ArrayList<String> mapnames = new ArrayList<String>();
 
-		Logger.DEBUG("dirOwnMaps = " + Config.MapPackFolderLocal.getValue());
-		getFiles(files, mapnames, Config.MapPackFolderLocal.getValue());
+		Logger.DEBUG("dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
+		getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
 
-		Logger.DEBUG("dirDefaultMaps = " + Config.MapPackFolder.getDefaultValue());
-		getFiles(files, mapnames, Config.MapPackFolder.getDefaultValue());
+		Logger.DEBUG("dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
+		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
 
-		Logger.DEBUG("dirGlobalMaps = " + Config.MapPackFolder.getValue());
-		getFiles(files, mapnames, Config.MapPackFolder.getValue());
+		Logger.DEBUG("dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
+		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
 
 		if (!(files == null))
 		{

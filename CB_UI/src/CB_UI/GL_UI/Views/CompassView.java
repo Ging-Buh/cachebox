@@ -11,6 +11,7 @@ import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Map.MapViewBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;

@@ -15,11 +15,11 @@ import javax.imageio.ImageIO;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 
-import CB_Core.Map.Descriptor;
-import CB_UI.Map.BoundingBox;
-import CB_UI.Map.Layer;
-import CB_UI.Map.ManagerBase;
-import CB_UI.Map.PackBase;
+import CB_Locator.Map.BoundingBox;
+import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.Layer;
+import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.PackBase;
 import CB_Utils.Util.FileIO;
 
 public class DesktopManager extends ManagerBase

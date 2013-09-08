@@ -1,4 +1,4 @@
-package CB_UI.GL_UI.Views;
+package CB_Locator.Map;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -6,20 +6,11 @@ import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TreeMap;
 
-import CB_Core.DB.Database;
-import CB_Core.Map.Descriptor;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Locator.LocatorSettings;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
-import CB_UI.Config;
-import CB_UI.GlobalCore;
-import CB_UI.GL_UI.Controls.MapScale;
-import CB_UI.GL_UI.Controls.ZoomScale;
-import CB_UI.Map.Layer;
-import CB_UI.Map.ManagerBase;
-import CB_UI.Map.MapTileLoader;
-import CB_UI.Map.TileGL;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -57,6 +48,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	public static int INITIAL_SETTINGS_WITH_OUT_ZOOM = 9;
 	public static final boolean debug = false;
 
+	// ######### theme Path ###############
+	public static String PathDefault;
+	public static String PathCustom;
+	public static String PathDefaultNight;
+	public static String PathCustomNight;
+
+	// ######################################
+
 	public enum MapState
 	{
 		FREE, GPS, WP, LOCK, CAR
@@ -68,8 +67,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		private boolean fertig;
 		// benutze den Abstand der letzten 5 Positionsänderungen
 		final int anzPoints = 3;
-		private int[] x = new int[anzPoints];
-		private int[] y = new int[anzPoints];
+		private final int[] x = new int[anzPoints];
+		private final int[] y = new int[anzPoints];
 		private int diffX;
 		private int diffY;
 		private long startTs;
@@ -149,10 +148,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	protected class KineticZoom
 	{
-		private float startZoom;
-		private float endZoom;
-		private long startTime;
-		private long endTime;
+		private final float startZoom;
+		private final float endZoom;
+		private final long startTime;
+		private final long endTime;
 		private boolean fertig;
 
 		public KineticZoom(float startZoom, float endZoom, long startTime, long endTime)
@@ -190,10 +189,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected ZoomScale zoomScale;
 	protected MapScale mapScale;
 	public static MapTileLoader mapTileLoader = new MapTileLoader();
-	protected boolean alignToCompass = false;
+	// protected boolean alignToCompass = false;
 	private float mapHeading = 0;
 	protected float arrowHeading = 0;
-	private Point lastMovement = new Point(0, 0);
+	private final Point lastMovement = new Point(0, 0);
 	protected Vector2 myPointOnScreen;
 	protected boolean showAccuracyCircle;
 	public int aktZoom;
@@ -216,8 +215,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	long startTime;
 	Timer myTimer;
 	boolean useNewInput = true;
-	float ySpeedVersatz = 200;
-	boolean CarMode = false;
+	protected float ySpeedVersatz = 200;
+	protected boolean CarMode = false;
+	boolean NightMode = false;
+	protected boolean NorthOriented = true;
 
 	protected iChanged themeChangedEventHandler = new iChanged()
 	{
@@ -234,18 +235,36 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	private Sprite AccuracySprite;
 	private int actAccuracy = 0;
 	private float actPixelsPerMeter = 0;
-	float iconFactor = 1.5f;
-	boolean showMapCenterCross;
+	protected float iconFactor = 1.5f;
+	protected boolean showMapCenterCross;
 	Sprite crossLine = null;
 	String str = "";
+
+	public boolean GetNightMode()
+	{
+		return this.NightMode;
+	}
+
+	public void SetNightMode(boolean NightMode)
+	{
+		this.NightMode = NightMode;
+	}
+
+	public boolean GetNorthOriented()
+	{
+		return this.NorthOriented;
+	}
+
+	public void SetNorthOriented(boolean NorthOriented)
+	{
+		this.NorthOriented = NorthOriented;
+	}
 
 	@Override
 	public void onShow()
 	{
 		PositionChangedEventList.Add(this);
 		PositionChanged();
-
-		alignToCompass = !Config.MapNorthOriented.getValue();
 
 		CarMode = (getMapState() == MapState.CAR);
 		if (!CarMode)
@@ -309,11 +328,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		camera.position.set(0, 0, 0);
 
-		// setze Size als IniSize
-		Config.MapIniWidth.setValue(mapIntWidth);
-		Config.MapIniHeight.setValue(mapIntHeight);
-		Config.AcceptChanges();
-
 		// Logger.LogCat("MapView Size Changed MaxY=" + this.getMaxY());
 
 		requestLayout();
@@ -323,10 +337,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	@Override
 	public void onStop()
 	{
-		Config.MapInitLatitude.setValue(center.getLatitude());
-		Config.MapInitLongitude.setValue(center.getLongitude());
-		Config.lastZoomLevel.setValue(aktZoom);
-		Config.settings.WriteToDB();
+		LocatorSettings.MapInitLatitude.setValue(center.getLatitude());
+		LocatorSettings.MapInitLongitude.setValue(center.getLongitude());
+		LocatorSettings.lastZoomLevel.setValue(aktZoom);
 		super.onStop();
 	}
 
@@ -334,13 +347,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	{
 		if (newLayer == null)
 		{
-			Config.CurrentMapLayer.setValue("");
+			LocatorSettings.CurrentMapLayer.setValue("");
 		}
 		else
 		{
-			Config.CurrentMapLayer.setValue(newLayer.Name);
+			LocatorSettings.CurrentMapLayer.setValue(newLayer.Name);
 		}
-		Config.AcceptChanges();
+
 		mapTileLoader.CurrentLayer = newLayer;
 		mapTileLoader.clearLoadedTiles();
 	}
@@ -349,13 +362,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	{
 		if (newLayer == null)
 		{
-			Config.CurrentMapOverlayLayer.setValue("");
+			LocatorSettings.CurrentMapOverlayLayer.setValue("");
 		}
 		else
 		{
-			Config.CurrentMapOverlayLayer.setValue(newLayer.Name);
+			LocatorSettings.CurrentMapOverlayLayer.setValue(newLayer.Name);
 		}
-		Config.AcceptChanges();
+
 		mapTileLoader.CurrentOverlayLayer = newLayer;
 		mapTileLoader.clearLoadedTiles();
 	}
@@ -368,10 +381,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected void render(SpriteBatch batch)
 	{
 
-		if (Config.MoveMapCenterWithSpeed.getValue() && CarMode && Locator.hasSpeed())
+		if (LocatorSettings.MoveMapCenterWithSpeed.getValue() && CarMode && Locator.hasSpeed())
 		{
 
-			double maxSpeed = Config.MoveMapCenterMaxSpeed.getValue();
+			double maxSpeed = LocatorSettings.MoveMapCenterMaxSpeed.getValue();
 
 			double percent = Locator.SpeedOverGround() / maxSpeed;
 
@@ -426,8 +439,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			// camera.position.add(pan.x * faktor, pan.y * faktor, 0);
 			// screenCenterW.x = camera.position.x;
 			// screenCenterW.y = camera.position.y;
-			screenCenterT.x += (long) pan.x * faktor;
-			screenCenterT.y += (long) pan.y * faktor;
+			screenCenterT.x += pan.x * faktor;
+			screenCenterT.y += pan.y * faktor;
 			calcCenter();
 
 			if (kineticPan.getFertig())
@@ -475,7 +488,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		float dxr = dx;
 		float dyr = dy;
 
-		if (alignToCompass || CarMode)
+		if (!this.NorthOriented || CarMode)
 		{
 			camera.up.x = 0;
 			camera.up.y = 1;
@@ -530,7 +543,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			{
 				for (int j = lo.Y; j <= ru.Y; j++)
 				{
-					Descriptor desc = new Descriptor(i, j, tmpzoom);
+					Descriptor desc = new Descriptor(i, j, tmpzoom, this.NightMode);
 					TileGL tile = null;
 					TileGL tileOverlay = null;
 					try
@@ -598,11 +611,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					// werden muß
 					long posFactor = mapTileLoader.getMapTilePosFactor(tile.Descriptor.Zoom);
 
-					long xPos = (long) tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
+					long xPos = tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
 					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
 					float xSize = tile.texture.getWidth() * posFactor;
 					float ySize = tile.texture.getHeight() * posFactor;
-					batch.draw(tile.texture, (float) xPos, (float) yPos, xSize, ySize);
+					batch.draw(tile.texture, xPos, yPos, xSize, ySize);
 
 				}
 			}
@@ -620,11 +633,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					// werden muß
 					long posFactor = mapTileLoader.getMapTilePosFactor(tile.Descriptor.Zoom);
 
-					long xPos = (long) tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
+					long xPos = tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
 					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
 					float xSize = tile.texture.getWidth() * posFactor;
 					float ySize = tile.texture.getHeight() * posFactor;
-					batch.draw(tile.texture, (float) xPos, (float) yPos, xSize, ySize);
+					batch.draw(tile.texture, xPos, yPos, xSize, ySize);
 				}
 			}
 		}
@@ -728,7 +741,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 
 		boolean lastUsedCompass = Locator.UseMagneticCompass();
-		boolean Transparency = Config.PositionMarkerTransparent.getValue();
+		boolean Transparency = LocatorSettings.PositionMarkerTransparent.getValue();
 
 		int arrowId = 0;
 		if (lastUsedCompass)
@@ -801,7 +814,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int jj = j / 2;
 		int zoomzoom = zoom2 - 1;
 
-		Descriptor desc = new Descriptor(ii, jj, zoomzoom);
+		Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
 		TileGL tile = null;
 		try
 		{
@@ -846,7 +859,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int jj = j / 2;
 		int zoomzoom = zoom2 - 1;
 
-		Descriptor desc = new Descriptor(ii, jj, zoomzoom);
+		Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
 		TileGL tile = null;
 		try
 		{
@@ -897,7 +910,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		{
 			for (int jj = j1; jj <= j2; jj++)
 			{
-				Descriptor desc = new Descriptor(ii, jj, zoomzoom);
+				Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
 				TileGL tile = null;
 				try
 				{
@@ -948,7 +961,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		{
 			for (int jj = j1; jj <= j2; jj++)
 			{
-				Descriptor desc = new Descriptor(ii, jj, zoomzoom);
+				Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
 				TileGL tile = null;
 				try
 				{
@@ -1005,12 +1018,12 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	public void InitializeMap()
 	{
-		zoomBtn.setZoom(Config.lastZoomLevel.getValue());
+		zoomBtn.setZoom(LocatorSettings.lastZoomLevel.getValue());
 		// Bestimmung der ersten Position auf der Karte
 		if (!positionInitialized)
 		{
-			double lat = Config.MapInitLatitude.getValue();
-			double lon = Config.MapInitLongitude.getValue();
+			double lat = LocatorSettings.MapInitLatitude.getValue();
+			double lon = LocatorSettings.MapInitLongitude.getValue();
 
 			// Initialisierungskoordinaten bekannt und können übernommen werden
 			if (lat != -1000 && lon != -1000)
@@ -1029,48 +1042,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				}
 				else
 				{
-					try
-					{
-						if (Database.Data != null)
-						{
-
-							if (Database.Data.Query != null)
-							{
-								synchronized (Database.Data.Query)
-								{
-									if (Database.Data.Query.size() > 0)
-									{
-										// Koordinaten des ersten Caches der Datenbank
-										// nehmen
-										setCenter(new Coordinate(Database.Data.Query.get(0).Pos.getLatitude(),
-												Database.Data.Query.get(0).Pos.getLongitude()));
-										positionInitialized = true;
-										// setLockPosition(0);
-									}
-									else
-									{
-										// Wenns auch den nicht gibt...)
-										setCenter(new Coordinate(48.0, 12.0));
-									}
-								}
-							}
-							else
-							{
-								// Wenn Query == null
-								setCenter(new Coordinate(48.0, 12.0));
-							}
-						}
-						else
-						{
-							// Wenn Data == null
-							setCenter(new Coordinate(48.0, 12.0));
-						}
-					}
-					catch (Exception e)
-					{
-						setCenter(new Coordinate(48.0, 12.0));
-					}
-
+					setInitialLocation();
 				}
 			}
 		}
@@ -1078,6 +1050,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		setNewSettings(INITIAL_ALL);
 
 	}
+
+	/**
+	 * Set the Initial location now. If you wont.
+	 */
+	protected abstract void setInitialLocation();
 
 	protected float lastDynamicZoom = -1;
 
@@ -1087,23 +1064,23 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	}
 
 	protected InputState inputState = InputState.Idle;
-	private HashMap<Integer, Point> fingerDown = new LinkedHashMap<Integer, Point>();
+	private final HashMap<Integer, Point> fingerDown = new LinkedHashMap<Integer, Point>();
 	private static String debugString = "";
 
 	public void setNewSettings(int InitialFlags)
 	{
 		if ((InitialFlags & INITIAL_SETTINGS) != 0)
 		{
-			showAccuracyCircle = Config.ShowAccuracyCircle.getValue();
-			showMapCenterCross = Config.ShowMapCenterCross.getValue();
+			showAccuracyCircle = LocatorSettings.ShowAccuracyCircle.getValue();
+			showMapCenterCross = LocatorSettings.ShowMapCenterCross.getValue();
 
 			if (InitialFlags == INITIAL_ALL)
 			{
-				iconFactor = (float) Config.MapViewDPIFaktor.getValue();
+				iconFactor = LocatorSettings.MapViewDPIFaktor.getValue();
 
-				int setAktZoom = Config.lastZoomLevel.getValue();
-				int setMaxZoom = Config.OsmMaxLevel.getValue();
-				int setMinZoom = Config.OsmMinLevel.getValue();
+				int setAktZoom = LocatorSettings.lastZoomLevel.getValue();
+				int setMaxZoom = LocatorSettings.OsmMaxLevel.getValue();
+				int setMinZoom = LocatorSettings.OsmMinLevel.getValue();
 
 				aktZoom = setAktZoom;
 				zoomBtn.setMaxZoom(setMaxZoom);
@@ -1124,14 +1101,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			// Zustand der Karte CarMode/NormalMode
 			if (CarMode)
 			{
-				if (Config.nightMode.getValue())
+				if (this.NightMode)
 				{
 					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(GlobalCore.PathCustomNight);
+					themePath = ifCarThemeExist(PathCustomNight);
 
 					if (themePath == null)
 					{// wenn kein Night Custum skin vorhanden, dann nach einem Day CostumTheme suchen, welches dann Invertiert wird!
-						themePath = ifCarThemeExist(GlobalCore.PathCustom);
+						themePath = ifCarThemeExist(PathCustom);
 						if (themePath != null) useInvertNightTheme = true;
 					}
 
@@ -1145,9 +1122,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				else
 				{
 					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(GlobalCore.PathCustom);
+					themePath = ifCarThemeExist(PathCustom);
 
-					if (themePath == null) themePath = ifCarThemeExist(GlobalCore.PathDefault);
+					if (themePath == null) themePath = ifCarThemeExist(PathDefault);
 				}
 
 				if (themePath == null)
@@ -1161,15 +1138,15 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			{
 
 				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
-				if (Config.nightMode.getValue())
+				if (this.NightMode)
 				{
-					themePath = ifThemeExist(Config.MapsforgeNightTheme.getValue());
+					themePath = ifThemeExist(LocatorSettings.MapsforgeNightTheme.getValue());
 				}
 
 				if (themePath == null)
 				{
-					if (Config.nightMode.getValue()) useInvertNightTheme = true;
-					themePath = ifThemeExist(Config.MapsforgeDayTheme.getValue());
+					if (this.NightMode) useInvertNightTheme = true;
+					themePath = ifThemeExist(LocatorSettings.MapsforgeDayTheme.getValue());
 
 				}
 
@@ -1282,7 +1259,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		world.y /= 256;
 		int x = (int) world.x;
 		int y = (int) world.y;
-		Descriptor result = new Descriptor(x, y, zoom);
+		Descriptor result = new Descriptor(x, y, zoom, NightMode);
 		return result;
 	}
 
@@ -1310,7 +1287,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		// im CarMode keine Richtungs Änderungen unter 20kmh
 		if (CarMode && Locator.SpeedOverGround() < 20) heading = this.mapHeading;
 
-		if (alignToCompass || CarMode)
+		if (!this.NorthOriented || CarMode)
 		{
 			this.mapHeading = heading;
 			this.arrowHeading = 0;
@@ -1345,16 +1322,12 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	public void SetAlignToCompass(boolean value)
 	{
-		alignToCompass = value;
 		if (!value)
 		{
 			drawingWidth = mapIntWidth;
 			drawingHeight = mapIntHeight;
 		}
-
-		Config.MapNorthOriented.setValue(!alignToCompass);
-		Config.AcceptChanges();
-
+		this.NorthOriented = !value;
 	}
 
 	/**
@@ -1372,7 +1345,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	public boolean GetAlignToCompass()
 	{
-		return alignToCompass;
+		return !this.NorthOriented;
 	}
 
 	public MapViewBase(String Name)
@@ -1437,8 +1410,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 			float zoomValue = div / 100f;
 
-			int maxZoom = Config.OsmMaxLevel.getValue();
-			int minZoom = Config.OsmMinLevel.getValue();
+			int maxZoom = LocatorSettings.OsmMaxLevel.getValue();
+			int minZoom = LocatorSettings.OsmMinLevel.getValue();
 			float dynZoom = (lastDynamicZoom - zoomValue);
 
 			if (dynZoom > maxZoom) dynZoom = maxZoom;
@@ -1780,20 +1753,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		else if (mapState == MapState.WP)
 		{
-			if (GlobalCore.getSelectedCache() != null)
-			{
-				if (GlobalCore.getSelectedWaypoint() != null)
-				{
-					Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
-					setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
-				}
-				else
-				{
-					Coordinate tmp = GlobalCore.getSelectedCache().Pos;
-					setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
-				}
-			}
-
+			MapStateChangedToWP();
 		}
 		else if (mapState == MapState.LOCK || mapState == MapState.GPS)
 		{
@@ -1808,5 +1768,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 
 	}
+
+	public abstract void MapStateChangedToWP();
 
 }

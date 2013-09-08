@@ -1,9 +1,7 @@
-package CB_UI.GL_UI.Controls;
+package CB_Locator.Map;
 
 import java.text.NumberFormat;
 
-import CB_UI.Config;
-import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -21,14 +19,16 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 {
 	private BitmapFontCache fontCache;
 	private float sollwidth = 0;
-	private MapView mapInstanz;
+	private final MapViewBase mapInstanz;
 	private Drawable CachedScaleSprite;
 	private float drawableWidth = 0;
 	private String distanceString;
+	private boolean imperialunits = false;
 
-	public MapScale(CB_RectF rec, String Name, MapView mapInstanz)
+	public MapScale(CB_RectF rec, String Name, MapViewBase mapInstanz, boolean useImperialUnits)
 	{
 		super(rec, Name);
+		imperialunits = useImperialUnits;
 		sollwidth = rec.getWidth();
 		this.mapInstanz = mapInstanz;
 		CachedScaleSprite = null;
@@ -87,7 +87,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			int idx = 0;
 			while (scaleSize < (sollwidth * 0.45))
 			{
-				scaleLength = multiplyer * scaleSteps[idx] * ((Config.ImperialUnits.getValue()) ? 1.6093 : 1);
+				scaleLength = multiplyer * scaleSteps[idx] * ((imperialunits) ? 1.6093 : 1);
 				scaleUnits = scaleNumUnits[idx];
 
 				scaleSize = pixelsPerMeter * scaleLength;
@@ -105,7 +105,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			Logger.Error("MapView.zoomChanged()", "", exc);
 		}
 
-		if (Config.ImperialUnits.getValue())
+		if (imperialunits)
 		{
 			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(2);

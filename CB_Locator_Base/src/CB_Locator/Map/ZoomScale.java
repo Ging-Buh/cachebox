@@ -1,4 +1,4 @@
-package CB_UI.GL_UI.Controls;
+package CB_Locator.Map;
 
 import java.util.Date;
 import java.util.Timer;

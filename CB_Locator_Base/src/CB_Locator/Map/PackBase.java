@@ -1,4 +1,4 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import org.apache.http.util.EncodingUtils;
 
-import CB_Core.Map.Descriptor;
 import CB_Utils.Util.FileIO;
 
 public abstract class PackBase implements Comparable<PackBase>
@@ -216,16 +215,18 @@ public abstract class PackBase implements Comparable<PackBase>
 					// Offset zum Bild absaven
 					writer.writeLong(Long.reverseBytes(offset));
 
+					Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
+
 					// Dateigröße ermitteln
-					String local = Layer.GetLocalFilename(new Descriptor(x, y, bbox.Zoom));
+					String local = Layer.GetLocalFilename(desc);
 
 					if (FileIO.FileExists(local))
 					{
 						File info = new File(local);
-						if (info.lastModified() < MaxAge) Layer.DownloadTile(new Descriptor(x, y, bbox.Zoom));
+						if (info.lastModified() < MaxAge) Layer.DownloadTile(desc);
 					}
 					else
-						Layer.DownloadTile(new Descriptor(x, y, bbox.Zoom));
+						Layer.DownloadTile(desc);
 
 					// Nicht vorhandene Tiles haben die Länge 0
 					if (!FileIO.FileExists(local)) offset += 0;
@@ -238,6 +239,9 @@ public abstract class PackBase implements Comparable<PackBase>
 					/*
 					 * if (OnProgressChanged != null) OnProgressChanged("Building index...", cnt++, numTilesTotal);
 					 */
+
+					desc.dispose();
+
 				}
 			}
 		}
@@ -254,9 +258,11 @@ public abstract class PackBase implements Comparable<PackBase>
 			{
 				for (int x = bbox.MinX; x <= bbox.MaxX && !Cancel; x++)
 				{
-					String local = Layer.GetLocalFilename(new Descriptor(x, y, bbox.Zoom));
+					Descriptor desc = new Descriptor(x, y, bbox.Zoom, false);
+
+					String local = Layer.GetLocalFilename(desc);
 					File f = new File(local);
-					if (!f.exists() || f.lastModified() < MaxAge) if (!Layer.DownloadTile(new Descriptor(x, y, bbox.Zoom))) continue;
+					if (!f.exists() || f.lastModified() < MaxAge) if (!Layer.DownloadTile(desc)) continue;
 					FileInputStream imageStream = new FileInputStream(local);
 					int anzAvailable = (int) f.length();
 					byte[] temp = new byte[anzAvailable];
@@ -265,7 +271,7 @@ public abstract class PackBase implements Comparable<PackBase>
 					imageStream.close();
 
 					// if (OnProgressChanged != null) OnProgressChanged("Linking package...", cnt++, numTilesTotal);
-
+					desc.dispose();
 				}
 			}
 		}

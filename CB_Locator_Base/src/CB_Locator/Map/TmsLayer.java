@@ -1,10 +1,9 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
-import CB_Core.Map.Descriptor;
 
 public class TmsLayer extends Layer
 {
-	private TmsMap tmsMap;
+	private final TmsMap tmsMap;
 
 	public TmsLayer(Type LayerType, TmsMap tmsMap)
 	{

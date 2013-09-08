@@ -1,10 +1,10 @@
 package CB_UI.GL_UI.Activitys;
 
-import CB_Core.Map.Descriptor;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import CB_Locator.Coordinate;
 import CB_Locator.Location.ProviderType;
+import CB_Locator.Map.Descriptor;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;

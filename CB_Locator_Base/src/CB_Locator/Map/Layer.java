@@ -1,7 +1,6 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
-import CB_Core.Map.Descriptor;
-import CB_UI.Config;
+import CB_Locator.LocatorSettings;
 
 public class Layer
 {
@@ -70,8 +69,8 @@ public class Layer
 	{
 		if (desc == null) return null;
 
-		String TileCacheFolder = Config.settings.TileCacheFolder.getValue();
-		if (Config.settings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = Config.settings.TileCacheFolderLocal.getValue();
+		String TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
+		if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
 
 		return TileCacheFolder + "/" + Name + "/" + desc.Zoom + "/" + desc.X;
 	}

@@ -1,7 +1,7 @@
 package CB_UI.Events;
 
-import CB_Core.Map.Descriptor;
-import CB_UI.Map.Layer;
+import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.Layer;
 
 public class MapManagerEventPtr
 {

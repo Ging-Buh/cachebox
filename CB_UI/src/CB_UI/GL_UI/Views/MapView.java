@@ -8,12 +8,17 @@ import java.util.TreeMap;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Map.Descriptor;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
+import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.MapScale;
+import CB_Locator.Map.MapTileLoader;
+import CB_Locator.Map.MapViewBase;
+import CB_Locator.Map.ZoomScale;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -25,12 +30,8 @@ import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Controls.InfoBubble;
 import CB_UI.GL_UI.Controls.MapInfoPanel;
 import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
-import CB_UI.GL_UI.Controls.MapScale;
-import CB_UI.GL_UI.Controls.ZoomScale;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
-import CB_UI.Map.ManagerBase;
-import CB_UI.Map.MapTileLoader;
 import CB_UI.Map.RouteOverlay;
 import CB_UI_Base.GL_UI.DrawUtils;
 import CB_UI_Base.GL_UI.Fonts;
@@ -44,6 +45,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -138,7 +140,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		mapTileLoader.setMaxNumTiles(maxNumTiles);
 
 		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.halfWidth, GL_UISizes.ZoomBtn.getHalfWidth() / 4),
-				"mapScale", this);
+				"mapScale", this, Config.ImperialUnits.getValue());
 
 		if (!CompassMode)
 		{
@@ -334,6 +336,29 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			center.setLatitude(48);
 			center.setLongitude(12);
 		}
+
+		// Initial SettingsChanged Events
+		MapView.that.SetNightMode(Config.nightMode.getValue());
+		Config.nightMode.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				MapView.this.SetNightMode(Config.nightMode.getValue());
+			}
+		});
+
+		MapView.that.SetNorthOriented(Config.MapNorthOriented.getValue());
+		Config.MapNorthOriented.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				MapView.this.SetNorthOriented(Config.MapNorthOriented.getValue());
+				MapView.this.PositionChanged();
+			}
+		});
 
 	}
 
@@ -1102,7 +1127,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	{
 		super.onShow();
 		CB_UI.Events.SelectedCacheEventList.Add(this);
-		alignToCompass = CompassMode ? true : !Config.MapNorthOriented.getValue();
+		this.NorthOriented = CompassMode ? false : Config.MapNorthOriented.getValue();
 		SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 
@@ -1120,7 +1145,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			showAllWaypoints = CompassMode ? false : Config.ShowAllWaypoints.getValue();
 			showAccuracyCircle = CompassMode ? false : Config.ShowAccuracyCircle.getValue();
 			showMapCenterCross = CompassMode ? false : Config.ShowMapCenterCross.getValue();
-			alignToCompass = CompassMode ? true : !Config.MapNorthOriented.getValue();
 
 			if (info != null) info.setVisible(showCompass);
 
@@ -1169,11 +1193,11 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				if (Config.nightMode.getValue())
 				{
 					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(GlobalCore.PathCustomNight);
+					themePath = ifCarThemeExist(PathCustomNight);
 
 					if (themePath == null)
 					{// wenn kein Night Custum skin vorhanden, dann nach einem Day CostumTheme suchen, welches dann Invertiert wird!
-						themePath = ifCarThemeExist(GlobalCore.PathCustom);
+						themePath = ifCarThemeExist(PathCustom);
 						if (themePath != null) useInvertNightTheme = true;
 					}
 
@@ -1187,9 +1211,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				else
 				{
 					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
-					themePath = ifCarThemeExist(GlobalCore.PathCustom);
+					themePath = ifCarThemeExist(PathCustom);
 
-					if (themePath == null) themePath = ifCarThemeExist(GlobalCore.PathDefault);
+					if (themePath == null) themePath = ifCarThemeExist(PathDefault);
 				}
 
 				if (themePath == null)
@@ -1256,6 +1280,77 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		}
 
+	}
+
+	@Override
+	protected void setInitialLocation()
+	{
+		try
+		{
+			if (Database.Data != null)
+			{
+
+				if (Database.Data.Query != null)
+				{
+					synchronized (Database.Data.Query)
+					{
+						if (Database.Data.Query.size() > 0)
+						{
+							// Koordinaten des ersten Caches der Datenbank
+							// nehmen
+							setCenter(new Coordinate(Database.Data.Query.get(0).Pos.getLatitude(),
+									Database.Data.Query.get(0).Pos.getLongitude()));
+							positionInitialized = true;
+							// setLockPosition(0);
+						}
+						else
+						{
+							// Wenns auch den nicht gibt...)
+							setCenter(new Coordinate(48.0, 12.0));
+						}
+					}
+				}
+				else
+				{
+					// Wenn Query == null
+					setCenter(new Coordinate(48.0, 12.0));
+				}
+			}
+			else
+			{
+				// Wenn Data == null
+				setCenter(new Coordinate(48.0, 12.0));
+			}
+		}
+		catch (Exception e)
+		{
+			setCenter(new Coordinate(48.0, 12.0));
+		}
+	}
+
+	@Override
+	public void MapStateChangedToWP()
+	{
+		if (GlobalCore.getSelectedCache() != null)
+		{
+			if (GlobalCore.getSelectedWaypoint() != null)
+			{
+				Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
+				setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
+			}
+			else
+			{
+				Coordinate tmp = GlobalCore.getSelectedCache().Pos;
+				setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
+			}
+		}
+	}
+
+	@Override
+	public void SetAlignToCompass(boolean value)
+	{
+		super.SetAlignToCompass(value);
+		Config.MapNorthOriented.setValue(!value);
 	}
 
 }

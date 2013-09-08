@@ -1,4 +1,4 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
 import java.io.DataInput;
 import java.io.DataOutput;

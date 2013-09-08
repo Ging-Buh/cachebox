@@ -1,6 +1,6 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
-import CB_UI.Map.Layer.Type;
+import CB_Locator.Map.Layer.Type;
 
 public class DefaultLayerList extends java.util.ArrayList<Layer>
 {

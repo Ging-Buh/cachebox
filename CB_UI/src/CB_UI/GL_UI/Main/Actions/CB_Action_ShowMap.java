@@ -1,12 +1,12 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import CB_Locator.Map.Layer;
+import CB_Locator.Map.ManagerBase;
 import CB_UI.Config;
 import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
-import CB_UI.Map.Layer;
-import CB_UI.Map.ManagerBase;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;

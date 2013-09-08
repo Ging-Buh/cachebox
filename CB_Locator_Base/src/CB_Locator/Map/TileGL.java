@@ -1,15 +1,12 @@
-package CB_UI.Map;
+package CB_Locator.Map;
 
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
-import CB_Core.Map.Descriptor;
-import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -55,13 +52,13 @@ public class TileGL implements Destroyable
 		{
 			pixmap = new Pixmap(bytes, 0, bytes.length);
 
-			if (MapView.debug)
-			{
-				int h = pixmap.getHeight();
-				int w = pixmap.getWidth();
-				pixmap.setColor(Color.RED);
-				pixmap.drawRectangle(0, 0, w, h);
-			}
+			// if (MapView.debug)
+			// {
+			// int h = pixmap.getHeight();
+			// int w = pixmap.getWidth();
+			// pixmap.setColor(Color.RED);
+			// pixmap.drawRectangle(0, 0, w, h);
+			// }
 
 			texture = new Texture(pixmap);
 		}

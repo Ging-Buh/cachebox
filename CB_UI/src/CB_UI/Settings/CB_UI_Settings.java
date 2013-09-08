@@ -1,11 +1,11 @@
 package CB_UI.Settings;
 
 import CB_Core.FilterProperties;
+import CB_Locator.LocatorSettings;
 import CB_UI.Config;
 import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
-import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingFile;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
@@ -41,11 +41,6 @@ public interface CB_UI_Settings
 		{ 0, 2, 10, 25, 50, 100, 200, 500, 1000 };
 	public static final Integer[] TrackDistanceArray = new Integer[]
 		{ 1, 3, 5, 10, 20 };
-
-	public Integer Level[] = new Integer[]
-		{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
-	public Integer CrossLevel[] = new Integer[]
-		{ 0, 1, 2, 3, 4, 5, 6, 7 };
 
 	// Settings Compass
 	public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel",
@@ -90,15 +85,8 @@ public interface CB_UI_Settings
 	public static final SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang",
 			SettingStoreType.Global);
 
-	public static final SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", SettingCategory.Folder, NEVER, "",
-			SettingStoreType.Local);
 	public static final SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, INVISIBLE, Work
 			+ "/PocketQuery", SettingStoreType.Global);
-
-	public static final SettingFolder MapPackFolder = new SettingFolder("MapPackFolder", SettingCategory.Folder, NORMAL, Work
-			+ "/repository/maps", SettingStoreType.Global);
-	public static final SettingFolder MapPackFolderLocal = new SettingFolder("MapPackFolderLocal", SettingCategory.Folder, NEVER, "",
-			SettingStoreType.Local);
 
 	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, NORMAL, Work + "/User/Tracks",
 			SettingStoreType.Global);
@@ -110,10 +98,6 @@ public interface CB_UI_Settings
 			SettingCategory.Folder, NEVER, Work + "/cachebox.db3", SettingStoreType.Global, "db3"));
 	public static final SettingFile FieldNotesGarminPath = (SettingFile) SettingsList.addSetting(new SettingFile("FieldNotesGarminPath",
 			SettingCategory.Folder, INVISIBLE, Work + "/User/geocache_visits.txt", SettingStoreType.Global));
-	public static final SettingFile MapsforgeDayTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeDayTheme",
-			SettingCategory.Skin, NORMAL, "", SettingStoreType.Global, "xml"));
-	public static final SettingFile MapsforgeNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeNightTheme",
-			SettingCategory.Skin, NORMAL, "", SettingStoreType.Global, "xml"));
 
 	public static final SettingBool MapShowRating = new SettingBool("MapShowRating", SettingCategory.Map, NORMAL, true,
 			SettingStoreType.Global);
@@ -150,8 +134,7 @@ public interface CB_UI_Settings
 			SettingStoreType.Global);
 	public static final SettingBool MultiDBAsk = new SettingBool("MultiDBAsk", SettingCategory.Internal, NEVER, true,
 			SettingStoreType.Global);
-	public static final SettingBool MoveMapCenterWithSpeed = new SettingBool("MoveMapCenterWithSpeed", SettingCategory.CarMode, NORMAL,
-			false, SettingStoreType.Global);
+
 	public static final SettingBool SearchWithoutFounds = new SettingBool("SearchWithoutFounds", SettingCategory.API, INVISIBLE, true,
 			SettingStoreType.Global);
 	public static final SettingBool SearchWithoutOwns = new SettingBool("SearchWithoutOwns", SettingCategory.API, INVISIBLE, true,
@@ -179,12 +162,6 @@ public interface CB_UI_Settings
 			SettingStoreType.Global);
 	public static final SettingBool ShowDirektLine = new SettingBool("ShowDirektLine", SettingCategory.Map, NORMAL, false,
 			SettingStoreType.Global);
-	public static final SettingBool ShowAccuracyCircle = new SettingBool("ShowAccuracyCircle", SettingCategory.Map, NORMAL, true,
-			SettingStoreType.Global);
-	public static final SettingBool ShowMapCenterCross = new SettingBool("ShowMapCenterCross", SettingCategory.Map, NORMAL, true,
-			SettingStoreType.Global);
-	public static final SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", SettingCategory.Map, NORMAL,
-			false, SettingStoreType.Global);
 	public static final SettingBool DebugShowMarker = new SettingBool("DebugShowMarker", SettingCategory.Debug, EXPERT, false,
 			SettingStoreType.Global);
 	public static final SettingBool ImportRatings = new SettingBool("ImportRatings", SettingCategory.API, NORMAL, false,
@@ -221,8 +198,6 @@ public interface CB_UI_Settings
 			NORMAL, true, SettingStoreType.Global);
 	public static final SettingBool Ask_Switch_GPS_ON = new SettingBool("Ask_Switch_GPS_ON", SettingCategory.RememberAsk, NORMAL, true,
 			SettingStoreType.Platform);
-	public static final SettingBool FireMapQueueProcessorExceptions = new SettingBool("FireMapQueueProcessorExceptions",
-			SettingCategory.Internal, INVISIBLE, false, SettingStoreType.Global);
 
 	public static final SettingBool TB_DirectLog = new SettingBool("TB_DirectLog", SettingCategory.Internal, NEVER, true,
 			SettingStoreType.Platform);
@@ -257,10 +232,7 @@ public interface CB_UI_Settings
 			"mapMaxCachesDisplayLarge_config", SettingCategory.Map, INVISIBLE, 75, SettingStoreType.Global));
 	public static final SettingInt MultiDBAutoStartTime = (SettingInt) SettingsList.addSetting(new SettingInt("MultiDBAutoStartTime",
 			SettingCategory.Internal, NEVER, 0, SettingStoreType.Global));
-	public static final SettingInt MoveMapCenterMaxSpeed = (SettingInt) SettingsList.addSetting(new SettingInt("MoveMapCenterMaxSpeed",
-			SettingCategory.CarMode, NORMAL, 60, SettingStoreType.Global));
-	public static final SettingInt lastZoomLevel = (SettingInt) SettingsList.addSetting(new SettingInt("lastZoomLevel",
-			SettingCategory.Map, INVISIBLE, 14, SettingStoreType.Global));
+
 	public static final SettingInt lastSearchRadius = (SettingInt) SettingsList.addSetting(new SettingInt("lastSearchRadius",
 			SettingCategory.API, INVISIBLE, 5, SettingStoreType.Global));
 	public static final SettingInt LastMapToggleBtnState = (SettingInt) SettingsList.addSetting(new SettingInt("LastMapToggleBtnState",
@@ -271,10 +243,7 @@ public interface CB_UI_Settings
 			SettingCategory.CarMode, NORMAL, 15, SettingStoreType.Global));
 
 	// String
-	public static final SettingString CurrentMapLayer = (SettingString) SettingsList.addSetting(new SettingString("CurrentMapLayer",
-			SettingCategory.Map, EXPERT, "Mapnik", SettingStoreType.Global));
-	public static final SettingString CurrentMapOverlayLayer = (SettingString) SettingsList.addSetting(new SettingString(
-			"CurrentMapOverlayLayer", SettingCategory.Map, EXPERT, "", SettingStoreType.Global));
+
 	public static final SettingString LastSelectedCache = (SettingString) SettingsList.addSetting(new SettingString("LastSelectedCache",
 			SettingCategory.Misc, NEVER, "", SettingStoreType.Local));
 	public static final SettingString NavigationProvider = (SettingString) SettingsList.addSetting(new SettingString("NavigationProvider",
@@ -306,27 +275,21 @@ public interface CB_UI_Settings
 
 	// ArrayInt
 	public static final SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", SettingCategory.Map, NORMAL, 16,
-			SettingStoreType.Global, CrossLevel);
+			SettingStoreType.Global, LocatorSettings.CrossLevel);
 	public static final SettingIntArray SoundApproachDistance = new SettingIntArray("SoundApproachDistance", SettingCategory.Misc, NORMAL,
 			50, SettingStoreType.Global, approach);
 	public static final SettingIntArray TrackDistance = new SettingIntArray("TrackDistance", SettingCategory.Misc, NORMAL, 3,
 			SettingStoreType.Global, TrackDistanceArray);
-	public static final SettingIntArray OsmMinLevel = new SettingIntArray("OsmMinLevel", SettingCategory.Map, NORMAL, 7,
-			SettingStoreType.Global, Level);
+
 	public static final SettingIntArray OsmMaxImportLevel = new SettingIntArray("OsmMaxImportLevel", SettingCategory.Map, INVISIBLE, 16,
-			SettingStoreType.Global, Level);
-	public static final SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", SettingCategory.Map, NORMAL, 19,
-			SettingStoreType.Global, Level);
+			SettingStoreType.Global, LocatorSettings.Level);
+
 	public static final SettingIntArray CompassMapMaxZommLevel = new SettingIntArray("CompassMapMaxZommLevel", SettingCategory.Map, NORMAL,
-			20, SettingStoreType.Global, Level);
+			20, SettingStoreType.Global, LocatorSettings.Level);
 	public static final SettingIntArray CompassMapMinZoomLevel = new SettingIntArray("CompassMapMinZoomLevel", SettingCategory.Map, NORMAL,
-			13, SettingStoreType.Global, Level);
+			13, SettingStoreType.Global, LocatorSettings.Level);
 
 	// double
-	public static final SettingDouble MapInitLatitude = new SettingDouble("MapInitLatitude", SettingCategory.Positions, EXPERT, -1000,
-			SettingStoreType.Global);
-	public static final SettingDouble MapInitLongitude = new SettingDouble("MapInitLongitude", SettingCategory.Positions, EXPERT, -1000,
-			SettingStoreType.Global);
 
 	// longString
 	public static final SettingLongString Filter = new SettingLongString("Filter", SettingCategory.Misc, NEVER,

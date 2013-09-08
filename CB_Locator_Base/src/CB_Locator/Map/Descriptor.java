@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package CB_Core.Map;
+package CB_Locator.Map;
 
 import CB_Utils.Math.PointD;
 
@@ -43,7 +43,7 @@ public class Descriptor implements Comparable<Descriptor>
 		{
 			TilesPerLine[i] = (int) (2 * Math.pow(2, i));
 			TilesPerColumn[i] = (int) Math.pow(2, i);
-			tileOffset[i + 1] = tileOffset[i] + (int) (TilesPerLine[i] * TilesPerColumn[i]);
+			tileOffset[i + 1] = tileOffset[i] + (TilesPerLine[i] * TilesPerColumn[i]);
 		}
 	}
 
@@ -62,6 +62,8 @@ public class Descriptor implements Comparable<Descriptor>
 	 */
 	public int Zoom; // TODO muss noch auf max begrenzt Werden
 
+	public boolean NightMode = false;
+
 	/**
 	 * Erzeugt einen neuen Deskriptor mit den übergebenen Parametern
 	 * 
@@ -72,11 +74,12 @@ public class Descriptor implements Comparable<Descriptor>
 	 * @param zoom
 	 *            Zoom-Stufe
 	 */
-	public Descriptor(int x, int y, int zoom)
+	public Descriptor(int x, int y, int zoom, boolean NightMode)
 	{
 		X = x;
 		Y = y;
 		Zoom = zoom;
+		this.NightMode = NightMode;
 	}
 
 	/**
@@ -90,6 +93,7 @@ public class Descriptor implements Comparable<Descriptor>
 		this.X = original.X;
 		this.Y = original.Y;
 		this.Zoom = original.Zoom;
+		this.NightMode = original.NightMode;
 	}
 
 	/**
@@ -100,7 +104,7 @@ public class Descriptor implements Comparable<Descriptor>
 		int zoomDiff = newZoomLevel - Zoom;
 		int pow = (int) Math.pow(2, Math.abs(zoomDiff));
 
-		return new Descriptor(X * pow, Y * pow, newZoomLevel);
+		return new Descriptor(X * pow, Y * pow, newZoomLevel, this.NightMode);
 	}
 
 	/**
@@ -203,7 +207,7 @@ public class Descriptor implements Comparable<Descriptor>
 
 	public long GetHashCode()
 	{
-		return ((long) (tileOffset[Zoom]) + (long) (TilesPerLine[Zoom]) * Y + X);
+		return ((tileOffset[Zoom]) + (long) (TilesPerLine[Zoom]) * Y + X);
 	}
 
 	public String ToString()
@@ -228,5 +232,10 @@ public class Descriptor implements Comparable<Descriptor>
 	public String toString()
 	{
 		return "X=" + this.X + " Y=" + this.Y + " Zoom=" + this.Zoom;
+	}
+
+	public void dispose()
+	{
+		Data = null;
 	}
 }
