@@ -2785,7 +2785,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 								paramsLeft.height = height;
 								paramsLeft.width = width;
 								paramsLeft.leftMargin = 0;
-								paramsLeft.topMargin = 0;
+								paramsLeft.topMargin = y;
 								frame.setLayoutParams(paramsLeft);
 							}
 							else
@@ -2797,7 +2797,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									params.height = height;
 									params.width = width;
 									params.leftMargin = 0;
-									params.topMargin = 0;
+									params.topMargin = y;
 									tabFrame.setLayoutParams(params);
 
 									LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame.getLayoutParams();
@@ -2805,7 +2805,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									paramsLeft.height = height;
 									paramsLeft.width = UI_Size_Base.that.getWindowWidth() - width;
 									paramsLeft.leftMargin = 0;
-									paramsLeft.topMargin = 0;
+									paramsLeft.topMargin = y;
 									frame.setLayoutParams(paramsLeft);
 								}
 							}

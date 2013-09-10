@@ -59,7 +59,6 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void onShow()
 	{
-		// platformConector.showView(ViewConst.SOLVER_VIEW, this.Pos.x, this.Pos.y, this.width, this.height);
 		// CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Add(this);
 

@@ -31,7 +31,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 public class GlobalCore extends CB_UI_Base.Global
 {
 
-	public static final int CurrentRevision = 1832;
+	public static final int CurrentRevision = 1834;
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "Test";
 
@@ -221,14 +221,23 @@ public class GlobalCore extends CB_UI_Base.Global
 		return false;
 	}
 
+	static boolean JaokerPwChk = false;
+	static boolean JokerPwExist = false;
+
 	/**
 	 * JokerisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein Passwort für gcJoker.de vorhanden ist.
 	 */
 	public static boolean JokerisOnline()
 	{
-		if (Config.GcJoker.getValue().length() == 0)
+		if (!JaokerPwChk)
 		{
-			Logger.General("GlobalCore.JokerisOnline() - no Joker Password");
+			JokerPwExist = Config.GcJoker.getValue().length() == 0;
+			JaokerPwChk = true;
+		}
+
+		if (JokerPwExist)
+		{
+			// Logger.General("GlobalCore.JokerisOnline() - no Joker Password");
 			return false;
 		}
 		if (platformConector.isOnline())
