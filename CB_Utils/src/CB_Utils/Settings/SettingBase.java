@@ -88,6 +88,11 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 		return modus;
 	}
 
+	public void changeSettingsModus(SettingModus Modus)
+	{
+		this.modus = Modus;
+	}
+
 	public abstract String toDBString();
 
 	public abstract boolean fromDBString(String dbString);

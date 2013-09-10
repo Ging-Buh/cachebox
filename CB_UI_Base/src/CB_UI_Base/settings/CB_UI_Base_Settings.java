@@ -65,4 +65,6 @@ public interface CB_UI_Base_Settings
 	public static final SettingFolder ImageCacheFolderLocal = new SettingFolder("ImageCacheFolderLocal", SettingCategory.Folder, NEVER, "",
 			SettingStoreType.Local);
 
+	public static final SettingBool GestureOn = new SettingBool("GestureOn", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global);
+
 }

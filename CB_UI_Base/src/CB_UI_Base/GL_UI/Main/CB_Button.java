@@ -5,20 +5,21 @@ import java.util.ArrayList;
 import CB_UI_Base.GL_UI.ButtonSprites;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.GestureHelp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
-import CB_UI_Base.GL_UI.Main.CB_ActionButton.GestureDirection;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Math.Point;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -63,6 +64,10 @@ public class CB_Button extends Button implements OnClickListener
 	public void addAction(CB_ActionButton Action)
 	{
 		mButtonActions.add(Action);
+
+		// disable Gesture ?
+		if (!CB_UI_Base_Settings.GestureOn.getValue()) Action.setGestureDirection(GestureDirection.None);
+
 		GestureDirection gestureDirection = Action.getGestureDirection();
 		if (gestureDirection != GestureDirection.None)
 		{

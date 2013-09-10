@@ -11,8 +11,8 @@ public class CB_ActionButton
 		None, Right, Up, Left, Down
 	};
 
-	private CB_Action action;
-	private boolean defaultAction;
+	private final CB_Action action;
+	private final boolean defaultAction;
 	private GestureDirection gestureDirection = GestureDirection.None;
 
 	public CB_ActionButton(CB_Action action, boolean defaultAction, GestureDirection gestureDirection)
@@ -51,5 +51,10 @@ public class CB_ActionButton
 	public Sprite getIcon()
 	{
 		return action.getIcon();
+	}
+
+	public void setGestureDirection(GestureDirection gesture)
+	{
+		gestureDirection = gesture;
 	}
 }
