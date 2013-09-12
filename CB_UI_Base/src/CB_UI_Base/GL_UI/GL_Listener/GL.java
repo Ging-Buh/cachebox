@@ -292,7 +292,7 @@ public class GL implements ApplicationListener, InputProcessor
 			removeRenderView(child);
 		}
 
-		if (!ShaderSetted) setShader();
+		// if (!ShaderSetted) setShader();
 
 		isWorkOnRunOnGL.set(true);
 		synchronized (runOnGL_List)
@@ -342,9 +342,6 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 		}
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
 		if (CB_UI_Base_Settings.nightMode.getValue())
 		{
 			Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
@@ -353,6 +350,9 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
 		}
+
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		{// Render 3D
 			if (mAct3D_Render != null)
@@ -511,7 +511,16 @@ public class GL implements ApplicationListener, InputProcessor
 						20);
 				debugSpritebatchMaxCount = Math.max(debugSpritebatchMaxCount, batch.maxSpritesInBatch);
 			}
+
+		}
+
+		try
+		{
 			batch.end();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 
 		Gdx.gl.glFlush();
