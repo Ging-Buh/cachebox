@@ -369,7 +369,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		if (GlobalCore.isTestVersion()) btn3.addAction(new CB_ActionButton(actionTestView, false));
 
 		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
-		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
+		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, true));
 		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
 		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
