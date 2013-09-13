@@ -7,9 +7,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Clipboard;
 
-public class Global
+public abstract class Global
 {
-	public static final String VersionPrefix = "";
+	protected static Global Instance;
+
 	public static Plattform platform = Plattform.undef;
 
 	/**
@@ -28,6 +29,13 @@ public class Global
 
 	private static boolean isTestVersionCheked = false;
 	private static boolean isTestVersion = false;
+
+	protected abstract String getVersionPrefix();
+
+	protected Global()
+	{
+		Instance = this;
+	}
 
 	public static FileHandle getInternalFileHandle(String path)
 	{
@@ -63,7 +71,9 @@ public class Global
 	public static boolean isTestVersion()
 	{
 		if (isTestVersionCheked) return isTestVersion;
-		isTestVersion = VersionPrefix.contains("Test");
+		if (Instance == null) return false;
+
+		isTestVersion = Instance.getVersionPrefix().contains("Test");
 		isTestVersionCheked = true;
 		return isTestVersion;
 	}

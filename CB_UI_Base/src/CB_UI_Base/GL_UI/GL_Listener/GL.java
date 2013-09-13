@@ -106,6 +106,7 @@ public class GL implements ApplicationListener, InputProcessor
 	private long mLongClickTime = 0;
 	private final long mDoubleClickTime = 500;
 	private long lastClickTime = 0;
+	private float lastRenderOnceTime = -1;
 
 	// private Threads
 	Thread threadDisposeDialog;
@@ -280,7 +281,11 @@ public class GL implements ApplicationListener, InputProcessor
 		if (Energy.DisplayOff()) return;
 
 		if (!started.get() || stopRender) return;
-
+		if (listenerInterface != null && listenerInterface.isContinous())
+		{
+			Logger.DEBUG("Reset Continous rendering");
+			listenerInterface.RenderDirty();
+		}
 		stateTime += Gdx.graphics.getDeltaTime();
 
 		lastRenderBegin = System.currentTimeMillis();
@@ -388,6 +393,8 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (java.lang.IllegalStateException e)
 		{
+			Logger.Error("IllegalStateException", "batch.begin() without batch.end()", e);
+			e.printStackTrace();
 			batch.flush();
 			batch.end();
 			batch.begin();
@@ -895,11 +902,10 @@ public class GL implements ApplicationListener, InputProcessor
 			private void TimerMethod()
 			{
 				if (listenerInterface != null) listenerInterface.RequestRender("Timer" + Name);
-
 			}
 
 		}, 0, delay);
-		// if (listenerInterface != null) listenerInterface.RenderDirty();
+
 	}
 
 	public static void stopTimer()
@@ -911,7 +917,6 @@ public class GL implements ApplicationListener, InputProcessor
 			myTimer = null;
 		}
 		timerValue = 0;
-		// if (listenerInterface != null) listenerInterface.RenderContinous();
 	}
 
 	public interface renderStartet
@@ -966,6 +971,8 @@ public class GL implements ApplicationListener, InputProcessor
 	public void Initialize()
 	{
 		// Logger.LogCat("GL_Listner => Initialize");
+
+		if (Gdx.graphics.getGLCommon() == null) return;// kann nicht initialisiert werden
 
 		if (batch == null)
 		{
@@ -1086,6 +1093,8 @@ public class GL implements ApplicationListener, InputProcessor
 	public void renderOnce(String requestName)
 	{
 
+		if (lastRenderOnceTime == GL.that.getStateTime()) return;
+		lastRenderOnceTime = GL.that.getStateTime();
 		if (requestName == null)
 		{
 			requestName = "";
@@ -1969,6 +1978,7 @@ public class GL implements ApplicationListener, InputProcessor
 		altSplash = null;
 		initialMarkerOverlay();
 		mMainView.onShow();
+		if (listenerInterface != null) listenerInterface.RenderDirty();
 	}
 
 	// ##########################################

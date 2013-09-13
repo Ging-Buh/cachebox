@@ -508,7 +508,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		initialLocationManager();
 
-		initialViewGL();
 		initalMicIcon();
 
 		glListener.onStart();
@@ -591,6 +590,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
 		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
+
+		initialViewGL();
 	}
 
 	boolean flag = false;

@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -212,15 +213,24 @@ public class DesktopMain
 				public void RenderDirty()
 				{
 					App.getGraphics().setContinuousRendering(false);
-
+					isContinousRenderMode.set(false);
 				}
 
 				@Override
 				public void RenderContinous()
 				{
 					App.getGraphics().setContinuousRendering(true);
-
+					isContinousRenderMode.set(true);
 				}
+
+				AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
+
+				@Override
+				public boolean isContinous()
+				{
+					return isContinousRenderMode.get();
+				}
+
 			};
 		}
 

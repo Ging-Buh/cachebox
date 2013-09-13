@@ -28,8 +28,8 @@ public class Fader
 	private boolean mFadeOut = false;
 	private boolean mFadeIn = false;
 	private boolean mVirtualVisible = true;
-	private int mFadeOutTime = DEFAULT_FADE_OUT_TIME;
-	private int mFadeInTime = DEFAULT_FADE_IN_TIME;
+	private float mFadeOutTime = DEFAULT_FADE_OUT_TIME;
+	private float mFadeInTime = DEFAULT_FADE_IN_TIME;
 	private float mFadeoutBeginntime = 0;
 
 	/**
@@ -52,9 +52,20 @@ public class Fader
 	public float getValue()
 	{
 		calcFade();
-		if (mFadeValue < 0) mFadeValue = 0;
-		if (mFadeValue > 1) mFadeValue = 1;
-		if (mFadeOut || mFadeIn) GL.that.renderOnce("Fader in Action");
+		if (mFadeValue < 0)
+		{
+			mFadeOut = false;
+			mFadeValue = 0;
+		}
+		if (mFadeValue > 1)
+		{
+			mFadeIn = false;
+			mFadeValue = 1;
+		}
+		if (mFadeOut || mFadeIn)
+		{
+			if (this.isVisible()) GL.that.renderOnce("Fader in Action");
+		}
 		return mFadeValue;
 	}
 
@@ -149,6 +160,8 @@ public class Fader
 		if (mFadeIn)
 		{
 			calcedFadeValue = (1 + ((statetime) % this.mFadeInTime) / (this.mFadeInTime / 1000)) / 1000;
+
+			if (Float.isInfinite(calcedFadeValue) || Float.isNaN(calcedFadeValue)) return;
 			if (calcedFadeValue < mFadeValue)
 			{
 				// fading finish
@@ -167,7 +180,7 @@ public class Fader
 		{
 
 			calcedFadeValue = (1000 - (1 + ((statetime) % this.mFadeOutTime) / (this.mFadeOutTime / 1000))) / 1000;
-
+			if (Float.isInfinite(calcedFadeValue) || Float.isNaN(calcedFadeValue)) return;
 			if (calcedFadeValue > mFadeValue)
 			{
 				// fading finish

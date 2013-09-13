@@ -31,7 +31,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 public class GlobalCore extends CB_UI_Base.Global
 {
 
-	public static final int CurrentRevision = 1836;
+	public static final int CurrentRevision = 1846;
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "Test";
 
@@ -54,6 +54,8 @@ public class GlobalCore extends CB_UI_Base.Global
 
 	private GlobalCore()
 	{
+		super();
+
 		Logger.setCreateDebugWithHeader(new iCreateDebugWithHeader()
 		{
 			@Override
@@ -373,6 +375,12 @@ public class GlobalCore extends CB_UI_Base.Global
 			handler.chekReady(GroundspeakAPI.GetMembershipType());
 		}
 
+	}
+
+	@Override
+	protected String getVersionPrefix()
+	{
+		return VersionPrefix;
 	}
 
 }
