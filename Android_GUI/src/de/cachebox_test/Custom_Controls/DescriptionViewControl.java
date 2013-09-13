@@ -23,7 +23,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,8 +41,6 @@ import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
 
-@SuppressLint(
-	{ "HandlerLeak", "SetJavaScriptEnabled" })
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 {
 

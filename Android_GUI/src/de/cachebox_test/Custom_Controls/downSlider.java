@@ -37,7 +37,6 @@ import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Util.UnitFormatter;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
@@ -216,7 +215,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 	};
 
-	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas canvas)
 	{

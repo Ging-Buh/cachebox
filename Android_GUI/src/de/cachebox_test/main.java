@@ -89,7 +89,6 @@ import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -181,7 +180,6 @@ import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
-@SuppressLint("HandlerLeak")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
@@ -1153,7 +1151,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
-	@SuppressLint("Wakelock")
 	@Override
 	public void onDestroy()
 	{

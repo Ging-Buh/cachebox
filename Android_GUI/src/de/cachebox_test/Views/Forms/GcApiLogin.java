@@ -3,7 +3,6 @@ package de.cachebox_test.Views.Forms;
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -23,7 +22,6 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Ui.ActivityUtils;
 
-@SuppressLint("HandlerLeak")
 public class GcApiLogin extends Activity
 {
 	private static GcApiLogin gcApiLogin;

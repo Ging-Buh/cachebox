@@ -37,7 +37,6 @@ import CB_Utils.Settings.SettingIntArray;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Util.FileIO;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -78,8 +77,6 @@ import de.cachebox_test.Components.copyAssetFolder;
 import de.cachebox_test.DB.AndroidDB;
 import de.cachebox_test.Views.Forms.MessageBox;
 
-@SuppressLint(
-	{ "SdCardPath", "DefaultLocale" })
 public class splash extends Activity
 {
 
@@ -106,7 +103,6 @@ public class splash extends Activity
 	private static devicesSizes ui;
 	private boolean isLandscape = false;
 
-	@SuppressLint("DefaultLocale")
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
