@@ -31,4 +31,13 @@ public class SettingFloat extends SettingBase<Float>
 		}
 	}
 
+	@Override
+	public SettingBase<Float> copy()
+	{
+		SettingBase<Float> ret = new SettingFloat(this.name, this.category, this.modus, this.defaultValue, this.storeType);
+		ret.value = this.value;
+		ret.lastValue = this.lastValue;
+		return ret;
+	}
+
 }

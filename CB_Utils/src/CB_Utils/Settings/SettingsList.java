@@ -170,15 +170,37 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			SettingBase<?> setting = it.next();
 			if (SettingStoreType.Local == setting.getStoreType())
 			{
-				dao.ReadFromDatabase(getDataDB(), setting);
+				setting = dao.ReadFromDatabase(getDataDB(), setting);
 			}
 			else if (SettingStoreType.Global == setting.getStoreType())
 			{
-				dao.ReadFromDatabase(getSettingsDB(), setting);
+				setting = dao.ReadFromDatabase(getSettingsDB(), setting);
 			}
 			else if (SettingStoreType.Platform == setting.getStoreType())
 			{
-				dao.ReadFromPlatformSetting(setting);
+				SettingBase<?> cpy = setting.copy();
+				cpy = dao.ReadFromDatabase(getSettingsDB(), cpy);
+				setting = dao.ReadFromPlatformSetting(setting);
+
+				// chk for Value on User.db3 and cleared Platform Value
+				if (cpy.value != setting.value)
+				{
+					if (setting.value == setting.defaultValue)
+					{
+						// override Platformsettings with UserDBSettings
+						setting.setValueFrom(cpy);
+						dao.WriteToPlatformSettings(setting);
+						setting.clearDirty();
+					}
+					else
+					{
+						// override UserDBSettings with Platformsettings
+						cpy.setValueFrom(setting);
+						dao.WriteToDatabase(getSettingsDB(), cpy);
+						cpy.clearDirty();
+					}
+				}
+
 			}
 		}
 		isLoaded = true;

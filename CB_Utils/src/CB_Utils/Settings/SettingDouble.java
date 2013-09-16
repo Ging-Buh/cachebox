@@ -31,4 +31,15 @@ public class SettingDouble extends SettingBase<Double>
 		}
 	}
 
+	@Override
+	public SettingBase<Double> copy()
+	{
+		SettingBase<Double> ret = new SettingDouble(this.name, this.category, this.modus, this.defaultValue, this.storeType);
+
+		ret.value = this.value;
+		ret.lastValue = this.lastValue;
+
+		return ret;
+	}
+
 }

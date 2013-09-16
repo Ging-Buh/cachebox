@@ -51,4 +51,13 @@ public class SettingsAudio extends SettingBase<Audio>
 		return false;
 	}
 
+	@Override
+	public SettingBase<Audio> copy()
+	{
+		SettingBase<Audio> ret = new SettingsAudio(this.name, this.category, this.modus, this.defaultValue, this.storeType);
+		ret.value = this.value;
+		ret.lastValue = this.lastValue;
+		return ret;
+	}
+
 }

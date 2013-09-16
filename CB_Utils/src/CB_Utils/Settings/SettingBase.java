@@ -117,7 +117,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 
 	public T getValue()
 	{
-		return value;
+		return (T) value;
 	}
 
 	public T getDefaultValue()
@@ -139,13 +139,27 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 
 	public void saveToLastValue()
 	{
-		lastValue = value;
+		lastValue = (T) value;
 	}
 
 	public void loadFromLastValue()
 	{
 		if (lastValue == null) throw new IllegalArgumentException("You have never saved the last value! Call SaveToLastValue()");
 		value = lastValue;
+	}
+
+	public abstract SettingBase<T> copy();
+
+	public void setValueFrom(SettingBase<?> cpy)
+	{
+		try
+		{
+			this.value = (T) cpy.value;
+		}
+		catch (Exception e)
+		{
+
+		}
 	}
 
 }

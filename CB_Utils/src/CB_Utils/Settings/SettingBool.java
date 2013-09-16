@@ -30,4 +30,15 @@ public class SettingBool extends SettingBase<Boolean>
 			return false;
 		}
 	}
+
+	@Override
+	public SettingBase<Boolean> copy()
+	{
+		SettingBase<Boolean> ret = new SettingBool(this.name, this.category, this.modus, this.defaultValue, this.storeType);
+
+		ret.value = this.value;
+		ret.lastValue = this.lastValue;
+
+		return ret;
+	}
 }
