@@ -34,4 +34,11 @@ public class SettingsListGetApiButton<T> extends SettingBase<T>
 		return false;
 	}
 
+	@Override
+	public SettingBase<T> copy()
+	{
+		// can't copy this obj
+		return null;
+	}
+
 }
