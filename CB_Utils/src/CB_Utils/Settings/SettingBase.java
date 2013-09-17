@@ -132,6 +132,12 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 		setDirty();
 	}
 
+	public void ForceDefaultChange(T defaultValue)
+	{
+		if (this.defaultValue.equals(defaultValue)) return;
+		this.defaultValue = defaultValue;
+	}
+
 	public void loadDefault()
 	{
 		value = defaultValue;
