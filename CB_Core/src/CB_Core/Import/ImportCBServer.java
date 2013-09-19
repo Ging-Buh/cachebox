@@ -1,5 +1,6 @@
 package CB_Core.Import;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import CB_Core.CoreSettingsForward;
@@ -8,9 +9,11 @@ import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
+import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_RpcCore.ClientCB.RpcClientCB;
@@ -18,6 +21,7 @@ import CB_RpcCore.Functions.RpcAnswer_GetCacheList;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList.ListItem;
 import CB_RpcCore.Functions.RpcMessage_GetCacheList;
 import cb_rpc.Functions.RpcAnswer;
+import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class ImportCBServer
 {
@@ -100,6 +104,49 @@ public class ImportCBServer
 						for (Waypoint waypoint : cache.waypoints)
 						{
 							wayDao.WriteToDatabase(waypoint);
+						}
+						for (ImageEntry image : cache.spoilerRessources)
+						{
+							String url = CB_Rpc_Settings.CBS_IP.getValue();
+							int pos = url.indexOf(":");
+							if (pos >= 0)
+							{
+								url = url.substring(0, pos); // Port abschneiden, da dieser bereits in der imageURL der Images steht
+							}
+							url = "http://" + url + image.ImageUrl;
+							File file = new File(image.LocalPath);
+							url += cache.GcCode.substring(0, 4) + "/";
+
+							url += file.getName().replace(" ", "%20");
+
+							String imagePath;
+							if (image.ImageUrl.indexOf("/spoilers/") >= 0)
+							{
+								imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.GcCode.substring(0, 4) + "/"
+										+ file.getName();
+								if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0)
+								{
+									// Own Repo
+									imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.GcCode.substring(0, 4) + "/"
+											+ file.getName();
+								}
+							}
+							else
+							{
+								imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.GcCode.substring(0, 4) + "/"
+										+ file.getName();
+								if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() != 0)
+								{
+									// Own Repo
+									imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/"
+											+ cache.GcCode.substring(0, 4) + "/" + file.getName();
+								}
+							}
+							file = new File(imagePath);
+							if (!file.exists())
+							{
+								DescriptionImageGrabber.Download(url, imagePath);
+							}
 						}
 					}
 					// Logs in DB eintragen. Die Logs sind hier nicht zu jedem Cache gespeichert sondern komplett in einer Liste

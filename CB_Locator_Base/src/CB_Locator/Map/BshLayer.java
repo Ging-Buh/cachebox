@@ -10,33 +10,47 @@ import bsh.Interpreter;
 public class BshLayer extends Layer
 {
 	private final String filename;
+	private Interpreter interpreter;
 
 	public BshLayer(Type LayerType, String filename)
 	{
 		super(LayerType, "B- " + FileIO.GetFileNameWithoutExtension(filename), FileIO.GetFileNameWithoutExtension(filename), "");
 		this.filename = filename;
+		this.interpreter = new Interpreter();
+		try
+		{
+			this.interpreter.source(filename);
+		}
+		catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			this.interpreter = null;
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			this.interpreter = null;
+		}
+		catch (EvalError e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			this.interpreter = null;
+		}
 	}
 
 	@Override
 	public String GetUrl(Descriptor desc)
 	{
 		if (desc == null) return null;
-		Interpreter i = new Interpreter();
+		if (interpreter == null) return null;
 		try
 		{
-			i.source(filename);
-			Object result = i.eval("getTileUrl(" + desc.Zoom + "," + desc.X + "," + desc.Y + ")");
+			Object result = interpreter.eval("getTileUrl(" + desc.Zoom + "," + desc.X + "," + desc.Y + ")");
+			System.out.println(result);
 			return (String) result;
-		}
-		catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		catch (EvalError e)
 		{

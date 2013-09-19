@@ -6,7 +6,6 @@ import java.net.URL;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
-
 import cb_rpc.Functions.RpcAnswer;
 import cb_rpc.Functions.RpcMessage;
 import cb_rpc.Settings.CB_Rpc_Settings;
@@ -37,7 +36,7 @@ public class Rpc_Client
 			// URL url = new URL("http://192.168.1.69:9911/xmlrpc");
 			// URL url = new URL("http://192.168.1.30:9911/xmlrpc");
 			// URL url = new URL("http://localhost:9911/xmlrpc");
-			URL url = new URL(CB_Rpc_Settings.CBS_IP.getValue() + "/xmlrpc");
+			URL url = new URL("http://" + CB_Rpc_Settings.CBS_IP.getValue() + "/xmlrpc");
 			config.setServerURL(url);
 			config.setServerURL(url);
 			// config.setEncoding("UTF-8");
