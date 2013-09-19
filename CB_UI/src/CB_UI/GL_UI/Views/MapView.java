@@ -1262,7 +1262,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			{
 				// set Theme to null
 				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-				ManagerBase.Manager.setRenderTheme(null);
+				ManagerBase.Manager.clearRenderTheme();
 			}
 
 		}

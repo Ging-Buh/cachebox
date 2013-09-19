@@ -334,91 +334,7 @@ public class splash extends Activity
 		{
 			// no saved workPath found -> search sd-cards and if more than 1 is found give the user the possibility to select one
 
-			// check if Layout forced from User
-			workPath = Environment.getExternalStorageDirectory() + "/cachebox";
-
-			// extract first part of path ("/mnt/" or "/storage/" ...)
-			int pos = workPath.indexOf("/", 2); // search for the second /
-			String prev = "/mnt";
-			if (pos > 0)
-			{
-				prev = workPath.substring(0, pos);
-			}
-			// search for an external SD-Card
-			String externalSd = "";
-
-			// search for an external sd card on different devices
-			if (testExtSdPath(prev + "/extSdCard"))
-			{
-				externalSd = prev + "/extSdCard/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/MicroSD"))
-			{
-				externalSd = prev + "/MicroSD/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard/ext_sd"))
-			{
-				externalSd = prev + "/sdcard/ext_sd/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/ext_card"))
-			{
-				// Sony Xperia sola
-				externalSd = prev + "/ext_card/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/external"))
-			{
-				externalSd = prev + "/external/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard2"))
-			{
-				externalSd = prev + "/sdcard2/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard1"))
-			{
-				externalSd = prev + "/sdcard1/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
-			{
-				externalSd = prev + "/sdcard/_ExternalSD";
-			}
-			else if (testExtSdPath(prev + "/sdcard-ext"))
-			{
-				externalSd = prev + "/sdcard-ext/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/external1"))
-			{
-				externalSd = prev + "/external1/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard/external_sd"))
-			{
-				externalSd = prev + "/sdcard/external_sd/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/emmc"))
-			{
-				// for CM9
-				externalSd = prev + "/emmc/CacheBox";
-			}
-			else if (testExtSdPath("/Removable/MicroSD"))
-			{
-				// Asus Transformer
-				externalSd = prev + "/Removable/MicroSD/CacheBox";
-			}
-			else if (testExtSdPath("/mnt/ext_sd"))
-			{
-				// ODYS Motion
-				externalSd = prev + "/ext_sd/CacheBox";
-			}
-			else if (testExtSdPath("/sdcard/tflash"))
-			{
-				// Car Radio
-				externalSd = prev + "/sdcard/tflash/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard"))
-			{
-				// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
-				// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
-				externalSd = prev + "/sdcard/CacheBox";
-			}
+			String externalSd = getExternalSdPath("/CacheBox");
 
 			final String externalSd2 = externalSd;
 			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
@@ -669,6 +585,96 @@ public class splash extends Activity
 			startInitial();
 		}
 
+	}
+
+	private String getExternalSdPath(String Folder)
+	{
+		// check if Layout forced from User
+		workPath = Environment.getExternalStorageDirectory() + Folder;
+
+		// extract first part of path ("/mnt/" or "/storage/" ...)
+		int pos = workPath.indexOf("/", 2); // search for the second /
+		String prev = "/mnt";
+		if (pos > 0)
+		{
+			prev = workPath.substring(0, pos);
+		}
+		// search for an external SD-Card
+		String externalSd = "";
+
+		// search for an external sd card on different devices
+		if (testExtSdPath(prev + "/extSdCard"))
+		{
+			externalSd = prev + "/extSdCard" + Folder;
+		}
+		else if (testExtSdPath(prev + "/MicroSD"))
+		{
+			externalSd = prev + "/MicroSD" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard/ext_sd"))
+		{
+			externalSd = prev + "/sdcard/ext_sd" + Folder;
+		}
+		else if (testExtSdPath(prev + "/ext_card"))
+		{
+			// Sony Xperia sola
+			externalSd = prev + "/ext_card" + Folder;
+		}
+		else if (testExtSdPath(prev + "/external"))
+		{
+			externalSd = prev + "/external" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard2"))
+		{
+			externalSd = prev + "/sdcard2" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard1"))
+		{
+			externalSd = prev + "/sdcard1" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
+		{
+			externalSd = prev + "/sdcard/_ExternalSD";
+		}
+		else if (testExtSdPath(prev + "/sdcard-ext"))
+		{
+			externalSd = prev + "/sdcard-ext" + Folder;
+		}
+		else if (testExtSdPath(prev + "/external1"))
+		{
+			externalSd = prev + "/external1" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard/external_sd"))
+		{
+			externalSd = prev + "/sdcard/external_sd" + Folder;
+		}
+		else if (testExtSdPath(prev + "/emmc"))
+		{
+			// for CM9
+			externalSd = prev + "/emmc" + Folder;
+		}
+		else if (testExtSdPath("/Removable/MicroSD"))
+		{
+			// Asus Transformer
+			externalSd = prev + "/Removable/MicroSD" + Folder;
+		}
+		else if (testExtSdPath("/mnt/ext_sd"))
+		{
+			// ODYS Motion
+			externalSd = prev + "/ext_sd" + Folder;
+		}
+		else if (testExtSdPath("/sdcard/tflash"))
+		{
+			// Car Radio
+			externalSd = prev + "/sdcard/tflash" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard"))
+		{
+			// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
+			// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
+			externalSd = prev + "/sdcard" + Folder;
+		}
+		return externalSd;
 	}
 
 	private ArrayList<String> getAdditionalWorkPathArray()

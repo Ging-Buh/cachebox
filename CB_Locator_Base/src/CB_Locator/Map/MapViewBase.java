@@ -1161,7 +1161,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			{
 				// set Theme to null
 				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
-				ManagerBase.Manager.setRenderTheme(null);
+				ManagerBase.Manager.clearRenderTheme();
 			}
 
 		}

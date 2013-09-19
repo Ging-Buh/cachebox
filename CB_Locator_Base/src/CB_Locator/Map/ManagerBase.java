@@ -63,12 +63,6 @@ public abstract class ManagerBase
 
 	protected String RenderTheme;
 
-	public void setRenderTheme(String theme)
-	{
-		RenderTheme = theme;
-		RenderThemeChanged = true;
-	}
-
 	public boolean isRenderThemeSetted()
 	{
 		if (RenderTheme != null && RenderTheme.length() > 0) return true;
@@ -486,6 +480,53 @@ public abstract class ManagerBase
 	XmlRenderTheme renderTheme;
 	float textScale = 1;
 	float DEFAULT_TEXT_SCALE = 1;
+
+	public void clearRenderTheme()
+	{
+		RenderTheme = null;
+		RenderThemeChanged = true;
+	}
+
+	public void setRenderTheme(String theme)
+	{
+		RenderTheme = theme;
+		RenderThemeChanged = true;
+	}
+
+	public void setRenderTheme(XmlRenderTheme RenderTheme)
+	{
+		renderTheme = RenderTheme;
+
+		// Check RenderTheme valid
+		try
+		{
+			RenderThemeHandler.getRenderTheme(getGraphicFactory(), renderTheme);
+		}
+		catch (SAXException e)
+		{
+			String ErrorMsg = e.getMessage();
+			GL.that.Toast(ErrorMsg, 5000);
+			Logger.Error("databaseRenderer: ", ErrorMsg);
+			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+		}
+		catch (ParserConfigurationException e)
+		{
+			String ErrorMsg = e.getMessage();
+			GL.that.Toast(ErrorMsg, 5000);
+			Logger.Error("databaseRenderer: ", ErrorMsg);
+			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+		}
+		catch (IOException e)
+		{
+			String ErrorMsg = e.getMessage();
+			GL.that.Toast(ErrorMsg, 5000);
+			Logger.Error("databaseRenderer: ", ErrorMsg);
+			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+		}
+
+		databaseRenderer = null;
+		RenderThemeChanged = false;
+	}
 
 	public byte[] getMapsforgePixMap(Layer layer, Descriptor desc)
 	{

@@ -3,13 +3,13 @@ package CB_UI_Base.GL_UI.Main.Actions;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,9 +17,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class CB_Action_ShowQuit extends CB_Action
 {
 
+	String OverrideAppName = null;
+
 	public CB_Action_ShowQuit()
 	{
 		super("quit", MenuID.AID_SHOW_QUIT);
+	}
+
+	public void OverrideAppName(String name)
+	{
+		OverrideAppName = name;
 	}
 
 	static GL_MsgBox msg;
@@ -31,22 +38,30 @@ public class CB_Action_ShowQuit extends CB_Action
 
 		if (msg != null && GL.that.actDialog == msg) return;
 
-		msg = GL_MsgBox.Show(Translation.Get("QuitReally"), Translation.Get("Quit?"), MessageBoxButtons.OKCancel, MessageBoxIcon.Stop,
-				new OnMsgBoxClickListener()
+		String Msg = Translation.Get("QuitReally");
+		String Title = Translation.Get("Quit?");
+
+		if (OverrideAppName != null)
+		{
+			Msg = Msg.replace("Cachebox", OverrideAppName);
+			Title = Title.replace("Cachebox", OverrideAppName);
+		}
+
+		msg = GL_MsgBox.Show(Msg, Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Stop, new OnMsgBoxClickListener()
+		{
+
+			@Override
+			public boolean onClick(int which, Object data)
+			{
+				if (which == GL_MsgBox.BUTTON_POSITIVE)
 				{
 
-					@Override
-					public boolean onClick(int which, Object data)
-					{
-						if (which == GL_MsgBox.BUTTON_POSITIVE)
-						{
-
-							Logger.DEBUG("\r\n Quit");
-							platformConector.callQuitt();
-						}
-						return true;
-					}
-				});
+					Logger.DEBUG("\r\n Quit");
+					platformConector.callQuitt();
+				}
+				return true;
+			}
+		});
 	}
 
 	@Override
