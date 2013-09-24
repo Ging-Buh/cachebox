@@ -264,6 +264,8 @@ public class DescriptionImageGrabber
 			File file = new File(local);
 
 			URLConnection con = aURL.openConnection();
+			con.setConnectTimeout(5000);
+			con.setReadTimeout(10000);
 
 			InputStream is = con.getInputStream();
 			BufferedInputStream bis = new BufferedInputStream(is);
