@@ -1,6 +1,5 @@
 package CB_Core.Import;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,8 +13,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-
-import org.apache.http.util.ByteArrayBuffer;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
@@ -256,11 +253,8 @@ public class DescriptionImageGrabber
 		try
 		{
 			String localDir = local.substring(0, local.lastIndexOf("/"));
-
 			if (!FileIO.createDirectory(localDir)) return false;
-
 			URL aURL = new URL(uri.replace("&amp;", "&"));
-
 			File file = new File(local);
 
 			URLConnection con = aURL.openConnection();
@@ -268,23 +262,28 @@ public class DescriptionImageGrabber
 			con.setReadTimeout(10000);
 
 			InputStream is = con.getInputStream();
-			BufferedInputStream bis = new BufferedInputStream(is);
+			FileOutputStream fos = new FileOutputStream(file);
 
-			ByteArrayBuffer baf = new ByteArrayBuffer(50);
-			int current = 0;
-			while ((current = bis.read()) != -1)
+			try
 			{
-				baf.append((byte) current);
+				int d;
+				while ((d = is.read()) != -1)
+				{
+					fos.write(d);
+				}
+			}
+			catch (IOException ex)
+			{
+				// TODO make a callback on exception.
 			}
 
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(baf.toByteArray());
 			fos.close();
 
 			return true;
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			return false;
 		}
 	}

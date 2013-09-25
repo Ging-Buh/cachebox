@@ -501,30 +501,38 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		stopTimer();
 
 		mAnimationTimer = new Timer();
-		mAnimationTimer.schedule(new TimerTask()
+		try
 		{
-			@Override
-			public void run()
+			mAnimationTimer.schedule(new TimerTask()
 			{
-				TimerMethod();
-			}
-
-			private void TimerMethod()
-			{
-				float newPos = mPos - ((mPos - mAnimationTarget) / 2);
-				if ((!mBottomAnimation && mAnimationTarget + 1.5 > mPos) || (mBottomAnimation && mAnimationTarget - 1.5 < mPos))
+				@Override
+				public void run()
 				{
-
-					setListPos(mAnimationTarget, true);
-					stopTimer();
-					return;
+					TimerMethod();
 				}
 
-				// Logger.DEBUG("Set Animatet ListPos");
-				setListPos(newPos, true);
-			}
+				private void TimerMethod()
+				{
+					float newPos = mPos - ((mPos - mAnimationTarget) / 2);
+					if ((!mBottomAnimation && mAnimationTarget + 1.5 > mPos) || (mBottomAnimation && mAnimationTarget - 1.5 < mPos))
+					{
 
-		}, 0, ANIMATION_TICK);
+						setListPos(mAnimationTarget, true);
+						stopTimer();
+						return;
+					}
+
+					// Logger.DEBUG("Set Animatet ListPos");
+					setListPos(newPos, true);
+				}
+
+			}, 0, ANIMATION_TICK);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void stopTimer()
