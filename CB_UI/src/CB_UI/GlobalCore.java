@@ -194,6 +194,8 @@ public class GlobalCore extends CB_UI_Base.Global
 			// switch off auto select
 			GlobalCore.setAutoResort(false);
 		}
+
+		GL.that.renderOnce("setSelectedWaypoint");
 	}
 
 	public static void NearestCache(Cache nearest)

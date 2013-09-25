@@ -6,14 +6,14 @@ import CB_UI.GL_UI.Views.SpoilerView;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -39,7 +39,9 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 	@Override
 	public boolean getEnabled()
 	{
-		return true;
+		boolean hasSpoiler = false;
+		if (GlobalCore.getSelectedCache() != null) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
+		return hasSpoiler;
 	}
 
 	int spoilerState = -1;

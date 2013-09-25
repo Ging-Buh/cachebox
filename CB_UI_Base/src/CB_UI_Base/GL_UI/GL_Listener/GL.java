@@ -1635,6 +1635,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector)
 	{
+
 		if (!DialogIsShown || !mDialog.getchilds().contains((dialog)))
 		{
 			Timer timer = new Timer();
@@ -1660,7 +1661,7 @@ public class GL implements ApplicationListener, InputProcessor
 			actDialog = dialogHistory.get(0);
 			// actDialog.onShow();
 			// actDialog.setEnabled(true);
-			// dialogHistory.remove(0);
+			dialogHistory.remove(0);
 			// DialogIsShown = true;
 			// platformConector.showForDialog();
 			showDialog(actDialog);
@@ -1681,7 +1682,14 @@ public class GL implements ApplicationListener, InputProcessor
 			@Override
 			public void run()
 			{
-				if (dialog != null) dialog.dispose();
+
+				if (dialog != null)
+				{
+					if (!dialog.isDisposed())
+					{
+						dialog.dispose();
+					}
+				}
 			}
 		};
 		timer.schedule(task, 500);

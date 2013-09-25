@@ -306,14 +306,25 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 				html += "</br></br>";
 			}
 
-			try
+			final String FinalHtml = html;
+
+			main.mainActivity.runOnUiThread(new Runnable()
 			{
-				this.loadDataWithBaseURL("fake://fake.de", html, mimeType, encoding, null);
-			}
-			catch (Exception e)
-			{
-				return; // if an exception here, then this is not initializes
-			}
+
+				@Override
+				public void run()
+				{
+					try
+					{
+						DescriptionViewControl.this.loadDataWithBaseURL("fake://fake.de", FinalHtml, mimeType, encoding, null);
+					}
+					catch (Exception e)
+					{
+						return; // if an exception here, then this is not initializes
+					}
+				}
+			});
+
 		}
 
 		try

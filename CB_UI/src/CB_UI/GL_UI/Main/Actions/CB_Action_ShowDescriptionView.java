@@ -20,11 +20,13 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
@@ -147,12 +149,32 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							// Reload result from DB
 							synchronized (Database.Data.Query)
 							{
-								String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.settings.GcLogin.getValue());
+								String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 								CacheListDAO cacheListDAO = new CacheListDAO();
 								cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 							}
 
 							CachListChangedEventList.Call();
+							Cache selCache = Database.Data.Query.GetCacheByGcCode(searchC.gcCode);
+							GlobalCore.setSelectedCache(selCache);
+							GL.that.RunOnGL(new runOnGL()
+							{
+
+								@Override
+								public void run()
+								{
+									GL.that.RunOnGL(new runOnGL()
+									{
+
+										@Override
+										public void run()
+										{
+											GL.that.renderOnce("after reload Cache");
+										}
+									});
+								}
+							});
+
 							wd.close();
 						}
 					});

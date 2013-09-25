@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.iStartPictureApp;
@@ -218,10 +219,19 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	@Override
 	public void OnShow()
 	{
-		aktCache = GlobalCore.getSelectedCache();
+		// clear old selection
+		spoilerFilename.setText(Translation.Get("NoSpoiler"));
+		spoilerImage.loadDataWithBaseURL("fake://not/needed", "", "text/html", "utf-8", "");
 
-		if (aktCache == null) return;
+		aktCache = GlobalCore.getSelectedCache();
 		lBitmaps.clear();
+
+		if (aktCache == null)
+		{
+			g.setAdapter(new ImageAdapter(context));
+			return;
+		}
+
 		for (ImageEntry image : aktCache.getSpoilerRessources())
 		{
 			try
