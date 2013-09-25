@@ -71,6 +71,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 		this.setWebViewClient(clint);
 		that = this;
+		this.setFocusable(false);
 	}
 
 	public DescriptionViewControl(Context context, AttributeSet attrs)
