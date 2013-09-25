@@ -631,6 +631,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						SearchDialog.that.showNotCloseAutomaticly();
 						SearchDialog.that.addSearch(ExtSearch_GcCode, searchMode.GcCode);
+						ExtSearch_GcCode = null;
 					}
 					else
 					{
@@ -708,6 +709,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									FilterProperties props = GlobalCore.LastFilter;
 
 									EditFilterSettings.ApplyFilter(props);
+
+									ExtSearch_GpxPath = null;
 
 									GL.that.Toast(Msg, 3000);
 								}
@@ -1118,6 +1121,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					platformConector.FirstShow();
 				}
 			}
+
+			// delete handled extras
+			getIntent().removeExtra("GcCode");
+			getIntent().removeExtra("GpxPath");
 		}
 
 	}
