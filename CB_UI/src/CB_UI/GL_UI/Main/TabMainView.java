@@ -284,6 +284,10 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		GlobalCore.setAutoResort(Config.StartWithAutoSelect.getValue());
 
+		// create MapView Instanz
+		CB_TabView mapTap = GlobalCore.isTab ? RightTab : LeftTab;
+		TabMainView.mapView = new MapView(mapTap.getContentRec(), false, "MapView");
+
 		platformConector.FirstShow();
 		filterSetChanged();
 		GL.that.removeRenderView(this);
