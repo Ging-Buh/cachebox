@@ -19,11 +19,12 @@ package CB_UI.GL_UI.Main.Actions.QuickButton;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
@@ -127,7 +128,7 @@ public class QuickButtonItem extends ListViewItemBase
 
 		super.render(batch);
 
-		if (mAction.getName().equals("AutoResort"))
+		if (mAction.getId() == MenuID.AID_AUTO_RESORT)
 		{
 			if (GlobalCore.getAutoResort() && autoResortState != 1)
 			{
@@ -140,7 +141,7 @@ public class QuickButtonItem extends ListViewItemBase
 				autoResortState = 0;
 			}
 		}
-		else if (mAction.getName().toLowerCase().equals("spoiler"))
+		else if (mAction.getId() == MenuID.AID_SHOW_SPOILER)
 		{
 			boolean hasSpoiler = false;
 			if (GlobalCore.getSelectedCache() != null) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
@@ -158,7 +159,7 @@ public class QuickButtonItem extends ListViewItemBase
 				spoilerState = 0;
 			}
 		}
-		else if (mAction.getName().equals("hint"))
+		else if (mAction.getId() == MenuID.AID_SHOW_HINT)
 		{
 
 			if (mAction.getEnabled() && hintState != 1)

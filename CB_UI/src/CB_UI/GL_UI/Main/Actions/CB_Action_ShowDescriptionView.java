@@ -153,8 +153,6 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							}
 
 							CachListChangedEventList.Call();
-
-							CachListChangedEventList.Call();
 							wd.close();
 						}
 					});
