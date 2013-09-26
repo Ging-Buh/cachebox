@@ -54,8 +54,16 @@ public class DescriptionView extends CB_View_Base
 						DescriptionView.this.height - infoHeight);
 			}
 		};
-		timer.schedule(task, 100);
+		timer.schedule(task, 50);
 
+	}
+
+	@Override
+	public void onResized(CB_RectF rec)
+	{
+		super.onResized(rec);
+		onShow();
+		// cacheInfo.setY(this.height - cacheInfo.getHeight());
 	}
 
 	@Override

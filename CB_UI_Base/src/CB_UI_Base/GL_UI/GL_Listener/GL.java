@@ -1787,6 +1787,7 @@ public class GL implements ApplicationListener, InputProcessor
 	 */
 	public void RestartRender()
 	{
+		listenerInterface.RenderContinous();
 		stopRender = false;
 		renderOnce("Restart Render");
 	}

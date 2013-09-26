@@ -1017,7 +1017,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				{
 					GL.that.registerRenderStartetListner(new renderStartet()
 					{
-
 						@Override
 						public void renderIsStartet()
 						{
@@ -1034,7 +1033,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onResume()
 	{
-
+		viewGL.RenderContinous();
 		if (stopped)
 		{
 			showWaitToRenderStartet();
