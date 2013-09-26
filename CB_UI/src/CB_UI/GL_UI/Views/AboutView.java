@@ -63,6 +63,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		super(rec, Name);
 		Me = this;
 		registerSkinChangedEvent();
+		createControls();
 	}
 
 	@Override
@@ -106,8 +107,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		if (this.getBackground() == null) Initial();
 	}
 
-	@Override
-	protected void Initial()
+	private void createControls()
 	{
 		this.removeChilds();
 
@@ -435,6 +435,12 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	@Override
 	public void SpeedChanged()
 	{
+	}
+
+	@Override
+	protected void Initial()
+	{
+
 	}
 
 }
