@@ -1,5 +1,6 @@
 package CB_Core.Import;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +14,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import org.apache.http.util.ByteArrayBuffer;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
@@ -263,20 +266,28 @@ public class DescriptionImageGrabber
 
 			InputStream is = con.getInputStream();
 			FileOutputStream fos = new FileOutputStream(file);
-
-			try
+			BufferedInputStream bis = new BufferedInputStream(is);
+			ByteArrayBuffer baf = new ByteArrayBuffer(10024);
+			int current = 0;
+			int count = 0;
+			while ((current = bis.read()) != -1)
 			{
-				int d;
-				while ((d = is.read()) != -1)
+				baf.append((byte) current);
+				count++;
+				if (count > 10000)
 				{
-					fos.write(d);
+					fos.write(baf.toByteArray());
+					count = 0;
+					baf.clear();
+					baf.setLength(0);
 				}
 			}
-			catch (IOException ex)
-			{
-				// TODO make a callback on exception.
-			}
 
+			fos.write(baf.toByteArray());
+			/*
+			 * try { int d; while ((d = is.read()) != -1) { fos.write(d); } } catch (IOException ex) { // TODO make a callback on exception.
+			 * }
+			 */
 			fos.close();
 
 			return true;
