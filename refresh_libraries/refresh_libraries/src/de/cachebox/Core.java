@@ -21,12 +21,12 @@ import java.util.zip.ZipFile;
 
 import javax.swing.JFileChooser;
 
-import CB_Core.GlobalCore;
-import CB_Core.GL_UI.utils.ColorDrawable;
-import CB_Core.Util.Downloader;
-import CB_Core.Util.CopyHelper.Copy;
-import CB_Core.Util.CopyHelper.Copy.CopyMsg;
-import CB_Core.Util.CopyHelper.CopyRule;
+import CB_UI_Base.Global;
+import CB_UI_Base.GL_UI.utils.ColorDrawable;
+import CB_Utils.Util.Downloader;
+import CB_Utils.Util.CopyHelper.Copy;
+import CB_Utils.Util.CopyHelper.Copy.CopyMsg;
+import CB_Utils.Util.CopyHelper.CopyRule;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -822,7 +822,7 @@ public class Core implements ApplicationListener
 		writeMsg("Copy: ");
 
 		// Change TexturFilter at *.spp files with in all output folder
-		String br = GlobalCore.br;
+		String br = Global.br;
 		for (String folder : outPutFolders)
 		{
 			File dir = new File(folder);
