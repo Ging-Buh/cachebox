@@ -37,9 +37,14 @@ public class DescriptionView extends CB_View_Base
 	{
 		if (cacheInfo != null) this.removeChild(cacheInfo);
 		Cache sel = GlobalCore.getSelectedCache();
-		cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
-		cacheInfo.setY(this.height - cacheInfo.getHeight());
-		this.addChild(cacheInfo);
+		if (sel != null)
+		{
+			cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
+			cacheInfo.setY(this.height - cacheInfo.getHeight());
+
+			this.addChild(cacheInfo);
+
+		}
 
 		// Rufe ANDROID VIEW auf
 		Timer timer = new Timer();
