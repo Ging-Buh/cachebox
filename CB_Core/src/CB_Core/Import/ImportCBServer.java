@@ -156,6 +156,7 @@ public class ImportCBServer
 					}
 					startIndex += anzToLoad;
 					dataAvailable = gclAnswer.isDataAvailable(); // weitere Daten vorhanden?
+					System.gc();
 				}
 				else
 				{

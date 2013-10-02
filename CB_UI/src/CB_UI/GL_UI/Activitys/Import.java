@@ -54,6 +54,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -70,7 +71,13 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 {
 
 	final boolean MAP_LINE_ACTIVE = false;
+	boolean PQ_LINE_ACTIVE = true;
 	boolean CBS_LINE_ACTIVE = false;
+	boolean GPX_LINE_ACTIVE = true;
+	boolean GCV_LINE_ACTIVE = true;
+	boolean LOG_LINE_ACTIVE = true;
+	boolean DB_LINE_ACTIVE = true;
+	private int importType = 0; // um direkt gleich den Import für eine bestimmte API starten zu können
 
 	private V_ListView lvPQs, lvCBServer;
 	private Button bOK, bCancel, refreshPqList, refreshCBServerList;
@@ -110,8 +117,48 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	public Import()
 	{
+		this(0);
+	}
+
+	public Import(int importType)
+	{
 		super(ActivityRec(), "importActivity");
+		this.importType = importType;
 		CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
+		switch (importType)
+		{
+		case MenuID.MI_IMPORT_GS_PQ:
+			PQ_LINE_ACTIVE = true;
+			CBS_LINE_ACTIVE = false;
+			GPX_LINE_ACTIVE = false;
+			GCV_LINE_ACTIVE = false;
+			LOG_LINE_ACTIVE = true;
+			DB_LINE_ACTIVE = true;
+			break;
+		case MenuID.MI_IMPORT_CBS:
+			PQ_LINE_ACTIVE = false;
+			CBS_LINE_ACTIVE = true;
+			GPX_LINE_ACTIVE = false;
+			GCV_LINE_ACTIVE = false;
+			LOG_LINE_ACTIVE = true;
+			DB_LINE_ACTIVE = true;
+			break;
+		case MenuID.MI_IMPORT_GPX:
+			PQ_LINE_ACTIVE = false;
+			CBS_LINE_ACTIVE = false;
+			GPX_LINE_ACTIVE = true;
+			GCV_LINE_ACTIVE = false;
+			LOG_LINE_ACTIVE = true;
+			DB_LINE_ACTIVE = true;
+			break;
+		case MenuID.MI_IMPORT_GCV:
+			PQ_LINE_ACTIVE = false;
+			CBS_LINE_ACTIVE = false;
+			GPX_LINE_ACTIVE = false;
+			GCV_LINE_ACTIVE = true;
+			LOG_LINE_ACTIVE = true;
+			DB_LINE_ACTIVE = true;
+		}
 
 		CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
 		innerHeight = 1000;
@@ -137,6 +184,31 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		initialForm();
 
 		Layout();
+
+		if (importType == MenuID.MI_IMPORT_GS_PQ)
+		{
+			checkImportPQfromGC.setChecked(true);
+			checkImportPQfromGC.setVisible(true);
+			refreshPqList();
+			PQ_ListCollapseBox.expand();
+		}
+		else if (importType == MenuID.MI_IMPORT_CBS)
+		{
+			checkImportFromCBServer.setChecked(true);
+			checkImportFromCBServer.setVisible(true);
+			refreshCBServerList();
+			CBServerCollapseBox.expand();
+		}
+		else if (importType == MenuID.MI_IMPORT_GPX)
+		{
+			checkBoxImportGPX.setChecked(true);
+			checkBoxImportGPX.setVisible(true);
+		}
+		else if (importType == MenuID.MI_IMPORT_GCV)
+		{
+			checkBoxGcVote.setChecked(true);
+			checkBoxGcVote.setVisible(true);
+		}
 
 		// scrollBox.setBackground(new ColorDrawable(Color.RED));
 	}
@@ -245,11 +317,20 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkImportPQfromGC = new chkBox("PQ");
 		checkImportPQfromGC.setX(innerLeft);
 		checkImportPQfromGC.setY(innerHeight - checkImportPQfromGC.getHeight());
-
+		if (!PQ_LINE_ACTIVE)
+		{
+			checkImportPQfromGC.setVisible(false);
+			checkImportPQfromGC.setHeight(0);
+		}
 		lblPQ = new Label(checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3
 				- checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight(), "");
 		lblPQ.setFont(Fonts.getNormal());
 		lblPQ.setText(Translation.Get("PQfromGC"));
+		if (!PQ_LINE_ACTIVE)
+		{
+			lblPQ.setVisible(false);
+			lblPQ.setHeight(0);
+		}
 
 		scrollBox.addChild(checkImportPQfromGC);
 		scrollBox.addChild(lblPQ);
@@ -348,7 +429,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxImportGPX = new chkBox("GPX");
 		checkBoxImportGPX.setX(innerLeft);
 		checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
-
+		if (!GPX_LINE_ACTIVE)
+		{
+			checkBoxImportGPX.setVisible(false);
+			checkBoxImportGPX.setHeight(0);
+		}
 		lblGPX = new Label(checkBoxImportGPX.getMaxX() + margin, checkBoxImportGPX.getY(), innerWidth - margin * 3
 				- checkBoxImportGPX.getWidth(), checkBoxImportGPX.getHeight(), "");
 		lblGPX.setFont(Fonts.getNormal());
@@ -363,11 +448,20 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxGcVote = new chkBox("GcVote");
 		checkBoxGcVote.setX(innerLeft);
 		checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
-
+		if (!GCV_LINE_ACTIVE)
+		{
+			checkBoxGcVote.setVisible(false);
+			checkBoxGcVote.setHeight(0);
+		}
 		lblGcVote = new Label(checkBoxGcVote.getMaxX() + margin, checkBoxGcVote.getY(),
 				innerWidth - margin * 3 - checkBoxGcVote.getWidth(), checkBoxGcVote.getHeight(), "");
 		lblGcVote.setFont(Fonts.getNormal());
 		lblGcVote.setText(Translation.Get("GCVoteRatings"));
+		if (!GCV_LINE_ACTIVE)
+		{
+			lblGcVote.setVisible(false);
+			lblGcVote.setHeight(0);
+		}
 
 		scrollBox.addChild(checkBoxGcVote);
 		scrollBox.addChild(lblGcVote);
@@ -426,12 +520,21 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadSpoiler.getY();
 
 		checkBoxCleanLogs.setY(yPos - margin - checkBoxCleanLogs.getHeight());
-
+		if (!LOG_LINE_ACTIVE)
+		{
+			checkBoxCleanLogs.setVisible(false);
+			checkBoxCleanLogs.setHeight(0);
+		}
 		lblLogs = new Label(checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3
 				- checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight(), "");
 		lblLogs.setFont(Fonts.getNormal());
 		lblLogs.setText(Translation.Get("DeleteLogs"));
 
+		if (!LOG_LINE_ACTIVE)
+		{
+			lblLogs.setVisible(false);
+			lblLogs.setHeight(0);
+		}
 		scrollBox.addChild(checkBoxCleanLogs);
 		scrollBox.addChild(lblLogs);
 	}
@@ -547,11 +650,21 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxCompactDB.setX(innerLeft);
 		checkBoxCompactDB.setY(LogCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
+		if (!DB_LINE_ACTIVE)
+		{
+			checkBoxCompactDB.setVisible(false);
+			checkBoxCompactDB.setHeight(0);
+		}
 		lblCompact = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3
 				- checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
 		lblCompact.setFont(Fonts.getNormal());
 		lblCompact.setText(Translation.Get("CompactDB"));
 
+		if (!DB_LINE_ACTIVE)
+		{
+			lblCompact.setVisible(false);
+			lblCompact.setHeight(0);
+		}
 		scrollBox.addChild(checkBoxCompactDB);
 		scrollBox.addChild(lblCompact);
 	}
@@ -603,51 +716,29 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private void initialForm()
 	{
-		checkBoxImportMaps.setChecked(Config.CacheMapData.getValue());
+		checkBoxImportMaps.setChecked(MAP_LINE_ACTIVE ? Config.CacheMapData.getValue() : false);
 		checkBoxPreloadImages.setChecked(Config.CacheImageData.getValue());
 		checkBoxPreloadSpoiler.setChecked(Config.CacheSpoilerData.getValue());
-		checkBoxImportGPX.setChecked(Config.ImportGpx.getValue());
+		checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? Config.ImportGpx.getValue() : false);
 		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkImportFromCBServer.setOnCheckedChangeListener(checkImportFromCBServer_CheckStateChanged);
-		checkBoxGcVote.setChecked(Config.ImportRatings.getValue());
+		checkBoxGcVote.setChecked(GCV_LINE_ACTIVE ? Config.ImportRatings.getValue() : false);
 
-		// First check API-Key with visual Feedback
-		// GroundspeakAPI.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
-		// {
-		//
-		// @Override
-		// public void chekReady()
-		// {
-		// if (GroundspeakAPI.isValidAPI_Key(true))
-		// {
-		// checkImportPQfromGC.setChecked(Config.ImportPQsFromGeocachingCom.getValue());
-		// checkImportPQfromGC.setEnabled(true);
-		// checkBoxPreloadSpoiler.setEnable(true);
-		// lblSpoiler.setTextColor(Fonts.getFontColor());
-		// if (checkImportPQfromGC.isChecked())
-		// {
-		// PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
-		// }
-		// else
-		// {
-		// PQ_ListCollapseBox.setAnimationHeight(0);
-		// }
-		// }
-		// else
-		// {
-		// checkImportPQfromGC.setChecked(false);
-		// checkImportPQfromGC.setEnabled(false);
-		// checkBoxPreloadSpoiler.setEnable(false);
-		// lblSpoiler.setTextColor(Fonts.getDisableFontColor());
-		// checkImportPQfromGC.setHeight(0);
-		// CollapseBoxHeight = 0;
-		// lblPQ.setHeight(0);
-		// }
-		// }
-		// });
-
-		checkImportPQfromGC.setChecked(Config.ImportPQsFromGeocachingCom.getValue());
+		checkImportPQfromGC.setChecked(PQ_LINE_ACTIVE ? Config.ImportPQsFromGeocachingCom.getValue() : false);
 		checkImportPQfromGC.setEnabled(true);
+
+		if (checkImportPQfromGC.isChecked() == true)
+		{
+			checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? true : false);
+			checkBoxImportGPX.setEnabled(false);
+		}
+		checkBoxCompactDB.setChecked(DB_LINE_ACTIVE ? Config.CompactDB.getValue() : false);
+
+		/*
+		 * if (importType == MenuID.MI_IMPORT_GS_PQ) { // alles andere als den PQ Import deaktivieren checkImportPQfromGC.setChecked(true);
+		 * checkImportFromCBServer.setChecked(false); checkBoxGcVote.setChecked(false); checkBoxCleanLogs.setChecked(false);
+		 * checkBoxCompactDB.setChecked(false); }
+		 */
 		checkBoxPreloadSpoiler.setEnable(true);
 		lblSpoiler.setTextColor(Fonts.getFontColor());
 		if (checkImportPQfromGC.isChecked())
@@ -668,17 +759,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			CBServerCollapseBox.setAnimationHeight(0);
 		}
 
-		if (checkImportPQfromGC.isChecked() == true)
-		{
-			checkBoxImportGPX.setChecked(true);
-			checkBoxImportGPX.setEnabled(false);
-		}
-
 		PQ_ListCollapseBox.setAnimationListner(Animationlistner);
 		CBServerCollapseBox.setAnimationListner(Animationlistner);
 		LogCollapseBox.setAnimationListner(Animationlistner);
 
-		checkBoxCleanLogs.setChecked(Config.DeleteLogs.getValue());
+		checkBoxCleanLogs.setChecked(LOG_LINE_ACTIVE ? Config.DeleteLogs.getValue() : false);
+
 		checkBoxCleanLogs.setOnCheckedChangeListener(checkLog_CheckStateChanged);
 
 		if (checkBoxCleanLogs.isChecked())
@@ -699,8 +785,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		{
 			LogCollapseBox.setAnimationHeight(0);
 		}
-
-		checkBoxCompactDB.setChecked(Config.CompactDB.getValue());
 
 	}
 
@@ -739,7 +823,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		@Override
 		public void onCheckedChanged(chkBox view, boolean isChecked)
 		{
-			if (checkImportPQfromGC.isChecked())
+			if ((importType == MenuID.MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked()))
 			{
 				checkBoxImportGPX.setChecked(true);
 				checkBoxImportGPX.setEnabled(false);

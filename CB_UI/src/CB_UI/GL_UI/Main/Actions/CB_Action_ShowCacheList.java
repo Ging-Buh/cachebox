@@ -6,14 +6,13 @@ import java.util.TimerTask;
 import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
 import CB_Core.Types.CacheWithWP;
-import CB_RpcCore.ClientCB.RpcClientCB;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Activitys.Import;
+import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI.GL_UI.Activitys.SyncActivity;
-import CB_UI.GL_UI.Activitys.APIs.ShowAPIImportList;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
@@ -24,13 +23,11 @@ import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_Utils.StringH;
-import cb_rpc.Functions.RpcAnswer;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -117,8 +114,9 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 
 					return true;
 				case MenuID.MI_IMPORT:
-					Import imp = new Import();
-					imp.show();
+					// Import imp = new Import();
+					// imp.show();
+					showImportMenu();
 					return true;
 				case MenuID.MI_SYNC:
 					SyncActivity sync = new SyncActivity();
@@ -171,19 +169,21 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					TabMainView.actionDelCaches.Execute();
 					return true;
 				case MenuID.MI_RpcGetExportList:
-					RpcClientCB rpc = new RpcClientCB();
-					RpcAnswer answer = rpc.getExportList();
-					if (answer != null)
-					{
-						GL_MsgBox.Show("RpcAntwort: " + answer.toString());
-					}
 
-					ShowAPIImportList impApi = new ShowAPIImportList();
-					impApi.show();
+					// RpcClientCB rpc = new RpcClientCB();
+					// RpcAnswer answer = rpc.getExportList();
+					// if (answer != null)
+					// {
+					// GL_MsgBox.Show("RpcAntwort: " + answer.toString());
+					// }
+					//
+					// ShowAPIImportList impApi = new ShowAPIImportList();
+					// impApi.show();
 					return true;
 				}
 				return false;
 			}
+
 		});
 
 		String DBName = Config.DatabasePath.getValue();
@@ -213,9 +213,180 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
 		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCacheBase.Icons.get(IconName.addCache_57.ordinal()));
 		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCacheBase.Icons.get(IconName.delete_28.ordinal()));
-		if (!StringH.isEmpty(Config.CBS_IP.getValue())) cm.addItem(MenuID.MI_RpcGetExportList, "RPC-GetExportList",
+		if (!StringH.isEmpty(Config.CBS_IP.getValue())) cm.addItem(MenuID.MI_RpcGetExportList, "Import from CB-Server",
 				SpriteCacheBase.Icons.get(IconName.list_21.ordinal()));
+
 		return cm;
+	}
+
+	private void showImportMenu()
+	{
+		Menu icm = new Menu("CacheListShowImportMenu");
+
+		icm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GS)
+				{
+					showImportMenu_GS();
+				}
+				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_CBS)
+				{
+					// Menü noch nicht zeigen da darin nur 1 Befehl ist
+					// showImportMenu_CBS();
+					import_CBS();
+				}
+				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GPX)
+				{
+					// Menü nicht zeigen da darin nur 1 Befehl ist
+					// showImportMenu_GPX();
+					import_GPX();
+				}
+				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GCV)
+				{
+					// Menü nicht zeigen da darin nur 1 Befehl ist
+					// showImportMenu_GCV();
+					import_GCV();
+				}
+				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT)
+				{
+					Import imp = new Import();
+					imp.show();
+				}
+				return true;
+			}
+		});
+		MenuItem mi;
+
+		mi = icm.addItem(MenuID.MI_IMPORT_GS, "Groundspeak API");
+		if (!StringH.isEmpty(Config.CBS_IP.getValue())) mi = icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
+		mi = icm.addItem(MenuID.MI_IMPORT_GPX, "GPX");
+		mi = icm.addItem(MenuID.MI_IMPORT_GCV, "GC Vote");
+		mi = icm.addItem(MenuID.MI_IMPORT, "Import");
+		icm.Show();
+	}
+
+	protected void showImportMenu_GCV()
+	{
+		Menu icm = new Menu("CacheListShowImportMenu");
+
+		icm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GCV)
+				{
+					import_GCV();
+				}
+				return true;
+			}
+		});
+		MenuItem mi;
+
+		mi = icm.addItem(MenuID.MI_IMPORT_GCV, "GC-Vote Import");
+
+		icm.Show();
+	}
+
+	private void import_GCV()
+	{
+		Import imp = new Import(MenuID.MI_IMPORT_GCV);
+		imp.show();
+	}
+
+	protected void showImportMenu_GPX()
+	{
+		Menu icm = new Menu("CacheListShowImportMenu");
+
+		icm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GPX)
+				{
+					import_GPX();
+				}
+				return true;
+			}
+		});
+		MenuItem mi;
+
+		mi = icm.addItem(MenuID.MI_IMPORT_GPX, "GPX Import");
+
+		icm.Show();
+	}
+
+	private void import_GPX()
+	{
+		Import imp = new Import(MenuID.MI_IMPORT_GPX);
+		imp.show();
+	}
+
+	protected void showImportMenu_CBS()
+	{
+		Menu icm = new Menu("CacheListShowImportMenu");
+
+		icm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_CBS)
+				{
+					import_CBS();
+				}
+				return true;
+			}
+		});
+		MenuItem mi;
+
+		mi = icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
+
+		icm.Show();
+	}
+
+	private void import_CBS()
+	{
+		Import imp = new Import(MenuID.MI_IMPORT_CBS);
+		imp.show();
+	}
+
+	private void showImportMenu_GS()
+	{
+		Menu icm = new Menu("CacheListShowImportMenu");
+
+		icm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GS_PQ)
+				{
+					Import imp = new Import(MenuID.MI_IMPORT_GS_PQ);
+					imp.show();
+				}
+				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GS_API)
+				{
+					new SearchOverPosition().show();
+				}
+				return true;
+			}
+		});
+		MenuItem mi;
+
+		mi = icm.addItem(MenuID.MI_IMPORT_GS_PQ, "Pocket Query");
+		mi = icm.addItem(MenuID.MI_IMPORT_GS_API, "Umkreissuche");
+
+		icm.Show();
 	}
 
 	public void setName(String newName)

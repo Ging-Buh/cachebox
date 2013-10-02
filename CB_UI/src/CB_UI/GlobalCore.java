@@ -31,7 +31,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 public class GlobalCore extends CB_UI_Base.Global
 {
 
-	public static final int CurrentRevision = 1862;
+	public static final int CurrentRevision = 1867;
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "Test";
 
@@ -358,7 +358,6 @@ public class GlobalCore extends CB_UI_Base.Global
 				@Override
 				public void isCanceld()
 				{
-					 
 
 				}
 			}, new Runnable()
