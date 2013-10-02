@@ -23,19 +23,19 @@ public class BshLayer extends Layer
 		}
 		catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 			this.interpreter = null;
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 			this.interpreter = null;
 		}
 		catch (EvalError e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 			this.interpreter = null;
 		}
@@ -54,7 +54,7 @@ public class BshLayer extends Layer
 		}
 		catch (EvalError e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		return null;

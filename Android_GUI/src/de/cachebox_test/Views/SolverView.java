@@ -376,7 +376,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

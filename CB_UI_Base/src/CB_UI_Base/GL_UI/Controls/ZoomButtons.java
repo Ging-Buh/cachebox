@@ -47,6 +47,9 @@ public class ZoomButtons extends CB_View_Base
 	private boolean fadeIn = false;
 	private float FadeValue = 1.0f;
 
+	private boolean dontFadeOut = false;
+	private boolean portrait = false;
+
 	// # Constructors
 	/**
 	 * Constructor für ein neues TestView mit Angabe der linken unteren Ecke und der Höhe und Breite
@@ -83,6 +86,33 @@ public class ZoomButtons extends CB_View_Base
 	{
 		this.setClickable(true);
 		mOnClickListenerDown = l;
+	}
+
+	public void disableFadeOut()
+	{
+		dontFadeOut = true;
+	}
+
+	public void enableFadeOut()
+	{
+		dontFadeOut = false;
+	}
+
+	public boolean FadeOutIsEnabled()
+	{
+		return !dontFadeOut;
+	}
+
+	public void setPortrait()
+	{
+		portrait = true;
+		onResized(this);
+	}
+
+	public void setPortrait(boolean value)
+	{
+		portrait = value;
+		onResized(this);
 	}
 
 	@Override
@@ -183,6 +213,7 @@ public class ZoomButtons extends CB_View_Base
 	@Override
 	public void render(SpriteBatch batch)
 	{
+		super.render(batch);
 
 		if (firstDraw)
 		{
@@ -204,7 +235,25 @@ public class ZoomButtons extends CB_View_Base
 		{
 			btnDown = SpriteCacheBase.ZoomBtn.get(onTouchDown ? 1 : 0);
 		}
-		btnDown.setBounds(HitRecDown.getX(), HitRecDown.getY(), HitRecDown.getWidth(), HitRecDown.getHeight());
+
+		float hw = HitRecDown.getWidth();
+		float hh = HitRecDown.getHeight();
+
+		if (portrait)
+		{
+			float e = btnDown.getWidth() / 2;
+			float f = btnDown.getHeight() / 2;
+
+			btnDown.setOrigin(f, f);
+			btnDown.setRotation(90);
+
+			hw = hh;
+			hh = HitRecDown.getWidth();
+
+		}
+
+		btnDown.setBounds(HitRecDown.getX(), HitRecDown.getY(), hw, hh);
+
 		btnDown.draw(batch, FadeValue);
 
 		// draw up button
@@ -217,7 +266,23 @@ public class ZoomButtons extends CB_View_Base
 		{
 			btnUp = SpriteCacheBase.ZoomBtn.get(onTouchUp ? 4 : 3);
 		}
-		btnUp.setBounds(HitRecUp.getX(), HitRecUp.getY(), HitRecUp.getWidth(), HitRecUp.getHeight());
+
+		hw = HitRecUp.getWidth();
+		hh = HitRecUp.getHeight();
+
+		if (portrait)
+		{
+			float e = btnUp.getWidth() / 2;
+			float f = btnUp.getHeight() / 2;
+			btnUp.setOrigin(f, f);
+			btnUp.setRotation(90);
+
+			hw = hh;
+			hh = HitRecUp.getWidth();
+		}
+
+		btnUp.setBounds(HitRecUp.getX(), HitRecUp.getY(), hw, hh);
+
 		btnUp.draw(batch, FadeValue);
 	}
 
@@ -332,7 +397,10 @@ public class ZoomButtons extends CB_View_Base
 
 	private void startTimerToFadeOut()
 	{
+
 		cancelTimerToFadeOut();
+
+		if (dontFadeOut) return;
 
 		timer = new Timer();
 		TimerTask task = new TimerTask()
@@ -349,6 +417,15 @@ public class ZoomButtons extends CB_View_Base
 
 	private void checkFade()
 	{
+
+		if (dontFadeOut)
+		{
+			fadeOut = false;
+			fadeIn = false;
+			FadeValue = 1f;
+			return;
+		}
+
 		if (!fadeOut && !fadeIn && !this.isVisible())
 		{
 			GL.that.removeRenderView(this);
@@ -408,9 +485,19 @@ public class ZoomButtons extends CB_View_Base
 		HitRecUp.setPos(new Vector2()); // setze auf 0,0
 		HitRecDown = rec.copy();
 		HitRecDown.setPos(new Vector2()); // setze auf 0,0
-		HitRecUp.setWidth(rec.getWidth() / 2);
-		HitRecDown.setWidth(rec.getWidth() / 2);
-		HitRecUp.setPos(new Vector2(HitRecDown.getWidth(), 0));
+
+		if (portrait)
+		{
+			HitRecUp.setHeight(rec.getHeight() / 2f);
+			HitRecDown.setHeight(rec.getHeight() / 2f);
+			HitRecUp.setPos(new Vector2(0, HitRecDown.getHeight()));
+		}
+		else
+		{
+			HitRecUp.setWidth(rec.getWidth() / 2f);
+			HitRecDown.setWidth(rec.getWidth() / 2f);
+			HitRecUp.setPos(new Vector2(HitRecDown.getWidth(), 0));
+		}
 
 	}
 

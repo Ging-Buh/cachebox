@@ -43,7 +43,7 @@ public class ApiUnavailable extends Toast
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

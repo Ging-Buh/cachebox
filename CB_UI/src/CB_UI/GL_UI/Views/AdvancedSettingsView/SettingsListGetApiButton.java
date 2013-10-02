@@ -23,14 +23,14 @@ public class SettingsListGetApiButton<T> extends SettingBase<T>
 	@Override
 	public String toDBString()
 	{
-		// TODO Auto-generated method stub
+		 
 		return null;
 	}
 
 	@Override
 	public boolean fromDBString(String dbString)
 	{
-		// TODO Auto-generated method stub
+		 
 		return false;
 	}
 

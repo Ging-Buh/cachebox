@@ -85,7 +85,7 @@ public class DeleteDialog extends ButtonDialog
 					@Override
 					public void isCanceld()
 					{
-						// TODO Auto-generated method stub
+						 
 
 					}
 				}, new Runnable()
@@ -128,7 +128,7 @@ public class DeleteDialog extends ButtonDialog
 					@Override
 					public void isCanceld()
 					{
-						// TODO Auto-generated method stub
+						 
 
 					}
 				}, new Runnable()
@@ -169,7 +169,7 @@ public class DeleteDialog extends ButtonDialog
 					@Override
 					public void isCanceld()
 					{
-						// TODO Auto-generated method stub
+						 
 
 					}
 				}, new Runnable()

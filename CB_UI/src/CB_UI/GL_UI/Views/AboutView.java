@@ -159,7 +159,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 												@Override
 												public void isCanceld()
 												{
-													// TODO Auto-generated method stub
+													 
 
 												}
 											}, new Runnable()

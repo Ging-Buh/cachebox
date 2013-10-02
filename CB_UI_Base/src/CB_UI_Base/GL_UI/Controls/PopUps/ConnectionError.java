@@ -42,7 +42,7 @@ public class ConnectionError extends Toast
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

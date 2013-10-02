@@ -794,9 +794,18 @@ public class SpriteCacheBase
 		}
 
 		MapScale = new Drawable[3];
-		MapScale[0] = new SpriteDrawable(getThemedSprite("MapScale-3"));
-		MapScale[1] = new SpriteDrawable(getThemedSprite("MapScale-4"));
-		MapScale[2] = new SpriteDrawable(getThemedSprite("MapScale-5"));
+
+		Sprite MS3 = getThemedSprite("MapScale-3");
+		int patchMS3 = (int) Math.max((MS3.getWidth() / 10), 1);
+		MapScale[0] = new NinePatchDrawable(new NinePatch(MS3, patchMS3, patchMS3, 0, 0));
+
+		Sprite MS4 = getThemedSprite("MapScale-4");
+		int patchMS4 = (int) Math.max((MS4.getWidth() / 10), 1);
+		MapScale[1] = new NinePatchDrawable(new NinePatch(MS4, patchMS4, patchMS4, 0, 0));
+
+		Sprite MS5 = getThemedSprite("MapScale-5");
+		int patchMS5 = (int) Math.max((MS5.getWidth() / 10), 1);
+		MapScale[2] = new NinePatchDrawable(new NinePatch(MS5, patchMS5, patchMS5, 0, 0));
 
 		Accuracy = new Sprite[3];
 		Accuracy[0] = getThemedSprite("Accuracy-0");

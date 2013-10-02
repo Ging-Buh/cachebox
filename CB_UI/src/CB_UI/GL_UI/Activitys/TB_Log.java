@@ -256,7 +256,7 @@ public class TB_Log extends ActivityBase
 			@Override
 			public void isCanceld()
 			{
-				// TODO Auto-generated method stub
+				 
 
 			}
 		}, new Runnable()

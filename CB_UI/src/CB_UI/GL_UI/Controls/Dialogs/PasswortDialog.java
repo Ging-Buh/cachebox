@@ -101,7 +101,7 @@ public class PasswortDialog extends ButtonDialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

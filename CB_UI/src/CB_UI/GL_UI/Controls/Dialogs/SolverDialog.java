@@ -324,12 +324,12 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	private void hidePageWaypoint()
 	{
-		// TODO Auto-generated method stub
+		 
 	}
 
 	private void hidePageOperator()
 	{
-		// TODO Auto-generated method stub
+		 
 	}
 
 	private void hidePageVariable()
@@ -386,13 +386,13 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	private void showPageWaypoint()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 
 	private void showPageOperator()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

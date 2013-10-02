@@ -23,10 +23,9 @@ public class TileGL implements Destroyable
 	// zum speichern beliebiger Zusatzinfos
 	public Object data;
 
-	// / <summary>
-	// / Textur der Kachel
-	// / </summary>
+	// TODO MapsforgeGL change to Drawable
 	public Texture texture = null;
+
 	private Pixmap pixmap;
 	private byte[] bytes;
 

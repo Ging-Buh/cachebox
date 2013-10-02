@@ -20,7 +20,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	private BitmapFontCache fontCache;
 	private float sollwidth = 0;
 	private final MapViewBase mapInstanz;
-	private Drawable CachedScaleSprite;
+	private Drawable CachedScaleDrawable;
 	private float drawableWidth = 0;
 	private String distanceString;
 	private boolean imperialunits = false;
@@ -31,7 +31,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		imperialunits = useImperialUnits;
 		sollwidth = rec.getWidth();
 		this.mapInstanz = mapInstanz;
-		CachedScaleSprite = null;
+		CachedScaleDrawable = null;
 		fontCache = new BitmapFontCache(Fonts.getNormal());
 		fontCache.setColor(Fonts.getFontColor());
 		invalidateTextureEventList.Add(this);
@@ -143,7 +143,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont()
 					.getCapHeight());
 			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
-			CachedScaleSprite = SpriteCacheBase.MapScale[scaleUnits - 3];
+			CachedScaleDrawable = SpriteCacheBase.MapScale[scaleUnits - 3];
 			float margin = (this.height - bounds.height) / 1.6f;
 			fontCache.setPosition(this.width - bounds.width - margin, margin);
 		}
@@ -160,17 +160,18 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	protected void render(SpriteBatch batch)
 	{
 		if (pixelsPerMeter <= 0) return;
-		if (CachedScaleSprite == null) zoomChanged();
-		if (CachedScaleSprite != null) CachedScaleSprite.draw(batch, 0, 0, drawableWidth, this.height);
+		if (mapInstanz.getAktZoom() != generatedZomm) zoomChanged();
+		if (CachedScaleDrawable == null) zoomChanged();
+		if (CachedScaleDrawable != null) CachedScaleDrawable.draw(batch, 0, 0, drawableWidth, this.height);
 		if (fontCache != null) fontCache.draw(batch);
 	}
 
 	@Override
 	public void invalidateTexture()
 	{
-		if (CachedScaleSprite != null)
+		if (CachedScaleDrawable != null)
 		{
-			CachedScaleSprite = null;
+			CachedScaleDrawable = null;
 		}
 		generatedZomm = -1;
 

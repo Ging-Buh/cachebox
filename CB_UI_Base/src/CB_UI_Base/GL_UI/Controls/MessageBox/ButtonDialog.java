@@ -242,7 +242,7 @@ public class ButtonDialog extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

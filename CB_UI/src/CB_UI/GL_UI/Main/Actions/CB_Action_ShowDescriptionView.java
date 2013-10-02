@@ -116,7 +116,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						@Override
 						public void isCanceld()
 						{
-							// TODO Auto-generated method stub
+							 
 
 						}
 					}, new Runnable()

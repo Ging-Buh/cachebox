@@ -96,7 +96,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 

@@ -123,12 +123,12 @@ public class GcApiLogin
 				}
 				catch (ClientProtocolException e)
 				{
-					// TODO Auto-generated catch block
+					 
 					e.printStackTrace();
 				}
 				catch (IOException e)
 				{
-					// TODO Auto-generated catch block
+					 
 					e.printStackTrace();
 				}
 			}
@@ -186,7 +186,7 @@ public class GcApiLogin
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 
@@ -245,7 +245,7 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 
@@ -275,11 +275,11 @@ public class GcApiLogin
 		}
 		catch (ClientProtocolException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 
 	}
@@ -473,18 +473,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 
 		String page = builder.toString();
@@ -554,18 +554,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 
 		String page = builder.toString();
@@ -629,18 +629,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 
 		String page = builder.toString();
@@ -702,18 +702,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			 
 		}
 
 		String html = builder.toString();

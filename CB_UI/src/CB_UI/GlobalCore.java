@@ -358,7 +358,7 @@ public class GlobalCore extends CB_UI_Base.Global
 				@Override
 				public void isCanceld()
 				{
-					// TODO Auto-generated method stub
+					 
 
 				}
 			}, new Runnable()

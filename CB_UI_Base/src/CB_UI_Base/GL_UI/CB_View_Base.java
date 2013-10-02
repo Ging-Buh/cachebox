@@ -450,6 +450,34 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		addMe(c, false);
 	}
 
+	/**
+	 * All items within the last row processed in the layout!
+	 */
+	public void FinaliseRow()
+	{
+		GL_View_Base lastItem = this.row.remove(this.row.size() - 1);
+		addLast(lastItem);
+	}
+
+	/**
+	 * All items within the last row processed in the layout!
+	 */
+	public void FinaliseRow(float Weight)
+	{
+		GL_View_Base lastItem = this.row.remove(this.row.size() - 1);
+		addLast(lastItem, Weight);
+	}
+
+	/**
+	 * Returns True, if all added Line Child's are layouted
+	 * 
+	 * @return
+	 */
+	public boolean RowIsFinalise()
+	{
+		return this.row.size() == 0;
+	}
+
 	// ===================================================================
 	private void addMe(GL_View_Base c, boolean lastInRow)
 	// ===================================================================

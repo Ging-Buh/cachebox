@@ -155,7 +155,7 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		try
@@ -165,7 +165,7 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		args.put("Hint", cache.hint);
@@ -271,7 +271,7 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
+			 
 			e.printStackTrace();
 		}
 		args.put("Hint", cache.hint);

@@ -25,6 +25,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
@@ -118,8 +119,12 @@ public abstract class ManagerBase
 		}
 		else
 		{
-			LocatorSettings.CurrentMapLayer.setValue(Layers.get(0).Name);
-			return Layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
+			if (Layers != null && Layers.size() > 0)
+			{
+				LocatorSettings.CurrentMapLayer.setValue(Layers.get(0).Name);
+				return Layers.get(0); // ist wahrscheinlich Mapnik und sollte immer tun
+			}
+			return null;
 		}
 	}
 
@@ -481,6 +486,34 @@ public abstract class ManagerBase
 	float textScale = 1;
 	float DEFAULT_TEXT_SCALE = 1;
 
+	/**
+	 * Returns the loaded MapfileInfo or NULL
+	 * 
+	 * @param newLayer
+	 * @return
+	 */
+	public MapFileInfo getMapsforgeLodedMapFileInfo(Layer layer)
+	{
+		if (!layer.isMapsForge) return null;
+
+		if (!mapsForgeFile.equalsIgnoreCase(layer.Name))
+		{
+			// layer is not Loaded, so we load first
+			LoadMapsforgeMap(layer);
+		}
+
+		try
+		{
+			MapFileInfo info = mapDatabase.getMapFileInfo();
+
+			return info;
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+
 	public void clearRenderTheme()
 	{
 		RenderTheme = null;
@@ -538,15 +571,7 @@ public abstract class ManagerBase
 
 		if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
 		{
-			RenderThemeChanged = true;
-			mapFile = new File(layer.Url);
-
-			mapDatabase = new MapDatabase();
-			mapDatabase.closeFile();
-			mapDatabase.openFile(mapFile);
-			Logger.DEBUG("Open MapsForge Map: " + mapFile);
-
-			mapsForgeFile = layer.Name;
+			LoadMapsforgeMap(layer);
 		}
 
 		if (RenderThemeChanged)
@@ -627,8 +652,24 @@ public abstract class ManagerBase
 
 		Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
 
-		// RendererJob job = new RendererJob(tile, mapFile, xmlRenderTheme, textScale) ;//new MapGeneratorJob(tile, mapFile,
-		// jobParameters, debugSettings);
+		// chk if MapDatabase Loded a Map File
+		if (!this.mapDatabase.hasOpenFile())
+		{
+			return null;
+		}
+
+		{
+			// TODO MapsforgeGL vielleicht kann man die DrawBefehle hier in OpenGL umsetzen.
+			// Mapsforge gibt hier alle enthaltenen Punkte eines Tile's zurück.
+			// Diese müssten in OpenGL Draw Befehle umgesetzt werden können?
+			// Longri
+			{
+				// MapReadResult test = this.mapDatabase.readMapData(tile);
+				// double lat = test.ways.get(0).latLongs[0][0].latitude;
+				// double lat2 = test.pointOfInterests.get(0).position.latitude;
+			}
+		}
+
 		RendererJob job = new RendererJob(tile, mapFile, renderTheme, textScale);
 
 		if (databaseRenderer == null)
@@ -661,6 +702,19 @@ public abstract class ManagerBase
 		}
 
 		return result;
+	}
+
+	private void LoadMapsforgeMap(Layer layer)
+	{
+		RenderThemeChanged = true;
+		mapFile = new File(layer.Url);
+
+		mapDatabase = new MapDatabase();
+		mapDatabase.closeFile();
+		mapDatabase.openFile(mapFile);
+		Logger.DEBUG("Open MapsForge Map: " + mapFile);
+
+		mapsForgeFile = layer.Name;
 	}
 
 	protected abstract GraphicFactory getGraphicFactory();

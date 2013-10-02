@@ -177,7 +177,7 @@ public class FieldNotesView extends V_ListView
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
+				 
 				e.printStackTrace();
 			}
 
@@ -600,7 +600,7 @@ public class FieldNotesView extends V_ListView
 			@Override
 			public void isCanceld()
 			{
-				// TODO Auto-generated method stub
+				 
 
 			}
 		}, new Runnable()

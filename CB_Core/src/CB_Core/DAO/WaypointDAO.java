@@ -194,7 +194,7 @@ public class WaypointDAO
 	// 1 Start-Waypoint hat
 	public void ResetStartWaypoint(Cache cache, Waypoint except)
 	{
-		// TODO Auto-generated method stub
+		 
 		for (Waypoint wp : cache.waypoints)
 		{
 			if (except == wp) continue;

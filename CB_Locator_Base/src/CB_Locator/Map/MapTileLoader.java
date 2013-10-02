@@ -664,13 +664,4 @@ public class MapTileLoader
 
 	}
 
-	// public void SetOverlay(boolean value)
-	// {
-	// overlay = value;
-	// }
-	//
-	// public boolean GetOverlay()
-	// {
-	// return overlay;
-	// }
 }

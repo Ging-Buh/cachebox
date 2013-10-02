@@ -427,7 +427,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 			calcPixelsPerMeter();
 			mapScale.ZoomChanged();
-			zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
+			if (zoomScale != null) zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
 
 		}
 
@@ -1087,8 +1087,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				zoomBtn.setMinZoom(setMinZoom);
 				zoomBtn.setZoom(aktZoom);
 
-				zoomScale.setMaxZoom(setMaxZoom);
-				zoomScale.setMinZoom(setMinZoom);
+				if (zoomScale != null)
+				{
+					zoomScale.setMaxZoom(setMaxZoom);
+					zoomScale.setMinZoom(setMinZoom);
+				}
 			}
 		}
 
@@ -1572,7 +1575,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				mapScale.ZoomChanged();
 				zoomBtn.setZoom(aktZoom);
 
-				if (!CarMode)
+				if (!CarMode && zoomScale != null)
 				{
 					zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
 					zoomScale.resetFadeOut();
@@ -1598,7 +1601,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	protected void setZoomScale(int zoom)
 	{
-		if (!CarMode) zoomScale.setZoom(zoom);
+		if (!CarMode && zoomScale != null) zoomScale.setZoom(zoom);
 	}
 
 	@Override
@@ -1770,5 +1773,29 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	}
 
 	public abstract void MapStateChangedToWP();
+
+	public void SetZoom(int newZoom)
+	{
+
+		if (zoomBtn != null)
+		{
+			if (zoomBtn.getZoom() != newZoom)
+			{
+				zoomBtn.setZoom(newZoom);
+			}
+		}
+
+		setZoomScale(newZoom);
+		if (zoomScale != null) zoomScale.resetFadeOut();
+		inputState = InputState.Idle;
+
+		lastDynamicZoom = newZoom;
+
+		kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(newZoom), System.currentTimeMillis(),
+				System.currentTimeMillis() + ZoomTime);
+		GL.that.addRenderView(MapViewBase.this, GL.FRAME_RATE_ACTION);
+		GL.that.renderOnce(MapViewBase.this.getName() + " ZoomButtonClick");
+		calcPixelsPerMeter();
+	}
 
 }

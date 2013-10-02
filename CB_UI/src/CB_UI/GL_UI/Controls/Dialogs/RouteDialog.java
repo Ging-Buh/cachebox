@@ -185,7 +185,7 @@ public class RouteDialog extends ButtonDialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

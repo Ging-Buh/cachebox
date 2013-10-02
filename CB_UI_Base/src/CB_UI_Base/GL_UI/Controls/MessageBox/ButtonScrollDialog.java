@@ -252,7 +252,7 @@ public class ButtonScrollDialog extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		// TODO Auto-generated method stub
+		 
 
 	}
 

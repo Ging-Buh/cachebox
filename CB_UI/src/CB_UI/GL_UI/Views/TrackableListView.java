@@ -101,7 +101,7 @@ public class TrackableListView extends CB_View_Base
 						@Override
 						public void isCanceld()
 						{
-							// TODO Auto-generated method stub
+							 
 
 						}
 					}, new Runnable()
@@ -209,7 +209,7 @@ public class TrackableListView extends CB_View_Base
 			@Override
 			public void isCanceld()
 			{
-				// TODO Auto-generated method stub
+				 
 
 			}
 		}, new Runnable()
