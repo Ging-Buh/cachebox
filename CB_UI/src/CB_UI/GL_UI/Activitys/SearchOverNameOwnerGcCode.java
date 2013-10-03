@@ -12,13 +12,9 @@ import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
-import CB_Locator.Coordinate;
-import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
-import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
@@ -31,47 +27,50 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
-import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class SearchOverPosition extends ActivityBase
+public class SearchOverNameOwnerGcCode extends ActivityBase
 {
 	private Button bOK, bCancel, btnPlus, btnMinus;
 	private Label lblTitle, lblRadius, lblRadiusEinheit, lblMarkerPos, lblExcludeFounds, lblOnlyAvible, lblExcludeHides;
 	private Image gsLogo;
-	private CoordinateButton coordBtn;
 	private chkBox checkBoxExcludeFounds, checkBoxOnlyAvible, checkBoxExcludeHides;
 	private EditTextField Radius;
 	private float lineHeight;
-	private MultiToggleButton tglBtnGPS, tglBtnMap;
-	private Coordinate actSearchPos;
+
 	private volatile Thread thread;
 	private ImportAnimation dis;
 	private Box box;
 	private boolean importRuns = false;
+	private SearchType actSearchType = null;
 
-	private static SearchOverPosition that;
+	private enum SearchType
+	{
+		Name, Owner, GC_Code
+	}
+
+	private static SearchOverNameOwnerGcCode that;
 
 	/**
 	 * 0=GPS, 1= Map, 2= Manuell
 	 */
 	private int searcheState = 0;
 
-	public static SearchOverPosition ShowInstanz()
+	public static SearchOverNameOwnerGcCode ShowInstanz()
 	{
 		if (that == null)
 		{
-			new SearchOverPosition();
+			new SearchOverNameOwnerGcCode();
 		}
 		that.show();
 		return that;
 	}
 
-	public SearchOverPosition()
+	public SearchOverNameOwnerGcCode()
 	{
 		super(ActivityRec(), "searchOverPosActivity");
 		that = this;
@@ -82,8 +81,6 @@ public class SearchOverPosition extends ActivityBase
 		createTitleLine();
 		createRadiusLine();
 		createChkBoxLines();
-		createToggleButtonLine();
-		createCoordButton();
 
 		initialContent();
 	}
@@ -221,38 +218,6 @@ public class SearchOverPosition extends ActivityBase
 
 	}
 
-	private void createToggleButtonLine()
-	{
-		float y = lblExcludeFounds.getY() - margin - UI_Size_Base.that.getButtonHeight();
-
-		tglBtnGPS = new MultiToggleButton(leftBorder, y, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "");
-		tglBtnMap = new MultiToggleButton(tglBtnGPS.getMaxX(), y, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "");
-
-		tglBtnGPS.setFont(Fonts.getSmall());
-		tglBtnMap.setFont(Fonts.getSmall());
-
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnGPS, Translation.Get("FromGps"), Translation.Get("FromGps"));
-		MultiToggleButton.initialOn_Off_ToggleStates(tglBtnMap, Translation.Get("FromMap"), Translation.Get("FromMap"));
-
-		box.addChild(tglBtnGPS);
-		box.addChild(tglBtnMap);
-
-		if (MapView.that == null) tglBtnMap.disable();
-
-	}
-
-	private void createCoordButton()
-	{
-		CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.width - (margin * 2), lineHeight);
-		lblMarkerPos = new Label(rec, Translation.Get("CurentMarkerPos"));
-		box.addChild(lblMarkerPos);
-
-		coordBtn = new CoordinateButton(rec, name, null);
-		coordBtn.setY(lblMarkerPos.getY() - margin - lineHeight);
-		box.addChild(coordBtn);
-
-	}
-
 	private void initialContent()
 	{
 
@@ -279,72 +244,10 @@ public class SearchOverPosition extends ActivityBase
 			}
 		});
 
-		tglBtnGPS.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				actSearchPos = Locator.getCoordinate();
-				setToggleBtnState(0);
-				return true;
-			}
-		});
-
-		tglBtnMap.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				if (MapView.that == null)
-				{
-					actSearchPos = new Coordinate();
-					actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
-					actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
-				}
-				else
-				{
-					actSearchPos = MapView.that.center;
-				}
-
-				setToggleBtnState(1);
-				return true;
-			}
-		});
-
-		coordBtn.setCoordinateChangedListner(new CoordinateChangeListner()
-		{
-
-			@Override
-			public void coordinateChanged(Coordinate coord)
-			{
-				if (coord != null)
-				{
-					actSearchPos = coord;
-					setToggleBtnState(2);
-				}
-				that.show();
-			}
-		});
-
-		if (MapView.that != null && MapView.that.isVisible())
-		{
-			actSearchPos = MapView.that.center;
-			searcheState = 1;
-		}
-		else
-		{
-			actSearchPos = Locator.getCoordinate();
-			searcheState = 0;
-		}
-
 		checkBoxExcludeFounds.setChecked(Config.SearchWithoutFounds.getValue());
 		checkBoxOnlyAvible.setChecked(Config.SearchOnlyAvible.getValue());
 		checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
 		Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
-		setToggleBtnState();
-
 	}
 
 	private void incrementRadius(int value)
@@ -363,37 +266,6 @@ public class SearchOverPosition extends ActivityBase
 		{
 
 		}
-	}
-
-	/**
-	 * 0=GPS, 1= Map, 2= Manuell
-	 */
-	public void setToggleBtnState(int value)
-	{
-		searcheState = value;
-		setToggleBtnState();
-	}
-
-	private void setToggleBtnState()
-	{// 0=GPS, 1= Map, 2= Manuell
-		switch (searcheState)
-		{
-		case 0:
-			tglBtnGPS.setState(1);
-			tglBtnMap.setState(0);
-			break;
-		case 1:
-			tglBtnGPS.setState(0);
-			tglBtnMap.setState(1);
-			break;
-		case 2:
-			tglBtnGPS.setState(0);
-			tglBtnMap.setState(0);
-			break;
-
-		}
-		coordBtn.setCoordinate(actSearchPos);
-
 	}
 
 	private void ImportNow()
@@ -436,7 +308,7 @@ public class SearchOverPosition extends ActivityBase
 
 				try
 				{
-					if (actSearchPos != null)
+					if (actSearchType != null)
 					{
 
 						// alle per API importierten Caches landen in der Category und
@@ -453,13 +325,24 @@ public class SearchOverPosition extends ActivityBase
 								ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 								ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 								ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-								CB_UI.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_UI.Api.SearchForGeocaches.SearchCoordinate();
+								CB_UI.Api.SearchForGeocaches.Search searchC = null;
 
+								switch (actSearchType)
+								{
+								case Name:
+									searchC = new CB_UI.Api.SearchForGeocaches.SearchGCName();
+									break;
+								case GC_Code:
+									searchC = new CB_UI.Api.SearchForGeocaches.SearchGC();
+									break;
+								case Owner:
+									searchC = new CB_UI.Api.SearchForGeocaches.SearchGCOwner();
+									break;
+								}
+
+								if (searchC == null) return;
 								searchC.withoutFinds = Config.SearchWithoutFounds.getValue();
 								searchC.withoutOwn = Config.SearchWithoutOwns.getValue();
-
-								searchC.pos = actSearchPos;
-								searchC.distanceInMeters = Config.lastSearchRadius.getValue() * 1000;
 								searchC.number = 50;
 								dis.setAnimationType(AnimationType.Download);
 								CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
@@ -508,5 +391,4 @@ public class SearchOverPosition extends ActivityBase
 		thread.start();
 
 	}
-
 }

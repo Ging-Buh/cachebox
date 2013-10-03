@@ -1099,7 +1099,7 @@ public class SearchDialog extends PopUp_Base
 			@Override
 			public void run()
 			{
-				new SearchOverPosition().show();
+				SearchOverPosition.ShowInstanz();
 			}
 		});
 

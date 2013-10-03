@@ -29,6 +29,7 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_ShowDescriptionView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowFieldNotesView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowFilterSettings;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowHint;
+import CB_UI.GL_UI.Main.Actions.CB_Action_ShowImportMenu;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowJokerView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowLogView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_ShowMap;
@@ -108,6 +109,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	private CB_Action_ShowAbout actionShowAboutView;
 	private CB_Action_ShowCreditsView actionShowCreditsView;
+	public static CB_Action_ShowImportMenu actionShowImportMenu = new CB_Action_ShowImportMenu();
 	public static CB_Action_ShowDescriptionView actionShowDescriptionView;
 	public static CB_Action_ShowFieldNotesView actionShowFieldNotesView;
 	public static CB_Action_ShowJokerView actionShowJokerView;
