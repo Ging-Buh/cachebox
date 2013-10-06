@@ -90,7 +90,8 @@ public class FieldNotesView extends V_ListView
 
 			// Close all opend Dialogs
 			GL.that.closeAllDialogs();
-			getContextMenu().Show();
+			Menu mn = getContextMenu();
+			if (mn != null) mn.Show();
 		}
 
 	}
@@ -177,7 +178,7 @@ public class FieldNotesView extends V_ListView
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
@@ -189,6 +190,11 @@ public class FieldNotesView extends V_ListView
 
 	public Menu getContextMenu()
 	{
+
+		Cache cache = GlobalCore.getSelectedCache();
+
+		if (cache == null) return null;
+
 		final Menu cm = new Menu("FieldNoteContextMenu");
 
 		cm.addItemClickListner(new OnClickListener()
@@ -230,8 +236,6 @@ public class FieldNotesView extends V_ListView
 				return false;
 			}
 		});
-
-		Cache cache = GlobalCore.getSelectedCache();
 
 		// Found je nach CacheType
 		switch (cache.Type)
@@ -600,7 +604,6 @@ public class FieldNotesView extends V_ListView
 			@Override
 			public void isCanceld()
 			{
-				 
 
 			}
 		}, new Runnable()

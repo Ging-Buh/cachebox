@@ -378,7 +378,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, true));
 		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
 		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
-		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
+		btn4.addAction(new CB_ActionButton(actionRecPicture, false, GestureDirection.Down));
 		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
 		btn4.addAction(new CB_ActionButton(actionParking, false));
 		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));

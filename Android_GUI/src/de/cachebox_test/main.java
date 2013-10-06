@@ -349,6 +349,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		super.onCreate(savedInstanceState);
 		GL.resetIsInitial();
+
 		mainActivity = this;
 
 		if (savedInstanceState != null)

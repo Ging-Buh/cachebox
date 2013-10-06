@@ -12,6 +12,8 @@ import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
@@ -25,8 +27,11 @@ import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -35,11 +40,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SearchOverNameOwnerGcCode extends ActivityBase
 {
-	private Button bOK, bCancel, btnPlus, btnMinus;
-	private Label lblTitle, lblRadius, lblRadiusEinheit, lblMarkerPos, lblExcludeFounds, lblOnlyAvible, lblExcludeHides;
+	private Button bOK, bCancel;
+	private Label lblTitle, lblExcludeFounds, lblOnlyAvible, lblExcludeHides;
 	private Image gsLogo;
 	private chkBox checkBoxExcludeFounds, checkBoxOnlyAvible, checkBoxExcludeHides;
-	private EditTextField Radius;
+
+	/**
+	 * Such Eingabe Feld
+	 */
+	private EditTextField mEingabe;
 	private float lineHeight;
 
 	private volatile Thread thread;
@@ -48,17 +57,27 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 	private boolean importRuns = false;
 	private SearchType actSearchType = null;
 
+	/**
+	 * Option Title, der drei Optionen Title/GC-Code/Owner
+	 */
+	private MultiToggleButton mTglBtnTitle;
+
+	/**
+	 * Option GC-Code, der drei Optionen Title/GC-Code/Owner
+	 */
+	private MultiToggleButton mTglBtnGc;
+
+	/**
+	 * Option Owner, der drei Optionen Title/GC-Code/Owner
+	 */
+	private MultiToggleButton mTglBtnOwner;
+
 	private enum SearchType
 	{
 		Name, Owner, GC_Code
 	}
 
 	private static SearchOverNameOwnerGcCode that;
-
-	/**
-	 * 0=GPS, 1= Map, 2= Manuell
-	 */
-	private int searcheState = 0;
 
 	public static SearchOverNameOwnerGcCode ShowInstanz()
 	{
@@ -79,9 +98,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 		createOkCancelBtn();
 		createBox();
 		createTitleLine();
-		createRadiusLine();
 		createChkBoxLines();
-
+		createtoggleButtonLine();
 		initialContent();
 	}
 
@@ -114,8 +132,9 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 			{
 				if (importRuns)
 				{
-					// breche den Import Thread ab
-					if (thread != null) thread.interrupt();
+
+					cancelImport();
+
 				}
 				else
 				{
@@ -123,7 +142,21 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 				}
 				return true;
 			}
+
 		});
+
+	}
+
+	private void cancelImport()
+	{
+
+		// breche den Import Thread ab
+		if (thread != null) thread.interrupt();
+
+		importRuns = false;
+		this.removeChildsDirekt(dis);
+		dis.dispose();
+		dis = null;
 
 	}
 
@@ -150,47 +183,15 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 				- gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setWrapType(WrapType.WRAPPED);
 		lblTitle.setFont(Fonts.getBig());
-		lblTitle.setWrappedText(Translation.Get("importCachesOverPosition"));
+		lblTitle.setWrappedText(Translation.Get("importCachesOverSearch"));
 		this.addChild(lblTitle);
-
-	}
-
-	private void createRadiusLine()
-	{
-		String sRadius = Translation.Get("Radius");
-		String sEinheit = Config.ImperialUnits.getValue() ? "mi" : "km";
-
-		float wRadius = Fonts.Measure(sRadius).width;
-		float wEinheit = Fonts.Measure(sEinheit).width;
-
-		float y = box.getHeight() - margin - lineHeight;
-
-		lblRadius = new Label(margin, y, wRadius, lineHeight, "");
-		lblRadius.setText(sRadius);
-		box.addChild(lblRadius);
-
-		CB_RectF rec = new CB_RectF(lblRadius.getMaxX() + margin, y, UI_Size_Base.that.getButtonWidthWide(), lineHeight);
-		Radius = new EditTextField(rec, this);
-		box.addChild(Radius);
-
-		lblRadiusEinheit = new Label(Radius.getMaxX(), y, wEinheit, lineHeight, "");
-		lblRadiusEinheit.setText(sEinheit);
-		box.addChild(lblRadiusEinheit);
-
-		btnMinus = new Button(lblRadiusEinheit.getMaxX() + (margin * 3), y, lineHeight, lineHeight, "");
-		btnMinus.setText("-");
-		box.addChild(btnMinus);
-
-		btnPlus = new Button(btnMinus.getMaxX() + (margin * 2), y, lineHeight, lineHeight, "");
-		btnPlus.setText("+");
-		box.addChild(btnPlus);
 
 	}
 
 	private void createChkBoxLines()
 	{
 		checkBoxOnlyAvible = new chkBox("");
-		checkBoxOnlyAvible.setPos(margin, Radius.getY() - margin - checkBoxOnlyAvible.getHeight());
+		checkBoxOnlyAvible.setPos(margin, box.getHeight() - margin - checkBoxOnlyAvible.getHeight());
 		box.addChild(checkBoxOnlyAvible);
 
 		checkBoxExcludeHides = new chkBox("");
@@ -218,54 +219,94 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 
 	}
 
+	private void createtoggleButtonLine()
+	{
+		CB_RectF rec = new CB_RectF(0, 0, box.getWidth() - (margin * 2), UI_Size_Base.that.getButtonHeight());
+
+		Box line = new Box(rec, "ToggLeButtonLine");
+
+		line.setHeight(UI_Size_Base.that.getButtonHeight() * 2 + margin);
+
+		mTglBtnTitle = new MultiToggleButton(rec, "mTglBtnTitle");
+		mTglBtnGc = new MultiToggleButton(rec, "mTglBtnGc");
+		mTglBtnOwner = new MultiToggleButton(rec, "mTglBtnOwner");
+
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnTitle, Translation.Get("Title"), Translation.Get("Title"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnGc, Translation.Get("GCCode"), Translation.Get("GCCode"));
+		MultiToggleButton.initialOn_Off_ToggleStates(mTglBtnOwner, Translation.Get("Owner"), Translation.Get("Owner"));
+
+		line.initRow(true);
+		line.addNext(mTglBtnTitle);
+		line.addNext(mTglBtnGc);
+		line.addLast(mTglBtnOwner);
+
+		line.setY(checkBoxExcludeFounds.getY() - margin - line.getHeight());
+		line.setX(margin);
+
+		mEingabe = new EditTextField(this, rec, WrapType.SINGLELINE, "");
+
+		mEingabe.setTextFieldListener(new TextFieldListener()
+		{
+
+			@Override
+			public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight)
+			{
+
+			}
+
+			@Override
+			public void keyTyped(EditTextFieldBase textField, char key)
+			{
+				textBox_TextChanged();
+			}
+		});
+		mEingabe.setText("");
+
+		line.addLast(mEingabe);
+
+		box.addChild(line);
+	}
+
 	private void initialContent()
 	{
-
-		btnPlus.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				incrementRadius(1);
-				return true;
-			}
-
-		});
-
-		btnMinus.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				incrementRadius(-1);
-				return true;
-			}
-		});
-
+		textBox_TextChanged();
+		switchSearcheMode(0);
 		checkBoxExcludeFounds.setChecked(Config.SearchWithoutFounds.getValue());
 		checkBoxOnlyAvible.setChecked(Config.SearchOnlyAvible.getValue());
 		checkBoxExcludeHides.setChecked(Config.SearchWithoutOwns.getValue());
-		Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
-	}
 
-	private void incrementRadius(int value)
-	{
-		try
-		{
-			int ist = Integer.parseInt(Radius.getText().toString());
-			ist += value;
-
-			if (ist > 100) ist = 100;
-			if (ist < 1) ist = 1;
-
-			Radius.setText(String.valueOf(ist));
-		}
-		catch (NumberFormatException e)
+		mTglBtnTitle.setOnClickListener(new OnClickListener()
 		{
 
-		}
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switchSearcheMode(0);
+				return true;
+			}
+		});
+
+		mTglBtnGc.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switchSearcheMode(1);
+				return true;
+			}
+		});
+
+		mTglBtnOwner.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switchSearcheMode(2);
+				return true;
+			}
+		});
 	}
 
 	private void ImportNow()
@@ -274,19 +315,6 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 		Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
 		Config.SearchOnlyAvible.setValue(checkBoxOnlyAvible.isChecked());
 		Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
-
-		int radius = 0;
-		try
-		{
-			radius = Integer.parseInt(Radius.getText().toString());
-		}
-		catch (NumberFormatException e)
-		{
-			// Kein Integer
-			e.printStackTrace();
-		}
-
-		if (radius != 0) Config.lastSearchRadius.setValue(radius);
 
 		Config.AcceptChanges();
 
@@ -327,23 +355,60 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 								ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 								CB_UI.Api.SearchForGeocaches.Search searchC = null;
 
+								String searchPattern = mEingabe.getText().toLowerCase();
+
+								Coordinate searchCoord = null;
+
+								if (MapView.that != null && MapView.that.isVisible())
+								{
+									searchCoord = MapView.that.center;
+								}
+								else
+								{
+									searchCoord = Locator.getCoordinate();
+								}
+
+								if (searchCoord == null)
+								{
+									return;
+								}
+
+								// * 0 = Title <br/>
+								// * 1 = Gc-Code <br/>
+								// * 2 = Owner <br/>
+
 								switch (actSearchType)
 								{
 								case Name:
-									searchC = new CB_UI.Api.SearchForGeocaches.SearchGCName();
+									CB_UI.Api.SearchForGeocaches.SearchGCName searchCName = new CB_UI.Api.SearchForGeocaches.SearchGCName();
+									searchCName.distanceInMeters = 5000000;
+									searchCName.pos = searchCoord;
+									searchCName.number = 50;
+									searchCName.gcName = searchPattern;
+									searchC = searchCName;
 									break;
+
 								case GC_Code:
-									searchC = new CB_UI.Api.SearchForGeocaches.SearchGC();
+									CB_UI.Api.SearchForGeocaches.SearchGC searchCGC = new CB_UI.Api.SearchForGeocaches.SearchGC();
+									searchCGC.gcCode = searchPattern;
+									searchCGC.number = 1;
+									searchC = searchCGC;
 									break;
+
 								case Owner:
-									searchC = new CB_UI.Api.SearchForGeocaches.SearchGCOwner();
+									CB_UI.Api.SearchForGeocaches.SearchGCOwner searchCOwner = new CB_UI.Api.SearchForGeocaches.SearchGCOwner();
+									searchCOwner.OwnerName = searchPattern;
+									searchCOwner.number = 50;
+									searchCOwner.pos = searchCoord;
+									searchCOwner.distanceInMeters = 5000000;
+
+									searchC = searchCOwner;
 									break;
 								}
 
 								if (searchC == null) return;
 								searchC.withoutFinds = Config.SearchWithoutFounds.getValue();
 								searchC.withoutOwn = Config.SearchWithoutOwns.getValue();
-								searchC.number = 50;
 								dis.setAnimationType(AnimationType.Download);
 								CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
 								dis.setAnimationType(AnimationType.Work);
@@ -371,7 +436,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 				if (!threadCanceld)
 				{
 					CachListChangedEventList.Call();
-
+					cancelImport();
 					finish();
 				}
 				else
@@ -391,4 +456,49 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 		thread.start();
 
 	}
+
+	/**
+	 * Schaltet den Such Modus um.
+	 * 
+	 * @param state
+	 * <br/>
+	 *            0 = Title <br/>
+	 *            1 = Gc-Code <br/>
+	 *            2 = Owner <br/>
+	 */
+	private void switchSearcheMode(int state)
+	{
+
+		if (state == 0)
+		{
+			mTglBtnTitle.setState(1);
+			mTglBtnGc.setState(0);
+			mTglBtnOwner.setState(0);
+			actSearchType = SearchType.Name;
+		}
+		if (state == 1)
+		{
+			mTglBtnTitle.setState(0);
+			mTglBtnGc.setState(1);
+			mTglBtnOwner.setState(0);
+			actSearchType = SearchType.GC_Code;
+		}
+		if (state == 2)
+		{
+			mTglBtnTitle.setState(0);
+			mTglBtnGc.setState(0);
+			mTglBtnOwner.setState(1);
+			actSearchType = SearchType.Owner;
+		}
+
+	}
+
+	private void textBox_TextChanged()
+	{
+
+		boolean isText = mEingabe.getText().length() != 0;
+		bOK.setEnable(isText);
+
+	}
+
 }

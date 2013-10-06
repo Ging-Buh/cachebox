@@ -2,6 +2,7 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.Import;
+import CB_UI.GL_UI.Activitys.SearchOverNameOwnerGcCode;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -218,22 +219,29 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GS_PQ)
+
+				switch (((MenuItem) v).getMenuItemId())
 				{
+				case MenuID.MI_IMPORT_GS_PQ:
 					Import imp = new Import(MenuID.MI_IMPORT_GS_PQ);
 					imp.show();
+					return true;
+				case MenuID.MI_IMPORT_GS_API_POSITION:
+					SearchOverPosition.ShowInstanz();
+					return true;
+				case MenuID.MI_IMPORT_GS_API_SEARCH:
+					SearchOverNameOwnerGcCode.ShowInstanz();
+					return true;
 				}
-				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_IMPORT_GS_API)
-				{
-					new SearchOverPosition().show();
-				}
+
 				return true;
 			}
 		});
 		MenuItem mi;
 
 		mi = icm.addItem(MenuID.MI_IMPORT_GS_PQ, "Pocket Query");
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_API, "Umkreissuche");
+		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_Position");
+		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_Search");
 
 		icm.Show();
 	}
