@@ -17,7 +17,7 @@ public class Spinner extends Button
 {
 	private NinePatch triangle;
 	private int mSelectedIndex = -1;
-	private Spinner that;
+	private final Spinner that;
 	private String prompt;
 	private Image icon;
 
@@ -124,6 +124,7 @@ public class Spinner extends Button
 
 	public void setSelection(int i)
 	{
+		if (lblTxt == null) return;
 		if (mAdapter != null && mAdapter.getCount() >= i && i > -1)
 		{
 			String Text = mAdapter.getText(i);

@@ -5,12 +5,14 @@ import javax.security.auth.Destroyable;
 
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.utils.EmptyDrawable;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class TileGL implements Destroyable
+public class TileGL extends EmptyDrawable implements Destroyable
 {
 	public enum TileState
 	{
@@ -24,7 +26,7 @@ public class TileGL implements Destroyable
 	public Object data;
 
 	// TODO MapsforgeGL change to Drawable
-	public Texture texture = null;
+	private Texture texture = null;
 
 	private Pixmap pixmap;
 	private byte[] bytes;
@@ -43,22 +45,22 @@ public class TileGL implements Destroyable
 		State = state;
 	}
 
-	public void createTexture()
+	public boolean canDraw()
+	{
+		if (texture != null) return true;
+		if (bytes == null) return false;
+		createTexture();
+		if (texture != null) return true;
+		return false;
+	}
+
+	private void createTexture()
 	{
 		if (texture != null) return;
 		if (bytes == null) return;
 		try
 		{
 			pixmap = new Pixmap(bytes, 0, bytes.length);
-
-			// if (MapView.debug)
-			// {
-			// int h = pixmap.getHeight();
-			// int w = pixmap.getWidth();
-			// pixmap.setColor(Color.RED);
-			// pixmap.drawRectangle(0, 0, w, h);
-			// }
-
 			texture = new Texture(pixmap);
 		}
 		catch (Exception ex)
@@ -114,6 +116,24 @@ public class TileGL implements Destroyable
 	public boolean isDestroyed()
 	{
 		return false;
+	}
+
+	@Override
+	public void draw(SpriteBatch batch, float x, float y, float width, float height)
+	{
+		if (texture != null) batch.draw(texture, x, y, width, height);
+	}
+
+	public long getWidth()
+	{
+		if (texture != null) return texture.getWidth();
+		return 0;
+	}
+
+	public long getHeight()
+	{
+		if (texture != null) return texture.getHeight();
+		return 0;
 	}
 
 }

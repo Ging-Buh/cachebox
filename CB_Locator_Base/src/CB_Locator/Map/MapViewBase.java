@@ -604,8 +604,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		{
 			for (TileGL tile : tilesToDraw.values())
 			{
-				tile.createTexture();
-				if (tile.texture != null)
+				if (tile.canDraw())
 				{
 					// Faktor, mit der dieses MapTile vergrößert gezeichnet
 					// werden muß
@@ -613,10 +612,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 					long xPos = tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
 					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
-					float xSize = tile.texture.getWidth() * posFactor;
-					float ySize = tile.texture.getHeight() * posFactor;
-					batch.draw(tile.texture, xPos, yPos, xSize, ySize);
-
+					float xSize = tile.getWidth() * posFactor;
+					float ySize = tile.getHeight() * posFactor;
+					tile.draw(batch, xPos, yPos, xSize, ySize);
 				}
 			}
 		}
@@ -626,8 +624,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		{
 			for (TileGL tile : overlayToDraw.values())
 			{
-				tile.createTexture();
-				if (tile.texture != null)
+				if (tile.canDraw())
 				{
 					// Faktor, mit der dieses MapTile vergrößert gezeichnet
 					// werden muß
@@ -635,9 +632,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 					long xPos = tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
 					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
-					float xSize = tile.texture.getWidth() * posFactor;
-					float ySize = tile.texture.getHeight() * posFactor;
-					batch.draw(tile.texture, xPos, yPos, xSize, ySize);
+					float xSize = tile.getWidth() * posFactor;
+					float ySize = tile.getHeight() * posFactor;
+					tile.draw(batch, xPos, yPos, xSize, ySize);
 				}
 			}
 		}

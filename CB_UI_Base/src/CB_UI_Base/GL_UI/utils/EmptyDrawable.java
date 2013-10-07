@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * 
  * @author Nathan Sweet
  */
-public class EmptyDrawable implements Drawable
+public abstract class EmptyDrawable implements Drawable
 {
 	private float leftWidth, rightWidth, topHeight, bottomHeight, minWidth, minHeight;
 
@@ -43,65 +43,76 @@ public class EmptyDrawable implements Drawable
 		minHeight = drawable.getMinHeight();
 	}
 
-	public void draw(SpriteBatch batch, float x, float y, float width, float height)
-	{
-	}
+	@Override
+	public abstract void draw(SpriteBatch batch, float x, float y, float width, float height);
 
+	@Override
 	public float getLeftWidth()
 	{
 		return leftWidth;
 	}
 
+	@Override
 	public void setLeftWidth(float leftWidth)
 	{
 		this.leftWidth = leftWidth;
 	}
 
+	@Override
 	public float getRightWidth()
 	{
 		return rightWidth;
 	}
 
+	@Override
 	public void setRightWidth(float rightWidth)
 	{
 		this.rightWidth = rightWidth;
 	}
 
+	@Override
 	public float getTopHeight()
 	{
 		return topHeight;
 	}
 
+	@Override
 	public void setTopHeight(float topHeight)
 	{
 		this.topHeight = topHeight;
 	}
 
+	@Override
 	public float getBottomHeight()
 	{
 		return bottomHeight;
 	}
 
+	@Override
 	public void setBottomHeight(float bottomHeight)
 	{
 		this.bottomHeight = bottomHeight;
 	}
 
+	@Override
 	public float getMinWidth()
 	{
 		return minWidth;
 	}
 
+	@Override
 	public void setMinWidth(float minWidth)
 	{
 		this.minWidth = minWidth;
 	}
 
+	@Override
 	public float getMinHeight()
 	{
 		return minHeight;
 	}
 
+	@Override
 	public void setMinHeight(float minHeight)
 	{
 		this.minHeight = minHeight;
