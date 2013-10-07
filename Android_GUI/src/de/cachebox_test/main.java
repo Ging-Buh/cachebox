@@ -2860,7 +2860,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							}
 							else
 							{
-								if (!(aktTabView == null) && viewID == aktViewId)
+								if (!(aktTabView == null) && viewID == aktTabViewId)
 								{
 									aktTabView.OnHide();
 								}
