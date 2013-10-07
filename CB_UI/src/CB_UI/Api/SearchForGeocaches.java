@@ -69,11 +69,9 @@ public class SearchForGeocaches
 	public static class Search
 	{
 		public int number;
-		public boolean withoutFinds = false;
-		public boolean withoutOwn = false;
-		boolean excludeHides = false;
-		boolean excludeFounds = false;
-		boolean available = true;
+		public boolean excludeHides = false;
+		public boolean excludeFounds = false;
+		public boolean available = true;
 	}
 
 	public static class SearchCoordinate extends Search
@@ -168,8 +166,9 @@ public class SearchForGeocaches
 			requestString += "\"Point\":{";
 			requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
 			requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
-			requestString += "}";
 			requestString += "},";
+
+			requestString = writeExclusions(requestString, searchC);
 
 			requestString += "}";
 
@@ -196,9 +195,9 @@ public class SearchForGeocaches
 			requestString += "\"Point\":{";
 			requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
 			requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
-			requestString += "}";
 			requestString += "},";
-			//
+
+			requestString = writeExclusions(requestString, searchC);
 
 			requestString += "}";
 
@@ -206,25 +205,6 @@ public class SearchForGeocaches
 		else if (search instanceof SearchCoordinate)
 		{
 			SearchCoordinate searchC = (SearchCoordinate) search;
-			requestString = "{";
-			requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
-			if (isLite) requestString += "\"IsLite\":true,"; // only lite
-			else
-				requestString += "\"IsLite\":false,"; // full for Premium
-			requestString += "\"StartIndex\":0,";
-			requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
-			requestString += "\"PointRadius\":{";
-			requestString += "\"DistanceInMeters\":" + String.valueOf(searchC.distanceInMeters) + ",";
-			requestString += "\"Point\":{";
-			requestString += "\"Latitude\":" + String.valueOf(searchC.pos.getLatitude()) + ",";
-			requestString += "\"Longitude\":" + String.valueOf(searchC.pos.getLongitude());
-			requestString += "}";
-			requestString += "},";
-			requestString += "\"GeocacheExclusions\":{";
-			requestString += "\"Archived\":false,";
-			requestString += "\"Available\":true";
-			requestString += "}";
-			requestString += "}";
 
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
@@ -255,12 +235,8 @@ public class SearchForGeocaches
 				requestString += "},";
 			}
 
-			requestString += "\"GeocacheExclusions\":{";
-			requestString += "\"Archived\":false,";
+			requestString = writeExclusions(requestString, searchC);
 
-			if (searchC.available) requestString += "\"Available\":true";
-
-			requestString += "}";
 			requestString += "}";
 
 		}
@@ -312,7 +288,7 @@ public class SearchForGeocaches
 			{
 				result = "";
 				JSONArray caches = json.getJSONArray("Geocaches");
-				Logger.DEBUG("got " + caches.length() + " Caches from gc");
+				Logger.LogCat("got " + caches.length() + " Caches from gc");
 				for (int i = 0; i < caches.length(); i++)
 				{
 					JSONObject jCache = (JSONObject) caches.get(i);
@@ -460,8 +436,9 @@ public class SearchForGeocaches
 
 					// Chk if Own or Found
 					Boolean exclude = false;
-					if (search.withoutFinds && cache.Found) exclude = true;
-					if (search.withoutOwn && cache.Owner.equalsIgnoreCase(Config.GcLogin.getValue())) exclude = true;
+					if (search.excludeFounds && cache.Found) exclude = true;
+					if (search.excludeHides && cache.Owner.equalsIgnoreCase(Config.GcLogin.getValue())) exclude = true;
+					if (search.available && (cache.Archived || !cache.Available)) exclude = true;
 
 					if (!CacheERROR && !exclude)
 					{
@@ -614,11 +591,31 @@ public class SearchForGeocaches
 		}
 		catch (JSONException e)
 		{
-
+			e.printStackTrace();
+		}
+		catch (ClassCastException e)
+		{
 			e.printStackTrace();
 		}
 
 		return result;
+	}
+
+	private static String writeExclusions(String requestString, SearchCoordinate searchC)
+	{
+		requestString += "\"GeocacheExclusions\":{";
+		if (searchC.available)
+		{
+			requestString += "\"Archived\":true,";
+			requestString += "\"Available\":false";
+		}
+		else
+		{
+			requestString += "\"Archived\":true,";
+			requestString += "\"Available\":true";
+		}
+		requestString += "},";
+		return requestString;
 	}
 
 	/**

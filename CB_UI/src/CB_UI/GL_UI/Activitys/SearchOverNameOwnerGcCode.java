@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SearchOverNameOwnerGcCode extends ActivityBase
 {
-	private Button bOK, bCancel;
+	private Button bImport, bCancel;
 	private Label lblTitle, lblExcludeFounds, lblOnlyAvible, lblExcludeHides;
 	private Image gsLogo;
 	private chkBox checkBoxExcludeFounds, checkBoxOnlyAvible, checkBoxExcludeHides;
@@ -103,17 +103,23 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 		initialContent();
 	}
 
+	@Override
+	public void onShow()
+	{
+		textBox_TextChanged();
+	}
+
 	private void createOkCancelBtn()
 	{
-		bOK = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
-		bCancel = new Button(bOK.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
+		bImport = new Button(leftBorder, leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
+		bCancel = new Button(bImport.getMaxX(), leftBorder, innerWidth / 2, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
 		// Translations
-		bOK.setText(Translation.Get("import"));
+		bImport.setText(Translation.Get("import"));
 		bCancel.setText(Translation.Get("cancel"));
 
-		this.addChild(bOK);
-		bOK.setOnClickListener(new OnClickListener()
+		this.addChild(bImport);
+		bImport.setOnClickListener(new OnClickListener()
 		{
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
@@ -164,8 +170,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 	{
 		box = new Box(ActivityRec(), "ScrollBox");
 		this.addChild(box);
-		box.setHeight(this.height - lineHeight - bOK.getMaxY() - margin - margin);
-		box.setY(bOK.getMaxY() + margin);
+		box.setHeight(this.height - lineHeight - bImport.getMaxY() - margin - margin);
+		box.setY(bImport.getMaxY() + margin);
 		box.setBackground(this.getBackground());
 	}
 
@@ -183,7 +189,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 				- gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setWrapType(WrapType.WRAPPED);
 		lblTitle.setFont(Fonts.getBig());
-		lblTitle.setWrappedText(Translation.Get("importCachesOverSearch"));
+		lblTitle.setWrappedText(Translation.Get("API_IMPORT_NAME_OWNER_CODE"));
 		this.addChild(lblTitle);
 
 	}
@@ -318,7 +324,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 
 		Config.AcceptChanges();
 
-		bOK.disable();
+		bImport.disable();
 
 		// disable UI
 		dis = new ImportAnimation(box);
@@ -407,8 +413,10 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 								}
 
 								if (searchC == null) return;
-								searchC.withoutFinds = Config.SearchWithoutFounds.getValue();
-								searchC.withoutOwn = Config.SearchWithoutOwns.getValue();
+								searchC.excludeFounds = Config.SearchWithoutFounds.getValue();
+								searchC.excludeHides = Config.SearchWithoutOwns.getValue();
+								searchC.available = Config.SearchOnlyAvible.getValue();
+
 								dis.setAnimationType(AnimationType.Download);
 								CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
 								dis.setAnimationType(AnimationType.Work);
@@ -445,7 +453,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 					// Notify Map
 					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
 
-					bOK.enable();
+					bImport.enable();
 				}
 				importRuns = false;
 			}
@@ -497,7 +505,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 	{
 
 		boolean isText = mEingabe.getText().length() != 0;
-		bOK.setEnable(isText);
+		bImport.setEnable(isText);
 
 	}
 

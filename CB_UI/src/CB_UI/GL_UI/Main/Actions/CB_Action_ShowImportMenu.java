@@ -111,11 +111,11 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 		});
 		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_IMPORT_GS, "Groundspeak API");
+		mi = icm.addItem(MenuID.MI_IMPORT_GS, "API_IMPORT");
 		if (!StringH.isEmpty(Config.CBS_IP.getValue())) mi = icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
 		mi = icm.addItem(MenuID.MI_IMPORT_GPX, "GPX");
-		mi = icm.addItem(MenuID.MI_IMPORT_GCV, "GC Vote");
-		mi = icm.addItem(MenuID.MI_IMPORT, "Import");
+		mi = icm.addItem(MenuID.MI_IMPORT_GCV, "GC_Vote");
+		mi = icm.addItem(MenuID.MI_IMPORT, "moreImport");
 		return icm;
 	}
 
@@ -239,9 +239,9 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 		});
 		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_PQ, "Pocket Query");
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_Position");
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_Search");
+		mi = icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
+		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_IMPORT_OVER_POSITION");
+		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
 
 		icm.Show();
 	}

@@ -16,6 +16,12 @@ public class Copy
 		mRules = rules;
 	}
 
+	public Copy(CopyRule rule)
+	{
+		mRules = new ArrayList<CopyRule>();
+		mRules.add(rule);
+	}
+
 	public interface CopyMsg
 	{
 		public void Msg(String msg);

@@ -20,6 +20,7 @@ import CB_UI.GL_UI.Activitys.EditFieldNotes;
 import CB_UI.GL_UI.Activitys.EditFieldNotes.ReturnListner;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Controls.PopUps.QuickFieldNoteFeedbackPopUp;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.Fonts;
@@ -90,8 +91,11 @@ public class FieldNotesView extends V_ListView
 
 			// Close all opend Dialogs
 			GL.that.closeAllDialogs();
-			Menu mn = getContextMenu();
-			if (mn != null) mn.Show();
+
+			TabMainView.that.ToolsButton.performClick();
+
+			// Menu mn = getContextMenu();
+			// if (mn != null) mn.Show();
 		}
 
 	}

@@ -313,14 +313,14 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCacheBase.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCacheBase.Cache);
 		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCacheBase.Nav);
-		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
+		ToolsButton = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
 		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCacheBase.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 		btnList.addButton(CacheListButton);
 		btnList.addButton(btn2);
 		btnList.addButton(btn3);
-		btnList.addButton(btn4);
+		btnList.addButton(ToolsButton);
 		btnList.addButton(btn5);
 
 		LeftTab.addButtonList(btnList);
@@ -374,16 +374,16 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		btn3.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
 		if (GlobalCore.isTestVersion()) btn3.addAction(new CB_ActionButton(actionTestView, false));
 
-		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
-		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, true));
-		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
-		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
-		btn4.addAction(new CB_ActionButton(actionRecPicture, false, GestureDirection.Down));
-		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
-		btn4.addAction(new CB_ActionButton(actionParking, false));
-		btn4.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
-		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
-		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));
+		ToolsButton.addAction(new CB_ActionButton(actionQuickFieldNote, false));
+		ToolsButton.addAction(new CB_ActionButton(actionShowFieldNotesView, true));
+		ToolsButton.addAction(new CB_ActionButton(actionRecTrack, false));
+		ToolsButton.addAction(new CB_ActionButton(actionRecVoice, false));
+		ToolsButton.addAction(new CB_ActionButton(actionRecPicture, false, GestureDirection.Down));
+		ToolsButton.addAction(new CB_ActionButton(actionRecVideo, false));
+		ToolsButton.addAction(new CB_ActionButton(actionParking, false));
+		ToolsButton.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
+		ToolsButton.addAction(new CB_ActionButton(actionShowSolverView2, false));
+		ToolsButton.addAction(new CB_ActionButton(actionShowJokerView, false));
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));
@@ -402,6 +402,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	}
 
 	public CB_Button CacheListButton;
+	public CB_Button ToolsButton;
 
 	private void addLeftForTabletsTab()
 	{
@@ -419,14 +420,14 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		CacheListButton = new CB_Button(btnRec, "Button1", SpriteCacheBase.CacheList);
 		CB_Button btn2 = new CB_Button(btnRec, "Button2", SpriteCacheBase.Cache);
 		CB_Button btn3 = new CB_Button(btnRec, "Button3", SpriteCacheBase.Nav);
-		CB_Button btn4 = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
+		ToolsButton = new CB_Button(btnRec, "Button4", SpriteCacheBase.Tool);
 		CB_Button btn5 = new CB_Button(btnRec, "Button5", SpriteCacheBase.Misc);
 
 		CB_ButtonList btnList = new CB_ButtonList();
 		btnList.addButton(CacheListButton);
 		btnList.addButton(btn2);
 		btnList.addButton(btn3);
-		btnList.addButton(btn4);
+		btnList.addButton(ToolsButton);
 		btnList.addButton(btn5);
 
 		LeftTab.addButtonList(btnList);
@@ -469,15 +470,15 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		btn3.addAction(new CB_ActionButton(actionNavigateTo1, false, GestureDirection.Down));
 		btn3.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
 
-		btn4.addAction(new CB_ActionButton(actionQuickFieldNote, false));
-		btn4.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
-		btn4.addAction(new CB_ActionButton(actionRecTrack, false));
-		btn4.addAction(new CB_ActionButton(actionRecVoice, false));
-		btn4.addAction(new CB_ActionButton(actionRecPicture, false));
-		btn4.addAction(new CB_ActionButton(actionRecVideo, false));
-		btn4.addAction(new CB_ActionButton(actionParking, false));
-		btn4.addAction(new CB_ActionButton(actionShowSolverView2, false));
-		btn4.addAction(new CB_ActionButton(actionShowJokerView, false));
+		ToolsButton.addAction(new CB_ActionButton(actionQuickFieldNote, false));
+		ToolsButton.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
+		ToolsButton.addAction(new CB_ActionButton(actionRecTrack, false));
+		ToolsButton.addAction(new CB_ActionButton(actionRecVoice, false));
+		ToolsButton.addAction(new CB_ActionButton(actionRecPicture, false));
+		ToolsButton.addAction(new CB_ActionButton(actionRecVideo, false));
+		ToolsButton.addAction(new CB_ActionButton(actionParking, false));
+		ToolsButton.addAction(new CB_ActionButton(actionShowSolverView2, false));
+		ToolsButton.addAction(new CB_ActionButton(actionShowJokerView, false));
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
 		btn5.addAction(new CB_ActionButton(actionShowCreditsView, false));

@@ -455,8 +455,9 @@ public class SearchOverPosition extends ActivityBase
 								ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 								CB_UI.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_UI.Api.SearchForGeocaches.SearchCoordinate();
 
-								searchC.withoutFinds = Config.SearchWithoutFounds.getValue();
-								searchC.withoutOwn = Config.SearchWithoutOwns.getValue();
+								searchC.excludeFounds = Config.SearchWithoutFounds.getValue();
+								searchC.excludeHides = Config.SearchWithoutOwns.getValue();
+								searchC.available = Config.SearchOnlyAvible.getValue();
 
 								searchC.pos = actSearchPos;
 								searchC.distanceInMeters = Config.lastSearchRadius.getValue() * 1000;

@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -26,6 +27,8 @@ import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.runOnGL;
@@ -63,6 +66,8 @@ import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.CopyHelper.Copy;
+import CB_Utils.Util.CopyHelper.CopyRule;
 import cb_rpc.Functions.RpcAnswer;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -80,7 +85,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private int importType = 0; // um direkt gleich den Import für eine bestimmte API starten zu können
 
 	private V_ListView lvPQs, lvCBServer;
-	private Button bOK, bCancel, refreshPqList, refreshCBServerList;
+	private Button bOK, bCancel, refreshPqList, refreshCBServerList, btnSelectFile;
 	private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
 	private Label lblTitle, lblPQ, lblCBServer, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
@@ -429,18 +434,45 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxImportGPX = new chkBox("GPX");
 		checkBoxImportGPX.setX(innerLeft);
 		checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
+
+		btnSelectFile = new Button(Translation.Get("selectFile"));
+
 		if (!GPX_LINE_ACTIVE)
 		{
 			checkBoxImportGPX.setVisible(false);
 			checkBoxImportGPX.setHeight(0);
+			btnSelectFile.setVisible(false);
 		}
 		lblGPX = new Label(checkBoxImportGPX.getMaxX() + margin, checkBoxImportGPX.getY(), innerWidth - margin * 3
 				- checkBoxImportGPX.getWidth(), checkBoxImportGPX.getHeight(), "");
 		lblGPX.setFont(Fonts.getNormal());
 		lblGPX.setText(Translation.Get("GPX"));
 
+		btnSelectFile.setPos(checkBoxImportGPX.getMaxX() + (checkBoxImportGPX.getWidth() * 2.2f), checkBoxImportGPX.getY());
+		btnSelectFile.setWidth(scrollBox.getInnerWidth() - (btnSelectFile.getX() + margin));
+
+		btnSelectFile.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				platformConector.getFile("", "", "", "", new IgetFileReturnListner()
+				{
+
+					@Override
+					public void getFieleReturn(String Path)
+					{
+						copyGPX2PQ_Folder(Path);
+					}
+				});
+				return true;
+			}
+		});
+
 		scrollBox.addChild(checkBoxImportGPX);
 		scrollBox.addChild(lblGPX);
+		scrollBox.addChild(btnSelectFile);
 	}
 
 	private void createGcVoteLine()
@@ -698,6 +730,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		checkBoxImportGPX.setY(lblGcVote.getMaxY() + margin);
 		lblGPX.setY(lblGcVote.getMaxY() + margin);
+		btnSelectFile.setY(lblGcVote.getMaxY() + margin);
 
 		CBServerCollapseBox.setY(checkBoxImportGPX.getMaxY() + margin);
 
@@ -1417,7 +1450,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	{
 		importCancel = false;
 		importStarted = false;
-		that.removeChild(dis);
+
+		this.removeChildsDirekt(dis);
+		dis.dispose();
+		dis = null;
 		bOK.enable();
 	}
 
@@ -1446,6 +1482,38 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			}
 		});
 
+	}
+
+	private void copyGPX2PQ_Folder(final String file)
+	{
+		// disable UI
+		dis = new ImportAnimation(scrollBox);
+		dis.setBackground(getBackground());
+
+		this.addChild(dis, false);
+
+		dis.setAnimationType(AnimationType.Work);
+
+		thread = new Thread(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				CopyRule rule = new CopyRule(file, Config.PocketQueryFolder.getValue());
+				Copy copyHelper = new Copy(rule);
+				try
+				{
+					copyHelper.Run();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+				importCanceld();
+			}
+		});
+		thread.start();
 	}
 
 }
