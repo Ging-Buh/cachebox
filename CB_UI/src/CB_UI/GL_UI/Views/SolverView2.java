@@ -63,11 +63,14 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		SelectedCacheEventList.Add(this);
 
 		setBackground(SpriteCacheBase.ListBack);
-
-		if (GlobalCore.getSelectedCache() != cache)
+		// Reload when
+		// - cache has changed
+		// - Solver 1 has changed
+		if ((GlobalCore.getSelectedCache() != cache) || ((cache != null) && (cache.getSolver1Changed())))
 		{
 			cache = GlobalCore.getSelectedCache();
 			intiList();
+			cache.setSolver1Changed(false);
 		}
 	}
 

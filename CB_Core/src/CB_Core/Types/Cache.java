@@ -908,4 +908,20 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	}
 
+	/**
+	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
+	 * from DB to get the changes from Solver 1
+	 */
+	private boolean solver1Changed = false;
+
+	public void setSolver1Changed(boolean b)
+	{
+		this.solver1Changed = b;
+	}
+
+	public boolean getSolver1Changed()
+	{
+		return solver1Changed;
+	}
+
 }

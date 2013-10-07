@@ -297,7 +297,12 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	public void OnHide()
 	{
 		// Save changed Solver text
-		if (aktCache != null) Database.SetSolver(aktCache, edSolver.getText().toString());
+		if (aktCache != null)
+		{
+			Database.SetSolver(aktCache, edSolver.getText().toString());
+			// When Solve 1 changes -> Solver 2 must reload the information from DB to get the changes from Solver 1
+			aktCache.setSolver1Changed(true);
+		}
 	}
 
 	@Override
@@ -376,7 +381,6 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	@Override
 	public void ActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		 
 
 	}
 
