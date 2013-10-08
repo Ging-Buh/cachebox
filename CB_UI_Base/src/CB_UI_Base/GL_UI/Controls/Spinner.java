@@ -124,7 +124,7 @@ public class Spinner extends Button
 
 	public void setSelection(int i)
 	{
-		if (lblTxt == null) return;
+
 		if (mAdapter != null && mAdapter.getCount() >= i && i > -1)
 		{
 			String Text = mAdapter.getText(i);
@@ -132,6 +132,8 @@ public class Spinner extends Button
 			this.setText(Text);
 
 			Drawable drw = mAdapter.getIcon(i);
+
+			if (lblTxt == null) return;
 
 			if (drw != null)
 			{
