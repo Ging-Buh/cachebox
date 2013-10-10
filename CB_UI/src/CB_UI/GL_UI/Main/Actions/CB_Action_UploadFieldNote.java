@@ -5,11 +5,13 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.GCVote.GCVote;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
+import CB_Core.Types.FieldNoteList.LoadingType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -18,7 +20,6 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.Events.ProgresssChangedEventList;
 
@@ -87,7 +88,8 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 				ProgresssChangedEventList.Call("Upload", "", 0);
 
 				FieldNoteList lFieldNotes = new FieldNoteList();
-				lFieldNotes.LoadFieldNotes("");
+
+				lFieldNotes.LoadFieldNotes("Uploaded=False", LoadingType.Loadall);
 
 				int count = 0;
 				int anzahl = 0;
@@ -96,7 +98,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 					if (!fieldNote.uploaded) anzahl++;
 				}
 
-				boolean sendGCVote = !Config.settings.GcVotePassword.getEncryptedValue().equalsIgnoreCase("");
+				boolean sendGCVote = !Config.GcVotePassword.getEncryptedValue().equalsIgnoreCase("");
 
 				if (anzahl > 0)
 				{

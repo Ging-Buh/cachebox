@@ -8,6 +8,7 @@ import CB_UI_Base.Math.CB_RectF;
 public class SettingsItemBase extends ListViewItemBackground
 {
 	protected Label lblName, lblDefault;
+	protected boolean isDisabled = false;
 
 	private static float MeasuredLabelHeight = -1;
 
@@ -33,6 +34,34 @@ public class SettingsItemBase extends ListViewItemBackground
 
 		this.setLongClickable(true);
 
+	}
+
+	public void enable()
+	{
+		isDisabled = false;
+		this.clearColorFilter();
+	}
+
+	public void disable()
+	{
+		isDisabled = true;
+		this.setColorFilter(Fonts.getDisableFontColor());
+	}
+
+	public boolean isDisabled()
+	{
+		return isDisabled;
+	}
+
+	@Override
+	public boolean click(int x, int y, int pointer, int button)
+	{
+		// wenn Item disabled ein Behandelt zurück schicken,
+		// damit keine weiteren Abfragen durchgereicht werden.
+		// Auch wenn dieses Item ein OnClickListner hat.
+		if (isDisabled) return true;
+		else
+			return super.click(x, y, pointer, button);
 	}
 
 	@Override

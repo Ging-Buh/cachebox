@@ -7,8 +7,10 @@ import java.util.ArrayList;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.Logger;
+import CB_Utils.Util.iChanged;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry>
 {
@@ -18,23 +20,91 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public enum LoadingType
+	{
+		Loadall, LoadNew, loadMore, loadNewLastLength
+	}
+
+	private boolean cropedList = false;
+	private int actCropedLength = -1;
+
 	public FieldNoteList()
 	{
+		CB_Core_Settings.FieldNotesLoadAll.addChangedEventListner(settingsChangedListner);
+		CB_Core_Settings.FieldNotesLoadLength.addChangedEventListner(settingsChangedListner);
 	}
 
-	public void LoadFieldNotes(String where)
+	iChanged settingsChangedListner = new iChanged()
 	{
-		LoadFieldNotes(where, "");
+
+		@Override
+		public void isChanged()
+		{
+			FieldNoteList.this.clear();
+			cropedList = false;
+			actCropedLength = -1;
+		}
+	};
+
+	public boolean isCropped()
+	{
+		return cropedList;
 	}
 
-	public void LoadFieldNotes(String where, String order)
+	public void LoadFieldNotes(String where, LoadingType loadingType)
 	{
-		this.clear();
+		LoadFieldNotes(where, "", loadingType);
+	}
+
+	public void LoadFieldNotes(String where, String order, LoadingType loadingType)
+	{
+
+		// List clear?
+		if (loadingType == LoadingType.Loadall || loadingType == LoadingType.LoadNew || loadingType == LoadingType.loadNewLastLength)
+		{
+			this.clear();
+		}
+
 		String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes";
-		if (!where.equals("")) sql += " where " + where;
-		if (order == "") sql += " order by FoundNumber DESC, Timestamp DESC";
+		if (!where.equals(""))
+		{
+			sql += " where " + where;
+		}
+		if (order == "")
+		{
+			sql += " order by FoundNumber DESC, Timestamp DESC";
+		}
 		else
+		{
 			sql += " order by " + order;
+		}
+
+		// SQLite Limit ?
+		boolean maybeCropped = !CB_Core_Settings.FieldNotesLoadAll.getValue() && loadingType != LoadingType.Loadall;
+
+		if (maybeCropped)
+		{
+			switch (loadingType)
+			{
+			case Loadall:
+				// do nothing
+				break;
+			case LoadNew:
+				actCropedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
+				sql += " LIMIT " + String.valueOf(actCropedLength + 1);
+				break;
+			case loadNewLastLength:
+				if (actCropedLength == -1) actCropedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
+				sql += " LIMIT " + String.valueOf(actCropedLength + 1);
+				break;
+			case loadMore:
+				int Offset = actCropedLength;
+				actCropedLength += CB_Core_Settings.FieldNotesLoadLength.getValue();
+				sql += " LIMIT " + String.valueOf(CB_Core_Settings.FieldNotesLoadLength.getValue() + 1);
+				sql += " OFFSET " + String.valueOf(Offset);
+			}
+		}
+
 		CoreCursor reader = null;
 		try
 		{
@@ -56,6 +126,22 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 			reader.moveToNext();
 		}
 		reader.close();
+
+		// check Cropped
+		if (maybeCropped)
+		{
+			if (this.size() > actCropedLength)
+			{
+				cropedList = true;
+				// remove last item
+				this.remove(this.size() - 1);
+			}
+			else
+			{
+				cropedList = false;
+			}
+		}
+
 	}
 
 	/**
@@ -65,7 +151,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 	public static void CreateVisitsTxt(String dirFileName)
 	{
 		FieldNoteList lFieldNotes = new FieldNoteList();
-		lFieldNotes.LoadFieldNotes("", "Timestamp ASC");
+		lFieldNotes.LoadFieldNotes("", "Timestamp ASC", LoadingType.Loadall);
 
 		File txtFile = new File(dirFileName);
 		FileWriter writer;
