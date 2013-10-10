@@ -11,6 +11,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
+import CB_Core.Types.FieldNoteList.LoadingType;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -68,8 +69,7 @@ public class FieldNotesView extends V_ListView
 
 		setBackground(SpriteCacheBase.ListBack);
 
-		lFieldNotes = new FieldNoteList();
-		lFieldNotes.LoadFieldNotes("");
+		if (lFieldNotes == null) lFieldNotes = new FieldNoteList();
 		this.setHasInvisibleItems(true);
 		this.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(lFieldNotes);
@@ -82,8 +82,8 @@ public class FieldNotesView extends V_ListView
 	@Override
 	public void onShow()
 	{
-		lFieldNotes = new FieldNoteList();
-		lFieldNotes.LoadFieldNotes("");
+		if (lFieldNotes == null) lFieldNotes = new FieldNoteList();
+		lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
 		this.notifyDataSetChanged();
 		if (firstShow)
 		{
@@ -130,11 +130,14 @@ public class FieldNotesView extends V_ListView
 
 		public int getCount()
 		{
-			return fieldNoteList.size();
+			int count = fieldNoteList.size();
+			if (fieldNoteList.isCropped()) count++;
+			return count;
 		}
 
 		public Object getItem(int position)
 		{
+			if (position >= fieldNoteList.size()) return null;
 			return fieldNoteList.get(position);
 		}
 
@@ -146,13 +149,36 @@ public class FieldNotesView extends V_ListView
 		@Override
 		public ListViewItemBase getView(int position)
 		{
-			FieldNoteEntry fne = fieldNoteList.get(position);
+			FieldNoteEntry fne = null;
+
+			if (position < fieldNoteList.size())
+			{
+				fne = fieldNoteList.get(position);
+			}
 
 			CB_RectF rec = ItemRec.copy().ScaleCenter(0.97f);
 			rec.setHeight(MeasureItemHeight(fne));
 			FieldNoteViewItem v = new FieldNoteViewItem(rec, position, fne);
 
-			v.setOnLongClickListener(itemLogClickListner);
+			if (fne == null)
+			{
+				v.setOnClickListener(new OnClickListener()
+				{
+
+					@Override
+					public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+					{
+						// Load More
+						lFieldNotes.LoadFieldNotes("", LoadingType.loadMore);
+						FieldNotesView.this.notifyDataSetChanged();
+						return true;
+					}
+				});
+			}
+			else
+			{
+				v.setOnLongClickListener(itemLogClickListner);
+			}
 
 			return v;
 		}
@@ -161,7 +187,14 @@ public class FieldNotesView extends V_ListView
 		public float getItemSize(int position)
 		{
 			if (position > fieldNoteList.size() || fieldNoteList.size() == 0) return 0;
-			FieldNoteEntry fne = fieldNoteList.get(position);
+
+			FieldNoteEntry fne = null;
+
+			if (position < fieldNoteList.size())
+			{
+				fne = fieldNoteList.get(position);
+			}
+
 			return MeasureItemHeight(fne);
 		}
 
@@ -173,19 +206,21 @@ public class FieldNotesView extends V_ListView
 					- ListViewItemBackground.getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2);
 
 			float mh = 0;
-			try
+			if (fne != null)
 			{
-				if (fne.comment != null && !(fne.comment.length() == 0))
+				try
 				{
-					mh = Fonts.MeasureWrapped(fne.comment, mesurdWidth).height;
+					if (fne.comment != null && !(fne.comment.length() == 0))
+					{
+						mh = Fonts.MeasureWrapped(fne.comment, mesurdWidth).height;
+					}
+				}
+				catch (Exception e)
+				{
+
+					e.printStackTrace();
 				}
 			}
-			catch (Exception e)
-			{
-
-				e.printStackTrace();
-			}
-
 			float commentHeight = (UI_Size_Base.that.getMargin() * 3) + mh;
 
 			return headHeight + cacheIfoHeight + commentHeight;
@@ -393,6 +428,9 @@ public class FieldNotesView extends V_ListView
 			return;
 		}
 
+		FieldNoteList tmpFieldNotes = new FieldNoteList();
+		tmpFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
+
 		FieldNoteEntry newFieldNote = null;
 		if ((type == LogTypes.found) || (type == LogTypes.didnt_find))
 		{
@@ -402,15 +440,9 @@ public class FieldNotesView extends V_ListView
 			// gilt nur für Found It! und DNF.
 			// needMaintance oder Note können zusätzlich angelegt werden
 
-			if (lFieldNotes == null)
-			{
-				lFieldNotes = new FieldNoteList();
+			// .LoadFieldNotes("", false);
 
-			}
-
-			lFieldNotes.LoadFieldNotes("");
-
-			for (FieldNoteEntry nfne : lFieldNotes)
+			for (FieldNoteEntry nfne : tmpFieldNotes)
 			{
 				if ((nfne.CacheId == cache.Id) && (nfne.type == type))
 				{
@@ -439,7 +471,7 @@ public class FieldNotesView extends V_ListView
 		}
 		else
 		{
-			lFieldNotes.remove(newFieldNote);
+			tmpFieldNotes.remove(newFieldNote);
 
 		}
 
@@ -478,7 +510,7 @@ public class FieldNotesView extends V_ListView
 		{
 
 			// neue FieldNote
-			lFieldNotes.add(0, newFieldNote);
+			tmpFieldNotes.add(0, newFieldNote);
 			newFieldNote.WriteToDatabase();
 			aktFieldNote = newFieldNote;
 			if (newFieldNote.type == LogTypes.found)
@@ -493,7 +525,7 @@ public class FieldNotesView extends V_ListView
 					Config.AcceptChanges();
 				}
 				// und eine evtl. vorhandene FieldNote DNF löschen
-				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.didnt_find);
+				tmpFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.didnt_find);
 			}
 			else if (newFieldNote.type == LogTypes.didnt_find)
 			{
@@ -507,7 +539,7 @@ public class FieldNotesView extends V_ListView
 					Config.AcceptChanges();
 				}
 				// und eine evtl. vorhandene FieldNote FoundIt löschen
-				lFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
+				tmpFieldNotes.DeleteFieldNoteByCacheId(GlobalCore.getSelectedCache().Id, LogTypes.found);
 			}
 
 			FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
@@ -775,8 +807,7 @@ public class FieldNotesView extends V_ListView
 
 					aktFieldNote = null;
 
-					lFieldNotes = new FieldNoteList();
-					lFieldNotes.LoadFieldNotes("");
+					lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
 
 					that.setBaseAdapter(null);
 					lvAdapter = new CustomAdapter(lFieldNotes);
@@ -937,9 +968,6 @@ public class FieldNotesView extends V_ListView
 	@Override
 	public void notifyDataSetChanged()
 	{
-		lFieldNotes = new FieldNoteList();
-		lFieldNotes.LoadFieldNotes("");
-
 		that.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(lFieldNotes);
 		that.setBaseAdapter(lvAdapter);

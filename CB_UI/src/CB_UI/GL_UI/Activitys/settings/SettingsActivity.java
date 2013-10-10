@@ -397,7 +397,13 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 										.getValue()) && (settingItem.getModus() != SettingModus.Never))
 							{
 
-								CB_View_Base view = getView(settingItem, position++);
+								final CB_View_Base view = getView(settingItem, position++);
+
+								if (Config.FieldNotesLoadAll.getValue() && settingItem.getName().equalsIgnoreCase("FieldNotesLoadLength"))
+								{
+									((SettingsItemBase) view).disable();
+
+								}
 
 								if (view instanceof Button)
 								{
@@ -1542,6 +1548,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			public void onCheckedChanged(chkBox view, boolean isChecked)
 			{
 				SB.setValue(isChecked);
+				if (SB.getName().equalsIgnoreCase("FieldNotesLoadAll"))
+				{
+					resortList();
+				}
 			}
 		});
 

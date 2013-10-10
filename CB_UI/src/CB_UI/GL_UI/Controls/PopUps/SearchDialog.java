@@ -50,6 +50,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -613,16 +614,7 @@ public class SearchDialog extends PopUp_Base
 				}
 				else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
 				{
-					GL.that.RunOnGL(new runOnGL()
-					{
-
-						@Override
-						public void run()
-						{
-							GL_MsgBox.Show(Translation.Get("noInet"), Translation.Get("InetClue"), MessageBoxButtons.OK,
-									MessageBoxIcon.Error, null);
-						}
-					});
+					GL.that.Toast(ConnectionError.INSTANCE);
 				}
 				else
 				{
@@ -649,16 +641,7 @@ public class SearchDialog extends PopUp_Base
 							}
 							else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
 							{
-								GL.that.RunOnGL(new runOnGL()
-								{
-
-									@Override
-									public void run()
-									{
-										GL_MsgBox.Show(Translation.Get("noInet"), Translation.Get("InetClue"), MessageBoxButtons.OK,
-												MessageBoxIcon.Error, null);
-									}
-								});
+								GL.that.Toast(ConnectionError.INSTANCE);
 							}
 							else
 							{

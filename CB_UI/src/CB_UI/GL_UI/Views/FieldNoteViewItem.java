@@ -4,12 +4,15 @@ import java.text.SimpleDateFormat;
 
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.FieldNoteEntry;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -49,14 +52,33 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		iniCacheNameLabel();
 		iniGcCodeLabel();
 		iniCommentLabel();
+
+		if (this.fieldnote == null)
+		{
+			Button btnLoadMore = new Button(Translation.Get("LoadMore"));
+			btnLoadMore.setWidth(this.width);
+			btnLoadMore.setOnClickListener(new OnClickListener()
+			{
+
+				@Override
+				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+				{
+					if (FieldNoteViewItem.this.mOnClickListener != null) FieldNoteViewItem.this.mOnClickListener.onClick(v, x, y, pointer,
+							button);
+					return true;
+				}
+			});
+			this.addChild(btnLoadMore);
+		}
 	}
 
 	private void iniImage()
 	{
+		if (this.fieldnote == null) return;
 		ivTyp = new Image(getLeftWidth(), this.height - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2),
 				UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
-		ivTyp.setDrawable(getTypeIcon(fieldnote));
+		ivTyp.setDrawable(getTypeIcon(this.fieldnote));
 	}
 
 	public static Drawable getTypeIcon(FieldNoteEntry fne)
@@ -85,6 +107,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniDateLabel()
 	{
+		if (this.fieldnote == null) return;
 		// SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
 		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MMM (HH:mm)");
 		String dateString = postFormater.format(fieldnote.timestamp);
@@ -96,7 +119,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 
@@ -109,6 +132,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniCacheTypeImage()
 	{
+		if (this.fieldnote == null) return;
 		ivCacheType = new Image(getLeftWidth() + UI_Size_Base.that.getMargin(), this.height - headHeight
 				- (UI_Size_Base.that.getButtonHeight()) - UI_Size_Base.that.getMargin(), UI_Size_Base.that.getButtonHeight(),
 				UI_Size_Base.that.getButtonHeight(), "");
@@ -126,6 +150,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniCacheNameLabel()
 	{
+		if (this.fieldnote == null) return;
 		lblCacheName = new Label(ivCacheType.getMaxX() + UI_Size_Base.that.getMargin(), this.height - headHeight - MeasuredLabelHeight
 				- UI_Size_Base.that.getMargin(), this.width - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2),
 				MeasuredLabelHeight, "");
@@ -137,6 +162,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniGcCodeLabel()
 	{
+		if (this.fieldnote == null) return;
 		lblGcCode = new Label(lblCacheName.getX(), lblCacheName.getY() - MeasuredLabelHeight - UI_Size_Base.that.getMargin(), this.width
 				- ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight, "");
 		lblGcCode.setFont(Fonts.getNormal());
@@ -147,6 +173,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 
 	private void iniCommentLabel()
 	{
+		if (this.fieldnote == null) return;
 		lblComment = new Label(getLeftWidth() + UI_Size_Base.that.getMargin(), 0, this.width - getLeftWidth() - getRightWidth()
 				- (UI_Size_Base.that.getMargin() * 2), this.height - (this.height - lblGcCode.getY()) - UI_Size_Base.that.getMargin(), "");
 		lblComment.setFont(Fonts.getNormal());
@@ -179,13 +206,22 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	@Override
 	public void render(SpriteBatch batch)
 	{
+		if (fieldnote == null)
+		{
+			// super.render(batch);
+			return;
+		}
+
 		Color color = batch.getColor();
 		float oldAlpha = color.a;
 		float oldRed = color.r;
 		float oldGreen = color.g;
 		float oldBlue = color.b;
 
-		if (fieldnote.uploaded)
+		boolean uploaded = false;
+		if (fieldnote.uploaded) uploaded = true;
+
+		if (uploaded)
 		{
 			color.a = 0.5f;
 			color.r = 0.6f;
@@ -204,7 +240,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 			resetInitial();
 		}
 
-		if (fieldnote.uploaded)
+		if (uploaded)
 		{
 			ivTyp.setColor(color);
 			ivCacheType.setColor(color);

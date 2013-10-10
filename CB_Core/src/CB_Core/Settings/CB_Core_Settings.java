@@ -63,4 +63,10 @@ public interface CB_Core_Settings
 	public static final SettingFolder UserImageFolder = new SettingFolder("UserImageFolder", SettingCategory.Folder, NORMAL,
 			Config_Core.WorkPath + "/User/Media", SettingStoreType.Global);
 
+	public static final SettingBool FieldNotesLoadAll = new SettingBool("FieldNotesLoadAll", SettingCategory.Fieldnotes, EXPERT, false,
+			SettingStoreType.Global);
+
+	public static final SettingInt FieldNotesLoadLength = new SettingInt("FieldNotesLoadLength", SettingCategory.Fieldnotes, EXPERT, 10,
+			SettingStoreType.Global);
+
 }

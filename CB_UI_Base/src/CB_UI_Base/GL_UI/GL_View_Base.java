@@ -51,9 +51,9 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
-	private OnClickListener mOnClickListener;
-	private OnClickListener mOnLongClickListener;
-	private OnClickListener mOnDoubleClickListener;
+	protected OnClickListener mOnClickListener;
+	protected OnClickListener mOnLongClickListener;
+	protected OnClickListener mOnDoubleClickListener;
 
 	private Pixmap debugRegPixmap = null;
 	private Texture debugRegTexture = null;
