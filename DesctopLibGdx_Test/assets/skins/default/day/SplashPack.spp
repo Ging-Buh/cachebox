@@ -1,0 +1,77 @@
+
+SplashPack.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+FXzwei
+  rotate: false
+  xy: 303, 148
+  size: 84, 64
+  orig: 84, 64
+  offset: 0, 0
+  index: -1
+btn-normal
+  rotate: false
+  xy: 103, 90
+  size: 84, 87
+  split: 15, 15, 21, 16
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+cachebox-logo
+  rotate: false
+  xy: 1, 179
+  size: 300, 73
+  orig: 300, 73
+  offset: 0, 0
+  index: -1
+gc_live
+  rotate: false
+  xy: 186, 1
+  size: 77, 87
+  orig: 77, 87
+  offset: 0, 0
+  index: -1
+libgdx
+  rotate: false
+  xy: 303, 214
+  size: 159, 38
+  orig: 159, 38
+  offset: 0, 0
+  index: -1
+mapsforge_logo
+  rotate: false
+  xy: 103, 11
+  size: 81, 77
+  orig: 81, 77
+  offset: 0, 0
+  index: -1
+openrouteservice_logo
+  rotate: false
+  xy: 389, 142
+  size: 80, 70
+  orig: 80, 70
+  offset: 0, 0
+  index: -1
+osm_logo
+  rotate: false
+  xy: 275, 69
+  size: 77, 77
+  orig: 77, 77
+  offset: 0, 0
+  index: -1
+progress
+  rotate: false
+  xy: 189, 90
+  size: 84, 87
+  split: 15, 15, 21, 16
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+splash-back
+  rotate: false
+  xy: 1, 8
+  size: 100, 169
+  orig: 100, 169
+  offset: 0, 0
+  index: -1

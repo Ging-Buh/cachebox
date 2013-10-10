@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
+	<classpathentry kind="src" path="data"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Translation_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Base"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Core"/>
+	<classpathentry kind="lib" path="lib/gdx.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry kind="lib" path="lib/sjxp-2.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
