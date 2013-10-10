@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
-import CB_Core.Config;
-import CB_Core.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
-import CB_Core.Math.UI_Size_Base;
 import CB_Core.Types.JokerList;
-import CB_Core.Types.MoveableList;
+import CB_UI.Config;
+import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Util.MoveableList;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
@@ -28,7 +28,6 @@ import de.CB_PlugIn.IPlugIn;
 public class Global
 {
 
-	public static final boolean Debug = true;
 	public static JokerList Jokers = new JokerList();
 
 	public static final String PREFS_NAME = "DroidCacheboxPrefsFile";
@@ -363,26 +362,35 @@ public class Global
 	{
 		Drawable ret = null;
 
-		if (NightResId == -1 || !Config.settings.nightMode.getValue())
-		{
-			ret = res.getDrawable(ResId);
+		if (Config.settings == null) return res.getDrawable(ResId);
 
-			// im Nacht Mode wird das Drawable mit einem Filter belegt, um es
-			// ein wenig abzudunkeln
-			if (Config.settings.nightMode.getValue())
+		try
+		{
+			if (NightResId == -1 || !Config.nightMode.getValue())
 			{
-				ret.setColorFilter(Color.argb(255, 100, 100, 100), Mode.MULTIPLY);
+				ret = res.getDrawable(ResId);
+
+				// im Nacht Mode wird das Drawable mit einem Filter belegt, um es
+				// ein wenig abzudunkeln
+				if (Config.nightMode.getValue())
+				{
+					ret.setColorFilter(Color.argb(255, 100, 100, 100), Mode.MULTIPLY);
+				}
+
+			}
+			else
+			{
+				ret = res.getDrawable(NightResId);
 			}
 
+			if (!Config.nightMode.getValue())
+			{
+				ret.clearColorFilter();
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			ret = res.getDrawable(NightResId);
-		}
-
-		if (!Config.settings.nightMode.getValue())
-		{
-			ret.clearColorFilter();
+			ret = res.getDrawable(ResId);
 		}
 
 		return ret;
@@ -542,7 +550,10 @@ public class Global
 
 		try
 		{
-			context.setTheme(Config.settings.nightMode.getValue() ? R.style.Theme_night : R.style.Theme_day);
+			Boolean NightMode = false;
+			if (Config.settings != null) NightMode = Config.nightMode.getValue();
+
+			context.setTheme(NightMode ? R.style.Theme_night : R.style.Theme_day);
 
 			Theme t = context.getTheme();
 			Arrays.sort(colorAttrs);

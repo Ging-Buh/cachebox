@@ -4,38 +4,47 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
-import CB_Core.Config;
-import CB_Core.FileIO;
-import CB_Core.GlobalCore;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
-import CB_Core.GL_UI.DisplayType;
-import CB_Core.Log.Logger;
-import CB_Core.Math.Size;
-import CB_Core.Math.UI_Size_Base;
-import CB_Core.Math.UiSizes;
-import CB_Core.Math.devicesSizes;
-import CB_Core.Settings.SettingBase;
-import CB_Core.Settings.SettingBool;
-import CB_Core.Settings.SettingDouble;
-import CB_Core.Settings.SettingEncryptedString;
-import CB_Core.Settings.SettingEnum;
-import CB_Core.Settings.SettingFile;
-import CB_Core.Settings.SettingFolder;
-import CB_Core.Settings.SettingInt;
-import CB_Core.Settings.SettingIntArray;
-import CB_Core.Settings.SettingString;
-import CB_Core.Settings.SettingTime;
-import CB_Core.TranslationEngine.Translation;
-import android.annotation.SuppressLint;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
+import CB_UI.GlobalCore;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.GL_UI.DisplayType;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.Math.Size;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
+import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Log.Logger;
+import CB_Utils.Settings.PlatformSettings;
+import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
+import CB_Utils.Settings.SettingBase;
+import CB_Utils.Settings.SettingBool;
+import CB_Utils.Settings.SettingDouble;
+import CB_Utils.Settings.SettingEncryptedString;
+import CB_Utils.Settings.SettingEnum;
+import CB_Utils.Settings.SettingFile;
+import CB_Utils.Settings.SettingFolder;
+import CB_Utils.Settings.SettingInt;
+import CB_Utils.Settings.SettingIntArray;
+import CB_Utils.Settings.SettingString;
+import CB_Utils.Settings.SettingTime;
+import CB_Utils.Util.FileIO;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -48,22 +57,30 @@ import android.os.StatFs;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidFiles;
+
 import de.droidcachebox.Components.copyAssetFolder;
 import de.droidcachebox.DB.AndroidDB;
+import de.droidcachebox.Views.Forms.MessageBox;
 
-@SuppressLint(
-	{ "SdCardPath", "DefaultLocale" })
 public class splash extends Activity
 {
 
-	public static Activity mainActivity;
+	public static Activity splashActivity;
 	final Context context = this;
 	Handler handler;
 	Bitmap bitmap;
@@ -72,14 +89,20 @@ public class splash extends Activity
 	String guid = null;
 	String name = null;
 	String GpxPath = null;
-
+	private SharedPreferences androidSetting;
+	private SharedPreferences.Editor androidSettingEditor;
 	String workPath;
+	IgetFolderReturnListner getFolderReturnListner;
+	int AdditionalWorkPathCount;
+	SharedPreferences AndroidSettings;
+	MessageBox msg;
+
+	ArrayList<String> AdditionalWorkPathArray;
 
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
 	private boolean isLandscape = false;
 
-	@SuppressLint("DefaultLocale")
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -189,7 +212,34 @@ public class splash extends Activity
 			}
 		}
 
-		mainActivity = this;
+		// if ACB running, call this instance
+		if (main.mainActivity != null)
+		{
+
+			Bundle b = new Bundle();
+			if (GcCode != null)
+			{
+
+				b.putSerializable("GcCode", GcCode);
+				b.putSerializable("name", name);
+				b.putSerializable("guid", guid);
+
+			}
+
+			if (GpxPath != null)
+			{
+				b.putSerializable("GpxPath", GpxPath);
+			}
+
+			Intent mainIntent = main.mainActivity.getIntent();
+
+			mainIntent.putExtras(b);
+
+			startActivity(mainIntent);
+			finish();
+		}
+
+		splashActivity = this;
 
 		LoadImages();
 
@@ -208,162 +258,237 @@ public class splash extends Activity
 	{
 		super.onStart();
 
-		// first, try to find stored preferences of workPath
-		SharedPreferences settings = this.getSharedPreferences(Global.PREFS_NAME, 0);
-		workPath = settings.getString("WorkPath", "");
-		boolean askAgain = settings.getBoolean("AskAgain", true);
+		// initial GDX
+		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useGL20 = true;
+		// Gdx.graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+		// : config.resolutionStrategy);
+		// LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		// Gdx.input = new AndroidInput(main.mainActivity, inflater.getContext(), null, config);
 
-		if ((workPath.length() == 0) || (askAgain))
+		// first, try to find stored preferences of workPath
+		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);
+
+		workPath = AndroidSettings.getString("WorkPath", "");
+		boolean askAgain = AndroidSettings.getBoolean("AskAgain", true);
+
+		Global.initTheme(this);
+		Global.InitIcons(this);
+
+		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
+		platformConector.setGetFileListner(fileExplorer);
+		platformConector.setGetFolderListner(fileExplorer);
+
+		String LangPath = AndroidSettings.getString("Sel_LanguagePath", "");
+		if (LangPath.length() == 0)
+		{
+			// set default lang
+
+			String locale = Locale.getDefault().getLanguage();
+			if (locale.contains("de"))
+			{
+				LangPath = "data/lang/de/strings.ini";
+			}
+			else if (locale.contains("cs"))
+			{
+				LangPath = "data/lang/cs/strings.ini";
+			}
+			else if (locale.contains("cs"))
+			{
+				LangPath = "data/lang/cs/strings.ini";
+			}
+			else if (locale.contains("fr"))
+			{
+				LangPath = "data/lang/fr/strings.ini";
+			}
+			else if (locale.contains("nl"))
+			{
+				LangPath = "data/lang/nl/strings.ini";
+			}
+			else if (locale.contains("pl"))
+			{
+				LangPath = "data/lang/pl/strings.ini";
+			}
+			else if (locale.contains("pt"))
+			{
+				LangPath = "data/lang/pt/strings.ini";
+			}
+			else
+			{
+				LangPath = "data/lang/en-GB/strings.ini";
+			}
+		}
+
+		new Translation(workPath, FileType.Internal);
+		try
+		{
+			Translation.LoadTranslation(LangPath);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		if ((askAgain))
 		{
 			// no saved workPath found -> search sd-cards and if more than 1 is found give the user the possibility to select one
 
-			// check if Layout forced from User
-			workPath = Environment.getExternalStorageDirectory() + "/cachebox";
-
-			// extract first part of path ("/mnt/" or "/storage/" ...)
-			int pos = workPath.indexOf("/", 2); // search for the second /
-			String prev = "/mnt";
-			if (pos > 0)
-			{
-				prev = workPath.substring(0, pos);
-			}
-			// search for an external SD-Card
-			String externalSd = "";
-
-			// search for an external sd card on different devices
-			if (testExtSdPath(prev + "/extSdCard"))
-			{
-				externalSd = prev + "/extSdCard/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/MicroSD"))
-			{
-				externalSd = prev + "/MicroSD/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard/ext_sd"))
-			{
-				externalSd = prev + "/sdcard/ext_sd/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/ext_card"))
-			{
-				// Sony Xperia sola
-				externalSd = prev + "/ext_card/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/external"))
-			{
-				externalSd = prev + "/external/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard2"))
-			{
-				externalSd = prev + "/sdcard2/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard1"))
-			{
-				externalSd = prev + "/sdcard1/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
-			{
-				externalSd = prev + "/sdcard/_ExternalSD";
-			}
-			else if (testExtSdPath(prev + "/sdcard-ext"))
-			{
-				externalSd = prev + "/sdcard-ext/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/external1"))
-			{
-				externalSd = prev + "/external1/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard/external_sd"))
-			{
-				externalSd = prev + "/sdcard/external_sd/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/emmc"))
-			{
-				// for CM9
-				externalSd = prev + "/emmc/CacheBox";
-			}
-			else if (testExtSdPath("/Removable/MicroSD"))
-			{
-				// Asus Transformer
-				externalSd = prev + "/Removable/MicroSD/CacheBox";
-			}
-			else if (testExtSdPath("/mnt/ext_sd"))
-			{
-				// ODYS Motion
-				externalSd = prev + "/ext_sd/CacheBox";
-			}
-			else if (testExtSdPath("/sdcard/tflash"))
-			{
-				// Car Radio
-				externalSd = prev + "/sdcard/tflash/CacheBox";
-			}
-			else if (testExtSdPath(prev + "/sdcard"))
-			{
-				// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
-				// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
-				externalSd = prev + "/sdcard/CacheBox";
-			}
+			String externalSd = getExternalSdPath("/CacheBox");
 
 			final String externalSd2 = externalSd;
 			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
 
-			if (hasExtSd || (GlobalCore.posibleTabletLayout))
+			// externe SD wurde gefunden != internal
+			// oder Tablet Layout möglich
+			// -> Auswahldialog anzeigen
+			try
 			{
-				// externe SD wurde gefunden != internal
-				// oder Tablet Layout möglich
-				// -> Auswahldialog anzeigen
-				try
+				final Dialog dialog = new Dialog(context);
+				dialog.setContentView(R.layout.sdselectdialog);
+				TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
+				title.setText(Translation.Get("selectWorkSpace") + "\n\n");
+				/*
+				 * TextView tbLayout = (TextView) dialog.findViewById(R.id.select_sd_layout); tbLayout.setText("\nLayout"); final RadioGroup
+				 * rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup); final RadioButton rbHandyLayout = (RadioButton)
+				 * dialog.findViewById(R.id.select_sd_handylayout); final RadioButton rbTabletLayout = (RadioButton)
+				 * dialog.findViewById(R.id.select_sd_tabletlayout); rbHandyLayout.setText("Handy-Layout");
+				 * rbTabletLayout.setText("Tablet-Layout"); if (!GlobalCore.posibleTabletLayout) {
+				 * rgLayout.setVisibility(RadioGroup.INVISIBLE); rbHandyLayout.setChecked(true); } else { if (GlobalCore.isTab) {
+				 * rbTabletLayout.setChecked(true); } else { rbHandyLayout.setChecked(true); } }
+				 */
+				final CheckBox cbAskAgain = (CheckBox) dialog.findViewById(R.id.select_sd_askagain);
+				cbAskAgain.setText(Translation.Get("AskAgain"));
+				cbAskAgain.setChecked(askAgain);
+				Button buttonI = (Button) dialog.findViewById(R.id.button1);
+				buttonI.setText("Internal SD\n\n" + workPath);
+				buttonI.setOnClickListener(new OnClickListener()
 				{
-					final Dialog dialog = new Dialog(context);
-					dialog.setContentView(R.layout.sdselectdialog);
-					TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
-					title.setText(title.getText() + "\n ");
-					/*
-					 * TextView tbLayout = (TextView) dialog.findViewById(R.id.select_sd_layout); tbLayout.setText("\nLayout"); final
-					 * RadioGroup rgLayout = (RadioGroup) dialog.findViewById(R.id.select_sd_radiogroup); final RadioButton rbHandyLayout =
-					 * (RadioButton) dialog.findViewById(R.id.select_sd_handylayout); final RadioButton rbTabletLayout = (RadioButton)
-					 * dialog.findViewById(R.id.select_sd_tabletlayout); rbHandyLayout.setText("Handy-Layout");
-					 * rbTabletLayout.setText("Tablet-Layout"); if (!GlobalCore.posibleTabletLayout) {
-					 * rgLayout.setVisibility(RadioGroup.INVISIBLE); rbHandyLayout.setChecked(true); } else { if (GlobalCore.isTab) {
-					 * rbTabletLayout.setChecked(true); } else { rbHandyLayout.setChecked(true); } }
-					 */
-					final CheckBox cbAskAgain = (CheckBox) dialog.findViewById(R.id.select_sd_askagain);
-					cbAskAgain.setChecked(askAgain);
-					Button buttonI = (Button) dialog.findViewById(R.id.button1);
-					buttonI.setText("Internal SD\n\n" + workPath);
-					buttonI.setOnClickListener(new OnClickListener()
+					@Override
+					public void onClick(View v)
 					{
-						@Override
-						public void onClick(View v)
+						// close select dialog
+						dialog.dismiss();
+
+						// show please wait dialog
+						showPleaseWaitDialog();
+
+						// use internal SD -> nothing to change
+						Thread thread = new Thread()
 						{
-							// close select dialog
-							dialog.dismiss();
-
-							// show please wait dialog
-							showPleaseWaitDialog();
-
-							// use internal SD -> nothing to change
-							Thread thread = new Thread()
+							@Override
+							public void run()
 							{
-								@Override
-								public void run()
-								{
-									boolean askAgain = cbAskAgain.isChecked();
-									// boolean useTabletLayout = rbTabletLayout.isChecked();
-									saveWorkPath(askAgain/* , useTabletLayout */);
-									dialog.dismiss();
-									startInitial();
-								}
-							};
-							thread.run();
+								boolean askAgain = cbAskAgain.isChecked();
+								// boolean useTabletLayout = rbTabletLayout.isChecked();
+								saveWorkPath(askAgain/* , useTabletLayout */);
+								dialog.dismiss();
+								startInitial();
+							}
+						};
+						thread.run();
+					}
+				});
+				Button buttonE = (Button) dialog.findViewById(R.id.button2);
+				buttonE.setText("External SD\n\n" + externalSd);
+				if (!hasExtSd)
+				{
+					buttonE.setVisibility(Button.INVISIBLE);
+				}
+				buttonE.setOnClickListener(new OnClickListener()
+				{
+					@Override
+					public void onClick(View v)
+					{
+						// close select dialog
+						dialog.dismiss();
+
+						// show please wait dialog
+						showPleaseWaitDialog();
+
+						// use external SD -> change workPath
+						Thread thread = new Thread()
+						{
+							@Override
+							public void run()
+							{
+								workPath = externalSd2;
+								boolean askAgain = cbAskAgain.isChecked();
+								// boolean useTabletLayout = rbTabletLayout.isChecked();
+								saveWorkPath(askAgain/* , useTabletLayout */);
+								startInitial();
+							}
+						};
+						thread.run();
+
+					}
+				});
+
+				// Set max height of ScrollView
+				ScrollView sv = (ScrollView) dialog.findViewById(R.id.scrollView);
+				// TODO set max
+				LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.scrollViewLinearLayout);
+
+				// add all Buttons for created Workspaces
+
+				AdditionalWorkPathArray = getAdditionalWorkPathArray();
+
+				for (final String AddWorkPath : AdditionalWorkPathArray)
+				{
+
+					final String Name = FileIO.GetFileNameWithoutExtension(AddWorkPath);
+
+					Button buttonW = new Button(context);
+					buttonW.setText(Name + "\n\n" + AddWorkPath);
+
+					buttonW.setOnLongClickListener(new OnLongClickListener()
+					{
+
+						@Override
+						public boolean onLongClick(View v)
+						{
+
+							// setting the MassageBox then the UI_sizes are not initial in this moment
+							Resources res = splash.this.getResources();
+							float scale = res.getDisplayMetrics().density;
+							float calcBase = 533.333f * scale;
+
+							FrameLayout frame = (FrameLayout) findViewById(R.id.frameLayout1);
+							int width = frame.getMeasuredWidth();
+							int height = frame.getMeasuredHeight();
+
+							MessageBox.Builder.WindowWidth = width;
+							MessageBox.Builder.WindowHeight = height;
+							MessageBox.Builder.textSize = (calcBase / res.getDimensionPixelSize(R.dimen.BtnTextSize)) * scale;
+							MessageBox.Builder.ButtonHeight = (int) (50 * scale);
+
+							// Ask before delete
+							msg = (MessageBox) MessageBox.Show(Translation.Get("shuredeleteWorkspace", Name),
+									Translation.Get("deleteWorkspace"), MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+									new DialogInterface.OnClickListener()
+									{
+
+										@Override
+										public void onClick(DialogInterface dialog, int which)
+										{
+											if (which == MessageBox.BUTTON_POSITIVE)
+											{
+												// Delete this Workpath only from Settings don't delete any File
+												deleteWorkPath(AddWorkPath);
+											}
+											// Start again to exclude the old Folder
+											msg.dismiss();
+											onStart();
+										}
+
+									});
+
+							dialog.dismiss();
+							return true;
 						}
 					});
-					Button buttonE = (Button) dialog.findViewById(R.id.button2);
-					buttonE.setText("External SD\n\n" + externalSd);
-					if (!hasExtSd)
-					{
-						buttonE.setVisibility(Button.INVISIBLE);
-					}
-					buttonE.setOnClickListener(new OnClickListener()
+
+					buttonW.setOnClickListener(new OnClickListener()
 					{
 						@Override
 						public void onClick(View v)
@@ -380,7 +505,7 @@ public class splash extends Activity
 								@Override
 								public void run()
 								{
-									workPath = externalSd2;
+									workPath = AddWorkPath;
 									boolean askAgain = cbAskAgain.isChecked();
 									// boolean useTabletLayout = rbTabletLayout.isChecked();
 									saveWorkPath(askAgain/* , useTabletLayout */);
@@ -392,24 +517,43 @@ public class splash extends Activity
 						}
 					});
 
-					dialog.show();
+					ll.addView(buttonW);
+				}
 
-				}
-				catch (Exception ex)
+				Button buttonC = (Button) dialog.findViewById(R.id.buttonCreateWorkspace);
+				buttonC.setText(Translation.Get("createWorkSpace"));
+				buttonC.setOnClickListener(new OnClickListener()
 				{
-					ex.printStackTrace();
-				}
+
+					@Override
+					public void onClick(View v)
+					{
+						// close select dialog
+						dialog.dismiss();
+						getFolderReturnListner = new IgetFolderReturnListner()
+						{
+
+							@Override
+							public void getFolderReturn(String Path)
+							{
+								AdditionalWorkPathArray.add(Path);
+								writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+								// Start again to include the new Folder
+								onStart();
+							}
+						};
+
+						platformConector.getFolder("", Translation.Get("select_folder"), Translation.Get("select"), getFolderReturnListner);
+
+					}
+				});
+
+				dialog.show();
+
 			}
-			else
+			catch (Exception ex)
 			{
-				try
-				{
-					startInitial();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+				ex.printStackTrace();
 			}
 		}
 		else
@@ -432,13 +576,169 @@ public class splash extends Activity
 			if (bytesAvailable == 0)
 			{
 				// there is a workPath stored but this workPath is not available at the moment (maybe SD is removed)
-				Toast.makeText(mainActivity, "WorkPath " + workPath + " is not available!\nMaybe SD-Card is removed?", Toast.LENGTH_LONG)
+				Toast.makeText(splashActivity, "WorkPath " + workPath + " is not available!\nMaybe SD-Card is removed?", Toast.LENGTH_LONG)
 						.show();
 				finish();
 				return;
 			}
 
 			startInitial();
+		}
+
+	}
+
+	private String getExternalSdPath(String Folder)
+	{
+		// check if Layout forced from User
+		workPath = Environment.getExternalStorageDirectory() + Folder;
+
+		// extract first part of path ("/mnt/" or "/storage/" ...)
+		int pos = workPath.indexOf("/", 2); // search for the second /
+		String prev = "/mnt";
+		if (pos > 0)
+		{
+			prev = workPath.substring(0, pos);
+		}
+		// search for an external SD-Card
+		String externalSd = "";
+
+		// search for an external sd card on different devices
+		if (testExtSdPath(prev + "/extSdCard"))
+		{
+			externalSd = prev + "/extSdCard" + Folder;
+		}
+		else if (testExtSdPath(prev + "/MicroSD"))
+		{
+			externalSd = prev + "/MicroSD" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard/ext_sd"))
+		{
+			externalSd = prev + "/sdcard/ext_sd" + Folder;
+		}
+		else if (testExtSdPath(prev + "/ext_card"))
+		{
+			// Sony Xperia sola
+			externalSd = prev + "/ext_card" + Folder;
+		}
+		else if (testExtSdPath(prev + "/external"))
+		{
+			externalSd = prev + "/external" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard2"))
+		{
+			externalSd = prev + "/sdcard2" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard1"))
+		{
+			externalSd = prev + "/sdcard1" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
+		{
+			externalSd = prev + "/sdcard/_ExternalSD";
+		}
+		else if (testExtSdPath(prev + "/sdcard-ext"))
+		{
+			externalSd = prev + "/sdcard-ext" + Folder;
+		}
+		else if (testExtSdPath(prev + "/external1"))
+		{
+			externalSd = prev + "/external1" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard/external_sd"))
+		{
+			externalSd = prev + "/sdcard/external_sd" + Folder;
+		}
+		else if (testExtSdPath(prev + "/emmc"))
+		{
+			// for CM9
+			externalSd = prev + "/emmc" + Folder;
+		}
+		else if (testExtSdPath("/Removable/MicroSD"))
+		{
+			// Asus Transformer
+			externalSd = prev + "/Removable/MicroSD" + Folder;
+		}
+		else if (testExtSdPath("/mnt/ext_sd"))
+		{
+			// ODYS Motion
+			externalSd = prev + "/ext_sd" + Folder;
+		}
+		else if (testExtSdPath("/sdcard/tflash"))
+		{
+			// Car Radio
+			externalSd = prev + "/sdcard/tflash" + Folder;
+		}
+		else if (testExtSdPath(prev + "/sdcard"))
+		{
+			// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
+			// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
+			externalSd = prev + "/sdcard" + Folder;
+		}
+		return externalSd;
+	}
+
+	private ArrayList<String> getAdditionalWorkPathArray()
+	{
+		ArrayList<String> retList = new ArrayList<String>();
+		AdditionalWorkPathCount = AndroidSettings.getInt("AdditionalWorkPathCount", 0);
+		for (int i = 0; i < AdditionalWorkPathCount; i++)
+		{
+			retList.add(AndroidSettings.getString("AdditionalWorkPath" + String.valueOf(i), ""));
+		}
+		return retList;
+	}
+
+	private void writeAdditionalWorkPathArray(ArrayList<String> list)
+	{
+		Editor editor = AndroidSettings.edit();
+
+		// first remove all
+		for (int i = 0; i < AdditionalWorkPathCount; i++)
+		{
+			String delWorkPath = "AdditionalWorkPath" + String.valueOf(i);
+			editor.remove(delWorkPath);
+		}
+		editor.commit();
+
+		int index = 0;
+		for (String workpath : list)
+		{
+			String addWorkPath = "AdditionalWorkPath" + String.valueOf(index);
+			editor.putString(addWorkPath, workpath);
+			index++;
+		}
+		AdditionalWorkPathCount = index;
+		editor.putInt("AdditionalWorkPathCount", AdditionalWorkPathCount);
+		editor.commit();
+	}
+
+	private void deleteWorkPath(String addWorkPath)
+	{
+		int index = AdditionalWorkPathArray.indexOf(addWorkPath);
+		if (index >= 0) AdditionalWorkPathArray.remove(index);
+		writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
+		{
+			if (resultCode == android.app.Activity.RESULT_OK && data != null)
+			{
+				// obtain the filename
+				Uri fileUri = data.getData();
+				if (fileUri != null)
+				{
+					String filePath = fileUri.getPath();
+					if (filePath != null)
+					{
+						if (getFolderReturnListner != null) getFolderReturnListner.getFolderReturn(filePath);
+					}
+				}
+			}
+			return;
+
 		}
 
 	}
@@ -494,7 +794,7 @@ public class splash extends Activity
 			// versionTextView = null;
 			// myTextView = null;
 			// descTextView = null;
-			mainActivity = null;
+			splashActivity = null;
 
 		}
 		super.onDestroy();
@@ -531,6 +831,9 @@ public class splash extends Activity
 	private void Initial()
 	{
 		// Jetzt ist der workPath erstmal festgelegt.
+
+		Logger.setDebugFilePath(workPath + "/debug.txt");
+
 		// Zur Kompatibilität mit älteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{
@@ -573,7 +876,7 @@ public class splash extends Activity
 
 		}
 
-		Logger.setDebug(Global.Debug);
+		new Config(workPath);
 
 		// Read Config
 		Config.Initialize(workPath, workPath + "/cachebox.config");
@@ -582,6 +885,59 @@ public class splash extends Activity
 		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
 		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
+
+		// initialisieren der PlattformSettings
+		PlatformSettings.setPlatformSettings(new iPlatformSettings()
+		{
+
+			@Override
+			public void Write(SettingBase<?> setting)
+			{
+				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
+
+				if (setting instanceof SettingBool)
+				{
+					androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString)
+				{
+					androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
+				}
+				else if (setting instanceof SettingInt)
+				{
+					androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				androidSettingEditor.commit();
+			}
+
+			@Override
+			public SettingBase<?> Read(SettingBase<?> setting)
+			{
+				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+
+				if (setting instanceof SettingString)
+				{
+					String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
+					((SettingString) setting).setValue(value);
+				}
+				else if (setting instanceof SettingBool)
+				{
+					boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				}
+				else if (setting instanceof SettingInt)
+				{
+					int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+				return setting;
+			}
+		});
 
 		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
 		// geschrieben werden.
@@ -603,9 +959,9 @@ public class splash extends Activity
 		{
 			Config.readConfigFile(/* getAssets() */);
 
-			for (Iterator<SettingBase> it = Config.settings.iterator(); it.hasNext();)
+			for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext();)
 			{
-				SettingBase setting = it.next();
+				SettingBase<?> setting = it.next();
 
 				if (setting instanceof SettingBool)
 				{
@@ -659,14 +1015,16 @@ public class splash extends Activity
 		}
 
 		// copy AssetFolder only if Rev-Number changed, like at new installation
-		if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
 		// if (true)
 		{
-			// String[] exclude = new String[]{"webkit","sounds","images"};
+			String[] exclude = new String[]
+				{ "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
 			copyAssetFolder myCopie = new copyAssetFolder();
-			myCopie.copyAll(getAssets(), Config.WorkPath);
-			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
-			Config.settings.newInstall.setValue(true);
+
+			myCopie.copyAll(getAssets(), Config.WorkPath, exclude);
+			Config.installRev.setValue(GlobalCore.CurrentRevision);
+			Config.newInstall.setValue(true);
 			Config.AcceptChanges();
 
 			File CreateFile;
@@ -730,7 +1088,7 @@ public class splash extends Activity
 		}
 		else
 		{
-			Config.settings.newInstall.setValue(false);
+			Config.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
 
@@ -761,13 +1119,12 @@ public class splash extends Activity
 			ui.isLandscape = false;
 		}
 
-		new Translation(Config.WorkPath, false);
+		// new Translation(Config.WorkPath, false);
 
 		new UiSizes();
 		UI_Size_Base.that.initial(ui);
 
 		Global.Paints.init(this);
-		Global.InitIcons(this);
 
 		new de.droidcachebox.Map.AndroidManager();
 
@@ -812,6 +1169,7 @@ public class splash extends Activity
 		b.putSerializable("UI", ui);
 		mainIntent.putExtras(b);
 		startActivity(mainIntent);
+		finish();
 	}
 
 	@Override

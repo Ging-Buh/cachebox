@@ -3,12 +3,13 @@ package de.droidcachebox.Views;
 import java.io.File;
 import java.util.ArrayList;
 
-import CB_Core.GlobalCore;
-import CB_Core.Events.platformConector;
-import CB_Core.Events.platformConector.iStartPictureApp;
-import CB_Core.Log.Logger;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.GlobalCore;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.platformConector.iStartPictureApp;
+import CB_Utils.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -64,6 +65,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		spoilerImage.getSettings().setUseWideViewPort(true);
 		spoilerImage.getSettings().setLoadWithOverviewMode(true);
 		spoilerImage.setBackgroundColor(Global.getColor(R.attr.EmptyBackground));
+		spoilerImage.setFocusable(false);
 
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -217,10 +219,19 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 	@Override
 	public void OnShow()
 	{
-		aktCache = GlobalCore.getSelectedCache();
+		// clear old selection
+		spoilerFilename.setText(Translation.Get("NoSpoiler"));
+		spoilerImage.loadDataWithBaseURL("fake://not/needed", "", "text/html", "utf-8", "");
 
-		if (aktCache == null) return;
+		aktCache = GlobalCore.getSelectedCache();
 		lBitmaps.clear();
+
+		if (aktCache == null)
+		{
+			g.setAdapter(new ImageAdapter(context));
+			return;
+		}
+
 		for (ImageEntry image : aktCache.getSpoilerRessources())
 		{
 			try

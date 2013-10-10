@@ -1,7 +1,7 @@
 package de.droidcachebox.DB;
 
 import android.database.Cursor;
-import CB_Core.DB.CoreCursor;
+import CB_Utils.DB.CoreCursor;
 
 public class AndroidCursor extends CoreCursor
 {

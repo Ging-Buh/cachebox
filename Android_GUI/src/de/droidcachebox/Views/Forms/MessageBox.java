@@ -16,11 +16,11 @@
 
 package de.droidcachebox.Views.Forms;
 
-import CB_Core.Config;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.Math.UI_Size_Base;
-import CB_Core.TranslationEngine.Translation;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.Math.UI_Size_Base;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -39,6 +39,7 @@ import android.widget.TextView;
 import de.droidcachebox.Global;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
+import de.droidcachebox.splash;
 
 /**
  * Zeigt ein Meldungsfeld an, das Text, Schaltflächen und Symbole mit Informationen und Anweisungen für den Benutzer enthalten kann.
@@ -116,6 +117,7 @@ public class MessageBox extends android.app.Dialog
 	 * 	
 	 *  private final  DialogInterface.OnClickListener  DialogListner = new  DialogInterface.OnClickListener() 
 	 *   {
+	 * @return 
 	 * 	@Override
 	 * 	public void onClick(DialogInterface dialog, int button) 
 	 * 	{
@@ -140,7 +142,7 @@ public class MessageBox extends android.app.Dialog
 	 * }
 	 * </pre>
 	 */
-	public static void Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon,
+	public static Dialog Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon,
 			DialogInterface.OnClickListener Listener)
 	{
 		listner = Listener;
@@ -160,7 +162,7 @@ public class MessageBox extends android.app.Dialog
 			dialog = CreateDialog(DialogID.MSG_BOX_4, b);
 			dialog.show();
 		}
-
+		return dialog;
 	}
 
 	public static void Show(String msg, String title, MessageBoxIcon icon)
@@ -233,8 +235,8 @@ public class MessageBox extends android.app.Dialog
 	private static Activity getActivity()
 	{
 		if (parent != null) return parent;
-		return main.mainActivity;
-
+		if (main.mainActivity != null) return main.mainActivity;
+		return splash.splashActivity;
 	}
 
 	/**
@@ -517,11 +519,21 @@ public class MessageBox extends android.app.Dialog
 			return this;
 		}
 
+		public static int WindowWidth = 200;
+		public static int WindowHeight = 200;
+		public static float textSize = 12f;
+		public static int ButtonHeight = 30;
+
 		/**
 		 * Create the custom dialog
 		 */
 		public MessageBox create()
 		{
+			int winWidth = UI_Size_Base.that != null ? UI_Size_Base.that.getWindowWidth() : WindowWidth;
+			int winHeight = UI_Size_Base.that != null ? UI_Size_Base.that.getWindowHeight() : WindowHeight;
+			float txtSize = UI_Size_Base.that != null ? (float) (UI_Size_Base.that.getScaledFontSize_btn()) : textSize;
+			int Buttonheight = UI_Size_Base.that != null ? UI_Size_Base.that.getButtonHeight() : ButtonHeight;
+
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			// instantiate the dialog with the custom Theme
 			final MessageBox dialog = new MessageBox(context, R.style.Dialog);
@@ -531,7 +543,7 @@ public class MessageBox extends android.app.Dialog
 			if (title != null && !title.equals(""))
 			{
 				((TextView) layout.findViewById(R.id.title)).setText(title);
-				((TextView) layout.findViewById(R.id.title)).setTextSize((float) (UI_Size_Base.that.getScaledFontSize_btn()));
+				((TextView) layout.findViewById(R.id.title)).setTextSize(txtSize);
 			}
 			else
 			{
@@ -601,17 +613,17 @@ public class MessageBox extends android.app.Dialog
 			// set the content message
 			if (message != null)
 			{
-				((TextView) layout.findViewById(R.id.message)).setText(message);
-				((TextView) layout.findViewById(R.id.message)).setTextSize((float) (UI_Size_Base.that.getScaledFontSize_btn()));
 
-				((TextView) layout.findViewById(R.id.message)).measure(UI_Size_Base.that.getWindowWidth() - 100,
-						UI_Size_Base.that.getWindowHeight() - 100);
+				((TextView) layout.findViewById(R.id.message)).setText(message);
+				((TextView) layout.findViewById(R.id.message)).setTextSize(txtSize);
+
+				((TextView) layout.findViewById(R.id.message)).measure(winWidth - 100, winHeight - 100);
 				int height = ((TextView) layout.findViewById(R.id.message)).getMeasuredHeight();
 
 				LayoutParams params = ((ScrollView) layout.findViewById(R.id.ScrollView01)).getLayoutParams();
-				if (height > UI_Size_Base.that.getWindowHeight() - (UI_Size_Base.that.getButtonHeight() * 4))
+				if (height > winHeight - (Buttonheight * 4))
 				{
-					height = UI_Size_Base.that.getWindowHeight() - (UI_Size_Base.that.getButtonHeight() * 4);
+					height = winHeight - (Buttonheight * 4);
 					params.height = height;
 					((ScrollView) layout.findViewById(R.id.ScrollView01)).setLayoutParams(params);
 				}
@@ -646,10 +658,13 @@ public class MessageBox extends android.app.Dialog
 		{
 			Resources res = context.getResources();
 
-			Drawable header = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_header : R.drawable.header);
-			Drawable title = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_title : R.drawable.title);
-			Drawable center = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_center : R.drawable.center);
-			Drawable footer = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_footer : R.drawable.footer);
+			boolean NightMode = false;
+			if (Config.settings != null) NightMode = Config.nightMode.getValue();
+
+			Drawable header = res.getDrawable(NightMode ? R.drawable.night_header : R.drawable.header);
+			Drawable title = res.getDrawable(NightMode ? R.drawable.night_title : R.drawable.title);
+			Drawable center = res.getDrawable(NightMode ? R.drawable.night_center : R.drawable.center);
+			Drawable footer = res.getDrawable(NightMode ? R.drawable.night_footer : R.drawable.footer);
 
 			((LinearLayout) layout.findViewById(R.id.header)).setBackgroundDrawable(header);
 			((TextView) layout.findViewById(R.id.title)).setBackgroundDrawable(title);

@@ -13,7 +13,18 @@
         android:textColor="@color/Day_Background"
         android:textSize="20dip" />
 
-    <Button
+     <ScrollView
+         android:id="@+id/scrollView"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+
+         <LinearLayout
+              android:id="@+id/scrollViewLinearLayout"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical" >
+             
+             <Button
         android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,6 +32,16 @@
     
     <Button
         android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+             
+         </LinearLayout>
+     </ScrollView>
+    
+    
+     <Button
+        android:id="@+id/buttonCreateWorkspace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button" />
@@ -52,7 +73,9 @@
             android:layout_height="wrap_content"
             android:text="RadioButton" />
 	</RadioGroup>
--->	
+-->
+
+    
 
     <CheckBox
         android:id="@+id/select_sd_askagain"

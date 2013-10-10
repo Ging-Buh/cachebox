@@ -21,85 +21,13 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-       
-        
-        
-        <LinearLayout
-            android:id="@+id/TabletLayoutButtons"
-            android:layout_width="fill_parent"
-            android:layout_height="65dip"
-            android:layout_alignParentBottom="true"
-             >
-
-            <LinearLayout
-                android:id="@+id/layoutButtons"
-                android:layout_width="340dip"
-                android:layout_height="65dip"
-                >
-
-                <ImageButton
-                    android:id="@+id/buttonDB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="2dip"
-                    android:layout_marginLeft="1dip"
-                    android:layout_weight="1"
-                   >
-                </ImageButton>
-
-                <ImageButton
-                    android:id="@+id/buttonCache"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="2dip"
-                    android:layout_marginLeft="1dip"
-                    android:layout_weight="1"
-                   
-                    >
-                </ImageButton>
-
-                <ImageButton
-                    android:id="@+id/buttonMap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="2dip"
-                    android:layout_marginLeft="1dip"
-                    android:layout_weight="1"
-                   
-                    android:text="@string/Map" >
-                </ImageButton>
-
-                <ImageButton
-                    android:id="@+id/buttonInfo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="2dip"
-                    android:layout_marginLeft="1dip"
-                    android:layout_weight="1"
-                   
-                    android:text="@string/Info" >
-                </ImageButton>
-
-                <ImageButton
-                    android:id="@+id/buttonMisc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="2dip"
-                    android:layout_marginLeft="1dip"
-                    android:layout_weight="1"
-                  
-                    android:text="@string/Misc" >
-                </ImageButton>
-            </LinearLayout>
-          
-        </LinearLayout>
+     
 
         <LinearLayout
             android:id="@+id/TabletLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_above="@+id/TabletLayoutButtons"
-            android:layout_below="@+id/layoutTop" >
+                       android:layout_below="@+id/layoutTop" >
 
             <FrameLayout
                 android:id="@+id/layoutContent"
@@ -138,14 +66,7 @@
         </LinearLayout>
         
         
-         <LinearLayout
-            android:id="@+id/layoutTextField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical" >
-
-        </LinearLayout>
+        
         
     </RelativeLayout>
 

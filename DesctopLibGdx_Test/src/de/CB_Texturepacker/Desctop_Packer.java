@@ -29,11 +29,11 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
-import CB_Core.CB_Texturepacker.MaxRectsPacker;
-import CB_Core.CB_Texturepacker.Page;
-import CB_Core.CB_Texturepacker.Rect_Base;
-import CB_Core.CB_Texturepacker.Settings;
-import CB_Core.CB_Texturepacker.TexturePacker_Base;
+import CB_UI_Base.CB_Texturepacker.MaxRectsPacker;
+import CB_UI_Base.CB_Texturepacker.Page;
+import CB_UI_Base.CB_Texturepacker.Rect_Base;
+import CB_UI_Base.CB_Texturepacker.Settings;
+import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.MathUtils;

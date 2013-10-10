@@ -4,32 +4,43 @@ import java.awt.Frame;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import CB_Core.Config;
-import CB_Core.FileIO;
-import CB_Core.GlobalCore;
-import CB_Core.Plattform;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
-import CB_Core.Events.platformConector;
-import CB_Core.Events.platformConector.ICallUrl;
-import CB_Core.Events.platformConector.IHardwarStateListner;
-import CB_Core.Events.platformConector.IQuit;
-import CB_Core.Events.platformConector.IgetFileListner;
-import CB_Core.Events.platformConector.IgetFileReturnListner;
-import CB_Core.Events.platformConector.IgetFolderListner;
-import CB_Core.Events.platformConector.IgetFolderReturnListner;
-import CB_Core.GL_UI.GL_View_Base;
-import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_Core.Log.Logger;
-import CB_Core.Math.UiSizes;
-import CB_Core.Math.devicesSizes;
-import CB_Core.Settings.SettingBase.iChanged;
 import CB_Locator.Location.ProviderType;
+import CB_UI.Config;
+import CB_UI.GlobalCore;
+import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Views.splash;
+import CB_UI_Base.Plattform;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.platformConector.ICallUrl;
+import CB_UI_Base.Events.platformConector.IHardwarStateListner;
+import CB_UI_Base.Events.platformConector.IQuit;
+import CB_UI_Base.Events.platformConector.IgetFileListner;
+import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.platformConector.IgetFolderListner;
+import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_UI_Base.Math.UiSizes;
+import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Log.Logger;
+import CB_Utils.Settings.PlatformSettings;
+import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
+import CB_Utils.Settings.SettingBase;
+import CB_Utils.Settings.SettingBool;
+import CB_Utils.Settings.SettingInt;
+import CB_Utils.Settings.SettingString;
+import CB_Utils.Util.FileIO;
+import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -38,47 +49,113 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import de.CB_Texturepacker.Desctop_Packer;
-import de.Map.DesctopManager;
+import de.Map.DesktopManager;
 
 public class DesktopMain
 {
 
 	static GL CB_UI;
-
 	static float compassheading = -1;
+	// Retrieve the user preference node for the package com.mycompany
+	static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
 
 	@SuppressWarnings("unused")
 	public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame)
 	{
 		GlobalCore.platform = Plattform.Desktop;
 		frame.setVisible(false);
-		new DesktopLogger();
-		Logger.setDebug(true);
 
 		// Initial Desctop TexturePacker
 		new Desctop_Packer();
 
 		InitalConfig();
 		Config.settings.ReadFromDB();
-		CB_UI = new Desktop_GL_Listner(ui.Window.width, ui.Window.height);
+
+		PlatformSettings.setPlatformSettings(new iPlatformSettings()
+		{
+
+			@Override
+			public void Write(SettingBase<?> setting)
+			{
+
+				if (setting instanceof SettingBool)
+				{
+					prefs.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString)
+				{
+					prefs.put(setting.getName(), ((SettingString) setting).getValue());
+				}
+				else if (setting instanceof SettingInt)
+				{
+					prefs.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				try
+				{
+					prefs.flush();
+				}
+				catch (BackingStoreException e)
+				{
+					 
+					e.printStackTrace();
+				}
+
+			}
+
+			@Override
+			public SettingBase<?> Read(SettingBase<?> setting)
+			{
+				if (setting instanceof SettingString)
+				{
+					String value = prefs.get(setting.getName(), ((SettingString) setting).getDefaultValue());
+					((SettingString) setting).setValue(value);
+				}
+				else if (setting instanceof SettingBool)
+				{
+					boolean value = prefs.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				}
+				else if (setting instanceof SettingInt)
+				{
+					int value = prefs.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+				return setting;
+			}
+		});
+
+		new DesktopLogger();
+		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
+
+		// create new splash
+		splash sp = new splash(0, 0, ui.Window.width, ui.Window.height, "Splash");
+
+		// create new mainView
+		TabMainView ma = new TabMainView(0, 0, ui.Window.width, ui.Window.height, "mainView");
+
+		CB_UI = new GL(ui.Window.width, ui.Window.height, sp, ma);
 
 		GL_View_Base.debug = debug;
 		GL_View_Base.disableScissor = scissor;
 
-		if (Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
 		{
 
-			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
-			Config.settings.newInstall.setValue(true);
+			Config.installRev.setValue(GlobalCore.CurrentRevision);
+			Config.newInstall.setValue(true);
 			Config.AcceptChanges();
 		}
 		else
 		{
-			Config.settings.newInstall.setValue(false);
+			Config.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
 
-		new DesctopManager();
+		new DesktopManager();
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 
@@ -136,15 +213,24 @@ public class DesktopMain
 				public void RenderDirty()
 				{
 					App.getGraphics().setContinuousRendering(false);
-
+					isContinousRenderMode.set(false);
 				}
 
 				@Override
 				public void RenderContinous()
 				{
 					App.getGraphics().setContinuousRendering(true);
-
+					isContinousRenderMode.set(true);
 				}
+
+				AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
+
+				@Override
+				public boolean isContinous()
+				{
+					return isContinousRenderMode.get();
+				}
+
 			};
 		}
 
@@ -258,6 +344,13 @@ public class DesktopMain
 			@Override
 			public void Quit()
 			{
+				if (GlobalCore.getSelectedCache() != null)
+				{
+					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
+					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+					Config.AcceptChanges();
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+				}
 				System.exit(0);
 
 			}
@@ -326,11 +419,13 @@ public class DesktopMain
 	 */
 	public static void InitalConfig()
 	{
+		String workPath = "./cachebox";
+
+		new Config(workPath);
 
 		if (Config.settings != null && Config.settings.isLoaded()) return;
 
 		// Read Config
-		String workPath = "./cachebox";
 
 		Config.Initialize(workPath, workPath + "/cachebox.config");
 
@@ -375,8 +470,8 @@ public class DesktopMain
 		// ##########################################################
 		// initial Locator with saved Location
 		// ##########################################################
-		double latitude = Config.settings.MapInitLatitude.getValue();
-		double longitude = Config.settings.MapInitLongitude.getValue();
+		double latitude = Config.MapInitLatitude.getValue();
+		double longitude = Config.MapInitLongitude.getValue();
 		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
 
 		CB_Locator.Location initialLocation;
@@ -397,47 +492,47 @@ public class DesktopMain
 		// ##########################################################
 
 		// Use Imperial units?
-		CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
-		Config.settings.ImperialUnits.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
+		Config.ImperialUnits.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+				CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
 			}
 		});
 
 		// GPS update time?
-		CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
-		Config.settings.gpsUpdateTime.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
+		Config.gpsUpdateTime.addChangedEventListner(new iChanged()
 		{
 
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+				CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
 			}
 		});
 
 		// Use magnetic Compass?
-		CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
-		Config.settings.HardwareCompass.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
+		Config.HardwareCompass.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+				CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
 			}
 		});
 
 		// Magnetic compass level
-		CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
-		Config.settings.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
+		Config.HardwareCompassLevel.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+				CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
 			}
 		});
 	}

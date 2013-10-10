@@ -6,18 +6,23 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.Config;
-import CB_Core.GlobalCore;
-import CB_Core.DAO.CacheDAO;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_Core.Import.DescriptionImageGrabber;
-import CB_Core.Log.Logger;
-import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
+import CB_UI.GlobalCore;
+import CB_UI.Api.SearchForGeocaches;
+import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_Utils.Log.Logger;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -66,6 +71,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 		this.setWebViewClient(clint);
 		that = this;
+		this.setFocusable(false);
 	}
 
 	public DescriptionViewControl(Context context, AttributeSet attrs)
@@ -85,6 +91,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		this.getSettings().setJavaScriptEnabled(true);
 		this.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 
+		this.setWebViewClient(clint);
+		that = this;
 	}
 
 	WebViewClient clint = new WebViewClient()
@@ -110,13 +118,23 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 					public void run()
 					{
 
-						String accessToken = Config.GetAccessToken();
 						if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
 						{
-							int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);
+							int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits();
 							if (result != 0)
 							{
 								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
+								return;
+							}
+
+							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+							{
+								GL.that.Toast(ConnectionError.INSTANCE);
+								return;
+							}
+							if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+							{
+								GL.that.Toast(ApiUnavailable.INSTANCE);
 								return;
 							}
 						}
@@ -134,7 +152,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 							return;
 						}
 
-						if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
+						if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember())
 						{
 							String s = "Download Details of this cache?\n";
 							s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
@@ -156,6 +174,12 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 				thread.start();
 
+				return true;
+			}
+			else if (url.startsWith("http://"))
+			{
+				// Load Url in ext Browser
+				platformConector.callUrl(url);
 				return true;
 			}
 			view.loadUrl(url);
@@ -233,16 +257,13 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			switch (button)
 			{
 			case -1:
-				CacheDAO dao = new CacheDAO();
-				Cache newCache = dao.LoadApiDetails(aktCache);
+				Cache newCache = SearchForGeocaches.LoadApiDetails(aktCache);
 				if (newCache != null)
 				{
 					aktCache = newCache;
 					setCache(newCache);
 
-					// hier ist kein AccessToke mehr notwendig, da diese Info
-					// bereits im Cache sein muss!
-					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(""))
+					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember())
 					{
 						String s = "Download successful!\n";
 						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
@@ -279,20 +300,31 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			{
 				html = DescriptionImageGrabber.ResolveImages(cache, cachehtml, false, NonLocalImages, NonLocalImagesUrl);
 
-				if (!Config.settings.DescriptionNoAttributes.getValue()) html = getAttributesHtml(cache) + html;
+				if (!Config.DescriptionNoAttributes.getValue()) html = getAttributesHtml(cache) + html;
 
 				// add 2 empty lines so that the last line of description can be selected with the markers
 				html += "</br></br>";
 			}
 
-			try
+			final String FinalHtml = html;
+
+			main.mainActivity.runOnUiThread(new Runnable()
 			{
-				this.loadDataWithBaseURL("fake://fake.de", html, mimeType, encoding, null);
-			}
-			catch (Exception e)
-			{
-				return; // if an exception here, then this is not initializes
-			}
+
+				@Override
+				public void run()
+				{
+					try
+					{
+						DescriptionViewControl.this.loadDataWithBaseURL("fake://fake.de", FinalHtml, mimeType, encoding, null);
+					}
+					catch (Exception e)
+					{
+						return; // if an exception here, then this is not initializes
+					}
+				}
+			});
+
 		}
 
 		try
@@ -428,7 +460,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 				// im Day Mode brauchen wir kein InvertView
 				// das sollte mehr Performance geben
-				if (Config.settings.nightMode.getValue())
+				if (Config.nightMode.getValue())
 				{
 					invertViewControl.Me.setVisibility(VISIBLE);
 				}

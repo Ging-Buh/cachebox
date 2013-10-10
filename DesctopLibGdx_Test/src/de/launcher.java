@@ -14,18 +14,11 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.zip.ZipException;
 
-import CB_Core.Config;
-import CB_Core.FileIO;
-import CB_Core.GlobalCore;
-import CB_Core.Import.UnZip;
-import CB_Core.Math.Size;
-import CB_Core.Math.devicesSizes;
-import CB_Core.Util.CopyHelper.Copy;
-import CB_Core.Util.CopyHelper.CopyRule;
+import CB_UI.Config;
+import CB_UI.GlobalCore;
+import CB_UI_Base.Math.Size;
+import CB_UI_Base.Math.devicesSizes;
 
 class Ex_1
 {
@@ -40,7 +33,6 @@ class Ex_1
 
 		files = Dir.list(new FilenameFilter()
 		{
-
 			@Override
 			public boolean accept(File dir, String filename)
 			{
@@ -50,101 +42,15 @@ class Ex_1
 			}
 		});
 
-		// copy AssetFolder only if Rev-Number changed, like at new installation
-		if (files.length > 0 && Config.settings.installRev.getValue() < GlobalCore.CurrentRevision)
+		if (files.length > 0 && Config.installRev.getValue() < GlobalCore.CurrentRevision)
 		{
-			File workJar = new File(files[0]);
-
-			if (workJar.getAbsolutePath().contains("src"))
-			{
-				// Copy from assets Folder!!
-				try
-				{
-					File Dir2 = new File("../Android_GUI/assets/");
-					final String[] files2;
-					ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
-
-					files2 = Dir2.list();
-
-					for (String file : files2)
-					{
-						rules.add(new CopyRule("../Android_GUI/assets/" + file, "./cachebox"));
-					}
-
-					Copy copy = new Copy(rules);
-					try
-					{
-						copy.Run();
-
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
-
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-			else
-			{
-				// Copy from Jar!!
-				try
-				{
-
-					String ExtractFolder = "";
-
-					if (workJar.exists())
-					{
-						try
-						{
-							ExtractFolder = UnZip.extractFolder(workJar.getAbsolutePath());
-						}
-						catch (ZipException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						catch (IOException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-						// Copy DCB/cachebox to cachebox
-
-						ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
-
-						rules.add(new CopyRule(ExtractFolder + "/cachebox", "./"));
-						Copy copy = new Copy(rules);
-						try
-						{
-							copy.Run();
-						}
-						catch (IOException e)
-						{
-							e.printStackTrace();
-						}
-
-						FileIO.deleteDir(new File(ExtractFolder));
-
-					}
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-
-			Config.settings.installRev.setValue(GlobalCore.CurrentRevision);
-			Config.settings.newInstall.setValue(true);
+			Config.installRev.setValue(GlobalCore.CurrentRevision);
+			Config.newInstall.setValue(true);
 			Config.AcceptChanges();
 		}
 		else
 		{
-			Config.settings.newInstall.setValue(false);
+			Config.newInstall.setValue(false);
 			Config.AcceptChanges();
 		}
 
@@ -153,7 +59,7 @@ class Ex_1
 			File workJar = new File(files[0]);
 			if (workJar.exists())
 			{
-				// don't show Luncher
+				// don't show Launcher
 				final Gui screen = new Gui("Device Launcher");
 				screen.setSize(250, 500);
 				screen.setVisible(true);

@@ -1,8 +1,10 @@
 package de.droidcachebox.Views;
 
-import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_Core.Log.Logger;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
+import CB_Utils.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
@@ -127,26 +129,6 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
 	}
 
-	// @Override
-	// public boolean onTouchEvent(MotionEvent event)
-	// {
-	// final float ex = event.getX();
-	// final float ey = event.getY();
-	// // Weitergabe der Toucheingabe an den Gl_Listener
-	// // ToDo: noch nicht fertig!!!!!!!!!!!!!
-	// Thread thread = new Thread(new Runnable()
-	// {
-	// @Override
-	// public void run()
-	// {
-	// glListener.onTouchDown((int) ex, (int) ey, 0, 0);
-	// }
-	// });
-	// thread.run();
-	//
-	// return true;
-	// }
-
 	public final static int GLSURFACE_VIEW20 = 0;
 	public final static int GLSURFACE_CUPCAKE = 1;
 	public final static int GLSURFACE_DEFAULT = 2;
@@ -214,6 +196,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 				((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
 				break;
 			}
+			isContinousRenderMode.set(false);
 		}
 		catch (Exception ex)
 		{
@@ -224,6 +207,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void RenderContinous()
 	{
+
 		Logger.LogCat("Set: RenderContinous");
 		switch (mAktSurfaceType)
 		{
@@ -240,6 +224,15 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 			((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
 			break;
 		}
+		isContinousRenderMode.set(true);
+	}
+
+	AtomicBoolean isContinousRenderMode = new AtomicBoolean(true);
+
+	@Override
+	public boolean isContinous()
+	{
+		return isContinousRenderMode.get();
 	}
 
 	@Override

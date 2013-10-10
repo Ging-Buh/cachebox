@@ -1,11 +1,11 @@
 package de.droidcachebox.Views;
 
-import CB_Core.GlobalCore;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.JokerEntry;
 import CB_Core.Types.Waypoint;
+import CB_UI.GlobalCore;
+import CB_UI.Events.SelectedCacheEvent;
+import CB_UI.Events.SelectedCacheEventList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

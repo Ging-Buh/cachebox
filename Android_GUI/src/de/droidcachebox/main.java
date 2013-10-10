@@ -24,76 +24,13 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import org.openintents.intents.FileManagerIntents;
-
-import CB_Core.Config;
-import CB_Core.Energy;
-import CB_Core.FileIO;
 import CB_Core.FilterProperties;
-import CB_Core.GlobalCore;
-import CB_Core.Plattform;
-import CB_Core.TrackRecorder;
-import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Events.KeyCodes;
-import CB_Core.Events.KeyboardFocusChangedEvent;
-import CB_Core.Events.KeyboardFocusChangedEventList;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.Events.invalidateTextureEventList;
-import CB_Core.Events.platformConector;
-import CB_Core.Events.platformConector.ICallUrl;
-import CB_Core.Events.platformConector.IGetApiKey;
-import CB_Core.Events.platformConector.IHardwarStateListner;
-import CB_Core.Events.platformConector.IQuit;
-import CB_Core.Events.platformConector.IShowViewListner;
-import CB_Core.Events.platformConector.IgetFileListner;
-import CB_Core.Events.platformConector.IgetFileReturnListner;
-import CB_Core.Events.platformConector.IgetFolderListner;
-import CB_Core.Events.platformConector.IgetFolderReturnListner;
-import CB_Core.Events.platformConector.IsetKeybordFocus;
-import CB_Core.Events.platformConector.IsetScreenLockTime;
-import CB_Core.Events.platformConector.iPlatformSettings;
-import CB_Core.GL_UI.SpriteCache;
-import CB_Core.GL_UI.SpriteCache.DialogElement;
-import CB_Core.GL_UI.ViewConst;
-import CB_Core.GL_UI.ViewID;
-import CB_Core.GL_UI.ViewID.UI_Pos;
-import CB_Core.GL_UI.ViewID.UI_Type;
-import CB_Core.GL_UI.runOnGL;
-import CB_Core.GL_UI.Activitys.FilterSettings.EditFilterSettings;
-import CB_Core.GL_UI.Activitys.settings.SettingsActivity;
-import CB_Core.GL_UI.Controls.EditTextFieldBase;
-import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog;
-import CB_Core.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox;
-import CB_Core.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxButtons;
-import CB_Core.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_Core.GL_UI.Controls.PopUps.SearchDialog;
-import CB_Core.GL_UI.Controls.PopUps.SearchDialog.searchMode;
-import CB_Core.GL_UI.GL_Listener.GL;
-import CB_Core.GL_UI.GL_Listener.GL.renderStartet;
-import CB_Core.GL_UI.GL_Listener.Tab_GL_Listner;
-import CB_Core.GL_UI.Main.TabMainView;
-import CB_Core.GL_UI.Views.TrackableListView;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
-import CB_Core.Log.ILog;
-import CB_Core.Log.Logger;
-import CB_Core.Math.Size;
-import CB_Core.Math.UI_Size_Base;
-import CB_Core.Math.UiSizes;
-import CB_Core.Math.devicesSizes;
-import CB_Core.Settings.SettingBase;
-import CB_Core.Settings.SettingBase.iChanged;
-import CB_Core.Settings.SettingBool;
-import CB_Core.Settings.SettingInt;
-import CB_Core.Settings.SettingString;
-import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.GpsStrength;
@@ -101,11 +38,59 @@ import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Locator.Events.GpsStateChangeEventList;
-import android.annotation.SuppressLint;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
+import CB_UI.GlobalCore;
+import CB_UI.TrackRecorder;
+import CB_UI.Events.SelectedCacheEvent;
+import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
+import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
+import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
+import CB_UI.GL_UI.Controls.PopUps.SearchDialog.searchMode;
+import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.GL_UI.Views.splash;
+import CB_UI_Base.Energy;
+import CB_UI_Base.Plattform;
+import CB_UI_Base.Events.invalidateTextureEventList;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.platformConector.ICallUrl;
+import CB_UI_Base.Events.platformConector.IGetApiKey;
+import CB_UI_Base.Events.platformConector.IHardwarStateListner;
+import CB_UI_Base.Events.platformConector.IQuit;
+import CB_UI_Base.Events.platformConector.IShowViewListner;
+import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
+import CB_UI_Base.Events.platformConector.IsetScreenLockTime;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.ViewConst;
+import CB_UI_Base.GL_UI.ViewID;
+import CB_UI_Base.GL_UI.ViewID.UI_Pos;
+import CB_UI_Base.GL_UI.ViewID.UI_Type;
+import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.GL_Listener.GL.renderStartet;
+import CB_UI_Base.Math.Size;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
+import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Log.ILog;
+import CB_Utils.Log.Logger;
+import CB_Utils.Settings.PlatformSettings;
+import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
+import CB_Utils.Settings.SettingBase;
+import CB_Utils.Settings.SettingBool;
+import CB_Utils.Settings.SettingInt;
+import CB_Utils.Settings.SettingString;
+import CB_Utils.Util.FileIO;
+import CB_Utils.Util.iChanged;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.app.Service;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -124,8 +109,6 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -143,20 +126,14 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.ClipboardManager;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -164,20 +141,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewParent;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
@@ -201,7 +173,6 @@ import de.droidcachebox.Ui.ActivityUtils;
 import de.droidcachebox.Ui.AndroidClipboard;
 import de.droidcachebox.Views.DescriptionView;
 import de.droidcachebox.Views.JokerView;
-import de.droidcachebox.Views.NotesView;
 import de.droidcachebox.Views.SolverView;
 import de.droidcachebox.Views.SpoilerView;
 import de.droidcachebox.Views.ViewGL;
@@ -209,20 +180,15 @@ import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 
-@SuppressLint("HandlerLeak")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
-		GpsStatus.NmeaListener, GpsStatus.Listener, ILog, KeyboardFocusChangedEvent
+		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
 
 	private static ServiceConnection mConnection;
 	private static Intent serviceIntent;
 	private static Service myNotifyService;
 	private static BroadcastReceiver mReceiver;
-	public boolean KeybordShown = false;
-	private static RelativeLayout Baselayout;
 	public HorizontalListView QuickButtonList;
-
-	private static hiddenTextField mTextField;
 
 	/*
 	 * private static member
@@ -233,10 +199,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static DescriptionView descriptionView = null; // ID 4
 	private static SpoilerView spoilerView = null; // ID 5
-	private static NotesView notesView = null; // ID 6
 	private static SolverView solverView = null; // ID 7
 	private static JokerView jokerView = null; // ID 12
-	private static TrackableListView trackablelistView = null; // ID 14
 
 	/**
 	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
@@ -290,8 +254,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public downSlider InfoDownSlider;
 
-	private String GcCode = null;
-	private String GpxPath = null;
+	private String ExtSearch_GcCode = null;
+	private String ExtSearch_GpxPath = null;
 
 	private boolean mustRunSearch = false;
 
@@ -385,6 +349,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		super.onCreate(savedInstanceState);
 		GL.resetIsInitial();
+
 		mainActivity = this;
 
 		if (savedInstanceState != null)
@@ -503,7 +468,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		Logger.Add(this);
 
-		// N = Config.settings.nightMode.getValue();
+		// N = Config.nightMode.getValue();
 
 		setContentView(GlobalCore.isTab ? R.layout.tab_main : R.layout.main);
 
@@ -514,9 +479,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		mainActivity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		glListener = new Tab_GL_Listner(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
+		// create new splash
+		splash sp = new splash(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "Splash");
 
-		int Time = Config.settings.ScreenLock.getValue();
+		// create new mainView
+		TabMainView ma = new TabMainView(0, 0, UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), "mainView");
+
+		glListener = new GL(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight(), sp, ma);
+
+		int Time = Config.ScreenLock.getValue();
 		counter = new ScreenLockTimer(Time, Time);
 		counter.start();
 
@@ -530,7 +501,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
-		Config.settings.DebugMode.setValue(false);
+		Config.DebugMode.setValue(false);
 		Config.AcceptChanges();
 
 		// Initial Android TexturePacker
@@ -538,7 +509,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		initialLocationManager();
 
-		initialViewGL();
 		initalMicIcon();
 
 		glListener.onStart();
@@ -567,19 +537,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		downSlider.isInitial = false;
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes.that
+		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that
 				.getQuickButtonListHeight() : 0;
 
 		setQuickButtonHeight(sollHeight);
-
-		LinearLayout BtnLayout = (LinearLayout) this.findViewById(R.id.layoutButtons);
-		BtnLayout.setVisibility(View.INVISIBLE);
 
 		if (isFirstStart)
 		{
 			// ask for API key only if Rev-Number changed, like at new
 			// installation and API Key is Empty
-			if (Config.settings.newInstall.getValue() && Config.GetAccessToken().equals(""))
+			if (Config.newInstall.getValue() && Config.GetAccessToken().equals(""))
 			{
 				askToGetApiKey();
 			}
@@ -588,7 +555,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				if (!GlobalCore.restartAfterKill) chkGpsIsOn();
 			}
 
-			if (Config.settings.newInstall.getValue())
+			if (Config.newInstall.getValue())
 			{
 				String Welcome = "";
 				String LangId = getString(R.string.langId);
@@ -625,8 +592,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
-		// initial hidden EditText
-		initialHiddenEditText();
+		initialViewGL();
 	}
 
 	boolean flag = false;
@@ -647,7 +613,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void startSearch()
 	{
-		if (GcCode != null)
+		if (ExtSearch_GcCode != null)
 		{
 
 			runOnUiThread(new Runnable()
@@ -665,7 +631,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						}
 
 						SearchDialog.that.showNotCloseAutomaticly();
-						SearchDialog.that.addSearch(GcCode, searchMode.GcCode);
+						SearchDialog.that.addSearch(ExtSearch_GcCode, searchMode.GcCode);
+						ExtSearch_GcCode = null;
 					}
 					else
 					{
@@ -685,7 +652,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void startGPXImport()
 	{
 		Logger.LogCat("startGPXImport");
-		if (GpxPath != null)
+		if (ExtSearch_GpxPath != null)
 		{
 
 			Timer timer = new Timer();
@@ -720,7 +687,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									ImporterProgress ip = new ImporterProgress();
 									Database.Data.beginTransaction();
 
-									importer.importGpx(GpxPath, ip);
+									importer.importGpx(ExtSearch_GpxPath, ip);
 
 									Database.Data.setTransactionSuccessful();
 									Database.Data.endTransaction();
@@ -743,6 +710,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									FilterProperties props = GlobalCore.LastFilter;
 
 									EditFilterSettings.ApplyFilter(props);
+
+									ExtSearch_GpxPath = null;
 
 									GL.that.Toast(Msg, 3000);
 								}
@@ -842,34 +811,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	@Override
-	public boolean dispatchKeyEvent(KeyEvent event)
-	{
-		if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK)
-		{
-			if (KeyboardWasClosed)
-			{
-				KeyboardWasClosed = false;
-				return true;
-			}
-			else
-			{
-				// if Dialog or Activity shown, close that first
-				if (GL.that.closeShownDialog()) return true;
-
-				if (SpriteCache.Dialog != null && SpriteCache.Dialog.get(DialogElement.footer.ordinal()) != null)
-				{
-					// SHOW Close Dialog only if SpriteCache initialized
-					if (!GL.that.keyBackCliced()) TabMainView.actionClose.Execute();
-					return true;
-				}
-
-			}
-
-		}
-		return super.dispatchKeyEvent(event);
-	}
-
-	@Override
 	public void CacheListChangedEvent()
 	{
 
@@ -900,8 +841,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					public void run()
 					{
 						if (GlobalCore.getSelectedCache() != null) GlobalCore.getSelectedCache().ReloadSpoilerRessources();
-						String MediaFolder = Config.settings.UserImageFolder.getValue();
-						String TrackFolder = Config.settings.TrackFolder.getValue();
+						String MediaFolder = Config.UserImageFolder.getValue();
+						String TrackFolder = Config.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
 						// die Koordinaten nach der Aufnahme verwendet werden.
@@ -921,22 +862,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (requestCode == Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR)
 		{
-			if (resultCode == android.app.Activity.RESULT_OK && data != null)
-			{
-				// obtain the filename
-				Uri fileUri = data.getData();
-				if (fileUri != null)
-				{
-					String filePath = fileUri.getPath();
-					if (filePath != null)
-					{
-						if (getFileReturnListner != null) getFileReturnListner.getFieleReturn(filePath);
-						if (getFolderReturnListner != null) getFolderReturnListner.getFolderReturn(filePath);
-					}
-				}
-			}
+			CB_Android_FileExplorer.onActivityResult(requestCode, resultCode, data);
 			return;
-
 		}
 
 		// Intent Result Record Video
@@ -958,7 +885,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						String recordedVideoFilePath = cursor.getString(column_index_data);
 
 						String ext = FileIO.GetFileExtension(recordedVideoFilePath);
-						String MediaFolder = Config.settings.UserImageFolder.getValue();
+						String MediaFolder = Config.UserImageFolder.getValue();
 
 						// Video in Media-Ordner verschieben
 						File source = new File(recordedVideoFilePath);
@@ -969,7 +896,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							// Log.d("DroidCachebox", "Fehler beim Umbenennen der Datei: " + source.getName());
 						}
 
-						String TrackFolder = Config.settings.TrackFolder.getValue();
+						String TrackFolder = Config.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 						TrackRecorder.AnnotateMedia(basename + "." + ext, relativPath + "/" + basename + "." + ext, mediaCoordinate,
 								mediaTimeString);
@@ -1091,7 +1018,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				{
 					GL.that.registerRenderStartetListner(new renderStartet()
 					{
-
 						@Override
 						public void renderIsStartet()
 						{
@@ -1108,7 +1034,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	@Override
 	protected void onResume()
 	{
-
+		viewGL.RenderContinous();
 		if (stopped)
 		{
 			showWaitToRenderStartet();
@@ -1143,7 +1069,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (mSensorManager != null) mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
 		this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-		int sollHeight = (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue()) ? UiSizes.that
+		int sollHeight = (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue()) ? UiSizes.that
 				.getQuickButtonListHeight() : 0;
 		((main) main.mainActivity).setQuickButtonHeight(sollHeight);
 		downSlider.isInitial = false;
@@ -1153,7 +1079,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		/*
 		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
 		 */
-		if (Config.settings.SuppressPowerSaving.getValue())
+		if (Config.SuppressPowerSaving.getValue())
 		{
 			Logger.DEBUG("Main=> onResume SuppressPowerSaving");
 
@@ -1174,9 +1100,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Logger.Error("onResume", "initialOnTouchListner", e);
 		}
 
-		// register KeyboardFocusChangedEvent
-		KeyboardFocusChangedEventList.Add(this);
-
 		// Initial PlugIn
 		fillPluginList();
 		bindPluginServices();
@@ -1184,11 +1107,24 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		final Bundle extras = getIntent().getExtras();
 		if (!GlobalCore.restartAfterKill && extras != null)
 		{
-			GcCode = extras.getString("GcCode");
-			GpxPath = extras.getString("GpxPath");
-			if (GpxPath != null) Logger.LogCat("GPX found: " + GpxPath);
-			mustRunSearch = true;
+			ExtSearch_GcCode = extras.getString("GcCode");
+			ExtSearch_GpxPath = extras.getString("GpxPath");
+			if (ExtSearch_GpxPath != null) Logger.LogCat("GPX found: " + ExtSearch_GpxPath);
 
+			if (ExtSearch_GcCode != null || ExtSearch_GpxPath != null)
+			{
+				mustRunSearch = true;
+
+				// ACB running call search
+				if (TabMainView.that.isInitial())
+				{
+					platformConector.FirstShow();
+				}
+			}
+
+			// delete handled extras
+			getIntent().removeExtra("GcCode");
+			getIntent().removeExtra("GpxPath");
 		}
 
 	}
@@ -1215,18 +1151,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		/*
 		 * This code together with the one in onDestroy() will make the screen be always on until this Activity gets destroyed.
 		 */
-		if (Config.settings.SuppressPowerSaving.getValue())
+		if (Config.SuppressPowerSaving.getValue())
 		{
 			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
 			this.mWakeLock.acquire();
 		}
-
-		// unregister KeyboardFocusChangedEvent
-		KeyboardFocusChangedEventList.Remove(this);
 	}
 
-	@SuppressLint("Wakelock")
 	@Override
 	public void onDestroy()
 	{
@@ -1287,7 +1219,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				}
 				ViewList.clear();
 				viewGL = null;
-				notesView = null;
 				jokerView = null;
 				descriptionView = null;
 				mainActivity = null;
@@ -1300,7 +1231,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				Database.Data.Close();
 				Database.FieldNotes.Close();
 
-				SpriteCache.destroyCache();
+				SpriteCacheBase.destroyCache();
 
 				Database.Settings.Close();
 				super.onDestroy();
@@ -1377,7 +1308,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			counterStopped = true;
 			// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
 			// Das verhindert das selber aussperren!
-			if ((Config.settings.ScreenLock.getValue() / 1000 < 10)) return;
+			if ((Config.ScreenLock.getValue() / 1000 < 10)) return;
 		}
 
 		// TODO move/create ScreenLock on GDX
@@ -1431,8 +1362,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (ID == ViewConst.JOKER_VIEW) return jokerView = new JokerView(this, this);
 		else if (ID == ViewConst.SOLVER_VIEW) return solverView = new SolverView(this, inflater);
-		else if (ID == ViewConst.NOTES_VIEW) return notesView = new NotesView(this, inflater);
-		else if (ID == ViewConst.SPOILER_VIEW) return spoilerView = new SpoilerView(this, inflater);
+		else if (ID == ViewConst.SPOILER_VIEW)
+		{
+			if (spoilerView == null) spoilerView = new SpoilerView(this, inflater);
+
+			return spoilerView;
+		}
+
 		else if (ID == ViewConst.DESCRIPTION_VIEW)
 		{
 			if (descriptionView != null)
@@ -1497,12 +1433,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				this.onPause();
 			}
 
-			if (aktView.equals(trackablelistView))
-			{
-				// Instanz löschenn
-				aktView = null;
-			}
-			else if (aktView.equals(jokerView))
+			if (aktView.equals(jokerView))
 			{
 				// Instanz löschenn
 				aktView = null;
@@ -1515,13 +1446,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				aktView = null;
 				solverView.OnFree();
 				solverView = null;
-			}
-			else if (aktView.equals(notesView))
-			{
-				// Instanz löschenn
-				aktView = null;
-				notesView.OnFree();
-				notesView = null;
 			}
 			else if (aktView.equals(spoilerView))
 			{
@@ -1548,8 +1472,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
-		System.gc();
-
 		aktView = view;
 
 		frame.removeAllViews();
@@ -1564,6 +1486,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		InfoDownSlider.invalidate();
 		((View) aktView).forceLayout();
+
+		if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
+		if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
+		if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
+		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
 
 	}
 
@@ -1599,8 +1526,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		}
 
-		System.gc();
-
 		aktTabView = view;
 		tabFrame.removeAllViews();
 		ViewParent parent = ((View) aktTabView).getParent();
@@ -1619,7 +1544,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public static void vibrate()
 	{
-		if (Config.settings.vibrateFeedback.getValue()) vibrator.vibrate(Config.settings.VibrateTime.getValue());
+		if (Config.vibrateFeedback.getValue()) vibrator.vibrate(Config.VibrateTime.getValue());
 	}
 
 	/*
@@ -1642,8 +1567,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		cacheNameView = (CacheNameView) this.findViewById(R.id.main_cache_name_view);
 
 		strengthLayout = (LinearLayout) this.findViewById(R.id.main_strength_control);
-
-		Baselayout = (RelativeLayout) findViewById(R.id.layoutTextField);
 
 	}
 
@@ -1704,9 +1627,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			int GlSurfaceType = -1;
 			if (gdxView instanceof GLSurfaceView20) GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
-			if (gdxView instanceof GLSurfaceViewCupcake) GlSurfaceType = ViewGL.GLSURFACE_CUPCAKE;
-			if (gdxView instanceof DefaultGLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_DEFAULT;
-			if (gdxView instanceof GLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_GLSURFACE;
+			else if (gdxView instanceof GLSurfaceViewCupcake) GlSurfaceType = ViewGL.GLSURFACE_CUPCAKE;
+			else if (gdxView instanceof DefaultGLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_DEFAULT;
+			else if (gdxView instanceof GLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_GLSURFACE;
 
 			ViewGL.setSurfaceType(GlSurfaceType);
 
@@ -1826,7 +1749,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Log.d("DroidCachebox", "Starting camera on the phone...");
 
 		// define the file-name to save photo taken by Camera activity
-		String directory = Config.settings.UserImageFolder.getValue();
+		String directory = Config.UserImageFolder.getValue();
 		if (!FileIO.createDirectory(directory))
 		{
 			// Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1861,7 +1784,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Log.d("DroidCachebox", "Starting video on the phone...");
 
 		// define the file-name to save video taken by Camera activity
-		String directory = Config.settings.UserImageFolder.getValue();
+		String directory = Config.UserImageFolder.getValue();
 		if (!FileIO.createDirectory(directory))
 		{
 			// Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1910,7 +1833,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// Log.d("DroidCachebox", "Starting voice recorder on the phone...");
 
 			// define the file-name to save voice taken by activity
-			String directory = Config.settings.UserImageFolder.getValue();
+			String directory = Config.UserImageFolder.getValue();
 			if (!FileIO.createDirectory(directory))
 			{
 				// Log.d("DroidCachebox", "Media-Folder does not exist...");
@@ -1945,8 +1868,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			extAudioRecorder.prepare();
 			extAudioRecorder.start();
 
-			String MediaFolder = Config.settings.UserImageFolder.getValue();
-			String TrackFolder = Config.settings.TrackFolder.getValue();
+			String MediaFolder = Config.UserImageFolder.getValue();
+			String TrackFolder = Config.TrackFolder.getValue();
 			String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
 			// Da eine Voice keine Momentaufnahme ist, muss die Zeit und die
 			// Koordinaten beim Start der Aufnahme verwendet werden.
@@ -1988,7 +1911,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 					try
 					{
-						URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.settings.GcJoker.getValue() + "&wpt="
+						URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GcJoker.getValue() + "&wpt="
 								+ GlobalCore.getSelectedCache().GcCode);
 						URLConnection urlConnection = url.openConnection();
 						HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
@@ -2123,6 +2046,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				try
 				{
+					String url = "waze://?ll=" + lat + "," + lon;
+					intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+					startActivity(intent);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+
+			if (intent == null)
+			{
+				try
+				{
 					intent = new Intent("android.intent.action.navigon.START_PUBLIC");
 				}
 				catch (Exception e)
@@ -2184,7 +2121,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void setDebugVisible()
 	{
-		if (Config.settings.DebugShowPanel.getValue())
+		if (Config.DebugShowPanel.getValue())
 		{
 			debugInfoPanel.setVisibility(View.VISIBLE);
 			debugInfoPanel.onShow();
@@ -2397,20 +2334,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			if (!GpsOn())
+			if (Config.Ask_Switch_GPS_ON.getValue() && !GpsOn())
 			{
 				if (!Translation.isInitial())
 				{
-					new Translation(Config.WorkPath, false);
+					new Translation(Config.WorkPath, FileType.Internal);
 					try
 					{
-						Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getValue());
+						Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
 					}
 					catch (Exception e)
 					{
 						try
 						{
-							Translation.LoadTranslation(Config.settings.Sel_LanguagePath.getDefaultValue());
+							Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
 						}
 						catch (IOException e1)
 						{
@@ -2612,8 +2549,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		List<ResolveInfo> list = packageManager.queryIntentServices(baseIntent, PackageManager.GET_RESOLVED_FILTER);
 		// Log.d(LOG_TAG, "fillPluginList: " + list);
 
-		Config.settings.hasFTF_PlugIn.setValue(false);
-		Config.settings.hasPQ_PlugIn.setValue(false);
+		Config.hasFTF_PlugIn.setValue(false);
+		Config.hasPQ_PlugIn.setValue(false);
 		int i;
 		try
 		{
@@ -2627,11 +2564,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 					if (sinfo.packageName.contains("de.CB_FTF_PlugIn")) // Don't bind, is an Widget
 					{
-						Config.settings.hasFTF_PlugIn.setValue(true);
+						Config.hasFTF_PlugIn.setValue(true);
 					}
 					else if (sinfo.packageName.contains("de.CB_PQ_PlugIn"))// Don't bind, is an Widget
 					{
-						Config.settings.hasPQ_PlugIn.setValue(true);
+						Config.hasPQ_PlugIn.setValue(true);
 					}
 					else
 					// PlugIn for Bind
@@ -2738,11 +2675,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 				if (Global.iPlugin != null && Global.iPlugin[0] != null)
 				{
-					Config.settings.hasCallPermission.setValue(true);
+					Config.hasCallPermission.setValue(true);
 				}
 				else
 				{
-					Config.settings.hasCallPermission.setValue(false);
+					Config.hasCallPermission.setValue(false);
 				}
 
 				Config.AcceptChanges();
@@ -2832,7 +2769,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 
 			@Override
-			public void show(final ViewID viewID, int x, int y, final int width, final int height)
+			public void show(final ViewID viewID, final int x, final int y, final int width, final int height)
 			{
 
 				runOnUiThread(new Runnable()
@@ -2848,19 +2785,33 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						{
 							if (viewID.getPos() == UI_Pos.Left)
 							{
-								android.view.ViewGroup.LayoutParams params = frame.getLayoutParams();
+								RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
 
-								params.height = height;
-								params.width = width;
+								paramsLeft.height = height;
+								paramsLeft.width = width;
+								paramsLeft.leftMargin = 0;
+								paramsLeft.topMargin = y;
+								frame.setLayoutParams(paramsLeft);
 							}
 							else
 							{
 								if (tabFrame != null)
 								{
-									android.view.ViewGroup.LayoutParams params = tabFrame.getLayoutParams();
+									LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
 									params.height = height;
 									params.width = width;
+									params.leftMargin = 0;
+									params.topMargin = y;
+									tabFrame.setLayoutParams(params);
+
+									LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame.getLayoutParams();
+
+									paramsLeft.height = height;
+									paramsLeft.width = UI_Size_Base.that.getWindowWidth() - width;
+									paramsLeft.leftMargin = 0;
+									paramsLeft.topMargin = y;
+									frame.setLayoutParams(paramsLeft);
 								}
 							}
 						}
@@ -2871,13 +2822,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							((View) InfoDownSlider).setVisibility(View.VISIBLE);
 						}
 
+						if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
+						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
 
-						if (viewID == ViewConst.RELOAD_CACHE)
-						{
-							reloadSelectedCacheInfo();
-						}
-						else if (viewID == ViewConst.JOKER_VIEW)
+						if (viewID == ViewConst.JOKER_VIEW)
 						{
 							showJoker();
 						}
@@ -2911,7 +2860,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							}
 							else
 							{
-								if (!(aktTabView == null) && viewID == aktViewId)
+								if (!(aktTabView == null) && viewID == aktTabViewId)
 								{
 									aktTabView.OnHide();
 								}
@@ -2937,6 +2886,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 							aktViewId = null;
 							aktView = null;
 						}
+
+						Logger.DEBUG("Hide Android view");
 					}
 				});
 
@@ -2945,37 +2896,58 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void showForDialog()
 			{
+
 				runOnUiThread(new Runnable()
 				{
 					@Override
 					public void run()
 					{
+						// chk for timer conflict (releay set invisible)
+						// only if showing Dialog or Activity
+						if (!GL.that.isShownDialogActivity()) return;
+
 						if (aktView != null) ((View) aktView).setVisibility(View.INVISIBLE);
 						if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
 						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
+						Logger.DEBUG("Show AndroidView");
 					}
 				});
-
 			}
 
 			@Override
 			public void hideForDialog()
 			{
-				runOnUiThread(new Runnable()
+
+				Timer timer = new Timer();
+				TimerTask task = new TimerTask()
 				{
 					@Override
 					public void run()
 					{
-						if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
-						if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
-						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
-						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
 
-						// set position of slider
-						downSlider.ButtonShowStateChanged();
+								// chk for timer conflict (releay set invisible)
+								// only if not showing Dialog or Activity
+								if (!GL.that.isShownDialogActivity())
+								{
+									if (aktView != null) ((View) aktView).setVisibility(View.VISIBLE);
+									if (aktTabView != null) ((View) aktTabView).setVisibility(View.VISIBLE);
+									if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.VISIBLE);
+									if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.VISIBLE);
+								}
+								// set position of slider
+								downSlider.ButtonShowStateChanged();
+							}
+						});
+
 					}
-				});
+				};
+				timer.schedule(task, 50);
 
 			}
 
@@ -2996,8 +2968,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				if (mustRunSearch)
 				{
 					Logger.LogCat("mustRunSearch");
-					if (GcCode != null) startSearchTimer();
-					if (GpxPath != null) startGPXImport();
+					if (ExtSearch_GcCode != null) startSearchTimer();
+					if (ExtSearch_GpxPath != null) startGPXImport();
 				}
 
 			}
@@ -3033,69 +3005,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (cm != null) GlobalCore.setDefaultClipboard(acb);
 
-		platformConector.setGetFileListner(new IgetFileListner()
-		{
-
-			@Override
-			public void getFile(String initialPath, String extension, String TitleText, String ButtonText,
-					IgetFileReturnListner returnListner)
-			{
-				getFileReturnListner = returnListner;
-				getFolderReturnListner = null;
-
-				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_FILE);
-
-				// Construct URI from file name.
-				File file = new File(initialPath);
-				intent.setData(Uri.fromFile(file));
-
-				// Set fancy title and button (optional)
-				intent.putExtra(FileManagerIntents.EXTRA_TITLE, TitleText);
-				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, ButtonText);
-
-				try
-				{
-					main.mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR);
-				}
-				catch (ActivityNotFoundException e)
-				{
-					// No compatible file manager was found.
-					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-				}
-
-			}
-		});
-
-		platformConector.setGetFolderListner(new IgetFolderListner()
-		{
-
-			@Override
-			public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner)
-			{
-				getFileReturnListner = null;
-				getFolderReturnListner = returnListner;
-
-				Intent intent = new Intent(FileManagerIntents.ACTION_PICK_DIRECTORY);
-
-				// Construct URI from file name.
-				File file = new File(initialPath);
-				intent.setData(Uri.fromFile(file));
-
-				// Set fancy title and button (optional)
-				intent.putExtra(FileManagerIntents.EXTRA_TITLE, TitleText);
-				intent.putExtra(FileManagerIntents.EXTRA_BUTTON_TEXT, ButtonText);
-
-				try
-				{
-					main.mainActivity.startActivityForResult(intent, Global.REQUEST_CODE_PICK_FILE_OR_DIRECTORY_FROM_PLATFORM_CONECTOR);
-				}
-				catch (ActivityNotFoundException e)
-				{
-					// No compatible file manager was found.
-					Toast.makeText(main.mainActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
+		CB_Android_FileExplorer fileExplorer = new CB_Android_FileExplorer(this);
+		platformConector.setGetFileListner(fileExplorer);
+		platformConector.setGetFolderListner(fileExplorer);
 
 		platformConector.setQuitListner(new IQuit()
 		{
@@ -3103,6 +3015,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void Quit()
 			{
+				if (GlobalCore.getSelectedCache() != null)
+				{
+					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
+					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+					Config.AcceptChanges();
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+				}
 				finish();
 			}
 		});
@@ -3127,80 +3046,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		platformConector.setsetKeybordFocusListner(new IsetKeybordFocus()
-		{
-
-			@Override
-			public void setKeybordFocus(boolean value)
-			{
-				// Iniitial HiddenTextField
-				if (value)
-				{
-					try
-					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								initialHiddenEditText();
-								mTextField.setVisibility(View.VISIBLE);
-								Baselayout.post(new Runnable()
-								{
-									public void run()
-									{
-										InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-										if (inputMethodManager != null)
-										{
-											inputMethodManager.toggleSoftInputFromWindow(mTextField.getApplicationWindowToken(),
-													InputMethodManager.SHOW_FORCED, 0);
-											mTextField.requestFocus();
-										}
-
-									}
-								});
-								Timer timer = new Timer();
-								TimerTask task = new TimerTask()
-								{
-									@Override
-									public void run()
-									{
-										KeybordShown = true;
-									}
-								};
-								timer.schedule(task, 500);
-
-							}
-						});
-					}
-					catch (Exception ex)
-					{
-						Logger.Error("main", "Show Keyboard", ex);
-					}
-				}
-				else
-				{
-					runOnUiThread(new Runnable()
-					{
-						public void run()
-						{
-							if (mTextField != null)
-							{
-								((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
-										mTextField.getWindowToken(), 0);
-								KeybordShown = false;
-
-								Baselayout.removeView(mTextField);
-								mTextField = null;
-							}
-
-						}
-					});
-
-				}
-			}
-		});
-
 		platformConector.setCallUrlListner(new ICallUrl()
 		{
 
@@ -3221,11 +3066,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		});
 
-		platformConector.setPlatformSettings(new iPlatformSettings()
+		PlatformSettings.setPlatformSettings(new iPlatformSettings()
 		{
 
 			@Override
-			public void Write(SettingBase setting)
+			public void Write(SettingBase<?> setting)
 			{
 				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
 				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
@@ -3249,7 +3094,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 
 			@Override
-			public void Read(SettingBase setting)
+			public SettingBase<?> Read(SettingBase<?> setting)
 			{
 				if (androidSetting == null) androidSetting = main.this.getSharedPreferences(Global.PREFS_NAME, 0);
 
@@ -3269,6 +3114,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					((SettingInt) setting).setValue(value);
 				}
 				setting.clearDirty();
+				return setting;
 			}
 		});
 
@@ -3284,128 +3130,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private SharedPreferences androidSetting;
 	private SharedPreferences.Editor androidSettingEditor;
 
-	private static ProgressDialog waitPD;
-
-	private void reloadSelectedCacheInfo()
-	{
-		if (threadReloadSelectedCacheInfo == null) threadReloadSelectedCacheInfo = new Thread()
-		{
-			public void run()
-			{
-
-				String accessToken = Config.GetAccessToken();
-				if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
-				{
-					int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(accessToken);
-					if (result != 0)
-					{
-						onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(1));
-						return;
-					}
-				}
-				if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
-				{
-					String s = "Download limit is reached!\n";
-					s += "You have downloaded the full cache details of " + CB_Core.Api.GroundspeakAPI.MaxCacheCount
-							+ " caches in the last 24 hours.\n";
-					if (CB_Core.Api.GroundspeakAPI.MaxCacheCount < 10) s += "If you want to download the full cache details of 6000 caches per day you can upgrade to Premium Member at \nwww.geocaching.com!";
-
-					message = s;
-
-					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(2));
-
-					return;
-				}
-
-				if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(accessToken))
-				{
-					String s = "Download Details of this cache?\n";
-					s += "Full Downloads left: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
-					s += "Actual Downloads: " + CB_Core.Api.GroundspeakAPI.CurrentCacheCount + "\n";
-					s += "Max. Downloads in 24h: " + CB_Core.Api.GroundspeakAPI.MaxCacheCount;
-					message = s;
-					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(3));
-					return;
-				}
-				else
-				{
-					// call the download directly
-					onlineReloadReadyHandler.sendMessage(onlineReloadReadyHandler.obtainMessage(4));
-					return;
-				}
-			}
-		};
-		waitPD = ProgressDialog.show(this, "", "Download Description", true);
-
-		threadReloadSelectedCacheInfo.run();
-	}
-
-	private String message = "";
-	private Handler onlineReloadReadyHandler = new Handler()
-	{
-		public void handleMessage(Message msg)
-		{
-			switch (msg.what)
-			{
-			case 1:
-			{
-				waitPD.dismiss();
-				break;
-			}
-			case 2:
-			{
-				waitPD.dismiss();
-				GL_MsgBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
-				break;
-			}
-			case 3:
-			{
-				waitPD.dismiss();
-				GL_MsgBox.Show(message, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live,
-						DownloadCacheDialogResult);
-				break;
-			}
-			case 4:
-			{
-				waitPD.dismiss();
-				DownloadCacheDialogResult.onClick(-1, null);
-				break;
-			}
-			}
-		}
-	};
-
-	private OnMsgBoxClickListener DownloadCacheDialogResult = new OnMsgBoxClickListener()
-	{
-		@Override
-		public boolean onClick(int button, Object data)
-		{
-			switch (button)
-			{
-			case -1:
-				CacheDAO dao = new CacheDAO();
-				Cache newCache = dao.LoadApiDetails(GlobalCore.getSelectedCache());
-				if (newCache != null)
-				{
-					GlobalCore.setSelectedCache(newCache);
-
-					// hier ist kein AccessToke mehr notwendig, da diese Info
-					// bereits im Cache sein muss!
-					if (!CB_Core.Api.GroundspeakAPI.IsPremiumMember(""))
-					{
-						String s = "Download successful!\n";
-						s += "Downloads left for today: " + CB_Core.Api.GroundspeakAPI.CachesLeft + "\n";
-						s += "If you upgrade to Premium Member you are allowed to download the full cache details of 6000 caches per day and you can search not only for traditional caches (www.geocaching.com).";
-
-						GL_MsgBox.Show(s, Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, null);
-					}
-				}
-				break;
-			}
-			return true;
-		}
-	};
-
 	// #########################################################
 	public void GetApiAuth()
 	{
@@ -3414,285 +3138,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	// ###########################################################
-
-	private class hiddenTextField extends EditText
-	{
-		public hiddenTextField(Context context)
-		{
-			super(context);
-		}
-
-		@Override
-		protected void onDraw(Canvas canvas)
-		{
-			canvas.drawColor(Color.TRANSPARENT);
-
-			// Debug
-			// canvas.drawColor(Color.argb(100, 255, 0, 0));
-		}
-	}
-
-	private String beforeS;
-	private int beforeStart;
-	private int beforeCount;
-	// private int beforeAfter;
-	private boolean KeyboardWasClosed = false;
-
-	private void initialHiddenEditText()
-	{
-		// mTextField = new hiddenTextField(this);
-
-		mTextField = new hiddenTextField(inflater.getContext())
-		{
-			@Override
-			public boolean onKeyPreIme(int keyCode, KeyEvent event)
-			{
-				if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
-				{
-
-					// if no Keybord focus send BeckKey to GL
-
-					if (GL.that.getKeyboardFocus() == null && !KeyboardWasClosed)
-					{
-						if (GL.that.isShownDialogActivity())
-						{
-							GL.that.closeShownDialog();
-							KeyboardWasClosed = true;
-							return true;
-						}
-						CB_Core.Events.platformConector.sendKey((char) KeyCodes.KEYCODE_BACK);
-						return true;
-					}
-
-					GL.that.setKeyboardFocus(null);
-					KeyboardWasClosed = true;
-
-					TimerTask tk = new TimerTask()
-					{
-
-						@Override
-						public void run()
-						{
-							KeyboardWasClosed = false;
-						}
-					};
-
-					Timer timer = new Timer();
-					timer.schedule(tk, 1000);
-
-					return true;
-				}
-				return super.onKeyPreIme(keyCode, event);
-			}
-		};
-
-		mTextField.setRawInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-
-		mTextField.setOnFocusChangeListener(new OnFocusChangeListener()
-		{
-			@Override
-			public void onFocusChange(View v, boolean hasFocus)
-			{
-				if (!mTextField.hasFocus()) mTextField.requestFocus();
-			}
-		});
-
-		mTextField.setOnKeyListener(new OnKeyListener()
-		{
-
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event)
-			{
-				// nach GL umleiten
-				boolean handeld = false;
-
-				if (event.getAction() == KeyEvent.ACTION_UP && getNumericValueFromKeyCode(keyCode) != null)
-				{
-					return CB_Core.Events.platformConector.sendKey((Character) getNumericValueFromKeyCode(keyCode));
-				}
-
-				if (event.getAction() == KeyEvent.ACTION_DOWN)
-				{
-					if (keyCode == 66)// Enter
-					{
-
-						return true;
-					}
-					else if (keyCode == 67)// Enter
-					{
-
-						return true;
-					}
-					else
-					{
-						handeld = CB_Core.Events.platformConector.sendKeyDown(keyCode);
-					}
-
-				}
-				else if (event.getAction() == KeyEvent.ACTION_UP)
-				{
-					if (keyCode == 66)// Enter
-					{
-						handeld = CB_Core.Events.platformConector.sendKey('\n');
-						return handeld;
-					}
-					else if (keyCode == 67)// Enter
-					{
-						// Back
-						char BACKSPACE = 8;
-						return CB_Core.Events.platformConector.sendKey(BACKSPACE);
-					}
-					else
-					{
-						handeld = CB_Core.Events.platformConector.sendKeyUp(keyCode);
-					}
-				}
-
-				return handeld;
-			}
-
-		});
-
-		mTextField.setOnEditorActionListener(new OnEditorActionListener()
-		{
-
-			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
-			{
-				try
-				{
-					boolean handeld = CB_Core.Events.platformConector.sendKeyDown(event.getKeyCode());
-					// boolean handeld2 = CB_Core.Events.platformConector.sendKey(chr);
-					return handeld;
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-					return false;
-				}
-
-			}
-		});
-
-		mTextField.addTextChangedListener(new TextWatcher()
-		{
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count)
-			{
-				// int BreakPoint = 1;
-				// if (BreakPoint == 1) BreakPoint++;
-				String newText = s.toString().substring(start, start + count);
-				String oldText = beforeS.substring(beforeStart, beforeStart + beforeCount);
-
-				// OldText mit newText vergleichen. Alle Zeichen, die in oldText stehen, in newText aber nicht mehr drin sind im Editor
-				// löschen
-				for (int i = beforeCount; i >= 0; i--)
-				{
-					if (newText.length() < i)
-					{
-						// 1 Zeichen aus dem Editor muß mit Sicherheit gelöscht werden!
-						char BACKSPACE = 8;
-						CB_Core.Events.platformConector.sendKey(BACKSPACE);
-						System.out.println("DEL");
-					}
-					else
-					{
-						// oldText mit newText vergleichen und zwar immer von Anfang an bis zu i
-						String tmpNew = newText.substring(0, i);
-						String tmpOld = oldText.substring(0, i);
-						if (tmpOld.equals(tmpNew))
-						{
-							// bis i ist alles gleiche -> nichts mehr muß gelöscht werden
-							// Neue Zeichen können eingefügt werden, und zwar ab dem Zeichen i in newText
-							for (int j = i; j < newText.length(); j++)
-							{
-								System.out.println("NEW: " + newText.charAt(j));
-
-								CB_Core.Events.platformConector.sendKey(newText.charAt(j));
-							}
-							// Fertig
-							break;
-						}
-						else
-						{
-							// bis i sind noch Unterschiede -> ein Zeichen löschen
-							System.out.println("DEL");
-							char BACKSPACE = 8;
-							CB_Core.Events.platformConector.sendKey(BACKSPACE);
-						}
-					}
-				}
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after)
-			{
-				// int BreakPoint = 1;
-				// if (BreakPoint == 1) BreakPoint++;
-				beforeS = s.toString();
-				beforeStart = start;
-				beforeCount = count;
-				// beforeAfter = after;
-			}
-
-			@Override
-			public void afterTextChanged(Editable s)
-			{
-			}
-		});
-
-		// mTextField.setBackgroundDrawable(null);
-		mTextField.setClickable(false);
-
-		Baselayout.addView(mTextField);
-
-		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTextField.getLayoutParams();
-		params.height = 1;
-
-		// params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-
-		mTextField.setLayoutParams(params);
-
-	}
-
-	protected Object getNumericValueFromKeyCode(int keyCode)
-	{
-		if (keyCode == KeyEvent.KEYCODE_0) return '0';
-		if (keyCode == KeyEvent.KEYCODE_1) return '1';
-		if (keyCode == KeyEvent.KEYCODE_2) return '2';
-		if (keyCode == KeyEvent.KEYCODE_3) return '3';
-		if (keyCode == KeyEvent.KEYCODE_4) return '4';
-		if (keyCode == KeyEvent.KEYCODE_5) return '5';
-		if (keyCode == KeyEvent.KEYCODE_6) return '6';
-		if (keyCode == KeyEvent.KEYCODE_7) return '7';
-		if (keyCode == KeyEvent.KEYCODE_8) return '8';
-		if (keyCode == KeyEvent.KEYCODE_9) return '9';
-
-		return null;
-	}
-
-	@Override
-	public void KeyboardFocusChanged(final EditTextFieldBase focus)
-	{
-		this.runOnUiThread(new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				if (focus != null)
-				{
-					mTextField.setVisibility(View.INVISIBLE);// ;
-				}
-				else
-				{
-					mTextField.setVisibility(View.GONE);
-				}
-			}
-		});
-
-	}
 
 	/**
 	 * Initial all Locator functions
@@ -3709,12 +3154,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			try
 			{
-				latitude = Config.settings.MapInitLatitude.getValue();
-				longitude = Config.settings.MapInitLongitude.getValue();
+				latitude = Config.MapInitLatitude.getValue();
+				longitude = Config.MapInitLongitude.getValue();
 			}
 			catch (Exception e)
 			{
 			}
+		}
+		else
+		{
+			// reload config
+			// TODO
 		}
 
 		ProviderType provider = (latitude == -1000) ? ProviderType.NULL : ProviderType.Saved;
@@ -3737,47 +3187,47 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// ##########################################################
 
 		// Use Imperial units?
-		CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
-		Config.settings.ImperialUnits.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
+		Config.ImperialUnits.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setUseImperialUnits(Config.settings.ImperialUnits.getValue());
+				CB_Locator.Locator.setUseImperialUnits(Config.ImperialUnits.getValue());
 			}
 		});
 
 		// GPS update time?
-		CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
-		Config.settings.gpsUpdateTime.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
+		Config.gpsUpdateTime.addChangedEventListner(new iChanged()
 		{
 
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setMinUpdateTime((long) Config.settings.gpsUpdateTime.getValue());
+				CB_Locator.Locator.setMinUpdateTime((long) Config.gpsUpdateTime.getValue());
 			}
 		});
 
 		// Use magnetic Compass?
-		CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
-		Config.settings.HardwareCompass.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
+		Config.HardwareCompass.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setUseHardwareCompass(Config.settings.HardwareCompass.getValue());
+				CB_Locator.Locator.setUseHardwareCompass(Config.HardwareCompass.getValue());
 			}
 		});
 
 		// Magnetic compass level
-		CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
-		Config.settings.HardwareCompassLevel.addChangedEventListner(new iChanged()
+		CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
+		Config.HardwareCompassLevel.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				CB_Locator.Locator.setHardwareCompassLevel(Config.settings.HardwareCompassLevel.getValue());
+				CB_Locator.Locator.setHardwareCompassLevel(Config.HardwareCompassLevel.getValue());
 			}
 		});
 	}

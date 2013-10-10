@@ -1,9 +1,9 @@
 package de.droidcachebox.Custom_Controls;
 
-import CB_Core.Config;
-import CB_Core.Math.CB_Rect;
-import CB_Core.Math.UI_Size_Base;
-import CB_Core.Math.UiSizes;
+import CB_UI.Config;
+import CB_UI_Base.Math.CB_Rect;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -30,20 +30,21 @@ import de.droidcachebox.Ui.ActivityUtils;
 public final class DebugInfoPanel extends View
 {
 	private ActivityManager activityManager;
-	private android.app.ActivityManager.MemoryInfo memoryInfo;
+
+	// private android.app.ActivityManager.MemoryInfo memoryInfo;
 
 	public DebugInfoPanel(Context context)
 	{
 		super(context);
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-		memoryInfo = new ActivityManager.MemoryInfo();
+		// memoryInfo = new ActivityManager.MemoryInfo();
 	}
 
 	public DebugInfoPanel(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
 		activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-		memoryInfo = new ActivityManager.MemoryInfo();
+		// memoryInfo = new ActivityManager.MemoryInfo();
 
 		setOnTouchListener(new OnTouchListener()
 		{
@@ -165,9 +166,9 @@ public final class DebugInfoPanel extends View
 
 		// Calc height
 		this.height = 0;
-		if (Config.settings.DebugMemory.getValue()) this.height += (LineSep * 4) + LayoutMemInfo.getHeight();
-		if (Config.settings.DebugShowMsg.getValue()) this.height += (LineSep * 2) + LayoutMsg.getHeight();
-		if (Config.settings.DebugShowLog.getValue()) this.height += (LineSep * 2) + LayoutLogMsg.getHeight();
+		if (Config.DebugMemory.getValue()) this.height += (LineSep * 4) + LayoutMemInfo.getHeight();
+		if (Config.DebugShowMsg.getValue()) this.height += (LineSep * 2) + LayoutMsg.getHeight();
+		if (Config.DebugShowLog.getValue()) this.height += (LineSep * 2) + LayoutLogMsg.getHeight();
 
 		setMeasuredDimension(this.width, this.height);
 	}
@@ -196,11 +197,11 @@ public final class DebugInfoPanel extends View
 
 		left = top = UiSizes.that.getCornerSize();
 
-		if (Config.settings.DebugMemory.getValue()) drawMemInfo(canvas);
+		if (Config.DebugMemory.getValue()) drawMemInfo(canvas);
 
-		if (Config.settings.DebugShowMsg.getValue()) drawMsg(canvas);
+		if (Config.DebugShowMsg.getValue()) drawMsg(canvas);
 
-		if (Config.settings.DebugShowLog.getValue()) drawLogMsg(canvas);
+		if (Config.DebugShowLog.getValue()) drawLogMsg(canvas);
 	}
 
 	private void drawMsg(Canvas canvas)

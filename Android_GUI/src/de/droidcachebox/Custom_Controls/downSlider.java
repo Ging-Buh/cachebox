@@ -18,17 +18,7 @@ package de.droidcachebox.Custom_Controls;
 
 import java.util.Iterator;
 
-import CB_Core.Config;
-import CB_Core.Energy;
-import CB_Core.GlobalCore;
 import CB_Core.Enums.Attributes;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.GL_UI.Controls.QuickButtonList;
-import CB_Core.Math.CB_Rect;
-import CB_Core.Math.UI_Size_Base;
-import CB_Core.Math.UiSizes;
-import CB_Core.TranslationEngine.Translation;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -36,7 +26,17 @@ import CB_Locator.GPS;
 import CB_Locator.Locator;
 import CB_Locator.Events.GpsStateChangeEvent;
 import CB_Locator.Events.GpsStateChangeEventList;
-import android.annotation.SuppressLint;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
+import CB_UI.GlobalCore;
+import CB_UI.Events.SelectedCacheEvent;
+import CB_UI.Events.SelectedCacheEventList;
+import CB_UI.GL_UI.Controls.QuickButtonList;
+import CB_UI_Base.Energy;
+import CB_UI_Base.Math.CB_Rect;
+import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Util.UnitFormatter;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
@@ -215,7 +215,6 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 	};
 
-	@SuppressLint("DrawAllocation")
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
@@ -226,7 +225,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		 */
 		if (!isInitial)
 		{
-			if (Config.settings.quickButtonShow.getValue() && Config.settings.quickButtonLastShow.getValue())
+			if (Config.quickButtonShow.getValue() && Config.quickButtonLastShow.getValue())
 			{
 				setPos(QuickButtonMaxHeight);
 			}
@@ -239,18 +238,18 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		if (!drag && !AnimationIsRunning && !ButtonDrag)
 		{
-			yPos = QuickButtonHeight = Config.settings.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
+			yPos = QuickButtonHeight = Config.quickButtonShow.getValue() ? ((int) QuickButtonList.that.getHeight()) : 0;
 		}
 
 		float FSize = ((float) (UI_Size_Base.that.getScaledFontSize_big() * 1.3));
 
-		if (paint == null || Config.settings.nightMode.getValue() != initialNight)
+		if (paint == null || Config.nightMode.getValue() != initialNight)
 		{
 			paint = new Paint();
 			paint.setColor(Global.getColor(R.attr.TextColor));
 			paint.setTextSize((float) (UI_Size_Base.that.getScaledFontSize() * 1.3));
 			paint.setAntiAlias(true);
-			initialNight = Config.settings.nightMode.getValue();
+			initialNight = Config.nightMode.getValue();
 		}
 
 		final Drawable Slide = Global.BtnIcons[0];
@@ -272,7 +271,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (!isInitial)
 		{
 
-			if (CB_Core.GL_UI.Controls.Slider.setAndroidSliderHeight(mBtnRec.height()))
+			if (CB_UI.GL_UI.Controls.Slider.setAndroidSliderHeight(mBtnRec.height()))
 			{
 				isInitial = true;
 			}
@@ -293,7 +292,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (mCache != null) canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
 
 		// Draw only is visible
-		if (Config.settings.quickButtonShow.getValue())
+		if (Config.quickButtonShow.getValue())
 		{
 			if (yPos <= QuickButtonMaxHeight)
 			{
@@ -319,7 +318,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		if (!Energy.SliderIsShown()) Energy.setSliderIsShown();
 
-		if (Config.settings.quickButtonShow.getValue())
+		if (Config.quickButtonShow.getValue())
 		{
 			canvas.clipRect(mBackRec);
 		}
@@ -481,7 +480,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	{
 		if (downSlider.Me != null)
 		{
-			if (Config.settings.quickButtonShow.getValue())
+			if (Config.quickButtonShow.getValue())
 			{
 				downSlider.Me.setPos_onUI(downSlider.Me.QuickButtonMaxHeight);
 			}
@@ -503,7 +502,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		if (Pos >= 0)
 		{
 			yPos = Pos;
-			if (Config.settings.quickButtonShow.getValue())
+			if (Config.quickButtonShow.getValue())
 			{
 				if (Pos <= QuickButtonMaxHeight)
 				{
@@ -528,7 +527,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 
 		// chk if info Visible then update info
-		int InfoBeginnAt = Config.settings.quickButtonShow.getValue() ? QuickButtonMaxHeight : 0;
+		int InfoBeginnAt = Config.quickButtonShow.getValue() ? QuickButtonMaxHeight : 0;
 		if (yPos > InfoBeginnAt)
 		{
 			if (!isVisible) startUpdateTimer();
@@ -543,7 +542,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		this.invalidate();
 
-		CB_Core.GL_UI.Controls.Slider.setAndroidSliderPos(yPos);
+		CB_UI.GL_UI.Controls.Slider.setAndroidSliderPos(yPos);
 
 	}
 
@@ -600,19 +599,19 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				public void run()
 				{
 
-					boolean QuickButtonShow = Config.settings.quickButtonShow.getValue();
+					boolean QuickButtonShow = Config.quickButtonShow.getValue();
 
 					// check if QuickButtonList snap in
 					if (yPos >= (QuickButtonMaxHeight * 0.5) && QuickButtonShow)
 					{
 						QuickButtonHeight = QuickButtonMaxHeight;
-						Config.settings.quickButtonLastShow.setValue(true);
+						Config.quickButtonLastShow.setValue(true);
 						Config.AcceptChanges();
 					}
 					else
 					{
 						QuickButtonHeight = 0;
-						Config.settings.quickButtonLastShow.setValue(false);
+						Config.quickButtonLastShow.setValue(false);
 						Config.AcceptChanges();
 					}
 
@@ -654,7 +653,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	public static int getAktQuickButtonHeight()
 	{
-		return Config.settings.quickButtonShow.getValue() ? QuickButtonHeight : 0;
+		return Config.quickButtonShow.getValue() ? QuickButtonHeight : 0;
 	}
 
 	@Override
@@ -695,8 +694,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 					if (waypoint.Clue != null) Clue = waypoint.Clue;
 					WPLayoutTextPaint.setAntiAlias(true);
 					WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
-					WPLayoutCord = new StaticLayout(GlobalCore.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
-							+ GlobalCore.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth,
+					WPLayoutCord = new StaticLayout(UnitFormatter.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
+							+ UnitFormatter.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth,
 							Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 					WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
 							false);
@@ -736,8 +735,8 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		mAccuracy = String.valueOf((int) location.getAccuracy());
 		mAlt = Locator.getAltStringWithCorection();
-		mLatitude = GlobalCore.FormatLatitudeDM(location.getLatitude());
-		mLongitude = GlobalCore.FormatLongitudeDM(location.getLongitude());
+		mLatitude = UnitFormatter.FormatLatitudeDM(location.getLatitude());
+		mLongitude = UnitFormatter.FormatLongitudeDM(location.getLongitude());
 
 		String br = String.format("%n");
 		String Text = Translation.Get("current") + " " + mLatitude + " " + mLongitude + br + Translation.Get("alt") + " " + mAlt + br

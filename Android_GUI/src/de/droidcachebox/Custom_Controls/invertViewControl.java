@@ -19,8 +19,8 @@ package de.droidcachebox.Custom_Controls;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.Config;
-import CB_Core.GL_UI.ViewConst;
+import CB_UI.Config;
+import CB_UI_Base.GL_UI.ViewConst;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -77,7 +77,7 @@ public final class invertViewControl extends View
 
 		WebViewLayout.draw(c);
 
-		canvas.drawBitmap(b, 0, 0, Config.settings.nightMode.getValue() ? Global.invertPaint : new Paint());
+		canvas.drawBitmap(b, 0, 0, Config.nightMode.getValue() ? Global.invertPaint : new Paint());
 
 		super.onDraw(canvas);
 

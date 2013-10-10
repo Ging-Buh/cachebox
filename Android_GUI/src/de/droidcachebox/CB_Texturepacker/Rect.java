@@ -1,6 +1,6 @@
 package de.droidcachebox.CB_Texturepacker;
 
-import CB_Core.CB_Texturepacker.Rect_Base;
+import CB_UI_Base.CB_Texturepacker.Rect_Base;
 import android.graphics.Bitmap;
 
 /** @author Nathan Sweet */

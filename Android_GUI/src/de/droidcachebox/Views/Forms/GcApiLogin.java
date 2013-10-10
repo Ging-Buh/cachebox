@@ -1,9 +1,8 @@
 package de.droidcachebox.Views.Forms;
 
-import CB_Core.Config;
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
-import android.annotation.SuppressLint;
+import CB_UI.Config;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
@@ -23,7 +22,6 @@ import de.droidcachebox.R;
 import de.droidcachebox.main;
 import de.droidcachebox.Ui.ActivityUtils;
 
-@SuppressLint("HandlerLeak")
 public class GcApiLogin extends Activity
 {
 	private static GcApiLogin gcApiLogin;
@@ -55,13 +53,13 @@ public class GcApiLogin extends Activity
 		{
 			String GC_AuthUrl;
 
-			if (Config.settings.OverrideUrl.getValue().equals(""))
+			if (Config.OverrideUrl.getValue().equals(""))
 			{
 				GC_AuthUrl = CB_Api.getGcAuthUrl();
 			}
 			else
 			{
-				GC_AuthUrl = Config.settings.OverrideUrl.getValue();
+				GC_AuthUrl = Config.OverrideUrl.getValue();
 			}
 
 			if (GC_AuthUrl.equals(""))
@@ -243,13 +241,13 @@ public class GcApiLogin extends Activity
 					// store the encrypted AccessToken in the Config file
 					// wir bekommen den Key schon verschlüsselt, deshalb muss er
 					// nicht noch einmal verschlüsselt werden!
-					if (Config.settings.StagingAPI.getValue())
+					if (Config.StagingAPI.getValue())
 					{
-						Config.settings.GcAPIStaging.setEncryptedValue(accessToken);
+						Config.GcAPIStaging.setEncryptedValue(accessToken);
 					}
 					else
 					{
-						Config.settings.GcAPI.setEncryptedValue(accessToken);
+						Config.GcAPI.setEncryptedValue(accessToken);
 					}
 
 					Config.AcceptChanges();
@@ -257,11 +255,11 @@ public class GcApiLogin extends Activity
 					String act = Config.GetAccessToken();
 					if (act.length() > 0)
 					{
-						int status = GroundspeakAPI.GetMembershipType(act);
+						int status = GroundspeakAPI.GetMembershipType();
 						if (status >= 0)
 						{
 
-							Config.settings.GcLogin.setValue(GroundspeakAPI.MemberName);
+							Config.GcLogin.setValue(GroundspeakAPI.MemberName);
 							Config.AcceptChanges();
 
 						}

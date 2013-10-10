@@ -5,7 +5,8 @@
 	<classpathentry exported="true" kind="lib" path="Lib/sqlite-jdbc-3.7.8-20111025.014814-1.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/gdx-natives.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Cachebox Core"/>
+	<classpathentry kind="lib" path="Lib/kxml2-2.3.0.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI"/>
 	<classpathentry exported="true" kind="lib" path="Lib/log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/httpclient-4.0-alpha1.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/httpcore-4.0-alpha5.jar"/>
@@ -15,6 +16,15 @@
 	<classpathentry exported="true" kind="lib" path="Lib/gdx-freetype.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
+	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-awt-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

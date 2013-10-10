@@ -1,12 +1,13 @@
 package de.droidcachebox.Views;
 
-import CB_Core.GlobalCore;
-import CB_Core.Events.SelectedCacheEvent;
-import CB_Core.Events.SelectedCacheEventList;
-import CB_Core.Math.UiSizes;
-import CB_Core.TranslationEngine.Translation;
+import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.GlobalCore;
+import CB_UI.Events.SelectedCacheEvent;
+import CB_UI.Events.SelectedCacheEventList;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -19,18 +20,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import de.droidcachebox.R;
 import de.droidcachebox.main;
-import de.droidcachebox.Components.CacheDraw.DrawStyle;
-import de.droidcachebox.Custom_Controls.CacheInfoControl;
 import de.droidcachebox.Custom_Controls.DescriptionViewControl;
 import de.droidcachebox.Events.ViewOptionsMenu;
 
-public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent
+public class DescriptionView extends FrameLayout implements ViewOptionsMenu, SelectedCacheEvent, CacheListChangedEventListner
 {
 	Context context;
 	public Cache aktCache;
 
 	Button TestButton;
-	public CacheInfoControl cacheInfo;
+
 	public static DescriptionViewControl WebControl;
 	public static LinearLayout webViewLayout;
 
@@ -43,36 +42,32 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		RelativeLayout descriptionLayout = (RelativeLayout) inflater.inflate(R.layout.description_view, null, false);
 		this.addView(descriptionLayout);
 		webViewLayout = (LinearLayout) findViewById(R.id.WebViewLayout);
-		cacheInfo = (CacheInfoControl) findViewById(R.id.CompassDescriptionView);
-		cacheInfo.setStyle(DrawStyle.withOwner);
+
 		WebControl = (DescriptionViewControl) findViewById(R.id.DescriptionViewControl);
 		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
-		if (main.mainActivity.getString(R.string.density).equals("ldpi"))
-		{
-			cacheInfo.setVisibility(GONE);
-		}
-
 	}
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
-		// we overriding onMeasure because this is where the application gets
-		// its right size.
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-		cacheInfo.setHeight(UiSizes.that.getCacheInfoHeight());
-
-	}
+	// @Override
+	// protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	// {
+	// // we overriding onMeasure because this is where the application gets
+	// // its right size.
+	// super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	//
+	// cacheInfo.setHeight(UiSizes.that.getCacheInfoHeight());
+	//
+	// }
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
+		if (cache == null || WebControl == null) return;
 		if (aktCache != cache)
 		{
 			aktCache = cache;
-			cacheInfo.setCache(aktCache);
 		}
+
+		WebControl.setCache(aktCache);
 	}
 
 	@Override
@@ -124,7 +119,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 		SelectedCacheEventList.Add(this);
 
 		WebControl.getSettings().setBuiltInZoomControls(true);
-
+		CachListChangedEventList.Add(this);
 	}
 
 	public int getHeightForWebViewSpacious()
@@ -133,7 +128,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 
 		if (!(paramsWebControl == null))
 		{
-			return this.getHeight() - cacheInfo.getHeight();
+			return this.getHeight();
 		}
 		return 0;
 	}
@@ -146,15 +141,19 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void OnHide()
 	{
+		CachListChangedEventList.Remove(this);
 
 		// save last ScrollPos
 
-		Point scpo = WebControl.getScrollPos();
+		if (WebControl != null)
+		{
+			Point scpo = WebControl.getScrollPos();
 
-		lastScrollPos.x = scpo.x;
-		lastScrollPos.y = scpo.y;
+			lastScrollPos.x = scpo.x;
+			lastScrollPos.y = scpo.y;
+		}
 
-		webViewLayout.removeAllViews();
+		if (webViewLayout != null) webViewLayout.removeAllViews();
 		if (WebControl != null)
 		{
 			WebControl.destroy();
@@ -200,29 +199,19 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-
-		// reset ScrollPos
-		lastScrollPos = new Point(0, 0);
+		// reset ScrollPos only if cache changed
+		if (aktCache != cache)
+		{
+			lastScrollPos = new Point(0, 0);
+		}
 
 		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 
-		// Thread t = new Thread()
-		// {
-		// public void run()
-		// {
-		// main.mainActivity.runOnUiThread(new Runnable()
-		// {
-		// @Override
-		// public void run()
-		// {
-		// WebControl.OnShow();
-		// WebControl.invalidate();
-		// }
-		// });
-		// }
-		// };
-		//
-		// t.start();
+	}
 
+	@Override
+	public void CacheListChangedEvent()
+	{
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 }
