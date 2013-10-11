@@ -170,7 +170,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 				if (importStarted)
 				{
-					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("Cancel Import"), MessageBoxButtons.YesNo,
+					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo,
 							MessageBoxIcon.Stop, new OnMsgBoxClickListener()
 							{
 

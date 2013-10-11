@@ -14,6 +14,7 @@ import CB_Core.Api.PocketQuery;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Import.BreakawayImportThread;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportCBServer;
 import CB_Core.Import.Importer;
@@ -99,10 +100,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	private int animationValue = 0;
 
 	private Date ImportStart;
-	// private int LogImports;
-	// private int CacheImports;
 
-	private static Boolean importCancel = false;
 	private Boolean importStarted = false;
 
 	private ArrayList<PQ> PqList;
@@ -114,11 +112,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private ScrollBox scrollBox;
 	private ImportAnimation dis;
-
-	public static boolean isCanceld()
-	{
-		return importCancel;
-	}
 
 	public Import()
 	{
@@ -256,7 +249,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (importCancel) return true;
+				if (BreakawayImportThread.isCanceld())
+				{
+					BreakawayImportThread.reset();
+					finish();
+					return true;
+				}
 
 				if (importStarted)
 				{
@@ -1109,7 +1107,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	{
 		// disable btn
 		bOK.disable();
-		importCancel = false;
+
 		// disable UI
 		dis = new ImportAnimation(scrollBox);
 		dis.setBackground(getBackground());
@@ -1133,11 +1131,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	}
 
-	private volatile Thread thread;
+	private volatile BreakawayImportThread importThread;
 
 	public void ImportThread(final String directoryPath, final File directory)
 	{
-		thread = new Thread()
+		importThread = new BreakawayImportThread()
 		{
 			public void run()
 			{
@@ -1212,9 +1210,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 							{
 								do
 								{
-									if (importCancel)
+									if (BreakawayImportThread.isCanceld())
 									{
-										importCanceld();
+										cancelImport();
+										ip.ProgressChangeMsg("", "");
 										return;
 									}
 
@@ -1271,9 +1270,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						}
 						Database.Data.endTransaction();
 
-						if (importCancel)
+						if (BreakawayImportThread.isCanceld())
 						{
-							importCanceld();
+							cancelImport();
+							ip.ProgressChangeMsg("", "");
 							return;
 						}
 
@@ -1321,9 +1321,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						}
 						Database.Data.endTransaction();
 
-						if (importCancel)
+						if (BreakawayImportThread.isCanceld())
 						{
-							importCanceld();
+							cancelImport();
+							ip.ProgressChangeMsg("", "");
 							return;
 						}
 
@@ -1348,9 +1349,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						}
 						dis.setAnimationType(AnimationType.Work);
 						Database.Data.endTransaction();
-						if (importCancel)
+						if (BreakawayImportThread.isCanceld())
 						{
-							importCanceld();
+							cancelImport();
+							ip.ProgressChangeMsg("", "");
 							return;
 						}
 					}
@@ -1364,18 +1366,21 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 						{
 							GL.that.Toast(ConnectionError.INSTANCE);
+							ip.ProgressChangeMsg("", "");
 							return;
 						}
 
 						if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
 						{
 							GL.that.Toast(ApiUnavailable.INSTANCE);
+							ip.ProgressChangeMsg("", "");
 							return;
 						}
 
-						if (importCancel)
+						if (BreakawayImportThread.isCanceld())
 						{
-							importCanceld();
+							cancelImport();
+							ip.ProgressChangeMsg("", "");
 							return;
 						}
 						dis.setAnimationType(AnimationType.Work);
@@ -1405,17 +1410,18 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				catch (InterruptedException e)
 				{
 					// import canceld
-					importCanceld();
+					cancelImport();
 					FilterProperties props = GlobalCore.LastFilter;
 					EditFilterSettings.ApplyFilter(props);
+					ip.ProgressChangeMsg("", "");
 					return;
 				}
 
-				if (importCancel)
+				if (BreakawayImportThread.isCanceld())
 				{
-					importCanceld();
 					FilterProperties props = GlobalCore.LastFilter;
 					EditFilterSettings.ApplyFilter(props);
+					ip.ProgressChangeMsg("", "");
 					return;
 				}
 
@@ -1441,29 +1447,33 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			}
 		};
 
-		thread.setPriority(Thread.MAX_PRIORITY);
+		importThread.setPriority(Thread.MAX_PRIORITY);
 		ImportStart = new Date();
-		thread.start();
-	}
-
-	private void importCanceld()
-	{
-		importCancel = false;
-		importStarted = false;
-
-		this.removeChildsDirekt(dis);
-		dis.dispose();
-		dis = null;
-		bOK.enable();
+		importThread.start();
 	}
 
 	private void cancelImport()
 	{
-		importCancel = true;
-		thread.interrupt();
-		thread = null;
+		if (importThread != null)
+		{
+			importThread.cancel();
+			importThread = null;
+		}
+
 		importStarted = false;
-		this.finish();
+
+		if (dis != null)
+		{
+			this.removeChildsDirekt(dis);
+			dis.dispose();
+			dis = null;
+		}
+		bOK.enable();
+
+		if (importThread != null && !importThread.isAlive())
+		{
+			this.finish();
+		}
 	}
 
 	@Override
@@ -1484,6 +1494,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	}
 
+	private volatile Thread CopyThread;
+
 	private void copyGPX2PQ_Folder(final String file)
 	{
 		// disable UI
@@ -1494,7 +1506,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		dis.setAnimationType(AnimationType.Work);
 
-		thread = new Thread(new Runnable()
+		CopyThread = new Thread(new Runnable()
 		{
 
 			@Override
@@ -1510,10 +1522,10 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				{
 					e.printStackTrace();
 				}
-				importCanceld();
+				cancelImport();
 			}
 		});
-		thread.start();
+		CopyThread.start();
 	}
 
 }

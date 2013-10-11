@@ -42,13 +42,6 @@ public class Importer
 
 	}
 
-	boolean canceld = false;
-
-	public void cancel()
-	{
-		canceld = true;
-	}
-
 	/**
 	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden. Oder das GPX-File
 	 * falls eine einzelne Datei übergeben wird.
@@ -84,7 +77,7 @@ public class Importer
 			{
 				try
 				{
-					Thread.sleep(20);
+					Thread.sleep(10);
 				}
 				catch (InterruptedException e2)
 				{
@@ -139,7 +132,7 @@ public class Importer
 
 			try
 			{
-				Thread.sleep(20);
+				Thread.sleep(10);
 			}
 			catch (InterruptedException e2)
 			{
@@ -191,7 +184,7 @@ public class Importer
 		{
 			try
 			{
-				Thread.sleep(20);
+				Thread.sleep(10);
 			}
 			catch (InterruptedException e2)
 			{
@@ -251,7 +244,7 @@ public class Importer
 
 			try
 			{
-				Thread.sleep(20);
+				Thread.sleep(10);
 			}
 			catch (InterruptedException e2)
 			{
@@ -297,7 +290,7 @@ public class Importer
 			{
 				try
 				{
-					Thread.sleep(20);
+					Thread.sleep(10);
 				}
 				catch (InterruptedException e2)
 				{
@@ -403,6 +396,16 @@ public class Importer
 		int counter = 0;
 		for (String gccode : gcCodes)
 		{
+
+			try
+			{
+				Thread.sleep(10);
+			}
+			catch (InterruptedException e2)
+			{
+				return 0; // Thread Canceld
+			}
+
 			if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 			{
 
@@ -442,6 +445,15 @@ public class Importer
 
 		for (String gccode : gcCodes)
 		{
+			try
+			{
+				Thread.sleep(10);
+			}
+			catch (InterruptedException e2)
+			{
+				return 0; // Thread Canceld
+			}
+
 			Boolean downloadedImage = false;
 			ArrayList<String> imageURLs = imageDAO.getImageURLsForCache(gccode);
 
@@ -553,8 +565,19 @@ public class Importer
 		if (reader.getCount() > 0)
 		{
 			reader.moveToFirst();
-			while (reader.isAfterLast() == false && !canceld)
+			while (reader.isAfterLast() == false)
 			{
+				try
+				{// for cancel/interupt Thread
+					Thread.sleep(10);
+				}
+				catch (InterruptedException e)
+				{
+					return 0;
+				}
+
+				if (BreakawayImportThread.isCanceld()) return 0;
+
 				cnt++;
 				long id = reader.getLong(0);
 				String name = reader.getString(2);

@@ -103,6 +103,8 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 			itemList.add(v);
 		}
 
+		this.notifyDataSetChanged();
+
 	}
 
 	private float MeasureItemHeight(LogEntry logEntry)

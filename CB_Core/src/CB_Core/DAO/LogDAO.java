@@ -36,14 +36,19 @@ public class LogDAO
 
 	// static HashMap<String, String> LogLookup = null;
 
+	public void WriteImports(Iterator<LogEntry> logIterator)
+	{
+		WriteImports(logIterator, 0, null);
+	}
+
 	public void WriteImports(Iterator<LogEntry> logIterator, int logCount, ImporterProgress ip)
 	{
 
-		ip.setJobMax("WriteLogsToDB", logCount);
+		if (ip != null) ip.setJobMax("WriteLogsToDB", logCount);
 		while (logIterator.hasNext())
 		{
 			LogEntry log = logIterator.next();
-			ip.ProgressInkrement("WriteLogsToDB", String.valueOf(log.CacheId), false);
+			if (ip != null) ip.ProgressInkrement("WriteLogsToDB", String.valueOf(log.CacheId), false);
 			try
 			{
 				WriteToDatabase(log);
