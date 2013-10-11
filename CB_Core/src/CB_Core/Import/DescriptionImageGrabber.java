@@ -452,6 +452,17 @@ public class DescriptionImageGrabber
 
 			for (URI uri : imgUris)
 			{
+				try
+				{// for cancel/interupt Thread
+					Thread.sleep(10);
+				}
+				catch (InterruptedException e)
+				{
+					return 0;
+				}
+
+				if (BreakawayImportThread.isCanceld()) return 0;
+
 				String local = BuildImageFilename(gcCode, uri);
 
 				ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode + " - Download: " + uri);
@@ -518,6 +529,18 @@ public class DescriptionImageGrabber
 
 				for (String key : allimgDict.keySet())
 				{
+
+					try
+					{// for cancel/interupt Thread
+						Thread.sleep(10);
+					}
+					catch (InterruptedException e)
+					{
+						return 0;
+					}
+
+					if (BreakawayImportThread.isCanceld()) return 0;
+
 					URI uri = allimgDict.get(key);
 					if (uri.toString().startsWith("http://img.geocaching.com/cache/log")) continue; // LOG-Image
 
@@ -537,7 +560,7 @@ public class DescriptionImageGrabber
 					}
 
 					// build URL
-					for (int j = 0; j < 1 /* && !parent.Cancel */; j++)
+					for (int j = 0; j < 1; j++)
 					{
 						if (Download(uri.toString(), local))
 						{

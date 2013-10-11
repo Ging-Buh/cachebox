@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 import CB_Locator.Events.PositionChangedEventList;
@@ -286,7 +285,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				SortedSettingList.add(setting);
 			}
 
-			Collections.sort(SortedSettingList);
+			// Collections.sort(SortedSettingList);
 
 			do
 			{

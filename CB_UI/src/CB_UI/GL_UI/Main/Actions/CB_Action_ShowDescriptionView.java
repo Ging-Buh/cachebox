@@ -116,7 +116,6 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						@Override
 						public void isCanceld()
 						{
-							 
 
 						}
 					}, new Runnable()
@@ -127,8 +126,8 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						{
 							CB_UI.Api.SearchForGeocaches.SearchGC searchC = new CB_UI.Api.SearchForGeocaches.SearchGC();
 							searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
-
 							searchC.number = 1;
+							searchC.available = false;
 
 							ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
@@ -169,6 +168,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 										@Override
 										public void run()
 										{
+											if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
 											GL.that.renderOnce("after reload Cache");
 										}
 									});

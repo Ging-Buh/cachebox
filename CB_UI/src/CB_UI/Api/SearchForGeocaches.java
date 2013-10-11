@@ -603,18 +603,15 @@ public class SearchForGeocaches
 
 	private static String writeExclusions(String requestString, SearchCoordinate searchC)
 	{
-		requestString += "\"GeocacheExclusions\":{";
 		if (searchC.available)
 		{
-			requestString += "\"Archived\":true,";
-			requestString += "\"Available\":false";
-		}
-		else
-		{
-			requestString += "\"Archived\":true,";
+
+			requestString += "\"GeocacheExclusions\":{";
+			requestString += "\"Archived\":false,";
 			requestString += "\"Available\":true";
+
+			requestString += "},";
 		}
-		requestString += "},";
 		return requestString;
 	}
 

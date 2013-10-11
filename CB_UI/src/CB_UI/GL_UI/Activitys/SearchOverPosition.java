@@ -489,7 +489,13 @@ public class SearchOverPosition extends ActivityBase
 				if (!threadCanceld)
 				{
 					CachListChangedEventList.Call();
-
+					if (dis != null)
+					{
+						SearchOverPosition.this.removeChildsDirekt(dis);
+						dis.dispose();
+						dis = null;
+					}
+					bOK.enable();
 					finish();
 				}
 				else
@@ -497,7 +503,12 @@ public class SearchOverPosition extends ActivityBase
 
 					// Notify Map
 					if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
-
+					if (dis != null)
+					{
+						SearchOverPosition.this.removeChildsDirekt(dis);
+						dis.dispose();
+						dis = null;
+					}
 					bOK.enable();
 				}
 				importRuns = false;
