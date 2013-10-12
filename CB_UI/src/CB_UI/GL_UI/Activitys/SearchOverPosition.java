@@ -67,6 +67,10 @@ public class SearchOverPosition extends ActivityBase
 		{
 			new SearchOverPosition();
 		}
+		else
+		{
+			that.initialCoordinates();
+		}
 		that.show();
 		return that;
 	}
@@ -345,6 +349,30 @@ public class SearchOverPosition extends ActivityBase
 		Radius.setText(String.valueOf(Config.lastSearchRadius.getValue()));
 		setToggleBtnState();
 
+	}
+
+	private void initialCoordinates()
+	{
+		// initiate Coordinates to actual Map-Center or actual GPS Coordinate
+		switch (searcheState)
+		{
+		case 0:
+			actSearchPos = Locator.getCoordinate();
+			break;
+		case 1:
+			if (MapView.that == null)
+			{
+				actSearchPos = new Coordinate();
+				actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
+				actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
+			}
+			else
+			{
+				actSearchPos = MapView.that.center;
+			}
+			break;
+		}
+		setToggleBtnState();
 	}
 
 	private void incrementRadius(int value)
