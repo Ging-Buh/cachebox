@@ -11,17 +11,17 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
@@ -124,7 +124,7 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 
 				if (importStarted)
 				{
-					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("Cancel Import"), MessageBoxButtons.YesNo,
+					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo,
 							MessageBoxIcon.Stop, new OnMsgBoxClickListener()
 							{
 

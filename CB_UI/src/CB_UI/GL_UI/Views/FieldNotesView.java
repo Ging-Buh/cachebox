@@ -92,10 +92,7 @@ public class FieldNotesView extends V_ListView
 			// Close all opend Dialogs
 			GL.that.closeAllDialogs();
 
-			TabMainView.that.ToolsButton.performClick();
-
-			// Menu mn = getContextMenu();
-			// if (mn != null) mn.Show();
+			if (Config.ShowFieldnotesCMwithFirstShow.getValue()) TabMainView.that.ToolsButton.performClick();
 		}
 
 	}
