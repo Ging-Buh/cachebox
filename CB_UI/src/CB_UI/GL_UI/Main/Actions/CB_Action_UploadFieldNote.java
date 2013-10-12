@@ -42,7 +42,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 	public void Execute()
 	{
 		GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.settings.RememberAsk_API_Coast);
+				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.RememberAsk_API_Coast);
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 
 				FieldNoteList lFieldNotes = new FieldNoteList();
 
-				lFieldNotes.LoadFieldNotes("Uploaded=False", LoadingType.Loadall);
+				lFieldNotes.LoadFieldNotes("(Uploaded=0 or Uploaded is null)", LoadingType.Loadall);
 
 				int count = 0;
 				int anzahl = 0;

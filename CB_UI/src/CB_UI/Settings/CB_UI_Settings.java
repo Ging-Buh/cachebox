@@ -318,4 +318,7 @@ public interface CB_UI_Settings
 	public static final SettingsAudio AutoResortSound = new SettingsAudio("AutoResortSound", SettingCategory.Sounds, NORMAL, new Audio(
 			"data/sound/AutoResort.ogg", false, false, 1.0f), SettingStoreType.Global);
 
+	public static final SettingBool ShowFieldnotesCMwithFirstShow = new SettingBool("ShowFieldnotesCMwithFirstShow",
+			SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global);
+
 }

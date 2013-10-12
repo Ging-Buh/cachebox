@@ -258,7 +258,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 				if (importStarted)
 				{
-					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("Cancel Import"), MessageBoxButtons.YesNo,
+					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo,
 							MessageBoxIcon.Stop, new OnMsgBoxClickListener()
 							{
 
