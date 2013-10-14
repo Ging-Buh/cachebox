@@ -31,9 +31,9 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 public class GlobalCore extends CB_UI_Base.Global
 {
 
-	public static final int CurrentRevision = 1880;
+	public static final int CurrentRevision = 1883;
 	public static final String CurrentVersion = "0.6.";
-	public static final String VersionPrefix = "Test";
+	public static final String VersionPrefix = "test";
 
 	// public static final String ps = System.getProperty("path.separator");
 	public static final String AboutMsg = "Team Cachebox (2011-2013)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"

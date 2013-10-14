@@ -198,9 +198,10 @@ public class Translation
 		FileHandle lang = Gdx.files.getFileHandle(FilePath, mFiletype);
 		String langRead = lang.readString();
 
-		String Value = langRead.substring(0, langRead.indexOf(BR));
-		int pos = Value.indexOf("=");
-		Value = Value.substring(pos + 1);
+		int pos1 = langRead.indexOf("lang=") + 5;
+		int pos2 = langRead.indexOf(BR, pos1);
+
+		String Value = langRead.substring(pos1, pos2);
 		return Value;
 	}
 

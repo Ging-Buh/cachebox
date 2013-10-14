@@ -390,7 +390,7 @@ public class Downloader implements Runnable
 						charset = m.group(1).trim();
 					}
 
-					if ((charset != null) && !charset.isEmpty())
+					if ((charset != null) && charset.length() > 0)
 					{
 						try
 						{
