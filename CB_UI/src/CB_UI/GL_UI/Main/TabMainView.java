@@ -374,15 +374,15 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		btn3.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
 		if (GlobalCore.isTestVersion()) btn3.addAction(new CB_ActionButton(actionTestView, false));
 
-		ToolsButton.addAction(new CB_ActionButton(actionQuickFieldNote, false));
-		ToolsButton.addAction(new CB_ActionButton(actionShowFieldNotesView, true));
+		ToolsButton.addAction(new CB_ActionButton(actionQuickFieldNote, false, GestureDirection.Up));
+		ToolsButton.addAction(new CB_ActionButton(actionShowFieldNotesView, Config.ShowFieldnotesAsDefaultView.getValue()));
 		ToolsButton.addAction(new CB_ActionButton(actionRecTrack, false));
 		ToolsButton.addAction(new CB_ActionButton(actionRecVoice, false));
 		ToolsButton.addAction(new CB_ActionButton(actionRecPicture, false, GestureDirection.Down));
 		ToolsButton.addAction(new CB_ActionButton(actionRecVideo, false));
 		ToolsButton.addAction(new CB_ActionButton(actionParking, false));
 		ToolsButton.addAction(new CB_ActionButton(actionShowSolverView, false, GestureDirection.Left));
-		ToolsButton.addAction(new CB_ActionButton(actionShowSolverView2, false));
+		ToolsButton.addAction(new CB_ActionButton(actionShowSolverView2, false, GestureDirection.Right));
 		ToolsButton.addAction(new CB_ActionButton(actionShowJokerView, false));
 
 		btn5.addAction(new CB_ActionButton(actionShowAboutView, true, GestureDirection.Up));
@@ -471,7 +471,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		btn3.addAction(new CB_ActionButton(actionGenerateRoute, false, GestureDirection.Left));
 
 		ToolsButton.addAction(new CB_ActionButton(actionQuickFieldNote, false));
-		ToolsButton.addAction(new CB_ActionButton(actionShowFieldNotesView, false));
+		ToolsButton.addAction(new CB_ActionButton(actionShowFieldNotesView, Config.ShowFieldnotesAsDefaultView.getValue()));
 		ToolsButton.addAction(new CB_ActionButton(actionRecTrack, false));
 		ToolsButton.addAction(new CB_ActionButton(actionRecVoice, false));
 		ToolsButton.addAction(new CB_ActionButton(actionRecPicture, false));

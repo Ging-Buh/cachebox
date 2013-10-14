@@ -47,6 +47,26 @@
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/CB_Rpc/src</locationURI>
 		</link>
+		<link>
+			<name>CB_Translationsrc</name>
+			<type>2</type>
+			<location>C:/@Work/Longri/SVN&apos;s/Cachebox/branches/2012-11-08 - First Release on Google Play/CB_Translation_Base/src</location>
+		</link>
+		<link>
+			<name>CB_UI_BASE_src</name>
+			<type>2</type>
+			<location>C:/@Work/Longri/SVN&apos;s/Cachebox/branches/2012-11-08 - First Release on Google Play/CB_UI_Base/src</location>
+		</link>
+		<link>
+			<name>CB_UI_src</name>
+			<type>2</type>
+			<location>C:/@Work/Longri/SVN&apos;s/Cachebox/branches/2012-11-08 - First Release on Google Play/CB_UI/src</location>
+		</link>
+		<link>
+			<name>CB_UTILS_src</name>
+			<type>2</type>
+			<location>C:/@Work/Longri/SVN&apos;s/Cachebox/branches/2012-11-08 - First Release on Google Play/CB_Utils/src</location>
+		</link>
 	</linkedResources>
 	<variableList>
 		<variable>

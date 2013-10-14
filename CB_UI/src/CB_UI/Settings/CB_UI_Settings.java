@@ -321,4 +321,7 @@ public interface CB_UI_Settings
 	public static final SettingBool ShowFieldnotesCMwithFirstShow = new SettingBool("ShowFieldnotesCMwithFirstShow",
 			SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global);
 
+	public static final SettingBool ShowFieldnotesAsDefaultView = new SettingBool("ShowFieldnotesAsDefaultView",
+			SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global);
+
 }

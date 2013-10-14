@@ -100,7 +100,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 	@Override
 	public int compareTo(SettingBase<T> o)
 	{
-		return Integer.compare(o.index, this.index);
+		return Double.compare(o.index, this.index);
 	}
 
 	private void fireChangedEvent()
