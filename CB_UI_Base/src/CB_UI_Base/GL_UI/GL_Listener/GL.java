@@ -215,13 +215,15 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public void RunOnGL(runOnGL run)
 	{
-
 		// if in progress put into pool
 		if (isWorkOnRunOnGL.get())
 		{
-			runOnGL_ListWaitpool.add(run);
-			renderOnce("RunOnGL called");
-			return;
+			synchronized (runOnGL_ListWaitpool)
+			{
+				runOnGL_ListWaitpool.add(run);
+				renderOnce("RunOnGL called");
+				return;
+			}
 		}
 		synchronized (runOnGL_List)
 		{
@@ -300,19 +302,25 @@ public class GL implements ApplicationListener, InputProcessor
 		// if (!ShaderSetted) setShader();
 
 		isWorkOnRunOnGL.set(true);
+
 		synchronized (runOnGL_List)
 		{
 			if (runOnGL_List.size() > 0)
 			{
 				for (runOnGL run : runOnGL_List)
 				{
-					if (run != null) run.run();
+					if (run != null)
+					{
+						run.run();
+
+					}
 				}
 
 				runOnGL_List.clear();
 			}
 		}
 		isWorkOnRunOnGL.set(false);
+
 		// work RunOnGlPool
 		synchronized (runOnGL_ListWaitpool)
 		{

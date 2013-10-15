@@ -41,12 +41,12 @@ public class GL_UISizes implements SizeChangedEvent
 		Logger.DEBUG("Initial UISizes => " + width + "/" + height);
 		Logger.DEBUG("DPI = " + DPI);
 
-		defaultDPI = CB_UI_Base_Settings.DPIFaktor.getDefaultValue();
+		defaultDPI = CB_UI_Base_Settings.MapViewDPIFaktor.getDefaultValue();
 
-		if (DPI != CB_UI_Base_Settings.DPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue())
+		if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue())
 		{
 
-			DPI = CB_UI_Base_Settings.DPIFaktor.getValue();
+			DPI = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
 
 			Logger.DEBUG("DPI != MapViewDPIFaktor " + DPI);
 

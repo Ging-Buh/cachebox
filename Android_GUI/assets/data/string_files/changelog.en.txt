@@ -1,5 +1,36 @@
 Changes:
 
+Version: 0.6.1884
+	• Creation of multiple working folders
+	• Forge Maps 0.4.0
+	• Create Waypoint from center of map
+	• Owner Field Notes
+	• integrated "Waze" as External navigation
+	• Better handling spoiler
+	• "ES File Explorer" as an external file manager
+	• Better error handling
+	• Audio Settings
+	• Better compatibility with WCB
+	• Imports revised
+	• Open links in Listing
+	• Fixed problems with soft keyboard
+	• Added Copy / Paste for coordinate
+	• Fixed some layout problems
+	• Fix some minor bugs
+	• Fixed OutOfMemoryException when importing
+
+
+Version : 0.6.1605
+	• Own repository for each database
+	• Import Munzee
+	• Logging Trackable
+	• dissolved Mysteries can be assigned a starting point
+	• Caches can be entered manually
+	• Text Filter
+	• TMS-map handling
+	• hillshading overlay
+
+
 Version : 0.5.1400
 	• Fix Nexus 7 start problems
 	• Add .nomedia

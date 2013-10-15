@@ -1,6 +1,35 @@
 
 Versions Änderungen:
 
+Version : 0.6.1884
+	• Anlegen von mehreren Arbeitsordnern
+	• Mapsforge 0.4.0
+	• Wegpunkterstellung vom Kartenmittelpunkt
+	• Owner Fieldnotes
+	• "Waze" als Externe Navigation eingebunden
+	• Besseres Spoiler Handling
+	• "ES Datei Explorer" als externer Filemanager
+	• Bessere Fehler Behandlung
+	• Audio Settings
+	• Bessere Kompatibilität mit WCB
+	• Imports überarbeitet
+	• öffnen von Links im Listing
+	• Fix Probleme mit SoftKeyboard
+	• Copy/Paste für Koordinate hinzugefügt
+	• Fix einige Layout Probleme
+	• Fix einige kleinere Fehler
+	• Fix OutOfMemoryException beim Import
+
+Version : 0.6.1605
+	• Eigene Repositorys für jede Datenbank
+	• Import Munzee
+	• Loggen von Trackable
+	• gelösten Mysteries kann ein Startpunkt zugewiesen werden
+	• Caches können von Hand eingetragen werden
+	• Text Filter
+	• TMS-Map Handling
+	• Hillshading Overlay
+
 Version : 0.5.1400
 	• Viele gemeldete Fehler behoben, Danke an alle!
 	• Optimierung der Leistung und Stabilität

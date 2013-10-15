@@ -12,8 +12,6 @@ import CB_UI.Settings.SettingsClass;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
 import CB_Utils.Log.Logger;
-import CB_Utils.Settings.SettingModus;
-import CB_Utils.Util.iChanged;
 import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings
@@ -33,22 +31,6 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 		ConfigName = configName;
 		settings = new SettingsClass();
 
-		// Merge DpiFactor with MapViewDpifactor
-		MapViewDPIFaktor.addChangedEventListner(new iChanged()
-		{
-
-			@Override
-			public void isChanged()
-			{
-				DPIFaktor.setValue(MapViewDPIFaktor.getValue());
-				// dont Safe DpiFactor! Only Use MapViewDpiFactor
-				DPIFaktor.clearDirty();
-			}
-		});
-		DPIFaktor.setValue(MapViewDPIFaktor.getValue());
-		// dont Safe/Show DpiFactor! Only Use MapViewDpiFactor
-		DPIFaktor.clearDirty();
-		DPIFaktor.changeSettingsModus(SettingModus.Never);
 	}
 
 	public static String GetString(String key)

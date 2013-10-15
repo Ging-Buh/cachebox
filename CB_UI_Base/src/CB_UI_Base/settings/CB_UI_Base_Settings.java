@@ -59,7 +59,7 @@ public interface CB_UI_Base_Settings
 	public static final SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", SettingCategory.Sounds, NORMAL, new Audio(
 			"data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global);
 
-	public static final SettingFloat DPIFaktor = new SettingFloat("DPIFaktor", SettingCategory.Internal, EXPERT,
+	public static final SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", SettingCategory.Map, EXPERT,
 			(float) Global.displayDensity, SettingStoreType.Global);
 
 	public static final SettingFolder ImageCacheFolderLocal = new SettingFolder("ImageCacheFolderLocal", SettingCategory.Folder, NEVER,

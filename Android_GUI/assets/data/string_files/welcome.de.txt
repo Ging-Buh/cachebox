@@ -1,8 +1,8 @@
-Danke dass Du Cachebox installiert hast.
+Danke dass Du Cachebox 0.6.1884 installiert hast.
 
 Bediene Cachebox niemals während der Fahrt im Auto!
 
-Diese Version ist noch eine Beta Version und kann noch Fehler enthalten.
+Auch wenn wir bemüht sind Cachebox Fehlerfrei zu halten, kann es doch sein, dass wir etwas übersehen haben.
 
 Einen Fehler kannst Du auf www.team-cachebox.de melden.
 
