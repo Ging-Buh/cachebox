@@ -624,6 +624,15 @@ public class FieldNotesView extends V_ListView
 			}
 			FieldNoteList.CreateVisitsTxt(Config.FieldNotesGarminPath.getValue());
 
+			// Reload List
+			if (isNewFieldNote)
+			{
+				lFieldNotes.LoadFieldNotes("", LoadingType.LoadNew);
+			}
+			else
+			{
+				lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
+			}
 		}
 		that.notifyDataSetChanged();
 	}

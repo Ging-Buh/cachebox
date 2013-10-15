@@ -1,12 +1,10 @@
 package CB_Locator;
 
-import CB_UI_Base.Global;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingFile;
-import CB_Utils.Settings.SettingFloat;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingIntArray;
@@ -72,9 +70,6 @@ public interface LocatorSettings
 
 	public static final SettingBool PositionMarkerTransparent = new SettingBool("PositionMarkerTransparent", SettingCategory.Map, NORMAL,
 			false, SettingStoreType.Global);
-
-	public static final SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", SettingCategory.Map, EXPERT,
-			(float) Global.displayDensity, SettingStoreType.Global);
 
 	public static final SettingIntArray OsmMaxLevel = new SettingIntArray("OsmMaxLevel", SettingCategory.Map, NORMAL, 19,
 			SettingStoreType.Global, Level);

@@ -1,8 +1,8 @@
-Thanks for installing Cachebox.
+Thanks for installing Cachebox 0.6.1884.
 
 Do not use Cachebox during the drive in the car!
 
-This version is still in beta stage and can contain errors.
+Even if we try to keep cachebox error free, but it may be that we have overlooked something.
 
 You can report an error at http://www.team-cachebox.de.
 

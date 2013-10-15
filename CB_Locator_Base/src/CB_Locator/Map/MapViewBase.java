@@ -25,6 +25,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Math.PointD;
@@ -1073,7 +1074,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 			if (InitialFlags == INITIAL_ALL)
 			{
-				iconFactor = LocatorSettings.MapViewDPIFaktor.getValue();
+				iconFactor = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
 
 				int setAktZoom = LocatorSettings.lastZoomLevel.getValue();
 				int setMaxZoom = LocatorSettings.OsmMaxLevel.getValue();
