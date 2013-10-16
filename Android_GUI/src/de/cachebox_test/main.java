@@ -2046,20 +2046,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				try
 				{
-					String url = "waze://?ll=" + lat + "," + lon;
-					intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-					startActivity(intent);
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-
-			if (intent == null)
-			{
-				try
-				{
 					intent = new Intent("android.intent.action.navigon.START_PUBLIC");
 				}
 				catch (Exception e)
