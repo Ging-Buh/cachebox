@@ -542,7 +542,7 @@ public class DescriptionImageGrabber
 					if (BreakawayImportThread.isCanceld()) return 0;
 
 					URI uri = allimgDict.get(key);
-					if (uri.toString().startsWith("http://img.geocaching.com/cache/log")) continue; // LOG-Image
+					if (uri.toString().contains(".geocaching.com/cache/log")) continue; // LOG-Image
 
 					ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode + " - Download: " + uri);
 
