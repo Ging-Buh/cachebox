@@ -10,6 +10,7 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.iStartPictureApp;
 import CB_Utils.Log.Logger;
+import android.R;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,7 +32,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.cachebox_test.Global;
-import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
@@ -132,7 +132,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		public int getCount()
 		{
 			if (aktCache == null) return 0;
-			if (aktCache.SpoilerExists()) return aktCache.getSpoilerRessources().size();
+			if (aktCache.SpoilerExists()) return lBitmaps.size();
 			else
 				return 0;
 			// return mThumbIds.length;
@@ -156,7 +156,10 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 			// GlobalCore.getSelectedCache().SpoilerRessources().get(position);
 			Bitmap bit = null;
 			bit = lBitmaps.get(position);
-			if (bit == null) return null;
+			if (bit == null)
+			{
+				return null;
+			}
 			i.setImageBitmap(bit);
 			// i.setImageResource(mThumbIds[position]);
 			i.setAdjustViewBounds(true);
@@ -194,7 +197,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		// Decode image size
 		BitmapFactory.Options o = new BitmapFactory.Options();
 		o.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(f, o);
+		Bitmap ori = BitmapFactory.decodeFile(f, o);
 
 		// The new size we want to scale to
 		final int REQUIRED_SIZE = 100;
@@ -213,7 +216,8 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		// Decode with inSampleSize
 		BitmapFactory.Options o2 = new BitmapFactory.Options();
 		o2.inSampleSize = scale;
-		return BitmapFactory.decodeFile(f, o2);
+		Bitmap scaledBmp = BitmapFactory.decodeFile(f, o2);
+		return scaledBmp == null ? ori : scaledBmp;
 	}
 
 	@Override
@@ -236,13 +240,15 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 		{
 			try
 			{
-				lBitmaps.add(decodeFile(image.LocalPath));
+				Bitmap tmp = decodeFile(image.LocalPath);
+				if (tmp != null) lBitmaps.add(tmp);
 			}
 			catch (Exception exc)
 			{
 				Logger.Error("SpoilerView.onShow()", "AddBitmap", exc);
 			}
 		}
+
 		g.setAdapter(new ImageAdapter(context));
 	}
 

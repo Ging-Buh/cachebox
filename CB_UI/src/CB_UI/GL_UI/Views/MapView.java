@@ -571,10 +571,16 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		// Beschriftung
 		if (showTitles && (aktZoom >= 15))
 		{
-			String Name = drawAsWaypoint ? wpi.Waypoint.Title : wpi.Cache.Name;
+			try
+			{
+				String Name = drawAsWaypoint ? wpi.Waypoint.Title : wpi.Cache.Name;
 
-			float halfWidth = Fonts.getNormal().getBounds(Name).width / 2;
-			Fonts.getNormal().draw(batch, Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
+				float halfWidth = Fonts.getNormal().getBounds(Name).width / 2;
+				Fonts.getNormal().draw(batch, Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
+			}
+			catch (Exception e)
+			{
+			}
 		}
 
 		// Show D/T-Rating

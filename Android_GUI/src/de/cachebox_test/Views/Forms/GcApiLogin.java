@@ -167,7 +167,7 @@ public class GcApiLogin extends Activity
 						@Override
 						public void run()
 						{
-							pd = ProgressDialog.show(gcApiLogin, "", "Loading....", true);
+							pd = ProgressDialog.show(GcApiLogin.this, "", "Loading....", true);
 							pdIsShow = true;
 						}
 					});

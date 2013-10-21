@@ -138,7 +138,7 @@ public abstract class Config_Core
 
 	public static void AcceptChanges()
 	{
-		that.acceptChanges();
+		if (that != null) that.acceptChanges();
 	}
 
 }
