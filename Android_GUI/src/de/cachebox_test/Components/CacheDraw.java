@@ -205,7 +205,16 @@ public class CacheDraw
 		}
 
 		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-		String dateString = postFormater.format(cache.DateHidden);
+		String dateString = "";
+
+		try
+		{
+			dateString = postFormater.format(cache.DateHidden);
+		}
+		catch (Exception e)
+		{
+
+		}
 
 		String CacheName = (String) TextUtils.ellipsize(cache.Name, namePaint, nameLayoutWidthRightBorder, TextUtils.TruncateAt.END);
 
@@ -432,8 +441,15 @@ public class CacheDraw
 		{
 			if (l.Type == LogTypes.found)
 			{
-				SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-				FoundDate = postFormater.format(l.Timestamp);
+				try
+				{
+					SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
+					FoundDate = postFormater.format(l.Timestamp);
+				}
+				catch (Exception e)
+				{
+
+				}
 				break;
 			}
 		}

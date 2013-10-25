@@ -20,4 +20,10 @@ public class PointD
 		this.X = x;
 		this.Y = y;
 	}
+
+	@Override
+	public String toString()
+	{
+		return this.X + ", " + this.Y;
+	}
 }
