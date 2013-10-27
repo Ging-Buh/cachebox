@@ -3,11 +3,13 @@ package CB_UI.GL_UI.Views;
 import java.text.SimpleDateFormat;
 
 import CB_Core.Types.LogEntry;
+import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
+import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -15,8 +17,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Clipboard;
 
-public class LogViewItem extends ListViewItemBackground
+public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 {
 	private static NinePatch backheader;
 	private LogEntry logEntry;
@@ -27,6 +30,8 @@ public class LogViewItem extends ListViewItemBackground
 
 	private float secondTab = 0;
 	private static float MeasuredLabelHeight = 0;
+
+	private Clipboard clipboard = GlobalCore.getDefaultClipboard();
 
 	public LogViewItem(CB_RectF rec, int Index, LogEntry logEntry)
 	{
@@ -114,6 +119,28 @@ public class LogViewItem extends ListViewItemBackground
 	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		return false;
+		copyToClipboard();
+		return true;
+	}
+
+	@Override
+	public String pasteFromClipboard()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String copyToClipboard()
+	{
+		clipboard.setContents(this.logEntry.Comment);
+		return this.logEntry.Comment;
+	}
+
+	@Override
+	public String cutToClipboard()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
