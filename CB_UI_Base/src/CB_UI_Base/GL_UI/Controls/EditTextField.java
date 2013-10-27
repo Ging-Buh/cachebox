@@ -1604,7 +1604,7 @@ public class EditTextField extends EditTextFieldBase
 			keyTyped(c, true);
 		}
 
-		setCursorPosition(0);
+		setCursorPosition(4);
 		setCursorLine(0, true);
 	}
 
@@ -1714,7 +1714,7 @@ public class EditTextField extends EditTextFieldBase
 	{
 		if (cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
 		clearSelection();
-		cursor.pos = Math.min(cursorPosition, text.length());
+		cursor.pos = Math.min(cursorPosition, getText().length());
 		checkCursorVisible(true);
 	}
 
