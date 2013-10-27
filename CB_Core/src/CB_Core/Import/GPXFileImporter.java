@@ -1178,6 +1178,8 @@ public class GPXFileImporter
 						try
 						{
 							log.Id = Long.parseLong(attrValue);
+							// GSAK Special improvisiert
+							if (log.Id < 0) log.Id = log.CacheId + log.Id;
 						}
 						catch (Exception ex)
 						{
