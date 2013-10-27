@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="libs/gdx-sources.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-tools.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

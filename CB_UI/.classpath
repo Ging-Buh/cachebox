@@ -15,6 +15,6 @@
 	<classpathentry kind="lib" path="lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry kind="lib" path="lib/sjxp-2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

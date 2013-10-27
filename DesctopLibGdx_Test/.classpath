@@ -24,7 +24,7 @@
 	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-awt-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
