@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CoordinateButton;
@@ -142,7 +143,18 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	{
 		CB_RectF rec = new CB_RectF(leftBorder, tvCacheName.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		bCoord = new CoordinateButton(rec, "CoordButton", waypoint.Pos);
+		Coordinate coordinate = waypoint.Pos;
+		if (!coordinate.isValid() || coordinate.isZero())
+		{
+			// coordinate = get from gps
+			coordinate = Locator.getCoordinate();
+			if (!coordinate.isValid() || coordinate.isZero())
+			{
+				// coordinate = get from cache
+				coordinate = GlobalCore.getSelectedCache().Pos;
+			}
+		}
+		bCoord = new CoordinateButton(rec, "CoordButton", coordinate);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
 		{
