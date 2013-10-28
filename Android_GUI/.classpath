@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding=".svn/" kind="src" path="src"/>
-	<classpathentry kind="src" path="CB_Locator_src"/>
 	<classpathentry kind="src" path="CB_Rpc_src"/>
+	<classpathentry kind="src" path="CB_Locator_src"/>
 	<classpathentry kind="src" path="CB_Core_src"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>

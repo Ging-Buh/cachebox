@@ -36,7 +36,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 	public LogViewItem(CB_RectF rec, int Index, LogEntry logEntry)
 	{
 		super(rec, Index, "");
-
+		this.setLongClickable(true);
 		this.logEntry = logEntry;
 		mBackIsInitial = false;
 		MeasuredLabelHeight = Fonts.Measure("T").height * 1.5f;
@@ -116,11 +116,28 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 
 	}
 
-	@Override
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		copyToClipboard();
-		return true;
+
+		isPressed = true;
+
+		return false;
+	}
+
+	@Override
+	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
+	{
+		isPressed = false;
+
+		return false;
+	}
+
+	@Override
+	public boolean onTouchUp(int x, int y, int pointer, int button)
+	{
+		isPressed = false;
+
+		return false;
 	}
 
 	@Override
