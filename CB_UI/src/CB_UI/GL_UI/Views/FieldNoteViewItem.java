@@ -110,7 +110,12 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		if (this.fieldnote == null) return;
 		// SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
 		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MMM (HH:mm)");
-		String dateString = postFormater.format(fieldnote.timestamp);
+		String foundNumber = "";
+		if (fieldnote.foundNumber > 0)
+		{
+			foundNumber = "#" + fieldnote.foundNumber + " @ ";
+		}
+		String dateString = foundNumber + postFormater.format(fieldnote.timestamp);
 		float DateLength = 100;
 
 		try
