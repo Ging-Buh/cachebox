@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package CB_Core.Types;
+package CB_Core;
 
 import junit.framework.TestCase;
+import CB_Core.Types.MeasuredCoord;
 import CB_Locator.Coordinate;
+import CB_Utils.MathUtils.CalculationType;
 
 /**
  * Test Klasse zum testen des Typs MeasuredCoord
@@ -60,7 +62,10 @@ public class MeasuredCoordTest extends TestCase
 
 		MeasuredCoord.Referenz = Referenz;
 
-		float distance = mMeasuredCoord.Distance();
+		float distance = mMeasuredCoord.Distance(CalculationType.ACCURATE);
+		assertTrue("Entfernung muss 99.38391m sein", (distance > 99.38390) && (distance < 99.38392));
+
+		distance = mMeasuredCoord.Distance(CalculationType.FAST);
 		assertTrue("Entfernung muss 99.38391m sein", (distance > 99.38390) && (distance < 99.38392));
 
 	}

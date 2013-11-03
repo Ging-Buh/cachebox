@@ -2,6 +2,7 @@ package CB_UI.Solver.Functions;
 
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_Utils.MathUtils.CalculationType;
 
 public class FunctionBearing extends Function
 {
@@ -41,7 +42,7 @@ public class FunctionBearing extends Function
 		}
 		try
 		{
-			double bearing = Coordinate.Bearing(coord[0], coord[1]);
+			double bearing = Coordinate.Bearing(CalculationType.ACCURATE, coord[0], coord[1]);
 			if (bearing < 0) bearing = bearing + 360;
 			return String.valueOf(bearing);
 		}

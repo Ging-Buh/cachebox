@@ -2,6 +2,8 @@ package CB_UI.Solver.Functions;
 
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 
 public class FunctionDistance extends Function
 {
@@ -42,8 +44,8 @@ public class FunctionDistance extends Function
 		float[] dist = new float[2];
 		try
 		{
-			Coordinate.distanceBetween(coord[0].getLatitude(), coord[0].getLongitude(), coord[1].getLatitude(), coord[1].getLongitude(),
-					dist);
+			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, coord[0].getLatitude(), coord[0].getLongitude(),
+					coord[1].getLatitude(), coord[1].getLongitude(), dist);
 			return String.valueOf(dist[0]);
 		}
 		catch (Exception ex)

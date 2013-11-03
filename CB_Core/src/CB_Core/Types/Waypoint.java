@@ -6,6 +6,8 @@ import java.util.Date;
 import CB_Core.Enums.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 
 public class Waypoint implements Serializable
 {
@@ -80,7 +82,9 @@ public class Waypoint implements Serializable
 	{
 		Coordinate fromPos = Locator.getLocation().toCordinate();
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(), Pos.getLongitude(), dist);
+
+		MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(),
+				Pos.getLongitude(), dist);
 		return dist[0];
 	}
 

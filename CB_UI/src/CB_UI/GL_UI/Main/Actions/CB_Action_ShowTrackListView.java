@@ -32,6 +32,8 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.TrackPoint;
 
@@ -279,8 +281,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
 						route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(),
-								startCoord.getLongitude(), dist);
+						MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(),
+								targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
 						route.TrackLength = dist[0];
 
 						route.ShowRoute = true;
@@ -315,8 +317,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
 						route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(),
-								startCoord.getLongitude(), dist);
+						MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(),
+								targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
 						route.TrackLength = dist[0];
 
 						route.ShowRoute = true;
@@ -370,8 +372,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 							}
 							else
 							{
-								Coordinate.distanceBetween(Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(),
-										LastCoord.getLongitude(), dist);
+								MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, Projektion.getLatitude(),
+										Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
 								route.TrackLength += dist[0];
 								LastCoord = Projektion;
 								LastCoord.setValid(true);

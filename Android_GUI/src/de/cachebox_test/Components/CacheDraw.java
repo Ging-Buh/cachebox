@@ -14,6 +14,7 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -388,10 +389,10 @@ public class CacheDraw
 		{
 			Coordinate position = Locator.getCoordinate();
 			double heading = Locator.getHeading();
-			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.Pos.getLatitude(),
-					cache.Pos.getLongitude());
+			double bearing = Coordinate.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(),
+					cache.Pos.getLatitude(), cache.Pos.getLongitude());
 			double cacheBearing = bearing - heading;
-			String cacheDistance = UnitFormatter.DistanceString(cache.Distance(false));
+			String cacheDistance = UnitFormatter.DistanceString(cache.Distance(CalculationType.FAST, false));
 			DrawBearing(cache, canvas, drawingRec, cacheDistance, cacheBearing);
 
 		}
@@ -404,13 +405,13 @@ public class CacheDraw
 		{
 			Coordinate position = Locator.getCoordinate();
 			double heading = Locator.getHeading();
-			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), waypoint.Pos.getLatitude(),
-					waypoint.Pos.getLongitude());
+			double bearing = Coordinate.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(),
+					waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
 			double waypointBearing = bearing - heading;
 			float distance = 0;
 			if (waypoint == null)
 			{
-				distance = cache.Distance(false);
+				distance = cache.Distance(CalculationType.FAST, false);
 			}
 			else
 			{

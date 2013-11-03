@@ -43,6 +43,8 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.UnitFormatter;
 
@@ -272,8 +274,9 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														}
 														else
 														{
-															Coordinate.distanceBetween(FromPosition.getLatitude(),
-																	FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
+															MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE,
+																	FromPosition.getLatitude(), FromPosition.getLongitude(),
+																	lastAcceptedCoordinate.getLatitude(),
 																	lastAcceptedCoordinate.getLongitude(), dist);
 															Distance += dist[0];
 															FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());

@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import CB_Locator.Coordinate;
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -17,6 +16,8 @@ import CB_Locator.Locator.CompassType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
 
@@ -210,10 +211,10 @@ public class TrackRecorder
 
 			// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
 			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
-			float[] dist = new float[4];
+			float[] dist = new float[1];
 
-			Coordinate.distanceBetween(LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS),
-					Locator.getLongitude(GPS), dist);
+			MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(),
+					LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS), Locator.getLongitude(GPS), dist);
 			float cachedDistance = dist[0];
 
 			if (cachedDistance > GlobalCore.TrackDistance)

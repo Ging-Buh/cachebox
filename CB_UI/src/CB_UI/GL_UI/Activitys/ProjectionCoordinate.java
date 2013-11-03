@@ -15,6 +15,7 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.NumPad;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.MathUtils.CalculationType;
 
 public class ProjectionCoordinate extends ActivityBase
 {
@@ -257,8 +258,8 @@ public class ProjectionCoordinate extends ActivityBase
 		{
 			try
 			{
-				Distance = coord.Distance(projCoord);
-				Bearing = coord.bearingTo(projCoord);
+				Distance = coord.Distance(projCoord, CalculationType.ACCURATE);
+				Bearing = coord.bearingTo(projCoord, CalculationType.ACCURATE);
 				return true;
 			}
 			catch (Exception e)

@@ -17,6 +17,8 @@
 package CB_Core.Types;
 
 import CB_Locator.Coordinate;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 
 /**
  * Ein Koordinaten Typ, der speziell zum Messen einer Koordinaten Reihe da ist. <br>
@@ -90,8 +92,8 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	@Override
 	public int compareTo(MeasuredCoord o2)
 	{
-		float dist1 = this.Distance();
-		float dist2 = o2.Distance();
+		float dist1 = this.Distance(CalculationType.ACCURATE);
+		float dist2 = o2.Distance(CalculationType.ACCURATE);
 
 		float acc1 = this.Accuracy;
 		float acc2 = o2.Accuracy;
@@ -118,10 +120,10 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 	 * 
 	 * @return Entfernung zur übergebenen User Position als Float
 	 */
-	public float Distance()
+	public float Distance(CalculationType type)
 	{
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(this.Latitude, this.Longitude, Referenz.getLatitude(), Referenz.getLongitude(), dist);
+		MathUtils.computeDistanceAndBearing(type, this.Latitude, this.Longitude, Referenz.getLatitude(), Referenz.getLongitude(), dist);
 
 		return (float) dist[0];
 	}

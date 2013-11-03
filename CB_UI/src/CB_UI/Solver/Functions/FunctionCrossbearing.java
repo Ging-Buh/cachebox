@@ -2,6 +2,7 @@ package CB_UI.Solver.Functions;
 
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_Utils.MathUtils.CalculationType;
 
 public class FunctionCrossbearing extends Function
 {
@@ -53,7 +54,7 @@ public class FunctionCrossbearing extends Function
 
 		try
 		{
-			return Coordinate.Crossbearing(coord[0], angle[0], coord[1], angle[1]).FormatCoordinate();
+			return Coordinate.Crossbearing(CalculationType.ACCURATE, coord[0], angle[0], coord[1], angle[1]).FormatCoordinate();
 		}
 		catch (Exception ex)
 		{

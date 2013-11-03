@@ -24,6 +24,8 @@ import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.PolylineReduction;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
@@ -345,8 +347,9 @@ public class RouteOverlay
 							}
 							else
 							{
-								Coordinate.distanceBetween(FromPosition.getLatitude(), FromPosition.getLongitude(),
-										lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
+								MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(),
+										FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
+										lastAcceptedCoordinate.getLongitude(), dist);
 								Distance += dist[0];
 								AltitudeDifference += Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
 								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());

@@ -14,6 +14,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.Gdx;
@@ -165,11 +166,11 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			{
 				double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
 				double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
-				float distance = (mWaypoint == null) ? mCache.Distance(true) : mWaypoint.Distance();
+				float distance = (mWaypoint == null) ? mCache.Distance(CalculationType.FAST, true) : mWaypoint.Distance();
 
 				Coordinate position = Locator.getCoordinate();
 				double heading = Locator.getHeading();
-				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), lat, lon);
+				double bearing = Coordinate.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
 				double cacheBearing = -(bearing - heading);
 				setDistanceString(UnitFormatter.DistanceString(distance));
 

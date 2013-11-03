@@ -45,6 +45,8 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.Color;
@@ -829,9 +831,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			{
 				Coordinate cache = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
 						.getSelectedCache().Pos;
-				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), cache.getLatitude(),
-						cache.getLongitude());
-				info.setBearing((float) (bearing - Locator.getHeading() - arrowHeading), Locator.getHeading());
+				float[] result = new float[4];
+				MathUtils.computeDistanceAndBearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(),
+						cache.getLatitude(), cache.getLongitude(), result);
+				info.setBearing((float) (result[1] - Locator.getHeading() - arrowHeading), Locator.getHeading());
 			}
 		}
 	}
@@ -1039,7 +1042,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 			if (GlobalCore.getSelectedCoord() != null)
 			{
-				info.setDistance(GlobalCore.getSelectedCoord().Distance());
+				info.setDistance(GlobalCore.getSelectedCoord().Distance(CalculationType.ACCURATE));
 			}
 			// Logger.DEBUG("Map.SetDistance=" + GlobalCore.getSelectedCoord().Distance());
 		}
@@ -1054,9 +1057,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			float distance = -1;
 			if (GlobalCore.getSelectedCache() != null && position.isValid())
 			{
-				if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos);
+				if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos,
+						CalculationType.ACCURATE);
 				else
-					distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos);
+					distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos, CalculationType.ACCURATE);
 			}
 			int setZoomTo = zoomBtn.getMinZoom();
 

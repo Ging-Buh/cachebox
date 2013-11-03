@@ -15,6 +15,7 @@ import CB_UI.GL_UI.SoundCache;
 import CB_UI.GL_UI.SoundCache.Sounds;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 
 /**
@@ -76,7 +77,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 					{
 						if (GlobalCore.getSelectedCache() != null)
 						{
-							float distance = GlobalCore.getSelectedCache().Distance(false);
+							float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 							if (GlobalCore.getSelectedWaypoint() != null)
 							{
 								distance = GlobalCore.getSelectedWaypoint().Distance();
@@ -156,7 +157,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 										if (cache.Found) continue;
 										if (cache.ImTheOwner()) continue;
 										if (cache.Type == CacheTypes.Mystery) if (!cache.CorrectedCoordiantesOrMysterySolved()) continue;
-										if (cache.Distance(true) < GlobalCore.NearestCache().Distance(true))
+										if (cache.Distance(CalculationType.FAST, true) < GlobalCore.NearestCache().Distance(
+												CalculationType.FAST, true))
 										{
 											resort = true;
 											break;

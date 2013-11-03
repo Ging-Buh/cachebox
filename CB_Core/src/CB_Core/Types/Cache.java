@@ -14,6 +14,8 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Util.FileIO;
 
@@ -97,6 +99,48 @@ public class Cache implements Comparable<Cache>, Serializable
 	public double Longitude()
 	{
 		return Pos.getLongitude();
+	}
+
+	/**
+	 * Breitengrad
+	 */
+	public double Latitude(Boolean useFinal)
+	{
+		Waypoint waypoint = null;
+		if (useFinal) waypoint = this.GetFinalWaypoint();
+		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
+		// Diszanzberechnung vom Final aus gemacht werden
+		// If a mystery has a final waypoint, the distance will be calculated to
+		// the final not the the cache coordinates
+		Coordinate toPos = Pos;
+		if (waypoint != null)
+		{
+			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			// nur sinnvolles Final, sonst vom Cache
+			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
+		}
+		return toPos.getLatitude();
+	}
+
+	/**
+	 * Längengrad
+	 */
+	public double Longitude(Boolean useFinal)
+	{
+		Waypoint waypoint = null;
+		if (useFinal) waypoint = this.GetFinalWaypoint();
+		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
+		// Diszanzberechnung vom Final aus gemacht werden
+		// If a mystery has a final waypoint, the distance will be calculated to
+		// the final not the the cache coordinates
+		Coordinate toPos = Pos;
+		if (waypoint != null)
+		{
+			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			// nur sinnvolles Final, sonst vom Cache
+			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
+		}
+		return toPos.getLongitude();
 	}
 
 	/**
@@ -436,7 +480,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	/**
 	 * @return Entfernung zur aktUserPos als Float
 	 */
-	public float CachedDistance()
+	public float CachedDistance(CalculationType type)
 	{
 		if (cachedDistance != 0)
 		{
@@ -444,7 +488,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 		else
 		{
-			return Distance(true);
+			return Distance(type, true);
 		}
 	}
 
@@ -590,12 +634,12 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * 
 	 * @return Entfernung zur übergebenen User Position als Float
 	 */
-	public float Distance(boolean useFinal)
+	public float Distance(CalculationType type, boolean useFinal)
 	{
-		return Distance(useFinal, Locator.getCoordinate());
+		return Distance(type, useFinal, Locator.getCoordinate());
 	}
 
-	public float Distance(boolean useFinal, Coordinate fromPos)
+	public float Distance(CalculationType type, boolean useFinal, Coordinate fromPos)
 	{
 		Waypoint waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
@@ -611,7 +655,8 @@ public class Cache implements Comparable<Cache>, Serializable
 			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
 		}
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
+		MathUtils.computeDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(),
+				dist);
 		cachedDistance = dist[0];
 		return cachedDistance;
 	}

@@ -35,6 +35,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
 
@@ -677,14 +678,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		if (lblOwnCoords != null) lblOwnCoords.setText(position.FormatCoordinate());
 
-		Coordinate dest = aktCache.Pos;
-		float distance = aktCache.Distance(false);
-		if (aktWaypoint != null)
-		{
-			dest = aktWaypoint.Pos;
-			distance = aktWaypoint.Distance();
-		}
-		double bearing = Coordinate.Bearing(position, dest);
+		Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.Pos;
+
+		float result[] = new float[4];
+
+		MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(),
+				dest.getLongitude(), result);
+
+		float distance = result[0];
+		float bearing = result[1];
 
 		if (lblBearing != null)
 		{
@@ -750,12 +752,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			Coordinate position = Locator.getCoordinate();
 			heading = Locator.getHeading();
 
-			Coordinate dest = aktCache.Pos;
-			if (aktWaypoint != null)
-			{
-				dest = aktWaypoint.Pos;
-			}
-			double bearing = Coordinate.Bearing(position, dest);
+			Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.Pos;
+
+			float result[] = new float[4];
+
+			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(),
+					dest.getLatitude(), dest.getLongitude(), result);
+
+			float bearing = result[1];
+
 			double relativeBearing = bearing - heading;
 			arrow.setRotate((float) -relativeBearing);
 			scale.setRotate((float) heading);

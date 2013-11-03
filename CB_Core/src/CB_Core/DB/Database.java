@@ -17,7 +17,6 @@ import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Coordinate;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core;
 import CB_Utils.Log.Logger;
@@ -641,21 +640,21 @@ public abstract class Database extends Database_Core
 		return cache.hint;
 	}
 
-	public float Distance(Cache cache, Coordinate fromPos)
-	{
-		// Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker :
-		// Global.LastValidPosition;
-		Waypoint waypoint = cache.GetFinalWaypoint();
-		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
-		// Diszanzberechnung vom Final aus gemacht werden
-		// If a mystery has a final waypoint, the distance will be calculated to
-		// the final not the the cache coordinates
-		Coordinate toPos = cache.Pos;
-		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
-		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
-		return (float) dist[0];
-	}
+	// public float Distance(Cache cache, Coordinate fromPos)
+	// {
+	// // Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker :
+	// // Global.LastValidPosition;
+	// Waypoint waypoint = cache.GetFinalWaypoint();
+	// // Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
+	// // Diszanzberechnung vom Final aus gemacht werden
+	// // If a mystery has a final waypoint, the distance will be calculated to
+	// // the final not the the cache coordinates
+	// Coordinate toPos = cache.Pos;
+	// if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+	// float[] dist = new float[4];
+	// Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
+	// return (float) dist[0];
+	// }
 
 	/**
 	 * @return Set To GlobalCore.Categories

@@ -88,6 +88,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
@@ -732,7 +733,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		if (GlobalCore.getSelectedCache() != null)
 		{
-			float distance = GlobalCore.getSelectedCache().Distance(false);
+			float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 			if (GlobalCore.getSelectedWaypoint() != null)
 			{
 				distance = GlobalCore.getSelectedWaypoint().Distance();

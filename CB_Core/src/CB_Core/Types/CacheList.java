@@ -5,6 +5,7 @@ import java.util.Collections;
 import CB_Core.Enums.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.MoveableList;
 
 public class CacheList extends MoveableList<Cache>
@@ -64,7 +65,7 @@ public class CacheList extends MoveableList<Cache>
 		{
 			for (Cache cache : this)
 			{
-				cache.Distance(true);
+				cache.Distance(CalculationType.FAST, true);
 			}
 		}
 		else
@@ -83,7 +84,7 @@ public class CacheList extends MoveableList<Cache>
 			}
 			for (Cache cache : this)
 			{
-				cache.Distance(true, fromPos);
+				cache.Distance(CalculationType.FAST, true, fromPos);
 			}
 		}
 

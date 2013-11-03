@@ -6,7 +6,7 @@ public class UTMConvert
 {
 
 	final double eccSquared = 0.00669438; // eccentricity (0.081819191 ^ 2) WGS84
-	final double dEquatorialRadius = 6378137.0; // WGS84 (note above: varies from 6,356.750 km to 6,378.135 km)
+
 	final double dScaleFactor = 0.9996; // scale factor, used as k0
 
 	// / <summary>
@@ -55,11 +55,11 @@ public class UTMConvert
 
 		double eccPrimeSquared = eccSquared / (1 - eccSquared);
 
-		double N = dEquatorialRadius / Math.sqrt(1 - eccSquared * Math.sin(dLatRad) * Math.sin(dLatRad));
+		double N = MathUtils.WGS84_MAJOR_AXIS / Math.sqrt(1 - eccSquared * Math.sin(dLatRad) * Math.sin(dLatRad));
 		double T = Math.tan(dLatRad) * Math.tan(dLatRad);
 		double C = eccPrimeSquared * Math.cos(dLatRad) * Math.cos(dLatRad);
 		double A = Math.cos(dLatRad) * (dLonRad - dCentralMeridian_Rad);
-		double M = dEquatorialRadius
+		double M = MathUtils.WGS84_MAJOR_AXIS
 				* ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared / 256) * dLatRad
 						- (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * eccSquared * eccSquared * eccSquared / 1024)
 						* Math.sin(2 * dLatRad) + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared * eccSquared * eccSquared / 1024)
@@ -119,8 +119,8 @@ public class UTMConvert
 
 		double M = y / dScaleFactor;
 		double mu = M
-				/ (dEquatorialRadius * (1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared
-						/ 256));
+				/ (MathUtils.WGS84_MAJOR_AXIS * (1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared
+						* eccSquared / 256));
 
 		double e1 = (1 - Math.sqrt(1 - eccSquared)) / (1 + Math.sqrt(1 - eccSquared));
 		// phi in radians
@@ -130,10 +130,10 @@ public class UTMConvert
 		// convert to degrees
 		// double phi1 = phi1Rad * dCvtRad2Deg;
 
-		double N1 = dEquatorialRadius / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad));
+		double N1 = MathUtils.WGS84_MAJOR_AXIS / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad));
 		double T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
 		double C1 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad);
-		double R1 = dEquatorialRadius * (1 - eccSquared) / Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5);
+		double R1 = MathUtils.WGS84_MAJOR_AXIS * (1 - eccSquared) / Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5);
 		double D = x / (N1 * dScaleFactor);
 
 		// phi in radians

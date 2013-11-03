@@ -1,10 +1,12 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
+import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.ParentInfo;
@@ -12,6 +14,8 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.Gdx;
@@ -122,9 +126,20 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		{
 			Coordinate position = Locator.getCoordinate();
 
-			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), mCache.Latitude(), mCache.Longitude());
-			double cacheBearing = -(bearing - heading);
-			setDistanceString(UnitFormatter.DistanceString(mCache.Distance(true)));
+			Waypoint FinalWp = mCache.GetFinalWaypoint();
+
+			Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.GetFinalWaypoint().Pos;
+
+			CalculationType calcType = mCache.Id == GlobalCore.getSelectedCache().Id ? CalculationType.ACCURATE : CalculationType.FAST;
+
+			float result[] = new float[4];
+
+			MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(),
+					Final.getLongitude(), result);
+
+			double cacheBearing = -(result[2] - heading);
+			mCache.cachedDistance = result[0];
+			setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
 
 			arrow.setRotation((float) cacheBearing);
 			if (arrow.getColor() == DISABLE_COLOR)
