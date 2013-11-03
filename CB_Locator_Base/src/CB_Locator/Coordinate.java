@@ -3,6 +3,9 @@ package CB_Locator;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import CB_Utils.MathUtils;
+import CB_Utils.Converter.UTMConvert;
+
 /**
  * @author Longri_2
  */
@@ -294,12 +297,12 @@ public class Coordinate implements Serializable
 		/*
 		 * if (UnitFormatter.ImperialUnits) c = c / 0.9144f;
 		 */
-		double a = (Latitude >= 0) ? (90 - Latitude) * Math.PI / 180 : Latitude * Math.PI / 180;
+		double a = (Latitude >= 0) ? (90 - Latitude) * MathUtils.DEG_RAD : Latitude * MathUtils.DEG_RAD;
 
-		double q = (360 - Direction) * Math.PI / 180.0;
+		double q = (360 - Direction) * MathUtils.DEG_RAD;
 		double b = Math.acos(Math.cos(q) * Math.sin(a) * Math.sin(c) + Math.cos(a) * Math.cos(c));
 
-		result.setLatitude(90 - (b * 180 / Math.PI));
+		result.setLatitude(90 - (b * MathUtils.RAD_DEG));
 		if (result.getLatitude() > 90) result.setLatitude(result.getLatitude() - 180);
 
 		double g = 0;
@@ -315,7 +318,7 @@ public class Coordinate implements Serializable
 
 		if (Direction <= 180) g = -g;
 
-		result.setLongitude(Longitude - g * 180 / Math.PI);
+		result.setLongitude(Longitude - g * MathUtils.RAD_DEG);
 
 		result.Valid = true;
 		return result;
@@ -407,10 +410,10 @@ public class Coordinate implements Serializable
 
 		int MAXITERS = 20;
 		// Convert lat/long to radians
-		lat1 *= Math.PI / 180.0;
-		lat2 *= Math.PI / 180.0;
-		lon1 *= Math.PI / 180.0;
-		lon2 *= Math.PI / 180.0;
+		lat1 *= MathUtils.DEG_RAD;
+		lat2 *= MathUtils.DEG_RAD;
+		lon1 *= MathUtils.DEG_RAD;
+		lon2 *= MathUtils.DEG_RAD;
 
 		double a = 6378137.0; // WGS84 major axis
 		double b = 6356752.3142; // WGS84 semi-major axis
@@ -482,12 +485,12 @@ public class Coordinate implements Serializable
 		if (results.length > 1)
 		{
 			float initialBearing = (float) Math.atan2(cosU2 * sinLambda, cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
-			initialBearing *= 180.0 / Math.PI;
+			initialBearing *= MathUtils.RAD_DEG;
 			results[1] = initialBearing;
 			if (results.length > 2)
 			{
 				float finalBearing = (float) Math.atan2(cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda);
-				finalBearing *= 180.0 / Math.PI;
+				finalBearing *= MathUtils.RAD_DEG;
 				results[2] = finalBearing;
 			}
 		}

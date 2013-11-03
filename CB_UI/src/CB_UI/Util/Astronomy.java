@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import CB_Locator.Coordinate;
+import CB_Utils.MathUtils;
 
 public class Astronomy
 {
@@ -75,7 +76,7 @@ public class Astronomy
 
 		double sinlon = Math.sin(eclipticCoordinate.getLongitude() / 180.0 * Math.PI);
 		Coordinate equatorial = new Coordinate();
-		equatorial.setLongitude((180.0 / Math.PI * Math.atan2(
+		equatorial.setLongitude((MathUtils.RAD_DEG * Math.atan2(
 				(sinlon * coseps - Math.tan(eclipticCoordinate.getLatitude() / 180.0 * Math.PI) * sineps),
 				Math.cos(eclipticCoordinate.getLongitude() / 180.0 * Math.PI))) % 360); // rektaszension (alpha)
 		equatorial.setLatitude(180.0
@@ -98,10 +99,9 @@ public class Astronomy
 		double azimutNenner = Math.cos(tau) * Math.sin(phi) - Math.tan(equatorialPosition.getLatitude() / 180.0 * Math.PI)
 				* Math.cos(observerPosition.getLatitude() / 180.0 * Math.PI);
 		float azimut = (float) Math.atan(Math.sin((theta - equatorialPosition.getLongitude()) / 180.0 * Math.PI) / azimutNenner);
-		azimut = (float) (azimut * 180.0f / Math.PI);
+		azimut = (float) (azimut * MathUtils.RAD_DEG);
 		if (azimutNenner < 0) azimut += 180.0f;
-		double h = 180
-				/ Math.PI
+		double h = MathUtils.RAD_DEG
 				* Math.asin(Math.cos(equatorialPosition.getLatitude() / 180.0 * Math.PI) * Math.cos(tau) * Math.cos(phi)
 						+ Math.sin(equatorialPosition.getLatitude() / 180.0 * Math.PI) * Math.sin(phi));
 		// null = Sueden auf Null = Norden umrechnen
@@ -113,7 +113,7 @@ public class Astronomy
 	public static Coordinate EclipticCoordinatesSun(double julianDate)
 	{
 		double T = (julianDate - 2451545) / 36525.0;
-		double k = Math.PI / 180.0;
+		double k = MathUtils.DEG_RAD;
 
 		// mean anomaly, degree
 		double M = 357.52910 + 35999.05030 * T - 0.0001559 * T * T - 0.00000048 * T * T * T;
@@ -133,40 +133,41 @@ public class Astronomy
 	// // ignores the time difference between juliandate and TDT, which is something like 1 minute
 	public static Coordinate EclipticCoordinatesMoon(double julianDate)
 	{
-		final double DEG = Math.PI / 180.0;
-		final double RAD = 180.0 / Math.PI;
+		// final double DEG = MathUtils.DEG_RAD;
+		// final double RAD = MathUtils.RAD_DEG;
 
-		double sunAnomalyMean = 360.0 * DEG / 365.242191 * (julianDate - 2447891.5) + 279.403303 * DEG - 282.768422 * DEG;
+		double sunAnomalyMean = 360.0 * MathUtils.DEG_RAD / 365.242191 * (julianDate - 2447891.5) + 279.403303 * MathUtils.DEG_RAD
+				- 282.768422 * MathUtils.DEG_RAD;
 		double D = julianDate - 2447891.5;
 
 		// Mean Moon orbit elements as of 1990
-		double l0 = 318.351648 * DEG;
-		double P0 = 36.340410 * DEG;
-		double N0 = 318.510107 * DEG;
-		double i = 5.145396 * DEG;
+		double l0 = 318.351648 * MathUtils.DEG_RAD;
+		double P0 = 36.340410 * MathUtils.DEG_RAD;
+		double N0 = 318.510107 * MathUtils.DEG_RAD;
+		double i = 5.145396 * MathUtils.DEG_RAD;
 
-		double l = 13.1763966 * DEG * D + l0;
-		double MMoon = l - 0.1114041 * DEG * D - P0; // Moon's mean anomaly M
-		double N = N0 - 0.0529539 * DEG * D; // Moon's mean ascending node longitude
+		double l = 13.1763966 * MathUtils.DEG_RAD * D + l0;
+		double MMoon = l - 0.1114041 * MathUtils.DEG_RAD * D - P0; // Moon's mean anomaly M
+		double N = N0 - 0.0529539 * MathUtils.DEG_RAD * D; // Moon's mean ascending node longitude
 
 		double sunlon = EclipticCoordinatesSun(julianDate).getLongitude();
 		double C = l - sunlon;
-		double Ev = 1.2739 * DEG * Math.sin(2 * C - MMoon);
-		double Ae = 0.1858 * DEG * Math.sin(sunAnomalyMean);
-		double A3 = 0.37 * DEG * Math.sin(sunAnomalyMean);
+		double Ev = 1.2739 * MathUtils.DEG_RAD * Math.sin(2 * C - MMoon);
+		double Ae = 0.1858 * MathUtils.DEG_RAD * Math.sin(sunAnomalyMean);
+		double A3 = 0.37 * MathUtils.DEG_RAD * Math.sin(sunAnomalyMean);
 
 		double MMoon2 = MMoon + Ev - Ae - A3; // corrected Moon anomaly
-		double Ec = 6.2886 * DEG * Math.sin(MMoon2); // equation of centre
-		double A4 = 0.214 * DEG * Math.sin(2 * MMoon2);
+		double Ec = 6.2886 * MathUtils.DEG_RAD * Math.sin(MMoon2); // equation of centre
+		double A4 = 0.214 * MathUtils.DEG_RAD * Math.sin(2 * MMoon2);
 		double l2 = l + Ev + Ec - Ae + A4; // corrected Moon's longitude
-		double V = 0.6583 * DEG * Math.sin(2 * (l2 - sunlon));
+		double V = 0.6583 * MathUtils.DEG_RAD * Math.sin(2 * (l2 - sunlon));
 
 		double l3 = l2 + V; // true orbital longitude;
-		double N2 = N - 0.16 * DEG * Math.sin(sunAnomalyMean);
+		double N2 = N - 0.16 * MathUtils.DEG_RAD * Math.sin(sunAnomalyMean);
 
 		Coordinate result = new Coordinate();
-		result.setLongitude(((N2 + Math.atan2(Math.sin(l3 - N2) * Math.cos(i), Math.cos(l3 - N2))) * RAD));
-		result.setLatitude(Math.asin(Math.sin(l3 - N2) * Math.sin(i)) * RAD);
+		result.setLongitude(((N2 + Math.atan2(Math.sin(l3 - N2) * Math.cos(i), Math.cos(l3 - N2))) * MathUtils.RAD_DEG));
+		result.setLatitude(Math.asin(Math.sin(l3 - N2) * Math.sin(i)) * MathUtils.RAD_DEG);
 		return result;
 
 		// moonCoor.lonDec = ((N2 + Math.atan2(Math.sin(l3 - N2) * Math.cos(i), Math.cos(l3 - N2))) * RAD) % 360;

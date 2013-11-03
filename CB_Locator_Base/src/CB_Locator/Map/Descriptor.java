@@ -18,6 +18,7 @@
 
 package CB_Locator.Map;
 
+import CB_Utils.MathUtils;
 import CB_Utils.Math.PointD;
 
 public class Descriptor implements Comparable<Descriptor>
@@ -150,7 +151,7 @@ public class Descriptor implements Comparable<Descriptor>
 	 */
 	public static double LatitudeToTileY(double zoom, double latitude)
 	{
-		double latRad = latitude * Math.PI / 180.0;
+		double latRad = latitude * MathUtils.DEG_RAD;
 
 		return (1 - Math.log(Math.tan(latRad) + (1.0 / Math.cos(latRad))) / Math.PI) / 2 * Math.pow(2, zoom);
 	}
@@ -175,7 +176,7 @@ public class Descriptor implements Comparable<Descriptor>
 		double yNom = 2 * Math.exp(-Math.PI * (-1 + Math.pow(2, 1 - zoom) * y));
 		double yDen = Math.exp(-2 * Math.PI * (-1 + Math.pow(2, 1 - zoom) * y)) + 1;
 
-		return Math.atan2(xNom / xDen, yNom / yDen) * 180.0 / Math.PI;
+		return Math.atan2(xNom / xDen, yNom / yDen) * MathUtils.RAD_DEG;
 	}
 
 	/**

@@ -327,7 +327,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 											}
 											catch (Exception e)
 											{
-												 
+
 												e.printStackTrace();
 											}
 
@@ -335,12 +335,12 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 										}
 										catch (ClientProtocolException e)
 										{
-											 
+
 											e.printStackTrace();
 										}
 										catch (IOException e)
 										{
-											 
+
 											e.printStackTrace();
 										}
 										RouteOverlay.RoutesChanged();

@@ -34,6 +34,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
+import CB_Utils.MathUtils;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
 
@@ -805,8 +806,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			if (azymuthMoon.getLatitude() >= 0)
 			{
 
-				int x = (int) (centerX + (radius - iconSize / 2) * Math.sin((azymuthMoon.getLongitude() - heading) * Math.PI / 180.0));
-				int y = (int) (centerY + (radius - iconSize / 2) * Math.cos((azymuthMoon.getLongitude() - heading) * Math.PI / 180.0));
+				int x = (int) (centerX + (radius - iconSize / 2) * Math.sin((azymuthMoon.getLongitude() - heading) * MathUtils.DEG_RAD));
+				int y = (int) (centerY + (radius - iconSize / 2) * Math.cos((azymuthMoon.getLongitude() - heading) * MathUtils.DEG_RAD));
 				Moon.setPos(x - iconSize / 2, y - iconSize / 2);
 				Moon.setVisible();
 			}
@@ -824,8 +825,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 			if (azymuthSun.getLatitude() >= 0)
 			{
-				int x = (int) (centerX + (radius - iconSize / 2) * Math.sin((azymuthSun.getLongitude() - heading) * Math.PI / 180.0));
-				int y = (int) (centerY + (radius - iconSize / 2) * Math.cos((azymuthSun.getLongitude() - heading) * Math.PI / 180.0));
+				int x = (int) (centerX + (radius - iconSize / 2) * Math.sin((azymuthSun.getLongitude() - heading) * MathUtils.DEG_RAD));
+				int y = (int) (centerY + (radius - iconSize / 2) * Math.cos((azymuthSun.getLongitude() - heading) * MathUtils.DEG_RAD));
 				Sun.setPos(x - iconSize / 2, y - iconSize / 2);
 				Sun.setVisible();
 			}

@@ -2,6 +2,7 @@ package CB_UI_Base.GL_UI.utils;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.MathUtils;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -28,14 +29,12 @@ public class GradiantFilledRectangle extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 
@@ -57,7 +56,7 @@ public class GradiantFilledRectangle extends CB_View_Base
 
 				// TODO handle angle over 90°
 
-				double alpha = (gradiant.getDirection() * Math.PI / 180);
+				double alpha = (gradiant.getDirection() * MathUtils.DEG_RAD);
 
 				float x1 = (float) (width * Math.cos(alpha));
 				float x2 = (float) (height * Math.sin(alpha));

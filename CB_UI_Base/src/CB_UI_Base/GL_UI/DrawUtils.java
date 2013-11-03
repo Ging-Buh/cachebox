@@ -1,5 +1,7 @@
 package CB_UI_Base.GL_UI;
 
+import CB_Utils.MathUtils;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -42,13 +44,13 @@ public class DrawUtils
 		float SpriteHalfY = sprite.getHeight() / 2;
 
 		sprite.setOrigin(SpriteHalfX, SpriteHalfY);
-		sprite.setRotation((float) (angle * 180 / Math.PI) - 90); // Grad-basiert, y-Achse 0 Grad, gegen Uhrzeigersinn
+		sprite.setRotation((float) (angle * MathUtils.RAD_DEG) - 90); // Grad-basiert, y-Achse 0 Grad, gegen Uhrzeigersinn
 
 		float SpriteEndHalfX = spriteEnd.getWidth() / 2;
 		float SpriteEndHalfY = spriteEnd.getHeight() / 2;
 
 		spriteEnd.setOrigin(SpriteEndHalfX, SpriteEndHalfY);
-		spriteEnd.setRotation((float) (angle * 180 / Math.PI) - 90); // Grad-basiert, y-Achse 0 Grad, gegen Uhrzeigersinn
+		spriteEnd.setRotation((float) (angle * MathUtils.RAD_DEG) - 90); // Grad-basiert, y-Achse 0 Grad, gegen Uhrzeigersinn
 
 		float h = sprite.getHeight() * overlap;
 

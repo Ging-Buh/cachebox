@@ -530,7 +530,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 	}

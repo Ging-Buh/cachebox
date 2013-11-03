@@ -26,6 +26,7 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.MathUtils;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Math.PointD;
@@ -495,7 +496,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			camera.up.y = 1;
 			camera.up.z = 0;
 			camera.rotate(-mapHeading, 0, 0, 1);
-			double angle = mapHeading * Math.PI / 180;
+			double angle = mapHeading * MathUtils.DEG_RAD;
 			dxr = (float) (Math.cos(angle) * dx + Math.sin(angle) * dy);
 			dyr = (float) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
 		}
@@ -788,7 +789,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		else
 		{
-			ang1 = (float) ((Math.atan(opp / adj)) * 180 / Math.PI);
+			ang1 = (float) ((Math.atan(opp / adj)) * MathUtils.RAD_DEG);
 			// the angle calculated will range from +90 degrees to -90 degrees
 			// so the angle needs to be adjusted if point x1 is less or greater then x2
 			if (x1 >= x2)
@@ -1500,7 +1501,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				// screenCenterW.y = camera.position.y;
 				synchronized (screenCenterT)
 				{
-					double angle = mapHeading * Math.PI / 180;
+					double angle = mapHeading * MathUtils.DEG_RAD;
 					int dx = (lastPoint.x - x);
 					int dy = (y - lastPoint.y);
 					int dxr = (int) (Math.cos(angle) * dx + Math.sin(angle) * dy);
