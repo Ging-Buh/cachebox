@@ -189,7 +189,7 @@ public class MathUtils
 		lat2 *= DEG_RAD;
 		lon2 *= DEG_RAD;
 
-		results[0] = (float) (WGS84_MAJOR_AXIS * Math.acos(Math.sin((float) lat1) * Math.sin((float) lat2) + Math.cos((float) lat1)
+		results[0] = (float) ((WGS84_MAJOR_AXIS) * Math.acos(Math.sin((float) lat1) * Math.sin((float) lat2) + Math.cos((float) lat1)
 				* Math.cos((float) lat2) * Math.cos((float) (lon2 - lon1))));
 
 		if (results.length > 1)

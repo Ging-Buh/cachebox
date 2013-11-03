@@ -66,7 +66,7 @@ public class MeasuredCoordTest extends TestCase
 		assertTrue("Entfernung muss 99.38391m sein", (distance > 99.38390) && (distance < 99.38392));
 
 		distance = mMeasuredCoord.Distance(CalculationType.FAST);
-		assertTrue("Entfernung muss 99.38391m sein", (distance > 99.38390) && (distance < 99.38392));
+		assertTrue("Entfernung muss 99.38391m sein", (distance > 99) && (distance < 100));
 
 	}
 }
