@@ -6,5 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Core"/>
+	<classpathentry kind="lib" path="lib/gdx.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
