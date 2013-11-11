@@ -56,9 +56,11 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
@@ -81,6 +83,8 @@ public class GL implements ApplicationListener, InputProcessor
 	public static GL_Listener_Interface listenerInterface;
 	public static GL that;
 	public static SpriteBatch batch;
+	public static PolygonSpriteBatch polygonBatch;
+	public static ShapeRenderer shapeRenderer;
 	public static OrthographicCamera camera;
 	private static Timer myTimer;
 	private static long timerValue;
@@ -993,6 +997,16 @@ public class GL implements ApplicationListener, InputProcessor
 			{
 				batch = new SpriteBatch(SPRITE_BATCH_BUFFER);
 			}
+		}
+
+		if (polygonBatch == null)
+		{
+			polygonBatch = new PolygonSpriteBatch();
+		}
+
+		if (shapeRenderer == null)
+		{
+			shapeRenderer = new ShapeRenderer();
 		}
 
 		if (modelBatch == null)
