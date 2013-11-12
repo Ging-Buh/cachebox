@@ -1126,7 +1126,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			getIntent().removeExtra("GcCode");
 			getIntent().removeExtra("GpxPath");
 		}
-
+		GL.that.RestartRender();
 	}
 
 	@Override

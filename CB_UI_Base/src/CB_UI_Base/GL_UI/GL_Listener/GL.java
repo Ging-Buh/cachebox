@@ -1812,6 +1812,7 @@ public class GL implements ApplicationListener, InputProcessor
 		listenerInterface.RenderContinous();
 		stopRender = false;
 		renderOnce("Restart Render");
+		setIsInitial();
 	}
 
 	public void clearRenderViews()
