@@ -73,7 +73,7 @@ public abstract class Global
 		if (isTestVersionCheked) return isTestVersion;
 		if (Instance == null) return false;
 
-		isTestVersion = Instance.getVersionPrefix().contains("Test");
+		isTestVersion = Instance.getVersionPrefix().contains("Test") || Instance.getVersionPrefix().contains("test");
 		isTestVersionCheked = true;
 		return isTestVersion;
 	}

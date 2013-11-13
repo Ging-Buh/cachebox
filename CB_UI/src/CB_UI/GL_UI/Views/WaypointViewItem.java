@@ -37,7 +37,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 	private CB_RectF ArrowRec;
 	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
-	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
+	private BitmapFontCache distance;
 	private Sprite mIconSprite;
 	private float mIconSize = 0;
 	private float mMargin = 0;
@@ -94,7 +94,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		this.mCache = cache;
 		this.mWaypoint = waypoint;
 
+		distance = new BitmapFontCache(Fonts.getSmall());
 		distance.setColor(Fonts.getFontColor());
+		distance.setText("", 0, 0);
 
 		if (waypoint == null) // this Item is the Cache
 		{
@@ -150,6 +152,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
 		float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
 		distance.setPosition(x, 0);
+
 	}
 
 	private void setActLocator()
@@ -292,6 +295,10 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			mNameCache = new BitmapFontCache(Fonts.getNormal());
 			mDescCache = new BitmapFontCache(Fonts.getBubbleNormal());
 			mCoordCache = new BitmapFontCache(Fonts.getBubbleNormal());
+
+			mNameCache.setText("", 0, 0);
+			mDescCache.setText("", 0, 0);
+			mCoordCache.setText("", 0, 0);
 
 			mNameCache.setColor(Fonts.getFontColor());
 			mDescCache.setColor(Fonts.getFontColor());

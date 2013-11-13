@@ -34,6 +34,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		CachedScaleDrawable = null;
 		fontCache = new BitmapFontCache(Fonts.getNormal());
 		fontCache.setColor(Fonts.getFontColor());
+		fontCache.setText("", 0, 0);
 		invalidateTextureEventList.Add(this);
 	}
 
@@ -136,6 +137,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		{
 			fontCache = new BitmapFontCache(Fonts.getNormal());
 			fontCache.setColor(Fonts.getFontColor());
+			fontCache.setText("", 0, 0);
 		}
 
 		try
