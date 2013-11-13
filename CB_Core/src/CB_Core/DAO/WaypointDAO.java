@@ -19,7 +19,7 @@ public class WaypointDAO
 	public void WriteToDatabase(Waypoint WP)
 	{
 		int newCheckSum = createCheckSum(WP);
-		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
+		Replication.WaypointNew(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
 		Parameters args = new Parameters();
 		args.put("gccode", WP.GcCode);
 		args.put("cacheid", WP.CacheId);
@@ -194,7 +194,7 @@ public class WaypointDAO
 	// 1 Start-Waypoint hat
 	public void ResetStartWaypoint(Cache cache, Waypoint except)
 	{
-		 
+
 		for (Waypoint wp : cache.waypoints)
 		{
 			if (except == wp) continue;

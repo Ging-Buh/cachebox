@@ -1,5 +1,7 @@
 package CB_RpcCore.ClientCB;
 
+import CB_Core.Types.ExportList;
+import CB_RpcCore.Functions.RpcMessage_ExportChangesToServer;
 import CB_RpcCore.Functions.RpcMessage_GetExportList;
 import cb_rpc.Rpc_Client;
 import cb_rpc.Functions.RpcAnswer;
@@ -19,5 +21,19 @@ public class RpcClientCB extends Rpc_Client
 		// return (RpcAnswer_GetExportList) result;
 		// }
 		return result;
+	}
+
+	public RpcAnswer ExportChangesToServer(ExportList exportList)
+	{
+		RpcMessage_ExportChangesToServer message = new RpcMessage_ExportChangesToServer(exportList);
+		RpcAnswer result = sendRpcToServer(message);
+		if (result == null)
+		{
+			return null;
+		}
+		else
+		{
+			return result;
+		}
 	}
 }

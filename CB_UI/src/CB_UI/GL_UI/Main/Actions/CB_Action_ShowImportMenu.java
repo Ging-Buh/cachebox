@@ -2,6 +2,7 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.Import;
+import CB_UI.GL_UI.Activitys.Import_CBServer;
 import CB_UI.GL_UI.Activitys.SearchOverNameOwnerGcCode;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -205,7 +206,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 
 	private void import_CBS()
 	{
-		Import imp = new Import(MenuID.MI_IMPORT_CBS);
+		Import_CBServer imp = new Import_CBServer(MenuID.MI_IMPORT_CBS);
 		imp.show();
 	}
 

@@ -471,21 +471,40 @@ public abstract class Database extends Database_Core
 	}
 
 	// Methodes für Cache
-
 	public static String GetNote(Cache cache)
+	{
+		String resultString = GetNote(cache.Id);
+		cache.noteCheckSum = (int) SDBM_Hash.sdbm(resultString);
+		return resultString;
+	}
+
+	public static String GetNote(long cacheId)
 	{
 		String resultString = "";
 		CoreCursor c = Database.Data.rawQuery("select Notes from Caches where Id=?", new String[]
-			{ String.valueOf(cache.Id) });
+			{ String.valueOf(cacheId) });
 		c.moveToFirst();
 		while (c.isAfterLast() == false)
 		{
 			resultString = c.getString(0);
 			break;
 		}
-		;
-		cache.noteCheckSum = (int) SDBM_Hash.sdbm(resultString);
 		return resultString;
+	}
+
+	/**
+	 * geänderte Note nur in die DB schreiben
+	 * 
+	 * @param cacheId
+	 * @param value
+	 */
+	public static void SetNote(long cacheId, String value)
+	{
+		Parameters args = new Parameters();
+		args.put("Notes", value);
+		args.put("HasUserData", true);
+
+		Database.Data.update("Caches", args, "id=" + cacheId, null);
 	}
 
 	public static void SetNote(Cache cache, String value)
@@ -495,36 +514,52 @@ public abstract class Database extends Database_Core
 		Replication.NoteChanged(cache.Id, cache.noteCheckSum, newNoteCheckSum);
 		if (newNoteCheckSum != cache.noteCheckSum)
 		{
-			Parameters args = new Parameters();
-			args.put("Notes", value);
-			args.put("HasUserData", true);
-
-			Database.Data.update("Caches", args, "id=" + cache.Id, null);
+			SetNote(cache.Id, value);
 			cache.noteCheckSum = newNoteCheckSum;
 		}
 	}
 
 	public static String GetSolver(Cache cache)
 	{
+		String resultString = GetSolver(cache.Id);
+		cache.solverCheckSum = (int) SDBM_Hash.sdbm(resultString);
+		return resultString;
+	}
+
+	public static String GetSolver(long cacheId)
+	{
 		try
 		{
 			String resultString = "";
 			CoreCursor c = Database.Data.rawQuery("select Solver from Caches where Id=?", new String[]
-				{ String.valueOf(cache.Id) });
+				{ String.valueOf(cacheId) });
 			c.moveToFirst();
 			while (c.isAfterLast() == false)
 			{
 				resultString = c.getString(0);
 				break;
 			}
-			;
-			cache.noteCheckSum = (int) SDBM_Hash.sdbm(resultString);
 			return resultString;
 		}
 		catch (Exception ex)
 		{
 			return "";
 		}
+	}
+
+	/**
+	 * geänderten Solver nur in die DB schreiben
+	 * 
+	 * @param cacheId
+	 * @param value
+	 */
+	public static void SetSolver(long cacheId, String value)
+	{
+		Parameters args = new Parameters();
+		args.put("Solver", value);
+		args.put("HasUserData", true);
+
+		Database.Data.update("Caches", args, "id=" + cacheId, null);
 	}
 
 	public static void SetSolver(Cache cache, String value)
@@ -534,11 +569,7 @@ public abstract class Database extends Database_Core
 		Replication.SolverChanged(cache.Id, cache.solverCheckSum, newSolverCheckSum);
 		if (newSolverCheckSum != cache.solverCheckSum)
 		{
-			Parameters args = new Parameters();
-			args.put("Solver", value);
-			args.put("HasUserData", true);
-
-			Database.Data.update("Caches", args, "id=" + cache.Id, null);
+			SetSolver(cache.Id, value);
 			cache.solverCheckSum = newSolverCheckSum;
 		}
 	}

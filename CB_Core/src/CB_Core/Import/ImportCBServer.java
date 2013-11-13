@@ -20,12 +20,14 @@ import CB_RpcCore.ClientCB.RpcClientCB;
 import CB_RpcCore.Functions.RpcAnswer_GetCacheList;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList.ListItem;
 import CB_RpcCore.Functions.RpcMessage_GetCacheList;
+import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Util.SDBM_Hash;
 import cb_rpc.Functions.RpcAnswer;
 import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class ImportCBServer
 {
-	public void importCBServer(ArrayList<ListItem> cbServerExportList, ImporterProgress ip)
+	public void importCBServer(ArrayList<ListItem> cbServerExportList, ImporterProgress ip, boolean importImages)
 	{
 		long startTS = System.currentTimeMillis();
 		int count = 0;
@@ -90,62 +92,75 @@ public class ImportCBServer
 					{
 						System.out.println(cache.Name);
 						cache.GPXFilename_ID = gpxFilename.Id;
+
 						dao.WriteToDatabase(cache);
 						if ((cache.tmpNote != null) && (cache.tmpNote.length() > 0))
 						{
-							Database.SetNote(cache, cache.tmpNote);
+							cache.noteCheckSum = (int) SDBM_Hash.sdbm(cache.tmpNote);
+							Parameters args = new Parameters();
+							// orginal NoteChecksum in DB speichern
+							args.put("Notes", cache.tmpNote);
+							Database.Data.update("Caches", args, "id=" + cache.Id, null);
+
 							cache.tmpNote = null;
 						}
-						if ((cache.tmpSolver != null) && (cache.tmpSolver.length() > 0))
+						if (cache.tmpSolver != null)
 						{
-							Database.SetSolver(cache, cache.tmpSolver);
+							cache.solverCheckSum = (int) SDBM_Hash.sdbm(cache.tmpSolver);
+							Parameters args = new Parameters();
+							args.put("Solver", cache.tmpSolver);
+							Database.Data.update("Caches", args, "id=" + cache.Id, null);
+
 							cache.tmpSolver = null;
 						}
 						for (Waypoint waypoint : cache.waypoints)
 						{
 							wayDao.WriteToDatabase(waypoint);
 						}
-						for (ImageEntry image : cache.spoilerRessources)
+						if (importImages)
 						{
-							String url = CB_Rpc_Settings.CBS_IP.getValue();
-							int pos = url.indexOf(":");
-							if (pos >= 0)
+							for (ImageEntry image : cache.spoilerRessources)
 							{
-								url = url.substring(0, pos); // Port abschneiden, da dieser bereits in der imageURL der Images steht
-							}
-							url = "http://" + url + image.ImageUrl;
-							File file = new File(image.LocalPath);
-							url += cache.GcCode.substring(0, 4) + "/";
-
-							url += file.getName().replace(" ", "%20");
-
-							String imagePath;
-							if (image.ImageUrl.indexOf("/spoilers/") >= 0)
-							{
-								imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.GcCode.substring(0, 4) + "/"
-										+ file.getName();
-								if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0)
+								String url = CB_Rpc_Settings.CBS_IP.getValue();
+								int pos = url.indexOf(":");
+								if (pos >= 0)
 								{
-									// Own Repo
-									imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.GcCode.substring(0, 4) + "/"
+									url = url.substring(0, pos); // Port abschneiden, da dieser bereits in der imageURL der Images steht
+								}
+								url = "http://" + url + image.ImageUrl;
+								File file = new File(image.LocalPath);
+								url += cache.GcCode.substring(0, 4) + "/";
+
+								url += file.getName().replace(" ", "%20");
+
+								String imagePath;
+								if (image.ImageUrl.indexOf("/spoilers/") >= 0)
+								{
+									imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.GcCode.substring(0, 4) + "/"
 											+ file.getName();
+									if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0)
+									{
+										// Own Repo
+										imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.GcCode.substring(0, 4)
+												+ "/" + file.getName();
+									}
 								}
-							}
-							else
-							{
-								imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.GcCode.substring(0, 4) + "/"
-										+ file.getName();
-								if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() != 0)
+								else
 								{
-									// Own Repo
-									imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/"
-											+ cache.GcCode.substring(0, 4) + "/" + file.getName();
+									imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.GcCode.substring(0, 4)
+											+ "/" + file.getName();
+									if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() != 0)
+									{
+										// Own Repo
+										imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/"
+												+ cache.GcCode.substring(0, 4) + "/" + file.getName();
+									}
 								}
-							}
-							file = new File(imagePath);
-							if (!file.exists())
-							{
-								DescriptionImageGrabber.Download(url, imagePath);
+								file = new File(imagePath);
+								if (!file.exists())
+								{
+									DescriptionImageGrabber.Download(url, imagePath);
+								}
 							}
 						}
 					}
@@ -167,5 +182,12 @@ public class ImportCBServer
 		}
 		long endTS = System.currentTimeMillis();
 		System.out.println("Import Dauer: " + (endTS - startTS) + "ms");
+		// Aufzeichnen der Änderungen aktivieren
+		if (Database.Data.MasterDatabaseId == 0)
+		{
+			Database.Data.MasterDatabaseId = 1;
+			Database.Data.WriteConfigLong("MasterDatabaseId", Database.Data.MasterDatabaseId);
+		}
+
 	}
 }

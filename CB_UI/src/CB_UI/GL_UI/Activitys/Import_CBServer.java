@@ -1,17 +1,14 @@
 package CB_UI.GL_UI.Activitys;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.PocketQuery;
-import CB_Core.Api.PocketQuery.PQ;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.BreakawayImportThread;
@@ -19,17 +16,20 @@ import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportCBServer;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
+import CB_Core.Types.ExportEntry;
+import CB_Core.Types.ExportList;
+import CB_Core.Types.Waypoint;
 import CB_RpcCore.ClientCB.RpcClientCB;
+import CB_RpcCore.Functions.RpcAnswer_ExportChangesToServer;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
+import CB_UI.GL_UI.Activitys.APIs.ExportCBServerListItem;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
-import CB_UI_Base.Events.platformConector;
-import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.runOnGL;
@@ -58,41 +58,33 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.StringH;
+import CB_Utils.DB.CoreCursor;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Logger;
-import CB_Utils.Util.FileIO;
-import CB_Utils.Util.CopyHelper.Copy;
-import CB_Utils.Util.CopyHelper.CopyRule;
 import cb_rpc.Functions.RpcAnswer;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class Import extends ActivityBase implements ProgressChangedEvent
+public class Import_CBServer extends ActivityBase implements ProgressChangedEvent
 {
 
 	final boolean MAP_LINE_ACTIVE = false;
-	boolean PQ_LINE_ACTIVE = true;
 	boolean CBS_LINE_ACTIVE = false;
-	boolean GPX_LINE_ACTIVE = true;
-	boolean GCV_LINE_ACTIVE = true;
+	boolean EXPORT_LINE_ACTIVE = false;
 	boolean LOG_LINE_ACTIVE = true;
 	boolean DB_LINE_ACTIVE = true;
-	private int importType = 0; // um direkt gleich den Import für eine bestimmte API starten zu können
-
-	private V_ListView lvPQs, lvCBServer;
-	private Button bOK, bCancel, refreshPqList, refreshCBServerList, btnSelectFile;
-	private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
-	private Label lblTitle, lblPQ, lblCBServer, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
+	private V_ListView lvCBServer, lvExport;
+	private Button bOK, bCancel, refreshCBServerList, refreshExportList;
+	private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxLogsMaxHeight;
+	private Label lblTitle, lblCBServer, lblExportCBServer, lblImage, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkImportFromCBServer, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages,
-			checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
-	private CollapseBox PQ_ListCollapseBox, CBServerCollapseBox, LogCollapseBox;
+	private chkBox checkImportFromCBServer, checkBoxExportToCBServer, checkBoxPreloadImages, checkBoxCleanLogs, checkBoxCompactDB;
+	private CollapseBox CBServerCollapseBox, ExportCollapseBox, LogCollapseBox;
 	private Spinner spinner;
 
 	private Timer mAnimationTimer;
@@ -103,62 +95,29 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private Boolean importStarted = false;
 
-	private ArrayList<PQ> PqList;
 	private ArrayList<RpcAnswer_GetExportList.ListItem> cbServerExportList;
+	private ExportList exportList;
 
-	private CB_RectF itemRec;
 	private CB_RectF itemRecCBServer;
 	private float itemHeight = -1;
 
 	private ScrollBox scrollBox;
 	private ImportAnimation dis;
 
-	public Import()
+	public Import_CBServer()
 	{
 		this(0);
 	}
 
-	public Import(int importType)
+	public Import_CBServer(int importType)
 	{
 		super(ActivityRec(), "importActivity");
-		this.importType = importType;
 		CBS_LINE_ACTIVE = !StringH.isEmpty(Config.CBS_IP.getValue());
-		switch (importType)
-		{
-		case MenuID.MI_IMPORT_GS_PQ:
-			PQ_LINE_ACTIVE = true;
-			CBS_LINE_ACTIVE = false;
-			GPX_LINE_ACTIVE = false;
-			GCV_LINE_ACTIVE = false;
-			LOG_LINE_ACTIVE = true;
-			DB_LINE_ACTIVE = true;
-			break;
-		case MenuID.MI_IMPORT_CBS:
-			PQ_LINE_ACTIVE = false;
-			CBS_LINE_ACTIVE = true;
-			GPX_LINE_ACTIVE = false;
-			GCV_LINE_ACTIVE = false;
-			LOG_LINE_ACTIVE = true;
-			DB_LINE_ACTIVE = true;
-			break;
-		case MenuID.MI_IMPORT_GPX:
-			PQ_LINE_ACTIVE = false;
-			CBS_LINE_ACTIVE = false;
-			GPX_LINE_ACTIVE = true;
-			GCV_LINE_ACTIVE = false;
-			LOG_LINE_ACTIVE = true;
-			DB_LINE_ACTIVE = true;
-			break;
-		case MenuID.MI_IMPORT_GCV:
-			PQ_LINE_ACTIVE = false;
-			CBS_LINE_ACTIVE = false;
-			GPX_LINE_ACTIVE = false;
-			GCV_LINE_ACTIVE = true;
-			LOG_LINE_ACTIVE = true;
-			DB_LINE_ACTIVE = true;
-		}
-
-		CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
+		EXPORT_LINE_ACTIVE = true;
+		CBS_LINE_ACTIVE = true;
+		LOG_LINE_ACTIVE = true;
+		DB_LINE_ACTIVE = true;
+		CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
 		innerHeight = 1000;
 		scrollBox = new ScrollBox(ActivityRec());
 		this.addChild(scrollBox);
@@ -167,14 +126,11 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.setHeight(lblProgressMsg.getY() - bOK.getMaxY() - margin - margin);
 		scrollBox.setY(bOK.getMaxY() + margin);
 		scrollBox.setBackground(this.getBackground());
-		createPQLines();
 		createCBServerLines();
-		createPqCollapseBox();
 		createCBServerCollapseBox();
-		createGpxLine();
-		createGcVoteLine();
+		createExportLines();
+		createExportCollapseBox();
 		createImageLine();
-		createMapLine();
 		createLogLine();
 		createLogCollapseBox();
 		createCompactDBLine();
@@ -183,32 +139,16 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		Layout();
 
-		if (importType == MenuID.MI_IMPORT_GS_PQ)
-		{
-			checkImportPQfromGC.setChecked(true);
-			checkImportPQfromGC.setVisible(true);
-			refreshPqList();
-			PQ_ListCollapseBox.expand();
-		}
-		else if (importType == MenuID.MI_IMPORT_CBS)
-		{
-			checkImportFromCBServer.setChecked(true);
-			checkImportFromCBServer.setVisible(true);
-			refreshCBServerList();
-			CBServerCollapseBox.expand();
-		}
-		else if (importType == MenuID.MI_IMPORT_GPX)
-		{
-			checkBoxImportGPX.setChecked(true);
-			checkBoxImportGPX.setVisible(true);
-		}
-		else if (importType == MenuID.MI_IMPORT_GCV)
-		{
-			checkBoxGcVote.setChecked(true);
-			checkBoxGcVote.setVisible(true);
-		}
+		checkImportFromCBServer.setChecked(true);
+		checkImportFromCBServer.setVisible(true);
 
-		// scrollBox.setBackground(new ColorDrawable(Color.RED));
+		checkBoxExportToCBServer.setChecked(false);
+		checkBoxExportToCBServer.setVisible(true);
+
+		refreshCBServerList();
+		refreshExportList();
+		CBServerCollapseBox.expand();
+		ExportCollapseBox.collapse();
 	}
 
 	@Override
@@ -312,36 +252,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	}
 
-	private void createPQLines()
-	{
-
-		innerLeft = margin;
-
-		checkImportPQfromGC = new chkBox("PQ");
-		checkImportPQfromGC.setX(innerLeft);
-		checkImportPQfromGC.setY(innerHeight - checkImportPQfromGC.getHeight());
-		if (!PQ_LINE_ACTIVE)
-		{
-			checkImportPQfromGC.setVisible(false);
-			checkImportPQfromGC.setHeight(0);
-		}
-		lblPQ = new Label(checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3
-				- checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight(), "");
-		lblPQ.setFont(Fonts.getNormal());
-		lblPQ.setText(Translation.Get("PQfromGC"));
-		if (!PQ_LINE_ACTIVE)
-		{
-			lblPQ.setVisible(false);
-			lblPQ.setHeight(0);
-		}
-
-		scrollBox.addChild(checkImportPQfromGC);
-		scrollBox.addChild(lblPQ);
-	}
-
 	private void createCBServerLines()
 	{
-
 		innerLeft = margin;
 
 		checkImportFromCBServer = new chkBox("CBServer");
@@ -359,49 +271,35 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.addChild(lblCBServer);
 	}
 
-	private void createPqCollapseBox()
+	private void createExportLines()
 	{
-		CB_RectF rec = new CB_RectF(lblPQ.getX(), lblPQ.getY() - CollapseBoxHeight - margin, lblPQ.getWidth(), CollapseBoxHeight);
+		innerLeft = margin;
 
-		PQ_ListCollapseBox = new CollapseBox(rec, "PqCollapse");
-		PQ_ListCollapseBox.setBackground(this.getBackground());
-
-		refreshPqList = new Button(name);
-		refreshPqList.setWidth(PQ_ListCollapseBox.getWidth() - margin - margin);
-		refreshPqList.setX(margin);
-		refreshPqList.setY(margin);
-		refreshPqList.setText(Translation.Get("refreshPqList"));
-		refreshPqList.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
-			{
-				refreshPqList();
-				return true;
-			}
-		});
-
-		lvPQs = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, PQ_ListCollapseBox.getWidth(),
-				PQ_ListCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
-
-		lvPQs.setEmptyMsg(Translation.Get("EmptyPqList"));
-
-		PQ_ListCollapseBox.addChild(lvPQs);
-		PQ_ListCollapseBox.addChild(refreshPqList);
-
-		scrollBox.addChild(PQ_ListCollapseBox);
+		checkBoxExportToCBServer = new chkBox("CBServer");
+		checkBoxExportToCBServer.setX(innerLeft);
+		checkBoxExportToCBServer.setY(innerHeight - checkBoxExportToCBServer.getHeight());
+		if (!EXPORT_LINE_ACTIVE) checkBoxExportToCBServer.setVisible(false);
+		if (!EXPORT_LINE_ACTIVE) checkBoxExportToCBServer.setHeight(0);
+		lblExportCBServer = new Label(checkBoxExportToCBServer.getMaxX() + margin, checkBoxExportToCBServer.getY(), innerWidth - margin * 3
+				- checkBoxExportToCBServer.getWidth(), checkBoxExportToCBServer.getHeight(), "");
+		lblExportCBServer.setFont(Fonts.getNormal());
+		lblExportCBServer.setText(Translation.Get("ToCBServer"));
+		if (!EXPORT_LINE_ACTIVE) lblExportCBServer.setVisible(false);
+		if (!EXPORT_LINE_ACTIVE) lblExportCBServer.setHeight(0);
+		scrollBox.addChild(checkBoxExportToCBServer);
+		scrollBox.addChild(lblExportCBServer);
 	}
 
 	private void createCBServerCollapseBox()
 	{
-		CB_RectF rec = new CB_RectF(lblPQ.getX(), lblPQ.getY() - CollapseBoxHeight - margin, lblPQ.getWidth(), CollapseBoxHeight);
+		CB_RectF rec = new CB_RectF(lblCBServer.getX(), lblCBServer.getY() - CollapseBoxHeight - margin, lblCBServer.getWidth(),
+				CollapseBoxHeight);
 
 		CBServerCollapseBox = new CollapseBox(rec, "CBServerCollapse");
 		CBServerCollapseBox.setBackground(this.getBackground());
 
 		refreshCBServerList = new Button(name);
-		refreshCBServerList.setWidth(PQ_ListCollapseBox.getWidth() - margin - margin);
+		refreshCBServerList.setWidth(CBServerCollapseBox.getWidth() - margin - margin);
 		refreshCBServerList.setX(margin);
 		refreshCBServerList.setY(margin);
 		refreshCBServerList.setText(Translation.Get("refreshCBServerList"));
@@ -416,8 +314,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			}
 		});
 
-		lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, CBServerCollapseBox.getWidth(),
-				CBServerCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
+		lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshCBServerList.getMaxY() + margin, CBServerCollapseBox.getWidth(),
+				CBServerCollapseBox.getHeight() - margin - margin - refreshCBServerList.getMaxY()), "");
 
 		lvCBServer.setEmptyMsg(Translation.Get("EmptyCBServerList"));
 
@@ -427,74 +325,39 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.addChild(CBServerCollapseBox);
 	}
 
-	private void createGpxLine()
+	private void createExportCollapseBox()
 	{
-		checkBoxImportGPX = new chkBox("GPX");
-		checkBoxImportGPX.setX(innerLeft);
-		checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
+		CB_RectF rec = new CB_RectF(lblExportCBServer.getX(), lblExportCBServer.getY() - CollapseBoxHeight - margin,
+				lblExportCBServer.getWidth(), CollapseBoxHeight);
 
-		btnSelectFile = new Button(Translation.Get("selectFile"));
+		ExportCollapseBox = new CollapseBox(rec, "ExportCollapse");
+		ExportCollapseBox.setBackground(this.getBackground());
 
-		if (!GPX_LINE_ACTIVE)
-		{
-			checkBoxImportGPX.setVisible(false);
-			checkBoxImportGPX.setHeight(0);
-			btnSelectFile.setVisible(false);
-		}
-		lblGPX = new Label(checkBoxImportGPX.getMaxX() + margin, checkBoxImportGPX.getY(), innerWidth - margin * 3
-				- checkBoxImportGPX.getWidth(), checkBoxImportGPX.getHeight(), "");
-		lblGPX.setFont(Fonts.getNormal());
-		lblGPX.setText(Translation.Get("GPX"));
-
-		btnSelectFile.setPos(checkBoxImportGPX.getMaxX() + (checkBoxImportGPX.getWidth() * 2.2f), checkBoxImportGPX.getY());
-		btnSelectFile.setWidth(scrollBox.getInnerWidth() - (btnSelectFile.getX() + margin));
-
-		btnSelectFile.setOnClickListener(new OnClickListener()
+		refreshExportList = new Button(name);
+		refreshExportList.setWidth(ExportCollapseBox.getWidth() - margin - margin);
+		refreshExportList.setX(margin);
+		refreshExportList.setY(margin);
+		refreshExportList.setText(Translation.Get("refreshExportList"));
+		refreshExportList.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				platformConector.getFile("", "", "", "", new IgetFileReturnListner()
-				{
-
-					@Override
-					public void getFieleReturn(String Path)
-					{
-						copyGPX2PQ_Folder(Path);
-					}
-				});
+				refreshExportList();
 				return true;
 			}
 		});
 
-		scrollBox.addChild(checkBoxImportGPX);
-		scrollBox.addChild(lblGPX);
-		scrollBox.addChild(btnSelectFile);
-	}
+		lvExport = new V_ListView(new CB_RectF(leftBorder, refreshExportList.getMaxY() + margin, ExportCollapseBox.getWidth(),
+				ExportCollapseBox.getHeight() - margin - margin - refreshExportList.getMaxY()), "");
 
-	private void createGcVoteLine()
-	{
-		checkBoxGcVote = new chkBox("GcVote");
-		checkBoxGcVote.setX(innerLeft);
-		checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
-		if (!GCV_LINE_ACTIVE)
-		{
-			checkBoxGcVote.setVisible(false);
-			checkBoxGcVote.setHeight(0);
-		}
-		lblGcVote = new Label(checkBoxGcVote.getMaxX() + margin, checkBoxGcVote.getY(),
-				innerWidth - margin * 3 - checkBoxGcVote.getWidth(), checkBoxGcVote.getHeight(), "");
-		lblGcVote.setFont(Fonts.getNormal());
-		lblGcVote.setText(Translation.Get("GCVoteRatings"));
-		if (!GCV_LINE_ACTIVE)
-		{
-			lblGcVote.setVisible(false);
-			lblGcVote.setHeight(0);
-		}
+		lvExport.setEmptyMsg(Translation.Get("EmptyExportList"));
 
-		scrollBox.addChild(checkBoxGcVote);
-		scrollBox.addChild(lblGcVote);
+		ExportCollapseBox.addChild(lvExport);
+		ExportCollapseBox.addChild(refreshExportList);
+
+		scrollBox.addChild(ExportCollapseBox);
 	}
 
 	private void createImageLine()
@@ -502,7 +365,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		// Preload Description Images
 		checkBoxPreloadImages = new chkBox("Image");
 		checkBoxPreloadImages.setX(innerLeft);
-		checkBoxPreloadImages.setY(checkBoxGcVote.getY() - margin - checkBoxPreloadImages.getHeight());
+		checkBoxPreloadImages.setY(ExportCollapseBox.getY() - margin - checkBoxPreloadImages.getHeight());
 
 		lblImage = new Label(checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3
 				- checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight(), "");
@@ -512,34 +375,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		scrollBox.addChild(checkBoxPreloadImages);
 		scrollBox.addChild(lblImage);
 
-		// Preload Spoiler Images
-		checkBoxPreloadSpoiler = new chkBox("Image");
-		checkBoxPreloadSpoiler.setX(innerLeft);
-		checkBoxPreloadSpoiler.setY(checkBoxPreloadImages.getY() - margin - checkBoxPreloadSpoiler.getHeight());
-
-		lblSpoiler = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxPreloadSpoiler.getY(), innerWidth - margin * 3
-				- checkBoxPreloadSpoiler.getWidth(), checkBoxPreloadSpoiler.getHeight(), "");
-		lblSpoiler.setFont(Fonts.getNormal());
-		lblSpoiler.setText(Translation.Get("PreloadSpoiler"));
-
-		scrollBox.addChild(checkBoxPreloadSpoiler);
-		scrollBox.addChild(lblSpoiler);
-	}
-
-	private void createMapLine()
-	{
-		checkBoxImportMaps = new chkBox("Image");
-		checkBoxImportMaps.setX(innerLeft);
-		checkBoxImportMaps.setY(checkBoxPreloadSpoiler.getY() - margin - checkBoxImportMaps.getHeight());
-
-		lblMaps = new Label(checkBoxImportMaps.getMaxX() + margin, checkBoxImportMaps.getY(), innerWidth - margin * 3
-				- checkBoxImportMaps.getWidth(), checkBoxImportMaps.getHeight(), "");
-		lblMaps.setFont(Fonts.getNormal());
-		lblMaps.setText(Translation.Get("Maps"));
-
-		// TODO wieder einschalten wenn Implementiert
-		// scrollBox.addChild(checkBoxImportMaps);
-		// scrollBox.addChild(lblMaps);
 	}
 
 	private void createLogLine()
@@ -547,7 +382,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxCleanLogs = new chkBox("Image");
 		checkBoxCleanLogs.setX(innerLeft);
 
-		float yPos = MAP_LINE_ACTIVE ? checkBoxImportMaps.getY() : checkBoxPreloadSpoiler.getY();
+		float yPos = lblImage.getY();
 
 		checkBoxCleanLogs.setY(yPos - margin - checkBoxCleanLogs.getHeight());
 		if (!LOG_LINE_ACTIVE)
@@ -685,7 +520,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 			checkBoxCompactDB.setVisible(false);
 			checkBoxCompactDB.setHeight(0);
 		}
-		lblCompact = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3
+		lblCompact = new Label(lblImage.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3
 				- checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
 		lblCompact.setFont(Fonts.getNormal());
 		lblCompact.setText(Translation.Get("CompactDB"));
@@ -710,76 +545,30 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		checkBoxCleanLogs.setY(LogCollapseBox.getMaxY() + margin);
 		lblLogs.setY(LogCollapseBox.getMaxY() + margin);
 
-		checkBoxImportMaps.setY(lblLogs.getMaxY() + margin);
-		lblMaps.setY(lblLogs.getMaxY() + margin);
-
-		float yPos = MAP_LINE_ACTIVE ? lblMaps.getMaxY() : lblLogs.getMaxY();
-
-		checkBoxPreloadSpoiler.setY(yPos + margin);
-		lblSpoiler.setY(yPos + margin);
-
-		yPos = checkBoxPreloadSpoiler.getMaxY();
+		float yPos = lblLogs.getMaxY();
 
 		checkBoxPreloadImages.setY(yPos + margin);
 		lblImage.setY(yPos + margin);
 
-		checkBoxGcVote.setY(lblImage.getMaxY() + margin);
-		lblGcVote.setY(lblImage.getMaxY() + margin);
-
-		checkBoxImportGPX.setY(lblGcVote.getMaxY() + margin);
-		lblGPX.setY(lblGcVote.getMaxY() + margin);
-		btnSelectFile.setY(lblGcVote.getMaxY() + margin);
-
-		CBServerCollapseBox.setY(checkBoxImportGPX.getMaxY() + margin);
-
+		CBServerCollapseBox.setY(lblImage.getMaxY() + margin);
 		checkImportFromCBServer.setY(CBServerCollapseBox.getMaxY() + margin);
 		lblCBServer.setY(CBServerCollapseBox.getMaxY() + margin);
 
-		PQ_ListCollapseBox.setY(lblCBServer.getMaxY() + margin);
-		// PQ_ListCollapseBox.setHeight(CollapseBoxHeight);
+		ExportCollapseBox.setY(lblCBServer.getMaxY() + margin);
+		lblExportCBServer.setY(ExportCollapseBox.getMaxY() + margin);
+		checkBoxExportToCBServer.setY(ExportCollapseBox.getMaxY() + margin);
 
-		checkImportPQfromGC.setY(PQ_ListCollapseBox.getMaxY() + margin);
-		lblPQ.setY(PQ_ListCollapseBox.getMaxY() + margin);
-
-		innerHeight = lblPQ.getMaxY() + margin;
+		innerHeight = lblExportCBServer.getMaxY() + margin;
 		scrollBox.setVirtualHeight(innerHeight);
 	}
 
 	private void initialForm()
 	{
-		checkBoxImportMaps.setChecked(MAP_LINE_ACTIVE ? Config.CacheMapData.getValue() : false);
 		checkBoxPreloadImages.setChecked(Config.CacheImageData.getValue());
-		checkBoxPreloadSpoiler.setChecked(Config.CacheSpoilerData.getValue());
-		checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? Config.ImportGpx.getValue() : false);
-		checkImportPQfromGC.setOnCheckedChangeListener(checkImportPQfromGC_CheckStateChanged);
 		checkImportFromCBServer.setOnCheckedChangeListener(checkImportFromCBServer_CheckStateChanged);
-		checkBoxGcVote.setChecked(GCV_LINE_ACTIVE ? Config.ImportRatings.getValue() : false);
+		checkBoxExportToCBServer.setOnCheckedChangeListener(checkBoxExportToCBServer_CheckStateChanged);
 
-		checkImportPQfromGC.setChecked(PQ_LINE_ACTIVE ? Config.ImportPQsFromGeocachingCom.getValue() : false);
-		checkImportPQfromGC.setEnabled(true);
-
-		if (checkImportPQfromGC.isChecked() == true)
-		{
-			checkBoxImportGPX.setChecked(GPX_LINE_ACTIVE ? true : false);
-			checkBoxImportGPX.setEnabled(false);
-		}
 		checkBoxCompactDB.setChecked(DB_LINE_ACTIVE ? Config.CompactDB.getValue() : false);
-
-		/*
-		 * if (importType == MenuID.MI_IMPORT_GS_PQ) { // alles andere als den PQ Import deaktivieren checkImportPQfromGC.setChecked(true);
-		 * checkImportFromCBServer.setChecked(false); checkBoxGcVote.setChecked(false); checkBoxCleanLogs.setChecked(false);
-		 * checkBoxCompactDB.setChecked(false); }
-		 */
-		checkBoxPreloadSpoiler.setEnable(true);
-		lblSpoiler.setTextColor(Fonts.getFontColor());
-		if (checkImportPQfromGC.isChecked())
-		{
-			PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
-		}
-		else
-		{
-			PQ_ListCollapseBox.setAnimationHeight(0);
-		}
 
 		if (checkImportFromCBServer.isChecked())
 		{
@@ -789,9 +578,18 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		{
 			CBServerCollapseBox.setAnimationHeight(0);
 		}
+		if (checkBoxExportToCBServer.isChecked())
+		{
+			ExportCollapseBox.setAnimationHeight(CollapseBoxHeight);
+		}
+		else
+		{
+			ExportCollapseBox.setAnimationHeight(0);
+			ExportCollapseBox.collapse();
+		}
 
-		PQ_ListCollapseBox.setAnimationListner(Animationlistner);
 		CBServerCollapseBox.setAnimationListner(Animationlistner);
+		ExportCollapseBox.setAnimationListner(Animationlistner);
 		LogCollapseBox.setAnimationListner(Animationlistner);
 
 		checkBoxCleanLogs.setChecked(LOG_LINE_ACTIVE ? Config.DeleteLogs.getValue() : false);
@@ -849,25 +647,6 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		}
 	};
 
-	private OnCheckedChangeListener checkImportPQfromGC_CheckStateChanged = new OnCheckedChangeListener()
-	{
-		@Override
-		public void onCheckedChanged(chkBox view, boolean isChecked)
-		{
-			if ((importType == MenuID.MI_IMPORT_GS_PQ) || (checkImportPQfromGC.isChecked()))
-			{
-				checkBoxImportGPX.setChecked(true);
-				checkBoxImportGPX.setEnabled(false);
-				PQ_ListCollapseBox.expand();
-			}
-			else
-			{
-				checkBoxImportGPX.setEnabled(true);
-				PQ_ListCollapseBox.collapse();
-			}
-		}
-	};
-
 	private OnCheckedChangeListener checkImportFromCBServer_CheckStateChanged = new OnCheckedChangeListener()
 	{
 		@Override
@@ -884,44 +663,21 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		}
 	};
 
-	public class CustomAdapter implements Adapter
+	private OnCheckedChangeListener checkBoxExportToCBServer_CheckStateChanged = new OnCheckedChangeListener()
 	{
-
-		public CustomAdapter()
-		{
-		}
-
-		public int getCount()
-		{
-			if (PqList != null) return PqList.size();
-			else
-				return 0;
-		}
-
 		@Override
-		public ListViewItemBase getView(int position)
+		public void onCheckedChanged(chkBox view, boolean isChecked)
 		{
-			final PQ pq = PqList.get(position);
-			if (itemRec == null)
+			if (checkBoxExportToCBServer.isChecked())
 			{
-				itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
-				float itemWidth = PQ_ListCollapseBox.getInnerWidth();
-
-				itemRec = new CB_RectF(new SizeF(itemWidth, itemHeight));
+				ExportCollapseBox.expand();
 			}
-
-			return new Import_PqListItem(itemRec, position, pq);
-
+			else
+			{
+				ExportCollapseBox.collapse();
+			}
 		}
-
-		@Override
-		public float getItemSize(int position)
-		{
-			if (itemHeight == -1) itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
-			return itemHeight;
-		}
-
-	}
+	};
 
 	public class CustomAdapterCBServer implements Adapter
 	{
@@ -962,59 +718,46 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	}
 
-	private void refreshPqList()
+	public class CustomAdapterExportCBServer implements Adapter
 	{
 
-		lvPQs.setBaseAdapter(null);
-		lvPQs.notifyDataSetChanged();
-		refreshPqList.disable();
-
-		Thread thread = new Thread()
+		public CustomAdapterExportCBServer()
 		{
-			@Override
-			public void run()
-			{
-				PqList = new ArrayList<PQ>();
-				PocketQuery.GetPocketQueryList(PqList);
-				lvPQs.setBaseAdapter(new CustomAdapter());
-				lvPQs.notifyDataSetChanged();
+		}
 
-				stopTimer();
-				lvPQs.setEmptyMsg(Translation.Get("EmptyPqList"));
-
-				refreshPqList.enable();
-			}
-
-		};
-
-		thread.start();
-
-		mAnimationTimer = new Timer();
-		mAnimationTimer.schedule(new TimerTask()
+		public int getCount()
 		{
-			@Override
-			public void run()
+			if (exportList != null)
 			{
-				TimerMethod();
+				return exportList.size();
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		@Override
+		public ListViewItemBase getView(int position)
+		{
+			final ExportEntry it = exportList.get(position);
+			if (itemRecCBServer == null)
+			{
+				itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
+				float itemWidth = ExportCollapseBox.getInnerWidth();
+
+				itemRecCBServer = new CB_RectF(new SizeF(itemWidth, itemHeight));
 			}
 
-			private void TimerMethod()
-			{
-				animationValue++;
+			return new ExportCBServerListItem(itemRecCBServer, position, it);
+		}
 
-				if (animationValue > 5) animationValue = 0;
-
-				String s = "";
-				for (int i = 0; i < animationValue; i++)
-				{
-					s += ".";
-				}
-
-				lvPQs.setEmptyMsg(Translation.Get("LoadPqList") + s);
-
-			}
-
-		}, 0, ANIMATION_TICK);
+		@Override
+		public float getItemSize(int position)
+		{
+			if (itemHeight == -1) itemHeight = UI_Size_Base.that.getChkBoxSize().height + UI_Size_Base.that.getChkBoxSize().halfHeight;
+			return itemHeight;
+		}
 
 	}
 
@@ -1094,6 +837,67 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	}
 
+	private void refreshExportList()
+	{
+
+		lvExport.setBaseAdapter(null);
+		lvExport.notifyDataSetChanged();
+		refreshExportList.disable();
+
+		Thread thread = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				exportList = new ExportList();
+				exportList.loadExportList();
+
+				lvExport.setBaseAdapter(new CustomAdapterExportCBServer());
+				lvExport.notifyDataSetChanged();
+
+				stopTimer();
+				lvExport.setEmptyMsg(Translation.Get("EmptyExportCBServerList"));
+
+				refreshExportList.enable();
+				if (exportList.size() > 0)
+				{
+					checkBoxExportToCBServer.setChecked(true);
+				}
+			}
+
+		};
+
+		thread.start();
+
+		mAnimationTimer = new Timer();
+		mAnimationTimer.schedule(new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				TimerMethod();
+			}
+
+			private void TimerMethod()
+			{
+				animationValue++;
+
+				if (animationValue > 5) animationValue = 0;
+
+				String s = "";
+				for (int i = 0; i < animationValue; i++)
+				{
+					s += ".";
+				}
+
+				lvExport.setEmptyMsg(Translation.Get("LoadExport CBServerList") + s);
+
+			}
+
+		}, 0, ANIMATION_TICK);
+
+	}
+
 	private void stopTimer()
 	{
 		if (mAnimationTimer != null)
@@ -1114,13 +918,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		this.addChild(dis, false);
 
-		Config.CacheMapData.setValue(checkBoxImportMaps.isChecked());
 		Config.CacheImageData.setValue(checkBoxPreloadImages.isChecked());
-		Config.CacheSpoilerData.setValue(checkBoxPreloadSpoiler.isChecked());
-		Config.ImportGpx.setValue(checkBoxImportGPX.isChecked());
 
-		Config.ImportPQsFromGeocachingCom.setValue(checkImportPQfromGC.isChecked());
-		Config.ImportRatings.setValue(checkBoxGcVote.isChecked());
 		Config.CompactDB.setValue(checkBoxCompactDB.isChecked());
 		Config.AcceptChanges();
 		String directoryPath = Config.PocketQueryFolder.getValue();
@@ -1147,27 +946,17 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				try
 				{
 					// Set Progress values
-					if (checkImportPQfromGC.isChecked())
+					if (checkBoxExportToCBServer.isChecked())
 					{
-						ip.addStep(ip.new Step("importGC", 4));
+						ip.addStep(ip.new Step("exportCBServer", 4));
 					}
+
 					if (checkImportFromCBServer.isChecked())
 					{
 						ip.addStep(ip.new Step("importCBServer", 4));
 					}
-					if (checkBoxImportGPX.isChecked())
-					{
-						ip.addStep(ip.new Step("ExtractZip", 1));
-						ip.addStep(ip.new Step("AnalyseGPX", 1));
-						ip.addStep(ip.new Step("ImportGPX", 4));
-					}
-					if (checkBoxGcVote.isChecked())
-					{
-						ip.addStep(ip.new Step("sendGcVote", 1));
-						ip.addStep(ip.new Step("importGcVote", 4));
-					}
 
-					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked())
+					if (checkBoxPreloadImages.isChecked())
 					{
 						// ip.addStep(ip.new Step("importImageUrls", 4));
 						ip.addStep(ip.new Step("importImages", 4));
@@ -1185,183 +974,12 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 					// begin import
 
-					if (checkImportPQfromGC.isChecked())
-					{
-
-						if (PqList != null && PqList.size() > 0)
-						{
-
-							// PQ-List von nicht Downloadbaren PQs befreien
-
-							ArrayList<PQ> downloadPqList = new ArrayList<PocketQuery.PQ>();
-
-							for (PQ pq : PqList)
-							{
-								if (pq.downloadAvible) downloadPqList.add(pq);
-							}
-
-							Iterator<PQ> iterator = downloadPqList.iterator();
-
-							ip.setJobMax("importGC", downloadPqList.size());
-
-							dis.setAnimationType(AnimationType.Download);
-
-							if (iterator != null && iterator.hasNext())
-							{
-								do
-								{
-									if (BreakawayImportThread.isCanceld())
-									{
-										cancelImport();
-										ip.ProgressChangeMsg("", "");
-										return;
-									}
-
-									PQ pq = iterator.next();
-
-									if (pq.downloadAvible)
-									{
-										ip.ProgressInkrement("importGC", "Download: " + pq.Name, false);
-										try
-										{
-											PocketQuery.DownloadSinglePocketQuery(pq, Config.PocketQueryFolder.getValue());
-										}
-										catch (OutOfMemoryError e)
-										{
-											Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
-											e.printStackTrace();
-										}
-									}
-
-								}
-								while (iterator.hasNext());
-							}
-
-							if (downloadPqList.size() == 0)
-							{
-								ip.ProgressInkrement("importGC", "", true);
-							}
-						}
-					}
-
 					dis.setAnimationType(AnimationType.Work);
 
-					// Importiere alle GPX Files im Import Folder, auch in ZIP
-					// verpackte
-					if (checkBoxImportGPX.isChecked() && directory.exists())
-					{
-
-						System.gc();
-
-						long startTime = System.currentTimeMillis();
-
-						Database.Data.beginTransaction();
-						Database.Data.Query.clear();
-						try
-						{
-
-							importer.importGpx(directoryPath, ip);
-
-							Database.Data.setTransactionSuccessful();
-						}
-						catch (Exception exc)
-						{
-							exc.printStackTrace();
-						}
-						Database.Data.endTransaction();
-
-						if (BreakawayImportThread.isCanceld())
-						{
-							cancelImport();
-							ip.ProgressChangeMsg("", "");
-							return;
-						}
-
-						Logger.LogCat("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
-
-						System.gc();
-
-						// del alten entpackten Ordener wenn vorhanden?
-						File[] filelist = directory.listFiles();
-						for (File tmp : filelist)
-						{
-							if (tmp.isDirectory())
-							{
-								ArrayList<File> ordnerInhalt = FileIO.recursiveDirectoryReader(tmp, new ArrayList<File>());
-								for (File tmp2 : ordnerInhalt)
-								{
-									tmp2.delete();
-								}
-
-							}
-							tmp.delete();
-						}
-
-					}
-
-					if (checkImportFromCBServer.isChecked())
-					{
-						// Import from CBServer
-						System.gc();
-						ImportCBServer importCBServer = new ImportCBServer();
-
-						long startTime = System.currentTimeMillis();
-
-						Database.Data.beginTransaction();
-						try
-						{
-
-							importCBServer.importCBServer(cbServerExportList, ip, true);
-
-							Database.Data.setTransactionSuccessful();
-						}
-						catch (Exception exc)
-						{
-							exc.printStackTrace();
-						}
-						Database.Data.endTransaction();
-
-						if (BreakawayImportThread.isCanceld())
-						{
-							cancelImport();
-							ip.ProgressChangeMsg("", "");
-							return;
-						}
-
-						Logger.LogCat("Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
-
-						System.gc();
-					}
-
-					if (checkBoxGcVote.isChecked())
+					if (checkBoxPreloadImages.isChecked())
 					{
 						dis.setAnimationType(AnimationType.Download);
-						Database.Data.beginTransaction();
-						try
-						{
-							importer.importGcVote(GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
-
-							Database.Data.setTransactionSuccessful();
-						}
-						catch (Exception exc)
-						{
-							exc.printStackTrace();
-						}
-						dis.setAnimationType(AnimationType.Work);
-						Database.Data.endTransaction();
-						if (BreakawayImportThread.isCanceld())
-						{
-							cancelImport();
-							ip.ProgressChangeMsg("", "");
-							return;
-						}
-					}
-
-					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked())
-					{
-						dis.setAnimationType(AnimationType.Download);
-						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(),
-								GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
+						int result = 0;
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 						{
@@ -1386,8 +1004,49 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						dis.setAnimationType(AnimationType.Work);
 					}
 
+					if (checkBoxExportToCBServer.isChecked())
+					{
+						ip.setJobMax("exportCBServer", 1);
+						ip.ProgressChangeMsg("Export CBServer", "");
+						runExport();
+						ip.ProgressInkrement("exportCBServer", "", true);
+					}
+
 					Thread.sleep(1000);
-					if (checkBoxImportMaps.isChecked()) importer.importMaps();
+
+					if (checkImportFromCBServer.isChecked())
+					{
+						// Import from CBServer
+						System.gc();
+						ImportCBServer importCBServer = new ImportCBServer();
+
+						long startTime = System.currentTimeMillis();
+
+						Database.Data.beginTransaction();
+						try
+						{
+
+							importCBServer.importCBServer(cbServerExportList, ip, checkBoxPreloadImages.isChecked());
+
+							Database.Data.setTransactionSuccessful();
+						}
+						catch (Exception exc)
+						{
+							exc.printStackTrace();
+						}
+						Database.Data.endTransaction();
+
+						if (BreakawayImportThread.isCanceld())
+						{
+							cancelImport();
+							ip.ProgressChangeMsg("", "");
+							return;
+						}
+
+						Logger.LogCat("Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
+
+						System.gc();
+					}
 
 					Thread.sleep(1000);
 					if (checkBoxCleanLogs.isChecked())
@@ -1496,36 +1155,76 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 	private volatile Thread CopyThread;
 
-	private void copyGPX2PQ_Folder(final String file)
+	protected void runExport()
 	{
-		// disable UI
-		dis = new ImportAnimation(scrollBox);
-		dis.setBackground(getBackground());
-
-		this.addChild(dis, false);
-
-		dis.setAnimationType(AnimationType.Work);
-
-		CopyThread = new Thread(new Runnable()
+		ExportList toExport = new ExportList();
+		// notwendige Informationen sammeln
+		for (ExportEntry entry : exportList)
 		{
-
-			@Override
-			public void run()
+			switch (entry.changeType)
 			{
-				CopyRule rule = new CopyRule(file, Config.PocketQueryFolder.getValue());
-				Copy copyHelper = new Copy(rule);
-				try
-				{
-					copyHelper.Run();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-				cancelImport();
+			case WaypointChanged:
+			case NewWaypoint:
+				// Waypoint Informationen laden
+				entry.waypoint = readWaypoint(entry.wpGcCode);
+				break;
+			case NotesText:
+				// Note Text laden
+				entry.note = Database.GetNote(entry.cacheId);
+				break;
+			case SolverText:
+				// Solver Text laden
+				entry.solver = Database.GetSolver(entry.cacheId);
+				break;
+			default:
+				break;
 			}
-		});
-		CopyThread.start();
+			if (entry.toExport)
+			{
+				// nur die Einträge exportieren die markiert wurden
+				toExport.add(entry);
+			}
+		}
+		// Export zm CB_Server auführen
+		RpcClientCB client = new RpcClientCB();
+		RpcAnswer answer = client.ExportChangesToServer(toExport);
+		if ((answer != null) && (answer instanceof RpcAnswer_ExportChangesToServer))
+		{
+			RpcAnswer_ExportChangesToServer ecs = (RpcAnswer_ExportChangesToServer) answer;
+			// Export ohne Fehler -> Replicationseinträge entfernen
+			String sql = "delete from Replication";
+			Database.Data.execSQL(sql);
+			// Liste neu laden
+			exportList.loadExportList();
+			lvExport.setBaseAdapter(new CustomAdapterExportCBServer());
+			lvExport.notifyDataSetChanged();
+		}
+		else
+		{
+			// Fehler beim Export
+			// TODO
+		}
+	}
+
+	private Waypoint readWaypoint(String wpGcCode)
+	{
+		Waypoint result = null;
+		CoreCursor reader = Database.Data
+				.rawQuery(
+						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint where GcCode = ?",
+						new String[]
+							{ wpGcCode });
+		reader.moveToFirst();
+		while (!reader.isAfterLast())
+		{
+			WaypointDAO waypointDAO = new WaypointDAO();
+			Waypoint wp = waypointDAO.getWaypoint(reader);
+			result = wp;
+			reader.moveToNext();
+
+		}
+		reader.close();
+		return result;
 	}
 
 }

@@ -360,6 +360,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
 		CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
 		CacheListButton.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
+		// CacheListButton.addAction(new CB_ActionButton(actionShowExportView, false));
 
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
 		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
