@@ -294,7 +294,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		String SolverString = solver.get(mSelectedIndex).getOrgText();
 
 		// SolverDialog solverDialog = new SolverDialog(rec, "SolverDialog", SolverString);
-		SolverDialog2 solverDialog = new SolverDialog2(SolverString);
+		SolverDialog2 solverDialog = new SolverDialog2(cache, SolverString, true);
 
 		neu = false;
 		solverDialog.show(backListner);
@@ -353,7 +353,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 		String SolverString = "";
 
-		SolverDialog2 solverDialog = new SolverDialog2(SolverString);
+		SolverDialog2 solverDialog = new SolverDialog2(cache, SolverString, true);
 
 		neu = true;
 		solverDialog.show(backListner);

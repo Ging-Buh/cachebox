@@ -61,4 +61,13 @@ public class FunctionCategories extends TreeMap<String, Functions>
 		return false;
 	}
 
+	public Function getFunction(String s)
+	{
+		for (Functions functions : this.values())
+		{
+			Function function = functions.getFunction(s);
+			if (function != null) return function;
+		}
+		return null;
+	}
 }

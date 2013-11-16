@@ -64,4 +64,17 @@ public class FunctionRound extends Function
 		return false;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return "Zahl";
+		case 1:
+			return "Nachkommastellen";
+		default:
+			return super.getParamName(i);
+		}
+	}
 }

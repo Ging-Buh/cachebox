@@ -165,4 +165,9 @@ public abstract class Function implements Serializable
 		return false;
 	}
 
+	// returns the name of the parameter with index i (for display in Solver2 dialog)
+	public String getParamName(int i)
+	{
+		return "unknown Parameter " + i;
+	}
 }
