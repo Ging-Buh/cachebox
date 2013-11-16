@@ -55,7 +55,7 @@ public class FunctionRound extends Function
 	@Override
 	public int getAnzParam()
 	{
-		return 1;
+		return 2;
 	}
 
 	@Override
