@@ -118,7 +118,6 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		LOG_LINE_ACTIVE = true;
 		DB_LINE_ACTIVE = true;
 		CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
-		innerHeight = 1000;
 		scrollBox = new ScrollBox(ActivityRec());
 		this.addChild(scrollBox);
 		createOkCancelBtn();

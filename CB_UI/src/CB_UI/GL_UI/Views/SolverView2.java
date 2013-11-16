@@ -12,8 +12,8 @@ import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEventList;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
-import CB_UI.GL_UI.Controls.Dialogs.SolverDialog;
-import CB_UI.GL_UI.Controls.Dialogs.SolverDialog.SolverBackStringListner;
+import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;
+import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.SolverBackStringListner;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.Solver.Solver;
 import CB_UI.Solver.SolverZeile;
@@ -293,7 +293,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 		String SolverString = solver.get(mSelectedIndex).getOrgText();
 
-		SolverDialog solverDialog = new SolverDialog(rec, "SolverDialog", SolverString);
+		// SolverDialog solverDialog = new SolverDialog(rec, "SolverDialog", SolverString);
+		SolverDialog2 solverDialog = new SolverDialog2(SolverString);
 
 		neu = false;
 		solverDialog.show(backListner);
@@ -352,7 +353,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 		String SolverString = "";
 
-		SolverDialog solverDialog = new SolverDialog(rec, "SolverDialog", SolverString);
+		SolverDialog2 solverDialog = new SolverDialog2(SolverString);
 
 		neu = true;
 		solverDialog.show(backListner);

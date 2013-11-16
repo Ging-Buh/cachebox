@@ -1607,6 +1607,7 @@ public class GL implements ApplicationListener, InputProcessor
 			actActivity.setEnabled(true);
 			activityHistory.remove(0);
 			ActivityIsShown = true;
+			mActivity.addChildDirekt(actActivity);
 			if (MsgToPlatformConector) platformConector.showForDialog();
 		}
 		else
