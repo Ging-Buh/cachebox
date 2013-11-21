@@ -21,7 +21,7 @@ public class PixmapDrawable extends EmptyDrawable
 			public void run()
 			{
 				tex = new Texture(pixmap);
-				tex.bind();
+//				tex.bind();
 				pixmap.dispose();
 			}
 		});

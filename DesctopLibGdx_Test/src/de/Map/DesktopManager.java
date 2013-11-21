@@ -31,7 +31,7 @@ public class DesktopManager extends ManagerBase
 	}
 
 	@Override
-	protected GraphicFactory getGraphicFactory()
+	public GraphicFactory getGraphicFactory()
 	{
 		return AwtGraphicFactory.INSTANCE;
 	}

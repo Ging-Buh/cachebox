@@ -49,6 +49,7 @@ public class ZoomButtons extends CB_View_Base
 
 	private boolean dontFadeOut = false;
 	private boolean portrait = false;
+	private boolean withoutDrawing = false;
 
 	// # Constructors
 	/**
@@ -71,6 +72,13 @@ public class ZoomButtons extends CB_View_Base
 		super(rec, view, name);
 		onResized(this);
 		resetFadeOut();
+	}
+
+	public ZoomButtons()
+	{
+		// Initial ZoomButtons without any Drawables
+		super("");
+		withoutDrawing = true;
 	}
 
 	private OnClickListener mOnClickListenerUp;
@@ -213,6 +221,7 @@ public class ZoomButtons extends CB_View_Base
 	@Override
 	public void render(SpriteBatch batch)
 	{
+		if (withoutDrawing) return;
 		super.render(batch);
 
 		if (firstDraw)

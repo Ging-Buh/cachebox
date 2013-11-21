@@ -35,7 +35,7 @@ public class AndroidManager extends ManagerBase
 	}
 
 	@Override
-	protected GraphicFactory getGraphicFactory()
+	public GraphicFactory getGraphicFactory()
 	{
 		return AndroidGraphicFactory.INSTANCE;
 	}

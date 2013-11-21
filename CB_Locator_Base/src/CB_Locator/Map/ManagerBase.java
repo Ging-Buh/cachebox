@@ -717,6 +717,6 @@ public abstract class ManagerBase
 		mapsForgeFile = layer.Name;
 	}
 
-	protected abstract GraphicFactory getGraphicFactory();
+	public abstract GraphicFactory getGraphicFactory();
 
 }

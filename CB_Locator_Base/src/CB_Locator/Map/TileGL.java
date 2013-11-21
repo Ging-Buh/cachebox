@@ -25,10 +25,8 @@ public class TileGL extends EmptyDrawable implements Destroyable
 	// zum speichern beliebiger Zusatzinfos
 	public Object data;
 
-	// TODO MapsforgeGL change to Drawable
 	private Texture texture = null;
 
-	private Pixmap pixmap;
 	private byte[] bytes;
 
 	// / <summary>
@@ -60,8 +58,10 @@ public class TileGL extends EmptyDrawable implements Destroyable
 		if (bytes == null) return;
 		try
 		{
-			pixmap = new Pixmap(bytes, 0, bytes.length);
+			Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
 			texture = new Texture(pixmap);
+			pixmap.dispose();
+			pixmap = null;
 		}
 		catch (Exception ex)
 		{
@@ -87,14 +87,6 @@ public class TileGL extends EmptyDrawable implements Destroyable
 			@Override
 			public void run()
 			{
-				try
-				{
-					if (pixmap != null) pixmap.dispose();
-				}
-				catch (Exception e1)
-				{
-					e1.printStackTrace();
-				}
 
 				try
 				{
@@ -106,7 +98,7 @@ public class TileGL extends EmptyDrawable implements Destroyable
 				}
 				texture = null;
 				bytes = null;
-				pixmap = null;
+
 			}
 		});
 

@@ -322,7 +322,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		this.drawingWidth = (int) rec.getWidth();
 		this.drawingHeight = (int) rec.getHeight();
 
-		camera = new OrthographicCamera(MainViewBase.mainView.getWidth(), MainViewBase.mainView.getHeight());
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		aktZoom = zoomBtn.getZoom();
 
@@ -428,7 +428,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				reduceFps = false;
 
 			calcPixelsPerMeter();
-			mapScale.ZoomChanged();
+			if (mapScale != null) mapScale.ZoomChanged();
 			if (zoomScale != null) zoomScale.setZoom(mapTileLoader.convertCameraZommToFloat(camera));
 
 		}

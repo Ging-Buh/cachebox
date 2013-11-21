@@ -95,7 +95,14 @@ public class GL_UISizes implements SizeChangedEvent
 				}
 			});
 
-			Fonts.loadFonts(CB_Skin.INSTANCE);
+			try
+			{
+				Fonts.loadFonts(CB_Skin.INSTANCE);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 
 			calcPos();
 
@@ -244,7 +251,18 @@ public class GL_UISizes implements SizeChangedEvent
 		ZoomBtn.setPos(new Vector2((w - margin - ZoomBtn.getWidth()), margin));
 
 		InfoLine1.x = Compass.crossPos.x + margin;
-		TextBounds bounds = Fonts.getNormal().getBounds("52° 34,806N ");
+		TextBounds bounds;
+		if (Fonts.getNormal() != null)
+		{
+			bounds = Fonts.getNormal().getBounds("52° 34,806N ");
+		}
+		else
+		{
+			bounds = new TextBounds();
+			bounds.height = 20;
+			bounds.width = 100;
+		}
+
 		InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - (margin * 2);
 
 		Float T1 = Info.getHeight() / 4;
