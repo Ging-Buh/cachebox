@@ -67,4 +67,15 @@ public class FunctionReverse extends Function
 		return DataType.String;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return "solverParamText";
+		default:
+			return super.getParamName(i);
+		}
+	}
 }

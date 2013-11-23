@@ -89,4 +89,19 @@ public class FunctionIntersection extends Function
 		return DataType.Coordinate;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		switch (i)
+		{
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+			return "solverParamCoordinate";
+		default:
+			return super.getParamName(i);
+		}
+	}
+
 }

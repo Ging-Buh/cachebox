@@ -86,4 +86,10 @@ public class FunctionBearing extends Function
 		return DataType.Float;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		return "solverParamCoordinate";
+	}
+
 }

@@ -77,6 +77,9 @@ public class FunctionMid extends Function
 		{
 		case 0:
 			return DataType.String;
+		case 1:
+		case 2:
+			return DataType.Integer;
 		default:
 			return DataType.None;
 		}
@@ -88,4 +91,18 @@ public class FunctionMid extends Function
 		return DataType.String;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return "solverParamText";
+		case 1:
+		case 2:
+			return "solverParamInteger";
+		default:
+			return super.getParamName(i);
+		}
+	}
 }

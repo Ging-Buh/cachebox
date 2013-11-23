@@ -88,4 +88,16 @@ public class FunctionDistance extends Function
 		return DataType.Float;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		switch (i)
+		{
+		case 0:
+		case 1:
+			return "solverParamCoordinate";
+		default:
+			return super.getParamName(i);
+		}
+	}
 }

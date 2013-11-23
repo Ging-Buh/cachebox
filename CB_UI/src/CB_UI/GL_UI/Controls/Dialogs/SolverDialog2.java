@@ -832,7 +832,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		String paramName = "Parameter " + i;
 		if (function != null)
 		{
-			paramName = function.getParamName(i);
+			paramName = Translation.Get(function.getParamName(i));
 		}
 		// Eingabefelder für die Parameter einfügen
 		lFunctionParam[i] = new Label();

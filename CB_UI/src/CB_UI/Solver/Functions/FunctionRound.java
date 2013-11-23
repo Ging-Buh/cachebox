@@ -71,9 +71,9 @@ public class FunctionRound extends Function
 		switch (i)
 		{
 		case 0:
-			return "Zahl";
+			return "solverParamNumber";
 		case 1:
-			return "Nachkommastellen";
+			return "solverParamDecimalPlaces";
 		default:
 			return super.getParamName(i);
 		}
@@ -96,4 +96,5 @@ public class FunctionRound extends Function
 			return DataType.None;
 		}
 	}
+
 }

@@ -74,4 +74,16 @@ public class FunctionQuerprodukt extends Function
 		return DataType.Integer;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return "solverParamInteger";
+		default:
+			return super.getParamName(i);
+		}
+	}
+
 }

@@ -72,4 +72,9 @@ public class FunctionAlphaPos extends Function
 		return DataType.Integer;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		return "solverParamText";
+	}
 }

@@ -98,4 +98,20 @@ public class FunctionProjection extends Function
 	{
 		return DataType.Coordinate;
 	}
+
+	@Override
+	public String getParamName(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return "solverParamCoordinate";
+		case 1:
+			return "solverParamDistance";
+		case 2:
+			return "solverParamAngle";
+		default:
+			return super.getParamName(i);
+		}
+	}
 }

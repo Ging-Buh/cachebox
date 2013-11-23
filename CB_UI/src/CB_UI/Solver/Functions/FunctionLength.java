@@ -67,4 +67,15 @@ public class FunctionLength extends Function
 		return DataType.Integer;
 	}
 
+	@Override
+	public String getParamName(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return "solverParamText";
+		default:
+			return super.getParamName(i);
+		}
+	}
 }
