@@ -381,7 +381,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// damit die Änderungen in sForm gespeichert werden
-				showPage(pages.Nothing);
+				saveAktPage();
 				String result = "";
 				if (mVariableField != null)
 				{
@@ -425,10 +425,14 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	@Override
 	public void onStateChange(GL_View_Base v, int State)
 	{
+
 		pages newPage = null;
 		// Statusänderung eines MultiToggleButtons
 		if (State == 1)
 		{
+			// Werte der aktuellen Seite in den String sForm speichern
+			saveAktPage();
+
 			if (v == visibleButtons.get(buttons.Text))
 			{
 				newPage = pages.Text;
@@ -464,6 +468,45 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			{
 				showPage(newPage);
 			}
+			else
+			{
+				// Button States zurück setzen
+				setButtonStates();
+			}
+		}
+	}
+
+	// Werte der aktuellen Seite in den String sForm speichern
+	private void saveAktPage()
+	{
+		switch (this.page)
+		{
+		case Coordinate:
+			savePageCoordinate();
+			break;
+		case Function:
+			savePageFunction();
+			break;
+		case Nothing:
+			break;
+		case Operator:
+			// savePageOperator();
+			break;
+		case Text:
+			savePageText();
+			break;
+		case Variable:
+			savePageVariable();
+			break;
+		case Waypoint:
+			savePageWaypoint();
+			break;
+		case Zahl:
+			savePageZahl();
+			break;
+		default:
+			break;
+
 		}
 	}
 
@@ -544,14 +587,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 		this.page = page;
 		// set State of buttons
-		if (visibleButtons.get(buttons.Text) != null) visibleButtons.get(buttons.Text).setState(page == pages.Text ? 1 : 0);
-		if (visibleButtons.get(buttons.Zahl) != null) visibleButtons.get(buttons.Zahl).setState(page == pages.Zahl ? 1 : 0);
-		if (visibleButtons.get(buttons.Function) != null) visibleButtons.get(buttons.Function).setState(page == pages.Function ? 1 : 0);
-		if (visibleButtons.get(buttons.Variable) != null) visibleButtons.get(buttons.Variable).setState(page == pages.Variable ? 1 : 0);
-		if (visibleButtons.get(buttons.Operator) != null) visibleButtons.get(buttons.Operator).setState(page == pages.Operator ? 1 : 0);
-		if (visibleButtons.get(buttons.Waypoint) != null) visibleButtons.get(buttons.Waypoint).setState(page == pages.Waypoint ? 1 : 0);
-		if (visibleButtons.get(buttons.Coordinate) != null) visibleButtons.get(buttons.Coordinate).setState(
-				page == pages.Coordinate ? 1 : 0);
+		setButtonStates();
 
 		switch (page)
 		{
@@ -582,9 +618,20 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		Layout();
 	}
 
+	private void setButtonStates()
+	{
+		if (visibleButtons.get(buttons.Text) != null) visibleButtons.get(buttons.Text).setState(page == pages.Text ? 1 : 0);
+		if (visibleButtons.get(buttons.Zahl) != null) visibleButtons.get(buttons.Zahl).setState(page == pages.Zahl ? 1 : 0);
+		if (visibleButtons.get(buttons.Function) != null) visibleButtons.get(buttons.Function).setState(page == pages.Function ? 1 : 0);
+		if (visibleButtons.get(buttons.Variable) != null) visibleButtons.get(buttons.Variable).setState(page == pages.Variable ? 1 : 0);
+		if (visibleButtons.get(buttons.Operator) != null) visibleButtons.get(buttons.Operator).setState(page == pages.Operator ? 1 : 0);
+		if (visibleButtons.get(buttons.Waypoint) != null) visibleButtons.get(buttons.Waypoint).setState(page == pages.Waypoint ? 1 : 0);
+		if (visibleButtons.get(buttons.Coordinate) != null) visibleButtons.get(buttons.Coordinate).setState(
+				page == pages.Coordinate ? 1 : 0);
+	}
+
 	private void hidePageText()
 	{
-		sForm = mFormulaField.getText();
 		scrollBox.removeChild(mFormulaField);
 		mFormulaField = null;
 	}
@@ -611,6 +658,14 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		});
 
 		scrollBox.addChild(mFormulaField);
+	}
+
+	private void savePageText()
+	{
+		if (mFormulaField != null)
+		{
+			sForm = mFormulaField.getText();
+		}
 	}
 
 	private void showPageZahl()
@@ -692,7 +747,6 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageZahl()
 	{
-		sForm = tbZahl.getText();
 		scrollBox.removeChild(tbZahl);
 		tbZahl = null;
 		for (int i = 0; i < 12; i++)
@@ -700,6 +754,14 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			scrollBox.removeChild(bZahl[i]);
 		}
 		bZahl = null;
+	}
+
+	private void savePageZahl()
+	{
+		if (tbZahl != null)
+		{
+			sForm = tbZahl.getText();
+		}
 	}
 
 	private void showPageFunction()
@@ -839,6 +901,20 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageFunction()
 	{
+		// Parameter entfernen
+		removeFunctionParam();
+		scrollBox.removeChild(tbFunction);
+		scrollBox.removeChild(bFunction);
+		tbFunction = null;
+		bFunction = null;
+	}
+
+	private void savePageFunction()
+	{
+		if (tbFunction == null)
+		{
+			return;
+		}
 		// geänderte Formel merken
 		sForm = tbFunction.getText();
 		if (sForm.length() > 0)
@@ -854,12 +930,6 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			}
 			sForm += ")";
 		}
-		// Parameter entfernen
-		removeFunctionParam();
-		scrollBox.removeChild(tbFunction);
-		scrollBox.removeChild(bFunction);
-		tbFunction = null;
-		bFunction = null;
 	}
 
 	private void removeFunctionParam()
@@ -926,6 +996,16 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageVariable()
 	{
+		for (Label l : lVariables)
+		{
+			scrollBox.removeChild(l);
+		}
+		cbVariables = null;
+		lVariables = null;
+	}
+
+	private void savePageVariable()
+	{
 		for (chkBox cb : cbVariables)
 		{
 			scrollBox.removeChild(cb);
@@ -938,12 +1018,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 				}
 			}
 		}
-		for (Label l : lVariables)
-		{
-			scrollBox.removeChild(l);
-		}
-		cbVariables = null;
-		lVariables = null;
+
 	}
 
 	private void showPageOperator()
@@ -1048,6 +1123,16 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageWaypoint()
 	{
+		for (Label l : lWaypoints)
+		{
+			scrollBox.removeChild(l);
+		}
+		cbWaypoints = null;
+		lWaypoints = null;
+	}
+
+	private void savePageWaypoint()
+	{
 		for (chkBox cb : cbWaypoints)
 		{
 			scrollBox.removeChild(cb);
@@ -1060,12 +1145,6 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 				}
 			}
 		}
-		for (Label l : lWaypoints)
-		{
-			scrollBox.removeChild(l);
-		}
-		cbWaypoints = null;
-		lWaypoints = null;
 	}
 
 	private void showPageCoordinate()
@@ -1077,11 +1156,15 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageCoordinate()
 	{
+		scrollBox.removeChild(bCoord);
+		bCoord = null;
+	}
+
+	private void savePageCoordinate()
+	{
 		if (bCoord.getCoordinate().isValid())
 		{
 			sForm = bCoord.getCoordinate().FormatCoordinate();
 		}
-		scrollBox.removeChild(bCoord);
-		bCoord = null;
 	}
 }
