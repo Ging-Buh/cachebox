@@ -1,6 +1,7 @@
 package CB_UI.Solver.Functions;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Solver.DataTypes.DataType;
 
 public class FunctionRound extends Function
 {
@@ -75,6 +76,24 @@ public class FunctionRound extends Function
 			return "Nachkommastellen";
 		default:
 			return super.getParamName(i);
+		}
+	}
+
+	@Override
+	public DataType getReturnType()
+	{
+		return DataType.Float;
+	}
+
+	@Override
+	public DataType getParamType(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return DataType.Float;
+		default:
+			return DataType.None;
 		}
 	}
 }

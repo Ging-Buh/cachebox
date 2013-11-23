@@ -2,6 +2,7 @@ package CB_UI.Solver.Functions;
 
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Solver.DataTypes.DataType;
 import CB_Utils.MathUtils.CalculationType;
 
 public class FunctionCrossbearing extends Function
@@ -74,4 +75,29 @@ public class FunctionCrossbearing extends Function
 	{
 		return false;
 	}
+
+	@Override
+	public DataType getParamType(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return DataType.Coordinate;
+		case 1:
+			return DataType.Float;
+		case 2:
+			return DataType.Coordinate;
+		case 3:
+			return DataType.Float;
+		default:
+			return DataType.None;
+		}
+	}
+
+	@Override
+	public DataType getReturnType()
+	{
+		return DataType.Coordinate;
+	}
+
 }

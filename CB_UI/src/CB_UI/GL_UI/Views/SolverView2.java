@@ -15,6 +15,7 @@ import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.SolverBackStringListner;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.Solver.DataTypes.DataType;
 import CB_UI.Solver.Solver;
 import CB_UI.Solver.SolverZeile;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -294,7 +295,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		String SolverString = solver.get(mSelectedIndex).getOrgText();
 
 		// SolverDialog solverDialog = new SolverDialog(rec, "SolverDialog", SolverString);
-		SolverDialog2 solverDialog = new SolverDialog2(cache, SolverString, true);
+		SolverDialog2 solverDialog = new SolverDialog2(cache, SolverString, true, DataType.None);
 
 		neu = false;
 		solverDialog.show(backListner);
@@ -353,7 +354,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 		String SolverString = "";
 
-		SolverDialog2 solverDialog = new SolverDialog2(cache, SolverString, true);
+		SolverDialog2 solverDialog = new SolverDialog2(cache, SolverString, true, DataType.None);
 
 		neu = true;
 		solverDialog.show(backListner);

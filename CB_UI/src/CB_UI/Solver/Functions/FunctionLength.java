@@ -1,6 +1,7 @@
 package CB_UI.Solver.Functions;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Solver.DataTypes.DataType;
 
 public class FunctionLength extends Function
 {
@@ -46,6 +47,24 @@ public class FunctionLength extends Function
 	public boolean needsTextArgument()
 	{
 		return true;
+	}
+
+	@Override
+	public DataType getParamType(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return DataType.String;
+		default:
+			return DataType.None;
+		}
+	}
+
+	@Override
+	public DataType getReturnType()
+	{
+		return DataType.Integer;
 	}
 
 }

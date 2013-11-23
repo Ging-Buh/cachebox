@@ -2,6 +2,7 @@ package CB_UI.Solver.Functions;
 
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Solver.DataTypes.DataType;
 
 public class FunctionIntersection extends Function
 {
@@ -63,4 +64,29 @@ public class FunctionIntersection extends Function
 	{
 		return false;
 	}
+
+	@Override
+	public DataType getParamType(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return DataType.Coordinate;
+		case 1:
+			return DataType.Coordinate;
+		case 2:
+			return DataType.Coordinate;
+		case 3:
+			return DataType.Coordinate;
+		default:
+			return DataType.None;
+		}
+	}
+
+	@Override
+	public DataType getReturnType()
+	{
+		return DataType.Coordinate;
+	}
+
 }

@@ -1,6 +1,7 @@
 package CB_UI.Solver.Functions;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Solver.DataTypes.DataType;
 
 // ************************************************************************
 // ********************** Iterierte (einstellige) Quersumme (Iterated CrossTotal) **************************
@@ -65,6 +66,24 @@ public class FunctionIQuersumme extends Function
 	public boolean needsTextArgument()
 	{
 		return false;
+	}
+
+	@Override
+	public DataType getParamType(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return DataType.Integer;
+		default:
+			return DataType.None;
+		}
+	}
+
+	@Override
+	public DataType getReturnType()
+	{
+		return DataType.Integer;
 	}
 
 }

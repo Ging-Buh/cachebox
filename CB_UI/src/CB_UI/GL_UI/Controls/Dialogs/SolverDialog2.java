@@ -1,5 +1,7 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
+import java.util.TreeMap;
+
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -7,6 +9,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_UI.GL_UI.Controls.CoordinateButton;
+import CB_UI.Solver.DataTypes.DataType;
 import CB_UI.Solver.Solver;
 import CB_UI.Solver.Functions.Function;
 import CB_UI_Base.Enums.WrapType;
@@ -15,6 +18,8 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
@@ -34,9 +39,55 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		Nothing, Text, Zahl, Function, Variable, Operator, Waypoint, Coordinate
 	}
 
+	private enum buttons
+	{
+		Text(pages.Text, "TXT"), Zahl(pages.Zahl, "123"), Function(pages.Function, "f(x)"), Variable(pages.Variable, "@"), Operator(
+				pages.Operator,
+				"+-*/"), Waypoint(pages.Waypoint, "$GC"), Coordinate(pages.Coordinate, "°");
+		private pages page;
+		public String description;
+
+		private buttons(pages page, String description)
+		{
+			this.page = page;
+			this.description = description;
+		}
+
+		public boolean hasDataType(DataType dataType)
+		{
+			if (dataType == DataType.None) return true; // wenn kein spezieller DataType angegeben ist -> alle Pages anzeigen
+			if (dataType == DataType.String) return true; // alles kann als String zurück gegeben werden
+			switch (page)
+			{
+			case Coordinate:
+				return dataType == DataType.Coordinate;
+			case Function:
+				return true;
+			case Nothing:
+				return true;
+			case Operator:
+				return (dataType == DataType.Integer) || (dataType == DataType.Float);
+			case Text:
+				return true;
+			case Variable:
+				return true;
+			case Waypoint:
+				return dataType == DataType.Coordinate;
+			case Zahl:
+				return (dataType == DataType.Integer) || (dataType == dataType.Float);
+			default:
+				break;
+
+			}
+			return true;
+		}
+	}
+
+	private TreeMap<buttons, MultiToggleButton> visibleButtons = new TreeMap<buttons, MultiToggleButton>();
 	private SolverBackStringListner mBackStringListner;
 	private Cache aktCache;
 	private String solverString;
+	private DataType dataType; // DataType of Parameter which must be returned
 	private String sVar;
 	private String sForm;
 	private pages page;
@@ -46,13 +97,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private float innerLeft;
 	private EditTextField mVariableField;
 	private Label lblGleich;
-	private MultiToggleButton btnTxt;
-	private MultiToggleButton btnZahl;
-	private MultiToggleButton btnFx;
-	private MultiToggleButton btnVar;
-	private MultiToggleButton btnOp;
-	private MultiToggleButton btnWp;
-	private MultiToggleButton btnCoord;
+	private EditTextField tbGesamt;
 	// Page Text
 	private EditTextField mFormulaField;
 	// Page Zahl
@@ -83,11 +128,12 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		public void BackString(String backString);
 	}
 
-	public SolverDialog2(Cache aktCache, String solverString, boolean showVariableField)
+	public SolverDialog2(Cache aktCache, String solverString, boolean showVariableField, DataType dataType)
 	{
 		super(ActivityRec(), "solverActivity");
 		this.solverString = solverString;
 		this.aktCache = aktCache;
+		this.dataType = dataType;
 		// Split Solver String by =
 		String[] solverStrings = solverString.split("=", 2);
 		sVar = "";
@@ -110,6 +156,12 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		scrollBox.setHeight(lblTitle.getY() - bOK.getMaxY() - margin - margin);
 		scrollBox.setY(bOK.getMaxY() + margin);
 		scrollBox.setBackground(this.getBackground());
+
+		tbGesamt = new EditTextField();
+		tbGesamt.setX(innerLeft);
+		tbGesamt.setWidth(innerWidth);
+		tbGesamt.setText(sForm);
+		// scrollBox.addChild(tbGesamt);
 
 		if (showVariableField)
 		{
@@ -152,77 +204,35 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	{
 		innerLeft = margin;
 
+		visibleButtons.clear();
 		// Buttons zur Auswahl des Dialog-Typs
-		float w = innerWidth / 7;
+		// nur die Buttons werden angezeigt, die auch den gewünschten DataType liefern können
+		for (buttons btn : buttons.values())
+		{
+			if (btn == buttons.Operator) continue; // Operator erstmal noch nicht anzeigen
+			if ((dataType == null) || btn.hasDataType(dataType))
+			{
+				MultiToggleButton button = new MultiToggleButton(0, 0, 0, UI_Size_Base.that.getButtonHeight(), btn.description);
+				button.addState(btn.description, Color.GRAY);
+				button.addState(btn.description, Color.GREEN);
+				button.setOnStateChangedListner(this);
+				visibleButtons.put(btn, button);
+				scrollBox.addChild(button);
+			}
+		}
+		float w = innerWidth / visibleButtons.size();
 		float x = 0;
-		btnTxt = new MultiToggleButton(x, 0, w, UI_Size_Base.that.getButtonHeight(), "TXT");
-		scrollBox.addChild(btnTxt);
-		x += w;
-		btnZahl = new MultiToggleButton(x, 0, w, UI_Size_Base.that.getButtonHeight(), "123");
-		scrollBox.addChild(btnZahl);
-		x += w;
-		btnFx = new MultiToggleButton(x, 0, w, UI_Size_Base.that.getButtonHeight(), "f(x)");
-		scrollBox.addChild(btnFx);
-		x += w;
-		btnVar = new MultiToggleButton(x, 0, w, UI_Size_Base.that.getButtonHeight(), "@");
-		scrollBox.addChild(btnVar);
-		x += w;
-		btnOp = new MultiToggleButton(x, 0, w, UI_Size_Base.that.getButtonHeight(), "+-");
-		scrollBox.addChild(btnOp);
-		x += w;
-		btnWp = new MultiToggleButton(x, 0, w, UI_Size_Base.that.getButtonHeight(), "$GC");
-		scrollBox.addChild(btnWp);
-		x += w;
-		btnCoord = new MultiToggleButton(x, 0, w, UI_Size_Base.that.getButtonHeight(), "°");
-		scrollBox.addChild(btnCoord);
-
-		String caption = Translation.Get("TXT");
-		btnTxt.setText(caption);
-		btnTxt.addState(caption, Color.GRAY);
-		btnTxt.addState(caption, Color.GREEN);
-		btnTxt.setOnStateChangedListner(this);
-
-		caption = Translation.Get("123");
-		btnZahl.setText(caption);
-		btnZahl.addState(caption, Color.GRAY);
-		btnZahl.addState(caption, Color.GREEN);
-		btnZahl.setOnStateChangedListner(this);
-
-		caption = Translation.Get("f(x)");
-		btnFx.setText(caption);
-		btnFx.addState(caption, Color.GRAY);
-		btnFx.addState(caption, Color.GREEN);
-		btnFx.setOnStateChangedListner(this);
-
-		caption = Translation.Get("@");
-		btnVar.setText(caption);
-		btnVar.addState(caption, Color.GRAY);
-		btnVar.addState(caption, Color.GREEN);
-		btnVar.setOnStateChangedListner(this);
-
-		caption = Translation.Get("+-*/");
-		btnOp.setText(caption);
-		btnOp.addState(caption, Color.GRAY);
-		btnOp.addState(caption, Color.GREEN);
-		btnOp.setOnStateChangedListner(this);
-
-		caption = Translation.Get("$GC");
-		btnWp.setText(caption);
-		btnWp.addState(caption, Color.GRAY);
-		btnWp.addState(caption, Color.GREEN);
-		btnWp.setOnStateChangedListner(this);
-
-		caption = Translation.Get("°");
-		btnCoord.setText(caption);
-		btnCoord.addState(caption, Color.GRAY);
-		btnCoord.addState(caption, Color.GREEN);
-		btnCoord.setOnStateChangedListner(this);
-
+		for (MultiToggleButton btn : visibleButtons.values())
+		{
+			btn.setX(x);
+			btn.setWidth(w);
+			x += w;
+		}
 	}
 
 	private void Layout()
 	{
-		float y = margin + innerHeight - btnTxt.getHeight() * 4;
+		float y = margin + innerHeight - visibleButtons.get(buttons.Text).getHeight() * 4;
 
 		switch (page)
 		{
@@ -325,14 +335,14 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			break;
 		}
 
-		btnTxt.setY(y);
-		btnZahl.setY(y);
-		btnFx.setY(y);
-		btnVar.setY(y);
-		btnOp.setY(y);
-		btnWp.setY(y);
-		btnCoord.setY(y);
-		y += btnTxt.getHeight() + margin;
+		for (MultiToggleButton mtb : visibleButtons.values())
+		{
+			mtb.setY(y);
+		}
+		y += visibleButtons.get(buttons.Text).getHeight() + margin;
+
+		// tbGesamt.setY(y);
+		// y += tbGesamt.getHeight();
 
 		if (lblGleich != null)
 		{
@@ -415,38 +425,89 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	@Override
 	public void onStateChange(GL_View_Base v, int State)
 	{
+		pages newPage = null;
 		// Statusänderung eines MultiToggleButtons
 		if (State == 1)
 		{
-			if (v == btnTxt)
+			if (v == visibleButtons.get(buttons.Text))
 			{
-				showPage(pages.Text);
+				newPage = pages.Text;
 			}
-			if (v == btnZahl)
+			if (v == visibleButtons.get(buttons.Zahl))
 			{
-				showPage(pages.Zahl);
+				newPage = pages.Zahl;
 			}
-			if (v == btnFx)
+			if (v == visibleButtons.get(buttons.Function))
 			{
-				showPage(pages.Function);
+				newPage = pages.Function;
 			}
-			if (v == btnVar)
+			if (v == visibleButtons.get(buttons.Variable))
 			{
-				showPage(pages.Variable);
+				newPage = pages.Variable;
 			}
-			if (v == btnOp)
+			if (v == visibleButtons.get(buttons.Operator))
 			{
-				showPage(pages.Operator);
+				newPage = pages.Operator;
 			}
-			if (v == btnWp)
+			if (v == visibleButtons.get(buttons.Waypoint))
 			{
-				showPage(pages.Waypoint);
+				newPage = pages.Waypoint;
 			}
-			if (v == btnCoord)
+			if (v == visibleButtons.get(buttons.Coordinate))
 			{
-				showPage(pages.Coordinate);
+				newPage = pages.Coordinate;
 			}
 		}
+		if (newPage != null)
+		{
+			if (checkDataType(newPage))
+			{
+				showPage(newPage);
+			}
+		}
+	}
+
+	// überprüft für alle pages, ob der aktuell eingegebene String einen gültigen Wert für diese Page darstellt
+	private void checkDataTypes()
+	{
+		for (pages p : pages.values())
+		{
+			checkDataType(p);
+		}
+	}
+
+	private boolean checkDataType(pages p)
+	{
+		boolean valid = true;
+		if (sForm.length() == 0) return true;
+		switch (p)
+		{
+		case Coordinate:
+			Coordinate c = new Coordinate(sForm);
+			valid = (c != null) && (c.isValid());
+			break;
+		case Function:
+			break;
+		case Nothing:
+			break;
+		case Operator:
+			break;
+		case Text:
+			break;
+		case Variable:
+			break;
+		case Waypoint:
+			if (sForm.charAt(0) != '$') valid = false;
+			break;
+		case Zahl:
+			if (!isZahl(sForm)) valid = false;
+			break;
+		default:
+			break;
+
+		}
+		return valid;
+
 	}
 
 	private void showPage(pages page)
@@ -483,13 +544,14 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 		this.page = page;
 		// set State of buttons
-		btnTxt.setState(page == pages.Text ? 1 : 0);
-		btnZahl.setState(page == pages.Zahl ? 1 : 0);
-		btnFx.setState(page == pages.Function ? 1 : 0);
-		btnVar.setState(page == pages.Variable ? 1 : 0);
-		btnOp.setState(page == pages.Operator ? 1 : 0);
-		btnWp.setState(page == pages.Waypoint ? 1 : 0);
-		btnCoord.setState(page == pages.Coordinate ? 1 : 0);
+		if (visibleButtons.get(buttons.Text) != null) visibleButtons.get(buttons.Text).setState(page == pages.Text ? 1 : 0);
+		if (visibleButtons.get(buttons.Zahl) != null) visibleButtons.get(buttons.Zahl).setState(page == pages.Zahl ? 1 : 0);
+		if (visibleButtons.get(buttons.Function) != null) visibleButtons.get(buttons.Function).setState(page == pages.Function ? 1 : 0);
+		if (visibleButtons.get(buttons.Variable) != null) visibleButtons.get(buttons.Variable).setState(page == pages.Variable ? 1 : 0);
+		if (visibleButtons.get(buttons.Operator) != null) visibleButtons.get(buttons.Operator).setState(page == pages.Operator ? 1 : 0);
+		if (visibleButtons.get(buttons.Waypoint) != null) visibleButtons.get(buttons.Waypoint).setState(page == pages.Waypoint ? 1 : 0);
+		if (visibleButtons.get(buttons.Coordinate) != null) visibleButtons.get(buttons.Coordinate).setState(
+				page == pages.Coordinate ? 1 : 0);
 
 		switch (page)
 		{
@@ -535,6 +597,18 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		mFormulaField.setWidth(innerWidth);
 		mFormulaField.setText(sForm);
 		mFormulaField.setZeroPos();
+		mFormulaField.setTextFieldListener(new TextFieldListener()
+		{
+			@Override
+			public void lineCountChanged(EditTextFieldBase textField, int lineCount, float textHeight)
+			{
+			}
+
+			@Override
+			public void keyTyped(EditTextFieldBase textField, char key)
+			{
+			}
+		});
 
 		scrollBox.addChild(mFormulaField);
 	}
@@ -551,6 +625,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			bZahl[i] = new Button(lZahl[i]);
 			bZahl[i].setData(i);
 			scrollBox.addChild(bZahl[i]);
+			if ((i == 1) && (dataType == DataType.Integer))
+			{
+				// Integer erwartet -> kein Komma anzeigen
+				bZahl[i].setVisible(false);
+			}
 			bZahl[i].setOnClickListener(new OnClickListener()
 			{
 				@Override
@@ -661,7 +740,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// Funktionsauswahl zeigen
-				SelectSolverFunction ssf = new SelectSolverFunction(new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(dataType, new IFunctionResult()
 				{
 					@Override
 					public void selectedFunction(Function function)
@@ -686,7 +765,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		});
 	}
 
-	private void addFunctionParamLine(Function function, int i, String string)
+	private void addFunctionParamLine(final Function function, int i, String string)
 	{
 		String paramName = "Parameter " + i;
 		if (function != null)
@@ -711,12 +790,17 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				String param = "";
+				DataType type = DataType.None;
 				Integer i = (Integer) v.getData();
 				if (i != null)
 				{
 					param = tbFunctionParam[i].getText();
+					if (function != null)
+					{
+						type = function.getParamType(i);
+					}
 				}
-				SolverDialog2 sd2 = new SolverDialog2(aktCache, param, false);
+				SolverDialog2 sd2 = new SolverDialog2(aktCache, param, false, type);
 				sd2.show(new SolverBackStringListner()
 				{
 					@Override
@@ -732,6 +816,19 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 				return true;
 			}
 		});
+	}
+
+	private DataType getFunctionDataType(String functionName)
+	{
+		Function function = Solver.functions.getFunction(functionName);
+		if (function == null)
+		{
+			return DataType.None;
+		}
+		else
+		{
+			return function.getReturnType();
+		}
 	}
 
 	private void addFunctionParamLine(String functionString, int i, String string)
@@ -875,7 +972,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			{
 				param = tb.getText();
 			}
-			SolverDialog2 sd2 = new SolverDialog2(aktCache, param, false);
+			SolverDialog2 sd2 = new SolverDialog2(aktCache, param, false, DataType.Float);
 			sd2.show(new SolverBackStringListner()
 			{
 				@Override
@@ -980,7 +1077,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageCoordinate()
 	{
-		sForm = bCoord.getCoordinate().FormatCoordinate();
+		if (bCoord.getCoordinate().isValid())
+		{
+			sForm = bCoord.getCoordinate().FormatCoordinate();
+		}
 		scrollBox.removeChild(bCoord);
 		bCoord = null;
 	}

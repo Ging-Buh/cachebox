@@ -2,6 +2,7 @@ package CB_UI.Solver.Functions;
 
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Solver.DataTypes.DataType;
 
 public class FunctionProjection extends Function
 {
@@ -76,4 +77,25 @@ public class FunctionProjection extends Function
 		return true;
 	}
 
+	@Override
+	public DataType getParamType(int i)
+	{
+		switch (i)
+		{
+		case 0:
+			return DataType.Coordinate;
+		case 1:
+			return DataType.Float;
+		case 2:
+			return DataType.Float;
+		default:
+			return DataType.None;
+		}
+	}
+
+	@Override
+	public DataType getReturnType()
+	{
+		return DataType.Coordinate;
+	}
 }

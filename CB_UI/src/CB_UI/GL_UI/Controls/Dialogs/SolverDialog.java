@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Controls.Dialogs;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
+import CB_UI.Solver.DataTypes.DataType;
 import CB_UI.Solver.Functions.Function;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
@@ -446,7 +447,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// Funktionsauswahl zeigen
-				SelectSolverFunction ssf = new SelectSolverFunction(new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(DataType.None, new IFunctionResult()
 				{
 					@Override
 					public void selectedFunction(Function function)

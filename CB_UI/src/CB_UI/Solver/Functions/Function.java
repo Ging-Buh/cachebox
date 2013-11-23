@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Solver.DataTypes.DataType;
 import CB_UI.Solver.EntityList;
 import CB_UI.Solver.FunctionEntity;
 import CB_UI.Solver.TempEntity;
@@ -169,5 +170,40 @@ public abstract class Function implements Serializable
 	public String getParamName(int i)
 	{
 		return "unknown Parameter " + i;
+	}
+
+	// returns the DataType this function returns
+	public DataType getReturnType()
+	{
+		return DataType.None;
+	}
+
+	public DataType getParamType(int i)
+	{
+		return DataType.None;
+	}
+
+	public boolean returnsDataType(DataType dataType)
+	{
+		// Return Type dieser Funktion
+		DataType dt = getReturnType();
+		// Wenn eine Funktion keinen speziellen ReturnDataType gegeben hat -> könnte für den gegebenen Fall gehen -> true
+		if (dt == DataType.None) return true;
+		switch (dataType)
+		{
+		case Coordinate:
+			return dt == DataType.Coordinate;
+		case Float:
+			return (dt == DataType.Integer) || (dt == DataType.Float);
+		case Integer:
+			return dt == DataType.Integer;
+		case None:
+			return true;
+		case String:
+			return true; // alles kann als String interpretiert werden!
+		default:
+			return true;
+
+		}
 	}
 }

@@ -8,6 +8,7 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
+import CB_UI.Solver.DataTypes.DataType;
 import CB_UI.Solver.Solver;
 import CB_UI.Solver.SolverZeile;
 import CB_UI.Solver.Functions.Function;
@@ -75,7 +76,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			@Override
 			public void onClick(View arg0)
 			{
-				SelectSolverFunction ssf = new SelectSolverFunction(new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(DataType.None, new IFunctionResult()
 				{
 
 					@Override
