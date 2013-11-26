@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.utils;
 
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
 import com.badlogic.gdx.graphics.Pixmap;
@@ -14,7 +14,7 @@ public class PixmapDrawable extends EmptyDrawable
 	public PixmapDrawable(final Pixmap pixmap)
 	{
 		// must create on GL Thread
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

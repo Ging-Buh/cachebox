@@ -4,7 +4,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.ColorPickerRec;
@@ -272,7 +272,7 @@ public class ColorPicker extends ActivityBase
 	private void regenarateActColorBox()
 	{
 
-		RunOnGL(new runOnGL()
+		RunOnGL(new IRunOnGL()
 		{
 
 			@Override

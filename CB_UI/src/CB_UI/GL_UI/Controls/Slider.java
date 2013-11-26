@@ -14,7 +14,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Handler;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -337,7 +337,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	private void setPos_onUI(final int newValue)
 	{
 
-		this.RunOnGL(new runOnGL()
+		this.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

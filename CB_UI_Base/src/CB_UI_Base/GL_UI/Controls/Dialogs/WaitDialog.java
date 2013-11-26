@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Controls.Dialogs;
 
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
@@ -43,7 +43,7 @@ public class WaitDialog extends ButtonDialog
 
 	public void setAnimation(final AnimationBase Animation)
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -106,7 +106,7 @@ public class WaitDialog extends ButtonDialog
 	public void dismis()
 	{
 		Logger.LogCat("WaitDialog.Dismis");
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()

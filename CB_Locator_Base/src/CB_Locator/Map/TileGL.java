@@ -3,7 +3,7 @@ package CB_Locator.Map;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.EmptyDrawable;
 import CB_Utils.Log.Logger;
@@ -81,7 +81,7 @@ public class TileGL extends EmptyDrawable implements Destroyable
 
 		// must run on GL thrad
 
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

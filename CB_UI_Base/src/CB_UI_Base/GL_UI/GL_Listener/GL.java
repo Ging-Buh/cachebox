@@ -21,11 +21,12 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.IRenderFBO;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.render3D;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -73,6 +74,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
 
+	private final int MAX_FBO_RENDER_CALLS = 4;
 	private static final boolean TOUCH_DEBUG = false;
 
 	/**
@@ -135,10 +137,10 @@ public class GL implements ApplicationListener, InputProcessor
 	private Texture mDarknesTexture;
 	protected EditTextField keyboardFocus;
 
-	protected ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
-	protected ArrayList<runOnGL> runOnGL_ListWaitpool = new ArrayList<runOnGL>();
+	protected ArrayList<IRunOnGL> runOnGL_List = new ArrayList<IRunOnGL>();
+	protected ArrayList<IRunOnGL> runOnGL_ListWaitpool = new ArrayList<IRunOnGL>();
 	protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
-	public static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
+	public static ArrayList<IRunOnGL> runIfInitial = new ArrayList<IRunOnGL>();
 
 	public static boolean ifAllInitial = false;
 
@@ -218,7 +220,7 @@ public class GL implements ApplicationListener, InputProcessor
 		Gdx.input.setCatchBackKey(true);
 	}
 
-	public void RunOnGL(runOnGL run)
+	public void RunOnGL(IRunOnGL run)
 	{
 		// if in progress put into pool
 		if (isWorkOnRunOnGL.get())
@@ -238,7 +240,7 @@ public class GL implements ApplicationListener, InputProcessor
 		renderOnce("RunOnGL called");
 	}
 
-	public void RunIfInitial(runOnGL run)
+	public void RunIfInitial(IRunOnGL run)
 	{
 		synchronized (runIfInitial)
 		{
@@ -265,7 +267,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public void register3D(final render3D renderView)
 	{
-		RunOnGL(new runOnGL()
+		RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -304,7 +306,7 @@ public class GL implements ApplicationListener, InputProcessor
 			removeRenderView(child);
 		}
 
-		// if (!ShaderSetted) setShader();
+		int FBO_RenderCals = 0;
 
 		isWorkOnRunOnGL.set(true);
 
@@ -312,12 +314,25 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			if (runOnGL_List.size() > 0)
 			{
-				for (runOnGL run : runOnGL_List)
+				for (IRunOnGL run : runOnGL_List)
 				{
 					if (run != null)
 					{
-						run.run();
-
+						// Run only MAX_FBO_RENDER_CALLS
+						if (run instanceof IRenderFBO)
+						{
+							if (FBO_RenderCals >= MAX_FBO_RENDER_CALLS)
+							{
+								runOnGL_ListWaitpool.add(run);
+							}
+							else
+							{
+								run.run();
+								FBO_RenderCals++;
+							}
+						}
+						else
+							run.run();
 					}
 				}
 
@@ -333,9 +348,27 @@ public class GL implements ApplicationListener, InputProcessor
 			{
 				if (runOnGL_ListWaitpool.size() > 0)
 				{
-					for (runOnGL run : runOnGL_ListWaitpool)
+					for (IRunOnGL run : runOnGL_ListWaitpool)
 					{
-						if (run != null) run.run();
+						if (run != null)
+						{
+							// Run only MAX_FBO_RENDER_CALLS
+							if (run instanceof IRenderFBO)
+							{
+								if (FBO_RenderCals >= MAX_FBO_RENDER_CALLS)
+								{
+									runOnGL_List.add(run);
+									renderOnce("MoreFBO_renderCalls");
+								}
+								else
+								{
+									run.run();
+									FBO_RenderCals++;
+								}
+							}
+							else
+								run.run();
+						}
 					}
 
 					runOnGL_ListWaitpool.clear();
@@ -350,7 +383,7 @@ public class GL implements ApplicationListener, InputProcessor
 			{
 				if (runIfInitial.size() > 0)
 				{
-					for (runOnGL run : runIfInitial)
+					for (IRunOnGL run : runIfInitial)
 					{
 						if (run != null) run.run();
 					}

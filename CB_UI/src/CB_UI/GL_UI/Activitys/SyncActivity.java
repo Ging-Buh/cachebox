@@ -8,7 +8,7 @@ import CB_Core.Api.PocketQuery.PQ;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
@@ -212,7 +212,7 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 	public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress)
 	{
 
-		this.RunOnGL(new runOnGL()
+		this.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

@@ -33,7 +33,7 @@ import CB_UI.Map.RouteOverlay;
 import CB_UI.Map.RouteOverlay.Track;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -128,7 +128,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 			{
 				routeDia.close();
 
-				if (!canceld) GL.that.RunOnGL(new runOnGL()
+				if (!canceld) GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override
@@ -228,7 +228,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														int endIdx = line.indexOf("\"", errorIdx + 9);
 														final String errorMessage = line.substring(errorIdx + 9, endIdx);
 														wd.close();
-														GL.that.RunOnGL(new runOnGL()
+														GL.that.RunOnGL(new IRunOnGL()
 														{
 															// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
 															// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
@@ -295,7 +295,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 
 													wd.close();
 
-													GL.that.RunOnGL(new runOnGL()
+													GL.that.RunOnGL(new IRunOnGL()
 													{
 														// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
 														// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
@@ -312,7 +312,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 												{
 													wd.close();
 
-													GL.that.RunOnGL(new runOnGL()
+													GL.that.RunOnGL(new IRunOnGL()
 													{
 														// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
 														// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.

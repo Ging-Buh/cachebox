@@ -200,7 +200,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public GL_View_Base addChild(final GL_View_Base view, final boolean last)
 	{
-		this.RunOnGL(new runOnGL()
+		this.RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -224,7 +224,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChild(final GL_View_Base view)
 	{
-		this.RunOnGL(new runOnGL()
+		this.RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -237,7 +237,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChilds()
 	{
-		this.RunOnGL(new runOnGL()
+		this.RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -250,7 +250,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChilds(final MoveableList<GL_View_Base> Childs)
 	{
-		this.RunOnGL(new runOnGL()
+		this.RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -288,9 +288,9 @@ public abstract class GL_View_Base extends CB_RectF
 		ChildIsLongClickable = tmpLongClickable;
 	}
 
-	private final ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
+	private final ArrayList<IRunOnGL> runOnGL_List = new ArrayList<IRunOnGL>();
 
-	public void RunOnGL(runOnGL run)
+	public void RunOnGL(IRunOnGL run)
 	{
 		synchronized (runOnGL_List)
 		{
@@ -448,7 +448,7 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			if (runOnGL_List.size() > 0)
 			{
-				for (runOnGL run : runOnGL_List)
+				for (IRunOnGL run : runOnGL_List)
 				{
 					if (run != null) run.run();
 				}

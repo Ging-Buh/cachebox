@@ -32,7 +32,7 @@ import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox;
@@ -1138,7 +1138,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress)
 	{
 
-		this.RunOnGL(new runOnGL()
+		this.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

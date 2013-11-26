@@ -17,7 +17,7 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -156,7 +156,7 @@ public class TB_Log extends ActivityBase
 				final String errorMsg = Translation.Get("NoCacheSelect");
 				this.finish();
 
-				GL.that.RunOnGL(new runOnGL()
+				GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override
@@ -330,7 +330,7 @@ public class TB_Log extends ActivityBase
 
 				if (GroundspeakAPI.LastAPIError.length() > 0)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override
@@ -347,7 +347,7 @@ public class TB_Log extends ActivityBase
 				// Refresh TB List after Droped Off or Picked or Grabed
 				if (LT == LogTypes.dropped_off || LT == LogTypes.retrieve || LT == LogTypes.grab_it)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override

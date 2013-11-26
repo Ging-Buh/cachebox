@@ -21,7 +21,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewBase.IListPosChanged;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -185,7 +185,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public void setSelectedCacheVisible()
 	{
-		listView.RunIfListInitial(new runOnGL()
+		listView.RunIfListInitial(new IRunOnGL()
 		{
 
 			@Override
@@ -221,7 +221,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 					@Override
 					public void run()
 					{
-						GL.that.RunOnGL(new runOnGL()
+						GL.that.RunOnGL(new IRunOnGL()
 						{
 
 							@Override
@@ -438,7 +438,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (selItem != null && GlobalCore.getSelectedCache() != selItem.getCache())
 			{
 				// TODO Run if ListView Initial and after showing
-				listView.RunIfListInitial(new runOnGL()
+				listView.RunIfListInitial(new IRunOnGL()
 				{
 
 					@Override

@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Activitys;
 
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -31,7 +31,7 @@ public class ImportAnimation extends Box
 
 	public void setAnimationType(final AnimationType Type)
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

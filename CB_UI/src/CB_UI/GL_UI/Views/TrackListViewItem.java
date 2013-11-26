@@ -3,7 +3,7 @@ package CB_UI.GL_UI.Views;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Map.RouteOverlay.Track;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListner;
@@ -199,7 +199,7 @@ public class TrackListViewItem extends ListViewItemBackground
 	{
 		// Logger.LogCat("TrackListViewItem => Chk Clicked");
 
-		RunOnGL(new runOnGL()
+		RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -216,7 +216,7 @@ public class TrackListViewItem extends ListViewItemBackground
 	{
 		// Logger.LogCat("TrackListViewItem => Color Clicked");
 
-		RunOnGL(new runOnGL()
+		RunOnGL(new IRunOnGL()
 		{
 
 			@Override

@@ -18,7 +18,7 @@ import CB_UI.GL_UI.Controls.Dialogs.NewDB_InputBox;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
@@ -302,7 +302,7 @@ public class SelectDB extends ActivityBase
 					}
 				}
 
-				lvFiles.RunIfListInitial(new runOnGL()
+				lvFiles.RunIfListInitial(new IRunOnGL()
 				{
 
 					@Override
@@ -351,7 +351,7 @@ public class SelectDB extends ActivityBase
 			@Override
 			public void run()
 			{
-				GL.that.RunOnGL(new runOnGL()
+				GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override

@@ -36,7 +36,7 @@ import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
@@ -600,7 +600,7 @@ public class SearchDialog extends PopUp_Base
 
 				if (ret == 0)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override
@@ -975,7 +975,7 @@ public class SearchDialog extends PopUp_Base
 				Logger.DEBUG("SEARCH isValidAPI_Key ret=" + ret);
 				if (ret == 0)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override
@@ -990,7 +990,7 @@ public class SearchDialog extends PopUp_Base
 				}
 				else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 						@Override
 						public void run()
@@ -1029,7 +1029,7 @@ public class SearchDialog extends PopUp_Base
 							{
 								closeWD();
 
-								GL.that.RunOnGL(new runOnGL()
+								GL.that.RunOnGL(new IRunOnGL()
 								{
 
 									@Override
@@ -1076,7 +1076,7 @@ public class SearchDialog extends PopUp_Base
 
 	private void showTargetApiDialog()
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

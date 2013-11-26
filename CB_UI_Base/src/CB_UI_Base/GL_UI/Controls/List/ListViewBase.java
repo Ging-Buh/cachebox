@@ -11,7 +11,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.ParentInfo;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Logger;
@@ -37,8 +37,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected boolean hasInvisibleItems = false;
 	protected boolean isTouch = false;
 
-	protected ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
-	protected ArrayList<runOnGL> runOnGL_ListWaitpool = new ArrayList<runOnGL>();
+	protected ArrayList<IRunOnGL> runOnGL_List = new ArrayList<IRunOnGL>();
+	protected ArrayList<IRunOnGL> runOnGL_ListWaitpool = new ArrayList<IRunOnGL>();
 	protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
 
 	/**
@@ -112,7 +112,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		if (!EventHandlerList.contains(handler)) EventHandlerList.add(handler);
 	}
 
-	public void RunIfListInitial(runOnGL run)
+	public void RunIfListInitial(IRunOnGL run)
 	{
 
 		// if in progress put into pool
@@ -367,7 +367,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 					{
 						if (runOnGL_List.size() > 0)
 						{
-							for (runOnGL run : runOnGL_List)
+							for (IRunOnGL run : runOnGL_List)
 							{
 								if (run != null) run.run();
 							}
@@ -383,7 +383,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 						{
 							if (runOnGL_ListWaitpool.size() > 0)
 							{
-								for (runOnGL run : runOnGL_ListWaitpool)
+								for (IRunOnGL run : runOnGL_ListWaitpool)
 								{
 									if (run != null) run.run();
 								}

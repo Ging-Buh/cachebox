@@ -2,7 +2,7 @@ package CB_UI_Base.GL_UI.Main;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.H_ListView;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -163,13 +163,13 @@ public class CB_TabView extends CB_View_Base
 	 */
 	private void sendOnShow2aktView()
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
 			public void run()
 			{
-				GL.that.RunOnGL(new runOnGL()
+				GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override
