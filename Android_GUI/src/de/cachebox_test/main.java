@@ -62,12 +62,12 @@ import CB_UI_Base.Events.platformConector.IShowViewListner;
 import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
 import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.Events.platformConector.IsetScreenLockTime;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.ViewID.UI_Pos;
 import CB_UI_Base.GL_UI.ViewID.UI_Type;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
@@ -834,7 +834,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (resultCode == RESULT_OK)
 			{
-				GL.that.RunIfInitial(new runOnGL()
+				GL.that.RunIfInitial(new IRunOnGL()
 				{
 
 					@Override
@@ -871,7 +871,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (resultCode == RESULT_OK)
 			{
-				GL.that.RunIfInitial(new runOnGL()
+				GL.that.RunIfInitial(new IRunOnGL()
 				{
 
 					@Override
@@ -915,7 +915,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Intent Result get API key
 		if (requestCode == Global.REQUEST_CODE_GET_API_KEY)
 		{
-			GL.that.RunIfInitial(new runOnGL()
+			GL.that.RunIfInitial(new IRunOnGL()
 			{
 
 				@Override
@@ -1010,7 +1010,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			pWaitD = PleaseWaitMessageBox.Show(Translation.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
 			stopped = false;
 
-			GL.that.RunIfInitial(new runOnGL()
+			GL.that.RunIfInitial(new IRunOnGL()
 			{
 
 				@Override
