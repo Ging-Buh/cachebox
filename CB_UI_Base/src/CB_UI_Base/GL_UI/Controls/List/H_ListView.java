@@ -113,7 +113,7 @@ public class H_ListView extends ListViewBase
 						float itemPos = tmpPosDefault.get(i);
 						itemPos -= mPos;
 
-						if (itemPos <= this.width)
+						if (itemPos <= this.getWidth())
 						{
 							tmp.setY(this.getHalfHeight() - tmp.getHalfHeight());// center Pos
 							tmp.setX(itemPos);
@@ -166,8 +166,8 @@ public class H_ListView extends ListViewBase
 
 		mPosDefault = new ArrayList<Float>();
 
-		float countPos = this.width;
-		minimumItemSize = this.width;
+		float countPos = this.getWidth();
+		minimumItemSize = this.getWidth();
 		mAllSize = 0;
 		for (int i = 0; i < mBaseAdapter.getCount(); i++)
 		{
@@ -181,7 +181,7 @@ public class H_ListView extends ListViewBase
 		}
 		mcalcAllSizeBase = countPos - mDividerSize;
 		mPos = countPos - mDividerSize;
-		mMaxItemCount = (int) (this.width / minimumItemSize);
+		mMaxItemCount = (int) (this.getWidth() / minimumItemSize);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
 	}
 
@@ -244,7 +244,7 @@ public class H_ListView extends ListViewBase
 		calcDefaultPosList();
 		reloadItems();
 
-		if (mAllSize > this.width)
+		if (mAllSize > this.getWidth())
 		{
 			this.setDragable();
 		}
@@ -271,7 +271,7 @@ public class H_ListView extends ListViewBase
 	@Override
 	protected float getListViewLength()
 	{
-		return width;
+		return getWidth();
 	}
 
 }

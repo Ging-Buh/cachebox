@@ -3,7 +3,6 @@ package CB_Core.DAO;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 
 import CB_Core.CoreSettingsForward;
@@ -146,7 +145,7 @@ public class CategoryDAO
 			reader.moveToNext();
 		}
 		reader.close();
-		Collections.sort(CoreSettingsForward.Categories);
+		CoreSettingsForward.Categories.sort();
 		CoreSettingsForward.Categories.endTransaction();
 	}
 

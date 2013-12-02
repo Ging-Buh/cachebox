@@ -1,7 +1,6 @@
 package CB_UI.GL_UI.Controls;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
@@ -15,6 +14,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -193,7 +193,7 @@ public class CacheInfo extends CB_View_Base
 
 		this.removeChilds();
 
-		float scaleFactor = width / UiSizes.that.getCacheListItemRec().getWidth();
+		float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
 		mMargin = 3 * scaleFactor;
 
 		float mLeft = mMargin;
@@ -282,7 +282,7 @@ public class CacheInfo extends CB_View_Base
 			}
 		}
 
-		Vector2 mSpriteCachePos = new Vector2(0, height - mTop - mIconSize);
+		Vector2 mSpriteCachePos = new Vector2(0, getHeight() - mTop - mIconSize);
 
 		// Rating stars
 		if (ifModeFlag(SHOW_VOTE))
@@ -293,14 +293,14 @@ public class CacheInfo extends CB_View_Base
 
 			mStarSize.scale(0.7f);
 			mRatingSprite = new Sprite(SpriteCacheBase.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
-			mRatingSprite.setBounds(mLeft + mStarSize.height, height - mTop - mStarSize.width - mMargin - mMargin - mMargin,
+			mRatingSprite.setBounds(mLeft + mStarSize.height, getHeight() - mTop - mStarSize.width - mMargin - mMargin - mMargin,
 					mStarSize.width, mStarSize.height);
 			mRatingSprite.setOrigin(0, mStarSize.halfHeight);
 			mRatingSprite.setRotation(90);
 			mRatingSprite.setColor(gcVoteColor);
 			//
 			mLeft += starHeight;
-			mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
+			mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
 		}
 
 		if (ifModeFlag(SHOW_NAME) || ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_COORDS) || ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)
@@ -334,7 +334,7 @@ public class CacheInfo extends CB_View_Base
 			}
 
 			mInfo_FontCache = new BitmapFontCache(mBitmapFont);
-			mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.height - mMargin);
+			mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.getHeight() - mMargin);
 			if (mCache.Archived || !mCache.Available)
 			{
 				mInfo_FontCache.setColor(Color.RED);
@@ -419,7 +419,7 @@ public class CacheInfo extends CB_View_Base
 	private static String getLastFoundLogDate(Cache cache)
 	{
 		String FoundDate = "";
-		ArrayList<LogEntry> logs = new ArrayList<LogEntry>();
+		CB_List<LogEntry> logs = new CB_List<LogEntry>();
 		logs = Database.Logs(cache);// cache.Logs();
 		for (LogEntry l : logs)
 		{

@@ -21,13 +21,13 @@ public class FloatControl extends CB_View_Base
 		super(rec, Name);
 		changeListner = listner;
 		progressbar = new ProgressBar(rec, "");
-		progressbar.setHeight(this.height * 0.75f);
+		progressbar.setHeight(this.getHeight() * 0.75f);
 		progressbar.setText("");
 		progressbar.setZeroPos();
-		progressbar.setY(halfHeight - progressbar.getHalfHeight());
+		progressbar.setY(getHalfHeight() - progressbar.getHalfHeight());
 		this.addChild(progressbar);
 		slideButton = new Button(rec, "");
-		slideButton.setWidth(this.height);
+		slideButton.setWidth(this.getHeight());
 		slideButton.setZeroPos();
 		slideButton.setDrageble();
 		this.addChild(slideButton);
@@ -38,7 +38,7 @@ public class FloatControl extends CB_View_Base
 		float progressDrawWidth = progressbar.setProgress(value);
 		float ButtonPos = progressDrawWidth - slideButton.getHalfWidth();
 		if (ButtonPos < 0) ButtonPos = 0;
-		if (ButtonPos > this.width - slideButton.getWidth()) ButtonPos = this.width - slideButton.getWidth();
+		if (ButtonPos > this.getWidth() - slideButton.getWidth()) ButtonPos = this.getWidth() - slideButton.getWidth();
 
 		slideButton.setX(ButtonPos);
 		GL.that.renderOnce("ProgressBar state changed");
@@ -67,7 +67,7 @@ public class FloatControl extends CB_View_Base
 		if (slideButton.isDisabled()) return false;
 		if (!KineticPan)
 		{
-			int progress = (int) (100 / (width / x));
+			int progress = (int) (100 / (getWidth() / x));
 			if (progress >= 0 && progress <= 100) this.setProgress(progress);
 		}
 

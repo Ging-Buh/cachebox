@@ -17,6 +17,7 @@ import CB_Locator.Locator;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 
 public class Cache implements Comparable<Cache>, Serializable
@@ -294,12 +295,12 @@ public class Cache implements Comparable<Cache>, Serializable
 	/**
 	 * Liste der zusätzlichen Wegpunkte des Caches
 	 */
-	public ArrayList<Waypoint> waypoints = null;
+	public CB_List<Waypoint> waypoints = null;
 
 	/**
 	 * Liste der Spoiler Resorcen
 	 */
-	public ArrayList<ImageEntry> spoilerRessources = null;
+	public CB_List<ImageEntry> spoilerRessources = null;
 
 	/**
 	 * Kurz Beschreibung des Caches
@@ -364,7 +365,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
 		this.Available = true;
-		waypoints = new ArrayList<Waypoint>();
+		waypoints = new CB_List<Waypoint>();
 	}
 
 	/**
@@ -383,7 +384,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
 		this.Available = true;
-		waypoints = new ArrayList<Waypoint>();
+		waypoints = new CB_List<Waypoint>();
 		AttributeList = null;
 	}
 
@@ -405,7 +406,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		boolean x;
 		x = false;
 
-		ArrayList<Waypoint> wps = waypoints;
+		CB_List<Waypoint> wps = waypoints;
 		for (Waypoint wp : wps)
 		{
 			if (wp.Type == CacheTypes.Final)
@@ -497,7 +498,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * 
 	 * @return ArrayList of String
 	 */
-	public ArrayList<ImageEntry> getSpoilerRessources()
+	public CB_List<ImageEntry> getSpoilerRessources()
 	{
 		if (spoilerRessources == null)
 		{
@@ -513,7 +514,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * @param value
 	 *            ArrayList of String
 	 */
-	public void setSpoilerRessources(ArrayList<ImageEntry> value)
+	public void setSpoilerRessources(CB_List<ImageEntry> value)
 	{
 		spoilerRessources = value;
 	}
@@ -548,7 +549,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public void ReloadSpoilerRessources()
 	{
-		spoilerRessources = new ArrayList<ImageEntry>();
+		spoilerRessources = new CB_List<ImageEntry>();
 
 		String directory = "";
 
@@ -579,7 +580,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 	}
 
-	private void reloadSpoilerResourcesFromPath(String directory, ArrayList<ImageEntry> spoilerResources)
+	private void reloadSpoilerResourcesFromPath(String directory, CB_List<ImageEntry> spoilerRessources2)
 	{
 		if (!FileIO.DirectoryExists(directory)) return;
 		// Logger.DEBUG("Loading spoilers from " + directory);
@@ -796,7 +797,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		NumTravelbugs = 0;
 		cachedDistance = 0;
 		hint = "";
-		waypoints = new ArrayList<Waypoint>();
+		waypoints = new CB_List<Waypoint>();
 		spoilerRessources = null;
 		shortDescription = "";
 		longDescription = "";

@@ -92,11 +92,11 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 		// initial
 		left = getLeftWidth();
-		top = this.height - this.getTopHeight();
+		top = this.getHeight() - this.getTopHeight();
 
 		if (rBounds == null || rChkBounds == null || lPinBounds == null)
 		{
-			rBounds = new CB_RectF(width - height - 10, 5, height - 10, height - 10);// =
+			rBounds = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);// =
 			// right
 			// Button
 			// bounds
@@ -104,7 +104,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 			rChkBounds = rBounds.ScaleCenter(0.8f);
 			lPinBounds = new CB_RectF(rChkBounds);
-			lPinBounds.offset(-(width - (halfSize * 2) - rChkBounds.getWidth()), 0);
+			lPinBounds.offset(-(getWidth() - (halfSize * 2) - rChkBounds.getWidth()), 0);
 		}
 
 		// boolean selected = false;
@@ -195,7 +195,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 				btnBack_pressed = new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
 			}
 
-			btnBack_pressed.draw(batch, 0, 0, width, height);
+			btnBack_pressed.draw(batch, 0, 0, getWidth(), getHeight());
 
 		}
 		else
@@ -205,7 +205,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 				btnBack = new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), 16, 16, 16, 16);
 			}
 
-			btnBack.draw(batch, 0, 0, width, height);
+			btnBack.draw(batch, 0, 0, getWidth(), getHeight());
 
 		}
 
@@ -221,7 +221,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 	private void drawPin(SpriteBatch batch)
 	{
 		margin = UI_Size_Base.that.getMargin();
-		float iconHeight = this.height * 0.6f;
+		float iconHeight = this.getHeight() * 0.6f;
 		float iconWidth = iconHeight;
 
 		if (this.getCategorieEntry().getCat().pinned)
@@ -329,7 +329,8 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 		if (rBounds == null || rChkBounds == null)
 		{
-			rBounds = new CB_RectF(width - height - margin, margin, height - margin, height - margin);// = right Button bounds
+			rBounds = new CB_RectF(getWidth() - getHeight() - margin, margin, getHeight() - margin, getHeight() - margin);// = right Button
+																															// bounds
 
 			rChkBounds = rBounds.ScaleCenter(0.8f);
 		}

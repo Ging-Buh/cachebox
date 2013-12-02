@@ -39,8 +39,8 @@ public class ImportAnimation extends Box
 			{
 				float size = ImportAnimation.this.getHalfWidth() / 2;
 				float halfSize = ImportAnimation.this.getHalfWidth() / 4;
-				CB_RectF imageRec = new CB_RectF(ImportAnimation.this.halfWidth - halfSize, ImportAnimation.this.halfHeight - halfSize,
-						size, size);
+				CB_RectF imageRec = new CB_RectF(ImportAnimation.this.getHalfWidth() - halfSize, ImportAnimation.this.getHalfHeight()
+						- halfSize, size, size);
 
 				ImportAnimation.this.removeChilds();
 
@@ -80,7 +80,7 @@ public class ImportAnimation extends Box
 
 			Color trans = new Color(0, 0.3f, 0, 0.40f);
 			batch.setColor(trans);
-			back.draw(batch, 0, 0, this.width, this.height);
+			back.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 
 			batch.setColor(new Color(r, g, b, a));
 

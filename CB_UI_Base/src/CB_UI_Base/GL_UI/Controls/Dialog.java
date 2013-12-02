@@ -93,8 +93,8 @@ public abstract class Dialog extends CB_View_Base
 		rightBorder = mCenter9patch.getRightWidth();
 		topBorder = mHeader9patch.getTopHeight();
 		bottomBorder = mFooter9patch.getBottomHeight();
-		innerWidth = width - leftBorder - rightBorder;
-		innerHeight = height - topBorder - bottomBorder;
+		innerWidth = getWidth() - leftBorder - rightBorder;
+		innerHeight = getHeight() - topBorder - bottomBorder;
 
 		reziseContentBox();
 	}
@@ -247,9 +247,9 @@ public abstract class Dialog extends CB_View_Base
 			mTitleWidth += rightBorder; // sonst sieht es blöd aus
 		}
 
-		mContent.setWidth(this.width * 0.95f);
-		mContent.setHeight((this.height - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
-		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
+		mContent.setWidth(this.getWidth() * 0.95f);
+		mContent.setHeight((this.getHeight() - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
+		float centerversatzX = this.getHalfWidth() - mContent.getHalfWidth();
 		float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
 		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
 
@@ -263,31 +263,32 @@ public abstract class Dialog extends CB_View_Base
 
 		if (mHeader9patch != null && !dontRenderDialogBackground)
 		{
-			mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHeight, this.width, mHeaderHeight);
+			mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mHeaderHeight, this.getWidth(), mHeaderHeight);
 		}
 		if (mFooter9patch != null && !dontRenderDialogBackground)
 		{
-			mFooter9patch.draw(batch, 0, 0, this.width, mFooterHeight + 2);
+			mFooter9patch.draw(batch, 0, 0, this.getWidth(), mFooterHeight + 2);
 		}
 		if (mCenter9patch != null && !dontRenderDialogBackground)
 		{
-			mCenter9patch.draw(batch, 0, mFooterHeight, this.width, (this.height - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
+			mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(),
+					(this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
 		}
 
 		if (mHasTitle)
 		{
-			if (mTitleWidth < this.width)
+			if (mTitleWidth < this.getWidth())
 			{
 				if (mTitle9patch != null && !dontRenderDialogBackground)
 				{
-					mTitle9patch.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					mTitle9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
 				}
 			}
 			else
 			{
 				if (mHeader9patch != null && !dontRenderDialogBackground)
 				{
-					mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
 				}
 			}
 		}

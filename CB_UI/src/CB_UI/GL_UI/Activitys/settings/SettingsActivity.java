@@ -359,7 +359,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					Box lblBox = new Box(rec, "LabelBox");
 
 					CB_RectF rec2 = rec.copy();
-					rec2.setWidth(rec.getWidth() - (rec.getLeft() * 2));
+					rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
 					rec2.setHeight(rec.getHalfHeight());
 
 					Label lblVolume = new Label(itemRec, Translation.Get("Volume"));
@@ -456,7 +456,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		if (LinearLayout == null || scrollBox == null)
 		{
 
-			CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, this.width, this.height - btnOk.getMaxY() - margin);
+			CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, this.getWidth(), this.getHeight() - btnOk.getMaxY() - margin);
 
 			scrollBox = new ScrollBox(rec);
 			scrollBox.setClickable(true);

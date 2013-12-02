@@ -222,9 +222,9 @@ public class V_ListView extends ListViewBase
 
 		mPosDefault = new ArrayList<Float>();
 
-		minimumItemSize = this.height;
+		minimumItemSize = this.getHeight();
 
-		float countPos = this.height - mDividerSize;
+		float countPos = this.getHeight() - mDividerSize;
 
 		mAllSize = 0;
 		if (hasInvisibleItems)
@@ -259,10 +259,10 @@ public class V_ListView extends ListViewBase
 		}
 
 		mcalcAllSizeBase = countPos - mDividerSize;
-		mMaxItemCount = (int) (this.height / minimumItemSize);
+		mMaxItemCount = (int) (this.getHeight() / minimumItemSize);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
 
-		if (mAllSize > this.height)
+		if (mAllSize > this.getHeight())
 		{
 			this.setDragable();
 		}
@@ -340,7 +340,7 @@ public class V_ListView extends ListViewBase
 	@Override
 	protected float getListViewLength()
 	{
-		return height;
+		return getHeight();
 	}
 
 }

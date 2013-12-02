@@ -45,11 +45,11 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	{
 		float minH = (SpriteCacheBase.bar.getBottomHeight() / 2) + SpriteCacheBase.bar.getTopHeight();
 
-		float w = (this.width / 14);
+		float w = (this.getWidth() / 14);
 		boolean small = SpriteCacheBase.bar.getMinWidth() > w * 1.2f;
 		if (small)
 		{
-			w = (this.width / 12);
+			w = (this.getWidth() / 12);
 		}
 
 		// calc Colors
@@ -104,7 +104,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 				// balken höhe festlegen
 				if (balken[count] != null)
 				{
-					float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.height, this.height);
+					float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.getHeight(), this.getHeight());
 
 					if (barHeight < minH)
 					{

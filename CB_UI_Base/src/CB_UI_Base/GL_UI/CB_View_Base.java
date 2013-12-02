@@ -1,6 +1,7 @@
 package CB_UI_Base.GL_UI;
 
 import java.util.ConcurrentModificationException;
+import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -162,12 +163,19 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 					setToNull(this);
 				}
 			}
+			catch (NoSuchElementException e)
+			{
+				childs.clear();
+				setToNull(this);
+			}
 			catch (ConcurrentModificationException e)
 			{
+				childs.clear();
 				setToNull(this);
 			}
 			catch (NullPointerException e)
 			{
+				childs.clear();
 				setToNull(this);
 			}
 		}
@@ -275,7 +283,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	@Override
 	public String toString()
 	{
-		return getName() + " X,Y/Width,Height = " + this.Pos.x + "," + this.Pos.y + "/" + this.width + "," + this.height;
+		return getName() + " X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.getWidth() + "," + this.getHeight();
 	}
 
 	// Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
@@ -340,7 +348,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	{
 		if (direction)
 		{
-			initRow(direction, this.height - this.topBorder);
+			initRow(direction, this.getHeight() - this.topBorder);
 		}
 		else
 		{
@@ -374,7 +382,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			else
 			{
 				this.bottomYAdd = y;
-				this.topYAdd = this.height - this.topBorder;
+				this.topYAdd = this.getHeight() - this.topBorder;
 			}
 		}
 		this.topdown = direction;
@@ -399,7 +407,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			// Die Position aller Clients muss bei TopDown neu gesetzt werden.
 			for (GL_View_Base g : this.childs)
 			{
-				g.setPos(g.getPos().x, g.getPos().y - this.topYAdd);
+				g.setPos(g.getX(), g.getY() - this.topYAdd);
 			}
 			// this.topYAdd = this.bottomYAdd; // fertig gebaut
 		}
@@ -501,7 +509,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			float weightedAnz = 0;
 			float fixedWidthSum = 0;
 			float percentWidthSum = 0;
-			float widthToFill = this.width - this.leftBorder - this.rightBorder;
+			float widthToFill = this.getWidth() - this.leftBorder - this.rightBorder;
 			for (GL_View_Base g : this.row)
 			{
 				if (g.Weight > 0)

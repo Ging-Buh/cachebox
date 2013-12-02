@@ -30,7 +30,7 @@ public class SolverView extends CB_View_Base
 	public void onShow()
 	{
 		// Rufe ANDROID VIEW auf
-		platformConector.showView(ViewConst.SOLVER_VIEW, 0, 0, this.width, this.height);
+		platformConector.showView(ViewConst.SOLVER_VIEW, 0, 0, this.getWidth(), this.getHeight());
 	}
 
 	@Override

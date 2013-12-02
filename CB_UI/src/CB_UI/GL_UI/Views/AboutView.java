@@ -22,8 +22,8 @@ import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -114,8 +114,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		this.setBackground(SpriteCacheBase.AboutBack);
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
 		margin = UI_Size_Base.that.getMargin();
-		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref - margin - margin,
-				ref * 5, (ref * 5) / 4.11f);
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin
+				- margin, ref * 5, (ref * 5) / 4.11f);
 		Logger.DEBUG("CB_Logo" + CB_LogoRec.toString());
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
@@ -123,7 +123,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		String VersionString = GlobalCore.getVersionString();
 		TextBounds bounds = Fonts.getSmall().getMultiLineBounds(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
-		descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - bounds.height, this.width, bounds.height + margin,
+		descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - bounds.height, this.getWidth(), bounds.height + margin,
 				"DescLabel");
 		descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
@@ -131,7 +131,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		this.addChild(descTextView);
 
 		CachesFoundLabel = new Label("", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
-		CachesFoundLabel.setWidth(width);
+		CachesFoundLabel.setWidth(getWidth());
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
 		{
@@ -159,7 +159,6 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 												@Override
 												public void isCanceld()
 												{
-													 
 
 												}
 											}, new Runnable()
@@ -259,7 +258,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		// ##############################
 		// create Value Label
 		lblRec.setX(lblGPS.getMaxX() + margin);
-		lblRec.setWidth(this.width - margin - lblGPS.getMaxX());
+		lblRec.setWidth(this.getWidth() - margin - lblGPS.getMaxX());
 
 		Gps = new Label(lblRec, "GPS");
 		Accuracy = new Label(lblRec, "Accuracy");
@@ -298,7 +297,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		// create Sat Chart
 		float l = margin * 2;
-		chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, this.width - l - l, CachesFoundLabel.getY() - Gps.getMaxY()),
+		chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, this.getWidth() - l - l, CachesFoundLabel.getY() - Gps.getMaxY()),
 				"Sat Chart");
 		chart.setDrawWithAlpha(true);
 		this.addChild(chart);
@@ -321,7 +320,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	private void setYpositions()
 	{
-		if (CB_Logo != null) CB_Logo.setY(this.height - (margin * 2) - CB_Logo.getHeight());
+		if (CB_Logo != null) CB_Logo.setY(this.getHeight() - (margin * 2) - CB_Logo.getHeight());
 		if (descTextView != null) descTextView.setY(CB_Logo.getY() - margin - margin - margin - descTextView.getHeight());
 		if (CachesFoundLabel != null) CachesFoundLabel.setY(descTextView.getY() - CachesFoundLabel.getHeight() + margin);
 		if (chart != null) chart.setHeight(CachesFoundLabel.getY() - Gps.getMaxY());

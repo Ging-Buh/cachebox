@@ -45,43 +45,6 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>CB_Core_src</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CB_Core/src</locationURI>
-		</link>
-		<link>
-			<name>CB_Locator_src</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CB_Locator_Base/src</locationURI>
-		</link>
-		<link>
-			<name>CB_Rpc_src</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CB_Rpc/src</locationURI>
-		</link>
-		<link>
-			<name>CB_Translations_src</name>
-			<type>2</type>
-			<locationURI>PROJEKT_HOME/CB_Translation_Base/src</locationURI>
-		</link>
-		<link>
-			<name>CB_UI_Base_src</name>
-			<type>2</type>
-			<locationURI>PROJEKT_HOME/CB_UI_Base/src</locationURI>
-		</link>
-		<link>
-			<name>CB_UI_src</name>
-			<type>2</type>
-			<locationURI>PROJEKT_HOME/CB_UI/src</locationURI>
-		</link>
-		<link>
-			<name>CB_Util_src</name>
-			<type>2</type>
-			<locationURI>PROJEKT_HOME/CB_Utils/src</locationURI>
-		</link>
-	</linkedResources>
 	<variableList>
 		<variable>
 			<name>PROJEKT_HOME</name>

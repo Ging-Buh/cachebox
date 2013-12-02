@@ -22,6 +22,7 @@ import CB_Core.DB.Database;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SDBM_Hash;
@@ -36,9 +37,9 @@ public class DescriptionImageGrabber
 		public String text;
 	}
 
-	public static ArrayList<Segment> Segmentize(String text, String leftSeperator, String rightSeperator)
+	public static CB_List<Segment> Segmentize(String text, String leftSeperator, String rightSeperator)
 	{
-		ArrayList<Segment> result = new ArrayList<Segment>();
+		CB_List<Segment> result = new CB_List<Segment>();
 
 		if (text == null)
 		{
@@ -182,7 +183,7 @@ public class DescriptionImageGrabber
 
 		// String htmlNoSpaces = RemoveSpaces(html);
 
-		ArrayList<Segment> imgTags = Segmentize(html, "<img", ">");
+		CB_List<Segment> imgTags = Segmentize(html, "<img", ">");
 
 		int delta = 0;
 
@@ -327,7 +328,7 @@ public class DescriptionImageGrabber
 			}
 		}
 
-		ArrayList<Segment> imgTags = Segmentize(Cache.shortDescription, "<img", ">");
+		CB_List<Segment> imgTags = Segmentize(Cache.shortDescription, "<img", ">");
 
 		imgTags.addAll(Segmentize(Cache.longDescription, "<img", ">"));
 
@@ -373,7 +374,7 @@ public class DescriptionImageGrabber
 			return images;
 		}
 
-		ArrayList<Segment> imgTags = Segmentize(html, "<img", ">");
+		CB_List<Segment> imgTags = Segmentize(html, "<img", ">");
 
 		for (Segment img : imgTags)
 		{

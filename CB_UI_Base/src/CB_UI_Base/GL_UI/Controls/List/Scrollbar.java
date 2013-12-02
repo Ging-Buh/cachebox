@@ -105,7 +105,7 @@ public class Scrollbar extends CB_View_Base
 
 		float minWidth = Slider.getMinWidth();
 
-		SliderRec.setX(this.width - (minWidth / 1.35f));
+		SliderRec.setX(this.getWidth() - (minWidth / 1.35f));
 		SliderRec.setWidth(minWidth);
 
 		mPuchSliderIstHight = UI_Size_Base.that.getButtonHeight() * 0.8f;
@@ -133,14 +133,14 @@ public class Scrollbar extends CB_View_Base
 		float ll = ListView.getAllListSize();
 
 		float s = mSliderIstHight;
-		float l = this.height;
+		float l = this.getHeight();
 
-		mSliderPos = this.height + ((lp / (ll - l)) * (l - s)) - s;
+		mSliderPos = this.getHeight() + ((lp / (ll - l)) * (l - s)) - s;
 		SliderRec.setY(mSliderPos);
 
 		s = mPuchSliderIstHight;
 
-		mPuchSliderPos = this.height + ((lp / (ll - l)) * (l - s)) - s;
+		mPuchSliderPos = this.getHeight() + ((lp / (ll - l)) * (l - s)) - s;
 		SliderPuchRec.setY(mPuchSliderPos);
 
 	}
@@ -148,11 +148,11 @@ public class Scrollbar extends CB_View_Base
 	private void CalcSliderHeight()
 	{
 
-		mSliderSollHeight = (this.height / ListView.getAllListSize()) * this.height;
+		mSliderSollHeight = (this.getHeight() / ListView.getAllListSize()) * this.getHeight();
 
-		if (mSliderSollHeight > this.halfHeight)
+		if (mSliderSollHeight > this.getHalfHeight())
 		{
-			mSliderIstHight = this.halfHeight;
+			mSliderIstHight = this.getHalfHeight();
 		}
 		else if (mSliderSollHeight < getMinSliderHeight())
 		{
@@ -221,10 +221,10 @@ public class Scrollbar extends CB_View_Base
 		{
 			mPushSliderFader.stopTimer();
 			float ll = ListView.getAllListSize();
-			float ls = this.height;
+			float ls = this.getHeight();
 			float p = -ls + y - mPuchSliderTouch;
 			float s = mPuchSliderIstHight;
-			float l = this.height;
+			float l = this.getHeight();
 
 			float lp = (p / (l - s)) * (ll - ls);
 

@@ -56,7 +56,7 @@ public class EditFilterSettings extends ActivityBase
 
 		tmpFilterProps = GlobalCore.LastFilter;
 
-		float myWidth = this.width - leftBorder;
+		float myWidth = this.getWidth() - leftBorder;
 
 		Button bOK = new Button(leftBorder / 2, leftBorder, myWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
 
@@ -110,9 +110,9 @@ public class EditFilterSettings extends ActivityBase
 
 		this.addChild(bCancel);
 
-		float topButtonY = this.height - leftBorder - UI_Size_Base.that.getButtonHeight();
+		float topButtonY = this.getHeight() - leftBorder - UI_Size_Base.that.getButtonHeight();
 
-		contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.width, topButtonY - bOK.getMaxY()), "contentBox");
+		contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.getWidth(), topButtonY - bOK.getMaxY()), "contentBox");
 		contentBox.setBackground(SpriteCacheBase.activityBackground);
 		this.addChild(contentBox);
 
@@ -213,7 +213,7 @@ public class EditFilterSettings extends ActivityBase
 		bOK.setText(Translation.Get("ok"));
 		bCancel.setText(Translation.Get("cancel"));
 
-		ListViewRec = new CB_RectF(0, margin, this.width, btPre.getY() - bOK.getMaxY() - margin - margin);
+		ListViewRec = new CB_RectF(0, margin, this.getWidth(), btPre.getY() - bOK.getMaxY() - margin - margin);
 
 		initialPresets();
 		initialSettings();

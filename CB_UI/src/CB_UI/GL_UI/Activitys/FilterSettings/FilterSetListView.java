@@ -259,7 +259,8 @@ public class FilterSetListView extends V_ListView
 				THREE_STATE_ITEM));
 		Archived = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("not-available"), Translation.Get("archived"),
 				THREE_STATE_ITEM));
-		Finds = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("log0icon"), Translation.Get("myfinds"), THREE_STATE_ITEM));
+		Finds = General
+				.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("log0icon"), Translation.Get("myfinds"), THREE_STATE_ITEM));
 		Own = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("star"), Translation.Get("myowncaches"), THREE_STATE_ITEM));
 		ContainsTravelBugs = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("tb"), Translation.Get("withtrackables"),
 				THREE_STATE_ITEM));
@@ -267,27 +268,29 @@ public class FilterSetListView extends V_ListView
 				THREE_STATE_ITEM));
 		HasUserData = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("userdata"), Translation.Get("hasuserdata"),
 				THREE_STATE_ITEM));
-		ListingChanged = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("warning-icon"), Translation.Get("ListingChanged"),
-				THREE_STATE_ITEM));
-		WithManualWaypoint = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("big16icon"), Translation.Get("manualwaypoint"),
-				THREE_STATE_ITEM));
+		ListingChanged = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("warning-icon"),
+				Translation.Get("ListingChanged"), THREE_STATE_ITEM));
+		WithManualWaypoint = General.addChild(addFilterSetItem(SpriteCacheBase.getThemedSprite("big16icon"),
+				Translation.Get("manualwaypoint"), THREE_STATE_ITEM));
 
 		// add D/T
 		FilterSetListViewItem DT = addFilterSetCollapseItem(null, "D / T" + String.format("%n") + "GC-Vote", COLLAPSE_BUTTON_ITEM);
-		minDifficulty = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minDifficulty"), NUMERICK_ITEM, 1, 5, 1,
+		minDifficulty = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minDifficulty"), NUMERICK_ITEM, 1,
+				5, 1, 0.5f));
+		maxDifficulty = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxDifficulty"), NUMERICK_ITEM, 1,
+				5, 5, 0.5f));
+		minTerrain = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minTerrain"), NUMERICK_ITEM, 1, 5, 1,
 				0.5f));
-		maxDifficulty = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxDifficulty"), NUMERICK_ITEM, 1, 5, 5,
+		maxTerrain = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxTerrain"), NUMERICK_ITEM, 1, 5, 5,
 				0.5f));
-		minTerrain = DT
-				.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minTerrain"), NUMERICK_ITEM, 1, 5, 1, 0.5f));
-		maxTerrain = DT
-				.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxTerrain"), NUMERICK_ITEM, 1, 5, 5, 0.5f));
 		minContainerSize = DT.addChild(addFilterSetItem(SpriteCacheBase.SizesIcons.toArray(), Translation.Get("minContainerSize"),
 				NUMERICK_ITEM, 0, 4, 0, 1));
 		maxContainerSize = DT.addChild(addFilterSetItem(SpriteCacheBase.SizesIcons.toArray(), Translation.Get("maxContainerSize"),
 				NUMERICK_ITEM, 0, 4, 4, 1));
-		minRating = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minRating"), NUMERICK_ITEM, 0, 5, 0, 0.5f));
-		maxRating = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxRating"), NUMERICK_ITEM, 0, 5, 5, 0.5f));
+		minRating = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("minRating"), NUMERICK_ITEM, 0, 5, 0,
+				0.5f));
+		maxRating = DT.addChild(addFilterSetItem(SpriteCacheBase.Stars.toArray(), Translation.Get("maxRating"), NUMERICK_ITEM, 0, 5, 5,
+				0.5f));
 
 		// add CacheTypes
 		Types = addFilterSetCollapseItem(null, "Cache Types", COLLAPSE_BUTTON_ITEM);
@@ -531,7 +534,7 @@ public class FilterSetListView extends V_ListView
 				if (view.contains(x, y))
 				{
 
-					((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getPos().x, y - view.getPos().y);
+					((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
 
 				}
 

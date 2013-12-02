@@ -1,8 +1,8 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
@@ -15,7 +15,7 @@ public class ProgressBar extends CB_View_Base
 	private int progress = 0;
 	protected float progressDrawWidth = 0;
 	private Drawable progressFill, progressFillDisabled;
-	private Label label;
+	private final Label label;
 	private String msg = "";
 	private boolean isDisabled = false;
 
@@ -65,7 +65,7 @@ public class ProgressBar extends CB_View_Base
 	{
 		progress = value;
 		if (progress > 100) progress = 100;
-		progressDrawWidth = (width / 100) * progress;
+		progressDrawWidth = (getWidth() / 100) * progress;
 		GL.that.renderOnce("ProgressBar state changed");
 		return progressDrawWidth;
 	}
@@ -81,7 +81,7 @@ public class ProgressBar extends CB_View_Base
 
 		float ret = setProgress(value);
 
-		this.RunOnGL(new IRunOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -116,7 +116,7 @@ public class ProgressBar extends CB_View_Base
 				float patch = progressFill.getLeftWidth() + progressFill.getRightWidth();
 				if (progressDrawWidth >= patch)
 				{
-					progressFill.draw(batch, 0, 0, progressDrawWidth, height);
+					progressFill.draw(batch, 0, 0, progressDrawWidth, getHeight());
 				}
 			}
 		}
@@ -127,7 +127,7 @@ public class ProgressBar extends CB_View_Base
 				float patch = progressFillDisabled.getLeftWidth() + progressFillDisabled.getRightWidth();
 				if (progressDrawWidth >= patch)
 				{
-					progressFillDisabled.draw(batch, 0, 0, progressDrawWidth, height);
+					progressFillDisabled.draw(batch, 0, 0, progressDrawWidth, getHeight());
 				}
 			}
 		}

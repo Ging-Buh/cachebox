@@ -1,11 +1,11 @@
 package CB_Locator;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Converter.UTMConvert;
+import CB_Utils.Lists.CB_List;
 
 /**
  * @author Longri_2
@@ -183,8 +183,8 @@ public class Coordinate implements Serializable
 
 		String[] clat = slat.split(" ");
 		String[] clon = slon.split(" ");
-		ArrayList<String> llat = new ArrayList<String>();
-		ArrayList<String> llon = new ArrayList<String>();
+		CB_List<String> llat = new CB_List<String>(clat.length);
+		CB_List<String> llon = new CB_List<String>(clon.length);
 		for (String ss : clat)
 		{
 			if (!ss.equals(""))

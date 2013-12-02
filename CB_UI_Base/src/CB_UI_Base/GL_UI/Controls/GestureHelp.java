@@ -24,7 +24,7 @@ public class GestureHelp extends CB_View_Base
 	/**
 	 * CacheID of the Cache showing Bubble
 	 */
-	private long mCacheId = -1;
+	private final long mCacheId = -1;
 
 	public long getCacheId()
 	{
@@ -37,7 +37,7 @@ public class GestureHelp extends CB_View_Base
 
 		Sprite sprite = SpriteCacheBase.Bubble.get(UseLastBtnBackground ? 4 : 3);
 		sprite.setPosition(0, 0);
-		sprite.setSize(width, height);
+		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);
 		super.render(batch);
 	}
@@ -68,10 +68,10 @@ public class GestureHelp extends CB_View_Base
 	@Override
 	public void setPos(float x, float y)
 	{
-		if (x + width > UI_Size_Base.that.getWindowWidth())
+		if (x + getWidth() > UI_Size_Base.that.getWindowWidth())
 		{
 			UseLastBtnBackground = true;
-			x = UI_Size_Base.that.getWindowWidth() - width;
+			x = UI_Size_Base.that.getWindowWidth() - getWidth();
 		}
 
 		super.setPos(x, y);
@@ -81,7 +81,7 @@ public class GestureHelp extends CB_View_Base
 	{
 		h = GL_UISizes.BottomButtonHeight / 2.4f;
 		d = h / 8;
-		cX = (this.height / 2) - (h / 2);
+		cX = (this.getHeight() / 2) - (h / 2);
 		cY = cX + d + d;
 		ArrowH = h / 3;
 		ArrowW = h / 3;

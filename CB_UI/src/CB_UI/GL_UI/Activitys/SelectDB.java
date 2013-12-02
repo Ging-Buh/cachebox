@@ -87,7 +87,7 @@ public class SelectDB extends ActivityBase
 		}
 
 		lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth,
-				height - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
+				getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
 
 		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
@@ -541,7 +541,7 @@ public class SelectDB extends ActivityBase
 			this.files = files;
 			recItem = UiSizes.that.getCacheListItemRec().asFloat();
 			recItem.setHeight(recItem.getHeight() * 0.8f);
-			recItem.setWidth(width - getLeftWidth() - getRightWidth() - (margin * 1.5f));
+			recItem.setWidth(getWidth() - getLeftWidth() - getRightWidth() - (margin * 1.5f));
 		}
 
 		public void setFiles(FileList files)

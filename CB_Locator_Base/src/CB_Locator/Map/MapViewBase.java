@@ -390,8 +390,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 			double percent = Locator.SpeedOverGround() / maxSpeed;
 
-			float diff = (float) ((height) / 3 * percent);
-			if (diff > height / 3) diff = height / 3;
+			float diff = (float) ((this.getHeight()) / 3 * percent);
+			if (diff > this.getHeight() / 3) diff = this.getHeight() / 3;
 
 			ySpeedVersatz = diff;
 
@@ -481,8 +481,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		batch.disableBlending();
 
 		float faktor = camera.zoom;
-		float dx = this.ThisWorldRec.getCenterPos().x - MainViewBase.mainView.getCenterPos().x;
-		float dy = this.ThisWorldRec.getCenterPos().y - MainViewBase.mainView.getCenterPos().y;
+		float dx = this.ThisWorldRec.getCenterPosX() - MainViewBase.mainView.getCenterPosX();
+		float dy = this.ThisWorldRec.getCenterPosY() - MainViewBase.mainView.getCenterPosY();
 
 		dy -= ySpeedVersatz;
 

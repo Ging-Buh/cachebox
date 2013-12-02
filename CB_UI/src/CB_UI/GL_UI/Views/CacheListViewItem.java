@@ -85,8 +85,8 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		this.addChild(info);
 		PositionChangedEventList.Add(this);
 
-		float size = this.height / 2.3f;
-		ArrowRec = new CB_RectF(this.width - (size * 1.2f), this.height - (size * 1.6f), size, size);
+		float size = this.getHeight() / 2.3f;
+		ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
 		arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 		arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
@@ -144,7 +144,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			arrow.setRotation((float) cacheBearing);
 			if (arrow.getColor() == DISABLE_COLOR)
 			{
-				float size = this.height / 2.3f;
+				float size = this.getHeight() / 2.3f;
 				arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());

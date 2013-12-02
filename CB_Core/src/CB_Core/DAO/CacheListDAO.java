@@ -12,6 +12,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
@@ -36,10 +37,10 @@ public class CacheListDAO
 		cacheList.clear();
 
 		Logger.DEBUG("ReadCacheList 1.Waypoints");
-		SortedMap<Long, ArrayList<Waypoint>> waypoints;
-		waypoints = new TreeMap<Long, ArrayList<Waypoint>>();
+		SortedMap<Long, CB_List<Waypoint>> waypoints;
+		waypoints = new TreeMap<Long, CB_List<Waypoint>>();
 		// zuerst alle Waypoints einlesen
-		ArrayList<Waypoint> wpList = new ArrayList<Waypoint>();
+		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
 		long aktCacheID = -1;
 
 		CoreCursor reader = Database.Data
@@ -54,7 +55,7 @@ public class CacheListDAO
 			if (wp.CacheId != aktCacheID)
 			{
 				aktCacheID = wp.CacheId;
-				wpList = new ArrayList<Waypoint>();
+				wpList = new CB_List<Waypoint>();
 				waypoints.put(aktCacheID, wpList);
 			}
 			wpList.add(wp);
@@ -93,7 +94,7 @@ public class CacheListDAO
 				waypoints.remove(cache.Id);
 			}
 			else
-				cache.waypoints = new ArrayList<Waypoint>();
+				cache.waypoints = new CB_List<Waypoint>();
 
 			// ++Global.CacheCount;
 			reader.moveToNext();

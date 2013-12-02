@@ -297,7 +297,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		float compassHeight = 0;
 
-		compassHeight = Math.min(leftBox.getHeight(), this.width) - margin - margin;
+		compassHeight = Math.min(leftBox.getHeight(), this.getWidth()) - margin - margin;
 
 		if (!showMap)
 		{
@@ -392,15 +392,17 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (showSDT) contentHeight += Fonts.MeasureSmall("Tg").height * 1.3f;
 		if (showLastFound) contentHeight += Fonts.MeasureSmall("Tg").height * 1.3f;
 
-		float topH = Math.max((this.width * 0.7f), this.height - contentHeight - SpriteCacheBase.activityBackground.getTopHeight()
-				- SpriteCacheBase.activityBackground.getBottomHeight());
+		float topH = Math.max(
+				(this.getWidth() * 0.7f),
+				this.getHeight() - contentHeight - SpriteCacheBase.activityBackground.getTopHeight()
+						- SpriteCacheBase.activityBackground.getBottomHeight());
 
 		if (showMap)
 		{
-			topH = this.halfWidth;
+			topH = this.getHalfWidth();
 		}
 
-		topBox = new ScrollBox(new CB_RectF(0, topH, this.width, this.height - topH));
+		topBox = new ScrollBox(new CB_RectF(0, topH, this.getWidth(), this.getHeight() - topH));
 		topBox.setVirtualHeight(topH);
 
 		topBox.setBackground(SpriteCacheBase.activityBackground);
@@ -408,7 +410,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topContentBox = new Box(topBox, "topContent");
 		topContentBox.setWidth(topBox.getInnerWidth());
 
-		attHeight = (this.width / 9) - margin;
+		attHeight = (this.getWidth() / 9) - margin;
 		CB_RectF attRec = new CB_RectF(0, 0, attHeight, attHeight);
 
 		lblHeight = Fonts.Measure("Tg").height * 1.3f;
@@ -416,13 +418,14 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topContentBox.setHeight(contentHeight);
 		topContentBox.setZeroPos();
 
-		leftBox = new Box(new CB_RectF(0, 0, showMap ? this.halfWidth : this.width, this.height - topBox.getHeight()), "left");
+		leftBox = new Box(new CB_RectF(0, 0, showMap ? this.getHalfWidth() : this.getWidth(), this.getHeight() - topBox.getHeight()),
+				"left");
 		leftBox.setBackground(SpriteCacheBase.activityBackground);
 
 		if (showMap)
 		{
-			rightBox = new Box(new CB_RectF(this.halfWidth, 0, this.halfWidth, this.halfWidth), "right");
-			rightBoxMask = new Box(new CB_RectF(this.halfWidth, 0, this.halfWidth, this.halfWidth), "rightMask");
+			rightBox = new Box(new CB_RectF(this.getHalfWidth(), 0, this.getHalfWidth(), this.getHalfWidth()), "right");
+			rightBoxMask = new Box(new CB_RectF(this.getHalfWidth(), 0, this.getHalfWidth(), this.getHalfWidth()), "rightMask");
 			rightBox.setBackground(SpriteCacheBase.activityBackground);
 			rightBoxMask.setBackground(SpriteCacheBase.activityBorderMask);
 			this.addChild(rightBox);
@@ -473,7 +476,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topContentBox.setMargins(margin, margin);
 		topContentBox.initRow();
 
-		imageRec = (new CB_RectF(0, 0, width, width)).ScaleCenter(0.6f);
+		imageRec = (new CB_RectF(0, 0, getWidth(), getWidth())).ScaleCenter(0.6f);
 		this.setBackground(SpriteCacheBase.ListBack);
 
 		frame = new Image(imageRec, "frame");
@@ -796,8 +799,8 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			Date UtcNow = new Date(Astronomy.getUtcTime(now.getTime()));
 
 			double julianDate = Astronomy.UtcToJulianDate(UtcNow);
-			float centerX = frame.getCenterPos().x;
-			float centerY = frame.getCenterPos().y;
+			float centerX = frame.getCenterPosX();
+			float centerY = frame.getCenterPosY();
 			float radius = frame.getHalfWidth() + Sun.getHalfHeight() + (Sun.getHalfHeight() / 4);
 			float iconSize = Sun.getWidth();
 

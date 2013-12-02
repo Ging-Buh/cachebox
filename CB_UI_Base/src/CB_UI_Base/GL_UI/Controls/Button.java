@@ -144,7 +144,7 @@ public class Button extends CB_View_Base
 		{
 			if (drawableNormal != null)
 			{
-				drawableNormal.draw(batch, 0, 0, width, height);
+				drawableNormal.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 			else
 			{
@@ -156,7 +156,7 @@ public class Button extends CB_View_Base
 		{
 			if (drawablePressed != null)
 			{
-				drawablePressed.draw(batch, 0, 0, width, height);
+				drawablePressed.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 			else
 			{
@@ -168,7 +168,7 @@ public class Button extends CB_View_Base
 		{
 			if (drawableFocused != null)
 			{
-				drawableFocused.draw(batch, 0, 0, width, height);
+				drawableFocused.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 			else
 			{
@@ -180,7 +180,7 @@ public class Button extends CB_View_Base
 		{
 			if (drawableDisabled != null)
 			{
-				drawableDisabled.draw(batch, 0, 0, width, height);
+				drawableDisabled.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 			else
 			{
@@ -191,7 +191,7 @@ public class Button extends CB_View_Base
 
 		for (Drawable drw : DrawableOverlayList)
 		{
-			drw.draw(batch, 0, 0, width, height);
+			drw.draw(batch, 0, 0, getWidth(), getHeight());
 		}
 
 	}

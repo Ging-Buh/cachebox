@@ -330,16 +330,16 @@ public class CB_Button extends Button implements OnClickListener
 			// draw Menu Sprite
 			if (menuSprite == null || menuSpriteFilterd == null)
 			{
-				float iconWidth = this.width / 5f;
-				float iconHeight = this.height / 2.3f;
-				float VersatzX = this.height / 20f;
-				float VersatzY = this.height / 30f;
+				float iconWidth = this.getWidth() / 5f;
+				float iconHeight = this.getHeight() / 2.3f;
+				float VersatzX = this.getHeight() / 20f;
+				float VersatzY = this.getHeight() / 30f;
 
 				menuSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.menu_37.ordinal()));
-				menuSprite.setBounds(this.width - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+				menuSprite.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
 				menuSpriteFilterd = new Sprite(SpriteCacheBase.Icons.get(IconName.menuFilterd_65.ordinal()));
-				menuSpriteFilterd.setBounds(this.width - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+				menuSpriteFilterd.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
 			}
 

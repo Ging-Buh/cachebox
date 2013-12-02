@@ -10,6 +10,7 @@ import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -21,7 +22,6 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -66,7 +66,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 		layout();
 		reloadListViewItems();
 
-		tmpQuickList = QuickButtonList.quickButtonList.clone();
+		tmpQuickList = new MoveableList<QuickButtonItem>(QuickButtonList.quickButtonList);
 		reloadListViewItems();
 	}
 
@@ -245,7 +245,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 
 	private void initialListView()
 	{
-		CB_RectF rec = new CB_RectF(0, 0, this.width, this.height);
+		CB_RectF rec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
 		boxForListView = new Box(rec, "");
 		boxForListView.setBackground(SpriteCacheBase.activityBackground);
 
@@ -274,7 +274,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 
 	private void layout()
 	{
-		float btnLeft = this.width - rightBorder - up.getWidth();
+		float btnLeft = this.getWidth() - rightBorder - up.getWidth();
 		float margin = up.getHalfHeight() / 2;
 
 		add.setX(btnLeft);
@@ -294,7 +294,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 		boxForListView.setX(margin);
 		boxForListView.setY(margin);
 		boxForListView.setWidth(add.getX() - margin - margin);
-		boxForListView.setHeight(this.height - (margin * 2));
+		boxForListView.setHeight(this.getHeight() - (margin * 2));
 
 		listView.setX(margin);
 		listView.setY(margin / 2);

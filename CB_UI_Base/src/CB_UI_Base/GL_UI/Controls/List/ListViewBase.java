@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Logger;
@@ -340,8 +340,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 				if (emptyMsg == null && mEmptyMsg != null)
 				{
 					emptyMsg = new BitmapFontCache(Fonts.getBig());
-					TextBounds bounds = emptyMsg.setWrappedText(mEmptyMsg, 0, 0, this.width);
-					emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
+					TextBounds bounds = emptyMsg.setWrappedText(mEmptyMsg, 0, 0, this.getWidth());
+					emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
 				}
 			}
 			catch (Exception e)

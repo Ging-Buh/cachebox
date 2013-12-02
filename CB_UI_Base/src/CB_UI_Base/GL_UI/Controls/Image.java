@@ -24,9 +24,9 @@ import java.util.HashMap;
 import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -138,22 +138,22 @@ public class Image extends CB_View_Base
 				Wait = null;
 			}
 			inLoad = false;
-			float drawwidth = width;
-			float drawHeight = height;
+			float drawwidth = getWidth();
+			float drawHeight = getHeight();
 			float drawX = 0;
 			float drawY = 0;
 
 			if (spriteWidth > 0 && spriteHeight > 0)
 			{
-				float proportionWidth = width / spriteWidth;
-				float proportionHeight = height / spriteHeight;
+				float proportionWidth = getWidth() / spriteWidth;
+				float proportionHeight = getHeight() / spriteHeight;
 
 				float proportion = Math.min(proportionWidth, proportionHeight);
 
 				drawwidth = spriteWidth * proportion;
 				drawHeight = spriteHeight * proportion;
-				drawX = (width - drawwidth) / 2;
-				drawY = (height - drawHeight) / 2;
+				drawX = (getWidth() - drawwidth) / 2;
+				drawY = (getHeight() - drawHeight) / 2;
 			}
 
 			mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
@@ -163,7 +163,7 @@ public class Image extends CB_View_Base
 		{
 			if (Wait == null)
 			{
-				CB_RectF animationRec = new CB_RectF(0, 0, this.width, this.height);
+				CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
 				Wait = WorkAnimation.GetINSTANCE(animationRec);
 				GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
 				this.addChild(Wait);

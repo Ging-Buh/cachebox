@@ -50,7 +50,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 
 	private void iniImage()
 	{
-		ivTyp = new Image(getLeftWidth(), this.height - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2),
+		ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2),
 				UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
 		ivTyp.setDrawable(new SpriteDrawable(SpriteCacheBase.LogIcons.get(logEntry.Type.getIconID())));
@@ -59,7 +59,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 
 	private void iniFoundLabel()
 	{
-		lblFoundByName = new Label(secondTab, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2), width - secondTab
+		lblFoundByName = new Label(secondTab, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), getWidth() - secondTab
 				- getRightWidth() - UI_Size_Base.that.getMargin(), MeasuredLabelHeight, logEntry.Finder);
 		this.addChild(lblFoundByName);
 	}
@@ -71,15 +71,15 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 		String dateString = postFormater.format(logEntry.Timestamp);
 		float DateLength = Fonts.Measure(dateString).width;
 
-		lblDate = new Label(this.width - getRightWidth() - DateLength, this.height - (headHeight / 2) - (MeasuredLabelHeight / 2),
-				DateLength, MeasuredLabelHeight, dateString);
+		lblDate = new Label(this.getWidth() - getRightWidth() - DateLength,
+				this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, dateString);
 		this.addChild(lblDate);
 	}
 
 	private void iniCommentLabel()
 	{
-		lblComment = new Label(getLeftWidth(), 0, this.width - getLeftWidthStatic() - getRightWidthStatic()
-				- (UI_Size_Base.that.getMargin() * 2), this.height - headHeight - UI_Size_Base.that.getMargin(), "");
+		lblComment = new Label(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic()
+				- (UI_Size_Base.that.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.that.getMargin(), "");
 		lblComment.setWrappedText(logEntry.Comment);
 		this.addChild(lblComment);
 	}
@@ -107,7 +107,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 		super.render(batch);
 		if (backheader != null)
 		{
-			backheader.draw(batch, 0, this.height - headHeight, this.width, headHeight);
+			backheader.draw(batch, 0, this.getHeight() - headHeight, this.getWidth(), headHeight);
 		}
 		else
 		{

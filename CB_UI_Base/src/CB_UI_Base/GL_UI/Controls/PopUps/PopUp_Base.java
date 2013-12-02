@@ -33,16 +33,16 @@ public abstract class PopUp_Base extends CB_View_Base
 
 	public void show(int msec)
 	{
-		float x = (UI_Size_Base.that.getWindowWidth() / 2) - this.halfWidth;
-		float y = (UI_Size_Base.that.getWindowHeight() / 2) - this.halfHeight;
+		float x = (UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth();
+		float y = (UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight();
 
 		show(x, y, msec);
 	}
 
 	public void show()
 	{
-		float x = (UI_Size_Base.that.getWindowWidth() / 2) - this.halfWidth;
-		float y = (UI_Size_Base.that.getWindowHeight() / 2) - this.halfHeight;
+		float x = (UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth();
+		float y = (UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight();
 
 		show(x, y, SHOW_TIME_NORMAL);
 	}
@@ -59,7 +59,7 @@ public abstract class PopUp_Base extends CB_View_Base
 
 	public void showNotCloseAutomaticly()
 	{
-		show(this.Pos.x, this.Pos.y, SHOW_TIME_NEVER_CLOSE);
+		show(this.getX(), this.getY(), SHOW_TIME_NEVER_CLOSE);
 	}
 
 	public void show(float x, float y, int msec)

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Translation_Base.FileUtil;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -48,9 +49,9 @@ public class Translation
 	private FileType mFiletype = FileType.Internal;
 
 	private final String BR;
-	private ArrayList<Translations> mStringList;
-	private ArrayList<Translations> mRefTranslation;
-	private final ArrayList<Translations> mMissingStringList;
+	private final CB_List<Translations> mStringList;
+	private final CB_List<Translations> mRefTranslation;
+	private final CB_List<Translations> mMissingStringList;
 	private String mLangID;
 	private final String mWorkPath;
 	private String mInitialLangPath;
@@ -67,8 +68,9 @@ public class Translation
 		that = this;
 		mWorkPath = WorkPath;
 		BR = System.getProperty("line.separator");
-		mStringList = new ArrayList<Translations>();
-		mMissingStringList = new ArrayList<Translations>();
+		mStringList = new CB_List<Translations>();
+		mRefTranslation = new CB_List<Translations>();
+		mMissingStringList = new CB_List<Translations>();
 		mFiletype = internal;
 
 	}
@@ -212,17 +214,17 @@ public class Translation
 			return;
 		}
 
-		if (mRefTranslation == null)
+		if (mRefTranslation.size() <= 0)
 		{
 			String FileName = FileUtil.GetFileName(FilePath);
 
 			int pos = FilePath.lastIndexOf("lang") + 4;
 			String LangFileName = FilePath.substring(0, pos) + "/en-GB/" + FileName;
 
-			mRefTranslation = ReadFile(LangFileName);
+			readRefFile(LangFileName);
 		}
 
-		mStringList = ReadFile(FilePath);
+		readDefFile(FilePath);
 
 		String tmp = FilePath;
 		int pos2 = tmp.lastIndexOf("/") + 1;
@@ -232,10 +234,20 @@ public class Translation
 		SelectedLangChangedEventList.Call();
 	}
 
-	private ArrayList<Translations> ReadFile(String FilePath)
+	private void readRefFile(String FilePath)
+	{
+		readFile(FilePath, false);
+	}
+
+	private void readDefFile(String FilePath)
+	{
+		readFile(FilePath, true);
+	}
+
+	private void readFile(String FilePath, boolean Default)
 	{
 
-		ArrayList<Translations> Temp = new ArrayList<Translations>();
+		CB_List<Translations> List = Default ? mStringList : mRefTranslation;
 
 		// get Encoding
 
@@ -272,10 +284,9 @@ public class Translation
 			String readID = line.substring(0, pos);
 			String readTransl = line.substring(pos + 1);
 			String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
-			Temp.add(new Translations(readID.trim(), ReplacedRead));
+			List.add(new Translations(readID.trim(), ReplacedRead));
 		}
 
-		return Temp;
 	}
 
 	private String get(String StringId, String... params)

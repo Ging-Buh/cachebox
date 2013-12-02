@@ -287,8 +287,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight,
-				"TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
+				lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 		this.addChild(lblTitle);
@@ -1480,7 +1480,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress)
 	{
 
-		this.RunOnGL(new IRunOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

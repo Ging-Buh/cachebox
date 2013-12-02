@@ -31,7 +31,7 @@ public class QuickButtonList extends H_ListView
 
 		CB_RectF btnRec = new CB_RectF(0, 0, btnHeight, btnHeight);
 
-		btnYPos = this.halfHeight - btnRec.getHalfHeight();
+		btnYPos = this.getHalfHeight() - btnRec.getHalfHeight();
 
 		this.setBaseAdapter(new CustomAdapter());
 		this.setDisposeFlag(false);

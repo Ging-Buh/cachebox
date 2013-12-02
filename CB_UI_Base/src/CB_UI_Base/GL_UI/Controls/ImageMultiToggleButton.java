@@ -6,13 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ImageMultiToggleButton extends MultiToggleButton
 {
-	private Image image;
+	private final Image image;
 
 	public ImageMultiToggleButton(CB_RectF rec, String name)
 	{
 		super(rec, name);
 		image = new Image(this.ScaleCenter(0.4f), "");
-		image.setY(this.height - image.getHeight() - image.getHalfHeight());
+		image.setY(this.getHeight() - image.getHeight() - image.getHalfHeight());
 		this.addChild(image);
 	}
 
@@ -25,7 +25,7 @@ public class ImageMultiToggleButton extends MultiToggleButton
 	{
 		mAngle = angle;
 		image.setRec(this.ScaleCenter(0.4f * mScale));
-		image.setY(this.height - image.getHeight());
+		image.setY(this.getHeight() - image.getHeight());
 		image.setRotate(angle);
 		image.setOrigin(image.getHalfWidth(), image.getHalfHeight() - image.getHalfHeight());
 	}
@@ -37,7 +37,7 @@ public class ImageMultiToggleButton extends MultiToggleButton
 	{
 		mScale = scale;
 		image.setRec(this.ScaleCenter(0.4f * mScale));
-		image.setY(this.height - image.getHeight());
+		image.setY(this.getHeight() - image.getHeight());
 		image.setRotate(mAngle);
 		image.setOrigin(image.getHalfWidth(), image.getHalfHeight() - image.getHalfHeight());
 	}
@@ -46,7 +46,7 @@ public class ImageMultiToggleButton extends MultiToggleButton
 	public void resize(float width, float height)
 	{
 		image.setRec(this.ScaleCenter(0.4f * mScale));
-		image.setY(this.height - image.getHeight());
+		image.setY(this.getHeight() - image.getHeight());
 		image.setRotate(mAngle);
 		image.setOrigin(image.getHalfWidth(), image.getHalfHeight() - image.getHalfHeight());
 	}

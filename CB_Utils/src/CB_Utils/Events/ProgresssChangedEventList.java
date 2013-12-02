@@ -1,10 +1,10 @@
 package CB_Utils.Events;
 
-import java.util.ArrayList;
+import CB_Utils.Lists.CB_List;
 
 public class ProgresssChangedEventList
 {
-	public static ArrayList<ProgressChangedEvent> list = new ArrayList<ProgressChangedEvent>();
+	public static CB_List<ProgressChangedEvent> list = new CB_List<ProgressChangedEvent>();
 
 	public static void Add(ProgressChangedEvent event)
 	{

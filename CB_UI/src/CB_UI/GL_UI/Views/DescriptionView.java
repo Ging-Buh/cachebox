@@ -40,7 +40,7 @@ public class DescriptionView extends CB_View_Base
 		if (sel != null)
 		{
 			cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
-			cacheInfo.setY(this.height - cacheInfo.getHeight());
+			cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 
 			this.addChild(cacheInfo);
 
@@ -55,8 +55,8 @@ public class DescriptionView extends CB_View_Base
 			{
 				float infoHeight = 0;
 				if (cacheInfo != null) infoHeight = cacheInfo.getHeight();
-				platformConector.showView(ViewConst.DESCRIPTION_VIEW, 0, infoHeight, DescriptionView.this.width,
-						DescriptionView.this.height - infoHeight);
+				platformConector.showView(ViewConst.DESCRIPTION_VIEW, 0, infoHeight, DescriptionView.this.getWidth(),
+						DescriptionView.this.getHeight() - infoHeight);
 			}
 		};
 		timer.schedule(task, 50);

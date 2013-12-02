@@ -13,8 +13,8 @@ public class SettingsItem_Bool extends SettingsItemBase
 		super(rec, Index, Name);
 
 		Check = new chkBox("");
-		Check.setX(this.width - rightBorder - Check.getWidth());
-		Check.setY(this.halfHeight - Check.getHalfHeight());
+		Check.setX(this.getWidth() - rightBorder - Check.getWidth());
+		Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 
 		lblName.setWidth(lblName.getWidth() - Check.getWidth() - rightBorder);
 
@@ -33,7 +33,7 @@ public class SettingsItem_Bool extends SettingsItemBase
 	protected void layout()
 	{
 		super.layout();
-		Check.setY(this.halfHeight - Check.getHalfHeight());
+		Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 	}
 
 }

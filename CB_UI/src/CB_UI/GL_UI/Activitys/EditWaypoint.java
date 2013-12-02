@@ -100,7 +100,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		iniTextfieldFocus();
 		layoutTextFields();
 
-		scrollBox.setHeight(this.height - bOK.getMaxY() - margin);
+		scrollBox.setHeight(this.getHeight() - bOK.getMaxY() - margin);
 		scrollBox.setY(bOK.getMaxY() + margin);
 		scrollBox.setBackground(this.getBackground());
 		scrollBox.setBorders(0, 0);
@@ -132,7 +132,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniCacheNameLabel()
 	{
-		tvCacheName = new Label(leftBorder + margin, height - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
+		tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
 				MeasuredLabelHeight, "CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBubbleNormal());
 		tvCacheName.setText(GlobalCore.getSelectedCache().Name);
@@ -178,7 +178,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		tvTyp.setText(Translation.Get("type"));
 		scrollBox.addChild(tvTyp);
 
-		tvStartPoint = new Label(tvTyp.getRight() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth,
+		tvStartPoint = new Label(tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth,
 				MeasuredLabelHeight, "TypeLabel");
 		tvStartPoint.setFont(Fonts.getBubbleNormal()).setHAlignment(HAlignment.CENTER);
 		tvStartPoint.setText(Translation.Get("start"));
@@ -513,7 +513,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void scrollToY(float y, float maxY)
 	{
-		if (y < this.halfHeight)// wird von softKeyboard verdeckt
+		if (y < this.getHalfHeight())// wird von softKeyboard verdeckt
 		{
 			scrollBox.scrollTo(-(virtualHeight - maxY - MeasuredLabelHeight));
 		}
@@ -525,7 +525,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void layoutTextFields()
 	{
-		float maxTextFieldHeight = this.height / 2.3f;
+		float maxTextFieldHeight = this.getHeight() / 2.3f;
 		float rand = etClue.getStyle().background.getBottomHeight() + etClue.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMeasuredHeight() + rand);
 		float clueHeight = Math.min(maxTextFieldHeight, etClue.getMeasuredHeight() + rand);

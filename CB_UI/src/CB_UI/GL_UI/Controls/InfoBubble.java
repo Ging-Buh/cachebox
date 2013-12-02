@@ -70,11 +70,11 @@ public class InfoBubble extends CB_View_Base
 		mCacheId = value.Id;
 		mWaypoint = waypoint;
 		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
-		SizeF size = new SizeF(0.96f * width, 0.72f * height);
+		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 
 		cacheInfo = new CacheInfo(size, "CacheInfo", value);
 		cacheInfo.setViewMode(CacheInfo.VIEW_MODE_BUBBLE);
-		cacheInfo.setY(height - size.height);
+		cacheInfo.setY(getHeight() - size.height);
 		cacheInfo.setFont(Fonts.getBubbleNormal());
 		cacheInfo.setSmallFont(Fonts.getBubbleSmall());
 		this.removeChilds();
@@ -95,7 +95,7 @@ public class InfoBubble extends CB_View_Base
 	{
 		Sprite sprite = (mCache == GlobalCore.getSelectedCache()) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
 		sprite.setPosition(0, 0);
-		sprite.setSize(width, height);
+		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);
 	}
 
@@ -109,9 +109,9 @@ public class InfoBubble extends CB_View_Base
 	{
 		// Logger.LogCat("InfoBubble RequestLayout");
 		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
-		SizeF size = new SizeF(0.96f * width, 0.72f * height);
+		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 		cacheInfo.setSize(size);
-		cacheInfo.setY(height - size.height);
+		cacheInfo.setY(getHeight() - size.height);
 	}
 
 	public Cache getCache()

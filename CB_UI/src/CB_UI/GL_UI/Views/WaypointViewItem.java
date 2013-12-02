@@ -119,8 +119,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		{
 			PositionChangedEventList.Add(this);
 
-			float size = this.height / 2.3f;
-			ArrowRec = new CB_RectF(this.width - (size * 1.2f), this.height - (size * 1.6f), size, size);
+			float size = this.getHeight() / 2.3f;
+			ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
 			arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 			arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
@@ -181,7 +181,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 				if (arrow.getColor().r == DISABLE_COLOR.r && arrow.getColor().g == DISABLE_COLOR.g && arrow.getColor().b == DISABLE_COLOR.b)// ignore
 																																			// alpha
 				{
-					float size = this.height / 2.3f;
+					float size = this.getHeight() / 2.3f;
 					arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 					arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 					arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
@@ -272,14 +272,14 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	{
 		if (mWaypoint != null)
 		{
-			float scaleFactor = width / UiSizes.that.getCacheListItemRec().getWidth();
+			float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
 			float mLeft = 3 * scaleFactor;
 			float mTop = 3 * scaleFactor;
 			mMargin = mLeft;
 
 			mIconSize = Fonts.Measure("T").height * 3.5f * scaleFactor;
 
-			Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
+			Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
 
 			{ // Icon Sprite erstellen
 				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
@@ -304,7 +304,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			mDescCache.setColor(Fonts.getFontColor());
 			mCoordCache.setColor(Fonts.getFontColor());
 
-			float textYPos = this.height - mMargin;
+			float textYPos = this.getHeight() - mMargin;
 
 			textYPos -= (mNameCache.setMultiLineText(mWaypoint.GcCode + ": " + mWaypoint.Title, mSpriteCachePos.x + mIconSize + mMargin,
 					textYPos)).height + mMargin + mMargin;

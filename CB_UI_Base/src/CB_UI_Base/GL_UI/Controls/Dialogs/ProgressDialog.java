@@ -169,7 +169,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 
 	public void setProgress(final String Msg, final String ProgressMessage, final int value)
 	{
-		this.RunOnGL(new IRunOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

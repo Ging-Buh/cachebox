@@ -179,7 +179,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		button1.setOnClickListener(OnOkClickListner);
 
 		// y -= UiSizes.getButtonHeight();
-		float restPlatz = this.height - y;
+		float restPlatz = this.getHeight() - y;
 		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Länge den Anzeige Bereich
 		// überschreitet!
 
@@ -497,7 +497,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	@Override
 	public void onShow()
 	{
-		initialYpos = this.Pos.y;
+		initialYpos = this.getY();
 		KeyboardFocusChangedEventList.Add(this);
 	}
 

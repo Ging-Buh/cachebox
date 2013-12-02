@@ -27,8 +27,8 @@ public class SettingsItem_Audio extends SettingsItemBase
 		// if (full) this.setHeight(rec.getHeight() * 2);
 
 		Check = new chkBox("");
-		Check.setX(this.width - rightBorder - Check.getWidth());
-		Check.setY(this.halfHeight - Check.getHalfHeight());
+		Check.setX(this.getWidth() - rightBorder - Check.getWidth());
+		Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 
 		lblName.setWidth(lblName.getWidth() - Check.getWidth() - rightBorder);
 
@@ -45,7 +45,7 @@ public class SettingsItem_Audio extends SettingsItemBase
 		float margin = UiSizes.that.getMargin();
 
 		rec2.setHeight(ProgressHeight);
-		rec2.setWidth(this.width - Check.getWidth() - (margin * 2));
+		rec2.setWidth(this.getWidth() - Check.getWidth() - (margin * 2));
 		rec2.setX(margin);
 		volumeControl = new FloatControl(rec2, "", listner);
 		volumeControl.setProgress(50);
@@ -71,11 +71,11 @@ public class SettingsItem_Audio extends SettingsItemBase
 	{
 		// don't call super.layout(); DefaultLabel is NULL
 
-		Check.setY(this.halfHeight - Check.getHalfHeight());
+		Check.setY(this.getHalfHeight() - Check.getHalfHeight());
 
 		float asc = lblName.getFont().getDescent();
 
-		lblName.setY(this.height - lblName.getHeight() + asc);
+		lblName.setY(this.getHeight() - lblName.getHeight() + asc);
 		lblName.setX(this.getLeftWidth());
 	}
 

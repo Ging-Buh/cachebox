@@ -174,7 +174,7 @@ public class Menu extends ButtonDialog
 	private void hideMoreMenu()
 	{
 		mAnimationState = 2;
-		mMoreMenu.setWidth(this.width);
+		mMoreMenu.setWidth(this.getWidth());
 		layout();
 		int index = GL.that.getDialogLayer().getchilds().indexOf(mMoreMenuToggleButton);
 		GL.that.getDialogLayer().getchilds().MoveItemLast(index);
@@ -231,7 +231,8 @@ public class Menu extends ButtonDialog
 		if (mMoreMenuToggleButtonWidth == -1)
 		{
 			float mesuredLblHeigt = Fonts.MeasureSmall("T").height;
-			mMoreMenuToggleButtonWidth = SpriteCacheBase.btn.getLeftWidth() + SpriteCacheBase.btn.getRightWidth() + (mesuredLblHeigt * 1.5f);
+			mMoreMenuToggleButtonWidth = SpriteCacheBase.btn.getLeftWidth() + SpriteCacheBase.btn.getRightWidth()
+					+ (mesuredLblHeigt * 1.5f);
 		}
 
 		mListView.setSize(this.getContentSize());
@@ -244,7 +245,7 @@ public class Menu extends ButtonDialog
 			mMoreMenu.Initial();
 			mMoreMenu.setVisible(false);
 			mMoreMenu.setZeroPos();
-			mMoreMenu.setHeight(this.height);
+			mMoreMenu.setHeight(this.getHeight());
 			mMoreMenu.setWidth(0);
 			mMoreMenu.setY(0 - mFooterHeight);
 			this.addChild(mMoreMenu);
@@ -475,11 +476,11 @@ public class Menu extends ButtonDialog
 				mMoreMenuLabel.setText(mMoreMenuTextLeft);
 				break;
 			case 1:
-				mMoreMenu.setX(this.width - mMoreMenu.width - this.getLeftWidth());
+				mMoreMenu.setX(this.getWidth() - mMoreMenu.getWidth() - this.getLeftWidth());
 				mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - this.getLeftWidth());
 				break;
 			case 2:
-				mMoreMenu.setX(this.width - mMoreMenu.width - this.getLeftWidth());
+				mMoreMenu.setX(this.getWidth() - mMoreMenu.getWidth() - this.getLeftWidth());
 				mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - mMoreMenuToggleButton.getHalfWidth());
 				break;
 			case 3:

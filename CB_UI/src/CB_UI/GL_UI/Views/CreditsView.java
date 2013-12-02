@@ -7,13 +7,13 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
-import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Linearlayout.LayoutChanged;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -70,7 +70,7 @@ public class CreditsView extends CB_View_Base
 		this.setBackground(SpriteCacheBase.AboutBack);
 
 		ref = UI_Size_Base.that.getWindowHeight() / 13;
-		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 
 		logo = new Image(CB_LogoRec, "Logo");
@@ -146,14 +146,14 @@ public class CreditsView extends CB_View_Base
 
 	private void divider()
 	{
-		Box box = new Box(new CB_RectF(0, 0, this.width, lineHeight * 2f), "");
+		Box box = new Box(new CB_RectF(0, 0, this.getWidth(), lineHeight * 2f), "");
 		layout.addChild(box);
 	}
 
 	private void captioned(String title)
 	{
 		title = Translation.Get(title);
-		Box box = new Box(new CB_RectF(0, 0, this.width, lineHeight * 1.2f), "");
+		Box box = new Box(new CB_RectF(0, 0, this.getWidth(), lineHeight * 1.2f), "");
 		Label label = new Label(box, title + ":");
 		label.setFont(Fonts.getBig());
 		label.setHAlignment(HAlignment.CENTER);
@@ -171,7 +171,7 @@ public class CreditsView extends CB_View_Base
 				float itemHeight = (item.image != null) ? GL_UISizes.Info.getHeight() : lineHeight;
 				if (item.desc != null) entry += "  (" + item.desc + ")";
 
-				Box box = new Box(new CB_RectF(0, 0, this.width, itemHeight), "");
+				Box box = new Box(new CB_RectF(0, 0, this.getWidth(), itemHeight), "");
 
 				if (entry != null)
 				{
@@ -184,8 +184,8 @@ public class CreditsView extends CB_View_Base
 
 					float SeitenVewrhältnis = item.image.getHeight() / item.image.getWidth();
 					float imageWidth = itemHeight / SeitenVewrhältnis;
-					float xPos = (this.halfWidth - (Fonts.Measure(entry).width / 2)) - itemHeight - margin - margin;
-					if (entry == null) xPos = this.halfWidth - (imageWidth / 2);
+					float xPos = (this.getHalfWidth() - (Fonts.Measure(entry).width / 2)) - itemHeight - margin - margin;
+					if (entry == null) xPos = this.getHalfWidth() - (imageWidth / 2);
 					Image img = new Image(xPos, 0, imageWidth, itemHeight, "");
 					img.setDrawable(new SpriteDrawable(item.image));
 					box.addChild(img);
@@ -203,7 +203,7 @@ public class CreditsView extends CB_View_Base
 	@Override
 	public void resize(float width, float height)
 	{
-		logo.setY(this.height - ((ref * 5) / 4.11f) - ref);
+		logo.setY(this.getHeight() - ((ref * 5) / 4.11f) - ref);
 		scrollBox.setHeight(logo.getY() - (ref / 2));
 	}
 

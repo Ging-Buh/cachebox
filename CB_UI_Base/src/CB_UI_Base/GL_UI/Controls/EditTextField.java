@@ -214,15 +214,15 @@ public class EditTextField extends EditTextFieldBase
 			{
 				if (style.backgroundFocused != null)
 				{
-					style.backgroundFocused.draw(batch, x, y, width, height);
+					style.backgroundFocused.draw(batch, x, y, getWidth(), getHeight());
 					bgLeftWidth = style.backgroundFocused.getLeftWidth();
 					bgRightWidth = style.background.getRightWidth();
 					bgTopHeight = style.background.getTopHeight();
 					bgBottomHeight = style.background.getBottomHeight();
 					if (mWrapType == WrapType.SINGLELINE)
 					{
-						bgTopHeight = (height - lineHeight) / 2;
-						bgBottomHeight = (height - lineHeight) / 2;
+						bgTopHeight = (getHeight() - lineHeight) / 2;
+						bgBottomHeight = (getHeight() - lineHeight) / 2;
 					}
 				}
 			}
@@ -231,15 +231,15 @@ public class EditTextField extends EditTextFieldBase
 
 				if (style.background != null)
 				{
-					style.background.draw(batch, x, y, width, height);
+					style.background.draw(batch, x, y, getWidth(), getHeight());
 					bgLeftWidth = style.background.getLeftWidth();
 					bgRightWidth = style.background.getRightWidth();
 					bgTopHeight = style.background.getTopHeight();
 					bgBottomHeight = style.background.getBottomHeight();
 					if (mWrapType == WrapType.SINGLELINE)
 					{
-						bgTopHeight = (height - lineHeight) / 2;
-						bgBottomHeight = (height - lineHeight) / 2;
+						bgTopHeight = (getHeight() - lineHeight) / 2;
+						bgBottomHeight = (getHeight() - lineHeight) / 2;
 					}
 				}
 			}
@@ -258,10 +258,10 @@ public class EditTextField extends EditTextFieldBase
 
 			}
 
-			float textY = (int) (height / 2 + textHeight / 2 + font.getDescent());
-			textY = (int) height /*- textHeight*/- bgTopHeight + font.getDescent();
-			maxLineCount = (height - bgTopHeight - bgBottomHeight - lineHeight / 2) / lineHeight;
-			maxTextWidth = width - bgLeftWidth - bgRightWidth;
+			float textY = (int) (getHeight() / 2 + textHeight / 2 + font.getDescent());
+			textY = (int) getHeight() /*- textHeight*/- bgTopHeight + font.getDescent();
+			maxLineCount = (getHeight() - bgTopHeight - bgBottomHeight - lineHeight / 2) / lineHeight;
+			maxTextWidth = getWidth() - bgLeftWidth - bgRightWidth;
 
 			if (selection != null)
 			{
@@ -315,7 +315,7 @@ public class EditTextField extends EditTextFieldBase
 				if (cursorOn && cursorPatch != null)
 				{
 					getCursorX();
-					textY = (int) height - bgTopHeight + font.getDescent();
+					textY = (int) getHeight() - bgTopHeight + font.getDescent();
 
 					cursorHeight = font.getLineHeight() + font.getDescent() / 2;
 
@@ -378,7 +378,7 @@ public class EditTextField extends EditTextFieldBase
 
 	private float getCursorY(int aCursorLine)
 	{
-		float textY = (int) height - bgTopHeight + style.font.getDescent();
+		float textY = (int) getHeight() - bgTopHeight + style.font.getDescent();
 		return (int) (y + textY - lineHeight * (aCursorLine - topLine) - lineHeight * 1.5);
 	}
 
@@ -416,7 +416,7 @@ public class EditTextField extends EditTextFieldBase
 	// Wenn calcCursor == true -> Cursorposition wird evtl. angepasst, sonst nicht
 	private void updateDisplayText(DisplayText dt, boolean calcCursor)
 	{
-		float maxWidth = width - 50; // noch falsch!!!!!!!!!!!!!!!!!!!!!
+		float maxWidth = getWidth() - 50; // noch falsch!!!!!!!!!!!!!!!!!!!!!
 		// wenn dies eine autoWrap Zeile ist muss zuerst die Zeile davor überprüft werden, ob die ersten Zeichen dieser Zeile dahinein
 		// kopiert werden können
 		if (dt.autoWrap)
@@ -731,7 +731,7 @@ public class EditTextField extends EditTextFieldBase
 		// Zeile bestimmen, in die geklickt wurde
 		float clickPos = y;
 		int clickedCursor = 0;
-		int clickedCursorLine = (int) ((this.height - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
+		int clickedCursorLine = (int) ((this.getHeight() - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
 		clickedCursorLine += topLine;
 		if (clickedCursorLine < 0) return null;
 		if (clickedCursorLine >= displayText.size()) return null;
@@ -883,7 +883,7 @@ public class EditTextField extends EditTextFieldBase
 	{
 		float x = touch.x - style.backgroundFocused.getLeftWidth() + leftPos;
 		float clickPos = touch.y + cursorHeight / 2;
-		int clickedCursorLine = (int) ((this.height - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
+		int clickedCursorLine = (int) ((this.getHeight() - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
 		clickedCursorLine += topLine;
 		if (clickedCursorLine < 0) return null;
 		if (clickedCursorLine >= displayText.size()) return null;

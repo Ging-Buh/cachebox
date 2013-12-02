@@ -414,8 +414,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight,
-				"TitleSolver");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
+				lineHeight, "TitleSolver");
 		lblTitle.setFont(Fonts.getBig());
 		lblTitle.setText(Translation.Get("solver_formula")).getTextWidth();
 		this.addChild(lblTitle);

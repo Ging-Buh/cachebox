@@ -141,8 +141,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		mapTileLoader.setMaxNumTiles(maxNumTiles);
 
-		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.halfWidth, GL_UISizes.ZoomBtn.getHalfWidth() / 4),
-				"mapScale", this, Config.ImperialUnits.getValue());
+		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.getHalfWidth(),
+				GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
 
 		if (!CompassMode)
 		{
@@ -211,7 +211,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		CB_RectF ZoomScaleRec = new CB_RectF();
 		ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.DPI),
-				this.height - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+				this.getHeight() - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 		ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
 
 		zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
@@ -521,8 +521,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		// Don't render if outside of screen !!
-		if (screen.x < 0 - WpSize.width || screen.x > this.width + WpSize.height) return;
-		if (screen.y < 0 - WpSize.height || screen.y > this.height + WpSize.height) return;
+		if (screen.x < 0 - WpSize.width || screen.x > this.getWidth() + WpSize.height) return;
+		if (screen.y < 0 - WpSize.height || screen.y > this.getHeight() + WpSize.height) return;
 
 		float NameYMovement = 0;
 
@@ -867,7 +867,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		togBtn.setPos(new Vector2((float) (this.mapIntWidth - margin - togBtn.getWidth()), this.mapIntHeight - margin - togBtn.getHeight()));
 
 		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI),
-				this.height - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+				this.getHeight() - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
 		GL.that.renderOnce(this.getName() + " requestLayout");
 	}
@@ -1179,7 +1179,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					// Berechne die darstellbare Entfernung für jedes ZoomLevel
 					DistanceZoomLevel = new TreeMap<Integer, Integer>();
 
-					int posiblePixel = (int) this.halfHeight;
+					int posiblePixel = (int) this.getHalfHeight();
 
 					for (int i = setMaxZoom; i > setMinZoom; i--)
 					{

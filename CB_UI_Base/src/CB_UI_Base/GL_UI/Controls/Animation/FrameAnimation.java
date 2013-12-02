@@ -72,22 +72,22 @@ public abstract class FrameAnimation extends AnimationBase
 
 		if (mDrawable != null)
 		{
-			float drawwidth = width;
-			float drawHeight = height;
+			float drawwidth = getWidth();
+			float drawHeight = getHeight();
 			float drawX = 0;
 			float drawY = 0;
 
 			if (mSpriteWidth > 0 && mSpriteHeight > 0)
 			{
-				float proportionWidth = width / mSpriteWidth;
-				float proportionHeight = height / mSpriteHeight;
+				float proportionWidth = getWidth() / mSpriteWidth;
+				float proportionHeight = getHeight() / mSpriteHeight;
 
 				float proportion = Math.min(proportionWidth, proportionHeight);
 
 				drawwidth = mSpriteWidth * proportion;
 				drawHeight = mSpriteHeight * proportion;
-				drawX = (width - drawwidth) / 2;
-				drawY = (height - drawHeight) / 2;
+				drawX = (getWidth() - drawwidth) / 2;
+				drawY = (getHeight() - drawHeight) / 2;
 			}
 
 			mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
@@ -102,11 +102,13 @@ public abstract class FrameAnimation extends AnimationBase
 		mPlaying = true;
 	}
 
+	@Override
 	public void stop()
 	{
 		mPlaying = false;
 	}
 
+	@Override
 	public void pause()
 	{
 

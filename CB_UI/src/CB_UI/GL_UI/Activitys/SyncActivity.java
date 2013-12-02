@@ -22,6 +22,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
@@ -153,8 +154,8 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight,
-				"TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
+				lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 		this.addChild(lblTitle);
@@ -181,7 +182,7 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 	private void Layout()
 	{
 
-		innerHeight = this.height;
+		innerHeight = this.getHeight();
 		scrollBox.setVirtualHeight(innerHeight);
 	}
 
@@ -212,7 +213,7 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 	public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress)
 	{
 
-		this.RunOnGL(new IRunOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

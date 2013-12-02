@@ -63,15 +63,15 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 			Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
 			if (isSelected)
 			{
-				backSelect.draw(batch, 0, 0, this.width, this.height);
+				backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 			}
 			else if (BackGroundChanger)
 			{
-				back1.draw(batch, 0, 0, this.width, this.height);
+				back1.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 			}
 			else
 			{
-				back2.draw(batch, 0, 0, this.width, this.height);
+				back2.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 			}
 		}
 		else

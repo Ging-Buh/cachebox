@@ -112,7 +112,7 @@ public class Spinner extends Button
 	protected void render(SpriteBatch batch)
 	{
 		super.render(batch);
-		triangle.draw(batch, 0, 0, width, height);
+		triangle.draw(batch, 0, 0, getWidth(), getHeight());
 	}
 
 	@Override
@@ -140,10 +140,10 @@ public class Spinner extends Button
 				lblTxt.setHAlignment(HAlignment.LEFT);
 				if (icon == null)
 				{
-					CB_RectF rec = (new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.7f);
+					CB_RectF rec = (new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.7f);
 
 					icon = new Image(rec, "");
-					icon.setY(this.halfHeight - icon.getHalfHeight());
+					icon.setY(this.getHalfHeight() - icon.getHalfHeight());
 
 					float margin = UI_Size_Base.that.getMargin();
 

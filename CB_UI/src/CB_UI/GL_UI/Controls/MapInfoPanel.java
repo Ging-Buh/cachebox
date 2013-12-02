@@ -139,7 +139,7 @@ public class MapInfoPanel extends CB_View_Base
 
 		// initial Image
 
-		CB_RectF CompassRec = new CB_RectF(0, 0, this.height, this.height);
+		CB_RectF CompassRec = new CB_RectF(0, 0, this.getHeight(), this.getHeight());
 
 		compass_frame = new Image(CompassRec, "Test_Image");
 		compass_frame.setDrawable(SpriteCacheBase.Compass.get(2));
@@ -163,7 +163,7 @@ public class MapInfoPanel extends CB_View_Base
 
 		lblSpeed = new Label(this.ScaleCenter(0.4f), "lblSpeed");
 		lblSpeed.setFont(Fonts.getSmall());
-		lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.height * 0.1f));
+		lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.getHeight() * 0.1f));
 		lblSpeed.setText("---");
 		this.addChild(lblSpeed);
 
@@ -175,18 +175,18 @@ public class MapInfoPanel extends CB_View_Base
 
 		lblLatitude = new Label(this.ScaleCenter(0.4f), "lblLatitude");
 		lblLatitude.setFont(Fonts.getSmall());
-		lblLatitude.setPos(new Vector2(this.width - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
+		lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
 		lblLatitude.setText("---");
 		this.addChild(lblLatitude);
 
 		lblLongitude = new Label(this.ScaleCenter(0.4f), "lblLongitude");
 		lblLongitude.setFont(Fonts.getSmall());
-		lblLongitude.setPos(new Vector2(this.width - lblLongitude.getWidth() - rightBorder, this.height * 0.1f));
+		lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth() - rightBorder, this.getHeight() * 0.1f));
 		lblLongitude.setText("---");
 		this.addChild(lblLongitude);
 
-		CoordSymbol = new Image((new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.62f), "CoordSymbol");
-		CoordSymbol.setX(this.width - CoordSymbol.getWidth() - (rightBorder / 3));
+		CoordSymbol = new Image((new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.62f), "CoordSymbol");
+		CoordSymbol.setX(this.getWidth() - CoordSymbol.getWidth() - (rightBorder / 3));
 		CoordSymbol.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("cache-icon")));
 		this.addChild(CoordSymbol);
 		CoordType tmp = lastCoordType;

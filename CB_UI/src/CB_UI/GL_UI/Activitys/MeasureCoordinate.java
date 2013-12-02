@@ -140,7 +140,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private void iniChart()
 	{
 		float w = innerWidth - margin - margin;
-		float h = this.height - lblDescMeasureCoord.getMaxY() - this.getTopHeight() - margin;
+		float h = this.getHeight() - lblDescMeasureCoord.getMaxY() - this.getTopHeight() - margin;
 
 		CB_RectF rec = new CB_RectF(leftBorder + margin, lblDescMeasureCoord.getMaxY() + margin, w, h);
 		chart = new SatBarChart(rec, "");

@@ -129,7 +129,7 @@ public class splash extends TabMainView
 	{
 
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
-		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
@@ -151,7 +151,7 @@ public class splash extends TabMainView
 
 		float ProgressHeight = Math.max(ProgressBack.getBottomHeight() + ProgressBack.getTopHeight(), ref / 1.5f);
 
-		progress = new ProgressBar(new CB_RectF(0, 0, this.width, ProgressHeight), "Splash.ProgressBar");
+		progress = new ProgressBar(new CB_RectF(0, 0, this.getWidth(), ProgressHeight), "Splash.ProgressBar");
 
 		progress.setBackground(ProgressBack);
 		progress.setProgressFill(ProgressFill);
@@ -184,7 +184,7 @@ public class splash extends TabMainView
 		OSM_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("osm_logo")));
 
 		float yPos = descTextView.getY() - GC_Logo.getHeight();
-		float xPos = (this.width - ref - GC_Logo.getWidth() - Mapsforge_Logo.getWidth()) / 2;
+		float xPos = (this.getWidth() - ref - GC_Logo.getWidth() - Mapsforge_Logo.getWidth()) / 2;
 
 		GC_Logo.setPos(xPos, yPos);
 		xPos += GC_Logo.getWidth() + ref;
@@ -193,10 +193,10 @@ public class splash extends TabMainView
 		xPos += Mapsforge_Logo.getWidth() + ref;
 
 		yPos -= GC_Logo.getHeight();// + refHeight;
-		LibGdx_Logo.setPos(this.halfWidth - LibGdx_Logo.getHalfWidth(), yPos);
+		LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
 
 		yPos -= GC_Logo.getHeight();//
-		xPos = (this.width - (ref) - Route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
+		xPos = (this.getWidth() - (ref) - Route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
 
 		Route_Logo.setPos(xPos, yPos);
 

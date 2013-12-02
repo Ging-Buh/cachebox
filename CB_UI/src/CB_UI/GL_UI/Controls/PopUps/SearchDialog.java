@@ -34,9 +34,9 @@ import CB_UI.GL_UI.Views.CacheListView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
@@ -142,9 +142,9 @@ public class SearchDialog extends PopUp_Base
 		if (GlobalCore.isTab)
 		{
 			this.setBackground(SpriteCacheBase.activityBackground);
-			this.setWidth(this.width * 1.4f);
-			this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.halfWidth);
-			this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.halfHeight);
+			this.setWidth(this.getWidth() * 1.4f);
+			this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth());
+			this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight());
 		}
 		else
 		{
@@ -154,7 +154,7 @@ public class SearchDialog extends PopUp_Base
 
 		float margin = UI_Size_Base.that.getMargin();
 		if (GlobalCore.isTab) margin *= 2;
-		float btnWidth = (this.width - (margin * 7)) / 4;
+		float btnWidth = (this.getWidth() - (margin * 7)) / 4;
 
 		CB_RectF rec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());
 
@@ -163,14 +163,14 @@ public class SearchDialog extends PopUp_Base
 		mTglBtnOwner = new MultiToggleButton(rec, "mTglBtnOwner");
 		mTglBtnOnline = new MultiToggleButton(rec, "mTglBtnOnline");
 
-		rec.setWidth(btnWidth = (this.width - (margin * 5)) / 4);
+		rec.setWidth(btnWidth = (this.getWidth() - (margin * 5)) / 4);
 
 		mBtnFilter = new ImageButton(rec, "mBtnFilter");
 		mBtnSearch = new Button(rec, "mBtnSearch");
 		mBtnNext = new Button(rec, "mBtnNext");
 		mBtnCancel = new Button(rec, "mBtnCancel");
 
-		rec.setWidth(this.width - (margin * 2));
+		rec.setWidth(this.getWidth() - (margin * 2));
 
 		mEingabe = new EditTextField(this, rec, WrapType.SINGLELINE, "");
 
@@ -902,7 +902,7 @@ public class SearchDialog extends PopUp_Base
 			{
 				if (CacheListView.that != null)
 				{
-					setY(CacheListView.that.getMaxY() - this.height);
+					setY(CacheListView.that.getMaxY() - this.getHeight());
 
 				}
 			}
@@ -910,8 +910,8 @@ public class SearchDialog extends PopUp_Base
 			{
 				if (CacheListView.that != null)
 				{
-					setY(CacheListView.that.getMaxY() - this.height);
-					CacheListView.that.setTopPlaceHolder(this.height);
+					setY(CacheListView.that.getMaxY() - this.getHeight());
+					CacheListView.that.setTopPlaceHolder(this.getHeight());
 				}
 			}
 			if (!GL.that.PopUpIsShown()) that.showNotCloseAutomaticly();
@@ -952,7 +952,7 @@ public class SearchDialog extends PopUp_Base
 			{
 				if (CacheListView.that != null)
 				{
-					setY(CacheListView.that.getMaxY() - that.height);
+					setY(CacheListView.that.getMaxY() - that.getHeight());
 				}
 			}
 

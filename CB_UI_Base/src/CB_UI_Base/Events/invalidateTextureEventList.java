@@ -1,12 +1,11 @@
 package CB_UI_Base.Events;
 
-import java.util.ArrayList;
-
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 public class invalidateTextureEventList
 {
-	public static ArrayList<invalidateTextureEvent> list = new ArrayList<invalidateTextureEvent>();
+	public static CB_List<invalidateTextureEvent> list = new CB_List<invalidateTextureEvent>();
 
 	public static void Add(invalidateTextureEvent event)
 	{

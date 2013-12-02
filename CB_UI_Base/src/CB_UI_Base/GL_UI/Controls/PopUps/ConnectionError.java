@@ -26,13 +26,13 @@ public class ConnectionError extends Toast
 
 		this.setRec(posRec);
 
-		this.mTextField.setHeight(this.halfHeight);
+		this.mTextField.setHeight(this.getHalfHeight());
 		this.mTextField.setZeroPos();
-		this.mTextField.setWidth(this.width * 0.8f);
-		this.mTextField.setX(this.halfWidth - mTextField.getHalfWidth());
+		this.mTextField.setWidth(this.getWidth() * 0.8f);
+		this.mTextField.setX(this.getHalfWidth() - mTextField.getHalfWidth());
 		this.setWrappedText(Translation.Get("ConnectionError"));
 
-		this.mIcon = new Image(0, 0, width, halfHeight, "ImageIcon");
+		this.mIcon = new Image(0, 0, getWidth(), getHalfHeight(), "ImageIcon");
 		this.mIcon.setSprite(SpriteCacheBase.getThemedSprite("connection-error"));
 		float top = 300; // TODO set on the Top of Screen
 		this.setY(top - UI_Size_Base.that.getButtonHeight() - this.getHeight());
@@ -42,7 +42,6 @@ public class ConnectionError extends Toast
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

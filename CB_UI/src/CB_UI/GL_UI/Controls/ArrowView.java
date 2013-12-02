@@ -54,8 +54,8 @@ public class ArrowView extends CB_View_Base
 
 		Sprite arrow = SpriteCacheBase.Arrows.get(0);
 		arrow.setRotation(0);
-		arrow.setBounds(-(width / 2), 0, width, height);
-		arrow.setOrigin(this.centerPos.x, this.centerPos.y);
+		arrow.setBounds(-(getWidth() / 2), 0, getWidth(), getHeight());
+		arrow.setOrigin(this.getCenterPosX(), this.getCenterPosY());
 		arrow.draw(batch);
 
 	}

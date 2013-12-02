@@ -19,6 +19,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.SDBM_Hash;
 
@@ -574,9 +575,9 @@ public abstract class Database extends Database_Core
 		}
 	}
 
-	public static ArrayList<LogEntry> Logs(Cache cache)
+	public static CB_List<LogEntry> Logs(Cache cache)
 	{
-		ArrayList<LogEntry> result = new ArrayList<LogEntry>();
+		CB_List<LogEntry> result = new CB_List<LogEntry>();
 		if (cache == null) // if no cache is selected!
 		return result;
 		CoreCursor reader = Database.Data.rawQuery(

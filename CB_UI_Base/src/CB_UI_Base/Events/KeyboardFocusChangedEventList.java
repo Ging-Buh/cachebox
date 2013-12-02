@@ -1,15 +1,14 @@
 package CB_UI_Base.Events;
 
-import java.util.ArrayList;
-
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.Gdx;
 
 public class KeyboardFocusChangedEventList
 {
-	public static ArrayList<KeyboardFocusChangedEvent> list = new ArrayList<KeyboardFocusChangedEvent>();
+	public static CB_List<KeyboardFocusChangedEvent> list = new CB_List<KeyboardFocusChangedEvent>();
 
 	public static void Add(KeyboardFocusChangedEvent event)
 	{

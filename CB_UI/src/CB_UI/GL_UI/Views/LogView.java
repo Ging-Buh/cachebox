@@ -1,7 +1,5 @@
 package CB_UI.GL_UI.Views;
 
-import java.util.ArrayList;
-
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
@@ -20,6 +18,7 @@ import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Lists.CB_List;
 
 public class LogView extends V_ListView implements SelectedCacheEvent
 {
@@ -30,7 +29,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 	{
 		super(rec, Name);
 		that = this;
-		ItemRec = (new CB_RectF(0, 0, this.width, UI_Size_Base.that.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
+		ItemRec = (new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f)).ScaleCenter(0.97f);
 		setBackground(SpriteCacheBase.ListBack);
 
 		this.setBaseAdapter(null);
@@ -83,16 +82,16 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 	Cache aktCache;
 	CustomAdapter lvAdapter;
 
-	ArrayList<LogViewItem> itemList;
+	CB_List<LogViewItem> itemList;
 
 	private void createItemList(Cache cache)
 	{
-		if (itemList == null) itemList = new ArrayList<LogViewItem>();
+		if (itemList == null) itemList = new CB_List<LogViewItem>();
 		itemList.clear();
 
 		if (cache == null) return; // Kein Cache angewählt
 
-		ArrayList<LogEntry> cleanLogs = new ArrayList<LogEntry>();
+		CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
 		cleanLogs = Database.Logs(cache);// cache.Logs();
 
 		int index = 0;

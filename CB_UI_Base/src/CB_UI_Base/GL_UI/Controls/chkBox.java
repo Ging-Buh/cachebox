@@ -40,28 +40,28 @@ public class chkBox extends Button
 		{
 			if (drawableNormal != null)
 			{
-				drawableNormal.draw(batch, 0, 0, width, height);
+				drawableNormal.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
 		else if (isChk && isDisabled)
 		{
 			if (drawableDisabledChk != null)
 			{
-				drawableDisabledChk.draw(batch, 0, 0, width, height);
+				drawableDisabledChk.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
 		else if (isChk)
 		{
 			if (drawablePressed != null)
 			{
-				drawablePressed.draw(batch, 0, 0, width, height);
+				drawablePressed.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
 		else
 		{
 			if (drawableDisabled != null)
 			{
-				drawableDisabled.draw(batch, 0, 0, width, height);
+				drawableDisabled.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
 
@@ -140,6 +140,7 @@ public class chkBox extends Button
 		if (changeListner != null) changeListner.onCheckedChanged(this, isChk);
 	}
 
+	@Override
 	public void setEnabled(boolean b)
 	{
 		isDisabled = !b;

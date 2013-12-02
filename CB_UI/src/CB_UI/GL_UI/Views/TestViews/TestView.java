@@ -50,7 +50,7 @@ public class TestView extends CB_View_Base
 
 		setBackground(SpriteCacheBase.ListBack);
 
-		CB_RectF TextFieldRec = new CB_RectF(0, this.height - (UI_Size_Base.that.getButtonHeight() * 3),
+		CB_RectF TextFieldRec = new CB_RectF(0, this.getHeight() - (UI_Size_Base.that.getButtonHeight() * 3),
 				UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
 
 		wrappedTextField = new CB_UI_Base.GL_UI.Controls.EditTextField(TextFieldRec, this).setWrapType(WrapType.WRAPPED);
@@ -65,7 +65,7 @@ public class TestView extends CB_View_Base
 		// ####################################################
 
 		// Setting Button
-		Button btnSetting = new Button(this.width - UI_Size_Base.that.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2),
+		Button btnSetting = new Button(this.getWidth() - UI_Size_Base.that.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2),
 				wrappedTextField.getY() - UI_Size_Base.that.getMargin() - UI_Size_Base.that.getButtonHeight(),
 				UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
 
@@ -85,7 +85,7 @@ public class TestView extends CB_View_Base
 
 		RadioButton rb = new RadioButton("Test");
 		rb.setPos(50, 50);
-		rb.setWidth(this.width - rb.getX());
+		rb.setWidth(this.getWidth() - rb.getX());
 		rb.setText("Option 1");
 		this.addChild(rb);
 
@@ -93,13 +93,13 @@ public class TestView extends CB_View_Base
 
 		RadioButton rb2 = new RadioButton("Test");
 		rb2.setPos(50, rb.getMaxY() + UI_Size_Base.that.getMargin());
-		rb2.setWidth(this.width - rb.getX());
+		rb2.setWidth(this.getWidth() - rb.getX());
 		rb2.setText("Option 2");
 		this.addChild(rb2);
 
 		RadioButton rb3 = new RadioButton("Test");
 		rb3.setPos(50, rb2.getMaxY() + UI_Size_Base.that.getMargin());
-		rb3.setWidth(this.width - rb.getX());
+		rb3.setWidth(this.getWidth() - rb.getX());
 		rb3.setText("Option 3");
 		this.addChild(rb3);
 

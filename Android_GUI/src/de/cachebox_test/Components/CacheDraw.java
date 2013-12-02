@@ -1,7 +1,6 @@
 package de.cachebox_test.Components;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
@@ -15,6 +14,7 @@ import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.UnitFormatter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -436,7 +436,7 @@ public class CacheDraw
 	private static String getLastFoundLogDate(Cache cache)
 	{
 		String FoundDate = "";
-		ArrayList<LogEntry> logs = new ArrayList<LogEntry>();
+		CB_List<LogEntry> logs = new CB_List<LogEntry>();
 		logs = Database.Logs(cache);// cache.Logs();
 		for (LogEntry l : logs)
 		{

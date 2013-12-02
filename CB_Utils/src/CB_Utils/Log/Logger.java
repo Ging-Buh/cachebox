@@ -20,8 +20,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+
+import CB_Utils.Lists.CB_List;
 
 /**
  * Der Logger basiert auf einem Interface als CallBack und kann damit auch von nicht GUI Klassen implementiert werden, damit sie einen
@@ -34,7 +35,7 @@ public class Logger
 {
 
 	private static Boolean mDebug = false;
-	private static ArrayList<ILog> list = new ArrayList<ILog>();
+	private static CB_List<ILog> list = new CB_List<ILog>();
 	private static String mDebugFilePath = "";
 
 	public static void setDebugFilePath(String DebugFilePath)
@@ -225,8 +226,8 @@ public class Logger
 
 	private static void writeDebugMsgtoFile(String Msg)
 	{
-		if(mDebugFilePath==null)return;
-		
+		if (mDebugFilePath == null) return;
+
 		File file = new File(mDebugFilePath);
 
 		if (mCreateDebugWithHeader != null) mCreateDebugWithHeader.CreateDebugWithHeader(file);

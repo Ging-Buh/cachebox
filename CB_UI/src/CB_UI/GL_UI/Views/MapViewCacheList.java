@@ -1,6 +1,5 @@
 package CB_UI.GL_UI.Views;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import CB_Core.DB.Database;
@@ -12,6 +11,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.MoveableList;
 
@@ -34,7 +34,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 	private Vector2 point1;
 	private Vector2 point2;
 	private int zoom = 15;
-	public ArrayList<WaypointRenderInfo> list = new ArrayList<MapViewCacheList.WaypointRenderInfo>();
+	public CB_List<WaypointRenderInfo> list = new CB_List<MapViewCacheList.WaypointRenderInfo>();
 	private MoveableList<WaypointRenderInfo> tmplist;
 	private WaypointRenderInfo selectedWP;
 	public int anz = 0;

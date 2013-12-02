@@ -27,10 +27,11 @@ package org.json;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
+import CB_Utils.Lists.CB_List;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a string wrapped in square brackets with commas separating the
@@ -68,14 +69,14 @@ public class JSONArray
 	/**
 	 * The arrayList where the JSONArray's properties are kept.
 	 */
-	private ArrayList<Object> myArrayList;
+	private CB_List<Object> myArrayList;
 
 	/**
 	 * Construct an empty JSONArray.
 	 */
 	public JSONArray()
 	{
-		this.myArrayList = new ArrayList<Object>();
+		this.myArrayList = new CB_List<Object>();
 	}
 
 	/**
@@ -149,14 +150,19 @@ public class JSONArray
 	 */
 	public JSONArray(Collection<Object> collection)
 	{
-		this.myArrayList = new ArrayList<Object>();
+
 		if (collection != null)
 		{
+			this.myArrayList = new CB_List<Object>(collection.size());
 			Iterator<Object> iter = collection.iterator();
 			while (iter.hasNext())
 			{
 				this.myArrayList.add(JSONObject.wrap(iter.next()));
 			}
+		}
+		else
+		{
+			this.myArrayList = new CB_List<Object>();
 		}
 	}
 

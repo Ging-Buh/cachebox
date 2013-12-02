@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,6 +78,7 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.ILog;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
@@ -3230,8 +3230,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			int satellites = 0;
 			int fixed = 0;
-			ArrayList<GpsStrength> SatList = new ArrayList<GpsStrength>();
-			ArrayList<CB_Locator.GpsStrength> coreSatList = new ArrayList<CB_Locator.GpsStrength>();
+			CB_List<GpsStrength> SatList = new CB_List<GpsStrength>();
+			CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>();
 			while (statusIterator.hasNext())
 			{
 				GpsSatellite sat = statusIterator.next();
@@ -3255,8 +3255,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			}
 
-			Collections.sort(SatList);
-			Collections.sort(coreSatList);
+			SatList.sort();
+			coreSatList.sort();
 
 			CB_Locator.GPS.setSatFixes(fixed);
 			CB_Locator.GPS.setSatVisible(satellites);

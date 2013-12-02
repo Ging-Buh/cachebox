@@ -28,8 +28,8 @@ public class API_Button extends Button
 		this.setOnClickListener(click);
 
 		CB_RectF rec1 = new CB_RectF(this);
-		rec1.setWidth(this.height);
-		rec1.setX(this.width - this.height);
+		rec1.setWidth(this.getHeight());
+		rec1.setX(this.getWidth() - this.getHeight());
 		rec1 = rec1.ScaleCenter(0.7f);
 
 		apiChk = new Image(rec1, "");

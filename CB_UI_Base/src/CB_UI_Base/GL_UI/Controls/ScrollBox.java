@@ -32,7 +32,7 @@ public class ScrollBox extends CB_View_Base
 	private void initScrollBox()
 	{
 		// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
-		virtualHeight = this.height;
+		virtualHeight = this.getHeight();
 
 		lv = new V_ListView(this, "ListView-" + name);
 		lv.setClickable(true);

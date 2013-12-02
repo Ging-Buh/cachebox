@@ -79,7 +79,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		// initial
 		left = getLeftWidth();
-		top = this.height - this.getTopHeight();
+		top = this.getHeight() - this.getTopHeight();
 
 		switch (this.mFilterSetEntry.getItemType())
 		{
@@ -103,7 +103,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			EntryName.setColor(Fonts.getFontColor());
 			if (this.mFilterSetEntry.getItemType() == FilterSetListView.THREE_STATE_ITEM)
 			{
-				float TextWidth = width - (left + 20) - getRightWidth() - height;
+				float TextWidth = getWidth() - (left + 20) - getRightWidth() - getHeight();
 				EntryName.setWrappedText(name, left + 20, top, TextWidth);
 			}
 			else
@@ -121,7 +121,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 				Value.setColor(Fonts.getFontColor());
 				setValueFont = true;
 			}
-			if (setValueFont) Value.setText(String.valueOf(getValue()), (width / 1.5f), (height / 1.8f));
+			if (setValueFont) Value.setText(String.valueOf(getValue()), (getWidth() / 1.5f), (getHeight() / 1.8f));
 			setValueFont = false;
 
 			Value.draw(batch);
@@ -149,7 +149,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 				btnBack_pressed = new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
 			}
 
-			btnBack_pressed.draw(batch, 0, 0, width, height);
+			btnBack_pressed.draw(batch, 0, 0, getWidth(), getHeight());
 
 		}
 		else
@@ -159,7 +159,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 				btnBack = new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), 16, 16, 16, 16);
 			}
 
-			btnBack.draw(batch, 0, 0, width, height);
+			btnBack.draw(batch, 0, 0, getWidth(), getHeight());
 
 		}
 
@@ -268,10 +268,10 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 	private void drawNumerickItem(SpriteBatch batch)
 	{
-		lBounds = new CB_RectF(0, 0, height, height);
+		lBounds = new CB_RectF(0, 0, getHeight(), getHeight());
 		lBounds = lBounds.ScaleCenter(0.95f);
 
-		rBounds = new CB_RectF(width - height, 0, height, height);
+		rBounds = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight());
 		rBounds = rBounds.ScaleCenter(0.95f);
 
 		boolean rClick = false;
@@ -310,7 +310,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			Minus = new BitmapFontCache(Fonts.getBig());
 			Minus.setColor(Fonts.getFontColor());
 			Minus.setText("-", 0, 0);
-			Minus.setPosition(lBounds.getCenterPos().x - (Minus.getBounds().width / 2), lBounds.getCenterPos().y
+			Minus.setPosition(lBounds.getCenterPosX() - (Minus.getBounds().width / 2), lBounds.getCenterPosY()
 					+ (Minus.getBounds().height / 2));
 		}
 
@@ -319,7 +319,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			Plus = new BitmapFontCache(Fonts.getBig());
 			Plus.setColor(Fonts.getFontColor());
 			Plus.setText("+", 0, 0);
-			Plus.setPosition(rBounds.getCenterPos().x - (Plus.getBounds().width / 2), rBounds.getCenterPos().y
+			Plus.setPosition(rBounds.getCenterPosX() - (Plus.getBounds().width / 2), rBounds.getCenterPosY()
 					+ (Plus.getBounds().height / 2));
 		}
 
@@ -337,7 +337,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		if (mFilterSetEntry.getIcon() != null)
 		{
-			float iconHeight = this.halfHeight * 0.8f;
+			float iconHeight = this.getHalfHeight() * 0.8f;
 			float iconWidth = iconHeight * 5;
 			mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			mFilterSetEntry.getIcon().draw(batch);
@@ -350,7 +350,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	{
 		if (mFilterSetEntry.getIcon() != null)
 		{
-			float iconHeight = this.height * 0.8f;
+			float iconHeight = this.getHeight() * 0.8f;
 			float iconWidth = iconHeight;
 			mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			mFilterSetEntry.getIcon().draw(batch);
@@ -363,7 +363,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	{
 		if (rBounds == null || rChkBounds == null)
 		{
-			rBounds = new CB_RectF(width - height - 10, 5, height - 10, height - 10);// = right Button bounds
+			rBounds = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);// = right Button bounds
 
 			rChkBounds = rBounds.ScaleCenter(0.8f);
 		}

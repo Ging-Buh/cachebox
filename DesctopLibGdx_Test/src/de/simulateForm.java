@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,6 +22,7 @@ import CB_Locator.Location.ProviderType;
 import CB_Locator.Events.GpsStateChangeEventList;
 import CB_UI.Config;
 import CB_UI.Map.RouteOverlay;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.TrackPoint;
 
 import com.badlogic.gdx.graphics.Color;
@@ -174,7 +174,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, 2, true,
 						Bearing, 95, ProviderType.GPS));
 
-				ArrayList<GpsStrength> satList = new ArrayList<GpsStrength>();
+				CB_List<GpsStrength> satList = new CB_List<GpsStrength>(8);
 
 				satList.add(new GpsStrength(true, 120));
 				satList.add(new GpsStrength(true, 100));

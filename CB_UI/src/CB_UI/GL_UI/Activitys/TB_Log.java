@@ -15,9 +15,9 @@ import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Views.TrackableListView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -96,7 +96,7 @@ public class TB_Log extends ActivityBase
 		});
 
 		contentBox = new Box(ActivityRec(), "ContentBox");
-		contentBox.setHeight(this.height - (btnClose.getHeight() - margin) * 2.5f);
+		contentBox.setHeight(this.getHeight() - (btnClose.getHeight() - margin) * 2.5f);
 		contentBox.setBackground(SpriteCacheBase.activityBackground);
 
 		CB_RectF iconRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight());
@@ -256,7 +256,6 @@ public class TB_Log extends ActivityBase
 			@Override
 			public void isCanceld()
 			{
-				 
 
 			}
 		}, new Runnable()

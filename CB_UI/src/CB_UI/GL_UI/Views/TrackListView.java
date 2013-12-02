@@ -32,7 +32,7 @@ public class TrackListView extends V_ListView
 		super(rec, Name);
 		that = this;
 
-		ItemRec = new CB_RectF(0, 0, this.width, UI_Size_Base.that.getButtonHeight() * 1.1f);
+		ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
 
 		this.setEmptyMsg(Translation.Get("EmptyTrackList"));
 
@@ -154,7 +154,7 @@ public class TrackListView extends V_ListView
 			{
 				if (view.contains(x, y))
 				{
-					((TrackListViewItem) view).lastItemTouchPos = new Vector2(x - view.getPos().x, y - view.getPos().y);
+					((TrackListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
 				}
 			}
 		}

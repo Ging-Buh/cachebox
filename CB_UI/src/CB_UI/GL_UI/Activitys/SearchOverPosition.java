@@ -138,7 +138,7 @@ public class SearchOverPosition extends ActivityBase
 	{
 		box = new Box(ActivityRec(), "ScrollBox");
 		this.addChild(box);
-		box.setHeight(this.height - lineHeight - bOK.getMaxY() - margin - margin);
+		box.setHeight(this.getHeight() - lineHeight - bOK.getMaxY() - margin - margin);
 		box.setY(bOK.getMaxY() + margin);
 		box.setBackground(this.getBackground());
 	}
@@ -148,12 +148,12 @@ public class SearchOverPosition extends ActivityBase
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		gsLogo = new Image(innerWidth - margin - lineHeight, this.height - this.getTopHeight() - lineHeight - margin, lineHeight,
+		gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight,
 				lineHeight, "");
 		gsLogo.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())));
 		this.addChild(gsLogo);
 
-		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4)
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4)
 				- gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setWrapType(WrapType.WRAPPED);
 		lblTitle.setFont(Fonts.getBig());
@@ -210,17 +210,17 @@ public class SearchOverPosition extends ActivityBase
 
 		lblOnlyAvible = new Label(checkBoxOnlyAvible, Translation.Get("SearchOnlyAvible"));
 		lblOnlyAvible.setX(checkBoxOnlyAvible.getMaxX() + margin);
-		lblOnlyAvible.setWidth(this.width - margin - checkBoxOnlyAvible.getMaxX() - margin);
+		lblOnlyAvible.setWidth(this.getWidth() - margin - checkBoxOnlyAvible.getMaxX() - margin);
 		box.addChild(lblOnlyAvible);
 
 		lblExcludeHides = new Label(checkBoxExcludeHides, Translation.Get("SearchWithoutOwns"));
 		lblExcludeHides.setX(checkBoxOnlyAvible.getMaxX() + margin);
-		lblExcludeHides.setWidth(this.width - margin - checkBoxExcludeHides.getMaxX() - margin);
+		lblExcludeHides.setWidth(this.getWidth() - margin - checkBoxExcludeHides.getMaxX() - margin);
 		box.addChild(lblExcludeHides);
 
 		lblExcludeFounds = new Label(checkBoxExcludeFounds, Translation.Get("SearchWithoutFounds"));
 		lblExcludeFounds.setX(checkBoxOnlyAvible.getMaxX() + margin);
-		lblExcludeFounds.setWidth(this.width - margin - checkBoxExcludeFounds.getMaxX() - margin);
+		lblExcludeFounds.setWidth(this.getWidth() - margin - checkBoxExcludeFounds.getMaxX() - margin);
 		box.addChild(lblExcludeFounds);
 
 	}
@@ -247,7 +247,7 @@ public class SearchOverPosition extends ActivityBase
 
 	private void createCoordButton()
 	{
-		CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.width - (margin * 2), lineHeight);
+		CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.getWidth() - (margin * 2), lineHeight);
 		lblMarkerPos = new Label(rec, Translation.Get("CurentMarkerPos"));
 		box.addChild(lblMarkerPos);
 

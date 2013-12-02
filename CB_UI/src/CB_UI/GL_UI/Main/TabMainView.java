@@ -306,7 +306,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
+		rec.setHeight(this.getHeight() - UiSizes.that.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
 		LeftTab = new CB_TabView(rec, "Phone Tab");
@@ -414,7 +414,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
+		rec.setHeight(this.getHeight() - UiSizes.that.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
 		LeftTab = new CB_TabView(rec, "Phone Tab");
@@ -503,7 +503,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		rec.setX(GL_UISizes.UI_Left.getWidth());
 		rec.setY(0);
 
-		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
+		rec.setHeight(this.getHeight() - UiSizes.that.getInfoSliderHeight());
 
 		RightTab = new CB_TabView(rec, "Phone Tab");
 
