@@ -35,6 +35,19 @@ public class CB_StringList extends CB_List<String>
 		System.arraycopy(array.hashList, 0, this.hashList, 0, size);
 	}
 
+	public CB_StringList(String[] array)
+	{
+		size = array.length;
+		items = this.createNewItems(size);
+		System.arraycopy(array, 0, items, 0, size);
+
+		hashList = new int[size];
+		for (int i = 0; i < size; i++)
+		{
+			hashList[i] = items[i].hashCode();
+		}
+	}
+
 	@Override
 	protected String[] createNewItems(int size)
 	{
@@ -68,7 +81,7 @@ public class CB_StringList extends CB_List<String>
 	@Override
 	public int indexOf(String value)
 	{
-
+		if (value == null) return -1;
 		int valueHash = value.hashCode();
 
 		for (int i = 0, n = size; i < n; i++)
@@ -80,6 +93,11 @@ public class CB_StringList extends CB_List<String>
 		}
 
 		return -1;
+	}
+
+	public int getHash(int index)
+	{
+		return hashList[index];
 	}
 
 }

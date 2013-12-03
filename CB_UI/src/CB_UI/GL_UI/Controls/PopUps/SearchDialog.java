@@ -139,17 +139,17 @@ public class SearchDialog extends PopUp_Base
 
 		this.setSize(UiSizes.that.getCacheListItemSize().asFloat());
 
-		if (GlobalCore.isTab)
-		{
-			this.setBackground(SpriteCacheBase.activityBackground);
-			this.setWidth(this.getWidth() * 1.4f);
-			this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth());
-			this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight());
-		}
-		else
-		{
-			this.setBackground(SpriteCacheBase.ListBack);
-		}
+		// if (GlobalCore.isTab)
+		// {
+		// this.setBackground(SpriteCacheBase.activityBackground);
+		// this.setWidth(this.getWidth() * 1.4f);
+		// this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth());
+		// this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight());
+		// }
+		// else
+		// {
+		this.setBackground(SpriteCacheBase.ListBack);
+		// }
 		// initial Buttons
 
 		float margin = UI_Size_Base.that.getMargin();
@@ -898,22 +898,13 @@ public class SearchDialog extends PopUp_Base
 	{
 		try
 		{
-			if (GlobalCore.isTab)
-			{
-				if (CacheListView.that != null)
-				{
-					setY(CacheListView.that.getMaxY() - this.getHeight());
 
-				}
-			}
-			else
+			if (CacheListView.that != null)
 			{
-				if (CacheListView.that != null)
-				{
-					setY(CacheListView.that.getMaxY() - this.getHeight());
-					CacheListView.that.setTopPlaceHolder(this.getHeight());
-				}
+				setY(CacheListView.that.getMaxY() - this.getHeight());
+				CacheListView.that.setTopPlaceHolder(this.getHeight());
 			}
+
 			if (!GL.that.PopUpIsShown()) that.showNotCloseAutomaticly();
 		}
 		catch (Exception e)
@@ -929,12 +920,9 @@ public class SearchDialog extends PopUp_Base
 	{
 		Slider.that.removePosChangedEvent(listner);
 
-		if (!GlobalCore.isTab)
+		if (CacheListView.that != null)
 		{
-			if (CacheListView.that != null)
-			{
-				CacheListView.that.resetPlaceHolder();
-			}
+			CacheListView.that.resetPlaceHolder();
 		}
 	}
 
@@ -944,18 +932,11 @@ public class SearchDialog extends PopUp_Base
 		@Override
 		public void Position(float SliderTop, float SliderBottom)
 		{
-			if (GlobalCore.isTab)
-			{
-				// TODO plaziere rechts neben der Cache List
-			}
-			else
-			{
-				if (CacheListView.that != null)
-				{
-					setY(CacheListView.that.getMaxY() - that.getHeight());
-				}
-			}
 
+			if (CacheListView.that != null)
+			{
+				setY(CacheListView.that.getMaxY() - that.getHeight());
+			}
 		}
 	};
 

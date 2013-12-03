@@ -573,7 +573,7 @@ public class DescriptionImageGrabber
 						{
 							imageLoadError = HandleMissingImages(imageLoadError, uri, local);
 						}
-						System.gc();
+
 					}
 				}
 

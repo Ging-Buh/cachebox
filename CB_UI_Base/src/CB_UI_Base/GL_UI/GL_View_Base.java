@@ -271,15 +271,22 @@ public abstract class GL_View_Base extends CB_RectF
 		boolean tmpLongClickable = false;
 		if (childs != null)
 		{
-			for (GL_View_Base tmp : childs)
-			{
-				if (tmp != null)
-				{
-					if (tmp.isClickable()) tmpClickable = true;
-					if (tmp.isLongClickable()) tmpLongClickable = true;
-					if (tmp.isDblClickable()) tmpDblClickable = true;
-				}
 
+			try
+			{
+				for (GL_View_Base tmp : childs)
+				{
+					if (tmp != null)
+					{
+						if (tmp.isClickable()) tmpClickable = true;
+						if (tmp.isLongClickable()) tmpLongClickable = true;
+						if (tmp.isDblClickable()) tmpDblClickable = true;
+					}
+
+				}
+			}
+			catch (Exception e)
+			{
 			}
 		}
 
@@ -503,12 +510,13 @@ public abstract class GL_View_Base extends CB_RectF
 					}
 
 				}
+				catch (java.util.NoSuchElementException e)
+				{
+					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+				}
 				catch (java.util.ConcurrentModificationException e)
 				{
-					e.printStackTrace();
-					// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
-
-					break;
+					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				}
 			}
 			// }
@@ -675,9 +683,13 @@ public abstract class GL_View_Base extends CB_RectF
 					if (view != null) view.onParentRezised(this);
 				}
 			}
+			catch (java.util.NoSuchElementException e)
+			{
+				// do nothing
+			}
 			catch (ConcurrentModificationException e)
 			{
-				e.printStackTrace();
+				// do nothing
 			}
 		}
 	}

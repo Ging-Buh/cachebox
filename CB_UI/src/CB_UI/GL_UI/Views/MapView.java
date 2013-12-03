@@ -25,6 +25,7 @@ import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEventList;
+import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Controls.InfoBubble;
@@ -199,6 +200,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		if (!CompassMode)
 		{
 			this.addChild(zoomBtn);
+			zoomBtn.setMinimumFadeValue(0.25f);
 		}
 		else
 		{
@@ -547,6 +549,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		{
 			wpi.Icon.setBounds(screen.x - WpSize.halfWidth, screen.y - WpSize.halfHeight, WpSize.width, WpSize.height);
 			wpi.Icon.draw(batch);
+		}
+
+		// draw Favorite symbol
+		if (wpi.Cache.Favorit())
+		{
+			batch.draw(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()), screen.x + (WpSize.halfWidth / 2), screen.y
+					+ (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
 		}
 
 		if (wpi.OverlayIcon != null)

@@ -15,11 +15,12 @@ public class CB_List<T> implements Iterable<T>
 {
 	private T[] items;
 	protected int size;
+	private final int INITIAL_SIZE = 16;
 
 	/** Creates an ordered array with a capacity of 16. */
 	public CB_List()
 	{
-		items = this.createNewItems(16);
+		items = this.createNewItems(INITIAL_SIZE);
 	}
 
 	/** Creates an ordered array with the specified capacity. */
@@ -215,13 +216,14 @@ public class CB_List<T> implements Iterable<T>
 	public T[] ensureCapacity(int additionalCapacity)
 	{
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
+		if (sizeNeeded > items.length) resize(Math.max(INITIAL_SIZE, sizeNeeded));
 		return items;
 	}
 
 	protected T[] resize(int newSize)
 	{
-		if (newSize < 10) newSize = 10;
+		if (newSize < INITIAL_SIZE) newSize = INITIAL_SIZE;
+		if (this.items.length == 0) return this.items = createNewItems(newSize);
 		return this.items = Arrays.copyOf(this.items, newSize);
 	}
 

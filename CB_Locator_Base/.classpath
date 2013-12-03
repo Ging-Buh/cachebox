@@ -8,8 +8,8 @@
 	<classpathentry kind="lib" path="libs/httpcore-4.1.jar"/>
 	<classpathentry kind="lib" path="libs/sjxp-2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
-	<classpathentry kind="lib" path="libs/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
+	<classpathentry kind="lib" path="libs/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry kind="lib" path="libs/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry kind="lib" path="libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
