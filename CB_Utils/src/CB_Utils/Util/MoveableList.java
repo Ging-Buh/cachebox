@@ -137,10 +137,11 @@ public class MoveableList<T> extends CB_List<T>
 	}
 
 	@Override
-	public void add(T t)
+	public int add(T t)
 	{
-		super.add(t);
+		int ID = super.add(t);
 		fireChangedEvent();
+		return ID;
 	}
 
 	@Override

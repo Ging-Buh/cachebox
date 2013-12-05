@@ -1,7 +1,5 @@
 package CB_Utils.Lists;
 
-import java.util.Arrays;
-
 public class CB_StringList extends CB_List<String>
 {
 	private String[] items;
@@ -57,19 +55,33 @@ public class CB_StringList extends CB_List<String>
 	@Override
 	protected String[] resize(int newSize)
 	{
-		hashList = Arrays.copyOf(hashList, newSize);
-		return this.items = Arrays.copyOf(this.items, newSize);
+
+		{// TODO Replace with this.items=Arrays.copyOf(this.items, newSize); if SDK>9
+
+			int[] tmpHash = new int[newSize];
+			System.arraycopy(hashList, 0, tmpHash, 0, hashList.length);
+			hashList = tmpHash;
+
+			String[] tmpString = new String[newSize];
+			System.arraycopy(items, 0, tmpString, 0, items.length);
+			items = tmpString;
+
+		}
+
+		return this.items;
 	}
 
 	@Override
-	public void add(String value)
+	public int add(String value)
 	{
 		if (size == this.items.length)
 		{
 			resize(size + (size >> 1));
 		}
+		int ID = size;
 		this.items[size] = value;
 		hashList[size++] = value.hashCode();
+		return ID;
 	}
 
 	@Override

@@ -10,9 +10,6 @@
 	<classpathentry kind="lib" path="lib/gdx.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.1.jar"/>
-	<classpathentry kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry kind="lib" path="lib/sjxp-2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>

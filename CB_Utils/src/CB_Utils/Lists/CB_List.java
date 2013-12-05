@@ -60,10 +60,12 @@ public class CB_List<T> implements Iterable<T>
 		size++;
 	}
 
-	public void add(T value)
+	public int add(T value)
 	{
 		if (size == this.items.length) resize(size + (size >> 1));
+		int ID = size;
 		this.items[size++] = value;
+		return ID;
 	}
 
 	public void addAll(CB_List<T> array)
@@ -224,7 +226,14 @@ public class CB_List<T> implements Iterable<T>
 	{
 		if (newSize < INITIAL_SIZE) newSize = INITIAL_SIZE;
 		if (this.items.length == 0) return this.items = createNewItems(newSize);
-		return this.items = Arrays.copyOf(this.items, newSize);
+
+		{// TODO Replace with this.items=Arrays.copyOf(this.items, newSize); if SDK>9
+			T[] tmp = createNewItems(newSize);
+			System.arraycopy(this.items, 0, tmp, 0, this.items.length); // Arrays.copyOf(this.items, newSize);
+			this.items = tmp;
+		}
+
+		return this.items;
 	}
 
 	/**
