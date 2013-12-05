@@ -229,7 +229,13 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				if (childs != null && childs.size() > 0) childs.remove(view);
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.remove(view);
+				}
+				catch (Exception e)
+				{
+				}
 				chkChildClickable();
 			}
 		});
@@ -242,7 +248,13 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				if (childs != null && childs.size() > 0) childs.clear();
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.clear();
+				}
+				catch (Exception e)
+				{
+				}
 				chkChildClickable();
 			}
 		});
@@ -255,7 +267,13 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				if (childs != null && childs.size() > 0) childs.remove(Childs);
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.remove(Childs);
+				}
+				catch (Exception e)
+				{
+				}
 				chkChildClickable();
 			}
 		});
