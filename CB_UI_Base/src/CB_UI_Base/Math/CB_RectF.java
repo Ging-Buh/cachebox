@@ -139,7 +139,7 @@ public class CB_RectF
 
 	public boolean setSize(CB_RectF rec)
 	{
-		setSize(member[2], member[3]);
+		setSize(rec.member[2], rec.member[3]);
 		return true;
 	}
 
