@@ -71,6 +71,7 @@ import CB_Utils.Lists.CB_List;
 public class MoveableList<T> extends CB_List<T>
 {
 
+	private static final long serialVersionUID = -3030926604332765746L;
 	protected CB_List<iChanged> ChangedEventList = new CB_List<iChanged>();
 
 	public MoveableList()

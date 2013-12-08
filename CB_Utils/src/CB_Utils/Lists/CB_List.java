@@ -1,5 +1,6 @@
 package CB_Utils.Lists;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -11,8 +12,9 @@ import java.util.NoSuchElementException;
  * 
  * @author Longri, based on FloatArray from Nathan Sweet (LibGdx)
  */
-public class CB_List<T> implements Iterable<T>
+public class CB_List<T> implements Iterable<T>, Serializable
 {
+	private static final long serialVersionUID = 4378819539487000418L;
 	private T[] items;
 	protected int size;
 	private final int INITIAL_SIZE = 16;

@@ -321,7 +321,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				zeile.setText(backString);
 			}
 
-			for (int i = mSelectedIndex; i < solver.size(); i++)
+			for (int i = 0; i < solver.size(); i++)
 			{
 				SolverZeile zeile2 = solver.get(i);
 				zeile2.setText(zeile2.getOrgText());

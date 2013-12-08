@@ -83,6 +83,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		}
 	}
 
+	private SolverDialog2BuildFormula buildFormula;
 	private TreeMap<buttons, MultiToggleButton> visibleButtons = new TreeMap<buttons, MultiToggleButton>();
 	private SolverBackStringListner mBackStringListner;
 	private Cache aktCache;
@@ -131,6 +132,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	public SolverDialog2(Cache aktCache, String solverString, boolean showVariableField, DataType dataType)
 	{
 		super(ActivityRec(), "solverActivity");
+		this.buildFormula = null;
 		this.solverString = solverString;
 		this.aktCache = aktCache;
 		this.dataType = dataType;
@@ -279,6 +281,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			y += tbOperator[1].getHeight();
 			break;
 		case Text:
+			// layout missing Variables
+			if (buildFormula != null)
+			{
+				y = buildFormula.Layout(y, innerLeft, innerWidth, margin);
+			}
 			mFormulaField.setY(y);
 			y += mFormulaField.getHeight() + margin;
 			break;
@@ -632,12 +639,18 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageText()
 	{
+		if (buildFormula != null)
+		{
+			buildFormula.removeChilds(scrollBox);
+		}
 		scrollBox.removeChild(mFormulaField);
 		mFormulaField = null;
 	}
 
 	private void showPageText()
 	{
+		buildFormula = new SolverDialog2BuildFormula(sForm);
+
 		mFormulaField = new EditTextField(this);
 		mFormulaField.setWrapType(WrapType.SINGLELINE);
 		mFormulaField.setX(innerLeft);
@@ -657,7 +670,20 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			}
 		});
 
+		Solver solv = new Solver(sForm);
+		if (solv.Solve())
+		{
+			if (solv.MissingVariables != null)
+			{
+				for (String mv : solv.MissingVariables.keySet())
+				{
+					System.out.println(mv);
+				}
+			}
+		}
+
 		scrollBox.addChild(mFormulaField);
+		buildFormula.addControls(scrollBox);
 	}
 
 	private void savePageText()

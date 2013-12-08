@@ -9,10 +9,7 @@ import CB_Utils.Util.MoveableList;
 public class CacheList extends MoveableList<Cache>
 {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -932434844601790958L;
 
 	public boolean ResortAtWork = false;
 
