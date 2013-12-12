@@ -520,6 +520,13 @@ public abstract class Database extends Database_Core
 		}
 	}
 
+	public static void SetFound(long cacheId, boolean value)
+	{
+		Parameters args = new Parameters();
+		args.put("found", value);
+		Database.Data.update("Caches", args, "id=" + cacheId, null);
+	}
+
 	public static String GetSolver(Cache cache)
 	{
 		String resultString = GetSolver(cache.Id);
