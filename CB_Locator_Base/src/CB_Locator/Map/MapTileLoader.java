@@ -443,7 +443,7 @@ public class MapTileLoader
 								if (CurrentOverlayLayer != null) queuedOverlayTilesLock.unlock();
 							}
 
-							// if (desc.Zoom == zoom)
+							if (desc != null)
 							{
 								if (calcOverlay && CurrentOverlayLayer != null) LoadOverlayTile(desc);
 								else if (CurrentLayer != null)

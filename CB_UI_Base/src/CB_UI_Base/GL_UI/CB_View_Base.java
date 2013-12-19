@@ -165,17 +165,17 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			}
 			catch (NoSuchElementException e)
 			{
-				childs.clear();
+
 				setToNull(this);
 			}
 			catch (ConcurrentModificationException e)
 			{
-				childs.clear();
+
 				setToNull(this);
 			}
 			catch (NullPointerException e)
 			{
-				childs.clear();
+
 				setToNull(this);
 			}
 		}
