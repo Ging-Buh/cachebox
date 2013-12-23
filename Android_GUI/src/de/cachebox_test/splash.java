@@ -921,7 +921,7 @@ public class splash extends Activity
 
 				if (setting instanceof SettingString)
 				{
-					String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
+					String value = androidSetting.getString(setting.getName(), "");
 					((SettingString) setting).setValue(value);
 				}
 				else if (setting instanceof SettingBool)

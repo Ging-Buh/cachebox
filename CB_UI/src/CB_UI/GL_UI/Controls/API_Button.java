@@ -70,11 +70,11 @@ public class API_Button extends Button
 
 			if (Entry)
 			{
-				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon-disable"));
+				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon"));
 			}
 			else
 			{
-				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon"));
+				drw = new SpriteDrawable(SpriteCacheBase.getThemedSprite("chk-icon-disable"));
 			}
 
 			apiChk.setDrawable(drw);

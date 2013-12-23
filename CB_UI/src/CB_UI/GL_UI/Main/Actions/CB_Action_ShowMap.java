@@ -4,6 +4,7 @@ import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_UI.Config;
 import CB_UI.TrackRecorder;
+import CB_UI.GL_UI.Activitys.MapDownload;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
@@ -83,7 +84,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		// mi = icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
 		mi = icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
 		// mi = icm.addItem(MenuID.MI_TREC_REC, "TrackRec");
-
+		mi = icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
 		return icm;
 	}
 
@@ -303,6 +304,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 			case MenuID.MI_TREC_REC:
 				showMenuTrackRecording();
+				return true;
+
+			case MenuID.MI_MAP_DOWNOAD:
+				MapDownload.INSTANCE.show();
 				return true;
 
 			default:

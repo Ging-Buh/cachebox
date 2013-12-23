@@ -248,7 +248,7 @@ public class Translation
 	{
 
 		CB_List<Translations> List = Default ? mStringList : mRefTranslation;
-
+		List.clear();
 		// get Encoding
 
 		FileHandle file = Gdx.files.getFileHandle(FilePath, mFiletype);
