@@ -167,4 +167,6 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 		}
 	}
 
+	public abstract boolean equals(Object obj);
+
 }

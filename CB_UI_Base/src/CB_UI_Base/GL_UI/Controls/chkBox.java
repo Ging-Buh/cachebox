@@ -131,6 +131,7 @@ public class chkBox extends Button
 			isChk = !isChk;
 			if (changeListner != null) changeListner.onCheckedChanged(this, isChk);
 		}
+		if (mOnClickListener != null) mOnClickListener.onClick(this, x, y, pointer, button);
 		return true;
 	}
 

@@ -318,6 +318,8 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	@Override
 	public Iterator<T> iterator()
 	{
+		Itr itr = new Itr();
+		itr.reverse = reverse;
 		return new Itr();
 	}
 
@@ -327,6 +329,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	private class Itr implements Iterator<T>
 	{
 
+		protected boolean reverse = false;
 		int cursor; // index of next element to return
 
 		@Override
@@ -340,7 +343,9 @@ public class CB_List<T> implements Iterable<T>, Serializable
 		{
 			if (cursor >= size) throw new NoSuchElementException();
 			if (cursor >= items.length) throw new ConcurrentModificationException();
-			return items[cursor++];
+
+			int index = reverse ? size - cursor++ : cursor++;
+			return items[index];
 		}
 
 		@Override
@@ -362,6 +367,14 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	{
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
+	}
+
+	boolean reverse = false;
+
+	public CB_List<T> reverse()
+	{
+		reverse = true;
+		return this;
 	}
 
 }

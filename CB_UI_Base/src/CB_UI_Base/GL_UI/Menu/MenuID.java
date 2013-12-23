@@ -230,4 +230,6 @@ public class MenuID
 
 	// Export
 	public static final int MI_EXPORT_RUN = 196;
+
+	public static final int MI_MAP_DOWNOAD = 199;
 }

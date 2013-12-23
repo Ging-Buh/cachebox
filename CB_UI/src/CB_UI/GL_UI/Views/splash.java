@@ -18,6 +18,7 @@ import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_UI.GL_UI.Main.TabMainView;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Plattform;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -31,6 +32,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileList;
+import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -45,6 +47,18 @@ public class splash extends TabMainView
 	public splash(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
+
+		CB_UI_Settings.Sel_LanguagePath.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				int i = 0;
+				i++;
+			}
+		});
+
 	}
 
 	TextureAtlas atlas;
@@ -231,41 +245,44 @@ public class splash extends TabMainView
 	 */
 	private void ini_Translations()
 	{
-		Logger.DEBUG("ini_Translations");
-
-		// Load from Assets changes
-		// delete work path from settings value
-		String altValue = Config.Sel_LanguagePath.getValue();
-		if (altValue.contains(Config.WorkPath))
+		if (!Translation.isInitial())
 		{
-			String newValue = altValue.replace(Config.WorkPath + "/", "");
-			Config.Sel_LanguagePath.setValue(newValue);
-			Config.AcceptChanges();
-		}
+			Logger.DEBUG("ini_Translations");
 
-		if (altValue.startsWith("/"))
-		{
-			String newValue = altValue.substring(1);
-			Config.Sel_LanguagePath.setValue(newValue);
-			Config.AcceptChanges();
-		}
+			// Load from Assets changes
+			// delete work path from settings value
+			String altValue = Config.Sel_LanguagePath.getValue();
+			if (altValue.contains(Config.WorkPath))
+			{
+				String newValue = altValue.replace(Config.WorkPath + "/", "");
+				Config.Sel_LanguagePath.setValue(newValue);
+				Config.AcceptChanges();
+			}
 
-		FileType fileType = (GlobalCore.platform == Plattform.Android) ? FileType.Internal : FileType.Classpath;
+			if (altValue.startsWith("/"))
+			{
+				String newValue = altValue.substring(1);
+				Config.Sel_LanguagePath.setValue(newValue);
+				Config.AcceptChanges();
+			}
 
-		new Translation(Config.WorkPath, fileType);
-		try
-		{
-			Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
-		}
-		catch (Exception e)
-		{
+			FileType fileType = (GlobalCore.platform == Plattform.Android) ? FileType.Internal : FileType.Classpath;
+
+			new Translation(Config.WorkPath, fileType);
 			try
 			{
-				Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+				Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
 			}
-			catch (IOException e1)
+			catch (Exception e)
 			{
-				e1.printStackTrace();
+				try
+				{
+					Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+				}
+				catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
 			}
 		}
 	}

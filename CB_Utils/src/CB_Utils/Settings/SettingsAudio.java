@@ -60,4 +60,18 @@ public class SettingsAudio extends SettingBase<Audio>
 		return ret;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingsAudio)) return false;
+
+		SettingsAudio inst = (SettingsAudio) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (inst.value.Mute != this.value.Mute) return false;
+		if (inst.value.Volume != this.value.Volume) return false;
+		if (inst.value.Class_Absolute != this.value.Class_Absolute) return false;
+		if (!inst.value.Path.equals(this.value.Path)) return false;
+
+		return true;
+	}
 }

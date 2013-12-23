@@ -19,6 +19,8 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
@@ -47,6 +49,7 @@ public class Label extends CB_View_Base
 	private VAlignment mVAlignment = VAlignment.CENTER;
 	private HAlignment mHAlignment = HAlignment.LEFT;
 	private WrapType mWrapType = WrapType.SINGLELINE;
+	private int ErrorCount = 0;
 
 	TextBounds bounds;
 
@@ -212,8 +215,30 @@ public class Label extends CB_View_Base
 		case CENTER:
 			yPosition = (innerHeight - bounds.height - mFont.getAscent()) / 2f;
 			break;
+		case BOTTOM:
+			// TODO implement
+			break;
+
 		}
-		TextObject.setPosition(xPosition, yPosition);
+
+		try
+		{
+			TextObject.setPosition(xPosition, yPosition);
+			ErrorCount = 0;
+		}
+		catch (Exception e)
+		{
+			// Try again
+			ErrorCount++;
+			if (ErrorCount < 5) GL.that.RunOnGL(new IRunOnGL()
+			{
+				@Override
+				public void run()
+				{
+					setTextPosition();
+				}
+			});
+		}
 	}
 
 	private void makeText()

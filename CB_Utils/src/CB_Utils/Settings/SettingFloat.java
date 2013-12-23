@@ -40,4 +40,15 @@ public class SettingFloat extends SettingBase<Float>
 		return ret;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingFloat)) return false;
+
+		SettingFloat inst = (SettingFloat) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (inst.value != this.value) return false;
+
+		return true;
+	}
 }
