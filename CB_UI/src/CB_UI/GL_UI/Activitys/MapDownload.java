@@ -19,6 +19,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import CB_Core.Import.BreakawayImportThread;
+import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.MapDownloadItem;
@@ -303,7 +304,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 	{
 		canceld = true;
 		importStarted = false;
-
+		fillDownloadList();
 		if (dis != null)
 		{
 			this.removeChildsDirekt(dis);
@@ -313,6 +314,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 		pgBar.setProgress(0);
 		lblProgressMsg.setText(Translation.Get("DownloadCanceld"));
 		bOK.enable();
+		if (ManagerBase.Manager != null) ManagerBase.Manager.initialMapPacks();
 	}
 
 	private void chkRepository()
@@ -379,32 +381,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 					e.printStackTrace();
 				}
 
-				Map<String, String> values = new HashMap<String, String>();
-				System.setProperty("sjxp.namespaces", "false");
-				List<IRule<Map<String, String>>> ruleList = new ArrayList<IRule<Map<String, String>>>();
-				ruleList = createRepositoryRules(ruleList);
-
-				@SuppressWarnings("unchecked")
-				XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
-
-				InputStream stream = new ByteArrayInputStream(repository_freizeitkarte_android.getBytes());
-				parserCache.parse(stream, values);
-
-				float yPos = 0;
-
-				// Create possible download List
-
-				for (MapRepositoryInfo map : mapInfoList.reverse())
-				{
-
-					MapDownloadItem item = new MapDownloadItem(map, MapDownload.this.innerWidth);
-					item.setY(yPos);
-					scrollBox.addChild(item);
-					mapInfoItemList.add(item);
-					yPos += item.getHeight() + margin;
-				}
-
-				scrollBox.setVirtualHeight(yPos);
+				fillDownloadList();
 
 				if (dis != null)
 				{
@@ -415,6 +392,8 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 				bOK.enable();
 				isChkRepository = false;
 				lblProgressMsg.setText("");
+
+				if (ManagerBase.Manager != null) ManagerBase.Manager.initialMapPacks();
 			}
 
 		});
@@ -428,6 +407,38 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 	CB_List<MapRepositoryInfo> mapInfoList = new CB_List<MapDownload.MapRepositoryInfo>();
 	CB_List<MapDownloadItem> mapInfoItemList = new CB_List<MapDownloadItem>();
 	MapRepositoryInfo actMapRepositoryInfo;
+
+	private void fillDownloadList()
+	{
+		scrollBox.removeChilds();
+
+		Map<String, String> values = new HashMap<String, String>();
+		System.setProperty("sjxp.namespaces", "false");
+		List<IRule<Map<String, String>>> ruleList = new ArrayList<IRule<Map<String, String>>>();
+		ruleList = createRepositoryRules(ruleList);
+
+		@SuppressWarnings("unchecked")
+		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
+
+		InputStream stream = new ByteArrayInputStream(repository_freizeitkarte_android.getBytes());
+		parserCache.parse(stream, values);
+
+		float yPos = 0;
+
+		// Create possible download List
+
+		for (MapRepositoryInfo map : mapInfoList.reverse())
+		{
+
+			MapDownloadItem item = new MapDownloadItem(map, MapDownload.this.innerWidth);
+			item.setY(yPos);
+			scrollBox.addChild(item);
+			mapInfoItemList.add(item);
+			yPos += item.getHeight() + margin;
+		}
+
+		scrollBox.setVirtualHeight(yPos);
+	}
 
 	private List<IRule<Map<String, String>>> createRepositoryRules(List<IRule<Map<String, String>>> ruleList)
 	{

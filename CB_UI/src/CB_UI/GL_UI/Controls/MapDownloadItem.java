@@ -79,6 +79,11 @@ public class MapDownloadItem extends CB_View_Base
 
 		String workPath = Config.MapPackFolder.getValue();
 
+		if (workPath.length() == 0 || !(new File(workPath).isDirectory()))
+		{
+			workPath = Config.MapPackFolder.getDefaultValue();
+		}
+
 		File file = new File(workPath + "/" + FileString);
 
 		if (file.exists())

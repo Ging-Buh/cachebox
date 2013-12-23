@@ -18,7 +18,6 @@ import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Plattform;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -32,7 +31,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileList;
-import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -47,17 +45,6 @@ public class splash extends TabMainView
 	public splash(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
-
-		CB_UI_Settings.Sel_LanguagePath.addChangedEventListner(new iChanged()
-		{
-
-			@Override
-			public void isChanged()
-			{
-				int i = 0;
-				i++;
-			}
-		});
 
 	}
 
