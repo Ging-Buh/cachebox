@@ -558,7 +558,32 @@ public class SearchForGeocaches
 							waypoint.GcCode = jWaypoints.getString("Code");
 							cache.waypoints.add(waypoint);
 						}
-
+						// User Waypoints - Corrected Coordinates of the Geocaching.com Website
+						JSONArray userWaypoints = jCache.getJSONArray("UserWaypoints");
+						for (int j = 0; j < userWaypoints.length(); j++)
+						{
+							JSONObject jUserWaypoint = (JSONObject) userWaypoints.get(j);
+							if (!jUserWaypoint.getString("Description").equals("Coordinate Override"))
+							{
+								continue; // only corrected Coordinate
+							}
+							Waypoint waypoint = new Waypoint();
+							waypoint.CacheId = cache.Id;
+							try
+							{
+								waypoint.Pos = new Coordinate(jUserWaypoint.getDouble("Latitude"), jUserWaypoint.getDouble("Longitude"));
+							}
+							catch (Exception ex)
+							{
+								// no Coordinates -> Lat/Lon = 0/0
+								waypoint.Pos = new Coordinate();
+							}
+							waypoint.Title = jUserWaypoint.getString("Description");
+							waypoint.Description = jUserWaypoint.getString("Description");
+							waypoint.Type = CacheTypes.Final;
+							waypoint.GcCode = "CO" + cache.GcCode.substring(2, cache.GcCode.length());
+							cache.waypoints.add(waypoint);
+						}
 						// Spoiler aktualisieren
 						if (GlobalCore.getSelectedCache() != null)
 						{

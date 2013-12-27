@@ -438,7 +438,8 @@ public class Cache implements Comparable<Cache>, Serializable
 		{
 			if (wp.Type == CacheTypes.Final)
 			{
-				if (wp.Pos.isZero()) continue;
+				// do not activate final waypoint with invalid coordinates
+				if (!wp.Pos.isValid() || wp.Pos.isZero()) continue;
 				return wp;
 			}
 		}

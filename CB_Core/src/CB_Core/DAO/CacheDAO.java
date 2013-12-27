@@ -155,7 +155,7 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		try
@@ -165,7 +165,7 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		args.put("Hint", cache.hint);
@@ -242,8 +242,12 @@ public class CacheDAO
 		// args.put("Id", cache.Id);
 		// args.put("GcCode", cache.GcCode);
 		// args.put("GcId", cache.GcId);
-		args.put("Latitude", cache.Pos.getLatitude());
-		args.put("Longitude", cache.Pos.getLongitude());
+		if (cache.Pos.isValid() && !cache.Pos.isZero())
+		{
+			// Update Cache position only when new position is valid and not zero
+			args.put("Latitude", cache.Pos.getLatitude());
+			args.put("Longitude", cache.Pos.getLongitude());
+		}
 		args.put("Name", cache.Name);
 		try
 		{
@@ -271,7 +275,7 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		args.put("Hint", cache.hint);

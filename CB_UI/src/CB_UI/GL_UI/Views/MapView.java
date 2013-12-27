@@ -401,6 +401,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
 				.getSelectedCache().Pos;
 
+		if (coord == null)
+		{
+			return;
+		}
 		float x = (float) (256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, coord.getLongitude()));
 		float y = (float) (-256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, coord.getLatitude()));
 
