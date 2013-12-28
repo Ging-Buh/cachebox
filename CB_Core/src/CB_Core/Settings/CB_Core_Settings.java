@@ -36,8 +36,8 @@ public interface CB_Core_Settings
 	public static final SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder,
 			SettingModus.Expert, Config_Core.WorkPath + "/repository/images", SettingStoreType.Global);
 
-	public static final SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolderLocal",
-			SettingCategory.Folder, SettingModus.Never, "", SettingStoreType.Local);
+	public static final SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder,
+			SettingModus.Never, "", SettingStoreType.Local);
 
 	public static final SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Folder, SettingModus.Expert,
 			Config_Core.WorkPath + "/repository/spoilers", SettingStoreType.Global);
