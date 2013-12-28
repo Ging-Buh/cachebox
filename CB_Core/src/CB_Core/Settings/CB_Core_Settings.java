@@ -20,30 +20,29 @@ public interface CB_Core_Settings
 	public static final SettingModus EXPERT = SettingModus.Expert;
 	public static final SettingModus NEVER = SettingModus.Never;
 
-	public static final SettingString GcLogin = new SettingString("GcLogin", SettingCategory.Login, SettingModus.Normal, "",
+	public static final SettingString GcLogin = new SettingString("GcLogin", SettingCategory.Login, NORMAL, "", SettingStoreType.Platform);
+
+	public static final SettingEncryptedString GcAPI = new SettingEncryptedString("GcAPI", SettingCategory.Login, INVISIBLE, "",
 			SettingStoreType.Platform);
 
-	public static final SettingEncryptedString GcAPI = new SettingEncryptedString("GcAPI", SettingCategory.Login, SettingModus.Invisible,
+	public static final SettingEncryptedString GcAPIStaging = new SettingEncryptedString("GcAPIStaging", SettingCategory.Login, INVISIBLE,
 			"", SettingStoreType.Platform);
 
-	public static final SettingEncryptedString GcAPIStaging = new SettingEncryptedString("GcAPIStaging", SettingCategory.Login,
-			SettingModus.Invisible, "", SettingStoreType.Platform);
-
-	public static final SettingBool StagingAPI = new SettingBool("StagingAPI", SettingCategory.Folder, SettingModus.Expert, false,
+	public static final SettingBool StagingAPI = new SettingBool("StagingAPI", SettingCategory.Folder, EXPERT, false,
 			SettingStoreType.Global);
 
 	// Folder Settings
-	public static final SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder,
-			SettingModus.Expert, Config_Core.WorkPath + "/repository/images", SettingStoreType.Global);
+	public static final SettingFolder DescriptionImageFolder = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder, EXPERT,
+			Config_Core.WorkPath + "/repository/images", SettingStoreType.Global);
 
 	public static final SettingFolder DescriptionImageFolderLocal = new SettingFolder("DescriptionImageFolder", SettingCategory.Folder,
-			SettingModus.Never, "", SettingStoreType.Local);
+			NEVER, "", SettingStoreType.Local);
 
-	public static final SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Folder, SettingModus.Expert,
+	public static final SettingFolder SpoilerFolder = new SettingFolder("SpoilerFolder", SettingCategory.Folder, EXPERT,
 			Config_Core.WorkPath + "/repository/spoilers", SettingStoreType.Global);
 
-	public static final SettingFolder SpoilerFolderLocal = new SettingFolder("SpoilerFolder", SettingCategory.Folder, SettingModus.Never,
-			"", SettingStoreType.Local);
+	public static final SettingFolder SpoilerFolderLocal = new SettingFolder("SpoilerFolder", SettingCategory.Folder, NEVER, "",
+			SettingStoreType.Local);
 
 	public static final SettingInt conection_timeout = new SettingInt("conection_timeout", SettingCategory.Internal, INVISIBLE, 10000,
 			SettingStoreType.Global);

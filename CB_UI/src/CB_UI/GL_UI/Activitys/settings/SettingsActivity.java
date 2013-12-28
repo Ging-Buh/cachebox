@@ -71,6 +71,7 @@ import CB_Utils.Settings.SettingLongString;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingString;
+import CB_Utils.Settings.SettingStringArray;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingsAudio;
 
@@ -491,6 +492,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		{
 			return getIntArrayView((SettingIntArray) SB, BackgroundChanger);
 		}
+		else if (SB instanceof SettingStringArray)
+		{
+			return getStringArrayView((SettingStringArray) SB, BackgroundChanger);
+		}
 		else if (SB instanceof SettingTime)
 		{
 			return getTimeView((SettingTime) SB, BackgroundChanger);
@@ -717,6 +722,70 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		spinner.setAdapter(adapter);
 		spinner.setSelection(SB.getIndex());
+
+		spinner.setSelectionChangedListner(new selectionChangedListner()
+		{
+			@Override
+			public void selectionChanged(int index)
+			{
+				SB.setValue(SB.getValueFromIndex(index));
+			}
+		});
+
+		item.setOnLongClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+
+				return false;
+			}
+
+		});
+
+		return item;
+
+	}
+
+	private CB_View_Base getStringArrayView(final SettingStringArray SB, int backgroundChanger)
+	{
+
+		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
+
+		item.setName(Translation.Get(SB.getName()));
+
+		final Spinner spinner = item.getSpinner();
+
+		spinner.setDrageble();
+
+		final SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return SB.possibleValues()[position];
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return SB.possibleValues().length;
+			}
+		};
+
+		spinner.setAdapter(adapter);
+		spinner.setSelection(SB.getIndexOfValue());
 
 		spinner.setSelectionChangedListner(new selectionChangedListner()
 		{

@@ -14,6 +14,7 @@ import CB_Utils.Settings.SettingLongString;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingString;
+import CB_Utils.Settings.SettingStringArray;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Settings.SettingsList;
@@ -41,6 +42,8 @@ public interface CB_UI_Settings
 		{ 0, 2, 10, 25, 50, 100, 200, 500, 1000 };
 	public static final Integer[] TrackDistanceArray = new Integer[]
 		{ 1, 3, 5, 10, 20 };
+	public static final String[] navis = new String[]
+		{ "Navigon", "Google", "Copilot" };
 
 	// Settings Compass
 	public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel",
@@ -272,6 +275,8 @@ public interface CB_UI_Settings
 			SettingCategory.QuickList, INVISIBLE, "5,0,1,3,2", SettingStoreType.Global));
 	public static final SettingString GcJoker = (SettingString) SettingsList.addSetting(new SettingString("GcJoker", SettingCategory.Login,
 			NORMAL, "", SettingStoreType.Platform));
+	public static final SettingStringArray Navis = (SettingStringArray) SettingsList.addSetting(new SettingStringArray("Navis",
+			SettingCategory.Misc, NORMAL, "Google", SettingStoreType.Global, navis));
 
 	// ArrayInt
 	public static final SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", SettingCategory.Map, NORMAL, 16,

@@ -2020,84 +2020,106 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				lon = GlobalCore.getSelectedWaypoint().Pos.getLongitude();
 			}
 
-			/*
-			 * Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon)); if (intent != null) {
-			 * intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET); this.startActivity(intent); }
-			 */
+			if (Config.Navis.getValue().equals("Navigon"))
+			{
+				startNavigon(lat, lon);
+			}
+			else if (Config.Navis.getValue().equals("Google"))
+			{
+				startGeo(lat, lon);
+			}
+			else if (Config.Navis.getValue().equals("Copilot"))
+			{
+				startCopilot(lat, lon);
+			}
+		}
+	}
 
-			String INTENT_EXTRA_KEY_LATITUDE = "latitude";
-			String INTENT_EXTRA_KEY_LONGITUDE = "longitude";
-			// Long/Latarefloatvaluesin decimaldegreeformat(+-DDD.DDDDD).
+	private void startNavigon(double lat, double lon)
+	{
 
-			PackageManager currentPM = getPackageManager();
+		Intent intent = null;
+		try
+		{
+			intent = getPackageManager().getLaunchIntentForPackage("com.navigon.navigator");
+		}
+		catch (Exception e)
+		{
+			// Kein Navigon ohne public intent Instaliert
+			e.printStackTrace();
+		}
 
-			Intent intent = null;
+		if (intent == null)
+		{
 			try
 			{
-				intent = currentPM.getLaunchIntentForPackage("com.navigon.navigator");
+				intent = new Intent("android.intent.action.navigon.START_PUBLIC");
 			}
 			catch (Exception e)
 			{
-				// Kein Navigon ohne public intent Instaliert
+				// Kein Navigon mit public intent Instaliert
 				e.printStackTrace();
 			}
+		}
 
-			if (intent == null)
+		try
+		{
+			if (intent != null)
 			{
 				try
 				{
-					intent = new Intent("android.intent.action.navigon.START_PUBLIC");
+					intent.putExtra("latitude", (float) lat);
+					intent.putExtra("longitude", (float) lon);
+					startActivity(intent);
 				}
 				catch (Exception e)
 				{
-					// Kein Navigon mit public intent Instaliert
-					e.printStackTrace();
 				}
 			}
+		}
+		catch (Exception e)
+		{
+			Logger.Error("main.NavigateTo()", "Start Navigon Fehler", e);
+		}
+	}
 
-			Intent implicitIntent = null;
-			try
-			{
-				// implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
-				// Changed the call for navigation app to maps.google.com...
-				// Copilot Live 9.3 listens for this intent call and google maps is working with this too...
-				implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+	private void startGeo(double lat, double lon)
+	{
+		// Google Navigator, OsmAnd
+		Intent intent = null;
+		try
+		{
+			intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
 
-			}
-			catch (Exception e)
-			{
-				// Kein Google Navigator mit public intent Instaliert
-				e.printStackTrace();
-			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
-			try
-			{
-				boolean NAVIGON_is_Start = true;
-				if (intent != null)
-				{
-					try
-					{
-						intent.putExtra(INTENT_EXTRA_KEY_LATITUDE, (float) lat);
-						intent.putExtra(INTENT_EXTRA_KEY_LONGITUDE, (float) lon);
-						startActivity(intent);
-					}
-					catch (Exception e)
-					{
-						NAVIGON_is_Start = false;
-					}
-				}
+		if (intent != null)
+		{
+			startActivity(intent);
+		}
 
-				if (implicitIntent != null && !NAVIGON_is_Start)
-				{
-					startActivity(implicitIntent);
-				}
-			}
-			catch (Exception e)
-			{
-				// Start Extern Navigation Fehler
-				Logger.Error("main.NavigateTo()", "Start Extern Navigation Fehler", e);
-			}
+	}
 
+	private void startCopilot(double lat, double lon)
+	{
+		// Copilot Live 9.3
+		Intent intent = null;
+		try
+		{
+			intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		if (intent != null)
+		{
+			startActivity(intent);
 		}
 	}
 
@@ -2357,9 +2379,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 										{
 										case -1:
 											// yes open gps settings
-											Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-
-											startActivity(gpsOptionsIntent);
+											startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 											break;
 										case -2:
 											// no,
