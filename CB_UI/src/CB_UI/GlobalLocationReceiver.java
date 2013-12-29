@@ -112,7 +112,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 								if (ret != null && ret.getCache() != null)
 								{
 									GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-									GlobalCore.NearestCache(ret.getCache());
+									GlobalCore.setNearestCache(ret.getCache());
 									ret.dispose();
 									ret = null;
 								}
@@ -138,6 +138,10 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 					{
 						if (GlobalCore.getAutoResort())
 						{
+							if ((GlobalCore.NearestCache() == null))
+							{
+								GlobalCore.setNearestCache(GlobalCore.getSelectedCache());
+							}
 							int z = 0;
 							if (!(GlobalCore.NearestCache() == null))
 							{
@@ -148,30 +152,37 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 								}
 								else
 								{
+									if (GlobalCore.getSelectedCache() != GlobalCore.NearestCache())
+									{
+										GlobalCore.setSelectedWaypoint(GlobalCore.NearestCache(), null, false);
+									}
+									float nearestDistance = GlobalCore.NearestCache().Distance(CalculationType.FAST, true);
 									for (Cache cache : Database.Data.Query)
 									{
 										z++;
-										if (z >= 50) return;
+										if (z >= 50)
+										{
+											return;
+										}
 										if (cache.Archived) continue;
 										if (!cache.Available) continue;
 										if (cache.Found) continue;
 										if (cache.ImTheOwner()) continue;
 										if (cache.Type == CacheTypes.Mystery) if (!cache.CorrectedCoordiantesOrMysterySolved()) continue;
-										if (cache.Distance(CalculationType.FAST, true) < GlobalCore.NearestCache().Distance(
-												CalculationType.FAST, true))
+										if (cache.Distance(CalculationType.FAST, true) < nearestDistance)
 										{
 											resort = true;
 											break;
 										}
 									}
 								}
-								if (resort)
+								if (resort || z == 0)
 								{
 									CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(),
 											new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
 									GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
-									GlobalCore.NearestCache(ret.getCache());
+									GlobalCore.setNearestCache(ret.getCache());
 									ret.dispose();
 
 									SoundCache.play(Sounds.AutoResortSound);
