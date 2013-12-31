@@ -328,7 +328,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	public void refreshText()
 	{
-		if (WaypointLabel == null || CachesFoundLabel == null) return;
+		if (WaypointLabel == null || CachesFoundLabel == null || CoordLabel == null) return;
 		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
 
 		Cache selectedCache = GlobalCore.getSelectedCache();
