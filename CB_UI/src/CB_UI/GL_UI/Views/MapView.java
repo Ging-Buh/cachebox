@@ -1063,7 +1063,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			{
 				info.setDistance(GlobalCore.getSelectedCoord().Distance(CalculationType.ACCURATE));
 			}
-			// Logger.DEBUG("Map.SetDistance=" + GlobalCore.getSelectedCoord().Distance());
+			OrientationChanged();
 		}
 
 		if (CompassMode)
