@@ -17,7 +17,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
