@@ -2,6 +2,7 @@ package de;
 
 import java.awt.Frame;
 import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -9,6 +10,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
 import CB_Core.DB.Database;
@@ -41,6 +43,7 @@ import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
+import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -99,7 +102,7 @@ public class DesktopMain
 				}
 				catch (BackingStoreException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 
@@ -409,9 +412,26 @@ public class DesktopMain
 
 	private static void showSimmulateForm()
 	{
-		final simulateForm sim = new simulateForm("Simulate Form");
-		sim.setSize(400, 130);
-		sim.setVisible(true);
+		// final simulateForm sim = new simulateForm("Simulate Form");
+		// sim.setSize(400, 130);
+		// sim.setVisible(true);
+
+		JFrame f;
+		try
+		{
+			f = SimulatorMain.createFrame();
+			f.pack();
+			f.setResizable(false);
+			f.setVisible(true);
+
+			SimulatorMain.startListener();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	/**

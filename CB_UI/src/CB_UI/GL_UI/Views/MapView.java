@@ -836,18 +836,24 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		super.OrientationChanged();
 		if (info != null)
 		{
-			Coordinate position = null;
-			// if ((GlobalCore.Marker != null) && (GlobalCore.Marker.Valid)) position = GlobalCore.Marker;
-			position = Locator.getCoordinate();
+			Coordinate position = Locator.getCoordinate();
 
 			if (GlobalCore.getSelectedCache() != null)
 			{
-				Coordinate cache = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
+				Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
 						.getSelectedCache().Pos;
-				float[] result = new float[4];
-				MathUtils.computeDistanceAndBearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(),
-						cache.getLatitude(), cache.getLongitude(), result);
-				info.setBearing((float) (result[1] - Locator.getHeading() - arrowHeading), Locator.getHeading());
+
+				float heading = Locator.getHeading();
+
+				float result[] = new float[2];
+
+				MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(),
+						dest.getLatitude(), dest.getLongitude(), result);
+
+				float bearing = result[1];
+
+				float relativeBearing = bearing - heading;
+				info.setBearing(-relativeBearing, heading);
 			}
 		}
 	}

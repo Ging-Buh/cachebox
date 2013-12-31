@@ -677,6 +677,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (aktCache == null) return;
 
 		Coordinate position = Locator.getCoordinate();
+
+		if (position == null) return;
+
 		heading = Locator.getHeading();
 
 		if (lblOwnCoords != null) lblOwnCoords.setText(position.FormatCoordinate());
@@ -757,7 +760,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 			Coordinate dest = aktWaypoint != null ? aktWaypoint.Pos : aktCache.Pos;
 
-			float result[] = new float[4];
+			float result[] = new float[2];
 
 			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(),
 					dest.getLatitude(), dest.getLongitude(), result);

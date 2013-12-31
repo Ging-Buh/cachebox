@@ -182,10 +182,15 @@ public class Label extends CB_View_Base
 
 	private void makeTextObject()
 	{
-		if (!TextObject.getFont().equals(mFont))
+		if (TextObject == null)
 		{
 			TextObject = new BitmapFontCache(mFont, false);
 		}
+		else if (!TextObject.getFont().equals(mFont))
+		{
+			TextObject = new BitmapFontCache(mFont, false);
+		}
+
 		if (!TextObject.getColor().equals(mColor))
 		{
 			TextObject.setColor(mColor);
@@ -207,6 +212,8 @@ public class Label extends CB_View_Base
 			}
 		}
 		float yPosition = 0; // VAlignment.BOTTOM
+
+		if (mVAlignment == null) mVAlignment = VAlignment.CENTER;
 		switch (mVAlignment)
 		{
 		case TOP:

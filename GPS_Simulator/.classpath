@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="log4j"/>
+	<classpathentry kind="lib" path="lib/bluecove-2.1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Base"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
