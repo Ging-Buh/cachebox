@@ -853,7 +853,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				float bearing = result[1];
 
 				float relativeBearing = bearing - heading;
-				info.setBearing(-relativeBearing, heading);
+				info.setBearing(relativeBearing, heading);
 			}
 		}
 	}
