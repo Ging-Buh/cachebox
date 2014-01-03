@@ -2024,13 +2024,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				startNavigon(lat, lon);
 			}
-			else if (Config.Navis.getValue().equals("Google"))
+			else if (Config.Navis.getValue().equals("OsmAnd"))
 			{
-				startGeo(lat, lon);
+				startNaviActivity("geo:" + lat + "," + lon);
 			}
-			else if (Config.Navis.getValue().equals("Copilot"))
+			else if (Config.Navis.getValue().equals("Copilot") || Config.Navis.getValue().equals("Google"))
 			{
-				startCopilot(lat, lon);
+				startNaviActivity("http://maps.google.com/maps?daddr=" + lat + "," + lon);
+			}
+			else if (Config.Navis.getValue().equals("Waze"))
+			{
+				startNaviActivity("waze://?ll=" + lat + "," + lon);
 			}
 		}
 	}
@@ -2083,13 +2087,12 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	}
 
-	private void startGeo(double lat, double lon)
+	private void startNaviActivity(String uri)
 	{
-		// Google Navigator, OsmAnd
 		Intent intent = null;
 		try
 		{
-			intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
+			intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 
 		}
 		catch (Exception e)
@@ -2102,25 +2105,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			startActivity(intent);
 		}
 
-	}
-
-	private void startCopilot(double lat, double lon)
-	{
-		// Copilot Live 9.3
-		Intent intent = null;
-		try
-		{
-			intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		if (intent != null)
-		{
-			startActivity(intent);
-		}
 	}
 
 	/*
@@ -3060,7 +3044,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				try
 				{
-					Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(url.trim()));
+					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.trim()));
 					main.mainActivity.startActivity(browserIntent);
 				}
 				catch (Exception exc)
