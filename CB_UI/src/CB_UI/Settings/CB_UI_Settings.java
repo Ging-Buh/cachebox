@@ -43,7 +43,7 @@ public interface CB_UI_Settings
 	public static final Integer[] TrackDistanceArray = new Integer[]
 		{ 1, 3, 5, 10, 20 };
 	public static final String[] navis = new String[]
-		{ "Navigon", "Google", "Copilot", "OsmAnd", "Waze" };
+		{ "Navigon", "Google", "Copilot", "OsmAnd", "OsmAnd2", "Waze", "Ask" };
 
 	// Settings Compass
 	public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel",

@@ -49,6 +49,7 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.searchMode;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.splash;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Plattform;
 import CB_UI_Base.Events.invalidateTextureEventList;
@@ -2020,19 +2021,38 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				lon = GlobalCore.getSelectedWaypoint().Pos.getLongitude();
 			}
 
-			if (Config.Navis.getValue().equals("Navigon"))
+			String selectedNavi = Config.Navis.getValue();
+			if (selectedNavi.equals("Ask"))
+			{
+				// todo : Spinner for Selection
+				for (String navi : CB_UI_Settings.navis)
+				{
+					if (!navi.equalsIgnoreCase("Ask"))
+					{
+						selectedNavi = navi;
+					}
+				}
+				// todo : remove if Spinner done
+				selectedNavi = Config.Navis.getValue(); // =Ask=do nothing
+			}
+
+			if (selectedNavi.equals("Navigon"))
 			{
 				startNavigon(lat, lon);
 			}
-			else if (Config.Navis.getValue().equals("OsmAnd"))
+			else if (selectedNavi.equals("OsmAnd"))
 			{
 				startNaviActivity("geo:" + lat + "," + lon);
 			}
-			else if (Config.Navis.getValue().equals("Copilot") || Config.Navis.getValue().equals("Google"))
+			else if (selectedNavi.equals("OsmAnd2"))
+			{
+				startNaviActivity("http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
+			}
+			else if (selectedNavi.equals("Copilot") || selectedNavi.equals("Google"))
 			{
 				startNaviActivity("http://maps.google.com/maps?daddr=" + lat + "," + lon);
 			}
-			else if (Config.Navis.getValue().equals("Waze"))
+			else if (selectedNavi.equals("Waze"))
 			{
 				startNaviActivity("waze://?ll=" + lat + "," + lon);
 			}
