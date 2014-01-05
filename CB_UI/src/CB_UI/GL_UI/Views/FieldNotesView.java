@@ -82,9 +82,7 @@ public class FieldNotesView extends V_ListView
 	@Override
 	public void onShow()
 	{
-		if (lFieldNotes == null) lFieldNotes = new FieldNoteList();
-		lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
-		this.notifyDataSetChanged();
+		reloadFieldNotes();
 		if (firstShow)
 		{
 			firstShow = false;
@@ -107,6 +105,16 @@ public class FieldNotesView extends V_ListView
 	public void Initial()
 	{
 
+	}
+
+	private void reloadFieldNotes()
+	{
+		if (lFieldNotes == null) lFieldNotes = new FieldNoteList();
+		lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
+
+		that.setBaseAdapter(null);
+		lvAdapter = new CustomAdapter(lFieldNotes);
+		that.setBaseAdapter(lvAdapter);
 	}
 
 	@Override
@@ -974,10 +982,7 @@ public class FieldNotesView extends V_ListView
 	@Override
 	public void notifyDataSetChanged()
 	{
-		that.setBaseAdapter(null);
-		lvAdapter = new CustomAdapter(lFieldNotes);
-		that.setBaseAdapter(lvAdapter);
-
+		reloadFieldNotes();
 		super.notifyDataSetChanged();
 	}
 

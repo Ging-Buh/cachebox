@@ -165,7 +165,13 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		if (mapInstanz.getAktZoom() != generatedZomm) zoomChanged();
 		if (CachedScaleDrawable == null) zoomChanged();
 		if (CachedScaleDrawable != null) CachedScaleDrawable.draw(batch, 0, 0, drawableWidth, this.getHeight());
-		if (fontCache != null) fontCache.draw(batch);
+		try
+		{
+			if (fontCache != null) fontCache.draw(batch);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
 	@Override
