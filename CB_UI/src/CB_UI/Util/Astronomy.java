@@ -1,6 +1,5 @@
 package CB_UI.Util;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -37,10 +36,10 @@ public class Astronomy
 
 	public static long getUtcTime(long time)
 	{
-		System.out.println("Time=" + time);
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		Date dbefore = new Date(time);
-		System.out.println("Date before conversion=" + format.format(dbefore));
+		// System.out.println("Time=" + time);
+		// SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		// Date dbefore = new Date(time);
+		// System.out.println("Date before conversion=" + format.format(dbefore));
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(time);
 		TimeZone timezone = c.getTimeZone();
@@ -52,14 +51,14 @@ public class Astronomy
 		int offsetHrs = offset / 1000 / 60 / 60;
 		int offsetMins = offset / 1000 / 60 % 60;
 
-		System.out.println("offset: " + offsetHrs);
-		System.out.println("offset: " + offsetMins);
+		// System.out.println("offset: " + offsetHrs);
+		// System.out.println("offset: " + offsetMins);
 
 		c.add(Calendar.HOUR_OF_DAY, (-offsetHrs));
 		c.add(Calendar.MINUTE, (-offsetMins));
 
-		System.out.println("Date after conversion: " + format.format(c.getTime()));
-		System.out.println("Time converted=" + c.getTime().getTime());
+		// System.out.println("Date after conversion: " + format.format(c.getTime()));
+		// System.out.println("Time converted=" + c.getTime().getTime());
 		return c.getTime().getTime();
 
 	}
