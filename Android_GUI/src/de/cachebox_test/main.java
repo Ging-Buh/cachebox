@@ -351,6 +351,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		super.onCreate(savedInstanceState);
 		GL.resetIsInitial();
 
+		if (GlobalCore.RunFromSplash)
+		{
+			Log.d("CACHEBOX", "main-OnCreate Run from Splash");
+		}
+		else
+		{
+			Log.d("CACHEBOX", "main-OnCreate illegal-Run");
+			// run splash
+			Intent mainIntent = new Intent().setClass(main.this, de.cachebox_test.splash.class);
+			startActivity(mainIntent);
+			finish();
+			return;
+		}
+
 		mainActivity = this;
 
 		if (savedInstanceState != null)
@@ -402,8 +416,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
 			GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
-
-			// TODO onCreate => restore more from onSaveInstanceState
 
 		}
 		else
@@ -1181,62 +1193,65 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (isFinishing())
 			{
 				Log.d("CACHEBOX", "Main=> onDestroy isFinishing");
-
-				Config.settings.WriteToDB();
-
-				if (this.mWakeLock != null) this.mWakeLock.release();
-				counter.cancel();
-				TrackRecorder.StopRecording();
-				// GPS Verbindung beenden
-				locationManager.removeUpdates(this);
-				// Voice Recorder stoppen
-				if (extAudioRecorder != null)
+				if (GlobalCore.RunFromSplash)
 				{
-					extAudioRecorder.stop();
-					extAudioRecorder.release();
-					extAudioRecorder = null;
+					Config.settings.WriteToDB();
+
+					if (this.mWakeLock != null) this.mWakeLock.release();
+					counter.cancel();
+					TrackRecorder.StopRecording();
+					// GPS Verbindung beenden
+					locationManager.removeUpdates(this);
+					// Voice Recorder stoppen
+					if (extAudioRecorder != null)
+					{
+						extAudioRecorder.stop();
+						extAudioRecorder.release();
+						extAudioRecorder = null;
+					}
+					GlobalCore.setSelectedCache(null);
+					SelectedCacheEventList.list.clear();
+					SelectedCacheEventList.list.clear();
+					CachListChangedEventList.list.clear();
+					if (aktView != null)
+					{
+						aktView.OnHide();
+						aktView.OnFree();
+					}
+					aktView = null;
+
+					if (aktTabView != null)
+					{
+						aktTabView.OnHide();
+						aktTabView.OnFree();
+					}
+					aktTabView = null;
+
+					for (ViewOptionsMenu vom : ViewList)
+					{
+						vom.OnFree();
+					}
+					ViewList.clear();
+					viewGL = null;
+					jokerView = null;
+					descriptionView = null;
+					mainActivity = null;
+					debugInfoPanel.OnFree();
+					debugInfoPanel = null;
+					InfoDownSlider = null;
+
+					Config.AcceptChanges();
+
+					Database.Data.Close();
+					Database.FieldNotes.Close();
+
+					SpriteCacheBase.destroyCache();
+
+					Database.Settings.Close();
+
 				}
-				GlobalCore.setSelectedCache(null);
-				SelectedCacheEventList.list.clear();
-				SelectedCacheEventList.list.clear();
-				CachListChangedEventList.list.clear();
-				if (aktView != null)
-				{
-					aktView.OnHide();
-					aktView.OnFree();
-				}
-				aktView = null;
-
-				if (aktTabView != null)
-				{
-					aktTabView.OnHide();
-					aktTabView.OnFree();
-				}
-				aktTabView = null;
-
-				for (ViewOptionsMenu vom : ViewList)
-				{
-					vom.OnFree();
-				}
-				ViewList.clear();
-				viewGL = null;
-				jokerView = null;
-				descriptionView = null;
-				mainActivity = null;
-				debugInfoPanel.OnFree();
-				debugInfoPanel = null;
-				InfoDownSlider = null;
-
-				Config.AcceptChanges();
-
-				Database.Data.Close();
-				Database.FieldNotes.Close();
-
-				SpriteCacheBase.destroyCache();
-
-				Database.Settings.Close();
 				super.onDestroy();
-				System.exit(0);
+				if (GlobalCore.RunFromSplash) System.exit(0);
 			}
 			else
 			{

@@ -55,6 +55,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -1167,7 +1168,11 @@ public class splash extends Activity
 		}
 
 		b.putSerializable("UI", ui);
+
+		GlobalCore.RunFromSplash = true;
+
 		mainIntent.putExtras(b);
+		Log.d("CACHEBOX", "Splash start Main Intent");
 		startActivity(mainIntent);
 		finish();
 	}

@@ -57,7 +57,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 		// A client is binding to the service with bindService()
 
 		Intent mainIntent = new Intent(this, main.class);
-
+		mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
 
 		// This constructor is deprecated. Use Notification.Builder instead
@@ -92,7 +92,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 			// CB is killing
 			Log.d("CACHEBOX", "Service => ACB is killed");
 			Intent mainIntent = new Intent(this, main.class);
-
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
 
 			// This constructor is deprecated. Use Notification.Builder instead
@@ -128,7 +128,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 		{
 			Log.d("CACHEBOX", "Service => ACB is killed");
 			Intent mainIntent = new Intent(this, main.class);
-
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
 
 			// This constructor is deprecated. Use Notification.Builder instead
@@ -144,7 +144,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 	public void FallBackToNetworkProvider()
 	{
 		Intent mainIntent = new Intent(this, main.class);
-
+		mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
 
 		// This constructor is deprecated. Use Notification.Builder instead
@@ -164,7 +164,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 	public void Fix()
 	{
 		Intent mainIntent = new Intent(this, main.class);
-
+		mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent pendIntent = PendingIntent.getActivity(this, 0, mainIntent, 0);
 
 		// This constructor is deprecated. Use Notification.Builder instead
