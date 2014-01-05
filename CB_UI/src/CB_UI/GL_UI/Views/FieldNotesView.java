@@ -864,7 +864,11 @@ public class FieldNotesView extends V_ListView
 				{
 				case GL_MsgBox.BUTTON_POSITIVE:
 					// Yes button clicked
-					// delete aktFieldNote
+					// delete all FieldNote
+
+					// reload all Fieladnotes!
+					lFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
+
 					for (FieldNoteEntry entry : lFieldNotes)
 					{
 						entry.DeleteFromDatabase();
