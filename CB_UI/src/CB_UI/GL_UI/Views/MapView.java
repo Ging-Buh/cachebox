@@ -209,11 +209,16 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		this.setOnClickListener(onClickListner);
 
-		info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel"));
+		float InfoHeight = 0;
+		if (!CompassMode)
+		{
+			info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel"));
+			InfoHeight = info.getHeight();
+		}
 
 		CB_RectF ZoomScaleRec = new CB_RectF();
 		ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.DPI),
-				this.getHeight() - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+				this.getHeight() - InfoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 		ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
 
 		zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
@@ -276,23 +281,26 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		togBtn.registerSkinChangedEvent();
 
 		setMapState(CompassMode ? MapState.GPS : last);
-		switch (Config.LastMapToggleBtnState.getValue())
+		if (!CompassMode)
 		{
-		case 0:
-			info.setCoordType(CoordType.Map);
-			break;
-		case 1:
-			info.setCoordType(CoordType.GPS);
-			break;
-		case 2:
-			info.setCoordType(CoordType.Cache);
-			break;
-		case 3:
-			info.setCoordType(CoordType.GPS);
-			break;
-		case 4:
-			info.setCoordType(CoordType.GPS);
-			break;
+			switch (Config.LastMapToggleBtnState.getValue())
+			{
+			case 0:
+				info.setCoordType(CoordType.Map);
+				break;
+			case 1:
+				info.setCoordType(CoordType.GPS);
+				break;
+			case 2:
+				info.setCoordType(CoordType.Cache);
+				break;
+			case 3:
+				info.setCoordType(CoordType.GPS);
+				break;
+			case 4:
+				info.setCoordType(CoordType.GPS);
+				break;
+			}
 		}
 
 		if (!CompassMode) this.addChild(togBtn);
@@ -328,7 +336,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		center.setLatitude(Config.MapInitLatitude.getValue());
 		center.setLongitude(Config.MapInitLongitude.getValue());
 		// Info aktualisieren
-		info.setCoord(center);
+		if (!CompassMode) info.setCoord(center);
 		aktZoom = Config.lastZoomLevel.getValue();
 		zoomBtn.setZoom(aktZoom);
 		calcPixelsPerMeter();
@@ -827,7 +835,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	public void setCenter(Coordinate value)
 	{
 		super.setCenter(value);
-		info.setCoord(center);
+		if (!CompassMode) info.setCoord(center);
 	}
 
 	@Override
@@ -874,19 +882,25 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	protected void calcCenter()
 	{
 		super.calcCenter();
-		info.setCoord(center);
+		if (!CompassMode) info.setCoord(center);
 	}
 
 	public void requestLayout()
 	{
 		// Logger.LogCat("MapView clacLayout()");
 		float margin = GL_UISizes.margin;
-		info.setPos(new Vector2(margin, (float) (this.mapIntHeight - margin - info.getHeight())));
-		info.setVisible(showCompass);
+
+		float infoHeight = 0;
+		if (!CompassMode)
+		{
+			info.setPos(new Vector2(margin, (float) (this.mapIntHeight - margin - info.getHeight())));
+			info.setVisible(showCompass);
+			infoHeight = info.getHeight();
+		}
 		togBtn.setPos(new Vector2((float) (this.mapIntWidth - margin - togBtn.getWidth()), this.mapIntHeight - margin - togBtn.getHeight()));
 
 		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI),
-				this.getHeight() - info.getHeight() - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+				this.getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
 		GL.that.renderOnce(this.getName() + " requestLayout");
 	}
@@ -1011,30 +1025,33 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	{
 		if (super.getMapState() == state) return;
 
-		info.setCoordType(CoordType.Map);
 		Config.LastMapToggleBtnState.setValue(state.ordinal());
 		Config.AcceptChanges();
 
 		boolean wasCarMode = CarMode;
 
-		if (state == MapState.CAR)
+		if (!CompassMode)
 		{
-			if (!wasCarMode)
+			info.setCoordType(CoordType.Map);
+			if (state == MapState.CAR)
+			{
+				if (!wasCarMode)
+				{
+					info.setCoordType(CoordType.GPS);
+				}
+			}
+			else if (state == MapState.WP)
+			{
+				info.setCoordType(CoordType.Cache);
+			}
+			else if (state == MapState.LOCK)
 			{
 				info.setCoordType(CoordType.GPS);
 			}
-		}
-		else if (state == MapState.WP)
-		{
-			info.setCoordType(CoordType.Cache);
-		}
-		else if (state == MapState.LOCK)
-		{
-			info.setCoordType(CoordType.GPS);
-		}
-		else if (state == MapState.GPS)
-		{
-			info.setCoordType(CoordType.GPS);
+			else if (state == MapState.GPS)
+			{
+				info.setCoordType(CoordType.GPS);
+			}
 		}
 
 		super.setMapState(state);

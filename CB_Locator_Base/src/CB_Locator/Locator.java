@@ -489,6 +489,7 @@ public class Locator
 	 */
 	public static boolean UseMagneticCompass()
 	{
+		if (that == null) return false;
 		synchronized (that)
 		{
 			return that.mLastUsedCompassType == CompassType.Magnetic;

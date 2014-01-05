@@ -9,6 +9,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Locator.LocatorSettings;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Map.MapViewBase;
@@ -41,6 +42,7 @@ import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent,
@@ -488,7 +490,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		this.addChild(scale);
 
 		arrow = new Image(imageRec, "arrow");
-		arrow.setDrawable(SpriteCacheBase.Compass.get(4));
+		setArrowDrawable(true);
 		this.addChild(arrow);
 
 		if (showSunMoon)
@@ -658,6 +660,34 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		// setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 
+	private boolean lastUsedCompass = Locator.UseMagneticCompass();
+
+	private void setArrowDrawable()
+	{
+		setArrowDrawable(false);
+	}
+
+	private void setArrowDrawable(boolean forceSet)
+	{
+		boolean tmp = Locator.UseMagneticCompass();
+		if (!forceSet && tmp == lastUsedCompass) return;// no change required
+		lastUsedCompass = tmp;
+		boolean Transparency = LocatorSettings.PositionMarkerTransparent.getValue();
+		int arrowId = 0;
+		if (lastUsedCompass)
+		{
+			arrowId = Transparency ? 1 : 0;
+		}
+		else
+		{
+			arrowId = Transparency ? 3 : 2;
+		}
+		Sprite arrowSprite = new Sprite(SpriteCacheBase.Arrows.get(arrowId));
+		arrowSprite.setRotation(0);// reset rotation
+		arrowSprite.setOrigin(0, 0);
+		arrow.setDrawable(new SpriteDrawable(arrowSprite));
+	}
+
 	@Override
 	public void onResized(CB_RectF rec)
 	{
@@ -707,7 +737,11 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		double relativeBearing = bearing - heading;
 
-		if (arrow != null) arrow.setRotate((float) -relativeBearing);
+		if (arrow != null)
+		{
+			setArrowDrawable();
+			arrow.setRotate((float) -relativeBearing);
+		}
 		if (scale != null) scale.setRotate((float) heading);
 		if (lblDistance != null)
 		{
@@ -768,6 +802,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			float bearing = result[1];
 
 			double relativeBearing = bearing - heading;
+			setArrowDrawable();
 			arrow.setRotate((float) -relativeBearing);
 			scale.setRotate((float) heading);
 
