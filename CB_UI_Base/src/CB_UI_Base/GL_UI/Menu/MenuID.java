@@ -232,4 +232,7 @@ public class MenuID
 	public static final int MI_EXPORT_RUN = 196;
 
 	public static final int MI_MAP_DOWNOAD = 199;
+	public static final int AID_LOADLOGS = 200;
+	public static final int MI_LOADLOGS = 201;
+	public static final int MI_FILTERLOGS = 202;
 }

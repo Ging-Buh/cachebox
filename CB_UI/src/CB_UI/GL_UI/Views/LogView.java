@@ -1,10 +1,13 @@
 package CB_UI.GL_UI.Views;
 
+import java.util.ArrayList;
+
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
@@ -94,9 +97,25 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
 		cleanLogs = Database.Logs(cache);// cache.Logs();
 
+		String finders = Config.Friends.getValue();
+		String[] finder = finders.split("\\|");
+		ArrayList<String> friendList = new ArrayList<String>();
+		for (String f : finder)
+		{
+			friendList.add(f);
+		}
+
 		int index = 0;
 		for (LogEntry logEntry : cleanLogs)
 		{
+			if (GlobalCore.filterLogsOfFriends)
+			{
+				// nur die Logs der eingetragenen Freunde anzeigen
+				if (!friendList.contains(logEntry.Finder))
+				{
+					continue;
+				}
+			}
 			CB_RectF rec = ItemRec.copy();
 			rec.setHeight(MeasureItemHeight(logEntry));
 			final LogViewItem v = new LogViewItem(rec, index++, logEntry);

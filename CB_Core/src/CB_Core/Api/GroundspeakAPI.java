@@ -35,6 +35,7 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
@@ -589,6 +590,153 @@ public class GroundspeakAPI
 			return ERROR;
 		}
 
+		return (-1);
+	}
+
+	/**
+	 * Gets the Logs for the given Cache
+	 * 
+	 * @param Staging
+	 *            Config.settings.StagingAPI.getValue()
+	 * @param accessToken
+	 * @param conectionTimeout
+	 *            Config.settings.conection_timeout.getValue()
+	 * @param socketTimeout
+	 *            Config.settings.socket_timeout.getValue()
+	 * @param cache
+	 * @return
+	 */
+	public static int GetGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList)
+	{
+		String finders = CB_Core_Settings.Friends.getValue();
+		String[] finder = finders.split("\\|");
+		ArrayList<String> finderList = new ArrayList<String>();
+		for (String f : finder)
+		{
+			finderList.add(f);
+		}
+
+		if (cache == null) return -3;
+		int chk = chkMemperShip(false);
+		if (chk < 0) return chk;
+
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException e1)
+		{
+			e1.printStackTrace();
+		}
+
+		int start = 1;
+		int count = 100;
+
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		while (finderList.size() > 0)
+		// Schleife, solange bis entweder keine Logs mehr geladen werden oder bis alle Logs aller Finder geladen sind.
+		{
+			try
+			{
+				String requestString = "";
+				requestString += "&AccessToken=" + GetAccessToken();
+				requestString += "&CacheCode=" + cache.GcCode;
+				requestString += "&StartIndex=" + start;
+				requestString += "&MaxPerPage=" + count;
+				HttpGet httppost = new HttpGet(URL + "GetGeocacheLogsByCacheCode?format=json" + requestString);
+
+				String result = Execute(httppost);
+				if (result.contains("The service is unavailable"))
+				{
+					return API_IS_UNAVAILABLE;
+				}
+				try
+				// Parse JSON Result
+				{
+					JSONTokener tokener = new JSONTokener(result);
+					JSONObject json = (JSONObject) tokener.nextValue();
+					JSONObject status = json.getJSONObject("Status");
+					if (status.getInt("StatusCode") == 0)
+					{
+						result = "";
+						JSONArray geocacheLogs = json.getJSONArray("Logs");
+						for (int ii = 0; ii < geocacheLogs.length(); ii++)
+						{
+							JSONObject jLogs = (JSONObject) geocacheLogs.get(ii);
+							JSONObject jFinder = (JSONObject) jLogs.get("Finder");
+							JSONObject jLogType = (JSONObject) jLogs.get("LogType");
+							LogEntry log = new LogEntry();
+							log.CacheId = cache.Id;
+							log.Comment = jLogs.getString("LogText");
+							log.Finder = jFinder.getString("UserName");
+							if (!finderList.contains(log.Finder))
+							{
+								continue;
+							}
+							finderList.remove(log.Finder);
+							log.Id = jLogs.getInt("ID");
+							log.Timestamp = new Date();
+							try
+							{
+								String dateCreated = jLogs.getString("VisitDate");
+								int date1 = dateCreated.indexOf("/Date(");
+								int date2 = dateCreated.indexOf("-");
+								String date = (String) dateCreated.subSequence(date1 + 6, date2);
+								log.Timestamp = new Date(Long.valueOf(date));
+							}
+							catch (Exception exc)
+							{
+								Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);
+							}
+							log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
+							logList.add(log);
+
+						}
+
+						if ((geocacheLogs.length() < count) || (finderList.size() == 0))
+						{
+							return 0; // alle Logs des Caches geladen oder alle gesuchten Finder gefunden
+						}
+					}
+					else
+					{
+						result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+						result += status.getString("StatusMessage") + "\n";
+						result += status.getString("ExceptionDetails");
+						LastAPIError = result;
+						return (-1);
+					}
+
+				}
+				catch (JSONException e)
+				{
+					e.printStackTrace();
+				}
+
+			}
+			catch (ConnectTimeoutException e)
+			{
+				Logger.Error("GetGeocacheLogsByCache", "ConnectTimeoutException", e);
+				return CONNECTION_TIMEOUT;
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				Logger.Error("GetGeocacheLogsByCache", "UnsupportedEncodingException", e);
+				return ERROR;
+			}
+			catch (ClientProtocolException e)
+			{
+				Logger.Error("GetGeocacheLogsByCache", "ClientProtocolException", e);
+				return ERROR;
+			}
+			catch (IOException e)
+			{
+				Logger.Error("GetGeocacheLogsByCache", "IOException", e);
+				return ERROR;
+			}
+			// die nächsten Logs laden
+			start += count;
+		}
 		return (-1);
 	}
 

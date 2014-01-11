@@ -10,6 +10,7 @@ import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingString;
+import CB_Utils.Settings.SettingsList;
 
 public interface CB_Core_Settings
 {
@@ -68,4 +69,6 @@ public interface CB_Core_Settings
 	public static final SettingInt FieldNotesLoadLength = new SettingInt("FieldNotesLoadLength", SettingCategory.Fieldnotes, EXPERT, 10,
 			SettingStoreType.Global);
 
+	public static final SettingString Friends = (SettingString) SettingsList.addSetting(new SettingString("Friends", SettingCategory.Login,
+			EXPERT, "", SettingStoreType.Global));
 }

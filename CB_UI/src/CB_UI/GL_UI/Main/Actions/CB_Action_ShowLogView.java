@@ -1,12 +1,22 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import CB_Core.Settings.CB_Core_Settings;
+import CB_UI.GlobalCore;
+import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.LogView;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
-import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
+import CB_UI_Base.GL_UI.Menu.Menu;
+import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.GL_UI.Menu.MenuItem;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -21,6 +31,8 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 	@Override
 	public void Execute()
 	{
+		GlobalCore.filterLogsOfFriends = false; // Reset Filter by Friends when opening LogView
+
 		if ((TabMainView.logView == null) && (tabMainView != null) && (tab != null)) TabMainView.logView = new LogView(tab.getContentRec(),
 				"LogView");
 
@@ -44,4 +56,78 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 	{
 		return TabMainView.logView;
 	}
+
+	@Override
+	public boolean HasContextMenu()
+	{
+		if (CB_Core_Settings.Friends.getValue().length() > 0)
+		{
+			// Menüpunkte die sich auf die in den Settings eingetragenen Friends beziehen nur dann anzeigen wenn bei Friends was eingetragen
+			// ist
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	@Override
+	public Menu getContextMenu()
+	{
+		Menu cm = new Menu("LogListContextMenu");
+
+		cm.addItemClickListner(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				switch (((MenuItem) v).getMenuItemId())
+				{
+				case MenuID.MI_LOADLOGS:
+					// First check API-Key with visual Feedback
+					GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
+					{
+
+						@Override
+						public void chekReady(int MemberType)
+						{
+							TimerTask tt = new TimerTask()
+							{
+
+								@Override
+								public void run()
+								{
+									new CB_Action_Command_LoadLogs().Execute();
+								}
+							};
+							Timer t = new Timer();
+							t.schedule(tt, 100);
+						}
+					});
+
+					return true;
+				case MenuID.MI_FILTERLOGS:
+					GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
+					if (LogView.that != null)
+					{
+						LogView.that.resetInitial();
+					}
+					break;
+				}
+				return false;
+			}
+
+		});
+
+		MenuItem mi;
+		cm.addItem(MenuID.MI_LOADLOGS, "LoadLogsOfFriends", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
+		mi = cm.addItem(MenuID.MI_FILTERLOGS, "FilterLogsOfFriends", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
+		mi.setCheckable(true);
+		mi.setChecked(GlobalCore.filterLogsOfFriends);
+
+		return cm;
+	}
+
 }

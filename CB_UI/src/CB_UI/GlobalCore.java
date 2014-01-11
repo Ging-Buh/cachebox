@@ -30,7 +30,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 
 public class GlobalCore extends CB_UI_Base.Global
 {
-	public static final int CurrentRevision = 1952;
+	public static final int CurrentRevision = 1953;
 
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "test";
@@ -43,6 +43,7 @@ public class GlobalCore extends CB_UI_Base.Global
 	public static boolean restartAfterKill = false;
 	public static String restartCache;
 	public static String restartWaypoint;
+	public static boolean filterLogsOfFriends = false;
 
 	// ###########create instance#############
 	public final static GlobalCore INSTANCE = new GlobalCore();
