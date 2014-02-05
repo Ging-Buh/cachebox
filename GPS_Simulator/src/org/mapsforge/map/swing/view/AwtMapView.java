@@ -16,7 +16,6 @@ package org.mapsforge.map.swing.view;
 
 import java.awt.Container;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -26,11 +25,12 @@ import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
-public class MapView extends Container implements org.mapsforge.map.view.MapView
+public class AwtMapView extends Container implements org.mapsforge.map.view.MapView
 {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final long serialVersionUID = 1L;
@@ -40,14 +40,14 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	private final LayerManager layerManager;
 	private final Model model;
 
-	public MapView()
+	public AwtMapView()
 	{
 		super();
 
 		this.model = new Model();
 
 		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
-		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, GRAPHIC_FACTORY);
+		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, new DisplayModel(), GRAPHIC_FACTORY);
 		FrameBufferController.create(this.frameBuffer, this.model);
 
 		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
@@ -98,7 +98,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	{
 		super.paint(graphics);
 
-		Canvas canvas = AwtGraphicFactory.createCanvas((Graphics2D) graphics);
+		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 		this.frameBuffer.draw(canvas);
 		// this.fpsCounter.draw(canvas);
 

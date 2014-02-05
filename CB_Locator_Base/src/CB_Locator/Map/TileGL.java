@@ -1,23 +1,17 @@
 package CB_Locator.Map;
 
 import javax.security.auth.DestroyFailedException;
-import javax.security.auth.Destroyable;
 
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.utils.EmptyDrawable;
-import CB_Utils.Log.Logger;
-
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class TileGL extends EmptyDrawable implements Destroyable
+public abstract class TileGL
 {
 	public enum TileState
 	{
 		Scheduled, Present, LowResolution, Disposed
-	};
+	}
+
+	private final int DEFAULT_TILE_SIZE = 256;
 
 	public Descriptor Descriptor = null;
 
@@ -25,107 +19,28 @@ public class TileGL extends EmptyDrawable implements Destroyable
 	// zum speichern beliebiger Zusatzinfos
 	public Object data;
 
-	private Texture texture = null;
-
-	private byte[] bytes;
-
 	// / <summary>
 	// / Frames seit dem letzten Zugriff auf die Textur
 	// / </summary>
 	public long Age = 0;
 
-	public TileGL(Descriptor desc, byte[] bytes, TileState state)
+	public abstract boolean canDraw();
+
+	public abstract String ToString();
+
+	public abstract void destroy() throws DestroyFailedException;
+
+	public abstract boolean isDestroyed();
+
+	public abstract void draw(SpriteBatch batch, float x, float y, float width, float height);
+
+	public abstract long getWidth();
+
+	public abstract long getHeight();
+
+	public float getScaleFactor()
 	{
-		Descriptor = desc;
-		this.texture = null;
-		// this.texture = texture;
-		this.bytes = bytes;
-		State = state;
-	}
-
-	public boolean canDraw()
-	{
-		if (texture != null) return true;
-		if (bytes == null) return false;
-		createTexture();
-		if (texture != null) return true;
-		return false;
-	}
-
-	private void createTexture()
-	{
-		if (texture != null) return;
-		if (bytes == null) return;
-		try
-		{
-			Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-			texture = new Texture(pixmap);
-			pixmap.dispose();
-			pixmap = null;
-		}
-		catch (Exception ex)
-		{
-			Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
-		}
-		bytes = null;
-	}
-
-	public String ToString()
-	{
-		return State.toString() + ", " + Descriptor.ToString();
-	}
-
-	@Override
-	public void destroy() throws DestroyFailedException
-	{
-
-		// must run on GL thrad
-
-		GL.that.RunOnGL(new IRunOnGL()
-		{
-
-			@Override
-			public void run()
-			{
-
-				try
-				{
-					if (texture != null) texture.dispose();
-				}
-				catch (java.lang.NullPointerException e)
-				{
-					e.printStackTrace();
-				}
-				texture = null;
-				bytes = null;
-
-			}
-		});
-
-	}
-
-	@Override
-	public boolean isDestroyed()
-	{
-		return false;
-	}
-
-	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height)
-	{
-		if (texture != null) batch.draw(texture, x, y, width, height);
-	}
-
-	public long getWidth()
-	{
-		if (texture != null) return texture.getWidth();
-		return 0;
-	}
-
-	public long getHeight()
-	{
-		if (texture != null) return texture.getHeight();
-		return 0;
+		return getWidth() / DEFAULT_TILE_SIZE;
 	}
 
 }

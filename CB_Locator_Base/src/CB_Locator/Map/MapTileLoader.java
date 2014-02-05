@@ -21,8 +21,8 @@ public class MapTileLoader
 	public Layer CurrentLayer = null;
 	public Layer CurrentOverlayLayer = null;
 
-	protected SortedMap<Long, TileGL> loadedTiles = new TreeMap<Long, TileGL>();
-	protected SortedMap<Long, TileGL> loadedOverlayTiles = new TreeMap<Long, TileGL>();
+	protected SortedMap<Long, TileGL_Bmp> loadedTiles = new TreeMap<Long, TileGL_Bmp>();
+	protected SortedMap<Long, TileGL_Bmp> loadedOverlayTiles = new TreeMap<Long, TileGL_Bmp>();
 	final Lock loadedTilesLock = new ReentrantLock();
 	final Lock loadedOverlayTilesLock = new ReentrantLock();
 	protected SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();
@@ -190,7 +190,7 @@ public class MapTileLoader
 		}
 	}
 
-	private void deleteUnusedTiles(SortedMap<Long, TileGL> loadedTiles, Lock loadedTilesLock)
+	private void deleteUnusedTiles(SortedMap<Long, TileGL_Bmp> loadedTiles, Lock loadedTilesLock)
 	{
 		// Ist Auslagerung überhaupt nötig?
 		if (numLoadedTiles() <= maxNumTiles) return;
@@ -206,7 +206,7 @@ public class MapTileLoader
 				long maxAge = Integer.MIN_VALUE;
 				Descriptor maxDesc = null;
 
-				for (TileGL tile : loadedTiles.values())
+				for (TileGL_Bmp tile : loadedTiles.values())
 					if (/* tile.texture != null && */tile.Age > maxAge)
 					{
 						maxAge = tile.Age;
@@ -218,7 +218,7 @@ public class MapTileLoader
 				{
 					try
 					{
-						TileGL tile = loadedTiles.get(maxDesc.GetHashCode());
+						TileGL_Bmp tile = loadedTiles.get(maxDesc.GetHashCode());
 						loadedTiles.remove(maxDesc.GetHashCode());
 						tile.destroy();
 					}
@@ -267,7 +267,7 @@ public class MapTileLoader
 		loadedTilesLock.lock();
 		try
 		{
-			for (TileGL tile : loadedTiles.values())
+			for (TileGL_Bmp tile : loadedTiles.values())
 			{
 				try
 				{
@@ -289,7 +289,7 @@ public class MapTileLoader
 			loadedOverlayTilesLock.lock();
 			try
 			{
-				for (TileGL tile : loadedOverlayTiles.values())
+				for (TileGL_Bmp tile : loadedOverlayTiles.values())
 				{
 					try
 					{
@@ -312,25 +312,25 @@ public class MapTileLoader
 	public void increaseLoadedTilesAge()
 	{
 		// das Alter aller Tiles um 1 erhöhen
-		for (TileGL tile : loadedTiles.values())
+		for (TileGL_Bmp tile : loadedTiles.values())
 		{
 			tile.Age++;
 		}
 		if (CurrentOverlayLayer != null)
 		{
-			for (TileGL tile : loadedOverlayTiles.values())
+			for (TileGL_Bmp tile : loadedOverlayTiles.values())
 			{
 				tile.Age++;
 			}
 		}
 	}
 
-	public TileGL getLoadedTile(Descriptor desc)
+	public TileGL_Bmp getLoadedTile(Descriptor desc)
 	{
 		return loadedTiles.get(desc.GetHashCode());
 	}
 
-	public TileGL getLoadedOverlayTile(Descriptor desc)
+	public TileGL_Bmp getLoadedOverlayTile(Descriptor desc)
 	{
 		// Overlay Tiles liefern
 		if (CurrentOverlayLayer == null)
@@ -523,7 +523,7 @@ public class MapTileLoader
 
 	private void LoadTile(Descriptor desc)
 	{
-		TileGL.TileState tileState = TileGL.TileState.Disposed;
+		TileGL_Bmp.TileState tileState = TileGL.TileState.Disposed;
 
 		byte[] bytes = null;
 		if (ManagerBase.Manager != null)
@@ -549,7 +549,7 @@ public class MapTileLoader
 
 	private void LoadOverlayTile(Descriptor desc)
 	{
-		TileGL.TileState tileState = TileGL.TileState.Disposed;
+		TileGL_Bmp.TileState tileState = TileGL.TileState.Disposed;
 
 		if (CurrentOverlayLayer == null) return;
 
@@ -592,7 +592,7 @@ public class MapTileLoader
 		}
 	}
 
-	private void addLoadedTile(Descriptor desc, byte[] bytes, TileGL.TileState state)
+	private void addLoadedTile(Descriptor desc, byte[] bytes, TileGL_Bmp.TileState state)
 	{
 		loadedTilesLock.lock();
 		try
@@ -603,7 +603,7 @@ public class MapTileLoader
 			}
 			else
 			{
-				TileGL tile = new TileGL(desc, bytes, state);
+				TileGL_Bmp tile = new TileGL_Bmp(desc, bytes, state);
 				loadedTiles.put(desc.GetHashCode(), tile);
 			}
 
@@ -628,7 +628,7 @@ public class MapTileLoader
 
 	}
 
-	private void addLoadedOverlayTile(Descriptor desc, byte[] bytes, TileGL.TileState state)
+	private void addLoadedOverlayTile(Descriptor desc, byte[] bytes, TileGL_Bmp.TileState state)
 	{
 		loadedOverlayTilesLock.lock();
 		try
@@ -639,7 +639,7 @@ public class MapTileLoader
 			}
 			else
 			{
-				TileGL tile = new TileGL(desc, bytes, state);
+				TileGL_Bmp tile = new TileGL_Bmp(desc, bytes, state);
 				loadedOverlayTiles.put(desc.GetHashCode(), tile);
 			}
 

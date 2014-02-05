@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
@@ -14,7 +15,12 @@ import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+import android.app.Application;
+import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+import de.cachebox_test.main;
 
 public class AndroidManager extends ManagerBase
 {
@@ -37,6 +43,15 @@ public class AndroidManager extends ManagerBase
 	@Override
 	public GraphicFactory getGraphicFactory()
 	{
+		Application application = main.mainActivity.getApplication();
+		DisplayMetrics metrics = new DisplayMetrics();
+		((WindowManager) application.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+
+		AndroidGraphicFactory.createInstance(application);
+
+		// set UserScaleFactor to 1/DPI (don't scale MF has Problems here with scale symbols etc.)
+		DisplayModel.setDefaultUserScaleFactor(1 / metrics.scaledDensity);
+
 		return AndroidGraphicFactory.INSTANCE;
 	}
 

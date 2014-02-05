@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -17,6 +16,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -30,6 +30,7 @@ import org.mapsforge.map.swing.MapViewer;
 import org.mapsforge.map.swing.controller.MapViewComponentListener;
 import org.mapsforge.map.swing.controller.MouseEventListener;
 import org.mapsforge.map.swing.util.JavaUtilPreferences;
+import org.mapsforge.map.view.MapView;
 
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
@@ -45,7 +46,7 @@ public class MapPanel extends JPanel implements ActionListener
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final long serialVersionUID = 6067211877479396433L;
 
-	private static MapView mapView;
+	private static AwtMapView mapView;
 
 	public MapPanel()
 	{
@@ -88,7 +89,7 @@ public class MapPanel extends JPanel implements ActionListener
 	private static void addLayers(MapView mapView, String MapPath)
 	{
 		LayerManager layerManager = mapView.getLayerManager();
-		List<Layer> layers = layerManager.getLayers();
+		Layers layers = layerManager.getLayers();
 		TileCache tileCache = createTileCache();
 		layers.clear();
 		layers.add(createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition, layerManager, MapPath));
@@ -97,17 +98,17 @@ public class MapPanel extends JPanel implements ActionListener
 	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager,
 			String MapPath)
 	{
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, layerManager, GRAPHIC_FACTORY);
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, false, GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(new File(MapPath));
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
 	}
 
-	private static MapView createMapView()
+	private static AwtMapView createMapView()
 	{
-		MapView mapView = new MapView();
+		AwtMapView mapView = new AwtMapView();
 		mapView.getFpsCounter().setVisible(true);
-		mapView.addComponentListener(new MapViewComponentListener(mapView, mapView.getModel().mapViewModel));
+		mapView.addComponentListener(new MapViewComponentListener(mapView));
 
 		MouseEventListener mouseEventListener = new MouseEventListener(mapView.getModel());
 		mapView.addMouseListener(mouseEventListener);

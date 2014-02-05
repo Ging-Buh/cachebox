@@ -24,6 +24,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
@@ -533,7 +534,7 @@ public abstract class ManagerBase
 		// Check RenderTheme valid
 		try
 		{
-			RenderThemeHandler.getRenderTheme(getGraphicFactory(), renderTheme);
+			RenderThemeHandler.getRenderTheme(getGraphicFactory(), new DisplayModel(), renderTheme);
 		}
 		catch (SAXException e)
 		{
@@ -622,7 +623,7 @@ public abstract class ManagerBase
 			// Check RenderTheme valid
 			try
 			{
-				RenderThemeHandler.getRenderTheme(getGraphicFactory(), renderTheme);
+				RenderThemeHandler.getRenderTheme(getGraphicFactory(), new DisplayModel(), renderTheme);
 			}
 			catch (SAXException e)
 			{
@@ -670,7 +671,7 @@ public abstract class ManagerBase
 			}
 		}
 
-		RendererJob job = new RendererJob(tile, mapFile, renderTheme, textScale);
+		RendererJob job = new RendererJob(tile, mapFile, renderTheme, new DisplayModel(), textScale, false);
 
 		if (databaseRenderer == null)
 		{

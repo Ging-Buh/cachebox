@@ -21,10 +21,10 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GPS Simulator"/>
 	<classpathentry kind="lib" path="Lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="lib" path="Lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="lib" path="Lib/mapsforge-map-awt-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="lib" path="Lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/GPS Simulator"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

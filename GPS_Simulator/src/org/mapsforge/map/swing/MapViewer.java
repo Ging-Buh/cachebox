@@ -15,13 +15,13 @@
 package org.mapsforge.map.swing;
 
 import java.io.File;
-import java.util.List;
 import java.util.prefs.Preferences;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -37,15 +37,17 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.swing.controller.MapViewComponentListener;
 import org.mapsforge.map.swing.controller.MouseEventListener;
 import org.mapsforge.map.swing.util.JavaUtilPreferences;
+import org.mapsforge.map.swing.view.AwtMapView;
 import org.mapsforge.map.swing.view.MainFrame;
-import org.mapsforge.map.swing.view.MapView;
 import org.mapsforge.map.swing.view.WindowCloseDialog;
 
-public final class MapViewer {
+public final class MapViewer
+{
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
-	public static void main(String[] args) {
-		MapView mapView = createMapView();
+	public static void main(String[] args)
+	{
+		AwtMapView mapView = createMapView();
 		addLayers(mapView);
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
@@ -58,9 +60,10 @@ public final class MapViewer {
 		mainFrame.setVisible(true);
 	}
 
-	private static void addLayers(MapView mapView) {
+	private static void addLayers(AwtMapView mapView)
+	{
 		LayerManager layerManager = mapView.getLayerManager();
-		List<Layer> layers = layerManager.getLayers();
+		Layers layers = layerManager.getLayers();
 		TileCache tileCache = createTileCache();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition, layerManager));
@@ -69,10 +72,11 @@ public final class MapViewer {
 		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
 	}
 
-	private static MapView createMapView() {
-		MapView mapView = new MapView();
+	private static AwtMapView createMapView()
+	{
+		AwtMapView mapView = new AwtMapView();
 		mapView.getFpsCounter().setVisible(true);
-		mapView.addComponentListener(new MapViewComponentListener(mapView, mapView.getModel().mapViewModel));
+		mapView.addComponentListener(new MapViewComponentListener(mapView));
 
 		MouseEventListener mouseEventListener = new MouseEventListener(mapView.getModel());
 		mapView.addMouseListener(mouseEventListener);
@@ -82,32 +86,32 @@ public final class MapViewer {
 		return mapView;
 	}
 
-	private static TileCache createTileCache() {
+	private static TileCache createTileCache()
+	{
 		TileCache firstLevelTileCache = new InMemoryTileCache(64);
 		File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge");
 		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}
 
-	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			LayerManager layerManager) {
+	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager)
+	{
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource,
-				layerManager, GRAPHIC_FACTORY);
+		TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY);
 		tileDownloadLayer.start();
 		return tileDownloadLayer;
 	}
 
-	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			LayerManager layerManager) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, layerManager,
-				GRAPHIC_FACTORY);
+	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager)
+	{
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, true, GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(new File("germany.map"));
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
 	}
 
-	private MapViewer() {
+	private MapViewer()
+	{
 		throw new IllegalStateException();
 	}
 }

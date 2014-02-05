@@ -231,8 +231,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			MapViewBase.this.invalidateTexture();
 		}
 	};
-	protected SortedMap<Long, TileGL> tilesToDraw = new TreeMap<Long, TileGL>();
-	protected SortedMap<Long, TileGL> overlayToDraw = new TreeMap<Long, TileGL>();
+	protected SortedMap<Long, TileGL_Bmp> tilesToDraw = new TreeMap<Long, TileGL_Bmp>();
+	protected SortedMap<Long, TileGL_Bmp> overlayToDraw = new TreeMap<Long, TileGL_Bmp>();
 	int debugcount = 0;
 	private Sprite AccuracySprite;
 	private int actAccuracy = 0;
@@ -546,8 +546,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				for (int j = lo.Y; j <= ru.Y; j++)
 				{
 					Descriptor desc = new Descriptor(i, j, tmpzoom, this.NightMode);
-					TileGL tile = null;
-					TileGL tileOverlay = null;
+					TileGL_Bmp tile = null;
+					TileGL_Bmp tileOverlay = null;
 					try
 					{
 						tile = mapTileLoader.getLoadedTile(desc);
@@ -604,16 +604,16 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		synchronized (screenCenterW)
 		{
-			for (TileGL tile : tilesToDraw.values())
+			for (TileGL_Bmp tile : tilesToDraw.values())
 			{
 				if (tile.canDraw())
 				{
 					// Faktor, mit der dieses MapTile vergrößert gezeichnet
 					// werden muß
-					long posFactor = mapTileLoader.getMapTilePosFactor(tile.Descriptor.Zoom);
+					long posFactor = getscaledMapTilePosFactor(tile);
 
-					long xPos = tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
-					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
+					long xPos = tile.Descriptor.X * posFactor * tile.getWidth() - screenCenterW.x;
+					long yPos = -(tile.Descriptor.Y + 1) * posFactor * tile.getHeight() - screenCenterW.y;
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
 					tile.draw(batch, xPos, yPos, xSize, ySize);
@@ -624,16 +624,16 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		batch.enableBlending();
 		synchronized (screenCenterW)
 		{
-			for (TileGL tile : overlayToDraw.values())
+			for (TileGL_Bmp tile : overlayToDraw.values())
 			{
 				if (tile.canDraw())
 				{
 					// Faktor, mit der dieses MapTile vergrößert gezeichnet
 					// werden muß
-					long posFactor = mapTileLoader.getMapTilePosFactor(tile.Descriptor.Zoom);
+					long posFactor = getscaledMapTilePosFactor(tile);
 
-					long xPos = tile.Descriptor.X * posFactor * 256 - screenCenterW.x;
-					long yPos = -(tile.Descriptor.Y + 1) * posFactor * 256 - screenCenterW.y;
+					long xPos = tile.Descriptor.X * posFactor * tile.getWidth() - screenCenterW.x;
+					long yPos = -(tile.Descriptor.Y + 1) * posFactor * tile.getHeight() - screenCenterW.y;
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
 					tile.draw(batch, xPos, yPos, xSize, ySize);
@@ -642,6 +642,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		overlayToDraw.clear();
 
+	}
+
+	private long getscaledMapTilePosFactor(TileGL tile)
+	{
+		long result = 1;
+		result = (long) (Math.pow(2.0, MapTileLoader.MAX_MAP_ZOOM - tile.Descriptor.Zoom) / tile.getScaleFactor());
+		return result;
 	}
 
 	@SuppressWarnings("unused")
@@ -814,7 +821,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int zoomzoom = zoom2 - 1;
 
 		Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
-		TileGL tile = null;
+		TileGL_Bmp tile = null;
 		try
 		{
 			tile = mapTileLoader.getLoadedTile(desc);
@@ -859,7 +866,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int zoomzoom = zoom2 - 1;
 
 		Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
-		TileGL tile = null;
+		TileGL_Bmp tile = null;
 		try
 		{
 			tile = mapTileLoader.getLoadedOverlayTile(desc);
@@ -910,7 +917,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			for (int jj = j1; jj <= j2; jj++)
 			{
 				Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
-				TileGL tile = null;
+				TileGL_Bmp tile = null;
 				try
 				{
 					tile = mapTileLoader.getLoadedTile(desc);
@@ -961,7 +968,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			for (int jj = j1; jj <= j2; jj++)
 			{
 				Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
-				TileGL tile = null;
+				TileGL_Bmp tile = null;
 				try
 				{
 					tile = mapTileLoader.getLoadedOverlayTile(desc);

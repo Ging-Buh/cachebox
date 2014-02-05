@@ -18,36 +18,42 @@ import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import org.mapsforge.map.model.MapViewModel;
-import org.mapsforge.map.swing.view.MapView;
+import org.mapsforge.map.swing.view.AwtMapView;
 
-public class MapViewComponentListener implements ComponentListener {
-	private final MapView mapView;
-	private final MapViewModel mapViewModel;
+public class MapViewComponentListener implements ComponentListener
+{
+	private final AwtMapView mapView;
 
-	public MapViewComponentListener(MapView mapView, MapViewModel mapViewModel) {
+	// private final MapViewModel mapViewModel;
+
+	public MapViewComponentListener(AwtMapView mapView)
+	{
 		this.mapView = mapView;
-		this.mapViewModel = mapViewModel;
+		// this.mapViewModel = mapViewModel;
 	}
 
 	@Override
-	public void componentHidden(ComponentEvent componentEvent) {
+	public void componentHidden(ComponentEvent componentEvent)
+	{
 		// do nothing
 	}
 
 	@Override
-	public void componentMoved(ComponentEvent componentEvent) {
+	public void componentMoved(ComponentEvent componentEvent)
+	{
 		// do nothing
 	}
 
 	@Override
-	public void componentResized(ComponentEvent componentEvent) {
+	public void componentResized(ComponentEvent componentEvent)
+	{
 		Dimension size = this.mapView.getSize();
-		this.mapViewModel.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
+		// this.mapViewModel.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
 	}
 
 	@Override
-	public void componentShown(ComponentEvent componentEvent) {
+	public void componentShown(ComponentEvent componentEvent)
+	{
 		// do nothing
 	}
 }

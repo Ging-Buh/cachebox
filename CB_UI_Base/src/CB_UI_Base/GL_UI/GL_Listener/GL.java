@@ -74,7 +74,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
 
-	private final int MAX_FBO_RENDER_CALLS = 4;
+	private final int MAX_FBO_RENDER_CALLS = 1;
 	private static final boolean TOUCH_DEBUG = false;
 
 	/**
@@ -286,7 +286,6 @@ public class GL implements ApplicationListener, InputProcessor
 	@Override
 	public void render()
 	{
-
 		if (Energy.DisplayOff()) return;
 
 		if (!started.get() || stopRender) return;
@@ -403,7 +402,10 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
+				| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
 		// reset BatchColor
 		batch.setColor(Color.WHITE);
@@ -1028,7 +1030,7 @@ public class GL implements ApplicationListener, InputProcessor
 			if (CB_UI_Base_Settings.DebugSpriteBatchCountBuffer.getValue())
 			{
 				// for Debug set to max!
-				batch = new SpriteBatch(10000);
+				batch = new SpriteBatch(5460);
 			}
 			else
 			{
