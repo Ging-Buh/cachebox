@@ -1,6 +1,7 @@
 package de.cachebox_test.Components;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
@@ -205,11 +206,11 @@ public class CacheDraw
 			DTPaint.setAntiAlias(true);
 		}
 
-		SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
 		String dateString = "";
 
 		try
 		{
+			SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
 			dateString = postFormater.format(cache.DateHidden);
 		}
 		catch (Exception e)
@@ -444,7 +445,7 @@ public class CacheDraw
 			{
 				try
 				{
-					SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
+					SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
 					FoundDate = postFormater.format(l.Timestamp);
 				}
 				catch (Exception e)
