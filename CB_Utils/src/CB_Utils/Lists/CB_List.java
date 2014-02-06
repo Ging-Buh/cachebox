@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * A resizable, ordered array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class avoids a memory copy when
@@ -341,8 +340,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 		@Override
 		public T next()
 		{
-			if (cursor >= size) throw new NoSuchElementException();
-			if (cursor >= items.length) throw new ConcurrentModificationException();
+			if (cursor >= size || cursor >= items.length) throw new ConcurrentModificationException();
 
 			int index = reverse ? size - cursor++ : cursor++;
 			return items[index];
