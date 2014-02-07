@@ -26,7 +26,8 @@ public abstract class TileGL
 
 	public abstract boolean canDraw();
 
-	public abstract String ToString();
+	@Override
+	public abstract String toString();
 
 	public abstract void destroy() throws DestroyFailedException;
 

@@ -122,23 +122,18 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			int aTile = 256 * 256;
 			maxTilesPerScreen = (int) ((rec.getWidth() * rec.getHeight()) / aTile + 0.5);
 
-			if (maxTilesPerScreen < 10)
-			{
-				float a = maxTilesPerScreen - 10;
-				maxNumTiles = (int) (-90.0 / 6561.0 * (a * a * a * a) + 108);
-			}
-			else
-			{
-				maxNumTiles = 150;
-			}
+			maxNumTiles = (int) (maxTilesPerScreen * 4);// four times as much as necessary
+
+			maxNumTiles *= 2; // for two zoom levels
+
 		}
 		catch (Exception e)
 		{
-			maxNumTiles = 100;
+			maxNumTiles = 80;
 		}
 
-		maxNumTiles = Math.min(maxNumTiles, 150);
-		maxNumTiles = Math.max(maxNumTiles, 15);
+		maxNumTiles = Math.min(maxNumTiles, 80);
+		maxNumTiles = Math.max(maxNumTiles, 30);
 
 		mapTileLoader.setMaxNumTiles(maxNumTiles);
 
@@ -236,17 +231,17 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		String currentLayerName = Config.CurrentMapLayer.getValue();
 		if (ManagerBase.Manager != null)
 		{
-			if (mapTileLoader.CurrentLayer == null)
+			if (mapTileLoader.getCurrentLayer() == null)
 			{
-				mapTileLoader.CurrentLayer = ManagerBase.Manager.GetLayerByName(currentLayerName, currentLayerName, "");
+				mapTileLoader.setLayer(ManagerBase.Manager.GetLayerByName(currentLayerName, currentLayerName, ""));
 			}
 		}
 
 		String currentOverlayLayerName = Config.CurrentMapOverlayLayer.getValue();
 		if (ManagerBase.Manager != null)
 		{
-			if (mapTileLoader.CurrentOverlayLayer == null && currentOverlayLayerName.length() > 0) mapTileLoader.CurrentOverlayLayer = ManagerBase.Manager
-					.GetLayerByName(currentOverlayLayerName, currentOverlayLayerName, "");
+			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName.length() > 0) mapTileLoader
+					.setOverlayLayer(ManagerBase.Manager.GetLayerByName(currentOverlayLayerName, currentOverlayLayerName, ""));
 		}
 
 		mapIntWidth = (int) rec.getWidth();

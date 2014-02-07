@@ -74,7 +74,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
 
-	private final int MAX_FBO_RENDER_CALLS = 1;
+	private final int MAX_FBO_RENDER_CALLS = 2;
 	private static final boolean TOUCH_DEBUG = false;
 
 	/**
@@ -564,9 +564,10 @@ public class GL implements ApplicationListener, InputProcessor
 			if (debugWriteSpriteCount)
 			{
 				renderTime = ((System.currentTimeMillis() - lastRenderBegin) + renderTime) / 2;
-				Fonts.getBubbleSmall().draw(batch,
-						"Max Sprites on Batch:" + String.valueOf(debugSpritebatchMaxCount) + "/" + String.valueOf(renderTime), width / 4,
-						20);
+
+				String Text = "Max Sprites on Batch:" + String.valueOf(debugSpritebatchMaxCount) + "/" + String.valueOf(renderTime);
+
+				Fonts.getBubbleSmall().draw(batch, MaptileLoaderDebugString, width / 4, 20);
 				debugSpritebatchMaxCount = Math.max(debugSpritebatchMaxCount, batch.maxSpritesInBatch);
 			}
 
@@ -585,6 +586,8 @@ public class GL implements ApplicationListener, InputProcessor
 		Gdx.gl.glFinish();
 
 	}
+
+	public static String MaptileLoaderDebugString = "";
 
 	protected int debugSpritebatchMaxCount = 0;
 	protected long lastRenderBegin = 0;

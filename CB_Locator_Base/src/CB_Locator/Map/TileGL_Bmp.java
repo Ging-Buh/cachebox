@@ -3,6 +3,7 @@ package CB_Locator.Map;
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Destroyable;
 
+import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Log.Logger;
@@ -14,9 +15,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class TileGL_Bmp extends TileGL implements Destroyable
 {
 
+	public static int LifeCount;
 	private Texture texture = null;
-
 	private byte[] bytes;
+	private boolean inCreation = false;
 
 	public TileGL_Bmp(Descriptor desc, byte[] bytes, TileState state)
 	{
@@ -25,6 +27,8 @@ public class TileGL_Bmp extends TileGL implements Destroyable
 		// this.texture = texture;
 		this.bytes = bytes;
 		State = state;
+		LifeCount++;
+
 	}
 
 	/*
@@ -37,6 +41,7 @@ public class TileGL_Bmp extends TileGL implements Destroyable
 	{
 		if (texture != null) return true;
 		if (bytes == null) return false;
+		if (inCreation) return false;
 		createTexture();
 		if (texture != null) return true;
 		return false;
@@ -44,31 +49,40 @@ public class TileGL_Bmp extends TileGL implements Destroyable
 
 	private void createTexture()
 	{
-		if (texture != null) return;
-		if (bytes == null) return;
-		try
+		if (inCreation) return;
+		inCreation = true;
+
+		// create Texture on next GlThread
+		GL.that.RunOnGL(new IRenderFBO()
 		{
-			Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-			texture = new Texture(pixmap);
-			pixmap.dispose();
-			pixmap = null;
-		}
-		catch (Exception ex)
-		{
-			Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
-		}
-		bytes = null;
+
+			@Override
+			public void run()
+			{
+				if (texture != null) return;
+				if (bytes == null) return;
+				try
+				{
+					Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
+					texture = new Texture(pixmap);
+					pixmap.dispose();
+					pixmap = null;
+				}
+				catch (Exception ex)
+				{
+					Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+				}
+				bytes = null;
+				inCreation = false;
+			}
+		});
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_Locator.Map.TileGL#ToString()
-	 */
 	@Override
-	public String ToString()
+	public String toString()
 	{
-		return State.toString() + ", " + Descriptor.ToString();
+		return "[Age: " + Age + " " + State.toString() + ", " + Descriptor.ToString();
 	}
 
 	/*
@@ -99,7 +113,7 @@ public class TileGL_Bmp extends TileGL implements Destroyable
 				}
 				texture = null;
 				bytes = null;
-
+				LifeCount--;
 			}
 		});
 

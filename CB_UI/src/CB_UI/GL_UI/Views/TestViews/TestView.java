@@ -2,9 +2,9 @@ package CB_UI.GL_UI.Views.TestViews;
 
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.MapTileLoader;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
-import CB_Locator.Map.MapTileLoader;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Enums.WrapType;
@@ -263,7 +263,7 @@ public class TestView extends CB_View_Base
 			for (int j = lo.Y; j <= ru.Y; j++)
 			{
 				Descriptor desc = new Descriptor(i, j, tmpzoom, false);
-				ManagerBase.Manager.getMapsforgePixMap(layer, desc);
+				ManagerBase.Manager.getMapsforgePixMap(layer, desc, 0);
 				counter++;
 			}
 		}

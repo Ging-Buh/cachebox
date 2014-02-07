@@ -56,12 +56,12 @@ public class AndroidManager extends ManagerBase
 	}
 
 	@Override
-	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
+	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 
 		if (layer.isMapsForge)
 		{
-			return getMapsforgePixMap(layer, desc);
+			return getMapsforgePixMap(layer, desc, ThreadIndex);
 		}
 		try
 		{

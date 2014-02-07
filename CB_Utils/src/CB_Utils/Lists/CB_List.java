@@ -242,7 +242,14 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	 */
 	public void truncate(int newSize)
 	{
-		if (size > newSize) size = newSize;
+		if (size > newSize)
+		{
+
+			for (int i = newSize; i < size; i++)
+				items[i] = null;
+
+			size = newSize;
+		}
 	}
 
 	/** Returns a random item from the array, or zero if the array is empty. */
@@ -373,6 +380,23 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	{
 		reverse = true;
 		return this;
+	}
+
+	/**
+	 * Get a Array Object[] from begin to end.
+	 * 
+	 * @param beginn
+	 * @param end
+	 * @return
+	 */
+	public Object[] get(int begin, int end)
+	{
+		int length = end - begin;
+		Object[] ret = createNewItems(length);
+
+		System.arraycopy(this.items, begin, ret, 0, length);
+
+		return ret;
 	}
 
 }

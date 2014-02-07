@@ -40,6 +40,9 @@ import CB_Utils.Util.FileIO;
 
 public abstract class ManagerBase
 {
+
+	public final int PROCESSOR_COUNT;
+
 	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
 	protected final int CONECTION_TIME_OUT = 15000;
 
@@ -75,7 +78,7 @@ public abstract class ManagerBase
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Locator.Map.ManagerBase.Manager = this;
-
+		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
 	}
 
 	public abstract PackBase CreatePack(String file) throws IOException;
@@ -129,9 +132,9 @@ public abstract class ManagerBase
 		}
 	}
 
-	public byte[] LoadInvertedPixmap(Layer layer, Descriptor desc)
+	public byte[] LoadInvertedPixmap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
-		byte[] tmp = LoadLocalPixmap(layer, desc);
+		byte[] tmp = LoadLocalPixmap(layer, desc, ThreadIndex);
 
 		if (!desc.NightMode) return tmp;
 
@@ -167,12 +170,12 @@ public abstract class ManagerBase
 		public int height;
 	}
 
-	public byte[] LoadLocalPixmap(String layer, Descriptor desc)
+	public byte[] LoadLocalPixmap(String layer, Descriptor desc, int ThreadIndex)
 	{
-		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc);
+		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc, ThreadIndex);
 	}
 
-	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
+	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 		if (layer == null) return null;
 		// Vorerst nur im Pack suchen
@@ -478,8 +481,8 @@ public abstract class ManagerBase
 	// Mapsforge 0.4.0
 	// ##########################################################################
 
-	MapDatabase mapDatabase = null;
-	DatabaseRenderer databaseRenderer = null;
+	MapDatabase mapDatabase[] = null;
+	DatabaseRenderer databaseRenderer[] = null;
 	Bitmap tileBitmap = null;
 	File mapFile = null;
 	private String mapsForgeFile = "";
@@ -505,7 +508,7 @@ public abstract class ManagerBase
 
 		try
 		{
-			MapFileInfo info = mapDatabase.getMapFileInfo();
+			MapFileInfo info = mapDatabase[0].getMapFileInfo();
 
 			return info;
 		}
@@ -562,7 +565,7 @@ public abstract class ManagerBase
 		RenderThemeChanged = false;
 	}
 
-	public byte[] getMapsforgePixMap(Layer layer, Descriptor desc)
+	public byte[] getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 		// Mapsforge 0.4.0
 
@@ -647,14 +650,21 @@ public abstract class ManagerBase
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 
-			databaseRenderer = null;
+			if (databaseRenderer != null)
+			{
+				for (int i = 0; i < PROCESSOR_COUNT; i++)
+				{
+					databaseRenderer[i] = null;
+				}
+			}
+
 			RenderThemeChanged = false;
 		}
 
 		Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
 
 		// chk if MapDatabase Loded a Map File
-		if (!this.mapDatabase.hasOpenFile())
+		if (!this.mapDatabase[ThreadIndex].hasOpenFile())
 		{
 			return null;
 		}
@@ -673,14 +683,17 @@ public abstract class ManagerBase
 
 		RendererJob job = new RendererJob(tile, mapFile, renderTheme, new DisplayModel(), textScale, false);
 
-		if (databaseRenderer == null)
+		if (databaseRenderer == null) databaseRenderer = new DatabaseRenderer[PROCESSOR_COUNT];
+
+		if (databaseRenderer[ThreadIndex] == null)
 		{
-			databaseRenderer = new DatabaseRenderer(this.mapDatabase, getGraphicFactory());
+			databaseRenderer[ThreadIndex] = new DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
 		}
 
 		try
 		{
-			Bitmap bmp = databaseRenderer.executeJob(job);
+
+			Bitmap bmp = databaseRenderer[ThreadIndex].executeJob(job);
 			if (bmp != null)
 			{
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -710,9 +723,15 @@ public abstract class ManagerBase
 		RenderThemeChanged = true;
 		mapFile = new File(layer.Url);
 
-		mapDatabase = new MapDatabase();
-		mapDatabase.closeFile();
-		mapDatabase.openFile(mapFile);
+		if (mapDatabase == null) mapDatabase = new MapDatabase[PROCESSOR_COUNT];
+
+		for (int i = 0; i < PROCESSOR_COUNT; i++)
+		{
+			if (mapDatabase[i] == null) mapDatabase[i] = new MapDatabase();
+			mapDatabase[i].closeFile();
+			mapDatabase[i].openFile(mapFile);
+		}
+
 		Logger.DEBUG("Open MapsForge Map: " + mapFile);
 
 		mapsForgeFile = layer.Name;

@@ -122,7 +122,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				mi = icm.addItem(Index++, "", layer.Name);
 				mi.setData(layer);
 				mi.setCheckable(true);
-				if (layer == MapView.mapTileLoader.CurrentLayer)
+				if (layer == MapView.mapTileLoader.getCurrentLayer())
 				{
 					mi.setChecked(true);
 				}
@@ -143,7 +143,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				Layer layer = (Layer) ((MenuItem) v).getData();
-				if (layer == MapView.mapTileLoader.CurrentOverlayLayer)
+				if (layer == MapView.mapTileLoader.getCurrentOverlayLayer())
 				{
 					// switch off Overlay
 					TabMainView.mapView.SetCurrentOverlayLayer(null);
@@ -168,7 +168,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				mi = icm.addItem(Index++, "", layer.Name);
 				mi.setData(layer);
 				mi.setCheckable(true);
-				if (layer == MapView.mapTileLoader.CurrentOverlayLayer)
+				if (layer == MapView.mapTileLoader.getCurrentOverlayLayer())
 				{
 					mi.setChecked(true);
 				}
