@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
 import java.util.HashMap;
@@ -24,8 +39,10 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Math.PointD;
@@ -40,6 +57,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ * @author arbor95
+ */
 public abstract class MapViewBase extends CB_View_Base implements PositionChangedEvent, invalidateTextureEvent
 {
 	public static int INITIAL_SETTINGS = 1;
@@ -604,6 +626,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				}
 			}
 		}
+
+		CB_List<TileGL_RotateDrawables> rotateList = new CB_List<TileGL_RotateDrawables>();
+
 		synchronized (screenCenterW)
 		{
 
@@ -620,7 +645,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					long yPos = -(tile.Descriptor.Y + 1) * posFactor * tile.getHeight() - screenCenterW.y;
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
-					tile.draw(batch, xPos, yPos, xSize, ySize);
+					tile.draw(batch, xPos, yPos, xSize, ySize, rotateList);
 				}
 			}
 		}
@@ -641,7 +666,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					long yPos = -(tile.Descriptor.Y + 1) * posFactor * tile.getHeight() - screenCenterW.y;
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
-					tile.draw(batch, xPos, yPos, xSize, ySize);
+					tile.draw(batch, xPos, yPos, xSize, ySize, rotateList);
 				}
 			}
 		}
@@ -1014,10 +1039,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int halfMapIntWidth = mapIntWidth / 2;
 		int halfMapIntHeight = mapIntHeight / 2;
 
-		int extensionTop = (int) ((halfMapIntHeight - ySpeedVersatz) * 1.5);
-		int extensionBottom = (int) ((halfMapIntHeight + ySpeedVersatz) * 1.5);
-		int extensionLeft = (int) (halfMapIntWidth * 1.5);
-		int extensionRight = (int) (halfMapIntWidth * 1.5);
+		int extensionTop = (int) ((halfMapIntHeight - ySpeedVersatz) * 2.5);
+		int extensionBottom = (int) ((halfMapIntHeight + ySpeedVersatz) * 2.5);
+		int extensionLeft = (int) (halfMapIntWidth * 2.5);
+		int extensionRight = (int) (halfMapIntWidth * 2.5);
 		Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - drawingWidth / 2 - extensionLeft, halfMapIntHeight - drawingHeight
 				/ 2 - extensionTop), aktZoom);
 		Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight

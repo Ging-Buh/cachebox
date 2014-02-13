@@ -1,18 +1,35 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
-import javax.security.auth.DestroyFailedException;
-import javax.security.auth.Destroyable;
-
 import CB_UI_Base.GL_UI.IRenderFBO;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class TileGL_Bmp extends TileGL implements Destroyable
+/**
+ * @author ging-buh
+ * @author Longri
+ */
+public class TileGL_Bmp extends TileGL
 {
 
 	public static int LifeCount;
@@ -88,55 +105,10 @@ public class TileGL_Bmp extends TileGL implements Destroyable
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see CB_Locator.Map.TileGL#destroy()
-	 */
-	@Override
-	public void destroy() throws DestroyFailedException
-	{
-
-		// must run on GL thrad
-
-		GL.that.RunOnGL(new IRunOnGL()
-		{
-
-			@Override
-			public void run()
-			{
-
-				try
-				{
-					if (texture != null) texture.dispose();
-				}
-				catch (java.lang.NullPointerException e)
-				{
-					e.printStackTrace();
-				}
-				texture = null;
-				bytes = null;
-				LifeCount--;
-			}
-		});
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_Locator.Map.TileGL#isDestroyed()
-	 */
-	@Override
-	public boolean isDestroyed()
-	{
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see CB_Locator.Map.TileGL#draw(com.badlogic.gdx.graphics.g2d.SpriteBatch, float, float, float, float)
 	 */
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height)
+	public void draw(SpriteBatch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> rotateList)
 	{
 		if (texture != null) batch.draw(texture, x, y, width, height);
 	}
@@ -163,6 +135,31 @@ public class TileGL_Bmp extends TileGL implements Destroyable
 	{
 		if (texture != null) return texture.getHeight();
 		return 0;
+	}
+
+	@Override
+	public void dispose()
+	{
+		if (isDisposed) return;
+
+		try
+		{
+			if (texture != null) texture.dispose();
+		}
+		catch (java.lang.NullPointerException e)
+		{
+			e.printStackTrace();
+		}
+		texture = null;
+		bytes = null;
+		LifeCount--;
+		isDisposed = true;
+	}
+
+	@Override
+	public boolean isDisposed()
+	{
+		return isDisposed;
 	}
 
 }

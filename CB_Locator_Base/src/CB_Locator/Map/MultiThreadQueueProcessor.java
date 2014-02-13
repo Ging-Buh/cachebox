@@ -1,6 +1,23 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
 import java.util.SortedMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.Energy;
@@ -8,11 +25,15 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 class MultiThreadQueueProcessor extends Thread
 {
 	static int instanceCount = 0;
-
 	static CB_List<Descriptor> inLoadDesc = new CB_List<Descriptor>();
+	static final Lock inLoadDescLock = new ReentrantLock();
 
 	final int thisInstanceCount;
 	public boolean queueProcessorLifeCycle = false;
@@ -106,28 +127,34 @@ class MultiThreadQueueProcessor extends Thread
 
 						if (desc != null)
 						{
-							synchronized (inLoadDesc)
+							inLoadDescLock.lock();
+							if (inLoadDesc.contains(desc))
 							{
+								continue;// Other thread is loading this Desc. Skip!
+							}
+							inLoadDescLock.unlock();
+
+							if (calcOverlay && queueData.CurrentOverlayLayer != null) LoadOverlayTile(desc);
+							else if (queueData.CurrentLayer != null)
+							{
+								inLoadDescLock.lock();
 								if (inLoadDesc.contains(desc))
 								{
 									continue;// Other thread is loading this Desc. Skip!
 								}
 								inLoadDesc.add(desc);
 							}
+							inLoadDescLock.unlock();
+							LoadTile(desc);
+							inLoadDescLock.lock();
+							inLoadDesc.remove(desc);
+							inLoadDescLock.unlock();
 
-							if (calcOverlay && queueData.CurrentOverlayLayer != null) LoadOverlayTile(desc);
-							else if (queueData.CurrentLayer != null)
-							{
-								// System.out.print("THREAD[" + thisInstanceCount + "] Load  desc:" + desc.toString() + Global.br);
-
-								LoadTile(desc);
-								synchronized (inLoadDesc)
-								{
-									inLoadDesc.remove(desc);
-								}
-
-								// System.out.print("THREAD[" + thisInstanceCount + "] Ready desc:" + desc.toString() + Global.br);
-							}
+						}
+						else
+						{
+							// nothing to do, so we can sleep
+							Thread.sleep(100);
 						}
 					}
 					catch (Exception ex1)
@@ -143,7 +170,7 @@ class MultiThreadQueueProcessor extends Thread
 				}
 				else
 				{
-					Thread.sleep(200);
+					Thread.sleep(400);
 				}
 			}
 			while (true);
@@ -184,18 +211,16 @@ class MultiThreadQueueProcessor extends Thread
 
 	private void LoadTile(Descriptor desc)
 	{
-		TileGL_Bmp.TileState tileState = TileGL.TileState.Disposed;
 
-		byte[] bytes = null;
+		TileGL tile = null;
 		if (ManagerBase.Manager != null)
 		{
-			bytes = ManagerBase.Manager.LoadInvertedPixmap(queueData.CurrentLayer, desc, thisInstanceCount);
+			tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, thisInstanceCount);
 		}
 
-		if (bytes != null && bytes.length > 0)
+		if (tile != null)
 		{
-			tileState = TileGL.TileState.Present;
-			addLoadedTile(desc, bytes, tileState);
+			addLoadedTile(desc, tile);
 			// Redraw Map after a new Tile was loaded or generated
 			GL.that.renderOnce("MapTileLoader loadTile");
 		}
@@ -210,22 +235,18 @@ class MultiThreadQueueProcessor extends Thread
 
 	private void LoadOverlayTile(Descriptor desc)
 	{
-		TileGL_Bmp.TileState tileState = TileGL.TileState.Disposed;
-
 		if (queueData.CurrentOverlayLayer == null) return;
 
-		byte[] bytes = null;
+		TileGL tile = null;
 		if (ManagerBase.Manager != null)
 		{
 			// Load Overlay never inverted !!!
-			bytes = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentOverlayLayer, desc, thisInstanceCount);
+			tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentOverlayLayer, desc, thisInstanceCount);
 		}
-		// byte[] bytes = MapManagerEventPtr.OnGetMapTile(CurrentLayer, desc);
-		// Texture texture = new Texture(new Pixmap(bytes, 0, bytes.length));
-		if (bytes != null && bytes.length > 0)
+
+		if (tile != null)
 		{
-			tileState = TileGL.TileState.Present;
-			addLoadedOverlayTile(desc, bytes, tileState);
+			addLoadedOverlayTile(desc, tile);
 			// Redraw Map after a new Tile was loaded or generated
 			GL.that.renderOnce("MapTileLoader loadOverlayTile");
 		}
@@ -253,18 +274,17 @@ class MultiThreadQueueProcessor extends Thread
 		}
 	}
 
-	private void addLoadedTile(Descriptor desc, byte[] bytes, TileGL_Bmp.TileState state)
+	private void addLoadedTile(Descriptor desc, TileGL tile)
 	{
 		queueData.loadedTilesLock.lock();
 		try
 		{
 			if (queueData.loadedTiles.containsKey(desc.GetHashCode()))
 			{
-
+				tile.dispose(); // das war dann umsonnst
 			}
 			else
 			{
-				TileGL_Bmp tile = new TileGL_Bmp(desc, bytes, state);
 				queueData.loadedTiles.add(desc.GetHashCode(), tile);
 			}
 
@@ -289,7 +309,7 @@ class MultiThreadQueueProcessor extends Thread
 
 	}
 
-	private void addLoadedOverlayTile(Descriptor desc, byte[] bytes, TileGL_Bmp.TileState state)
+	private void addLoadedOverlayTile(Descriptor desc, TileGL tile)
 	{
 		queueData.loadedOverlayTilesLock.lock();
 		try
@@ -300,7 +320,6 @@ class MultiThreadQueueProcessor extends Thread
 			}
 			else
 			{
-				TileGL_Bmp tile = new TileGL_Bmp(desc, bytes, state);
 				queueData.loadedOverlayTiles.add(desc.GetHashCode(), tile);
 			}
 

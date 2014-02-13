@@ -158,7 +158,7 @@ public class DesktopMain
 			Config.AcceptChanges();
 		}
 
-		new DesktopManager();
+		new DesktopManager(false);
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 

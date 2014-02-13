@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.Map;
 
 import java.awt.image.BufferedImage;
@@ -12,7 +27,6 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 
 import CB_Locator.Map.BoundingBox;
@@ -20,24 +34,32 @@ import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
+import CB_Locator.Map.TileGL;
+import CB_Locator.Map.TileGL.TileState;
+import CB_Locator.Map.TileGL_Bmp;
+import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_Utils.Util.FileIO;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class DesktopManager extends ManagerBase
 {
 
-	public DesktopManager()
+	public DesktopManager(boolean useGL_Renderer)
 	{
-		super();
+		super(useGL_Renderer);
 	}
 
 	@Override
-	public GraphicFactory getGraphicFactory()
+	public ext_GraphicFactory getGraphicFactory()
 	{
 		return AwtGraphicFactory.INSTANCE;
 	}
 
 	@Override
-	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
+	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 
 		if (layer.isMapsForge)
@@ -66,7 +88,12 @@ public class DesktopManager extends ManagerBase
 				{
 					BoundingBox bbox = mapPacks.get(i).Contains(desc);
 
-					if (bbox != null) return mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
+					if (bbox != null)
+					{
+						byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
+						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+						return bmpTile;
+					}
 				}
 			}
 			// Kein Map Pack am Start!
@@ -78,7 +105,10 @@ public class DesktopManager extends ManagerBase
 				ByteArrayOutputStream bas = new ByteArrayOutputStream();
 				ImageIO.write(img, "png", bas);
 				byte[] data = bas.toByteArray();
-				return data;
+
+				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, data, TileState.Present);
+
+				return bmpTile;
 			}
 		}
 		catch (Exception exc)
@@ -113,7 +143,7 @@ public class DesktopManager extends ManagerBase
 		ColorConvertOp op = new ColorConvertOp(null);
 		op.filter(bImage, intimg);
 
-		Raster ras = ((BufferedImage) intimg).getData();
+		Raster ras = intimg.getData();
 		DataBufferInt db = (DataBufferInt) ras.getDataBuffer();
 		imgData.PixelColorArray = db.getData();
 

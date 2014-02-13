@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cachebox_test;
 
 import java.io.BufferedReader;
@@ -181,6 +196,11 @@ import de.cachebox_test.Views.Forms.GcApiLogin;
 import de.cachebox_test.Views.Forms.MessageBox;
 import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
 
+/**
+ * @author Longri
+ * @author ging-buh
+ * @author arbor95
+ */
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
@@ -412,7 +432,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Global.Paints.init(this);
 			Global.InitIcons(this);
 
-			new de.cachebox_test.Map.AndroidManager();
+			new de.cachebox_test.Map.AndroidManager(false);
 
 			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
 			GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");

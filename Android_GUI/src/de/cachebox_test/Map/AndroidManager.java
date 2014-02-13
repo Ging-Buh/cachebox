@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cachebox_test.Map;
 
 import java.io.ByteArrayOutputStream;
@@ -13,20 +28,24 @@ import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
+import CB_Locator.Map.TileGL;
+import CB_Locator.Map.TileGL.TileState;
+import CB_Locator.Map.TileGL_Bmp;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
-import android.app.Application;
-import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
 import de.cachebox_test.main;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class AndroidManager extends ManagerBase
 {
-	public AndroidManager()
+	public AndroidManager(boolean useGL_Renderer)
 	{
-		super();
+		super(useGL_Renderer);
+
 	}
 
 	@Override
@@ -43,20 +62,17 @@ public class AndroidManager extends ManagerBase
 	@Override
 	public GraphicFactory getGraphicFactory()
 	{
-		Application application = main.mainActivity.getApplication();
-		DisplayMetrics metrics = new DisplayMetrics();
-		((WindowManager) application.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-
-		AndroidGraphicFactory.createInstance(application);
-
-		// set UserScaleFactor to 1/DPI (don't scale MF has Problems here with scale symbols etc.)
-		DisplayModel.setDefaultUserScaleFactor(1 / metrics.scaledDensity);
+		if (AndroidGraphicFactory.INSTANCE == null)
+		{
+			AndroidGraphicFactory.createInstance(main.mainActivity.getApplication());
+			DisplayModel.setDeviceScaleFactor(1);
+		}
 
 		return AndroidGraphicFactory.INSTANCE;
 	}
 
 	@Override
-	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
+	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 
 		if (layer.isMapsForge)
@@ -86,11 +102,9 @@ public class AndroidManager extends ManagerBase
 
 					if (bbox != null)
 					{
-						return mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
-						// Bitmap result = mapPacks.get(i).LoadFromBoundingBox(bbox, desc);
-						// ByteArrayOutputStream stream = new ByteArrayOutputStream();
-						// result.compress(Bitmap.CompressFormat.PNG, 100, stream);
-						// return stream.toByteArray();
+						byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
+						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+						return bmpTile;
 					}
 				}
 			}
@@ -101,7 +115,9 @@ public class AndroidManager extends ManagerBase
 				android.graphics.Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
-				return stream.toByteArray();
+				byte[] b = stream.toByteArray();
+				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+				return bmpTile;
 			}
 		}
 		catch (Exception exc)
@@ -169,9 +185,7 @@ public class AndroidManager extends ManagerBase
 		}
 		catch (Exception exc)
 		{
-			/*
-			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
-			 */
+
 		}
 		return null;
 	}
@@ -205,4 +219,5 @@ public class AndroidManager extends ManagerBase
 		byte[] b = baos.toByteArray();
 		return b;
 	}
+
 }

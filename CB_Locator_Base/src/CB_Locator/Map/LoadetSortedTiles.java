@@ -1,12 +1,28 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
 import java.util.Iterator;
 
-import javax.security.auth.DestroyFailedException;
-
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
+/**
+ * @author Longri
+ */
 public class LoadetSortedTiles implements Iterable<TileGL>
 {
 
@@ -33,7 +49,8 @@ public class LoadetSortedTiles implements Iterable<TileGL>
 		{
 			int index = descList.indexOf(Hash);
 			descList.remove(index);
-			tileList.remove(index);
+			TileGL t = tileList.remove(index);
+			t.dispose();
 		}
 	}
 
@@ -43,7 +60,8 @@ public class LoadetSortedTiles implements Iterable<TileGL>
 		{
 			int index = tileList.indexOf(tile);
 			descList.remove(index);
-			tileList.remove(index);
+			TileGL t = tileList.remove(index);
+			t.dispose();
 		}
 	}
 
@@ -109,16 +127,7 @@ public class LoadetSortedTiles implements Iterable<TileGL>
 			for (int i = 0; i < delList.length; i++)
 			{
 				TileGL tile = (TileGL) delList[i];
-
-				try
-				{
-					tile.destroy();
-				}
-				catch (DestroyFailedException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				tile.dispose();
 				tile = null;
 			}
 			delList = null;
@@ -167,7 +176,7 @@ public class LoadetSortedTiles implements Iterable<TileGL>
 		CB_List<TileGL> destroyedList = new CB_List<TileGL>();
 		for (int i = 0; i < arr.length; i++)
 		{
-			if (((TileGL) arr[i]).isDestroyed()) destroyedList.add((TileGL) arr[i]);
+			if (((TileGL) arr[i]).isDisposed()) destroyedList.add((TileGL) arr[i]);
 		}
 
 		for (TileGL tile : destroyedList)

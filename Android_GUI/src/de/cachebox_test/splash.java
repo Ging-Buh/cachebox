@@ -1127,7 +1127,7 @@ public class splash extends Activity
 
 		Global.Paints.init(this);
 
-		new de.cachebox_test.Map.AndroidManager();
+		new de.cachebox_test.Map.AndroidManager(false);
 
 		Initial2();
 	}

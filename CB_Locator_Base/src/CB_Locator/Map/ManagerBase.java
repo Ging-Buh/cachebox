@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
 import java.io.ByteArrayOutputStream;
@@ -22,7 +37,9 @@ import org.apache.http.params.HttpParams;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.layer.renderer.DatabaseRenderer;
+import org.mapsforge.map.layer.renderer.GL_DatabaseRenderer;
+import org.mapsforge.map.layer.renderer.IDatabaseRenderer;
+import org.mapsforge.map.layer.renderer.MF_DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
@@ -34,14 +51,21 @@ import org.xml.sax.SAXException;
 
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.Type;
+import CB_Locator.Map.TileGL.TileState;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public abstract class ManagerBase
 {
 
 	public final int PROCESSOR_COUNT;
+	private final boolean USE_GL_RENDERER;
 
 	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
 	protected final int CONECTION_TIME_OUT = 15000;
@@ -74,11 +98,12 @@ public abstract class ManagerBase
 		return false;
 	}
 
-	public ManagerBase()
+	public ManagerBase(boolean useGL_Renderer)
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Locator.Map.ManagerBase.Manager = this;
 		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
+		USE_GL_RENDERER = useGL_Renderer;
 	}
 
 	public abstract PackBase CreatePack(String file) throws IOException;
@@ -132,35 +157,18 @@ public abstract class ManagerBase
 		}
 	}
 
-	public byte[] LoadInvertedPixmap(Layer layer, Descriptor desc, int ThreadIndex)
-	{
-		byte[] tmp = LoadLocalPixmap(layer, desc, ThreadIndex);
-
-		if (!desc.NightMode) return tmp;
-
-		if (layer.isMapsForge && mapsforgeNightThemeExist()) return tmp;
-
-		if (tmp == null) return null;
-
-		ImageData imgData = getImagePixel(tmp);
-
-		imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
-
-		tmp = getImageFromData(imgData);
-
-		return tmp;
-	}
+	// public abstract TileGL LoadInvertedPixmap(Layer layer, Descriptor desc, int ThreadIndex);
 
 	private boolean useInvertedNightTheme;
+
+	protected boolean mapsforgeNightThemeExist()
+	{
+		return !useInvertedNightTheme;
+	}
 
 	public void setUseInvertedNightTheme(boolean value)
 	{
 		useInvertedNightTheme = value;
-	}
-
-	private boolean mapsforgeNightThemeExist()
-	{
-		return !useInvertedNightTheme;
 	}
 
 	public class ImageData
@@ -170,12 +178,12 @@ public abstract class ManagerBase
 		public int height;
 	}
 
-	public byte[] LoadLocalPixmap(String layer, Descriptor desc, int ThreadIndex)
+	public TileGL LoadLocalPixmap(String layer, Descriptor desc, int ThreadIndex)
 	{
 		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc, ThreadIndex);
 	}
 
-	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
+	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 		if (layer == null) return null;
 		// Vorerst nur im Pack suchen
@@ -191,8 +199,10 @@ public abstract class ManagerBase
 				if (bbox != null)
 				{
 					byte b[] = mapPack.LoadFromBoundingBoxByteArray(bbox, desc);
-					// if (b == null) mapPacks.remove(i);
-					return b;
+
+					TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+
+					return bmpTile;
 				}
 			}
 		}
@@ -482,7 +492,7 @@ public abstract class ManagerBase
 	// ##########################################################################
 
 	MapDatabase mapDatabase[] = null;
-	DatabaseRenderer databaseRenderer[] = null;
+	IDatabaseRenderer databaseRenderer[] = null;
 	Bitmap tileBitmap = null;
 	File mapFile = null;
 	private String mapsForgeFile = "";
@@ -565,13 +575,9 @@ public abstract class ManagerBase
 		RenderThemeChanged = false;
 	}
 
-	public byte[] getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex)
+	public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 		// Mapsforge 0.4.0
-
-		byte[] result = null;
-
-		// if (mapGenerator == null) mapGenerator = MapGeneratorFactory.createMapGenerator(MapGeneratorInternal.DATABASE_RENDERER);
 
 		if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
 		{
@@ -669,53 +675,33 @@ public abstract class ManagerBase
 			return null;
 		}
 
-		{
-			// TODO MapsforgeGL vielleicht kann man die DrawBefehle hier in OpenGL umsetzen.
-			// Mapsforge gibt hier alle enthaltenen Punkte eines Tile's zurück.
-			// Diese müssten in OpenGL Draw Befehle umgesetzt werden können?
-			// Longri
-			{
-				// MapReadResult test = this.mapDatabase.readMapData(tile);
-				// double lat = test.ways.get(0).latLongs[0][0].latitude;
-				// double lat2 = test.pointOfInterests.get(0).position.latitude;
-			}
-		}
-
 		RendererJob job = new RendererJob(tile, mapFile, renderTheme, new DisplayModel(), textScale, false);
-
-		if (databaseRenderer == null) databaseRenderer = new DatabaseRenderer[PROCESSOR_COUNT];
-
+		if (databaseRenderer == null) databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
 		if (databaseRenderer[ThreadIndex] == null)
 		{
-			databaseRenderer[ThreadIndex] = new DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
+			if (USE_GL_RENDERER)
+			{
+				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(1),
+						new DisplayModel());
+			}
+			else
+			{
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
+			}
 		}
 
 		try
 		{
 
-			Bitmap bmp = databaseRenderer[ThreadIndex].executeJob(job);
-			if (bmp != null)
-			{
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				bmp.compress(baos);
+			return databaseRenderer[ThreadIndex].execute(job);
 
-				result = baos.toByteArray();
-
-				try
-				{
-					baos.close();
-				}
-				catch (IOException e)
-				{
-				}
-			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		return result;
+		return null;
 	}
 
 	private void LoadMapsforgeMap(Layer layer)

@@ -1,10 +1,23 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
 import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.concurrent.locks.Lock;
-
-import javax.security.auth.DestroyFailedException;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
@@ -12,6 +25,10 @@ import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class MapTileLoader
 {
 	public static final int MAX_MAP_ZOOM = 22;
@@ -98,8 +115,9 @@ public class MapTileLoader
 
 		{// DEBUG
 
-			String text = "MaxCache:" + maxNumTiles + " " + (doubleCache ? "D" : "") + " loaded:" + queueData.loadedTiles.size() + " life:"
-					+ TileGL_Bmp.LifeCount;
+			String tre = String.valueOf(((queueProcessor == null) ? 0 : queueProcessor.length));
+			String text = "Threads:" + tre + " | MaxCache:" + maxNumTiles + " " + (doubleCache ? "D" : "") + " loaded:"
+					+ queueData.loadedTiles.size() + " life:" + TileGL_Bmp.LifeCount;
 			GL.MaptileLoaderDebugString = text;
 		}
 
@@ -205,15 +223,7 @@ public class MapTileLoader
 
 			for (long hash : delList)
 			{
-				try
-				{
-					queueData.loadedTiles.get(hash).destroy();
-				}
-				catch (DestroyFailedException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				queueData.loadedTiles.get(hash).dispose();
 				queueData.loadedTiles.remove(hash);
 			}
 
@@ -221,15 +231,7 @@ public class MapTileLoader
 			{
 				for (long hash : delList)
 				{
-					try
-					{
-						queueData.loadedOverlayTiles.get(hash).destroy();
-					}
-					catch (DestroyFailedException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					queueData.loadedOverlayTiles.get(hash).dispose();
 					queueData.loadedOverlayTiles.remove(hash);
 				}
 			}
