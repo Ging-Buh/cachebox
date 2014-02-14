@@ -5,7 +5,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class PixmapDrawable extends EmptyDrawable
 {
@@ -21,7 +21,7 @@ public class PixmapDrawable extends EmptyDrawable
 			public void run()
 			{
 				tex = new Texture(pixmap);
-//				tex.bind();
+				// tex.bind();
 				pixmap.dispose();
 			}
 		});
@@ -29,7 +29,7 @@ public class PixmapDrawable extends EmptyDrawable
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height)
+	public void draw(Batch batch, float x, float y, float width, float height)
 	{
 		if (tex != null) batch.draw(tex, x, y, width, height);
 	}

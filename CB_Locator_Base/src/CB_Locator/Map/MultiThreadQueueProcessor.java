@@ -163,7 +163,7 @@ class MultiThreadQueueProcessor extends Thread
 						{
 							throw ex1;
 						}
-						Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
+						// Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
 						Thread.sleep(400);
 					}
 

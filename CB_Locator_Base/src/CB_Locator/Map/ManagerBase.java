@@ -571,7 +571,7 @@ public abstract class ManagerBase
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 
-		databaseRenderer = null;
+		databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
 		RenderThemeChanged = false;
 	}
 
@@ -676,7 +676,7 @@ public abstract class ManagerBase
 		}
 
 		RendererJob job = new RendererJob(tile, mapFile, renderTheme, new DisplayModel(), textScale, false);
-		if (databaseRenderer == null) databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
+
 		if (databaseRenderer[ThreadIndex] == null)
 		{
 			if (USE_GL_RENDERER)

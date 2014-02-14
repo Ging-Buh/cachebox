@@ -16,7 +16,7 @@
 
 package CB_UI_Base.GL_UI.utils;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /**
@@ -44,7 +44,7 @@ public abstract class EmptyDrawable implements Drawable
 	}
 
 	@Override
-	public abstract void draw(SpriteBatch batch, float x, float y, float width, float height);
+	public abstract void draw(Batch batch, float x, float y, float width, float height);
 
 	@Override
 	public float getLeftWidth()

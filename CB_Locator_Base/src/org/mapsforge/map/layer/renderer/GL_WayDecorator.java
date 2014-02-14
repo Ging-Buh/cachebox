@@ -103,6 +103,9 @@ public final class GL_WayDecorator
 
 	public void renderText(String textKey, Paint fill, Paint stroke, Point[][] coordinates, List<GL_WayTextContainer> wayNames)
 	{
+
+		if (true) return;
+
 		GL_Path path = new GL_Path();
 
 		path.moveTo((float) coordinates[0][0].x, (float) coordinates[0][0].y);

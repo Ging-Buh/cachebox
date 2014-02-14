@@ -85,6 +85,7 @@ public class GL implements ApplicationListener, InputProcessor
 	// Public Static Member
 	public static GL_Listener_Interface listenerInterface;
 	public static GL that;
+	public static long GL_ThreadId;
 	public static SpriteBatch batch;
 	public static PolygonSpriteBatch polygonBatch;
 	public static ShapeRenderer shapeRenderer;
@@ -278,6 +279,11 @@ public class GL implements ApplicationListener, InputProcessor
 
 	}
 
+	public static boolean isGlThread()
+	{
+		return GL_ThreadId == Thread.currentThread().getId();
+	}
+
 	public void unregister3D()
 	{
 		mAct3D_Render = null;
@@ -286,6 +292,7 @@ public class GL implements ApplicationListener, InputProcessor
 	@Override
 	public void render()
 	{
+		GL_ThreadId = Thread.currentThread().getId();
 		if (Energy.DisplayOff()) return;
 
 		if (!started.get() || stopRender) return;
@@ -1043,7 +1050,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (polygonBatch == null)
 		{
-			polygonBatch = new PolygonSpriteBatch();
+			polygonBatch = new PolygonSpriteBatch(10920);
 		}
 
 		if (shapeRenderer == null)

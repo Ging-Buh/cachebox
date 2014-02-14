@@ -26,8 +26,8 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -163,7 +163,7 @@ public class BitmapDrawable extends EmptyDrawable implements ext_Bitmap, Disposa
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height)
+	public void draw(Batch batch, float x, float y, float width, float height)
 	{
 
 		if (tex != null && batch != null)

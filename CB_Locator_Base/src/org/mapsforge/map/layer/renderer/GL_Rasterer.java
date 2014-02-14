@@ -43,7 +43,6 @@ import com.badlogic.gdx.math.MathUtils;
  */
 public class GL_Rasterer
 {
-	private static final GL_Path path = new GL_Path();
 	private static final String UNKNOWN_STYLE = "unknown style: ";
 	private final int TILE_SIZE;
 	private final DisplayModel DISPLAY_MODEL;
@@ -134,37 +133,44 @@ public class GL_Rasterer
 			return; // nothing to draw
 		}
 
-		GL_Rasterer.path.clear();
+		GL_Path path = new GL_Path();
 
 		for (int j = 0; j < coordinates.length; ++j)
 		{
 			Point[] points = coordinates[j];
 			if (points.length >= 2)
 			{
-				GL_Rasterer.path.setToMaxItems(points.length);
+				path.setToMaxItems(points.length);
 				Point point = points[0];
 
-				GL_Rasterer.path.moveTo((float) point.x, (float) (TILE_SIZE - point.y));
+				path.moveTo((float) point.x, (float) (TILE_SIZE - point.y));
 				for (int i = 1; i < points.length; ++i)
 				{
 					point = points[i];
-					GL_Rasterer.path.lineTo((float) point.x, (float) (TILE_SIZE - point.y));
+					path.lineTo((float) point.x, (float) (TILE_SIZE - point.y));
 				}
 			}
 		}
 
 		GL_Style style = paint.getStyle();
 
-		ArrayList<float[]> pathes = GL_Rasterer.path.getVertices();
+		ArrayList<float[]> pathes = path.getVertices();
 
 		switch (style)
 		{
 		case FILL:
 			for (float[] singlePath : pathes)
 			{
-				if (singlePath.length < 6) break; // Nothing to Draw
-				short[] triangles = GL_GraphicFactory.ECT.computeTriangles(singlePath).toArray();
-				drw.addDrawable(new PolygonDrawable(singlePath, triangles, paint, TILE_SIZE, TILE_SIZE), false);
+				try
+				{
+					if (singlePath.length < 6) break; // Nothing to Draw
+					short[] triangles = GL_GraphicFactory.ECT.computeTriangles(singlePath).toArray();
+					drw.addDrawable(new PolygonDrawable(singlePath, triangles, paint, TILE_SIZE, TILE_SIZE), false);
+				}
+				catch (Exception e)
+				{
+
+				}
 			}
 			return;
 

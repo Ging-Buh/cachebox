@@ -35,7 +35,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.MathUtils;
@@ -148,7 +148,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	private boolean RunOnGlSetted = false;
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height)
+	public void draw(Batch batch, float x, float y, float width, float height)
 	{// Draw only not rotate
 
 		if (isDisposed.get())
@@ -163,7 +163,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 		GL.batch.setProjectionMatrix(oriMatrix);
 	}
 
-	public void draw(SpriteBatch batch, float x, float y, final float width, final float height, float rotated)
+	public void draw(Batch batch, float x, float y, final float width, final float height, float rotated)
 	{
 
 		if (isDisposed.get())
@@ -195,7 +195,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 		GL.batch.setProjectionMatrix(oriMatrix);
 	}
 
-	private void drawFbo(SpriteBatch batch, float x, float y, final float width, final float height, final Matrix4 oriMatrix,
+	private void drawFbo(Batch batch, float x, float y, final float width, final float height, final Matrix4 oriMatrix,
 			Matrix4 thisDrawMatrix)
 	{
 		final int fboScalerWidth = (int) (width * FBO_SCALER);

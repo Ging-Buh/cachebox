@@ -85,7 +85,7 @@ public class TileGL_Vector extends TileGL
 	@Override
 	public void dispose()
 	{
-		drawable.dispose();
+		if (drawable != null) drawable.dispose();
 		drawable = null;
 	}
 

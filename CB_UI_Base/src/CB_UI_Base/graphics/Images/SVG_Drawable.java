@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.graphics.Images;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author Longri
@@ -29,7 +29,7 @@ public class SVG_Drawable extends VectorDrawable
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, float rotated)
+	public void draw(Batch batch, float x, float y, float width, float height, float rotated)
 	{
 		super.draw(batch, x, y, width, height, rotated);
 	}

@@ -5,8 +5,8 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class ColorDrawable extends EmptyDrawable
 {
@@ -26,7 +26,7 @@ public class ColorDrawable extends EmptyDrawable
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height)
+	public void draw(Batch batch, float x, float y, float width, float height)
 	{
 		if (pixelSprite == null)
 		{
