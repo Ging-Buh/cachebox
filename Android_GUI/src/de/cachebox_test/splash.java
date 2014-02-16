@@ -10,6 +10,7 @@ import java.util.Locale;
 
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Locator.Map.GL_RenderType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -1127,7 +1128,7 @@ public class splash extends Activity
 
 		Global.Paints.init(this);
 
-		new de.cachebox_test.Map.AndroidManager(false);
+		new de.cachebox_test.Map.AndroidManager(GL_RenderType.Mapsforge);
 
 		Initial2();
 	}

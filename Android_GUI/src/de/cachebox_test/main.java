@@ -52,6 +52,7 @@ import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Locator.Events.GpsStateChangeEventList;
+import CB_Locator.Map.GL_RenderType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -432,7 +433,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Global.Paints.init(this);
 			Global.InitIcons(this);
 
-			new de.cachebox_test.Map.AndroidManager(false);
+			new de.cachebox_test.Map.AndroidManager(GL_RenderType.Mapsforge);
 
 			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
 			GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");

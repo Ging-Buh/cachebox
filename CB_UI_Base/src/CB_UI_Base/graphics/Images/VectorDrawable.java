@@ -49,7 +49,7 @@ import com.badlogic.gdx.utils.Disposable;
 public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 {
 
-	public static final float FBO_SCALER = 1;// 2.5f;
+	public static final float FBO_SCALER = 2.5f;
 
 	/**
 	 * @uml.property name="fBO_DrawingTime"
@@ -92,11 +92,11 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	/**
 	 * @uml.property name="width"
 	 */
-	private final int width;
+	private final int DEFAULT_WIDTH;
 	/**
 	 * @uml.property name="height"
 	 */
-	private final int height;
+	private final int DEFAULT_HEIGHT;
 
 	/**
 	 * @uml.property name="flipY"
@@ -117,8 +117,8 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 		this.background = new ColorDrawable(backgroundColor);
 		this.drawableList = new CB_List<MatrixDrawable>();
 		this.rotateDrawableList = new CB_List<MatrixDrawable>();
-		this.width = width;
-		this.height = height;
+		this.DEFAULT_WIDTH = width;
+		this.DEFAULT_HEIGHT = height;
 	}
 
 	public VectorDrawable(int width, int height)
@@ -126,8 +126,8 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 		this.drawableList = new CB_List<MatrixDrawable>();
 		this.rotateDrawableList = new CB_List<MatrixDrawable>();
 		this.background = new ColorDrawable(GL_GraphicFactory.TRANSPARENT);
-		this.width = width;
-		this.height = height;
+		this.DEFAULT_WIDTH = width;
+		this.DEFAULT_HEIGHT = height;
 	}
 
 	public void Flip(boolean X, boolean Y)
@@ -198,8 +198,8 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	private void drawFbo(Batch batch, float x, float y, final float width, final float height, final Matrix4 oriMatrix,
 			Matrix4 thisDrawMatrix)
 	{
-		final int fboScalerWidth = (int) (width * FBO_SCALER);
-		final int fboScalerHeight = (int) (height * FBO_SCALER);
+		final int fboScalerWidth = (int) (DEFAULT_WIDTH * FBO_SCALER);
+		final int fboScalerHeight = (int) (DEFAULT_HEIGHT * FBO_SCALER);
 		if (!RunOnGlSetted && m_fboEnabled && m_fboRegion == null)
 		{
 			RunOnGlSetted = true;
@@ -361,7 +361,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	@Override
 	public int getHeight()
 	{
-		return this.height;
+		return this.DEFAULT_HEIGHT;
 	}
 
 	/**
@@ -371,7 +371,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	@Override
 	public int getWidth()
 	{
-		return this.width;
+		return this.DEFAULT_WIDTH;
 	}
 
 	@Override

@@ -46,8 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 
 public class Core implements ApplicationListener
 {
@@ -782,7 +782,7 @@ public class Core implements ApplicationListener
 
 		try
 		{
-			TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+			TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 		}
 		catch (Exception e1)
 		{
@@ -795,28 +795,28 @@ public class Core implements ApplicationListener
 		outputFolder = imageWorkPath + "\\LibgdxPacker\\default\\Output\\night";
 		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
-		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+		TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 
 		// Pack small day
 		inputFolder = imageWorkPath + "\\LibgdxPacker\\small\\input\\day\\UI_IconPack";
 		outputFolder = imageWorkPath + "\\LibgdxPacker\\small\\Output\\day";
 		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
-		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+		TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 
 		// Pack small night
 		inputFolder = imageWorkPath + "\\LibgdxPacker\\small\\input\\night\\UI_IconPack";
 		outputFolder = imageWorkPath + "\\LibgdxPacker\\small\\Output\\night";
 		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
-		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+		TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 
 		// Pack Default day
 		inputFolder = imageWorkPath + "\\LibgdxPacker\\default\\input\\splash";
 		outputFolder = imageWorkPath + "\\LibgdxPacker\\default\\Output\\day";
 		outPutFolders.add(outputFolder);
 		Name = "SplashPack.spp";
-		TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+		TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 
 		writeMsg("Copy Textures");
 		writeMsg("Copy: ");

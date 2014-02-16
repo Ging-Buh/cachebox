@@ -65,7 +65,7 @@ public abstract class ManagerBase
 {
 
 	public final int PROCESSOR_COUNT;
-	private final boolean USE_GL_RENDERER;
+	private final GL_RenderType RENDERING_TYPE;
 
 	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
 	protected final int CONECTION_TIME_OUT = 15000;
@@ -98,12 +98,12 @@ public abstract class ManagerBase
 		return false;
 	}
 
-	public ManagerBase(boolean useGL_Renderer)
+	public ManagerBase(GL_RenderType renderingType)
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Locator.Map.ManagerBase.Manager = this;
 		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-		USE_GL_RENDERER = useGL_Renderer;
+		RENDERING_TYPE = renderingType;
 	}
 
 	public abstract PackBase CreatePack(String file) throws IOException;
@@ -677,17 +677,27 @@ public abstract class ManagerBase
 
 		RendererJob job = new RendererJob(tile, mapFile, renderTheme, new DisplayModel(), textScale, false);
 
+		if (databaseRenderer == null) databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
+
 		if (databaseRenderer[ThreadIndex] == null)
 		{
-			if (USE_GL_RENDERER)
+			switch (RENDERING_TYPE)
 			{
+			case Mapsforge:
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
+				break;
+			case Mixing:
+				break;
+			case OpenGl:
 				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(1),
 						new DisplayModel());
-			}
-			else
-			{
+				break;
+			default:
 				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
+				break;
+
 			}
+
 		}
 
 		try

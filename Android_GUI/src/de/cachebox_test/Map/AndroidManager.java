@@ -25,6 +25,7 @@ import org.mapsforge.map.model.DisplayModel;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.GL_RenderType;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
@@ -42,9 +43,9 @@ import de.cachebox_test.main;
  */
 public class AndroidManager extends ManagerBase
 {
-	public AndroidManager(boolean useGL_Renderer)
+	public AndroidManager(GL_RenderType renderingTyp)
 	{
-		super(useGL_Renderer);
+		super(renderingTyp);
 
 	}
 

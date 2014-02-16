@@ -334,7 +334,7 @@ public class CacheInfo extends CB_View_Base
 			}
 
 			mInfo_FontCache = new BitmapFontCache(mBitmapFont);
-			mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.getHeight() - mMargin);
+
 			if (mCache.Archived || !mCache.Available)
 			{
 				mInfo_FontCache.setColor(Color.RED);
@@ -343,6 +343,7 @@ public class CacheInfo extends CB_View_Base
 			{
 				mInfo_FontCache.setColor(Fonts.getFontColor());
 			}
+			mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.getHeight() - mMargin);
 
 		}
 

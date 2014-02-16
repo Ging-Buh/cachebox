@@ -31,6 +31,7 @@ import org.mapsforge.map.awt.AwtGraphicFactory;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.GL_RenderType;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
@@ -47,9 +48,9 @@ import CB_Utils.Util.FileIO;
 public class DesktopManager extends ManagerBase
 {
 
-	public DesktopManager(boolean useGL_Renderer)
+	public DesktopManager(GL_RenderType renderingTyp)
 	{
-		super(useGL_Renderer);
+		super(renderingTyp);
 	}
 
 	@Override
