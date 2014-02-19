@@ -52,6 +52,9 @@ public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRe
 			Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
 
 			TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+
+			// FIXME((ext_Bitmap) bmp).recycle();
+
 			return bmpTile;
 		}
 		catch (IOException e)
@@ -61,5 +64,4 @@ public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRe
 		}
 		return null;
 	}
-
 }

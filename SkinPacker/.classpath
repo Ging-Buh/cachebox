@@ -8,7 +8,6 @@
 	<classpathentry kind="lib" path="lib/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-freetype-natives.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-freetype.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-sources.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-tools.jar"/>
 	<classpathentry kind="lib" path="lib/gdx.jar"/>
 	<classpathentry kind="output" path="bin"/>

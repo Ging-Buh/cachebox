@@ -40,6 +40,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.GL_DatabaseRenderer;
 import org.mapsforge.map.layer.renderer.IDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.MF_DatabaseRenderer;
+import org.mapsforge.map.layer.renderer.MixedDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
@@ -687,6 +688,7 @@ public abstract class ManagerBase
 				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
 				break;
 			case Mixing:
+				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
 				break;
 			case OpenGl:
 				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(1),

@@ -101,16 +101,13 @@ public final class GL_WayDecorator
 
 	}
 
-	public void renderText(String textKey, Paint fill, Paint stroke, Point[][] coordinates, List<GL_WayTextContainer> wayNames)
+	public static void renderText(String textKey, Paint fill, Paint stroke, Point[][] coordinates, List<GL_WayTextContainer> wayNames)
 	{
-
-		if (true) return;
 
 		GL_Path path = new GL_Path();
 
 		path.moveTo((float) coordinates[0][0].x, (float) coordinates[0][0].y);
 
-		// find way segments long enough to draw the way name on them
 		for (int i = 1; i < coordinates[0].length; ++i)
 		{
 			path.lineTo((float) coordinates[0][i].x, (float) coordinates[0][i].y);

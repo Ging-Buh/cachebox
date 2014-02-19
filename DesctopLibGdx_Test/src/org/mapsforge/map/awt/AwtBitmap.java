@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,11 +23,13 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
+import org.mapsforge.map.model.DisplayModel;
+
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 
 class AwtBitmap implements ext_Bitmap
 {
-	final BufferedImage bufferedImage;
+	BufferedImage bufferedImage;
 
 	AwtBitmap(InputStream inputStream) throws IOException
 	{
@@ -35,6 +38,19 @@ class AwtBitmap implements ext_Bitmap
 		{
 			throw new IOException("ImageIO filed to read inputStream");
 		}
+
+		// Scale?
+
+		if (DisplayModel.getDeviceScaleFactor() != 1)
+		{
+
+			float newWidth = this.bufferedImage.getWidth() * DisplayModel.getDeviceScaleFactor();
+			float newHeight = this.bufferedImage.getHeight() * DisplayModel.getDeviceScaleFactor();
+
+			scaleTo((int) newWidth, (int) newHeight);
+
+		}
+
 	}
 
 	AwtBitmap(int width, int height)
@@ -75,7 +91,19 @@ class AwtBitmap implements ext_Bitmap
 	@Override
 	public void scaleTo(int width, int height)
 	{
-		// TODO implement
+		float scaleWidth = width / this.bufferedImage.getWidth();
+		float scaleHeight = height / this.bufferedImage.getHeight();
+
+		BufferedImage bi = new BufferedImage((int) scaleWidth * this.bufferedImage.getWidth(), (int) scaleHeight
+				* this.bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+		Graphics2D grph = (Graphics2D) bi.getGraphics();
+		grph.scale(scaleWidth, scaleHeight);
+
+		grph.drawImage(this.bufferedImage, 0, 0, null);
+		grph.dispose();
+
+		this.bufferedImage = bi;
 	}
 
 	@Override

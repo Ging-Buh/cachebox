@@ -28,7 +28,6 @@ import CB_Locator.Events.PositionChangedEventList;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
-import CB_UI_Base.GL_UI.DrawUtils;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -51,7 +50,10 @@ import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -494,6 +496,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		renderMapTiles(batch);
 		renderOverlay(batch);
+		renderDebugInfo(batch);
 	}
 
 	protected abstract void renderOverlay(SpriteBatch batch);
@@ -645,12 +648,28 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					long yPos = -(tile.Descriptor.Y + 1) * posFactor * tile.getHeight() - screenCenterW.y;
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
-					tile.draw(batch, xPos, yPos, xSize, ySize, rotateList);
+
+					boolean addToRotateList = tile.Descriptor.Zoom == aktZoom; // Draw Names and Symbols only from Tile with right zoom
+																				// factor
+
+					tile.draw(batch, xPos, yPos, xSize, ySize, addToRotateList ? rotateList : null);
 				}
 			}
+			batch.enableBlending();
+
+			// TODO sort rotate List first the Symbols then the Text! sort Text with same Font! Don't change the Texture (improve the
+			// Performance)
+
+			for (TileGL_RotateDrawables drw : rotateList)
+			{
+				drw.draw(batch, mapHeading);
+			}
+			rotateList.truncate(0);
+			rotateList = null;
+
 		}
 		tilesToDraw.truncate(0); // don't clear!!! clear will destroy the holden Tiles
-		batch.enableBlending();
+
 		synchronized (screenCenterW)
 		{
 			for (Iterator<TileGL> iterator = overlayToDraw.reverse(); iterator.hasNext();)
@@ -685,42 +704,33 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected void renderDebugInfo(SpriteBatch batch)
 	{
 
-		if (showMapCenterCross)
-		{
-			if (getMapState() == MapState.FREE)
-			{
-				if (crossLine == null)
-				{
-					crossLine = SpriteCacheBase.getThemedSprite("pixel2x2");
-					crossLine.setScale(UI_Size_Base.that.getScale());
-					crossLine.setColor(Fonts.getCrossColor());
-				}
-				scale = UI_Size_Base.that.getScale();
+		CB_RectF r = this.ThisWorldRec;
 
-				int crossSize = Math.min(mapIntHeight / 3, mapIntWidth / 3) / 2;
-				DrawUtils.drawSpriteLine(batch, crossLine, scale, mapIntWidth / 2 - crossSize, mapIntHeight / 2, mapIntWidth / 2
-						+ crossSize, mapIntHeight / 2);
-				DrawUtils.drawSpriteLine(batch, crossLine, scale, mapIntWidth / 2, mapIntHeight / 2 - crossSize, mapIntWidth / 2,
-						mapIntHeight / 2 + crossSize);
-			}
-		}
-		if (true) return;
+		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+
+		BitmapFont font = Fonts.getNormal();
+
+		font.setColor(Color.BLACK);
+
+		Matrix4 def = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		def.translate(r.getX(), r.getY(), 1);
+		batch.setProjectionMatrix(def);
 
 		str = debugString;
-		Fonts.getNormal().draw(batch, str, 20, 120);
+		font.draw(batch, str, 20, 120);
 
 		str = "fps: " + Gdx.graphics.getFramesPerSecond();
-		Fonts.getNormal().draw(batch, str, 20, 100);
+		font.draw(batch, str, 20, 100);
 
 		str = String.valueOf(aktZoom) + " - camzoom: " + Math.round(camera.zoom * 100) / 100;
-		Fonts.getNormal().draw(batch, str, 20, 80);
+		font.draw(batch, str, 20, 80);
 
 		str = "lTiles: " + mapTileLoader.LoadedTilesSize() + " - qTiles: " + mapTileLoader.QueuedTilesSize();
-		Fonts.getNormal().draw(batch, str, 20, 60);
+		font.draw(batch, str, 20, 60);
 
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-		Fonts.getNormal().draw(batch, str, 20, 20);
-
+		font.draw(batch, str, 20, 20);
+		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 	}
 
 	protected void renderPositionMarker(SpriteBatch batch)

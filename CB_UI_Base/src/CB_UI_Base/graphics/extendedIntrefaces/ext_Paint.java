@@ -15,6 +15,9 @@
  */
 package CB_UI_Base.graphics.extendedIntrefaces;
 
+import CB_UI_Base.GL_UI.utils.HSV_Color;
+import CB_UI_Base.graphics.GL_FontFamily;
+import CB_UI_Base.graphics.GL_FontStyle;
 import CB_UI_Base.graphics.GL_Style;
 import CB_UI_Base.graphics.Join;
 import CB_UI_Base.graphics.TileMode;
@@ -46,4 +49,12 @@ public interface ext_Paint extends org.mapsforge.core.graphics.Paint
 	ext_Matrix getGradiantMatrix();
 
 	void setStyle(GL_Style fill);
+
+	GL_FontStyle getFontStyle();
+
+	GL_FontFamily getFontFamily();
+
+	HSV_Color getColor();
+
+	float getStrokeWidth();
 }

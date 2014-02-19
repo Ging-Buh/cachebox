@@ -22,9 +22,6 @@ import CB_UI_Base.graphics.Images.IRotateDrawable;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 
 /**
  * @author Longri
@@ -38,8 +35,6 @@ public class SymbolDrawable implements IRotateDrawable
 	private final boolean alignCenter;
 	private final float pointX;
 	private final float pointY;
-	private Matrix4 lastMatrix = null;
-	private float lastRotate;
 	private final float postRotate;
 
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
@@ -78,11 +73,6 @@ public class SymbolDrawable implements IRotateDrawable
 		this.postRotate = theta;
 	}
 
-	public void resetMatrixForFboDrawing()
-	{
-		lastMatrix = null;
-	}
-
 	@Override
 	public void draw(SpriteBatch batch, float x, float y, float width, float height, float rotate)
 	{
@@ -94,62 +84,45 @@ public class SymbolDrawable implements IRotateDrawable
 
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
-
 		boolean scaled = scaleWidth != 1 || scaleHeight != 1;
+		rotate += this.postRotate;
 
 		float offsetX = 0;// (tex.getWidth() * scaleWidth) / 2;
 		float offsetY = tex.getHeight();
 
-		TextureRegion reg = new TextureRegion(tex);
-		Matrix4 Orim = batch.getProjectionMatrix();
+		GL_Matrix matrix = new GL_Matrix();
 
-		rotate += this.postRotate;
-		rotate *= MathUtils.degreesToRadians;
+		float pivotX = (BITMAP.getWidth()) / 2;
+		float pivotY = (BITMAP.getHeight()) / 2;
 
-		if (lastMatrix == null || lastRotate != rotate)
+		if (alignCenter)
 		{
-			lastRotate = rotate;
-			Matrix4 m = batch.getProjectionMatrix().cpy();
-
-			GL_Matrix matrix = new GL_Matrix();
-
-			if (alignCenter)
-			{
-				float pivotX = (BITMAP.getWidth()) / 2;
-				float pivotY = (BITMAP.getHeight()) / 2;
-
-				matrix.translate(-pivotX, pivotY);
-				matrix.translate(-offsetX, -offsetY);
-				if (scaled) matrix.scale(1 / scaleWidth, 1 / scaleHeight);
-				matrix.rotate(rotate);
-				if (scaled) matrix.scale(scaleWidth, scaleHeight);
-				matrix.translate(pointX + pivotX, pointY - pivotY);
-				matrix.translate(-pivotX, -pivotY);
-			}
-			else
-			{
-				float pivotX = (BITMAP.getWidth()) / 2;
-				float pivotY = (BITMAP.getHeight()) / 2;
-				matrix.translate(-pivotX, pivotY);
-				matrix.translate(-offsetX, -offsetY);
-				if (scaled) matrix.scale(1 / scaleWidth, 1 / scaleHeight);
-				matrix.rotate(rotate);
-				if (scaled) matrix.scale(scaleWidth, scaleHeight);
-				matrix.translate(pointX + pivotX, pointY - pivotY);
-
-			}
-
-			if (scaled) m.scale(scaleWidth, scaleHeight, 1);
-			m.mul(matrix.getMatrix4());
-
-			lastMatrix = m;
+			matrix.translate(-pivotX, pivotY);
+			matrix.translate(-offsetX, -offsetY);
+			if (scaled) matrix.scale(1 / scaleWidth, 1 / scaleHeight);
+			// matrix.rotate(rotate);
+			if (scaled) matrix.scale(scaleWidth, scaleHeight);
+			matrix.translate(pointX + pivotX, pointY - pivotY);
+			matrix.translate(-pivotX, -pivotY);
+		}
+		else
+		{
+			matrix.translate(-pivotX, pivotY);
+			matrix.translate(-offsetX, -offsetY);
+			if (scaled) matrix.scale(1 / scaleWidth, 1 / scaleHeight);
+			if (scaled) matrix.scale(scaleWidth, scaleHeight);
+			matrix.translate(pointX + pivotX, pointY - pivotY);
 		}
 
-		batch.setProjectionMatrix(lastMatrix);
-		// batch.disableBlending();
-		batch.draw(reg, 0, 0);
-		// batch.enableBlending();
-		batch.setProjectionMatrix(Orim);
+		if (scaled) matrix.scale(scaleWidth, scaleHeight);
+
+		float[] pos = new float[]
+			{ 0, 0 };
+
+		matrix.mapPoints(pos);
+
+		batch.draw(tex, pos[0] + x, pos[1] + y, pivotX, pivotY, tex.getWidth(), tex.getHeight(), scaleWidth, scaleHeight, rotate, 0, 0,
+				tex.getWidth(), tex.getHeight(), false, false);
 
 	}
 
@@ -166,7 +139,6 @@ public class SymbolDrawable implements IRotateDrawable
 			if (isDisposed.get()) return;
 			if (BITMAP != null) BITMAP.dispose();
 			BITMAP = null;
-			lastMatrix = null;
 			isDisposed.set(true);
 		}
 	}

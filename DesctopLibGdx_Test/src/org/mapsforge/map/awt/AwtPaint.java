@@ -30,6 +30,9 @@ import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Style;
 
+import CB_UI_Base.GL_UI.utils.HSV_Color;
+import CB_UI_Base.graphics.GL_FontFamily;
+import CB_UI_Base.graphics.GL_FontStyle;
 import CB_UI_Base.graphics.GL_Style;
 import CB_UI_Base.graphics.Join;
 import CB_UI_Base.graphics.TileMode;
@@ -261,8 +264,7 @@ class AwtPaint implements ext_Paint
 	@Override
 	public float getTextSize()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return this.textSize;
 	}
 
 	@Override
@@ -291,5 +293,50 @@ class AwtPaint implements ext_Paint
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public GL_FontStyle getFontStyle()
+	{
+
+		switch (fontStyle)
+		{
+		case 0:
+			return GL_FontStyle.NORMAL;
+		case 1:
+			return GL_FontStyle.BOLD;
+		case 2:
+			return GL_FontStyle.ITALIC;
+		case 3:
+			return GL_FontStyle.BOLD_ITALIC;
+		}
+
+		return GL_FontStyle.NORMAL;
+	}
+
+	@Override
+	public GL_FontFamily getFontFamily()
+	{
+		return GL_FontFamily.valueOf(fontName);
+	}
+
+	@Override
+	public HSV_Color getColor()
+	{
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+		int a = color.getAlpha();
+
+		HSV_Color c = new HSV_Color(r, g, b, a);
+
+		return c;
+
+	}
+
+	@Override
+	public float getStrokeWidth()
+	{
+		return strokeWidth;
 	}
 }

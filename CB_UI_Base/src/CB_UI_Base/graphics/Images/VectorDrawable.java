@@ -25,7 +25,6 @@ import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_Matrix;
-import CB_UI_Base.graphics.SymbolDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_Utils.Lists.CB_List;
@@ -198,8 +197,8 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	private void drawFbo(Batch batch, float x, float y, final float width, final float height, final Matrix4 oriMatrix,
 			Matrix4 thisDrawMatrix)
 	{
-		final int fboScalerWidth = (int) (DEFAULT_WIDTH * FBO_SCALER);
-		final int fboScalerHeight = (int) (DEFAULT_HEIGHT * FBO_SCALER);
+		final int fboScalerWidth = (int) (this.DEFAULT_WIDTH * FBO_SCALER);
+		final int fboScalerHeight = (int) (this.DEFAULT_HEIGHT * FBO_SCALER);
 		if (!RunOnGlSetted && m_fboEnabled && m_fboRegion == null)
 		{
 			RunOnGlSetted = true;
@@ -258,12 +257,6 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 								matrix.mul(drw.matrix.getMatrix4());
 
 								GL.batch.setProjectionMatrix(matrix);
-
-								if (drw.drawable instanceof SymbolDrawable)
-								{
-									((SymbolDrawable) drw.drawable).resetMatrixForFboDrawing();
-								}
-
 								drw.drawable.draw(GL.batch, 0, 0, width, height, 0);
 							}
 

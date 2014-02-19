@@ -44,8 +44,8 @@ import javax.swing.tree.TreeSelectionModel;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 
 public class launch extends JFrame
 {
@@ -275,7 +275,7 @@ public class launch extends JFrame
 
 		try
 		{
-			TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+			TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 		}
 		catch (Exception e1)
 		{
@@ -298,7 +298,7 @@ public class launch extends JFrame
 		Name = "UI_IconPack.spp";
 		try
 		{
-			TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+			TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 		}
 		catch (Exception e1)
 		{
@@ -321,7 +321,7 @@ public class launch extends JFrame
 		Name = "UI_IconPack.spp";
 		try
 		{
-			TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+			TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 		}
 		catch (Exception e1)
 		{
@@ -344,7 +344,7 @@ public class launch extends JFrame
 		Name = "UI_IconPack.spp";
 		try
 		{
-			TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+			TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 		}
 		catch (Exception e1)
 		{
@@ -367,7 +367,7 @@ public class launch extends JFrame
 		Name = "SplashPack.spp";
 		try
 		{
-			TexturePacker2.process(textureSettings, inputFolder, outputFolder, Name);
+			TexturePacker.process(textureSettings, inputFolder, outputFolder, Name);
 		}
 		catch (Exception e1)
 		{

@@ -40,9 +40,19 @@ public class GL_Fonts
 	{
 		int Size = ((int) textSize);
 
+		if (textSize <= 0) textSize = 3;
+
 		if (fontFamily == null || fontStyle == null) return get_Default_Normal(Size);
 
-		return get_Default_Normal(Size);
+		try
+		{
+			return get_Default_Normal(Size);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private static BitmapFont get_Default_Normal(int textSize)

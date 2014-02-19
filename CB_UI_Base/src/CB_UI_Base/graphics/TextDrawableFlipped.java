@@ -19,9 +19,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextOnPath;
+import com.badlogic.gdx.math.Matrix3;
 
 /**
  * @author Longri
@@ -35,8 +37,8 @@ public class TextDrawableFlipped extends TextDrawable
 	private final AtomicBoolean isFlipped = new AtomicBoolean(false);
 	private float pathFlipDirection;
 
-	public TextDrawableFlipped(final String text, GL_Path path, float defaultWidth, float defaultHeight, final GL_Paint fill,
-			final GL_Paint stroke, final boolean center)
+	public TextDrawableFlipped(final String text, GL_Path path, float defaultWidth, float defaultHeight, final ext_Paint fill,
+			final ext_Paint stroke, final boolean center)
 	{
 		super(text, path, defaultWidth, defaultHeight, fill, stroke, center);
 
@@ -66,15 +68,33 @@ public class TextDrawableFlipped extends TextDrawable
 
 		if (isFlipped.get() && pathDirection + rotated < 100) isFlipped.set(false);
 
+		float scaleWidth = width / DEFAULT_WIDTH;
+		float scaleHeight = height / DEFAULT_HEIGHT;
+
+		// PROJECTION_CHK
+
+		// Matrix4 ori = batch.getProjectionMatrix().cpy();
+		// if (scaleWidth != 1 || scaleHeight != 1)
+		// {
+		// Matrix4 transform = batch.getProjectionMatrix().cpy();
+		// transform.scale(scaleWidth, scaleHeight, 1);
+		// batch.setProjectionMatrix(transform);
+		// }
+
+		Matrix3 transform2 = new Matrix3();
+		transform2.translate(x, y);
+
+		transform2.scale(scaleWidth, scaleHeight);
+
 		if (isFlipped.get())
 		{
-			if (flippedCache != null) flippedCache.draw(batch);
+			if (flippedCache != null) flippedCache.draw(batch, transform2);
 		}
 		else
 		{
-			if (Cache != null) Cache.draw(batch);
+			if (Cache != null) Cache.draw(batch, transform2);
 		}
-
+		// batch.setProjectionMatrix(ori);
 	}
 
 	@Override

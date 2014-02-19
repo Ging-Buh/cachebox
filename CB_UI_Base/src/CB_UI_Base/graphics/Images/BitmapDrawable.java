@@ -144,6 +144,12 @@ public class BitmapDrawable extends EmptyDrawable implements ext_Bitmap, Disposa
 
 	}
 
+	public BitmapDrawable(byte[] b, float scalefactor)
+	{
+		this.scaleFactor = scalefactor;
+		buffer = b;
+	}
+
 	@Override
 	public int getHeight()
 	{

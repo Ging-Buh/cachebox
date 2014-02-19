@@ -15,9 +15,12 @@
  */
 package com.badlogic.gdx.graphics.g2d;
 
-import CB_UI_Base.graphics.GL_Paint;
+import CB_UI_Base.graphics.GL_FontFamily;
+import CB_UI_Base.graphics.GL_FontStyle;
+import CB_UI_Base.graphics.GL_Fonts;
 import CB_UI_Base.graphics.GL_Path;
 import CB_UI_Base.graphics.Geometry.Circle;
+import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
@@ -34,6 +37,10 @@ public class TextOnPath implements Disposable
 	private final boolean PathToClose;
 	private BitmapFont font;
 	private float[][] vertexData;
+	private float[][] StrokeVertexData;
+	private float[][] TransVertexData;
+	private float[][] TransStrokeVertexData;
+
 	private int[] idx;
 	private int[] tmpGlyphCount;
 	private float color = Color.WHITE.toFloatBits();
@@ -42,18 +49,23 @@ public class TextOnPath implements Disposable
 	private float[] centerPoints;
 	private float[] PathMapedPoints;
 	private final float PathOffset;
-	private float[][] StrokeVerstexData;
+
 	private final float textWidth;
-	private float textHight;
 	private final float[] centerpoint = new float[2];
 	private boolean centerpointCalculated = false;
 
 	private boolean isDisposed;
 
-	public TextOnPath(String Text, GL_Path path, GL_Paint fill, GL_Paint stroke, boolean center)
+	public TextOnPath(String Text, GL_Path path, ext_Paint fill2, ext_Paint stroke2, boolean center)
 	{
-		this.font = fill.getFont();
-		// fill.setColor(Color.BLACK);
+
+		// Convert Paint values to used GL_PaintValues
+		GL_FontFamily fontFamily = fill2.getFontFamily();
+		GL_FontStyle fontStyle = fill2.getFontStyle();
+		float fontsize = fill2.getTextSize();
+		color = fill2.getColor().toFloatBits();
+		this.font = GL_Fonts.get(fontFamily, fontStyle, fontsize);
+
 		int regionsLength = font.regions.length;
 		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
 
@@ -72,8 +84,6 @@ public class TextOnPath implements Disposable
 			tmpGlyphCount = new int[vertexDataLength];
 		}
 
-		color = fill.getColor().toFloatBits();
-
 		requireSequence(Text, 0, Text.length());
 		textWidth = addToCache(Text, 0, 0, 0, Text.length());
 
@@ -90,9 +100,9 @@ public class TextOnPath implements Disposable
 
 		if (!PathToClose)
 		{
-			if (stroke != null && stroke.getStrokeWidth() > 1)
+			if (stroke2 != null && stroke2.getStrokeWidth() > 1)
 			{
-				createStroke(stroke.getStrokeWidth(), stroke.getColor());
+				createStroke(stroke2.getStrokeWidth(), stroke2.getColor());
 			}
 
 		}
@@ -108,7 +118,7 @@ public class TextOnPath implements Disposable
 		Circle circ = new Circle(0, 0, width / 2, (int) (width * 3));
 		float[] vertices = circ.getVertices();
 
-		StrokeVerstexData = new float[vertexData.length][vertexData[0].length * ((vertices.length / 2) - 1)];
+		StrokeVertexData = new float[vertexData.length][vertexData[0].length * ((vertices.length / 2) - 1)];
 
 		for (int j = 0, n = vertexData.length; j < n; j++)
 		{
@@ -116,7 +126,7 @@ public class TextOnPath implements Disposable
 			for (int i = 2; i < vertices.length; i += 2)
 			{
 				float[][] tmp = createDataCopy(color, vertices[i], vertices[i + 1]);
-				System.arraycopy(tmp[j], 0, StrokeVerstexData[j], index, tmp[0].length);
+				System.arraycopy(tmp[j], 0, StrokeVertexData[j], index, tmp[0].length);
 				index += tmp[j].length;
 			}
 		}
@@ -191,20 +201,73 @@ public class TextOnPath implements Disposable
 		return PathToClose;
 	}
 
-	public void draw(SpriteBatch spriteBatch)
+	Matrix3 lastTransform;
+
+	private boolean transformChanged(Matrix3 transform)
 	{
+		if (lastTransform == null) return true;
+
+		for (int i = 0; i < 9; i++)
+		{
+			if (transform.val[i] != lastTransform.val[i]) return true;
+		}
+
+		return false;
+	}
+
+	private float[][] MapTransform(float[][] srcData, Matrix3 matrix3)
+	{
+		// Copy Data
+		float[][] data = new float[srcData.length][];
+		for (int j = 0, n = srcData.length; j < n; j++)
+		{
+			if (idx[j] >= 0)
+			{ // ignore if this texture has no glyphs
+				float[] vertices = srcData[j];
+				data[j] = new float[vertices.length];
+				System.arraycopy(vertices, 0, data[j], 0, vertices.length);
+			}
+		}
+
+		// Map Data
+		for (int j = 0, length = data.length; j < length; j++)
+		{
+			float[] vertices = data[j];
+			for (int i = 0; i < vertices.length; i += 5)
+			{
+				float x = vertices[i] * matrix3.val[0] + vertices[i + 1] * matrix3.val[3] + matrix3.val[6];
+				float y = vertices[i] * matrix3.val[1] + vertices[i + 1] * matrix3.val[4] + matrix3.val[7];
+				vertices[i] = x;
+				vertices[i + 1] = y;
+			}
+		}
+
+		return data;
+	}
+
+	public void draw(SpriteBatch spriteBatch, Matrix3 transform)
+	{
+
+		if (vertexData == null) return;
+
+		if (transformChanged(transform))
+		{
+			lastTransform = new Matrix3(transform);
+			if (StrokeVertexData != null)
+			{
+				TransStrokeVertexData = MapTransform(StrokeVertexData, lastTransform);
+			}
+			TransVertexData = MapTransform(vertexData, lastTransform);
+		}
 
 		if (PathToClose || isDisposed) return;
 		TextureRegion[] regions = font.getRegions();
 
-		if (StrokeVerstexData != null)
+		if (TransStrokeVertexData != null)
 		{
-			drawVertexData(spriteBatch, regions, StrokeVerstexData);
+			drawVertexData(spriteBatch, regions, TransStrokeVertexData);
 		}
-
-		spriteBatch.flush();
-
-		drawVertexData(spriteBatch, regions, vertexData);
+		drawVertexData(spriteBatch, regions, TransVertexData);
 
 	}
 
@@ -216,6 +279,7 @@ public class TextOnPath implements Disposable
 			{ // ignore if this texture has no glyphs
 				float[] vertices = data[j];
 				spriteBatch.draw(regions[j].getTexture(), vertices, 0, vertices.length);
+
 			}
 		}
 	}
@@ -498,14 +562,14 @@ public class TextOnPath implements Disposable
 		}
 		vertexData = null;
 
-		if (StrokeVerstexData != null)
+		if (StrokeVertexData != null)
 		{
-			for (int i = 0; i < StrokeVerstexData.length; i++)
+			for (int i = 0; i < StrokeVertexData.length; i++)
 			{
-				StrokeVerstexData[i] = null;
+				StrokeVertexData[i] = null;
 			}
 		}
-		StrokeVerstexData = null;
+		StrokeVertexData = null;
 		idx = null;
 		font = null;
 		isDisposed = true;
