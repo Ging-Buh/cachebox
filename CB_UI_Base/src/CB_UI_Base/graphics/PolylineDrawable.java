@@ -26,7 +26,7 @@ import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_UI_Base.graphics.Geometry.QuadranglePath;
 import CB_UI_Base.graphics.Images.IRotateDrawable;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author Longri
@@ -149,7 +149,7 @@ public class PolylineDrawable implements IRotateDrawable
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, float rotate)
+	public void draw(Batch batch, float x, float y, float width, float height, float rotate)
 	{
 		synchronized (isDisposed)
 		{

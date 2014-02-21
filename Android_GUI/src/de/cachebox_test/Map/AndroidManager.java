@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 
 import CB_Locator.Map.BoundingBox;
@@ -63,13 +63,13 @@ public class AndroidManager extends ManagerBase
 	@Override
 	public GraphicFactory getGraphicFactory()
 	{
-		if (AndroidGraphicFactory.INSTANCE == null)
+		if (ext_AndroidGraphicFactory.INSTANCE == null)
 		{
-			AndroidGraphicFactory.createInstance(main.mainActivity.getApplication());
+			ext_AndroidGraphicFactory.createInstance(main.mainActivity.getApplication());
 			DisplayModel.setDeviceScaleFactor(1);
 		}
 
-		return AndroidGraphicFactory.INSTANCE;
+		return ext_AndroidGraphicFactory.INSTANCE;
 	}
 
 	@Override

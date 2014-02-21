@@ -9,6 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
 	<classpathentry kind="con" path="com.soyatec.uml.CONTAINER"/>
-	<classpathentry kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="/Mapsforge-Core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Mapsforge-Core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

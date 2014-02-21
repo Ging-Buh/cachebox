@@ -61,14 +61,59 @@ public class GL_Paint implements ext_Paint
 
 	public GL_Paint(Paint paint)
 	{
-		GL_Paint p = (GL_Paint) paint;
-		this.cap = p.cap;
-		this.join = p.join;
-		this.color = new HSV_Color(p.color);
-		this.style = p.style;
+		if (paint instanceof GL_Paint)
+		{
+			GL_Paint p = (GL_Paint) paint;
+			this.cap = p.cap;
+			this.join = p.join;
+			this.color = new HSV_Color(p.color);
+			this.style = p.style;
+			this.textSize = p.textSize;
+			this.strokeWidth = p.strokeWidth;
+			this.strokeDasharray = p.strokeDasharray;
+		}
+		else
+		{
+			Cap cap = paint.getCap();
+			switch (cap)
+			{
+			case BUTT:
+				this.cap = GL_Cap.BUTT;
+				break;
+			case ROUND:
+				this.cap = GL_Cap.ROUND;
+				break;
+			case SQUARE:
+				this.cap = GL_Cap.SQUARE;
+				break;
+			default:
+				this.cap = GL_Cap.ROUND;
+				break;
+			}
+
+			this.color = new HSV_Color(paint.getColor());
+
+			Style style = paint.getStyle();
+			switch (style)
+			{
+			case FILL:
+				this.style = GL_Style.FILL;
+				break;
+			case STROKE:
+				this.style = GL_Style.STROKE;
+				break;
+			default:
+				this.style = GL_Style.FILL;
+				break;
+			}
+		}
+		this.textSize = paint.getTextSize();
+		this.strokeWidth = paint.getStrokeWidth();
+		this.strokeDasharray = paint.getDashArray();
 	}
 
-	public HSV_Color getColor()
+	@Override
+	public HSV_Color getHSV_Color()
 	{
 		if (color == null) return null;
 		HSV_Color c = new HSV_Color(color);
@@ -149,7 +194,7 @@ public class GL_Paint implements ext_Paint
 				@Override
 				public void run()
 				{
-					GL_Paint.this.font = GL_Fonts.get(GL_Paint.this.getFontFamily(), GL_Paint.this.getFontStyle(),
+					GL_Paint.this.font = GL_Fonts.get(GL_Paint.this.getGLFontFamily(), GL_Paint.this.getGLFontStyle(),
 							GL_Paint.this.getTextSize());
 				}
 			});
@@ -167,6 +212,7 @@ public class GL_Paint implements ext_Paint
 		return this.bitmapShader == null && this.color.a == 0;
 	}
 
+	@Override
 	public float getStrokeWidth()
 	{
 		return strokeWidth;
@@ -177,7 +223,7 @@ public class GL_Paint implements ext_Paint
 		return bitmapShader;
 	}
 
-	public GL_Cap getCap()
+	public GL_Cap getGL_Cap()
 	{
 		return cap;
 	}
@@ -187,6 +233,7 @@ public class GL_Paint implements ext_Paint
 		this.cap = cap;
 	}
 
+	@Override
 	public float[] getDashArray()
 	{
 		// chk if DashArray empty, then return null
@@ -332,22 +379,24 @@ public class GL_Paint implements ext_Paint
 	}
 
 	@Override
-	public GL_Style getStyle()
+	public GL_Style getGL_Style()
 	{
 		return this.style;
 	}
 
-	public GL_FontFamily getFontFamly()
+	public FontFamily getFontFamly()
 	{
 		return getFontFamily();
 	}
 
-	public GL_FontStyle getFontStyle()
+	@Override
+	public GL_FontStyle getGLFontStyle()
 	{
 		return fontStyle;
 	}
 
-	public GL_FontFamily getFontFamily()
+	@Override
+	public GL_FontFamily getGLFontFamily()
 	{
 		return fontFamily;
 	}
@@ -361,10 +410,97 @@ public class GL_Paint implements ext_Paint
 	{
 		if (this.font == null)
 		{
-			this.font = GL_Fonts.get(this.getFontFamily(), this.fontStyle, this.textSize);
+			this.font = GL_Fonts.get(this.getGLFontFamily(), this.fontStyle, this.textSize);
 		}
 
 		return this.font;
+	}
+
+	@Override
+	public Cap getCap()
+	{
+		switch (cap)
+		{
+		case BUTT:
+			return Cap.BUTT;
+		case DEFAULT:
+			return Cap.ROUND;
+		case ROUND:
+			return Cap.ROUND;
+		case SQUARE:
+			return Cap.SQUARE;
+		default:
+			return Cap.ROUND;
+
+		}
+	}
+
+	@Override
+	public int getColor()
+	{
+		return this.color.toIntBits();
+	}
+
+	public HSV_Color getGlColor()
+	{
+		return this.color;
+	}
+
+	@Override
+	public Style getStyle()
+	{
+		switch (this.style)
+		{
+		case FILL:
+			return Style.FILL;
+		case STROKE:
+			return Style.STROKE;
+		default:
+			return Style.FILL;
+		}
+	}
+
+	@Override
+	public FontFamily getFontFamily()
+	{
+		switch (this.fontFamily)
+		{
+		case DEFAULT:
+			return FontFamily.DEFAULT;
+		case MONOSPACE:
+			return FontFamily.MONOSPACE;
+		case SANS_SERIF:
+			return FontFamily.SANS_SERIF;
+		case SERIF:
+			return FontFamily.SERIF;
+		default:
+			return FontFamily.DEFAULT;
+
+		}
+	}
+
+	@Override
+	public FontStyle getFontStyle()
+	{
+		switch (this.fontStyle)
+		{
+		case BOLD:
+			return FontStyle.BOLD;
+		case BOLD_ITALIC:
+			return FontStyle.BOLD_ITALIC;
+		case ITALIC:
+			return FontStyle.ITALIC;
+		case NORMAL:
+			return FontStyle.NORMAL;
+		default:
+			return FontStyle.NORMAL;
+
+		}
+	}
+
+	public void setGLColor(Color color)
+	{
+		this.color = new HSV_Color(color);
 	}
 
 }

@@ -21,7 +21,7 @@ import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.Images.IRotateDrawable;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author Longri
@@ -74,7 +74,7 @@ public class SymbolDrawable implements IRotateDrawable
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, float rotate)
+	public void draw(Batch batch, float x, float y, float width, float height, float rotate)
 	{
 		if (isDisposed.get()) return;
 		if (BITMAP == null) return;

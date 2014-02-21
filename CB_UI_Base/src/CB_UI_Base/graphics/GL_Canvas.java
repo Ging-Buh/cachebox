@@ -117,7 +117,7 @@ public class GL_Canvas implements ext_Canvas
 		GL_Path pat = (GL_Path) path;
 		GL_Paint pai = (GL_Paint) paint;
 
-		GL_Style style = pai.getStyle();
+		GL_Style style = pai.getGL_Style();
 
 		ArrayList<float[]> pathes = pat.getVertices();
 
@@ -262,7 +262,7 @@ public class GL_Canvas implements ext_Canvas
 		// Cast
 		GL_Paint pai = (GL_Paint) paint;
 
-		GL_Style style = pai.getStyle();
+		GL_Style style = pai.getGL_Style();
 		switch (style)
 		{
 		case FILL:

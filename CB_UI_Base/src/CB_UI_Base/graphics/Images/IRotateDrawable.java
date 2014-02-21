@@ -15,7 +15,7 @@
  */
 package CB_UI_Base.graphics.Images;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -23,5 +23,5 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public interface IRotateDrawable extends Disposable
 {
-	public void draw(SpriteBatch batch, float x, float y, final float width, final float height, float rotated);
+	public void draw(Batch batch, float x, float y, final float width, final float height, float rotated);
 }

@@ -37,7 +37,7 @@ import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
-import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils;
@@ -258,12 +258,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected LoadetSortedTiles tilesToDraw = new LoadetSortedTiles();
 	protected LoadetSortedTiles overlayToDraw = new LoadetSortedTiles();
 	int debugcount = 0;
-	private Sprite AccuracySprite;
-	private int actAccuracy = 0;
-	private float actPixelsPerMeter = 0;
 	protected float iconFactor = 1.5f;
 	protected boolean showMapCenterCross;
-	Sprite crossLine = null;
+	protected PolygonDrawable CrossLines = null;
+	protected AccuracyDrawable accuracyDrawable = null;
 	String str = "";
 
 	public boolean GetNightMode()
@@ -700,7 +698,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		return result;
 	}
 
-	@SuppressWarnings("unused")
 	protected void renderDebugInfo(SpriteBatch batch)
 	{
 
@@ -748,41 +745,16 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		if (showAccuracyCircle)
 		{
 
-			if (actAccuracy != Locator.getCoordinate().getAccuracy() || actPixelsPerMeter != pixelsPerMeter)
+			if (accuracyDrawable == null)
 			{
-				actAccuracy = Locator.getCoordinate().getAccuracy();
-				actPixelsPerMeter = pixelsPerMeter;
-
-				int radius = (int) (pixelsPerMeter * Locator.getCoordinate().getAccuracy());
-				if (radius > 0 && radius < UI_Size_Base.that.getSmallestWidth())
-				{
-
-					try
-					{
-						int squaredR = radius * 2;
-
-						if (squaredR > SpriteCacheBase.Accuracy[2].getWidth()) AccuracySprite = new Sprite(SpriteCacheBase.Accuracy[2]);
-						else if (squaredR > SpriteCacheBase.Accuracy[1].getWidth()) AccuracySprite = new Sprite(SpriteCacheBase.Accuracy[1]);
-						else
-							AccuracySprite = new Sprite(SpriteCacheBase.Accuracy[0]);
-						if (AccuracySprite != null) AccuracySprite.setSize(squaredR, squaredR);
-					}
-					catch (Exception e)
-					{
-						Logger.Error("MapView.renderPositionMarker()", "set AccuracySprite", e);
-					}
-
-				}
-
+				accuracyDrawable = new AccuracyDrawable(this.mapIntWidth, this.mapIntWidth);
 			}
 
-			if (AccuracySprite != null && AccuracySprite.getWidth() > GL_UISizes.PosMarkerSize)
-			{// nur wenn berechnet wurde und grösser als der PosMarker
+			float radius = (pixelsPerMeter * Locator.getCoordinate().getAccuracy());
 
-				float center = AccuracySprite.getWidth() / 2;
-
-				AccuracySprite.setPosition(myPointOnScreen.x - center, myPointOnScreen.y - center);
-				AccuracySprite.draw(batch);
+			if (radius > GL_UISizes.PosMarkerSize / 2)
+			{
+				accuracyDrawable.draw(batch, myPointOnScreen.x, myPointOnScreen.y, radius);
 			}
 		}
 
@@ -1212,7 +1184,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				ManagerBase.Manager.setUseInvertedNightTheme(useInvertNightTheme);
 				ManagerBase.Manager.clearRenderTheme();
 			}
-
 		}
 	}
 
@@ -1770,7 +1741,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		mapTileLoader.clearLoadedTiles();
 		tilesToDraw.clear();
 		mapScale.ZoomChanged();
-		crossLine = null;
+		if (CrossLines != null) CrossLines.dispose();
+		CrossLines = null;
 	}
 
 	@Override

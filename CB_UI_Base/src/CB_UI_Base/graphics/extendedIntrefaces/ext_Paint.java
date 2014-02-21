@@ -38,8 +38,9 @@ public interface ext_Paint extends org.mapsforge.core.graphics.Paint
 
 	void setLinearGradient(float x1, float y1, float x2, float y2, int[] colors, float[] positions, TileMode tileMode);
 
-	GL_Style getStyle();
+	GL_Style getGL_Style();
 
+	@Override
 	float getTextSize();
 
 	void setDashPathEffect(float[] strokeDasharray, float offset);
@@ -50,11 +51,12 @@ public interface ext_Paint extends org.mapsforge.core.graphics.Paint
 
 	void setStyle(GL_Style fill);
 
-	GL_FontStyle getFontStyle();
+	GL_FontStyle getGLFontStyle();
 
-	GL_FontFamily getFontFamily();
+	GL_FontFamily getGLFontFamily();
 
-	HSV_Color getColor();
+	HSV_Color getHSV_Color();
 
+	@Override
 	float getStrokeWidth();
 }

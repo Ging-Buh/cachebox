@@ -166,7 +166,7 @@ public class LoadetSortedTiles implements Iterable<TileGL>
 	{
 		synchronized (descList)
 		{
-			removeAndDestroy(descList.size());
+			removeAndDestroy(0);
 		}
 	}
 

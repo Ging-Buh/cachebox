@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
@@ -27,7 +28,6 @@ import CB_UI_Base.graphics.CircleDrawable;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.GL_Path;
-import CB_UI_Base.graphics.GL_Style;
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.PolylineDrawable;
 import CB_UI_Base.graphics.SymbolDrawable;
@@ -152,7 +152,7 @@ public class GL_Rasterer
 			}
 		}
 
-		GL_Style style = paint.getStyle();
+		Style style = paint.getStyle();
 
 		ArrayList<float[]> pathes = path.getVertices();
 

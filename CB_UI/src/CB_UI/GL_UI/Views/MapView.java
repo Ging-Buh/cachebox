@@ -34,7 +34,6 @@ import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI.Map.RouteOverlay;
-import CB_UI_Base.GL_UI.DrawUtils;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -46,6 +45,11 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.graphics.GL_Paint;
+import CB_UI_Base.graphics.PolygonDrawable;
+import CB_UI_Base.graphics.Geometry.GeometryList;
+import CB_UI_Base.graphics.Geometry.Line;
+import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.iChanged;
@@ -77,10 +81,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	boolean showTitles;
 	boolean hideMyFinds;
 	boolean showCompass;
-	boolean showDirektLine;
+	boolean showDirectLine;
 	boolean showAllWaypoints;
 	private int lastCompassMapZoom = -1;
-
+	GL_Paint paint;
 	public static MapView that = null;
 
 	Cache lastSelectedCache = null;
@@ -390,6 +394,40 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	{
 		batch.setProjectionMatrix(myParentInfo.Matrix());
 
+		if (showMapCenterCross)
+		{
+			if (getMapState() == MapState.FREE)
+			{
+				if (CrossLines == null)
+				{
+					int crossSize = Math.min(mapIntHeight / 3, mapIntWidth / 3) / 2;
+					float strokeWidth = 2 * UI_Size_Base.that.getScale();
+
+					GeometryList geomList = new GeometryList();
+					Line l1 = new Line(mapIntWidth / 2 - crossSize, mapIntHeight / 2, mapIntWidth / 2 + crossSize, mapIntHeight / 2);
+					Line l2 = new Line(mapIntWidth / 2, mapIntHeight / 2 - crossSize, mapIntWidth / 2, mapIntHeight / 2 + crossSize);
+					Quadrangle q1 = new Quadrangle(l1, strokeWidth);
+					Quadrangle q2 = new Quadrangle(l2, strokeWidth);
+
+					geomList.add(q1);
+					geomList.add(q2);
+
+					GL_Paint paint = new GL_Paint();
+					paint.setGLColor(Fonts.getCrossColor());
+					CrossLines = new PolygonDrawable(geomList.getVertices(), geomList.getTriangles(), paint, mapIntWidth, mapIntHeight);
+
+					geomList.dispose();
+					l1.dispose();
+					l2.dispose();
+					q1.dispose();
+					q2.dispose();
+
+				}
+
+				CrossLines.draw(batch, 0, 0, mapIntWidth, mapIntHeight, 0);
+			}
+		}
+
 		renderDebugInfo(batch);
 
 	}
@@ -505,28 +543,23 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		outScreenDraw = 0;
 	}
 
-	private Sprite LineSprite, PointSprite;
-
 	private void renderWPI(SpriteBatch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
 	{
 		Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
 
 		screen.y -= ySpeedVersatz;
 
-		if (myPointOnScreen != null && showDirektLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
+		if (myPointOnScreen != null && showDirectLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
 		{
-			if (LineSprite == null || PointSprite == null)
+			Quadrangle line = new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UI_Size_Base.that.getScale());
+			if (paint == null)
 			{
-				LineSprite = SpriteCacheBase.Arrows.get(13);
-				PointSprite = SpriteCacheBase.Arrows.get(14);
-				scale = 0.8f * UI_Size_Base.that.getScale();
+				paint = new GL_Paint();
+				paint.setGLColor(Color.RED);
 			}
-
-			LineSprite.setColor(Color.RED);
-			PointSprite.setColor(Color.RED);
-
-			DrawUtils.drawSpriteLine(batch, LineSprite, PointSprite, scale, myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y);
-
+			PolygonDrawable po = new PolygonDrawable(line.getVertices(), line.getTriangles(), paint, this.mapIntWidth, this.mapIntHeight);
+			po.draw(batch, 0, 0, this.mapIntWidth, this.mapIntHeight, 0);
+			po.dispose();
 		}
 
 		// Don't render if outside of screen !!
@@ -1182,7 +1215,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			showTitles = CompassMode ? false : Config.MapShowTitles.getValue();
 			hideMyFinds = Config.MapHideMyFinds.getValue();
 			showCompass = CompassMode ? false : Config.MapShowCompass.getValue();
-			showDirektLine = CompassMode ? false : Config.ShowDirektLine.getValue();
+			showDirectLine = CompassMode ? false : Config.ShowDirektLine.getValue();
 			showAllWaypoints = CompassMode ? false : Config.ShowAllWaypoints.getValue();
 			showAccuracyCircle = CompassMode ? false : Config.ShowAccuracyCircle.getValue();
 			showMapCenterCross = CompassMode ? false : Config.ShowMapCenterCross.getValue();

@@ -25,8 +25,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 
@@ -63,7 +63,7 @@ public class PolygonDrawable implements IRotateDrawable
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, float rotate)
+	public void draw(Batch batch, float x, float y, float width, float height, float rotate)
 	{
 		synchronized (isDisposed)
 		{
@@ -101,7 +101,7 @@ public class PolygonDrawable implements IRotateDrawable
 			{
 				if (this.PAINT.getBitmapShader() == null)
 				{
-					GL.polygonBatch.setColor(PAINT.getColor());
+					GL.polygonBatch.setColor(PAINT.getGlColor());
 				}
 				else
 				{

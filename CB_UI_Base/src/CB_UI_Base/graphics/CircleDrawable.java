@@ -38,9 +38,9 @@ public class CircleDrawable extends PolygonDrawable
 
 	PolygonRegion polygonRegion;
 
-	public CircleDrawable(float x, float y, float radius, GL_Paint paint, int width, int height)
+	public CircleDrawable(float x, float y, float radius, GL_Paint paint, float size, float size2)
 	{
-		super(paint, width, height);
+		super(paint, size, size2);
 
 		RADIUS = radius;
 		X = x;
@@ -58,7 +58,7 @@ public class CircleDrawable extends PolygonDrawable
 		// calculate theta step
 		double thetaStep = (MathUtils.PI2 / SEGMENTE);
 
-		if (PAINT.getStyle() == GL_Style.FILL)
+		if (PAINT.getGL_Style() == GL_Style.FILL)
 		{
 			// initialize arrays
 			VERTICES = new float[(SEGMENTE + 1) * 2];

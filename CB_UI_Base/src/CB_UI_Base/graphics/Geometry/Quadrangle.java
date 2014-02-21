@@ -122,6 +122,31 @@ public class Quadrangle implements IGeometry
 		this.cor = null;
 	}
 
+	public Quadrangle(float x1, float y1, float x2, float y2, float strokeWidth)
+	{
+
+		this.cor = new float[]
+			{ x1, y1, x2, y2 };
+
+		float dX = cor[2] - cor[0];
+		float dY = cor[3] - cor[1];
+		float lineLength = (float) Math.sqrt(dX * dX + dY * dY);
+
+		float scale = (strokeWidth) / (2 * lineLength);
+
+		float dx = -scale * dY;
+		float dy = scale * dX;
+
+		vertices[0] = cor[0] + dx;
+		vertices[1] = cor[1] + dy;
+		vertices[2] = cor[0] - dx;
+		vertices[3] = cor[1] - dy;
+		vertices[4] = cor[2] - dx;
+		vertices[5] = cor[3] - dy;
+		vertices[6] = cor[2] + dx;
+		vertices[7] = cor[3] + dy;
+	}
+
 	@Override
 	public float[] getVertices()
 	{

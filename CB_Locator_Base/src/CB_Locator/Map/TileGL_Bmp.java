@@ -16,6 +16,7 @@
 package CB_Locator.Map;
 
 import CB_UI_Base.GL_UI.IRenderFBO;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
 import CB_Utils.Lists.CB_List;
@@ -142,15 +143,39 @@ public class TileGL_Bmp extends TileGL
 	{
 		if (isDisposed) return;
 
-		try
+		if (GL.isGlThread())
 		{
-			if (texture != null) texture.dispose();
+			try
+			{
+				if (texture != null) texture.dispose();
+			}
+			catch (java.lang.NullPointerException e)
+			{
+				e.printStackTrace();
+			}
+			texture = null;
 		}
-		catch (java.lang.NullPointerException e)
+		else
 		{
-			e.printStackTrace();
+			GL.that.RunOnGL(new IRunOnGL()
+			{
+
+				@Override
+				public void run()
+				{
+					try
+					{
+						if (texture != null) texture.dispose();
+					}
+					catch (java.lang.NullPointerException e)
+					{
+						e.printStackTrace();
+					}
+					texture = null;
+				}
+			});
 		}
-		texture = null;
+
 		bytes = null;
 		LifeCount--;
 		isDisposed = true;

@@ -27,7 +27,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.awt.ext_AwtGraphicFactory;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
@@ -56,7 +56,7 @@ public class DesktopManager extends ManagerBase
 	@Override
 	public ext_GraphicFactory getGraphicFactory()
 	{
-		return AwtGraphicFactory.INSTANCE;
+		return ext_AwtGraphicFactory.INSTANCE;
 	}
 
 	@Override

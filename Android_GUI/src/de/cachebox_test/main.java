@@ -1655,10 +1655,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			boolean GL20 = checkGL20Support(this);
+			// boolean GL20 = checkGL20Support(this);
+			//
+			// if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
+			// gdxView = initializeForView(glListener, GL20);
 
-			if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
-			gdxView = initializeForView(glListener, GL20);
+			AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+			cfg.useGL20 = true;
+			cfg.numSamples = 16;
+
+			gdxView = initializeForView(glListener, cfg);
 
 			Logger.DEBUG("Initial new gdxView=" + gdxView.toString());
 

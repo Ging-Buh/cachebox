@@ -26,6 +26,7 @@ import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
+import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 
 /**
  * @author Longri
@@ -53,7 +54,7 @@ public class MF_DatabaseRenderer extends DatabaseRenderer implements IDatabaseRe
 
 			TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
 
-			// FIXME((ext_Bitmap) bmp).recycle();
+			((ext_Bitmap) bmp).recycle();
 
 			return bmpTile;
 		}

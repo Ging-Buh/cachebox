@@ -199,6 +199,7 @@ public class DesktopMain
 			lwjglAppCfg.width = ui.Window.width;
 			lwjglAppCfg.height = ui.Window.height;
 			lwjglAppCfg.title = "DCB Desctop Cachebox";
+			lwjglAppCfg.samples = 16;
 
 			final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
 			App.getGraphics().setContinuousRendering(false);

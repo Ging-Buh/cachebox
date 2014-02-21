@@ -60,10 +60,19 @@ public class TextOnPath implements Disposable
 	{
 
 		// Convert Paint values to used GL_PaintValues
-		GL_FontFamily fontFamily = fill2.getFontFamily();
-		GL_FontStyle fontStyle = fill2.getFontStyle();
+		GL_FontFamily fontFamily = fill2.getGLFontFamily();
+		GL_FontStyle fontStyle = fill2.getGLFontStyle();
 		float fontsize = fill2.getTextSize();
-		color = fill2.getColor().toFloatBits();
+
+		if (fontsize < 3)
+		{
+			textWidth = 0;
+			PathToClose = true;
+			PathOffset = 0;
+			return;
+		}
+
+		color = fill2.getHSV_Color().toFloatBits();
 		this.font = GL_Fonts.get(fontFamily, fontStyle, fontsize);
 
 		int regionsLength = font.regions.length;
@@ -102,7 +111,7 @@ public class TextOnPath implements Disposable
 		{
 			if (stroke2 != null && stroke2.getStrokeWidth() > 1)
 			{
-				createStroke(stroke2.getStrokeWidth(), stroke2.getColor());
+				createStroke(stroke2.getStrokeWidth(), stroke2.getHSV_Color());
 			}
 
 		}
@@ -245,7 +254,7 @@ public class TextOnPath implements Disposable
 		return data;
 	}
 
-	public void draw(SpriteBatch spriteBatch, Matrix3 transform)
+	public void draw(Batch spriteBatch, Matrix3 transform)
 	{
 
 		if (vertexData == null) return;
@@ -271,7 +280,7 @@ public class TextOnPath implements Disposable
 
 	}
 
-	private void drawVertexData(SpriteBatch spriteBatch, TextureRegion[] regions, float[][] data)
+	private void drawVertexData(Batch spriteBatch, TextureRegion[] regions, float[][] data)
 	{
 		for (int j = 0, n = data.length; j < n; j++)
 		{

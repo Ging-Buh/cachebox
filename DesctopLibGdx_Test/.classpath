@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="Lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="lib" path="Lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="lib" path="Lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry kind="lib" path="Lib/mapsforge-map-awt-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

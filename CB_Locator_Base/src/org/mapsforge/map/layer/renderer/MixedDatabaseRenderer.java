@@ -50,6 +50,7 @@ import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Mixed;
 import CB_UI_Base.graphics.GL_Matrix;
+import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.GL_Path;
 import CB_UI_Base.graphics.SymbolDrawable;
 import CB_UI_Base.graphics.TextDrawable;
@@ -57,7 +58,6 @@ import CB_UI_Base.graphics.TextDrawableFlipped;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_Utils.Lists.CB_List;
 
 /**
@@ -243,9 +243,11 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			path.moveTo(PointX, PointY);
 			path.lineTo(PointX + TextWidth, PointY);
 
-			TextDrawable textDrw = new TextDrawable(pointTextContainer.text, path, this.currentRendererJob.displayModel.getTileSize(),
-					this.currentRendererJob.displayModel.getTileSize(), (ext_Paint) pointTextContainer.paintFront,
-					(ext_Paint) pointTextContainer.paintBack, false);
+			GL_Paint front = new GL_Paint(pointTextContainer.paintFront);
+			GL_Paint back = new GL_Paint(pointTextContainer.paintBack);
+			float tileSize = this.currentRendererJob.displayModel.getTileSize();
+
+			TextDrawable textDrw = new TextDrawable(pointTextContainer.text, path, tileSize, tileSize, front, back, false);
 
 			MatrixDrawable maDr = new MatrixDrawable(textDrw, new GL_Matrix(), true);
 
@@ -261,12 +263,12 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 			wayTextContainer.path.flipY(this.currentRendererJob.displayModel.getTileSize());
 
-			ext_Paint fill = (ext_Paint) wayTextContainer.fill;
-			ext_Paint stroke = (ext_Paint) wayTextContainer.stroke;
+			GL_Paint fill = new GL_Paint(wayTextContainer.fill);
+			GL_Paint stroke = new GL_Paint(wayTextContainer.stroke);
+			float tileSize = this.currentRendererJob.displayModel.getTileSize();
 
-			TextDrawableFlipped textDrw = new TextDrawableFlipped(wayTextContainer.text, wayTextContainer.path,
-					this.currentRendererJob.displayModel.getTileSize(), this.currentRendererJob.displayModel.getTileSize(), fill, stroke,
-					true);
+			TextDrawableFlipped textDrw = new TextDrawableFlipped(wayTextContainer.text, wayTextContainer.path, tileSize, tileSize, fill,
+					stroke, true);
 
 			MatrixDrawable maDr = new MatrixDrawable(textDrw, new GL_Matrix(), true);
 

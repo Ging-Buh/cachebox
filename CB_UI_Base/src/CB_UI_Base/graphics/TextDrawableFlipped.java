@@ -21,7 +21,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextOnPath;
 import com.badlogic.gdx.math.Matrix3;
 
@@ -60,7 +60,7 @@ public class TextDrawableFlipped extends TextDrawable
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, float rotated)
+	public void draw(Batch batch, float x, float y, float width, float height, float rotated)
 	{
 		if (isDisposed) return;
 
