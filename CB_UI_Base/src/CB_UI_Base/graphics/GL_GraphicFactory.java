@@ -189,7 +189,8 @@ public class GL_GraphicFactory implements ext_GraphicFactory
 			return BmpBuffer.get(HashCode);
 		}
 
-		ResourceBitmap bmp = new BitmapDrawable(inputStream, scaleFactor);
+		// ResourceBitmap bmp = new BitmapDrawable(inputStream, scaleFactor);
+		ResourceBitmap bmp = new BitmapDrawable(inputStream, HashCode, scaleFactor);
 		BmpBuffer.put(HashCode, bmp);
 		return bmp;
 	}

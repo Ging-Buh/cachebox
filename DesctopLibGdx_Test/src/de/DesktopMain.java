@@ -13,6 +13,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
+import org.mapsforge.map.model.DisplayModel;
+
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Locator.Location.ProviderType;
@@ -159,7 +161,8 @@ public class DesktopMain
 			Config.AcceptChanges();
 		}
 
-		new DesktopManager(GL_RenderType.Mapsforge);
+		DisplayModel model = new DisplayModel();
+		new DesktopManager(GL_RenderType.Mapsforge, model);
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 

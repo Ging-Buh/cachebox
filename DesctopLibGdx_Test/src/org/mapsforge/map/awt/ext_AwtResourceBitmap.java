@@ -1,34 +1,36 @@
-package org.mapsforge.map.android.graphics;
+package org.mapsforge.map.awt;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
-import android.graphics.Bitmap.Config;
 
 import com.badlogic.gdx.graphics.Texture;
 
-/**
- * Extends the original Mapsforge AwtBitmap with the ext_Bitmap interface.
- * 
- * @author Longri
- */
-public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap
+public class ext_AwtResourceBitmap extends AwtResourceBitmap implements ext_Bitmap
 {
-	int instCount = 0;
-
 	protected final BitmapDrawable GL_image;
 
-	ext_AndroidBitmap(int width, int height)
+	public ext_AwtResourceBitmap(InputStream stream, int HashCode, float scaleFactor) throws IOException
 	{
-		super(width, height, Config.ARGB_8888);
-		GL_image = null;
-		instCount++;
+		super(stream);
+
+		if (scaleFactor != 1)
+		{
+			int w = (int) (this.getWidth() * scaleFactor);
+			int h = (int) (this.getHeight() * scaleFactor);
+			this.scaleTo(w, h);
+		}
+
+		GL_image = new BitmapDrawable(stream, HashCode, scaleFactor);
 	}
 
 	@Override
 	public void recycle()
 	{
-		instCount++;
-		this.destroyBitmap();
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

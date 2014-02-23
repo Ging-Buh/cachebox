@@ -55,7 +55,6 @@ import CB_UI_Base.graphics.GL_Path;
 import CB_UI_Base.graphics.SymbolDrawable;
 import CB_UI_Base.graphics.TextDrawable;
 import CB_UI_Base.graphics.TextDrawableFlipped;
-import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
@@ -286,25 +285,13 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			float PointX = (float) (symbolContainer.point.x);
 			float PointY = (float) (this.currentRendererJob.displayModel.getTileSize() - symbolContainer.point.y);
 
-			// convert Mapsforge BMP to GL_Bmp
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			try
-			{
-				symbolContainer.symbol.compress(baos);
-				byte[] b = baos.toByteArray();
+			ext_Bitmap bmp = (ext_Bitmap) symbolContainer.symbol;
 
-				BitmapDrawable bmp = new BitmapDrawable(b, 1);
-
-				SymbolDrawable drw = new SymbolDrawable(bmp, PointX, PointY, this.currentRendererJob.displayModel.getTileSize(),
-						this.currentRendererJob.displayModel.getTileSize(), symbolContainer.alignCenter);
-				MatrixDrawable maDr = new MatrixDrawable(drw, new GL_Matrix(), true);
-				rotateList.add(maDr);
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			SymbolDrawable drw = new SymbolDrawable(bmp.getGlBmpHandle(), PointX, PointY,
+					this.currentRendererJob.displayModel.getTileSize(), this.currentRendererJob.displayModel.getTileSize(),
+					symbolContainer.alignCenter);
+			MatrixDrawable maDr = new MatrixDrawable(drw, new GL_Matrix(), true);
+			rotateList.add(maDr);
 
 		}
 	}

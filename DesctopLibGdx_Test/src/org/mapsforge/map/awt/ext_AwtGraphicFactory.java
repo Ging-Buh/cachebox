@@ -1,5 +1,9 @@
 package org.mapsforge.map.awt;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
@@ -11,7 +15,13 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
 
 public class ext_AwtGraphicFactory extends AwtGraphicFactory implements ext_GraphicFactory
 {
-	public static final ext_GraphicFactory INSTANCE = new ext_AwtGraphicFactory();
+
+	private final float ScaleFactor;
+
+	public ext_AwtGraphicFactory(float ScaleFactor)
+	{
+		this.ScaleFactor = ScaleFactor;
+	}
 
 	@Override
 	public ext_Matrix createMatrix(ext_Matrix matrix)
@@ -54,5 +64,20 @@ public class ext_AwtGraphicFactory extends AwtGraphicFactory implements ext_Grap
 	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha)
 	{
 		return new ext_AwtBitmap(tileSize);
+	}
+
+	@Override
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException
+	{
+		return new ext_AwtResourceBitmap(inputStream, hash, this.ScaleFactor);
+	}
+
+	public static ext_GraphicFactory getInstance(float ScaleFactor)
+	{
+		if (FactoryList.containsKey(ScaleFactor)) return FactoryList.get(ScaleFactor);
+
+		ext_AwtGraphicFactory factory = new ext_AwtGraphicFactory(ScaleFactor);
+		FactoryList.put(ScaleFactor, factory);
+		return factory;
 	}
 }

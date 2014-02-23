@@ -17,7 +17,6 @@ package CB_UI_Base.graphics.Images;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_Matrix;
-import CB_UI_Base.graphics.SymbolDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_Utils.Lists.CB_List;
 
@@ -55,8 +54,6 @@ public class TileGL_RotateDrawables
 
 		for (MatrixDrawable drw : DRAWABLELIST)
 		{
-
-			if (drw.drawable instanceof SymbolDrawable) continue;
 
 			if (count++ > 2500)
 			{

@@ -19,7 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 
@@ -32,10 +31,10 @@ import CB_Locator.Map.PackBase;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
+import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import android.graphics.BitmapFactory;
-import de.cachebox_test.main;
 
 /**
  * @author ging-buh
@@ -43,10 +42,9 @@ import de.cachebox_test.main;
  */
 public class AndroidManager extends ManagerBase
 {
-	public AndroidManager(GL_RenderType renderingTyp)
+	public AndroidManager(GL_RenderType renderingTyp, DisplayModel displaymodel)
 	{
-		super(renderingTyp);
-
+		super(renderingTyp, displaymodel);
 	}
 
 	@Override
@@ -58,18 +56,6 @@ public class AndroidManager extends ManagerBase
 	public android.graphics.Bitmap LoadLocalBitmap(String layer, Descriptor desc)
 	{
 		return LoadLocalBitmap(GetLayerByName(layer, layer, ""), desc);
-	}
-
-	@Override
-	public GraphicFactory getGraphicFactory()
-	{
-		if (ext_AndroidGraphicFactory.INSTANCE == null)
-		{
-			ext_AndroidGraphicFactory.createInstance(main.mainActivity.getApplication());
-			DisplayModel.setDeviceScaleFactor(1);
-		}
-
-		return ext_AndroidGraphicFactory.INSTANCE;
 	}
 
 	@Override
@@ -221,4 +207,9 @@ public class AndroidManager extends ManagerBase
 		return b;
 	}
 
+	@Override
+	public ext_GraphicFactory getGraphicFactory(float Scalefactor)
+	{
+		return ext_AndroidGraphicFactory.getInstance(Scalefactor);
+	}
 }

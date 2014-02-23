@@ -15,6 +15,8 @@
  */
 package CB_UI_Base.graphics.extendedIntrefaces;
 
+import java.util.HashMap;
+
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 
@@ -23,6 +25,8 @@ import org.mapsforge.core.graphics.Paint;
  */
 public interface ext_GraphicFactory extends org.mapsforge.core.graphics.GraphicFactory
 {
+
+	static HashMap<Float, ext_GraphicFactory> FactoryList = new HashMap<Float, ext_GraphicFactory>();
 
 	@Override
 	public abstract ext_Bitmap createBitmap(int width, int height);

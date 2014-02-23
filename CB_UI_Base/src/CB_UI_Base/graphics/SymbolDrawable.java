@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.Images.IRotateDrawable;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
@@ -80,7 +79,6 @@ public class SymbolDrawable implements IRotateDrawable
 		if (BITMAP == null) return;
 
 		if (BITMAP.getTexture() == null) return;
-		Texture tex = BITMAP.getTexture();
 
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
@@ -88,7 +86,7 @@ public class SymbolDrawable implements IRotateDrawable
 		rotate += this.postRotate;
 
 		float offsetX = 0;// (tex.getWidth() * scaleWidth) / 2;
-		float offsetY = tex.getHeight();
+		float offsetY = BITMAP.getHeight();
 
 		GL_Matrix matrix = new GL_Matrix();
 
@@ -121,9 +119,7 @@ public class SymbolDrawable implements IRotateDrawable
 
 		matrix.mapPoints(pos);
 
-		batch.draw(tex, pos[0] + x, pos[1] + y, pivotX, pivotY, tex.getWidth(), tex.getHeight(), scaleWidth, scaleHeight, rotate, 0, 0,
-				tex.getWidth(), tex.getHeight(), false, false);
-
+		BITMAP.draw(batch, pos[0] + x, pos[1] + y, pivotX, pivotY, BITMAP.getWidth(), BITMAP.getHeight(), scaleWidth, scaleHeight, rotate);
 	}
 
 	public boolean isDisposed()

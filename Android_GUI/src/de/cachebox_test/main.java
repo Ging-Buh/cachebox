@@ -38,6 +38,9 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
+
 import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
@@ -433,7 +436,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Global.Paints.init(this);
 			Global.InitIcons(this);
 
-			new de.cachebox_test.Map.AndroidManager(GL_RenderType.Mapsforge);
+			AndroidGraphicFactory.createInstance(this.getApplication());
+			new de.cachebox_test.Map.AndroidManager(GL_RenderType.Mapsforge, new DisplayModel());
 
 			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
 			GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");

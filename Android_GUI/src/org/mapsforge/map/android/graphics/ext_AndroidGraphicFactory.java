@@ -1,6 +1,9 @@
 package org.mapsforge.map.android.graphics;
 
-import org.mapsforge.core.graphics.TileBitmap;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.mapsforge.core.graphics.ResourceBitmap;
 
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
@@ -9,26 +12,35 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
 import android.app.Application;
+import android.content.Context;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements ext_GraphicFactory
 {
+	static Application aplication;
+	private final float ScaleFactor;
+
 	protected ext_AndroidGraphicFactory(Application app)
 	{
 		super(app);
+		aplication = app;
+		DisplayMetrics metrics = new DisplayMetrics();
+		((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+		this.ScaleFactor = metrics.scaledDensity;
 	}
 
-	public static ext_GraphicFactory INSTANCE;
+	protected ext_AndroidGraphicFactory(float scaleFactor)
+	{
+		super(aplication);
+		this.ScaleFactor = scaleFactor;
+	}
 
 	@Override
 	public ext_Matrix createMatrix(ext_Matrix matrix)
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public static void createInstance(Application app)
-	{
-		INSTANCE = new ext_AndroidGraphicFactory(app);
 	}
 
 	@Override
@@ -62,9 +74,19 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 		return new ext_AndroidPath();
 	}
 
-	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent)
+	@Override
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException
 	{
-		return new ext_AndroidBitmap(tileSize, tileSize);
+		return new ext_AndroidResourceBitmap(inputStream, hash, this.ScaleFactor);
+	}
+
+	public static ext_GraphicFactory getInstance(float ScaleFactor)
+	{
+		if (FactoryList.containsKey(ScaleFactor)) return FactoryList.get(ScaleFactor);
+
+		ext_AndroidGraphicFactory factory = new ext_AndroidGraphicFactory(ScaleFactor);
+		FactoryList.put(ScaleFactor, factory);
+		return factory;
 	}
 
 }

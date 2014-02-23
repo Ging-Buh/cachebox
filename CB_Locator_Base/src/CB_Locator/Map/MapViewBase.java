@@ -628,6 +628,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			}
 		}
 
+		// FIXME Change to Sorted List, close Texture changing!!
+		/*
+		 * Sort First Symbols then Text!
+		 * 
+		 * Sort Symbols with Texture, close Texture changing!
+		 * 
+		 * Sort Text with TextType and Size, close Texture changing!
+		 */
 		CB_List<TileGL_RotateDrawables> rotateList = new CB_List<TileGL_RotateDrawables>();
 
 		synchronized (screenCenterW)

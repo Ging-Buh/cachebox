@@ -67,6 +67,7 @@ public abstract class ManagerBase
 
 	public final int PROCESSOR_COUNT;
 	private final GL_RenderType RENDERING_TYPE;
+	private final DisplayModel DISPLAY_MODEL;
 
 	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
 	protected final int CONECTION_TIME_OUT = 15000;
@@ -99,12 +100,13 @@ public abstract class ManagerBase
 		return false;
 	}
 
-	public ManagerBase(GL_RenderType renderingType)
+	public ManagerBase(GL_RenderType renderingType, DisplayModel displaymodel)
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Locator.Map.ManagerBase.Manager = this;
 		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
 		RENDERING_TYPE = renderingType;
+		DISPLAY_MODEL = displaymodel;
 	}
 
 	public abstract PackBase CreatePack(String file) throws IOException;
@@ -157,8 +159,6 @@ public abstract class ManagerBase
 			return null;
 		}
 	}
-
-	// public abstract TileGL LoadInvertedPixmap(Layer layer, Descriptor desc, int ThreadIndex);
 
 	private boolean useInvertedNightTheme;
 
@@ -548,7 +548,7 @@ public abstract class ManagerBase
 		// Check RenderTheme valid
 		try
 		{
-			RenderThemeHandler.getRenderTheme(getGraphicFactory(), new DisplayModel(), renderTheme);
+			RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 		}
 		catch (SAXException e)
 		{
@@ -633,7 +633,7 @@ public abstract class ManagerBase
 			// Check RenderTheme valid
 			try
 			{
-				RenderThemeHandler.getRenderTheme(getGraphicFactory(), new DisplayModel(), renderTheme);
+				RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 			}
 			catch (SAXException e)
 			{
@@ -676,7 +676,7 @@ public abstract class ManagerBase
 			return null;
 		}
 
-		RendererJob job = new RendererJob(tile, mapFile, renderTheme, new DisplayModel(), textScale, false);
+		RendererJob job = new RendererJob(tile, mapFile, renderTheme, DISPLAY_MODEL, textScale, false);
 
 		if (databaseRenderer == null) databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
 
@@ -685,17 +685,20 @@ public abstract class ManagerBase
 			switch (RENDERING_TYPE)
 			{
 			case Mapsforge:
-				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex],
+						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
 				break;
 			case Mixing:
-				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
+				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(this.mapDatabase[ThreadIndex],
+						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
 				break;
 			case OpenGl:
-				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(1),
-						new DisplayModel());
+				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(
+						DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL);
 				break;
 			default:
-				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory());
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex],
+						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
 				break;
 
 			}
@@ -735,6 +738,6 @@ public abstract class ManagerBase
 		mapsForgeFile = layer.Name;
 	}
 
-	public abstract GraphicFactory getGraphicFactory();
+	public abstract GraphicFactory getGraphicFactory(float ScaleFactor);
 
 }

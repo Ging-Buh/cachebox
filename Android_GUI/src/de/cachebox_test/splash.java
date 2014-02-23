@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
+
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Locator.Map.GL_RenderType;
@@ -1128,7 +1131,8 @@ public class splash extends Activity
 
 		Global.Paints.init(this);
 
-		new de.cachebox_test.Map.AndroidManager(GL_RenderType.Mapsforge);
+		AndroidGraphicFactory.createInstance(this.getApplication());
+		new de.cachebox_test.Map.AndroidManager(GL_RenderType.Mapsforge, new DisplayModel());
 
 		Initial2();
 	}

@@ -28,6 +28,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import org.mapsforge.map.awt.ext_AwtGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
@@ -48,15 +49,15 @@ import CB_Utils.Util.FileIO;
 public class DesktopManager extends ManagerBase
 {
 
-	public DesktopManager(GL_RenderType renderingTyp)
+	public DesktopManager(GL_RenderType renderingTyp, DisplayModel displaymodel)
 	{
-		super(renderingTyp);
+		super(renderingTyp, displaymodel);
 	}
 
 	@Override
-	public ext_GraphicFactory getGraphicFactory()
+	public ext_GraphicFactory getGraphicFactory(float Scalefactor)
 	{
-		return ext_AwtGraphicFactory.INSTANCE;
+		return ext_AwtGraphicFactory.getInstance(Scalefactor);
 	}
 
 	@Override

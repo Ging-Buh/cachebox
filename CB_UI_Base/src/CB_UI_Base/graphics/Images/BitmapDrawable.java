@@ -18,50 +18,49 @@ package CB_UI_Base.graphics.Images;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.utils.EmptyDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * @author Longri
  */
-public class BitmapDrawable extends EmptyDrawable implements ext_Bitmap, Disposable
+public class BitmapDrawable implements ext_Bitmap, Disposable
 {
-	/**
-	 * @uml.property name="tex"
-	 * @uml.associationEnd
-	 */
-	protected Texture tex;
-	/**
-	 * @uml.property name="buffer" multiplicity="(0 -1)" dimension="1"
-	 */
-	private byte[] buffer;
-	/**
-	 * @uml.property name="isDisposed"
-	 */
-	private boolean isDisposed = false;
-	/**
-	 * @uml.property name="scaleFactor"
-	 */
+	static CB_List<String> HashStringList = new CB_List<String>();
+	static HashMap<String, Texture> TextureList = new HashMap<String, Texture>();
+	public static TextureAtlas Atlas;
+	static PixmapPacker Packer = new PixmapPacker(2048, 2048, Format.RGBA8888, 2, true);
+
 	private final float scaleFactor;
+	private byte[] buffer;
+	private String AtlasHashString;
+	private Sprite sprite;
+	private Texture tex;
+	private final boolean isDisposed = false;
 
-	protected BitmapDrawable()
+	public BitmapDrawable(InputStream stream, int HashCode, float scaleFactor)
 	{
-		scaleFactor = 1;
-	}
 
-	public BitmapDrawable(InputStream stream, float scaleFactor)
-	{
+		AtlasHashString = String.valueOf(HashCode);
 		this.scaleFactor = scaleFactor;
+
+		if (HashStringList.contains(AtlasHashString)) return;
+		HashStringList.add(AtlasHashString);
 		try
 		{
 			int length = stream.available();
@@ -110,125 +109,92 @@ public class BitmapDrawable extends EmptyDrawable implements ext_Bitmap, Disposa
 			}
 		}
 
-		GL.that.RunOnGL(new IRunOnGL()
+		if (GL.isGlThread())
 		{
-
-			@Override
-			public void run()
-			{
-				prepare();
-			}
-		});
-
-	}
-
-	public BitmapDrawable(Texture texture)
-	{
-		scaleFactor = 1f;
-		tex = texture;
-	}
-
-	public BitmapDrawable(final Pixmap p)
-	{
-		scaleFactor = 1f;
-		GL.that.RunOnGL(new IRunOnGL()
+			createData();
+		}
+		else
 		{
-
-			@Override
-			public void run()
+			GL.that.RunOnGL(new IRunOnGL()
 			{
-				tex = new Texture(p);
-				p.dispose();
-			}
-		});
 
+				@Override
+				public void run()
+				{
+					createData();
+				}
+			});
+		}
 	}
 
-	public BitmapDrawable(byte[] b, float scalefactor)
+	private void createData()
 	{
-		this.scaleFactor = scalefactor;
-		buffer = b;
+		Pixmap pix;
+		try
+		{
+			pix = new Pixmap(buffer, 0, buffer.length);
+		}
+		catch (Exception e)
+		{
+			// Can't create
+			e.printStackTrace();
+			return;
+		}
+
+		// scale?
+		if (this.scaleFactor != 1)
+		{
+			int w = (int) (pix.getWidth() * this.scaleFactor);
+			int h = (int) (pix.getHeight() * this.scaleFactor);
+			Pixmap tmpPixmap = new Pixmap(w, h, pix.getFormat());
+			Pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
+			tmpPixmap.drawPixmap(pix, 0, 0, pix.getWidth(), pix.getHeight(), 0, 0, w, h);
+
+			pix.dispose();
+
+			pix = tmpPixmap;
+		}
+
+		Packer.pack(AtlasHashString, pix);
+
+		if (Atlas == null)
+		{
+			Atlas = Packer.generateTextureAtlas(TextureFilter.Linear, TextureFilter.Linear, false);
+		}
+		else
+		{
+			Packer.updateTextureAtlas(Atlas, TextureFilter.Linear, TextureFilter.Linear, false);
+		}
+
+		// FIXME scale Pixmap before create Texture if ScaleFactor!=1
+		Texture tex = new Texture(pix);
+
+		TextureList.put(AtlasHashString, tex);
+		pix.dispose();
+		buffer = null;
 	}
 
-	@Override
-	public int getHeight()
-	{
-		return tex == null ? 0 : tex.getHeight();
-	}
-
-	@Override
-	public int getWidth()
-	{
-
-		return tex == null ? 0 : tex.getWidth();
-	}
-
-	public boolean isPrepared()
-	{
-		return tex != null && buffer == null;
-	}
-
-	@Override
 	public void draw(Batch batch, float x, float y, float width, float height)
 	{
-
-		if (tex != null && batch != null)
+		if (Atlas == null) return;
+		if (sprite == null)
 		{
-
-			batch.draw(tex, x, y, getWidth(), getHeight());
+			createSprite();
 		}
-
+		batch.draw(sprite, x, y, width, height);
 	}
 
-	public Texture getTexture()
+	private void createSprite()
 	{
-		if (!isPrepared()) prepare();
-		return tex;
+		sprite = Atlas.createSprite(AtlasHashString);
 	}
 
-	public void prepare()
+	public void draw(Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY,
+			float rotation)
 	{
-		if (tex == null && buffer != null)
-		{
-
-			// ################ Create Pixmap from Buffer #################################
-
-			Pixmap pixmap = null;
-			try
-			{
-				pixmap = new Pixmap(new Gdx2DPixmap(buffer, 0, buffer.length, 0));
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-
-			// ################ Last step, create Texture from Pixmap #################################
-
-			if (pixmap != null)
-			{
-
-				if (this.scaleFactor != 1f)
-				{
-					Pixmap scPic = new Pixmap((int) (pixmap.getWidth() * scaleFactor), (int) (pixmap.getHeight() * scaleFactor),
-							pixmap.getFormat());
-					scPic.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, (int) (pixmap.getWidth() * scaleFactor),
-							(int) (pixmap.getHeight() * scaleFactor));
-					tex = new Texture(scPic);
-					pixmap.dispose();
-					scPic.dispose();
-					buffer = null;
-				}
-				else
-				{
-					tex = new Texture(pixmap);
-					pixmap.dispose();
-					buffer = null;
-				}
-
-			}
-		}
-
+		if (Atlas == null) return;
+		if (sprite == null) createSprite();
+		batch.draw(sprite, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
 
 	@Override
@@ -239,14 +205,32 @@ public class BitmapDrawable extends EmptyDrawable implements ext_Bitmap, Disposa
 	}
 
 	@Override
-	public void incrementRefCount()
+	public void decrementRefCount()
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void decrementRefCount()
+	public int getHeight()
+	{
+		if (Atlas == null) return 0;
+		if (sprite == null) createSprite();
+		if (sprite == null) return 0;
+		return (int) sprite.getHeight();
+	}
+
+	@Override
+	public int getWidth()
+	{
+		if (Atlas == null) return 0;
+		if (sprite == null) createSprite();
+		if (sprite == null) return 0;
+		return (int) sprite.getWidth();
+	}
+
+	@Override
+	public void incrementRefCount()
 	{
 		// TODO Auto-generated method stub
 
@@ -266,27 +250,11 @@ public class BitmapDrawable extends EmptyDrawable implements ext_Bitmap, Disposa
 
 	}
 
-	/**
-	 * @return
-	 * @uml.property name="isDisposed"
-	 */
-	public boolean isDisposed()
-	{
-		return isDisposed;
-	}
-
-	@Override
-	public void dispose()
-	{
-		tex = null;
-		buffer = null;
-		isDisposed = true;
-	}
-
 	@Override
 	public void recycle()
 	{
-		dispose();
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -302,4 +270,33 @@ public class BitmapDrawable extends EmptyDrawable implements ext_Bitmap, Disposa
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public Texture getTexture()
+	{
+		if (isDisposed) return null;
+		if (tex == null)
+		{
+			tex = TextureList.get(AtlasHashString);
+		}
+
+		return tex;
+	}
+
+	@Override
+	public void dispose()
+	{
+		// Dont Dispose Texture, is Hold in a Static List
+		tex = null;
+		sprite = null;
+		AtlasHashString = null;
+
+	}
+
+	@Override
+	public BitmapDrawable getGlBmpHandle()
+	{
+		return this;
+	}
+
 }

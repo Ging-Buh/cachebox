@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -134,12 +135,6 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 		flipX = X;
 		flipY = Y;
 	}
-
-	// @Override
-	// public void draw(SpriteBatch batch, float x, float y, final float width, final float height)
-	// {
-	// draw(batch, x, y, width, height, 0);
-	// }
 
 	/**
 	 * @uml.property name="runOnGlSetted"
@@ -546,6 +541,22 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	{
 		// TODO Auto-generated method stub
 
+	}
+
+	// FIXME create BitmapDrawable from FMBO
+
+	@Override
+	public BitmapDrawable getGlBmpHandle()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Texture getTexture()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
