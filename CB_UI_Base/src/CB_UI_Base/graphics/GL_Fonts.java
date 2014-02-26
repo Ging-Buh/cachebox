@@ -27,8 +27,104 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 /**
- * GL_FontFamily => DEFAULT, MONOSPACE, SANS_SERIF, SERIF;<br>
- * GL_FontStyle => BOLD, BOLD_ITALIC, ITALIC, NORMAL;
+ * GL_FontFamily => DEFAULT(DroidSans), MONOSPACE, SANS_SERIF, SERIF;<br>
+ * GL_FontStyle => BOLD, BOLD_ITALIC, ITALIC, NORMAL;<br>
+ * <br>
+ * ANDROID Familyset:<br>
+ * 
+ * <pre>
+ * {@code
+ * <family>
+ *         <nameset>
+ *             <name>sans-serif</name>
+ *             <name>arial</name>
+ *             <name>helvetica</name>
+ *             <name>tahoma</name>
+ *             <name>verdana</name>
+ *         </nameset>
+ *         <fileset>
+ *             <file>Roboto-Regular.ttf</file>
+ *             <file>Roboto-Bold.ttf</file>
+ *             <file>Roboto-Italic.ttf</file>
+ *             <file>Roboto-BoldItalic.ttf</file>
+ *         </fileset>
+ *     </family>
+ * 
+ *     <family>
+ *         <nameset>
+ *             <name>sans-serif-light</name>
+ *         </nameset>
+ *         <fileset>
+ *             <file>Roboto-Light.ttf</file>
+ *             <file>Roboto-LightItalic.ttf</file>
+ *         </fileset>
+ *     </family>
+ * 
+ *     <family>
+ *         <nameset>
+ *             <name>sans-serif-thin</name>
+ *         </nameset>
+ *         <fileset>
+ *             <file>Roboto-Thin.ttf</file>
+ *             <file>Roboto-ThinItalic.ttf</file>
+ *         </fileset>
+ *     </family>
+ * 
+ *     <family>
+ *         <nameset>
+ *             <name>sans-serif-condensed</name>
+ *         </nameset>
+ *         <fileset>
+ *             <file>RobotoCondensed-Regular.ttf</file>
+ *             <file>RobotoCondensed-Bold.ttf</file>
+ *             <file>RobotoCondensed-Italic.ttf</file>
+ *             <file>RobotoCondensed-BoldItalic.ttf</file>
+ *         </fileset>
+ *     </family>
+ *     <family>
+ *         <nameset>
+ *             <name>serif</name>
+ *             <name>times</name>
+ *             <name>times new roman</name>
+ *             <name>palatino</name>
+ *             <name>georgia</name>
+ *             <name>baskerville</name>
+ *             <name>goudy</name>
+ *             <name>fantasy</name>
+ *             <name>cursive</name>
+ *             <name>ITC Stone Serif</name>
+ *         </nameset>
+ *         <fileset>
+ *             <file>DroidSerif-Regular.ttf</file>
+ *             <file>DroidSerif-Bold.ttf</file>
+ *             <file>DroidSerif-Italic.ttf</file>
+ *             <file>DroidSerif-BoldItalic.ttf</file>
+ *         </fileset>
+ *     </family>
+ * 
+ *     <family>
+ *         <nameset>
+ *             <name>Droid Sans</name>
+ *         </nameset>
+ *         <fileset>
+ *             <file>DroidSans.ttf</file>
+ *             <file>DroidSans-Bold.ttf</file>
+ *         </fileset>
+ *     </family>
+ * 
+ *     <family>
+ *         <nameset>
+ *             <name>monospace</name>
+ *             <name>courier</name>
+ *             <name>courier new</name>
+ *             <name>monaco</name>
+ *         </nameset>
+ *         <fileset>
+ *             <file>DroidSansMono.ttf</file>
+ *         </fileset>
+ *     </family>
+ * }
+ * </pre>
  * 
  * @author Longri
  */

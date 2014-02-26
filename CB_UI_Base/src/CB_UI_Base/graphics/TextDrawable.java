@@ -112,12 +112,15 @@ public class TextDrawable implements IRotateDrawable, Disposable
 			{
 
 				float[] center = Cache.getCenterPoint();
+				transform2.scale(scaleWidth, scaleHeight);
 				transform2.translate(center[0], center[1]);
 				transform2.rotate(rotated);
 				transform2.translate(-center[0], -center[1]);
 			}
-
-			transform2.scale(scaleWidth, scaleHeight);
+			else
+			{
+				transform2.scale(scaleWidth, scaleHeight);
+			}
 
 			Cache.draw(batch, transform2);
 

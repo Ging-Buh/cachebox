@@ -204,6 +204,8 @@ public class GL_Rasterer
 
 	public void drawSymbols(VectorDrawable drw, List<SymbolContainer> symbolContainers)
 	{
+		// FIXME use Methode from MixedDataBaseRenderer
+
 		for (int index = symbolContainers.size() - 1; index >= 0; --index)
 		{
 			SymbolContainer symbolContainer = symbolContainers.get(index);
@@ -233,6 +235,8 @@ public class GL_Rasterer
 
 	public void drawNodes(VectorDrawable drw, List<PointTextContainer> pointTextContainers)
 	{
+		// FIXME use Methode from MixedDataBaseRenderer
+
 		for (int index = pointTextContainers.size() - 1; index >= 0; --index)
 		{
 			PointTextContainer pointTextContainer = pointTextContainers.get(index);
@@ -254,6 +258,8 @@ public class GL_Rasterer
 
 	public void drawWayNames(VectorDrawable drw, List<GL_WayTextContainer> wayTextContainers)
 	{
+		// FIXME use Methode from MixedDataBaseRenderer
+
 		for (int index = wayTextContainers.size() - 1; index >= 0; --index)
 		{
 			GL_WayTextContainer wayTextContainer = wayTextContainers.get(index);
