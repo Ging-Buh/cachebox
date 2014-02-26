@@ -72,7 +72,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	/**
 	 * @uml.property name="rotateDrawableList"
 	 */
-	private CB_List<MatrixDrawable> rotateDrawableList;
+	private SortedRotateList rotateDrawableList;
 
 	/**
 	 * @uml.property name="m_fboEnabled"
@@ -116,7 +116,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	{
 		this.background = new ColorDrawable(backgroundColor);
 		this.drawableList = new CB_List<MatrixDrawable>();
-		this.rotateDrawableList = new CB_List<MatrixDrawable>();
+		this.rotateDrawableList = new SortedRotateList();
 		this.DEFAULT_WIDTH = width;
 		this.DEFAULT_HEIGHT = height;
 	}
@@ -124,7 +124,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 	public VectorDrawable(int width, int height)
 	{
 		this.drawableList = new CB_List<MatrixDrawable>();
-		this.rotateDrawableList = new CB_List<MatrixDrawable>();
+		this.rotateDrawableList = new SortedRotateList();
 		this.background = new ColorDrawable(GL_GraphicFactory.TRANSPARENT);
 		this.DEFAULT_WIDTH = width;
 		this.DEFAULT_HEIGHT = height;
@@ -175,11 +175,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 		int count = 0;
 		for (MatrixDrawable drw : rotateDrawableList)
 		{
-			if (count++ > 2500)
-			{
-				GL.batch.flush();
-				count = 0;
-			}
+
 			Matrix4 matrix = thisDrawMatrix.cpy();
 			ext_Matrix drwMatrix = new GL_Matrix(drw.matrix);
 			matrix.mul(drwMatrix.getMatrix4().cpy());
@@ -396,7 +392,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 
 	}
 
-	public CB_List<MatrixDrawable> getRotateDrawables()
+	public SortedRotateList getRotateDrawables()
 	{
 		if (rotateDrawableList.isEmpty()) return null;
 		return rotateDrawableList;

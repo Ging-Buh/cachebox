@@ -4,7 +4,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.MathUtils;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GradiantFilledRectangle extends CB_View_Base
@@ -45,7 +45,7 @@ public class GradiantFilledRectangle extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (gradiant.getTexture() != null)
 		{

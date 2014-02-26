@@ -250,8 +250,8 @@ public class launch extends JFrame
 		textureSettings.rotation = false;
 		textureSettings.minWidth = 16;
 		textureSettings.minHeight = 16;
-		textureSettings.maxWidth = 512;
-		textureSettings.maxHeight = 1024;
+		textureSettings.maxWidth = 2048;
+		textureSettings.maxHeight = 2048;
 		textureSettings.stripWhitespaceX = false;
 		textureSettings.stripWhitespaceY = false;
 		textureSettings.alphaThreshold = 0;

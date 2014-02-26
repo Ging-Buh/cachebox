@@ -14,7 +14,7 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class WaitDialog extends ButtonDialog
 {
@@ -126,7 +126,7 @@ public class WaitDialog extends ButtonDialog
 	}
 
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
 		super.render(batch);
 	}

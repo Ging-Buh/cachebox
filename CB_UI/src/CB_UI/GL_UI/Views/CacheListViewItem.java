@@ -21,10 +21,10 @@ import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent
 {
@@ -43,7 +43,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		}
 
 		@Override
-		public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+		public void renderChilds(final Batch batch, ParentInfo parentInfo)
 		{
 			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
@@ -160,7 +160,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 

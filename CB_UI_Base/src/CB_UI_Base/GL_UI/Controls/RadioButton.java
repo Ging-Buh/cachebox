@@ -5,15 +5,15 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RadioButton extends chkBox
 {
 
 	private RadioGroup group;
-	private Image radioBack;
-	private Image radioSet;
+	private final Image radioBack;
+	private final Image radioSet;
 
 	public RadioButton(String Name)
 	{
@@ -33,7 +33,7 @@ public class RadioButton extends chkBox
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (lblTxt != null && lblTxt.getX() < radioBack.getMaxX())
 		{

@@ -8,7 +8,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Scrollbar extends CB_View_Base
@@ -62,7 +62,7 @@ public class Scrollbar extends CB_View_Base
 	}
 
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
 		// Wenn Liste länger als Clintbereich zeige Slider
 		if (ListView.isDragable())

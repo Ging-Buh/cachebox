@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package CB_UI_Base.graphics.Images;
+package CB_Locator.Map;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_Matrix;
+import CB_UI_Base.graphics.Images.MatrixDrawable;
+import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
-import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 
 /**
@@ -31,9 +32,9 @@ import com.badlogic.gdx.math.Matrix4;
 public class TileGL_RotateDrawables
 {
 	private final Float[] REC;
-	private final CB_List<MatrixDrawable> DRAWABLELIST;
+	public final SortedRotateList DRAWABLELIST;
 
-	public TileGL_RotateDrawables(float x, float y, float width, float height, CB_List<MatrixDrawable> drawableList)
+	public TileGL_RotateDrawables(float x, float y, float width, float height, SortedRotateList drawableList)
 	{
 		REC = new Float[4];
 		REC[0] = x;
@@ -43,34 +44,36 @@ public class TileGL_RotateDrawables
 		DRAWABLELIST = drawableList;
 	}
 
-	public void draw(SpriteBatch batch, float rotated)
+	public void draw(Batch batch, float rotated)
 	{
 		Matrix4 oriMatrix = GL.batch.getProjectionMatrix().cpy();
 
 		Matrix4 thisDrawMatrix = oriMatrix.cpy();
 
-		int count = 0;
 		boolean MatrixChanged = false;
 
 		for (MatrixDrawable drw : DRAWABLELIST)
 		{
 
-			if (count++ > 2500)
+			if (drw.matrix == null)
 			{
-				GL.batch.flush();
-				count = 0;
+				drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
 			}
-			Matrix4 matrix = thisDrawMatrix.cpy();
-			ext_Matrix drwMatrix = new GL_Matrix(drw.matrix);
-			matrix.mul(drwMatrix.getMatrix4().cpy());
-
-			if (!transformEquals(matrix, oriMatrix))
+			else
 			{
-				GL.batch.setProjectionMatrix(matrix);
-				MatrixChanged = true;
+				Matrix4 matrix = thisDrawMatrix.cpy();
+				ext_Matrix drwMatrix = new GL_Matrix(drw.matrix);
+				matrix.mul(drwMatrix.getMatrix4().cpy());
+
+				if (!transformEquals(matrix, oriMatrix))
+				{
+					GL.batch.setProjectionMatrix(matrix);
+					MatrixChanged = true;
+				}
+
+				drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
 			}
 
-			drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
 		}
 		if (MatrixChanged) GL.batch.setProjectionMatrix(oriMatrix);
 

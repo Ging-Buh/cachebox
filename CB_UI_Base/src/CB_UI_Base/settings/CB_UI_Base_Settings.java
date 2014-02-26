@@ -1,11 +1,13 @@
 package CB_UI_Base.settings;
 
 import CB_UI_Base.Global;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingDouble;
+import CB_Utils.Settings.SettingEnum;
 import CB_Utils.Settings.SettingFloat;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
@@ -66,5 +68,8 @@ public interface CB_UI_Base_Settings
 			Config_Core.WorkPath + "/repository/cache", SettingStoreType.Local);
 
 	public static final SettingBool GestureOn = new SettingBool("GestureOn", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global);
+
+	public static final SettingEnum<GL_RenderType> MapsforgeRenderType = new SettingEnum<GL_RenderType>("MapsforgeRenderType",
+			SettingCategory.Map, EXPERT, GL_RenderType.Mapsforge, SettingStoreType.Global, GL_RenderType.Mapsforge);
 
 }

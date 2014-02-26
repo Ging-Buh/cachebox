@@ -42,9 +42,9 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.UnitFormatter;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent
@@ -100,7 +100,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 

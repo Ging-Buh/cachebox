@@ -78,8 +78,6 @@ public class SymbolDrawable implements IRotateDrawable
 		if (isDisposed.get()) return;
 		if (BITMAP == null) return;
 
-		if (BITMAP.getTexture() == null) return;
-
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
 		boolean scaled = scaleWidth != 1 || scaleHeight != 1;

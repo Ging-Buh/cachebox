@@ -10,9 +10,9 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Logger;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class MapScale extends CB_View_Base implements invalidateTextureEvent
@@ -159,7 +159,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	 * Zeichnet den Maﬂstab. pixelsPerKm muss durch zoomChanged initialisiert sein!
 	 */
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (pixelsPerMeter <= 0) return;
 		if (mapInstanz.getAktZoom() != generatedZomm) zoomChanged();

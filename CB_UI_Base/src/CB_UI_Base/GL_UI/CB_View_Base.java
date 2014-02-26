@@ -11,7 +11,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_Utils.Util.MoveableList;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
@@ -78,7 +78,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		if (!isInitial)

@@ -21,8 +21,8 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Slider extends CB_View_Base implements SelectedCacheEvent
 {
@@ -113,7 +113,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 		// renderDebugInfo(batch);

@@ -55,6 +55,7 @@ import CB_Locator.Map.Layer.Type;
 import CB_Locator.Map.TileGL.TileState;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
@@ -704,6 +705,8 @@ public abstract class ManagerBase
 			}
 
 		}
+
+		if (databaseRenderer[ThreadIndex] == null) return null;
 
 		try
 		{

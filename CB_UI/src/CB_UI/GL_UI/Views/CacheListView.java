@@ -33,9 +33,9 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CacheListView extends CB_View_Base implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent
 {
@@ -82,7 +82,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	}
 
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
 		// if Track List empty, draw empty Msg
 		try

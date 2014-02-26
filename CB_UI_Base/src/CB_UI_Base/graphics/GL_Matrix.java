@@ -32,6 +32,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 {
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
 	private Matrix3 matrix3;
+	private static final Matrix3 DEFAULT = new Matrix3();
 
 	public GL_Matrix(ext_Matrix matrix)
 	{
@@ -482,6 +483,23 @@ public class GL_Matrix implements ext_Matrix, Matrix
 			matrix3 = null;
 			isDisposed.set(true);
 		}
+	}
+
+	@Override
+	public boolean isDefault()
+	{
+		return MatrixEquals(this.matrix3, DEFAULT);
+	}
+
+	public static boolean MatrixEquals(Matrix3 matrix1, Matrix3 matrix2)
+	{
+
+		for (int i = 0; i < 9; i++)
+		{
+			if (matrix1.val[i] != matrix2.val[i]) return false;
+		}
+
+		return true;
 	}
 
 }

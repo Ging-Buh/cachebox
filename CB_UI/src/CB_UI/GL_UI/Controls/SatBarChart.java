@@ -11,7 +11,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 {
@@ -36,7 +36,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (redraw) setSatStrength();
 	}

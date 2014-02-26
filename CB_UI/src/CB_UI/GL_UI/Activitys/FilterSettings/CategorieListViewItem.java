@@ -12,10 +12,10 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class CategorieListViewItem extends ListViewItemBackground
@@ -81,7 +81,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 	private static float halfSize = 0;
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (this.categorieEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM) super.render(batch);
 
@@ -185,7 +185,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 	private static NinePatch btnBack;
 	private static NinePatch btnBack_pressed;
 
-	private void drawCollapseButtonItem(SpriteBatch batch)
+	private void drawCollapseButtonItem(Batch batch)
 	{
 
 		if (this.isPressed)
@@ -218,7 +218,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 	private static Sprite sPinOff;
 	private static float margin = 0;
 
-	private void drawPin(SpriteBatch batch)
+	private void drawPin(Batch batch)
 	{
 		margin = UI_Size_Base.that.getMargin();
 		float iconHeight = this.getHeight() * 0.6f;
@@ -249,7 +249,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawChkItem(SpriteBatch batch)
+	private void drawChkItem(Batch batch)
 	{
 		if (this.categorieEntry == null) return;
 
@@ -290,7 +290,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		}
 	}
 
-	private void drawThreeStateItem(SpriteBatch batch)
+	private void drawThreeStateItem(Batch batch)
 	{
 		drawIcon(batch);
 		drawRightChkBox(batch);
@@ -316,7 +316,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		}
 	}
 
-	private void drawIcon(SpriteBatch batch)
+	private void drawIcon(Batch batch)
 	{
 		// if (categorieEntry.getIcon() != null) ActivityUtils.PutImageTargetHeight(batch, categorieEntry.getIcon(), left, top,
 		// UiSizes.getIconSize());
@@ -324,7 +324,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawRightChkBox(SpriteBatch batch)
+	private void drawRightChkBox(Batch batch)
 	{
 
 		if (rBounds == null || rChkBounds == null)

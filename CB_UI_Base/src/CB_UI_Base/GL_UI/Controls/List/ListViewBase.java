@@ -18,9 +18,9 @@ import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.MoveableList;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent
 {
@@ -323,7 +323,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		if (!isInitial)
@@ -404,7 +404,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	@Override
-	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
 		super.renderChilds(batch, parentInfo);
 

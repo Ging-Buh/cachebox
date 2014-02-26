@@ -33,7 +33,7 @@ public class MapTileLoader
 {
 	public static final int MAX_MAP_ZOOM = 22;
 	private final QueueData queueData = new QueueData();
-	private Thread[] queueProcessor = null;
+	private MultiThreadQueueProcessor[] queueProcessor = null;
 	private Thread[] queueProcessorAliveCheck = null;
 	CB_List<Long> neadedTiles = new CB_List<Long>();
 	private int maxNumTiles = 0;
@@ -49,7 +49,7 @@ public class MapTileLoader
 		if (queueProcessor == null)
 		{
 
-			queueProcessor = new Thread[processors];
+			queueProcessor = new MultiThreadQueueProcessor[processors];
 			queueProcessorAliveCheck = new Thread[processors];
 
 			for (int i = 0; i < processors; i++)
@@ -84,7 +84,7 @@ public class MapTileLoader
 						e.printStackTrace();
 					}
 
-					if (!queueProcessor[index].isAlive())
+					if (!queueProcessor[index].Alive())
 					{
 						Logger.DEBUG("MapTileLoader Restart queueProcessor");
 						queueProcessor[index] = new MultiThreadQueueProcessor(queueData);

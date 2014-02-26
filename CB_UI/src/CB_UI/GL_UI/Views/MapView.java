@@ -55,8 +55,8 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -373,7 +373,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	}
 
-	protected void renderOverlay(SpriteBatch batch)
+	protected void renderOverlay(Batch batch)
 	{
 		batch.setProjectionMatrix(myParentInfo.Matrix());
 
@@ -390,7 +390,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		renderUI(batch);
 	}
 
-	void renderUI(SpriteBatch batch)
+	void renderUI(Batch batch)
 	{
 		batch.setProjectionMatrix(myParentInfo.Matrix());
 
@@ -434,7 +434,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	CB_RectF TargetArrowScreenRec;
 
-	private void RenderTargetArrow(SpriteBatch batch)
+	private void RenderTargetArrow(Batch batch)
 	{
 
 		if (GlobalCore.getSelectedCache() == null) return;
@@ -514,7 +514,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	 */
 	CB_RectF TargetArrow = null;
 
-	private void renderWPs(SizeF wpUnderlay, SizeF wpSize, SpriteBatch batch)
+	private void renderWPs(SizeF wpUnderlay, SizeF wpSize, Batch batch)
 	{
 
 		if (mapCacheList.list != null)
@@ -543,7 +543,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		outScreenDraw = 0;
 	}
 
-	private void renderWPI(SpriteBatch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
+	private void renderWPI(Batch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
 	{
 		Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
 

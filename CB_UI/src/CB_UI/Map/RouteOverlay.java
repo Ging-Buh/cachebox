@@ -31,8 +31,8 @@ import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class RouteOverlay
@@ -475,8 +475,8 @@ public class RouteOverlay
 
 	private static ArrayList<Route> DrawRoutes;
 
-	public static void RenderRoute(SpriteBatch batch, int Zoom, float yVersatz) // , Descriptor desc, float dpiScaleFactorX, float
-																				// dpiScaleFactorY)
+	public static void RenderRoute(Batch batch, int Zoom, float yVersatz) // , Descriptor desc, float dpiScaleFactorX, float
+																			// dpiScaleFactorY)
 	{
 
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)

@@ -15,8 +15,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -412,7 +412,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 * 
 	 * @param batch
 	 */
-	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
 
 		if (thisInvalidate)
@@ -490,8 +490,8 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.setTransformMatrix(matrix);
 		}
 
-		batch.flush();
-		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+		// batch.flush();// FIXME ist das nötig?
+		// Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 
 		// this.renderWithoutScissor(batch);
 
@@ -524,7 +524,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 						view.renderChilds(batch, myInfoForChild);
 						nDepthCounter--;
-						batch.setProjectionMatrix(myParentInfo.Matrix());
+						// batch.setProjectionMatrix(myParentInfo.Matrix());
 					}
 
 				}
@@ -537,6 +537,7 @@ public abstract class GL_View_Base extends CB_RectF
 					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				}
 			}
+
 			// }
 			childsInvalidate = false;
 		}
@@ -635,7 +636,7 @@ public abstract class GL_View_Base extends CB_RectF
 		thisInvalidate = true;
 	}
 
-	protected abstract void render(SpriteBatch batch);
+	protected abstract void render(Batch batch);
 
 	// ########################
 	// Rotate Property

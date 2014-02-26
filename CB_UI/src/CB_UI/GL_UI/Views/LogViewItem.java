@@ -13,9 +13,9 @@ import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -102,7 +102,7 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 	}
 
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
 		super.render(batch);
 		if (backheader != null)

@@ -10,10 +10,10 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class FilterSetListViewItem extends ListViewItemBackground
@@ -64,7 +64,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	BitmapFontCache EntryName;
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (this.mFilterSetEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM)
 		{
@@ -139,7 +139,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	private static Sprite chkOn;
 	private static Sprite chkNo;
 
-	private void drawCollapseButtonItem(SpriteBatch batch)
+	private void drawCollapseButtonItem(Batch batch)
 	{
 
 		if (this.isPressed)
@@ -165,7 +165,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawChkItem(SpriteBatch batch)
+	private void drawChkItem(Batch batch)
 	{
 		drawIcon(batch);
 		drawRightChkBox(batch);
@@ -205,7 +205,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawThreeStateItem(SpriteBatch batch)
+	private void drawThreeStateItem(Batch batch)
 	{
 		drawIcon(batch);
 		drawRightChkBox(batch);
@@ -266,7 +266,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	private BitmapFontCache Value;
 	private boolean Clicked = false;
 
-	private void drawNumerickItem(SpriteBatch batch)
+	private void drawNumerickItem(Batch batch)
 	{
 		lBounds = new CB_RectF(0, 0, getHeight(), getHeight());
 		lBounds = lBounds.ScaleCenter(0.95f);
@@ -346,7 +346,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawIcon(SpriteBatch batch)
+	private void drawIcon(Batch batch)
 	{
 		if (mFilterSetEntry.getIcon() != null)
 		{
@@ -359,7 +359,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawRightChkBox(SpriteBatch batch)
+	private void drawRightChkBox(Batch batch)
 	{
 		if (rBounds == null || rChkBounds == null)
 		{

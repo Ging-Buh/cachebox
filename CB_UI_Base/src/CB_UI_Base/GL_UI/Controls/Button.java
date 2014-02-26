@@ -28,9 +28,9 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.MoveableList;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Button extends CB_View_Base
@@ -129,7 +129,7 @@ public class Button extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (dragableButton)
 		{

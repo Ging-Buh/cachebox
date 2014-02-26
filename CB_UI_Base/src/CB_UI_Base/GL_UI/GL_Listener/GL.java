@@ -62,7 +62,6 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
@@ -86,9 +85,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public static GL_Listener_Interface listenerInterface;
 	public static GL that;
 	public static long GL_ThreadId;
-	public static SpriteBatch batch;
-	public static PolygonSpriteBatch polygonBatch;
-	public static ShapeRenderer shapeRenderer;
+	public static PolygonSpriteBatch batch;
 	public static OrthographicCamera camera;
 	private static Timer myTimer;
 	private static long timerValue;
@@ -504,11 +501,14 @@ public class GL implements ApplicationListener, InputProcessor
 		if (!ActivityIsShown)
 		{
 			child.renderChilds(batch, prjMatrix);
+			// reset child Matrix
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
 		if (DialogIsShown && mDialog.getCildCount() > 0)
 		{
 			// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
+
 			drawDarknessSprite();
 			mDialog.renderChilds(batch, prjMatrix);
 		}
@@ -566,16 +566,6 @@ public class GL implements ApplicationListener, InputProcessor
 			if (FpsInfoPos > 60)
 			{
 				FpsInfoPos = 0;
-			}
-
-			if (debugWriteSpriteCount)
-			{
-				renderTime = ((System.currentTimeMillis() - lastRenderBegin) + renderTime) / 2;
-
-				String Text = "Max Sprites on Batch:" + String.valueOf(debugSpritebatchMaxCount) + "/" + String.valueOf(renderTime);
-
-				Fonts.getBubbleSmall().draw(batch, MaptileLoaderDebugString, width / 4, 20);
-				debugSpritebatchMaxCount = Math.max(debugSpritebatchMaxCount, batch.maxSpritesInBatch);
 			}
 
 		}
@@ -1037,25 +1027,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (batch == null)
 		{
-			if (CB_UI_Base_Settings.DebugSpriteBatchCountBuffer.getValue())
-			{
-				// for Debug set to max!
-				batch = new SpriteBatch(5460);
-			}
-			else
-			{
-				batch = new SpriteBatch(SPRITE_BATCH_BUFFER);
-			}
-		}
-
-		if (polygonBatch == null)
-		{
-			polygonBatch = new PolygonSpriteBatch(10920);
-		}
-
-		if (shapeRenderer == null)
-		{
-			shapeRenderer = new ShapeRenderer();
+			batch = new PolygonSpriteBatch(10920);
 		}
 
 		if (modelBatch == null)

@@ -23,8 +23,8 @@ import CB_Utils.Math.PointD;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MeasureCoordinate extends ActivityBase implements PositionChangedEvent
 {
@@ -189,7 +189,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		if (drawing != null) drawing.draw(batch);

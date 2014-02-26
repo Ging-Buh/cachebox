@@ -38,7 +38,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 
 import CB_Core.FilterProperties;
@@ -55,7 +55,6 @@ import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
 import CB_Locator.Events.GpsStateChangeEventList;
-import CB_Locator.Map.GL_RenderType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -436,8 +435,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Global.Paints.init(this);
 			Global.InitIcons(this);
 
-			AndroidGraphicFactory.createInstance(this.getApplication());
-			new de.cachebox_test.Map.AndroidManager(GL_RenderType.Mapsforge, new DisplayModel());
+			ext_AndroidGraphicFactory.createInstance(this.getApplication());
+			new de.cachebox_test.Map.AndroidManager(Config.MapsforgeRenderType.getEnumValue(), new DisplayModel());
 
 			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
 			GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");

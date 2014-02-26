@@ -143,4 +143,11 @@ public class ext_AwtMatrix extends AwtMatrix implements ext_Matrix
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean isDefault()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

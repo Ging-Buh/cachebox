@@ -2,18 +2,17 @@ package CB_UI_Base.GL_UI;
 
 import CB_Utils.MathUtils;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class DrawUtils
 {
-	public static void drawSpriteLine(SpriteBatch batch, Sprite sprite, float overlap, float x1, float y1, float x2, float y2)
+	public static void drawSpriteLine(Batch batch, Sprite sprite, float overlap, float x1, float y1, float x2, float y2)
 	{
 		drawSpriteLine(batch, sprite, sprite, overlap, x1, y1, x2, y2);
 	}
 
-	public static void drawSpriteLine(SpriteBatch batch, Sprite sprite, Sprite spriteEnd, float overlap, float x1, float y1, float x2,
-			float y2)
+	public static void drawSpriteLine(Batch batch, Sprite sprite, Sprite spriteEnd, float overlap, float x1, float y1, float x2, float y2)
 	{
 		// chk NPE
 		if (batch == null || sprite == null || spriteEnd == null) return;

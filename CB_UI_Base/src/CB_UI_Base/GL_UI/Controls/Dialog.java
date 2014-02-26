@@ -15,9 +15,9 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Dialog extends CB_View_Base
@@ -256,7 +256,7 @@ public abstract class Dialog extends CB_View_Base
 	}
 
 	@Override
-	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
 
 		batch.flush();

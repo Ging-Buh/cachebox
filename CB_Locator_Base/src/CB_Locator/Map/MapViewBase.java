@@ -38,7 +38,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.graphics.PolygonDrawable;
-import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils;
 import CB_Utils.Lists.CB_List;
@@ -53,9 +52,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
@@ -402,7 +401,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	public static int INITIAL_NEW_SETTINGS = 3;
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		if (LocatorSettings.MoveMapCenterWithSpeed.getValue() && CarMode && Locator.hasSpeed())
@@ -497,9 +496,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		renderDebugInfo(batch);
 	}
 
-	protected abstract void renderOverlay(SpriteBatch batch);
+	protected abstract void renderOverlay(Batch batch);
 
-	private void renderMapTiles(SpriteBatch batch)
+	private void renderMapTiles(Batch batch)
 	{
 		batch.disableBlending();
 
@@ -534,10 +533,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		camera.update();
 
 		Matrix4 mat = camera.combined;
-		/*
-		 * float dx = this.ThisWorldRec.getCenterPos().x - MainView.mainView.getCenterPos().x; float dy = this.ThisWorldRec.getCenterPos().y
-		 * - MainView.mainView.getCenterPos().y; mat = mat.translate(dx * faktor, dy * faktor, 0);
-		 */
 
 		batch.setProjectionMatrix(mat);
 
@@ -656,7 +651,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					float ySize = tile.getHeight() * posFactor;
 
 					boolean addToRotateList = tile.Descriptor.Zoom == aktZoom; // Draw Names and Symbols only from Tile with right zoom
-																				// factor
+					// factor
 
 					tile.draw(batch, xPos, yPos, xSize, ySize, addToRotateList ? rotateList : null);
 				}
@@ -668,7 +663,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 			for (TileGL_RotateDrawables drw : rotateList)
 			{
-				drw.draw(batch, mapHeading);
+				drw.draw(batch, -mapHeading);
 			}
 			rotateList.truncate(0);
 			rotateList = null;
@@ -706,7 +701,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		return result;
 	}
 
-	protected void renderDebugInfo(SpriteBatch batch)
+	protected void renderDebugInfo(Batch batch)
 	{
 
 		CB_RectF r = this.ThisWorldRec;
@@ -738,7 +733,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 	}
 
-	protected void renderPositionMarker(SpriteBatch batch)
+	protected void renderPositionMarker(Batch batch)
 	{
 		PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getLongitude()),
 				Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, Locator.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
@@ -831,7 +826,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		return (ang1);
 	}
 
-	private boolean renderBiggerTiles(SpriteBatch batch, int i, int j, int zoom2)
+	private boolean renderBiggerTiles(Batch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> kleinere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
@@ -876,7 +871,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		return false;
 	}
 
-	private boolean renderBiggerOverlayTiles(SpriteBatch batch, int i, int j, int zoom2)
+	private boolean renderBiggerOverlayTiles(Batch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> kleinere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
@@ -921,7 +916,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		return false;
 	}
 
-	private void renderSmallerTiles(SpriteBatch batch, int i, int j, int zoom2)
+	private void renderSmallerTiles(Batch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
@@ -972,7 +967,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 	}
 
-	private void renderSmallerOverlayTiles(SpriteBatch batch, int i, int j, int zoom2)
+	private void renderSmallerOverlayTiles(Batch batch, int i, int j, int zoom2)
 	{
 		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...

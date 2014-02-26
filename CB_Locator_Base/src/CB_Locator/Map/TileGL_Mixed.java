@@ -16,10 +16,10 @@
 package CB_Locator.Map;
 
 import CB_UI_Base.graphics.Images.MatrixDrawable;
-import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
+import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * Extends TileGL_Bmp with holding a List of Drawable for Symbols and Textes
@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 public class TileGL_Mixed extends TileGL_Bmp
 {
-	CB_List<MatrixDrawable> rotateList;
+	SortedRotateList rotateList;
 
 	public TileGL_Mixed(CB_Locator.Map.Descriptor desc, byte[] bytes, TileState state)
 	{
@@ -37,7 +37,7 @@ public class TileGL_Mixed extends TileGL_Bmp
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList)
+	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList)
 	{
 		super.draw(batch, x, y, width, height, returnDrawableList);
 
@@ -48,7 +48,7 @@ public class TileGL_Mixed extends TileGL_Bmp
 
 	}
 
-	public void add(CB_List<MatrixDrawable> rotateList)
+	public void add(SortedRotateList rotateList)
 	{
 		this.rotateList = rotateList;
 	}

@@ -15,10 +15,9 @@
  */
 package CB_Locator.Map;
 
-import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -63,7 +62,6 @@ public abstract class TileGL implements Disposable
 		return getWidth() / DEFAULT_TILE_SIZE;
 	}
 
-	public abstract void draw(SpriteBatch batch, float f, float y, float tILESIZE, float tILESIZE2,
-			CB_List<TileGL_RotateDrawables> rotateList);
+	public abstract void draw(Batch batch, float f, float y, float tILESIZE, float tILESIZE2, CB_List<TileGL_RotateDrawables> rotateList);
 
 }

@@ -135,6 +135,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 
 	public int indexOf(T value)
 	{
+		if (this.items == null) return -1;
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
 			if (items[i].equals(value)) return i;

@@ -15,8 +15,8 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class TrackListViewItem extends ListViewItemBackground
@@ -59,7 +59,7 @@ public class TrackListViewItem extends ListViewItemBackground
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		super.render(batch);
@@ -142,7 +142,7 @@ public class TrackListViewItem extends ListViewItemBackground
 		GL.that.renderOnce("CreateTrackListItem_Label");
 	}
 
-	private void drawColorRec(SpriteBatch batch)
+	private void drawColorRec(Batch batch)
 	{
 		if (lBounds == null)
 		{
@@ -163,7 +163,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawRightChkBox(SpriteBatch batch)
+	private void drawRightChkBox(Batch batch)
 	{
 		if (rBounds == null || rChkBounds == null)
 		{

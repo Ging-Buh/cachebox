@@ -15,8 +15,6 @@
  */
 package CB_UI_Base.graphics;
 
-import java.security.InvalidParameterException;
-
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.Images.IRotateDrawable;
@@ -45,7 +43,15 @@ public class TextDrawable implements IRotateDrawable, Disposable
 	{
 		super();
 
-		if (path == null || path.size < 4) throw new InvalidParameterException("not valid Path for TextDrawable");
+		if (path == null || path.size < 4)
+		{
+			System.out.print("not valid Path for TextDrawable");
+			debugText = null;
+			DEFAULT_WIDTH = 0;
+			DEFAULT_HEIGHT = 0;
+			return;
+			// throw new InvalidParameterException("not valid Path for TextDrawable");
+		}
 
 		debugText = text;
 		final GL_Path workPath = new GL_Path(path);
@@ -95,59 +101,26 @@ public class TextDrawable implements IRotateDrawable, Disposable
 
 		if (Cache != null)
 		{
-			// PROJECTION_CHK
-			// Matrix4 ori = batch.getProjectionMatrix().cpy();
 
 			float scaleWidth = width / DEFAULT_WIDTH;
 			float scaleHeight = height / DEFAULT_HEIGHT;
 
-			// if (scaleWidth != 1 || scaleHeight != 1)
-			// {
-			// Matrix4 transform = batch.getProjectionMatrix().cpy();
-			// transform.scale(scaleWidth, scaleHeight, 1);
-			// batch.setProjectionMatrix(transform);
-			// }
-
-			Matrix3 transform2 = new Matrix3().scale(scaleWidth, scaleHeight);
+			Matrix3 transform2 = new Matrix3();
+			transform2.translate(x, y);
 
 			if (rotated != 0)
 			{
 
 				float[] center = Cache.getCenterPoint();
-
-				// Matrix4 Orim = batch.getProjectionMatrix().cpy();
-				// Matrix4 m = batch.getProjectionMatrix().cpy();
-
-				// m.translate(center[0], center[1], 0);
-				// m.rotate(0, 0, 1, rotated);
-				// m.translate(-center[0], -center[1], 0);
-
-				// batch.setProjectionMatrix(m);
-				// Cache.draw(batch, transform2);
-				// batch.setProjectionMatrix(Orim);
-
-				// Matrix3 m3 = new Matrix3();
-				// m3.set(batch.getProjectionMatrix());
-				//
-				// m3.translate(center[0], center[1]);
-				// m3.rotate(rotated);
-				// m3.translate(-center[0], -center[1]);
-
-				// transform2.mul(m3);
-				// m3.mul(transform2);
-
-				transform2.translate(x, y);
 				transform2.translate(center[0], center[1]);
 				transform2.rotate(rotated);
 				transform2.translate(-center[0], -center[1]);
-				Cache.draw(batch, transform2);
 			}
-			else
-			{
-				transform2.translate(x, y);
-				Cache.draw(batch, transform2);
-			}
-			// batch.setProjectionMatrix(ori);
+
+			transform2.scale(scaleWidth, scaleHeight);
+
+			Cache.draw(batch, transform2);
+
 		}
 	}
 }

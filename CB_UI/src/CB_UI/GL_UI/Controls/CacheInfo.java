@@ -17,10 +17,10 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class CacheInfo extends CB_View_Base
@@ -141,7 +141,7 @@ public class CacheInfo extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 

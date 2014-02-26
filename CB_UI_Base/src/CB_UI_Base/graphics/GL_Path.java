@@ -417,10 +417,14 @@ public class GL_Path implements ext_Path, Disposable
 	private void calcSectionLength()
 	{
 		averageDirection = 0;
-		PathSectionLength = new float[((size - 2) / 2)];
+		int arrayLength = ((size - 2) / 2);
+
+		PathSectionLength = new float[arrayLength];
+		if (arrayLength == 0) return;
 
 		int index = 0;
 		int angleCount = 0;
+
 		float length = PathSectionLength[index] = 0;
 
 		for (int i = 0; i < size - 2; i += 2)

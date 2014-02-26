@@ -15,8 +15,8 @@ import CB_UI_Base.Math.GL_UISizes;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
@@ -59,7 +59,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (this.getWidth() < 1 || this.getHeight() < 1) return;
 

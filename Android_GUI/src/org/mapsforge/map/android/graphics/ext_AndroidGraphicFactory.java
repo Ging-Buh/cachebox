@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.core.graphics.TileBitmap;
 
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
@@ -18,8 +19,14 @@ import android.view.WindowManager;
 
 public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements ext_GraphicFactory
 {
-	static Application aplication;
+	public static Application aplication;
 	private final float ScaleFactor;
+
+	public static void createInstance(Application app)
+	{
+		aplication = app;
+		INSTANCE = new AndroidGraphicFactory(app);
+	}
 
 	protected ext_AndroidGraphicFactory(Application app)
 	{
@@ -60,6 +67,12 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 	public ext_Bitmap createBitmap(int width, int height)
 	{
 		return new ext_AndroidBitmap(width, height);
+	}
+
+	@Override
+	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha)
+	{
+		return new ext_AndroidBitmap(tileSize, tileSize);
 	}
 
 	@Override

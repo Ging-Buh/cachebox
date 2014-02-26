@@ -20,10 +20,10 @@ import CB_Utils.Util.UnitFormatter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent
@@ -62,7 +62,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		}
 
 		@Override
-		public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+		public void renderChilds(final Batch batch, ParentInfo parentInfo)
 		{
 			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
@@ -192,7 +192,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (mIndex != -1) super.render(batch);
 

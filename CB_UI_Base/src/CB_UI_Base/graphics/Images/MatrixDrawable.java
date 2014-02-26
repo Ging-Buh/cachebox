@@ -25,8 +25,18 @@ public class MatrixDrawable
 	public MatrixDrawable(IRotateDrawable drw, ext_Matrix mat, boolean realDraw)
 	{
 		this.drawable = drw;
-		this.matrix = mat;
+
+		if (mat.isDefault())
+		{
+			this.matrix = mat;
+		}
+		else
+		{
+			this.matrix = null;
+		}
+
 		this.reaelDraw = realDraw;
+
 	}
 
 	/**
@@ -47,7 +57,7 @@ public class MatrixDrawable
 
 	public void dispose()
 	{
-		this.matrix.dispose();
+		if (this.matrix != null) this.matrix.dispose();
 		// TODO chek if we cann dispose and not hold on Cache like BmpBuffer at GL_GraphicFactory // this.drawable.dispose();
 	}
 }

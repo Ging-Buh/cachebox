@@ -2,9 +2,9 @@ package CB_UI.GL_UI.Views.TestViews;
 
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
-import CB_Locator.Map.MapTileLoader;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
+import CB_Locator.Map.MapTileLoader;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Enums.WrapType;
@@ -24,7 +24,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.PointD;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -133,7 +133,7 @@ public class TestView extends CB_View_Base
 	};
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		// drawHausVomNikolaus(batch);
 
@@ -142,7 +142,7 @@ public class TestView extends CB_View_Base
 
 	String str;
 
-	private void renderDebugInfo(SpriteBatch batch)
+	private void renderDebugInfo(Batch batch)
 	{
 		// str = "Coursor Pos:" + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugCursorPos) + "/"
 		// + String.valueOf(CB_Core.GL_UI.libGdx_Controls.derived.WrappedTextField.debugRealCursorPos);

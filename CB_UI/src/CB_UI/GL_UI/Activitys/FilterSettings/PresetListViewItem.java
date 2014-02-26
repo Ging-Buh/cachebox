@@ -8,8 +8,8 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PresetListViewItem extends ListViewItemBackground
 {
@@ -26,7 +26,7 @@ public class PresetListViewItem extends ListViewItemBackground
 	float top = 0;
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (EditFilterSettings.tmpFilterProps != null)
 		{
@@ -67,7 +67,7 @@ public class PresetListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawIcon(SpriteBatch batch)
+	private void drawIcon(Batch batch)
 	{
 		if (mPresetEntry.getIcon() != null)
 		{

@@ -6,7 +6,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.Point;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class SelectionMarker extends CB_View_Base
@@ -87,7 +87,7 @@ public class SelectionMarker extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (marker == null) Initial();
 		marker.draw(batch, 0, 0, getWidth(), getHeight());

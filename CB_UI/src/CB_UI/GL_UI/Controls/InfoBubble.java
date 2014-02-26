@@ -9,8 +9,8 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class InfoBubble extends CB_View_Base
 {
@@ -91,7 +91,7 @@ public class InfoBubble extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		Sprite sprite = (mCache == GlobalCore.getSelectedCache()) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
 		sprite.setPosition(0, 0);

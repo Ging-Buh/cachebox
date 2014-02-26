@@ -18,13 +18,12 @@ package CB_Locator.Map;
 import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author ging-buh
@@ -109,7 +108,7 @@ public class TileGL_Bmp extends TileGL
 	 * @see CB_Locator.Map.TileGL#draw(com.badlogic.gdx.graphics.g2d.SpriteBatch, float, float, float, float)
 	 */
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> rotateList)
+	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> rotateList)
 	{
 		if (texture != null) batch.draw(texture, x, y, width, height);
 	}

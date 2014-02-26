@@ -32,13 +32,13 @@ import org.mapsforge.map.model.DisplayModel;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
-import CB_Locator.Map.GL_RenderType;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_Utils.Util.FileIO;
 

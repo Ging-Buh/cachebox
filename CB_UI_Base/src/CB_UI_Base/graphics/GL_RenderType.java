@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package CB_Locator.Map;
+package CB_UI_Base.graphics;
 
 /**
  * The possibilities as a Maptile is created. <br>

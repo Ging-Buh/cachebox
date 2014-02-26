@@ -90,4 +90,6 @@ public interface ext_Matrix extends Disposable
 	@Override
 	public abstract String toString();
 
+	public abstract boolean isDefault();
+
 }

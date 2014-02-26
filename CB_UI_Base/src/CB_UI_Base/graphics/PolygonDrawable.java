@@ -17,7 +17,6 @@ package CB_UI_Base.graphics;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.Images.IRotateDrawable;
 
 import com.badlogic.gdx.graphics.Color;
@@ -27,8 +26,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Matrix4;
 
 /**
  * @author Longri
@@ -90,40 +89,34 @@ public class PolygonDrawable implements IRotateDrawable
 
 			}
 
+			Color c = batch.getColor();
+			float a = c.a;
+			float r = c.r;
+			float g = c.g;
+			float b = c.b;
+
 			if (po == null) return;
 
-			Matrix4 projection = batch.getProjectionMatrix();
-			batch.end();
-
-			GL.polygonBatch.begin();
-			GL.polygonBatch.setProjectionMatrix(projection);
-
+			if (this.PAINT.getBitmapShader() == null)
 			{
-				if (this.PAINT.getBitmapShader() == null)
-				{
-					GL.polygonBatch.setColor(PAINT.getGlColor());
-				}
-				else
-				{
-					GL.polygonBatch.setColor(new Color(Color.WHITE));
-				}
-
-				try
-				{
-					GL.polygonBatch.draw(po, x, y, width, height);
-				}
-				catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				batch.setColor(PAINT.getGlColor());
 			}
-
-			GL.polygonBatch.end();
-
-			GL.polygonBatch.flush();
-
-			batch.begin();
+			else
+			{
+				batch.setColor(new Color(Color.WHITE));
+			}
+			batch.flush();
+			try
+			{
+				((PolygonSpriteBatch) batch).draw(po, x, y, width, height);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			batch.flush();
+			// reset color
+			batch.setColor(r, g, b, a);
 		}
 	}
 

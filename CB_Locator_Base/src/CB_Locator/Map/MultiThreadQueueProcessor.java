@@ -39,6 +39,7 @@ class MultiThreadQueueProcessor extends Thread
 	public boolean queueProcessorLifeCycle = false;
 
 	private final QueueData queueData;
+	private boolean isAlive;
 
 	MultiThreadQueueProcessor(QueueData queueData)
 	{
@@ -172,6 +173,7 @@ class MultiThreadQueueProcessor extends Thread
 				{
 					Thread.sleep(400);
 				}
+				this.isAlive = true;
 			}
 			while (true);
 		}
@@ -197,6 +199,8 @@ class MultiThreadQueueProcessor extends Thread
 			{
 				e.printStackTrace();
 			}
+
+			this.isAlive = false;
 		}
 		finally
 		{
@@ -204,6 +208,11 @@ class MultiThreadQueueProcessor extends Thread
 			// queueProcessor = null;
 		}
 		return;
+	}
+
+	public boolean Alive()
+	{
+		return this.isAlive;
 	}
 
 	// #######################################################################

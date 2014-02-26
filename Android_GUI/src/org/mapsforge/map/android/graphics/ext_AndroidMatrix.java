@@ -138,4 +138,11 @@ public class ext_AndroidMatrix extends AndroidMatrix implements ext_Matrix
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean isDefault()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

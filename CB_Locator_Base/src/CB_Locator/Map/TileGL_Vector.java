@@ -15,12 +15,11 @@
  */
 package CB_Locator.Map;
 
-import CB_UI_Base.graphics.Images.MatrixDrawable;
-import CB_UI_Base.graphics.Images.TileGL_RotateDrawables;
+import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.Images.VectorDrawable;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * @author Longri
@@ -54,7 +53,7 @@ public class TileGL_Vector extends TileGL
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList)
+	public void draw(Batch batch, float x, float y, float width, float height, CB_List<TileGL_RotateDrawables> returnDrawableList)
 	{
 		if (drawable != null)
 		{
@@ -62,7 +61,7 @@ public class TileGL_Vector extends TileGL
 
 			if (returnDrawableList != null)
 			{
-				CB_List<MatrixDrawable> list = drawable.getRotateDrawables();
+				SortedRotateList list = drawable.getRotateDrawables();
 				if (list != null) returnDrawableList.add(new TileGL_RotateDrawables(x, y, width, height, list));
 			}
 		}

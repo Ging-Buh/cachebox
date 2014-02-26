@@ -18,7 +18,6 @@ import org.mapsforge.map.model.DisplayModel;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Locator.Location.ProviderType;
-import CB_Locator.Map.GL_RenderType;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Main.TabMainView;
@@ -162,7 +161,7 @@ public class DesktopMain
 		}
 
 		DisplayModel model = new DisplayModel();
-		new DesktopManager(GL_RenderType.Mapsforge, model);
+		new DesktopManager(Config.MapsforgeRenderType.getEnumValue(), model);
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 

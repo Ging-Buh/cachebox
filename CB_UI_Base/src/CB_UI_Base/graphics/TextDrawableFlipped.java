@@ -71,16 +71,6 @@ public class TextDrawableFlipped extends TextDrawable
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
 
-		// PROJECTION_CHK
-
-		// Matrix4 ori = batch.getProjectionMatrix().cpy();
-		// if (scaleWidth != 1 || scaleHeight != 1)
-		// {
-		// Matrix4 transform = batch.getProjectionMatrix().cpy();
-		// transform.scale(scaleWidth, scaleHeight, 1);
-		// batch.setProjectionMatrix(transform);
-		// }
-
 		Matrix3 transform2 = new Matrix3();
 		transform2.translate(x, y);
 
@@ -94,7 +84,6 @@ public class TextDrawableFlipped extends TextDrawable
 		{
 			if (Cache != null) Cache.draw(batch, transform2);
 		}
-		// batch.setProjectionMatrix(ori);
 	}
 
 	@Override

@@ -56,8 +56,8 @@ import CB_UI_Base.graphics.SymbolDrawable;
 import CB_UI_Base.graphics.TextDrawable;
 import CB_UI_Base.graphics.TextDrawableFlipped;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
+import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
-import CB_Utils.Lists.CB_List;
 
 /**
  * Mixed Database render for render MapTile with Mapsforge Tile as Bitmap without Symbols and Names.<br>
@@ -169,7 +169,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	 * @param rendererJob
 	 *            the job that should be executed.
 	 */
-	private TileBitmap executeJob(RendererJob rendererJob, CB_List<MatrixDrawable> rotateList)
+	private TileBitmap executeJob(RendererJob rendererJob, SortedRotateList rotateList)
 	{
 		this.currentRendererJob = rendererJob;
 
@@ -223,11 +223,26 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.drawNodes(rotateList, this.nodes);
 		this.drawNodes(rotateList, this.areaLabels);
 
+		// Canvas c = graphicFactory.createCanvas();
+		// c.setBitmap(bitmap);
+		//
+		// Paint p = graphicFactory.createPaint();
+		// p.setColor(Color.RED);
+		// p.setStrokeWidth(2);
+		// p.setStyle(Style.STROKE);
+		//
+		// int s = bitmap.getHeight();
+		//
+		// c.drawLine(0, 0, 0, s, p);
+		// c.drawLine(0, s, s, s, p);
+		// c.drawLine(s, s, s, 0, p);
+		// c.drawLine(s, 0, 0, 0, p);
+
 		clearLists();
 		return bitmap;
 	}
 
-	public void drawNodes(CB_List<MatrixDrawable> rotateList, List<PointTextContainer> pointTextContainers)
+	public void drawNodes(SortedRotateList rotateList, List<PointTextContainer> pointTextContainers)
 	{
 		for (int index = pointTextContainers.size() - 1; index >= 0; --index)
 		{
@@ -237,6 +252,11 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 			float PointX = (float) pointTextContainer.x;
 			float PointY = (float) (this.currentRendererJob.displayModel.getTileSize() - pointTextContainer.y);
+
+			if (PointX < 0) continue;
+			if (PointX > this.currentRendererJob.displayModel.getTileSize()) continue;
+			if (PointY < 0) continue;
+			if (PointY > this.currentRendererJob.displayModel.getTileSize()) continue;
 
 			GL_Path path = new GL_Path();
 			path.moveTo(PointX, PointY);
@@ -248,17 +268,24 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 			TextDrawable textDrw = new TextDrawable(pointTextContainer.text, path, tileSize, tileSize, front, back, false);
 
+			// TextDrawableFlipped textDrw = new TextDrawableFlipped(pointTextContainer.text, path, tileSize, tileSize, front, back, false);
+
 			MatrixDrawable maDr = new MatrixDrawable(textDrw, new GL_Matrix(), true);
 
 			rotateList.add(maDr);
 		}
 	}
 
-	public void drawWayNames(CB_List<MatrixDrawable> rotateList, List<GL_WayTextContainer> wayNames2)
+	public void drawWayNames(SortedRotateList rotateList, List<GL_WayTextContainer> wayNames2)
 	{
 		for (int index = wayNames2.size() - 1; index >= 0; --index)
 		{
 			GL_WayTextContainer wayTextContainer = wayNames2.get(index);
+
+			if (wayTextContainer.averageX < 0) continue;
+			if (wayTextContainer.averageX > this.currentRendererJob.displayModel.getTileSize()) continue;
+			if (wayTextContainer.averageY < 0) continue;
+			if (wayTextContainer.averageY > this.currentRendererJob.displayModel.getTileSize()) continue;
 
 			wayTextContainer.path.flipY(this.currentRendererJob.displayModel.getTileSize());
 
@@ -276,7 +303,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		}
 	}
 
-	public void drawSymbols(CB_List<MatrixDrawable> rotateList, List<SymbolContainer> symbolContainers)
+	public void drawSymbols(SortedRotateList rotateList, List<SymbolContainer> symbolContainers)
 	{
 		for (int index = symbolContainers.size() - 1; index >= 0; --index)
 		{
@@ -572,7 +599,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	@Override
 	public TileGL execute(RendererJob rendererJob)
 	{
-		CB_List<MatrixDrawable> rotateList = new CB_List<MatrixDrawable>();
+		SortedRotateList rotateList = new SortedRotateList();
 
 		TileBitmap bmp = executeJob(rendererJob, rotateList);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -38,8 +38,8 @@ public class TextOnPath implements Disposable
 	private BitmapFont font;
 	private float[][] vertexData;
 	private float[][] StrokeVertexData;
-	private float[][] TransVertexData;
-	private float[][] TransStrokeVertexData;
+	// private float[][] TransVertexData;
+	// private float[][] TransStrokeVertexData;
 
 	private int[] idx;
 	private int[] tmpGlyphCount;
@@ -74,6 +74,14 @@ public class TextOnPath implements Disposable
 
 		color = fill2.getHSV_Color().toFloatBits();
 		this.font = GL_Fonts.get(fontFamily, fontStyle, fontsize);
+
+		if (this.font == null)
+		{
+			textWidth = 0;
+			PathToClose = true;
+			PathOffset = 0;
+			return;
+		}
 
 		int regionsLength = font.regions.length;
 		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
@@ -124,7 +132,10 @@ public class TextOnPath implements Disposable
 
 	private void createStroke(float width, Color color)
 	{
-		Circle circ = new Circle(0, 0, width / 2, (int) (width * 3));
+
+		int seg = Math.max(5, (int) width);
+
+		Circle circ = new Circle(0, 0, width / 2, seg);
 		float[] vertices = circ.getVertices();
 
 		StrokeVertexData = new float[vertexData.length][vertexData[0].length * ((vertices.length / 2) - 1)];
@@ -211,6 +222,8 @@ public class TextOnPath implements Disposable
 	}
 
 	Matrix3 lastTransform;
+	private float[][] TransStrokeVertexData;
+	private float[][] TransVertexData;
 
 	private boolean transformChanged(Matrix3 transform)
 	{
@@ -261,6 +274,8 @@ public class TextOnPath implements Disposable
 
 		if (transformChanged(transform))
 		{
+			// FIXME Map only difference reduce copy VertexData
+
 			lastTransform = new Matrix3(transform);
 			if (StrokeVertexData != null)
 			{
@@ -272,7 +287,7 @@ public class TextOnPath implements Disposable
 		if (PathToClose || isDisposed) return;
 		TextureRegion[] regions = font.getRegions();
 
-		if (TransStrokeVertexData != null)
+		if (StrokeVertexData != null)
 		{
 			drawVertexData(spriteBatch, regions, TransStrokeVertexData);
 		}
@@ -463,6 +478,7 @@ public class TextOnPath implements Disposable
 	 */
 	private boolean mapPath(GL_Path path)
 	{
+		if (vertexData == null) return false;
 		int index = 0;
 		float[] vertices = vertexData[0];
 
@@ -599,6 +615,14 @@ public class TextOnPath implements Disposable
 	public float[] getCenterPoint()
 	{
 		if (centerpointCalculated) return centerpoint;
+
+		if (vertexData == null)
+		{
+			centerpoint[0] = 0;
+			centerpoint[1] = 0;
+			centerpointCalculated = true;
+			return centerpoint;
+		}
 
 		float x = Float.MAX_VALUE;
 		float y = Float.MAX_VALUE;

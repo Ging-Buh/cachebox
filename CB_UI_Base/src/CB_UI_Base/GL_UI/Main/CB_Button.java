@@ -22,9 +22,9 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Math.Point;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -313,7 +313,7 @@ public class CB_Button extends Button implements OnClickListener
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		boolean hasContextMenu = false;
 

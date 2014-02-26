@@ -155,7 +155,15 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 			pix = tmpPixmap;
 		}
 
-		Packer.pack(AtlasHashString, pix);
+		try
+		{
+			Packer.pack(AtlasHashString, pix);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		if (Atlas == null)
 		{
@@ -166,7 +174,6 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 			Packer.updateTextureAtlas(Atlas, TextureFilter.Linear, TextureFilter.Linear, false);
 		}
 
-		// FIXME scale Pixmap before create Texture if ScaleFactor!=1
 		Texture tex = new Texture(pix);
 
 		TextureList.put(AtlasHashString, tex);
@@ -194,7 +201,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 	{
 		if (Atlas == null) return;
 		if (sprite == null) createSprite();
-		batch.draw(sprite, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+		if (sprite != null) batch.draw(sprite, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
 
 	@Override
@@ -297,6 +304,11 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 	public BitmapDrawable getGlBmpHandle()
 	{
 		return this;
+	}
+
+	public static boolean AtlasContains(int hashCode)
+	{
+		return HashStringList.contains(String.valueOf(hashCode));
 	}
 
 }
