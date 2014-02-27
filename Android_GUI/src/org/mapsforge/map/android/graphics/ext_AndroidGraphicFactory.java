@@ -72,7 +72,7 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 	@Override
 	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha)
 	{
-		return new ext_AndroidBitmap(tileSize, tileSize);
+		return new ext_AndroidTileBitmap(tileSize);
 	}
 
 	@Override

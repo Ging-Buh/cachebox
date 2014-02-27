@@ -26,8 +26,11 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
@@ -58,6 +61,7 @@ import CB_UI_Base.graphics.TextDrawableFlipped;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
+import CB_Utils.Lists.CB_List;
 
 /**
  * Mixed Database render for render MapTile with Mapsforge Tile as Bitmap without Symbols and Names.<br>
@@ -120,6 +124,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	private RenderTheme renderTheme;
 	private ShapeContainer shapeContainer;
 	private final List<GL_WayTextContainer> wayNames;
+	private final CB_List<String> wayNamesStrings;
 	private final List<List<List<ShapePaintContainer>>> ways;
 	private final List<SymbolContainer> waySymbols;
 
@@ -143,6 +148,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.areaLabels = new ArrayList<PointTextContainer>(64);
 		this.waySymbols = new ArrayList<SymbolContainer>(64);
 		this.pointSymbols = new ArrayList<SymbolContainer>(64);
+		this.wayNamesStrings = new CB_List<String>(64);
 	}
 
 	public void destroy()
@@ -223,20 +229,20 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.drawNodes(rotateList, this.nodes);
 		this.drawNodes(rotateList, this.areaLabels);
 
-		// Canvas c = graphicFactory.createCanvas();
-		// c.setBitmap(bitmap);
-		//
-		// Paint p = graphicFactory.createPaint();
-		// p.setColor(Color.RED);
-		// p.setStrokeWidth(2);
-		// p.setStyle(Style.STROKE);
-		//
-		// int s = bitmap.getHeight();
-		//
-		// c.drawLine(0, 0, 0, s, p);
-		// c.drawLine(0, s, s, s, p);
-		// c.drawLine(s, s, s, 0, p);
-		// c.drawLine(s, 0, 0, 0, p);
+		Canvas c = graphicFactory.createCanvas();
+		c.setBitmap(bitmap);
+
+		Paint p = graphicFactory.createPaint();
+		p.setColor(Color.RED);
+		p.setStrokeWidth(2);
+		p.setStyle(Style.STROKE);
+
+		int s = bitmap.getHeight();
+
+		c.drawLine(0, 0, 0, s, p);
+		c.drawLine(0, s, s, s, p);
+		c.drawLine(s, s, s, 0, p);
+		c.drawLine(s, 0, 0, 0, p);
 
 		clearLists();
 		return bitmap;
@@ -287,6 +293,13 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			if (wayTextContainer.averageY < 0) continue;
 			if (wayTextContainer.averageY > this.currentRendererJob.displayModel.getTileSize()) continue;
 
+			if (wayNamesStrings.contains(wayTextContainer.text))
+			{
+				continue;
+			}
+
+			wayNamesStrings.add(wayTextContainer.text);
+
 			wayTextContainer.path.flipY(this.currentRendererJob.displayModel.getTileSize());
 
 			GL_Paint fill = new GL_Paint(wayTextContainer.fill);
@@ -301,6 +314,8 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			rotateList.add(maDr);
 
 		}
+
+		wayNamesStrings.clear();
 	}
 
 	public void drawSymbols(SortedRotateList rotateList, List<SymbolContainer> symbolContainers)
@@ -601,19 +616,39 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	{
 		SortedRotateList rotateList = new SortedRotateList();
 
-		TileBitmap bmp = executeJob(rendererJob, rotateList);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final TileBitmap bmp = executeJob(rendererJob, rotateList);
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try
 		{
 			bmp.compress(baos);
-			byte[] b = baos.toByteArray();
+			final byte[] b = baos.toByteArray();
 
 			Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
 
 			TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present);
-
 			mixedTile.add(rotateList);
-			((ext_Bitmap) bmp).recycle();
+
+			Thread destroyThread = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					try
+					{
+						baos.close();
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					((ext_Bitmap) bmp).recycle();
+				}
+			});
+
+			destroyThread.start();
+
 			return mixedTile;
 		}
 		catch (IOException e)

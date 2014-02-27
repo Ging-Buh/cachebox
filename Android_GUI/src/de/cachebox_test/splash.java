@@ -750,7 +750,6 @@ public class splash extends Activity
 	private void showPleaseWaitDialog()
 	{
 		pWaitD = ProgressDialog.show(splash.this, "In progress", "Copy resources");
-
 		pWaitD.show();
 		TextView tv1 = (TextView) pWaitD.findViewById(android.R.id.message);
 		tv1.setTextColor(Color.WHITE);

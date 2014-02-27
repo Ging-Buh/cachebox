@@ -36,7 +36,21 @@ public class GL_Matrix implements ext_Matrix, Matrix
 
 	public GL_Matrix(ext_Matrix matrix)
 	{
-		matrix3 = new Matrix3(((GL_Matrix) matrix).matrix3);
+		if (matrix == null)
+		{
+			matrix3 = new Matrix3(DEFAULT);
+		}
+		else
+		{
+			if (((GL_Matrix) matrix).matrix3 == null)
+			{
+				matrix3 = new Matrix3(DEFAULT);
+			}
+			else
+			{
+				matrix3 = new Matrix3(((GL_Matrix) matrix).matrix3);
+			}
+		}
 	}
 
 	public GL_Matrix()

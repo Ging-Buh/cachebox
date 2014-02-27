@@ -63,7 +63,7 @@ public class ext_AwtGraphicFactory extends AwtGraphicFactory implements ext_Grap
 	@Override
 	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha)
 	{
-		return new ext_AwtBitmap(tileSize);
+		return new ext_AwtTileBitmap(tileSize);
 	}
 
 	@Override

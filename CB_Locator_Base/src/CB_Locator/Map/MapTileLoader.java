@@ -40,27 +40,38 @@ public class MapTileLoader
 	private boolean doubleCache;
 	private int doubleCacheCount = 0;
 
+	private final int PROCESSOR_COUNT;
+
 	public MapTileLoader()
 	{
 		super();
 
-		int processors = Runtime.getRuntime().availableProcessors();
+		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
 
 		if (queueProcessor == null)
 		{
 
-			queueProcessor = new MultiThreadQueueProcessor[processors];
-			queueProcessorAliveCheck = new Thread[processors];
+			queueProcessor = new MultiThreadQueueProcessor[PROCESSOR_COUNT];
+			queueProcessorAliveCheck = new Thread[PROCESSOR_COUNT];
 
-			for (int i = 0; i < processors; i++)
-			{
-				queueProcessor[i] = new MultiThreadQueueProcessor(queueData);
-				queueProcessor[i].setPriority(Thread.MIN_PRIORITY);
-				queueProcessor[i].start();
+			initial(Thread.MAX_PRIORITY); // first initial one thread(MultiThreadQueueProcessor)
 
-				startAliveCheck(i);
-			}
+		}
+	}
 
+	int InitialCount = 0;
+
+	private void initial(int ThreadPriority)
+	{
+		if (InitialCount < PROCESSOR_COUNT)
+		{
+			queueProcessor[InitialCount] = new MultiThreadQueueProcessor(queueData);
+			queueProcessor[InitialCount].setPriority(ThreadPriority);
+			queueProcessor[InitialCount].start();
+
+			startAliveCheck(InitialCount);
+
+			InitialCount++;
 		}
 	}
 
@@ -110,8 +121,28 @@ public class MapTileLoader
 		return queueData.loadedTiles.size();
 	}
 
+	private boolean ThreadPrioSetted = false;
+	private boolean CombleadInitial = false;
+
 	public void loadTiles(MapViewBase mapView, Descriptor lo, Descriptor ru, int aktZoom)
 	{
+		// Initial Threads?
+		if (!CombleadInitial)
+		{
+			if (InitialCount < PROCESSOR_COUNT && InitialCount > 0 && queueData.loadedTiles.size() > 1)
+			{
+				initial(Thread.MAX_PRIORITY);
+			}
+			else if (InitialCount >= PROCESSOR_COUNT && !ThreadPrioSetted)
+			{
+				for (int i = 0; i < PROCESSOR_COUNT; i++)
+				{
+					queueProcessor[i].setPriority(Thread.NORM_PRIORITY);
+					ThreadPrioSetted = true;
+					CombleadInitial = true;
+				}
+			}
+		}
 
 		{// DEBUG
 

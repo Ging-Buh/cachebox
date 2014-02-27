@@ -499,8 +499,8 @@ public abstract class ManagerBase
 	File mapFile = null;
 	private String mapsForgeFile = "";
 	XmlRenderTheme renderTheme;
-	float textScale = 1;
-	float DEFAULT_TEXT_SCALE = 1;
+	public float textScale = 1;
+	public static float DEFAULT_TEXT_SCALE = 1;
 
 	/**
 	 * Returns the loaded MapfileInfo or NULL

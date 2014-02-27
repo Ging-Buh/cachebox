@@ -20,6 +20,13 @@ public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap
 	int instCount = 0;
 	protected final BitmapDrawable GL_image;
 
+	protected ext_AwtBitmap()
+	{
+		super(1, 1);
+		this.GL_image = null;
+		this.bufferedImage = null;
+	}
+
 	ext_AwtBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException
 	{
 		super(inputStream);

@@ -26,6 +26,13 @@ public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, Tile
 		instCount++;
 	}
 
+	protected ext_AndroidBitmap()
+	{
+		super(1, 1, Config.ALPHA_8);
+		this.GL_image = null;
+		this.bitmap = null;
+	}
+
 	@Override
 	public void recycle()
 	{

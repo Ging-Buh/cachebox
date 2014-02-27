@@ -1024,10 +1024,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int halfMapIntWidth = mapIntWidth / 2;
 		int halfMapIntHeight = mapIntHeight / 2;
 
-		int extensionTop = (int) ((halfMapIntHeight - ySpeedVersatz) * 2.5);
-		int extensionBottom = (int) ((halfMapIntHeight + ySpeedVersatz) * 2.5);
-		int extensionLeft = (int) (halfMapIntWidth * 2.5);
-		int extensionRight = (int) (halfMapIntWidth * 2.5);
+		int extensionTop = (int) ((halfMapIntHeight - ySpeedVersatz) * 1.5);
+		int extensionBottom = (int) ((halfMapIntHeight + ySpeedVersatz) * 1.5);
+		int extensionLeft = (int) (halfMapIntWidth * 1.5);
+		int extensionRight = (int) (halfMapIntWidth * 1.5);
 		Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - drawingWidth / 2 - extensionLeft, halfMapIntHeight - drawingHeight
 				/ 2 - extensionTop), aktZoom);
 		Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight
@@ -1787,6 +1787,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		if (mapState != MapState.CAR)
 		{
 			if (!wasCarMode) return; // brauchen wir nicht noch einmal machen
+
 			CarMode = false;
 			invalidateTexture();
 		}

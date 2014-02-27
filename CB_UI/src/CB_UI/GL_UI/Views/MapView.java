@@ -126,9 +126,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			int aTile = 256 * 256;
 			maxTilesPerScreen = (int) ((rec.getWidth() * rec.getHeight()) / aTile + 0.5);
 
-			maxNumTiles = (int) (maxTilesPerScreen * 4);// four times as much as necessary
-
-			maxNumTiles *= 2; // for two zoom levels
+			maxNumTiles = (int) (maxTilesPerScreen * 8);// 8 times as much as necessary
 
 		}
 		catch (Exception e)
@@ -1264,6 +1262,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			// Zustand der Karte CarMode/NormalMode
 			if (CarMode)
 			{
+
+				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 2;
+
 				if (Config.nightMode.getValue())
 				{
 					// zuerst schauen, ob ein Render Theme im Custom Skin Ordner Liegt
@@ -1295,6 +1296,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					themePath = ManagerBase.INTERNAL_CAR_THEME;
 				}
 
+			}
+			else
+			{
+				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE;
 			}
 
 			if (themePath == null)

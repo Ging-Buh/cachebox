@@ -505,6 +505,8 @@ public class GL implements ApplicationListener, InputProcessor
 			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
+		if (DialogIsShown || ToastIsShown || MarkerIsShown) batch.setProjectionMatrix(prjMatrix.Matrix());
+
 		if (DialogIsShown && mDialog.getCildCount() > 0)
 		{
 			// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
@@ -544,6 +546,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (Global.isTestVersion())
 		{
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 
 			// TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
 			float FpsInfoSize = 4;
