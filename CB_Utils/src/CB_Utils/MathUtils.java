@@ -32,101 +32,20 @@ public class MathUtils
 	 */
 	static public final double WGS84_SEMI_MAJOR_AXIS = 6356752.3142; // WGS84 semi-major axis
 
-	/*
-	 * Calculation of Cos/Sin/Atan over LockUpTable
-	 */
+	static public float LegalizeDecreese(float value)
+	{
+		while (value > 360)
+		{
+			value = 360 - value;
+		}
 
-	// static private final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
-	// static private final int SIN_MASK = ~(-1 << SIN_BITS);
-	// static private final int SIN_COUNT = SIN_MASK + 1;
-	//
-	// static private final double degFull = 360;
-	// static private final double radToIndex = SIN_COUNT / PI2;
-	// static private final double degToIndex = SIN_COUNT / degFull;
-	//
-	// static private class Sin
-	// {
-	// static final double[] table = new double[SIN_COUNT];
-	// static
-	// {
-	// for (int i = 0; i < SIN_COUNT; i++)
-	// table[i] = Math.sin((i + 0.5f) / SIN_COUNT * PI2);
-	// for (int i = 0; i < 360; i += 90)
-	// table[(int) (i * degToIndex) & SIN_MASK] = Math.sin(i * DEG_RAD);
-	// }
-	// }
-	//
-	// /** Returns the sine in radians from a lookup table. */
-	// static public final double TableSin(double radians)
-	// {
-	// return Sin.table[(int) (radians * radToIndex) & SIN_MASK];
-	// }
-	//
-	// /** Returns the cosine in radians from a lookup table. */
-	// static public final double TableCos(double radians)
-	// {
-	// return Sin.table[(int) ((radians + HALF_PI) * radToIndex) & SIN_MASK];
-	// }
-	//
-	// static private final int ATAN2_BITS = 7; // Adjust for accuracy.
-	// static private final int ATAN2_BITS2 = ATAN2_BITS << 1;
-	// static private final int ATAN2_MASK = ~(-1 << ATAN2_BITS2);
-	// static private final int ATAN2_COUNT = ATAN2_MASK + 1;
-	// static final int ATAN2_DIM = (int) Math.sqrt(ATAN2_COUNT);
-	// static private final double INV_ATAN2_DIM_MINUS_1 = 1.0f / (ATAN2_DIM - 1);
-	//
-	// static private class Atan2
-	// {
-	// static final double[] table = new double[ATAN2_COUNT];
-	// static
-	// {
-	// for (int i = 0; i < ATAN2_DIM; i++)
-	// {
-	// for (int j = 0; j < ATAN2_DIM; j++)
-	// {
-	// double x0 = i / ATAN2_DIM;
-	// double y0 = j / ATAN2_DIM;
-	// table[j * ATAN2_DIM + i] = Math.atan2(y0, x0);
-	// }
-	// }
-	// }
-	// }
-	//
-	// /** Returns atan2 in radians from a lookup table. */
-	// static public final double TableAtan2(double d, double e)
-	// {
-	// double add, mul;
-	// if (e < 0)
-	// {
-	// if (d < 0)
-	// {
-	// d = -d;
-	// mul = 1;
-	// }
-	// else
-	// mul = -1;
-	// e = -e;
-	// add = (float) -Math.PI;
-	// }
-	// else
-	// {
-	// if (d < 0)
-	// {
-	// d = -d;
-	// mul = -1;
-	// }
-	// else
-	// mul = 1;
-	// add = 0;
-	// }
-	// double invDiv = (1 / ((e < d ? d : e) * INV_ATAN2_DIM_MINUS_1));
-	//
-	// if (invDiv == Float.POSITIVE_INFINITY) return (Math.atan2(d, e) + add) * mul;
-	//
-	// int xi = (int) (e * invDiv);
-	// int yi = (int) (d * invDiv);
-	// return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
-	// }
+		while (value < 0)
+		{
+			value += 360;
+		}
+
+		return value;
+	}
 
 	/**
 	 * Computes the approximate distance in meters between two locations, and optionally the initial and final bearings of the shortest path

@@ -410,20 +410,23 @@ public class GL_Path implements ext_Path, Disposable
 
 	public float getAverageDirection()
 	{
-		if (averageDirection == Float.MAX_VALUE) calcSectionLength();
+		if (averageDirection == Float.MAX_VALUE)
+		{
+			// Average direction is the direction between first and last point!
+			averageDirection = getAngle(0, size / 2);
+		}
 		return averageDirection;
 	}
 
 	private void calcSectionLength()
 	{
-		averageDirection = 0;
+
 		int arrayLength = ((size - 2) / 2);
 
 		PathSectionLength = new float[arrayLength];
 		if (arrayLength == 0) return;
 
 		int index = 0;
-		int angleCount = 0;
 
 		float length = PathSectionLength[index] = 0;
 
@@ -440,16 +443,8 @@ public class GL_Path implements ext_Path, Disposable
 
 			length = PathSectionLength[index] = length + segmentLength;
 
-			float angle = getAngle(index, index + 1);
-			if (!Float.isInfinite(angle))
-			{
-				averageDirection += angle;
-				angleCount++;
-			}
-
 			index++;
 		}
-		averageDirection /= angleCount;
 	}
 
 	/**

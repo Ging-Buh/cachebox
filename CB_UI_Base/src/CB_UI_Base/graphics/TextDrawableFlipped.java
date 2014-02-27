@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
+import CB_Utils.MathUtils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextOnPath;
@@ -64,9 +65,11 @@ public class TextDrawableFlipped extends TextDrawable
 	{
 		if (isDisposed) return;
 
-		if (!isFlipped.get() && pathDirection + rotated > 100) isFlipped.set(true);
+		float direction = MathUtils.LegalizeDecreese(pathDirection + rotated);
 
-		if (isFlipped.get() && pathDirection + rotated < 100) isFlipped.set(false);
+		if (isFlipped.get() && direction > 185) isFlipped.set(false);
+
+		if (!isFlipped.get() && direction < 175) isFlipped.set(true);
 
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
