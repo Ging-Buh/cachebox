@@ -52,6 +52,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -513,16 +514,19 @@ public class GL implements ApplicationListener, InputProcessor
 
 			drawDarknessSprite();
 			mDialog.renderChilds(batch, prjMatrix);
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
 		if (ToastIsShown)
 		{
 			mToastOverlay.renderChilds(batch, prjMatrix);
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
 		if (MarkerIsShown)
 		{
 			mMarkerOverlay.renderChilds(batch, prjMatrix);
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
 		GL_View_Base.debug = CB_UI_Base_Settings.DebugMode.getValue();
@@ -546,6 +550,9 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (Global.isTestVersion())
 		{
+
+			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+
 			batch.setProjectionMatrix(prjMatrix.Matrix());
 
 			// TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;

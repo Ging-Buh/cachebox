@@ -50,7 +50,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global
 {
-	public static final int CurrentRevision = 1966;
+	public static final int CurrentRevision = 1969;
 
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "test";

@@ -50,14 +50,6 @@ public class GL_GraphicFactory implements ext_GraphicFactory
 	private final float scaleFactor;
 	private final Hashtable<Integer, ResourceBitmap> BmpBuffer = new Hashtable<Integer, ResourceBitmap>();
 
-	/**
-	 * Release and dispose all cached Images
-	 */
-	public static void disposeBmpBuffer()
-	{
-		// TODO
-	}
-
 	public GL_GraphicFactory(float ScaleFactor)
 	{
 		this.scaleFactor = ScaleFactor;

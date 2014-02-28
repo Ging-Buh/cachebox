@@ -24,7 +24,6 @@ import CB_Utils.MathUtils;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextOnPath;
-import com.badlogic.gdx.math.Matrix3;
 
 /**
  * @author Longri
@@ -74,18 +73,16 @@ public class TextDrawableFlipped extends TextDrawable
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
 
-		Matrix3 transform2 = new Matrix3();
-		transform2.translate(x, y);
-
-		transform2.scale(scaleWidth, scaleHeight);
+		transform.setToTranslation(x, y, 0);
+		transform.scale(scaleWidth, scaleHeight, 1);
 
 		if (isFlipped.get())
 		{
-			if (flippedCache != null) flippedCache.draw(batch, transform2);
+			if (flippedCache != null) flippedCache.draw(batch, transform);
 		}
 		else
 		{
-			if (Cache != null) Cache.draw(batch, transform2);
+			if (Cache != null) Cache.draw(batch, transform);
 		}
 	}
 

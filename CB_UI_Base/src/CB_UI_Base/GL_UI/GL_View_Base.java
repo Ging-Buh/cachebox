@@ -490,11 +490,6 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.setTransformMatrix(matrix);
 		}
 
-		// batch.flush();// FIXME ist das nötig?
-		// Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
-
-		// this.renderWithoutScissor(batch);
-
 		if (childs != null && childs.size() > 0)
 		{
 			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)

@@ -22,7 +22,7 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextOnPath;
-import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -36,6 +36,7 @@ public class TextDrawable implements IRotateDrawable, Disposable
 	protected final float DEFAULT_HEIGHT;
 	protected boolean isDisposed = false;
 	protected float pathDirection;
+	protected final Matrix4 transform = new Matrix4();
 	protected final String debugText;
 
 	public TextDrawable(final String text, GL_Path path, float defaultWidth, float defaultHeight, final ext_Paint fill,
@@ -105,24 +106,23 @@ public class TextDrawable implements IRotateDrawable, Disposable
 			float scaleWidth = width / DEFAULT_WIDTH;
 			float scaleHeight = height / DEFAULT_HEIGHT;
 
-			Matrix3 transform2 = new Matrix3();
-			transform2.translate(x, y);
+			transform.setToTranslation(x, y, 0);
 
 			if (rotated != 0)
 			{
 
 				float[] center = Cache.getCenterPoint();
-				transform2.scale(scaleWidth, scaleHeight);
-				transform2.translate(center[0], center[1]);
-				transform2.rotate(rotated);
-				transform2.translate(-center[0], -center[1]);
+				transform.scale(scaleWidth, scaleHeight, 1);
+				transform.translate(center[0], center[1], 0);
+				transform.rotate(0, 0, 1, rotated);
+				transform.translate(-center[0], -center[1], 0);
 			}
 			else
 			{
-				transform2.scale(scaleWidth, scaleHeight);
+				transform.scale(scaleWidth, scaleHeight, 1);
 			}
 
-			Cache.draw(batch, transform2);
+			Cache.draw(batch, transform);
 
 		}
 	}
