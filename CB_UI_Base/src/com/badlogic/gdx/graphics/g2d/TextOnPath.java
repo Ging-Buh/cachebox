@@ -237,24 +237,22 @@ public class TextOnPath implements Disposable
 		return false;
 	}
 
-	private float[][] MapTransform(float[][] srcData, Matrix3 matrix3)
+	private void MapTransform(float[][] srcData, float[][] tarData, Matrix3 matrix3)
 	{
 		// Copy Data
-		float[][] data = new float[srcData.length][];
 		for (int j = 0, n = srcData.length; j < n; j++)
 		{
 			if (idx[j] >= 0)
-			{ // ignore if this texture has no glyphs
+			{
 				float[] vertices = srcData[j];
-				data[j] = new float[vertices.length];
-				System.arraycopy(vertices, 0, data[j], 0, vertices.length);
+				System.arraycopy(vertices, 0, tarData[j], 0, vertices.length);
 			}
 		}
 
 		// Map Data
-		for (int j = 0, length = data.length; j < length; j++)
+		for (int j = 0, length = tarData.length; j < length; j++)
 		{
-			float[] vertices = data[j];
+			float[] vertices = tarData[j];
 			for (int i = 0; i < vertices.length; i += 5)
 			{
 				float x = vertices[i] * matrix3.val[0] + vertices[i + 1] * matrix3.val[3] + matrix3.val[6];
@@ -263,8 +261,6 @@ public class TextOnPath implements Disposable
 				vertices[i + 1] = y;
 			}
 		}
-
-		return data;
 	}
 
 	public void draw(Batch spriteBatch, Matrix3 transform)
@@ -279,9 +275,34 @@ public class TextOnPath implements Disposable
 			lastTransform = new Matrix3(transform);
 			if (StrokeVertexData != null)
 			{
-				TransStrokeVertexData = MapTransform(StrokeVertexData, lastTransform);
+				if (TransStrokeVertexData == null)
+				{
+					TransStrokeVertexData = new float[StrokeVertexData.length][];
+					for (int j = 0, n = StrokeVertexData.length; j < n; j++)
+					{
+						if (idx[j] >= 0)
+						{
+							TransStrokeVertexData[j] = new float[StrokeVertexData[j].length];
+						}
+					}
+				}
+
+				MapTransform(StrokeVertexData, TransStrokeVertexData, lastTransform);
 			}
-			TransVertexData = MapTransform(vertexData, lastTransform);
+
+			if (TransVertexData == null)
+			{
+				TransVertexData = new float[vertexData.length][];
+				for (int j = 0, n = vertexData.length; j < n; j++)
+				{
+					if (idx[j] >= 0)
+					{
+						TransVertexData[j] = new float[vertexData[j].length];
+					}
+				}
+			}
+
+			MapTransform(vertexData, TransVertexData, lastTransform);
 		}
 
 		if (PathToClose || isDisposed) return;

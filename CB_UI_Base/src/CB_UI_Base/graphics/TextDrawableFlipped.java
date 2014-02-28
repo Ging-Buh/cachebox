@@ -65,7 +65,7 @@ public class TextDrawableFlipped extends TextDrawable
 	{
 		if (isDisposed) return;
 
-		float direction = MathUtils.LegalizeDecreese(pathDirection + rotated);
+		float direction = MathUtils.LegalizeDegreese(pathDirection + rotated);
 
 		if (isFlipped.get() && direction > 185) isFlipped.set(false);
 
