@@ -40,19 +40,15 @@ public class MapTileLoader
 	private boolean doubleCache;
 	private int doubleCacheCount = 0;
 
-	private final int PROCESSOR_COUNT;
-
 	public MapTileLoader()
 	{
 		super();
 
-		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-
 		if (queueProcessor == null)
 		{
 
-			queueProcessor = new MultiThreadQueueProcessor[PROCESSOR_COUNT];
-			queueProcessorAliveCheck = new Thread[PROCESSOR_COUNT];
+			queueProcessor = new MultiThreadQueueProcessor[ManagerBase.PROCESSOR_COUNT];
+			queueProcessorAliveCheck = new Thread[ManagerBase.PROCESSOR_COUNT];
 
 			initial(Thread.MAX_PRIORITY); // first initial one thread(MultiThreadQueueProcessor)
 
@@ -63,7 +59,7 @@ public class MapTileLoader
 
 	private void initial(int ThreadPriority)
 	{
-		if (InitialCount < PROCESSOR_COUNT)
+		if (InitialCount < ManagerBase.PROCESSOR_COUNT)
 		{
 			queueProcessor[InitialCount] = new MultiThreadQueueProcessor(queueData);
 			queueProcessor[InitialCount].setPriority(ThreadPriority);
@@ -129,13 +125,13 @@ public class MapTileLoader
 		// Initial Threads?
 		if (!CombleadInitial)
 		{
-			if (InitialCount < PROCESSOR_COUNT && InitialCount > 0 && queueData.loadedTiles.size() > 1)
+			if (InitialCount < ManagerBase.PROCESSOR_COUNT && InitialCount > 0 && queueData.loadedTiles.size() > 1)
 			{
 				initial(Thread.MAX_PRIORITY);
 			}
-			else if (InitialCount >= PROCESSOR_COUNT && !ThreadPrioSetted)
+			else if (InitialCount >= ManagerBase.PROCESSOR_COUNT && !ThreadPrioSetted)
 			{
-				for (int i = 0; i < PROCESSOR_COUNT; i++)
+				for (int i = 0; i < ManagerBase.PROCESSOR_COUNT; i++)
 				{
 					queueProcessor[i].setPriority(Thread.NORM_PRIORITY);
 					ThreadPrioSetted = true;

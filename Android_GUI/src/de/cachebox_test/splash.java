@@ -1122,14 +1122,16 @@ public class splash extends Activity
 			ui.isLandscape = false;
 		}
 
-		// new Translation(Config.WorkPath, false);
-
 		new UiSizes();
 		UI_Size_Base.that.initial(ui);
 
 		Global.Paints.init(this);
 
 		ext_AndroidGraphicFactory.createInstance(this.getApplication());
+
+		// FIXME set true density
+		DisplayModel.setDeviceScaleFactor(1);
+
 		new de.cachebox_test.Map.AndroidManager(Config.MapsforgeRenderType.getEnumValue(), new DisplayModel());
 
 		Initial2();

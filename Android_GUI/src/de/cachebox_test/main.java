@@ -436,6 +436,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Global.InitIcons(this);
 
 			ext_AndroidGraphicFactory.createInstance(this.getApplication());
+
+			// FIXME set true density
+			DisplayModel.setDeviceScaleFactor(1);
+
 			new de.cachebox_test.Map.AndroidManager(Config.MapsforgeRenderType.getEnumValue(), new DisplayModel());
 
 			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
