@@ -603,6 +603,15 @@ public class SearchForGeocaches
 						}
 					}
 
+					// Notes
+					Object note = jCache.get("GeocacheNote");
+					if ((note != null) && (note instanceof String))
+					{
+						String s = (String) note;
+						System.out.println(s);
+						cache.tmpNote = s;
+					}
+
 				}
 				GroundspeakAPI.checkCacheStatus(json, isLite);
 			}

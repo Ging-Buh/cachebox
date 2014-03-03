@@ -1504,6 +1504,42 @@ public class GroundspeakAPI
 				cacheDAO.WriteToDatabase(cache);
 			}
 
+			// Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
+			if (cache.tmpNote != null)
+			{
+				String oldNote = Database.GetNote(cache);
+				String newNote = "";
+				if (oldNote == null)
+				{
+					oldNote = "";
+				}
+				String begin = "<Import from Geocaching.com>";
+				String end = "</Import from Geocaching.com>";
+				int iBegin = oldNote.indexOf(begin);
+				int iEnd = oldNote.indexOf(end);
+				if ((iBegin >= 0) && (iEnd > iBegin))
+				{
+					// Note from Groundspeak already in Database
+					// -> Replace only this part in whole Note
+					newNote = oldNote.substring(0, iBegin - 1) + System.getProperty("line.separator"); // Copy the old part of Note before
+																										// the beginning of the groundspeak
+																										// block
+					newNote += begin + System.getProperty("line.separator");
+					newNote += cache.tmpNote;
+					newNote += System.getProperty("line.separator") + end;
+					newNote += oldNote.substring(iEnd + end.length(), oldNote.length());
+				}
+				else
+				{
+					newNote = oldNote + System.getProperty("line.separator");
+					newNote += begin + System.getProperty("line.separator");
+					newNote += cache.tmpNote;
+					newNote += System.getProperty("line.separator") + end;
+				}
+				cache.tmpNote = newNote;
+				Database.SetNote(cache, cache.tmpNote);
+			}
+
 			// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
 			cache.longDescription = "";
 
