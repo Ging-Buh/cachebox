@@ -655,29 +655,39 @@ public class TextOnPath implements Disposable
 			return centerpoint;
 		}
 
-		float x = Float.MAX_VALUE;
-		float y = Float.MAX_VALUE;
-		float u = Float.MIN_VALUE;
-		float v = Float.MIN_VALUE;
-
-		for (int j = 0, length = vertexData.length; j < length; j++)
+		try
 		{
-			float[] vertices = vertexData[j];
-			for (int i = 0, n = idx[0]; i < n; i += 5)
+			float x = Float.MAX_VALUE;
+			float y = Float.MAX_VALUE;
+			float u = Float.MIN_VALUE;
+			float v = Float.MIN_VALUE;
+
+			for (int j = 0, length = vertexData.length; j < length; j++)
 			{
-				x = Math.min(x, vertices[i]);
-				y = Math.min(y, vertices[i + 1]);
+				float[] vertices = vertexData[j];
+				for (int i = 0, n = idx[0]; i < n; i += 5)
+				{
+					x = Math.min(x, vertices[i]);
+					y = Math.min(y, vertices[i + 1]);
 
-				u = Math.max(u, vertices[i]);
-				v = Math.max(v, vertices[i + 1]);
+					u = Math.max(u, vertices[i]);
+					v = Math.max(v, vertices[i + 1]);
 
+				}
 			}
-		}
 
-		centerpoint[0] = x + ((u - x) / 2);
-		centerpoint[1] = y + ((v - y) / 2);
-		centerpointCalculated = true;
-		return centerpoint;
+			centerpoint[0] = x + ((u - x) / 2);
+			centerpoint[1] = y + ((v - y) / 2);
+			centerpointCalculated = true;
+			return centerpoint;
+		}
+		catch (Exception e)
+		{
+			centerpoint[0] = 0;
+			centerpoint[1] = 0;
+			centerpointCalculated = true;
+			return centerpoint;
+		}
 
 	}
 

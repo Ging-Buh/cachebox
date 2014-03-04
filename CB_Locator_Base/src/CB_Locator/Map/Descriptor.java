@@ -1,7 +1,7 @@
 /* 
  * Copyright (C) 2009 - 2010 getcachebox.net
  * 
- * Copyright (C) 2011 team-cachebox.de
+ * Copyright (C) 2011 - 2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,12 @@ package CB_Locator.Map;
 import CB_Utils.MathUtils;
 import CB_Utils.Math.PointD;
 
+/**
+ * @author hwinkelmann
+ * @author ersthelfer
+ * @author ging-buh
+ * @author Longri
+ */
 public class Descriptor implements Comparable<Descriptor>
 {
 
@@ -29,6 +35,7 @@ public class Descriptor implements Comparable<Descriptor>
 	static int[] tileOffset = null;
 	// zur Übergabe beliebiger Daten
 	public Object Data = null;
+	private long BuffertHash = 0;
 
 	public static void Init()
 	{
@@ -51,17 +58,17 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * X-Koordinate der Kachel
 	 */
-	public int X;
+	protected int X;
 
 	/**
 	 * Y-Koordinate der Kachel
 	 */
-	public int Y;
+	protected int Y;
 
 	/**
 	 * Zoom-Stufe der Kachel
 	 */
-	public int Zoom; // TODO muss noch auf max begrenzt Werden
+	protected int Zoom; // TODO muss noch auf max begrenzt Werden
 
 	public boolean NightMode = false;
 
@@ -77,9 +84,9 @@ public class Descriptor implements Comparable<Descriptor>
 	 */
 	public Descriptor(int x, int y, int zoom, boolean NightMode)
 	{
-		X = x;
-		Y = y;
-		Zoom = zoom;
+		this.X = x;
+		this.Y = y;
+		this.Zoom = zoom;
 		this.NightMode = NightMode;
 	}
 
@@ -102,10 +109,18 @@ public class Descriptor implements Comparable<Descriptor>
 	 */
 	public Descriptor AdjustZoom(int newZoomLevel)
 	{
-		int zoomDiff = newZoomLevel - Zoom;
+		int zoomDiff = newZoomLevel - getZoom();
 		int pow = (int) Math.pow(2, Math.abs(zoomDiff));
 
-		return new Descriptor(X * pow, Y * pow, newZoomLevel, this.NightMode);
+		if (zoomDiff < 0)
+		{
+			return new Descriptor(getX() / pow, getY() / pow, newZoomLevel, this.NightMode);
+		}
+		else
+		{
+			return new Descriptor(getX() * pow, getY() * pow, newZoomLevel, this.NightMode);
+		}
+
 	}
 
 	/**
@@ -138,6 +153,19 @@ public class Descriptor implements Comparable<Descriptor>
 	public static double LongitudeToTileX(double zoom, double longitude)
 	{
 		return (longitude + 180.0) / 360.0 * Math.pow(2, zoom);
+
+	}
+
+	public static double LongitudeToTileX(byte zoom, double longitude)
+	{
+		return LongitudeToTileX(zoom, longitude, 1);
+	}
+
+	public static double LongitudeToTileX(byte zoom, double longitude, int TileSize)
+	{
+
+		long mapSize = TileSize << zoom;
+		return (longitude + 180) / 360 * mapSize;
 	}
 
 	/**
@@ -154,6 +182,24 @@ public class Descriptor implements Comparable<Descriptor>
 		double latRad = latitude * MathUtils.DEG_RAD;
 
 		return (1 - Math.log(Math.tan(latRad) + (1.0 / Math.cos(latRad))) / Math.PI) / 2 * Math.pow(2, zoom);
+	}
+
+	public static double LatitudeToTileY(byte zoom, double latitude)
+	{
+		return LatitudeToTileY(zoom, latitude, 1);
+	}
+
+	public final static double PI_180 = (Math.PI / 180);
+	public final static double PI_4 = (Math.PI * 4);
+
+	public static double LatitudeToTileY(byte zoom, double latitude, int TileSize)
+	{
+		double sinLatitude = Math.sin(latitude * (Math.PI / 180));
+		long mapSize = TileSize << zoom;
+		// FIXME improve this formula so that it works correctly without the clipping
+		double pixelY = (0.5 - Math.log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * Math.PI)) * mapSize;
+		return Math.min(Math.max(0, pixelY), mapSize);
+
 	}
 
 	/**
@@ -190,8 +236,8 @@ public class Descriptor implements Comparable<Descriptor>
 	 */
 	public PointD ToWorld(int xOffset, int yOffset, int desiredZoom)
 	{
-		double adjust = Math.pow(2, (desiredZoom - Zoom));
-		return new PointD((X + xOffset) * adjust * 256, (Y + yOffset) * adjust * 256);
+		double adjust = Math.pow(2, (desiredZoom - getZoom()));
+		return new PointD((getX() + xOffset) * adjust * 256, (getY() + yOffset) * adjust * 256);
 	}
 
 	public static PointD ToWorld(double X, double Y, int zoom, int desiredZoom)
@@ -206,9 +252,11 @@ public class Descriptor implements Comparable<Descriptor>
 		return new PointD(X / (adjust * 256), Y / (adjust * 256));
 	}
 
-	public long GetHashCode()
+	public Long GetHashCode()
 	{
-		return ((tileOffset[Zoom]) + (long) (TilesPerLine[Zoom]) * Y + X);
+		if (BuffertHash != 0) return BuffertHash;
+		BuffertHash = ((tileOffset[Zoom]) + (long) (TilesPerLine[Zoom]) * Y + X);
+		return BuffertHash;
 	}
 
 	public String ToString()
@@ -230,13 +278,59 @@ public class Descriptor implements Comparable<Descriptor>
 	}
 
 	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof Descriptor)
+		{
+			Descriptor desc = (Descriptor) obj;
+
+			if (this.GetHashCode() == desc.GetHashCode()) return true;
+
+		}
+		return false;
+	}
+
+	@Override
 	public String toString()
 	{
-		return "X=" + this.X + " Y=" + this.Y + " Zoom=" + this.Zoom;
+		return "X=" + this.getX() + " Y=" + this.getY() + " Zoom=" + this.getZoom();
 	}
 
 	public void dispose()
 	{
 		Data = null;
+	}
+
+	public int getZoom()
+	{
+		return Zoom;
+	}
+
+	public void setZoom(int zoom)
+	{
+		Zoom = zoom;
+		BuffertHash = 0; // Hash must new calculated
+	}
+
+	public int getY()
+	{
+		return Y;
+	}
+
+	public void setY(int y)
+	{
+		Y = y;
+		BuffertHash = 0; // Hash must new calculated
+	}
+
+	public int getX()
+	{
+		return X;
+	}
+
+	public void setX(int x)
+	{
+		X = x;
+		BuffertHash = 0; // Hash must new calculated
 	}
 }

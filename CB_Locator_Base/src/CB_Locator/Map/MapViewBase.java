@@ -148,7 +148,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			int abstand = (int) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 			endTs = startTs + 2000 + abstand * 50 / anzPoints;
 			started = true;
-			mapTileLoader.doubleCache();
+			// mapTileLoader.doubleCache();
 		}
 
 		public Point getAktPan()
@@ -185,7 +185,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			this.startZoom = startZoom;
 			this.endZoom = endZoom;
 			fertig = false;
-			mapTileLoader.doubleCache();
+			// mapTileLoader.doubleCache();
 		}
 
 		public float getAktZoom()
@@ -559,9 +559,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					- ySpeedVersatz), tmpzoom);
 			Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + halfDrawingtWidth, halfMapIntHeight + halfDrawingHeight
 					+ ySpeedVersatz), tmpzoom);
-			for (int i = lo.X; i <= ru.X; i++)
+			for (int i = lo.getX(); i <= ru.getX(); i++)
 			{
-				for (int j = lo.Y; j <= ru.Y; j++)
+				for (int j = lo.getY(); j <= ru.getY(); j++)
 				{
 					Descriptor desc = new Descriptor(i, j, tmpzoom, this.NightMode);
 					TileGL tile = null;
@@ -645,12 +645,12 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					// werden muß
 					long posFactor = getscaledMapTilePosFactor(tile);
 
-					long xPos = tile.Descriptor.X * posFactor * tile.getWidth() - screenCenterW.x;
-					long yPos = -(tile.Descriptor.Y + 1) * posFactor * tile.getHeight() - screenCenterW.y;
+					long xPos = tile.Descriptor.getX() * posFactor * tile.getWidth() - screenCenterW.x;
+					long yPos = -(tile.Descriptor.getY() + 1) * posFactor * tile.getHeight() - screenCenterW.y;
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
 
-					boolean addToRotateList = tile.Descriptor.Zoom == aktZoom; // Draw Names and Symbols only from Tile with right zoom
+					boolean addToRotateList = tile.Descriptor.getZoom() == aktZoom; // Draw Names and Symbols only from Tile with right zoom
 					// factor
 
 					tile.draw(batch, xPos, yPos, xSize, ySize, addToRotateList ? rotateList : null);
@@ -682,8 +682,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					// werden muß
 					long posFactor = getscaledMapTilePosFactor(tile);
 
-					long xPos = tile.Descriptor.X * posFactor * tile.getWidth() - screenCenterW.x;
-					long yPos = -(tile.Descriptor.Y + 1) * posFactor * tile.getHeight() - screenCenterW.y;
+					long xPos = tile.Descriptor.getX() * posFactor * tile.getWidth() - screenCenterW.x;
+					long yPos = -(tile.Descriptor.getY() + 1) * posFactor * tile.getHeight() - screenCenterW.y;
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
 					tile.draw(batch, xPos, yPos, xSize, ySize, rotateList);
@@ -697,7 +697,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	private long getscaledMapTilePosFactor(TileGL tile)
 	{
 		long result = 1;
-		result = (long) (Math.pow(2.0, MapTileLoader.MAX_MAP_ZOOM - tile.Descriptor.Zoom) / tile.getScaleFactor());
+		result = (long) (Math.pow(2.0, MapTileLoader.MAX_MAP_ZOOM - tile.Descriptor.getZoom()) / tile.getScaleFactor());
 		return result;
 	}
 

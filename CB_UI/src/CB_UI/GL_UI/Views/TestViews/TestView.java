@@ -258,9 +258,9 @@ public class TestView extends CB_View_Base
 				+ ySpeedVersatz), tmpzoom);
 
 		int counter = 0;
-		for (int i = lo.X; i <= ru.X; i++)
+		for (int i = lo.getX(); i <= ru.getX(); i++)
 		{
-			for (int j = lo.Y; j <= ru.Y; j++)
+			for (int j = lo.getY(); j <= ru.getY(); j++)
 			{
 				Descriptor desc = new Descriptor(i, j, tmpzoom, false);
 				ManagerBase.Manager.getMapsforgePixMap(layer, desc, 0);

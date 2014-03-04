@@ -50,7 +50,7 @@ public class MapTileLoader
 			queueProcessor = new MultiThreadQueueProcessor[ManagerBase.PROCESSOR_COUNT];
 			queueProcessorAliveCheck = new Thread[ManagerBase.PROCESSOR_COUNT];
 
-			initial(Thread.MAX_PRIORITY); // first initial one thread(MultiThreadQueueProcessor)
+			initial(Thread.NORM_PRIORITY); // first initial one thread(MultiThreadQueueProcessor)
 
 		}
 	}
@@ -61,7 +61,7 @@ public class MapTileLoader
 	{
 		if (InitialCount < ManagerBase.PROCESSOR_COUNT)
 		{
-			queueProcessor[InitialCount] = new MultiThreadQueueProcessor(queueData);
+			queueProcessor[InitialCount] = new MultiThreadQueueProcessor(queueData, InitialCount);
 			queueProcessor[InitialCount].setPriority(ThreadPriority);
 			queueProcessor[InitialCount].start();
 
@@ -93,8 +93,8 @@ public class MapTileLoader
 
 					if (!queueProcessor[index].Alive())
 					{
-						Logger.DEBUG("MapTileLoader Restart queueProcessor");
-						queueProcessor[index] = new MultiThreadQueueProcessor(queueData);
+						Logger.LogCat("MapTileLoader Restart queueProcessor[" + index + "]");
+						queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
 						queueProcessor[index].setPriority(Thread.MIN_PRIORITY);
 						queueProcessor[index].start();
 					}
@@ -127,13 +127,13 @@ public class MapTileLoader
 		{
 			if (InitialCount < ManagerBase.PROCESSOR_COUNT && InitialCount > 0 && queueData.loadedTiles.size() > 1)
 			{
-				initial(Thread.MAX_PRIORITY);
+				initial(Thread.NORM_PRIORITY);
 			}
 			else if (InitialCount >= ManagerBase.PROCESSOR_COUNT && !ThreadPrioSetted)
 			{
 				for (int i = 0; i < ManagerBase.PROCESSOR_COUNT; i++)
 				{
-					queueProcessor[i].setPriority(Thread.NORM_PRIORITY);
+					queueProcessor[i].setPriority(Thread.MIN_PRIORITY);
 					ThreadPrioSetted = true;
 					CombleadInitial = true;
 				}
@@ -199,48 +199,70 @@ public class MapTileLoader
 
 		}
 
-		try
+		CB_List<Descriptor> trueZommDescList = new CB_List<Descriptor>();
+		CB_List<Descriptor> biggerZommDescList = new CB_List<Descriptor>();
+
+		for (int i = lo.getX(); i <= ru.getX(); i++)
 		{
-
-			for (int i = lo.X; i <= ru.X; i++)
+			for (int j = lo.getY(); j <= ru.getY(); j++)
 			{
-				for (int j = lo.Y; j <= ru.Y; j++)
+				Descriptor desc = new Descriptor(i, j, aktZoom, lo.NightMode);
+				Descriptor biggerDesc = desc.AdjustZoom(aktZoom - 1);
+
+				// speichern, zu welche MapView diese Descriptor angefordert hat
+				desc.Data = mapView;
+				biggerDesc.Data = mapView;
+
+				trueZommDescList.add(desc);
+				neadedTiles.add(desc.GetHashCode());
+				if (!biggerZommDescList.contains(biggerDesc))
 				{
-					Descriptor desc = new Descriptor(i, j, aktZoom, lo.NightMode);
-					// speichern, zu welche MapView diesen Descriptor angefordert hat
-					desc.Data = mapView;
-
-					neadedTiles.add(desc.GetHashCode());
-
-					try
-					{
-						if (!queueData.loadedTiles.containsKey(desc.GetHashCode()))
-						{
-							if (!queueData.queuedTiles.containsKey(desc.GetHashCode()))
-							{
-								queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
-							}
-						}
-						if (queueData.CurrentOverlayLayer != null)
-						{
-							if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode()))
-							{
-								continue;
-							}
-							if (queueData.queuedOverlayTiles.containsKey(desc.GetHashCode())) continue;
-							queueTile(desc, queueData.queuedOverlayTiles, queueData.queuedOverlayTilesLock);
-						}
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
+					biggerZommDescList.add(biggerDesc);
+					neadedTiles.add(biggerDesc.GetHashCode());
 				}
 			}
 		}
-		finally
-		{
 
+		// first queue bigger Tiles
+		for (Descriptor desc : biggerZommDescList)
+		{
+			if (!queueData.loadedTiles.containsKey(desc.GetHashCode()))
+			{
+				if (!queueData.queuedTiles.containsKey(desc.GetHashCode()))
+				{
+					queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
+				}
+			}
+			if (queueData.CurrentOverlayLayer != null)
+			{
+				if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode()))
+				{
+					continue;
+				}
+				if (queueData.queuedOverlayTiles.containsKey(desc.GetHashCode())) continue;
+				queueTile(desc, queueData.queuedOverlayTiles, queueData.queuedOverlayTilesLock);
+			}
+		}
+
+		// then true zoom level
+		for (Descriptor desc : trueZommDescList)
+		{
+			if (!queueData.loadedTiles.containsKey(desc.GetHashCode()))
+			{
+				if (!queueData.queuedTiles.containsKey(desc.GetHashCode()))
+				{
+					queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
+				}
+			}
+			if (queueData.CurrentOverlayLayer != null)
+			{
+				if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode()))
+				{
+					continue;
+				}
+				if (queueData.queuedOverlayTiles.containsKey(desc.GetHashCode())) continue;
+				queueTile(desc, queueData.queuedOverlayTiles, queueData.queuedOverlayTilesLock);
+			}
 		}
 
 		if (!doubleCache && LoadedTilesSize() > neadedTiles.size() * 1.5)
@@ -298,8 +320,8 @@ public class MapTileLoader
 
 		loadedTilesLock.lock();
 		loadedTiles.removeDestroyedTiles();
-		loadedTiles.sort();
-		loadedTiles.removeAndDestroy(doubleCacheValue);
+		// loadedTiles.sort();
+		// loadedTiles.removeAndDestroy(doubleCacheValue);
 		loadedTilesLock.unlock();
 
 	}

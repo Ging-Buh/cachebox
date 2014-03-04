@@ -199,7 +199,7 @@ public class AndroidManager extends ManagerBase
 	protected byte[] getImageFromData(ImageData imgData)
 	{
 		android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height,
-				android.graphics.Bitmap.Config.ARGB_8888);
+				android.graphics.Bitmap.Config.RGB_565);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);

@@ -35,15 +35,16 @@ class MultiThreadQueueProcessor extends Thread
 	static CB_List<Descriptor> inLoadDesc = new CB_List<Descriptor>();
 	static final Lock inLoadDescLock = new ReentrantLock();
 
-	final int thisInstanceCount;
+	final int ThreadId;
 	public boolean queueProcessorLifeCycle = false;
 
 	private final QueueData queueData;
 	private boolean isAlive;
 
-	MultiThreadQueueProcessor(QueueData queueData)
+	MultiThreadQueueProcessor(QueueData queueData, int threadID)
 	{
-		thisInstanceCount = instanceCount++;
+		Logger.LogCat("Create MultiThreadQueueProcessor[" + threadID + "]");
+		ThreadId = threadID;
 		this.queueData = queueData;
 	}
 
@@ -54,6 +55,7 @@ class MultiThreadQueueProcessor extends Thread
 		{
 			do
 			{
+				this.isAlive = true;
 				queueProcessorLifeCycle = !queueProcessorLifeCycle;
 				Descriptor desc = null;
 				if (!Energy.DisplayOff() /* && MapView.this.isVisible() */
@@ -146,7 +148,9 @@ class MultiThreadQueueProcessor extends Thread
 								inLoadDesc.add(desc);
 							}
 							inLoadDescLock.unlock();
+							// Logger.LogCat("LoadTile on[" + ThreadId + "]");
 							LoadTile(desc);
+							// Logger.LogCat("finish LoadTile on[" + ThreadId + "]");
 							inLoadDescLock.lock();
 							inLoadDesc.remove(desc);
 							inLoadDescLock.unlock();
@@ -165,13 +169,13 @@ class MultiThreadQueueProcessor extends Thread
 							throw ex1;
 						}
 						// Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
-						Thread.sleep(400);
+						Thread.sleep(200);
 					}
 
 				}
 				else
 				{
-					Thread.sleep(400);
+					Thread.sleep(1000);
 				}
 				this.isAlive = true;
 			}
@@ -193,7 +197,7 @@ class MultiThreadQueueProcessor extends Thread
 			}
 			try
 			{
-				Thread.sleep(400);
+				Thread.sleep(200);
 			}
 			catch (InterruptedException e)
 			{
@@ -224,7 +228,7 @@ class MultiThreadQueueProcessor extends Thread
 		TileGL tile = null;
 		if (ManagerBase.Manager != null)
 		{
-			tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, thisInstanceCount);
+			tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
 		}
 
 		if (tile != null)
@@ -233,12 +237,12 @@ class MultiThreadQueueProcessor extends Thread
 			// Redraw Map after a new Tile was loaded or generated
 			GL.that.renderOnce("MapTileLoader loadTile");
 		}
-		else
-		{
-			ManagerBase.Manager.CacheTile(queueData.CurrentLayer, desc);
-			// to avoid endless trys
-			RemoveFromQueuedTiles(desc);
-		}
+		// else
+		// {
+		// ManagerBase.Manager.CacheTile(queueData.CurrentLayer, desc);
+		// // to avoid endless trys
+		// RemoveFromQueuedTiles(desc);
+		// }
 
 	}
 
@@ -250,7 +254,7 @@ class MultiThreadQueueProcessor extends Thread
 		if (ManagerBase.Manager != null)
 		{
 			// Load Overlay never inverted !!!
-			tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentOverlayLayer, desc, thisInstanceCount);
+			tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentOverlayLayer, desc, ThreadId);
 		}
 
 		if (tile != null)

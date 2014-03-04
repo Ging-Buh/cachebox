@@ -15,6 +15,9 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.FontMetrics;
+import java.awt.image.BufferedImage;
+
 import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.graphics.GL_FontFamily;
 import CB_UI_Base.graphics.GL_FontStyle;
@@ -160,6 +163,24 @@ public class ext_AwtPaint extends AwtPaint implements ext_Paint
 	public float getStrokeWidth()
 	{
 		return strokeWidth;
+	}
+
+	@Override
+	public int getTextHeight(String text)
+	{
+		if (this.font == null) return 0;
+		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
+		return fontMetrics.getHeight();
+	}
+
+	@Override
+	public int getTextWidth(String text)
+	{
+		if (this.font == null) return 0;
+		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
+		return fontMetrics.stringWidth(text);
 	}
 
 }

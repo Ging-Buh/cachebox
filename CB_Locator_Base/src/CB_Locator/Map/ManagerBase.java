@@ -105,8 +105,8 @@ public abstract class ManagerBase
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Locator.Map.ManagerBase.Manager = this;
-		// FIXME PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-		PROCESSOR_COUNT = 1;
+		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
+		// PROCESSOR_COUNT = 1;
 		RENDERING_TYPE = renderingType;
 		DISPLAY_MODEL = displaymodel;
 	}
@@ -670,7 +670,7 @@ public abstract class ManagerBase
 			RenderThemeChanged = false;
 		}
 
-		Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
+		Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom());
 
 		// chk if MapDatabase Loded a Map File
 		if (!this.mapDatabase[ThreadIndex].hasOpenFile())
@@ -692,7 +692,7 @@ public abstract class ManagerBase
 				break;
 			case Mixing:
 				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(this.mapDatabase[ThreadIndex],
-						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
+						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), ThreadIndex);
 				break;
 			case OpenGl:
 				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(

@@ -8,5 +8,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Core"/>
 	<classpathentry kind="lib" path="lib/gdx.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
+	<classpathentry kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="/Mapsforge-Core/core-src"/>
+	<classpathentry kind="lib" path="lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-map-android-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

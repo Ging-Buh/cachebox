@@ -15,7 +15,6 @@
  */
 package CB_Locator.Map;
 
-import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
@@ -41,11 +40,10 @@ public class TileGL_Bmp extends TileGL
 	{
 		Descriptor = desc;
 		this.texture = null;
-		// this.texture = texture;
 		this.bytes = bytes;
 		State = state;
 		LifeCount++;
-
+		createTexture();
 	}
 
 	/*
@@ -69,30 +67,51 @@ public class TileGL_Bmp extends TileGL
 		if (inCreation) return;
 		inCreation = true;
 
-		// create Texture on next GlThread
-		GL.that.RunOnGL(new IRenderFBO()
+		if (GL.isGlThread())
 		{
-
-			@Override
-			public void run()
+			if (texture != null) return;
+			if (bytes == null) return;
+			try
 			{
-				if (texture != null) return;
-				if (bytes == null) return;
-				try
-				{
-					Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-					texture = new Texture(pixmap);
-					pixmap.dispose();
-					pixmap = null;
-				}
-				catch (Exception ex)
-				{
-					Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
-				}
-				bytes = null;
-				inCreation = false;
+				Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
+				texture = new Texture(pixmap);
+				pixmap.dispose();
+				pixmap = null;
 			}
-		});
+			catch (Exception ex)
+			{
+				Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+			}
+			bytes = null;
+			inCreation = false;
+		}
+		else
+		{
+			// create Texture on next GlThread
+			GL.that.RunOnGL(new IRunOnGL()
+			{
+				@Override
+				public void run()
+				{
+					if (isDisposed) return;
+					if (texture != null) return;
+					if (bytes == null) return;
+					try
+					{
+						Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
+						texture = new Texture(pixmap);
+						pixmap.dispose();
+						pixmap = null;
+					}
+					catch (Exception ex)
+					{
+						Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+					}
+					bytes = null;
+					inCreation = false;
+				}
+			});
+		}
 
 	}
 

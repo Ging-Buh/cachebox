@@ -50,7 +50,7 @@ public class ext_AndroidTileBitmap extends ext_AndroidBitmap
 		}
 		else
 		{
-			this.bitmap = super.createAndroidBitmap(tileSize, tileSize, Config.ARGB_8888);
+			this.bitmap = super.createAndroidBitmap(tileSize, tileSize, Config.RGB_565);
 			;
 		}
 	}

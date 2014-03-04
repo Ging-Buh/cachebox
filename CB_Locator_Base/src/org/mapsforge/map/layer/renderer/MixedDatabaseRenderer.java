@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +36,6 @@ import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
-import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.MapReadResult;
@@ -127,6 +127,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	private final CB_List<String> wayNamesStrings;
 	private final List<List<List<ShapePaintContainer>>> ways;
 	private final List<SymbolContainer> waySymbols;
+	private final int ThreadId;
 
 	/**
 	 * Constructs a new DatabaseRenderer.
@@ -134,8 +135,9 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public MixedDatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory)
+	public MixedDatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory, int ThreadId)
 	{
+		this.ThreadId = ThreadId;
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 
@@ -591,10 +593,15 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	 */
 	private Point scaleLatLong(LatLong latLong, int tileSize)
 	{
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel, tileSize)
-				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel, tileSize)
-				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY, tileSize);
+		// double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel, tileSize)
+		// - MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX, tileSize);
+		// double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel, tileSize)
+		// - MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY, tileSize);
+
+		double pixelX = Descriptor.LongitudeToTileX(this.currentRendererJob.tile.zoomLevel, latLong.longitude, tileSize)
+				- (this.currentRendererJob.tile.tileX * tileSize);
+		double pixelY = Descriptor.LatitudeToTileY(this.currentRendererJob.tile.zoomLevel, latLong.latitude, tileSize)
+				- (this.currentRendererJob.tile.tileY * tileSize);
 
 		return new Point((float) pixelX, (float) pixelY);
 	}
@@ -611,51 +618,71 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff));
 	}
 
+	AtomicBoolean inWork = new AtomicBoolean(false);
+
 	@Override
 	public TileGL execute(RendererJob rendererJob)
 	{
-		SortedRotateList rotateList = new SortedRotateList();
 
-		final TileBitmap bmp = executeJob(rendererJob, rotateList);
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		if (inWork.get())
+		{
+			// CB_Utils.Log.Logger.LogCat("MixedDatabaseRenderer in Work [" + ThreadId + "]");
+			return null;
+		}
+		inWork.set(true);
 		try
 		{
-			bmp.compress(baos);
-			final byte[] b = baos.toByteArray();
+			SortedRotateList rotateList = new SortedRotateList();
 
-			Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
-
-			TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present);
-			mixedTile.add(rotateList);
-
-			Thread destroyThread = new Thread(new Runnable()
+			final TileBitmap bmp = executeJob(rendererJob, rotateList);
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			try
 			{
 
-				@Override
-				public void run()
+				// FIXME call direct Buffer swap
+				bmp.compress(baos);
+				final byte[] b = baos.toByteArray();
+
+				Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel,
+						false);
+
+				TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present);
+				mixedTile.add(rotateList);
+
+				Thread destroyThread = new Thread(new Runnable()
 				{
-					try
-					{
-						baos.close();
-					}
-					catch (IOException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					((ext_Bitmap) bmp).recycle();
-				}
-			});
 
-			destroyThread.start();
+					@Override
+					public void run()
+					{
+						try
+						{
+							baos.close();
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						((ext_Bitmap) bmp).recycle();
+					}
+				});
 
-			return mixedTile;
+				destroyThread.start();
+				inWork.set(false);
+				return mixedTile;
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			inWork.set(false);
+			return null;
 		}
-		catch (IOException e)
+		finally
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			inWork.set(false);
 		}
-		return null;
 	}
 }

@@ -266,10 +266,6 @@ public class splash extends Activity
 		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useGL20 = true;
-		// Gdx.graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-		// : config.resolutionStrategy);
-		// LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		// Gdx.input = new AndroidInput(main.mainActivity, inflater.getContext(), null, config);
 
 		// first, try to find stored preferences of workPath
 		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);
@@ -1127,12 +1123,14 @@ public class splash extends Activity
 
 		Global.Paints.init(this);
 
-		ext_AndroidGraphicFactory.createInstance(this.getApplication());
+		{// restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
+			ext_AndroidGraphicFactory.createInstance(this.getApplication());
 
-		// FIXME set true density
-		DisplayModel.setDeviceScaleFactor(1);
+			float restrictedScaleFactor = 1f;
 
-		new de.cachebox_test.Map.AndroidManager(Config.MapsforgeRenderType.getEnumValue(), new DisplayModel());
+			DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
+			new de.cachebox_test.Map.AndroidManager(Config.MapsforgeRenderType.getEnumValue(), new DisplayModel());
+		}
 
 		Initial2();
 	}

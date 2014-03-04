@@ -36,7 +36,7 @@ public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, Tile
 
 	ext_AndroidBitmap(int width, int height)
 	{
-		super(width, height, Config.ARGB_8888);
+		super(width, height, Config.RGB_565);
 		GL_image = null;
 		instCount++;
 	}

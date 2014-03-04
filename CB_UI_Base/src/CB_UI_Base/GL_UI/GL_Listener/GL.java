@@ -74,7 +74,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
 
-	private final int MAX_FBO_RENDER_CALLS = 2;
+	private final int MAX_FBO_RENDER_CALLS = 5;
 	private static final boolean TOUCH_DEBUG = false;
 
 	/**
@@ -318,6 +318,12 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			if (runOnGL_List.size() > 0)
 			{
+
+				if (runOnGL_List.size() > 200)
+				{
+					System.out.print("zuviel");
+				}
+
 				for (IRunOnGL run : runOnGL_List)
 				{
 					if (run != null)

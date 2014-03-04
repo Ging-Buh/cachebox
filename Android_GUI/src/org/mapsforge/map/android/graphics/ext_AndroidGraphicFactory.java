@@ -20,6 +20,7 @@ import java.io.InputStream;
 
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.map.model.DisplayModel;
 
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
@@ -58,6 +59,7 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 	protected ext_AndroidGraphicFactory(float scaleFactor)
 	{
 		super(aplication);
+		DisplayModel.setDeviceScaleFactor(scaleFactor);
 		this.ScaleFactor = scaleFactor;
 	}
 

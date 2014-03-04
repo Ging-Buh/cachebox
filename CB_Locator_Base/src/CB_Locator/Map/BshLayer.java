@@ -48,7 +48,7 @@ public class BshLayer extends Layer
 		if (interpreter == null) return null;
 		try
 		{
-			Object result = interpreter.eval("getTileUrl(" + desc.Zoom + "," + desc.X + "," + desc.Y + ")");
+			Object result = interpreter.eval("getTileUrl(" + desc.getZoom() + "," + desc.getX() + "," + desc.getY() + ")");
 			System.out.println(result);
 			return (String) result;
 		}
