@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 public class TileGL_Mixed extends TileGL_Bmp
 {
 	SortedRotateList rotateList;
+	TileGL_RotateDrawables rotateDrawable;
 
 	public TileGL_Mixed(CB_Locator.Map.Descriptor desc, byte[] bytes, TileState state)
 	{
@@ -43,7 +44,16 @@ public class TileGL_Mixed extends TileGL_Bmp
 
 		if (returnDrawableList != null)
 		{
-			if (rotateList != null) returnDrawableList.add(new TileGL_RotateDrawables(x, y, width, height, rotateList));
+			if (rotateList != null)
+			{
+				if (rotateDrawable == null)
+				{
+					rotateDrawable = new TileGL_RotateDrawables(x, y, width, height, rotateList);
+				}
+
+				rotateDrawable.set(x, y, width, height);
+				returnDrawableList.add(rotateDrawable);
+			}
 		}
 
 	}
@@ -66,6 +76,7 @@ public class TileGL_Mixed extends TileGL_Bmp
 			}
 		}
 		rotateList = null;
+		rotateDrawable = null;
 	}
 
 }

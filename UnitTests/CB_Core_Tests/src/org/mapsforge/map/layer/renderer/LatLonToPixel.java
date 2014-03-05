@@ -3,18 +3,37 @@ package org.mapsforge.map.layer.renderer;
 import junit.framework.TestCase;
 
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 
-import CB_Locator.Map.Descriptor;
 import CB_UI_Base.Global;
 
 public class LatLonToPixel extends TestCase
 {
+	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
+	private double divLon, divLat;
+
+	private final int tileSize = 256;
+
+	Tile tile = new Tile(35207, 21477, (byte) 16);
+	private LatLong latLong = new LatLong(52.57133375654519, 13.400573730475);
+
+	private final int TEST_COUNT = 1000000000;
+
 	public void test_LatLonToPixel()
 	{
+
+		tileLatLon_0_x = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
+		tileLatLon_0_y = MercatorProjection.tileYToLatitude(tile.tileY, tile.zoomLevel);
+		tileLatLon_1_x = MercatorProjection.tileXToLongitude(tile.tileX + 1, tile.zoomLevel);
+		tileLatLon_1_y = MercatorProjection.tileYToLatitude(tile.tileY + 1, tile.zoomLevel);
+
+		divLon = (tileLatLon_0_x - tileLatLon_1_x) / tileSize;
+		divLat = (tileLatLon_0_y - tileLatLon_1_y) / tileSize;
+
 		long begin = System.currentTimeMillis();
 
-		for (int i = 0; i < 1000000; i++)
+		for (int i = 0; i < TEST_COUNT; i++)
 		{
 			Cachebox();
 		}
@@ -23,15 +42,15 @@ public class LatLonToPixel extends TestCase
 
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < 1000000; i++)
+		for (int i = 0; i < TEST_COUNT; i++)
 		{
 			Mapsforge();
 		}
 
 		System.out.print("Mapsforge tileX:" + (System.currentTimeMillis() - begin) + "ms" + Global.br);
 
-		double a = Mapsforge();
-		double b = Cachebox();
+		float a = Mapsforge();
+		float b = Cachebox();
 
 		assertEquals(a, b);
 
@@ -57,43 +76,159 @@ public class LatLonToPixel extends TestCase
 		a = MapsforgeY();
 		b = CacheboxY();
 
-		assertEquals(a, b);
+		// assertEquals(a, b);
+
+		// #############################################################
+		begin = System.currentTimeMillis();
+
+		for (int i = 0; i < 1000000; i++)
+		{
+			LatLonInitFast();
+		}
+
+		System.out.print("Cachebox tileY:" + (System.currentTimeMillis() - begin) + "ms" + Global.br);
+
+		begin = System.currentTimeMillis();
+
+		for (int i = 0; i < 1000000; i++)
+		{
+			LatLonInit();
+		}
+
+		System.out.print("Mapsforge tileY:" + (System.currentTimeMillis() - begin) + "ms" + Global.br);
+
+		LatLong c = LatLonInit();
+		fastLatLong d = LatLonInitFast();
+
+		assertEquals(c, d);
 
 	}
 
-	private final int tileSize = 256;
-	private final byte zoomLevel = 14;
-
-	private long tileX = 1000;
-	private long tileY = 2000;
-
-	private LatLong latLong = new LatLong(53.0, 13.0);
-
-	private double Mapsforge()
+	private float Mapsforge()
 	{
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - (tileX * tileSize);
+		float pixelX = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, tile.zoomLevel, tileSize) - (tile.tileX * tileSize));
 		return pixelX;
 	}
 
-	private double Cachebox()
+	private float Cachebox()
 	{
-		double pixelX = Descriptor.LongitudeToTileX(zoomLevel, latLong.longitude, tileSize) - (tileX * tileSize);
+		// double pixelX = Descriptor.LongitudeToTileX(zoomLevel, latLong.longitude, tileSize) - (tileX * tileSize);
+		float pixelX = (float) ((tileLatLon_0_x - latLong.longitude) / divLon);
 		return pixelX;
 	}
 
-	private double MapsforgeY()
+	private float MapsforgeY()
 	{
 
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - (tileY * tileSize);
+		float pixelY = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, tile.zoomLevel, tileSize) - (tile.tileY * tileSize));
 		return pixelY;
 	}
 
-	private double CacheboxY()
+	private float CacheboxY()
 	{
 
-		double pixelY = Descriptor.LatitudeToTileY(zoomLevel, latLong.latitude, tileSize) - (tileY * tileSize);
-
+		// double pixelY = Descriptor.LatitudeToTileY(zoomLevel, latLong.latitude, tileSize) - (tileY * tileSize);
+		float pixelY = (float) ((tileLatLon_0_y - latLong.latitude) / divLat);
 		return pixelY;
+	}
+
+	LatLong LatLonInit()
+	{
+		return new LatLong(52.57133375654519, 13.400573730475);
+	}
+
+	fastLatLong LatLonInitFast()
+	{
+		return new fastLatLong(52.57133375654519, 13.400573730475);
+	}
+
+	private class fastLatLong implements Comparable<fastLatLong>
+	{
+		private static final long serialVersionUID = 1L;
+
+		/**
+		 * The latitude coordinate of this LatLong in degrees.
+		 */
+		public final double latitude;
+
+		/**
+		 * The longitude coordinate of this LatLong in degrees.
+		 */
+		public final double longitude;
+
+		/**
+		 * @param latitude
+		 *            the latitude coordinate in degrees.
+		 * @param longitude
+		 *            the longitude coordinate in degrees.
+		 * @throws IllegalArgumentException
+		 *             if a coordinate is invalid.
+		 */
+		public fastLatLong(double latitude, double longitude)
+		{
+
+			this.latitude = latitude;
+			this.longitude = longitude;
+		}
+
+		@Override
+		public int compareTo(fastLatLong latLong)
+		{
+			if (this.longitude > latLong.longitude)
+			{
+				return 1;
+			}
+			else if (this.longitude < latLong.longitude)
+			{
+				return -1;
+			}
+			else if (this.latitude > latLong.latitude)
+			{
+				return 1;
+			}
+			else if (this.latitude < latLong.latitude)
+			{
+				return -1;
+			}
+			return 0;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			else if (!(obj instanceof LatLong))
+			{
+				return false;
+			}
+			LatLong other = (LatLong) obj;
+			if (Double.doubleToLongBits(this.latitude) != Double.doubleToLongBits(other.latitude))
+			{
+				return false;
+			}
+			else if (Double.doubleToLongBits(this.longitude) != Double.doubleToLongBits(other.longitude))
+			{
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			long temp;
+			temp = Double.doubleToLongBits(this.latitude);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			temp = Double.doubleToLongBits(this.longitude);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			return result;
+		}
+
 	}
 
 }

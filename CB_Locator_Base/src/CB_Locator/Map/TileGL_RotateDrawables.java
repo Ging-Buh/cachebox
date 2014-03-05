@@ -91,4 +91,12 @@ public class TileGL_RotateDrawables
 
 		return true;
 	}
+
+	public void set(float x, float y, float width, float height)
+	{
+		REC[0] = x;
+		REC[1] = y;
+		REC[2] = width;
+		REC[3] = height;
+	}
 }

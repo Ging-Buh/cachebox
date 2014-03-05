@@ -122,6 +122,7 @@ public class MapTileLoader
 
 	public void loadTiles(MapViewBase mapView, Descriptor lo, Descriptor ru, int aktZoom)
 	{
+
 		// Initial Threads?
 		if (!CombleadInitial)
 		{

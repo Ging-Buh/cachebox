@@ -105,8 +105,8 @@ public abstract class ManagerBase
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Locator.Map.ManagerBase.Manager = this;
-		PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
-		// PROCESSOR_COUNT = 1;
+		// PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
+		PROCESSOR_COUNT = 1;
 		RENDERING_TYPE = renderingType;
 		DISPLAY_MODEL = displaymodel;
 	}

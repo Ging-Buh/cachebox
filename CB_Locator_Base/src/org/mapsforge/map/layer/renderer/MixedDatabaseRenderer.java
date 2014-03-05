@@ -17,7 +17,6 @@ package org.mapsforge.map.layer.renderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -64,6 +63,7 @@ import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Lists.F_List;
 
 /**
  * Mixed Database render for render MapTile with Mapsforge Tile as Bitmap without Symbols and Names.<br>
@@ -149,12 +149,12 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.canvasRasterer = new CanvasRasterer(graphicFactory);
 		this.labelPlacement = new LabelPlacement();
 
-		this.ways = new ArrayList<List<List<ShapePaintContainer>>>(LAYERS);
-		this.wayNames = new ArrayList<GL_WayTextContainer>(64);
-		this.nodes = new ArrayList<PointTextContainer>(64);
-		this.areaLabels = new ArrayList<PointTextContainer>(64);
-		this.waySymbols = new ArrayList<SymbolContainer>(64);
-		this.pointSymbols = new ArrayList<SymbolContainer>(64);
+		this.ways = new F_List<List<List<ShapePaintContainer>>>(LAYERS);
+		this.wayNames = new F_List<GL_WayTextContainer>(64);
+		this.nodes = new F_List<PointTextContainer>(64);
+		this.areaLabels = new F_List<PointTextContainer>(64);
+		this.waySymbols = new F_List<SymbolContainer>(64);
+		this.pointSymbols = new F_List<SymbolContainer>(64);
 		this.wayNamesStrings = new CB_List<String>(64);
 	}
 
@@ -231,6 +231,8 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile,
 				rendererJob.displayModel.getTileSize());
+
+		// Fixme Buffer VectorData for this tile! Don't Read and Process if this tile bufferd VerctorData
 
 		TileBitmap bitmap = this.graphicFactory.createTileBitmap(rendererJob.displayModel.getTileSize(), rendererJob.hasAlpha);
 		this.canvasRasterer.setCanvasBitmap(bitmap);
@@ -406,8 +408,8 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	public void renderArea(Paint fill, Paint stroke, int level)
 	{
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
-		list.add(new ShapePaintContainer(this.shapeContainer, stroke));
-		list.add(new ShapePaintContainer(this.shapeContainer, fill));
+		if (!stroke.isTransparent()) list.add(new ShapePaintContainer(this.shapeContainer, stroke));
+		if (!fill.isTransparent()) list.add(new ShapePaintContainer(this.shapeContainer, fill));
 	}
 
 	@Override
@@ -440,8 +442,8 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	{
 		radius *= currentRendererJob.displayModel.getScaleFactor();
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
-		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), stroke));
-		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), fill));
+		if (!stroke.isTransparent()) list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), stroke));
+		if (!fill.isTransparent()) list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), fill));
 	}
 
 	@Override
@@ -490,6 +492,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.pointSymbols.clear();
 		this.wayNames.clear();
 		this.waySymbols.clear();
+		this.wayNamesStrings.clear();
 	}
 
 	private void createWayLists()
@@ -499,10 +502,10 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 		for (byte i = LAYERS - 1; i >= 0; --i)
 		{
-			List<List<ShapePaintContainer>> innerWayList = new ArrayList<List<ShapePaintContainer>>(levels);
+			List<List<ShapePaintContainer>> innerWayList = new F_List<List<ShapePaintContainer>>(levels);
 			for (int j = levels - 1; j >= 0; --j)
 			{
-				innerWayList.add(new ArrayList<ShapePaintContainer>(0));
+				innerWayList.add(new F_List<ShapePaintContainer>(0));
 			}
 			this.ways.add(innerWayList);
 		}
@@ -573,6 +576,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		// TODO what about the label position?
 
 		LatLong[][] latLongs = way.latLongs;
+
 		this.coordinates = new Point[latLongs.length][];
 		for (int i = 0; i < this.coordinates.length; ++i)
 		{

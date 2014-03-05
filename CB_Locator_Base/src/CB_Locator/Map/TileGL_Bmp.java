@@ -109,6 +109,7 @@ public class TileGL_Bmp extends TileGL
 					}
 					bytes = null;
 					inCreation = false;
+					GL.that.renderOnce("Tile Texture ready");
 				}
 			});
 		}
