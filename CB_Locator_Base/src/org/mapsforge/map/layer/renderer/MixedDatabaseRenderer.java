@@ -36,6 +36,8 @@ import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.MapReadResult;
@@ -129,6 +131,9 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	private final List<SymbolContainer> waySymbols;
 	private final int ThreadId;
 
+	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
+	private double divLon, divLat;
+
 	/**
 	 * Constructs a new DatabaseRenderer.
 	 * 
@@ -180,6 +185,15 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	private TileBitmap executeJob(RendererJob rendererJob, SortedRotateList rotateList)
 	{
 		this.currentRendererJob = rendererJob;
+		int tileSize = rendererJob.displayModel.getTileSize();
+		Tile tile = this.currentRendererJob.tile;
+		tileLatLon_0_x = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
+		tileLatLon_0_y = MercatorProjection.tileYToLatitude(tile.tileY, tile.zoomLevel);
+		tileLatLon_1_x = MercatorProjection.tileXToLongitude(tile.tileX + 1, tile.zoomLevel);
+		tileLatLon_1_y = MercatorProjection.tileYToLatitude(tile.tileY + 1, tile.zoomLevel);
+
+		divLon = (tileLatLon_0_x - tileLatLon_1_x) / tileSize;
+		divLat = (tileLatLon_0_y - tileLatLon_1_y) / tileSize;
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
 		if (!jobTheme.equals(this.previousJobTheme))
@@ -399,8 +413,8 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	@Override
 	public void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke)
 	{
-		// Point centerPosition = GeometryUtils.calculateCenterOfBoundingBox(this.coordinates[0]);
-		// this.areaLabels.add(new PointTextContainer(caption, centerPosition.x, centerPosition.y, fill, stroke));
+		Point centerPosition = GeometryUtils.calculateCenterOfBoundingBox(this.coordinates[0]);
+		this.areaLabels.add(new PointTextContainer(caption, centerPosition.x, centerPosition.y, fill, stroke));
 	}
 
 	@Override
@@ -593,15 +607,8 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	 */
 	private Point scaleLatLong(LatLong latLong, int tileSize)
 	{
-		// double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel, tileSize)
-		// - MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX, tileSize);
-		// double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel, tileSize)
-		// - MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY, tileSize);
-
-		double pixelX = Descriptor.LongitudeToTileX(this.currentRendererJob.tile.zoomLevel, latLong.longitude, tileSize)
-				- (this.currentRendererJob.tile.tileX * tileSize);
-		double pixelY = Descriptor.LatitudeToTileY(this.currentRendererJob.tile.zoomLevel, latLong.latitude, tileSize)
-				- (this.currentRendererJob.tile.tileY * tileSize);
+		double pixelX = (tileLatLon_0_x - latLong.longitude) / divLon;
+		double pixelY = (tileLatLon_0_y - latLong.latitude) / divLat;
 
 		return new Point((float) pixelX, (float) pixelY);
 	}
