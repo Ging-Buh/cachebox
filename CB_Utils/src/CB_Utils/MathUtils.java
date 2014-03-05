@@ -129,6 +129,11 @@ public class MathUtils
 	private static void computeDistanceAndBearingFast(double lat1, double lon1, double lat2, double lon2, float[] results)
 	{
 
+		double longitude1 = lon1;
+		double longitude2 = lon2;
+		double latitude1 = Math.toRadians(lat1);
+		double latitude2 = Math.toRadians(lat2);
+
 		lat1 *= DEG_RAD;
 		lon1 *= DEG_RAD;
 		lat2 *= DEG_RAD;
@@ -139,15 +144,13 @@ public class MathUtils
 
 		if (results.length > 1)
 		{
-			double dlat = deg2rad(lat1) - deg2rad(lat2);
-			double dlon = deg2rad(lon1) - deg2rad(lon2);
-			double y = Math.sin(dlon) * Math.cos(lat2);
-			double x = Math.cos(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) - Math.sin(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
-					* Math.cos(dlon);
-			double direct = rad2deg(Math.atan2(y, x));
-			if (direct < 0) direct = direct + 360;
 
-			results[1] = (float) (direct);
+			double longDiff = Math.toRadians(longitude2 - longitude1);
+			double y = Math.sin(longDiff) * Math.cos(latitude2);
+			double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
+
+			double angle = Math.toDegrees(Math.atan2(y, x));
+			results[1] = (float) (angle);
 			if (results.length > 2)
 			{
 				results[2] = results[1];
@@ -155,15 +158,9 @@ public class MathUtils
 		}
 	}
 
-	private static double deg2rad(double deg)
-	{
-		return (deg * DEG_RAD);
-	}
-
-	private static double rad2deg(double rad)
-	{
-		return (rad * RAD_DEG);
-	}
+	static final double f = (WGS84_MAJOR_AXIS - WGS84_SEMI_MAJOR_AXIS) / WGS84_MAJOR_AXIS;
+	static final double aSqMinusBSqOverBSq = (WGS84_MAJOR_AXIS * WGS84_MAJOR_AXIS - WGS84_SEMI_MAJOR_AXIS * WGS84_SEMI_MAJOR_AXIS)
+			/ (WGS84_SEMI_MAJOR_AXIS * WGS84_SEMI_MAJOR_AXIS);
 
 	private static void computeDistanceAndBearingAccurate(double lat1, double lon1, double lat2, double lon2, float[] results)
 	{
@@ -176,10 +173,6 @@ public class MathUtils
 		lat2 *= MathUtils.DEG_RAD;
 		lon1 *= MathUtils.DEG_RAD;
 		lon2 *= MathUtils.DEG_RAD;
-
-		double f = (WGS84_MAJOR_AXIS - WGS84_SEMI_MAJOR_AXIS) / WGS84_MAJOR_AXIS;
-		double aSqMinusBSqOverBSq = (WGS84_MAJOR_AXIS * WGS84_MAJOR_AXIS - WGS84_SEMI_MAJOR_AXIS * WGS84_SEMI_MAJOR_AXIS)
-				/ (WGS84_SEMI_MAJOR_AXIS * WGS84_SEMI_MAJOR_AXIS);
 
 		double L = lon2 - lon1;
 		double A = 0.0;

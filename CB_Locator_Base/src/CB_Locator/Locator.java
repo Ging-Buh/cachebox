@@ -37,7 +37,7 @@ public class Locator
 	 * @uml.property name="that"
 	 * @uml.associationEnd
 	 */
-	private static Locator that;
+	public static Locator that;
 
 	private static long minGpsUpdateTime = 125;
 	private static double altCorrection = 0;

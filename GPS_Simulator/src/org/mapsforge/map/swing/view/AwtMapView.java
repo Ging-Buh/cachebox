@@ -17,7 +17,7 @@ package org.mapsforge.map.swing.view;
 import java.awt.Container;
 import java.awt.Graphics;
 
-import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.awt.AwtGraphicFactory;
@@ -98,9 +98,10 @@ public class AwtMapView extends Container implements org.mapsforge.map.view.MapV
 	{
 		super.paint(graphics);
 
-		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
-		this.frameBuffer.draw(canvas);
-		// this.fpsCounter.draw(canvas);
+		GraphicContext graphicContext = AwtGraphicFactory.createGraphicContext(graphics);
+		this.frameBuffer.draw(graphicContext);
+
+		this.fpsCounter.draw(graphicContext);
 
 		int xc = this.getWidth() / 2;
 		int yc = this.getHeight() / 2;

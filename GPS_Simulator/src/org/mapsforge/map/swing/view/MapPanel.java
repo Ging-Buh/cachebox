@@ -61,7 +61,7 @@ public class MapPanel extends JPanel implements ActionListener
 		this.setBorder(BorderFactory.createTitledBorder("Map"));
 		mapView.setPreferredSize(new Dimension(600, 600));
 		this.add(mapView);
-
+		mapView.setVisible(true);
 		Button pushButton2 = new Button("Load Map");
 		add(pushButton2);
 		pushButton2.addActionListener(this); // listen for Button press
@@ -78,10 +78,14 @@ public class MapPanel extends JPanel implements ActionListener
 			@Override
 			public void valueChanged()
 			{
-				LatLong pos = new LatLong(GPSData.getLatitude(), GPSData.getLongitude());
-				model.mapViewPosition.setCenter(pos);
-				CB_Locator.Locator.setNewLocation(new Location(pos.latitude, pos.longitude, GPSData.getQuality(), true, (float) GPSData
-						.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
+				if (CB_Locator.Locator.that != null)
+				{
+					LatLong pos = new LatLong(GPSData.getLatitude(), GPSData.getLongitude());
+					model.mapViewPosition.setCenter(pos);
+					CB_Locator.Locator.setNewLocation(new Location(pos.latitude, pos.longitude, GPSData.getQuality(), true, (float) GPSData
+							.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
+				}
+
 			}
 		});
 	}
@@ -108,7 +112,8 @@ public class MapPanel extends JPanel implements ActionListener
 	{
 		AwtMapView mapView = new AwtMapView();
 		mapView.getFpsCounter().setVisible(true);
-		mapView.addComponentListener(new MapViewComponentListener(mapView));
+		// mapView.addComponentListener(new MapViewComponentListener(mapView,new Dimension(600, 600)));
+		mapView.addComponentListener(new MapViewComponentListener(mapView, mapView.getModel().mapViewDimension));
 
 		MouseEventListener mouseEventListener = new MouseEventListener(mapView.getModel());
 		mapView.addMouseListener(mouseEventListener);

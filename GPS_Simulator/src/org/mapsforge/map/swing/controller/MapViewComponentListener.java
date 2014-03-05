@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,18 +18,18 @@ import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
+import org.mapsforge.map.model.MapViewDimension;
 import org.mapsforge.map.swing.view.AwtMapView;
 
 public class MapViewComponentListener implements ComponentListener
 {
 	private final AwtMapView mapView;
+	private final MapViewDimension mapViewDimension;
 
-	// private final MapViewModel mapViewModel;
-
-	public MapViewComponentListener(AwtMapView mapView)
+	public MapViewComponentListener(AwtMapView mapView, MapViewDimension mapViewDimension)
 	{
 		this.mapView = mapView;
-		// this.mapViewModel = mapViewModel;
+		this.mapViewDimension = mapViewDimension;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class MapViewComponentListener implements ComponentListener
 	public void componentResized(ComponentEvent componentEvent)
 	{
 		Dimension size = this.mapView.getSize();
-		// this.mapViewModel.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
+		this.mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
 	}
 
 	@Override

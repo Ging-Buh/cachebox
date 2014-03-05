@@ -111,8 +111,11 @@ public class SimulatorMain
 
 		JPanel rightbox = new JPanel();
 		rightbox.setLayout(new BoxLayout(rightbox, BoxLayout.Y_AXIS));
+		MapPanel mapPanel = new MapPanel();
+		mapPanel.setVisible(true);
+		rightbox.add(mapPanel);
 
-		rightbox.add(new MapPanel());
+		rightbox.setVisible(true);
 
 		f.add(box, BorderLayout.WEST);
 		f.add(rightbox, BorderLayout.EAST);
