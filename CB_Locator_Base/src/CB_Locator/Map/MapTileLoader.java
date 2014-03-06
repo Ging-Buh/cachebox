@@ -201,8 +201,8 @@ public class MapTileLoader
 		}
 
 		CB_List<Descriptor> trueZommDescList = new CB_List<Descriptor>();
-		CB_List<Descriptor> biggerZommDescList = new CB_List<Descriptor>();
-
+		// // CB_List<Descriptor> biggerZommDescList = new CB_List<Descriptor>();
+		//
 		for (int i = lo.getX(); i <= ru.getX(); i++)
 		{
 			for (int j = lo.getY(); j <= ru.getY(); j++)
@@ -212,38 +212,38 @@ public class MapTileLoader
 
 				// speichern, zu welche MapView diese Descriptor angefordert hat
 				desc.Data = mapView;
-				biggerDesc.Data = mapView;
+				// biggerDesc.Data = mapView;
 
 				trueZommDescList.add(desc);
 				neadedTiles.add(desc.GetHashCode());
-				if (!biggerZommDescList.contains(biggerDesc))
-				{
-					biggerZommDescList.add(biggerDesc);
-					neadedTiles.add(biggerDesc.GetHashCode());
-				}
+				// if (!biggerZommDescList.contains(biggerDesc))
+				// {
+				// biggerZommDescList.add(biggerDesc);
+				// neadedTiles.add(biggerDesc.GetHashCode());
+				// }
 			}
 		}
 
 		// first queue bigger Tiles
-		for (Descriptor desc : biggerZommDescList)
-		{
-			if (!queueData.loadedTiles.containsKey(desc.GetHashCode()))
-			{
-				if (!queueData.queuedTiles.containsKey(desc.GetHashCode()))
-				{
-					queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
-				}
-			}
-			if (queueData.CurrentOverlayLayer != null)
-			{
-				if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode()))
-				{
-					continue;
-				}
-				if (queueData.queuedOverlayTiles.containsKey(desc.GetHashCode())) continue;
-				queueTile(desc, queueData.queuedOverlayTiles, queueData.queuedOverlayTilesLock);
-			}
-		}
+		// for (Descriptor desc : biggerZommDescList)
+		// {
+		// if (!queueData.loadedTiles.containsKey(desc.GetHashCode()))
+		// {
+		// if (!queueData.queuedTiles.containsKey(desc.GetHashCode()))
+		// {
+		// queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
+		// }
+		// }
+		// if (queueData.CurrentOverlayLayer != null)
+		// {
+		// if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode()))
+		// {
+		// continue;
+		// }
+		// if (queueData.queuedOverlayTiles.containsKey(desc.GetHashCode())) continue;
+		// queueTile(desc, queueData.queuedOverlayTiles, queueData.queuedOverlayTilesLock);
+		// }
+		// }
 
 		// then true zoom level
 		for (Descriptor desc : trueZommDescList)
