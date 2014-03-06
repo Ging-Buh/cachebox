@@ -529,12 +529,20 @@ public class GL_Path implements ext_Path, Disposable
 
 	private float getAngle(int index1, int index2)
 	{
-		if (index1 >= items.length || index2 >= items.length) return 0;
+		float ret = 0;
 
-		float ret = MathUtils.atan2((items[index2 * 2] - items[index1 * 2]), (items[index2 * 2 + 1] - items[index1 * 2 + 1]))
-				* MathUtils.radiansToDegrees;
+		try
+		{
+			if (index1 >= items.length || index2 >= items.length) return 0;
 
-		ret = 90 - ret;
+			ret = MathUtils.atan2((items[index2 * 2] - items[index1 * 2]), (items[index2 * 2 + 1] - items[index1 * 2 + 1]))
+					* MathUtils.radiansToDegrees;
+
+			ret = 90 - ret;
+		}
+		catch (Exception e)
+		{
+		}
 
 		return ret;
 	}
