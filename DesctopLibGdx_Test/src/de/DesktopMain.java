@@ -161,7 +161,7 @@ public class DesktopMain
 		}
 
 		DisplayModel model = new DisplayModel();
-		new DesktopManager(Config.MapsforgeRenderType.getEnumValue(), model);
+		new DesktopManager(model);
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 

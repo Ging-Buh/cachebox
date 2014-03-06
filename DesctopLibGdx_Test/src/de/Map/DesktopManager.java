@@ -38,7 +38,6 @@ import CB_Locator.Map.PackBase;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
-import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_Utils.Util.FileIO;
 
@@ -49,9 +48,9 @@ import CB_Utils.Util.FileIO;
 public class DesktopManager extends ManagerBase
 {
 
-	public DesktopManager(GL_RenderType renderingTyp, DisplayModel displaymodel)
+	public DesktopManager(DisplayModel displaymodel)
 	{
-		super(renderingTyp, displaymodel);
+		super(displaymodel);
 	}
 
 	@Override

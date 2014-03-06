@@ -58,6 +58,7 @@ import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.iChanged;
 
 /**
  * @author ging-buh
@@ -67,7 +68,6 @@ public abstract class ManagerBase
 {
 
 	public static int PROCESSOR_COUNT;
-	private final GL_RenderType RENDERING_TYPE;
 	private final DisplayModel DISPLAY_MODEL;
 
 	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
@@ -101,14 +101,26 @@ public abstract class ManagerBase
 		return false;
 	}
 
-	public ManagerBase(GL_RenderType renderingType, DisplayModel displaymodel)
+	public ManagerBase(DisplayModel displaymodel)
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Locator.Map.ManagerBase.Manager = this;
 		// PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
 		PROCESSOR_COUNT = 1;
-		RENDERING_TYPE = renderingType;
 		DISPLAY_MODEL = displaymodel;
+
+		LocatorSettings.MapsforgeRenderType.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+
+				// FIXME release loaded Tiles
+
+				// release act DataBaseRenderer!
+				ManagerBase.this.setRenderTheme(getCurrentRenderTheme());
+			}
+		});
 	}
 
 	public abstract PackBase CreatePack(String file) throws IOException;
@@ -543,6 +555,11 @@ public abstract class ManagerBase
 		RenderThemeChanged = true;
 	}
 
+	public XmlRenderTheme getCurrentRenderTheme()
+	{
+		return renderTheme;
+	}
+
 	public void setRenderTheme(XmlRenderTheme RenderTheme)
 	{
 		renderTheme = RenderTheme;
@@ -684,6 +701,8 @@ public abstract class ManagerBase
 
 		if (databaseRenderer[ThreadIndex] == null)
 		{
+			GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
+
 			switch (RENDERING_TYPE)
 			{
 			case Mapsforge:

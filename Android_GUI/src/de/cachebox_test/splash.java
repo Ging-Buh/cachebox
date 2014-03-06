@@ -1129,7 +1129,7 @@ public class splash extends Activity
 			float restrictedScaleFactor = 1f;
 
 			DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
-			new de.cachebox_test.Map.AndroidManager(Config.MapsforgeRenderType.getEnumValue(), new DisplayModel());
+			new de.cachebox_test.Map.AndroidManager(new DisplayModel());
 		}
 
 		Initial2();
