@@ -377,7 +377,7 @@ public class GL_DatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	@Override
 	public void renderWayText(String textKey, Paint fill, Paint stroke)
 	{
-		this.wayDecorator.renderText(textKey, fill, stroke, this.coordinates, this.wayNames);
+		GL_WayDecorator.renderText(textKey, fill, stroke, this.coordinates, this.wayNames, this.currentRendererJob.tileSize);
 	}
 
 	private void clearLists()

@@ -62,12 +62,12 @@ public class PolygonDrawable implements IRotateDrawable
 	}
 
 	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, float rotate)
+	public boolean draw(Batch batch, float x, float y, float width, float height, float rotate)
 	{
 		synchronized (isDisposed)
 		{
 
-			if (isDisposed.get()) return;
+			if (isDisposed.get()) return true;
 
 			if (po == null)
 			{
@@ -95,7 +95,7 @@ public class PolygonDrawable implements IRotateDrawable
 			float g = c.g;
 			float b = c.b;
 
-			if (po == null) return;
+			if (po == null) return true;
 
 			if (this.PAINT.getBitmapShader() == null)
 			{
@@ -118,6 +118,7 @@ public class PolygonDrawable implements IRotateDrawable
 			// reset color
 			batch.setColor(r, g, b, a);
 		}
+		return false;
 	}
 
 	private void createTexRegFromPixMap()

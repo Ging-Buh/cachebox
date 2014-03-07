@@ -23,5 +23,5 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public interface IRotateDrawable extends Disposable
 {
-	public void draw(Batch batch, float x, float y, final float width, final float height, float rotated);
+	public boolean draw(Batch batch, float x, float y, final float width, final float height, float rotated);
 }

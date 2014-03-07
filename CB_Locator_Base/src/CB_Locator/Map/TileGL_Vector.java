@@ -62,7 +62,7 @@ public class TileGL_Vector extends TileGL
 			if (returnDrawableList != null)
 			{
 				SortedRotateList list = drawable.getRotateDrawables();
-				if (list != null) returnDrawableList.add(new TileGL_RotateDrawables(x, y, width, height, list));
+				if (list != null) returnDrawableList.add(new TileGL_RotateDrawables(x, y, width, height, this, list));
 			}
 		}
 	}

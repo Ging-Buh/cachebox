@@ -15,10 +15,6 @@
  */
 package CB_UI_Base.graphics;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import CB_UI_Base.GL_UI.IRunOnGL;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_Utils.MathUtils;
 
@@ -30,45 +26,30 @@ import com.badlogic.gdx.graphics.g2d.TextOnPath;
  */
 public class TextDrawableFlipped extends TextDrawable
 {
-
-	// extract base with non flipping
-
 	TextOnPath flippedCache;
-	private final AtomicBoolean isFlipped = new AtomicBoolean(false);
-	private float pathFlipDirection;
+	private boolean isFlipped = false;
 
 	public TextDrawableFlipped(final String text, GL_Path path, float defaultWidth, float defaultHeight, final ext_Paint fill,
 			final ext_Paint stroke, final boolean center)
 	{
 		super(text, path, defaultWidth, defaultHeight, fill, stroke, center);
-
-		final GL_Path workPath = new GL_Path(path);
-
-		GL.that.RunOnGL(new IRunOnGL()
-		{
-
-			@Override
-			public void run()
-			{
-				workPath.revert();
-				flippedCache = new TextOnPath(text, workPath, fill, stroke, center);
-				pathFlipDirection = workPath.getAverageDirection();
-				workPath.dispose();
-			}
-		});
-
 	}
 
 	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, float rotated)
+	public boolean draw(Batch batch, float x, float y, float width, float height, float rotated)
 	{
-		if (isDisposed) return;
+		if (isDisposed) return true;
 
 		float direction = MathUtils.LegalizeDegreese(pathDirection + rotated);
 
-		if (isFlipped.get() && direction > 185) isFlipped.set(false);
-
-		if (!isFlipped.get() && direction < 175) isFlipped.set(true);
+		if (direction >= 180)
+		{
+			isFlipped = true;
+		}
+		else
+		{
+			isFlipped = false;
+		}
 
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
@@ -76,14 +57,48 @@ public class TextDrawableFlipped extends TextDrawable
 		transform.setToTranslation(x, y, 0);
 		transform.scale(scaleWidth, scaleHeight, 1);
 
-		if (isFlipped.get())
+		if (isFlipped)
 		{
-			if (flippedCache != null) flippedCache.draw(batch, transform);
+			if (flippedCache == null)
+			{
+				workPath.revert();
+				flippedCache = new TextOnPath(this.Text, workPath, fill, stroke, center);
+			}
+			if (flippedCache != null)
+			{
+				if (flippedCache.PathToClose()) return true;
+				flippedCache.draw(batch, transform);
+			}
+			else
+			{
+				return true;
+			}
 		}
 		else
 		{
-			if (Cache != null) Cache.draw(batch, transform);
+			if (Cache == null)
+			{
+				Cache = new TextOnPath(Text, workPath, fill, stroke, center);
+			}
+			if (Cache != null)
+			{
+
+				if (Cache.PathToClose()) return true;
+				Cache.draw(batch, transform);
+			}
+			else
+			{
+				return true;
+			}
 		}
+
+		if (workPath != null && Cache != null && flippedCache != null)
+		{
+			// all Caches created, can dispose Path
+			workPath.dispose();
+			workPath = null;
+		}
+		return false;
 	}
 
 	@Override
@@ -92,11 +107,6 @@ public class TextDrawableFlipped extends TextDrawable
 		if (flippedCache != null) flippedCache.dispose();
 		flippedCache = null;
 		super.dispose();
-	}
-
-	public void flip(boolean value)
-	{
-		isFlipped.set(value);
 	}
 
 }

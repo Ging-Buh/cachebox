@@ -20,6 +20,7 @@ import CB_UI_Base.graphics.GL_Matrix;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
@@ -33,8 +34,10 @@ public class TileGL_RotateDrawables
 {
 	private final Float[] REC;
 	public final SortedRotateList DRAWABLELIST;
+	public final TileGL tile;
+	private final CB_List<MatrixDrawable> clearList = new CB_List<MatrixDrawable>();
 
-	public TileGL_RotateDrawables(float x, float y, float width, float height, SortedRotateList drawableList)
+	public TileGL_RotateDrawables(float x, float y, float width, float height, TileGL Tile, SortedRotateList drawableList)
 	{
 		REC = new Float[4];
 		REC[0] = x;
@@ -42,6 +45,7 @@ public class TileGL_RotateDrawables
 		REC[2] = width;
 		REC[3] = height;
 		DRAWABLELIST = drawableList;
+		tile = Tile;
 	}
 
 	public void draw(Batch batch, float rotated)
@@ -55,9 +59,11 @@ public class TileGL_RotateDrawables
 		for (MatrixDrawable drw : DRAWABLELIST)
 		{
 
+			boolean cantDraw = false;
+			clearList.clear();
 			if (drw.matrix == null)
 			{
-				drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
+				cantDraw = drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
 			}
 			else
 			{
@@ -71,10 +77,22 @@ public class TileGL_RotateDrawables
 					MatrixChanged = true;
 				}
 
-				drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
+				cantDraw = drw.drawable.draw(GL.batch, REC[0], REC[1], REC[2], REC[3], rotated);
+			}
+
+			if (cantDraw)
+			{
+				// remove from Drawable List
+				clearList.add(drw);
 			}
 
 		}
+
+		if (!clearList.isEmpty())
+		{
+			DRAWABLELIST.remove(clearList);
+		}
+
 		if (MatrixChanged) GL.batch.setProjectionMatrix(oriMatrix);
 
 		oriMatrix = null;

@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Point;
 
 import CB_UI_Base.graphics.GL_Path;
+import CB_Utils.MathUtils;
 
 /**
  * @author Longri
@@ -48,6 +49,7 @@ public final class GL_WayDecorator
 		DISTANCE_BETWEEN_SYMBOLS = (int) (200 * ScaleFactor);
 		DISTANCE_BETWEEN_WAY_NAMES = (int) (500 * ScaleFactor);
 		SEGMENT_SAFETY_DISTANCE = (int) (30 * ScaleFactor);
+
 	}
 
 	public void renderSymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol, Point[][] coordinates,
@@ -101,16 +103,22 @@ public final class GL_WayDecorator
 
 	}
 
-	public static void renderText(String textKey, Paint fill, Paint stroke, Point[][] coordinates, List<GL_WayTextContainer> wayNames)
+	public static void renderText(String textKey, Paint fill, Paint stroke, Point[][] coordinates, List<GL_WayTextContainer> wayNames,
+			float TileSize)
 	{
 
-		GL_Path path = new GL_Path();
+		GL_Path path = new GL_Path(coordinates[0].length);
 
 		path.moveTo((float) coordinates[0][0].x, (float) coordinates[0][0].y);
 
 		for (int i = 1; i < coordinates[0].length; ++i)
 		{
 			path.lineTo((float) coordinates[0][i].x, (float) coordinates[0][i].y);
+		}
+
+		if (MathUtils.LegalizeDegreese(path.getAverageDirection()) > 180)
+		{
+			path.revert();
 		}
 
 		// Calculate Average center point. For skip same name drawing closer DISTANCE_BETWEEN_WAY_NAMES
@@ -120,12 +128,21 @@ public final class GL_WayDecorator
 		for (int i = 0; i < coordinates[0].length; ++i)
 		{
 			// get the current way point coordinates
-			averageX = coordinates[0][i].x;
-			averageY = coordinates[0][i].y;
+			averageX += coordinates[0][i].x;
+			averageY += coordinates[0][i].y;
 			averageCount++;
 		}
-		averageX /= averageCount - 1;
-		averageY /= averageCount - 1;
+		averageX /= averageCount;
+		averageY /= averageCount;
+
+		float max = TileSize + (TileSize / 20);
+		float min = 0 - (TileSize / 20);
+
+		if (averageX < min || averageX > max || averageY < min || averageY > max)
+		{
+			return; // outside of Tile
+		}
+
 		wayNames.add(new GL_WayTextContainer(path, textKey, fill, stroke, averageX, averageY));
 
 	}

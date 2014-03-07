@@ -17,7 +17,9 @@ package org.mapsforge.map.layer.renderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -300,32 +302,62 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		}
 	}
 
+	private HashMap<String, CB_List<GL_WayTextContainer>> NameList;
+
 	public void drawWayNames(SortedRotateList rotateList, List<GL_WayTextContainer> wayNames2)
 	{
-		for (int index = wayNames2.size() - 1; index >= 0; --index)
+
+		NameList = new HashMap<String, CB_List<GL_WayTextContainer>>();
+
+		// for (int index = wayNames2.size() - 1; index >= 0; --index)
+		for (int index = 0; index < wayNames2.size(); ++index)
 		{
 			GL_WayTextContainer wayTextContainer = wayNames2.get(index);
 
-			if (wayTextContainer.averageX < 0) continue;
-			if (wayTextContainer.averageX > this.currentRendererJob.displayModel.getTileSize()) continue;
-			if (wayTextContainer.averageY < 0) continue;
-			if (wayTextContainer.averageY > this.currentRendererJob.displayModel.getTileSize()) continue;
-
-			if (wayNamesStrings.contains(wayTextContainer.text))
+			if (NameList.containsKey(wayTextContainer.text))
 			{
-				continue;
+				NameList.get(wayTextContainer.text).add(wayTextContainer);
+			}
+			else
+			{
+				CB_List<GL_WayTextContainer> list = new CB_List<GL_WayTextContainer>();
+				list.add(wayTextContainer);
+				NameList.put(wayTextContainer.text, list);
+			}
+		}
+
+		ArrayList<CB_List<GL_WayTextContainer>> values = new ArrayList<CB_List<GL_WayTextContainer>>(NameList.values());
+
+		for (int index = values.size() - 1; index >= 0; --index)
+		{
+			CB_List<GL_WayTextContainer> sameName = values.get(index);
+
+			// search the biggest
+			GL_WayTextContainer biggestWayTextContainer = null;
+			for (GL_WayTextContainer wayTextContainer : sameName)
+			{
+				if (biggestWayTextContainer == null)
+				{
+					biggestWayTextContainer = wayTextContainer;
+				}
+				else
+				{
+					if (biggestWayTextContainer.path.getLength() < wayTextContainer.path.getLength())
+					{
+						biggestWayTextContainer = wayTextContainer;
+					}
+				}
+
 			}
 
-			wayNamesStrings.add(wayTextContainer.text);
+			biggestWayTextContainer.path.flipY(this.currentRendererJob.displayModel.getTileSize());
 
-			wayTextContainer.path.flipY(this.currentRendererJob.displayModel.getTileSize());
-
-			GL_Paint fill = new GL_Paint(wayTextContainer.fill);
-			GL_Paint stroke = new GL_Paint(wayTextContainer.stroke);
+			GL_Paint fill = new GL_Paint(biggestWayTextContainer.fill);
+			GL_Paint stroke = new GL_Paint(biggestWayTextContainer.stroke);
 			float tileSize = this.currentRendererJob.displayModel.getTileSize();
 
-			TextDrawableFlipped textDrw = new TextDrawableFlipped(wayTextContainer.text, wayTextContainer.path, tileSize, tileSize, fill,
-					stroke, true);
+			TextDrawableFlipped textDrw = new TextDrawableFlipped(biggestWayTextContainer.text, biggestWayTextContainer.path, tileSize,
+					tileSize, fill, stroke, true);
 
 			MatrixDrawable maDr = new MatrixDrawable(textDrw, new GL_Matrix(), true);
 
@@ -473,7 +505,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	@Override
 	public void renderWayText(String textKey, Paint fill, Paint stroke)
 	{
-		GL_WayDecorator.renderText(textKey, fill, stroke, this.coordinates, this.wayNames);
+		GL_WayDecorator.renderText(textKey, fill, stroke, this.coordinates, this.wayNames, this.currentRendererJob.tileSize);
 	}
 
 	private void clearLists()

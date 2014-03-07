@@ -73,10 +73,10 @@ public class SymbolDrawable implements IRotateDrawable
 	}
 
 	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, float rotate)
+	public boolean draw(Batch batch, float x, float y, float width, float height, float rotate)
 	{
-		if (isDisposed.get()) return;
-		if (BITMAP == null) return;
+		if (isDisposed.get()) return true;
+		if (BITMAP == null) return true;
 
 		float scaleWidth = width / DEFAULT_WIDTH;
 		float scaleHeight = height / DEFAULT_HEIGHT;
@@ -118,6 +118,7 @@ public class SymbolDrawable implements IRotateDrawable
 		matrix.mapPoints(pos);
 
 		BITMAP.draw(batch, pos[0] + x, pos[1] + y, pivotX, pivotY, BITMAP.getWidth(), BITMAP.getHeight(), scaleWidth, scaleHeight, rotate);
+		return false;
 	}
 
 	public boolean isDisposed()

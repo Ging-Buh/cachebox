@@ -650,8 +650,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
 
-					boolean addToRotateList = tile.Descriptor.getZoom() == aktZoom; // Draw Names and Symbols only from Tile with right zoom
-					// factor
+					// Draw Names and Symbols only from Tile with right zoom factor
+					boolean addToRotateList = tile.Descriptor.getZoom() == aktZoom;
 
 					tile.draw(batch, xPos, yPos, xSize, ySize, addToRotateList ? rotateList : null);
 				}

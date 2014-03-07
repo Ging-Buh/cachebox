@@ -35,6 +35,8 @@ import com.badlogic.gdx.utils.IntArray;
  */
 public class TextOnPath implements Disposable
 {
+	private static final float STROKE_WITH_SCALE_FACTOR = 1.2f;
+
 	private final boolean PathToClose;
 	private BitmapFont font;
 	private float[][] vertexData;
@@ -59,6 +61,14 @@ public class TextOnPath implements Disposable
 
 	public TextOnPath(String Text, GL_Path path, ext_Paint fill2, ext_Paint stroke2, boolean center)
 	{
+
+		if (fill2 == null)
+		{
+			textWidth = 0;
+			PathToClose = true;
+			PathOffset = 0;
+			return;
+		}
 
 		// Convert Paint values to used GL_PaintValues
 		GL_FontFamily fontFamily = fill2.getGLFontFamily();
@@ -120,7 +130,7 @@ public class TextOnPath implements Disposable
 		{
 			if (stroke2 != null && stroke2.getStrokeWidth() > 1)
 			{
-				createStroke(stroke2.getStrokeWidth(), stroke2.getHSV_Color());
+				createStroke(stroke2.getStrokeWidth() * STROKE_WITH_SCALE_FACTOR, stroke2.getHSV_Color());
 			}
 
 		}
@@ -171,6 +181,12 @@ public class TextOnPath implements Disposable
 		}
 
 		final float c = color.toFloatBits();
+
+		final float[] p0 = new float[2];
+		final float[] p1 = new float[2];
+		final float[] p2 = new float[2];
+		final float[] p3 = new float[2];
+
 		for (int j = 0, length = data.length; j < length; j++)
 		{
 			float[] vertices = data[j];
@@ -182,10 +198,10 @@ public class TextOnPath implements Disposable
 
 				tmpMatrix4.setToTranslation(xOffset, yOffset, 0);
 
-				final float[] p0 = GL_Matrix.MapPoint(vertices[i], vertices[i + 1], tmpMatrix4);
-				final float[] p1 = GL_Matrix.MapPoint(vertices[i + 5], vertices[i + 6], tmpMatrix4);
-				final float[] p2 = GL_Matrix.MapPoint(vertices[i + 10], vertices[i + 11], tmpMatrix4);
-				final float[] p3 = GL_Matrix.MapPoint(vertices[i + 15], vertices[i + 16], tmpMatrix4);
+				GL_Matrix.MapPoint(vertices[i], vertices[i + 1], tmpMatrix4, p0);
+				GL_Matrix.MapPoint(vertices[i + 5], vertices[i + 6], tmpMatrix4, p1);
+				GL_Matrix.MapPoint(vertices[i + 10], vertices[i + 11], tmpMatrix4, p2);
+				GL_Matrix.MapPoint(vertices[i + 15], vertices[i + 16], tmpMatrix4, p3);
 
 				vertices[i] = p0[0];
 				vertices[i + 1] = p0[1];
@@ -244,12 +260,13 @@ public class TextOnPath implements Disposable
 		}
 
 		// Map Data
+		final float[] p0 = new float[2];
 		for (int j = 0, length = tarData.length; j < length; j++)
 		{
 			float[] vertices = tarData[j];
 			for (int i = 0; i < vertices.length; i += 5)
 			{
-				final float[] p0 = GL_Matrix.MapPoint(vertices[i], vertices[i + 1], matrix4);
+				GL_Matrix.MapPoint(vertices[i], vertices[i + 1], matrix4, p0);
 
 				vertices[i] = p0[0];
 				vertices[i + 1] = p0[1];
@@ -541,6 +558,10 @@ public class TextOnPath implements Disposable
 
 		index = 0;
 		indexGlyphRotation = 0;
+		final float[] p0 = new float[2];
+		final float[] p1 = new float[2];
+		final float[] p2 = new float[2];
+		final float[] p3 = new float[2];
 		for (int i = 0, n = idx[0]; i < n; i += 20)
 		{
 			float GlyphCenterX = centerPoints[index];
@@ -553,35 +574,10 @@ public class TextOnPath implements Disposable
 			// tmpMatrix4.translate(GlyphCenterX, GlyphCenterY, 0);
 			tmpMatrix4.rotate(0, 0, 1, GlyphRotation[indexGlyphRotation++]);
 			tmpMatrix4.translate(-GlyphCenterX, -GlyphCenterY, 0);
-
-			// float x0 = vertices[i] * matrix3.val[0] + vertices[i + 1] * matrix3.val[3] + matrix3.val[6];
-			// float y0 = vertices[i] * matrix3.val[1] + vertices[i + 1] * matrix3.val[4] + matrix3.val[7];
-			//
-			// float x1 = vertices[i + 5] * matrix3.val[0] + vertices[i + 6] * matrix3.val[3] + matrix3.val[6];
-			// float y1 = vertices[i + 5] * matrix3.val[1] + vertices[i + 6] * matrix3.val[4] + matrix3.val[7];
-			//
-			// float x2 = vertices[i + 10] * matrix3.val[0] + vertices[i + 11] * matrix3.val[3] + matrix3.val[6];
-			// float y2 = vertices[i + 10] * matrix3.val[1] + vertices[i + 11] * matrix3.val[4] + matrix3.val[7];
-			//
-			// float x3 = vertices[i + 15] * matrix3.val[0] + vertices[i + 16] * matrix3.val[3] + matrix3.val[6];
-			// float y3 = vertices[i + 15] * matrix3.val[1] + vertices[i + 16] * matrix3.val[4] + matrix3.val[7];
-			//
-			// vertices[i] = x0;
-			// vertices[i + 1] = y0;
-			//
-			// vertices[i + 5] = x1;
-			// vertices[i + 6] = y1;
-			//
-			// vertices[i + 10] = x2;
-			// vertices[i + 11] = y2;
-			//
-			// vertices[i + 15] = x3;
-			// vertices[i + 16] = y3;
-
-			final float[] p0 = GL_Matrix.MapPoint(vertices[i], vertices[i + 1], tmpMatrix4);
-			final float[] p1 = GL_Matrix.MapPoint(vertices[i + 5], vertices[i + 6], tmpMatrix4);
-			final float[] p2 = GL_Matrix.MapPoint(vertices[i + 10], vertices[i + 11], tmpMatrix4);
-			final float[] p3 = GL_Matrix.MapPoint(vertices[i + 15], vertices[i + 16], tmpMatrix4);
+			GL_Matrix.MapPoint(vertices[i], vertices[i + 1], tmpMatrix4, p0);
+			GL_Matrix.MapPoint(vertices[i + 5], vertices[i + 6], tmpMatrix4, p1);
+			GL_Matrix.MapPoint(vertices[i + 10], vertices[i + 11], tmpMatrix4, p2);
+			GL_Matrix.MapPoint(vertices[i + 15], vertices[i + 16], tmpMatrix4, p3);
 
 			vertices[i] = p0[0];
 			vertices[i + 1] = p0[1];

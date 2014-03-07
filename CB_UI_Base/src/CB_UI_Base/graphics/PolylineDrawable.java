@@ -149,16 +149,17 @@ public class PolylineDrawable implements IRotateDrawable
 	}
 
 	@Override
-	public void draw(Batch batch, float x, float y, float width, float height, float rotate)
+	public boolean draw(Batch batch, float x, float y, float width, float height, float rotate)
 	{
 		synchronized (isDisposed)
 		{
-			if (isDisposed.get()) return;
+			if (isDisposed.get()) return true;
 			if (DRAWABLE != null)
 			{
-				DRAWABLE.draw(batch, x, y, width, height, rotate);
+				return DRAWABLE.draw(batch, x, y, width, height, rotate);
 			}
 		}
+		return false;
 	}
 
 	public boolean isDisposed()

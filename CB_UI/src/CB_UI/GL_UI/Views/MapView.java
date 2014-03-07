@@ -1263,7 +1263,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			if (CarMode)
 			{
 
-				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 2;
+				ManagerBase.Manager.textScale = ManagerBase.DEFAULT_TEXT_SCALE * 1.35f;
 
 				if (Config.nightMode.getValue())
 				{

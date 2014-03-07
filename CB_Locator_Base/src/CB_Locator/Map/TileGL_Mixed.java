@@ -48,7 +48,7 @@ public class TileGL_Mixed extends TileGL_Bmp
 			{
 				if (rotateDrawable == null)
 				{
-					rotateDrawable = new TileGL_RotateDrawables(x, y, width, height, rotateList);
+					rotateDrawable = new TileGL_RotateDrawables(x, y, width, height, this, rotateList);
 				}
 
 				rotateDrawable.set(x, y, width, height);

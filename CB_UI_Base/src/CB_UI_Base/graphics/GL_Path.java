@@ -54,7 +54,7 @@ public class GL_Path implements ext_Path, Disposable
 
 	public GL_Path(int capacity)
 	{
-		items = new float[capacity];
+		items = new float[capacity * 2];
 		last = new float[2];
 	}
 
@@ -106,10 +106,11 @@ public class GL_Path implements ext_Path, Disposable
 
 		isMoveTo = false;
 
-		if (size + 2 >= items.length) resize(size + (size >> 1));
+		if (size + 2 > items.length) resize(size + (Math.max(2, size >> 1)));
 		items[size++] = x;
 		items[size++] = y;
 		setLast(x, y);
+		averageDirection = Float.MAX_VALUE;
 	}
 
 	private void resize(int newSize)
@@ -413,7 +414,16 @@ public class GL_Path implements ext_Path, Disposable
 		if (averageDirection == Float.MAX_VALUE)
 		{
 			// Average direction is the direction between first and last point!
-			averageDirection = getAngle(0, size / 2);
+
+			float firstX = items[0];
+			float firstY = items[1];
+			float lastX = items[size - 2];
+			float lastY = items[size - 1];
+
+			float ret = MathUtils.atan2((lastX - firstX), (lastY - firstY)) * MathUtils.radiansToDegrees;
+
+			// averageDirection = 90 - ret;
+			averageDirection = ret;
 		}
 		return averageDirection;
 	}
@@ -627,7 +637,7 @@ public class GL_Path implements ext_Path, Disposable
 		}
 		items = tmp;
 		PathSectionLength = null;
-		averageDirection = Float.NaN;
+		averageDirection = Float.MAX_VALUE;
 	}
 
 }

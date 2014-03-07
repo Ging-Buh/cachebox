@@ -546,28 +546,15 @@ public class GL_Matrix implements ext_Matrix, Matrix
 		}
 	}
 
-	public static float[] MapPoint(float x, float y, Matrix4 matrix4)
+	public static void MapPoint(float x, float y, Matrix4 matrix4, float[] mapedPoint)
 	{
-
-		float x0 = x * matrix4.val[Matrix4.M00] + y * matrix4.val[Matrix4.M01] + matrix4.val[Matrix4.M03];
-		float y0 = x * matrix4.val[Matrix4.M10] + y * matrix4.val[Matrix4.M11] + matrix4.val[Matrix4.M13];
-
-		float[] ret = new float[2];
-		ret[0] = x0;
-		ret[1] = y0;
-
-		return ret;
+		mapedPoint[0] = x * matrix4.val[Matrix4.M00] + y * matrix4.val[Matrix4.M01] + matrix4.val[Matrix4.M03];
+		mapedPoint[1] = x * matrix4.val[Matrix4.M10] + y * matrix4.val[Matrix4.M11] + matrix4.val[Matrix4.M13];
 	}
 
-	public static float[] MapPoint(float x, float y, Matrix3 matrix3)
+	public static void MapPoint(float x, float y, Matrix3 matrix3, float[] mapedPoint)
 	{
-		float x0 = x * matrix3.val[0] + y * matrix3.val[3] + matrix3.val[6];
-		float y0 = x * matrix3.val[1] + y * matrix3.val[4] + matrix3.val[7];
-
-		float[] ret = new float[2];
-		ret[0] = x0;
-		ret[1] = y0;
-
-		return ret;
+		mapedPoint[0] = x * matrix3.val[0] + y * matrix3.val[3] + matrix3.val[6];
+		mapedPoint[1] = x * matrix3.val[1] + y * matrix3.val[4] + matrix3.val[7];
 	}
 }

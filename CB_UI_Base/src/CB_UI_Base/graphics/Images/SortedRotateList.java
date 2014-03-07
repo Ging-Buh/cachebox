@@ -105,4 +105,20 @@ public class SortedRotateList implements Iterable<MatrixDrawable>
 		symbols.clear();
 		Text.clear();
 	}
+
+	public void remove(CB_List<MatrixDrawable> clearList)
+	{
+		for (MatrixDrawable drw : clearList)
+		{
+			if (drw.drawable instanceof SymbolDrawable)
+			{
+				symbols.remove(drw);
+			}
+			else
+			{
+				Text.remove(drw);
+			}
+		}
+
+	}
 }
