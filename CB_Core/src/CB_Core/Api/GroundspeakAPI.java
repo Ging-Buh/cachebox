@@ -606,7 +606,7 @@ public class GroundspeakAPI
 	 * @param cache
 	 * @return
 	 */
-	public static int GetGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList)
+	public static int GetGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all)
 	{
 		String finders = CB_Core_Settings.Friends.getValue();
 		String[] finder = finders.split("\\|");
@@ -633,7 +633,7 @@ public class GroundspeakAPI
 		int count = 100;
 
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
-		while (finderList.size() > 0)
+		while (finderList.size() > 0 || all)
 		// Schleife, solange bis entweder keine Logs mehr geladen werden oder bis alle Logs aller Finder geladen sind.
 		{
 			try

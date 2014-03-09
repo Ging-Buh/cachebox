@@ -60,16 +60,7 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 	@Override
 	public boolean HasContextMenu()
 	{
-		if (CB_Core_Settings.Friends.getValue().length() > 0)
-		{
-			// Menüpunkte die sich auf die in den Settings eingetragenen Friends beziehen nur dann anzeigen wenn bei Friends was eingetragen
-			// ist
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return true;
 	}
 
 	@Override
@@ -85,28 +76,11 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 			{
 				switch (((MenuItem) v).getMenuItemId())
 				{
-				case MenuID.MI_LOADLOGS:
-					// First check API-Key with visual Feedback
-					GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
-					{
-
-						@Override
-						public void chekReady(int MemberType)
-						{
-							TimerTask tt = new TimerTask()
-							{
-
-								@Override
-								public void run()
-								{
-									new CB_Action_Command_LoadLogs().Execute();
-								}
-							};
-							Timer t = new Timer();
-							t.schedule(tt, 100);
-						}
-					});
-
+				case MenuID.MI_LOAD_FRIENDS_LOGS:
+					reloadLogs(false);
+					return true;
+				case MenuID.MI_RELOADLOGS:
+					reloadLogs(true);
 					return true;
 				case MenuID.MI_FILTERLOGS:
 					GlobalCore.filterLogsOfFriends = !GlobalCore.filterLogsOfFriends;
@@ -122,12 +96,47 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 		});
 
 		MenuItem mi;
-		cm.addItem(MenuID.MI_LOADLOGS, "LoadLogsOfFriends", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
-		mi = cm.addItem(MenuID.MI_FILTERLOGS, "FilterLogsOfFriends", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
-		mi.setCheckable(true);
-		mi.setChecked(GlobalCore.filterLogsOfFriends);
-
+		cm.addItem(MenuID.MI_RELOADLOGS, "ReloadLogs", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
+		if (CB_Core_Settings.Friends.getValue().length() > 0)
+		{
+			cm.addItem(MenuID.MI_LOAD_FRIENDS_LOGS, "LoadLogsOfFriends", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
+			mi = cm.addItem(MenuID.MI_FILTERLOGS, "FilterLogsOfFriends", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
+			mi.setCheckable(true);
+			mi.setChecked(GlobalCore.filterLogsOfFriends);
+		}
 		return cm;
+	}
+
+	private void reloadLogs(final boolean all)
+	{
+		// First check API-Key with visual Feedback
+		GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
+		{
+
+			@Override
+			public void chekReady(int MemberType)
+			{
+				TimerTask tt = new TimerTask()
+				{
+
+					@Override
+					public void run()
+					{
+						if (all)
+						{
+							new CB_Action_Command_LoadLogs().Execute();
+						}
+						else
+						{
+							new CB_Action_Command_LoadFriendLogs().Execute();
+						}
+
+					}
+				};
+				Timer t = new Timer();
+				t.schedule(tt, 100);
+			}
+		});
 	}
 
 }
