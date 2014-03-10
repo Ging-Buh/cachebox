@@ -1,5 +1,8 @@
 package CB_UI.GL_UI.Activitys.FilterSettings;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -65,31 +68,44 @@ public class EditFilterSettings extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				lvCat.SetCategory();
-				GlobalCore.LastFilter = tmpFilterProps;
-
-				// Text Filter ?
-				String txtFilter = vTxt.getFilterString();
-				if (txtFilter.length() > 0)
-				{
-					int FilterMode = vTxt.getFilterState();
-					if (FilterMode == 0) GlobalCore.LastFilter.filterName = txtFilter;
-					else if (FilterMode == 1) GlobalCore.LastFilter.filterGcCode = txtFilter;
-					else if (FilterMode == 2) GlobalCore.LastFilter.filterOwner = txtFilter;
-				}
-				else
-				{
-					GlobalCore.LastFilter.filterName = "";
-					GlobalCore.LastFilter.filterGcCode = "";
-					GlobalCore.LastFilter.filterOwner = "";
-				}
-
-				ApplyFilter(GlobalCore.LastFilter);
-
-				// Save selected filter (new JSON Format)
-				Config.FilterNew.setValue(GlobalCore.LastFilter.toString());
-				Config.AcceptChanges();
 				finish();
+
+				Timer t = new Timer();
+				TimerTask postTask = new TimerTask()
+				{
+
+					@Override
+					public void run()
+					{
+						lvCat.SetCategory();
+						GlobalCore.LastFilter = tmpFilterProps;
+
+						// Text Filter ?
+						String txtFilter = vTxt.getFilterString();
+						if (txtFilter.length() > 0)
+						{
+							int FilterMode = vTxt.getFilterState();
+							if (FilterMode == 0) GlobalCore.LastFilter.filterName = txtFilter;
+							else if (FilterMode == 1) GlobalCore.LastFilter.filterGcCode = txtFilter;
+							else if (FilterMode == 2) GlobalCore.LastFilter.filterOwner = txtFilter;
+						}
+						else
+						{
+							GlobalCore.LastFilter.filterName = "";
+							GlobalCore.LastFilter.filterGcCode = "";
+							GlobalCore.LastFilter.filterOwner = "";
+						}
+
+						ApplyFilter(GlobalCore.LastFilter);
+
+						// Save selected filter (new JSON Format)
+						Config.FilterNew.setValue(GlobalCore.LastFilter.toString());
+						Config.AcceptChanges();
+					}
+				};
+
+				t.schedule(postTask, 300);
+
 				return true;
 			}
 		});

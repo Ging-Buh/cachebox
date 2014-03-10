@@ -57,10 +57,13 @@ public abstract class Dialog extends CB_View_Base
 	protected static float margin = -1;
 
 	public static boolean lastNightMode = false;
+	static int DialogCount = 0;
+	public final int DialogID;
 
 	public Dialog(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		DialogID = DialogCount++;
 		// ctor without title and footer
 		mHeaderHeight = calcHeaderHeight();
 		mFooterHeight = mHeaderHeight;
@@ -417,6 +420,13 @@ public abstract class Dialog extends CB_View_Base
 
 		Size ret = new Size((int) Width, Height);
 		return ret;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName() + "DialogID[" + DialogID + "] X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.getWidth() + ","
+				+ this.getHeight();
 	}
 
 }

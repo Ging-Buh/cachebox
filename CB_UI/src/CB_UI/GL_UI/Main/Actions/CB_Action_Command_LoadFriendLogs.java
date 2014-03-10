@@ -23,7 +23,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
-import CB_Utils.Events.ProgresssChangedEventList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -53,7 +52,6 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		// pd = ProgressDialog.Show(Translation.Get("LoadLogs"), DownloadAnimation.GetINSTANCE(), ChkStatRunnable);
 		pd = CancelWaitDialog.ShowWait(Translation.Get("LoadLogs"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 		{
 
@@ -63,11 +61,13 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 				cancelThread = true;
 			}
 		}, ChkStatRunnable);
+
 	}
 
 	int ChangedCount = 0;
 	int result = 0;
 	boolean cancelThread = false;
+
 	private RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler(new Runnable()
 	{
 		@Override
@@ -77,11 +77,11 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 
 			cancelThread = false;
 
-			float progress = 0;
 			ArrayList<LogEntry> logList = new ArrayList<LogEntry>();
 
 			do
 			{
+
 				try
 				{
 					Thread.sleep(10);
@@ -108,8 +108,6 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 						break;
 					}
 				}
-
-				ProgresssChangedEventList.Call("", (int) progress);
 
 			}
 			while (false && !cancelThread);
@@ -144,7 +142,6 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 				}
 
 			}
-			pd.close();
 
 		}
 	})
@@ -154,7 +151,7 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 		public void RunnableReady(boolean canceld)
 		{
 			String sCanceld = canceld ? Translation.Get("isCanceld") + GlobalCore.br : "";
-
+			pd.close();
 			if (result != -1)
 			{
 				/*

@@ -2,9 +2,9 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
-import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
@@ -21,7 +21,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 public class CancelWaitDialog extends WaitDialog
 {
 
-	CancelWaitDialog that;
+	// CancelWaitDialog that;
 
 	public interface IcancelListner
 	{
@@ -35,14 +35,13 @@ public class CancelWaitDialog extends WaitDialog
 
 	protected IcancelListner cancelListner;
 	private IReadyListner readyListner;
-	private Runnable runnable;
+	private final Runnable runnable;
 
 	public CancelWaitDialog(Size size, String name, IcancelListner listner, Runnable runnable)
 	{
 		super(size, name);
 		this.cancelListner = listner;
 		this.runnable = runnable;
-		that = this;
 	}
 
 	public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, Runnable runnable)
@@ -116,7 +115,7 @@ public class CancelWaitDialog extends WaitDialog
 
 		waitDialog.addChild(waitDialog.label);
 
-		return (CancelWaitDialog) waitDialog;
+		return waitDialog;
 
 	}
 
@@ -139,7 +138,7 @@ public class CancelWaitDialog extends WaitDialog
 				@Override
 				public void RunnableReady(boolean isCanceld)
 				{
-					that.close();
+					// CancelWaitDialog.this.close();
 					if (isCanceld && cancelListner != null)
 					{
 						cancelListner.isCanceld();

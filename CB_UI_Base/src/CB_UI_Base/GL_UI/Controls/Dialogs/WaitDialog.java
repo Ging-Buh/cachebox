@@ -19,12 +19,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 public class WaitDialog extends ButtonDialog
 {
 	AnimationBase animation;
-	WaitDialog that;
 
 	public WaitDialog(Size size, String name)
 	{
 		super(size.getBounds().asFloat(), name, "", "", null, null, null);
-		that = this;
+
 	}
 
 	public static WaitDialog ShowWait()
@@ -111,7 +110,7 @@ public class WaitDialog extends ButtonDialog
 			@Override
 			public void run()
 			{
-				GL.that.closeDialog(that);
+				GL.that.closeDialog(WaitDialog.this);
 				GL.that.renderOnce("dismis WaitDialog");
 			}
 		});
@@ -120,15 +119,24 @@ public class WaitDialog extends ButtonDialog
 	@Override
 	public void dispose()
 	{
-
 		super.dispose();
-		Logger.LogCat("WaitDialog.disposed");
+		if (this.DialogID == 5)
+		{
+			System.out.print(true);
+		}
+		Logger.LogCat("WaitDialog.disposed ID:[" + this.DialogID + "]");
 	}
 
 	@Override
 	public void render(Batch batch)
 	{
 		super.render(batch);
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName() + "DialogID[" + DialogID + "] " + this.label.getText();
 	}
 
 }

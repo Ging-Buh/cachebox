@@ -35,6 +35,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker.Type;
+import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -1696,6 +1697,14 @@ public class GL implements ApplicationListener, InputProcessor
 	public void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector)
 	{
 
+		if (dialog instanceof WaitDialog)
+		{
+			if (((WaitDialog) dialog).DialogID == 5)
+			{
+				System.out.print(true);
+			}
+		}
+
 		if (!DialogIsShown || !mDialog.getchilds().contains((dialog)))
 		{
 			Timer timer = new Timer();
@@ -1708,8 +1717,6 @@ public class GL implements ApplicationListener, InputProcessor
 				}
 			};
 			timer.schedule(task, 500);
-			//
-			// return;
 		}
 
 		if (MsgToPlatformConector) platformConector.hideForDialog();

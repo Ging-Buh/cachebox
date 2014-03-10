@@ -50,7 +50,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global
 {
-	public static final int CurrentRevision = 1979;
+	public static final int CurrentRevision = 1983;
 
 	public static final String CurrentVersion = "0.6.";
 	public static final String VersionPrefix = "test";
@@ -371,17 +371,19 @@ public class GlobalCore extends CB_UI_Base.Global
 		public void chekReady(int MemberTypeId);
 	}
 
+	static CancelWaitDialog dia;
+
 	public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler)
 	{
 		if (!GroundspeakAPI.API_isCheked())
 		{
-			CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner()
+			dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner()
 			{
 
 				@Override
 				public void isCanceld()
 				{
-
+					dia.close();
 				}
 			}, new Runnable()
 			{
@@ -390,13 +392,14 @@ public class GlobalCore extends CB_UI_Base.Global
 				public void run()
 				{
 					int ret = GroundspeakAPI.chkMemperShip(false);
+					dia.close();
 					handler.chekReady(ret);
 				}
 			});
 		}
 		else
 		{
-			handler.chekReady(GroundspeakAPI.GetMembershipType());
+			handler.chekReady(GroundspeakAPI.chkMemperShip(true));
 		}
 
 	}
