@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -53,6 +54,7 @@ import org.xml.sax.SAXException;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.Type;
 import CB_Locator.Map.TileGL.TileState;
+import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_RenderType;
@@ -71,7 +73,8 @@ public abstract class ManagerBase
 	private final DisplayModel DISPLAY_MODEL;
 
 	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
-	protected final int CONECTION_TIME_OUT = 15000;
+	protected final int CONECTION_TIME_OUT = 15000;// 15 sec
+	protected final int CONECTION_TIME_OUT_MESSAGE_INTERVALL = 60000;// 1min
 
 	public static boolean RenderThemeChanged = true;
 
@@ -228,12 +231,13 @@ public abstract class ManagerBase
 
 	protected abstract byte[] getImageFromData(ImageData imgData);
 
-	// / <summary>
-	// / Läd die Kachel mit dem übergebenen Descriptor
-	// / </summary>
-	// / <param name="layer"></param>
-	// / <param name="tile"></param>
-	// / <returns></returns>
+	/**
+	 * Load Tile from URL and save to MapTile-Cache
+	 * 
+	 * @param layer
+	 * @param tile
+	 * @return
+	 */
 	public boolean CacheTile(Layer layer, Descriptor tile)
 	{
 
@@ -262,9 +266,12 @@ public abstract class ManagerBase
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		HttpResponse response = null;
 
+		HttpGet GET = new HttpGet(url);
+
 		try
 		{
-			response = httpclient.execute(new HttpGet(url));
+
+			response = httpclient.execute(GET);
 			StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() == HttpStatus.SC_OK)
 			{
@@ -308,6 +315,33 @@ public abstract class ManagerBase
 		}
 		catch (Exception ex)
 		{
+			// Check last Error for this URL and post massage if the last > 1 min.
+
+			String URL = GET.getURI().getAuthority();
+
+			boolean PostErrorMassage = false;
+
+			if (LastRequestTimeOut.containsKey(URL))
+			{
+				long last = LastRequestTimeOut.get(URL);
+				if (last + CONECTION_TIME_OUT_MESSAGE_INTERVALL > System.currentTimeMillis())
+				{
+					PostErrorMassage = true;
+					LastRequestTimeOut.remove(URL);
+				}
+			}
+			else
+			{
+				PostErrorMassage = true;
+			}
+
+			if (PostErrorMassage)
+			{
+				LastRequestTimeOut.put(URL, System.currentTimeMillis());
+				ConnectionError INSTANCE = new ConnectionError(layer.Name + " - Provider");
+				GL.that.Toast(INSTANCE);
+			}
+
 			return false;
 		}
 		/*
@@ -318,6 +352,8 @@ public abstract class ManagerBase
 
 		return true;
 	}
+
+	HashMap<String, Long> LastRequestTimeOut = new HashMap<String, Long>();
 
 	/**
 	 * The matrix is stored in a single array, and its treated as follows: [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ] <br>

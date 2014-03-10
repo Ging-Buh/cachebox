@@ -18,6 +18,7 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.RadioButton;
 import CB_UI_Base.GL_UI.Controls.RadioGroup;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -69,14 +70,15 @@ public class TestView extends CB_View_Base
 				wrappedTextField.getY() - UI_Size_Base.that.getMargin() - UI_Size_Base.that.getButtonHeight(),
 				UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
 
-		btnSetting.setText("Performe Map");
+		btnSetting.setText("Post Conection Error");
 		btnSetting.setOnClickListener(new OnClickListener()
 		{
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				runMapsforgePerformanceTest();
+				ConnectionError INSTANCE = new ConnectionError("http:12345");
+				GL.that.Toast(INSTANCE);
 				return true;
 			}
 		});
