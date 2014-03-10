@@ -254,8 +254,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			MapViewBase.this.invalidateTexture();
 		}
 	};
-	protected LoadetSortedTiles tilesToDraw = new LoadetSortedTiles();
-	protected LoadetSortedTiles overlayToDraw = new LoadetSortedTiles();
+	protected LoadedSortedTiles tilesToDraw = new LoadedSortedTiles();
+	protected LoadedSortedTiles overlayToDraw = new LoadedSortedTiles();
 	int debugcount = 0;
 	protected float iconFactor = 1.5f;
 	protected boolean showMapCenterCross;

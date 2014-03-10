@@ -25,8 +25,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 class QueueData
 {
-	final LoadetSortedTiles loadedTiles = new LoadetSortedTiles();
-	final LoadetSortedTiles loadedOverlayTiles = new LoadetSortedTiles();
+	final LoadedSortedTiles loadedTiles = new LoadedSortedTiles();
+	final LoadedSortedTiles loadedOverlayTiles = new LoadedSortedTiles();
 	final Lock loadedTilesLock = new ReentrantLock();
 	final Lock loadedOverlayTilesLock = new ReentrantLock();
 	final SortedMap<Long, Descriptor> queuedTiles = new TreeMap<Long, Descriptor>();

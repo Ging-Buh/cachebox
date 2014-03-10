@@ -23,19 +23,20 @@ import CB_Utils.Util.MoveableList;
 /**
  * @author Longri
  */
-public class LoadetSortedTiles implements Iterable<TileGL>
+public class LoadedSortedTiles implements Iterable<TileGL>
 {
 
 	private final MoveableList<Long> descList = new MoveableList<Long>();
 	private final MoveableList<TileGL> tileList = new MoveableList<TileGL>();
 
-	public LoadetSortedTiles()
+	public LoadedSortedTiles()
 	{
 
 	}
 
 	public void add(Long Hash, TileGL tile)
 	{
+		if (tile == null) return;
 		synchronized (descList)
 		{
 			descList.add(Hash);
@@ -48,6 +49,7 @@ public class LoadetSortedTiles implements Iterable<TileGL>
 		synchronized (descList)
 		{
 			int index = descList.indexOf(Hash);
+			if (index < 0 || index > size()) return;
 			descList.remove(index);
 			TileGL t = tileList.remove(index);
 			t.dispose();
@@ -56,9 +58,11 @@ public class LoadetSortedTiles implements Iterable<TileGL>
 
 	public void remove(TileGL tile)
 	{
+		if (tile == null) return;
 		synchronized (descList)
 		{
 			int index = tileList.indexOf(tile);
+			if (index < 0 || index > size()) return;
 			descList.remove(index);
 			TileGL t = tileList.remove(index);
 			t.dispose();

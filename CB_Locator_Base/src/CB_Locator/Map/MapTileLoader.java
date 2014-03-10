@@ -273,7 +273,8 @@ public class MapTileLoader
 
 			for (long hash : delList)
 			{
-				queueData.loadedTiles.get(hash).dispose();
+				TileGL tmp = queueData.loadedTiles.get(hash);
+				if (tmp != null) tmp.dispose();
 				queueData.loadedTiles.remove(hash);
 			}
 
@@ -281,7 +282,8 @@ public class MapTileLoader
 			{
 				for (long hash : delList)
 				{
-					queueData.loadedOverlayTiles.get(hash).dispose();
+					TileGL tmp = queueData.loadedOverlayTiles.get(hash);
+					if (tmp != null) tmp.dispose();
 					queueData.loadedOverlayTiles.remove(hash);
 				}
 			}
@@ -306,7 +308,7 @@ public class MapTileLoader
 		doubleCacheCount = 50;
 	}
 
-	private void deleteUnusedTiles(MapViewBase mapView, LoadetSortedTiles loadedTiles, Lock loadedTilesLock)
+	private void deleteUnusedTiles(MapViewBase mapView, LoadedSortedTiles loadedTiles, Lock loadedTilesLock)
 	{
 		// Ist Auslagerung überhaupt nötig?
 		int doubleCacheValue = doubleCache ? maxNumTiles + maxNumTiles : maxNumTiles;
