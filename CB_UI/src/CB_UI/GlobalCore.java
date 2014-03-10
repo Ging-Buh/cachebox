@@ -50,9 +50,9 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global
 {
-	public static final int CurrentRevision = 1983;
+	public static final int CurrentRevision = 1984;
 
-	public static final String CurrentVersion = "0.6.";
+	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
 
 	// public static final String ps = System.getProperty("path.separator");

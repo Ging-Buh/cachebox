@@ -143,11 +143,13 @@ class MultiThreadQueueProcessor extends Thread
 								inLoadDescLock.lock();
 								if (inLoadDesc.contains(desc))
 								{
+									inLoadDescLock.unlock();
 									continue;// Other thread is loading this Desc. Skip!
 								}
 								inLoadDesc.add(desc);
+								inLoadDescLock.unlock();
 							}
-							inLoadDescLock.unlock();
+
 							// Logger.LogCat("LoadTile on[" + ThreadId + "]");
 							LoadTile(desc);
 							// Logger.LogCat("finish LoadTile on[" + ThreadId + "]");
