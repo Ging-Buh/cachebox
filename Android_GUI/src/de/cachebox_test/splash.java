@@ -337,8 +337,17 @@ public class splash extends Activity
 
 			String externalSd = getExternalSdPath("/CacheBox");
 
+			boolean hasExtSd;
 			final String externalSd2 = externalSd;
-			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
+
+			if (externalSd != null)
+			{
+				hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
+			}
+			else
+			{
+				hasExtSd = false;
+			}
 
 			// externe SD wurde gefunden != internal
 			// oder Tablet Layout möglich
@@ -674,6 +683,11 @@ public class splash extends Activity
 		{
 			// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
 			// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
+			externalSd += Folder;
+		}
+		else if ((externalSd = testExtSdPath("/mnt/shared/ExtSD")) != null)
+		{
+			// GinyMotion Emulator
 			externalSd += Folder;
 		}
 		return externalSd;
