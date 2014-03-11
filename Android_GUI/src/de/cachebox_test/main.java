@@ -595,20 +595,43 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (Config.newInstall.getValue())
 			{
-				String Welcome = "";
-				String LangId = getString(R.string.langId);
-				try
+				// wait for Copy Asset is closed
+				CheckTranslationIsLoaded();
+				Timer tim = new Timer();
+				TimerTask timTask = new TimerTask()
 				{
-					Welcome = Translation.GetTextFile("welcome", LangId);
 
-					Welcome += Translation.GetTextFile("changelog", LangId);
-				}
-				catch (IOException e1)
-				{
-					e1.printStackTrace();
-				}
+					@Override
+					public void run()
+					{
 
-				MessageBox.Show(Welcome, Translation.Get("welcome"), MessageBoxIcon.None);
+						mainActivity.runOnUiThread(new Runnable()
+						{
+
+							@Override
+							public void run()
+							{
+								String Welcome = "";
+								String LangId = getString(R.string.langId);
+								try
+								{
+									Welcome = Translation.GetTextFile("welcome", LangId);
+
+									Welcome += Translation.GetTextFile("changelog", LangId);
+								}
+								catch (IOException e1)
+								{
+									e1.printStackTrace();
+								}
+
+								MessageBox.Show(Welcome, Translation.Get("welcome"), MessageBoxIcon.None);
+							}
+						});
+
+					}
+				};
+
+				tim.schedule(timTask, 5000);
 
 			}
 
@@ -2394,25 +2417,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (Config.Ask_Switch_GPS_ON.getValue() && !GpsOn())
 			{
-				if (!Translation.isInitial())
-				{
-					new Translation(Config.WorkPath, FileType.Internal);
-					try
-					{
-						Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
-					}
-					catch (Exception e)
-					{
-						try
-						{
-							Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
-						}
-						catch (IOException e1)
-						{
-							e1.printStackTrace();
-						}
-					}
-				}
+				CheckTranslationIsLoaded();
 				runOnUiThread(new Runnable()
 				{
 					@Override
@@ -2452,6 +2457,29 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			Logger.Error("main.chkGpsIsOn()", "", e);
 			e.printStackTrace();
+		}
+	}
+
+	private void CheckTranslationIsLoaded()
+	{
+		if (!Translation.isInitial())
+		{
+			new Translation(Config.WorkPath, FileType.Internal);
+			try
+			{
+				Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
+			}
+			catch (Exception e)
+			{
+				try
+				{
+					Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+				}
+				catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
 		}
 	}
 

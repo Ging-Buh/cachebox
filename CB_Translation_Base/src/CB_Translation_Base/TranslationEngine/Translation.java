@@ -18,11 +18,9 @@ package CB_Translation_Base.TranslationEngine;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -471,29 +469,11 @@ public class Translation
 
 	private String getTextFile(String Name, String overrideLangId) throws IOException
 	{
-		String FilePath = mWorkPath + "/data/string_files/" + Name + "." + overrideLangId + ".txt";
 
-		if (!FileUtil.FileExists(FilePath))
-		{
-			FilePath = mWorkPath + "/data/string_files/" + Name + ".en.txt";
-			if (!FileUtil.FileExists(FilePath))
-			{
-				return "File not found => " + Name;
-			}
-		}
-
-		StringBuilder retSb = new StringBuilder();
-		BufferedReader Filereader;
-		Filereader = new BufferedReader(new InputStreamReader(new FileInputStream(FilePath), "UTF8"));
-
-		String line;
-		while ((line = Filereader.readLine()) != null)
-		{
-			retSb.append(line + String.format("%n"));
-		}
-
-		Filereader.close();
-		return retSb.toString();
+		String FilePath = "data/string_files/" + Name + "." + overrideLangId + ".txt";
+		FileHandle file = Gdx.files.getFileHandle(FilePath, FileType.Internal);
+		String text = file.readString();
+		return text;
 	}
 
 }

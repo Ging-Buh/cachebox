@@ -103,7 +103,7 @@ public class copyAssetFolder
 
 		File ziel = new File(target);
 		ziel.getParentFile().mkdirs();
-		OutputStream myOutput = new FileOutputStream(target);
+		final OutputStream myOutput = new FileOutputStream(target);
 
 		int dotposition = target.lastIndexOf(".");
 		String ext = target.substring(dotposition + 1, target.length()).toLowerCase();
@@ -143,6 +143,7 @@ public class copyAssetFolder
 		// Close the streams
 		myOutput.flush();
 		myOutput.close();
+
 		myInput.close();
 
 	}

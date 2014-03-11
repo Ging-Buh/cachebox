@@ -604,76 +604,77 @@ public class splash extends Activity
 		String externalSd = "";
 
 		// search for an external sd card on different devices
-		if (testExtSdPath(prev + "/extSdCard"))
+
+		if ((externalSd = testExtSdPath(prev + "/extSdCard")) != null)
 		{
-			externalSd = prev + "/extSdCard" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/MicroSD"))
+		else if ((externalSd = testExtSdPath(prev + "/MicroSD")) != null)
 		{
-			externalSd = prev + "/MicroSD" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard/ext_sd"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard/ext_sd")) != null)
 		{
-			externalSd = prev + "/sdcard/ext_sd" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/ext_card"))
+		else if ((externalSd = testExtSdPath(prev + "/ext_card")) != null)
 		{
 			// Sony Xperia sola
-			externalSd = prev + "/ext_card" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/external"))
+		else if ((externalSd = testExtSdPath(prev + "/external")) != null)
 		{
-			externalSd = prev + "/external" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard2"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard2")) != null)
 		{
-			externalSd = prev + "/sdcard2" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard1"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard1")) != null)
 		{
-			externalSd = prev + "/sdcard1" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard/_ExternalSD")) != null)
 		{
-			externalSd = prev + "/sdcard/_ExternalSD";
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard-ext"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard-ext")) != null)
 		{
-			externalSd = prev + "/sdcard-ext" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/external1"))
+		else if ((externalSd = testExtSdPath(prev + "/external1")) != null)
 		{
-			externalSd = prev + "/external1" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard/external_sd"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard/external_sd")) != null)
 		{
-			externalSd = prev + "/sdcard/external_sd" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/emmc"))
+		else if ((externalSd = testExtSdPath(prev + "/emmc")) != null)
 		{
 			// for CM9
-			externalSd = prev + "/emmc" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath("/Removable/MicroSD"))
+		else if ((externalSd = testExtSdPath("/Removable/MicroSD")) != null)
 		{
 			// Asus Transformer
-			externalSd = prev + "/Removable/MicroSD" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath("/mnt/ext_sd"))
+		else if ((externalSd = testExtSdPath("/mnt/ext_sd")) != null)
 		{
 			// ODYS Motion
-			externalSd = prev + "/ext_sd" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath("/sdcard/tflash"))
+		else if ((externalSd = testExtSdPath("/sdcard/tflash")) != null)
 		{
 			// Car Radio
-			externalSd = prev + "/sdcard/tflash" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard")) != null)
 		{
 			// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
 			// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
-			externalSd = prev + "/sdcard" + Folder;
+			externalSd += Folder;
 		}
 		return externalSd;
 	}
@@ -753,20 +754,49 @@ public class splash extends Activity
 	}
 
 	// this will test whether the extPath is an existing path to an external sd card
-	private boolean testExtSdPath(String extPath)
+	private String testExtSdPath(String extPath)
 	{
-		if (extPath.equalsIgnoreCase(workPath)) return false; // if this extPath is the same than the actual workPath -> this is the
+		if (extPath.equalsIgnoreCase(workPath)) return null; // if this extPath is the same than the actual workPath -> this is the
 																// internal SD, not
 		// the external!!!
 		if (FileIO.FileExists(extPath))
 		{
 			StatFs stat = new StatFs(extPath);
 			long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
-			if (bytesAvailable == 0) return false; // ext SD-Card is not plugged in -> do not use it
+			if (bytesAvailable == 0)
+			{
+				return null; // ext SD-Card is not plugged in -> do not use it
+			}
 			else
-				return true; // ext SD-Card is plugged in
+			{
+				// Check can Read/Write
+
+				File f = new File(extPath);
+				if (f.canWrite())
+				{
+					if (f.canRead())
+					{
+						return f.getAbsolutePath(); // ext SD-Card is plugged in
+					}
+				}
+
+				// Check can Read/Write on Application Storage
+				String appPath = this.getApplication().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+				int Pos = appPath.indexOf("/Android/data/");
+				String p = appPath.substring(Pos);
+				File fi = new File(extPath + p);// "/Android/data/de.cachebox_test/files");
+				fi.mkdirs();
+				if (fi.canWrite())
+				{
+					if (fi.canRead())
+					{
+						return fi.getAbsolutePath();
+					}
+				}
+				return null;
+			}
 		}
-		return false;
+		return null;
 	}
 
 	private void saveWorkPath(boolean askAgain/* , boolean useTabletLayout */)
@@ -1016,7 +1046,6 @@ public class splash extends Activity
 
 		// copy AssetFolder only if Rev-Number changed, like at new installation
 		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
-		// if (true)
 		{
 			String[] exclude = new String[]
 				{ "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
