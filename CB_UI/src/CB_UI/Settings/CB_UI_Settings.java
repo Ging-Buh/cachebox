@@ -75,7 +75,7 @@ public interface CB_UI_Settings
 			SettingStoreType.Global);
 	public static final SettingBool CompassShowTargetDirection = new SettingBool("CompassShowTargetDirection", SettingCategory.Compass,
 			NORMAL, false, SettingStoreType.Global);
-	public static final SettingBool CompassShowSDT = new SettingBool("CompassSDT", SettingCategory.Compass, NORMAL, true,
+	public static final SettingBool CompassShowSDT = new SettingBool("CompassShowSDT", SettingCategory.Compass, NORMAL, true,
 			SettingStoreType.Global);
 	public static final SettingBool CompassShowLastFound = new SettingBool("CompassShowLastFound", SettingCategory.Compass, NORMAL, true,
 			SettingStoreType.Global);
