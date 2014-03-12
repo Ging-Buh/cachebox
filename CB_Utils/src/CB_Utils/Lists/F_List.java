@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import CB_Utils.Exceptions.NotImplementedException;
 
 public class F_List<T> implements List<T>
 {
@@ -61,7 +61,6 @@ public class F_List<T> implements List<T>
 	public boolean add(T value)
 	{
 		if (size == this.items.length) resize(size + (size >> 1));
-		int ID = size;
 		this.items[size++] = value;
 		return true;
 	}
@@ -399,66 +398,67 @@ public class F_List<T> implements List<T>
 	@Override
 	public boolean addAll(Collection<? extends T> c)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.addAll");
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends T> c)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.addAll");
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.containsAll");
 	}
 
 	@Override
 	public int lastIndexOf(Object o)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.lastIndexOf");
 	}
 
 	@Override
 	public ListIterator<T> listIterator()
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.listIterator");
 	}
 
 	@Override
 	public ListIterator<T> listIterator(int index)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.listIterator");
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.removeAll");
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.retainAll");
 	}
 
 	@Override
 	public List<T> subList(int fromIndex, int toIndex)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.subList");
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	public <T> T[] toArray(T[] a)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.toArray");
 	}
 
 	@Override
 	public T set(int index, T element)
 	{
-		throw new NotImplementedException();
+		throw new NotImplementedException("F_List.set");
 	}
 }

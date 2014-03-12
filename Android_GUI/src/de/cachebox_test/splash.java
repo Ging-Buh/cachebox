@@ -690,6 +690,31 @@ public class splash extends Activity
 			// GinyMotion Emulator
 			externalSd += Folder;
 		}
+
+		if (android.os.Build.VERSION.SDK_INT == 19)
+		{
+			// check for Root permission
+			try
+			{
+				String testFolderName = externalSd + "/Test";
+
+				File testFolder = new File(testFolderName);
+				File test = new File(testFolderName + "/Test.txt");
+				testFolder.mkdirs();
+				test.createNewFile();
+				if (!test.exists())
+				{
+					return null;
+				}
+				test.delete();
+				testFolder.delete();
+			}
+			catch (IOException e)
+			{
+				return null;
+			}
+		}
+
 		return externalSd;
 	}
 

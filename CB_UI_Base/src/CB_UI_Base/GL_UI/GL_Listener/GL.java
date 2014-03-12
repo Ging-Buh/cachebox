@@ -334,6 +334,7 @@ public class GL implements ApplicationListener, InputProcessor
 						{
 							if (FBO_RenderCals >= MAX_FBO_RENDER_CALLS)
 							{
+								Logger.LogCat("Max_FBO_Render_Calls" + run.toString());
 								runOnGL_ListWaitpool.add(run);
 							}
 							else
@@ -1150,10 +1151,10 @@ public class GL implements ApplicationListener, InputProcessor
 	 * @param view
 	 *            Aufrufendes GL_View_Base für Debug zwecke. Kann auch null sein.
 	 */
-	public void renderOnce(String requestName)
+	public void renderOnce(String requestName, boolean force)
 	{
 
-		if (lastRenderOnceTime == GL.that.getStateTime()) return;
+		if (!force && lastRenderOnceTime == GL.that.getStateTime()) return;
 		lastRenderOnceTime = GL.that.getStateTime();
 		if (requestName == null)
 		{
@@ -1161,6 +1162,11 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 
 		if (listenerInterface != null) listenerInterface.RequestRender(requestName);
+	}
+
+	public void renderOnce(String requestName)
+	{
+		renderOnce(requestName, false);
 	}
 
 	private void calcNewRenderSpeed()

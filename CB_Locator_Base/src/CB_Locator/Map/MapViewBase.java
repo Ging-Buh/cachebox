@@ -332,6 +332,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	@Override
 	public void onResized(CB_RectF rec)
 	{
+		if (rec.getWidth() <= 0 || rec.getHeight() <= 0) return;
+
 		// wenn sich die Größe nicht geändert hat, brauchen wir nicht zu machen!
 		if (rec.getWidth() == this.mapIntWidth && rec.getHeight() == this.mapIntHeight)
 		{
@@ -1269,7 +1271,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 	}
 
-	private Descriptor screenToDescriptor(Vector2 point, int zoom)
+	protected Descriptor screenToDescriptor(Vector2 point, int zoom)
 	{
 		// World-Koordinaten in Pixel
 		Vector2 world = screenToWorld(point);

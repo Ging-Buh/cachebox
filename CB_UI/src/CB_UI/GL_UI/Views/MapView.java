@@ -40,6 +40,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
+import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
@@ -166,7 +167,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				lastDynamicZoom = zoomBtn.getZoom();
 
-				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
+				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
 						System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
@@ -185,7 +186,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				lastDynamicZoom = zoomBtn.getZoom();
 
-				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
+				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
 						System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
@@ -221,6 +222,11 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
 		if (!CompassMode) this.addChild(zoomScale);
 
+		mapIntWidth = (int) rec.getWidth();
+		mapIntHeight = (int) rec.getHeight();
+		drawingWidth = mapIntWidth;
+		drawingHeight = mapIntHeight;
+
 		InitializeMap();
 
 		// initial Zoom Scale
@@ -245,11 +251,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName.length() > 0) mapTileLoader
 					.setOverlayLayer(ManagerBase.Manager.GetLayerByName(currentOverlayLayerName, currentOverlayLayerName, ""));
 		}
-
-		mapIntWidth = (int) rec.getWidth();
-		mapIntHeight = (int) rec.getHeight();
-		drawingWidth = mapIntWidth;
-		drawingHeight = mapIntHeight;
 
 		iconFactor = Config.MapViewDPIFaktor.getValue();
 
@@ -763,7 +764,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					zoomBtn.setZoom((int) lastDynamicZoom);
 					inputState = InputState.Idle;
 
-					kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(lastDynamicZoom),
+					kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(lastDynamicZoom),
 							System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
 					GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
@@ -1144,7 +1145,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				zoomBtn.setZoom(setZoomTo);
 				inputState = InputState.Idle;
 
-				kineticZoom = new KineticZoom(camera.zoom, mapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(),
+				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(),
 						System.currentTimeMillis() + ZoomTime);
 
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
@@ -1198,10 +1199,20 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	public void onShow()
 	{
 		super.onShow();
+
+		if (MapTileLoderPreInitialAtWork)
+		{
+			waitForPreloadDialog = WaitDialog.ShowWait(Translation.Get("WaitForMapsforgeInitial"));
+		}
+
 		CB_UI.Events.SelectedCacheEventList.Add(this);
 		this.NorthOriented = CompassMode ? false : Config.MapNorthOriented.getValue();
 		SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
+
+	private static boolean MapTileLoderPreInitial = false;
+	private static boolean MapTileLoderPreInitialAtWork = true;
+	private WaitDialog waitForPreloadDialog;
 
 	@Override
 	public void setNewSettings(int InitialFlags)
@@ -1357,6 +1368,62 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				mapCacheList.update(data);
 			}
 
+		}
+
+		if (!MapTileLoderPreInitial)
+		{
+			MapTileLoderPreInitial = true;
+
+			Thread preLoadThread = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					int halfMapIntWidth = mapIntWidth / 2;
+					int halfMapIntHeight = mapIntHeight / 2;
+
+					int extensionTop = (int) -((halfMapIntHeight) * 0.5);
+					int extensionBottom = (int) -((halfMapIntHeight) * 0.5);
+					int extensionLeft = (int) -(halfMapIntWidth * 0.5);
+					int extensionRight = (int) -(halfMapIntWidth * 0.5);
+					Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - drawingWidth / 2 - extensionLeft, halfMapIntHeight
+							- drawingHeight / 2 - extensionTop), aktZoom);
+					Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight
+							+ drawingHeight / 2 + extensionBottom), aktZoom);
+
+					MapTileLoderPreInitialAtWork = true;
+					mapTileLoader.loadTiles(MapView.this, lo, ru, aktZoom);
+					Thread checkPreLoadReadyThread = new Thread(new Runnable()
+					{
+
+						@Override
+						public void run()
+						{
+							while (true)
+							{
+								if (mapTileLoader.LoadedTilesSize() > 0)
+								{
+									break;
+								}
+								try
+								{
+									Thread.sleep(300);
+								}
+								catch (InterruptedException e)
+								{
+
+								}
+							}
+							// cloase Wait Dialog
+							if (waitForPreloadDialog != null) waitForPreloadDialog.close();
+							MapTileLoderPreInitialAtWork = false;
+						}
+					});
+					checkPreLoadReadyThread.start();
+				}
+			});
+			preLoadThread.start();
 		}
 
 	}

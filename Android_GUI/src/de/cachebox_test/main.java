@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -89,7 +90,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_Listener.GL.renderStartet;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
@@ -1061,6 +1061,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	Dialog pWaitD;
 	private boolean stopped = false;
 
+	private AtomicBoolean waitForGL = new AtomicBoolean(false);
+
 	private void showWaitToRenderStartet()
 	{
 		if (!GL.isInitial()) return;
@@ -1071,24 +1073,40 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			pWaitD = PleaseWaitMessageBox.Show(Translation.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
 			stopped = false;
 
-			GL.that.RunIfInitial(new IRunOnGL()
+			waitForGL.set(true);
+
+			GL.that.RunOnGL(new IRunOnGL()
+			{
+				@Override
+				public void run()
+				{
+					pWaitD.dismiss();
+					pWaitD = null;
+					waitForGL.set(false);
+				}
+			});
+
+			Thread chkThread = new Thread(new Runnable()
 			{
 
 				@Override
 				public void run()
 				{
-					GL.that.registerRenderStartetListner(new renderStartet()
+					while (waitForGL.get())
 					{
-						@Override
-						public void renderIsStartet()
+						GL.that.renderOnce("WaitForGL", true);
+						try
 						{
-							pWaitD.dismiss();
-							pWaitD = null;
+							Thread.sleep(200);
 						}
-					});
+						catch (InterruptedException e)
+						{
+
+						}
+					}
 				}
 			});
-
+			chkThread.start();
 		}
 	}
 

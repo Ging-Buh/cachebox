@@ -15,7 +15,6 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,20 +37,17 @@ public class ext_AndroidResourceBitmap extends AndroidResourceBitmap implements 
 	{
 		super(inputStream, HashCode);
 
-		ByteArrayInputStream bais = null;
-
+		byte[] bytes = null;
 		if (!BitmapDrawable.AtlasContains(HashCode))
 		{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			this.bitmap.compress(CompressFormat.PNG, 1, baos);
 
-			byte[] bytes = new byte[baos.toByteArray().length];
+			bytes = new byte[baos.toByteArray().length];
 			System.arraycopy(baos.toByteArray(), 0, bytes, 0, baos.toByteArray().length);
-
-			bais = new ByteArrayInputStream(bytes);
 		}
 
-		GL_image = new BitmapDrawable(bais, HashCode, scaleFactor);
+		GL_image = new BitmapDrawable(bytes, HashCode, scaleFactor);
 
 	}
 

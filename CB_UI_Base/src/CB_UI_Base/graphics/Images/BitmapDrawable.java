@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 
-import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
@@ -115,7 +115,34 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 		}
 		else
 		{
-			GL.that.RunOnGL(new IRunOnGL()
+			GL.that.RunOnGL(new IRenderFBO()
+			{
+
+				@Override
+				public void run()
+				{
+					createData();
+				}
+			});
+		}
+	}
+
+	public BitmapDrawable(byte[] bytes, int HashCode, float scaleFactor)
+	{
+		AtlasHashString = String.valueOf(HashCode);
+		this.scaleFactor = scaleFactor;
+
+		if (HashStringList.contains(AtlasHashString)) return;
+		HashStringList.add(AtlasHashString);
+		buffer = bytes;
+
+		if (GL.isGlThread())
+		{
+			createData();
+		}
+		else
+		{
+			GL.that.RunOnGL(new IRenderFBO()
 			{
 
 				@Override
