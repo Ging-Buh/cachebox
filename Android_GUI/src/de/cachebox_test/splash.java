@@ -107,6 +107,7 @@ public class splash extends Activity
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
 	private boolean isLandscape = false;
+	private boolean ToastEx = false;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -331,6 +332,21 @@ public class splash extends Activity
 			e.printStackTrace();
 		}
 
+		// check Write permission
+		if (!askAgain)
+		{
+			if (!checkWritePermission(workPath))
+			{
+				askAgain = true;
+				if (!ToastEx)
+				{
+					ToastEx = true;
+					String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+					Toast.makeText(splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+				}
+			}
+		}
+
 		if ((askAgain))
 		{
 			// no saved workPath found -> search sd-cards and if more than 1 is found give the user the possibility to select one
@@ -448,6 +464,13 @@ public class splash extends Activity
 
 					final String Name = FileIO.GetFileNameWithoutExtension(AddWorkPath);
 
+					if (!checkWritePermission(AddWorkPath))
+					{
+						// delete this Work Path
+						deleteWorkPath(AddWorkPath);
+						continue;
+					}
+
 					Button buttonW = new Button(context);
 					buttonW.setText(Name + "\n\n" + AddWorkPath);
 
@@ -546,10 +569,19 @@ public class splash extends Activity
 							@Override
 							public void getFolderReturn(String Path)
 							{
-								AdditionalWorkPathArray.add(Path);
-								writeAdditionalWorkPathArray(AdditionalWorkPathArray);
-								// Start again to include the new Folder
-								onStart();
+								if (checkWritePermission(Path))
+								{
+
+									AdditionalWorkPathArray.add(Path);
+									writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+									// Start again to include the new Folder
+									onStart();
+								}
+								else
+								{
+									String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+									Toast.makeText(splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+								}
 							}
 						};
 
@@ -595,6 +627,30 @@ public class splash extends Activity
 			startInitial();
 		}
 
+	}
+
+	private boolean checkWritePermission(String addWorkPath)
+	{
+		try
+		{
+			String testFolderName = addWorkPath + "/Test";
+
+			File testFolder = new File(testFolderName);
+			File test = new File(testFolderName + "/Test.txt");
+			testFolder.mkdirs();
+			test.createNewFile();
+			if (!test.exists())
+			{
+				return false;
+			}
+			test.delete();
+			testFolder.delete();
+		}
+		catch (IOException e)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	private String getExternalSdPath(String Folder)

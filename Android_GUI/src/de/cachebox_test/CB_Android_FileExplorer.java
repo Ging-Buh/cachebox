@@ -28,6 +28,9 @@ public final class CB_Android_FileExplorer implements IgetFileListner, IgetFolde
 		getFileReturnListner = returnListner;
 		getFolderReturnListner = null;
 
+		// Try X-Plore
+		// if (!Android_FileExplorer_XPlore.getMyInstanz().getFile(initialPath, extension, TitleText, ButtonText, returnListner))
+		// {
 		// Try OI-Datei-Explorer
 		if (!Android_FileExplorer_OI.getMyInstanz().getFile(initialPath, extension, TitleText, ButtonText, returnListner))
 		{
@@ -38,6 +41,7 @@ public final class CB_Android_FileExplorer implements IgetFileListner, IgetFolde
 				Toast.makeText(UsedActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
 			}
 		}
+		// }
 
 	}
 
@@ -46,6 +50,9 @@ public final class CB_Android_FileExplorer implements IgetFileListner, IgetFolde
 	{
 		getFileReturnListner = null;
 		getFolderReturnListner = returnListner;
+		// Try X-Plore
+		// if (!Android_FileExplorer_XPlore.getMyInstanz().getfolder(initialPath, TitleText, ButtonText, returnListner))
+		// {
 		// Try OI-Datei-Explorer
 		if (!Android_FileExplorer_OI.getMyInstanz().getfolder(initialPath, TitleText, ButtonText, returnListner))
 		{
@@ -56,6 +63,7 @@ public final class CB_Android_FileExplorer implements IgetFileListner, IgetFolde
 				Toast.makeText(UsedActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
 			}
 		}
+		// }
 	}
 
 	public static void onActivityResult(int requestCode, int resultCode, Intent data)
