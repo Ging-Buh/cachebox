@@ -200,7 +200,8 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public GL_View_Base addChild(final GL_View_Base view, final boolean last)
 	{
-		GL.that.RunOnGL(new IRunOnGL()
+		if (childs.contains(view)) return view;
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -222,7 +223,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChild(final GL_View_Base view)
 	{
-		GL.that.RunOnGL(new IRunOnGL()
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -241,7 +242,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChilds()
 	{
-		GL.that.RunOnGL(new IRunOnGL()
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -260,7 +261,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChilds(final MoveableList<GL_View_Base> Childs)
 	{
-		GL.that.RunOnGL(new IRunOnGL()
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override
 			public void run()

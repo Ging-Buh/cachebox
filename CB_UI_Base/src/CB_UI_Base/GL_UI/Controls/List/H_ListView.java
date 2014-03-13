@@ -1,12 +1,11 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.Point;
 
 public class H_ListView extends ListViewBase
@@ -22,7 +21,7 @@ public class H_ListView extends ListViewBase
 	{
 		float distance = mPos - value;
 
-		ArrayList<ListViewItemBase> clearList = new ArrayList<ListViewItemBase>();
+		CB_List<ListViewItemBase> clearList = new CB_List<ListViewItemBase>();
 
 		// alle childs verschieben
 		synchronized (childs)
@@ -50,19 +49,28 @@ public class H_ListView extends ListViewBase
 		// afräumen
 		if (clearList.size() > 0)
 		{
-			for (Iterator<ListViewItemBase> iterator = clearList.iterator(); iterator.hasNext();)
+			for (int i = 0; i < clearList.size(); i++)
 			{
-				ListViewItemBase tmp = iterator.next();
-				mAddeedIndexList.remove((Object) tmp.getIndex());
-				// Logger.LogCat("Remove: " + tmp.getName());
-				this.removeChild(tmp);
-				if (mCanDispose) tmp.dispose();
+				ListViewItemBase tmp = clearList.get(i);
+				int index = mAddeedIndexList.indexOf(tmp.getIndex());
+				if (index >= 0 && index < mAddeedIndexList.size())
+				{
+					mAddeedIndexList.remove(index);
+					// Logger.LogCat("Remove Item " + tmp.getIndex());
+					this.removeChild(tmp);
+					if (mCanDispose) tmp.dispose();
+				}
+				else
+				{
+					System.out.print("");
+				}
 			}
 			clearList.clear();
 			clearList = null;
 
 			// setze First Index, damit nicht alle Items durchlaufen werden müssen
-			Collections.sort(mAddeedIndexList);
+			mAddeedIndexList.sort();
+
 			if (mAddeedIndexList.size() > 0)
 			{
 				mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
@@ -89,10 +97,10 @@ public class H_ListView extends ListViewBase
 		if (mBaseAdapter == null) return;
 		if (mPosDefault == null) calcDefaultPosList();
 
-		ArrayList<Float> tmpPosDefault;
+		CB_List<Float> tmpPosDefault;
 		synchronized (mPosDefault)
 		{
-			tmpPosDefault = (ArrayList<Float>) mPosDefault.clone();
+			tmpPosDefault = new CB_List<Float>(mPosDefault);
 		}
 
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
@@ -164,7 +172,7 @@ public class H_ListView extends ListViewBase
 			mPosDefault = null;
 		}
 
-		mPosDefault = new ArrayList<Float>();
+		mPosDefault = new CB_List<Float>();
 
 		float countPos = this.getWidth();
 		minimumItemSize = this.getWidth();

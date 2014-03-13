@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.concurrent.locks.Lock;
 
+import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
@@ -266,29 +267,32 @@ public class MapTileLoader
 			}
 		}
 
-		if (!doubleCache && LoadedTilesSize() > neadedTiles.size() * 1.5)
+		// Don't cleanup on tablet, it can two maps visible
+		if (!Global.isTab)
 		{
-
-			CB_List<Long> delList = queueData.loadedTiles.allKeysAreNot(neadedTiles);
-
-			for (long hash : delList)
+			if (!doubleCache && LoadedTilesSize() > neadedTiles.size() * 1.5)
 			{
-				TileGL tmp = queueData.loadedTiles.get(hash);
-				if (tmp != null) tmp.dispose();
-				queueData.loadedTiles.remove(hash);
-			}
 
-			if (queueData.CurrentOverlayLayer != null)
-			{
+				CB_List<Long> delList = queueData.loadedTiles.allKeysAreNot(neadedTiles);
+
 				for (long hash : delList)
 				{
-					TileGL tmp = queueData.loadedOverlayTiles.get(hash);
+					TileGL tmp = queueData.loadedTiles.get(hash);
 					if (tmp != null) tmp.dispose();
-					queueData.loadedOverlayTiles.remove(hash);
+					queueData.loadedTiles.remove(hash);
+				}
+
+				if (queueData.CurrentOverlayLayer != null)
+				{
+					for (long hash : delList)
+					{
+						TileGL tmp = queueData.loadedOverlayTiles.get(hash);
+						if (tmp != null) tmp.dispose();
+						queueData.loadedOverlayTiles.remove(hash);
+					}
 				}
 			}
 		}
-
 		queueData.queuedTilesLock.unlock();
 		queueData.loadedTilesLock.unlock();
 		if (queueData.CurrentOverlayLayer != null)

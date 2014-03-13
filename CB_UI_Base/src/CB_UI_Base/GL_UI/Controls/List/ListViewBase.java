@@ -1,7 +1,5 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,6 +12,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.MoveableList;
@@ -37,8 +36,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected boolean hasInvisibleItems = false;
 	protected boolean isTouch = false;
 
-	protected ArrayList<IRunOnGL> runOnGL_List = new ArrayList<IRunOnGL>();
-	protected ArrayList<IRunOnGL> runOnGL_ListWaitpool = new ArrayList<IRunOnGL>();
+	protected CB_List<IRunOnGL> runOnGL_List = new CB_List<IRunOnGL>();
+	protected CB_List<IRunOnGL> runOnGL_ListWaitpool = new CB_List<IRunOnGL>();
 	protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
 
 	/**
@@ -61,7 +60,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	/**
 	 * Enthällt die Indexes, welche schon als Child exestieren.
 	 */
-	ArrayList<Integer> mAddeedIndexList = new ArrayList<Integer>();
+	CB_List<Integer> mAddeedIndexList = new CB_List<Integer>();
 
 	/**
 	 * Aktuelle Position der Liste
@@ -98,14 +97,14 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected boolean mMustSetPosKinetic = false;
 	protected boolean mMustSetPos = false;
 	protected float mMustSetPosValue = 0;
-	protected ArrayList<Float> mPosDefault;
+	protected CB_List<Float> mPosDefault;
 
 	public interface IListPosChanged
 	{
 		public void ListPosChanged();
 	}
 
-	private final ArrayList<IListPosChanged> EventHandlerList = new ArrayList<IListPosChanged>();
+	private final CB_List<IListPosChanged> EventHandlerList = new CB_List<IListPosChanged>();
 
 	public void addListPosChangedEventHandler(IListPosChanged handler)
 	{
@@ -138,7 +137,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 	}
 
-	public ArrayList<Float> getItemPosList()
+	public CB_List<Float> getItemPosList()
 	{
 		return mPosDefault;
 	}
@@ -620,7 +619,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		synchronized (childs)
 		{
 
-			ArrayList<ListViewItemBase> visibleList = new ArrayList<ListViewItemBase>();
+			CB_List<ListViewItemBase> visibleList = new CB_List<ListViewItemBase>();
 
 			for (GL_View_Base v : childs)
 			{
@@ -637,7 +636,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 				return ret;
 			}
 
-			Collections.sort(visibleList);
+			visibleList.sort();
 			boolean foundFirstVisible = false;
 			int lastFoundedVisible = 0;
 			for (ListViewItemBase lv : visibleList)
@@ -665,37 +664,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		return ret;
 	}
-
-	// public int getFirstVisiblePosition()
-	// {
-	// if (mBaseAdapter == null) return 0;
-	// synchronized (childs)
-	// {
-	//
-	// ArrayList<ListViewItemBase> visibleList = new ArrayList<ListViewItemBase>();
-	//
-	// for (GL_View_Base v : childs)
-	// {
-	// if (v instanceof ListViewItemBase)
-	// {
-	// visibleList.add(((ListViewItemBase) v));
-	// }
-	// }
-	//
-	// Collections.sort(visibleList);
-	//
-	// for (ListViewItemBase lv : visibleList)
-	// {
-	// if (this.contains(lv))
-	// {
-	// return lv.getIndex();
-	// }
-	//
-	// }
-	// }
-	//
-	// return mBaseAdapter.getCount();
-	// }
 
 	/**
 	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden können, wenn alle Items so Groß sind wie das kleinste Item in der

@@ -220,6 +220,24 @@ public class GL implements ApplicationListener, InputProcessor
 		Gdx.input.setCatchBackKey(true);
 	}
 
+	/**
+	 * Run on GL-Thread!<br>
+	 * If this Thread the GL_thread, run direct!
+	 * 
+	 * @param run
+	 */
+	public void RunOnGLWithThreadCheck(IRunOnGL run)
+	{
+		if (isGlThread())
+		{
+			run.run();
+		}
+		else
+		{
+			RunOnGL(run);
+		}
+	}
+
 	public void RunOnGL(IRunOnGL run)
 	{
 		// if in progress put into pool
