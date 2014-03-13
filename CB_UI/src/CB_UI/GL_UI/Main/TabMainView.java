@@ -91,6 +91,7 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -173,16 +174,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	{
 		GlobalCore.receiver = new CB_UI.GlobalLocationReceiver();
 
-		Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
-		Config.WriteLoggerDebugMode.addChangedEventListner(new iChanged()
-		{
-			@Override
-			public void isChanged()
-			{
-				Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
-			}
-		});
-
+		initialSettingsChangedListner();
 		ini();
 		isInitial = true;
 
@@ -207,6 +199,32 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	}
 
 	private boolean isInitial = false;
+
+	private void initialSettingsChangedListner()
+	{
+		Config.WriteLoggerDebugMode.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
+			}
+		});
+
+		Config.ImperialUnits.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
+			}
+		});
+
+		// Set settings first
+		UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
+		Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
+	}
 
 	private void ini()
 	{

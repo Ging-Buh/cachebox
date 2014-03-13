@@ -55,11 +55,11 @@ public class UnitFormatter
 		float yards = distance / 0.9144f;
 		float miles = yards / 1760;
 
-		if (yards < 1000) return String.format("%.0f", yards) + "yd";
+		if (yards < 1000) return String.format("%.0f", yards) + " yd";
 
-		if (miles < 10) return String.format("%.2f", miles) + "mi";
+		if (miles < 10) return String.format("%.2f", miles) + " mi";
 
-		return String.format("%.1f", miles) + "mi";
+		return String.format("%.1f", miles) + " mi";
 
 	}
 

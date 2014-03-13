@@ -5,6 +5,7 @@ import java.util.Date;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEventList;
+import CB_Utils.Util.UnitFormatter;
 
 /**
  * @author Longri
@@ -453,10 +454,9 @@ public class Locator
 	 */
 	public static String getAltStringWithCorection()
 	{
-		// TODO ImperialUnits ?
 		String result = getAltString();
-		if (altCorrection > 0) result += " (+" + String.format("%.0f", altCorrection) + " m)";
-		else if (altCorrection < 0) result += " (" + String.format("%.0f", altCorrection) + " m)";
+		if (altCorrection > 0) result += " (+" + UnitFormatter.DistanceString((float) altCorrection);
+		else if (altCorrection < 0) result += " (" + UnitFormatter.DistanceString((float) altCorrection);
 		return result;
 	}
 
@@ -467,9 +467,7 @@ public class Locator
 	 */
 	public static String getAltString()
 	{
-		// TODO ImperialUnits ?
-		String result = String.format("%.0f", getAlt()) + " m";
-		return result;
+		return UnitFormatter.DistanceString((float) getAlt());
 	}
 
 	/**

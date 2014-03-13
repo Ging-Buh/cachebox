@@ -376,7 +376,9 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		if (Locator.getCoordinate().hasAccuracy())
 		{
 			int radius = (int) Locator.getCoordinate().getAccuracy();
-			if (Accuracy != null) Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Locator.getProvider().toString() + ")");
+
+			if (Accuracy != null) Accuracy.setText("+/- " + UnitFormatter.DistanceString(radius) + " (" + Locator.getProvider().toString()
+					+ ")");
 		}
 		else
 		{

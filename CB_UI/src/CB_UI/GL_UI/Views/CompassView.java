@@ -759,7 +759,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		if (lblAccuracy != null)
 		{
-			lblAccuracy.setText("  +/- " + String.valueOf((int) position.getAccuracy()) + "m  ");
+			lblAccuracy.setText("  +/- " + UnitFormatter.DistanceString(position.getAccuracy()));
 		}
 
 		if (showSatInfos && lblAlt != null)
