@@ -52,7 +52,10 @@ public class MapDownloadItem extends CB_View_Base
 		lblName = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(),
 				checkBoxMap.getHeight(), "");
 		lblName.setFont(Fonts.getNormal());
-		lblName.setText(mapInfo.Name);
+
+		// Cut "Freizeitkarte"
+		String Name = mapInfo.Name.replace("Freizeitkarte", "");
+		lblName.setText(Name);
 
 		lblSize = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(),
 				checkBoxMap.getHeight(), "");
