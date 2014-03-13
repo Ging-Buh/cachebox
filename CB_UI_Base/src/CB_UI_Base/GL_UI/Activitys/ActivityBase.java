@@ -83,6 +83,11 @@ public class ActivityBase extends Dialog
 		GL.that.showActivity(this);
 	}
 
+	public boolean canCloseWithBackKey()
+	{
+		return true;
+	}
+
 	public static CB_RectF ActivityRec()
 	{
 		float w = Math.min(UI_Size_Base.that.getSmallestWidth(), UI_Size_Base.that.getWindowHeight() * 0.66f);

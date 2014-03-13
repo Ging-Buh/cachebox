@@ -60,6 +60,7 @@ import android.os.Handler;
 import android.os.StatFs;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -370,7 +371,20 @@ public class splash extends Activity
 			// -> Auswahldialog anzeigen
 			try
 			{
-				final Dialog dialog = new Dialog(context);
+				final Dialog dialog = new Dialog(context)
+				{
+					@Override
+					public boolean onKeyDown(int keyCode, KeyEvent event)
+					{
+						if (keyCode == KeyEvent.KEYCODE_BACK)
+						{
+							splash.this.finish();
+						}
+
+						return super.onKeyDown(keyCode, event);
+					}
+				};
+
 				dialog.setContentView(R.layout.sdselectdialog);
 				TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
 				title.setText(Translation.Get("selectWorkSpace") + "\n\n");
@@ -1334,7 +1348,15 @@ public class splash extends Activity
 
 	}
 
-	// private LayoutInflater inflater;
-	// private Handler uiHandler;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if (keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			this.finish();
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
 
 }

@@ -33,6 +33,7 @@ public class Fonts
 	private static Color day_fontColorLink;
 	private static Color day_darknesColor;
 	private static Color day_crossColor;
+	private static Color day_MenuBackColor;
 
 	private static Color night_fontColor;
 	private static Color night_fontColorDisable;
@@ -40,6 +41,7 @@ public class Fonts
 	private static Color night_fontColorLink;
 	private static Color night_darknesColor;
 	private static Color night_crossColor;
+	private static Color night_MenuBackColor;
 
 	private static BitmapFont compass;
 	private static BitmapFont big;
@@ -65,6 +67,7 @@ public class Fonts
 		day_fontColorLink = SkinBase.getDaySkin().getColor("font-color-link");
 		day_darknesColor = SkinBase.getDaySkin().getColor("darknes");
 		day_crossColor = SkinBase.getDaySkin().getColor("cross");
+		day_MenuBackColor = SkinBase.getDaySkin().getColor("menu-back-color");
 
 		night_fontColor = SkinBase.getNightSkin().getColor("font-color");
 		night_fontColorDisable = SkinBase.getNightSkin().getColor("font-color-disable");
@@ -72,6 +75,7 @@ public class Fonts
 		night_fontColorLink = SkinBase.getNightSkin().getColor("font-color-link");
 		night_darknesColor = SkinBase.getNightSkin().getColor("darknes");
 		night_crossColor = SkinBase.getNightSkin().getColor("cross");
+		night_MenuBackColor = SkinBase.getNightSkin().getColor("menu-back-color");
 
 		FreeTypeFontGenerator generator = null;
 
@@ -110,6 +114,11 @@ public class Fonts
 		normalBubble = loadFontFromFile(generator, (int) (cfg.SizeNormalbubble * density));
 		smallBubble = loadFontFromFile(generator, (int) (cfg.SizeSmallBubble * density));
 		generator.dispose();
+	}
+
+	public static Color getMenuBackColor()
+	{
+		return cfg.Nightmode ? night_MenuBackColor : day_MenuBackColor;
 	}
 
 	public static Color getFontColor()

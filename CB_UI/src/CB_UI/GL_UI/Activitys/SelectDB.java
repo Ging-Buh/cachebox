@@ -668,4 +668,10 @@ public class SelectDB extends ActivityBase
 		cm.Show();
 	}
 
+	@Override
+	public boolean canCloseWithBackKey()
+	{
+		return !MusstSelect;
+	}
+
 }

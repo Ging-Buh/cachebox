@@ -2110,6 +2110,13 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (ActivityIsShown && character == KeyCodes.KEYCODE_BACK)
 		{
+			// chek closeable
+
+			if (actActivity instanceof ActivityBase)
+			{
+				if (!((ActivityBase) actActivity).canCloseWithBackKey()) return true;
+			}
+
 			closeActivity();
 			return true; // behandelt!
 		}
@@ -2128,6 +2135,30 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			if (isShownDialogActivity())
 			{
+
+				if (DialogIsShown)
+				{
+					closeDialog(mDialog);
+					return true; // behandelt!
+				}
+
+				if (ActivityIsShown)
+				{
+					// chek closeable
+
+					if (actActivity instanceof ActivityBase)
+					{
+						if (!((ActivityBase) actActivity).canCloseWithBackKey())
+						{
+							MainViewBase.actionClose.Execute();
+							return true;
+						}
+					}
+
+					closeActivity();
+					return true; // behandelt!
+				}
+
 				closeShownDialog();
 			}
 			else

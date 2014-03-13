@@ -15,6 +15,7 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
@@ -125,6 +126,7 @@ public class Menu extends ButtonDialog
 		mMoreMenu.setParrentMenu(this);
 		mMoreMenu.setVisible(false);
 		mMoreMenu.Level = this.Level + 1;
+		mMoreMenu.setBackground(new ColorDrawable(Fonts.getMenuBackColor()));
 	}
 
 	public Menu getMoreMenu()
@@ -248,6 +250,9 @@ public class Menu extends ButtonDialog
 			mMoreMenu.setHeight(this.getHeight());
 			mMoreMenu.setWidth(0);
 			mMoreMenu.setY(0 - mFooterHeight);
+
+			mMoreMenu.setBackground(new ColorDrawable(Fonts.getMenuBackColor()));
+
 			this.addChild(mMoreMenu);
 
 			mMoreMenuToggleButton = new Button("");

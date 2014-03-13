@@ -184,7 +184,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	public static void setToNull(CB_View_Base view)
 	{
-		if (view.childs == null)
+		if (view.childs.size() == 0)
 		{
 			view = null;
 		}
@@ -192,7 +192,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		{
 			synchronized (view.childs)
 			{
-				view.childs = null;
+				view.childs.clear();
 				view = null;
 			}
 		}

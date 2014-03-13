@@ -49,7 +49,7 @@ public abstract class GL_View_Base extends CB_RectF
 	/**
 	 * Enthaelt alle GL_Views innerhalb dieser Gl_View
 	 */
-	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
+	protected final MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
 	protected OnClickListener mOnClickListener;
 	protected OnClickListener mOnLongClickListener;
@@ -205,8 +205,6 @@ public abstract class GL_View_Base extends CB_RectF
 			@Override
 			public void run()
 			{
-				if (childs == null) childs = new MoveableList<GL_View_Base>();
-
 				if (last)
 				{
 					childs.add(0, view);

@@ -7,13 +7,13 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
@@ -277,46 +277,52 @@ public class GL_MsgBox extends Dialog
 	private static Sprite getIcon(MessageBoxIcon msgIcon)
 	{
 
-		Sprite icon;
+		Sprite icon = null;
 
-		switch (msgIcon.ordinal())
+		try
 		{
-		case 0:
-			icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
-			break;
-		case 1:
-			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
-			break;
-		case 2:
-			icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
-			break;
-		case 3:
-			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
-			break;
-		case 4:
-			icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
-			break;
-		case 5:
-			icon = null;
-			break;
-		case 6:
-			icon = SpriteCacheBase.Icons.get(IconName.help_34.ordinal());
-			break;
-		case 7:
-			icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
-			break;
-		case 8:
-			icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
-			break;
-		case 9:
-			icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
-			break;
-		case 10:
-			icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
-			break;
-		default:
-			icon = null;
+			switch (msgIcon.ordinal())
+			{
+			case 0:
+				icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
+				break;
+			case 1:
+				icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+				break;
+			case 2:
+				icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
+				break;
+			case 3:
+				icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+				break;
+			case 4:
+				icon = SpriteCacheBase.Icons.get(IconName.info_32.ordinal());
+				break;
+			case 5:
+				icon = null;
+				break;
+			case 6:
+				icon = SpriteCacheBase.Icons.get(IconName.help_34.ordinal());
+				break;
+			case 7:
+				icon = SpriteCacheBase.Icons.get(IconName.close_31.ordinal());
+				break;
+			case 8:
+				icon = SpriteCacheBase.Icons.get(IconName.warning_33.ordinal());
+				break;
+			case 9:
+				icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
+				break;
+			case 10:
+				icon = SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal());
+				break;
+			default:
+				icon = null;
 
+			}
+		}
+		catch (Exception e)
+		{
 		}
 
 		return icon;
