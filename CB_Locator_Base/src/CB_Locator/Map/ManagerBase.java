@@ -53,7 +53,6 @@ import org.xml.sax.SAXException;
 
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.Type;
-import CB_Locator.Map.TileGL.TileState;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
@@ -201,31 +200,7 @@ public abstract class ManagerBase
 		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc, ThreadIndex);
 	}
 
-	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
-	{
-		if (layer == null) return null;
-		// Vorerst nur im Pack suchen
-		// Kachel im Pack suchen
-		long cachedTileAge = 0;
-		for (int i = 0; i < mapPacks.size(); i++)
-		{
-			PackBase mapPack = mapPacks.get(i);
-			if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge))
-			{
-				BoundingBox bbox = mapPack.Contains(desc);
-
-				if (bbox != null)
-				{
-					byte b[] = mapPack.LoadFromBoundingBoxByteArray(bbox, desc);
-
-					TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
-
-					return bmpTile;
-				}
-			}
-		}
-		return null;
-	}
+	public abstract TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex);
 
 	protected abstract ImageData getImagePixel(byte[] img);
 
@@ -372,40 +347,35 @@ public abstract class ManagerBase
 	{
 
 		int[] data = imgData.PixelColorArray;
-
-		int len = data.length;
-
-		int[] dst = new int[len];
-
-		for (int i = 0; i < len; i++)
+		for (int i = 0; i < data.length; i++)
 		{
-			int[] color = new int[4];
-
-			color[0] = (data[i] >> 24) & (0xff);
-			color[1] = ((data[i] << 8) >> 24) & (0xff);
-			color[2] = ((data[i] << 16) >> 24) & (0xff);
-			color[3] = ((data[i] << 24) >> 24) & (0xff);
-
-			int R = color[1];
-			int G = color[2];
-			int B = color[3];
-			int A = color[0];
-
-			color[1] = Math
-					.max(0, Math.min(255, (int) ((matrix[0] * R) + (matrix[1] * G) + (matrix[2] * B) + (matrix[3] * A) + matrix[4])));
-			color[2] = Math
-					.max(0, Math.min(255, (int) ((matrix[5] * R) + (matrix[6] * G) + (matrix[7] * B) + (matrix[8] * A) + matrix[9])));
-			color[3] = Math.max(0,
-					Math.min(255, (int) ((matrix[10] * R) + (matrix[11] * G) + (matrix[12] * B) + (matrix[13] * A) + matrix[14])));
-			color[0] = Math.max(0,
-					Math.min(255, (int) ((matrix[15] * R) + (matrix[16] * G) + (matrix[17] * B) + (matrix[18] * A) + matrix[19])));
-
-			dst[i] = ((color[0] & 0xFF) << 24) | ((color[1] & 0xFF) << 16) | ((color[2] & 0xFF) << 8) | ((color[3] & 0xFF));
+			data[i] = colorMatrixManipulation(data[i], matrix);
 		}
-
-		imgData.PixelColorArray = dst;
-
 		return imgData;
+	}
+
+	public static int colorMatrixManipulation(int c, float[] matrix)
+	{
+		int[] color = new int[4];
+
+		color[0] = (c >> 24) & (0xff);
+		color[1] = ((c << 8) >> 24) & (0xff);
+		color[2] = ((c << 16) >> 24) & (0xff);
+		color[3] = ((c << 24) >> 24) & (0xff);
+
+		int R = color[1];
+		int G = color[2];
+		int B = color[3];
+		int A = color[0];
+
+		color[1] = Math.max(0, Math.min(255, (int) ((matrix[0] * R) + (matrix[1] * G) + (matrix[2] * B) + (matrix[3] * A) + matrix[4])));
+		color[2] = Math.max(0, Math.min(255, (int) ((matrix[5] * R) + (matrix[6] * G) + (matrix[7] * B) + (matrix[8] * A) + matrix[9])));
+		color[3] = Math.max(0,
+				Math.min(255, (int) ((matrix[10] * R) + (matrix[11] * G) + (matrix[12] * B) + (matrix[13] * A) + matrix[14])));
+		color[0] = Math.max(0,
+				Math.min(255, (int) ((matrix[15] * R) + (matrix[16] * G) + (matrix[17] * B) + (matrix[18] * A) + matrix[19])));
+
+		return ((color[0] & 0xFF) << 24) | ((color[1] & 0xFF) << 16) | ((color[2] & 0xFF) << 8) | ((color[3] & 0xFF));
 	}
 
 	/**

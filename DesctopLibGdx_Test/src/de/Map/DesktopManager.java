@@ -39,6 +39,7 @@ import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.FileIO;
 
 /**
@@ -92,6 +93,14 @@ public class DesktopManager extends ManagerBase
 					if (bbox != null)
 					{
 						byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
+
+						if (CB_UI_Base_Settings.nightMode.getValue())
+						{
+							ImageData imgData = getImagePixel(b);
+							imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
+							b = getImageFromData(imgData);
+						}
+
 						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
 						return bmpTile;
 					}
@@ -106,6 +115,13 @@ public class DesktopManager extends ManagerBase
 				ByteArrayOutputStream bas = new ByteArrayOutputStream();
 				ImageIO.write(img, "png", bas);
 				byte[] data = bas.toByteArray();
+
+				if (CB_UI_Base_Settings.nightMode.getValue())
+				{
+					ImageData imgData = getImagePixel(data);
+					imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
+					data = getImageFromData(imgData);
+				}
 
 				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, data, TileState.Present);
 

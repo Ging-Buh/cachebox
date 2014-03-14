@@ -18,15 +18,18 @@ package org.mapsforge.map.awt;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 
+import CB_Locator.Map.ManagerBase;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 
 /**
  * @author Longri
@@ -97,5 +100,21 @@ public class ext_AwtGraphicFactory extends AwtGraphicFactory implements ext_Grap
 		ext_AwtGraphicFactory factory = new ext_AwtGraphicFactory(ScaleFactor);
 		FactoryList.put(ScaleFactor, factory);
 		return factory;
+	}
+
+	@Override
+	public int createColor(Color color)
+	{
+		int c = getColor(color).getRGB();
+		if (CB_UI_Base_Settings.nightMode.getValue()) c = ManagerBase.colorMatrixManipulation(c, ManagerBase.NIGHT_COLOR_MATRIX);
+		return c;
+	}
+
+	@Override
+	public int createColor(int alpha, int red, int green, int blue)
+	{
+		int c = new java.awt.Color(red, green, blue, alpha).getRGB();
+		if (CB_UI_Base_Settings.nightMode.getValue()) c = ManagerBase.colorMatrixManipulation(c, ManagerBase.NIGHT_COLOR_MATRIX);
+		return c;
 	}
 }

@@ -314,7 +314,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	@Override
 	protected void SkinIsChanged()
 	{
-		Initial();
+		createControls();
 		setYpositions();
 	}
 

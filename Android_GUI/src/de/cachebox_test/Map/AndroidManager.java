@@ -31,6 +31,7 @@ import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import android.graphics.BitmapFactory;
@@ -89,6 +90,14 @@ public class AndroidManager extends ManagerBase
 					if (bbox != null)
 					{
 						byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
+
+						if (CB_UI_Base_Settings.nightMode.getValue())
+						{
+							ImageData imgData = getImagePixel(b);
+							imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
+							b = getImageFromData(imgData);
+						}
+
 						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
 						return bmpTile;
 					}
@@ -102,6 +111,14 @@ public class AndroidManager extends ManagerBase
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
 				byte[] b = stream.toByteArray();
+
+				if (CB_UI_Base_Settings.nightMode.getValue())
+				{
+					ImageData imgData = getImagePixel(b);
+					imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
+					b = getImageFromData(imgData);
+				}
+
 				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
 				return bmpTile;
 			}

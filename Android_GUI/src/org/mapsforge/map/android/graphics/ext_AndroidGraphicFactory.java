@@ -18,16 +18,19 @@ package org.mapsforge.map.android.graphics;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.model.DisplayModel;
 
+import CB_Locator.Map.ManagerBase;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import android.app.Application;
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -120,6 +123,22 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 		ext_AndroidGraphicFactory factory = new ext_AndroidGraphicFactory(ScaleFactor);
 		FactoryList.put(ScaleFactor, factory);
 		return factory;
+	}
+
+	@Override
+	public int createColor(Color color)
+	{
+		int c = getColor(color);
+		if (CB_UI_Base_Settings.nightMode.getValue()) c = ManagerBase.colorMatrixManipulation(c, ManagerBase.NIGHT_COLOR_MATRIX);
+		return c;
+	}
+
+	@Override
+	public int createColor(int alpha, int red, int green, int blue)
+	{
+		int c = android.graphics.Color.argb(alpha, red, green, blue);
+		if (CB_UI_Base_Settings.nightMode.getValue()) c = ManagerBase.colorMatrixManipulation(c, ManagerBase.NIGHT_COLOR_MATRIX);
+		return c;
 	}
 
 }
