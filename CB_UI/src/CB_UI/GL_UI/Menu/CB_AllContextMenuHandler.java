@@ -136,7 +136,6 @@ public class CB_AllContextMenuHandler
 					@Override
 					public void isCanceld()
 					{
-						 
 
 					}
 				}, new Runnable()
@@ -154,7 +153,7 @@ public class CB_AllContextMenuHandler
 						ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 						ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-						CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+						CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
 								GlobalCore.getSelectedCache().GPXFilename_ID);
 
 						try

@@ -84,7 +84,7 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-				CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
 						GlobalCore.getSelectedCache().GPXFilename_ID);
 
 				try

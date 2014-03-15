@@ -769,7 +769,7 @@ public class SearchDialog extends PopUp_Base
 					return;
 				}
 
-				CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
+				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
 
 				if (apiCaches.size() > 0)
 				{

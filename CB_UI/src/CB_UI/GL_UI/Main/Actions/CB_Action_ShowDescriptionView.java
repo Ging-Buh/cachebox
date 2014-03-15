@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.ArrayList;
 
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.SearchForGeocaches_Core;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -18,9 +19,9 @@ import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -124,7 +125,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						@Override
 						public void run()
 						{
-							CB_UI.Api.SearchForGeocaches.SearchGC searchC = new CB_UI.Api.SearchForGeocaches.SearchGC();
+							CB_UI.Api.SearchForGeocaches.SearchGC searchC = new SearchForGeocaches_Core.SearchGC();
 							searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
 							searchC.number = 1;
 							searchC.available = false;
@@ -133,7 +134,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 							ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-							CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+							CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
 									GlobalCore.getSelectedCache().GPXFilename_ID);
 
 							try

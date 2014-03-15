@@ -257,7 +257,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			switch (button)
 			{
 			case -1:
-				Cache newCache = SearchForGeocaches.LoadApiDetails(aktCache);
+				Cache newCache = SearchForGeocaches.getInstance().LoadApiDetails(aktCache);
 				if (newCache != null)
 				{
 					aktCache = newCache;

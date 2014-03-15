@@ -418,7 +418,8 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 								searchC.available = Config.SearchOnlyAvible.getValue();
 
 								dis.setAnimationType(AnimationType.Download);
-								CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
+								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+										gpxFilename.Id);
 								dis.setAnimationType(AnimationType.Work);
 								if (apiCaches.size() > 0)
 								{
