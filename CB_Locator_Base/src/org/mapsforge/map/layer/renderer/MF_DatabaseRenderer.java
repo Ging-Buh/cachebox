@@ -41,8 +41,8 @@ import org.mapsforge.map.reader.Way;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.rule.RenderTheme;
-import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
+import org.mapsforge.map.rendertheme.rule.CB_RenderTheme;
+import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.xml.sax.SAXException;
 
 import CB_Locator.Map.Descriptor;
@@ -111,7 +111,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	private XmlRenderTheme previousJobTheme;
 	private float previousTextScale;
 	private byte previousZoomLevel;
-	private RenderTheme renderTheme;
+	private CB_RenderTheme renderTheme;
 	private ShapeContainer shapeContainer;
 	private final List<WayTextContainer> wayNames;
 	private final List<List<List<ShapePaintContainer>>> ways;
@@ -373,11 +373,11 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		}
 	}
 
-	private RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel)
+	private CB_RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel)
 	{
 		try
 		{
-			return RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, jobTheme);
+			return CB_RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, jobTheme);
 		}
 		catch (ParserConfigurationException e)
 		{

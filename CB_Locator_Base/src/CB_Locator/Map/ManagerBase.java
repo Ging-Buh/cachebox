@@ -48,7 +48,7 @@ import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
+import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.xml.sax.SAXException;
 
 import CB_Locator.LocatorSettings;
@@ -573,7 +573,7 @@ public abstract class ManagerBase
 		// Check RenderTheme valid
 		try
 		{
-			RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
+			CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 		}
 		catch (SAXException e)
 		{
@@ -658,7 +658,7 @@ public abstract class ManagerBase
 			// Check RenderTheme valid
 			try
 			{
-				RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
+				CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 			}
 			catch (SAXException e)
 			{
