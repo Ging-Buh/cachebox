@@ -299,7 +299,7 @@ public abstract class ManagerBase
 			if (LastRequestTimeOut.containsKey(URL))
 			{
 				long last = LastRequestTimeOut.get(URL);
-				if (last + CONECTION_TIME_OUT_MESSAGE_INTERVALL > System.currentTimeMillis())
+				if ((last + CONECTION_TIME_OUT_MESSAGE_INTERVALL) < System.currentTimeMillis())
 				{
 					PostErrorMassage = true;
 					LastRequestTimeOut.remove(URL);
