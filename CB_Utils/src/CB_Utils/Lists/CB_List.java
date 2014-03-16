@@ -29,7 +29,7 @@ import java.util.Iterator;
 public class CB_List<T> implements Iterable<T>, Serializable
 {
 	private static final long serialVersionUID = 4378819539487000418L;
-	private T[] items;
+	protected T[] items;
 	protected int size;
 	private final int INITIAL_SIZE = 16;
 

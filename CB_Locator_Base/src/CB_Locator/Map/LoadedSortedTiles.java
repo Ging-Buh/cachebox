@@ -26,6 +26,10 @@ import CB_Utils.Util.MoveableList;
 public class LoadedSortedTiles implements Iterable<TileGL>
 {
 
+	// FIXME Hold the Items on two own Arrays!
+	// Third Array Holds the Index. With Sort() sort only Index-array
+	// The Capacity is final! add() remove the Last Item
+
 	private final MoveableList<Long> descList = new MoveableList<Long>();
 	private final MoveableList<TileGL> tileList = new MoveableList<TileGL>();
 
