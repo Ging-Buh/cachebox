@@ -15,79 +15,83 @@
  */
 package CB_Locator.Map;
 
-import java.util.Iterator;
-
-import CB_Utils.Lists.CB_List;
-import CB_Utils.Util.MoveableList;
-
 /**
  * @author Longri
  */
-public class LoadedSortedTiles implements Iterable<TileGL>
+public class LoadedSortedTiles
 {
 
-	// FIXME Hold the Items on two own Arrays!
-	// Third Array Holds the Index. With Sort() sort only Index-array
-	// The Capacity is final! add() remove the Last Item
+	private final long[] HashList;
+	private final TileGL[] TileList;
+	private final short[] IndexList;
+	private final short Capacity;
+	private short Size = 0;
 
-	private final MoveableList<Long> descList = new MoveableList<Long>();
-	private final MoveableList<TileGL> tileList = new MoveableList<TileGL>();
-
-	public LoadedSortedTiles()
+	public LoadedSortedTiles(short capacity)
 	{
+		this.HashList = new long[capacity];
+		this.TileList = new TileGL[capacity];
+		this.IndexList = new short[capacity];
+		this.Capacity = capacity;
+		clearIndexList();
+	}
 
+	private void clearIndexList()
+	{
+		for (short i = 0, n = (short) this.IndexList.length; i < n; i++)
+		{
+			this.IndexList[i] = i;
+		}
 	}
 
 	public void add(Long Hash, TileGL tile)
 	{
 		if (tile == null) return;
-		synchronized (descList)
-		{
-			descList.add(Hash);
-			tileList.add(tile);
-		}
+
+		short freeIndex = addIndex();
+		this.HashList[freeIndex] = Hash;
+		this.TileList[freeIndex] = tile;
+		this.IndexList[0] = freeIndex;
+		this.Size++;
+		if (this.Size > this.Capacity - 1) Size = (short) (this.Capacity - 1);
+
 	}
 
-	public void remove(Long Hash)
+	private short addIndex()
 	{
-		synchronized (descList)
-		{
-			int index = descList.indexOf(Hash);
-			if (index < 0 || index > size()) return;
-			descList.remove(index);
-			TileGL t = tileList.remove(index);
-			t.dispose();
-		}
-	}
-
-	public void remove(TileGL tile)
-	{
-		if (tile == null) return;
-		synchronized (descList)
-		{
-			int index = tileList.indexOf(tile);
-			if (index < 0 || index > size()) return;
-			descList.remove(index);
-			TileGL t = tileList.remove(index);
-			t.dispose();
-		}
+		short ret = this.IndexList[Capacity - 1];
+		// Move IndexList
+		System.arraycopy(this.IndexList, 0, this.IndexList, 1, Capacity - 1);
+		return ret;
 	}
 
 	public boolean containsKey(Long Hash)
 	{
-		int index = descList.indexOf(Hash);
-		if (index < 0 || index >= tileList.size()) return false;
-		return true;
+		boolean cont = false;
+		for (short i = 0, n = (short) (this.Capacity - 1); i < n; i++)
+		{
+			if (this.HashList[i] == Hash)
+			{
+				cont = true;
+				break;
+			}
+		}
+		return cont;
+
 	}
 
 	public TileGL get(Long Hash)
 	{
-		synchronized (descList)
+		int HashIndex = -1;
+		for (short i = 0, n = (short) this.HashList.length; i < n; i++)
 		{
-			int index = descList.indexOf(Hash);
-			if (index < 0 || index >= tileList.size()) return null;
-			return tileList.get(index);
+			if (this.HashList[i] == Hash)
+			{
+				HashIndex = i;
+				break;
+			}
 		}
+		return this.TileList[HashIndex];
 	}
 
 	/**
@@ -95,139 +99,59 @@ public class LoadedSortedTiles implements Iterable<TileGL>
 	 */
 	public void sort()
 	{
-		synchronized (descList)
+
+		boolean inSort = true;
+
+		do
 		{
-			boolean inSort = true;
+			inSort = false;
 
-			do
+			for (short i = 0, n = (short) (this.Capacity - 1); i < n; i++)
 			{
-				inSort = false;
 
-				for (int i = 0; i < tileList.size() - 1; i++)
-				{
-					if (tileList.get(i).Age == tileList.get(i + 1).Age) continue;
-					if (tileList.get(i).Age < tileList.get(i + 1).Age) continue;
+				short index1 = IndexList[i];
+				short index2 = IndexList[i + 1];
 
-					// swap
-					tileList.MoveItem(i);
-					descList.MoveItem(i);
-					inSort = true;
-					break; // sort changed, begin new
-				}
+				if (TileList[index1].Age == TileList[index2].Age) continue;
+				if (TileList[index1].Age < TileList[index2].Age) continue;
+
+				// swap
+				IndexList[i] = index2;
+				IndexList[i + 1] = index1;
+				inSort = true;
+				break; // sort changed, begin new
 			}
-			while (inSort);
 		}
-	}
-
-	/**
-	 * All items with index > given size will remove and destroy!
-	 * 
-	 * @param size
-	 */
-	public void removeAndDestroy(int size)
-	{
-		synchronized (descList)
-		{
-			if (size >= descList.size()) return; // nothing to remove
-
-			Object[] delList = tileList.get(size, descList.size());
-
-			for (int i = 0; i < delList.length; i++)
-			{
-				TileGL tile = (TileGL) delList[i];
-				tile.dispose();
-				tile = null;
-			}
-			delList = null;
-			tileList.truncate(size);
-			descList.truncate(size);
-		}
+		while (inSort);
 
 	}
 
 	public int size()
 	{
-		synchronized (descList)
-		{
-			return descList.size();
-		}
-	}
-
-	public TileGL[] getValues()
-	{
-		synchronized (descList)
-		{
-			Object[] arr = tileList.get(0, tileList.size());
-
-			// must cast
-			TileGL[] ret = new TileGL[arr.length];
-			for (int i = 0; i < arr.length; i++)
-			{
-				ret[i] = (TileGL) arr[i];
-			}
-
-			return ret;
-		}
+		return this.Size;
 	}
 
 	public void clear()
 	{
-		synchronized (descList)
+		clearIndexList();
+		for (short i = 0, n = (short) this.HashList.length; i < n; i++)
 		{
-			removeAndDestroy(0);
+			this.HashList[i] = 0;
+		}
+		Size = 0;
+	}
+
+	public void increaseLoadedTilesAge()
+	{
+		for (short i = 0, n = (short) this.TileList.length; i < n; i++)
+		{
+			this.TileList[i].Age++;
 		}
 	}
 
-	public void removeDestroyedTiles()
+	public TileGL get(int i)
 	{
-		Object[] arr = tileList.get(0, tileList.size());
-		CB_List<TileGL> destroyedList = new CB_List<TileGL>();
-		for (int i = 0; i < arr.length; i++)
-		{
-			if (((TileGL) arr[i]).isDisposed()) destroyedList.add((TileGL) arr[i]);
-		}
-
-		for (TileGL tile : destroyedList)
-		{
-			int index = tileList.indexOf(tile);
-			tileList.remove(index);
-			descList.remove(index);
-		}
-
+		return this.TileList[this.IndexList[i]];
 	}
 
-	@Override
-	public Iterator<TileGL> iterator()
-	{
-		return tileList.iterator();
-	}
-
-	public Iterator<TileGL> reverse()
-	{
-		return tileList.reverseIterator();
-	}
-
-	/**
-	 * Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is taken.
-	 */
-	public void truncate(int size)
-	{
-		tileList.truncate(size);
-		descList.truncate(size);
-	}
-
-	public CB_List<Long> allKeysAreNot(CB_List<Long> neadedTiles)
-	{
-		CB_List<Long> ret = new CB_List<Long>();
-
-		for (long desc : descList)
-		{
-			if (!neadedTiles.contains(desc))
-			{
-				ret.add(desc);
-			}
-		}
-
-		return ret;
-	}
 }

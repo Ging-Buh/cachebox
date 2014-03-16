@@ -151,11 +151,6 @@ public class MapTileLoader
 
 		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
 
-		deleteUnusedTiles(mapView, queueData.loadedTiles, queueData.loadedTilesLock);
-		if (queueData.CurrentOverlayLayer != null)
-		{
-			deleteUnusedTiles(mapView, queueData.loadedOverlayTiles, queueData.loadedOverlayTilesLock);
-		}
 		// alle notwendigen Tiles zum Laden einstellen in die Queue
 
 		queueData.loadedTilesLock.lock();
@@ -284,27 +279,6 @@ public class MapTileLoader
 		doubleCacheCount = 50;
 	}
 
-	private void deleteUnusedTiles(MapViewBase mapView, LoadedSortedTiles loadedTiles, Lock loadedTilesLock)
-	{
-		// Ist Auslagerung überhaupt nötig?
-		int doubleCacheValue = doubleCache ? maxNumTiles + maxNumTiles : maxNumTiles;
-
-		if (doubleCache)
-		{
-			doubleCacheCount--;
-			if (doubleCacheCount <= 0) doubleCache = false;
-		}
-
-		if (numLoadedTiles() <= doubleCacheValue) return;
-
-		loadedTilesLock.lock();
-		loadedTiles.removeDestroyedTiles();
-		// loadedTiles.sort();
-		// loadedTiles.removeAndDestroy(doubleCacheValue);
-		loadedTilesLock.unlock();
-
-	}
-
 	int numLoadedTiles()
 	{
 		return queueData.loadedTiles.size();
@@ -313,6 +287,7 @@ public class MapTileLoader
 	public void setMaxNumTiles(int maxNumTiles2)
 	{
 		if (maxNumTiles2 > maxNumTiles) maxNumTiles = maxNumTiles2;
+		queueData.setLoadedTilesCacheCapacity(maxNumTiles);
 	}
 
 	private void queueTile(Descriptor desc, SortedMap<Long, Descriptor> queuedTiles, Lock queuedTilesLock)
@@ -349,16 +324,11 @@ public class MapTileLoader
 	public void increaseLoadedTilesAge()
 	{
 		// das Alter aller Tiles um 1 erhöhen
-		for (TileGL tile : queueData.loadedTiles.getValues())
-		{
-			tile.Age++;
-		}
+		queueData.loadedTiles.increaseLoadedTilesAge();
+
 		if (queueData.CurrentOverlayLayer != null)
 		{
-			for (TileGL tile : queueData.loadedOverlayTiles.getValues())
-			{
-				tile.Age++;
-			}
+			queueData.loadedOverlayTiles.increaseLoadedTilesAge();
 		}
 	}
 

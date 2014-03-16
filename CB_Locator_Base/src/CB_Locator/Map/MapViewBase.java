@@ -16,7 +16,6 @@
 package CB_Locator.Map;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Timer;
 
@@ -254,8 +253,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			MapViewBase.this.invalidateTexture();
 		}
 	};
-	protected LoadedSortedTiles tilesToDraw = new LoadedSortedTiles();
-	protected LoadedSortedTiles overlayToDraw = new LoadedSortedTiles();
+	protected LoadedSortedTiles tilesToDraw = new LoadedSortedTiles((short) 10);
+	protected LoadedSortedTiles overlayToDraw = new LoadedSortedTiles((short) 10);
 	int debugcount = 0;
 	protected float iconFactor = 1.5f;
 	protected boolean showMapCenterCross;
@@ -638,9 +637,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		synchronized (screenCenterW)
 		{
 
-			for (Iterator<TileGL> iterator = tilesToDraw.reverse(); iterator.hasNext();)
+			for (int i = tilesToDraw.size() - 1; i > -1; i--)
 			{
-				TileGL tile = iterator.next();
+				TileGL tile = tilesToDraw.get(i);
 				if (tile.canDraw())
 				{
 					// Faktor, mit der dieses MapTile vergrößert gezeichnet
@@ -671,13 +670,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			rotateList = null;
 
 		}
-		tilesToDraw.truncate(0); // don't clear!!! clear will destroy the holden Tiles
+		tilesToDraw.clear();
 
 		synchronized (screenCenterW)
 		{
-			for (Iterator<TileGL> iterator = overlayToDraw.reverse(); iterator.hasNext();)
+			for (int i = overlayToDraw.size() - 1; i > -1; i--)
 			{
-				TileGL tile = iterator.next();
+				TileGL tile = overlayToDraw.get(i);
 				if (tile.canDraw())
 				{
 					// Faktor, mit der dieses MapTile vergrößert gezeichnet
@@ -692,7 +691,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				}
 			}
 		}
-		overlayToDraw.truncate(0);// don't clear!!! clear will destroy the holden Tiles
+		overlayToDraw.clear();
 
 	}
 

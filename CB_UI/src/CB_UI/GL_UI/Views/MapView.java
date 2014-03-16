@@ -14,6 +14,7 @@ import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Map.Descriptor;
+import CB_Locator.Map.LoadedSortedTiles;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.MapScale;
 import CB_Locator.Map.MapTileLoader;
@@ -139,6 +140,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		maxNumTiles = Math.max(maxNumTiles, 30);
 
 		mapTileLoader.setMaxNumTiles(maxNumTiles);
+
+		tilesToDraw = new LoadedSortedTiles((short) maxNumTiles);
+		overlayToDraw = new LoadedSortedTiles((short) maxNumTiles);
 
 		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.getHalfWidth(),
 				GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
