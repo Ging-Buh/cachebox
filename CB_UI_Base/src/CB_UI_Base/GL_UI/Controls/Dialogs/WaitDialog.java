@@ -29,6 +29,7 @@ public class WaitDialog extends ButtonDialog
 	public static WaitDialog ShowWait()
 	{
 		WaitDialog wd = createDialog("");
+		wd.setCallerName(Logger.getCallerName());
 		wd.Show();
 		return wd;
 	}
@@ -36,6 +37,7 @@ public class WaitDialog extends ButtonDialog
 	public static WaitDialog ShowWait(String Msg)
 	{
 		WaitDialog wd = createDialog(Msg);
+		wd.setCallerName(Logger.getCallerName());
 		wd.Show();
 		return wd;
 	}
@@ -120,11 +122,8 @@ public class WaitDialog extends ButtonDialog
 	public void dispose()
 	{
 		super.dispose();
-		if (this.DialogID == 5)
-		{
-			System.out.print(true);
-		}
-		Logger.LogCat("WaitDialog.disposed ID:[" + this.DialogID + "]");
+		String caller = Logger.getCallerName(1);
+		Logger.LogCat("WaitDialog.disposed ID:[" + this.DialogID + "] called:" + caller);
 	}
 
 	@Override
@@ -136,7 +135,7 @@ public class WaitDialog extends ButtonDialog
 	@Override
 	public String toString()
 	{
-		return getName() + "DialogID[" + DialogID + "] " + this.label.getText();
+		return getName() + "DialogID[" + DialogID + "] \"" + this.label.getText() + "\" Created by: " + CallerName;
 	}
 
 }

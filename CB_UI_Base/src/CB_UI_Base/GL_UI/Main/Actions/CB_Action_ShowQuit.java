@@ -47,21 +47,28 @@ public class CB_Action_ShowQuit extends CB_Action
 			Title = Title.replace("Cachebox", OverrideAppName);
 		}
 
-		msg = GL_MsgBox.Show(Msg, Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Stop, new OnMsgBoxClickListener()
+		try
 		{
-
-			@Override
-			public boolean onClick(int which, Object data)
+			msg = GL_MsgBox.Show(Msg, Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Stop, new OnMsgBoxClickListener()
 			{
-				if (which == GL_MsgBox.BUTTON_POSITIVE)
-				{
 
-					Logger.DEBUG("\r\n Quit");
-					platformConector.callQuitt();
+				@Override
+				public boolean onClick(int which, Object data)
+				{
+					if (which == GL_MsgBox.BUTTON_POSITIVE)
+					{
+
+						Logger.DEBUG("\r\n Quit");
+						platformConector.callQuitt();
+					}
+					return true;
 				}
-				return true;
-			}
-		});
+			});
+		}
+		catch (Exception e)
+		{
+			platformConector.callQuitt();
+		}
 	}
 
 	@Override

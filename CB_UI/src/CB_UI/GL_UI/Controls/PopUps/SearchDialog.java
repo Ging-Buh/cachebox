@@ -619,7 +619,7 @@ public class SearchDialog extends PopUp_Base
 				else
 				{
 
-					wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListner()
+					wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 					{
 
 						@Override
@@ -636,7 +636,7 @@ public class SearchDialog extends PopUp_Base
 							int ret = GroundspeakAPI.GetMembershipType();
 							if (ret == 3)
 							{
-								// closeWaitDialog();
+								closeWaitDialog();
 								searchOnlineNow();
 							}
 							else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)

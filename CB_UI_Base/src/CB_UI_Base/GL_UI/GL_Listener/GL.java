@@ -1767,23 +1767,31 @@ public class GL implements ApplicationListener, InputProcessor
 			darknesAlpha = 0f;
 		}
 
-		Timer timer = new Timer();
-		TimerTask task = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
+		// Timer timer = new Timer();
+		// TimerTask task = new TimerTask()
+		// {
+		// @Override
+		// public void run()
+		// {
+		//
+		// if (dialog != null)
+		// {
+		// if (!dialog.isDisposed())
+		// {
+		// dialog.dispose();
+		// }
+		// }
+		// }
+		// };
+		// timer.schedule(task, 500);
 
-				if (dialog != null)
-				{
-					if (!dialog.isDisposed())
-					{
-						dialog.dispose();
-					}
-				}
+		if (dialog != null)
+		{
+			if (!dialog.isDisposed())
+			{
+				dialog.dispose();
 			}
-		};
-		timer.schedule(task, 500);
+		}
 
 		clearRenderViews();
 		if (ActivityIsShown)

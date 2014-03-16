@@ -1184,7 +1184,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		bindPluginServices();
 
 		final Bundle extras = getIntent().getExtras();
-		if (!GlobalCore.restartAfterKill && extras != null)
+		if (!GlobalCore.restartAfterKill || extras != null)
 		{
 			ExtSearch_GcCode = extras.getString("GcCode");
 			ExtSearch_GpxPath = extras.getString("GpxPath");

@@ -257,7 +257,7 @@ public class CacheDraw
 		}
 
 		// Draw owner and Last Found
-		if (drawStyle == DrawStyle.withOwnerAndName)
+		if (drawStyle == DrawStyle.withOwnerAndName && cache.Owner != null)
 		{
 			String DrawText = "by " + cache.Owner + ", " + dateString;
 
