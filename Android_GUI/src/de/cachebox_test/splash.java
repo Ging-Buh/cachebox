@@ -13,7 +13,6 @@ import org.mapsforge.map.model.DisplayModel;
 
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
-import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -1266,7 +1265,6 @@ public class splash extends Activity
 			ext_AndroidGraphicFactory.createInstance(this.getApplication());
 
 			float restrictedScaleFactor = 1f;
-			ManagerBase.DEFAULT_TEXT_SCALE = DisplayModel.getDeviceScaleFactor();
 			DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
 			new de.cachebox_test.Map.AndroidManager(new DisplayModel());
 		}
