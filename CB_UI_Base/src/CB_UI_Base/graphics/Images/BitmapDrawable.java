@@ -18,12 +18,12 @@ package CB_UI_Base.graphics.Images;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 
 import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class BitmapDrawable implements ext_Bitmap, Disposable
 {
 	static CB_List<String> HashStringList = new CB_List<String>();
-	static HashMap<String, Texture> TextureList = new HashMap<String, Texture>();
+	// static HashMap<String, Texture> TextureList = new HashMap<String, Texture>();
 	public static TextureAtlas Atlas;
 	static PixmapPacker Packer = new PixmapPacker(2048, 2048, Format.RGBA8888, 2, true);
 
@@ -132,7 +132,11 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 		AtlasHashString = String.valueOf(HashCode);
 		this.scaleFactor = scaleFactor;
 
-		if (HashStringList.contains(AtlasHashString)) return;
+		if (HashStringList.contains(AtlasHashString))
+		{
+			Logger.LogCat("Immage are in to Atlas");
+			return;
+		}
 		HashStringList.add(AtlasHashString);
 		buffer = bytes;
 
@@ -176,9 +180,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 			Pixmap tmpPixmap = new Pixmap(w, h, pix.getFormat());
 			Pixmap.setFilter(Pixmap.Filter.NearestNeighbour);
 			tmpPixmap.drawPixmap(pix, 0, 0, pix.getWidth(), pix.getHeight(), 0, 0, w, h);
-
 			pix.dispose();
-
 			pix = tmpPixmap;
 		}
 
@@ -201,9 +203,6 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 			Packer.updateTextureAtlas(Atlas, TextureFilter.Linear, TextureFilter.Linear, false);
 		}
 
-		Texture tex = new Texture(pix);
-
-		TextureList.put(AtlasHashString, tex);
 		pix.dispose();
 		buffer = null;
 	}
@@ -309,11 +308,6 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 	public Texture getTexture()
 	{
 		if (isDisposed) return null;
-		if (tex == null)
-		{
-			tex = TextureList.get(AtlasHashString);
-		}
-
 		return tex;
 	}
 

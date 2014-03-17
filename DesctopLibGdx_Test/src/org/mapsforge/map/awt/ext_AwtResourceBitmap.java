@@ -15,7 +15,6 @@
  */
 package org.mapsforge.map.awt;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +42,7 @@ public class ext_AwtResourceBitmap extends AwtResourceBitmap implements ext_Bitm
 			this.scaleTo(w, h);
 		}
 
-		ByteArrayInputStream bais = null;
+		byte[] bytes = null;
 
 		if (!BitmapDrawable.AtlasContains(HashCode))
 		{
@@ -51,13 +50,12 @@ public class ext_AwtResourceBitmap extends AwtResourceBitmap implements ext_Bitm
 
 			this.compress(baos);
 
-			byte[] bytes = new byte[baos.toByteArray().length];
+			bytes = new byte[baos.toByteArray().length];
 			System.arraycopy(baos.toByteArray(), 0, bytes, 0, baos.toByteArray().length);
 
-			bais = new ByteArrayInputStream(bytes);
 		}
 
-		GL_image = new BitmapDrawable(bais, HashCode, scaleFactor);
+		GL_image = new BitmapDrawable(bytes, HashCode, scaleFactor);
 	}
 
 	@Override

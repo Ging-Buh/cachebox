@@ -75,7 +75,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
 
-	private final int MAX_FBO_RENDER_CALLS = 5;
+	private final int MAX_FBO_RENDER_TIME = 700;
 	private static final boolean TOUCH_DEBUG = false;
 
 	/**
@@ -306,6 +306,23 @@ public class GL implements ApplicationListener, InputProcessor
 		mAct3D_Render = null;
 	}
 
+	long FBO_RunBegin = System.currentTimeMillis();
+	boolean FBO_RunLapsed = false;
+
+	private void FBO_RunBegin()
+	{
+		FBO_RunBegin = System.currentTimeMillis();
+		FBO_RunLapsed = false;
+	}
+
+	private boolean canFBO()
+	{
+		if (FBO_RunLapsed) return false;
+		if (FBO_RunBegin + MAX_FBO_RENDER_TIME >= System.currentTimeMillis()) return true;
+		FBO_RunLapsed = true;
+		return false;
+	}
+
 	@Override
 	public void render()
 	{
@@ -329,7 +346,7 @@ public class GL implements ApplicationListener, InputProcessor
 			removeRenderView(child);
 		}
 
-		int FBO_RenderCals = 0;
+		FBO_RunBegin();
 
 		isWorkOnRunOnGL.set(true);
 
@@ -350,15 +367,14 @@ public class GL implements ApplicationListener, InputProcessor
 						// Run only MAX_FBO_RENDER_CALLS
 						if (run instanceof IRenderFBO)
 						{
-							if (FBO_RenderCals >= MAX_FBO_RENDER_CALLS)
+							if (canFBO())
 							{
-								Logger.LogCat("Max_FBO_Render_Calls" + run.toString());
-								runOnGL_ListWaitpool.add(run);
+								run.run();
 							}
 							else
 							{
-								run.run();
-								FBO_RenderCals++;
+								// Logger.LogCat("Max_FBO_Render_Calls" + run.toString());
+								runOnGL_ListWaitpool.add(run);
 							}
 						}
 						else
@@ -385,15 +401,15 @@ public class GL implements ApplicationListener, InputProcessor
 							// Run only MAX_FBO_RENDER_CALLS
 							if (run instanceof IRenderFBO)
 							{
-								if (FBO_RenderCals >= MAX_FBO_RENDER_CALLS)
+
+								if (canFBO())
 								{
-									runOnGL_List.add(run);
-									renderOnce("MoreFBO_renderCalls");
+									run.run();
 								}
 								else
 								{
-									run.run();
-									FBO_RenderCals++;
+									// Logger.LogCat("Max_FBO_Render_Calls" + run.toString());
+									runOnGL_List.add(run);
 								}
 							}
 							else
