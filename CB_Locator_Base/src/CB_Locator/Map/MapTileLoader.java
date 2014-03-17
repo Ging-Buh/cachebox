@@ -37,8 +37,6 @@ public class MapTileLoader
 	private Thread[] queueProcessorAliveCheck = null;
 	CB_List<Long> neadedTiles = new CB_List<Long>();
 	private int maxNumTiles = 0;
-	private boolean doubleCache;
-	private int doubleCacheCount = 0;
 
 	public MapTileLoader()
 	{
@@ -144,8 +142,8 @@ public class MapTileLoader
 		{// DEBUG
 
 			String tre = String.valueOf(((queueProcessor == null) ? 0 : queueProcessor.length));
-			String text = "Threads:" + tre + " | MaxCache:" + maxNumTiles + " " + (doubleCache ? "D" : "") + " loaded:"
-					+ queueData.loadedTiles.size() + " life:" + TileGL_Bmp.LifeCount;
+			String text = "Threads:" + tre + " | MaxCache:" + maxNumTiles + " " + " loaded:" + queueData.loadedTiles.size() + " life:"
+					+ TileGL_Bmp.LifeCount;
 			GL.MaptileLoaderDebugString = text;
 		}
 
@@ -270,15 +268,6 @@ public class MapTileLoader
 		neadedTiles.truncate(0);
 	}
 
-	/**
-	 * Double the value for maxNumTiles, for 50 render call's
-	 */
-	public void doubleCache()
-	{
-		doubleCache = true;
-		doubleCacheCount = 50;
-	}
-
 	int numLoadedTiles()
 	{
 		return queueData.loadedTiles.size();
@@ -337,6 +326,35 @@ public class MapTileLoader
 		return queueData.loadedTiles.get(desc.GetHashCode());
 	}
 
+	public boolean markToDraw(Descriptor desc)
+	{
+		return queueData.loadedTiles.markToDraw(desc.GetHashCode());
+	}
+
+	public int getDrawingSize()
+	{
+		return queueData.loadedTiles.DrawingSize();
+	}
+
+	public TileGL getDrawingTile(int i)
+	{
+		return queueData.loadedTiles.getDrawingTile(i);
+	}
+
+	public void clearDrawingTiles()
+	{
+		queueData.loadedTiles.clearDrawingList();
+	}
+
+	public void sort()
+	{
+		queueData.loadedTiles.sort();
+		if (queueData.CurrentOverlayLayer != null)
+		{
+			queueData.loadedOverlayTiles.sort();
+		}
+	}
+
 	public TileGL getLoadedOverlayTile(Descriptor desc)
 	{
 		// Overlay Tiles liefern
@@ -345,6 +363,26 @@ public class MapTileLoader
 			return null;
 		}
 		return queueData.loadedOverlayTiles.get(desc.GetHashCode());
+	}
+
+	public boolean markToDrawOverlay(Descriptor desc)
+	{
+		return queueData.loadedOverlayTiles.markToDraw(desc.GetHashCode());
+	}
+
+	public int getDrawingSizeOverlay()
+	{
+		return queueData.loadedOverlayTiles.DrawingSize();
+	}
+
+	public TileGL getDrawingTileOverlay(int i)
+	{
+		return queueData.loadedOverlayTiles.getDrawingTile(i);
+	}
+
+	public void clearDrawingTilesOverlay()
+	{
+		queueData.loadedOverlayTiles.clearDrawingList();
 	}
 
 	// #######################################################################################################
@@ -385,4 +423,5 @@ public class MapTileLoader
 	{
 		return queueData.CurrentOverlayLayer;
 	}
+
 }

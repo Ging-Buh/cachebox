@@ -253,8 +253,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			MapViewBase.this.invalidateTexture();
 		}
 	};
-	protected LoadedSortedTiles tilesToDraw = new LoadedSortedTiles((short) 10);
-	protected LoadedSortedTiles overlayToDraw = new LoadedSortedTiles((short) 10);
+	// protected LoadedSortedTiles tilesToDraw = new LoadedSortedTiles((short) 10);
+
 	int debugcount = 0;
 	protected float iconFactor = 1.5f;
 	protected boolean showMapCenterCross;
@@ -565,32 +565,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				for (int j = lo.getY(); j <= ru.getY(); j++)
 				{
 					Descriptor desc = new Descriptor(i, j, tmpzoom, this.NightMode);
-					TileGL tile = null;
-					TileGL tileOverlay = null;
-					try
+					boolean canDraw = mapTileLoader.markToDraw(desc);
+					boolean canDrawOverlay = false;
+					if (mapTileLoader.getCurrentOverlayLayer() != null)
 					{
-						tile = mapTileLoader.getLoadedTile(desc);
-						tileOverlay = mapTileLoader.getLoadedOverlayTile(desc);
+						canDrawOverlay = mapTileLoader.markToDrawOverlay(desc);
 					}
-					catch (Exception ex)
-					{
-					}
-					if (tile != null && tile.canDraw())
-					{
-						// das Alter der benutzten Tiles auf 0 setzen wenn dies
-						// für den richtigen aktuellen Zoom ist
-						if (tmpzoom == aktZoom) tile.Age = 0;
 
-						try
-						{
-							if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.add(tile.Descriptor.GetHashCode(),
-									tile);
-						}
-						catch (Exception e)
-						{
-						}
-					}
-					else if (tmpzoom == aktZoom)
+					if (!canDraw && tmpzoom == aktZoom)
 					{
 						// für den aktuellen Zoom ist kein Tile vorhanden ->
 						// kleinere Zoomfaktoren durchsuchen
@@ -604,21 +586,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 							renderSmallerTiles(batch, i, j, aktZoom);
 						}
 					}
-					if (tileOverlay != null)
+
+					if (mapTileLoader.getCurrentOverlayLayer() != null)
 					{
-						if (tmpzoom == aktZoom) tileOverlay.Age = 0;
-						try
+						if (!canDrawOverlay && tmpzoom == aktZoom)
 						{
-							if (!overlayToDraw.containsKey(tileOverlay.Descriptor.GetHashCode())) overlayToDraw.add(
-									tileOverlay.Descriptor.GetHashCode(), tileOverlay);
+							if (!renderBiggerOverlayTiles(batch, i, j, aktZoom)) renderSmallerOverlayTiles(batch, i, j, aktZoom);
 						}
-						catch (Exception e)
-						{
-						}
-					}
-					else if (tmpzoom == aktZoom)
-					{
-						if (!renderBiggerOverlayTiles(batch, i, j, aktZoom)) renderSmallerOverlayTiles(batch, i, j, aktZoom);
 					}
 				}
 			}
@@ -634,32 +608,32 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		 */
 		CB_List<TileGL_RotateDrawables> rotateList = new CB_List<TileGL_RotateDrawables>();
 
+		mapTileLoader.sort();
+
 		synchronized (screenCenterW)
 		{
-
-			for (int i = tilesToDraw.size() - 1; i > -1; i--)
+			for (int i = mapTileLoader.getDrawingSize() - 1; i > -1; i--)
 			{
-				TileGL tile = tilesToDraw.get(i);
-				if (tile.canDraw())
-				{
-					// Faktor, mit der dieses MapTile vergrößert gezeichnet
-					// werden muß
-					long posFactor = getscaledMapTilePosFactor(tile);
+				TileGL tile = mapTileLoader.getDrawingTile(i);
 
-					long xPos = tile.Descriptor.getX() * posFactor * tile.getWidth() - screenCenterW.x;
-					long yPos = -(tile.Descriptor.getY() + 1) * posFactor * tile.getHeight() - screenCenterW.y;
-					float xSize = tile.getWidth() * posFactor;
-					float ySize = tile.getHeight() * posFactor;
+				// Faktor, mit der dieses MapTile vergrößert gezeichnet
+				// werden muß
+				long posFactor = getscaledMapTilePosFactor(tile);
 
-					// Draw Names and Symbols only from Tile with right zoom factor
-					boolean addToRotateList = tile.Descriptor.getZoom() == aktZoom;
+				long xPos = tile.Descriptor.getX() * posFactor * tile.getWidth() - screenCenterW.x;
+				long yPos = -(tile.Descriptor.getY() + 1) * posFactor * tile.getHeight() - screenCenterW.y;
+				float xSize = tile.getWidth() * posFactor;
+				float ySize = tile.getHeight() * posFactor;
 
-					tile.draw(batch, xPos, yPos, xSize, ySize, addToRotateList ? rotateList : null);
-				}
+				// Draw Names and Symbols only from Tile with right zoom factor
+				boolean addToRotateList = tile.Descriptor.getZoom() == aktZoom;
+
+				tile.draw(batch, xPos, yPos, xSize, ySize, addToRotateList ? rotateList : null);
+
 			}
 			batch.enableBlending();
 
-			// TODO sort rotate List first the Symbols then the Text! sort Text with same Font! Don't change the Texture (improve the
+			// FIXME sort rotate List first the Symbols then the Text! sort Text with same Font! Don't change the Texture (improve the
 			// Performance)
 
 			for (TileGL_RotateDrawables drw : rotateList)
@@ -670,15 +644,16 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			rotateList = null;
 
 		}
-		tilesToDraw.clear();
+		mapTileLoader.clearDrawingTiles();
 
-		synchronized (screenCenterW)
+		if (mapTileLoader.getCurrentOverlayLayer() != null)
 		{
-			for (int i = overlayToDraw.size() - 1; i > -1; i--)
+			synchronized (screenCenterW)
 			{
-				TileGL tile = overlayToDraw.get(i);
-				if (tile.canDraw())
+				for (int i = mapTileLoader.getDrawingSizeOverlay() - 1; i > -1; i--)
 				{
+					TileGL tile = mapTileLoader.getDrawingTileOverlay(i);
+
 					// Faktor, mit der dieses MapTile vergrößert gezeichnet
 					// werden muß
 					long posFactor = getscaledMapTilePosFactor(tile);
@@ -688,10 +663,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					float xSize = tile.getWidth() * posFactor;
 					float ySize = tile.getHeight() * posFactor;
 					tile.draw(batch, xPos, yPos, xSize, ySize, rotateList);
+
 				}
 			}
+			mapTileLoader.clearDrawingTilesOverlay();
 		}
-		overlayToDraw.clear();
 
 	}
 
@@ -837,26 +813,14 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int zoomzoom = zoom2 - 1;
 
 		Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
-		TileGL tile = null;
-		try
-		{
-			tile = mapTileLoader.getLoadedTile(desc);
-		}
-		catch (Exception ex)
-		{
-		}
-		if (tile != null)
+		boolean canDraw = mapTileLoader.markToDraw(desc);
+
+		if (canDraw)
 		{
 			// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
 			// eigentlich nicht das richtige Tile ist!!!
 			// tile.Age = 0;
-			try
-			{
-				if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.add(tile.Descriptor.GetHashCode(), tile);
-			}
-			catch (Exception e)
-			{
-			}
+
 			return true;
 		}
 		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
@@ -882,26 +846,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int zoomzoom = zoom2 - 1;
 
 		Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
-		TileGL tile = null;
-		try
+		boolean canDraw = mapTileLoader.markToDrawOverlay(desc);
+
+		if (canDraw)
 		{
-			tile = mapTileLoader.getLoadedOverlayTile(desc);
-		}
-		catch (Exception ex)
-		{
-		}
-		if (tile != null)
-		{
-			// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
-			// eigentlich nicht das richtige Tile ist!!!
-			// tile.Age = 0;
-			try
-			{
-				if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.add(tile.Descriptor.GetHashCode(), tile);
-			}
-			catch (Exception e)
-			{
-			}
+
 			return true;
 		}
 		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
@@ -933,26 +882,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			for (int jj = j1; jj <= j2; jj++)
 			{
 				Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
-				TileGL tile = null;
-				try
+				boolean canDraw = mapTileLoader.markToDraw(desc);
+				if (canDraw)
 				{
-					tile = mapTileLoader.getLoadedTile(desc);
-				}
-				catch (Exception ex)
-				{
-				}
-				if (tile != null)
-				{
-					try
-					{
-						if (!tilesToDraw.containsKey(tile.Descriptor.GetHashCode())) tilesToDraw.add(tile.Descriptor.GetHashCode(), tile);
-					}
-					catch (Exception e)
-					{
-					}
-					// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
-					// eigentlich nicht das richtige Tile ist!!!
-					// tile.Age = 0;
+
 				}
 				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM))
 				{
@@ -984,27 +917,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			for (int jj = j1; jj <= j2; jj++)
 			{
 				Descriptor desc = new Descriptor(ii, jj, zoomzoom, this.NightMode);
-				TileGL tile = null;
-				try
+				boolean canDraw = mapTileLoader.markToDrawOverlay(desc);
+				if (canDraw)
 				{
-					tile = mapTileLoader.getLoadedOverlayTile(desc);
-				}
-				catch (Exception ex)
-				{
-				}
-				if (tile != null)
-				{
-					try
-					{
-						if (!overlayToDraw.containsKey(tile.Descriptor.GetHashCode())) overlayToDraw.add(tile.Descriptor.GetHashCode(),
-								tile);
-					}
-					catch (Exception e)
-					{
-					}
-					// das Alter der benutzten Tiles nicht auf 0 setzen, da dies
-					// eigentlich nicht das richtige Tile ist!!!
-					// tile.Age = 0;
+
 				}
 				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM))
 				{
@@ -1743,7 +1659,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	{
 		setNewSettings(INITIAL_THEME);
 		mapTileLoader.clearLoadedTiles();
-		tilesToDraw.clear();
 		mapScale.ZoomChanged();
 		if (CrossLines != null) CrossLines.dispose();
 		CrossLines = null;
