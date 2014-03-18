@@ -232,38 +232,18 @@ public class MapTileLoader
 			}
 		}
 
-		// Don't cleanup on tablet, it can two maps visible
-		// if (!Global.isTab)
-		// {
-		// if (!doubleCache && LoadedTilesSize() > neadedTiles.size() * 1.5)
-		// {
-		//
-		// CB_List<Long> delList = queueData.loadedTiles.allKeysAreNot(neadedTiles);
-		//
-		// for (long hash : delList)
-		// {
-		// TileGL tmp = queueData.loadedTiles.get(hash);
-		// if (tmp != null) tmp.dispose();
-		// queueData.loadedTiles.remove(hash);
-		// }
-		//
-		// if (queueData.CurrentOverlayLayer != null)
-		// {
-		// for (long hash : delList)
-		// {
-		// TileGL tmp = queueData.loadedOverlayTiles.get(hash);
-		// if (tmp != null) tmp.dispose();
-		// queueData.loadedOverlayTiles.remove(hash);
-		// }
-		// }
-		// }
-		// }
-		queueData.queuedTilesLock.unlock();
-		queueData.loadedTilesLock.unlock();
-		if (queueData.CurrentOverlayLayer != null)
+		try
 		{
-			queueData.queuedOverlayTilesLock.unlock();
-			queueData.loadedOverlayTilesLock.unlock();
+			queueData.queuedTilesLock.unlock();
+			queueData.loadedTilesLock.unlock();
+			if (queueData.CurrentOverlayLayer != null)
+			{
+				queueData.queuedOverlayTilesLock.unlock();
+				queueData.loadedOverlayTilesLock.unlock();
+			}
+		}
+		catch (Exception e)
+		{
 		}
 		neadedTiles.truncate(0);
 	}

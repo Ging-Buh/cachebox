@@ -128,16 +128,16 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			int aTile = 256 * 256;
 			maxTilesPerScreen = (int) ((rec.getWidth() * rec.getHeight()) / aTile + 0.5);
 
-			maxNumTiles = (int) (maxTilesPerScreen * 8);// 8 times as much as necessary
+			maxNumTiles = (int) (maxTilesPerScreen * 2);// 8 times as much as necessary
 
 		}
 		catch (Exception e)
 		{
-			maxNumTiles = 80;
+			maxNumTiles = 20;
 		}
 
-		maxNumTiles = Math.min(maxNumTiles, 80);
-		maxNumTiles = Math.max(maxNumTiles, 30);
+		maxNumTiles = Math.min(maxNumTiles, 20);
+		maxNumTiles = Math.max(maxNumTiles, 5);
 
 		mapTileLoader.setMaxNumTiles(maxNumTiles);
 
