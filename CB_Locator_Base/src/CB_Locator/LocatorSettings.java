@@ -86,5 +86,5 @@ public interface LocatorSettings
 			SettingCategory.Skin, NORMAL, "", SettingStoreType.Global, "xml"));
 
 	public static final SettingEnum<GL_RenderType> MapsforgeRenderType = new SettingEnum<GL_RenderType>("MapsforgeRenderType",
-			SettingCategory.Map, EXPERT, GL_RenderType.Mapsforge, SettingStoreType.Global, GL_RenderType.Mapsforge);
+			SettingCategory.Map, EXPERT, GL_RenderType.Mixing, SettingStoreType.Global, GL_RenderType.Mixing);
 }

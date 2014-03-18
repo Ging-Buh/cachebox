@@ -28,11 +28,8 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
@@ -249,20 +246,20 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.drawNodes(rotateList, this.nodes);
 		this.drawNodes(rotateList, this.areaLabels);
 
-		Canvas c = graphicFactory.createCanvas();
-		c.setBitmap(bitmap);
-
-		Paint p = graphicFactory.createPaint();
-		p.setColor(Color.RED);
-		p.setStrokeWidth(2);
-		p.setStyle(Style.STROKE);
-
-		int s = bitmap.getHeight();
-
-		c.drawLine(0, 0, 0, s, p);
-		c.drawLine(0, s, s, s, p);
-		c.drawLine(s, s, s, 0, p);
-		c.drawLine(s, 0, 0, 0, p);
+		// Canvas c = graphicFactory.createCanvas();
+		// c.setBitmap(bitmap);
+		//
+		// Paint p = graphicFactory.createPaint();
+		// p.setColor(Color.RED);
+		// p.setStrokeWidth(2);
+		// p.setStyle(Style.STROKE);
+		//
+		// int s = bitmap.getHeight();
+		//
+		// c.drawLine(0, 0, 0, s, p);
+		// c.drawLine(0, s, s, s, p);
+		// c.drawLine(s, s, s, 0, p);
+		// c.drawLine(s, 0, 0, 0, p);
 
 		clearLists();
 		return bitmap;
