@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Menu;
 
-import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -91,7 +91,7 @@ public class MenuItem extends MenuItemBase
 			iconImage.setDrawable(mIcon);
 			if (!mIsEnabled)
 			{
-				iconImage.setColor(Fonts.getDisableFontColor());
+				iconImage.setColor(COLOR.getDisableFontColor());
 			}
 
 			this.addChild(iconImage);
@@ -131,7 +131,7 @@ public class MenuItem extends MenuItemBase
 		if (mTitle != null) mLabel.setText(mTitle);
 		if (!mIsEnabled)
 		{
-			mLabel.setTextColor(Fonts.getDisableFontColor());
+			mLabel.setTextColor(COLOR.getDisableFontColor());
 		}
 
 		this.addChild(mLabel);

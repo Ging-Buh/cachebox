@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Global;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -126,7 +127,7 @@ public class Menu extends ButtonDialog
 		mMoreMenu.setParrentMenu(this);
 		mMoreMenu.setVisible(false);
 		mMoreMenu.Level = this.Level + 1;
-		mMoreMenu.setBackground(new ColorDrawable(Fonts.getMenuBackColor()));
+		mMoreMenu.setBackground(new ColorDrawable(COLOR.getMenuBackColor()));
 	}
 
 	public Menu getMoreMenu()
@@ -251,7 +252,7 @@ public class Menu extends ButtonDialog
 			mMoreMenu.setWidth(0);
 			mMoreMenu.setY(0 - mFooterHeight);
 
-			mMoreMenu.setBackground(new ColorDrawable(Fonts.getMenuBackColor()));
+			mMoreMenu.setBackground(new ColorDrawable(COLOR.getMenuBackColor()));
 
 			this.addChild(mMoreMenu);
 
@@ -272,7 +273,7 @@ public class Menu extends ButtonDialog
 				}
 			});
 
-			mMoreMenuLabel = new Label(mMoreMenuTextRight, Fonts.getSmall(), Fonts.getFontColor(), WrapType.SINGLELINE)
+			mMoreMenuLabel = new Label(mMoreMenuTextRight, Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE)
 					.setHAlignment(HAlignment.CENTER);
 			// mMoreMenuLabel.setRec(mMoreMenuToggleButton);
 			mMoreMenuLabel.setWidth(mMoreMenuToggleButton.getHeight());

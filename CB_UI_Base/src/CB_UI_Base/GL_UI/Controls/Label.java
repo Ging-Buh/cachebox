@@ -18,6 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -45,7 +46,7 @@ public class Label extends CB_View_Base
 
 	private String mText = "";
 	private BitmapFont mFont = Fonts.getNormal();
-	private Color mColor = Fonts.getFontColor();
+	private Color mColor = COLOR.getFontColor();
 	private VAlignment mVAlignment = VAlignment.CENTER;
 	private HAlignment mHAlignment = HAlignment.LEFT;
 	private WrapType mWrapType = WrapType.SINGLELINE;
@@ -409,7 +410,7 @@ public class Label extends CB_View_Base
 	{
 		// todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
 		mFont = Fonts.getNormal();
-		mColor = Fonts.getFontColor();
+		mColor = COLOR.getFontColor();
 		initLabel();
 	}
 

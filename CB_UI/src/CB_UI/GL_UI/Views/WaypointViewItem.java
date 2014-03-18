@@ -8,6 +8,7 @@ import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GL_UI.Controls.CacheInfo;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -95,7 +96,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		this.mWaypoint = waypoint;
 
 		distance = new BitmapFontCache(Fonts.getSmall());
-		distance.setColor(Fonts.getFontColor());
+		distance.setColor(COLOR.getFontColor());
 		distance.setText("", 0, 0);
 
 		if (waypoint == null) // this Item is the Cache
@@ -300,9 +301,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			mDescCache.setText("", 0, 0);
 			mCoordCache.setText("", 0, 0);
 
-			mNameCache.setColor(Fonts.getFontColor());
-			mDescCache.setColor(Fonts.getFontColor());
-			mCoordCache.setColor(Fonts.getFontColor());
+			mNameCache.setColor(COLOR.getFontColor());
+			mDescCache.setColor(COLOR.getFontColor());
+			mCoordCache.setColor(COLOR.getFontColor());
 
 			float textYPos = this.getHeight() - mMargin;
 

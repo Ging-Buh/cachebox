@@ -20,6 +20,7 @@ import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -130,7 +131,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
 		this.addChild(descTextView);
 
-		CachesFoundLabel = new Label("", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
+		CachesFoundLabel = new Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
 		CachesFoundLabel.setWidth(getWidth());
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
@@ -262,7 +263,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		Gps = new Label(lblRec, "GPS");
 		Accuracy = new Label(lblRec, "Accuracy");
-		WaypointLabel = new Label("-", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE);
+		WaypointLabel = new Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
 		WaypointLabel.setRec(lblRec);
 		CoordLabel = new Label(lblRec, "Cord");
 		Current = new Label(lblRec, "Current");

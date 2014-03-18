@@ -18,7 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 
 import java.util.ArrayList;
 
-import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
@@ -195,7 +195,7 @@ public class MultiToggleButton extends Button
 		String ButtonTxt = "";
 		bt.clearStates();
 		bt.addState(ButtonTxt, Color.GRAY);
-		bt.addState(ButtonTxt, Fonts.getHighLightFontColor());
+		bt.addState(ButtonTxt, COLOR.getHighLightFontColor());
 		bt.setState(0, true);
 	}
 
@@ -203,7 +203,7 @@ public class MultiToggleButton extends Button
 	{
 		bt.clearStates();
 		bt.addState(txtOff, Color.GRAY);
-		bt.addState(txtOn, Fonts.getHighLightFontColor());
+		bt.addState(txtOn, COLOR.getHighLightFontColor());
 		bt.setState(0, true);
 	}
 

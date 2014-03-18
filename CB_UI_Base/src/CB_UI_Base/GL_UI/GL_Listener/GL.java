@@ -18,6 +18,7 @@ import CB_UI_Base.Events.KeyCodes;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
@@ -1051,7 +1052,7 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			disposeTexture();
 			mDarknesPixmap = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
-			mDarknesPixmap.setColor(Fonts.getDarknesColor());
+			mDarknesPixmap.setColor(COLOR.getDarknesColor());
 			mDarknesPixmap.fillRectangle(0, 0, width, height);
 			mDarknesTexture = new Texture(mDarknesPixmap, Pixmap.Format.RGBA8888, false);
 			mDarknesSprite = new Sprite(mDarknesTexture, width, height);

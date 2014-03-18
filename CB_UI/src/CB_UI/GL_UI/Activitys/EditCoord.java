@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Activitys;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -10,9 +11,9 @@ import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.PopUps.CopiePastePopUp;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.ICopyPaste;
@@ -920,11 +921,11 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 		// normal to highlighted showing next input change
 		if (newFocus < nrOfButtons)
 		{
-			bLat[newFocus].setText(bLat[newFocus].getText(), Fonts.getHighLightFontColor());
+			bLat[newFocus].setText(bLat[newFocus].getText(), COLOR.getHighLightFontColor());
 		}
 		else
 		{
-			bLon[newFocus - nrOfButtons].setText(bLon[newFocus - nrOfButtons].getText(), Fonts.getHighLightFontColor());
+			bLon[newFocus - nrOfButtons].setText(bLon[newFocus - nrOfButtons].getText(), COLOR.getHighLightFontColor());
 		}
 		return newFocus;
 	}
@@ -943,8 +944,8 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 
 	private void setUTMFocus(int newFocus)
 	{
-		setUTMbtnTextColor(this.focus, Fonts.getFontColor());
-		setUTMbtnTextColor(newFocus, Fonts.getHighLightFontColor());
+		setUTMbtnTextColor(this.focus, COLOR.getFontColor());
+		setUTMbtnTextColor(newFocus, COLOR.getHighLightFontColor());
 		if (newFocus == 6 + 8 + 3 - 1)
 		{
 			// keyboard einblenden

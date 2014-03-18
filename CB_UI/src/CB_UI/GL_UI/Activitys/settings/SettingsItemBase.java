@@ -1,5 +1,6 @@
 package CB_UI.GL_UI.Activitys.settings;
 
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -45,7 +46,7 @@ public class SettingsItemBase extends ListViewItemBackground
 	public void disable()
 	{
 		isDisabled = true;
-		this.setColorFilter(Fonts.getDisableFontColor());
+		this.setColorFilter(COLOR.getDisableFontColor());
 	}
 
 	public boolean isDisabled()

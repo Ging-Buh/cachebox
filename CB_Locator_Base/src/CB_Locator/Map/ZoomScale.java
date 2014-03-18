@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -95,7 +96,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		int intZoom = (int) zoom;
 
-		com.badlogic.gdx.graphics.Color c = Fonts.getFontColor();
+		com.badlogic.gdx.graphics.Color c = COLOR.getFontColor();
 		Fonts.getNormal().setColor(c.r, c.g, c.b, FadeValue);
 		Fonts.getNormal().draw(batch, String.valueOf(intZoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.15f);

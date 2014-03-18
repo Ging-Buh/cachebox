@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -236,10 +237,10 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 		ret.background = SpriteCacheBase.textFiledBackground;
 		ret.backgroundFocused = SpriteCacheBase.textFiledBackgroundFocus;
 		ret.font = Fonts.getNormal();
-		ret.fontColor = Fonts.getFontColor();
+		ret.fontColor = COLOR.getFontColor();
 
 		ret.messageFont = Fonts.getSmall();
-		ret.messageFontColor = Fonts.getDisableFontColor();
+		ret.messageFontColor = COLOR.getDisableFontColor();
 
 		ret.cursor = SpriteCacheBase.textFieldCursor;
 

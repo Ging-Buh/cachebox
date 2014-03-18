@@ -5,6 +5,7 @@ import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -90,22 +91,22 @@ public class TB_Details extends ActivityBase
 		lblName = new Label(iconRec, "Name");
 
 		image = new Image(iconRec, "Image");
-		lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.SINGLELINE);
+		lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
 		lblAboutDesc = new Label("AboutDesc");
 		AboutThisItem = new Box(10, 10, "AboutItemBox");
 		AboutThisItem.setBackground(SpriteCacheBase.activityBackground);
 
-		lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.SINGLELINE);
+		lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
 		lblGoalDesc = new Label("GoalDesc");
 		GoalThisItem = new Box(10, 10, "GoalItemBox");
 		GoalThisItem.setBackground(SpriteCacheBase.activityBackground);
 
-		lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
-		lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
-		lblOwner = new Label(Translation.Get("TB_Owner"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
+		lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), COLOR.getDisableFontColor(), WrapType.SINGLELINE);
+		lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), COLOR.getDisableFontColor(), WrapType.SINGLELINE);
+		lblOwner = new Label(Translation.Get("TB_Owner"), Fonts.getSmall(), COLOR.getDisableFontColor(), WrapType.SINGLELINE);
 		// lbllastVisit = new Label("LastVisit");
 		// lblHome = new Label("Home");
-		lblBirth = new Label(Translation.Get("TB_Birth"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
+		lblBirth = new Label(Translation.Get("TB_Birth"), Fonts.getSmall(), COLOR.getDisableFontColor(), WrapType.SINGLELINE);
 		// lblTravelDistance = new Label("TravelDistance");
 
 		TypeName = new Label("TypeName");

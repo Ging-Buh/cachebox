@@ -30,6 +30,7 @@ import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -771,7 +772,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		 * checkBoxCompactDB.setChecked(false); }
 		 */
 		checkBoxPreloadSpoiler.setEnable(true);
-		lblSpoiler.setTextColor(Fonts.getFontColor());
+		lblSpoiler.setTextColor(COLOR.getFontColor());
 		if (checkImportPQfromGC.isChecked())
 		{
 			PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);

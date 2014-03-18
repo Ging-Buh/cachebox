@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
@@ -33,7 +34,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		this.mapInstanz = mapInstanz;
 		CachedScaleDrawable = null;
 		fontCache = new BitmapFontCache(Fonts.getNormal());
-		fontCache.setColor(Fonts.getFontColor());
+		fontCache.setColor(COLOR.getFontColor());
 		fontCache.setText("", 0, 0);
 		invalidateTextureEventList.Add(this);
 	}
@@ -136,7 +137,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		if (fontCache == null)
 		{
 			fontCache = new BitmapFontCache(Fonts.getNormal());
-			fontCache.setColor(Fonts.getFontColor());
+			fontCache.setColor(COLOR.getFontColor());
 			fontCache.setText("", 0, 0);
 		}
 
@@ -184,7 +185,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		}
 		generatedZomm = -1;
 
-		fontCache.setColor(Fonts.getFontColor());
+		fontCache.setColor(COLOR.getFontColor());
 	}
 
 }

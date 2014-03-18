@@ -34,6 +34,7 @@ import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI.Map.RouteOverlay;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -412,7 +413,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					geomList.add(q2);
 
 					GL_Paint paint = new GL_Paint();
-					paint.setGLColor(Fonts.getCrossColor());
+					paint.setGLColor(COLOR.getCrossColor());
 					CrossLines = new PolygonDrawable(geomList.getVertices(), geomList.getTriangles(), paint, mapIntWidth, mapIntHeight);
 
 					geomList.dispose();

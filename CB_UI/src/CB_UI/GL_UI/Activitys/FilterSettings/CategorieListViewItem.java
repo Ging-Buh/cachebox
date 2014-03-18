@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import CB_Core.Types.GpxFilename;
 import CB_UI.GL_UI.Activitys.FilterSettings.CategorieListView.CategorieEntry;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -149,18 +150,18 @@ public class CategorieListViewItem extends ListViewItemBackground
 			Count += " Caches";
 
 			EntryName = new BitmapFontCache(Fonts.getNormal());
-			EntryName.setColor(Fonts.getFontColor());
+			EntryName.setColor(COLOR.getFontColor());
 			EntryName.setMultiLineText(Name, left + UI_Size_Base.that.getMargin(), top);
 
 			top = margin + margin + Fonts.MeasureSmall(Count).height;
 
 			EntryDate = new BitmapFontCache(Fonts.getSmall());
-			EntryDate.setColor(Fonts.getFontColor());
+			EntryDate.setColor(COLOR.getFontColor());
 			EntryDate.setMultiLineText(Date, left + UI_Size_Base.that.getMargin(), top);
 
 			float measure = Fonts.Measure(Count).width;
 			EntryCount = new BitmapFontCache(Fonts.getSmall());
-			EntryCount.setColor(Fonts.getFontColor());
+			EntryCount.setColor(COLOR.getFontColor());
 			EntryCount.setMultiLineText(Count, rBounds.getX() - margin - measure, top);
 
 			// layoutEntryName = new StaticLayout(Name, textPaint, innerWidthName, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);

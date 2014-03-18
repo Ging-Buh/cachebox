@@ -8,6 +8,7 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CacheInfo;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -81,7 +82,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		mCache = cache;
 		info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
 		info.setZeroPos();
-		distance.setColor(Fonts.getFontColor());
+		distance.setColor(COLOR.getFontColor());
 		this.addChild(info);
 		PositionChangedEventList.Add(this);
 

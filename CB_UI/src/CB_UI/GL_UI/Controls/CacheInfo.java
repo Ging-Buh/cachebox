@@ -8,6 +8,7 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
@@ -203,7 +204,7 @@ public class CacheInfo extends CB_View_Base
 		// Size
 		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
 		mS_FontCache.setText("MSRLO", 0, 0);
-		mS_FontCache.setColor(Fonts.getFontColor());
+		mS_FontCache.setColor(COLOR.getFontColor());
 		float starHeight = mS_FontCache.getBounds().height * 1.1f;
 		mStarSize = new SizeF(starHeight * 5, starHeight);
 
@@ -240,7 +241,7 @@ public class CacheInfo extends CB_View_Base
 			// Difficulty
 			mLeft += mSSprite.getWidth() + mMargin + mMargin;
 			mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
-			mD_FontCache.setColor(Fonts.getFontColor());
+			mD_FontCache.setColor(COLOR.getFontColor());
 			mD_FontCache.setText("D", mLeft, mBottom);
 			mLeft += mD_FontCache.getBounds().width + mMargin;
 			mDSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Difficulty * 2)));
@@ -249,7 +250,7 @@ public class CacheInfo extends CB_View_Base
 			// Terrain
 			mLeft += mDSprite.getWidth() + mMargin + mMargin;
 			mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
-			mT_FontCache.setColor(Fonts.getFontColor());
+			mT_FontCache.setColor(COLOR.getFontColor());
 			mT_FontCache.setText("T", mLeft, mBottom);
 			mLeft += mT_FontCache.getBounds().width + mMargin;
 			mTSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Terrain * 2)));
@@ -271,7 +272,7 @@ public class CacheInfo extends CB_View_Base
 				{
 					mLeft += mTBSprite.getWidth() + mMargin;
 					mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
-					mTB_FontCache.setColor(Fonts.getFontColor());
+					mTB_FontCache.setColor(COLOR.getFontColor());
 					mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
 				}
 			}
@@ -341,7 +342,7 @@ public class CacheInfo extends CB_View_Base
 			}
 			else
 			{
-				mInfo_FontCache.setColor(Fonts.getFontColor());
+				mInfo_FontCache.setColor(COLOR.getFontColor());
 			}
 			mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.getHeight() - mMargin);
 

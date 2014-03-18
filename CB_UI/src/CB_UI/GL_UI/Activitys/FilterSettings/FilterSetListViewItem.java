@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Activitys.FilterSettings;
 import java.util.ArrayList;
 
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -100,7 +101,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		if (EntryName == null)
 		{
 			EntryName = new BitmapFontCache(Fonts.getNormal());
-			EntryName.setColor(Fonts.getFontColor());
+			EntryName.setColor(COLOR.getFontColor());
 			if (this.mFilterSetEntry.getItemType() == FilterSetListView.THREE_STATE_ITEM)
 			{
 				float TextWidth = getWidth() - (left + 20) - getRightWidth() - getHeight();
@@ -118,7 +119,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			if (Value == null)
 			{
 				Value = new BitmapFontCache(Fonts.getBig());
-				Value.setColor(Fonts.getFontColor());
+				Value.setColor(COLOR.getFontColor());
 				setValueFont = true;
 			}
 			if (setValueFont) Value.setText(String.valueOf(getValue()), (getWidth() / 1.5f), (getHeight() / 1.8f));
@@ -308,7 +309,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		if (Minus == null)
 		{
 			Minus = new BitmapFontCache(Fonts.getBig());
-			Minus.setColor(Fonts.getFontColor());
+			Minus.setColor(COLOR.getFontColor());
 			Minus.setText("-", 0, 0);
 			Minus.setPosition(lBounds.getCenterPosX() - (Minus.getBounds().width / 2), lBounds.getCenterPosY()
 					+ (Minus.getBounds().height / 2));
@@ -317,7 +318,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		if (Plus == null)
 		{
 			Plus = new BitmapFontCache(Fonts.getBig());
-			Plus.setColor(Fonts.getFontColor());
+			Plus.setColor(COLOR.getFontColor());
 			Plus.setText("+", 0, 0);
 			Plus.setPosition(rBounds.getCenterPosX() - (Plus.getBounds().width / 2), rBounds.getCenterPosY()
 					+ (Plus.getBounds().height / 2));

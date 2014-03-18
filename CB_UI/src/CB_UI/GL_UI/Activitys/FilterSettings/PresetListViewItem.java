@@ -2,6 +2,7 @@ package CB_UI.GL_UI.Activitys.FilterSettings;
 
 import CB_Core.FilterProperties;
 import CB_UI.GL_UI.Activitys.FilterSettings.PresetListView.PresetEntry;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -60,7 +61,7 @@ public class PresetListViewItem extends ListViewItemBackground
 		if (EntryName == null)
 		{
 			EntryName = new BitmapFontCache(Fonts.getNormal());
-			EntryName.setColor(Fonts.getFontColor());
+			EntryName.setColor(COLOR.getFontColor());
 			EntryName.setMultiLineText(name, left + 10, top);
 		}
 		EntryName.draw(batch);
