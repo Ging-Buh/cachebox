@@ -193,8 +193,8 @@ public interface CB_UI_Settings
 			SettingStoreType.Global);
 	public static final SettingBool CompactDB = new SettingBool("CompactDB", SettingCategory.Internal, INVISIBLE, false,
 			SettingStoreType.Global);
-	public static final SettingBool RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", SettingCategory.RememberAsk, NORMAL,
-			false, SettingStoreType.Global);
+	// public static final SettingBool RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", SettingCategory.RememberAsk, NORMAL,
+	// false, SettingStoreType.Global);
 	public static final SettingBool AskAgain = new SettingBool("AskAgain", SettingCategory.RememberAsk, NORMAL, true,
 			SettingStoreType.Platform);
 	public static final SettingBool RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", SettingCategory.RememberAsk,

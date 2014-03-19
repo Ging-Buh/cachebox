@@ -96,6 +96,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public void OnShow()
 	{
 		this.forceLayout();
+		System.gc();
 
 		// Del View from XML Layout
 		webViewLayout.removeAllViews();

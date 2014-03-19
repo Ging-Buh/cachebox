@@ -41,8 +41,9 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.RememberAsk_API_Coast);
+		// GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
+		// MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.RememberAsk_API_Coast);
+		UploadFieldNotes();
 	}
 
 	@Override

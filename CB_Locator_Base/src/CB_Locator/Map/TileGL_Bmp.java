@@ -17,10 +17,12 @@ package CB_Locator.Map;
 
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
@@ -74,7 +76,8 @@ public class TileGL_Bmp extends TileGL
 			try
 			{
 				Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-				texture = new Texture(pixmap);
+				// texture = new Texture(pixmap);
+				texture = new Texture(pixmap, Format.RGB565, CB_UI_Base_Settings.useMipMap.getValue());
 				pixmap.dispose();
 				pixmap = null;
 			}
@@ -99,7 +102,8 @@ public class TileGL_Bmp extends TileGL
 					try
 					{
 						Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-						texture = new Texture(pixmap);
+						// texture = new Texture(pixmap);
+						texture = new Texture(pixmap, Format.RGB565, CB_UI_Base_Settings.useMipMap.getValue());
 						pixmap.dispose();
 						pixmap = null;
 					}
