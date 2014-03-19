@@ -694,7 +694,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		def.translate(r.getX(), r.getY(), 1);
 		batch.setProjectionMatrix(def);
 
-		str = debugString;
+		// str = debugString;
 		font.draw(batch, str, 20, 120);
 
 		str = "fps: " + Gdx.graphics.getFramesPerSecond();
@@ -1004,7 +1004,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	protected InputState inputState = InputState.Idle;
 	private final HashMap<Integer, Point> fingerDown = new LinkedHashMap<Integer, Point>();
-	private static String debugString = "";
+
+	// private static String debugString = "";
 
 	public void setNewSettings(int InitialFlags)
 	{
@@ -1445,7 +1446,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					int dy = (y - lastPoint.y);
 					int dxr = (int) (Math.cos(angle) * dx + Math.sin(angle) * dy);
 					int dyr = (int) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
-					debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
+					// debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
 
 					// Pan stufenlos anpassen an den aktuell gültigen Zoomfaktor
 					float tmpZoom = camera.zoom;
@@ -1552,7 +1553,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 
 		y = mapIntHeight - y;
-		debugString = "touchUp: " + x + " - " + y;
+		// debugString = "touchUp: " + x + " - " + y;
 		// debugString = "touchUp " + inputState.toString();
 		if (inputState == InputState.IdleDown)
 		{

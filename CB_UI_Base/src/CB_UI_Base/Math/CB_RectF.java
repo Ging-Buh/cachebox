@@ -253,7 +253,7 @@ public class CB_RectF
 		return ret;
 	}
 
-	private final CB_List<SizeChangedEvent> list = new CB_List<SizeChangedEvent>();
+	private final CB_List<SizeChangedEvent> list = new CB_List<SizeChangedEvent>(1);
 
 	public void Add(SizeChangedEvent event)
 	{

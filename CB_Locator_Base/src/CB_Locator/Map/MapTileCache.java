@@ -15,8 +15,6 @@
  */
 package CB_Locator.Map;
 
-import CB_UI_Base.Global;
-import CB_Utils.Log.Logger;
 
 /**
  * @author Longri
@@ -176,7 +174,7 @@ public class MapTileCache
 
 	public void clear()
 	{
-		System.out.print("LOADED_TILES clear() " + Logger.getCallerName(1) + Global.br);
+		// System.out.print("LOADED_TILES clear() " + Logger.getCallerName(1) + Global.br);
 		clearIndexList();
 		clearDrawingList();
 		System.arraycopy(this.EMPTY_HashList, 0, this.HashList, 0, Capacity - 1);

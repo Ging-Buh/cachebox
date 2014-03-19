@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.concurrent.locks.Lock;
 
-import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
@@ -139,13 +138,13 @@ public class MapTileLoader
 			}
 		}
 
-		{// DEBUG
-
-			String tre = String.valueOf(((queueProcessor == null) ? 0 : queueProcessor.length));
-			String text = "Threads:" + tre + " | MaxCache:" + maxNumTiles + " " + " loaded:" + queueData.loadedTiles.size() + " life:"
-					+ TileGL_Bmp.LifeCount;
-			GL.MaptileLoaderDebugString = text;
-		}
+		// {// DEBUG
+		//
+		// String tre = String.valueOf(((queueProcessor == null) ? 0 : queueProcessor.length));
+		// String text = "Threads:" + tre + " | MaxCache:" + maxNumTiles + " " + " loaded:" + queueData.loadedTiles.size() + " life:"
+		// + TileGL_Bmp.LifeCount;
+		// GL.MaptileLoaderDebugString = text;
+		// }
 
 		if (ManagerBase.Manager == null) return; // Kann nichts laden, wenn der Manager Null ist!
 

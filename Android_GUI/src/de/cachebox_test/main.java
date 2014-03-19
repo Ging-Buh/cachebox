@@ -3341,13 +3341,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS)
 		{
+
 			GpsStatus status = locationManager.getGpsStatus(null);
 			Iterator<GpsSatellite> statusIterator = status.getSatellites().iterator();
 
 			int satellites = 0;
 			int fixed = 0;
 			CB_List<GpsStrength> SatList = new CB_List<GpsStrength>();
-			CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>();
+			CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>(status.getMaxSatellites());
 			while (statusIterator.hasNext())
 			{
 				GpsSatellite sat = statusIterator.next();

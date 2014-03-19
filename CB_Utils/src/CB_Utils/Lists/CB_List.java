@@ -31,7 +31,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	private static final long serialVersionUID = 4378819539487000418L;
 	protected T[] items;
 	protected int size;
-	private final int INITIAL_SIZE = 16;
+	private final int INITIAL_SIZE = 5;
 
 	/** Creates an ordered array with a capacity of 16. */
 	public CB_List()
@@ -65,12 +65,19 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	@SuppressWarnings("unchecked")
 	protected T[] createNewItems(int size)
 	{
+		if (size <= 0) return null;
 		return (T[]) new Object[size];
+	}
+
+	private int getItemLength()
+	{
+		if (this.items == null) return 0;
+		return items.length;
 	}
 
 	public void add(int index, T t)
 	{
-		if (size == items.length) ensureCapacity(size + 1);
+		if (size == getItemLength()) ensureCapacity(size + 1);
 		if (index != size) System.arraycopy(items, index, items, index + 1, size - index);
 		items[index] = t;
 		size++;
@@ -78,7 +85,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 
 	public int add(T value)
 	{
-		if (size == this.items.length) resize(size + (size >> 1));
+		if (size == getItemLength()) resize(size + (size >> 1));
 		int ID = size;
 		this.items[size++] = value;
 		return ID;
@@ -94,7 +101,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 		Iterator<T> itr = array.iterator();
 		int csize = array.size();
 
-		if (csize + size > items.length) ensureCapacity(size + csize);
+		if (csize + size > getItemLength()) ensureCapacity(size + csize);
 		int end = index + csize;
 		if (size > 0 && index != size) System.arraycopy(items, index, items, end, size - index);
 		size += csize;
@@ -117,7 +124,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	public void addAll(T[] array, int offset, int length)
 	{
 		int sizeNeeded = (size + length);
-		if (sizeNeeded > items.length) resize(sizeNeeded + (size >> 1));
+		if (sizeNeeded > getItemLength()) resize(sizeNeeded + (size >> 1));
 		System.arraycopy(array, offset, this.items, size, length);
 		size += length;
 	}
@@ -144,6 +151,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 
 	public T remove(T value)
 	{
+		if (this.items == null) return null;
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
 		{
@@ -222,7 +230,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	 */
 	public void shrink()
 	{
-		if (items.length == size) return;
+		if (getItemLength() == size) return;
 		resize(size);
 	}
 
@@ -235,7 +243,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	public T[] ensureCapacity(int additionalCapacity)
 	{
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded > items.length) resize(Math.max(INITIAL_SIZE, sizeNeeded));
+		if (sizeNeeded > getItemLength()) resize(Math.max(INITIAL_SIZE, sizeNeeded));
 		return items;
 	}
 

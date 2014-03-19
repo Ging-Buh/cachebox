@@ -24,6 +24,7 @@ import CB_UI_Base.graphics.Geometry.CircularSegment;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.MathUtils;
@@ -41,7 +42,7 @@ public class GL_Path implements ext_Path, Disposable
 	private float[] last;
 	public int size = 0;
 	float[] PathSectionLength;
-	private ArrayList<Integer> pathBegins = new ArrayList<Integer>();
+	private CB_List<Integer> pathBegins = new CB_List<Integer>();
 	private int aktBeginn = 0;
 	private boolean isDisposed = false;
 
@@ -49,7 +50,7 @@ public class GL_Path implements ext_Path, Disposable
 
 	public GL_Path()
 	{
-		this(54);
+		this(4);
 	}
 
 	public GL_Path(int capacity)

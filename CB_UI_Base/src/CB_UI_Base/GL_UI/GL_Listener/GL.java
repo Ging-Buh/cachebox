@@ -1005,7 +1005,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 			private void TimerMethod()
 			{
-				if (listenerInterface != null) listenerInterface.RequestRender("Timer" + Name);
+				if (listenerInterface != null) listenerInterface.RequestRender(Name);
 			}
 
 		}, 0, delay);

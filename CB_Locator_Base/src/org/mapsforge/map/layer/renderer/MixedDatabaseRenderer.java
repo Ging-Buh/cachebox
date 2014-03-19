@@ -128,9 +128,11 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	private final List<List<List<ShapePaintContainer>>> ways;
 	private final List<SymbolContainer> waySymbols;
 	private final int ThreadId;
+	private final TileBitmap bitmap;
 
 	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
 	private double divLon, divLat;
+	private boolean NoBitmapDrawing;
 
 	/**
 	 * Constructs a new DatabaseRenderer.
@@ -154,6 +156,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.waySymbols = new F_List<SymbolContainer>(64);
 		this.pointSymbols = new F_List<SymbolContainer>(64);
 		this.wayNamesStrings = new CB_List<String>(64);
+		bitmap = this.graphicFactory.createTileBitmap(256, false);
 	}
 
 	public void destroy()
@@ -180,7 +183,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	 * @param rendererJob
 	 *            the job that should be executed.
 	 */
-	private TileBitmap executeJob(RendererJob rendererJob, SortedRotateList rotateList)
+	private void executeJob(RendererJob rendererJob, SortedRotateList rotateList)
 	{
 		this.currentRendererJob = rendererJob;
 		int tileSize = rendererJob.displayModel.getTileSize();
@@ -200,7 +203,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			if (this.renderTheme == null)
 			{
 				this.previousJobTheme = null;
-				return null;
+				this.NoBitmapDrawing = true;
 			}
 			createWayLists();
 			this.previousJobTheme = jobTheme;
@@ -232,8 +235,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 		// Fixme Buffer VectorData for this tile! Don't Read and Process if this tile bufferd VerctorData
 
-		TileBitmap bitmap = this.graphicFactory.createTileBitmap(rendererJob.displayModel.getTileSize(), rendererJob.hasAlpha);
-		this.canvasRasterer.setCanvasBitmap(bitmap);
+		this.canvasRasterer.setCanvasBitmap(this.bitmap);
 		if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground())
 		{
 			this.canvasRasterer.fill(this.renderTheme.getMapBackground());
@@ -261,7 +263,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		// c.drawLine(s, 0, 0, 0, p);
 
 		clearLists();
-		return bitmap;
+		this.NoBitmapDrawing = false;
 	}
 
 	public void drawNodes(SortedRotateList rotateList, List<PointTextContainer> pointTextContainers)
@@ -658,6 +660,8 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	}
 
 	AtomicBoolean inWork = new AtomicBoolean(false);
+	// UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream(256 * 256 * 2);
+	UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream();
 
 	@Override
 	public TileGL execute(RendererJob rendererJob)
@@ -673,49 +677,30 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		{
 			SortedRotateList rotateList = new SortedRotateList();
 
-			final TileBitmap bmp = executeJob(rendererJob, rotateList);
-			int size = 256 * 256 * 2;
-			final UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream(size);
-			try
+			executeJob(rendererJob, rotateList);
+			if (!this.NoBitmapDrawing)
 			{
-
-				// FIXME call direct Buffer swap
-				bmp.compress(baos);
-				final byte[] b = baos.toByteArray();
-
-				Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel,
-						false);
-
-				TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present);
-				mixedTile.add(rotateList);
-
-				Thread destroyThread = new Thread(new Runnable()
+				try
 				{
 
-					@Override
-					public void run()
-					{
-						try
-						{
-							baos.close();
-						}
-						catch (IOException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						((ext_Bitmap) bmp).recycle();
-					}
-				});
+					// FIXME call direct Buffer swap
+					this.bitmap.compress(baos);
+					byte[] b = baos.toByteArray();
 
-				destroyThread.start();
-				inWork.set(false);
-				return mixedTile;
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+					Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY,
+							rendererJob.tile.zoomLevel, false);
+
+					TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present);
+					mixedTile.add(rotateList);
+					baos.clear();
+					b = null;
+					inWork.set(false);
+					return mixedTile;
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 			inWork.set(false);
 			return null;
