@@ -15,7 +15,6 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -675,7 +674,8 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			SortedRotateList rotateList = new SortedRotateList();
 
 			final TileBitmap bmp = executeJob(rendererJob, rotateList);
-			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			int size = 256 * 256 * 2;
+			final UnsaveByteArrayOutputStream baos = new UnsaveByteArrayOutputStream(size);
 			try
 			{
 

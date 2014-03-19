@@ -1,5 +1,7 @@
 package CB_Utils.Lists;
 
+import java.util.Arrays;
+
 public class CB_StringList extends CB_List<String>
 {
 	private String[] items;
@@ -58,14 +60,17 @@ public class CB_StringList extends CB_List<String>
 
 		{// TODO Replace with this.items=Arrays.copyOf(this.items, newSize); if SDK>9
 
-			int[] tmpHash = new int[newSize];
-			System.arraycopy(hashList, 0, tmpHash, 0, hashList.length);
-			hashList = tmpHash;
+			// int[] tmpHash = new int[newSize];
+			// System.arraycopy(hashList, 0, tmpHash, 0, hashList.length);
+			// hashList = tmpHash;
+			// tmpHash = null;
+			this.hashList = Arrays.copyOf(this.hashList, newSize);
 
-			String[] tmpString = new String[newSize];
-			System.arraycopy(items, 0, tmpString, 0, items.length);
-			items = tmpString;
+			// String[] tmpString = new String[newSize];
+			// System.arraycopy(items, 0, tmpString, 0, items.length);
+			// items = tmpString;
 
+			this.items = Arrays.copyOf(this.items, newSize);
 		}
 
 		return this.items;

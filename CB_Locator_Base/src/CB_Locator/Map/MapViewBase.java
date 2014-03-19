@@ -615,6 +615,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			for (int i = mapTileLoader.getDrawingSize() - 1; i > -1; i--)
 			{
 				TileGL tile = mapTileLoader.getDrawingTile(i);
+				if (tile == null) continue;
 
 				// Faktor, mit der dieses MapTile vergrößert gezeichnet
 				// werden muß

@@ -206,12 +206,19 @@ public class MapTileCache
 
 	public boolean markToDraw(Long HashCode)
 	{
-		short index = getIndex(HashCode);
-		if (index == -1) return false;
-		if (!this.TileList[index].canDraw()) return false;
-		this.TileList[index].Age = 0;
-		this.DrawingIndexList[this.TilesToDrawSize++] = index;
-		return true;
+		try
+		{
+			short index = getIndex(HashCode);
+			if (index == -1) return false;
+			if (!this.TileList[index].canDraw()) return false;
+			this.TileList[index].Age = 0;
+			this.DrawingIndexList[this.TilesToDrawSize++] = index;
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
 	}
 
 	public void clearDrawingList()
@@ -222,8 +229,15 @@ public class MapTileCache
 
 	public TileGL getDrawingTile(int index)
 	{
-		int drawingIndex = this.DrawingIndexList[index];
-		return this.TileList[drawingIndex];
+		try
+		{
+			int drawingIndex = this.DrawingIndexList[index];
+			return this.TileList[drawingIndex];
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 	}
 
 	public int DrawingSize()

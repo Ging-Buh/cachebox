@@ -224,12 +224,13 @@ public class F_List<T> implements List<T>
 	protected T[] resize(int newSize)
 	{
 		if (newSize < INITIAL_SIZE) newSize = INITIAL_SIZE;
-		if (this.items.length == 0) return this.items = createNewItems(newSize);
-
-		T[] tmp = createNewItems(newSize);
-		System.arraycopy(this.items, 0, tmp, 0, this.items.length);
-		this.items = tmp;
-
+		// if (this.items.length == 0) return this.items = createNewItems(newSize);
+		//
+		// T[] tmp = createNewItems(newSize);
+		// System.arraycopy(this.items, 0, tmp, 0, this.items.length);
+		//
+		// this.items = tmp;
+		this.items = Arrays.copyOf(this.items, newSize);
 		return this.items;
 	}
 
