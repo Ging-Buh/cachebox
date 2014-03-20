@@ -1163,11 +1163,6 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 			if (center == null) center = new Coordinate(48.0, 12.0);
 			positionInitialized = true;
-			/*
-			 * if (animationTimer != null) animationTimer.Enabled = false;
-			 */
-			if (center == value) return;
-
 			center = value;
 			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()),
 					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,

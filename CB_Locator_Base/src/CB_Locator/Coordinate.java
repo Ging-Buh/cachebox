@@ -8,7 +8,7 @@ import CB_Utils.Converter.UTMConvert;
 import CB_Utils.Lists.CB_List;
 
 /**
- * @author Longri_2
+ * @author Longri
  */
 public class Coordinate implements Serializable
 {
