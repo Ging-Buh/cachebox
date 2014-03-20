@@ -274,4 +274,18 @@ public class Location
 		this.provider = provider;
 	}
 
+	public Location cpy()
+	{
+		Location ret = new Location();
+
+		ret.Position = Position.copy();
+		ret.hasSpeed = this.hasSpeed;
+		ret.speed = this.speed;
+		ret.hasBearing = this.hasBearing;
+		ret.bearing = this.bearing;
+		ret.altitude = this.altitude;
+		ret.provider = this.provider;
+		return ret;
+	}
+
 }

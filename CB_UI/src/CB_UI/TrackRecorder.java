@@ -201,7 +201,7 @@ public class TrackRecorder
 
 		if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
 		{
-			LastRecordedPosition = Locator.getLocation(GPS);
+			LastRecordedPosition = Locator.getLocation(GPS).cpy();
 		}
 		else
 		{
@@ -271,7 +271,7 @@ public class TrackRecorder
 				if (TrackListView.that != null) TrackListView.that.notifyActTrackChanged();
 
 				RouteOverlay.RoutesChanged();
-				LastRecordedPosition = Locator.getLocation(GPS);
+				LastRecordedPosition = Locator.getLocation(GPS).cpy();
 				GlobalCore.AktuelleRoute.TrackLength += cachedDistance;
 				GlobalCore.AktuelleRoute.AltitudeDifference += AltDiff;
 				writePos = false;
