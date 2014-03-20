@@ -36,6 +36,9 @@ public class MapTileLoader
 	private Thread[] queueProcessorAliveCheck = null;
 	CB_List<Long> neadedTiles = new CB_List<Long>();
 	private int maxNumTiles = 0;
+	private boolean ThreadPrioSetted = false;
+	private boolean CombleadInitial = false;
+	private long lastLoadHash = 0;
 
 	public MapTileLoader()
 	{
@@ -114,11 +117,12 @@ public class MapTileLoader
 		return queueData.loadedTiles.size();
 	}
 
-	private boolean ThreadPrioSetted = false;
-	private boolean CombleadInitial = false;
-
 	public void loadTiles(MapViewBase mapView, Descriptor lo, Descriptor ru, int aktZoom)
 	{
+
+		long hash = lo.GetHashCode() * ru.GetHashCode();
+		if (lastLoadHash == hash) return; // we have loaded!
+		lastLoadHash = hash;
 
 		// Initial Threads?
 		if (!CombleadInitial)
@@ -220,6 +224,11 @@ public class MapTileLoader
 					queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
 				}
 			}
+			else if (queueData.queuedTiles.containsKey(desc.GetHashCode()))
+			{
+				queueData.queuedTiles.remove(desc.GetHashCode());
+			}
+
 			if (queueData.CurrentOverlayLayer != null)
 			{
 				if (queueData.loadedOverlayTiles.containsKey(desc.GetHashCode()))
@@ -276,6 +285,7 @@ public class MapTileLoader
 
 	public void clearLoadedTiles()
 	{
+		lastLoadHash = 0;
 		queueData.loadedTilesLock.lock();
 		queueData.loadedTiles.clear();
 		queueData.loadedTilesLock.unlock();
@@ -364,25 +374,6 @@ public class MapTileLoader
 		queueData.loadedOverlayTiles.clearDrawingList();
 	}
 
-	// #######################################################################################################
-	// Static
-
-	public static float convertCameraZommToFloat(OrthographicCamera cam)
-	{
-		if (cam.zoom <= 0) return 0f;
-
-		float result = 0.0f;
-		result = MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));
-		return result;
-	}
-
-	public static long getMapTilePosFactor(float zoom)
-	{
-		long result = 1;
-		result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
-		return result;
-	}
-
 	public void setLayer(Layer layer)
 	{
 		queueData.CurrentLayer = layer;
@@ -401,6 +392,30 @@ public class MapTileLoader
 	public Layer getCurrentOverlayLayer()
 	{
 		return queueData.CurrentOverlayLayer;
+	}
+
+	public int getCacheSize()
+	{
+		return queueData.loadedTiles.getCapacity();
+	}
+
+	// #######################################################################################################
+	// Static
+
+	public static float convertCameraZommToFloat(OrthographicCamera cam)
+	{
+		if (cam.zoom <= 0) return 0f;
+
+		float result = 0.0f;
+		result = MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));
+		return result;
+	}
+
+	public static long getMapTilePosFactor(float zoom)
+	{
+		long result = 1;
+		result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
+		return result;
 	}
 
 }

@@ -31,6 +31,8 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public static final int MOUSE_WHEEL_POINTER_UP = -280272;
 
+	private final Matrix4 rotateMatrix = new Matrix4();
+
 	/**
 	 * Pointer ID for Mouse wheel scrolling down
 	 */
@@ -464,15 +466,13 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			isRotated = true;
 
-			Matrix4 matrix = new Matrix4();
+			rotateMatrix.idt();
+			rotateMatrix.translate(mOriginX, mOriginY, 0);
+			rotateMatrix.rotate(0, 0, 1, mRotate);
+			rotateMatrix.scale(mScale, mScale, 1);
+			rotateMatrix.translate(-mOriginX, -mOriginY, 0);
 
-			matrix.idt();
-			matrix.translate(mOriginX, mOriginY, 0);
-			matrix.rotate(0, 0, 1, mRotate);
-			matrix.scale(mScale, mScale, 1);
-			matrix.translate(-mOriginX, -mOriginY, 0);
-
-			batch.setTransformMatrix(matrix);
+			batch.setTransformMatrix(rotateMatrix);
 		}
 
 		this.render(batch);
@@ -480,13 +480,11 @@ public abstract class GL_View_Base extends CB_RectF
 		// reverse rotation
 		if (isRotated)
 		{
-			Matrix4 matrix = new Matrix4();
+			rotateMatrix.idt();
+			// rotateMatrix.rotate(0, 0, 1, 0);
+			// rotateMatrix.scale(1, 1, 1);
 
-			matrix.idt();
-			matrix.rotate(0, 0, 1, 0);
-			matrix.scale(1, 1, 1);
-
-			batch.setTransformMatrix(matrix);
+			batch.setTransformMatrix(rotateMatrix);
 		}
 
 		if (childs != null && childs.size() > 0)
@@ -508,6 +506,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 						if (childsInvalidate) view.invalidate();
 
+						// FIXME dont copy myParent Info use final and set Values
 						ParentInfo myInfoForChild = myParentInfo.cpy();
 						myInfoForChild.setWorldDrawRec(intersectRec);
 

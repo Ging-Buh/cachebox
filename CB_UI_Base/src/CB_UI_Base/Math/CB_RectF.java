@@ -269,11 +269,13 @@ public class CB_RectF
 	{
 		resize(this.member[2], this.member[3]);
 
-		for (SizeChangedEvent event : list)
+		if (list.size() > 0)
 		{
-			event.sizeChanged();
+			for (int i = 0, n = list.size(); i < n; i++)
+			{
+				list.get(i).sizeChanged();
+			}
 		}
-
 	}
 
 	public void resize(float width, float height)

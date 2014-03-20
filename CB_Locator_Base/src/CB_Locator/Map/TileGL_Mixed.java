@@ -19,6 +19,7 @@ import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
 import CB_Utils.Lists.CB_List;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
@@ -31,9 +32,9 @@ public class TileGL_Mixed extends TileGL_Bmp
 	SortedRotateList rotateList;
 	TileGL_RotateDrawables rotateDrawable;
 
-	public TileGL_Mixed(CB_Locator.Map.Descriptor desc, byte[] bytes, TileState state)
+	public TileGL_Mixed(CB_Locator.Map.Descriptor desc, byte[] bytes, TileState state, Format format)
 	{
-		super(desc, bytes, state);
+		super(desc, bytes, state, format);
 
 	}
 

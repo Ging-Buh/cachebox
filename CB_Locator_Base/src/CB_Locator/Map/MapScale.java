@@ -25,6 +25,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	private float drawableWidth = 0;
 	private String distanceString;
 	private boolean imperialunits = false;
+	private final static NumberFormat nf = NumberFormat.getInstance();
 
 	public MapScale(CB_RectF rec, String Name, MapViewBase mapInstanz, boolean useImperialUnits)
 	{
@@ -67,6 +68,11 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 	int generatedZomm = -1;
 
+	final int[] scaleNumUnits = new int[]
+		{ 4, 3, 4, 3, 4, 5, 3 };
+	final float[] scaleSteps = new float[]
+		{ 1, 1.5f, 2, 3, 4, 5, 7.5f };
+
 	/**
 	 * Nachdem Zoom verändert wurde müssen einige Werte neu berechnet werden
 	 */
@@ -77,10 +83,6 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 		try
 		{
-			int[] scaleNumUnits = new int[]
-				{ 4, 3, 4, 3, 4, 5, 3 };
-			float[] scaleSteps = new float[]
-				{ 1, 1.5f, 2, 3, 4, 5, 7.5f };
 
 			pixelsPerMeter = mapInstanz.pixelsPerMeter;
 
@@ -109,20 +111,17 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 		if (imperialunits)
 		{
-			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(2);
 			distanceString = nf.format(scaleLength / 1609.3) + "mi";
 		}
 		else if (scaleLength <= 500)
 		{
-			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(0);
 			distanceString = nf.format(scaleLength) + "m";
 		}
 		else
 		{
 			double length = scaleLength / 1000;
-			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(0);
 			distanceString = nf.format(length) + "km";
 		}

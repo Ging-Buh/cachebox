@@ -15,7 +15,6 @@
  */
 package CB_Locator.Map;
 
-
 /**
  * @author Longri
  */
@@ -241,6 +240,11 @@ public class MapTileCache
 	public int DrawingSize()
 	{
 		return this.TilesToDrawSize;
+	}
+
+	public int getCapacity()
+	{
+		return Capacity;
 	}
 
 }

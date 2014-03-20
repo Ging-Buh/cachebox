@@ -351,6 +351,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	@Override
 	public Iterator<T> iterator()
 	{
+		// FIXME remove iterator and use for(int i=0,n=Items.size;i<n;i++)
 		Itr itr = new Itr();
 		itr.reverse = reverse;
 		return new Itr();

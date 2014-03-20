@@ -63,6 +63,8 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.F_List;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
 /**
  * Mixed Database render for render MapTile with Mapsforge Tile as Bitmap without Symbols and Names.<br>
  * Symbols and Names are rendered in OpenGl for re rotating on runtime.
@@ -690,7 +692,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 					Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY,
 							rendererJob.tile.zoomLevel, false);
 
-					TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present);
+					TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present, Format.RGB565);
 					mixedTile.add(rotateList);
 					baos.clear();
 					b = null;

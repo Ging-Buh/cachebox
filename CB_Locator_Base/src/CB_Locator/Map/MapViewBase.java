@@ -711,6 +711,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 	}
 
+	// FIXME make point and nPoint final and setValues!
 	protected void renderPositionMarker(Batch batch)
 	{
 		PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getLongitude()),
@@ -950,6 +951,29 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				/ 2 - extensionTop), aktZoom);
 		Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight
 				+ drawingHeight / 2 + extensionBottom), aktZoom);
+
+		// check count of Tiles
+		boolean CacheisToSmall = true;
+		int cacheSize = mapTileLoader.getCacheSize();
+		do
+		{
+			int x = ru.X - lo.X + 1;
+			int y = ru.Y - lo.Y + 1;
+			int count = x * y;
+			if (count <= cacheSize)
+			{
+				CacheisToSmall = false;
+			}
+			else
+			{
+				lo.X++;
+				lo.Y++;
+				ru.X--;
+				ru.Y--;
+			}
+
+		}
+		while (CacheisToSmall);
 
 		mapTileLoader.loadTiles(this, lo, ru, aktZoom);
 
@@ -1259,7 +1283,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			drawingHeight = mapIntHeight;
 		}
 
-		GL.that.renderOnce(MapViewBase.this.getName() + " OrientationChanged");
+		GL.that.renderOnce("OrientationChanged");
 	}
 
 	public void SetAlignToCompass(boolean value)

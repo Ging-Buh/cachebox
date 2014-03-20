@@ -428,7 +428,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			}
 		}
 
-		renderDebugInfo(batch);
+		// renderDebugInfo(batch);
 
 	}
 
@@ -493,8 +493,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				arrow.setOrigin(GL_UISizes.TargetArrow.halfWidth, GL_UISizes.TargetArrow.height);
 				arrow.draw(batch);
 
+				// FIXME bounds are set four lines earlier use this! getBoundingRectangle give a copy
 				Rectangle bound = arrow.getBoundingRectangle();
 
+				// FIXME make Target Arrow final and set Values
 				TargetArrow = new CB_RectF(bound.x, bound.y, bound.width, bound.height);
 
 			}

@@ -844,6 +844,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
+	private final CB_Locator.Location CB_location = new CB_Locator.Location();
+
 	@Override
 	public void onLocationChanged(Location location)
 	{
@@ -852,8 +854,21 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (location.getProvider().toLowerCase(new Locale("en")).contains("gps")) provider = ProviderType.GPS;
 		if (location.getProvider().toLowerCase(new Locale("en")).contains("network")) provider = ProviderType.Network;
 
-		CB_Locator.Locator.setNewLocation(new CB_Locator.Location(location.getLatitude(), location.getLongitude(), location.getAccuracy(),
-				location.hasSpeed(), location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), provider));
+		CB_location.setlatitude(location.getLatitude());
+		CB_location.setLongitude(location.getLongitude());
+		CB_location.setAccuracy(location.getAccuracy());
+		CB_location.setHasSpeed(location.hasSpeed());
+		CB_location.setSpeed(location.getSpeed());
+		CB_location.setHasBearing(location.hasBearing());
+		CB_location.setBearing(location.getBearing());
+		CB_location.setAltitude(location.getAltitude());
+		CB_location.setProvider(provider);
+
+		CB_Locator.Locator.setNewLocation(CB_location);
+
+		// CB_Locator.Locator.setNewLocation(new CB_Locator.Location(location.getLatitude(), location.getLongitude(),
+		// location.getAccuracy(),
+		// location.hasSpeed(), location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), provider));
 	}
 
 	@Override
@@ -3334,6 +3349,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
+	private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>(14);
+
 	@Override
 	public void onGpsStatusChanged(int event)
 	{
@@ -3347,8 +3364,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			int satellites = 0;
 			int fixed = 0;
-			CB_List<GpsStrength> SatList = new CB_List<GpsStrength>();
-			CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>(status.getMaxSatellites());
+			coreSatList.clear();
+
 			while (statusIterator.hasNext())
 			{
 				GpsSatellite sat = statusIterator.next();
@@ -3360,19 +3377,19 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				{
 					fixed++;
 					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
-					SatList.add(new GpsStrength(true, sat.getSnr()));
+					// SatList.add(new GpsStrength(true, sat.getSnr()));
 					coreSatList.add(new GpsStrength(true, sat.getSnr()));
 				}
 				else
 				{
 					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr());
-					SatList.add(new GpsStrength(false, sat.getSnr()));
+					// SatList.add(new GpsStrength(false, sat.getSnr()));
 					coreSatList.add(new GpsStrength(false, sat.getSnr()));
 				}
 
 			}
 
-			SatList.sort();
+			// SatList.sort();
 			coreSatList.sort();
 
 			CB_Locator.GPS.setSatFixes(fixed);

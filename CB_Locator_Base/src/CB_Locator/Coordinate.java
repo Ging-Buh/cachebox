@@ -524,4 +524,9 @@ public class Coordinate implements Serializable
 		return FormatCoordinate();
 	}
 
+	public void setAccuracy(float accuracy)
+	{
+		Accuracy = (int) accuracy;
+	}
+
 }

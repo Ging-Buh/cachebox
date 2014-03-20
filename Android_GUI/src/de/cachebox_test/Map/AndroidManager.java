@@ -36,6 +36,8 @@ import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import android.graphics.BitmapFactory;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
 /**
  * @author ging-buh
  * @author Longri
@@ -66,6 +68,8 @@ public class AndroidManager extends ManagerBase
 		{
 			return getMapsforgePixMap(layer, desc, ThreadIndex);
 		}
+
+		Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
 		try
 		{
 			// Schauen, ob Tile im Cache liegt
@@ -98,7 +102,7 @@ public class AndroidManager extends ManagerBase
 							b = getImageFromData(imgData);
 						}
 
-						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
 						return bmpTile;
 					}
 				}
@@ -119,7 +123,7 @@ public class AndroidManager extends ManagerBase
 					b = getImageFromData(imgData);
 				}
 
-				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
 				return bmpTile;
 			}
 		}

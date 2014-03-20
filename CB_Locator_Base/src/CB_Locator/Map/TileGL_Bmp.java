@@ -37,12 +37,14 @@ public class TileGL_Bmp extends TileGL
 	private Texture texture = null;
 	private byte[] bytes;
 	private boolean inCreation = false;
+	private final Format format;
 
-	public TileGL_Bmp(Descriptor desc, byte[] bytes, TileState state)
+	public TileGL_Bmp(Descriptor desc, byte[] bytes, TileState state, Format format)
 	{
 		Descriptor = desc;
 		this.texture = null;
 		this.bytes = bytes;
+		this.format = format;
 		State = state;
 		LifeCount++;
 		createTexture();
@@ -76,8 +78,7 @@ public class TileGL_Bmp extends TileGL
 			try
 			{
 				Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-				// texture = new Texture(pixmap);
-				texture = new Texture(pixmap, Format.RGB565, CB_UI_Base_Settings.useMipMap.getValue());
+				texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
 				pixmap.dispose();
 				pixmap = null;
 			}
@@ -102,8 +103,7 @@ public class TileGL_Bmp extends TileGL
 					try
 					{
 						Pixmap pixmap = new Pixmap(bytes, 0, bytes.length);
-						// texture = new Texture(pixmap);
-						texture = new Texture(pixmap, Format.RGB565, CB_UI_Base_Settings.useMipMap.getValue());
+						texture = new Texture(pixmap, format, CB_UI_Base_Settings.useMipMap.getValue());
 						pixmap.dispose();
 						pixmap = null;
 					}

@@ -87,9 +87,9 @@ public class Location
 	 */
 	private Date TimeStamp;
 
-	private Location()
+	public Location()
 	{
-		// private Constructor for NULL_LOCATION
+
 	}
 
 	/**
@@ -226,7 +226,52 @@ public class Location
 
 	public Coordinate toCordinate()
 	{
-		return new Coordinate(this.Position);
+		return this.Position;
+	}
+
+	public void setlatitude(double latitude)
+	{
+		this.Position.setLatitude(latitude);
+	}
+
+	public void setLongitude(double longitude)
+	{
+		this.Position.setLongitude(longitude);
+	}
+
+	public void setAccuracy(float accuracy)
+	{
+		this.Position.setAccuracy(accuracy);
+	}
+
+	public void setHasSpeed(boolean hasSpeed)
+	{
+		this.hasSpeed = hasSpeed;
+	}
+
+	public void setSpeed(float speed)
+	{
+		this.speed = speed;
+	}
+
+	public void setHasBearing(boolean hasBearing)
+	{
+		this.hasBearing = hasBearing;
+	}
+
+	public void setBearing(float bearing)
+	{
+		this.bearing = bearing;
+	}
+
+	public void setAltitude(double altitude)
+	{
+		this.altitude = (float) altitude;
+	}
+
+	public void setProvider(ProviderType provider)
+	{
+		this.provider = provider;
 	}
 
 }

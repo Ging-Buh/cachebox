@@ -42,6 +42,8 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Util.FileIO;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
 /**
  * @author ging-buh
  * @author Longri
@@ -68,7 +70,7 @@ public class DesktopManager extends ManagerBase
 		{
 			return getMapsforgePixMap(layer, desc, ThreadIndex);
 		}
-
+		Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
 		try
 		{
 			// Schauen, ob Tile im Cache liegt
@@ -101,7 +103,7 @@ public class DesktopManager extends ManagerBase
 							b = getImageFromData(imgData);
 						}
 
-						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
 						return bmpTile;
 					}
 				}
@@ -123,7 +125,7 @@ public class DesktopManager extends ManagerBase
 					data = getImageFromData(imgData);
 				}
 
-				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, data, TileState.Present);
+				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, data, TileState.Present, format);
 
 				return bmpTile;
 			}

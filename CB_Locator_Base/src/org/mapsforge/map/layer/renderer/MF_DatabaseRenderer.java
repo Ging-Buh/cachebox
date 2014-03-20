@@ -52,6 +52,8 @@ import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.F_List;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
 /**
  * @author Longri
  */
@@ -511,7 +513,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 
 			Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
 
-			TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present);
+			TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, Format.RGB565);
 
 			((ext_Bitmap) bmp).recycle();
 
