@@ -116,10 +116,6 @@ public abstract class ManagerBase
 			@Override
 			public void isChanged()
 			{
-
-				// FIXME release loaded Tiles
-
-				// release act DataBaseRenderer!
 				ManagerBase.this.setRenderTheme(getCurrentRenderTheme());
 			}
 		});
