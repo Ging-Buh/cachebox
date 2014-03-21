@@ -1498,6 +1498,13 @@ public class GroundspeakAPI
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+
+			// If Cache into DB, extract saved rating
+			if (aktCache != null)
+			{
+				cache.Rating = aktCache.Rating;
+			}
+
 			// Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen
 			if (!cacheDAO.UpdateDatabase(cache))
 			{
