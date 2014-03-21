@@ -19,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import CB_Locator.LocatorSettings;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 
@@ -53,6 +55,15 @@ public class ext_AwtResourceBitmap extends AwtResourceBitmap implements ext_Bitm
 			bytes = new byte[baos.toByteArray().length];
 			System.arraycopy(baos.toByteArray(), 0, bytes, 0, baos.toByteArray().length);
 
+		}
+
+		GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
+
+		// Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
+		if (RENDERING_TYPE == GL_RenderType.Mapsforge)
+		{
+			GL_image = null;
+			return;
 		}
 
 		GL_image = new BitmapDrawable(bytes, HashCode, scaleFactor);

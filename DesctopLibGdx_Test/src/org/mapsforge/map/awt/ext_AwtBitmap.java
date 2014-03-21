@@ -20,6 +20,8 @@ import java.io.InputStream;
 
 import org.mapsforge.core.graphics.TileBitmap;
 
+import CB_Locator.LocatorSettings;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 
@@ -51,6 +53,15 @@ public class ext_AwtBitmap extends AwtBitmap implements ext_Bitmap, TileBitmap
 			int w = (int) (this.getWidth() * scaleFactor);
 			int h = (int) (this.getHeight() * scaleFactor);
 			this.scaleTo(w, h);
+		}
+
+		GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
+
+		// Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
+		if (RENDERING_TYPE == GL_RenderType.Mapsforge)
+		{
+			GL_image = null;
+			return;
 		}
 
 		GL_image = new BitmapDrawable(inputStream, HashCode, scaleFactor);

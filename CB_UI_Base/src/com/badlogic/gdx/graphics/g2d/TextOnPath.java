@@ -231,7 +231,7 @@ public class TextOnPath implements Disposable
 		return PathToClose;
 	}
 
-	Matrix4 lastTransform;
+	private final Matrix4 lastTransform = new Matrix4();
 	private float[][] TransStrokeVertexData;
 	private float[][] TransVertexData;
 
@@ -283,7 +283,7 @@ public class TextOnPath implements Disposable
 		{
 			// FIXME Map only difference reduce copy VertexData
 
-			lastTransform = new Matrix4(transform);
+			lastTransform.set(transform);
 			if (StrokeVertexData != null)
 			{
 				if (TransStrokeVertexData == null)

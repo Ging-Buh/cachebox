@@ -13,6 +13,7 @@ import org.mapsforge.map.model.DisplayModel;
 
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -25,6 +26,7 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
@@ -37,6 +39,7 @@ import CB_Utils.Settings.SettingFile;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingIntArray;
+import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Util.FileIO;
@@ -1087,6 +1090,15 @@ public class splash extends Activity
 		else
 		{
 			Config.settings.ReadFromDB();
+		}
+
+		// Check Android Version and disable MixedDatabaseRenderer with Version<14(4.0.0)
+		if (android.os.Build.VERSION.SDK_INT < 14)
+		{
+			LocatorSettings.MapsforgeRenderType.setEnumValue(GL_RenderType.Mapsforge);
+			// Set setting to invisible
+			LocatorSettings.MapsforgeRenderType.changeSettingsModus(SettingModus.Never);
+			Config.settings.WriteToDB();
 		}
 
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);

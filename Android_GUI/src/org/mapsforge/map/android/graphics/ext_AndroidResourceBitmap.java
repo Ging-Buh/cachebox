@@ -19,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import CB_Locator.LocatorSettings;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -36,6 +38,15 @@ public class ext_AndroidResourceBitmap extends AndroidResourceBitmap implements 
 	ext_AndroidResourceBitmap(InputStream inputStream, int HashCode, float scaleFactor) throws IOException
 	{
 		super(inputStream, HashCode);
+
+		GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
+
+		// Don't create GL_Image with renderType Mapsforge! GL_Images are not needed!
+		if (RENDERING_TYPE == GL_RenderType.Mapsforge)
+		{
+			GL_image = null;
+			return;
+		}
 
 		byte[] bytes = null;
 		if (!BitmapDrawable.AtlasContains(HashCode))

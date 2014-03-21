@@ -241,8 +241,8 @@ public class CacheInfoList
 					CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
 							+ GcCode + ".changed");
 
-					CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
-							+ GcCode + ".changed");
+					// CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
+					// + GcCode + ".changed");
 				}
 				else
 				{
@@ -316,7 +316,7 @@ public class CacheInfoList
 
 			if (!Directory.exists())
 			{
-				Directory.mkdir();
+				Directory.mkdirs();
 			}
 
 			PrintWriter writer = new PrintWriter(new FileWriter(file));
