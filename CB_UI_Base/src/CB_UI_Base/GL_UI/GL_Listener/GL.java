@@ -76,7 +76,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
 
-	private final int MAX_FBO_RENDER_TIME = 700;
+	private final int MAX_FBO_RENDER_TIME = 200;
 	private static final boolean TOUCH_DEBUG = false;
 
 	/**

@@ -31,7 +31,7 @@ import com.badlogic.gdx.math.Matrix4;
 public class GL_Matrix implements ext_Matrix, Matrix
 {
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
-	private Matrix3 matrix3;
+	private Matrix3 matrix3; // FIXME change to Matrix4, Batch use Matrix4
 	private static final Matrix3 DEFAULT = new Matrix3();
 
 	public GL_Matrix(ext_Matrix matrix)

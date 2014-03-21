@@ -494,7 +494,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		renderMapTiles(batch);
 		renderOverlay(batch);
-		renderDebugInfo(batch);
+		// renderDebugInfo(batch);
 	}
 
 	protected abstract void renderOverlay(Batch batch);
@@ -1177,20 +1177,22 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	 */
 	protected Vector2 screenToWorld(Vector2 point)
 	{
-		Vector2 result = new Vector2(0, 0);
+		// Vector2 result = new Vector2(0, 0);
 		try
 		{
 			synchronized (screenCenterW)
 			{
-				result.x = screenCenterW.x + ((long) point.x - mapIntWidth / 2) * camera.zoom;
-				result.y = -screenCenterW.y + ((long) point.y - mapIntHeight / 2) * camera.zoom;
+				point.x = screenCenterW.x + ((long) point.x - mapIntWidth / 2) * camera.zoom;
+				point.y = -screenCenterW.y + ((long) point.y - mapIntHeight / 2) * camera.zoom;
 			}
 		}
 		catch (Exception e)
 		{
 			// wenn hier ein Fehler auftritt, dann geben wir einen Vector 0,0 zurück!
+			point.x = 0;
+			point.y = 0;
 		}
-		return result;
+		return point;
 	}
 
 	public Vector2 worldToScreen(Vector2 point)

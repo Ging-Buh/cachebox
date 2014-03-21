@@ -318,7 +318,7 @@ public abstract class Dialog extends CB_View_Base
 
 					if (childsInvalidate) view.invalidate();
 
-					ParentInfo myInfoForChild = myParentInfo.cpy();
+					myInfoForChild.setParentInfo(myParentInfo);
 					myInfoForChild.setWorldDrawRec(intersectRec);
 
 					myInfoForChild.add(view.getX(), view.getY());

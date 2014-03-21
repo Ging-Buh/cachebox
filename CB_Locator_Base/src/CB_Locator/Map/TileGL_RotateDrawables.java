@@ -16,10 +16,8 @@
 package CB_Locator.Map;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.graphics.GL_Matrix;
 import CB_UI_Base.graphics.Images.MatrixDrawable;
 import CB_UI_Base.graphics.Images.SortedRotateList;
-import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -48,11 +46,15 @@ public class TileGL_RotateDrawables
 		tile = Tile;
 	}
 
+	private final Matrix4 oriMatrix = new Matrix4();
+	private final Matrix4 thisDrawMatrix = new Matrix4();
+	private final Matrix4 workMatrix = new Matrix4();
+
 	public void draw(Batch batch, float rotated)
 	{
-		Matrix4 oriMatrix = GL.batch.getProjectionMatrix().cpy();
+		oriMatrix.set(GL.batch.getProjectionMatrix());
 
-		Matrix4 thisDrawMatrix = oriMatrix.cpy();
+		thisDrawMatrix.set(oriMatrix);
 
 		boolean MatrixChanged = false;
 
@@ -67,13 +69,16 @@ public class TileGL_RotateDrawables
 			}
 			else
 			{
-				Matrix4 matrix = thisDrawMatrix.cpy();
-				ext_Matrix drwMatrix = new GL_Matrix(drw.matrix);
-				matrix.mul(drwMatrix.getMatrix4().cpy());
+				// Matrix4 matrix = thisDrawMatrix.cpy();
+				// ext_Matrix drwMatrix = new GL_Matrix(drw.matrix);
+				// matrix.mul(drwMatrix.getMatrix4().cpy());
 
-				if (!transformEquals(matrix, oriMatrix))
+				workMatrix.set(thisDrawMatrix);
+				workMatrix.mul(drw.matrix.getMatrix4());
+
+				if (!transformEquals(workMatrix, oriMatrix))
 				{
-					GL.batch.setProjectionMatrix(matrix);
+					GL.batch.setProjectionMatrix(workMatrix);
 					MatrixChanged = true;
 				}
 
@@ -94,8 +99,6 @@ public class TileGL_RotateDrawables
 		}
 
 		if (MatrixChanged) GL.batch.setProjectionMatrix(oriMatrix);
-
-		oriMatrix = null;
 
 	}
 

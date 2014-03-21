@@ -30,7 +30,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 * Pointer ID for Mouse wheel scrolling up
 	 */
 	public static final int MOUSE_WHEEL_POINTER_UP = -280272;
-
+	protected final ParentInfo myInfoForChild = new ParentInfo();
 	private final Matrix4 rotateMatrix = new Matrix4();
 
 	/**
@@ -507,7 +507,7 @@ public abstract class GL_View_Base extends CB_RectF
 						if (childsInvalidate) view.invalidate();
 
 						// FIXME dont copy myParent Info use final and set Values
-						ParentInfo myInfoForChild = myParentInfo.cpy();
+						myInfoForChild.setParentInfo(myParentInfo);
 						myInfoForChild.setWorldDrawRec(intersectRec);
 
 						myInfoForChild.add(view.getX(), view.getY());

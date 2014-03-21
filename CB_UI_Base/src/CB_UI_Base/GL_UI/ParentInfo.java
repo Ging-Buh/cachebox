@@ -31,6 +31,13 @@ public class ParentInfo
 		rec = Rect;
 	}
 
+	public ParentInfo()
+	{
+		this.matrix = new Matrix4();
+		this.vector = new Vector2();
+		this.rec = new CB_RectF();
+	}
+
 	public void add(Vector2 Vector)
 	{
 		add(Vector.x, Vector.y);
@@ -57,11 +64,6 @@ public class ParentInfo
 		return matrix;
 	}
 
-	public ParentInfo cpy()
-	{
-		return new ParentInfo(matrix.cpy(), vector.cpy(), rec.copy());
-	}
-
 	public Vector2 Vector()
 	{
 		return vector;
@@ -75,6 +77,15 @@ public class ParentInfo
 	public void setWorldDrawRec(CB_RectF Rect)
 	{
 		this.rec.setRec(Rect);
+	}
+
+	public void setParentInfo(ParentInfo parentInfo)
+	{
+		this.rec.setRec(parentInfo.rec);
+		this.vector.x = parentInfo.vector.x;
+		this.vector.y = parentInfo.vector.y;
+		this.matrix.set(parentInfo.matrix);
+
 	}
 
 }
