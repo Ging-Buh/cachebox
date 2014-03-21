@@ -1386,17 +1386,18 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					int halfMapIntWidth = mapIntWidth / 2;
 					int halfMapIntHeight = mapIntHeight / 2;
 
-					int extensionTop = (int) -((halfMapIntHeight) * 0.5);
-					int extensionBottom = (int) -((halfMapIntHeight) * 0.5);
-					int extensionLeft = (int) -(halfMapIntWidth * 0.5);
-					int extensionRight = (int) -(halfMapIntWidth * 0.5);
-					Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - drawingWidth / 2 - extensionLeft, halfMapIntHeight
-							- drawingHeight / 2 - extensionTop), aktZoom);
-					Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight
-							+ drawingHeight / 2 + extensionBottom), aktZoom);
+					synchronized (screenCenterT)
+					{
+						screenCenterW.x = screenCenterT.x;
+						screenCenterW.y = screenCenterT.y;
+					}
+
+					// preload only one Tile(the Tile on Center)
+					loVector.set(halfMapIntWidth, halfMapIntHeight);
+					lo.set(screenToDescriptor(loVector, aktZoom, lo));
 
 					MapTileLoderPreInitialAtWork = true;
-					mapTileLoader.loadTiles(MapView.this, lo, ru, aktZoom);
+					mapTileLoader.loadTiles(MapView.this, lo, lo, aktZoom);
 					Thread checkPreLoadReadyThread = new Thread(new Runnable()
 					{
 
@@ -1411,7 +1412,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 								}
 								try
 								{
-									Thread.sleep(300);
+									Thread.sleep(100);
 								}
 								catch (InterruptedException e)
 								{

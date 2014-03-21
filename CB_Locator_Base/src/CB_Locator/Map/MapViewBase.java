@@ -226,7 +226,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	long posx = 8745;
 	long posy = 5685;
 	public PointL screenCenterW = new PointL(0, 0);
-	PointL screenCenterT = new PointL(0, 0);
+	protected PointL screenCenterT = new PointL(0, 0);
 	protected int mapIntWidth;
 	protected int mapIntHeight;
 	protected int drawingWidth;
@@ -243,6 +243,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected boolean CarMode = false;
 	boolean NightMode = false;
 	protected boolean NorthOriented = true;
+
+	protected final Vector2 loVector = new Vector2();
+	protected final Vector2 ruVector = new Vector2();
+	protected final Descriptor lo = new Descriptor();
+	protected final Descriptor ru = new Descriptor();
 
 	protected iChanged themeChangedEventHandler = new iChanged()
 	{
@@ -556,10 +561,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			int halfDrawingtWidth = drawingWidth / 2;
 			int halfDrawingHeight = drawingHeight / 2;
 
-			Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - halfDrawingtWidth, halfMapIntHeight - halfDrawingHeight
-					- ySpeedVersatz), tmpzoom);
-			Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + halfDrawingtWidth, halfMapIntHeight + halfDrawingHeight
-					+ ySpeedVersatz), tmpzoom);
+			loVector.set(halfMapIntWidth - halfDrawingtWidth, halfMapIntHeight - halfDrawingHeight - ySpeedVersatz);
+			ruVector.set(halfMapIntWidth + halfDrawingtWidth, halfMapIntHeight + halfDrawingHeight + ySpeedVersatz);
+			lo.set(screenToDescriptor(loVector, aktZoom, lo));
+			ru.set(screenToDescriptor(ruVector, aktZoom, ru));
+
 			for (int i = lo.getX(); i <= ru.getX(); i++)
 			{
 				for (int j = lo.getY(); j <= ru.getY(); j++)
@@ -947,10 +953,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		int extensionBottom = (int) ((halfMapIntHeight + ySpeedVersatz) * 1.5);
 		int extensionLeft = (int) (halfMapIntWidth * 1.5);
 		int extensionRight = (int) (halfMapIntWidth * 1.5);
-		Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - drawingWidth / 2 - extensionLeft, halfMapIntHeight - drawingHeight
-				/ 2 - extensionTop), aktZoom);
-		Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight
-				+ drawingHeight / 2 + extensionBottom), aktZoom);
+
+		loVector.set(halfMapIntWidth - drawingWidth / 2 - extensionLeft, halfMapIntHeight - drawingHeight / 2 - extensionTop);
+		ruVector.set(halfMapIntWidth + drawingWidth / 2 + extensionRight, halfMapIntHeight + drawingHeight / 2 + extensionBottom);
+		lo.set(screenToDescriptor(loVector, aktZoom, lo));
+		ru.set(screenToDescriptor(ruVector, aktZoom, ru));
 
 		// check count of Tiles
 		boolean CacheisToSmall = true;
@@ -1209,7 +1216,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 	}
 
-	protected Descriptor screenToDescriptor(Vector2 point, int zoom)
+	protected Descriptor screenToDescriptor(Vector2 point, int zoom, Descriptor destDescriptor)
 	{
 		// World-Koordinaten in Pixel
 		Vector2 world = screenToWorld(point);
@@ -1222,8 +1229,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		world.y /= 256;
 		int x = (int) world.x;
 		int y = (int) world.y;
-		Descriptor result = new Descriptor(x, y, zoom, NightMode);
-		return result;
+		destDescriptor.set(x, y, zoom, NightMode);
+		// Descriptor result = new Descriptor(x, y, zoom, NightMode);
+		return destDescriptor;
 	}
 
 	@Override

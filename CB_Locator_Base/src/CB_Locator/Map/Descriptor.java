@@ -88,6 +88,7 @@ public class Descriptor implements Comparable<Descriptor>
 		this.Y = y;
 		this.Zoom = zoom;
 		this.NightMode = NightMode;
+		BuffertHash = 0;
 	}
 
 	/**
@@ -102,6 +103,16 @@ public class Descriptor implements Comparable<Descriptor>
 		this.Y = original.Y;
 		this.Zoom = original.Zoom;
 		this.NightMode = original.NightMode;
+		BuffertHash = 0;
+	}
+
+	public Descriptor()
+	{
+		this.X = 0;
+		this.Y = 0;
+		this.Zoom = 0;
+		this.NightMode = false;
+		BuffertHash = 0;
 	}
 
 	/**
@@ -331,6 +342,25 @@ public class Descriptor implements Comparable<Descriptor>
 	public void setX(int x)
 	{
 		X = x;
+		BuffertHash = 0; // Hash must new calculated
+	}
+
+	public void set(int x2, int y2, int zoom2, boolean nightMode2)
+	{
+		this.X = x2;
+		this.Y = y2;
+		this.Zoom = zoom2;
+		this.NightMode = nightMode2;
+		BuffertHash = 0; // Hash must new calculated
+
+	}
+
+	public void set(Descriptor descripter)
+	{
+		this.X = descripter.X;
+		this.Y = descripter.Y;
+		this.Zoom = descripter.Zoom;
+		this.NightMode = descripter.NightMode;
 		BuffertHash = 0; // Hash must new calculated
 	}
 }
