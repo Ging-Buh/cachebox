@@ -54,6 +54,7 @@ public class CB_Button extends Button implements OnClickListener
 
 	public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites)
 	{
+
 		super(rec, Name);
 		mButtonActions = new ArrayList<CB_ActionButton>();
 		this.setOnClickListener(this);

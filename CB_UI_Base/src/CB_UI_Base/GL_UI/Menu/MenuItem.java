@@ -32,8 +32,6 @@ public class MenuItem extends MenuItemBase
 	{
 		super(new CB_RectF(size), Index, Name);
 		mID = ID;
-
-		mIndex = Index;
 	}
 
 	public int getMenuItemId()

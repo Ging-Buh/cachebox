@@ -50,6 +50,7 @@ public class ScrollBox extends CB_View_Base
 			{
 				isInitial = true;
 			}
+
 		};
 
 		item.setHeight(virtualHeight);

@@ -16,59 +16,60 @@ public class V_ListView extends ListViewBase
 		super(rec, Name);
 	}
 
-	CB_List<ListViewItemBase> clearList = new CB_List<ListViewItemBase>();
-
 	@Override
 	protected void RenderThreadSetPos(float value, boolean Kinetic)
 	{
-		float distance = mPos - value;
-		mLastDragedDistance = distance;
-		clearList.clear();
-
-		// alle childs verschieben
-
-		if (mReloadItems)
+		synchronized (childs)
 		{
-			mAddeedIndexList.clear();
-			if (mCanDispose)
+			mPos = value;
+			clearList.clear();
+
+			// alle childs verschieben
+
+			if (mReloadItems)
 			{
-				synchronized (childs)
+				mAddeedIndexList.clear();
+				if (mCanDispose)
 				{
-					for (GL_View_Base v : childs)
+					synchronized (childs)
 					{
-						v.dispose();
+						for (GL_View_Base v : childs)
+						{
+							v.dispose();
+						}
 					}
 				}
+				this.removeChilds();
 			}
-			this.removeChilds();
-		}
-		else
-		{
-			synchronized (childs)
+			else
 			{
-				for (GL_View_Base tmp : childs)
+
+				for (GL_View_Base view : childs)
 				{
-					tmp.setY(tmp.getY() + distance);
+
+					ListViewItemBase tmp = (ListViewItemBase) view;
+					float itemPos = mPosDefault.get(tmp.getIndex());
+					itemPos -= mPos;
+					tmp.setY(itemPos);
 
 					if (!isTouch)
 					{
 						if (tmp.getY() > this.getMaxY() || tmp.getMaxY() < 0)
 						{
 							// Item ist nicht mehr im sichtbaren Bereich!
-							clearList.add((ListViewItemBase) tmp);
+							clearList.add(tmp);
 						}
 					}
 				}
+
 			}
-		}
 
-		mReloadItems = false;
+			mReloadItems = false;
 
-		// afräumen
-		if (clearList.size() > 0)
-		{
-			synchronized (childs)
+			// afräumen
+			if (clearList.size() > 0)
 			{
+
 				synchronized (mAddeedIndexList)
 				{
 					for (int i = 0; i < clearList.size(); i++)
@@ -89,6 +90,7 @@ public class V_ListView extends ListViewBase
 					}
 					clearList.clear();
 				}
+
 			}
 
 		}
@@ -106,11 +108,10 @@ public class V_ListView extends ListViewBase
 			{
 				mFirstIndex = 0;
 			}
+
+			if (mLastIndex == mFirstIndex) mFirstIndex = 0;
+
 		}
-
-		if (mLastIndex == mFirstIndex) mFirstIndex = 0;
-
-		mPos = value;
 
 		// Logger.DEBUG(this.name + " ListPos:" + mPos);
 
@@ -119,7 +120,7 @@ public class V_ListView extends ListViewBase
 		mMustSetPos = false;
 		mMustSetPosKinetic = false;
 
-		if (distance != 0) callListPosChangedEvent();
+		callListPosChangedEvent();
 
 	}
 
@@ -135,55 +136,50 @@ public class V_ListView extends ListViewBase
 
 		try
 		{
-			synchronized (mBaseAdapter)
-			{
-				if (mBaseAdapter == null) return;
-				if (mPosDefault == null) calcDefaultPosList();
-				CB_List<Float> tmpPosDefault;
-				synchronized (mPosDefault)
-				{
-					tmpPosDefault = new CB_List<Float>(mPosDefault);
-				}
 
+			if (mBaseAdapter == null) return;
+			if (mPosDefault == null) calcDefaultPosList();
+
+			final float workPos = mPos;
+
+			synchronized (childs)
+			{
 				for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 				{
-					synchronized (mAddeedIndexList)
+					if (!mAddeedIndexList.contains(i))
 					{
-						if (!mAddeedIndexList.contains(i))
+						if (mPosDefault.size() - 1 < i) return;
+
+						float itemPos = mPosDefault.get(i);
+						itemPos -= workPos;
+
+						if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize))
 						{
-							if (tmpPosDefault.size() - 1 < i) return;
-
-							float itemPos = tmpPosDefault.get(i);
-							itemPos -= mPos;
-
-							if (itemPos < this.getMaxY() && itemPos + mBaseAdapter.getItemSize(i) > -(mMaxItemCount * minimumItemSize))
+							ListViewItemBase tmp = mBaseAdapter.getView(i);
+							if (tmp != null)
 							{
-								ListViewItemBase tmp = mBaseAdapter.getView(i);
-								if (tmp != null)
+								tmp.setY(itemPos);
+								if (i == mSelectedIndex)
 								{
-									tmp.setY(itemPos);
-									if (i == mSelectedIndex)
-									{
-										tmp.isSelected = true;
-										tmp.resetInitial();
-									}
-									this.addChild(tmp);
+									tmp.isSelected = true;
+									tmp.resetInitial();
 								}
-
-								// Logger.LogCat("Add Item " + i);
-								mAddeedIndexList.add(i);
+								this.addChild(tmp);
 							}
 
-							else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))
-							{
-								mLastIndex = i;
-								break;
-							}
-
+							// Logger.LogCat("Add Item " + i);
+							mAddeedIndexList.add(i);
 						}
+						else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))
+						{
+							mLastIndex = i;
+							break;
+						}
+
 					}
+
 					// RenderRequest
-					GL.that.renderOnce(this.getName() + " addVisibleItems");
+					GL.that.renderOnce("addVisibleItems");
 
 					if (selectionchanged)
 					{
@@ -207,6 +203,7 @@ public class V_ListView extends ListViewBase
 					}
 				}
 			}
+
 		}
 		catch (Exception e)
 		{

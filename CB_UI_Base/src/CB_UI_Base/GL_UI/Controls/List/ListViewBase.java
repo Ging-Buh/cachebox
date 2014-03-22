@@ -25,7 +25,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 {
 	protected Scrollbar scrollbar;
 	protected MoveableList<GL_View_Base> noListChilds = new MoveableList<GL_View_Base>();
-	protected float mLastDragedDistance = 0;
 	private float mAnimationTarget = 0;
 	private Timer mAnimationTimer;
 	private final long ANIMATION_TICK = 50;
@@ -39,6 +38,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected CB_List<IRunOnGL> runOnGL_List = new CB_List<IRunOnGL>();
 	protected CB_List<IRunOnGL> runOnGL_ListWaitpool = new CB_List<IRunOnGL>();
 	protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
+
+	protected final CB_List<ListViewItemBase> clearList = new CB_List<ListViewItemBase>();
 
 	/**
 	 * Return With for horizontal and Height for vertical ListView
@@ -137,10 +138,10 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 	}
 
-	public CB_List<Float> getItemPosList()
-	{
-		return mPosDefault;
-	}
+	// public CB_List<Float> getItemPosList()
+	// {
+	// return mPosDefault;
+	// }
 
 	@Override
 	public float getAllListSize()
@@ -698,6 +699,94 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	public float getLasstItemSize()
 	{
 		return lastItemSize;
+	}
+
+	@Override
+	public GL_View_Base addChild(final GL_View_Base view, final boolean last)
+	{
+		if (childs.contains(view))
+		{
+			// Remove first
+			childs.remove(view);
+		}
+		GL.that.RunOnGL(new IRunOnGL()
+		{
+			@Override
+			public void run()
+			{
+				if (last)
+				{
+					childs.add(0, view);
+				}
+				else
+				{
+					childs.add(view);
+				}
+				chkChildClickable();
+			}
+		});
+
+		return view;
+	}
+
+	@Override
+	public void removeChild(final GL_View_Base view)
+	{
+		GL.that.RunOnGL(new IRunOnGL()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.remove(view);
+				}
+				catch (Exception e)
+				{
+				}
+				chkChildClickable();
+			}
+		});
+	}
+
+	@Override
+	public void removeChilds()
+	{
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.clear();
+				}
+				catch (Exception e)
+				{
+				}
+				chkChildClickable();
+			}
+		});
+	}
+
+	@Override
+	public void removeChilds(final MoveableList<GL_View_Base> Childs)
+	{
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.remove(Childs);
+				}
+				catch (Exception e)
+				{
+				}
+				chkChildClickable();
+			}
+		});
 	}
 
 }

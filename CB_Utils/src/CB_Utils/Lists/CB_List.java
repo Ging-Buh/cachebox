@@ -155,7 +155,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
 		{
-			if (items[i] == value)
+			if (items[i].equals(value))
 			{
 				return remove(i);
 			}
@@ -189,7 +189,7 @@ public class CB_List<T> implements Iterable<T>, Serializable
 			T item = array.get(i);
 			for (int ii = 0; ii < size; ii++)
 			{
-				if (item == items[ii])
+				if (item.equals(items[ii]))
 				{
 					remove(ii);
 					size--;

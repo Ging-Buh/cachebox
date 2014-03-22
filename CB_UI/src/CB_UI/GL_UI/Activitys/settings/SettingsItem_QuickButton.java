@@ -332,7 +332,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 				}
 			});
 
-			mi.setIndex(position);
+			// mi.setIndex(position);
 
 			return mi;
 		}

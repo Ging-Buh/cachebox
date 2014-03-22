@@ -283,7 +283,7 @@ public abstract class GL_View_Base extends CB_RectF
 	/**
 	 * Checks whether any child has the status Clickable. </br>If so, then this view must also Clickable!
 	 */
-	private void chkChildClickable()
+	protected void chkChildClickable()
 	{
 		boolean tmpClickable = false;
 		boolean tmpDblClickable = false;

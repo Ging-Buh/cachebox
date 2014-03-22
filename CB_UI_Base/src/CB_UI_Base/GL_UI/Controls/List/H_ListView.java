@@ -21,8 +21,6 @@ public class H_ListView extends ListViewBase
 	{
 		float distance = mPos - value;
 
-		CB_List<ListViewItemBase> clearList = new CB_List<ListViewItemBase>();
-
 		// alle childs verschieben
 		synchronized (childs)
 		{
@@ -66,7 +64,6 @@ public class H_ListView extends ListViewBase
 				}
 			}
 			clearList.clear();
-			clearList = null;
 
 			// setze First Index, damit nicht alle Items durchlaufen werden müssen
 			mAddeedIndexList.sort();
