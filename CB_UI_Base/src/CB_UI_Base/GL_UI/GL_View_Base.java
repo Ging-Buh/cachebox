@@ -493,13 +493,18 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			for (int i = 0, n = childs.size(); i < n; i++)
 			{
-				GL_View_Base view = childs.get(i);
+
+				if (i >= childs.size())
+				{
+					break; // ConcurrentModificationException
+				}
+
 				// alle renderChilds() der in dieser GL_View_Base
 				// enthaltenen Childs auf rufen.
 
 				try
 				{
-
+					GL_View_Base view = childs.get(i);
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
 					if (view != null && view.isVisible())
