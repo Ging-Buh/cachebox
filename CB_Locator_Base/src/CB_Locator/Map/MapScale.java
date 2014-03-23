@@ -162,7 +162,11 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	protected void render(Batch batch)
 	{
 		if (pixelsPerMeter <= 0) return;
-		if (mapInstanz.getAktZoom() != generatedZomm) zoomChanged();
+		if (mapInstanz.getAktZoom() != generatedZomm)
+		{
+			zoomChanged();
+			generatedZomm = mapInstanz.getAktZoom();
+		}
 		if (CachedScaleDrawable == null) zoomChanged();
 
 		try

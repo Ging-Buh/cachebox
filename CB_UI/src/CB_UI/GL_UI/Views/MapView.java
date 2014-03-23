@@ -549,9 +549,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
 
 		screen.y -= ySpeedVersatz;
-
+		// FIXME create a LineDrawable class for create one times and set the Coordinates with calculated Triangles
 		if (myPointOnScreen != null && showDirectLine && (wpi.Selected) && (wpi.Waypoint == GlobalCore.getSelectedWaypoint()))
 		{
+			// FIXME render only if visible on screen (intersect the screen rec)
 			Quadrangle line = new Quadrangle(myPointOnScreen.x, myPointOnScreen.y, screen.x, screen.y, 3 * UI_Size_Base.that.getScale());
 			if (paint == null)
 			{
