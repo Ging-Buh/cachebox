@@ -136,12 +136,13 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
 		{
+			GL_MsgBox ms;
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 
-				GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo,
+				ms = GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
 						{
 
@@ -152,7 +153,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 								switch (which)
 								{
 								case 1:
-
+									ms.close();
 									pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(),
 											new IcancelListner()
 											{
@@ -194,8 +195,18 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 									break;
 								case 3:
-									NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"),
-											CB_UI.Config.FoundOffset.getValue(), DialogListner);
+									ms.close();
+									GL.that.RunOnGL(new IRunOnGL()
+									{
+
+										@Override
+										public void run()
+										{
+											NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"),
+													CB_UI.Config.FoundOffset.getValue(), DialogListner);
+										}
+									});
+
 									break;
 
 								}

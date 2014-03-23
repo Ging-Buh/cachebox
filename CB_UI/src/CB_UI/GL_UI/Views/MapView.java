@@ -497,24 +497,24 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				Rectangle bound = arrow.getBoundingRectangle();
 
 				// FIXME make Target Arrow final and set Values
-				TargetArrow = new CB_RectF(bound.x, bound.y, bound.width, bound.height);
+				TargetArrow.set(bound.x, bound.y, bound.width, bound.height);
 
 			}
 			else
 			{
-				TargetArrow = null;
+				TargetArrow.set(0, 0, 0, 0);
 			}
 		}
 		catch (Exception e)
 		{
-			TargetArrow = null;
+			TargetArrow.set(0, 0, 0, 0);
 		}
 	}
 
 	/**
 	 * Rechteck vom Target-Pfeil zur onClick bestimmung
 	 */
-	CB_RectF TargetArrow = null;
+	private final CB_RectF TargetArrow = new CB_RectF();
 
 	private void renderWPs(SizeF wpUnderlay, SizeF wpSize, Batch batch)
 	{

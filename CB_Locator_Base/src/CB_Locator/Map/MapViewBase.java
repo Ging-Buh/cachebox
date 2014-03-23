@@ -717,7 +717,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 	}
 
-	// FIXME make point and nPoint final and setValues!
+	// FIXME make point and vPoint final and setValues!
 	protected void renderPositionMarker(Batch batch)
 	{
 		PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getLongitude()),

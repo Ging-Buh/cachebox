@@ -506,7 +506,6 @@ public abstract class GL_View_Base extends CB_RectF
 
 						if (childsInvalidate) view.invalidate();
 
-						// FIXME dont copy myParent Info use final and set Values
 						myInfoForChild.setParentInfo(myParentInfo);
 						myInfoForChild.setWorldDrawRec(intersectRec);
 

@@ -413,6 +413,7 @@ public class GL_MsgBox extends Dialog
 	@Override
 	protected void Initial()
 	{
+		if (isDisposed()) return;
 		super.Initial();
 		synchronized (childs)
 		{

@@ -522,4 +522,14 @@ public class CB_RectF
 		return this.member[9];
 	}
 
+	public void set(float x, float y, float width, float height)
+	{
+		this.member[0] = x;
+		this.member[1] = y;
+		this.member[2] = width;
+		this.member[3] = height;
+		calcCrossCorner();
+		CallRecChanged();
+	}
+
 }
