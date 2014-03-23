@@ -59,7 +59,6 @@ import CB_Utils.Util.iChanged;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class MapView extends MapViewBase implements SelectedCacheEvent, PositionChangedEvent
@@ -487,17 +486,15 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				Sprite arrow = SpriteCacheBase.Arrows.get(4);
 				arrow.setRotation(direction);
 
-				arrow.setBounds(newTarget.x - GL_UISizes.TargetArrow.halfWidth, newTarget.y - GL_UISizes.TargetArrow.height,
-						GL_UISizes.TargetArrow.width, GL_UISizes.TargetArrow.height);
+				float boundsX = newTarget.x - GL_UISizes.TargetArrow.halfWidth;
+				float boundsY = newTarget.y - GL_UISizes.TargetArrow.height;
+
+				arrow.setBounds(boundsX, boundsY, GL_UISizes.TargetArrow.width, GL_UISizes.TargetArrow.height);
 
 				arrow.setOrigin(GL_UISizes.TargetArrow.halfWidth, GL_UISizes.TargetArrow.height);
 				arrow.draw(batch);
 
-				// FIXME bounds are set four lines earlier use this! getBoundingRectangle give a copy
-				Rectangle bound = arrow.getBoundingRectangle();
-
-				// FIXME make Target Arrow final and set Values
-				TargetArrow.set(bound.x, bound.y, bound.width, bound.height);
+				TargetArrow.set(boundsX, boundsY, GL_UISizes.TargetArrow.width, GL_UISizes.TargetArrow.height);
 
 			}
 			else
