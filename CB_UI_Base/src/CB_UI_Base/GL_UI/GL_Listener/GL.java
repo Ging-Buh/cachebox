@@ -493,7 +493,7 @@ public class GL implements ApplicationListener, InputProcessor
 		catch (java.lang.IllegalStateException e)
 		{
 			Logger.Error("IllegalStateException", "batch.begin() without batch.end()", e);
-			e.printStackTrace();
+
 			batch.flush();
 			batch.end();
 			batch.begin();

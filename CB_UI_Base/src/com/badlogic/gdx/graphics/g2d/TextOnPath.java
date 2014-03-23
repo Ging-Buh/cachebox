@@ -329,6 +329,7 @@ public class TextOnPath implements Disposable
 
 	private void drawVertexData(Batch batch, TextureRegion[] regions, float[][] data)
 	{
+		if (data == null) return;
 		for (int j = 0, n = data.length; j < n; j++)
 		{
 			if (idx[j] >= 0)

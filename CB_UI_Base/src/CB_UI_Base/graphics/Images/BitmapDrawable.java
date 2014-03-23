@@ -214,7 +214,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 		{
 			createSprite();
 		}
-		batch.draw(sprite, x, y, width, height);
+		if (sprite != null) batch.draw(sprite, x, y, width, height);
 	}
 
 	private void createSprite()

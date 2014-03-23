@@ -297,7 +297,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 					count = 0;
 				}
 				Matrix4 matrix = thisDrawMatrix.cpy();
-				matrix.mul(drw.matrix.getMatrix4());
+				if (drw.matrix != null) matrix.mul(drw.matrix.getMatrix4());
 
 				GL.batch.setProjectionMatrix(matrix);
 

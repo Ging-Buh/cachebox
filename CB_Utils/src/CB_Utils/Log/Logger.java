@@ -241,8 +241,7 @@ public class Logger
 		}
 		catch (IOException e)
 		{
-
-			e.printStackTrace();
+			System.out.print(Msg);
 		}
 
 	}

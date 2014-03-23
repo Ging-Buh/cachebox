@@ -404,7 +404,7 @@ public class MapTileLoader
 
 	public static float convertCameraZommToFloat(OrthographicCamera cam)
 	{
-		if (cam.zoom <= 0) return 0f;
+		if (cam == null || cam.zoom <= 0) return 0f;
 
 		float result = 0.0f;
 		result = MAX_MAP_ZOOM - (float) (Math.log(cam.zoom) / Math.log(2.0));

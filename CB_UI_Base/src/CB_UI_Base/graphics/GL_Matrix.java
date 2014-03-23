@@ -31,31 +31,31 @@ import com.badlogic.gdx.math.Matrix4;
 public class GL_Matrix implements ext_Matrix, Matrix
 {
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
-	private Matrix3 matrix3; // FIXME change to Matrix4, Batch use Matrix4
-	private static final Matrix3 DEFAULT = new Matrix3();
+	private Matrix4 matrix4; // FIXME change to Matrix4, Batch use Matrix4
+	private static final Matrix4 DEFAULT = new Matrix4();
 
 	public GL_Matrix(ext_Matrix matrix)
 	{
 		if (matrix == null)
 		{
-			matrix3 = new Matrix3(DEFAULT);
+			matrix4 = new Matrix4(DEFAULT);
 		}
 		else
 		{
-			if (((GL_Matrix) matrix).matrix3 == null)
+			if (((GL_Matrix) matrix).matrix4 == null)
 			{
-				matrix3 = new Matrix3(DEFAULT);
+				matrix4 = new Matrix4(DEFAULT);
 			}
 			else
 			{
-				matrix3 = new Matrix3(((GL_Matrix) matrix).matrix3);
+				matrix4 = new Matrix4(((GL_Matrix) matrix).matrix4);
 			}
 		}
 	}
 
 	public GL_Matrix()
 	{
-		matrix3 = new Matrix3();
+		matrix4 = new Matrix4();
 	}
 
 	/*
@@ -67,7 +67,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void reset()
 	{
-		matrix3.idt();
+		matrix4.idt();
 	}
 
 	/*
@@ -138,12 +138,12 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void set(ext_Matrix matrix)
 	{
-		this.matrix3.set(((GL_Matrix) matrix).matrix3);
+		this.matrix4.set(((GL_Matrix) matrix).matrix4);
 	}
 
-	private void set(Matrix3 matrix)
+	private void set(Matrix4 matrix)
 	{
-		this.matrix3.set(matrix);
+		this.matrix4.set(matrix);
 	}
 
 	/*
@@ -154,7 +154,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void postConcat(ext_Matrix matrix)
 	{
-		this.addTransform(((GL_Matrix) matrix).matrix3);
+		this.addTransform(((GL_Matrix) matrix).matrix4);
 	}
 
 	/*
@@ -165,9 +165,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void preTranslate(float x, float y)
 	{
-		Matrix3 m = new Matrix3();
-		m.translate(x, y);
-		m.mul(this.matrix3);
+		Matrix4 m = new Matrix4();
+		m.translate(x, y, 1);
+		m.mul(this.matrix4);
 		set(m);
 	}
 
@@ -179,9 +179,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void preScale(float x, float y)
 	{
-		Matrix3 m = new Matrix3();
-		m.scale(x, y);
-		m.mul(this.matrix3);
+		Matrix4 m = new Matrix4();
+		m.scale(x, y, 1);
+		m.mul(this.matrix4);
 		set(m);
 	}
 
@@ -193,22 +193,22 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void preScale(float sx, float sy, float px, float py)
 	{
-		Matrix3 m = new Matrix3();
-		m.scale(sx, sy);
+		Matrix4 m = new Matrix4();
+		m.scale(sx, sy, 1);
 
-		Matrix3 m2 = new Matrix3();
-		m2.translate(px, py);
+		Matrix4 m2 = new Matrix4();
+		m2.translate(px, py, 0);
 
 		m.mul(m2);
 
-		m.mul(this.matrix3);
+		m.mul(this.matrix4);
 		set(m);
 
 	}
 
-	private void addTransform(Matrix3 matrix)
+	private void addTransform(Matrix4 matrix)
 	{
-		this.matrix3.mul(matrix);
+		this.matrix4.mul(matrix);
 	}
 
 	/*
@@ -219,9 +219,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void postRotate(float angle)
 	{
-		Matrix3 m = new Matrix3();
-		m.rotate(angle);
-		this.matrix3.mul(m);
+		Matrix4 m = new Matrix4();
+		m.rotate(0, 0, 1, angle);
+		this.matrix4.mul(m);
 	}
 
 	/*
@@ -232,9 +232,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void postScale(float rx, float ry)
 	{
-		Matrix3 m = new Matrix3();
-		m.scale(rx, ry);
-		this.matrix3.mul(m);
+		Matrix4 m = new Matrix4();
+		m.scale(rx, ry, 1);
+		this.matrix4.mul(m);
 	}
 
 	/*
@@ -245,9 +245,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void postTranslate(float cx, float cy)
 	{
-		Matrix3 m = new Matrix3();
-		m.translate(cx, cy);
-		this.matrix3.mul(m);
+		Matrix4 m = new Matrix4();
+		m.translate(cx, cy, 0);
+		this.matrix4.mul(m);
 	}
 
 	/*
@@ -266,8 +266,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 
 			int j = i * 2;
 
-			float x = src[j] * this.matrix3.val[0] + src[j + 1] * this.matrix3.val[3] + this.matrix3.val[6];
-			float y = src[j] * this.matrix3.val[1] + src[j + 1] * this.matrix3.val[4] + this.matrix3.val[7];
+			float x = src[j] * matrix4.val[Matrix4.M00] + src[j + 1] * matrix4.val[Matrix4.M01] + matrix4.val[Matrix4.M03];
+			float y = src[j] * matrix4.val[Matrix4.M10] + src[j + 1] * matrix4.val[Matrix4.M11] + matrix4.val[Matrix4.M13];
 
 			dst[j] = x;
 			dst[j + 1] = y;
@@ -288,8 +288,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 
 			int j = i * 5;
 
-			float x = src[j] * this.matrix3.val[0] + src[j + 1] * this.matrix3.val[3] + this.matrix3.val[6];
-			float y = src[j] * this.matrix3.val[1] + src[j + 1] * this.matrix3.val[4] + this.matrix3.val[7];
+			float x = src[j] * this.matrix4.val[0] + src[j + 1] * this.matrix4.val[3] + this.matrix4.val[6];
+			float y = src[j] * this.matrix4.val[1] + src[j + 1] * this.matrix4.val[4] + this.matrix4.val[7];
 
 			dst[j] = x;
 			dst[j + 1] = y;
@@ -355,9 +355,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public Matrix4 getMatrix4()
 	{
-		Matrix4 m4 = new Matrix4();
-		m4.set(matrix3);
-		return m4;
+		return matrix4;
 	}
 
 	/*
@@ -368,9 +366,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void preRotate(float angle)
 	{
-		Matrix3 m = new Matrix3();
-		m.rotate(angle);
-		m.mul(this.matrix3);
+		Matrix4 m = new Matrix4();
+		m.rotate(0, 0, 1, angle);
+		m.mul(this.matrix4);
 		set(m);
 	}
 
@@ -383,15 +381,15 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	public void setValues(float[] fs)
 	{
 
-		matrix3.val[Matrix3.M00] = fs[0];
-		matrix3.val[Matrix3.M01] = fs[1];
-		matrix3.val[Matrix3.M02] = fs[2];
-		matrix3.val[Matrix3.M10] = fs[3];
-		matrix3.val[Matrix3.M11] = fs[4];
-		matrix3.val[Matrix3.M12] = fs[5];
-		matrix3.val[Matrix3.M20] = fs[6];
-		matrix3.val[Matrix3.M21] = fs[7];
-		matrix3.val[Matrix3.M22] = fs[8];
+		matrix4.val[Matrix3.M00] = fs[0];
+		matrix4.val[Matrix3.M01] = fs[1];
+		matrix4.val[Matrix3.M02] = fs[2];
+		matrix4.val[Matrix3.M10] = fs[3];
+		matrix4.val[Matrix3.M11] = fs[4];
+		matrix4.val[Matrix3.M12] = fs[5];
+		matrix4.val[Matrix3.M20] = fs[6];
+		matrix4.val[Matrix3.M21] = fs[7];
+		matrix4.val[Matrix3.M22] = fs[8];
 
 	}
 
@@ -415,13 +413,13 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void preRotate(Float angle, Float cx, Float cy)
 	{
-		Matrix3 m = new Matrix3();
-		m.rotate(angle);
-		Matrix3 m2 = new Matrix3();
-		m2.translate(cx, cy);
+		Matrix4 m = new Matrix4();
+		m.rotate(0, 0, 1, angle);
+		Matrix4 m2 = new Matrix4();
+		m2.translate(cx, cy, 0);
 
 		m.mul(m2);
-		m.mul(this.matrix3);
+		m.mul(this.matrix4);
 		set(m);
 	}
 
@@ -433,7 +431,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void getValues(float[] mValues)
 	{
-		System.arraycopy(matrix3.getValues(), 0, mValues, 0, mValues.length);
+		System.arraycopy(matrix4.getValues(), 0, mValues, 0, mValues.length);
 	}
 
 	/*
@@ -444,7 +442,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void preConcat(ext_Matrix matrix)
 	{
-		((GL_Matrix) matrix).matrix3.mul(this.matrix3);
+		((GL_Matrix) matrix).matrix4.mul(this.matrix4);
 		this.set(matrix);
 	}
 
@@ -458,7 +456,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	{
 		try
 		{
-			this.matrix3.inv();
+			this.matrix4.inv();
 		}
 		catch (Exception e)
 		{
@@ -477,9 +475,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public String toString()
 	{
-		return "[" + this.matrix3.val[0] + "|" + this.matrix3.val[3] + "|" + this.matrix3.val[6] + "]\n" + "[" + this.matrix3.val[1] + "|"
-				+ this.matrix3.val[4] + "|" + this.matrix3.val[7] + "]\n" + "[" + this.matrix3.val[2] + "|" + this.matrix3.val[5] + "|"
-				+ this.matrix3.val[8] + "]";
+		return "[" + this.matrix4.val[0] + "|" + this.matrix4.val[3] + "|" + this.matrix4.val[6] + "]\n" + "[" + this.matrix4.val[1] + "|"
+				+ this.matrix4.val[4] + "|" + this.matrix4.val[7] + "]\n" + "[" + this.matrix4.val[2] + "|" + this.matrix4.val[5] + "|"
+				+ this.matrix4.val[8] + "]";
 	}
 
 	public boolean isDisposed()
@@ -493,8 +491,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 		synchronized (isDisposed)
 		{
 			if (isDisposed.get()) return;
-			if (matrix3 != null) matrix3.val = null;
-			matrix3 = null;
+			matrix4 = null;
 			isDisposed.set(true);
 		}
 	}
@@ -502,13 +499,13 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public boolean isDefault()
 	{
-		return MatrixEquals(this.matrix3, DEFAULT);
+		return MatrixEquals(this.matrix4, DEFAULT);
 	}
 
-	public static boolean MatrixEquals(Matrix3 matrix1, Matrix3 matrix2)
+	public static boolean MatrixEquals(Matrix4 matrix1, Matrix4 matrix2)
 	{
 
-		for (int i = 0; i < 9; i++)
+		for (int i = 0; i < 16; i++)
 		{
 			if (matrix1.val[i] != matrix2.val[i]) return false;
 		}
