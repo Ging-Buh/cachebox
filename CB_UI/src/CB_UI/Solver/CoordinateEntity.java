@@ -65,14 +65,22 @@ public class CoordinateEntity extends Entity
 		if (selCache != null)
 		// In 99,9% der Fälle dürfte der Wegpunkt zum aktuellen Cache gehören
 		{
-			if (selCache.GcCode.equalsIgnoreCase(gcCode)) coord = selCache.Pos;
+			if (selCache.GcCode.equalsIgnoreCase(gcCode))
+			{
+				coord = selCache.Pos;
+			}
 			else
-				for (Waypoint wp : selCache.waypoints)
+			{
+				for (int i = 0, n = selCache.waypoints.size(); i < n; i++)
+				{
+					Waypoint wp = selCache.waypoints.get(i);
 					if (wp.GcCode.equalsIgnoreCase(gcCode))
 					{
 						coord = wp.Pos;
 						break;
 					}
+				}
+			}
 		}
 		if (coord == null)
 		// gesuchten Waypoint nicht im aktuellen Cache gefunden, jetzt alle Caches mit den passenden GC/OC etc. Code suchen
@@ -132,8 +140,9 @@ public class CoordinateEntity extends Entity
 
 		if (cacheFromCacheList != null)
 		{
-			for (Waypoint wp : cacheFromCacheList.waypoints)
+			for (int i = 0, n = cacheFromCacheList.waypoints.size(); i < n; i++)
 			{
+				Waypoint wp = cacheFromCacheList.waypoints.get(i);
 				if (wp.GcCode.equalsIgnoreCase(this.gcCode))
 				{
 					wp.Pos.setLatitude(coord.getLatitude());

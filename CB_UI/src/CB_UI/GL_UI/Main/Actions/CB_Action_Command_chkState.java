@@ -72,18 +72,10 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			synchronized (Database.Data.Query)
 			{
 				if (Database.Data.Query == null || Database.Data.Query.size() == 0) return;
-
-				Iterator<Cache> cIterator = Database.Data.Query.iterator();
-
 				ChangedCount = 0;
-
-				if (cIterator != null && cIterator.hasNext())
+				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 				{
-					do
-					{
-						chkList.add(cIterator.next());
-					}
-					while (cIterator.hasNext());
+					chkList.add(Database.Data.Query.get(i));
 				}
 
 			}

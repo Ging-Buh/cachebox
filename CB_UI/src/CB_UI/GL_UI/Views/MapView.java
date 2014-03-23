@@ -520,8 +520,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		{
 			synchronized (mapCacheList.list)
 			{
-				for (WaypointRenderInfo wpi : mapCacheList.list)
+
+				for (int i = 0, n = mapCacheList.list.size(); i < n; i++)
 				{
+					WaypointRenderInfo wpi = mapCacheList.list.get(i);
 					if (wpi.Selected)
 					{
 						// wenn der Wp selectiert ist, dann immer in der größten Darstellung
@@ -974,8 +976,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					infoBubble.setInvisible();
 				}
 
-				for (WaypointRenderInfo wpi : mapCacheList.list)
+				for (int i = 0, n = mapCacheList.list.size(); i < n; i++)
 				{
+					WaypointRenderInfo wpi = mapCacheList.list.get(i);
 					Vector2 screen = worldToScreen(new Vector2(Math.round(wpi.MapX), Math.round(wpi.MapY)));
 					if (clickedAt != null)
 					{

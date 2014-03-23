@@ -31,8 +31,9 @@ public class ext_AwtTileBitmap extends ext_AwtBitmap
 	{
 		synchronized (ReusebleList)
 		{
-			for (BufferedImage reuse : ReusebleList)
+			for (int i = 0, n = ReusebleList.size(); i < n; i++)
 			{
+				BufferedImage reuse = ReusebleList.get(i);
 				if (reuse != null && reuse.getWidth() == tileSize && reuse.getHeight() == tileSize)
 				{
 					ReusebleList.remove(reuse);

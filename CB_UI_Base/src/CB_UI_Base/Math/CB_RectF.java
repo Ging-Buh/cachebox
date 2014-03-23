@@ -17,7 +17,6 @@
 package CB_UI_Base.Math;
 
 import java.util.Arrays;
-import java.util.Iterator;
 
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
@@ -392,9 +391,9 @@ public class CB_RectF
 
 		Vector2 ret = new Vector2();
 
-		for (Iterator<Integer> i = Geraden.iterator(); i.hasNext();)
+		for (int i = 0, n = Geraden.size(); i < n; i++)
 		{
-			switch (i.next())
+			switch (Geraden.get(i))
 			{
 			case 1:
 

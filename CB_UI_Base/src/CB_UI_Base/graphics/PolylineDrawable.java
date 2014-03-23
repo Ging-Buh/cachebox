@@ -66,8 +66,9 @@ public class PolylineDrawable implements IRotateDrawable
 		float[] coords = new float[pathLine.size() * 4];
 
 		int index = 0;
-		for (Line line : pathLine)
+		for (int i = 0, n = pathLine.size(); i < n; i++)
 		{
+			Line line = pathLine.get(i);
 			coords[index++] = line.points[0];
 			coords[index++] = line.points[1];
 			coords[index++] = line.points[2];

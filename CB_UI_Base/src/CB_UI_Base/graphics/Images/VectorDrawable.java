@@ -237,8 +237,9 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 							GL.batch.enableBlending();
 							int count = 0;
 
-							for (MatrixDrawable drw : drawableList)
+							for (int i = 0, n = drawableList.size(); i < n; i++)
 							{
+								MatrixDrawable drw = drawableList.get(i);
 								if (count++ > 2500)
 								{
 									GL.batch.flush();
@@ -288,8 +289,9 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 
 			int count = 0;
 
-			for (MatrixDrawable drw : drawableList)
+			for (int i = 0, n = drawableList.size(); i < n; i++)
 			{
+				MatrixDrawable drw = drawableList.get(i);
 				if (!drw.reaelDraw) continue;
 				if (count++ > 2500)
 				{
@@ -436,9 +438,10 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 
 			if (drawableList != null)
 			{
-				for (MatrixDrawable drw : drawableList)
+				for (int i = 0, n = drawableList.size(); i < n; i++)
 				{
-					drw.dispose();
+					drawableList.get(i).dispose();
+
 				}
 				drawableList.clear();
 				drawableList = null;

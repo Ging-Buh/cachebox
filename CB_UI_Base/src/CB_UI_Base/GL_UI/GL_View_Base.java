@@ -293,8 +293,10 @@ public abstract class GL_View_Base extends CB_RectF
 
 			try
 			{
-				for (GL_View_Base tmp : childs)
+
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
+					GL_View_Base tmp = childs.get(i);
 					if (tmp != null)
 					{
 						if (tmp.isClickable()) tmpClickable = true;
@@ -489,15 +491,14 @@ public abstract class GL_View_Base extends CB_RectF
 
 		if (childs != null && childs.size() > 0)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
+				GL_View_Base view = childs.get(i);
 				// alle renderChilds() der in dieser GL_View_Base
 				// enthaltenen Childs auf rufen.
 
-				GL_View_Base view;
 				try
 				{
-					view = iterator.next();
 
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
@@ -686,11 +687,11 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			try
 			{
-				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
 					// alle renderChilds() der in dieser GL_View_Base
 					// enthaltenen Childs auf rufen.
-					GL_View_Base view = iterator.next();
+					GL_View_Base view = childs.get(i);
 					if (view != null) view.onParentRezised(this);
 				}
 			}
@@ -715,11 +716,11 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			try
 			{
-				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
 					// alle renderChilds() der in dieser GL_View_Base
 					// enthaltenen Childs auf rufen.
-					GL_View_Base view = iterator.next();
+					GL_View_Base view = childs.get(i);
 					if (view != null) view.onShow();
 				}
 			}
@@ -737,11 +738,11 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			try
 			{
-				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
 					// alle renderChilds() der in dieser GL_View_Base
 					// enthaltenen Childs auf rufen.
-					GL_View_Base view = iterator.next();
+					GL_View_Base view = childs.get(i);
 					if (view != null) view.onHide();
 				}
 			}
@@ -759,11 +760,11 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			try
 			{
-				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
 					// alle renderChilds() der in dieser GL_View_Base
 					// enthaltenen Childs auf rufen.
-					GL_View_Base view = iterator.next();
+					GL_View_Base view = childs.get(i);
 					view.onStop();
 				}
 			}

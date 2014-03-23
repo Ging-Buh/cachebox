@@ -194,9 +194,9 @@ public class WaypointDAO
 	// 1 Start-Waypoint hat
 	public void ResetStartWaypoint(Cache cache, Waypoint except)
 	{
-
-		for (Waypoint wp : cache.waypoints)
+		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
+			Waypoint wp = cache.waypoints.get(i);
 			if (except == wp) continue;
 			if (wp.IsStart)
 			{

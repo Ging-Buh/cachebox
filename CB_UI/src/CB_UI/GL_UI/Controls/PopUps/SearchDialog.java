@@ -1,7 +1,6 @@
 package CB_UI.GL_UI.Controls.PopUps;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
@@ -117,11 +116,6 @@ public class SearchDialog extends PopUp_Base
 	 * Such Eingabe Feld
 	 */
 	private EditTextField mEingabe;
-
-	/**
-	 * Enthält einen Iterator der aktuell durchsuchten CacheList
-	 */
-	private Iterator<Cache> CacheListIterator = null;
 
 	/**
 	 * Enthällt den Aktuellen Such Modus <br/>
@@ -464,15 +458,13 @@ public class SearchDialog extends PopUp_Base
 
 				if (!mSearchAktive)
 				{
-					CacheListIterator = Database.Data.Query.iterator();
 					mSearchAktive = true;
 				}
 
 				Cache tmp = null;
-				while (CacheListIterator.hasNext() && !criterionMatches)
+				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 				{
-
-					tmp = CacheListIterator.next();
+					tmp = Database.Data.Query.get(i);
 
 					switch (mSearchState)
 					{
@@ -571,9 +563,9 @@ public class SearchDialog extends PopUp_Base
 		if (!Config.dynamicFilterAtSearch.getValue()) return;
 		synchronized (Database.Data.Query)
 		{
-			for (Cache cache : Database.Data.Query)
+			for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 			{
-				cache.setSearchVisible(true);
+				Database.Data.Query.get(i).setSearchVisible(true);
 			}
 		}
 		if (CacheListView.that != null)
@@ -810,8 +802,9 @@ public class SearchDialog extends PopUp_Base
 									imageDAO.WriteToDatabase(image, false);
 								}
 
-								for (Waypoint waypoint : cache.waypoints)
+								for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 								{
+									Waypoint waypoint = cache.waypoints.get(i);
 									waypointDAO.WriteToDatabase(waypoint);
 								}
 							}

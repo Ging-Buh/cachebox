@@ -97,8 +97,9 @@ public class MapViewCacheList implements CacheListChangedEventListner
 						selectedWP = null;
 						synchronized (Database.Data.Query)
 						{
-							for (Cache cache : Database.Data.Query)
+							for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 							{
+								Cache cache = Database.Data.Query.get(i);
 								// Funde
 								if (hideMyFinds && cache.Found) continue;
 								boolean showWaypoints = showAllWaypoints || GlobalCore.getSelectedCache() == cache;
@@ -209,9 +210,9 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 	private void addWaypoints(Cache cache, int iconSize)
 	{
-		for (Waypoint wp : cache.waypoints)
+		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
-			addWaypoint(cache, wp, iconSize);
+			addWaypoint(cache, cache.waypoints.get(i), iconSize);
 		}
 	}
 

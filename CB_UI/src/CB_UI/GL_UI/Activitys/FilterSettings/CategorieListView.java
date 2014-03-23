@@ -241,8 +241,9 @@ public class CategorieListView extends V_ListView
 			{
 				GpxFilename file = tmp.categorieEntry.getFile();
 
-				for (Category cat : CoreSettingsForward.Categories)
+				for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++)
 				{
+					Category cat = CoreSettingsForward.Categories.get(i);
 					int index = cat.indexOf(file);
 					if (index != -1)
 					{
@@ -368,8 +369,9 @@ public class CategorieListView extends V_ListView
 
 		int Index = 0;
 
-		for (Category cat : CoreSettingsForward.Categories)
+		for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++)
 		{
+			Category cat = CoreSettingsForward.Categories.get(i);
 			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCacheBase.Icons.get(IconName.doc_20.ordinal()),
 					cat, COLLAPSE_BUTTON_ITEM);
 

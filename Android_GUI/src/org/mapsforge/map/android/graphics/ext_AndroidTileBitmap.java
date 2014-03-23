@@ -29,8 +29,9 @@ public class ext_AndroidTileBitmap extends ext_AndroidBitmap
 	{
 		synchronized (ReusebleList)
 		{
-			for (android.graphics.Bitmap reuse : ReusebleList)
+			for (int i = 0, n = ReusebleList.size(); i < n; i++)
 			{
+				android.graphics.Bitmap reuse = ReusebleList.get(i);
 				if (reuse != null && reuse.getWidth() == tileSize && reuse.getHeight() == tileSize)
 				{
 					ReusebleList.remove(reuse);

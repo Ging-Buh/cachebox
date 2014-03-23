@@ -334,8 +334,9 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 			// search the biggest
 			GL_WayTextContainer biggestWayTextContainer = null;
-			for (GL_WayTextContainer wayTextContainer : sameName)
+			for (int i = 0, n = sameName.size(); i < n; i++)
 			{
+				GL_WayTextContainer wayTextContainer = sameName.get(i);
 				if (biggestWayTextContainer == null)
 				{
 					biggestWayTextContainer = wayTextContainer;

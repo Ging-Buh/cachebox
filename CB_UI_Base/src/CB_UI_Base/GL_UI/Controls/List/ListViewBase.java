@@ -132,8 +132,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 	protected void callListPosChangedEvent()
 	{
-		for (IListPosChanged handler : EventHandlerList)
+		for (int i = 0, n = EventHandlerList.size(); i < n; i++)
 		{
+			IListPosChanged handler = EventHandlerList.get(i);
 			if (handler != null) handler.ListPosChanged();
 		}
 	}
@@ -196,9 +197,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			{
 				try
 				{
-					for (GL_View_Base v : childs)
+					for (int i = 0, n = childs.size(); i < n; i++)
 					{
-						v.dispose();
+						childs.get(i).dispose();
 					}
 				}
 				catch (ConcurrentModificationException e)
@@ -367,8 +368,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 					{
 						if (runOnGL_List.size() > 0)
 						{
-							for (IRunOnGL run : runOnGL_List)
+							for (int i = 0, n = runOnGL_List.size(); i < n; i++)
 							{
+								IRunOnGL run = runOnGL_List.get(i);
 								if (run != null) run.run();
 							}
 
@@ -383,8 +385,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 						{
 							if (runOnGL_ListWaitpool.size() > 0)
 							{
-								for (IRunOnGL run : runOnGL_ListWaitpool)
+								for (int i = 0, n = runOnGL_ListWaitpool.size(); i < n; i++)
 								{
+									IRunOnGL run = runOnGL_ListWaitpool.get(i);
 									if (run != null) run.run();
 								}
 
@@ -571,8 +574,10 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			selectionchanged = true;
 			synchronized (childs)
 			{
-				for (GL_View_Base v : childs)
+
+				for (int j = 0, m = childs.size(); j < m; j++)
 				{
+					GL_View_Base v = childs.get(j);
 					if (v instanceof ListViewItemBase)
 					{
 						if (((ListViewItemBase) v).getIndex() == mSelectedIndex)
@@ -583,8 +588,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 					}
 				}
 				mSelectedIndex = i;
-				for (GL_View_Base v : childs)
+				for (int j = 0, m = childs.size(); j < m; j++)
 				{
+					GL_View_Base v = childs.get(j);
 					if (v instanceof ListViewItemBase)
 					{
 						if (((ListViewItemBase) v).getIndex() == mSelectedIndex)
@@ -622,8 +628,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 			CB_List<ListViewItemBase> visibleList = new CB_List<ListViewItemBase>();
 
-			for (GL_View_Base v : childs)
+			for (int j = 0, m = childs.size(); j < m; j++)
 			{
+				GL_View_Base v = childs.get(j);
 				if (v instanceof ListViewItemBase)
 				{
 					visibleList.add(((ListViewItemBase) v));
@@ -640,8 +647,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			visibleList.sort();
 			boolean foundFirstVisible = false;
 			int lastFoundedVisible = 0;
-			for (ListViewItemBase lv : visibleList)
+			for (int j = 0, m = visibleList.size(); j < m; j++)
 			{
+				ListViewItemBase lv = visibleList.get(j);
 				if (this.ThisWorldRec.contains(lv.ThisWorldRec))
 				{
 					if (!foundFirstVisible) ret.x = lv.getIndex();
@@ -752,6 +760,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	@Override
 	public void removeChilds()
 	{
+
 		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override

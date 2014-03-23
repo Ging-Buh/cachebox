@@ -74,9 +74,10 @@ public class GL_Path implements ext_Path, Disposable
 		items = new float[path.items.length];
 		System.arraycopy(path.items, 0, items, 0, items.length);
 
-		for (int t : path.pathBegins)
+		for (int i = 0, n = path.pathBegins.size(); i < n; i++)
 		{
-			pathBegins.add(t);
+
+			pathBegins.add(path.pathBegins.get(i));
 		}
 	}
 

@@ -106,8 +106,9 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		}
 
 		int index = 0;
-		for (LogEntry logEntry : cleanLogs)
+		for (int i = 0, n = cleanLogs.size(); i < n; i++)
 		{
+			LogEntry logEntry = cleanLogs.get(i);
 			if (GlobalCore.filterLogsOfFriends)
 			{
 				// nur die Logs der eingetragenen Freunde anzeigen

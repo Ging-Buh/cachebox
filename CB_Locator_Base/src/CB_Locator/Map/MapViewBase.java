@@ -643,9 +643,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			// FIXME sort rotate List first the Symbols then the Text! sort Text with same Font! Don't change the Texture (improve the
 			// Performance)
 
-			for (TileGL_RotateDrawables drw : rotateList)
+			for (int i = 0, n = rotateList.size(); i < n; i++)
 			{
-				drw.draw(batch, -mapHeading);
+				rotateList.get(i).draw(batch, -mapHeading);
 			}
 			rotateList.truncate(0);
 			rotateList = null;

@@ -187,8 +187,9 @@ public class DescriptionImageGrabber
 
 		int delta = 0;
 
-		for (Segment img : imgTags)
+		for (int i = 0, n = imgTags.size(); i < n; i++)
 		{
+			Segment img = imgTags.get(i);
 			int srcIdx = img.text.toLowerCase().indexOf("src=");
 			int srcStart = img.text.indexOf('"', srcIdx + 4);
 			int srcEnd = img.text.indexOf('"', srcStart + 1);
@@ -332,8 +333,9 @@ public class DescriptionImageGrabber
 
 		imgTags.addAll(Segmentize(Cache.longDescription, "<img", ">"));
 
-		for (Segment img : imgTags)
+		for (int i = 0, n = imgTags.size(); i < n; i++)
 		{
+			Segment img = imgTags.get(i);
 			int srcStart = -1;
 			int srcEnd = -1;
 			int srcIdx = img.text.toLowerCase().indexOf("src=");
@@ -376,8 +378,9 @@ public class DescriptionImageGrabber
 
 		CB_List<Segment> imgTags = Segmentize(html, "<img", ">");
 
-		for (Segment img : imgTags)
+		for (int i = 0, n = imgTags.size(); i < n; i++)
 		{
+			Segment img = imgTags.get(i);
 			int srcStart = -1;
 			int srcEnd = -1;
 			int srcIdx = img.text.toLowerCase().indexOf("src=");

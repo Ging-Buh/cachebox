@@ -30,8 +30,9 @@ public class invalidateTextureEventList
 		{
 			synchronized (list)
 			{
-				for (invalidateTextureEvent event : list)
+				for (int i = 0, n = list.size(); i < n; i++)
 				{
+					invalidateTextureEvent event = list.get(i);
 					if (event != null) event.invalidateTexture();
 				}
 			}

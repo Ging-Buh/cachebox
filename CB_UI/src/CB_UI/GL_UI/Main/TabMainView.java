@@ -291,8 +291,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		{
 			synchronized (Database.Data.Query)
 			{
-				for (Cache c : Database.Data.Query)
+				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 				{
+					Cache c = Database.Data.Query.get(i);
 					if (c.GcCode.equalsIgnoreCase(sGc))
 					{
 						Logger.DEBUG("TabMainView: Set selectedCache to " + c.GcCode + " from lastSaved.");
@@ -592,8 +593,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		// Logger.LogCat("TabMainView SetContent maxY" + y);
 		synchronized (childs)
 		{
-			for (GL_View_Base view : this.childs)
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
+				GL_View_Base view = childs.get(i);
 				if (view instanceof CB_TabView)
 				{
 					view.setHeight(y);
@@ -643,8 +645,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 			synchronized (childs)
 			{
-				for (GL_View_Base view : this.childs)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
+					GL_View_Base view = childs.get(i);
 					if (view instanceof CB_TabView)
 					{
 						((CB_TabView) view).SkinIsChanged();

@@ -106,8 +106,9 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 	{
 		synchronized (ChangedEventList)
 		{
-			for (iChanged event : ChangedEventList)
+			for (int i = 0, n = ChangedEventList.size(); i < n; i++)
 			{
+				iChanged event = ChangedEventList.get(i);
 				event.isChanged();
 			}
 		}

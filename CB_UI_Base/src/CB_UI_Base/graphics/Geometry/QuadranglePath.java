@@ -32,9 +32,9 @@ public class QuadranglePath extends CB_List<Quadrangle> implements Disposable
 
 	public QuadranglePath(PathLine pathLine, GL_Paint paint)
 	{
-		for (Line line : pathLine)
+		for (int i = 0, n = pathLine.size(); i < n; i++)
 		{
-			this.add(new Quadrangle(line, paint.getStrokeWidth()));
+			this.add(new Quadrangle(pathLine.get(i), paint.getStrokeWidth()));
 		}
 	}
 
@@ -49,9 +49,9 @@ public class QuadranglePath extends CB_List<Quadrangle> implements Disposable
 		synchronized (isDisposed)
 		{
 			if (isDisposed.get()) return;
-			for (Quadrangle qu : this)
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
-				qu.dispose();
+				this.get(i).dispose();
 			}
 			this.clear();
 			isDisposed.set(true);

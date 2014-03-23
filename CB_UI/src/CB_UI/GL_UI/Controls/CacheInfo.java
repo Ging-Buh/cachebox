@@ -423,8 +423,10 @@ public class CacheInfo extends CB_View_Base
 		String FoundDate = "";
 		CB_List<LogEntry> logs = new CB_List<LogEntry>();
 		logs = Database.Logs(cache);// cache.Logs();
-		for (LogEntry l : logs)
+
+		for (int i = 0, n = logs.size(); i < n; i++)
 		{
+			LogEntry l = logs.get(i);
 			if (l.Type == LogTypes.found)
 			{
 				SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");

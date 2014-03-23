@@ -89,8 +89,9 @@ public class MoveableList<T> extends CB_List<T>
 		if (dontFireEvent) return;
 		synchronized (ChangedEventList)
 		{
-			for (iChanged event : ChangedEventList)
+			for (int i = 0, n = ChangedEventList.size(); i < n; i++)
 			{
+				iChanged event = ChangedEventList.get(i);
 				event.isChanged();
 			}
 		}

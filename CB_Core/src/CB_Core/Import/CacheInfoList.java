@@ -201,8 +201,9 @@ public class CacheInfoList
 
 			if (cleanLogs.size() > 0)
 			{
-				for (LogEntry entry : cleanLogs)
+				for (int i = 0, n = cleanLogs.size(); i < n; i++)
 				{
+					LogEntry entry = cleanLogs.get(i);
 					String Comment = entry.Comment;
 					String Finder = entry.Finder;
 
@@ -342,8 +343,9 @@ public class CacheInfoList
 
 		if (cleanLogs.size() > 0)
 		{
-			for (LogEntry entry : cleanLogs)
+			for (int i = 0, n = cleanLogs.size(); i < n; i++)
 			{
+				LogEntry entry = cleanLogs.get(i);
 				String Comment = entry.Comment;
 				String Finder = entry.Finder;
 

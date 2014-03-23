@@ -35,6 +35,7 @@ import de.cachebox_test.R;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
+@SuppressWarnings("deprecation")
 public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener
 {
 
@@ -236,8 +237,9 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 			return;
 		}
 
-		for (ImageEntry image : aktCache.getSpoilerRessources())
+		for (int i = 0, n = aktCache.getSpoilerRessources().size(); i < n; i++)
 		{
+			ImageEntry image = aktCache.getSpoilerRessources().get(i);
 			try
 			{
 				Bitmap tmp = decodeFile(image.LocalPath);

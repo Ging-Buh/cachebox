@@ -15,8 +15,9 @@ public class CacheList extends MoveableList<Cache>
 
 	public Cache GetCacheByGcCode(String GcCode)
 	{
-		for (Cache cache : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
+			Cache cache = this.get(i);
 			if (cache.GcCode.equalsIgnoreCase(GcCode)) return cache;
 		}
 		return null;
@@ -24,8 +25,9 @@ public class CacheList extends MoveableList<Cache>
 
 	public Cache GetCacheById(long cacheId)
 	{
-		for (Cache cache : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
+			Cache cache = this.get(i);
 			if (cache.Id == cacheId) return cache;
 		}
 		return null;
@@ -58,8 +60,9 @@ public class CacheList extends MoveableList<Cache>
 		// Alle Distanzen aktualisieren
 		if (LocatorValid)
 		{
-			for (Cache cache : this)
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
+				Cache cache = this.get(i);
 				cache.Distance(CalculationType.FAST, true);
 			}
 		}
@@ -77,8 +80,9 @@ public class CacheList extends MoveableList<Cache>
 				this.ResortAtWork = false;
 				return retValue;
 			}
-			for (Cache cache : this)
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
+				Cache cache = this.get(i);
 				cache.Distance(CalculationType.FAST, true, fromPos);
 			}
 		}
@@ -154,8 +158,9 @@ public class CacheList extends MoveableList<Cache>
 	@Override
 	public void clear()
 	{
-		for (Cache cache : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
+			Cache cache = this.get(i);
 			cache.dispose();
 			cache = null;
 		}

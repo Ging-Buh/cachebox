@@ -189,8 +189,9 @@ public class Button extends CB_View_Base
 			}
 		}
 
-		for (Drawable drw : DrawableOverlayList)
+		for (int i = 0, n = DrawableOverlayList.size(); i < n; i++)
 		{
+			Drawable drw = DrawableOverlayList.get(i);
 			drw.draw(batch, 0, 0, getWidth(), getHeight());
 		}
 

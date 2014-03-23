@@ -2,7 +2,6 @@ package CB_UI_Base.GL_UI.Controls.List;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
@@ -33,9 +32,9 @@ public class V_ListView extends ListViewBase
 				{
 					synchronized (childs)
 					{
-						for (GL_View_Base v : childs)
+						for (int i = 0, n = childs.size(); i < n; i++)
 						{
-							v.dispose();
+							childs.get(i).dispose();
 						}
 					}
 				}
@@ -43,11 +42,9 @@ public class V_ListView extends ListViewBase
 			}
 			else
 			{
-
-				for (GL_View_Base view : childs)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
-
-					ListViewItemBase tmp = (ListViewItemBase) view;
+					ListViewItemBase tmp = (ListViewItemBase) childs.get(i);
 					float itemPos = mPosDefault.get(tmp.getIndex());
 					itemPos -= mPos;
 					tmp.setY(itemPos);
@@ -113,15 +110,10 @@ public class V_ListView extends ListViewBase
 
 		}
 
-		// Logger.DEBUG(this.name + " ListPos:" + mPos);
-
-		// addVisibleItems();
 		addVisibleItems(Kinetic);
 		mMustSetPos = false;
 		mMustSetPosKinetic = false;
-
 		callListPosChangedEvent();
-
 	}
 
 	/**

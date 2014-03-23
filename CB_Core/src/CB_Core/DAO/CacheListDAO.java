@@ -208,9 +208,9 @@ public class CacheListDAO
 		ReadCacheList(list, where);
 		ArrayList<String> StrList = new ArrayList<String>();
 
-		for (Iterator<Cache> iterator = list.iterator(); iterator.hasNext();)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
-			StrList.add(iterator.next().GcCode);
+			StrList.add(list.get(i).GcCode);
 		}
 		return StrList;
 	}

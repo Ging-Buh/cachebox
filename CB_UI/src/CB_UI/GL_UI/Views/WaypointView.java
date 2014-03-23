@@ -313,8 +313,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			aktWaypoint = GlobalCore.getSelectedWaypoint();
 			int id = 0;
 
-			for (Waypoint wp : aktCache.waypoints)
+			for (int i = 0, n = aktCache.waypoints.size(); i < n; i++)
 			{
+				Waypoint wp = aktCache.waypoints.get(i);
 				id++;
 				if (wp == aktWaypoint)
 				{

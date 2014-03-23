@@ -188,8 +188,9 @@ public class Logger
 		Short = dateString + Short + String.format("%n");
 		Msg = dateString2 + " - " + Msg + String.format("%n");
 
-		for (ILog event : list)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
+			ILog event = list.get(i);
 			event.receiveLog(Msg);
 			event.receiveShortLog(Short);
 		}
@@ -205,8 +206,9 @@ public class Logger
 
 	public static void LogCat(String Msg)
 	{
-		for (ILog event : list)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
+			ILog event = list.get(i);
 			event.receiveLogCat(Msg);
 		}
 

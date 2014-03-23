@@ -152,10 +152,10 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			{
 				synchronized (childs)
 				{
-					for (GL_View_Base v : childs)
+					for (int i = 0, n = childs.size(); i < n; i++)
 					{
-						removeChild(v);
-						v.dispose();
+						GL_View_Base view = childs.get(i);
+						view.dispose();
 					}
 
 					childs.clear();
@@ -405,9 +405,10 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		{
 			this.setHeight(this.getHeight() - this.topYAdd);
 			// Die Position aller Clients muss bei TopDown neu gesetzt werden.
-			for (GL_View_Base g : this.childs)
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
-				g.setPos(g.getX(), g.getY() - this.topYAdd);
+				GL_View_Base view = childs.get(i);
+				view.setPos(view.getX(), view.getY() - this.topYAdd);
 			}
 			// this.topYAdd = this.bottomYAdd; // fertig gebaut
 		}
@@ -496,9 +497,10 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 		{
 			// Determine this.rowMaxHeight
 			this.rowMaxHeight = 0;
-			for (GL_View_Base g : this.row)
+			for (int i = 0, n = this.row.size(); i < n; i++)
 			{
-				if (g.getHeight() > this.rowMaxHeight) this.rowMaxHeight = g.getHeight();
+				GL_View_Base view = this.row.get(i);
+				if (view.getHeight() > this.rowMaxHeight) this.rowMaxHeight = view.getHeight();
 			}
 			if (this.topdown)
 			{
@@ -510,22 +512,23 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			float fixedWidthSum = 0;
 			float percentWidthSum = 0;
 			float widthToFill = this.getWidth() - this.leftBorder - this.rightBorder;
-			for (GL_View_Base g : this.row)
+			for (int i = 0, n = this.row.size(); i < n; i++)
 			{
-				if (g.Weight > 0)
+				GL_View_Base view = this.row.get(i);
+				if (view.Weight > 0)
 				{
-					weightedAnz += g.Weight;
+					weightedAnz += view.Weight;
 				}
 				else
 				{
-					if (g.Weight == FIXED)
+					if (view.Weight == FIXED)
 					{
-						fixedWidthSum += g.getWidth() + this.xMargin; // xMargin is added to each object
+						fixedWidthSum += view.getWidth() + this.xMargin; // xMargin is added to each object
 					}
 					else
 					{
 						// Prozentuale Breite des Objekts bzgl widthToFill
-						percentWidthSum += Math.abs(g.Weight) * widthToFill;
+						percentWidthSum += Math.abs(view.Weight) * widthToFill;
 					}
 				}
 
@@ -535,23 +538,24 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			{
 				objectWidth = (widthToFill - percentWidthSum - fixedWidthSum + this.xMargin) / weightedAnz - this.xMargin;
 			}
-			for (GL_View_Base g : this.row)
+			for (int i = 0, n = this.row.size(); i < n; i++)
 			{
-				if (g.Weight > 0)
+				GL_View_Base view = this.row.get(i);
+				if (view.Weight > 0)
 				{
-					g.setWidth(objectWidth * g.Weight);
+					view.setWidth(objectWidth * view.Weight);
 				}
 				else
 				{
-					if (g.Weight > FIXED)
+					if (view.Weight > FIXED)
 					{
-						g.setWidth(Math.abs(g.Weight) * widthToFill - this.xMargin);
+						view.setWidth(Math.abs(view.Weight) * widthToFill - this.xMargin);
 					}
 				}
-				g.setPos(rowXPos, this.rowYPos);
-				this.addChildDirekt(g);
+				view.setPos(rowXPos, this.rowYPos);
+				this.addChildDirekt(view);
 				// next object at x
-				rowXPos = rowXPos + g.getWidth() + this.xMargin;
+				rowXPos = rowXPos + view.getWidth() + this.xMargin;
 			}
 			// next row objects at y
 			if (this.topdown)

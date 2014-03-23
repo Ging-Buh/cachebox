@@ -23,7 +23,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import CB_Translation_Base.FileUtil;
 import CB_Utils.Lists.CB_List;
@@ -293,8 +292,9 @@ public class Translation
 		if (mStringList == null || mRefTranslation == null) return "Translation  not initial";
 
 		String retString = "";
-		for (Translations tmp : mStringList)
+		for (int i = 0, n = mStringList.size(); i < n; i++)
 		{
+			Translations tmp = mStringList.get(i);
 			if (tmp.IdString.equals(StringId))
 			{
 				retString = tmp.Translation;
@@ -304,8 +304,9 @@ public class Translation
 
 		if (retString == "")
 		{
-			for (Translations tmp : mRefTranslation)
+			for (int i = 0, n = mRefTranslation.size(); i < n; i++)
 			{
+				Translations tmp = mRefTranslation.get(i);
 				if (tmp.IdString.equals(StringId))
 				{
 					retString = tmp.Translation;
@@ -414,9 +415,10 @@ public class Translation
 				if (line.contains("##########  Missing Lang Strings ######"))
 				{
 					// Beginn des schreibbereichs
-					for (Iterator<Translations> it = mMissingStringList.iterator(); it.hasNext();)
+					for (int i = 0, n = mMissingStringList.size(); i < n; i++)
 					{
-						sb.append(it.next().IdString + BR);
+						Translations tmp = mRefTranslation.get(i);
+						sb.append(tmp.IdString + BR);
 					}
 					override = true;
 				}

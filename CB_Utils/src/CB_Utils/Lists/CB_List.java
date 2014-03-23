@@ -17,8 +17,6 @@ package CB_Utils.Lists;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
 
 /**
  * A resizable, ordered array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class avoids a memory copy when
@@ -26,7 +24,7 @@ import java.util.Iterator;
  * 
  * @author Longri, based on FloatArray from Nathan Sweet (LibGdx)
  */
-public class CB_List<T> implements Iterable<T>, Serializable
+public class CB_List<T> implements Serializable
 {
 	private static final long serialVersionUID = 4378819539487000418L;
 	protected T[] items;
@@ -98,15 +96,14 @@ public class CB_List<T> implements Iterable<T>, Serializable
 
 	public void addAll(int index, CB_List<T> array)
 	{
-		Iterator<T> itr = array.iterator();
 		int csize = array.size();
 
 		if (csize + size > getItemLength()) ensureCapacity(size + csize);
 		int end = index + csize;
 		if (size > 0 && index != size) System.arraycopy(items, index, items, end, size - index);
 		size += csize;
-		for (; index < end; index++)
-			items[index] = itr.next();
+		for (int i = 0, n = items.length; i < n; i++)
+			items[index++] = array.get(i);
 	}
 
 	public void addAll(CB_List<T> array, int offset, int length)
@@ -336,48 +333,6 @@ public class CB_List<T> implements Iterable<T>, Serializable
 	public boolean isEmpty()
 	{
 		return size <= 0;
-	}
-
-	@Override
-	public Iterator<T> iterator()
-	{
-		// FIXME remove iterator and use for(int i=0,n=Items.size;i<n;i++)
-		Itr itr = new Itr();
-		itr.reverse = reverse;
-		return new Itr();
-	}
-
-	/**
-	 * An optimized version of AbstractList.Itr
-	 */
-	private class Itr implements Iterator<T>
-	{
-
-		protected boolean reverse = false;
-		int cursor; // index of next element to return
-
-		@Override
-		public boolean hasNext()
-		{
-			return cursor != size;
-		}
-
-		@Override
-		public T next()
-		{
-			if (cursor >= size || cursor >= items.length) throw new ConcurrentModificationException();
-
-			int index = reverse ? size - cursor++ : cursor++;
-			return items[index];
-		}
-
-		@Override
-		public void remove()
-		{
-			throw new UnsupportedOperationException("remove is not supported by this Iterator");
-
-		}
-
 	}
 
 	public void sort()

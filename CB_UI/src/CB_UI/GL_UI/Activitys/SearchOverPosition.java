@@ -510,8 +510,9 @@ public class SearchOverPosition extends ActivityBase
 				}
 
 				// Delete all LongDescription from Query! LongDescription is Loading by showing DescriptionView direct from DB
-				for (Cache cache : Database.Data.Query)
+				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 				{
+					Cache cache = Database.Data.Query.get(i);
 					cache.longDescription = "";
 				}
 

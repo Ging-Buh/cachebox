@@ -40,9 +40,11 @@ public class KeyboardFocusChangedEventList
 		}
 		synchronized (list)
 		{
-			for (KeyboardFocusChangedEvent event : list)
+
+			for (int i = 0, n = list.size(); i < n; i++)
 			{
-				Logger.LogCat("FocusChangedEventList fire to " + event.toString());
+				KeyboardFocusChangedEvent event = list.get(i);
+				// Logger.LogCat("FocusChangedEventList fire to " + event.toString());
 				event.KeyboardFocusChanged(focus);
 			}
 		}

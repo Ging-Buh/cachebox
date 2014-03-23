@@ -1,7 +1,5 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
-import java.util.Iterator;
-
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -24,16 +22,20 @@ public class H_ListView extends ListViewBase
 		// alle childs verschieben
 		synchronized (childs)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
-				GL_View_Base tmp = iterator.next();
+				GL_View_Base tmp = childs.get(i);
+
 				if (mReloadItems)
 				{
 					clearList.add((ListViewItemBase) tmp);
 				}
 				else
 				{
-					tmp.setX(tmp.getX() + distance);
+					float itemPos = mPosDefault.get(((ListViewItemBase) tmp).getIndex());
+					itemPos -= mPos;
+					tmp.setX(itemPos);
 
 					if (tmp.getX() > this.getMaxX() || tmp.getMaxX() < 0)
 					{
@@ -43,6 +45,8 @@ public class H_ListView extends ListViewBase
 				}
 			}
 		}
+
+		mReloadItems = false;
 
 		// afräumen
 		if (clearList.size() > 0)
@@ -94,28 +98,22 @@ public class H_ListView extends ListViewBase
 		if (mBaseAdapter == null) return;
 		if (mPosDefault == null) calcDefaultPosList();
 
-		CB_List<Float> tmpPosDefault;
-		synchronized (mPosDefault)
-		{
-			tmpPosDefault = new CB_List<Float>(mPosDefault);
-		}
-
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 		{
 			if (!mAddeedIndexList.contains(i))
 			{
 
-				if (tmpPosDefault.size() - 1 < i || mBaseAdapter.getCount() < i) return;
+				if (mPosDefault.size() - 1 < i || mBaseAdapter.getCount() < i) return;
 
 				ListViewItemBase tmp = mBaseAdapter.getView(i);
 
 				if (tmp == null) return;
 				try
 				{
-					if (tmpPosDefault.get(i) + tmp.getWidth() - mPos > 0)
+					if (mPosDefault.get(i) + tmp.getWidth() - mPos > 0)
 					{
 
-						float itemPos = tmpPosDefault.get(i);
+						float itemPos = mPosDefault.get(i);
 						itemPos -= mPos;
 
 						if (itemPos <= this.getWidth())

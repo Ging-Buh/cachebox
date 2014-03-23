@@ -16,8 +16,9 @@ public class Categories extends MoveableList<Category>
 
 	private void checkAll()
 	{
-		for (Category cat : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
+			Category cat = this.get(i);
 			cat.Checked = false;
 			for (GpxFilename gpx : cat)
 			{
@@ -32,8 +33,9 @@ public class Categories extends MoveableList<Category>
 		boolean foundOne = false;
 		for (long id : filter.Categories)
 		{
-			for (Category cat : this)
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
+				Category cat = this.get(i);
 				if (cat.Id == id)
 				{
 					cat.Checked = true;
@@ -44,15 +46,17 @@ public class Categories extends MoveableList<Category>
 		if (!foundOne)
 		{
 			// Wenn gar keine Category aktiv -> alle aktivieren!
-			for (Category cat : this)
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
+				Category cat = this.get(i);
 				cat.Checked = true;
 			}
 		}
 		for (long id : filter.GPXFilenameIds)
 		{
-			for (Category cat : this)
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
+				Category cat = this.get(i);
 				for (GpxFilename gpx : cat)
 				{
 					if (gpx.Id == id)
@@ -62,8 +66,9 @@ public class Categories extends MoveableList<Category>
 				}
 			}
 		}
-		for (Category cat : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
+			Category cat = this.get(i);
 			// wenn Category nicht checked ist -> alle GpxFilenames deaktivieren
 			if (cat.Checked) continue;
 			for (GpxFilename gpx : cat)
@@ -77,8 +82,9 @@ public class Categories extends MoveableList<Category>
 	{
 		filter.GPXFilenameIds.clear();
 		filter.Categories.clear();
-		for (Category cat : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
+			Category cat = this.get(i);
 			if (cat.Checked)
 			{
 				// GpxFilename Filter nur setzen, wenn die Category aktiv ist!

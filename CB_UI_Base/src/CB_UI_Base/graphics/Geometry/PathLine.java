@@ -128,9 +128,9 @@ public class PathLine extends CB_List<Line> implements Disposable
 	{
 		float l = 0;
 
-		for (Line line : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
-			l += line.length();
+			l += this.get(i).length();
 		}
 
 		return l;
@@ -147,9 +147,10 @@ public class PathLine extends CB_List<Line> implements Disposable
 		synchronized (isDisposed)
 		{
 			if (isDisposed.get()) return;
-			for (Line line : this)
+
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
-				line.dispose();
+				this.get(i).dispose();
 			}
 			this.clear();
 			isDisposed.set(true);

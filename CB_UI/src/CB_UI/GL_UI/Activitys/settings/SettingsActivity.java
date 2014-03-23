@@ -199,8 +199,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				String ActionsString = "";
 				int counter = 0;
-				for (QuickButtonItem tmp : SettingsItem_QuickButton.tmpQuickList)
+				for (int i = 0, n = SettingsItem_QuickButton.tmpQuickList.size(); i < n; i++)
 				{
+					QuickButtonItem tmp = SettingsItem_QuickButton.tmpQuickList.get(i);
 					ActionsString += String.valueOf(tmp.getAction().ordinal());
 					if (counter < SettingsItem_QuickButton.tmpQuickList.size() - 1)
 					{

@@ -120,8 +120,9 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				String sGc = Config.LastSelectedCache.getValue();
 				if (sGc != null && !sGc.equals(""))
 				{
-					for (Cache c : Database.Data.Query)
+					for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 					{
+						Cache c = Database.Data.Query.get(i);
 						if (c.GcCode.equalsIgnoreCase(sGc))
 						{
 							Logger.DEBUG("returnFromSelectDB:Set selectedCache to " + c.GcCode + " from lastSaved.");

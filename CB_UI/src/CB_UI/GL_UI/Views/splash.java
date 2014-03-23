@@ -483,8 +483,9 @@ public class splash extends TabMainView
 				{
 					Waypoint w = null;
 
-					for (Waypoint wp : c.waypoints)
+					for (int i = 0, n = c.waypoints.size(); i < n; i++)
 					{
+						Waypoint wp = c.waypoints.get(i);
 						if (wp.GcCode.equalsIgnoreCase(GlobalCore.restartWaypoint))
 						{
 							w = wp;

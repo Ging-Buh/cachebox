@@ -225,8 +225,9 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 
 		canceld = false;
 		importStarted = true;
-		for (MapDownloadItem item : mapInfoItemList)
+		for (int i = 0, n = mapInfoItemList.size(); i < n; i++)
 		{
+			MapDownloadItem item = mapInfoItemList.get(i);
 			item.beginDownload();
 		}
 
@@ -241,16 +242,18 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 				{
 					if (canceld)
 					{
-						for (MapDownloadItem item : mapInfoItemList)
+						for (int i = 0, n = mapInfoItemList.size(); i < n; i++)
 						{
+							MapDownloadItem item = mapInfoItemList.get(i);
 							item.cancelDownload();
 						}
 					}
 
 					int calcAll = 0;
 					int downloadCount = 0;
-					for (MapDownloadItem item : mapInfoItemList)
+					for (int i = 0, n = mapInfoItemList.size(); i < n; i++)
 					{
+						MapDownloadItem item = mapInfoItemList.get(i);
 						int actPro = item.getDownloadProgress();
 						if (actPro > -1)
 						{
@@ -280,8 +283,9 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 
 					// chk download ready
 					boolean chk = true;
-					for (MapDownloadItem item : mapInfoItemList)
+					for (int i = 0, n = mapInfoItemList.size(); i < n; i++)
 					{
+						MapDownloadItem item = mapInfoItemList.get(i);
 						if (!item.isFinish()) chk = false;
 					}
 
@@ -427,8 +431,9 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 
 		// Create possible download List
 
-		for (MapRepositoryInfo map : mapInfoList.reverse())
+		for (int i = mapInfoList.size(); i > 0; i--)
 		{
+			MapRepositoryInfo map = mapInfoList.get(i);
 
 			MapDownloadItem item = new MapDownloadItem(map, MapDownload.this.innerWidth);
 			item.setY(yPos);

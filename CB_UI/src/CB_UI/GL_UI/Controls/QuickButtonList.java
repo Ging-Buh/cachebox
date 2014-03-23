@@ -66,8 +66,9 @@ public class QuickButtonList extends H_ListView
 		// send Event to Buttons
 		synchronized (childs)
 		{
-			for (GL_View_Base btn : this.childs)
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
+				GL_View_Base btn = childs.get(i);
 				if (btn != null)
 				{
 					btn.onTouchUp(x, y, pointer, button);
@@ -86,8 +87,9 @@ public class QuickButtonList extends H_ListView
 	{
 		synchronized (this.childs)
 		{
-			for (GL_View_Base btn : this.childs)
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
+				GL_View_Base btn = childs.get(i);
 				if (btn != null) btn.onTouchDown(x, y, pointer, button);
 			}
 		}
@@ -99,8 +101,9 @@ public class QuickButtonList extends H_ListView
 	{
 		synchronized (this.childs)
 		{
-			for (GL_View_Base btn : this.childs)
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
+				GL_View_Base btn = childs.get(i);
 				if (btn != null) btn.onTouchUp(x, y, pointer, button);
 			}
 		}
@@ -116,8 +119,9 @@ public class QuickButtonList extends H_ListView
 
 			try
 			{
-				for (GL_View_Base btn : this.childs)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
+					GL_View_Base btn = childs.get(i);
 					if (btn != null) btn.onTouchDragged(x, y, pointer, KineticPan);
 				}
 			}

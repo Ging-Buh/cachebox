@@ -67,8 +67,9 @@ public class ImportCBServer
 					Category cat = null;
 					CategoryDAO catDao = new CategoryDAO();
 					// Suchen, ob diese Category schon vorhanden ist
-					for (Category tcat : CoreSettingsForward.Categories)
+					for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++)
 					{
+						Category tcat = CoreSettingsForward.Categories.get(i);
 						if (tcat.GpxFilename.equals(item.getDescription()))
 						{
 							cat = tcat;
@@ -88,8 +89,10 @@ public class ImportCBServer
 					CacheDAO dao = new CacheDAO();
 					WaypointDAO wayDao = new WaypointDAO();
 					LogDAO logDAO = new LogDAO();
-					for (Cache cache : gclAnswer.getCacheList())
+
+					for (int i = 0, n = gclAnswer.getCacheList().size(); i < n; i++)
 					{
+						Cache cache = gclAnswer.getCacheList().get(i);
 						System.out.println(cache.Name);
 						cache.GPXFilename_ID = gpxFilename.Id;
 
@@ -113,14 +116,17 @@ public class ImportCBServer
 
 							cache.tmpSolver = null;
 						}
-						for (Waypoint waypoint : cache.waypoints)
+
+						for (int j = 0, m = cache.waypoints.size(); j < m; j++)
 						{
+							Waypoint waypoint = cache.waypoints.get(j);
 							wayDao.WriteToDatabase(waypoint);
 						}
 						if (importImages)
 						{
-							for (ImageEntry image : cache.spoilerRessources)
+							for (int j = 0, m = cache.spoilerRessources.size(); j < m; j++)
 							{
+								ImageEntry image = cache.spoilerRessources.get(j);
 								String url = CB_Rpc_Settings.CBS_IP.getValue();
 								int pos = url.indexOf(":");
 								if (pos >= 0)

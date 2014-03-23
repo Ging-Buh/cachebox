@@ -1566,15 +1566,17 @@ public class GroundspeakAPI
 				imageDAO.WriteToDatabase(image, false);
 			}
 
-			for (Waypoint waypoint : cache.waypoints)
+			for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 			{
+				Waypoint waypoint = cache.waypoints.get(i);
 				boolean update = true;
 
 				// dont refresh wp if aktCache.wp is user changed
 				if (aktCache != null)
 				{
-					for (Waypoint wp : aktCache.waypoints)
+					for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
 					{
+						Waypoint wp = aktCache.waypoints.get(j);
 						if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
 						{
 							if (wp.IsUserWaypoint) update = false;

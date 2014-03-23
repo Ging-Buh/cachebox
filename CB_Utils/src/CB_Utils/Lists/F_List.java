@@ -70,19 +70,6 @@ public class F_List<T> implements List<T>
 		addAll(array, 0, array.size);
 	}
 
-	public void addAll(int index, CB_List<T> array)
-	{
-		Iterator<T> itr = array.iterator();
-		int csize = array.size();
-
-		if (csize + size > items.length) ensureCapacity(size + csize);
-		int end = index + csize;
-		if (size > 0 && index != size) System.arraycopy(items, index, items, end, size - index);
-		size += csize;
-		for (; index < end; index++)
-			items[index] = itr.next();
-	}
-
 	public void addAll(F_List<T> array, int offset, int length)
 	{
 		if (offset + length > array.size) throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length

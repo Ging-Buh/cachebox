@@ -196,8 +196,9 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 				synchronized (Database.Data.Query)
 				{
-					for (Cache ca : Database.Data.Query)
+					for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 					{
+						Cache ca = Database.Data.Query.get(i);
 						if (ca == GlobalCore.getSelectedCache())
 						{
 							listView.setSelection(id);

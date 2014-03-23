@@ -1,7 +1,6 @@
 package CB_UI.GL_UI.Activitys.settings;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.QuickButtonList;
@@ -86,9 +85,9 @@ public class SettingsItem_QuickButton extends CB_View_Base
 		for (QuickActions item : tmp)
 		{
 			boolean exist = false;
-			for (Iterator<QuickButtonItem> it = tmpQuickList.iterator(); it.hasNext();)
+			for (int i = 0, n = tmpQuickList.size(); i < n; i++)
 			{
-				QuickButtonItem listItem = it.next();
+				QuickButtonItem listItem = tmpQuickList.get(i);
 				if (listItem.getAction() == item) exist = true;
 			}
 			if (!exist) AllActionList.add(item);

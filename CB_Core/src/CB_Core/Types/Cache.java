@@ -406,9 +406,9 @@ public class Cache implements Comparable<Cache>, Serializable
 		boolean x;
 		x = false;
 
-		CB_List<Waypoint> wps = waypoints;
-		for (Waypoint wp : wps)
+		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
+			Waypoint wp = waypoints.get(i);
 			if (wp.Type == CacheTypes.Final)
 			{
 				if (!(wp.Pos.getLatitude() == 0 && wp.Pos.getLongitude() == 0)) x = true;
@@ -434,8 +434,9 @@ public class Cache implements Comparable<Cache>, Serializable
 		if (this.Type != CacheTypes.Mystery) return null;
 		if (waypoints == null || waypoints.size() == 0) return null;
 
-		for (Waypoint wp : waypoints)
+		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
+			Waypoint wp = waypoints.get(i);
 			if (wp.Type == CacheTypes.Final)
 			{
 				// do not activate final waypoint with invalid coordinates
@@ -469,8 +470,9 @@ public class Cache implements Comparable<Cache>, Serializable
 
 		if (waypoints == null || waypoints.size() == 0) return null;
 
-		for (Waypoint wp : waypoints)
+		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
+			Waypoint wp = waypoints.get(i);
 			if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
 			{
 				return wp;
@@ -832,11 +834,12 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	public Waypoint findWaypointByGc(String gc)
 	{
-		for (Waypoint waypoint : waypoints)
+		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
-			if (waypoint.GcCode.equals(gc))
+			Waypoint wp = waypoints.get(i);
+			if (wp.GcCode.equals(gc))
 			{
-				return waypoint;
+				return wp;
 			}
 		}
 		return null;
@@ -882,8 +885,10 @@ public class Cache implements Comparable<Cache>, Serializable
 		this.hint = cache.hint;
 		// do not copy waypoints List directly because actual user defined Waypoints would be deleted
 		// this.waypoints = new ArrayList<Waypoint>();
-		for (Waypoint newWaypoint : cache.waypoints)
+
+		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
+			Waypoint newWaypoint = cache.waypoints.get(i);
 
 			Waypoint aktWaypoint = this.findWaypointByGc(newWaypoint.GcCode);
 			if (aktWaypoint == null)
@@ -925,16 +930,22 @@ public class Cache implements Comparable<Cache>, Serializable
 
 		if (spoilerRessources != null)
 		{
-			for (ImageEntry entry : spoilerRessources)
+			for (int i = 0, n = spoilerRessources.size(); i < n; i++)
+			{
+				ImageEntry entry = spoilerRessources.get(i);
 				entry.dispose();
+			}
 			spoilerRessources.clear();
 			spoilerRessources = null;
 		}
 
 		if (waypoints != null)
 		{
-			for (Waypoint entry : waypoints)
+			for (int i = 0, n = waypoints.size(); i < n; i++)
+			{
+				Waypoint entry = waypoints.get(i);
 				entry.dispose();
+			}
 
 			waypoints.clear();
 			waypoints = null;

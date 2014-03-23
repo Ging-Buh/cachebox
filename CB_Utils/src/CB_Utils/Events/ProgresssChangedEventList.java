@@ -13,8 +13,9 @@ public class ProgresssChangedEventList
 
 	public static void Call(String Msg, String ProgressMessage, int Progress)
 	{
-		for (ProgressChangedEvent event : list)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
+			ProgressChangedEvent event = list.get(i);
 			event.ProgressChangedEventCalled(Msg, ProgressMessage, Progress);
 		}
 
@@ -22,8 +23,9 @@ public class ProgresssChangedEventList
 
 	public static void Call(String Msg, int Progress)
 	{
-		for (ProgressChangedEvent event : list)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
+			ProgressChangedEvent event = list.get(i);
 			event.ProgressChangedEventCalled("", Msg, Progress);
 		}
 

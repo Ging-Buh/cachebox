@@ -215,8 +215,9 @@ public class MapTileLoader
 		}
 
 		// then true zoom level
-		for (Descriptor desc : trueZommDescList)
+		for (int i = 0, n = trueZommDescList.size(); i < n; i++)
 		{
+			Descriptor desc = trueZommDescList.get(i);
 			if (!queueData.loadedTiles.containsKey(desc.GetHashCode()))
 			{
 				if (!queueData.queuedTiles.containsKey(desc.GetHashCode()))

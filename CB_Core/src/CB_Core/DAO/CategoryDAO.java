@@ -152,9 +152,9 @@ public class CategoryDAO
 	public Category GetCategory(Categories categories, String filename)
 	{
 		filename = new File(filename).getName();
-
-		for (Category category : categories)
+		for (int i = 0, n = categories.size(); i < n; i++)
 		{
+			Category category = categories.get(i);
 			if (filename.toUpperCase().equals(category.GpxFilename.toUpperCase()))
 			{
 				return category;
@@ -171,8 +171,9 @@ public class CategoryDAO
 		CoreSettingsForward.Categories.beginnTransaction();
 
 		Categories delete = new Categories();
-		for (Category cat : CoreSettingsForward.Categories)
+		for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++)
 		{
+			Category cat = CoreSettingsForward.Categories.get(i);
 			if (cat.CacheCount() == 0)
 			{
 				Database.Data.delete("Category", "Id=?", new String[]
@@ -180,9 +181,10 @@ public class CategoryDAO
 				delete.add(cat);
 			}
 		}
-		for (Category cat : delete)
+
+		for (int i = 0, n = delete.size(); i < n; i++)
 		{
-			CoreSettingsForward.Categories.remove(cat);
+			CoreSettingsForward.Categories.remove(delete.get(i));
 		}
 		CoreSettingsForward.Categories.endTransaction();
 	}

@@ -469,8 +469,9 @@ public class CacheDAO
 
 		ip.setJobMax("IndexingDB", IndexDB.size());
 		ArrayList<String> index = new ArrayList<String>();
-		for (Cache c : IndexDB)
+		for (int i = 0, n = IndexDB.size(); i < n; i++)
 		{
+			Cache c = IndexDB.get(i);
 			ip.ProgressInkrement("IndexingDB", "index- " + c.GcCode, false);
 			index.add(c.GcCode);
 		}

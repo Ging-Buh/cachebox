@@ -157,8 +157,10 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 										GlobalCore.setSelectedWaypoint(GlobalCore.NearestCache(), null, false);
 									}
 									float nearestDistance = GlobalCore.NearestCache().Distance(CalculationType.FAST, true);
-									for (Cache cache : Database.Data.Query)
+
+									for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 									{
+										Cache cache = Database.Data.Query.get(i);
 										z++;
 										if (z >= 50)
 										{
