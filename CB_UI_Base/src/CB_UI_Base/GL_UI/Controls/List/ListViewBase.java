@@ -1,6 +1,5 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
-import java.util.ConcurrentModificationException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -199,10 +198,11 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 				{
 					for (int i = 0, n = childs.size(); i < n; i++)
 					{
+						if (i >= childs.size()) break;
 						childs.get(i).dispose();
 					}
 				}
-				catch (ConcurrentModificationException e)
+				catch (Exception e)
 				{
 					// Dann Disposen wir halt nicht, dann muss der GC ran!
 				}
