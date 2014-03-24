@@ -417,7 +417,8 @@ public class Translation
 					// Beginn des schreibbereichs
 					for (int i = 0, n = mMissingStringList.size(); i < n; i++)
 					{
-						Translations tmp = mRefTranslation.get(i);
+						if (i >= mMissingStringList.size()) break;
+						Translations tmp = mMissingStringList.get(i);
 						sb.append(tmp.IdString + BR);
 					}
 					override = true;
