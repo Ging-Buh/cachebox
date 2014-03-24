@@ -119,7 +119,7 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 							@Override
 							public void run()
 							{
-								if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
+								if (TabMainView.logView != null) TabMainView.logView.onShow();
 								GL.that.renderOnce("after reload Cache");
 							}
 						});
