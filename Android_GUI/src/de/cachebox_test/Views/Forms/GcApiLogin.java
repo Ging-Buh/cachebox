@@ -13,6 +13,8 @@ import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
+import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -195,8 +197,7 @@ public class GcApiLogin extends Activity
 
 				if (url.toLowerCase().contains("oauth_verifier=") && (url.toLowerCase().contains("oauth_token=")))
 				{
-					WebControl
-							.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+					WebControl.loadUrl(javaScript);
 				}
 				else
 					super.onPageFinished(view, url);
@@ -214,12 +215,25 @@ public class GcApiLogin extends Activity
 		WebControl.getSettings().setJavaScriptEnabled(true);
 		WebControl.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
 
+		WebControl.evaluateJavascript(javaScript, new ValueCallback<String>()
+		{
+
+			@Override
+			public void onReceiveValue(String value)
+			{
+				// do nothing
+			}
+		});
+
 		WebControl.loadUrl(GC_AuthUrl);
 	}
+
+	final String javaScript = "javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');";
 
 	class MyJavaScriptInterface
 	{
 
+		@JavascriptInterface
 		public void showHTML(String html)
 		{
 
