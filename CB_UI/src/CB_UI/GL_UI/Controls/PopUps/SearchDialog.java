@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Controls.PopUps;
 
 import java.util.ArrayList;
@@ -125,6 +140,11 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private int mSearchState = 0;
 
+	/**
+	 * Index of the beginning search
+	 */
+	private int beginnSearchIndex = -1;
+
 	public SearchDialog()
 	{
 		super(new CB_RectF(), "SearchDialog");
@@ -133,18 +153,7 @@ public class SearchDialog extends PopUp_Base
 
 		this.setSize(UiSizes.that.getCacheListItemSize().asFloat());
 
-		// if (GlobalCore.isTab)
-		// {
-		// this.setBackground(SpriteCacheBase.activityBackground);
-		// this.setWidth(this.getWidth() * 1.4f);
-		// this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.getHalfWidth());
-		// this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.getHalfHeight());
-		// }
-		// else
-		// {
 		this.setBackground(SpriteCacheBase.ListBack);
-		// }
-		// initial Buttons
 
 		float margin = UI_Size_Base.that.getMargin();
 		if (GlobalCore.isTab) margin *= 2;
@@ -277,6 +286,7 @@ public class SearchDialog extends PopUp_Base
 			{
 				closeSoftKeyPad();
 				mSearchAktive = false;
+				beginnSearchIndex = 0;
 				searchNow(false);
 				return true;
 			}
@@ -462,7 +472,7 @@ public class SearchDialog extends PopUp_Base
 				}
 
 				Cache tmp = null;
-				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
+				for (int i = beginnSearchIndex, n = Database.Data.Query.size(); i < n; i++)
 				{
 					tmp = Database.Data.Query.get(i);
 
@@ -477,6 +487,11 @@ public class SearchDialog extends PopUp_Base
 					case 2:
 						criterionMatches = tmp.Owner.toLowerCase().contains(searchPattern)
 								|| tmp.PlacedBy.toLowerCase().contains(searchPattern);
+						break;
+					}
+					if (criterionMatches)
+					{
+						beginnSearchIndex = i + 1;
 						break;
 					}
 				}

@@ -110,6 +110,16 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 				MessageBox.Show(Translation.Get(attr));
 				return true;
 			}
+			else if (url.contains("fake://fake.de?Button"))
+			{
+				int pos = url.indexOf("+");
+				if (pos < 0) return true;
+
+				final String attr = url.substring(pos + 1, url.length() - 1);
+
+				MessageBox.Show(Translation.Get(attr));
+				return true;
+			}
 			else if (url.contains("fake://fake.de/download"))
 			{
 

@@ -69,12 +69,12 @@ public class TileGL_RotateDrawables
 			}
 			else
 			{
-				// Matrix4 matrix = thisDrawMatrix.cpy();
-				// ext_Matrix drwMatrix = new GL_Matrix(drw.matrix);
-				// matrix.mul(drwMatrix.getMatrix4().cpy());
 
 				workMatrix.set(thisDrawMatrix);
-				workMatrix.mul(drw.matrix.getMatrix4());
+				if (drw.matrix != null && drw.matrix.getMatrix4() != null)
+				{
+					workMatrix.mul(drw.matrix.getMatrix4());
+				}
 
 				if (!transformEquals(workMatrix, oriMatrix))
 				{

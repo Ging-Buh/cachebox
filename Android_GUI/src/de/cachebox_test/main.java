@@ -2951,15 +2951,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 
 			@Override
-			public void hideAll()
-			{
-				if (aktView != null)
-				{
-					hide(aktViewId);
-				}
-			}
-
-			@Override
 			public void hide(final ViewID viewID)
 			{
 

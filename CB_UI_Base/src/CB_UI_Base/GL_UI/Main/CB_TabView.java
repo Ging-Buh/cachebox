@@ -1,6 +1,5 @@
 package CB_UI_Base.GL_UI.Main;
 
-import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -132,8 +131,6 @@ public class CB_TabView extends CB_View_Base
 
 		GL.that.clearRenderViews();
 		GL.that.closeAllDialogs();
-
-		platformConector.hideAll();
 
 		// delete all Views up to the ButtonList
 		if (aktView != null && aktView != view)

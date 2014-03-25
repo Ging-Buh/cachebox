@@ -35,6 +35,7 @@ public class SymbolDrawable implements IRotateDrawable
 	private final float pointX;
 	private final float pointY;
 	private final float postRotate;
+	private final GL_Matrix matrix = new GL_Matrix();
 
 	private final AtomicBoolean isDisposed = new AtomicBoolean(false);
 
@@ -86,7 +87,7 @@ public class SymbolDrawable implements IRotateDrawable
 		float offsetX = 0;// (tex.getWidth() * scaleWidth) / 2;
 		float offsetY = BITMAP.getHeight();
 
-		GL_Matrix matrix = new GL_Matrix();
+		matrix.reset();
 
 		float pivotX = (BITMAP.getWidth()) / 2;
 		float pivotY = (BITMAP.getHeight()) / 2;
