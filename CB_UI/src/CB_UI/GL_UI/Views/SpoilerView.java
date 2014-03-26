@@ -30,7 +30,7 @@ public class SpoilerView extends CB_View_Base
 	public void onShow()
 	{
 		// Rufe ANDROID VIEW auf
-		platformConector.showView(ViewConst.SPOILER_VIEW, 0, 0, this.getWidth(), this.getHeight());
+		platformConector.showView(ViewConst.SPOILER_VIEW, this.getX(), this.getY(), this.getWidth(), this.getHeight());
 	}
 
 	@Override

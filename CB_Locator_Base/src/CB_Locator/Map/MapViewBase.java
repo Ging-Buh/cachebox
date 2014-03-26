@@ -680,6 +680,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	private long getscaledMapTilePosFactor(TileGL tile)
 	{
+		if (tile == null || tile.Descriptor == null) return 1;
 		long result = 1;
 		result = (long) (Math.pow(2.0, MapTileLoader.MAX_MAP_ZOOM - tile.Descriptor.getZoom()) / tile.getScaleFactor());
 		return result;

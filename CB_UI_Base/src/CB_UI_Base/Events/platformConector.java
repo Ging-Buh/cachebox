@@ -10,7 +10,7 @@ public class platformConector
 	 */
 	public interface IShowViewListner
 	{
-		void show(ViewID viewID, int x, int y, int width, int height);
+		void show(ViewID viewID, int left, int top, int right, int bottom);
 
 		void hide(ViewID viewID);
 
@@ -32,10 +32,22 @@ public class platformConector
 
 	public static void showView(ViewID viewID, float x, float y, float width, float height)
 	{
+		showView(viewID, x, y, width, height, 0, 0, 0, 0);
+	}
+
+	public static void showView(ViewID viewID, float x, float y, float width, float height, float leftMargin, float topMargin,
+			float rightMargin, float bottomMargin)
+	{
 		if (showViewListner != null)
 		{
 			GL.that.clearRenderViews();
-			showViewListner.show(viewID, (int) x, (int) y, (int) width, (int) height);
+
+			int left = (int) (x + leftMargin);
+			int right = (int) rightMargin;
+			int bottom = (int) (y + bottomMargin);
+			int top = (int) topMargin;
+
+			showViewListner.show(viewID, left, top, right, bottom);
 		}
 	}
 

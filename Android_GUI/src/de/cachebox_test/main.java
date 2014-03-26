@@ -2879,7 +2879,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 
 			@Override
-			public void show(final ViewID viewID, final int x, final int y, final int width, final int height)
+			public void show(final ViewID viewID, final int left, final int top, final int right, final int bottom)
 			{
 
 				runOnUiThread(new Runnable()
@@ -2891,17 +2891,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						// set Content size
 
-						if (viewID.getType() != ViewID.UI_Type.Activity && width > 1)
+						if (viewID.getType() != ViewID.UI_Type.Activity)
 						{
 							if (viewID.getPos() == UI_Pos.Left)
 							{
 								RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
-
-								paramsLeft.height = height;
-								paramsLeft.width = width;
-								paramsLeft.leftMargin = 0;
-								paramsLeft.topMargin = y;
+								paramsLeft.setMargins(left, top, right, bottom);
 								frame.setLayoutParams(paramsLeft);
+								frame.requestLayout();
 							}
 							else
 							{
@@ -2909,19 +2906,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 								{
 									LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
-									params.height = height;
-									params.width = width;
-									params.leftMargin = 0;
-									params.topMargin = y;
+									int versatz = 0;
+									if (TabMainView.LeftTab != null)
+									{
+										versatz = (int) (TabMainView.LeftTab.getWidth() - frame.getWidth());
+									}
+
+									params.setMargins(versatz + left, top, right, bottom);
 									tabFrame.setLayoutParams(params);
-
-									LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame.getLayoutParams();
-
-									paramsLeft.height = height;
-									paramsLeft.width = UI_Size_Base.that.getWindowWidth() - width;
-									paramsLeft.leftMargin = 0;
-									paramsLeft.topMargin = y;
-									frame.setLayoutParams(paramsLeft);
+									tabFrame.requestLayout();
 								}
 							}
 						}
