@@ -82,7 +82,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 {
 
 	public static SettingsActivity that;
-	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
+	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>(); // FIXME change to CB_List
 	private Button btnOk, btnCancel, btnMenu;
 	private ScrollBox scrollBox;
 	private CB_RectF ButtonRec, itemRec;
@@ -263,21 +263,15 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		}
 
-		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
+		SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button,
+				SettingModus.Normal, SettingStoreType.Global);
+		CB_View_Base langView = getLangSpinnerView(lang);
 
+		addControlToLinearLayout(langView, margin);
+
+		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
 		if (iteratorCat != null && iteratorCat.hasNext())
 		{
-
-			SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button,
-					SettingModus.Normal, SettingStoreType.Global);
-			CB_View_Base langView = getLangSpinnerView(lang);
-
-			addControlToLinearLayout(langView, margin);
-
-			// SettingsListCategoryButton quick = new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal,
-			// true);
-			// CB_View_Base quickView = getButtonView(quick, 0);
-			// addControlToLinearLayout(quickView, margin);
 
 			ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<SettingBase<?>>();// Config.settings.values().toArray();
 

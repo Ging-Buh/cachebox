@@ -6,15 +6,15 @@ import java.util.Iterator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -29,7 +29,7 @@ public class ButtonDialog extends Dialog
 	public final int BUTTON_NEUTRAL = 2;
 	public final int BUTTON_NEGATIVE = 3;
 
-	private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
+	private final ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
 	public Button button1;
 	public Button button2;
@@ -242,7 +242,6 @@ public class ButtonDialog extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 
@@ -261,7 +260,14 @@ public class ButtonDialog extends Dialog
 			@Override
 			public void run()
 			{
-				GL.that.showDialog(ButtonDialog.this);
+				try
+				{
+					GL.that.showDialog(ButtonDialog.this);
+				}
+				catch (Exception e)
+				{
+
+				}
 			}
 		});
 

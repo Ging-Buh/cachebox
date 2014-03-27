@@ -318,6 +318,7 @@ public class SettingsItem_QuickButton extends CB_View_Base
 			MenuItem mi = icm.addItem(position, QuickActions.getName(action.ordinal()),
 					new SpriteDrawable(QuickActions.getActionEnumById(action.ordinal()).getIcon()), true);
 
+			mi.setIndex(position);
 			mi.setWidth(listView.getWidth() - (listView.getBackground().getLeftWidth() * 2));
 			mi.setClickable(true);
 			mi.setOnClickListener(new OnClickListener()

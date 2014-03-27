@@ -1613,13 +1613,19 @@ public class GL implements ApplicationListener, InputProcessor
 		DialogIsShown = true;
 		darknesAnimationRuns = true;
 		actDialog.onShow();
-		actDialog.setEnabled(true);
-		actDialog.setVisible();
+		try
+		{
+			actDialog.setEnabled(true);
+			actDialog.setVisible();
+		}
+		catch (Exception e)
+		{
 
+		}
 		platformConector.showForDialog();
 
 		renderOnce("ShowDialog");
-		Logger.LogCat("ShowDialog: " + actDialog.toString());
+
 	}
 
 	public void showActivity(final ActivityBase activity)

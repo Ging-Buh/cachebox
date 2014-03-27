@@ -16,8 +16,6 @@
 
 package CB_UI_Base.Math;
 
-import java.util.Arrays;
-
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
@@ -283,7 +281,13 @@ public class CB_RectF
 
 	public boolean equals(CB_RectF rec)
 	{
-		return Arrays.equals(this.member, rec.member);
+		// Compare only x,y,width and height
+		if (this.member[0] != rec.member[0]) return false;
+		if (this.member[1] != rec.member[1]) return false;
+		if (this.member[2] != rec.member[2]) return false;
+		if (this.member[3] != rec.member[3]) return false;
+
+		return true;
 	}
 
 	public CB_RectF copy()
@@ -296,6 +300,7 @@ public class CB_RectF
 		if (this.member[1] == i) return;
 		this.member[1] = i;
 		calcCrossCorner();
+		CallRecChanged();
 	}
 
 	public void setX(float i)
@@ -303,6 +308,7 @@ public class CB_RectF
 		if (this.member[0] == i) return;
 		this.member[0] = i;
 		calcCrossCorner();
+		CallRecChanged();
 	}
 
 	/**
@@ -494,6 +500,8 @@ public class CB_RectF
 	public void setRec(CB_RectF rec)
 	{
 		if (rec == null) return;
+		// chk of changes
+		if (this.equals(rec)) return;
 		System.arraycopy(rec.member, 0, this.member, 0, 10);
 		CallRecChanged();
 	}
@@ -506,9 +514,13 @@ public class CB_RectF
 
 	public void setPos(float x, float y)
 	{
+		// chk of changes
+		if (this.member[0] == x && this.member[1] == y) return;
+
 		this.member[0] = x;
 		this.member[1] = y;
 		calcCrossCorner();
+		CallRecChanged();
 	}
 
 	public float getCenterPosX()
@@ -523,6 +535,8 @@ public class CB_RectF
 
 	public void set(float x, float y, float width, float height)
 	{
+		// chk of changes
+		if (this.member[0] == x && this.member[1] == y && this.member[2] == width && this.member[3] == height) return;
 		this.member[0] = x;
 		this.member[1] = y;
 		this.member[2] = width;

@@ -206,7 +206,7 @@ public class V_ListView extends ListViewBase
 	AtomicBoolean isInCalculation = new AtomicBoolean(false);
 
 	@Override
-	protected void calcDefaultPosList()
+	public void calcDefaultPosList()
 	{
 		if (isInCalculation.get())
 		{

@@ -589,9 +589,9 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 	}
 
-	public CB_RectF ThisWorldRec;
-	public CB_RectF intersectRec;
-	public ParentInfo myParentInfo;
+	public CB_RectF ThisWorldRec; // FIXME make final and set values
+	public CB_RectF intersectRec;// FIXME make final and set values
+	public ParentInfo myParentInfo;// FIXME make final and set values
 	private boolean mustSetScissor = false;
 	protected boolean childsInvalidate = false;
 	private boolean thisInvalidate = true;
@@ -1191,7 +1191,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getY() == i) return;
 		super.setY(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setY");
+		GL.that.renderOnce(" setY");
 	}
 
 	@Override
@@ -1209,14 +1209,14 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getX() == Pos.x && this.getY() == Pos.y) return;
 		super.setPos(Pos);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setPos(Vector)");
+		GL.that.renderOnce(" setPos(Vector)");
 	}
 
 	public void setZeroPos()
 	{
-		super.setPos(new Vector2(0, 0));
+		super.setPos(0, 0);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setZeroPos");
+		GL.that.renderOnce(" setZeroPos");
 	}
 
 	@Override
@@ -1224,7 +1224,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		super.setPos(x, y);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setPos(float)");
+		GL.that.renderOnce(" setPos(float)");
 	}
 
 	// Abfrage der clickToleranz, mit der Bestimmt wird ab welcher Bewegung ein onTouchDragged erzeugt wird und beim loslassen kein click
@@ -1313,12 +1313,12 @@ public abstract class GL_View_Base extends CB_RectF
 		return enabled;
 	}
 
-	@Override
-	protected void calcCrossCorner()
-	{
-		super.calcCrossCorner();
-		thisInvalidate = true;
-	}
+	// @Override
+	// protected void calcCrossCorner()
+	// {
+	// super.calcCrossCorner();
+	// thisInvalidate = true;
+	// }
 
 	private Object data = null;
 

@@ -14,7 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.webkit.JavascriptInterface;
-import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -214,16 +213,6 @@ public class GcApiLogin extends Activity
 		// webView.setWebChromeClient(new WebChromeClient());
 		WebControl.getSettings().setJavaScriptEnabled(true);
 		WebControl.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
-
-		WebControl.evaluateJavascript(javaScript, new ValueCallback<String>()
-		{
-
-			@Override
-			public void onReceiveValue(String value)
-			{
-				// do nothing
-			}
-		});
 
 		WebControl.loadUrl(GC_AuthUrl);
 	}
