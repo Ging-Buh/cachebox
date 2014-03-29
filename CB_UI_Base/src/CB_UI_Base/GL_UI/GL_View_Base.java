@@ -594,7 +594,7 @@ public abstract class GL_View_Base extends CB_RectF
 	public ParentInfo myParentInfo;// FIXME make final and set values
 	private boolean mustSetScissor = false;
 	protected boolean childsInvalidate = false;
-	private boolean thisInvalidate = true;
+	protected boolean thisInvalidate = true;
 
 	public CB_RectF getWorldRec()
 	{

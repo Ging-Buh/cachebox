@@ -97,13 +97,13 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	@Override
 	public void onResized(CB_RectF rec)
 	{
-
+		thisInvalidate = true;
 	}
 
 	@Override
 	public void onParentRezised(CB_RectF rec)
 	{
-
+		thisInvalidate = true;
 	}
 
 	@Override
