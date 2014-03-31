@@ -78,6 +78,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 	private final int MAX_FBO_RENDER_TIME = 200;
 	private static final boolean TOUCH_DEBUG = false;
+	private final boolean FORCE = true;
 
 	/**
 	 * See http://code.google.com/p/libgdx/wiki/SpriteBatch Performance tuning
@@ -237,6 +238,7 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			RunOnGL(run);
 		}
+		renderOnce("RunOnGL called", FORCE);
 	}
 
 	public void RunOnGL(IRunOnGL run)
@@ -247,7 +249,7 @@ public class GL implements ApplicationListener, InputProcessor
 			synchronized (runOnGL_ListWaitpool)
 			{
 				runOnGL_ListWaitpool.add(run);
-				renderOnce("RunOnGL called");
+				renderOnce("RunOnGL called", FORCE);
 				return;
 			}
 		}
@@ -256,7 +258,7 @@ public class GL implements ApplicationListener, InputProcessor
 			runOnGL_List.add(run);
 		}
 
-		renderOnce("RunOnGL called");
+		renderOnce("RunOnGL called", FORCE);
 	}
 
 	public void RunIfInitial(IRunOnGL run)
@@ -266,7 +268,7 @@ public class GL implements ApplicationListener, InputProcessor
 			runIfInitial.add(run);
 		}
 
-		renderOnce("runIfInitial called");
+		renderOnce("runIfInitial called", FORCE);
 	}
 
 	protected boolean ShaderSetted = false;
@@ -805,6 +807,8 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			cancelLongClickTimer();
 		}
+
+		renderOnce("OnTouchEvent", FORCE);
 
 		return true;
 	}
