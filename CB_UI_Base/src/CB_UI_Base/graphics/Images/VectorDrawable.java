@@ -31,7 +31,7 @@ import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -210,7 +210,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 
 						try
 						{
-							Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+							Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 
 							long start = System.currentTimeMillis();
 
@@ -261,7 +261,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 
 							FBOisDrawed = true;
 							FBO_DrawingTime = System.currentTimeMillis() - start;
-							Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+							Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 							GL.batch.setProjectionMatrix(oriMatrix);
 
 							m_fboEnabled = false;

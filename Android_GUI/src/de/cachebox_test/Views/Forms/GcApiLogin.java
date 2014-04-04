@@ -13,7 +13,6 @@ import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -222,7 +221,6 @@ public class GcApiLogin extends Activity
 	class MyJavaScriptInterface
 	{
 
-		@JavascriptInterface
 		public void showHTML(String html)
 		{
 

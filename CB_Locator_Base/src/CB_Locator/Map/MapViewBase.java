@@ -49,7 +49,7 @@ import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -691,7 +691,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		CB_RectF r = this.ThisWorldRec;
 
-		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 
 		BitmapFont font = Fonts.getNormal();
 
@@ -715,7 +715,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
 		font.draw(batch, str, 20, 20);
-		Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 	}
 
 	// FIXME make point and vPoint final and setValues!

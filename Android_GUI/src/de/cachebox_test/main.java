@@ -34,11 +34,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-
 import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
@@ -170,10 +165,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.backends.android.AndroidInput;
-import com.badlogic.gdx.backends.android.surfaceview.DefaultGLSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.NotifyService.LocalBinder;
@@ -631,7 +624,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (input == null)
 			{
 				AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-				config.useGL20 = true;
 				graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 						: config.resolutionStrategy);
 
@@ -1035,7 +1027,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-			config.useGL20 = true;
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 					: config.resolutionStrategy);
 			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
@@ -1133,7 +1124,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			Logger.DEBUG("Main=> onResume input== null");
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-			config.useGL20 = true;
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 					: config.resolutionStrategy);
 			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
@@ -1714,7 +1704,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// gdxView = initializeForView(glListener, GL20);
 
 			AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-			cfg.useGL20 = true;
 			cfg.numSamples = 16;
 
 			gdxView = initializeForView(glListener, cfg);
@@ -1723,8 +1712,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			int GlSurfaceType = -1;
 			if (gdxView instanceof GLSurfaceView20) GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
-			else if (gdxView instanceof GLSurfaceViewCupcake) GlSurfaceType = ViewGL.GLSURFACE_CUPCAKE;
-			else if (gdxView instanceof DefaultGLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_DEFAULT;
 			else if (gdxView instanceof GLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_GLSURFACE;
 
 			ViewGL.setSurfaceType(GlSurfaceType);
@@ -1734,16 +1721,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			switch (GlSurfaceType)
 			{
 			case ViewGL.GLSURFACE_VIEW20:
-				((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+				((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
 				break;
-			case ViewGL.GLSURFACE_CUPCAKE:
-				((GLSurfaceViewCupcake) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
-				break;
-			case ViewGL.GLSURFACE_DEFAULT:
-				((DefaultGLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
-				break;
+
 			case ViewGL.GLSURFACE_GLSURFACE:
-				((GLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+				((GLSurfaceView) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
 				break;
 			}
 
@@ -2810,27 +2792,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			return -1;
 		}
 	};
-
-	private boolean checkGL20Support(Context context)
-	{
-
-		EGL10 egl = (EGL10) EGLContext.getEGL();
-		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-
-		int[] version = new int[2];
-		egl.eglInitialize(display, version);
-
-		int EGL_OPENGL_ES2_BIT = 4;
-		int[] configAttribs =
-			{ EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4, EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-					EGL10.EGL_NONE };
-
-		EGLConfig[] configs = new EGLConfig[10];
-		int[] num_config = new int[1];
-		egl.eglChooseConfig(display, configAttribs, configs, 10, num_config);
-		egl.eglTerminate(display);
-		return num_config[0] > 0;
-	}
 
 	// #########################################################
 
