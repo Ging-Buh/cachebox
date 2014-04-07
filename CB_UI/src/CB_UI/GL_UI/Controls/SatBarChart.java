@@ -101,7 +101,16 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		{
 			for (int i = 0, n = GPS.getSatList().size(); i < n; i++)
 			{
-				GpsStrength tmp = GPS.getSatList().get(i);
+				GpsStrength tmp;
+				try
+				{
+					tmp = GPS.getSatList().get(i);
+				}
+				catch (Exception e)
+				{
+					break;
+				}
+
 				// balken höhe festlegen
 				if (balken[count] != null)
 				{

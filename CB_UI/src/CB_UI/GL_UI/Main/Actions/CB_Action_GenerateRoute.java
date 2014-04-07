@@ -31,9 +31,9 @@ import CB_UI.GL_UI.Controls.Dialogs.RouteDialog.returnListner;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
 import CB_UI.Map.RouteOverlay.Track;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -319,7 +319,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														@Override
 														public void run()
 														{
-															GL_MsgBox.Show("OpenRouteService", "no route found", MessageBoxButtons.OK,
+															GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
 																	MessageBoxIcon.Error, null);
 														}
 													});
@@ -330,21 +330,54 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 											}
 											catch (Exception e)
 											{
+												wd.close();
 
-												e.printStackTrace();
+												GL.that.RunOnGL(new IRunOnGL()
+												{
+													// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+													// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+													@Override
+													public void run()
+													{
+														GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
+																MessageBoxIcon.Error, null);
+													}
+												});
 											}
 
 											// String page = builder.toString(); //page enthält komplette zurückgelieferte Web-Seite
 										}
 										catch (ClientProtocolException e)
 										{
+											wd.close();
 
-											e.printStackTrace();
+											GL.that.RunOnGL(new IRunOnGL()
+											{
+												// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+												// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+												@Override
+												public void run()
+												{
+													GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
+															MessageBoxIcon.Error, null);
+												}
+											});
 										}
 										catch (IOException e)
 										{
+											wd.close();
 
-											e.printStackTrace();
+											GL.that.RunOnGL(new IRunOnGL()
+											{
+												// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+												// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+												@Override
+												public void run()
+												{
+													GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
+															MessageBoxIcon.Error, null);
+												}
+											});
 										}
 										RouteOverlay.RoutesChanged();
 

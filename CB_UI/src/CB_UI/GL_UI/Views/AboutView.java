@@ -348,17 +348,24 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		if (selectedCache != null)
 		{
-			if (selectedWaypoint != null)
+			try
 			{
-				WaypointLabel.setText(selectedWaypoint.GcCode);
-				CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " "
-						+ UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
+				if (selectedWaypoint != null)
+				{
+					WaypointLabel.setText(selectedWaypoint.GcCode);
+					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " "
+							+ UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
+				}
+				else
+				{
+					WaypointLabel.setText(selectedCache.GcCode);
+					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " "
+							+ UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				WaypointLabel.setText(selectedCache.GcCode);
-				CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " "
-						+ UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
+				CoordLabel.setText(" - - - ");
 			}
 		}
 		GL.that.renderOnce("About refresh Text");
