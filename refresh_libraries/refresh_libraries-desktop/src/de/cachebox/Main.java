@@ -9,6 +9,7 @@ public class Main
 	{
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "refresh_libraries";
+		cfg.useGL20 = false;
 		cfg.width = 950;
 		cfg.height = 600;
 

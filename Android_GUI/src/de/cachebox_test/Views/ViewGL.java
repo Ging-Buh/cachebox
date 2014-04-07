@@ -15,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.badlogic.gdx.backends.android.surfaceview.DefaultGLSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.cachebox_test.R;
 import de.cachebox_test.Events.ViewOptionsMenu;
@@ -128,6 +130,8 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	}
 
 	public final static int GLSURFACE_VIEW20 = 0;
+	public final static int GLSURFACE_CUPCAKE = 1;
+	public final static int GLSURFACE_DEFAULT = 2;
 	public final static int GLSURFACE_GLSURFACE = 3;
 
 	private static int mAktSurfaceType = -1;
@@ -159,7 +163,12 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 		case GLSURFACE_VIEW20:
 			((GLSurfaceView20) ViewGl).requestRender();
 			break;
-
+		case GLSURFACE_CUPCAKE:
+			((GLSurfaceViewCupcake) ViewGl).requestRender();
+			break;
+		case GLSURFACE_DEFAULT:
+			((DefaultGLSurfaceView) ViewGl).requestRender();
+			break;
 		case GLSURFACE_GLSURFACE:
 			((GLSurfaceView) ViewGl).requestRender();
 			break;
@@ -175,11 +184,16 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 			switch (mAktSurfaceType)
 			{
 			case GLSURFACE_VIEW20:
-				((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_WHEN_DIRTY);
+				((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
 				break;
-
+			case GLSURFACE_CUPCAKE:
+				((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
+				break;
+			case GLSURFACE_DEFAULT:
+				((DefaultGLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
+				break;
 			case GLSURFACE_GLSURFACE:
-				((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_WHEN_DIRTY);
+				((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_WHEN_DIRTY);
 				break;
 			}
 			isContinousRenderMode.set(false);
@@ -198,11 +212,16 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 		switch (mAktSurfaceType)
 		{
 		case GLSURFACE_VIEW20:
-			((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
+			((GLSurfaceView20) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
 			break;
-
+		case GLSURFACE_CUPCAKE:
+			((GLSurfaceViewCupcake) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+			break;
+		case GLSURFACE_DEFAULT:
+			((DefaultGLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+			break;
 		case GLSURFACE_GLSURFACE:
-			((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
+			((GLSurfaceView) ViewGl).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
 			break;
 		}
 		isContinousRenderMode.set(true);

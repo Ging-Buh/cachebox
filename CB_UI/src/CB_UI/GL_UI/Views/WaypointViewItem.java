@@ -20,7 +20,7 @@ import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -65,14 +65,14 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		@Override
 		public void renderChilds(final Batch batch, ParentInfo parentInfo)
 		{
-			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 
 			batch.flush();
 
 			this.render(batch);
 			batch.flush();
 
-			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 		}
 	}
 

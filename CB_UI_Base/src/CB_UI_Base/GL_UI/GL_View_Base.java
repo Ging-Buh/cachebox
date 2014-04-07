@@ -12,7 +12,7 @@ import CB_Utils.Util.MoveableList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -427,7 +427,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (!withoutScissor)
 		{
 			if (intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0) return; // hier gibt es nichts zu rendern
-			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
 					(int) intersectRec.getHeight() + 1);
 		}

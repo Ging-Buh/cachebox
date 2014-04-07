@@ -241,10 +241,10 @@ public class SpriteCacheBase
 	protected static void setPath(CB_Skin skin)
 	{
 
-		if (Gdx.gl20 != null)
+		if (Gdx.gl11 != null)
 		{
-			Gdx.gl20.glFlush();
-			Gdx.gl20.glFinish();
+			Gdx.gl11.glFlush();
+			Gdx.gl11.glFinish();
 		}
 
 		String TexturName = CB_UI_Base_Settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp" : "UI_IconPack.spp";
