@@ -29,8 +29,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcConfig;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.common.TypeConverterFactory;
@@ -40,6 +38,8 @@ import org.apache.xmlrpc.server.RequestProcessorFactoryFactory;
 import org.apache.xmlrpc.server.XmlRpcHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.util.ReflectionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /** <p>A default servlet implementation The typical use would
@@ -56,7 +56,7 @@ import org.apache.xmlrpc.util.ReflectionUtil;
  */
 public class XmlRpcServlet extends HttpServlet {
 	private static final long serialVersionUID = 2348768267234L;
-	private static final Log log = LogFactory.getLog(XmlRpcServlet.class);
+	private static final Logger log = LoggerFactory.getLogger(XmlRpcServlet.class);
     private XmlRpcServletServer server;
     private AbstractReflectiveHandlerMapping.AuthenticationHandler authenticationHandler;
     private RequestProcessorFactoryFactory requestProcessorFactoryFactory;

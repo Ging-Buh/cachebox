@@ -4,12 +4,18 @@ import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
 import org.apache.xmlrpc.server.XmlRpcStreamServer;
 import org.apache.xmlrpc.webserver.WebServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 public class Rpc_Server {
 	// WebServer für die RPC-Communication
 	private WebServer webServer = null;
+	public Logger log;
 
 	public Rpc_Server(Class rpcFunctions) {
+		log = LoggerFactory.getLogger(Rpc_Server.class);
 		startWebserver(rpcFunctions);
 	}
 
@@ -35,9 +41,9 @@ public class Rpc_Server {
 			serverConfig.setEnabledForExceptions(true);
 			xmlRpcServer.setConfig(serverConfig);
 			webServer.start();
-			System.out.println("RpcWebServer started");
+			log.info("RpcWebServer started on port " + 9911);
 		} catch (Exception ex) {
-			System.out.println("Error starting RpcWebServer: " + ex.getMessage());
+			log.error("Error starting RpcWebServer: " + ex.getMessage());
 		}
 
 	}
