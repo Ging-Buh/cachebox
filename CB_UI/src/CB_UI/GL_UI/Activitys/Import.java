@@ -1245,7 +1245,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						}
 					}
 
-					dis.setAnimationType(AnimationType.Work);
+					try
+					{
+						dis.setAnimationType(AnimationType.Work);
+					}
+					catch (Exception e)
+					{
+
+					}
 
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte

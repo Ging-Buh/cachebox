@@ -50,6 +50,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerTime;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -74,6 +75,7 @@ import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingStringArray;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingsAudio;
+import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -1028,8 +1030,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 										@Override
 										public void getFolderReturn(String Path)
 										{
-											SB.setValue(Path);
-											resortList();
+											// check WriteProtection
+											if (FileIO.checkWritePermission(Path))
+											{
+												SB.setValue(Path);
+												resortList();
+											}
+											else
+											{
+												String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+												GL.that.Toast(WriteProtectionMsg);
+											}
+
 										}
 									});
 							return true;

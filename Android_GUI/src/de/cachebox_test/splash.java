@@ -338,7 +338,7 @@ public class splash extends Activity
 		// check Write permission
 		if (!askAgain)
 		{
-			if (!checkWritePermission(workPath))
+			if (!FileIO.checkWritePermission(workPath))
 			{
 				askAgain = true;
 				if (!ToastEx)
@@ -480,7 +480,7 @@ public class splash extends Activity
 
 					final String Name = FileIO.GetFileNameWithoutExtension(AddWorkPath);
 
-					if (!checkWritePermission(AddWorkPath))
+					if (!FileIO.checkWritePermission(AddWorkPath))
 					{
 						// delete this Work Path
 						deleteWorkPath(AddWorkPath);
@@ -585,7 +585,7 @@ public class splash extends Activity
 							@Override
 							public void getFolderReturn(String Path)
 							{
-								if (checkWritePermission(Path))
+								if (FileIO.checkWritePermission(Path))
 								{
 
 									AdditionalWorkPathArray.add(Path);
@@ -643,30 +643,6 @@ public class splash extends Activity
 			startInitial();
 		}
 
-	}
-
-	private boolean checkWritePermission(String addWorkPath)
-	{
-		try
-		{
-			String testFolderName = addWorkPath + "/Test";
-
-			File testFolder = new File(testFolderName);
-			File test = new File(testFolderName + "/Test.txt");
-			testFolder.mkdirs();
-			test.createNewFile();
-			if (!test.exists())
-			{
-				return false;
-			}
-			test.delete();
-			testFolder.delete();
-		}
-		catch (IOException e)
-		{
-			return false;
-		}
-		return true;
 	}
 
 	private String getExternalSdPath(String Folder)

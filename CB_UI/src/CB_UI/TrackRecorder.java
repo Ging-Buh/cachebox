@@ -16,6 +16,7 @@ import CB_Locator.Locator.CompassType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Math.TrackPoint;
@@ -45,7 +46,7 @@ public class TrackRecorder
 		GlobalCore.AktuelleRoute.TrackLength = 0;
 		GlobalCore.AktuelleRoute.AltitudeDifference = 0;
 
-		String directory = Config.settings.TrackFolder.getValue();
+		String directory = CB_UI_Settings.TrackFolder.getValue();
 		if (!FileIO.createDirectory(directory)) return;
 
 		if (gpxfile == null)

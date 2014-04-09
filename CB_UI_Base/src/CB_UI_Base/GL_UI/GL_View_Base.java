@@ -1,7 +1,6 @@
 package CB_UI_Base.GL_UI;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -700,11 +699,7 @@ public abstract class GL_View_Base extends CB_RectF
 					if (view != null) view.onParentRezised(this);
 				}
 			}
-			catch (java.util.NoSuchElementException e)
-			{
-				// do nothing
-			}
-			catch (ConcurrentModificationException e)
+			catch (Exception e)
 			{
 				// do nothing
 			}
