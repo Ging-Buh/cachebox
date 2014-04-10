@@ -23,7 +23,6 @@ import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -134,7 +133,6 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 
 		if (HashStringList.contains(AtlasHashString))
 		{
-			Logger.LogCat("Immage are in to Atlas");
 			return;
 		}
 		HashStringList.add(AtlasHashString);

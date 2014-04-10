@@ -779,7 +779,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht �berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown �bergeben!!!
-		boolean behandelt = false;
+		boolean handled = false;
 		try
 		{
 			if (childs != null && childs.size() > 0)
@@ -797,17 +797,20 @@ public abstract class GL_View_Base extends CB_RectF
 					{
 						// touch innerhalb des Views
 						// -> Klick an das View weitergeben
-						behandelt = view.click(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
+						handled = view.click(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
+
+						// if handled, we can break and don't test the rest
+						if (handled) break;
 					}
 				}
 			}
-			if (!behandelt)
+			if (!handled)
 			{
 				// kein Klick in einem untergeordnetem View
 				// -> hier behandeln
 				if (mOnClickListener != null)
 				{
-					behandelt = mOnClickListener.onClick(this, x, y, pointer, button);
+					handled = mOnClickListener.onClick(this, x, y, pointer, button);
 				}
 
 			}
@@ -816,7 +819,7 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			e.printStackTrace();
 		}
-		return behandelt;
+		return handled;
 	}
 
 	public boolean doubleClick(int x, int y, int pointer, int button)

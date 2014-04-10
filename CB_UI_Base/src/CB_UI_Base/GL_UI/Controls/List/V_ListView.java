@@ -180,6 +180,7 @@ public class V_ListView extends ListViewBase
 						if (lastAndFirst.y == -1)
 						{
 							scrollTo(0);
+							selectionchanged = false;
 							return;
 						}
 

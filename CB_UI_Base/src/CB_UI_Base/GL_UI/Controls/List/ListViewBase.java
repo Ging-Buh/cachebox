@@ -464,8 +464,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	{
 		if (mPosDefault == null || mBaseAdapter == null) return;
 
-		// if (i < getMaxItemCount()) i = getMaxItemCount();
-
 		Point lastAndFirst = getFirstAndLastVisibleIndex();
 
 		if (lastAndFirst.y == -1)
@@ -519,7 +517,11 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 					float newPos = mPos - ((mPos - mAnimationTarget) / 2);
 					if ((!mBottomAnimation && mAnimationTarget + 1.5 > mPos) || (mBottomAnimation && mAnimationTarget - 1.5 < mPos))
 					{
-
+						if (mAnimationTimer == null)
+						{
+							this.cancel();
+							return;
+						}
 						setListPos(mAnimationTarget, true);
 						stopTimer();
 						return;

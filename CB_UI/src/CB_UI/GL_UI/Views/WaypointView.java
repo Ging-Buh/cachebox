@@ -269,7 +269,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		}
 		else
 		{
-			this.notifyDataSetChanged();
+			// this.notifyDataSetChanged();
 		}
 
 		// aktuellen Waypoint in der List anzeigen
@@ -310,6 +310,13 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		if (GlobalCore.getSelectedWaypoint() != null)
 		{
+
+			if (aktWaypoint == GlobalCore.getSelectedWaypoint())
+			{
+				// is selected
+				return;
+			}
+
 			aktWaypoint = GlobalCore.getSelectedWaypoint();
 			int id = 0;
 

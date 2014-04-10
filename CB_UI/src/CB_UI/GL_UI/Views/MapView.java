@@ -494,7 +494,27 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				arrow.setOrigin(GL_UISizes.TargetArrow.halfWidth, GL_UISizes.TargetArrow.height);
 				arrow.draw(batch);
 
-				TargetArrow.set(boundsX, boundsY, GL_UISizes.TargetArrow.width, GL_UISizes.TargetArrow.height);
+				// get real bounding box of TargetArrow
+				float t[] = arrow.getVertices();
+				float maxX = Math.max(Math.max(t[0], t[5]), Math.max(t[10], t[15]));
+				float minX = Math.min(Math.min(t[0], t[5]), Math.min(t[10], t[15]));
+				float maxY = Math.max(Math.max(t[1], t[6]), Math.max(t[11], t[16]));
+				float minY = Math.min(Math.min(t[1], t[6]), Math.min(t[11], t[16]));
+				TargetArrow.set(minX, minY, maxX - minX, maxY - minY);
+
+				// {// DEBUG
+				//
+				// Pixmap debugRegPixmap = new Pixmap((int) TargetArrow.getWidth(), (int) TargetArrow.getHeight(), Pixmap.Format.RGBA8888);
+				// debugRegPixmap.setColor(1f, 0f, 0f, 1f);
+				// debugRegPixmap.drawRectangle(1, 1, (int) TargetArrow.getWidth() - 1, (int) TargetArrow.getHeight() - 1);
+				//
+				// Texture debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
+				//
+				// Sprite DebugSprite = new Sprite(debugRegTexture, (int) TargetArrow.getWidth(), (int) TargetArrow.getHeight());
+				//
+				// DebugSprite.setBounds(TargetArrow.getX(), TargetArrow.getY(), TargetArrow.getWidth(), TargetArrow.getHeight());
+				// DebugSprite.draw(batch);
+				// }
 
 			}
 			else

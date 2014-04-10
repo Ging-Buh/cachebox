@@ -134,11 +134,8 @@ public class CoordinateButton extends Button implements ICopyPaste
 
 	protected void showPopUp(int x, int y)
 	{
-		if ((popUp != null) && (popUp.getchilds() == null)) popUp = null;
-		if (popUp == null)
-		{
-			popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), this);
-		}
+
+		popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), this);
 
 		float noseOffset = popUp.getHalfWidth() / 2;
 
