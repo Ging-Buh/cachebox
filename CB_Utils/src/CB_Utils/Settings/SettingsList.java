@@ -129,7 +129,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 				{
 					if (Data != null) dao.WriteToDatabase(Data, setting);
 				}
-				else if (SettingStoreType.Global == setting.getStoreType())
+				else if (SettingStoreType.Global == setting.getStoreType()
+						|| (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 				{
 					dao.WriteToDatabase(getSettingsDB(), setting);
 				}
@@ -173,7 +174,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			{
 				setting = dao.ReadFromDatabase(getDataDB(), setting);
 			}
-			else if (SettingStoreType.Global == setting.getStoreType())
+			else if (SettingStoreType.Global == setting.getStoreType()
+					|| (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 			{
 				setting = dao.ReadFromDatabase(getSettingsDB(), setting);
 			}
