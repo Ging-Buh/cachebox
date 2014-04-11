@@ -116,7 +116,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	protected void render(Batch batch)
 	{
 		super.render(batch);
-		// renderDebugInfo(batch);
 	}
 
 	@Override
@@ -397,6 +396,11 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		mSlideBox.setBackground(SpriteCacheBase.ProgressBack);
 
+	}
+
+	public void onResized(CB_RectF rec)
+	{
+		super.onResized(rec);
 	}
 
 }

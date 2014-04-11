@@ -308,11 +308,9 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	@Override
 	public void onResized(CB_RectF rec)
 	{
-		// setBaseAdapter(mBaseAdapter);
-
 		// Items neu laden
 		calcDefaultPosList();
-		reloadItems();
+		mMustSetPos = true;
 	}
 
 	@Override

@@ -1705,7 +1705,7 @@ public class GL implements ApplicationListener, InputProcessor
 			actActivity = null;
 			mActivity.removeChildsDirekt();
 			child.setClickable(true);
-			child.invalidate();
+			// child.invalidate();
 			ActivityIsShown = false;
 			darknesAlpha = 0f;
 			if (MsgToPlatformConector) platformConector.hideForDialog();
@@ -1789,7 +1789,7 @@ public class GL implements ApplicationListener, InputProcessor
 			actDialog = null;
 			mDialog.removeChildsDirekt();
 			child.setClickable(true);
-			child.invalidate();
+			// child.invalidate();
 			DialogIsShown = false;
 			darknesAlpha = 0f;
 		}
