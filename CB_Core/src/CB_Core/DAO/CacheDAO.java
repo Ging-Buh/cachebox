@@ -519,4 +519,32 @@ public class CacheDAO
 		reader.close();
 		return GcCodes;
 	}
+
+	public Boolean loadBooleanValue(String gcCode, String key)
+	{
+		CoreCursor reader = Database.Data.rawQuery("select " + key + " from Caches where GcCode = \"" + gcCode + "\"", null);
+		try
+		{
+			reader.moveToFirst();
+			while (!reader.isAfterLast())
+			{
+				if (reader.getInt(0) != 0)
+				{ // gefunden. Suche abbrechen
+					return true;
+				}
+				reader.moveToNext();
+			}
+		}
+		catch (Exception ex)
+		{
+			return false;
+		}
+		finally
+		{
+			reader.close();
+		}
+
+		return false;
+	}
+
 }
