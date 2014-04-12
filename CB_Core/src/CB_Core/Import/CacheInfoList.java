@@ -139,6 +139,7 @@ public class CacheInfoList
 	 */
 	public static void dispose()
 	{
+		if (List == null) return;
 		List.clear();
 		List = null;
 	}
@@ -151,11 +152,13 @@ public class CacheInfoList
 	 */
 	public static boolean ExistCache(String GcCode)
 	{
+		if (List == null) return false;
 		return List.containsKey(GcCode);
 	}
 
 	public static boolean CacheIsFavoriteInDB(String GcCode)
 	{
+		if (List == null) return false;
 		if (List.containsKey(GcCode))
 		{
 			CacheInfo ci = List.get(GcCode);
@@ -167,6 +170,8 @@ public class CacheInfoList
 
 	public static boolean CacheIsFoundInDB(String GcCode)
 	{
+		if (List == null) return false;
+
 		if (List.containsKey(GcCode))
 		{
 			CacheInfo ci = List.get(GcCode);
@@ -364,6 +369,8 @@ public class CacheInfoList
 		info.Found = cache.Found;
 		info.favorite = cache.Favorit();
 		info.CorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
+
+		if (List == null) List = new HashMap<String, CacheInfo>();
 
 		List.put(cache.GcCode, info);
 

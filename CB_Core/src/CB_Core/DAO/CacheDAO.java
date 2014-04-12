@@ -237,11 +237,9 @@ public class CacheDAO
 
 		Parameters args = new Parameters();
 
-		// bei einem Update müssen nicht alle infos überschrieben werden
-
-		// args.put("Id", cache.Id);
-		// args.put("GcCode", cache.GcCode);
-		// args.put("GcId", cache.GcId);
+		args.put("Id", cache.Id);
+		args.put("GcCode", cache.GcCode);
+		args.put("GcId", cache.GcId);
 		if (cache.Pos.isValid() && !cache.Pos.isZero())
 		{
 			// Update Cache position only when new position is valid and not zero

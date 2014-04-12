@@ -18,7 +18,7 @@ public class LatLonToPixel extends TestCase
 	Tile tile = new Tile(35207, 21477, (byte) 16);
 	private LatLong latLong = new LatLong(52.57133375654519, 13.400573730475);
 
-	private final int TEST_COUNT = 1000000000;
+	private final int TEST_COUNT = 1000;
 
 	public void test_LatLonToPixel()
 	{
@@ -57,7 +57,7 @@ public class LatLonToPixel extends TestCase
 		// #############################################################
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < 1000000; i++)
+		for (int i = 0; i < TEST_COUNT; i++)
 		{
 			CacheboxY();
 		}
@@ -66,7 +66,7 @@ public class LatLonToPixel extends TestCase
 
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < 1000000; i++)
+		for (int i = 0; i < TEST_COUNT; i++)
 		{
 			MapsforgeY();
 		}
@@ -81,7 +81,7 @@ public class LatLonToPixel extends TestCase
 		// #############################################################
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < 1000000; i++)
+		for (int i = 0; i < TEST_COUNT; i++)
 		{
 			LatLonInitFast();
 		}
@@ -90,7 +90,7 @@ public class LatLonToPixel extends TestCase
 
 		begin = System.currentTimeMillis();
 
-		for (int i = 0; i < 1000000; i++)
+		for (int i = 0; i < TEST_COUNT; i++)
 		{
 			LatLonInit();
 		}
@@ -100,7 +100,7 @@ public class LatLonToPixel extends TestCase
 		LatLong c = LatLonInit();
 		fastLatLong d = LatLonInitFast();
 
-		assertEquals(c, d);
+		assertEquals(d, c); // must equals check fastLatLong.equals(LatLon) only fastLatLon has a comparator for this
 
 	}
 
