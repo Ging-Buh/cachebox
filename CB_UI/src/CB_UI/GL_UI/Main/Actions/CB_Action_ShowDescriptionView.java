@@ -3,7 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.ArrayList;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Api.SearchForGeocaches_Core;
+import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -125,8 +125,9 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						@Override
 						public void run()
 						{
-							CB_UI.Api.SearchForGeocaches.SearchGC searchC = new SearchForGeocaches_Core.SearchGC();
-							searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
+							String GcCode = GlobalCore.getSelectedCache().GcCode;
+
+							SearchGC searchC = new SearchGC(GcCode);
 							searchC.number = 1;
 							searchC.available = false;
 
@@ -155,7 +156,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							}
 
 							CachListChangedEventList.Call();
-							Cache selCache = Database.Data.Query.GetCacheByGcCode(searchC.gcCode);
+							Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
 							GlobalCore.setSelectedCache(selCache);
 							GL.that.RunOnGL(new IRunOnGL()
 							{

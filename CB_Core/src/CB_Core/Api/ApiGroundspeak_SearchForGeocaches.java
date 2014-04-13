@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Api;
 
 import java.util.ArrayList;
@@ -23,6 +38,10 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Utils.Log.Logger;
 
+/**
+ * @author Hubert
+ * @author Longri
+ */
 public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 {
 	private Search search;
@@ -42,6 +61,16 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 		this.imageList = imageList;
 	}
 
+	public ApiGroundspeak_SearchForGeocaches(Search search, ArrayList<Cache> cacheList)
+	{
+		super();
+		this.search = search;
+		this.gpxFilenameId = -1;
+		this.cacheList = cacheList;
+		this.logList = null;
+		this.imageList = null;
+	}
+
 	@Override
 	protected queryType getQueryType()
 	{
@@ -57,16 +86,6 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 	@Override
 	protected boolean getRequest(JSONObject request)
 	{
-		// Generate the request Object
-		try
-		{
-			search.getRequest(request, isLite);
-		}
-		catch (JSONException e1)
-		{
-			Logger.Error("ApiGroundspeak - SearchForGeocaches:JSONException", e1.getMessage());
-			return false;
-		}
 		// isLite vom SearchObjekt auswerten, da dies darin geändert worden sein könnte
 		if (search.getIsLite())
 		{
@@ -77,6 +96,17 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 		{
 			isLite = search.getIsLite();
 			apiStatus = 1; // nicht voll laden
+		}
+
+		// Generate the request Object
+		try
+		{
+			search.getRequest(request, isLite);
+		}
+		catch (JSONException e1)
+		{
+			Logger.Error("ApiGroundspeak - SearchForGeocaches:JSONException", e1.getMessage());
+			return false;
 		}
 
 		return true;
@@ -125,8 +155,8 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			{
 				String dateCreated = jCache.getString("DateCreated");
 				int date1 = dateCreated.indexOf("/Date(");
-				int date2 = dateCreated.indexOf("-");
-				String date = (String) dateCreated.subSequence(date1 + 6, date2);
+				int date2 = dateCreated.lastIndexOf("-");
+				String date = dateCreated.substring(date1 + 6, date2);
 				cache.DateHidden = new Date(Long.valueOf(date));
 			}
 			catch (Exception exc)
@@ -178,18 +208,21 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			cache.Id = Cache.GenerateCacheId(cache.GcCode);
 			cache.listingChanged = false;
 
-			try
+			if (!this.isLite)
 			{
-				cache.longDescription = jCache.getString("LongDescription");
-			}
-			catch (Exception e1)
-			{
-				Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.GcCode, e1);
-				cache.longDescription = "";
-			}
-			if (jCache.getBoolean("LongDescriptionIsHtml") == false)
-			{
-				cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+				try
+				{
+					cache.longDescription = jCache.getString("LongDescription");
+				}
+				catch (Exception e1)
+				{
+					Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.GcCode, e1);
+					cache.longDescription = "";
+				}
+				if (jCache.getBoolean("LongDescriptionIsHtml") == false)
+				{
+					cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+				}
 			}
 			cache.Name = jCache.getString("Name");
 			cache.noteCheckSum = 0;
@@ -206,19 +239,21 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 
 			}
 			cache.Rating = 0;
-			// cache.Rating =
-			try
+			if (!this.isLite)
 			{
-				cache.shortDescription = jCache.getString("ShortDescription");
-			}
-			catch (Exception e)
-			{
-				Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.GcCode, e);
-				cache.shortDescription = "";
-			}
-			if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
-			{
-				cache.shortDescription = cache.shortDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+				try
+				{
+					cache.shortDescription = jCache.getString("ShortDescription");
+				}
+				catch (Exception e)
+				{
+					Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.GcCode, e);
+					cache.shortDescription = "";
+				}
+				if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
+				{
+					cache.shortDescription = cache.shortDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+				}
 			}
 			JSONObject jContainer = jCache.getJSONObject("ContainerType");
 			int jSize = jContainer.getInt("ContainerTypeId");
@@ -415,168 +450,6 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 	protected void actualizeSpoilerOfActualCache(Cache cache)
 	{
 		// hier im Core nichts machen da hier keine UI vorhanden ist
-	}
-
-	/**
-	 * Search Definitions
-	 */
-
-	public static class Search
-	{
-		public int number;
-		public boolean excludeHides = false;
-		public boolean excludeFounds = false;
-		public boolean available = true;
-		public int geocacheLogCount = 10;
-		public int trackableLogCount = 10;
-		private boolean isLite;
-
-		public Search(int number)
-		{
-			this.number = number;
-		}
-
-		protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-		{
-			this.isLite = isLite;
-			request.put("IsLite", isLite);
-			request.put("StartIndex", 0);
-			request.put("MaxPerPage", number);
-			request.put("GeocacheLogCount", geocacheLogCount);
-			request.put("TrackableLogCount", trackableLogCount);
-			if (available)
-			{
-				JSONObject excl = new JSONObject();
-				excl.put("Archived", false);
-				excl.put("Available", true);
-				request.put("GeocacheExclusions", excl);
-
-			}
-			if (excludeHides)
-			{
-				JSONObject excl = new JSONObject();
-				JSONArray jarr = new JSONArray();
-				jarr.put(CB_Core_Settings.GcLogin.getValue());
-				excl.put("UserNames", jarr);
-				request.put("NotHiddenByUsers", excl);
-			}
-
-			if (excludeFounds)
-			{
-				JSONObject excl = new JSONObject();
-				JSONArray jarr = new JSONArray();
-				jarr.put(CB_Core_Settings.GcLogin.getValue());
-				excl.put("UserNames", jarr);
-				request.put("NotFoundByUsers", excl);
-			}
-		}
-
-		// isLite kann hier nochmal abgefragt werden da dieser Wert von einzelnen Search-Objecten geändert werden könnte
-		protected boolean getIsLite()
-		{
-			return isLite;
-		}
-	}
-
-	public static class SearchCoordinate extends Search
-	{
-		public Coordinate pos;
-		public float distanceInMeters;
-
-		public SearchCoordinate(int number, Coordinate pos, float distanceInMeters)
-		{
-			super(number);
-			this.pos = pos;
-			this.distanceInMeters = distanceInMeters;
-		}
-
-		@Override
-		protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-		{
-			super.getRequest(request, isLite);
-			JSONObject jpr = new JSONObject();
-			jpr.put("DistanceInMeters", String.valueOf((int) distanceInMeters));
-			JSONObject jpt = new JSONObject();
-			jpt.put("Latitude", String.valueOf(pos.getLatitude()));
-			jpt.put("Longitude", String.valueOf(pos.getLongitude()));
-			jpr.put("Point", jpt);
-			request.put("PointRadius", jpr);
-		}
-	}
-
-	public static class SearchGC extends Search
-	{
-		private ArrayList<String> gcCodes;
-
-		public SearchGC(String gcCode)
-		{
-			super(1);
-			// einzelner Cache wird immer voll geladen
-			this.gcCodes = new ArrayList<String>();
-			this.gcCodes.add(gcCode);
-		}
-
-		public SearchGC(ArrayList<String> gcCodes)
-		{
-			super(gcCodes.size());
-			this.gcCodes = gcCodes;
-		}
-
-		@Override
-		protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-		{
-			super.getRequest(request, isLite);
-			JSONObject requestcc = new JSONObject();
-			JSONArray requesta = new JSONArray();
-			for (String gcCode : gcCodes)
-			{
-				requesta.put(gcCode);
-			}
-			requestcc.put("CacheCodes", requesta);
-			request.put("CacheCode", requestcc);
-		}
-	}
-
-	public static class SearchGCName extends SearchCoordinate
-	{
-		public String gcName;
-
-		public SearchGCName(int number, Coordinate pos, float distanceInMeters, String gcName)
-		{
-			super(number, pos, distanceInMeters);
-			this.gcName = gcName;
-		}
-
-		@Override
-		protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-		{
-			super.getRequest(request, isLite);
-			JSONObject jgc = new JSONObject();
-			jgc.put("GeocacheName", gcName);
-			request.put("GeocacheName", jgc);
-		}
-	}
-
-	public static class SearchGCOwner extends SearchCoordinate
-	{
-		public String OwnerName;
-
-		public SearchGCOwner(int number, Coordinate pos, float distanceInMeters, String ownerName)
-		{
-			super(number, pos, distanceInMeters);
-			this.OwnerName = ownerName;
-		}
-
-		@Override
-		protected void getRequest(JSONObject request, boolean isLite) throws JSONException
-		{
-			super.getRequest(request, isLite);
-			JSONObject jhidden = new JSONObject();
-			JSONArray jusers = new JSONArray();
-			jusers.put(OwnerName);
-			jhidden.put("UserNames", jusers);
-			request.put("HiddenByUsers", jhidden);
-		}
 	}
 
 }

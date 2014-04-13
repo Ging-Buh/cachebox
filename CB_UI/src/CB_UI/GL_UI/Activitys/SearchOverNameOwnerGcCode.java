@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.Search;
+import CB_Core.Api.SearchGC;
+import CB_Core.Api.SearchGCName;
+import CB_Core.Api.SearchGCOwner;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
@@ -359,7 +363,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 								ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 								ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 								ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-								CB_UI.Api.SearchForGeocaches.Search searchC = null;
+								Search searchC = null;
 
 								String searchPattern = mEingabe.getText().toLowerCase();
 
@@ -386,29 +390,15 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 								switch (actSearchType)
 								{
 								case Name:
-									CB_UI.Api.SearchForGeocaches.SearchGCName searchCName = new CB_UI.Api.SearchForGeocaches.SearchGCName();
-									searchCName.distanceInMeters = 5000000;
-									searchCName.pos = searchCoord;
-									searchCName.number = 50;
-									searchCName.gcName = searchPattern;
-									searchC = searchCName;
+									searchC = new SearchGCName(50, searchCoord, 5000000, searchPattern);
 									break;
 
 								case GC_Code:
-									CB_UI.Api.SearchForGeocaches.SearchGC searchCGC = new CB_UI.Api.SearchForGeocaches.SearchGC();
-									searchCGC.gcCode = searchPattern;
-									searchCGC.number = 1;
-									searchC = searchCGC;
+									searchC = new SearchGC(searchPattern);
 									break;
 
 								case Owner:
-									CB_UI.Api.SearchForGeocaches.SearchGCOwner searchCOwner = new CB_UI.Api.SearchForGeocaches.SearchGCOwner();
-									searchCOwner.OwnerName = searchPattern;
-									searchCOwner.number = 50;
-									searchCOwner.pos = searchCoord;
-									searchCOwner.distanceInMeters = 5000000;
-
-									searchC = searchCOwner;
+									searchC = new SearchGCOwner(50, searchCoord, 5000000, searchPattern);
 									break;
 								}
 

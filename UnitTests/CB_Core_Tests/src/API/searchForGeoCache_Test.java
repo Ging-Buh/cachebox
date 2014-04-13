@@ -6,11 +6,11 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 import CB_Core.InitTestDBs;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.SearchCoordinate;
 import CB_Core.Api.SearchForGeocaches_Core;
-import CB_Core.Api.SearchForGeocaches_Core.SearchCoordinate;
-import CB_Core.Api.SearchForGeocaches_Core.SearchGC;
-import CB_Core.Api.SearchForGeocaches_Core.SearchGCName;
-import CB_Core.Api.SearchForGeocaches_Core.SearchGCOwner;
+import CB_Core.Api.SearchGC;
+import CB_Core.Api.SearchGCName;
+import CB_Core.Api.SearchGCOwner;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
@@ -54,7 +54,6 @@ public class searchForGeoCache_Test extends TestCase
 
 	public void testSearchCache()
 	{
-		String accessToken = Config.GetAccessToken();
 
 		Coordinate searchCoord = new Coordinate(52.581892, 13.398128); // Home
 																		// of
@@ -64,10 +63,7 @@ public class searchForGeoCache_Test extends TestCase
 		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-		SearchCoordinate searchC = new SearchCoordinate();
-		searchC.pos = searchCoord;
-		searchC.distanceInMeters = 500000;
-		searchC.number = 50;
+		SearchCoordinate searchC = new SearchCoordinate(50, searchCoord, 500000);
 
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
 		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
@@ -78,10 +74,7 @@ public class searchForGeoCache_Test extends TestCase
 
 	public void testSearchGcCode()
 	{
-		String accessToken = Config.GetAccessToken();
-
-		SearchGC searchC = new SearchGC();
-		searchC.gcCode = "GC2TZPJ";
+		SearchGC searchC = new SearchGC("GC2TZPJ");
 
 		searchC.number = 1;
 
@@ -104,17 +97,10 @@ public class searchForGeoCache_Test extends TestCase
 
 	public void testSearchName()
 	{
-		String accessToken = Config.GetAccessToken();
 
-		Coordinate searchCoord = new Coordinate(52.581892, 13.398128); // Home
-																		// of
-																		// Katipa(like
-																		// Longri)
+		Coordinate searchCoord = new Coordinate(52.581892, 13.398128); // Home of Katipa(like Longri)
 
-		SearchGCName searchC = new SearchGCName();
-		searchC.gcName = "Kleiner Multi - Quer durch die Heide";
-		searchC.number = 30;
-		searchC.pos = searchCoord;
+		SearchGCName searchC = new SearchGCName(30, searchCoord, 50000, "Kleiner Multi - Quer durch die Heide");
 
 		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
@@ -134,17 +120,13 @@ public class searchForGeoCache_Test extends TestCase
 
 	public void testSearchByOwner()
 	{
-		String accessToken = Config.GetAccessToken();
+
 		Coordinate searchCoord = new Coordinate(52.581892, 13.398128); // Home
 		// of
 		// Katipa(like
 		// Longri)
 
-		SearchGCOwner searchC = new SearchGCOwner();
-		searchC.OwnerName = "bros";
-		// searchC.OwnerName = "nimaci2001";
-		searchC.number = 30;
-		searchC.pos = searchCoord;
+		SearchGCOwner searchC = new SearchGCOwner(30, searchCoord, 50000, "bros");
 
 		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
@@ -173,8 +155,6 @@ public class searchForGeoCache_Test extends TestCase
 
 	public void testChkState()
 	{
-		String accessToken = Config.GetAccessToken();
-
 		ArrayList<Cache> chkList = new ArrayList<Cache>();
 
 		Cache c = new Cache(0.0, 0.0, "", CacheTypes.Traditional, "GC2JT2F");

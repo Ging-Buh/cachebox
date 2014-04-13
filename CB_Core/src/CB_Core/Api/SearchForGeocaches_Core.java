@@ -61,36 +61,6 @@ public class SearchForGeocaches_Core
 		return false;
 	}
 
-	public static class Search
-	{
-		public int number;
-		public boolean excludeHides = false;
-		public boolean excludeFounds = false;
-		public boolean available = true;
-	}
-
-	public static class SearchCoordinate extends Search
-	{
-		public Coordinate pos;
-		public float distanceInMeters;
-		public int distance;
-	}
-
-	public static class SearchGC extends Search
-	{
-		public String gcCode;
-	}
-
-	public static class SearchGCName extends SearchCoordinate
-	{
-		public String gcName;
-	}
-
-	public static class SearchGCOwner extends SearchCoordinate
-	{
-		public String OwnerName;
-	}
-
 	public String SearchForGeocachesJSON(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList,
 			ArrayList<ImageEntry> imageList, long gpxFilenameId)
 	{
@@ -129,7 +99,12 @@ public class SearchForGeocaches_Core
 				request.put("TrackableLogCount", 10);
 				JSONObject requestcc = new JSONObject();
 				JSONArray requesta = new JSONArray();
-				requesta.put(searchGC.gcCode);
+
+				for (String gcCode : searchGC.gcCodes)
+				{
+					requesta.put(gcCode);
+				}
+
 				requestcc.put("CacheCodes", requesta);
 				request.put("CacheCode", requestcc);
 			}
@@ -651,8 +626,7 @@ public class SearchForGeocaches_Core
 		Cache newCache = null;
 		try
 		{
-			SearchForGeocaches_Core.SearchGC search = new SearchForGeocaches_Core.SearchGC();
-			search.gcCode = aktCache.GcCode;
+			SearchGC search = new SearchGC(aktCache.GcCode);
 
 			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();

@@ -1,21 +1,17 @@
-package CB_Core.CB_Core.Api;
+package API;
 
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
 import CB_Core.InitTestDBs;
-import CB_Core.Api.SearchForGeocaches_Core;
-import CB_Core.Api.SearchGC;
-import CB_Core.Enums.CacheTypes;
+import CB_Core.Api.ApiGroundspeak_SearchForGeocaches;
+import CB_Core.Api.SearchLiveMap;
 import CB_Core.Types.Cache;
-import CB_Core.Types.ImageEntry;
-import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
+import CB_Locator.Coordinate;
 import CB_UI.Config;
 
-public class Bug384 extends TestCase
+public class searchLiveMapTests extends TestCase
 {
-
 	@Override
 	public void setUp() throws Exception
 	{
@@ -42,24 +38,18 @@ public class Bug384 extends TestCase
 		assertFalse("Kein Access Key gefunden, liegt die Config an der richtigen stelle?", key.equals(""));
 	}
 
-	public void testSearchCache()
+	public void testSearchLive()
 	{
-		SearchGC searchC = new SearchGC("GC166HV");
 
-		searchC.number = 1;
+		Coordinate searchCoord = new Coordinate(52.581892, 13.398128);
 
 		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+		SearchLiveMap searchC = new SearchLiveMap(2, searchCoord, 500);
 
-		// String result =
-		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
+		ApiGroundspeak_SearchForGeocaches apis = new ApiGroundspeak_SearchForGeocaches(searchC, apiCaches);
+		apis.execute();
 
-		Cache c = apiCaches.get(0);
-		Waypoint w = c.waypoints.get(0);
-		assertTrue("Falsche WP.Type zuordnung", w.Type == CacheTypes.ReferencePoint);
+		assertFalse("Keine Caches gefunden", apiCaches.size() < 1);
 
 	}
-
 }

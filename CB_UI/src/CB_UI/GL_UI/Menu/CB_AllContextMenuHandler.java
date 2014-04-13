@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Menu;
 import java.util.ArrayList;
 
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -144,8 +145,7 @@ public class CB_AllContextMenuHandler
 					@Override
 					public void run()
 					{
-						CB_UI.Api.SearchForGeocaches.SearchGC searchC = new CB_UI.Api.SearchForGeocaches.SearchGC();
-						searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
+						SearchGC searchC = new SearchGC(GlobalCore.getSelectedCache().GcCode);
 
 						searchC.number = 1;
 

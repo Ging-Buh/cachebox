@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.SearchCoordinate;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
@@ -481,15 +482,12 @@ public class SearchOverPosition extends ActivityBase
 								ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 								ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 								ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-								CB_UI.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_UI.Api.SearchForGeocaches.SearchCoordinate();
+								SearchCoordinate searchC = new SearchCoordinate(50, actSearchPos, Config.lastSearchRadius.getValue() * 1000);
 
 								searchC.excludeFounds = Config.SearchWithoutFounds.getValue();
 								searchC.excludeHides = Config.SearchWithoutOwns.getValue();
 								searchC.available = Config.SearchOnlyAvible.getValue();
 
-								searchC.pos = actSearchPos;
-								searchC.distanceInMeters = Config.lastSearchRadius.getValue() * 1000;
-								searchC.number = 50;
 								dis.setAnimationType(AnimationType.Download);
 								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
 										gpxFilename.Id);

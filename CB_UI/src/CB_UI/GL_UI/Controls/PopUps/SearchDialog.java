@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.Search;
+import CB_Core.Api.SearchGC;
+import CB_Core.Api.SearchGCName;
+import CB_Core.Api.SearchGCOwner;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.ImageDAO;
@@ -733,7 +737,7 @@ public class SearchDialog extends PopUp_Base
 				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-				CB_UI.Api.SearchForGeocaches.Search searchC = null;
+				Search searchC = null;
 
 				String searchPattern = mEingabe.getText().toLowerCase();
 
@@ -744,29 +748,15 @@ public class SearchDialog extends PopUp_Base
 				switch (mSearchState)
 				{
 				case 0:
-					CB_UI.Api.SearchForGeocaches.SearchGCName searchCName = new CB_UI.Api.SearchForGeocaches.SearchGCName();
-					searchCName.pos = searchCoord;
-					searchCName.distanceInMeters = 5000000;
-					searchCName.number = 50;
-					searchCName.gcName = searchPattern;
-					searchC = searchCName;
+					searchC = new SearchGCName(50, searchCoord, 5000000, searchPattern);
 					break;
 
 				case 1:
-					CB_UI.Api.SearchForGeocaches.SearchGC searchCGC = new CB_UI.Api.SearchForGeocaches.SearchGC();
-					searchCGC.gcCode = searchPattern;
-					searchCGC.number = 1;
-					searchC = searchCGC;
+					searchC = new SearchGC(searchPattern);
 					break;
 
 				case 2:
-					CB_UI.Api.SearchForGeocaches.SearchGCOwner searchCOwner = new CB_UI.Api.SearchForGeocaches.SearchGCOwner();
-					searchCOwner.OwnerName = searchPattern;
-					searchCOwner.number = 50;
-					searchCOwner.pos = searchCoord;
-					searchCOwner.distanceInMeters = 5000000;
-
-					searchC = searchCOwner;
+					searchC = new SearchGCOwner(50, searchCoord, 5000000, searchPattern);
 					break;
 				}
 
