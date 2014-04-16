@@ -88,9 +88,6 @@ public interface CB_UI_Settings
 	public static final SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang",
 			SettingStoreType.Global);
 
-	public static final SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, INVISIBLE, Work
-			+ "/PocketQuery", SettingStoreType.Global);
-
 	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, NORMAL, Work + "/User/Tracks",
 			SettingStoreType.Global);
 

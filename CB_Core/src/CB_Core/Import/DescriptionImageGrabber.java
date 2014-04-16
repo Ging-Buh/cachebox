@@ -658,6 +658,7 @@ public class DescriptionImageGrabber
 		ImageName = ImageName.replace("[/:*?\"<>|]", "");
 		ImageName = ImageName.replace("\\", "");
 		ImageName = ImageName.replace("\n", "");
+		ImageName = ImageName.replace("\"", "");
 		ImageName = ImageName.trim();
 
 		int idx = uri.toString().lastIndexOf('.');

@@ -71,4 +71,8 @@ public interface CB_Core_Settings
 
 	public static final SettingString Friends = (SettingString) SettingsList.addSetting(new SettingString("Friends", SettingCategory.Login,
 			EXPERT, "", SettingStoreType.Global));
+
+	public static final SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, INVISIBLE,
+			Config_Core.WorkPath + "/PocketQuery", SettingStoreType.Global);
+
 }
