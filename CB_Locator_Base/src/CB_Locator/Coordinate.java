@@ -1,12 +1,16 @@
 package CB_Locator;
 
+import java.io.Serializable;
+
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Converter.UTMConvert;
 import CB_Utils.Lists.CB_List;
 
-public class Coordinate
+public class Coordinate implements Serializable
 {
+	private static final long serialVersionUID = 4288564255686705L;
+
 	static final String br = System.getProperty("line.separator");
 
 	protected boolean Valid;
