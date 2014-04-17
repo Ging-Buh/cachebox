@@ -9,7 +9,6 @@ import CB_Core.Api.SearchGC;
 import CB_Core.Api.SearchGCName;
 import CB_Core.Api.SearchGCOwner;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
@@ -427,11 +426,11 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 				}
 
 				// Delete all LongDescription from Query! LongDescription is Loading by showing DescriptionView direct from DB
-				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
-				{
-					Cache cache = Database.Data.Query.get(i);
-					cache.longDescription = "";
-				}
+				// for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
+				// {
+				// Cache cache = Database.Data.Query.get(i);
+				// cache.longDescription = "";
+				// }
 
 				if (!threadCanceld)
 				{

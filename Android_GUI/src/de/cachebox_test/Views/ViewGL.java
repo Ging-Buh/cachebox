@@ -153,7 +153,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	}
 
 	@Override
-	public void RequestRender(String requestName)
+	public void RequestRender()
 	{
 
 		// Logger.LogCat("RequestRender von : " + requestName);

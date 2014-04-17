@@ -4,8 +4,9 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
@@ -111,7 +112,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		this.setListPos(0, false);
 
 		this.invalidate();
-		GL.that.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce();
 	}
 
 	private void reloadList()
@@ -131,7 +132,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		}
 
 		this.invalidate();
-		GL.that.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -149,7 +150,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		Logger.LogCat("SolverView2 => Initial()");
 		this.setListPos(0, false);
 		chkSlideBack();
-		GL.that.renderOnce(this.getName() + " Initial()");
+		GL.that.renderOnce();
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()
@@ -272,13 +273,13 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 		if (cache == this.cache) return; // Cache hat sich nicht geändert!
 		// Solver speichern
 		if (this.cache != null) Database.SetSolver(this.cache, solver.getSolverString());
 		// nächsten Cache laden
-		this.cache = cache;
+		this.cache = new Cache(cache);
 		intiList();
 	}
 
@@ -384,7 +385,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		GL_MsgBox.Show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, deleteListener);
 	}
 
-	private Coordinate getSelectedCoordinateResult()
+	private CoordinateGPS getSelectedCoordinateResult()
 	{
 		// Get the coordinate of the actual selected solver line
 		// if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
@@ -398,14 +399,14 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			{
 				text = text.substring(text.indexOf("=") + 1);
 			}
-			Coordinate result = new Coordinate(text);
+			CoordinateGPS result = new CoordinateGPS(text);
 			if (!result.isValid())
 			{
 				// Zweizeilig versuchen
 				SolverZeile zeile2 = solver.get(mSelectedIndex + 1);
 				String text2 = zeile2.Solution;
 				if (text2.contains("=")) text2 = text2.substring(text2.indexOf("=") + 1);
-				result = new Coordinate(text + " " + text2);
+				result = new CoordinateGPS(text + " " + text2);
 			}
 			if (result.isValid()) return result;
 			else
@@ -421,7 +422,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	{
 		// Add new Waypoint with the selected Coordinates in the solver list
 		// if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
-		Coordinate result = getSelectedCoordinateResult();
+		CoordinateGPS result = getSelectedCoordinateResult();
 		if (result != null)
 		{
 			// Create New Waypoint
@@ -429,11 +430,11 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			wp.CacheId = GlobalCore.getSelectedCache().Id;
 			wp.setCoordinate(result);
 			wp.Type = CacheTypes.Final;
-			wp.Title = "Final";
+			wp.setTitle("Final");
 			wp.IsUserWaypoint = true;
 			try
 			{
-				wp.GcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+				wp.setGcCode(Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode()));
 			}
 			catch (Exception e)
 			{
@@ -463,7 +464,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	{
 		// Center Map to the actual selected Coordinates in the solver list
 		// if one Coordinate is splitted into 2 Lines (first Line latitude, second Line longitude) then the first line has to be selected
-		Coordinate result = getSelectedCoordinateResult();
+		CoordinateGPS result = getSelectedCoordinateResult();
 		if (result != null)
 		{
 			// Set Map Center

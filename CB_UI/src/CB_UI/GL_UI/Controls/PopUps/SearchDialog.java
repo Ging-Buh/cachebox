@@ -32,6 +32,7 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
@@ -41,7 +42,6 @@ import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Map.Descriptor;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
@@ -240,9 +240,6 @@ public class SearchDialog extends PopUp_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// eventuell eingesetzten Search Filter zurück setzen
-				clearSearchFilter();
-
 				close();
 				return true;
 			}
@@ -475,7 +472,7 @@ public class SearchDialog extends PopUp_Base
 					mSearchAktive = true;
 				}
 
-				Cache tmp = null;
+				CacheLite tmp = null;
 				for (int i = beginnSearchIndex, n = Database.Data.Query.size(); i < n; i++)
 				{
 					tmp = Database.Data.Query.get(i);
@@ -483,14 +480,13 @@ public class SearchDialog extends PopUp_Base
 					switch (mSearchState)
 					{
 					case 0:
-						criterionMatches = tmp.Name.toLowerCase().contains(searchPattern);
+						criterionMatches = tmp.getName().toLowerCase().contains(searchPattern);
 						break;
 					case 1:
-						criterionMatches = tmp.GcCode.toLowerCase().contains(searchPattern);
+						criterionMatches = tmp.getGcCode().toLowerCase().contains(searchPattern);
 						break;
 					case 2:
-						criterionMatches = tmp.Owner.toLowerCase().contains(searchPattern)
-								|| tmp.PlacedBy.toLowerCase().contains(searchPattern);
+						criterionMatches = tmp.getOwner().toLowerCase().contains(searchPattern);
 						break;
 					}
 					if (criterionMatches)
@@ -577,22 +573,22 @@ public class SearchDialog extends PopUp_Base
 	// CacheListView.that.CacheListChangedEvent();
 	// }
 
-	private void clearSearchFilter()
-	{
-		if (!Config.dynamicFilterAtSearch.getValue()) return;
-		synchronized (Database.Data.Query)
-		{
-			for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
-			{
-				Database.Data.Query.get(i).setSearchVisible(true);
-			}
-		}
-		if (CacheListView.that != null)
-		{
-			CacheListView.that.getListView().setHasInvisibleItems(false);
-			CacheListView.that.CacheListChangedEvent();
-		}
-	}
+	// private void clearSearchFilter()
+	// {
+	// if (!Config.dynamicFilterAtSearch.getValue()) return;
+	// synchronized (Database.Data.Query)
+	// {
+	// for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
+	// {
+	// Database.Data.Query.get(i).setSearchVisible(true);
+	// }
+	// }
+	// if (CacheListView.that != null)
+	// {
+	// CacheListView.that.getListView().setHasInvisibleItems(false);
+	// CacheListView.that.CacheListChangedEvent();
+	// }
+	// }
 
 	/**
 	 * Sucht mit den Vorgaben nach Caches über die API. Die Gefundenen Caches werden in die DB eingetragen und im Anschluss wird der lokale
@@ -785,8 +781,8 @@ public class SearchDialog extends PopUp_Base
 						for (Cache cache : apiCaches)
 						{
 							counter++;
-							cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-							cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+							cache.MapX = 256.0 * Descriptor.LongitudeToTileX(CacheLite.MapZoomLevel, cache.Longitude());
+							cache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, cache.Latitude());
 							if (Database.Data.Query.GetCacheById(cache.Id) == null)
 							{
 								Database.Data.Query.add(cache);
@@ -825,7 +821,7 @@ public class SearchDialog extends PopUp_Base
 					if (counter == 1)
 					{
 						// select this Cache
-						Cache cache = Database.Data.Query.GetCacheById(apiCaches.get(0).Id);
+						CacheLite cache = Database.Data.Query.GetCacheById(apiCaches.get(0).Id);
 						GlobalCore.setSelectedCache(cache);
 					}
 

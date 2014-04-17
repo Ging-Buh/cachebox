@@ -136,7 +136,7 @@ public class Button extends CB_View_Base
 			if (isPressed && !GL.getIsTouchDown())
 			{
 				isPressed = false;
-				GL.that.renderOnce(this.getName() + " Dragged");
+				GL.that.renderOnce();
 			}
 		}
 
@@ -149,7 +149,7 @@ public class Button extends CB_View_Base
 			else
 			{
 				Initial();
-				GL.that.renderOnce(this.getName() + " render");
+				GL.that.renderOnce();
 			}
 		}
 		else if (isPressed)
@@ -161,7 +161,7 @@ public class Button extends CB_View_Base
 			else
 			{
 				Initial();
-				GL.that.renderOnce(this.getName() + " render");
+				GL.that.renderOnce();
 			}
 		}
 		else if (isFocused)
@@ -173,7 +173,7 @@ public class Button extends CB_View_Base
 			else
 			{
 				Initial();
-				GL.that.renderOnce(this.getName() + " render");
+				GL.that.renderOnce();
 			}
 		}
 		else
@@ -185,7 +185,7 @@ public class Button extends CB_View_Base
 			else
 			{
 				Initial();
-				GL.that.renderOnce(this.getName() + " render");
+				GL.that.renderOnce();
 			}
 		}
 
@@ -203,7 +203,7 @@ public class Button extends CB_View_Base
 		if (!isDisabled)
 		{
 			isPressed = true;
-			GL.that.renderOnce(this.getName() + " touchDown");
+			GL.that.renderOnce();
 		}
 		return dragableButton ? false : true;
 	}
@@ -212,7 +212,7 @@ public class Button extends CB_View_Base
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 		isPressed = false;
-		GL.that.renderOnce(this.getName() + " Dragged");
+		GL.that.renderOnce();
 		return false;
 	}
 
@@ -221,7 +221,7 @@ public class Button extends CB_View_Base
 	{
 
 		isPressed = false;
-		GL.that.renderOnce(this.getName() + " touchUp");
+		GL.that.renderOnce();
 		return dragableButton ? false : true;
 	}
 
@@ -284,7 +284,7 @@ public class Button extends CB_View_Base
 			}
 
 			lblTxt = null;
-			GL.that.renderOnce(this.getName() + " setText");
+			GL.that.renderOnce();
 			return;
 		}
 
@@ -299,7 +299,7 @@ public class Button extends CB_View_Base
 		this.initRow(BOTTOMUP);
 		this.addLast(lblTxt);
 
-		GL.that.renderOnce(this.getName() + " setText2");
+		GL.that.renderOnce();
 	}
 
 	@Override

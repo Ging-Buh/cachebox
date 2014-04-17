@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Activitys;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
@@ -63,7 +64,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		if (MeasuredCoord.Referenz == null)
 		{
-			MeasuredCoord.Referenz = new Coordinate();
+			MeasuredCoord.Referenz = new CoordinateGPS();
 		}
 
 		iniOkCancel();
@@ -302,7 +303,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		redraw = false;
 
-		GL.that.renderOnce("MeasureCoord");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -332,7 +333,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		}
 
 		redraw = true;
-		GL.that.renderOnce("MeasureCoord");
+		GL.that.renderOnce();
 	}
 
 	@Override

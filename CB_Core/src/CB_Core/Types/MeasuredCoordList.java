@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 
@@ -50,7 +51,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 
 		if (this.size() == 0)
 		{
-			ret = new Coordinate(0, 0);
+			ret = new CoordinateGPS(0, 0);
 			ret.setValid(false);
 
 			return ret;
@@ -69,7 +70,7 @@ public class MeasuredCoordList extends ArrayList<MeasuredCoord>
 		}
 		while (iterator.hasNext());
 
-		ret = new Coordinate(sumLatitude / this.size(), sumLongitude / this.size());
+		ret = new CoordinateGPS(sumLatitude / this.size(), sumLongitude / this.size());
 		ret.setValid(true);
 
 		return ret;

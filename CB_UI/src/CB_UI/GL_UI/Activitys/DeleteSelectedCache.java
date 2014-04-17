@@ -19,7 +19,7 @@ public class DeleteSelectedCache
 		// Images
 		Logger.DEBUG("Delete Images");
 		ArrayList<String> GcCodeList = new ArrayList<String>();
-		GcCodeList.add(GlobalCore.getSelectedCache().GcCode);
+		GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
 		CacheListDAO dao = new CacheListDAO();
 		dao.delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
 				CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
@@ -33,8 +33,8 @@ public class DeleteSelectedCache
 			Database.DeleteFromDatabase(wp);
 		}
 		// Cache
-		Logger.DEBUG("Delete Cache " + GlobalCore.getSelectedCache().GcCode);
-		Database.Data.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().GcCode + "'", null);
+		Logger.DEBUG("Delete Cache " + GlobalCore.getSelectedCache().getGcCode());
+		Database.Data.delete("Caches", "GcCode='" + GlobalCore.getSelectedCache().getGcCode() + "'", null);
 		// Logs
 		Logger.DEBUG("Delete Logs");
 		LogDAO logdao = new LogDAO();

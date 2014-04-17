@@ -133,7 +133,7 @@ public abstract class RotateAnimation extends AnimationBase
 
 		batch.draw(mDrawable, drawX, drawY, mOriginX, mOriginY, drawwidth, drawHeight, mScale, mScale, animateRotateValue);
 
-		GL.that.renderOnce("RotateAnimation-" + name);
+		GL.that.renderOnce();
 
 	}
 

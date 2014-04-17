@@ -17,6 +17,7 @@
 package CB_Core.Types;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 
@@ -52,7 +53,7 @@ public class MeasuredCoord implements Comparable<MeasuredCoord>
 		Accuracy = accuracy;
 	}
 
-	public MeasuredCoord(Coordinate coord)
+	public MeasuredCoord(CoordinateGPS coord)
 	{
 		Latitude = coord.getLatitude();
 		Longitude = coord.getLongitude();

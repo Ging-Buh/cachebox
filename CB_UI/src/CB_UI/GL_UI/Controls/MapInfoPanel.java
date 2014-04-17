@@ -48,7 +48,7 @@ public class MapInfoPanel extends CB_View_Base
 				aktCoord = Coord;
 				lblLatitude.setText(UnitFormatter.FormatLatitudeDM(Coord.getLatitude()));
 				lblLongitude.setText(UnitFormatter.FormatLongitudeDM(Coord.getLongitude()));
-				GL.that.renderOnce(this.getName() + " setCoord");
+				GL.that.renderOnce();
 			}
 
 		}
@@ -102,7 +102,7 @@ public class MapInfoPanel extends CB_View_Base
 		if (distance == -1) lblDistance.setText("?");
 		else
 			lblDistance.setText(UnitFormatter.DistanceString(distance));
-		GL.that.renderOnce(this.getName() + " setDistance");
+		GL.that.renderOnce();
 	}
 
 	private float aktHeading = 0;
@@ -118,7 +118,7 @@ public class MapInfoPanel extends CB_View_Base
 			setArrowDrawable();
 			arrow.setRotate(-Heading);
 			compas_scale.setRotate(Bearing);
-			GL.that.renderOnce(this.getName() + " setBearing");
+			GL.that.renderOnce();
 		}
 	}
 

@@ -1,6 +1,7 @@
 package CB_UI.Solver.Functions;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Solver.DataTypes.DataType;
 
@@ -35,7 +36,7 @@ public class FunctionProjection extends Function
 			String s = Translation.Get("solverErrParamCount", "3", "$solverFuncProjection");
 			return s;
 		}
-		Coordinate coord = new Coordinate(parameter[0]);
+		Coordinate coord = new CoordinateGPS(parameter[0]);
 		if (!coord.isValid())
 		{
 			return Translation.Get("solverErrParamType", "$solverFuncProjection", "1", "$coordinate", "$coordinate", parameter[0]);
@@ -59,7 +60,7 @@ public class FunctionProjection extends Function
 			return Translation.Get("solverErrParamType", "$solverFuncProjection", "3", "$angle", "$number", parameter[2]);
 		}
 
-		Coordinate result = Coordinate.Project(coord.getLatitude(), coord.getLongitude(), angle, distance);
+		Coordinate result = CoordinateGPS.Project(coord.getLatitude(), coord.getLongitude(), angle, distance);
 		if (!result.isValid()) return Translation.Get("InvalidCoordinate", "$solverFuncProjection",
 				"Lat: " + String.valueOf(coord.getLatitude()) + ", Lon: " + String.valueOf(coord.getLongitude()));
 		return result.FormatCoordinate();

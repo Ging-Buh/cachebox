@@ -237,7 +237,7 @@ class MultiThreadQueueProcessor extends Thread
 		{
 			addLoadedTile(desc, tile);
 			// Redraw Map after a new Tile was loaded or generated
-			GL.that.renderOnce("MapTileLoader loadTile");
+			GL.that.renderOnce();
 		}
 		else
 		{
@@ -263,7 +263,7 @@ class MultiThreadQueueProcessor extends Thread
 		{
 			addLoadedOverlayTile(desc, tile);
 			// Redraw Map after a new Tile was loaded or generated
-			GL.that.renderOnce("MapTileLoader loadOverlayTile");
+			GL.that.renderOnce();
 		}
 		else
 		{

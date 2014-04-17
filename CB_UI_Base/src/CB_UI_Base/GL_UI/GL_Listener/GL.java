@@ -178,7 +178,8 @@ public class GL implements ApplicationListener, InputProcessor
 	protected int width = 0, height = 0;
 	protected boolean debugWriteSpriteCount = false;
 
-	private final MainViewBase mSplash, mMainView;
+	private MainViewBase mSplash;
+	private final MainViewBase mMainView;
 
 	/**
 	 * Constructor
@@ -238,7 +239,7 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			RunOnGL(run);
 		}
-		renderOnce("RunOnGL called", FORCE);
+		renderOnce(FORCE);
 	}
 
 	public void RunOnGL(IRunOnGL run)
@@ -249,7 +250,7 @@ public class GL implements ApplicationListener, InputProcessor
 			synchronized (runOnGL_ListWaitpool)
 			{
 				runOnGL_ListWaitpool.add(run);
-				renderOnce("RunOnGL called", FORCE);
+				renderOnce(FORCE);
 				return;
 			}
 		}
@@ -258,7 +259,7 @@ public class GL implements ApplicationListener, InputProcessor
 			runOnGL_List.add(run);
 		}
 
-		renderOnce("RunOnGL called", FORCE);
+		renderOnce(FORCE);
 	}
 
 	public void RunIfInitial(IRunOnGL run)
@@ -268,7 +269,7 @@ public class GL implements ApplicationListener, InputProcessor
 			runIfInitial.add(run);
 		}
 
-		renderOnce("runIfInitial called", FORCE);
+		renderOnce(FORCE);
 	}
 
 	protected boolean ShaderSetted = false;
@@ -506,13 +507,13 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			ActivityIsShown = false;
 			platformConector.hideForDialog();
-			renderOnce("");
+			renderOnce();
 		}
 		if (DialogIsShown && mDialog.getCildCount() <= 0)
 		{
 			DialogIsShown = false;
 			platformConector.hideForDialog();
-			renderOnce("");
+			renderOnce();
 		}
 
 		if (actDialog != null && actDialog.isDisposed())
@@ -723,7 +724,7 @@ public class GL implements ApplicationListener, InputProcessor
 			if (mDialog != null) mDialog.onShow();
 		}
 
-		renderOnce("Gl_Listner.onStart()");
+		renderOnce();
 
 	}
 
@@ -808,7 +809,7 @@ public class GL implements ApplicationListener, InputProcessor
 			cancelLongClickTimer();
 		}
 
-		renderOnce("OnTouchEvent", FORCE);
+		renderOnce(FORCE);
 
 		return true;
 	}
@@ -995,7 +996,6 @@ public class GL implements ApplicationListener, InputProcessor
 	{
 		if (timerValue == delay) return;
 		stopTimer();
-		// Logger.LogCat("Start Timer: " + delay + " (" + Name + ")");
 
 		timerValue = delay;
 		myTimer = new Timer();
@@ -1009,7 +1009,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 			private void TimerMethod()
 			{
-				if (listenerInterface != null) listenerInterface.RequestRender(Name);
+				if (listenerInterface != null) listenerInterface.RequestRender();
 			}
 
 		}, 0, delay);
@@ -1071,7 +1071,7 @@ public class GL implements ApplicationListener, InputProcessor
 				darknesAlpha = 1f;
 				darknesAnimationRuns = false;
 			}
-			renderOnce("Darknes Animation");
+			renderOnce();
 		}
 
 	}
@@ -1084,7 +1084,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (batch == null)
 		{
-			batch = new PolygonSpriteBatch(10920);
+			batch = new PolygonSpriteBatch();// PolygonSpriteBatch(10920);
 		}
 
 		if (modelBatch == null)
@@ -1158,7 +1158,7 @@ public class GL implements ApplicationListener, InputProcessor
 				{
 					renderViews.remove(view);
 					calcNewRenderSpeed();
-					if (listenerInterface != null) listenerInterface.RequestRender("");
+					if (listenerInterface != null) listenerInterface.RequestRender();
 				}
 				return;
 			}
@@ -1168,7 +1168,7 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 			renderViews.put(view, delay);
 			calcNewRenderSpeed();
-			if (listenerInterface != null) listenerInterface.RequestRender("");
+			if (listenerInterface != null) listenerInterface.RequestRender();
 		}
 	}
 
@@ -1190,22 +1190,18 @@ public class GL implements ApplicationListener, InputProcessor
 	 * @param view
 	 *            Aufrufendes GL_View_Base für Debug zwecke. Kann auch null sein.
 	 */
-	public void renderOnce(String requestName, boolean force)
+	public void renderOnce(boolean force)
 	{
 
 		if (!force && lastRenderOnceTime == GL.that.getStateTime()) return;
 		lastRenderOnceTime = GL.that.getStateTime();
-		if (requestName == null)
-		{
-			requestName = "";
-		}
 
-		if (listenerInterface != null) listenerInterface.RequestRender(requestName);
+		if (listenerInterface != null) listenerInterface.RequestRender();
 	}
 
-	public void renderOnce(String requestName)
+	public void renderOnce()
 	{
-		renderOnce(requestName, false);
+		renderOnce(false);
 	}
 
 	private void calcNewRenderSpeed()
@@ -1519,7 +1515,7 @@ public class GL implements ApplicationListener, InputProcessor
 		aktView.addChild(popUp);
 		aktPopUp = popUp;
 		aktPopUp.onShow();
-		renderOnce("Show PopUp");
+		renderOnce();
 	}
 
 	public void closePopUp(PopUp_Base popUp)
@@ -1531,7 +1527,7 @@ public class GL implements ApplicationListener, InputProcessor
 		if (aktPopUp != null) aktPopUp.onHide();
 		aktPopUp = null;
 		if (popUp != null) popUp.dispose();
-		renderOnce("Close PopUp");
+		renderOnce();
 	}
 
 	public boolean PopUpIsShown()
@@ -1628,7 +1624,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		platformConector.showForDialog();
 
-		renderOnce("ShowDialog");
+		renderOnce();
 
 	}
 
@@ -1713,7 +1709,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 
 		clearRenderViews();
-		renderOnce("Close Activity");
+		renderOnce();
 	}
 
 	public void closeAllDialogs()
@@ -1826,7 +1822,7 @@ public class GL implements ApplicationListener, InputProcessor
 			platformConector.showForDialog();
 
 		}
-		renderOnce("Close Dialog");
+		renderOnce();
 	}
 
 	public void Toast(CB_View_Base view)
@@ -1842,7 +1838,7 @@ public class GL implements ApplicationListener, InputProcessor
 			ToastIsShown = false;
 			mToastOverlay.removeChilds();
 
-			renderOnce("ToastClosing");
+			renderOnce();
 		}
 	}
 
@@ -1865,7 +1861,7 @@ public class GL implements ApplicationListener, InputProcessor
 				public void run()
 				{
 					ToastIsShown = false;
-					renderOnce("ToastClosing");
+					renderOnce();
 				}
 			};
 
@@ -1915,7 +1911,7 @@ public class GL implements ApplicationListener, InputProcessor
 	{
 		listenerInterface.RenderContinous();
 		stopRender = false;
-		renderOnce("Restart Render");
+		renderOnce();
 		setIsInitial();
 	}
 
@@ -2112,6 +2108,8 @@ public class GL implements ApplicationListener, InputProcessor
 		child = mMainView;
 		altSplash.dispose();
 		altSplash = null;
+		mSplash.dispose();
+		mSplash = null;
 		initialMarkerOverlay();
 		mMainView.onShow();
 		if (listenerInterface != null) listenerInterface.RenderDirty();

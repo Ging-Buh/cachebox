@@ -2,7 +2,7 @@ package CB_UI.GL_UI.Controls;
 
 import java.util.ArrayList;
 
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -119,11 +119,11 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 		if (cache != null && mLblCacheName != null)
 		{
-			mLblCacheName.setText(cache.Name);
+			mLblCacheName.setText(cache.getName());
 		}
 
 	}
@@ -135,7 +135,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		yPos = value;
 		mSlideBox.setY(value);
 		setQuickButtonListHeight();
-		GL.that.renderOnce(this.name);
+		GL.that.renderOnce();
 		callPosChangedEvent();
 	}
 

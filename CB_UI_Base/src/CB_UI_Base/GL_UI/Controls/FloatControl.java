@@ -41,7 +41,7 @@ public class FloatControl extends CB_View_Base
 		if (ButtonPos > this.getWidth() - slideButton.getWidth()) ButtonPos = this.getWidth() - slideButton.getWidth();
 
 		slideButton.setX(ButtonPos);
-		GL.that.renderOnce("ProgressBar state changed");
+		GL.that.renderOnce();
 	}
 
 	@Override

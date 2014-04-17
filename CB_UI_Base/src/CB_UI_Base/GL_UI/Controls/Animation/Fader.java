@@ -64,7 +64,7 @@ public class Fader
 		}
 		if (mFadeOut || mFadeIn)
 		{
-			if (this.isVisible()) GL.that.renderOnce("Fader in Action");
+			if (this.isVisible()) GL.that.renderOnce();
 		}
 		return mFadeValue;
 	}
@@ -87,7 +87,7 @@ public class Fader
 		cancelTimerToFadeOut();
 		mFadeoutBeginntime = GL.that.getStateTime() * 1000;
 		mFadeOut = true;
-		GL.that.renderOnce("Fader in Action");
+		GL.that.renderOnce();
 	}
 
 	/**

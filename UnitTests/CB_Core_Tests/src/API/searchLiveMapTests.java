@@ -8,6 +8,7 @@ import CB_Core.Api.ApiGroundspeak_SearchForGeocaches;
 import CB_Core.Api.SearchLiveMap;
 import CB_Core.Types.Cache;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_UI.Config;
 
 public class searchLiveMapTests extends TestCase
@@ -41,7 +42,7 @@ public class searchLiveMapTests extends TestCase
 	public void testSearchLive()
 	{
 
-		Coordinate searchCoord = new Coordinate(52.581892, 13.398128);
+		Coordinate searchCoord = new CoordinateGPS(52.581892, 13.398128);
 
 		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 		SearchLiveMap searchC = new SearchLiveMap(2, searchCoord, 500);

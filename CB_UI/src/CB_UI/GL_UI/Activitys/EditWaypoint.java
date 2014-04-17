@@ -135,7 +135,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
 				MeasuredLabelHeight, "CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBubbleNormal());
-		tvCacheName.setText(GlobalCore.getSelectedCache().Name);
+		tvCacheName.setText(GlobalCore.getSelectedCache().getName());
 		scrollBox.addChild(tvCacheName);
 	}
 
@@ -327,7 +327,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				UI_Size_Base.that.getButtonHeight());
 		etTitle = new EditTextField(rec, this);
 
-		String txt = (waypoint.Title == null) ? "" : waypoint.Title;
+		String txt = (waypoint.getTitle() == null) ? "" : waypoint.getTitle();
 
 		etTitle.setText(txt);
 		scrollBox.addChild(etTitle);
@@ -348,7 +348,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				UI_Size_Base.that.getButtonHeight());
 		etDescription = new EditTextField(this, rec, WrapType.WRAPPED, "DescTextField");
 
-		String txt = (waypoint.Description == null) ? "" : waypoint.Description;
+		String txt = (waypoint.getDescription() == null) ? "" : waypoint.getDescription();
 
 		etDescription.setText(txt);
 
@@ -386,7 +386,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				UI_Size_Base.that.getButtonHeight());
 		etClue = new EditTextField(this, rec, WrapType.WRAPPED, "ClueTextField");
 
-		String txt = (waypoint.Clue == null) ? "" : waypoint.Clue;
+		String txt = (waypoint.getClue() == null) ? "" : waypoint.getClue();
 
 		etClue.setText(txt);
 
@@ -436,9 +436,9 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				if (mReturnListner != null)
 				{
 					waypoint.Pos = bCoord.getCoordinate();
-					waypoint.Title = etTitle.getText();
-					waypoint.Description = etDescription.getText();
-					waypoint.Clue = etClue.getText();
+					waypoint.setTitle(etTitle.getText());
+					waypoint.setDescription(etDescription.getText());
+					waypoint.setClue(etClue.getText());
 					waypoint.IsStart = cbStartPoint.isChecked();
 					mReturnListner.returnedWP(waypoint);
 				}

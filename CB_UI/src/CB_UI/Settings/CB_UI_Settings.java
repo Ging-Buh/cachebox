@@ -204,8 +204,6 @@ public interface CB_UI_Settings
 
 	public static final SettingBool MapHideMyFinds = new SettingBool("MapHideMyFinds", SettingCategory.Map, NORMAL, false,
 			SettingStoreType.Global);
-	public static final SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", SettingCategory.Map, NORMAL, false,
-			SettingStoreType.Global);
 
 	// int
 	public static final SettingInt LogMaxMonthAge = (SettingInt) SettingsList.addSetting(new SettingInt("LogMaxMonthAge",

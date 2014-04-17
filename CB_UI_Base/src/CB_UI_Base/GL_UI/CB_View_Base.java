@@ -72,7 +72,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			@Override
 			public void run()
 			{
-				GL.that.renderOnce("ResetInitial");
+				GL.that.renderOnce();
 			}
 		}, 50);
 	}

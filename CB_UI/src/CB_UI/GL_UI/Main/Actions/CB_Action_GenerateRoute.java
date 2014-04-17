@@ -22,6 +22,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -87,8 +88,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 		tread.start();
 	}
 
-	private Coordinate start = new Coordinate();
-	private Coordinate target = new Coordinate();
+	private Coordinate start = new CoordinateGPS();
+	private Coordinate target = new CoordinateGPS();
 	private RouteDialog routeDia;
 	private CancelWaitDialog wd;
 
@@ -153,7 +154,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 										Coordinate lastAcceptedCoordinate = null;
 										float[] dist = new float[4];
 										double Distance = 0;
-										Coordinate FromPosition = new Coordinate();
+										Coordinate FromPosition = new CoordinateGPS();
 										String routepref = "Fastest";
 
 										if (canceld) return;
@@ -260,7 +261,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														double lat = Double.valueOf(latStr);
 														double lon = Double.valueOf(lonStr);
 
-														lastAcceptedCoordinate = new Coordinate(lat, lon);
+														lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
 
 														route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(),
 																lastAcceptedCoordinate.getLatitude(), 0, 0, null));

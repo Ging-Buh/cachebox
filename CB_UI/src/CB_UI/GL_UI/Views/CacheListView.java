@@ -21,8 +21,8 @@ import java.util.TimerTask;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
-import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
+import CB_Core.Types.CacheListLite;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
@@ -47,6 +47,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
+import CB_Utils.Util.SyncronizeHelper;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -93,7 +94,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		// Logger.LogCat("CacheListView => Initial()");
 		// this.setListPos(0, false);
 		listView.chkSlideBack();
-		GL.that.renderOnce(this.getName() + " Initial()");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -149,6 +150,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		PositionChangedEventList.Add(this);
 
+		SyncronizeHelper.sync("CachListView 153");
 		synchronized (Database.Data.Query)
 		{
 			try
@@ -172,6 +174,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			{
 				e.printStackTrace();
 			}
+			SyncronizeHelper.endSync("CachListView 153");
 		}
 		TimerTask task = new TimerTask()
 		{
@@ -195,7 +198,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		Timer timer = new Timer();
 		timer.schedule(task, 150);
 
-		GL.that.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce();
 	}
 
 	public void setSelectedCacheVisible()
@@ -213,8 +216,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				{
 					for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 					{
-						Cache ca = Database.Data.Query.get(i);
-						if (ca == GlobalCore.getSelectedCache())
+						CacheLite ca = Database.Data.Query.get(i);
+						if (ca.Id == GlobalCore.getSelectedCache().Id)
 						{
 							listView.setSelection(id);
 							if (listView.isDragable())
@@ -244,7 +247,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 							public void run()
 							{
 								listView.chkSlideBack();
-								GL.that.renderOnce(CacheListView.this.getName() + " setSelectedCachVisible [chkSlideBack]");
+								GL.that.renderOnce();
 							}
 						});
 					}
@@ -255,7 +258,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			}
 		});
 
-		GL.that.renderOnce(this.getName() + " setSelectedCachVisible");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -283,7 +286,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 
-			Cache cache;
+			CacheLite cache;
 			synchronized (Database.Data.Query)
 			{
 				cache = Database.Data.Query.get(selectionIndex);
@@ -309,7 +312,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 
-			Cache cache;
+			CacheLite cache;
 			synchronized (Database.Data.Query)
 			{
 				cache = Database.Data.Query.get(selectionIndex);
@@ -329,11 +332,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public class CustomAdapter implements Adapter
 	{
-		private CacheList cacheList;
+		private CacheListLite cacheList;
 
 		private int Count = 0;
 
-		public CustomAdapter(CacheList cacheList)
+		public CustomAdapter(CacheListLite cacheList)
 		{
 			synchronized (cacheList)
 			{
@@ -366,9 +369,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 				if (cacheList.size() <= position) return null;
 
-				Cache cache = cacheList.get(position);
-
-				if (!cache.isSearchVisible()) return null;
+				CacheLite cache = cacheList.get(position);
 
 				CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
 				v.setClickable(true);
@@ -388,9 +389,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			synchronized (cacheList)
 			{
 				if (cacheList.size() == 0) return 0;
-				Cache cache = cacheList.get(position);
+				CacheLite cache = cacheList.get(position);
 				if (cache == null) return 0;
-				if (!cache.isSearchVisible()) return 0;
 
 				// alle Items haben die gleiche Größe (Höhe)
 				return UiSizes.that.getCacheListItemRec().getHeight();
@@ -430,7 +430,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 			try
 			{
-				diverend = GlobalCore.getSelectedCache() != ((CacheListViewItem) listView.getSelectedItem()).getCache();
+				diverend = GlobalCore.getSelectedCache().Id != ((CacheListViewItem) listView.getSelectedItem()).getCache().Id;
 			}
 			catch (Exception e)
 			{
@@ -446,12 +446,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 		if (GlobalCore.getSelectedCache() != null)
 		{
 			CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
-			if (selItem != null && GlobalCore.getSelectedCache() != selItem.getCache())
+			if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id)
 			{
 				// TODO Run if ListView Initial and after showing
 				listView.RunIfListInitial(new IRunOnGL()
@@ -479,13 +479,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void PositionChanged()
 	{
-		GL.that.renderOnce("Core.CacheListView");
+		GL.that.renderOnce();
 	}
 
 	@Override
 	public void OrientationChanged()
 	{
-		GL.that.renderOnce("Core.CacheListView");
+		GL.that.renderOnce();
 	}
 
 	@Override

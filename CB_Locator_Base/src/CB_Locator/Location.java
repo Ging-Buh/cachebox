@@ -76,7 +76,7 @@ public class Location
 	 * @uml.property name="position"
 	 * @uml.associationEnd
 	 */
-	private Coordinate Position = new Coordinate();
+	private CoordinateGPS Position = new CoordinateGPS();
 	/**
 	 * @uml.property name="provider"
 	 * @uml.associationEnd
@@ -110,7 +110,7 @@ public class Location
 	{
 		synchronized (this)
 		{
-			Position = new Coordinate(latitude, longitude, (int) accuracy);
+			Position = new CoordinateGPS(latitude, longitude, (int) accuracy);
 			this.hasSpeed = hasSpeed;
 			this.speed = speed;
 			this.hasBearing = hasBearing;
@@ -224,7 +224,7 @@ public class Location
 		return altitude;
 	}
 
-	public Coordinate toCordinate()
+	public CoordinateGPS toCordinate()
 	{
 		return this.Position;
 	}
@@ -278,7 +278,7 @@ public class Location
 	{
 		Location ret = new Location();
 
-		ret.Position = Position.copy();
+		ret.Position = new CoordinateGPS(Position);
 		ret.hasSpeed = this.hasSpeed;
 		ret.speed = this.speed;
 		ret.hasBearing = this.hasBearing;

@@ -2,7 +2,8 @@ package Types;
 
 import junit.framework.TestCase;
 import CB_Core.Types.Cache;
-import CB_Locator.Coordinate;
+import CB_Core.Types.CacheLite;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
 import CB_Utils.MathUtils.CalculationType;
@@ -10,7 +11,7 @@ import CB_Utils.MathUtils.CalculationType;
 public class CacheTest extends TestCase
 {
 
-	private Cache mCache;
+	private CacheLite mCache;
 
 	@Override
 	public void setUp() throws Exception
@@ -35,7 +36,7 @@ public class CacheTest extends TestCase
 
 	public void testDistance()
 	{
-		Coordinate coordinate1 = new Coordinate();
+		CoordinateGPS coordinate1 = new CoordinateGPS();
 		assertTrue("Objekt muss konstruierbar sein", coordinate1 != null);
 		coordinate1.setLatitude(49.428333);
 		coordinate1.setLongitude(6.203333);

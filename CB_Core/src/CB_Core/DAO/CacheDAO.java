@@ -14,6 +14,7 @@ import CB_Core.Import.ImporterProgress;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
@@ -39,9 +40,9 @@ public class CacheDAO
 		{
 			Cache cache = new Cache();
 			cache.Id = reader.getLong(0);
-			cache.GcCode = reader.getString(1).trim();
+			cache.setGcCode(reader.getString(1).trim());
 			cache.Pos = new Coordinate(reader.getDouble(2), reader.getDouble(3));
-			cache.Name = reader.getString(4).trim();
+			cache.setName(reader.getString(4).trim());
 			cache.Size = CacheSizes.parseInt(reader.getInt(5));
 			cache.Difficulty = ((float) reader.getShort(6)) / 2;
 			cache.Terrain = ((float) reader.getShort(7)) / 2;
@@ -50,7 +51,7 @@ public class CacheDAO
 			cache.Found = reader.getInt(10) != 0;
 			cache.Type = CacheTypes.values()[reader.getShort(11)];
 			cache.PlacedBy = reader.getString(12).trim();
-			cache.Owner = reader.getString(13).trim();
+			cache.setOwner(reader.getString(13).trim());
 
 			String sDate = reader.getString(14);
 			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -93,8 +94,8 @@ public class CacheDAO
 			else
 				cache.ApiStatus = (byte) reader.getInt(25);
 
-			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(CacheLite.MapZoomLevel, cache.Longitude());
+			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, cache.Latitude());
 
 			cache.setAttributesPositive(new DLong(reader.getLong(27), reader.getLong(26)));
 			cache.setAttributesNegative(new DLong(reader.getLong(29), reader.getLong(28)));
@@ -118,17 +119,62 @@ public class CacheDAO
 		}
 	}
 
+	public CacheLite ReadFromCursorLite(CoreCursor reader)
+	{
+		return ReadFromCursor(reader, false);
+	}
+
+	public CacheLite ReadFromCursorLite(CoreCursor reader, boolean withDescription)
+	{
+		try
+		{
+			CacheLite cache = new CacheLite();
+			cache.Id = reader.getLong(0);
+			cache.setGcCode(reader.getString(1).trim());
+			cache.Pos = new Coordinate(reader.getDouble(2), reader.getDouble(3));
+			cache.setName(reader.getString(4).trim());
+			cache.Size = CacheSizes.parseInt(reader.getInt(5));
+			cache.Difficulty = ((float) reader.getShort(6)) / 2;
+			cache.Terrain = ((float) reader.getShort(7)) / 2;
+			cache.Archived = reader.getInt(8) != 0;
+			cache.Available = reader.getInt(9) != 0;
+			cache.Found = reader.getInt(10) != 0;
+			cache.Type = CacheTypes.values()[reader.getShort(11)];
+
+			cache.Rating = ((float) reader.getShort(12)) / 100.0f;
+			if (reader.getInt(13) > 0) cache.setFavorit(true);
+			else
+				cache.setFavorit(false);
+
+			if (reader.getInt(14) > 0) cache.setCorrectedCoordinates(true);
+			else
+				cache.setCorrectedCoordinates(false);
+
+			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(CacheLite.MapZoomLevel, cache.Longitude());
+			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, cache.Latitude());
+
+			cache.setOwner(reader.getString(15).trim());
+
+			return cache;
+		}
+		catch (Exception exc)
+		{
+			Logger.Error("Read Cache Lite", "", exc);
+			return null;
+		}
+	}
+
 	public void WriteToDatabase(Cache cache)
 	{
 		// int newCheckSum = createCheckSum(WP);
 		// Replication.WaypointChanged(CacheId, checkSum, newCheckSum, GcCode);
 		Parameters args = new Parameters();
 		args.put("Id", cache.Id);
-		args.put("GcCode", cache.GcCode);
+		args.put("GcCode", cache.getGcCode());
 		args.put("GcId", cache.GcId);
 		args.put("Latitude", cache.Pos.getLatitude());
 		args.put("Longitude", cache.Pos.getLongitude());
-		args.put("Name", cache.Name);
+		args.put("Name", cache.getName());
 		try
 		{
 			args.put("Size", cache.Size.ordinal());
@@ -144,7 +190,7 @@ public class CacheDAO
 		args.put("Found", cache.Found);
 		args.put("Type", cache.Type.ordinal());
 		args.put("PlacedBy", cache.PlacedBy);
-		args.put("Owner", cache.Owner);
+		args.put("Owner", cache.getOwner());
 		args.put("Country", cache.Country);
 		args.put("State", cache.State);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -238,7 +284,7 @@ public class CacheDAO
 		Parameters args = new Parameters();
 
 		args.put("Id", cache.Id);
-		args.put("GcCode", cache.GcCode);
+		args.put("GcCode", cache.getGcCode());
 		args.put("GcId", cache.GcId);
 		if (cache.Pos.isValid() && !cache.Pos.isZero())
 		{
@@ -246,7 +292,7 @@ public class CacheDAO
 			args.put("Latitude", cache.Pos.getLatitude());
 			args.put("Longitude", cache.Pos.getLongitude());
 		}
-		args.put("Name", cache.Name);
+		args.put("Name", cache.getName());
 		try
 		{
 			args.put("Size", cache.Size.ordinal());
@@ -262,7 +308,7 @@ public class CacheDAO
 		args.put("Found", cache.Found);
 		args.put("Type", cache.Type.ordinal());
 		args.put("PlacedBy", cache.PlacedBy);
-		args.put("Owner", cache.Owner);
+		args.put("Owner", cache.getOwner());
 		args.put("Country", cache.Country);
 		args.put("State", cache.State);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -404,32 +450,32 @@ public class CacheDAO
 	/**
 	 * hier wird nur die Status Abfrage zurück geschrieben und gegebenen Falls die Replication Informationen geschrieben.
 	 * 
-	 * @param cache
+	 * @param writeTmp
 	 */
-	public boolean UpdateDatabaseCacheState(Cache cache)
+	public boolean UpdateDatabaseCacheState(CacheLite writeTmp)
 	{
 
 		// chk of changes
 		boolean changed = false;
-		Cache fromDB = getFromDbByCacheId(cache.Id);
+		Cache fromDB = getFromDbByCacheId(writeTmp.Id);
 
 		if (fromDB == null) return false; // nichts zum Updaten gefunden
 
-		if (fromDB.Archived != cache.Archived)
+		if (fromDB.Archived != writeTmp.Archived)
 		{
 			changed = true;
-			Replication.ArchivedChanged(cache.Id, cache.Archived);
+			Replication.ArchivedChanged(writeTmp.Id, writeTmp.Archived);
 		}
-		if (fromDB.Available != cache.Available)
+		if (fromDB.Available != writeTmp.Available)
 		{
 			changed = true;
-			Replication.AvailableChanged(cache.Id, cache.Available);
+			Replication.AvailableChanged(writeTmp.Id, writeTmp.Available);
 		}
 
-		if (fromDB.NumTravelbugs != cache.NumTravelbugs)
+		if (fromDB.NumTravelbugs != writeTmp.NumTravelbugs)
 		{
 			changed = true;
-			Replication.NumTravelbugsChanged(cache.Id, cache.NumTravelbugs);
+			Replication.NumTravelbugsChanged(writeTmp.Id, writeTmp.NumTravelbugs);
 		}
 
 		if (changed) // Wir brauchen die DB nur Updaten, wenn sich auch etwas
@@ -438,14 +484,14 @@ public class CacheDAO
 
 			Parameters args = new Parameters();
 
-			args.put("Archived", cache.Archived ? 1 : 0);
-			args.put("Available", cache.Available ? 1 : 0);
-			args.put("NumTravelbugs", cache.NumTravelbugs);
+			args.put("Archived", writeTmp.Archived ? 1 : 0);
+			args.put("Available", writeTmp.Available ? 1 : 0);
+			args.put("NumTravelbugs", writeTmp.NumTravelbugs);
 
 			try
 			{
 				Database.Data.update("Caches", args, "Id = ?", new String[]
-					{ String.valueOf(cache.Id) });
+					{ String.valueOf(writeTmp.Id) });
 			}
 			catch (Exception exc)
 			{
@@ -469,9 +515,9 @@ public class CacheDAO
 		ArrayList<String> index = new ArrayList<String>();
 		for (int i = 0, n = IndexDB.size(); i < n; i++)
 		{
-			Cache c = IndexDB.get(i);
-			ip.ProgressInkrement("IndexingDB", "index- " + c.GcCode, false);
-			index.add(c.GcCode);
+			CacheLite c = IndexDB.get(i);
+			ip.ProgressInkrement("IndexingDB", "index- " + c.getGcCode(), false);
+			index.add(c.getGcCode());
 		}
 
 		ip.setJobMax("WriteCachesToDB", CacheCount);
@@ -479,14 +525,14 @@ public class CacheDAO
 		{
 			Cache cache = Caches.next();
 
-			if (index.contains(cache.GcCode))
+			if (index.contains(cache.getGcCode()))
 			{
-				ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.GcCode, false);
+				ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.getGcCode(), false);
 				UpdateDatabase(cache);
 			}
 			else
 			{
-				ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.GcCode, false);
+				ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.getGcCode(), false);
 				WriteToDatabase(cache);
 			}
 

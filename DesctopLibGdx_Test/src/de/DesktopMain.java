@@ -210,7 +210,7 @@ public class DesktopMain
 			{
 
 				@Override
-				public void RequestRender(String requestName)
+				public void RequestRender()
 				{
 					App.getGraphics().requestRendering();
 
@@ -354,9 +354,9 @@ public class DesktopMain
 				if (GlobalCore.getSelectedCache() != null)
 				{
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
-					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 				}
 				System.exit(0);
 

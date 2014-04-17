@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.COLOR;
@@ -74,10 +75,10 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 		public void returnCoord(Coordinate coord);
 	}
 
-	public EditCoord(CB_RectF rec, String Name, Coordinate Coord, ReturnListner returnListner)
+	public EditCoord(CB_RectF rec, String Name, Coordinate mActCoord, ReturnListner returnListner)
 	{
 		super(rec, Name);
-		coord = Coord;
+		coord = mActCoord;
 		cancelCoord = coord.copy();
 		mReturnListner = returnListner;
 
@@ -1066,7 +1067,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 			break;
 		}
 
-		Coordinate newCoord = new Coordinate(scoord);
+		CoordinateGPS newCoord = new CoordinateGPS(scoord);
 		if (newCoord.isValid())
 		{
 			coord = newCoord;
@@ -1081,12 +1082,12 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 	{
 		if (clipboard == null) return null;
 		String content = clipboard.getContents();
-		Coordinate cor = null;
+		CoordinateGPS cor = null;
 		if (content != null)
 		{
 			try
 			{
-				cor = new Coordinate(content);
+				cor = new CoordinateGPS(content);
 			}
 			catch (Exception e)
 			{
@@ -1121,7 +1122,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 		parseView(); // setting coord
 		String content = coord.FormatCoordinate();
 		clipboard.setContents(content);
-		Coordinate cor = new Coordinate("N 0° 0.00 / E 0° 0.00");
+		CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
 		cor.setValid(false);
 		coord = cor;
 		setButtonValues(aktPage);

@@ -153,14 +153,14 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (mVisible) return;
 		mVisible = true;
-		GL.that.renderOnce(this.getName() + "setVisibility");
+		GL.that.renderOnce();
 	}
 
 	public void setInvisible()
 	{
 		if (!mVisible) return;
 		mVisible = false;
-		GL.that.renderOnce(this.getName() + "setVisibility");
+		GL.that.renderOnce();
 	}
 
 	public MoveableList<GL_View_Base> getchilds()
@@ -954,7 +954,7 @@ public abstract class GL_View_Base extends CB_RectF
 			if (behandelt) resultView = this;
 		}
 
-		GL.that.renderOnce(this.getName() + " touchDown");
+		GL.that.renderOnce();
 		return resultView;
 	}
 
@@ -1189,7 +1189,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getY() == i) return;
 		super.setY(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(" setY");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -1198,7 +1198,7 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getX() == i) return;
 		super.setX(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setX");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -1207,14 +1207,14 @@ public abstract class GL_View_Base extends CB_RectF
 		if (this.getX() == Pos.x && this.getY() == Pos.y) return;
 		super.setPos(Pos);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(" setPos(Vector)");
+		GL.that.renderOnce();
 	}
 
 	public void setZeroPos()
 	{
 		super.setPos(0, 0);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(" setZeroPos");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -1222,7 +1222,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		super.setPos(x, y);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(" setPos(float)");
+		GL.that.renderOnce();
 	}
 
 	// Abfrage der clickToleranz, mit der Bestimmt wird ab welcher Bewegung ein onTouchDragged erzeugt wird und beim loslassen kein click

@@ -2,8 +2,10 @@ package CB_UI.GL_UI.Views;
 
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
@@ -29,7 +31,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent
 {
-	private Cache mCache;
+	private CacheLite mCache;
 	private Waypoint mWaypoint;
 
 	protected extendedCacheInfo info;
@@ -109,7 +111,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 				return;
 			}
 
-			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
+			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
 			info.setZeroPos();
 			info.setViewMode(ViewMode);
 
@@ -174,7 +176,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 				Coordinate position = Locator.getCoordinate();
 				double heading = Locator.getHeading();
-				double bearing = Coordinate.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
+				double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
 				double cacheBearing = -(bearing - heading);
 				setDistanceString(UnitFormatter.DistanceString(distance));
 
@@ -307,7 +309,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 			float textYPos = this.getHeight() - mMargin;
 
-			textYPos -= (mNameCache.setMultiLineText(mWaypoint.GcCode + ": " + mWaypoint.Title, mSpriteCachePos.x + mIconSize + mMargin,
+			textYPos -= (mNameCache.setMultiLineText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize + mMargin,
 					textYPos)).height + mMargin + mMargin;
 
 			if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
@@ -316,9 +318,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			}
 			else
 			{
-				if (!mWaypoint.Description.equals(""))
+				if (!mWaypoint.getDescription().equals(""))
 				{
-					textYPos -= (mDescCache.setMultiLineText(mWaypoint.Description, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height
+					textYPos -= (mDescCache.setMultiLineText(mWaypoint.getDescription(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height
 							+ mMargin + mMargin;
 				}
 			}

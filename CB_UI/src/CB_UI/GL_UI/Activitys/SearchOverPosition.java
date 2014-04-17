@@ -6,7 +6,6 @@ import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchCoordinate;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
@@ -14,6 +13,7 @@ import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -304,7 +304,7 @@ public class SearchOverPosition extends ActivityBase
 			{
 				if (MapView.that == null)
 				{
-					actSearchPos = new Coordinate();
+					actSearchPos = new CoordinateGPS();
 					actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
 					actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
 				}
@@ -363,7 +363,7 @@ public class SearchOverPosition extends ActivityBase
 		case 1:
 			if (MapView.that == null)
 			{
-				actSearchPos = new Coordinate();
+				actSearchPos = new CoordinateGPS();
 				actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
 				actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
 			}
@@ -508,11 +508,11 @@ public class SearchOverPosition extends ActivityBase
 				}
 
 				// Delete all LongDescription from Query! LongDescription is Loading by showing DescriptionView direct from DB
-				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
-				{
-					Cache cache = Database.Data.Query.get(i);
-					cache.longDescription = "";
-				}
+				// for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
+				// {
+				// Cache cache = Database.Data.Query.get(i);
+				// cache.longDescription = "";
+				// }
 
 				if (!threadCanceld)
 				{

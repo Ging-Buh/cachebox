@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Utils.MathUtils;
 
 public class Astronomy
@@ -69,7 +70,7 @@ public class Astronomy
 		double sineps = Math.sin(eps);
 
 		double sinlon = Math.sin(eclipticCoordinate.getLongitude() / 180.0 * Math.PI);
-		Coordinate equatorial = new Coordinate();
+		Coordinate equatorial = new CoordinateGPS();
 		equatorial.setLongitude((MathUtils.RAD_DEG * Math.atan2(
 				(sinlon * coseps - Math.tan(eclipticCoordinate.getLatitude() / 180.0 * Math.PI) * sineps),
 				Math.cos(eclipticCoordinate.getLongitude() / 180.0 * Math.PI))) % 360); // rektaszension (alpha)
@@ -101,7 +102,7 @@ public class Astronomy
 		// null = Sueden auf Null = Norden umrechnen
 		azimut += 180.0f;
 		if (azimut > 360.0f) azimut -= 360.0f;
-		return new Coordinate(h, azimut);
+		return new CoordinateGPS(h, azimut);
 	}
 
 	public static Coordinate EclipticCoordinatesSun(double julianDate)
@@ -120,7 +121,7 @@ public class Astronomy
 		// true longitude, degree
 		double L = L0 + DL;
 
-		return new Coordinate(0, L);
+		return new CoordinateGPS(0, L);
 	}
 
 	// // the following code is adopted from http://lexikon.astronomie.info/java/sunmoon/sunmoon.html
@@ -159,7 +160,7 @@ public class Astronomy
 		double l3 = l2 + V; // true orbital longitude;
 		double N2 = N - 0.16 * MathUtils.DEG_RAD * Math.sin(sunAnomalyMean);
 
-		Coordinate result = new Coordinate();
+		Coordinate result = new CoordinateGPS();
 		result.setLongitude(((N2 + Math.atan2(Math.sin(l3 - N2) * Math.cos(i), Math.cos(l3 - N2))) * MathUtils.RAD_DEG));
 		result.setLatitude(Math.asin(Math.sin(l3 - N2) * Math.sin(i)) * MathUtils.RAD_DEG);
 		return result;

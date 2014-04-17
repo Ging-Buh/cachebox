@@ -55,7 +55,7 @@ public class GSAKGpxImportTest extends TestCase
 		assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 13.40545);
 		assertTrue("Pos ist ungültig", cache.Pos.isValid());
 
-		assertEquals("GcCode falsch", "GC1XCEW", cache.GcCode);
+		assertEquals("GcCode falsch", "GC1XCEW", cache.getGcCode());
 		assertEquals("DateHidden falsch", "Mon Aug 17 08:00:00 CEST 2009", cache.DateHidden.toString());
 		assertEquals("url falsch", "", cache.Url);// URL wird noch nicht
 													// ausgelesen
@@ -64,9 +64,9 @@ public class GSAKGpxImportTest extends TestCase
 		assertEquals("Id ist falsch", cache.GcId, "1358542");
 		assertFalse("ist available ist falsch", cache.Available);
 		assertTrue("ist archived ist falsch", cache.Archived);
-		assertEquals("Name falsch", "Schlossblick # 2/ View at the castle  #2", cache.Name);
+		assertEquals("Name falsch", "Schlossblick # 2/ View at the castle  #2", cache.getName());
 		assertEquals("Placed by falsch", "Risou", cache.PlacedBy);
-		assertEquals("Owner falsch", "Risou", cache.Owner);
+		assertEquals("Owner falsch", "Risou", cache.getOwner());
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Mystery);
 		assertTrue("Size ist falsch", cache.Size == CacheSizes.micro);
 		assertTrue("Difficulty ist falsch", cache.Difficulty == 2);

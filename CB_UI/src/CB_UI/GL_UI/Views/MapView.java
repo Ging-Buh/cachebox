@@ -8,9 +8,10 @@ import java.util.TreeMap;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Map.Descriptor;
@@ -54,6 +55,7 @@ import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Util.SyncronizeHelper;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.Color;
@@ -83,12 +85,11 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	boolean hideMyFinds;
 	boolean showCompass;
 	boolean showDirectLine;
-	boolean showAllWaypoints;
 	private int lastCompassMapZoom = -1;
 	GL_Paint paint;
 	public static MapView that = null;
 
-	Cache lastSelectedCache = null;
+	CacheLite lastSelectedCache = null;
 	Waypoint lastSelectedWaypoint = null;
 
 	public MapView(CB_RectF rec, boolean compassMode, String Name)
@@ -170,7 +171,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
 						System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
+				GL.that.renderOnce();
 				calcPixelsPerMeter();
 				return true;
 			}
@@ -189,7 +190,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
 						System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
+				GL.that.renderOnce();
 				calcPixelsPerMeter();
 				return true;
 			}
@@ -646,7 +647,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		{
 			try
 			{
-				String Name = drawAsWaypoint ? wpi.Waypoint.Title : wpi.Cache.Name;
+				String Name = drawAsWaypoint ? wpi.Waypoint.getTitle() : wpi.Cache.getName();
 
 				float halfWidth = Fonts.getNormal().getBounds(Name).width / 2;
 				Fonts.getNormal().draw(batch, Name, screen.x - halfWidth, screen.y - WpUnderlay.halfHeight - NameYMovement);
@@ -687,13 +688,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	public static int INITIAL_WP_LIST = 4;
 
-	// @Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	@Override
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
-		// xxx if (Global.autoResort) return;
-		// Logger.DEBUG("Cache Changed Event");
 		if (cache == null) return;
-		if ((cache == lastSelectedCache) && (waypoint == lastSelectedWaypoint)) return;
+		if (cache.equals(lastSelectedCache)
+				&& (waypoint.equals(lastSelectedWaypoint) || (waypoint == null && lastSelectedWaypoint == null))) return;
+
 		lastSelectedCache = cache;
 		lastSelectedWaypoint = waypoint;
 		/*
@@ -704,7 +705,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, true);
 		data.hideMyFinds = this.hideMyFinds;
-		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 
 		if (getCenterGps())
@@ -717,7 +717,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if (getMapState() != MapState.WP) setMapState(MapState.FREE);
 
-		Coordinate target = (waypoint != null) ? new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new Coordinate(
+		CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new CoordinateGPS(
 				cache.Pos.getLatitude(), cache.Pos.getLongitude());
 
 		setCenter(target);
@@ -791,7 +791,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
 					GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-					GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
+					GL.that.renderOnce();
 					calcPixelsPerMeter();
 				}
 			}
@@ -805,7 +805,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		String newGcCode = "";
 		try
 		{
-			newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+			newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 		}
 		catch (Exception e)
 		{
@@ -841,7 +841,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 					// informiere WaypointListView über Änderung
 					WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
-					GL.that.renderOnce("newWP_CenterMap");
+					GL.that.renderOnce();
 				}
 			}
 		}, true, false);
@@ -876,13 +876,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, false);
 		data.hideMyFinds = this.hideMyFinds;
-		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 
 		super.loadTiles();
 	}
 
-	public void setCenter(Coordinate value)
+	public void setCenter(CoordinateGPS value)
 	{
 		super.setCenter(value);
 		if (!CompassMode) info.setCoord(center);
@@ -961,7 +960,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI),
 				this.getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
-		GL.that.renderOnce(this.getName() + " requestLayout");
+		GL.that.renderOnce();
 	}
 
 	protected OnClickListener onClickListner = new OnClickListener()
@@ -983,12 +982,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 						if (GlobalCore.getSelectedWaypoint() != null)
 						{
 							Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
-							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
+							setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
 						}
 						else
 						{
 							Coordinate tmp = GlobalCore.getSelectedCache().Pos;
-							setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
+							setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
 						}
 
 						// switch map state to WP
@@ -1050,7 +1049,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
 									screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 							data.hideMyFinds = MapView.this.hideMyFinds;
-							data.showAllWaypoints = MapView.this.showAllWaypoints;
 							mapCacheList.update(data);
 						}
 
@@ -1182,7 +1180,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 						System.currentTimeMillis() + ZoomTime);
 
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
-				GL.that.renderOnce(MapView.this.getName() + " ZoomButtonClick");
+				GL.that.renderOnce();
 				calcPixelsPerMeter();
 			}
 
@@ -1211,7 +1209,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, true);
 		data.hideMyFinds = this.hideMyFinds;
-		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 		if (infoBubble.isVisible())
 		{
@@ -1258,7 +1255,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			hideMyFinds = Config.MapHideMyFinds.getValue();
 			showCompass = CompassMode ? false : Config.MapShowCompass.getValue();
 			showDirectLine = CompassMode ? false : Config.ShowDirektLine.getValue();
-			showAllWaypoints = CompassMode ? false : Config.ShowAllWaypoints.getValue();
 			showAccuracyCircle = CompassMode ? false : Config.ShowAccuracyCircle.getValue();
 			showMapCenterCross = CompassMode ? false : Config.ShowMapCenterCross.getValue();
 
@@ -1397,7 +1393,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
 						screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 				data.hideMyFinds = this.hideMyFinds;
-				data.showAllWaypoints = this.showAllWaypoints;
 				mapCacheList.update(data);
 			}
 
@@ -1472,13 +1467,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				if (Database.Data.Query != null)
 				{
+					SyncronizeHelper.sync("MapView 1496");
 					synchronized (Database.Data.Query)
 					{
 						if (Database.Data.Query.size() > 0)
 						{
 							// Koordinaten des ersten Caches der Datenbank
 							// nehmen
-							setCenter(new Coordinate(Database.Data.Query.get(0).Pos.getLatitude(),
+							setCenter(new CoordinateGPS(Database.Data.Query.get(0).Pos.getLatitude(),
 									Database.Data.Query.get(0).Pos.getLongitude()));
 							positionInitialized = true;
 							// setLockPosition(0);
@@ -1486,25 +1482,26 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 						else
 						{
 							// Wenns auch den nicht gibt...)
-							setCenter(new Coordinate(48.0, 12.0));
+							setCenter(new CoordinateGPS(48.0, 12.0));
 						}
 					}
+					SyncronizeHelper.endSync("MapView 1496");
 				}
 				else
 				{
 					// Wenn Query == null
-					setCenter(new Coordinate(48.0, 12.0));
+					setCenter(new CoordinateGPS(48.0, 12.0));
 				}
 			}
 			else
 			{
 				// Wenn Data == null
-				setCenter(new Coordinate(48.0, 12.0));
+				setCenter(new CoordinateGPS(48.0, 12.0));
 			}
 		}
 		catch (Exception e)
 		{
-			setCenter(new Coordinate(48.0, 12.0));
+			setCenter(new CoordinateGPS(48.0, 12.0));
 		}
 	}
 
@@ -1516,12 +1513,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			if (GlobalCore.getSelectedWaypoint() != null)
 			{
 				Coordinate tmp = GlobalCore.getSelectedWaypoint().Pos;
-				setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
+				setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
 			}
 			else
 			{
 				Coordinate tmp = GlobalCore.getSelectedCache().Pos;
-				setCenter(new Coordinate(tmp.getLatitude(), tmp.getLongitude()));
+				setCenter(new CoordinateGPS(tmp.getLatitude(), tmp.getLongitude()));
 			}
 		}
 	}

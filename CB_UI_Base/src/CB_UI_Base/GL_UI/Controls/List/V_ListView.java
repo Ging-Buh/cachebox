@@ -171,7 +171,7 @@ public class V_ListView extends ListViewBase
 					}
 
 					// RenderRequest
-					GL.that.renderOnce("addVisibleItems");
+					GL.that.renderOnce();
 
 					if (selectionchanged)
 					{

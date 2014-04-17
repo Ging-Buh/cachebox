@@ -691,7 +691,7 @@ public class EditTextField extends EditTextFieldBase
 			}
 			moveSelectionMarkers((oldLeftPos - leftPos), (topLine - oldTopLine) * lineHeight);
 		}
-		GL.that.renderOnce("EditTextField");
+		GL.that.renderOnce();
 
 		// Scrollen nach oben / unten soll möglich sein trotzdem dass hier evtl. schon links / rechts gescrollt wird ????
 		return bearbeitet;
@@ -765,7 +765,7 @@ public class EditTextField extends EditTextFieldBase
 
 		cursor.pos = newCursor.pos;
 		setCursorLine(newCursor.line, true);
-		GL.that.renderOnce("EditTextField");
+		GL.that.renderOnce();
 		showSelectionMarker(SelectionMarker.Type.Center);
 		return true;
 	}
@@ -1063,7 +1063,7 @@ public class EditTextField extends EditTextFieldBase
 						clearSelection();
 					}
 				}
-				GL.that.renderOnce("EditTextField");
+				GL.that.renderOnce();
 
 				return true;
 			}
@@ -1344,9 +1344,17 @@ public class EditTextField extends EditTextFieldBase
 		}
 		dt.displayText = text;
 		updateDisplayText(dt, false);
-		for (int i = selection.cursorEnd.line; i > selection.cursorStart.line; i--)
+		try
 		{
-			displayText.remove(i);
+			for (int i = selection.cursorEnd.line; i > selection.cursorStart.line; i--)
+			{
+				displayText.remove(i);
+			}
+		}
+		catch (Exception e)
+		{
+			selection = null;
+			return;
 		}
 
 		cursor.pos = selection.cursorStart.pos;
@@ -1397,7 +1405,7 @@ public class EditTextField extends EditTextFieldBase
 							updateDisplayText(dt, true);
 							cursor.pos--;
 							checkCursorVisible(true);
-							GL.that.renderOnce("EditTextField");
+							GL.that.renderOnce();
 							sendKeyTyped(character);
 							return true;
 						}
@@ -1416,7 +1424,7 @@ public class EditTextField extends EditTextFieldBase
 								int lineCount = displayText.size();
 								sendLineCountChanged(lineCount, lineHeight * lineCount);
 							}
-							GL.that.renderOnce("EditTextField");
+							GL.that.renderOnce();
 							sendKeyTyped(character);
 							return true;
 						}
@@ -1441,7 +1449,7 @@ public class EditTextField extends EditTextFieldBase
 						dt.displayText = dt.displayText.substring(0, cursor.pos)
 								+ dt.displayText.substring(cursor.pos + 1, dt.displayText.length());
 						updateDisplayText(dt, true);
-						GL.that.renderOnce("EditTextField");
+						GL.that.renderOnce();
 						sendKeyTyped(character);
 						return true;
 					}
@@ -1455,7 +1463,7 @@ public class EditTextField extends EditTextFieldBase
 							displayText.remove(dt2);
 							dt.displayText += dt2.displayText;
 							updateDisplayText(dt, true);
-							GL.that.renderOnce("EditTextField");
+							GL.that.renderOnce();
 						}
 						sendKeyTyped(character);
 						return true;
@@ -1526,7 +1534,7 @@ public class EditTextField extends EditTextFieldBase
 					}
 				}
 
-				GL.that.renderOnce("EditTextField");
+				GL.that.renderOnce();
 			}
 			sendKeyTyped(character);
 			if (passwordMode) updateDisplayTextList();

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.MapTileLoader;
 import CB_UI.GlobalCore;
@@ -74,7 +74,7 @@ public class RouteOverlay
 	public static void RoutesChanged()
 	{
 		mRoutesChanged = true;
-		GL.that.renderOnce("RouteChanged");
+		GL.that.renderOnce();
 	}
 
 	public static class Track
@@ -115,7 +115,7 @@ public class RouteOverlay
 		float[] dist = new float[4];
 		double Distance = 0;
 		double AltitudeDifference = 0;
-		Coordinate FromPosition = new Coordinate();
+		CoordinateGPS FromPosition = new CoordinateGPS();
 		BufferedReader reader;
 
 		try
@@ -134,7 +134,7 @@ public class RouteOverlay
 			boolean ReadName = false;
 			int AnzTracks = 0;
 
-			Coordinate lastAcceptedCoordinate = null;
+			CoordinateGPS lastAcceptedCoordinate = null;
 			double lastAcceptedDirection = -1;
 			Date lastAcceptedTime = null;
 
@@ -276,7 +276,7 @@ public class RouteOverlay
 							double lat = Double.valueOf(latStr);
 							double lon = Double.valueOf(lonStr);
 
-							lastAcceptedCoordinate = new Coordinate(lat, lon);
+							lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
 						}
 
 						if (line.indexOf("</time>") > -1)

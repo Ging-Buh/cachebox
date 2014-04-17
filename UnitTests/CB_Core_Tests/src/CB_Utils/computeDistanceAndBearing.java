@@ -2,15 +2,16 @@ package CB_Utils;
 
 import junit.framework.TestCase;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Utils.MathUtils.CalculationType;
 
 public class computeDistanceAndBearing extends TestCase
 {
-	Coordinate position = new Coordinate("52° 31,386N / 13° 28,800E");
+	Coordinate position = new CoordinateGPS("52° 31,386N / 13° 28,800E");
 	Coordinate Final[] = new Coordinate[]
-		{ new Coordinate("52° 34,218N / 13° 23,634E"), new Coordinate("52° 32,958N / 13° 24,816E"),
-				new Coordinate("52° 35,472N / 13° 21,540E"), new Coordinate("52° 31,398N / 13° 23,004E"),
-				new Coordinate("52° 31,236N / 13° 24,570E") };
+		{ new CoordinateGPS("52° 34,218N / 13° 23,634E"), new CoordinateGPS("52° 32,958N / 13° 24,816E"),
+				new CoordinateGPS("52° 35,472N / 13° 21,540E"), new CoordinateGPS("52° 31,398N / 13° 23,004E"),
+				new CoordinateGPS("52° 31,236N / 13° 24,570E") };
 
 	CalculationType ACCURATE = CalculationType.ACCURATE;
 	CalculationType FAST = CalculationType.FAST;

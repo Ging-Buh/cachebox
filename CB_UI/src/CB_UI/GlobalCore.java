@@ -25,7 +25,8 @@ import CB_Core.DB.Database;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
+import CB_Core.Types.CacheListLite;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -50,7 +51,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global
 {
-	public static final int CurrentRevision = 2051;
+	public static final int CurrentRevision = 2062;
 
 	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
@@ -173,9 +174,9 @@ public class GlobalCore extends CB_UI_Base.Global
 
 	public static FilterProperties LastFilter = null;
 
-	public static void setSelectedCache(Cache cache)
+	public static void setSelectedCache(CacheLite cacheLite)
 	{
-		setSelectedWaypoint(cache, null);
+		setSelectedWaypoint(cacheLite, null);
 	}
 
 	public static Cache getSelectedCache()
@@ -183,32 +184,51 @@ public class GlobalCore extends CB_UI_Base.Global
 		return selectedCache;
 	}
 
-	private static Cache nearestCache = null;
+	private static CacheLite nearestCache = null;
 
-	public static Cache NearestCache()
+	public static CacheLite NearestCache()
 	{
 		return nearestCache;
 	}
 
 	private static Waypoint selectedWaypoint = null;
 
-	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint)
+	public static void setSelectedWaypoint(CacheLite cacheLite, Waypoint waypoint)
 	{
-		setSelectedWaypoint(cache, waypoint, true);
+		setSelectedWaypoint(cacheLite, waypoint, true);
 	}
 
 	/**
 	 * if changeAutoResort == false -> do not change state of autoResort Flag
 	 * 
-	 * @param cache
+	 * @param cacheLite
 	 * @param waypoint
 	 * @param changeAutoResort
 	 */
-	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort)
+	public static void setSelectedWaypoint(CacheLite cacheLite, Waypoint waypoint, boolean changeAutoResort)
 	{
-		selectedCache = cache;
-		selectedWaypoint = waypoint;
-		SelectedCacheEventList.Call(selectedCache, waypoint);
+		selectedCache = new Cache(cacheLite);
+
+		if (waypoint == null)
+		{
+			// check autoselect Waypoint Final or start
+
+			if (selectedCache.HasFinalWaypoint())
+			{
+				selectedWaypoint = selectedCache.FinalWaypoint;
+			}
+			else if (selectedCache.HasStartWaypoint())
+			{
+				selectedWaypoint = selectedCache.startWaypoint;
+			}
+
+		}
+		else
+		{
+			selectedWaypoint = waypoint;
+		}
+
+		SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
 
 		if (changeAutoResort)
 		{
@@ -216,12 +236,12 @@ public class GlobalCore extends CB_UI_Base.Global
 			GlobalCore.setAutoResort(false);
 		}
 
-		GL.that.renderOnce("setSelectedWaypoint");
+		GL.that.renderOnce();
 	}
 
-	public static void setNearestCache(Cache nearest)
+	public static void setNearestCache(CacheLite cacheLite)
 	{
-		nearestCache = nearest;
+		nearestCache = cacheLite;
 	}
 
 	public static Waypoint getSelectedWaypoint()
@@ -298,20 +318,20 @@ public class GlobalCore extends CB_UI_Base.Global
 	public static void checkSelectedCacheValid()
 	{
 
-		CacheList List = Database.Data.Query;
+		CacheListLite List = Database.Data.Query;
 
 		// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
 		if ((List.size() > 0) && (GlobalCore.getSelectedCache() != null) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null))
 		{
 			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
-			Logger.DEBUG("Change SelectedCache from " + GlobalCore.getSelectedCache().GcCode + "to" + List.get(0).GcCode);
+			Logger.DEBUG("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
 			GlobalCore.setSelectedCache(List.get(0));
 		}
 		// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 		if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0))
 		{
 			GlobalCore.setSelectedCache(List.get(0));
-			Logger.DEBUG("Set SelectedCache to " + List.get(0).GcCode + " first in List.");
+			Logger.DEBUG("Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
 		}
 	}
 

@@ -165,7 +165,7 @@ public class TrackListView extends V_ListView
 	{
 		aktRouteItem.notifyTrackChanged(GlobalCore.AktuelleRoute);
 
-		GL.that.renderOnce("ActTrackChanged");
+		GL.that.renderOnce();
 	}
 
 	private OnClickListener onItemClickListner = new OnClickListener()

@@ -20,7 +20,7 @@ import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Utils.Log.Logger;
 
 import com.thebuzzmedia.sjxp.XMLParser;
@@ -940,14 +940,14 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon"))
 		{
-			cache.Pos = new Coordinate(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
+			cache.Pos = new CoordinateGPS(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
 					values.get("wpt_attribute_lon")).doubleValue());
 		}
 
 		if (values.containsKey("wpt_name"))
 		{
-			cache.GcCode = values.get("wpt_name");
-			cache.Id = Cache.GenerateCacheId(cache.GcCode);
+			cache.setGcCode(values.get("wpt_name"));
+			cache.Id = Cache.GenerateCacheId(cache.getGcCode());
 		}
 
 		if (values.containsKey("wpt_time"))
@@ -969,7 +969,7 @@ public class GPXFileImporter
 		// Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + cache.GcCode + "\"");
 
 		// Read from IndexDBList
-		boolean fav = CacheInfoList.CacheIsFavoriteInDB(cache.GcCode);
+		boolean fav = CacheInfoList.CacheIsFavoriteInDB(cache.getGcCode());
 
 		cache.setFavorit(fav);
 
@@ -979,7 +979,7 @@ public class GPXFileImporter
 			// Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + cache.GcCode + "\"");
 
 			// Read from IndexDBList
-			boolean Found = CacheInfoList.CacheIsFoundInDB(cache.GcCode);
+			boolean Found = CacheInfoList.CacheIsFoundInDB(cache.getGcCode());
 
 			if (!Found)
 			{
@@ -1025,11 +1025,11 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_name"))
 		{
-			cache.Name = values.get("cache_name");
+			cache.setName(values.get("cache_name"));
 		}
 		else if (values.containsKey("wpt_desc")) // kein Name gefunden? Dann versuche den WP-Namen
 		{
-			cache.Name = values.get("wpt_desc");
+			cache.setName(values.get("wpt_desc"));
 		}
 
 		if (values.containsKey("cache_placed_by"))
@@ -1039,13 +1039,13 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_owner"))
 		{
-			cache.Owner = values.get("cache_owner");
+			cache.setOwner(values.get("cache_owner"));
 		}
 
 		if (values.containsKey("cache_type"))
 		{
 			cache.Type = CacheTypes.parseString(values.get("cache_type"));
-			if (cache.GcCode.indexOf("MZ") == 0) cache.Type = CacheTypes.Munzee;
+			if (cache.getGcCode().indexOf("MZ") == 0) cache.Type = CacheTypes.Munzee;
 		}
 		else
 		{
@@ -1258,7 +1258,7 @@ public class GPXFileImporter
 		mImportHandler.handleCache(cache);
 
 		// Merge mit cache info
-		if (CacheInfoList.ExistCache(cache.GcCode))
+		if (CacheInfoList.ExistCache(cache.getGcCode()))
 		{
 			CacheInfoList.mergeCacheInfo(cache);
 		}
@@ -1276,25 +1276,25 @@ public class GPXFileImporter
 	{
 		if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon"))
 		{
-			waypoint.Pos = new Coordinate(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
+			waypoint.Pos = new CoordinateGPS(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
 					values.get("wpt_attribute_lon")).doubleValue());
 		}
 		else
 		{
-			waypoint.Pos = new Coordinate();
+			waypoint.Pos = new CoordinateGPS();
 		}
 
 		if (values.containsKey("wpt_name"))
 		{
-			waypoint.GcCode = values.get("wpt_name");
-			waypoint.Title = waypoint.GcCode;
+			waypoint.setGcCode(values.get("wpt_name"));
+			waypoint.setTitle(waypoint.getGcCode());
 			// TODO Hack to get parent Cache
-			waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.GcCode.substring(2, waypoint.GcCode.length()));
+			waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
 		}
 
 		if (values.containsKey("wpt_desc"))
 		{
-			waypoint.Title = values.get("wpt_desc");
+			waypoint.setTitle(values.get("wpt_desc"));
 		}
 
 		if (values.containsKey("wpt_type"))
@@ -1304,12 +1304,12 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_cmt"))
 		{
-			waypoint.Description = values.get("wpt_cmt");
+			waypoint.setDescription(values.get("wpt_cmt"));
 		}
 
 		currentwpt++;
 		if (mip != null) mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentwpt + "/" + countwpt + "\n"
-				+ waypoint.GcCode + " - " + waypoint.Description, false);
+				+ waypoint.getGcCode() + " - " + waypoint.getDescription(), false);
 
 		mImportHandler.handleWaypoint(waypoint);
 

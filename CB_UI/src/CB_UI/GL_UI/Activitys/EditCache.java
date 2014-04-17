@@ -179,11 +179,11 @@ public class EditCache extends ActivityBase
 		do
 		{
 			count++;
-			newValues.GcCode = prefix + String.format("%04d", count);
+			newValues.setGcCode(prefix + String.format("%04d", count));
 		}
-		while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.GcCode)) != null);
-		newValues.Name = newValues.GcCode;
-		newValues.Owner = "Unbekannt";
+		while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
+		newValues.setName(newValues.getGcCode());
+		newValues.setOwner("Unbekannt");
 		newValues.DateHidden = new Date();
 		newValues.Archived = false;
 		newValues.Available = true;
@@ -197,7 +197,7 @@ public class EditCache extends ActivityBase
 
 	private void doShow()
 	{
-		cacheCode.setText(cache.GcCode);
+		cacheCode.setText(cache.getGcCode());
 		cacheTyp.setSelection(0);
 		for (int i = 0; i < CacheTypNumbers.length; i++)
 		{
@@ -217,8 +217,8 @@ public class EditCache extends ActivityBase
 		cacheDifficulty.setSelection((int) (cache.Difficulty * 2 - 2));
 		cacheTerrain.setSelection((int) (cache.Terrain * 2 - 2));
 		cacheCoords.setCoordinate(cache.Pos);
-		cacheTitle.setText(cache.Name);
-		cacheOwner.setText(cache.Owner);
+		cacheTitle.setText(cache.getName());
+		cacheOwner.setText(cache.getOwner());
 		if (cache.longDescription.equals(GlobalCore.br)) cache.longDescription = "";
 		cacheDescription.setText(cache.longDescription);
 		this.show();
@@ -235,7 +235,7 @@ public class EditCache extends ActivityBase
 				CacheDAO cacheDAO = new CacheDAO();
 				String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
 				cache.Id = Cache.GenerateCacheId(gcc);
-				Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+				Cache aktCache = new Cache(Database.Data.Query.GetCacheById(cache.Id));
 				if (aktCache != null)
 				{
 					cache = aktCache;
@@ -248,14 +248,14 @@ public class EditCache extends ActivityBase
 						}
 					}
 				}
-				cache.GcCode = gcc;
+				cache.setGcCode(gcc);
 				cache.Type = newValues.Type;
 				cache.Size = newValues.Size;
 				cache.Difficulty = newValues.Difficulty;
 				cache.Terrain = newValues.Terrain;
 				cache.Pos = newValues.Pos;
-				cache.Name = cacheTitle.getText();
-				cache.Owner = cacheOwner.getText();
+				cache.setName(cacheTitle.getText());
+				cache.setOwner(cacheOwner.getText());
 				cache.longDescription = cacheDescription.getText();
 				if (update)
 				{

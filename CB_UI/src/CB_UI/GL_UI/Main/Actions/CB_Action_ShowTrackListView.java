@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.Date;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -355,13 +356,13 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.ShowRoute = true;
 						RouteOverlay.add(route);
 
-						Coordinate Projektion = new Coordinate();
-						Coordinate LastCoord = new Coordinate();
+						Coordinate Projektion = new CoordinateGPS();
+						Coordinate LastCoord = new CoordinateGPS();
 
 						for (int i = 0; i <= 360; i += 10) // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme
 															// mit dem Reduktionsalgorythmus
 						{
-							Projektion = Coordinate.Project(startCoord.getLatitude(), startCoord.getLongitude(), (double) i, distance);
+							Projektion = CoordinateGPS.Project(startCoord.getLatitude(), startCoord.getLongitude(), (double) i, distance);
 
 							route.Points.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
 

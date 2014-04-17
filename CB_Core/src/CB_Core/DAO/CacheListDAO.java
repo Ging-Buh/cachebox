@@ -8,8 +8,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
+import CB_Core.Types.CacheListLite;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
@@ -210,7 +213,7 @@ public class CacheListDAO
 
 		for (int i = 0, n = list.size(); i < n; i++)
 		{
-			StrList.add(list.get(i).GcCode);
+			StrList.add(list.get(i).getGcCode());
 		}
 		return StrList;
 	}
@@ -283,6 +286,123 @@ public class CacheListDAO
 				}
 			}
 		}
+	}
+
+	public CacheListLite ReadCacheList(CacheListLite cacheList, String where)
+	{
+		return ReadCacheList(cacheList, "", where, false);
+	}
+
+	public CacheListLite ReadCacheList(CacheListLite cacheList, String join, String where)
+	{
+		return ReadCacheList(cacheList, join, where, false);
+	}
+
+	public CacheListLite ReadCacheList(CacheListLite cacheList, String join, String where, boolean withDescription)
+	{
+		if (cacheList == null) return null;
+
+		// Clear List before read
+		cacheList.clear();
+
+		// zuerst alle Waypoints einlesen
+		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
+		long aktCacheID = -1;
+
+		SortedMap<Long, CB_List<Waypoint>> waypoints = new TreeMap<Long, CB_List<Waypoint>>();
+
+		CoreCursor reader = Database.Data
+				.rawQuery(
+						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint order by CacheId",
+						null);
+		reader.moveToFirst();
+		while (!reader.isAfterLast())
+		{
+			WaypointDAO waypointDAO = new WaypointDAO();
+			Waypoint wp = waypointDAO.getWaypoint(reader);
+			if (wp.CacheId != aktCacheID)
+			{
+				aktCacheID = wp.CacheId;
+				wpList = new CB_List<Waypoint>();
+				waypoints.put(aktCacheID, wpList);
+			}
+			wpList.add(wp);
+			reader.moveToNext();
+
+		}
+		reader.close();
+
+		Logger.DEBUG("ReadCacheList 2.Caches");
+		try
+		{
+			String sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Rating, Favorit, CorrectedCoordinates, Owner";
+			if (withDescription)
+			{
+				sql += ", Description, Solver, Notes";
+			}
+			sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
+			reader = Database.Data.rawQuery(sql, null);
+
+		}
+		catch (Exception e)
+		{
+			Logger.Error("CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
+		}
+
+		if (reader == null) return cacheList;
+
+		reader.moveToFirst();
+
+		CacheDAO cacheDAO = new CacheDAO();
+		while (!reader.isAfterLast())
+		{
+			CacheLite cache = cacheDAO.ReadFromCursorLite(reader, withDescription);
+			boolean hasStart = false;
+			boolean hasFinal = false;
+			if (waypoints.containsKey(cache.Id))
+			{
+				// set Final or start waypoint
+
+				CB_List<Waypoint> cacheWaypoints = waypoints.get(cache.Id);
+
+				for (int i = 0, n = cacheWaypoints.size(); i < n; i++)
+				{
+					Waypoint wp = cacheWaypoints.get(i);
+
+					if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
+					{
+						cache.hasStartWaypoint = 1;
+						cache.startWaypoint = wp;
+						hasStart = true;
+					}
+
+					if (wp.Type == CacheTypes.Final)
+					{
+						// do not activate final waypoint with invalid coordinates
+						if (!wp.Pos.isValid() || wp.Pos.isZero()) continue;
+						cache.FinalWaypoint = wp;
+						cache.hasFinalWaypoint = 1;
+						hasFinal = true;
+					}
+
+				}
+
+				cacheWaypoints.clear();
+				waypoints.remove(cache.Id);
+			}
+
+			if (!hasFinal) cache.hasFinalWaypoint = 0;
+			if (!hasStart) cache.hasStartWaypoint = 0;
+
+			cacheList.add(cache);
+			reader.moveToNext();
+
+		}
+
+		waypoints.clear();
+		reader.close();
+
+		return cacheList;
 	}
 
 }

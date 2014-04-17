@@ -6,8 +6,10 @@ import java.util.Date;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Events.PositionChangedEvent;
@@ -168,15 +170,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	}
 
-	private void setWP(Cache c, Waypoint wp)
+	private void setWP(CacheLite cache, Waypoint wp)
 	{
 		boolean resetControls = false; // Set if WP desk changed
 
 		if (wp != null)
 		{
-			if (wp.Description != null && !wp.Description.equals(""))
+			if (wp.getDescription() != null && !wp.getDescription().equals(""))
 			{
-				float newDescHeight = Fonts.MeasureWrapped(wp.Description, topContentBox.getWidth()).height + margin;
+				float newDescHeight = Fonts.MeasureWrapped(wp.getDescription(), topContentBox.getWidth()).height + margin;
 				if (newDescHeight != descHeight) resetControls = true;
 			}
 		}
@@ -189,25 +191,25 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		}
 		else
 		{
-			setCache(c);
+			setCache(cache);
 		}
 
 	}
 
-	private void setCache(Cache c)
+	private void setCache(CacheLite cache)
 	{
 
-		aktCache = c;
-		if (c == null) return;
+		aktCache = new Cache(cache);
+		if (cache == null) return;
 		if (showAtt)
 		{
 			for (int i = 0; i < 19; i++)
 			{
-				if (i < c.getAttributes().size())
+				if (i < aktCache.getAttributes().size())
 				{
 					try
 					{
-						String ImageName = c.getAttributes().get(i).getImageName() + "Icon";
+						String ImageName = aktCache.getAttributes().get(i).getImageName() + "Icon";
 						ImageName = ImageName.replace("_", "-");
 						att[i].setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite(ImageName)));
 					}
@@ -227,13 +229,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		{
 			if (aktWaypoint == null)
 			{
-				if (c.CorrectedCoordiantesOrMysterySolved())
+				if (aktCache.CorrectedCoordiantesOrMysterySolved())
 				{
 					Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(21)));
 				}
 				else
 				{
-					Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(c.Type.ordinal())));
+					Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktCache.Type.ordinal())));
 				}
 			}
 			else
@@ -246,24 +248,24 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		{
 			if (aktWaypoint == null)
 			{
-				lbl_Name.setText(c.Name);
+				lbl_Name.setText(aktCache.getName());
 			}
 			else
 			{
-				lbl_Name.setText(aktWaypoint.Title);
+				lbl_Name.setText(aktWaypoint.getTitle());
 			}
 		}
 
 		if (showGcCode && lblGcCode != null)
 		{
-			lblGcCode.setText(c.GcCode);
+			lblGcCode.setText(aktCache.getGcCode());
 		}
 
 		if (showCoords && lblCoords != null)
 		{
 			if (aktWaypoint == null)
 			{
-				lblCoords.setText(c.Pos.FormatCoordinate());
+				lblCoords.setText(aktCache.Pos.FormatCoordinate());
 			}
 			else
 			{
@@ -273,9 +275,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		if (showWpDesc && lblDesc != null)
 		{
-			if (aktWaypoint != null && !aktWaypoint.Description.equals(""))
+			if (aktWaypoint != null && !aktWaypoint.getDescription().equals(""))
 			{
-				lblDesc.setWrappedText(aktWaypoint.Description);
+				lblDesc.setWrappedText(aktWaypoint.getDescription());
 			}
 			else
 			{
@@ -382,9 +384,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		{
 			if (aktWaypoint != null)
 			{
-				if (aktWaypoint.Description != null && !aktWaypoint.Description.equals(""))
+				if (aktWaypoint.getDescription() != null && !aktWaypoint.getDescription().equals(""))
 				{
-					descHeight = Fonts.MeasureWrapped(aktWaypoint.Description, topContentBox.getWidth()).height + margin;
+					descHeight = Fonts.MeasureWrapped(aktWaypoint.getDescription(), topContentBox.getWidth()).height + margin;
 					contentHeight += descHeight + margin;
 				}
 			}
@@ -696,7 +698,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 		setWP(cache, waypoint);
 	}
@@ -706,7 +708,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 		if (aktCache == null) return;
 
-		Coordinate position = Locator.getCoordinate();
+		CoordinateGPS position = Locator.getCoordinate();
 
 		if (position == null) return;
 
@@ -778,7 +780,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			}
 		}
 
-		GL.that.renderOnce("Compass-PositionChanged");
+		GL.that.renderOnce();
 
 	}
 
@@ -814,7 +816,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			{
 			}
 
-			GL.that.renderOnce("Compass-OrientationChanged");
+			GL.that.renderOnce();
 		}
 	}
 

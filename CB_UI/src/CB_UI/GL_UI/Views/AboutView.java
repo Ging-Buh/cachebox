@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.GPS;
 import CB_Locator.Location.ProviderType;
@@ -343,7 +343,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		if (WaypointLabel == null || CachesFoundLabel == null || CoordLabel == null) return;
 		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
 
-		Cache selectedCache = GlobalCore.getSelectedCache();
+		CacheLite selectedCache = GlobalCore.getSelectedCache();
 		Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
 
 		if (selectedCache != null)
@@ -352,13 +352,13 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 			{
 				if (selectedWaypoint != null)
 				{
-					WaypointLabel.setText(selectedWaypoint.GcCode);
+					WaypointLabel.setText(selectedWaypoint.getGcCode());
 					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " "
 							+ UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
 				}
 				else
 				{
-					WaypointLabel.setText(selectedCache.GcCode);
+					WaypointLabel.setText(selectedCache.getGcCode());
 					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " "
 							+ UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
 				}
@@ -368,7 +368,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 				CoordLabel.setText(" - - - ");
 			}
 		}
-		GL.that.renderOnce("About refresh Text");
+		GL.that.renderOnce();
 	}
 
 	protected final returnValueListner DialogListner = new returnValueListner()
@@ -416,7 +416,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 		GL.that.RunOnGL(new IRunOnGL()
 		{

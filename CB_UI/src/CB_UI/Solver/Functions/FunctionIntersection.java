@@ -1,6 +1,7 @@
 package CB_UI.Solver.Functions;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Solver.DataTypes.DataType;
 
@@ -37,13 +38,13 @@ public class FunctionIntersection extends Function
 		Coordinate[] coord = new Coordinate[4];
 		for (int i = 0; i < 4; i++)
 		{
-			coord[i] = new Coordinate(parameter[i]);
+			coord[i] = new CoordinateGPS(parameter[i]);
 			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncIntersection", String.valueOf(i + 1),
 					"$coordinate", "$coordinate", parameter[i]);
 		}
 		try
 		{
-			return Coordinate.Intersection(coord[0], coord[1], coord[2], coord[3]).FormatCoordinate();
+			return CoordinateGPS.Intersection(coord[0], coord[1], coord[2], coord[3]).FormatCoordinate();
 		}
 		catch (Exception ex)
 		{

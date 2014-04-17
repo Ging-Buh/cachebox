@@ -27,14 +27,16 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.DLong;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.Logger;
+import CB_Utils.Util.SyncronizeHelper;
 
 public class SearchForGeocaches_Core
 {
@@ -320,7 +322,7 @@ public class SearchForGeocaches_Core
 						cache.Found = true;
 					}
 
-					cache.GcCode = jCache.getString("Code");
+					cache.setGcCode(jCache.getString("Code"));
 					try
 					{
 						cache.GcId = jCache.getString("ID");
@@ -344,7 +346,7 @@ public class SearchForGeocaches_Core
 					{
 						cache.hint = "";
 					}
-					cache.Id = Cache.GenerateCacheId(cache.GcCode);
+					cache.Id = Cache.GenerateCacheId(cache.getGcCode());
 					cache.listingChanged = false;
 
 					try
@@ -353,22 +355,22 @@ public class SearchForGeocaches_Core
 					}
 					catch (Exception e1)
 					{
-						Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.GcCode, e1);
+						Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
 						cache.longDescription = "";
 					}
 					if (jCache.getBoolean("LongDescriptionIsHtml") == false)
 					{
 						cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
 					}
-					cache.Name = jCache.getString("Name");
+					cache.setName(jCache.getString("Name"));
 					cache.noteCheckSum = 0;
 					cache.NumTravelbugs = jCache.getInt("TrackableCount");
 					JSONObject jOwner = (JSONObject) jCache.getJSONObject("Owner");
-					cache.Owner = jOwner.getString("UserName");
-					cache.PlacedBy = cache.Owner;
+					cache.setOwner(jOwner.getString("UserName"));
+					cache.PlacedBy = cache.getOwner();
 					try
 					{
-						cache.Pos = new Coordinate(jCache.getDouble("Latitude"), jCache.getDouble("Longitude"));
+						cache.Pos = new CoordinateGPS(jCache.getDouble("Latitude"), jCache.getDouble("Longitude"));
 					}
 					catch (Exception e)
 					{
@@ -382,7 +384,7 @@ public class SearchForGeocaches_Core
 					}
 					catch (Exception e)
 					{
-						Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.GcCode, e);
+						Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
 						cache.shortDescription = "";
 					}
 					if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
@@ -407,7 +409,7 @@ public class SearchForGeocaches_Core
 					// Chk if Own or Found
 					Boolean exclude = false;
 					if (search.excludeFounds && cache.Found) exclude = true;
-					if (search.excludeHides && cache.Owner.equalsIgnoreCase(CB_Core_Settings.GcLogin.getValue())) exclude = true;
+					if (search.excludeHides && cache.getOwner().equalsIgnoreCase(CB_Core_Settings.GcLogin.getValue())) exclude = true;
 					if (search.available && (cache.Archived || !cache.Available)) exclude = true;
 
 					if (!CacheERROR && !exclude)
@@ -451,7 +453,7 @@ public class SearchForGeocaches_Core
 
 							ImageEntry image = new ImageEntry();
 							image.CacheId = cache.Id;
-							image.GcCode = cache.GcCode;
+							image.GcCode = cache.getGcCode();
 							image.Name = jImage.getString("Name");
 							image.Description = jImage.getString("Description");
 							image.ImageUrl = jImage.getString("Url").replace("img.geocaching.com/gc/cache", "img.geocaching.com/cache");
@@ -491,7 +493,7 @@ public class SearchForGeocaches_Core
 								ImageEntry image = new ImageEntry();
 
 								image.CacheId = cache.Id;
-								image.GcCode = cache.GcCode;
+								image.GcCode = cache.getGcCode();
 								image.Name = url.substring(url.lastIndexOf("/") + 1);
 								image.Description = "";
 								image.ImageUrl = url;
@@ -514,18 +516,18 @@ public class SearchForGeocaches_Core
 
 							try
 							{
-								waypoint.Pos = new Coordinate(jWaypoints.getDouble("Latitude"), jWaypoints.getDouble("Longitude"));
+								waypoint.Pos = new CoordinateGPS(jWaypoints.getDouble("Latitude"), jWaypoints.getDouble("Longitude"));
 							}
 							catch (Exception ex)
 							{
 								// no Coordinates -> Lat/Lon = 0/0
-								waypoint.Pos = new Coordinate();
+								waypoint.Pos = new CoordinateGPS();
 							}
 
-							waypoint.Title = jWaypoints.getString("Description");
-							waypoint.Description = jWaypoints.getString("Comment");
+							waypoint.setTitle(jWaypoints.getString("Description"));
+							waypoint.setDescription(jWaypoints.getString("Comment"));
 							waypoint.Type = GroundspeakAPI.getCacheType(jWaypoints.getInt("WptTypeID"));
-							waypoint.GcCode = jWaypoints.getString("Code");
+							waypoint.setGcCode(jWaypoints.getString("Code"));
 							cache.waypoints.add(waypoint);
 						}
 						// User Waypoints - Corrected Coordinates of the Geocaching.com Website
@@ -541,17 +543,17 @@ public class SearchForGeocaches_Core
 							waypoint.CacheId = cache.Id;
 							try
 							{
-								waypoint.Pos = new Coordinate(jUserWaypoint.getDouble("Latitude"), jUserWaypoint.getDouble("Longitude"));
+								waypoint.Pos = new CoordinateGPS(jUserWaypoint.getDouble("Latitude"), jUserWaypoint.getDouble("Longitude"));
 							}
 							catch (Exception ex)
 							{
 								// no Coordinates -> Lat/Lon = 0/0
-								waypoint.Pos = new Coordinate();
+								waypoint.Pos = new CoordinateGPS();
 							}
-							waypoint.Title = jUserWaypoint.getString("Description");
-							waypoint.Description = jUserWaypoint.getString("Description");
+							waypoint.setTitle(jUserWaypoint.getString("Description"));
+							waypoint.setDescription(jUserWaypoint.getString("Description"));
 							waypoint.Type = CacheTypes.Final;
-							waypoint.GcCode = "CO" + cache.GcCode.substring(2, cache.GcCode.length());
+							waypoint.setGcCode("CO" + cache.getGcCode().substring(2, cache.getGcCode().length()));
 							cache.waypoints.add(waypoint);
 						}
 						// Spoiler aktualisieren
@@ -595,7 +597,7 @@ public class SearchForGeocaches_Core
 		// hier im Core nichts machen da hier keine UI vorhanden ist
 	}
 
-	protected void actualizeSpoilerOfActualCache(Cache cache)
+	protected void actualizeSpoilerOfActualCache(CacheLite cache)
 	{
 		// hier im Core nichts machen da hier keine UI vorhanden ist
 	}
@@ -626,12 +628,13 @@ public class SearchForGeocaches_Core
 		Cache newCache = null;
 		try
 		{
-			SearchGC search = new SearchGC(aktCache.GcCode);
+			SearchGC search = new SearchGC(aktCache.getGcCode());
 
 			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 			SearchForGeocachesJSON(search, apiCaches, apiLogs, apiImages, aktCache.GPXFilename_ID);
+			SyncronizeHelper.sync("SearchForGeocaches_Core 637");
 			synchronized (Database.Data.Query)
 			{
 				if (apiCaches.size() == 1)
@@ -640,8 +643,8 @@ public class SearchForGeocaches_Core
 					newCache = apiCaches.get(0);
 					Database.Data.Query.remove(aktCache);
 					Database.Data.Query.add(newCache);
-					newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, newCache.Longitude());
-					newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, newCache.Latitude());
+					newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(CacheLite.MapZoomLevel, newCache.Longitude());
+					newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, newCache.Latitude());
 
 					new CacheDAO().UpdateDatabase(newCache);
 
@@ -668,7 +671,7 @@ public class SearchForGeocaches_Core
 						for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
 						{
 							Waypoint wp = aktCache.waypoints.get(j);
-							if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
+							if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode()))
 							{
 								if (wp.IsUserWaypoint) update = false;
 								break;
@@ -693,6 +696,7 @@ public class SearchForGeocaches_Core
 					Database.Data.GPXFilenameUpdateCacheCount();
 				}
 			}
+			SyncronizeHelper.endSync("SearchForGeocaches_Core 637");
 		}
 		catch (Exception ex)
 		{

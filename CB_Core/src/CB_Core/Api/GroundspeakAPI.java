@@ -38,6 +38,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
@@ -478,7 +479,7 @@ public class GroundspeakAPI
 	 * @param caches
 	 * @return
 	 */
-	public static int GetGeocacheStatus(ArrayList<Cache> caches)
+	public static int GetGeocacheStatus(ArrayList<CacheLite> caches)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -503,9 +504,9 @@ public class GroundspeakAPI
 			requestString += "\"CacheCodes\":[";
 
 			int i = 0;
-			for (Cache cache : caches)
+			for (CacheLite cache : caches)
 			{
-				requestString += "\"" + cache.GcCode + "\"";
+				requestString += "\"" + cache.getGcCode() + "\"";
 				if (i < caches.size() - 1) requestString += ",";
 				i++;
 			}
@@ -534,13 +535,13 @@ public class GroundspeakAPI
 					{
 						JSONObject jCache = (JSONObject) geocacheStatuses.get(ii);
 
-						Iterator<Cache> iterator = caches.iterator();
+						Iterator<CacheLite> iterator = caches.iterator();
 
 						do
 						{
-							Cache tmp = iterator.next();
+							CacheLite tmp = iterator.next();
 
-							if (jCache.getString("CacheCode").equals(tmp.GcCode))
+							if (jCache.getString("CacheCode").equals(tmp.getGcCode()))
 							{
 								tmp.Archived = jCache.getBoolean("Archived");
 								tmp.Available = jCache.getBoolean("Available");
@@ -640,7 +641,7 @@ public class GroundspeakAPI
 			{
 				String requestString = "";
 				requestString += "&AccessToken=" + GetAccessToken();
-				requestString += "&CacheCode=" + cache.GcCode;
+				requestString += "&CacheCode=" + cache.getGcCode();
 				requestString += "&StartIndex=" + start;
 				requestString += "&MaxPerPage=" + count;
 				HttpGet httppost = new HttpGet(URL + "GetGeocacheLogsByCacheCode?format=json" + requestString);
@@ -1495,9 +1496,12 @@ public class GroundspeakAPI
 
 		for (Cache cache : apiCaches)
 		{
-			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(CacheLite.MapZoomLevel, cache.Longitude());
+			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, cache.Latitude());
+
+			CacheLite aktCacheLite = Database.Data.Query.GetCacheById(cache.Id);
+
+			Cache aktCache = new Cache(aktCacheLite);
 
 			// If Cache into DB, extract saved rating
 			if (aktCache != null)
@@ -1577,7 +1581,7 @@ public class GroundspeakAPI
 					for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
 					{
 						Waypoint wp = aktCache.waypoints.get(j);
-						if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
+						if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode()))
 						{
 							if (wp.IsUserWaypoint) update = false;
 							break;

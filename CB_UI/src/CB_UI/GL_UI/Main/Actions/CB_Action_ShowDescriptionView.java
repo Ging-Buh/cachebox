@@ -9,6 +9,7 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -125,7 +126,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						@Override
 						public void run()
 						{
-							String GcCode = GlobalCore.getSelectedCache().GcCode;
+							String GcCode = GlobalCore.getSelectedCache().getGcCode();
 
 							SearchGC searchC = new SearchGC(GcCode);
 							searchC.number = 1;
@@ -156,7 +157,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							}
 
 							CachListChangedEventList.Call();
-							Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
+							CacheLite selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
 							GlobalCore.setSelectedCache(selCache);
 							GL.that.RunOnGL(new IRunOnGL()
 							{
@@ -171,7 +172,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 										public void run()
 										{
 											if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
-											GL.that.renderOnce("after reload Cache");
+											GL.that.renderOnce();
 										}
 									});
 								}
@@ -204,7 +205,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		boolean selectedCacheIsNoGC = false;
 
-		if (isSelected) selectedCacheIsNoGC = !GlobalCore.getSelectedCache().GcCode.startsWith("GC");
+		if (isSelected) selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
 		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
 		if (!isSelected) mi.setEnabled(false);
 		if (selectedCacheIsNoGC) mi.setEnabled(false);

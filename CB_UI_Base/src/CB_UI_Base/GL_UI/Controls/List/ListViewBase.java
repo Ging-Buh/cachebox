@@ -118,7 +118,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		if (isWorkOnRunOnGL.get())
 		{
 			runOnGL_ListWaitpool.add(run);
-			GL.that.renderOnce("RunIfListInitial called");
+			GL.that.renderOnce();
 			return;
 		}
 		synchronized (runOnGL_List)
@@ -126,7 +126,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			runOnGL_List.add(run);
 		}
 
-		GL.that.renderOnce("RunIfListInitial called");
+		GL.that.renderOnce();
 	}
 
 	protected void callListPosChangedEvent()
@@ -165,7 +165,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	{
 		mEmptyMsg = Msg;
 		emptyMsg = null;
-		GL.that.renderOnce("ListView.setEmptyMsg");
+		GL.that.renderOnce();
 	}
 
 	/**
@@ -249,7 +249,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		// Position setzen, damit die items neu geladen werden
 		setListPos(mPos, false);
 		// Logger.DEBUG("SetListPos Relod Items");
-		GL.that.renderOnce("");
+		GL.that.renderOnce();
 
 	}
 
@@ -286,7 +286,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		mMustSetPosValue = value;
 		mMustSetPos = true;
 		mMustSetPosKinetic = Kinetic;
-		GL.that.renderOnce(this.getName() + " setListPos");
+		GL.that.renderOnce();
 	}
 
 	protected abstract void RenderThreadSetPos(float value, boolean Kinetic);
@@ -607,7 +607,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 					reloadItems();
 				}
 			}
-			GL.that.renderOnce(this.getName() + " setListPos");
+			GL.that.renderOnce();
 
 		}
 

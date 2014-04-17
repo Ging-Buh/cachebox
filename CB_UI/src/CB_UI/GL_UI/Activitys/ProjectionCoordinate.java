@@ -2,9 +2,9 @@ package CB_UI.GL_UI.Activitys;
 
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -63,16 +63,16 @@ public class ProjectionCoordinate extends ActivityBase
 		public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance);
 	}
 
-	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate Coord, ReturnListner listner, Type type)
+	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate coord2, ReturnListner listner, Type type)
 	{
 		super(rec, Name);
-		coord = Coord;
+		coord = coord2;
 		radius = (type == Type.circle);
 		p2p = (type == Type.p2p);
 		mReturnListner = listner;
-		ImperialUnits = Config.settings.ImperialUnits.getValue();
+		ImperialUnits = CB_UI_Settings.ImperialUnits.getValue();
 
-		if (p2p) projCoord = Coord.copy();
+		if (p2p) projCoord = coord2.copy();
 
 		iniCacheNameLabel();
 		iniCoordButton();

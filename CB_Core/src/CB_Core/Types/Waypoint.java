@@ -1,6 +1,7 @@
 package CB_Core.Types;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.Date;
 
 import CB_Core.Enums.CacheTypes;
@@ -15,20 +16,23 @@ public class Waypoint implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 67610567646416L;
+	private static final Charset US_ASCII = Charset.forName("US-ASCII");
+	private static final Charset UTF_8 = Charset.forName("UTF-8");
+	private static final String EMPTY_STRING = "";
 
 	// / Id des dazugehörigen Caches in der Datenbank von geocaching.com
 	public long CacheId;
 
 	// / Waypoint Code
-	public String GcCode = "";
+	private byte[] GcCode;
 
 	public Coordinate Pos;
 
 	// / Titel des Wegpunktes
-	public String Title = "";
+	private byte[] Title;
 
 	// / Kommentartext
-	public String Description = "";
+	private byte[] Description;
 
 	// / Art des Wegpunkts
 	public CacheTypes Type;
@@ -40,7 +44,7 @@ public class Waypoint implements Serializable
 	public boolean IsSyncExcluded;
 
 	// / Lösung einer QTA
-	public String Clue = "";
+	private byte[] Clue;
 
 	// True wenn dies der Startpunkt für den nächsten Besuch ist.
 	// Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert
@@ -50,9 +54,9 @@ public class Waypoint implements Serializable
 	public Waypoint()
 	{
 		CacheId = -1;
-		GcCode = "";
+		setGcCode("");
 		Pos = new Coordinate();
-		Description = "";
+		setDescription("");
 		IsStart = false;
 	}
 
@@ -63,15 +67,15 @@ public class Waypoint implements Serializable
 	public Waypoint(String gcCode, CacheTypes type, String description, double latitude, double longitude, long cacheId, String clue,
 			String title)
 	{
-		GcCode = gcCode;
+		setGcCode(gcCode);
 		CacheId = cacheId;
 		Pos = new Coordinate(latitude, longitude);
-		Description = description;
+		setDescription(description);
 		Type = type;
 		IsSyncExcluded = true;
 		IsUserWaypoint = true;
-		Clue = clue;
-		Title = title;
+		setClue(clue);
+		setTitle(title);
 		IsStart = false;
 	}
 
@@ -137,38 +141,119 @@ public class Waypoint implements Serializable
 	public void clear()
 	{
 		CacheId = -1;
-		GcCode = "";
+		setGcCode("");
 		Pos = new Coordinate();
-		Title = "";
-		Description = "";
+		setTitle("");
+		setDescription("");
 		Type = null;
 		IsUserWaypoint = false;
 		IsSyncExcluded = false;
-		Clue = "";
+		setClue("");
 		checkSum = 0;
 		time = null;
 	}
 
 	public Waypoint copy()
 	{
-		return new Waypoint(GcCode, Type, Description, Pos.getLatitude(), Pos.getLongitude(), CacheId, Clue, Title);
+		return new Waypoint(getGcCode(), Type, getDescription(), Pos.getLatitude(), Pos.getLongitude(), CacheId, getClue(), getTitle());
 	}
 
 	@Override
 	public String toString()
 	{
-		return "WP:" + GcCode + " " + Pos.toString();
+		return "WP:" + getGcCode() + " " + Pos.toString();
 	}
 
 	public void dispose()
 	{
-		GcCode = null;
+		setGcCode(null);
 		Pos = null;
-		Title = null;
-		Description = null;
+		setTitle(null);
+		setDescription(null);
 		Type = null;
-		Clue = null;
+		setClue(null);
 		time = null;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null) return false;
+		if (o instanceof Waypoint)
+		{
+			Waypoint w = (Waypoint) o;
+
+			if (!this.getGcCode().equals(w.getGcCode())) return false;
+			if (!this.Pos.equals(w.Pos)) return false;
+			if (!this.getTitle().equals(w.getTitle())) return false;
+			return true;
+		}
+
+		return false;
+	}
+
+	public String getGcCode()
+	{
+		if (GcCode == null) return EMPTY_STRING;
+		return new String(GcCode, US_ASCII);
+	}
+
+	public void setGcCode(String gcCode)
+	{
+		if (gcCode == null)
+		{
+			GcCode = null;
+			return;
+		}
+		GcCode = gcCode.getBytes(US_ASCII);
+	}
+
+	public String getTitle()
+	{
+		if (Title == null) return EMPTY_STRING;
+		return new String(Title, UTF_8);
+	}
+
+	public void setTitle(String title)
+	{
+		if (title == null)
+		{
+			Title = null;
+			return;
+		}
+		Title = title.getBytes(UTF_8);
+	}
+
+	public String getDescription()
+	{
+		if (Description == null) return EMPTY_STRING;
+		return new String(Description, UTF_8);
+	}
+
+	public void setDescription(String description)
+	{
+		if (description == null)
+		{
+			Description = null;
+			return;
+		}
+		Description = description.getBytes(UTF_8);
+	}
+
+	public String getClue()
+	{
+		if (Clue == null) return EMPTY_STRING;
+		return new String(Clue, UTF_8);
+	}
+
+	public void setClue(String clue)
+	{
+		if (clue == null)
+		{
+			Clue = null;
+			return;
+		}
+		Clue = clue.getBytes(UTF_8);
 	}
 
 }

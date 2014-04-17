@@ -6,6 +6,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.LogEntry;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
@@ -95,7 +96,7 @@ public class CacheInfo extends CB_View_Base
 
 	private int mViewMode = VIEW_MODE_CACHE_LIST;
 
-	private Cache mCache;
+	private CacheLite mCache;
 	private float mIconSize = 0;
 	private SizeF mStarSize = new SizeF();
 	private float mMargin = 0;
@@ -121,14 +122,14 @@ public class CacheInfo extends CB_View_Base
 
 	private boolean cacheIsInitial = false;
 
-	public CacheInfo(SizeF size, String Name, Cache value)
+	public CacheInfo(SizeF size, String Name, CacheLite value)
 	{
 		super(size, Name);
 		mCache = value;
 		cacheIsInitial = false;
 	}
 
-	public CacheInfo(CB_RectF rec, String Name, Cache value)
+	public CacheInfo(CB_RectF rec, String Name, CacheLite value)
 	{
 		super(rec, Name);
 		mCache = value;
@@ -190,239 +191,247 @@ public class CacheInfo extends CB_View_Base
 
 	private void requestLayout()
 	{
-		if (mCache == null) return;
-
-		this.removeChilds();
-
-		float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
-		mMargin = 3 * scaleFactor;
-
-		float mLeft = mMargin;
-		float mTop = mMargin;
-		float mBottom = mMargin;
-
-		// Size
-		mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
-		mS_FontCache.setText("MSRLO", 0, 0);
-		mS_FontCache.setColor(COLOR.getFontColor());
-		float starHeight = mS_FontCache.getBounds().height * 1.1f;
-		mStarSize = new SizeF(starHeight * 5, starHeight);
-
-		if (ifModeFlag(SHOW_S_D_T))
+		try
 		{
-			String CacheSize = "";
-			switch ((int) (mCache.Size.ordinal()))
+			if (mCache == null) return;
+
+			this.removeChilds();
+
+			float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
+			mMargin = 3 * scaleFactor;
+
+			float mLeft = mMargin;
+			float mTop = mMargin;
+			float mBottom = mMargin;
+
+			// Size
+			mS_FontCache = new BitmapFontCache(mBitmapFontSmall);
+			mS_FontCache.setText("MSRLO", 0, 0);
+			mS_FontCache.setColor(COLOR.getFontColor());
+			float starHeight = mS_FontCache.getBounds().height * 1.1f;
+			mStarSize = new SizeF(starHeight * 5, starHeight);
+
+			if (ifModeFlag(SHOW_S_D_T))
 			{
-			case 1:
-				CacheSize = "M"; // micro;
-				break;
-			case 2:
-				CacheSize = "S"; // small;
-				break;
-			case 3:
-				CacheSize = "R"; // regular;
-				break;
-			case 4:
-				CacheSize = "L"; // large;
-				break;
-			default:
-				CacheSize = "O"; // other;
-				break;
-			}
-			mS_FontCache.setText(CacheSize, 0, 0);
-			mBottom += mS_FontCache.getBounds().height;
-			float mSpriteBottom = mMargin;
-			mS_FontCache.setPosition(mLeft, mBottom);
-			mLeft += mS_FontCache.getBounds().width + mMargin;
-
-			mStarSize.scale(scaleFactor);
-			mSSprite = new Sprite(SpriteCacheBase.SizesIcons.get((int) (mCache.Size.ordinal())));
-			mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
-			// Difficulty
-			mLeft += mSSprite.getWidth() + mMargin + mMargin;
-			mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
-			mD_FontCache.setColor(COLOR.getFontColor());
-			mD_FontCache.setText("D", mLeft, mBottom);
-			mLeft += mD_FontCache.getBounds().width + mMargin;
-			mDSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Difficulty * 2)));
-			mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
-			mDSprite.setRotation(0);
-			// Terrain
-			mLeft += mDSprite.getWidth() + mMargin + mMargin;
-			mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
-			mT_FontCache.setColor(COLOR.getFontColor());
-			mT_FontCache.setText("T", mLeft, mBottom);
-			mLeft += mT_FontCache.getBounds().width + mMargin;
-			mTSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Terrain * 2)));
-			mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
-			mTSprite.setRotation(0);
-			// Draw TB
-			mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
-			int numTb = mCache.NumTravelbugs;
-			if (numTb > 0)
-			{
-				float sizes = mStarSize.width / 2.1f;
-
-				mTBSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.tb_36.ordinal()));
-				mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
-				mTBSprite.setOrigin(sizes / 2, sizes / 2);
-				mTBSprite.setRotation(90);
-
-				if (numTb > 1)
+				String CacheSize = "";
+				switch ((int) (mCache.Size.ordinal()))
 				{
-					mLeft += mTBSprite.getWidth() + mMargin;
-					mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
-					mTB_FontCache.setColor(COLOR.getFontColor());
-					mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
+				case 1:
+					CacheSize = "M"; // micro;
+					break;
+				case 2:
+					CacheSize = "S"; // small;
+					break;
+				case 3:
+					CacheSize = "R"; // regular;
+					break;
+				case 4:
+					CacheSize = "L"; // large;
+					break;
+				default:
+					CacheSize = "O"; // other;
+					break;
 				}
-			}
-			else
-			{
-				mTBSprite = null;
-				mTB_FontCache = null;
-			}
-		}
+				mS_FontCache.setText(CacheSize, 0, 0);
+				mBottom += mS_FontCache.getBounds().height;
+				float mSpriteBottom = mMargin;
+				mS_FontCache.setPosition(mLeft, mBottom);
+				mLeft += mS_FontCache.getBounds().width + mMargin;
 
-		Vector2 mSpriteCachePos = new Vector2(0, getHeight() - mTop - mIconSize);
-
-		// Rating stars
-		if (ifModeFlag(SHOW_VOTE))
-		{
-			mLeft = -4 * scaleFactor;
-
-			mIconSize = Fonts.MeasureSmall("T").height * 3.5f * scaleFactor;
-
-			mStarSize.scale(0.7f);
-			mRatingSprite = new Sprite(SpriteCacheBase.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
-			mRatingSprite.setBounds(mLeft + mStarSize.height, getHeight() - mTop - mStarSize.width - mMargin - mMargin - mMargin,
-					mStarSize.width, mStarSize.height);
-			mRatingSprite.setOrigin(0, mStarSize.halfHeight);
-			mRatingSprite.setRotation(90);
-			mRatingSprite.setColor(gcVoteColor);
-			//
-			mLeft += starHeight;
-			mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
-		}
-
-		if (ifModeFlag(SHOW_NAME) || ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_COORDS) || ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)
-				|| ifModeFlag(SHOW_GC) || ifModeFlag(SHOW_LAST_FOUND))
-		{// Text zusammensetzen
-
-			String br = String.format("%n");
-			StringBuilder text = new StringBuilder();
-			if (ifModeFlag(SHOW_NAME)) text.append(mCache.Name + br);
-			if (ifModeFlag(SHOW_OWNER)) text.append("by " + mCache.Owner + ", " + postFormater.format(mCache.DateHidden) + br);
-			if (ifModeFlag(SHOW_COORDS))
-			{
-				if (ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE))
+				mStarSize.scale(scaleFactor);
+				mSSprite = new Sprite(SpriteCacheBase.SizesIcons.get((int) (mCache.Size.ordinal())));
+				mSSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+				// Difficulty
+				mLeft += mSSprite.getWidth() + mMargin + mMargin;
+				mD_FontCache = new BitmapFontCache(mBitmapFontSmall);
+				mD_FontCache.setColor(COLOR.getFontColor());
+				mD_FontCache.setText("D", mLeft, mBottom);
+				mLeft += mD_FontCache.getBounds().width + mMargin;
+				mDSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Difficulty * 2)));
+				mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+				mDSprite.setRotation(0);
+				// Terrain
+				mLeft += mDSprite.getWidth() + mMargin + mMargin;
+				mT_FontCache = new BitmapFontCache(mBitmapFontSmall);
+				mT_FontCache.setColor(COLOR.getFontColor());
+				mT_FontCache.setText("T", mLeft, mBottom);
+				mLeft += mT_FontCache.getBounds().width + mMargin;
+				mTSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Terrain * 2)));
+				mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
+				mTSprite.setRotation(0);
+				// Draw TB
+				mLeft += mTSprite.getWidth() + mMargin + mMargin + mMargin + mMargin;
+				int numTb = mCache.NumTravelbugs;
+				if (numTb > 0)
 				{
-					text.append(mCache.Pos.FormatCoordinateLineBreake() + br);
+					float sizes = mStarSize.width / 2.1f;
+
+					mTBSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.tb_36.ordinal()));
+					mTBSprite.setBounds(mLeft, mBottom - (sizes / 1.8f) - mMargin, sizes, sizes);
+					mTBSprite.setOrigin(sizes / 2, sizes / 2);
+					mTBSprite.setRotation(90);
+
+					if (numTb > 1)
+					{
+						mLeft += mTBSprite.getWidth() + mMargin;
+						mTB_FontCache = new BitmapFontCache(mBitmapFontSmall);
+						mTB_FontCache.setColor(COLOR.getFontColor());
+						mTB_FontCache.setText("x" + String.valueOf(numTb), mLeft, mBottom);
+					}
 				}
 				else
 				{
-					text.append(mCache.Pos.FormatCoordinate() + br);
+					mTBSprite = null;
+					mTB_FontCache = null;
 				}
 			}
 
-			if (ifModeFlag(SHOW_GC)) text.append(mCache.GcCode + br);
-			if (ifModeFlag(SHOW_LAST_FOUND))
+			Vector2 mSpriteCachePos = new Vector2(0, getHeight() - mTop - mIconSize);
+
+			// Rating stars
+			if (ifModeFlag(SHOW_VOTE))
 			{
-				String LastFound = getLastFoundLogDate(mCache);
-				if (!LastFound.equals(""))
+				mLeft = -4 * scaleFactor;
+
+				mIconSize = Fonts.MeasureSmall("T").height * 3.5f * scaleFactor;
+
+				mStarSize.scale(0.7f);
+				mRatingSprite = new Sprite(SpriteCacheBase.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
+				mRatingSprite.setBounds(mLeft + mStarSize.height, getHeight() - mTop - mStarSize.width - mMargin - mMargin - mMargin,
+						mStarSize.width, mStarSize.height);
+				mRatingSprite.setOrigin(0, mStarSize.halfHeight);
+				mRatingSprite.setRotation(90);
+				mRatingSprite.setColor(gcVoteColor);
+				//
+				mLeft += starHeight;
+				mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
+			}
+
+			if (ifModeFlag(SHOW_NAME) || ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_COORDS) || ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)
+					|| ifModeFlag(SHOW_GC) || ifModeFlag(SHOW_LAST_FOUND))
+			{// Text zusammensetzen
+
+				String br = String.format("%n");
+				StringBuilder text = new StringBuilder();
+				if (ifModeFlag(SHOW_NAME)) text.append(mCache.getName() + br);
+				if (mCache instanceof Cache && ifModeFlag(SHOW_OWNER)) text.append("by " + mCache.getOwner() + ", "
+						+ postFormater.format(((Cache) mCache).DateHidden) + br);
+				if (ifModeFlag(SHOW_COORDS))
 				{
-					text.append("last found: " + LastFound);
+					if (ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE))
+					{
+						text.append(mCache.Pos.FormatCoordinateLineBreake() + br);
+					}
+					else
+					{
+						text.append(mCache.Pos.FormatCoordinate() + br);
+					}
+				}
+
+				if (ifModeFlag(SHOW_GC)) text.append(mCache.getGcCode() + br);
+				if (ifModeFlag(SHOW_LAST_FOUND))
+				{
+					String LastFound = getLastFoundLogDate(mCache);
+					if (!LastFound.equals(""))
+					{
+						text.append("last found: " + LastFound);
+					}
+				}
+
+				mInfo_FontCache = new BitmapFontCache(mBitmapFont);
+
+				if (mCache.Archived || !mCache.Available)
+				{
+					mInfo_FontCache.setColor(Color.RED);
+				}
+				else
+				{
+					mInfo_FontCache.setColor(COLOR.getFontColor());
+				}
+				mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.getHeight() - mMargin);
+
+			}
+
+			if (ifModeFlag(SHOW_ICON))
+			{ // Icon Sprite erstellen
+
+				if (mCache.CorrectedCoordiantesOrMysterySolved())
+				{
+					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(21));
+				}
+				else if ((mCache.Type == CacheTypes.Multi) && mCache.HasStartWaypoint())
+				{
+					// Multi anders darstellen wenn dieser einen definierten Startpunkt hat
+					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(22));
+				}
+				else if ((mCache.Type == CacheTypes.Mystery) && mCache.HasStartWaypoint())
+				{
+					// Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
+					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(24));
+				}
+				else if (mCache.Type == CacheTypes.Munzee)
+				{
+					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(25));
+				}
+				else
+				{
+					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mCache.Type.ordinal()));
+				}
+				mIconSprite.setSize(mIconSize, mIconSize);
+				mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
+
+				// infoIcons erstellen
+
+				float infoSize = mIconSize / 2;
+
+				if (mCache.Found)
+				{
+					mFoundOwnerSprite = new Sprite(SpriteCacheBase.BigIcons.get(19));
+				}
+				else if (mCache.ImTheOwner())
+				{
+					mFoundOwnerSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.star_43.ordinal()));
+				}
+				if (mFoundOwnerSprite != null)
+				{
+					mFoundOwnerSprite.setSize(infoSize, infoSize);
+					mFoundOwnerSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
+				}
+
+				if (mCache.Favorit())
+				{
+					mFavoriteSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
+					mFavoriteSprite.setSize(infoSize, infoSize);
+					mFavoriteSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y + infoSize);
+				}
+
+				if (mCache.Archived)
+				{
+					mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.log11_45.ordinal()));
+				}
+				else if (!mCache.Available)
+				{
+					mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.disabled_44.ordinal()));
+				}
+				if (mAvailableSprite != null)
+				{
+					mAvailableSprite.setSize(infoSize, infoSize);
+					mAvailableSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y);
 				}
 			}
-
-			mInfo_FontCache = new BitmapFontCache(mBitmapFont);
-
-			if (mCache.Archived || !mCache.Available)
-			{
-				mInfo_FontCache.setColor(Color.RED);
-			}
-			else
-			{
-				mInfo_FontCache.setColor(COLOR.getFontColor());
-			}
-			mInfo_FontCache.setMultiLineText(text.toString(), mSpriteCachePos.x + mIconSize + mMargin, this.getHeight() - mMargin);
-
 		}
-
-		if (ifModeFlag(SHOW_ICON))
-		{ // Icon Sprite erstellen
-
-			if (mCache.CorrectedCoordiantesOrMysterySolved())
-			{
-				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(21));
-			}
-			else if ((mCache.Type == CacheTypes.Multi) && mCache.HasStartWaypoint())
-			{
-				// Multi anders darstellen wenn dieser einen definierten Startpunkt hat
-				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(22));
-			}
-			else if ((mCache.Type == CacheTypes.Mystery) && mCache.HasStartWaypoint())
-			{
-				// Mystery anders darstellen wenn dieser keinen Final aber einen definierten Startpunkt hat
-				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(24));
-			}
-			else if (mCache.Type == CacheTypes.Munzee)
-			{
-				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(25));
-			}
-			else
-			{
-				mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mCache.Type.ordinal()));
-			}
-			mIconSprite.setSize(mIconSize, mIconSize);
-			mIconSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
-
-			// infoIcons erstellen
-
-			float infoSize = mIconSize / 2;
-
-			if (mCache.Found)
-			{
-				mFoundOwnerSprite = new Sprite(SpriteCacheBase.BigIcons.get(19));
-			}
-			else if (mCache.ImTheOwner())
-			{
-				mFoundOwnerSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.star_43.ordinal()));
-			}
-			if (mFoundOwnerSprite != null)
-			{
-				mFoundOwnerSprite.setSize(infoSize, infoSize);
-				mFoundOwnerSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
-			}
-
-			if (mCache.Favorit())
-			{
-				mFavoriteSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
-				mFavoriteSprite.setSize(infoSize, infoSize);
-				mFavoriteSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y + infoSize);
-			}
-
-			if (mCache.Archived)
-			{
-				mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.log11_45.ordinal()));
-			}
-			else if (!mCache.Available)
-			{
-				mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.disabled_44.ordinal()));
-			}
-			if (mAvailableSprite != null)
-			{
-				mAvailableSprite.setSize(infoSize, infoSize);
-				mAvailableSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y);
-			}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 
 	}
 
-	private static String getLastFoundLogDate(Cache cache)
+	private static String getLastFoundLogDate(CacheLite mCache)
 	{
 		String FoundDate = "";
 		CB_List<LogEntry> logs = new CB_List<LogEntry>();
-		logs = Database.Logs(cache);// cache.Logs();
+		logs = Database.Logs(mCache);
 
 		for (int i = 0, n = logs.size(); i < n; i++)
 		{

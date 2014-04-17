@@ -113,7 +113,7 @@ public class WaitDialog extends ButtonDialog
 			public void run()
 			{
 				GL.that.closeDialog(WaitDialog.this);
-				GL.that.renderOnce("dismis WaitDialog");
+				GL.that.renderOnce();
 			}
 		});
 	}

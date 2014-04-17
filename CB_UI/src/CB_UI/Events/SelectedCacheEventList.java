@@ -2,7 +2,7 @@ package CB_UI.Events;
 
 import java.util.ArrayList;
 
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalLocationReceiver;
 
@@ -26,20 +26,20 @@ public class SelectedCacheEventList
 		}
 	}
 
-	private static Cache lastSelectedCache;
+	private static CacheLite lastSelectedCache;
 	private static Waypoint lastSelectedWayPoint;
 
-	public static void Call(final Cache cache, final Waypoint waypoint)
+	public static void Call(final CacheLite selectedCache, final Waypoint waypoint)
 	{
 		boolean change = true;
 
 		if (lastSelectedCache != null)
 		{
-			if (lastSelectedCache == cache)
+			if (lastSelectedCache.equals(selectedCache))
 			{
 				if (lastSelectedWayPoint != null)
 				{
-					if (lastSelectedWayPoint == waypoint) change = false;
+					if (lastSelectedWayPoint.equals(waypoint)) change = false;
 				}
 				else
 				{
@@ -57,7 +57,7 @@ public class SelectedCacheEventList
 				selectChangeThread = null;
 		}
 
-		if (cache != null)
+		if (selectedCache != null)
 		{
 			selectChangeThread = new Thread(new Runnable()
 			{
@@ -69,7 +69,7 @@ public class SelectedCacheEventList
 					{
 						for (SelectedCacheEvent event : list)
 						{
-							event.SelectedCacheChanged(cache, waypoint);
+							event.SelectedCacheChanged(selectedCache, waypoint);
 						}
 
 						// save last selected Cache in to DB

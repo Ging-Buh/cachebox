@@ -2,7 +2,7 @@ package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
@@ -95,7 +95,7 @@ public class ParkingDialog extends ButtonDialog
 		// chk disable select and delete Button
 		synchronized (Database.Data.Query)
 		{
-			Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+			CacheLite cache = Database.Data.Query.GetCacheByGcCode("CBPark");
 			if (cache == null)
 			{
 				btSelectWP.disable();
@@ -131,7 +131,7 @@ public class ParkingDialog extends ButtonDialog
 			{
 				synchronized (Database.Data.Query)
 				{
-					Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+					CacheLite cache = Database.Data.Query.GetCacheByGcCode("CBPark");
 					if (cache != null) GlobalCore.setSelectedCache(cache);
 				}
 				close();

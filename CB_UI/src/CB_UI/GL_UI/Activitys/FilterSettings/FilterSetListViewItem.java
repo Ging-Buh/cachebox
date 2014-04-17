@@ -74,7 +74,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		if (isPressed)
 		{
-			GL.that.renderOnce("");
+			GL.that.renderOnce();
 			isPressed = GL.getIsTouchDown();
 		}
 
@@ -388,7 +388,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL.that.renderOnce("");
+		GL.that.renderOnce();
 	}
 
 	public void minusClick()
@@ -398,7 +398,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL.that.renderOnce("");
+		GL.that.renderOnce();
 	}
 
 	public void stateClick()
@@ -407,7 +407,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL.that.renderOnce("");
+		GL.that.renderOnce();
 	}
 
 	public void setValue(int value)

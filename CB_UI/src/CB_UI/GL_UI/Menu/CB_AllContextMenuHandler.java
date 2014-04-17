@@ -44,7 +44,7 @@ public class CB_AllContextMenuHandler
 
 		if (!selectedCacheIsNull)
 		{
-			selectedCacheIsNoGC = !GlobalCore.getSelectedCache().GcCode.startsWith("GC");
+			selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
 		}
 
 		Menu icm = new Menu("BtnCacheContextMenu");
@@ -145,7 +145,7 @@ public class CB_AllContextMenuHandler
 					@Override
 					public void run()
 					{
-						SearchGC searchC = new SearchGC(GlobalCore.getSelectedCache().GcCode);
+						SearchGC searchC = new SearchGC(GlobalCore.getSelectedCache().getGcCode());
 
 						searchC.number = 1;
 

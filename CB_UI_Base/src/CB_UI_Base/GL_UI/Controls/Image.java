@@ -169,7 +169,7 @@ public class Image extends CB_View_Base
 				this.addChild(Wait);
 			}
 
-			GL.that.renderOnce("Image Loading Animation");
+			GL.that.renderOnce();
 		}
 
 		batch.setColor(altColor);
@@ -225,14 +225,14 @@ public class Image extends CB_View_Base
 			dispose();
 			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
 		}
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	public void setDrawable(Drawable drawable)
 	{
 		mDrawable = drawable;
 		inLoad = false;
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -354,7 +354,7 @@ public class Image extends CB_View_Base
 		});
 		ImageDownloadThread.start();
 
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	public void setSprite(Sprite sprite)
@@ -364,7 +364,7 @@ public class Image extends CB_View_Base
 		spriteWidth = sprite.getWidth();
 		spriteHeight = sprite.getHeight();
 		mDrawable = new SpriteDrawable(sprite);
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	public void clearImage()
@@ -430,7 +430,7 @@ public class Image extends CB_View_Base
 		if (spt != null) setSprite(spt);
 
 		isPacking = false;
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	private String getCachedAtlasName(String inputFolder)

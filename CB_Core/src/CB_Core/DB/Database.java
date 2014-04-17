@@ -12,7 +12,8 @@ import java.util.Map.Entry;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
+import CB_Core.Types.CacheListLite;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
@@ -28,7 +29,7 @@ public abstract class Database extends Database_Core
 	public static Database Data;
 	public static Database FieldNotes;
 	public static Database Settings;
-	public CacheList Query;
+	public CacheListLite Query;
 
 	public enum DatabaseType
 	{
@@ -46,7 +47,7 @@ public abstract class Database extends Database_Core
 		{
 		case CacheBox:
 			latestDatabaseChange = DatabaseVersions.LatestDatabaseChange;
-			Query = new CacheList();
+			Query = new CacheListLite();
 			break;
 		case FieldNotes:
 			latestDatabaseChange = DatabaseVersions.LatestDatabaseFieldNoteChange;
@@ -420,10 +421,10 @@ public abstract class Database extends Database_Core
 	public static void DeleteFromDatabase(Waypoint WP)
 	{
 		int newCheckSum = 0;
-		Replication.WaypointDelete(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
+		Replication.WaypointDelete(WP.CacheId, WP.checkSum, newCheckSum, WP.getGcCode());
 		try
 		{
-			Data.delete("Waypoint", "GcCode='" + WP.GcCode + "'", null);
+			Data.delete("Waypoint", "GcCode='" + WP.getGcCode() + "'", null);
 		}
 		catch (Exception exc)
 		{
@@ -582,7 +583,7 @@ public abstract class Database extends Database_Core
 		}
 	}
 
-	public static CB_List<LogEntry> Logs(Cache cache)
+	public static CB_List<LogEntry> Logs(CacheLite cache)
 	{
 		CB_List<LogEntry> result = new CB_List<LogEntry>();
 		if (cache == null) // if no cache is selected!
@@ -604,7 +605,7 @@ public abstract class Database extends Database_Core
 		return result;
 	}
 
-	private static LogEntry getLogEntry(Cache cache, CoreCursor reader, boolean filterBbCode)
+	private static LogEntry getLogEntry(CacheLite cache, CoreCursor reader, boolean filterBbCode)
 	{
 		int intLogType = reader.getInt(3);
 		if (intLogType < 0 || intLogType > 13) return null;
@@ -645,7 +646,7 @@ public abstract class Database extends Database_Core
 		return retLogEntry;
 	}
 
-	public static String GetDescription(Cache cache)
+	public static String GetDescription(CacheLite cache)
 	{
 		String description = "";
 		CoreCursor reader = Database.Data.rawQuery("select Description from Caches where Id=?", new String[]

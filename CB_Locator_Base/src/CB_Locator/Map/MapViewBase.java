@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Timer;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Locator.LocatorSettings;
 import CB_Locator.Events.PositionChangedEvent;
@@ -233,7 +234,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	protected int drawingHeight;
 	long pos20y = 363904;
 	long size20 = 256;
-	public Coordinate center = new Coordinate(48.0, 12.0);
+	public CoordinateGPS center = new CoordinateGPS(48.0, 12.0);
 	protected boolean positionInitialized = false;
 	protected OrthographicCamera camera;
 	long startTime;
@@ -1000,7 +1001,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			// Initialisierungskoordinaten bekannt und können übernommen werden
 			if (lat != -1000 && lon != -1000)
 			{
-				setCenter(new Coordinate(lat, lon));
+				setCenter(new CoordinateGPS(lat, lon));
 				positionInitialized = true;
 				// setLockPosition(0);
 			}
@@ -1162,15 +1163,15 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			screenCenterT.y = (long) (-newCenter.y);
 		}
 		// if (camera != null) camera.position.set((float) screenCenterW.x, (float) screenCenterW.y, 0);
-		GL.that.renderOnce(this.getName() + " setScreenCenter");
+		GL.that.renderOnce();
 	}
 
-	public void setCenter(Coordinate value)
+	public void setCenter(CoordinateGPS value)
 	{
 		synchronized (screenCenterW)
 		{
 
-			if (center == null) center = new Coordinate(48.0, 12.0);
+			if (center == null) center = new CoordinateGPS(48.0, 12.0);
 			positionInitialized = true;
 			center = value;
 			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()),
@@ -1246,7 +1247,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		if (getCenterGps()) setCenter(Locator.getCoordinate());
 
-		GL.that.renderOnce(MapViewBase.this.getName() + " Position Changed");
+		GL.that.renderOnce();
 	}
 
 	public float pixelsPerMeter = 0;
@@ -1290,7 +1291,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			drawingHeight = mapIntHeight;
 		}
 
-		GL.that.renderOnce("OrientationChanged");
+		GL.that.renderOnce();
 	}
 
 	public void SetAlignToCompass(boolean value)
@@ -1406,7 +1407,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				// 1000);
 
 				GL.that.addRenderView(MapViewBase.this, GL.FRAME_RATE_ACTION);
-				GL.that.renderOnce(MapViewBase.this.getName() + " ZoomButtonClick");
+				GL.that.renderOnce();
 				calcPixelsPerMeter();
 			}
 
@@ -1429,7 +1430,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					{
 						inputState = InputState.Pan;
 						// GL_Listener.glListener.addRenderView(this, frameRateAction);
-						GL.that.renderOnce(this.getName() + " Dragged");
+						GL.that.renderOnce();
 						// xxx startTimer(frameRateAction);
 						// xxx ((GLSurfaceView) MapViewGL.ViewGl).requestRender();
 					}
@@ -1460,7 +1461,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				zoomBtn.resetFadeOut();
 
 				// GL_Listener.glListener.addRenderView(this, frameRateAction);
-				GL.that.renderOnce(this.getName() + " Pan");
+				GL.that.renderOnce();
 				// debugString = "";
 				long faktor = MapTileLoader.getMapTilePosFactor(aktZoom);
 				// debugString += faktor;
@@ -1608,7 +1609,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		{
 			inputState = InputState.Idle;
 			// wieder langsam rendern
-			GL.that.renderOnce(this.getName() + " touchUp");
+			GL.that.renderOnce();
 
 			if ((kineticZoom == null) && (kineticPan == null)) GL.that.removeRenderView(this);
 
@@ -1630,7 +1631,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		// berechnet anhand des ScreenCenterW die Center-Coordinaten
 		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
-		center = new Coordinate(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(
+		center = new CoordinateGPS(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(
 				MapTileLoader.MAX_MAP_ZOOM, point.X));
 	}
 
@@ -1644,7 +1645,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		float calcZoom = MapTileLoader.convertCameraZommToFloat(camera);
 
-		Coordinate dummy = Coordinate.Project(center.getLatitude(), center.getLongitude(), 90, 1000);
+		Coordinate dummy = CoordinateGPS.Project(center.getLatitude(), center.getLongitude(), 90, 1000);
 		double l1 = Descriptor.LongitudeToTileX(calcZoom, center.getLongitude());
 		double l2 = Descriptor.LongitudeToTileX(calcZoom, dummy.getLongitude());
 		double diff = Math.abs(l2 - l1);
@@ -1654,7 +1655,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	protected float getPixelsPerMeter(int ZoomLevel)
 	{
-		Coordinate dummy = Coordinate.Project(center.getLatitude(), center.getLongitude(), 90, 1000);
+		Coordinate dummy = CoordinateGPS.Project(center.getLatitude(), center.getLongitude(), 90, 1000);
 		double l1 = Descriptor.LongitudeToTileX(ZoomLevel, center.getLongitude());
 		double l2 = Descriptor.LongitudeToTileX(ZoomLevel, dummy.getLongitude());
 		double diff = Math.abs(l2 - l1);
@@ -1765,7 +1766,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(newZoom), System.currentTimeMillis(),
 				System.currentTimeMillis() + ZoomTime);
 		GL.that.addRenderView(MapViewBase.this, GL.FRAME_RATE_ACTION);
-		GL.that.renderOnce(MapViewBase.this.getName() + " ZoomButtonClick");
+		GL.that.renderOnce();
 		calcPixelsPerMeter();
 	}
 

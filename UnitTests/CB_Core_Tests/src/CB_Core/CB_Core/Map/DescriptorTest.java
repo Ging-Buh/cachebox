@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Math.PointD;
 
@@ -38,7 +39,7 @@ public class DescriptorTest extends TestCase
 
 	public void testDescriptor()
 	{
-		Coordinate Referenz = new Coordinate();
+		Coordinate Referenz = new CoordinateGPS();
 		assertTrue("Objekt muss konstruierbar sein", Referenz != null);
 		Referenz.setLatitude(49.427700);
 		Referenz.setLongitude(6.204300);

@@ -8,6 +8,7 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -76,7 +77,7 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 			@Override
 			public void run()
 			{
-				String GcCode = GlobalCore.getSelectedCache().GcCode;
+				String GcCode = GlobalCore.getSelectedCache().getGcCode();
 
 				SearchGC searchC = new SearchGC(GcCode);
 				searchC.number = 1;
@@ -107,7 +108,7 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 				}
 
 				CachListChangedEventList.Call();
-				Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
+				CacheLite selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
 				GlobalCore.setSelectedCache(selCache);
 				GL.that.RunOnGL(new IRunOnGL()
 				{
@@ -122,7 +123,7 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 							public void run()
 							{
 								if (TabMainView.logView != null) TabMainView.logView.onShow();
-								GL.that.renderOnce("after reload Cache");
+								GL.that.renderOnce();
 							}
 						});
 					}

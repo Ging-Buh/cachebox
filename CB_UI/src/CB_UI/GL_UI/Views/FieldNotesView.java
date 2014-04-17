@@ -9,6 +9,8 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
+import CB_Core.Types.CacheListLite;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Core.Types.FieldNoteList.LoadingType;
@@ -235,7 +237,7 @@ public class FieldNotesView extends V_ListView
 	public Menu getContextMenu()
 	{
 
-		Cache cache = GlobalCore.getSelectedCache();
+		CacheLite cache = GlobalCore.getSelectedCache();
 
 		if (cache == null) return null;
 
@@ -303,7 +305,7 @@ public class FieldNotesView extends V_ListView
 		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
 
 		// Aktueller Cache ist von geocaching.com dann weitere Menüeinträge freigeben
-		if (cache != null && cache.GcCode.toLowerCase().startsWith("gc"))
+		if (cache != null && cache.getGcCode().toLowerCase().startsWith("gc"))
 		{
 			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCacheBase.getThemedSprite("log5icon"));
 			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCacheBase.getThemedSprite("log2icon"));
@@ -381,7 +383,7 @@ public class FieldNotesView extends V_ListView
 		}
 
 		// chk car found?
-		if (cache.GcCode.equalsIgnoreCase("CBPark"))
+		if (cache.getGcCode().equalsIgnoreCase("CBPark"))
 		{
 
 			if (type == LogTypes.found)
@@ -399,7 +401,7 @@ public class FieldNotesView extends V_ListView
 		}
 
 		// GC fremder Cache gefunden?
-		if (!cache.GcCode.toLowerCase().startsWith("gc"))
+		if (!cache.getGcCode().toLowerCase().startsWith("gc"))
 		{
 
 			if (type == LogTypes.found)
@@ -462,8 +464,8 @@ public class FieldNotesView extends V_ListView
 		if (newFieldNote == null)
 		{
 			newFieldNote = new FieldNoteEntry(type);
-			newFieldNote.CacheName = cache.Name;
-			newFieldNote.gcCode = cache.GcCode;
+			newFieldNote.CacheName = cache.getName();
+			newFieldNote.gcCode = cache.getGcCode();
 			newFieldNote.foundNumber = Config.FoundOffset.getValue();
 			newFieldNote.timestamp = new Date();
 			newFieldNote.CacheId = cache.Id;
@@ -809,7 +811,7 @@ public class FieldNotesView extends V_ListView
 							// damit das Smiley Symbol aus der Map und der CacheList verschwindet
 							synchronized (Database.Data.Query)
 							{
-								Cache tc = Database.Data.Query.GetCacheById(cache.Id);
+								CacheLite tc = Database.Data.Query.GetCacheById(cache.Id);
 								if (tc != null)
 								{
 									tc.Found = false;
@@ -903,12 +905,12 @@ public class FieldNotesView extends V_ListView
 
 		// suche den Cache aus der DB.
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
-		CacheList lCaches = new CacheList();
+		CacheListLite lCaches = new CacheListLite();
 		CacheListDAO cacheListDAO = new CacheListDAO();
 		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId);
-		Cache tmpCache = null;
+		CacheLite tmpCache = null;
 		if (lCaches.size() > 0) tmpCache = lCaches.get(0);
-		Cache cache = tmpCache;
+		CacheLite cache = tmpCache;
 
 		if (cache == null)
 		{

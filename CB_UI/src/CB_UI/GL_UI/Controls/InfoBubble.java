@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Controls;
 
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -44,14 +45,15 @@ public class InfoBubble extends CB_View_Base
 
 	private CacheInfo cacheInfo;
 
-	public void setCache(Cache value, Waypoint waypoint)
+	public void setCache(CacheLite cache, Waypoint waypoint)
 	{
-		setCache(value, waypoint, false);
+		setCache(cache, waypoint, false);
 	}
 
-	public void setCache(Cache value, Waypoint waypoint, boolean force)
+	public void setCache(CacheLite cacheLite, Waypoint waypoint, boolean force)
 	{
-		if (value == null)
+
+		if (cacheLite == null)
 		{
 			mCache = null;
 			mCacheId = -1;
@@ -60,19 +62,21 @@ public class InfoBubble extends CB_View_Base
 			return;
 		}
 
+		Cache cache = new Cache(cacheLite);
+
 		if (!force)
 		{
-			if ((mCache != null) && (mCache.Id == value.Id) && (mWaypoint == waypoint)) return;
+			if ((mCache != null) && (mCache.Id == cache.Id) && (mWaypoint == waypoint)) return;
 		}
 
 		// Logger.LogCat("New Cache @InfoBubble");
-		mCache = value;
-		mCacheId = value.Id;
+		mCache = cache;
+		mCacheId = cache.Id;
 		mWaypoint = waypoint;
 		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 
-		cacheInfo = new CacheInfo(size, "CacheInfo", value);
+		cacheInfo = new CacheInfo(size, "CacheInfo", cache);
 		cacheInfo.setViewMode(CacheInfo.VIEW_MODE_BUBBLE);
 		cacheInfo.setY(getHeight() - size.height);
 		cacheInfo.setFont(Fonts.getBubbleNormal());
@@ -93,7 +97,7 @@ public class InfoBubble extends CB_View_Base
 	@Override
 	protected void render(Batch batch)
 	{
-		Sprite sprite = (mCache == GlobalCore.getSelectedCache()) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
+		Sprite sprite = (mCache.Id == GlobalCore.getSelectedCache().Id) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
 		sprite.setPosition(0, 0);
 		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);

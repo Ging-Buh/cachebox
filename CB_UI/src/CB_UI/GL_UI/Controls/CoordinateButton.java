@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Controls;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.EditCoord;
@@ -30,11 +31,11 @@ public class CoordinateButton extends Button implements ICopyPaste
 
 	private CoordinateChangeListner mCoordinateChangedListner;
 
-	public CoordinateButton(CB_RectF rec, String name, Coordinate coord)
+	public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate)
 	{
 		super(rec, name);
-		if (coord == null) coord = new Coordinate();
-		mActCoord = coord;
+		if (coordinate == null) coordinate = new Coordinate();
+		mActCoord = coordinate;
 		setText();
 		this.setOnClickListener(click);
 		this.setOnLongClickListener(longCLick);
@@ -44,7 +45,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 	public CoordinateButton(String name)
 	{
 		super(name);
-		mActCoord = new Coordinate();
+		mActCoord = new CoordinateGPS();
 		this.setOnClickListener(click);
 		this.setOnLongClickListener(longCLick);
 		clipboard = GlobalCore.getDefaultClipboard();
@@ -115,10 +116,10 @@ public class CoordinateButton extends Button implements ICopyPaste
 		}
 	};
 
-	public void setCoordinate(Coordinate coord)
+	public void setCoordinate(Coordinate pos)
 	{
-		mActCoord = coord;
-		if (mActCoord == null) mActCoord = new Coordinate();
+		mActCoord = pos;
+		if (mActCoord == null) mActCoord = new CoordinateGPS();
 		setText();
 	}
 
@@ -166,12 +167,12 @@ public class CoordinateButton extends Button implements ICopyPaste
 	{
 		if (clipboard == null) return null;
 		String content = clipboard.getContents();
-		Coordinate cor = null;
+		CoordinateGPS cor = null;
 		if (content != null)
 		{
 			try
 			{
-				cor = new Coordinate(content);
+				cor = new CoordinateGPS(content);
 			}
 			catch (Exception e)
 			{
@@ -206,7 +207,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 		if (clipboard == null) return null;
 		String content = this.getText();
 		clipboard.setContents(content);
-		Coordinate cor = new Coordinate("N 0° 0.00 / E 0° 0.00");
+		CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
 		cor.setValid(false);
 		this.setCoordinate(cor);
 		return content;

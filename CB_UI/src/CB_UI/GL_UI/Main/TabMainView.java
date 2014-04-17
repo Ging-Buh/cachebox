@@ -7,7 +7,7 @@ import CB_Core.FilterProperties;
 import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.DB.Database;
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Map.ManagerBase;
@@ -91,6 +91,7 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.SyncronizeHelper;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
 
@@ -293,10 +294,10 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			{
 				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 				{
-					Cache c = Database.Data.Query.get(i);
-					if (c.GcCode.equalsIgnoreCase(sGc))
+					CacheLite c = Database.Data.Query.get(i);
+					if (c.getGcCode().equalsIgnoreCase(sGc))
 					{
-						Logger.DEBUG("TabMainView: Set selectedCache to " + c.GcCode + " from lastSaved.");
+						Logger.DEBUG("TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 						GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
 						break;
 					}
@@ -689,6 +690,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		// Set new list size at context menu
 		// ##################################
 		String Name = "";
+
+		SyncronizeHelper.sync("TabmainView 496");
 		synchronized (Database.Data.Query)
 		{
 			int filterCount = Database.Data.Query.size();
@@ -704,6 +707,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 			Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
 		}
+		SyncronizeHelper.endSync("TabmainView 496");
 		actionShowCacheList.setNameExtention(Name);
 	}
 

@@ -2,6 +2,7 @@ package CB_UI.GL_UI.Views;
 
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
@@ -112,9 +113,9 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
-		aktCache = cache;
+		aktCache = new Cache(cache);
 		mustLoadNotes = true;
 	}
 

@@ -139,7 +139,7 @@ public class TrackListViewItem extends ListViewItemBackground
 			this.addChild(EntryLength);
 		}
 
-		GL.that.renderOnce("CreateTrackListItem_Label");
+		GL.that.renderOnce();
 	}
 
 	private void drawColorRec(Batch batch)
@@ -209,7 +209,7 @@ public class TrackListViewItem extends ListViewItemBackground
 				if (mRouteChangedListner != null) mRouteChangedListner.RouteChanged(mRoute);
 			}
 		});
-		GL.that.renderOnce("TrackListViewItem_Click_Color_Rec");
+		GL.that.renderOnce();
 	}
 
 	private void colorClick()
@@ -235,7 +235,7 @@ public class TrackListViewItem extends ListViewItemBackground
 				clrPick.show();
 			}
 		});
-		GL.that.renderOnce("TrackListViewItem_Click_Color_Rec");
+		GL.that.renderOnce();
 	}
 
 	public void notifyTrackChanged(Track route)

@@ -33,7 +33,7 @@ public class chkBox extends Button
 		if (drawableNormal == null || drawablePressed == null || drawableDisabledChk == null || drawableDisabled == null)
 		{
 			Initial();
-			GL.that.renderOnce(this.getName() + " render");
+			GL.that.renderOnce();
 		}
 
 		if (!isChk && !isDisabled)
@@ -102,7 +102,7 @@ public class chkBox extends Button
 		if (!isDisabled)
 		{
 
-			GL.that.renderOnce(this.getName() + " touchDown");
+			GL.that.renderOnce();
 		}
 		return dragableButton ? false : true;
 	}
@@ -111,7 +111,7 @@ public class chkBox extends Button
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 
-		GL.that.renderOnce(this.getName() + " Dragged");
+		GL.that.renderOnce();
 		return false;
 	}
 
@@ -119,7 +119,7 @@ public class chkBox extends Button
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 
-		GL.that.renderOnce(this.getName() + " touchUp");
+		GL.that.renderOnce();
 		return dragableButton ? false : true;
 	}
 

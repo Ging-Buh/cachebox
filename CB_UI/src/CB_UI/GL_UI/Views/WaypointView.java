@@ -4,6 +4,7 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -255,21 +256,22 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	}
 
-	public void SetSelectedCache(Cache cache, Waypoint waypoint)
+	public void SetSelectedCache(CacheLite cache, Waypoint waypoint)
 	{
-		if (aktCache != cache)
+
+		if (aktCache == null || (aktCache != null && aktCache.Id != cache.Id))
 		{
 			// Liste nur dann neu Erstellen, wenn der aktuelle Cache geändert
 			// wurde
-			aktCache = cache;
+			aktCache = GlobalCore.getSelectedCache();
 			this.setBaseAdapter(null);
-			lvAdapter = new CustomAdapter(cache);
+			lvAdapter = new CustomAdapter(aktCache);
 			this.setBaseAdapter(lvAdapter);
 
 		}
 		else
 		{
-			// this.notifyDataSetChanged();
+
 		}
 
 		// aktuellen Waypoint in der List anzeigen
@@ -311,7 +313,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		if (GlobalCore.getSelectedWaypoint() != null)
 		{
 
-			if (aktWaypoint == GlobalCore.getSelectedWaypoint())
+			if (aktWaypoint != null && aktWaypoint.equals(GlobalCore.getSelectedWaypoint()))
 			{
 				// is selected
 				return;
@@ -324,7 +326,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 			{
 				Waypoint wp = aktCache.waypoints.get(i);
 				id++;
-				if (wp == aktWaypoint)
+				if (wp.equals(aktWaypoint))
 				{
 					this.setSelection(id);
 					if (this.isDragable())
@@ -357,7 +359,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 		SetSelectedCache(cache, waypoint);
 	}
@@ -422,7 +424,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		String newGcCode = "";
 		try
 		{
-			newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+			newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 		}
 		catch (Exception e)
 		{
@@ -489,12 +491,12 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 					}
 					else
 					{
-						aktWaypoint.Title = waypoint.Title;
+						aktWaypoint.setTitle(waypoint.getTitle());
 						aktWaypoint.Type = waypoint.Type;
 						aktWaypoint.Pos = waypoint.Pos;
-						aktWaypoint.Description = waypoint.Description;
+						aktWaypoint.setDescription(waypoint.getDescription());
 						aktWaypoint.IsStart = waypoint.IsStart;
-						aktWaypoint.Clue = waypoint.Clue;
+						aktWaypoint.setClue(waypoint.getClue());
 
 						// set waypoint as UserWaypoint, because waypoint is changed by user
 						aktWaypoint.IsUserWaypoint = true;
@@ -520,7 +522,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	private void deleteWP()
 	{
-		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo,
+		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitle() + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo,
 				MessageBoxIcon.Question, new OnMsgBoxClickListener()
 				{
 
@@ -584,7 +586,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						String newGcCode = "";
 						try
 						{
-							newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+							newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 						}
 						catch (Exception e)
 						{
@@ -623,7 +625,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				String newGcCode = "";
 				try
 				{
-					newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+					newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 				}
 				catch (Exception e)
 				{

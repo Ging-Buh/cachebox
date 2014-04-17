@@ -2,31 +2,26 @@ package CB_Core.Types;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
-import CB_Locator.Coordinate;
-import CB_Locator.Locator;
-import CB_Utils.MathUtils;
-import CB_Utils.MathUtils.CalculationType;
+import CB_Locator.CoordinateGPS;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 
-public class Cache implements Comparable<Cache>, Serializable
+public class Cache extends CacheLite
 {
-	private static final long serialVersionUID = 1015307624242318838L;
 
-	/*
-	 * Private Member
-	 */
+	private static final long serialVersionUID = 3442053093499951966L;
 
 	public static long GenerateCacheId(String GcCode)
 	{
@@ -52,143 +47,26 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 
 	/**
-	 * Koordinaten des Caches auf der Karte gelten in diesem Zoom
-	 */
-	public static final int MapZoomLevel = 18;
-	/**
-	 * Koordinaten des Caches auf der Karte
-	 */
-	public double MapX;
-	/**
-	 * Koordinaten des Caches auf der Karte
-	 */
-	public double MapY;
-	/**
 	 * Id des Caches bei geocaching.com. Wird zumm Loggen benötigt und von geotoad nicht exportiert
 	 */
 	// TODO Warum ist das ein String?
 	public String GcId = "";
-	/**
-	 * Id des Caches in der Datenbank von geocaching.com
-	 */
-	public long Id;
-	/**
-	 * Waypoint Code des Caches
-	 */
-	public String GcCode = "";
-	/**
-	 * Name des Caches
-	 */
-	public String Name = "";
 
 	/**
-	 * Die Coordinate, an der der Cache liegt.
+	 * Erschaffer des Caches
 	 */
-	public Coordinate Pos = new Coordinate();
+	public String PlacedBy = "";
 
 	/**
-	 * Breitengrad
+	 * Datum, an dem der Cache versteckt wurde
 	 */
-	public double Latitude()
-	{
-		return Pos.getLatitude();
-	}
+	public Date DateHidden;
 
-	/**
-	 * Längengrad
-	 */
-	public double Longitude()
-	{
-		return Pos.getLongitude();
-	}
-
-	/**
-	 * Breitengrad
-	 */
-	public double Latitude(Boolean useFinal)
-	{
-		Waypoint waypoint = null;
-		if (useFinal) waypoint = this.GetFinalWaypoint();
-		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
-		// Diszanzberechnung vom Final aus gemacht werden
-		// If a mystery has a final waypoint, the distance will be calculated to
-		// the final not the the cache coordinates
-		Coordinate toPos = Pos;
-		if (waypoint != null)
-		{
-			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
-			// nur sinnvolles Final, sonst vom Cache
-			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
-		}
-		return toPos.getLatitude();
-	}
-
-	/**
-	 * Längengrad
-	 */
-	public double Longitude(Boolean useFinal)
-	{
-		Waypoint waypoint = null;
-		if (useFinal) waypoint = this.GetFinalWaypoint();
-		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
-		// Diszanzberechnung vom Final aus gemacht werden
-		// If a mystery has a final waypoint, the distance will be calculated to
-		// the final not the the cache coordinates
-		Coordinate toPos = Pos;
-		if (waypoint != null)
-		{
-			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
-			// nur sinnvolles Final, sonst vom Cache
-			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
-		}
-		return toPos.getLongitude();
-	}
-
-	/**
-	 * Durchschnittliche Bewertung des Caches von GcVote
-	 */
-	public float Rating;
-	/**
-	 * Größe des Caches. Bei Wikipediaeinträgen enthält dieses Feld den Radius in m
-	 */
-	public CacheSizes Size;
-	/**
-	 * Schwierigkeit des Caches
-	 */
-	public float Difficulty = 0;
-	/**
-	 * Geländebewertung
-	 */
-	public float Terrain = 0;
-	/**
-	 * Wurde der Cache archiviert?
-	 */
-	public boolean Archived;
-	/**
-	 * Ist der Cache derzeit auffindbar?
-	 */
-	public boolean Available;
 	/**
 	 * ApiStatus 0: Cache wurde nicht per Api hinzugefügt 1: Cache wurde per GC Api hinzugefügt und ist noch nicht komplett geladen (IsLite
 	 * = true) 2: Cache wurde per GC Api hinzugefügt und ist komplett geladen (IsLite = false)
 	 */
 	public byte ApiStatus;
-
-	/**
-	 * Ist der Cache einer der Favoriten
-	 */
-	public boolean Favorit()
-	{
-		return favorite;
-	}
-
-	private boolean favorite;
-
-	public void setFavorit(boolean value)
-	{
-		favorite = value;
-
-	}
 
 	/**
 	 * for Replication
@@ -208,16 +86,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	public boolean hasUserData;
 
 	/**
-	 * hat der Cache korrigierte Koordinaten
-	 */
-	private boolean CorrectedCoordinates;
-
-	/**
-	 * Wurde der Cache bereits gefunden?
-	 */
-	public boolean Found;
-
-	/**
 	 * Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
 	 */
 	public String TourName = "";
@@ -226,26 +94,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * Name der GPX-Datei aus der importiert wurde
 	 */
 	public long GPXFilename_ID = 0;
-
-	/**
-	 * Art des Caches
-	 */
-	public CacheTypes Type = CacheTypes.Undefined;
-
-	/**
-	 * Erschaffer des Caches
-	 */
-	public String PlacedBy = "";
-
-	/**
-	 * Verantwortlicher
-	 */
-	public String Owner = "";
-
-	/**
-	 * Datum, an dem der Cache versteckt wurde
-	 */
-	public Date DateHidden;
 
 	/**
 	 * URL des Caches
@@ -278,16 +126,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	private DLong attributesNegative = new DLong(0, 0);
 
 	/**
-	 * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
-	 */
-	public int NumTravelbugs = 0;
-
-	/**
-	 * Falls keine erneute Distanzberechnung nötig ist nehmen wir diese Distanz
-	 */
-	public float cachedDistance = 0;
-
-	/**
 	 * Hinweis für diesen Cache
 	 */
 	public String hint = "";
@@ -312,43 +150,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * bei Bedarf aus der DB geladen wird
 	 */
 	public String longDescription;
-
-	/**
-	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
-	 */
-	private int myCache = -1;
-
-	private static String gcLogin = null;
-
-	/**
-	 * @param userName
-	 *            Config.settings.GcLogin.getValue()
-	 * @return
-	 */
-	public boolean ImTheOwner()
-	{
-		String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
-		if (myCache == 0) return false;
-		if (myCache == 1) return true;
-
-		if (gcLogin == null)
-		{
-			gcLogin = userName;
-		}
-
-		boolean ret = false;
-
-		try
-		{
-			ret = this.Owner.toLowerCase(Locale.getDefault()).equals(gcLogin);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		myCache = ret ? 1 : 0;
-		return ret;
-	}
 
 	/*
 	 * Constructors
@@ -375,10 +176,10 @@ public class Cache implements Comparable<Cache>, Serializable
 	{
 		this.Pos.setLatitude(Latitude);
 		this.Pos.setLongitude(Longitude);
-		this.Name = Name;
+		this.setName(Name);
 		this.Type = type;
 		this.DateHidden = new Date();
-		this.GcCode = GcCode;
+		this.setGcCode(GcCode);
 		this.NumTravelbugs = 0;
 		this.Difficulty = 0;
 		this.Terrain = 0;
@@ -392,108 +193,70 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * Getter/Setter
 	 */
 
-	/**
-	 * -- korrigierte Koordinaten (kommt nur aus GSAK? bzw CacheWolf-Import) -- oder Mystery mit gültigem Final
-	 */
-	public boolean CorrectedCoordiantesOrMysterySolved()
+	public Cache(CacheLite cacheLite)
 	{
-		if (this.hasCorrectedCoordinates()) return true;
+		if (cacheLite == null) return;
 
-		if (this.Type != CacheTypes.Mystery) return false;
+		// Read Cache data from DB
+		CacheDAO dao = new CacheDAO();
+		Cache tmpCache = dao.getFromDbByCacheId(cacheLite.Id);
 
-		if (this.waypoints == null || this.waypoints.size() == 0) return false;
+		if (tmpCache == null) return;
 
-		boolean x;
-		x = false;
+		// CacheLiteValues:
+		this.myCache = cacheLite.myCache;
+		this.MapX = tmpCache.MapX;
+		this.MapY = tmpCache.MapY;
+		this.setGcCode(tmpCache.getGcCode());
+		this.setName(tmpCache.getName());
+		this.Pos = tmpCache.Pos;
+		this.Rating = tmpCache.Rating;
+		this.NumTravelbugs = tmpCache.NumTravelbugs;
+		this.Id = tmpCache.Id;
+		this.Size = tmpCache.Size;
+		this.Difficulty = tmpCache.Difficulty;
+		this.Terrain = tmpCache.Terrain;
+		this.Archived = tmpCache.Archived;
+		this.Available = tmpCache.Available;
+		this.Found = tmpCache.Found;
+		this.Type = tmpCache.Type;
+		this.cachedDistance = tmpCache.cachedDistance;
+		this.setOwner(tmpCache.getOwner());
 
-		for (int i = 0, n = waypoints.size(); i < n; i++)
-		{
-			Waypoint wp = waypoints.get(i);
-			if (wp.Type == CacheTypes.Final)
-			{
-				if (!(wp.Pos.getLatitude() == 0 && wp.Pos.getLongitude() == 0)) x = true;
-			}
-		}
-		;
-		return x;
-	}
+		// Full Cache Values
+		this.GcId = tmpCache.GcId;
+		this.ApiStatus = tmpCache.ApiStatus;
+		this.noteCheckSum = tmpCache.noteCheckSum;
+		this.tmpNote = tmpCache.tmpNote;
+		this.solverCheckSum = tmpCache.solverCheckSum;
+		this.tmpSolver = tmpCache.tmpSolver;
+		this.hasUserData = tmpCache.hasUserData;
+		this.TourName = tmpCache.TourName;
+		this.GPXFilename_ID = tmpCache.GPXFilename_ID;
+		this.Url = tmpCache.Url;
+		this.Country = tmpCache.Country;
+		this.State = tmpCache.State;
+		this.listingChanged = tmpCache.listingChanged;
+		this.hint = tmpCache.hint;
+		this.waypoints = tmpCache.waypoints;
+		this.spoilerRessources = tmpCache.spoilerRessources;
+		this.shortDescription = tmpCache.shortDescription;
+		this.longDescription = tmpCache.longDescription;
+		this.PlacedBy = tmpCache.PlacedBy;
+		this.DateHidden = tmpCache.DateHidden;
 
-	/**
-	 * true, if a this mystery cache has a final waypoint
-	 */
-	public boolean HasFinalWaypoint()
-	{
-		return GetFinalWaypoint() != null;
-	}
+		this.hasFinalWaypoint = cacheLite.hasFinalWaypoint;
+		this.hasStartWaypoint = cacheLite.hasStartWaypoint;
+		this.FinalWaypoint = cacheLite.FinalWaypoint;
+		this.startWaypoint = cacheLite.startWaypoint;
 
-	/**
-	 * search the final waypoint for a mystery cache
-	 */
-	public Waypoint GetFinalWaypoint()
-	{
-		if (this.Type != CacheTypes.Mystery) return null;
-		if (waypoints == null || waypoints.size() == 0) return null;
+		// read Waypoints
 
-		for (int i = 0, n = waypoints.size(); i < n; i++)
-		{
-			Waypoint wp = waypoints.get(i);
-			if (wp.Type == CacheTypes.Final)
-			{
-				// do not activate final waypoint with invalid coordinates
-				if (!wp.Pos.isValid() || wp.Pos.isZero()) continue;
-				return wp;
-			}
-		}
-		;
+		WaypointDAO daoW = new WaypointDAO();
+		this.waypoints = daoW.getWaypointsFromCacheID(this.Id);
 
-		return null;
-	}
+		tmpCache = null; // Dont dispose, this will clear waypoint list!
 
-	/**
-	 * true if this is a mystery of multi with a Stage Waypoint defined as StartPoint
-	 * 
-	 * @return
-	 */
-	public boolean HasStartWaypoint()
-	{
-		return GetStartWaypoint() != null;
-	}
-
-	/**
-	 * search the start Waypoint for a multi or mystery
-	 * 
-	 * @return
-	 */
-	public Waypoint GetStartWaypoint()
-	{
-		if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery)) return null;
-
-		if (waypoints == null || waypoints.size() == 0) return null;
-
-		for (int i = 0, n = waypoints.size(); i < n; i++)
-		{
-			Waypoint wp = waypoints.get(i);
-			if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
-			{
-				return wp;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * @return Entfernung zur aktUserPos als Float
-	 */
-	public float CachedDistance(CalculationType type)
-	{
-		if (cachedDistance != 0)
-		{
-			return cachedDistance;
-		}
-		else
-		{
-			return Distance(type, true);
-		}
 	}
 
 	/**
@@ -560,19 +323,19 @@ public class Cache implements Comparable<Cache>, Serializable
 		String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
 		if (path != null && path.length() > 0)
 		{
-			directory = path + "/" + GcCode.substring(0, 4);
+			directory = path + "/" + getGcCode().substring(0, 4);
 			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 		}
 
 		// from Global Repository
 		path = CB_Core_Settings.DescriptionImageFolder.getValue();
-		directory = path + "/" + GcCode.substring(0, 4);
+		directory = path + "/" + getGcCode().substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Spoilers are always loaden from global Repository too
 		// from globalUser changed Repository
 		path = CB_Core_Settings.SpoilerFolder.getValue();
-		directory = path + "/" + GcCode.substring(0, 4);
+		directory = path + "/" + getGcCode().substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
 
 		// Add own taken photo
@@ -594,7 +357,7 @@ public class Cache implements Comparable<Cache>, Serializable
 			public boolean accept(File dir, String filename)
 			{
 				filename = filename.toLowerCase(Locale.getDefault());
-				if (filename.indexOf(GcCode.toLowerCase(Locale.getDefault())) >= 0)
+				if (filename.indexOf(getGcCode().toLowerCase(Locale.getDefault())) >= 0)
 				{
 					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png")
 							|| filename.endsWith(".gif")) return true;
@@ -633,38 +396,6 @@ public class Cache implements Comparable<Cache>, Serializable
 		this.Type = CacheTypes.parseString(type);
 	}
 
-	/**
-	 * Gibt die Entfernung zur übergebenen User Position als Float zurück und Speichert die Aktueller User Position für alle Caches ab.
-	 * 
-	 * @return Entfernung zur übergebenen User Position als Float
-	 */
-	public float Distance(CalculationType type, boolean useFinal)
-	{
-		return Distance(type, useFinal, Locator.getCoordinate());
-	}
-
-	public float Distance(CalculationType type, boolean useFinal, Coordinate fromPos)
-	{
-		Waypoint waypoint = null;
-		if (useFinal) waypoint = this.GetFinalWaypoint();
-		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
-		// Diszanzberechnung vom Final aus gemacht werden
-		// If a mystery has a final waypoint, the distance will be calculated to
-		// the final not the the cache coordinates
-		Coordinate toPos = Pos;
-		if (waypoint != null)
-		{
-			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
-			// nur sinnvolles Final, sonst vom Cache
-			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
-		}
-		float[] dist = new float[4];
-		MathUtils.computeDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(),
-				dist);
-		cachedDistance = dist[0];
-		return cachedDistance;
-	}
-
 	public boolean isAttributePositiveSet(Attributes attribute)
 	{
 		return attributesPositive.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
@@ -694,14 +425,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	/*
 	 * Overrides
 	 */
-
-	@Override
-	public int compareTo(Cache c2)
-	{
-		float dist1 = this.cachedDistance;
-		float dist2 = c2.cachedDistance;
-		return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
-	}
 
 	public void setAttributesPositive(DLong i)
 	{
@@ -771,9 +494,9 @@ public class Cache implements Comparable<Cache>, Serializable
 		MapY = 0;
 		GcId = "";
 		Id = -1;
-		GcCode = "";
-		Name = "";
-		Pos = new Coordinate();
+		setGcCode("");
+		setName("");
+		Pos = new CoordinateGPS();
 		Rating = 0;
 		Size = null;
 		Difficulty = 0;
@@ -791,7 +514,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		GPXFilename_ID = 0;
 		Type = CacheTypes.Undefined;
 		PlacedBy = "";
-		Owner = "";
+		setOwner("");
 		DateHidden = null;
 		Url = "";
 		listingChanged = false;
@@ -822,22 +545,12 @@ public class Cache implements Comparable<Cache>, Serializable
 		return isSearchVisible;
 	}
 
-	public boolean hasCorrectedCoordinates()
-	{
-		return CorrectedCoordinates;
-	}
-
-	public void setCorrectedCoordinates(boolean correctedCoordinates)
-	{
-		this.CorrectedCoordinates = correctedCoordinates;
-	}
-
 	public Waypoint findWaypointByGc(String gc)
 	{
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
 			Waypoint wp = waypoints.get(i);
-			if (wp.GcCode.equals(gc))
+			if (wp.getGcCode().equals(gc))
 			{
 				return wp;
 			}
@@ -849,11 +562,13 @@ public class Cache implements Comparable<Cache>, Serializable
 	// this is used after actualization of cache with API
 	public void copyFrom(Cache cache)
 	{
+
 		if (AttributeList != null) AttributeList.clear();
 		AttributeList = null;
+
 		this.MapX = cache.MapX;
 		this.MapY = cache.MapY;
-		this.Name = cache.Name;
+		this.setName(cache.getName());
 		this.Pos = cache.Pos;
 		this.Rating = cache.Rating;
 		this.Size = cache.Size;
@@ -862,26 +577,21 @@ public class Cache implements Comparable<Cache>, Serializable
 		this.Archived = cache.Archived;
 		this.Available = cache.Available;
 		this.ApiStatus = cache.ApiStatus;
-		// this.favorite = false;
-		// this.noteCheckSum = 0;
-		// this.solverCheckSum = 0;
-		// this.hasUserData = false;
-		// this.CorrectedCoordinates = false;
+
 		// only change the found status when it is true in the loaded cache
 		// This will prevent ACB from overriding a found cache which is still not found in GC
 		if (cache.Found) this.Found = cache.Found;
-		// this.TourName = "";
-		// this.GPXFilename_ID = 0;
+
 		this.Type = cache.Type;
 		this.PlacedBy = cache.PlacedBy;
-		this.Owner = cache.Owner;
+		this.setOwner(cache.getOwner());
 		this.DateHidden = cache.DateHidden;
 		this.Url = cache.Url;
 		this.listingChanged = true; // so that spoiler download will be done again
 		this.attributesPositive = cache.attributesPositive;
 		this.attributesNegative = cache.attributesNegative;
 		this.NumTravelbugs = cache.NumTravelbugs;
-		// this.cachedDistance = 0;
+
 		this.hint = cache.hint;
 		// do not copy waypoints List directly because actual user defined Waypoints would be deleted
 		// this.waypoints = new ArrayList<Waypoint>();
@@ -890,7 +600,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		{
 			Waypoint newWaypoint = cache.waypoints.get(i);
 
-			Waypoint aktWaypoint = this.findWaypointByGc(newWaypoint.GcCode);
+			Waypoint aktWaypoint = this.findWaypointByGc(newWaypoint.getGcCode());
 			if (aktWaypoint == null)
 			{
 				// this waypoint is new -> Add to list
@@ -899,24 +609,23 @@ public class Cache implements Comparable<Cache>, Serializable
 			else
 			{
 				// this waypoint is already in our list -> Copy Informations
-				aktWaypoint.Description = newWaypoint.Description;
+				aktWaypoint.setDescription(newWaypoint.getDescription());
 				aktWaypoint.Pos = newWaypoint.Pos;
-				aktWaypoint.Title = newWaypoint.Title;
+				aktWaypoint.setTitle(newWaypoint.getTitle());
 				aktWaypoint.Type = newWaypoint.Type;
 			}
 		}
-		// this.spoilerRessources = null;
+
 		this.shortDescription = cache.shortDescription;
 		this.longDescription = cache.longDescription;
 		this.myCache = cache.myCache;
-		// this.gcLogin = null;
 
 	}
 
 	@Override
 	public String toString()
 	{
-		return "Cache:" + GcCode + " " + Pos.toString();
+		return "Cache:" + getGcCode() + " " + Pos.toString();
 	}
 
 	public void dispose()
@@ -955,7 +664,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		tmpSolver = null;
 		TourName = null;
 		PlacedBy = null;
-		Owner = null;
+		setOwner(null);
 		DateHidden = null;
 		Url = null;
 		Country = null;
@@ -980,6 +689,29 @@ public class Cache implements Comparable<Cache>, Serializable
 	public boolean getSolver1Changed()
 	{
 		return solver1Changed;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null) return false;
+		if (o instanceof Cache)
+		{
+			Cache c = (Cache) o;
+
+			if (!this.getGcCode().equals(c.getGcCode())) return false;
+			if (!this.Pos.equals(c.Pos)) return false;
+			return true;
+		}
+		else if (o instanceof CacheLite)
+		{
+			CacheLite c = (CacheLite) o;
+
+			if (!this.getGcCode().equals(c.getGcCode())) return false;
+			if (!this.Pos.equals(c.Pos)) return false;
+			return true;
+		}
+		return false;
 	}
 
 }

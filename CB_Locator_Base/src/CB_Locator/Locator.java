@@ -301,7 +301,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static Coordinate getCoordinate()
+	public static CoordinateGPS getCoordinate()
 	{
 		return getLocation(ProviderType.any).toCordinate();
 	}

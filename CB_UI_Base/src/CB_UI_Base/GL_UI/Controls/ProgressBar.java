@@ -48,7 +48,7 @@ public class ProgressBar extends CB_View_Base
 			progressFillDisabled = SpriteCacheBase.ProgressDisabled;
 		}
 
-		GL.that.renderOnce("InitialProgressBar reday");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class ProgressBar extends CB_View_Base
 		progress = value;
 		if (progress > 100) progress = 100;
 		progressDrawWidth = (getWidth() / 100) * progress;
-		GL.that.renderOnce("ProgressBar state changed");
+		GL.that.renderOnce();
 		return progressDrawWidth;
 	}
 

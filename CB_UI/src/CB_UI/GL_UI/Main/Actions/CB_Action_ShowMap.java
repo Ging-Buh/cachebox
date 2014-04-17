@@ -193,10 +193,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.MapShowCompass.getValue());
 
-		mi = icm.addItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints");
-		mi.setCheckable(true);
-		mi.setChecked(Config.ShowAllWaypoints.getValue());
-
 		mi = icm.addItem(MenuID.MI_SHOW_RATINGS, "ShowRatings");
 		mi.setCheckable(true);
 		mi.setChecked(Config.MapShowRating.getValue());
@@ -248,10 +244,6 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 			case MenuID.MI_HIDE_FINDS:
 				toggleSetting(Config.MapHideMyFinds);
 
-				return true;
-
-			case MenuID.MI_SHOW_ALL_WAYPOINTS:
-				toggleSetting(Config.ShowAllWaypoints);
 				return true;
 
 			case MenuID.MI_SHOW_RATINGS:

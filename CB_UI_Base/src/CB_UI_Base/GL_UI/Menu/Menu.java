@@ -331,7 +331,7 @@ public class Menu extends ButtonDialog
 			}
 
 			layout();
-			GL.that.renderOnce("MoreMenuAnimation");
+			GL.that.renderOnce();
 		}
 		else if (mAnimationState == -1)
 		{

@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Views;
 
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -38,7 +38,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	private class extendedCacheInfo extends CacheInfo
 	{
 
-		public extendedCacheInfo(CB_RectF rec, String Name, Cache value)
+		public extendedCacheInfo(CB_RectF rec, String Name, CacheLite value)
 		{
 			super(rec, Name, value);
 		}
@@ -69,18 +69,18 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 	private CB_RectF ArrowRec;
 
-	private Cache mCache;
+	private CacheLite mCache;
 
-	public Cache getCache()
+	public CacheLite getCache()
 	{
 		return mCache;
 	}
 
-	public CacheListViewItem(CB_RectF rec, int Index, Cache cache)
+	public CacheListViewItem(CB_RectF rec, int Index, CacheLite cache)
 	{
-		super(rec, Index, cache.Name);
+		super(rec, Index, cache.getName());
 		mCache = cache;
-		info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
+		info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
 		info.setZeroPos();
 		distance.setColor(COLOR.getFontColor());
 		this.addChild(info);
@@ -131,7 +131,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 			Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.Pos;
 			CalculationType calcType = CalculationType.FAST;
-			Cache c = GlobalCore.getSelectedCache();
+			CacheLite c = GlobalCore.getSelectedCache();
 			if (c != null)
 			{
 				calcType = mCache.Id == GlobalCore.getSelectedCache().Id ? CalculationType.ACCURATE : CalculationType.FAST;

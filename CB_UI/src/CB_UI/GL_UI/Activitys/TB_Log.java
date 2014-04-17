@@ -4,7 +4,7 @@ import java.util.Date;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.LogTypes;
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -149,7 +149,7 @@ public class TB_Log extends ActivityBase
 		if (LT == LogTypes.discovered || LT == LogTypes.visited || LT == LogTypes.dropped_off || LT == LogTypes.retrieve)
 		{
 
-			Cache c = GlobalCore.getSelectedCache();
+			CacheLite c = GlobalCore.getSelectedCache();
 			if (c == null)
 			{
 				// Log Inposible, close Activity and give a Message
@@ -171,19 +171,19 @@ public class TB_Log extends ActivityBase
 			String msg = "";
 			if (LT == LogTypes.discovered)
 			{
-				msg = Translation.Get("discoveredAt") + ": " + GlobalCore.br + c.Name;
+				msg = Translation.Get("discoveredAt") + ": " + GlobalCore.br + c.getName();
 			}
 			if (LT == LogTypes.visited)
 			{
-				msg = Translation.Get("visitedAt") + ": " + GlobalCore.br + c.Name;
+				msg = Translation.Get("visitedAt") + ": " + GlobalCore.br + c.getName();
 			}
 			if (LT == LogTypes.dropped_off)
 			{
-				msg = Translation.Get("dropped_offAt") + ": " + GlobalCore.br + c.Name;
+				msg = Translation.Get("dropped_offAt") + ": " + GlobalCore.br + c.getName();
 			}
 			if (LT == LogTypes.retrieve)
 			{
-				msg = Translation.Get("retrieveAt") + ": " + GlobalCore.br + c.Name;
+				msg = Translation.Get("retrieveAt") + ": " + GlobalCore.br + c.getName();
 			}
 
 			CacheIcon.setSprite(SpriteCacheBase.BigIcons.get(c.Type.ordinal()));
@@ -390,7 +390,7 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().GcCode
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getGcCode()
 				: "";
 	}
 
@@ -399,7 +399,7 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Name : "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
 	}
 
 	private long getCache_ID()

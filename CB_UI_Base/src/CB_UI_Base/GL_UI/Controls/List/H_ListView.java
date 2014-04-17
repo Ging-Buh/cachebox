@@ -140,7 +140,7 @@ public class H_ListView extends ListViewBase
 			}
 
 			// RenderRequest
-			GL.that.renderOnce(this.getName() + " addVisibleItems");
+			GL.that.renderOnce();
 
 			if (selectionchanged)
 			{

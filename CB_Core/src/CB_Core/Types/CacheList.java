@@ -18,7 +18,7 @@ public class CacheList extends MoveableList<Cache>
 		for (int i = 0, n = this.size(); i < n; i++)
 		{
 			Cache cache = this.get(i);
-			if (cache.GcCode.equalsIgnoreCase(GcCode)) return cache;
+			if (cache.getGcCode().equalsIgnoreCase(GcCode)) return cache;
 		}
 		return null;
 	}
@@ -62,7 +62,7 @@ public class CacheList extends MoveableList<Cache>
 		{
 			for (int i = 0, n = this.size(); i < n; i++)
 			{
-				Cache cache = this.get(i);
+				CacheLite cache = this.get(i);
 				cache.Distance(CalculationType.FAST, true);
 			}
 		}
@@ -82,7 +82,7 @@ public class CacheList extends MoveableList<Cache>
 			}
 			for (int i = 0, n = this.size(); i < n; i++)
 			{
-				Cache cache = this.get(i);
+				CacheLite cache = this.get(i);
 				cache.Distance(CalculationType.FAST, true, fromPos);
 			}
 		}

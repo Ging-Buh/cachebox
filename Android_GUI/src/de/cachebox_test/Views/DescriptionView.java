@@ -3,6 +3,7 @@ package de.cachebox_test.Views;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
@@ -198,10 +199,10 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 		// reset ScrollPos only if cache changed
-		if (aktCache != cache)
+		if (aktCache.Id != cache.Id)
 		{
 			lastScrollPos = new Point(0, 0);
 		}

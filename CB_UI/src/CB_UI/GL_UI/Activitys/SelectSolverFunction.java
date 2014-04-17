@@ -317,7 +317,7 @@ public class SelectSolverFunction extends ButtonDialog
 								selectedFunction = fct;
 
 								// hier muss einmal gerendert werden, damit die Änderungen übernommen werden
-								GL.that.renderOnce("Function Select Changed");
+								GL.that.renderOnce();
 
 								return false;
 							}

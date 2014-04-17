@@ -7,6 +7,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
@@ -14,6 +15,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.MoveableList;
+import CB_Utils.Util.SyncronizeHelper;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -39,7 +41,6 @@ public class MapViewCacheList implements CacheListChangedEventListner
 	private WaypointRenderInfo selectedWP;
 	public int anz = 0;
 	private boolean hideMyFinds = false;
-	private boolean showAllWaypoints = false;
 
 	// public ArrayList<ArrayList<Sprite>> NewMapIcons = null;
 	// public ArrayList<ArrayList<Sprite>> NewMapOverlay = null;
@@ -95,14 +96,15 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 						tmplist = new MoveableList<MapViewCacheList.WaypointRenderInfo>();
 						selectedWP = null;
+						SyncronizeHelper.sync("MapViewCacheList 99");
 						synchronized (Database.Data.Query)
 						{
 							for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 							{
-								Cache cache = Database.Data.Query.get(i);
+								CacheLite cache = Database.Data.Query.get(i);
 								// Funde
 								if (hideMyFinds && cache.Found) continue;
-								boolean showWaypoints = showAllWaypoints || GlobalCore.getSelectedCache() == cache;
+								boolean showWaypoints = GlobalCore.getSelectedCache().Id == cache.Id;
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
 								Waypoint fwp = null; // Final Waypoint
@@ -110,7 +112,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 								// sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
 								if (showWaypoints)
 								{
-									addWaypoints(cache, iconSize);
+									addWaypoints(GlobalCore.getSelectedCache(), iconSize);
 								}
 								else
 								{
@@ -144,7 +146,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 										}
 									}
 								}
-								if (isVisible(MapX, MapY) || (GlobalCore.getSelectedCache() == cache))
+								if (isVisible(MapX, MapY) || (GlobalCore.getSelectedCache().Id == cache.Id))
 								{
 									// sichtbaren Cache/Mystery-Final hinzufügen
 									WaypointRenderInfo wpi = new WaypointRenderInfo();
@@ -155,13 +157,15 @@ public class MapViewCacheList implements CacheListChangedEventListner
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
 									wpi.Waypoint = null; // = fwp; ist null, ausser bei Mystery-Final // null -> Beschriftung Name vom Cache
-									wpi.Selected = (GlobalCore.getSelectedCache() == cache);
+									wpi.Selected = (GlobalCore.getSelectedCache().Id == cache.Id);
 									if (wpi.Selected && selectedWP == null) selectedWP = wpi;// select nur wenn kein WP selectiert ist (draw
 																								// last)
 									tmplist.add(wpi);
 								}
 							}
 						}
+
+						SyncronizeHelper.endSync("MapViewCacheList 99");
 
 						synchronized (list)
 						{
@@ -183,7 +187,6 @@ public class MapViewCacheList implements CacheListChangedEventListner
 							// Diese jetzt ausführen!
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(savedQuery);
 							data.hideMyFinds = MapViewCacheList.this.hideMyFinds;
-							data.showAllWaypoints = MapViewCacheList.this.showAllWaypoints;
 							savedQuery = null;
 							update(data);
 						}
@@ -249,9 +252,9 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			return SpriteCacheBase.MapIcons.get(waypoint.Type.ordinal());
 	}
 
-	private Sprite getCacheIcon(Cache cache, int iconSize)
+	private Sprite getCacheIcon(CacheLite cache, int iconSize)
 	{
-		if ((iconSize < 1) && (cache != GlobalCore.getSelectedCache()))
+		if ((iconSize < 1) && (cache.Id != GlobalCore.getSelectedCache().Id))
 		{
 			return getSmallMapIcon(cache);
 		}
@@ -262,7 +265,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		}
 	}
 
-	private Sprite getMapIcon(Cache cache)
+	private Sprite getMapIcon(CacheLite cache)
 	{
 		int IconId;
 		if (cache.ImTheOwner()) IconId = 26;
@@ -276,7 +279,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		return SpriteCacheBase.MapIcons.get(IconId);
 	}
 
-	private Sprite getSmallMapIcon(Cache cache)
+	private Sprite getSmallMapIcon(CacheLite cache)
 	{
 		int iconId = 0;
 
@@ -336,9 +339,9 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 	}
 
-	private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint, int iconSize)
+	private Sprite getUnderlayIcon(CacheLite cache, Waypoint waypoint, int iconSize)
 	{
-		if ((iconSize == 0) && (cache != GlobalCore.getSelectedCache()))
+		if ((iconSize == 0) && (cache.Id != GlobalCore.getSelectedCache().Id))
 		{
 			return null;
 		}
@@ -346,7 +349,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		{
 			if (waypoint == null)
 			{
-				if ((cache == null) || (cache == GlobalCore.getSelectedCache()))
+				if ((cache == null) || (cache.Id == GlobalCore.getSelectedCache().Id))
 				{
 					return SpriteCacheBase.MapOverlay.get(1);
 				}
@@ -380,7 +383,6 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		public int zoom;
 		public boolean doNotCheck;
 		public boolean hideMyFinds = false;
-		public boolean showAllWaypoints = false;
 
 		public MapViewCacheListUpdateData(Vector2 point1, Vector2 point2, int zoom, boolean doNotCheck)
 		{
@@ -406,7 +408,6 @@ public class MapViewCacheList implements CacheListChangedEventListner
 	public void update(MapViewCacheListUpdateData data)
 	{
 		LastUpdateData = data;
-		this.showAllWaypoints = data.showAllWaypoints;
 		this.hideMyFinds = data.hideMyFinds;
 
 		if (data.point1 == null || data.point2 == null) return;
@@ -462,7 +463,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 	{
 		public float MapX;
 		public float MapY;
-		public Cache Cache;
+		public CacheLite Cache;
 		public Waypoint Waypoint;
 		public boolean Selected;
 		public Sprite Icon;

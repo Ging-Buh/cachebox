@@ -11,6 +11,7 @@ import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.SDBM_Hash;
 import CB_Utils.Util.UnitFormatter;
 
@@ -19,19 +20,19 @@ public class WaypointDAO
 	public void WriteToDatabase(Waypoint WP)
 	{
 		int newCheckSum = createCheckSum(WP);
-		Replication.WaypointNew(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
+		Replication.WaypointNew(WP.CacheId, WP.checkSum, newCheckSum, WP.getGcCode());
 		Parameters args = new Parameters();
-		args.put("gccode", WP.GcCode);
+		args.put("gccode", WP.getGcCode());
 		args.put("cacheid", WP.CacheId);
 		args.put("latitude", WP.Pos.getLatitude());
 		args.put("longitude", WP.Pos.getLongitude());
-		args.put("description", WP.Description);
+		args.put("description", WP.getDescription());
 		args.put("type", WP.Type.ordinal());
 		args.put("syncexclude", WP.IsSyncExcluded);
 		args.put("userwaypoint", WP.IsUserWaypoint);
-		if (WP.Clue == null) WP.Clue = "";
-		args.put("clue", WP.Clue);
-		args.put("title", WP.Title);
+		if (WP.getClue() == null) WP.setClue("");
+		args.put("clue", WP.getClue());
+		args.put("title", WP.getTitle());
 		args.put("isStart", WP.IsStart);
 
 		try
@@ -57,24 +58,24 @@ public class WaypointDAO
 	{
 		boolean result = false;
 		int newCheckSum = createCheckSum(WP);
-		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
+		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.getGcCode());
 		if (newCheckSum != WP.checkSum)
 		{
 			Parameters args = new Parameters();
-			args.put("gccode", WP.GcCode);
+			args.put("gccode", WP.getGcCode());
 			args.put("cacheid", WP.CacheId);
 			args.put("latitude", WP.Pos.getLatitude());
 			args.put("longitude", WP.Pos.getLongitude());
-			args.put("description", WP.Description);
+			args.put("description", WP.getDescription());
 			args.put("type", WP.Type.ordinal());
 			args.put("syncexclude", WP.IsSyncExcluded);
 			args.put("userwaypoint", WP.IsUserWaypoint);
-			args.put("clue", WP.Clue);
-			args.put("title", WP.Title);
+			args.put("clue", WP.getClue());
+			args.put("title", WP.getTitle());
 			args.put("isStart", WP.IsStart);
 			try
 			{
-				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.GcCode + "\"", null);
+				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"", null);
 				if (count > 0) result = true;
 			}
 			catch (Exception exc)
@@ -106,18 +107,18 @@ public class WaypointDAO
 	public Waypoint getWaypoint(CoreCursor reader)
 	{
 		Waypoint WP = new Waypoint();
-		WP.GcCode = reader.getString(0);
+		WP.setGcCode(reader.getString(0));
 		WP.CacheId = reader.getLong(1);
 		double latitude = reader.getDouble(2);
 		double longitude = reader.getDouble(3);
 		WP.Pos = new Coordinate(latitude, longitude);
-		WP.Description = reader.getString(4);
+		WP.setDescription(reader.getString(4));
 		WP.Type = CacheTypes.values()[reader.getShort(5)];
 		WP.IsSyncExcluded = reader.getInt(6) == 1;
 		WP.IsUserWaypoint = reader.getInt(7) == 1;
-		WP.Clue = reader.getString(8);
-		if (WP.Clue != null) WP.Clue = WP.Clue.trim();
-		WP.Title = reader.getString(9).trim();
+		WP.setClue(reader.getString(8));
+		if (WP.getClue() != null) WP.setClue(WP.getClue().trim());
+		WP.setTitle(reader.getString(9).trim());
 		WP.IsStart = reader.getInt(10) == 1;
 		WP.checkSum = createCheckSum(WP);
 		return WP;
@@ -126,13 +127,13 @@ public class WaypointDAO
 	private int createCheckSum(Waypoint WP)
 	{
 		// for Replication
-		String sCheckSum = WP.GcCode;
+		String sCheckSum = WP.getGcCode();
 		sCheckSum += UnitFormatter.FormatLatitudeDM(WP.Pos.getLatitude());
 		sCheckSum += UnitFormatter.FormatLongitudeDM(WP.Pos.getLongitude());
-		sCheckSum += WP.Description;
+		sCheckSum += WP.getDescription();
 		sCheckSum += WP.Type.ordinal();
-		sCheckSum += WP.Clue;
-		sCheckSum += WP.Title;
+		sCheckSum += WP.getClue();
+		sCheckSum += WP.getTitle();
 		if (WP.IsStart) sCheckSum += "1";
 		return (int) SDBM_Hash.sdbm(sCheckSum);
 	}
@@ -161,16 +162,16 @@ public class WaypointDAO
 	public void WriteImportToDatabase(Waypoint WP)
 	{
 		Parameters args = new Parameters();
-		args.put("gccode", WP.GcCode);
+		args.put("gccode", WP.getGcCode());
 		args.put("cacheid", WP.CacheId);
 		args.put("latitude", WP.Pos.getLatitude());
 		args.put("longitude", WP.Pos.getLongitude());
-		args.put("description", WP.Description);
+		args.put("description", WP.getDescription());
 		args.put("type", WP.Type.ordinal());
 		args.put("syncexclude", WP.IsSyncExcluded);
 		args.put("userwaypoint", WP.IsUserWaypoint);
-		args.put("clue", WP.Clue);
-		args.put("title", WP.Title);
+		args.put("clue", WP.getClue());
+		args.put("title", WP.getTitle());
 		args.put("isStart", WP.IsStart);
 
 		try
@@ -214,6 +215,35 @@ public class WaypointDAO
 	{
 		String SQL = "DELETE  FROM  Waypoint WHERE  NOT EXISTS (SELECT * FROM Caches c WHERE  Waypoint.CacheId = c.Id)";
 		Database.Data.execSQL(SQL);
+	}
+
+	public CB_List<Waypoint> getWaypointsFromCacheID(Long CacheID)
+	{
+		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
+		long aktCacheID = -1;
+
+		CoreCursor reader = Database.Data
+				.rawQuery(
+						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint  where CacheId = ?",
+						new String[]
+							{ String.valueOf(CacheID) });
+		reader.moveToFirst();
+		while (!reader.isAfterLast())
+		{
+			Waypoint wp = getWaypoint(reader);
+			if (wp.CacheId != aktCacheID)
+			{
+				aktCacheID = wp.CacheId;
+				wpList = new CB_List<Waypoint>();
+
+			}
+			wpList.add(wp);
+			reader.moveToNext();
+
+		}
+		reader.close();
+
+		return wpList;
 	}
 
 }

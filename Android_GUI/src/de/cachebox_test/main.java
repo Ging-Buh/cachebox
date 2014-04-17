@@ -46,7 +46,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
@@ -355,9 +355,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.ui.Window.width);
 		savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
 
-		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().GcCode);
+		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGcCode());
 		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint",
-				GlobalCore.getSelectedWaypoint().GcCode);
+				GlobalCore.getSelectedWaypoint().getGcCode());
 
 		// TODO onSaveInstanceState => save more
 
@@ -819,13 +819,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	@Override
-	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 
 		setSelectedCache_onUI(cache, waypoint);
 	}
 
-	public void setSelectedCache_onUI(Cache cache, Waypoint waypoint)
+	public void setSelectedCache_onUI(CacheLite cache, Waypoint waypoint)
 	{
 		((main) main.mainActivity).runOnUiThread(new Runnable()
 		{
@@ -1102,7 +1102,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				{
 					while (waitForGL.get())
 					{
-						GL.that.renderOnce("WaitForGL", true);
+						GL.that.renderOnce(true);
 						try
 						{
 							Thread.sleep(200);
@@ -1857,7 +1857,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (GlobalCore.getSelectedCache() != null)
 		{
 			String validName = FileIO
-					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-" + GlobalCore.getSelectedCache().Name);
+					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1892,7 +1892,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (GlobalCore.getSelectedCache() != null)
 		{
 			String validName = FileIO
-					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-" + GlobalCore.getSelectedCache().Name);
+					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1940,8 +1940,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (GlobalCore.getSelectedCache() != null)
 			{
-				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-"
-						+ GlobalCore.getSelectedCache().Name);
+				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
+						+ GlobalCore.getSelectedCache().getName());
 				mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 				// Title = Global.SelectedCache().Name;
 			}
@@ -2008,7 +2008,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					try
 					{
 						URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GcJoker.getValue() + "&wpt="
-								+ GlobalCore.getSelectedCache().GcCode);
+								+ GlobalCore.getSelectedCache().getGcCode());
 						URLConnection urlConnection = url.openConnection();
 						HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
 
@@ -3121,9 +3121,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				if (GlobalCore.getSelectedCache() != null)
 				{
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
-					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 				}
 				finish();
 			}

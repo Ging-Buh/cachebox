@@ -5,7 +5,7 @@ import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Categories;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -52,9 +52,9 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		if (GlobalCore.getSelectedCache() != null)
 		{
 			// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 			Config.AcceptChanges();
-			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 		}
 
 		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
@@ -122,10 +122,10 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				{
 					for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 					{
-						Cache c = Database.Data.Query.get(i);
-						if (c.GcCode.equalsIgnoreCase(sGc))
+						CacheLite c = Database.Data.Query.get(i);
+						if (c.getGcCode().equalsIgnoreCase(sGc))
 						{
-							Logger.DEBUG("returnFromSelectDB:Set selectedCache to " + c.GcCode + " from lastSaved.");
+							Logger.DEBUG("returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 							GlobalCore.setSelectedCache(c);
 							break;
 						}
@@ -134,7 +134,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 				if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0))
 				{
-					Logger.DEBUG("Set selectedCache to " + Database.Data.Query.get(0).GcCode + " from firstInDB");
+					Logger.DEBUG("Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
 					GlobalCore.setSelectedCache(Database.Data.Query.get(0));
 				}
 

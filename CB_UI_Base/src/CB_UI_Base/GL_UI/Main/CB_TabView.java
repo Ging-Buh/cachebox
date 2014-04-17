@@ -153,7 +153,7 @@ public class CB_TabView extends CB_View_Base
 		aktView.setVisible();
 		sendOnShow2aktView();
 
-		GL.that.renderOnce(aktView.getName() + " TabView=>ShowView()");
+		GL.that.renderOnce();
 
 	}
 

@@ -30,7 +30,7 @@ public class TestCursor extends CoreCursor
 			if (rs.isFirst()) return true;
 			return rs.first();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			return false;
 		}
@@ -44,9 +44,9 @@ public class TestCursor extends CoreCursor
 		{
 			return rs.isAfterLast();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
-			return false;
+			return true;
 		}
 
 	}
@@ -75,6 +75,7 @@ public class TestCursor extends CoreCursor
 		{
 			e.printStackTrace();
 		}
+		rs = null;
 	}
 
 	@Override

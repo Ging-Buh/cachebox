@@ -166,7 +166,7 @@ public class DescriptionImageGrabber
 
 		if (baseUri == null)
 		{
-			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.GcCode;
+			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGcCode();
 			try
 			{
 				baseUri = URI.create(Cache.Url);
@@ -203,7 +203,7 @@ public class DescriptionImageGrabber
 				{
 					URI imgUri = URI.create(/* baseUri, */src); // NICHT
 																// ORGINAL!!!!!!!!!
-					String localFile = BuildImageFilename(Cache.GcCode, imgUri);
+					String localFile = BuildImageFilename(Cache.getGcCode(), imgUri);
 
 					if (FileIO.FileExists(localFile))
 					{
@@ -318,7 +318,7 @@ public class DescriptionImageGrabber
 
 		if (baseUri == null)
 		{
-			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.GcCode;
+			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGcCode();
 			try
 			{
 				baseUri = URI.create(Cache.Url);

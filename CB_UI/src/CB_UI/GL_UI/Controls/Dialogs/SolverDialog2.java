@@ -5,6 +5,7 @@ import java.util.TreeMap;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
@@ -533,7 +534,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		switch (p)
 		{
 		case Coordinate:
-			Coordinate c = new Coordinate(sForm);
+			Coordinate c = new CoordinateGPS(sForm);
 			valid = (c != null) && (c.isValid());
 			break;
 		case Function:
@@ -1114,13 +1115,13 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			if (i > 0)
 			{
 				waypoint = aktCache.waypoints.get(i - 1);
-				data = "$" + waypoint.GcCode;
-				description = "$" + waypoint.GcCode + " - " + waypoint.Title;
+				data = "$" + waypoint.getGcCode();
+				description = "$" + waypoint.getGcCode() + " - " + waypoint.getTitle();
 			}
 			else
 			{
-				data = "$" + aktCache.GcCode;
-				description = "$" + aktCache.GcCode + " - " + aktCache.Name;
+				data = "$" + aktCache.getGcCode();
+				description = "$" + aktCache.getGcCode() + " - " + aktCache.getName();
 			}
 
 			cbWaypoints[i] = new chkBox(data);
@@ -1176,7 +1177,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private void showPageCoordinate()
 	{
 		bCoord = new CoordinateButton("Coordinate");
-		bCoord.setCoordinate(new Coordinate(sForm));
+		bCoord.setCoordinate(new CoordinateGPS(sForm));
 		scrollBox.addChild(bCoord);
 	}
 

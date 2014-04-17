@@ -6,9 +6,10 @@ import java.io.IOException;
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Map.ManagerBase;
@@ -17,7 +18,6 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
-import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Plattform;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -25,9 +25,11 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileList;
@@ -40,7 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class splash extends TabMainView
+public class splash extends MainViewBase
 {
 	public splash(float X, float Y, float Width, float Height, String Name)
 	{
@@ -421,6 +423,7 @@ public class splash extends TabMainView
 			CacheListDAO cacheListDAO = new CacheListDAO();
 			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
 			// Database.Data.Query.checkSelectedCacheValid(); // überflüssig, wird später überschrieben
+			cacheListDAO = null;
 		}
 
 		CachListChangedEventList.Call();
@@ -478,27 +481,36 @@ public class splash extends TabMainView
 		{
 			synchronized (Database.Data.Query)
 			{
-				Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
-				if (GlobalCore.restartWaypoint != null && c != null && c.waypoints != null)
+				CacheLite c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
+				if (c != null)
 				{
-					Waypoint w = null;
-
-					for (int i = 0, n = c.waypoints.size(); i < n; i++)
+					if (GlobalCore.restartWaypoint != null)
 					{
-						Waypoint wp = c.waypoints.get(i);
-						if (wp.GcCode.equalsIgnoreCase(GlobalCore.restartWaypoint))
+						WaypointDAO dao = new WaypointDAO();
+						CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(c.Id);
+						if (waypoints != null)
 						{
-							w = wp;
+							Waypoint w = null;
+
+							for (int i = 0, n = waypoints.size(); i < n; i++)
+							{
+								Waypoint wp = waypoints.get(i);
+								if (wp.getGcCode().equalsIgnoreCase(GlobalCore.restartWaypoint))
+								{
+									w = wp;
+								}
+							}
+							Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache + WP.");
+							GlobalCore.setSelectedWaypoint(c, w);
+						}
+						else
+						{
+							Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache.");
+							GlobalCore.setSelectedCache(c);
 						}
 					}
-					Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.GcCode + " from restartCache + WP.");
-					GlobalCore.setSelectedWaypoint(c, w);
 				}
-				else
-				{
-					Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.GcCode + " from restartCache.");
-					GlobalCore.setSelectedCache(c);
-				}
+
 			}
 
 		}

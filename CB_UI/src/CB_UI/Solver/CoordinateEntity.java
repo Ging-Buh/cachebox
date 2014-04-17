@@ -6,8 +6,10 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_Utils.DB.CoreCursor;
@@ -44,7 +46,7 @@ public class CoordinateEntity extends Entity
 				String sGcCode = reader.getString(0).trim();
 				if (sGcCode.equalsIgnoreCase(this.gcCode))
 				{ // gefunden. Suche abbrechen
-					return new Coordinate(reader.getDouble(1), reader.getDouble(2));
+					return new CoordinateGPS(reader.getDouble(1), reader.getDouble(2));
 				}
 				reader.moveToNext();
 			}
@@ -65,7 +67,7 @@ public class CoordinateEntity extends Entity
 		if (selCache != null)
 		// In 99,9% der Fälle dürfte der Wegpunkt zum aktuellen Cache gehören
 		{
-			if (selCache.GcCode.equalsIgnoreCase(gcCode))
+			if (selCache.getGcCode().equalsIgnoreCase(gcCode))
 			{
 				coord = selCache.Pos;
 			}
@@ -74,7 +76,7 @@ public class CoordinateEntity extends Entity
 				for (int i = 0, n = selCache.waypoints.size(); i < n; i++)
 				{
 					Waypoint wp = selCache.waypoints.get(i);
-					if (wp.GcCode.equalsIgnoreCase(gcCode))
+					if (wp.getGcCode().equalsIgnoreCase(gcCode))
 					{
 						coord = wp.Pos;
 						break;
@@ -96,7 +98,7 @@ public class CoordinateEntity extends Entity
 	public String SetCoordinate(String sCoord)
 	{
 		if (Solver.isError(sCoord)) return sCoord;
-		Coordinate coord = new Coordinate(sCoord);
+		Coordinate coord = new CoordinateGPS(sCoord);
 		if (!coord.isValid()) return Translation.Get("InvalidCoordinate", "SetCoordinate", sCoord);
 		WaypointDAO waypointDAO = new WaypointDAO();
 		Waypoint dbWaypoint = null;
@@ -120,12 +122,12 @@ public class CoordinateEntity extends Entity
 			// Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
 			// Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
 			CacheDAO cacheDAO = new CacheDAO();
-			Cache cache = cacheDAO.getFromDbByCacheId(dbWaypoint.CacheId);
+			CacheLite cache = cacheDAO.getFromDbByCacheId(dbWaypoint.CacheId);
 			// String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
 			// sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
 			// String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
 			// MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
-			return Translation.Get("solverErrDiffCache", coord.FormatCoordinate(), dbWaypoint.Title, cache.Name);
+			return Translation.Get("solverErrDiffCache", coord.FormatCoordinate(), dbWaypoint.getTitle(), cache.getName());
 		}
 		dbWaypoint.Pos.setLatitude(coord.getLatitude());
 		dbWaypoint.Pos.setLongitude(coord.getLongitude());
@@ -135,7 +137,7 @@ public class CoordinateEntity extends Entity
 		Cache cacheFromCacheList;
 		synchronized (Database.Data.Query)
 		{
-			cacheFromCacheList = Database.Data.Query.GetCacheById(dbWaypoint.CacheId);
+			cacheFromCacheList = new Cache(Database.Data.Query.GetCacheById(dbWaypoint.CacheId));
 		}
 
 		if (cacheFromCacheList != null)
@@ -143,7 +145,7 @@ public class CoordinateEntity extends Entity
 			for (int i = 0, n = cacheFromCacheList.waypoints.size(); i < n; i++)
 			{
 				Waypoint wp = cacheFromCacheList.waypoints.get(i);
-				if (wp.GcCode.equalsIgnoreCase(this.gcCode))
+				if (wp.getGcCode().equalsIgnoreCase(this.gcCode))
 				{
 					wp.Pos.setLatitude(coord.getLatitude());
 					wp.Pos.setLongitude(coord.getLongitude());

@@ -93,7 +93,7 @@ public abstract class FrameAnimation extends AnimationBase
 			mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
 
 		}
-		GL.that.renderOnce("FrameAnimation-" + name);
+		GL.that.renderOnce();
 	}
 
 	protected void play(int duration)

@@ -93,7 +93,7 @@ public class ImportCBServer
 					for (int i = 0, n = gclAnswer.getCacheList().size(); i < n; i++)
 					{
 						Cache cache = gclAnswer.getCacheList().get(i);
-						System.out.println(cache.Name);
+						System.out.println(cache.getName());
 						cache.GPXFilename_ID = gpxFilename.Id;
 
 						dao.WriteToDatabase(cache);
@@ -135,31 +135,31 @@ public class ImportCBServer
 								}
 								url = "http://" + url + image.ImageUrl;
 								File file = new File(image.LocalPath);
-								url += cache.GcCode.substring(0, 4) + "/";
+								url += cache.getGcCode().substring(0, 4) + "/";
 
 								url += file.getName().replace(" ", "%20");
 
 								String imagePath;
 								if (image.ImageUrl.indexOf("/spoilers/") >= 0)
 								{
-									imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.GcCode.substring(0, 4) + "/"
+									imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + cache.getGcCode().substring(0, 4) + "/"
 											+ file.getName();
 									if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0)
 									{
 										// Own Repo
-										imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.GcCode.substring(0, 4)
+										imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.getGcCode().substring(0, 4)
 												+ "/" + file.getName();
 									}
 								}
 								else
 								{
-									imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.GcCode.substring(0, 4)
+									imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.getGcCode().substring(0, 4)
 											+ "/" + file.getName();
 									if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() != 0)
 									{
 										// Own Repo
 										imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/"
-												+ cache.GcCode.substring(0, 4) + "/" + file.getName();
+												+ cache.getGcCode().substring(0, 4) + "/" + file.getName();
 									}
 								}
 								file = new File(imagePath);

@@ -85,7 +85,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		isPressed = true;
-		GL.that.renderOnce(this.getName() + " touchDown");
+		GL.that.renderOnce();
 
 		return false;
 	}
@@ -99,7 +99,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 			isPressed = false;
 		}
 
-		GL.that.renderOnce(this.getName() + " touchDown");
+		GL.that.renderOnce();
 
 		return false;
 	}

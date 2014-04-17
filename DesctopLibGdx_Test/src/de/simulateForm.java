@@ -16,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.GPS;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
@@ -165,7 +166,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		else if (event.getActionCommand().equals("Send GPS Signal"))
 		{
 			// Parse Coordinate
-			Coordinate pos = new Coordinate(txt.getText());
+			Coordinate pos = new CoordinateGPS(txt.getText());
 			if (pos != null)
 			{
 
@@ -301,7 +302,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 			public void run()
 			{
 				TrackPoint trk = simulationRoute.Points.get(trackPointIndex);
-				Coordinate pos = new Coordinate(trk.Y, trk.X);
+				Coordinate pos = new CoordinateGPS(trk.Y, trk.X);
 				CB_Locator.Locator.setNewLocation(new CB_Locator.Location(pos.getLatitude(), pos.getLongitude(), 100, true, speed, true,
 						(float) trk.Direction, 95, ProviderType.GPS));
 

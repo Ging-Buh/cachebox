@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Views.TestViews;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
@@ -186,7 +187,7 @@ public class TestView extends CB_View_Base
 	private void requestLayout()
 	{
 
-		GL.that.renderOnce(this.getName() + " requestLayout");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -213,7 +214,7 @@ public class TestView extends CB_View_Base
 
 	final int mapIntWidth = 3000;
 	final int mapIntHeight = 3000;
-	final Coordinate center = new Coordinate(50.44, 9.28);
+	final Coordinate center = new CoordinateGPS(50.44, 9.28);
 	final int drawingWidth = 3000;
 	final int drawingHeight = 3000;
 

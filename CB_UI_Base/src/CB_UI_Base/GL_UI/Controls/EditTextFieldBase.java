@@ -82,7 +82,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 			public void run()
 			{
 				cursorOn = !cursorOn;
-				GL.that.renderOnce("TextFieldBase: CursorBlink");
+				GL.that.renderOnce();
 			}
 		};
 		blinkTimer.scheduleAtFixedRate(blinkTimerTask, 0, blinkTime);

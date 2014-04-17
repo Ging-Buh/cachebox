@@ -193,8 +193,8 @@ public class CacheInfoList
 	 */
 	public static void mergeCacheInfo(Cache cache) throws IOException
 	{
-		CacheInfo info = List.get(cache.GcCode);
-		String GcCode = cache.GcCode;
+		CacheInfo info = List.get(cache.getGcCode());
+		String GcCode = cache.getGcCode();
 		if (info != null)
 		{
 
@@ -212,7 +212,7 @@ public class CacheInfoList
 					String Comment = entry.Comment;
 					String Finder = entry.Finder;
 
-					if (Finder.equalsIgnoreCase(cache.Owner))
+					if (Finder.equalsIgnoreCase(cache.getOwner()))
 					{
 						recentOwnerLogString += Comment;
 						break;
@@ -354,7 +354,7 @@ public class CacheInfoList
 				String Comment = entry.Comment;
 				String Finder = entry.Finder;
 
-				if (Finder.equalsIgnoreCase(cache.Owner))
+				if (Finder.equalsIgnoreCase(cache.getOwner()))
 				{
 					recentOwnerLogString += Comment;
 					break;
@@ -372,7 +372,7 @@ public class CacheInfoList
 
 		if (List == null) List = new HashMap<String, CacheInfo>();
 
-		List.put(cache.GcCode, info);
+		List.put(cache.getGcCode(), info);
 
 	}
 

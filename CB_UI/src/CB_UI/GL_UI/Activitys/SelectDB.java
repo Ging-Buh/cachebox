@@ -320,7 +320,7 @@ public class SelectDB extends ActivityBase
 		Timer timer = new Timer();
 		timer.schedule(task, 350);
 
-		GL.that.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce();
 	}
 
 	private void setSelectedItemVisible()
@@ -358,7 +358,7 @@ public class SelectDB extends ActivityBase
 					public void run()
 					{
 						lvFiles.chkSlideBack();
-						GL.that.renderOnce(SelectDB.this.getName() + " setSelectedDBVisible [chkSlideBack]");
+						GL.that.renderOnce();
 					}
 				});
 			}
@@ -367,7 +367,7 @@ public class SelectDB extends ActivityBase
 		Timer timer = new Timer();
 		timer.schedule(task, 50);
 
-		GL.that.renderOnce(this.getName() + " setSelectedDBVisible");
+		GL.that.renderOnce();
 	}
 
 	OnClickListener onItemClickListner = new OnClickListener()
