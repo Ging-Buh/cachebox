@@ -255,6 +255,10 @@ public class Cache extends CacheLite
 		WaypointDAO daoW = new WaypointDAO();
 		this.waypoints = daoW.getWaypointsFromCacheID(this.Id);
 
+		this.AttributeList = tmpCache.AttributeList;
+		this.attributesNegative = tmpCache.attributesNegative;
+		this.attributesPositive = tmpCache.attributesPositive;
+
 		tmpCache = null; // Dont dispose, this will clear waypoint list!
 
 	}
