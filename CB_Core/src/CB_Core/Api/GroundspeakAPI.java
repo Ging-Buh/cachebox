@@ -1501,7 +1501,7 @@ public class GroundspeakAPI
 
 			CacheLite aktCacheLite = Database.Data.Query.GetCacheById(cache.Id);
 
-			Cache aktCache = new Cache(aktCacheLite);
+			Cache aktCache = aktCacheLite == null ? null : new Cache(aktCacheLite);
 
 			// If Cache into DB, extract saved rating
 			if (aktCache != null)
@@ -1578,13 +1578,16 @@ public class GroundspeakAPI
 				// dont refresh wp if aktCache.wp is user changed
 				if (aktCache != null)
 				{
-					for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
+					if (aktCache.waypoints != null)
 					{
-						Waypoint wp = aktCache.waypoints.get(j);
-						if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode()))
+						for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
 						{
-							if (wp.IsUserWaypoint) update = false;
-							break;
+							Waypoint wp = aktCache.waypoints.get(j);
+							if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode()))
+							{
+								if (wp.IsUserWaypoint) update = false;
+								break;
+							}
 						}
 					}
 				}

@@ -91,13 +91,18 @@ public class CacheListDAO
 			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription);
 
 			cacheList.add(cache);
+			cache.waypoints.clear();
 			if (waypoints.containsKey(cache.Id))
 			{
-				cache.waypoints = waypoints.get(cache.Id);
+				CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
+
+				for (int i = 0, n = tmpwaypoints.size(); i < n; i++)
+				{
+					cache.waypoints.add(tmpwaypoints.get(i));
+				}
+
 				waypoints.remove(cache.Id);
 			}
-			else
-				cache.waypoints = new CB_List<Waypoint>();
 
 			// ++Global.CacheCount;
 			reader.moveToNext();

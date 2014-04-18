@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import CB_Core.DAO.CacheDAO;
-import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
@@ -133,7 +132,7 @@ public class Cache extends CacheLite
 	/**
 	 * Liste der zusätzlichen Wegpunkte des Caches
 	 */
-	public CB_List<Waypoint> waypoints = null;
+	public final CB_List<Waypoint> waypoints = new CB_List<Waypoint>();
 
 	/**
 	 * Liste der Spoiler Resorcen
@@ -166,7 +165,6 @@ public class Cache extends CacheLite
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
 		this.Available = true;
-		waypoints = new CB_List<Waypoint>();
 	}
 
 	/**
@@ -185,7 +183,6 @@ public class Cache extends CacheLite
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
 		this.Available = true;
-		waypoints = new CB_List<Waypoint>();
 		AttributeList = null;
 	}
 
@@ -238,7 +235,13 @@ public class Cache extends CacheLite
 		this.State = tmpCache.State;
 		this.listingChanged = tmpCache.listingChanged;
 		this.hint = tmpCache.hint;
-		this.waypoints = tmpCache.waypoints;
+
+		this.waypoints.clear();
+		for (int i = 0, n = tmpCache.waypoints.size(); i < n; i++)
+		{
+			this.waypoints.add(tmpCache.waypoints.get(i));
+		}
+
 		this.spoilerRessources = tmpCache.spoilerRessources;
 		this.shortDescription = tmpCache.shortDescription;
 		this.longDescription = tmpCache.longDescription;
@@ -249,11 +252,6 @@ public class Cache extends CacheLite
 		this.hasStartWaypoint = cacheLite.hasStartWaypoint;
 		this.FinalWaypoint = cacheLite.FinalWaypoint;
 		this.startWaypoint = cacheLite.startWaypoint;
-
-		// read Waypoints
-
-		WaypointDAO daoW = new WaypointDAO();
-		this.waypoints = daoW.getWaypointsFromCacheID(this.Id);
 
 		this.AttributeList = tmpCache.AttributeList;
 		this.attributesNegative = tmpCache.attributesNegative;
@@ -527,7 +525,6 @@ public class Cache extends CacheLite
 		NumTravelbugs = 0;
 		cachedDistance = 0;
 		hint = "";
-		waypoints = new CB_List<Waypoint>();
 		spoilerRessources = null;
 		shortDescription = "";
 		longDescription = "";
@@ -551,6 +548,7 @@ public class Cache extends CacheLite
 
 	public Waypoint findWaypointByGc(String gc)
 	{
+		if (waypoints == null) return null;
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
 			Waypoint wp = waypoints.get(i);
@@ -661,7 +659,6 @@ public class Cache extends CacheLite
 			}
 
 			waypoints.clear();
-			waypoints = null;
 		}
 
 		tmpNote = null;
