@@ -33,7 +33,7 @@ public class TestDB extends Database
 			myDB.close();
 			myDB = null;
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
