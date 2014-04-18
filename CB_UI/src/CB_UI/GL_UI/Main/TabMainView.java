@@ -90,6 +90,7 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
+import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SyncronizeHelper;
 import CB_Utils.Util.UnitFormatter;
@@ -196,6 +197,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		// add changed handler
 		Energy.addChangedEventListner(settingChangedHandler);
+
+		// change CBS settings Type from Develop to normal with TestVersion
+		if (GlobalCore.isTestVersion())
+		{
+			Config.CBS_IP.changeSettingsModus(SettingModus.Normal);
+		}
 
 	}
 
