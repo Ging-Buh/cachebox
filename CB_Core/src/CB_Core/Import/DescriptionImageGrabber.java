@@ -259,7 +259,16 @@ public class DescriptionImageGrabber
 		{
 			String localDir = local.substring(0, local.lastIndexOf("/"));
 			if (!FileIO.createDirectory(localDir)) return false;
-			URL aURL = new URL(uri.replace("&amp;", "&"));
+			URL aURL = null;
+			try
+			{
+				// ungültige URL -> nicht importieren
+				aURL = new URL(uri.replace("&amp;", "&"));
+			}
+			catch (Exception ex)
+			{
+				return true;
+			}
 			File file = new File(local);
 
 			URLConnection con = aURL.openConnection();
