@@ -413,6 +413,7 @@ public class Coordinate implements Serializable
 	public void setLatitude(double latitude)
 	{
 		Latitude = latitude;
+		Valid = true;// FIXME check if relay valid
 	}
 
 	/**
@@ -431,6 +432,7 @@ public class Coordinate implements Serializable
 	public void setLongitude(double longitude)
 	{
 		Longitude = longitude;
+		Valid = true; // FIXME check if relay valid
 	}
 
 	public void setValid(boolean b)

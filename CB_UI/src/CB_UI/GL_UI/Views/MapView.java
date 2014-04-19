@@ -692,8 +692,18 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
 	{
 		if (cache == null) return;
-		if (cache.equals(lastSelectedCache)
-				&& (waypoint.equals(lastSelectedWaypoint) || (waypoint == null && lastSelectedWaypoint == null))) return;
+		try
+		{
+			if (cache.equals(lastSelectedCache)
+					&& ((waypoint != null && waypoint.equals(lastSelectedWaypoint)) || (waypoint == null && lastSelectedWaypoint == null)))
+			{
+				return;
+			}
+		}
+		catch (Exception e)
+		{
+			return;
+		}
 
 		lastSelectedCache = cache;
 		lastSelectedWaypoint = waypoint;
@@ -717,8 +727,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if (getMapState() != MapState.WP) setMapState(MapState.FREE);
 
-		CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new CoordinateGPS(
-				cache.Pos.getLatitude(), cache.Pos.getLongitude());
+		CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude())
+				: new CoordinateGPS(cache.Pos.getLatitude(), cache.Pos.getLongitude());
 
 		setCenter(target);
 

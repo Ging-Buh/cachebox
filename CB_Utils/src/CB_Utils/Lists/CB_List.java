@@ -372,4 +372,12 @@ public class CB_List<T> implements Serializable
 		return ret;
 	}
 
+	public void dispose()
+	{
+		for (int i = 0, n = this.size(); i < n; i++)
+		{
+			items[i] = null;
+		}
+	}
+
 }

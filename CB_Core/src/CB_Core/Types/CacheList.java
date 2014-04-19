@@ -168,4 +168,9 @@ public class CacheList extends MoveableList<Cache>
 		super.clear();
 	}
 
+	public void dispose()
+	{
+		super.dispose();
+	}
+
 }

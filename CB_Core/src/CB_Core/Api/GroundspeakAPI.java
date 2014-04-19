@@ -30,6 +30,7 @@ import org.json.JSONTokener;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -38,6 +39,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheList;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -1494,14 +1496,16 @@ public class GroundspeakAPI
 		ImageDAO imageDAO = new ImageDAO();
 		WaypointDAO waypointDAO = new WaypointDAO();
 
+		CacheListDAO listDao = new CacheListDAO();
+		CacheList FullCacheList = new CacheList();
+		listDao.ReadCacheList(FullCacheList, "");
+
 		for (Cache cache : apiCaches)
 		{
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(CacheLite.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, cache.Latitude());
 
-			CacheLite aktCacheLite = Database.Data.Query.GetCacheById(cache.Id);
-
-			Cache aktCache = aktCacheLite == null ? null : new Cache(aktCacheLite);
+			Cache aktCache = FullCacheList.GetCacheById(cache.Id);
 
 			// If Cache into DB, extract saved rating
 			if (aktCache != null)
@@ -1621,6 +1625,11 @@ public class GroundspeakAPI
 		Database.Data.endTransaction();
 
 		Database.Data.GPXFilenameUpdateCacheCount();
+
+		// release tmp full CacheList
+		FullCacheList.dispose();
+		FullCacheList = null;
+
 	}
 
 	private static String getDeviceInfoRequestString()
