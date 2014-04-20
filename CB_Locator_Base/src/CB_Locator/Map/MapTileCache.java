@@ -130,39 +130,46 @@ public class MapTileCache
 
 		boolean inSort = true;
 
-		do
+		try
 		{
-			inSort = false;
-
-			for (int i = 0, n = this.Capacity - 1; i < n; i++)
+			do
 			{
+				inSort = false;
 
-				short index1 = IndexList[i];
-				short index2 = IndexList[i + 1];
-
-				// null check
-				if (TileList[index1] == null && TileList[index2] == null) continue;
-				if (TileList[index1] != null && TileList[index2] == null) continue;
-				if (TileList[index1] == null && TileList[index2] != null)
+				for (int i = 0, n = this.Capacity - 1; i < n; i++)
 				{
+
+					short index1 = IndexList[i];
+					short index2 = IndexList[i + 1];
+
+					// null check
+					if (TileList[index1] == null && TileList[index2] == null) continue;
+					if (TileList[index1] != null && TileList[index2] == null) continue;
+					if (TileList[index1] == null && TileList[index2] != null)
+					{
+						// swap
+						IndexList[i] = index2;
+						IndexList[i + 1] = index1;
+						inSort = true;
+						break; // sort changed, begin new
+					}
+
+					if (TileList[index1].Age == TileList[index2].Age) continue;
+					if (TileList[index1].Age < TileList[index2].Age) continue;
+
 					// swap
 					IndexList[i] = index2;
 					IndexList[i + 1] = index1;
 					inSort = true;
 					break; // sort changed, begin new
 				}
-
-				if (TileList[index1].Age == TileList[index2].Age) continue;
-				if (TileList[index1].Age < TileList[index2].Age) continue;
-
-				// swap
-				IndexList[i] = index2;
-				IndexList[i + 1] = index1;
-				inSort = true;
-				break; // sort changed, begin new
 			}
+			while (inSort);
 		}
-		while (inSort);
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 	}
 

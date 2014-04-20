@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import CB_Core.DAO.CacheDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
@@ -237,9 +238,13 @@ public class Cache extends CacheLite
 		this.hint = tmpCache.hint;
 
 		this.waypoints.clear();
-		for (int i = 0, n = tmpCache.waypoints.size(); i < n; i++)
+
+		WaypointDAO wDao = new WaypointDAO();
+		CB_List<Waypoint> wayPois = wDao.getWaypointsFromCacheID(this.Id);
+
+		for (int i = 0, n = wayPois.size(); i < n; i++)
 		{
-			this.waypoints.add(tmpCache.waypoints.get(i));
+			this.waypoints.add(wayPois.get(i));
 		}
 
 		this.spoilerRessources = tmpCache.spoilerRessources;
