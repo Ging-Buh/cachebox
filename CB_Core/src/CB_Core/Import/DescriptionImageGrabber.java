@@ -683,11 +683,12 @@ public class DescriptionImageGrabber
 			File file = new File(local + "_broken_link.txt");
 			if (!file.exists())
 			{
-				if (file.exists())
+				File file2 = new File(local + ".1st");
+				if (file2.exists())
 				{
 					// After first try, we can be sure that the image cannot be loaded.
 					// At this point mark the image as loaded and go ahead.
-					file.renameTo(file);
+					file2.renameTo(file);
 				}
 				else
 				{
