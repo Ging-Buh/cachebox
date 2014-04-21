@@ -195,6 +195,17 @@ public class Cache extends CacheLite
 	{
 		if (cacheLite == null) return;
 
+		if (cacheLite.getGcCode().equals("CBPark"))
+		{
+			this.Pos = cacheLite.Pos;
+			this.MapX = cacheLite.MapX;
+			this.MapY = cacheLite.MapY;
+			this.setGcCode(cacheLite.getGcCode());
+			this.setName(cacheLite.getName());
+			this.Type = cacheLite.Type;
+			return;
+		}
+
 		// Read Cache data from DB
 		CacheDAO dao = new CacheDAO();
 		Cache tmpCache = dao.getFromDbByCacheId(cacheLite.Id);
@@ -326,30 +337,37 @@ public class Cache extends CacheLite
 
 		String directory = "";
 
-		// from own Repository
-		String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
-		if (path != null && path.length() > 0)
+		try
 		{
+			// from own Repository
+			String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
+			if (path != null && path.length() > 0)
+			{
+				directory = path + "/" + getGcCode().substring(0, 4);
+				reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+			}
+
+			// from Global Repository
+			path = CB_Core_Settings.DescriptionImageFolder.getValue();
 			directory = path + "/" + getGcCode().substring(0, 4);
 			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-		}
 
-		// from Global Repository
-		path = CB_Core_Settings.DescriptionImageFolder.getValue();
-		directory = path + "/" + getGcCode().substring(0, 4);
-		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-
-		// Spoilers are always loaden from global Repository too
-		// from globalUser changed Repository
-		path = CB_Core_Settings.SpoilerFolder.getValue();
-		directory = path + "/" + getGcCode().substring(0, 4);
-		reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-
-		// Add own taken photo
-		directory = CB_Core_Settings.UserImageFolder.getValue();
-		if (directory != null)
-		{
+			// Spoilers are always loaden from global Repository too
+			// from globalUser changed Repository
+			path = CB_Core_Settings.SpoilerFolder.getValue();
+			directory = path + "/" + getGcCode().substring(0, 4);
 			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+
+			// Add own taken photo
+			directory = CB_Core_Settings.UserImageFolder.getValue();
+			if (directory != null)
+			{
+				reloadSpoilerResourcesFromPath(directory, spoilerRessources);
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 

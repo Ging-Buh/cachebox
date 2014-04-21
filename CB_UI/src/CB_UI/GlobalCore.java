@@ -51,7 +51,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global
 {
-	public static final int CurrentRevision = 2071;
+	public static final int CurrentRevision = 2073;
 
 	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
@@ -221,7 +221,10 @@ public class GlobalCore extends CB_UI_Base.Global
 			{
 				selectedWaypoint = selectedCache.startWaypoint;
 			}
-
+			else
+			{
+				selectedWaypoint = null;
+			}
 		}
 		else
 		{
