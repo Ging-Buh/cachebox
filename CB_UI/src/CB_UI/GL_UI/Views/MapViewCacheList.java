@@ -224,7 +224,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		// im Bild ?
 		double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
 		double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
-		if (isVisible(MapX, MapY) || (GlobalCore.getSelectedWaypoint() == wp))
+		if (isVisible(MapX, MapY) || (GlobalCore.getSelectedWaypoint().equals(wp)))
 		{
 			WaypointRenderInfo wpi = new WaypointRenderInfo();
 			wpi.MapX = (float) MapX;
@@ -234,7 +234,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			wpi.Cache = cache;
 			wpi.Waypoint = wp;
 			wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint, iconSize);
-			wpi.Selected = (GlobalCore.getSelectedWaypoint() == wp);
+			wpi.Selected = (GlobalCore.getSelectedWaypoint().equals(wp));
 			if (wpi.Selected) selectedWP = wpi;
 			tmplist.add(wpi);
 		}
@@ -360,7 +360,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			}
 			else
 			{
-				if (waypoint == GlobalCore.getSelectedWaypoint())
+				if (waypoint.equals(GlobalCore.getSelectedWaypoint()))
 				{
 					return SpriteCacheBase.MapOverlay.get(1);
 				}
