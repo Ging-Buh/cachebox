@@ -2,7 +2,7 @@ package de.cachebox_test.Views;
 
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.JokerEntry;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
@@ -90,7 +90,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	}
 
 	@Override
-	public void SelectedCacheChanged(final CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(final CacheLite cache, WaypointLite waypoint)
 	{
 		main.mainActivity.runOnUiThread(new Runnable()
 		{

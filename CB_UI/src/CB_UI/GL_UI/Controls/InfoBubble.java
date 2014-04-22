@@ -2,7 +2,7 @@ package CB_UI.GL_UI.Controls;
 
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
@@ -32,7 +32,7 @@ public class InfoBubble extends CB_View_Base
 		return mCacheId;
 	}
 
-	public Waypoint getWaypoint()
+	public WaypointLite getWaypoint()
 	{
 		return mWaypoint;
 	}
@@ -41,16 +41,16 @@ public class InfoBubble extends CB_View_Base
 	 * Cache showing Bubble
 	 */
 	private Cache mCache = null;
-	private Waypoint mWaypoint = null;
+	private WaypointLite mWaypoint = null;
 
 	private CacheInfo cacheInfo;
 
-	public void setCache(CacheLite cache, Waypoint waypoint)
+	public void setCache(CacheLite cache, WaypointLite waypoint)
 	{
 		setCache(cache, waypoint, false);
 	}
 
-	public void setCache(CacheLite cacheLite, Waypoint waypoint, boolean force)
+	public void setCache(CacheLite cacheLite, WaypointLite waypoint, boolean force)
 	{
 
 		if (cacheLite == null)

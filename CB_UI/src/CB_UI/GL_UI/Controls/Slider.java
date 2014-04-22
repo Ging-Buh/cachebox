@@ -3,7 +3,7 @@ package CB_UI.GL_UI.Controls;
 import java.util.ArrayList;
 
 import CB_Core.Types.CacheLite;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
@@ -119,7 +119,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
 	{
 		if (cache != null && mLblCacheName != null)
 		{

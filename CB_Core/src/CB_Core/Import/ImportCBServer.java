@@ -119,7 +119,7 @@ public class ImportCBServer
 
 						for (int j = 0, m = cache.waypoints.size(); j < m; j++)
 						{
-							Waypoint waypoint = cache.waypoints.get(j);
+							Waypoint waypoint = (Waypoint) cache.waypoints.get(j);
 							wayDao.WriteToDatabase(waypoint);
 						}
 						if (importImages)
@@ -147,14 +147,14 @@ public class ImportCBServer
 									if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() != 0)
 									{
 										// Own Repo
-										imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + cache.getGcCode().substring(0, 4)
-												+ "/" + file.getName();
+										imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
+												+ cache.getGcCode().substring(0, 4) + "/" + file.getName();
 									}
 								}
 								else
 								{
-									imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + cache.getGcCode().substring(0, 4)
-											+ "/" + file.getName();
+									imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/"
+											+ cache.getGcCode().substring(0, 4) + "/" + file.getName();
 									if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() != 0)
 									{
 										// Own Repo

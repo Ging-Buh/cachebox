@@ -663,14 +663,14 @@ public class SearchForGeocaches_Core
 					WaypointDAO waypointDAO = new WaypointDAO();
 					for (int i = 0, n = newCache.waypoints.size(); i < n; i++)
 					{
-						Waypoint waypoint = newCache.waypoints.get(i);
+						Waypoint waypoint = (Waypoint) newCache.waypoints.get(i);
 
 						boolean update = true;
 
 						// dont refresh wp if aktCache.wp is user changed
 						for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
 						{
-							Waypoint wp = aktCache.waypoints.get(j);
+							Waypoint wp = (Waypoint) aktCache.waypoints.get(j);
 							if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode()))
 							{
 								if (wp.IsUserWaypoint) update = false;

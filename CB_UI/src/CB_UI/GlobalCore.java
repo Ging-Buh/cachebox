@@ -28,6 +28,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListLite;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Events.SelectedCacheEventList;
@@ -193,7 +194,7 @@ public class GlobalCore extends CB_UI_Base.Global
 
 	private static Waypoint selectedWaypoint = null;
 
-	public static void setSelectedWaypoint(CacheLite cacheLite, Waypoint waypoint)
+	public static void setSelectedWaypoint(CacheLite cacheLite, WaypointLite waypoint)
 	{
 		setSelectedWaypoint(cacheLite, waypoint, true);
 	}
@@ -205,7 +206,7 @@ public class GlobalCore extends CB_UI_Base.Global
 	 * @param waypoint
 	 * @param changeAutoResort
 	 */
-	public static void setSelectedWaypoint(CacheLite cacheLite, Waypoint waypoint, boolean changeAutoResort)
+	public static void setSelectedWaypoint(CacheLite cacheLite, WaypointLite waypoint, boolean changeAutoResort)
 	{
 		selectedCache = new Cache(cacheLite);
 
@@ -215,11 +216,11 @@ public class GlobalCore extends CB_UI_Base.Global
 
 			if (selectedCache.HasFinalWaypoint())
 			{
-				selectedWaypoint = selectedCache.FinalWaypoint;
+				selectedWaypoint = selectedCache.FinalWaypoint.makeFull();
 			}
 			else if (selectedCache.HasStartWaypoint())
 			{
-				selectedWaypoint = selectedCache.startWaypoint;
+				selectedWaypoint = selectedCache.startWaypoint.makeFull();
 			}
 			else
 			{
@@ -228,7 +229,7 @@ public class GlobalCore extends CB_UI_Base.Global
 		}
 		else
 		{
-			selectedWaypoint = waypoint;
+			selectedWaypoint = waypoint.makeFull();
 		}
 
 		SelectedCacheEventList.Call(selectedCache, selectedWaypoint);

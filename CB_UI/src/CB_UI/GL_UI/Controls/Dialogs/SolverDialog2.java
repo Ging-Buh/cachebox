@@ -1114,7 +1114,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			String description = "";
 			if (i > 0)
 			{
-				waypoint = aktCache.waypoints.get(i - 1);
+				waypoint = (Waypoint) aktCache.waypoints.get(i - 1);
 				data = "$" + waypoint.getGcCode();
 				description = "$" + waypoint.getGcCode() + " - " + waypoint.getTitle();
 			}

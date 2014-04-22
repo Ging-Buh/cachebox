@@ -6,6 +6,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
@@ -273,7 +274,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
 	{
 		if (cache == this.cache) return; // Cache hat sich nicht geändert!
 		// Solver speichern

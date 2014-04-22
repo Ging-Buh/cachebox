@@ -8,7 +8,7 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -411,7 +411,7 @@ public class CacheDraw
 	}
 
 	@SuppressWarnings("unused")
-	public void DrawBearing(CacheLite cache, Canvas canvas, CB_Rect drawingRec, Waypoint waypoint)
+	public void DrawBearing(CacheLite cache, Canvas canvas, CB_Rect drawingRec, WaypointLite waypoint)
 	{
 		if (Locator.Valid())
 		{

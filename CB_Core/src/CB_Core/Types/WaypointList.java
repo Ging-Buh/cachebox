@@ -10,7 +10,7 @@ import CB_Utils.Lists.CB_List;
 public class WaypointList
 {
 
-	CB_List<Waypoint> list = new CB_List<Waypoint>();
+	CB_List<WaypointLite> list = new CB_List<WaypointLite>();
 
 	/**
 	 * Reload the Waypoints of Loaded Caches

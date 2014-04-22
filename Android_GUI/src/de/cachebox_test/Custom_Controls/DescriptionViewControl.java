@@ -11,7 +11,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -515,7 +515,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		this.destroy();
 	}
 
-	public void SetSelectedCache(Cache cache, Waypoint waypoint)
+	public void SetSelectedCache(Cache cache, WaypointLite waypoint)
 	{
 
 		aktCache = cache;

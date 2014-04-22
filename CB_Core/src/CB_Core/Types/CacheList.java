@@ -125,7 +125,7 @@ public class CacheList extends MoveableList<Cache>
 			// -> gleich den Final Waypoint auswahlen!!!
 			// When the next Cache is a mystery with final waypoint
 			// -> activate the final waypoint!!!
-			Waypoint waypoint = nextCache.GetFinalWaypoint();
+			WaypointLite waypoint = nextCache.GetFinalWaypoint();
 			if (waypoint == null)
 			{
 				// wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat

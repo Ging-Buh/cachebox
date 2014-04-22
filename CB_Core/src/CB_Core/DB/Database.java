@@ -17,7 +17,7 @@ import CB_Core.Types.CacheLite;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core;
 import CB_Utils.Lists.CB_List;
@@ -418,10 +418,9 @@ public abstract class Database extends Database_Core
 	}
 
 	// Methoden für Waypoint
-	public static void DeleteFromDatabase(Waypoint WP)
+	public static void DeleteFromDatabase(WaypointLite WP)
 	{
-		int newCheckSum = 0;
-		Replication.WaypointDelete(WP.CacheId, WP.checkSum, newCheckSum, WP.getGcCode());
+		Replication.WaypointDelete(WP.CacheId, 0, 1, WP.getGcCode());
 		try
 		{
 			Data.delete("Waypoint", "GcCode='" + WP.getGcCode() + "'", null);

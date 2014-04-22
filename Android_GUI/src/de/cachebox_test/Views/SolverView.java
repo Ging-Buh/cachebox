@@ -2,7 +2,7 @@ package de.cachebox_test.Views;
 
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -263,7 +263,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 
 	};
 
-	public void SetSelectedCache(Cache cache, Waypoint waypoint)
+	public void SetSelectedCache(Cache cache, WaypointLite waypoint)
 	{
 		if (aktCache != cache)
 		{

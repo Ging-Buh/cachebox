@@ -8,6 +8,7 @@ import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -75,7 +76,7 @@ public class CoordinateEntity extends Entity
 			{
 				for (int i = 0, n = selCache.waypoints.size(); i < n; i++)
 				{
-					Waypoint wp = selCache.waypoints.get(i);
+					WaypointLite wp = selCache.waypoints.get(i);
 					if (wp.getGcCode().equalsIgnoreCase(gcCode))
 					{
 						coord = wp.Pos;
@@ -144,7 +145,7 @@ public class CoordinateEntity extends Entity
 		{
 			for (int i = 0, n = cacheFromCacheList.waypoints.size(); i < n; i++)
 			{
-				Waypoint wp = cacheFromCacheList.waypoints.get(i);
+				WaypointLite wp = cacheFromCacheList.waypoints.get(i);
 				if (wp.getGcCode().equalsIgnoreCase(this.gcCode))
 				{
 					wp.Pos.setLatitude(coord.getLatitude());

@@ -8,6 +8,7 @@ import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -170,9 +171,20 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	}
 
-	private void setWP(CacheLite cache, Waypoint wp)
+	private void setWP(CacheLite cache, WaypointLite waypoint)
 	{
 		boolean resetControls = false; // Set if WP desk changed
+
+		Waypoint wp = null;
+
+		if (waypoint instanceof Waypoint)
+		{
+			wp = (Waypoint) waypoint;
+		}
+		else
+		{
+			wp = waypoint.makeFull();
+		}
 
 		if (wp != null)
 		{
@@ -698,7 +710,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
 	{
 		setWP(cache, waypoint);
 	}

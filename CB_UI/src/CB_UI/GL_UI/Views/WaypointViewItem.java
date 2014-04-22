@@ -111,7 +111,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 				return;
 			}
 
-			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
+			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(),
+					cache);
 			info.setZeroPos();
 			info.setViewMode(ViewMode);
 
@@ -309,8 +310,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 
 			float textYPos = this.getHeight() - mMargin;
 
-			textYPos -= (mNameCache.setMultiLineText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize + mMargin,
-					textYPos)).height + mMargin + mMargin;
+			textYPos -= (mNameCache.setMultiLineText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize
+					+ mMargin, textYPos)).height
+					+ mMargin + mMargin;
 
 			if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
 			{

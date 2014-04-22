@@ -47,7 +47,7 @@ import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.CacheLite;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -819,13 +819,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
 	{
 
 		setSelectedCache_onUI(cache, waypoint);
 	}
 
-	public void setSelectedCache_onUI(CacheLite cache, Waypoint waypoint)
+	public void setSelectedCache_onUI(CacheLite cache, WaypointLite waypoint)
 	{
 		((main) main.mainActivity).runOnUiThread(new Runnable()
 		{

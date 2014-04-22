@@ -10,7 +10,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_UI.Config;
 
 public class Bug384 extends TestCase
@@ -57,7 +57,7 @@ public class Bug384 extends TestCase
 		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
 
 		Cache c = apiCaches.get(0);
-		Waypoint w = c.waypoints.get(0);
+		WaypointLite w = c.waypoints.get(0);
 		assertTrue("Falsche WP.Type zuordnung", w.Type == CacheTypes.ReferencePoint);
 
 	}

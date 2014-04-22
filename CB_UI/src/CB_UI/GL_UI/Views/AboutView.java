@@ -2,7 +2,7 @@ package CB_UI.GL_UI.Views;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.CacheLite;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.GPS;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -344,7 +344,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
 
 		CacheLite selectedCache = GlobalCore.getSelectedCache();
-		Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
+		WaypointLite selectedWaypoint = GlobalCore.getSelectedWaypoint();
 
 		if (selectedCache != null)
 		{
@@ -416,7 +416,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
 	{
 		GL.that.RunOnGL(new IRunOnGL()
 		{

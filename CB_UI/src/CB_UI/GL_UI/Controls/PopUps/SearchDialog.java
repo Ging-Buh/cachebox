@@ -38,6 +38,7 @@ import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Map.Descriptor;
@@ -506,7 +507,7 @@ public class SearchDialog extends PopUp_Base
 				else
 				{
 
-					Waypoint finalWp = null;
+					WaypointLite finalWp = null;
 					if (tmp != null)
 					{
 						if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
@@ -805,7 +806,7 @@ public class SearchDialog extends PopUp_Base
 
 								for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 								{
-									Waypoint waypoint = cache.waypoints.get(i);
+									Waypoint waypoint = (Waypoint) cache.waypoints.get(i);
 									waypointDAO.WriteToDatabase(waypoint);
 								}
 							}

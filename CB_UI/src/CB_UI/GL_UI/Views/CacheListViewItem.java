@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Types.CacheLite;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
@@ -127,7 +127,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		{
 			Coordinate position = Locator.getCoordinate();
 
-			Waypoint FinalWp = mCache.GetFinalWaypoint();
+			WaypointLite FinalWp = mCache.GetFinalWaypoint();
 
 			Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.Pos;
 			CalculationType calcType = CalculationType.FAST;

@@ -46,6 +46,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
@@ -1576,7 +1577,8 @@ public class GroundspeakAPI
 
 			for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 			{
-				Waypoint waypoint = cache.waypoints.get(i);
+				// must Cast to Full Waypoint. If WaypointLite, is wrong createt!
+				Waypoint waypoint = (Waypoint) cache.waypoints.get(i);
 				boolean update = true;
 
 				// dont refresh wp if aktCache.wp is user changed
@@ -1586,7 +1588,7 @@ public class GroundspeakAPI
 					{
 						for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
 						{
-							Waypoint wp = aktCache.waypoints.get(j);
+							WaypointLite wp = aktCache.waypoints.get(j);
 							if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode()))
 							{
 								if (wp.IsUserWaypoint) update = false;

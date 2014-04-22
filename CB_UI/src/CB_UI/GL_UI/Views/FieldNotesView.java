@@ -14,7 +14,7 @@ import CB_Core.Types.CacheLite;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Core.Types.FieldNoteList.LoadingType;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -931,7 +931,7 @@ public class FieldNotesView extends V_ListView
 			cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
 		}
 
-		Waypoint finalWp = null;
+		WaypointLite finalWp = null;
 		if (cache != null)
 		{
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();

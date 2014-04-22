@@ -22,6 +22,7 @@ import CB_Core.Enums.Attributes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.GPS;
 import CB_Locator.Locator;
@@ -658,12 +659,12 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
 	{
 		setCache_onUI(cache, waypoint);
 	}
 
-	public void setCache_onUI(final CacheLite cache, final Waypoint waypoint)
+	public void setCache_onUI(final CacheLite cache, final WaypointLite waypoint)
 	{
 		if (mCache != null)
 		{
@@ -686,7 +687,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			public void run()
 			{
 				mCache = new Cache(cache);
-				mWaypoint = waypoint;
+				mWaypoint = waypoint.makeFull();
 
 				attCompleadHeight = 0;
 				CacheInfoHeight = 0;
@@ -704,14 +705,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				String Clue = "";
 				if (mWaypoint != null)
 				{
-					if (waypoint.getClue() != null) Clue = waypoint.getClue();
+					if (mWaypoint.getClue() != null) Clue = mWaypoint.getClue();
 					WPLayoutTextPaint.setAntiAlias(true);
 					WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
 					WPLayoutCord = new StaticLayout(UnitFormatter.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
 							+ UnitFormatter.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth,
 							Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-					WPLayoutDesc = new StaticLayout(waypoint.getDescription(), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
-							false);
+					WPLayoutDesc = new StaticLayout(mWaypoint.getDescription(), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f,
+							0.0f, false);
 					WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 					WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
 					WPLayoutTextPaintBold.setFakeBoldText(true);

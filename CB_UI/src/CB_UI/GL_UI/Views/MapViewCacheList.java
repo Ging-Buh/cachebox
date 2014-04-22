@@ -8,7 +8,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -107,8 +107,8 @@ public class MapViewCacheList implements CacheListChangedEventListner
 								boolean showWaypoints = GlobalCore.getSelectedCache().Id == cache.Id;
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
-								Waypoint fwp = null; // Final Waypoint
-								Waypoint swp = null; // Start Waypoint
+								WaypointLite fwp = null; // Final Waypoint
+								WaypointLite swp = null; // Start Waypoint
 								// sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
 								if (showWaypoints)
 								{
@@ -219,7 +219,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		}
 	}
 
-	private void addWaypoint(Cache cache, Waypoint wp, int iconSize)
+	private void addWaypoint(Cache cache, WaypointLite wp, int iconSize)
 	{
 		// im Bild ?
 		double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
@@ -245,7 +245,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		return ((x >= point1.x) && (x < point2.x) && (Math.abs(y) > Math.abs(point1.y)) && (Math.abs(y) < Math.abs(point2.y)));
 	}
 
-	private Sprite getWaypointIcon(Waypoint waypoint)
+	private Sprite getWaypointIcon(WaypointLite waypoint)
 	{
 		if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart)) return SpriteCacheBase.MapIcons.get(24);
 		else
@@ -339,7 +339,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 	}
 
-	private Sprite getUnderlayIcon(CacheLite cache, Waypoint waypoint, int iconSize)
+	private Sprite getUnderlayIcon(CacheLite cache, WaypointLite waypoint, int iconSize)
 	{
 		if ((iconSize == 0) && (cache.Id != GlobalCore.getSelectedCache().Id))
 		{
@@ -464,7 +464,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		public float MapX;
 		public float MapY;
 		public CacheLite Cache;
-		public Waypoint Waypoint;
+		public WaypointLite Waypoint;
 		public boolean Selected;
 		public Sprite Icon;
 		public Sprite UnderlayIcon;

@@ -42,7 +42,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	/**
 	 * Waypoint Code des Caches
 	 */
-	private byte[] GcCode;
+	protected byte[] GcCode;
 	/**
 	 * Name des Caches
 	 */
@@ -118,7 +118,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	 */
 	public double Latitude(Boolean useFinal)
 	{
-		Waypoint waypoint = null;
+		WaypointLite waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
 		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
 		// Diszanzberechnung vom Final aus gemacht werden
@@ -139,7 +139,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	 */
 	public double Longitude(Boolean useFinal)
 	{
-		Waypoint waypoint = null;
+		WaypointLite waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
 		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
 		// Diszanzberechnung vom Final aus gemacht werden
@@ -216,7 +216,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	/**
 	 * The start WayPoint of this Cahe, if exist
 	 */
-	public Waypoint startWaypoint = null;
+	public WaypointLite startWaypoint = null;
 
 	/**
 	 * -1 = not readed from DB <br>
@@ -228,7 +228,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	/**
 	 * The start WayPoint of this Cahe, if exist
 	 */
-	public Waypoint FinalWaypoint = null;
+	public WaypointLite FinalWaypoint = null;
 
 	public CacheLite()
 	{
@@ -276,7 +276,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	/**
 	 * search the final waypoint for a mystery cache
 	 */
-	public Waypoint GetFinalWaypoint()
+	public WaypointLite GetFinalWaypoint()
 	{
 		if (this.Type != CacheTypes.Mystery && this.Type != CacheTypes.Multi) return null;
 
@@ -284,11 +284,11 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 
 		WaypointDAO dao = new WaypointDAO();
 
-		CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(this.Id);
+		CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(this.Id);
 
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
-			Waypoint wp = waypoints.get(i);
+			WaypointLite wp = waypoints.get(i);
 			if (wp.Type == CacheTypes.Final)
 			{
 				// do not activate final waypoint with invalid coordinates
@@ -312,7 +312,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 
 		if (this.Type != CacheTypes.Mystery) return false;
 
-		Waypoint wp = GetFinalWaypoint();
+		WaypointLite wp = GetFinalWaypoint();
 		if (wp == null) return false;
 		if (wp.Type == CacheTypes.Final)
 		{
@@ -347,7 +347,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	 * 
 	 * @return
 	 */
-	public Waypoint GetStartWaypoint()
+	public WaypointLite GetStartWaypoint()
 	{
 		if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery)) return null;
 
@@ -357,11 +357,11 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 
 		WaypointDAO dao = new WaypointDAO();
 
-		CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(this.Id);
+		CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(this.Id);
 
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
-			Waypoint wp = waypoints.get(i);
+			WaypointLite wp = waypoints.get(i);
 			if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
 			{
 				this.hasStartWaypoint = 1;
@@ -400,7 +400,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 
 	public float Distance(CalculationType type, boolean useFinal, Coordinate fromPos)
 	{
-		Waypoint waypoint = null;
+		WaypointLite waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
 		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
 		// Diszanzberechnung vom Final aus gemacht werden

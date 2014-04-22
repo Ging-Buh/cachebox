@@ -6,6 +6,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -235,8 +236,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				}
 				else
 				{
-					Waypoint waypoint = cache.waypoints.get(position - 1);
-					WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, waypoint);
+					WaypointLite waypoint = cache.waypoints.get(position - 1);
+					WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache,
+							waypoint.makeFull());
 					v.setClickable(true);
 					v.setOnClickListener(onItemClickListner);
 					v.setOnLongClickListener(onItemLongClickListner);
@@ -256,7 +258,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	}
 
-	public void SetSelectedCache(CacheLite cache, Waypoint waypoint)
+	public void SetSelectedCache(CacheLite cache, WaypointLite waypoint)
 	{
 
 		if (aktCache == null || (aktCache != null && aktCache.Id != cache.Id))
@@ -324,7 +326,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 			for (int i = 0, n = aktCache.waypoints.size(); i < n; i++)
 			{
-				Waypoint wp = aktCache.waypoints.get(i);
+				WaypointLite wp = aktCache.waypoints.get(i);
 				id++;
 				if (wp.equals(aktWaypoint))
 				{
@@ -359,7 +361,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
 	{
 		SetSelectedCache(cache, waypoint);
 	}
@@ -522,8 +524,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	private void deleteWP()
 	{
-		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitle() + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.Question, new OnMsgBoxClickListener()
+		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitle() + "]", Translation.Get("!DelWP"),
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
 				{
 
 					@Override

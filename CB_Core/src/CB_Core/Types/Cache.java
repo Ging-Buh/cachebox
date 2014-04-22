@@ -3,6 +3,7 @@ package CB_Core.Types;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -133,7 +134,7 @@ public class Cache extends CacheLite
 	/**
 	 * Liste der zusätzlichen Wegpunkte des Caches
 	 */
-	public final CB_List<Waypoint> waypoints = new CB_List<Waypoint>();
+	public final CB_List<WaypointLite> waypoints = new CB_List<WaypointLite>();
 
 	/**
 	 * Liste der Spoiler Resorcen
@@ -251,7 +252,7 @@ public class Cache extends CacheLite
 		this.waypoints.clear();
 
 		WaypointDAO wDao = new WaypointDAO();
-		CB_List<Waypoint> wayPois = wDao.getWaypointsFromCacheID(this.Id);
+		CB_List<WaypointLite> wayPois = wDao.getWaypointsFromCacheID(this.Id);
 
 		for (int i = 0, n = wayPois.size(); i < n; i++)
 		{
@@ -569,12 +570,12 @@ public class Cache extends CacheLite
 		return isSearchVisible;
 	}
 
-	public Waypoint findWaypointByGc(String gc)
+	public WaypointLite findWaypointByGc(String gc)
 	{
 		if (waypoints == null) return null;
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
-			Waypoint wp = waypoints.get(i);
+			WaypointLite wp = waypoints.get(i);
 			if (wp.getGcCode().equals(gc))
 			{
 				return wp;
@@ -623,9 +624,9 @@ public class Cache extends CacheLite
 
 		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
-			Waypoint newWaypoint = cache.waypoints.get(i);
+			WaypointLite newWaypoint = cache.waypoints.get(i);
 
-			Waypoint aktWaypoint = this.findWaypointByGc(newWaypoint.getGcCode());
+			WaypointLite aktWaypoint = this.findWaypointByGc(newWaypoint.getGcCode());
 			if (aktWaypoint == null)
 			{
 				// this waypoint is new -> Add to list
@@ -634,9 +635,7 @@ public class Cache extends CacheLite
 			else
 			{
 				// this waypoint is already in our list -> Copy Informations
-				aktWaypoint.setDescription(newWaypoint.getDescription());
 				aktWaypoint.Pos = newWaypoint.Pos;
-				aktWaypoint.setTitle(newWaypoint.getTitle());
 				aktWaypoint.Type = newWaypoint.Type;
 			}
 		}
@@ -677,7 +676,7 @@ public class Cache extends CacheLite
 		{
 			for (int i = 0, n = waypoints.size(); i < n; i++)
 			{
-				Waypoint entry = waypoints.get(i);
+				WaypointLite entry = waypoints.get(i);
 				entry.dispose();
 			}
 
@@ -723,7 +722,7 @@ public class Cache extends CacheLite
 		{
 			Cache c = (Cache) o;
 
-			if (!this.getGcCode().equals(c.getGcCode())) return false;
+			if (!Arrays.equals(this.GcCode, c.GcCode)) return false;
 			if (!this.Pos.equals(c.Pos)) return false;
 			return true;
 		}
@@ -731,7 +730,7 @@ public class Cache extends CacheLite
 		{
 			CacheLite c = (CacheLite) o;
 
-			if (!this.getGcCode().equals(c.getGcCode())) return false;
+			if (!Arrays.equals(this.GcCode, c.GcCode)) return false;
 			if (!this.Pos.equals(c.Pos)) return false;
 			return true;
 		}

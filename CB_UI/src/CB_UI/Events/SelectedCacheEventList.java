@@ -3,7 +3,7 @@ package CB_UI.Events;
 import java.util.ArrayList;
 
 import CB_Core.Types.CacheLite;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_UI.GlobalLocationReceiver;
 
 public class SelectedCacheEventList
@@ -27,9 +27,9 @@ public class SelectedCacheEventList
 	}
 
 	private static CacheLite lastSelectedCache;
-	private static Waypoint lastSelectedWayPoint;
+	private static WaypointLite lastSelectedWayPoint;
 
-	public static void Call(final CacheLite selectedCache, final Waypoint waypoint)
+	public static void Call(final CacheLite selectedCache, final WaypointLite waypoint)
 	{
 		boolean change = true;
 

@@ -8,6 +8,7 @@ import CB_Core.Import.ImporterProgress;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
@@ -75,7 +76,8 @@ public class WaypointDAO
 			args.put("isStart", WP.IsStart);
 			try
 			{
-				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"", null);
+				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"",
+						null);
 				if (count > 0) result = true;
 			}
 			catch (Exception exc)
@@ -193,17 +195,27 @@ public class WaypointDAO
 	// Hier wird überprüft, ob für diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurückgesetzt
 	// Damit kann bei der Definition eines neuen Start-Waypoints vorher der alte entfernt werden damit sichergestellt ist dass ein Cache nur
 	// 1 Start-Waypoint hat
-	public void ResetStartWaypoint(Cache cache, Waypoint except)
+	public void ResetStartWaypoint(Cache cache, WaypointLite except)
 	{
 		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
-			Waypoint wp = cache.waypoints.get(i);
-			if (except == wp) continue;
+			WaypointLite wp = cache.waypoints.get(i);
+			if (except.equals(wp)) continue;
 			if (wp.IsStart)
 			{
 				wp.IsStart = false;
-				WaypointDAO waypointDAO = new WaypointDAO();
-				waypointDAO.UpdateDatabase(wp);
+				Parameters args = new Parameters();
+				args.put("isStart", false);
+				try
+				{
+					long count = Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"",
+							null);
+
+				}
+				catch (Exception exc)
+				{
+
+				}
 			}
 		}
 	}
@@ -217,9 +229,9 @@ public class WaypointDAO
 		Database.Data.execSQL(SQL);
 	}
 
-	public CB_List<Waypoint> getWaypointsFromCacheID(Long CacheID)
+	public CB_List<WaypointLite> getWaypointsFromCacheID(Long CacheID)
 	{
-		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
+		CB_List<WaypointLite> wpList = new CB_List<WaypointLite>();
 		long aktCacheID = -1;
 
 		CoreCursor reader = Database.Data
@@ -230,11 +242,11 @@ public class WaypointDAO
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
 		{
-			Waypoint wp = getWaypoint(reader);
+			WaypointLite wp = getWaypoint(reader);
 			if (wp.CacheId != aktCacheID)
 			{
 				aktCacheID = wp.CacheId;
-				wpList = new CB_List<Waypoint>();
+				wpList = new CB_List<WaypointLite>();
 
 			}
 			wpList.add(wp);

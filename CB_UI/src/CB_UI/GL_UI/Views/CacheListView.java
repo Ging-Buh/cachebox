@@ -23,7 +23,7 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.CacheListLite;
 import CB_Core.Types.CacheLite;
-import CB_Core.Types.Waypoint;
+import CB_Core.Types.WaypointLite;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -294,7 +294,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (cache != null)
 			{
 				// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-				Waypoint waypoint = cache.GetFinalWaypoint();
+				WaypointLite waypoint = cache.GetFinalWaypoint();
 				if (waypoint == null) waypoint = cache.GetStartWaypoint();
 				GlobalCore.setSelectedWaypoint(cache, waypoint);
 			}
@@ -317,7 +317,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			{
 				cache = Database.Data.Query.get(selectionIndex);
 			}
-			Waypoint finalWp = null;
+			WaypointLite finalWp = null;
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 			if (finalWp == null) finalWp = cache.GetStartWaypoint();
 			// shutdown AutoResort when selecting a cache by hand
@@ -446,7 +446,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, Waypoint waypoint)
+	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
 	{
 		if (GlobalCore.getSelectedCache() != null)
 		{

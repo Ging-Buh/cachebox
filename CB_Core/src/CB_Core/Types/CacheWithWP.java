@@ -8,9 +8,9 @@ package CB_Core.Types;
 public class CacheWithWP
 {
 	private CacheLite cache;
-	private Waypoint waypoint;
+	private WaypointLite waypoint;
 
-	public CacheWithWP(CacheLite cacheLite, Waypoint waypoint)
+	public CacheWithWP(CacheLite cacheLite, WaypointLite waypoint)
 	{
 		this.cache = cacheLite;
 		this.waypoint = waypoint;
@@ -27,7 +27,7 @@ public class CacheWithWP
 		return this.cache;
 	}
 
-	public Waypoint getWaypoint()
+	public WaypointLite getWaypoint()
 	{
 		return this.waypoint;
 	}
