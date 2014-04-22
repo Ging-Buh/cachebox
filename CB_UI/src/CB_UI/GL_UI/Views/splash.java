@@ -487,7 +487,7 @@ public class splash extends MainViewBase
 					if (GlobalCore.restartWaypoint != null)
 					{
 						WaypointDAO dao = new WaypointDAO();
-						CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(c.Id);
+						CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(c.Id, true);
 						if (waypoints != null)
 						{
 							WaypointLite w = null;

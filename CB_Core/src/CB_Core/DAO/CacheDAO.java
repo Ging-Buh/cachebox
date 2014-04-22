@@ -65,7 +65,7 @@ public class CacheDAO
 
 			cache.Url = reader.getString(15).trim();
 			cache.NumTravelbugs = reader.getInt(16);
-			cache.GcId = reader.getString(17).trim();
+			cache.setGcId(reader.getString(17).trim());
 			cache.Rating = ((float) reader.getShort(18)) / 100.0f;
 			if (reader.getInt(19) > 0) cache.setFavorit(true);
 			else
@@ -171,7 +171,7 @@ public class CacheDAO
 		Parameters args = new Parameters();
 		args.put("Id", cache.Id);
 		args.put("GcCode", cache.getGcCode());
-		args.put("GcId", cache.GcId);
+		args.put("GcId", cache.getGcId());
 		args.put("Latitude", cache.Pos.getLatitude());
 		args.put("Longitude", cache.Pos.getLongitude());
 		args.put("Name", cache.getName());
@@ -285,7 +285,7 @@ public class CacheDAO
 
 		args.put("Id", cache.Id);
 		args.put("GcCode", cache.getGcCode());
-		args.put("GcId", cache.GcId);
+		args.put("GcId", cache.getGcId());
 		if (cache.Pos.isValid() && !cache.Pos.isZero())
 		{
 			// Update Cache position only when new position is valid and not zero

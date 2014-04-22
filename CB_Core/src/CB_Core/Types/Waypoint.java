@@ -55,8 +55,7 @@ public class Waypoint extends WaypointLite
 		{
 			this.setDescription(reader.getString(0));
 			this.setClue(reader.getString(1));
-			this.setClue(reader.getString(2));
-			this.setTitle(reader.getString(3).trim());
+			this.setTitle(reader.getString(2).trim());
 			reader.moveToNext();
 
 		}

@@ -112,7 +112,7 @@ public class CoordinateEntity extends Entity
 		{
 			reader.moveToFirst();
 			if (reader.isAfterLast()) return Translation.Get("CacheOrWaypointNotFound", this.gcCode);
-			dbWaypoint = waypointDAO.getWaypoint(reader);
+			dbWaypoint = (Waypoint) waypointDAO.getWaypoint(reader, true);
 		}
 		finally
 		{

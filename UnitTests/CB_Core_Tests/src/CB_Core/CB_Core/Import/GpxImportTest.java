@@ -63,7 +63,7 @@ public class GpxImportTest extends TestCase
 		assertEquals("url falsch", "http://www.geocaching.com/seek/cache_details.aspx?guid=f26f18bd-9aaa-4499-944b-3e8cb62e41a7", cache.Url);
 		assertTrue("Found ist falsch", cache.Found);
 
-		assertEquals("Id ist falsch", cache.GcId, "2190117");
+		assertEquals("Id ist falsch", cache.getGcId(), "2190117");
 		assertTrue("ist available ist falsch", cache.Available);
 		assertFalse("ist archived ist falsch", cache.Archived);
 		assertEquals("Name falsch", "der Hampir - T5 -", cache.getName());

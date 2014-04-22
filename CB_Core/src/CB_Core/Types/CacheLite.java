@@ -18,9 +18,9 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 {
 	private static final long serialVersionUID = 1015307624242318838L;
 
-	private static final Charset US_ASCII = Charset.forName("US-ASCII");
-	private static final Charset UTF_8 = Charset.forName("UTF-8");
-	private static final String EMPTY_STRING = "";
+	protected static final Charset US_ASCII = Charset.forName("US-ASCII");
+	protected static final Charset UTF_8 = Charset.forName("UTF-8");
+	protected static final String EMPTY_STRING = "";
 
 	/**
 	 * Static holden UserName
@@ -46,7 +46,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	/**
 	 * Name des Caches
 	 */
-	private byte[] Name;
+	protected byte[] Name;
 	/**
 	 * Die Coordinate, an der der Cache liegt.
 	 */
@@ -69,7 +69,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	/**
 	 * Verantwortlicher
 	 */
-	private byte[] Owner;
+	protected byte[] Owner;
 
 	/**
 	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
@@ -284,7 +284,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 
 		WaypointDAO dao = new WaypointDAO();
 
-		CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(this.Id);
+		CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(this.Id, false);
 
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
@@ -357,7 +357,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 
 		WaypointDAO dao = new WaypointDAO();
 
-		CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(this.Id);
+		CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(this.Id, false);
 
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{

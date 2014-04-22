@@ -106,23 +106,44 @@ public class WaypointDAO
 		return result;
 	}
 
-	public Waypoint getWaypoint(CoreCursor reader)
+	/**
+	 * Create Waypoint Object from Reader.
+	 * 
+	 * @param reader
+	 * @param full
+	 *            Waypoints as FullWaypoints (true) or WaypointLite (false)
+	 * @return
+	 */
+	public WaypointLite getWaypoint(CoreCursor reader, boolean full)
 	{
-		Waypoint WP = new Waypoint();
+		WaypointLite WP = null;
+
+		if (full)
+		{
+			WP = new Waypoint();
+		}
+		else
+		{
+			WP = new WaypointLite();
+		}
+
 		WP.setGcCode(reader.getString(0));
 		WP.CacheId = reader.getLong(1);
 		double latitude = reader.getDouble(2);
 		double longitude = reader.getDouble(3);
 		WP.Pos = new Coordinate(latitude, longitude);
-		WP.setDescription(reader.getString(4));
 		WP.Type = CacheTypes.values()[reader.getShort(5)];
 		WP.IsSyncExcluded = reader.getInt(6) == 1;
 		WP.IsUserWaypoint = reader.getInt(7) == 1;
-		WP.setClue(reader.getString(8));
-		if (WP.getClue() != null) WP.setClue(WP.getClue().trim());
 		WP.setTitle(reader.getString(9).trim());
 		WP.IsStart = reader.getInt(10) == 1;
-		WP.checkSum = createCheckSum(WP);
+
+		if (full)
+		{
+			((Waypoint) WP).setClue(reader.getString(8));
+			((Waypoint) WP).setDescription(reader.getString(4));
+			((Waypoint) WP).checkSum = createCheckSum((Waypoint) WP);
+		}
 		return WP;
 	}
 
@@ -229,7 +250,16 @@ public class WaypointDAO
 		Database.Data.execSQL(SQL);
 	}
 
-	public CB_List<WaypointLite> getWaypointsFromCacheID(Long CacheID)
+	/**
+	 * Returns a WaypointList from reading DB!
+	 * 
+	 * @param CacheID
+	 *            ID of Cache
+	 * @param Full
+	 *            Waypoints as FullWaypoints (true) or WaypointLite (false)
+	 * @return
+	 */
+	public CB_List<WaypointLite> getWaypointsFromCacheID(Long CacheID, boolean Full)
 	{
 		CB_List<WaypointLite> wpList = new CB_List<WaypointLite>();
 		long aktCacheID = -1;
@@ -242,7 +272,7 @@ public class WaypointDAO
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
 		{
-			WaypointLite wp = getWaypoint(reader);
+			WaypointLite wp = getWaypoint(reader, Full);
 			if (wp.CacheId != aktCacheID)
 			{
 				aktCacheID = wp.CacheId;

@@ -2,6 +2,9 @@ package CB_Core.Types;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -51,7 +54,7 @@ public class Cache extends CacheLite
 	 * Id des Caches bei geocaching.com. Wird zumm Loggen benötigt und von geotoad nicht exportiert
 	 */
 	// TODO Warum ist das ein String?
-	public String GcId = "";
+	private byte[] GcId;
 
 	/**
 	 * Erschaffer des Caches
@@ -207,74 +210,87 @@ public class Cache extends CacheLite
 			return;
 		}
 
-		// Read Cache data from DB
-		CacheDAO dao = new CacheDAO();
-		Cache tmpCache = dao.getFromDbByCacheId(cacheLite.Id);
-
-		if (tmpCache == null) return;
-
 		// CacheLiteValues:
 		this.myCache = cacheLite.myCache;
-		this.MapX = tmpCache.MapX;
-		this.MapY = tmpCache.MapY;
-		this.setGcCode(tmpCache.getGcCode());
-		this.setName(tmpCache.getName());
-		this.Pos = tmpCache.Pos;
-		this.Rating = tmpCache.Rating;
-		this.NumTravelbugs = tmpCache.NumTravelbugs;
-		this.Id = tmpCache.Id;
-		this.Size = tmpCache.Size;
-		this.Difficulty = tmpCache.Difficulty;
-		this.Terrain = tmpCache.Terrain;
-		this.Archived = tmpCache.Archived;
-		this.Available = tmpCache.Available;
-		this.Found = tmpCache.Found;
-		this.Type = tmpCache.Type;
-		this.cachedDistance = tmpCache.cachedDistance;
-		this.setOwner(tmpCache.getOwner());
-
-		// Full Cache Values
-		this.GcId = tmpCache.GcId;
-		this.ApiStatus = tmpCache.ApiStatus;
-		this.noteCheckSum = tmpCache.noteCheckSum;
-		this.tmpNote = tmpCache.tmpNote;
-		this.solverCheckSum = tmpCache.solverCheckSum;
-		this.tmpSolver = tmpCache.tmpSolver;
-		this.hasUserData = tmpCache.hasUserData;
-		this.TourName = tmpCache.TourName;
-		this.GPXFilename_ID = tmpCache.GPXFilename_ID;
-		this.Url = tmpCache.Url;
-		this.Country = tmpCache.Country;
-		this.State = tmpCache.State;
-		this.listingChanged = tmpCache.listingChanged;
-		this.hint = tmpCache.hint;
-
-		this.waypoints.clear();
-
-		WaypointDAO wDao = new WaypointDAO();
-		CB_List<WaypointLite> wayPois = wDao.getWaypointsFromCacheID(this.Id);
-
-		for (int i = 0, n = wayPois.size(); i < n; i++)
-		{
-			this.waypoints.add(wayPois.get(i));
-		}
-
-		this.spoilerRessources = tmpCache.spoilerRessources;
-		this.shortDescription = tmpCache.shortDescription;
-		this.longDescription = tmpCache.longDescription;
-		this.PlacedBy = tmpCache.PlacedBy;
-		this.DateHidden = tmpCache.DateHidden;
-
+		this.MapX = cacheLite.MapX;
+		this.MapY = cacheLite.MapY;
+		this.GcCode = cacheLite.GcCode;
+		this.Name = cacheLite.Name;
+		this.Pos = cacheLite.Pos;
+		this.Rating = cacheLite.Rating;
+		this.NumTravelbugs = cacheLite.NumTravelbugs;
+		this.Id = cacheLite.Id;
+		this.Size = cacheLite.Size;
+		this.Difficulty = cacheLite.Difficulty;
+		this.Terrain = cacheLite.Terrain;
+		this.Archived = cacheLite.Archived;
+		this.Available = cacheLite.Available;
+		this.Found = cacheLite.Found;
+		this.Type = cacheLite.Type;
+		this.cachedDistance = cacheLite.cachedDistance;
+		this.Owner = cacheLite.Owner;
 		this.hasFinalWaypoint = cacheLite.hasFinalWaypoint;
 		this.hasStartWaypoint = cacheLite.hasStartWaypoint;
 		this.FinalWaypoint = cacheLite.FinalWaypoint;
 		this.startWaypoint = cacheLite.startWaypoint;
 
-		this.AttributeList = tmpCache.AttributeList;
-		this.attributesNegative = tmpCache.attributesNegative;
-		this.attributesPositive = tmpCache.attributesPositive;
+		// read missing values from DB
+		CoreCursor reader = Database.Data
+				.rawQuery(
+						"select GcId, ApiStatus, CorrectedCoordinates, HasUserData, TourName, GpxFilename_ID, Url, Country, State, ListingChanged, PlacedBy, DateHidden, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh from Caches where id = ?",
+						new String[]
+							{ String.valueOf(this.Id) });
+		reader.moveToFirst();
+		while (!reader.isAfterLast())
+		{
+			this.setGcId(reader.getString(0));
 
-		tmpCache = null; // Dont dispose, this will clear waypoint list!
+			if (reader.isNull(2)) this.ApiStatus = 0;
+			else
+				this.ApiStatus = (byte) reader.getInt(2);
+
+			this.CorrectedCoordinates = (reader.getInt(3) > 0);
+			this.hasUserData = (reader.getInt(4) > 0);
+			this.TourName = reader.getString(5);
+			this.GPXFilename_ID = reader.getLong(6);
+			this.Url = reader.getString(7);
+			this.Country = reader.getString(8);
+			this.State = reader.getString(9);
+			this.listingChanged = (reader.getInt(10) > 0);
+			this.PlacedBy = reader.getString(11);
+
+			String sDate = reader.getString(12);
+			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try
+			{
+				this.DateHidden = iso8601Format.parse(sDate);
+			}
+			catch (ParseException e)
+			{
+			}
+
+			this.setAttributesPositive(new DLong(reader.getLong(14), reader.getLong(13)));
+			this.setAttributesNegative(new DLong(reader.getLong(16), reader.getLong(15)));
+
+			reader.moveToNext();
+
+		}
+		reader.close();
+
+		CacheDAO dao = new CacheDAO();
+		Cache tmpCache = dao.getFromDbByCacheId(cacheLite.Id);
+
+		if (tmpCache == null) return;
+
+		this.waypoints.clear();
+
+		WaypointDAO wDao = new WaypointDAO();
+		CB_List<WaypointLite> wayPois = wDao.getWaypointsFromCacheID(this.Id, true);
+
+		for (int i = 0, n = wayPois.size(); i < n; i++)
+		{
+			this.waypoints.add(wayPois.get(i));
+		}
 
 	}
 
@@ -518,7 +534,7 @@ public class Cache extends CacheLite
 	{
 		MapX = 0;
 		MapY = 0;
-		GcId = "";
+		setGcId("");
 		Id = -1;
 		setGcCode("");
 		setName("");
@@ -735,6 +751,22 @@ public class Cache extends CacheLite
 			return true;
 		}
 		return false;
+	}
+
+	public String getGcId()
+	{
+		if (GcId == null) return EMPTY_STRING;
+		return new String(GcId, US_ASCII);
+	}
+
+	public void setGcId(String gcId)
+	{
+		if (gcId == null)
+		{
+			GcId = null;
+			return;
+		}
+		GcId = gcId.getBytes(US_ASCII);
 	}
 
 }

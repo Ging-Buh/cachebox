@@ -1217,7 +1217,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		while (!reader.isAfterLast())
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
-			Waypoint wp = waypointDAO.getWaypoint(reader);
+			Waypoint wp = (Waypoint) waypointDAO.getWaypoint(reader, true);
 			result = wp;
 			reader.moveToNext();
 

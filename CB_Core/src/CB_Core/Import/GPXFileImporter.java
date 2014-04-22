@@ -957,7 +957,7 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_attribute_id"))
 		{
-			cache.GcId = values.get("cache_attribute_id");
+			cache.setGcId(values.get("cache_attribute_id"));
 		}
 
 		if (values.containsKey("wpt_url"))

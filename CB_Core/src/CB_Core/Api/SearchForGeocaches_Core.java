@@ -325,7 +325,7 @@ public class SearchForGeocaches_Core
 					cache.setGcCode(jCache.getString("Code"));
 					try
 					{
-						cache.GcId = jCache.getString("ID");
+						cache.setGcId(jCache.getString("ID"));
 					}
 					catch (Exception e)
 					{

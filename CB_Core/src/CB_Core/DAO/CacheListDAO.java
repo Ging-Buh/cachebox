@@ -54,7 +54,7 @@ public class CacheListDAO
 		while (!reader.isAfterLast())
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
-			WaypointLite wp = waypointDAO.getWaypoint(reader);
+			WaypointLite wp = waypointDAO.getWaypoint(reader, true);
 			if (wp.CacheId != aktCacheID)
 			{
 				aktCacheID = wp.CacheId;
@@ -324,7 +324,7 @@ public class CacheListDAO
 		while (!reader.isAfterLast())
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
-			WaypointLite wp = waypointDAO.getWaypoint(reader);
+			WaypointLite wp = waypointDAO.getWaypoint(reader, false);
 			if (wp.CacheId != aktCacheID)
 			{
 				aktCacheID = wp.CacheId;

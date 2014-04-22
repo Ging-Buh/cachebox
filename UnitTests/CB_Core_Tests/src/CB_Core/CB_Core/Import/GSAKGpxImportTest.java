@@ -61,7 +61,7 @@ public class GSAKGpxImportTest extends TestCase
 													// ausgelesen
 		assertTrue("Found ist falsch", cache.Found);
 
-		assertEquals("Id ist falsch", cache.GcId, "1358542");
+		assertEquals("Id ist falsch", cache.getGcId(), "1358542");
 		assertFalse("ist available ist falsch", cache.Available);
 		assertTrue("ist archived ist falsch", cache.Archived);
 		assertEquals("Name falsch", "Schlossblick # 2/ View at the castle  #2", cache.getName());
