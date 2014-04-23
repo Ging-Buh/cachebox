@@ -177,13 +177,16 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		Waypoint wp = null;
 
-		if (waypoint instanceof Waypoint)
+		if (waypoint != null)
 		{
-			wp = (Waypoint) waypoint;
-		}
-		else
-		{
-			wp = waypoint.makeFull();
+			if (waypoint instanceof Waypoint)
+			{
+				wp = (Waypoint) waypoint;
+			}
+			else
+			{
+				wp = waypoint.makeFull();
+			}
 		}
 
 		if (wp != null)
