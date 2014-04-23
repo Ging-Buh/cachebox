@@ -18,6 +18,8 @@ package CB_UI;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
@@ -415,9 +417,21 @@ public class GlobalCore extends CB_UI_Base.Global
 				@Override
 				public void run()
 				{
-					int ret = GroundspeakAPI.chkMemperShip(false);
+					final int ret = GroundspeakAPI.chkMemperShip(false);
 					dia.close();
-					handler.chekReady(ret);
+
+					Timer ti = new Timer();
+					TimerTask task = new TimerTask()
+					{
+
+						@Override
+						public void run()
+						{
+							handler.chekReady(ret);
+						}
+					};
+					ti.schedule(task, 300);
+
 				}
 			});
 		}

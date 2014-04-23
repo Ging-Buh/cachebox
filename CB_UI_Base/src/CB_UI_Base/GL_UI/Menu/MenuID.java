@@ -113,6 +113,8 @@ public class MenuID
 	public static final int MI_ROTATE = 79;
 	public static final int MI_CENTER_WP = 80;
 
+	public static final int MI_SHOW_ALL_WAYPOINTS = 81;
+
 	// Action ID´s
 
 	public static final int AID_TEST_VIEW = -1;

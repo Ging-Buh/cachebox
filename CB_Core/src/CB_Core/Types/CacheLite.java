@@ -82,6 +82,11 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	protected boolean CorrectedCoordinates;
 
 	/**
+	 * Liste der zusätzlichen Wegpunkte des Caches
+	 */
+	public final CB_List<WaypointLite> waypoints = new CB_List<WaypointLite>();
+
+	/**
 	 * Constructor
 	 */
 	public CacheLite(double Latitude, double Longitude, String Name, CacheTypes type, String GcCode)

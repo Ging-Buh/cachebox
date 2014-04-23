@@ -79,6 +79,9 @@ import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+/**
+ * @author Longri
+ */
 public class SearchDialog extends PopUp_Base
 {
 	public static SearchDialog that;
@@ -978,62 +981,41 @@ public class SearchDialog extends PopUp_Base
 				}
 				else
 				{
-					Logger.DEBUG("SEARCH show WD chkApiState ");
-					wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
+					if (ret == 3)
 					{
-
-						@Override
-						public void isCanceld()
-						{
-							// TODO Handle Cancel
-
-						}
-					}, new Runnable()
+						// searchOnlineNow();
+						showTargetApiDialog();
+					}
+					else
 					{
+						closeWD();
 
-						@Override
-						public void run()
+						GL.that.RunOnGL(new IRunOnGL()
 						{
-							Logger.DEBUG("SEARCH run WD chkApiState ");
-							int ret = GroundspeakAPI.GetMembershipType();
-							if (ret == 3)
-							{
-								// searchOnlineNow();
-								showTargetApiDialog();
-							}
-							else
-							{
-								closeWD();
 
-								GL.that.RunOnGL(new IRunOnGL()
-								{
+							@Override
+							public void run()
+							{
+								MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
+										MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+										{
 
-									@Override
-									public void run()
-									{
-										MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"),
-												MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+											@Override
+											public boolean onClick(int which, Object data)
+											{
+												closeMsgBox();
+												if (which == GL_MsgBox.BUTTON_POSITIVE)
 												{
+													showTargetApiDialog();
+												}
 
-													@Override
-													public boolean onClick(int which, Object data)
-													{
-														closeMsgBox();
-														if (which == GL_MsgBox.BUTTON_POSITIVE)
-														{
-															showTargetApiDialog();
-														}
-
-														return true;
-													}
-												});
-									}
-								});
-
+												return true;
+											}
+										});
 							}
-						}
-					});
+						});
 
+					}
 				}
 			}
 		});

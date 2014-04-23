@@ -313,22 +313,44 @@ public class CacheInfo extends CB_View_Base
 
 				String br = String.format("%n");
 				StringBuilder text = new StringBuilder();
-				if (ifModeFlag(SHOW_NAME)) text.append(mCache.getName() + br);
-				if (mCache instanceof Cache && ifModeFlag(SHOW_OWNER)) text.append("by " + mCache.getOwner() + ", "
-						+ postFormater.format(((Cache) mCache).DateHidden) + br);
+				if (ifModeFlag(SHOW_NAME))
+				{
+					text.append(mCache.getName());
+					text.append(br);
+				}
+				if (mCache instanceof Cache && ifModeFlag(SHOW_OWNER))
+				{
+					text.append("by " + mCache.getOwner() + ", ");
+					try
+					{
+						text.append(postFormater.format(((Cache) mCache).DateHidden));
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+					text.append(br);
+				}
+
 				if (ifModeFlag(SHOW_COORDS))
 				{
 					if (ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE))
 					{
-						text.append(mCache.Pos.FormatCoordinateLineBreake() + br);
+						text.append(mCache.Pos.FormatCoordinateLineBreake());
+						text.append(br);
 					}
 					else
 					{
-						text.append(mCache.Pos.FormatCoordinate() + br);
+						text.append(mCache.Pos.FormatCoordinate());
+						text.append(br);
 					}
 				}
 
-				if (ifModeFlag(SHOW_GC)) text.append(mCache.getGcCode() + br);
+				if (ifModeFlag(SHOW_GC))
+				{
+					text.append(mCache.getGcCode());
+					text.append(br);
+				}
 				if (ifModeFlag(SHOW_LAST_FOUND))
 				{
 					String LastFound = getLastFoundLogDate(mCache);

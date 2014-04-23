@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Main;
 
 import java.io.File;
@@ -6,7 +21,9 @@ import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
+import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.CacheLite;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
@@ -98,6 +115,10 @@ import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class TabMainView extends MainViewBase implements PositionChangedEvent
 {
 	public static TabMainView that;
@@ -229,9 +250,35 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			}
 		});
 
+		Config.ShowAllWaypoints.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				reloadCacheList();
+				// must reload MapViewCacheList
+				// do this over Initial WPI-List
+				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+			}
+		});
+
 		// Set settings first
 		UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
 		Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
+	}
+
+	public static void reloadCacheList()
+	{
+		String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		synchronized (Database.Data.Query)
+		{
+			CacheListDAO cacheListDAO = new CacheListDAO();
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+			cacheListDAO = null;
+		}
+		CachListChangedEventList.Call();
+
 	}
 
 	private void ini()

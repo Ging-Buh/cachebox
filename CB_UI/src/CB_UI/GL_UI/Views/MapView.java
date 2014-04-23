@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package CB_UI.GL_UI.Views;
 
 import java.util.SortedMap;
@@ -64,6 +80,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class MapView extends MapViewBase implements SelectedCacheEvent, PositionChangedEvent
 {
 	boolean CompassMode = false;
@@ -86,6 +106,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	boolean hideMyFinds;
 	boolean showCompass;
 	boolean showDirectLine;
+	boolean showAllWaypoints;
 	private int lastCompassMapZoom = -1;
 	GL_Paint paint;
 	public static MapView that = null;
@@ -120,6 +141,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		Config.MapsforgeDayTheme.addChangedEventListner(themeChangedEventHandler);
 		Config.MapsforgeNightTheme.addChangedEventListner(themeChangedEventHandler);
+
 		registerSkinChangedEvent();
 		setBackground(SpriteCacheBase.ListBack);
 		int maxNumTiles = 0;
@@ -716,6 +738,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, true);
 		data.hideMyFinds = this.hideMyFinds;
+		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 
 		if (getCenterGps())
@@ -887,6 +910,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, false);
 		data.hideMyFinds = this.hideMyFinds;
+		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 
 		super.loadTiles();
@@ -1060,6 +1084,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
 									screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 							data.hideMyFinds = MapView.this.hideMyFinds;
+							data.showAllWaypoints = MapView.this.showAllWaypoints;
 							mapCacheList.update(data);
 						}
 
@@ -1220,6 +1245,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
 				mapIntWidth, mapIntHeight)), aktZoom, true);
 		data.hideMyFinds = this.hideMyFinds;
+		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
 		if (infoBubble.isVisible())
 		{
@@ -1266,6 +1292,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			hideMyFinds = Config.MapHideMyFinds.getValue();
 			showCompass = CompassMode ? false : Config.MapShowCompass.getValue();
 			showDirectLine = CompassMode ? false : Config.ShowDirektLine.getValue();
+			showAllWaypoints = CompassMode ? false : Config.ShowAllWaypoints.getValue();
 			showAccuracyCircle = CompassMode ? false : Config.ShowAccuracyCircle.getValue();
 			showMapCenterCross = CompassMode ? false : Config.ShowMapCenterCross.getValue();
 
@@ -1404,6 +1431,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
 						screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 				data.hideMyFinds = this.hideMyFinds;
+				data.showAllWaypoints = this.showAllWaypoints;
 				mapCacheList.update(data);
 			}
 

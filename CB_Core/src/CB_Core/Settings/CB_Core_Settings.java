@@ -75,4 +75,7 @@ public interface CB_Core_Settings
 	public static final SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, INVISIBLE,
 			Config_Core.WorkPath + "/PocketQuery", SettingStoreType.Global);
 
+	public static final SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", SettingCategory.Map, NORMAL, false,
+			SettingStoreType.Global);
+
 }

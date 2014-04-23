@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package CB_Core.Types;
 
 import java.io.Serializable;
@@ -10,6 +26,9 @@ import CB_Locator.Locator;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 
+/**
+ * @author Longri
+ */
 public class WaypointLite implements Serializable
 {
 	private static final long serialVersionUID = 67610567646416L;
@@ -59,6 +78,17 @@ public class WaypointLite implements Serializable
 		IsUserWaypoint = isUserWaypoint;
 		IsSyncExcluded = isSyncExcluded;
 		IsStart = isStart;
+	}
+
+	public WaypointLite(Waypoint waypoint)
+	{
+		CacheId = waypoint.CacheId;
+		GcCode = waypoint.GcCode;
+		Pos = waypoint.Pos;
+		Type = waypoint.Type;
+		IsUserWaypoint = waypoint.IsUserWaypoint;
+		IsSyncExcluded = waypoint.IsSyncExcluded;
+		IsStart = waypoint.IsStart;
 	}
 
 	// / <summary>
@@ -213,6 +243,15 @@ public class WaypointLite implements Serializable
 			return (Waypoint) this;
 		}
 		return new Waypoint(this);
+	}
+
+	public WaypointLite makeLite()
+	{
+		if (this instanceof Waypoint)
+		{
+			return new WaypointLite((Waypoint) this);
+		}
+		return this;
 	}
 
 }

@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Types;
 
 import java.io.File;
@@ -22,6 +37,10 @@ import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class Cache extends CacheLite
 {
 
@@ -135,11 +154,6 @@ public class Cache extends CacheLite
 	public String hint = "";
 
 	/**
-	 * Liste der zusätzlichen Wegpunkte des Caches
-	 */
-	public final CB_List<WaypointLite> waypoints = new CB_List<WaypointLite>();
-
-	/**
 	 * Liste der Spoiler Resorcen
 	 */
 	public CB_List<ImageEntry> spoilerRessources = null;
@@ -245,21 +259,21 @@ public class Cache extends CacheLite
 		{
 			this.setGcId(reader.getString(0));
 
-			if (reader.isNull(2)) this.ApiStatus = 0;
+			if (reader.isNull(1)) this.ApiStatus = 0;
 			else
-				this.ApiStatus = (byte) reader.getInt(2);
+				this.ApiStatus = (byte) reader.getInt(1);
 
-			this.CorrectedCoordinates = (reader.getInt(3) > 0);
-			this.hasUserData = (reader.getInt(4) > 0);
-			this.TourName = reader.getString(5);
-			this.GPXFilename_ID = reader.getLong(6);
-			this.Url = reader.getString(7);
-			this.Country = reader.getString(8);
-			this.State = reader.getString(9);
-			this.listingChanged = (reader.getInt(10) > 0);
-			this.PlacedBy = reader.getString(11);
+			this.CorrectedCoordinates = (reader.getInt(2) > 0);
+			this.hasUserData = (reader.getInt(3) > 0);
+			this.TourName = reader.getString(4);
+			this.GPXFilename_ID = reader.getLong(5);
+			this.Url = reader.getString(6);
+			this.Country = reader.getString(7);
+			this.State = reader.getString(8);
+			this.listingChanged = (reader.getInt(9) > 0);
+			this.PlacedBy = reader.getString(10);
 
-			String sDate = reader.getString(12);
+			String sDate = reader.getString(11);
 			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			try
 			{
@@ -269,8 +283,8 @@ public class Cache extends CacheLite
 			{
 			}
 
-			this.setAttributesPositive(new DLong(reader.getLong(14), reader.getLong(13)));
-			this.setAttributesNegative(new DLong(reader.getLong(16), reader.getLong(15)));
+			this.setAttributesPositive(new DLong(reader.getLong(13), reader.getLong(12)));
+			this.setAttributesNegative(new DLong(reader.getLong(15), reader.getLong(14)));
 
 			reader.moveToNext();
 

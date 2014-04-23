@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_Locator.Map.Layer;
@@ -22,6 +38,9 @@ import CB_Utils.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+/**
+ * @author Longri
+ */
 public class CB_Action_ShowMap extends CB_Action_ShowView
 {
 
@@ -193,6 +212,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		mi.setCheckable(true);
 		mi.setChecked(Config.MapShowCompass.getValue());
 
+		mi = icm.addItem(MenuID.MI_SHOW_ALL_WAYPOINTS, "ShowAllWaypoints");
+		mi.setCheckable(true);
+		mi.setChecked(Config.ShowAllWaypoints.getValue());
+
 		mi = icm.addItem(MenuID.MI_SHOW_RATINGS, "ShowRatings");
 		mi.setCheckable(true);
 		mi.setChecked(Config.MapShowRating.getValue());
@@ -239,6 +262,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 			case MenuID.MI_ALIGN_TO_COMPSS:
 				MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());
+				return true;
+
+			case MenuID.MI_SHOW_ALL_WAYPOINTS:
+				toggleSetting(Config.ShowAllWaypoints);
 				return true;
 
 			case MenuID.MI_HIDE_FINDS:

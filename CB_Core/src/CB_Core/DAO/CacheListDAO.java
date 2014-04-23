@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package CB_Core.DAO;
 
 import java.io.File;
@@ -9,6 +25,7 @@ import java.util.TreeMap;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.CacheListLite;
@@ -19,6 +36,10 @@ import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class CacheListDAO
 {
 
@@ -370,6 +391,8 @@ public class CacheListDAO
 
 				CB_List<WaypointLite> cacheWaypoints = waypoints.get(cache.Id);
 
+				cache.waypoints.clear();
+
 				for (int i = 0, n = cacheWaypoints.size(); i < n; i++)
 				{
 					WaypointLite wp = cacheWaypoints.get(i);
@@ -388,6 +411,12 @@ public class CacheListDAO
 						cache.FinalWaypoint = wp;
 						cache.hasFinalWaypoint = 1;
 						hasFinal = true;
+					}
+
+					// if option showAllWaypoints staid we must put the WaypointLite to cache waypointList
+					if (CB_Core_Settings.ShowAllWaypoints.getValue())
+					{
+						cache.waypoints.add(wp.makeLite());
 					}
 
 				}
@@ -409,5 +438,4 @@ public class CacheListDAO
 
 		return cacheList;
 	}
-
 }
