@@ -32,8 +32,12 @@ public class HintDialog extends GL_MsgBox
 	public static void show()
 	{
 		if (GlobalCore.getSelectedCache() == null) return;
-		hintTextDecoded = UnitFormatter.Rot13(GlobalCore.getSelectedCache().hint) + "\n ";
-		hintTextEncoded = GlobalCore.getSelectedCache().hint + "\n ";
+		if (!GlobalCore.getSelectedCache().hasHint()) return;
+
+		String HintFromDB = GlobalCore.getSelectedCache().getHintFromDB();
+
+		hintTextDecoded = UnitFormatter.Rot13(HintFromDB) + "\n ";
+		hintTextEncoded = HintFromDB + "\n ";
 
 		// nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
 		// !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.

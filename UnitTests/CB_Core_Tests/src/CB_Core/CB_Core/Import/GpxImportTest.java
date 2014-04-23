@@ -148,7 +148,7 @@ public class GpxImportTest extends TestCase
 		// System.out.println( cache.shortDescription );
 		// System.out.println( cache.longDescription );
 
-		assertEquals("Hint falsch", "wenn du ihn nicht findest, findet er dich!!", cache.hint);
+		assertEquals("Hint falsch", "wenn du ihn nicht findest, findet er dich!!", cache.getHint());
 
 		CB_List<LogEntry> logs = new CB_List<LogEntry>();
 		logs = Database.Logs(cache);

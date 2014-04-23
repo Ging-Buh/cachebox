@@ -1161,7 +1161,7 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_encoded_hints"))
 		{
-			cache.hint = values.get("cache_encoded_hints");
+			cache.setHint(values.get("cache_encoded_hints"));
 		}
 
 		if (values.containsKey("cache_logs_count"))

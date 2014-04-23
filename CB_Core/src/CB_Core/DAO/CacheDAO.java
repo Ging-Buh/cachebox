@@ -100,9 +100,9 @@ public class CacheDAO
 			cache.setAttributesPositive(new DLong(reader.getLong(27), reader.getLong(26)));
 			cache.setAttributesNegative(new DLong(reader.getLong(29), reader.getLong(28)));
 
-			if (reader.getString(30) != null) cache.hint = reader.getString(30).trim();
+			if (reader.getString(30) != null) cache.setHint(reader.getString(30).trim());
 			else
-				cache.hint = "";
+				cache.setHint("");
 
 			if (withDescription)
 			{
@@ -154,6 +154,12 @@ public class CacheDAO
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, cache.Latitude());
 
 			cache.setOwner(reader.getString(15).trim());
+
+			// set has Hint
+			String hint = reader.getString(16).trim();
+			if (hint != null && hint.length() > 0) cache.setHasHint(true);
+			else
+				cache.setHasHint(false);
 
 			return cache;
 		}
@@ -214,7 +220,7 @@ public class CacheDAO
 
 			e.printStackTrace();
 		}
-		args.put("Hint", cache.hint);
+		args.put("Hint", cache.getHint());
 
 		if ((cache.shortDescription != null) && (cache.shortDescription.length() > 0))
 		{
@@ -322,7 +328,7 @@ public class CacheDAO
 
 			e.printStackTrace();
 		}
-		args.put("Hint", cache.hint);
+		args.put("Hint", cache.getHint());
 
 		if ((cache.shortDescription != null) && (cache.shortDescription.length() > 0))
 		{

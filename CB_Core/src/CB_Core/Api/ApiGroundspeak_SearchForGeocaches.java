@@ -200,11 +200,11 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			cache.hasUserData = userData;
 			try
 			{
-				cache.hint = jCache.getString("EncodedHints");
+				cache.setHint(jCache.getString("EncodedHints"));
 			}
 			catch (Exception e1)
 			{
-				cache.hint = "";
+				cache.setHint("");
 			}
 			cache.Id = Cache.GenerateCacheId(cache.getGcCode());
 			cache.listingChanged = false;

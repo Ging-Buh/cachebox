@@ -65,7 +65,7 @@ public class CB_AllContextMenuHandler
 		if (mi != null)
 		{
 			boolean enabled = false;
-			if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.getSelectedCache()).equals(""))) enabled = true;
+			if (!selectedCacheIsNull && (GlobalCore.getSelectedCache().hasHint())) enabled = true;
 			mi.setEnabled(enabled);
 			mi.setIcon(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
 		}

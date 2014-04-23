@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
@@ -151,7 +150,7 @@ public class Cache extends CacheLite
 	/**
 	 * Hinweis für diesen Cache
 	 */
-	public String hint = "";
+	private String hint = "";
 
 	/**
 	 * Liste der Spoiler Resorcen
@@ -247,6 +246,7 @@ public class Cache extends CacheLite
 		this.hasStartWaypoint = cacheLite.hasStartWaypoint;
 		this.FinalWaypoint = cacheLite.FinalWaypoint;
 		this.startWaypoint = cacheLite.startWaypoint;
+		this.hasHint = cacheLite.hasHint;
 
 		// read missing values from DB
 		CoreCursor reader = Database.Data
@@ -290,11 +290,6 @@ public class Cache extends CacheLite
 
 		}
 		reader.close();
-
-		CacheDAO dao = new CacheDAO();
-		Cache tmpCache = dao.getFromDbByCacheId(cacheLite.Id);
-
-		if (tmpCache == null) return;
 
 		this.waypoints.clear();
 
@@ -578,7 +573,7 @@ public class Cache extends CacheLite
 		attributesNegative = new DLong(0, 0);
 		NumTravelbugs = 0;
 		cachedDistance = 0;
-		hint = "";
+		setHint("");
 		spoilerRessources = null;
 		shortDescription = "";
 		longDescription = "";
@@ -648,7 +643,7 @@ public class Cache extends CacheLite
 		this.attributesNegative = cache.attributesNegative;
 		this.NumTravelbugs = cache.NumTravelbugs;
 
-		this.hint = cache.hint;
+		this.setHint(cache.getHint());
 		// do not copy waypoints List directly because actual user defined Waypoints would be deleted
 		// this.waypoints = new ArrayList<Waypoint>();
 
@@ -722,7 +717,7 @@ public class Cache extends CacheLite
 		Url = null;
 		Country = null;
 		State = null;
-		hint = null;
+		setHint(null);
 		shortDescription = null;
 		longDescription = null;
 
@@ -781,6 +776,16 @@ public class Cache extends CacheLite
 			return;
 		}
 		GcId = gcId.getBytes(US_ASCII);
+	}
+
+	public String getHint()
+	{
+		return hint;
+	}
+
+	public void setHint(String hint)
+	{
+		this.hint = hint;
 	}
 
 }

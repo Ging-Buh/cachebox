@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 
 import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
@@ -12,6 +13,7 @@ import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
 
 public class CacheLite implements Comparable<CacheLite>, Serializable
@@ -80,6 +82,12 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	 * hat der Cache korrigierte Koordinaten
 	 */
 	protected boolean CorrectedCoordinates;
+
+	/**
+	 * True, if a Hint into DB. <br>
+	 * for read use getHint()
+	 */
+	protected boolean hasHint = false;
 
 	/**
 	 * Liste der zusätzlichen Wegpunkte des Caches
@@ -199,6 +207,29 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	{
 		favorite = value;
 
+	}
+
+	public boolean hasHint()
+	{
+		return this.hasHint;
+	}
+
+	public String getHintFromDB()
+	{
+		String ret = "";
+
+		CoreCursor reader = Database.Data.rawQuery("select Hint from Caches where id = ?", new String[]
+			{ String.valueOf(this.Id) });
+		reader.moveToFirst();
+		while (!reader.isAfterLast())
+		{
+			ret = reader.getString(0);
+			reader.moveToNext();
+
+		}
+		reader.close();
+
+		return ret;
 	}
 
 	/**
@@ -514,6 +545,11 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 			return;
 		}
 		Owner = owner.getBytes(UTF_8);
+	}
+
+	public void setHasHint(boolean b)
+	{
+		this.hasHint = b;
 	}
 
 }

@@ -662,39 +662,6 @@ public abstract class Database extends Database_Core
 		return description;
 	}
 
-	public static String Hint(Cache cache)
-	{
-		if (cache.hint.equals(""))
-		{
-			CoreCursor reader = Database.Data.rawQuery("select Hint from Caches where Id=?", new String[]
-				{ Long.toString(cache.Id) });
-			reader.moveToFirst();
-			while (reader.isAfterLast() == false)
-			{
-				cache.hint = reader.getString(0);
-				reader.moveToNext();
-			}
-			reader.close();
-		}
-		return cache.hint;
-	}
-
-	// public float Distance(Cache cache, Coordinate fromPos)
-	// {
-	// // Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker :
-	// // Global.LastValidPosition;
-	// Waypoint waypoint = cache.GetFinalWaypoint();
-	// // Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
-	// // Diszanzberechnung vom Final aus gemacht werden
-	// // If a mystery has a final waypoint, the distance will be calculated to
-	// // the final not the the cache coordinates
-	// Coordinate toPos = cache.Pos;
-	// if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
-	// float[] dist = new float[4];
-	// Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
-	// return (float) dist[0];
-	// }
-
 	/**
 	 * @return Set To GlobalCore.Categories
 	 */

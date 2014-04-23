@@ -142,7 +142,7 @@ public class GSAKGpxImportTest extends TestCase
 		// System.out.println( cache.shortDescription );
 		// System.out.println( cache.longDescription );
 
-		assertEquals("Hint falsch", "", cache.hint);
+		assertEquals("Hint falsch", "", cache.getHint());
 
 		CB_List<LogEntry> logs = new CB_List<LogEntry>();
 		logs = Database.Logs(cache);

@@ -361,7 +361,7 @@ public class CacheListDAO
 		Logger.DEBUG("ReadCacheList 2.Caches");
 		try
 		{
-			String sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Rating, Favorit, CorrectedCoordinates, Owner";
+			String sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Rating, Favorit, CorrectedCoordinates, Owner, Hint";
 			if (withDescription)
 			{
 				sql += ", Description, Solver, Notes";
