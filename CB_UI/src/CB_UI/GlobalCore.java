@@ -54,7 +54,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global
 {
-	public static final int CurrentRevision = 2073;
+	public static final int CurrentRevision = 2080;
 
 	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
@@ -210,6 +210,16 @@ public class GlobalCore extends CB_UI_Base.Global
 	 */
 	public static void setSelectedWaypoint(CacheLite cacheLite, WaypointLite waypoint, boolean changeAutoResort)
 	{
+
+		// rewrite Changed Values ( like Favroite state)
+		if (selectedCache != null)
+		{
+			if (!cacheLite.getGcCode().equals("CBPark"))
+			{
+				Database.Data.Query.GetCacheById(selectedCache.Id).setValues(selectedCache);
+			}
+		}
+
 		selectedCache = new Cache(cacheLite);
 
 		if (waypoint == null)

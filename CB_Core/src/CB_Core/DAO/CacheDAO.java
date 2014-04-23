@@ -46,9 +46,9 @@ public class CacheDAO
 			cache.Size = CacheSizes.parseInt(reader.getInt(5));
 			cache.Difficulty = ((float) reader.getShort(6)) / 2;
 			cache.Terrain = ((float) reader.getShort(7)) / 2;
-			cache.Archived = reader.getInt(8) != 0;
-			cache.Available = reader.getInt(9) != 0;
-			cache.Found = reader.getInt(10) != 0;
+			cache.setArchived(reader.getInt(8) != 0);
+			cache.setAvailable(reader.getInt(9) != 0);
+			cache.setFound(reader.getInt(10) != 0);
 			cache.Type = CacheTypes.values()[reader.getShort(11)];
 			cache.PlacedBy = reader.getString(12).trim();
 			cache.setOwner(reader.getString(13).trim());
@@ -78,13 +78,13 @@ public class CacheDAO
 			else
 				cache.GPXFilename_ID = -1;
 
-			if (reader.getInt(22) > 0) cache.hasUserData = true;
+			if (reader.getInt(22) > 0) cache.setHasUserData(true);
 			else
-				cache.hasUserData = false;
+				cache.setHasUserData(false);
 
-			if (reader.getInt(23) > 0) cache.listingChanged = true;
+			if (reader.getInt(23) > 0) cache.setListingChanged(true);
 			else
-				cache.listingChanged = false;
+				cache.setListingChanged(false);
 
 			if (reader.getInt(24) > 0) cache.setCorrectedCoordinates(true);
 			else
@@ -136,9 +136,9 @@ public class CacheDAO
 			cache.Size = CacheSizes.parseInt(reader.getInt(5));
 			cache.Difficulty = ((float) reader.getShort(6)) / 2;
 			cache.Terrain = ((float) reader.getShort(7)) / 2;
-			cache.Archived = reader.getInt(8) != 0;
-			cache.Available = reader.getInt(9) != 0;
-			cache.Found = reader.getInt(10) != 0;
+			cache.setArchived(reader.getInt(8) != 0);
+			cache.setAvailable(reader.getInt(9) != 0);
+			cache.setFound(reader.getInt(10) != 0);
 			cache.Type = CacheTypes.values()[reader.getShort(11)];
 
 			cache.Rating = ((float) reader.getShort(12)) / 100.0f;
@@ -191,9 +191,9 @@ public class CacheDAO
 		}
 		args.put("Difficulty", (int) (cache.Difficulty * 2));
 		args.put("Terrain", (int) (cache.Terrain * 2));
-		args.put("Archived", cache.Archived ? 1 : 0);
-		args.put("Available", cache.Available ? 1 : 0);
-		args.put("Found", cache.Found);
+		args.put("Archived", cache.isArchived() ? 1 : 0);
+		args.put("Available", cache.isAvailable() ? 1 : 0);
+		args.put("Found", cache.isFound());
 		args.put("Type", cache.Type.ordinal());
 		args.put("PlacedBy", cache.PlacedBy);
 		args.put("Owner", cache.getOwner());
@@ -271,12 +271,12 @@ public class CacheDAO
 	public void WriteToDatabase_Found(Cache cache)
 	{
 		Parameters args = new Parameters();
-		args.put("found", cache.Found);
+		args.put("found", cache.isFound());
 		try
 		{
 			Database.Data.update("Caches", args, "Id = ?", new String[]
 				{ String.valueOf(cache.Id) });
-			Replication.FoundChanged(cache.Id, cache.Found);
+			Replication.FoundChanged(cache.Id, cache.isFound());
 		}
 		catch (Exception exc)
 		{
@@ -309,9 +309,9 @@ public class CacheDAO
 		}
 		args.put("Difficulty", (int) (cache.Difficulty * 2));
 		args.put("Terrain", (int) (cache.Terrain * 2));
-		args.put("Archived", cache.Archived ? 1 : 0);
-		args.put("Available", cache.Available ? 1 : 0);
-		args.put("Found", cache.Found);
+		args.put("Archived", cache.isArchived() ? 1 : 0);
+		args.put("Available", cache.isAvailable() ? 1 : 0);
+		args.put("Found", cache.isFound());
 		args.put("Type", cache.Type.ordinal());
 		args.put("PlacedBy", cache.PlacedBy);
 		args.put("Owner", cache.getOwner());
@@ -360,7 +360,7 @@ public class CacheDAO
 		args.put("AttributesNegativeHigh", cache.getAttributesNegative().getHigh());
 		// args.put("ListingCheckSum", cache.);
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
-		args.put("Favorit", cache.Favorit() ? 1 : 0);
+		args.put("Favorit", cache.isFavorite() ? 1 : 0);
 		args.put("ApiStatus", cache.ApiStatus);
 		args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
 		args.put("TourName", cache.TourName);
@@ -467,15 +467,15 @@ public class CacheDAO
 
 		if (fromDB == null) return false; // nichts zum Updaten gefunden
 
-		if (fromDB.Archived != writeTmp.Archived)
+		if (fromDB.isArchived() != writeTmp.isArchived())
 		{
 			changed = true;
-			Replication.ArchivedChanged(writeTmp.Id, writeTmp.Archived);
+			Replication.ArchivedChanged(writeTmp.Id, writeTmp.isArchived());
 		}
-		if (fromDB.Available != writeTmp.Available)
+		if (fromDB.isAvailable() != writeTmp.isAvailable())
 		{
 			changed = true;
-			Replication.AvailableChanged(writeTmp.Id, writeTmp.Available);
+			Replication.AvailableChanged(writeTmp.Id, writeTmp.isAvailable());
 		}
 
 		if (fromDB.NumTravelbugs != writeTmp.NumTravelbugs)
@@ -490,8 +490,8 @@ public class CacheDAO
 
 			Parameters args = new Parameters();
 
-			args.put("Archived", writeTmp.Archived ? 1 : 0);
-			args.put("Available", writeTmp.Available ? 1 : 0);
+			args.put("Archived", writeTmp.isArchived() ? 1 : 0);
+			args.put("Available", writeTmp.isAvailable() ? 1 : 0);
 			args.put("NumTravelbugs", writeTmp.NumTravelbugs);
 
 			try

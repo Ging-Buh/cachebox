@@ -79,17 +79,6 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	int myCache = -1;
 
 	/**
-	 * hat der Cache korrigierte Koordinaten
-	 */
-	protected boolean CorrectedCoordinates;
-
-	/**
-	 * True, if a Hint into DB. <br>
-	 * for read use getHint()
-	 */
-	protected boolean hasHint = false;
-
-	/**
 	 * Liste der zusätzlichen Wegpunkte des Caches
 	 */
 	public final CB_List<WaypointLite> waypoints = new CB_List<WaypointLite>();
@@ -107,7 +96,7 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 		this.Difficulty = 0;
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
-		this.Available = true;
+		this.setAvailable(true);
 	}
 
 	/**
@@ -180,38 +169,11 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	 * Geländebewertung
 	 */
 	public float Terrain = 0;
-	/**
-	 * Wurde der Cache archiviert?
-	 */
-	public boolean Archived;
-	/**
-	 * Ist der Cache derzeit auffindbar?
-	 */
-	public boolean Available;
-	protected boolean favorite;
-
-	/**
-	 * Ist der Cache einer der Favoriten
-	 */
-	public boolean Favorit()
-	{
-		return favorite;
-	}
-
-	/**
-	 * Wurde der Cache bereits gefunden?
-	 */
-	public boolean Found;
 
 	public void setFavorit(boolean value)
 	{
-		favorite = value;
+		setFavorite(value);
 
-	}
-
-	public boolean hasHint()
-	{
-		return this.hasHint;
 	}
 
 	public String getHintFromDB()
@@ -356,16 +318,6 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 		}
 
 		return false;
-	}
-
-	public boolean hasCorrectedCoordinates()
-	{
-		return CorrectedCoordinates;
-	}
-
-	public void setCorrectedCoordinates(boolean correctedCoordinates)
-	{
-		this.CorrectedCoordinates = correctedCoordinates;
 	}
 
 	/**
@@ -547,9 +499,128 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 		Owner = owner.getBytes(UTF_8);
 	}
 
+	public void setValues(Cache cache)
+	{
+		this.myCache = cache.myCache;
+		this.MapX = cache.MapX;
+		this.MapY = cache.MapY;
+		this.GcCode = cache.GcCode;
+		this.Name = cache.Name;
+		this.Pos = cache.Pos;
+		this.Rating = cache.Rating;
+		this.NumTravelbugs = cache.NumTravelbugs;
+		this.Id = cache.Id;
+		this.Size = cache.Size;
+		this.Difficulty = cache.Difficulty;
+		this.Terrain = cache.Terrain;
+		this.Type = cache.Type;
+		this.cachedDistance = cache.cachedDistance;
+		this.Owner = cache.Owner;
+		this.hasFinalWaypoint = cache.hasFinalWaypoint;
+		this.hasStartWaypoint = cache.hasStartWaypoint;
+		this.FinalWaypoint = cache.FinalWaypoint;
+		this.startWaypoint = cache.startWaypoint;
+		this.BitFlags = cache.BitFlags;
+	}
+
+	// ########################################################
+	// Boolean Handling
+	// one Boolean use up to 4 Bytes
+	// Boolean data type represents one bit of information, but its "size" isn't something that's precisely defined. (Oracle Docs)
+	//
+	// so we use one Short for Store all Boolean and Use a BitMask
+	// ########################################################
+
+	// Masks
+	protected final static short MASK_HAS_HINT = 1 << 0;
+	protected final static short MASK_CORECTED_COORDS = 1 << 1;
+	protected final static short MASK_ARCHIVED = 1 << 2;
+	protected final static short MASK_AVAILABLE = 1 << 3;
+	protected final static short MASK_VAVORITE = 1 << 4;
+	protected final static short MASK_FOUND = 1 << 5;
+
+	protected short BitFlags = 0;
+
+	protected boolean getMaskValue(short mask)
+	{
+		return (BitFlags & mask) == mask;
+	}
+
+	protected void setMaskValue(short mask, boolean value)
+	{
+		if (getMaskValue(mask) == value) return;
+
+		if (value)
+		{
+			BitFlags |= mask;
+		}
+		else
+		{
+			BitFlags &= ~mask;
+		}
+
+	}
+
+	// Getter and Setter over Mask
+
+	public boolean hasHint()
+	{
+		return getMaskValue(MASK_HAS_HINT);
+	}
+
 	public void setHasHint(boolean b)
 	{
-		this.hasHint = b;
+		setMaskValue(MASK_HAS_HINT, b);
+	}
+
+	public boolean hasCorrectedCoordinates()
+	{
+		return this.getMaskValue(MASK_CORECTED_COORDS);
+	}
+
+	public void setCorrectedCoordinates(boolean correctedCoordinates)
+	{
+		this.setMaskValue(MASK_CORECTED_COORDS, correctedCoordinates);
+	}
+
+	public boolean isArchived()
+	{
+		return this.getMaskValue(MASK_ARCHIVED);
+	}
+
+	public void setArchived(boolean archived)
+	{
+		this.setMaskValue(MASK_ARCHIVED, archived);
+	}
+
+	public boolean isAvailable()
+	{
+		return this.getMaskValue(MASK_AVAILABLE);
+	}
+
+	public void setAvailable(boolean available)
+	{
+		this.setMaskValue(MASK_AVAILABLE, available);
+	}
+
+	public boolean isFavorite()
+	{
+		return this.getMaskValue(MASK_VAVORITE);
+	}
+
+	public void setFavorite(boolean favorite)
+	{
+		this.setMaskValue(MASK_VAVORITE, favorite);
+	}
+
+	public boolean isFound()
+	{
+		return this.getMaskValue(MASK_FOUND);
+	}
+
+	public void setFound(boolean found)
+	{
+		this.setMaskValue(MASK_FOUND, found);
 	}
 
 }

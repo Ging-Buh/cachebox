@@ -362,7 +362,7 @@ public class CacheInfo extends CB_View_Base
 
 				mInfo_FontCache = new BitmapFontCache(mBitmapFont);
 
-				if (mCache.Archived || !mCache.Available)
+				if (mCache.isArchived() || !mCache.isAvailable())
 				{
 					mInfo_FontCache.setColor(Color.RED);
 				}
@@ -406,7 +406,7 @@ public class CacheInfo extends CB_View_Base
 
 				float infoSize = mIconSize / 2;
 
-				if (mCache.Found)
+				if (mCache.isFound())
 				{
 					mFoundOwnerSprite = new Sprite(SpriteCacheBase.BigIcons.get(19));
 				}
@@ -420,18 +420,18 @@ public class CacheInfo extends CB_View_Base
 					mFoundOwnerSprite.setPosition(mSpriteCachePos.x, mSpriteCachePos.y);
 				}
 
-				if (mCache.Favorit())
+				if (mCache.isFavorite())
 				{
 					mFavoriteSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
 					mFavoriteSprite.setSize(infoSize, infoSize);
 					mFavoriteSprite.setPosition(mSpriteCachePos.x + infoSize, mSpriteCachePos.y + infoSize);
 				}
 
-				if (mCache.Archived)
+				if (mCache.isArchived())
 				{
 					mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.log11_45.ordinal()));
 				}
-				else if (!mCache.Available)
+				else if (!mCache.isAvailable())
 				{
 					mAvailableSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.disabled_44.ordinal()));
 				}

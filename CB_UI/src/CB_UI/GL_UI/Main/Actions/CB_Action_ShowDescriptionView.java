@@ -99,9 +99,18 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						return true;
 					}
 
-					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().Favorit());
+					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
 					CacheDAO dao = new CacheDAO();
 					dao.UpdateDatabase(GlobalCore.getSelectedCache());
+
+					// Update Query
+					Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(
+							GlobalCore.getSelectedCache().isFavorite());
+
+					// Update View
+					if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
+
+					CachListChangedEventList.Call();
 
 					return true;
 				case MenuID.MI_RELOAD_CACHE:
@@ -196,7 +205,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 		mi.setCheckable(true);
 		if (isSelected)
 		{
-			mi.setChecked(GlobalCore.getSelectedCache().Favorit());
+			mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
 		}
 		else
 		{

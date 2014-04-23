@@ -96,11 +96,11 @@ public class CacheList extends MoveableList<Cache>
 			for (int i = 0; i < this.size(); i++)
 			{
 				nextCache = this.get(i);
-				if (!nextCache.Archived)
+				if (!nextCache.isArchived())
 				{
-					if (nextCache.Available)
+					if (nextCache.isAvailable())
 					{
-						if (!nextCache.Found) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber found
+						if (!nextCache.isFound()) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber found
 												// kann nicht rückgängig gemacht werden.
 						{
 							if (!nextCache.ImTheOwner())

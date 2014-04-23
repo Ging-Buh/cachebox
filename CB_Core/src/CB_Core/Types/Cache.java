@@ -103,11 +103,6 @@ public class Cache extends CacheLite
 	public String tmpSolver = null; // nur für den RPC-Import
 
 	/**
-	 * hat der Cache Clues oder Notizen erfasst
-	 */
-	public boolean hasUserData;
-
-	/**
 	 * Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
 	 */
 	public String TourName = "";
@@ -131,11 +126,6 @@ public class Cache extends CacheLite
 	 * State des Caches
 	 */
 	public String State = "";
-
-	/**
-	 * Das Listing hat sich geändert!
-	 */
-	public boolean listingChanged = false;
 
 	/**
 	 * Positive Attribute des Caches
@@ -182,7 +172,7 @@ public class Cache extends CacheLite
 		this.Difficulty = 0;
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
-		this.Available = true;
+		this.setAvailable(true);
 	}
 
 	/**
@@ -200,7 +190,7 @@ public class Cache extends CacheLite
 		this.Difficulty = 0;
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
-		this.Available = true;
+		this.setAvailable(true);
 		AttributeList = null;
 	}
 
@@ -236,9 +226,6 @@ public class Cache extends CacheLite
 		this.Size = cacheLite.Size;
 		this.Difficulty = cacheLite.Difficulty;
 		this.Terrain = cacheLite.Terrain;
-		this.Archived = cacheLite.Archived;
-		this.Available = cacheLite.Available;
-		this.Found = cacheLite.Found;
 		this.Type = cacheLite.Type;
 		this.cachedDistance = cacheLite.cachedDistance;
 		this.Owner = cacheLite.Owner;
@@ -246,12 +233,12 @@ public class Cache extends CacheLite
 		this.hasStartWaypoint = cacheLite.hasStartWaypoint;
 		this.FinalWaypoint = cacheLite.FinalWaypoint;
 		this.startWaypoint = cacheLite.startWaypoint;
-		this.hasHint = cacheLite.hasHint;
+		this.BitFlags = cacheLite.BitFlags;
 
 		// read missing values from DB
 		CoreCursor reader = Database.Data
 				.rawQuery(
-						"select GcId, ApiStatus, CorrectedCoordinates, HasUserData, TourName, GpxFilename_ID, Url, Country, State, ListingChanged, PlacedBy, DateHidden, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh from Caches where id = ?",
+						"select GcId, ApiStatus, HasUserData, TourName, GpxFilename_ID, Url, Country, State, ListingChanged, PlacedBy, DateHidden, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh from Caches where id = ?",
 						new String[]
 							{ String.valueOf(this.Id) });
 		reader.moveToFirst();
@@ -263,17 +250,16 @@ public class Cache extends CacheLite
 			else
 				this.ApiStatus = (byte) reader.getInt(1);
 
-			this.CorrectedCoordinates = (reader.getInt(2) > 0);
-			this.hasUserData = (reader.getInt(3) > 0);
-			this.TourName = reader.getString(4);
-			this.GPXFilename_ID = reader.getLong(5);
-			this.Url = reader.getString(6);
-			this.Country = reader.getString(7);
-			this.State = reader.getString(8);
-			this.listingChanged = (reader.getInt(9) > 0);
-			this.PlacedBy = reader.getString(10);
+			this.setHasUserData((reader.getInt(2) > 0));
+			this.TourName = reader.getString(3);
+			this.GPXFilename_ID = reader.getLong(4);
+			this.Url = reader.getString(5);
+			this.Country = reader.getString(6);
+			this.State = reader.getString(7);
+			this.setListingChanged((reader.getInt(8) > 0));
+			this.PlacedBy = reader.getString(9);
 
-			String sDate = reader.getString(11);
+			String sDate = reader.getString(10);
 			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			try
 			{
@@ -283,8 +269,8 @@ public class Cache extends CacheLite
 			{
 			}
 
-			this.setAttributesPositive(new DLong(reader.getLong(13), reader.getLong(12)));
-			this.setAttributesNegative(new DLong(reader.getLong(15), reader.getLong(14)));
+			this.setAttributesPositive(new DLong(reader.getLong(12), reader.getLong(11)));
+			this.setAttributesNegative(new DLong(reader.getLong(14), reader.getLong(13)));
 
 			reader.moveToNext();
 
@@ -541,6 +527,7 @@ public class Cache extends CacheLite
 
 	public void clear()
 	{
+		BitFlags = 0;
 		MapX = 0;
 		MapY = 0;
 		setGcId("");
@@ -552,15 +539,13 @@ public class Cache extends CacheLite
 		Size = null;
 		Difficulty = 0;
 		Terrain = 0;
-		Archived = false;
-		Available = false;
+
 		ApiStatus = 0;
-		favorite = false;
+
 		noteCheckSum = 0;
 		solverCheckSum = 0;
-		hasUserData = false;
-		CorrectedCoordinates = false;
-		Found = false;
+		setHasUserData(false);
+		setFound(false);
 		TourName = "";
 		GPXFilename_ID = 0;
 		Type = CacheTypes.Undefined;
@@ -568,7 +553,7 @@ public class Cache extends CacheLite
 		setOwner("");
 		DateHidden = null;
 		Url = "";
-		listingChanged = false;
+		setListingChanged(false);
 		attributesPositive = new DLong(0, 0);
 		attributesNegative = new DLong(0, 0);
 		NumTravelbugs = 0;
@@ -581,18 +566,6 @@ public class Cache extends CacheLite
 		gcLogin = null;
 		if (AttributeList != null) AttributeList.clear();
 		AttributeList = null;
-	}
-
-	private boolean isSearchVisible = true;
-
-	public void setSearchVisible(boolean value)
-	{
-		isSearchVisible = value;
-	}
-
-	public boolean isSearchVisible()
-	{
-		return isSearchVisible;
 	}
 
 	public WaypointLite findWaypointByGc(String gc)
@@ -625,20 +598,20 @@ public class Cache extends CacheLite
 		this.Size = cache.Size;
 		this.Difficulty = cache.Difficulty;
 		this.Terrain = cache.Terrain;
-		this.Archived = cache.Archived;
-		this.Available = cache.Available;
+		this.setArchived(cache.isArchived());
+		this.setAvailable(cache.isAvailable());
 		this.ApiStatus = cache.ApiStatus;
 
 		// only change the found status when it is true in the loaded cache
 		// This will prevent ACB from overriding a found cache which is still not found in GC
-		if (cache.Found) this.Found = cache.Found;
+		if (cache.isFound()) this.setFound(cache.isFound());
 
 		this.Type = cache.Type;
 		this.PlacedBy = cache.PlacedBy;
 		this.setOwner(cache.getOwner());
 		this.DateHidden = cache.DateHidden;
 		this.Url = cache.Url;
-		this.listingChanged = true; // so that spoiler download will be done again
+		this.setListingChanged(true); // so that spoiler download will be done again
 		this.attributesPositive = cache.attributesPositive;
 		this.attributesNegative = cache.attributesNegative;
 		this.NumTravelbugs = cache.NumTravelbugs;
@@ -723,22 +696,6 @@ public class Cache extends CacheLite
 
 	}
 
-	/**
-	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
-	 * from DB to get the changes from Solver 1
-	 */
-	private boolean solver1Changed = false;
-
-	public void setSolver1Changed(boolean b)
-	{
-		this.solver1Changed = b;
-	}
-
-	public boolean getSolver1Changed()
-	{
-		return solver1Changed;
-	}
-
 	@Override
 	public boolean equals(Object o)
 	{
@@ -786,6 +743,69 @@ public class Cache extends CacheLite
 	public void setHint(String hint)
 	{
 		this.hint = hint;
+	}
+
+	// ########################################################
+	// Boolean Handling
+	// one Boolean use up to 4 Bytes
+	// Boolean data type represents one bit of information, but its "size" isn't something that's precisely defined. (Oracle Docs)
+	//
+	// so we use one Short for Store all Boolean and Use a BitMask
+	// the short is hold on CacheLite und use Bit 0-5
+	// Cache use Bit 6-9
+	// ########################################################
+
+	protected final static short MASK_SEARCH_VISIBLE = 1 << 6;
+	protected final static short MASK_SOLVER1CHANGED = 1 << 7;
+	protected final static short MASK_HAS_USER_DATA = 1 << 8;
+	protected final static short MASK_LISTING_CHANGED = 1 << 9;
+
+	public boolean isSearchVisible()
+	{
+		return this.getMaskValue(MASK_SEARCH_VISIBLE);
+	}
+
+	public void setSearchVisible(boolean value)
+	{
+		this.setMaskValue(MASK_SEARCH_VISIBLE, value);
+	}
+
+	/**
+	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
+	 * from DB to get the changes from Solver 1
+	 */
+	public void setSolver1Changed(boolean b)
+	{
+		this.setMaskValue(MASK_SOLVER1CHANGED, b);
+	}
+
+	/**
+	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
+	 * from DB to get the changes from Solver 1
+	 */
+	public boolean getSolver1Changed()
+	{
+		return this.getMaskValue(MASK_SOLVER1CHANGED);
+	}
+
+	public boolean isHasUserData()
+	{
+		return this.getMaskValue(MASK_HAS_USER_DATA);
+	}
+
+	public void setHasUserData(boolean hasUserData)
+	{
+		this.setMaskValue(MASK_HAS_USER_DATA, hasUserData);
+	}
+
+	public boolean isListingChanged()
+	{
+		return this.getMaskValue(MASK_LISTING_CHANGED);
+	}
+
+	public void setListingChanged(boolean listingChanged)
+	{
+		this.setMaskValue(MASK_LISTING_CHANGED, listingChanged);
 	}
 
 }

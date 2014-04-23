@@ -546,8 +546,8 @@ public class GroundspeakAPI
 
 							if (jCache.getString("CacheCode").equals(tmp.getGcCode()))
 							{
-								tmp.Archived = jCache.getBoolean("Archived");
-								tmp.Available = jCache.getBoolean("Available");
+								tmp.setArchived(jCache.getBoolean("Archived"));
+								tmp.setAvailable(jCache.getBoolean("Available"));
 								tmp.NumTravelbugs = jCache.getInt("TrackableCount");
 							}
 						}

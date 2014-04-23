@@ -638,7 +638,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		// draw Favorite symbol
-		if (wpi.Cache.Favorit())
+		if (wpi.Cache.isFavorite())
 		{
 			batch.draw(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()), screen.x + (WpSize.halfWidth / 2), screen.y
 					+ (WpSize.halfHeight / 2), WpSize.width, WpSize.height);

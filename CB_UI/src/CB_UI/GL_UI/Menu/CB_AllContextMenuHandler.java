@@ -105,7 +105,7 @@ public class CB_AllContextMenuHandler
 		mi.setCheckable(true);
 		if (selectedCacheIsNull) mi.setEnabled(false);
 		else
-			mi.setChecked(GlobalCore.getSelectedCache().Favorit());
+			mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
 
 		mi = icm.addItem(MenuID.MI_DELETE_CACHE, "MI_DELETE_CACHE");
 		if (selectedCacheIsNull) mi.setEnabled(false);
@@ -210,7 +210,7 @@ public class CB_AllContextMenuHandler
 			case MenuID.MI_FAVORIT:
 				if (GlobalCore.getSelectedCache() != null)
 				{
-					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().Favorit());
+					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
 					if (dao == null) dao = new CacheDAO();
 					dao.UpdateDatabase(GlobalCore.getSelectedCache());
 					CachListChangedEventList.Call();

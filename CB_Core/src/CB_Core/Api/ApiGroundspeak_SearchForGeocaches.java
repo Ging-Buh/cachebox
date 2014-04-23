@@ -131,7 +131,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			Boolean CacheERROR = false;
 
 			Cache cache = new Cache();
-			cache.Archived = jCache.getBoolean("Archived");
+			cache.setArchived(jCache.getBoolean("Archived"));
 			cache.setAttributesPositive(new DLong(0, 0));
 			cache.setAttributesNegative(new DLong(0, 0));
 			JSONArray jAttributes = jCache.getJSONArray("Attributes");
@@ -150,7 +150,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 					cache.addAttributeNegative(att);
 				}
 			}
-			cache.Available = jCache.getBoolean("Available");
+			cache.setAvailable(jCache.getBoolean("Available"));
 			cache.DateHidden = new Date();
 			try
 			{
@@ -175,11 +175,11 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			Boolean Found = dao.loadBooleanValue(gcCode, "found");
 			if (!Found)
 			{
-				cache.Found = jCache.getBoolean("HasbeenFoundbyUser");
+				cache.setFound(jCache.getBoolean("HasbeenFoundbyUser"));
 			}
 			else
 			{
-				cache.Found = true;
+				cache.setFound(true);
 			}
 
 			cache.setGcCode(jCache.getString("Code"));
@@ -197,7 +197,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
 			Boolean userData = dao.loadBooleanValue(gcCode, "HasUserData");
 
-			cache.hasUserData = userData;
+			cache.setHasUserData(userData);
 			try
 			{
 				cache.setHint(jCache.getString("EncodedHints"));
@@ -207,7 +207,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 				cache.setHint("");
 			}
 			cache.Id = Cache.GenerateCacheId(cache.getGcCode());
-			cache.listingChanged = false;
+			cache.setListingChanged(false);
 
 			if (!this.isLite)
 			{
@@ -269,9 +269,9 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 
 			// Chk if Own or Found
 			Boolean exclude = false;
-			if (search.excludeFounds && cache.Found) exclude = true;
+			if (search.excludeFounds && cache.isFound()) exclude = true;
 			if (search.excludeHides && cache.getOwner().equalsIgnoreCase(CB_Core_Settings.GcLogin.getValue())) exclude = true;
-			if (search.available && (cache.Archived || !cache.Available)) exclude = true;
+			if (search.available && (cache.isArchived() || !cache.isAvailable())) exclude = true;
 
 			if (!CacheERROR && !exclude)
 			{

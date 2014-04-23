@@ -983,11 +983,11 @@ public class GPXFileImporter
 
 			if (!Found)
 			{
-				cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
+				cache.setFound(values.get("wpt_sym").equalsIgnoreCase("Geocache Found"));
 			}
 			else
 			{
-				cache.Found = true;
+				cache.setFound(true);
 			}
 		}
 
@@ -995,32 +995,32 @@ public class GPXFileImporter
 		{
 			if (values.get("cache_attribute_available").equalsIgnoreCase("True"))
 			{
-				cache.Available = true;
+				cache.setAvailable(true);
 			}
 			else
 			{
-				cache.Available = false;
+				cache.setAvailable(false);
 			}
 		}
 		else
 		{
-			cache.Available = true;
+			cache.setAvailable(true);
 		}
 
 		if (values.containsKey("cache_attribute_archived"))
 		{
 			if (values.get("cache_attribute_archived").equalsIgnoreCase("True"))
 			{
-				cache.Archived = true;
+				cache.setArchived(true);
 			}
 			else
 			{
-				cache.Archived = false;
+				cache.setArchived(false);
 			}
 		}
 		else
 		{
-			cache.Archived = false;
+			cache.setArchived(false);
 		}
 
 		if (values.containsKey("cache_name"))

@@ -687,8 +687,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			public void run()
 			{
 				mCache = new Cache(cache);
-				mWaypoint = waypoint.makeFull();
-
+				if (waypoint == null)
+				{
+					mWaypoint = null;
+				}
+				else
+				{
+					mWaypoint = waypoint.makeFull();
+				}
 				attCompleadHeight = 0;
 				CacheInfoHeight = 0;
 				WPInfoHeight = 0;

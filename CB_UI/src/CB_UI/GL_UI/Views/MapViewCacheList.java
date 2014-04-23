@@ -122,7 +122,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 							{
 								CacheLite cache = Database.Data.Query.get(i);
 								// Funde
-								if (hideMyFinds && cache.Found) continue;
+								if (hideMyFinds && cache.isFound()) continue;
 								boolean selectedCache = GlobalCore.getSelectedCache().Id == cache.Id;
 								boolean showWaypoints = showAllWaypoints || selectedCache;
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
@@ -179,7 +179,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 									WaypointRenderInfo wpi = new WaypointRenderInfo();
 									wpi.MapX = (float) MapX;
 									wpi.MapY = (float) MapY;
-									if (cache.Archived || !cache.Available) wpi.OverlayIcon = SpriteCacheBase.MapOverlay.get(2);
+									if (cache.isArchived() || !cache.isAvailable()) wpi.OverlayIcon = SpriteCacheBase.MapOverlay.get(2);
 									wpi.UnderlayIcon = getUnderlayIcon(cache, null, iconSize);
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
@@ -301,7 +301,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 	{
 		int IconId;
 		if (cache.ImTheOwner()) IconId = 26;
-		else if (cache.Found) IconId = 19;
+		else if (cache.isFound()) IconId = 19;
 		else if ((cache.Type == CacheTypes.Mystery) && cache.CorrectedCoordiantesOrMysterySolved()) IconId = 21;
 		else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint()) IconId = 23; // Multi mit Startpunkt
 		else if ((cache.Type == CacheTypes.Mystery) && cache.HasStartWaypoint()) IconId = 25; // Mystery ohne Final aber mit Startpunkt
@@ -359,10 +359,10 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			iconId = 0;
 		}
 
-		if (cache.Found) iconId = 6;
+		if (cache.isFound()) iconId = 6;
 		if (cache.ImTheOwner()) iconId = 7;
 
-		if (cache.Archived || !cache.Available) iconId += 8;
+		if (cache.isArchived() || !cache.isAvailable()) iconId += 8;
 
 		if (cache.Type == CacheTypes.MyParking) iconId = 16;
 		if (cache.Type == CacheTypes.Munzee) iconId = 17;

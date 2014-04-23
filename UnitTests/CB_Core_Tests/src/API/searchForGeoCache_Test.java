@@ -172,8 +172,8 @@ public class searchForGeoCache_Test extends TestCase
 		CacheLite cacheNew = null;
 		for (CacheLite cache : chkList)
 		{
-			changedState = cache.Available;
-			cache.Available = !changedState;
+			changedState = cache.isAvailable();
+			cache.setAvailable(!changedState);
 			cacheNew = cache;
 			break;
 		}
@@ -186,7 +186,7 @@ public class searchForGeoCache_Test extends TestCase
 
 		for (CacheLite cache : chkList)
 		{
-			if (changedState == cache.Available) Assert = true;
+			if (changedState == cache.isAvailable()) Assert = true;
 		}
 
 		assertTrue("Nicht richtig aktualisiert", Assert);

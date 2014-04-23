@@ -185,9 +185,9 @@ public class EditCache extends ActivityBase
 		newValues.setName(newValues.getGcCode());
 		newValues.setOwner("Unbekannt");
 		newValues.DateHidden = new Date();
-		newValues.Archived = false;
-		newValues.Available = true;
-		newValues.Found = false;
+		newValues.setArchived(false);
+		newValues.setAvailable(true);
+		newValues.setFound(false);
 		newValues.NumTravelbugs = 0;
 		newValues.shortDescription = "";
 		newValues.longDescription = "";

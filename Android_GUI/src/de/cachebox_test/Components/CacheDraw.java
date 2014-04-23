@@ -139,7 +139,7 @@ public class CacheDraw
 		try
 		{
 			// init
-			Boolean notAvailable = (!cache.Available || cache.Archived);
+			Boolean notAvailable = (!cache.isAvailable() || cache.isArchived());
 			Boolean GlobalSelected = cache.Id == GlobalCore.getSelectedCache().Id;
 			if (BackgroundColor == -1) BackgroundColor = GlobalSelected ? Global.getColor(R.attr.ListBackground_select) : Global
 					.getColor(R.attr.ListBackground);
@@ -222,7 +222,8 @@ public class CacheDraw
 
 			}
 
-			String CacheName = (String) TextUtils.ellipsize(cache.getName(), namePaint, nameLayoutWidthRightBorder, TextUtils.TruncateAt.END);
+			String CacheName = (String) TextUtils.ellipsize(cache.getName(), namePaint, nameLayoutWidthRightBorder,
+					TextUtils.TruncateAt.END);
 
 			String drawName = (drawStyle == DrawStyle.withOwner) ? "by " + cache.getOwner() + ", " + dateString : CacheName;
 
@@ -354,7 +355,7 @@ public class CacheDraw
 				DrawBearing(cache, canvas, BearingRec);
 			}
 
-			if (cache.Found)
+			if (cache.isFound())
 			{
 
 				ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[2], left + VoteWidth - correctPos + UI_Size_Base.that.getIconSize()
@@ -362,18 +363,18 @@ public class CacheDraw
 						UI_Size_Base.that.getIconSize() / 2);// Smile
 			}
 
-			if (cache.Favorit())
+			if (cache.isFavorite())
 			{
 				ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[19], left + VoteWidth - correctPos + 2, top,
 						UI_Size_Base.that.getIconSize() / 2);
 			}
 
-			if (cache.Archived)
+			if (cache.isArchived())
 			{
 				ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[24], left + VoteWidth - correctPos + 2, top,
 						UI_Size_Base.that.getIconSize() / 2);
 			}
-			else if (!cache.Available)
+			else if (!cache.isAvailable())
 			{
 				ActivityUtils.PutImageTargetHeight(canvas, Global.Icons[14], left + VoteWidth - correctPos + 2, top,
 						UI_Size_Base.that.getIconSize() / 2);

@@ -407,9 +407,9 @@ public class FieldNotesView extends V_ListView
 			if (type == LogTypes.found)
 			{
 				// Found it! -> fremden Cache als gefunden markieren
-				if (!GlobalCore.getSelectedCache().Found)
+				if (!GlobalCore.getSelectedCache().isFound())
 				{
-					GlobalCore.getSelectedCache().Found = true;
+					GlobalCore.getSelectedCache().setFound(true);
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
@@ -420,9 +420,9 @@ public class FieldNotesView extends V_ListView
 			else if (type == LogTypes.didnt_find)
 			{
 				// DidNotFound -> fremden Cache als nicht gefunden markieren
-				if (GlobalCore.getSelectedCache().Found)
+				if (GlobalCore.getSelectedCache().isFound())
 				{
-					GlobalCore.getSelectedCache().Found = false;
+					GlobalCore.getSelectedCache().setFound(false);
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
@@ -485,7 +485,7 @@ public class FieldNotesView extends V_ListView
 		switch (type)
 		{
 		case found:
-			if (!cache.Found) newFieldNote.foundNumber++; //
+			if (!cache.isFound()) newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
 			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(),
 					newFieldNote);
@@ -523,9 +523,9 @@ public class FieldNotesView extends V_ListView
 			if (newFieldNote.type == LogTypes.found)
 			{
 				// Found it! -> Cache als gefunden markieren
-				if (!GlobalCore.getSelectedCache().Found)
+				if (!GlobalCore.getSelectedCache().isFound())
 				{
-					GlobalCore.getSelectedCache().Found = true;
+					GlobalCore.getSelectedCache().setFound(true);
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					Config.FoundOffset.setValue(aktFieldNote.foundNumber);
@@ -537,9 +537,9 @@ public class FieldNotesView extends V_ListView
 			else if (newFieldNote.type == LogTypes.didnt_find)
 			{
 				// DidNotFound -> Cache als nicht gefunden markieren
-				if (GlobalCore.getSelectedCache().Found)
+				if (GlobalCore.getSelectedCache().isFound())
 				{
-					GlobalCore.getSelectedCache().Found = false;
+					GlobalCore.getSelectedCache().setFound(false);
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
@@ -609,9 +609,9 @@ public class FieldNotesView extends V_ListView
 				// SelectedCache eine fieldNote angelegt wird
 				if (fieldNote.type == LogTypes.found)
 				{ // Found it! -> Cache als gefunden markieren
-					if (!GlobalCore.getSelectedCache().Found)
+					if (!GlobalCore.getSelectedCache().isFound())
 					{
-						GlobalCore.getSelectedCache().Found = true;
+						GlobalCore.getSelectedCache().setFound(true);
 						CacheDAO cacheDAO = new CacheDAO();
 						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 						Config.FoundOffset.setValue(aktFieldNote.foundNumber);
@@ -621,9 +621,9 @@ public class FieldNotesView extends V_ListView
 				}
 				else if (fieldNote.type == LogTypes.didnt_find)
 				{ // DidNotFound -> Cache als nicht gefunden markieren
-					if (GlobalCore.getSelectedCache().Found)
+					if (GlobalCore.getSelectedCache().isFound())
 					{
-						GlobalCore.getSelectedCache().Found = false;
+						GlobalCore.getSelectedCache().setFound(false);
 						CacheDAO cacheDAO = new CacheDAO();
 						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 						Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
@@ -800,9 +800,9 @@ public class FieldNotesView extends V_ListView
 					// delete aktFieldNote
 					if (cache != null)
 					{
-						if (cache.Found)
+						if (cache.isFound())
 						{
-							cache.Found = false;
+							cache.setFound(false);
 							CacheDAO cacheDAO = new CacheDAO();
 							cacheDAO.WriteToDatabase_Found(cache);
 							Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
@@ -814,7 +814,7 @@ public class FieldNotesView extends V_ListView
 								CacheLite tc = Database.Data.Query.GetCacheById(cache.Id);
 								if (tc != null)
 								{
-									tc.Found = false;
+									tc.setFound(false);
 								}
 							}
 						}

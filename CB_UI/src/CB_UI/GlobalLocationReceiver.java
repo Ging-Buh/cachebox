@@ -146,7 +146,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 							if (!(GlobalCore.NearestCache() == null))
 							{
 								boolean resort = false;
-								if (GlobalCore.NearestCache().Found)
+								if (GlobalCore.NearestCache().isFound())
 								{
 									resort = true;
 								}
@@ -166,9 +166,9 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 										{
 											return;
 										}
-										if (cache.Archived) continue;
-										if (!cache.Available) continue;
-										if (cache.Found) continue;
+										if (cache.isArchived()) continue;
+										if (!cache.isAvailable()) continue;
+										if (cache.isFound()) continue;
 										if (cache.ImTheOwner()) continue;
 										if (cache.Type == CacheTypes.Mystery) if (!cache.CorrectedCoordiantesOrMysterySolved()) continue;
 										if (cache.Distance(CalculationType.FAST, true) < nearestDistance)

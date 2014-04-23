@@ -262,7 +262,7 @@ public class CacheInfoList
 			if (!info.Found)
 			{
 				// nur wenn der Cache nicht als gefunden markiert ist, wird der Wert aus dem GPX Import übernommen!
-				info.Found = cache.Found;
+				info.Found = cache.isFound();
 			}
 
 			// Schreibe info neu in die List(lösche den Eintrag vorher)
@@ -366,8 +366,8 @@ public class CacheInfoList
 		info.ListingCheckSum = ListingCheckSum;
 		info.Latitude = cache.Latitude();
 		info.Longitude = cache.Longitude();
-		info.Found = cache.Found;
-		info.favorite = cache.Favorit();
+		info.Found = cache.isFound();
+		info.favorite = cache.isFavorite();
 		info.CorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
 
 		if (List == null) List = new HashMap<String, CacheInfo>();
