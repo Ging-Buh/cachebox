@@ -227,7 +227,14 @@ public class GlobalCore extends CB_UI_Base.Global
 			}
 		}
 
-		selectedCache = new Cache(cacheLite);
+		if (cacheLite instanceof Cache)
+		{
+			selectedCache = (Cache) cacheLite;
+		}
+		else
+		{
+			selectedCache = new Cache(cacheLite);
+		}
 
 		if (waypoint == null)
 		{
