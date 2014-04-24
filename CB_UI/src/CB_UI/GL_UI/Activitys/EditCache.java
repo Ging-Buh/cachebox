@@ -9,6 +9,7 @@ import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheLite;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -235,10 +236,11 @@ public class EditCache extends ActivityBase
 				CacheDAO cacheDAO = new CacheDAO();
 				String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
 				cache.Id = Cache.GenerateCacheId(gcc);
-				Cache aktCache = new Cache(Database.Data.Query.GetCacheById(cache.Id));
-				if (aktCache != null)
+
+				CacheLite cl = Database.Data.Query.GetCacheById(cache.Id);
+
+				if (cl != null)
 				{
-					cache = aktCache;
 					update = true;
 					if (newValues.Type == CacheTypes.Mystery)
 					{
@@ -248,6 +250,7 @@ public class EditCache extends ActivityBase
 						}
 					}
 				}
+
 				cache.setGcCode(gcc);
 				cache.Type = newValues.Type;
 				cache.Size = newValues.Size;
