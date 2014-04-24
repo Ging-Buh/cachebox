@@ -181,26 +181,6 @@ public class CB_RectF
 		return member[3];
 	}
 
-	// /**
-	// * Gibt die Position der rechten oberen Ecke zurück
-	// *
-	// * @return Vector2
-	// */
-	// public Vector2 getCrossPos()
-	// {
-	// return this.crossPos;
-	// }
-	//
-	// /**
-	// * Gibt die Position des Zentrums zurück
-	// *
-	// * @return Vector2
-	// */
-	// public Vector2 getCenterPos()
-	// {
-	// return this.centerPos;
-	// }
-
 	/**
 	 * Berechnet die rechte obere Ecke
 	 */

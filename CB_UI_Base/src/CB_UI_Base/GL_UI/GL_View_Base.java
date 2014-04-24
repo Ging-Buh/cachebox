@@ -419,7 +419,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 		if (thisInvalidate)
 		{
-			myParentInfo = parentInfo;
+			myParentInfo.setParentInfo(parentInfo);
 			CalcMyInfoForChild();
 		}
 
@@ -576,21 +576,12 @@ public abstract class GL_View_Base extends CB_RectF
 
 			DebugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
 
-			// Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + nDepthCounter + " ]----------");
-			// Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
-			// Logger.LogCat("Parent Draw  Rec " + myParentInfo.drawRec().getPos().x + "/" + myParentInfo.drawRec().getPos().y + "/"
-			// + myParentInfo.drawRec().getWidth() + "/" + myParentInfo.drawRec().getHeight());
-			// Logger.LogCat("intersectRec  Rec " + intersectRec.getPos().x + "/" + intersectRec.getPos().y + "/" + intersectRec.getWidth()
-			// + "/" + intersectRec.getHeight() + "  interscted =" + mustSetScissor);
-			// Logger.LogCat("This World Rec    " + ThisWorldRec.getPos().x + "/" + ThisWorldRec.getPos().y + "/" + ThisWorldRec.getWidth()
-			// + "/" + ThisWorldRec.getHeight());
-			// Logger.LogCat("ParentInfo.Vector= " + myParentInfo.Vector());
 		}
 	}
 
-	public CB_RectF ThisWorldRec; // FIXME make final and set values
-	public CB_RectF intersectRec;// FIXME make final and set values
-	public ParentInfo myParentInfo;// FIXME make final and set values
+	public final CB_RectF ThisWorldRec = new CB_RectF();
+	public final CB_RectF intersectRec = new CB_RectF();
+	public final ParentInfo myParentInfo = new ParentInfo();// FIXME make final and set values
 	private boolean mustSetScissor = false;
 	protected boolean childsInvalidate = false;
 	protected boolean thisInvalidate = true;
@@ -610,17 +601,18 @@ public abstract class GL_View_Base extends CB_RectF
 	private void CalcMyInfoForChild()
 	{
 		childsInvalidate = true;
-		ThisWorldRec = this.copy().offset(myParentInfo.Vector());
-		ThisWorldRec.offset(-this.getX(), -this.getY());
+		ThisWorldRec.setRec(this);// .copy().offset(myParentInfo.Vector());
+		// ThisWorldRec.offset(myParentInfo.Vector());
+		ThisWorldRec.offset(-this.getX() + myParentInfo.Vector().x, -this.getY() + myParentInfo.Vector().y);
 		mustSetScissor = !myParentInfo.drawRec().contains(ThisWorldRec);
 
 		if (mustSetScissor)
 		{
-			intersectRec = myParentInfo.drawRec().createIntersection(ThisWorldRec);
+			intersectRec.setRec(myParentInfo.drawRec().createIntersection(ThisWorldRec));
 		}
 		else
 		{
-			intersectRec = ThisWorldRec.copy();
+			intersectRec.setRec(ThisWorldRec);
 		}
 
 		thisInvalidate = false;
