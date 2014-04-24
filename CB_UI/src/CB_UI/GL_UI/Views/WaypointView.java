@@ -617,4 +617,11 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	}
 
+	public void Refresh()
+	{
+		aktWaypoint = null;
+		aktCache = null;
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+	}
+
 }

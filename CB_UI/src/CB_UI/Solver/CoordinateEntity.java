@@ -13,6 +13,7 @@ import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
+import CB_UI.GL_UI.Views.WaypointView;
 import CB_Utils.DB.CoreCursor;
 
 public class CoordinateEntity extends Entity
@@ -135,10 +136,25 @@ public class CoordinateEntity extends Entity
 		waypointDAO.UpdateDatabase(dbWaypoint);
 
 		// evtl. bereits geladenen Waypoint aktualisieren
-		Cache cacheFromCacheList;
+		CacheLite cacheFromCacheList;
+		Cache cacheFromSelect = GlobalCore.getSelectedCache();
 		synchronized (Database.Data.Query)
 		{
-			cacheFromCacheList = new Cache(Database.Data.Query.GetCacheById(dbWaypoint.CacheId));
+			cacheFromCacheList = Database.Data.Query.GetCacheById(dbWaypoint.CacheId);
+		}
+
+		if (cacheFromSelect != null)
+		{
+			for (int i = 0, n = cacheFromSelect.waypoints.size(); i < n; i++)
+			{
+				WaypointLite wp = cacheFromSelect.waypoints.get(i);
+				if (wp.getGcCode().equalsIgnoreCase(this.gcCode))
+				{
+					wp.Pos.setLatitude(coord.getLatitude());
+					wp.Pos.setLongitude(coord.getLongitude());
+					break;
+				}
+			}
 		}
 
 		if (cacheFromCacheList != null)
@@ -155,7 +171,7 @@ public class CoordinateEntity extends Entity
 			}
 			if (CB_UI.GlobalCore.getSelectedCache().Id == cacheFromCacheList.Id)
 			{
-				// Views.WaypointView.View.Refresh();
+
 				if (GlobalCore.getSelectedWaypoint() == null)
 				{
 					GlobalCore.setSelectedCache(GlobalCore.getSelectedCache());
@@ -164,6 +180,8 @@ public class CoordinateEntity extends Entity
 				{
 					GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 				}
+
+				WaypointView.that.Refresh();
 			}
 
 		}
