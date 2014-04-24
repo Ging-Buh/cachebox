@@ -211,6 +211,13 @@ public class GlobalCore extends CB_UI_Base.Global
 	public static void setSelectedWaypoint(CacheLite cacheLite, WaypointLite waypoint, boolean changeAutoResort)
 	{
 
+		if (cacheLite == null)
+		{
+			selectedCache = null;
+			selectedWaypoint = null;
+			return;
+		}
+
 		// rewrite Changed Values ( like Favroite state)
 		if (selectedCache != null)
 		{

@@ -64,42 +64,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	public void onShow()
 	{
 
-		// // aktuellen Waypoint in der List anzeigen
-		// int first = this.getFirstVisiblePosition();
-		// int last = this.getLastVisiblePosition();
-		//
-		// if (aktCache == null) return;
-		//
-		// int itemCount = aktCache.waypoints.size() + 1;
-		// int itemSpace = this.getMaxItemCount();
-		//
-		// if (itemSpace >= itemCount)
-		// {
-		// this.setUndragable();
-		// }
-		// else
-		// {
-		// this.setDragable();
-		// }
-		//
-		// if (GlobalCore.getSelectedWaypoint() != null)
-		// {
-		// aktWaypoint = GlobalCore.getSelectedWaypoint();
-		// int id = 0;
-		//
-		// for (Waypoint wp : aktCache.waypoints)
-		// {
-		// id++;
-		// if (wp == aktWaypoint)
-		// {
-		// if (!(first < id && last > id)) this.setSelection(id);
-		// break;
-		// }
-		// }
-		// }
-		// else
-		// this.setSelection(0);
-
 		SetSelectedCache(aktCache, aktWaypoint);
 		chkSlideBack();
 
@@ -261,20 +225,10 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	public void SetSelectedCache(CacheLite cache, WaypointLite waypoint)
 	{
 
-		if (aktCache == null || (aktCache != null && aktCache.Id != cache.Id))
-		{
-			// Liste nur dann neu Erstellen, wenn der aktuelle Cache geändert
-			// wurde
-			aktCache = GlobalCore.getSelectedCache();
-			this.setBaseAdapter(null);
-			lvAdapter = new CustomAdapter(aktCache);
-			this.setBaseAdapter(lvAdapter);
-
-		}
-		else
-		{
-
-		}
+		aktCache = GlobalCore.getSelectedCache();
+		this.setBaseAdapter(null);
+		lvAdapter = new CustomAdapter(aktCache);
+		this.setBaseAdapter(lvAdapter);
 
 		// aktuellen Waypoint in der List anzeigen
 

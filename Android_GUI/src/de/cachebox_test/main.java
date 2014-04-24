@@ -355,9 +355,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.ui.Window.width);
 		savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
 
-		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGcCode());
-		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint",
-				GlobalCore.getSelectedWaypoint().getGcCode());
+		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache()
+				.getGcCode());
+		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWaypoint()
+				.getGcCode());
 
 		// TODO onSaveInstanceState => save more
 
@@ -1283,7 +1284,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						extAudioRecorder.release();
 						extAudioRecorder = null;
 					}
-					GlobalCore.setSelectedCache(null);
 					SelectedCacheEventList.list.clear();
 					SelectedCacheEventList.list.clear();
 					CachListChangedEventList.list.clear();
@@ -1856,8 +1856,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (GlobalCore.getSelectedCache() != null)
 		{
-			String validName = FileIO
-					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
+			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
+					+ GlobalCore.getSelectedCache().getName());
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1891,8 +1891,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (GlobalCore.getSelectedCache() != null)
 		{
-			String validName = FileIO
-					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-" + GlobalCore.getSelectedCache().getName());
+			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
+					+ GlobalCore.getSelectedCache().getName());
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
