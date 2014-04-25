@@ -2,7 +2,7 @@ package CB_UI.GL_UI.Controls.Dialogs;
 
 import java.util.ArrayList;
 
-import CB_UI.Solver.Solver;
+import CB_Core.Solver.Solver;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 

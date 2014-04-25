@@ -26,6 +26,8 @@ import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
+import CB_Core.Solver.Solver;
+import CB_Core.Solver.SolverCacheInterface;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListLite;
 import CB_Core.Types.CacheLite;
@@ -52,7 +54,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  * @author arbor95
  * @author longri
  */
-public class GlobalCore extends CB_UI_Base.Global
+public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
 	public static final int CurrentRevision = 2089;
 
@@ -80,7 +82,7 @@ public class GlobalCore extends CB_UI_Base.Global
 	private GlobalCore()
 	{
 		super();
-
+		Solver.solverCacheInterface = this;
 		Logger.setCreateDebugWithHeader(new iCreateDebugWithHeader()
 		{
 			@Override
@@ -470,6 +472,32 @@ public class GlobalCore extends CB_UI_Base.Global
 	protected String getVersionPrefix()
 	{
 		return VersionPrefix;
+	}
+
+	// Interface für den Solver zum Zugriff auf den SelectedCache.
+	// Direkter Zugriff geht nicht da der Solver im Core definiert ist
+	@Override
+	public Cache sciGetSelectedCache()
+	{
+		return getSelectedCache();
+	}
+
+	@Override
+	public void sciSetSelectedCache(Cache cache)
+	{
+		setSelectedCache(cache);
+	}
+
+	@Override
+	public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint)
+	{
+		setSelectedWaypoint(cache, waypoint);
+	}
+
+	@Override
+	public Waypoint sciGetSelectedWaypoint()
+	{
+		return getSelectedWaypoint();
 	}
 
 }

@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Views;
 
-import CB_UI.Solver.SolverZeile;
+import CB_Core.Solver.SolverZeile;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;

@@ -2,6 +2,9 @@ package CB_UI.GL_UI.Controls.Dialogs;
 
 import java.util.TreeMap;
 
+import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
+import CB_Core.Solver.Functions.Function;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -10,9 +13,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
 import CB_UI.GL_UI.Controls.CoordinateButton;
-import CB_UI.Solver.DataTypes.DataType;
-import CB_UI.Solver.Solver;
-import CB_UI.Solver.Functions.Function;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;

@@ -3,11 +3,11 @@ package CB_UI.GL_UI.Activitys;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Core.Solver.Solver;
+import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Functions.Function;
+import CB_Core.Solver.Functions.Functions;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Solver.DataTypes.DataType;
-import CB_UI.Solver.Solver;
-import CB_UI.Solver.Functions.Function;
-import CB_UI.Solver.Functions.Functions;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;

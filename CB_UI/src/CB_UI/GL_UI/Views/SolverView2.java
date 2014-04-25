@@ -3,6 +3,9 @@ package CB_UI.GL_UI.Views;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
+import CB_Core.Solver.SolverZeile;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
@@ -17,9 +20,6 @@ import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2;
 import CB_UI.GL_UI.Controls.Dialogs.SolverDialog2.SolverBackStringListner;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.Solver.DataTypes.DataType;
-import CB_UI.Solver.Solver;
-import CB_UI.Solver.SolverZeile;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -79,7 +79,10 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 	private void intiList()
 	{
-		if (cache == null) solver = new Solver("");
+		if (cache == null)
+		{
+			solver = new Solver("");
+		}
 		else
 		{
 			this.cache = GlobalCore.getSelectedCache();
