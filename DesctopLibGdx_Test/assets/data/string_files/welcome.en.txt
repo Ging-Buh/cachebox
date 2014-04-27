@@ -1,4 +1,4 @@
-Thanks for installing Cachebox 0.6.1884.
+Thanks for installing Cachebox 0.7.2041.
 
 Do not use Cachebox during the drive in the car!
 

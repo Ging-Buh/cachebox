@@ -286,6 +286,10 @@ public class FieldNotesView extends V_ListView
 		// Found je nach CacheType
 		switch (cache.Type)
 		{
+		case GigaEvent:
+			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
+			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
+			break;
 		case MegaEvent:
 			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
 			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));

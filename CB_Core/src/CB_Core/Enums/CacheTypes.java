@@ -24,6 +24,7 @@ public enum CacheTypes
 	Cache, // = 19,
 	MyParking, // = 20
 	Munzee, // 21
+	GigaEvent, // 22
 	;
 
 	/**

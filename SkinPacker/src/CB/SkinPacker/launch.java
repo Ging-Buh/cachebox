@@ -248,10 +248,21 @@ public class launch extends JFrame
 		textureSettings.duplicatePadding = true;
 		textureSettings.edgePadding = true;
 		textureSettings.rotation = false;
-		textureSettings.minWidth = 16;
-		textureSettings.minHeight = 16;
-		textureSettings.maxWidth = 2048;
-		textureSettings.maxHeight = 2048;
+		if (true)
+		{
+			textureSettings.minWidth = 512;
+			textureSettings.minHeight = 512;
+			textureSettings.maxWidth = 1024;
+			textureSettings.maxHeight = 1024;
+		}
+		else
+		{
+			textureSettings.minWidth = 2048;
+			textureSettings.minHeight = 2048;
+			textureSettings.maxWidth = 2048;
+			textureSettings.maxHeight = 2048;
+		}
+
 		textureSettings.stripWhitespaceX = false;
 		textureSettings.stripWhitespaceY = false;
 		textureSettings.alphaThreshold = 0;
@@ -259,7 +270,7 @@ public class launch extends JFrame
 		textureSettings.filterMag = TextureFilter.Linear;
 		textureSettings.wrapX = TextureWrap.ClampToEdge;
 		textureSettings.wrapY = TextureWrap.ClampToEdge;
-		textureSettings.format = Format.RGBA8888;
+		textureSettings.format = Format.RGBA4444;
 		textureSettings.alias = true;
 		textureSettings.outputFormat = "png";
 		textureSettings.jpegQuality = 0.9f;

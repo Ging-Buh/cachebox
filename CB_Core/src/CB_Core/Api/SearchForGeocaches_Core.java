@@ -363,6 +363,7 @@ public class SearchForGeocaches_Core
 						cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
 					}
 					cache.setName(jCache.getString("Name"));
+					cache.TourName = "";
 					cache.noteCheckSum = 0;
 					cache.NumTravelbugs = jCache.getInt("TrackableCount");
 					JSONObject jOwner = (JSONObject) jCache.getJSONObject("Owner");
@@ -397,8 +398,23 @@ public class SearchForGeocaches_Core
 					cache.solverCheckSum = 0;
 					cache.Terrain = (float) jCache.getDouble("Terrain");
 					cache.Type = CacheTypes.Traditional;
-					JSONObject jCacheType = jCache.getJSONObject("CacheType");
-					cache.Type = GroundspeakAPI.getCacheType(jCacheType.getInt("GeocacheTypeId"));
+					try
+					{
+						JSONObject jCacheType = jCache.getJSONObject("CacheType");
+						cache.Type = GroundspeakAPI.getCacheType(jCacheType.getInt("GeocacheTypeId"));
+					}
+					catch (Exception e)
+					{
+
+						if (gcCode.equals("GC4K089"))
+						{
+							cache.Type = CacheTypes.GigaEvent;
+						}
+						else
+						{
+							cache.Type = CacheTypes.Undefined;
+						}
+					}
 					cache.Url = jCache.getString("Url");
 					cache.ApiStatus = apiStatus;
 

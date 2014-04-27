@@ -395,6 +395,10 @@ public class CacheInfo extends CB_View_Base
 				{
 					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(25));
 				}
+				else if (mCache.Type == CacheTypes.GigaEvent)
+				{
+					mIconSprite = new Sprite(SpriteCacheBase.MapIcons.get(27));
+				}
 				else
 				{
 					mIconSprite = new Sprite(SpriteCacheBase.BigIcons.get(mCache.Type.ordinal()));

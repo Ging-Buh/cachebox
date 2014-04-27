@@ -545,6 +545,7 @@ public class SpriteCacheBase
 			MapIcons.add(getThemedSprite("24"));
 			MapIcons.add(getThemedSprite("25"));
 			MapIcons.add(getThemedSprite("star"));
+			MapIcons.add(getThemedSprite("27"));
 
 		}
 

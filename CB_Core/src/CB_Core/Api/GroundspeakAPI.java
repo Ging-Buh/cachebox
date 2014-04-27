@@ -939,6 +939,8 @@ public class GroundspeakAPI
 			return CacheTypes.Trailhead;
 		case 218:
 			return CacheTypes.MultiQuestion;
+		case 7005:
+			return CacheTypes.GigaEvent;
 
 		default:
 			return CacheTypes.Cache;

@@ -73,7 +73,8 @@ public enum Attributes
 	Tourist_Friendly,
 	Tree_Climbing,
 	Front_Yard,
-	Teamwork_Required;
+	Teamwork_Required,
+	GeoTour;
 
 	public static DLong GetAttributeDlong(Attributes attrib)
 	{
@@ -223,6 +224,8 @@ public enum Attributes
 			return CB_Core.Enums.Attributes.Front_Yard;
 		case 66:
 			return CB_Core.Enums.Attributes.Teamwork_Required;
+		case 67:
+			return CB_Core.Enums.Attributes.GeoTour;
 		}
 
 		return CB_Core.Enums.Attributes.Default;
@@ -300,6 +303,7 @@ public enum Attributes
 		attributeLookup.put(Attributes.Tree_Climbing, 64);
 		attributeLookup.put(Attributes.Front_Yard, 65);
 		attributeLookup.put(Attributes.Teamwork_Required, 66);
+		attributeLookup.put(Attributes.GeoTour, 67);
 	}
 
 	public static ArrayList<Attributes> getAttributes(DLong attributesPositive, DLong attributesNegative)

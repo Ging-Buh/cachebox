@@ -1,6 +1,7 @@
 package Types;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import CB_Utils.Util.FileIO;
  */
 public class GenAttributes extends TestCase
 {
-	private Boolean NotRun = true;
+	private Boolean NotRun = false;
 
 	public static String LastAPIError = "";
 
@@ -243,6 +244,11 @@ public class GenAttributes extends TestCase
 
 		java += BR + "return ret; ";
 		java += BR + "}";
+
+		// create folder
+		File FolderPath = new File("./testdata/Attributes");
+
+		FolderPath.mkdirs();
 
 		// Write to File
 		String FilePath = "./testdata/Attributes/Attributes.java";

@@ -306,6 +306,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		else if ((cache.Type == CacheTypes.Multi) && cache.HasStartWaypoint()) IconId = 23; // Multi mit Startpunkt
 		else if ((cache.Type == CacheTypes.Mystery) && cache.HasStartWaypoint()) IconId = 25; // Mystery ohne Final aber mit Startpunkt
 		else if ((cache.Type == CacheTypes.Munzee)) IconId = 22;
+		else if ((cache.Type == CacheTypes.GigaEvent)) IconId = 27;
 		else
 			IconId = cache.Type.ordinal();
 		return SpriteCacheBase.MapIcons.get(IconId);
@@ -332,6 +333,9 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			iconId = 2;
 			break;
 		case MegaEvent:
+			iconId = 2;
+			break;
+		case GigaEvent:
 			iconId = 2;
 			break;
 		case Virtual:
