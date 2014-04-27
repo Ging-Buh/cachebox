@@ -237,27 +237,53 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		{
 			selectedCache = new Cache(cacheLite);
 		}
-
+		WaypointLite newSelectedWaypoint = null;
+		selectedWaypoint = null;
 		if (waypoint == null)
 		{
 			// check autoselect Waypoint Final or start
 
 			if (selectedCache.HasFinalWaypoint())
 			{
-				selectedWaypoint = selectedCache.FinalWaypoint.makeFull();
+				newSelectedWaypoint = selectedCache.FinalWaypoint;
 			}
 			else if (selectedCache.HasStartWaypoint())
 			{
-				selectedWaypoint = selectedCache.startWaypoint.makeFull();
+				newSelectedWaypoint = selectedCache.startWaypoint;
 			}
 			else
 			{
-				selectedWaypoint = null;
+				newSelectedWaypoint = null;
 			}
 		}
 		else
 		{
-			selectedWaypoint = waypoint.makeFull();
+			newSelectedWaypoint = waypoint;
+		}
+
+		if (newSelectedWaypoint != null)
+		{
+			// den zu selektierenden Waypoint aus dem aktuellen Cache-Object suchen
+			for (int i = 0, n = selectedCache.waypoints.size(); i < n; i++)
+			{
+				WaypointLite wp = selectedCache.waypoints.get(i);
+				if (wp.getGcCode().equals(newSelectedWaypoint.getGcCode()))
+				{
+					if (wp instanceof Waypoint)
+					{
+						selectedWaypoint = (Waypoint) wp;
+						break;
+					}
+				}
+			}
+			if (selectedWaypoint == null)
+			{
+				selectedWaypoint = newSelectedWaypoint.makeFull();
+			}
+		}
+		else
+		{
+			selectedWaypoint = null;
 		}
 
 		SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
