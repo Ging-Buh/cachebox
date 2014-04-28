@@ -940,7 +940,7 @@ public class GroundspeakAPI
 		case 218:
 			return CacheTypes.MultiQuestion;
 		case 7005:
-			return CacheTypes.GigaEvent;
+			return CacheTypes.Giga;
 
 		default:
 			return CacheTypes.Cache;

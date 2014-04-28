@@ -408,7 +408,7 @@ public class SearchForGeocaches_Core
 
 						if (gcCode.equals("GC4K089"))
 						{
-							cache.Type = CacheTypes.GigaEvent;
+							cache.Type = CacheTypes.Giga;
 						}
 						else
 						{

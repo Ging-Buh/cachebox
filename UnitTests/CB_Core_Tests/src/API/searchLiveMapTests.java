@@ -45,7 +45,7 @@ public class searchLiveMapTests extends TestCase
 		Coordinate searchCoord = new CoordinateGPS(52.581892, 13.398128);
 
 		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-		SearchLiveMap searchC = new SearchLiveMap(2, searchCoord, 500);
+		SearchLiveMap searchC = new SearchLiveMap(2, searchCoord, 5000);
 
 		ApiGroundspeak_SearchForGeocaches apis = new ApiGroundspeak_SearchForGeocaches(searchC, apiCaches);
 		apis.execute();
