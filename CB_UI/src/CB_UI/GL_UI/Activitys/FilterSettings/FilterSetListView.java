@@ -306,6 +306,7 @@ public class FilterSetListView extends V_ListView
 		Types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(9), "Letterbox", CHECK_ITEM));
 		Types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(10), "Wherigo", CHECK_ITEM));
 		Types.addChild(addFilterSetItem(SpriteCacheBase.BigIcons.get(25), "Munzee", CHECK_ITEM));
+		Types.addChild(addFilterSetItem(SpriteCacheBase.MapIcons.get(27), "Giga", CHECK_ITEM));
 
 		// add Attributes
 		Attr = addFilterSetCollapseItem(null, "Attributes", COLLAPSE_BUTTON_ITEM);
@@ -511,7 +512,7 @@ public class FilterSetListView extends V_ListView
 			if (i < props.attributesFilter.length) props.attributesFilter[i] = Attr.getChild(i).getChecked();
 		}
 
-		// TODO at Categorie
+		// FIXME at Categorie
 
 		return props;
 	}

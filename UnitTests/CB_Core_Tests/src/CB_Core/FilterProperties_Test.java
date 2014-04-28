@@ -31,7 +31,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[0] 'All Caches' => MaxRating", 5.0f, FilterProperties.presets[0].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[0] 'All Caches' => cacheType.length", 12, FilterProperties.presets[0].cacheTypes.length);
+			assertEquals("presets[0] 'All Caches' => cacheType.length", 13, FilterProperties.presets[0].cacheTypes.length);
 			assertTrue("presets[0] 'All Caches' => cacheType[0]''?", FilterProperties.presets[0].cacheTypes[0]);
 			assertTrue("presets[0] 'All Caches' => cacheType[1]''?", FilterProperties.presets[0].cacheTypes[1]);
 			assertTrue("presets[0] 'All Caches' => cacheType[2]''?", FilterProperties.presets[0].cacheTypes[2]);
@@ -44,6 +44,7 @@ public class FilterProperties_Test extends TestCase
 			assertTrue("presets[0] 'All Caches' => cacheType[9]''?", FilterProperties.presets[0].cacheTypes[9]);
 			assertTrue("presets[0] 'All Caches' => cacheType[10]''?", FilterProperties.presets[0].cacheTypes[10]);
 			assertTrue("presets[0] 'All Caches' => cacheType[11]'Munzee'", FilterProperties.presets[0].cacheTypes[11]);
+			assertTrue("presets[0] 'All Caches' => cacheType[12]'GIGA'", FilterProperties.presets[0].cacheTypes[12]);
 
 			// AttributesFilter
 			int AtributeLength = 66;
@@ -70,7 +71,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[0] 'All Caches' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
 					FilterProperties.presets[0].toString());
 
 		}
@@ -95,7 +96,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[1] 'All Caches to find' => MaxRating", 5.0f, FilterProperties.presets[1].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[1] 'All Caches to find' => cacheType.length", 12, FilterProperties.presets[1].cacheTypes.length);
+			assertEquals("presets[1] 'All Caches to find' => cacheType.length", 13, FilterProperties.presets[1].cacheTypes.length);
 			assertTrue("presets[1] 'All Caches to find' => cacheType[0]''?", FilterProperties.presets[1].cacheTypes[0]);
 			assertTrue("presets[1] 'All Caches to find' => cacheType[1]''?", FilterProperties.presets[1].cacheTypes[1]);
 			assertTrue("presets[1] 'All Caches to find' => cacheType[2]''?", FilterProperties.presets[1].cacheTypes[2]);
@@ -135,7 +136,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[1] 'All Caches to find' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
 					FilterProperties.presets[1].toString());
 
 		}
@@ -160,7 +161,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[2] 'Quick Cache' => MaxRating", 5.0f, FilterProperties.presets[2].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[2] 'Quick Cache' => cacheType.length", 12, FilterProperties.presets[2].cacheTypes.length);
+			assertEquals("presets[2] 'Quick Cache' => cacheType.length", 13, FilterProperties.presets[2].cacheTypes.length);
 			assertTrue("presets[2] 'Quick Cache' => cacheType[0]''?", FilterProperties.presets[2].cacheTypes[0]);
 			assertFalse("presets[2] 'Quick Cache' => cacheType[1]''?", FilterProperties.presets[2].cacheTypes[1]);
 			assertFalse("presets[2] 'Quick Cache' => cacheType[2]''?", FilterProperties.presets[2].cacheTypes[2]);
@@ -199,7 +200,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[2] 'Quick Cache' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,2.5,0.0,2.5,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,true,true,false,false,false,false,false,false,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,2.5,0.0,2.5,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,true,true,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}",
 					FilterProperties.presets[2].toString());
 
 		}
@@ -224,7 +225,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[3] 'Fetch some Travelbugs' => MaxRating", 5.0f, FilterProperties.presets[3].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[3] 'Fetch some Travelbugs' => cacheType.length", 12, FilterProperties.presets[3].cacheTypes.length);
+			assertEquals("presets[3] 'Fetch some Travelbugs' => cacheType.length", 13, FilterProperties.presets[3].cacheTypes.length);
 			assertTrue("presets[3] 'Fetch some Travelbugs' => cacheType[0]''?", FilterProperties.presets[3].cacheTypes[0]);
 			assertFalse("presets[3] 'Fetch some Travelbugs' => cacheType[1]''?", FilterProperties.presets[3].cacheTypes[1]);
 			assertFalse("presets[3] 'Fetch some Travelbugs' => cacheType[2]''?", FilterProperties.presets[3].cacheTypes[2]);
@@ -264,7 +265,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[3] 'Fetch some Travelbugs' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"0,-1,-1,0,1,0,0,0,0,0.0,3.0,0.0,3.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"0,-1,-1,0,1,0,0,0,0,0.0,3.0,0.0,3.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}",
 					FilterProperties.presets[3].toString());
 
 		}
@@ -289,7 +290,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[4] 'Drop off Travelbugs' => MaxRating", 5.0f, FilterProperties.presets[4].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[4] 'Drop off Travelbugs' => cacheType.length", 12, FilterProperties.presets[4].cacheTypes.length);
+			assertEquals("presets[4] 'Drop off Travelbugs' => cacheType.length", 13, FilterProperties.presets[4].cacheTypes.length);
 			assertTrue("presets[4] 'Drop off Travelbugs' => cacheType[0]''?", FilterProperties.presets[4].cacheTypes[0]);
 			assertFalse("presets[4] 'Drop off Travelbugs' => cacheType[1]''?", FilterProperties.presets[4].cacheTypes[1]);
 			assertFalse("presets[4] 'Drop off Travelbugs' => cacheType[2]''?", FilterProperties.presets[4].cacheTypes[2]);
@@ -329,7 +330,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[4] 'Drop off Travelbugs' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"0,-1,-1,0,0,0,0,0,0,0.0,3.0,0.0,3.0,2.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"0,-1,-1,0,0,0,0,0,0,0.0,3.0,0.0,3.0,2.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}",
 					FilterProperties.presets[4].toString());
 
 		}
@@ -354,7 +355,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[5] 'Highlights' => MaxRating", 5.0f, FilterProperties.presets[5].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[5] 'Highlights' => cacheType.length", 12, FilterProperties.presets[5].cacheTypes.length);
+			assertEquals("presets[5] 'Highlights' => cacheType.length", 13, FilterProperties.presets[5].cacheTypes.length);
 			assertTrue("presets[5] 'Highlights' => cacheType[0]''?", FilterProperties.presets[5].cacheTypes[0]);
 			assertTrue("presets[5] 'Highlights' => cacheType[1]''?", FilterProperties.presets[5].cacheTypes[1]);
 			assertTrue("presets[5] 'Highlights' => cacheType[2]''?", FilterProperties.presets[5].cacheTypes[2]);
@@ -393,7 +394,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[5] 'Highlights' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,3.5,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,3.5,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
 					FilterProperties.presets[5].toString());
 
 		}
@@ -418,7 +419,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[6] 'Favoriten' => MaxRating", 5.0f, FilterProperties.presets[6].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[6] 'Favoriten' => cacheType.length", 12, FilterProperties.presets[6].cacheTypes.length);
+			assertEquals("presets[6] 'Favoriten' => cacheType.length", 13, FilterProperties.presets[6].cacheTypes.length);
 			assertTrue("presets[6] 'Favoriten' => cacheType[0]''?", FilterProperties.presets[6].cacheTypes[0]);
 			assertTrue("presets[6] 'Favoriten' => cacheType[1]''?", FilterProperties.presets[6].cacheTypes[1]);
 			assertTrue("presets[6] 'Favoriten' => cacheType[2]''?", FilterProperties.presets[6].cacheTypes[2]);
@@ -457,7 +458,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[6] 'Favoriten' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,1,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,1,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
 					FilterProperties.presets[6].toString());
 
 		}
@@ -482,7 +483,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[7] 'prepare to archive' => MaxRating", 5.0f, FilterProperties.presets[7].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[7] 'prepare to archive' => cacheType.length", 12, FilterProperties.presets[7].cacheTypes.length);
+			assertEquals("presets[7] 'prepare to archive' => cacheType.length", 13, FilterProperties.presets[7].cacheTypes.length);
 			assertTrue("presets[7] 'prepare to archive' => cacheType[0]''?", FilterProperties.presets[7].cacheTypes[0]);
 			assertTrue("presets[7] 'prepare to archive' => cacheType[1]''?", FilterProperties.presets[7].cacheTypes[1]);
 			assertTrue("presets[7] 'prepare to archive' => cacheType[2]''?", FilterProperties.presets[7].cacheTypes[2]);
@@ -522,7 +523,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[7] 'prepare to archive' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,-1,-1,0,-1,-1,-1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,-1,-1,0,-1,-1,-1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
 					FilterProperties.presets[7].toString());
 
 		}
@@ -547,7 +548,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("presets[8] 'Listing Changed' => MaxRating", 5.0f, FilterProperties.presets[8].MaxRating);
 
 			// CacheTypes
-			assertEquals("presets[8] 'Listing Changed' => cacheType.length", 12, FilterProperties.presets[8].cacheTypes.length);
+			assertEquals("presets[8] 'Listing Changed' => cacheType.length", 13, FilterProperties.presets[8].cacheTypes.length);
 			assertTrue("presets[8] 'Listing Changed' => cacheType[0]''?", FilterProperties.presets[8].cacheTypes[0]);
 			assertTrue("presets[8] 'Listing Changed' => cacheType[1]''?", FilterProperties.presets[8].cacheTypes[1]);
 			assertTrue("presets[8] 'Listing Changed' => cacheType[2]''?", FilterProperties.presets[8].cacheTypes[2]);
@@ -587,7 +588,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"presets[8] 'Listing Changed' =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
 					FilterProperties.presets[8].toString());
 
 		}
@@ -615,7 +616,7 @@ public class FilterProperties_Test extends TestCase
 			assertEquals("default constructor => MaxRating", 5.0f, defaultCtor.MaxRating);
 
 			// CacheTypes
-			assertEquals("default constructor => cacheType.length", 12, defaultCtor.cacheTypes.length);
+			assertEquals("default constructor => cacheType.length", 13, defaultCtor.cacheTypes.length);
 			assertTrue("default constructor => cacheType[0]''?", defaultCtor.cacheTypes[0]);
 			assertTrue("default constructor => cacheType[1]''?", defaultCtor.cacheTypes[1]);
 			assertTrue("default constructor => cacheType[2]''?", defaultCtor.cacheTypes[2]);
@@ -652,7 +653,7 @@ public class FilterProperties_Test extends TestCase
 
 			assertEquals(
 					"default constructor =>toString",
-					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
+					"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}",
 					defaultCtor.toString());
 
 		}
@@ -677,15 +678,15 @@ public class FilterProperties_Test extends TestCase
 		int presetSize = FilterProperties.presets.length;
 		String[] SqlStringList = new String[]
 			{
-					"Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
-					"(Found=0 or Found is null) and Available=1 and Archived=0 and (not Owner='User') and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
+					"Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21,22) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
+					"(Found=0 or Found is null) and Available=1 and Archived=0 and (not Owner='User') and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21,22) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
 					"(Found=0 or Found is null) and Available=1 and Archived=0 and (not Owner='User') and Difficulty >= 0.0 and Difficulty <= 5.0 and Terrain >= 0.0 and Terrain <= 5.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,3,4,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
 					"Available=1 and Archived=0 and NumTravelbugs > 0 and Difficulty >= 0.0 and Difficulty <= 6.0 and Terrain >= 0.0 and Terrain <= 6.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
 					"Available=1 and Archived=0 and Difficulty >= 0.0 and Difficulty <= 6.0 and Terrain >= 0.0 and Terrain <= 6.0 and Size >= 2.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
-					"(Found=0 or Found is null) and Available=1 and Archived=0 and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 350.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
-					"Favorit=1 and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
-					"Archived=0 and (not Owner='User') and (Favorit=0 or Favorit is null) and (HasUserData = 0 or HasUserData is null) and (ListingChanged=0 or ListingChanged is null) and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
-					"ListingChanged=1 and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )" };
+					"(Found=0 or Found is null) and Available=1 and Archived=0 and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 350.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21,22) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
+					"Favorit=1 and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21,22) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
+					"Archived=0 and (not Owner='User') and (Favorit=0 or Favorit is null) and (HasUserData = 0 or HasUserData is null) and (ListingChanged=0 or ListingChanged is null) and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21,22) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )",
+					"ListingChanged=1 and Difficulty >= 0.0 and Difficulty <= 10.0 and Terrain >= 0.0 and Terrain <= 10.0 and Size >= 0.0 and Size <= 4.0 and Rating >= 0.0 and Rating <= 500.0 and Type in (0,1,2,3,4,5,6,7,8,9,10,21,22) and Name like '%%' and GcCode like '%%' and ( PlacedBy like '%%' or Owner like '%%' )" };
 
 		for (int i = 0; i < presetSize; i++)
 		{
