@@ -383,8 +383,8 @@ public class CacheListDAO
 		while (!reader.isAfterLast())
 		{
 			CacheLite cache = cacheDAO.ReadFromCursorLite(reader, withDescription);
-			boolean hasStart = false;
-			boolean hasFinal = false;
+			// - boolean hasStart = false;
+			// - boolean hasFinal = false;
 			if (waypoints.containsKey(cache.Id))
 			{
 				// set Final or start waypoint
@@ -397,26 +397,30 @@ public class CacheListDAO
 				{
 					WaypointLite wp = cacheWaypoints.get(i);
 
+					boolean addWp = false;
+
 					if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
 					{
-						cache.hasStartWaypoint = 1;
-						cache.startWaypoint = wp;
-						hasStart = true;
+						addWp = true;
+						// - cache.hasStartWaypoint = 1;
+						// - cache.startWaypoint = wp;
+						// - hasStart = true;
 					}
 
 					if (wp.Type == CacheTypes.Final)
 					{
 						// do not activate final waypoint with invalid coordinates
 						if (!wp.Pos.isValid() || wp.Pos.isZero()) continue;
-						cache.FinalWaypoint = wp;
-						cache.hasFinalWaypoint = 1;
-						hasFinal = true;
+						addWp = true;
+						// - cache.FinalWaypoint = wp;
+						// - cache.hasFinalWaypoint = 1;
+						// - hasFinal = true;
 					}
 
 					// if option showAllWaypoints staid we must put the WaypointLite to cache waypointList
-					if (CB_Core_Settings.ShowAllWaypoints.getValue())
+					if (addWp || CB_Core_Settings.ShowAllWaypoints.getValue())
 					{
-						cache.waypoints.add(wp.makeLite());
+						cache.waypoints.add(wp/*-.makeLite()-*/);
 					}
 
 				}
@@ -425,8 +429,8 @@ public class CacheListDAO
 				waypoints.remove(cache.Id);
 			}
 
-			if (!hasFinal) cache.hasFinalWaypoint = 0;
-			if (!hasStart) cache.hasStartWaypoint = 0;
+			// - if (!hasFinal) cache.hasFinalWaypoint = 0;
+			// - if (!hasStart) cache.hasStartWaypoint = 0;
 
 			cacheList.add(cache);
 			reader.moveToNext();

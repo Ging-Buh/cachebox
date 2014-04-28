@@ -229,10 +229,6 @@ public class Cache extends CacheLite
 		this.Type = cacheLite.Type;
 		this.cachedDistance = cacheLite.cachedDistance;
 		this.Owner = cacheLite.Owner;
-		this.hasFinalWaypoint = cacheLite.hasFinalWaypoint;
-		this.hasStartWaypoint = cacheLite.hasStartWaypoint;
-		this.FinalWaypoint = cacheLite.FinalWaypoint;
-		this.startWaypoint = cacheLite.startWaypoint;
 		this.BitFlags = cacheLite.BitFlags;
 
 		// read missing values from DB

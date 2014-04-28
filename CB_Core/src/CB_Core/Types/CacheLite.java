@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
-import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -204,30 +203,6 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	 */
 	public float cachedDistance = 0;
 
-	/**
-	 * -1 = not readed from DB <br>
-	 * 0 = now Start WayPoint <br>
-	 * 1 = have start WayPoint
-	 */
-	public byte hasStartWaypoint = -1;
-
-	/**
-	 * The start WayPoint of this Cahe, if exist
-	 */
-	public WaypointLite startWaypoint = null;
-
-	/**
-	 * -1 = not readed from DB <br>
-	 * 0 = now Start WayPoint <br>
-	 * 1 = have start WayPoint
-	 */
-	public byte hasFinalWaypoint = -1;
-
-	/**
-	 * The start WayPoint of this Cahe, if exist
-	 */
-	public WaypointLite FinalWaypoint = null;
-
 	public CacheLite()
 	{
 		super();
@@ -278,12 +253,6 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	{
 		if (this.Type != CacheTypes.Mystery && this.Type != CacheTypes.Multi) return null;
 
-		if (this.hasFinalWaypoint > -1) return this.FinalWaypoint;
-
-		WaypointDAO dao = new WaypointDAO();
-
-		CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(this.Id, false);
-
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
 			WaypointLite wp = waypoints.get(i);
@@ -291,13 +260,10 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 			{
 				// do not activate final waypoint with invalid coordinates
 				if (!wp.Pos.isValid() || wp.Pos.isZero()) continue;
-				this.FinalWaypoint = wp;
-				this.hasFinalWaypoint = 1;
 				return wp;
 			}
 		}
-		;
-		this.hasFinalWaypoint = 0;
+
 		return null;
 	}
 
@@ -339,25 +305,15 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 	{
 		if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery)) return null;
 
-		if (this.hasStartWaypoint > -1) return this.startWaypoint;
-
-		// Read Waypooints from DB
-
-		WaypointDAO dao = new WaypointDAO();
-
-		CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(this.Id, false);
-
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
 			WaypointLite wp = waypoints.get(i);
 			if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
 			{
-				this.hasStartWaypoint = 1;
-				this.startWaypoint = wp;
 				return wp;
 			}
 		}
-		this.hasStartWaypoint = 0;
+
 		return null;
 	}
 
@@ -516,10 +472,6 @@ public class CacheLite implements Comparable<CacheLite>, Serializable
 		this.Type = cache.Type;
 		this.cachedDistance = cache.cachedDistance;
 		this.Owner = cache.Owner;
-		this.hasFinalWaypoint = cache.hasFinalWaypoint;
-		this.hasStartWaypoint = cache.hasStartWaypoint;
-		this.FinalWaypoint = cache.FinalWaypoint;
-		this.startWaypoint = cache.startWaypoint;
 		this.BitFlags = cache.BitFlags;
 	}
 

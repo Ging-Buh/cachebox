@@ -245,11 +245,11 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 			if (selectedCache.HasFinalWaypoint())
 			{
-				newSelectedWaypoint = selectedCache.FinalWaypoint;
+				newSelectedWaypoint = selectedCache.GetFinalWaypoint();
 			}
 			else if (selectedCache.HasStartWaypoint())
 			{
-				newSelectedWaypoint = selectedCache.startWaypoint;
+				newSelectedWaypoint = selectedCache.GetStartWaypoint();
 			}
 			else
 			{
