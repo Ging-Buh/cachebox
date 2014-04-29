@@ -225,7 +225,8 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		{
 			if (!cacheLite.getGcCode().equals("CBPark"))
 			{
-				Database.Data.Query.GetCacheById(selectedCache.Id).setValues(selectedCache);
+				CacheLite lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
+				if (lastCache != null) lastCache.setValues(selectedCache);
 			}
 		}
 
