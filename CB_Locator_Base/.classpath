@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/gdx.jar" sourcepath="C:/Users/hoepfner/Desktop/libgdx-nightly-latest/sources/gdx-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
 	<classpathentry kind="lib" path="libs/httpclient-4.1.1.jar"/>
 	<classpathentry kind="lib" path="libs/httpcore-4.1.jar"/>
@@ -11,5 +10,6 @@
 	<classpathentry kind="lib" path="libs/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="/Mapsforge-Core"/>
 	<classpathentry kind="lib" path="libs/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="/Mapsforge-Map"/>
 	<classpathentry kind="lib" path="libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

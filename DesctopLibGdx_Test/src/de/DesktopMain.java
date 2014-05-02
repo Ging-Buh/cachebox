@@ -197,7 +197,6 @@ public class DesktopMain
 			lwjglAppCfg.setFromDisplayMode(dispMode);
 			lwjglAppCfg.fullscreen = false;
 			lwjglAppCfg.resizable = false;
-			lwjglAppCfg.useGL20 = true;
 			lwjglAppCfg.width = ui.Window.width;
 			lwjglAppCfg.height = ui.Window.height;
 			lwjglAppCfg.title = "DCB Desctop Cachebox";

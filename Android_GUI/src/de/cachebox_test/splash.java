@@ -270,7 +270,6 @@ public class splash extends Activity
 		// initial GDX
 		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = true;
 
 		// first, try to find stored preferences of workPath
 		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);

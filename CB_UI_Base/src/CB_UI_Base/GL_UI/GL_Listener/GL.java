@@ -54,7 +54,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -276,7 +275,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 	protected void setShader()
 	{
-		if (Gdx.graphics.isGL20Available()) batch.setShader(SpriteBatch.createDefaultShader());
+		batch.setShader(SpriteBatch.createDefaultShader());
 		ShaderSetted = true;
 	}
 
@@ -466,7 +465,7 @@ public class GL implements ApplicationListener, InputProcessor
 			{
 				if (modelBatch == null)
 				{
-					if (Gdx.graphics.isGL20Available()) modelBatch = new ModelBatch();
+					modelBatch = new ModelBatch();
 				}
 				else
 				{
@@ -597,7 +596,7 @@ public class GL implements ApplicationListener, InputProcessor
 		if (Global.isTestVersion())
 		{
 
-			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 
 			batch.setProjectionMatrix(prjMatrix.Matrix());
 
@@ -1080,18 +1079,18 @@ public class GL implements ApplicationListener, InputProcessor
 	{
 		// Logger.LogCat("GL_Listner => Initialize");
 
-		if (Gdx.graphics.getGLCommon() == null) return;// kann nicht initialisiert werden
+		if (Gdx.graphics.getGL20() == null) return;// kann nicht initialisiert werden
 
 		if (batch == null)
 		{
-			batch = new PolygonSpriteBatch();// PolygonSpriteBatch(10920);
+			batch = new PolygonSpriteBatch(10920);// PolygonSpriteBatch(10920);
 		}
 
 		if (modelBatch == null)
 		{
 			try
 			{
-				if (Gdx.graphics.isGL20Available()) modelBatch = new ModelBatch();
+				modelBatch = new ModelBatch();
 			}
 			catch (java.lang.NoSuchFieldError e)
 			{

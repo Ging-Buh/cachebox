@@ -22,7 +22,7 @@ public class Coordinate implements Serializable
 	 * @uml.property name="longitude"
 	 */
 	private double Longitude = 0;
-	private static final float[] mResults = new float[1];
+	private static final float[] mResults = new float[2];
 
 	public static Coordinate Project(Coordinate coord, double Direction, double Distance)
 	{

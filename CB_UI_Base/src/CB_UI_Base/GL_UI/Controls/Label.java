@@ -42,7 +42,8 @@ public class Label extends CB_View_Base
 		TOP, CENTER, BOTTOM
 	}
 
-	BitmapFontCache TextObject;
+	BitmapFontCache TextObject; // FIXME Create BitmapFontCache-Array and reduce PolygonSpriteBatch(10920) constructor for Labels with long
+								// Text
 
 	private String mText = "";
 	private BitmapFont mFont = Fonts.getNormal();
@@ -110,6 +111,7 @@ public class Label extends CB_View_Base
 	@Override
 	protected void render(Batch batch)
 	{
+
 		try
 		{
 			if (TextObject != null) TextObject.draw(batch);
@@ -117,10 +119,12 @@ public class Label extends CB_View_Base
 		catch (ArrayIndexOutOfBoundsException e)
 		{
 			// kommt manchmal wenn der Text geändert wird
+			makeText();
 		}
 		catch (NullPointerException e)
 		{
 			// kommt manchmal wenn der Text geändert wird
+			makeText();
 		}
 	}
 

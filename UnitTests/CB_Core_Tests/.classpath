@@ -6,7 +6,6 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
-	<classpathentry exported="true" kind="lib" path="lib/gdx.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI_Base"/>
 	<classpathentry exported="true" kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="/Mapsforge-Core/core-src"/>
 	<classpathentry exported="true" kind="lib" path="lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
@@ -23,14 +22,14 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.3.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-backend-lwjgl-natives.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-backend-lwjgl.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-freetype-natives.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-freetype.jar"/>
-	<classpathentry kind="lib" path="lib/gdx-natives.jar"/>
 	<classpathentry kind="lib" path="lib/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="lib/mapsforge-map-awt-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DesctopLibGdx_Test"/>
+	<classpathentry kind="lib" path="lib/gdx-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-backend-lwjgl-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-freetype-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-freetype-platform-1.0.0-natives-desktop.jar"/>
+	<classpathentry kind="lib" path="lib/gdx-platform-1.0.0-natives-desktop.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

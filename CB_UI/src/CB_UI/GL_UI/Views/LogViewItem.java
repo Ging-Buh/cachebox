@@ -78,8 +78,14 @@ public class LogViewItem extends ListViewItemBackground implements ICopyPaste
 
 	private void iniCommentLabel()
 	{
+
+		// if (logEntry.Comment.startsWith("Das war"))
+		// {
+		// logEntry.Comment = "TEst";
+		// }
+
 		lblComment = new Label(getLeftWidth(), 0, this.getWidth() - getLeftWidthStatic() - getRightWidthStatic()
-				- (UI_Size_Base.that.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.that.getMargin(), "");
+				- (UI_Size_Base.that.getMargin() * 2), this.getHeight() - headHeight - UI_Size_Base.that.getMargin(), logEntry.Comment);
 		lblComment.setWrappedText(logEntry.Comment);
 		this.addChild(lblComment);
 	}
