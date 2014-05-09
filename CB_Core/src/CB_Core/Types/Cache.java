@@ -709,6 +709,8 @@ public class Cache implements Comparable<Cache>, Serializable
 			}
 		}
 		// this.spoilerRessources = null;
+		// copy Detail Information
+		this.detail = cache.detail;
 		this.myCache = cache.myCache;
 		// this.gcLogin = null;
 
@@ -774,13 +776,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	public String getName()
 	{
 		if (Name == null) return EMPTY_STRING;
-		String n = new String(Name, UTF_8);
-
-		if (detail != null) n += "*";
-		else
-			n += "-";
-		n += waypoints.size();
-		return n;
+		return new String(Name, UTF_8);
 	}
 
 	public void setName(String name)
