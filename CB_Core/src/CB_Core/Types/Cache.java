@@ -173,11 +173,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	public boolean hasUserData;
 
 	/**
-	 * Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
-	 */
-	public String TourName = "";
-
-	/**
 	 * Name der GPX-Datei aus der importiert wurde
 	 */
 	public long GPXFilename_ID = 0;
@@ -736,7 +731,6 @@ public class Cache implements Comparable<Cache>, Serializable
 			waypoints = null;
 		}
 
-		TourName = null;
 		Owner = null;
 
 	}
@@ -1282,6 +1276,26 @@ public class Cache implements Comparable<Cache>, Serializable
 		if (detail != null)
 		{
 			return detail.getShortDescription();
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
+
+	public void setTourName(String value)
+	{
+		if (detail != null)
+		{
+			detail.TourName = value;
+		}
+	}
+
+	public String getTourName()
+	{
+		if (detail != null)
+		{
+			return detail.TourName;
 		}
 		else
 		{

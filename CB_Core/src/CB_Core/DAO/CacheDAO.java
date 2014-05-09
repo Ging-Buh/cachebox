@@ -71,9 +71,9 @@ public class CacheDAO
 			if (reader.getInt(19) > 0) cache.setFavorit(true);
 			else
 				cache.setFavorit(false);
-			if (reader.getString(20) != null) cache.TourName = reader.getString(20).trim();
+			if (reader.getString(20) != null) cache.setTourName(reader.getString(20).trim());
 			else
-				cache.TourName = "";
+				cache.setTourName("");
 
 			if (reader.getString(21) != "") cache.GPXFilename_ID = reader.getLong(21);
 			else
@@ -160,6 +160,30 @@ public class CacheDAO
 		if (reader.isNull(25)) detail.ApiStatus = (byte) 0;
 		else
 			detail.ApiStatus = (byte) reader.getInt(25);
+
+		String sDate = reader.getString(14);
+		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try
+		{
+			detail.DateHidden = iso8601Format.parse(sDate);
+		}
+		catch (ParseException e)
+		{
+		}
+
+		detail.Url = reader.getString(15).trim();
+		if (reader.getString(20) != null) detail.TourName = reader.getString(20).trim();
+		else
+			detail.TourName = "";
+		if (reader.getString(21) != "") detail.GPXFilename_ID = reader.getLong(21);
+		else
+			detail.GPXFilename_ID = -1;
+		detail.setAttributesPositive(new DLong(reader.getLong(27), reader.getLong(26)));
+		detail.setAttributesNegative(new DLong(reader.getLong(29), reader.getLong(28)));
+
+		if (reader.getString(30) != null) detail.setHint(reader.getString(30).trim());
+		else
+			detail.setHint("");
 
 		return true;
 	}
@@ -248,7 +272,7 @@ public class CacheDAO
 		args.put("GPXFilename_Id", cache.GPXFilename_ID);
 		args.put("ApiStatus", cache.getApiStatus());
 		args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
-		args.put("TourName", cache.TourName);
+		args.put("TourName", cache.getTourName());
 
 		try
 		{
@@ -357,7 +381,7 @@ public class CacheDAO
 		args.put("Favorit", cache.isFavorite() ? 1 : 0);
 		args.put("ApiStatus", cache.getApiStatus());
 		args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
-		args.put("TourName", cache.TourName);
+		args.put("TourName", cache.getTourName());
 
 		try
 		{

@@ -362,7 +362,7 @@ public class SearchForGeocaches_Core
 						cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 					}
 					cache.setName(jCache.getString("Name"));
-					cache.TourName = "";
+					cache.setTourName("");
 					cache.setNoteChecksum(0);
 					cache.NumTravelbugs = jCache.getInt("TrackableCount");
 					JSONObject jOwner = (JSONObject) jCache.getJSONObject("Owner");

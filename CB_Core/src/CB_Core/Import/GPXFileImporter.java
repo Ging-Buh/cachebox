@@ -937,7 +937,7 @@ public class GPXFileImporter
 
 		if (gpxAuthor.toLowerCase().contains("gctour"))
 		{
-			cache.TourName = gpxName;
+			cache.setTourName(gpxName);
 		}
 
 		if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon"))
