@@ -2,7 +2,6 @@ package CB_UI.GL_UI.Views;
 
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
@@ -31,7 +30,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent
 {
-	private CacheLite mCache;
+	private Cache mCache;
 	private Waypoint mWaypoint;
 
 	protected extendedCacheInfo info;

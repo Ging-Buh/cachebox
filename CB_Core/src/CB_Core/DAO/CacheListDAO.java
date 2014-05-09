@@ -25,12 +25,9 @@ import java.util.TreeMap;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
-import CB_Core.Types.CacheListLite;
-import CB_Core.Types.CacheLite;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
@@ -43,17 +40,17 @@ import CB_Utils.Util.FileIO;
 public class CacheListDAO
 {
 
-	public CacheList ReadCacheList(CacheList cacheList, String where)
+	public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails)
 	{
-		return ReadCacheList(cacheList, "", where, false);
+		return ReadCacheList(cacheList, "", where, false, fullDetails);
 	}
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where)
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails)
 	{
-		return ReadCacheList(cacheList, join, where, false);
+		return ReadCacheList(cacheList, join, where, false, fullDetails);
 	}
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription)
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails)
 	{
 		if (cacheList == null) return null;
 
@@ -61,10 +58,10 @@ public class CacheListDAO
 		cacheList.clear();
 
 		Logger.DEBUG("ReadCacheList 1.Waypoints");
-		SortedMap<Long, CB_List<WaypointLite>> waypoints;
-		waypoints = new TreeMap<Long, CB_List<WaypointLite>>();
+		SortedMap<Long, CB_List<Waypoint>> waypoints;
+		waypoints = new TreeMap<Long, CB_List<Waypoint>>();
 		// zuerst alle Waypoints einlesen
-		CB_List<WaypointLite> wpList = new CB_List<WaypointLite>();
+		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
 		long aktCacheID = -1;
 
 		CoreCursor reader = Database.Data
@@ -75,11 +72,20 @@ public class CacheListDAO
 		while (!reader.isAfterLast())
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
-			WaypointLite wp = waypointDAO.getWaypoint(reader, true);
+			Waypoint wp = waypointDAO.getWaypoint(reader, true);
+			if (!fullDetails)
+			{
+				// wenn keine FullDetails geladen werden sollen dann sollen nur die Finals und Start-Waypoints geladen werden
+				if (!(wp.IsStart || wp.Type == CacheTypes.Final))
+				{
+					reader.moveToNext();
+					continue;
+				}
+			}
 			if (wp.CacheId != aktCacheID)
 			{
 				aktCacheID = wp.CacheId;
-				wpList = new CB_List<WaypointLite>();
+				wpList = new CB_List<Waypoint>();
 				waypoints.put(aktCacheID, wpList);
 			}
 			wpList.add(wp);
@@ -109,13 +115,13 @@ public class CacheListDAO
 		CacheDAO cacheDAO = new CacheDAO();
 		while (!reader.isAfterLast())
 		{
-			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription);
+			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription, fullDetails);
 
 			cacheList.add(cache);
 			cache.waypoints.clear();
 			if (waypoints.containsKey(cache.Id))
 			{
-				CB_List<WaypointLite> tmpwaypoints = waypoints.get(cache.Id);
+				CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
 
 				for (int i = 0, n = tmpwaypoints.size(); i < n; i++)
 				{
@@ -234,7 +240,7 @@ public class CacheListDAO
 	private ArrayList<String> getDelGcCodeList(String where)
 	{
 		CacheList list = new CacheList();
-		ReadCacheList(list, where);
+		ReadCacheList(list, where, false);
 		ArrayList<String> StrList = new ArrayList<String>();
 
 		for (int i = 0, n = list.size(); i < n; i++)
@@ -312,134 +318,5 @@ public class CacheListDAO
 				}
 			}
 		}
-	}
-
-	public CacheListLite ReadCacheList(CacheListLite cacheList, String where)
-	{
-		return ReadCacheList(cacheList, "", where, false);
-	}
-
-	public CacheListLite ReadCacheList(CacheListLite cacheList, String join, String where)
-	{
-		return ReadCacheList(cacheList, join, where, false);
-	}
-
-	public CacheListLite ReadCacheList(CacheListLite cacheList, String join, String where, boolean withDescription)
-	{
-		if (cacheList == null) return null;
-
-		// Clear List before read
-		cacheList.clear();
-
-		// zuerst alle Waypoints einlesen
-		CB_List<WaypointLite> wpList = new CB_List<WaypointLite>();
-		long aktCacheID = -1;
-
-		SortedMap<Long, CB_List<WaypointLite>> waypoints = new TreeMap<Long, CB_List<WaypointLite>>();
-
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint order by CacheId",
-						null);
-		reader.moveToFirst();
-		while (!reader.isAfterLast())
-		{
-			WaypointDAO waypointDAO = new WaypointDAO();
-			WaypointLite wp = waypointDAO.getWaypoint(reader, false);
-			if (wp.CacheId != aktCacheID)
-			{
-				aktCacheID = wp.CacheId;
-				wpList = new CB_List<WaypointLite>();
-				waypoints.put(aktCacheID, wpList);
-			}
-			wpList.add(wp);
-			reader.moveToNext();
-
-		}
-		reader.close();
-
-		Logger.DEBUG("ReadCacheList 2.Caches");
-		try
-		{
-			String sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Rating, Favorit, CorrectedCoordinates, Owner, Hint";
-			if (withDescription)
-			{
-				sql += ", Description, Solver, Notes";
-			}
-			sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
-			reader = Database.Data.rawQuery(sql, null);
-
-		}
-		catch (Exception e)
-		{
-			Logger.Error("CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
-		}
-
-		if (reader == null) return cacheList;
-
-		reader.moveToFirst();
-
-		CacheDAO cacheDAO = new CacheDAO();
-		while (!reader.isAfterLast())
-		{
-			CacheLite cache = cacheDAO.ReadFromCursorLite(reader, withDescription);
-			// - boolean hasStart = false;
-			// - boolean hasFinal = false;
-			if (waypoints.containsKey(cache.Id))
-			{
-				// set Final or start waypoint
-
-				CB_List<WaypointLite> cacheWaypoints = waypoints.get(cache.Id);
-
-				cache.waypoints.clear();
-
-				for (int i = 0, n = cacheWaypoints.size(); i < n; i++)
-				{
-					WaypointLite wp = cacheWaypoints.get(i);
-
-					boolean addWp = false;
-
-					if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
-					{
-						addWp = true;
-						// - cache.hasStartWaypoint = 1;
-						// - cache.startWaypoint = wp;
-						// - hasStart = true;
-					}
-
-					if (wp.Type == CacheTypes.Final)
-					{
-						// do not activate final waypoint with invalid coordinates
-						if (!wp.Pos.isValid() || wp.Pos.isZero()) continue;
-						addWp = true;
-						// - cache.FinalWaypoint = wp;
-						// - cache.hasFinalWaypoint = 1;
-						// - hasFinal = true;
-					}
-
-					// if option showAllWaypoints staid we must put the WaypointLite to cache waypointList
-					if (addWp || CB_Core_Settings.ShowAllWaypoints.getValue())
-					{
-						cache.waypoints.add(wp/*-.makeLite()-*/);
-					}
-
-				}
-
-				cacheWaypoints.clear();
-				waypoints.remove(cache.Id);
-			}
-
-			// - if (!hasFinal) cache.hasFinalWaypoint = 0;
-			// - if (!hasStart) cache.hasStartWaypoint = 0;
-
-			cacheList.add(cache);
-			reader.moveToNext();
-
-		}
-
-		waypoints.clear();
-		reader.close();
-
-		return cacheList;
 	}
 }

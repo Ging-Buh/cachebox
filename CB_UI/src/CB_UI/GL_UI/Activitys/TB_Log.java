@@ -4,7 +4,7 @@ import java.util.Date;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.LogTypes;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -149,7 +149,7 @@ public class TB_Log extends ActivityBase
 		if (LT == LogTypes.discovered || LT == LogTypes.visited || LT == LogTypes.dropped_off || LT == LogTypes.retrieve)
 		{
 
-			CacheLite c = GlobalCore.getSelectedCache();
+			Cache c = GlobalCore.getSelectedCache();
 			if (c == null)
 			{
 				// Log Inposible, close Activity and give a Message
@@ -390,8 +390,8 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getGcCode()
-				: "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache()
+				.getGcCode() : "";
 	}
 
 	private String getCache_Name()
@@ -399,7 +399,8 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName()
+				: "";
 	}
 
 	private long getCache_ID()
@@ -415,7 +416,8 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Url : "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getUrl()
+				: "";
 	}
 
 	private int getCache_Type()

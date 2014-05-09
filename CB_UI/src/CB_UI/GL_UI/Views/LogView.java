@@ -4,9 +4,8 @@ import java.util.ArrayList;
 
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -197,9 +196,9 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 
 	}
 
-	public void SetSelectedCache(CacheLite cache, WaypointLite waypoint)
+	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
-		Cache c = new Cache(cache);
+		Cache c = cache;
 
 		if (aktCache != c)
 		{
@@ -210,7 +209,7 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		SetSelectedCache(cache, waypoint);
 	}

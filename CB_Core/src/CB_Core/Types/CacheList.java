@@ -62,7 +62,7 @@ public class CacheList extends MoveableList<Cache>
 		{
 			for (int i = 0, n = this.size(); i < n; i++)
 			{
-				CacheLite cache = this.get(i);
+				Cache cache = this.get(i);
 				cache.Distance(CalculationType.FAST, true);
 			}
 		}
@@ -82,7 +82,7 @@ public class CacheList extends MoveableList<Cache>
 			}
 			for (int i = 0, n = this.size(); i < n; i++)
 			{
-				CacheLite cache = this.get(i);
+				Cache cache = this.get(i);
 				cache.Distance(CalculationType.FAST, true, fromPos);
 			}
 		}
@@ -100,8 +100,9 @@ public class CacheList extends MoveableList<Cache>
 				{
 					if (nextCache.isAvailable())
 					{
-						if (!nextCache.isFound()) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber found
-												// kann nicht rückgängig gemacht werden.
+						if (!nextCache.isFound()) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber
+													// found
+													// kann nicht rückgängig gemacht werden.
 						{
 							if (!nextCache.ImTheOwner())
 							{
@@ -125,7 +126,7 @@ public class CacheList extends MoveableList<Cache>
 			// -> gleich den Final Waypoint auswahlen!!!
 			// When the next Cache is a mystery with final waypoint
 			// -> activate the final waypoint!!!
-			WaypointLite waypoint = nextCache.GetFinalWaypoint();
+			Waypoint waypoint = nextCache.GetFinalWaypoint();
 			if (waypoint == null)
 			{
 				// wenn ein Cache keinen Final Waypoint hat dann wird überprüft, ob dieser einen Startpunkt definiert hat

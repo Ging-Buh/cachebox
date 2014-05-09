@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Views;
 
-import CB_Core.Types.CacheLite;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
@@ -38,7 +38,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	private class extendedCacheInfo extends CacheInfo
 	{
 
-		public extendedCacheInfo(CB_RectF rec, String Name, CacheLite value)
+		public extendedCacheInfo(CB_RectF rec, String Name, Cache value)
 		{
 			super(rec, Name, value);
 		}
@@ -69,14 +69,14 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 	private CB_RectF ArrowRec;
 
-	private CacheLite mCache;
+	private Cache mCache;
 
-	public CacheLite getCache()
+	public Cache getCache()
 	{
 		return mCache;
 	}
 
-	public CacheListViewItem(CB_RectF rec, int Index, CacheLite cache)
+	public CacheListViewItem(CB_RectF rec, int Index, Cache cache)
 	{
 		super(rec, Index, cache.getName());
 		mCache = cache;
@@ -127,11 +127,11 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		{
 			Coordinate position = Locator.getCoordinate();
 
-			WaypointLite FinalWp = mCache.GetFinalWaypoint();
+			Waypoint FinalWp = mCache.GetFinalWaypoint();
 
 			Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.Pos;
 			CalculationType calcType = CalculationType.FAST;
-			CacheLite c = GlobalCore.getSelectedCache();
+			Cache c = GlobalCore.getSelectedCache();
 			if (c != null)
 			{
 				calcType = mCache.Id == GlobalCore.getSelectedCache().Id ? CalculationType.ACCURATE : CalculationType.FAST;

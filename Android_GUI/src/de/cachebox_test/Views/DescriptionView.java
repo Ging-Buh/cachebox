@@ -3,8 +3,7 @@ package de.cachebox_test.Views;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
@@ -60,7 +59,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	//
 	// }
 
-	public void SetSelectedCache(Cache cache, WaypointLite waypoint)
+	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
 		if (cache == null || WebControl == null) return;
 		if (aktCache != cache)
@@ -199,7 +198,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		// reset ScrollPos only if cache changed
 		if (aktCache.Id != cache.Id)

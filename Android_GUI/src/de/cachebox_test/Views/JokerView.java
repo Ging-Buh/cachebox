@@ -1,8 +1,8 @@
 package de.cachebox_test.Views;
 
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Core.Types.JokerEntry;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
@@ -28,7 +28,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 
 	CustomAdapter lvAdapter;
 	Activity parentActivity;
-	CacheLite aktCache = null;
+	Cache aktCache = null;
 	JokerEntry aktJoker = null;
 
 	/**
@@ -90,7 +90,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 	}
 
 	@Override
-	public void SelectedCacheChanged(final CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(final Cache cache, Waypoint waypoint)
 	{
 		main.mainActivity.runOnUiThread(new Runnable()
 		{
@@ -132,15 +132,15 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 		 */
 
 		private Context context;
-		private CacheLite cache;
+		private Cache cache;
 
-		public CustomAdapter(Context context, CacheLite cache)
+		public CustomAdapter(Context context, Cache cache)
 		{
 			this.context = context;
 			this.cache = cache;
 		}
 
-		public void setCache(CacheLite cache)
+		public void setCache(Cache cache)
 		{
 			this.cache = cache;
 

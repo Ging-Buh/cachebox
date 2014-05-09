@@ -460,7 +460,7 @@ public class SelectDB extends ActivityBase
 				synchronized (Database.Data.Query)
 				{
 					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
 					GlobalCore.checkSelectedCacheValid();
 				}
 

@@ -9,12 +9,10 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
-import CB_Core.Types.CacheListLite;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Core.Types.FieldNoteList.LoadingType;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -237,7 +235,7 @@ public class FieldNotesView extends V_ListView
 	public Menu getContextMenu()
 	{
 
-		CacheLite cache = GlobalCore.getSelectedCache();
+		Cache cache = GlobalCore.getSelectedCache();
 
 		if (cache == null) return null;
 
@@ -474,7 +472,7 @@ public class FieldNotesView extends V_ListView
 			newFieldNote.timestamp = new Date();
 			newFieldNote.CacheId = cache.Id;
 			newFieldNote.comment = "";
-			newFieldNote.CacheUrl = cache.Url;
+			newFieldNote.CacheUrl = cache.getUrl();
 			newFieldNote.cacheType = cache.Type.ordinal();
 			newFieldNote.fillType();
 			// aktFieldNoteIndex = -1;
@@ -780,7 +778,7 @@ public class FieldNotesView extends V_ListView
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 		CacheList lCaches = new CacheList();
 		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId);
+		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false);
 		if (lCaches.size() > 0) tmpCache = lCaches.get(0);
 		final Cache cache = tmpCache;
 
@@ -815,7 +813,7 @@ public class FieldNotesView extends V_ListView
 							// damit das Smiley Symbol aus der Map und der CacheList verschwindet
 							synchronized (Database.Data.Query)
 							{
-								CacheLite tc = Database.Data.Query.GetCacheById(cache.Id);
+								Cache tc = Database.Data.Query.GetCacheById(cache.Id);
 								if (tc != null)
 								{
 									tc.setFound(false);
@@ -909,12 +907,12 @@ public class FieldNotesView extends V_ListView
 
 		// suche den Cache aus der DB.
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
-		CacheListLite lCaches = new CacheListLite();
+		CacheList lCaches = new CacheList();
 		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId);
-		CacheLite tmpCache = null;
+		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false);
+		Cache tmpCache = null;
 		if (lCaches.size() > 0) tmpCache = lCaches.get(0);
-		CacheLite cache = tmpCache;
+		Cache cache = tmpCache;
 
 		if (cache == null)
 		{
@@ -935,7 +933,7 @@ public class FieldNotesView extends V_ListView
 			cache = Database.Data.Query.GetCacheByGcCode(aktFieldNote.gcCode);
 		}
 
-		WaypointLite finalWp = null;
+		Waypoint finalWp = null;
 		if (cache != null)
 		{
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();

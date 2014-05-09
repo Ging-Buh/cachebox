@@ -1,7 +1,6 @@
 package de.cachebox_test.Views;
 
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.JokerEntry;
 import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -36,10 +35,10 @@ public class JokerViewItem extends View
 	private TextPaint LayoutTextPaintBold;
 	private int LineSep;
 
-	public JokerViewItem(Context context, CacheLite cache, JokerEntry joker, Boolean BackColorId)
+	public JokerViewItem(Context context, Cache cache, JokerEntry joker, Boolean BackColorId)
 	{
 		super(context);
-		this.cache = new Cache(cache);
+		this.cache = cache;
 		this.joker = joker;
 
 		BackColorChanger = BackColorId;

@@ -8,7 +8,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -67,7 +67,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 		@Override
 		public void run()
 		{
-			ArrayList<CacheLite> chkList = new ArrayList<CacheLite>();
+			ArrayList<Cache> chkList = new ArrayList<Cache>();
 
 			synchronized (Database.Data.Query)
 			{
@@ -85,10 +85,10 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 
 			int start = 0;
 			int stop = BlockSize;
-			ArrayList<CacheLite> addedReturnList = new ArrayList<CacheLite>();
+			ArrayList<Cache> addedReturnList = new ArrayList<Cache>();
 
 			result = 0;
-			ArrayList<CacheLite> chkList100;
+			ArrayList<Cache> chkList100;
 
 			boolean cancelThread = false;
 
@@ -105,7 +105,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 					// thread abgebrochen
 					cancelThread = true;
 				}
-				chkList100 = new ArrayList<CacheLite>();
+				chkList100 = new ArrayList<Cache>();
 				if (!cancelThread)
 				{
 
@@ -114,7 +114,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 						break;
 					}
 
-					Iterator<CacheLite> Iterator2 = chkList.iterator();
+					Iterator<Cache> Iterator2 = chkList.iterator();
 
 					int index = 0;
 					do
@@ -160,7 +160,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			{
 				Database.Data.beginTransaction();
 
-				Iterator<CacheLite> iterator = addedReturnList.iterator();
+				Iterator<Cache> iterator = addedReturnList.iterator();
 				CacheDAO dao = new CacheDAO();
 				do
 				{
@@ -172,7 +172,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 					{
 						cancelThread = true;
 					}
-					CacheLite writeTmp = iterator.next();
+					Cache writeTmp = iterator.next();
 					if (dao.UpdateDatabaseCacheState(writeTmp)) ChangedCount++;
 				}
 				while (iterator.hasNext() && !cancelThread);
@@ -200,7 +200,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				{
 					String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
 					cacheListDAO = null;
 				}
 

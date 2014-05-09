@@ -21,7 +21,7 @@ import CB_Core.CoreSettingsForward;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Utils.Util.SyncronizeHelper;
 
 /**
@@ -56,14 +56,14 @@ public class CachListChangedEventList
 		SyncronizeHelper.sync("CachListChangedEventList 45");
 		synchronized (Database.Data.Query)
 		{
-			CacheLite cache = Database.Data.Query.GetCacheByGcCode("CBPark");
+			Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
 
 			if (cache != null) Database.Data.Query.remove(cache);
 
 			// add Parking Cache
 			if (CB_Core_Settings.ParkingLatitude.getValue() != 0)
 			{
-				cache = new CacheLite(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(),
+				cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(),
 						"My Parking area", CacheTypes.MyParking, "CBPark");
 				Database.Data.Query.add(0, cache);
 			}

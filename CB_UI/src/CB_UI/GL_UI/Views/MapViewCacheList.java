@@ -21,8 +21,8 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
-import CB_Core.Types.CacheLite;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -120,15 +120,15 @@ public class MapViewCacheList implements CacheListChangedEventListner
 						{
 							for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 							{
-								CacheLite cache = Database.Data.Query.get(i);
+								Cache cache = Database.Data.Query.get(i);
 								// Funde
 								if (hideMyFinds && cache.isFound()) continue;
 								boolean selectedCache = GlobalCore.getSelectedCache().Id == cache.Id;
 								boolean showWaypoints = showAllWaypoints || selectedCache;
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
-								WaypointLite fwp = null; // Final Waypoint
-								WaypointLite swp = null; // Start Waypoint
+								Waypoint fwp = null; // Final Waypoint
+								Waypoint swp = null; // Start Waypoint
 								// sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
 								if (showWaypoints)
 								{
@@ -243,7 +243,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		}
 	}
 
-	private void addWaypoints(CacheLite cache, int iconSize)
+	private void addWaypoints(Cache cache, int iconSize)
 	{
 		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
@@ -251,12 +251,12 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		}
 	}
 
-	private void addWaypoint(CacheLite cache, WaypointLite wp, int iconSize)
+	private void addWaypoint(Cache cache, Waypoint wp, int iconSize)
 	{
 		// im Bild ?
 		double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, wp.Pos.getLongitude());
 		double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, wp.Pos.getLatitude());
-		if (isVisible(MapX, MapY) || (GlobalCore.getSelectedWaypoint() != null && GlobalCore.getSelectedWaypoint().equals(wp)))
+		if (isVisible(MapX, MapY) || (GlobalCore.getSelectedWaypoint() == wp))
 		{
 			WaypointRenderInfo wpi = new WaypointRenderInfo();
 			wpi.MapX = (float) MapX;
@@ -266,7 +266,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			wpi.Cache = cache;
 			wpi.Waypoint = wp;
 			wpi.UnderlayIcon = getUnderlayIcon(wpi.Cache, wpi.Waypoint, iconSize);
-			wpi.Selected = (GlobalCore.getSelectedWaypoint() != null && GlobalCore.getSelectedWaypoint().equals(wp));
+			wpi.Selected = (GlobalCore.getSelectedWaypoint() == wp);
 			if (wpi.Selected) selectedWP = wpi;
 			tmplist.add(wpi);
 		}
@@ -277,14 +277,14 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		return ((x >= point1.x) && (x < point2.x) && (Math.abs(y) > Math.abs(point1.y)) && (Math.abs(y) < Math.abs(point2.y)));
 	}
 
-	private Sprite getWaypointIcon(WaypointLite waypoint)
+	private Sprite getWaypointIcon(Waypoint waypoint)
 	{
 		if ((waypoint.Type == CacheTypes.MultiStage) && (waypoint.IsStart)) return SpriteCacheBase.MapIcons.get(24);
 		else
 			return SpriteCacheBase.MapIcons.get(waypoint.Type.ordinal());
 	}
 
-	private Sprite getCacheIcon(CacheLite cache, int iconSize)
+	private Sprite getCacheIcon(Cache cache, int iconSize)
 	{
 		if ((iconSize < 1) && (cache.Id != GlobalCore.getSelectedCache().Id))
 		{
@@ -297,7 +297,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		}
 	}
 
-	private Sprite getMapIcon(CacheLite cache)
+	private Sprite getMapIcon(Cache cache)
 	{
 		int IconId;
 		if (cache.ImTheOwner()) IconId = 26;
@@ -312,7 +312,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		return SpriteCacheBase.MapIcons.get(IconId);
 	}
 
-	private Sprite getSmallMapIcon(CacheLite cache)
+	private Sprite getSmallMapIcon(Cache cache)
 	{
 		int iconId = 0;
 
@@ -375,7 +375,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 	}
 
-	private Sprite getUnderlayIcon(CacheLite cache, WaypointLite waypoint, int iconSize)
+	private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint, int iconSize)
 	{
 		if ((iconSize == 0) && (cache.Id != GlobalCore.getSelectedCache().Id))
 		{
@@ -396,7 +396,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			}
 			else
 			{
-				if (waypoint.equals(GlobalCore.getSelectedWaypoint()))
+				if (waypoint == GlobalCore.getSelectedWaypoint())
 				{
 					return SpriteCacheBase.MapOverlay.get(1);
 				}
@@ -501,8 +501,8 @@ public class MapViewCacheList implements CacheListChangedEventListner
 	{
 		public float MapX;
 		public float MapY;
-		public CacheLite Cache;
-		public WaypointLite Waypoint;
+		public Cache Cache;
+		public Waypoint Waypoint;
 		public boolean Selected;
 		public Sprite Icon;
 		public Sprite UnderlayIcon;

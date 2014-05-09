@@ -27,6 +27,10 @@ public class TestCursor extends CoreCursor
 	{
 		try
 		{
+			if (rs.isBeforeFirst())
+			{
+				rs.next();
+			}
 			if (rs.isFirst()) return true;
 			return rs.first();
 		}

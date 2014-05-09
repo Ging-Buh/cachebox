@@ -153,7 +153,7 @@ public class DescriptionImageGrabber
 		URI baseUri;
 		try
 		{
-			baseUri = URI.create(Cache.Url);
+			baseUri = URI.create(Cache.getUrl());
 		}
 		catch (Exception exc)
 		{
@@ -166,10 +166,10 @@ public class DescriptionImageGrabber
 
 		if (baseUri == null)
 		{
-			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGcCode();
+			Cache.setUrl("http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGcCode());
 			try
 			{
-				baseUri = URI.create(Cache.Url);
+				baseUri = URI.create(Cache.getUrl());
 			}
 			catch (Exception exc)
 			{
@@ -318,7 +318,7 @@ public class DescriptionImageGrabber
 		URI baseUri;
 		try
 		{
-			baseUri = URI.create(Cache.Url);
+			baseUri = URI.create(Cache.getUrl());
 		}
 		catch (Exception exc)
 		{
@@ -327,10 +327,10 @@ public class DescriptionImageGrabber
 
 		if (baseUri == null)
 		{
-			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGcCode();
+			Cache.setUrl("http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGcCode());
 			try
 			{
-				baseUri = URI.create(Cache.Url);
+				baseUri = URI.create(Cache.getUrl());
 			}
 			catch (Exception exc)
 			{
@@ -338,9 +338,9 @@ public class DescriptionImageGrabber
 			}
 		}
 
-		CB_List<Segment> imgTags = Segmentize(Cache.shortDescription, "<img", ">");
+		CB_List<Segment> imgTags = Segmentize(Cache.getShortDescription(), "<img", ">");
 
-		imgTags.addAll(Segmentize(Cache.longDescription, "<img", ">"));
+		imgTags.addAll(Segmentize(Cache.getLongDescription(), "<img", ">"));
 
 		for (int i = 0, n = imgTags.size(); i < n; i++)
 		{

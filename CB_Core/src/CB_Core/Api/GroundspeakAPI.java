@@ -30,7 +30,6 @@ import org.json.JSONTokener;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.CacheDAO;
-import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -39,14 +38,11 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheList;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
@@ -482,7 +478,7 @@ public class GroundspeakAPI
 	 * @param caches
 	 * @return
 	 */
-	public static int GetGeocacheStatus(ArrayList<CacheLite> caches)
+	public static int GetGeocacheStatus(ArrayList<Cache> caches)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -507,7 +503,7 @@ public class GroundspeakAPI
 			requestString += "\"CacheCodes\":[";
 
 			int i = 0;
-			for (CacheLite cache : caches)
+			for (Cache cache : caches)
 			{
 				requestString += "\"" + cache.getGcCode() + "\"";
 				if (i < caches.size() - 1) requestString += ",";
@@ -538,11 +534,11 @@ public class GroundspeakAPI
 					{
 						JSONObject jCache = (JSONObject) geocacheStatuses.get(ii);
 
-						Iterator<CacheLite> iterator = caches.iterator();
+						Iterator<Cache> iterator = caches.iterator();
 
 						do
 						{
-							CacheLite tmp = iterator.next();
+							Cache tmp = iterator.next();
 
 							if (jCache.getString("CacheCode").equals(tmp.getGcCode()))
 							{
@@ -1499,17 +1495,21 @@ public class GroundspeakAPI
 		ImageDAO imageDAO = new ImageDAO();
 		WaypointDAO waypointDAO = new WaypointDAO();
 
-		CacheListDAO listDao = new CacheListDAO();
-		CacheList FullCacheList = new CacheList();
-		listDao.ReadCacheList(FullCacheList, "");
-
 		for (Cache cache : apiCaches)
 		{
-			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(CacheLite.MapZoomLevel, cache.Longitude());
-			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, cache.Latitude());
+			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 
-			Cache aktCache = FullCacheList.GetCacheById(cache.Id);
-
+			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+			if (aktCache == null)
+			{
+				aktCache = cacheDAO.getFromDbByCacheId(cache.Id);
+			}
+			// Read Detail Info of Cache if not available
+			if ((aktCache != null) && (aktCache.detail == null))
+			{
+				aktCache.loadDetail();
+			}
 			// If Cache into DB, extract saved rating
 			if (aktCache != null)
 			{
@@ -1523,7 +1523,7 @@ public class GroundspeakAPI
 			}
 
 			// Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
-			if (cache.tmpNote != null)
+			if (cache.getTmpNote() != null)
 			{
 				String oldNote = Database.GetNote(cache);
 				String newNote = "";
@@ -1543,7 +1543,7 @@ public class GroundspeakAPI
 																										// the beginning of the groundspeak
 																										// block
 					newNote += begin + System.getProperty("line.separator");
-					newNote += cache.tmpNote;
+					newNote += cache.getTmpNote();
 					newNote += System.getProperty("line.separator") + end;
 					newNote += oldNote.substring(iEnd + end.length(), oldNote.length());
 				}
@@ -1551,15 +1551,15 @@ public class GroundspeakAPI
 				{
 					newNote = oldNote + System.getProperty("line.separator");
 					newNote += begin + System.getProperty("line.separator");
-					newNote += cache.tmpNote;
+					newNote += cache.getTmpNote();
 					newNote += System.getProperty("line.separator") + end;
 				}
-				cache.tmpNote = newNote;
-				Database.SetNote(cache, cache.tmpNote);
+				cache.setTmpNote(newNote);
+				Database.SetNote(cache, cache.getTmpNote());
 			}
 
 			// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-			cache.longDescription = "";
+			cache.setLongDescription("");
 
 			for (LogEntry log : apiLogs)
 			{
@@ -1590,7 +1590,7 @@ public class GroundspeakAPI
 					{
 						for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
 						{
-							WaypointLite wp = aktCache.waypoints.get(j);
+							Waypoint wp = aktCache.waypoints.get(j);
 							if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode()))
 							{
 								if (wp.IsUserWaypoint) update = false;
@@ -1629,10 +1629,6 @@ public class GroundspeakAPI
 		Database.Data.endTransaction();
 
 		Database.Data.GPXFilenameUpdateCacheCount();
-
-		// release tmp full CacheList
-		FullCacheList.dispose();
-		FullCacheList = null;
 
 	}
 

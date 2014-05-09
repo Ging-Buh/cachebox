@@ -1,8 +1,8 @@
 package CB_UI.GL_UI.Views;
 
 import CB_Core.Api.GroundspeakAPI;
-import CB_Core.Types.CacheLite;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import CB_Locator.GPS;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -295,7 +295,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				if (GlobalCore.getSelectedCache() == null) return true;
-				platformConector.callUrl(GlobalCore.getSelectedCache().Url);
+				platformConector.callUrl(GlobalCore.getSelectedCache().getUrl());
 				return true;
 			}
 		});
@@ -343,8 +343,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		if (WaypointLabel == null || CachesFoundLabel == null || CoordLabel == null) return;
 		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
 
-		CacheLite selectedCache = GlobalCore.getSelectedCache();
-		WaypointLite selectedWaypoint = GlobalCore.getSelectedWaypoint();
+		Cache selectedCache = GlobalCore.getSelectedCache();
+		Waypoint selectedWaypoint = GlobalCore.getSelectedWaypoint();
 
 		if (selectedCache != null)
 		{
@@ -416,7 +416,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		GL.that.RunOnGL(new IRunOnGL()
 		{

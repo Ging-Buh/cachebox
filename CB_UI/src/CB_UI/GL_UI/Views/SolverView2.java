@@ -7,9 +7,7 @@ import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverZeile;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
@@ -277,13 +275,13 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		if (cache == this.cache) return; // Cache hat sich nicht geändert!
 		// Solver speichern
 		if (this.cache != null) Database.SetSolver(this.cache, solver.getSolverString());
 		// nächsten Cache laden
-		this.cache = new Cache(cache);
+		this.cache = cache;
 		intiList();
 	}
 
@@ -430,7 +428,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		if (result != null)
 		{
 			// Create New Waypoint
-			Waypoint wp = new Waypoint();
+			Waypoint wp = new Waypoint(true);
 			wp.CacheId = GlobalCore.getSelectedCache().Id;
 			wp.setCoordinate(result);
 			wp.Type = CacheTypes.Final;

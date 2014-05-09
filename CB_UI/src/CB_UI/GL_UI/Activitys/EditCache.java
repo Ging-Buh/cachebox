@@ -9,7 +9,6 @@ import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -156,18 +155,18 @@ public class EditCache extends ActivityBase
 
 	public void Update(Cache cache)
 	{
-		newValues = new Cache();
+		newValues = new Cache(true);
 		newValues.copyFrom(cache);
-		newValues.shortDescription = "";
-		newValues.longDescription = Database.GetDescription(cache);
-		cache.longDescription = newValues.longDescription;
+		newValues.setShortDescription("");
+		newValues.setLongDescription(Database.GetDescription(cache));
+		cache.setLongDescription(newValues.getLongDescription());
 		this.cache = cache;
 		doShow();
 	}
 
 	public void Create()
 	{
-		newValues = new Cache();
+		newValues = new Cache(true);
 		newValues.Type = CacheTypes.Traditional;
 		newValues.Size = CacheSizes.micro;
 		newValues.Difficulty = 1;
@@ -185,13 +184,13 @@ public class EditCache extends ActivityBase
 		while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
 		newValues.setName(newValues.getGcCode());
 		newValues.setOwner("Unbekannt");
-		newValues.DateHidden = new Date();
+		newValues.setDateHidden(new Date());
 		newValues.setArchived(false);
 		newValues.setAvailable(true);
 		newValues.setFound(false);
 		newValues.NumTravelbugs = 0;
-		newValues.shortDescription = "";
-		newValues.longDescription = "";
+		newValues.setShortDescription("");
+		newValues.setLongDescription("");
 		this.cache = newValues;
 		doShow();
 	}
@@ -220,8 +219,8 @@ public class EditCache extends ActivityBase
 		cacheCoords.setCoordinate(cache.Pos);
 		cacheTitle.setText(cache.getName());
 		cacheOwner.setText(cache.getOwner());
-		if (cache.longDescription.equals(GlobalCore.br)) cache.longDescription = "";
-		cacheDescription.setText(cache.longDescription);
+		if (cache.getLongDescription().equals(GlobalCore.br)) cache.setLongDescription("");
+		cacheDescription.setText(cache.getLongDescription());
 		this.show();
 	}
 
@@ -237,7 +236,7 @@ public class EditCache extends ActivityBase
 				String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
 				cache.Id = Cache.GenerateCacheId(gcc);
 
-				CacheLite cl = Database.Data.Query.GetCacheById(cache.Id);
+				Cache cl = Database.Data.Query.GetCacheById(cache.Id);
 
 				if (cl != null)
 				{
@@ -259,7 +258,7 @@ public class EditCache extends ActivityBase
 				cache.Pos = newValues.Pos;
 				cache.setName(cacheTitle.getText());
 				cache.setOwner(cacheOwner.getText());
-				cache.longDescription = cacheDescription.getText();
+				cache.setLongDescription(cacheDescription.getText());
 				if (update)
 				{
 					cacheDAO.UpdateDatabase(cache);
@@ -275,7 +274,7 @@ public class EditCache extends ActivityBase
 				}
 
 				// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-				cache.longDescription = "";
+				cache.setLongDescription("");
 				finish();
 				return true;
 			}

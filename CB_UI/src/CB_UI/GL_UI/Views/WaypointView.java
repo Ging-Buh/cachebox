@@ -4,9 +4,7 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -200,9 +198,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				}
 				else
 				{
-					WaypointLite waypoint = cache.waypoints.get(position - 1);
-					WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache,
-							waypoint.makeFull());
+					Waypoint waypoint = cache.waypoints.get(position - 1);
+					WaypointViewItem v = new WaypointViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache, waypoint);
 					v.setClickable(true);
 					v.setOnClickListener(onItemClickListner);
 					v.setOnLongClickListener(onItemLongClickListner);
@@ -222,27 +219,10 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	}
 
-	private boolean ifCacheWaypointChange(CacheLite cache1, CacheLite cache2, WaypointLite waypoint1, WaypointLite waypoint2)
-	{
-		if (cache1 == null && cache2 == null) return false;
-		if (cache1 == null && cache2 != null) return true;
-		if (cache2 == null && cache1 != null) return true;
-
-		if (!cache1.equals(cache2)) return true;
-
-		if (waypoint1 == null && waypoint2 == null) return false;
-		if (waypoint1 == null && waypoint2 != null) return true;
-		if (waypoint2 == null && waypoint1 != null) return true;
-
-		if (!waypoint1.equals(waypoint2)) return true;
-
-		return false;
-	}
-
-	public void SetSelectedCache(CacheLite cache, WaypointLite waypoint)
+	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
 
-		if (ifCacheWaypointChange(cache, aktCache, waypoint, aktWaypoint))
+		if (aktCache != cache)
 		{
 			aktCache = GlobalCore.getSelectedCache();
 			this.setBaseAdapter(null);
@@ -288,7 +268,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		if (GlobalCore.getSelectedWaypoint() != null)
 		{
 
-			if (aktWaypoint != null && aktWaypoint.equals(GlobalCore.getSelectedWaypoint()))
+			if (aktWaypoint == GlobalCore.getSelectedWaypoint())
 			{
 				// is selected
 				return;
@@ -299,9 +279,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 			for (int i = 0, n = aktCache.waypoints.size(); i < n; i++)
 			{
-				WaypointLite wp = aktCache.waypoints.get(i);
+				Waypoint wp = aktCache.waypoints.get(i);
 				id++;
-				if (wp.equals(aktWaypoint))
+				if (wp == aktWaypoint)
 				{
 					this.setSelection(id);
 					if (this.isDragable())
@@ -334,7 +314,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		SetSelectedCache(cache, waypoint);
 	}

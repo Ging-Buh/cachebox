@@ -6,9 +6,8 @@ import java.util.Locale;
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -215,7 +214,7 @@ public class CacheDraw
 			try
 			{
 				SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-				dateString = postFormater.format(cache.DateHidden);
+				dateString = postFormater.format(cache.getDateHidden());
 			}
 			catch (Exception e)
 			{
@@ -395,7 +394,7 @@ public class CacheDraw
 
 	}
 
-	private static void DrawBearing(CacheLite cache, Canvas canvas, CB_Rect drawingRec)
+	private static void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec)
 	{
 
 		if (Locator.Valid())
@@ -412,7 +411,7 @@ public class CacheDraw
 	}
 
 	@SuppressWarnings("unused")
-	public void DrawBearing(CacheLite cache, Canvas canvas, CB_Rect drawingRec, WaypointLite waypoint)
+	public void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec, Waypoint waypoint)
 	{
 		if (Locator.Valid())
 		{
@@ -436,7 +435,7 @@ public class CacheDraw
 		}
 	}
 
-	private static void DrawBearing(CacheLite cache, Canvas canvas, CB_Rect drawingRec, String Distance, double Bearing)
+	private static void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec, String Distance, double Bearing)
 	{
 
 		double scale = (double) UI_Size_Base.that.getScaledFontSize() / UiSizes.that.getArrowScaleList();

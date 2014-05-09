@@ -31,7 +31,6 @@ import CB_Core.Enums.LogTypes;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.DLong;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -130,7 +129,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 
 			Boolean CacheERROR = false;
 
-			Cache cache = new Cache();
+			Cache cache = new Cache(true);
 			cache.setArchived(jCache.getBoolean("Archived"));
 			cache.setAttributesPositive(new DLong(0, 0));
 			cache.setAttributesNegative(new DLong(0, 0));
@@ -151,14 +150,14 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 				}
 			}
 			cache.setAvailable(jCache.getBoolean("Available"));
-			cache.DateHidden = new Date();
+			cache.setDateHidden(new Date());
 			try
 			{
 				String dateCreated = jCache.getString("DateCreated");
 				int date1 = dateCreated.indexOf("/Date(");
 				int date2 = dateCreated.lastIndexOf("-");
 				String date = dateCreated.substring(date1 + 6, date2);
-				cache.DateHidden = new Date(Long.valueOf(date));
+				cache.setDateHidden(new Date(Long.valueOf(date)));
 			}
 			catch (Exception exc)
 			{
@@ -213,24 +212,24 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			{
 				try
 				{
-					cache.longDescription = jCache.getString("LongDescription");
+					cache.setLongDescription(jCache.getString("LongDescription"));
 				}
 				catch (Exception e1)
 				{
 					Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
-					cache.longDescription = "";
+					cache.setLongDescription("");
 				}
 				if (jCache.getBoolean("LongDescriptionIsHtml") == false)
 				{
-					cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+					cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 				}
 			}
 			cache.setName(jCache.getString("Name"));
-			cache.noteCheckSum = 0;
+			cache.setNoteChecksum(0);
 			cache.NumTravelbugs = jCache.getInt("TrackableCount");
 			JSONObject jOwner = (JSONObject) jCache.getJSONObject("Owner");
 			cache.setOwner(jOwner.getString("UserName"));
-			cache.PlacedBy = cache.getOwner();
+			cache.setPlacedBy(cache.getOwner());
 			try
 			{
 				cache.Pos = new CoordinateGPS(jCache.getDouble("Latitude"), jCache.getDouble("Longitude"));
@@ -244,28 +243,28 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			{
 				try
 				{
-					cache.shortDescription = jCache.getString("ShortDescription");
+					cache.setShortDescription(jCache.getString("ShortDescription"));
 				}
 				catch (Exception e)
 				{
 					Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
-					cache.shortDescription = "";
+					cache.setShortDescription("");
 				}
 				if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
 				{
-					cache.shortDescription = cache.shortDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+					cache.setShortDescription(cache.getShortDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 				}
 			}
 			JSONObject jContainer = jCache.getJSONObject("ContainerType");
 			int jSize = jContainer.getInt("ContainerTypeId");
 			cache.Size = CacheSizes.parseInt(GroundspeakAPI.getCacheSize(jSize));
-			cache.solverCheckSum = 0;
+			cache.setSolverChecksum(0);
 			cache.Terrain = (float) jCache.getDouble("Terrain");
 			cache.Type = CacheTypes.Traditional;
 			JSONObject jCacheType = jCache.getJSONObject("CacheType");
 			cache.Type = GroundspeakAPI.getCacheType(jCacheType.getInt("GeocacheTypeId"));
-			cache.Url = jCache.getString("Url");
-			cache.ApiStatus = apiStatus;
+			cache.setUrl(jCache.getString("Url"));
+			cache.setApiStatus(apiStatus);
 
 			// Chk if Own or Found
 			Boolean exclude = false;
@@ -372,7 +371,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 				for (int j = 0; j < waypoints.length(); j++)
 				{
 					JSONObject jWaypoints = (JSONObject) waypoints.get(j);
-					Waypoint waypoint = new Waypoint();
+					Waypoint waypoint = new Waypoint(true);
 					waypoint.CacheId = cache.Id;
 
 					try
@@ -400,7 +399,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 					{
 						continue; // only corrected Coordinate
 					}
-					Waypoint waypoint = new Waypoint();
+					Waypoint waypoint = new Waypoint(true);
 					waypoint.CacheId = cache.Id;
 					try
 					{
@@ -427,7 +426,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			{
 				String s = (String) note;
 				System.out.println(s);
-				cache.tmpNote = s;
+				cache.setTmpNote(s);
 			}
 
 		}
@@ -448,7 +447,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 		}
 	}
 
-	protected void actualizeSpoilerOfActualCache(CacheLite cache)
+	protected void actualizeSpoilerOfActualCache(Cache cache)
 	{
 		// hier im Core nichts machen da hier keine UI vorhanden ist
 	}

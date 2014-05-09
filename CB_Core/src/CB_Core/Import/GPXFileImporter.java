@@ -16,6 +16,7 @@ import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheDetail;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
@@ -44,8 +45,8 @@ public class GPXFileImporter
 	private Integer countwpt = 0;
 	private Integer errors = 0;
 
-	private Cache cache = new Cache();
-	private Waypoint waypoint = new Waypoint();
+	private Cache cache = new Cache(true);
+	private Waypoint waypoint = new Waypoint(true);
 	private LogEntry log = new LogEntry();
 	private Category category = new Category();
 	private GpxFilename gpxFilename = null;
@@ -932,6 +933,7 @@ public class GPXFileImporter
 	 */
 	private void createCache(Map<String, String> values) throws Exception
 	{
+		if (cache.detail == null) cache.detail = new CacheDetail();
 
 		if (gpxAuthor.toLowerCase().contains("gctour"))
 		{
@@ -952,7 +954,7 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_time"))
 		{
-			cache.DateHidden = parseDate(values.get("wpt_time"));
+			cache.setDateHidden(parseDate(values.get("wpt_time")));
 		}
 
 		if (values.containsKey("cache_attribute_id"))
@@ -962,7 +964,7 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_url"))
 		{
-			cache.Url = values.get("wpt_url");
+			cache.setUrl(values.get("wpt_url"));
 		}
 
 		// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
@@ -1034,7 +1036,7 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_placed_by"))
 		{
-			cache.PlacedBy = values.get("cache_placed_by");
+			cache.setPlacedBy(values.get("cache_placed_by"));
 		}
 
 		if (values.containsKey("cache_owner"))
@@ -1089,12 +1091,12 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_country"))
 		{
-			cache.Country = values.get("cache_country");
+			cache.setCountry(values.get("cache_country"));
 		}
 
 		if (values.containsKey("cache_state"))
 		{
-			cache.State = values.get("cache_state");
+			cache.setState(values.get("cache_state"));
 		}
 
 		if (values.containsKey("cache_attributes_count"))
@@ -1141,21 +1143,21 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_short_description"))
 		{
-			cache.shortDescription = values.get("cache_short_description").trim();
+			cache.setShortDescription(values.get("cache_short_description").trim());
 
 			if (values.containsKey("cache_short_description_html") && values.get("cache_short_description_html").equalsIgnoreCase("False"))
 			{
-				cache.shortDescription = cache.shortDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+				cache.setShortDescription(cache.getShortDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 			}
 		}
 
 		if (values.containsKey("cache_long_description"))
 		{
-			cache.longDescription = values.get("cache_long_description").trim();
+			cache.setLongDescription(values.get("cache_long_description").trim());
 
 			if (values.containsKey("cache_long_description_html") && values.get("cache_long_description_html").equalsIgnoreCase("False"))
 			{
-				cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+				cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 			}
 		}
 
@@ -1267,9 +1269,6 @@ public class GPXFileImporter
 			// Neue CacheInfo erstellen und zur Liste Hinzufügen
 			CacheInfoList.putNewInfo(cache);
 		}
-
-		cache.clear();
-
 	}
 
 	private void createWaypoint(Map<String, String> values) throws Exception

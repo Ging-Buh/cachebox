@@ -24,7 +24,7 @@ import CB_Core.Api.API_ErrorEventHandlerList;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Map.ManagerBase;
@@ -274,7 +274,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		synchronized (Database.Data.Query)
 		{
 			CacheListDAO cacheListDAO = new CacheListDAO();
-			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
 			cacheListDAO = null;
 		}
 		CachListChangedEventList.Call();
@@ -348,7 +348,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			{
 				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 				{
-					CacheLite c = Database.Data.Query.get(i);
+					Cache c = Database.Data.Query.get(i);
 					if (c.getGcCode().equalsIgnoreCase(sGc))
 					{
 						Logger.DEBUG("TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");

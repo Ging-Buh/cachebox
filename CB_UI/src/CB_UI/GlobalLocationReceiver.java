@@ -2,7 +2,7 @@ package CB_UI;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Core.Types.CacheWithWP;
 import CB_Locator.GPS;
 import CB_Locator.Location.ProviderType;
@@ -160,7 +160,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 									for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 									{
-										CacheLite cache = Database.Data.Query.get(i);
+										Cache cache = Database.Data.Query.get(i);
 										z++;
 										if (z >= 50)
 										{

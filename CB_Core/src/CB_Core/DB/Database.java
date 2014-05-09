@@ -12,12 +12,11 @@ import java.util.Map.Entry;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheListLite;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.CacheList;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core;
 import CB_Utils.Lists.CB_List;
@@ -29,7 +28,7 @@ public abstract class Database extends Database_Core
 	public static Database Data;
 	public static Database FieldNotes;
 	public static Database Settings;
-	public CacheListLite Query;
+	public CacheList Query;
 
 	public enum DatabaseType
 	{
@@ -47,7 +46,7 @@ public abstract class Database extends Database_Core
 		{
 		case CacheBox:
 			latestDatabaseChange = DatabaseVersions.LatestDatabaseChange;
-			Query = new CacheListLite();
+			Query = new CacheList();
 			break;
 		case FieldNotes:
 			latestDatabaseChange = DatabaseVersions.LatestDatabaseFieldNoteChange;
@@ -418,7 +417,7 @@ public abstract class Database extends Database_Core
 	}
 
 	// Methoden für Waypoint
-	public static void DeleteFromDatabase(WaypointLite WP)
+	public static void DeleteFromDatabase(Waypoint WP)
 	{
 		Replication.WaypointDelete(WP.CacheId, 0, 1, WP.getGcCode());
 		try
@@ -475,7 +474,7 @@ public abstract class Database extends Database_Core
 	public static String GetNote(Cache cache)
 	{
 		String resultString = GetNote(cache.Id);
-		cache.noteCheckSum = (int) SDBM_Hash.sdbm(resultString);
+		cache.setNoteChecksum((int) SDBM_Hash.sdbm(resultString));
 		return resultString;
 	}
 
@@ -512,11 +511,11 @@ public abstract class Database extends Database_Core
 	{
 		int newNoteCheckSum = (int) SDBM_Hash.sdbm(value);
 
-		Replication.NoteChanged(cache.Id, cache.noteCheckSum, newNoteCheckSum);
-		if (newNoteCheckSum != cache.noteCheckSum)
+		Replication.NoteChanged(cache.Id, cache.getNoteChecksum(), newNoteCheckSum);
+		if (newNoteCheckSum != cache.getNoteChecksum())
 		{
 			SetNote(cache.Id, value);
-			cache.noteCheckSum = newNoteCheckSum;
+			cache.setNoteChecksum(newNoteCheckSum);
 		}
 	}
 
@@ -530,7 +529,7 @@ public abstract class Database extends Database_Core
 	public static String GetSolver(Cache cache)
 	{
 		String resultString = GetSolver(cache.Id);
-		cache.solverCheckSum = (int) SDBM_Hash.sdbm(resultString);
+		cache.setSolverChecksum((int) SDBM_Hash.sdbm(resultString));
 		return resultString;
 	}
 
@@ -574,15 +573,15 @@ public abstract class Database extends Database_Core
 	{
 		int newSolverCheckSum = (int) SDBM_Hash.sdbm(value);
 
-		Replication.SolverChanged(cache.Id, cache.solverCheckSum, newSolverCheckSum);
-		if (newSolverCheckSum != cache.solverCheckSum)
+		Replication.SolverChanged(cache.Id, cache.getSolverChecksum(), newSolverCheckSum);
+		if (newSolverCheckSum != cache.getSolverChecksum())
 		{
 			SetSolver(cache.Id, value);
-			cache.solverCheckSum = newSolverCheckSum;
+			cache.setSolverChecksum(newSolverCheckSum);
 		}
 	}
 
-	public static CB_List<LogEntry> Logs(CacheLite cache)
+	public static CB_List<LogEntry> Logs(Cache cache)
 	{
 		CB_List<LogEntry> result = new CB_List<LogEntry>();
 		if (cache == null) // if no cache is selected!
@@ -604,7 +603,7 @@ public abstract class Database extends Database_Core
 		return result;
 	}
 
-	private static LogEntry getLogEntry(CacheLite cache, CoreCursor reader, boolean filterBbCode)
+	private static LogEntry getLogEntry(Cache cache, CoreCursor reader, boolean filterBbCode)
 	{
 		int intLogType = reader.getInt(3);
 		if (intLogType < 0 || intLogType > 13) return null;
@@ -645,7 +644,7 @@ public abstract class Database extends Database_Core
 		return retLogEntry;
 	}
 
-	public static String GetDescription(CacheLite cache)
+	public static String GetDescription(Cache cache)
 	{
 		String description = "";
 		CoreCursor reader = Database.Data.rawQuery("select Description from Caches where Id=?", new String[]

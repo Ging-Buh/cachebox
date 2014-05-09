@@ -6,9 +6,7 @@ import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -80,7 +78,7 @@ public class CoordinateEntity extends Entity
 			{
 				for (int i = 0, n = selCache.waypoints.size(); i < n; i++)
 				{
-					WaypointLite wp = selCache.waypoints.get(i);
+					Waypoint wp = selCache.waypoints.get(i);
 					if (wp.getGcCode().equalsIgnoreCase(gcCode))
 					{
 						coord = wp.Pos;
@@ -131,7 +129,7 @@ public class CoordinateEntity extends Entity
 				// Zuweisung soll an einen Waypoint eines anderen als dem aktuellen Cache gemacht werden.
 				// Vermutlich Tippfehler daher Update verhindern. Modale Dialoge gehen in Android nicht
 				CacheDAO cacheDAO = new CacheDAO();
-				CacheLite cache = cacheDAO.getFromDbByCacheId(dbWaypoint.CacheId);
+				Cache cache = cacheDAO.getFromDbByCacheId(dbWaypoint.CacheId);
 				// String sFmt = "Change Coordinates of a waypoint which does not belong to the actual Cache?\n";
 				// sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
 				// String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
@@ -147,14 +145,14 @@ public class CoordinateEntity extends Entity
 		Cache cacheFromCacheList;
 		synchronized (Database.Data.Query)
 		{
-			cacheFromCacheList = new Cache(Database.Data.Query.GetCacheById(dbWaypoint.CacheId));
+			cacheFromCacheList = Database.Data.Query.GetCacheById(dbWaypoint.CacheId);
 		}
 		cacheFromCacheList = Solver.solverCacheInterface.sciGetSelectedCache();
 		if (cacheFromCacheList != null)
 		{
 			for (int i = 0, n = cacheFromCacheList.waypoints.size(); i < n; i++)
 			{
-				WaypointLite wp = cacheFromCacheList.waypoints.get(i);
+				Waypoint wp = cacheFromCacheList.waypoints.get(i);
 				if (wp.getGcCode().equalsIgnoreCase(this.gcCode))
 				{
 					wp.Pos.setLatitude(coord.getLatitude());

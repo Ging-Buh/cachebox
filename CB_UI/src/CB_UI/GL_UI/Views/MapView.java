@@ -24,9 +24,8 @@ import java.util.TreeMap;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -111,8 +110,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	GL_Paint paint;
 	public static MapView that = null;
 
-	CacheLite lastSelectedCache = null;
-	WaypointLite lastSelectedWaypoint = null;
+	Cache lastSelectedCache = null;
+	Waypoint lastSelectedWaypoint = null;
 
 	public MapView(CB_RectF rec, boolean compassMode, String Name)
 	{
@@ -338,7 +337,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				if (infoBubble.getWaypoint() == null)
 				{
 					// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-					WaypointLite waypoint = infoBubble.getCache().GetFinalWaypoint();
+					Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
 					// wenn ein Cache keine Final hat, aber einen StartWaypoint dann wird dieser gleich selektiert
 					if (waypoint == null) waypoint = infoBubble.getCache().GetStartWaypoint();
 					GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
@@ -712,13 +711,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	public static int INITIAL_WP_LIST = 4;
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		if (cache == null) return;
 		try
 		{
-			if (cache.equals(lastSelectedCache)
-					&& ((waypoint != null && waypoint.equals(lastSelectedWaypoint)) || (waypoint == null && lastSelectedWaypoint == null)))
+			if ((cache == lastSelectedCache) && (waypoint == lastSelectedWaypoint))
 			{
 				return;
 			}

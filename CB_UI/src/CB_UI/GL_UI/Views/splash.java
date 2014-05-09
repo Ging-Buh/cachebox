@@ -24,9 +24,9 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -440,7 +440,7 @@ public class splash extends MainViewBase
 		synchronized (Database.Data.Query)
 		{
 			CacheListDAO cacheListDAO = new CacheListDAO();
-			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
 			cacheListDAO = null;
 		}
 
@@ -499,20 +499,20 @@ public class splash extends MainViewBase
 		{
 			synchronized (Database.Data.Query)
 			{
-				CacheLite c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
+				Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
 				if (c != null)
 				{
 					if (GlobalCore.restartWaypoint != null)
 					{
 						WaypointDAO dao = new WaypointDAO();
-						CB_List<WaypointLite> waypoints = dao.getWaypointsFromCacheID(c.Id, true);
+						CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(c.Id, true);
 						if (waypoints != null)
 						{
-							WaypointLite w = null;
+							Waypoint w = null;
 
 							for (int i = 0, n = waypoints.size(); i < n; i++)
 							{
-								WaypointLite wp = waypoints.get(i);
+								Waypoint wp = waypoints.get(i);
 								if (wp.getGcCode().equalsIgnoreCase(GlobalCore.restartWaypoint))
 								{
 									w = wp;

@@ -41,8 +41,8 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
-import CB_Core.Types.CacheLite;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -812,13 +812,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 
 		setSelectedCache_onUI(cache, waypoint);
 	}
 
-	public void setSelectedCache_onUI(CacheLite cache, WaypointLite waypoint)
+	public void setSelectedCache_onUI(Cache cache, Waypoint waypoint)
 	{
 		((main) main.mainActivity).runOnUiThread(new Runnable()
 		{
@@ -3123,7 +3123,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				catch (Exception exc)
 				{
 					Toast.makeText(main.mainActivity,
-							Translation.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim() + ")",
+							Translation.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().getUrl().trim() + ")",
 							Toast.LENGTH_SHORT).show();
 				}
 			}

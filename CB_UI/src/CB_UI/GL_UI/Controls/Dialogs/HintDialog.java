@@ -34,7 +34,7 @@ public class HintDialog extends GL_MsgBox
 		if (GlobalCore.getSelectedCache() == null) return;
 		if (!GlobalCore.getSelectedCache().hasHint()) return;
 
-		String HintFromDB = GlobalCore.getSelectedCache().getHintFromDB();
+		String HintFromDB = GlobalCore.getSelectedCache().getHint();
 
 		hintTextDecoded = UnitFormatter.Rot13(HintFromDB) + "\n ";
 		hintTextEncoded = HintFromDB + "\n ";

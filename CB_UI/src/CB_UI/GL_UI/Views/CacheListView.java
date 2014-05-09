@@ -21,9 +21,9 @@ import java.util.TimerTask;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
-import CB_Core.Types.CacheListLite;
-import CB_Core.Types.CacheLite;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Cache;
+import CB_Core.Types.CacheList;
+import CB_Core.Types.Waypoint;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -216,7 +216,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				{
 					for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 					{
-						CacheLite ca = Database.Data.Query.get(i);
+						Cache ca = Database.Data.Query.get(i);
 						if (ca.Id == GlobalCore.getSelectedCache().Id)
 						{
 							listView.setSelection(id);
@@ -286,7 +286,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 
-			CacheLite cache;
+			Cache cache;
 			synchronized (Database.Data.Query)
 			{
 				cache = Database.Data.Query.get(selectionIndex);
@@ -294,7 +294,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (cache != null)
 			{
 				// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-				WaypointLite waypoint = cache.GetFinalWaypoint();
+				Waypoint waypoint = cache.GetFinalWaypoint();
 				if (waypoint == null) waypoint = cache.GetStartWaypoint();
 				GlobalCore.setSelectedWaypoint(cache, waypoint);
 			}
@@ -312,12 +312,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		{
 			int selectionIndex = ((ListViewItemBase) v).getIndex();
 
-			CacheLite cache;
+			Cache cache;
 			synchronized (Database.Data.Query)
 			{
 				cache = Database.Data.Query.get(selectionIndex);
 			}
-			WaypointLite finalWp = null;
+			Waypoint finalWp = null;
 			if (cache.HasFinalWaypoint()) finalWp = cache.GetFinalWaypoint();
 			if (finalWp == null) finalWp = cache.GetStartWaypoint();
 			// shutdown AutoResort when selecting a cache by hand
@@ -332,11 +332,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public class CustomAdapter implements Adapter
 	{
-		private CacheListLite cacheList;
+		private CacheList cacheList;
 
 		private int Count = 0;
 
-		public CustomAdapter(CacheListLite cacheList)
+		public CustomAdapter(CacheList cacheList)
 		{
 			synchronized (cacheList)
 			{
@@ -369,7 +369,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 				if (cacheList.size() <= position) return null;
 
-				CacheLite cache = cacheList.get(position);
+				Cache cache = cacheList.get(position);
 
 				CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
 				v.setClickable(true);
@@ -389,7 +389,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			synchronized (cacheList)
 			{
 				if (cacheList.size() == 0) return 0;
-				CacheLite cache = cacheList.get(position);
+				Cache cache = cacheList.get(position);
 				if (cache == null) return 0;
 
 				// alle Items haben die gleiche Größe (Höhe)
@@ -446,7 +446,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		if (GlobalCore.getSelectedCache() != null)
 		{

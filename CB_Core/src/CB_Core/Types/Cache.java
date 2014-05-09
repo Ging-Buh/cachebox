@@ -1,49 +1,33 @@
-/* 
- * Copyright (C) 2014 team-cachebox.de
- *
- * Licensed under the : GNU General Public License (GPL);
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.gnu.org/licenses/gpl.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package CB_Core.Types;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
-import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
-import CB_Locator.CoordinateGPS;
-import CB_Utils.DB.CoreCursor;
+import CB_Locator.Coordinate;
+import CB_Locator.Locator;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Util.FileIO;
 
-/**
- * @author ging-buh
- * @author Longri
- */
-public class Cache extends CacheLite
+public class Cache implements Comparable<Cache>, Serializable
 {
+	private static final long serialVersionUID = 1015307624242318838L;
+	protected static final Charset US_ASCII = Charset.forName("US-ASCII");
+	protected static final Charset UTF_8 = Charset.forName("UTF-8");
+	protected static final String EMPTY_STRING = "";
 
-	private static final long serialVersionUID = 3442053093499951966L;
+	/*
+	 * Private Member
+	 */
 
 	public static long GenerateCacheId(String GcCode)
 	{
@@ -69,38 +53,124 @@ public class Cache extends CacheLite
 	 */
 
 	/**
-	 * Id des Caches bei geocaching.com. Wird zumm Loggen benötigt und von geotoad nicht exportiert
+	 * Detail Information of Waypoint which are not always loaded
 	 */
-	// TODO Warum ist das ein String?
-	private byte[] GcId;
+	public CacheDetail detail = null;
 
 	/**
-	 * Erschaffer des Caches
+	 * Koordinaten des Caches auf der Karte gelten in diesem Zoom
 	 */
-	public String PlacedBy = "";
+	public static final int MapZoomLevel = 18;
+	/**
+	 * Koordinaten des Caches auf der Karte
+	 */
+	public double MapX;
+	/**
+	 * Koordinaten des Caches auf der Karte
+	 */
+	public double MapY;
+	/**
+	 * Id des Caches in der Datenbank von geocaching.com
+	 */
+	public long Id;
+	/**
+	 * Waypoint Code des Caches
+	 */
+	protected byte[] GcCode;
+	/**
+	 * Name des Caches
+	 */
+	protected byte[] Name;
 
 	/**
-	 * Datum, an dem der Cache versteckt wurde
+	 * Die Coordinate, an der der Cache liegt.
 	 */
-	public Date DateHidden;
+	public Coordinate Pos = new Coordinate();
 
 	/**
-	 * ApiStatus 0: Cache wurde nicht per Api hinzugefügt 1: Cache wurde per GC Api hinzugefügt und ist noch nicht komplett geladen (IsLite
-	 * = true) 2: Cache wurde per GC Api hinzugefügt und ist komplett geladen (IsLite = false)
+	 * Breitengrad
 	 */
-	public byte ApiStatus;
+	public double Latitude()
+	{
+		return Pos.getLatitude();
+	}
 
 	/**
-	 * for Replication
+	 * Längengrad
 	 */
-	public int noteCheckSum = 0;
-	public String tmpNote = null; // nur für den RPC-Import
+	public double Longitude()
+	{
+		return Pos.getLongitude();
+	}
 
 	/**
-	 * for Replication
+	 * Breitengrad
 	 */
-	public int solverCheckSum = 0;
-	public String tmpSolver = null; // nur für den RPC-Import
+	public double Latitude(Boolean useFinal)
+	{
+		Waypoint waypoint = null;
+		if (useFinal) waypoint = this.GetFinalWaypoint();
+		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
+		// Diszanzberechnung vom Final aus gemacht werden
+		// If a mystery has a final waypoint, the distance will be calculated to
+		// the final not the the cache coordinates
+		Coordinate toPos = Pos;
+		if (waypoint != null)
+		{
+			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			// nur sinnvolles Final, sonst vom Cache
+			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
+		}
+		return toPos.getLatitude();
+	}
+
+	/**
+	 * Laengengrad
+	 */
+	public double Longitude(Boolean useFinal)
+	{
+		Waypoint waypoint = null;
+		if (useFinal) waypoint = this.GetFinalWaypoint();
+		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
+		// Diszanzberechnung vom Final aus gemacht werden
+		// If a mystery has a final waypoint, the distance will be calculated to
+		// the final not the the cache coordinates
+		Coordinate toPos = Pos;
+		if (waypoint != null)
+		{
+			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			// nur sinnvolles Final, sonst vom Cache
+			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
+		}
+		return toPos.getLongitude();
+	}
+
+	/**
+	 * Durchschnittliche Bewertung des Caches von GcVote
+	 */
+	public float Rating;
+	/**
+	 * Groesse des Caches. Bei Wikipediaeintraegen enthaelt dieses Feld den Radius in m
+	 */
+	public CacheSizes Size;
+	/**
+	 * Schwierigkeit des Caches
+	 */
+	public float Difficulty = 0;
+	/**
+	 * Gelaendebewertung
+	 */
+	public float Terrain = 0;
+
+	public void setFavorit(boolean value)
+	{
+		setFavorite(value);
+	}
+
+	/**
+	 * hat der Cache Clues oder Notizen erfasst
+	 */
+	public boolean hasUserData;
 
 	/**
 	 * Name der Tour, wenn die GPX-Datei aus GCTour importiert wurde
@@ -113,50 +183,139 @@ public class Cache extends CacheLite
 	public long GPXFilename_ID = 0;
 
 	/**
-	 * URL des Caches
+	 * Art des Caches
 	 */
-	public String Url = "";
+	public CacheTypes Type = CacheTypes.Undefined;
 
 	/**
-	 * Country des Caches
+	 * Verantwortlicher
 	 */
-	public String Country = "";
+	public byte[] Owner;
 
 	/**
-	 * State des Caches
+	 * Das Listing hat sich geaendert!
 	 */
-	public String State = "";
+	public boolean listingChanged = false;
 
 	/**
-	 * Positive Attribute des Caches
+	 * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
 	 */
-	private DLong attributesPositive = new DLong(0, 0);
+	public int NumTravelbugs = 0;
 
 	/**
-	 * Negative Attribute des Caches
+	 * Falls keine erneute Distanzberechnung noetig ist nehmen wir diese Distanz
 	 */
-	private DLong attributesNegative = new DLong(0, 0);
+	public float cachedDistance = 0;
 
 	/**
-	 * Hinweis für diesen Cache
+	 * Liste der zusaetzlichen Wegpunkte des Caches
 	 */
-	private String hint = "";
+	public CB_List<Waypoint> waypoints = null;
 
 	/**
-	 * Liste der Spoiler Resorcen
+	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
 	 */
-	public CB_List<ImageEntry> spoilerRessources = null;
+	private int myCache = -1;
+
+	private static String gcLogin = null;
 
 	/**
-	 * Kurz Beschreibung des Caches
+	 * Delete Detail Information to save memory
 	 */
-	public String shortDescription;
+	public void deleteDetail()
+	{
+		if (this.detail == null) return;
+		this.detail.dispose();
+		this.detail = null;
+		// remove all Detail Information from Waypoints
+		// remove all Waypoints != Start and Final
+		if (waypoints != null)
+		{
+			for (int i = 0; i < waypoints.size(); i++)
+			{
+				Waypoint wp = waypoints.get(i);
+				if (wp.IsStart || wp.Type == CacheTypes.Final)
+				{
+					wp.detail.dispose();
+					wp.detail = null;
+				}
+				else
+				{
+					if (wp.detail != null)
+					{
+						wp.detail.dispose();
+						wp.detail = null;
+					}
+					waypoints.remove(i);
+					i--;
+				}
+			}
+		}
+	}
 
 	/**
-	 * Ausführliche Beschreibung des Caches Nur für Import Zwecke. Ist normalerweise leer, da die Description bei aus Speicherplatz Gründen
-	 * bei Bedarf aus der DB geladen wird
+	 * Load Detail Information from DB
 	 */
-	public String longDescription;
+	public void loadDetail()
+	{
+		if (detail != null) return; // Detail info already valid
+		CacheDAO dao = new CacheDAO();
+		dao.readDetail(this);
+		// load all Waypoints with full Details
+		WaypointDAO wdao = new WaypointDAO();
+		CB_List<Waypoint> wpts = wdao.getWaypointsFromCacheID(Id, true);
+		for (int i = 0; i < wpts.size(); i++)
+		{
+			Waypoint wp = wpts.get(i);
+			boolean found = false;
+			for (int j = 0; j < waypoints.size(); j++)
+			{
+				Waypoint wp2 = waypoints.get(j);
+				if (wp.getGcCode().equals(wp2.getGcCode()))
+				{
+					found = true;
+					wp2.detail = wp.detail; // copy Detail Info
+					break;
+				}
+			}
+			if (!found)
+			{
+				// Waypoint not in List
+				// Add Waypoint to List
+				waypoints.add(wp);
+			}
+		}
+	}
+
+	/**
+	 * @param userName
+	 *            Config.settings.GcLogin.getValue()
+	 * @return
+	 */
+	public boolean ImTheOwner()
+	{
+		String userName = CB_Core_Settings.GcLogin.getValue().toLowerCase(Locale.getDefault());
+		if (myCache == 0) return false;
+		if (myCache == 1) return true;
+
+		if (gcLogin == null)
+		{
+			gcLogin = userName;
+		}
+
+		boolean ret = false;
+
+		try
+		{
+			ret = this.getOwner().toLowerCase(Locale.getDefault()).equals(gcLogin);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		myCache = ret ? 1 : 0;
+		return ret;
+	}
 
 	/*
 	 * Constructors
@@ -165,14 +324,18 @@ public class Cache extends CacheLite
 	/**
 	 * Constructor
 	 */
-	public Cache()
+	public Cache(boolean withDetails)
 	{
-		this.DateHidden = new Date();
 		this.NumTravelbugs = 0;
 		this.Difficulty = 0;
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
 		this.setAvailable(true);
+		waypoints = new CB_List<Waypoint>();
+		if (withDetails)
+		{
+			detail = new CacheDetail();
+		}
 	}
 
 	/**
@@ -184,105 +347,123 @@ public class Cache extends CacheLite
 		this.Pos.setLongitude(Longitude);
 		this.setName(Name);
 		this.Type = type;
-		this.DateHidden = new Date();
 		this.setGcCode(GcCode);
 		this.NumTravelbugs = 0;
 		this.Difficulty = 0;
 		this.Terrain = 0;
 		this.Size = CacheSizes.other;
 		this.setAvailable(true);
-		AttributeList = null;
+		;
+		waypoints = new CB_List<Waypoint>();
+
 	}
 
 	/*
 	 * Getter/Setter
 	 */
 
-	public Cache(CacheLite cacheLite)
+	/**
+	 * -- korrigierte Koordinaten (kommt nur aus GSAK? bzw CacheWolf-Import) -- oder Mystery mit gueltigem Final
+	 */
+	public boolean CorrectedCoordiantesOrMysterySolved()
 	{
-		if (cacheLite == null) return;
+		if (this.hasCorrectedCoordinates()) return true;
 
-		if (cacheLite.getGcCode().equals("CBPark"))
+		if (this.Type != CacheTypes.Mystery) return false;
+
+		if (this.waypoints == null || this.waypoints.size() == 0) return false;
+
+		boolean x;
+		x = false;
+
+		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
-			this.Pos = cacheLite.Pos;
-			this.MapX = cacheLite.MapX;
-			this.MapY = cacheLite.MapY;
-			this.setGcCode(cacheLite.getGcCode());
-			this.setName(cacheLite.getName());
-			this.Type = cacheLite.Type;
-			return;
-		}
-
-		// CacheLiteValues:
-		this.myCache = cacheLite.myCache;
-		this.MapX = cacheLite.MapX;
-		this.MapY = cacheLite.MapY;
-		this.GcCode = cacheLite.GcCode;
-		this.Name = cacheLite.Name;
-		this.Pos = cacheLite.Pos;
-		this.Rating = cacheLite.Rating;
-		this.NumTravelbugs = cacheLite.NumTravelbugs;
-		this.Id = cacheLite.Id;
-		this.Size = cacheLite.Size;
-		this.Difficulty = cacheLite.Difficulty;
-		this.Terrain = cacheLite.Terrain;
-		this.Type = cacheLite.Type;
-		this.cachedDistance = cacheLite.cachedDistance;
-		this.Owner = cacheLite.Owner;
-		this.BitFlags = cacheLite.BitFlags;
-
-		// read missing values from DB
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcId, ApiStatus, HasUserData, TourName, GpxFilename_ID, Url, Country, State, ListingChanged, PlacedBy, DateHidden, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh from Caches where id = ?",
-						new String[]
-							{ String.valueOf(this.Id) });
-		reader.moveToFirst();
-		while (!reader.isAfterLast())
-		{
-			this.setGcId(reader.getString(0));
-
-			if (reader.isNull(1)) this.ApiStatus = 0;
-			else
-				this.ApiStatus = (byte) reader.getInt(1);
-
-			this.setHasUserData((reader.getInt(2) > 0));
-			this.TourName = reader.getString(3);
-			this.GPXFilename_ID = reader.getLong(4);
-			this.Url = reader.getString(5);
-			this.Country = reader.getString(6);
-			this.State = reader.getString(7);
-			this.setListingChanged((reader.getInt(8) > 0));
-			this.PlacedBy = reader.getString(9);
-
-			String sDate = reader.getString(10);
-			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			try
+			Waypoint wp = waypoints.get(i);
+			if (wp.Type == CacheTypes.Final)
 			{
-				this.DateHidden = iso8601Format.parse(sDate);
+				if (!(wp.Pos.getLatitude() == 0 && wp.Pos.getLongitude() == 0)) x = true;
 			}
-			catch (ParseException e)
-			{
-			}
-
-			this.setAttributesPositive(new DLong(reader.getLong(12), reader.getLong(11)));
-			this.setAttributesNegative(new DLong(reader.getLong(14), reader.getLong(13)));
-
-			reader.moveToNext();
-
 		}
-		reader.close();
+		;
+		return x;
+	}
 
-		this.waypoints.clear();
+	/**
+	 * true, if a this mystery cache has a final waypoint
+	 */
+	public boolean HasFinalWaypoint()
+	{
+		return GetFinalWaypoint() != null;
+	}
 
-		WaypointDAO wDao = new WaypointDAO();
-		CB_List<WaypointLite> wayPois = wDao.getWaypointsFromCacheID(this.Id, true);
+	/**
+	 * search the final waypoint for a mystery cache
+	 */
+	public Waypoint GetFinalWaypoint()
+	{
+		if (this.Type != CacheTypes.Mystery) return null;
+		if (waypoints == null || waypoints.size() == 0) return null;
 
-		for (int i = 0, n = wayPois.size(); i < n; i++)
+		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
-			this.waypoints.add(wayPois.get(i));
+			Waypoint wp = waypoints.get(i);
+			if (wp.Type == CacheTypes.Final)
+			{
+				// do not activate final waypoint with invalid coordinates
+				if (!wp.Pos.isValid() || wp.Pos.isZero()) continue;
+				return wp;
+			}
 		}
+		;
 
+		return null;
+	}
+
+	/**
+	 * true if this is a mystery of multi with a Stage Waypoint defined as StartPoint
+	 * 
+	 * @return
+	 */
+	public boolean HasStartWaypoint()
+	{
+		return GetStartWaypoint() != null;
+	}
+
+	/**
+	 * search the start Waypoint for a multi or mystery
+	 * 
+	 * @return
+	 */
+	public Waypoint GetStartWaypoint()
+	{
+		if ((this.Type != CacheTypes.Multi) && (this.Type != CacheTypes.Mystery)) return null;
+
+		if (waypoints == null || waypoints.size() == 0) return null;
+
+		for (int i = 0, n = waypoints.size(); i < n; i++)
+		{
+			Waypoint wp = waypoints.get(i);
+			if ((wp.Type == CacheTypes.MultiStage) && (wp.IsStart))
+			{
+				return wp;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return Entfernung zur aktUserPos als Float
+	 */
+	public float CachedDistance(CalculationType type)
+	{
+		if (cachedDistance != 0)
+		{
+			return cachedDistance;
+		}
+		else
+		{
+			return Distance(type, true);
+		}
 	}
 
 	/**
@@ -292,12 +473,14 @@ public class Cache extends CacheLite
 	 */
 	public CB_List<ImageEntry> getSpoilerRessources()
 	{
-		if (spoilerRessources == null)
+		if (detail != null)
 		{
-			ReloadSpoilerRessources();
+			return detail.getSpoilerRessources(this);
 		}
-
-		return spoilerRessources;
+		else
+		{
+			return null;
+		}
 	}
 
 	/**
@@ -308,7 +491,10 @@ public class Cache extends CacheLite
 	 */
 	public void setSpoilerRessources(CB_List<ImageEntry> value)
 	{
-		spoilerRessources = value;
+		if (detail != null)
+		{
+			detail.setSpoilerRessources(value);
+		}
 	}
 
 	/**
@@ -318,12 +504,11 @@ public class Cache extends CacheLite
 	 */
 	public boolean SpoilerExists()
 	{
-		try
+		if (detail != null)
 		{
-			if (spoilerRessources == null) ReloadSpoilerRessources();
-			return spoilerRessources.size() > 0;
+			return detail.SpoilerExists(this);
 		}
-		catch (Exception e)
+		else
 		{
 			return false;
 		}
@@ -341,81 +526,9 @@ public class Cache extends CacheLite
 	 */
 	public void ReloadSpoilerRessources()
 	{
-		spoilerRessources = new CB_List<ImageEntry>();
-
-		String directory = "";
-
-		try
+		if (detail != null)
 		{
-			// from own Repository
-			String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
-			if (path != null && path.length() > 0)
-			{
-				directory = path + "/" + getGcCode().substring(0, 4);
-				reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-			}
-
-			// from Global Repository
-			path = CB_Core_Settings.DescriptionImageFolder.getValue();
-			directory = path + "/" + getGcCode().substring(0, 4);
-			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-
-			// Spoilers are always loaden from global Repository too
-			// from globalUser changed Repository
-			path = CB_Core_Settings.SpoilerFolder.getValue();
-			directory = path + "/" + getGcCode().substring(0, 4);
-			reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-
-			// Add own taken photo
-			directory = CB_Core_Settings.UserImageFolder.getValue();
-			if (directory != null)
-			{
-				reloadSpoilerResourcesFromPath(directory, spoilerRessources);
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	private void reloadSpoilerResourcesFromPath(String directory, CB_List<ImageEntry> spoilerRessources2)
-	{
-		if (!FileIO.DirectoryExists(directory)) return;
-		// Logger.DEBUG("Loading spoilers from " + directory);
-		File dir = new File(directory);
-		FilenameFilter filter = new FilenameFilter()
-		{
-			@Override
-			public boolean accept(File dir, String filename)
-			{
-				filename = filename.toLowerCase(Locale.getDefault());
-				if (filename.indexOf(getGcCode().toLowerCase(Locale.getDefault())) >= 0)
-				{
-					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png")
-							|| filename.endsWith(".gif")) return true;
-				}
-				return false;
-			}
-		};
-		String[] files = dir.list(filter);
-		if (!(files == null))
-		{
-			if (files.length > 0)
-			{
-				for (String file : files)
-				{
-					String ext = FileIO.GetFileExtension(file);
-					if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp")
-							|| ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
-					{
-						ImageEntry imageEntry = new ImageEntry();
-						imageEntry.LocalPath = directory + "/" + file;
-						imageEntry.Name = file;
-						spoilerRessources.add(imageEntry);
-					}
-				}
-			}
+			detail.ReloadSpoilerRessources(this);
 		}
 	}
 
@@ -429,147 +542,112 @@ public class Cache extends CacheLite
 		this.Type = CacheTypes.parseString(type);
 	}
 
-	public boolean isAttributePositiveSet(Attributes attribute)
+	/**
+	 * Gibt die Entfernung zur uebergebenen User Position als Float zurueck und Speichert die Aktueller User Position fuer alle Caches ab.
+	 * 
+	 * @return Entfernung zur uebergebenen User Position als Float
+	 */
+	public float Distance(CalculationType type, boolean useFinal)
 	{
-		return attributesPositive.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
-		// return (attributesPositive & Attributes.GetAttributeDlong(attribute))
-		// > 0;
+		return Distance(type, useFinal, Locator.getCoordinate());
 	}
 
-	public boolean isAttributeNegativeSet(Attributes attribute)
+	public float Distance(CalculationType type, boolean useFinal, Coordinate fromPos)
 	{
-		return attributesNegative.BitAndBiggerNull(Attributes.GetAttributeDlong(attribute));
-		// return (attributesNegative & Attributes.GetAttributeDlong(attribute))
-		// > 0;
-	}
-
-	public void addAttributeNegative(Attributes attribute)
-	{
-		if (attributesNegative == null) attributesNegative = new DLong(0, 0);
-		attributesNegative.BitOr(Attributes.GetAttributeDlong(attribute));
-	}
-
-	public void addAttributePositive(Attributes attribute)
-	{
-		if (attributesPositive == null) attributesPositive = new DLong(0, 0);
-		attributesPositive.BitOr(Attributes.GetAttributeDlong(attribute));
+		Waypoint waypoint = null;
+		if (useFinal) waypoint = this.GetFinalWaypoint();
+		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
+		// Diszanzberechnung vom Final aus gemacht werden
+		// If a mystery has a final waypoint, the distance will be calculated to
+		// the final not the the cache coordinates
+		Coordinate toPos = Pos;
+		if (waypoint != null)
+		{
+			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			// nur sinnvolles Final, sonst vom Cache
+			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
+		}
+		float[] dist = new float[4];
+		MathUtils.computeDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(),
+				dist);
+		cachedDistance = dist[0];
+		return cachedDistance;
 	}
 
 	/*
 	 * Overrides
 	 */
 
-	public void setAttributesPositive(DLong i)
+	@Override
+	public int compareTo(Cache c2)
 	{
-		attributesPositive = i;
+		float dist1 = this.cachedDistance;
+		float dist2 = c2.cachedDistance;
+		return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
 	}
 
-	public void setAttributesNegative(DLong i)
+	// public void clear()
+	// {
+	// MapX = 0;
+	// MapY = 0;
+	// GcId = "";
+	// Id = -1;
+	// setGcCode("");
+	// setName("");
+	// Pos = new Coordinate();
+	// Rating = 0;
+	// Size = null;
+	// Difficulty = 0;
+	// Terrain = 0;
+	// setArchived(false);
+	// setAvailable(false);
+	// ApiStatus = 0;
+	// setFavorite(false);
+	// noteCheckSum = 0;
+	// solverCheckSum = 0;
+	// hasUserData = false;
+	// setCorrectedCoordinates(false);
+	// setFound(false);
+	// TourName = "";
+	// GPXFilename_ID = 0;
+	// Type = CacheTypes.Undefined;
+	// PlacedBy = "";
+	// Owner = "";
+	// DateHidden = null;
+	// Url = "";
+	// listingChanged = false;
+	// attributesPositive = new DLong(0, 0);
+	// attributesNegative = new DLong(0, 0);
+	// NumTravelbugs = 0;
+	// cachedDistance = 0;
+	// hint = "";
+	// waypoints = new CB_List<Waypoint>();
+	// spoilerRessources = null;
+	// shortDescription = "";
+	// longDescription = "";
+	// myCache = -1;
+	// gcLogin = null;
+	// if (AttributeList != null) AttributeList.clear();
+	// AttributeList = null;
+	// }
+
+	private boolean isSearchVisible = true;
+
+	public void setSearchVisible(boolean value)
 	{
-		attributesNegative = i;
+		isSearchVisible = value;
 	}
 
-	public DLong getAttributesNegative()
+	public boolean isSearchVisible()
 	{
-		if (this.attributesNegative == null)
-		{
-			CoreCursor c = Database.Data.rawQuery("select AttributesNegative,AttributesNegativeHigh from Caches where Id=?", new String[]
-				{ String.valueOf(this.Id) });
-			c.moveToFirst();
-			while (c.isAfterLast() == false)
-			{
-				if (!c.isNull(0)) this.attributesNegative = new DLong(c.getLong(1), c.getLong(0));
-				else
-					this.attributesNegative = new DLong(0, 0);
-				break;
-			}
-			;
-			c.close();
-		}
-		return this.attributesNegative;
+		return isSearchVisible;
 	}
 
-	public DLong getAttributesPositive()
+	public Waypoint findWaypointByGc(String gc)
 	{
-		if (this.attributesPositive == null)
-		{
-			CoreCursor c = Database.Data.rawQuery("select AttributesPositive,AttributesPositiveHigh from Caches where Id=?", new String[]
-				{ String.valueOf(this.Id) });
-			c.moveToFirst();
-			while (c.isAfterLast() == false)
-			{
-				if (!c.isNull(0)) this.attributesPositive = new DLong(c.getLong(1), c.getLong(0));
-				else
-					this.attributesPositive = new DLong(0, 0);
-				break;
-			}
-			;
-			c.close();
-		}
-		return this.attributesPositive;
-	}
-
-	private ArrayList<Attributes> AttributeList = null;
-
-	public ArrayList<Attributes> getAttributes()
-	{
-		if (AttributeList == null)
-		{
-			AttributeList = Attributes.getAttributes(this.getAttributesPositive(), this.getAttributesNegative());
-		}
-
-		return AttributeList;
-	}
-
-	public void clear()
-	{
-		BitFlags = 0;
-		MapX = 0;
-		MapY = 0;
-		setGcId("");
-		Id = -1;
-		setGcCode("");
-		setName("");
-		Pos = new CoordinateGPS();
-		Rating = 0;
-		Size = null;
-		Difficulty = 0;
-		Terrain = 0;
-
-		ApiStatus = 0;
-
-		noteCheckSum = 0;
-		solverCheckSum = 0;
-		setHasUserData(false);
-		setFound(false);
-		TourName = "";
-		GPXFilename_ID = 0;
-		Type = CacheTypes.Undefined;
-		PlacedBy = "";
-		setOwner("");
-		DateHidden = null;
-		Url = "";
-		setListingChanged(false);
-		attributesPositive = new DLong(0, 0);
-		attributesNegative = new DLong(0, 0);
-		NumTravelbugs = 0;
-		cachedDistance = 0;
-		setHint("");
-		spoilerRessources = null;
-		shortDescription = "";
-		longDescription = "";
-		myCache = -1;
-		gcLogin = null;
-		if (AttributeList != null) AttributeList.clear();
-		AttributeList = null;
-	}
-
-	public WaypointLite findWaypointByGc(String gc)
-	{
-		if (waypoints == null) return null;
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
-			WaypointLite wp = waypoints.get(i);
+			Waypoint wp = waypoints.get(i);
 			if (wp.getGcCode().equals(gc))
 			{
 				return wp;
@@ -582,13 +660,9 @@ public class Cache extends CacheLite
 	// this is used after actualization of cache with API
 	public void copyFrom(Cache cache)
 	{
-
-		if (AttributeList != null) AttributeList.clear();
-		AttributeList = null;
-
 		this.MapX = cache.MapX;
 		this.MapY = cache.MapY;
-		this.setName(cache.getName());
+		this.Name = cache.Name;
 		this.Pos = cache.Pos;
 		this.Rating = cache.Rating;
 		this.Size = cache.Size;
@@ -596,31 +670,30 @@ public class Cache extends CacheLite
 		this.Terrain = cache.Terrain;
 		this.setArchived(cache.isArchived());
 		this.setAvailable(cache.isAvailable());
-		this.ApiStatus = cache.ApiStatus;
-
+		// this.favorite = false;
+		// this.noteCheckSum = 0;
+		// this.solverCheckSum = 0;
+		// this.hasUserData = false;
+		// this.CorrectedCoordinates = false;
 		// only change the found status when it is true in the loaded cache
 		// This will prevent ACB from overriding a found cache which is still not found in GC
 		if (cache.isFound()) this.setFound(cache.isFound());
-
+		// this.TourName = "";
+		// this.GPXFilename_ID = 0;
 		this.Type = cache.Type;
-		this.PlacedBy = cache.PlacedBy;
-		this.setOwner(cache.getOwner());
-		this.DateHidden = cache.DateHidden;
-		this.Url = cache.Url;
-		this.setListingChanged(true); // so that spoiler download will be done again
-		this.attributesPositive = cache.attributesPositive;
-		this.attributesNegative = cache.attributesNegative;
+		// this.PlacedBy = cache.PlacedBy;
+		this.Owner = cache.Owner;
+		this.listingChanged = true; // so that spoiler download will be done again
 		this.NumTravelbugs = cache.NumTravelbugs;
-
-		this.setHint(cache.getHint());
+		// this.cachedDistance = 0;
 		// do not copy waypoints List directly because actual user defined Waypoints would be deleted
 		// this.waypoints = new ArrayList<Waypoint>();
 
 		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
-			WaypointLite newWaypoint = cache.waypoints.get(i);
+			Waypoint newWaypoint = cache.waypoints.get(i);
 
-			WaypointLite aktWaypoint = this.findWaypointByGc(newWaypoint.getGcCode());
+			Waypoint aktWaypoint = this.findWaypointByGc(newWaypoint.getGcCode());
 			if (aktWaypoint == null)
 			{
 				// this waypoint is new -> Add to list
@@ -629,116 +702,158 @@ public class Cache extends CacheLite
 			else
 			{
 				// this waypoint is already in our list -> Copy Informations
+				aktWaypoint.setDescription(newWaypoint.getDescription());
 				aktWaypoint.Pos = newWaypoint.Pos;
+				aktWaypoint.setTitle(newWaypoint.getTitle());
 				aktWaypoint.Type = newWaypoint.Type;
 			}
 		}
-
-		this.shortDescription = cache.shortDescription;
-		this.longDescription = cache.longDescription;
+		// this.spoilerRessources = null;
 		this.myCache = cache.myCache;
+		// this.gcLogin = null;
 
 	}
 
 	@Override
 	public String toString()
 	{
-		return "Cache:" + getGcCode() + " " + Pos.toString();
+		return "Cache:" + GcCode + " " + Pos.toString();
 	}
 
 	public void dispose()
 	{
-		// clear all Lists
-		if (AttributeList != null)
-		{
-			AttributeList.clear();
-			AttributeList = null;
-		}
-
-		if (spoilerRessources != null)
-		{
-			for (int i = 0, n = spoilerRessources.size(); i < n; i++)
-			{
-				ImageEntry entry = spoilerRessources.get(i);
-				entry.dispose();
-			}
-			spoilerRessources.clear();
-			spoilerRessources = null;
-		}
-
 		if (waypoints != null)
 		{
 			for (int i = 0, n = waypoints.size(); i < n; i++)
 			{
-				WaypointLite entry = waypoints.get(i);
+				Waypoint entry = waypoints.get(i);
 				entry.dispose();
 			}
 
 			waypoints.clear();
+			waypoints = null;
 		}
 
-		tmpNote = null;
-		tmpSolver = null;
 		TourName = null;
-		PlacedBy = null;
-		setOwner(null);
-		DateHidden = null;
-		Url = null;
-		Country = null;
-		State = null;
-		setHint(null);
-		shortDescription = null;
-		longDescription = null;
+		Owner = null;
 
 	}
 
-	@Override
-	public boolean equals(Object o)
+	/**
+	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
+	 * from DB to get the changes from Solver 1
+	 */
+	private boolean solver1Changed = false;
+
+	public void setSolver1Changed(boolean b)
 	{
-		if (o == null) return false;
-		if (o instanceof Cache)
-		{
-			Cache c = (Cache) o;
+		this.solver1Changed = b;
+	}
 
-			if (!Arrays.equals(this.GcCode, c.GcCode)) return false;
-			if (!this.Pos.equals(c.Pos)) return false;
-			return true;
-		}
-		else if (o instanceof CacheLite)
-		{
-			CacheLite c = (CacheLite) o;
+	public boolean getSolver1Changed()
+	{
+		return solver1Changed;
+	}
 
-			if (!Arrays.equals(this.GcCode, c.GcCode)) return false;
-			if (!this.Pos.equals(c.Pos)) return false;
-			return true;
+	public String getGcCode()
+	{
+		if (GcCode == null) return EMPTY_STRING;
+		return new String(GcCode, US_ASCII);
+	}
+
+	public void setGcCode(String gcCode)
+	{
+		if (gcCode == null)
+		{
+			GcCode = null;
+			return;
 		}
-		return false;
+		GcCode = gcCode.getBytes(US_ASCII);
+	}
+
+	public String getName()
+	{
+		if (Name == null) return EMPTY_STRING;
+		String n = new String(Name, UTF_8);
+
+		if (detail != null) n += "*";
+		else
+			n += "-";
+		n += waypoints.size();
+		return n;
+	}
+
+	public void setName(String name)
+	{
+		if (name == null)
+		{
+			Name = null;
+			return;
+		}
+		Name = name.getBytes(UTF_8);
+	}
+
+	public String getOwner()
+	{
+		if (Owner == null) return EMPTY_STRING;
+		return new String(Owner, UTF_8);
+	}
+
+	public void setOwner(String owner)
+	{
+		if (owner == null)
+		{
+			Owner = null;
+			return;
+		}
+		Owner = owner.getBytes(UTF_8);
 	}
 
 	public String getGcId()
 	{
-		if (GcId == null) return EMPTY_STRING;
-		return new String(GcId, US_ASCII);
+		if (detail == null) return EMPTY_STRING;
+		return detail.getGcId();
 	}
 
 	public void setGcId(String gcId)
 	{
-		if (gcId == null)
+		if (detail == null)
 		{
-			GcId = null;
 			return;
 		}
-		GcId = gcId.getBytes(US_ASCII);
+		detail.setGcId(gcId);
 	}
 
 	public String getHint()
 	{
-		return hint;
+		if (detail != null)
+		{
+			return detail.getHint();
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
 	}
 
 	public void setHint(String hint)
 	{
-		this.hint = hint;
+		if (detail != null)
+		{
+			detail.setHint(hint);
+		}
+	}
+
+	public boolean hasHint()
+	{
+		if (detail != null)
+		{
+			return detail.getHint().length() > 0;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	// ########################################################
@@ -747,41 +862,105 @@ public class Cache extends CacheLite
 	// Boolean data type represents one bit of information, but its "size" isn't something that's precisely defined. (Oracle Docs)
 	//
 	// so we use one Short for Store all Boolean and Use a BitMask
-	// the short is hold on CacheLite und use Bit 0-5
-	// Cache use Bit 6-9
 	// ########################################################
 
+	// Masks
+	// protected final static short MASK_HAS_HINT = 1 << 0; // not necessary because hasHint is always called for SelectedCache and
+	// SelectedCache will have valid hint field.
+	protected final static short MASK_CORECTED_COORDS = 1 << 1;
+	protected final static short MASK_ARCHIVED = 1 << 2;
+	protected final static short MASK_AVAILABLE = 1 << 3;
+	protected final static short MASK_VAVORITE = 1 << 4;
+	protected final static short MASK_FOUND = 1 << 5;
 	protected final static short MASK_SEARCH_VISIBLE = 1 << 6;
 	protected final static short MASK_SOLVER1CHANGED = 1 << 7;
 	protected final static short MASK_HAS_USER_DATA = 1 << 8;
 	protected final static short MASK_LISTING_CHANGED = 1 << 9;
 
-	public boolean isSearchVisible()
+	protected short BitFlags = 0;
+
+	protected boolean getMaskValue(short mask)
 	{
-		return this.getMaskValue(MASK_SEARCH_VISIBLE);
+		return (BitFlags & mask) == mask;
 	}
 
-	public void setSearchVisible(boolean value)
+	protected void setMaskValue(short mask, boolean value)
 	{
-		this.setMaskValue(MASK_SEARCH_VISIBLE, value);
+		if (getMaskValue(mask) == value) return;
+
+		if (value)
+		{
+			BitFlags |= mask;
+		}
+		else
+		{
+			BitFlags &= ~mask;
+		}
+
 	}
 
-	/**
-	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
-	 * from DB to get the changes from Solver 1
-	 */
-	public void setSolver1Changed(boolean b)
+	// Getter and Setter over Mask
+
+	// not necessary because hasHint is always called for SelectedCache and
+	// SelectedCache will have valid hint field.
+	// public boolean hasHint()
+	// {
+	// return getMaskValue(MASK_HAS_HINT);
+	// }
+	//
+	// public void setHasHint(boolean b)
+	// {
+	// setMaskValue(MASK_HAS_HINT, b);
+	// }
+
+	public boolean hasCorrectedCoordinates()
 	{
-		this.setMaskValue(MASK_SOLVER1CHANGED, b);
+		return this.getMaskValue(MASK_CORECTED_COORDS);
 	}
 
-	/**
-	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
-	 * from DB to get the changes from Solver 1
-	 */
-	public boolean getSolver1Changed()
+	public void setCorrectedCoordinates(boolean correctedCoordinates)
 	{
-		return this.getMaskValue(MASK_SOLVER1CHANGED);
+		this.setMaskValue(MASK_CORECTED_COORDS, correctedCoordinates);
+	}
+
+	public boolean isArchived()
+	{
+		return this.getMaskValue(MASK_ARCHIVED);
+	}
+
+	public void setArchived(boolean archived)
+	{
+		this.setMaskValue(MASK_ARCHIVED, archived);
+	}
+
+	public boolean isAvailable()
+	{
+		return this.getMaskValue(MASK_AVAILABLE);
+	}
+
+	public void setAvailable(boolean available)
+	{
+		this.setMaskValue(MASK_AVAILABLE, available);
+	}
+
+	public boolean isFavorite()
+	{
+		return this.getMaskValue(MASK_VAVORITE);
+	}
+
+	public void setFavorite(boolean favorite)
+	{
+		this.setMaskValue(MASK_VAVORITE, favorite);
+	}
+
+	public boolean isFound()
+	{
+		return this.getMaskValue(MASK_FOUND);
+	}
+
+	public void setFound(boolean found)
+	{
+		this.setMaskValue(MASK_FOUND, found);
 	}
 
 	public boolean isHasUserData()
@@ -804,4 +983,313 @@ public class Cache extends CacheLite
 		this.setMaskValue(MASK_LISTING_CHANGED, listingChanged);
 	}
 
+	public String getPlacedBy()
+	{
+		if (detail != null)
+		{
+			return detail.PlacedBy;
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
+
+	public void setPlacedBy(String value)
+	{
+		if (detail != null)
+		{
+			detail.PlacedBy = value;
+		}
+	}
+
+	public Date getDateHidden()
+	{
+		if (detail != null)
+		{
+			return detail.DateHidden;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public void setDateHidden(Date date)
+	{
+		if (detail != null)
+		{
+			detail.DateHidden = date;
+		}
+	}
+
+	public byte getApiStatus()
+	{
+		if (detail != null)
+		{
+			return detail.ApiStatus;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	public void setApiStatus(byte value)
+	{
+		if (detail != null)
+		{
+			detail.ApiStatus = value;
+		}
+	}
+
+	public int getNoteChecksum()
+	{
+		if (detail != null)
+		{
+			return detail.noteCheckSum;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	public void setNoteChecksum(int value)
+	{
+		if (detail != null)
+		{
+			detail.noteCheckSum = value;
+		}
+	}
+
+	public String getTmpNote()
+	{
+		if (detail != null)
+		{
+			return detail.tmpNote;
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
+
+	public void setTmpNote(String value)
+	{
+		if (detail != null)
+		{
+			detail.tmpNote = value;
+		}
+	}
+
+	public int getSolverChecksum()
+	{
+		if (detail != null)
+		{
+			return detail.solverCheckSum;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	public void setSolverChecksum(int value)
+	{
+		if (detail != null)
+		{
+			detail.solverCheckSum = value;
+		}
+	}
+
+	public String getTmpSolver()
+	{
+		if (detail != null)
+		{
+			return detail.tmpSolver;
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
+
+	public void setTmpSolver(String value)
+	{
+		if (detail != null)
+		{
+			detail.tmpSolver = value;
+		}
+	}
+
+	public String getUrl()
+	{
+		if (detail != null)
+		{
+			return detail.Url;
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
+
+	public void setUrl(String value)
+	{
+		if (detail != null)
+		{
+			detail.Url = value;
+		}
+	}
+
+	public String getCountry()
+	{
+		if (detail != null)
+		{
+			return detail.Country;
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
+
+	public void setCountry(String value)
+	{
+		if (detail != null)
+		{
+			detail.Country = value;
+		}
+	}
+
+	public String getState()
+	{
+		if (detail != null)
+		{
+			return detail.State;
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
+
+	public void setState(String value)
+	{
+		if (detail != null)
+		{
+			detail.State = value;
+		}
+	}
+
+	public ArrayList<Attributes> getAttributes()
+	{
+		if (detail != null)
+		{
+			return detail.getAttributes(Id);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public void addAttributeNegative(Attributes attribute)
+	{
+		if (detail != null)
+		{
+			detail.addAttributeNegative(attribute);
+		}
+	}
+
+	public void addAttributePositive(Attributes attribute)
+	{
+		if (detail != null)
+		{
+			detail.addAttributePositive(attribute);
+		}
+	}
+
+	public DLong getAttributesPositive()
+	{
+		if (detail != null)
+		{
+			return detail.getAttributesPositive(Id);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public DLong getAttributesNegative()
+	{
+		if (detail != null)
+		{
+			return detail.getAttributesNegative(Id);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public void setAttributesPositive(DLong dLong)
+	{
+		if (detail != null)
+		{
+			detail.setAttributesPositive(dLong);
+		}
+	}
+
+	public void setAttributesNegative(DLong dLong)
+	{
+		if (detail != null)
+		{
+			detail.setAttributesNegative(dLong);
+		}
+	}
+
+	public void setLongDescription(String value)
+	{
+		if (detail != null)
+		{
+			detail.setLongDescription(value);
+
+		}
+	}
+
+	public String getLongDescription()
+	{
+		if (detail != null)
+		{
+			return detail.getLongDescription();
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
+
+	public void setShortDescription(String value)
+	{
+		if (detail != null)
+		{
+			detail.setShortDescription(value);
+
+		}
+	}
+
+	public String getShortDescription()
+	{
+		if (detail != null)
+		{
+			return detail.getShortDescription();
+		}
+		else
+		{
+			return EMPTY_STRING;
+		}
+	}
 }

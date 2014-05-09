@@ -8,7 +8,6 @@ import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -104,11 +103,11 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 				{
 					String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
 				}
 
 				CachListChangedEventList.Call();
-				CacheLite selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
+				Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
 				GlobalCore.setSelectedCache(selCache);
 				GL.that.RunOnGL(new IRunOnGL()
 				{

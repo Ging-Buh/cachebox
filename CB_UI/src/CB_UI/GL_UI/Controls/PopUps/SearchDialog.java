@@ -32,13 +32,11 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Map.Descriptor;
@@ -476,7 +474,7 @@ public class SearchDialog extends PopUp_Base
 					mSearchAktive = true;
 				}
 
-				CacheLite tmp = null;
+				Cache tmp = null;
 				for (int i = beginnSearchIndex, n = Database.Data.Query.size(); i < n; i++)
 				{
 					tmp = Database.Data.Query.get(i);
@@ -510,7 +508,7 @@ public class SearchDialog extends PopUp_Base
 				else
 				{
 
-					WaypointLite finalWp = null;
+					Waypoint finalWp = null;
 					if (tmp != null)
 					{
 						if (tmp.HasFinalWaypoint()) finalWp = tmp.GetFinalWaypoint();
@@ -785,8 +783,8 @@ public class SearchDialog extends PopUp_Base
 						for (Cache cache : apiCaches)
 						{
 							counter++;
-							cache.MapX = 256.0 * Descriptor.LongitudeToTileX(CacheLite.MapZoomLevel, cache.Longitude());
-							cache.MapY = 256.0 * Descriptor.LatitudeToTileY(CacheLite.MapZoomLevel, cache.Latitude());
+							cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+							cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 							if (Database.Data.Query.GetCacheById(cache.Id) == null)
 							{
 								Database.Data.Query.add(cache);
@@ -825,7 +823,7 @@ public class SearchDialog extends PopUp_Base
 					if (counter == 1)
 					{
 						// select this Cache
-						CacheLite cache = Database.Data.Query.GetCacheById(apiCaches.get(0).Id);
+						Cache cache = Database.Data.Query.GetCacheById(apiCaches.get(0).Id);
 						GlobalCore.setSelectedCache(cache);
 					}
 

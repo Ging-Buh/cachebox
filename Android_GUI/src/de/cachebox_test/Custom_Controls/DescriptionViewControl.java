@@ -11,7 +11,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Import.DescriptionImageGrabber;
 import CB_Core.Types.Cache;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -300,7 +300,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			NonLocalImagesUrl.clear();
 			String cachehtml = Database.GetDescription(cache);
 			String html = "";
-			if (cache.ApiStatus == 1)// GC.com API lite
+			if (cache.getApiStatus() == 1)// GC.com API lite
 			{ // Load Standard HTML
 				String nodesc = Translation.Get("GC_NoDescription");
 				html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
@@ -515,7 +515,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		this.destroy();
 	}
 
-	public void SetSelectedCache(Cache cache, WaypointLite waypoint)
+	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
 
 		aktCache = cache;

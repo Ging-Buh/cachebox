@@ -29,10 +29,8 @@ import CB_Core.Import.ImporterProgress;
 import CB_Core.Solver.Solver;
 import CB_Core.Solver.SolverCacheInterface;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheListLite;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Events.SelectedCacheEventList;
@@ -179,9 +177,9 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	public static FilterProperties LastFilter = null;
 
-	public static void setSelectedCache(CacheLite cacheLite)
+	public static void setSelectedCache(Cache Cache)
 	{
-		setSelectedWaypoint(cacheLite, null);
+		setSelectedWaypoint(Cache, null);
 	}
 
 	public static Cache getSelectedCache()
@@ -189,31 +187,31 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		return selectedCache;
 	}
 
-	private static CacheLite nearestCache = null;
+	private static Cache nearestCache = null;
 
-	public static CacheLite NearestCache()
+	public static Cache NearestCache()
 	{
 		return nearestCache;
 	}
 
 	private static Waypoint selectedWaypoint = null;
 
-	public static void setSelectedWaypoint(CacheLite cacheLite, WaypointLite waypoint)
+	public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint)
 	{
-		setSelectedWaypoint(cacheLite, waypoint, true);
+		setSelectedWaypoint(Cache, waypoint, true);
 	}
 
 	/**
 	 * if changeAutoResort == false -> do not change state of autoResort Flag
 	 * 
-	 * @param cacheLite
+	 * @param Cache
 	 * @param waypoint
 	 * @param changeAutoResort
 	 */
-	public static void setSelectedWaypoint(CacheLite cacheLite, WaypointLite waypoint, boolean changeAutoResort)
+	public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint, boolean changeAutoResort)
 	{
 
-		if (cacheLite == null)
+		if (Cache == null)
 		{
 			selectedCache = null;
 			selectedWaypoint = null;
@@ -223,68 +221,25 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		// rewrite Changed Values ( like Favroite state)
 		if (selectedCache != null)
 		{
-			if (!cacheLite.getGcCode().equals("CBPark"))
+			if (!Cache.getGcCode().equals("CBPark"))
 			{
-				CacheLite lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
-				if (lastCache != null) lastCache.setValues(selectedCache);
+				Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
+
 			}
 		}
 
-		if (cacheLite instanceof Cache)
+		// remove Detail Info from old selectedCache
+		if ((selectedCache != Cache) && (selectedCache != null) && (selectedCache.detail != null))
 		{
-			selectedCache = (Cache) cacheLite;
+			selectedCache.deleteDetail();
 		}
-		else
-		{
-			selectedCache = new Cache(cacheLite);
-		}
-		WaypointLite newSelectedWaypoint = null;
-		selectedWaypoint = null;
-		if (waypoint == null)
-		{
-			// check autoselect Waypoint Final or start
+		selectedCache = Cache;
+		selectedWaypoint = waypoint;
 
-			if (selectedCache.HasFinalWaypoint())
-			{
-				newSelectedWaypoint = selectedCache.GetFinalWaypoint();
-			}
-			else if (selectedCache.HasStartWaypoint())
-			{
-				newSelectedWaypoint = selectedCache.GetStartWaypoint();
-			}
-			else
-			{
-				newSelectedWaypoint = null;
-			}
-		}
-		else
+		// load Detail Info if not available
+		if (selectedCache.detail == null)
 		{
-			newSelectedWaypoint = waypoint;
-		}
-
-		if (newSelectedWaypoint != null)
-		{
-			// den zu selektierenden Waypoint aus dem aktuellen Cache-Object suchen
-			for (int i = 0, n = selectedCache.waypoints.size(); i < n; i++)
-			{
-				WaypointLite wp = selectedCache.waypoints.get(i);
-				if (wp.getGcCode().equals(newSelectedWaypoint.getGcCode()))
-				{
-					if (wp instanceof Waypoint)
-					{
-						selectedWaypoint = (Waypoint) wp;
-						break;
-					}
-				}
-			}
-			if (selectedWaypoint == null)
-			{
-				selectedWaypoint = newSelectedWaypoint.makeFull();
-			}
-		}
-		else
-		{
-			selectedWaypoint = null;
+			selectedCache.loadDetail();
 		}
 
 		SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
@@ -298,9 +253,9 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		GL.that.renderOnce();
 	}
 
-	public static void setNearestCache(CacheLite cacheLite)
+	public static void setNearestCache(Cache Cache)
 	{
-		nearestCache = cacheLite;
+		nearestCache = Cache;
 	}
 
 	public static Waypoint getSelectedWaypoint()
@@ -377,7 +332,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	public static void checkSelectedCacheValid()
 	{
 
-		CacheListLite List = Database.Data.Query;
+		CacheList List = Database.Data.Query;
 
 		// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
 		if ((List.size() > 0) && (GlobalCore.getSelectedCache() != null) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null))

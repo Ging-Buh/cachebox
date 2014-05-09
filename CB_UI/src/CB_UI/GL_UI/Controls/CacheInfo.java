@@ -6,7 +6,6 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.LogEntry;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
@@ -96,7 +95,7 @@ public class CacheInfo extends CB_View_Base
 
 	private int mViewMode = VIEW_MODE_CACHE_LIST;
 
-	private CacheLite mCache;
+	private Cache mCache;
 	private float mIconSize = 0;
 	private SizeF mStarSize = new SizeF();
 	private float mMargin = 0;
@@ -122,14 +121,14 @@ public class CacheInfo extends CB_View_Base
 
 	private boolean cacheIsInitial = false;
 
-	public CacheInfo(SizeF size, String Name, CacheLite value)
+	public CacheInfo(SizeF size, String Name, Cache value)
 	{
 		super(size, Name);
 		mCache = value;
 		cacheIsInitial = false;
 	}
 
-	public CacheInfo(CB_RectF rec, String Name, CacheLite value)
+	public CacheInfo(CB_RectF rec, String Name, Cache value)
 	{
 		super(rec, Name);
 		mCache = value;
@@ -323,7 +322,7 @@ public class CacheInfo extends CB_View_Base
 					text.append("by " + mCache.getOwner() + ", ");
 					try
 					{
-						text.append(postFormater.format(((Cache) mCache).DateHidden));
+						text.append(postFormater.format(((Cache) mCache).getDateHidden()));
 					}
 					catch (Exception e)
 					{
@@ -453,7 +452,7 @@ public class CacheInfo extends CB_View_Base
 
 	}
 
-	private static String getLastFoundLogDate(CacheLite mCache)
+	private static String getLastFoundLogDate(Cache mCache)
 	{
 		String FoundDate = "";
 		CB_List<LogEntry> logs = new CB_List<LogEntry>();

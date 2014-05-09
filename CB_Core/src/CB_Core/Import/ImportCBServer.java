@@ -97,24 +97,24 @@ public class ImportCBServer
 						cache.GPXFilename_ID = gpxFilename.Id;
 
 						dao.WriteToDatabase(cache);
-						if ((cache.tmpNote != null) && (cache.tmpNote.length() > 0))
+						if ((cache.getTmpNote() != null) && (cache.getTmpNote().length() > 0))
 						{
-							cache.noteCheckSum = (int) SDBM_Hash.sdbm(cache.tmpNote);
+							cache.setNoteChecksum((int) SDBM_Hash.sdbm(cache.getTmpNote()));
 							Parameters args = new Parameters();
 							// orginal NoteChecksum in DB speichern
-							args.put("Notes", cache.tmpNote);
+							args.put("Notes", cache.getTmpNote());
 							Database.Data.update("Caches", args, "id=" + cache.Id, null);
 
-							cache.tmpNote = null;
+							cache.setTmpNote(null);
 						}
-						if (cache.tmpSolver != null)
+						if (cache.getTmpSolver() != null)
 						{
-							cache.solverCheckSum = (int) SDBM_Hash.sdbm(cache.tmpSolver);
+							cache.setSolverChecksum((int) SDBM_Hash.sdbm(cache.getTmpSolver()));
 							Parameters args = new Parameters();
-							args.put("Solver", cache.tmpSolver);
+							args.put("Solver", cache.getTmpSolver());
 							Database.Data.update("Caches", args, "id=" + cache.Id, null);
 
-							cache.tmpSolver = null;
+							cache.setTmpSolver(null);
 						}
 
 						for (int j = 0, m = cache.waypoints.size(); j < m; j++)
@@ -124,9 +124,9 @@ public class ImportCBServer
 						}
 						if (importImages)
 						{
-							for (int j = 0, m = cache.spoilerRessources.size(); j < m; j++)
+							for (int j = 0, m = cache.getSpoilerRessources().size(); j < m; j++)
 							{
-								ImageEntry image = cache.spoilerRessources.get(j);
+								ImageEntry image = cache.getSpoilerRessources().get(j);
 								String url = CB_Rpc_Settings.CBS_IP.getValue();
 								int pos = url.indexOf(":");
 								if (pos >= 0)

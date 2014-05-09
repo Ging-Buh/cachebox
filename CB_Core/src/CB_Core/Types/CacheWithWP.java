@@ -7,12 +7,12 @@ package CB_Core.Types;
  */
 public class CacheWithWP
 {
-	private CacheLite cache;
-	private WaypointLite waypoint;
+	private Cache cache;
+	private Waypoint waypoint;
 
-	public CacheWithWP(CacheLite cacheLite, WaypointLite waypoint)
+	public CacheWithWP(Cache Cache, Waypoint waypoint)
 	{
-		this.cache = cacheLite;
+		this.cache = Cache;
 		this.waypoint = waypoint;
 	}
 
@@ -22,12 +22,12 @@ public class CacheWithWP
 		this.waypoint = null;
 	}
 
-	public CacheLite getCache()
+	public Cache getCache()
 	{
 		return this.cache;
 	}
 
-	public WaypointLite getWaypoint()
+	public Waypoint getWaypoint()
 	{
 		return this.waypoint;
 	}

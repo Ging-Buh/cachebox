@@ -1,7 +1,7 @@
 package CB_UI.Api;
 
 import CB_Core.Api.SearchForGeocaches_Core;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
@@ -21,7 +21,7 @@ public class SearchForGeocaches extends SearchForGeocaches_Core
 	}
 
 	@Override
-	protected void actualizeSpoilerOfActualCache(CacheLite cache)
+	protected void actualizeSpoilerOfActualCache(Cache cache)
 	{
 		super.actualizeSpoilerOfActualCache(cache);
 		// Spoiler aktualisieren

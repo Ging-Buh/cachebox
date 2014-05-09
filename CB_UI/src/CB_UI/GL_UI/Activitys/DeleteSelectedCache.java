@@ -7,7 +7,7 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Settings.CB_Core_Settings;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_Utils.Log.Logger;
@@ -29,7 +29,7 @@ public class DeleteSelectedCache
 		Logger.DEBUG("Delete Waypoints");
 		for (int i = 0, n = GlobalCore.getSelectedCache().waypoints.size(); i < n; i++)
 		{
-			WaypointLite wp = GlobalCore.getSelectedCache().waypoints.get(i);
+			Waypoint wp = GlobalCore.getSelectedCache().waypoints.get(i);
 			Database.DeleteFromDatabase(wp);
 		}
 		// Cache

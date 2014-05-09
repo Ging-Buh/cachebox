@@ -45,7 +45,7 @@ public class ImportHandler implements IImportHandler
 		}
 
 		// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-		cache.longDescription = "";
+		cache.setLongDescription("");
 		cacheCount++;
 	}
 

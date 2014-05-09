@@ -2,8 +2,8 @@ package CB_UI.Events;
 
 import java.util.ArrayList;
 
-import CB_Core.Types.CacheLite;
-import CB_Core.Types.WaypointLite;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import CB_UI.GlobalLocationReceiver;
 
 public class SelectedCacheEventList
@@ -26,20 +26,20 @@ public class SelectedCacheEventList
 		}
 	}
 
-	private static CacheLite lastSelectedCache;
-	private static WaypointLite lastSelectedWayPoint;
+	private static Cache lastSelectedCache;
+	private static Waypoint lastSelectedWayPoint;
 
-	public static void Call(final CacheLite selectedCache, final WaypointLite waypoint)
+	public static void Call(final Cache selectedCache, final Waypoint waypoint)
 	{
 		boolean change = true;
 
 		if (lastSelectedCache != null)
 		{
-			if (lastSelectedCache.equals(selectedCache))
+			if (lastSelectedCache == selectedCache)
 			{
 				if (lastSelectedWayPoint != null)
 				{
-					if (lastSelectedWayPoint.equals(waypoint)) change = false;
+					if (lastSelectedWayPoint == waypoint) change = false;
 				}
 				else
 				{

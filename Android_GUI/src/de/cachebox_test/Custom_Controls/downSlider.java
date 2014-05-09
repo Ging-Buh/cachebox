@@ -20,9 +20,7 @@ import java.util.Iterator;
 
 import CB_Core.Enums.Attributes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.GPS;
 import CB_Locator.Locator;
@@ -659,23 +657,23 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		setCache_onUI(cache, waypoint);
 	}
 
-	public void setCache_onUI(final CacheLite cache, final WaypointLite waypoint)
+	public void setCache_onUI(final Cache cache, final Waypoint waypoint)
 	{
 		if (mCache != null)
 		{
 			if (cache == null) return;
 
-			if (cache.equals(mCache))
+			if (cache == mCache)
 			{
 				if (mWaypoint == null && waypoint == null) return;
 				if (waypoint != null)
 				{
-					if (waypoint.equals(mWaypoint)) return;
+					if (waypoint == mWaypoint) return;
 				}
 			}
 
@@ -686,14 +684,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			@Override
 			public void run()
 			{
-				mCache = new Cache(cache);
+				mCache = cache;
 				if (waypoint == null)
 				{
 					mWaypoint = null;
 				}
 				else
 				{
-					mWaypoint = waypoint.makeFull();
+					mWaypoint = waypoint;
 				}
 				attCompleadHeight = 0;
 				CacheInfoHeight = 0;

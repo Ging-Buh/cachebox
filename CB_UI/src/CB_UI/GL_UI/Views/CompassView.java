@@ -6,9 +6,7 @@ import java.util.Date;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Events.CacheListChangedEventListner;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -171,23 +169,13 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	}
 
-	private void setWP(CacheLite cache, WaypointLite waypoint)
+	private void setWP(Cache cache, Waypoint waypoint)
 	{
 		boolean resetControls = false; // Set if WP desk changed
 
 		Waypoint wp = null;
 
-		if (waypoint != null)
-		{
-			if (waypoint instanceof Waypoint)
-			{
-				wp = (Waypoint) waypoint;
-			}
-			else
-			{
-				wp = waypoint.makeFull();
-			}
-		}
+		wp = waypoint;
 
 		if (wp != null)
 		{
@@ -211,10 +199,10 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	}
 
-	private void setCache(CacheLite cache)
+	private void setCache(Cache cache)
 	{
 
-		aktCache = new Cache(cache);
+		aktCache = cache;
 		if (cache == null) return;
 		if (showAtt)
 		{
@@ -713,7 +701,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	}
 
 	@Override
-	public void SelectedCacheChanged(CacheLite cache, WaypointLite waypoint)
+	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		setWP(cache, waypoint);
 	}

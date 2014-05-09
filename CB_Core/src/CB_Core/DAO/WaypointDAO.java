@@ -8,7 +8,6 @@ import CB_Core.Import.ImporterProgress;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import CB_Core.Types.WaypointLite;
 import CB_Locator.Coordinate;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
@@ -21,7 +20,7 @@ public class WaypointDAO
 	public void WriteToDatabase(Waypoint WP)
 	{
 		int newCheckSum = createCheckSum(WP);
-		Replication.WaypointNew(WP.CacheId, WP.checkSum, newCheckSum, WP.getGcCode());
+		Replication.WaypointNew(WP.CacheId, WP.getCheckSum(), newCheckSum, WP.getGcCode());
 		Parameters args = new Parameters();
 		args.put("gccode", WP.getGcCode());
 		args.put("cacheid", WP.CacheId);
@@ -59,8 +58,8 @@ public class WaypointDAO
 	{
 		boolean result = false;
 		int newCheckSum = createCheckSum(WP);
-		Replication.WaypointChanged(WP.CacheId, WP.checkSum, newCheckSum, WP.getGcCode());
-		if (newCheckSum != WP.checkSum)
+		Replication.WaypointChanged(WP.CacheId, WP.getCheckSum(), newCheckSum, WP.getGcCode());
+		if (newCheckSum != WP.getCheckSum())
 		{
 			Parameters args = new Parameters();
 			args.put("gccode", WP.getGcCode());
@@ -101,7 +100,7 @@ public class WaypointDAO
 					return result;
 				}
 			}
-			WP.checkSum = newCheckSum;
+			WP.setCheckSum(newCheckSum);
 		}
 		return result;
 	}
@@ -114,18 +113,11 @@ public class WaypointDAO
 	 *            Waypoints as FullWaypoints (true) or WaypointLite (false)
 	 * @return
 	 */
-	public WaypointLite getWaypoint(CoreCursor reader, boolean full)
+	public Waypoint getWaypoint(CoreCursor reader, boolean full)
 	{
-		WaypointLite WP = null;
+		Waypoint WP = null;
 
-		if (full)
-		{
-			WP = new Waypoint();
-		}
-		else
-		{
-			WP = new WaypointLite();
-		}
+		WP = new Waypoint(full);
 
 		WP.setGcCode(reader.getString(0));
 		WP.CacheId = reader.getLong(1);
@@ -140,9 +132,9 @@ public class WaypointDAO
 
 		if (full)
 		{
-			((Waypoint) WP).setClue(reader.getString(8));
-			((Waypoint) WP).setDescription(reader.getString(4));
-			((Waypoint) WP).checkSum = createCheckSum((Waypoint) WP);
+			WP.setClue(reader.getString(8));
+			WP.setDescription(reader.getString(4));
+			WP.setCheckSum(createCheckSum(WP));
 		}
 		return WP;
 	}
@@ -216,12 +208,12 @@ public class WaypointDAO
 	// Hier wird überprüft, ob für diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurückgesetzt
 	// Damit kann bei der Definition eines neuen Start-Waypoints vorher der alte entfernt werden damit sichergestellt ist dass ein Cache nur
 	// 1 Start-Waypoint hat
-	public void ResetStartWaypoint(Cache cache, WaypointLite except)
+	public void ResetStartWaypoint(Cache cache, Waypoint except)
 	{
 		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
-			WaypointLite wp = cache.waypoints.get(i);
-			if (except.equals(wp)) continue;
+			Waypoint wp = cache.waypoints.get(i);
+			if (except == wp) continue;
 			if (wp.IsStart)
 			{
 				wp.IsStart = false;
@@ -259,9 +251,9 @@ public class WaypointDAO
 	 *            Waypoints as FullWaypoints (true) or WaypointLite (false)
 	 * @return
 	 */
-	public CB_List<WaypointLite> getWaypointsFromCacheID(Long CacheID, boolean Full)
+	public CB_List<Waypoint> getWaypointsFromCacheID(Long CacheID, boolean Full)
 	{
-		CB_List<WaypointLite> wpList = new CB_List<WaypointLite>();
+		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
 		long aktCacheID = -1;
 
 		CoreCursor reader = Database.Data
@@ -272,11 +264,11 @@ public class WaypointDAO
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
 		{
-			WaypointLite wp = getWaypoint(reader, Full);
+			Waypoint wp = getWaypoint(reader, Full);
 			if (wp.CacheId != aktCacheID)
 			{
 				aktCacheID = wp.CacheId;
-				wpList = new CB_List<WaypointLite>();
+				wpList = new CB_List<Waypoint>();
 
 			}
 			wpList.add(wp);

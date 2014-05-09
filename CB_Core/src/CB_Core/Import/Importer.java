@@ -26,7 +26,7 @@ import CB_Core.GCVote.GCVote;
 import CB_Core.GCVote.GCVoteCacheInfo;
 import CB_Core.GCVote.RatingData;
 import CB_Core.Settings.CB_Core_Settings;
-import CB_Core.Types.CacheLite;
+import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
@@ -658,7 +658,7 @@ public class Importer
 	 *         return;<br>
 	 *         }<br>
 	 */
-	public int importSpoilerForCacheNew(ImporterProgress ip, CacheLite cacheLite)
+	public int importSpoilerForCacheNew(ImporterProgress ip, Cache cacheLite)
 	{
 		if (cacheLite == null) return 0;
 		return importImagesForCacheNew(ip, true, false, cacheLite.Id, cacheLite.getGcCode(), cacheLite.getName(), "", "", true);
