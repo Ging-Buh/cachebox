@@ -217,14 +217,14 @@ public class Cache implements Comparable<Cache>, Serializable
 	/**
 	 * Delete Detail Information to save memory
 	 */
-	public void deleteDetail()
+	public void deleteDetail(boolean showAllWaypoints)
 	{
 		if (this.detail == null) return;
 		this.detail.dispose();
 		this.detail = null;
 		// remove all Detail Information from Waypoints
 		// remove all Waypoints != Start and Final
-		if (waypoints != null)
+		if ((waypoints != null) && (!showAllWaypoints))
 		{
 			for (int i = 0; i < waypoints.size(); i++)
 			{

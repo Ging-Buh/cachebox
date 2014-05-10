@@ -40,17 +40,18 @@ import CB_Utils.Util.FileIO;
 public class CacheListDAO
 {
 
-	public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails)
+	public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails, boolean loadAllWaypoints)
 	{
-		return ReadCacheList(cacheList, "", where, false, fullDetails);
+		return ReadCacheList(cacheList, "", where, false, fullDetails, loadAllWaypoints);
 	}
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails)
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
 	{
-		return ReadCacheList(cacheList, join, where, false, fullDetails);
+		return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
 	}
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails)
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails,
+			boolean loadAllWaypoints)
 	{
 		if (cacheList == null) return null;
 
@@ -73,7 +74,7 @@ public class CacheListDAO
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
 			Waypoint wp = waypointDAO.getWaypoint(reader, true);
-			if (!fullDetails)
+			if (!(fullDetails || loadAllWaypoints))
 			{
 				// wenn keine FullDetails geladen werden sollen dann sollen nur die Finals und Start-Waypoints geladen werden
 				if (!(wp.IsStart || wp.Type == CacheTypes.Final))
@@ -242,7 +243,7 @@ public class CacheListDAO
 	private ArrayList<String> getDelGcCodeList(String where)
 	{
 		CacheList list = new CacheList();
-		ReadCacheList(list, where, false);
+		ReadCacheList(list, where, false, false);
 		ArrayList<String> StrList = new ArrayList<String>();
 
 		for (int i = 0, n = list.size(); i < n; i++)

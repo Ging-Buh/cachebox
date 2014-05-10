@@ -506,7 +506,7 @@ public class CacheDAO
 		// Indexing DB
 		CacheList IndexDB = new CacheList();
 		CacheListDAO cacheListDAO = new CacheListDAO();
-		IndexDB = cacheListDAO.ReadCacheList(IndexDB, "", true);
+		IndexDB = cacheListDAO.ReadCacheList(IndexDB, "", true, true);
 
 		ip.setJobMax("IndexingDB", IndexDB.size());
 		ArrayList<String> index = new ArrayList<String>();

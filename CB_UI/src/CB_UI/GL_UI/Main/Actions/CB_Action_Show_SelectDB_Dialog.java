@@ -112,7 +112,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				synchronized (Database.Data.Query)
 				{
 					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 				}
 
 				// set selectedCache from lastselected Cache

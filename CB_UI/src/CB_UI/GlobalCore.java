@@ -231,7 +231,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		// remove Detail Info from old selectedCache
 		if ((selectedCache != Cache) && (selectedCache != null) && (selectedCache.detail != null))
 		{
-			selectedCache.deleteDetail();
+			selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
 		}
 		selectedCache = Cache;
 		selectedWaypoint = waypoint;

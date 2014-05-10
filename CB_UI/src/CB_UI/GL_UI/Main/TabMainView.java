@@ -274,7 +274,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		synchronized (Database.Data.Query)
 		{
 			CacheListDAO cacheListDAO = new CacheListDAO();
-			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 			cacheListDAO = null;
 		}
 		CachListChangedEventList.Call();

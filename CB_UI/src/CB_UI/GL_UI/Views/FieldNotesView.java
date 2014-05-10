@@ -778,7 +778,7 @@ public class FieldNotesView extends V_ListView
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 		CacheList lCaches = new CacheList();
 		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false);
+		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
 		if (lCaches.size() > 0) tmpCache = lCaches.get(0);
 		final Cache cache = tmpCache;
 
@@ -909,7 +909,7 @@ public class FieldNotesView extends V_ListView
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 		CacheList lCaches = new CacheList();
 		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false);
+		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
 		Cache tmpCache = null;
 		if (lCaches.size() > 0) tmpCache = lCaches.get(0);
 		Cache cache = tmpCache;

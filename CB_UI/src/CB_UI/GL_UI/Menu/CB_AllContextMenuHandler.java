@@ -170,7 +170,7 @@ public class CB_AllContextMenuHandler
 						{
 							String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 							CacheListDAO cacheListDAO = new CacheListDAO();
-							cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
+							cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 						}
 
 						CachListChangedEventList.Call();

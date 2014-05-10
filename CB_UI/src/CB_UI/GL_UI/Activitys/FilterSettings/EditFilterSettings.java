@@ -390,7 +390,7 @@ public class EditFilterSettings extends ActivityBase
 						Logger.General("Main.ApplyFilter: " + sqlWhere);
 						Database.Data.Query.clear();
 						CacheListDAO cacheListDAO = new CacheListDAO();
-						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
+						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 						GlobalCore.checkSelectedCacheValid();
 					}
 					CachListChangedEventList.Call();

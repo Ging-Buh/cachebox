@@ -103,7 +103,7 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 				{
 					String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false);
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 				}
 
 				CachListChangedEventList.Call();
