@@ -113,6 +113,7 @@ public class CacheListDAO
 		reader.moveToFirst();
 
 		CacheDAO cacheDAO = new CacheDAO();
+		long start = System.currentTimeMillis();
 		while (!reader.isAfterLast())
 		{
 			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription, fullDetails);
@@ -136,7 +137,8 @@ public class CacheListDAO
 
 		}
 		reader.close();
-
+		long end = System.currentTimeMillis();
+		System.out.println("Dauer: " + String.valueOf(end - start));
 		// clear other never used WP`s from Mem
 		waypoints.clear();
 		waypoints = null;

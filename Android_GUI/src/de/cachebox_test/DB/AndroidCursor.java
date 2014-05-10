@@ -44,9 +44,21 @@ public class AndroidCursor extends CoreCursor
 	}
 
 	@Override
+	public String getString(String column)
+	{
+		return cursor.getString(cursor.getColumnIndex(column));
+	}
+
+	@Override
 	public long getLong(int columnIndex)
 	{
 		return cursor.getLong(columnIndex);
+	}
+
+	@Override
+	public long getLong(String column)
+	{
+		return cursor.getLong(cursor.getColumnIndex(column));
 	}
 
 	@Override
@@ -56,9 +68,21 @@ public class AndroidCursor extends CoreCursor
 	}
 
 	@Override
+	public int getInt(String column)
+	{
+		return cursor.getInt(cursor.getColumnIndex(column));
+	}
+
+	@Override
 	public boolean isNull(int columnIndex)
 	{
 		return cursor.isNull(columnIndex);
+	}
+
+	@Override
+	public boolean isNull(String column)
+	{
+		return cursor.isNull(cursor.getColumnIndex(column));
 	}
 
 	@Override
@@ -68,9 +92,21 @@ public class AndroidCursor extends CoreCursor
 	}
 
 	@Override
+	public double getDouble(String column)
+	{
+		return cursor.getDouble(cursor.getColumnIndex(column));
+	}
+
+	@Override
 	public short getShort(int columnIndex)
 	{
 		return cursor.getShort(columnIndex);
+	}
+
+	@Override
+	public short getShort(String column)
+	{
+		return cursor.getShort(cursor.getColumnIndex(column));
 	}
 
 	@Override

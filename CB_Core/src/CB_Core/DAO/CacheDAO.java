@@ -51,33 +51,13 @@ public class CacheDAO
 			cache.setAvailable(reader.getInt(9) != 0);
 			cache.setFound(reader.getInt(10) != 0);
 			cache.Type = CacheTypes.values()[reader.getShort(11)];
-			cache.setPlacedBy(reader.getString(12).trim());
 			cache.setOwner(reader.getString(13).trim());
 
-			String sDate = reader.getString(14);
-			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			try
-			{
-				cache.setDateHidden(iso8601Format.parse(sDate));
-			}
-			catch (ParseException e)
-			{
-			}
-
-			cache.setUrl(reader.getString(15).trim());
 			cache.NumTravelbugs = reader.getInt(16);
-			cache.setGcId(reader.getString(17).trim());
 			cache.Rating = ((float) reader.getShort(18)) / 100.0f;
 			if (reader.getInt(19) > 0) cache.setFavorit(true);
 			else
 				cache.setFavorit(false);
-			if (reader.getString(20) != null) cache.setTourName(reader.getString(20).trim());
-			else
-				cache.setTourName("");
-
-			if (reader.getString(21) != "") cache.GPXFilename_ID = reader.getLong(21);
-			else
-				cache.GPXFilename_ID = -1;
 
 			if (reader.getInt(22) > 0) cache.setHasUserData(true);
 			else
@@ -91,20 +71,13 @@ public class CacheDAO
 			else
 				cache.setCorrectedCoordinates(false);
 
-			if (reader.isNull(25)) cache.setApiStatus((byte) 0);
-			else
-				cache.setApiStatus((byte) reader.getInt(25));
-
 			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 
-			cache.setAttributesPositive(new DLong(reader.getLong(27), reader.getLong(26)));
-			cache.setAttributesNegative(new DLong(reader.getLong(29), reader.getLong(28)));
-
-			if (reader.getString(30) != null) cache.setHint(reader.getString(30).trim());
-			else
-				cache.setHint("");
-
+			if (fullDetails)
+			{
+				readDetailFromCursor(reader, cache.detail);
+			}
 			if (withDescription)
 			{
 				cache.setLongDescription(reader.getString(31));
