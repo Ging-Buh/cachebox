@@ -50,7 +50,7 @@ public class GpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW");
+		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", true);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 

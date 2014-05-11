@@ -47,7 +47,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC1XCEW");
+		Cache cache = cacheDAO.getFromDbByGcCode("GC1XCEW", true);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 

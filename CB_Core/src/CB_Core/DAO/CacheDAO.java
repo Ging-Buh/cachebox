@@ -400,7 +400,7 @@ public class CacheDAO
 
 	}
 
-	public Cache getFromDbByGcCode(String GcCode)
+	public Cache getFromDbByGcCode(String GcCode, boolean witDetail)
 	{
 		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByGcCode, new String[]
 			{ GcCode });
@@ -410,7 +410,7 @@ public class CacheDAO
 			if (reader != null && reader.getCount() > 0)
 			{
 				reader.moveToFirst();
-				Cache ret = ReadFromCursor(reader, false);
+				Cache ret = ReadFromCursor(reader, witDetail);
 
 				reader.close();
 				return ret;
