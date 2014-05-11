@@ -65,10 +65,15 @@ public class CacheListDAO
 		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
 		long aktCacheID = -1;
 
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint order by CacheId",
-						null);
+		String sql = "select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint";
+		if (!((fullDetails || loadAllWaypoints)))
+		{
+			// when CacheList should be loaded without full details and without all Waypoints
+			// do not load all waypoints from db!
+			sql = " where IsStart=true or Type=18"; // StartWaypoint or Final
+		}
+		sql += " order by CacheId";
+		CoreCursor reader = Database.Data.rawQuery(sql, null);
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
 		{
@@ -98,7 +103,7 @@ public class CacheListDAO
 		Logger.DEBUG("ReadCacheList 2.Caches");
 		try
 		{
-			String sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint";
+			sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint";
 			if (withDescription)
 			{
 				sql += ", Description, Solver, Notes";
