@@ -19,13 +19,13 @@ public class FunctionBearing extends Function
 	@Override
 	public String getName()
 	{
-		return Translation.Get("solverFuncBearing");
+		return Translation.Get("solverFuncBearing".hashCode());
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Translation.Get("solverDescBearing");
+		return Translation.Get("solverDescBearing".hashCode());
 	}
 
 	@Override
@@ -33,13 +33,13 @@ public class FunctionBearing extends Function
 	{
 		if (parameter.length != 2)
 		{
-			return Translation.Get("solverErrParamCount", "2", "$solverFuncBearing");
+			return Translation.Get("solverErrParamCount".hashCode(), "2", "$solverFuncBearing");
 		}
 		Coordinate[] coord = new Coordinate[2];
 		for (int i = 0; i < 2; i++)
 		{
 			coord[i] = new CoordinateGPS(parameter[i]);
-			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncBearing", String.valueOf(i + 1),
+			if (!coord[i].isValid()) return Translation.Get("solverErrParamType".hashCode(), "$solverFuncBearing", String.valueOf(i + 1),
 					"$coordinate", "$coordinate", parameter[i]);
 		}
 		try
@@ -50,8 +50,8 @@ public class FunctionBearing extends Function
 		}
 		catch (Exception ex)
 		{
-			return Translation.Get("StdError", "$solverFuncBearing", ex.getMessage(),
-					coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+			return Translation.Get("StdError".hashCode(), "$solverFuncBearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> "
+					+ coord[1].FormatCoordinate());
 		}
 	}
 

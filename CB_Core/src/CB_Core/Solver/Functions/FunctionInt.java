@@ -16,13 +16,13 @@ public class FunctionInt extends Function
 	@Override
 	public String getName()
 	{
-		return Translation.Get("solverFuncInt");
+		return Translation.Get("solverFuncInt".hashCode());
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Translation.Get("solverDescInt");
+		return Translation.Get("solverDescInt".hashCode());
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class FunctionInt extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return Translation.Get("solverErrParamCount", "1", "$solverFuncInt");
+			return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncInt");
 		}
 		double number = 0;
 		try
@@ -39,7 +39,7 @@ public class FunctionInt extends Function
 		}
 		catch (Exception ex)
 		{
-			return Translation.Get("solverErrParamType", "$solverFuncInt", "1", "$value", "$number", parameter[0]);
+			return Translation.Get("solverErrParamType".hashCode(), "$solverFuncInt", "1", "$value", "$number", parameter[0]);
 		}
 		return String.valueOf((int) number);
 	}

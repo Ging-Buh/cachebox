@@ -16,14 +16,14 @@ public class FunctionAlphaPos extends Function
 	@Override
 	public String getName()
 	{
-		return Translation.Get("solverFuncAlphaPos");
+		return Translation.Get("solverFuncAlphaPos".hashCode());
 		// return "AlphaPos";
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Translation.Get("solverDescAlphaPos");
+		return Translation.Get("solverDescAlphaPos".hashCode());
 		// return "Position des ersten Zeichens im Alphabet";
 	}
 
@@ -32,7 +32,7 @@ public class FunctionAlphaPos extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return Translation.Get("solverErrParamCount", "1", "$solverFuncAlphaPos");
+			return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaPos");
 			// return "Diese Funktion benötigt %s Parameter".replace("%s", "1");
 		}
 		String wert = parameter[0].trim().toLowerCase();

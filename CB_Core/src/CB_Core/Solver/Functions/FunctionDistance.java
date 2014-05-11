@@ -20,13 +20,13 @@ public class FunctionDistance extends Function
 	@Override
 	public String getName()
 	{
-		return Translation.Get("solverFuncDistance");
+		return Translation.Get("solverFuncDistance".hashCode());
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Translation.Get("solverDescDistance");
+		return Translation.Get("solverDescDistance".hashCode());
 	}
 
 	@Override
@@ -34,13 +34,13 @@ public class FunctionDistance extends Function
 	{
 		if (parameter.length != 2)
 		{
-			return Translation.Get("solverErrParamCount", "2", "$solverFuncDistance");
+			return Translation.Get("solverErrParamCount".hashCode(), "2", "$solverFuncDistance");
 		}
 		Coordinate[] coord = new Coordinate[2];
 		for (int i = 0; i < 2; i++)
 		{
 			coord[i] = new CoordinateGPS(parameter[i]);
-			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncDistance", String.valueOf(i + 1),
+			if (!coord[i].isValid()) return Translation.Get("solverErrParamType".hashCode(), "$solverFuncDistance", String.valueOf(i + 1),
 					"$coordinate", "$coordinate", parameter[i]);
 		}
 		float[] dist = new float[2];
@@ -52,8 +52,8 @@ public class FunctionDistance extends Function
 		}
 		catch (Exception ex)
 		{
-			return Translation.Get("StdError", "$solverFuncDistance", ex.getMessage(),
-					coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+			return Translation.Get("StdError".hashCode(), "$solverFuncDistance", ex.getMessage(), coord[0].FormatCoordinate() + " -> "
+					+ coord[1].FormatCoordinate());
 		}
 	}
 

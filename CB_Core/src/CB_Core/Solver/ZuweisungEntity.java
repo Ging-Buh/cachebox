@@ -55,7 +55,7 @@ public class ZuweisungEntity extends Entity
 				if (!(isBuchstabe || isZahl)) ungueltig = true;
 				firstChar = false;
 			}
-			if (ungueltig) return Translation.Get("InvalidVariableName", lLinks);
+			if (ungueltig) return Translation.Get("InvalidVariableName".hashCode(), lLinks);
 			// lLinks ist gueltiger Variablenname
 			if (!Solver.Variablen.containsKey(lLinks))
 			{
@@ -75,7 +75,7 @@ public class ZuweisungEntity extends Entity
 			return ((CoordinateEntity) links).SetCoordinate(lRechts);
 		}
 		else
-			return Translation.Get("LeftMustBeAVariable", lLinks);
+			return Translation.Get("LeftMustBeAVariable".hashCode(), lLinks);
 	}
 
 	@Override

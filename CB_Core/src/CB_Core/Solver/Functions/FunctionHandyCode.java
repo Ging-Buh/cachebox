@@ -19,13 +19,13 @@ public class FunctionHandyCode extends Function
 	@Override
 	public String getName()
 	{
-		return Translation.Get("solverFuncPhoneCode");
+		return Translation.Get("solverFuncPhoneCode".hashCode());
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Translation.Get("solverDescPhoneCode");
+		return Translation.Get("solverDescPhoneCode".hashCode());
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class FunctionHandyCode extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return Translation.Get("solverErrParamCount", "1", "$solverFuncPhoneCode");
+			return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncPhoneCode");
 		}
 		String wert = parameter[0].trim().toLowerCase();
 		if (wert.length() == 0) return "0";

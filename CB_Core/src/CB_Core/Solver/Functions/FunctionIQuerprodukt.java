@@ -18,13 +18,13 @@ public class FunctionIQuerprodukt extends Function
 	@Override
 	public String getName()
 	{
-		return Translation.Get("solverFuncICrossproduct");
+		return Translation.Get("solverFuncICrossproduct".hashCode());
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Translation.Get("solverDescICrossproduct");
+		return Translation.Get("solverDescICrossproduct".hashCode());
 	}
 
 	private String Qp(String wert)
@@ -43,7 +43,7 @@ public class FunctionIQuerprodukt extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return Translation.Get("solverErrParamCount", "1", "$solverFuncICrossproduct");
+			return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncICrossproduct");
 		}
 		String wert = parameter[0].trim();
 		while (wert.length() > 1)

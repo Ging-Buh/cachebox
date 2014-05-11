@@ -41,14 +41,14 @@ public class Translation
 	 * @uml.property name="that"
 	 * @uml.associationEnd
 	 */
-	private static Translation that;
+	public static Translation that;
 
 	private FileType mFiletype = FileType.Internal;
 
 	private final String BR;
 	private final CB_List<Translations> mStringList;
 	private final CB_List<Translations> mRefTranslation;
-	private final CB_List<Translations> mMissingStringList;
+	public final CB_List<Translations> mMissingStringList;
 	private String mLangID;
 	private final String mWorkPath;
 	private String mInitialLangPath;
@@ -91,19 +91,6 @@ public class Translation
 	}
 
 	/**
-	 * Returns the translation from StringID
-	 * 
-	 * @param StringId
-	 *            as String
-	 * @return String
-	 */
-	public static String Get(String StringId)
-	{
-		if (that == null) return "Translation not initial";
-		return that.get(StringId);
-	}
-
-	/**
 	 * Returns the translation from StringID </br>with params ??????
 	 * 
 	 * @param StringId
@@ -118,6 +105,23 @@ public class Translation
 	{
 		if (that == null) return "Translation not initial";
 		return that.get(StringId, params);
+	}
+
+	/**
+	 * Returns the translation from StringID </br>with params ??????
+	 * 
+	 * @param Id
+	 *            Id String as String.hashCode()
+	 * @param params
+	 *            With this a variable number of Strings can be definde Before returning the translation string there will be replaced
+	 *            predefined substrings by these parameters Example: the "{1}" will be replaced by the first param, the "{2}" by the
+	 *            second... Get("abc {1} def {3} ghi {2}", "123", "456", "789"); Result: "abc 123 def 789 ghi 456"
+	 * @return String
+	 */
+	public static String Get(int Id, String... params)
+	{
+		if (that == null) return "Translation not initial";
+		return that.get(Id, params);
 	}
 
 	/**
@@ -183,7 +187,7 @@ public class Translation
 	 */
 	public static boolean isInitial()
 	{
-		if (that != null && that.mRefTranslation != null && that.mRefTranslation.size() > 0) return true;
+		if (that != null && that.mRefTranslation != null) return true;
 		return false;
 	}
 
@@ -211,17 +215,14 @@ public class Translation
 			return;
 		}
 
-		if (mRefTranslation.size() <= 0)
-		{
-			String FileName = FileUtil.GetFileName(FilePath);
+		readDefFile(FilePath);
 
+		{// read refFile (EN)
+			String FileName = FileUtil.GetFileName(FilePath);
 			int pos = FilePath.lastIndexOf("lang") + 4;
 			String LangFileName = FilePath.substring(0, pos) + "/en-GB/" + FileName;
-
 			readRefFile(LangFileName);
 		}
-
-		readDefFile(FilePath);
 
 		String tmp = FilePath;
 		int pos2 = tmp.lastIndexOf("/") + 1;
@@ -246,7 +247,6 @@ public class Translation
 
 		CB_List<Translations> List = Default ? mStringList : mRefTranslation;
 		List.clear();
-		// get Encoding
 
 		FileHandle file = Gdx.files.getFileHandle(FilePath, mFiletype);
 
@@ -278,43 +278,27 @@ public class Translation
 				continue;
 			}
 
-			String readID = line.substring(0, pos);
+			String readID = line.substring(0, pos).trim();
 			String readTransl = line.substring(pos + 1);
 			String ReplacedRead = readTransl.trim().replace("\\n", String.format("%n"));
-			List.add(new Translations(readID.trim(), ReplacedRead));
+
+			if (!Default)
+			{
+				// dont add if added on Def
+				String contains = Get(readID);
+				if (contains.startsWith("$ID: ")) List.add(new Translations(readID, ReplacedRead));
+			}
+			else
+			{
+				List.add(new Translations(readID, ReplacedRead));
+			}
 		}
 
 	}
 
 	private String get(String StringId, String... params)
 	{
-
-		if (mStringList == null || mRefTranslation == null) return "Translation  not initial";
-
-		String retString = "";
-		for (int i = 0, n = mStringList.size(); i < n; i++)
-		{
-			Translations tmp = mStringList.get(i);
-			if (tmp.IdString.equals(StringId))
-			{
-				retString = tmp.Translation;
-				break;
-			}
-		}
-
-		if (retString == "")
-		{
-			for (int i = 0, n = mRefTranslation.size(); i < n; i++)
-			{
-				Translations tmp = mRefTranslation.get(i);
-				if (tmp.IdString.equals(StringId))
-				{
-					retString = tmp.Translation;
-					break;
-				}
-			}
-		}
-
+		String retString = get(StringId.hashCode(), params);
 		if (retString == "")
 		{
 			retString = "$ID: " + StringId;// "No translation found";
@@ -324,7 +308,43 @@ public class Translation
 			{
 				mMissingStringList.add(notFound);
 			}
+			return retString;
+		}
+		return retString;
+	}
 
+	private String get(int Id, String... params)
+	{
+
+		if (mStringList == null || mRefTranslation == null) return "Translation  not initial";
+
+		String retString = "";
+		for (int i = 0, n = mStringList.size(); i < n; i++)
+		{
+			Translations tmp = mStringList.get(i);
+			if (tmp.getIdString() == Id)
+			{
+				retString = tmp.getTranslation();
+				break;
+			}
+		}
+
+		if (retString == "")
+		{
+			for (int i = 0, n = mRefTranslation.size(); i < n; i++)
+			{
+				Translations tmp = mRefTranslation.get(i);
+				if (tmp.getIdString() == Id)
+				{
+					retString = tmp.getTranslation();
+					break;
+				}
+			}
+		}
+
+		if (retString == "")
+		{
+			return retString;
 		}
 
 		if (params != null && params.length > 0)
@@ -419,7 +439,7 @@ public class Translation
 					{
 						if (i >= mMissingStringList.size()) break;
 						Translations tmp = mMissingStringList.get(i);
-						sb.append(tmp.IdString + BR);
+						sb.append(tmp.getIdString() + BR);
 					}
 					override = true;
 				}

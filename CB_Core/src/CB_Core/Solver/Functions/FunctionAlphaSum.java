@@ -16,13 +16,13 @@ public class FunctionAlphaSum extends Function
 	@Override
 	public String getName()
 	{
-		return Translation.Get("solverFuncAlphaSum");
+		return Translation.Get("solverFuncAlphaSum".hashCode());
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Translation.Get("solverDescAlphaSum");
+		return Translation.Get("solverDescAlphaSum".hashCode());
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class FunctionAlphaSum extends Function
 	{
 		if (parameter.length != 1)
 		{
-			return Translation.Get("solverErrParamCount", "1", "$solverFuncAlphaSum");
+			return Translation.Get("solverErrParamCount".hashCode(), "1", "$solverFuncAlphaSum");
 		}
 		int result = 0;
 		if (parameter[0].length() == 0) return "0";

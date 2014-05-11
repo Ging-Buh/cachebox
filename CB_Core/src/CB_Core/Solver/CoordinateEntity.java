@@ -93,7 +93,7 @@ public class CoordinateEntity extends Entity
 		if (coord == null)
 		// gesuchter Waypoint ist kein Cache-Waypoint, jetzt in Waypoint-Tabelle danach suchen
 		coord = LoadFromDB("select GcCode, Latitude, Longitude from Waypoint where GcCode = \"" + this.gcCode + "\"");
-		if (coord == null) return Translation.Get("CacheOrWaypointNotFound", gcCode);
+		if (coord == null) return Translation.Get("CacheOrWaypointNotFound".hashCode(), gcCode);
 		else
 			return coord.FormatCoordinate();
 	}
@@ -102,7 +102,7 @@ public class CoordinateEntity extends Entity
 	{
 		if (Solver.isError(sCoord)) return sCoord;
 		Coordinate coord = new CoordinateGPS(sCoord);
-		if (!coord.isValid()) return Translation.Get("InvalidCoordinate", "SetCoordinate", sCoord);
+		if (!coord.isValid()) return Translation.Get("InvalidCoordinate".hashCode(), "SetCoordinate", sCoord);
 		WaypointDAO waypointDAO = new WaypointDAO();
 		Waypoint dbWaypoint = null;
 		// Suchen, ob dieser Waypoint bereits vorhanden ist.
@@ -113,7 +113,7 @@ public class CoordinateEntity extends Entity
 		try
 		{
 			reader.moveToFirst();
-			if (reader.isAfterLast()) return Translation.Get("CacheOrWaypointNotFound", this.gcCode);
+			if (reader.isAfterLast()) return Translation.Get("CacheOrWaypointNotFound".hashCode(), this.gcCode);
 			dbWaypoint = (Waypoint) waypointDAO.getWaypoint(reader, true);
 		}
 		finally
@@ -134,7 +134,7 @@ public class CoordinateEntity extends Entity
 				// sFmt += "Cache: [%s]\nWaypoint: [%s]\nCoordinates: [%s]";
 				// String s = String.format(sFmt, cache.Name, waypoint.Title, coord.FormatCoordinate());
 				// MessageBox(s, "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, DiffCac//heListener);
-				return Translation.Get("solverErrDiffCache", coord.FormatCoordinate(), dbWaypoint.getTitle(), cache.getName());
+				return Translation.Get("solverErrDiffCache".hashCode(), coord.FormatCoordinate(), dbWaypoint.getTitle(), cache.getName());
 			}
 		}
 		dbWaypoint.Pos.setLatitude(coord.getLatitude());

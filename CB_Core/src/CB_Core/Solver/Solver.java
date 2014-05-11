@@ -10,7 +10,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 public class Solver extends ArrayList<SolverZeile>
 {
 	private static final long serialVersionUID = 132452345624562L;
-	public static final String errorPrefix = Translation.Get("solverErrorPrefix");
+	public static final String errorPrefix = Translation.Get("solverErrorPrefix".hashCode());
 	public static final String errorPostfix = "";
 
 	// Liste mit den Operatoren, werden in dieser Reihenfolge abgearbeitet (. vor -)...

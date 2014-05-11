@@ -20,13 +20,13 @@ public class FunctionCrossbearing extends Function
 	@Override
 	public String getName()
 	{
-		return Translation.Get("solverFuncCrossbearing");
+		return Translation.Get("solverFuncCrossbearing".hashCode());
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Translation.Get("solverDescCrossbearing");
+		return Translation.Get("solverDescCrossbearing".hashCode());
 	}
 
 	@Override
@@ -34,23 +34,23 @@ public class FunctionCrossbearing extends Function
 	{
 		if (parameter.length != 4)
 		{
-			return Translation.Get("solverErrParamCount", "4", "$solverFuncBearing");
+			return Translation.Get("solverErrParamCount".hashCode(), "4", "$solverFuncBearing");
 		}
 		Coordinate[] coord = new Coordinate[2];
 		double[] angle = new double[2];
 		for (int i = 0; i < 2; i++)
 		{
 			coord[i] = new CoordinateGPS(parameter[i * 2]);
-			if (!coord[i].isValid()) return Translation.Get("solverErrParamType", "$solverFuncCrossbearing", String.valueOf(i * 2 + 1),
-					"$coordinate", "$coordinate", parameter[i * 2]);
+			if (!coord[i].isValid()) return Translation.Get("solverErrParamType".hashCode(), "$solverFuncCrossbearing",
+					String.valueOf(i * 2 + 1), "$coordinate", "$coordinate", parameter[i * 2]);
 			try
 			{
 				angle[i] = Double.valueOf(parameter[i * 2 + 1]);
 			}
 			catch (Exception ex)
 			{
-				return Translation.Get("solverErrParamType", "$solverFuncCrossbearing", String.valueOf(i * 2 + 2), "$angle", "$number",
-						parameter[i * 2 + 1]);
+				return Translation.Get("solverErrParamType".hashCode(), "$solverFuncCrossbearing", String.valueOf(i * 2 + 2), "$angle",
+						"$number", parameter[i * 2 + 1]);
 			}
 		}
 
@@ -60,8 +60,8 @@ public class FunctionCrossbearing extends Function
 		}
 		catch (Exception ex)
 		{
-			return Translation.Get("StdError", "$solverFuncCrossbearing", ex.getMessage(),
-					coord[0].FormatCoordinate() + " -> " + coord[1].FormatCoordinate());
+			return Translation.Get("StdError".hashCode(), "$solverFuncCrossbearing", ex.getMessage(), coord[0].FormatCoordinate() + " -> "
+					+ coord[1].FormatCoordinate());
 		}
 	}
 

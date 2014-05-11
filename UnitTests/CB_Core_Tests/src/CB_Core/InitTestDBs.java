@@ -148,16 +148,23 @@ public class InitTestDBs
 		Database.Data.GPXFilenameUpdateCacheCount();
 	}
 
-	public static void InitialTranslations()
+	private static String lastLoadedTranslation;
+
+	public static void InitialTranslations(String lang)
 	{
-		if (Translation.isInitial()) return;
+		if (Translation.that != null)
+		{
+			if (lastLoadedTranslation.equals(lang)) return;
+		}
+
+		lastLoadedTranslation = lang;
 
 		InitalConfig();
 
 		new Translation(Config.WorkPath, FileType.Absolute);
 		try
 		{
-			Translation.LoadTranslation(Config.WorkPath + "/lang/de/strings.ini");
+			Translation.LoadTranslation(Config.WorkPath + "/lang/" + lang + "/strings.ini");
 		}
 		catch (IOException e)
 		{
