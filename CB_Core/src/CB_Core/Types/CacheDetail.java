@@ -150,7 +150,7 @@ public class CacheDetail implements Serializable
 		// {
 		// for (int i = 0, n = waypoints.size(); i < n; i++)
 		// {
-		// WaypointLite entry = waypoints.get(i);
+		// Waypoint entry = waypoints.get(i);
 		// entry.dispose();
 		// }
 		//

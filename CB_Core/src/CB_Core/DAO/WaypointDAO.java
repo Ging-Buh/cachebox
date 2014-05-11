@@ -110,7 +110,7 @@ public class WaypointDAO
 	 * 
 	 * @param reader
 	 * @param full
-	 *            Waypoints as FullWaypoints (true) or WaypointLite (false)
+	 *            Waypoints as FullWaypoints (true) or Waypoint (false)
 	 * @return
 	 */
 	public Waypoint getWaypoint(CoreCursor reader, boolean full)
@@ -248,7 +248,7 @@ public class WaypointDAO
 	 * @param CacheID
 	 *            ID of Cache
 	 * @param Full
-	 *            Waypoints as FullWaypoints (true) or WaypointLite (false)
+	 *            Waypoints as FullWaypoints (true) or Waypoint (false)
 	 * @return
 	 */
 	public CB_List<Waypoint> getWaypointsFromCacheID(Long CacheID, boolean Full)

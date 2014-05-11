@@ -15,6 +15,7 @@
  */
 package CB_UI_Base.graphics.Images;
 
+import CB_UI_Base.graphics.GL_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 
 /**
@@ -26,9 +27,10 @@ public class MatrixDrawable
 	{
 		this.drawable = drw;
 
-		if (mat.isDefault())
+		if (!mat.isDefault())
 		{
-			this.matrix = mat;
+			this.matrix = new GL_Matrix();
+			this.matrix.set(mat);
 		}
 		else
 		{
@@ -53,7 +55,7 @@ public class MatrixDrawable
 	 * @uml.property name="matrix"
 	 * @uml.associationEnd
 	 */
-	public final ext_Matrix matrix;
+	public ext_Matrix matrix;
 
 	public void dispose()
 	{

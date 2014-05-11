@@ -166,7 +166,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	public void preTranslate(float x, float y)
 	{
 		Matrix4 m = new Matrix4();
-		m.translate(x, y, 1);
+		m.translate(x, y, 0);
 		m.mul(this.matrix4);
 		set(m);
 	}

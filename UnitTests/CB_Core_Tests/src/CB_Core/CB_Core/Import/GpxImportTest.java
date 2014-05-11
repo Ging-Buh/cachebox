@@ -59,15 +59,16 @@ public class GpxImportTest extends TestCase
 		assertTrue("Pos ist ungültig", cache.Pos.isValid());
 
 		assertEquals("GcCode falsch", "GC2T9RW", cache.getGcCode());
-		assertEquals("DateHidden falsch", "Sat Apr 16 07:00:00 CEST 2011", cache.DateHidden.toString());
-		assertEquals("url falsch", "http://www.geocaching.com/seek/cache_details.aspx?guid=f26f18bd-9aaa-4499-944b-3e8cb62e41a7", cache.Url);
+		assertEquals("DateHidden falsch", "Sat Apr 16 07:00:00 CEST 2011", cache.getDateHidden().toString());
+		assertEquals("url falsch", "http://www.geocaching.com/seek/cache_details.aspx?guid=f26f18bd-9aaa-4499-944b-3e8cb62e41a7",
+				cache.getUrl());
 		assertTrue("Found ist falsch", cache.isFound());
 
 		assertEquals("Id ist falsch", cache.getGcId(), "2190117");
 		assertTrue("ist available ist falsch", cache.isAvailable());
 		assertFalse("ist archived ist falsch", cache.isArchived());
 		assertEquals("Name falsch", "der Hampir - T5 -", cache.getName());
-		assertEquals("Placed by falsch", "Team Rabbits", cache.PlacedBy);
+		assertEquals("Placed by falsch", "Team Rabbits", cache.getPlacedBy());
 		assertEquals("Owner falsch", "Team Rabbits", cache.getOwner());
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Traditional);
 		assertTrue("Size ist falsch", cache.Size == CacheSizes.small);

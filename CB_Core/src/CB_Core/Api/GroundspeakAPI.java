@@ -1579,7 +1579,7 @@ public class GroundspeakAPI
 
 			for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 			{
-				// must Cast to Full Waypoint. If WaypointLite, is wrong createt!
+				// must Cast to Full Waypoint. If Waypoint, is wrong createt!
 				Waypoint waypoint = (Waypoint) cache.waypoints.get(i);
 				boolean update = true;
 

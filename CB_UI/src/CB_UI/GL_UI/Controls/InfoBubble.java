@@ -49,10 +49,10 @@ public class InfoBubble extends CB_View_Base
 		setCache(cache, waypoint, false);
 	}
 
-	public void setCache(Cache cacheLite, Waypoint waypoint, boolean force)
+	public void setCache(Cache Cache, Waypoint waypoint, boolean force)
 	{
 
-		if (cacheLite == null)
+		if (Cache == null)
 		{
 			mCache = null;
 			mCacheId = -1;
@@ -61,7 +61,7 @@ public class InfoBubble extends CB_View_Base
 			return;
 		}
 
-		Cache cache = cacheLite;
+		Cache cache = Cache;
 
 		if (!force)
 		{

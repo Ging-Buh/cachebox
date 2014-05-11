@@ -13,7 +13,6 @@ import CB_Core.Api.SearchGCName;
 import CB_Core.Api.SearchGCOwner;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
@@ -58,9 +57,9 @@ public class searchForGeoCache_Test extends TestCase
 	{
 
 		Coordinate searchCoord = new CoordinateGPS(52.581892, 13.398128); // Home
-																		// of
-																		// Katipa(like
-																		// Longri)
+																			// of
+																			// Katipa(like
+																			// Longri)
 
 		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
@@ -157,7 +156,7 @@ public class searchForGeoCache_Test extends TestCase
 
 	public void testChkState()
 	{
-		ArrayList<CacheLite> chkList = new ArrayList<CacheLite>();
+		ArrayList<Cache> chkList = new ArrayList<Cache>();
 
 		Cache c = new Cache(0.0, 0.0, "", CacheTypes.Traditional, "GC2JT2F");
 
@@ -169,8 +168,8 @@ public class searchForGeoCache_Test extends TestCase
 		boolean Assert = false;
 
 		boolean changedState = false;
-		CacheLite cacheNew = null;
-		for (CacheLite cache : chkList)
+		Cache cacheNew = null;
+		for (Cache cache : chkList)
 		{
 			changedState = cache.isAvailable();
 			cache.setAvailable(!changedState);
@@ -184,7 +183,7 @@ public class searchForGeoCache_Test extends TestCase
 		// result =
 		GroundspeakAPI.GetGeocacheStatus(chkList);
 
-		for (CacheLite cache : chkList)
+		for (Cache cache : chkList)
 		{
 			if (changedState == cache.isAvailable()) Assert = true;
 		}

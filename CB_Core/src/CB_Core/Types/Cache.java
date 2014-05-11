@@ -1302,4 +1302,28 @@ public class Cache implements Comparable<Cache>, Serializable
 			return EMPTY_STRING;
 		}
 	}
+
+	public boolean isAttributePositiveSet(Attributes attribute)
+	{
+		if (detail != null)
+		{
+			return detail.isAttributePositiveSet(attribute);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public boolean isAttributeNegativeSet(Attributes attribute)
+	{
+		if (detail != null)
+		{
+			return detail.isAttributeNegativeSet(attribute);
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

@@ -630,7 +630,7 @@ public class Importer
 	 * @param Staging
 	 *            Config.settings.StagingAPI.getValue()
 	 * @param ip
-	 * @param cacheLite
+	 * @param Cache
 	 * @param DescriptionImageFolder
 	 *            Config.settings.SpoilerFolder.getValue()
 	 * @param DescriptionImageFolderLocal
@@ -658,10 +658,10 @@ public class Importer
 	 *         return;<br>
 	 *         }<br>
 	 */
-	public int importSpoilerForCacheNew(ImporterProgress ip, Cache cacheLite)
+	public int importSpoilerForCacheNew(ImporterProgress ip, Cache Cache)
 	{
-		if (cacheLite == null) return 0;
-		return importImagesForCacheNew(ip, true, false, cacheLite.Id, cacheLite.getGcCode(), cacheLite.getName(), "", "", true);
+		if (Cache == null) return 0;
+		return importImagesForCacheNew(ip, true, false, Cache.Id, Cache.getGcCode(), Cache.getName(), "", "", true);
 	}
 
 	/**

@@ -32,7 +32,6 @@ import CB_Utils.Lists.CB_List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -49,7 +48,7 @@ import com.badlogic.gdx.utils.Disposable;
 public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 {
 
-	public static final float FBO_SCALER = 2.5f;
+	public static final float FBO_SCALER = 1;// 2.5f;
 
 	/**
 	 * @uml.property name="fBO_DrawingTime"
@@ -246,7 +245,11 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 									count = 0;
 								}
 								matrix = new Matrix4().setToOrtho2D(0, 0, width, height);
-								matrix.mul(drw.matrix.getMatrix4());
+								if (drw.matrix != null)
+								{
+
+									matrix.mul(drw.matrix.getMatrix4());
+								}
 
 								GL.batch.setProjectionMatrix(matrix);
 								drw.drawable.draw(GL.batch, 0, 0, width, height, 0);
@@ -268,6 +271,8 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 						}
 						catch (Exception e)
 						{
+							e.printStackTrace();
+
 						}
 					}
 				}

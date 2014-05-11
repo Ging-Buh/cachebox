@@ -27,9 +27,14 @@ public class TestCursor extends CoreCursor
 	{
 		try
 		{
+			if (rs.isBeforeFirst())
+			{
+				rs.next();
+			}
+			if (rs.isFirst()) return true;
 			return rs.first();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			return false;
 		}
@@ -43,9 +48,9 @@ public class TestCursor extends CoreCursor
 		{
 			return rs.isAfterLast();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
-			return false;
+			return true;
 		}
 
 	}
@@ -74,6 +79,7 @@ public class TestCursor extends CoreCursor
 		{
 			e.printStackTrace();
 		}
+		rs = null;
 	}
 
 	@Override
@@ -83,6 +89,21 @@ public class TestCursor extends CoreCursor
 		try
 		{
 			return rs.getString(columnIndex + 1);
+		}
+		catch (SQLException e)
+		{
+			return null;
+		}
+
+	}
+
+	@Override
+	public String getString(String column)
+	{
+
+		try
+		{
+			return rs.getString(column);
 		}
 		catch (SQLException e)
 		{
@@ -107,11 +128,39 @@ public class TestCursor extends CoreCursor
 	}
 
 	@Override
+	public long getLong(String column)
+	{
+
+		try
+		{
+			return rs.getLong(column);
+		}
+		catch (SQLException e)
+		{
+			return 0;
+		}
+
+	}
+
+	@Override
 	public int getInt(int columnIndex)
 	{
 		try
 		{
 			return rs.getInt(columnIndex + 1);
+		}
+		catch (SQLException e)
+		{
+			return 0;
+		}
+	}
+
+	@Override
+	public int getInt(String column)
+	{
+		try
+		{
+			return rs.getInt(column);
 		}
 		catch (SQLException e)
 		{
@@ -142,6 +191,28 @@ public class TestCursor extends CoreCursor
 	}
 
 	@Override
+	public boolean isNull(String column)
+	{
+
+		try
+		{
+			if (rs.getObject(column) == null || rs.getObject(column).toString().length() == 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+
+	}
+
+	@Override
 	public double getDouble(int columnIndex)
 	{
 		try
@@ -155,11 +226,37 @@ public class TestCursor extends CoreCursor
 	}
 
 	@Override
+	public double getDouble(String column)
+	{
+		try
+		{
+			return rs.getDouble(column);
+		}
+		catch (SQLException e)
+		{
+			return 0;
+		}
+	}
+
+	@Override
 	public short getShort(int columnIndex)
 	{
 		try
 		{
 			return rs.getShort(columnIndex + 1);
+		}
+		catch (SQLException e)
+		{
+			return 0;
+		}
+	}
+
+	@Override
+	public short getShort(String column)
+	{
+		try
+		{
+			return rs.getShort(column);
 		}
 		catch (SQLException e)
 		{

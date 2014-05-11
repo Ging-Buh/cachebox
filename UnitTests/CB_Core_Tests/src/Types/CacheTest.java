@@ -2,7 +2,6 @@ package Types;
 
 import junit.framework.TestCase;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheLite;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
@@ -11,14 +10,14 @@ import CB_Utils.MathUtils.CalculationType;
 public class CacheTest extends TestCase
 {
 
-	private CacheLite mCache;
+	private Cache mCache;
 
 	@Override
 	public void setUp() throws Exception
 	{
 
 		super.setUp();
-		mCache = new Cache();
+		mCache = new Cache(false);
 	}
 
 	@Override
