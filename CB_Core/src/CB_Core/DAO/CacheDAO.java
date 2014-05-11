@@ -5,16 +5,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Import.ImporterProgress;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheDetail;
-import CB_Core.Types.CacheList;
 import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
@@ -500,44 +497,45 @@ public class CacheDAO
 		return changed;
 	}
 
-	public void WriteImports(Iterator<Cache> Caches, int CacheCount, ImporterProgress ip)
-	{
-
-		// Indexing DB
-		CacheList IndexDB = new CacheList();
-		CacheListDAO cacheListDAO = new CacheListDAO();
-		IndexDB = cacheListDAO.ReadCacheList(IndexDB, "", true, true);
-
-		ip.setJobMax("IndexingDB", IndexDB.size());
-		ArrayList<String> index = new ArrayList<String>();
-		for (int i = 0, n = IndexDB.size(); i < n; i++)
-		{
-			Cache c = IndexDB.get(i);
-			ip.ProgressInkrement("IndexingDB", "index- " + c.getGcCode(), false);
-			index.add(c.getGcCode());
-		}
-
-		ip.setJobMax("WriteCachesToDB", CacheCount);
-		while (Caches.hasNext())
-		{
-			Cache cache = Caches.next();
-
-			if (index.contains(cache.getGcCode()))
-			{
-				ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.getGcCode(), false);
-				UpdateDatabase(cache);
-			}
-			else
-			{
-				ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.getGcCode(), false);
-				WriteToDatabase(cache);
-			}
-
-			// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-			cache.setLongDescription("");
-
-		}
-	}
+	/* This seems to be no longer necessary */
+	// public void WriteImports(Iterator<Cache> Caches, int CacheCount, ImporterProgress ip)
+	// {
+	//
+	// // Indexing DB
+	// CacheList IndexDB = new CacheList();
+	// CacheListDAO cacheListDAO = new CacheListDAO();
+	// IndexDB = cacheListDAO.ReadCacheList(IndexDB, "", true, true);
+	//
+	// ip.setJobMax("IndexingDB", IndexDB.size());
+	// ArrayList<String> index = new ArrayList<String>();
+	// for (int i = 0, n = IndexDB.size(); i < n; i++)
+	// {
+	// Cache c = IndexDB.get(i);
+	// ip.ProgressInkrement("IndexingDB", "index- " + c.getGcCode(), false);
+	// index.add(c.getGcCode());
+	// }
+	//
+	// ip.setJobMax("WriteCachesToDB", CacheCount);
+	// while (Caches.hasNext())
+	// {
+	// Cache cache = Caches.next();
+	//
+	// if (index.contains(cache.getGcCode()))
+	// {
+	// ip.ProgressInkrement("WriteCachesToDB", "Update DB " + cache.getGcCode(), false);
+	// UpdateDatabase(cache);
+	// }
+	// else
+	// {
+	// ip.ProgressInkrement("WriteCachesToDB", "Write to DB " + cache.getGcCode(), false);
+	// WriteToDatabase(cache);
+	// }
+	//
+	// // Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
+	// cache.setLongDescription("");
+	//
+	// }
+	// }
 
 	public ArrayList<String> getGcCodesFromMustLoadImages()
 	{
