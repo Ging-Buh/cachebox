@@ -1,0 +1,13 @@
+Thanks for installing Cachebox 0.7.2041.
+
+Do not use Cachebox during the drive in the car!
+
+Even if we try to keep cachebox error free, but it may be that we have overlooked something.
+
+You can report an error at http://www.team-cachebox.de.
+
+Here you can also leave a feature request.
+
+Or you visit us at our forum http://www.geoclub.de/viewforum.php?f=114.
+Some developers and forums user also speak English, so that you can get help in English.
+

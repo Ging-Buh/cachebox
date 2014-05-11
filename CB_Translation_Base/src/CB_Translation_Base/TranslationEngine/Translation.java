@@ -250,7 +250,7 @@ public class Translation
 
 		FileHandle file = Gdx.files.getFileHandle(FilePath, mFiletype);
 
-		String text = file.readString();
+		String text = file.readString("UTF-8");
 
 		String[] lines = text.split("\n");
 
