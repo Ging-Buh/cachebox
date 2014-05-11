@@ -165,7 +165,6 @@ public class CacheDAO
 		Parameters args = new Parameters();
 		args.put("Id", cache.Id);
 		args.put("GcCode", cache.getGcCode());
-		args.put("GcId", cache.getGcId());
 		args.put("Latitude", cache.Pos.getLatitude());
 		args.put("Longitude", cache.Pos.getLongitude());
 		args.put("Name", cache.getName());
@@ -183,21 +182,10 @@ public class CacheDAO
 		args.put("Available", cache.isAvailable() ? 1 : 0);
 		args.put("Found", cache.isFound());
 		args.put("Type", cache.Type.ordinal());
-		args.put("PlacedBy", cache.getPlacedBy());
 		args.put("Owner", cache.getOwner());
 		args.put("Country", cache.getCountry());
 		args.put("State", cache.getState());
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		try
-		{
-			String stimestamp = iso8601Format.format(cache.getDateHidden());
-			args.put("DateHidden", stimestamp);
-		}
-		catch (Exception e)
-		{
-
-			e.printStackTrace();
-		}
 		try
 		{
 			String firstimported = iso8601Format.format(new Date());
@@ -208,7 +196,6 @@ public class CacheDAO
 
 			e.printStackTrace();
 		}
-		args.put("Hint", cache.getHint());
 
 		if ((cache.getShortDescription() != null) && (cache.getShortDescription().length() > 0))
 		{
@@ -227,23 +214,41 @@ public class CacheDAO
 			}
 		}
 
-		args.put("Url", cache.getUrl());
 		args.put("NumTravelbugs", cache.NumTravelbugs);
 		args.put("Rating", (int) (cache.Rating * 100));
 		// args.put("Vote", cache.);
 		// args.put("VotePending", cache.);
 		// args.put("Notes", );
 		// args.put("Solver", cache.);
-		args.put("AttributesPositive", cache.getAttributesPositive().getLow());
-		args.put("AttributesPositiveHigh", cache.getAttributesPositive().getHigh());
-		args.put("AttributesNegative", cache.getAttributesNegative().getLow());
-		args.put("AttributesNegativeHigh", cache.getAttributesNegative().getHigh());
 		// args.put("ListingCheckSum", cache.);
-		args.put("GPXFilename_Id", cache.GPXFilename_ID);
-		args.put("ApiStatus", cache.getApiStatus());
 		args.put("CorrectedCoordinates", cache.hasCorrectedCoordinates() ? 1 : 0);
-		args.put("TourName", cache.getTourName());
 
+		if (cache.detail != null)
+		{
+			// write detail information if existing
+			args.put("GcId", cache.getGcId());
+			args.put("PlacedBy", cache.getPlacedBy());
+			args.put("ApiStatus", cache.getApiStatus());
+			try
+			{
+				String stimestamp = iso8601Format.format(cache.getDateHidden());
+				args.put("DateHidden", stimestamp);
+			}
+			catch (Exception e)
+			{
+
+				e.printStackTrace();
+			}
+			args.put("Url", cache.getUrl());
+			args.put("TourName", cache.getTourName());
+			args.put("GPXFilename_Id", cache.GPXFilename_ID);
+			args.put("AttributesPositive", cache.getAttributesPositive().getLow());
+			args.put("AttributesPositiveHigh", cache.getAttributesPositive().getHigh());
+			args.put("AttributesNegative", cache.getAttributesNegative().getLow());
+			args.put("AttributesNegativeHigh", cache.getAttributesNegative().getHigh());
+			args.put("Hint", cache.getHint());
+
+		}
 		try
 		{
 			Database.Data.insert("Caches", args);
