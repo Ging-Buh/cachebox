@@ -124,14 +124,14 @@ public class CacheInfo extends CB_View_Base
 	public CacheInfo(SizeF size, String Name, Cache value)
 	{
 		super(size, Name);
-		mCache = value;
+		setCache(value);
 		cacheIsInitial = false;
 	}
 
 	public CacheInfo(CB_RectF rec, String Name, Cache value)
 	{
 		super(rec, Name);
-		mCache = value;
+		setCache(value);
 		cacheIsInitial = false;
 	}
 
@@ -320,14 +320,6 @@ public class CacheInfo extends CB_View_Base
 				if (mCache instanceof Cache && ifModeFlag(SHOW_OWNER))
 				{
 					text.append("by " + mCache.getOwner() + ", ");
-					try
-					{
-						text.append(postFormater.format(((Cache) mCache).getDateHidden()));
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
 					text.append(br);
 				}
 

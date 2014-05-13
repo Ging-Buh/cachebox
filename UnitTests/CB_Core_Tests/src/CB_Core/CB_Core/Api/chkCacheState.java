@@ -1,7 +1,7 @@
 package CB_Core.CB_Core.Api;
 
+import __Static.InitTestDBs;
 import junit.framework.TestCase;
-import CB_Core.InitTestDBs;
 import CB_UI.Config;
 
 public class chkCacheState extends TestCase

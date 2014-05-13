@@ -2,6 +2,7 @@ package org.mapsforge.map.layer.renderer;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
@@ -18,8 +19,9 @@ public class LatLonToPixel extends TestCase
 	Tile tile = new Tile(35207, 21477, (byte) 16);
 	private LatLong latLong = new LatLong(52.57133375654519, 13.400573730475);
 
-	private final int TEST_COUNT = 1000;
+	private final int TEST_COUNT = 10000000;
 
+	@Test
 	public void test_LatLonToPixel()
 	{
 

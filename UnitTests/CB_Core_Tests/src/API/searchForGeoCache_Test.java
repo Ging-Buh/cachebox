@@ -3,8 +3,8 @@ package API;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import __Static.InitTestDBs;
 import junit.framework.TestCase;
-import CB_Core.InitTestDBs;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchCoordinate;
 import CB_Core.Api.SearchForGeocaches_Core;

@@ -2,8 +2,8 @@ package API;
 
 import java.util.ArrayList;
 
+import __Static.InitTestDBs;
 import junit.framework.TestCase;
-import CB_Core.InitTestDBs;
 import CB_Core.Api.ApiGroundspeak_SearchForGeocaches;
 import CB_Core.Api.SearchLiveMap;
 import CB_Core.Types.Cache;

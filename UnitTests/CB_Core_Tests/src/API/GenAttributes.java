@@ -1,4 +1,4 @@
-package Types;
+package API;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.InitTestDBs;
+import __Static.InitTestDBs;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
 import CB_Utils.Util.FileIO;

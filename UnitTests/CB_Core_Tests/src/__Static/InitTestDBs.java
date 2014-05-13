@@ -1,10 +1,10 @@
-package CB_Core;
+package __Static;
 
 import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import CB_Core.CB_Core.DB.TestDB;
+import CB_Core.CoreSettingsForward;
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
 import CB_Core.Types.Categories;

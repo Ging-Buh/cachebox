@@ -1,4 +1,4 @@
-package CB_Core.CB_Core.DB;
+package __Static;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

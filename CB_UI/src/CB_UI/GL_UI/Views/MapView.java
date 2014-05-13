@@ -71,7 +71,6 @@ import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Util.SyncronizeHelper;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.Color;
@@ -1504,7 +1503,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				if (Database.Data.Query != null)
 				{
-					SyncronizeHelper.sync("MapView 1496");
 					synchronized (Database.Data.Query)
 					{
 						if (Database.Data.Query.size() > 0)
@@ -1522,7 +1520,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							setCenter(new CoordinateGPS(48.0, 12.0));
 						}
 					}
-					SyncronizeHelper.endSync("MapView 1496");
 				}
 				else
 				{

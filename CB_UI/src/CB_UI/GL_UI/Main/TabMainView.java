@@ -109,7 +109,6 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
-import CB_Utils.Util.SyncronizeHelper;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
 
@@ -745,7 +744,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		// ##################################
 		String Name = "";
 
-		SyncronizeHelper.sync("TabmainView 496");
 		synchronized (Database.Data.Query)
 		{
 			int filterCount = Database.Data.Query.size();
@@ -761,7 +759,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 			Name = "  (" + Filtert + String.valueOf(DBCount) + ")";
 		}
-		SyncronizeHelper.endSync("TabmainView 496");
 		actionShowCacheList.setNameExtention(Name);
 	}
 

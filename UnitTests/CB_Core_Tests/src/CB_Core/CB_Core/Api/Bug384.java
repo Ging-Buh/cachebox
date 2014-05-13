@@ -2,8 +2,8 @@ package CB_Core.CB_Core.Api;
 
 import java.util.ArrayList;
 
+import __Static.InitTestDBs;
 import junit.framework.TestCase;
-import CB_Core.InitTestDBs;
 import CB_Core.Api.SearchForGeocaches_Core;
 import CB_Core.Api.SearchGC;
 import CB_Core.Enums.CacheTypes;

@@ -35,7 +35,6 @@ import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.Logger;
-import CB_Utils.Util.SyncronizeHelper;
 
 public class SearchForGeocaches_Core
 {
@@ -649,7 +648,6 @@ public class SearchForGeocaches_Core
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 			SearchForGeocachesJSON(search, apiCaches, apiLogs, apiImages, aktCache.GPXFilename_ID);
-			SyncronizeHelper.sync("SearchForGeocaches_Core 637");
 			synchronized (Database.Data.Query)
 			{
 				if (apiCaches.size() == 1)
@@ -711,7 +709,6 @@ public class SearchForGeocaches_Core
 					Database.Data.GPXFilenameUpdateCacheCount();
 				}
 			}
-			SyncronizeHelper.endSync("SearchForGeocaches_Core 637");
 		}
 		catch (Exception ex)
 		{

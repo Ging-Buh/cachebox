@@ -1,4 +1,4 @@
-package CB_Core.CB_Core.DB;
+package __Static;
 
 import java.io.File;
 import java.sql.Connection;

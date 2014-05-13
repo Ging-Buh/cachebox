@@ -29,7 +29,6 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.MoveableList;
-import CB_Utils.Util.SyncronizeHelper;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -115,7 +114,6 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 						tmplist.clear();
 						selectedWP = null;
-						SyncronizeHelper.sync("MapViewCacheList 99");
 						synchronized (Database.Data.Query)
 						{
 							for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
@@ -191,8 +189,6 @@ public class MapViewCacheList implements CacheListChangedEventListner
 								}
 							}
 						}
-
-						SyncronizeHelper.endSync("MapViewCacheList 99");
 
 						synchronized (list)
 						{

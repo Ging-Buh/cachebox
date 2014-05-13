@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import __Static.InitTestDBs;
 import junit.framework.TestCase;
-import CB_Core.InitTestDBs;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;

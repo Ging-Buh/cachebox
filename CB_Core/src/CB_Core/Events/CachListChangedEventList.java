@@ -22,7 +22,6 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
-import CB_Utils.Util.SyncronizeHelper;
 
 /**
  * @author Longri
@@ -53,7 +52,6 @@ public class CachListChangedEventList
 	{
 		if (CoreSettingsForward.DisplayOff) return;
 
-		SyncronizeHelper.sync("CachListChangedEventList 45");
 		synchronized (Database.Data.Query)
 		{
 			Cache cache = Database.Data.Query.GetCacheByGcCode("CBPark");
@@ -69,7 +67,6 @@ public class CachListChangedEventList
 			}
 
 		}
-		SyncronizeHelper.endSync("CachListChangedEventList 45");
 
 		if (threadCall != null)
 		{

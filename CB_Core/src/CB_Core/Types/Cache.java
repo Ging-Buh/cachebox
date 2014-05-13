@@ -23,7 +23,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	private static final long serialVersionUID = 1015307624242318838L;
 	protected static final Charset US_ASCII = Charset.forName("US-ASCII");
 	protected static final Charset UTF_8 = Charset.forName("UTF-8");
-	protected static final String EMPTY_STRING = "";
+	public static final String EMPTY_STRING = "";
 
 	/*
 	 * Private Member

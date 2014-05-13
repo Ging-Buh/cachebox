@@ -47,7 +47,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
-import CB_Utils.Util.SyncronizeHelper;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -150,7 +149,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 		PositionChangedEventList.Add(this);
 
-		SyncronizeHelper.sync("CachListView 153");
 		synchronized (Database.Data.Query)
 		{
 			try
@@ -174,7 +172,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			{
 				e.printStackTrace();
 			}
-			SyncronizeHelper.endSync("CachListView 153");
 		}
 		TimerTask task = new TimerTask()
 		{

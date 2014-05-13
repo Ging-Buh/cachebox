@@ -1,4 +1,4 @@
-package Types;
+package API;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,8 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.junit.Test;
 
-import CB_Core.InitTestDBs;
+import __Static.InitTestDBs;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
 import CB_Utils.Util.FileIO;
@@ -26,13 +27,12 @@ import CB_Utils.Util.FileIO;
  */
 public class GenCacheTypes extends TestCase
 {
-	private Boolean NotRun = false;
 
 	public static String LastAPIError = "";
 
+	@Test
 	public void testGetAllAttributes() throws IOException
 	{
-		if (NotRun) return;
 
 		InitTestDBs.InitalConfig();
 		String accessToken = Config.GetAccessToken();
