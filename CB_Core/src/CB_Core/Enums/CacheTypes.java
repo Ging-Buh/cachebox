@@ -52,6 +52,8 @@ public enum CacheTypes
 		if (string.toLowerCase().contains("stages")) string = "MultiStage";
 		if (string.toLowerCase().contains("munzee")) string = "Munzee";
 		if (string.toLowerCase().contains("mega")) string = "MegaEvent";
+		if (string.toLowerCase().contains("virtual")) string = "MultiQuestion"; // Import Virtual Stage as Question of a Multi
+		if (string.toLowerCase().contains("physical")) string = "MultiStage"; // Import Physical Stage as a Multi Stage
 		// If no cache type is given, use "Unknown"
 		if (string.length() == 0) string = "Unknown";
 
