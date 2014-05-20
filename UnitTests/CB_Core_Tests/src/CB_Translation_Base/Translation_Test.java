@@ -5,9 +5,9 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import CB_Core.InitTestDBs;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.GdxTestRunner;
+import __Static.InitTestDBs;
 
 @RunWith(GdxTestRunner.class)
 public class Translation_Test extends TestCase
