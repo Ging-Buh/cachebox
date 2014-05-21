@@ -20,13 +20,13 @@ public class HSV_Color extends Color
 	}
 
 	/**
-	 * Constructor for color as Hex String WITHOUT #
+	 * Constructor for color as Hex String WITHOUT # RGBA or RGB
 	 * 
 	 * @param hex
 	 */
 	public HSV_Color(String hex)
 	{
-		if (hex.length() != 6 || hex.length() != 8) throw new IllegalArgumentException("wrong argument: " + hex);
+		if (hex.length() != 6 && hex.length() != 8) throw new IllegalArgumentException("wrong argument: " + hex);
 
 		int values = hex.length() / 2;
 
@@ -38,10 +38,10 @@ public class HSV_Color extends Color
 
 		if (values == 4)
 		{
-			a = ret[0] / 255f;
-			r = ret[1] / 255f;
-			g = ret[2] / 255f;
-			b = ret[3] / 255f;
+			r = ret[0] / 255f;
+			g = ret[1] / 255f;
+			b = ret[2] / 255f;
+			a = ret[3] / 255f;
 		}
 		else
 		{
@@ -80,6 +80,11 @@ public class HSV_Color extends Color
 		g = ((color & 0xff00) >>> 8) / 255f;
 		b = (color & 0xff) / 255f;
 		clamp();
+	}
+
+	public HSV_Color(float r, float g, float b, float a)
+	{
+		super(r, g, b, a);
 	}
 
 	private int hexToInt(char c1, char c2)

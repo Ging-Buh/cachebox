@@ -21,7 +21,6 @@ import org.mapsforge.core.graphics.Matrix;
 
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
@@ -76,10 +75,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#rotate(float)
 	 */
 
-	@Override
-	public void rotate(float theta)
+	public void setRotate(float theta)
 	{
-		preRotate(theta * MathUtils.radiansToDegrees);
+		preRotate(theta);
 	}
 
 	/*
@@ -91,7 +89,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void rotate(float theta, float pivotX, float pivotY)
 	{
-		preRotate(theta * MathUtils.radiansToDegrees, pivotX, pivotY);
+		preRotate(theta, pivotX, pivotY);
 	}
 
 	/*
@@ -124,8 +122,7 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#translate(float, float)
 	 */
 
-	@Override
-	public void translate(float translateX, float translateY)
+	public void setTranslate(float translateX, float translateY)
 	{
 		preTranslate(translateX, translateY);
 	}
@@ -154,7 +151,11 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void postConcat(ext_Matrix matrix)
 	{
-		this.addTransform(((GL_Matrix) matrix).matrix4);
+		Matrix4 m = matrix.getMatrix4();
+		m.mul(this.matrix4);
+		set(m);
+
+		// this.matrix4.mul(matrix.getMatrix4());
 	}
 
 	/*
@@ -194,15 +195,21 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	public void preScale(float sx, float sy, float px, float py)
 	{
 		Matrix4 m = new Matrix4();
-		m.scale(sx, sy, 1);
+		// set Scale sx,sy,px,py
+		{
 
-		Matrix4 m2 = new Matrix4();
-		m2.translate(px, py, 0);
+			m.val[Matrix4.M00] = sx;
+			m.val[Matrix4.M11] = sy;
+			m.val[Matrix4.M03] = px - sx * px;
+			m.val[Matrix4.M13] = py - sy * py;
 
-		m.mul(m2);
+		}
 
-		m.mul(this.matrix4);
-		set(m);
+		this.matrix4.mul(m);
+
+		// m.mul(this.matrix4);
+		//
+		// set(m);
 
 	}
 
@@ -221,7 +228,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	{
 		Matrix4 m = new Matrix4();
 		m.rotate(0, 0, 1, angle);
-		this.matrix4.mul(m);
+		m.mul(this.matrix4);
+		set(m);
 	}
 
 	/*
@@ -234,7 +242,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	{
 		Matrix4 m = new Matrix4();
 		m.scale(rx, ry, 1);
-		this.matrix4.mul(m);
+		m.mul(this.matrix4);
+		set(m);
 	}
 
 	/*
@@ -247,7 +256,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	{
 		Matrix4 m = new Matrix4();
 		m.translate(cx, cy, 0);
-		this.matrix4.mul(m);
+		m.mul(this.matrix4);
+		set(m);
 	}
 
 	/*
@@ -381,15 +391,15 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	public void setValues(float[] fs)
 	{
 
-		matrix4.val[Matrix3.M00] = fs[0];
-		matrix4.val[Matrix3.M01] = fs[1];
-		matrix4.val[Matrix3.M02] = fs[2];
-		matrix4.val[Matrix3.M10] = fs[3];
-		matrix4.val[Matrix3.M11] = fs[4];
-		matrix4.val[Matrix3.M12] = fs[5];
-		matrix4.val[Matrix3.M20] = fs[6];
-		matrix4.val[Matrix3.M21] = fs[7];
-		matrix4.val[Matrix3.M22] = fs[8];
+		matrix4.val[Matrix4.M00] = fs[0];
+		matrix4.val[Matrix4.M01] = fs[1];
+		matrix4.val[Matrix4.M03] = fs[2];
+		matrix4.val[Matrix4.M10] = fs[3];
+		matrix4.val[Matrix4.M11] = fs[4];
+		matrix4.val[Matrix4.M13] = fs[5];
+		matrix4.val[Matrix4.M20] = fs[6];
+		matrix4.val[Matrix4.M21] = fs[7];
+		matrix4.val[Matrix4.M22] = fs[8];
 
 	}
 
@@ -411,16 +421,36 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#preRotate(java.lang.Float, java.lang.Float, java.lang.Float)
 	 */
 	@Override
-	public void preRotate(Float angle, Float cx, Float cy)
+	public void preRotate(Float angle, Float px, Float py)
 	{
+
+		// ## native android ##
+		// const SkScalar oneMinusCosV = 1 - cosV;
+		//
+		// fMat[kMScaleX] = cosV;
+		// fMat[kMSkewX] = -sinV;
+		// fMat[kMTransX] = sdot(sinV, py, oneMinusCosV, px);
+		//
+		// fMat[kMSkewY] = sinV;
+		// fMat[kMScaleY] = cosV;
+		// fMat[kMTransY] = sdot(-sinV, px, oneMinusCosV, py);
+		//
+		// fMat[kMPersp0] = fMat[kMPersp1] = 0;
+		// fMat[kMPersp2] = 1;
+
 		Matrix4 m = new Matrix4();
 		m.rotate(0, 0, 1, angle);
-		Matrix4 m2 = new Matrix4();
-		m2.translate(cx, cy, 0);
+		float oneMinusCosV = 1 - m.val[Matrix4.M00];
+		float sinV = m.val[Matrix4.M10];
+		m.val[Matrix4.M03] = sdot(sinV, py, oneMinusCosV, px);
+		m.val[Matrix4.M13] = sdot(-sinV, px, oneMinusCosV, py);
 
-		m.mul(m2);
-		m.mul(this.matrix4);
-		set(m);
+		this.matrix4.mul(m);
+	}
+
+	private float sdot(float a, float b, float c, float d)
+	{
+		return a * b + c * d;
 	}
 
 	/*
@@ -431,7 +461,15 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void getValues(float[] mValues)
 	{
-		System.arraycopy(matrix4.getValues(), 0, mValues, 0, mValues.length);
+		mValues[0] = matrix4.val[Matrix4.M00];
+		mValues[1] = matrix4.val[Matrix4.M01];
+		mValues[2] = matrix4.val[Matrix4.M03];
+		mValues[3] = matrix4.val[Matrix4.M10];
+		mValues[4] = matrix4.val[Matrix4.M11];
+		mValues[5] = matrix4.val[Matrix4.M13];
+		mValues[6] = matrix4.val[Matrix4.M20];
+		mValues[7] = matrix4.val[Matrix4.M21];
+		mValues[8] = matrix4.val[Matrix4.M22];
 	}
 
 	/*
@@ -475,9 +513,9 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public String toString()
 	{
-		return "[" + this.matrix4.val[0] + "|" + this.matrix4.val[3] + "|" + this.matrix4.val[6] + "]\n" + "[" + this.matrix4.val[1] + "|"
-				+ this.matrix4.val[4] + "|" + this.matrix4.val[7] + "]\n" + "[" + this.matrix4.val[2] + "|" + this.matrix4.val[5] + "|"
-				+ this.matrix4.val[8] + "]";
+		return "[" + this.matrix4.val[Matrix4.M00] + "|" + this.matrix4.val[Matrix4.M01] + "|" + this.matrix4.val[Matrix4.M03] + "]\n"
+				+ "[" + this.matrix4.val[Matrix4.M10] + "|" + this.matrix4.val[Matrix4.M11] + "|" + this.matrix4.val[Matrix4.M13] + "]\n"
+				+ "[" + this.matrix4.val[Matrix4.M20] + "|" + this.matrix4.val[Matrix4.M21] + "|" + this.matrix4.val[Matrix4.M22] + "]";
 	}
 
 	public boolean isDisposed()
@@ -553,5 +591,17 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	{
 		mapedPoint[0] = x * matrix3.val[0] + y * matrix3.val[3] + matrix3.val[6];
 		mapedPoint[1] = x * matrix3.val[1] + y * matrix3.val[4] + matrix3.val[7];
+	}
+
+	@Override
+	public void rotate(float arg0)
+	{
+		setRotate(arg0);
+	}
+
+	@Override
+	public void translate(float arg0, float arg1)
+	{
+		setTranslate(arg0, arg1);
 	}
 }

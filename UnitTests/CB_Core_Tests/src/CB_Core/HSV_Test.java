@@ -1,6 +1,9 @@
 package CB_Core;
 
 import junit.framework.TestCase;
+
+import org.junit.Test;
+
 import CB_UI_Base.GL_UI.utils.HSV_Color;
 
 public class HSV_Test extends TestCase
@@ -42,6 +45,14 @@ public class HSV_Test extends TestCase
 			r = 0;
 		}
 
+	}
+
+	@Test
+	public void testHSV_String_Constructor()
+	{
+		HSV_Color c = new HSV_Color("bfbfbfff");
+		HSV_Color c2 = new HSV_Color(0.7490196f, 0.7490196f, 0.7490196f, 1f);
+		assertEquals(c2, c);
 	}
 
 }

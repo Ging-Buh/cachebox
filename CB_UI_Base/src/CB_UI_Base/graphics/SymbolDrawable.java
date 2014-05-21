@@ -94,21 +94,21 @@ public class SymbolDrawable implements IRotateDrawable
 
 		if (alignCenter)
 		{
-			matrix.translate(-pivotX, pivotY);
-			matrix.translate(-offsetX, -offsetY);
+			matrix.setTranslate(-pivotX, pivotY);
+			matrix.setTranslate(-offsetX, -offsetY);
 			if (scaled) matrix.scale(1 / scaleWidth, 1 / scaleHeight);
 			// matrix.rotate(rotate);
 			if (scaled) matrix.scale(scaleWidth, scaleHeight);
-			matrix.translate(pointX + pivotX, pointY - pivotY);
-			matrix.translate(-pivotX, -pivotY);
+			matrix.setTranslate(pointX + pivotX, pointY - pivotY);
+			matrix.setTranslate(-pivotX, -pivotY);
 		}
 		else
 		{
-			matrix.translate(-pivotX, pivotY);
-			matrix.translate(-offsetX, -offsetY);
+			matrix.setTranslate(-pivotX, pivotY);
+			matrix.setTranslate(-offsetX, -offsetY);
 			if (scaled) matrix.scale(1 / scaleWidth, 1 / scaleHeight);
 			if (scaled) matrix.scale(scaleWidth, scaleHeight);
-			matrix.translate(pointX + pivotX, pointY - pivotY);
+			matrix.setTranslate(pointX + pivotX, pointY - pivotY);
 		}
 
 		if (scaled) matrix.scale(scaleWidth, scaleHeight);
