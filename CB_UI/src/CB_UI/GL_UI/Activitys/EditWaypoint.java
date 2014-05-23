@@ -154,7 +154,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				coordinate = GlobalCore.getSelectedCache().Pos;
 			}
 		}
-		bCoord = new CoordinateButton(rec, "CoordButton", coordinate);
+		bCoord = new CoordinateButton(rec, "CoordButton", coordinate, null);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
 		{

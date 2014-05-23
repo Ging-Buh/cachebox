@@ -290,7 +290,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						RouteOverlay.add(route);
 						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
-				}, Type.p2p);
+				}, Type.p2p, null);
 		pC.show();
 
 	}
@@ -327,7 +327,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 
-				}, Type.projetion);
+				}, Type.projetion, null);
 
 		pC.show();
 
@@ -384,7 +384,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 
-				}, Type.circle);
+				}, Type.circle, null);
 
 		pC.show();
 	}

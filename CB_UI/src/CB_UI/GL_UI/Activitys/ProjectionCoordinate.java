@@ -21,6 +21,7 @@ public class ProjectionCoordinate extends ActivityBase
 {
 	private Coordinate coord;
 	private Coordinate projCoord;
+	private String wpName;
 
 	private double Bearing;
 	private double Distance;
@@ -63,10 +64,11 @@ public class ProjectionCoordinate extends ActivityBase
 		public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance);
 	}
 
-	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate coord2, ReturnListner listner, Type type)
+	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate coord2, ReturnListner listner, Type type, String WP_Name)
 	{
 		super(rec, Name);
 		coord = coord2;
+		wpName = WP_Name;
 		radius = (type == Type.circle);
 		p2p = (type == Type.p2p);
 		mReturnListner = listner;
@@ -99,7 +101,7 @@ public class ProjectionCoordinate extends ActivityBase
 	{
 		CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		bCoord = new CoordinateButton(rec, "CoordButton", coord);
+		bCoord = new CoordinateButton(rec, "CoordButton", coord, wpName);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
 		{
@@ -126,7 +128,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 		CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord);
+		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord, null);
 
 		bCoord2.setCoordinateChangedListner(new CoordinateChangeListner()
 		{

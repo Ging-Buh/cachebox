@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class CoordinateButton extends Button implements ICopyPaste
 {
 	protected Coordinate mActCoord;
+	protected String mwpName;
 	protected CopiePastePopUp popUp;
 	protected Clipboard clipboard;
 
@@ -31,11 +32,12 @@ public class CoordinateButton extends Button implements ICopyPaste
 
 	private CoordinateChangeListner mCoordinateChangedListner;
 
-	public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate)
+	public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate, String wpName)
 	{
 		super(rec, name);
 		if (coordinate == null) coordinate = new Coordinate();
 		mActCoord = coordinate;
+		mwpName = wpName;
 		setText();
 		this.setOnClickListener(click);
 		this.setOnLongClickListener(longCLick);
@@ -58,7 +60,9 @@ public class CoordinateButton extends Button implements ICopyPaste
 
 	private void setText()
 	{
-		this.setText(mActCoord.FormatCoordinate());
+		if (mwpName == null) this.setText(mActCoord.FormatCoordinate());
+		else
+			this.setText(mwpName);
 	}
 
 	@Override

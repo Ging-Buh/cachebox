@@ -252,7 +252,7 @@ public class SearchOverPosition extends ActivityBase
 		lblMarkerPos = new Label(rec, Translation.Get("CurentMarkerPos"));
 		box.addChild(lblMarkerPos);
 
-		coordBtn = new CoordinateButton(rec, name, null);
+		coordBtn = new CoordinateButton(rec, name, null, null);
 		coordBtn.setY(lblMarkerPos.getY() - margin - lineHeight);
 		box.addChild(coordBtn);
 

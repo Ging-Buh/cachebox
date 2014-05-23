@@ -517,6 +517,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		createNewWaypoint = true;
 
 		final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getCoordinate();
+		String ProjName = null;
+
+		ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;
 
 		Logger.DEBUG("WaypointView.addProjection()");
 		Logger.DEBUG("   AktWaypoint:" + ((aktWaypoint == null) ? "null" : aktWaypoint.toString()));
@@ -553,7 +556,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 					}
 
-				}, Type.projetion);
+				}, Type.projetion, ProjName);
 
 		pC.show();
 
