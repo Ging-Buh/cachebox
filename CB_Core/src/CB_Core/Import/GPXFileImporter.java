@@ -16,7 +16,6 @@ import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
-import CB_Core.Types.CacheDetail;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
@@ -933,7 +932,9 @@ public class GPXFileImporter
 	 */
 	private void createCache(Map<String, String> values) throws Exception
 	{
-		if (cache.detail == null) cache.detail = new CacheDetail();
+		// create new Cache Object for each imported cache to avoid that informations of one cache are copied into anohter cache.
+		cache = new Cache(true);
+		// if (cache.detail == null) cache.detail = new CacheDetail();
 
 		if (gpxAuthor.toLowerCase().contains("gctour"))
 		{
