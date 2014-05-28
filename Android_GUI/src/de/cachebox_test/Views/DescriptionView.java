@@ -201,7 +201,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		// reset ScrollPos only if cache changed
-		if (aktCache.Id != cache.Id)
+		if ((aktCache != null) && (aktCache.Id != cache.Id))
 		{
 			lastScrollPos = new Point(0, 0);
 		}
