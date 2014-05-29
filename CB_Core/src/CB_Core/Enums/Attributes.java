@@ -315,6 +315,7 @@ public enum Attributes
 			DLong att = Attributes.GetAttributeDlong(attribute);
 			if ((att.BitAndBiggerNull(attributesPositive)))
 			{
+				attribute.negative = false;
 				ret.add(attribute);
 			}
 		}

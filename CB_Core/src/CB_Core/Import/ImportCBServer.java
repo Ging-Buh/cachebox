@@ -105,7 +105,12 @@ public class ImportCBServer
 							// System.out.println(cache.getName());
 							cache.GPXFilename_ID = gpxFilename.Id;
 
-							dao.WriteToDatabase(cache);
+							// Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen
+							if (!dao.UpdateDatabase(cache))
+							{
+								dao.WriteToDatabase(cache);
+							}
+
 							if ((cache.getTmpNote() != null) && (cache.getTmpNote().length() > 0))
 							{
 								cache.setNoteChecksum((int) SDBM_Hash.sdbm(cache.getTmpNote()));
@@ -195,6 +200,7 @@ public class ImportCBServer
 					}
 				}
 			}
+			Database.Data.setTransactionSuccessful();
 		}
 		finally
 		{
