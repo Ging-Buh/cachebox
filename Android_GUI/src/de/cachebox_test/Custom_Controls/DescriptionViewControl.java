@@ -412,26 +412,33 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	private String getAttributesHtml(Cache cache)
 	{
 		StringBuilder sb = new StringBuilder();
-
-		Iterator<Attributes> attrs = cache.getAttributes().iterator();
-
-		if (attrs == null || !attrs.hasNext()) return "";
-
-		do
+		try
 		{
-			Attributes attribute = attrs.next();
-			File result = new File(Config.WorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+			Iterator<Attributes> attrs = cache.getAttributes().iterator();
 
-			sb.append("<form action=\"Attr\">");
-			sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" "
-					+ attribute.getImageName() + " \">");
+			if (attrs == null || !attrs.hasNext()) return "";
+
+			do
+			{
+				Attributes attribute = attrs.next();
+				File result = new File(Config.WorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+
+				sb.append("<form action=\"Attr\">");
+				sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" "
+						+ attribute.getImageName() + " \">");
+			}
+			while (attrs.hasNext());
+
+			sb.append("</form>");
+
+			if (sb.length() > 0) sb.append("<br>");
+			return sb.toString();
 		}
-		while (attrs.hasNext());
-
-		sb.append("</form>");
-
-		if (sb.length() > 0) sb.append("<br>");
-		return sb.toString();
+		catch (Exception ex)
+		{
+			// TODO Handle Exception
+			return "";
+		}
 	}
 
 	@Override
