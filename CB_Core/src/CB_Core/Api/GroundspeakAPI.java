@@ -1339,7 +1339,7 @@ public class GroundspeakAPI
 		if (list == null) list = new HashMap<String, URI>();
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken() + "&CacheCode=" + cacheCode
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode
 					+ "&format=json");
 
 			String result = Execute(httppost);
