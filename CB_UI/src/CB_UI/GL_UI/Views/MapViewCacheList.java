@@ -241,6 +241,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 	private void addWaypoints(Cache cache, int iconSize)
 	{
+		if (cache.waypoints == null) return;
 		for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 		{
 			addWaypoint(cache, cache.waypoints.get(i), iconSize);
