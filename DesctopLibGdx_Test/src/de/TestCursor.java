@@ -1,5 +1,6 @@
 package de;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -8,18 +9,20 @@ import CB_Utils.DB.CoreCursor;
 public class TestCursor extends CoreCursor
 {
 	private ResultSet rs;
+	private PreparedStatement ps;
 	private int rowcount;
 
-	public TestCursor(ResultSet rs)
+	public TestCursor(ResultSet rs, PreparedStatement ps)
 	{
 		this.rs = rs;
+		this.ps = ps;
 	}
 
-	public TestCursor(ResultSet rs, int rowcount)
+	public TestCursor(ResultSet rs, int rowcount, PreparedStatement ps)
 	{
 		this.rs = rs;
 		this.rowcount = rowcount;
-
+		this.ps = ps;
 	}
 
 	@Override
@@ -74,12 +77,14 @@ public class TestCursor extends CoreCursor
 		try
 		{
 			if (rs != null) rs.close();
+			if (ps != null) ps.close();
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 		rs = null;
+		ps = null;
 	}
 
 	@Override

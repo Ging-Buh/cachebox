@@ -83,11 +83,11 @@ public class TestDB extends Database
 	{
 		if (myDB == null) return null;
 		ResultSet rs = null;
-
+		PreparedStatement statement = null;
 		try
 		{
 
-			PreparedStatement statement = myDB.prepareStatement(sql);
+			statement = myDB.prepareStatement(sql);
 
 			if (args != null)
 			{
@@ -107,11 +107,11 @@ public class TestDB extends Database
 		// TODO Hack to get Rowcount
 		ResultSet rs2 = null;
 		int rowcount = 0;
-
+		PreparedStatement statement2 = null;
 		try
 		{
 
-			PreparedStatement statement2 = myDB.prepareStatement("select count(*) from (" + sql + ")");
+			statement2 = myDB.prepareStatement("select count(*) from (" + sql + ")");
 
 			if (args != null)
 			{
@@ -125,21 +125,33 @@ public class TestDB extends Database
 			rs2.next();
 
 			rowcount = Integer.parseInt(rs2.getString(1));
-
+			statement2.close();
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
+		finally
+		{
+			try
+			{
+				statement2.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
-		return new TestCursor(rs, rowcount);
+		return new TestCursor(rs, rowcount, statement);
 	}
 
 	@Override
 	public void execSQL(String sql)
 	{
 		if (myDB == null) return;
-		Statement statement;
+		Statement statement = null;
 		try
 		{
 			statement = myDB.createStatement();
@@ -149,6 +161,18 @@ public class TestDB extends Database
 		{
 
 			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				statement.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -182,10 +206,10 @@ public class TestDB extends Database
 			sql.append(" where ");
 			sql.append(whereClause);
 		}
-
+		PreparedStatement st = null;
 		try
 		{
-			PreparedStatement st = myDB.prepareStatement(sql.toString());
+			st = myDB.prepareStatement(sql.toString());
 
 			int j = 0;
 			for (Entry<String, Object> entry : val.entrySet())
@@ -208,6 +232,18 @@ public class TestDB extends Database
 		catch (SQLException e)
 		{
 			return 0;
+		}
+		finally
+		{
+			try
+			{
+				st.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -247,10 +283,10 @@ public class TestDB extends Database
 		}
 
 		sql.append(" )");
-
+		PreparedStatement st = null;
 		try
 		{
-			PreparedStatement st = myDB.prepareStatement(sql.toString());
+			st = myDB.prepareStatement(sql.toString());
 
 			int j = 0;
 			for (Entry<String, Object> entry : val.entrySet())
@@ -267,7 +303,18 @@ public class TestDB extends Database
 		{
 			return 0;
 		}
-
+		finally
+		{
+			try
+			{
+				st.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -284,10 +331,10 @@ public class TestDB extends Database
 			sql.append(" where ");
 			sql.append(whereClause);
 		}
-
+		PreparedStatement st = null;
 		try
 		{
-			PreparedStatement st = myDB.prepareStatement(sql.toString());
+			st = myDB.prepareStatement(sql.toString());
 
 			if (whereArgs != null)
 			{
@@ -303,6 +350,18 @@ public class TestDB extends Database
 		catch (SQLException e)
 		{
 			return 0;
+		}
+		finally
+		{
+			try
+			{
+				st.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -384,10 +443,10 @@ public class TestDB extends Database
 		}
 
 		sql.append(" )");
-
+		PreparedStatement st = null;
 		try
 		{
-			PreparedStatement st = myDB.prepareStatement(sql.toString());
+			st = myDB.prepareStatement(sql.toString());
 
 			int j = 0;
 			for (Entry<String, Object> entry : val.entrySet())
@@ -402,6 +461,18 @@ public class TestDB extends Database
 		catch (SQLException e)
 		{
 			return 0;
+		}
+		finally
+		{
+			try
+			{
+				st.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -442,10 +513,10 @@ public class TestDB extends Database
 		}
 
 		sql.append(" )");
-
+		PreparedStatement st = null;
 		try
 		{
-			PreparedStatement st = myDB.prepareStatement(sql.toString());
+			st = myDB.prepareStatement(sql.toString());
 
 			int j = 0;
 			for (Entry<String, Object> entry : val.entrySet())
@@ -461,7 +532,18 @@ public class TestDB extends Database
 		{
 			return 0;
 		}
-
+		finally
+		{
+			try
+			{
+				st.close();
+			}
+			catch (SQLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
