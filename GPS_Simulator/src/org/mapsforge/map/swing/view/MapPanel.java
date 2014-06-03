@@ -52,7 +52,15 @@ public class MapPanel extends JPanel implements ActionListener
 	{
 		mapView = createMapView();
 		String MapPath = SimulatorMain.prefs.get("loadedMap", "../germany.map");
-		addLayers(mapView, MapPath);
+		try
+		{
+			addLayers(mapView, MapPath);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		final Model model = mapView.getModel();
 		model.init(preferencesFacade);
