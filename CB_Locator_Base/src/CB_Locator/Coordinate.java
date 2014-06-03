@@ -214,12 +214,27 @@ public class Coordinate implements Serializable
 		return dist[0];
 	}
 
-	public boolean equals(Coordinate coord)
-	{
-		if (this.getLatitude() != coord.getLatitude()) return false;
-		if (this.getLongitude() != coord.getLongitude()) return false;
+	private final static double TOL = 0.000008;
 
-		return true;
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof Coordinate)
+		{
+			Coordinate coord = (Coordinate) other;
+
+			double la = this.getLatitude() - coord.getLatitude();
+			double lo = this.getLongitude() - coord.getLongitude();
+
+			if (la < 0) la *= -1;
+			if (lo < 0) la *= -1;
+
+			if (la > TOL) return false;
+			if (lo > TOL) return false;
+
+			return true;
+		}
+		return false;
 	}
 
 	public static Coordinate Crossbearing(CalculationType type, Coordinate coord1, double direction1, Coordinate coord2, double direction2)

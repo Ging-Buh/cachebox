@@ -294,12 +294,12 @@ public class Descriptor implements Comparable<Descriptor>
 	@Override
 	public int compareTo(Descriptor another)
 	{
-		long hashcode = this.GetHashCode();
-		long objHashcode = another.GetHashCode();
+		Long hashcode = this.GetHashCode();
+		Long objHashcode = another.GetHashCode();
 
-		if (hashcode == objHashcode) return 0;
+		if (hashcode.longValue() == objHashcode.longValue()) return 0;
 
-		if (hashcode < objHashcode) return -1;
+		if (hashcode.longValue() < objHashcode.longValue()) return -1;
 
 		return 1;
 	}
@@ -378,5 +378,24 @@ public class Descriptor implements Comparable<Descriptor>
 		this.Zoom = descripter.Zoom;
 		this.NightMode = descripter.NightMode;
 		BuffertHash = 0; // Hash must new calculated
+	}
+
+	/**
+	 * Return the center coordinate of this Descriptor
+	 * 
+	 * @return
+	 */
+	public Coordinate getCenterCoordinate()
+	{
+		double lon = TileXToLongitude(Zoom, X);
+		double lat = TileYToLatitude(Zoom, Y);
+
+		double lon1 = TileXToLongitude(Zoom, X + 1);
+		double lat1 = TileYToLatitude(Zoom, Y + 1);
+
+		double divLon = (lon1 - lon) / 2;
+		double divLat = (lat1 - lat) / 2;
+
+		return new Coordinate(lat + divLat, lon + divLon);
 	}
 }

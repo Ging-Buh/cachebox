@@ -40,8 +40,9 @@ public class searchLiveMapTests extends TestCase
 		Descriptor.Init();
 
 		// Descriptor Zoom Level 14 = search radius 2km
-		// Center of Descriptor x=8801 y=5368 z=14 => 52° 34,973N / 13° 23,531E (Pankow)
+		// Center of Descriptor x=8801 y=5368 z=14 => 52° 34,982N / 13° 23,540E (Pankow)
 		Descriptor descPankow = new Descriptor(8801, 5368, 14, false);
+		Coordinate corPankow = new Coordinate("52° 34,982N / 13° 23,540E");
 
 		// List of Coordinates are into x=8801 y=5368 z=14
 		Coordinate[] coordList = new Coordinate[]
@@ -55,17 +56,11 @@ public class searchLiveMapTests extends TestCase
 		{
 			Descriptor desc = new Descriptor(cor, 14);
 			assertEquals("mustEquals", desc, descPankow);
-		}
 
-		// Coordinate searchCoord = new CoordinateGPS(52.581892, 13.398128);
-		//
-		// ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-		// SearchLiveMap searchC = new SearchLiveMap(2, searchCoord, 5000);
-		//
-		// ApiGroundspeak_SearchForGeocaches apis = new ApiGroundspeak_SearchForGeocaches(searchC, apiCaches);
-		// apis.execute();
-		//
-		// assertFalse("Keine Caches gefunden", apiCaches.size() < 1);
+			// Check center coordinate of Descriptor
+			Coordinate cord = desc.getCenterCoordinate();
+			assertEquals("mustEquals", cord, corPankow);
+		}
 
 	}
 }
