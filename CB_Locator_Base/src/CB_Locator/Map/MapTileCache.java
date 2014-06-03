@@ -186,7 +186,11 @@ public class MapTileCache
 		System.arraycopy(this.EMPTY_HashList, 0, this.HashList, 0, Capacity - 1);
 		for (int i = 0, n = this.TileList.length; i < n; i++)
 		{
-			if (this.TileList[i] != null) this.TileList[i].dispose();
+			if (this.TileList[i] != null)
+			{
+				this.TileList[i].dispose();
+				this.TileList[i] = null;
+			}
 		}
 		System.arraycopy(this.EMPTY_TileList, 0, this.TileList, 0, Capacity - 1);
 		Size = 0;

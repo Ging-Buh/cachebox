@@ -15,16 +15,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class GdxTestRunner extends BlockJUnit4ClassRunner implements ApplicationListener
 {
-
+	private static LwjglApplication testRunnerAplication;
 	private Map<FrameworkMethod, RunNotifier> invokeInRender = new HashMap<FrameworkMethod, RunNotifier>();
 
 	public GdxTestRunner(Class<?> klass) throws InitializationError
 	{
 		super(klass);
-		// JoglApplicationConfiguration conf = new JoglApplicationConfiguration();
-		// conf.width = 800;
-		// conf.height = 640;
-		// new JoglApplication(this, conf);
 
 		LwjglApplicationConfiguration lwjglAppCfg = new LwjglApplicationConfiguration();
 		DisplayMode dispMode = LwjglApplicationConfiguration.getDesktopDisplayMode();
@@ -36,18 +32,20 @@ public class GdxTestRunner extends BlockJUnit4ClassRunner implements Application
 		lwjglAppCfg.height = 100;
 		lwjglAppCfg.title = "GDX Test Runner";
 		lwjglAppCfg.samples = 16;
-
-		new LwjglApplication(this, lwjglAppCfg);
+		LwjglApplicationConfiguration.disableAudio = true;
+		testRunnerAplication = new LwjglApplication(this, lwjglAppCfg);
 	}
 
 	@Override
 	public void create()
 	{
+		// System.out.print("create");
 	}
 
 	@Override
 	public void resume()
 	{
+		// System.out.print("resume");
 	}
 
 	@Override
@@ -66,16 +64,19 @@ public class GdxTestRunner extends BlockJUnit4ClassRunner implements Application
 	@Override
 	public void resize(int width, int height)
 	{
+		// System.out.print("resize");
 	}
 
 	@Override
 	public void pause()
 	{
+		// System.out.print("pause");
 	}
 
 	@Override
 	public void dispose()
 	{
+		// System.out.print("dispose");
 	}
 
 	@Override

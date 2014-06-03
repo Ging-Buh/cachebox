@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Disposable;
 public interface ext_Matrix extends Disposable
 {
 
+	/** Set the matrix to identity */
 	public abstract void reset();
 
 	public abstract void rotate(float theta);

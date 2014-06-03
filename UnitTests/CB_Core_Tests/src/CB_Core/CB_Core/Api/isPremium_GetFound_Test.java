@@ -1,9 +1,9 @@
 package CB_Core.CB_Core.Api;
 
-import __Static.InitTestDBs;
 import junit.framework.TestCase;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
+import __Static.InitTestDBs;
 
 /**
  * Enthält die Tests um die Caches zu einer bestimmten Position über die API abzufragen
@@ -49,7 +49,7 @@ public class isPremium_GetFound_Test extends TestCase
 		int Anzahl = GroundspeakAPI.GetCachesFound();
 
 		// Bei mir
-		assertTrue("Muss Anzahl meiner Funde sein (" + Anzahl + ")", Anzahl == 464);
+		assertTrue("Muss Anzahl meiner Funde sein (" + Anzahl + ")", Anzahl == 465);
 	}
 
 }

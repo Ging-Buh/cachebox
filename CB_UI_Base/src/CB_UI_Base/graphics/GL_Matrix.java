@@ -57,80 +57,64 @@ public class GL_Matrix implements ext_Matrix, Matrix
 		matrix4 = new Matrix4();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#reset()
+	/**
+	 * Set the matrix to identity
 	 */
-
 	@Override
 	public void reset()
 	{
 		matrix4.idt();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#rotate(float)
+	/**
+	 * Set the matrix to rotate about (0,0) by the specified number of degrees.
 	 */
-
 	public void setRotate(float theta)
 	{
+		matrix4.idt();
 		preRotate(theta);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#rotate(float, float, float)
+	/**
+	 * Set the matrix to rotate by the specified number of degrees, with a pivot point at (pivotX, pivotY). The pivot point is the
+	 * coordinate that should remain unchanged by the specified transformation.
 	 */
-
-	@Override
-	public void rotate(float theta, float pivotX, float pivotY)
+	public void setRotate(float theta, float pivotX, float pivotY)
 	{
+		matrix4.idt();
 		preRotate(theta, pivotX, pivotY);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#scale(float, float)
+	/**
+	 * Set the matrix to scale by scaleX and scaleY.
 	 */
-
-	@Override
-	public void scale(float scaleX, float scaleY)
+	public void setScale(float scaleX, float scaleY)
 	{
+		matrix4.idt();
 		preScale(scaleX, scaleY);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#scale(float, float, float, float)
+	/**
+	 * Set the matrix to scale by scaleX and scaleY, with a pivot point at (pivotX, pivotY). The pivot point is the coordinate that should
+	 * remain unchanged by the specified transformation.
 	 */
-
-	@Override
-	public void scale(float scaleX, float scaleY, float pivotX, float pivotY)
+	public void setScale(float scaleX, float scaleY, float pivotX, float pivotY)
 	{
+		matrix4.idt();
 		preScale(scaleX, scaleY, pivotX, pivotY);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#translate(float, float)
+	/**
+	 * Set the matrix to translate by (translateX, translateY).
 	 */
-
 	public void setTranslate(float translateX, float translateY)
 	{
+		matrix4.idt();
 		preTranslate(translateX, translateY);
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#set(CB_UI_Base.graphics.extended.ext_Matrix)
+	 * Set the values from given interface ext_Matrix.
 	 */
 	@Override
 	public void set(ext_Matrix matrix)
@@ -138,15 +122,16 @@ public class GL_Matrix implements ext_Matrix, Matrix
 		this.matrix4.set(((GL_Matrix) matrix).matrix4);
 	}
 
+	/*
+	 * Set the values from given Matrix4
+	 */
 	private void set(Matrix4 matrix)
 	{
 		this.matrix4.set(matrix);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#postConcat(CB_UI_Base.graphics.extended.ext_Matrix)
+	/**
+	 * Postconcats the matrix with the specified matrix. M' = other * M
 	 */
 	@Override
 	public void postConcat(ext_Matrix matrix)
@@ -158,10 +143,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 		// this.matrix4.mul(matrix.getMatrix4());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#preTranslate(float, float)
+	/**
+	 * Preconcats the matrix with the specified translation. M' = M * T(x, y)
 	 */
 	@Override
 	public void preTranslate(float x, float y)
@@ -172,10 +155,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 		set(m);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#preScale(float, float)
+	/**
+	 * Preconcats the matrix with the specified scale. M' = M * S(x, y)
 	 */
 	@Override
 	public void preScale(float x, float y)
@@ -186,10 +167,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 		set(m);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#preScale(float, float, float, float)
+	/**
+	 * Preconcats the matrix with the specified scale. M' = M * S(sx, sy, px, py)
 	 */
 	@Override
 	public void preScale(float sx, float sy, float px, float py)
@@ -206,22 +185,10 @@ public class GL_Matrix implements ext_Matrix, Matrix
 		}
 
 		this.matrix4.mul(m);
-
-		// m.mul(this.matrix4);
-		//
-		// set(m);
-
 	}
 
-	private void addTransform(Matrix4 matrix)
-	{
-		this.matrix4.mul(matrix);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#postRotate(float)
+	/**
+	 * Postconcats the matrix with the specified rotation. M' = R(degrees) * M
 	 */
 	@Override
 	public void postRotate(float angle)
@@ -409,10 +376,14 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	 * @see CB_UI_Base.graphics.extended.ext_Matrix2#preSkew(float, float)
 	 */
 	@Override
-	public void preSkew(float f, float tan)
+	public void preSkew(float sx, float sy)
 	{
-		// TODO Auto-generated method stub
+		Matrix4 m = new Matrix4();
+		// m.set?
 
+		// SkMatrix m;
+		// m.setSkew(sx, sy);
+		// this->preConcat(m);
 	}
 
 	/*
@@ -603,5 +574,24 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	public void translate(float arg0, float arg1)
 	{
 		setTranslate(arg0, arg1);
+	}
+
+	@Override
+	public void rotate(float arg0, float arg1, float arg2)
+	{
+		setRotate(arg0, arg1, arg2);
+
+	}
+
+	@Override
+	public void scale(float arg0, float arg1)
+	{
+		setScale(arg0, arg1);
+	}
+
+	@Override
+	public void scale(float arg0, float arg1, float arg2, float arg3)
+	{
+		setScale(arg0, arg1, arg2, arg3);
 	}
 }

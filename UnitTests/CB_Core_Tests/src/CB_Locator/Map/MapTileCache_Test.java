@@ -20,6 +20,8 @@ public class MapTileCache_Test extends TestCase
 	public void test()
 	{
 
+		InstanceCount = 0;
+
 		add1SortAndClear();
 
 		createAndFill();
@@ -49,7 +51,7 @@ public class MapTileCache_Test extends TestCase
 			{ Hash6 });
 
 		cache.sort();
-
+		cache.clear();
 	}
 
 	private void add2newTiles()
@@ -128,6 +130,8 @@ public class MapTileCache_Test extends TestCase
 
 	private void createAndFill()
 	{
+		cache.clear();
+
 		// fill with 5 Tiles
 		{
 			TileGL t1 = new DummyTile(Hash1);
@@ -144,6 +148,7 @@ public class MapTileCache_Test extends TestCase
 
 		assertFalse("Cache Size must be 5", cache.size() != 5);
 		assertFalse("InstanceCount must be 5", InstanceCount != 5);
+
 	}
 
 	private void changeAge()
@@ -210,6 +215,12 @@ public class MapTileCache_Test extends TestCase
 
 		private boolean isDisposed = false;
 		private final long Hash;
+
+		public DummyTile()
+		{
+			this.Hash = -1;
+			InstanceCount++;
+		}
 
 		public DummyTile(Long Hash)
 		{

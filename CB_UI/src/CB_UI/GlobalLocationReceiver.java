@@ -13,8 +13,10 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GL_UI.SoundCache;
 import CB_UI.GL_UI.SoundCache.Sounds;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 
@@ -25,6 +27,8 @@ import CB_Utils.Log.Logger;
  */
 public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBackEvent
 {
+
+	public final static boolean DEBUG_POSITION = true;
 
 	public final static String GPS_PROVIDER = "gps";
 	public final static String NETWORK_PROVIDER = "network";
@@ -55,7 +59,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	public void PositionChanged()
 	{
 
-		PlaySounds = !Config.settings.GlobalVolume.getValue().Mute;
+		PlaySounds = !CB_UI_Base_Settings.GlobalVolume.getValue().Mute;
 
 		if (newLocationThread != null)
 		{
@@ -83,7 +87,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 								distance = GlobalCore.getSelectedWaypoint().Distance();
 							}
 
-							if (!approachSoundCompleted && (distance < Config.settings.SoundApproachDistance.getValue()))
+							if (!approachSoundCompleted && (distance < CB_UI_Settings.SoundApproachDistance.getValue()))
 							{
 								SoundCache.play(Sounds.Approach);
 								approachSoundCompleted = true;
@@ -240,7 +244,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	@Override
 	public void Fix()
 	{
-		PlaySounds = !Config.settings.GlobalVolume.getValue().Mute;
+		PlaySounds = !CB_UI_Base_Settings.GlobalVolume.getValue().Mute;
 
 		try
 		{
@@ -268,7 +272,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 	@Override
 	public void FallBackToNetworkProvider()
 	{
-		PlaySounds = !Config.settings.GlobalVolume.getValue().Mute;
+		PlaySounds = !CB_UI_Base_Settings.GlobalVolume.getValue().Mute;
 
 		if (initialFixSoundCompleted && !loseSoundCompleated)
 		{
