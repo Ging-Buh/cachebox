@@ -78,7 +78,7 @@ public class CacheListDAO
 		while (!reader.isAfterLast())
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
-			Waypoint wp = waypointDAO.getWaypoint(reader, true);
+			Waypoint wp = waypointDAO.getWaypoint(reader, fullDetails);
 			if (!(fullDetails || loadAllWaypoints))
 			{
 				// wenn keine FullDetails geladen werden sollen dann sollen nur die Finals und Start-Waypoints geladen werden
