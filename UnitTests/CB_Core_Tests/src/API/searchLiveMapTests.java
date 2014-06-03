@@ -1,15 +1,10 @@
 package API;
 
-import java.util.ArrayList;
-
-import __Static.InitTestDBs;
 import junit.framework.TestCase;
-import CB_Core.Api.ApiGroundspeak_SearchForGeocaches;
-import CB_Core.Api.SearchLiveMap;
-import CB_Core.Types.Cache;
 import CB_Locator.Coordinate;
-import CB_Locator.CoordinateGPS;
+import CB_Locator.Map.Descriptor;
 import CB_UI.Config;
+import __Static.InitTestDBs;
 
 public class searchLiveMapTests extends TestCase
 {
@@ -42,15 +37,35 @@ public class searchLiveMapTests extends TestCase
 	public void testSearchLive()
 	{
 
-		Coordinate searchCoord = new CoordinateGPS(52.581892, 13.398128);
+		Descriptor.Init();
 
-		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-		SearchLiveMap searchC = new SearchLiveMap(2, searchCoord, 5000);
+		// Descriptor Zoom Level 14 = search radius 2km
+		// Center of Descriptor x=8801 y=5368 z=14 => 52° 34,973N / 13° 23,531E (Pankow)
+		Descriptor descPankow = new Descriptor(8801, 5368, 14, false);
 
-		ApiGroundspeak_SearchForGeocaches apis = new ApiGroundspeak_SearchForGeocaches(searchC, apiCaches);
-		apis.execute();
+		// List of Coordinates are into x=8801 y=5368 z=14
+		Coordinate[] coordList = new Coordinate[]
+			{ new Coordinate("52° 34,973N / 13° 23,531E"), new Coordinate("52° 35,364N / 13° 24,170E"),
+					new Coordinate("52° 35,367N / 13° 22,908E"), new Coordinate("52° 34,601N / 13° 22,923E"),
+					new Coordinate("52° 34,598N / 13° 24,170E"), new Coordinate("52° 34,773N / 13° 23,346E"),
+					new Coordinate("52° 34,933N / 13° 23,938E") };
 
-		assertFalse("Keine Caches gefunden", apiCaches.size() < 1);
+		// check
+		for (Coordinate cor : coordList)
+		{
+			Descriptor desc = new Descriptor(cor, 14);
+			assertEquals("mustEquals", desc, descPankow);
+		}
+
+		// Coordinate searchCoord = new CoordinateGPS(52.581892, 13.398128);
+		//
+		// ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		// SearchLiveMap searchC = new SearchLiveMap(2, searchCoord, 5000);
+		//
+		// ApiGroundspeak_SearchForGeocaches apis = new ApiGroundspeak_SearchForGeocaches(searchC, apiCaches);
+		// apis.execute();
+		//
+		// assertFalse("Keine Caches gefunden", apiCaches.size() < 1);
 
 	}
 }

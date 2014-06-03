@@ -18,6 +18,7 @@
 
 package CB_Locator.Map;
 
+import CB_Locator.Coordinate;
 import CB_Utils.MathUtils;
 import CB_Utils.Math.PointD;
 
@@ -88,6 +89,21 @@ public class Descriptor implements Comparable<Descriptor>
 		this.Y = y;
 		this.Zoom = zoom;
 		this.NightMode = NightMode;
+		BuffertHash = 0;
+	}
+
+	/**
+	 * Constructor for given coordinate and zoom-level
+	 * 
+	 * @param coord
+	 * @param zoom
+	 */
+	public Descriptor(Coordinate coord, int zoom)
+	{
+		this.X = (int) LongitudeToTileX(zoom, coord.getLongitude());
+		this.Y = (int) LatitudeToTileY(zoom, coord.getLatitude());
+		this.Zoom = zoom;
+		this.NightMode = false;
 		BuffertHash = 0;
 	}
 
@@ -295,7 +311,7 @@ public class Descriptor implements Comparable<Descriptor>
 		{
 			Descriptor desc = (Descriptor) obj;
 
-			if (this.GetHashCode() == desc.GetHashCode()) return true;
+			if (this.GetHashCode().longValue() == desc.GetHashCode().longValue()) return true;
 
 		}
 		return false;
