@@ -2,7 +2,6 @@ package CB_Core.Types;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
-import java.util.Date;
 
 import CB_Core.Enums.CacheTypes;
 import CB_Locator.Coordinate;
@@ -147,7 +146,6 @@ public class Waypoint implements Serializable
 		IsSyncExcluded = false;
 		setClue("");
 		setCheckSum(0);
-		setTime(null);
 	}
 
 	@Override
@@ -164,7 +162,6 @@ public class Waypoint implements Serializable
 		setDescription(null);
 		Type = null;
 		setClue(null);
-		setTime(null);
 	}
 
 	public String getGcCode()
@@ -237,15 +234,6 @@ public class Waypoint implements Serializable
 		{
 			detail.setClue(clue);
 		}
-	}
-
-	private void setTime(Date time)
-	{
-		if (detail != null)
-		{
-			detail.setTime(time);
-		}
-
 	}
 
 	public void setCheckSum(int i)

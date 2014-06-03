@@ -1,7 +1,6 @@
 package CB_Core.Types;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class WaypointDetail implements Serializable
 {
@@ -13,8 +12,6 @@ public class WaypointDetail implements Serializable
 	private byte[] Description;
 
 	public int checkSum = 0; // for replication
-
-	public Date time;
 
 	public WaypointDetail()
 	{
@@ -51,11 +48,6 @@ public class WaypointDetail implements Serializable
 			return;
 		}
 		Clue = clue.getBytes(Waypoint.UTF_8);
-	}
-
-	public void setTime(Date time2)
-	{
-		time = time2;
 	}
 
 	public void setCheckSum(int i)
