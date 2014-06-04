@@ -218,6 +218,7 @@ public class CB_List<T> implements Serializable
 
 	public void clear()
 	{
+		Arrays.fill(items, null);
 		size = 0;
 	}
 

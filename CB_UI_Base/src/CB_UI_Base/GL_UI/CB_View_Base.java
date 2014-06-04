@@ -15,7 +15,19 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
 {
-
+	// Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
+	// the position and width (stretched equally, weighted or percentual on this) of the objects is calculated automatically
+	private MoveableList<GL_View_Base> row;
+	private boolean topdown = true; // false = bottomup
+	private float rowYPos = 0;
+	private float rowMaxHeight = 0;
+	private float xMargin = 0;
+	private float yMargin = 0;
+	private float topYAdd;
+	private float bottomYAdd = -1;
+	public static final int FIXED = -1;
+	public static final boolean TOPDOWN = true;
+	public static final boolean BOTTOMUP = false;
 	private boolean isDisposed = false;
 
 	// # Constructors
@@ -179,7 +191,20 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 				setToNull(this);
 			}
 		}
+
+		if (row != null)
+		{
+			for (int i = 0; i < row.size(); i++)
+			{
+				row.get(i).dispose();
+			}
+			row.clear();
+		}
+
+		row = null;
+
 		isDisposed = true;
+		super.dispose();
 	}
 
 	public static void setToNull(CB_View_Base view)
@@ -285,20 +310,6 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 	{
 		return getName() + " X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.getWidth() + "," + this.getHeight();
 	}
-
-	// Designing this ( a page, a box, a panel, ...) by adding rows of objects<GL_View_Base>
-	// the position and width (stretched equally, weighted or percentual on this) of the objects is calculated automatically
-	private MoveableList<GL_View_Base> row;
-	private boolean topdown = true; // false = bottomup
-	private float rowYPos = 0;
-	private float rowMaxHeight = 0;
-	private float xMargin = 0;
-	private float yMargin = 0;
-	private float topYAdd;
-	private float bottomYAdd = -1;
-	public static final int FIXED = -1;
-	public static final boolean TOPDOWN = true;
-	public static final boolean BOTTOMUP = false;
 
 	/**
 	 ** used Height from Bottom with correct topborder

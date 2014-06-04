@@ -453,4 +453,10 @@ public class CB_Button extends Button implements OnClickListener
 		}
 	}
 
+	@Override
+	public void dispose()
+	{
+		super.dispose();
+	}
+
 }

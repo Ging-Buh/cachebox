@@ -58,8 +58,6 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		super(rec, Name);
 		mReturnListner = listner;
 
-		that = this;
-
 		MeasuredCoord.Referenz = Locator.getCoordinate(ProviderType.GPS);
 
 		if (MeasuredCoord.Referenz == null)

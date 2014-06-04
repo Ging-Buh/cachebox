@@ -43,8 +43,6 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		return SpriteCacheBase.Icons.get(IconName.manageDB_41.ordinal());
 	}
 
-	SelectDB selectDBDialog;
-
 	@Override
 	public void Execute()
 	{
@@ -57,7 +55,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 		}
 
-		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
+		SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
 		selectDBDialog.setReturnListner(new ReturnListner()
 		{
 			@Override
@@ -67,7 +65,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			}
 		});
 		selectDBDialog.show();
-
+		selectDBDialog = null;
 	}
 
 	WaitDialog wd;

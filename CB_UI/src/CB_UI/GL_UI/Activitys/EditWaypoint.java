@@ -117,7 +117,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				}
 
 				keyboard.show(false);
-				scrollToY(that.getHeight(), that.getHeight());
+				scrollToY(EditWaypoint.this.getHeight(), EditWaypoint.this.getHeight());
 				return true;
 			}
 		});
@@ -162,7 +162,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 			@Override
 			public void coordinateChanged(Coordinate coord)
 			{
-				that.show();
+				EditWaypoint.this.show();
 			}
 		});
 
@@ -197,7 +197,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
+				EditWaypoint.this.show();
 				showCbStartPoint(false);
 				switch (index)
 				{

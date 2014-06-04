@@ -30,15 +30,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Menu extends ButtonDialog
 {
-	protected Menu that;
 
 	public float ItemHeight = -1f;
 
 	private static final int ANIMATION_DURATION = 1200;
 	private static float mMoreMenuToggleButtonWidth = -1;
 
-	private final ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();
-	private final V_ListView mListView;
+	private ArrayList<MenuItemBase> mItems = new ArrayList<MenuItemBase>();
+	private V_ListView mListView;
 
 	private static CB_RectF MENU_REC = null;
 	private static boolean MENU_REC_IsInitial = false;
@@ -81,12 +80,12 @@ public class Menu extends ButtonDialog
 	public Menu(String Name)
 	{
 		super(getMenuRec(), Name);
-		that = this;
 
 		if (ItemHeight == -1f) ItemHeight = UI_Size_Base.that.getButtonHeight();
 		mListView = new V_ListView(this, "MenuList");
 		mListView.setSize(this.getContentSize());
 		mListView.setZeroPos();
+		mListView.setDisposeFlag(false);
 		this.addChild(mMoreMenu);
 		initialDialog();
 	}
@@ -97,7 +96,7 @@ public class Menu extends ButtonDialog
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			GL.that.closeDialog(that);
+			GL.that.closeDialog(Menu.this);
 			if (isMoreMenu) GL.that.closeDialog(mParentMenu);
 			if (mOnItemClickListner != null)
 			{
@@ -603,6 +602,49 @@ public class Menu extends ButtonDialog
 	{
 		if (mParentMenu == null) return this.getWidth();
 		return mParentMenu.getLeve0_Width();
+	}
+
+	@Override
+	public void dispose()
+	{
+		mMoreMenuTextRight = null;
+		mMoreMenuTextLeft = null;
+		mParentMenu = null;
+
+		if (mMoreMenu != null)
+		{
+			mMoreMenu.dispose();
+		}
+		mMoreMenu = null;
+
+		if (mMoreMenuToggleButton != null)
+		{
+			mMoreMenuToggleButton.dispose();
+		}
+		mMoreMenuToggleButton = null;
+
+		if (mMoreMenuLabel != null)
+		{
+			mMoreMenuLabel.dispose();
+		}
+		mMoreMenuLabel = null;
+
+		if (mItems != null)
+		{
+			for (MenuItemBase it : mItems)
+			{
+				it.dispose();
+			}
+			mItems.clear();
+		}
+		mItems = null;
+
+		if (mListView != null)
+		{
+			mListView.dispose();
+		}
+		mListView = null;
+		super.dispose();
 	}
 
 }

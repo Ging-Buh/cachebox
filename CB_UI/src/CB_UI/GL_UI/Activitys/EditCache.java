@@ -327,7 +327,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
+				EditCache.this.show();
 				newValues.Type = CacheTypNumbers[index];
 			}
 		};
@@ -366,7 +366,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
+				EditCache.this.show();
 				newValues.Size = CacheSizeNumbers[index];
 			}
 		};
@@ -379,7 +379,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public void coordinateChanged(Coordinate coord)
 			{
-				that.show();
+				EditCache.this.show();
 				newValues.Pos = coord; // oder = cacheCoords.getCoordinate()
 			}
 		});
@@ -416,7 +416,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
+				EditCache.this.show();
 				newValues.Difficulty = (index + 2.0f) / 2.0f;
 			}
 		};
@@ -453,7 +453,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
+				EditCache.this.show();
 				newValues.Terrain = (index + 2.0f) / 2.0f;
 			}
 		};

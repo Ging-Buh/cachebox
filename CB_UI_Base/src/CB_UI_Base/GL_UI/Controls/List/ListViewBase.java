@@ -38,7 +38,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected CB_List<IRunOnGL> runOnGL_ListWaitpool = new CB_List<IRunOnGL>();
 	protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
 
-	protected final CB_List<ListViewItemBase> clearList = new CB_List<ListViewItemBase>();
+	protected CB_List<ListViewItemBase> clearList = new CB_List<ListViewItemBase>();
 
 	/**
 	 * Return With for horizontal and Height for vertical ListView
@@ -798,4 +798,57 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		});
 	}
 
+	@Override
+	public void dispose()
+	{
+		if (scrollbar != null) scrollbar.dispose();
+		scrollbar = null;
+
+		if (noListChilds != null)
+		{
+			for (int i = 0; i < noListChilds.size(); i++)
+			{
+				noListChilds.get(i).dispose();
+			}
+			noListChilds.clear();
+		}
+
+		if (clearList != null)
+		{
+			for (int i = 0; i < clearList.size(); i++)
+			{
+				clearList.get(i).dispose();
+			}
+			clearList.clear();
+		}
+		clearList = null;
+
+		if (runOnGL_List != null)
+		{
+			runOnGL_List.clear();
+		}
+		runOnGL_List = null;
+		if (runOnGL_ListWaitpool != null)
+		{
+			runOnGL_ListWaitpool.clear();
+		}
+		runOnGL_ListWaitpool = null;
+		if (mAddeedIndexList != null)
+		{
+			mAddeedIndexList.clear();
+		}
+		mAddeedIndexList = null;
+		if (mPosDefault != null)
+		{
+			mPosDefault.clear();
+		}
+		mPosDefault = null;
+
+		mAnimationTimer = null;
+
+		isWorkOnRunOnGL = null;
+
+		mBaseAdapter = null;
+		super.dispose();
+	}
 }

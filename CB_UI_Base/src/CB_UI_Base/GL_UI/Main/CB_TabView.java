@@ -35,6 +35,7 @@ public class CB_TabView extends CB_View_Base
 		buttonListView.setBaseAdapter(new CustomAdapter());
 		buttonListView.setUndragable();
 		buttonListView.setBackground(SpriteCacheBase.ButtonBack);
+		buttonListView.setDisposeFlag(false);
 		this.addChild(buttonListView);
 	}
 

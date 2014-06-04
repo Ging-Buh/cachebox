@@ -184,7 +184,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 											@Override
 											public void run()
 											{
-												that.show();
+												EditFieldNotes.this.show();
 											}
 										};
 

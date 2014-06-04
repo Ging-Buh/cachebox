@@ -115,6 +115,7 @@ public class GL implements ApplicationListener, InputProcessor
 	private final long mDoubleClickTime = 500;
 	private long lastClickTime = 0;
 	private float lastRenderOnceTime = -1;
+	private CB_View_Base disposeAcktivitie;
 
 	// private Threads
 	Thread threadDisposeDialog;
@@ -1697,6 +1698,21 @@ public class GL implements ApplicationListener, InputProcessor
 		else
 		{
 			actActivity.onHide();
+
+			disposeAcktivitie = actActivity;
+			RunOnGL(new IRunOnGL()
+			{
+
+				@Override
+				public void run()
+				{
+					disposeAcktivitie.dispose();
+
+					disposeAcktivitie = null;
+					System.gc();
+				}
+			});
+
 			actActivity = null;
 			mActivity.removeChildsDirekt();
 			child.setClickable(true);

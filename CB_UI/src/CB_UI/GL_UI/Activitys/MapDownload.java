@@ -69,7 +69,6 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 	private MapDownload()
 	{
 		super(ActivityRec(), "mapDownloadActivity");
-		that = this;
 		scrollBox = new ScrollBox(ActivityRec());
 		this.addChild(scrollBox);
 		createOkCancelBtn();

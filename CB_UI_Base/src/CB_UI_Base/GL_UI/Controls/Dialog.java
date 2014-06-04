@@ -22,31 +22,35 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Dialog extends CB_View_Base
 {
-	private String mTitle;
-	private Label titleLabel;
-	private Box mContent;
-	private final ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
-	protected String CallerName = "";
-
-	/**
-	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
-	 */
-	private final ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>();
-	// TODO das Handling der Marker in den Dialogen überarbeiten!
-
-	/**
-	 * Overlay über alles wird als letztes Gerendert
-	 */
-	private final ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
-
-	protected boolean dontRenderDialogBackground = false;
-	protected Object data;
 	static protected NinePatch mTitle9patch;
 	static protected NinePatch mHeader9patch;
 	static protected NinePatch mCenter9patch;
 	static protected NinePatch mFooter9patch;
 	static protected float mTitleVersatz = 6;
 	static private int pW = 0;
+	static protected float margin = -1;
+	static public boolean lastNightMode = false;
+	static private int DialogCount = 0;
+
+	private String mTitle;
+	private Label titleLabel;
+	private Box mContent;
+	private ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
+	protected String CallerName = "";
+
+	/**
+	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
+	 */
+	private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>();
+	// TODO das Handling der Marker in den Dialogen überarbeiten!
+
+	/**
+	 * Overlay über alles wird als letztes Gerendert
+	 */
+	private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
+
+	protected boolean dontRenderDialogBackground = false;
+	protected Object data;
 
 	protected float mTitleHeight = 0;
 	protected float mTitleWidth = 100;
@@ -55,10 +59,6 @@ public abstract class Dialog extends CB_View_Base
 	protected float mHeaderHeight = 10f;
 	protected float mFooterHeight = 10f;
 
-	protected static float margin = -1;
-
-	public static boolean lastNightMode = false;
-	static int DialogCount = 0;
 	public final int DialogID;
 
 	public Dialog(CB_RectF rec, String Name)
@@ -434,4 +434,55 @@ public abstract class Dialog extends CB_View_Base
 		CallerName = callerName;
 	}
 
+	@Override
+	public void dispose()
+	{
+		mTitle = null;
+		CallerName = null;
+		data = null;
+
+		if (titleLabel != null) titleLabel.dispose();
+		titleLabel = null;
+
+		if (mContent != null) mContent.dispose();
+		mContent = null;
+
+		if (contentChilds != null)
+		{
+			for (GL_View_Base v : contentChilds)
+			{
+				if (v != null) v.dispose();
+				v = null;
+			}
+
+			contentChilds.clear();
+		}
+		contentChilds = null;
+
+		if (overlayForTextMarker != null)
+		{
+			for (GL_View_Base v : overlayForTextMarker)
+			{
+				if (v != null) v.dispose();
+				v = null;
+			}
+
+			overlayForTextMarker.clear();
+		}
+		overlayForTextMarker = null;
+
+		if (overlay != null)
+		{
+			for (GL_View_Base v : overlay)
+			{
+				if (v != null) v.dispose();
+				v = null;
+			}
+
+			overlay.clear();
+		}
+		overlay = null;
+
+		super.dispose();
+	}
 }

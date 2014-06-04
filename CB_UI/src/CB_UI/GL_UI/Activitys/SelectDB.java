@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Activitys;
 
 import java.io.File;
@@ -40,6 +55,10 @@ import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class SelectDB extends ActivityBase
 {
 	private int autoStartTime = 10;
@@ -51,13 +70,11 @@ public class SelectDB extends ActivityBase
 	private Button bAutostart;
 	private V_ListView lvFiles;
 	private Scrollbar scrollbar;
-	CustomAdapter lvAdapter;
-
-	public static File AktFile = null;
-
+	private CustomAdapter lvAdapter;
+	private File AktFile = null;
 	private String[] countList;
-
 	private boolean MusstSelect = false;
+	private ReturnListner returnListner;
 
 	public SelectDB(CB_RectF rec, String Name, boolean mustSelect)
 	{
@@ -385,7 +402,7 @@ public class SelectDB extends ActivityBase
 				{
 					file = lvAdapter.getItem(i);
 
-					SelectDB.AktFile = file;
+					AktFile = file;
 					lvFiles.setSelection(i);
 					break;
 				}
@@ -473,10 +490,10 @@ public class SelectDB extends ActivityBase
 
 				break;
 			case 2: // cancel clicked
-				that.show();
+				SelectDB.this.show();
 				break;
 			case 3:
-				that.show();
+				SelectDB.this.show();
 				break;
 			}
 
@@ -592,8 +609,6 @@ public class SelectDB extends ActivityBase
 		// bAutostart.setText(Translation.Get("confirm"));
 	}
 
-	private ReturnListner returnListner;
-
 	public void setReturnListner(ReturnListner listner)
 	{
 		returnListner = listner;
@@ -653,7 +668,7 @@ public class SelectDB extends ActivityBase
 					break;
 
 				}
-				that.show();
+				SelectDB.this.show();
 				return true;
 			}
 		});
@@ -672,6 +687,32 @@ public class SelectDB extends ActivityBase
 	public boolean canCloseWithBackKey()
 	{
 		return !MusstSelect;
+	}
+
+	@Override
+	public void dispose()
+	{
+
+		DBPath = null;
+		if (bNew != null) bNew.dispose();
+		bNew = null;
+		if (bSelect != null) bSelect.dispose();
+		bSelect = null;
+		if (bCancel != null) bCancel.dispose();
+		bCancel = null;
+		if (bAutostart != null) bAutostart.dispose();
+		bAutostart = null;
+		if (lvFiles != null) lvFiles.dispose();
+		lvFiles = null;
+		if (scrollbar != null) scrollbar.dispose();
+		scrollbar = null;
+
+		lvAdapter = null;
+		AktFile = null;
+		countList = null;
+
+		returnListner = null;
+		super.dispose();
 	}
 
 }

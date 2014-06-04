@@ -231,7 +231,8 @@ public class Cache implements Comparable<Cache>, Serializable
 				Waypoint wp = waypoints.get(i);
 				if (wp.IsStart || wp.Type == CacheTypes.Final)
 				{
-					wp.detail.dispose();
+
+					if (wp.detail != null) wp.detail.dispose();
 					wp.detail = null;
 				}
 				else

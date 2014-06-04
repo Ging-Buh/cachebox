@@ -1079,7 +1079,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	{
 		importCancel = false;
 		importStarted = false;
-		that.removeChild(dis);
+		this.removeChild(dis);
 		bOK.enable();
 	}
 

@@ -973,7 +973,6 @@ public abstract class GL_View_Base extends CB_RectF
 			}
 			catch (IndexOutOfBoundsException e)
 			{
-				e.printStackTrace();
 				return false;
 			}
 		}
@@ -1038,6 +1037,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
+	@Override
 	public void dispose()
 	{
 		DebugSprite = null;
@@ -1061,6 +1061,33 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		debugRegPixmap = null;
 		debugRegTexture = null;
+
+		debugRegTexture = null;
+		name = null;
+		data = null;
+		mOnClickListener = null;
+		mOnLongClickListener = null;
+		mOnDoubleClickListener = null;
+		drawableBackground = null;
+		parent = null;
+		DebugSprite = null;
+		lastTouchPos = null;
+
+		if (debugRegPixmap != null)
+		{
+			debugRegPixmap.dispose();
+		}
+		debugRegPixmap = null;
+
+		if (childs != null)
+		{
+			for (int i = 0; i < childs.size(); i++)
+			{
+				childs.get(i).dispose();
+			}
+			childs.clear();
+		}
+		super.dispose();
 	}
 
 	/**

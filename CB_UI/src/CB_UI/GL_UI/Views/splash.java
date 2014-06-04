@@ -74,7 +74,6 @@ public class splash extends MainViewBase
 	Image CB_Logo, OSM_Logo, Route_Logo, Mapsforge_Logo, LibGdx_Logo, GC_Logo;
 
 	Label descTextView;
-	SelectDB selectDBDialog;
 
 	int step = 0;
 	boolean switcher = false;
@@ -367,7 +366,7 @@ public class splash extends MainViewBase
 		if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill)
 		{
 			breakForWait = true;
-			selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
+			SelectDB selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
 			selectDBDialog.setReturnListner(new ReturnListner()
 			{
 				@Override
@@ -377,6 +376,7 @@ public class splash extends MainViewBase
 				}
 			});
 			selectDBDialog.show();
+			selectDBDialog = null;
 		}
 
 	}
@@ -539,7 +539,6 @@ public class splash extends MainViewBase
 	{
 		this.removeChildsDirekt();
 
-		if (selectDBDialog != null) selectDBDialog.dispose();
 		if (descTextView != null) descTextView.dispose();
 		if (GC_Logo != null) GC_Logo.dispose();
 		if (LibGdx_Logo != null) LibGdx_Logo.dispose();
@@ -548,7 +547,6 @@ public class splash extends MainViewBase
 		if (progress != null) progress.dispose();
 		if (atlas != null) atlas.dispose();
 
-		selectDBDialog = null;
 		descTextView = null;
 		GC_Logo = null;
 		LibGdx_Logo = null;

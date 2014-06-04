@@ -109,7 +109,7 @@ public class ProjectionCoordinate extends ActivityBase
 			@Override
 			public void coordinateChanged(Coordinate Coord)
 			{
-				that.show();
+				ProjectionCoordinate.this.show();
 				coord = Coord;
 			}
 		});
@@ -136,7 +136,7 @@ public class ProjectionCoordinate extends ActivityBase
 			@Override
 			public void coordinateChanged(Coordinate Coord)
 			{
-				that.show();
+				ProjectionCoordinate.this.show();
 				projCoord = Coord;
 			}
 		});

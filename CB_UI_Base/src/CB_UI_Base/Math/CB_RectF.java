@@ -230,7 +230,7 @@ public class CB_RectF
 		return ret;
 	}
 
-	private final CB_List<SizeChangedEvent> list = new CB_List<SizeChangedEvent>(1);
+	private CB_List<SizeChangedEvent> list = new CB_List<SizeChangedEvent>(1);
 
 	public void Add(SizeChangedEvent event)
 	{
@@ -244,6 +244,8 @@ public class CB_RectF
 
 	public void CallRecChanged()
 	{
+		if (list == null) return; // is disposed
+
 		resize(this.member[2], this.member[3]);
 
 		if (list.size() > 0)
@@ -525,4 +527,12 @@ public class CB_RectF
 		CallRecChanged();
 	}
 
+	public void dispose()
+	{
+		if (list != null)
+		{
+			list.clear();
+		}
+		list = null;
+	}
 }
