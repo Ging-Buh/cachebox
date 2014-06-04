@@ -71,7 +71,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 		super(rec, Name);
 		margin = GL_UISizes.margin;
-		SelectedCacheEventList.Add(this);
+
 		CachListChangedEventList.Add(this);
 		invalidateTextureEventList.Add(this);
 		that = this;
@@ -90,7 +90,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			chart.onShow();
 			chart.setDrawWithAlpha(false);
 		}
-
+		SelectedCacheEventList.Add(this);
 		PositionChangedEventList.Add(this);
 		if (map != null) map.onShow();
 
@@ -102,6 +102,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 		super.onHide();
 		if (chart != null) chart.onHide();
+		SelectedCacheEventList.Remove(this);
 		PositionChangedEventList.Remove(this);
 		if (map != null) map.onHide();
 	}
@@ -204,6 +205,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		aktCache = cache;
 		if (cache == null) return;
+
+		if (cache.detail == null) return; // maybe must load?
+
 		if (showAtt)
 		{
 			for (int i = 0; i < 19; i++)
