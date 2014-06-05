@@ -1700,18 +1700,20 @@ public class GL implements ApplicationListener, InputProcessor
 			actActivity.onHide();
 
 			disposeAcktivitie = actActivity;
-			RunOnGL(new IRunOnGL()
-			{
 
+			Timer disposeTimer = new Timer();
+			TimerTask disposeTsak = new TimerTask()
+			{
 				@Override
 				public void run()
 				{
 					disposeAcktivitie.dispose();
-
 					disposeAcktivitie = null;
 					System.gc();
 				}
-			});
+			};
+
+			disposeTimer.schedule(disposeTsak, 700);
 
 			actActivity = null;
 			mActivity.removeChildsDirekt();

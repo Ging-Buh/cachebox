@@ -475,4 +475,12 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			TabMainView.actionShowMap.Execute();
 		}
 	}
+
+	@Override
+	public void dispose()
+	{
+		// FIXME release all Member
+		// FIXME release all EventHandler
+		super.dispose();
+	}
 }

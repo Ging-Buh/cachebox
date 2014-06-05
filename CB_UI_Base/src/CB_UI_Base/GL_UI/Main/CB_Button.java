@@ -218,7 +218,7 @@ public class CB_Button extends Button implements OnClickListener
 			{
 				if (ba.getAction() == aktActionView)
 				{
-					if (aktActionView.getView().isVisible())
+					if (aktActionView.getView() != null && aktActionView.getView().isVisible())
 					{
 						// Dieses View ist aktuell das Sichtbare
 						// -> ein Click auf den Menü-Button zeigt das Contextmenü
@@ -323,6 +323,12 @@ public class CB_Button extends Button implements OnClickListener
 			isFocused = aktActionView.getView().isVisible();
 			hasContextMenu = aktActionView.HasContextMenu();
 		}
+		else
+		{
+			isFocused = false;
+			hasContextMenu = false;
+		}
+
 		super.render(batch);
 
 		if (hasContextMenu && isFocused)
@@ -344,7 +350,7 @@ public class CB_Button extends Button implements OnClickListener
 
 			}
 
-			boolean isFilterd = false;// TODO this == TabMainView.that.CacheListButton && TabMainView.that.isFilterd();
+			boolean isFilterd = false;
 
 			if (!isFilterd && menuSprite != null) menuSprite.draw(batch);
 			if (isFilterd && menuSpriteFilterd != null) menuSpriteFilterd.draw(batch);

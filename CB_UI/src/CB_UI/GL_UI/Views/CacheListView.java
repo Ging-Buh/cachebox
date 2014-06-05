@@ -58,7 +58,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	private V_ListView listView;
 	private Scrollbar scrollBar;
 
-	public static CacheListView that;
 	private CustomAdapter lvAdapter;
 	private BitmapFontCache emptyMsg;
 
@@ -68,7 +67,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		registerSkinChangedEvent();
 		CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Add(this);
-		that = this;
 		listView = new V_ListView(rec, Name);
 		listView.setZeroPos();
 
@@ -351,12 +349,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			return Count;
 		}
 
-		// public Object getItem(int position)
-		// {
-		// if (cacheList == null) return null;
-		// return cacheList.get(position);
-		// }
-
 		@Override
 		public ListViewItemBase getView(int position)
 		{
@@ -393,6 +385,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				return UiSizes.that.getCacheListItemRec().getHeight();
 			}
 
+		}
+
+		public void dispose()
+		{
+			cacheList = null;
 		}
 
 	}
@@ -530,4 +527,26 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	{
 	}
 
+	@Override
+	public void dispose()
+	{
+
+		onItemLongClickListner = null;
+		onItemClickListner = null;
+
+		if (listView != null) listView.dispose();
+		listView = null;
+		if (scrollBar != null) scrollBar.dispose();
+		scrollBar = null;
+		if (lvAdapter != null) lvAdapter.dispose();
+		lvAdapter = null;
+		if (emptyMsg != null) emptyMsg.clear();
+		emptyMsg = null;
+
+		CachListChangedEventList.Remove(this);
+		SelectedCacheEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
+
+		super.dispose();
+	}
 }

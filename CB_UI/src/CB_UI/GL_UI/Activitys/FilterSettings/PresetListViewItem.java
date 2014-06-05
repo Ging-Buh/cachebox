@@ -29,6 +29,8 @@ public class PresetListViewItem extends ListViewItemBackground
 	@Override
 	protected void render(Batch batch)
 	{
+		if (this.isDisposed()) return;
+
 		if (EditFilterSettings.tmpFilterProps != null)
 		{
 			if (chkPresetFilter(mPresetEntry.getFilterProperties(), EditFilterSettings.tmpFilterProps))

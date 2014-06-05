@@ -79,7 +79,7 @@ public class SearchForGeocaches_Core
 			apiStatus = 1;
 		}
 
-		HttpPost httppost = new HttpPost("https://api.groundspeak.com/LiveV5/Geocaching.svc/SearchForGeocaches?format=json");
+		HttpPost httppost = new HttpPost("https://api.groundspeak.com/LiveV6/Geocaching.svc/SearchForGeocaches?format=json");
 
 		String requestString = "";
 

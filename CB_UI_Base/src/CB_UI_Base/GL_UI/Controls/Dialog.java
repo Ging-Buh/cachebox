@@ -301,44 +301,46 @@ public abstract class Dialog extends CB_View_Base
 
 		super.renderChilds(batch, parentInfo);
 
-		for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
+		if (overlay != null)
 		{
-			// alle renderChilds() der in dieser GL_View_Base
-			// enthaltenen Childs auf rufen.
-
-			GL_View_Base view;
-			try
+			for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
 			{
-				view = iterator.next();
+				// alle renderChilds() der in dieser GL_View_Base
+				// enthaltenen Childs auf rufen.
 
-				// hier nicht view.render(batch) aufrufen, da sonnst die in der
-				// view enthaldenen Childs nicht aufgerufen werden.
-				if (view != null && view.isVisible())
+				GL_View_Base view;
+				try
 				{
+					view = iterator.next();
 
-					if (childsInvalidate) view.invalidate();
+					// hier nicht view.render(batch) aufrufen, da sonnst die in der
+					// view enthaldenen Childs nicht aufgerufen werden.
+					if (view != null && view.isVisible())
+					{
 
-					myInfoForChild.setParentInfo(myParentInfo);
-					myInfoForChild.setWorldDrawRec(intersectRec);
+						if (childsInvalidate) view.invalidate();
 
-					myInfoForChild.add(view.getX(), view.getY());
+						myInfoForChild.setParentInfo(myParentInfo);
+						myInfoForChild.setWorldDrawRec(intersectRec);
 
-					batch.setProjectionMatrix(myInfoForChild.Matrix());
-					nDepthCounter++;
+						myInfoForChild.add(view.getX(), view.getY());
 
-					view.renderChilds(batch, myInfoForChild);
-					nDepthCounter--;
-					batch.setProjectionMatrix(myParentInfo.Matrix());
+						batch.setProjectionMatrix(myInfoForChild.Matrix());
+						nDepthCounter++;
+
+						view.renderChilds(batch, myInfoForChild);
+						nDepthCounter--;
+						batch.setProjectionMatrix(myParentInfo.Matrix());
+					}
+
 				}
-
-			}
-			catch (java.util.ConcurrentModificationException e)
-			{
-				// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
-				break;
+				catch (java.util.ConcurrentModificationException e)
+				{
+					// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+					break;
+				}
 			}
 		}
-
 	}
 
 	public SizeF getContentSize()

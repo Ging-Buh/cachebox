@@ -57,12 +57,10 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	private SatBarChart chart;
 	private int result = -1;
 	CancelWaitDialog pd;
-	AboutView Me;
 
 	public AboutView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		Me = this;
 		registerSkinChangedEvent();
 		createControls();
 	}
@@ -463,4 +461,45 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	}
 
+	@Override
+	public void dispose()
+	{
+
+		if (descTextView != null) descTextView.dispose();
+		descTextView = null;
+		if (CachesFoundLabel != null) CachesFoundLabel.dispose();
+		CachesFoundLabel = null;
+		if (WaypointLabel != null) WaypointLabel.dispose();
+		WaypointLabel = null;
+		if (CoordLabel != null) CoordLabel.dispose();
+		CoordLabel = null;
+		if (lblGPS != null) lblGPS.dispose();
+		lblGPS = null;
+		if (Gps != null) Gps.dispose();
+		Gps = null;
+		if (lblAccuracy != null) lblAccuracy.dispose();
+		lblAccuracy = null;
+		if (Accuracy != null) Accuracy.dispose();
+		Accuracy = null;
+		if (lblWP != null) lblWP.dispose();
+		lblWP = null;
+		if (lblCoord != null) lblCoord.dispose();
+		lblCoord = null;
+		if (lblCurrent != null) lblCurrent.dispose();
+		lblCurrent = null;
+		if (Current != null) Current.dispose();
+		Current = null;
+		if (CB_Logo != null) CB_Logo.dispose();
+		CB_Logo = null;
+		if (chart != null) chart.dispose();
+		chart = null;
+		if (pd != null) pd.dispose();
+		pd = null;
+
+		SelectedCacheEventList.Remove(this);
+		GpsStateChangeEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
+
+		super.dispose();
+	}
 }

@@ -573,9 +573,16 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	@Override
 	protected void onScrollChanged(int x, int y, int oldl, int oldt)
 	{
-		super.onScrollChanged(x, y, oldl, oldt);
-		scrollPos.x = x;
-		scrollPos.y = y;
+		try
+		{
+			super.onScrollChanged(x, y, oldl, oldt);
+			scrollPos.x = x;
+			scrollPos.y = y;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public Point getScrollPos()

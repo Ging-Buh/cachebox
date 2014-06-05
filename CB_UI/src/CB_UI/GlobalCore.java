@@ -54,7 +54,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2157;
+	public static final int CurrentRevision = 2158;
 
 	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
@@ -218,15 +218,15 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 			return;
 		}
 
-		// rewrite Changed Values ( like Favroite state)
-		if (selectedCache != null)
-		{
-			if (!Cache.getGcCode().equals("CBPark"))
-			{
-				Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
-
-			}
-		}
+		// // rewrite Changed Values ( like Favroite state)
+		// if (selectedCache != null)
+		// {
+		// if (!Cache.getGcCode().equals("CBPark"))
+		// {
+		// Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
+		//
+		// }
+		// }
 
 		// remove Detail Info from old selectedCache
 		if ((selectedCache != Cache) && (selectedCache != null) && (selectedCache.detail != null))

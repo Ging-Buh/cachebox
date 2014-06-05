@@ -3,7 +3,6 @@ package API;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import __Static.InitTestDBs;
 import junit.framework.TestCase;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchCoordinate;
@@ -18,6 +17,7 @@ import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_UI.Config;
+import __Static.InitTestDBs;
 
 /**
  * Enthält die Tests um die Caches zu einer bestimmten Position über die API abzufragen
@@ -75,7 +75,7 @@ public class searchForGeoCache_Test extends TestCase
 
 	public void testSearchGcCode()
 	{
-		SearchGC searchC = new SearchGC("GC2TZPJ");
+		SearchGC searchC = new SearchGC("GC1T33T");
 
 		searchC.number = 1;
 
@@ -87,7 +87,7 @@ public class searchForGeoCache_Test extends TestCase
 		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
 
 		boolean Assert = false;
-		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).getGcCode().equalsIgnoreCase("GC2TZPJ"))
+		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).getGcCode().equalsIgnoreCase("GC1T33T"))
 		{
 			Assert = true;
 		}

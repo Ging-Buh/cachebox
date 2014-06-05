@@ -180,7 +180,7 @@ public class FilterSetListView extends V_ListView
 		this.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(lFilterSets, lFilterSetListViewItems);
 		this.setBaseAdapter(lvAdapter);
-
+		this.setDisposeFlag(false);
 	}
 
 	@Override

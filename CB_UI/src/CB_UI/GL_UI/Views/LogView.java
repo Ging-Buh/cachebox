@@ -214,4 +214,11 @@ public class LogView extends V_ListView implements SelectedCacheEvent
 		SetSelectedCache(cache, waypoint);
 	}
 
+	@Override
+	public void dispose()
+	{
+		// FIXME release all Member
+		// FIXME release all EventHandler
+		super.dispose();
+	}
 }

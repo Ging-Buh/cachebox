@@ -16,6 +16,8 @@
 package CB_UI.GL_UI.Main;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
@@ -189,6 +191,71 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		TrackRecIsRegisted = true;
 		that = (TabMainView) (mainView = this);
 
+		Timer releaseTimer = new Timer();
+		TimerTask releaseTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				releaseNonvisibleViews();
+			}
+		};
+		releaseTimer.scheduleAtFixedRate(releaseTask, 5000, 5000);
+	}
+
+	/**
+	 * release all non visible Views
+	 */
+	private void releaseNonvisibleViews()
+	{
+		if (cacheListView != null && !cacheListView.isVisible())
+		{
+			Logger.LogCat("Rerlease CachelistView");
+			cacheListView.dispose();
+			cacheListView = null;
+		}
+
+		if (aboutView != null && !aboutView.isVisible())
+		{
+			Logger.LogCat("Rerlease aboutView");
+			aboutView.dispose();
+			aboutView = null;
+		}
+
+		if (compassView != null && !compassView.isVisible())
+		{
+			Logger.LogCat("Rerlease compassView");
+			compassView.dispose();
+			compassView = null;
+		}
+
+		if (fieldNotesView != null && !fieldNotesView.isVisible())
+		{
+			Logger.LogCat("Rerlease fieldNotesView");
+			fieldNotesView.dispose();
+			fieldNotesView = null;
+		}
+
+		if (logView != null && !logView.isVisible())
+		{
+			Logger.LogCat("Rerlease logView");
+			logView.dispose();
+			logView = null;
+		}
+
+		if (waypointView != null && !waypointView.isVisible())
+		{
+			Logger.LogCat("Rerlease waypointView");
+			waypointView.dispose();
+			waypointView = null;
+		}
+
+		if (solverView2 != null && !solverView2.isVisible())
+		{
+			Logger.LogCat("Rerlease solverView2");
+			solverView2.dispose();
+			solverView2 = null;
+		}
 	}
 
 	@Override

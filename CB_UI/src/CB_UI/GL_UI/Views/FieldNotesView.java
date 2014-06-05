@@ -994,4 +994,11 @@ public class FieldNotesView extends V_ListView
 		super.notifyDataSetChanged();
 	}
 
+	@Override
+	public void dispose()
+	{
+		// FIXME release all Member
+		// FIXME release all EventHandler
+		super.dispose();
+	}
 }

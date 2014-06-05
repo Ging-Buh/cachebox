@@ -47,7 +47,7 @@ import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Controls.Slider.YPositionChanged;
-import CB_UI.GL_UI.Views.CacheListView;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -895,10 +895,10 @@ public class SearchDialog extends PopUp_Base
 		try
 		{
 
-			if (CacheListView.that != null)
+			if (TabMainView.cacheListView != null)
 			{
-				setY(CacheListView.that.getMaxY() - this.getHeight());
-				CacheListView.that.setTopPlaceHolder(this.getHeight());
+				setY(TabMainView.cacheListView.getMaxY() - this.getHeight());
+				TabMainView.cacheListView.setTopPlaceHolder(this.getHeight());
 			}
 
 			if (!GL.that.PopUpIsShown()) that.showNotCloseAutomaticly();
@@ -916,9 +916,9 @@ public class SearchDialog extends PopUp_Base
 	{
 		Slider.that.removePosChangedEvent(listner);
 
-		if (CacheListView.that != null)
+		if (TabMainView.cacheListView != null)
 		{
-			CacheListView.that.resetPlaceHolder();
+			TabMainView.cacheListView.resetPlaceHolder();
 		}
 	}
 
@@ -929,9 +929,9 @@ public class SearchDialog extends PopUp_Base
 		public void Position(float SliderTop, float SliderBottom)
 		{
 
-			if (CacheListView.that != null)
+			if (TabMainView.cacheListView != null)
 			{
-				setY(CacheListView.that.getMaxY() - that.getHeight());
+				setY(TabMainView.cacheListView.getMaxY() - that.getHeight());
 			}
 		}
 	};

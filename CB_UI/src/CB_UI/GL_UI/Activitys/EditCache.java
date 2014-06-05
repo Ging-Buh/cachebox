@@ -15,7 +15,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_UI.GL_UI.Views.CacheListView;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -270,7 +270,7 @@ public class EditCache extends ActivityBase
 					cacheDAO.WriteToDatabase(cache);
 					CachListChangedEventList.Call();
 					GlobalCore.setSelectedCache(cache);
-					CacheListView.that.setSelectedCacheVisible();
+					if (TabMainView.cacheListView != null) TabMainView.cacheListView.setSelectedCacheVisible();
 				}
 
 				// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB

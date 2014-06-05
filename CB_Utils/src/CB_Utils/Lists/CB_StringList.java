@@ -57,22 +57,8 @@ public class CB_StringList extends CB_List<String>
 	@Override
 	protected String[] resize(int newSize)
 	{
-
-		{// TODO Replace with this.items=Arrays.copyOf(this.items, newSize); if SDK>9
-
-			// int[] tmpHash = new int[newSize];
-			// System.arraycopy(hashList, 0, tmpHash, 0, hashList.length);
-			// hashList = tmpHash;
-			// tmpHash = null;
-			this.hashList = Arrays.copyOf(this.hashList, newSize);
-
-			// String[] tmpString = new String[newSize];
-			// System.arraycopy(items, 0, tmpString, 0, items.length);
-			// items = tmpString;
-
-			this.items = Arrays.copyOf(this.items, newSize);
-		}
-
+		this.hashList = Arrays.copyOf(this.hashList, newSize);
+		this.items = Arrays.copyOf(this.items, newSize);
 		return this.items;
 	}
 

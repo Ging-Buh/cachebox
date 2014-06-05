@@ -225,7 +225,7 @@ public class CategorieListView extends V_ListView
 		super(rec, "");
 		this.setHasInvisibleItems(true);
 		fillCategorieList();
-
+		this.setDisposeFlag(false);
 		this.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(lCategories, lCategorieListViewItems);
 		this.setBaseAdapter(lvAdapter);

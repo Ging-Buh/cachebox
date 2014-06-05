@@ -916,4 +916,12 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		setWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 
+	@Override
+	public void dispose()
+	{
+		// FIXME release all Member
+		// FIXME release all EventHandler
+		super.dispose();
+	}
+
 }
