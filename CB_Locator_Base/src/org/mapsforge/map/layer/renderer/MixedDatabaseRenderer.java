@@ -707,7 +707,6 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 				try
 				{
 
-					// FIXME call direct Buffer swap
 					this.bitmap.compress(baos);
 					byte[] b = baos.toByteArray();
 

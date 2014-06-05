@@ -189,7 +189,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	{
 		mBaseAdapter = adapter;
 
-		mAddeedIndexList.clear();
+		if (mAddeedIndexList != null) mAddeedIndexList.clear();
 		if (mCanDispose)
 		{
 			synchronized (childs)
