@@ -311,7 +311,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 				"Sat Chart");
 		chart.setDrawWithAlpha(true);
 		this.addChild(chart);
-
+		setYpositions();
 	}
 
 	@Override

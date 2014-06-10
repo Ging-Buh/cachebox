@@ -610,8 +610,15 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	@Override
 	public void dispose()
 	{
-		// FIXME release all Member
-		// FIXME release all EventHandler
+		// release all Member
+		lvAdapter = null;
+		aktWaypoint = null;
+		aktCache = null;
+		that = null;
+
+		// release all EventHandler
+		SelectedCacheEventList.Remove(this);
+		WaypointListChangedEventList.Remove(this);
 		super.dispose();
 	}
 

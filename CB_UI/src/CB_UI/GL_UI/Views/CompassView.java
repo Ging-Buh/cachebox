@@ -49,7 +49,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent,
 		CacheListChangedEventListner
 {
-	public static CompassView that;
 	private CB_RectF imageRec;
 	private Image frame, scale, arrow, att[], Icon, Sun, Moon;
 
@@ -74,7 +73,6 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		CachListChangedEventList.Add(this);
 		invalidateTextureEventList.Add(this);
-		that = this;
 		aktCache = GlobalCore.getSelectedCache();
 		aktWaypoint = GlobalCore.getSelectedWaypoint();
 		createControls();
@@ -919,8 +917,91 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	@Override
 	public void dispose()
 	{
-		// FIXME release all Member
-		// FIXME release all EventHandler
+		// release all Member
+		if (imageRec != null) imageRec.dispose();
+		imageRec = null;
+		if (frame != null) frame.dispose();
+		frame = null;
+		if (scale != null) scale.dispose();
+		scale = null;
+		if (arrow != null) arrow.dispose();
+		arrow = null;
+		if (Icon != null) Icon.dispose();
+		Icon = null;
+		if (Sun != null) Sun.dispose();
+		Sun = null;
+		if (Moon != null) Moon.dispose();
+		Moon = null;
+		if (topContentBox != null) topContentBox.dispose();
+		topContentBox = null;
+		if (leftBox != null) leftBox.dispose();
+		leftBox = null;
+		if (rightBox != null) rightBox.dispose();
+		rightBox = null;
+		if (rightBoxMask != null) rightBoxMask.dispose();
+		rightBoxMask = null;
+		if (distanceBack != null) distanceBack.dispose();
+		distanceBack = null;
+		if (topBox != null) topBox.dispose();
+		topBox = null;
+		if (map != null) map.dispose();
+		map = null;
+		if (chart != null) chart.dispose();
+		chart = null;
+		if (lblDistance != null) lblDistance.dispose();
+		lblDistance = null;
+		if (lbl_Name != null) lbl_Name.dispose();
+		lbl_Name = null;
+		if (lblGcCode != null) lblGcCode.dispose();
+		lblGcCode = null;
+		if (lblCoords != null) lblCoords.dispose();
+		lblCoords = null;
+		if (lblDesc != null) lblDesc.dispose();
+		lblDesc = null;
+		if (lblAlt != null) lblAlt.dispose();
+		lblAlt = null;
+		if (lblAccuracy != null) lblAccuracy.dispose();
+		lblAccuracy = null;
+		if (lblOwnCoords != null) lblOwnCoords.dispose();
+		lblOwnCoords = null;
+		if (lblBearing != null) lblBearing.dispose();
+		lblBearing = null;
+		if (SDT != null) SDT.dispose();
+		SDT = null;
+
+		aktCache = null;
+		aktWaypoint = null;
+
+		if (att != null)
+		{
+			for (Image img : att)
+			{
+				if (img != null) img.dispose();
+				img = null;
+			}
+			att = null;
+		}
+
+		// release all EventHandler
+		Config.CompassShowMap.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowWP_Name.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowWP_Icon.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowAttributes.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowGcCode.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowCoords.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowWpDesc.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowSatInfos.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowSunMoon.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowTargetDirection.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowSDT.removeChangedEventListner(SettingChangedListner);
+		Config.CompassShowLastFound.removeChangedEventListner(SettingChangedListner);
+
+		SettingChangedListner = null;
+		SelectedCacheEventList.Remove(this);
+		CachListChangedEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
+		invalidateTextureEventList.Remove(this);
+
 		super.dispose();
 	}
 
