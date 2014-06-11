@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
@@ -39,6 +40,19 @@ import CB_Utils.Util.FileIO;
  */
 public class CacheListDAO
 {
+
+	public CacheList ReadCacheList(CacheList cacheList, ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails,
+			boolean loadAllWaypoints)
+	{
+		ArrayList<String> orParts = new ArrayList<String>();
+
+		for (String gcCode : GC_Codes)
+		{
+			orParts.add("GcCode like '%" + gcCode + "%'");
+		}
+		String where = FilterProperties.join(" or ", orParts);
+		return ReadCacheList(cacheList, "", where, withDescription, fullDetails, loadAllWaypoints);
+	}
 
 	public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails, boolean loadAllWaypoints)
 	{
@@ -178,7 +192,7 @@ public class CacheListDAO
 	{
 		try
 		{
-			delCacheImages(getDelGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder,
+			delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder,
 					DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", "Archived=1", null);
 			return ret;
@@ -205,8 +219,7 @@ public class CacheListDAO
 	{
 		try
 		{
-			delCacheImages(getDelGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder,
-					DescriptionImageFolderLocal);
+			delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", "Found=1", null);
 			return ret;
 		}
@@ -234,7 +247,7 @@ public class CacheListDAO
 	{
 		try
 		{
-			delCacheImages(getDelGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+			delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", Where, null);
 			return ret;
 		}
@@ -245,7 +258,7 @@ public class CacheListDAO
 		}
 	}
 
-	private ArrayList<String> getDelGcCodeList(String where)
+	private ArrayList<String> getGcCodeList(String where)
 	{
 		CacheList list = new CacheList();
 		ReadCacheList(list, where, false, false);
@@ -255,6 +268,8 @@ public class CacheListDAO
 		{
 			StrList.add(list.get(i).getGcCode());
 		}
+		list.dispose();
+		list = null;
 		return StrList;
 	}
 
