@@ -63,6 +63,24 @@ public class UnitFormatter
 
 	}
 
+	public static String AltString(float distance)
+	{
+		if (mUseImperialUnits) return AltStringImperial(distance);
+		else
+			return AltStringMetric(distance);
+	}
+
+	public static String AltStringMetric(float alt)
+	{
+		return String.format("%.0f", alt) + " m";
+	}
+
+	public static String AltStringImperial(float alt)
+	{
+		float yards = alt / 0.9144f;
+		return String.format("%.0f", yards) + " yd";
+	}
+
 	public static String SpeedString(float kmh)
 	{
 		if (mUseImperialUnits) return SpeedStringImperial(kmh);

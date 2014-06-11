@@ -455,8 +455,8 @@ public class Locator
 	public static String getAltStringWithCorection()
 	{
 		String result = getAltString();
-		if (altCorrection > 0) result += " (+" + UnitFormatter.DistanceString((float) altCorrection);
-		else if (altCorrection < 0) result += " (" + UnitFormatter.DistanceString((float) altCorrection);
+		if (altCorrection > 0) result += " (+" + UnitFormatter.AltString((float) altCorrection);
+		else if (altCorrection < 0) result += " (" + UnitFormatter.AltString((float) altCorrection);
 		return result;
 	}
 
@@ -467,7 +467,7 @@ public class Locator
 	 */
 	public static String getAltString()
 	{
-		return UnitFormatter.DistanceString((float) getAlt());
+		return UnitFormatter.AltString((float) getAlt());
 	}
 
 	/**
