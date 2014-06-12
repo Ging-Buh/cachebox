@@ -94,7 +94,7 @@ public class GPX_Export extends TestCase
 			{
 
 				@Override
-				public void publishProgress(int countExported)
+				public void publishProgress(int countExported, String msg)
 				{
 
 				}
@@ -162,7 +162,7 @@ public class GPX_Export extends TestCase
 			{
 
 				@Override
-				public void publishProgress(int countExported)
+				public void publishProgress(int countExported, String msg)
 				{
 					System.out.print("Export:" + countExported + "/" + count + Global.br);
 				}

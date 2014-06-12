@@ -202,9 +202,9 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	{
 
 		aktCache = cache;
-		if (cache == null) return;
+		if (aktCache == null) return;
 
-		if (cache.detail == null) return; // maybe must load?
+		if (aktCache.detail == null) return; // maybe must load?
 
 		if (showAtt)
 		{

@@ -69,7 +69,7 @@ public final class GpxSerializer
 
 	public static interface ProgressListener
 	{
-		void publishProgress(int countExported);
+		void publishProgress(int countExported, String Name);
 	}
 
 	public void writeGPX(List<String> allGeocodesIn, Writer writer, final ProgressListener progressListener) throws IOException
@@ -115,6 +115,8 @@ public final class GpxSerializer
 		boolean fullDetails = true;
 		boolean loadAllWaypoints = true;
 		boolean withDescription = true;
+
+		progressListener.publishProgress(countExported, "read " + geocodesOfBatch.size() + "Cache details");
 
 		clDAO.ReadCacheList(cacheList, geocodesOfBatch, withDescription, fullDetails, loadAllWaypoints);
 
@@ -194,7 +196,7 @@ public final class GpxSerializer
 			countExported++;
 			if (progressListener != null)
 			{
-				progressListener.publishProgress(countExported);
+				progressListener.publishProgress(countExported, "Write Cache: " + cache.getGcCode());
 			}
 		}
 	}
