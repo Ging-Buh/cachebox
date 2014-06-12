@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package Types;
 
 import java.util.ArrayList;
@@ -26,6 +41,125 @@ public class CacheTest extends TestCase
 {
 
 	private static Cache mCache;
+	private static final String BR = "\n";
+	private static final String LONG_DESC = "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "T5 Klettercache<br />"
+			+ BR
+			+ "Ihr benötigt ein 30 m Seil und Eurer Klettergeraffel<br />"
+			+ BR
+			+ "Bigshot wäre von Vorteil!<br />"
+			+ BR
+			+ "BITTE NUR KLETTERN, wenn Klettererfahrungen und geeignetes Wissen"
+			+ BR
+			+ "vorhanden sind!! Klettern natürlich auf eigene Gefahr!<br />"
+			+ BR
+			+ "BITTE:<br />"
+			+ BR
+			+ "NICHT alleine Klettern!! Denkt daran, auch ein Fall aus wenigen"
+			+ BR
+			+ "Metern Höhe kann böse enden!!<br /></font><br /><hr /><br /><br />"
+			+ BR
+			+ "<center><img src="
+			+ BR
+			+ "\"http://img.geocaching.com/cache/9b0334c7-c419-41c8-b883-8bb0adf20ac3.jpg\" /><br />"
+			+ BR
+			+ ""
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "Der Hampir, so sagt man, optisch ein liebes zartes Wesen<br />"
+			+ BR
+			+ "im dunklen Hardtwald treibt er seine Spesen.<br />"
+			+ BR
+			+ "So süß, so flauschig sogleich<br />"
+			+ BR
+			+ "auch sein Fell so samtig und weich!<br />"
+			+ BR
+			+ "Deshalb lass dich blos nicht blenden,<br />"
+			+ BR
+			+ "sonst könnte es sehr böse für dich enden!<br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "Aaaaaber wenn du ihn entdeckst,<br />"
+			+ BR
+			+ "so achte dich vor ihm, die Gefahr besteht dass du vergisst<br />"
+			+ BR
+			+ "und vor lauter Kummer und Sorgen ihm tief in die Augen"
+			+ BR
+			+ "erblickst!!<br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "Es ist dann zu spät!<br />"
+			+ BR
+			+ "Dann hat dich der Hampir bereits erspäht!!<br />"
+			+ BR
+			+ "Der Hampir, so sagt man erschallt sein Gelächter<br />"
+			+ BR
+			+ "wenn es Beute vor sich hat, so schaurig so grell,<br />"
+			+ BR
+			+ "rette dich wenn du kannst schneller als schnell!<br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "Und wage dich nicht in den Wald<br />"
+			+ BR
+			+ "in der Nacht beim Vollmond ist es dort bitterkalt!<br />"
+			+ BR
+			+ "Nebelschwaden dort, aber die schaurige Gestalten<br />"
+			+ BR
+			+ "verstecken sich im dunkeln mit dem Gedanken,<br />"
+			+ BR
+			+ "ihre Beute noch schneller zu jagen als der Hampir!<br />"
+			+ BR
+			+ "Dennoch willst du in den Wald?! Überlege es dir!!<br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "Du meinst, ach was... Hampire... die gibt es doch nicht?!<br />"
+			+ BR
+			+ "Die Hasen die warnen: HIER wartet er auf dich!!!<br />"
+			+ BR
+			+ "<br /></font></center>"
+			+ BR
+			+ "<font face=\"tahoma\" size=\"3\" color=\"#330033\"><br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "Fotos dürft Ihr gerne machen <img src="
+			+ BR
+			+ "'http://www.geocaching.com/images/icons/icon_smile_big.gif' border="
+			+ BR
+			+ "\"0\" align=\"middle\" /><br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "<br />"
+			+ BR
+			+ "ein besonderer Dank an Monas Cacherteam, für die handwerkliche"
+			+ BR
+			+ "Meisterleistung!!<br />"
+			+ BR
+			+ "Es ist genau so geworden, wie es sich die Hasen vorgestellt"
+			+ BR
+			+ "haben!!<br />"
+			+ BR
+			+ "<br /></font><br />"
+			+ BR
+			+ "<a href=\"http://www.andyhoppe.com/\" title="
+			+ BR
+			+ "\"Counter/Zähler\"><img src=\"http://c.andyhoppe.com/1302990447\""
+			+ BR
+			+ "style=\"border:none\" alt=\"Counter/Zähler\" /></a><p>Additional Hidden Waypoints</p>PK2T9RW - GC2T9RW Parking<br />N 49° 21.077 E 008° 37.840<br />Raststätte Hardtwald West."
+			+ BR + "Und für Ortskundige: einfach Richtung ADAC Übungsgelände. Dann müsst Ihr nicht auf die Autobahn.<br />";
 
 	@Override
 	public void setUp() throws Exception
@@ -72,7 +206,7 @@ public class CacheTest extends TestCase
 	}
 
 	@Test
-	public static void test_assertCache_GC2T9RW_with_details() throws ClassNotFoundException
+	public static void test_assertCache_GC2T9RW_with_details(boolean withDescription) throws ClassNotFoundException
 	{
 		InitTestDBs.InitalConfig();
 
@@ -82,7 +216,7 @@ public class CacheTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", true);
+		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", true, withDescription);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 
@@ -177,9 +311,6 @@ public class CacheTest extends TestCase
 			assertFalse(attr.toString() + " Attribut falsch", cache.isAttributeNegativeSet(attr));
 		}
 
-		assertEquals("shortDescription must be NULL", null, cache.getShortDescription());
-		assertEquals("longDescription must be NULL", null, cache.getLongDescription());
-
 		assertEquals("Hint falsch", "wenn du ihn nicht findest, findet er dich!!", cache.getHint());
 
 		CB_List<LogEntry> logs = new CB_List<LogEntry>();
@@ -194,6 +325,19 @@ public class CacheTest extends TestCase
 		assertTrue("LogTyp falsch", log.Type == LogTypes.found);
 
 		// TODO Beschreibungstexte überprüfen
+
+		assertEquals("shortDescription must be NULL", null, cache.getShortDescription());
+		if (!withDescription)
+		{
+			assertEquals("longDescription must be NULL", null, cache.getLongDescription());
+		}
+		else
+		{
+			assertEquals("longDescription must equals", LONG_DESC, cache.getLongDescription());
+		}
+
+		// assertEquals("Long description is wrong", LongDesc, cache.getLongDescription());
+
 		// System.out.println( log.Comment );
 
 		// Database.Data.Close();
@@ -210,7 +354,7 @@ public class CacheTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false);
+		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false, false);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 

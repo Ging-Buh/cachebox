@@ -1,5 +1,7 @@
 package CB_Core.Types;
 
+import java.util.ArrayList;
+
 import CB_Core.Enums.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
@@ -172,6 +174,16 @@ public class CacheList extends MoveableList<Cache>
 	public void dispose()
 	{
 		super.dispose();
+	}
+
+	public ArrayList<String> getGcCodes()
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		for (int i = 0, n = this.size(); i < n; i++)
+		{
+			list.add(this.get(i).getGcCode());
+		}
+		return list;
 	}
 
 }

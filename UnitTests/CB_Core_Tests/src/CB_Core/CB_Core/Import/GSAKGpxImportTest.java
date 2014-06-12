@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import __Static.InitTestDBs;
 import junit.framework.TestCase;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DB.Database;
@@ -17,6 +16,7 @@ import CB_Core.Import.ImportHandler;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Utils.Lists.CB_List;
+import __Static.InitTestDBs;
 
 public class GSAKGpxImportTest extends TestCase
 {
@@ -47,7 +47,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC1XCEW", true);
+		Cache cache = cacheDAO.getFromDbByGcCode("GC1XCEW", true, true);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 

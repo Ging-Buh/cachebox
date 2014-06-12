@@ -78,12 +78,13 @@ public enum Attributes
 
 	public static DLong GetAttributeDlong(Attributes attrib)
 	{
+		return DLong.shift(GetAttributeID(attrib));
+	}
 
+	public static int GetAttributeID(Attributes attrib)
+	{
 		if (attributeLookup == null) ini();
-
-		int Id = attributeLookup.get(attrib);
-
-		return DLong.shift(Id);
+		return attributeLookup.get(attrib);
 	}
 
 	private boolean negative = false;

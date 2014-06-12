@@ -8,6 +8,7 @@ import CB_Core.Config_Crypt;
 import CB_Core.FilterProperties_Test;
 import CB_Core.HSV_Test;
 import CB_Core.MeasuredCoordTest;
+import CB_Core.CB_Core.Export.GPX_Export;
 import CB_Core.CB_Core.Map.DescriptorTest;
 import CB_Core.Converter.Base64_Test;
 import CB_Locator.Map.MapTileCache_Test;
@@ -21,7 +22,7 @@ import Types.MeasuredCoordListTest;
 @SuiteClasses(
 	{ Config_Crypt.class, FilterProperties_Test.class, HSV_Test.class, MeasuredCoordTest.class, Import_tests.class, DescriptorTest.class,
 			Base64_Test.class, MapTileCache_Test.class, computeDistanceAndBearing.class, Cb_RectF_Test.class, PolylineReduction_Test.class,
-			CacheTest.class, MeasuredCoordListTest.class })
+			CacheTest.class, MeasuredCoordListTest.class, GPX_Export.class })
 public class Offline_tests
 {
 

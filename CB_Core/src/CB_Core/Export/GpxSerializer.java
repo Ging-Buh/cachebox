@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Export;
 
 import java.io.IOException;
@@ -23,6 +38,15 @@ import CB_Locator.Coordinate;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
+/**
+ * GPX writer, which the given cache code from the current DB after each other, with all the details, loads, <br>
+ * and then writes to a GPX file.<br>
+ * <br>
+ * The Code base is from c:geo https://github.com/cgeo/cgeo/blob/master/main/src/cgeo/geocaching/export/GpxSerializer.java<br>
+ * commit cadf1bb896976c5dc04cfd4b1615ad694fec3415
+ * 
+ * @author Longri
+ */
 public final class GpxSerializer
 {
 
@@ -30,8 +54,6 @@ public final class GpxSerializer
 	public static final String PREFIX_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	public static final String PREFIX_GPX = "http://www.topografix.com/GPX/1/0";
 	public static final String PREFIX_GROUNDSPEAK = "http://www.groundspeak.com/cache/1/0";
-	// public static final String PREFIX_GSAK = "http://www.gsak.net/xmlv1/6";
-	// public static final String PREFIX_CGEO = "http://www.cgeo.org/wptext/1/0";
 
 	/**
 	 * During the export, only this number of Caches is fully loaded into memory.
@@ -135,6 +157,8 @@ public final class GpxSerializer
 
 			writeAttributes(cache);
 
+			// TODO Shortdescription is not into DB is combind with LongDescription and Save into ROW Description
+			// Expand DB with ROW shortDescription
 			String shortDesc = cache.getShortDescription();
 			if (shortDesc != null && shortDesc.length() > 0)
 			{
@@ -149,7 +173,11 @@ public final class GpxSerializer
 			{
 				gpx.startTag(PREFIX_GROUNDSPEAK, "long_description");
 				gpx.attribute("", "html", containsHtml(cache.getLongDescription()) ? "True" : "False");
-				gpx.text(cache.getLongDescription());
+
+				char[] chr = cache.getLongDescription().toCharArray();
+
+				gpx.text(chr, 0, chr.length);
+				// gpx.text(cache.getLongDescription());
 				gpx.endTag(PREFIX_GROUNDSPEAK, "long_description");
 			}
 			writeLogs(cache);
@@ -170,26 +198,6 @@ public final class GpxSerializer
 			}
 		}
 	}
-
-	// private void writeGSAK(final Cache cache) throws IOException
-	// {
-	// gpx.startTag(PREFIX_GSAK, "wptExtension");
-	// multipleTexts(gpx, PREFIX_GSAK, "IsPremium", gpxBoolean(cache.isPremiumMembersOnly()), "FavPoints",
-	// Integer.toString(cache.getFavoritePoints()), "Watch", gpxBoolean(cache.isOnWatchlist()), "GcNote",
-	// StringUtils.trimToEmpty(cache.getPersonalNote()));
-	// gpx.endTag(PREFIX_GSAK, "wptExtension");
-	// }
-
-	// /**
-	// * @param boolFlag
-	// * @return XML schema compliant boolean representation of the boolean flag. This must be either true, false, 0 or 1, but no other
-	// value
-	// * (also not upper case True/False).
-	// */
-	// private static String gpxBoolean(boolean boolFlag)
-	// {
-	// return boolFlag ? "true" : "false";
-	// }
 
 	private void writeWaypoints(final Cache cache) throws IOException
 	{
@@ -329,7 +337,7 @@ public final class GpxSerializer
 			final boolean enabled = cache.isAttributePositiveSet(attribute);
 
 			gpx.startTag(PREFIX_GROUNDSPEAK, "attribute");
-			// gpx.attribute("", "id", Integer.toString(attr.gcid));
+			gpx.attribute("", "id", Integer.toString(Attributes.GetAttributeID(attribute)));
 			gpx.attribute("", "inc", enabled ? "1" : "0");
 			gpx.text(attribute.toString());
 			gpx.endTag(PREFIX_GROUNDSPEAK, "attribute");

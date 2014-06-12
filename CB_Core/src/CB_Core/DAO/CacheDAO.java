@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.DAO;
 
 import java.text.DateFormat;
@@ -23,6 +38,7 @@ public class CacheDAO
 {
 	protected static final String sqlgetFromDbByCacheId = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where id = ?";
 	protected static final String sqlgetFromDbByGcCode = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where GCCode = ?";
+	protected static final String sqlgetFromDbByGcCodeWithDiscription = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint, Description, Solver, Notes from Caches where GCCode = ?";
 
 	protected static final String sqlExistsCache = "select 1 from Caches where Id = ?";
 
@@ -402,9 +418,11 @@ public class CacheDAO
 
 	}
 
-	public Cache getFromDbByGcCode(String GcCode, boolean witDetail)
+	public Cache getFromDbByGcCode(String GcCode, boolean witDetail, boolean withDescription)
 	{
-		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByGcCode, new String[]
+		String where = withDescription ? sqlgetFromDbByGcCodeWithDiscription : sqlgetFromDbByGcCode;
+
+		CoreCursor reader = Database.Data.rawQuery(where, new String[]
 			{ GcCode });
 
 		try
@@ -412,7 +430,7 @@ public class CacheDAO
 			if (reader != null && reader.getCount() > 0)
 			{
 				reader.moveToFirst();
-				Cache ret = ReadFromCursor(reader, witDetail);
+				Cache ret = ReadFromCursor(reader, withDescription, witDetail);
 
 				reader.close();
 				return ret;
