@@ -53,14 +53,15 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 
 	/**
+	 * Koordinaten des Caches auf der Karte gelten in diesem Zoom
+	 */
+	public static final int MapZoomLevel = 18;
+
+	/**
 	 * Detail Information of Waypoint which are not always loaded
 	 */
 	public CacheDetail detail = null;
 
-	/**
-	 * Koordinaten des Caches auf der Karte gelten in diesem Zoom
-	 */
-	public static final int MapZoomLevel = 18;
 	/**
 	 * Koordinaten des Caches auf der Karte
 	 */
@@ -86,6 +87,68 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * Die Coordinate, an der der Cache liegt.
 	 */
 	public Coordinate Pos = new Coordinate();
+
+	/**
+	 * Durchschnittliche Bewertung des Caches von GcVote
+	 */
+	public float Rating;
+	/**
+	 * Groesse des Caches. Bei Wikipediaeintraegen enthaelt dieses Feld den Radius in m
+	 */
+	public CacheSizes Size;
+	/**
+	 * Schwierigkeit des Caches
+	 */
+	public float Difficulty = 0;
+	/**
+	 * Gelaendebewertung
+	 */
+	public float Terrain = 0;
+
+	/**
+	 * hat der Cache Clues oder Notizen erfasst
+	 */
+	public boolean hasUserData;
+
+	/**
+	 * Name der GPX-Datei aus der importiert wurde
+	 */
+	public long GPXFilename_ID = 0;
+
+	/**
+	 * Art des Caches
+	 */
+	public CacheTypes Type = CacheTypes.Undefined;
+
+	/**
+	 * Verantwortlicher
+	 */
+	public byte[] Owner;
+
+	/**
+	 * Das Listing hat sich geaendert!
+	 */
+	public boolean listingChanged = false;
+
+	/**
+	 * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
+	 */
+	public int NumTravelbugs = 0;
+
+	/**
+	 * Falls keine erneute Distanzberechnung noetig ist nehmen wir diese Distanz
+	 */
+	public float cachedDistance = 0;
+
+	/**
+	 * Liste der zusaetzlichen Wegpunkte des Caches
+	 */
+	public CB_List<Waypoint> waypoints = null;
+
+	/**
+	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
+	 */
+	private int myCache = -1;
 
 	/**
 	 * Breitengrad
@@ -145,72 +208,10 @@ public class Cache implements Comparable<Cache>, Serializable
 		return toPos.getLongitude();
 	}
 
-	/**
-	 * Durchschnittliche Bewertung des Caches von GcVote
-	 */
-	public float Rating;
-	/**
-	 * Groesse des Caches. Bei Wikipediaeintraegen enthaelt dieses Feld den Radius in m
-	 */
-	public CacheSizes Size;
-	/**
-	 * Schwierigkeit des Caches
-	 */
-	public float Difficulty = 0;
-	/**
-	 * Gelaendebewertung
-	 */
-	public float Terrain = 0;
-
 	public void setFavorit(boolean value)
 	{
 		setFavorite(value);
 	}
-
-	/**
-	 * hat der Cache Clues oder Notizen erfasst
-	 */
-	public boolean hasUserData;
-
-	/**
-	 * Name der GPX-Datei aus der importiert wurde
-	 */
-	public long GPXFilename_ID = 0;
-
-	/**
-	 * Art des Caches
-	 */
-	public CacheTypes Type = CacheTypes.Undefined;
-
-	/**
-	 * Verantwortlicher
-	 */
-	public byte[] Owner;
-
-	/**
-	 * Das Listing hat sich geaendert!
-	 */
-	public boolean listingChanged = false;
-
-	/**
-	 * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
-	 */
-	public int NumTravelbugs = 0;
-
-	/**
-	 * Falls keine erneute Distanzberechnung noetig ist nehmen wir diese Distanz
-	 */
-	public float cachedDistance = 0;
-
-	/**
-	 * Liste der zusaetzlichen Wegpunkte des Caches
-	 */
-	public CB_List<Waypoint> waypoints = null;
-
-	/**
-	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
-	 */
-	private int myCache = -1;
 
 	private static String gcLogin = null;
 
@@ -720,6 +721,17 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	public void dispose()
 	{
+
+		if (detail != null) detail.dispose();
+		detail = null;
+
+		GcCode = null;
+		Name = null;
+		Pos = null;
+		Size = null;
+		Type = null;
+		Owner = null;
+
 		if (waypoints != null)
 		{
 			for (int i = 0, n = waypoints.size(); i < n; i++)
@@ -731,7 +743,6 @@ public class Cache implements Comparable<Cache>, Serializable
 			waypoints.clear();
 			waypoints = null;
 		}
-
 		Owner = null;
 
 	}

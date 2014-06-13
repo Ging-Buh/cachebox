@@ -187,7 +187,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
 		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
 		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCacheBase.Icons.get(IconName.lupe_12.ordinal()));
-		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
+		cm.addItem(MenuID.MI_IMPORT, "importExport", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
 		if (SyncActivity.RELEASED) cm.addItem(MenuID.MI_SYNC, "sync", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
 		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCacheBase.Icons.get(IconName.manageDB_41.ordinal()));
 		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");

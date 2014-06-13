@@ -55,8 +55,6 @@ public class SearchOverPosition extends ActivityBase
 	private Box box;
 	private boolean importRuns = false;
 
-	private static SearchOverPosition that;
-
 	/**
 	 * 0=GPS, 1= Map, 2= Manuell
 	 */
@@ -64,22 +62,16 @@ public class SearchOverPosition extends ActivityBase
 
 	public static SearchOverPosition ShowInstanz()
 	{
-		if (that == null)
-		{
-			new SearchOverPosition();
-		}
-		else
-		{
-			that.initialCoordinates();
-		}
-		that.show();
-		return that;
+
+		SearchOverPosition ret = new SearchOverPosition();
+		ret.initialCoordinates();
+		ret.show();
+		return ret;
 	}
 
 	public SearchOverPosition()
 	{
 		super(ActivityRec(), "searchOverPosActivity");
-		that = this;
 		lineHeight = UI_Size_Base.that.getButtonHeight();
 
 		createOkCancelBtn();
@@ -329,7 +321,7 @@ public class SearchOverPosition extends ActivityBase
 					actSearchPos = coord;
 					setToggleBtnState(2);
 				}
-				that.show();
+				SearchOverPosition.this.show();
 			}
 		});
 
@@ -546,6 +538,58 @@ public class SearchOverPosition extends ActivityBase
 
 		thread.setPriority(Thread.MAX_PRIORITY);
 		thread.start();
+
+	}
+
+	@Override
+	public void dispose()
+	{
+		if (bOK != null) bOK.dispose();
+		bOK = null;
+		if (bCancel != null) bCancel.dispose();
+		bCancel = null;
+		if (btnPlus != null) btnPlus.dispose();
+		btnPlus = null;
+		if (btnMinus != null) btnMinus.dispose();
+		btnMinus = null;
+		if (lblTitle != null) lblTitle.dispose();
+		lblTitle = null;
+		if (lblRadius != null) lblRadius.dispose();
+		lblRadius = null;
+		if (lblRadiusEinheit != null) lblRadiusEinheit.dispose();
+		lblRadiusEinheit = null;
+		if (lblMarkerPos != null) lblMarkerPos.dispose();
+		lblMarkerPos = null;
+		if (lblExcludeFounds != null) lblExcludeFounds.dispose();
+		lblExcludeFounds = null;
+		if (lblOnlyAvible != null) lblOnlyAvible.dispose();
+		lblOnlyAvible = null;
+		if (lblExcludeHides != null) lblExcludeHides.dispose();
+		lblExcludeHides = null;
+		if (gsLogo != null) gsLogo.dispose();
+		gsLogo = null;
+		if (coordBtn != null) coordBtn.dispose();
+		coordBtn = null;
+		if (checkBoxExcludeFounds != null) checkBoxExcludeFounds.dispose();
+		checkBoxExcludeFounds = null;
+		if (checkBoxOnlyAvible != null) checkBoxOnlyAvible.dispose();
+		checkBoxOnlyAvible = null;
+		if (checkBoxExcludeHides != null) checkBoxExcludeHides.dispose();
+		checkBoxExcludeHides = null;
+		if (Radius != null) Radius.dispose();
+		Radius = null;
+		if (tglBtnGPS != null) tglBtnGPS.dispose();
+		tglBtnGPS = null;
+		if (tglBtnMap != null) tglBtnMap.dispose();
+		tglBtnMap = null;
+		if (dis != null) dis.dispose();
+		dis = null;
+		if (box != null) box.dispose();
+		box = null;
+
+		actSearchPos = null;
+
+		super.dispose();
 
 	}
 

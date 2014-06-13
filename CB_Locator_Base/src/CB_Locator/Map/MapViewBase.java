@@ -332,6 +332,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		// remove eventHandler
 		PositionChangedEventList.Remove(this);
 		invalidateTextureEventList.Remove(this);
+		super.dispose();
 	}
 
 	@Override

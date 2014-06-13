@@ -983,10 +983,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				@Override
 				public void run()
 				{
-					if (SettingsActivity.that != null)
-					{
-						SettingsActivity.that.resortList();
-					}
+					SettingsActivity.resortList();
 				}
 			});
 

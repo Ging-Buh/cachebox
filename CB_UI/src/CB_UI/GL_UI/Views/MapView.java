@@ -915,8 +915,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	public void setCenter(CoordinateGPS value)
 	{
+		if (!CompassMode) info.setCoord(value);
 		super.setCenter(value);
-		if (!CompassMode) info.setCoord(center);
+
 	}
 
 	@Override
@@ -972,7 +973,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	protected void calcCenter()
 	{
 		super.calcCenter();
-		if (!CompassMode) info.setCoord(center);
+		if (!CompassMode)
+		{
+			info.setCoord(center);
+		}
 	}
 
 	public void requestLayout()

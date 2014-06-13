@@ -173,6 +173,7 @@ public class CacheList extends MoveableList<Cache>
 
 	public void dispose()
 	{
+		clear();
 		super.dispose();
 	}
 

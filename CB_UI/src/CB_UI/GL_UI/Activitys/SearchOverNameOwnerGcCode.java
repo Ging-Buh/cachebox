@@ -80,22 +80,17 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 		Name, Owner, GC_Code
 	}
 
-	private static SearchOverNameOwnerGcCode that;
-
 	public static SearchOverNameOwnerGcCode ShowInstanz()
 	{
-		if (that == null)
-		{
-			new SearchOverNameOwnerGcCode();
-		}
-		that.show();
-		return that;
+		SearchOverNameOwnerGcCode ret = new SearchOverNameOwnerGcCode();
+		ret.show();
+		return ret;
 	}
 
 	public SearchOverNameOwnerGcCode()
 	{
 		super(ActivityRec(), "searchOverPosActivity");
-		that = this;
+
 		lineHeight = UI_Size_Base.that.getButtonHeight();
 
 		createOkCancelBtn();
@@ -494,10 +489,48 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 
 	private void textBox_TextChanged()
 	{
-
 		boolean isText = mEingabe.getText().length() != 0;
 		bImport.setEnable(isText);
+	}
 
+	@Override
+	public void dispose()
+	{
+		if (bImport != null) bImport.dispose();
+		bImport = null;
+		if (bCancel != null) bCancel.dispose();
+		bCancel = null;
+		if (lblTitle != null) lblTitle.dispose();
+		lblTitle = null;
+		if (lblExcludeFounds != null) lblExcludeFounds.dispose();
+		lblExcludeFounds = null;
+		if (lblOnlyAvible != null) lblOnlyAvible.dispose();
+		lblOnlyAvible = null;
+		if (lblExcludeHides != null) lblExcludeHides.dispose();
+		lblExcludeHides = null;
+		if (gsLogo != null) gsLogo.dispose();
+		gsLogo = null;
+		if (checkBoxExcludeFounds != null) checkBoxExcludeFounds.dispose();
+		checkBoxExcludeFounds = null;
+		if (checkBoxOnlyAvible != null) checkBoxOnlyAvible.dispose();
+		checkBoxOnlyAvible = null;
+		if (checkBoxExcludeHides != null) checkBoxExcludeHides.dispose();
+		checkBoxExcludeHides = null;
+		if (mEingabe != null) mEingabe.dispose();
+		mEingabe = null;
+		if (dis != null) dis.dispose();
+		dis = null;
+		if (box != null) box.dispose();
+		box = null;
+		if (mTglBtnTitle != null) mTglBtnTitle.dispose();
+		mTglBtnTitle = null;
+		if (mTglBtnGc != null) mTglBtnGc.dispose();
+		mTglBtnGc = null;
+		if (mTglBtnOwner != null) mTglBtnOwner.dispose();
+		mTglBtnOwner = null;
+
+		actSearchType = null;
+		super.dispose();
 	}
 
 }

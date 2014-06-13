@@ -123,12 +123,12 @@ public class GcApiLogin
 				}
 				catch (ClientProtocolException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 				catch (IOException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 			}
@@ -186,7 +186,7 @@ public class GcApiLogin
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 
@@ -245,7 +245,7 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
@@ -275,11 +275,11 @@ public class GcApiLogin
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 	}
@@ -473,18 +473,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 		String page = builder.toString();
@@ -554,18 +554,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 		String page = builder.toString();
@@ -629,18 +629,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 		String page = builder.toString();
@@ -702,18 +702,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 		String html = builder.toString();
@@ -748,7 +748,7 @@ public class GcApiLogin
 
 		closeWaitDialog();
 
-		if (SettingsActivity.that != null) SettingsActivity.that.resortList();
+		SettingsActivity.resortList();
 
 	}
 }

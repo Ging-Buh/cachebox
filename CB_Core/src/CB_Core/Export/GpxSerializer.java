@@ -35,6 +35,7 @@ import CB_Core.Types.CacheList;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
@@ -66,14 +67,25 @@ public final class GpxSerializer
 	private int countExported;
 	private ProgressListener progressListener;
 	private final XmlSerializer gpx = new KXmlSerializer();
+	private boolean cancel = false;
 
 	public static interface ProgressListener
 	{
 		void publishProgress(int countExported, String Name);
 	}
 
+	/**
+	 * Cancel the Export
+	 */
+	public void cancel()
+	{
+		cancel = true;
+	}
+
 	public void writeGPX(List<String> allGeocodesIn, Writer writer, final ProgressListener progressListener) throws IOException
 	{
+		cancel = false;
+
 		// create a copy of the geocode list, as we need to modify it, but it might be immutable
 		final ArrayList<String> allGeocodes = new ArrayList<String>(allGeocodesIn);
 
@@ -100,6 +112,7 @@ public final class GpxSerializer
 			exportBatch(gpx, batch);
 			allGeocodes.removeAll(batch);
 			batch.clear();
+			if (cancel) break;
 		}
 
 		gpx.endTag(PREFIX_GPX, "gpx");
@@ -116,12 +129,14 @@ public final class GpxSerializer
 		boolean loadAllWaypoints = true;
 		boolean withDescription = true;
 
-		progressListener.publishProgress(countExported, "read " + geocodesOfBatch.size() + "Cache details");
+		progressListener.publishProgress(countExported,
+				Translation.Get("readCacheDetails".hashCode(), String.valueOf(geocodesOfBatch.size())));
 
 		clDAO.ReadCacheList(cacheList, geocodesOfBatch, withDescription, fullDetails, loadAllWaypoints);
 
 		for (int i = 0; i < cacheList.size(); i++)
 		{
+			if (cancel) break;
 			Cache cache = cacheList.get(i);
 
 			if (cache == null)
@@ -166,7 +181,7 @@ public final class GpxSerializer
 			{
 				gpx.startTag(PREFIX_GROUNDSPEAK, "short_description");
 				gpx.attribute("", "html", containsHtml(cache.getShortDescription()) ? "True" : "False");
-				gpx.text(cache.getShortDescription());
+				gpx.text(validateChar(cache.getShortDescription()));
 				gpx.endTag(PREFIX_GROUNDSPEAK, "short_description");
 			}
 
@@ -175,11 +190,7 @@ public final class GpxSerializer
 			{
 				gpx.startTag(PREFIX_GROUNDSPEAK, "long_description");
 				gpx.attribute("", "html", containsHtml(cache.getLongDescription()) ? "True" : "False");
-
-				char[] chr = cache.getLongDescription().toCharArray();
-
-				gpx.text(chr, 0, chr.length);
-				// gpx.text(cache.getLongDescription());
+				gpx.text(validateChar(cache.getLongDescription()));
 				gpx.endTag(PREFIX_GROUNDSPEAK, "long_description");
 			}
 			writeLogs(cache);
@@ -196,9 +207,12 @@ public final class GpxSerializer
 			countExported++;
 			if (progressListener != null)
 			{
-				progressListener.publishProgress(countExported, "Write Cache: " + cache.getGcCode());
+				progressListener.publishProgress(countExported, Translation.Get("writeCahce".hashCode(), cache.getGcCode()));
 			}
 		}
+
+		cacheList.dispose();
+		cacheList = null;
 	}
 
 	private void writeWaypoints(final Cache cache) throws IOException
@@ -254,7 +268,7 @@ public final class GpxSerializer
 																															// string
 					"type", "Waypoint|" + wp.Type.toString()); // TODO: Correct identifier string
 
-			gpx.text(wp.getGcCode());
+			gpx.text(validateChar(wp.getGcCode()));
 			gpx.endTag(PREFIX_GPX, "wpt");
 		}
 	}
@@ -280,14 +294,14 @@ public final class GpxSerializer
 
 			gpx.startTag(PREFIX_GROUNDSPEAK, "finder");
 			gpx.attribute("", "id", "");
-			gpx.text(log.Finder);
+			gpx.text(validateChar(log.Finder));
 			gpx.endTag(PREFIX_GROUNDSPEAK, "finder");
 
 			gpx.startTag(PREFIX_GROUNDSPEAK, "text");
 			gpx.attribute("", "encoded", "False");
 			try
 			{
-				gpx.text(log.Comment);
+				gpx.text(validateChar(log.Comment));
 			}
 			catch (final IllegalArgumentException e)
 			{
@@ -341,7 +355,7 @@ public final class GpxSerializer
 			gpx.startTag(PREFIX_GROUNDSPEAK, "attribute");
 			gpx.attribute("", "id", Integer.toString(Attributes.GetAttributeID(attribute)));
 			gpx.attribute("", "inc", enabled ? "1" : "0");
-			gpx.text(attribute.toString());
+			gpx.text(validateChar(attribute.toString()));
 			gpx.endTag(PREFIX_GROUNDSPEAK, "attribute");
 		}
 
@@ -393,9 +407,32 @@ public final class GpxSerializer
 		if (text != null)
 		{
 			serializer.startTag(prefix, tag);
-			serializer.text(text);
+			serializer.text(validateChar(text));
 			serializer.endTag(prefix, tag);
 		}
+	}
+
+	/**
+	 * Android throws a InvalidCharacterException so we check this before write
+	 * 
+	 * @param text
+	 * @return valid text as String
+	 */
+	private static String validateChar(String text)
+	{
+		char[] validChars = new char[text.length()];
+		int validCount = 0;
+		for (int i = 0; i < text.length(); i++)
+		{
+			char c = text.charAt(i);
+			boolean valid = (c >= 0x20 && c <= 0xd7ff) || (c >= 0xe000 && c <= 0xfffd);
+			if (valid)
+			{
+				validChars[validCount++] = c;
+			}
+		}
+		String validText = new String(validChars, 0, validCount);
+		return validText;
 	}
 
 	/**

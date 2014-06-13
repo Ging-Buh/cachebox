@@ -16,7 +16,6 @@ import CB_UI.GL_UI.Activitys.Import;
 import CB_UI.GL_UI.Activitys.Import_CBServer;
 import CB_UI.GL_UI.Activitys.SearchOverNameOwnerGcCode;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
-import CB_UI_Base.Global;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
@@ -27,8 +26,11 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -173,23 +175,26 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 
 	private void ExportGetFolderStep(final String FileName)
 	{
-		platformConector.getFolder("", Translation.Get("selectExportFolder"), Translation.Get("select"), new IgetFolderReturnListner()
-		{
-
-			@Override
-			public void getFolderReturn(final String Path)
-			{
-				GL.that.RunOnGL(new IRunOnGL()
+		platformConector.getFolder("", Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()),
+				new IgetFolderReturnListner()
 				{
+
 					@Override
-					public void run()
+					public void getFolderReturn(final String Path)
 					{
-						EXPORT(FileName, Path);
+						GL.that.RunOnGL(new IRunOnGL()
+						{
+							@Override
+							public void run()
+							{
+								EXPORT(FileName, Path);
+							}
+						});
 					}
 				});
-			}
-		});
 	}
+
+	int actExportedCount = 0;
 
 	private void EXPORT(final String FileName, String Path)
 	{
@@ -203,7 +208,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 		final ArrayList<String> allGeocodesForExport = Database.Data.Query.getGcCodes();
 
 		final int count = allGeocodesForExport.size();
-
+		actExportedCount = 0;
 		// Show with Progress
 
 		final GpxSerializer ser = new GpxSerializer();
@@ -224,12 +229,13 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 							@Override
 							public void publishProgress(int countExported, String msg)
 							{
+								actExportedCount = countExported;
 								if (pD != null)
 								{
 									int progress = (countExported * 100) / count;
+									pD.setProgress("EXPORT:" + countExported + "/" + count, msg, progress);
+									if (pD.isCanceld()) ser.cancel();
 
-									pD.setProgress("EXPORT", msg, progress);
-									System.out.print("Export:" + countExported + "/" + count + Global.br);
 								}
 							}
 						});
@@ -252,6 +258,29 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 						pD.dispose();
 						pD = null;
 					}
+
+					if (canceld)
+					{
+						GL_MsgBox.Show(
+								Translation.Get("exportedCanceld".hashCode(), String.valueOf(actExportedCount), String.valueOf(count)),
+								Translation.Get("export"), MessageBoxIcon.Stop);
+					}
+					else
+					{
+						GL_MsgBox.Show(Translation.Get("exported".hashCode(), String.valueOf(actExportedCount)), Translation.Get("export"),
+								MessageBoxIcon.Information);
+					}
+
+				}
+			});
+
+			pD.setCancelListner(new iCancelListner()
+			{
+
+				@Override
+				public void isCanceld()
+				{
+					if (pD.isCanceld()) ser.cancel();
 				}
 			});
 		}

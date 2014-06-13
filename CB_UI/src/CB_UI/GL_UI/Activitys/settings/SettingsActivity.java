@@ -83,12 +83,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent
 {
 
-	public static SettingsActivity that;
 	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>(); // FIXME change to CB_List
 	private Button btnOk, btnCancel, btnMenu;
 	private ScrollBox scrollBox;
 	private CB_RectF ButtonRec, itemRec;
 	private API_Button apiBtn;
+	private static SettingsActivity that;
 
 	/***
 	 * Enthält den Key des zu Editierenden Wertes der SettingsList
@@ -100,7 +100,6 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	public SettingsActivity()
 	{
 		super(ActivityBase.ActivityRec(), "Settings");
-		that = this;
 		initial();
 		SelectedLangChangedEventList.Add(this);
 	}
@@ -592,7 +591,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 									resortList();
 								}
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 								return true;
 							}
 						});
@@ -900,14 +899,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 								if (SetValue != null) SetValue.setValue(value);
 								resortList();
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 
 							@Override
 							public void cancelClicked()
 							{
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 						});
 				return true;
@@ -960,14 +959,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 								if (SetValue != null) SetValue.setValue((float) value);
 								resortList();
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 
 							@Override
 							public void cancelClicked()
 							{
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 						});
 				return true;
@@ -1358,14 +1357,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 								if (SetValue != null) SetValue.setValue(value);
 								resortList();
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 
 							@Override
 							public void cancelClicked()
 							{
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 						});
 				return true;
@@ -1660,16 +1659,19 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		}
 	};
 
-	public void resortList()
+	public static void resortList()
 	{
 		// show();
+		if (that != null)
+		{
+			float scrollPos = that.scrollBox.getScrollY();
+			that.scrollBox = null;
+			that.LinearLayout = null;
 
-		float scrollPos = scrollBox.getScrollY();
-		scrollBox = null;
-		LinearLayout = null;
+			that.fillContent();
+			that.scrollBox.scrollTo(scrollPos);
+		}
 
-		fillContent();
-		scrollBox.scrollTo(scrollPos);
 	}
 
 	@Override
@@ -1678,4 +1680,33 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		initial();
 	}
 
+	@Override
+	public void dispose()
+	{
+		that = null;
+
+		if (Categorys != null) Categorys.clear();
+		Categorys = null;
+
+		if (btnOk != null) btnOk.dispose();
+		btnOk = null;
+		if (btnCancel != null) btnCancel.dispose();
+		btnCancel = null;
+		if (btnMenu != null) btnMenu.dispose();
+		btnMenu = null;
+		if (scrollBox != null) scrollBox.dispose();
+		scrollBox = null;
+		if (ButtonRec != null) ButtonRec.dispose();
+		ButtonRec = null;
+		if (itemRec != null) itemRec.dispose();
+		itemRec = null;
+		if (apiBtn != null) apiBtn.dispose();
+		apiBtn = null;
+		if (LinearLayout != null) LinearLayout.dispose();
+		LinearLayout = null;
+
+		SelectedLangChangedEventList.Remove(this);
+
+		super.dispose();
+	}
 }

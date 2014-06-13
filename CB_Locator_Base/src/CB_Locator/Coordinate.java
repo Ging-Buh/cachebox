@@ -223,8 +223,10 @@ public class Coordinate implements Serializable
 		{
 			Coordinate coord = (Coordinate) other;
 
-			double la = this.getLatitude() - coord.getLatitude();
-			double lo = this.getLongitude() - coord.getLongitude();
+			double la = (this.getLatitude() > coord.getLatitude()) ? this.getLatitude() - coord.getLatitude() : coord.getLatitude()
+					- this.getLatitude();
+			double lo = (this.getLongitude() > coord.getLongitude()) ? this.getLongitude() - coord.getLongitude() : coord.getLongitude()
+					- this.getLongitude();
 
 			if (la < 0) la *= -1;
 			if (lo < 0) la *= -1;
