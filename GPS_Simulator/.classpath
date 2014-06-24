@@ -7,9 +7,7 @@
 	<classpathentry kind="lib" path="lib/bluecove-2.1.1-SNAPSHOT.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Base"/>
-	<classpathentry kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
-	<classpathentry kind="lib" path="lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="/Mapsforge-Map/map-src/org/mapsforge/map/model"/>
-	<classpathentry kind="lib" path="lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
-	<classpathentry kind="lib" path="lib/mapsforge-map-awt-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="/Mapsforge-awt/Mapsforge-awt-src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Desktop"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_mapsforge"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

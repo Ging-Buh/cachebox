@@ -28,9 +28,7 @@ import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.swing.MapViewer;
 import org.mapsforge.map.swing.controller.MapViewComponentListener;
-import org.mapsforge.map.swing.controller.MouseEventListener;
 import org.mapsforge.map.swing.util.JavaUtilPreferences;
-import org.mapsforge.map.view.MapView;
 
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
@@ -123,7 +121,7 @@ public class MapPanel extends JPanel implements ActionListener
 		// mapView.addComponentListener(new MapViewComponentListener(mapView,new Dimension(600, 600)));
 		mapView.addComponentListener(new MapViewComponentListener(mapView, mapView.getModel().mapViewDimension));
 
-		MouseEventListener mouseEventListener = new MouseEventListener(mapView.getModel());
+		GpsSimmulatorMouseEventListener mouseEventListener = new GpsSimmulatorMouseEventListener(mapView.getModel());
 		mapView.addMouseListener(mouseEventListener);
 		mapView.addMouseMotionListener(mouseEventListener);
 		mapView.addMouseWheelListener(mouseEventListener);

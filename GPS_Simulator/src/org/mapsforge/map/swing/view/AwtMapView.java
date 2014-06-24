@@ -1,25 +1,10 @@
-/*
- * Copyright 2010, 2011, 2012 mapsforge.org
- *
- * This program is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package org.mapsforge.map.swing.view;
 
-import java.awt.Container;
+import static org.mapsforge.map.swing.view.MapView.GRAPHIC_FACTORY;
+
 import java.awt.Graphics;
 
 import org.mapsforge.core.graphics.GraphicContext;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
@@ -30,15 +15,10 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
-public class AwtMapView extends Container implements org.mapsforge.map.view.MapView
+public class AwtMapView extends MapView
 {
-	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
-	private static final long serialVersionUID = 1L;
 
-	private final FpsCounter fpsCounter;
-	private final FrameBuffer frameBuffer;
-	private final LayerManager layerManager;
-	private final Model model;
+	private static final long serialVersionUID = 1L;
 
 	public AwtMapView()
 	{
@@ -55,42 +35,6 @@ public class AwtMapView extends Container implements org.mapsforge.map.view.MapV
 		LayerManagerController.create(this.layerManager, this.model);
 
 		MapViewController.create(this, this.model);
-	}
-
-	@Override
-	public void destroy()
-	{
-		this.layerManager.interrupt();
-	}
-
-	@Override
-	public Dimension getDimension()
-	{
-		return new Dimension(getWidth(), getHeight());
-	}
-
-	@Override
-	public FpsCounter getFpsCounter()
-	{
-		return this.fpsCounter;
-	}
-
-	@Override
-	public FrameBuffer getFrameBuffer()
-	{
-		return this.frameBuffer;
-	}
-
-	@Override
-	public LayerManager getLayerManager()
-	{
-		return this.layerManager;
-	}
-
-	@Override
-	public Model getModel()
-	{
-		return this.model;
 	}
 
 	@Override
@@ -111,4 +55,5 @@ public class AwtMapView extends Container implements org.mapsforge.map.view.MapV
 
 		graphics.drawOval(xc - 25, yc - 25, 50, 50);
 	}
+
 }

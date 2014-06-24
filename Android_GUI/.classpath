@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="libs/org.apache.commons.httpclient.jar"/>
 	<classpathentry kind="lib" path="libs/org.apache.commons.logging.jar"/>
 	<classpathentry kind="lib" path="libs/servlet-api-6.0.16.jar"/>
-	<classpathentry kind="lib" path="libs/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="libs/sjxp-2.2.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
@@ -18,11 +17,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="libs/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="C:/@Work/Longri/SVNs/Libgdx-Mapsforge/Mapsforge Git Cloned Source"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-android-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar" sourcepath="C:/@Work/Longri/SVNs/Libgdx-Mapsforge/Mapsforge Git Cloned Source"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
-	<classpathentry kind="lib" path="libs/svg-android-1.0.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_mapsforge"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="libs/kxml2-2.3.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

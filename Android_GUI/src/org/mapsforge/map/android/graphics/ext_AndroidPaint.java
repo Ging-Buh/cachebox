@@ -15,6 +15,9 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+
 import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.graphics.GL_FontFamily;
 import CB_UI_Base.graphics.GL_FontStyle;
@@ -131,9 +134,13 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 
 	}
 
+	FontStyle fontStyle;
+	FontFamily fontFamily;
+
 	@Override
 	public GL_FontFamily getGLFontFamily()
 	{
+
 		switch (fontFamily)
 		{
 		case DEFAULT:
@@ -152,11 +159,8 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 	@Override
 	public HSV_Color getHSV_Color()
 	{
-
 		HSV_Color c = new HSV_Color(this.paint.getColor());
-
 		return c;
-
 	}
 
 	@Override

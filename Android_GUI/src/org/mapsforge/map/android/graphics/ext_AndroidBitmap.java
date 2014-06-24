@@ -29,7 +29,6 @@ import android.graphics.Bitmap.Config;
 
 import com.badlogic.gdx.graphics.Texture;
 
-import de.cachebox_test.main;
 
 /**
  * Extends the original Mapsforge AwtBitmap with the ext_Bitmap interface.
@@ -42,29 +41,29 @@ public class ext_AndroidBitmap extends AndroidBitmap implements ext_Bitmap, Tile
 
 	protected final BitmapDrawable GL_image;
 
-	@Override
-	public void compress(OutputStream outputStream) throws IOException
-	{
-
-		ActivityManager am = (ActivityManager) main.mainActivity.getSystemService(Context.ACTIVITY_SERVICE);
-		int memoryClass = am.getMemoryClass();
-
-		if (memoryClass > 60)
-		{
-			if (!this.bitmap.compress(CompressFormat.PNG, 0, outputStream))
-			{
-				throw new IOException("Failed to write bitmap to output stream");
-			}
-		}
-		else
-		{
-			if (!this.bitmap.compress(CompressFormat.JPEG, 60, outputStream))
-			{
-				throw new IOException("Failed to write bitmap to output stream");
-			}
-		}
-
-	}
+//	@Override
+//	public void compress(OutputStream outputStream) throws IOException
+//	{
+//
+//		ActivityManager am = (ActivityManager) main.mainActivity.getSystemService(Context.ACTIVITY_SERVICE);
+//		int memoryClass = am.getMemoryClass();
+//
+//		if (memoryClass > 60)
+//		{
+//			if (!this.bitmap.compress(CompressFormat.PNG, 0, outputStream))
+//			{
+//				throw new IOException("Failed to write bitmap to output stream");
+//			}
+//		}
+//		else
+//		{
+//			if (!this.bitmap.compress(CompressFormat.JPEG, 60, outputStream))
+//			{
+//				throw new IOException("Failed to write bitmap to output stream");
+//			}
+//		}
+//
+//	}
 
 	ext_AndroidBitmap(int width, int height)
 	{

@@ -3,21 +3,14 @@
 	<name>droidcachebox</name>
 	<comment></comment>
 	<projects>
-		<project>Cachebox Core</project>
 		<project>CB_Core</project>
-		<project>CB_Core_Tests</project>
 		<project>CB_GC_Joker_PlugIn</project>
 		<project>CB_Locator_Base</project>
-		<project>CB_Rpc</project>
+		<project>CB_mapsforge</project>
 		<project>CB_Translation_Base</project>
 		<project>CB_UI</project>
 		<project>CB_UI_Base</project>
 		<project>CB_Utils</project>
-		<project>DesctopLibGdx_Test</project>
-		<project>doc</project>
-		<project>refresh_libraries</project>
-		<project>refresh_libraries-desktop</project>
-		<project>Release_Rename_proj</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

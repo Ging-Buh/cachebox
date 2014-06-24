@@ -4,8 +4,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
-	<classpathentry kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH_2.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/gdx-freetype-1.0.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_mapsforge"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

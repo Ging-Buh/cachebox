@@ -182,6 +182,7 @@ public class F_List<T> implements List<T>
 
 	public void clear()
 	{
+		Arrays.fill(items, null);
 		size = 0;
 	}
 
