@@ -3563,14 +3563,14 @@ public class SVGAndroidRenderer
 
 	private class PlainTextToPath extends TextProcessor
 	{
-		public float x;
-		public float y;
+		// public float x;
+		// public float y;
 		public ext_Path textAsPath;
 
 		public PlainTextToPath(float x, float y, ext_Path textAsPath)
 		{
-			this.x = x;
-			this.y = y;
+			// this.x = x;
+			// this.y = y;
 			this.textAsPath = textAsPath;
 		}
 
@@ -3597,7 +3597,7 @@ public class SVGAndroidRenderer
 			}
 
 			// Update the current text position
-			x += state.fillPaint.getTextWidth(text);
+			// x += state.fillPaint.getTextWidth(text);
 		}
 	}
 

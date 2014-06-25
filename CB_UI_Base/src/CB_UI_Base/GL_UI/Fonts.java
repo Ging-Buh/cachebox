@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 /**
  * Enthält die benutzten und geladenen GDX-Fonts
@@ -208,7 +209,9 @@ public class Fonts
 		else
 		{
 			Logger.DEBUG("generate font for scale " + scale);
-			BitmapFont ret = generator.generateFont(scale);
+			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+			parameter.size = scale;
+			BitmapFont ret = generator.generateFont(parameter);
 			TextureRegion region = ret.getRegion();
 			Texture tex = region.getTexture();
 			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);

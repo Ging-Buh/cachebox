@@ -25,52 +25,62 @@ import javax.swing.JPanel;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain.ConnectionHandler;
 
 @SuppressWarnings("serial")
-public class BluetoothPanel extends JPanel {
+public class BluetoothPanel extends JPanel
+{
 
-	private JComboBox bluetoothConnections;
-	private JButton closeConnection;
+	private final JComboBox<ConnectionHandler> bluetoothConnections;
+	private final JButton closeConnection;
 
-	public BluetoothPanel() {
+	public BluetoothPanel()
+	{
 		this.setBorder(BorderFactory.createTitledBorder("Bluetooth Devices"));
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-	
+
 		JPanel aroundBluetooth = new JPanel(new FlowLayout());
-	
-		bluetoothConnections = new JComboBox();
-		
+
+		bluetoothConnections = new JComboBox<ConnectionHandler>();
+
 		aroundBluetooth.add(new JLabel("Connection Number:"));
 		aroundBluetooth.add(bluetoothConnections);
 		this.add(aroundBluetooth);
-	
+
 		JPanel aroundCloseConnection = new JPanel();
-		
+
 		closeConnection = new JButton("Close Connection");
 		closeConnection.setEnabled(false);
-		closeConnection.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				synchronized(bluetoothConnections) {
+		closeConnection.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				synchronized (bluetoothConnections)
+				{
 					ConnectionHandler connection = (ConnectionHandler) bluetoothConnections.getSelectedItem();
 					connection.stopRunning();
 					bluetoothConnections.removeItem(connection);
-					if (bluetoothConnections.getItemCount() == 0) {
+					if (bluetoothConnections.getItemCount() == 0)
+					{
 						closeConnection.setEnabled(false);
 					}
 				}
-				
+
 			}
 		});
 		aroundCloseConnection.add(closeConnection);
 		this.add(aroundCloseConnection);
 	}
-	
-	public synchronized void addConnection(ConnectionHandler connection) {
+
+	public synchronized void addConnection(ConnectionHandler connection)
+	{
 		bluetoothConnections.addItem(connection);
 		closeConnection.setEnabled(true);
 	}
-	
-	public synchronized void removeConnection(ConnectionHandler connection) {
+
+	public synchronized void removeConnection(ConnectionHandler connection)
+	{
 		bluetoothConnections.removeItem(connection);
-		if (bluetoothConnections.getItemCount() == 0) {
+		if (bluetoothConnections.getItemCount() == 0)
+		{
 			closeConnection.setEnabled(false);
 		}
 	}

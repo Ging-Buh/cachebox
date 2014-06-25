@@ -378,7 +378,8 @@ public class GL_Matrix implements ext_Matrix, Matrix
 	@Override
 	public void preSkew(float sx, float sy)
 	{
-		Matrix4 m = new Matrix4();
+		// FIXME Implement Matrix.preSkew
+		// Matrix4 m = new Matrix4();
 		// m.set?
 
 		// SkMatrix m;

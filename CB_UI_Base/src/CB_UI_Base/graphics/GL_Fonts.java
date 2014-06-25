@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 /**
  * GL_FontFamily => DEFAULT(DroidSans), MONOSPACE, SANS_SERIF, SERIF;<br>
@@ -369,7 +370,9 @@ public class GL_Fonts
 	{
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
 
-		BitmapFont ret = generator.generateFont(textSize);
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = textSize;
+		BitmapFont ret = generator.generateFont(parameter);
 
 		TextureRegion region = ret.getRegion();
 		Texture tex = region.getTexture();

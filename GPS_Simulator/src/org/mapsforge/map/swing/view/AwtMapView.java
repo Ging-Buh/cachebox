@@ -1,7 +1,5 @@
 package org.mapsforge.map.swing.view;
 
-import static org.mapsforge.map.swing.view.MapView.GRAPHIC_FACTORY;
-
 import java.awt.Graphics;
 
 import org.mapsforge.core.graphics.GraphicContext;

@@ -29,64 +29,67 @@ import javax.swing.event.ChangeListener;
 import org.apache.log4j.Logger;
 
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
+import ch.fhnw.imvs.gpssimulator.data.GPSData.Orientation;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 
 @SuppressWarnings("serial")
-public class LocationGPS extends JPanel implements GPSDataListener {	
+public class LocationGPS extends JPanel implements GPSDataListener
+{
 
 	static Logger log4j = Logger.getLogger("root");
 
-	private final JSpinner latitude  = new JSpinner();
+	private final JSpinner latitude = new JSpinner();
 	private final JSpinner longitude = new JSpinner();
-	private final JSpinner speed     = new JSpinner();
-	private final JSpinner altitude  = new JSpinner();
-	private final JComboBox ew = new JComboBox();
-	private final JComboBox ns = new JComboBox();
+	private final JSpinner speed = new JSpinner();
+	private final JSpinner altitude = new JSpinner();
+	private final JComboBox<Orientation> ew = new JComboBox<Orientation>();
+	private final JComboBox<Orientation> ns = new JComboBox<Orientation>();
 
-	public LocationGPS() {
+	public LocationGPS()
+	{
 		GPSData.addChangeListener(this);
 
-		JPanel labels = new JPanel(new GridLayout(4,1));
+		JPanel labels = new JPanel(new GridLayout(4, 1));
 		labels.add(new JLabel("Latitude: [Deg]", JLabel.RIGHT));
 		labels.add(new JLabel("Longitude: [Deg]", JLabel.RIGHT));
 		labels.add(new JLabel("Speed: [kts]", JLabel.RIGHT));
-		labels.add(new JLabel("Altitude: [m]", JLabel.RIGHT));		
+		labels.add(new JLabel("Altitude: [m]", JLabel.RIGHT));
 
 		JPanel p1 = new JPanel();
 		p1.setLayout(new BoxLayout(p1, BoxLayout.X_AXIS));
 
 		p1.add(latitude);
-		latitude.setPreferredSize(new Dimension(100,20));
+		latitude.setPreferredSize(new Dimension(100, 20));
 		p1.add(ns);
-		ns.setPreferredSize(new Dimension(80,20));
+		ns.setPreferredSize(new Dimension(80, 20));
 		{
 			JLabel spacer = new JLabel("");
-			spacer.setPreferredSize(new Dimension(50,20));
+			spacer.setPreferredSize(new Dimension(50, 20));
 			p1.add(spacer);
 		}
 
 		JPanel p2 = new JPanel();
 		p2.setLayout(new BoxLayout(p2, BoxLayout.X_AXIS));
-		
+
 		p2.add(longitude);
-		longitude.setPreferredSize(new Dimension(100,20));
+		longitude.setPreferredSize(new Dimension(100, 20));
 		p2.add(ew);
-		ew.setPreferredSize(new Dimension(80,20));
+		ew.setPreferredSize(new Dimension(80, 20));
 		{
 			JLabel spacer = new JLabel("");
-			spacer.setPreferredSize(new Dimension(50,20));
+			spacer.setPreferredSize(new Dimension(50, 20));
 			p2.add(spacer);
 		}
-		
+
 		JPanel p3 = new JPanel();
 		p3.setLayout(new BoxLayout(p3, BoxLayout.X_AXIS));
-		
+
 		p3.add(speed);
-		speed.setPreferredSize(new Dimension(100,20));
+		speed.setPreferredSize(new Dimension(100, 20));
 		speed.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		{
 			JLabel spacer = new JLabel("");
-			spacer.setPreferredSize(new Dimension(130,20));
+			spacer.setPreferredSize(new Dimension(130, 20));
 			p3.add(spacer);
 		}
 
@@ -94,59 +97,76 @@ public class LocationGPS extends JPanel implements GPSDataListener {
 		p4.setLayout(new BoxLayout(p4, BoxLayout.X_AXIS));
 
 		p4.add(altitude);
-		altitude.setPreferredSize(new Dimension(100,20));
+		altitude.setPreferredSize(new Dimension(100, 20));
 		{
 			JLabel spacer = new JLabel("");
-			spacer.setPreferredSize(new Dimension(130,20));
+			spacer.setPreferredSize(new Dimension(130, 20));
 			p4.add(spacer);
 		}
 
-
-		ChangeListener latitudeChangeListener = new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				GPSData.setLatitude((Double)latitude.getValue());
+		ChangeListener latitudeChangeListener = new ChangeListener()
+		{
+			@Override
+			public void stateChanged(ChangeEvent e)
+			{
+				GPSData.setLatitude((Double) latitude.getValue());
 			}
-    	};
-		
+		};
+
 		latitude.setModel(new SpinnerNumberModel(GPSData.getLatitude(), 0, 180, 0.001));
-    	latitude.addChangeListener(latitudeChangeListener);
+		latitude.addChangeListener(latitudeChangeListener);
 
 		ns.addItem(GPSData.Orientation.NORTH);
 		ns.addItem(GPSData.Orientation.SOUTH);
-		ns.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				GPSData.setNS((GPSData.Orientation)ns.getSelectedItem());
+		ns.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GPSData.setNS((GPSData.Orientation) ns.getSelectedItem());
 			}
 		});
-		
-		ChangeListener longitudeChangeListener = new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				GPSData.setLongitude((Double)longitude.getValue());
+
+		ChangeListener longitudeChangeListener = new ChangeListener()
+		{
+			@Override
+			public void stateChanged(ChangeEvent e)
+			{
+				GPSData.setLongitude((Double) longitude.getValue());
 			}
-    	};
-		
-		longitude.setModel(new SpinnerNumberModel(GPSData.getLongitude(), 0, 180, 0.001));		
+		};
+
+		longitude.setModel(new SpinnerNumberModel(GPSData.getLongitude(), 0, 180, 0.001));
 		longitude.addChangeListener(longitudeChangeListener);
 
 		ew.addItem(GPSData.Orientation.EAST);
 		ew.addItem(GPSData.Orientation.WEST);
-		ew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				GPSData.setEW((GPSData.Orientation)ew.getSelectedItem());
+		ew.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GPSData.setEW((GPSData.Orientation) ew.getSelectedItem());
 			}
 		});
 
 		speed.setModel(new SpinnerNumberModel(GPSData.getSpeed(), 0, 1000, 1));
-		speed.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				GPSData.setSpeed((Double)speed.getValue());
+		speed.addChangeListener(new ChangeListener()
+		{
+			@Override
+			public void stateChanged(ChangeEvent e)
+			{
+				GPSData.setSpeed((Double) speed.getValue());
 			}
 		});
-		
+
 		altitude.setModel(new SpinnerNumberModel(GPSData.getAltitude(), -100, 10000, 1));
-		altitude.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				GPSData.setAltitude((Double)altitude.getValue());
+		altitude.addChangeListener(new ChangeListener()
+		{
+			@Override
+			public void stateChanged(ChangeEvent e)
+			{
+				GPSData.setAltitude((Double) altitude.getValue());
 			}
 		});
 
@@ -181,16 +201,18 @@ public class LocationGPS extends JPanel implements GPSDataListener {
 		}
 		this.add(aroundThis);
 	}
-	
-	public void valueChanged() {
+
+	@Override
+	public void valueChanged()
+	{
 		latitude.setValue(GPSData.getLatitude());
 		longitude.setValue(GPSData.getLongitude());
 
-		ns.setSelectedItem((Object)GPSData.getNS());
-		ew.setSelectedItem((Object)GPSData.getEW());
-		
+		ns.setSelectedItem(GPSData.getNS());
+		ew.setSelectedItem(GPSData.getEW());
+
 		altitude.setValue(GPSData.getAltitude());
 		speed.setValue(GPSData.getSpeed());
 	}
-	
+
 }

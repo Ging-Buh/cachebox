@@ -24,7 +24,6 @@ public class Fader
 	private float mFadeValue = 1f;
 	private int mTimeToFadeOut = DEFAULT_TIME_TO_FADE_OUT;
 	private Timer mTimer;
-	private GL_View_Base mImplementedView;
 	private boolean mFadeOut = false;
 	private boolean mFadeIn = false;
 	private boolean mVirtualVisible = true;
@@ -40,7 +39,6 @@ public class Fader
 	 */
 	public Fader(GL_View_Base view)
 	{
-		mImplementedView = view;
 		resetFadeOut();
 	}
 
@@ -225,7 +223,6 @@ public class Fader
 
 	public void dispose()
 	{
-		mImplementedView = null;
 		if (mTimer != null) cancelTimerToFadeOut();
 
 	}

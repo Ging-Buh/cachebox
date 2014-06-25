@@ -126,8 +126,6 @@ public class MapPanel extends JPanel implements ActionListener
 		mapView.addMouseMotionListener(mouseEventListener);
 		mapView.addMouseWheelListener(mouseEventListener);
 
-		LatLong pos = mapView.getModel().mapViewPosition.getCenter();
-
 		return mapView;
 	}
 

@@ -170,8 +170,6 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 
 		drawFbo(batch, x, y, width, height, oriMatrix, thisDrawMatrix);
 
-		// Draw rotated Symbols etc
-		int count = 0;
 		for (MatrixDrawable drw : rotateDrawableList)
 		{
 

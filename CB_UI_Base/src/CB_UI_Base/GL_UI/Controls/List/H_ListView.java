@@ -17,8 +17,6 @@ public class H_ListView extends ListViewBase
 	@Override
 	protected void RenderThreadSetPos(float value, boolean Kinetic)
 	{
-		float distance = mPos - value;
-
 		// alle childs verschieben
 		synchronized (childs)
 		{
@@ -92,7 +90,6 @@ public class H_ListView extends ListViewBase
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected void addVisibleItems(boolean Kinetic)
 	{
 		if (mBaseAdapter == null) return;

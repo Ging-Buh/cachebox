@@ -25,46 +25,58 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
+import ch.fhnw.imvs.gpssimulator.data.GPSData.Mode;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
 import ch.fhnw.imvs.gpssimulator.nmea.NMEASentence;
 
 @SuppressWarnings("serial")
-public class GeneralPanel extends JPanel implements GPSDataListener {
+public class GeneralPanel extends JPanel implements GPSDataListener
+{
 
-	public void valueChanged() {
+	@Override
+	public void valueChanged()
+	{
 		mode.setSelectedItem(GPSData.getMode());
 	}
 
-	private JComboBox mode = new JComboBox();
+	private final JComboBox<Mode> mode = new JComboBox<Mode>();
 
-	private List<NMEASentence> sentences;
+	private final List<NMEASentence> sentences;
 
-	public GeneralPanel(List<NMEASentence> list) {
+	public GeneralPanel(List<NMEASentence> list)
+	{
 		GPSData.addChangeListener(this);
 		this.setBorder(BorderFactory.createTitledBorder("General"));
-	
+
 		this.sentences = list;
-		
+
 		this.setLayout(new FlowLayout());
-		
-		JPanel p1 = new JPanel(new GridLayout(0,3));
+
+		JPanel p1 = new JPanel(new GridLayout(0, 3));
 		p1.add(new JLabel(""));
 		p1.add(new JLabel("Line"));
 		p1.add(new JLabel("Data"));
-		for(final NMEASentence s : list){
+		for (final NMEASentence s : list)
+		{
 			final JCheckBox line = new JCheckBox("", true);
 			final JCheckBox data = new JCheckBox("", true);
 			s.setLinePrinted(true);
 			s.setPrintContent(true);
-			line.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
+			line.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
 					s.setLinePrinted(line.isSelected());
-				}		
+				}
 			});
-			data.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
+			data.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
 					s.setPrintContent(data.isSelected());
-				}		
+				}
 			});
 			p1.add(new JLabel(s.getName()));
 			p1.add(line);
@@ -72,36 +84,45 @@ public class GeneralPanel extends JPanel implements GPSDataListener {
 		}
 		this.add(p1);
 
-    	final JCheckBox checkSum = new JCheckBox("", true);
-		for(NMEASentence s : list){
+		final JCheckBox checkSum = new JCheckBox("", true);
+		for (NMEASentence s : list)
+		{
 			s.setPrintChecksum(true);
 		}
-    	checkSum.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
+		checkSum.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
 				boolean printChecksum = checkSum.isSelected();
-				for(NMEASentence s : sentences) s.setPrintChecksum(printChecksum);
+				for (NMEASentence s : sentences)
+					s.setPrintChecksum(printChecksum);
 			}
-    	});
-    	
-    	for(GPSData.Mode m : GPSData.Mode.values())	mode.addItem(m);
+		});
 
-    	mode.addActionListener(new ActionListener(){
-    		public void actionPerformed(ActionEvent e){
-    			GPSData.setMode((GPSData.Mode)mode.getSelectedItem());
-    		}
-    	});
+		for (GPSData.Mode m : GPSData.Mode.values())
+			mode.addItem(m);
 
-    	JPanel p2 = new JPanel();
-    	p2.setLayout(new BoxLayout(p2, BoxLayout.X_AXIS));
-    	p2.add(new JLabel("Add Check Sum: "));
-    	p2.add(checkSum);
-    	
-    	JPanel p3 = new JPanel();
-    	p3.setLayout(new GridLayout(0,1));
-    	p3.add(p2);
-    	p3.add(new JLabel("Mode:", JLabel.LEFT));
-    	p3.add(mode);
-    	
-    	this.add(p3);
+		mode.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				GPSData.setMode((GPSData.Mode) mode.getSelectedItem());
+			}
+		});
+
+		JPanel p2 = new JPanel();
+		p2.setLayout(new BoxLayout(p2, BoxLayout.X_AXIS));
+		p2.add(new JLabel("Add Check Sum: "));
+		p2.add(checkSum);
+
+		JPanel p3 = new JPanel();
+		p3.setLayout(new GridLayout(0, 1));
+		p3.add(p2);
+		p3.add(new JLabel("Mode:", JLabel.LEFT));
+		p3.add(mode);
+
+		this.add(p3);
 	}
 }

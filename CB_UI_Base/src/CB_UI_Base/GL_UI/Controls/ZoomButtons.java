@@ -259,7 +259,7 @@ public class ZoomButtons extends CB_View_Base
 			float e = btnDown.getWidth() / 2;
 			float f = btnDown.getHeight() / 2;
 
-			btnDown.setOrigin(f, f);
+			btnDown.setOrigin(e, f);
 			btnDown.setRotation(90);
 
 			hw = hh;
@@ -289,7 +289,7 @@ public class ZoomButtons extends CB_View_Base
 		{
 			float e = btnUp.getWidth() / 2;
 			float f = btnUp.getHeight() / 2;
-			btnUp.setOrigin(f, f);
+			btnUp.setOrigin(e, f);
 			btnUp.setRotation(90);
 
 			hw = hh;
