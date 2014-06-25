@@ -1364,7 +1364,7 @@ public class GroundspeakAPI
 						String name = jImage.getString("Name");
 						String uri = jImage.getString("Url");
 						// ignore log images
-						if (uri.startsWith("http://img.geocaching.com/cache/log")) continue; // LOG-Image
+						if (uri.contains("/cache/log")) continue; // LOG-Image
 						// Check for duplicate name
 						if (list.containsKey(name))
 						{
@@ -1381,6 +1381,10 @@ public class GroundspeakAPI
 						list.put(name, new URI(uri));
 					}
 					return IO;
+				}
+				else if (status.getInt("StatusCode") == 140)
+				{
+					return 140; // API-Limit überschritten -> nach etwas Verzögerung wiederholen!
 				}
 				else
 				{

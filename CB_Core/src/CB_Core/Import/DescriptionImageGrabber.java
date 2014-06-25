@@ -457,7 +457,7 @@ public class DescriptionImageGrabber
 	{
 		boolean imageLoadError = false;
 
-		if (!descriptionImagesUpdated)
+		if (!descriptionImagesUpdated && false)
 		{
 			ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode);
 
@@ -526,18 +526,45 @@ public class DescriptionImageGrabber
 				ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode);
 				HashMap<String, URI> allimgDict = new HashMap<String, URI>();
 
-				int result = GroundspeakAPI.GetAllImageLinks(gcCode, allimgDict);
-
-				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+				int result = 0;
+				long startTs = System.currentTimeMillis();
+				do
 				{
-					return GroundspeakAPI.CONNECTION_TIMEOUT;
-				}
+					result = GroundspeakAPI.GetAllImageLinks(gcCode, allimgDict);
 
-				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
-				{
-					return GroundspeakAPI.CONNECTION_TIMEOUT;
-				}
+					if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+					{
+						return GroundspeakAPI.CONNECTION_TIMEOUT;
+					}
 
+					if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+					{
+						return GroundspeakAPI.CONNECTION_TIMEOUT;
+					}
+					if (result == 140)
+					{
+						// API-Limit überschritten -> nach 15 Sekunden wiederholen
+						System.out.println("******* API-Limit überschritten -> 15 Sekunden warten! *******");
+						try
+						{
+							Thread.sleep(15000);
+						}
+						catch (InterruptedException e)
+						{
+						}
+						if (System.currentTimeMillis() > startTs + 60000)
+						{
+							// Aufruf nach 1 min immer noch nicht OK -> raus!
+							System.out.println("******* Timeout API-Limit überschritten ********");
+							break;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+				while (true);
 				if (allimgDict == null) return 0;
 
 				for (String key : allimgDict.keySet())
@@ -555,13 +582,20 @@ public class DescriptionImageGrabber
 					if (BreakawayImportThread.isCanceld()) return 0;
 
 					URI uri = allimgDict.get(key);
-					if (uri.toString().contains(".geocaching.com/cache/log")) continue; // LOG-Image
+					if (uri.toString().contains("/cache/log/")) continue; // LOG-Image
 
 					ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode + " - Download: " + uri);
 
 					String decodedImageName = key;
 
 					String local = BuildAdditionalImageFilename(gcCode, decodedImageName, uri);
+					if (new File(local).exists())
+					{
+						// Spoiler ohne den Hash im Dateinamen löschen
+						new File(local).delete();
+					}
+					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden können
+					local = BuildAdditionalImageFilenameHash(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);
 					// überprüfen, ob dieser Spoiler bereits geladen wurde
 					if (afiles.contains(filename))
@@ -602,14 +636,22 @@ public class DescriptionImageGrabber
 					// Alle Spoiler in der Liste afiles sind "alte"
 					for (String file : afiles)
 					{
-						File f = new File(CB_Core_Settings.SpoilerFolder.getValue() + "/" + gcCode.substring(0, 4) + '/' + file);
-						try
+						String fileNameWithOutExt = file.replaceFirst("[.][^.]+$", "");
+						// Testen, ob dieser Dateiname einen gültigen ACB Hash hat (eingeschlossen zwischen ([{....}])>
+						if (fileNameWithOutExt.endsWith("}])") && fileNameWithOutExt.contains("([{"))
 						{
-							f.delete();
-						}
-						catch (Exception ex)
-						{
-							Logger.Error("DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex.getMessage());
+							// file enthält nur den Dateinamen, nicht den Pfad. Diesen Dateinamen um den Pfad erweitern, in dem hier die
+							// Spoiler gespeichert wurden
+							String path = getSpoilerPath(gcCode);
+							File f = new File(path + '/' + file);
+							try
+							{
+								f.delete();
+							}
+							catch (Exception ex)
+							{
+								Logger.Error("DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex.getMessage());
+							}
 						}
 					}
 				}
@@ -647,6 +689,16 @@ public class DescriptionImageGrabber
 		return new String[0];
 	}
 
+	public static String getSpoilerPath(String GcCode)
+	{
+		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
+
+		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
+				+ GcCode.substring(0, 4);
+
+		return imagePath;
+	}
+
 	/**
 	 * @param GcCode
 	 * @param ImageName
@@ -658,6 +710,32 @@ public class DescriptionImageGrabber
 	 * @return
 	 */
 	public static String BuildAdditionalImageFilename(String GcCode, String ImageName, URI uri)
+	{
+		String imagePath = getSpoilerPath(GcCode);
+
+		ImageName = ImageName.replace("[/:*?\"<>|]", "");
+		ImageName = ImageName.replace("\\", "");
+		ImageName = ImageName.replace("\n", "");
+		ImageName = ImageName.replace("\"", "");
+		ImageName = ImageName.trim();
+
+		int idx = uri.toString().lastIndexOf('.');
+		String extension = (idx >= 0) ? uri.toString().substring(idx) : ".";
+
+		return imagePath + "/" + GcCode + " - " + ImageName + extension;
+	}
+
+	/**
+	 * @param GcCode
+	 * @param ImageName
+	 * @param uri
+	 * @param SpoilerFolder
+	 *            Config.settings.SpoilerFolder.getValue()
+	 * @param SpoilerFolderLocal
+	 *            Config.settings.SpoilerFolderLocal.getValue()
+	 * @return
+	 */
+	public static String BuildAdditionalImageFilenameHash(String GcCode, String ImageName, URI uri)
 	{
 		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
 
@@ -673,7 +751,8 @@ public class DescriptionImageGrabber
 		int idx = uri.toString().lastIndexOf('.');
 		String extension = (idx >= 0) ? uri.toString().substring(idx) : ".";
 
-		return imagePath + "/" + GcCode + " - " + ImageName + extension;
+		// Create sdbm Hash from Path of URI, not from complete URI
+		return imagePath + "/" + GcCode + " - " + ImageName + " ([{" + SDBM_Hash.sdbm(uri.getPath().toString()) + "}])" + extension;
 	}
 
 	private static boolean HandleMissingImages(boolean imageLoadError, URI uri, String local)

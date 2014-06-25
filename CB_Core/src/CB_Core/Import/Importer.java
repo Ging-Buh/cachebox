@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -29,7 +28,6 @@ import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Utils.DB.CoreCursor;
-import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
@@ -703,49 +701,54 @@ public class Importer
 	{
 		boolean dbUpdate = false;
 
-		if (!importAlways)
-		{
-			if (!descriptionImagesUpdated)
-			{
-				if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
-				{
-					descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolderLocal.getValue(), gcCode);
-				}
-				else
-				{
-					descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolder.getValue(), gcCode);
-				}
-
-				if (descriptionImagesUpdated)
-				{
-					dbUpdate = true;
-				}
-			}
-			if (!additionalImagesUpdated)
-			{
-				if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
-				{
-					additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
-				}
-				else
-				{
-					additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
-				}
-
-				if (additionalImagesUpdated)
-				{
-					dbUpdate = true;
-				}
-			}
-		}
-		if (dbUpdate)
-		{
-			Parameters args = new Parameters();
-			args.put("ImagesUpdated", additionalImagesUpdated);
-			args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-			Database.Data.update("Caches", args, "Id = ?", new String[]
-				{ String.valueOf(id) });
-		}
+		// if (!importAlways)
+		// {
+		// 2014-06-19 - Ging-Buh:
+		// removed this function because spoiler and images was not imported when at least one image of this cache exists.
+		// This is not good because in the DB of each cache is stored whether the images are actual. If they are not actual the image
+		// should be laoded.
+		// the .changed file is no longer used too. The information about changed caches is stored in DB
+		// if (!descriptionImagesUpdated)
+		// {
+		// if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
+		// {
+		// descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolderLocal.getValue(), gcCode);
+		// }
+		// else
+		// {
+		// descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolder.getValue(), gcCode);
+		// }
+		//
+		// if (descriptionImagesUpdated)
+		// {
+		// dbUpdate = true;
+		// }
+		// }
+		// if (!additionalImagesUpdated)
+		// {
+		// if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
+		// {
+		// additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
+		// }
+		// else
+		// {
+		// additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
+		// }
+		//
+		// if (additionalImagesUpdated)
+		// {
+		// dbUpdate = true;
+		// }
+		// }
+		// }
+		// if (dbUpdate)
+		// {
+		// Parameters args = new Parameters();
+		// args.put("ImagesUpdated", additionalImagesUpdated);
+		// args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
+		// Database.Data.update("Caches", args, "Id = ?", new String[]
+		// { String.valueOf(id) });
+		// }
 
 		return DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name,
 				description, uri);
@@ -756,65 +759,66 @@ public class Importer
 	 * 
 	 * @return true wenn schon Images existieren und keine .changed oder .1st Datei ansonsten false
 	 */
-	private boolean CheckLocalImages(String path, final String GcCode)
-	{
-		boolean retval = true;
-
-		String imagePath = path + "/" + GcCode.substring(0, 4);
-		boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
-
-		if (imagePathDirExists)
-		{
-			File dir = new File(imagePath);
-			FilenameFilter filter = new FilenameFilter()
-			{
-				@Override
-				public boolean accept(File dir, String filename)
-				{
-
-					filename = filename.toLowerCase(Locale.getDefault());
-					if (filename.indexOf(GcCode.toLowerCase(Locale.getDefault())) == 0)
-					{
-						return true;
-					}
-					return false;
-				}
-			};
-			String[] files = dir.list(filter);
-
-			if (files.length > 0)
-			{
-				for (String file : files)
-				{
-					if (file.endsWith(".1st") || file.endsWith(".changed"))
-					{
-						if (file.endsWith(".changed"))
-						{
-							File f = new File(file);
-							try
-							{
-								f.delete();
-							}
-							catch (Exception ex)
-							{
-							}
-						}
-						retval = false;
-					}
-				}
-			}
-			else
-			{
-				retval = false;
-			}
-		}
-		else
-		{
-			retval = false;
-		}
-
-		return retval;
-	}
+	// nicht mehr benutzt
+	// private boolean CheckLocalImages(String path, final String GcCode)
+	// {
+	// boolean retval = true;
+	//
+	// String imagePath = path + "/" + GcCode.substring(0, 4);
+	// boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
+	//
+	// if (imagePathDirExists)
+	// {
+	// File dir = new File(imagePath);
+	// FilenameFilter filter = new FilenameFilter()
+	// {
+	// @Override
+	// public boolean accept(File dir, String filename)
+	// {
+	//
+	// filename = filename.toLowerCase(Locale.getDefault());
+	// if (filename.indexOf(GcCode.toLowerCase(Locale.getDefault())) == 0)
+	// {
+	// return true;
+	// }
+	// return false;
+	// }
+	// };
+	// String[] files = dir.list(filter);
+	//
+	// if (files.length > 0)
+	// {
+	// for (String file : files)
+	// {
+	// if (file.endsWith(".1st") || file.endsWith(".changed"))
+	// {
+	// if (file.endsWith(".changed"))
+	// {
+	// File f = new File(file);
+	// try
+	// {
+	// f.delete();
+	// }
+	// catch (Exception ex)
+	// {
+	// }
+	// }
+	// retval = false;
+	// }
+	// }
+	// }
+	// else
+	// {
+	// retval = false;
+	// }
+	// }
+	// else
+	// {
+	// retval = false;
+	// }
+	//
+	// return retval;
+	// }
 
 	/**
 	 * @param Staging

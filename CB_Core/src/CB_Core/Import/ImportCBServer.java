@@ -138,6 +138,8 @@ public class ImportCBServer
 							}
 							if (importImages)
 							{
+								// TODO - Delete old no longer valid Spoiler Images
+								// this can be done with Hash code of Path of URL which is added to Image Name of Spoilers
 								for (int j = 0, m = cache.getSpoilerRessources().size(); j < m; j++)
 								{
 									ImageEntry image = cache.getSpoilerRessources().get(j);

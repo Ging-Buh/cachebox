@@ -244,11 +244,11 @@ public class CacheInfoList
 					if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) CB_Core_Settings.DescriptionImageFolder
 							.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
-					CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
-							+ GcCode + ".changed");
-
+					// 2014-06-21 - Ging-Buh - .changed files are no longer used. Only information in DB (ImagesUpdated and
+					// DescriptionImagesUpdated) are used
 					// CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
 					// + GcCode + ".changed");
+
 				}
 				else
 				{
