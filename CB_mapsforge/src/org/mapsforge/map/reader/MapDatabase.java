@@ -204,6 +204,7 @@ public class MapDatabase {
 	private String signatureWay;
 	private double tileLatitude;
 	private double tileLongitude;
+	private LatLong tileLatLong;
 
 	/**
 	 * Closes the map file and destroys all internal caches. Has no effect if no map file is currently opened.
@@ -326,34 +327,46 @@ public class MapDatabase {
 	}
 
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment) {
+//		// get the first way node latitude offset (VBE-S)
+//		double wayNodeLatitude = this.tileLatitude
+//				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+//
+//		// get the first way node longitude offset (VBE-S)
+//		double wayNodeLongitude = this.tileLongitude
+//				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+//
+//		// store the first way node
+//		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+		
+		
 		// get the first way node latitude offset (VBE-S)
-		double wayNodeLatitude = this.tileLatitude
-				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		int wayNodeLatitude = this.readBuffer.readSignedInt();
 
 		// get the first way node longitude offset (VBE-S)
-		double wayNodeLongitude = this.tileLongitude
-				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		int wayNodeLongitude = this.readBuffer.readSignedInt();
 
 		// store the first way node
-		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+		waySegment[0] = new LatLong(this.tileLatLong, wayNodeLatitude, wayNodeLongitude);
+		
+		
 
-		double previousSingleDeltaLatitude = 0;
-		double previousSingleDeltaLongitude = 0;
+		int previousSingleDeltaLatitude = 0;
+		int previousSingleDeltaLongitude = 0;
 
 		for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
 			// get the way node latitude double-delta offset (VBE-S)
-			double doubleDeltaLatitude = LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			int doubleDeltaLatitude = this.readBuffer.readSignedInt();
 
 			// get the way node longitude double-delta offset (VBE-S)
-			double doubleDeltaLongitude = LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			int doubleDeltaLongitude = this.readBuffer.readSignedInt();
 
-			double singleDeltaLatitude = doubleDeltaLatitude + previousSingleDeltaLatitude;
-			double singleDeltaLongitude = doubleDeltaLongitude + previousSingleDeltaLongitude;
+			int singleDeltaLatitude = doubleDeltaLatitude + previousSingleDeltaLatitude;
+			int singleDeltaLongitude = doubleDeltaLongitude + previousSingleDeltaLongitude;
 
 			wayNodeLatitude = wayNodeLatitude + singleDeltaLatitude;
 			wayNodeLongitude = wayNodeLongitude + singleDeltaLongitude;
 
-			waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+			waySegment[wayNodesIndex] = new LatLong(this.tileLatLong, wayNodeLatitude, wayNodeLongitude);
 
 			previousSingleDeltaLatitude = singleDeltaLatitude;
 			previousSingleDeltaLongitude = singleDeltaLongitude;
@@ -362,24 +375,22 @@ public class MapDatabase {
 
 	private void decodeWayNodesSingleDelta(LatLong[] waySegment) {
 		// get the first way node latitude single-delta offset (VBE-S)
-		double wayNodeLatitude = this.tileLatitude
-				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		int wayNodeLatitude = this.readBuffer.readSignedInt();
 
 		// get the first way node longitude single-delta offset (VBE-S)
-		double wayNodeLongitude = this.tileLongitude
-				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		int wayNodeLongitude = this.readBuffer.readSignedInt();
 
 		// store the first way node
-		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+		waySegment[0] = new LatLong(this.tileLatLong, wayNodeLatitude, wayNodeLongitude);
 
 		for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
 			// get the way node latitude offset (VBE-S)
-			wayNodeLatitude = wayNodeLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			wayNodeLatitude = wayNodeLatitude +this.readBuffer.readSignedInt();
 
 			// get the way node longitude offset (VBE-S)
-			wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			wayNodeLongitude = wayNodeLongitude + this.readBuffer.readSignedInt();
 
-			waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+			waySegment[wayNodesIndex] = new LatLong(this.tileLatLong, wayNodeLatitude, wayNodeLongitude);
 		}
 	}
 
@@ -534,6 +545,8 @@ public class MapDatabase {
 				this.tileLongitude = MercatorProjection.tileXToLongitude(subFileParameter.boundaryTileLeft + column,
 						subFileParameter.baseZoomLevel);
 
+				this.tileLatLong=new LatLong(this.tileLatitude, this.tileLongitude);
+				
 				try {
 					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter);
 					if (poiWayBundle != null) {
@@ -586,10 +599,10 @@ public class MapDatabase {
 			}
 
 			// get the POI latitude offset (VBE-S)
-			double latitude = this.tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			int latitude = this.readBuffer.readSignedInt();
 
 			// get the POI longitude offset (VBE-S)
-			double longitude = this.tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			int longitude = this.readBuffer.readSignedInt();
 
 			// get the special byte which encodes multiple flags
 			byte specialByte = this.readBuffer.readByte();
@@ -638,7 +651,7 @@ public class MapDatabase {
 				tags.add(new Tag(TAG_KEY_ELE, Integer.toString(this.readBuffer.readSignedInt())));
 			}
 
-			pois.add(new PointOfInterest(layer, tags, new LatLong(latitude, longitude)));
+			pois.add(new PointOfInterest(layer, tags, new LatLong(this.tileLatLong, latitude, longitude)));
 		}
 
 		return pois;
@@ -792,12 +805,12 @@ public class MapDatabase {
 	private LatLong readOptionalLabelPosition(boolean featureLabelPosition) {
 		if (featureLabelPosition) {
 			// get the label position latitude offset (VBE-S)
-			double latitude = this.tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			int latitude = this.readBuffer.readSignedInt();
 
 			// get the label position longitude offset (VBE-S)
-			double longitude = this.tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			int longitude = this.readBuffer.readSignedInt();
 
-			return new LatLong(latitude, longitude);
+			return new LatLong(this.tileLatLong, latitude, longitude);
 		}
 
 		return null;

@@ -24,7 +24,7 @@ import org.mapsforge.core.util.LatLongUtils;
 public class LatLong implements Comparable<LatLong>, Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private static final double CENVERSIONFACTOR=1e6;
+	private static final double CONVERSIONFACTOR=1e6;
 	
 
 	/**
@@ -38,11 +38,11 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 	protected final int longitude;
 
 	public double getLatitude() {
-		return latitude/CENVERSIONFACTOR;
+		return latitude / CONVERSIONFACTOR;
 	}
 
 	public double getLongitude() {
-		return longitude/CENVERSIONFACTOR;
+		return longitude / CONVERSIONFACTOR;
 	}
 
 	/**
@@ -57,13 +57,18 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 		LatLongUtils.validateLatitude(latitude);
 		LatLongUtils.validateLongitude(longitude);
 
-		this.latitude = (int) (latitude*CENVERSIONFACTOR);
-		this.longitude = (int) (longitude*CENVERSIONFACTOR);
+		this.latitude = (int) (latitude * CONVERSIONFACTOR);
+		this.longitude = (int) (longitude * CONVERSIONFACTOR);
 	}
 	
 	public LatLong(int latitude, int longitude) {
 		this.latitude = latitude;
 		this.longitude =longitude;
+	}
+
+	public LatLong(LatLong tileLatLong, int deltaLatitude, int deltaLongitude) {
+		this.latitude = tileLatLong.latitude + deltaLatitude;
+		this.longitude = tileLatLong.longitude + deltaLongitude;
 	}
 
 	@Override
