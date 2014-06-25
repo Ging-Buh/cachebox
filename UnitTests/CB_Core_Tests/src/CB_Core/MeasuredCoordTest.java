@@ -56,10 +56,8 @@ public class MeasuredCoordTest extends TestCase
 	public void testDistance()
 	{
 
-		Coordinate Referenz = new CoordinateGPS();
+		Coordinate Referenz = new CoordinateGPS(49.427700, 6.204300);
 		assertTrue("Objekt muss konstruierbar sein", Referenz != null);
-		Referenz.setLatitude(49.427700);
-		Referenz.setLongitude(6.204300);
 
 		MeasuredCoord.Referenz = Referenz;
 

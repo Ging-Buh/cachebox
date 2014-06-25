@@ -381,7 +381,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 					catch (Exception ex)
 					{
 						// no Coordinates -> Lat/Lon = 0/0
-						waypoint.Pos = new CoordinateGPS();
+						waypoint.Pos = new CoordinateGPS(0, 0);
 					}
 
 					waypoint.setTitle(jWaypoints.getString("Description"));
@@ -408,7 +408,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 					catch (Exception ex)
 					{
 						// no Coordinates -> Lat/Lon = 0/0
-						waypoint.Pos = new CoordinateGPS();
+						waypoint.Pos = new CoordinateGPS(0, 0);
 					}
 					waypoint.setTitle(jUserWaypoint.getString("Description"));
 					waypoint.setDescription(jUserWaypoint.getString("Description"));

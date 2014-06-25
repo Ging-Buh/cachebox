@@ -86,7 +86,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	/**
 	 * Die Coordinate, an der der Cache liegt.
 	 */
-	public Coordinate Pos = new Coordinate();
+	public Coordinate Pos = new Coordinate(0, 0);
 
 	/**
 	 * Durchschnittliche Bewertung des Caches von GcVote
@@ -340,8 +340,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public Cache(double Latitude, double Longitude, String Name, CacheTypes type, String GcCode)
 	{
-		this.Pos.setLatitude(Latitude);
-		this.Pos.setLongitude(Longitude);
+		this.Pos = new Coordinate(Latitude, Longitude);
 		this.setName(Name);
 		this.Type = type;
 		this.setGcCode(GcCode);

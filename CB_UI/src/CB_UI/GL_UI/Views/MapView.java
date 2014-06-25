@@ -353,8 +353,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		resize(rec.getWidth(), rec.getHeight());
 
-		center.setLatitude(Config.MapInitLatitude.getValue());
-		center.setLongitude(Config.MapInitLongitude.getValue());
+		center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
+
 		// Info aktualisieren
 		if (!CompassMode) info.setCoord(center);
 		aktZoom = Config.lastZoomLevel.getValue();
@@ -365,8 +365,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		if ((center.getLatitude() == -1000) && (center.getLongitude() == -1000))
 		{
 			// not initialized
-			center.setLatitude(48);
-			center.setLongitude(12);
+			center = new CoordinateGPS(48, 12);
 		}
 
 		// Initial SettingsChanged Events
@@ -748,10 +747,16 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if (getMapState() != MapState.WP) setMapState(MapState.FREE);
 
-		CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude())
-				: new CoordinateGPS(cache.Pos.getLatitude(), cache.Pos.getLongitude());
-
-		setCenter(target);
+		try
+		{
+			CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude())
+					: new CoordinateGPS(cache.Pos.getLatitude(), cache.Pos.getLongitude());
+			setCenter(target);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 

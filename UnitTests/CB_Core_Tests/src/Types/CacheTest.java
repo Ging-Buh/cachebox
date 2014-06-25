@@ -186,10 +186,9 @@ public class CacheTest extends TestCase
 	@Test
 	public static void testDistance()
 	{
-		CoordinateGPS coordinate1 = new CoordinateGPS();
+		CoordinateGPS coordinate1 = new CoordinateGPS(49.428333, 6.203333);
 		assertTrue("Objekt muss konstruierbar sein", coordinate1 != null);
-		coordinate1.setLatitude(49.428333);
-		coordinate1.setLongitude(6.203333);
+
 		// Vorsicht - hier wird nur die Objekt-Referenz gesetzt...
 		mCache.Pos = coordinate1;
 

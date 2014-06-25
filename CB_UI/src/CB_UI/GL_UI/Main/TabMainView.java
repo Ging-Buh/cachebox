@@ -886,6 +886,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted
 					&& (distance < Config.SoundApproachDistance.getValue()))
 			{
+				if (compassView != null && compassView.isVisible()) return;// don't show if showing
 				actionShowCompassView.Execute();
 				GlobalCore.switchToCompassCompleted = true;
 			}

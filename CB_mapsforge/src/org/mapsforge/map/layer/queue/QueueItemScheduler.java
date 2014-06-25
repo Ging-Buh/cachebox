@@ -42,8 +42,8 @@ final class QueueItemScheduler {
 				+ halfTileSize;
 
 		LatLong latLong = mapPosition.latLong;
-		double mapPixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapPosition.zoomLevel, tileSize);
-		double mapPixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapPosition.zoomLevel, tileSize);
+		double mapPixelX = MercatorProjection.longitudeToPixelX(latLong.getLongitude(), mapPosition.zoomLevel, tileSize);
+		double mapPixelY = MercatorProjection.latitudeToPixelY(latLong.getLatitude(), mapPosition.zoomLevel, tileSize);
 
 		double diffPixel = Math.hypot(tilePixelX - mapPixelX, tilePixelY - mapPixelY);
 		int diffZoom = Math.abs(tile.zoomLevel - mapPosition.zoomLevel);

@@ -830,7 +830,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
-	private final CB_Locator.Location CB_location = new CB_Locator.Location();
+	private CB_Locator.Location CB_location = new CB_Locator.Location(0, 0, 0);
 
 	@Override
 	public void onLocationChanged(Location location)
@@ -840,9 +840,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (location.getProvider().toLowerCase(new Locale("en")).contains("gps")) provider = ProviderType.GPS;
 		if (location.getProvider().toLowerCase(new Locale("en")).contains("network")) provider = ProviderType.Network;
 
-		CB_location.setlatitude(location.getLatitude());
-		CB_location.setLongitude(location.getLongitude());
-		CB_location.setAccuracy(location.getAccuracy());
+		CB_location = new CB_Locator.Location(location.getLatitude(), location.getLongitude(), location.getAccuracy());
+
 		CB_location.setHasSpeed(location.hasSpeed());
 		CB_location.setSpeed(location.getSpeed());
 		CB_location.setHasBearing(location.hasBearing());
@@ -851,10 +850,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		CB_location.setProvider(provider);
 
 		CB_Locator.Locator.setNewLocation(CB_location);
-
-		// CB_Locator.Locator.setNewLocation(new CB_Locator.Location(location.getLatitude(), location.getLongitude(),
-		// location.getAccuracy(),
-		// location.hasSpeed(), location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), provider));
 	}
 
 	@Override

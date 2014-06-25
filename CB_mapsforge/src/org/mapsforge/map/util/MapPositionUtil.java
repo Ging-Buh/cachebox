@@ -24,9 +24,9 @@ import org.mapsforge.core.util.MercatorProjection;
 
 public final class MapPositionUtil {
 	public static BoundingBox getBoundingBox(MapPosition mapPosition, Dimension canvasDimension, int tileSize) {
-		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.latLong.longitude, mapPosition.zoomLevel,
+		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.latLong.getLongitude(), mapPosition.zoomLevel,
 				tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.latLong.latitude, mapPosition.zoomLevel,
+		double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.latLong.getLatitude(), mapPosition.zoomLevel,
 				tileSize);
 
 		int halfCanvasWidth = canvasDimension.width / 2;
@@ -53,8 +53,8 @@ public final class MapPositionUtil {
 		int halfCanvasWidth = canvasDimension.width / 2;
 		int halfCanvasHeight = canvasDimension.height / 2;
 
-		double pixelX = Math.round(MercatorProjection.longitudeToPixelX(centerPoint.longitude, zoomLevel, tileSize));
-		double pixelY = Math.round(MercatorProjection.latitudeToPixelY(centerPoint.latitude, zoomLevel, tileSize));
+		double pixelX = Math.round(MercatorProjection.longitudeToPixelX(centerPoint.getLongitude(), zoomLevel, tileSize));
+		double pixelY = Math.round(MercatorProjection.latitudeToPixelY(centerPoint.getLatitude(), zoomLevel, tileSize));
 		return new Point((int) pixelX - halfCanvasWidth, (int) pixelY - halfCanvasHeight);
 	}
 

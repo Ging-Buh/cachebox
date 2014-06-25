@@ -67,14 +67,14 @@ public class Polygon extends Layer {
 		Path path = this.graphicFactory.createPath();
 		LatLong latLong = iterator.next();
 		int tileSize = displayModel.getTileSize();
-		float x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - topLeftPoint.x);
-		float y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - topLeftPoint.y);
+		float x = (float) (MercatorProjection.longitudeToPixelX(latLong.getLongitude(), zoomLevel, tileSize) - topLeftPoint.x);
+		float y = (float) (MercatorProjection.latitudeToPixelY(latLong.getLatitude(), zoomLevel, tileSize) - topLeftPoint.y);
 		path.moveTo(x, y);
 
 		while (iterator.hasNext()) {
 			latLong = iterator.next();
-			x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - topLeftPoint.x);
-			y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - topLeftPoint.y);
+			x = (float) (MercatorProjection.longitudeToPixelX(latLong.getLongitude(), zoomLevel, tileSize) - topLeftPoint.x);
+			y = (float) (MercatorProjection.latitudeToPixelY(latLong.getLatitude(), zoomLevel, tileSize) - topLeftPoint.y);
 			path.lineTo(x, y);
 		}
 

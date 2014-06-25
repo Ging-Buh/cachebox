@@ -116,7 +116,7 @@ public class RouteOverlay
 		double Distance = 0;
 		double AltitudeDifference = 0;
 		double DeltaAltitude = 0;
-		CoordinateGPS FromPosition = new CoordinateGPS();
+		CoordinateGPS FromPosition = new CoordinateGPS(0, 0);
 		BufferedReader reader;
 
 		try
@@ -341,8 +341,7 @@ public class RouteOverlay
 							// Calculate the length of a Track
 							if (!FromPosition.isValid())
 							{
-								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
-								FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+								FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
 								FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
 								FromPosition.setValid(true);
 							}
@@ -353,8 +352,7 @@ public class RouteOverlay
 										lastAcceptedCoordinate.getLongitude(), dist);
 								Distance += dist[0];
 								DeltaAltitude = Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
-								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
-								FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+								FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
 
 								if (DeltaAltitude >= 25.0) // nur aufaddieren wenn Höhenunterschied größer 10 Meter
 								{

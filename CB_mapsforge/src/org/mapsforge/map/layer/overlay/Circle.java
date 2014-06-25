@@ -64,8 +64,8 @@ public class Circle extends Layer {
 			return;
 		}
 
-		double latitude = this.latLong.latitude;
-		double longitude = this.latLong.longitude;
+		double latitude = this.latLong.getLatitude();
+		double longitude = this.latLong.getLongitude();
 		int tileSize = displayModel.getTileSize();
 		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel, tileSize) - topLeftPoint.x);
 		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel, tileSize) - topLeftPoint.y);

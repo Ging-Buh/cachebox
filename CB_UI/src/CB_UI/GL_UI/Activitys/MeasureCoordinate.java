@@ -62,7 +62,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		if (MeasuredCoord.Referenz == null)
 		{
-			MeasuredCoord.Referenz = new CoordinateGPS();
+			MeasuredCoord.Referenz = new CoordinateGPS(0, 0);
 		}
 
 		iniOkCancel();

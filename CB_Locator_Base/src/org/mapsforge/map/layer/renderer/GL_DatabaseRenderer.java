@@ -511,9 +511,9 @@ public class GL_DatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	 */
 	private Point scaleLatLong(LatLong latLong, int tileSize)
 	{
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel, tileSize)
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.getLongitude(), this.currentRendererJob.tile.zoomLevel, tileSize)
 				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel, tileSize)
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.getLatitude(), this.currentRendererJob.tile.zoomLevel, tileSize)
 				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY, tileSize);
 
 		return new Point((float) pixelX, (float) pixelY);

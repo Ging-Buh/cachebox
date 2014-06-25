@@ -88,8 +88,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 		tread.start();
 	}
 
-	private Coordinate start = new CoordinateGPS();
-	private Coordinate target = new CoordinateGPS();
+	private Coordinate start = new CoordinateGPS(0, 0);
+	private Coordinate target = new CoordinateGPS(0, 0);
 	private RouteDialog routeDia;
 	private CancelWaitDialog wd;
 
@@ -154,7 +154,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 										Coordinate lastAcceptedCoordinate = null;
 										float[] dist = new float[4];
 										double Distance = 0;
-										Coordinate FromPosition = new CoordinateGPS();
+										Coordinate FromPosition = new CoordinateGPS(0, 0);
 										String routepref = "Fastest";
 
 										if (canceld) return;
@@ -269,8 +269,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														// Calculate the length of a Track
 														if (!FromPosition.isValid())
 														{
-															FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
-															FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+															FromPosition = new Coordinate(lastAcceptedCoordinate);
 															FromPosition.setValid(true);
 														}
 														else
@@ -280,8 +279,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 																	lastAcceptedCoordinate.getLatitude(),
 																	lastAcceptedCoordinate.getLongitude(), dist);
 															Distance += dist[0];
-															FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
-															FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+															FromPosition = new Coordinate(lastAcceptedCoordinate);
 															IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
 														}
 													}

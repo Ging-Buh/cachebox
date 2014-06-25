@@ -70,14 +70,16 @@ public class Astronomy
 		double sineps = Math.sin(eps);
 
 		double sinlon = Math.sin(eclipticCoordinate.getLongitude() / 180.0 * Math.PI);
-		Coordinate equatorial = new CoordinateGPS();
-		equatorial.setLongitude((MathUtils.RAD_DEG * Math.atan2(
-				(sinlon * coseps - Math.tan(eclipticCoordinate.getLatitude() / 180.0 * Math.PI) * sineps),
-				Math.cos(eclipticCoordinate.getLongitude() / 180.0 * Math.PI))) % 360); // rektaszension (alpha)
-		equatorial.setLatitude(180.0
+
+		double lat = (MathUtils.RAD_DEG * Math.atan2((sinlon * coseps - Math.tan(eclipticCoordinate.getLatitude() / 180.0 * Math.PI)
+				* sineps), Math.cos(eclipticCoordinate.getLongitude() / 180.0 * Math.PI))) % 360; // rektaszension (alpha)
+
+		double lon = 180.0
 				/ Math.PI
 				* Math.asin(Math.sin(eclipticCoordinate.getLatitude() / 180.0 * Math.PI) * coseps
-						+ Math.cos(eclipticCoordinate.getLatitude() / 180.0 * Math.PI) * sineps * sinlon)); // deklination (delta)
+						+ Math.cos(eclipticCoordinate.getLatitude() / 180.0 * Math.PI) * sineps * sinlon); // deklination (delta)
+
+		Coordinate equatorial = new CoordinateGPS(lat, lon);
 
 		return equatorial;
 	}
@@ -160,12 +162,10 @@ public class Astronomy
 		double l3 = l2 + V; // true orbital longitude;
 		double N2 = N - 0.16 * MathUtils.DEG_RAD * Math.sin(sunAnomalyMean);
 
-		Coordinate result = new CoordinateGPS();
-		result.setLongitude(((N2 + Math.atan2(Math.sin(l3 - N2) * Math.cos(i), Math.cos(l3 - N2))) * MathUtils.RAD_DEG));
-		result.setLatitude(Math.asin(Math.sin(l3 - N2) * Math.sin(i)) * MathUtils.RAD_DEG);
-		return result;
+		double lat = (N2 + Math.atan2(Math.sin(l3 - N2) * Math.cos(i), Math.cos(l3 - N2))) * MathUtils.RAD_DEG;
 
-		// moonCoor.lonDec = ((N2 + Math.atan2(Math.sin(l3 - N2) * Math.cos(i), Math.cos(l3 - N2))) * RAD) % 360;
-		// moonCoor.latDec = Math.asin(Math.sin(l3 - N2) * Math.sin(i)) * RAD;
+		double lon = Math.asin(Math.sin(l3 - N2) * Math.sin(i)) * MathUtils.RAD_DEG;
+
+		return new CoordinateGPS(lat, lon);
 	}
 }

@@ -51,7 +51,7 @@ public class Waypoint implements Serializable
 	{
 		CacheId = -1;
 		setGcCode("");
-		Pos = new Coordinate();
+		Pos = new Coordinate(0, 0);
 		setDescription("");
 		IsStart = false;
 		if (withDetails)
@@ -73,6 +73,7 @@ public class Waypoint implements Serializable
 		setClue(clue);
 		setTitle(title);
 		IsStart = false;
+		detail = new WaypointDetail();
 	}
 
 	// / <summary>
@@ -86,16 +87,6 @@ public class Waypoint implements Serializable
 		MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(),
 				Pos.getLongitude(), dist);
 		return dist[0];
-	}
-
-	public void setLatitude(double parseDouble)
-	{
-		Pos.setLatitude(parseDouble);
-	}
-
-	public void setLongitude(double parseDouble)
-	{
-		Pos.setLongitude(parseDouble);
 	}
 
 	public void setCoordinate(Coordinate result)
@@ -138,7 +129,7 @@ public class Waypoint implements Serializable
 	{
 		CacheId = -1;
 		setGcCode("");
-		Pos = new Coordinate();
+		Pos = new Coordinate(0, 0);
 		setTitle("");
 		setDescription("");
 		Type = null;

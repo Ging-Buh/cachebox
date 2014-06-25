@@ -23,16 +23,27 @@ import org.mapsforge.core.util.LatLongUtils;
  */
 public class LatLong implements Comparable<LatLong>, Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	private static final double CENVERSIONFACTOR=1e6;
+	
 
 	/**
 	 * The latitude coordinate of this LatLong in degrees.
 	 */
-	public final double latitude;
+	protected final int latitude;
 
 	/**
 	 * The longitude coordinate of this LatLong in degrees.
 	 */
-	public final double longitude;
+	protected final int longitude;
+
+	public double getLatitude() {
+		return latitude/CENVERSIONFACTOR;
+	}
+
+	public double getLongitude() {
+		return longitude/CENVERSIONFACTOR;
+	}
 
 	/**
 	 * @param latitude
@@ -46,8 +57,13 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 		LatLongUtils.validateLatitude(latitude);
 		LatLongUtils.validateLongitude(longitude);
 
+		this.latitude = (int) (latitude*CENVERSIONFACTOR);
+		this.longitude = (int) (longitude*CENVERSIONFACTOR);
+	}
+	
+	public LatLong(int latitude, int longitude) {
 		this.latitude = latitude;
-		this.longitude = longitude;
+		this.longitude =longitude;
 	}
 
 	@Override

@@ -73,8 +73,8 @@ public class MapPanel extends JPanel implements ActionListener
 		pushButton2.addActionListener(this); // listen for Button press
 
 		LatLong pos = new LatLong(SimulatorMain.prefs.getDouble("lat", 0), SimulatorMain.prefs.getDouble("lon", 0));
-		GPSData.setLatitude(pos.latitude);
-		GPSData.setLongitude(pos.longitude);
+		GPSData.setLatitude(pos.getLatitude());
+		GPSData.setLongitude(pos.getLongitude());
 		model.mapViewPosition.setCenter(pos);
 		model.mapViewPosition.setZoomLevel((byte) SimulatorMain.prefs.getInt("zoom", 16));
 
@@ -88,8 +88,8 @@ public class MapPanel extends JPanel implements ActionListener
 				{
 					LatLong pos = new LatLong(GPSData.getLatitude(), GPSData.getLongitude());
 					model.mapViewPosition.setCenter(pos);
-					CB_Locator.Locator.setNewLocation(new Location(pos.latitude, pos.longitude, GPSData.getQuality(), true, (float) GPSData
-							.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
+					CB_Locator.Locator.setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), GPSData.getQuality(), true,
+							(float) GPSData.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
 				}
 
 			}

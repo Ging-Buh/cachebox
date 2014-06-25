@@ -1296,7 +1296,7 @@ public class GPXFileImporter
 		}
 		else
 		{
-			waypoint.Pos = new CoordinateGPS();
+			waypoint.Pos = new CoordinateGPS(0, 0);
 		}
 
 		if (values.containsKey("wpt_name"))

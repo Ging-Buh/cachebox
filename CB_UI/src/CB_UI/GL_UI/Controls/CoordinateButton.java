@@ -35,7 +35,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 	public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate, String wpName)
 	{
 		super(rec, name);
-		if (coordinate == null) coordinate = new Coordinate();
+		if (coordinate == null) coordinate = new Coordinate(0, 0);
 		mActCoord = coordinate;
 		mwpName = wpName;
 		setText();
@@ -47,7 +47,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 	public CoordinateButton(String name)
 	{
 		super(name);
-		mActCoord = new CoordinateGPS();
+		mActCoord = new CoordinateGPS(0, 0);
 		this.setOnClickListener(click);
 		this.setOnLongClickListener(longCLick);
 		clipboard = GlobalCore.getDefaultClipboard();
@@ -123,7 +123,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 	public void setCoordinate(Coordinate pos)
 	{
 		mActCoord = pos;
-		if (mActCoord == null) mActCoord = new CoordinateGPS();
+		if (mActCoord == null) mActCoord = new CoordinateGPS(0, 0);
 		setText();
 	}
 

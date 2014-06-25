@@ -129,14 +129,14 @@ public final class MercatorProjection {
 	}
 
 	public static Point getPixel(LatLong latLong, double scaleFactor, int tileSize) {
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, scaleFactor, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, scaleFactor, tileSize);
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.getLongitude(), scaleFactor, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.getLatitude(), scaleFactor, tileSize);
 		return new Point(pixelX, pixelY);
 	}
 
 	public static Point getPixel(LatLong latLong, byte zoomLevel, int tileSize) {
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize);
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.getLongitude(), zoomLevel, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.getLatitude(), zoomLevel, tileSize);
 		return new Point(pixelX, pixelY);
 	}
 

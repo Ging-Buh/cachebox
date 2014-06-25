@@ -137,8 +137,8 @@ public class CoordinateEntity extends Entity
 				return Translation.Get("solverErrDiffCache".hashCode(), coord.FormatCoordinate(), dbWaypoint.getTitle(), cache.getName());
 			}
 		}
-		dbWaypoint.Pos.setLatitude(coord.getLatitude());
-		dbWaypoint.Pos.setLongitude(coord.getLongitude());
+		dbWaypoint.Pos = new Coordinate(coord);
+
 		waypointDAO.UpdateDatabase(dbWaypoint);
 
 		// evtl. bereits geladenen Waypoint aktualisieren
@@ -155,8 +155,7 @@ public class CoordinateEntity extends Entity
 				Waypoint wp = cacheFromCacheList.waypoints.get(i);
 				if (wp.getGcCode().equalsIgnoreCase(this.gcCode))
 				{
-					wp.Pos.setLatitude(coord.getLatitude());
-					wp.Pos.setLongitude(coord.getLongitude());
+					wp.Pos = new Coordinate(coord);
 					break;
 				}
 			}

@@ -536,8 +536,8 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 	 */
 	private Point scaleLatLong(LatLong latLong, int tileSize)
 	{
-		double pixelX = (tileLatLon_0_x - latLong.longitude) / divLon;
-		double pixelY = (tileLatLon_0_y - latLong.latitude) / divLat;
+		double pixelX = (tileLatLon_0_x - latLong.getLongitude()) / divLon;
+		double pixelY = (tileLatLon_0_y - latLong.getLatitude()) / divLat;
 
 		return new Point((float) pixelX, (float) pixelY);
 	}

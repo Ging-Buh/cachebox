@@ -20,34 +20,26 @@ public class CoordinateGPS extends Coordinate implements Serializable
 	 * 
 	 * @uml.property name="accuracy"
 	 */
-	private int Accuracy = -1;
-
-	// Cache the inputs and outputs of computeDistanceAndBearing
-	// so calls to distanceTo() and bearingTo() can share work
-	// private final double mLat1 = 0.0;
-	// private final double mLon1 = 0.0;
-	// private final double mLat2 = 0.0;
-	// private final double mLon2 = 0.0;
-	// private final float mInitialBearing = 0.0f;
-	// private float mDistance = 0.0f;
-
-	public CoordinateGPS()
-	{
-		Valid = false;
-	}
+	protected int Accuracy = -1;
 
 	public CoordinateGPS(double latitude, double longitude)
 	{
-		this.setLatitude(latitude);
-		this.setLongitude(longitude);
+		super(latitude, longitude);
 		this.setElevation(0);
 		Valid = true;
 	}
 
 	public CoordinateGPS(double latitude, double longitude, int accuracy)
 	{
-		this.setLatitude(latitude);
-		this.setLongitude(longitude);
+		super(latitude, longitude);
+		this.setElevation(0);
+		this.Accuracy = accuracy;
+		Valid = true;
+	}
+
+	public CoordinateGPS(int latitude, int longitude, int accuracy)
+	{
+		super(latitude, longitude);
 		this.setElevation(0);
 		this.Accuracy = accuracy;
 		Valid = true;
@@ -55,8 +47,7 @@ public class CoordinateGPS extends Coordinate implements Serializable
 
 	public CoordinateGPS(CoordinateGPS parent)
 	{
-		this.setLatitude(parent.getLatitude());
-		this.setLongitude(parent.getLongitude());
+		super(parent.latitude, parent.longitude);
 		this.setElevation(parent.getElevation());
 		this.Accuracy = parent.getAccuracy();
 		this.Valid = parent.Valid;

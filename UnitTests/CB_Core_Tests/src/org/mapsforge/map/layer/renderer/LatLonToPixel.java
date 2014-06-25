@@ -108,21 +108,21 @@ public class LatLonToPixel extends TestCase
 
 	private float Mapsforge()
 	{
-		float pixelX = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, tile.zoomLevel, tileSize) - (tile.tileX * tileSize));
+		float pixelX = (float) (MercatorProjection.longitudeToPixelX(latLong.getLongitude(), tile.zoomLevel, tileSize) - (tile.tileX * tileSize));
 		return pixelX;
 	}
 
 	private float Cachebox()
 	{
 		// double pixelX = Descriptor.LongitudeToTileX(zoomLevel, latLong.longitude, tileSize) - (tileX * tileSize);
-		float pixelX = (float) ((tileLatLon_0_x - latLong.longitude) / divLon);
+		float pixelX = (float) ((tileLatLon_0_x - latLong.getLongitude()) / divLon);
 		return pixelX;
 	}
 
 	private float MapsforgeY()
 	{
 
-		float pixelY = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, tile.zoomLevel, tileSize) - (tile.tileY * tileSize));
+		float pixelY = (float) (MercatorProjection.latitudeToPixelY(latLong.getLatitude(), tile.zoomLevel, tileSize) - (tile.tileY * tileSize));
 		return pixelY;
 	}
 
@@ -130,7 +130,7 @@ public class LatLonToPixel extends TestCase
 	{
 
 		// double pixelY = Descriptor.LatitudeToTileY(zoomLevel, latLong.latitude, tileSize) - (tileY * tileSize);
-		float pixelY = (float) ((tileLatLon_0_y - latLong.latitude) / divLat);
+		float pixelY = (float) ((tileLatLon_0_y - latLong.getLatitude()) / divLat);
 		return pixelY;
 	}
 
@@ -207,11 +207,11 @@ public class LatLonToPixel extends TestCase
 				return false;
 			}
 			LatLong other = (LatLong) obj;
-			if (Double.doubleToLongBits(this.latitude) != Double.doubleToLongBits(other.latitude))
+			if (Double.doubleToLongBits(this.latitude) != Double.doubleToLongBits(other.getLatitude()))
 			{
 				return false;
 			}
-			else if (Double.doubleToLongBits(this.longitude) != Double.doubleToLongBits(other.longitude))
+			else if (Double.doubleToLongBits(this.longitude) != Double.doubleToLongBits(other.getLongitude()))
 			{
 				return false;
 			}

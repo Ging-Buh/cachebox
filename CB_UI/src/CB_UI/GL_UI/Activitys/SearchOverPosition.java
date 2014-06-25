@@ -296,9 +296,7 @@ public class SearchOverPosition extends ActivityBase
 			{
 				if (MapView.that == null)
 				{
-					actSearchPos = new CoordinateGPS();
-					actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
-					actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
+					actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
 				}
 				else
 				{
@@ -355,9 +353,7 @@ public class SearchOverPosition extends ActivityBase
 		case 1:
 			if (MapView.that == null)
 			{
-				actSearchPos = new CoordinateGPS();
-				actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
-				actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
+				actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
 			}
 			else
 			{

@@ -95,8 +95,8 @@ public class BoundingBox implements Serializable {
 	 * @return true if this BoundingBox contains the given LatLong, false otherwise.
 	 */
 	public boolean contains(LatLong latLong) {
-		return this.minLatitude <= latLong.latitude && this.maxLatitude >= latLong.latitude
-				&& this.minLongitude <= latLong.longitude && this.maxLongitude >= latLong.longitude;
+		return this.minLatitude <= latLong.getLatitude() && this.maxLatitude >= latLong.getLatitude()
+				&& this.minLongitude <= latLong.getLongitude() && this.maxLongitude >= latLong.getLongitude();
 	}
 
 	@Override

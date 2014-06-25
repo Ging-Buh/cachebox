@@ -390,6 +390,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		if ((coord == null) || (!coord.isValid())) coord = GlobalCore.getSelectedCache().Pos;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
 				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+
 		editWP(newWP, true);
 
 	}

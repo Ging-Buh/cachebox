@@ -26,8 +26,8 @@ public class GpsSimmulatorMouseEventListener extends MouseEventListener
 		LatLong pos = this.mapViewPosition.getCenter();
 		int zoom = this.mapViewPosition.getZoomLevel();
 		SimulatorMain.prefs.putInt("zoom", zoom);
-		SimulatorMain.prefs.putDouble("lat", pos.latitude);
-		SimulatorMain.prefs.putDouble("lon", pos.longitude);
+		SimulatorMain.prefs.putDouble("lat", pos.getLatitude());
+		SimulatorMain.prefs.putDouble("lon", pos.getLongitude());
 		try
 		{
 			SimulatorMain.prefs.flush();
@@ -37,8 +37,8 @@ public class GpsSimmulatorMouseEventListener extends MouseEventListener
 			e.printStackTrace();
 		}
 
-		GPSData.setLatitude(pos.latitude);
-		GPSData.setLongitude(pos.longitude);
+		GPSData.setLatitude(pos.getLatitude());
+		GPSData.setLongitude(pos.getLongitude());
 
 	}
 

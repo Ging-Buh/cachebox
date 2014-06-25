@@ -2,26 +2,21 @@ package CB_Locator;
 
 import java.io.Serializable;
 
+import org.mapsforge.core.model.LatLong;
+
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Converter.UTMConvert;
 import CB_Utils.Lists.CB_List;
 
-public class Coordinate implements Serializable
+public class Coordinate extends LatLong implements Serializable
 {
 	private static final long serialVersionUID = 4288564255686705L;
 
 	static final String br = System.getProperty("line.separator");
 
 	protected boolean Valid;
-	/**
-	 * @uml.property name="latitude"
-	 */
-	private double Latitude = 0;
-	/**
-	 * @uml.property name="longitude"
-	 */
-	private double Longitude = 0;
+
 	private static final float[] mResults = new float[2];
 
 	public static Coordinate Project(Coordinate coord, double Direction, double Distance)
@@ -37,7 +32,7 @@ public class Coordinate implements Serializable
 	public boolean isZero()
 	{
 		if (!isValid()) return false;
-		return ((Latitude == 0) && (Longitude == 0));
+		return ((latitude == 0) && (longitude == 0));
 	}
 
 	/**
@@ -67,7 +62,6 @@ public class Coordinate implements Serializable
 	public static Coordinate Project(double Latitude, double Longitude, double Direction, double Distance)
 	{
 		// nach http://www.zwanziger.de/gc_tools_projwp.html
-		Coordinate result = new Coordinate();
 
 		// Bearing auf [0..360] begrenzen
 		while (Direction > 360)
@@ -85,8 +79,8 @@ public class Coordinate implements Serializable
 		double q = (360 - Direction) * MathUtils.DEG_RAD;
 		double b = Math.acos(Math.cos(q) * Math.sin(a) * Math.sin(c) + Math.cos(a) * Math.cos(c));
 
-		result.setLatitude(90 - (b * MathUtils.RAD_DEG));
-		if (result.getLatitude() > 90) result.setLatitude(result.getLatitude() - 180);
+		double resultLatitude = 90 - (b * MathUtils.RAD_DEG);
+		if (resultLatitude > 90) resultLatitude = resultLatitude - 180;
 
 		double g = 0;
 		try
@@ -101,8 +95,7 @@ public class Coordinate implements Serializable
 
 		if (Direction <= 180) g = -g;
 
-		result.setLongitude(Longitude - g * MathUtils.RAD_DEG);
-
+		Coordinate result = new Coordinate(resultLatitude, Longitude - g * MathUtils.RAD_DEG);
 		result.Valid = true;
 		return result;
 	}
@@ -114,16 +107,7 @@ public class Coordinate implements Serializable
 
 	public static double Bearing(CalculationType type, double froLatitude, double fromLongitude, double toLatitude, double toLongitude)
 	{
-		Coordinate loc = new Coordinate();
-		loc.setLatitude(froLatitude);
-		loc.setLongitude(fromLongitude);
-
-		Coordinate loc2 = new Coordinate("");
-		loc2.setLatitude(toLatitude);
-		loc2.setLongitude(toLongitude);
-
-		return loc.bearingTo(loc2, type);
-
+		return new Coordinate(froLatitude, fromLongitude).bearingTo(new Coordinate(toLatitude, toLongitude), type);
 	}
 
 	public static Coordinate Intersection(Coordinate coord1, Coordinate coord2, Coordinate coord3, Coordinate coord4)
@@ -251,31 +235,42 @@ public class Coordinate implements Serializable
 		return Intersection(coord1, coord3, coord2, coord4);
 	}
 
-	public Coordinate()
-	{
-		super();
-	}
-
 	public Coordinate(Coordinate parent)
 	{
-		this.setLatitude(parent.getLatitude());
-		this.setLongitude(parent.getLongitude());
+		super(parent.latitude, parent.longitude);
 		this.Valid = parent.Valid;
 	}
 
 	public Coordinate(double latitude, double longitude)
 	{
-		this.setLatitude(latitude);
-		this.setLongitude(longitude);
+		super(latitude, longitude);
 		Valid = true;
+	}
 
+	public Coordinate(int latitude, int longitude)
+	{
+		super(latitude, longitude);
+		Valid = true;
 	}
 
 	public Coordinate(String text)
 	{
+
+		this(parseCoordinate(text));
+
+	}
+
+	public Coordinate(double[] coordinate)
+	{
+		super(coordinate[0], coordinate[1]);
+	}
+
+	public static double[] parseCoordinate(String text)
+	{
+		double[] values = new double[3];
 		text = text.toUpperCase();
 		text = text.replace(",", ".");
-		Valid = false;
+		values[2] = 0;
 
 		// UTM versuche
 		String[] utm = text.trim().split(" ");
@@ -300,10 +295,10 @@ public class Coordinate implements Serializable
 					// Ergebnis runden, da sonst Koordinaten wie 47° 60' herauskommen!
 					ddlat = Math.rint(ddlat * 1000000) / 1000000;
 					ddlon = Math.rint(ddlon * 1000000) / 1000000;
-					this.Valid = true;
-					this.setLatitude(ddlat);
-					this.setLongitude(ddlon);
-					return;
+					values[2] = 1;
+					values[0] = ddlat;
+					values[1] = ddlon;
+					return values;
 				}
 				catch (Exception ex)
 				{
@@ -327,9 +322,9 @@ public class Coordinate implements Serializable
 		if (ilat < 0) ilat = text.indexOf('S');
 		int ilon = text.indexOf('E');
 		if (ilon < 0) ilon = text.indexOf('W');
-		if (ilat < 0) return;
-		if (ilon < 0) return;
-		if (ilat > ilon) return;
+		if (ilat < 0) return values;
+		if (ilon < 0) return values;
+		if (ilat > ilon) return values;
 		char dlat = text.charAt(ilat);
 		char dlon = text.charAt(ilon);
 		String slat = "";
@@ -395,61 +390,26 @@ public class Coordinate implements Serializable
 		}
 		catch (Exception exc)
 		{
-			Valid = false;
-			return;
+			values[2] = 0;
+			return values;
 		}
-		this.setLatitude(lat);
-		this.setLongitude(lon);
-		if (dlat == 'S') this.setLatitude(-this.getLatitude());
-		if (dlon == 'W') this.setLongitude(-this.getLongitude());
-		this.Valid = true;
-		if (this.getLatitude() > 180.00001) this.Valid = false;
-		if (this.getLatitude() < -180.00001) this.Valid = false;
-		if (this.getLongitude() > 180.00001) this.Valid = false;
-		if (this.getLongitude() < -180.00001) this.Valid = false;
+		values[0] = lat;
+		values[1] = lon;
+		if (dlat == 'S') values[0] = -values[0];
+		if (dlon == 'W') values[1] = -values[0];
+		values[2] = 1;
+		if (values[0] > 180.00001) values[2] = 0;
+		if (values[0] < -180.00001) values[2] = 0;
+		if (values[1] > 180.00001) values[2] = 0;
+		if (values[1] < -180.00001) values[2] = 0;
+
+		return values;
+
 	}
 
 	public Coordinate copy()
 	{
 		return new Coordinate(this);
-	}
-
-	/**
-	 * @return
-	 * @uml.property name="latitude"
-	 */
-	public double getLatitude()
-	{
-		return Latitude;
-	}
-
-	/**
-	 * @param latitude
-	 * @uml.property name="latitude"
-	 */
-	public void setLatitude(double latitude)
-	{
-		Latitude = latitude;
-		Valid = true;// FIXME check if relay valid
-	}
-
-	/**
-	 * @return
-	 * @uml.property name="longitude"
-	 */
-	public double getLongitude()
-	{
-		return Longitude;
-	}
-
-	/**
-	 * @param longitude
-	 * @uml.property name="longitude"
-	 */
-	public void setLongitude(double longitude)
-	{
-		Longitude = longitude;
-		Valid = true; // FIXME check if relay valid
 	}
 
 	public void setValid(boolean b)
@@ -461,6 +421,18 @@ public class Coordinate implements Serializable
 	public String toString()
 	{
 		return FormatCoordinate();
+	}
+
+	@Override
+	public double getLatitude()
+	{
+		return super.getLatitude();
+	}
+
+	@Override
+	public double getLongitude()
+	{
+		return super.getLongitude();
 	}
 
 }

@@ -23,8 +23,9 @@ import java.util.Date;
  * 
  * @author Longri
  */
-public class Location
+public class Location extends CoordinateGPS
 {
+	private static final long serialVersionUID = 3339644242602640422L;
 
 	/**
 	 * @author Longri
@@ -68,15 +69,9 @@ public class Location
 	 * @uml.property name="bearing"
 	 */
 	private float bearing = 0;
-	/**
-	 * @uml.property name="altitude"
-	 */
+
 	private float altitude = 0;
-	/**
-	 * @uml.property name="position"
-	 * @uml.associationEnd
-	 */
-	private CoordinateGPS Position = new CoordinateGPS();
+
 	/**
 	 * @uml.property name="provider"
 	 * @uml.associationEnd
@@ -86,11 +81,6 @@ public class Location
 	 * @uml.property name="timeStamp"
 	 */
 	private Date TimeStamp;
-
-	public Location()
-	{
-
-	}
 
 	/**
 	 * Constructor </br> You can set the values only over a constructor! </br> No manipulation of any value!
@@ -108,16 +98,24 @@ public class Location
 	public Location(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing, float bearing,
 			double altitude, ProviderType provider)
 	{
-		synchronized (this)
-		{
-			Position = new CoordinateGPS(latitude, longitude, (int) accuracy);
-			this.hasSpeed = hasSpeed;
-			this.speed = speed;
-			this.hasBearing = hasBearing;
-			this.bearing = bearing;
-			this.altitude = (float) altitude;
-			this.provider = provider;
-		}
+		super(latitude, longitude, (int) accuracy);
+		this.hasSpeed = hasSpeed;
+		this.speed = speed;
+		this.hasBearing = hasBearing;
+		this.bearing = bearing;
+		this.altitude = (float) altitude;
+		this.provider = provider;
+	}
+
+	public Location(int latitude, int longitude, int accuracy)
+	{
+		super(latitude, longitude, accuracy);
+	}
+
+	public Location(double latitude, double longitude, float accuracy)
+	{
+		super(latitude, longitude);
+		this.Accuracy = (int) accuracy;
 	}
 
 	/**
@@ -126,7 +124,7 @@ public class Location
 	 * @uml.property name="nULL_LOCATION"
 	 * @uml.associationEnd
 	 */
-	public static final Location NULL_LOCATION = new Location();
+	public static final Location NULL_LOCATION = new Location(0, 0, 0);
 
 	/**
 	 * Returns the Provider Type of this location
@@ -154,9 +152,10 @@ public class Location
 	 * 
 	 * @return Latitude as double
 	 */
+	@Override
 	public double getLatitude()
 	{
-		return Position.getLatitude();
+		return super.getLatitude();
 	}
 
 	/**
@@ -164,9 +163,10 @@ public class Location
 	 * 
 	 * @return Longitude as double
 	 */
+	@Override
 	public double getLongitude()
 	{
-		return Position.getLongitude();
+		return super.getLongitude();
 	}
 
 	/**
@@ -226,22 +226,13 @@ public class Location
 
 	public CoordinateGPS toCordinate()
 	{
-		return this.Position;
+		return new CoordinateGPS(this);
 	}
 
-	public void setlatitude(double latitude)
-	{
-		this.Position.setLatitude(latitude);
-	}
-
-	public void setLongitude(double longitude)
-	{
-		this.Position.setLongitude(longitude);
-	}
-
+	@Override
 	public void setAccuracy(float accuracy)
 	{
-		this.Position.setAccuracy(accuracy);
+		super.setAccuracy(accuracy);
 	}
 
 	public void setHasSpeed(boolean hasSpeed)
@@ -276,9 +267,8 @@ public class Location
 
 	public Location cpy()
 	{
-		Location ret = new Location();
+		Location ret = new Location(this.latitude, this.longitude, this.Accuracy);
 
-		ret.Position = new CoordinateGPS(Position);
 		ret.hasSpeed = this.hasSpeed;
 		ret.speed = this.speed;
 		ret.hasBearing = this.hasBearing;

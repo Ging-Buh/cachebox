@@ -356,8 +356,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.ShowRoute = true;
 						RouteOverlay.add(route);
 
-						Coordinate Projektion = new CoordinateGPS();
-						Coordinate LastCoord = new CoordinateGPS();
+						Coordinate Projektion = new CoordinateGPS(0, 0);
+						Coordinate LastCoord = new CoordinateGPS(0, 0);
 
 						for (int i = 0; i <= 360; i += 10) // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme
 															// mit dem Reduktionsalgorythmus
