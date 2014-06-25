@@ -71,8 +71,6 @@ public class Test_TestCoordinate extends TestCase
 	public void testCoordinateStorrage()
 	{
 		Coordinate corPankow = new Coordinate("52° 34,982N / 13° 23,540E");
-		Coordinate corEquator = new Coordinate("S 00° 00.205 E 006° 31.292");
-
 		TestCoordinate coor = new TestCoordinate(corPankow.getLatitude(), corPankow.getLongitude());
 
 		double la = coor.getLatitude();

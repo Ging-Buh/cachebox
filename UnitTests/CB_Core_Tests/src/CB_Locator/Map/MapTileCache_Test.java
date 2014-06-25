@@ -216,12 +216,6 @@ public class MapTileCache_Test extends TestCase
 		private boolean isDisposed = false;
 		private final long Hash;
 
-		public DummyTile()
-		{
-			this.Hash = -1;
-			InstanceCount++;
-		}
-
 		public DummyTile(Long Hash)
 		{
 			this.Hash = Hash;

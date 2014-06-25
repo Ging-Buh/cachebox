@@ -146,8 +146,6 @@ public class LatLonToPixel extends TestCase
 
 	private class fastLatLong implements Comparable<fastLatLong>
 	{
-		private static final long serialVersionUID = 1L;
-
 		/**
 		 * The latitude coordinate of this LatLong in degrees.
 		 */

@@ -23,8 +23,6 @@ import java.io.InputStream;
  * An ExternalRenderTheme allows for customizing the rendering style of the map via an XML file.
  */
 public class ExternalRenderTheme implements XmlRenderTheme {
-	private static final long serialVersionUID = 1L;
-
 	private final long lastModifiedTime;
 	private final File renderThemeFile;
 

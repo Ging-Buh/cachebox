@@ -15,7 +15,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class GdxTestRunner extends BlockJUnit4ClassRunner implements ApplicationListener
 {
-	private static LwjglApplication testRunnerAplication;
 	private Map<FrameworkMethod, RunNotifier> invokeInRender = new HashMap<FrameworkMethod, RunNotifier>();
 
 	public GdxTestRunner(Class<?> klass) throws InitializationError
@@ -33,7 +32,7 @@ public class GdxTestRunner extends BlockJUnit4ClassRunner implements Application
 		lwjglAppCfg.title = "GDX Test Runner";
 		lwjglAppCfg.samples = 16;
 		LwjglApplicationConfiguration.disableAudio = true;
-		testRunnerAplication = new LwjglApplication(this, lwjglAppCfg);
+		new LwjglApplication(this, lwjglAppCfg);
 	}
 
 	@Override

@@ -202,6 +202,9 @@ public class GPX_Export extends TestCase
 			}
 		}
 
+		sc.close();
+		sc = null;
+
 		assertTrue("Exportet Waypoint count must be " + mustWptCount + " but was " + WptCount, mustWptCount == WptCount);
 		assertTrue("Exportet Logs count must be " + mustLogCount + " but was " + LogCount, mustLogCount == LogCount);
 
