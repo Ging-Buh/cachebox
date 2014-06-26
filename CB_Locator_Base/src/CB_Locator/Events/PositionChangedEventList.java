@@ -9,7 +9,7 @@ import CB_Locator.Events.PositionChangedEvent.Priority;
 
 public class PositionChangedEventList
 {
-	private static ArrayList<PositionChangedEvent> list = new ArrayList<PositionChangedEvent>();
+	private static final ArrayList<PositionChangedEvent> list = new ArrayList<PositionChangedEvent>();
 
 	public static void Add(PositionChangedEvent event)
 	{

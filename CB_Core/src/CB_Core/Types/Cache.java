@@ -250,6 +250,11 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 	}
 
+	public boolean isDetailLoaded()
+	{
+		return (detail != null);
+	}
+
 	/**
 	 * Load Detail Information from DB
 	 */

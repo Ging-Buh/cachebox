@@ -30,6 +30,7 @@ import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -1695,8 +1696,17 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		setNewSettings(INITIAL_THEME);
 		mapTileLoader.clearLoadedTiles();
 		mapScale.ZoomChanged();
-		if (CrossLines != null) CrossLines.dispose();
-		CrossLines = null;
+
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
+		{
+			@Override
+			public void run()
+			{
+				if (CrossLines != null) CrossLines.dispose();
+				CrossLines = null;
+			}
+		});
+
 	}
 
 	@Override

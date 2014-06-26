@@ -163,8 +163,7 @@ public class TrackListView extends V_ListView
 
 	public void notifyActTrackChanged()
 	{
-		aktRouteItem.notifyTrackChanged(GlobalCore.AktuelleRoute);
-
+		if (aktRouteItem != null) aktRouteItem.notifyTrackChanged(GlobalCore.AktuelleRoute);
 		GL.that.renderOnce();
 	}
 
@@ -175,7 +174,6 @@ public class TrackListView extends V_ListView
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			selectedTrackItem = ((ListViewItemBase) v).getIndex();
-
 			setSelection(selectedTrackItem);
 			return true;
 		}

@@ -54,8 +54,8 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 	 *             if a coordinate is invalid.
 	 */
 	public LatLong(double latitude, double longitude) {
-		LatLongUtils.validateLatitude(latitude);
-		LatLongUtils.validateLongitude(longitude);
+//		LatLongUtils.validateLatitude(latitude);
+//		LatLongUtils.validateLongitude(longitude);
 
 		this.latitude = (int) (latitude * CONVERSIONFACTOR);
 		this.longitude = (int) (longitude * CONVERSIONFACTOR);
