@@ -203,102 +203,114 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		aktCache = cache;
 		if (aktCache == null) return;
-
-		if (aktCache.isDetailLoaded())
+		synchronized (aktCache)
 		{
-			aktCache.loadDetail();
-		}
 
-		if (showAtt)
-		{
-			for (int i = 0; i < 19; i++)
+			if (aktCache.isDetailLoaded())
 			{
-				if (i < aktCache.getAttributes().size())
+				aktCache.loadDetail();
+			}
+
+			if (showAtt)
+			{
+				try
 				{
-					try
+					int attributesSize = aktCache.getAttributes().size();
+					for (int i = 0; i < 19; i++)
 					{
-						String ImageName = aktCache.getAttributes().get(i).getImageName() + "Icon";
-						ImageName = ImageName.replace("_", "-");
-						att[i].setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite(ImageName)));
+						if (i < attributesSize)
+						{
+							try
+							{
+								String ImageName = aktCache.getAttributes().get(i).getImageName() + "Icon";
+								ImageName = ImageName.replace("_", "-");
+								att[i].setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite(ImageName)));
+							}
+							catch (Exception e)
+							{
+								att[i].setDrawable(null);
+							}
+						}
+						else
+						{
+							att[i].setDrawable(null);
+						}
 					}
-					catch (Exception e)
+				}
+				catch (Exception e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			if (showIcon && Icon != null)
+			{
+				if (aktWaypoint == null)
+				{
+					if (aktCache.CorrectedCoordiantesOrMysterySolved())
 					{
-						att[i].setDrawable(null);
+						Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(21)));
+					}
+					else
+					{
+						Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktCache.Type.ordinal())));
 					}
 				}
 				else
 				{
-					att[i].setDrawable(null);
+					Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktWaypoint.Type.ordinal())));
 				}
 			}
-		}
 
-		if (showIcon && Icon != null)
-		{
-			if (aktWaypoint == null)
+			if (showName && lbl_Name != null)
 			{
-				if (aktCache.CorrectedCoordiantesOrMysterySolved())
+				if (aktWaypoint == null)
 				{
-					Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(21)));
+					lbl_Name.setText(aktCache.getName());
 				}
 				else
 				{
-					Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktCache.Type.ordinal())));
+					lbl_Name.setText(aktWaypoint.getTitle());
 				}
 			}
-			else
-			{
-				Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktWaypoint.Type.ordinal())));
-			}
-		}
 
-		if (showName && lbl_Name != null)
-		{
-			if (aktWaypoint == null)
+			if (showGcCode && lblGcCode != null)
 			{
-				lbl_Name.setText(aktCache.getName());
+				lblGcCode.setText(aktCache.getGcCode());
 			}
-			else
-			{
-				lbl_Name.setText(aktWaypoint.getTitle());
-			}
-		}
 
-		if (showGcCode && lblGcCode != null)
-		{
-			lblGcCode.setText(aktCache.getGcCode());
-		}
+			if (showCoords && lblCoords != null)
+			{
+				if (aktWaypoint == null)
+				{
+					lblCoords.setText(aktCache.Pos.FormatCoordinate());
+				}
+				else
+				{
+					lblCoords.setText(aktWaypoint.Pos.FormatCoordinate());
+				}
+			}
 
-		if (showCoords && lblCoords != null)
-		{
-			if (aktWaypoint == null)
+			if (showWpDesc && lblDesc != null)
 			{
-				lblCoords.setText(aktCache.Pos.FormatCoordinate());
-			}
-			else
-			{
-				lblCoords.setText(aktWaypoint.Pos.FormatCoordinate());
-			}
-		}
+				if (aktWaypoint != null && !aktWaypoint.getDescription().equals(""))
+				{
+					lblDesc.setWrappedText(aktWaypoint.getDescription());
+				}
+				else
+				{
+					lblDesc.setText("");
+				}
 
-		if (showWpDesc && lblDesc != null)
-		{
-			if (aktWaypoint != null && !aktWaypoint.getDescription().equals(""))
-			{
-				lblDesc.setWrappedText(aktWaypoint.getDescription());
 			}
-			else
+
+			if (showSDT & SDT != null)
 			{
-				lblDesc.setText("");
+				SDT.setCache(aktCache);
 			}
 
 		}
-
-		if (showSDT & SDT != null)
-		{
-			SDT.setCache(aktCache);
-		}
-
 		Layout();
 	}
 

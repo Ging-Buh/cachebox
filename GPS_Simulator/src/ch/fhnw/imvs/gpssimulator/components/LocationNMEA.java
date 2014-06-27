@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import ch.fhnw.imvs.gpssimulator.data.GPSData;
 import ch.fhnw.imvs.gpssimulator.data.GPSData.Orientation;
 import ch.fhnw.imvs.gpssimulator.data.GPSDataListener;
-import ch.fhnw.imvs.gpssimulator.nmea.NMEASentence;
 
 @SuppressWarnings("serial")
 public class LocationNMEA extends JPanel implements GPSDataListener
@@ -111,8 +110,8 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 			public void stateChanged(ChangeEvent e)
 			{
 				GPSData.setLatitude(nmea2degree((Double) latitude.getValue()));
-				log4j.debug("Latitude: " + GPSData.getLatitude());
-				log4j.debug("Latitude (NMEA): " + NMEASentence.getNMEALatitude());
+				// log4j.debug("Latitude: " + GPSData.getLatitude());
+				// log4j.debug("Latitude (NMEA): " + NMEASentence.getNMEALatitude());
 			}
 		};
 
@@ -136,8 +135,8 @@ public class LocationNMEA extends JPanel implements GPSDataListener
 			public void stateChanged(ChangeEvent e)
 			{
 				GPSData.setLongitude(nmea2degree((Double) longitude.getValue()));
-				log4j.debug("Longitude: " + GPSData.getLongitude());
-				log4j.debug("Longitude NMEA: " + NMEASentence.getNMEALongitude());
+				// log4j.debug("Longitude: " + GPSData.getLongitude());
+				// log4j.debug("Longitude NMEA: " + NMEASentence.getNMEALongitude());
 			}
 		};
 
