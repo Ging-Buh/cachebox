@@ -128,15 +128,6 @@ public class MathUtils
 	 */
 	private static void computeDistanceAndBearingFast(double lat1, double lon1, double lat2, double lon2, float[] results)
 	{
-		double x1 = (lat1);
-		double y1 = (lon1);
-		double x2 = (lat2);
-		double y2 = (lon2);
-
-		double xd = x2 - x1;
-		double yd = y2 - y1;
-		double Distance = Math.sqrt(xd * xd + yd * yd);
-
 		double longitude1 = lon1;
 		double longitude2 = lon2;
 		double latitude1 = Math.toRadians(lat1);
