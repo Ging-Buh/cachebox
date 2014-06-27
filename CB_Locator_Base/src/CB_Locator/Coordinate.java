@@ -435,4 +435,14 @@ public class Coordinate extends LatLong implements Serializable
 		return super.getLongitude();
 	}
 
+	public int getIntLatitude()
+	{
+		return super.latitude;
+	}
+
+	public int getIntLongitude()
+	{
+		return super.longitude;
+	}
+
 }

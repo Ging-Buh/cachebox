@@ -177,8 +177,8 @@ public class GPX_Export extends TestCase
 		assertTrue("ExportFile must created @ " + exportFile.getAbsolutePath(), exportFile.exists());
 
 		// Check TAG counts
-		final int mustWptCount = 551;
-		final int mustLogCount = 2139;
+		final int mustWptCount = 550;
+		final int mustLogCount = 2138;
 
 		int WptCount = 0;
 		int LogCount = 0;

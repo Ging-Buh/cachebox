@@ -128,6 +128,14 @@ public class MathUtils
 	 */
 	private static void computeDistanceAndBearingFast(double lat1, double lon1, double lat2, double lon2, float[] results)
 	{
+		double x1 = (lat1);
+		double y1 = (lon1);
+		double x2 = (lat2);
+		double y2 = (lon2);
+
+		double xd = x2 - x1;
+		double yd = y2 - y1;
+		double Distance = Math.sqrt(xd * xd + yd * yd);
 
 		double longitude1 = lon1;
 		double longitude2 = lon2;
@@ -139,8 +147,12 @@ public class MathUtils
 		lat2 *= DEG_RAD;
 		lon2 *= DEG_RAD;
 
-		results[0] = (float) ((WGS84_MAJOR_AXIS) * Math.acos(Math.sin((float) lat1) * Math.sin((float) lat2) + Math.cos((float) lat1)
-				* Math.cos((float) lat2) * Math.cos((float) (lon2 - lon1))));
+		int IntWGS84_MAJOR_AXIS = (int) WGS84_MAJOR_AXIS;
+
+		results[0] = (float) ((IntWGS84_MAJOR_AXIS) * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2)
+				* Math.cos((lon2 - lon1))));
+
+		// results[0] = (float) Distance;
 
 		if (results.length > 1)
 		{

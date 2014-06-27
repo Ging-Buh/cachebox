@@ -98,7 +98,7 @@ public class DescriptorTest extends TestCase
 
 		}
 
-		assertTrue("Die Summe der X punkte sollte  sein", sumX == 838);
-		assertTrue("Die Summe der Y punkte sollte  sein", sumY == 237);
+		assertTrue("Die Summe der X punkte sollte  sein", sumX == 842);
+		assertTrue("Die Summe der Y punkte sollte  sein", sumY == 249);
 	}
 }

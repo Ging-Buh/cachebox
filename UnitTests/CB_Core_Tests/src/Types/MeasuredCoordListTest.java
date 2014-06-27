@@ -119,8 +119,8 @@ public class MeasuredCoordListTest extends TestCase
 		// Teste bei Sortierung entstandene Referenz Koordinate
 
 		boolean test = true;
-		if (MeasuredCoord.Referenz.getLatitude() != 49.40959516666667) test = false;
-		else if (MeasuredCoord.Referenz.getLongitude() != 6.203408499999999) test = false;
+		if (MeasuredCoord.Referenz.getLatitude() != 49.409595) test = false;
+		else if (MeasuredCoord.Referenz.getLongitude() != 6.203408) test = false;
 		assertTrue("mMeasuredCoordList hat beim Sortieren eine falsche Referenz erzeugt", test);
 
 		// eleminiere Ausreisser Werte mit einer Referenz Distanz > 50m

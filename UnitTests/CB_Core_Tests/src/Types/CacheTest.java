@@ -202,6 +202,9 @@ public class CacheTest extends TestCase
 		float distance = mCache.Distance(CalculationType.ACCURATE, true);
 		assertTrue("Entfernung muss 100m sein", (distance > 99.38390) && (distance < 99.38392));
 
+		distance = mCache.Distance(CalculationType.FAST, true);
+		assertTrue("Entfernung muss 100m sein", (distance > 99) && (distance < 101));
+
 	}
 
 	@Test

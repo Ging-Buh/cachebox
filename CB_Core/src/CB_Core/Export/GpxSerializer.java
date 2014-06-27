@@ -430,6 +430,13 @@ public final class GpxSerializer
 			{
 				validChars[validCount++] = c;
 			}
+			else
+			{
+				if (c == 10) // LineBreak
+				{
+					validChars[validCount++] = c;
+				}
+			}
 		}
 		String validText = new String(validChars, 0, validCount);
 		return validText;
