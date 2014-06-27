@@ -51,6 +51,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 		return mStartMode;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public IBinder onBind(Intent intent)
 	{
@@ -77,6 +78,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 
 	public static boolean finish = false;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onUnbind(Intent intent)
 	{
@@ -119,6 +121,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 		// after onUnbind() has already been called
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onDestroy()
 	{
@@ -140,6 +143,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void FallBackToNetworkProvider()
 	{
@@ -160,6 +164,7 @@ public class NotifyService extends Service implements GPS_FallBackEvent
 		startForeground(myID, notice);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void Fix()
 	{

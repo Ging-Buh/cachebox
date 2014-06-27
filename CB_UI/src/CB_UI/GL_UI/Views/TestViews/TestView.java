@@ -2,11 +2,6 @@ package CB_UI.GL_UI.Views.TestViews;
 
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
-import CB_Locator.Map.Descriptor;
-import CB_Locator.Map.Layer;
-import CB_Locator.Map.ManagerBase;
-import CB_Locator.Map.MapTileLoader;
-import CB_UI.GlobalCore;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -18,16 +13,13 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.RadioButton;
 import CB_UI_Base.GL_UI.Controls.RadioGroup;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Math.PointD;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Enthält die TestContols
@@ -220,103 +212,11 @@ public class TestView extends CB_View_Base
 
 	float camerazoom = 10;
 
-	private void runMapsforgePerformanceTest()
-	{
-		String result = "";
-		for (int i = 7; i < 19; i++)
-		{
-			result re = runMapsforgePerformanceTest(i);
-			result += "Render " + re.count + " Tiles at Zoom " + re.zoom + " in " + re.time + " ms" + GlobalCore.br;
-		}
-
-		GL_MsgBox.Show(result);
-	}
-
 	public class result
 	{
 		public int count;
 		public long time;
 		public int zoom;
-	}
-
-	private result runMapsforgePerformanceTest(int aktZoom)
-	{
-		long start = System.currentTimeMillis();
-
-		Layer layer = ManagerBase.Manager.GetLayerByName("germany", "", "");
-		camerazoom = getMapTilePosFactor(aktZoom);
-		int tmpzoom = aktZoom;
-
-		int halfMapIntWidth = mapIntWidth / 2;
-		int halfMapIntHeight = mapIntHeight / 2;
-
-		int halfDrawingtWidth = drawingWidth / 2;
-		int halfDrawingHeight = drawingHeight / 2;
-
-		int ySpeedVersatz = 0;
-
-		Descriptor lo = screenToDescriptor(new Vector2(halfMapIntWidth - halfDrawingtWidth, halfMapIntHeight - halfDrawingHeight
-				- ySpeedVersatz), tmpzoom);
-		Descriptor ru = screenToDescriptor(new Vector2(halfMapIntWidth + halfDrawingtWidth, halfMapIntHeight + halfDrawingHeight
-				+ ySpeedVersatz), tmpzoom);
-
-		int counter = 0;
-		for (int i = lo.getX(); i <= ru.getX(); i++)
-		{
-			for (int j = lo.getY(); j <= ru.getY(); j++)
-			{
-				Descriptor desc = new Descriptor(i, j, tmpzoom, false);
-				ManagerBase.Manager.getMapsforgePixMap(layer, desc, 0);
-				counter++;
-			}
-		}
-
-		result re = new result();
-		re.count = counter;
-		re.zoom = aktZoom;
-		re.time = System.currentTimeMillis() - start;
-		return re;
-	}
-
-	private Descriptor screenToDescriptor(Vector2 point, int zoom)
-	{
-		// World-Koordinaten in Pixel
-		Vector2 world = screenToWorld(point);
-		for (int i = MapTileLoader.MAX_MAP_ZOOM; i > zoom; i--)
-		{
-			world.x /= 2;
-			world.y /= 2;
-		}
-		world.x /= 256;
-		world.y /= 256;
-		int x = (int) world.x;
-		int y = (int) world.y;
-		Descriptor result = new Descriptor(x, y, zoom, false);
-		return result;
-	}
-
-	private Vector2 screenToWorld(Vector2 point)
-	{
-
-		PointD cPoint = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()),
-				Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
-				MapTileLoader.MAX_MAP_ZOOM);
-
-		Vector2 screenCenterW = new Vector2((float) cPoint.X, (float) cPoint.Y);
-
-		Vector2 result = new Vector2(0, 0);
-		try
-		{
-
-			result.x = screenCenterW.x + ((long) point.x - mapIntWidth / 2) * camerazoom;
-			result.y = screenCenterW.y + ((long) point.y - mapIntHeight / 2) * camerazoom;
-
-		}
-		catch (Exception e)
-		{
-			// wenn hier ein Fehler auftritt, dann geben wir einen Vector 0,0 zurück!
-		}
-		return result;
 	}
 
 	public static final int MAX_MAP_ZOOM = 22;

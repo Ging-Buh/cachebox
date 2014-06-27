@@ -9,13 +9,14 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_UI.GL_UI.Views.FieldNoteViewItem;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
@@ -309,7 +310,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private void iniGC_VoteItem()
 	{
 
-		if (!Config.settings.GcVotePassword.getEncryptedValue().equalsIgnoreCase(""))
+		if (!CB_Core_Settings.GcVotePassword.getEncryptedValue().equalsIgnoreCase(""))
 		{
 			float itemHeight = UI_Size_Base.that.getButtonHeight() * 1.1f;
 
@@ -399,7 +400,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		if (isNewFieldNote)
 		{
 			// Choice last selection
-			if (Config.settings.TB_DirectLog.getValue())
+			if (CB_UI_Settings.TB_DirectLog.getValue())
 			{
 				rbDirectLog.setChecked(true);
 			}

@@ -185,6 +185,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 
 	public abstract SettingBase<T> copy();
 
+	@SuppressWarnings("unchecked")
 	public void setValueFrom(SettingBase<?> cpy)
 	{
 		try

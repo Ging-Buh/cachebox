@@ -14,7 +14,6 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Import.BreakawayImportThread;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportCBServer;
-import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.ExportEntry;
 import CB_Core.Types.ExportList;
@@ -939,7 +938,6 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			{
 				importStarted = true;
 
-				Importer importer = new Importer();
 				ImporterProgress ip = new ImporterProgress();
 
 				try
@@ -1152,8 +1150,6 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	}
 
-	private volatile Thread CopyThread;
-
 	protected void runExport()
 	{
 		ExportList toExport = new ExportList();
@@ -1189,7 +1185,6 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		RpcAnswer answer = client.ExportChangesToServer(toExport);
 		if ((answer != null) && (answer instanceof RpcAnswer_ExportChangesToServer))
 		{
-			RpcAnswer_ExportChangesToServer ecs = (RpcAnswer_ExportChangesToServer) answer;
 			// Export ohne Fehler -> Replicationseinträge entfernen
 			String sql = "delete from Replication";
 			Database.Data.execSQL(sql);

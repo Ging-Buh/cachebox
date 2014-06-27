@@ -134,7 +134,6 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	private final CB_List<String> wayNamesStrings;
 	private final List<List<List<ShapePaintContainer>>> ways;
 	private final List<SymbolContainer> waySymbols;
-	private final int ThreadId;
 	private final TileBitmap bitmap;
 
 	private double tileLatLon_0_x, tileLatLon_0_y, tileLatLon_1_x, tileLatLon_1_y;
@@ -149,7 +148,6 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	 */
 	public MixedDatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory, int ThreadId)
 	{
-		this.ThreadId = ThreadId;
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 

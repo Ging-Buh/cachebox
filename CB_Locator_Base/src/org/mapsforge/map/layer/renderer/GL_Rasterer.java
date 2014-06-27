@@ -23,7 +23,6 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
-import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.graphics.CircleDrawable;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_Paint;
@@ -109,7 +108,7 @@ public class GL_Rasterer
 
 		{// TODO Don't draw if circle complete outside of tile
 
-			CB_RectF rec = new CB_RectF(PointX - radius, PointY - radius, radius * 2, radius * 2);
+			// CB_RectF rec = new CB_RectF(PointX - radius, PointY - radius, radius * 2, radius * 2);
 
 			// TODO TILE_REG.contains(rec) is wrong
 

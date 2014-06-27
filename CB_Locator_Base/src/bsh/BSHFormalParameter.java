@@ -34,41 +34,41 @@
 package bsh;
 
 /**
-	A formal parameter declaration.
-	For loose variable declaration type is null.
-*/
+ * A formal parameter declaration. For loose variable declaration type is null.
+ */
+@SuppressWarnings("serial")
 class BSHFormalParameter extends SimpleNode
 {
+	@SuppressWarnings("rawtypes")
 	public static final Class UNTYPED = null;
 	public String name;
 	// unsafe caching of type here
+	@SuppressWarnings("rawtypes")
 	public Class type;
 
-	BSHFormalParameter(int id) { super(id); }
-
-	public String getTypeDescriptor( 
-		CallStack callstack, Interpreter interpreter, String defaultPackage ) 
+	BSHFormalParameter(int id)
 	{
-		if ( jjtGetNumChildren() > 0 )
-			return ((BSHType)jjtGetChild(0)).getTypeDescriptor( 
-				callstack, interpreter, defaultPackage );
+		super(id);
+	}
+
+	public String getTypeDescriptor(CallStack callstack, Interpreter interpreter, String defaultPackage)
+	{
+		if (jjtGetNumChildren() > 0) return ((BSHType) jjtGetChild(0)).getTypeDescriptor(callstack, interpreter, defaultPackage);
 		else
 			// this will probably not get used
-			return "Ljava/lang/Object;";  // Object type
+			return "Ljava/lang/Object;"; // Object type
 	}
 
 	/**
-		Evaluate the type.
-	*/
-	public Object eval( CallStack callstack, Interpreter interpreter) 
-		throws EvalError
+	 * Evaluate the type.
+	 */
+	@Override
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
 	{
-		if ( jjtGetNumChildren() > 0 )
-			type = ((BSHType)jjtGetChild(0)).getType( callstack, interpreter );
+		if (jjtGetNumChildren() > 0) type = ((BSHType) jjtGetChild(0)).getType(callstack, interpreter);
 		else
 			type = UNTYPED;
 
 		return type;
 	}
 }
-

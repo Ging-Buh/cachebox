@@ -1,10 +1,5 @@
 package CB_UI.GL_UI.Activitys;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Timer;
-
-import CB_Core.Api.PocketQuery.PQ;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -15,9 +10,6 @@ import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
-import CB_UI_Base.GL_UI.Controls.Spinner;
-import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
@@ -32,33 +24,14 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 {
 	public static final boolean RELEASED = false;
 
-	private V_ListView lvPQs;
 	private Button bOK, bCancel;
-	private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
+	private float innerHeight;
 	private Label lblTitle, lblProgressMsg;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler,
-			checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
-	private Spinner spinner;
-
-	private Timer mAnimationTimer;
-	private long ANIMATION_TICK = 450;
-	private int animationValue = 0;
-
-	private Date ImportStart;
-	// private int LogImports;
-	// private int CacheImports;
-
 	private static Boolean importCancel = false;
 	private Boolean importStarted = false;
 
-	private ArrayList<PQ> PqList;
-
-	private CB_RectF itemRec;
-	private float itemHeight = -1;
-
 	private ScrollBox scrollBox;
-	private ImportAnimation dis;
 
 	public static boolean isCanceld()
 	{
@@ -68,7 +41,6 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 	public SyncActivity()
 	{
 		super(ActivityRec(), "importActivity");
-		CollapseBoxMaxHeight = CollapseBoxHeight = UI_Size_Base.that.getButtonHeight() * 6;
 		innerHeight = 1000;
 		scrollBox = new ScrollBox(ActivityRec());
 		this.addChild(scrollBox);
@@ -199,15 +171,6 @@ public class SyncActivity extends ActivityBase implements ProgressChangedEvent
 			Layout();
 		}
 	};
-
-	private void stopTimer()
-	{
-		if (mAnimationTimer != null)
-		{
-			mAnimationTimer.cancel();
-			mAnimationTimer = null;
-		}
-	}
 
 	@Override
 	public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress)

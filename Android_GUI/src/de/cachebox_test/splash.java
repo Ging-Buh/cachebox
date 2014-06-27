@@ -262,6 +262,7 @@ public class splash extends Activity
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onStart()
 	{

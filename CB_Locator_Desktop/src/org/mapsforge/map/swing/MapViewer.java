@@ -131,7 +131,6 @@ public final class MapViewer {
 		return tileDownloadLayer;
 	}
 
-	@SuppressWarnings("unused")
 	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
 			File mapFile) {
 		boolean isTransparent = false;

@@ -91,8 +91,6 @@ public class CacheInfo extends CB_View_Base
 	 */
 	public static final int VIEW_MODE_LAST_FOUND_AND_DTS = SHOW_LAST_FOUND + SHOW_S_D_T;
 
-	private static final SimpleDateFormat postFormater = new SimpleDateFormat("dd.MM.yy");
-
 	private int mViewMode = VIEW_MODE_CACHE_LIST;
 
 	private Cache mCache;

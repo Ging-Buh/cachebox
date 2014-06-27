@@ -110,7 +110,7 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 				}
 
 			}
-			while (false && !cancelThread);
+			while (!cancelThread);
 
 			if ((result == 0) && (!cancelThread) && (logList.size() > 0))
 			{

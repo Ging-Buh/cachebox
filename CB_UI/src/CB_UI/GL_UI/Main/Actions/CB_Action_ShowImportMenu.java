@@ -162,14 +162,13 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_IMPORT_GS, "API_IMPORT");
-		if (!StringH.isEmpty(Config.CBS_IP.getValue())) mi = icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
-		mi = icm.addItem(MenuID.MI_IMPORT_GPX, "GPX");
-		mi = icm.addItem(MenuID.MI_IMPORT_GCV, "GC_Vote");
-		mi = icm.addItem(MenuID.MI_IMPORT, "moreImport");
-		mi = icm.addItem(MenuID.MI_EXPORT_RUN, "export");
+		icm.addItem(MenuID.MI_IMPORT_GS, "API_IMPORT");
+		if (!StringH.isEmpty(Config.CBS_IP.getValue())) icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
+		icm.addItem(MenuID.MI_IMPORT_GPX, "GPX");
+		icm.addItem(MenuID.MI_IMPORT_GCV, "GC_Vote");
+		icm.addItem(MenuID.MI_IMPORT, "moreImport");
+		icm.addItem(MenuID.MI_EXPORT_RUN, "export");
 		return icm;
 	}
 
@@ -307,9 +306,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_IMPORT_GCV, "GC-Vote Import");
+		icm.addItem(MenuID.MI_IMPORT_GCV, "GC-Vote Import");
 
 		icm.Show();
 	}
@@ -337,9 +335,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_IMPORT_GPX, "GPX Import");
+		icm.addItem(MenuID.MI_IMPORT_GPX, "GPX Import");
 
 		icm.Show();
 	}
@@ -367,9 +363,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
+		icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
 
 		icm.Show();
 	}
@@ -408,11 +402,9 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_IMPORT_OVER_POSITION");
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
+		icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
+		icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_IMPORT_OVER_POSITION");
+		icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
 
 		icm.Show();
 	}

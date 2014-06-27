@@ -1,11 +1,11 @@
 package CB_UI.GL_UI.Main.Actions;
 
-import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -36,7 +36,7 @@ public class CB_Action_Show_Settings extends CB_ActionCommand
 	{
 
 		SettingsActivity settingsDialog = new SettingsActivity();
-		lastNightValue = Config.settings.nightMode.getValue();
+		lastNightValue = CB_UI_Base_Settings.nightMode.getValue();
 
 		settingsDialog.show();
 	}

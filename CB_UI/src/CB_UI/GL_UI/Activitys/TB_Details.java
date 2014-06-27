@@ -34,7 +34,7 @@ public class TB_Details extends ActivityBase
 	private Label lblName, lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
 	private Label lblTypeName, lblTbCode, lblOwner, lblBirth;
 	// TODO Visit,Home und Distance müssen noch angezeigt werden!
-	private Label TypeName, TbCode, Owner, Birth, lastVisit, Home, TravelDistance;
+	private Label TypeName, TbCode, Owner, Birth;
 	private Box AboutThisItem, GoalThisItem, DetailThisItem;
 
 	public TB_Details()
@@ -112,10 +112,8 @@ public class TB_Details extends ActivityBase
 		TypeName = new Label("TypeName");
 		TbCode = new Label("TbCode");
 		Owner = new Label("Owner");
-		lastVisit = new Label("LastVisit");
-		Home = new Label("Home");
+
 		Birth = new Label("Birth");
-		TravelDistance = new Label("TravelDistance");
 
 		DetailThisItem = new Box(10, 10, "DetailThisItem");
 		DetailThisItem.setBackground(SpriteCacheBase.activityBackground);

@@ -16,7 +16,6 @@ package org.mapsforge.core.model;
 
 import java.io.Serializable;
 
-import org.mapsforge.core.util.LatLongUtils;
 
 /**
  * A LatLong represents an immutable pair of latitude and longitude coordinates.

@@ -9,13 +9,11 @@ import bsh.Interpreter;
 
 public class BshLayer extends Layer
 {
-	private final String filename;
 	private Interpreter interpreter;
 
 	public BshLayer(Type LayerType, String filename)
 	{
 		super(LayerType, "B- " + FileIO.GetFileNameWithoutExtension(filename), FileIO.GetFileNameWithoutExtension(filename), "");
-		this.filename = filename;
 		this.interpreter = new Interpreter();
 		try
 		{
@@ -23,19 +21,19 @@ public class BshLayer extends Layer
 		}
 		catch (FileNotFoundException e)
 		{
-			 
+
 			e.printStackTrace();
 			this.interpreter = null;
 		}
 		catch (IOException e)
 		{
-			 
+
 			e.printStackTrace();
 			this.interpreter = null;
 		}
 		catch (EvalError e)
 		{
-			 
+
 			e.printStackTrace();
 			this.interpreter = null;
 		}
@@ -54,7 +52,7 @@ public class BshLayer extends Layer
 		}
 		catch (EvalError e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 		return null;

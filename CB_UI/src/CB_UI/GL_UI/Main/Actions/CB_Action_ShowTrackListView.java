@@ -6,7 +6,6 @@ import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate.Type;
@@ -15,6 +14,7 @@ import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.GL_UI.Views.TrackListViewItem;
 import CB_UI.Map.RouteOverlay;
 import CB_UI.Map.RouteOverlay.Track;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
@@ -137,7 +137,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_LOAD:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"),
+					platformConector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"),
 							Translation.Get("load"), new IgetFileReturnListner()
 							{
 								@Override
@@ -157,7 +157,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_SAVE:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"),
+					platformConector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"),
 							Translation.Get("save"), new IgetFileReturnListner()
 							{
 								TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();

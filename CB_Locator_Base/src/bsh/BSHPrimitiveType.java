@@ -31,14 +31,22 @@
  *                                                                           *
  *****************************************************************************/
 
-
 package bsh;
 
+@SuppressWarnings("serial")
 class BSHPrimitiveType extends SimpleNode
 {
+	@SuppressWarnings("rawtypes")
 	public Class type;
 
-	BSHPrimitiveType(int id) { super(id); }
-	public Class getType() { return type; }
-}
+	BSHPrimitiveType(int id)
+	{
+		super(id);
+	}
 
+	@SuppressWarnings("rawtypes")
+	public Class getType()
+	{
+		return type;
+	}
+}

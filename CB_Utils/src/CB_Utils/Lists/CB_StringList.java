@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class CB_StringList extends CB_List<String>
 {
+	private static final long serialVersionUID = -3065632065615067769L;
 	private String[] items;
 	private int[] hashList;
 

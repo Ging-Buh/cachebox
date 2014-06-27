@@ -31,36 +31,35 @@
  *                                                                           *
  *****************************************************************************/
 
-
 package bsh;
 
+@SuppressWarnings("serial")
 class BSHReturnType extends SimpleNode
 {
 	public boolean isVoid;
 
-	BSHReturnType(int id) { super(id); }
-
-	BSHType getTypeNode() { 
-		return (BSHType)jjtGetChild(0);
+	BSHReturnType(int id)
+	{
+		super(id);
 	}
 
-	public String getTypeDescriptor( 
-		CallStack callstack, Interpreter interpreter, String defaultPackage ) 
+	BSHType getTypeNode()
 	{
-		if ( isVoid )
-			return "V";
-		else
-			return getTypeNode().getTypeDescriptor( 
-				callstack, interpreter, defaultPackage );
+		return (BSHType) jjtGetChild(0);
 	}
 
-	public Class evalReturnType( 
-		CallStack callstack, Interpreter interpreter ) throws EvalError
+	public String getTypeDescriptor(CallStack callstack, Interpreter interpreter, String defaultPackage)
 	{
-		if ( isVoid )
-			return Void.TYPE;
+		if (isVoid) return "V";
 		else
-			return getTypeNode().getType( callstack, interpreter );
+			return getTypeNode().getTypeDescriptor(callstack, interpreter, defaultPackage);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Class evalReturnType(CallStack callstack, Interpreter interpreter) throws EvalError
+	{
+		if (isVoid) return Void.TYPE;
+		else
+			return getTypeNode().getType(callstack, interpreter);
 	}
 }
-
