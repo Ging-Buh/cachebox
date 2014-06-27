@@ -595,8 +595,28 @@ public class DescriptionImageGrabber
 						new File(local).delete();
 					}
 					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden können
-					local = BuildAdditionalImageFilenameHash(gcCode, decodedImageName, uri);
+					// Hier erst die alten Version mit den Klammern als Eingrenzung des Hash
+					// Dies hier machen, damit die Namen der Spoiler ins neue System Konvertiert werden können.
+					String localOld = BuildAdditionalImageFilenameHash(gcCode, decodedImageName, uri);
+					// Neuen Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden
+					// können
+					// Hier jetzt mit @ als Eingrenzung des Hashs
+					local = BuildAdditionalImageFilenameHashNew(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);
+					File oldFile = new File(localOld);
+					if (oldFile.exists())
+					{
+						try
+						{
+							oldFile.renameTo(new File(local));
+							afiles.add(filename);
+						}
+						catch (Exception ex)
+						{
+							Logger.Error("Error trying to rename Spoiler with old Name format", ex.getMessage());
+						}
+					}
+
 					// überprüfen, ob dieser Spoiler bereits geladen wurde
 					if (afiles.contains(filename))
 					{
@@ -637,8 +657,8 @@ public class DescriptionImageGrabber
 					for (String file : afiles)
 					{
 						String fileNameWithOutExt = file.replaceFirst("[.][^.]+$", "");
-						// Testen, ob dieser Dateiname einen gültigen ACB Hash hat (eingeschlossen zwischen ([{....}])>
-						if (fileNameWithOutExt.endsWith("}])") && fileNameWithOutExt.contains("([{"))
+						// Testen, ob dieser Dateiname einen gültigen ACB Hash hat (eingeschlossen zwischen @....@>
+						if (fileNameWithOutExt.endsWith("@") && fileNameWithOutExt.contains("@"))
 						{
 							// file enthält nur den Dateinamen, nicht den Pfad. Diesen Dateinamen um den Pfad erweitern, in dem hier die
 							// Spoiler gespeichert wurden
@@ -726,14 +746,8 @@ public class DescriptionImageGrabber
 	}
 
 	/**
-	 * @param GcCode
-	 * @param ImageName
-	 * @param uri
-	 * @param SpoilerFolder
-	 *            Config.settings.SpoilerFolder.getValue()
-	 * @param SpoilerFolderLocal
-	 *            Config.settings.SpoilerFolderLocal.getValue()
-	 * @return
+	 * Alte Version mit den Klammern als Eingrenzung des Hashs. Dies funktioniert nicht, da die Klammern nicht in URL's verwendet werden
+	 * dürfen (CBServer)
 	 */
 	public static String BuildAdditionalImageFilenameHash(String GcCode, String ImageName, URI uri)
 	{
@@ -753,6 +767,38 @@ public class DescriptionImageGrabber
 
 		// Create sdbm Hash from Path of URI, not from complete URI
 		return imagePath + "/" + GcCode + " - " + ImageName + " ([{" + SDBM_Hash.sdbm(uri.getPath().toString()) + "}])" + extension;
+	}
+
+	/**
+	 * Neue Version, mit @ als Eingrenzung des Hashs, da die Klammern nicht als URL's verwendet werden dürfen
+	 * 
+	 * @param GcCode
+	 * @param ImageName
+	 * @param uri
+	 * @param SpoilerFolder
+	 *            Config.settings.SpoilerFolder.getValue()
+	 * @param SpoilerFolderLocal
+	 *            Config.settings.SpoilerFolderLocal.getValue()
+	 * @return
+	 */
+	public static String BuildAdditionalImageFilenameHashNew(String GcCode, String ImageName, URI uri)
+	{
+		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
+
+		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
+				+ GcCode.substring(0, 4);
+
+		ImageName = ImageName.replace("[/:*?\"<>|]", "");
+		ImageName = ImageName.replace("\\", "");
+		ImageName = ImageName.replace("\n", "");
+		ImageName = ImageName.replace("\"", "");
+		ImageName = ImageName.trim();
+
+		int idx = uri.toString().lastIndexOf('.');
+		String extension = (idx >= 0) ? uri.toString().substring(idx) : ".";
+
+		// Create sdbm Hash from Path of URI, not from complete URI
+		return imagePath + "/" + GcCode + " - " + ImageName + " @" + SDBM_Hash.sdbm(uri.getPath().toString()) + "@" + extension;
 	}
 
 	private static boolean HandleMissingImages(boolean imageLoadError, URI uri, String local)
