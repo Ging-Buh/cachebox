@@ -1019,19 +1019,16 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 						long startTime = System.currentTimeMillis();
 
-						Database.Data.beginTransaction();
 						try
 						{
 
 							importCBServer.importCBServer(cbServerExportList, ip, checkBoxPreloadImages.isChecked());
 
-							Database.Data.setTransactionSuccessful();
 						}
 						catch (Exception exc)
 						{
 							exc.printStackTrace();
 						}
-						Database.Data.endTransaction();
 
 						if (BreakawayImportThread.isCanceld())
 						{
