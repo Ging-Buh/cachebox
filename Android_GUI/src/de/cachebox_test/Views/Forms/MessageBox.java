@@ -527,6 +527,7 @@ public class MessageBox extends android.app.Dialog
 		/**
 		 * Create the custom dialog
 		 */
+		@SuppressWarnings("deprecation")
 		public MessageBox create()
 		{
 			int winWidth = UI_Size_Base.that != null ? UI_Size_Base.that.getWindowWidth() : WindowWidth;
@@ -654,6 +655,7 @@ public class MessageBox extends android.app.Dialog
 			return dialog;
 		}
 
+		@SuppressWarnings("deprecation")
 		private void setBackgroundDrawables(View layout)
 		{
 			Resources res = context.getResources();

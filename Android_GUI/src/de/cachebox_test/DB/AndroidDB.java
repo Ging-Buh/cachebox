@@ -47,6 +47,7 @@ public class AndroidDB extends Database
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void Reset()
 	{

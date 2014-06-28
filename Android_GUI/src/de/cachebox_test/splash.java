@@ -72,13 +72,11 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 
 import de.cachebox_test.Components.copyAssetFolder;
@@ -270,8 +268,6 @@ public class splash extends Activity
 
 		// initial GDX
 		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-
 		// first, try to find stored preferences of workPath
 		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
@@ -466,9 +462,6 @@ public class splash extends Activity
 					}
 				});
 
-				// Set max height of ScrollView
-				ScrollView sv = (ScrollView) dialog.findViewById(R.id.scrollView);
-				// TODO set max
 				LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.scrollViewLinearLayout);
 
 				// add all Buttons for created Workspaces
@@ -849,6 +842,7 @@ public class splash extends Activity
 		if (FileIO.FileExists(extPath))
 		{
 			StatFs stat = new StatFs(extPath);
+			@SuppressWarnings("deprecation")
 			long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
 			if (bytesAvailable == 0)
 			{

@@ -16,10 +16,6 @@
 package org.mapsforge.map.android.graphics;
 
 import java.io.InputStream;
-import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +25,6 @@ import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 
 import android.annotation.TargetApi;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 /**
@@ -43,8 +38,6 @@ import android.graphics.BitmapFactory;
 public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap
 {
 	private static final Logger LOGGER = Logger.getLogger(AndroidTileBitmap.class.getName());
-	private static HashMap<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<Integer, Set<SoftReference<Bitmap>>>();
-
 	private static AtomicInteger tileInstances;
 
 	// For modern Android versions, bitmap storage can be recycled. To support different tile
@@ -56,49 +49,6 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap
 		{
 			tileInstances = new AtomicInteger();
 		}
-	}
-
-	private static int composeHash(int tileSize, boolean isTransparent)
-	{
-		if (isTransparent)
-		{
-			return tileSize + 0x10000000;
-		}
-		return tileSize;
-	}
-
-	private static android.graphics.Bitmap getTileBitmapFromReusableSet(int tileSize, boolean isTransparent)
-	{
-		int hash = composeHash(tileSize, isTransparent);
-		Set<SoftReference<Bitmap>> subSet = reusableTileBitmaps.get(hash);
-
-		if (subSet == null)
-		{
-			return null;
-		}
-		android.graphics.Bitmap bitmap = null;
-		synchronized (subSet)
-		{
-			final Iterator<SoftReference<android.graphics.Bitmap>> iterator = subSet.iterator();
-			android.graphics.Bitmap candidate;
-			while (iterator.hasNext())
-			{
-				candidate = iterator.next().get();
-				if (null != candidate && candidate.isMutable())
-				{
-					bitmap = candidate;
-					// Remove from reusable set so it can't be used again.
-					iterator.remove();
-					break;
-				}
-				else
-				{
-					// Remove from the set if the reference has been cleared.
-					iterator.remove();
-				}
-			}
-		}
-		return bitmap;
 	}
 
 	/*
@@ -121,7 +71,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap
 			// is triggered if the stream is not readable,
 			// so that it can be handled at this point, rather than later
 			// during bitmap painting
-			int w = this.bitmap.getWidth();
+			this.bitmap.getWidth();
 		}
 		catch (Exception e)
 		{

@@ -242,6 +242,7 @@ public class ActivityUtils
 	// / <param name="x"></param>
 	// / <param name="y"></param>
 	// / <param name="height"></param>
+	@SuppressWarnings("deprecation")
 	public static int PutImageTargetHeight(Canvas canvas, Drawable image, double Angle, int x, int y, int newHeight)
 	{
 
@@ -273,6 +274,7 @@ public class ActivityUtils
 
 	}
 
+	@SuppressWarnings("deprecation")
 	public static int PutImageScale(Canvas canvas, Drawable image, double Angle, int x, int y, double scale)
 	{
 

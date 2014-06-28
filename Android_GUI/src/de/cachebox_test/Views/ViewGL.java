@@ -26,6 +26,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 
 	public static View ViewGl;
 
+	@SuppressWarnings("deprecation")
 	public ViewGL(Context context, LayoutInflater inflater, View glView, GL glListener)
 	{
 		super(context);

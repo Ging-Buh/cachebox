@@ -29,7 +29,6 @@ import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
-import android.os.Build;
 
 class AndroidPaint implements Paint
 {
@@ -149,7 +148,7 @@ class AndroidPaint implements Paint
 		{
 			return;
 		}
-		
+
 		this.paint.setColor(AndroidGraphicFactory.getColor(Color.WHITE));
 		this.paint.setShader(new BitmapShader(AndroidGraphicFactory.getBitmap(bitmap), TileMode.REPEAT, TileMode.REPEAT));
 	}
@@ -167,10 +166,11 @@ class AndroidPaint implements Paint
 	}
 
 	float[] strokeDasharray;
+
 	@Override
 	public void setDashPathEffect(float[] strokeDasharray)
 	{
-		this.strokeDasharray=strokeDasharray;
+		this.strokeDasharray = strokeDasharray;
 		PathEffect pathEffect = new DashPathEffect(this.strokeDasharray, 0);
 		this.paint.setPathEffect(pathEffect);
 	}
@@ -207,18 +207,19 @@ class AndroidPaint implements Paint
 
 	FontFamily fontFamily;
 	FontStyle fontStyle;
+
 	@Override
 	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle)
 	{
-		this.fontFamily=fontFamily;
-		this.fontStyle=fontStyle;
+		this.fontFamily = fontFamily;
+		this.fontStyle = fontStyle;
 		this.paint.setTypeface(Typeface.create(getTypeface(fontFamily), getFontStyle(fontStyle)));
 	}
 
 	@Override
 	public Cap getCap()
 	{
-		switch(this.paint.getStrokeCap())
+		switch (this.paint.getStrokeCap())
 		{
 		case BUTT:
 			return Cap.BUTT;
@@ -228,8 +229,8 @@ class AndroidPaint implements Paint
 			return Cap.SQUARE;
 		default:
 			return Cap.BUTT;
-				}
-		
+		}
+
 	}
 
 	@Override
@@ -241,7 +242,7 @@ class AndroidPaint implements Paint
 	@Override
 	public Style getStyle()
 	{
-		switch(this.paint.getStyle())
+		switch (this.paint.getStyle())
 		{
 		case FILL:
 			return Style.FILL;
@@ -252,7 +253,7 @@ class AndroidPaint implements Paint
 		default:
 			return Style.STROKE;
 		}
-		}
+	}
 
 	@Override
 	public float getTextSize()

@@ -41,6 +41,7 @@ import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
 
+@SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 {
 

@@ -7,7 +7,6 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
-import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -406,31 +405,6 @@ public class CacheDraw
 			double cacheBearing = bearing - heading;
 			String cacheDistance = UnitFormatter.DistanceString(cache.Distance(CalculationType.FAST, false));
 			DrawBearing(cache, canvas, drawingRec, cacheDistance, cacheBearing);
-
-		}
-	}
-
-	@SuppressWarnings("unused")
-	public void DrawBearing(Cache cache, Canvas canvas, CB_Rect drawingRec, Waypoint waypoint)
-	{
-		if (Locator.Valid())
-		{
-			Coordinate position = Locator.getCoordinate();
-			double heading = Locator.getHeading();
-			double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(),
-					waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
-			double waypointBearing = bearing - heading;
-			float distance = 0;
-			if (waypoint == null)
-			{
-				distance = cache.Distance(CalculationType.FAST, false);
-			}
-			else
-			{
-				distance = waypoint.Distance();
-			}
-			String waypointDistance = UnitFormatter.DistanceString(distance);
-			DrawBearing(cache, canvas, drawingRec, waypointDistance, waypointBearing);
 
 		}
 	}

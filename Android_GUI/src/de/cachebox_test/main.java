@@ -100,6 +100,7 @@ import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -194,6 +195,8 @@ import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
  * @author ging-buh
  * @author arbor95
  */
+@SuppressLint("Wakelock")
+@SuppressWarnings("deprecation")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
@@ -1764,8 +1767,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public boolean sendMotionEvent(final MotionEvent event)
 	{
-		// Weitergabe der Toucheingabe an den Gl_Listener
-		// ToDo: noch nicht fertig!!!!!!!!!!!!!
 
 		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
