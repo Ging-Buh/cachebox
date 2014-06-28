@@ -159,8 +159,22 @@ public final class GpxSerializer
 				simpleText(gpx, PREFIX_GPX, "time", dateFormatZ.format(hiddenDate));
 			}
 
-			multipleTexts(gpx, PREFIX_GPX, "name", cache.getGcCode(), "desc", cache.getName(), "url", cache.getUrl(), "urlname",
-					cache.getName(), "sym", cache.isFound() ? "Geocache Found" : "Geocache", "type", "Geocache|" + cache.Type.toString());
+			String additinalIfFound = cache.isFound() ? "|Found" : "";
+			String note = Database.GetNote(cache);
+			if (note == null) note = "";
+			String solver = Database.GetSolver(cache);
+			if (solver == null) solver = "";
+
+			multipleTexts(gpx, PREFIX_GPX,//
+					"name", cache.getGcCode(),//
+					"desc", cache.getName(),//
+					"url", cache.getUrl(), //
+					"urlname", cache.getName(),//
+					"sym", cache.isFound() ? "Geocache Found" : "Geocache", //
+					"type", "Geocache|" + cache.Type.toString() + additinalIfFound,//
+					"note", note,//
+					"solver", solver//
+			);
 
 			gpx.startTag(PREFIX_GROUNDSPEAK, "cache");
 			gpx.attribute("", "id", cache.getGcId());
@@ -257,18 +271,18 @@ public final class GpxSerializer
 	private void writeCacheWaypoint(final Waypoint wp) throws IOException
 	{
 		final Coordinate coords = wp.Pos;
-		// TODO: create some extension to GPX to include waypoint without coords
 		if (coords != null)
 		{
 			gpx.startTag(PREFIX_GPX, "wpt");
 			gpx.attribute("", "lat", Double.toString(coords.getLatitude()));
 			gpx.attribute("", "lon", Double.toString(coords.getLongitude()));
-			multipleTexts(gpx, PREFIX_GPX, "name", wp.getDescription(), "desc", wp.getTitle(), "sym", wp.Type.toString(), // TODO: Correct
-																															// identifier
-																															// string
-					"type", "Waypoint|" + wp.Type.toString()); // TODO: Correct identifier string
-
-			gpx.text(validateChar(wp.getGcCode()));
+			multipleTexts(gpx, PREFIX_GPX, //
+					"name", wp.getGcCode(),//
+					"cmt", wp.getDescription(), //
+					"desc", wp.getTitle(),//
+					"sym", wp.Type.toString(), //
+					"type", "Waypoint|" + wp.Type.toString(),//
+					"clue", wp.getClue()); //
 			gpx.endTag(PREFIX_GPX, "wpt");
 		}
 	}

@@ -348,4 +348,154 @@ public enum Attributes
 		}
 		return ret;
 	}
+
+	@Override
+	public String toString()
+	{
+		switch (this)
+		{
+		case Abandoned_Structure:
+			return "Abandoned Structure";
+		case Abandoned_mines:
+			return "Abandoned mines";
+		case Access_or_parking_fee:
+			return "Access or parking fee";
+		case Available_at_all_times:
+			return "Available at all times";
+		case Available_during_winter:
+			return "Available during winter";
+		case Bicycles:
+			break;
+		case Boat:
+			break;
+		case Cactus:
+			break;
+		case Campfires:
+			break;
+		case Camping_available:
+			return "Camping available";
+		case Cliff_falling_rocks:
+			return "Cliff falling rocks";
+		case Climbing_gear:
+			return "Climbing gear";
+		case Cross_Country_Skis:
+			return "Cross Country Skis";
+		case Dangerous_Animals:
+			return "Dangerous Animals";
+		case Dangerous_area:
+			return "Dangerous area";
+		case Default:
+			break;
+		case Difficult_climbing:
+			return "Difficult climbing";
+		case Dogs:
+			break;
+		case Drinking_water_nearby:
+			return "Drinking water nearby";
+		case Field_Puzzle:
+			return "Field Puzzle";
+		case Flashlight_required:
+			return "Flashlight required";
+		case Food_Nearby:
+			return "Food Nearby";
+		case Front_Yard:
+			return "Front Yard";
+		case Fuel_Nearby:
+			return "Fuel Nearby";
+		case GeoTour:
+			break;
+		case Horses:
+			break;
+		case Hunting:
+			break;
+		case Long_Hike:
+			return "Long Hike";
+		case Lost_And_Found_Tour:
+			return "Lost And Found Tour";
+		case May_require_swimming:
+			return "May require swimming";
+		case May_require_wading:
+			return "May require wading";
+		case Medium_hike:
+			return "Medium hike";
+		case Motorcycles:
+			break;
+		case Needs_maintenance:
+			return "Needs maintenance";
+		case Night_Cache:
+			return "Night Cache";
+		case Off_road_vehicles:
+			return "Off road vehicles";
+		case Park_and_Grab:
+			return "Park and Grab";
+		case Parking_available:
+			return "Parking available";
+		case Partnership_Cache:
+			return "Partnership Cache";
+		case Picnic_tables_nearby:
+			return "Picnic tables nearby";
+		case Poison_plants:
+			return "Poison plants";
+		case Public_restrooms_nearby:
+			return "Public restrooms nearby";
+		case Public_transportation:
+			return "Public transportation";
+		case Quads:
+			break;
+		case Recommended_at_night:
+			return "Recommended at night";
+		case Recommended_for_kids:
+			return "Recommended for kids";
+		case Scenic_view:
+			return "Scenic view";
+		case Scuba_gear:
+			return "Scuba gear";
+		case Seasonal_Access:
+			return "Seasonal Access";
+		case Short_hike:
+			return "Short hike";
+		case Significant_Hike:
+			return "Significant Hike";
+		case Snowmobiles:
+			break;
+		case Snowshoes:
+			break;
+		case Special_Tool_Required:
+			return "Special Tool Required";
+		case Stealth_required:
+			return "Stealth required";
+		case Stroller_accessible:
+			return "Stroller accessible";
+		case Takes_less_than_an_hour:
+			return "Takes less than an hour";
+		case Teamwork_Required:
+			return "Teamwork Required";
+		case Telephone_nearby:
+			return "Telephone nearby";
+		case Thorns:
+			break;
+		case Ticks:
+			break;
+		case Tourist_Friendly:
+			return "Tourist Friendly";
+		case Tree_Climbing:
+			return "Tree Climbing";
+		case Truck_Driver:
+			return "Truck Driver";
+		case UV_Light_Required:
+			return "UV Light Required";
+		case Watch_for_livestock:
+			return "Watch for livestock";
+		case Wheelchair_accessible:
+			return "Wheelchair accessible";
+		case Wireless_Beacon:
+			return "Wireless Beacon";
+		default:
+			break;
+
+		}
+
+		return super.toString();
+	}
+
 }

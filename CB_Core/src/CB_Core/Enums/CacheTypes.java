@@ -41,8 +41,7 @@ public enum CacheTypes
 		// Replace some opencaching.de / geotoad cache types
 		if (string.toLowerCase().contains("unknown")) string = "Mystery";
 		if (string.toLowerCase().contains("multicache")) string = "Multi";
-		if (string.toLowerCase().contains("whereigo")) // note the additional "e"
-		string = "Wherigo";
+		if (string.toLowerCase().contains("whereigo")) string = "Wherigo"; // note the additional "e"
 		if (string.toLowerCase().contains("other")) string = "Mystery";
 		if (string.toLowerCase().contains("earthcache")) string = "Earth";
 		if (string.toLowerCase().contains("webcam")) string = "Camera";
@@ -77,4 +76,64 @@ public enum CacheTypes
 			return cacheType;
 		}
 	}
+
+	@Override
+	public String toString()
+	{
+		switch (this)
+		{
+		case CITO:
+			break;
+		case Cache:
+			break;
+		case Camera:
+			break;
+		case Earth:
+			return "Earthcache";
+		case Event:
+			return "Event Cache";
+		case Final:
+			break;
+		case Giga:
+			break;
+		case Letterbox:
+			break;
+		case MegaEvent:
+			break;
+		case Multi:
+			return "Multi-cache";
+		case MultiQuestion:
+			return "Question to Answer";
+		case MultiStage:
+			return "Stages of a Multicache";
+		case Munzee:
+			break;
+		case MyParking:
+			break;
+		case Mystery:
+			return "Unknown Cache";
+		case ParkingArea:
+			return "Parking Area";
+		case ReferencePoint:
+			break;
+		case Traditional:
+			return "Traditional Cache";
+		case Trailhead:
+			break;
+		case Undefined:
+			break;
+		case Virtual:
+			break;
+		case Wherigo:
+			break;
+		case Wikipedia:
+			break;
+		default:
+			break;
+
+		}
+
+		return super.toString();
+	}
+
 }
