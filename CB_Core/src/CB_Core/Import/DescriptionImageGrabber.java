@@ -457,7 +457,7 @@ public class DescriptionImageGrabber
 	{
 		boolean imageLoadError = false;
 
-		if (!descriptionImagesUpdated && false)
+		if (!descriptionImagesUpdated)
 		{
 			ip.ProgressChangeMsg("importImages", "Importing Description Images for " + gcCode);
 
