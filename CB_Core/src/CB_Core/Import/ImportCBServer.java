@@ -1,6 +1,8 @@
 package CB_Core.Import;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import CB_Core.CoreSettingsForward;
@@ -153,7 +155,15 @@ public class ImportCBServer
 									File file = new File(image.LocalPath);
 									url += cache.getGcCode().substring(0, 4) + "/";
 
-									url += file.getName().replace(" ", "%20");
+									try
+									{
+										url += URLEncoder.encode(file.getName().replace(" ", "%20"), "UTF-8");
+										url = url.replace("%2520", "%20"); // replace wrong converted " " with %20
+									}
+									catch (UnsupportedEncodingException e)
+									{
+										continue;
+									}
 
 									String imagePath;
 									if (image.ImageUrl.indexOf("/spoilers/") >= 0)

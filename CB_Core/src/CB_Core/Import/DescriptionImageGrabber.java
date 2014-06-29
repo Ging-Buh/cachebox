@@ -259,6 +259,7 @@ public class DescriptionImageGrabber
 		{
 			String localDir = local.substring(0, local.lastIndexOf("/"));
 			if (!FileIO.createDirectory(localDir)) return false;
+
 			URL aURL = null;
 			try
 			{
@@ -270,10 +271,10 @@ public class DescriptionImageGrabber
 				return true;
 			}
 			File file = new File(local);
-
 			URLConnection con = aURL.openConnection();
 			con.setConnectTimeout(5000);
 			con.setReadTimeout(10000);
+			con.setRequestProperty("Accept-Charset", "UTF-8");
 
 			InputStream is = con.getInputStream();
 			FileOutputStream fos = new FileOutputStream(file);

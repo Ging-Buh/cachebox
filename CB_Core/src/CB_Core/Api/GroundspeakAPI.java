@@ -1481,6 +1481,7 @@ public class GroundspeakAPI
 		String line = "";
 		while ((line = rd.readLine()) != null)
 		{
+			line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
 			result += line + "\n";
 		}
 		return result;
