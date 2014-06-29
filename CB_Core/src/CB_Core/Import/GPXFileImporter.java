@@ -126,6 +126,7 @@ public class GPXFileImporter
 		ruleList = createGSAKRules(ruleList);
 		ruleList = createGSAKRulesWithOutExtensions(ruleList);
 		ruleList = createTerraRules(ruleList);
+		ruleList = createCacheboxRules(ruleList);
 
 		@SuppressWarnings("unchecked")
 		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
@@ -163,6 +164,40 @@ public class GPXFileImporter
 
 	public static int CacheCount = 0;
 	public static int LogCount = 0;
+
+	private List<IRule<Map<String, String>>> createCacheboxRules(List<IRule<Map<String, String>>> ruleList) throws Exception
+	{
+		// Cachebox Extension
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/note")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cachebox-extension_note", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/solver")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cachebox-extension_solver", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/clue")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cachebox-extension_clue", text);
+			}
+		});
+
+		return ruleList;
+	}
 
 	private List<IRule<Map<String, String>>> createWPTRules(List<IRule<Map<String, String>>> ruleList) throws Exception
 	{
@@ -1587,6 +1622,16 @@ public class GPXFileImporter
 
 		mImportHandler.handleCache(cache);
 
+		// Write Note and Solver
+		if (values.containsKey("cachebox-extension_solver"))
+		{
+			Database.SetSolver(cache, values.get("cachebox-extension_solver"));
+		}
+		if (values.containsKey("cachebox-extension_note"))
+		{
+			Database.SetNote(cache, values.get("cachebox-extension_note"));
+		}
+
 		// Merge mit cache info
 		if (CacheInfoList.ExistCache(cache.getGcCode()))
 		{
@@ -1632,6 +1677,11 @@ public class GPXFileImporter
 		if (values.containsKey("wpt_cmt"))
 		{
 			waypoint.setDescription(values.get("wpt_cmt"));
+		}
+
+		if (values.containsKey("cachebox-extension_clue"))
+		{
+			waypoint.setClue(values.get("cachebox-extension_clue"));
 		}
 
 		currentwpt++;

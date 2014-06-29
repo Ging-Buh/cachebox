@@ -207,8 +207,7 @@ public class CacheTest extends TestCase
 
 	}
 
-	@Test
-	public static void test_assertCache_GC2T9RW_with_details(boolean withDescription) throws ClassNotFoundException
+	public static void assertCache_GC2T9RW_with_details(boolean withDescription) throws ClassNotFoundException
 	{
 		InitTestDBs.InitalConfig();
 
@@ -345,8 +344,7 @@ public class CacheTest extends TestCase
 		// Database.Data.Close();
 	}
 
-	@Test
-	public static void test_assertCache_GC2T9RW_without_details() throws ClassNotFoundException
+	public static void assertCache_GC2T9RW_without_details() throws ClassNotFoundException
 	{
 		InitTestDBs.InitalConfig();
 
@@ -402,6 +400,24 @@ public class CacheTest extends TestCase
 		assertEquals("longDescription must be EMPTY_STRING", Cache.EMPTY_STRING, cache.getLongDescription());
 
 		assertEquals("Hint must be EMPTY_STRING", Cache.EMPTY_STRING, cache.getHint());
+
+	}
+
+	public static void assertCache_GC2T9RW_with_detailsAndChangedNote(boolean b) throws ClassNotFoundException
+	{
+		assertCache_GC2T9RW_with_details(true);
+
+		// Check Notes
+		CacheDAO cacheDAO = new CacheDAO();
+
+		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false, false);
+
+		assertEquals(Database.GetNote(cache), "Test Note for In/Ex-port");
+		assertEquals(Database.GetSolver(cache), "Test Solver for In/Ex-port");
+
+		cache.loadDetail();
+
+		assertEquals("Test Clue for In/Ex-port", cache.waypoints.get(0).getClue());
 
 	}
 

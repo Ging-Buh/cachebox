@@ -72,7 +72,7 @@ public class GpxImportTest extends TestCase
 
 		Database.Data.endTransaction();
 
-		CacheTest.test_assertCache_GC2T9RW_with_details(true);
+		CacheTest.assertCache_GC2T9RW_with_details(true);
 	}
 
 }

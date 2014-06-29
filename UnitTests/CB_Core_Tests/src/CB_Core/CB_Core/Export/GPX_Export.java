@@ -28,14 +28,19 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Export.GpxSerializer;
 import CB_Core.Export.GpxSerializer.ProgressListener;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportHandler;
+import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import CB_UI_Base.Global;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import Types.CacheTest;
 import __Static.InitTestDBs;
@@ -80,7 +85,25 @@ public class GPX_Export extends TestCase
 			Database.Data.endTransaction();
 		}
 
-		CacheTest.test_assertCache_GC2T9RW_with_details(false);
+		CacheTest.assertCache_GC2T9RW_with_details(false);
+
+		{ // Set Notes,Solver and Waypoint.Clue
+			CacheDAO cacheDAO = new CacheDAO();
+
+			Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false, false);
+			cache.loadDetail();
+
+			Database.SetNote(cache, "Test Note for In/Ex-port");
+			Database.SetSolver(cache, "Test Solver for In/Ex-port");
+
+			cache.waypoints.get(0).setClue("Test Clue for In/Ex-port");
+
+			WaypointDAO wpDao = new WaypointDAO();
+			wpDao.UpdateDatabase(cache.waypoints.get(0));
+
+			CB_List<Waypoint> test = wpDao.getWaypointsFromCacheID(cache.Id, true);
+			System.out.print(true);
+		}
 
 		ArrayList<String> allGeocodesIn = new ArrayList<String>();
 		allGeocodesIn.add("GC2T9RW");
@@ -125,7 +148,7 @@ public class GPX_Export extends TestCase
 			Database.Data.setTransactionSuccessful();
 			Database.Data.endTransaction();
 
-			CacheTest.test_assertCache_GC2T9RW_with_details(true);
+			CacheTest.assertCache_GC2T9RW_with_detailsAndChangedNote(true);
 
 		}
 	}

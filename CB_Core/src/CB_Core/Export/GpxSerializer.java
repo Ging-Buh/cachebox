@@ -55,7 +55,7 @@ public final class GpxSerializer
 	public static final String PREFIX_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	public static final String PREFIX_GPX = "http://www.topografix.com/GPX/1/0";
 	public static final String PREFIX_GROUNDSPEAK = "http://www.groundspeak.com/cache/1/0";
-	public static final String PREFIX_CACHEBOX = "Cachebox Extension";
+	public static final String PREFIX_CACHEBOX = "cachebox-extension";
 
 	/**
 	 * During the export, only this number of Caches is fully loaded into memory.
