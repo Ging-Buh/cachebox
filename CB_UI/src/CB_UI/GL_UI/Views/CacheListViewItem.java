@@ -1,5 +1,6 @@
 package CB_UI.GL_UI.Views;
 
+import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
@@ -125,6 +126,18 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 		if (Locator.Valid())
 		{
+
+			if (mCache.Pos == null)
+			{
+				// mCache was disposed
+				Cache c = Database.Data.Query.GetCacheById(mCache.Id);
+				if (c == null)
+				{
+					return;
+				}
+				mCache = c;
+			}
+
 			Coordinate position = Locator.getCoordinate();
 
 			Waypoint FinalWp = mCache.GetFinalWaypoint();
@@ -139,8 +152,15 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 			float result[] = new float[4];
 
-			MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(),
-					Final.getLongitude(), result);
+			try
+			{
+				MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(),
+						Final.getLongitude(), result);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 
 			double cacheBearing = -(result[2] - heading);
 			mCache.cachedDistance = result[0];

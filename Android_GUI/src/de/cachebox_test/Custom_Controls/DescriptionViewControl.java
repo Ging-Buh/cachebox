@@ -340,7 +340,17 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 		try
 		{
-			if (this.getSettings() != null) this.getSettings().setLightTouchEnabled(true);
+			main.mainActivity.runOnUiThread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					if (DescriptionViewControl.this.getSettings() != null) DescriptionViewControl.this.getSettings().setLightTouchEnabled(
+							true);
+				}
+			});
+
 		}
 		catch (Exception e1)
 		{

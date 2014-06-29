@@ -555,6 +555,7 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	public float Distance(CalculationType type, boolean useFinal, Coordinate fromPos)
 	{
+		if (isDisposed) return 0;
 		Waypoint waypoint = null;
 		if (useFinal) waypoint = this.GetFinalWaypoint();
 		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
@@ -633,6 +634,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	// }
 
 	private boolean isSearchVisible = true;
+	private boolean isDisposed = false;
 
 	public void setSearchVisible(boolean value)
 	{
@@ -646,6 +648,7 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	public Waypoint findWaypointByGc(String gc)
 	{
+		if (isDisposed) return null;
 		for (int i = 0, n = waypoints.size(); i < n; i++)
 		{
 			Waypoint wp = waypoints.get(i);
@@ -725,6 +728,7 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	public void dispose()
 	{
+		isDisposed = true;
 
 		if (detail != null) detail.dispose();
 		detail = null;

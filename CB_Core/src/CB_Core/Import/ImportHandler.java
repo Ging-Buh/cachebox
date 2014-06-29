@@ -44,6 +44,14 @@ public class ImportHandler implements IImportHandler
 			cacheDAO.WriteToDatabase(cache);
 		}
 
+		if (cache.waypoints.size() > 0)
+		{
+			for (int i = 0; i < cache.waypoints.size(); i++)
+			{
+				handleWaypoint(cache.waypoints.get(i));
+			}
+		}
+
 		// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
 		cache.setLongDescription("");
 		cacheCount++;
