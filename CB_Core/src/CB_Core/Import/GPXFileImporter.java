@@ -561,17 +561,22 @@ public class GPXFileImporter
 
 		// GSAK Rules
 
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/gpx/wpt/extensions/gsak:wptExtension/gsak:LatBeforeCorrect")
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/gsak:wptExtension/gsak:LatBeforeCorrect")
 		{
 			@Override
-			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
+				values.put("cache_gsak_corrected_coordinates", "True");
+				values.put("cache_gsak_corrected_coordinates_before_lat", text);
+			}
+		});
 
-				if (isStartTag)
-				{
-					values.put("cache_gsak_corrected_coordinates", "True");
-				}
-
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/gsak:wptExtension/gsak:LonBeforeCorrect")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_gsak_corrected_coordinates_before_lon", text);
 			}
 		});
 

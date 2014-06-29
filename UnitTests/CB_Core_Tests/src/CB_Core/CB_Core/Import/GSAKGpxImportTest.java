@@ -34,7 +34,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		try
 		{
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/GSAK_1_1.gpx"));
+			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/CorrectedCoordinates1.1.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -174,6 +174,144 @@ public class GSAKGpxImportTest extends TestCase
 		try
 		{
 			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/CorrectedCoordinates.gpx"));
+			assertTrue("Objekt muss konstruierbar sein", importer != null);
+			importer.doImport(importHandler, 0);
+
+			Database.Data.setTransactionSuccessful();
+		}
+		finally
+		{
+		}
+
+		Database.Data.endTransaction();
+
+		CacheDAO cacheDAO = new CacheDAO();
+
+		Cache cache = cacheDAO.getFromDbByGcCode("GCC0RR1", false, true);
+
+		cache.loadDetail();
+
+		assertTrue("Cache muss zurückgegeben werden", cache != null);
+
+		assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 50.85);
+		assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 9.85);
+		assertTrue("Pos ist ungültig", cache.Pos.isValid());
+
+		assertEquals("GcCode falsch", "GCC0RR1", cache.getGcCode());
+		assertEquals("DateHidden falsch", "Tue Jun 24 08:00:00 CEST 2014", cache.getDateHidden().toString());
+		assertEquals("url falsch", "", cache.getUrl());// URL wird noch nicht
+														// ausgelesen
+		assertTrue("Found ist falsch", !cache.isFound());
+
+		assertEquals("Id ist falsch", cache.getGcId(), "99000003");
+		assertTrue("ist available ist falsch", cache.isAvailable());
+		assertFalse("ist archived ist falsch", cache.isArchived());
+		assertEquals("Test-Cache für GSAK Corrected Coordinates", cache.getName());
+		assertEquals("Placed by falsch", "Test Owner", cache.getPlacedBy());
+		assertEquals("Owner falsch", "Test Owner", cache.getOwner());
+		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Mystery);
+		assertTrue("Size ist falsch", cache.Size == CacheSizes.regular);
+		assertTrue("Difficulty ist falsch", cache.Difficulty == 1);
+		assertTrue("Terrain ist falsch", cache.Terrain == 1);
+
+		// Attribute Tests
+
+		ArrayList<Attributes> PositvieList = new ArrayList<Attributes>();
+		ArrayList<Attributes> NegativeList = new ArrayList<Attributes>();
+
+		// { Keine Attribute gesetzt
+		// PositvieList.add(Attributes.Bicycles);
+		//
+		// NegativeList.add(Attributes.Recommended_at_night);
+		// }
+
+		Iterator<Attributes> positiveInterator = PositvieList.iterator();
+		Iterator<Attributes> negativeInterator = NegativeList.iterator();
+
+		while (positiveInterator.hasNext())
+		{
+			assertTrue("Attribut falsch", cache.isAttributePositiveSet((Attributes) positiveInterator.next()));
+		}
+
+		while (negativeInterator.hasNext())
+		{
+			Attributes tmp = negativeInterator.next();
+
+			assertTrue(tmp.name() + " negative Attribut falsch", cache.isAttributeNegativeSet((tmp)));
+		}
+
+		// fülle eine Liste mit allen Attributen
+		ArrayList<Attributes> attributes = new ArrayList<Attributes>();
+		Attributes[] tmp = Attributes.values();
+		for (Attributes item : tmp)
+		{
+			attributes.add(item);
+		}
+
+		// Lösche die vergebenen Atribute aus der Kommplett Liste
+		positiveInterator = PositvieList.iterator();
+		negativeInterator = NegativeList.iterator();
+
+		while (positiveInterator.hasNext())
+		{
+			attributes.remove(positiveInterator.next());
+		}
+
+		while (negativeInterator.hasNext())
+		{
+			attributes.remove(negativeInterator.next());
+		}
+
+		attributes.remove(Attributes.getAttributeEnumByGcComId(64));
+		attributes.remove(Attributes.getAttributeEnumByGcComId(65));
+		attributes.remove(Attributes.getAttributeEnumByGcComId(66));
+
+		// Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
+		Iterator<Attributes> RestInterator = attributes.iterator();
+
+		while (RestInterator.hasNext())
+		{
+			Attributes attr = (Attributes) RestInterator.next();
+			assertFalse(attr.name() + "Attribut falsch", cache.isAttributePositiveSet(attr));
+			assertFalse(attr.name() + "Attribut falsch", cache.isAttributeNegativeSet(attr));
+		}
+		//
+
+		// TODO Beschreibungstexte überprüfen
+		// System.out.println( cache.shortDescription );
+		// System.out.println( cache.longDescription );
+
+		assertEquals("Hint falsch", "Final: Im Loch", cache.getHint());
+
+		CB_List<LogEntry> logs = new CB_List<LogEntry>();
+		logs = Database.Logs(cache);
+
+		assertTrue("es dürfte keine Logs geben", logs.size() == 0);
+
+		// Check Final WP
+		assertTrue("Cache einen Final WP haben", cache.GetFinalWaypoint() != null);
+
+		Waypoint wp = cache.GetFinalWaypoint();
+
+		assertTrue("FinalWpPos: Latitude falsch", wp.Pos.getLatitude() == 50.85205);
+		assertTrue("FinalWpPos: Longitude falsch", wp.Pos.getLongitude() == 9.8576);
+		assertTrue("FinalWpPos ist ungültig", cache.Pos.isValid());
+
+	}
+
+	public static void testGpxImportWithCorrected1_1() throws Exception
+	{
+
+		// initialize Database
+		InitTestDBs.InitalConfig();
+
+		ImportHandler importHandler = new ImportHandler();
+
+		Database.Data.beginTransaction();
+
+		try
+		{
+			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/CorrectedCoordinates1.1.gpx"));
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
