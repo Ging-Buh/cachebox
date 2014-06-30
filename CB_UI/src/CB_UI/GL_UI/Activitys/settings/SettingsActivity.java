@@ -102,6 +102,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		super(ActivityBase.ActivityRec(), "Settings");
 		initial();
 		SelectedLangChangedEventList.Add(this);
+		that = this;
 	}
 
 	private void initial()
