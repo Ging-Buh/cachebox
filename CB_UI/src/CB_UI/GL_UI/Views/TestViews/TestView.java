@@ -11,8 +11,7 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
-import CB_UI_Base.GL_UI.Controls.RadioButton;
-import CB_UI_Base.GL_UI.Controls.RadioGroup;
+import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -22,7 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
- * Enth�lt die TestContols
+ * Enthält die TestContols
  * 
  * @author Longri
  */
@@ -56,6 +55,12 @@ public class TestView extends CB_View_Base
 
 		// ####################################################
 
+		String test = "Карти";
+
+		char c[] = test.toCharArray();
+
+		Label label = new Label(new CB_RectF(50, 50, 500, 100), "/ExtSD/Карти/Vector Maps");
+		this.addChild(label);
 		// ####################################################
 
 		// Setting Button
@@ -78,30 +83,30 @@ public class TestView extends CB_View_Base
 
 		this.addChild(btnSetting);
 
-		RadioButton rb = new RadioButton("Test");
-		rb.setPos(50, 50);
-		rb.setWidth(this.getWidth() - rb.getX());
-		rb.setText("Option 1");
-		this.addChild(rb);
-
-		this.addChild(btnSetting);
-
-		RadioButton rb2 = new RadioButton("Test");
-		rb2.setPos(50, rb.getMaxY() + UI_Size_Base.that.getMargin());
-		rb2.setWidth(this.getWidth() - rb.getX());
-		rb2.setText("Option 2");
-		this.addChild(rb2);
-
-		RadioButton rb3 = new RadioButton("Test");
-		rb3.setPos(50, rb2.getMaxY() + UI_Size_Base.that.getMargin());
-		rb3.setWidth(this.getWidth() - rb.getX());
-		rb3.setText("Option 3");
-		this.addChild(rb3);
-
-		RadioGroup Group = new RadioGroup();
-		Group.add(rb);
-		Group.add(rb2);
-		Group.add(rb3);
+		// RadioButton rb = new RadioButton("Test");
+		// rb.setPos(50, 50);
+		// rb.setWidth(this.getWidth() - rb.getX());
+		// rb.setText("Option 1");
+		// this.addChild(rb);
+		//
+		// this.addChild(btnSetting);
+		//
+		// RadioButton rb2 = new RadioButton("Test");
+		// rb2.setPos(50, rb.getMaxY() + UI_Size_Base.that.getMargin());
+		// rb2.setWidth(this.getWidth() - rb.getX());
+		// rb2.setText("Option 2");
+		// this.addChild(rb2);
+		//
+		// RadioButton rb3 = new RadioButton("Test");
+		// rb3.setPos(50, rb2.getMaxY() + UI_Size_Base.that.getMargin());
+		// rb3.setWidth(this.getWidth() - rb.getX());
+		// rb3.setText("Option 3");
+		// this.addChild(rb3);
+		//
+		// RadioGroup Group = new RadioGroup();
+		// Group.add(rb);
+		// Group.add(rb2);
+		// Group.add(rb3);
 
 		requestLayout();
 
@@ -190,7 +195,7 @@ public class TestView extends CB_View_Base
 
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
-		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgel�st wird.
+		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
 	}
 
 	public boolean onTouchUp(int x, int y, int pointer, int button)

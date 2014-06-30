@@ -20,12 +20,24 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 /**
- * Enth‰lt die benutzten und geladenen GDX-Fonts
+ * Enth√§lt die benutzten und geladenen GDX-Fonts
  * 
  * @author Longri
  */
 public class Fonts
 {
+	static final String DEFAULT_CHARACTER = getCyrilCharSet();
+
+	static String getCyrilCharSet()
+	{
+		int CharSize = 0x04ff - 0x0400;
+		char[] cyril = new char[CharSize + 1];
+		for (int i = 0x0400; i < 0x04ff + 1; i++)
+		{
+			cyril[i - 0x0400] = (char) i;
+		}
+		return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril);
+	}
 
 	private static BitmapFont compass;
 	private static BitmapFont big;
@@ -36,13 +48,12 @@ public class Fonts
 
 	private static SkinSettings cfg;
 
-	// private static BitmapFont night_fontAB17_out;
-
 	/**
-	 * L‰dt die verwendeten Bitmap Fonts und berechnet die entsprechenden Grˆﬂen
+	 * L√§dt die verwendeten Bitmap Fonts und berechnet die entsprechenden Gr√∂√üen
 	 */
 	public static void loadFonts(SkinBase skin)
 	{
+
 		cfg = skin.getSettings();
 		COLOR.loadColors(skin);
 		FreeTypeFontGenerator generator = null;
@@ -211,6 +222,7 @@ public class Fonts
 			Logger.DEBUG("generate font for scale " + scale);
 			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 			parameter.size = scale;
+			parameter.characters = DEFAULT_CHARACTER;
 			BitmapFont ret = generator.generateFont(parameter);
 			TextureRegion region = ret.getRegion();
 			Texture tex = region.getTexture();
