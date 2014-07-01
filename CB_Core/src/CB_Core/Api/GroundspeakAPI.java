@@ -43,6 +43,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
+import CB_Utils.Plattform;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
 
@@ -1480,6 +1481,7 @@ public class GroundspeakAPI
 		String line = "";
 		while ((line = rd.readLine()) != null)
 		{
+			if (Plattform.used == Plattform.Server) line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
 			result += line + "\n";
 		}
 		return result;

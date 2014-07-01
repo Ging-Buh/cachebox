@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.Config;
-import CB_UI.GlobalCore;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Handler;
@@ -20,6 +18,7 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Plattform;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -93,7 +92,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		mLblCacheName.setPos(30, 0);
 		mLblCacheName.setHAlignment(HAlignment.CENTER);
 		mSlideBox.addChild(mLblCacheName);
-		if (GlobalCore.platform == Plattform.Desktop) this.addChild(mSlideBox);
+		if (Plattform.used == Plattform.Desktop) this.addChild(mSlideBox);
 	}
 
 	@Override

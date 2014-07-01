@@ -22,7 +22,6 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.splash;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.ICallUrl;
 import CB_UI_Base.Events.platformConector.IHardwarStateListner;
@@ -36,6 +35,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Plattform;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
@@ -67,7 +67,7 @@ public class DesktopMain
 	@SuppressWarnings("unused")
 	public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame)
 	{
-		GlobalCore.platform = Plattform.Desktop;
+		Plattform.used = Plattform.Desktop;
 		frame.setVisible(false);
 
 		// Initial Desctop TexturePacker

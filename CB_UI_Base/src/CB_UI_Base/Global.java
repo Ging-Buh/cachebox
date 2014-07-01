@@ -2,6 +2,7 @@ package CB_UI_Base;
 
 import CB_UI_Base.GL_UI.DisplayType;
 import CB_Utils.Config_Core;
+import CB_Utils.Plattform;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -10,8 +11,6 @@ import com.badlogic.gdx.utils.Clipboard;
 public abstract class Global
 {
 	protected static Global Instance;
-
-	public static Plattform platform = Plattform.undef;
 
 	/**
 	 * Wird im Splash gesetzt und ist True, wenn es sich um ein Tablet handelt!
@@ -39,9 +38,9 @@ public abstract class Global
 
 	public static FileHandle getInternalFileHandle(String path)
 	{
-		if (Global.platform == Plattform.undef) throw new IllegalArgumentException("Platform not def");
+		if (Plattform.used == Plattform.undef) throw new IllegalArgumentException("Platform not def");
 
-		if (Global.platform == Plattform.Android)
+		if (Plattform.used == Plattform.Android)
 		{
 			return Gdx.files.internal(path);
 		}

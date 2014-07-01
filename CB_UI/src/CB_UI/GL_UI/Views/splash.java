@@ -33,7 +33,6 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -44,6 +43,7 @@ import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingString;
@@ -273,7 +273,7 @@ public class splash extends MainViewBase
 				Config.AcceptChanges();
 			}
 
-			FileType fileType = (GlobalCore.platform == Plattform.Android) ? FileType.Internal : FileType.Classpath;
+			FileType fileType = (Plattform.used == Plattform.Android) ? FileType.Internal : FileType.Classpath;
 
 			new Translation(Config.WorkPath, fileType);
 			try

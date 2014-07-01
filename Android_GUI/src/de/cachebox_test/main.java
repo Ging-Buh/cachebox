@@ -62,7 +62,6 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.splash;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Energy;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.ICallUrl;
@@ -89,6 +88,7 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.ILog;
 import CB_Utils.Log.Logger;
@@ -2792,7 +2792,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void initialPlatformConector()
 	{
 
-		GlobalCore.platform = Plattform.Android;
+		Plattform.used = Plattform.Android;
 
 		initialLocatorBase();
 

@@ -2,15 +2,14 @@ package CB_UI.GL_UI.Controls;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GlobalCore;
 import CB_UI.Api.GcApiLogin;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Plattform;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -88,7 +87,7 @@ public class API_Button extends Button
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			if (GlobalCore.platform == Plattform.Desktop)
+			if (Plattform.used == Plattform.Desktop)
 			{
 				(new GcApiLogin()).RunRequest();
 			}
