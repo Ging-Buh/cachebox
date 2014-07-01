@@ -114,7 +114,7 @@ public class SymbolDrawable implements IRotateDrawable
 		if (scaled) matrix.setScale(scaleWidth, scaleHeight);
 
 		float[] pos = new float[]
-			{ 0, 0 };
+			{ this.pointX, this.pointY };
 
 		matrix.mapPoints(pos);
 
