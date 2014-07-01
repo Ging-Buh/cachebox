@@ -39,7 +39,7 @@ public class PocketQuery
 		 */
 		private static final long serialVersionUID = 8308386638170255124L;
 		public String Name;
-		public String GUID;
+		String GUID;
 		public int PQCount;
 		public Date DateLastGenerated;
 		public double SizeMB;
@@ -143,71 +143,71 @@ public class PocketQuery
 		return 0;
 	}
 
-	/**
-	 * @param accessToken
-	 * @param GUID
-	 * @param Uri
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()t
-	 * @return
-	 */
-	public static int GetPocketQueryUri(String GUID, String Uri)
-	{
-		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryUrls?AccessToken=" + GroundspeakAPI.GetAccessToken()
-				+ "&PocketQueryGuid=" + GUID + "&format=json");
-		if (GUID == null || GUID.equals("")) new NullArgumentException("GUID");
-		try
-		{
-			String result = GroundspeakAPI.Execute(httpGet);
-
-			try
-			// Parse JSON Result
-			{
-				JSONTokener tokener = new JSONTokener(result);
-				JSONObject json = (JSONObject) tokener.nextValue();
-				JSONObject status = json.getJSONObject("Status");
-				if (status.getInt("StatusCode") == 0)
-				{
-					GroundspeakAPI.LastAPIError = "";
-					JSONObject jPQ = json.getJSONObject("PocketQueryUrls");
-
-					Uri = jPQ.getString("Uri");
-
-					return 0;
-				}
-				else
-				{
-					GroundspeakAPI.LastAPIError = "";
-					GroundspeakAPI.LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-					GroundspeakAPI.LastAPIError += status.getString("StatusMessage") + "\n";
-					GroundspeakAPI.LastAPIError += status.getString("ExceptionDetails");
-
-					return (-1);
-				}
-
-			}
-			catch (JSONException e)
-			{
-
-				e.printStackTrace();
-			}
-		}
-		catch (ClientProtocolException e)
-		{
-			System.out.println(e.getMessage());
-			return (-1);
-		}
-		catch (IOException e)
-		{
-			System.out.println(e.getMessage());
-			return (-1);
-		}
-
-		return 0;
-
-	}
+	// /**
+	// * @param accessToken
+	// * @param GUID
+	// * @param Uri
+	// * @param conectionTimeout
+	// * Config.settings.conection_timeout.getValue()
+	// * @param socketTimeout
+	// * Config.settings.socket_timeout.getValue()t
+	// * @return
+	// */
+	// public static int GetPocketQueryUri(String GUID, String Uri)
+	// {
+	// HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryUrls?AccessToken=" + GroundspeakAPI.GetAccessToken()
+	// + "&PocketQueryGuid=" + GUID + "&format=json");
+	// if (GUID == null || GUID.equals("")) new NullArgumentException("GUID");
+	// try
+	// {
+	// String result = GroundspeakAPI.Execute(httpGet);
+	//
+	// try
+	// // Parse JSON Result
+	// {
+	// JSONTokener tokener = new JSONTokener(result);
+	// JSONObject json = (JSONObject) tokener.nextValue();
+	// JSONObject status = json.getJSONObject("Status");
+	// if (status.getInt("StatusCode") == 0)
+	// {
+	// GroundspeakAPI.LastAPIError = "";
+	// JSONObject jPQ = json.getJSONObject("PocketQueryUrls");
+	//
+	// Uri = jPQ.getString("Uri");
+	//
+	// return 0;
+	// }
+	// else
+	// {
+	// GroundspeakAPI.LastAPIError = "";
+	// GroundspeakAPI.LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
+	// GroundspeakAPI.LastAPIError += status.getString("StatusMessage") + "\n";
+	// GroundspeakAPI.LastAPIError += status.getString("ExceptionDetails");
+	//
+	// return (-1);
+	// }
+	//
+	// }
+	// catch (JSONException e)
+	// {
+	//
+	// e.printStackTrace();
+	// }
+	// }
+	// catch (ClientProtocolException e)
+	// {
+	// System.out.println(e.getMessage());
+	// return (-1);
+	// }
+	// catch (IOException e)
+	// {
+	// System.out.println(e.getMessage());
+	// return (-1);
+	// }
+	//
+	// return 0;
+	//
+	// }
 
 	/**
 	 * @param AccessToken

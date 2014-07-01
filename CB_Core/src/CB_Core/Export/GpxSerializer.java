@@ -52,15 +52,15 @@ public final class GpxSerializer
 {
 
 	private static final SimpleDateFormat dateFormatZ = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-	public static final String PREFIX_XSI = "http://www.w3.org/2001/XMLSchema-instance";
-	public static final String PREFIX_GPX = "http://www.topografix.com/GPX/1/0";
-	public static final String PREFIX_GROUNDSPEAK = "http://www.groundspeak.com/cache/1/0";
-	public static final String PREFIX_CACHEBOX = "cachebox-extension";
+	private static final String PREFIX_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+	private static final String PREFIX_GPX = "http://www.topografix.com/GPX/1/0";
+	private static final String PREFIX_GROUNDSPEAK = "http://www.groundspeak.com/cache/1/0";
+	private static final String PREFIX_CACHEBOX = "cachebox-extension";
 
 	/**
 	 * During the export, only this number of Caches is fully loaded into memory.
 	 */
-	public static final int CACHES_PER_BATCH = 500;
+	private static final int CACHES_PER_BATCH = 500;
 
 	/**
 	 * counter for exported caches, used for progress reporting
@@ -183,14 +183,35 @@ public final class GpxSerializer
 			gpx.attribute("", "available", cache.isAvailable() ? "True" : "False");
 			gpx.attribute("", "archived", cache.isArchived() ? "True" : "False");
 
+			String difficulty;
+			String terrain;
+
+			if (cache.Difficulty % 1 == 0)
+			{
+				difficulty = Integer.toString((int) cache.Difficulty);
+			}
+			else
+			{
+				difficulty = Float.toString(cache.Difficulty);
+			}
+
+			if (cache.Terrain % 1 == 0)
+			{
+				terrain = Integer.toString((int) cache.Terrain);
+			}
+			else
+			{
+				terrain = Float.toString(cache.Terrain);
+			}
+
 			multipleTexts(gpx, PREFIX_GROUNDSPEAK,//
 					"name", cache.getName(), //
 					"placed_by", cache.getPlacedBy(),//
 					"owner", cache.getOwner(),//
 					"type", cache.Type.toString(),//
 					"container", cache.Size.toString(),//
-					"difficulty", Integer.toString((int) cache.Difficulty),//
-					"terrain", Integer.toString((int) cache.Terrain),//
+					"difficulty", difficulty,//
+					"terrain", terrain,//
 					"country", getCountry(cache),//
 					"state", getState(cache),//
 					"encoded_hints", cache.getHint());
@@ -395,7 +416,7 @@ public final class GpxSerializer
 		gpx.endTag(PREFIX_GROUNDSPEAK, "attributes");
 	}
 
-	public static String getState(final Cache cache)
+	private static String getState(final Cache cache)
 	{
 		return getLocationPart(cache, 0);
 	}
@@ -414,7 +435,7 @@ public final class GpxSerializer
 		return "";
 	}
 
-	public static String getCountry(final Cache cache)
+	private static String getCountry(final Cache cache)
 	{
 		String country = getLocationPart(cache, 1);
 		if (country != null && country.length() > 0) return country;
@@ -434,7 +455,7 @@ public final class GpxSerializer
 	 *            some text to insert, or <tt>null</tt> to omit completely this tag
 	 * @throws IOException
 	 */
-	public static void simpleText(final XmlSerializer serializer, final String prefix, final String tag, final String text)
+	private static void simpleText(final XmlSerializer serializer, final String prefix, final String tag, final String text)
 			throws IOException
 	{
 		if (text != null)
@@ -487,7 +508,7 @@ public final class GpxSerializer
 	 *            with their respective tag.
 	 * @throws IOException
 	 */
-	public static void multipleTexts(final XmlSerializer serializer, final String prefix, final String... tagAndText) throws IOException
+	private static void multipleTexts(final XmlSerializer serializer, final String prefix, final String... tagAndText) throws IOException
 	{
 		for (int i = 0; i < tagAndText.length; i += 2)
 		{
@@ -503,7 +524,7 @@ public final class GpxSerializer
 	 * @return <tt>true</tt> if <tt>str</tt> contains HTML code that needs to go through a HTML renderer before being displayed,
 	 *         <tt>false</tt> if it can be displayed as-is without any loss
 	 */
-	public static boolean containsHtml(final String str)
+	private static boolean containsHtml(final String str)
 	{
 		if (str == null) return false;
 		return str.indexOf('<') != -1 || str.indexOf('&') != -1;

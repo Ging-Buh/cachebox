@@ -1580,12 +1580,16 @@ public class GPXFileImporter
 				WaypointDAO WPDao = new WaypointDAO();
 				CB_List<Waypoint> wplist = WPDao.getWaypointsFromCacheID(cache.Id, false);
 
-				for (int i = 0; i > wplist.size(); i++)
+				for (int i = 0; i < wplist.size(); i++)
 				{
 					Waypoint wp = wplist.get(i);
-					if (wp.getTitle().equalsIgnoreCase("Final GSAK Corrected"))
+					if (wp.Type == CacheTypes.Final)
 					{
-						newGcCode = wp.getGcCode();
+						if (wp.getTitle().equalsIgnoreCase("Final GSAK Corrected"))
+						{
+							newGcCode = wp.getGcCode();
+							break;
+						}
 					}
 				}
 

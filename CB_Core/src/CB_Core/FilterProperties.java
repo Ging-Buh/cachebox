@@ -109,8 +109,8 @@ public class FilterProperties
 	public String filterGcCode = "";
 	public String filterOwner = "";
 
-	final String seperator = ",";
-	final String GPXseperator = "^";
+	private final String seperator = ",";
+	private final String GPXseperator = "^";
 
 	/**
 	 * True, wenn diese FiletrPropertys eine Filterung nach Name, Gc-Code oder Owner enthält!

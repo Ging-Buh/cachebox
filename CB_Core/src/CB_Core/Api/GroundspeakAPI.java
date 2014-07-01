@@ -50,12 +50,12 @@ import CB_Utils.Util.ByRef;
 public class GroundspeakAPI
 {
 	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
-	public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
+	static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
 
 	public static final int IO = 0;
-	public static final int ERROR = -1;
+	private static final int ERROR = -1;
 	public static final int CONNECTION_TIMEOUT = -2;
-	public static final int API_ERROR = -3;
+	private static final int API_ERROR = -3;
 	public static final int API_IS_UNAVAILABLE = -4;
 
 	public static String LastAPIError = "";
@@ -74,7 +74,7 @@ public class GroundspeakAPI
 	 * 
 	 * @return
 	 */
-	public static String GetAccessToken()
+	static String GetAccessToken()
 	{
 		return GetAccessToken(false);
 	}
@@ -86,7 +86,7 @@ public class GroundspeakAPI
 	 * @param boolean Url_Codiert
 	 * @return
 	 */
-	public static String GetAccessToken(boolean Url_Codiert)
+	static String GetAccessToken(boolean Url_Codiert)
 	{
 		String act = "";
 		if (CB_Core_Settings.StagingAPI.getValue())
@@ -138,7 +138,7 @@ public class GroundspeakAPI
 		return membershipType == 3;
 	}
 
-	public static String GetUTCDate(Date date)
+	private static String GetUTCDate(Date date)
 	{
 		long utc = date.getTime();
 		TimeZone tz = TimeZone.getDefault();
@@ -148,7 +148,7 @@ public class GroundspeakAPI
 		return "\\/Date(" + utc + ")\\/";
 	}
 
-	public static String ConvertNotes(String note)
+	private static String ConvertNotes(String note)
 	{
 		String result = note.replace("\r", "");
 		result = result.replace("\"", "\\\"");
@@ -835,7 +835,7 @@ public class GroundspeakAPI
 	// liest den CacheStatus aus dem gegebenen json Object aus.
 	// darin ist gespeichert, wie viele Full Caches schon geladen wurden und wie
 	// viele noch frei sind
-	public static int checkCacheStatus(JSONObject json, boolean isLite)
+	static int checkCacheStatus(JSONObject json, boolean isLite)
 	{
 		LastAPIError = "";
 		try
@@ -866,7 +866,7 @@ public class GroundspeakAPI
 		}
 	}
 
-	public static int getCacheSize(int containerTypeId)
+	static int getCacheSize(int containerTypeId)
 	{
 		switch (containerTypeId)
 		{
@@ -890,7 +890,7 @@ public class GroundspeakAPI
 		}
 	}
 
-	public static CacheTypes getCacheType(int apiTyp)
+	static CacheTypes getCacheType(int apiTyp)
 	{
 		switch (apiTyp)
 		{
@@ -1701,11 +1701,6 @@ public class GroundspeakAPI
 			return CONNECTION_TIMEOUT;
 
 		return ret;
-	}
-
-	public static int isValidAPI_Key()
-	{
-		return isValidAPI_Key(false);
 	}
 
 	public static int isValidAPI_Key(boolean withoutMsg)
