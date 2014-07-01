@@ -70,8 +70,8 @@ public class GSAKGpxImportTest extends TestCase
 		assertEquals("Owner falsch", "Risou", cache.getOwner());
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Mystery);
 		assertTrue("Size ist falsch", cache.Size == CacheSizes.micro);
-		assertTrue("Difficulty ist falsch", cache.Difficulty == 2);
-		assertTrue("Terrain ist falsch", cache.Terrain == 2);
+		assertTrue("Difficulty ist falsch", cache.getDifficulty() == 2);
+		assertTrue("Terrain ist falsch", cache.getTerrain() == 2);
 
 		// Attribute Tests
 
@@ -211,8 +211,8 @@ public class GSAKGpxImportTest extends TestCase
 		assertEquals("Owner falsch", "Test Owner", cache.getOwner());
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Mystery);
 		assertTrue("Size ist falsch", cache.Size == CacheSizes.regular);
-		assertTrue("Difficulty ist falsch", cache.Difficulty == 1);
-		assertTrue("Terrain ist falsch", cache.Terrain == 1);
+		assertTrue("Difficulty ist falsch", cache.getDifficulty() == 1);
+		assertTrue("Terrain ist falsch", cache.getTerrain() == 1);
 
 		// Attribute Tests
 
@@ -349,8 +349,8 @@ public class GSAKGpxImportTest extends TestCase
 		assertEquals("Owner falsch", "Test Owner", cache.getOwner());
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Mystery);
 		assertTrue("Size ist falsch", cache.Size == CacheSizes.regular);
-		assertTrue("Difficulty ist falsch", cache.Difficulty == 1);
-		assertTrue("Terrain ist falsch", cache.Terrain == 1);
+		assertTrue("Difficulty ist falsch", cache.getDifficulty() == 1);
+		assertTrue("Terrain ist falsch", cache.getTerrain() == 1);
 
 		// Attribute Tests
 

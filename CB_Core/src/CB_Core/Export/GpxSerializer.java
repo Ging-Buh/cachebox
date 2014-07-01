@@ -186,22 +186,22 @@ public final class GpxSerializer
 			String difficulty;
 			String terrain;
 
-			if (cache.Difficulty % 1 == 0)
+			if (cache.getDifficulty() % 1 == 0)
 			{
-				difficulty = Integer.toString((int) cache.Difficulty);
+				difficulty = Integer.toString((int) cache.getDifficulty());
 			}
 			else
 			{
-				difficulty = Float.toString(cache.Difficulty);
+				difficulty = Float.toString(cache.getDifficulty());
 			}
 
-			if (cache.Terrain % 1 == 0)
+			if (cache.getTerrain() % 1 == 0)
 			{
-				terrain = Integer.toString((int) cache.Terrain);
+				terrain = Integer.toString((int) cache.getTerrain());
 			}
 			else
 			{
-				terrain = Float.toString(cache.Terrain);
+				terrain = Float.toString(cache.getTerrain());
 			}
 
 			multipleTexts(gpx, PREFIX_GROUNDSPEAK,//

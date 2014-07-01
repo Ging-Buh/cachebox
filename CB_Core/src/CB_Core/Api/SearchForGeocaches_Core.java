@@ -32,13 +32,12 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
-import CB_Locator.Map.Descriptor;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Log.Logger;
 
 public class SearchForGeocaches_Core
 {
-	public Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
+	private Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
 	{
 		CoreCursor reader = Database.Data.rawQuery(sql, null);
 		try
@@ -303,7 +302,7 @@ public class SearchForGeocaches_Core
 					{
 						Logger.Error("API", "SearchForGeocaches_ParseDate", exc);
 					}
-					cache.Difficulty = (float) jCache.getDouble("Difficulty");
+					cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
 					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
 					Boolean Favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + gcCode + "\"");
@@ -394,7 +393,7 @@ public class SearchForGeocaches_Core
 					int jSize = jContainer.getInt("ContainerTypeId");
 					cache.Size = CacheSizes.parseInt(GroundspeakAPI.getCacheSize(jSize));
 					cache.setSolverChecksum(0);
-					cache.Terrain = (float) jCache.getDouble("Terrain");
+					cache.setTerrain((float) jCache.getDouble("Terrain"));
 					cache.Type = CacheTypes.Traditional;
 					try
 					{
@@ -616,7 +615,7 @@ public class SearchForGeocaches_Core
 		// hier im Core nichts machen da hier keine UI vorhanden ist
 	}
 
-	protected String writeExclusions(String requestString, SearchCoordinate searchC)
+	private String writeExclusions(String requestString, SearchCoordinate searchC)
 	{
 		if (searchC.available)
 		{
@@ -656,8 +655,8 @@ public class SearchForGeocaches_Core
 					newCache = apiCaches.get(0);
 					Database.Data.Query.remove(aktCache);
 					Database.Data.Query.add(newCache);
-					newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, newCache.Longitude());
-					newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, newCache.Latitude());
+					// newCache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, newCache.Longitude());
+					// newCache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, newCache.Latitude());
 
 					new CacheDAO().UpdateDatabase(newCache);
 

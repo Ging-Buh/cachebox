@@ -244,7 +244,7 @@ public class CacheInfo extends CB_View_Base
 				mD_FontCache.setColor(COLOR.getFontColor());
 				mD_FontCache.setText("D", mLeft, mBottom);
 				mLeft += mD_FontCache.getBounds().width + mMargin;
-				mDSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Difficulty * 2)));
+				mDSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.getDifficulty() * 2)));
 				mDSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 				mDSprite.setRotation(0);
 				// Terrain
@@ -253,7 +253,7 @@ public class CacheInfo extends CB_View_Base
 				mT_FontCache.setColor(COLOR.getFontColor());
 				mT_FontCache.setText("T", mLeft, mBottom);
 				mLeft += mT_FontCache.getBounds().width + mMargin;
-				mTSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.Terrain * 2)));
+				mTSprite = new Sprite(SpriteCacheBase.Stars.get((int) (mCache.getTerrain() * 2)));
 				mTSprite.setBounds(mLeft, mSpriteBottom, mStarSize.width, mStarSize.height);
 				mTSprite.setRotation(0);
 				// Draw TB

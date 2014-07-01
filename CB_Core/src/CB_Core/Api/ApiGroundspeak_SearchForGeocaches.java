@@ -163,7 +163,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			{
 				Logger.Error("API", "SearchForGeocaches_ParseDate", exc);
 			}
-			cache.Difficulty = (float) jCache.getDouble("Difficulty");
+			cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
 			CacheDAO dao = new CacheDAO();
 			// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
@@ -259,7 +259,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			int jSize = jContainer.getInt("ContainerTypeId");
 			cache.Size = CacheSizes.parseInt(GroundspeakAPI.getCacheSize(jSize));
 			cache.setSolverChecksum(0);
-			cache.Terrain = (float) jCache.getDouble("Terrain");
+			cache.setTerrain((float) jCache.getDouble("Terrain"));
 			cache.Type = CacheTypes.Traditional;
 			JSONObject jCacheType = jCache.getJSONObject("CacheType");
 			cache.Type = GroundspeakAPI.getCacheType(jCacheType.getInt("GeocacheTypeId"));

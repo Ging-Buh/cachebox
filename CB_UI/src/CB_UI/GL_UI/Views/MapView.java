@@ -680,14 +680,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		// Show D/T-Rating
 		if (showDT && (!drawAsWaypoint) && (aktZoom >= 15))
 		{
-			Sprite difficulty = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Difficulty * 2, 5 * 2));
+			Sprite difficulty = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
 			difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2),
 					WpUnderlay.width, WpUnderlay.Height4_8);
 			difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			difficulty.setRotation(90);
 			difficulty.draw(batch);
 
-			Sprite terrain = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Terrain * 2, 5 * 2));
+			Sprite terrain = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
 			terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width,
 					WpUnderlay.Height4_8);
 			terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);

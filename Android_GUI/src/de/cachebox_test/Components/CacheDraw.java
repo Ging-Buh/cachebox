@@ -320,12 +320,12 @@ public class CacheDraw
 			SDTleft += UiSizes.that.getTabWidth();
 			canvas.drawText("D", SDTleft, SDTLineTop, DTPaint);
 			SDTleft += UiSizes.that.getSpaceWidth();
-			SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.Difficulty * 2)], SDTleft, SDTImageTop,
+			SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.getDifficulty() * 2)], SDTleft, SDTImageTop,
 					UI_Size_Base.that.getScaledFontSize());
 			SDTleft += UiSizes.that.getTabWidth();
 			canvas.drawText("T", SDTleft, SDTLineTop, DTPaint);
 			SDTleft += UiSizes.that.getSpaceWidth();
-			SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.Terrain * 2)], SDTleft, SDTImageTop,
+			SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.getTerrain() * 2)], SDTleft, SDTImageTop,
 					UI_Size_Base.that.getScaledFontSize());
 			SDTleft += UiSizes.that.getSpaceWidth();
 

@@ -39,7 +39,6 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
-import CB_Locator.Map.Descriptor;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.IChkRedyHandler;
@@ -783,8 +782,8 @@ public class SearchDialog extends PopUp_Base
 						for (Cache cache : apiCaches)
 						{
 							counter++;
-							cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-							cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+							// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+							// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 							if (Database.Data.Query.GetCacheById(cache.Id) == null)
 							{
 								Database.Data.Query.add(cache);

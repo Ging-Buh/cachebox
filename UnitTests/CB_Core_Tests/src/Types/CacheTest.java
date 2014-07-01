@@ -207,6 +207,105 @@ public class CacheTest extends TestCase
 
 	}
 
+	@Test
+	public static void testDT()
+	{
+		Cache c = new Cache(false);
+
+		float value;
+		{
+			value = 3f;
+			c.setTerrain(3f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+		{
+			value = 4.5f;
+			c.setTerrain(4.5f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+		{
+			value = 4.5f;
+			c.setDifficulty(4.5f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 1.5f;
+			c.setTerrain(1.5f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+		{
+			value = 1f;
+			c.setDifficulty(1f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 1.5f;
+			c.setDifficulty(1.5f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 1f;
+			c.setTerrain(1f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+		{
+			value = 2.5f;
+			c.setTerrain(2.5f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+		{
+			value = 2f;
+			c.setDifficulty(2f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 2.5f;
+			c.setDifficulty(2.5f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 4f;
+			c.setTerrain(4f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+		{
+			value = 3f;
+			c.setDifficulty(3f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 3.5f;
+			c.setTerrain(3.5f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+		{
+			value = 3.5f;
+			c.setDifficulty(3.5f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 4f;
+			c.setDifficulty(4f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 2f;
+			c.setTerrain(2f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+		{
+			value = 5f;
+			c.setDifficulty(5f);
+			assertTrue("Difficulty must be equals", c.getDifficulty() == value);
+		}
+		{
+			value = 5f;
+			c.setTerrain(5f);
+			assertTrue("Terrain must be equals", c.getTerrain() == value);
+		}
+
+	}
+
 	public static void assertCache_GC2T9RW_with_details(boolean withDescription) throws ClassNotFoundException
 	{
 		InitTestDBs.InitalConfig();
@@ -239,8 +338,8 @@ public class CacheTest extends TestCase
 		assertEquals("Owner falsch", "Team Rabbits", cache.getOwner());
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Traditional);
 		assertTrue("Size ist falsch", cache.Size == CacheSizes.small);
-		assertTrue("Difficulty ist falsch", cache.Difficulty == 2);
-		assertTrue("Terrain ist falsch", cache.Terrain == 5);
+		assertTrue("Difficulty ist falsch", cache.getDifficulty() == 2);
+		assertTrue("Terrain ist falsch", cache.getTerrain() == 5);
 
 		assertTrue("Attribut falsch", cache.isAttributePositiveSet(Attributes.Bicycles));
 		assertFalse("Attribut falsch", cache.isAttributeNegativeSet(Attributes.Bicycles));
@@ -375,8 +474,8 @@ public class CacheTest extends TestCase
 		assertEquals("Owner falsch", "Team Rabbits", cache.getOwner());
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Traditional);
 		assertTrue("Size ist falsch", cache.Size == CacheSizes.small);
-		assertTrue("Difficulty ist falsch", cache.Difficulty == 2);
-		assertTrue("Terrain ist falsch", cache.Terrain == 5);
+		assertTrue("Difficulty ist falsch", cache.getDifficulty() == 2);
+		assertTrue("Terrain ist falsch", cache.getTerrain() == 5);
 
 		// fülle eine Liste mit allen Attributen
 		ArrayList<Attributes> attributes = new ArrayList<Attributes>();

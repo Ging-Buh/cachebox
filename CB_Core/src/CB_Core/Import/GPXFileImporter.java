@@ -1401,26 +1401,26 @@ public class GPXFileImporter
 		{
 			try
 			{
-				cache.Difficulty = Float.parseFloat(values.get("cache_difficulty"));
+				cache.setDifficulty(Float.parseFloat(values.get("cache_difficulty")));
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
-			if (cache.Difficulty < 0) cache.Difficulty = 0f;
+			if (cache.getDifficulty() < 0) cache.setDifficulty(0f);
 		}
 
 		if (values.containsKey("cache_terrain"))
 		{
 			try
 			{
-				cache.Terrain = Float.parseFloat(values.get("cache_terrain"));
+				cache.setTerrain(Float.parseFloat(values.get("cache_terrain")));
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
-			if (cache.Terrain < 0) cache.Terrain = 0f;
+			if (cache.getTerrain() < 0) cache.setTerrain(0f);
 		}
 
 		if (values.containsKey("cache_country"))

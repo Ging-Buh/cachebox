@@ -43,7 +43,6 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Map.Descriptor;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
 
@@ -1501,8 +1500,8 @@ public class GroundspeakAPI
 
 		for (Cache cache : apiCaches)
 		{
-			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+			// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+			// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
 			if (aktCache == null)

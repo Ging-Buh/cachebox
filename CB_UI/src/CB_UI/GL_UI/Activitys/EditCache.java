@@ -169,8 +169,8 @@ public class EditCache extends ActivityBase
 		newValues = new Cache(true);
 		newValues.Type = CacheTypes.Traditional;
 		newValues.Size = CacheSizes.micro;
-		newValues.Difficulty = 1;
-		newValues.Terrain = 1;
+		newValues.setDifficulty(1);
+		newValues.setTerrain(1);
 		newValues.Pos = Locator.getLocation().toCordinate();
 		if (!newValues.Pos.isValid()) newValues.Pos = GlobalCore.getSelectedCoord();
 		// GC - Code bestimmen für freies CWxxxx = CustomWaypint
@@ -214,8 +214,8 @@ public class EditCache extends ActivityBase
 				cacheSize.setSelection(i);
 			}
 		}
-		cacheDifficulty.setSelection((int) (cache.Difficulty * 2 - 2));
-		cacheTerrain.setSelection((int) (cache.Terrain * 2 - 2));
+		cacheDifficulty.setSelection((int) (cache.getDifficulty() * 2 - 2));
+		cacheTerrain.setSelection((int) (cache.getTerrain() * 2 - 2));
 		cacheCoords.setCoordinate(cache.Pos);
 		cacheTitle.setText(cache.getName());
 		cacheOwner.setText(cache.getOwner());
@@ -253,8 +253,8 @@ public class EditCache extends ActivityBase
 				cache.setGcCode(gcc);
 				cache.Type = newValues.Type;
 				cache.Size = newValues.Size;
-				cache.Difficulty = newValues.Difficulty;
-				cache.Terrain = newValues.Terrain;
+				cache.setDifficulty(newValues.getDifficulty());
+				cache.setTerrain(newValues.getTerrain());
 				cache.Pos = newValues.Pos;
 				cache.setName(cacheTitle.getText());
 				cache.setOwner(cacheOwner.getText());
@@ -417,7 +417,7 @@ public class EditCache extends ActivityBase
 			public void selectionChanged(int index)
 			{
 				EditCache.this.show();
-				newValues.Difficulty = (index + 2.0f) / 2.0f;
+				newValues.setDifficulty((index + 2.0f) / 2.0f);
 			}
 		};
 	}
@@ -454,7 +454,7 @@ public class EditCache extends ActivityBase
 			public void selectionChanged(int index)
 			{
 				EditCache.this.show();
-				newValues.Terrain = (index + 2.0f) / 2.0f;
+				newValues.setTerrain((index + 2.0f) / 2.0f);
 			}
 		};
 	}

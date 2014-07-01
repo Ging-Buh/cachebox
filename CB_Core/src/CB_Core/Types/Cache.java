@@ -21,14 +21,30 @@ import CB_Utils.Lists.CB_List;
 public class Cache implements Comparable<Cache>, Serializable
 {
 	private static final long serialVersionUID = 1015307624242318838L;
+	// ########################################################
+	// Boolean Handling
+	// one Boolean use up to 4 Bytes
+	// Boolean data type represents one bit of information, but its "size" isn't something that's precisely defined. (Oracle Docs)
+	//
+	// so we use one Short for Store all Boolean and Use a BitMask
+	// ########################################################
+	
+	// Masks
+	// protected final static short MASK_HAS_HINT = 1 << 0; // not necessary because hasHint is always called for SelectedCache and
+	// SelectedCache will have valid hint field.
+	private final static short MASK_CORECTED_COORDS = 1 << 1;
+	private final static short MASK_ARCHIVED = 1 << 2;
+	private final static short MASK_AVAILABLE = 1 << 3;
+	private final static short MASK_VAVORITE = 1 << 4;
+	private final static short MASK_FOUND = 1 << 5;
+	// private final static short MASK_SEARCH_VISIBLE = 1 << 6;
+	// private final static short MASK_SOLVER1CHANGED = 1 << 7;
+	private final static short MASK_HAS_USER_DATA = 1 << 8;
+	private final static short MASK_LISTING_CHANGED = 1 << 9;
 	protected static final Charset US_ASCII = Charset.forName("US-ASCII");
-	protected static final Charset UTF_8 = Charset.forName("UTF-8");
+	private static final Charset UTF_8 = Charset.forName("UTF-8");
 	public static final String EMPTY_STRING = "";
-
-	/*
-	 * Private Member
-	 */
-
+	private static String gcLogin = null;
 	public static long GenerateCacheId(String GcCode)
 	{
 		long result = 0;
@@ -48,41 +64,46 @@ public class Cache implements Comparable<Cache>, Serializable
 		return result;
 	}
 
-	/*
-	 * Public Member
+	/**
+	 * Waypoint Code des Caches
 	 */
+	private byte[] GcCode;
+	/**
+	 * Name des Caches
+	 */
+	private byte[] Name;
 
 	/**
-	 * Koordinaten des Caches auf der Karte gelten in diesem Zoom
+	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
 	 */
-	public static final int MapZoomLevel = 18;
-
+	private int myCache = -1;
+	private boolean isSearchVisible = true;
+	private boolean isDisposed = false;
+	/**
+	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
+	 * from DB to get the changes from Solver 1
+	 */
+	private boolean solver1Changed = false;
+	private short BitFlags = 0;
+	/**
+	 * Stored Difficulty and Terrain<br>
+	 * <br>
+	 * First four bits for Difficulty<br>
+	 * Last four bits for Terrain
+	 */
+	private byte DifficultyTerrain = 0;
+	/**
+	 * Verantwortlicher
+	 */
+	private byte[] Owner;
 	/**
 	 * Detail Information of Waypoint which are not always loaded
 	 */
 	public CacheDetail detail = null;
-
-	/**
-	 * Koordinaten des Caches auf der Karte
-	 */
-	public double MapX;
-	/**
-	 * Koordinaten des Caches auf der Karte
-	 */
-	public double MapY;
 	/**
 	 * Id des Caches in der Datenbank von geocaching.com
 	 */
 	public long Id;
-	/**
-	 * Waypoint Code des Caches
-	 */
-	protected byte[] GcCode;
-	/**
-	 * Name des Caches
-	 */
-	protected byte[] Name;
-
 	/**
 	 * Die Coordinate, an der der Cache liegt.
 	 */
@@ -96,19 +117,11 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * Groesse des Caches. Bei Wikipediaeintraegen enthaelt dieses Feld den Radius in m
 	 */
 	public CacheSizes Size;
-	/**
-	 * Schwierigkeit des Caches
-	 */
-	public float Difficulty = 0;
-	/**
-	 * Gelaendebewertung
-	 */
-	public float Terrain = 0;
 
-	/**
-	 * hat der Cache Clues oder Notizen erfasst
-	 */
-	public boolean hasUserData;
+	// /**
+	// * hat der Cache Clues oder Notizen erfasst
+	// */
+	// public boolean hasUserData;
 
 	/**
 	 * Name der GPX-Datei aus der importiert wurde
@@ -120,15 +133,10 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public CacheTypes Type = CacheTypes.Undefined;
 
-	/**
-	 * Verantwortlicher
-	 */
-	public byte[] Owner;
-
-	/**
-	 * Das Listing hat sich geaendert!
-	 */
-	public boolean listingChanged = false;
+	// /**
+	// * Das Listing hat sich geaendert!
+	// */
+	// public boolean listingChanged = false;
 
 	/**
 	 * Anzahl der Travelbugs und Coins, die sich in diesem Cache befinden
@@ -145,10 +153,45 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public CB_List<Waypoint> waypoints = null;
 
-	/**
-	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
+	/*
+	 * Constructors
 	 */
-	private int myCache = -1;
+	
+	/**
+	 * Constructor
+	 */
+	public Cache(boolean withDetails)
+	{
+		this.NumTravelbugs = 0;
+		this.setDifficulty(0);
+		this.setTerrain(0);
+		this.Size = CacheSizes.other;
+		this.setAvailable(true);
+		waypoints = new CB_List<Waypoint>();
+		if (withDetails)
+		{
+			detail = new CacheDetail();
+		}
+	}
+
+	/**
+	 * Constructor
+	 */
+	public Cache(double Latitude, double Longitude, String Name, CacheTypes type, String GcCode)
+	{
+		this.Pos = new Coordinate(Latitude, Longitude);
+		this.setName(Name);
+		this.Type = type;
+		this.setGcCode(GcCode);
+		this.NumTravelbugs = 0;
+		this.setDifficulty(0);
+		this.setTerrain(0);
+		this.Size = CacheSizes.other;
+		this.setAvailable(true);
+		;
+		waypoints = new CB_List<Waypoint>();
+	
+	}
 
 	/**
 	 * Breitengrad
@@ -166,54 +209,10 @@ public class Cache implements Comparable<Cache>, Serializable
 		return Pos.getLongitude();
 	}
 
-	/**
-	 * Breitengrad
-	 */
-	public double Latitude(Boolean useFinal)
-	{
-		Waypoint waypoint = null;
-		if (useFinal) waypoint = this.GetFinalWaypoint();
-		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
-		// Diszanzberechnung vom Final aus gemacht werden
-		// If a mystery has a final waypoint, the distance will be calculated to
-		// the final not the the cache coordinates
-		Coordinate toPos = Pos;
-		if (waypoint != null)
-		{
-			toPos = new Coordinate(waypoint.Pos.getIntLatitude(), waypoint.Pos.getIntLongitude());
-			// nur sinnvolles Final, sonst vom Cache
-			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
-		}
-		return toPos.getLatitude();
-	}
-
-	/**
-	 * Laengengrad
-	 */
-	public double Longitude(Boolean useFinal)
-	{
-		Waypoint waypoint = null;
-		if (useFinal) waypoint = this.GetFinalWaypoint();
-		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
-		// Diszanzberechnung vom Final aus gemacht werden
-		// If a mystery has a final waypoint, the distance will be calculated to
-		// the final not the the cache coordinates
-		Coordinate toPos = Pos;
-		if (waypoint != null)
-		{
-			toPos = new Coordinate(waypoint.Pos.getIntLatitude(), waypoint.Pos.getIntLongitude());
-			// nur sinnvolles Final, sonst vom Cache
-			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
-		}
-		return toPos.getLongitude();
-	}
-
 	public void setFavorit(boolean value)
 	{
 		setFavorite(value);
 	}
-
-	private static String gcLogin = null;
 
 	/**
 	 * Delete Detail Information to save memory
@@ -320,46 +319,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	}
 
 	/*
-	 * Constructors
-	 */
-
-	/**
-	 * Constructor
-	 */
-	public Cache(boolean withDetails)
-	{
-		this.NumTravelbugs = 0;
-		this.Difficulty = 0;
-		this.Terrain = 0;
-		this.Size = CacheSizes.other;
-		this.setAvailable(true);
-		waypoints = new CB_List<Waypoint>();
-		if (withDetails)
-		{
-			detail = new CacheDetail();
-		}
-	}
-
-	/**
-	 * Constructor
-	 */
-	public Cache(double Latitude, double Longitude, String Name, CacheTypes type, String GcCode)
-	{
-		this.Pos = new Coordinate(Latitude, Longitude);
-		this.setName(Name);
-		this.Type = type;
-		this.setGcCode(GcCode);
-		this.NumTravelbugs = 0;
-		this.Difficulty = 0;
-		this.Terrain = 0;
-		this.Size = CacheSizes.other;
-		this.setAvailable(true);
-		;
-		waypoints = new CB_List<Waypoint>();
-
-	}
-
-	/*
 	 * Getter/Setter
 	 */
 
@@ -453,21 +412,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	}
 
 	/**
-	 * @return Entfernung zur aktUserPos als Float
-	 */
-	public float CachedDistance(CalculationType type)
-	{
-		if (cachedDistance != 0)
-		{
-			return cachedDistance;
-		}
-		else
-		{
-			return Distance(type, true);
-		}
-	}
-
-	/**
 	 * Returns a List of Spoiler Ressources
 	 * 
 	 * @return ArrayList of String
@@ -534,16 +478,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	}
 
 	/**
-	 * Converts the type string into an element of the CacheType enumeration.
-	 * 
-	 * @param type
-	 */
-	public void parseCacheTypeString(String type)
-	{
-		this.Type = CacheTypes.parseString(type);
-	}
-
-	/**
 	 * Gibt die Entfernung zur uebergebenen User Position als Float zurueck und Speichert die Aktueller User Position fuer alle Caches ab.
 	 * 
 	 * @return Entfernung zur uebergebenen User Position als Float
@@ -553,7 +487,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		return Distance(type, useFinal, Locator.getCoordinate());
 	}
 
-	public float Distance(CalculationType type, boolean useFinal, Coordinate fromPos)
+	float Distance(CalculationType type, boolean useFinal, Coordinate fromPos)
 	{
 		if (isDisposed) return 0;
 		Waypoint waypoint = null;
@@ -588,54 +522,6 @@ public class Cache implements Comparable<Cache>, Serializable
 		return (dist1 < dist2 ? -1 : (dist1 == dist2 ? 0 : 1));
 	}
 
-	// public void clear()
-	// {
-	// MapX = 0;
-	// MapY = 0;
-	// GcId = "";
-	// Id = -1;
-	// setGcCode("");
-	// setName("");
-	// Pos = new Coordinate();
-	// Rating = 0;
-	// Size = null;
-	// Difficulty = 0;
-	// Terrain = 0;
-	// setArchived(false);
-	// setAvailable(false);
-	// ApiStatus = 0;
-	// setFavorite(false);
-	// noteCheckSum = 0;
-	// solverCheckSum = 0;
-	// hasUserData = false;
-	// setCorrectedCoordinates(false);
-	// setFound(false);
-	// TourName = "";
-	// GPXFilename_ID = 0;
-	// Type = CacheTypes.Undefined;
-	// PlacedBy = "";
-	// Owner = "";
-	// DateHidden = null;
-	// Url = "";
-	// listingChanged = false;
-	// attributesPositive = new DLong(0, 0);
-	// attributesNegative = new DLong(0, 0);
-	// NumTravelbugs = 0;
-	// cachedDistance = 0;
-	// hint = "";
-	// waypoints = new CB_List<Waypoint>();
-	// spoilerRessources = null;
-	// shortDescription = "";
-	// longDescription = "";
-	// myCache = -1;
-	// gcLogin = null;
-	// if (AttributeList != null) AttributeList.clear();
-	// AttributeList = null;
-	// }
-
-	private boolean isSearchVisible = true;
-	private boolean isDisposed = false;
-
 	public void setSearchVisible(boolean value)
 	{
 		isSearchVisible = value;
@@ -646,7 +532,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		return isSearchVisible;
 	}
 
-	public Waypoint findWaypointByGc(String gc)
+	private Waypoint findWaypointByGc(String gc)
 	{
 		if (isDisposed) return null;
 		for (int i = 0, n = waypoints.size(); i < n; i++)
@@ -664,14 +550,14 @@ public class Cache implements Comparable<Cache>, Serializable
 	// this is used after actualization of cache with API
 	public void copyFrom(Cache cache)
 	{
-		this.MapX = cache.MapX;
-		this.MapY = cache.MapY;
+		// this.MapX = cache.MapX;
+		// this.MapY = cache.MapY;
 		this.Name = cache.Name;
 		this.Pos = cache.Pos;
 		this.Rating = cache.Rating;
 		this.Size = cache.Size;
-		this.Difficulty = cache.Difficulty;
-		this.Terrain = cache.Terrain;
+		this.setDifficulty(cache.getDifficulty());
+		this.setTerrain(cache.getTerrain());
 		this.setArchived(cache.isArchived());
 		this.setAvailable(cache.isAvailable());
 		// this.favorite = false;
@@ -687,7 +573,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		this.Type = cache.Type;
 		// this.PlacedBy = cache.PlacedBy;
 		this.Owner = cache.Owner;
-		this.listingChanged = true; // so that spoiler download will be done again
+		// this.listingChanged = true; // so that spoiler download will be done again
 		this.NumTravelbugs = cache.NumTravelbugs;
 		// this.cachedDistance = 0;
 		// do not copy waypoints List directly because actual user defined Waypoints would be deleted
@@ -726,7 +612,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		return "Cache:" + GcCode + " " + Pos.toString();
 	}
 
-	public void dispose()
+	void dispose()
 	{
 		isDisposed = true;
 
@@ -754,12 +640,6 @@ public class Cache implements Comparable<Cache>, Serializable
 		Owner = null;
 
 	}
-
-	/**
-	 * When Solver1 changes -> this flag must be set. When Solver 2 will be opend and this flag is set -> Solver 2 must reload the content
-	 * from DB to get the changes from Solver 1
-	 */
-	private boolean solver1Changed = false;
 
 	public void setSolver1Changed(boolean b)
 	{
@@ -866,35 +746,12 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 	}
 
-	// ########################################################
-	// Boolean Handling
-	// one Boolean use up to 4 Bytes
-	// Boolean data type represents one bit of information, but its "size" isn't something that's precisely defined. (Oracle Docs)
-	//
-	// so we use one Short for Store all Boolean and Use a BitMask
-	// ########################################################
-
-	// Masks
-	// protected final static short MASK_HAS_HINT = 1 << 0; // not necessary because hasHint is always called for SelectedCache and
-	// SelectedCache will have valid hint field.
-	protected final static short MASK_CORECTED_COORDS = 1 << 1;
-	protected final static short MASK_ARCHIVED = 1 << 2;
-	protected final static short MASK_AVAILABLE = 1 << 3;
-	protected final static short MASK_VAVORITE = 1 << 4;
-	protected final static short MASK_FOUND = 1 << 5;
-	protected final static short MASK_SEARCH_VISIBLE = 1 << 6;
-	protected final static short MASK_SOLVER1CHANGED = 1 << 7;
-	protected final static short MASK_HAS_USER_DATA = 1 << 8;
-	protected final static short MASK_LISTING_CHANGED = 1 << 9;
-
-	protected short BitFlags = 0;
-
-	protected boolean getMaskValue(short mask)
+	private boolean getMaskValue(short mask)
 	{
 		return (BitFlags & mask) == mask;
 	}
 
-	protected void setMaskValue(short mask, boolean value)
+	private void setMaskValue(short mask, boolean value)
 	{
 		if (getMaskValue(mask) == value) return;
 
@@ -910,18 +767,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	}
 
 	// Getter and Setter over Mask
-
-	// not necessary because hasHint is always called for SelectedCache and
-	// SelectedCache will have valid hint field.
-	// public boolean hasHint()
-	// {
-	// return getMaskValue(MASK_HAS_HINT);
-	// }
-	//
-	// public void setHasHint(boolean b)
-	// {
-	// setMaskValue(MASK_HAS_HINT, b);
-	// }
 
 	public boolean hasCorrectedCoordinates()
 	{
@@ -961,6 +806,65 @@ public class Cache implements Comparable<Cache>, Serializable
 	public void setFavorite(boolean favorite)
 	{
 		this.setMaskValue(MASK_VAVORITE, favorite);
+	}
+
+	public float getDifficulty()
+	{
+		return getFloatX_5FromByte((byte) (DifficultyTerrain & 15));
+	}
+
+	public void setDifficulty(float difficulty)
+	{
+		DifficultyTerrain = (byte) (DifficultyTerrain & (byte) 240);// clear Bits
+		DifficultyTerrain = (byte) (DifficultyTerrain | getDT_HalfByte(difficulty));
+	}
+
+	public float getTerrain()
+	{
+		return getFloatX_5FromByte((byte) (DifficultyTerrain >>> 4));
+	}
+
+	public void setTerrain(float terrain)
+	{
+		DifficultyTerrain = (byte) (DifficultyTerrain & (byte) 15);// clear Bits
+		DifficultyTerrain = (byte) (DifficultyTerrain | getDT_HalfByte(terrain) << 4);
+	}
+
+	private byte getDT_HalfByte(float value)
+	{
+		if (value == 1f) return (byte) 0;
+		if (value == 1.5f) return (byte) 1;
+		if (value == 2f) return (byte) 2;
+		if (value == 2.5f) return (byte) 3;
+		if (value == 3f) return (byte) 4;
+		if (value == 3.5f) return (byte) 5;
+		if (value == 4f) return (byte) 6;
+		if (value == 4.5f) return (byte) 7;
+		return (byte) 8;
+	}
+
+	private float getFloatX_5FromByte(byte value)
+	{
+		switch (value)
+		{
+		case 0:
+			return 1f;
+		case 1:
+			return 1.5f;
+		case 2:
+			return 2f;
+		case 3:
+			return 2.5f;
+		case 4:
+			return 3f;
+		case 5:
+			return 3.5f;
+		case 6:
+			return 4f;
+		case 7:
+			return 4.5f;
+		}
+		return 5f;
 	}
 
 	public boolean isFound()

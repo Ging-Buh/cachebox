@@ -29,25 +29,24 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheDetail;
 import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
-import CB_Locator.Map.Descriptor;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Log.Logger;
 
 public class CacheDAO
 {
-	protected static final String sqlgetFromDbByCacheId = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where id = ?";
-	protected static final String sqlgetFromDbByGcCode = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where GCCode = ?";
-	protected static final String sqlgetFromDbByGcCodeWithDiscription = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint, Description, Solver, Notes from Caches where GCCode = ?";
+	private static final String sqlgetFromDbByCacheId = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where id = ?";
+	private static final String sqlgetFromDbByGcCode = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where GCCode = ?";
+	private static final String sqlgetFromDbByGcCodeWithDiscription = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint, Description, Solver, Notes from Caches where GCCode = ?";
 
-	protected static final String sqlExistsCache = "select 1 from Caches where Id = ?";
+	private static final String sqlExistsCache = "select 1 from Caches where Id = ?";
 
-	public Cache ReadFromCursor(CoreCursor reader, boolean fullDetails)
+	private Cache ReadFromCursor(CoreCursor reader, boolean fullDetails)
 	{
 		return ReadFromCursor(reader, false, fullDetails);
 	}
 
-	public Cache ReadFromCursor(CoreCursor reader, boolean withDescription, boolean fullDetails)
+	Cache ReadFromCursor(CoreCursor reader, boolean withDescription, boolean fullDetails)
 	{
 		try
 		{
@@ -58,8 +57,8 @@ public class CacheDAO
 			cache.Pos = new Coordinate(reader.getDouble(2), reader.getDouble(3));
 			cache.setName(reader.getString(4).trim());
 			cache.Size = CacheSizes.parseInt(reader.getInt(5));
-			cache.Difficulty = ((float) reader.getShort(6)) / 2;
-			cache.Terrain = ((float) reader.getShort(7)) / 2;
+			cache.setDifficulty(((float) reader.getShort(6)) / 2);
+			cache.setTerrain(((float) reader.getShort(7)) / 2);
 			cache.setArchived(reader.getInt(8) != 0);
 			cache.setAvailable(reader.getInt(9) != 0);
 			cache.setFound(reader.getInt(10) != 0);
@@ -84,8 +83,8 @@ public class CacheDAO
 			else
 				cache.setCorrectedCoordinates(false);
 
-			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+			// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+			// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 
 			if (fullDetails)
 			{
@@ -192,8 +191,8 @@ public class CacheDAO
 		{
 			e.printStackTrace();
 		}
-		args.put("Difficulty", (int) (cache.Difficulty * 2));
-		args.put("Terrain", (int) (cache.Terrain * 2));
+		args.put("Difficulty", (int) (cache.getDifficulty() * 2));
+		args.put("Terrain", (int) (cache.getTerrain() * 2));
 		args.put("Archived", cache.isArchived() ? 1 : 0);
 		args.put("Available", cache.isAvailable() ? 1 : 0);
 		args.put("Found", cache.isFound());
@@ -316,8 +315,8 @@ public class CacheDAO
 		{
 			e.printStackTrace();
 		}
-		args.put("Difficulty", (int) (cache.Difficulty * 2));
-		args.put("Terrain", (int) (cache.Terrain * 2));
+		args.put("Difficulty", (int) (cache.getDifficulty() * 2));
+		args.put("Terrain", (int) (cache.getTerrain() * 2));
 		args.put("Archived", cache.isArchived() ? 1 : 0);
 		args.put("Available", cache.isAvailable() ? 1 : 0);
 		args.put("Found", cache.isFound());
@@ -418,7 +417,7 @@ public class CacheDAO
 
 	}
 
-	public Cache getFromDbByGcCode(String GcCode, boolean witDetail, boolean withDescription)
+	public Cache getFromDbByGcCode(String GcCode, boolean witDetail, boolean withDescription) // NO_UCD (test only)
 	{
 		String where = withDescription ? sqlgetFromDbByGcCodeWithDiscription : sqlgetFromDbByGcCode;
 
