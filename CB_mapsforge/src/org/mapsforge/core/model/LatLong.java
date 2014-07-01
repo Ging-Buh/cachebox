@@ -44,6 +44,16 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 		return longitude / CONVERSIONFACTOR;
 	}
 
+	public int getIntLatitude()
+	{
+		return latitude;
+	}
+
+	public int getIntLongitude()
+	{
+		return longitude;
+	}
+	
 	/**
 	 * @param latitude
 	 *            the latitude coordinate in degrees.

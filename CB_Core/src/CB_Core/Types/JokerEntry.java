@@ -2,43 +2,40 @@ package CB_Core.Types;
 
 import java.io.Serializable;
 
-public class JokerEntry implements Serializable {
+public class JokerEntry implements Serializable
+{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4110771837489396947L;
-	
-    /// Vorname
-    public String Vorname;
 
-    /// Name
-    public String Name;
+	// / Vorname
+	public String Vorname;
 
-    /// Name
-    public String GCLogin;
+	// / Name
+	public String Name;
 
-    /// Telefunnummer
-    public String Telefon;
+	// / Name
+	public String GCLogin;
 
-	/// Anzahl der Tage die der Fund her ist. -1 = Owner
-    public long Tage;
+	// / Telefunnummer
+	public String Telefon;
 
-    /// Bemerkung
-    public String Bemerkung;
-    
+	// / Anzahl der Tage die der Fund her ist. -1 = Owner
+	public long Tage;
 
+	// / Bemerkung
+	public String Bemerkung;
 
-    public JokerEntry(String vorname, String name, String gclogin, String telefon, long tage, String bemerkung)
-    {
-    	Vorname = vorname;
-    	Name = name;
-    	GCLogin = gclogin;
-    	Telefon = telefon;
-    	Tage = tage;
-    	Bemerkung = bemerkung;
-    	
-    }
-    
-    
-    	
+	JokerEntry(String vorname, String name, String gclogin, String telefon, long tage, String bemerkung)
+	{
+		Vorname = vorname;
+		Name = name;
+		GCLogin = gclogin;
+		Telefon = telefon;
+		Tage = tage;
+		Bemerkung = bemerkung;
+
+	}
+
 }

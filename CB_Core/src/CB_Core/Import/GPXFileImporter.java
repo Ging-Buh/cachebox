@@ -72,7 +72,7 @@ public class GPXFileImporter
 	private String gpxName = "";
 	private String gpxAuthor = "";
 
-	public GPXFileImporter(File gpxFileName)
+	public GPXFileImporter(File gpxFileName) // NO_UCD (test only)
 	{
 		super();
 		mGpxFile = gpxFileName;
@@ -80,7 +80,7 @@ public class GPXFileImporter
 		mDisplayFilename = gpxFileName.getName();
 	}
 
-	public GPXFileImporter(File file, ImporterProgress ip)
+	GPXFileImporter(File file, ImporterProgress ip)
 	{
 		super();
 		mGpxFile = file;

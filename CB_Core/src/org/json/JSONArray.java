@@ -87,7 +87,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If there is a syntax error.
 	 */
-	public JSONArray(JSONTokener x) throws JSONException
+	JSONArray(JSONTokener x) throws JSONException
 	{
 		this();
 		if (x.nextClean() != '[')
@@ -148,7 +148,7 @@ public class JSONArray
 	 * @param collection
 	 *            A Collection.
 	 */
-	public JSONArray(Collection<Object> collection)
+	JSONArray(Collection<Object> collection)
 	{
 
 		if (collection != null)
@@ -172,7 +172,7 @@ public class JSONArray
 	 * @throws JSONException
 	 *             If not an array.
 	 */
-	public JSONArray(Object array) throws JSONException
+	JSONArray(Object array) throws JSONException
 	{
 		this();
 		if (array.getClass().isArray())

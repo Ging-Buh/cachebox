@@ -30,12 +30,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its external form is a string wrapped in curly braces with colons between
@@ -122,7 +119,6 @@ public class JSONObject
 	/**
 	 * The map where the JSONObject's properties are kept.
 	 */
-	@SuppressWarnings("rawtypes")
 	private Map map;
 
 	/**
@@ -135,7 +131,6 @@ public class JSONObject
 	/**
 	 * Construct an empty JSONObject.
 	 */
-	@SuppressWarnings("rawtypes")
 	public JSONObject()
 	{
 		this.map = new HashMap();
@@ -243,9 +238,7 @@ public class JSONObject
 	 *            A map object that can be used to initialize the contents of the JSONObject.
 	 * @throws JSONException
 	 */
-	@SuppressWarnings(
-		{ "rawtypes", "unchecked" })
-	public JSONObject(Map map)
+	JSONObject(Map map)
 	{
 		this.map = new HashMap();
 		if (map != null)
@@ -275,100 +268,10 @@ public class JSONObject
 	 * @param bean
 	 *            An object that has getter methods that should be used to make a JSONObject.
 	 */
-	public JSONObject(Object bean)
+	private JSONObject(Object bean)
 	{
 		this();
 		populateMap(bean);
-	}
-
-	/**
-	 * Construct a JSONObject from an Object, using reflection to find the public members. The resulting JSONObject's keys will be the
-	 * strings from the names array, and the values will be the field values associated with those keys in the object. If a key is not found
-	 * or not visible, then it will not be copied into the new JSONObject.
-	 * 
-	 * @param object
-	 *            An object that has fields that should be used to make a JSONObject.
-	 * @param names
-	 *            An array of strings, the names of the fields to be obtained from the object.
-	 */
-	@SuppressWarnings("rawtypes")
-	public JSONObject(Object object, String names[])
-	{
-		this();
-		Class c = object.getClass();
-		for (int i = 0; i < names.length; i += 1)
-		{
-			String name = names[i];
-			try
-			{
-				putOpt(name, c.getField(name).get(object));
-			}
-			catch (Exception ignore)
-			{
-			}
-		}
-	}
-
-	/**
-	 * Construct a JSONObject from a source JSON text string. This is the most commonly used JSONObject constructor.
-	 * 
-	 * @param source
-	 *            A string beginning with <code>{</code>&nbsp;<small>(left brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *            brace)</small>.
-	 * @exception JSONException
-	 *                If there is a syntax error in the source string or a duplicated key.
-	 */
-	public JSONObject(String source) throws JSONException
-	{
-		this(new JSONTokener(source));
-	}
-
-	/**
-	 * Construct a JSONObject from a ResourceBundle.
-	 * 
-	 * @param baseName
-	 *            The ResourceBundle base name.
-	 * @param locale
-	 *            The Locale to load the ResourceBundle for.
-	 * @throws JSONException
-	 *             If any JSONExceptions are detected.
-	 */
-	@SuppressWarnings("rawtypes")
-	public JSONObject(String baseName, Locale locale) throws JSONException
-	{
-		this();
-		ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale, Thread.currentThread().getContextClassLoader());
-
-		// Iterate through the keys in the bundle.
-
-		Enumeration keys = bundle.getKeys();
-		while (keys.hasMoreElements())
-		{
-			Object key = keys.nextElement();
-			if (key instanceof String)
-			{
-
-				// Go through the path, ensuring that there is a nested JSONObject for each
-				// segment except the last. Add the value using the last segment's name into
-				// the deepest nested JSONObject.
-
-				String[] path = ((String) key).split("\\.");
-				int last = path.length - 1;
-				JSONObject target = this;
-				for (int i = 0; i < last; i += 1)
-				{
-					String segment = path[i];
-					JSONObject nextTarget = target.optJSONObject(segment);
-					if (nextTarget == null)
-					{
-						nextTarget = new JSONObject();
-						target.put(segment, nextTarget);
-					}
-					target = nextTarget;
-				}
-				target.put(path[last], bundle.getString((String) key));
-			}
-		}
 	}
 
 	/**
@@ -385,7 +288,7 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the value is an invalid number or if the key is null.
 	 */
-	public JSONObject accumulate(String key, Object value) throws JSONException
+	JSONObject accumulate(String key, Object value) throws JSONException
 	{
 		testValidity(value);
 		Object object = opt(key);
@@ -622,7 +525,6 @@ public class JSONObject
 	 * 
 	 * @return An array of field names, or null if there are no names.
 	 */
-	@SuppressWarnings("rawtypes")
 	public static String[] getNames(JSONObject jo)
 	{
 		int length = jo.length();
@@ -646,7 +548,6 @@ public class JSONObject
 	 * 
 	 * @return An array of field names, or null if there are no names.
 	 */
-	@SuppressWarnings("rawtypes")
 	public static String[] getNames(Object object)
 	{
 		if (object == null)
@@ -756,7 +657,6 @@ public class JSONObject
 	 * 
 	 * @return An iterator of the keys.
 	 */
-	@SuppressWarnings("rawtypes")
 	public Iterator keys()
 	{
 		return this.map.keySet().iterator();
@@ -777,7 +677,6 @@ public class JSONObject
 	 * 
 	 * @return A JSONArray containing the key strings, or null if the JSONObject is empty.
 	 */
-	@SuppressWarnings("rawtypes")
 	public JSONArray names()
 	{
 		JSONArray ja = new JSONArray();
@@ -1029,8 +928,6 @@ public class JSONObject
 		return NULL.equals(object) ? defaultValue : object.toString();
 	}
 
-	@SuppressWarnings(
-		{ "rawtypes", "unchecked" })
 	private void populateMap(Object bean)
 	{
 		Class klass = bean.getClass();
@@ -1116,8 +1013,6 @@ public class JSONObject
 	 * @return this.
 	 * @throws JSONException
 	 */
-	@SuppressWarnings(
-		{ "rawtypes", "unchecked" })
 	public JSONObject put(String key, Collection value) throws JSONException
 	{
 		put(key, new JSONArray(value));
@@ -1185,7 +1080,6 @@ public class JSONObject
 	 * @return this.
 	 * @throws JSONException
 	 */
-	@SuppressWarnings("rawtypes")
 	public JSONObject put(String key, Map value) throws JSONException
 	{
 		put(key, new JSONObject(value));
@@ -1204,7 +1098,6 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the value is non-finite number or if the key is null.
 	 */
-	@SuppressWarnings("unchecked")
 	public JSONObject put(String key, Object value) throws JSONException
 	{
 		if (key == null)
@@ -1484,7 +1377,6 @@ public class JSONObject
 	 * @return a printable, displayable, portable, transmittable representation of the object, beginning with <code>{</code>
 	 *         &nbsp;<small>(left brace)</small> and ending with <code>}</code>&nbsp;<small>(right brace)</small>.
 	 */
-	@SuppressWarnings("rawtypes")
 	public String toString()
 	{
 		try
@@ -1543,7 +1435,6 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the object contains an invalid number.
 	 */
-	@SuppressWarnings("rawtypes")
 	String toString(int indentFactor, int indent) throws JSONException
 	{
 		int i;
@@ -1613,8 +1504,6 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the value is or contains an invalid number.
 	 */
-	@SuppressWarnings(
-		{ "unchecked", "rawtypes" })
 	public static String valueToString(Object value) throws JSONException
 	{
 		if (value == null || value.equals(null))
@@ -1677,8 +1566,6 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the object contains an invalid number.
 	 */
-	@SuppressWarnings(
-		{ "rawtypes", "unchecked" })
 	static String valueToString(Object value, int indentFactor, int indent) throws JSONException
 	{
 		if (value == null || value.equals(null))
@@ -1740,8 +1627,6 @@ public class JSONObject
 	 *            The object to wrap
 	 * @return The wrapped value
 	 */
-	@SuppressWarnings(
-		{ "unchecked", "rawtypes" })
 	public static Object wrap(Object object)
 	{
 		try
@@ -1793,7 +1678,6 @@ public class JSONObject
 	 * @return The writer.
 	 * @throws JSONException
 	 */
-	@SuppressWarnings("rawtypes")
 	public Writer write(Writer writer) throws JSONException
 	{
 		try

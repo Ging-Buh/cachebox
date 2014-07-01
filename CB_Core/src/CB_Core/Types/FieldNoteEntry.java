@@ -41,7 +41,7 @@ public class FieldNoteEntry implements Serializable
 	public String TrackingNumber = "";
 	public boolean isDirectLog = false;
 
-	public FieldNoteEntry(FieldNoteEntry fne)
+	private FieldNoteEntry(FieldNoteEntry fne)
 	{
 		this.Id = fne.Id;
 		this.CacheId = fne.CacheId;
@@ -72,7 +72,7 @@ public class FieldNoteEntry implements Serializable
 		fillType();
 	}
 
-	public FieldNoteEntry(CoreCursor reader)
+	FieldNoteEntry(CoreCursor reader)
 	{
 		CacheId = reader.getLong(0);
 		gcCode = reader.getString(1).trim();
@@ -132,7 +132,7 @@ public class FieldNoteEntry implements Serializable
 		}
 	}
 
-	public String GetDateTimeString()
+	String GetDateTimeString()
 	{
 		SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");
 		datFormat.setTimeZone(TimeZone.getTimeZone("GMT"));

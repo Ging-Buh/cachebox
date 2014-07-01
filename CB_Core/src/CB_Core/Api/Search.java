@@ -32,11 +32,11 @@ public class Search
 	public boolean excludeHides = false;
 	public boolean excludeFounds = false;
 	public boolean available = true;
-	public int geocacheLogCount = 10;
-	public int trackableLogCount = 10;
+	int geocacheLogCount = 10;
+	int trackableLogCount = 10;
 	protected boolean isLite;
 
-	public Search(int number)
+	Search(int number)
 	{
 		this.number = number;
 	}

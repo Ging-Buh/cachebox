@@ -263,7 +263,6 @@ public class Coordinate extends LatLong implements Serializable
 	public Coordinate(double[] coordinate)
 	{
 		super(coordinate[0], coordinate[1]);
-		if (coordinate.length == 3) this.Valid = coordinate[2] == 1;
 	}
 
 	public static double[] parseCoordinate(String text)
@@ -436,14 +435,16 @@ public class Coordinate extends LatLong implements Serializable
 		return super.getLongitude();
 	}
 
+	@Override
 	public int getIntLatitude()
 	{
-		return super.latitude;
+		return super.getIntLatitude();
 	}
 
+	@Override
 	public int getIntLongitude()
 	{
-		return super.longitude;
+		return super.getIntLongitude();
 	}
 
 }

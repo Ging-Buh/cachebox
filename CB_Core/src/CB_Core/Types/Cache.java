@@ -180,7 +180,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		Coordinate toPos = Pos;
 		if (waypoint != null)
 		{
-			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			toPos = new Coordinate(waypoint.Pos.getIntLatitude(), waypoint.Pos.getIntLongitude());
 			// nur sinnvolles Final, sonst vom Cache
 			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
 		}
@@ -201,7 +201,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		Coordinate toPos = Pos;
 		if (waypoint != null)
 		{
-			toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
+			toPos = new Coordinate(waypoint.Pos.getIntLatitude(), waypoint.Pos.getIntLongitude());
 			// nur sinnvolles Final, sonst vom Cache
 			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
 		}

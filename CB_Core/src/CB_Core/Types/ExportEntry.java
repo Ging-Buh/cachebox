@@ -22,7 +22,7 @@ public class ExportEntry implements Serializable
 	public String note;
 	public boolean toExport;
 
-	public ExportEntry(CoreCursor reader)
+	ExportEntry(CoreCursor reader)
 	{
 		id = reader.getLong(0);
 		changeType = ChangeType.values()[reader.getInt(1)];
