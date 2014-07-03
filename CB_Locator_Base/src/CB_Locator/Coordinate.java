@@ -398,7 +398,7 @@ public class Coordinate extends LatLong implements Serializable
 		values[0] = lat;
 		values[1] = lon;
 		if (dlat == 'S') values[0] = -values[0];
-		if (dlon == 'W') values[1] = -values[0];
+		if (dlon == 'W') values[1] = -values[1];
 		values[2] = 1;
 		if (values[0] > 180.00001) values[2] = 0;
 		if (values[0] < -180.00001) values[2] = 0;

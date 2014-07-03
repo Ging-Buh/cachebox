@@ -98,6 +98,37 @@ public class Coordinate_LatLong_Test extends TestCase
 		}
 	}
 
+	public void testStringConstructors()
+	{
+		String[] strings = new String[]
+			{ "52° 33,355N / 13° 24,873E", "N52° 33,355 / E13° 24,873", "N 52° 33,355 / E 13° 24,873", "N 52° 33.355 / E 13° 24.873",
+					"52° 33,355n / 13° 24,873e", "n52° 33,355 / e13° 24,873", "n 52° 33,355 / e 13° 24,873", "n 52° 33.355 / e 13° 24.873",
+					"52° 33,355N / 13° 024,873E", "N52° 33,355 / E013° 24,873", "N 52° 33,355 / E 013° 24,873",
+					"S 52° 33.355 / W 013° 24.873", "52° 33,355S / 13° 24,873W", "S52° 33,355 / W13° 24,873",
+					"S 52° 33,355 / W 13° 24,873", "S 52° 33.355 / W 13° 24.873", "52° 33,355S / 13° 24,873W", "S52° 33,355 / W13° 24,873",
+					"S 52° 33,355 / W 13° 24,873", "S 52° 33.355 / W 13° 24.873", "52° 33,355S / 13° 024,873W",
+					"S52° 33,355 / W013° 24,873", "S 52° 33,355 / W 013° 24,873", "S 52° 33.355 / W 013° 24.873" };
+
+		// ExpectedCoords are Integer (microdegrees Double*1e6)
+		Coordinate[] expectedCoord = new Coordinate[]
+			{ new Coordinate(52555916, 13414550), new Coordinate(52555916, 13414550), new Coordinate(52555916, 13414550),
+					new Coordinate(52555916, 13414550), new Coordinate(52555916, 13414550), new Coordinate(52555916, 13414550),
+					new Coordinate(52555916, 13414550), new Coordinate(52555916, 13414550), new Coordinate(52555916, 13414550),
+					new Coordinate(52555916, 13414550), new Coordinate(52555916, 13414550), new Coordinate(-52555916, -13414550),
+					new Coordinate(-52555916, -13414550), new Coordinate(-52555916, -13414550), new Coordinate(-52555916, -13414550),
+					new Coordinate(-52555916, -13414550), new Coordinate(-52555916, -13414550), new Coordinate(-52555916, -13414550),
+					new Coordinate(-52555916, -13414550), new Coordinate(-52555916, -13414550), new Coordinate(-52555916, -13414550),
+					new Coordinate(-52555916, -13414550), new Coordinate(-52555916, -13414550), new Coordinate(-52555916, -13414550) };
+
+		for (int i = 0; i < strings.length; i++)
+		{
+			Coordinate cor = new Coordinate(strings[i]);
+			assertTrue("Coordinate {" + cor.toString() + "} must be valid", cor.isValid());
+			assertEquals("Coordinate Parser error with String \"" + strings[i] + "\"", expectedCoord[i], cor);
+		}
+
+	}
+
 	private void assertCoordDistance(Coordinate coord1, Coordinate coord2, CalculationType calcType, int exspectedDistance, int tolerance)
 	{
 		float[] dist = new float[4];
@@ -123,7 +154,6 @@ public class Coordinate_LatLong_Test extends TestCase
 				assertEquals("Distance Strings must be equals ", value, valueAccurate);
 			}
 		}
-
 	}
 
 }
