@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.model.DisplayModel;
@@ -66,6 +68,10 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 		this.ScaleFactor = scaleFactor;
 	}
 
+	// ############################################################################################
+	// Overrides for CB.ext_GraphicFactory
+	// ############################################################################################
+
 	@Override
 	public ext_Matrix createMatrix(ext_Matrix matrix)
 	{
@@ -84,6 +90,31 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 	{
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public static ext_GraphicFactory getInstance(float ScaleFactor)
+	{
+		if (FactoryList.containsKey(ScaleFactor)) return FactoryList.get(ScaleFactor);
+
+		ext_AndroidGraphicFactory factory = new ext_AndroidGraphicFactory(ScaleFactor);
+		FactoryList.put(ScaleFactor, factory);
+		return factory;
+	}
+
+	// ############################################################################################
+	// Overrides for mapsforge.AndroidGraphicFactory
+	// ############################################################################################
+
+	@Override
+	public Paint createPaint()
+	{
+		return new ext_AndroidPaint();
+	}
+
+	@Override
+	public Matrix createMatrix()
+	{
+		return new ext_AndroidMatrix();
 	}
 
 	@Override
@@ -116,15 +147,6 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 		return new ext_AndroidResourceBitmap(inputStream, hash, this.ScaleFactor);
 	}
 
-	public static ext_GraphicFactory getInstance(float ScaleFactor)
-	{
-		if (FactoryList.containsKey(ScaleFactor)) return FactoryList.get(ScaleFactor);
-
-		ext_AndroidGraphicFactory factory = new ext_AndroidGraphicFactory(ScaleFactor);
-		FactoryList.put(ScaleFactor, factory);
-		return factory;
-	}
-
 	@Override
 	public int createColor(Color color)
 	{
@@ -140,5 +162,4 @@ public class ext_AndroidGraphicFactory extends AndroidGraphicFactory implements 
 		if (CB_UI_Base_Settings.nightMode.getValue()) c = ManagerBase.colorMatrixManipulation(c, ManagerBase.NIGHT_COLOR_MATRIX);
 		return c;
 	}
-
 }

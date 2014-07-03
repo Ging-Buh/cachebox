@@ -38,6 +38,15 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 		// TODO Auto-generated constructor stub
 	}
 
+	public ext_AndroidPaint()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
+	// ############################################################################################
+	// Overrides for CB.ext_Paint
+	// ############################################################################################
+
 	@Override
 	public void setAlpha(int i)
 	{
@@ -78,12 +87,6 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public float getTextSize()
-	{
-		return this.paint.getTextSize();
 	}
 
 	@Override
@@ -134,9 +137,6 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 
 	}
 
-	FontStyle fontStyle;
-	FontFamily fontFamily;
-
 	@Override
 	public GL_FontFamily getGLFontFamily()
 	{
@@ -161,6 +161,19 @@ public class ext_AndroidPaint extends AndroidPaint implements ext_Paint
 	{
 		HSV_Color c = new HSV_Color(this.paint.getColor());
 		return c;
+	}
+
+	// ############################################################################################
+	// Overrides for mapsforge.AndroidPaint
+	// ############################################################################################
+
+	FontStyle fontStyle;
+	FontFamily fontFamily;
+
+	@Override
+	public float getTextSize()
+	{
+		return this.paint.getTextSize();
 	}
 
 	@Override
