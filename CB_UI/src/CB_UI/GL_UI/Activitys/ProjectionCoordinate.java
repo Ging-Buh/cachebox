@@ -7,12 +7,14 @@ import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.iBecomsFocus;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.NumPad;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.MathUtils.CalculationType;
@@ -97,6 +99,12 @@ public class ProjectionCoordinate extends ActivityBase
 		this.addChild(Title);
 	}
 
+	@Override
+	public void onShow()
+	{
+		valueBearing.setFocus();
+	}
+
 	private void iniCoordButton()
 	{
 		CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
@@ -163,6 +171,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 		lblBearing = new Label(labelRec, sBearing);
 		valueBearing = new EditTextField(textFieldRec, this);
+		valueBearing.dontShowSoftKeyBoardOnFocus();
 		lblBearingUnit = new Label(UnitRec, "°");
 
 		labelRec.setY(lblBearing.getY() - ButtonHeight);
@@ -171,6 +180,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 		lblDistance = new Label(labelRec, sDistance);
 		valueDistance = new EditTextField(textFieldRec, this);
+		valueDistance.dontShowSoftKeyBoardOnFocus();
 		lblDistanceUnit = new Label(UnitRec, sUnit);
 
 		valueDistance.setText("0");
@@ -190,6 +200,17 @@ public class ProjectionCoordinate extends ActivityBase
 			public void BecomsFocus()
 			{
 				numPad.registerTextField(valueDistance);
+				GL.that.RunOnGL(new IRunOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						int textLength = valueDistance.getText().length();
+						valueDistance.setSelection(0, textLength);
+					}
+				});
+
 			}
 		});
 
@@ -200,6 +221,17 @@ public class ProjectionCoordinate extends ActivityBase
 			public void BecomsFocus()
 			{
 				numPad.registerTextField(valueBearing);
+				GL.that.RunOnGL(new IRunOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						int textLength = valueBearing.getText().length();
+						valueBearing.setSelection(0, textLength);
+					}
+				});
+
 			}
 		});
 

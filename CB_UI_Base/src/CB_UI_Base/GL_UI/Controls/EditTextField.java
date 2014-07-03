@@ -1693,26 +1693,33 @@ public class EditTextField extends EditTextFieldBase
 	/** Sets the selected text. */
 	public void setSelection(int selectionStart, int selectionEnd)
 	{
-		// if (selectionStart < 0) throw new IllegalArgumentException("selectionStart must be >= 0");
-		// if (selectionEnd < 0) throw new IllegalArgumentException("selectionEnd must be >= 0");
-		// selectionStart = Math.min(text.length(), selectionStart);
-		// selectionEnd = Math.min(text.length(), selectionEnd);
-		// if (selectionEnd == selectionStart)
-		// {
-		// clearSelection();
-		// return;
-		// }
-		// if (selectionEnd < selectionStart)
-		// {
-		// int temp = selectionEnd;
-		// selectionEnd = selectionStart;
-		// selectionStart = temp;
-		// }
-		//
-		// hasSelection = true;
-		// this.selectionStart = selectionStart;
-		// cursor = selectionEnd;
-		// checkCursorVisible(true);
+
+		String aktText = getText();
+
+		if (selectionStart < 0) throw new IllegalArgumentException("selectionStart must be >= 0");
+		if (selectionEnd < 0) throw new IllegalArgumentException("selectionEnd must be >= 0");
+		selectionStart = Math.min(aktText.length(), selectionStart);
+		selectionEnd = Math.min(aktText.length(), selectionEnd);
+		if (selectionEnd == selectionStart)
+		{
+			clearSelection();
+			return;
+		}
+		if (selectionEnd < selectionStart)
+		{
+			int temp = selectionEnd;
+			selectionEnd = selectionStart;
+			selectionStart = temp;
+		}
+
+		Cursor cursorStart = new Cursor(0, 0);
+		cursorStart.pos = selectionStart;
+		Cursor cursorEnd = new Cursor(0, 0);
+		cursorEnd.pos = selectionEnd;
+		selection = new Selection(cursorStart, cursorEnd);
+		// showSelectionMarker(SelectionMarker.Type.Left, selection.cursorStart);
+		// showSelectionMarker(SelectionMarker.Type.Right, selection.cursorEnd);
+
 	}
 
 	public void clearSelection()
