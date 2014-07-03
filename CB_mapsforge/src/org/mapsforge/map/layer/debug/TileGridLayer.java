@@ -48,10 +48,10 @@ public class TileGridLayer extends Layer {
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
-		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
-		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
-		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
+		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.getMinLongitude(), zoomLevel);
+		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.getMaxLatitude(), zoomLevel);
+		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.getMaxLongitude(), zoomLevel);
+		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.getMinLatitude(), zoomLevel);
 
 		int tileSize = this.displayModel.getTileSize();
 		int pixelX1 = (int) (MercatorProjection.tileToPixel(tileLeft, tileSize) - topLeftPoint.x);

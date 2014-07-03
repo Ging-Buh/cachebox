@@ -48,10 +48,10 @@ final class RequiredFields {
 	private static final int SUPPORTED_FILE_VERSION = 3;
 
 	static FileOpenResult readBoundingBox(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
-		double minLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
-		double minLongitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
-		double maxLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
-		double maxLongitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
+		int minLatitude = readBuffer.readInt();
+		int minLongitude = readBuffer.readInt();
+		int maxLatitude = readBuffer.readInt();
+		int maxLongitude = readBuffer.readInt();
 
 		try {
 			mapFileInfoBuilder.boundingBox = new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);

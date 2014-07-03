@@ -1306,15 +1306,19 @@ public class EditTextField extends EditTextFieldBase
 				for (int i = 0; i < content.length(); i++)
 				{
 					char c = content.charAt(i);
-					if (style.font.containsCharacter(c)) builder.append(c);
+					if (style.font.containsCharacter(c))
+					{
+						builder.append(c);
+						keyTyped(c);
+					}
 				}
-				content = builder.toString();
-
-				DisplayText dt = getDisplayText(cursor.line);
-				dt.displayText = dt.displayText.substring(0, cursor.pos) + content
-						+ dt.displayText.substring(cursor.pos, dt.displayText.length());
-				updateDisplayText(dt, true);
-				cursor.pos += content.length();
+				// content = builder.toString();
+				//
+				// DisplayText dt = getDisplayText(cursor.line);
+				// dt.displayText = dt.displayText.substring(0, cursor.pos) + content
+				// + dt.displayText.substring(cursor.pos, dt.displayText.length());
+				// updateDisplayText(dt, true);
+				// cursor.pos += content.length();
 				checkCursorVisible(true);
 			}
 			return ""; // only paste Msg

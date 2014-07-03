@@ -309,10 +309,10 @@ public class MapViewPosition extends Observable implements Persistable {
 			preferencesFacade.putDouble(LONGITUDE_MAX, Double.NaN);
 			preferencesFacade.putDouble(LONGITUDE_MIN, Double.NaN);
 		} else {
-			preferencesFacade.putDouble(LATITUDE_MAX, this.mapLimit.maxLatitude);
-			preferencesFacade.putDouble(LATITUDE_MIN, this.mapLimit.minLatitude);
-			preferencesFacade.putDouble(LONGITUDE_MAX, this.mapLimit.maxLongitude);
-			preferencesFacade.putDouble(LONGITUDE_MIN, this.mapLimit.minLongitude);
+			preferencesFacade.putDouble(LATITUDE_MAX, this.mapLimit.getMaxLatitude());
+			preferencesFacade.putDouble(LATITUDE_MIN, this.mapLimit.getMinLatitude());
+			preferencesFacade.putDouble(LONGITUDE_MAX, this.mapLimit.getMaxLongitude());
+			preferencesFacade.putDouble(LONGITUDE_MIN, this.mapLimit.getMinLongitude());
 		}
 
 		preferencesFacade.putByte(ZOOM_LEVEL, this.zoomLevel);
@@ -454,9 +454,9 @@ public class MapViewPosition extends Observable implements Persistable {
 			this.latitude = latLong.getLatitude();
 			this.longitude = latLong.getLongitude();
 		} else {
-			this.latitude = Math.max(Math.min(latLong.getLatitude(), this.mapLimit.maxLatitude), this.mapLimit.minLatitude);
-			this.longitude = Math.max(Math.min(latLong.getLongitude(), this.mapLimit.maxLongitude),
-					this.mapLimit.minLongitude);
+			this.latitude = Math.max(Math.min(latLong.getLatitude(), this.mapLimit.getMaxLatitude()), this.mapLimit.getMinLatitude());
+			this.longitude = Math.max(Math.min(latLong.getLongitude(), this.mapLimit.getMaxLongitude()),
+					this.mapLimit.getMinLongitude());
 		}
 	}
 

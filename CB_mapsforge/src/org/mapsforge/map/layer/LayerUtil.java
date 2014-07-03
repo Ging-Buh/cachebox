@@ -27,10 +27,10 @@ public final class LayerUtil {
 
 	public static List<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Point topLeftPoint,
 			int tileSize) {
-		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
-		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
-		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
-		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
+		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.getMinLongitude(), zoomLevel);
+		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.getMaxLatitude(), zoomLevel);
+		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.getMaxLongitude(), zoomLevel);
+		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.getMinLatitude(), zoomLevel);
 
 		int initialCapacity = (int) ((tileRight - tileLeft + 1) * (tileBottom - tileTop + 1));
 		List<TilePosition> tilePositions = new ArrayList<TilePosition>(initialCapacity);
