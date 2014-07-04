@@ -28,7 +28,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	//
 	// so we use one Short for Store all Boolean and Use a BitMask
 	// ########################################################
-	
+
 	// Masks
 	// protected final static short MASK_HAS_HINT = 1 << 0; // not necessary because hasHint is always called for SelectedCache and
 	// SelectedCache will have valid hint field.
@@ -45,6 +45,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	private static final Charset UTF_8 = Charset.forName("UTF-8");
 	public static final String EMPTY_STRING = "";
 	private static String gcLogin = null;
+
 	public static long GenerateCacheId(String GcCode)
 	{
 		long result = 0;
@@ -156,7 +157,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	/*
 	 * Constructors
 	 */
-	
+
 	/**
 	 * Constructor
 	 */
@@ -190,7 +191,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		this.setAvailable(true);
 		;
 		waypoints = new CB_List<Waypoint>();
-	
+
 	}
 
 	/**
@@ -276,6 +277,10 @@ public class Cache implements Comparable<Cache>, Serializable
 				{
 					found = true;
 					wp2.detail = wp.detail; // copy Detail Info
+					wp2.Pos = wp.Pos.copy();
+					wp2.setTitle(wp.getTitle());
+					wp2.IsUserWaypoint = wp.IsUserWaypoint;
+					wp2.IsStart = wp.IsStart;
 					break;
 				}
 			}
