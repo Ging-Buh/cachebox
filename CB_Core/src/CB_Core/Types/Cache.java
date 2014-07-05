@@ -277,10 +277,6 @@ public class Cache implements Comparable<Cache>, Serializable
 				{
 					found = true;
 					wp2.detail = wp.detail; // copy Detail Info
-					wp2.Pos = wp.Pos.copy();
-					wp2.setTitle(wp.getTitle());
-					wp2.IsUserWaypoint = wp.IsUserWaypoint;
-					wp2.IsStart = wp.IsStart;
 					break;
 				}
 			}
