@@ -59,45 +59,23 @@ public class Coordinate extends LatLong implements Serializable
 			return "not Valid";
 	}
 
+	private static final double ERTH_RADIUS = 6378137.0;
+
 	public static Coordinate Project(double Latitude, double Longitude, double Direction, double Distance)
 	{
-		// nach http://www.zwanziger.de/gc_tools_projwp.html
+		double dist = Distance / ERTH_RADIUS; // convert dist to angular distance in radians
+		double brng = Direction * MathUtils.DEG_RAD; //
+		double lat1 = Latitude * MathUtils.DEG_RAD;
+		double lon1 = Longitude * MathUtils.DEG_RAD;
 
-		// Bearing auf [0..360] begrenzen
-		while (Direction > 360)
-			Direction -= 360;
+		double lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
+		double lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1), Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
+		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180º
 
-		while (Direction < 0)
-			Direction += 360;
-
-		double c = Distance / 6378137.0;
-		/*
-		 * if (UnitFormatter.ImperialUnits) c = c / 0.9144f;
-		 */
-		double a = (Latitude >= 0) ? (90 - Latitude) * MathUtils.DEG_RAD : Latitude * MathUtils.DEG_RAD;
-
-		double q = (360 - Direction) * MathUtils.DEG_RAD;
-		double b = Math.acos(Math.cos(q) * Math.sin(a) * Math.sin(c) + Math.cos(a) * Math.cos(c));
-
-		double resultLatitude = 90 - (b * MathUtils.RAD_DEG);
-		if (resultLatitude > 90) resultLatitude = resultLatitude - 180;
-
-		double g = 0;
-		try
-		{
-			g = ((a + b) == 0) ? 0 : Math.acos((Math.cos(c) - Math.cos(a) * Math.cos(b)) / (Math.sin(a) * Math.sin(b)));
-			if (Double.isNaN(g)) g = 0;
-		}
-		catch (Exception ex)
-		{
-			g = 0;
-		}
-
-		if (Direction <= 180) g = -g;
-
-		Coordinate result = new Coordinate(resultLatitude, Longitude - g * MathUtils.RAD_DEG);
+		Coordinate result = new Coordinate(lat2 * MathUtils.RAD_DEG, lon2 * MathUtils.RAD_DEG);
 		result.Valid = true;
 		return result;
+
 	}
 
 	public static double Bearing(CalculationType type, Coordinate coord1, Coordinate coord2)

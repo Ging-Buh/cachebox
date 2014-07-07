@@ -129,6 +129,38 @@ public class Coordinate_LatLong_Test extends TestCase
 
 	}
 
+	public void testProjection()
+	{
+
+		// ############ check projection Problem with South coordinates ########
+		// Point A S01° 16.841' E036° 41.470' All notations
+		// Angle 90°
+		// Distance 1000 m
+		// Projection P S01° 16.841' E036° 42.009'
+		// #####################################################################
+
+		Coordinate A = new Coordinate("S01° 16.841' E036° 41.470'");
+		Coordinate P = new Coordinate("S01° 16.841' E036° 42.009'");
+
+		Coordinate p = Coordinate.Project(A, 90, 1000);
+
+		assertEquals("Projected Coordinate must be right", P, p);
+
+		// #####################################################################
+		// Point A N52° 33.355' E013° 24.873'
+		// Angle 213°
+		// Distance 580 m
+		// Projection P N52° 33.093' E013° 24.594'
+
+		A = new Coordinate("N52° 33.355' E013° 24.873'");
+		P = new Coordinate("N52° 33.093' E013° 24.593'");
+
+		p = Coordinate.Project(A, 213, 580);
+
+		assertEquals("Projected Coordinate must be right", P, p);
+
+	}
+
 	private void assertCoordDistance(Coordinate coord1, Coordinate coord2, CalculationType calcType, int exspectedDistance, int tolerance)
 	{
 		float[] dist = new float[4];
