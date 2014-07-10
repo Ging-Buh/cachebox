@@ -1,0 +1,622 @@
+
+UI_IconPack.png
+format: RGBA8888
+filter: MipMapLinearNearest,Nearest
+repeat: none
+1to4bubble
+  rotate: false
+  xy: 181, 23
+  size: 178, 190
+  orig: 178, 190
+  offset: 0, 0
+  index: -1
+1to4bubble-flip
+  rotate: false
+  xy: 1, 23
+  size: 178, 190
+  orig: 178, 190
+  offset: 0, 0
+  index: -1
+Accuracy-2
+  rotate: false
+  xy: 1, 456
+  size: 476, 476
+  orig: 476, 476
+  offset: 0, 0
+  index: -1
+ConfigTheme
+  rotate: false
+  xy: 1, 215
+  size: 275, 239
+  orig: 275, 239
+  offset: 0, 0
+  index: -1
+InstBack-Select
+  rotate: false
+  xy: 361, 123
+  size: 138, 119
+  orig: 138, 119
+  offset: 0, 0
+  index: -1
+MapScale-3
+  rotate: false
+  xy: 361, 298
+  size: 150, 25
+  orig: 150, 25
+  offset: 0, 0
+  index: -1
+MapScale-4
+  rotate: false
+  xy: 361, 271
+  size: 150, 25
+  orig: 150, 25
+  offset: 0, 0
+  index: -1
+MapScale-5
+  rotate: false
+  xy: 361, 244
+  size: 150, 25
+  orig: 150, 25
+  offset: 0, 0
+  index: -1
+Selection
+  rotate: false
+  xy: 479, 709
+  size: 16, 13
+  orig: 16, 13
+  offset: 0, 0
+  index: -1
+Selection-Left
+  rotate: false
+  xy: 479, 756
+  size: 16, 30
+  orig: 16, 30
+  offset: 0, 0
+  index: -1
+Selection-Right
+  rotate: false
+  xy: 479, 724
+  size: 16, 30
+  orig: 16, 30
+  offset: 0, 0
+  index: -1
+Selection-set
+  rotate: false
+  xy: 479, 870
+  size: 22, 30
+  orig: 22, 30
+  offset: 0, 0
+  index: -1
+arrow-down
+  rotate: false
+  xy: 479, 921
+  size: 32, 11
+  orig: 32, 11
+  offset: 0, 0
+  index: -1
+arrow-left
+  rotate: false
+  xy: 499, 803
+  size: 11, 31
+  orig: 11, 31
+  offset: 0, 0
+  index: -1
+arrow-right
+  rotate: false
+  xy: 499, 836
+  size: 11, 32
+  orig: 11, 32
+  offset: 0, 0
+  index: -1
+arrow-up
+  rotate: false
+  xy: 479, 908
+  size: 32, 11
+  orig: 32, 11
+  offset: 0, 0
+  index: -1
+button-list-back
+  rotate: false
+  xy: 1, 934
+  size: 500, 85
+  orig: 500, 85
+  offset: 0, 0
+  index: -1
+dialog-center
+  rotate: false
+  xy: 1, 1
+  size: 51, 20
+  orig: 51, 20
+  offset: 0, 0
+  index: -1
+dialog-footer
+  rotate: false
+  xy: 162, 8
+  size: 51, 13
+  orig: 51, 13
+  offset: 0, 0
+  index: -1
+dialog-header
+  rotate: false
+  xy: 109, 5
+  size: 51, 16
+  orig: 51, 16
+  offset: 0, 0
+  index: -1
+dialog-title
+  rotate: false
+  xy: 54, 5
+  size: 53, 16
+  orig: 53, 16
+  offset: 0, 0
+  index: -1
+listrec-pressed
+  rotate: false
+  xy: 278, 325
+  size: 207, 129
+  orig: 207, 129
+  offset: 0, 0
+  index: -1
+mapsforge_logo
+  rotate: false
+  xy: 278, 246
+  size: 81, 77
+  orig: 81, 77
+  offset: 0, 0
+  index: -1
+menu-divider
+  rotate: false
+  xy: 479, 902
+  size: 30, 4
+  orig: 30, 4
+  offset: 0, 0
+  index: -1
+misc-pressed
+  rotate: false
+  xy: 361, 2
+  size: 138, 119
+  orig: 138, 119
+  offset: 0, 0
+  index: -1
+scrollbarSlider
+  rotate: false
+  xy: 479, 788
+  size: 18, 80
+  orig: 18, 80
+  offset: 0, 0
+  index: -1
+selection-input-icon
+  rotate: false
+  xy: 503, 1011
+  size: 5, 8
+  orig: 5, 8
+  offset: 0, 0
+  index: -1
+
+UI_IconPack2.png
+format: RGBA8888
+filter: MipMapLinearNearest,Nearest
+repeat: none
+5bubble
+  rotate: false
+  xy: 279, 641
+  size: 178, 190
+  orig: 178, 190
+  offset: 0, 0
+  index: -1
+5bubble-flip
+  rotate: false
+  xy: 279, 833
+  size: 178, 190
+  orig: 178, 190
+  offset: 0, 0
+  index: -1
+Accuracy-0
+  rotate: false
+  xy: 279, 520
+  size: 119, 119
+  orig: 119, 119
+  offset: 0, 0
+  index: -1
+InstBack-Disabled
+  rotate: false
+  xy: 400, 563
+  size: 88, 76
+  orig: 88, 76
+  offset: 0, 0
+  index: -1
+InstBack-Focus
+  rotate: false
+  xy: 1, 785
+  size: 276, 238
+  orig: 276, 238
+  offset: 0, 0
+  index: -1
+InstBack-Normal
+  rotate: false
+  xy: 1, 545
+  size: 276, 238
+  orig: 276, 238
+  offset: 0, 0
+  index: -1
+InstBack-Pressed
+  rotate: false
+  xy: 1, 305
+  size: 276, 238
+  orig: 276, 238
+  offset: 0, 0
+  index: -1
+Nav
+  rotate: false
+  xy: 394, 234
+  size: 88, 76
+  orig: 88, 76
+  offset: 0, 0
+  index: -1
+Nav-pressed
+  rotate: false
+  xy: 400, 485
+  size: 88, 76
+  orig: 88, 76
+  offset: 0, 0
+  index: -1
+RadioButtonBack
+  rotate: false
+  xy: 425, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+activity-border
+  rotate: false
+  xy: 279, 123
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+btn-disabled
+  rotate: false
+  xy: 279, 34
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+btn-normal
+  rotate: false
+  xy: 425, 67
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+chk-icon
+  rotate: false
+  xy: 459, 925
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+chk-icon-disable
+  rotate: false
+  xy: 459, 975
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+close-icon
+  rotate: false
+  xy: 459, 875
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+cm-icon-filterd
+  rotate: false
+  xy: 365, 26
+  size: 58, 128
+  orig: 58, 128
+  offset: 0, 0
+  index: -1
+listrec-first
+  rotate: false
+  xy: 279, 405
+  size: 113, 113
+  orig: 113, 113
+  offset: 0, 0
+  index: -1
+listrec-header
+  rotate: false
+  xy: 394, 312
+  size: 113, 56
+  orig: 113, 56
+  offset: 0, 0
+  index: -1
+listrec-secend
+  rotate: false
+  xy: 394, 370
+  size: 113, 113
+  orig: 113, 113
+  offset: 0, 0
+  index: -1
+listrec-selected
+  rotate: false
+  xy: 279, 290
+  size: 113, 113
+  orig: 113, 113
+  offset: 0, 0
+  index: -1
+misc
+  rotate: false
+  xy: 1, 65
+  size: 276, 238
+  orig: 276, 238
+  offset: 0, 0
+  index: -1
+tf-cut
+  rotate: false
+  xy: 459, 825
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+tool
+  rotate: false
+  xy: 369, 156
+  size: 88, 76
+  orig: 88, 76
+  offset: 0, 0
+  index: -1
+tool-pressed
+  rotate: false
+  xy: 279, 212
+  size: 88, 76
+  orig: 88, 76
+  offset: 0, 0
+  index: -1
+zoom-back
+  rotate: false
+  xy: 1, 23
+  size: 80, 40
+  orig: 80, 40
+  offset: 0, 0
+  index: -1
+
+UI_IconPack3.png
+format: RGBA8888
+filter: MipMapLinearNearest,Nearest
+repeat: none
+Accuracy-1
+  rotate: false
+  xy: 1, 3
+  size: 238, 238
+  orig: 238, 238
+  offset: 0, 0
+  index: -1
+LoadMap
+  rotate: false
+  xy: 1, 725
+  size: 275, 239
+  orig: 275, 239
+  offset: 0, 0
+  index: -1
+LoadTheme
+  rotate: false
+  xy: 1, 484
+  size: 275, 239
+  orig: 275, 239
+  offset: 0, 0
+  index: -1
+RadioButtonSet
+  rotate: false
+  xy: 430, 743
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+SaveTheme
+  rotate: false
+  xy: 1, 243
+  size: 275, 239
+  orig: 275, 239
+  offset: 0, 0
+  index: -1
+activity-back
+  rotate: false
+  xy: 278, 572
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
+arrow-Compass
+  rotate: false
+  xy: 430, 611
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrow-Compass-Trans
+  rotate: false
+  xy: 364, 607
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrow-Compass-car
+  rotate: false
+  xy: 430, 677
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrow-GPS
+  rotate: false
+  xy: 430, 545
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrow-GPS-Trans
+  rotate: false
+  xy: 364, 541
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+btn-pressed
+  rotate: false
+  xy: 338, 877
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+check-disable
+  rotate: false
+  xy: 364, 741
+  size: 64, 66
+  orig: 64, 66
+  offset: 0, 0
+  index: -1
+check-off
+  rotate: false
+  xy: 437, 809
+  size: 64, 66
+  orig: 64, 66
+  offset: 0, 0
+  index: -1
+check-on
+  rotate: false
+  xy: 364, 673
+  size: 64, 66
+  orig: 64, 66
+  offset: 0, 0
+  index: -1
+cm-icon
+  rotate: false
+  xy: 278, 836
+  size: 58, 128
+  orig: 58, 128
+  offset: 0, 0
+  index: -1
+day-btn-zoom-down-disabled
+  rotate: false
+  xy: 241, 90
+  size: 248, 151
+  orig: 248, 151
+  offset: 0, 0
+  index: -1
+openrouteservice_logo
+  rotate: false
+  xy: 278, 421
+  size: 80, 70
+  orig: 80, 70
+  offset: 0, 0
+  index: -1
+osm_logo
+  rotate: false
+  xy: 278, 493
+  size: 77, 77
+  orig: 77, 77
+  offset: 0, 0
+  index: -1
+progress
+  rotate: false
+  xy: 241, 1
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+progress-disabled
+  rotate: false
+  xy: 424, 877
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+scrollbarPushedSlider
+  rotate: false
+  xy: 364, 809
+  size: 71, 66
+  orig: 71, 66
+  offset: 0, 0
+  index: -1
+spinner-triangle
+  rotate: false
+  xy: 327, 1
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+text-field-back
+  rotate: false
+  xy: 278, 747
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+text-field-back-focus
+  rotate: false
+  xy: 413, 1
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+tf-copy
+  rotate: false
+  xy: 278, 347
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+tf-paste
+  rotate: false
+  xy: 278, 273
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+toggle-led-gr
+  rotate: false
+  xy: 278, 658
+  size: 84, 87
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+
+UI_IconPack4.png
+format: RGBA8888
+filter: MipMapLinearNearest,Nearest
+repeat: none
+day-btn-zoom-down-normal
+  rotate: false
+  xy: 1, 307
+  size: 248, 151
+  orig: 248, 151
+  offset: 0, 0
+  index: -1
+day-btn-zoom-down-pressed
+  rotate: false
+  xy: 1, 154
+  size: 248, 151
+  orig: 248, 151
+  offset: 0, 0
+  index: -1
+day-btn-zoom-up-disabled
+  rotate: false
+  xy: 251, 307
+  size: 248, 151
+  orig: 248, 151
+  offset: 0, 0
+  index: -1
+day-btn-zoom-up-normal
+  rotate: false
+  xy: 1, 1
+  size: 248, 151
+  orig: 248, 151
+  offset: 0, 0
+  index: -1
+day-btn-zoom-up-pressed
+  rotate: false
+  xy: 251, 154
+  size: 248, 151
+  orig: 248, 151
+  offset: 0, 0
+  index: -1

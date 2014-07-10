@@ -1,0 +1,63 @@
+
+SplashPack.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+CB_Icon
+  rotate: false
+  xy: 1, 130
+  size: 175, 175
+  orig: 175, 175
+  offset: 0, 0
+  index: -1
+btn-normal
+  rotate: false
+  xy: 417, 920
+  size: 84, 87
+  split: 15, 15, 21, 16
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+cgeo
+  rotate: false
+  xy: 178, 130
+  size: 160, 175
+  orig: 160, 175
+  offset: 0, 0
+  index: -1
+libgdx
+  rotate: false
+  xy: 1, 90
+  size: 159, 38
+  orig: 159, 38
+  offset: 0, 0
+  index: -1
+mapsforge_logo
+  rotate: false
+  xy: 417, 841
+  size: 81, 77
+  orig: 81, 77
+  offset: 0, 0
+  index: -1
+osm_logo
+  rotate: false
+  xy: 417, 762
+  size: 77, 77
+  orig: 77, 77
+  offset: 0, 0
+  index: -1
+progress
+  rotate: false
+  xy: 1, 1
+  size: 84, 87
+  split: 15, 15, 21, 16
+  orig: 84, 87
+  offset: 0, 0
+  index: -1
+splash-back
+  rotate: false
+  xy: 1, 307
+  size: 414, 700
+  orig: 414, 700
+  offset: 0, 0
+  index: -1
