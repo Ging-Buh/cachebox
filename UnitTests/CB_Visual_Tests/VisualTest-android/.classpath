@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI_Base"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_mapsforge"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-android-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/kxml2-2.3.0.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/VisualTest-core"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
