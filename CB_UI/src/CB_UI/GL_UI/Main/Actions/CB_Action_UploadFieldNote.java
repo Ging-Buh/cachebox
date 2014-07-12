@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.LogTypes;
 import CB_Core.GCVote.GCVote;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Core.Types.FieldNoteList;
 import CB_Core.Types.FieldNoteList.LoadingType;
@@ -41,8 +42,9 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 	@Override
 	public void Execute()
 	{
-		GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.RememberAsk_API_Coast);
+		// GL_MsgBox.Show(Translation.Get("uploadFieldNotes?"), Translation.Get("uploadFieldNotes"), MessageBoxButtons.YesNo,
+		// MessageBoxIcon.GC_Live, UploadFieldnotesDialogListner, Config.RememberAsk_API_Coast);
+		UploadFieldNotes();
 	}
 
 	@Override
@@ -56,23 +58,6 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 	{
 		return SpriteCacheBase.Icons.get(IconName.uploadFieldNote_64.ordinal());
 	}
-
-	private final GL_MsgBox.OnMsgBoxClickListener UploadFieldnotesDialogListner = new GL_MsgBox.OnMsgBoxClickListener()
-	{
-		@Override
-		public boolean onClick(int which, Object data)
-		{
-			switch (which)
-			{
-			case GL_MsgBox.BUTTON_POSITIVE:
-				UploadFieldNotes();
-
-				return true;
-			}
-			return false;
-		}
-
-	};
 
 	private ProgressDialog PD;
 
@@ -205,7 +190,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 		// Stimme abgeben
 		try
 		{
-			if (!GCVote.SendVotes(Config.settings.GcLogin.getValue(), Config.settings.GcVotePassword.getValue(), fieldNote.gc_Vote,
+			if (!GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), fieldNote.gc_Vote,
 					fieldNote.CacheUrl, fieldNote.gcCode))
 			{
 				UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";

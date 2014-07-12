@@ -17,10 +17,10 @@
 package de.droidcachebox.Views.Forms;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -704,6 +704,7 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 		/**
 		 * Create the custom dialog
 		 */
+		@SuppressWarnings("deprecation")
 		public PleaseWaitMessageBox create()
 		{
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -839,14 +840,16 @@ public class PleaseWaitMessageBox extends android.app.Dialog
 			return dialog;
 		}
 
+		@SuppressWarnings(
+			{ "deprecation" })
 		private void setBackgroundDrawables(View layout)
 		{
 			Resources res = context.getResources();
 
-			Drawable header = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_header : R.drawable.header);
-			Drawable title = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_title : R.drawable.title);
-			Drawable center = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_center : R.drawable.center);
-			Drawable footer = res.getDrawable(Config.settings.nightMode.getValue() ? R.drawable.night_footer : R.drawable.footer);
+			Drawable header = res.getDrawable(CB_UI_Base_Settings.nightMode.getValue() ? R.drawable.night_header : R.drawable.header);
+			Drawable title = res.getDrawable(CB_UI_Base_Settings.nightMode.getValue() ? R.drawable.night_title : R.drawable.title);
+			Drawable center = res.getDrawable(CB_UI_Base_Settings.nightMode.getValue() ? R.drawable.night_center : R.drawable.center);
+			Drawable footer = res.getDrawable(CB_UI_Base_Settings.nightMode.getValue() ? R.drawable.night_footer : R.drawable.footer);
 
 			((LinearLayout) layout.findViewById(R.id.header)).setBackgroundDrawable(header);
 			((TextView) layout.findViewById(R.id.title)).setBackgroundDrawable(title);

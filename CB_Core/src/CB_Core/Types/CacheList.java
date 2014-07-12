@@ -1,35 +1,35 @@
 package CB_Core.Types;
 
-import java.util.Collections;
+import java.util.ArrayList;
 
 import CB_Core.Enums.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.MoveableList;
 
 public class CacheList extends MoveableList<Cache>
 {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -932434844601790958L;
 
 	public boolean ResortAtWork = false;
 
 	public Cache GetCacheByGcCode(String GcCode)
 	{
-		for (Cache cache : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
-			if (cache.GcCode.equalsIgnoreCase(GcCode)) return cache;
+			Cache cache = this.get(i);
+			if (cache.getGcCode().equalsIgnoreCase(GcCode)) return cache;
 		}
 		return null;
 	}
 
 	public Cache GetCacheById(long cacheId)
 	{
-		for (Cache cache : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
+			Cache cache = this.get(i);
 			if (cache.Id == cacheId) return cache;
 		}
 		return null;
@@ -62,9 +62,10 @@ public class CacheList extends MoveableList<Cache>
 		// Alle Distanzen aktualisieren
 		if (LocatorValid)
 		{
-			for (Cache cache : this)
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
-				cache.Distance(true);
+				Cache cache = this.get(i);
+				cache.Distance(CalculationType.FAST, true);
 			}
 		}
 		else
@@ -81,13 +82,14 @@ public class CacheList extends MoveableList<Cache>
 				this.ResortAtWork = false;
 				return retValue;
 			}
-			for (Cache cache : this)
+			for (int i = 0, n = this.size(); i < n; i++)
 			{
-				cache.Distance(true, fromPos);
+				Cache cache = this.get(i);
+				cache.Distance(CalculationType.FAST, true, fromPos);
 			}
 		}
 
-		Collections.sort(this);
+		this.sort();
 
 		// Nächsten Cache auswählen
 		if (this.size() > 0)
@@ -96,12 +98,13 @@ public class CacheList extends MoveableList<Cache>
 			for (int i = 0; i < this.size(); i++)
 			{
 				nextCache = this.get(i);
-				if (!nextCache.Archived)
+				if (!nextCache.isArchived())
 				{
-					if (nextCache.Available)
+					if (nextCache.isAvailable())
 					{
-						if (!nextCache.Found) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber found
-												// kann nicht rückgängig gemacht werden.
+						if (!nextCache.isFound()) // eigentlich wenn has_fieldnote(found,DNF,Maint,SBA, aber note vielleicht nicht) , aber
+													// found
+													// kann nicht rückgängig gemacht werden.
 						{
 							if (!nextCache.ImTheOwner())
 							{
@@ -158,13 +161,30 @@ public class CacheList extends MoveableList<Cache>
 	@Override
 	public void clear()
 	{
-		for (Cache cache : this)
+		for (int i = 0, n = this.size(); i < n; i++)
 		{
+			Cache cache = this.get(i);
 			cache.dispose();
 			cache = null;
 		}
 
 		super.clear();
+	}
+
+	public void dispose()
+	{
+		clear();
+		super.dispose();
+	}
+
+	public ArrayList<String> getGcCodes()
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		for (int i = 0, n = this.size(); i < n; i++)
+		{
+			list.add(this.get(i).getGcCode());
+		}
+		return list;
 	}
 
 }

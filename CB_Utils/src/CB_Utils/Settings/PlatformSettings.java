@@ -29,5 +29,12 @@ public class PlatformSettings
 		if (platformSettingsListner != null) platformSettingsListner.Write(setting);
 	}
 
-	// -----------------------------------------
+	/**
+	 * @return True, if platform settings are set
+	 */
+	public static boolean canUsePlatformSettings()
+	{
+		return (platformSettingsListner != null);
+	}
+
 }

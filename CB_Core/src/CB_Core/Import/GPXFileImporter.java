@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Import;
 
 import java.io.File;
@@ -11,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import CB_Core.StaticFinal;
+import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -21,6 +38,8 @@ import CB_Core.Types.GpxFilename;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 import com.thebuzzmedia.sjxp.XMLParser;
@@ -44,8 +63,8 @@ public class GPXFileImporter
 	private Integer countwpt = 0;
 	private Integer errors = 0;
 
-	private Cache cache = new Cache();
-	private Waypoint waypoint = new Waypoint();
+	private Cache cache = new Cache(true);
+	private Waypoint waypoint = new Waypoint(true);
 	private LogEntry log = new LogEntry();
 	private Category category = new Category();
 	private GpxFilename gpxFilename = null;
@@ -53,7 +72,7 @@ public class GPXFileImporter
 	private String gpxName = "";
 	private String gpxAuthor = "";
 
-	public GPXFileImporter(File gpxFileName)
+	public GPXFileImporter(File gpxFileName) // NO_UCD (test only)
 	{
 		super();
 		mGpxFile = gpxFileName;
@@ -61,7 +80,7 @@ public class GPXFileImporter
 		mDisplayFilename = gpxFileName.getName();
 	}
 
-	public GPXFileImporter(File file, ImporterProgress ip)
+	GPXFileImporter(File file, ImporterProgress ip)
 	{
 		super();
 		mGpxFile = file;
@@ -105,7 +124,9 @@ public class GPXFileImporter
 		ruleList = createWPTRules(ruleList);
 		ruleList = createGroundspeakRules(ruleList);
 		ruleList = createGSAKRules(ruleList);
+		ruleList = createGSAKRulesWithOutExtensions(ruleList);
 		ruleList = createTerraRules(ruleList);
+		ruleList = createCacheboxRules(ruleList);
 
 		@SuppressWarnings("unchecked")
 		XMLParser<Map<String, String>> parserCache = new XMLParser<Map<String, String>>(ruleList.toArray(new IRule[0]));
@@ -143,6 +164,40 @@ public class GPXFileImporter
 
 	public static int CacheCount = 0;
 	public static int LogCount = 0;
+
+	private List<IRule<Map<String, String>>> createCacheboxRules(List<IRule<Map<String, String>>> ruleList) throws Exception
+	{
+		// Cachebox Extension
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/note")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cachebox-extension_note", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/solver")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cachebox-extension_solver", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/clue")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cachebox-extension_clue", text);
+			}
+		});
+
+		return ruleList;
+	}
 
 	private List<IRule<Map<String, String>>> createWPTRules(List<IRule<Map<String, String>>> ruleList) throws Exception
 	{
@@ -541,17 +596,22 @@ public class GPXFileImporter
 
 		// GSAK Rules
 
-		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG, "/gpx/wpt/extensions/gsak:wptExtension/gsak:LatBeforeCorrect")
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/gsak:wptExtension/gsak:LatBeforeCorrect")
 		{
 			@Override
-			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
 			{
+				values.put("cache_gsak_corrected_coordinates", "True");
+				values.put("cache_gsak_corrected_coordinates_before_lat", text);
+			}
+		});
 
-				if (isStartTag)
-				{
-					values.put("cache_gsak_corrected_coordinates", "True");
-				}
-
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/gsak:wptExtension/gsak:LonBeforeCorrect")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_gsak_corrected_coordinates_before_lon", text);
 			}
 		});
 
@@ -641,6 +701,279 @@ public class GPXFileImporter
 		});
 
 		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:state")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_state", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:attributes/groundspeak:attribute")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
+				{
+					if (values.containsKey("cache_attributes_count")) values.put("cache_attributes_count",
+							String.valueOf((Integer.parseInt(values.get("cache_attributes_count")) + 1)));
+					else
+						values.put("cache_attributes_count", "1");
+				}
+
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:attributes/groundspeak:attribute", "id", "inc")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_attribute_" + values.get("cache_attributes_count") + "_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:short_description")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_short_description", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:short_description", "html")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_short_description_html", value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:long_description")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_long_description", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:long_description", "html")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_long_description_html", value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/groundspeak:cache/groundspeak:encoded_hints")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_encoded_hints", text);
+			}
+		});
+
+		// Log Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.TAG,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log")
+		{
+			@Override
+			public void handleTag(XMLParser<Map<String, String>> parser, boolean isStartTag, Map<String, String> values)
+			{
+
+				if (isStartTag)
+				{
+					if (values.containsKey("cache_logs_count")) values.put("cache_logs_count",
+							String.valueOf((Integer.parseInt(values.get("cache_logs_count")) + 1)));
+					else
+						values.put("cache_logs_count", "1");
+				}
+
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log", "id")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_log_" + values.get("cache_logs_count") + "_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_date", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:finder")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_finder", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER,
+				"/gpx/wpt/extensions/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_log_" + values.get("cache_logs_count") + "_text", text);
+			}
+		});
+
+		return ruleList;
+	}
+
+	private List<IRule<Map<String, String>>> createGSAKRulesWithOutExtensions(List<IRule<Map<String, String>>> ruleList) throws Exception
+	{
+
+		// GSAK Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/gsak:wptExtension/gsak:LatBeforeCorrect")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_gsak_corrected_coordinates", "True");
+				values.put("cache_gsak_corrected_coordinates_before_lat", text);
+			}
+
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/gsak:wptExtension/gsak:LonBeforeCorrect")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_gsak_corrected_coordinates_before_lon", text);
+			}
+
+		});
+
+		// Cache Rules for GPX from GSAK
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.ATTRIBUTE, "/gpx/wpt/groundspeak:cache", "id", "available", "archived")
+		{
+			@Override
+			public void handleParsedAttribute(XMLParser<Map<String, String>> parser, int index, String value, Map<String, String> values)
+			{
+
+				values.put("cache_attribute_" + this.getAttributeNames()[index], value);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:name")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_name", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:placed_by")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_placed_by", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:owner")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_owner", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:type")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_type", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:container")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_container", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:difficulty")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_difficulty", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:terrain")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_terrain", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:country")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_country", text);
+			}
+		});
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/groundspeak:cache/groundspeak:state")
 		{
 			@Override
 			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
@@ -932,43 +1265,47 @@ public class GPXFileImporter
 	 */
 	private void createCache(Map<String, String> values) throws Exception
 	{
+		// create new Cache Object for each imported cache to avoid that informations of one cache are copied into anohter cache.
+		cache = new Cache(true);
+		// if (cache.detail == null) cache.detail = new CacheDetail();
 
 		if (gpxAuthor.toLowerCase().contains("gctour"))
 		{
-			cache.TourName = gpxName;
+			cache.setTourName(gpxName);
 		}
 
 		if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon"))
 		{
-			cache.Pos = new Coordinate(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
+			cache.Pos = new CoordinateGPS(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
 					values.get("wpt_attribute_lon")).doubleValue());
 		}
 
 		if (values.containsKey("wpt_name"))
 		{
-			cache.GcCode = values.get("wpt_name");
-			cache.Id = Cache.GenerateCacheId(cache.GcCode);
+			cache.setGcCode(values.get("wpt_name"));
+			cache.Id = Cache.GenerateCacheId(cache.getGcCode());
 		}
 
 		if (values.containsKey("wpt_time"))
 		{
-			cache.DateHidden = parseDate(values.get("wpt_time"));
+			cache.setDateHidden(parseDate(values.get("wpt_time")));
 		}
-		else
+
+		if (values.containsKey("cache_attribute_id"))
 		{
-			cache.DateHidden = new Date();
+			cache.setGcId(values.get("cache_attribute_id"));
 		}
 
 		if (values.containsKey("wpt_url"))
 		{
-			cache.Url = values.get("wpt_url");
+			cache.setUrl(values.get("wpt_url"));
 		}
 
 		// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
 		// Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + cache.GcCode + "\"");
 
 		// Read from IndexDBList
-		boolean fav = CacheInfoList.CacheIsFavoriteInDB(cache.GcCode);
+		boolean fav = CacheInfoList.CacheIsFavoriteInDB(cache.getGcCode());
 
 		cache.setFavorit(fav);
 
@@ -978,15 +1315,15 @@ public class GPXFileImporter
 			// Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + cache.GcCode + "\"");
 
 			// Read from IndexDBList
-			boolean Found = CacheInfoList.CacheIsFoundInDB(cache.GcCode);
+			boolean Found = CacheInfoList.CacheIsFoundInDB(cache.getGcCode());
 
 			if (!Found)
 			{
-				cache.Found = values.get("wpt_sym").equalsIgnoreCase("Geocache Found");
+				cache.setFound(values.get("wpt_sym").equalsIgnoreCase("Geocache Found"));
 			}
 			else
 			{
-				cache.Found = true;
+				cache.setFound(true);
 			}
 		}
 
@@ -994,57 +1331,57 @@ public class GPXFileImporter
 		{
 			if (values.get("cache_attribute_available").equalsIgnoreCase("True"))
 			{
-				cache.Available = true;
+				cache.setAvailable(true);
 			}
 			else
 			{
-				cache.Available = false;
+				cache.setAvailable(false);
 			}
 		}
 		else
 		{
-			cache.Available = true;
+			cache.setAvailable(true);
 		}
 
 		if (values.containsKey("cache_attribute_archived"))
 		{
 			if (values.get("cache_attribute_archived").equalsIgnoreCase("True"))
 			{
-				cache.Archived = true;
+				cache.setArchived(true);
 			}
 			else
 			{
-				cache.Archived = false;
+				cache.setArchived(false);
 			}
 		}
 		else
 		{
-			cache.Archived = false;
+			cache.setArchived(false);
 		}
 
 		if (values.containsKey("cache_name"))
 		{
-			cache.Name = values.get("cache_name");
+			cache.setName(values.get("cache_name"));
 		}
 		else if (values.containsKey("wpt_desc")) // kein Name gefunden? Dann versuche den WP-Namen
 		{
-			cache.Name = values.get("wpt_desc");
+			cache.setName(values.get("wpt_desc"));
 		}
 
 		if (values.containsKey("cache_placed_by"))
 		{
-			cache.PlacedBy = values.get("cache_placed_by");
+			cache.setPlacedBy(values.get("cache_placed_by"));
 		}
 
 		if (values.containsKey("cache_owner"))
 		{
-			cache.Owner = values.get("cache_owner");
+			cache.setOwner(values.get("cache_owner"));
 		}
 
 		if (values.containsKey("cache_type"))
 		{
 			cache.Type = CacheTypes.parseString(values.get("cache_type"));
-			if (cache.GcCode.indexOf("MZ") == 0) cache.Type = CacheTypes.Munzee;
+			if (cache.getGcCode().indexOf("MZ") == 0) cache.Type = CacheTypes.Munzee;
 		}
 		else
 		{
@@ -1064,36 +1401,36 @@ public class GPXFileImporter
 		{
 			try
 			{
-				cache.Difficulty = Float.parseFloat(values.get("cache_difficulty"));
+				cache.setDifficulty(Float.parseFloat(values.get("cache_difficulty")));
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
-			if (cache.Difficulty < 0) cache.Difficulty = 0f;
+			if (cache.getDifficulty() < 0) cache.setDifficulty(0f);
 		}
 
 		if (values.containsKey("cache_terrain"))
 		{
 			try
 			{
-				cache.Terrain = Float.parseFloat(values.get("cache_terrain"));
+				cache.setTerrain(Float.parseFloat(values.get("cache_terrain")));
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
-			if (cache.Terrain < 0) cache.Terrain = 0f;
+			if (cache.getTerrain() < 0) cache.setTerrain(0f);
 		}
 
 		if (values.containsKey("cache_country"))
 		{
-			cache.Country = values.get("cache_country");
+			cache.setCountry(values.get("cache_country"));
 		}
 
 		if (values.containsKey("cache_state"))
 		{
-			cache.State = values.get("cache_state");
+			cache.setState(values.get("cache_state"));
 		}
 
 		if (values.containsKey("cache_attributes_count"))
@@ -1140,27 +1477,27 @@ public class GPXFileImporter
 
 		if (values.containsKey("cache_short_description"))
 		{
-			cache.shortDescription = values.get("cache_short_description").trim();
+			cache.setShortDescription(values.get("cache_short_description").trim());
 
 			if (values.containsKey("cache_short_description_html") && values.get("cache_short_description_html").equalsIgnoreCase("False"))
 			{
-				cache.shortDescription = cache.shortDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+				cache.setShortDescription(cache.getShortDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 			}
 		}
 
 		if (values.containsKey("cache_long_description"))
 		{
-			cache.longDescription = values.get("cache_long_description").trim();
+			cache.setLongDescription(values.get("cache_long_description").trim());
 
 			if (values.containsKey("cache_long_description_html") && values.get("cache_long_description_html").equalsIgnoreCase("False"))
 			{
-				cache.longDescription = cache.longDescription.replaceAll("(\r\n|\n\r|\r|\n)", "<br />");
+				cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 			}
 		}
 
 		if (values.containsKey("cache_encoded_hints"))
 		{
-			cache.hint = values.get("cache_encoded_hints");
+			cache.setHint(values.get("cache_encoded_hints"));
 		}
 
 		if (values.containsKey("cache_logs_count"))
@@ -1178,6 +1515,8 @@ public class GPXFileImporter
 						try
 						{
 							log.Id = Long.parseLong(attrValue);
+							// GSAK Special improvisiert
+							if (log.Id < 0) log.Id = log.CacheId + log.Id;
 						}
 						catch (Exception ex)
 						{
@@ -1223,9 +1562,42 @@ public class GPXFileImporter
 		}
 
 		if (values.containsKey("cache_gsak_corrected_coordinates"))
-		{
+		{ // Handle GSAK Corrected Coordinates
 			if (values.get("cache_gsak_corrected_coordinates").equalsIgnoreCase("True"))
 			{
+				double lat = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lat"));
+				double lon = Double.parseDouble(values.get("cache_gsak_corrected_coordinates_before_lon"));
+
+				Coordinate coorectedCoord = cache.Pos;
+
+				// set Original Coords
+				cache.Pos = new Coordinate(lat, lon);
+
+				// create final WP with Corrected Coords
+				String newGcCode = Database.CreateFreeGcCode(cache.getGcCode());
+
+				// Check if "Final GSAK Corrected" exist
+				WaypointDAO WPDao = new WaypointDAO();
+				CB_List<Waypoint> wplist = WPDao.getWaypointsFromCacheID(cache.Id, false);
+
+				for (int i = 0; i < wplist.size(); i++)
+				{
+					Waypoint wp = wplist.get(i);
+					if (wp.Type == CacheTypes.Final)
+					{
+						if (wp.getTitle().equalsIgnoreCase("Final GSAK Corrected"))
+						{
+							newGcCode = wp.getGcCode();
+							break;
+						}
+					}
+				}
+
+				Waypoint FinalWp = new Waypoint(newGcCode, CacheTypes.Final, "", coorectedCoord.getLatitude(),
+						coorectedCoord.getLongitude(), cache.Id, "", "Final GSAK Corrected");
+
+				cache.waypoints.add(FinalWp);
+
 				cache.setCorrectedCoordinates(true);
 			}
 		}
@@ -1254,8 +1626,18 @@ public class GPXFileImporter
 
 		mImportHandler.handleCache(cache);
 
+		// Write Note and Solver
+		if (values.containsKey("cachebox-extension_solver"))
+		{
+			Database.SetSolver(cache, values.get("cachebox-extension_solver"));
+		}
+		if (values.containsKey("cachebox-extension_note"))
+		{
+			Database.SetNote(cache, values.get("cachebox-extension_note"));
+		}
+
 		// Merge mit cache info
-		if (CacheInfoList.ExistCache(cache.GcCode))
+		if (CacheInfoList.ExistCache(cache.getGcCode()))
 		{
 			CacheInfoList.mergeCacheInfo(cache);
 		}
@@ -1264,34 +1646,31 @@ public class GPXFileImporter
 			// Neue CacheInfo erstellen und zur Liste Hinzufügen
 			CacheInfoList.putNewInfo(cache);
 		}
-
-		cache.clear();
-
 	}
 
 	private void createWaypoint(Map<String, String> values) throws Exception
 	{
 		if (values.containsKey("wpt_attribute_lat") && values.containsKey("wpt_attribute_lon"))
 		{
-			waypoint.Pos = new Coordinate(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
+			waypoint.Pos = new CoordinateGPS(new Double(values.get("wpt_attribute_lat")).doubleValue(), new Double(
 					values.get("wpt_attribute_lon")).doubleValue());
 		}
 		else
 		{
-			waypoint.Pos = new Coordinate();
+			waypoint.Pos = new CoordinateGPS(0, 0);
 		}
 
 		if (values.containsKey("wpt_name"))
 		{
-			waypoint.GcCode = values.get("wpt_name");
-			waypoint.Title = waypoint.GcCode;
+			waypoint.setGcCode(values.get("wpt_name"));
+			waypoint.setTitle(waypoint.getGcCode());
 			// TODO Hack to get parent Cache
-			waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.GcCode.substring(2, waypoint.GcCode.length()));
+			waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
 		}
 
 		if (values.containsKey("wpt_desc"))
 		{
-			waypoint.Title = values.get("wpt_desc");
+			waypoint.setTitle(values.get("wpt_desc"));
 		}
 
 		if (values.containsKey("wpt_type"))
@@ -1301,12 +1680,17 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_cmt"))
 		{
-			waypoint.Description = values.get("wpt_cmt");
+			waypoint.setDescription(values.get("wpt_cmt"));
+		}
+
+		if (values.containsKey("cachebox-extension_clue"))
+		{
+			waypoint.setClue(values.get("cachebox-extension_clue"));
 		}
 
 		currentwpt++;
 		if (mip != null) mip.ProgressInkrement("ImportGPX", mDisplayFilename + "\nWaypoint: " + currentwpt + "/" + countwpt + "\n"
-				+ waypoint.GcCode + " - " + waypoint.Description, false);
+				+ waypoint.getGcCode() + " - " + waypoint.getDescription(), false);
 
 		mImportHandler.handleWaypoint(waypoint);
 

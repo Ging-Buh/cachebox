@@ -5,14 +5,15 @@ import java.text.NumberFormat;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Log.Logger;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class MapScale extends CB_View_Base implements invalidateTextureEvent
@@ -24,6 +25,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	private float drawableWidth = 0;
 	private String distanceString;
 	private boolean imperialunits = false;
+	private final static NumberFormat nf = NumberFormat.getInstance();
 
 	public MapScale(CB_RectF rec, String Name, MapViewBase mapInstanz, boolean useImperialUnits)
 	{
@@ -33,7 +35,8 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		this.mapInstanz = mapInstanz;
 		CachedScaleDrawable = null;
 		fontCache = new BitmapFontCache(Fonts.getNormal());
-		fontCache.setColor(Fonts.getFontColor());
+		fontCache.setColor(COLOR.getFontColor());
+		fontCache.setText("", 0, 0);
 		invalidateTextureEventList.Add(this);
 	}
 
@@ -65,6 +68,11 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 	int generatedZomm = -1;
 
+	final int[] scaleNumUnits = new int[]
+		{ 4, 3, 4, 3, 4, 5, 3 };
+	final float[] scaleSteps = new float[]
+		{ 1, 1.5f, 2, 3, 4, 5, 7.5f };
+
 	/**
 	 * Nachdem Zoom verändert wurde müssen einige Werte neu berechnet werden
 	 */
@@ -75,10 +83,6 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 		try
 		{
-			int[] scaleNumUnits = new int[]
-				{ 4, 3, 4, 3, 4, 5, 3 };
-			float[] scaleSteps = new float[]
-				{ 1, 1.5f, 2, 3, 4, 5, 7.5f };
 
 			pixelsPerMeter = mapInstanz.pixelsPerMeter;
 
@@ -107,20 +111,17 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 		if (imperialunits)
 		{
-			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(2);
 			distanceString = nf.format(scaleLength / 1609.3) + "mi";
 		}
 		else if (scaleLength <= 500)
 		{
-			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(0);
 			distanceString = nf.format(scaleLength) + "m";
 		}
 		else
 		{
 			double length = scaleLength / 1000;
-			NumberFormat nf = NumberFormat.getInstance();
 			nf.setMaximumFractionDigits(0);
 			distanceString = nf.format(length) + "km";
 		}
@@ -135,7 +136,8 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		if (fontCache == null)
 		{
 			fontCache = new BitmapFontCache(Fonts.getNormal());
-			fontCache.setColor(Fonts.getFontColor());
+			fontCache.setColor(COLOR.getFontColor());
+			fontCache.setText("", 0, 0);
 		}
 
 		try
@@ -144,8 +146,8 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 					.getCapHeight());
 			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
 			CachedScaleDrawable = SpriteCacheBase.MapScale[scaleUnits - 3];
-			float margin = (this.height - bounds.height) / 1.6f;
-			fontCache.setPosition(this.width - bounds.width - margin, margin);
+			float margin = (this.getHeight() - bounds.height) / 1.6f;
+			fontCache.setPosition(this.getWidth() - bounds.width - margin, margin);
 		}
 		catch (Exception e)
 		{
@@ -157,13 +159,24 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	 * Zeichnet den Maßstab. pixelsPerKm muss durch zoomChanged initialisiert sein!
 	 */
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (pixelsPerMeter <= 0) return;
-		if (mapInstanz.getAktZoom() != generatedZomm) zoomChanged();
+		if (mapInstanz.getAktZoom() != generatedZomm)
+		{
+			zoomChanged();
+			generatedZomm = mapInstanz.getAktZoom();
+		}
 		if (CachedScaleDrawable == null) zoomChanged();
-		if (CachedScaleDrawable != null) CachedScaleDrawable.draw(batch, 0, 0, drawableWidth, this.height);
-		if (fontCache != null) fontCache.draw(batch);
+
+		try
+		{
+			if (CachedScaleDrawable != null) CachedScaleDrawable.draw(batch, 0, 0, drawableWidth, this.getHeight());
+			if (fontCache != null) fontCache.draw(batch);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
 	@Override
@@ -175,7 +188,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		}
 		generatedZomm = -1;
 
-		fontCache.setColor(Fonts.getFontColor());
+		fontCache.setColor(COLOR.getFontColor());
 	}
 
 }

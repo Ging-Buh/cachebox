@@ -42,4 +42,15 @@ public class SettingDouble extends SettingBase<Double>
 		return ret;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingDouble)) return false;
+
+		SettingDouble inst = (SettingDouble) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (inst.value != this.value) return false;
+
+		return true;
+	}
 }

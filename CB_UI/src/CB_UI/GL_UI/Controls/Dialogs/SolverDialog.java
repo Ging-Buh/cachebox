@@ -1,9 +1,10 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
+import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Functions.Function;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
-import CB_UI.Solver.Functions.Function;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
@@ -16,11 +17,10 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
-import CB_UI_Base.GL_UI.Controls.ScrollBox;
+import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonScrollDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
@@ -40,7 +40,6 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	private float boxYPosStart;
 	private float boxYPosStored;
 
-	private ScrollBox scrollBox2;
 	private Box mBox;
 	private boolean ignoreStateChange = false;
 	private MultiToggleButton btnTxt;
@@ -180,18 +179,11 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		button1.setOnClickListener(OnOkClickListner);
 
 		// y -= UiSizes.getButtonHeight();
-		float restPlatz = this.height - y;
+		float restPlatz = this.getHeight() - y;
 		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Länge den Anzeige Bereich
 		// überschreitet!
 
 		rec = new CB_RectF(0, y - restPlatz, msgBoxContentSize.width, restPlatz);
-		scrollBox2 = new ScrollBox(rec);
-
-		// damit die Scrollbox auch Events erhällt
-		// scrollBox2.setClickable(true);
-
-		// die ScrollBox erhält den Selben Hintergrund wie die Activity und wird damit ein wenig abgegrenzt von den Restlichen Controls
-		// scrollBox2.setBackground(this.getBackground());
 
 		// Initial LinearLayout
 		// Dieses wird nur mit der Breite Initialisiert, die Höhe ergibt sich aus dem Inhalt
@@ -205,7 +197,6 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 		// add LinearLayout zu ScrollBox und diese zu der Activity
 		scrollBox.addLast(mBox);
-		// scrollBox.addChild(scrollBox2);
 
 		showPage(pages.Text);
 	}
@@ -324,12 +315,12 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	private void hidePageWaypoint()
 	{
-		 
+
 	}
 
 	private void hidePageOperator()
 	{
-		 
+
 	}
 
 	private void hidePageVariable()
@@ -386,13 +377,11 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	private void showPageWaypoint()
 	{
-		 
 
 	}
 
 	private void showPageOperator()
 	{
-		 
 
 	}
 
@@ -458,7 +447,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// Funktionsauswahl zeigen
-				SelectSolverFunction ssf = new SelectSolverFunction(new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(DataType.None, new IFunctionResult()
 				{
 					@Override
 					public void selectedFunction(Function function)
@@ -508,7 +497,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	@Override
 	public void onShow()
 	{
-		initialYpos = this.Pos.y;
+		initialYpos = this.getY();
 		KeyboardFocusChangedEventList.Add(this);
 	}
 

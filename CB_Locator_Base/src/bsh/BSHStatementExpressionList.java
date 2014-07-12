@@ -31,23 +31,29 @@
  *                                                                           *
  *****************************************************************************/
 
-
 package bsh;
 
 class BSHStatementExpressionList extends SimpleNode
 {
-	BSHStatementExpressionList(int id) { super(id); }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-	public Object eval(CallStack callstack, Interpreter interpreter)  
-		throws EvalError
+	BSHStatementExpressionList(int id)
+	{
+		super(id);
+	}
+
+	@Override
+	public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError
 	{
 		int n = jjtGetNumChildren();
-		for(int i=0; i<n; i++)
+		for (int i = 0; i < n; i++)
 		{
-			SimpleNode node = ((SimpleNode)jjtGetChild(i));
+			SimpleNode node = ((SimpleNode) jjtGetChild(i));
 			node.eval(callstack, interpreter);
 		}
 		return Primitive.VOID;
 	}
 }
-

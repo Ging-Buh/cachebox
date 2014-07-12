@@ -41,6 +41,7 @@ import de.droidcachebox.main;
 import de.droidcachebox.Events.ViewOptionsMenu;
 import de.droidcachebox.Views.Forms.MessageBox;
 
+@SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 {
 
@@ -101,6 +102,16 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		public boolean shouldOverrideUrlLoading(WebView view, String url)
 		{
 			if (url.contains("fake://fake.de/Attr"))
+			{
+				int pos = url.indexOf("+");
+				if (pos < 0) return true;
+
+				final String attr = url.substring(pos + 1, url.length() - 1);
+
+				MessageBox.Show(Translation.Get(attr));
+				return true;
+			}
+			else if (url.contains("fake://fake.de?Button"))
 			{
 				int pos = url.indexOf("+");
 				if (pos < 0) return true;
@@ -257,7 +268,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			switch (button)
 			{
 			case -1:
-				Cache newCache = SearchForGeocaches.LoadApiDetails(aktCache);
+				Cache newCache = SearchForGeocaches.getInstance().LoadApiDetails(aktCache);
 				if (newCache != null)
 				{
 					aktCache = newCache;
@@ -290,7 +301,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			NonLocalImagesUrl.clear();
 			String cachehtml = Database.GetDescription(cache);
 			String html = "";
-			if (cache.ApiStatus == 1)// GC.com API lite
+			if (cache.getApiStatus() == 1)// GC.com API lite
 			{ // Load Standard HTML
 				String nodesc = Translation.Get("GC_NoDescription");
 				html = "</br>" + nodesc + "</br></br></br><form action=\"download\"><input type=\"submit\" value=\" "
@@ -329,7 +340,17 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 		try
 		{
-			if (this.getSettings() != null) this.getSettings().setLightTouchEnabled(true);
+			main.mainActivity.runOnUiThread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					if (DescriptionViewControl.this.getSettings() != null) DescriptionViewControl.this.getSettings().setLightTouchEnabled(
+							true);
+				}
+			});
+
 		}
 		catch (Exception e1)
 		{
@@ -402,26 +423,33 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	private String getAttributesHtml(Cache cache)
 	{
 		StringBuilder sb = new StringBuilder();
-
-		Iterator<Attributes> attrs = cache.getAttributes().iterator();
-
-		if (attrs == null || !attrs.hasNext()) return "";
-
-		do
+		try
 		{
-			Attributes attribute = attrs.next();
-			File result = new File(Config.WorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+			Iterator<Attributes> attrs = cache.getAttributes().iterator();
 
-			sb.append("<form action=\"Attr\">");
-			sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" "
-					+ attribute.getImageName() + " \">");
+			if (attrs == null || !attrs.hasNext()) return "";
+
+			do
+			{
+				Attributes attribute = attrs.next();
+				File result = new File(Config.WorkPath + "/data/Attributes/" + attribute.getImageName() + ".png");
+
+				sb.append("<form action=\"Attr\">");
+				sb.append("<input name=\"Button\" type=\"image\" src=\"file://" + result.getAbsolutePath() + "\" value=\" "
+						+ attribute.getImageName() + " \">");
+			}
+			while (attrs.hasNext());
+
+			sb.append("</form>");
+
+			if (sb.length() > 0) sb.append("<br>");
+			return sb.toString();
 		}
-		while (attrs.hasNext());
-
-		sb.append("</form>");
-
-		if (sb.length() > 0) sb.append("<br>");
-		return sb.toString();
+		catch (Exception ex)
+		{
+			// TODO Handle Exception
+			return "";
+		}
 	}
 
 	@Override
@@ -556,9 +584,16 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 	@Override
 	protected void onScrollChanged(int x, int y, int oldl, int oldt)
 	{
-		super.onScrollChanged(x, y, oldl, oldt);
-		scrollPos.x = x;
-		scrollPos.y = y;
+		try
+		{
+			super.onScrollChanged(x, y, oldl, oldt);
+			scrollPos.x = x;
+			scrollPos.y = y;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public Point getScrollPos()

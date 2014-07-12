@@ -5,7 +5,7 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public abstract class AnimationBase extends CB_View_Base
 {
@@ -46,7 +46,7 @@ public abstract class AnimationBase extends CB_View_Base
 		super(size, Name);
 	}
 
-	protected abstract void render(SpriteBatch batch);
+	protected abstract void render(Batch batch);
 
 	public abstract void play();
 

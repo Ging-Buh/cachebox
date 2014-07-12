@@ -1,19 +1,20 @@
 package de.droidcachebox.Views;
 
 import CB_Core.DB.Database;
+import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
+import CB_Core.Solver.SolverZeile;
+import CB_Core.Solver.Functions.Function;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction.IFunctionResult;
-import CB_UI.Solver.Solver;
-import CB_UI.Solver.SolverZeile;
-import CB_UI.Solver.Functions.Function;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,7 +53,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	{
 		super(context);
 		mustLoadSolver = false;
-		LinearLayout solverLayout = (LinearLayout) inflater.inflate(Config.settings.nightMode.getValue() ? R.layout.night_solverview
+		LinearLayout solverLayout = (LinearLayout) inflater.inflate(CB_UI_Base_Settings.nightMode.getValue() ? R.layout.night_solverview
 				: R.layout.solverview, null, false);
 
 		this.addView(solverLayout);
@@ -75,7 +76,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			@Override
 			public void onClick(View arg0)
 			{
-				SelectSolverFunction ssf = new SelectSolverFunction(new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(DataType.None, new IFunctionResult()
 				{
 
 					@Override

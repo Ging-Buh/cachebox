@@ -32,7 +32,7 @@ public class NumPad extends CB_View_Base
 		public void KeyPressed(String value);
 	}
 
-	private keyEventListner mKeyPressedListner;
+	private final keyEventListner mKeyPressedListner;
 
 	private Button btn_0;
 	private Button btn_1;
@@ -56,7 +56,7 @@ public class NumPad extends CB_View_Base
 	private CB_RectF btnRecWide;
 	private CB_RectF btnRecHalfWide;
 
-	private Type mType;
+	private final Type mType;
 
 	public NumPad(CB_RectF rec, String Name, Type type, keyEventListner listner)
 	{
@@ -97,8 +97,8 @@ public class NumPad extends CB_View_Base
 
 	private void calcPositions()
 	{
-		float center = this.width / 2;
-		float left = (this.width - (btnRec.getWidth() * 5)) / 2;
+		float center = this.getWidth() / 2;
+		float left = (this.getWidth() - (btnRec.getWidth() * 5)) / 2;
 
 		// LastLine
 		btn_left.setX(center - btn_left.getWidth());
@@ -150,8 +150,8 @@ public class NumPad extends CB_View_Base
 
 		this.setOnClickListener(clickListner);
 
-		float btnHeight = this.height / 5f;
-		float btnWidth = this.width / 5f;
+		float btnHeight = this.getHeight() / 5f;
+		float btnWidth = this.getWidth() / 5f;
 		float minValue = Math.min(btnHeight, btnWidth);
 
 		btnRec = new CB_RectF(0, 0, minValue, minValue);

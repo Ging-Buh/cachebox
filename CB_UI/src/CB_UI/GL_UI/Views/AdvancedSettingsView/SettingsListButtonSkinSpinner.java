@@ -22,14 +22,14 @@ public class SettingsListButtonSkinSpinner<T> extends SettingBase<T>
 	@Override
 	public String toDBString()
 	{
-		 
+
 		return null;
 	}
 
 	@Override
 	public boolean fromDBString(String dbString)
 	{
-		 
+
 		return false;
 	}
 
@@ -40,4 +40,15 @@ public class SettingsListButtonSkinSpinner<T> extends SettingBase<T>
 		return null;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingsListButtonSkinSpinner<?>)) return false;
+
+		SettingsListButtonSkinSpinner<?> inst = (SettingsListButtonSkinSpinner<?>) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (inst.value != this.value) return false;
+
+		return true;
+	}
 }

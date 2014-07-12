@@ -1,5 +1,6 @@
 package CB_UI.GL_UI.Activitys.settings;
 
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -19,14 +20,14 @@ public class SettingsItemBase extends ListViewItemBackground
 
 		if (MeasuredLabelHeight == -1) MeasuredLabelHeight = Fonts.MeasureSmall("Tg").height;
 
-		CB_RectF LblRec = new CB_RectF(leftBorder, 0, innerWidth, this.halfHeight);
+		CB_RectF LblRec = new CB_RectF(leftBorder, 0, innerWidth, this.getHalfHeight());
 
 		lblDefault = new Label(LblRec, "");
 		lblDefault.setFont(Fonts.getSmall());
 		this.addChild(lblDefault);
 
 		LblRec.setY(MeasuredLabelHeight);
-		LblRec.setHeight(this.height - MeasuredLabelHeight);
+		LblRec.setHeight(this.getHeight() - MeasuredLabelHeight);
 
 		lblName = new Label(LblRec, "");
 		lblName.setFont(Fonts.getNormal());
@@ -45,7 +46,7 @@ public class SettingsItemBase extends ListViewItemBackground
 	public void disable()
 	{
 		isDisabled = true;
-		this.setColorFilter(Fonts.getDisableFontColor());
+		this.setColorFilter(COLOR.getDisableFontColor());
 	}
 
 	public boolean isDisabled()

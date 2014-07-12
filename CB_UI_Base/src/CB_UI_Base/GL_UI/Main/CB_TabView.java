@@ -1,8 +1,8 @@
 package CB_UI_Base.GL_UI.Main;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.H_ListView;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -30,10 +30,12 @@ public class CB_TabView extends CB_View_Base
 	private void AddButtonsAsChild()
 	{
 		if (mButtonList == null) return;
-		buttonListView = new H_ListView(new CB_RectF(0, 0, this.width, GL_UISizes.BottomButtonHeight), "ButtonList von " + this.getName());
+		buttonListView = new H_ListView(new CB_RectF(0, 0, this.getWidth(), GL_UISizes.BottomButtonHeight), "ButtonList von "
+				+ this.getName());
 		buttonListView.setBaseAdapter(new CustomAdapter());
 		buttonListView.setUndragable();
 		buttonListView.setBackground(SpriteCacheBase.ButtonBack);
+		buttonListView.setDisposeFlag(false);
 		this.addChild(buttonListView);
 	}
 
@@ -52,13 +54,13 @@ public class CB_TabView extends CB_View_Base
 
 	private void layout()
 	{
-		mContentRec.setHeight(this.height - GL_UISizes.BottomButtonHeight);
+		mContentRec.setHeight(this.getHeight() - GL_UISizes.BottomButtonHeight);
 		mContentRec.setPos(0, GL_UISizes.BottomButtonHeight);
 
 		if (aktView != null)
 		{
 			// set View size and pos
-			aktView.setSize(this.width, this.height - buttonListView.getHeight());
+			aktView.setSize(this.getWidth(), this.getHeight() - buttonListView.getHeight());
 			aktView.setPos(new Vector2(0, buttonListView.getHeight()));
 
 		}
@@ -141,7 +143,7 @@ public class CB_TabView extends CB_View_Base
 		}
 
 		// set View size and pos
-		view.setSize(this.width, this.height - buttonListView.getHeight());
+		view.setSize(this.getWidth(), this.getHeight() - buttonListView.getHeight());
 		view.setPos(new Vector2(0, buttonListView.getHeight()));
 
 		if (aktView == view) return;
@@ -152,7 +154,7 @@ public class CB_TabView extends CB_View_Base
 		aktView.setVisible();
 		sendOnShow2aktView();
 
-		GL.that.renderOnce(aktView.getName() + " TabView=>ShowView()");
+		GL.that.renderOnce();
 
 	}
 
@@ -163,13 +165,13 @@ public class CB_TabView extends CB_View_Base
 	 */
 	private void sendOnShow2aktView()
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
 			public void run()
 			{
-				GL.that.RunOnGL(new runOnGL()
+				GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override
@@ -182,18 +184,6 @@ public class CB_TabView extends CB_View_Base
 
 			}
 		});
-
-		// TimerTask task = new TimerTask()
-		// {
-		// @Override
-		// public void run()
-		// {
-		//
-		// }
-		// };
-		//
-		// Timer timer = new Timer();
-		// timer.schedule(task, 150);
 	}
 
 	public CB_RectF getContentRec()

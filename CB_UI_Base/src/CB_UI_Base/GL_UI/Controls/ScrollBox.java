@@ -32,7 +32,7 @@ public class ScrollBox extends CB_View_Base
 	private void initScrollBox()
 	{
 		// todo: check to have no scroll(? - margin) oder rec.getHalfHeight()
-		virtualHeight = this.height;
+		virtualHeight = this.getHeight();
 
 		lv = new V_ListView(this, "ListView-" + name);
 		lv.setClickable(true);
@@ -50,6 +50,7 @@ public class ScrollBox extends CB_View_Base
 			{
 				isInitial = true;
 			}
+
 		};
 
 		item.setHeight(virtualHeight);
@@ -71,9 +72,13 @@ public class ScrollBox extends CB_View_Base
 	private void Layout()
 	{
 		lv.setSize(innerWidth, innerHeight);
-		lv.setPos(leftBorder, bottomBorder);
+
 		item.setHeight(virtualHeight);
-		lv.notifyDataSetChanged();
+		lv.calcDefaultPosList();
+
+		lv.setPos(leftBorder, bottomBorder);
+
+		lv.scrollTo(lv.getScrollPos());
 	}
 
 	@Override
@@ -131,11 +136,13 @@ public class ScrollBox extends CB_View_Base
 	}
 
 	// ################ add / remove overrides ############################################
+	@Override
 	public int getCildCount()
 	{
 		return item.getCildCount();
 	}
 
+	@Override
 	public GL_View_Base addChildDirekt(final GL_View_Base view)
 	{
 		item.addChildDirekt(view);
@@ -143,6 +150,7 @@ public class ScrollBox extends CB_View_Base
 		return view;
 	}
 
+	@Override
 	public GL_View_Base addChildDirektLast(final GL_View_Base view)
 	{
 		item.addChildDirektLast(view);
@@ -150,17 +158,20 @@ public class ScrollBox extends CB_View_Base
 		return view;
 	}
 
+	@Override
 	public void removeChildsDirekt()
 	{
 		item.removeChildsDirekt();
 		lv.notifyDataSetChanged();
 	}
 
+	@Override
 	public GL_View_Base getChild(int i)
 	{
 		return item.getChild(i);
 	}
 
+	@Override
 	public GL_View_Base addChild(final GL_View_Base view)
 	{
 		item.addChildDirekt(view);
@@ -168,6 +179,7 @@ public class ScrollBox extends CB_View_Base
 		return view;
 	}
 
+	@Override
 	public GL_View_Base addChild(final GL_View_Base view, final boolean last)
 	{
 		if (last)
@@ -182,18 +194,21 @@ public class ScrollBox extends CB_View_Base
 		return view;
 	}
 
+	@Override
 	public void removeChild(final GL_View_Base view)
 	{
 		item.removeChild(view);
 		lv.notifyDataSetChanged();
 	}
 
+	@Override
 	public void removeChilds()
 	{
 		item.removeChilds();
 		lv.notifyDataSetChanged();
 	}
 
+	@Override
 	public void removeChilds(final MoveableList<GL_View_Base> Childs)
 	{
 		item.removeChilds(Childs);
@@ -228,12 +243,14 @@ public class ScrollBox extends CB_View_Base
 		lv.scrollTo(scrollPos);
 	}
 
+	@Override
 	public void setClickable(boolean value)
 	{
 		lv.setClickable(value);
 		super.setClickable(value);
 	}
 
+	@Override
 	public void setLongClickable(boolean value)
 	{
 

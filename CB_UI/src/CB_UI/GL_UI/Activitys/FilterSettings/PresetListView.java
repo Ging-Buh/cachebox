@@ -69,7 +69,7 @@ public class PresetListView extends V_ListView
 		super(rec, "");
 		this.setHasInvisibleItems(true);
 		fillPresetList();
-
+		this.setDisposeFlag(false);
 		this.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(lPresets);
 		this.setBaseAdapter(lvAdapter);

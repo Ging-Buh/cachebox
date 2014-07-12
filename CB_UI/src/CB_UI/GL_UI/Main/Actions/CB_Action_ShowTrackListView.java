@@ -3,9 +3,9 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.Date;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate;
 import CB_UI.GL_UI.Activitys.ProjectionCoordinate.Type;
@@ -14,24 +14,27 @@ import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.GL_UI.Views.TrackListViewItem;
 import CB_UI.Map.RouteOverlay;
 import CB_UI.Map.RouteOverlay.Track;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
-import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.TrackPoint;
 
@@ -134,7 +137,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_LOAD:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"),
+					platformConector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("LoadTrack"),
 							Translation.Get("load"), new IgetFileReturnListner()
 							{
 								@Override
@@ -154,7 +157,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 					return true;
 
 				case MenuID.MI_SAVE:
-					platformConector.getFile(Config.settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"),
+					platformConector.getFile(CB_UI_Settings.TrackFolder.getValue(), "*.gpx", Translation.Get("SaveTrack"),
 							Translation.Get("save"), new IgetFileReturnListner()
 							{
 								TrackListViewItem selectedTrackItem = TrackListView.that.getSelectedItem();
@@ -279,15 +282,15 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
 						route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(),
-								startCoord.getLongitude(), dist);
+						MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(),
+								targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
 						route.TrackLength = dist[0];
 
 						route.ShowRoute = true;
 						RouteOverlay.add(route);
 						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
-				}, Type.p2p);
+				}, Type.p2p, null);
 		pC.show();
 
 	}
@@ -315,8 +318,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.Points.add(new TrackPoint(targetCoord.getLongitude(), targetCoord.getLatitude(), 0, 0, new Date()));
 						route.Points.add(new TrackPoint(startCoord.getLongitude(), startCoord.getLatitude(), 0, 0, new Date()));
 
-						Coordinate.distanceBetween(targetCoord.getLatitude(), targetCoord.getLongitude(), startCoord.getLatitude(),
-								startCoord.getLongitude(), dist);
+						MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, targetCoord.getLatitude(),
+								targetCoord.getLongitude(), startCoord.getLatitude(), startCoord.getLongitude(), dist);
 						route.TrackLength = dist[0];
 
 						route.ShowRoute = true;
@@ -324,7 +327,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 
-				}, Type.projetion);
+				}, Type.projetion, null);
 
 		pC.show();
 
@@ -353,13 +356,13 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						route.ShowRoute = true;
 						RouteOverlay.add(route);
 
-						Coordinate Projektion = new Coordinate();
-						Coordinate LastCoord = new Coordinate();
+						Coordinate Projektion = new CoordinateGPS(0, 0);
+						Coordinate LastCoord = new CoordinateGPS(0, 0);
 
 						for (int i = 0; i <= 360; i += 10) // Achtung der Kreis darf nicht mehr als 50 Punkte haben, sonst gibt es Probleme
 															// mit dem Reduktionsalgorythmus
 						{
-							Projektion = Coordinate.Project(startCoord.getLatitude(), startCoord.getLongitude(), (double) i, distance);
+							Projektion = CoordinateGPS.Project(startCoord.getLatitude(), startCoord.getLongitude(), (double) i, distance);
 
 							route.Points.add(new TrackPoint(Projektion.getLongitude(), Projektion.getLatitude(), 0, 0, new Date()));
 
@@ -370,8 +373,8 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 							}
 							else
 							{
-								Coordinate.distanceBetween(Projektion.getLatitude(), Projektion.getLongitude(), LastCoord.getLatitude(),
-										LastCoord.getLongitude(), dist);
+								MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, Projektion.getLatitude(),
+										Projektion.getLongitude(), LastCoord.getLatitude(), LastCoord.getLongitude(), dist);
 								route.TrackLength += dist[0];
 								LastCoord = Projektion;
 								LastCoord.setValid(true);
@@ -381,7 +384,7 @@ public class CB_Action_ShowTrackListView extends CB_Action_ShowView
 						if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
 					}
 
-				}, Type.circle);
+				}, Type.circle, null);
 
 		pC.show();
 	}

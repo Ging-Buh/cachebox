@@ -41,4 +41,16 @@ public class SettingBool extends SettingBase<Boolean>
 
 		return ret;
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingBool)) return false;
+
+		SettingBool inst = (SettingBool) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (inst.value != this.value) return false;
+
+		return true;
+	}
 }

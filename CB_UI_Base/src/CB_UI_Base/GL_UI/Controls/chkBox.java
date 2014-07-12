@@ -5,7 +5,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class chkBox extends Button
@@ -28,40 +28,40 @@ public class chkBox extends Button
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (drawableNormal == null || drawablePressed == null || drawableDisabledChk == null || drawableDisabled == null)
 		{
 			Initial();
-			GL.that.renderOnce(this.getName() + " render");
+			GL.that.renderOnce();
 		}
 
 		if (!isChk && !isDisabled)
 		{
 			if (drawableNormal != null)
 			{
-				drawableNormal.draw(batch, 0, 0, width, height);
+				drawableNormal.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
 		else if (isChk && isDisabled)
 		{
 			if (drawableDisabledChk != null)
 			{
-				drawableDisabledChk.draw(batch, 0, 0, width, height);
+				drawableDisabledChk.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
 		else if (isChk)
 		{
 			if (drawablePressed != null)
 			{
-				drawablePressed.draw(batch, 0, 0, width, height);
+				drawablePressed.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
 		else
 		{
 			if (drawableDisabled != null)
 			{
-				drawableDisabled.draw(batch, 0, 0, width, height);
+				drawableDisabled.draw(batch, 0, 0, getWidth(), getHeight());
 			}
 		}
 
@@ -102,7 +102,7 @@ public class chkBox extends Button
 		if (!isDisabled)
 		{
 
-			GL.that.renderOnce(this.getName() + " touchDown");
+			GL.that.renderOnce();
 		}
 		return dragableButton ? false : true;
 	}
@@ -111,7 +111,7 @@ public class chkBox extends Button
 	public boolean onTouchDragged(int x, int y, int pointer, boolean KineticPan)
 	{
 
-		GL.that.renderOnce(this.getName() + " Dragged");
+		GL.that.renderOnce();
 		return false;
 	}
 
@@ -119,7 +119,7 @@ public class chkBox extends Button
 	public boolean onTouchUp(int x, int y, int pointer, int button)
 	{
 
-		GL.that.renderOnce(this.getName() + " touchUp");
+		GL.that.renderOnce();
 		return dragableButton ? false : true;
 	}
 
@@ -131,6 +131,7 @@ public class chkBox extends Button
 			isChk = !isChk;
 			if (changeListner != null) changeListner.onCheckedChanged(this, isChk);
 		}
+		if (mOnClickListener != null) mOnClickListener.onClick(this, x, y, pointer, button);
 		return true;
 	}
 
@@ -140,6 +141,7 @@ public class chkBox extends Button
 		if (changeListner != null) changeListner.onCheckedChanged(this, isChk);
 	}
 
+	@Override
 	public void setEnabled(boolean b)
 	{
 		isDisabled = !b;

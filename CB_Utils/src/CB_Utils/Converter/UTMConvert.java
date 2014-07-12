@@ -1,12 +1,12 @@
 package CB_Utils.Converter;
 
+import CB_Utils.MathUtils;
+
 public class UTMConvert
 {
 
-	final double dCvtDeg2Rad = Math.PI / 180.0; // 0.0174532925199432957 ... remember: pi radians = 180 deg
-	final double dCvtRad2Deg = 180.0 / Math.PI; // 57.2957795130823208767 ...
 	final double eccSquared = 0.00669438; // eccentricity (0.081819191 ^ 2) WGS84
-	final double dEquatorialRadius = 6378137.0; // WGS84 (note above: varies from 6,356.750 km to 6,378.135 km)
+
 	final double dScaleFactor = 0.9996; // scale factor, used as k0
 
 	// / <summary>
@@ -38,11 +38,11 @@ public class UTMConvert
 		// eccSquared = ellipsoid[index-of-desired-reference-ellipsoid].eccentricitySquared;
 
 		// convert degrees to radians
-		double dLatRad = dLat * dCvtDeg2Rad;
+		double dLatRad = dLat * MathUtils.DEG_RAD;
 		// use dLonWork to make sure the longitude is between -180.00 .. 179.9
 		double dLonWork = (dLon + 180) - ((int) ((dLon + 180) / 360)) * 360 - 180; // -180.00 .. 179.9;
 		// convert degrees to radians
-		double dLonRad = dLonWork * dCvtDeg2Rad;
+		double dLonRad = dLonWork * MathUtils.DEG_RAD;
 
 		iUTM_Zone_Num = this.iGetUtmZone(dLat, dLonWork);
 		// set the resultant UTM Zone string
@@ -51,15 +51,15 @@ public class UTMConvert
 		// set central meridian
 		double dCentralMeridian = dSet_CentralMeridian_from_UtmZone(iUTM_Zone_Num);
 		// convert degrees to radians
-		double dCentralMeridian_Rad = dCentralMeridian * dCvtDeg2Rad;
+		double dCentralMeridian_Rad = dCentralMeridian * MathUtils.DEG_RAD;
 
 		double eccPrimeSquared = eccSquared / (1 - eccSquared);
 
-		double N = dEquatorialRadius / Math.sqrt(1 - eccSquared * Math.sin(dLatRad) * Math.sin(dLatRad));
+		double N = MathUtils.WGS84_MAJOR_AXIS / Math.sqrt(1 - eccSquared * Math.sin(dLatRad) * Math.sin(dLatRad));
 		double T = Math.tan(dLatRad) * Math.tan(dLatRad);
 		double C = eccPrimeSquared * Math.cos(dLatRad) * Math.cos(dLatRad);
 		double A = Math.cos(dLatRad) * (dLonRad - dCentralMeridian_Rad);
-		double M = dEquatorialRadius
+		double M = MathUtils.WGS84_MAJOR_AXIS
 				* ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared / 256) * dLatRad
 						- (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * eccSquared * eccSquared * eccSquared / 1024)
 						* Math.sin(2 * dLatRad) + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared * eccSquared * eccSquared / 1024)
@@ -119,8 +119,8 @@ public class UTMConvert
 
 		double M = y / dScaleFactor;
 		double mu = M
-				/ (dEquatorialRadius * (1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared * eccSquared
-						/ 256));
+				/ (MathUtils.WGS84_MAJOR_AXIS * (1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * eccSquared * eccSquared
+						* eccSquared / 256));
 
 		double e1 = (1 - Math.sqrt(1 - eccSquared)) / (1 + Math.sqrt(1 - eccSquared));
 		// phi in radians
@@ -130,10 +130,10 @@ public class UTMConvert
 		// convert to degrees
 		// double phi1 = phi1Rad * dCvtRad2Deg;
 
-		double N1 = dEquatorialRadius / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad));
+		double N1 = MathUtils.WGS84_MAJOR_AXIS / Math.sqrt(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad));
 		double T1 = Math.tan(phi1Rad) * Math.tan(phi1Rad);
 		double C1 = eccPrimeSquared * Math.cos(phi1Rad) * Math.cos(phi1Rad);
-		double R1 = dEquatorialRadius * (1 - eccSquared) / Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5);
+		double R1 = MathUtils.WGS84_MAJOR_AXIS * (1 - eccSquared) / Math.pow(1 - eccSquared * Math.sin(phi1Rad) * Math.sin(phi1Rad), 1.5);
 		double D = x / (N1 * dScaleFactor);
 
 		// phi in radians
@@ -143,14 +143,14 @@ public class UTMConvert
 						+ 45 * T1 * T1 - 252 * eccPrimeSquared - 3 * C1 * C1)
 						* D * D * D * D * D * D / 720);
 		// convert to degrees
-		dLat = dLat * dCvtRad2Deg;
+		dLat = dLat * MathUtils.RAD_DEG;
 
 		// lon in radians
 		dLon = (D - (1 + 2 * T1 + C1) * D * D * D / 6 + (5 - 2 * C1 + 28 * T1 - 3 * C1 * C1 + 8 * eccPrimeSquared + 24 * T1 * T1) * D * D
 				* D * D * D / 120)
 				/ Math.cos(phi1Rad);
 		// convert to degrees
-		dLon = dLongOrigin + dLon * dCvtRad2Deg;
+		dLon = dLongOrigin + dLon * MathUtils.RAD_DEG;
 		return (0);
 	}
 

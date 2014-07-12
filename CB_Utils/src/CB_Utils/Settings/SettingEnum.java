@@ -1,11 +1,11 @@
 package CB_Utils.Settings;
 
-import java.util.ArrayList;
+import CB_Utils.Lists.CB_List;
 
 public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 {
 
-	private ArrayList<String> values;
+	private CB_List<String> values;
 
 	private EnumTyp myEnum;
 
@@ -16,7 +16,7 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 		super(name, category, modus, defaultValue.name(), StoreType);
 		myEnum = enu;
 
-		values = new ArrayList<String>();
+		values = new CB_List<String>();
 
 		// hier bekommst du die Klasse TestEnum
 		Class c = enu.getDeclaringClass();
@@ -32,7 +32,7 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 
 	}
 
-	public ArrayList<String> getValues()
+	public CB_List<String> getValues()
 	{
 		return values;
 	}

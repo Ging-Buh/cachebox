@@ -55,7 +55,7 @@ public abstract class UI_Size_Base
 			// RefWidth LeftWidth on Tab
 			// must have place for 5 Buttons
 
-			b *= 1.2f; // But the bottom button are a little bit higher!
+			b *= 1.5f; // Bud the bottom button are a little bit higher!
 
 			RefWidth = ((b + margin) * 5) + margin;
 		}

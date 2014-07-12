@@ -1,7 +1,8 @@
 package CB_UI.GL_UI.Views;
 
-import CB_UI.Solver.SolverZeile;
+import CB_Core.Solver.SolverZeile;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -23,9 +24,9 @@ public class SolverViewItem extends ListViewItemBackground
 	@Override
 	protected void Initial()
 	{
-		lblSolverZeile = new Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), Fonts.getFontColor(),
+		lblSolverZeile = new Label(solverZeile.getOrgText() + "\n" + solverZeile.Solution, Fonts.getNormal(), COLOR.getFontColor(),
 				WrapType.MULTILINE);
-		lblSolverZeile.setHeight(this.height); // todo ob das immer passt?
+		lblSolverZeile.setHeight(this.getHeight()); // todo ob das immer passt?
 		this.setBorders(UI_Size_Base.that.getMargin(), UI_Size_Base.that.getMargin());
 		this.addLast(lblSolverZeile);
 	}

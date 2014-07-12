@@ -1,10 +1,10 @@
 package CB_Utils.Events;
 
-import java.util.ArrayList;
+import CB_Utils.Lists.CB_List;
 
 public class ProgresssChangedEventList
 {
-	public static ArrayList<ProgressChangedEvent> list = new ArrayList<ProgressChangedEvent>();
+	public static CB_List<ProgressChangedEvent> list = new CB_List<ProgressChangedEvent>();
 
 	public static void Add(ProgressChangedEvent event)
 	{
@@ -13,8 +13,9 @@ public class ProgresssChangedEventList
 
 	public static void Call(String Msg, String ProgressMessage, int Progress)
 	{
-		for (ProgressChangedEvent event : list)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
+			ProgressChangedEvent event = list.get(i);
 			event.ProgressChangedEventCalled(Msg, ProgressMessage, Progress);
 		}
 
@@ -22,8 +23,9 @@ public class ProgresssChangedEventList
 
 	public static void Call(String Msg, int Progress)
 	{
-		for (ProgressChangedEvent event : list)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
+			ProgressChangedEvent event = list.get(i);
 			event.ProgressChangedEventCalled("", Msg, Progress);
 		}
 

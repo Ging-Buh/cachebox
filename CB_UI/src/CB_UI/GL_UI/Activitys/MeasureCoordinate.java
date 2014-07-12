@@ -3,11 +3,12 @@ package CB_UI.GL_UI.Activitys;
 import CB_Core.Types.MeasuredCoord;
 import CB_Core.Types.MeasuredCoordList;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Location.ProviderType;
-import CB_Locator.Map.Descriptor;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
+import CB_Locator.Map.Descriptor;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.SatBarChart;
 import CB_UI_Base.GL_UI.Fonts;
@@ -23,8 +24,8 @@ import CB_Utils.Math.PointD;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MeasureCoordinate extends ActivityBase implements PositionChangedEvent
 {
@@ -57,13 +58,11 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		super(rec, Name);
 		mReturnListner = listner;
 
-		that = this;
-
 		MeasuredCoord.Referenz = Locator.getCoordinate(ProviderType.GPS);
 
 		if (MeasuredCoord.Referenz == null)
 		{
-			MeasuredCoord.Referenz = new Coordinate();
+			MeasuredCoord.Referenz = new CoordinateGPS(0, 0);
 		}
 
 		iniOkCancel();
@@ -140,7 +139,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	private void iniChart()
 	{
 		float w = innerWidth - margin - margin;
-		float h = this.height - lblDescMeasureCoord.getMaxY() - this.getTopHeight() - margin;
+		float h = this.getHeight() - lblDescMeasureCoord.getMaxY() - this.getTopHeight() - margin;
 
 		CB_RectF rec = new CB_RectF(leftBorder + margin, lblDescMeasureCoord.getMaxY() + margin, w, h);
 		chart = new SatBarChart(rec, "");
@@ -189,7 +188,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		if (drawing != null) drawing.draw(batch);
@@ -302,7 +301,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		redraw = false;
 
-		GL.that.renderOnce("MeasureCoord");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -332,7 +331,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		}
 
 		redraw = true;
-		GL.that.renderOnce("MeasureCoord");
+		GL.that.renderOnce();
 	}
 
 	@Override

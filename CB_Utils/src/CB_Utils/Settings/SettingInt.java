@@ -39,4 +39,16 @@ public class SettingInt extends SettingBase<Integer>
 		ret.lastValue = this.lastValue;
 		return ret;
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingInt)) return false;
+
+		SettingInt inst = (SettingInt) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (inst.value != this.value) return false;
+
+		return true;
+	}
 }

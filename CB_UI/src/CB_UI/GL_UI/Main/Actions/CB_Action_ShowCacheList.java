@@ -25,7 +25,6 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_Utils.StringH;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -91,7 +90,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 								new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
 						GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
-						if (CacheListView.that != null) CacheListView.that.setSelectedCacheVisible();
+						if (TabMainView.cacheListView != null) TabMainView.cacheListView.setSelectedCacheVisible();
 					}
 					return true;
 				case MenuID.MI_FilterSet:
@@ -164,18 +163,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 				case MenuID.AID_SHOW_DELETE_DIALOG:
 					TabMainView.actionDelCaches.Execute();
 					return true;
-				case MenuID.MI_RpcGetExportList:
-
-					// RpcClientCB rpc = new RpcClientCB();
-					// RpcAnswer answer = rpc.getExportList();
-					// if (answer != null)
-					// {
-					// GL_MsgBox.Show("RpcAntwort: " + answer.toString());
-					// }
-					//
-					// ShowAPIImportList impApi = new ShowAPIImportList();
-					// impApi.show();
-					return true;
 				}
 				return false;
 			}
@@ -200,7 +187,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		cm.addItem(MenuID.MI_FilterSet, "filter", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
 		cm.addItem(MenuID.MI_RESET_FILTER, "MI_RESET_FILTER", SpriteCacheBase.Icons.get(IconName.filter_13.ordinal()));
 		cm.addItem(MenuID.MI_SEARCH_LIST, "search", SpriteCacheBase.Icons.get(IconName.lupe_12.ordinal()));
-		cm.addItem(MenuID.MI_IMPORT, "import", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
+		cm.addItem(MenuID.MI_IMPORT, "importExport", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
 		if (SyncActivity.RELEASED) cm.addItem(MenuID.MI_SYNC, "sync", SpriteCacheBase.Icons.get(IconName.import_40.ordinal()));
 		mi = cm.addItem(MenuID.MI_MANAGE_DB, "manage", "  (" + DBName + ")", SpriteCacheBase.Icons.get(IconName.manageDB_41.ordinal()));
 		mi = cm.addItem(MenuID.MI_AUTO_RESORT, "AutoResort");
@@ -209,8 +196,6 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 		cm.addItem(MenuID.MI_CHK_STATE_API, "chkState", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
 		cm.addItem(MenuID.MI_NEW_CACHE, "MI_NEW_CACHE", SpriteCacheBase.Icons.get(IconName.addCache_57.ordinal()));
 		cm.addItem(MenuID.AID_SHOW_DELETE_DIALOG, "DeleteCaches", SpriteCacheBase.Icons.get(IconName.delete_28.ordinal()));
-		if (!StringH.isEmpty(Config.CBS_IP.getValue())) cm.addItem(MenuID.MI_RpcGetExportList, "Import from CB-Server",
-				SpriteCacheBase.Icons.get(IconName.list_21.ordinal()));
 
 		return cm;
 	}

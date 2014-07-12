@@ -21,7 +21,7 @@ import java.util.Iterator;
 import CB_Core.Enums.Attributes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.GPS;
 import CB_Locator.Locator;
 import CB_Locator.Events.GpsStateChangeEvent;
@@ -289,7 +289,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		SlideIcon.draw(canvas);
 
 		// draw Cache Name
-		if (mCache != null) canvas.drawText(mCache.Name, 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
+		if (mCache != null) canvas.drawText(mCache.getName(), 20 + SlideIconRec.width(), yPos + (FSize + (FSize / 3)), paint);
 
 		// Draw only is visible
 		if (Config.quickButtonShow.getValue())
@@ -432,7 +432,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutName, left, top);
 		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutDesc, left, top);
 		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutCord, left, top);
-		if (mWaypoint.Clue != null) ActivityUtils.drawStaticLayout(canvas, WPLayoutClue, left, top);
+		if (mWaypoint.getClue() != null) ActivityUtils.drawStaticLayout(canvas, WPLayoutClue, left, top);
 
 		return true;
 	}
@@ -664,8 +664,20 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	public void setCache_onUI(final Cache cache, final Waypoint waypoint)
 	{
+		if (mCache != null)
+		{
+			if (cache == null) return;
 
-		if (mCache == cache && mWaypoint == waypoint) return;
+			if (cache == mCache)
+			{
+				if (mWaypoint == null && waypoint == null) return;
+				if (waypoint != null)
+				{
+					if (waypoint == mWaypoint) return;
+				}
+			}
+
+		}
 
 		((main) main.mainActivity).runOnUiThread(new Runnable()
 		{
@@ -673,8 +685,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			public void run()
 			{
 				mCache = cache;
-				mWaypoint = waypoint;
-
+				if (waypoint == null)
+				{
+					mWaypoint = null;
+				}
+				else
+				{
+					mWaypoint = waypoint;
+				}
 				attCompleadHeight = 0;
 				CacheInfoHeight = 0;
 				WPInfoHeight = 0;
@@ -691,18 +709,18 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				String Clue = "";
 				if (mWaypoint != null)
 				{
-					if (waypoint.Clue != null) Clue = waypoint.Clue;
+					if (mWaypoint.getClue() != null) Clue = mWaypoint.getClue();
 					WPLayoutTextPaint.setAntiAlias(true);
 					WPLayoutTextPaint.setColor(Global.getColor(R.attr.TextColor));
 					WPLayoutCord = new StaticLayout(UnitFormatter.FormatLatitudeDM(waypoint.Pos.getLatitude()) + " / "
 							+ UnitFormatter.FormatLongitudeDM(waypoint.Pos.getLongitude()), WPLayoutTextPaint, TextWidth,
 							Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-					WPLayoutDesc = new StaticLayout(waypoint.Description, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f,
-							false);
+					WPLayoutDesc = new StaticLayout(mWaypoint.getDescription(), WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f,
+							0.0f, false);
 					WPLayoutClue = new StaticLayout(Clue, WPLayoutTextPaint, TextWidth, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 					WPLayoutTextPaintBold = new TextPaint(WPLayoutTextPaint);
 					WPLayoutTextPaintBold.setFakeBoldText(true);
-					WPLayoutName = new StaticLayout(waypoint.GcCode + ": " + waypoint.Title, WPLayoutTextPaintBold, TextWidth,
+					WPLayoutName = new StaticLayout(waypoint.getGcCode() + ": " + waypoint.getTitle(), WPLayoutTextPaintBold, TextWidth,
 							Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 					WPInfoHeight = (LineSep * 5) + WPLayoutCord.getHeight() + WPLayoutDesc.getHeight() + WPLayoutClue.getHeight()
 							+ WPLayoutName.getHeight();
@@ -725,7 +743,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 	private StaticLayout GPSLayout;
 
-	public void setNewLocation(Coordinate location)
+	public void setNewLocation(CoordinateGPS location)
 	{
 
 		if (this.width == 0) return;

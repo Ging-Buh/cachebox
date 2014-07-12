@@ -1,6 +1,6 @@
 package CB_UI.GL_UI.Activitys;
 
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -9,7 +9,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ImportAnimation extends Box
@@ -31,7 +31,7 @@ public class ImportAnimation extends Box
 
 	public void setAnimationType(final AnimationType Type)
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -39,8 +39,8 @@ public class ImportAnimation extends Box
 			{
 				float size = ImportAnimation.this.getHalfWidth() / 2;
 				float halfSize = ImportAnimation.this.getHalfWidth() / 4;
-				CB_RectF imageRec = new CB_RectF(ImportAnimation.this.halfWidth - halfSize, ImportAnimation.this.halfHeight - halfSize,
-						size, size);
+				CB_RectF imageRec = new CB_RectF(ImportAnimation.this.getHalfWidth() - halfSize, ImportAnimation.this.getHalfHeight()
+						- halfSize, size, size);
 
 				ImportAnimation.this.removeChilds();
 
@@ -61,7 +61,7 @@ public class ImportAnimation extends Box
 
 	}
 
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
 		if (drawableBackground != null)
 		{
@@ -80,7 +80,7 @@ public class ImportAnimation extends Box
 
 			Color trans = new Color(0, 0.3f, 0, 0.40f);
 			batch.setColor(trans);
-			back.draw(batch, 0, 0, this.width, this.height);
+			back.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 
 			batch.setColor(new Color(r, g, b, a));
 

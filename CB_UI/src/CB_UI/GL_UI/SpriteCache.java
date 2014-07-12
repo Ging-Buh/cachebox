@@ -18,7 +18,6 @@ package CB_UI.GL_UI;
 
 import java.util.ArrayList;
 
-import CB_UI.Config;
 import CB_UI_Base.GL_UI.ButtonSprites;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Skin.CB_Skin;
@@ -26,6 +25,7 @@ import CB_UI_Base.GL_UI.Skin.SkinBase;
 import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -238,13 +238,13 @@ public class SpriteCache extends SpriteCacheBase
 	protected static void setPath(CB_Skin skin)
 	{
 
-		if (Gdx.gl11 != null)
+		if (Gdx.gl != null)
 		{
-			Gdx.gl11.glFlush();
-			Gdx.gl11.glFinish();
+			Gdx.gl.glFlush();
+			Gdx.gl.glFinish();
 		}
 
-		String TexturName = Config.settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp" : "UI_IconPack.spp";
+		String TexturName = CB_UI_Base_Settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp" : "UI_IconPack.spp";
 
 		FileHandleCustomAtlas = null;
 		FileHandleCustomNightAtlas = null;
@@ -307,7 +307,7 @@ public class SpriteCache extends SpriteCacheBase
 	public static Sprite getThemedSprite(String name, float scale)
 	{
 		Sprite tmp = null;
-		if (Config.settings.nightMode.getValue())
+		if (CB_UI_Base_Settings.nightMode.getValue())
 		{
 			tmp = createSprite(atlasCustomtNight, name);
 			if (tmp == null)
@@ -346,7 +346,7 @@ public class SpriteCache extends SpriteCacheBase
 	protected static NinePatch getThemedPatch(String name)
 	{
 		NinePatch tmp = null;
-		if (Config.settings.nightMode.getValue())
+		if (CB_UI_Base_Settings.nightMode.getValue())
 		{
 			tmp = createPatch(atlasCustomtNight, name);
 			if (tmp == null)

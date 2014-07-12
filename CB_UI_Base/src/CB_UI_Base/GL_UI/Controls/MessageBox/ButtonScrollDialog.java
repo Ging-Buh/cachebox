@@ -8,6 +8,7 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.Controls.Image;
@@ -15,7 +16,6 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
@@ -32,7 +32,7 @@ public class ButtonScrollDialog extends Dialog
 	public final int BUTTON_NEUTRAL = 2;
 	public final int BUTTON_NEGATIVE = 3;
 
-	private ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
+	private final ArrayList<CB_View_Base> FooterItems = new ArrayList<CB_View_Base>();
 
 	protected Button button1;
 	protected Button button2;
@@ -90,8 +90,9 @@ public class ButtonScrollDialog extends Dialog
 		label.setX(imageRec.getMaxX() + 5);
 		label.setY(-margin);
 		label.setWrappedText(msg);
-		scrollBox.addChild(label);
+		// scrollBox.addChild(label);
 		mMsgBoxClickListner = Listener;
+		scrollBox.setVirtualHeight(1000);
 		this.addChild(scrollBox);
 	}
 
@@ -252,7 +253,6 @@ public class ButtonScrollDialog extends Dialog
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 
@@ -328,7 +328,7 @@ public class ButtonScrollDialog extends Dialog
 		TextBounds bounds = Fonts.MeasureWrapped(Text, MsgWidth);
 		float MeasuredTextHeight = bounds.height + (margin * 2);
 
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, (int) UI_Size_Base.that.getButtonHeight()) : (int) MeasuredTextHeight);
+		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight()) : (int) MeasuredTextHeight);
 
 		if (hasTitle)
 		{

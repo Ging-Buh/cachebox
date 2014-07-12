@@ -32,7 +32,7 @@ public class TemplateFormatter
 		template = template.replace("##time##", stime);
 		if (GlobalCore.getSelectedCache() != null)
 		{
-			template = template.replace("##owner##", GlobalCore.getSelectedCache().Owner);
+			template = template.replace("##owner##", GlobalCore.getSelectedCache().getOwner());
 		}
 		else
 		{

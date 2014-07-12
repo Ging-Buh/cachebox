@@ -22,14 +22,14 @@ public class SettingsListButtonLangSpinner<T> extends SettingBase<T>
 	@Override
 	public String toDBString()
 	{
-		 
+
 		return null;
 	}
 
 	@Override
 	public boolean fromDBString(String dbString)
 	{
-		 
+
 		return false;
 	}
 
@@ -38,6 +38,18 @@ public class SettingsListButtonLangSpinner<T> extends SettingBase<T>
 	{
 		// can't copy this obj
 		return null;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingsListButtonLangSpinner<?>)) return false;
+
+		SettingsListButtonLangSpinner<?> inst = (SettingsListButtonLangSpinner<?>) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (inst.value != this.value) return false;
+
+		return true;
 	}
 
 }

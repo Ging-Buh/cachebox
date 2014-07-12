@@ -2,12 +2,10 @@ package CB_UI.GL_UI.Main.Actions;
 
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI.GL_UI.Views.CacheListView;
-import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -23,12 +21,9 @@ public class CB_Action_Show_Search extends CB_Action
 	public void Execute()
 	{
 
-		if (MapView.that == null || !MapView.that.isVisible())
+		if (TabMainView.cacheListView == null || !TabMainView.cacheListView.isVisible())
 		{
-			if (CacheListView.that == null || !CacheListView.that.isVisible())
-			{
-				TabMainView.actionShowCacheList.Execute();
-			}
+			TabMainView.actionShowCacheList.Execute();
 		}
 
 		if (SearchDialog.that == null)

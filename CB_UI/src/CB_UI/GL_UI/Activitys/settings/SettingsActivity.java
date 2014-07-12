@@ -50,6 +50,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.NumerikInputBox.returnValueListnerTime;
 import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
@@ -71,8 +72,10 @@ import CB_Utils.Settings.SettingLongString;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingString;
+import CB_Utils.Settings.SettingStringArray;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingsAudio;
+import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -80,12 +83,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class SettingsActivity extends ActivityBase implements SelectedLangChangedEvent
 {
 
-	public static SettingsActivity that;
-	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>();
+	private ArrayList<SettingCategory> Categorys = new ArrayList<SettingCategory>(); // FIXME change to CB_List
 	private Button btnOk, btnCancel, btnMenu;
 	private ScrollBox scrollBox;
 	private CB_RectF ButtonRec, itemRec;
 	private API_Button apiBtn;
+	private static SettingsActivity that;
 
 	/***
 	 * Enthält den Key des zu Editierenden Wertes der SettingsList
@@ -97,9 +100,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	public SettingsActivity()
 	{
 		super(ActivityBase.ActivityRec(), "Settings");
-		that = this;
 		initial();
 		SelectedLangChangedEventList.Add(this);
+		that = this;
 	}
 
 	private void initial()
@@ -198,8 +201,9 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				String ActionsString = "";
 				int counter = 0;
-				for (QuickButtonItem tmp : SettingsItem_QuickButton.tmpQuickList)
+				for (int i = 0, n = SettingsItem_QuickButton.tmpQuickList.size(); i < n; i++)
 				{
+					QuickButtonItem tmp = SettingsItem_QuickButton.tmpQuickList.get(i);
 					ActionsString += String.valueOf(tmp.getAction().ordinal());
 					if (counter < SettingsItem_QuickButton.tmpQuickList.size() - 1)
 					{
@@ -261,21 +265,15 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		}
 
-		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
+		SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button,
+				SettingModus.Normal, SettingStoreType.Global);
+		CB_View_Base langView = getLangSpinnerView(lang);
 
+		addControlToLinearLayout(langView, margin);
+
+		Iterator<SettingCategory> iteratorCat = Categorys.iterator();
 		if (iteratorCat != null && iteratorCat.hasNext())
 		{
-
-			SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button,
-					SettingModus.Normal, SettingStoreType.Global);
-			CB_View_Base langView = getLangSpinnerView(lang);
-
-			addControlToLinearLayout(langView, margin);
-
-			// SettingsListCategoryButton quick = new SettingsListCategoryButton("QuickList", SettingCategory.Button, SettingModus.Normal,
-			// true);
-			// CB_View_Base quickView = getButtonView(quick, 0);
-			// addControlToLinearLayout(quickView, margin);
 
 			ArrayList<SettingBase<?>> SortedSettingList = new ArrayList<SettingBase<?>>();// Config.settings.values().toArray();
 
@@ -359,7 +357,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 					Box lblBox = new Box(rec, "LabelBox");
 
 					CB_RectF rec2 = rec.copy();
-					rec2.setWidth(rec.getWidth() - (rec.getLeft() * 2));
+					rec2.setWidth(rec.getWidth() - (rec.getX() * 2));
 					rec2.setHeight(rec.getHalfHeight());
 
 					Label lblVolume = new Label(itemRec, Translation.Get("Volume"));
@@ -456,7 +454,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		if (LinearLayout == null || scrollBox == null)
 		{
 
-			CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, this.width, this.height - btnOk.getMaxY() - margin);
+			CB_RectF rec = new CB_RectF(0, btnOk.getMaxY() + margin, this.getWidth(), this.getHeight() - btnOk.getMaxY() - margin);
 
 			scrollBox = new ScrollBox(rec);
 			scrollBox.setClickable(true);
@@ -490,6 +488,10 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		else if (SB instanceof SettingIntArray)
 		{
 			return getIntArrayView((SettingIntArray) SB, BackgroundChanger);
+		}
+		else if (SB instanceof SettingStringArray)
+		{
+			return getStringArrayView((SettingStringArray) SB, BackgroundChanger);
 		}
 		else if (SB instanceof SettingTime)
 		{
@@ -590,7 +592,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 									resortList();
 								}
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 								return true;
 							}
 						});
@@ -746,6 +748,70 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 	}
 
+	private CB_View_Base getStringArrayView(final SettingStringArray SB, int backgroundChanger)
+	{
+
+		SettingsItemEnum item = new SettingsItemEnum(itemRec, backgroundChanger, SB.getName());
+
+		item.setName(Translation.Get(SB.getName()));
+
+		final Spinner spinner = item.getSpinner();
+
+		spinner.setDrageble();
+
+		final SpinnerAdapter adapter = new SpinnerAdapter()
+		{
+
+			@Override
+			public String getText(int position)
+			{
+				return SB.possibleValues()[position];
+			}
+
+			@Override
+			public Drawable getIcon(int Position)
+			{
+				return null;
+			}
+
+			@Override
+			public int getCount()
+			{
+				return SB.possibleValues().length;
+			}
+		};
+
+		spinner.setAdapter(adapter);
+		spinner.setSelection(SB.getIndexOfValue());
+
+		spinner.setSelectionChangedListner(new selectionChangedListner()
+		{
+			@Override
+			public void selectionChanged(int index)
+			{
+				SB.setValue(SB.getValueFromIndex(index));
+			}
+		});
+
+		item.setOnLongClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+
+				return false;
+			}
+
+		});
+
+		return item;
+
+	}
+
 	private CB_View_Base getIntView(final SettingInt SB, int backgroundChanger)
 	{
 
@@ -834,14 +900,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 								if (SetValue != null) SetValue.setValue(value);
 								resortList();
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 
 							@Override
 							public void cancelClicked()
 							{
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 						});
 				return true;
@@ -894,14 +960,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 								if (SetValue != null) SetValue.setValue((float) value);
 								resortList();
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 
 							@Override
 							public void cancelClicked()
 							{
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 						});
 				return true;
@@ -964,8 +1030,18 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 										@Override
 										public void getFolderReturn(String Path)
 										{
-											SB.setValue(Path);
-											resortList();
+											// check WriteProtection
+											if (FileIO.checkWritePermission(Path))
+											{
+												SB.setValue(Path);
+												resortList();
+											}
+											else
+											{
+												String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+												GL.that.Toast(WriteProtectionMsg);
+											}
+
 										}
 									});
 							return true;
@@ -1282,14 +1358,14 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 								if (SetValue != null) SetValue.setValue(value);
 								resortList();
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 
 							@Override
 							public void cancelClicked()
 							{
 								// Activity wieder anzeigen
-								that.show();
+								SettingsActivity.this.show();
 							}
 						});
 				return true;
@@ -1584,16 +1660,19 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		}
 	};
 
-	public void resortList()
+	public static void resortList()
 	{
 		// show();
+		if (that != null)
+		{
+			float scrollPos = that.scrollBox.getScrollY();
+			that.scrollBox = null;
+			that.LinearLayout = null;
 
-		float scrollPos = scrollBox.getScrollY();
-		scrollBox = null;
-		LinearLayout = null;
+			that.fillContent();
+			that.scrollBox.scrollTo(scrollPos);
+		}
 
-		fillContent();
-		scrollBox.scrollTo(scrollPos);
 	}
 
 	@Override
@@ -1602,4 +1681,33 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		initial();
 	}
 
+	@Override
+	public void dispose()
+	{
+		that = null;
+
+		if (Categorys != null) Categorys.clear();
+		Categorys = null;
+
+		if (btnOk != null) btnOk.dispose();
+		btnOk = null;
+		if (btnCancel != null) btnCancel.dispose();
+		btnCancel = null;
+		if (btnMenu != null) btnMenu.dispose();
+		btnMenu = null;
+		if (scrollBox != null) scrollBox.dispose();
+		scrollBox = null;
+		if (ButtonRec != null) ButtonRec.dispose();
+		ButtonRec = null;
+		if (itemRec != null) itemRec.dispose();
+		itemRec = null;
+		if (apiBtn != null) apiBtn.dispose();
+		apiBtn = null;
+		if (LinearLayout != null) LinearLayout.dispose();
+		LinearLayout = null;
+
+		SelectedLangChangedEventList.Remove(this);
+
+		super.dispose();
+	}
 }

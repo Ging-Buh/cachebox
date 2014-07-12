@@ -2,14 +2,15 @@ package CB_UI.GL_UI.Activitys.FilterSettings;
 
 import CB_Core.FilterProperties;
 import CB_UI.GL_UI.Activitys.FilterSettings.PresetListView.PresetEntry;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PresetListViewItem extends ListViewItemBackground
 {
@@ -26,8 +27,10 @@ public class PresetListViewItem extends ListViewItemBackground
 	float top = 0;
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
+		if (this.isDisposed()) return;
+
 		if (EditFilterSettings.tmpFilterProps != null)
 		{
 			if (chkPresetFilter(mPresetEntry.getFilterProperties(), EditFilterSettings.tmpFilterProps))
@@ -52,7 +55,7 @@ public class PresetListViewItem extends ListViewItemBackground
 
 		// initial
 		left = getLeftWidth();
-		top = this.height - this.getTopHeight();
+		top = this.getHeight() - this.getTopHeight();
 
 		drawIcon(batch);
 
@@ -60,18 +63,18 @@ public class PresetListViewItem extends ListViewItemBackground
 		if (EntryName == null)
 		{
 			EntryName = new BitmapFontCache(Fonts.getNormal());
-			EntryName.setColor(Fonts.getFontColor());
+			EntryName.setColor(COLOR.getFontColor());
 			EntryName.setMultiLineText(name, left + 10, top);
 		}
 		EntryName.draw(batch);
 
 	}
 
-	private void drawIcon(SpriteBatch batch)
+	private void drawIcon(Batch batch)
 	{
 		if (mPresetEntry.getIcon() != null)
 		{
-			float iconHeight = this.height * 0.8f;
+			float iconHeight = this.getHeight() * 0.8f;
 			float iconWidth = iconHeight;
 			mPresetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			mPresetEntry.getIcon().draw(batch);

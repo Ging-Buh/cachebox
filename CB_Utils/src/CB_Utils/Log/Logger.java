@@ -20,8 +20,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+
+import CB_Utils.Lists.CB_List;
 
 /**
  * Der Logger basiert auf einem Interface als CallBack und kann damit auch von nicht GUI Klassen implementiert werden, damit sie einen
@@ -34,7 +35,7 @@ public class Logger
 {
 
 	private static Boolean mDebug = false;
-	private static ArrayList<ILog> list = new ArrayList<ILog>();
+	private static CB_List<ILog> list = new CB_List<ILog>();
 	private static String mDebugFilePath = "";
 
 	public static void setDebugFilePath(String DebugFilePath)
@@ -187,8 +188,9 @@ public class Logger
 		Short = dateString + Short + String.format("%n");
 		Msg = dateString2 + " - " + Msg + String.format("%n");
 
-		for (ILog event : list)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
+			ILog event = list.get(i);
 			event.receiveLog(Msg);
 			event.receiveShortLog(Short);
 		}
@@ -204,8 +206,9 @@ public class Logger
 
 	public static void LogCat(String Msg)
 	{
-		for (ILog event : list)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
+			ILog event = list.get(i);
 			event.receiveLogCat(Msg);
 		}
 
@@ -225,8 +228,8 @@ public class Logger
 
 	private static void writeDebugMsgtoFile(String Msg)
 	{
-		if(mDebugFilePath==null)return;
-		
+		if (mDebugFilePath == null) return;
+
 		File file = new File(mDebugFilePath);
 
 		if (mCreateDebugWithHeader != null) mCreateDebugWithHeader.CreateDebugWithHeader(file);
@@ -240,10 +243,44 @@ public class Logger
 		}
 		catch (IOException e)
 		{
-
-			e.printStackTrace();
+			System.out.print(Msg);
 		}
 
 	}
 
+	/**
+	 * Get the Name of Class, Name of method and the linenumber of th Caller.
+	 * 
+	 * @return
+	 */
+	public static String getCallerName()
+	{
+		return getCallerName(1);
+	}
+
+	/**
+	 * Get the Name of Class, Name of method and the linenumber of th Caller. For the given deep.
+	 * 
+	 * @param i
+	 * @return
+	 */
+	public static String getCallerName(int i)
+	{
+		String ret = "NoInfo";
+
+		try
+		{
+			StackTraceElement Caller = Thread.currentThread().getStackTrace()[3 + i];
+			String Name = Caller.getClassName();
+			String Methode = Caller.getMethodName();
+			int Line = Caller.getLineNumber();
+			ret = Name + "." + Methode + " [Line:" + Line + "]";
+		}
+		catch (Exception e)
+		{
+
+		}
+
+		return ret;
+	}
 }

@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package CB_UI.Settings;
 
 import CB_Core.FilterProperties;
@@ -14,9 +30,15 @@ import CB_Utils.Settings.SettingLongString;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingString;
+import CB_Utils.Settings.SettingStringArray;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Settings.SettingsList;
+
+/**
+ * @author Longri
+ * @author arbor95
+ */
 
 public interface CB_UI_Settings
 {
@@ -41,6 +63,8 @@ public interface CB_UI_Settings
 		{ 0, 2, 10, 25, 50, 100, 200, 500, 1000 };
 	public static final Integer[] TrackDistanceArray = new Integer[]
 		{ 1, 3, 5, 10, 20 };
+	public static final String[] navis = new String[]
+		{ "Navigon", "Google", "Copilot", "OsmAnd", "OsmAnd2", "Waze", "Ask" };
 
 	// Settings Compass
 	public static final SettingInt HardwareCompassLevel = (SettingInt) SettingsList.addSetting(new SettingInt("HardwareCompassLevel",
@@ -72,7 +96,7 @@ public interface CB_UI_Settings
 			SettingStoreType.Global);
 	public static final SettingBool CompassShowTargetDirection = new SettingBool("CompassShowTargetDirection", SettingCategory.Compass,
 			NORMAL, false, SettingStoreType.Global);
-	public static final SettingBool CompassShowSDT = new SettingBool("CompassSDT", SettingCategory.Compass, NORMAL, true,
+	public static final SettingBool CompassShowSDT = new SettingBool("CompassShowSDT", SettingCategory.Compass, NORMAL, true,
 			SettingStoreType.Global);
 	public static final SettingBool CompassShowLastFound = new SettingBool("CompassShowLastFound", SettingCategory.Compass, NORMAL, true,
 			SettingStoreType.Global);
@@ -84,9 +108,6 @@ public interface CB_UI_Settings
 
 	public static final SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang",
 			SettingStoreType.Global);
-
-	public static final SettingFolder PocketQueryFolder = new SettingFolder("PocketQueryFolder", SettingCategory.Folder, INVISIBLE, Work
-			+ "/PocketQuery", SettingStoreType.Global);
 
 	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, NORMAL, Work + "/User/Tracks",
 			SettingStoreType.Global);
@@ -190,8 +211,8 @@ public interface CB_UI_Settings
 			SettingStoreType.Global);
 	public static final SettingBool CompactDB = new SettingBool("CompactDB", SettingCategory.Internal, INVISIBLE, false,
 			SettingStoreType.Global);
-	public static final SettingBool RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", SettingCategory.RememberAsk, NORMAL,
-			false, SettingStoreType.Global);
+	// public static final SettingBool RememberAsk_API_Coast = new SettingBool("RememberAsk_API_Coast", SettingCategory.RememberAsk, NORMAL,
+	// false, SettingStoreType.Global);
 	public static final SettingBool AskAgain = new SettingBool("AskAgain", SettingCategory.RememberAsk, NORMAL, true,
 			SettingStoreType.Platform);
 	public static final SettingBool RememberAsk_Get_API_Key = new SettingBool("RememberAsk_Get_API_Key", SettingCategory.RememberAsk,
@@ -203,8 +224,6 @@ public interface CB_UI_Settings
 			SettingStoreType.Platform);
 
 	public static final SettingBool MapHideMyFinds = new SettingBool("MapHideMyFinds", SettingCategory.Map, NORMAL, false,
-			SettingStoreType.Global);
-	public static final SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", SettingCategory.Map, NORMAL, false,
 			SettingStoreType.Global);
 
 	// int
@@ -272,6 +291,8 @@ public interface CB_UI_Settings
 			SettingCategory.QuickList, INVISIBLE, "5,0,1,3,2", SettingStoreType.Global));
 	public static final SettingString GcJoker = (SettingString) SettingsList.addSetting(new SettingString("GcJoker", SettingCategory.Login,
 			NORMAL, "", SettingStoreType.Platform));
+	public static final SettingStringArray Navis = (SettingStringArray) SettingsList.addSetting(new SettingStringArray("Navis",
+			SettingCategory.Misc, NORMAL, "Google", SettingStoreType.Global, navis));
 
 	// ArrayInt
 	public static final SettingIntArray ZoomCross = new SettingIntArray("ZoomCross", SettingCategory.Map, NORMAL, 16,

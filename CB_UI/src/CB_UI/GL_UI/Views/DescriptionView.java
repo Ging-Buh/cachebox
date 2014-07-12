@@ -5,7 +5,6 @@ import java.util.TimerTask;
 
 import CB_Core.Types.Cache;
 import CB_UI.GlobalCore;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
@@ -13,7 +12,9 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Plattform;
 
 public class DescriptionView extends CB_View_Base
 {
@@ -28,7 +29,7 @@ public class DescriptionView extends CB_View_Base
 		lblDummy.setText("Dummy DescriptionView");
 		setBackground(SpriteCacheBase.ListBack);
 
-		if (GlobalCore.platform == Plattform.Desktop) this.addChild(lblDummy);
+		if (Plattform.used == Plattform.Desktop) this.addChild(lblDummy);
 
 	}
 
@@ -40,7 +41,7 @@ public class DescriptionView extends CB_View_Base
 		if (sel != null)
 		{
 			cacheInfo = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), 0, sel);
-			cacheInfo.setY(this.height - cacheInfo.getHeight());
+			cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 
 			this.addChild(cacheInfo);
 
@@ -55,8 +56,8 @@ public class DescriptionView extends CB_View_Base
 			{
 				float infoHeight = 0;
 				if (cacheInfo != null) infoHeight = cacheInfo.getHeight();
-				platformConector.showView(ViewConst.DESCRIPTION_VIEW, 0, infoHeight, DescriptionView.this.width,
-						DescriptionView.this.height - infoHeight);
+				platformConector.showView(ViewConst.DESCRIPTION_VIEW, DescriptionView.this.getX(), DescriptionView.this.getY(),
+						DescriptionView.this.getWidth(), DescriptionView.this.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
 			}
 		};
 		timer.schedule(task, 50);
@@ -67,8 +68,8 @@ public class DescriptionView extends CB_View_Base
 	public void onResized(CB_RectF rec)
 	{
 		super.onResized(rec);
-		onShow();
-		// cacheInfo.setY(this.height - cacheInfo.getHeight());
+		// onShow();
+		if (cacheInfo != null) cacheInfo.setY(this.getHeight() - cacheInfo.getHeight());
 	}
 
 	@Override

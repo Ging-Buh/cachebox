@@ -47,6 +47,7 @@ public class AndroidDB extends Database
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void Reset()
 	{
@@ -124,7 +125,18 @@ public class AndroidDB extends Database
 	public long insert(String tablename, Parameters val)
 	{
 		ContentValues values = getContentValues(val);
-		return myDB.insert(tablename, null, values);
+
+		long ret = -1;
+		try
+		{
+			myDB.insert(tablename, null, values);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return ret;
 	}
 
 	@Override

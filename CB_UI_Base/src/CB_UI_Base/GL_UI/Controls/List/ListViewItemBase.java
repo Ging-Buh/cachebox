@@ -46,4 +46,16 @@ public abstract class ListViewItemBase extends CB_View_Base implements Comparabl
 		return "ListItem:" + mIndex;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null) return false;
+		if (obj instanceof ListViewItemBase)
+		{
+			return mIndex == ((ListViewItemBase) obj).mIndex;
+		}
+
+		return false;
+	}
+
 }

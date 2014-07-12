@@ -96,6 +96,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public void OnShow()
 	{
 		this.forceLayout();
+		System.gc();
 
 		// Del View from XML Layout
 		webViewLayout.removeAllViews();
@@ -200,7 +201,7 @@ public class DescriptionView extends FrameLayout implements ViewOptionsMenu, Sel
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
 		// reset ScrollPos only if cache changed
-		if (aktCache != cache)
+		if ((aktCache != null) && (aktCache.Id != cache.Id))
 		{
 			lastScrollPos = new Point(0, 0);
 		}

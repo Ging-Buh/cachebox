@@ -86,7 +86,7 @@ public class QuickFieldNoteFeedbackPopUp extends PopUp_Base
 					counter++;
 				}
 			}
-			GL.that.renderOnce("WaitRotateAni");
+			GL.that.renderOnce();
 
 		}
 	};

@@ -6,8 +6,6 @@ import java.util.Collections;
 import CB_Utils.Math.PointD;
 import CB_Utils.Math.TrackPoint;
 
-
-
 /**
  * Reduktion of Ploylines with Douglas-Peucker-Algorithmus </br> </br> http://de.wikipedia.org/wiki/Douglas-Peucker-Algorithmus </br> </br>
  * code divide from http://www.codeproject.com/Articles/18936/A-C-Implementation-of-Douglas-Peucker-Line-Approxi

@@ -1,7 +1,6 @@
 package CB_UI_Base.GL_UI;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -12,11 +11,11 @@ import CB_Utils.Util.MoveableList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -30,6 +29,8 @@ public abstract class GL_View_Base extends CB_RectF
 	 * Pointer ID for Mouse wheel scrolling up
 	 */
 	public static final int MOUSE_WHEEL_POINTER_UP = -280272;
+	protected final ParentInfo myInfoForChild = new ParentInfo();
+	private final Matrix4 rotateMatrix = new Matrix4();
 
 	/**
 	 * Pointer ID for Mouse wheel scrolling down
@@ -49,7 +50,7 @@ public abstract class GL_View_Base extends CB_RectF
 	/**
 	 * Enthaelt alle GL_Views innerhalb dieser Gl_View
 	 */
-	protected MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
+	protected final MoveableList<GL_View_Base> childs = new MoveableList<GL_View_Base>();
 
 	protected OnClickListener mOnClickListener;
 	protected OnClickListener mOnLongClickListener;
@@ -152,14 +153,14 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (mVisible) return;
 		mVisible = true;
-		GL.that.renderOnce(this.getName() + "setVisibility");
+		GL.that.renderOnce();
 	}
 
 	public void setInvisible()
 	{
 		if (!mVisible) return;
 		mVisible = false;
-		GL.that.renderOnce(this.getName() + "setVisibility");
+		GL.that.renderOnce();
 	}
 
 	public MoveableList<GL_View_Base> getchilds()
@@ -184,7 +185,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	private boolean getVisibility()
 	{
-		if (this.width <= 0f || this.height <= 0f) return false;
+		if (this.getWidth() <= 0f || this.getHeight() <= 0f) return false;
 		return mVisible;
 	}
 
@@ -200,13 +201,12 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public GL_View_Base addChild(final GL_View_Base view, final boolean last)
 	{
-		this.RunOnGL(new runOnGL()
+		if (childs.contains(view)) return view;
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override
 			public void run()
 			{
-				if (childs == null) childs = new MoveableList<GL_View_Base>();
-
 				if (last)
 				{
 					childs.add(0, view);
@@ -224,12 +224,18 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChild(final GL_View_Base view)
 	{
-		this.RunOnGL(new runOnGL()
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override
 			public void run()
 			{
-				if (childs != null && childs.size() > 0) childs.remove(view);
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.remove(view);
+				}
+				catch (Exception e)
+				{
+				}
 				chkChildClickable();
 			}
 		});
@@ -237,12 +243,18 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChilds()
 	{
-		this.RunOnGL(new runOnGL()
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override
 			public void run()
 			{
-				if (childs != null && childs.size() > 0) childs.clear();
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.clear();
+				}
+				catch (Exception e)
+				{
+				}
 				chkChildClickable();
 			}
 		});
@@ -250,12 +262,18 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void removeChilds(final MoveableList<GL_View_Base> Childs)
 	{
-		this.RunOnGL(new runOnGL()
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
 			@Override
 			public void run()
 			{
-				if (childs != null && childs.size() > 0) childs.remove(Childs);
+				try
+				{
+					if (childs != null && childs.size() > 0) childs.remove(Childs);
+				}
+				catch (Exception e)
+				{
+				}
 				chkChildClickable();
 			}
 		});
@@ -264,22 +282,31 @@ public abstract class GL_View_Base extends CB_RectF
 	/**
 	 * Checks whether any child has the status Clickable. </br>If so, then this view must also Clickable!
 	 */
-	private void chkChildClickable()
+	protected void chkChildClickable()
 	{
 		boolean tmpClickable = false;
 		boolean tmpDblClickable = false;
 		boolean tmpLongClickable = false;
 		if (childs != null)
 		{
-			for (GL_View_Base tmp : childs)
-			{
-				if (tmp != null)
-				{
-					if (tmp.isClickable()) tmpClickable = true;
-					if (tmp.isLongClickable()) tmpLongClickable = true;
-					if (tmp.isDblClickable()) tmpDblClickable = true;
-				}
 
+			try
+			{
+
+				for (int i = 0, n = childs.size(); i < n; i++)
+				{
+					GL_View_Base tmp = childs.get(i);
+					if (tmp != null)
+					{
+						if (tmp.isClickable()) tmpClickable = true;
+						if (tmp.isLongClickable()) tmpLongClickable = true;
+						if (tmp.isDblClickable()) tmpDblClickable = true;
+					}
+
+				}
+			}
+			catch (Exception e)
+			{
 			}
 		}
 
@@ -288,23 +315,12 @@ public abstract class GL_View_Base extends CB_RectF
 		ChildIsLongClickable = tmpLongClickable;
 	}
 
-	private final ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
-
-	public void RunOnGL(runOnGL run)
-	{
-		synchronized (runOnGL_List)
-		{
-			runOnGL_List.add(run);
-		}
-		GL.that.renderOnce(this.getName() + "add RunOnGL");
-	}
-
 	protected float leftBorder = 0;
 	protected float rightBorder = 0;
 	protected float topBorder = 0;
 	protected float bottomBorder = 0;
-	protected float innerWidth = width;
-	protected float innerHeight = height;
+	protected float innerWidth = getWidth();
+	protected float innerHeight = getHeight();
 
 	/**
 	 ** setting the drawableBackground and changes the Borders (do own Borders afterwards)
@@ -326,8 +342,8 @@ public abstract class GL_View_Base extends CB_RectF
 			topBorder = 0;
 			bottomBorder = 0; // this.BottomHeight;
 		}
-		innerWidth = width - leftBorder - rightBorder;
-		innerHeight = height - topBorder - bottomBorder;
+		innerWidth = getWidth() - leftBorder - rightBorder;
+		innerHeight = getHeight() - topBorder - bottomBorder;
 	}
 
 	/**
@@ -337,7 +353,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		leftBorder = 0f;
 		rightBorder = 0f;
-		innerWidth = width;
+		innerWidth = getWidth();
 	}
 
 	/**
@@ -347,7 +363,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		leftBorder = l;
 		rightBorder = r;
-		innerWidth = width - l - r;
+		innerWidth = getWidth() - l - r;
 	}
 
 	public Drawable getBackground()
@@ -398,19 +414,19 @@ public abstract class GL_View_Base extends CB_RectF
 	 * 
 	 * @param batch
 	 */
-	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
 
 		if (thisInvalidate)
 		{
-			myParentInfo = parentInfo;
+			myParentInfo.setParentInfo(parentInfo);
 			CalcMyInfoForChild();
 		}
 
 		if (!withoutScissor)
 		{
 			if (intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0) return; // hier gibt es nichts zu rendern
-			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
 					(int) intersectRec.getHeight() + 1);
 		}
@@ -441,20 +457,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 		if (drawableBackground != null)
 		{
-			drawableBackground.draw(batch, 0, 0, width, height);
-		}
-
-		synchronized (runOnGL_List)
-		{
-			if (runOnGL_List.size() > 0)
-			{
-				for (runOnGL run : runOnGL_List)
-				{
-					if (run != null) run.run();
-				}
-
-				runOnGL_List.clear();
-			}
+			drawableBackground.draw(batch, 0, 0, getWidth(), getHeight());
 		}
 
 		// set rotation
@@ -464,15 +467,13 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			isRotated = true;
 
-			Matrix4 matrix = new Matrix4();
+			rotateMatrix.idt();
+			rotateMatrix.translate(mOriginX, mOriginY, 0);
+			rotateMatrix.rotate(0, 0, 1, mRotate);
+			rotateMatrix.scale(mScale, mScale, 1);
+			rotateMatrix.translate(-mOriginX, -mOriginY, 0);
 
-			matrix.idt();
-			matrix.translate(mOriginX, mOriginY, 0);
-			matrix.rotate(0, 0, 1, mRotate);
-			matrix.scale(mScale, mScale, 1);
-			matrix.translate(-mOriginX, -mOriginY, 0);
-
-			batch.setTransformMatrix(matrix);
+			batch.setTransformMatrix(rotateMatrix);
 		}
 
 		this.render(batch);
@@ -480,32 +481,29 @@ public abstract class GL_View_Base extends CB_RectF
 		// reverse rotation
 		if (isRotated)
 		{
-			Matrix4 matrix = new Matrix4();
+			rotateMatrix.idt();
+			// rotateMatrix.rotate(0, 0, 1, 0);
+			// rotateMatrix.scale(1, 1, 1);
 
-			matrix.idt();
-			matrix.rotate(0, 0, 1, 0);
-			matrix.scale(1, 1, 1);
-
-			batch.setTransformMatrix(matrix);
+			batch.setTransformMatrix(rotateMatrix);
 		}
-
-		batch.flush();
-		Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
-
-		// this.renderWithoutScissor(batch);
 
 		if (childs != null && childs.size() > 0)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
+
+				if (i >= childs.size())
+				{
+					break; // ConcurrentModificationException
+				}
+
 				// alle renderChilds() der in dieser GL_View_Base
 				// enthaltenen Childs auf rufen.
 
-				GL_View_Base view;
 				try
 				{
-					view = iterator.next();
-
+					GL_View_Base view = childs.get(i);
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
 					if (view != null && view.isVisible())
@@ -513,28 +511,30 @@ public abstract class GL_View_Base extends CB_RectF
 
 						if (childsInvalidate) view.invalidate();
 
-						ParentInfo myInfoForChild = myParentInfo.cpy();
+						myInfoForChild.setParentInfo(myParentInfo);
 						myInfoForChild.setWorldDrawRec(intersectRec);
 
-						myInfoForChild.add(view.Pos.x, view.Pos.y);
+						myInfoForChild.add(view.getX(), view.getY());
 
 						batch.setProjectionMatrix(myInfoForChild.Matrix());
 						nDepthCounter++;
 
 						view.renderChilds(batch, myInfoForChild);
 						nDepthCounter--;
-						batch.setProjectionMatrix(myParentInfo.Matrix());
+						// batch.setProjectionMatrix(myParentInfo.Matrix());
 					}
 
 				}
+				catch (java.util.NoSuchElementException e)
+				{
+					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+				}
 				catch (java.util.ConcurrentModificationException e)
 				{
-					e.printStackTrace();
-					// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
-
-					break;
+					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				}
 			}
+
 			// }
 			childsInvalidate = false;
 		}
@@ -566,34 +566,25 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (DebugSprite == null)
 		{
-			int w = getNextHighestPO2((int) width);
-			int h = getNextHighestPO2((int) height);
+			int w = getNextHighestPO2((int) getWidth());
+			int h = getNextHighestPO2((int) getHeight());
 			debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 			debugRegPixmap.setColor(1f, 0f, 0f, 1f);
-			debugRegPixmap.drawRectangle(1, 1, (int) width - 1, (int) height - 1);
+			debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
 
 			debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
 
-			DebugSprite = new Sprite(debugRegTexture, (int) width, (int) height);
+			DebugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
 
-			// Logger.LogCat("GL_Control ------[ " + name + " ]------[ Ebene: " + nDepthCounter + " ]----------");
-			// Logger.LogCat("Create Debug Rec " + Pos.x + "/" + Pos.y + "/" + width + "/" + height);
-			// Logger.LogCat("Parent Draw  Rec " + myParentInfo.drawRec().getPos().x + "/" + myParentInfo.drawRec().getPos().y + "/"
-			// + myParentInfo.drawRec().getWidth() + "/" + myParentInfo.drawRec().getHeight());
-			// Logger.LogCat("intersectRec  Rec " + intersectRec.getPos().x + "/" + intersectRec.getPos().y + "/" + intersectRec.getWidth()
-			// + "/" + intersectRec.getHeight() + "  interscted =" + mustSetScissor);
-			// Logger.LogCat("This World Rec    " + ThisWorldRec.getPos().x + "/" + ThisWorldRec.getPos().y + "/" + ThisWorldRec.getWidth()
-			// + "/" + ThisWorldRec.getHeight());
-			// Logger.LogCat("ParentInfo.Vector= " + myParentInfo.Vector());
 		}
 	}
 
-	public CB_RectF ThisWorldRec;
-	public CB_RectF intersectRec;
-	public ParentInfo myParentInfo;
+	public final CB_RectF ThisWorldRec = new CB_RectF();
+	public final CB_RectF intersectRec = new CB_RectF();
+	public final ParentInfo myParentInfo = new ParentInfo();
 	private boolean mustSetScissor = false;
 	protected boolean childsInvalidate = false;
-	private boolean thisInvalidate = true;
+	protected boolean thisInvalidate = true;
 
 	public CB_RectF getWorldRec()
 	{
@@ -610,17 +601,18 @@ public abstract class GL_View_Base extends CB_RectF
 	private void CalcMyInfoForChild()
 	{
 		childsInvalidate = true;
-		ThisWorldRec = this.copy().offset(myParentInfo.Vector());
-		ThisWorldRec.offset(-this.Pos.x, -this.Pos.y);
+		ThisWorldRec.setRec(this);// .copy().offset(myParentInfo.Vector());
+		// ThisWorldRec.offset(myParentInfo.Vector());
+		ThisWorldRec.offset(-this.getX() + myParentInfo.Vector().x, -this.getY() + myParentInfo.Vector().y);
 		mustSetScissor = !myParentInfo.drawRec().contains(ThisWorldRec);
 
 		if (mustSetScissor)
 		{
-			intersectRec = myParentInfo.drawRec().createIntersection(ThisWorldRec);
+			intersectRec.setRec(myParentInfo.drawRec().createIntersection(ThisWorldRec));
 		}
 		else
 		{
-			intersectRec = ThisWorldRec.copy();
+			intersectRec.setRec(ThisWorldRec);
 		}
 
 		thisInvalidate = false;
@@ -633,7 +625,7 @@ public abstract class GL_View_Base extends CB_RectF
 		thisInvalidate = true;
 	}
 
-	protected abstract void render(SpriteBatch batch);
+	protected abstract void render(Batch batch);
 
 	// ########################
 	// Rotate Property
@@ -656,8 +648,8 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public void setOriginCenter()
 	{
-		mOriginX = this.halfWidth;
-		mOriginY = this.halfHeight;
+		mOriginX = this.getHalfWidth();
+		mOriginY = this.getHalfHeight();
 	}
 
 	/**
@@ -691,17 +683,17 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			try
 			{
-				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
 					// alle renderChilds() der in dieser GL_View_Base
 					// enthaltenen Childs auf rufen.
-					GL_View_Base view = iterator.next();
+					GL_View_Base view = childs.get(i);
 					if (view != null) view.onParentRezised(this);
 				}
 			}
-			catch (ConcurrentModificationException e)
+			catch (Exception e)
 			{
-				e.printStackTrace();
+				// do nothing
 			}
 		}
 	}
@@ -716,11 +708,11 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			try
 			{
-				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
 					// alle renderChilds() der in dieser GL_View_Base
 					// enthaltenen Childs auf rufen.
-					GL_View_Base view = iterator.next();
+					GL_View_Base view = childs.get(i);
 					if (view != null) view.onShow();
 				}
 			}
@@ -738,11 +730,11 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			try
 			{
-				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
 					// alle renderChilds() der in dieser GL_View_Base
 					// enthaltenen Childs auf rufen.
-					GL_View_Base view = iterator.next();
+					GL_View_Base view = childs.get(i);
 					if (view != null) view.onHide();
 				}
 			}
@@ -760,11 +752,11 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			try
 			{
-				for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
 					// alle renderChilds() der in dieser GL_View_Base
 					// enthaltenen Childs auf rufen.
-					GL_View_Base view = iterator.next();
+					GL_View_Base view = childs.get(i);
 					view.onStop();
 				}
 			}
@@ -779,7 +771,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		// Achtung: dieser touchDown ist nicht virtual und darf nicht ï¿½berschrieben werden!!!
 		// das Ereignis wird dann in der richtigen View an onTouchDown ï¿½bergeben!!!
-		boolean behandelt = false;
+		boolean handled = false;
 		try
 		{
 			if (childs != null && childs.size() > 0)
@@ -797,17 +789,20 @@ public abstract class GL_View_Base extends CB_RectF
 					{
 						// touch innerhalb des Views
 						// -> Klick an das View weitergeben
-						behandelt = view.click(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+						handled = view.click(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
+
+						// if handled, we can break and don't test the rest
+						if (handled) break;
 					}
 				}
 			}
-			if (!behandelt)
+			if (!handled)
 			{
 				// kein Klick in einem untergeordnetem View
 				// -> hier behandeln
 				if (mOnClickListener != null)
 				{
-					behandelt = mOnClickListener.onClick(this, x, y, pointer, button);
+					handled = mOnClickListener.onClick(this, x, y, pointer, button);
 				}
 
 			}
@@ -816,7 +811,7 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			e.printStackTrace();
 		}
-		return behandelt;
+		return handled;
 	}
 
 	public boolean doubleClick(int x, int y, int pointer, int button)
@@ -841,7 +836,7 @@ public abstract class GL_View_Base extends CB_RectF
 					{
 						// touch innerhalb des Views
 						// -> Klick an das View weitergeben
-						behandelt = view.doubleClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+						behandelt = view.doubleClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
 					}
 				}
 			}
@@ -884,7 +879,7 @@ public abstract class GL_View_Base extends CB_RectF
 					{
 						// touch innerhalb des Views
 						// -> Klick an das View weitergeben
-						behandelt = view.longClick(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+						behandelt = view.longClick(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
 					}
 				}
 			}
@@ -929,8 +924,8 @@ public abstract class GL_View_Base extends CB_RectF
 					{
 						// touch innerhalb des Views
 						// -> Klick an das View weitergeben
-						lastTouchPos = new Vector2(x - view.Pos.x, y - view.Pos.y);
-						resultView = view.touchDown(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+						lastTouchPos = new Vector2(x - view.getX(), y - view.getY());
+						resultView = view.touchDown(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
 					}
 
 					if (resultView != null) break;
@@ -951,7 +946,7 @@ public abstract class GL_View_Base extends CB_RectF
 			if (behandelt) resultView = this;
 		}
 
-		GL.that.renderOnce(this.getName() + " touchDown");
+		GL.that.renderOnce();
 		return resultView;
 	}
 
@@ -971,14 +966,13 @@ public abstract class GL_View_Base extends CB_RectF
 
 					if (view != null && view.contains(x, y))
 					{
-						behandelt = view.touchDragged(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, KineticPan);
+						behandelt = view.touchDragged(x - (int) view.getX(), y - (int) view.getY(), pointer, KineticPan);
 					}
 					if (behandelt) break;
 				}
 			}
 			catch (IndexOutOfBoundsException e)
 			{
-				e.printStackTrace();
 				return false;
 			}
 		}
@@ -1009,7 +1003,7 @@ public abstract class GL_View_Base extends CB_RectF
 					{
 						// touch innerhalb des Views
 						// -> Klick an das View weitergeben
-						behandelt = view.touchUp(x - (int) view.Pos.x, y - (int) view.Pos.y, pointer, button);
+						behandelt = view.touchUp(x - (int) view.getX(), y - (int) view.getY(), pointer, button);
 					}
 
 					if (behandelt) break;
@@ -1043,6 +1037,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	public abstract boolean onTouchUp(int x, int y, int pointer, int button);
 
+	@Override
 	public void dispose()
 	{
 		DebugSprite = null;
@@ -1066,6 +1061,33 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		debugRegPixmap = null;
 		debugRegTexture = null;
+
+		debugRegTexture = null;
+		name = null;
+		data = null;
+		mOnClickListener = null;
+		mOnLongClickListener = null;
+		mOnDoubleClickListener = null;
+		drawableBackground = null;
+		parent = null;
+		DebugSprite = null;
+		lastTouchPos = null;
+
+		if (debugRegPixmap != null)
+		{
+			debugRegPixmap.dispose();
+		}
+		debugRegPixmap = null;
+
+		if (childs != null)
+		{
+			for (int i = 0; i < childs.size(); i++)
+			{
+				childs.get(i).dispose();
+			}
+			childs.clear();
+		}
+		super.dispose();
 	}
 
 	/**
@@ -1183,35 +1205,35 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void setY(float i)
 	{
-		if (this.Pos.y == i) return;
+		if (this.getY() == i) return;
 		super.setY(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setY");
+		GL.that.renderOnce();
 	}
 
 	@Override
 	public void setX(float i)
 	{
-		if (this.Pos.x == i) return;
+		if (this.getX() == i) return;
 		super.setX(i);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setX");
+		GL.that.renderOnce();
 	}
 
 	@Override
 	public void setPos(Vector2 Pos)
 	{
-		if (this.Pos.x == Pos.x && this.Pos.y == Pos.y) return;
+		if (this.getX() == Pos.x && this.getY() == Pos.y) return;
 		super.setPos(Pos);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setPos(Vector)");
+		GL.that.renderOnce();
 	}
 
 	public void setZeroPos()
 	{
-		super.setPos(new Vector2(0, 0));
+		super.setPos(0, 0);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setZeroPos");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -1219,7 +1241,7 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		super.setPos(x, y);
 		this.invalidate(); // Scissor muss neu berechnet werden
-		GL.that.renderOnce(this.getName() + " setPos(float)");
+		GL.that.renderOnce();
 	}
 
 	// Abfrage der clickToleranz, mit der Bestimmt wird ab welcher Bewegung ein onTouchDragged erzeugt wird und beim loslassen kein click
@@ -1308,11 +1330,23 @@ public abstract class GL_View_Base extends CB_RectF
 		return enabled;
 	}
 
-	@Override
-	protected void calcCrossCorner()
+	// @Override
+	// protected void calcCrossCorner()
+	// {
+	// super.calcCrossCorner();
+	// thisInvalidate = true;
+	// }
+
+	private Object data = null;
+
+	public void setData(Object data)
 	{
-		super.calcCrossCorner();
-		thisInvalidate = true;
+		this.data = data;
+	}
+
+	public Object getData()
+	{
+		return data;
 	}
 
 }

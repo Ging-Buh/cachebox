@@ -25,18 +25,18 @@ public class SelectDBItem extends ListViewItemBackground
 
 		if (mLabelHeight == -1)
 		{
-			mLabelHeight = height * 0.7f;
-			mLabelYPos = (height - mLabelHeight) / 2;
-			mLabelWidth = width - (left * 2);
+			mLabelHeight = getHeight() * 0.7f;
+			mLabelYPos = (getHeight() - mLabelHeight) / 2;
+			mLabelWidth = getWidth() - (left * 2);
 		}
 
-		nameLabel = new Label(left, mLabelYPos, width, mLabelHeight, "NameLabel");
+		nameLabel = new Label(left, mLabelYPos, getWidth(), mLabelHeight, "NameLabel");
 		nameLabel.setFont(Fonts.getBig());
 		nameLabel.setVAlignment(VAlignment.TOP);
 		nameLabel.setText(file.getName());
 		this.addChild(nameLabel);
 
-		countLabel = new Label(left, mLabelYPos, width, mLabelHeight, "NameLabel");
+		countLabel = new Label(left, mLabelYPos, getWidth(), mLabelHeight, "NameLabel");
 		countLabel.setFont(Fonts.getBubbleNormal());
 		countLabel.setVAlignment(VAlignment.BOTTOM);
 		countLabel.setText(count);

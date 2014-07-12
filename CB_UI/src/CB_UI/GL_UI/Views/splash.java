@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Views;
 
 import java.io.File;
@@ -6,6 +21,7 @@ import java.io.IOException;
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
+import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
@@ -17,17 +33,18 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
-import CB_UI.GL_UI.Main.TabMainView;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Plattform;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileList;
@@ -40,11 +57,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class splash extends TabMainView
+/**
+ * @author ging-buh
+ * @author Longri
+ */
+public class splash extends MainViewBase
 {
 	public splash(float X, float Y, float Width, float Height, String Name)
 	{
 		super(X, Y, Width, Height, Name);
+
 	}
 
 	TextureAtlas atlas;
@@ -52,7 +74,6 @@ public class splash extends TabMainView
 	Image CB_Logo, OSM_Logo, Route_Logo, Mapsforge_Logo, LibGdx_Logo, GC_Logo;
 
 	Label descTextView;
-	SelectDB selectDBDialog;
 
 	int step = 0;
 	boolean switcher = false;
@@ -129,7 +150,7 @@ public class splash extends TabMainView
 	{
 
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
-		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref, ref * 5,
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5,
 				(ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
@@ -151,7 +172,7 @@ public class splash extends TabMainView
 
 		float ProgressHeight = Math.max(ProgressBack.getBottomHeight() + ProgressBack.getTopHeight(), ref / 1.5f);
 
-		progress = new ProgressBar(new CB_RectF(0, 0, this.width, ProgressHeight), "Splash.ProgressBar");
+		progress = new ProgressBar(new CB_RectF(0, 0, this.getWidth(), ProgressHeight), "Splash.ProgressBar");
 
 		progress.setBackground(ProgressBack);
 		progress.setProgressFill(ProgressFill);
@@ -184,7 +205,7 @@ public class splash extends TabMainView
 		OSM_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("osm_logo")));
 
 		float yPos = descTextView.getY() - GC_Logo.getHeight();
-		float xPos = (this.width - ref - GC_Logo.getWidth() - Mapsforge_Logo.getWidth()) / 2;
+		float xPos = (this.getWidth() - ref - GC_Logo.getWidth() - Mapsforge_Logo.getWidth()) / 2;
 
 		GC_Logo.setPos(xPos, yPos);
 		xPos += GC_Logo.getWidth() + ref;
@@ -193,10 +214,10 @@ public class splash extends TabMainView
 		xPos += Mapsforge_Logo.getWidth() + ref;
 
 		yPos -= GC_Logo.getHeight();// + refHeight;
-		LibGdx_Logo.setPos(this.halfWidth - LibGdx_Logo.getHalfWidth(), yPos);
+		LibGdx_Logo.setPos(this.getHalfWidth() - LibGdx_Logo.getHalfWidth(), yPos);
 
 		yPos -= GC_Logo.getHeight();//
-		xPos = (this.width - (ref) - Route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
+		xPos = (this.getWidth() - (ref) - Route_Logo.getWidth() - OSM_Logo.getWidth()) / 2;
 
 		Route_Logo.setPos(xPos, yPos);
 
@@ -231,41 +252,44 @@ public class splash extends TabMainView
 	 */
 	private void ini_Translations()
 	{
-		Logger.DEBUG("ini_Translations");
-
-		// Load from Assets changes
-		// delete work path from settings value
-		String altValue = Config.Sel_LanguagePath.getValue();
-		if (altValue.contains(Config.WorkPath))
+		if (!Translation.isInitial())
 		{
-			String newValue = altValue.replace(Config.WorkPath + "/", "");
-			Config.Sel_LanguagePath.setValue(newValue);
-			Config.AcceptChanges();
-		}
+			Logger.DEBUG("ini_Translations");
 
-		if (altValue.startsWith("/"))
-		{
-			String newValue = altValue.substring(1);
-			Config.Sel_LanguagePath.setValue(newValue);
-			Config.AcceptChanges();
-		}
+			// Load from Assets changes
+			// delete work path from settings value
+			String altValue = Config.Sel_LanguagePath.getValue();
+			if (altValue.contains(Config.WorkPath))
+			{
+				String newValue = altValue.replace(Config.WorkPath + "/", "");
+				Config.Sel_LanguagePath.setValue(newValue);
+				Config.AcceptChanges();
+			}
 
-		FileType fileType = (GlobalCore.platform == Plattform.Android) ? FileType.Internal : FileType.Classpath;
+			if (altValue.startsWith("/"))
+			{
+				String newValue = altValue.substring(1);
+				Config.Sel_LanguagePath.setValue(newValue);
+				Config.AcceptChanges();
+			}
 
-		new Translation(Config.WorkPath, fileType);
-		try
-		{
-			Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
-		}
-		catch (Exception e)
-		{
+			FileType fileType = (Plattform.used == Plattform.Android) ? FileType.Internal : FileType.Classpath;
+
+			new Translation(Config.WorkPath, fileType);
 			try
 			{
-				Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+				Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
 			}
-			catch (IOException e1)
+			catch (Exception e)
 			{
-				e1.printStackTrace();
+				try
+				{
+					Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+				}
+				catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
 			}
 		}
 	}
@@ -342,7 +366,7 @@ public class splash extends TabMainView
 		if ((fileList.size() > 1) && Config.MultiDBAsk.getValue() && !GlobalCore.restartAfterKill)
 		{
 			breakForWait = true;
-			selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
+			SelectDB selectDBDialog = new SelectDB(this, "SelectDbDialog", true);
 			selectDBDialog.setReturnListner(new ReturnListner()
 			{
 				@Override
@@ -352,6 +376,7 @@ public class splash extends TabMainView
 				}
 			});
 			selectDBDialog.show();
+			selectDBDialog = null;
 		}
 
 	}
@@ -415,8 +440,8 @@ public class splash extends TabMainView
 		synchronized (Database.Data.Query)
 		{
 			CacheListDAO cacheListDAO = new CacheListDAO();
-			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
-			// Database.Data.Query.checkSelectedCacheValid(); // überflüssig, wird später überschrieben
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+			cacheListDAO = null;
 		}
 
 		CachListChangedEventList.Call();
@@ -475,25 +500,35 @@ public class splash extends TabMainView
 			synchronized (Database.Data.Query)
 			{
 				Cache c = Database.Data.Query.GetCacheByGcCode(GlobalCore.restartCache);
-				if (GlobalCore.restartWaypoint != null && c != null && c.waypoints != null)
+				if (c != null)
 				{
-					Waypoint w = null;
-
-					for (Waypoint wp : c.waypoints)
+					if (GlobalCore.restartWaypoint != null)
 					{
-						if (wp.GcCode.equalsIgnoreCase(GlobalCore.restartWaypoint))
+						WaypointDAO dao = new WaypointDAO();
+						CB_List<Waypoint> waypoints = dao.getWaypointsFromCacheID(c.Id, true);
+						if (waypoints != null)
 						{
-							w = wp;
+							Waypoint w = null;
+
+							for (int i = 0, n = waypoints.size(); i < n; i++)
+							{
+								Waypoint wp = waypoints.get(i);
+								if (wp.getGcCode().equalsIgnoreCase(GlobalCore.restartWaypoint))
+								{
+									w = wp;
+								}
+							}
+							Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache + WP.");
+							GlobalCore.setSelectedWaypoint(c, w);
+						}
+						else
+						{
+							Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.getGcCode() + " from restartCache.");
+							GlobalCore.setSelectedCache(c);
 						}
 					}
-					Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.GcCode + " from restartCache + WP.");
-					GlobalCore.setSelectedWaypoint(c, w);
 				}
-				else
-				{
-					Logger.DEBUG("ini_TabMainView: Set selectedCache to" + c.GcCode + " from restartCache.");
-					GlobalCore.setSelectedCache(c);
-				}
+
 			}
 
 		}
@@ -504,7 +539,6 @@ public class splash extends TabMainView
 	{
 		this.removeChildsDirekt();
 
-		if (selectDBDialog != null) selectDBDialog.dispose();
 		if (descTextView != null) descTextView.dispose();
 		if (GC_Logo != null) GC_Logo.dispose();
 		if (LibGdx_Logo != null) LibGdx_Logo.dispose();
@@ -513,7 +547,6 @@ public class splash extends TabMainView
 		if (progress != null) progress.dispose();
 		if (atlas != null) atlas.dispose();
 
-		selectDBDialog = null;
 		descTextView = null;
 		GC_Logo = null;
 		LibGdx_Logo = null;

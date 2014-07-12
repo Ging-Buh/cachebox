@@ -1,9 +1,11 @@
 package CB_UI_Base.GL_UI.Skin;
 
+import CB_UI_Base.Global;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -17,8 +19,22 @@ public abstract class SkinBase
 	public static SkinBase that;
 	private static Skin night_skin;
 	private static Skin day_skin;
+	private static Skin default_night_skin;
+	private static Skin default_day_skin;
 
 	protected static SkinSettings settings;
+
+	public static Skin getDefaultDaySkin()
+	{
+		if (default_day_skin == null) initialSkin();
+		return default_day_skin;
+	}
+
+	public static Skin getDefaultNightSkin()
+	{
+		if (default_night_skin == null) initialSkin();
+		return default_night_skin;
+	}
 
 	public static Skin getDaySkin()
 	{
@@ -57,6 +73,18 @@ public abstract class SkinBase
 
 	private static void initialSkin()
 	{
+		if (default_day_skin == null)
+		{
+			FileHandle default_day_skinPath = Global.getInternalFileHandle("skins/default/day/skin.json");
+			default_day_skin = new Skin(default_day_skinPath);
+		}
+
+		if (default_night_skin == null)
+		{
+			FileHandle default_night_skinPath = Global.getInternalFileHandle("skins/default/night/skin.json");
+			default_night_skin = new Skin(default_night_skinPath);
+		}
+
 		if (day_skin == null)
 		{
 			String day_skinPath = settings.SkinFolder + "/day/skin.json";

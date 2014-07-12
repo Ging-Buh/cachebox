@@ -72,9 +72,9 @@ public class AndroidPack extends PackBase
 	{
 		try
 		{
-			if (bbox.Zoom != desc.Zoom) return null;
+			if (bbox.Zoom != desc.getZoom()) return null;
 
-			int index = (desc.Y - bbox.MinY) * bbox.Stride + (desc.X - bbox.MinX) - 1;
+			int index = (desc.getY() - bbox.MinY) * bbox.Stride + (desc.getX() - bbox.MinX) - 1;
 			long offset = bbox.OffsetToIndex + index * 8;
 
 			FileInputStream stream = new FileInputStream(Filename);

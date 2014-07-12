@@ -16,9 +16,9 @@
 
 package CB_Utils.Util;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+
+import CB_Utils.Lists.CB_List;
 
 /// <summary>
 /// Diese klasse ist von DynamicList(Of T) abgeleitet und implementiert Methoden zum bewegen der elemente in einer DynamicList(Of T)
@@ -68,18 +68,30 @@ import java.util.Iterator;
 /**
  * @author Longri
  */
-public class MoveableList<T> extends ArrayList<T>
+public class MoveableList<T> extends CB_List<T>
 {
 
-	protected ArrayList<iChanged> ChangedEventList = new ArrayList<iChanged>();
+	private static final long serialVersionUID = -3030926604332765746L;
+	protected CB_List<iChanged> ChangedEventList = new CB_List<iChanged>();
+
+	public MoveableList()
+	{
+		super();
+	}
+
+	public MoveableList(MoveableList<T> list)
+	{
+		super(list);
+	}
 
 	protected void fireChangedEvent()
 	{
 		if (dontFireEvent) return;
 		synchronized (ChangedEventList)
 		{
-			for (iChanged event : ChangedEventList)
+			for (int i = 0, n = ChangedEventList.size(); i < n; i++)
 			{
+				iChanged event = ChangedEventList.get(i);
 				event.isChanged();
 			}
 		}
@@ -101,11 +113,6 @@ public class MoveableList<T> extends ArrayList<T>
 			ChangedEventList.remove(listner);
 		}
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	private void PrivateMoveItem(int CutItem, int InsertItem)
 	{
@@ -132,11 +139,11 @@ public class MoveableList<T> extends ArrayList<T>
 	}
 
 	@Override
-	public boolean add(T t)
+	public int add(T t)
 	{
-		boolean ret = super.add(t);
+		int ID = super.add(t);
 		fireChangedEvent();
-		return ret;
+		return ID;
 	}
 
 	@Override
@@ -147,19 +154,17 @@ public class MoveableList<T> extends ArrayList<T>
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends T> t)
+	public void addAll(CB_List<T> t)
 	{
-		boolean ret = super.addAll(t);
+		super.addAll(t);
 		fireChangedEvent();
-		return ret;
 	}
 
 	@Override
-	public boolean addAll(int index, Collection<? extends T> t)
+	public void addAll(int index, CB_List<T> t)
 	{
-		boolean ret = super.addAll(index, t);
+		super.addAll(index, t);
 		fireChangedEvent();
-		return ret;
 	}
 
 	@Override
@@ -172,64 +177,23 @@ public class MoveableList<T> extends ArrayList<T>
 	@Override
 	public T remove(int index)
 	{
-		T ret = super.remove(index);
+		T t = super.remove(index);
 		fireChangedEvent();
-		return ret;
+		return t;
 	}
 
-	@Override
-	public boolean remove(Object o)
-	{
-		boolean ret = super.remove(o);
-		fireChangedEvent();
-		return ret;
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> t)
-	{
-		boolean ret = super.removeAll(t);
-		fireChangedEvent();
-		return ret;
-	}
-
-	// / <summary>
-	// / Rotiert alle Item der List(of T) über den Anfang hinaus.
-	// / </summary>
-	// / <remarks>
-	// / <code lang="none" source="C:\@Work\Longri_Sammlung\coc_VB01\MoveableDynamicList_XmlDocu.vb" region="Docu Move Left" />
-	// / <para>Die Eigenschaft <see cref="MoveResultIndex">[MoveResultIndex]</see> wird auf <b>-1</b> gesetzt.</para>
-	// / <para>Das Event <see cref="Changed">[Changed]</see> wird ausgelösst.</para>
-	// /</remarks>
 	public void MoveItemsLeft()
 	{
 		PrivateMoveItem(0, this.size() - 1);
 		_MoveResultIndex = -1;
 	}
 
-	// / <summary>
-	// / Rotiert alle Item der List(of T) über das Ende hinaus.
-	// / </summary>
-	// / <remarks>
-	// / <code lang="none" source="C:\@Work\Longri_Sammlung\coc_VB01\MoveableDynamicList_XmlDocu.vb" region="Docu Move Right" />
-	// / <para>Die Eigenschaft <see cref="MoveResultIndex">[MoveResultIndex]</see> wird auf <b>-1</b> gesetzt.</para>
-	// / <para>Das Event <see cref="Changed">[Changed]</see> wird ausgelösst.</para>
-	// /</remarks>
 	public void MoveItemsRight()
 	{
 		PrivateMoveItem(this.size() - 1, 0);
 		_MoveResultIndex = -1;
 	}
 
-	// / <summary>
-	// / Verschiebt das über den Index angegebenen Item an den Anfang der List(of T)
-	// / </summary>
-	// / <param name="index">Der nullbasierte Index, des Items, welches verschoben werden soll.</param>
-	// / <remarks>
-	// / <code lang="none" source="C:\@Work\Longri_Sammlung\coc_VB01\MoveableDynamicList_XmlDocu.vb" region="Docu Move First" />
-	// / <para>Die Eigenschaft <see cref="MoveResultIndex">[MoveResultIndex]</see> wird auf 0 gesetzt.</para>
-	// / <para>Das Event <see cref="Changed">[Changed]</see> wird ausgelösst.</para>
-	// /</remarks>
 	public void MoveItemFirst(int index)
 	{
 		PrivateMoveItem(index, 0);
@@ -237,15 +201,6 @@ public class MoveableList<T> extends ArrayList<T>
 
 	}
 
-	// / <summary>
-	// / Verschiebt das über den Index angegebenen Item an das Ende der List(of T)
-	// / </summary>
-	// / <param name="index">Der nullbasierte Index, des Items, welches verschoben werden soll.</param>
-	// / <remarks>
-	// / <code lang="none" source="C:\@Work\Longri_Sammlung\coc_VB01\MoveableDynamicList_XmlDocu.vb" region="Docu Move Last" />
-	// / <para>Die Eigenschaft <see cref="MoveResultIndex">[MoveResultIndex]</see> wird auf Count-1 gesetzt.</para>
-	// / <para>Das Event <see cref="Changed">[Changed]</see> wird ausgelösst.</para>
-	// / </remarks>
 	public void MoveItemLast(int index)
 	{
 		PrivateMoveItem(index, this.size() - 1);
@@ -253,21 +208,6 @@ public class MoveableList<T> extends ArrayList<T>
 
 	}
 
-	// / <summary>
-	// / Verschiebt das über den Index angegebenen Item an die Position, welche sich aus der Summe von Index und [Step] ergibt.
-	// / </summary>
-	// / <param name="index">Der nullbasierte Index, des Items, welches verschoben werden soll.</param>
-	// / <param name="Step">Die Anzahl an schritten um die das Item verschoben werden soll.</param>
-	// / <example>
-	// / <code lang="none" source="C:\@Work\Longri_Sammlung\Release\Doku@Work\LinkedTxtDocu\MoveableDynamicList(Of T).MoveItem.txt" />
-	// / </example>
-	// / <remarks>
-	// / <para>Die Eigenschaft <see cref="MoveResultIndex">[MoveResultIndex]</see> wird auf den Index des ergebnisses gesetzt.</para>
-	// / <para>Das Event <see cref="Changed">[Changed]</see> wird ausgelösst.</para>
-	// / <para><b>Das Event <see cref="Changed">[Changed]</see> wird NICHT ausgelösst, wenn Step = 0 ist oder das Ergebniss dem Index
-	// entspricht.
-	// / (Wenn sich die List(Of T) nicht geändert hat.)</b></para>
-	// / </remarks>
 	public int MoveItem(int index, int Step)
 	{
 		_MoveResultIndex = index;
@@ -293,21 +233,6 @@ public class MoveableList<T> extends ArrayList<T>
 		return _MoveResultIndex;
 	}
 
-	// / <summary>
-	// / Verschiebt das über den Index angegebenen Item an die Position, welche sich aus der Summe von Index und [Step] ergibt.
-	// / </summary>
-	// / <param name="index">Der nullbasierte Index, des Items, welches verschoben werden soll.</param>
-	// / <param name="Step">Die Anzahl an schritten um die das Item verschoben werden soll.</param>
-	// / <example>
-	// / <code lang="none" source="C:\@Work\Longri_Sammlung\Release\Doku@Work\LinkedTxtDocu\MoveableDynamicList(Of T).MoveItem.txt" />
-	// / </example>
-	// / <remarks>
-	// / <para>Die Eigenschaft <see cref="MoveResultIndex">[MoveResultIndex]</see> wird auf den Index des ergebnisses gesetzt.</para>
-	// / <para>Das Event <see cref="Changed">[Changed]</see> wird ausgelösst.</para>
-	// / <para><b>Das Event <see cref="Changed">[Changed]</see> wird NICHT ausgelösst, wenn Step = 0 ist oder das Ergebniss dem Index
-	// entspricht.
-	// / (Wenn sich die List(Of T) nicht geändert hat.)</b></para>
-	// / </remarks>
 	public void MoveItem(int index)
 	{
 		this.MoveItem(index, 1);
@@ -388,11 +313,14 @@ public class MoveableList<T> extends ArrayList<T>
 		return iterator;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public MoveableList<T> clone()
+	public void remove(MoveableList<T> items)
 	{
-		return (MoveableList<T>) super.clone();
+		super.removeAll(items);
+	}
+
+	public void dispose()
+	{
+		super.dispose();
 	}
 
 }

@@ -1,26 +1,52 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.droidcachebox.Map;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
+import CB_Locator.Map.TileGL;
+import CB_Locator.Map.TileGL.TileState;
+import CB_Locator.Map.TileGL_Bmp;
+import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import android.graphics.BitmapFactory;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class AndroidManager extends ManagerBase
 {
-	public AndroidManager()
+	public AndroidManager(DisplayModel displaymodel)
 	{
-		super();
+		super(displaymodel);
 	}
 
 	@Override
@@ -35,19 +61,15 @@ public class AndroidManager extends ManagerBase
 	}
 
 	@Override
-	protected GraphicFactory getGraphicFactory()
-	{
-		return AndroidGraphicFactory.INSTANCE;
-	}
-
-	@Override
-	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
+	public TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 
 		if (layer.isMapsForge)
 		{
-			return getMapsforgePixMap(layer, desc);
+			return getMapsforgePixMap(layer, desc, ThreadIndex);
 		}
+
+		Format format = layer.isOverlay() ? Format.RGBA4444 : Format.RGB565;
 		try
 		{
 			// Schauen, ob Tile im Cache liegt
@@ -71,11 +93,17 @@ public class AndroidManager extends ManagerBase
 
 					if (bbox != null)
 					{
-						return mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
-						// Bitmap result = mapPacks.get(i).LoadFromBoundingBox(bbox, desc);
-						// ByteArrayOutputStream stream = new ByteArrayOutputStream();
-						// result.compress(Bitmap.CompressFormat.PNG, 100, stream);
-						// return stream.toByteArray();
+						byte[] b = mapPacks.get(i).LoadFromBoundingBoxByteArray(bbox, desc);
+
+						if (CB_UI_Base_Settings.nightMode.getValue())
+						{
+							ImageData imgData = getImagePixel(b);
+							imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
+							b = getImageFromData(imgData);
+						}
+
+						TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
+						return bmpTile;
 					}
 				}
 			}
@@ -86,7 +114,17 @@ public class AndroidManager extends ManagerBase
 				android.graphics.Bitmap result = BitmapFactory.decodeFile(cachedTileFilename);
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				result.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, stream);
-				return stream.toByteArray();
+				byte[] b = stream.toByteArray();
+
+				if (CB_UI_Base_Settings.nightMode.getValue())
+				{
+					ImageData imgData = getImagePixel(b);
+					imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
+					b = getImageFromData(imgData);
+				}
+
+				TileGL_Bmp bmpTile = new TileGL_Bmp(desc, b, TileState.Present, format);
+				return bmpTile;
 			}
 		}
 		catch (Exception exc)
@@ -154,9 +192,7 @@ public class AndroidManager extends ManagerBase
 		}
 		catch (Exception exc)
 		{
-			/*
-			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
-			 */
+
 		}
 		return null;
 	}
@@ -183,11 +219,17 @@ public class AndroidManager extends ManagerBase
 	protected byte[] getImageFromData(ImageData imgData)
 	{
 		android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(imgData.PixelColorArray, imgData.width, imgData.height,
-				android.graphics.Bitmap.Config.ARGB_8888);
+				android.graphics.Bitmap.Config.RGB_565);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);
 		byte[] b = baos.toByteArray();
 		return b;
+	}
+
+	@Override
+	public ext_GraphicFactory getGraphicFactory(float Scalefactor)
+	{
+		return ext_AndroidGraphicFactory.getInstance(Scalefactor);
 	}
 }

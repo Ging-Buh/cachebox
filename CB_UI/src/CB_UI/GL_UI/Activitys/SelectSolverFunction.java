@@ -3,18 +3,19 @@ package CB_UI.GL_UI.Activitys;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Core.Solver.Solver;
+import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Functions.Function;
+import CB_Core.Solver.Functions.Functions;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Solver.Solver;
-import CB_UI.Solver.Functions.Function;
-import CB_UI.Solver.Functions.Functions;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;
+import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.LinearCollapseBox;
 import CB_UI_Base.GL_UI.Controls.Linearlayout;
-import CB_UI_Base.GL_UI.Controls.ScrollBox;
-import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
 import CB_UI_Base.GL_UI.Controls.Linearlayout.LayoutChanged;
+import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.ButtonDialog;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -32,16 +33,18 @@ public class SelectSolverFunction extends ButtonDialog
 	private Linearlayout mLinearLayout;
 	private CB_RectF categoryBtnRec, itemBtnRec;
 	private Function selectedFunction;
+	private DataType dataType;
 
 	public interface IFunctionResult
 	{
 		public void selectedFunction(Function function);
 	}
 
-	public SelectSolverFunction(IFunctionResult resultListner)
+	public SelectSolverFunction(DataType dataType, IFunctionResult resultListner)
 	{
 		super(ActivityRec(), "SelectSolverFunctionActivity", "", "", MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
 		mResultListner = resultListner;
+		this.dataType = dataType;
 
 		// Grössen für die CategoryButtons und ItemButtons berechnen!
 		categoryBtnRec = new CB_RectF(leftBorder, 0, innerWidth - mCenter9patch.getLeftWidth() - mCenter9patch.getRightWidth(),
@@ -171,7 +174,7 @@ public class SelectSolverFunction extends ButtonDialog
 	private void iniDescLabel()
 	{
 		// rechteck für Label erstellen
-		CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.width, UI_Size_Base.that.getButtonHeight() * 1.5f);
+		CB_RectF rec = new CB_RectF(0, this.getBottomHeight(), this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.5f);
 
 		desc = new Label(rec, "description");
 
@@ -186,7 +189,7 @@ public class SelectSolverFunction extends ButtonDialog
 	{
 		// rechteck für die List erstellen.
 		// diese ergibt sich aus dem Platzangebot oberhalb des desc Labels
-		CB_RectF rec = new CB_RectF(0, desc.getMaxY(), desc.getWidth(), this.height - desc.getMaxY() - mFooterHeight);
+		CB_RectF rec = new CB_RectF(0, desc.getMaxY(), desc.getWidth(), this.getHeight() - desc.getMaxY() - mFooterHeight);
 
 		// Die Einträge der Function List werden aber nicht in einer ListView dargestellt, sondern werden in ein LinearLayout von oben nach
 		// unten geschrieben.
@@ -275,6 +278,10 @@ public class SelectSolverFunction extends ButtonDialog
 						// erstelle einzelnen Funktions Button
 
 						final Function fct = iteratorFunctions.next();
+						if (!fct.returnsDataType(dataType))
+						{
+							continue;
+						}
 						final Button btnFct = new Button(itemBtnRec, "FunctionBtn-" + fct.getName());
 
 						// den Function Button der algemeinen Liste hinzufügrn
@@ -310,7 +317,7 @@ public class SelectSolverFunction extends ButtonDialog
 								selectedFunction = fct;
 
 								// hier muss einmal gerendert werden, damit die Änderungen übernommen werden
-								GL.that.renderOnce("Function Select Changed");
+								GL.that.renderOnce();
 
 								return false;
 							}

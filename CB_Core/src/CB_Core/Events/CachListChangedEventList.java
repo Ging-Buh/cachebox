@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Events;
 
 import java.util.ArrayList;
@@ -8,6 +23,9 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 
+/**
+ * @author Longri
+ */
 public class CachListChangedEventList
 {
 	public static ArrayList<CacheListChangedEventListner> list = new ArrayList<CacheListChangedEventListner>();
@@ -30,14 +48,6 @@ public class CachListChangedEventList
 
 	private static Thread threadCall;
 
-	/**
-	 * @param ParkingLatitude
-	 *            Config.settings.ParkingLatitude.getValue()
-	 * @param ParkingLongitude
-	 *            Config.settings.ParkingLongitude.getValue()
-	 * @param DisplayOff
-	 *            Energy.DisplayOff()
-	 */
 	public static void Call()
 	{
 		if (CoreSettingsForward.DisplayOff) return;
@@ -84,7 +94,6 @@ public class CachListChangedEventList
 		});
 
 		threadCall.start();
-
 	}
 
 }

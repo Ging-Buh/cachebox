@@ -43,8 +43,6 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		return SpriteCacheBase.Icons.get(IconName.manageDB_41.ordinal());
 	}
 
-	SelectDB selectDBDialog;
-
 	@Override
 	public void Execute()
 	{
@@ -52,12 +50,12 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 		if (GlobalCore.getSelectedCache() != null)
 		{
 			// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 			Config.AcceptChanges();
-			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 		}
 
-		selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
+		SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
 		selectDBDialog.setReturnListner(new ReturnListner()
 		{
 			@Override
@@ -67,7 +65,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			}
 		});
 		selectDBDialog.show();
-
+		selectDBDialog = null;
 	}
 
 	WaitDialog wd;
@@ -112,7 +110,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				synchronized (Database.Data.Query)
 				{
 					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 				}
 
 				// set selectedCache from lastselected Cache
@@ -120,11 +118,12 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				String sGc = Config.LastSelectedCache.getValue();
 				if (sGc != null && !sGc.equals(""))
 				{
-					for (Cache c : Database.Data.Query)
+					for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 					{
-						if (c.GcCode.equalsIgnoreCase(sGc))
+						Cache c = Database.Data.Query.get(i);
+						if (c.getGcCode().equalsIgnoreCase(sGc))
 						{
-							Logger.DEBUG("returnFromSelectDB:Set selectedCache to " + c.GcCode + " from lastSaved.");
+							Logger.DEBUG("returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 							GlobalCore.setSelectedCache(c);
 							break;
 						}
@@ -133,7 +132,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 				if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0))
 				{
-					Logger.DEBUG("Set selectedCache to " + Database.Data.Query.get(0).GcCode + " from firstInDB");
+					Logger.DEBUG("Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
 					GlobalCore.setSelectedCache(Database.Data.Query.get(0));
 				}
 

@@ -22,9 +22,9 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Math.Point;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -54,6 +54,7 @@ public class CB_Button extends Button implements OnClickListener
 
 	public CB_Button(CB_RectF rec, String Name, ButtonSprites sprites)
 	{
+
 		super(rec, Name);
 		mButtonActions = new ArrayList<CB_ActionButton>();
 		this.setOnClickListener(this);
@@ -217,7 +218,7 @@ public class CB_Button extends Button implements OnClickListener
 			{
 				if (ba.getAction() == aktActionView)
 				{
-					if (aktActionView.getView().isVisible())
+					if (aktActionView.getView() != null && aktActionView.getView().isVisible())
 					{
 						// Dieses View ist aktuell das Sichtbare
 						// -> ein Click auf den Menü-Button zeigt das Contextmenü
@@ -313,7 +314,7 @@ public class CB_Button extends Button implements OnClickListener
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		boolean hasContextMenu = false;
 
@@ -322,6 +323,12 @@ public class CB_Button extends Button implements OnClickListener
 			isFocused = aktActionView.getView().isVisible();
 			hasContextMenu = aktActionView.HasContextMenu();
 		}
+		else
+		{
+			isFocused = false;
+			hasContextMenu = false;
+		}
+
 		super.render(batch);
 
 		if (hasContextMenu && isFocused)
@@ -330,20 +337,20 @@ public class CB_Button extends Button implements OnClickListener
 			// draw Menu Sprite
 			if (menuSprite == null || menuSpriteFilterd == null)
 			{
-				float iconWidth = this.width / 5f;
-				float iconHeight = this.height / 2.3f;
-				float VersatzX = this.height / 20f;
-				float VersatzY = this.height / 30f;
+				float iconWidth = this.getWidth() / 5f;
+				float iconHeight = this.getHeight() / 2.3f;
+				float VersatzX = this.getHeight() / 20f;
+				float VersatzY = this.getHeight() / 30f;
 
 				menuSprite = new Sprite(SpriteCacheBase.Icons.get(IconName.menu_37.ordinal()));
-				menuSprite.setBounds(this.width - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+				menuSprite.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
 				menuSpriteFilterd = new Sprite(SpriteCacheBase.Icons.get(IconName.menuFilterd_65.ordinal()));
-				menuSpriteFilterd.setBounds(this.width - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
+				menuSpriteFilterd.setBounds(this.getWidth() - iconWidth - VersatzX, VersatzY, iconWidth, iconHeight);
 
 			}
 
-			boolean isFilterd = false;// TODO this == TabMainView.that.CacheListButton && TabMainView.that.isFilterd();
+			boolean isFilterd = false;
 
 			if (!isFilterd && menuSprite != null) menuSprite.draw(batch);
 			if (isFilterd && menuSpriteFilterd != null) menuSpriteFilterd.draw(batch);
@@ -450,6 +457,12 @@ public class CB_Button extends Button implements OnClickListener
 			}
 
 		}
+	}
+
+	@Override
+	public void dispose()
+	{
+		super.dispose();
 	}
 
 }

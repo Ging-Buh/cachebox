@@ -24,9 +24,10 @@ import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.Import_PqListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox;
@@ -199,8 +200,8 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight,
-				"TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
+				lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 		this.addChild(lblTitle);
@@ -578,7 +579,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		checkImportPQfromGC.setChecked(Config.ImportPQsFromGeocachingCom.getValue());
 		checkImportPQfromGC.setEnabled(true);
 		checkBoxPreloadSpoiler.setEnable(true);
-		lblSpoiler.setTextColor(Fonts.getFontColor());
+		lblSpoiler.setTextColor(COLOR.getFontColor());
 		if (checkImportPQfromGC.isChecked())
 		{
 			PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
@@ -1078,7 +1079,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	{
 		importCancel = false;
 		importStarted = false;
-		that.removeChild(dis);
+		this.removeChild(dis);
 		bOK.enable();
 	}
 
@@ -1095,7 +1096,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress)
 	{
 
-		this.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

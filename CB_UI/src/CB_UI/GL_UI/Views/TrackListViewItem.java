@@ -2,8 +2,8 @@ package CB_UI.GL_UI.Views;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Map.RouteOverlay.Track;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListner;
@@ -15,8 +15,8 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class TrackListViewItem extends ListViewItemBackground
@@ -59,7 +59,7 @@ public class TrackListViewItem extends ListViewItemBackground
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		super.render(batch);
@@ -119,7 +119,7 @@ public class TrackListViewItem extends ListViewItemBackground
 		if (EntryName == null)
 		{
 
-			CB_RectF rec = new CB_RectF(left, this.height / 2, this.width - left - height - 10, this.height / 2);
+			CB_RectF rec = new CB_RectF(left, this.getHeight() / 2, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
 			EntryName = new Label(rec, "");
 
 			EntryName.setText(mRoute.Name);
@@ -131,7 +131,7 @@ public class TrackListViewItem extends ListViewItemBackground
 		if (EntryLength == null)
 		{
 
-			CB_RectF rec = new CB_RectF(left, 0, this.width - left - height - 10, this.height / 2);
+			CB_RectF rec = new CB_RectF(left, 0, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
 			EntryLength = new Label(rec, "");
 			EntryLength.setText(Translation.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / "
 					+ UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
@@ -139,14 +139,14 @@ public class TrackListViewItem extends ListViewItemBackground
 			this.addChild(EntryLength);
 		}
 
-		GL.that.renderOnce("CreateTrackListItem_Label");
+		GL.that.renderOnce();
 	}
 
-	private void drawColorRec(SpriteBatch batch)
+	private void drawColorRec(Batch batch)
 	{
 		if (lBounds == null)
 		{
-			lBounds = new CB_RectF(0, 0, height, height);
+			lBounds = new CB_RectF(0, 0, getHeight(), getHeight());
 			lBounds = lBounds.ScaleCenter(0.95f);
 		}
 
@@ -163,11 +163,11 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawRightChkBox(SpriteBatch batch)
+	private void drawRightChkBox(Batch batch)
 	{
 		if (rBounds == null || rChkBounds == null)
 		{
-			rBounds = new CB_RectF(width - height - 10, 5, height - 10, height - 10);// = right Button bounds
+			rBounds = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);// = right Button bounds
 
 			rChkBounds = rBounds.ScaleCenter(0.8f);
 		}
@@ -199,7 +199,7 @@ public class TrackListViewItem extends ListViewItemBackground
 	{
 		// Logger.LogCat("TrackListViewItem => Chk Clicked");
 
-		RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -209,14 +209,14 @@ public class TrackListViewItem extends ListViewItemBackground
 				if (mRouteChangedListner != null) mRouteChangedListner.RouteChanged(mRoute);
 			}
 		});
-		GL.that.renderOnce("TrackListViewItem_Click_Color_Rec");
+		GL.that.renderOnce();
 	}
 
 	private void colorClick()
 	{
 		// Logger.LogCat("TrackListViewItem => Color Clicked");
 
-		RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -235,7 +235,7 @@ public class TrackListViewItem extends ListViewItemBackground
 				clrPick.show();
 			}
 		});
-		GL.that.renderOnce("TrackListViewItem_Click_Color_Rec");
+		GL.that.renderOnce();
 	}
 
 	public void notifyTrackChanged(Track route)

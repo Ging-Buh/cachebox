@@ -23,8 +23,8 @@ import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
-import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
+import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -43,7 +43,7 @@ public class TextFilterView extends CB_View_Base
 		that = this;
 
 		float margin = UI_Size_Base.that.getMargin() * 2;
-		float btnWidth = (this.width - (margin * 7)) / 3;
+		float btnWidth = (this.getWidth() - (margin * 7)) / 3;
 
 		CB_RectF btnRrec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());
 
@@ -57,7 +57,7 @@ public class TextFilterView extends CB_View_Base
 		mTglBtnGc.setPos(mTglBtnTitle.getMaxX() + margin, y);
 		mTglBtnOwner.setPos(mTglBtnGc.getMaxX() + margin, y);
 
-		btnRrec.setWidth(this.width - (margin * 2));
+		btnRrec.setWidth(this.getWidth() - (margin * 2));
 
 		mEingabe = new EditTextField(this, btnRrec, WrapType.SINGLELINE, "");
 
@@ -82,7 +82,7 @@ public class TextFilterView extends CB_View_Base
 
 		mBtnClear = new Button("clear");
 		mBtnClear.setY(mEingabe.getY() - margin - mBtnClear.getHeight());
-		mBtnClear.setX(this.width - margin - mBtnClear.getWidth());
+		mBtnClear.setX(this.getWidth() - margin - mBtnClear.getWidth());
 		mBtnClear.setText(Translation.Get("clear"));
 		mBtnClear.setOnClickListener(new OnClickListener()
 		{
@@ -170,14 +170,12 @@ public class TextFilterView extends CB_View_Base
 	@Override
 	protected void Initial()
 	{
-		 
 
 	}
 
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

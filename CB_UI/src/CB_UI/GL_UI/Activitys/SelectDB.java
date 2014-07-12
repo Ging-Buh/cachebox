@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Activitys;
 
 import java.io.File;
@@ -18,7 +33,7 @@ import CB_UI.GL_UI.Controls.Dialogs.NewDB_InputBox;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
@@ -40,6 +55,10 @@ import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class SelectDB extends ActivityBase
 {
 	private int autoStartTime = 10;
@@ -51,13 +70,11 @@ public class SelectDB extends ActivityBase
 	private Button bAutostart;
 	private V_ListView lvFiles;
 	private Scrollbar scrollbar;
-	CustomAdapter lvAdapter;
-
-	public static File AktFile = null;
-
+	private CustomAdapter lvAdapter;
+	private File AktFile = null;
 	private String[] countList;
-
 	private boolean MusstSelect = false;
+	private ReturnListner returnListner;
 
 	public SelectDB(CB_RectF rec, String Name, boolean mustSelect)
 	{
@@ -87,7 +104,7 @@ public class SelectDB extends ActivityBase
 		}
 
 		lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth,
-				height - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
+				getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
 
 		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
@@ -302,7 +319,7 @@ public class SelectDB extends ActivityBase
 					}
 				}
 
-				lvFiles.RunIfListInitial(new runOnGL()
+				lvFiles.RunIfListInitial(new IRunOnGL()
 				{
 
 					@Override
@@ -320,7 +337,7 @@ public class SelectDB extends ActivityBase
 		Timer timer = new Timer();
 		timer.schedule(task, 350);
 
-		GL.that.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce();
 	}
 
 	private void setSelectedItemVisible()
@@ -351,14 +368,14 @@ public class SelectDB extends ActivityBase
 			@Override
 			public void run()
 			{
-				GL.that.RunOnGL(new runOnGL()
+				GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override
 					public void run()
 					{
 						lvFiles.chkSlideBack();
-						GL.that.renderOnce(SelectDB.this.getName() + " setSelectedDBVisible [chkSlideBack]");
+						GL.that.renderOnce();
 					}
 				});
 			}
@@ -367,7 +384,7 @@ public class SelectDB extends ActivityBase
 		Timer timer = new Timer();
 		timer.schedule(task, 50);
 
-		GL.that.renderOnce(this.getName() + " setSelectedDBVisible");
+		GL.that.renderOnce();
 	}
 
 	OnClickListener onItemClickListner = new OnClickListener()
@@ -385,7 +402,7 @@ public class SelectDB extends ActivityBase
 				{
 					file = lvAdapter.getItem(i);
 
-					SelectDB.AktFile = file;
+					AktFile = file;
 					lvFiles.setSelection(i);
 					break;
 				}
@@ -460,7 +477,7 @@ public class SelectDB extends ActivityBase
 				synchronized (Database.Data.Query)
 				{
 					CacheListDAO cacheListDAO = new CacheListDAO();
-					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 					GlobalCore.checkSelectedCacheValid();
 				}
 
@@ -473,10 +490,10 @@ public class SelectDB extends ActivityBase
 
 				break;
 			case 2: // cancel clicked
-				that.show();
+				SelectDB.this.show();
 				break;
 			case 3:
-				that.show();
+				SelectDB.this.show();
 				break;
 			}
 
@@ -541,7 +558,7 @@ public class SelectDB extends ActivityBase
 			this.files = files;
 			recItem = UiSizes.that.getCacheListItemRec().asFloat();
 			recItem.setHeight(recItem.getHeight() * 0.8f);
-			recItem.setWidth(width - getLeftWidth() - getRightWidth() - (margin * 1.5f));
+			recItem.setWidth(getWidth() - getLeftWidth() - getRightWidth() - (margin * 1.5f));
 		}
 
 		public void setFiles(FileList files)
@@ -591,8 +608,6 @@ public class SelectDB extends ActivityBase
 		if (updateTimer != null) updateTimer.cancel();
 		// bAutostart.setText(Translation.Get("confirm"));
 	}
-
-	private ReturnListner returnListner;
 
 	public void setReturnListner(ReturnListner listner)
 	{
@@ -653,7 +668,7 @@ public class SelectDB extends ActivityBase
 					break;
 
 				}
-				that.show();
+				SelectDB.this.show();
 				return true;
 			}
 		});
@@ -666,6 +681,38 @@ public class SelectDB extends ActivityBase
 		cm.addItem(MenuID.MI_60, cs[5], true);
 
 		cm.Show();
+	}
+
+	@Override
+	public boolean canCloseWithBackKey()
+	{
+		return !MusstSelect;
+	}
+
+	@Override
+	public void dispose()
+	{
+
+		DBPath = null;
+		if (bNew != null) bNew.dispose();
+		bNew = null;
+		if (bSelect != null) bSelect.dispose();
+		bSelect = null;
+		if (bCancel != null) bCancel.dispose();
+		bCancel = null;
+		if (bAutostart != null) bAutostart.dispose();
+		bAutostart = null;
+		if (lvFiles != null) lvFiles.dispose();
+		lvFiles = null;
+		if (scrollbar != null) scrollbar.dispose();
+		scrollbar = null;
+
+		lvAdapter = null;
+		AktFile = null;
+		countList = null;
+
+		returnListner = null;
+		super.dispose();
 	}
 
 }

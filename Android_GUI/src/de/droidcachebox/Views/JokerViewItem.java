@@ -104,7 +104,7 @@ public class JokerViewItem extends View
 		else
 		{
 			// Measure the text
-			result = (int) Global.Paints.measurePaint.measureText(cache.Name) + getPaddingLeft() + getPaddingRight();
+			result = (int) Global.Paints.measurePaint.measureText(cache.getName()) + getPaddingLeft() + getPaddingRight();
 			if (specMode == MeasureSpec.AT_MOST)
 			{
 				// Respect AT_MOST value if that was what is called for by

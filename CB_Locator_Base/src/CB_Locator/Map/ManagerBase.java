@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
 import java.io.ByteArrayOutputStream;
@@ -7,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -22,25 +38,42 @@ import org.apache.http.params.HttpParams;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.layer.renderer.DatabaseRenderer;
+import org.mapsforge.map.layer.renderer.GL_DatabaseRenderer;
+import org.mapsforge.map.layer.renderer.IDatabaseRenderer;
+import org.mapsforge.map.layer.renderer.MF_DatabaseRenderer;
+import org.mapsforge.map.layer.renderer.MixedDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
+import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.xml.sax.SAXException;
 
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.Type;
+import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.graphics.GL_GraphicFactory;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.iChanged;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public abstract class ManagerBase
 {
+
+	public static int PROCESSOR_COUNT;
+	private final DisplayModel DISPLAY_MODEL;
+
 	public static final String INTERNAL_CAR_THEME = "internal-car-theme";
-	protected final int CONECTION_TIME_OUT = 15000;
+	protected final int CONECTION_TIME_OUT = 15000;// 15 sec
+	protected final int CONECTION_TIME_OUT_MESSAGE_INTERVALL = 60000;// 1min
 
 	public static boolean RenderThemeChanged = true;
 
@@ -70,11 +103,22 @@ public abstract class ManagerBase
 		return false;
 	}
 
-	public ManagerBase()
+	public ManagerBase(DisplayModel displaymodel)
 	{
 		// for the Access to the manager in the CB_Core
 		CB_Locator.Map.ManagerBase.Manager = this;
+		// PROCESSOR_COUNT = Runtime.getRuntime().availableProcessors();
+		PROCESSOR_COUNT = 1;
+		DISPLAY_MODEL = displaymodel;
 
+		LocatorSettings.MapsforgeRenderType.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				ManagerBase.this.setRenderTheme(getCurrentRenderTheme());
+			}
+		});
 	}
 
 	public abstract PackBase CreatePack(String file) throws IOException;
@@ -128,35 +172,16 @@ public abstract class ManagerBase
 		}
 	}
 
-	public byte[] LoadInvertedPixmap(Layer layer, Descriptor desc)
-	{
-		byte[] tmp = LoadLocalPixmap(layer, desc);
-
-		if (!desc.NightMode) return tmp;
-
-		if (layer.isMapsForge && mapsforgeNightThemeExist()) return tmp;
-
-		if (tmp == null) return null;
-
-		ImageData imgData = getImagePixel(tmp);
-
-		imgData = getImageDataWithColormatrixManipulation(NIGHT_COLOR_MATRIX, imgData);
-
-		tmp = getImageFromData(imgData);
-
-		return tmp;
-	}
-
 	private boolean useInvertedNightTheme;
+
+	protected boolean mapsforgeNightThemeExist()
+	{
+		return !useInvertedNightTheme;
+	}
 
 	public void setUseInvertedNightTheme(boolean value)
 	{
 		useInvertedNightTheme = value;
-	}
-
-	private boolean mapsforgeNightThemeExist()
-	{
-		return !useInvertedNightTheme;
 	}
 
 	public class ImageData
@@ -166,45 +191,24 @@ public abstract class ManagerBase
 		public int height;
 	}
 
-	public byte[] LoadLocalPixmap(String layer, Descriptor desc)
+	public TileGL LoadLocalPixmap(String layer, Descriptor desc, int ThreadIndex)
 	{
-		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc);
+		return LoadLocalPixmap(GetLayerByName(layer, layer, ""), desc, ThreadIndex);
 	}
 
-	public byte[] LoadLocalPixmap(Layer layer, Descriptor desc)
-	{
-		if (layer == null) return null;
-		// Vorerst nur im Pack suchen
-		// Kachel im Pack suchen
-		long cachedTileAge = 0;
-		for (int i = 0; i < mapPacks.size(); i++)
-		{
-			PackBase mapPack = mapPacks.get(i);
-			if ((mapPack.Layer.Name.equalsIgnoreCase(layer.Name)) && (mapPack.MaxAge >= cachedTileAge))
-			{
-				BoundingBox bbox = mapPack.Contains(desc);
-
-				if (bbox != null)
-				{
-					byte b[] = mapPack.LoadFromBoundingBoxByteArray(bbox, desc);
-					// if (b == null) mapPacks.remove(i);
-					return b;
-				}
-			}
-		}
-		return null;
-	}
+	public abstract TileGL LoadLocalPixmap(Layer layer, Descriptor desc, int ThreadIndex);
 
 	protected abstract ImageData getImagePixel(byte[] img);
 
 	protected abstract byte[] getImageFromData(ImageData imgData);
 
-	// / <summary>
-	// / Läd die Kachel mit dem übergebenen Descriptor
-	// / </summary>
-	// / <param name="layer"></param>
-	// / <param name="tile"></param>
-	// / <returns></returns>
+	/**
+	 * Load Tile from URL and save to MapTile-Cache
+	 * 
+	 * @param layer
+	 * @param tile
+	 * @return
+	 */
 	public boolean CacheTile(Layer layer, Descriptor tile)
 	{
 
@@ -233,9 +237,12 @@ public abstract class ManagerBase
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		HttpResponse response = null;
 
+		HttpGet GET = new HttpGet(url);
+
 		try
 		{
-			response = httpclient.execute(new HttpGet(url));
+
+			response = httpclient.execute(GET);
 			StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() == HttpStatus.SC_OK)
 			{
@@ -279,6 +286,33 @@ public abstract class ManagerBase
 		}
 		catch (Exception ex)
 		{
+			// Check last Error for this URL and post massage if the last > 1 min.
+
+			String URL = GET.getURI().getAuthority();
+
+			boolean PostErrorMassage = false;
+
+			if (LastRequestTimeOut.containsKey(URL))
+			{
+				long last = LastRequestTimeOut.get(URL);
+				if ((last + CONECTION_TIME_OUT_MESSAGE_INTERVALL) < System.currentTimeMillis())
+				{
+					PostErrorMassage = true;
+					LastRequestTimeOut.remove(URL);
+				}
+			}
+			else
+			{
+				PostErrorMassage = true;
+			}
+
+			if (PostErrorMassage)
+			{
+				LastRequestTimeOut.put(URL, System.currentTimeMillis());
+				ConnectionError INSTANCE = new ConnectionError(layer.Name + " - Provider");
+				GL.that.Toast(INSTANCE);
+			}
+
 			return false;
 		}
 		/*
@@ -289,6 +323,8 @@ public abstract class ManagerBase
 
 		return true;
 	}
+
+	HashMap<String, Long> LastRequestTimeOut = new HashMap<String, Long>();
 
 	/**
 	 * The matrix is stored in a single array, and its treated as follows: [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ] <br>
@@ -307,40 +343,35 @@ public abstract class ManagerBase
 	{
 
 		int[] data = imgData.PixelColorArray;
-
-		int len = data.length;
-
-		int[] dst = new int[len];
-
-		for (int i = 0; i < len; i++)
+		for (int i = 0; i < data.length; i++)
 		{
-			int[] color = new int[4];
-
-			color[0] = (data[i] >> 24) & (0xff);
-			color[1] = ((data[i] << 8) >> 24) & (0xff);
-			color[2] = ((data[i] << 16) >> 24) & (0xff);
-			color[3] = ((data[i] << 24) >> 24) & (0xff);
-
-			int R = color[1];
-			int G = color[2];
-			int B = color[3];
-			int A = color[0];
-
-			color[1] = Math
-					.max(0, Math.min(255, (int) ((matrix[0] * R) + (matrix[1] * G) + (matrix[2] * B) + (matrix[3] * A) + matrix[4])));
-			color[2] = Math
-					.max(0, Math.min(255, (int) ((matrix[5] * R) + (matrix[6] * G) + (matrix[7] * B) + (matrix[8] * A) + matrix[9])));
-			color[3] = Math.max(0,
-					Math.min(255, (int) ((matrix[10] * R) + (matrix[11] * G) + (matrix[12] * B) + (matrix[13] * A) + matrix[14])));
-			color[0] = Math.max(0,
-					Math.min(255, (int) ((matrix[15] * R) + (matrix[16] * G) + (matrix[17] * B) + (matrix[18] * A) + matrix[19])));
-
-			dst[i] = ((color[0] & 0xFF) << 24) | ((color[1] & 0xFF) << 16) | ((color[2] & 0xFF) << 8) | ((color[3] & 0xFF));
+			data[i] = colorMatrixManipulation(data[i], matrix);
 		}
-
-		imgData.PixelColorArray = dst;
-
 		return imgData;
+	}
+
+	public static int colorMatrixManipulation(int c, float[] matrix)
+	{
+		int[] color = new int[4];
+
+		color[0] = (c >> 24) & (0xff);
+		color[1] = ((c << 8) >> 24) & (0xff);
+		color[2] = ((c << 16) >> 24) & (0xff);
+		color[3] = ((c << 24) >> 24) & (0xff);
+
+		int R = color[1];
+		int G = color[2];
+		int B = color[3];
+		int A = color[0];
+
+		color[1] = Math.max(0, Math.min(255, (int) ((matrix[0] * R) + (matrix[1] * G) + (matrix[2] * B) + (matrix[3] * A) + matrix[4])));
+		color[2] = Math.max(0, Math.min(255, (int) ((matrix[5] * R) + (matrix[6] * G) + (matrix[7] * B) + (matrix[8] * A) + matrix[9])));
+		color[3] = Math.max(0,
+				Math.min(255, (int) ((matrix[10] * R) + (matrix[11] * G) + (matrix[12] * B) + (matrix[13] * A) + matrix[14])));
+		color[0] = Math.max(0,
+				Math.min(255, (int) ((matrix[15] * R) + (matrix[16] * G) + (matrix[17] * B) + (matrix[18] * A) + matrix[19])));
+
+		return ((color[0] & 0xFF) << 24) | ((color[1] & 0xFF) << 16) | ((color[2] & 0xFF) << 8) | ((color[3] & 0xFF));
 	}
 
 	/**
@@ -477,14 +508,14 @@ public abstract class ManagerBase
 	// Mapsforge 0.4.0
 	// ##########################################################################
 
-	MapDatabase mapDatabase = null;
-	DatabaseRenderer databaseRenderer = null;
+	MapDatabase mapDatabase[] = null;
+	IDatabaseRenderer databaseRenderer[] = null;
 	Bitmap tileBitmap = null;
 	File mapFile = null;
 	private String mapsForgeFile = "";
 	XmlRenderTheme renderTheme;
-	float textScale = 1;
-	float DEFAULT_TEXT_SCALE = 1;
+	public float textScale = 1;
+	public static float DEFAULT_TEXT_SCALE = 1;
 
 	/**
 	 * Returns the loaded MapfileInfo or NULL
@@ -504,7 +535,7 @@ public abstract class ManagerBase
 
 		try
 		{
-			MapFileInfo info = mapDatabase.getMapFileInfo();
+			MapFileInfo info = mapDatabase[0].getMapFileInfo();
 
 			return info;
 		}
@@ -526,6 +557,11 @@ public abstract class ManagerBase
 		RenderThemeChanged = true;
 	}
 
+	public XmlRenderTheme getCurrentRenderTheme()
+	{
+		return renderTheme;
+	}
+
 	public void setRenderTheme(XmlRenderTheme RenderTheme)
 	{
 		renderTheme = RenderTheme;
@@ -533,7 +569,7 @@ public abstract class ManagerBase
 		// Check RenderTheme valid
 		try
 		{
-			RenderThemeHandler.getRenderTheme(getGraphicFactory(), renderTheme);
+			CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 		}
 		catch (SAXException e)
 		{
@@ -557,17 +593,13 @@ public abstract class ManagerBase
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 
-		databaseRenderer = null;
+		databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
 		RenderThemeChanged = false;
 	}
 
-	public byte[] getMapsforgePixMap(Layer layer, Descriptor desc)
+	public TileGL getMapsforgePixMap(Layer layer, Descriptor desc, int ThreadIndex)
 	{
 		// Mapsforge 0.4.0
-
-		byte[] result = null;
-
-		// if (mapGenerator == null) mapGenerator = MapGeneratorFactory.createMapGenerator(MapGeneratorInternal.DATABASE_RENDERER);
 
 		if ((mapDatabase == null) || (!mapsForgeFile.equalsIgnoreCase(layer.Name)))
 		{
@@ -622,7 +654,7 @@ public abstract class ManagerBase
 			// Check RenderTheme valid
 			try
 			{
-				RenderThemeHandler.getRenderTheme(getGraphicFactory(), renderTheme);
+				CB_RenderThemeHandler.getRenderTheme(getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL, renderTheme);
 			}
 			catch (SAXException e)
 			{
@@ -646,62 +678,70 @@ public abstract class ManagerBase
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 
-			databaseRenderer = null;
+			if (databaseRenderer != null)
+			{
+				for (int i = 0; i < PROCESSOR_COUNT; i++)
+				{
+					databaseRenderer[i] = null;
+				}
+			}
+
 			RenderThemeChanged = false;
 		}
 
-		Tile tile = new Tile(desc.X, desc.Y, (byte) desc.Zoom);
+		Tile tile = new Tile(desc.getX(), desc.getY(), (byte) desc.getZoom());
 
 		// chk if MapDatabase Loded a Map File
-		if (!this.mapDatabase.hasOpenFile())
+		if (!this.mapDatabase[ThreadIndex].hasOpenFile())
 		{
 			return null;
 		}
 
+		RendererJob job = new RendererJob(tile, mapFile, renderTheme, DISPLAY_MODEL, textScale, false);
+
+		if (databaseRenderer == null) databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
+
+		if (databaseRenderer[ThreadIndex] == null)
 		{
-			// TODO MapsforgeGL vielleicht kann man die DrawBefehle hier in OpenGL umsetzen.
-			// Mapsforge gibt hier alle enthaltenen Punkte eines Tile's zurück.
-			// Diese müssten in OpenGL Draw Befehle umgesetzt werden können?
-			// Longri
+			GL_RenderType RENDERING_TYPE = LocatorSettings.MapsforgeRenderType.getEnumValue();
+
+			switch (RENDERING_TYPE)
 			{
-				// MapReadResult test = this.mapDatabase.readMapData(tile);
-				// double lat = test.ways.get(0).latLongs[0][0].latitude;
-				// double lat2 = test.pointOfInterests.get(0).position.latitude;
+			case Mapsforge:
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex],
+						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
+				break;
+			case Mixing:
+				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(this.mapDatabase[ThreadIndex],
+						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), ThreadIndex);
+				break;
+			case OpenGl:
+				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(
+						DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL);
+				break;
+			default:
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex],
+						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
+				break;
+
 			}
+
 		}
 
-		RendererJob job = new RendererJob(tile, mapFile, renderTheme, textScale);
-
-		if (databaseRenderer == null)
-		{
-			databaseRenderer = new DatabaseRenderer(this.mapDatabase, getGraphicFactory());
-		}
+		if (databaseRenderer[ThreadIndex] == null) return null;
 
 		try
 		{
-			Bitmap bmp = databaseRenderer.executeJob(job);
-			if (bmp != null)
-			{
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				bmp.compress(baos);
 
-				result = baos.toByteArray();
+			return databaseRenderer[ThreadIndex].execute(job);
 
-				try
-				{
-					baos.close();
-				}
-				catch (IOException e)
-				{
-				}
-			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 
-		return result;
+		return null;
 	}
 
 	private void LoadMapsforgeMap(Layer layer)
@@ -709,14 +749,20 @@ public abstract class ManagerBase
 		RenderThemeChanged = true;
 		mapFile = new File(layer.Url);
 
-		mapDatabase = new MapDatabase();
-		mapDatabase.closeFile();
-		mapDatabase.openFile(mapFile);
+		if (mapDatabase == null) mapDatabase = new MapDatabase[PROCESSOR_COUNT];
+
+		for (int i = 0; i < PROCESSOR_COUNT; i++)
+		{
+			if (mapDatabase[i] == null) mapDatabase[i] = new MapDatabase();
+			mapDatabase[i].closeFile();
+			mapDatabase[i].openFile(mapFile);
+		}
+
 		Logger.DEBUG("Open MapsForge Map: " + mapFile);
 
 		mapsForgeFile = layer.Name;
 	}
 
-	protected abstract GraphicFactory getGraphicFactory();
+	public abstract GraphicFactory getGraphicFactory(float ScaleFactor);
 
 }

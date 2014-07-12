@@ -15,37 +15,42 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Dialog extends CB_View_Base
 {
-	private String mTitle;
-	private Label titleLabel;
-	private Box mContent;
-	private final ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
-
-	/**
-	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
-	 */
-	private final ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>();
-	// TODO das Handling der Marker in den Dialogen überarbeiten!
-
-	/**
-	 * Overlay über alles wird als letztes Gerendert
-	 */
-	private final ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
-
-	protected boolean dontRenderDialogBackground = false;
-	protected Object data;
 	static protected NinePatch mTitle9patch;
 	static protected NinePatch mHeader9patch;
 	static protected NinePatch mCenter9patch;
 	static protected NinePatch mFooter9patch;
 	static protected float mTitleVersatz = 6;
 	static private int pW = 0;
+	static protected float margin = -1;
+	static public boolean lastNightMode = false;
+	static private int DialogCount = 0;
+
+	private String mTitle;
+	private Label titleLabel;
+	private Box mContent;
+	private ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
+	protected String CallerName = "";
+
+	/**
+	 * enthällt die Controls, welche über allen anderen gezeichnet werden zB. Selection Marker des TextFields
+	 */
+	private ArrayList<GL_View_Base> overlayForTextMarker = new ArrayList<GL_View_Base>();
+	// TODO das Handling der Marker in den Dialogen überarbeiten!
+
+	/**
+	 * Overlay über alles wird als letztes Gerendert
+	 */
+	private ArrayList<GL_View_Base> overlay = new ArrayList<GL_View_Base>();
+
+	protected boolean dontRenderDialogBackground = false;
+	protected Object data;
 
 	protected float mTitleHeight = 0;
 	protected float mTitleWidth = 100;
@@ -54,13 +59,12 @@ public abstract class Dialog extends CB_View_Base
 	protected float mHeaderHeight = 10f;
 	protected float mFooterHeight = 10f;
 
-	protected static float margin = -1;
-
-	public static boolean lastNightMode = false;
+	public final int DialogID;
 
 	public Dialog(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
+		DialogID = DialogCount++;
 		// ctor without title and footer
 		mHeaderHeight = calcHeaderHeight();
 		mFooterHeight = mHeaderHeight;
@@ -93,8 +97,8 @@ public abstract class Dialog extends CB_View_Base
 		rightBorder = mCenter9patch.getRightWidth();
 		topBorder = mHeader9patch.getTopHeight();
 		bottomBorder = mFooter9patch.getBottomHeight();
-		innerWidth = width - leftBorder - rightBorder;
-		innerHeight = height - topBorder - bottomBorder;
+		innerWidth = getWidth() - leftBorder - rightBorder;
+		innerHeight = getHeight() - topBorder - bottomBorder;
 
 		reziseContentBox();
 	}
@@ -247,47 +251,48 @@ public abstract class Dialog extends CB_View_Base
 			mTitleWidth += rightBorder; // sonst sieht es blöd aus
 		}
 
-		mContent.setWidth(this.width * 0.95f);
-		mContent.setHeight((this.height - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
-		float centerversatzX = this.halfWidth - mContent.getHalfWidth();
+		mContent.setWidth(this.getWidth() * 0.95f);
+		mContent.setHeight((this.getHeight() - mHeaderHeight - mFooterHeight - mTitleHeight - margin));
+		float centerversatzX = this.getHalfWidth() - mContent.getHalfWidth();
 		float centerversatzY = mFooterHeight;// this.halfHeight - mContent.getHalfHeight();
 		mContent.setPos(new Vector2(centerversatzX, centerversatzY));
 
 	}
 
 	@Override
-	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
 
 		batch.flush();
 
 		if (mHeader9patch != null && !dontRenderDialogBackground)
 		{
-			mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mHeaderHeight, this.width, mHeaderHeight);
+			mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mHeaderHeight, this.getWidth(), mHeaderHeight);
 		}
 		if (mFooter9patch != null && !dontRenderDialogBackground)
 		{
-			mFooter9patch.draw(batch, 0, 0, this.width, mFooterHeight + 2);
+			mFooter9patch.draw(batch, 0, 0, this.getWidth(), mFooterHeight + 2);
 		}
 		if (mCenter9patch != null && !dontRenderDialogBackground)
 		{
-			mCenter9patch.draw(batch, 0, mFooterHeight, this.width, (this.height - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
+			mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(),
+					(this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
 		}
 
 		if (mHasTitle)
 		{
-			if (mTitleWidth < this.width)
+			if (mTitleWidth < this.getWidth())
 			{
 				if (mTitle9patch != null && !dontRenderDialogBackground)
 				{
-					mTitle9patch.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					mTitle9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
 				}
 			}
 			else
 			{
 				if (mHeader9patch != null && !dontRenderDialogBackground)
 				{
-					mHeader9patch.draw(batch, 0, this.height - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
 				}
 			}
 		}
@@ -296,44 +301,46 @@ public abstract class Dialog extends CB_View_Base
 
 		super.renderChilds(batch, parentInfo);
 
-		for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
+		if (overlay != null)
 		{
-			// alle renderChilds() der in dieser GL_View_Base
-			// enthaltenen Childs auf rufen.
-
-			GL_View_Base view;
-			try
+			for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
 			{
-				view = iterator.next();
+				// alle renderChilds() der in dieser GL_View_Base
+				// enthaltenen Childs auf rufen.
 
-				// hier nicht view.render(batch) aufrufen, da sonnst die in der
-				// view enthaldenen Childs nicht aufgerufen werden.
-				if (view != null && view.isVisible())
+				GL_View_Base view;
+				try
 				{
+					view = iterator.next();
 
-					if (childsInvalidate) view.invalidate();
+					// hier nicht view.render(batch) aufrufen, da sonnst die in der
+					// view enthaldenen Childs nicht aufgerufen werden.
+					if (view != null && view.isVisible())
+					{
 
-					ParentInfo myInfoForChild = myParentInfo.cpy();
-					myInfoForChild.setWorldDrawRec(intersectRec);
+						if (childsInvalidate) view.invalidate();
 
-					myInfoForChild.add(view.getX(), view.getY());
+						myInfoForChild.setParentInfo(myParentInfo);
+						myInfoForChild.setWorldDrawRec(intersectRec);
 
-					batch.setProjectionMatrix(myInfoForChild.Matrix());
-					nDepthCounter++;
+						myInfoForChild.add(view.getX(), view.getY());
 
-					view.renderChilds(batch, myInfoForChild);
-					nDepthCounter--;
-					batch.setProjectionMatrix(myParentInfo.Matrix());
+						batch.setProjectionMatrix(myInfoForChild.Matrix());
+						nDepthCounter++;
+
+						view.renderChilds(batch, myInfoForChild);
+						nDepthCounter--;
+						batch.setProjectionMatrix(myParentInfo.Matrix());
+					}
+
 				}
-
-			}
-			catch (java.util.ConcurrentModificationException e)
-			{
-				// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
-				break;
+				catch (java.util.ConcurrentModificationException e)
+				{
+					// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+					break;
+				}
 			}
 		}
-
 	}
 
 	public SizeF getContentSize()
@@ -418,4 +425,66 @@ public abstract class Dialog extends CB_View_Base
 		return ret;
 	}
 
+	@Override
+	public String toString()
+	{
+		return getName() + "DialogID[" + DialogID + "] Created by: " + CallerName;
+	}
+
+	protected void setCallerName(String callerName)
+	{
+		CallerName = callerName;
+	}
+
+	@Override
+	public void dispose()
+	{
+		mTitle = null;
+		CallerName = null;
+		data = null;
+
+		if (titleLabel != null) titleLabel.dispose();
+		titleLabel = null;
+
+		if (mContent != null) mContent.dispose();
+		mContent = null;
+
+		if (contentChilds != null)
+		{
+			for (GL_View_Base v : contentChilds)
+			{
+				if (v != null) v.dispose();
+				v = null;
+			}
+
+			contentChilds.clear();
+		}
+		contentChilds = null;
+
+		if (overlayForTextMarker != null)
+		{
+			for (GL_View_Base v : overlayForTextMarker)
+			{
+				if (v != null) v.dispose();
+				v = null;
+			}
+
+			overlayForTextMarker.clear();
+		}
+		overlayForTextMarker = null;
+
+		if (overlay != null)
+		{
+			for (GL_View_Base v : overlay)
+			{
+				if (v != null) v.dispose();
+				v = null;
+			}
+
+			overlay.clear();
+		}
+		overlay = null;
+
+		super.dispose();
+	}
 }

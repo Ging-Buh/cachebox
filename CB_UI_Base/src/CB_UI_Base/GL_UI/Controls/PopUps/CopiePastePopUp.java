@@ -94,7 +94,7 @@ public class CopiePastePopUp extends PopUp_Base
 
 		this.addChild(btnCut);
 
-		float sollDivider = (this.width - p - (rec.getWidth() * 3)) / 4;
+		float sollDivider = (this.getWidth() - p - (rec.getWidth() * 3)) / 4;
 
 		btnCut.setX(sollDivider + (p / 2));
 		btnCopy.setX(btnCut.getMaxX() + sollDivider);
@@ -113,7 +113,7 @@ public class CopiePastePopUp extends PopUp_Base
 		Drawable drawable = new NinePatchDrawable(new NinePatch(SpriteCacheBase.Bubble.get(5), p, p, (int) (p * 1.432), p));
 		setBackground(drawable);
 
-		float yValue = this.height * 0.07f;
+		float yValue = this.getHeight() * 0.07f;
 
 		btnPaste.setY(yValue);
 		btnCopy.setY(yValue);

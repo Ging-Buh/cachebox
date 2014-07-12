@@ -10,7 +10,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 
 public class ActivityBase extends Dialog
 {
-	protected ActivityBase that;
+	// protected ActivityBase that;
 	protected float MeasuredLabelHeight;
 	protected float MeasuredLabelHeightBig;
 	protected float ButtonHeight;
@@ -18,7 +18,7 @@ public class ActivityBase extends Dialog
 	public ActivityBase(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		that = this;
+		// that = this;
 		dontRenderDialogBackground = true;
 		this.setBackground(SpriteCacheBase.activityBackground);
 
@@ -83,11 +83,23 @@ public class ActivityBase extends Dialog
 		GL.that.showActivity(this);
 	}
 
+	public boolean canCloseWithBackKey()
+	{
+		return true;
+	}
+
 	public static CB_RectF ActivityRec()
 	{
 		float w = Math.min(UI_Size_Base.that.getSmallestWidth(), UI_Size_Base.that.getWindowHeight() * 0.66f);
 
 		return new CB_RectF(0, 0, w, UI_Size_Base.that.getWindowHeight());
+	}
+
+	@Override
+	public void dispose()
+	{
+		super.dispose();
+		// that = null;
 	}
 
 }

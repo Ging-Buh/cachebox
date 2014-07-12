@@ -1,9 +1,26 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package CB_UI.GL_UI.Main.Actions;
 
 import CB_Locator.Map.Layer;
 import CB_Locator.Map.ManagerBase;
 import CB_UI.Config;
 import CB_UI.TrackRecorder;
+import CB_UI.GL_UI.Activitys.MapDownload;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
@@ -21,6 +38,9 @@ import CB_Utils.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+/**
+ * @author Longri
+ */
 public class CB_Action_ShowMap extends CB_Action_ShowView
 {
 
@@ -83,7 +103,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 		// mi = icm.addItem(MenuID.MI_SEARCH, "search", SpriteCache.Icons.get(27));
 		mi = icm.addItem(MenuID.MI_MAPVIEW_VIEW, "view");
 		// mi = icm.addItem(MenuID.MI_TREC_REC, "TrackRec");
-
+		mi = icm.addItem(MenuID.MI_MAP_DOWNOAD, "MapDownload");
 		return icm;
 	}
 
@@ -121,7 +141,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				mi = icm.addItem(Index++, "", layer.Name);
 				mi.setData(layer);
 				mi.setCheckable(true);
-				if (layer == MapView.mapTileLoader.CurrentLayer)
+				if (layer == MapView.mapTileLoader.getCurrentLayer())
 				{
 					mi.setChecked(true);
 				}
@@ -142,7 +162,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				Layer layer = (Layer) ((MenuItem) v).getData();
-				if (layer == MapView.mapTileLoader.CurrentOverlayLayer)
+				if (layer == MapView.mapTileLoader.getCurrentOverlayLayer())
 				{
 					// switch off Overlay
 					TabMainView.mapView.SetCurrentOverlayLayer(null);
@@ -167,7 +187,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				mi = icm.addItem(Index++, "", layer.Name);
 				mi.setData(layer);
 				mi.setCheckable(true);
-				if (layer == MapView.mapTileLoader.CurrentOverlayLayer)
+				if (layer == MapView.mapTileLoader.getCurrentOverlayLayer())
 				{
 					mi.setChecked(true);
 				}
@@ -244,13 +264,13 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 				MapView.that.SetAlignToCompass(!MapView.that.GetAlignToCompass());
 				return true;
 
+			case MenuID.MI_SHOW_ALL_WAYPOINTS:
+				toggleSetting(Config.ShowAllWaypoints);
+				return true;
+
 			case MenuID.MI_HIDE_FINDS:
 				toggleSetting(Config.MapHideMyFinds);
 
-				return true;
-
-			case MenuID.MI_SHOW_ALL_WAYPOINTS:
-				toggleSetting(Config.ShowAllWaypoints);
 				return true;
 
 			case MenuID.MI_SHOW_RATINGS:
@@ -303,6 +323,10 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 
 			case MenuID.MI_TREC_REC:
 				showMenuTrackRecording();
+				return true;
+
+			case MenuID.MI_MAP_DOWNOAD:
+				MapDownload.INSTANCE.show();
 				return true;
 
 			default:

@@ -19,11 +19,13 @@ public class WorkAnimation extends RotateAnimation
 		return mINSTANCE;
 	}
 
+	@Override
 	public AnimationBase INSTANCE()
 	{
 		return mINSTANCE;
 	}
 
+	@Override
 	public AnimationBase INSTANCE(CB_RectF rec)
 	{
 		mINSTANCE.setRec(rec);

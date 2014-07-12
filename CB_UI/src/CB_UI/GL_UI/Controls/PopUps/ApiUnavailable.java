@@ -27,13 +27,13 @@ public class ApiUnavailable extends Toast
 
 		this.setRec(posRec);
 
-		this.mTextField.setHeight(this.halfHeight);
+		this.mTextField.setHeight(this.getHalfHeight());
 		this.mTextField.setZeroPos();
-		this.mTextField.setWidth(this.width * 0.8f);
-		this.mTextField.setX(this.halfWidth - mTextField.getHalfWidth());
+		this.mTextField.setWidth(this.getWidth() * 0.8f);
+		this.mTextField.setX(this.getHalfWidth() - mTextField.getHalfWidth());
 		this.setWrappedText(Translation.Get("API-offline"));
 
-		this.mIcon = new Image(0, 0, width, halfHeight, "ImageIcon");
+		this.mIcon = new Image(0, 0, getWidth(), getHalfHeight(), "ImageIcon");
 		this.mIcon.setSprite(SpriteCacheBase.getThemedSprite("api-offline"));
 		float top = QuickButtonList.that.getY();
 		this.setY(top - UI_Size_Base.that.getButtonHeight() - this.getHeight());
@@ -43,7 +43,6 @@ public class ApiUnavailable extends Toast
 	@Override
 	protected void SkinIsChanged()
 	{
-		 
 
 	}
 

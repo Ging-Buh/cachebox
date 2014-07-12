@@ -4,8 +4,8 @@ import CB_RpcCore.Functions.RpcAnswer_GetExportList;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.chkBox;
-import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.GL_UI.Controls.chkBox.OnCheckedChangeListener;
+import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -18,8 +18,9 @@ public class ImportAPIListItem extends ListViewItemBackground
 	{
 		super(rec, Index, "");
 
-		lblName = new Label(getLeftWidth(), this.halfHeight, this.width - getLeftWidth() - getRightWidth(), this.halfHeight, "");
-		lblInfo = new Label(getLeftWidth(), 0, this.width - getLeftWidth() - getRightWidth(), this.halfHeight, "");
+		lblName = new Label(getLeftWidth(), this.getHalfHeight(), this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight(),
+				"");
+		lblInfo = new Label(getLeftWidth(), 0, this.getWidth() - getLeftWidth() - getRightWidth(), this.getHalfHeight(), "");
 
 		lblName.setFont(Fonts.getNormal());
 		lblInfo.setFont(Fonts.getSmall());
@@ -36,8 +37,8 @@ public class ImportAPIListItem extends ListViewItemBackground
 		// lblInfo.setText("---");
 
 		chk = new chkBox("");
-		chk.setX(this.width - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
-		chk.setY(this.halfHeight - chk.getHalfHeight());
+		chk.setX(this.getWidth() - getRightWidth() - chk.getWidth() - UI_Size_Base.that.getMargin());
+		chk.setY(this.getHalfHeight() - chk.getHalfHeight());
 		chk.setChecked(false);
 		chk.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{

@@ -6,7 +6,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.Point;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class SelectionMarker extends CB_View_Base
@@ -87,10 +87,10 @@ public class SelectionMarker extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (marker == null) Initial();
-		marker.draw(batch, 0, 0, width, height);
+		marker.draw(batch, 0, 0, getWidth(), getHeight());
 	}
 
 	private Point touchDownPos = null;
@@ -120,12 +120,12 @@ public class SelectionMarker extends CB_View_Base
 			}
 			// SelectionMarker verschieben
 			// neue gewünschte Koordinaten rel. links unten
-			float newX = this.Pos.x + x - touchDownPos.x;
-			float newY = this.Pos.y + y - touchDownPos.y;
+			float newX = this.getX() + x - touchDownPos.x;
+			float newY = this.getY() + y - touchDownPos.y;
 			// System.out.println("getX()=" + this.Pos.x + " x=" + x + " - newX=" + newX);
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
-			newY = newY + height;
+			newY = newY + getHeight();
 			Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			if (cursorPos != null)
 			{
@@ -146,12 +146,12 @@ public class SelectionMarker extends CB_View_Base
 		{
 			// SelectionMarker verschieben
 			// neue gewünschte Koordinaten rel. links unten
-			float newX = this.Pos.x + x - touchDownPos.x;
-			float newY = this.Pos.y + y - touchDownPos.y;
+			float newX = this.getX() + x - touchDownPos.x;
+			float newY = this.getY() + y - touchDownPos.y;
 
 			// neue gewünschte Koordinaten am Einfügepunkt des Markers
 			newX = newX + markerXPos;
-			newY = newY + height;
+			newY = newY + getHeight();
 			// Point cursorPos = GL.that.getKeyboardFocus().GetNextCursorPos(new Point((int) newX, (int) newY), type, true);
 			touchDownPos = null;
 		}
@@ -170,7 +170,7 @@ public class SelectionMarker extends CB_View_Base
 
 		// float oldX = this.Pos.x;
 		// float oldY = this.Pos.y;
-		this.setPos(x - markerXPos, y - height);
+		this.setPos(x - markerXPos, y - getHeight());
 		// if (this.ThisWorldRec != null)
 		// {
 		// this.ThisWorldRec.offset(x - markerXPos - oldX, y - height - oldY);
@@ -181,6 +181,6 @@ public class SelectionMarker extends CB_View_Base
 	public void moveBy(float dx, float dy)
 	{
 		if ((Math.abs(dx) < 0.5) && (Math.abs(dy) < 0.5)) return;
-		this.setPos(this.Pos.x + dx, this.Pos.y + dy);
+		this.setPos(this.getX() + dx, this.getY() + dy);
 	}
 }

@@ -26,8 +26,8 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class ZoomButtons extends CB_View_Base
@@ -46,9 +46,11 @@ public class ZoomButtons extends CB_View_Base
 	private boolean fadeOut = false;
 	private boolean fadeIn = false;
 	private float FadeValue = 1.0f;
+	private float minimummFadeValue = 0;
 
 	private boolean dontFadeOut = false;
 	private boolean portrait = false;
+	private boolean withoutDrawing = false;
 
 	// # Constructors
 	/**
@@ -71,6 +73,13 @@ public class ZoomButtons extends CB_View_Base
 		super(rec, view, name);
 		onResized(this);
 		resetFadeOut();
+	}
+
+	public ZoomButtons()
+	{
+		// Initial ZoomButtons without any Drawables
+		super("");
+		withoutDrawing = true;
 	}
 
 	private OnClickListener mOnClickListenerUp;
@@ -96,6 +105,11 @@ public class ZoomButtons extends CB_View_Base
 	public void enableFadeOut()
 	{
 		dontFadeOut = false;
+	}
+
+	public void setMinimumFadeValue(float value)
+	{
+		minimummFadeValue = value;
 	}
 
 	public boolean FadeOutIsEnabled()
@@ -211,8 +225,9 @@ public class ZoomButtons extends CB_View_Base
 	private boolean firstDraw = true;
 
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
+		if (withoutDrawing) return;
 		super.render(batch);
 
 		if (firstDraw)
@@ -244,7 +259,7 @@ public class ZoomButtons extends CB_View_Base
 			float e = btnDown.getWidth() / 2;
 			float f = btnDown.getHeight() / 2;
 
-			btnDown.setOrigin(f, f);
+			btnDown.setOrigin(e, f);
 			btnDown.setRotation(90);
 
 			hw = hh;
@@ -274,7 +289,7 @@ public class ZoomButtons extends CB_View_Base
 		{
 			float e = btnUp.getWidth() / 2;
 			float f = btnUp.getHeight() / 2;
-			btnUp.setOrigin(f, f);
+			btnUp.setOrigin(e, f);
 			btnUp.setRotation(90);
 
 			hw = hh;
@@ -371,7 +386,7 @@ public class ZoomButtons extends CB_View_Base
 			this.setVisible(true);
 			virtualVisible = true;
 			fadeIn = true;
-			FadeValue = 0f;
+			FadeValue = minimummFadeValue;
 		}
 		if (fadeOut)
 		{
@@ -447,10 +462,10 @@ public class ZoomButtons extends CB_View_Base
 			if (now.getTime() - timeLastAction.getTime() > fadeStep)
 			{
 				FadeValue -= 0.05f;
-				if (FadeValue <= 0f)
+				if (FadeValue <= minimummFadeValue)
 				{
 					// Log.d("CACHEBOX", "Ende Fade Out");
-					FadeValue = 0f;
+					FadeValue = minimummFadeValue;
 					fadeOut = false;
 					// this.setVisibility(INVISIBLE);
 					virtualVisible = false;

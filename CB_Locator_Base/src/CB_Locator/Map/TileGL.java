@@ -1,23 +1,37 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
-import javax.security.auth.DestroyFailedException;
-import javax.security.auth.Destroyable;
+import CB_Utils.Lists.CB_List;
 
-import CB_UI_Base.GL_UI.runOnGL;
-import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.utils.EmptyDrawable;
-import CB_Utils.Log.Logger;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.utils.Disposable;
 
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-public class TileGL extends EmptyDrawable implements Destroyable
+/**
+ * @author ging-buh
+ * @author Longri
+ */
+public abstract class TileGL implements Disposable
 {
 	public enum TileState
 	{
 		Scheduled, Present, LowResolution, Disposed
-	};
+	}
+
+	private final int DEFAULT_TILE_SIZE = 256;
 
 	public Descriptor Descriptor = null;
 
@@ -25,115 +39,29 @@ public class TileGL extends EmptyDrawable implements Destroyable
 	// zum speichern beliebiger Zusatzinfos
 	public Object data;
 
-	// TODO MapsforgeGL change to Drawable
-	private Texture texture = null;
-
-	private Pixmap pixmap;
-	private byte[] bytes;
-
 	// / <summary>
 	// / Frames seit dem letzten Zugriff auf die Textur
 	// / </summary>
 	public long Age = 0;
 
-	public TileGL(Descriptor desc, byte[] bytes, TileState state)
-	{
-		Descriptor = desc;
-		this.texture = null;
-		// this.texture = texture;
-		this.bytes = bytes;
-		State = state;
-	}
+	protected boolean isDisposed = false;
 
-	public boolean canDraw()
-	{
-		if (texture != null) return true;
-		if (bytes == null) return false;
-		createTexture();
-		if (texture != null) return true;
-		return false;
-	}
+	public abstract boolean isDisposed();
 
-	private void createTexture()
-	{
-		if (texture != null) return;
-		if (bytes == null) return;
-		try
-		{
-			pixmap = new Pixmap(bytes, 0, bytes.length);
-			texture = new Texture(pixmap);
-		}
-		catch (Exception ex)
-		{
-			Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
-		}
-		bytes = null;
-	}
-
-	public String ToString()
-	{
-		return State.toString() + ", " + Descriptor.ToString();
-	}
+	public abstract boolean canDraw();
 
 	@Override
-	public void destroy() throws DestroyFailedException
+	public abstract String toString();
+
+	public abstract long getWidth();
+
+	public abstract long getHeight();
+
+	public float getScaleFactor()
 	{
-
-		// must run on GL thrad
-
-		GL.that.RunOnGL(new runOnGL()
-		{
-
-			@Override
-			public void run()
-			{
-				try
-				{
-					if (pixmap != null) pixmap.dispose();
-				}
-				catch (Exception e1)
-				{
-					e1.printStackTrace();
-				}
-
-				try
-				{
-					if (texture != null) texture.dispose();
-				}
-				catch (java.lang.NullPointerException e)
-				{
-					e.printStackTrace();
-				}
-				texture = null;
-				bytes = null;
-				pixmap = null;
-			}
-		});
-
+		return getWidth() / DEFAULT_TILE_SIZE;
 	}
 
-	@Override
-	public boolean isDestroyed()
-	{
-		return false;
-	}
-
-	@Override
-	public void draw(SpriteBatch batch, float x, float y, float width, float height)
-	{
-		if (texture != null) batch.draw(texture, x, y, width, height);
-	}
-
-	public long getWidth()
-	{
-		if (texture != null) return texture.getWidth();
-		return 0;
-	}
-
-	public long getHeight()
-	{
-		if (texture != null) return texture.getHeight();
-		return 0;
-	}
+	public abstract void draw(Batch batch, float f, float y, float tILESIZE, float tILESIZE2, CB_List<TileGL_RotateDrawables> rotateList);
 
 }

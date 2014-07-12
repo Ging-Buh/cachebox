@@ -16,9 +16,9 @@
 
 package CB_Locator;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
+
+import CB_Utils.Lists.CB_List;
 
 /**
  * Klasse zum verwalten von GPS Status
@@ -31,7 +31,7 @@ public class GPS
 	private static int mSatVisible;
 	private static int mSatFixed;
 
-	private static ArrayList<GpsStrength> mSatList;
+	private static CB_List<GpsStrength> mSatList;
 
 	public static int getVisibleSats()
 	{
@@ -43,7 +43,7 @@ public class GPS
 		return mSatFixed;
 	}
 
-	public static ArrayList<GpsStrength> getSatList()
+	public static CB_List<GpsStrength> getSatList()
 	{
 		return mSatList;
 	}
@@ -61,7 +61,7 @@ public class GPS
 
 		int satellites = 0;
 		int fixed = 0;
-		ArrayList<GpsStrength> SatList = new ArrayList<GpsStrength>();
+		CB_List<GpsStrength> SatList = new CB_List<GpsStrength>();
 		while (statusIterator.hasNext())
 		{
 			GpsSatellite sat = statusIterator.next();
@@ -88,7 +88,7 @@ public class GPS
 
 		mSatFixed = fixed;
 		mSatVisible = satellites;
-		Collections.sort(SatList);
+		SatList.sort();
 		mSatList = SatList;
 	}
 
@@ -102,7 +102,7 @@ public class GPS
 		mSatVisible = satellites;
 	}
 
-	public static void setSatList(ArrayList<GpsStrength> coreSatList)
+	public static void setSatList(CB_List<GpsStrength> coreSatList)
 	{
 		mSatList = coreSatList;
 	}

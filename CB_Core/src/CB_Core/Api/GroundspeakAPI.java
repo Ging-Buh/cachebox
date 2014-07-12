@@ -35,6 +35,7 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
@@ -42,19 +43,19 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Map.Descriptor;
+import CB_Utils.Plattform;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
 
 public class GroundspeakAPI
 {
 	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
-	public static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
+	static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
 
 	public static final int IO = 0;
-	public static final int ERROR = -1;
+	private static final int ERROR = -1;
 	public static final int CONNECTION_TIMEOUT = -2;
-	public static final int API_ERROR = -3;
+	private static final int API_ERROR = -3;
 	public static final int API_IS_UNAVAILABLE = -4;
 
 	public static String LastAPIError = "";
@@ -73,7 +74,7 @@ public class GroundspeakAPI
 	 * 
 	 * @return
 	 */
-	public static String GetAccessToken()
+	static String GetAccessToken()
 	{
 		return GetAccessToken(false);
 	}
@@ -85,7 +86,7 @@ public class GroundspeakAPI
 	 * @param boolean Url_Codiert
 	 * @return
 	 */
-	public static String GetAccessToken(boolean Url_Codiert)
+	static String GetAccessToken(boolean Url_Codiert)
 	{
 		String act = "";
 		if (CB_Core_Settings.StagingAPI.getValue())
@@ -137,7 +138,7 @@ public class GroundspeakAPI
 		return membershipType == 3;
 	}
 
-	public static String GetUTCDate(Date date)
+	private static String GetUTCDate(Date date)
 	{
 		long utc = date.getTime();
 		TimeZone tz = TimeZone.getDefault();
@@ -147,7 +148,7 @@ public class GroundspeakAPI
 		return "\\/Date(" + utc + ")\\/";
 	}
 
-	public static String ConvertNotes(String note)
+	private static String ConvertNotes(String note)
 	{
 		String result = note.replace("\r", "");
 		result = result.replace("\"", "\\\"");
@@ -484,7 +485,7 @@ public class GroundspeakAPI
 
 		try
 		{
-			Thread.sleep(1000);
+			Thread.sleep(2500);
 		}
 		catch (InterruptedException e1)
 		{
@@ -504,7 +505,7 @@ public class GroundspeakAPI
 			int i = 0;
 			for (Cache cache : caches)
 			{
-				requestString += "\"" + cache.GcCode + "\"";
+				requestString += "\"" + cache.getGcCode() + "\"";
 				if (i < caches.size() - 1) requestString += ",";
 				i++;
 			}
@@ -539,10 +540,10 @@ public class GroundspeakAPI
 						{
 							Cache tmp = iterator.next();
 
-							if (jCache.getString("CacheCode").equals(tmp.GcCode))
+							if (jCache.getString("CacheCode").equals(tmp.getGcCode()))
 							{
-								tmp.Archived = jCache.getBoolean("Archived");
-								tmp.Available = jCache.getBoolean("Available");
+								tmp.setArchived(jCache.getBoolean("Archived"));
+								tmp.setAvailable(jCache.getBoolean("Available"));
 								tmp.NumTravelbugs = jCache.getInt("TrackableCount");
 							}
 						}
@@ -589,6 +590,153 @@ public class GroundspeakAPI
 			return ERROR;
 		}
 
+		return (-1);
+	}
+
+	/**
+	 * Gets the Logs for the given Cache
+	 * 
+	 * @param Staging
+	 *            Config.settings.StagingAPI.getValue()
+	 * @param accessToken
+	 * @param conectionTimeout
+	 *            Config.settings.conection_timeout.getValue()
+	 * @param socketTimeout
+	 *            Config.settings.socket_timeout.getValue()
+	 * @param cache
+	 * @return
+	 */
+	public static int GetGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all)
+	{
+		String finders = CB_Core_Settings.Friends.getValue();
+		String[] finder = finders.split("\\|");
+		ArrayList<String> finderList = new ArrayList<String>();
+		for (String f : finder)
+		{
+			finderList.add(f);
+		}
+
+		if (cache == null) return -3;
+		int chk = chkMemperShip(false);
+		if (chk < 0) return chk;
+
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException e1)
+		{
+			e1.printStackTrace();
+		}
+
+		int start = 1;
+		int count = 100;
+
+		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
+		while (finderList.size() > 0 || all)
+		// Schleife, solange bis entweder keine Logs mehr geladen werden oder bis alle Logs aller Finder geladen sind.
+		{
+			try
+			{
+				String requestString = "";
+				requestString += "&AccessToken=" + GetAccessToken();
+				requestString += "&CacheCode=" + cache.getGcCode();
+				requestString += "&StartIndex=" + start;
+				requestString += "&MaxPerPage=" + count;
+				HttpGet httppost = new HttpGet(URL + "GetGeocacheLogsByCacheCode?format=json" + requestString);
+
+				String result = Execute(httppost);
+				if (result.contains("The service is unavailable"))
+				{
+					return API_IS_UNAVAILABLE;
+				}
+				try
+				// Parse JSON Result
+				{
+					JSONTokener tokener = new JSONTokener(result);
+					JSONObject json = (JSONObject) tokener.nextValue();
+					JSONObject status = json.getJSONObject("Status");
+					if (status.getInt("StatusCode") == 0)
+					{
+						result = "";
+						JSONArray geocacheLogs = json.getJSONArray("Logs");
+						for (int ii = 0; ii < geocacheLogs.length(); ii++)
+						{
+							JSONObject jLogs = (JSONObject) geocacheLogs.get(ii);
+							JSONObject jFinder = (JSONObject) jLogs.get("Finder");
+							JSONObject jLogType = (JSONObject) jLogs.get("LogType");
+							LogEntry log = new LogEntry();
+							log.CacheId = cache.Id;
+							log.Comment = jLogs.getString("LogText");
+							log.Finder = jFinder.getString("UserName");
+							if (!finderList.contains(log.Finder))
+							{
+								continue;
+							}
+							finderList.remove(log.Finder);
+							log.Id = jLogs.getInt("ID");
+							log.Timestamp = new Date();
+							try
+							{
+								String dateCreated = jLogs.getString("VisitDate");
+								int date1 = dateCreated.indexOf("/Date(");
+								int date2 = dateCreated.indexOf("-");
+								String date = (String) dateCreated.subSequence(date1 + 6, date2);
+								log.Timestamp = new Date(Long.valueOf(date));
+							}
+							catch (Exception exc)
+							{
+								Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);
+							}
+							log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
+							logList.add(log);
+
+						}
+
+						if ((geocacheLogs.length() < count) || (finderList.size() == 0))
+						{
+							return 0; // alle Logs des Caches geladen oder alle gesuchten Finder gefunden
+						}
+					}
+					else
+					{
+						result = "StatusCode = " + status.getInt("StatusCode") + "\n";
+						result += status.getString("StatusMessage") + "\n";
+						result += status.getString("ExceptionDetails");
+						LastAPIError = result;
+						return (-1);
+					}
+
+				}
+				catch (JSONException e)
+				{
+					e.printStackTrace();
+				}
+
+			}
+			catch (ConnectTimeoutException e)
+			{
+				Logger.Error("GetGeocacheLogsByCache", "ConnectTimeoutException", e);
+				return CONNECTION_TIMEOUT;
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				Logger.Error("GetGeocacheLogsByCache", "UnsupportedEncodingException", e);
+				return ERROR;
+			}
+			catch (ClientProtocolException e)
+			{
+				Logger.Error("GetGeocacheLogsByCache", "ClientProtocolException", e);
+				return ERROR;
+			}
+			catch (IOException e)
+			{
+				Logger.Error("GetGeocacheLogsByCache", "IOException", e);
+				return ERROR;
+			}
+			// die nächsten Logs laden
+			start += count;
+		}
 		return (-1);
 	}
 
@@ -687,7 +835,7 @@ public class GroundspeakAPI
 	// liest den CacheStatus aus dem gegebenen json Object aus.
 	// darin ist gespeichert, wie viele Full Caches schon geladen wurden und wie
 	// viele noch frei sind
-	public static int checkCacheStatus(JSONObject json, boolean isLite)
+	static int checkCacheStatus(JSONObject json, boolean isLite)
 	{
 		LastAPIError = "";
 		try
@@ -718,7 +866,7 @@ public class GroundspeakAPI
 		}
 	}
 
-	public static int getCacheSize(int containerTypeId)
+	static int getCacheSize(int containerTypeId)
 	{
 		switch (containerTypeId)
 		{
@@ -742,7 +890,7 @@ public class GroundspeakAPI
 		}
 	}
 
-	public static CacheTypes getCacheType(int apiTyp)
+	static CacheTypes getCacheType(int apiTyp)
 	{
 		switch (apiTyp)
 		{
@@ -787,6 +935,8 @@ public class GroundspeakAPI
 			return CacheTypes.Trailhead;
 		case 218:
 			return CacheTypes.MultiQuestion;
+		case 7005:
+			return CacheTypes.Giga;
 
 		default:
 			return CacheTypes.Cache;
@@ -1189,7 +1339,7 @@ public class GroundspeakAPI
 		if (list == null) list = new HashMap<String, URI>();
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken() + "&CacheCode=" + cacheCode
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode
 					+ "&format=json");
 
 			String result = Execute(httppost);
@@ -1214,7 +1364,7 @@ public class GroundspeakAPI
 						String name = jImage.getString("Name");
 						String uri = jImage.getString("Url");
 						// ignore log images
-						if (uri.startsWith("http://img.geocaching.com/cache/log")) continue; // LOG-Image
+						if (uri.contains("/cache/log")) continue; // LOG-Image
 						// Check for duplicate name
 						if (list.containsKey(name))
 						{
@@ -1231,6 +1381,10 @@ public class GroundspeakAPI
 						list.put(name, new URI(uri));
 					}
 					return IO;
+				}
+				else if (status.getInt("StatusCode") == 140)
+				{
+					return 140; // API-Limit überschritten -> nach etwas Verzögerung wiederholen!
 				}
 				else
 				{
@@ -1327,6 +1481,7 @@ public class GroundspeakAPI
 		String line = "";
 		while ((line = rd.readLine()) != null)
 		{
+			if (Plattform.used == Plattform.Server) line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
 			result += line + "\n";
 		}
 		return result;
@@ -1347,17 +1502,69 @@ public class GroundspeakAPI
 
 		for (Cache cache : apiCaches)
 		{
-			cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+			// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+			// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+			if (aktCache == null)
+			{
+				aktCache = cacheDAO.getFromDbByCacheId(cache.Id);
+			}
+			// Read Detail Info of Cache if not available
+			if ((aktCache != null) && (aktCache.detail == null))
+			{
+				aktCache.loadDetail();
+			}
+			// If Cache into DB, extract saved rating
+			if (aktCache != null)
+			{
+				cache.Rating = aktCache.Rating;
+			}
+
 			// Falls das Update nicht klappt (Cache noch nicht in der DB) Insert machen
 			if (!cacheDAO.UpdateDatabase(cache))
 			{
 				cacheDAO.WriteToDatabase(cache);
 			}
 
+			// Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
+			if (cache.getTmpNote() != null)
+			{
+				String oldNote = Database.GetNote(cache);
+				String newNote = "";
+				if (oldNote == null)
+				{
+					oldNote = "";
+				}
+				String begin = "<Import from Geocaching.com>";
+				String end = "</Import from Geocaching.com>";
+				int iBegin = oldNote.indexOf(begin);
+				int iEnd = oldNote.indexOf(end);
+				if ((iBegin >= 0) && (iEnd > iBegin))
+				{
+					// Note from Groundspeak already in Database
+					// -> Replace only this part in whole Note
+					newNote = oldNote.substring(0, iBegin - 1) + System.getProperty("line.separator"); // Copy the old part of Note before
+																										// the beginning of the groundspeak
+																										// block
+					newNote += begin + System.getProperty("line.separator");
+					newNote += cache.getTmpNote();
+					newNote += System.getProperty("line.separator") + end;
+					newNote += oldNote.substring(iEnd + end.length(), oldNote.length());
+				}
+				else
+				{
+					newNote = oldNote + System.getProperty("line.separator");
+					newNote += begin + System.getProperty("line.separator");
+					newNote += cache.getTmpNote();
+					newNote += System.getProperty("line.separator") + end;
+				}
+				cache.setTmpNote(newNote);
+				Database.SetNote(cache, cache.getTmpNote());
+			}
+
 			// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-			cache.longDescription = "";
+			cache.setLongDescription("");
 
 			for (LogEntry log : apiLogs)
 			{
@@ -1375,19 +1582,25 @@ public class GroundspeakAPI
 				imageDAO.WriteToDatabase(image, false);
 			}
 
-			for (Waypoint waypoint : cache.waypoints)
+			for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 			{
+				// must Cast to Full Waypoint. If Waypoint, is wrong createt!
+				Waypoint waypoint = (Waypoint) cache.waypoints.get(i);
 				boolean update = true;
 
 				// dont refresh wp if aktCache.wp is user changed
 				if (aktCache != null)
 				{
-					for (Waypoint wp : aktCache.waypoints)
+					if (aktCache.waypoints != null)
 					{
-						if (wp.GcCode.equalsIgnoreCase(waypoint.GcCode))
+						for (int j = 0, m = aktCache.waypoints.size(); j < m; j++)
 						{
-							if (wp.IsUserWaypoint) update = false;
-							break;
+							Waypoint wp = aktCache.waypoints.get(j);
+							if (wp.getGcCode().equalsIgnoreCase(waypoint.getGcCode()))
+							{
+								if (wp.IsUserWaypoint) update = false;
+								break;
+							}
 						}
 					}
 				}
@@ -1421,6 +1634,7 @@ public class GroundspeakAPI
 		Database.Data.endTransaction();
 
 		Database.Data.GPXFilenameUpdateCacheCount();
+
 	}
 
 	private static String getDeviceInfoRequestString()
@@ -1488,11 +1702,6 @@ public class GroundspeakAPI
 			return CONNECTION_TIMEOUT;
 
 		return ret;
-	}
-
-	public static int isValidAPI_Key()
-	{
-		return isValidAPI_Key(false);
 	}
 
 	public static int isValidAPI_Key(boolean withoutMsg)

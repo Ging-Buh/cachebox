@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
+
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
+import CB_Locator.LocatorSettings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
@@ -22,6 +26,7 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
@@ -34,6 +39,7 @@ import CB_Utils.Settings.SettingFile;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingIntArray;
+import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Util.FileIO;
@@ -55,6 +61,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -64,13 +72,11 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFiles;
 
 import de.droidcachebox.Components.copyAssetFolder;
@@ -102,6 +108,7 @@ public class splash extends Activity
 	private boolean mOriantationRestart = false;
 	private static devicesSizes ui;
 	private boolean isLandscape = false;
+	private boolean ToastEx = false;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -253,6 +260,7 @@ public class splash extends Activity
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onStart()
 	{
@@ -260,13 +268,6 @@ public class splash extends Activity
 
 		// initial GDX
 		Gdx.files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = true;
-		// Gdx.graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-		// : config.resolutionStrategy);
-		// LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		// Gdx.input = new AndroidInput(main.mainActivity, inflater.getContext(), null, config);
-
 		// first, try to find stored preferences of workPath
 		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
@@ -330,21 +331,58 @@ public class splash extends Activity
 			e.printStackTrace();
 		}
 
+		// check Write permission
+		if (!askAgain)
+		{
+			if (!FileIO.checkWritePermission(workPath))
+			{
+				askAgain = true;
+				if (!ToastEx)
+				{
+					ToastEx = true;
+					String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+					Toast.makeText(splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+				}
+			}
+		}
+
 		if ((askAgain))
 		{
 			// no saved workPath found -> search sd-cards and if more than 1 is found give the user the possibility to select one
 
 			String externalSd = getExternalSdPath("/CacheBox");
 
+			boolean hasExtSd;
 			final String externalSd2 = externalSd;
-			boolean hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
+
+			if (externalSd != null)
+			{
+				hasExtSd = (externalSd.length() > 0) && (!externalSd.equalsIgnoreCase(workPath));
+			}
+			else
+			{
+				hasExtSd = false;
+			}
 
 			// externe SD wurde gefunden != internal
 			// oder Tablet Layout möglich
 			// -> Auswahldialog anzeigen
 			try
 			{
-				final Dialog dialog = new Dialog(context);
+				final Dialog dialog = new Dialog(context)
+				{
+					@Override
+					public boolean onKeyDown(int keyCode, KeyEvent event)
+					{
+						if (keyCode == KeyEvent.KEYCODE_BACK)
+						{
+							splash.this.finish();
+						}
+
+						return super.onKeyDown(keyCode, event);
+					}
+				};
+
 				dialog.setContentView(R.layout.sdselectdialog);
 				TextView title = (TextView) dialog.findViewById(R.id.select_sd_title);
 				title.setText(Translation.Get("selectWorkSpace") + "\n\n");
@@ -424,9 +462,6 @@ public class splash extends Activity
 					}
 				});
 
-				// Set max height of ScrollView
-				ScrollView sv = (ScrollView) dialog.findViewById(R.id.scrollView);
-				// TODO set max
 				LinearLayout ll = (LinearLayout) dialog.findViewById(R.id.scrollViewLinearLayout);
 
 				// add all Buttons for created Workspaces
@@ -437,6 +472,13 @@ public class splash extends Activity
 				{
 
 					final String Name = FileIO.GetFileNameWithoutExtension(AddWorkPath);
+
+					if (!FileIO.checkWritePermission(AddWorkPath))
+					{
+						// delete this Work Path
+						deleteWorkPath(AddWorkPath);
+						continue;
+					}
 
 					Button buttonW = new Button(context);
 					buttonW.setText(Name + "\n\n" + AddWorkPath);
@@ -536,10 +578,19 @@ public class splash extends Activity
 							@Override
 							public void getFolderReturn(String Path)
 							{
-								AdditionalWorkPathArray.add(Path);
-								writeAdditionalWorkPathArray(AdditionalWorkPathArray);
-								// Start again to include the new Folder
-								onStart();
+								if (FileIO.checkWritePermission(Path))
+								{
+
+									AdditionalWorkPathArray.add(Path);
+									writeAdditionalWorkPathArray(AdditionalWorkPathArray);
+									// Start again to include the new Folder
+									onStart();
+								}
+								else
+								{
+									String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+									Toast.makeText(splash.this, WriteProtectionMsg, Toast.LENGTH_LONG).show();
+								}
 							}
 						};
 
@@ -603,77 +654,108 @@ public class splash extends Activity
 		String externalSd = "";
 
 		// search for an external sd card on different devices
-		if (testExtSdPath(prev + "/extSdCard"))
+
+		if ((externalSd = testExtSdPath(prev + "/extSdCard")) != null)
 		{
-			externalSd = prev + "/extSdCard" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/MicroSD"))
+		else if ((externalSd = testExtSdPath(prev + "/MicroSD")) != null)
 		{
-			externalSd = prev + "/MicroSD" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard/ext_sd"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard/ext_sd")) != null)
 		{
-			externalSd = prev + "/sdcard/ext_sd" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/ext_card"))
+		else if ((externalSd = testExtSdPath(prev + "/ext_card")) != null)
 		{
 			// Sony Xperia sola
-			externalSd = prev + "/ext_card" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/external"))
+		else if ((externalSd = testExtSdPath(prev + "/external")) != null)
 		{
-			externalSd = prev + "/external" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard2"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard2")) != null)
 		{
-			externalSd = prev + "/sdcard2" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard1"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard1")) != null)
 		{
-			externalSd = prev + "/sdcard1" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard/_ExternalSD"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard/_ExternalSD")) != null)
 		{
-			externalSd = prev + "/sdcard/_ExternalSD";
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard-ext"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard-ext")) != null)
 		{
-			externalSd = prev + "/sdcard-ext" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/external1"))
+		else if ((externalSd = testExtSdPath(prev + "/external1")) != null)
 		{
-			externalSd = prev + "/external1" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard/external_sd"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard/external_sd")) != null)
 		{
-			externalSd = prev + "/sdcard/external_sd" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/emmc"))
+		else if ((externalSd = testExtSdPath(prev + "/emmc")) != null)
 		{
 			// for CM9
-			externalSd = prev + "/emmc" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath("/Removable/MicroSD"))
+		else if ((externalSd = testExtSdPath("/Removable/MicroSD")) != null)
 		{
 			// Asus Transformer
-			externalSd = prev + "/Removable/MicroSD" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath("/mnt/ext_sd"))
+		else if ((externalSd = testExtSdPath("/mnt/ext_sd")) != null)
 		{
 			// ODYS Motion
-			externalSd = prev + "/ext_sd" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath("/sdcard/tflash"))
+		else if ((externalSd = testExtSdPath("/sdcard/tflash")) != null)
 		{
 			// Car Radio
-			externalSd = prev + "/sdcard/tflash" + Folder;
+			externalSd += Folder;
 		}
-		else if (testExtSdPath(prev + "/sdcard"))
+		else if ((externalSd = testExtSdPath(prev + "/sdcard")) != null)
 		{
 			// on some devices it is possible that the SD-Card reported by getExternalStorageDirectory() is the extSd and the real
 			// external SD is /mnt/sdcard (Faktor2 Tablet!!!)
-			externalSd = prev + "/sdcard" + Folder;
+			externalSd += Folder;
 		}
+		else if ((externalSd = testExtSdPath("/mnt/shared/ExtSD")) != null)
+		{
+			// GinyMotion Emulator
+			externalSd += Folder;
+		}
+
+		if (android.os.Build.VERSION.SDK_INT == 19)
+		{
+			// check for Root permission
+			try
+			{
+				String testFolderName = externalSd + "/Test";
+
+				File testFolder = new File(testFolderName);
+				File test = new File(testFolderName + "/Test.txt");
+				testFolder.mkdirs();
+				test.createNewFile();
+				if (!test.exists())
+				{
+					return null;
+				}
+				test.delete();
+				testFolder.delete();
+			}
+			catch (IOException e)
+			{
+				return null;
+			}
+		}
+
 		return externalSd;
 	}
 
@@ -746,27 +828,56 @@ public class splash extends Activity
 	private void showPleaseWaitDialog()
 	{
 		pWaitD = ProgressDialog.show(splash.this, "In progress", "Copy resources");
-
 		pWaitD.show();
 		TextView tv1 = (TextView) pWaitD.findViewById(android.R.id.message);
 		tv1.setTextColor(Color.WHITE);
 	}
 
 	// this will test whether the extPath is an existing path to an external sd card
-	private boolean testExtSdPath(String extPath)
+	private String testExtSdPath(String extPath)
 	{
-		if (extPath.equalsIgnoreCase(workPath)) return false; // if this extPath is the same than the actual workPath -> this is the
+		if (extPath.equalsIgnoreCase(workPath)) return null; // if this extPath is the same than the actual workPath -> this is the
 																// internal SD, not
 		// the external!!!
 		if (FileIO.FileExists(extPath))
 		{
 			StatFs stat = new StatFs(extPath);
+			@SuppressWarnings("deprecation")
 			long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
-			if (bytesAvailable == 0) return false; // ext SD-Card is not plugged in -> do not use it
+			if (bytesAvailable == 0)
+			{
+				return null; // ext SD-Card is not plugged in -> do not use it
+			}
 			else
-				return true; // ext SD-Card is plugged in
+			{
+				// Check can Read/Write
+
+				File f = new File(extPath);
+				if (f.canWrite())
+				{
+					if (f.canRead())
+					{
+						return f.getAbsolutePath(); // ext SD-Card is plugged in
+					}
+				}
+
+				// Check can Read/Write on Application Storage
+				String appPath = this.getApplication().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+				int Pos = appPath.indexOf("/Android/data/");
+				String p = appPath.substring(Pos);
+				File fi = new File(extPath + p);// "/Android/data/de.droidcachebox/files");
+				fi.mkdirs();
+				if (fi.canWrite())
+				{
+					if (fi.canRead())
+					{
+						return fi.getAbsolutePath();
+					}
+				}
+				return null;
+			}
 		}
-		return false;
+		return null;
 	}
 
 	private void saveWorkPath(boolean askAgain/* , boolean useTabletLayout */)
@@ -921,7 +1032,7 @@ public class splash extends Activity
 
 				if (setting instanceof SettingString)
 				{
-					String value = androidSetting.getString(setting.getName(), ((SettingString) setting).getDefaultValue());
+					String value = androidSetting.getString(setting.getName(), "");
 					((SettingString) setting).setValue(value);
 				}
 				else if (setting instanceof SettingBool)
@@ -949,6 +1060,15 @@ public class splash extends Activity
 		else
 		{
 			Config.settings.ReadFromDB();
+		}
+
+		// Check Android Version and disable MixedDatabaseRenderer with Version<14(4.0.0)
+		if (android.os.Build.VERSION.SDK_INT < 14)
+		{
+			LocatorSettings.MapsforgeRenderType.setEnumValue(GL_RenderType.Mapsforge);
+			// Set setting to invisible
+			LocatorSettings.MapsforgeRenderType.changeSettingsModus(SettingModus.Never);
+			Config.settings.WriteToDB();
 		}
 
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
@@ -1016,7 +1136,6 @@ public class splash extends Activity
 
 		// copy AssetFolder only if Rev-Number changed, like at new installation
 		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
-		// if (true)
 		{
 			String[] exclude = new String[]
 				{ "webkit", "sound", "sounds", "images", "skins", "lang", "kioskmode", "string-files", "" };
@@ -1119,14 +1238,18 @@ public class splash extends Activity
 			ui.isLandscape = false;
 		}
 
-		// new Translation(Config.WorkPath, false);
-
 		new UiSizes();
 		UI_Size_Base.that.initial(ui);
 
 		Global.Paints.init(this);
 
-		new de.droidcachebox.Map.AndroidManager();
+		{// restrict MapsforgeScaleFactor to max 1.0f (TileSize 256x256)
+			ext_AndroidGraphicFactory.createInstance(this.getApplication());
+
+			float restrictedScaleFactor = 1f;
+			DisplayModel.setDeviceScaleFactor(restrictedScaleFactor);
+			new de.droidcachebox.Map.AndroidManager(new DisplayModel());
+		}
 
 		Initial2();
 	}
@@ -1167,7 +1290,11 @@ public class splash extends Activity
 		}
 
 		b.putSerializable("UI", ui);
+
+		GlobalCore.RunFromSplash = true;
+
 		mainIntent.putExtras(b);
+		Log.d("CACHEBOX", "Splash start Main Intent");
 		startActivity(mainIntent);
 		finish();
 	}
@@ -1201,7 +1328,15 @@ public class splash extends Activity
 
 	}
 
-	// private LayoutInflater inflater;
-	// private Handler uiHandler;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if (keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			this.finish();
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
 
 }

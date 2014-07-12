@@ -11,7 +11,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 {
@@ -36,7 +36,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (redraw) setSatStrength();
 	}
@@ -45,11 +45,11 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	{
 		float minH = (SpriteCacheBase.bar.getBottomHeight() / 2) + SpriteCacheBase.bar.getTopHeight();
 
-		float w = (this.width / 14);
+		float w = (this.getWidth() / 14);
 		boolean small = SpriteCacheBase.bar.getMinWidth() > w * 1.2f;
 		if (small)
 		{
-			w = (this.width / 12);
+			w = (this.getWidth() / 12);
 		}
 
 		// calc Colors
@@ -99,12 +99,22 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		int count = 0;
 		if (GPS.getSatList() != null)
 		{
-			for (GpsStrength tmp : GPS.getSatList())
+			for (int i = 0, n = GPS.getSatList().size(); i < n; i++)
 			{
+				GpsStrength tmp;
+				try
+				{
+					tmp = GPS.getSatList().get(i);
+				}
+				catch (Exception e)
+				{
+					break;
+				}
+
 				// balken höhe festlegen
 				if (balken[count] != null)
 				{
-					float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.height, this.height);
+					float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.getHeight(), this.getHeight());
 
 					if (barHeight < minH)
 					{
@@ -144,7 +154,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 		}
 
 		redraw = false;
-		GL.that.renderOnce("MeasureCoord");
+		GL.that.renderOnce();
 
 	}
 
@@ -154,7 +164,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 	public void GpsStateChanged()
 	{
 		redraw = true;
-		GL.that.renderOnce("GPS-State Change");
+		GL.that.renderOnce();
 	}
 
 	@Override

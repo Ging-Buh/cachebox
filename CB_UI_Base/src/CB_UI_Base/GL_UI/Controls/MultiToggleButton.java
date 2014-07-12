@@ -18,16 +18,16 @@ package CB_UI_Base.GL_UI.Controls;
 
 import java.util.ArrayList;
 
-import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
@@ -195,7 +195,7 @@ public class MultiToggleButton extends Button
 		String ButtonTxt = "";
 		bt.clearStates();
 		bt.addState(ButtonTxt, Color.GRAY);
-		bt.addState(ButtonTxt, Fonts.getHighLightFontColor());
+		bt.addState(ButtonTxt, COLOR.getHighLightFontColor());
 		bt.setState(0, true);
 	}
 
@@ -203,7 +203,7 @@ public class MultiToggleButton extends Button
 	{
 		bt.clearStates();
 		bt.addState(txtOff, Color.GRAY);
-		bt.addState(txtOn, Fonts.getHighLightFontColor());
+		bt.addState(txtOn, COLOR.getHighLightFontColor());
 		bt.setState(0, true);
 	}
 
@@ -230,7 +230,7 @@ public class MultiToggleButton extends Button
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch); // draw Button with Txt
 
@@ -254,7 +254,7 @@ public class MultiToggleButton extends Button
 
 			batch.setColor(aktState.color);
 
-			if (led != null) led.draw(batch, 0, 0, width, height);
+			if (led != null) led.draw(batch, 0, 0, getWidth(), getHeight());
 
 			// alte abgespeicherte Farbe des Batches wieder herstellen!
 			batch.setColor(R, G, B, A);

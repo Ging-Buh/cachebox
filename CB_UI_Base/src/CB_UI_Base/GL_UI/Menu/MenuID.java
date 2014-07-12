@@ -227,4 +227,13 @@ public class MenuID
 	public static final int MI_IMPORT_GS_PQ = 193;
 	public static final int MI_IMPORT_GS_API_POSITION = 194;
 	public static final int MI_IMPORT_GS_API_SEARCH = 195;
+
+	// Export
+	public static final int MI_EXPORT_RUN = 196;
+
+	public static final int MI_MAP_DOWNOAD = 199;
+	public static final int AID_LOADLOGS = 200;
+	public static final int MI_LOAD_FRIENDS_LOGS = 201;
+	public static final int MI_FILTERLOGS = 202;
+	public static final int MI_RELOADLOGS = 203;
 }

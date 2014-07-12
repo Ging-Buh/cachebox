@@ -9,13 +9,14 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView;
-import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
+import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_UI.GL_UI.Views.FieldNoteViewItem;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
@@ -27,16 +28,16 @@ import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
+import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.RadioButton;
 import CB_UI_Base.GL_UI.Controls.RadioGroup;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.OnscreenKeyboard;
-import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.TextFieldListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
-import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -184,7 +185,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 											@Override
 											public void run()
 											{
-												that.show();
+												EditFieldNotes.this.show();
 											}
 										};
 
@@ -242,7 +243,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniNameLabel()
 	{
-		tvCacheName = new Label(leftBorder + margin, height - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
+		tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
 				MeasuredLabelHeight, "CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBig());
 		tvCacheName.setText(fieldNote.CacheName);
@@ -266,8 +267,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniFoundLabel()
 	{
-		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UI_Size_Base.that.getButtonHeight(), width - secondTab - rightBorder - margin,
-				UI_Size_Base.that.getButtonHeight(), "CacheNameLabel");
+		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UI_Size_Base.that.getButtonHeight(), getWidth() - secondTab - rightBorder
+				- margin, UI_Size_Base.that.getButtonHeight(), "CacheNameLabel");
 		tvFounds.setFont(Fonts.getBig());
 		scrollBox.addChild(tvFounds);
 	}
@@ -284,8 +285,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		lblDate.setFont(Fonts.getBig());
 		lblDate.setText(Translation.Get("date") + ":");
 		scrollBox.addChild(lblDate);
-		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, width - lblDate.getMaxX() - margin - rightBorder,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, getWidth() - lblDate.getMaxX() - margin
+				- rightBorder, UI_Size_Base.that.getButtonHeight());
 
 		tvDate = new EditTextField(rec, this);
 		scrollBox.addChild(tvDate);
@@ -299,8 +300,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		lblTime.setFont(Fonts.getBig());
 		lblTime.setText(Translation.Get("time") + ":");
 		scrollBox.addChild(lblTime);
-		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, width - lblTime.getMaxX() - margin - rightBorder,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, getWidth() - lblTime.getMaxX() - margin
+				- rightBorder, UI_Size_Base.that.getButtonHeight());
 
 		tvTime = new EditTextField(rec, this);
 		scrollBox.addChild(tvTime);
@@ -309,7 +310,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private void iniGC_VoteItem()
 	{
 
-		if (!Config.settings.GcVotePassword.getEncryptedValue().equalsIgnoreCase(""))
+		if (!CB_Core_Settings.GcVotePassword.getEncryptedValue().equalsIgnoreCase(""))
 		{
 			float itemHeight = UI_Size_Base.that.getButtonHeight() * 1.1f;
 
@@ -340,7 +341,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		etComment.setText(fieldNote.comment);
 
 		// set Size to linecount
-		float maxTextFieldHeight = this.height / 2.5f;
+		float maxTextFieldHeight = this.getHeight() / 2.5f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 		descriptionHeight = Math.max(descriptionHeight, UI_Size_Base.that.getButtonHeight());
@@ -399,7 +400,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		if (isNewFieldNote)
 		{
 			// Choice last selection
-			if (Config.settings.TB_DirectLog.getValue())
+			if (CB_UI_Settings.TB_DirectLog.getValue())
 			{
 				rbDirectLog.setChecked(true);
 			}
@@ -447,9 +448,9 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void scrollToY(float y, float maxY)
 	{
-		if (y < this.halfHeight)// wird von softKeyboard verdeckt
+		if (y < this.getHalfHeight())// wird von softKeyboard verdeckt
 		{
-			scrollBox.setY(this.height - maxY - MeasuredLabelHeight);
+			scrollBox.setY(this.getHeight() - maxY - MeasuredLabelHeight);
 		}
 		else
 		{
@@ -459,7 +460,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void layoutTextFields()
 	{
-		float maxTextFieldHeight = this.height / 2.5f;
+		float maxTextFieldHeight = this.getHeight() / 2.5f;
 		float rand = etComment.getStyle().background.getBottomHeight() + etComment.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etComment.getMeasuredHeight() + rand);
 
@@ -504,7 +505,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 			{
 				if (view.contains(x, y))
 				{
-					((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getPos().x, y - view.getPos().y);
+					((FilterSetListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
 				}
 			}
 		}

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -58,7 +58,7 @@ public abstract class FrameAnimation extends AnimationBase
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		if (frames == null || frames.size() == 0) return;
@@ -72,28 +72,28 @@ public abstract class FrameAnimation extends AnimationBase
 
 		if (mDrawable != null)
 		{
-			float drawwidth = width;
-			float drawHeight = height;
+			float drawwidth = getWidth();
+			float drawHeight = getHeight();
 			float drawX = 0;
 			float drawY = 0;
 
 			if (mSpriteWidth > 0 && mSpriteHeight > 0)
 			{
-				float proportionWidth = width / mSpriteWidth;
-				float proportionHeight = height / mSpriteHeight;
+				float proportionWidth = getWidth() / mSpriteWidth;
+				float proportionHeight = getHeight() / mSpriteHeight;
 
 				float proportion = Math.min(proportionWidth, proportionHeight);
 
 				drawwidth = mSpriteWidth * proportion;
 				drawHeight = mSpriteHeight * proportion;
-				drawX = (width - drawwidth) / 2;
-				drawY = (height - drawHeight) / 2;
+				drawX = (getWidth() - drawwidth) / 2;
+				drawY = (getHeight() - drawHeight) / 2;
 			}
 
 			mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
 
 		}
-		GL.that.renderOnce("FrameAnimation-" + name);
+		GL.that.renderOnce();
 	}
 
 	protected void play(int duration)
@@ -102,11 +102,13 @@ public abstract class FrameAnimation extends AnimationBase
 		mPlaying = true;
 	}
 
+	@Override
 	public void stop()
 	{
 		mPlaying = false;
 	}
 
+	@Override
 	public void pause()
 	{
 

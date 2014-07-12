@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.XmlRpcRequestConfig;
@@ -40,6 +38,8 @@ import org.apache.xmlrpc.serializer.XmlRpcWriter;
 import org.apache.xmlrpc.serializer.XmlWriterFactory;
 import org.apache.xmlrpc.util.SAXParsers;
 import org.apache.xmlrpc.webserver.RequestData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -52,7 +52,7 @@ import org.xml.sax.XMLReader;
  */
 public abstract class XmlRpcStreamServer extends XmlRpcServer
 		implements XmlRpcStreamRequestProcessor {
-	private static final Log log = LogFactory.getLog(XmlRpcStreamServer.class);
+	private static final Logger log = LoggerFactory.getLogger(XmlRpcStreamServer.class);
 	private XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
 	private static final XmlRpcErrorLogger theErrorLogger = new XmlRpcErrorLogger();
 	private XmlRpcErrorLogger errorLogger = theErrorLogger;

@@ -5,9 +5,9 @@ import CB_UI_Base.GL_UI.SpriteCacheBase.DialogElement;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
@@ -30,7 +30,7 @@ public class MenuItemDivider extends MenuItemBase
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (Image == null)
 		{
@@ -40,7 +40,7 @@ public class MenuItemDivider extends MenuItemBase
 			Image = new NinePatchDrawable(new NinePatch(s, 1, 1, 1, 1));
 		}
 
-		Image.draw(batch, 0, this.halfHeight - (spriteHeight / 2), width, spriteHeight);
+		Image.draw(batch, 0, this.getHalfHeight() - (spriteHeight / 2), getWidth(), spriteHeight);
 	}
 
 }

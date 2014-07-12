@@ -10,7 +10,6 @@ import CB_Utils.Util.FileIO;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,28 +17,27 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 /**
- * Enth‰lt die benutzten und geladenen GDX-Fonts
+ * Enth√§lt die benutzten und geladenen GDX-Fonts
  * 
  * @author Longri
  */
 public class Fonts
 {
+	static final String DEFAULT_CHARACTER = getCyrilCharSet();
 
-	private static Color day_fontColor;
-	private static Color day_fontColorDisable;
-	private static Color day_fontColorHighLight;
-	private static Color day_fontColorLink;
-	private static Color day_darknesColor;
-	private static Color day_crossColor;
-
-	private static Color night_fontColor;
-	private static Color night_fontColorDisable;
-	private static Color night_fontColorHighLight;
-	private static Color night_fontColorLink;
-	private static Color night_darknesColor;
-	private static Color night_crossColor;
+	static String getCyrilCharSet()
+	{
+		int CharSize = 0x04ff - 0x0400;
+		char[] cyril = new char[CharSize + 1];
+		for (int i = 0x0400; i < 0x04ff + 1; i++)
+		{
+			cyril[i - 0x0400] = (char) i;
+		}
+		return FreeTypeFontGenerator.DEFAULT_CHARS + String.copyValueOf(cyril);
+	}
 
 	private static BitmapFont compass;
 	private static BitmapFont big;
@@ -50,29 +48,14 @@ public class Fonts
 
 	private static SkinSettings cfg;
 
-	// private static BitmapFont night_fontAB17_out;
-
 	/**
-	 * L‰dt die verwendeten Bitmap Fonts und berechnet die entsprechenden Grˆﬂen
+	 * L√§dt die verwendeten Bitmap Fonts und berechnet die entsprechenden Gr√∂√üen
 	 */
 	public static void loadFonts(SkinBase skin)
 	{
+
 		cfg = skin.getSettings();
-
-		day_fontColor = SkinBase.getDaySkin().getColor("font-color");
-		day_fontColorDisable = SkinBase.getDaySkin().getColor("font-color-disable");
-		day_fontColorHighLight = SkinBase.getDaySkin().getColor("font-color-highlight");
-		day_fontColorLink = SkinBase.getDaySkin().getColor("font-color-link");
-		day_darknesColor = SkinBase.getDaySkin().getColor("darknes");
-		day_crossColor = SkinBase.getDaySkin().getColor("cross");
-
-		night_fontColor = SkinBase.getNightSkin().getColor("font-color");
-		night_fontColorDisable = SkinBase.getNightSkin().getColor("font-color-disable");
-		night_fontColorHighLight = SkinBase.getNightSkin().getColor("font-color-highlight");
-		night_fontColorLink = SkinBase.getNightSkin().getColor("font-color-link");
-		night_darknesColor = SkinBase.getNightSkin().getColor("darknes");
-		night_crossColor = SkinBase.getNightSkin().getColor("cross");
-
+		COLOR.loadColors(skin);
 		FreeTypeFontGenerator generator = null;
 
 		// get the first found ttf-font
@@ -110,36 +93,6 @@ public class Fonts
 		normalBubble = loadFontFromFile(generator, (int) (cfg.SizeNormalbubble * density));
 		smallBubble = loadFontFromFile(generator, (int) (cfg.SizeSmallBubble * density));
 		generator.dispose();
-	}
-
-	public static Color getFontColor()
-	{
-		return cfg.Nightmode ? night_fontColor : day_fontColor;
-	}
-
-	public static Color getDisableFontColor()
-	{
-		return cfg.Nightmode ? night_fontColorDisable : day_fontColorDisable;
-	}
-
-	public static Color getHighLightFontColor()
-	{
-		return cfg.Nightmode ? night_fontColorHighLight : day_fontColorHighLight;
-	}
-
-	public static Color getLinkFontColor()
-	{
-		return cfg.Nightmode ? night_fontColorLink : day_fontColorLink;
-	}
-
-	public static Color getDarknesColor()
-	{
-		return cfg.Nightmode ? night_darknesColor : day_darknesColor;
-	}
-
-	public static Color getCrossColor()
-	{
-		return cfg.Nightmode ? night_crossColor : day_crossColor;
 	}
 
 	public static void dispose()
@@ -267,7 +220,10 @@ public class Fonts
 		else
 		{
 			Logger.DEBUG("generate font for scale " + scale);
-			BitmapFont ret = generator.generateFont(scale);
+			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+			parameter.size = scale;
+			parameter.characters = DEFAULT_CHARACTER;
+			BitmapFont ret = generator.generateFont(parameter);
 			TextureRegion region = ret.getRegion();
 			Texture tex = region.getTexture();
 			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);

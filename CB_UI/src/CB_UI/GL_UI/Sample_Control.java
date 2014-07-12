@@ -3,7 +3,7 @@ package CB_UI.GL_UI;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.Math.CB_RectF;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * zeigt die Methoden die Überschrieben werden müssen und die, welche Überschrieben werden können. Wobei die Basis Methoden von CB_RecF
@@ -22,7 +22,7 @@ public class Sample_Control extends GL_View_Base
 	}
 
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
 	}
 

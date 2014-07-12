@@ -1,9 +1,11 @@
 package CB_Locator;
 
+import CB_UI_Base.graphics.GL_RenderType;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingDouble;
+import CB_Utils.Settings.SettingEnum;
 import CB_Utils.Settings.SettingFile;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
@@ -24,7 +26,7 @@ public interface LocatorSettings
 	public Integer Level[] = new Integer[]
 		{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
 	public Integer CrossLevel[] = new Integer[]
-		{ 0, 1, 2, 3, 4, 5, 6, 7 };
+		{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
 
 	public static final SettingFolder TileCacheFolderLocal = new SettingFolder("TileCacheFolderLocal", SettingCategory.Folder, NEVER, "",
 			SettingStoreType.Local);
@@ -82,4 +84,7 @@ public interface LocatorSettings
 
 	public static final SettingFile MapsforgeNightTheme = (SettingFile) SettingsList.addSetting(new SettingFile("MapsforgeNightTheme",
 			SettingCategory.Skin, NORMAL, "", SettingStoreType.Global, "xml"));
+
+	public static final SettingEnum<GL_RenderType> MapsforgeRenderType = new SettingEnum<GL_RenderType>("MapsforgeRenderType",
+			SettingCategory.Map, EXPERT, GL_RenderType.Mixing, SettingStoreType.Global, GL_RenderType.Mixing);
 }

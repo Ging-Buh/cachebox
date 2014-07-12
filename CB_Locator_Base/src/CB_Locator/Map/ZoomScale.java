@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -15,8 +16,8 @@ import CB_UI_Base.Math.GL_UISizes;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
@@ -25,7 +26,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	private int maxzoom = 20;
 	private float zoom = 13;
 	private CB_RectF ScaleDrawRec;
-	private boolean isVisible = true;
+	private final boolean isVisible = true;
 	private Date timeLastAction = new Date();
 	private final int timeToFadeOut = 5000; // 5Sec
 	private final int fadeStep = 50; // 100 mSec
@@ -47,7 +48,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	private float numSteps;
 	private float grundY;
 
-	private ZoomScale THIS;
+	private final ZoomScale THIS;
 
 	public ZoomScale(CB_RectF rec, String Name, int minzoom, int maxzoom, float zoom)
 	{
@@ -59,16 +60,16 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
-		if (this.width < 1 || this.height < 1) return;
+		if (this.getWidth() < 1 || this.getHeight() < 1) return;
 
-		int valueRecHeight = (int) (this.width / 2);
+		int valueRecHeight = (int) (this.getWidth() / 2);
 
 		if (ScaleDrawRec == null)
 		{
 			ScaleDrawRec = this.copy();
-			ScaleDrawRec.setHeight(this.height - valueRecHeight);
+			ScaleDrawRec.setHeight(this.getHeight() - valueRecHeight);
 			ScaleDrawRec.setPos(new Vector2(0, valueRecHeight / 2));
 		}
 
@@ -95,7 +96,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		int intZoom = (int) zoom;
 
-		com.badlogic.gdx.graphics.Color c = Fonts.getFontColor();
+		com.badlogic.gdx.graphics.Color c = COLOR.getFontColor();
 		Fonts.getNormal().setColor(c.r, c.g, c.b, FadeValue);
 		Fonts.getNormal().draw(batch, String.valueOf(intZoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
 				ValueRec.getY() + ValueRec.getHeight() / 1.15f);
@@ -155,14 +156,14 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 			// dist = (bottomRow - topRow) / numSteps;
 
-			y = (int) ((1 - ((float) ((zoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
+			y = (int) ((1 - ((zoom) - minzoom) / numSteps) * (bottomRow - topRow)) + topRow;
 
 			ValueRec = new CB_RectF(rect.getX() + GL_UISizes.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY
 					+ y, rect.getWidth(), rect.getWidth() / 2);
 		}
 		else
 		{
-			y = (int) ((1 - ((float) ((zoom) - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
+			y = (int) ((1 - ((zoom) - minzoom) / numSteps) * (bottomRow - topRow)) + topRow;
 			ValueRec.setY(grundY + y);
 		}
 
@@ -170,8 +171,8 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		disposeTexture();
 
-		int w = getNextHighestPO2((int) width);
-		int h = getNextHighestPO2((int) height);
+		int w = getNextHighestPO2((int) getWidth());
+		int h = getNextHighestPO2((int) getHeight());
 		CachedScalePixmap = new Pixmap(w, h, Pixmap.Format.RGBA4444);
 		CachedScalePixmap.setColor(0f, 0f, 0f, 1f);
 
@@ -179,8 +180,8 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		for (int i = minzoom; i <= maxzoom; i++)
 		{
-			y = (int) ((1 - ((float) (i - minzoom)) / numSteps) * (bottomRow - topRow)) + topRow;
-			CachedScalePixmap.drawRectangle(3, y, (int) width - 3, 1);
+			y = (int) ((1 - (i - minzoom) / numSteps) * (bottomRow - topRow)) + topRow;
+			CachedScalePixmap.drawRectangle(3, y, (int) getWidth() - 3, 1);
 
 		}
 

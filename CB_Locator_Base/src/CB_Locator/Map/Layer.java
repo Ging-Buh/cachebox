@@ -54,15 +54,15 @@ public class Layer
 	public String GetUrl(Descriptor desc)
 	{
 		if (desc == null) return null;
-		if (Name.contains("HillShade")) return Url + "?x=" + desc.X + "&y=" + desc.Y + "&z=" + desc.Zoom;
+		if (Name.contains("HillShade")) return Url + "?x=" + desc.getX() + "&y=" + desc.getY() + "&z=" + desc.getZoom();
 		else
-			return Url + desc.Zoom + "/" + desc.X + "/" + desc.Y + ".png";
+			return Url + desc.getZoom() + "/" + desc.getX() + "/" + desc.getY() + ".png";
 	}
 
 	public String GetLocalFilename(Descriptor desc)
 	{
 		if (desc == null) return null;
-		return GetLocalPath(desc) + "/" + desc.Y + ".png";
+		return GetLocalPath(desc) + "/" + desc.getY() + ".png";
 	}
 
 	public String GetLocalPath(Descriptor desc)
@@ -72,7 +72,7 @@ public class Layer
 		String TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
 		if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
 
-		return TileCacheFolder + "/" + Name + "/" + desc.Zoom + "/" + desc.X;
+		return TileCacheFolder + "/" + Name + "/" + desc.getZoom() + "/" + desc.getX();
 	}
 
 	public boolean isOverlay()

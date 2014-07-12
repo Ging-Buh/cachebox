@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import CB_Core.DB.Database;
@@ -13,6 +12,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.SDBM_Hash;
 
@@ -139,6 +139,7 @@ public class CacheInfoList
 	 */
 	public static void dispose()
 	{
+		if (List == null) return;
 		List.clear();
 		List = null;
 	}
@@ -151,11 +152,13 @@ public class CacheInfoList
 	 */
 	public static boolean ExistCache(String GcCode)
 	{
+		if (List == null) return false;
 		return List.containsKey(GcCode);
 	}
 
 	public static boolean CacheIsFavoriteInDB(String GcCode)
 	{
+		if (List == null) return false;
 		if (List.containsKey(GcCode))
 		{
 			CacheInfo ci = List.get(GcCode);
@@ -167,6 +170,8 @@ public class CacheInfoList
 
 	public static boolean CacheIsFoundInDB(String GcCode)
 	{
+		if (List == null) return false;
+
 		if (List.containsKey(GcCode))
 		{
 			CacheInfo ci = List.get(GcCode);
@@ -188,25 +193,26 @@ public class CacheInfoList
 	 */
 	public static void mergeCacheInfo(Cache cache) throws IOException
 	{
-		CacheInfo info = List.get(cache.GcCode);
-		String GcCode = cache.GcCode;
+		CacheInfo info = List.get(cache.getGcCode());
+		String GcCode = cache.getGcCode();
 		if (info != null)
 		{
 
 			String stringForListingCheckSum = Database.GetDescription(cache);
 			String recentOwnerLogString = "";
 
-			ArrayList<LogEntry> cleanLogs = new ArrayList<LogEntry>();
+			CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
 			cleanLogs = Database.Logs(cache);// cache.Logs();
 
 			if (cleanLogs.size() > 0)
 			{
-				for (LogEntry entry : cleanLogs)
+				for (int i = 0, n = cleanLogs.size(); i < n; i++)
 				{
+					LogEntry entry = cleanLogs.get(i);
 					String Comment = entry.Comment;
 					String Finder = entry.Finder;
 
-					if (Finder.equalsIgnoreCase(cache.Owner))
+					if (Finder.equalsIgnoreCase(cache.getOwner()))
 					{
 						recentOwnerLogString += Comment;
 						break;
@@ -238,11 +244,11 @@ public class CacheInfoList
 					if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) CB_Core_Settings.DescriptionImageFolder
 							.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
-					CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
-							+ GcCode + ".changed");
+					// 2014-06-21 - Ging-Buh - .changed files are no longer used. Only information in DB (ImagesUpdated and
+					// DescriptionImagesUpdated) are used
+					// CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
+					// + GcCode + ".changed");
 
-					CreateChangedListingFile(CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4) + "/"
-							+ GcCode + ".changed");
 				}
 				else
 				{
@@ -256,7 +262,7 @@ public class CacheInfoList
 			if (!info.Found)
 			{
 				// nur wenn der Cache nicht als gefunden markiert ist, wird der Wert aus dem GPX Import übernommen!
-				info.Found = cache.Found;
+				info.Found = cache.isFound();
 			}
 
 			// Schreibe info neu in die List(lösche den Eintrag vorher)
@@ -316,7 +322,7 @@ public class CacheInfoList
 
 			if (!Directory.exists())
 			{
-				Directory.mkdir();
+				Directory.mkdirs();
 			}
 
 			PrintWriter writer = new PrintWriter(new FileWriter(file));
@@ -337,17 +343,18 @@ public class CacheInfoList
 		String stringForListingCheckSum = Database.GetDescription(cache);
 		String recentOwnerLogString = "";
 
-		ArrayList<LogEntry> cleanLogs = new ArrayList<LogEntry>();
+		CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
 		cleanLogs = Database.Logs(cache);// cache.Logs();
 
 		if (cleanLogs.size() > 0)
 		{
-			for (LogEntry entry : cleanLogs)
+			for (int i = 0, n = cleanLogs.size(); i < n; i++)
 			{
+				LogEntry entry = cleanLogs.get(i);
 				String Comment = entry.Comment;
 				String Finder = entry.Finder;
 
-				if (Finder.equalsIgnoreCase(cache.Owner))
+				if (Finder.equalsIgnoreCase(cache.getOwner()))
 				{
 					recentOwnerLogString += Comment;
 					break;
@@ -359,11 +366,13 @@ public class CacheInfoList
 		info.ListingCheckSum = ListingCheckSum;
 		info.Latitude = cache.Latitude();
 		info.Longitude = cache.Longitude();
-		info.Found = cache.Found;
-		info.favorite = cache.Favorit();
+		info.Found = cache.isFound();
+		info.favorite = cache.isFavorite();
 		info.CorrectedCoordinates = cache.CorrectedCoordiantesOrMysterySolved();
 
-		List.put(cache.GcCode, info);
+		if (List == null) List = new HashMap<String, CacheInfo>();
+
+		List.put(cache.getGcCode(), info);
 
 	}
 

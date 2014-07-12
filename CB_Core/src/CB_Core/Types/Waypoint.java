@@ -1,11 +1,13 @@
 package CB_Core.Types;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.nio.charset.Charset;
 
 import CB_Core.Enums.CacheTypes;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 
 public class Waypoint implements Serializable
 {
@@ -13,20 +15,20 @@ public class Waypoint implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 67610567646416L;
+	public static final Charset US_ASCII = Charset.forName("US-ASCII");
+	public static final Charset UTF_8 = Charset.forName("UTF-8");
+	public static final String EMPTY_STRING = "";
 
 	// / Id des dazugehörigen Caches in der Datenbank von geocaching.com
 	public long CacheId;
 
 	// / Waypoint Code
-	public String GcCode = "";
+	private byte[] GcCode;
 
 	public Coordinate Pos;
 
 	// / Titel des Wegpunktes
-	public String Title = "";
-
-	// / Kommentartext
-	public String Description = "";
+	private byte[] Title;
 
 	// / Art des Wegpunkts
 	public CacheTypes Type;
@@ -37,40 +39,41 @@ public class Waypoint implements Serializable
 	// / true, falls der Wegpunkt von der Synchronisation ausgeschlossen wird
 	public boolean IsSyncExcluded;
 
-	// / Lösung einer QTA
-	public String Clue = "";
-
 	// True wenn dies der Startpunkt für den nächsten Besuch ist.
 	// Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert
 	// Es muss aber sichergestellt sein dass immer nur 1 Waypoint eines Caches ein Startpunkt ist!
 	public boolean IsStart = false;
 
-	public Waypoint()
+	// Detail Information of Waypoint which are not always loaded
+	public WaypointDetail detail = null;
+
+	public Waypoint(boolean withDetails)
 	{
 		CacheId = -1;
-		GcCode = "";
-		Pos = new Coordinate();
-		Description = "";
+		setGcCode("");
+		Pos = new Coordinate(0, 0);
+		setDescription("");
 		IsStart = false;
+		if (withDetails)
+		{
+			detail = new WaypointDetail();
+		}
 	}
-
-	public int checkSum = 0; // for replication
-
-	public Date time;
 
 	public Waypoint(String gcCode, CacheTypes type, String description, double latitude, double longitude, long cacheId, String clue,
 			String title)
 	{
-		GcCode = gcCode;
+		setGcCode(gcCode);
 		CacheId = cacheId;
 		Pos = new Coordinate(latitude, longitude);
-		Description = description;
+		setDescription(description);
 		Type = type;
 		IsSyncExcluded = true;
 		IsUserWaypoint = true;
-		Clue = clue;
-		Title = title;
+		setClue(clue);
+		setTitle(title);
 		IsStart = false;
+		detail = new WaypointDetail();
 	}
 
 	// / <summary>
@@ -80,18 +83,10 @@ public class Waypoint implements Serializable
 	{
 		Coordinate fromPos = Locator.getLocation().toCordinate();
 		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(), Pos.getLongitude(), dist);
+
+		MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(),
+				Pos.getLongitude(), dist);
 		return dist[0];
-	}
-
-	public void setLatitude(double parseDouble)
-	{
-		Pos.setLatitude(parseDouble);
-	}
-
-	public void setLongitude(double parseDouble)
-	{
-		Pos.setLongitude(parseDouble);
 	}
 
 	public void setCoordinate(Coordinate result)
@@ -133,38 +128,123 @@ public class Waypoint implements Serializable
 	public void clear()
 	{
 		CacheId = -1;
-		GcCode = "";
-		Pos = new Coordinate();
-		Title = "";
-		Description = "";
+		setGcCode("");
+		Pos = new Coordinate(0, 0);
+		setTitle("");
+		setDescription("");
 		Type = null;
 		IsUserWaypoint = false;
 		IsSyncExcluded = false;
-		Clue = "";
-		checkSum = 0;
-		time = null;
-	}
-
-	public Waypoint copy()
-	{
-		return new Waypoint(GcCode, Type, Description, Pos.getLatitude(), Pos.getLongitude(), CacheId, Clue, Title);
+		setClue("");
+		setCheckSum(0);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "WP:" + GcCode + " " + Pos.toString();
+		return "WP:" + getGcCode() + " " + Pos.toString();
 	}
 
 	public void dispose()
 	{
-		GcCode = null;
+		setGcCode(null);
 		Pos = null;
-		Title = null;
-		Description = null;
+		setTitle(null);
+		setDescription(null);
 		Type = null;
-		Clue = null;
-		time = null;
+		setClue(null);
+	}
+
+	public String getGcCode()
+	{
+		if (GcCode == null) return EMPTY_STRING;
+		return new String(GcCode, US_ASCII);
+	}
+
+	public void setGcCode(String gcCode)
+	{
+		if (gcCode == null)
+		{
+			GcCode = null;
+			return;
+		}
+		GcCode = gcCode.getBytes(US_ASCII);
+	}
+
+	public String getTitle()
+	{
+		if (Title == null) return EMPTY_STRING;
+		return new String(Title, UTF_8);
+	}
+
+	public void setTitle(String title)
+	{
+		if (title == null)
+		{
+			Title = null;
+			return;
+		}
+		Title = title.getBytes(UTF_8);
+	}
+
+	public String getDescription()
+	{
+		if (detail == null)
+		{
+			return EMPTY_STRING;
+		}
+		else
+		{
+			return detail.getDescription();
+		}
+	}
+
+	public void setDescription(String description)
+	{
+		if (detail != null)
+		{
+			detail.setDescription(description);
+		}
+	}
+
+	public String getClue()
+	{
+		if (detail == null)
+		{
+			return EMPTY_STRING;
+		}
+		else
+		{
+			return detail.getClue();
+		}
+	}
+
+	public void setClue(String clue)
+	{
+		if (detail != null)
+		{
+			detail.setClue(clue);
+		}
+	}
+
+	public void setCheckSum(int i)
+	{
+		if (detail != null)
+		{
+			detail.setCheckSum(i);
+		}
+	}
+
+	public int getCheckSum()
+	{
+		if (detail == null)
+		{
+			return 0;
+		}
+		else
+		{
+			return detail.checkSum;
+		}
 	}
 
 }

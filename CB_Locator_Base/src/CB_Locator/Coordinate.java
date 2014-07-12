@@ -1,79 +1,27 @@
 package CB_Locator;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
-/**
- * @author Longri_2
- */
-public class Coordinate implements Serializable
+import org.mapsforge.core.model.LatLong;
+
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Converter.UTMConvert;
+import CB_Utils.Lists.CB_List;
+
+public class Coordinate extends LatLong implements Serializable
 {
+	private static final long serialVersionUID = 4288564255686705L;
 
-	private static final long serialVersionUID = 1235642315487L;
-	private static final String br = System.getProperty("line.separator");
+	static final String br = System.getProperty("line.separator");
 
-	private boolean Valid;
-	/**
-	 * @uml.property name="latitude"
-	 */
-	private double Latitude = 0;
-	/**
-	 * @uml.property name="longitude"
-	 */
-	private double Longitude = 0;
-	/**
-	 * @uml.property name="elevation"
-	 */
-	private double Elevation = 0;
+	protected boolean Valid;
 
-	/**
-	 * Die Genauigkeit dieser Coordinate! Wird beim Messen benutzt
-	 * 
-	 * @uml.property name="accuracy"
-	 */
-	private int Accuracy = -1;
+	private static final float[] mResults = new float[2];
 
-	// Cache the inputs and outputs of computeDistanceAndBearing
-	// so calls to distanceTo() and bearingTo() can share work
-	private double mLat1 = 0.0;
-	private double mLon1 = 0.0;
-	private double mLat2 = 0.0;
-	private double mLon2 = 0.0;
-	// private float mDistance = 0.0f;
-	private float mInitialBearing = 0.0f;
-
-	// Scratchpad
-	private final float[] mResults = new float[2];
-
-	public Coordinate()
+	public static Coordinate Project(Coordinate coord, double Direction, double Distance)
 	{
-		Valid = false;
-	}
-
-	public Coordinate(double latitude, double longitude)
-	{
-		this.setLatitude(latitude);
-		this.setLongitude(longitude);
-		this.setElevation(0);
-		Valid = true;
-	}
-
-	public Coordinate(double latitude, double longitude, int accuracy)
-	{
-		this.setLatitude(latitude);
-		this.setLongitude(longitude);
-		this.setElevation(0);
-		this.Accuracy = accuracy;
-		Valid = true;
-	}
-
-	public Coordinate(Coordinate parent)
-	{
-		this.setLatitude(parent.getLatitude());
-		this.setLongitude(parent.getLongitude());
-		this.setElevation(parent.getElevation());
-		this.Accuracy = parent.getAccuracy();
-		this.Valid = parent.Valid;
+		return Project(coord.getLatitude(), coord.getLongitude(), Direction, Distance);
 	}
 
 	public boolean isValid()
@@ -84,30 +32,225 @@ public class Coordinate implements Serializable
 	public boolean isZero()
 	{
 		if (!isValid()) return false;
-		return ((Latitude == 0) && (Longitude == 0));
-	}
-
-	public boolean hasAccuracy()
-	{
-		if (Accuracy == -1) return false;
-		return true;
+		return ((latitude == 0) && (longitude == 0));
 	}
 
 	/**
+	 * Gibt einen Formatierten String dieser Koordinate wieder
+	 * 
 	 * @return
-	 * @uml.property name="accuracy"
 	 */
-	public int getAccuracy()
+	public String FormatCoordinate()
 	{
-		return Accuracy;
+		if (Valid) return Formatter.FormatLatitudeDM(getLatitude()) + " / " + Formatter.FormatLongitudeDM(getLongitude());
+		else
+			return "not Valid";
 	}
 
-	// Parse Coordinates from String
+	/**
+	 * Gibt einen Formatierten String dieser Koordinate in zwei Zeilen wieder
+	 * 
+	 * @return
+	 */
+	public String FormatCoordinateLineBreake()
+	{
+		if (Valid) return Formatter.FormatLatitudeDM(getLatitude()) + br + Formatter.FormatLongitudeDM(getLongitude());
+		else
+			return "not Valid";
+	}
+
+	private static final double ERTH_RADIUS = 6378137.0;
+
+	public static Coordinate Project(double Latitude, double Longitude, double Direction, double Distance)
+	{
+		double dist = Distance / ERTH_RADIUS; // convert dist to angular distance in radians
+		double brng = Direction * MathUtils.DEG_RAD; //
+		double lat1 = Latitude * MathUtils.DEG_RAD;
+		double lon1 = Longitude * MathUtils.DEG_RAD;
+
+		double lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
+		double lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1), Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
+		lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180º
+
+		Coordinate result = new Coordinate(lat2 * MathUtils.RAD_DEG, lon2 * MathUtils.RAD_DEG);
+		result.Valid = true;
+		return result;
+
+	}
+
+	public static double Bearing(CalculationType type, Coordinate coord1, Coordinate coord2)
+	{
+		return Bearing(type, coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude());
+	}
+
+	public static double Bearing(CalculationType type, double froLatitude, double fromLongitude, double toLatitude, double toLongitude)
+	{
+		return new Coordinate(froLatitude, fromLongitude).bearingTo(new Coordinate(toLatitude, toLongitude), type);
+	}
+
+	public static Coordinate Intersection(Coordinate coord1, Coordinate coord2, Coordinate coord3, Coordinate coord4)
+	{
+		Coordinate result = null;
+
+		double[] x = new double[4];
+		double[] y = new double[4];
+		x[0] = coord1.getLongitude();
+		y[0] = coord1.getLatitude();
+		x[1] = coord2.getLongitude();
+		y[1] = coord2.getLatitude();
+		x[2] = coord3.getLongitude();
+		y[2] = coord3.getLatitude();
+		x[3] = coord4.getLongitude();
+		y[3] = coord4.getLatitude();
+
+		// Steigungen
+		double steig1 = (y[1] - y[0]) / (x[1] - x[0]);
+		double steig2 = (y[3] - y[2]) / (x[3] - x[2]);
+		// Nullwerte
+		double null1 = y[0] - x[0] * steig1;
+		double null2 = y[2] - x[2] * steig2;
+		// Schnittpunkt
+		double X = (null2 - null1) / (steig1 - steig2);
+		double Y = steig1 * X + null1;
+		// Konvertieren in Lat-Lon
+
+		result = new Coordinate(Y, X);
+		return result;
+	}
+
+	/**
+	 * Returns the approximate initial bearing in degrees East of true North when traveling along the shortest path between this location
+	 * and the given location. The shortest path is defined using the WGS84 ellipsoid. Locations that are (nearly) antipodal may produce
+	 * meaningless results.
+	 * 
+	 * @param dest
+	 *            the destination location
+	 * @return the initial bearing in degrees
+	 */
+	public float bearingTo(Coordinate dest, CalculationType type)
+	{
+		synchronized (mResults)
+		{
+			// See if we already have the result
+			// if (getLatitude() != mLat1 || getLongitude() != mLon1 || dest.getLatitude() != mLat2 || dest.getLongitude() != mLon2)
+			// {
+			// MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
+			// mLat1 = getLatitude();
+			// mLon1 = getLongitude();
+			// mLat2 = dest.getLatitude();
+			// mLon2 = dest.getLongitude();
+			// mInitialBearing = mResults[1];
+			// }
+			// return mInitialBearing;
+
+			synchronized (mResults)
+			{
+				MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
+				return mResults[1];
+			}
+		}
+	}
+
+	/**
+	 * Returns the distance to to refer Coordinate
+	 * 
+	 * @param coord
+	 * @return
+	 */
+	public float Distance(Coordinate coord, CalculationType type)
+	{
+		// float[] dist = new float[1];
+		MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), coord.getLatitude(), coord.getLongitude(), mResults);
+		return mResults[0];
+	}
+
+	/**
+	 * Returns the distance to to last valid Position
+	 * 
+	 * @return
+	 */
+	public float Distance(CalculationType type)
+	{
+		float[] dist = new float[1];
+		MathUtils.computeDistanceAndBearing(type, getLatitude(), getLongitude(), Locator.getLatitude(), Locator.getLongitude(), dist);
+		return dist[0];
+	}
+
+	private final static double TOL = 0.000008;
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof Coordinate)
+		{
+			Coordinate coord = (Coordinate) other;
+
+			double la = (this.getLatitude() > coord.getLatitude()) ? this.getLatitude() - coord.getLatitude() : coord.getLatitude()
+					- this.getLatitude();
+			double lo = (this.getLongitude() > coord.getLongitude()) ? this.getLongitude() - coord.getLongitude() : coord.getLongitude()
+					- this.getLongitude();
+
+			if (la < 0) la *= -1;
+			if (lo < 0) la *= -1;
+
+			if (la > TOL) return false;
+			if (lo > TOL) return false;
+
+			return true;
+		}
+		return false;
+	}
+
+	public static Coordinate Crossbearing(CalculationType type, Coordinate coord1, double direction1, Coordinate coord2, double direction2)
+	{
+		float[] dist = new float[4];
+		MathUtils.computeDistanceAndBearing(type, coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude(),
+				dist);
+		double distance = dist[0];
+		Coordinate coord3 = Project(coord1, direction1, distance);
+		Coordinate coord4 = Project(coord2, direction2, distance);
+
+		return Intersection(coord1, coord3, coord2, coord4);
+	}
+
+	public Coordinate(Coordinate parent)
+	{
+		super(parent.latitude, parent.longitude);
+		this.Valid = parent.Valid;
+	}
+
+	public Coordinate(double latitude, double longitude)
+	{
+		super(latitude, longitude);
+		Valid = true;
+	}
+
+	public Coordinate(int latitude, int longitude)
+	{
+		super(latitude, longitude);
+		Valid = true;
+	}
+
 	public Coordinate(String text)
 	{
+		this(parseCoordinate(text));
+	}
+
+	public Coordinate(double[] coordinate)
+	{
+		super(coordinate[0], coordinate[1]);
+		if (coordinate.length > 2)
+		{
+			this.Valid = coordinate[2] == 1;
+		}
+	}
+
+	public static double[] parseCoordinate(String text)
+	{
+		double[] values = new double[3];
 		text = text.toUpperCase();
 		text = text.replace(",", ".");
-		Valid = false;
+		values[2] = 0;
 
 		// UTM versuche
 		String[] utm = text.trim().split(" ");
@@ -132,10 +275,10 @@ public class Coordinate implements Serializable
 					// Ergebnis runden, da sonst Koordinaten wie 47° 60' herauskommen!
 					ddlat = Math.rint(ddlat * 1000000) / 1000000;
 					ddlon = Math.rint(ddlon * 1000000) / 1000000;
-					this.Valid = true;
-					this.setLatitude(ddlat);
-					this.setLongitude(ddlon);
-					return;
+					values[2] = 1;
+					values[0] = ddlat;
+					values[1] = ddlon;
+					return values;
 				}
 				catch (Exception ex)
 				{
@@ -159,9 +302,9 @@ public class Coordinate implements Serializable
 		if (ilat < 0) ilat = text.indexOf('S');
 		int ilon = text.indexOf('E');
 		if (ilon < 0) ilon = text.indexOf('W');
-		if (ilat < 0) return;
-		if (ilon < 0) return;
-		if (ilat > ilon) return;
+		if (ilat < 0) return values;
+		if (ilon < 0) return values;
+		if (ilat > ilon) return values;
 		char dlat = text.charAt(ilat);
 		char dlon = text.charAt(ilon);
 		String slat = "";
@@ -179,8 +322,8 @@ public class Coordinate implements Serializable
 
 		String[] clat = slat.split(" ");
 		String[] clon = slon.split(" ");
-		ArrayList<String> llat = new ArrayList<String>();
-		ArrayList<String> llon = new ArrayList<String>();
+		CB_List<String> llat = new CB_List<String>(clat.length);
+		CB_List<String> llon = new CB_List<String>(clon.length);
 		for (String ss : clat)
 		{
 			if (!ss.equals(""))
@@ -227,407 +370,26 @@ public class Coordinate implements Serializable
 		}
 		catch (Exception exc)
 		{
-			Valid = false;
-			return;
+			values[2] = 0;
+			return values;
 		}
-		this.setLatitude(lat);
-		this.setLongitude(lon);
-		if (dlat == 'S') this.setLatitude(-this.getLatitude());
-		if (dlon == 'W') this.setLongitude(-this.getLongitude());
-		this.Valid = true;
-		if (this.getLatitude() > 180.00001) this.Valid = false;
-		if (this.getLatitude() < -180.00001) this.Valid = false;
-		if (this.getLongitude() > 180.00001) this.Valid = false;
-		if (this.getLongitude() < -180.00001) this.Valid = false;
-	}
+		values[0] = lat;
+		values[1] = lon;
+		if (dlat == 'S') values[0] = -values[0];
+		if (dlon == 'W') values[1] = -values[1];
+		values[2] = 1;
+		if (values[0] > 180.00001) values[2] = 0;
+		if (values[0] < -180.00001) values[2] = 0;
+		if (values[1] > 180.00001) values[2] = 0;
+		if (values[1] < -180.00001) values[2] = 0;
 
-	/**
-	 * Gibt einen Formatierten String dieser Koordinate wieder
-	 * 
-	 * @return
-	 */
-	public String FormatCoordinate()
-	{
-		if (Valid) return Formatter.FormatLatitudeDM(getLatitude()) + " / " + Formatter.FormatLongitudeDM(getLongitude());
-		else
-			return "not Valid";
-	}
+		return values;
 
-	/**
-	 * Gibt einen Formatierten String dieser Koordinate in zwei Zeilen wieder
-	 * 
-	 * @return
-	 */
-	public String FormatCoordinateLineBreake()
-	{
-		if (Valid) return Formatter.FormatLatitudeDM(getLatitude()) + br + Formatter.FormatLongitudeDM(getLongitude());
-		else
-			return "not Valid";
-	}
-
-	// / <summary>
-	// / Projiziert die übergebene Koordinate
-	// / </summary>
-	// / <param name="Latitude">Breitengrad</param>
-	// / <param name="Longitude">Längengrad</param>
-	// / <param name="Direction">Richtung</param>
-	// / <param name="Distance">Distanz</param>
-	// / <returns>Die projizierte Koordinate</returns>
-	public static Coordinate Project(Coordinate coord, double Direction, double Distance)
-	{
-		return Project(coord.getLatitude(), coord.getLongitude(), Direction, Distance);
-	}
-
-	public static Coordinate Project(double Latitude, double Longitude, double Direction, double Distance)
-	{
-		// nach http://www.zwanziger.de/gc_tools_projwp.html
-		Coordinate result = new Coordinate();
-
-		// Bearing auf [0..360] begrenzen
-		while (Direction > 360)
-			Direction -= 360;
-
-		while (Direction < 0)
-			Direction += 360;
-
-		double c = Distance / 6378137.0;
-		/*
-		 * if (UnitFormatter.ImperialUnits) c = c / 0.9144f;
-		 */
-		double a = (Latitude >= 0) ? (90 - Latitude) * Math.PI / 180 : Latitude * Math.PI / 180;
-
-		double q = (360 - Direction) * Math.PI / 180.0;
-		double b = Math.acos(Math.cos(q) * Math.sin(a) * Math.sin(c) + Math.cos(a) * Math.cos(c));
-
-		result.setLatitude(90 - (b * 180 / Math.PI));
-		if (result.getLatitude() > 90) result.setLatitude(result.getLatitude() - 180);
-
-		double g = 0;
-		try
-		{
-			g = ((a + b) == 0) ? 0 : Math.acos((Math.cos(c) - Math.cos(a) * Math.cos(b)) / (Math.sin(a) * Math.sin(b)));
-			if (Double.isNaN(g)) g = 0;
-		}
-		catch (Exception ex)
-		{
-			g = 0;
-		}
-
-		if (Direction <= 180) g = -g;
-
-		result.setLongitude(Longitude - g * 180 / Math.PI);
-
-		result.Valid = true;
-		return result;
-	}
-
-	public static double Bearing(Coordinate coord1, Coordinate coord2)
-	{
-		return Bearing(coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude());
-	}
-
-	// / <summary>
-	// / Berechnet den Kurs von from nach to auf einer Kugel
-	// / </summary>
-	// / <param name="froLatitude"></param>
-	// / <param name="fromLongitude"></param>
-	// / <param name="toLatitude"></param>
-	// / <param name="toLongitude"></param>
-	// / <returns></returns>
-	public static double Bearing(double froLatitude, double fromLongitude, double toLatitude, double toLongitude)
-	{
-		Coordinate loc = new Coordinate();
-		loc.setLatitude(froLatitude);
-		loc.setLongitude(fromLongitude);
-
-		Coordinate loc2 = new Coordinate("");
-		loc2.setLatitude(toLatitude);
-		loc2.setLongitude(toLongitude);
-
-		return loc.bearingTo(loc2);
-
-	}
-
-	/**
-	 * Returns the approximate initial bearing in degrees East of true North when traveling along the shortest path between this location
-	 * and the given location. The shortest path is defined using the WGS84 ellipsoid. Locations that are (nearly) antipodal may produce
-	 * meaningless results.
-	 * 
-	 * @param dest
-	 *            the destination location
-	 * @return the initial bearing in degrees
-	 */
-	public float bearingTo(Coordinate dest)
-	{
-		synchronized (mResults)
-		{
-			// See if we already have the result
-			if (getLatitude() != mLat1 || getLongitude() != mLon1 || dest.getLatitude() != mLat2 || dest.getLongitude() != mLon2)
-			{
-				computeDistanceAndBearing(getLatitude(), getLongitude(), dest.getLatitude(), dest.getLongitude(), mResults);
-				mLat1 = getLatitude();
-				mLon1 = getLongitude();
-				mLat2 = dest.getLatitude();
-				mLon2 = dest.getLongitude();
-				mInitialBearing = mResults[1];
-			}
-			return mInitialBearing;
-		}
-	}
-
-	/**
-	 * Returns the distance to to refer Coordinate
-	 * 
-	 * @param coord
-	 * @return
-	 */
-	public float Distance(Coordinate coord)
-	{
-		float[] dist = new float[4];
-		distanceBetween(getLatitude(), getLongitude(), coord.getLatitude(), coord.getLongitude(), dist);
-		return dist[0];
-	}
-
-	/**
-	 * Returns the distance to to last valid Position
-	 * 
-	 * @return
-	 */
-	public float Distance()
-	{
-		float[] dist = new float[4];
-		distanceBetween(getLatitude(), getLongitude(), Locator.getLatitude(), Locator.getLongitude(), dist);
-		return dist[0];
-	}
-
-	private static void computeDistanceAndBearing(double lat1, double lon1, double lat2, double lon2, float[] results)
-	{
-		// Based on http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
-		// using the "Inverse Formula" (section 4)
-
-		int MAXITERS = 20;
-		// Convert lat/long to radians
-		lat1 *= Math.PI / 180.0;
-		lat2 *= Math.PI / 180.0;
-		lon1 *= Math.PI / 180.0;
-		lon2 *= Math.PI / 180.0;
-
-		double a = 6378137.0; // WGS84 major axis
-		double b = 6356752.3142; // WGS84 semi-major axis
-		double f = (a - b) / a;
-		double aSqMinusBSqOverBSq = (a * a - b * b) / (b * b);
-
-		double L = lon2 - lon1;
-		double A = 0.0;
-		double U1 = Math.atan((1.0 - f) * Math.tan(lat1));
-		double U2 = Math.atan((1.0 - f) * Math.tan(lat2));
-
-		double cosU1 = Math.cos(U1);
-		double cosU2 = Math.cos(U2);
-		double sinU1 = Math.sin(U1);
-		double sinU2 = Math.sin(U2);
-		double cosU1cosU2 = cosU1 * cosU2;
-		double sinU1sinU2 = sinU1 * sinU2;
-
-		double sigma = 0.0;
-		double deltaSigma = 0.0;
-		double cosSqAlpha = 0.0;
-		double cos2SM = 0.0;
-		double cosSigma = 0.0;
-		double sinSigma = 0.0;
-		double cosLambda = 0.0;
-		double sinLambda = 0.0;
-
-		double lambda = L; // initial guess
-		for (int iter = 0; iter < MAXITERS; iter++)
-		{
-			double lambdaOrig = lambda;
-			cosLambda = Math.cos(lambda);
-			sinLambda = Math.sin(lambda);
-			double t1 = cosU2 * sinLambda;
-			double t2 = cosU1 * sinU2 - sinU1 * cosU2 * cosLambda;
-			double sinSqSigma = t1 * t1 + t2 * t2; // (14)
-			sinSigma = Math.sqrt(sinSqSigma);
-			cosSigma = sinU1sinU2 + cosU1cosU2 * cosLambda; // (15)
-			sigma = Math.atan2(sinSigma, cosSigma); // (16)
-			double sinAlpha = (sinSigma == 0) ? 0.0 : cosU1cosU2 * sinLambda / sinSigma; // (17)
-			cosSqAlpha = 1.0 - sinAlpha * sinAlpha;
-			cos2SM = (cosSqAlpha == 0) ? 0.0 : cosSigma - 2.0 * sinU1sinU2 / cosSqAlpha; // (18)
-
-			double uSquared = cosSqAlpha * aSqMinusBSqOverBSq; // defn
-			A = 1 + (uSquared / 16384.0) * // (3)
-					(4096.0 + uSquared * (-768 + uSquared * (320.0 - 175.0 * uSquared)));
-			double B = (uSquared / 1024.0) * // (4)
-					(256.0 + uSquared * (-128.0 + uSquared * (74.0 - 47.0 * uSquared)));
-			double C = (f / 16.0) * cosSqAlpha * (4.0 + f * (4.0 - 3.0 * cosSqAlpha)); // (10)
-			double cos2SMSq = cos2SM * cos2SM;
-			deltaSigma = B
-					* sinSigma
-					* // (6)
-					(cos2SM + (B / 4.0)
-							* (cosSigma * (-1.0 + 2.0 * cos2SMSq) - (B / 6.0) * cos2SM * (-3.0 + 4.0 * sinSigma * sinSigma)
-									* (-3.0 + 4.0 * cos2SMSq)));
-
-			lambda = L + (1.0 - C) * f * sinAlpha * (sigma + C * sinSigma * (cos2SM + C * cosSigma * (-1.0 + 2.0 * cos2SM * cos2SM))); // (11)
-
-			double delta = (lambda - lambdaOrig) / lambda;
-			if (Math.abs(delta) < 1.0e-12)
-			{
-				break;
-			}
-		}
-
-		float distance = (float) (b * A * (sigma - deltaSigma));
-		results[0] = distance;
-		if (results.length > 1)
-		{
-			float initialBearing = (float) Math.atan2(cosU2 * sinLambda, cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
-			initialBearing *= 180.0 / Math.PI;
-			results[1] = initialBearing;
-			if (results.length > 2)
-			{
-				float finalBearing = (float) Math.atan2(cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda);
-				finalBearing *= 180.0 / Math.PI;
-				results[2] = finalBearing;
-			}
-		}
-	}
-
-	/**
-	 * Computes the approximate distance in meters between two locations, and optionally the initial and final bearings of the shortest path
-	 * between them. Distance and bearing are defined using the WGS84 ellipsoid.
-	 * <p>
-	 * The computed distance is stored in results[0]. If results has length 2 or greater, the initial bearing is stored in results[1]. If
-	 * results has length 3 or greater, the final bearing is stored in results[2].
-	 * 
-	 * @param startLatitude
-	 *            the starting latitude
-	 * @param startLongitude
-	 *            the starting longitude
-	 * @param endLatitude
-	 *            the ending latitude
-	 * @param endLongitude
-	 *            the ending longitude
-	 * @param results
-	 *            an array of floats to hold the results
-	 * @throws IllegalArgumentException
-	 *             if results is null or has length < 1
-	 */
-	public static void distanceBetween(double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results)
-	{
-		if (results == null || results.length < 1)
-		{
-			throw new IllegalArgumentException("results is null or has length < 1");
-		}
-		computeDistanceAndBearing(startLatitude, startLongitude, endLatitude, endLongitude, results);
-	}
-
-	public boolean equals(Coordinate coord)
-	{
-		if (this.getLatitude() != coord.getLatitude()) return false;
-		if (this.getLongitude() != coord.getLongitude()) return false;
-
-		return true;
-	}
-
-	public static Coordinate Intersection(Coordinate coord1, Coordinate coord2, Coordinate coord3, Coordinate coord4)
-	{
-		Coordinate result = null;
-
-		double[] x = new double[4];
-		double[] y = new double[4];
-		x[0] = coord1.getLongitude();
-		y[0] = coord1.getLatitude();
-		x[1] = coord2.getLongitude();
-		y[1] = coord2.getLatitude();
-		x[2] = coord3.getLongitude();
-		y[2] = coord3.getLatitude();
-		x[3] = coord4.getLongitude();
-		y[3] = coord4.getLatitude();
-
-		// Steigungen
-		double steig1 = (y[1] - y[0]) / (x[1] - x[0]);
-		double steig2 = (y[3] - y[2]) / (x[3] - x[2]);
-		// Nullwerte
-		double null1 = y[0] - x[0] * steig1;
-		double null2 = y[2] - x[2] * steig2;
-		// Schnittpunkt
-		double X = (null2 - null1) / (steig1 - steig2);
-		double Y = steig1 * X + null1;
-		// Konvertieren in Lat-Lon
-
-		result = new Coordinate(Y, X);
-		return result;
-	}
-
-	public static Coordinate Crossbearing(Coordinate coord1, double direction1, Coordinate coord2, double direction2)
-	{
-		float[] dist = new float[4];
-		distanceBetween(coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude(), dist);
-		double distance = dist[0];
-		Coordinate coord3 = Project(coord1, direction1, distance);
-		Coordinate coord4 = Project(coord2, direction2, distance);
-
-		return Intersection(coord1, coord3, coord2, coord4);
 	}
 
 	public Coordinate copy()
 	{
 		return new Coordinate(this);
-	}
-
-	/**
-	 * @return
-	 * @uml.property name="elevation"
-	 */
-	public double getElevation()
-	{
-		return Elevation;
-	}
-
-	/**
-	 * @param elevation
-	 * @uml.property name="elevation"
-	 */
-	public void setElevation(double elevation)
-	{
-		Elevation = elevation;
-	}
-
-	/**
-	 * @return
-	 * @uml.property name="latitude"
-	 */
-	public double getLatitude()
-	{
-		return Latitude;
-	}
-
-	/**
-	 * @param latitude
-	 * @uml.property name="latitude"
-	 */
-	public void setLatitude(double latitude)
-	{
-		Latitude = latitude;
-	}
-
-	/**
-	 * @return
-	 * @uml.property name="longitude"
-	 */
-	public double getLongitude()
-	{
-		return Longitude;
-	}
-
-	/**
-	 * @param longitude
-	 * @uml.property name="longitude"
-	 */
-	public void setLongitude(double longitude)
-	{
-		Longitude = longitude;
 	}
 
 	public void setValid(boolean b)
@@ -639,6 +401,30 @@ public class Coordinate implements Serializable
 	public String toString()
 	{
 		return FormatCoordinate();
+	}
+
+	@Override
+	public double getLatitude()
+	{
+		return super.getLatitude();
+	}
+
+	@Override
+	public double getLongitude()
+	{
+		return super.getLongitude();
+	}
+
+	@Override
+	public int getIntLatitude()
+	{
+		return super.getIntLatitude();
+	}
+
+	@Override
+	public int getIntLongitude()
+	{
+		return super.getIntLongitude();
 	}
 
 }

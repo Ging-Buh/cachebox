@@ -11,7 +11,6 @@ public class MenuItemBase extends ListViewItemBackground
 	public MenuItemBase(CB_RectF rec, int Index, String Name)
 	{
 		super(rec, Index, Name);
-
 	}
 
 	@Override

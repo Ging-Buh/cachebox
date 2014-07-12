@@ -241,10 +241,10 @@ public class SpriteCacheBase
 	protected static void setPath(CB_Skin skin)
 	{
 
-		if (Gdx.gl11 != null)
+		if (Gdx.gl != null)
 		{
-			Gdx.gl11.glFlush();
-			Gdx.gl11.glFinish();
+			Gdx.gl.glFlush();
+			Gdx.gl.glFinish();
 		}
 
 		String TexturName = CB_UI_Base_Settings.useMipMap.getValue() ? "UI_IconPack_MipMap.spp" : "UI_IconPack.spp";
@@ -545,6 +545,7 @@ public class SpriteCacheBase
 			MapIcons.add(getThemedSprite("24"));
 			MapIcons.add(getThemedSprite("25"));
 			MapIcons.add(getThemedSprite("star"));
+			MapIcons.add(getThemedSprite("27"));
 
 		}
 

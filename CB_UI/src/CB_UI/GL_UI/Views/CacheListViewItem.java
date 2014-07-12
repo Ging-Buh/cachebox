@@ -1,26 +1,32 @@
 package CB_UI.GL_UI.Views;
 
+import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
+import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
+import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CacheInfo;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CacheListViewItem extends ListViewItemBackground implements PositionChangedEvent
 {
@@ -39,16 +45,16 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		}
 
 		@Override
-		public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+		public void renderChilds(final Batch batch, ParentInfo parentInfo)
 		{
-			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
 			batch.flush();
 
 			this.render(batch);
 			batch.flush();
 
-			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 		}
 	}
 
@@ -73,16 +79,16 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 	public CacheListViewItem(CB_RectF rec, int Index, Cache cache)
 	{
-		super(rec, Index, cache.Name);
+		super(rec, Index, cache.getName());
 		mCache = cache;
-		info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
+		info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(), cache);
 		info.setZeroPos();
-		distance.setColor(Fonts.getFontColor());
+		distance.setColor(COLOR.getFontColor());
 		this.addChild(info);
 		PositionChangedEventList.Add(this);
 
-		float size = this.height / 2.3f;
-		ArrowRec = new CB_RectF(this.width - (size * 1.2f), this.height - (size * 1.6f), size, size);
+		float size = this.getHeight() / 2.3f;
+		ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
 		arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 		arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
@@ -120,16 +126,50 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 		if (Locator.Valid())
 		{
+
+			if (mCache.Pos == null)
+			{
+				// mCache was disposed
+				Cache c = Database.Data.Query.GetCacheById(mCache.Id);
+				if (c == null)
+				{
+					return;
+				}
+				mCache = c;
+			}
+
 			Coordinate position = Locator.getCoordinate();
 
-			double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), mCache.Latitude(), mCache.Longitude());
-			double cacheBearing = -(bearing - heading);
-			setDistanceString(UnitFormatter.DistanceString(mCache.Distance(true)));
+			Waypoint FinalWp = mCache.GetFinalWaypoint();
+
+			Coordinate Final = FinalWp != null ? FinalWp.Pos : mCache.Pos;
+			CalculationType calcType = CalculationType.FAST;
+			Cache c = GlobalCore.getSelectedCache();
+			if (c != null)
+			{
+				calcType = mCache.Id == GlobalCore.getSelectedCache().Id ? CalculationType.ACCURATE : CalculationType.FAST;
+			}
+
+			float result[] = new float[4];
+
+			try
+			{
+				MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(),
+						Final.getLongitude(), result);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+
+			double cacheBearing = -(result[2] - heading);
+			mCache.cachedDistance = result[0];
+			setDistanceString(UnitFormatter.DistanceString(mCache.cachedDistance));
 
 			arrow.setRotation((float) cacheBearing);
 			if (arrow.getColor() == DISABLE_COLOR)
 			{
-				float size = this.height / 2.3f;
+				float size = this.getHeight() / 2.3f;
 				arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 				arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 				arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
@@ -145,7 +185,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 

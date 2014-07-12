@@ -74,7 +74,7 @@ public class TrackableListView extends CB_View_Base
 		// ##################################################################################################
 		// Search Box
 		// ##################################################################################################
-		searchBox = new Box(this.width, 10, "TB_Search Box");
+		searchBox = new Box(this.getWidth(), 10, "TB_Search Box");
 		btnSearch = new ImageButton("Search");
 		searchBox.setBackground(SpriteCacheBase.activityBackground);
 		searchBox.setHeight(btnSearch.getHeight() + searchBox.getTopHeight() + searchBox.getBottomHeight());
@@ -101,7 +101,6 @@ public class TrackableListView extends CB_View_Base
 						@Override
 						public void isCanceld()
 						{
-							 
 
 						}
 					}, new Runnable()
@@ -168,7 +167,7 @@ public class TrackableListView extends CB_View_Base
 		});
 		searchBox.addLast(btnSearch, FIXED);
 
-		listView = new V_ListView(new CB_RectF(0, 0, width, height - searchBox.getHeight()), "TB_LIstView");
+		listView = new V_ListView(new CB_RectF(0, 0, getWidth(), getHeight() - searchBox.getHeight()), "TB_LIstView");
 		listView.setEmptyMsg(Translation.Get("TB_List_Empty"));
 		listView.setBaseAdapter(lvAdapter);
 		this.addChild(listView);
@@ -178,8 +177,8 @@ public class TrackableListView extends CB_View_Base
 
 	private void Layout()
 	{
-		searchBox.setY(this.height - searchBox.getHeight());
-		listView.setHeight(this.height - searchBox.getHeight() - UI_Size_Base.that.getMargin());
+		searchBox.setY(this.getHeight() - searchBox.getHeight());
+		listView.setHeight(this.getHeight() - searchBox.getHeight() - UI_Size_Base.that.getMargin());
 		listView.notifyDataSetChanged();
 	}
 
@@ -209,7 +208,6 @@ public class TrackableListView extends CB_View_Base
 			@Override
 			public void isCanceld()
 			{
-				 
 
 			}
 		}, new Runnable()

@@ -1,14 +1,33 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
+import CB_Core.Solver.Solver;
+import CB_Core.Solver.SolverCacheInterface;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
@@ -28,21 +47,27 @@ import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 
-public class GlobalCore extends CB_UI_Base.Global
+/**
+ * @author ging-buh
+ * @author arbor95
+ * @author longri
+ */
+public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
+	public static final int CurrentRevision = 2203;
 
-	public static final int CurrentRevision = 1884;
-	public static final String CurrentVersion = "0.6.";
+	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "store";
 
 	// public static final String ps = System.getProperty("path.separator");
-	public static final String AboutMsg = "Team Cachebox (2011-2013)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
+	public static final String AboutMsg = "Team Cachebox (2011-2014)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
 			+ br + "Groundspeak Inc. Used with permission";
 	public static final String splashMsg = AboutMsg + br + br + "POWERED BY:";
 
 	public static boolean restartAfterKill = false;
 	public static String restartCache;
 	public static String restartWaypoint;
+	public static boolean filterLogsOfFriends = false;
 
 	// ###########create instance#############
 	public final static GlobalCore INSTANCE = new GlobalCore();
@@ -55,7 +80,7 @@ public class GlobalCore extends CB_UI_Base.Global
 	private GlobalCore()
 	{
 		super();
-
+		Solver.solverCacheInterface = this;
 		Logger.setCreateDebugWithHeader(new iCreateDebugWithHeader()
 		{
 			@Override
@@ -152,9 +177,9 @@ public class GlobalCore extends CB_UI_Base.Global
 
 	public static FilterProperties LastFilter = null;
 
-	public static void setSelectedCache(Cache cache)
+	public static void setSelectedCache(Cache Cache)
 	{
-		setSelectedWaypoint(cache, null);
+		setSelectedWaypoint(Cache, null);
 	}
 
 	public static Cache getSelectedCache()
@@ -171,23 +196,53 @@ public class GlobalCore extends CB_UI_Base.Global
 
 	private static Waypoint selectedWaypoint = null;
 
-	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint)
+	public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint)
 	{
-		setSelectedWaypoint(cache, waypoint, true);
+		setSelectedWaypoint(Cache, waypoint, true);
 	}
 
 	/**
 	 * if changeAutoResort == false -> do not change state of autoResort Flag
 	 * 
-	 * @param cache
+	 * @param Cache
 	 * @param waypoint
 	 * @param changeAutoResort
 	 */
-	public static void setSelectedWaypoint(Cache cache, Waypoint waypoint, boolean changeAutoResort)
+	public static void setSelectedWaypoint(Cache Cache, Waypoint waypoint, boolean changeAutoResort)
 	{
-		selectedCache = cache;
+
+		if (Cache == null)
+		{
+			selectedCache = null;
+			selectedWaypoint = null;
+			return;
+		}
+
+		// // rewrite Changed Values ( like Favroite state)
+		// if (selectedCache != null)
+		// {
+		// if (!Cache.getGcCode().equals("CBPark"))
+		// {
+		// Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
+		//
+		// }
+		// }
+
+		// remove Detail Info from old selectedCache
+		if ((selectedCache != Cache) && (selectedCache != null) && (selectedCache.detail != null))
+		{
+			selectedCache.deleteDetail(Config.ShowAllWaypoints.getValue());
+		}
+		selectedCache = Cache;
 		selectedWaypoint = waypoint;
-		SelectedCacheEventList.Call(selectedCache, waypoint);
+
+		// load Detail Info if not available
+		if (selectedCache.detail == null)
+		{
+			selectedCache.loadDetail();
+		}
+
+		SelectedCacheEventList.Call(selectedCache, selectedWaypoint);
 
 		if (changeAutoResort)
 		{
@@ -195,12 +250,12 @@ public class GlobalCore extends CB_UI_Base.Global
 			GlobalCore.setAutoResort(false);
 		}
 
-		GL.that.renderOnce("setSelectedWaypoint");
+		GL.that.renderOnce();
 	}
 
-	public static void NearestCache(Cache nearest)
+	public static void setNearestCache(Cache Cache)
 	{
-		nearestCache = nearest;
+		nearestCache = Cache;
 	}
 
 	public static Waypoint getSelectedWaypoint()
@@ -283,14 +338,14 @@ public class GlobalCore extends CB_UI_Base.Global
 		if ((List.size() > 0) && (GlobalCore.getSelectedCache() != null) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null))
 		{
 			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
-			Logger.DEBUG("Change SelectedCache from " + GlobalCore.getSelectedCache().GcCode + "to" + List.get(0).GcCode);
+			Logger.DEBUG("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
 			GlobalCore.setSelectedCache(List.get(0));
 		}
 		// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 		if ((GlobalCore.getSelectedCache() == null) && (List.size() > 0))
 		{
 			GlobalCore.setSelectedCache(List.get(0));
-			Logger.DEBUG("Set SelectedCache to " + List.get(0).GcCode + " first in List.");
+			Logger.DEBUG("Set SelectedCache to " + List.get(0).getGcCode() + " first in List.");
 		}
 	}
 
@@ -305,6 +360,8 @@ public class GlobalCore extends CB_UI_Base.Global
 	}
 
 	private static CancelWaitDialog wd;
+
+	public static boolean RunFromSplash = false;
 
 	public static CancelWaitDialog ImportSpoiler()
 	{
@@ -348,17 +405,19 @@ public class GlobalCore extends CB_UI_Base.Global
 		public void chekReady(int MemberTypeId);
 	}
 
+	static CancelWaitDialog dia;
+
 	public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler)
 	{
 		if (!GroundspeakAPI.API_isCheked())
 		{
-			CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner()
+			dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner()
 			{
 
 				@Override
 				public void isCanceld()
 				{
-
+					dia.close();
 				}
 			}, new Runnable()
 			{
@@ -366,14 +425,27 @@ public class GlobalCore extends CB_UI_Base.Global
 				@Override
 				public void run()
 				{
-					int ret = GroundspeakAPI.chkMemperShip(false);
-					handler.chekReady(ret);
+					final int ret = GroundspeakAPI.chkMemperShip(false);
+					dia.close();
+
+					Timer ti = new Timer();
+					TimerTask task = new TimerTask()
+					{
+
+						@Override
+						public void run()
+						{
+							handler.chekReady(ret);
+						}
+					};
+					ti.schedule(task, 300);
+
 				}
 			});
 		}
 		else
 		{
-			handler.chekReady(GroundspeakAPI.GetMembershipType());
+			handler.chekReady(GroundspeakAPI.chkMemperShip(true));
 		}
 
 	}
@@ -382,6 +454,32 @@ public class GlobalCore extends CB_UI_Base.Global
 	protected String getVersionPrefix()
 	{
 		return VersionPrefix;
+	}
+
+	// Interface für den Solver zum Zugriff auf den SelectedCache.
+	// Direkter Zugriff geht nicht da der Solver im Core definiert ist
+	@Override
+	public Cache sciGetSelectedCache()
+	{
+		return getSelectedCache();
+	}
+
+	@Override
+	public void sciSetSelectedCache(Cache cache)
+	{
+		setSelectedCache(cache);
+	}
+
+	@Override
+	public void sciSetSelectedWaypoint(Cache cache, Waypoint waypoint)
+	{
+		setSelectedWaypoint(cache, waypoint);
+	}
+
+	@Override
+	public Waypoint sciGetSelectedWaypoint()
+	{
+		return getSelectedWaypoint();
 	}
 
 }

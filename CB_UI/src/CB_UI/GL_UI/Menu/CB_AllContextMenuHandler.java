@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Menu;
 import java.util.ArrayList;
 
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -43,7 +44,7 @@ public class CB_AllContextMenuHandler
 
 		if (!selectedCacheIsNull)
 		{
-			selectedCacheIsNoGC = !GlobalCore.getSelectedCache().GcCode.startsWith("GC");
+			selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
 		}
 
 		Menu icm = new Menu("BtnCacheContextMenu");
@@ -64,7 +65,7 @@ public class CB_AllContextMenuHandler
 		if (mi != null)
 		{
 			boolean enabled = false;
-			if (!selectedCacheIsNull && (!Database.Hint(GlobalCore.getSelectedCache()).equals(""))) enabled = true;
+			if (!selectedCacheIsNull && (GlobalCore.getSelectedCache().hasHint())) enabled = true;
 			mi.setEnabled(enabled);
 			mi.setIcon(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.hint_19.ordinal())));
 		}
@@ -104,7 +105,7 @@ public class CB_AllContextMenuHandler
 		mi.setCheckable(true);
 		if (selectedCacheIsNull) mi.setEnabled(false);
 		else
-			mi.setChecked(GlobalCore.getSelectedCache().Favorit());
+			mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
 
 		mi = icm.addItem(MenuID.MI_DELETE_CACHE, "MI_DELETE_CACHE");
 		if (selectedCacheIsNull) mi.setEnabled(false);
@@ -136,7 +137,6 @@ public class CB_AllContextMenuHandler
 					@Override
 					public void isCanceld()
 					{
-						 
 
 					}
 				}, new Runnable()
@@ -145,8 +145,7 @@ public class CB_AllContextMenuHandler
 					@Override
 					public void run()
 					{
-						CB_UI.Api.SearchForGeocaches.SearchGC searchC = new CB_UI.Api.SearchForGeocaches.SearchGC();
-						searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
+						SearchGC searchC = new SearchGC(GlobalCore.getSelectedCache().getGcCode());
 
 						searchC.number = 1;
 
@@ -154,7 +153,7 @@ public class CB_AllContextMenuHandler
 						ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 						ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-						CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+						CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
 								GlobalCore.getSelectedCache().GPXFilename_ID);
 
 						try
@@ -171,7 +170,7 @@ public class CB_AllContextMenuHandler
 						{
 							String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 							CacheListDAO cacheListDAO = new CacheListDAO();
-							cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+							cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 						}
 
 						CachListChangedEventList.Call();
@@ -211,7 +210,7 @@ public class CB_AllContextMenuHandler
 			case MenuID.MI_FAVORIT:
 				if (GlobalCore.getSelectedCache() != null)
 				{
-					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().Favorit());
+					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
 					if (dao == null) dao = new CacheDAO();
 					dao.UpdateDatabase(GlobalCore.getSelectedCache());
 					CachListChangedEventList.Call();

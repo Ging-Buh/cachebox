@@ -41,7 +41,7 @@ public class RpcAnswer_GetExportList extends RpcAnswer
 		private int cacheCount;
 		private boolean download;
 
-		public ListItem(int id, String description, int cacheCount)
+		private ListItem(int id, String description, int cacheCount)
 		{
 			this.id = id;
 			this.description = description;

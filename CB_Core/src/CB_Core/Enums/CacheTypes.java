@@ -24,6 +24,7 @@ public enum CacheTypes
 	Cache, // = 19,
 	MyParking, // = 20
 	Munzee, // 21
+	Giga, // 22
 	;
 
 	/**
@@ -32,27 +33,36 @@ public enum CacheTypes
 	 */
 	public static CacheTypes parseString(String string)
 	{
-		// Remove trailing " cache" or " hybrid" fragments
-		if (string.contains(" ")) string = string.substring(0, string.indexOf(" "));
-		// Remove trailing "-cache" fragments
-		if (string.contains("-")) string = string.substring(0, string.indexOf("-"));
 
-		// Replace some opencaching.de / geotoad cache types
-		if (string.toLowerCase().contains("unknown")) string = "Mystery";
-		if (string.toLowerCase().contains("multicache")) string = "Multi";
-		if (string.toLowerCase().contains("whereigo")) // note the additional "e"
-		string = "Wherigo";
-		if (string.toLowerCase().contains("other")) string = "Mystery";
-		if (string.toLowerCase().contains("earthcache")) string = "Earth";
-		if (string.toLowerCase().contains("webcam")) string = "Camera";
-		if (string.toLowerCase().contains("question")) string = "MultiQuestion";
-		if (string.toLowerCase().contains("reference")) string = "ReferencePoint";
-		if (string.toLowerCase().contains("parking")) string = "ParkingArea";
-		if (string.toLowerCase().contains("stages")) string = "MultiStage";
-		if (string.toLowerCase().contains("munzee")) string = "Munzee";
-		if (string.toLowerCase().contains("mega")) string = "MegaEvent";
-		// If no cache type is given, use "Unknown"
-		if (string.length() == 0) string = "Unknown";
+		if (string.toLowerCase().contains("virtual cache"))
+		{
+			string = "Virtual";
+		}
+		else
+		{
+			// Remove trailing " cache" or " hybrid" fragments
+			if (string.contains(" ")) string = string.substring(0, string.indexOf(" "));
+			// Remove trailing "-cache" fragments
+			if (string.contains("-")) string = string.substring(0, string.indexOf("-"));
+
+			// Replace some opencaching.de / geotoad cache types
+			if (string.toLowerCase().contains("unknown")) string = "Mystery";
+			if (string.toLowerCase().contains("multicache")) string = "Multi";
+			if (string.toLowerCase().contains("whereigo")) string = "Wherigo"; // note the additional "e"
+			if (string.toLowerCase().contains("other")) string = "Mystery";
+			if (string.toLowerCase().contains("earthcache")) string = "Earth";
+			if (string.toLowerCase().contains("webcam")) string = "Camera";
+			if (string.toLowerCase().contains("question")) string = "MultiQuestion";
+			if (string.toLowerCase().contains("reference")) string = "ReferencePoint";
+			if (string.toLowerCase().contains("parking")) string = "ParkingArea";
+			if (string.toLowerCase().contains("stages")) string = "MultiStage";
+			if (string.toLowerCase().contains("munzee")) string = "Munzee";
+			if (string.toLowerCase().contains("mega")) string = "MegaEvent";
+			if (string.toLowerCase().contains("virtual")) string = "MultiQuestion"; // Import Virtual Stage as Question of a Multi
+			if (string.toLowerCase().contains("physical")) string = "MultiStage"; // Import Physical Stage as a Multi Stage
+			// If no cache type is given, use "Unknown"
+			if (string.length() == 0) string = "Unknown";
+		}
 
 		try
 		{
@@ -68,10 +78,71 @@ public enum CacheTypes
 				{
 					cacheType = ct;
 					blnCacheTypeFound = true;
+					break;
 				}
 			}
 			if (!blnCacheTypeFound) System.out.println("Handle cache type: " + string);
 			return cacheType;
 		}
 	}
+
+	@Override
+	public String toString()
+	{
+		switch (this)
+		{
+		case CITO:
+			break;
+		case Cache:
+			break;
+		case Camera:
+			break;
+		case Earth:
+			return "Earthcache";
+		case Event:
+			return "Event Cache";
+		case Final:
+			break;
+		case Giga:
+			break;
+		case Letterbox:
+			break;
+		case MegaEvent:
+			break;
+		case Multi:
+			return "Multi-cache";
+		case MultiQuestion:
+			return "Question to Answer";
+		case MultiStage:
+			return "Stages of a Multicache";
+		case Munzee:
+			break;
+		case MyParking:
+			break;
+		case Mystery:
+			return "Unknown Cache";
+		case ParkingArea:
+			return "Parking Area";
+		case ReferencePoint:
+			break;
+		case Traditional:
+			return "Traditional Cache";
+		case Trailhead:
+			break;
+		case Undefined:
+			break;
+		case Virtual:
+			break;
+		case Wherigo:
+			break;
+		case Wikipedia:
+			break;
+		default:
+			break;
+
+		}
+
+		return super.toString();
+	}
+
 }

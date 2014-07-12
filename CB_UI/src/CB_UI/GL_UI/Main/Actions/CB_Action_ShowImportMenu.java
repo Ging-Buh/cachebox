@@ -1,20 +1,42 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
+import CB_Core.DB.Database;
+import CB_Core.Export.GpxSerializer;
+import CB_Core.Export.GpxSerializer.ProgressListener;
+import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.Import;
+import CB_UI.GL_UI.Activitys.Import_CBServer;
 import CB_UI.GL_UI.Activitys.SearchOverNameOwnerGcCode;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
+import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
+import CB_UI_Base.GL_UI.Controls.Dialogs.StringInputBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox.OnMsgBoxClickListener;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_Utils.StringH;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -38,7 +60,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 	{
 		// don't return a view.
 		// show menu direct.
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -67,6 +89,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 	{
 		return true;
 	}
+
+	private ProgressDialog pD;
 
 	@Override
 	public Menu getContextMenu()
@@ -106,17 +130,163 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 					Import imp = new Import();
 					imp.show();
 				}
+				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_EXPORT_RUN)
+				{
+					// ExportFileName
+					StringInputBox.Show(WrapType.SINGLELINE, "Message", Translation.Get("enterFileName"), "Export.gpx",
+							new OnMsgBoxClickListener()
+							{
+								@Override
+								public boolean onClick(int which, Object data)
+								{
+									if (which == 1)
+									{
+										final String FileName = StringInputBox.editText.getText();
+
+										GL.that.RunOnGL(new IRunOnGL()
+										{
+											@Override
+											public void run()
+											{
+												ExportGetFolderStep(FileName);
+											}
+										});
+
+									}
+									return true;
+								}
+
+							});
+				}
+
 				return true;
 			}
 		});
-		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_IMPORT_GS, "API_IMPORT");
-		if (!StringH.isEmpty(Config.CBS_IP.getValue())) mi = icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
-		mi = icm.addItem(MenuID.MI_IMPORT_GPX, "GPX");
-		mi = icm.addItem(MenuID.MI_IMPORT_GCV, "GC_Vote");
-		mi = icm.addItem(MenuID.MI_IMPORT, "moreImport");
+		icm.addItem(MenuID.MI_IMPORT_GS, "API_IMPORT");
+		if (!StringH.isEmpty(Config.CBS_IP.getValue())) icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
+		icm.addItem(MenuID.MI_IMPORT_GPX, "GPX");
+		icm.addItem(MenuID.MI_IMPORT_GCV, "GC_Vote");
+		icm.addItem(MenuID.MI_IMPORT, "moreImport");
+		icm.addItem(MenuID.MI_EXPORT_RUN, "export");
 		return icm;
+	}
+
+	private void ExportGetFolderStep(final String FileName)
+	{
+		platformConector.getFolder("", Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()),
+				new IgetFolderReturnListner()
+				{
+
+					@Override
+					public void getFolderReturn(final String Path)
+					{
+						GL.that.RunOnGL(new IRunOnGL()
+						{
+							@Override
+							public void run()
+							{
+								EXPORT(FileName, Path);
+							}
+						});
+					}
+				});
+	}
+
+	int actExportedCount = 0;
+
+	private void EXPORT(final String FileName, String Path)
+	{
+		String exportPath = Path + "/" + FileName;
+		File exportFile = new File(exportPath);
+
+		// Delete File if exist
+		if (exportFile.exists()) exportFile.delete();
+
+		// Export all Caches from DB
+		final ArrayList<String> allGeocodesForExport = Database.Data.Query.getGcCodes();
+
+		final int count = allGeocodesForExport.size();
+		actExportedCount = 0;
+		// Show with Progress
+
+		final GpxSerializer ser = new GpxSerializer();
+		try
+		{
+			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(exportFile), "UTF-8"));
+
+			pD = ProgressDialog.Show("export", new RunnableReadyHandler(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					try
+					{
+						ser.writeGPX(allGeocodesForExport, writer, new ProgressListener()
+						{
+							@Override
+							public void publishProgress(int countExported, String msg)
+							{
+								actExportedCount = countExported;
+								if (pD != null)
+								{
+									int progress = (countExported * 100) / count;
+									pD.setProgress("EXPORT:" + countExported + "/" + count, msg, progress);
+									if (pD.isCanceld()) ser.cancel();
+
+								}
+							}
+						});
+					}
+					catch (IOException e)
+					{
+
+					}
+				}
+			})
+			{
+
+				@Override
+				public void RunnableReady(boolean canceld)
+				{
+					System.out.print("Export READY");
+					if (pD != null)
+					{
+						pD.close();
+						pD.dispose();
+						pD = null;
+					}
+
+					if (canceld)
+					{
+						GL_MsgBox.Show(
+								Translation.Get("exportedCanceld".hashCode(), String.valueOf(actExportedCount), String.valueOf(count)),
+								Translation.Get("export"), MessageBoxIcon.Stop);
+					}
+					else
+					{
+						GL_MsgBox.Show(Translation.Get("exported".hashCode(), String.valueOf(actExportedCount)), Translation.Get("export"),
+								MessageBoxIcon.Information);
+					}
+
+				}
+			});
+
+			pD.setCancelListner(new iCancelListner()
+			{
+
+				@Override
+				public void isCanceld()
+				{
+					if (pD.isCanceld()) ser.cancel();
+				}
+			});
+		}
+		catch (IOException e)
+		{
+
+		}
 	}
 
 	protected void showImportMenu_GCV()
@@ -136,9 +306,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
 
-		mi = icm.addItem(MenuID.MI_IMPORT_GCV, "GC-Vote Import");
+		icm.addItem(MenuID.MI_IMPORT_GCV, "GC-Vote Import");
 
 		icm.Show();
 	}
@@ -166,9 +335,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_IMPORT_GPX, "GPX Import");
+		icm.addItem(MenuID.MI_IMPORT_GPX, "GPX Import");
 
 		icm.Show();
 	}
@@ -196,16 +363,14 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
+		icm.addItem(MenuID.MI_IMPORT_CBS, "CB-Server");
 
 		icm.Show();
 	}
 
 	private void import_CBS()
 	{
-		Import imp = new Import(MenuID.MI_IMPORT_CBS);
+		Import_CBServer imp = new Import_CBServer(MenuID.MI_IMPORT_CBS);
 		imp.show();
 	}
 
@@ -237,11 +402,9 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				return true;
 			}
 		});
-		MenuItem mi;
-
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_IMPORT_OVER_POSITION");
-		mi = icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
+		icm.addItem(MenuID.MI_IMPORT_GS_PQ, "API_PocketQuery");
+		icm.addItem(MenuID.MI_IMPORT_GS_API_POSITION, "API_IMPORT_OVER_POSITION");
+		icm.addItem(MenuID.MI_IMPORT_GS_API_SEARCH, "API_IMPORT_NAME_OWNER_CODE");
 
 		icm.Show();
 	}

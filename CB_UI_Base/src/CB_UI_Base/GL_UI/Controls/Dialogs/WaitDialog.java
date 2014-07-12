@@ -1,6 +1,6 @@
 package CB_UI_Base.GL_UI.Controls.Dialogs;
 
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
@@ -14,22 +14,22 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class WaitDialog extends ButtonDialog
 {
 	AnimationBase animation;
-	WaitDialog that;
 
 	public WaitDialog(Size size, String name)
 	{
 		super(size.getBounds().asFloat(), name, "", "", null, null, null);
-		that = this;
+
 	}
 
 	public static WaitDialog ShowWait()
 	{
 		WaitDialog wd = createDialog("");
+		wd.setCallerName(Logger.getCallerName());
 		wd.Show();
 		return wd;
 	}
@@ -37,13 +37,14 @@ public class WaitDialog extends ButtonDialog
 	public static WaitDialog ShowWait(String Msg)
 	{
 		WaitDialog wd = createDialog(Msg);
+		wd.setCallerName(Logger.getCallerName());
 		wd.Show();
 		return wd;
 	}
 
 	public void setAnimation(final AnimationBase Animation)
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -106,13 +107,13 @@ public class WaitDialog extends ButtonDialog
 	public void dismis()
 	{
 		Logger.LogCat("WaitDialog.Dismis");
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()
 			{
-				GL.that.closeDialog(that);
-				GL.that.renderOnce("dismis WaitDialog");
+				GL.that.closeDialog(WaitDialog.this);
+				GL.that.renderOnce();
 			}
 		});
 	}
@@ -120,15 +121,21 @@ public class WaitDialog extends ButtonDialog
 	@Override
 	public void dispose()
 	{
-
 		super.dispose();
-		Logger.LogCat("WaitDialog.disposed");
+		String caller = Logger.getCallerName(1);
+		Logger.LogCat("WaitDialog.disposed ID:[" + this.DialogID + "] called:" + caller);
 	}
 
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
 		super.render(batch);
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName() + "DialogID[" + DialogID + "] \"" + this.label.getText() + "\" Created by: " + CallerName;
 	}
 
 }

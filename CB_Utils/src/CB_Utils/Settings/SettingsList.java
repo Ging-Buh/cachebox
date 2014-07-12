@@ -37,12 +37,12 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 				}
 				catch (IllegalArgumentException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 				catch (IllegalAccessException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 			}
@@ -129,13 +129,15 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 				{
 					if (Data != null) dao.WriteToDatabase(Data, setting);
 				}
-				else if (SettingStoreType.Global == setting.getStoreType())
+				else if (SettingStoreType.Global == setting.getStoreType()
+						|| (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 				{
 					dao.WriteToDatabase(getSettingsDB(), setting);
 				}
 				else if (SettingStoreType.Platform == setting.getStoreType())
 				{
 					dao.WriteToPlatformSettings(setting);
+					dao.WriteToDatabase(getSettingsDB(), setting);
 				}
 				setting.clearDirty();
 
@@ -172,7 +174,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			{
 				setting = dao.ReadFromDatabase(getDataDB(), setting);
 			}
-			else if (SettingStoreType.Global == setting.getStoreType())
+			else if (SettingStoreType.Global == setting.getStoreType()
+					|| (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 			{
 				setting = dao.ReadFromDatabase(getSettingsDB(), setting);
 			}
@@ -183,9 +186,21 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 				setting = dao.ReadFromPlatformSetting(setting);
 
 				// chk for Value on User.db3 and cleared Platform Value
-				if (cpy.value != setting.value)
+
+				if (setting instanceof SettingString)
 				{
-					if (setting.value == setting.defaultValue)
+					SettingString st = (SettingString) setting;
+
+					if (st.value.length() == 0)
+					{
+						// Platform Settings are empty use db3 value or default
+						setting = dao.ReadFromDatabase(getSettingsDB(), setting);
+						dao.WriteToPlatformSettings(setting);
+					}
+				}
+				else if (!cpy.value.equals(setting.value))
+				{
+					if (setting.value.equals(setting.defaultValue))
 					{
 						// override Platformsettings with UserDBSettings
 						setting.setValueFrom(cpy);

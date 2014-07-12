@@ -20,10 +20,11 @@ import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -42,9 +43,9 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.UnitFormatter;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent
@@ -56,12 +57,10 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	private SatBarChart chart;
 	private int result = -1;
 	CancelWaitDialog pd;
-	AboutView Me;
 
 	public AboutView(CB_RectF rec, String Name)
 	{
 		super(rec, Name);
-		Me = this;
 		registerSkinChangedEvent();
 		createControls();
 	}
@@ -100,7 +99,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 
@@ -114,8 +113,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		this.setBackground(SpriteCacheBase.AboutBack);
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
 		margin = UI_Size_Base.that.getMargin();
-		CB_RectF CB_LogoRec = new CB_RectF(this.halfWidth - (ref * 2.5f), this.height - ((ref * 5) / 4.11f) - ref - margin - margin,
-				ref * 5, (ref * 5) / 4.11f);
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin
+				- margin, ref * 5, (ref * 5) / 4.11f);
 		Logger.DEBUG("CB_Logo" + CB_LogoRec.toString());
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
@@ -123,24 +122,25 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		String VersionString = GlobalCore.getVersionString();
 		TextBounds bounds = Fonts.getSmall().getMultiLineBounds(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
-		descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - bounds.height, this.width, bounds.height + margin,
+		descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - bounds.height, this.getWidth(), bounds.height + margin,
 				"DescLabel");
 		descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
 		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
 		this.addChild(descTextView);
 
-		CachesFoundLabel = new Label("", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
-		CachesFoundLabel.setWidth(width);
+		CachesFoundLabel = new Label("", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
+		CachesFoundLabel.setWidth(getWidth());
 
 		CachesFoundLabel.setOnClickListener(new OnClickListener()
 		{
+			GL_MsgBox ms;
 
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 
-				GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo,
+				ms = GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
 						{
 
@@ -151,7 +151,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 								switch (which)
 								{
 								case 1:
-
+									ms.close();
 									pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(),
 											new IcancelListner()
 											{
@@ -159,7 +159,6 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 												@Override
 												public void isCanceld()
 												{
-													 
 
 												}
 											}, new Runnable()
@@ -194,8 +193,18 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 									break;
 								case 3:
-									NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"),
-											CB_UI.Config.FoundOffset.getValue(), DialogListner);
+									ms.close();
+									GL.that.RunOnGL(new IRunOnGL()
+									{
+
+										@Override
+										public void run()
+										{
+											NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"),
+													CB_UI.Config.FoundOffset.getValue(), DialogListner);
+										}
+									});
+
 									break;
 
 								}
@@ -259,11 +268,11 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		// ##############################
 		// create Value Label
 		lblRec.setX(lblGPS.getMaxX() + margin);
-		lblRec.setWidth(this.width - margin - lblGPS.getMaxX());
+		lblRec.setWidth(this.getWidth() - margin - lblGPS.getMaxX());
 
 		Gps = new Label(lblRec, "GPS");
 		Accuracy = new Label(lblRec, "Accuracy");
-		WaypointLabel = new Label("-", Fonts.getNormal(), Fonts.getLinkFontColor(), WrapType.SINGLELINE);
+		WaypointLabel = new Label("-", Fonts.getNormal(), COLOR.getLinkFontColor(), WrapType.SINGLELINE);
 		WaypointLabel.setRec(lblRec);
 		CoordLabel = new Label(lblRec, "Cord");
 		Current = new Label(lblRec, "Current");
@@ -284,7 +293,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				if (GlobalCore.getSelectedCache() == null) return true;
-				platformConector.callUrl(GlobalCore.getSelectedCache().Url);
+				platformConector.callUrl(GlobalCore.getSelectedCache().getUrl());
 				return true;
 			}
 		});
@@ -298,11 +307,11 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		// create Sat Chart
 		float l = margin * 2;
-		chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, this.width - l - l, CachesFoundLabel.getY() - Gps.getMaxY()),
+		chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, this.getWidth() - l - l, CachesFoundLabel.getY() - Gps.getMaxY()),
 				"Sat Chart");
 		chart.setDrawWithAlpha(true);
 		this.addChild(chart);
-
+		setYpositions();
 	}
 
 	@Override
@@ -315,13 +324,13 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	@Override
 	protected void SkinIsChanged()
 	{
-		Initial();
+		createControls();
 		setYpositions();
 	}
 
 	private void setYpositions()
 	{
-		if (CB_Logo != null) CB_Logo.setY(this.height - (margin * 2) - CB_Logo.getHeight());
+		if (CB_Logo != null) CB_Logo.setY(this.getHeight() - (margin * 2) - CB_Logo.getHeight());
 		if (descTextView != null) descTextView.setY(CB_Logo.getY() - margin - margin - margin - descTextView.getHeight());
 		if (CachesFoundLabel != null) CachesFoundLabel.setY(descTextView.getY() - CachesFoundLabel.getHeight() + margin);
 		if (chart != null) chart.setHeight(CachesFoundLabel.getY() - Gps.getMaxY());
@@ -329,7 +338,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	public void refreshText()
 	{
-		if (WaypointLabel == null || CachesFoundLabel == null) return;
+		if (WaypointLabel == null || CachesFoundLabel == null || CoordLabel == null) return;
 		CachesFoundLabel.setText(Translation.Get("caches_found") + " " + String.valueOf(Config.FoundOffset.getValue()));
 
 		Cache selectedCache = GlobalCore.getSelectedCache();
@@ -337,20 +346,27 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		if (selectedCache != null)
 		{
-			if (selectedWaypoint != null)
+			try
 			{
-				WaypointLabel.setText(selectedWaypoint.GcCode);
-				CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " "
-						+ UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
+				if (selectedWaypoint != null)
+				{
+					WaypointLabel.setText(selectedWaypoint.getGcCode());
+					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " "
+							+ UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
+				}
+				else
+				{
+					WaypointLabel.setText(selectedCache.getGcCode());
+					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " "
+							+ UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				WaypointLabel.setText(selectedCache.GcCode);
-				CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " "
-						+ UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
+				CoordLabel.setText(" - - - ");
 			}
 		}
-		GL.that.renderOnce("About refresh Text");
+		GL.that.renderOnce();
 	}
 
 	protected final returnValueListner DialogListner = new returnValueListner()
@@ -377,7 +393,9 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		if (Locator.getCoordinate().hasAccuracy())
 		{
 			int radius = (int) Locator.getCoordinate().getAccuracy();
-			if (Accuracy != null) Accuracy.setText("+/- " + String.valueOf(radius) + "m (" + Locator.getProvider().toString() + ")");
+
+			if (Accuracy != null) Accuracy.setText("+/- " + UnitFormatter.DistanceString(radius) + " (" + Locator.getProvider().toString()
+					+ ")");
 		}
 		else
 		{
@@ -398,7 +416,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -443,4 +461,45 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 	}
 
+	@Override
+	public void dispose()
+	{
+
+		if (descTextView != null) descTextView.dispose();
+		descTextView = null;
+		if (CachesFoundLabel != null) CachesFoundLabel.dispose();
+		CachesFoundLabel = null;
+		if (WaypointLabel != null) WaypointLabel.dispose();
+		WaypointLabel = null;
+		if (CoordLabel != null) CoordLabel.dispose();
+		CoordLabel = null;
+		if (lblGPS != null) lblGPS.dispose();
+		lblGPS = null;
+		if (Gps != null) Gps.dispose();
+		Gps = null;
+		if (lblAccuracy != null) lblAccuracy.dispose();
+		lblAccuracy = null;
+		if (Accuracy != null) Accuracy.dispose();
+		Accuracy = null;
+		if (lblWP != null) lblWP.dispose();
+		lblWP = null;
+		if (lblCoord != null) lblCoord.dispose();
+		lblCoord = null;
+		if (lblCurrent != null) lblCurrent.dispose();
+		lblCurrent = null;
+		if (Current != null) Current.dispose();
+		Current = null;
+		if (CB_Logo != null) CB_Logo.dispose();
+		CB_Logo = null;
+		if (chart != null) chart.dispose();
+		chart = null;
+		if (pd != null) pd.dispose();
+		pd = null;
+
+		SelectedCacheEventList.Remove(this);
+		GpsStateChangeEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
+
+		super.dispose();
+	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CoordinateButton;
@@ -99,7 +100,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		iniTextfieldFocus();
 		layoutTextFields();
 
-		scrollBox.setHeight(this.height - bOK.getMaxY() - margin);
+		scrollBox.setHeight(this.getHeight() - bOK.getMaxY() - margin);
 		scrollBox.setY(bOK.getMaxY() + margin);
 		scrollBox.setBackground(this.getBackground());
 		scrollBox.setBorders(0, 0);
@@ -116,7 +117,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				}
 
 				keyboard.show(false);
-				scrollToY(that.getHeight(), that.getHeight());
+				scrollToY(EditWaypoint.this.getHeight(), EditWaypoint.this.getHeight());
 				return true;
 			}
 		});
@@ -131,10 +132,10 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void iniCacheNameLabel()
 	{
-		tvCacheName = new Label(leftBorder + margin, height - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
+		tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
 				MeasuredLabelHeight, "CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBubbleNormal());
-		tvCacheName.setText(GlobalCore.getSelectedCache().Name);
+		tvCacheName.setText(GlobalCore.getSelectedCache().getName());
 		scrollBox.addChild(tvCacheName);
 	}
 
@@ -142,7 +143,18 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 	{
 		CB_RectF rec = new CB_RectF(leftBorder, tvCacheName.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		bCoord = new CoordinateButton(rec, "CoordButton", waypoint.Pos);
+		Coordinate coordinate = waypoint.Pos;
+		if (!coordinate.isValid() || coordinate.isZero())
+		{
+			// coordinate = get from gps
+			coordinate = Locator.getCoordinate();
+			if (!coordinate.isValid() || coordinate.isZero())
+			{
+				// coordinate = get from cache
+				coordinate = GlobalCore.getSelectedCache().Pos;
+			}
+		}
+		bCoord = new CoordinateButton(rec, "CoordButton", coordinate, null);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
 		{
@@ -150,7 +162,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 			@Override
 			public void coordinateChanged(Coordinate coord)
 			{
-				that.show();
+				EditWaypoint.this.show();
 			}
 		});
 
@@ -166,7 +178,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 		tvTyp.setText(Translation.Get("type"));
 		scrollBox.addChild(tvTyp);
 
-		tvStartPoint = new Label(tvTyp.getRight() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth,
+		tvStartPoint = new Label(tvTyp.getMaxX() + margin, bCoord.getY() - margin - MeasuredLabelHeight, cbStartPointWidth,
 				MeasuredLabelHeight, "TypeLabel");
 		tvStartPoint.setFont(Fonts.getBubbleNormal()).setHAlignment(HAlignment.CENTER);
 		tvStartPoint.setText(Translation.Get("start"));
@@ -185,7 +197,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
+				EditWaypoint.this.show();
 				showCbStartPoint(false);
 				switch (index)
 				{
@@ -315,7 +327,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				UI_Size_Base.that.getButtonHeight());
 		etTitle = new EditTextField(rec, this);
 
-		String txt = (waypoint.Title == null) ? "" : waypoint.Title;
+		String txt = (waypoint.getTitle() == null) ? "" : waypoint.getTitle();
 
 		etTitle.setText(txt);
 		scrollBox.addChild(etTitle);
@@ -336,7 +348,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				UI_Size_Base.that.getButtonHeight());
 		etDescription = new EditTextField(this, rec, WrapType.WRAPPED, "DescTextField");
 
-		String txt = (waypoint.Description == null) ? "" : waypoint.Description;
+		String txt = (waypoint.getDescription() == null) ? "" : waypoint.getDescription();
 
 		etDescription.setText(txt);
 
@@ -374,7 +386,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				UI_Size_Base.that.getButtonHeight());
 		etClue = new EditTextField(this, rec, WrapType.WRAPPED, "ClueTextField");
 
-		String txt = (waypoint.Clue == null) ? "" : waypoint.Clue;
+		String txt = (waypoint.getClue() == null) ? "" : waypoint.getClue();
 
 		etClue.setText(txt);
 
@@ -424,9 +436,9 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 				if (mReturnListner != null)
 				{
 					waypoint.Pos = bCoord.getCoordinate();
-					waypoint.Title = etTitle.getText();
-					waypoint.Description = etDescription.getText();
-					waypoint.Clue = etClue.getText();
+					waypoint.setTitle(etTitle.getText());
+					waypoint.setDescription(etDescription.getText());
+					waypoint.setClue(etClue.getText());
 					waypoint.IsStart = cbStartPoint.isChecked();
 					mReturnListner.returnedWP(waypoint);
 				}
@@ -501,7 +513,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void scrollToY(float y, float maxY)
 	{
-		if (y < this.halfHeight)// wird von softKeyboard verdeckt
+		if (y < this.getHalfHeight())// wird von softKeyboard verdeckt
 		{
 			scrollBox.scrollTo(-(virtualHeight - maxY - MeasuredLabelHeight));
 		}
@@ -513,7 +525,7 @@ public class EditWaypoint extends ActivityBase implements KeyboardFocusChangedEv
 
 	private void layoutTextFields()
 	{
-		float maxTextFieldHeight = this.height / 2.3f;
+		float maxTextFieldHeight = this.getHeight() / 2.3f;
 		float rand = etClue.getStyle().background.getBottomHeight() + etClue.getStyle().background.getTopHeight();
 		float descriptionHeight = Math.min(maxTextFieldHeight, etDescription.getMeasuredHeight() + rand);
 		float clueHeight = Math.min(maxTextFieldHeight, etClue.getMeasuredHeight() + rand);

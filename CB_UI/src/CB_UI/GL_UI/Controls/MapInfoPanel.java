@@ -1,6 +1,8 @@
 package CB_UI.GL_UI.Controls;
 
 import CB_Locator.Coordinate;
+import CB_Locator.Locator;
+import CB_Locator.LocatorSettings;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -11,7 +13,8 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_Utils.Util.UnitFormatter;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -45,7 +48,7 @@ public class MapInfoPanel extends CB_View_Base
 				aktCoord = Coord;
 				lblLatitude.setText(UnitFormatter.FormatLatitudeDM(Coord.getLatitude()));
 				lblLongitude.setText(UnitFormatter.FormatLongitudeDM(Coord.getLongitude()));
-				GL.that.renderOnce(this.getName() + " setCoord");
+				GL.that.renderOnce();
 			}
 
 		}
@@ -99,7 +102,7 @@ public class MapInfoPanel extends CB_View_Base
 		if (distance == -1) lblDistance.setText("?");
 		else
 			lblDistance.setText(UnitFormatter.DistanceString(distance));
-		GL.that.renderOnce(this.getName() + " setDistance");
+		GL.that.renderOnce();
 	}
 
 	private float aktHeading = 0;
@@ -112,14 +115,15 @@ public class MapInfoPanel extends CB_View_Base
 		aktBearing = Bearing;
 		if (arrow != null && compas_scale != null)
 		{
+			setArrowDrawable();
 			arrow.setRotate(-Heading);
 			compas_scale.setRotate(Bearing);
-			GL.that.renderOnce(this.getName() + " setBearing");
+			GL.that.renderOnce();
 		}
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 	}
@@ -139,22 +143,22 @@ public class MapInfoPanel extends CB_View_Base
 
 		// initial Image
 
-		CB_RectF CompassRec = new CB_RectF(0, 0, this.height, this.height);
+		CB_RectF CompassRec = new CB_RectF(0, 0, this.getHeight(), this.getHeight());
 
-		compass_frame = new Image(CompassRec, "Test_Image");
+		compass_frame = new Image(CompassRec, "Compass_Frame");
 		compass_frame.setDrawable(SpriteCacheBase.Compass.get(2));
 		compass_frame.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
 		compass_frame.setScale(0.80f);
 		this.addChild(compass_frame);
 
-		compas_scale = new Image(CompassRec, "Test_Image");
+		compas_scale = new Image(CompassRec, "Compass_Scale");
 		compas_scale.setDrawable(SpriteCacheBase.Compass.get(3));
 		compas_scale.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
 		compas_scale.setScale(0.80f);
 		this.addChild(compas_scale);
 
-		arrow = new Image(CompassRec, "Test_Image");
-		arrow.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(0)));
+		arrow = new Image(CompassRec, "Compass_Arrow");
+		setArrowDrawable(true);
 		arrow.setOrigin(CompassRec.getWidth() / 2, CompassRec.getHeight() / 2);
 		arrow.setScale(0.50f);
 		this.addChild(arrow);
@@ -163,7 +167,7 @@ public class MapInfoPanel extends CB_View_Base
 
 		lblSpeed = new Label(this.ScaleCenter(0.4f), "lblSpeed");
 		lblSpeed.setFont(Fonts.getSmall());
-		lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.height * 0.1f));
+		lblSpeed.setPos(new Vector2(CompassRec.getWidth() + margin, this.getHeight() * 0.1f));
 		lblSpeed.setText("---");
 		this.addChild(lblSpeed);
 
@@ -175,23 +179,51 @@ public class MapInfoPanel extends CB_View_Base
 
 		lblLatitude = new Label(this.ScaleCenter(0.4f), "lblLatitude");
 		lblLatitude.setFont(Fonts.getSmall());
-		lblLatitude.setPos(new Vector2(this.width - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
+		lblLatitude.setPos(new Vector2(this.getWidth() - lblLatitude.getWidth() - rightBorder, CompassRec.getWidth() / 2));
 		lblLatitude.setText("---");
 		this.addChild(lblLatitude);
 
 		lblLongitude = new Label(this.ScaleCenter(0.4f), "lblLongitude");
 		lblLongitude.setFont(Fonts.getSmall());
-		lblLongitude.setPos(new Vector2(this.width - lblLongitude.getWidth() - rightBorder, this.height * 0.1f));
+		lblLongitude.setPos(new Vector2(this.getWidth() - lblLongitude.getWidth() - rightBorder, this.getHeight() * 0.1f));
 		lblLongitude.setText("---");
 		this.addChild(lblLongitude);
 
-		CoordSymbol = new Image((new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.62f), "CoordSymbol");
-		CoordSymbol.setX(this.width - CoordSymbol.getWidth() - (rightBorder / 3));
+		CoordSymbol = new Image((new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.62f), "CoordSymbol");
+		CoordSymbol.setX(this.getWidth() - CoordSymbol.getWidth() - (rightBorder / 3));
 		CoordSymbol.setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite("cache-icon")));
 		this.addChild(CoordSymbol);
 		CoordType tmp = lastCoordType;
 		lastCoordType = CoordType.NULL;
 		setCoordType(tmp);
+	}
+
+	private boolean lastUsedCompass = Locator.UseMagneticCompass();
+
+	private void setArrowDrawable()
+	{
+		setArrowDrawable(false);
+	}
+
+	private void setArrowDrawable(boolean forceSet)
+	{
+		boolean tmp = Locator.UseMagneticCompass();
+		if (!forceSet && tmp == lastUsedCompass) return;// no change required
+		lastUsedCompass = tmp;
+		boolean Transparency = LocatorSettings.PositionMarkerTransparent.getValue();
+		int arrowId = 0;
+		if (lastUsedCompass)
+		{
+			arrowId = Transparency ? 1 : 0;
+		}
+		else
+		{
+			arrowId = Transparency ? 3 : 2;
+		}
+		Sprite arrowSprite = new Sprite(SpriteCacheBase.Arrows.get(arrowId));
+		arrowSprite.setRotation(0);// reset rotation
+		arrowSprite.setOrigin(0, 0);
+		arrow.setDrawable(new SpriteDrawable(arrowSprite));
 	}
 
 	@Override

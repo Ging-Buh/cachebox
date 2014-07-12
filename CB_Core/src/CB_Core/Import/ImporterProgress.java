@@ -115,7 +115,7 @@ public class ImporterProgress
 		}
 	}
 
-	private int getProgress()
+	protected int getProgress()
 	{
 		float progress = 0.0f;
 

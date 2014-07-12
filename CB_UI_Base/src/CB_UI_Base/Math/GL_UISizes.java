@@ -95,7 +95,14 @@ public class GL_UISizes implements SizeChangedEvent
 				}
 			});
 
-			Fonts.loadFonts(CB_Skin.INSTANCE);
+			try
+			{
+				Fonts.loadFonts(CB_Skin.INSTANCE);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 
 			calcPos();
 
@@ -230,8 +237,8 @@ public class GL_UISizes implements SizeChangedEvent
 	{
 		Logger.DEBUG("GL_UISizes.calcPos()");
 
-		float w = Global.isTab ? UI_Right.width : UI_Left.width;
-		float h = Global.isTab ? UI_Right.height : UI_Left.height;
+		float w = Global.isTab ? UI_Right.getWidth() : UI_Left.getWidth();
+		float h = Global.isTab ? UI_Right.getHeight() : UI_Left.getHeight();
 
 		Info.setPos(new Vector2(margin, (h - margin - Info.getHeight())));
 
@@ -243,13 +250,24 @@ public class GL_UISizes implements SizeChangedEvent
 
 		ZoomBtn.setPos(new Vector2((w - margin - ZoomBtn.getWidth()), margin));
 
-		InfoLine1.x = Compass.crossPos.x + margin;
-		TextBounds bounds = Fonts.getNormal().getBounds("52° 34,806N ");
+		InfoLine1.x = Compass.getMaxX() + margin;
+		TextBounds bounds;
+		if (Fonts.getNormal() != null)
+		{
+			bounds = Fonts.getNormal().getBounds("52° 34,806N ");
+		}
+		else
+		{
+			bounds = new TextBounds();
+			bounds.height = 20;
+			bounds.width = 100;
+		}
+
 		InfoLine2.x = Info.getX() + Info.getWidth() - bounds.width - (margin * 2);
 
 		Float T1 = Info.getHeight() / 4;
 
-		InfoLine1.y = Info.crossPos.y - T1;
+		InfoLine1.y = Info.getMaxY() - T1;
 		InfoLine2.y = Info.getY() + T1 + bounds.height;
 
 		// Aufräumen

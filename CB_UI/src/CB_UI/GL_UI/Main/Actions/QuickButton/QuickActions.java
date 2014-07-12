@@ -25,10 +25,10 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_add_WP;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_DayNight;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Util.MoveableList;
 
@@ -95,7 +95,7 @@ public enum QuickActions
 
 					QuickActions type = QuickActions.values()[EnumId];
 
-					QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, height, height), index,
+					QuickButtonItem tmp = new QuickButtonItem(new CB_RectF(0, 0, height, height), index++,
 							QuickActions.getActionEnumById(EnumId), QuickActions.getName(EnumId), type);
 
 					retVel.add(tmp);

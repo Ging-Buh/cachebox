@@ -4,8 +4,8 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class ListViewItemBackground extends ListViewItemBase
 {
@@ -48,7 +48,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (isPressed)
 		{
@@ -63,15 +63,15 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 			Boolean BackGroundChanger = ((this.getIndex() % 2) == 1);
 			if (isSelected)
 			{
-				backSelect.draw(batch, 0, 0, this.width, this.height);
+				backSelect.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 			}
 			else if (BackGroundChanger)
 			{
-				back1.draw(batch, 0, 0, this.width, this.height);
+				back1.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 			}
 			else
 			{
-				back2.draw(batch, 0, 0, this.width, this.height);
+				back2.draw(batch, 0, 0, this.getWidth(), this.getHeight());
 			}
 		}
 		else
@@ -85,7 +85,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 	public boolean onTouchDown(int x, int y, int pointer, int button)
 	{
 		isPressed = true;
-		GL.that.renderOnce(this.getName() + " touchDown");
+		GL.that.renderOnce();
 
 		return false;
 	}
@@ -99,7 +99,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 			isPressed = false;
 		}
 
-		GL.that.renderOnce(this.getName() + " touchDown");
+		GL.that.renderOnce();
 
 		return false;
 	}

@@ -1,3 +1,19 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package CB_Core.DAO;
 
 import java.io.File;
@@ -7,28 +23,49 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class CacheListDAO
 {
 
-	public CacheList ReadCacheList(CacheList cacheList, String where)
+	public CacheList ReadCacheList(CacheList cacheList, ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails,
+			boolean loadAllWaypoints)
 	{
-		return ReadCacheList(cacheList, "", where, false);
+		ArrayList<String> orParts = new ArrayList<String>();
+
+		for (String gcCode : GC_Codes)
+		{
+			orParts.add("GcCode like '%" + gcCode + "%'");
+		}
+		String where = FilterProperties.join(" or ", orParts);
+		return ReadCacheList(cacheList, "", where, withDescription, fullDetails, loadAllWaypoints);
 	}
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where)
+	public CacheList ReadCacheList(CacheList cacheList, String where, boolean fullDetails, boolean loadAllWaypoints)
 	{
-		return ReadCacheList(cacheList, join, where, false);
+		return ReadCacheList(cacheList, "", where, false, fullDetails, loadAllWaypoints);
 	}
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription)
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
+	{
+		return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
+	}
+
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails,
+			boolean loadAllWaypoints)
 	{
 		if (cacheList == null) return null;
 
@@ -36,25 +73,39 @@ public class CacheListDAO
 		cacheList.clear();
 
 		Logger.DEBUG("ReadCacheList 1.Waypoints");
-		SortedMap<Long, ArrayList<Waypoint>> waypoints;
-		waypoints = new TreeMap<Long, ArrayList<Waypoint>>();
+		SortedMap<Long, CB_List<Waypoint>> waypoints;
+		waypoints = new TreeMap<Long, CB_List<Waypoint>>();
 		// zuerst alle Waypoints einlesen
-		ArrayList<Waypoint> wpList = new ArrayList<Waypoint>();
+		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
 		long aktCacheID = -1;
 
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint order by CacheId",
-						null);
+		String sql = "select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint";
+		if (!((fullDetails || loadAllWaypoints)))
+		{
+			// when CacheList should be loaded without full details and without all Waypoints
+			// do not load all waypoints from db!
+			sql += " where IsStart=\"true\" or Type=18"; // StartWaypoint or Final
+		}
+		sql += " order by CacheId";
+		CoreCursor reader = Database.Data.rawQuery(sql, null);
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
 		{
 			WaypointDAO waypointDAO = new WaypointDAO();
-			Waypoint wp = waypointDAO.getWaypoint(reader);
+			Waypoint wp = waypointDAO.getWaypoint(reader, fullDetails);
+			if (!(fullDetails || loadAllWaypoints))
+			{
+				// wenn keine FullDetails geladen werden sollen dann sollen nur die Finals und Start-Waypoints geladen werden
+				if (!(wp.IsStart || wp.Type == CacheTypes.Final))
+				{
+					reader.moveToNext();
+					continue;
+				}
+			}
 			if (wp.CacheId != aktCacheID)
 			{
 				aktCacheID = wp.CacheId;
-				wpList = new ArrayList<Waypoint>();
+				wpList = new CB_List<Waypoint>();
 				waypoints.put(aktCacheID, wpList);
 			}
 			wpList.add(wp);
@@ -66,7 +117,7 @@ public class CacheListDAO
 		Logger.DEBUG("ReadCacheList 2.Caches");
 		try
 		{
-			String sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint";
+			sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint";
 			if (withDescription)
 			{
 				sql += ", Description, Solver, Notes";
@@ -82,25 +133,32 @@ public class CacheListDAO
 		reader.moveToFirst();
 
 		CacheDAO cacheDAO = new CacheDAO();
+		long start = System.currentTimeMillis();
 		while (!reader.isAfterLast())
 		{
-			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription);
+			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription, fullDetails);
 
 			cacheList.add(cache);
+			cache.waypoints.clear();
 			if (waypoints.containsKey(cache.Id))
 			{
-				cache.waypoints = waypoints.get(cache.Id);
+				CB_List<Waypoint> tmpwaypoints = waypoints.get(cache.Id);
+
+				for (int i = 0, n = tmpwaypoints.size(); i < n; i++)
+				{
+					cache.waypoints.add(tmpwaypoints.get(i));
+				}
+
 				waypoints.remove(cache.Id);
 			}
-			else
-				cache.waypoints = new ArrayList<Waypoint>();
 
 			// ++Global.CacheCount;
 			reader.moveToNext();
 
 		}
 		reader.close();
-
+		long end = System.currentTimeMillis();
+		System.out.println("Dauer: " + String.valueOf(end - start));
 		// clear other never used WP`s from Mem
 		waypoints.clear();
 		waypoints = null;
@@ -134,7 +192,7 @@ public class CacheListDAO
 	{
 		try
 		{
-			delCacheImages(getDelGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder,
+			delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder,
 					DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", "Archived=1", null);
 			return ret;
@@ -161,8 +219,7 @@ public class CacheListDAO
 	{
 		try
 		{
-			delCacheImages(getDelGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder,
-					DescriptionImageFolderLocal);
+			delCacheImages(getGcCodeList("Found=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", "Found=1", null);
 			return ret;
 		}
@@ -190,7 +247,7 @@ public class CacheListDAO
 	{
 		try
 		{
-			delCacheImages(getDelGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
+			delCacheImages(getGcCodeList(Where), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", Where, null);
 			return ret;
 		}
@@ -201,16 +258,18 @@ public class CacheListDAO
 		}
 	}
 
-	private ArrayList<String> getDelGcCodeList(String where)
+	private ArrayList<String> getGcCodeList(String where)
 	{
 		CacheList list = new CacheList();
-		ReadCacheList(list, where);
+		ReadCacheList(list, where, false, false);
 		ArrayList<String> StrList = new ArrayList<String>();
 
-		for (Iterator<Cache> iterator = list.iterator(); iterator.hasNext();)
+		for (int i = 0, n = list.size(); i < n; i++)
 		{
-			StrList.add(iterator.next().GcCode);
+			StrList.add(list.get(i).getGcCode());
 		}
+		list.dispose();
+		list = null;
 		return StrList;
 	}
 
@@ -283,5 +342,4 @@ public class CacheListDAO
 			}
 		}
 	}
-
 }

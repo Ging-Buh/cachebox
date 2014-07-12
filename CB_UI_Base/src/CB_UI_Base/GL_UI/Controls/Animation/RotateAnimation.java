@@ -1,21 +1,36 @@
+/* 
+ * Copyright (C) 2013-2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.GL_UI.Controls.Animation;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+/**
+ * @author Longri
+ */
 public abstract class RotateAnimation extends AnimationBase
 {
 	private float mOriginX;
 	private float mOriginY;
 	private float mScale = 1f;
 	private float animateRotateValue = 0;
-	private Drawable mDrawable;
+	private Sprite mDrawable;
 
 	protected static final int ANIMATION_DURATION = 2000;
 
@@ -62,12 +77,14 @@ public abstract class RotateAnimation extends AnimationBase
 	{
 	}
 
+	@Override
 	public void setOrigin(float x, float y)
 	{
 		mOriginX = x;
 		mOriginY = y;
 	}
 
+	@Override
 	public void setScale(float scale)
 	{
 		mScale = scale;
@@ -77,11 +94,11 @@ public abstract class RotateAnimation extends AnimationBase
 	{
 		mSpriteWidth = sprite.getWidth();
 		mSpriteHeight = sprite.getHeight();
-		mDrawable = new SpriteDrawable(sprite);
+		mDrawable = sprite;// new SpriteDrawable(sprite);
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 
 		if (mDrawable == null) return;
@@ -93,51 +110,30 @@ public abstract class RotateAnimation extends AnimationBase
 		animateRotateValue = (1 + ((int) (GL.that.getStateTime() * 1000) % this.mDuration) / (this.mDuration / 360));
 
 		// ####################################################################
-		// Set Rotation
-		// ####################################################################
-		Matrix4 matrix = new Matrix4();
-		matrix.idt();
-		matrix.translate(mOriginX, mOriginY, 0);
-		matrix.rotate(0, 0, 1, animateRotateValue);
-		matrix.scale(mScale, mScale, 1);
-		matrix.translate(-mOriginX, -mOriginY, 0);
-		batch.setTransformMatrix(matrix);
-
-		// ####################################################################
 		// Draw
 		// ####################################################################
 
-		float drawwidth = width;
-		float drawHeight = height;
+		float drawwidth = getWidth();
+		float drawHeight = getHeight();
 		float drawX = 0;
 		float drawY = 0;
 
 		if (mSpriteWidth > 0 && mSpriteHeight > 0)
 		{
-			float proportionWidth = width / mSpriteWidth;
-			float proportionHeight = height / mSpriteHeight;
+			float proportionWidth = getWidth() / mSpriteWidth;
+			float proportionHeight = getHeight() / mSpriteHeight;
 
 			float proportion = Math.min(proportionWidth, proportionHeight);
 
 			drawwidth = mSpriteWidth * proportion;
 			drawHeight = mSpriteHeight * proportion;
-			drawX = (width - drawwidth) / 2;
-			drawY = (height - drawHeight) / 2;
+			drawX = (getWidth() - drawwidth) / 2;
+			drawY = (getHeight() - drawHeight) / 2;
 		}
 
-		mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
+		batch.draw(mDrawable, drawX, drawY, mOriginX, mOriginY, drawwidth, drawHeight, mScale, mScale, animateRotateValue);
 
-		// ####################################################################
-		// Reset Rotation
-		// ####################################################################
-
-		matrix = new Matrix4();
-		matrix.idt();
-		matrix.rotate(0, 0, 1, 0);
-		matrix.scale(1, 1, 1);
-		batch.setTransformMatrix(matrix);
-
-		GL.that.renderOnce("RotateAnimation-" + name);
+		GL.that.renderOnce();
 
 	}
 

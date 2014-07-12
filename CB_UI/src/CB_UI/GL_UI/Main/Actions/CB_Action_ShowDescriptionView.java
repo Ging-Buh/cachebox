@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.ArrayList;
 
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -18,9 +19,9 @@ import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -97,9 +98,18 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						return true;
 					}
 
-					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().Favorit());
+					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
 					CacheDAO dao = new CacheDAO();
 					dao.UpdateDatabase(GlobalCore.getSelectedCache());
+
+					// Update Query
+					Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(
+							GlobalCore.getSelectedCache().isFavorite());
+
+					// Update View
+					if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
+
+					CachListChangedEventList.Call();
 
 					return true;
 				case MenuID.MI_RELOAD_CACHE:
@@ -124,8 +134,9 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 						@Override
 						public void run()
 						{
-							CB_UI.Api.SearchForGeocaches.SearchGC searchC = new CB_UI.Api.SearchForGeocaches.SearchGC();
-							searchC.gcCode = GlobalCore.getSelectedCache().GcCode;
+							String GcCode = GlobalCore.getSelectedCache().getGcCode();
+
+							SearchGC searchC = new SearchGC(GcCode);
 							searchC.number = 1;
 							searchC.available = false;
 
@@ -133,7 +144,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 							ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-							CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+							CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
 									GlobalCore.getSelectedCache().GPXFilename_ID);
 
 							try
@@ -150,26 +161,26 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							{
 								String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 								CacheListDAO cacheListDAO = new CacheListDAO();
-								cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+								cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 							}
 
 							CachListChangedEventList.Call();
-							Cache selCache = Database.Data.Query.GetCacheByGcCode(searchC.gcCode);
+							Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
 							GlobalCore.setSelectedCache(selCache);
-							GL.that.RunOnGL(new runOnGL()
+							GL.that.RunOnGL(new IRunOnGL()
 							{
 
 								@Override
 								public void run()
 								{
-									GL.that.RunOnGL(new runOnGL()
+									GL.that.RunOnGL(new IRunOnGL()
 									{
 
 										@Override
 										public void run()
 										{
 											if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
-											GL.that.renderOnce("after reload Cache");
+											GL.that.renderOnce();
 										}
 									});
 								}
@@ -193,7 +204,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 		mi.setCheckable(true);
 		if (isSelected)
 		{
-			mi.setChecked(GlobalCore.getSelectedCache().Favorit());
+			mi.setChecked(GlobalCore.getSelectedCache().isFavorite());
 		}
 		else
 		{
@@ -202,7 +213,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		boolean selectedCacheIsNoGC = false;
 
-		if (isSelected) selectedCacheIsNoGC = !GlobalCore.getSelectedCache().GcCode.startsWith("GC");
+		if (isSelected) selectedCacheIsNoGC = !GlobalCore.getSelectedCache().getGcCode().startsWith("GC");
 		mi = cm.addItem(MenuID.MI_RELOAD_CACHE, "ReloadCacheAPI", SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal()));
 		if (!isSelected) mi.setEnabled(false);
 		if (selectedCacheIsNoGC) mi.setEnabled(false);

@@ -6,7 +6,7 @@ import java.util.TimerTask;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ProgressBar;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
@@ -31,10 +31,25 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 	private AnimationBase animation;
 	public float measuredLabelHeight = 0;
 
+	private boolean isCanceld = false;
+
+	public interface iCancelListner
+	{
+		public void isCanceld();
+	}
+
+	private iCancelListner mCancelListner;
+
+	public void setCancelListner(iCancelListner listner)
+	{
+		mCancelListner = listner;
+	}
+
 	public ProgressDialog(Size size, String name)
 	{
 		super(size, name);
 		that = this;
+		isCanceld = false;
 
 		setButtonCaptions(MessageBoxButtons.Cancel);
 		button3.setOnClickListener(new OnClickListener()
@@ -46,6 +61,8 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 				ProgressThread.Cancel();
 				button3.disable();
 				button3.setText(Translation.Get("waitForCancel"));
+				isCanceld = true;
+				if (mCancelListner != null) mCancelListner.isCanceld();
 				return true;
 			}
 		});
@@ -67,9 +84,14 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 
 	}
 
+	public boolean isCanceld()
+	{
+		return isCanceld;
+	}
+
 	public void setAnimation(final AnimationBase Animation)
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -169,7 +191,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 
 	public void setProgress(final String Msg, final String ProgressMessage, final int value)
 	{
-		this.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

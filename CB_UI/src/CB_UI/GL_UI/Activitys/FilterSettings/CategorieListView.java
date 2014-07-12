@@ -9,10 +9,10 @@ import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
 import CB_UI_Base.GL_UI.Controls.List.V_ListView;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -225,7 +225,7 @@ public class CategorieListView extends V_ListView
 		super(rec, "");
 		this.setHasInvisibleItems(true);
 		fillCategorieList();
-
+		this.setDisposeFlag(false);
 		this.setBaseAdapter(null);
 		lvAdapter = new CustomAdapter(lCategories, lCategorieListViewItems);
 		this.setBaseAdapter(lvAdapter);
@@ -241,8 +241,9 @@ public class CategorieListView extends V_ListView
 			{
 				GpxFilename file = tmp.categorieEntry.getFile();
 
-				for (Category cat : CoreSettingsForward.Categories)
+				for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++)
 				{
+					Category cat = CoreSettingsForward.Categories.get(i);
 					int index = cat.indexOf(file);
 					if (index != -1)
 					{
@@ -368,10 +369,11 @@ public class CategorieListView extends V_ListView
 
 		int Index = 0;
 
-		for (Category cat : CoreSettingsForward.Categories)
+		for (int i = 0, n = CoreSettingsForward.Categories.size(); i < n; i++)
 		{
-			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCacheBase.Icons.get(IconName.doc_20.ordinal()), cat,
-					COLLAPSE_BUTTON_ITEM);
+			Category cat = CoreSettingsForward.Categories.get(i);
+			CategorieListViewItem CollapseItem = addCategorieCollapseItem(Index++, SpriteCacheBase.Icons.get(IconName.doc_20.ordinal()),
+					cat, COLLAPSE_BUTTON_ITEM);
 
 			for (GpxFilename File : cat)
 			{
@@ -531,7 +533,7 @@ public class CategorieListView extends V_ListView
 				if (view.contains(x, y))
 				{
 
-					((CategorieListViewItem) view).lastItemTouchPos = new Vector2(x - view.getPos().x, y - view.getPos().y);
+					((CategorieListViewItem) view).lastItemTouchPos = new Vector2(x - view.getX(), y - view.getY());
 
 				}
 

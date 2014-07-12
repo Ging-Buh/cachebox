@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.SearchCoordinate;
 import CB_Core.DAO.CategoryDAO;
-import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Category;
@@ -13,6 +13,7 @@ import CB_Core.Types.GpxFilename;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -54,8 +55,6 @@ public class SearchOverPosition extends ActivityBase
 	private Box box;
 	private boolean importRuns = false;
 
-	private static SearchOverPosition that;
-
 	/**
 	 * 0=GPS, 1= Map, 2= Manuell
 	 */
@@ -63,22 +62,16 @@ public class SearchOverPosition extends ActivityBase
 
 	public static SearchOverPosition ShowInstanz()
 	{
-		if (that == null)
-		{
-			new SearchOverPosition();
-		}
-		else
-		{
-			that.initialCoordinates();
-		}
-		that.show();
-		return that;
+
+		SearchOverPosition ret = new SearchOverPosition();
+		ret.initialCoordinates();
+		ret.show();
+		return ret;
 	}
 
 	public SearchOverPosition()
 	{
 		super(ActivityRec(), "searchOverPosActivity");
-		that = this;
 		lineHeight = UI_Size_Base.that.getButtonHeight();
 
 		createOkCancelBtn();
@@ -138,7 +131,7 @@ public class SearchOverPosition extends ActivityBase
 	{
 		box = new Box(ActivityRec(), "ScrollBox");
 		this.addChild(box);
-		box.setHeight(this.height - lineHeight - bOK.getMaxY() - margin - margin);
+		box.setHeight(this.getHeight() - lineHeight - bOK.getMaxY() - margin - margin);
 		box.setY(bOK.getMaxY() + margin);
 		box.setBackground(this.getBackground());
 	}
@@ -148,12 +141,12 @@ public class SearchOverPosition extends ActivityBase
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		gsLogo = new Image(innerWidth - margin - lineHeight, this.height - this.getTopHeight() - lineHeight - margin, lineHeight,
+		gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight,
 				lineHeight, "");
 		gsLogo.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())));
 		this.addChild(gsLogo);
 
-		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4)
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4)
 				- gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setWrapType(WrapType.WRAPPED);
 		lblTitle.setFont(Fonts.getBig());
@@ -210,17 +203,17 @@ public class SearchOverPosition extends ActivityBase
 
 		lblOnlyAvible = new Label(checkBoxOnlyAvible, Translation.Get("SearchOnlyAvible"));
 		lblOnlyAvible.setX(checkBoxOnlyAvible.getMaxX() + margin);
-		lblOnlyAvible.setWidth(this.width - margin - checkBoxOnlyAvible.getMaxX() - margin);
+		lblOnlyAvible.setWidth(this.getWidth() - margin - checkBoxOnlyAvible.getMaxX() - margin);
 		box.addChild(lblOnlyAvible);
 
 		lblExcludeHides = new Label(checkBoxExcludeHides, Translation.Get("SearchWithoutOwns"));
 		lblExcludeHides.setX(checkBoxOnlyAvible.getMaxX() + margin);
-		lblExcludeHides.setWidth(this.width - margin - checkBoxExcludeHides.getMaxX() - margin);
+		lblExcludeHides.setWidth(this.getWidth() - margin - checkBoxExcludeHides.getMaxX() - margin);
 		box.addChild(lblExcludeHides);
 
 		lblExcludeFounds = new Label(checkBoxExcludeFounds, Translation.Get("SearchWithoutFounds"));
 		lblExcludeFounds.setX(checkBoxOnlyAvible.getMaxX() + margin);
-		lblExcludeFounds.setWidth(this.width - margin - checkBoxExcludeFounds.getMaxX() - margin);
+		lblExcludeFounds.setWidth(this.getWidth() - margin - checkBoxExcludeFounds.getMaxX() - margin);
 		box.addChild(lblExcludeFounds);
 
 	}
@@ -247,11 +240,11 @@ public class SearchOverPosition extends ActivityBase
 
 	private void createCoordButton()
 	{
-		CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.width - (margin * 2), lineHeight);
+		CB_RectF rec = new CB_RectF(margin, tglBtnGPS.getY() - margin - lineHeight, this.getWidth() - (margin * 2), lineHeight);
 		lblMarkerPos = new Label(rec, Translation.Get("CurentMarkerPos"));
 		box.addChild(lblMarkerPos);
 
-		coordBtn = new CoordinateButton(rec, name, null);
+		coordBtn = new CoordinateButton(rec, name, null, null);
 		coordBtn.setY(lblMarkerPos.getY() - margin - lineHeight);
 		box.addChild(coordBtn);
 
@@ -303,9 +296,7 @@ public class SearchOverPosition extends ActivityBase
 			{
 				if (MapView.that == null)
 				{
-					actSearchPos = new Coordinate();
-					actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
-					actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
+					actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
 				}
 				else
 				{
@@ -328,7 +319,7 @@ public class SearchOverPosition extends ActivityBase
 					actSearchPos = coord;
 					setToggleBtnState(2);
 				}
-				that.show();
+				SearchOverPosition.this.show();
 			}
 		});
 
@@ -362,9 +353,7 @@ public class SearchOverPosition extends ActivityBase
 		case 1:
 			if (MapView.that == null)
 			{
-				actSearchPos = new Coordinate();
-				actSearchPos.setLatitude(Config.MapInitLatitude.getValue());
-				actSearchPos.setLongitude(Config.MapInitLongitude.getValue());
+				actSearchPos = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
 			}
 			else
 			{
@@ -481,17 +470,15 @@ public class SearchOverPosition extends ActivityBase
 								ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 								ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 								ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-								CB_UI.Api.SearchForGeocaches.SearchCoordinate searchC = new CB_UI.Api.SearchForGeocaches.SearchCoordinate();
+								SearchCoordinate searchC = new SearchCoordinate(50, actSearchPos, Config.lastSearchRadius.getValue() * 1000);
 
 								searchC.excludeFounds = Config.SearchWithoutFounds.getValue();
 								searchC.excludeHides = Config.SearchWithoutOwns.getValue();
 								searchC.available = Config.SearchOnlyAvible.getValue();
 
-								searchC.pos = actSearchPos;
-								searchC.distanceInMeters = Config.lastSearchRadius.getValue() * 1000;
-								searchC.number = 50;
 								dis.setAnimationType(AnimationType.Download);
-								CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
+								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+										gpxFilename.Id);
 								dis.setAnimationType(AnimationType.Work);
 								if (apiCaches.size() > 0)
 								{
@@ -509,10 +496,11 @@ public class SearchOverPosition extends ActivityBase
 				}
 
 				// Delete all LongDescription from Query! LongDescription is Loading by showing DescriptionView direct from DB
-				for (Cache cache : Database.Data.Query)
-				{
-					cache.longDescription = "";
-				}
+				// for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
+				// {
+				// Cache cache = Database.Data.Query.get(i);
+				// cache.longDescription = "";
+				// }
 
 				if (!threadCanceld)
 				{
@@ -546,6 +534,58 @@ public class SearchOverPosition extends ActivityBase
 
 		thread.setPriority(Thread.MAX_PRIORITY);
 		thread.start();
+
+	}
+
+	@Override
+	public void dispose()
+	{
+		if (bOK != null) bOK.dispose();
+		bOK = null;
+		if (bCancel != null) bCancel.dispose();
+		bCancel = null;
+		if (btnPlus != null) btnPlus.dispose();
+		btnPlus = null;
+		if (btnMinus != null) btnMinus.dispose();
+		btnMinus = null;
+		if (lblTitle != null) lblTitle.dispose();
+		lblTitle = null;
+		if (lblRadius != null) lblRadius.dispose();
+		lblRadius = null;
+		if (lblRadiusEinheit != null) lblRadiusEinheit.dispose();
+		lblRadiusEinheit = null;
+		if (lblMarkerPos != null) lblMarkerPos.dispose();
+		lblMarkerPos = null;
+		if (lblExcludeFounds != null) lblExcludeFounds.dispose();
+		lblExcludeFounds = null;
+		if (lblOnlyAvible != null) lblOnlyAvible.dispose();
+		lblOnlyAvible = null;
+		if (lblExcludeHides != null) lblExcludeHides.dispose();
+		lblExcludeHides = null;
+		if (gsLogo != null) gsLogo.dispose();
+		gsLogo = null;
+		if (coordBtn != null) coordBtn.dispose();
+		coordBtn = null;
+		if (checkBoxExcludeFounds != null) checkBoxExcludeFounds.dispose();
+		checkBoxExcludeFounds = null;
+		if (checkBoxOnlyAvible != null) checkBoxOnlyAvible.dispose();
+		checkBoxOnlyAvible = null;
+		if (checkBoxExcludeHides != null) checkBoxExcludeHides.dispose();
+		checkBoxExcludeHides = null;
+		if (Radius != null) Radius.dispose();
+		Radius = null;
+		if (tglBtnGPS != null) tglBtnGPS.dispose();
+		tglBtnGPS = null;
+		if (tglBtnMap != null) tglBtnMap.dispose();
+		tglBtnMap = null;
+		if (dis != null) dis.dispose();
+		dis = null;
+		if (box != null) box.dispose();
+		box = null;
+
+		actSearchPos = null;
+
+		super.dispose();
 
 	}
 

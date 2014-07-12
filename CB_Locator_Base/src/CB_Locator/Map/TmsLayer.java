@@ -17,9 +17,9 @@ public class TmsLayer extends Layer
 		if (desc == null) return null;
 
 		String url = tmsMap.url;
-		url = url.replace("{$x}", String.valueOf(desc.X));
-		url = url.replace("{$y}", String.valueOf(desc.Y));
-		url = url.replace("{$z}", String.valueOf(desc.Zoom));
+		url = url.replace("{$x}", String.valueOf(desc.getX()));
+		url = url.replace("{$y}", String.valueOf(desc.getY()));
+		url = url.replace("{$z}", String.valueOf(desc.getZoom()));
 
 		return url;
 	}

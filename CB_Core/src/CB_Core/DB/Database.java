@@ -17,9 +17,9 @@ import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
-import CB_Locator.Coordinate;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.SDBM_Hash;
 
@@ -419,11 +419,10 @@ public abstract class Database extends Database_Core
 	// Methoden für Waypoint
 	public static void DeleteFromDatabase(Waypoint WP)
 	{
-		int newCheckSum = 0;
-		Replication.WaypointDelete(WP.CacheId, WP.checkSum, newCheckSum, WP.GcCode);
+		Replication.WaypointDelete(WP.CacheId, 0, 1, WP.getGcCode());
 		try
 		{
-			Data.delete("Waypoint", "GcCode='" + WP.GcCode + "'", null);
+			Data.delete("Waypoint", "GcCode='" + WP.getGcCode() + "'", null);
 		}
 		catch (Exception exc)
 		{
@@ -472,54 +471,81 @@ public abstract class Database extends Database_Core
 	}
 
 	// Methodes für Cache
-
 	public static String GetNote(Cache cache)
+	{
+		String resultString = GetNote(cache.Id);
+		cache.setNoteChecksum((int) SDBM_Hash.sdbm(resultString));
+		return resultString;
+	}
+
+	public static String GetNote(long cacheId)
 	{
 		String resultString = "";
 		CoreCursor c = Database.Data.rawQuery("select Notes from Caches where Id=?", new String[]
-			{ String.valueOf(cache.Id) });
+			{ String.valueOf(cacheId) });
 		c.moveToFirst();
 		while (c.isAfterLast() == false)
 		{
 			resultString = c.getString(0);
 			break;
 		}
-		;
-		cache.noteCheckSum = (int) SDBM_Hash.sdbm(resultString);
 		return resultString;
+	}
+
+	/**
+	 * geänderte Note nur in die DB schreiben
+	 * 
+	 * @param cacheId
+	 * @param value
+	 */
+	public static void SetNote(long cacheId, String value)
+	{
+		Parameters args = new Parameters();
+		args.put("Notes", value);
+		args.put("HasUserData", true);
+
+		Database.Data.update("Caches", args, "id=" + cacheId, null);
 	}
 
 	public static void SetNote(Cache cache, String value)
 	{
 		int newNoteCheckSum = (int) SDBM_Hash.sdbm(value);
 
-		Replication.NoteChanged(cache.Id, cache.noteCheckSum, newNoteCheckSum);
-		if (newNoteCheckSum != cache.noteCheckSum)
+		Replication.NoteChanged(cache.Id, cache.getNoteChecksum(), newNoteCheckSum);
+		if (newNoteCheckSum != cache.getNoteChecksum())
 		{
-			Parameters args = new Parameters();
-			args.put("Notes", value);
-			args.put("HasUserData", true);
-
-			Database.Data.update("Caches", args, "id=" + cache.Id, null);
-			cache.noteCheckSum = newNoteCheckSum;
+			SetNote(cache.Id, value);
+			cache.setNoteChecksum(newNoteCheckSum);
 		}
 	}
 
+	public static void SetFound(long cacheId, boolean value)
+	{
+		Parameters args = new Parameters();
+		args.put("found", value);
+		Database.Data.update("Caches", args, "id=" + cacheId, null);
+	}
+
 	public static String GetSolver(Cache cache)
+	{
+		String resultString = GetSolver(cache.Id);
+		cache.setSolverChecksum((int) SDBM_Hash.sdbm(resultString));
+		return resultString;
+	}
+
+	public static String GetSolver(long cacheId)
 	{
 		try
 		{
 			String resultString = "";
 			CoreCursor c = Database.Data.rawQuery("select Solver from Caches where Id=?", new String[]
-				{ String.valueOf(cache.Id) });
+				{ String.valueOf(cacheId) });
 			c.moveToFirst();
 			while (c.isAfterLast() == false)
 			{
 				resultString = c.getString(0);
 				break;
 			}
-			;
-			cache.noteCheckSum = (int) SDBM_Hash.sdbm(resultString);
 			return resultString;
 		}
 		catch (Exception ex)
@@ -528,25 +554,36 @@ public abstract class Database extends Database_Core
 		}
 	}
 
+	/**
+	 * geänderten Solver nur in die DB schreiben
+	 * 
+	 * @param cacheId
+	 * @param value
+	 */
+	public static void SetSolver(long cacheId, String value)
+	{
+		Parameters args = new Parameters();
+		args.put("Solver", value);
+		args.put("HasUserData", true);
+
+		Database.Data.update("Caches", args, "id=" + cacheId, null);
+	}
+
 	public static void SetSolver(Cache cache, String value)
 	{
 		int newSolverCheckSum = (int) SDBM_Hash.sdbm(value);
 
-		Replication.SolverChanged(cache.Id, cache.solverCheckSum, newSolverCheckSum);
-		if (newSolverCheckSum != cache.solverCheckSum)
+		Replication.SolverChanged(cache.Id, cache.getSolverChecksum(), newSolverCheckSum);
+		if (newSolverCheckSum != cache.getSolverChecksum())
 		{
-			Parameters args = new Parameters();
-			args.put("Solver", value);
-			args.put("HasUserData", true);
-
-			Database.Data.update("Caches", args, "id=" + cache.Id, null);
-			cache.solverCheckSum = newSolverCheckSum;
+			SetSolver(cache.Id, value);
+			cache.setSolverChecksum(newSolverCheckSum);
 		}
 	}
 
-	public static ArrayList<LogEntry> Logs(Cache cache)
+	public static CB_List<LogEntry> Logs(Cache cache)
 	{
-		ArrayList<LogEntry> result = new ArrayList<LogEntry>();
+		CB_List<LogEntry> result = new CB_List<LogEntry>();
 		if (cache == null) // if no cache is selected!
 		return result;
 		CoreCursor reader = Database.Data.rawQuery(
@@ -622,39 +659,6 @@ public abstract class Database extends Database_Core
 		reader.close();
 
 		return description;
-	}
-
-	public static String Hint(Cache cache)
-	{
-		if (cache.hint.equals(""))
-		{
-			CoreCursor reader = Database.Data.rawQuery("select Hint from Caches where Id=?", new String[]
-				{ Long.toString(cache.Id) });
-			reader.moveToFirst();
-			while (reader.isAfterLast() == false)
-			{
-				cache.hint = reader.getString(0);
-				reader.moveToNext();
-			}
-			reader.close();
-		}
-		return cache.hint;
-	}
-
-	public float Distance(Cache cache, Coordinate fromPos)
-	{
-		// Coordinate fromPos = (Global.Marker.Valid) ? Global.Marker :
-		// Global.LastValidPosition;
-		Waypoint waypoint = cache.GetFinalWaypoint();
-		// Wenn ein Mystery-Cache einen Final-Waypoint hat, soll die
-		// Diszanzberechnung vom Final aus gemacht werden
-		// If a mystery has a final waypoint, the distance will be calculated to
-		// the final not the the cache coordinates
-		Coordinate toPos = cache.Pos;
-		if (waypoint != null) toPos = new Coordinate(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude());
-		float[] dist = new float[4];
-		Coordinate.distanceBetween(fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
-		return (float) dist[0];
 	}
 
 	/**

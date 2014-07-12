@@ -18,14 +18,16 @@ import CB_UI_Base.Events.KeyCodes;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.IRenderFBO;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.render3D;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -34,6 +36,7 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker;
 import CB_UI_Base.GL_UI.Controls.SelectionMarker.Type;
+import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.Controls.PopUps.PopUp_Base;
 import CB_UI_Base.GL_UI.Main.MainViewBase;
 import CB_UI_Base.GL_UI.Menu.Menu;
@@ -50,12 +53,14 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -70,7 +75,9 @@ public class GL implements ApplicationListener, InputProcessor
 	public static final int FRAME_RATE_ACTION = 50;
 	public static final int FRAME_RATE_FAST_ACTION = 40;
 
+	private final int MAX_FBO_RENDER_TIME = 200;
 	private static final boolean TOUCH_DEBUG = false;
+	private final boolean FORCE = true;
 
 	/**
 	 * See http://code.google.com/p/libgdx/wiki/SpriteBatch Performance tuning
@@ -80,7 +87,8 @@ public class GL implements ApplicationListener, InputProcessor
 	// Public Static Member
 	public static GL_Listener_Interface listenerInterface;
 	public static GL that;
-	public static SpriteBatch batch;
+	public static long GL_ThreadId;
+	public static PolygonSpriteBatch batch;
 	public static OrthographicCamera camera;
 	private static Timer myTimer;
 	private static long timerValue;
@@ -107,6 +115,7 @@ public class GL implements ApplicationListener, InputProcessor
 	private final long mDoubleClickTime = 500;
 	private long lastClickTime = 0;
 	private float lastRenderOnceTime = -1;
+	private CB_View_Base disposeAcktivitie;
 
 	// private Threads
 	Thread threadDisposeDialog;
@@ -130,10 +139,10 @@ public class GL implements ApplicationListener, InputProcessor
 	private Texture mDarknesTexture;
 	protected EditTextField keyboardFocus;
 
-	protected ArrayList<runOnGL> runOnGL_List = new ArrayList<runOnGL>();
-	protected ArrayList<runOnGL> runOnGL_ListWaitpool = new ArrayList<runOnGL>();
+	protected ArrayList<IRunOnGL> runOnGL_List = new ArrayList<IRunOnGL>();
+	protected ArrayList<IRunOnGL> runOnGL_ListWaitpool = new ArrayList<IRunOnGL>();
 	protected AtomicBoolean isWorkOnRunOnGL = new AtomicBoolean(false);
-	public static ArrayList<runOnGL> runIfInitial = new ArrayList<runOnGL>();
+	public static ArrayList<IRunOnGL> runIfInitial = new ArrayList<IRunOnGL>();
 
 	public static boolean ifAllInitial = false;
 
@@ -169,7 +178,8 @@ public class GL implements ApplicationListener, InputProcessor
 	protected int width = 0, height = 0;
 	protected boolean debugWriteSpriteCount = false;
 
-	private final MainViewBase mSplash, mMainView;
+	private MainViewBase mSplash;
+	private final MainViewBase mMainView;
 
 	/**
 	 * Constructor
@@ -213,7 +223,26 @@ public class GL implements ApplicationListener, InputProcessor
 		Gdx.input.setCatchBackKey(true);
 	}
 
-	public void RunOnGL(runOnGL run)
+	/**
+	 * Run on GL-Thread!<br>
+	 * If this Thread the GL_thread, run direct!
+	 * 
+	 * @param run
+	 */
+	public void RunOnGLWithThreadCheck(IRunOnGL run)
+	{
+		if (isGlThread())
+		{
+			run.run();
+		}
+		else
+		{
+			RunOnGL(run);
+		}
+		renderOnce(FORCE);
+	}
+
+	public void RunOnGL(IRunOnGL run)
 	{
 		// if in progress put into pool
 		if (isWorkOnRunOnGL.get())
@@ -221,7 +250,7 @@ public class GL implements ApplicationListener, InputProcessor
 			synchronized (runOnGL_ListWaitpool)
 			{
 				runOnGL_ListWaitpool.add(run);
-				renderOnce("RunOnGL called");
+				renderOnce(FORCE);
 				return;
 			}
 		}
@@ -230,24 +259,24 @@ public class GL implements ApplicationListener, InputProcessor
 			runOnGL_List.add(run);
 		}
 
-		renderOnce("RunOnGL called");
+		renderOnce(FORCE);
 	}
 
-	public void RunIfInitial(runOnGL run)
+	public void RunIfInitial(IRunOnGL run)
 	{
 		synchronized (runIfInitial)
 		{
 			runIfInitial.add(run);
 		}
 
-		renderOnce("runIfInitial called");
+		renderOnce(FORCE);
 	}
 
 	protected boolean ShaderSetted = false;
 
 	protected void setShader()
 	{
-		if (Gdx.graphics.isGL20Available()) batch.setShader(SpriteBatch.createDefaultShader());
+		batch.setShader(SpriteBatch.createDefaultShader());
 		ShaderSetted = true;
 	}
 
@@ -260,7 +289,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public void register3D(final render3D renderView)
 	{
-		RunOnGL(new runOnGL()
+		RunOnGL(new IRunOnGL()
 		{
 			@Override
 			public void run()
@@ -271,15 +300,37 @@ public class GL implements ApplicationListener, InputProcessor
 
 	}
 
+	public static boolean isGlThread()
+	{
+		return GL_ThreadId == Thread.currentThread().getId();
+	}
+
 	public void unregister3D()
 	{
 		mAct3D_Render = null;
 	}
 
+	long FBO_RunBegin = System.currentTimeMillis();
+	boolean FBO_RunLapsed = false;
+
+	private void FBO_RunBegin()
+	{
+		FBO_RunBegin = System.currentTimeMillis();
+		FBO_RunLapsed = false;
+	}
+
+	private boolean canFBO()
+	{
+		if (FBO_RunLapsed) return false;
+		if (FBO_RunBegin + MAX_FBO_RENDER_TIME >= System.currentTimeMillis()) return true;
+		FBO_RunLapsed = true;
+		return false;
+	}
+
 	@Override
 	public void render()
 	{
-
+		GL_ThreadId = Thread.currentThread().getId();
 		if (Energy.DisplayOff()) return;
 
 		if (!started.get() || stopRender) return;
@@ -299,7 +350,7 @@ public class GL implements ApplicationListener, InputProcessor
 			removeRenderView(child);
 		}
 
-		// if (!ShaderSetted) setShader();
+		FBO_RunBegin();
 
 		isWorkOnRunOnGL.set(true);
 
@@ -307,12 +358,31 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			if (runOnGL_List.size() > 0)
 			{
-				for (runOnGL run : runOnGL_List)
+
+				if (runOnGL_List.size() > 200)
+				{
+					System.out.print("zuviel");
+				}
+
+				for (IRunOnGL run : runOnGL_List)
 				{
 					if (run != null)
 					{
-						run.run();
-
+						// Run only MAX_FBO_RENDER_CALLS
+						if (run instanceof IRenderFBO)
+						{
+							if (canFBO())
+							{
+								run.run();
+							}
+							else
+							{
+								// Logger.LogCat("Max_FBO_Render_Calls" + run.toString());
+								runOnGL_ListWaitpool.add(run);
+							}
+						}
+						else
+							run.run();
 					}
 				}
 
@@ -328,9 +398,27 @@ public class GL implements ApplicationListener, InputProcessor
 			{
 				if (runOnGL_ListWaitpool.size() > 0)
 				{
-					for (runOnGL run : runOnGL_ListWaitpool)
+					for (IRunOnGL run : runOnGL_ListWaitpool)
 					{
-						if (run != null) run.run();
+						if (run != null)
+						{
+							// Run only MAX_FBO_RENDER_CALLS
+							if (run instanceof IRenderFBO)
+							{
+
+								if (canFBO())
+								{
+									run.run();
+								}
+								else
+								{
+									// Logger.LogCat("Max_FBO_Render_Calls" + run.toString());
+									runOnGL_List.add(run);
+								}
+							}
+							else
+								run.run();
+						}
 					}
 
 					runOnGL_ListWaitpool.clear();
@@ -345,7 +433,7 @@ public class GL implements ApplicationListener, InputProcessor
 			{
 				if (runIfInitial.size() > 0)
 				{
-					for (runOnGL run : runIfInitial)
+					for (IRunOnGL run : runIfInitial)
 					{
 						if (run != null) run.run();
 					}
@@ -365,14 +453,20 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
+				| (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
+
+		// reset BatchColor
+		batch.setColor(Color.WHITE);
 
 		{// Render 3D
 			if (mAct3D_Render != null)
 			{
 				if (modelBatch == null)
 				{
-					if (Gdx.graphics.isGL20Available()) modelBatch = new ModelBatch();
+					modelBatch = new ModelBatch();
 				}
 				else
 				{
@@ -402,7 +496,7 @@ public class GL implements ApplicationListener, InputProcessor
 		catch (java.lang.IllegalStateException e)
 		{
 			Logger.Error("IllegalStateException", "batch.begin() without batch.end()", e);
-			e.printStackTrace();
+
 			batch.flush();
 			batch.end();
 			batch.begin();
@@ -413,13 +507,13 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			ActivityIsShown = false;
 			platformConector.hideForDialog();
-			renderOnce("");
+			renderOnce();
 		}
 		if (DialogIsShown && mDialog.getCildCount() <= 0)
 		{
 			DialogIsShown = false;
 			platformConector.hideForDialog();
-			renderOnce("");
+			renderOnce();
 		}
 
 		if (actDialog != null && actDialog.isDisposed())
@@ -454,23 +548,31 @@ public class GL implements ApplicationListener, InputProcessor
 		if (!ActivityIsShown)
 		{
 			child.renderChilds(batch, prjMatrix);
+			// reset child Matrix
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
+
+		if (DialogIsShown || ToastIsShown || MarkerIsShown) batch.setProjectionMatrix(prjMatrix.Matrix());
 
 		if (DialogIsShown && mDialog.getCildCount() > 0)
 		{
 			// Zeichne Transparentes Rec um den Hintergrund abzudunkeln.
+
 			drawDarknessSprite();
 			mDialog.renderChilds(batch, prjMatrix);
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
 		if (ToastIsShown)
 		{
 			mToastOverlay.renderChilds(batch, prjMatrix);
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
 		if (MarkerIsShown)
 		{
 			mMarkerOverlay.renderChilds(batch, prjMatrix);
+			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
 		GL_View_Base.debug = CB_UI_Base_Settings.DebugMode.getValue();
@@ -495,6 +597,10 @@ public class GL implements ApplicationListener, InputProcessor
 		if (Global.isTestVersion())
 		{
 
+			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+
+			batch.setProjectionMatrix(prjMatrix.Matrix());
+
 			// TODO float FpsInfoSize = MapTileLoader.queueProcessorLifeCycle ? 4 : 8;
 			float FpsInfoSize = 4;
 			if (FpsInfoSprite != null)
@@ -518,15 +624,6 @@ public class GL implements ApplicationListener, InputProcessor
 				FpsInfoPos = 0;
 			}
 
-			if (debugWriteSpriteCount)
-			{
-				renderTime = ((System.currentTimeMillis() - lastRenderBegin) + renderTime) / 2;
-				Fonts.getBubbleSmall().draw(batch,
-						"Max Sprites on Batch:" + String.valueOf(debugSpritebatchMaxCount) + "/" + String.valueOf(renderTime), width / 4,
-						20);
-				debugSpritebatchMaxCount = Math.max(debugSpritebatchMaxCount, batch.maxSpritesInBatch);
-			}
-
 		}
 
 		try
@@ -542,6 +639,8 @@ public class GL implements ApplicationListener, InputProcessor
 		Gdx.gl.glFinish();
 
 	}
+
+	public static String MaptileLoaderDebugString = "";
 
 	protected int debugSpritebatchMaxCount = 0;
 	protected long lastRenderBegin = 0;
@@ -625,7 +724,7 @@ public class GL implements ApplicationListener, InputProcessor
 			if (mDialog != null) mDialog.onShow();
 		}
 
-		renderOnce("Gl_Listner.onStart()");
+		renderOnce();
 
 	}
 
@@ -709,6 +808,8 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			cancelLongClickTimer();
 		}
+
+		renderOnce(FORCE);
 
 		return true;
 	}
@@ -895,7 +996,6 @@ public class GL implements ApplicationListener, InputProcessor
 	{
 		if (timerValue == delay) return;
 		stopTimer();
-		// Logger.LogCat("Start Timer: " + delay + " (" + Name + ")");
 
 		timerValue = delay;
 		myTimer = new Timer();
@@ -909,7 +1009,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 			private void TimerMethod()
 			{
-				if (listenerInterface != null) listenerInterface.RequestRender("Timer" + Name);
+				if (listenerInterface != null) listenerInterface.RequestRender();
 			}
 
 		}, 0, delay);
@@ -956,7 +1056,7 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			disposeTexture();
 			mDarknesPixmap = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
-			mDarknesPixmap.setColor(Fonts.getDarknesColor());
+			mDarknesPixmap.setColor(COLOR.getDarknesColor());
 			mDarknesPixmap.fillRectangle(0, 0, width, height);
 			mDarknesTexture = new Texture(mDarknesPixmap, Pixmap.Format.RGBA8888, false);
 			mDarknesSprite = new Sprite(mDarknesTexture, width, height);
@@ -971,7 +1071,7 @@ public class GL implements ApplicationListener, InputProcessor
 				darknesAlpha = 1f;
 				darknesAnimationRuns = false;
 			}
-			renderOnce("Darknes Animation");
+			renderOnce();
 		}
 
 	}
@@ -980,26 +1080,18 @@ public class GL implements ApplicationListener, InputProcessor
 	{
 		// Logger.LogCat("GL_Listner => Initialize");
 
-		if (Gdx.graphics.getGLCommon() == null) return;// kann nicht initialisiert werden
+		if (Gdx.graphics.getGL20() == null) return;// kann nicht initialisiert werden
 
 		if (batch == null)
 		{
-			if (CB_UI_Base_Settings.DebugSpriteBatchCountBuffer.getValue())
-			{
-				// for Debug set to max!
-				batch = new SpriteBatch(10000);
-			}
-			else
-			{
-				batch = new SpriteBatch(SPRITE_BATCH_BUFFER);
-			}
+			batch = new PolygonSpriteBatch(10920);// PolygonSpriteBatch(10920);
 		}
 
 		if (modelBatch == null)
 		{
 			try
 			{
-				if (Gdx.graphics.isGL20Available()) modelBatch = new ModelBatch();
+				modelBatch = new ModelBatch();
 			}
 			catch (java.lang.NoSuchFieldError e)
 			{
@@ -1066,7 +1158,7 @@ public class GL implements ApplicationListener, InputProcessor
 				{
 					renderViews.remove(view);
 					calcNewRenderSpeed();
-					if (listenerInterface != null) listenerInterface.RequestRender("");
+					if (listenerInterface != null) listenerInterface.RequestRender();
 				}
 				return;
 			}
@@ -1076,7 +1168,7 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 			renderViews.put(view, delay);
 			calcNewRenderSpeed();
-			if (listenerInterface != null) listenerInterface.RequestRender("");
+			if (listenerInterface != null) listenerInterface.RequestRender();
 		}
 	}
 
@@ -1098,17 +1190,18 @@ public class GL implements ApplicationListener, InputProcessor
 	 * @param view
 	 *            Aufrufendes GL_View_Base für Debug zwecke. Kann auch null sein.
 	 */
-	public void renderOnce(String requestName)
+	public void renderOnce(boolean force)
 	{
 
-		if (lastRenderOnceTime == GL.that.getStateTime()) return;
+		if (!force && lastRenderOnceTime == GL.that.getStateTime()) return;
 		lastRenderOnceTime = GL.that.getStateTime();
-		if (requestName == null)
-		{
-			requestName = "";
-		}
 
-		if (listenerInterface != null) listenerInterface.RequestRender(requestName);
+		if (listenerInterface != null) listenerInterface.RequestRender();
+	}
+
+	public void renderOnce()
+	{
+		renderOnce(false);
 	}
 
 	private void calcNewRenderSpeed()
@@ -1422,7 +1515,7 @@ public class GL implements ApplicationListener, InputProcessor
 		aktView.addChild(popUp);
 		aktPopUp = popUp;
 		aktPopUp.onShow();
-		renderOnce("Show PopUp");
+		renderOnce();
 	}
 
 	public void closePopUp(PopUp_Base popUp)
@@ -1434,7 +1527,7 @@ public class GL implements ApplicationListener, InputProcessor
 		if (aktPopUp != null) aktPopUp.onHide();
 		aktPopUp = null;
 		if (popUp != null) popUp.dispose();
-		renderOnce("Close PopUp");
+		renderOnce();
 	}
 
 	public boolean PopUpIsShown()
@@ -1520,13 +1613,19 @@ public class GL implements ApplicationListener, InputProcessor
 		DialogIsShown = true;
 		darknesAnimationRuns = true;
 		actDialog.onShow();
-		actDialog.setEnabled(true);
-		actDialog.setVisible();
+		try
+		{
+			actDialog.setEnabled(true);
+			actDialog.setVisible();
+		}
+		catch (Exception e)
+		{
 
+		}
 		platformConector.showForDialog();
 
-		renderOnce("ShowDialog");
-		Logger.LogCat("ShowDialog: " + actDialog.toString());
+		renderOnce();
+
 	}
 
 	public void showActivity(final ActivityBase activity)
@@ -1593,15 +1692,33 @@ public class GL implements ApplicationListener, InputProcessor
 			actActivity.setEnabled(true);
 			activityHistory.remove(0);
 			ActivityIsShown = true;
+			mActivity.addChildDirekt(actActivity);
 			if (MsgToPlatformConector) platformConector.showForDialog();
 		}
 		else
 		{
 			actActivity.onHide();
+
+			disposeAcktivitie = actActivity;
+
+			Timer disposeTimer = new Timer();
+			TimerTask disposeTsak = new TimerTask()
+			{
+				@Override
+				public void run()
+				{
+					disposeAcktivitie.dispose();
+					disposeAcktivitie = null;
+					System.gc();
+				}
+			};
+
+			disposeTimer.schedule(disposeTsak, 700);
+
 			actActivity = null;
 			mActivity.removeChildsDirekt();
 			child.setClickable(true);
-			child.invalidate();
+			// child.invalidate();
 			ActivityIsShown = false;
 			darknesAlpha = 0f;
 			if (MsgToPlatformConector) platformConector.hideForDialog();
@@ -1609,7 +1726,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 
 		clearRenderViews();
-		renderOnce("Close Activity");
+		renderOnce();
 	}
 
 	public void closeAllDialogs()
@@ -1644,6 +1761,14 @@ public class GL implements ApplicationListener, InputProcessor
 	public void closeDialog(final CB_View_Base dialog, boolean MsgToPlatformConector)
 	{
 
+		if (dialog instanceof WaitDialog)
+		{
+			if (((WaitDialog) dialog).DialogID == 5)
+			{
+				System.out.print(true);
+			}
+		}
+
 		if (!DialogIsShown || !mDialog.getchilds().contains((dialog)))
 		{
 			Timer timer = new Timer();
@@ -1656,8 +1781,6 @@ public class GL implements ApplicationListener, InputProcessor
 				}
 			};
 			timer.schedule(task, 500);
-			//
-			// return;
 		}
 
 		if (MsgToPlatformConector) platformConector.hideForDialog();
@@ -1679,28 +1802,36 @@ public class GL implements ApplicationListener, InputProcessor
 			actDialog = null;
 			mDialog.removeChildsDirekt();
 			child.setClickable(true);
-			child.invalidate();
+			// child.invalidate();
 			DialogIsShown = false;
 			darknesAlpha = 0f;
 		}
 
-		Timer timer = new Timer();
-		TimerTask task = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
+		// Timer timer = new Timer();
+		// TimerTask task = new TimerTask()
+		// {
+		// @Override
+		// public void run()
+		// {
+		//
+		// if (dialog != null)
+		// {
+		// if (!dialog.isDisposed())
+		// {
+		// dialog.dispose();
+		// }
+		// }
+		// }
+		// };
+		// timer.schedule(task, 500);
 
-				if (dialog != null)
-				{
-					if (!dialog.isDisposed())
-					{
-						dialog.dispose();
-					}
-				}
+		if (dialog != null)
+		{
+			if (!dialog.isDisposed())
+			{
+				dialog.dispose();
 			}
-		};
-		timer.schedule(task, 500);
+		}
 
 		clearRenderViews();
 		if (ActivityIsShown)
@@ -1708,7 +1839,7 @@ public class GL implements ApplicationListener, InputProcessor
 			platformConector.showForDialog();
 
 		}
-		renderOnce("Close Dialog");
+		renderOnce();
 	}
 
 	public void Toast(CB_View_Base view)
@@ -1724,7 +1855,7 @@ public class GL implements ApplicationListener, InputProcessor
 			ToastIsShown = false;
 			mToastOverlay.removeChilds();
 
-			renderOnce("ToastClosing");
+			renderOnce();
 		}
 	}
 
@@ -1747,7 +1878,7 @@ public class GL implements ApplicationListener, InputProcessor
 				public void run()
 				{
 					ToastIsShown = false;
-					renderOnce("ToastClosing");
+					renderOnce();
 				}
 			};
 
@@ -1797,7 +1928,8 @@ public class GL implements ApplicationListener, InputProcessor
 	{
 		listenerInterface.RenderContinous();
 		stopRender = false;
-		renderOnce("Restart Render");
+		renderOnce();
+		setIsInitial();
 	}
 
 	public void clearRenderViews()
@@ -1993,6 +2125,8 @@ public class GL implements ApplicationListener, InputProcessor
 		child = mMainView;
 		altSplash.dispose();
 		altSplash = null;
+		mSplash.dispose();
+		mSplash = null;
 		initialMarkerOverlay();
 		mMainView.onShow();
 		if (listenerInterface != null) listenerInterface.RenderDirty();
@@ -2044,6 +2178,13 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (ActivityIsShown && character == KeyCodes.KEYCODE_BACK)
 		{
+			// chek closeable
+
+			if (actActivity instanceof ActivityBase)
+			{
+				if (!((ActivityBase) actActivity).canCloseWithBackKey()) return true;
+			}
+
 			closeActivity();
 			return true; // behandelt!
 		}
@@ -2062,6 +2203,30 @@ public class GL implements ApplicationListener, InputProcessor
 		{
 			if (isShownDialogActivity())
 			{
+
+				if (DialogIsShown)
+				{
+					closeDialog(mDialog);
+					return true; // behandelt!
+				}
+
+				if (ActivityIsShown)
+				{
+					// chek closeable
+
+					if (actActivity instanceof ActivityBase)
+					{
+						if (!((ActivityBase) actActivity).canCloseWithBackKey())
+						{
+							MainViewBase.actionClose.Execute();
+							return true;
+						}
+					}
+
+					closeActivity();
+					return true; // behandelt!
+				}
+
 				closeShownDialog();
 			}
 			else

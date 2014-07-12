@@ -11,15 +11,20 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import CB_Core.Settings.CB_Core_Settings;
+import CB_Utils.Log.Logger;
 
 public class GCVote
 {
@@ -58,8 +63,12 @@ public class GCVote
 
 			httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
 
+			// Logger.General("GCVOTE-Post" + data);
+
 			// Execute HTTP Post Request
 			String responseString = Execute(httppost);
+
+			// Logger.General("GCVOTE-Response" + responseString);
 
 			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			InputSource is = new InputSource();
@@ -83,8 +92,17 @@ public class GCVote
 			}
 
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
+			String Ex = "";
+			if (e != null)
+			{
+				if (e != null && e.getMessage() != null) Ex = "Ex = [" + e.getMessage() + "]";
+				else if (e != null && e.getLocalizedMessage() != null) Ex = "Ex = [" + e.getLocalizedMessage() + "]";
+				else
+					Ex = "Ex = [" + e.toString() + "]";
+			}
+			Logger.General("GcVote-Error" + Ex);
 			return null;
 		}
 		return result;
@@ -94,12 +112,27 @@ public class GCVote
 	private static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException
 	{
 		httprequest.setHeader("Content-type", "application/x-www-form-urlencoded");
-		httprequest.setHeader("UserAgent", "cachebox");
+		// httprequest.setHeader("UserAgent", "cachebox");
+
+		int conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+		int socketTimeout = CB_Core_Settings.socket_timeout.getValue();
 
 		// Execute HTTP Post Request
 		String result = "";
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpResponse response = httpclient.execute(httprequest);
+
+		HttpParams httpParameters = new BasicHttpParams();
+		// Set the timeout in milliseconds until a connection is established.
+		// The default value is zero, that means the timeout is not used.
+
+		HttpConnectionParams.setConnectionTimeout(httpParameters, conectionTimeout);
+		// Set the default socket timeout (SO_TIMEOUT)
+		// in milliseconds which is the timeout for waiting for data.
+
+		HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
+
+		DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+
+		HttpResponse response = httpClient.execute(httprequest);
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		String line = "";
@@ -108,6 +141,7 @@ public class GCVote
 			result += line + "\n";
 		}
 		return result;
+
 	}
 
 	public static Boolean SendVotes(String User, String password, int vote, String url, String waypoint)

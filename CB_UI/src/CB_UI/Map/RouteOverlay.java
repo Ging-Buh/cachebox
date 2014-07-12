@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.MapTileLoader;
 import CB_UI.GlobalCore;
@@ -24,13 +24,15 @@ import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.PolylineReduction;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class RouteOverlay
@@ -72,7 +74,7 @@ public class RouteOverlay
 	public static void RoutesChanged()
 	{
 		mRoutesChanged = true;
-		GL.that.renderOnce("RouteChanged");
+		GL.that.renderOnce();
 	}
 
 	public static class Track
@@ -113,7 +115,8 @@ public class RouteOverlay
 		float[] dist = new float[4];
 		double Distance = 0;
 		double AltitudeDifference = 0;
-		Coordinate FromPosition = new Coordinate();
+		double DeltaAltitude = 0;
+		CoordinateGPS FromPosition = new CoordinateGPS(0, 0);
 		BufferedReader reader;
 
 		try
@@ -132,7 +135,7 @@ public class RouteOverlay
 			boolean ReadName = false;
 			int AnzTracks = 0;
 
-			Coordinate lastAcceptedCoordinate = null;
+			CoordinateGPS lastAcceptedCoordinate = null;
 			double lastAcceptedDirection = -1;
 			Date lastAcceptedTime = null;
 
@@ -274,7 +277,7 @@ public class RouteOverlay
 							double lat = Double.valueOf(latStr);
 							double lon = Double.valueOf(lonStr);
 
-							lastAcceptedCoordinate = new Coordinate(lat, lon);
+							lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
 						}
 
 						if (line.indexOf("</time>") > -1)
@@ -338,20 +341,24 @@ public class RouteOverlay
 							// Calculate the length of a Track
 							if (!FromPosition.isValid())
 							{
-								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
-								FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+								FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
 								FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
 								FromPosition.setValid(true);
 							}
 							else
 							{
-								Coordinate.distanceBetween(FromPosition.getLatitude(), FromPosition.getLongitude(),
-										lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
+								MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(),
+										FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
+										lastAcceptedCoordinate.getLongitude(), dist);
 								Distance += dist[0];
-								AltitudeDifference += Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
-								FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
-								FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
-								FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
+								DeltaAltitude = Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
+								FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
+
+								if (DeltaAltitude >= 25.0) // nur aufaddieren wenn Höhenunterschied größer 10 Meter
+								{
+									FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
+									AltitudeDifference = AltitudeDifference + DeltaAltitude;
+								}
 							}
 						}
 					}
@@ -472,8 +479,8 @@ public class RouteOverlay
 
 	private static ArrayList<Route> DrawRoutes;
 
-	public static void RenderRoute(SpriteBatch batch, int Zoom, float yVersatz) // , Descriptor desc, float dpiScaleFactorX, float
-																				// dpiScaleFactorY)
+	public static void RenderRoute(Batch batch, int Zoom, float yVersatz) // , Descriptor desc, float dpiScaleFactorX, float
+																			// dpiScaleFactorY)
 	{
 
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)

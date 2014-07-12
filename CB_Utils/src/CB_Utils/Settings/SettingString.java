@@ -41,4 +41,15 @@ public class SettingString extends SettingBase<String>
 		return ret;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingString)) return false;
+
+		SettingString inst = (SettingString) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (!inst.value.equals(this.value)) return false;
+
+		return true;
+	}
 }

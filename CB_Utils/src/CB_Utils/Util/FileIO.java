@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -26,6 +27,30 @@ public class FileIO
 		return file.exists();
 	}
 
+	public static boolean checkWritePermission(String Path)
+	{
+		try
+		{
+			String testFolderName = Path + "/Test";
+
+			File testFolder = new File(testFolderName);
+			File test = new File(testFolderName + "/Test.txt");
+			testFolder.mkdirs();
+			test.createNewFile();
+			if (!test.exists())
+			{
+				return false;
+			}
+			test.delete();
+			testFolder.delete();
+		}
+		catch (IOException e)
+		{
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Überprüft ob ein Ordner exestiert und legt ihn an, wenn er nicht exestiert.
 	 * 
@@ -35,6 +60,8 @@ public class FileIO
 	 */
 	public static boolean createDirectory(String folder)
 	{
+		if (!checkWritePermission(folder)) return false;
+
 		File f = new File(folder);
 		if (f.isDirectory()) return true;
 		else

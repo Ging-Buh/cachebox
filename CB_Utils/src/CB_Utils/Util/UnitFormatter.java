@@ -55,12 +55,30 @@ public class UnitFormatter
 		float yards = distance / 0.9144f;
 		float miles = yards / 1760;
 
-		if (yards < 1000) return String.format("%.0f", yards) + "yd";
+		if (yards < 1000) return String.format("%.0f", yards) + " yd";
 
-		if (miles < 10) return String.format("%.2f", miles) + "mi";
+		if (miles < 10) return String.format("%.2f", miles) + " mi";
 
-		return String.format("%.1f", miles) + "mi";
+		return String.format("%.1f", miles) + " mi";
 
+	}
+
+	public static String AltString(float distance)
+	{
+		if (mUseImperialUnits) return AltStringImperial(distance);
+		else
+			return AltStringMetric(distance);
+	}
+
+	public static String AltStringMetric(float alt)
+	{
+		return String.format("%.0f", alt) + " m";
+	}
+
+	public static String AltStringImperial(float alt)
+	{
+		float yards = alt / 0.9144f;
+		return String.format("%.0f", yards) + " yd";
 	}
 
 	public static String SpeedString(float kmh)

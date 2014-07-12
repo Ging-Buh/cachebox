@@ -4,6 +4,7 @@ import android.text.ClipboardManager;
 
 import com.badlogic.gdx.utils.Clipboard;
 
+@SuppressWarnings("deprecation")
 public class AndroidClipboard implements Clipboard
 {
 	private String contents;

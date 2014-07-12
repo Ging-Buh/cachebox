@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.droidcachebox;
 
 import java.io.BufferedReader;
@@ -10,7 +25,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,11 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.FilterProperties;
 import CB_Core.DB.Database;
@@ -50,8 +60,8 @@ import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog.searchMode;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.splash;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Energy;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.ICallUrl;
@@ -62,23 +72,24 @@ import CB_UI_Base.Events.platformConector.IShowViewListner;
 import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
 import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.Events.platformConector.IsetScreenLockTime;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.ViewConst;
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.ViewID.UI_Pos;
 import CB_UI_Base.GL_UI.ViewID.UI_Type;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.GL_Listener.GL.renderStartet;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Plattform;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.ILog;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
@@ -89,6 +100,7 @@ import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -154,10 +166,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.backends.android.AndroidInput;
-import com.badlogic.gdx.backends.android.surfaceview.DefaultGLSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 
 import de.CB_PlugIn.IPlugIn;
 import de.droidcachebox.NotifyService.LocalBinder;
@@ -180,6 +190,13 @@ import de.droidcachebox.Views.Forms.GcApiLogin;
 import de.droidcachebox.Views.Forms.MessageBox;
 import de.droidcachebox.Views.Forms.PleaseWaitMessageBox;
 
+/**
+ * @author Longri
+ * @author ging-buh
+ * @author arbor95
+ */
+@SuppressLint("Wakelock")
+@SuppressWarnings("deprecation")
 public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
 		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
@@ -334,9 +351,10 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.ui.Window.width);
 		savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
 
-		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().GcCode);
-		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint",
-				GlobalCore.getSelectedWaypoint().GcCode);
+		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache()
+				.getGcCode());
+		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWaypoint()
+				.getGcCode());
 
 		// TODO onSaveInstanceState => save more
 
@@ -349,6 +367,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		super.onCreate(savedInstanceState);
 		GL.resetIsInitial();
+
+		if (GlobalCore.RunFromSplash)
+		{
+			Log.d("CACHEBOX", "main-OnCreate Run from Splash");
+		}
+		else
+		{
+			Log.d("CACHEBOX", "main-OnCreate illegal-Run");
+			// run splash
+			Intent mainIntent = new Intent().setClass(main.this, de.droidcachebox.splash.class);
+			startActivity(mainIntent);
+			finish();
+			return;
+		}
 
 		mainActivity = this;
 
@@ -397,12 +429,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			Global.Paints.init(this);
 			Global.InitIcons(this);
 
-			new de.droidcachebox.Map.AndroidManager();
-
 			GlobalCore.restartCache = savedInstanceState.getString("selectedCacheID");
 			GlobalCore.restartWaypoint = savedInstanceState.getString("selectedWayPoint");
-
-			// TODO onCreate => restore more from onSaveInstanceState
 
 		}
 		else
@@ -557,27 +585,49 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (Config.newInstall.getValue())
 			{
-				String Welcome = "";
-				String LangId = getString(R.string.langId);
-				try
+				// wait for Copy Asset is closed
+				CheckTranslationIsLoaded();
+				Timer tim = new Timer();
+				TimerTask timTask = new TimerTask()
 				{
-					Welcome = Translation.GetTextFile("welcome", LangId);
 
-					Welcome += Translation.GetTextFile("changelog", LangId);
-				}
-				catch (IOException e1)
-				{
-					e1.printStackTrace();
-				}
+					@Override
+					public void run()
+					{
 
-				MessageBox.Show(Welcome, Translation.Get("welcome"), MessageBoxIcon.None);
+						mainActivity.runOnUiThread(new Runnable()
+						{
+
+							@Override
+							public void run()
+							{
+								String Welcome = "";
+								String LangId = getString(R.string.langId);
+								try
+								{
+									Welcome = Translation.GetTextFile("welcome", LangId);
+
+									Welcome += Translation.GetTextFile("changelog", LangId);
+								}
+								catch (IOException e1)
+								{
+									e1.printStackTrace();
+								}
+
+								MessageBox.Show(Welcome, Translation.Get("welcome"), MessageBoxIcon.None);
+							}
+						});
+
+					}
+				};
+
+				tim.schedule(timTask, 5000);
 
 			}
 
 			if (input == null)
 			{
 				AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-				config.useGL20 = true;
 				graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 						: config.resolutionStrategy);
 
@@ -783,6 +833,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
+	private CB_Locator.Location CB_location = new CB_Locator.Location(0, 0, 0);
+
 	@Override
 	public void onLocationChanged(Location location)
 	{
@@ -791,8 +843,16 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (location.getProvider().toLowerCase(new Locale("en")).contains("gps")) provider = ProviderType.GPS;
 		if (location.getProvider().toLowerCase(new Locale("en")).contains("network")) provider = ProviderType.Network;
 
-		CB_Locator.Locator.setNewLocation(new CB_Locator.Location(location.getLatitude(), location.getLongitude(), location.getAccuracy(),
-				location.hasSpeed(), location.getSpeed(), location.hasBearing(), location.getBearing(), location.getAltitude(), provider));
+		CB_location = new CB_Locator.Location(location.getLatitude(), location.getLongitude(), location.getAccuracy());
+
+		CB_location.setHasSpeed(location.hasSpeed());
+		CB_location.setSpeed(location.getSpeed());
+		CB_location.setHasBearing(location.hasBearing());
+		CB_location.setBearing(location.getBearing());
+		CB_location.setAltitude(location.getAltitude());
+		CB_location.setProvider(provider);
+
+		CB_Locator.Locator.setNewLocation(CB_location);
 	}
 
 	@Override
@@ -834,7 +894,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (resultCode == RESULT_OK)
 			{
-				GL.that.RunIfInitial(new runOnGL()
+				GL.that.RunIfInitial(new IRunOnGL()
 				{
 
 					@Override
@@ -871,7 +931,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (resultCode == RESULT_OK)
 			{
-				GL.that.RunIfInitial(new runOnGL()
+				GL.that.RunIfInitial(new IRunOnGL()
 				{
 
 					@Override
@@ -915,16 +975,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		// Intent Result get API key
 		if (requestCode == Global.REQUEST_CODE_GET_API_KEY)
 		{
-			GL.that.RunIfInitial(new runOnGL()
+			GL.that.RunIfInitial(new IRunOnGL()
 			{
 
 				@Override
 				public void run()
 				{
-					if (SettingsActivity.that != null)
-					{
-						SettingsActivity.that.resortList();
-					}
+					SettingsActivity.resortList();
 				}
 			});
 
@@ -966,7 +1023,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (input == null)
 		{
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-			config.useGL20 = true;
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 					: config.resolutionStrategy);
 			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
@@ -1000,6 +1056,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	Dialog pWaitD;
 	private boolean stopped = false;
 
+	private AtomicBoolean waitForGL = new AtomicBoolean(false);
+
 	private void showWaitToRenderStartet()
 	{
 		if (!GL.isInitial()) return;
@@ -1010,24 +1068,40 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			pWaitD = PleaseWaitMessageBox.Show(Translation.Get("waitForGL"), "", MessageBoxButtons.NOTHING, MessageBoxIcon.None, null);
 			stopped = false;
 
-			GL.that.RunIfInitial(new runOnGL()
+			waitForGL.set(true);
+
+			GL.that.RunOnGL(new IRunOnGL()
+			{
+				@Override
+				public void run()
+				{
+					pWaitD.dismiss();
+					pWaitD = null;
+					waitForGL.set(false);
+				}
+			});
+
+			Thread chkThread = new Thread(new Runnable()
 			{
 
 				@Override
 				public void run()
 				{
-					GL.that.registerRenderStartetListner(new renderStartet()
+					while (waitForGL.get())
 					{
-						@Override
-						public void renderIsStartet()
+						GL.that.renderOnce(true);
+						try
 						{
-							pWaitD.dismiss();
-							pWaitD = null;
+							Thread.sleep(200);
 						}
-					});
+						catch (InterruptedException e)
+						{
+
+						}
+					}
 				}
 			});
-
+			chkThread.start();
 		}
 	}
 
@@ -1046,7 +1120,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			Logger.DEBUG("Main=> onResume input== null");
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-			config.useGL20 = true;
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 					: config.resolutionStrategy);
 			input = new AndroidInput(this, this.inflater.getContext(), graphics.getView(), config);
@@ -1105,7 +1178,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		bindPluginServices();
 
 		final Bundle extras = getIntent().getExtras();
-		if (!GlobalCore.restartAfterKill && extras != null)
+		if (!GlobalCore.restartAfterKill || extras != null)
 		{
 			ExtSearch_GcCode = extras.getString("GcCode");
 			ExtSearch_GpxPath = extras.getString("GpxPath");
@@ -1126,7 +1199,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			getIntent().removeExtra("GcCode");
 			getIntent().removeExtra("GpxPath");
 		}
-
+		GL.that.RestartRender();
 	}
 
 	@Override
@@ -1180,62 +1253,64 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			if (isFinishing())
 			{
 				Log.d("CACHEBOX", "Main=> onDestroy isFinishing");
-
-				Config.settings.WriteToDB();
-
-				if (this.mWakeLock != null) this.mWakeLock.release();
-				counter.cancel();
-				TrackRecorder.StopRecording();
-				// GPS Verbindung beenden
-				locationManager.removeUpdates(this);
-				// Voice Recorder stoppen
-				if (extAudioRecorder != null)
+				if (GlobalCore.RunFromSplash)
 				{
-					extAudioRecorder.stop();
-					extAudioRecorder.release();
-					extAudioRecorder = null;
+					Config.settings.WriteToDB();
+
+					if (this.mWakeLock != null) this.mWakeLock.release();
+					counter.cancel();
+					TrackRecorder.StopRecording();
+					// GPS Verbindung beenden
+					locationManager.removeUpdates(this);
+					// Voice Recorder stoppen
+					if (extAudioRecorder != null)
+					{
+						extAudioRecorder.stop();
+						extAudioRecorder.release();
+						extAudioRecorder = null;
+					}
+					SelectedCacheEventList.list.clear();
+					SelectedCacheEventList.list.clear();
+					CachListChangedEventList.list.clear();
+					if (aktView != null)
+					{
+						aktView.OnHide();
+						aktView.OnFree();
+					}
+					aktView = null;
+
+					if (aktTabView != null)
+					{
+						aktTabView.OnHide();
+						aktTabView.OnFree();
+					}
+					aktTabView = null;
+
+					for (ViewOptionsMenu vom : ViewList)
+					{
+						vom.OnFree();
+					}
+					ViewList.clear();
+					viewGL = null;
+					jokerView = null;
+					descriptionView = null;
+					mainActivity = null;
+					debugInfoPanel.OnFree();
+					debugInfoPanel = null;
+					InfoDownSlider = null;
+
+					Config.AcceptChanges();
+
+					Database.Data.Close();
+					Database.FieldNotes.Close();
+
+					SpriteCacheBase.destroyCache();
+
+					Database.Settings.Close();
+
 				}
-				GlobalCore.setSelectedCache(null);
-				SelectedCacheEventList.list.clear();
-				SelectedCacheEventList.list.clear();
-				CachListChangedEventList.list.clear();
-				if (aktView != null)
-				{
-					aktView.OnHide();
-					aktView.OnFree();
-				}
-				aktView = null;
-
-				if (aktTabView != null)
-				{
-					aktTabView.OnHide();
-					aktTabView.OnFree();
-				}
-				aktTabView = null;
-
-				for (ViewOptionsMenu vom : ViewList)
-				{
-					vom.OnFree();
-				}
-				ViewList.clear();
-				viewGL = null;
-				jokerView = null;
-				descriptionView = null;
-				mainActivity = null;
-				debugInfoPanel.OnFree();
-				debugInfoPanel = null;
-				InfoDownSlider = null;
-
-				Config.AcceptChanges();
-
-				Database.Data.Close();
-				Database.FieldNotes.Close();
-
-				SpriteCacheBase.destroyCache();
-
-				Database.Settings.Close();
 				super.onDestroy();
-				System.exit(0);
+				if (GlobalCore.RunFromSplash) System.exit(0);
 			}
 			else
 			{
@@ -1618,17 +1693,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	{
 		try
 		{
-			boolean GL20 = checkGL20Support(this);
+			// boolean GL20 = checkGL20Support(this);
+			//
+			// if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
+			// gdxView = initializeForView(glListener, GL20);
 
-			if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
-			gdxView = initializeForView(glListener, GL20);
+			AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+			cfg.numSamples = 16;
+
+			gdxView = initializeForView(glListener, cfg);
 
 			Logger.DEBUG("Initial new gdxView=" + gdxView.toString());
 
 			int GlSurfaceType = -1;
 			if (gdxView instanceof GLSurfaceView20) GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
-			else if (gdxView instanceof GLSurfaceViewCupcake) GlSurfaceType = ViewGL.GLSURFACE_CUPCAKE;
-			else if (gdxView instanceof DefaultGLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_DEFAULT;
 			else if (gdxView instanceof GLSurfaceView) GlSurfaceType = ViewGL.GLSURFACE_GLSURFACE;
 
 			ViewGL.setSurfaceType(GlSurfaceType);
@@ -1638,16 +1716,11 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			switch (GlSurfaceType)
 			{
 			case ViewGL.GLSURFACE_VIEW20:
-				((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+				((GLSurfaceView20) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
 				break;
-			case ViewGL.GLSURFACE_CUPCAKE:
-				((GLSurfaceViewCupcake) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
-				break;
-			case ViewGL.GLSURFACE_DEFAULT:
-				((DefaultGLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
-				break;
+
 			case ViewGL.GLSURFACE_GLSURFACE:
-				((GLSurfaceView) gdxView).setRenderMode(GLSurfaceViewCupcake.RENDERMODE_CONTINUOUSLY);
+				((GLSurfaceView) gdxView).setRenderMode(GLSurfaceView20.RENDERMODE_CONTINUOUSLY);
 				break;
 			}
 
@@ -1655,7 +1728,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (viewGL == null) viewGL = new ViewGL(this, inflater, gdxView, glListener);
 
-			viewGL.Initialize();
 			viewGL.InitializeMap();
 
 			GlFrame.removeAllViews();
@@ -1695,8 +1767,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public boolean sendMotionEvent(final MotionEvent event)
 	{
-		// Weitergabe der Toucheingabe an den Gl_Listener
-		// ToDo: noch nicht fertig!!!!!!!!!!!!!
 
 		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
@@ -1760,8 +1830,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (GlobalCore.getSelectedCache() != null)
 		{
-			String validName = FileIO
-					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-" + GlobalCore.getSelectedCache().Name);
+			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
+					+ GlobalCore.getSelectedCache().getName());
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1795,8 +1865,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (GlobalCore.getSelectedCache() != null)
 		{
-			String validName = FileIO
-					.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-" + GlobalCore.getSelectedCache().Name);
+			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
+					+ GlobalCore.getSelectedCache().getName());
 			mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 			// Title = Global.SelectedCache().Name;
 		}
@@ -1844,8 +1914,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			if (GlobalCore.getSelectedCache() != null)
 			{
-				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().GcCode + "-"
-						+ GlobalCore.getSelectedCache().Name);
+				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
+						+ GlobalCore.getSelectedCache().getName());
 				mediaCacheName = validName.substring(0, (validName.length() > 32) ? 32 : validName.length());
 				// Title = Global.SelectedCache().Name;
 			}
@@ -1912,7 +1982,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					try
 					{
 						URL url = new URL("http://www.gcjoker.de/cachebox.php?md5=" + Config.GcJoker.getValue() + "&wpt="
-								+ GlobalCore.getSelectedCache().GcCode);
+								+ GlobalCore.getSelectedCache().getGcCode());
 						URLConnection urlConnection = url.openConnection();
 						HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
 
@@ -2020,99 +2090,110 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				lon = GlobalCore.getSelectedWaypoint().Pos.getLongitude();
 			}
 
-			/*
-			 * Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon)); if (intent != null) {
-			 * intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET); this.startActivity(intent); }
-			 */
+			String selectedNavi = Config.Navis.getValue();
+			if (selectedNavi.equals("Ask"))
+			{
+				// todo : Spinner for Selection
+				for (String navi : CB_UI_Settings.navis)
+				{
+					if (!navi.equalsIgnoreCase("Ask"))
+					{
+						selectedNavi = navi;
+					}
+				}
+				// todo : remove if Spinner done
+				selectedNavi = Config.Navis.getValue(); // =Ask=do nothing
+			}
 
-			String INTENT_EXTRA_KEY_LATITUDE = "latitude";
-			String INTENT_EXTRA_KEY_LONGITUDE = "longitude";
-			// Long/Latarefloatvaluesin decimaldegreeformat(+-DDD.DDDDD).
+			if (selectedNavi.equals("Navigon"))
+			{
+				startNavigon(lat, lon);
+			}
+			else if (selectedNavi.equals("OsmAnd"))
+			{
+				startNaviActivity("geo:" + lat + "," + lon);
+			}
+			else if (selectedNavi.equals("OsmAnd2"))
+			{
+				startNaviActivity("http://download.osmand.net/go?lat=" + lat + "&lon=" + lon + "&z=14");
+			}
+			else if (selectedNavi.equals("Copilot") || selectedNavi.equals("Google"))
+			{
+				startNaviActivity("http://maps.google.com/maps?daddr=" + lat + "," + lon);
+			}
+			else if (selectedNavi.equals("Waze"))
+			{
+				startNaviActivity("waze://?ll=" + lat + "," + lon);
+			}
+		}
+	}
 
-			PackageManager currentPM = getPackageManager();
+	private void startNavigon(double lat, double lon)
+	{
 
-			Intent intent = null;
+		Intent intent = null;
+		try
+		{
+			intent = getPackageManager().getLaunchIntentForPackage("com.navigon.navigator");
+		}
+		catch (Exception e)
+		{
+			// Kein Navigon ohne public intent Instaliert
+			e.printStackTrace();
+		}
+
+		if (intent == null)
+		{
 			try
 			{
-				intent = currentPM.getLaunchIntentForPackage("com.navigon.navigator");
+				intent = new Intent("android.intent.action.navigon.START_PUBLIC");
 			}
 			catch (Exception e)
 			{
-				// Kein Navigon ohne public intent Instaliert
+				// Kein Navigon mit public intent Instaliert
 				e.printStackTrace();
 			}
+		}
 
-			if (intent == null)
+		try
+		{
+			if (intent != null)
 			{
 				try
 				{
-					String url = "waze://?ll=" + lat + "," + lon;
-					intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+					intent.putExtra("latitude", (float) lat);
+					intent.putExtra("longitude", (float) lon);
 					startActivity(intent);
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
 				}
 			}
+		}
+		catch (Exception e)
+		{
+			Logger.Error("main.NavigateTo()", "Start Navigon Fehler", e);
+		}
+	}
 
-			if (intent == null)
-			{
-				try
-				{
-					intent = new Intent("android.intent.action.navigon.START_PUBLIC");
-				}
-				catch (Exception e)
-				{
-					// Kein Navigon mit public intent Instaliert
-					e.printStackTrace();
-				}
-			}
-
-			Intent implicitIntent = null;
-			try
-			{
-				// implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + lat + "," + lon));
-				// Changed the call for navigation app to maps.google.com...
-				// Copilot Live 9.3 listens for this intent call and google maps is working with this too...
-				implicitIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
-
-			}
-			catch (Exception e)
-			{
-				// Kein Google Navigator mit public intent Instaliert
-				e.printStackTrace();
-			}
-
-			try
-			{
-				boolean NAVIGON_is_Start = true;
-				if (intent != null)
-				{
-					try
-					{
-						intent.putExtra(INTENT_EXTRA_KEY_LATITUDE, (float) lat);
-						intent.putExtra(INTENT_EXTRA_KEY_LONGITUDE, (float) lon);
-						startActivity(intent);
-					}
-					catch (Exception e)
-					{
-						NAVIGON_is_Start = false;
-					}
-				}
-
-				if (implicitIntent != null && !NAVIGON_is_Start)
-				{
-					startActivity(implicitIntent);
-				}
-			}
-			catch (Exception e)
-			{
-				// Start Extern Navigation Fehler
-				Logger.Error("main.NavigateTo()", "Start Extern Navigation Fehler", e);
-			}
+	private void startNaviActivity(String uri)
+	{
+		Intent intent = null;
+		try
+		{
+			intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 
 		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		if (intent != null)
+		{
+			startActivity(intent);
+		}
+
 	}
 
 	/*
@@ -2336,25 +2417,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			if (Config.Ask_Switch_GPS_ON.getValue() && !GpsOn())
 			{
-				if (!Translation.isInitial())
-				{
-					new Translation(Config.WorkPath, FileType.Internal);
-					try
-					{
-						Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
-					}
-					catch (Exception e)
-					{
-						try
-						{
-							Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
-						}
-						catch (IOException e1)
-						{
-							e1.printStackTrace();
-						}
-					}
-				}
+				CheckTranslationIsLoaded();
 				runOnUiThread(new Runnable()
 				{
 					@Override
@@ -2371,9 +2434,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 										{
 										case -1:
 											// yes open gps settings
-											Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-
-											startActivity(gpsOptionsIntent);
+											startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 											break;
 										case -2:
 											// no,
@@ -2396,6 +2457,29 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 			Logger.Error("main.chkGpsIsOn()", "", e);
 			e.printStackTrace();
+		}
+	}
+
+	private void CheckTranslationIsLoaded()
+	{
+		if (!Translation.isInitial())
+		{
+			new Translation(Config.WorkPath, FileType.Internal);
+			try
+			{
+				Translation.LoadTranslation(Config.Sel_LanguagePath.getValue());
+			}
+			catch (Exception e)
+			{
+				try
+				{
+					Translation.LoadTranslation(Config.Sel_LanguagePath.getDefaultValue());
+				}
+				catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -2701,27 +2785,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		}
 	};
 
-	private boolean checkGL20Support(Context context)
-	{
-
-		EGL10 egl = (EGL10) EGLContext.getEGL();
-		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
-
-		int[] version = new int[2];
-		egl.eglInitialize(display, version);
-
-		int EGL_OPENGL_ES2_BIT = 4;
-		int[] configAttribs =
-			{ EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4, EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-					EGL10.EGL_NONE };
-
-		EGLConfig[] configs = new EGLConfig[10];
-		int[] num_config = new int[1];
-		egl.eglChooseConfig(display, configAttribs, configs, 10, num_config);
-		egl.eglTerminate(display);
-		return num_config[0] > 0;
-	}
-
 	// #########################################################
 
 	// ########### Platform Conector ##########################
@@ -2729,7 +2792,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 	private void initialPlatformConector()
 	{
 
-		GlobalCore.platform = Plattform.Android;
+		Plattform.used = Plattform.Android;
 
 		initialLocatorBase();
 
@@ -2769,7 +2832,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		{
 
 			@Override
-			public void show(final ViewID viewID, final int x, final int y, final int width, final int height)
+			public void show(final ViewID viewID, final int left, final int top, final int right, final int bottom)
 			{
 
 				runOnUiThread(new Runnable()
@@ -2781,17 +2844,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 						// set Content size
 
-						if (viewID.getType() != ViewID.UI_Type.Activity && width > 1)
+						if (viewID.getType() != ViewID.UI_Type.Activity)
 						{
 							if (viewID.getPos() == UI_Pos.Left)
 							{
 								RelativeLayout.LayoutParams paramsLeft = (RelativeLayout.LayoutParams) frame.getLayoutParams();
-
-								paramsLeft.height = height;
-								paramsLeft.width = width;
-								paramsLeft.leftMargin = 0;
-								paramsLeft.topMargin = y;
+								paramsLeft.setMargins(left, top, right, bottom);
 								frame.setLayoutParams(paramsLeft);
+								frame.requestLayout();
 							}
 							else
 							{
@@ -2799,19 +2859,15 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 								{
 									LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabFrame.getLayoutParams();
 
-									params.height = height;
-									params.width = width;
-									params.leftMargin = 0;
-									params.topMargin = y;
+									int versatz = 0;
+									if (TabMainView.LeftTab != null)
+									{
+										versatz = (int) (TabMainView.LeftTab.getWidth() - frame.getWidth());
+									}
+
+									params.setMargins(versatz + left, top, right, bottom);
 									tabFrame.setLayoutParams(params);
-
-									LinearLayout.LayoutParams paramsLeft = (LinearLayout.LayoutParams) frame.getLayoutParams();
-
-									paramsLeft.height = height;
-									paramsLeft.width = UI_Size_Base.that.getWindowWidth() - width;
-									paramsLeft.leftMargin = 0;
-									paramsLeft.topMargin = y;
-									frame.setLayoutParams(paramsLeft);
+									tabFrame.requestLayout();
 								}
 							}
 						}
@@ -3018,9 +3074,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				if (GlobalCore.getSelectedCache() != null)
 				{
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
-					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 				}
 				finish();
 			}
@@ -3054,13 +3110,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				try
 				{
-					Intent browserIntent = new Intent("android.intent.action.VIEW", Uri.parse(url.trim()));
+					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url.trim()));
 					main.mainActivity.startActivity(browserIntent);
 				}
 				catch (Exception exc)
 				{
 					Toast.makeText(main.mainActivity,
-							Translation.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().Url.trim() + ")",
+							Translation.Get("Cann_not_open_cache_browser") + " (" + GlobalCore.getSelectedCache().getUrl().trim() + ")",
 							Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -3232,6 +3288,8 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		});
 	}
 
+	private final CB_List<CB_Locator.GpsStrength> coreSatList = new CB_List<CB_Locator.GpsStrength>(14);
+
 	@Override
 	public void onGpsStatusChanged(int event)
 	{
@@ -3239,13 +3297,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS)
 		{
+
 			GpsStatus status = locationManager.getGpsStatus(null);
 			Iterator<GpsSatellite> statusIterator = status.getSatellites().iterator();
 
 			int satellites = 0;
 			int fixed = 0;
-			ArrayList<GpsStrength> SatList = new ArrayList<GpsStrength>();
-			ArrayList<CB_Locator.GpsStrength> coreSatList = new ArrayList<CB_Locator.GpsStrength>();
+			coreSatList.clear();
+
 			while (statusIterator.hasNext())
 			{
 				GpsSatellite sat = statusIterator.next();
@@ -3257,20 +3316,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				{
 					fixed++;
 					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr() + " FIX");
-					SatList.add(new GpsStrength(true, sat.getSnr()));
+					// SatList.add(new GpsStrength(true, sat.getSnr()));
 					coreSatList.add(new GpsStrength(true, sat.getSnr()));
 				}
 				else
 				{
 					// Log.d("Cachbox satellite signal strength", "Sat #" + satellites + ": " + sat.getSnr());
-					SatList.add(new GpsStrength(false, sat.getSnr()));
+					// SatList.add(new GpsStrength(false, sat.getSnr()));
 					coreSatList.add(new GpsStrength(false, sat.getSnr()));
 				}
 
 			}
 
-			Collections.sort(SatList);
-			Collections.sort(coreSatList);
+			// SatList.sort();
+			coreSatList.sort();
 
 			CB_Locator.GPS.setSatFixes(fixed);
 			CB_Locator.GPS.setSatVisible(satellites);

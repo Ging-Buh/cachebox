@@ -1,17 +1,18 @@
 package CB_UI_Base.GL_UI;
 
+import CB_Utils.MathUtils;
+
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class DrawUtils
 {
-	public static void drawSpriteLine(SpriteBatch batch, Sprite sprite, float overlap, float x1, float y1, float x2, float y2)
+	public static void drawSpriteLine(Batch batch, Sprite sprite, float overlap, float x1, float y1, float x2, float y2)
 	{
 		drawSpriteLine(batch, sprite, sprite, overlap, x1, y1, x2, y2);
 	}
 
-	public static void drawSpriteLine(SpriteBatch batch, Sprite sprite, Sprite spriteEnd, float overlap, float x1, float y1, float x2,
-			float y2)
+	public static void drawSpriteLine(Batch batch, Sprite sprite, Sprite spriteEnd, float overlap, float x1, float y1, float x2, float y2)
 	{
 		// chk NPE
 		if (batch == null || sprite == null || spriteEnd == null) return;
@@ -42,13 +43,13 @@ public class DrawUtils
 		float SpriteHalfY = sprite.getHeight() / 2;
 
 		sprite.setOrigin(SpriteHalfX, SpriteHalfY);
-		sprite.setRotation((float) (angle * 180 / Math.PI) - 90); // Grad-basiert, y-Achse 0 Grad, gegen Uhrzeigersinn
+		sprite.setRotation((float) (angle * MathUtils.RAD_DEG) - 90); // Grad-basiert, y-Achse 0 Grad, gegen Uhrzeigersinn
 
 		float SpriteEndHalfX = spriteEnd.getWidth() / 2;
 		float SpriteEndHalfY = spriteEnd.getHeight() / 2;
 
 		spriteEnd.setOrigin(SpriteEndHalfX, SpriteEndHalfY);
-		spriteEnd.setRotation((float) (angle * 180 / Math.PI) - 90); // Grad-basiert, y-Achse 0 Grad, gegen Uhrzeigersinn
+		spriteEnd.setRotation((float) (angle * MathUtils.RAD_DEG) - 90); // Grad-basiert, y-Achse 0 Grad, gegen Uhrzeigersinn
 
 		float h = sprite.getHeight() * overlap;
 

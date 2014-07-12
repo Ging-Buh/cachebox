@@ -30,9 +30,10 @@ import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox;
@@ -287,8 +288,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.height - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight,
-				"TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
+				lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 		this.addChild(lblTitle);
@@ -771,7 +772,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 		 * checkBoxCompactDB.setChecked(false); }
 		 */
 		checkBoxPreloadSpoiler.setEnable(true);
-		lblSpoiler.setTextColor(Fonts.getFontColor());
+		lblSpoiler.setTextColor(COLOR.getFontColor());
 		if (checkImportPQfromGC.isChecked())
 		{
 			PQ_ListCollapseBox.setAnimationHeight(CollapseBoxMaxHeight);
@@ -1244,7 +1245,14 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						}
 					}
 
-					dis.setAnimationType(AnimationType.Work);
+					try
+					{
+						dis.setAnimationType(AnimationType.Work);
+					}
+					catch (Exception e)
+					{
+
+					}
 
 					// Importiere alle GPX Files im Import Folder, auch in ZIP
 					// verpackte
@@ -1311,7 +1319,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						try
 						{
 
-							importCBServer.importCBServer(cbServerExportList, ip);
+							importCBServer.importCBServer(cbServerExportList, ip, true);
 
 							Database.Data.setTransactionSuccessful();
 						}
@@ -1480,7 +1488,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	public void ProgressChangedEventCalled(final String Message, final String ProgressMessage, final int Progress)
 	{
 
-		this.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

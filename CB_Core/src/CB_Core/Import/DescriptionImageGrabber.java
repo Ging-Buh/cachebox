@@ -22,6 +22,7 @@ import CB_Core.DB.Database;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Utils.DB.Database_Core.Parameters;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SDBM_Hash;
@@ -36,9 +37,9 @@ public class DescriptionImageGrabber
 		public String text;
 	}
 
-	public static ArrayList<Segment> Segmentize(String text, String leftSeperator, String rightSeperator)
+	public static CB_List<Segment> Segmentize(String text, String leftSeperator, String rightSeperator)
 	{
-		ArrayList<Segment> result = new ArrayList<Segment>();
+		CB_List<Segment> result = new CB_List<Segment>();
 
 		if (text == null)
 		{
@@ -152,7 +153,7 @@ public class DescriptionImageGrabber
 		URI baseUri;
 		try
 		{
-			baseUri = URI.create(Cache.Url);
+			baseUri = URI.create(Cache.getUrl());
 		}
 		catch (Exception exc)
 		{
@@ -165,10 +166,10 @@ public class DescriptionImageGrabber
 
 		if (baseUri == null)
 		{
-			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.GcCode;
+			Cache.setUrl("http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGcCode());
 			try
 			{
-				baseUri = URI.create(Cache.Url);
+				baseUri = URI.create(Cache.getUrl());
 			}
 			catch (Exception exc)
 			{
@@ -182,12 +183,13 @@ public class DescriptionImageGrabber
 
 		// String htmlNoSpaces = RemoveSpaces(html);
 
-		ArrayList<Segment> imgTags = Segmentize(html, "<img", ">");
+		CB_List<Segment> imgTags = Segmentize(html, "<img", ">");
 
 		int delta = 0;
 
-		for (Segment img : imgTags)
+		for (int i = 0, n = imgTags.size(); i < n; i++)
 		{
+			Segment img = imgTags.get(i);
 			int srcIdx = img.text.toLowerCase().indexOf("src=");
 			int srcStart = img.text.indexOf('"', srcIdx + 4);
 			int srcEnd = img.text.indexOf('"', srcStart + 1);
@@ -201,7 +203,7 @@ public class DescriptionImageGrabber
 				{
 					URI imgUri = URI.create(/* baseUri, */src); // NICHT
 																// ORGINAL!!!!!!!!!
-					String localFile = BuildImageFilename(Cache.GcCode, imgUri);
+					String localFile = BuildImageFilename(Cache.getGcCode(), imgUri);
 
 					if (FileIO.FileExists(localFile))
 					{
@@ -257,12 +259,22 @@ public class DescriptionImageGrabber
 		{
 			String localDir = local.substring(0, local.lastIndexOf("/"));
 			if (!FileIO.createDirectory(localDir)) return false;
-			URL aURL = new URL(uri.replace("&amp;", "&"));
-			File file = new File(local);
 
+			URL aURL = null;
+			try
+			{
+				// ungültige URL -> nicht importieren
+				aURL = new URL(uri.replace("&amp;", "&"));
+			}
+			catch (Exception ex)
+			{
+				return true;
+			}
+			File file = new File(local);
 			URLConnection con = aURL.openConnection();
 			con.setConnectTimeout(5000);
 			con.setReadTimeout(10000);
+			con.setRequestProperty("Accept-Charset", "UTF-8");
 
 			InputStream is = con.getInputStream();
 			FileOutputStream fos = new FileOutputStream(file);
@@ -307,7 +319,7 @@ public class DescriptionImageGrabber
 		URI baseUri;
 		try
 		{
-			baseUri = URI.create(Cache.Url);
+			baseUri = URI.create(Cache.getUrl());
 		}
 		catch (Exception exc)
 		{
@@ -316,10 +328,10 @@ public class DescriptionImageGrabber
 
 		if (baseUri == null)
 		{
-			Cache.Url = "http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.GcCode;
+			Cache.setUrl("http://www.geocaching.com/seek/cache_details.aspx?wp=" + Cache.getGcCode());
 			try
 			{
-				baseUri = URI.create(Cache.Url);
+				baseUri = URI.create(Cache.getUrl());
 			}
 			catch (Exception exc)
 			{
@@ -327,12 +339,13 @@ public class DescriptionImageGrabber
 			}
 		}
 
-		ArrayList<Segment> imgTags = Segmentize(Cache.shortDescription, "<img", ">");
+		CB_List<Segment> imgTags = Segmentize(Cache.getShortDescription(), "<img", ">");
 
-		imgTags.addAll(Segmentize(Cache.longDescription, "<img", ">"));
+		imgTags.addAll(Segmentize(Cache.getLongDescription(), "<img", ">"));
 
-		for (Segment img : imgTags)
+		for (int i = 0, n = imgTags.size(); i < n; i++)
 		{
+			Segment img = imgTags.get(i);
 			int srcStart = -1;
 			int srcEnd = -1;
 			int srcIdx = img.text.toLowerCase().indexOf("src=");
@@ -373,10 +386,11 @@ public class DescriptionImageGrabber
 			return images;
 		}
 
-		ArrayList<Segment> imgTags = Segmentize(html, "<img", ">");
+		CB_List<Segment> imgTags = Segmentize(html, "<img", ">");
 
-		for (Segment img : imgTags)
+		for (int i = 0, n = imgTags.size(); i < n; i++)
 		{
+			Segment img = imgTags.get(i);
 			int srcStart = -1;
 			int srcEnd = -1;
 			int srcIdx = img.text.toLowerCase().indexOf("src=");
@@ -513,18 +527,45 @@ public class DescriptionImageGrabber
 				ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode);
 				HashMap<String, URI> allimgDict = new HashMap<String, URI>();
 
-				int result = GroundspeakAPI.GetAllImageLinks(gcCode, allimgDict);
-
-				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+				int result = 0;
+				long startTs = System.currentTimeMillis();
+				do
 				{
-					return GroundspeakAPI.CONNECTION_TIMEOUT;
-				}
+					result = GroundspeakAPI.GetAllImageLinks(gcCode, allimgDict);
 
-				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
-				{
-					return GroundspeakAPI.CONNECTION_TIMEOUT;
-				}
+					if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+					{
+						return GroundspeakAPI.CONNECTION_TIMEOUT;
+					}
 
+					if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+					{
+						return GroundspeakAPI.CONNECTION_TIMEOUT;
+					}
+					if (result == 140)
+					{
+						// API-Limit überschritten -> nach 15 Sekunden wiederholen
+						System.out.println("******* API-Limit überschritten -> 15 Sekunden warten! *******");
+						try
+						{
+							Thread.sleep(15000);
+						}
+						catch (InterruptedException e)
+						{
+						}
+						if (System.currentTimeMillis() > startTs + 60000)
+						{
+							// Aufruf nach 1 min immer noch nicht OK -> raus!
+							System.out.println("******* Timeout API-Limit überschritten ********");
+							break;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+				while (true);
 				if (allimgDict == null) return 0;
 
 				for (String key : allimgDict.keySet())
@@ -542,14 +583,41 @@ public class DescriptionImageGrabber
 					if (BreakawayImportThread.isCanceld()) return 0;
 
 					URI uri = allimgDict.get(key);
-					if (uri.toString().startsWith("http://img.geocaching.com/cache/log")) continue; // LOG-Image
+					if (uri.toString().contains("/cache/log/")) continue; // LOG-Image
 
 					ip.ProgressChangeMsg("importImages", "Importing Spoiler Images for " + gcCode + " - Download: " + uri);
 
 					String decodedImageName = key;
 
 					String local = BuildAdditionalImageFilename(gcCode, decodedImageName, uri);
+					if (new File(local).exists())
+					{
+						// Spoiler ohne den Hash im Dateinamen löschen
+						new File(local).delete();
+					}
+					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden können
+					// Hier erst die alten Version mit den Klammern als Eingrenzung des Hash
+					// Dies hier machen, damit die Namen der Spoiler ins neue System Konvertiert werden können.
+					String localOld = BuildAdditionalImageFilenameHash(gcCode, decodedImageName, uri);
+					// Neuen Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden
+					// können
+					// Hier jetzt mit @ als Eingrenzung des Hashs
+					local = BuildAdditionalImageFilenameHashNew(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);
+					File oldFile = new File(localOld);
+					if (oldFile.exists())
+					{
+						try
+						{
+							oldFile.renameTo(new File(local));
+							afiles.add(filename);
+						}
+						catch (Exception ex)
+						{
+							Logger.Error("Error trying to rename Spoiler with old Name format", ex.getMessage());
+						}
+					}
+
 					// überprüfen, ob dieser Spoiler bereits geladen wurde
 					if (afiles.contains(filename))
 					{
@@ -572,7 +640,7 @@ public class DescriptionImageGrabber
 						{
 							imageLoadError = HandleMissingImages(imageLoadError, uri, local);
 						}
-						System.gc();
+
 					}
 				}
 
@@ -589,14 +657,22 @@ public class DescriptionImageGrabber
 					// Alle Spoiler in der Liste afiles sind "alte"
 					for (String file : afiles)
 					{
-						File f = new File(CB_Core_Settings.SpoilerFolder.getValue() + "/" + gcCode.substring(0, 4) + '/' + file);
-						try
+						String fileNameWithOutExt = file.replaceFirst("[.][^.]+$", "");
+						// Testen, ob dieser Dateiname einen gültigen ACB Hash hat (eingeschlossen zwischen @....@>
+						if (fileNameWithOutExt.endsWith("@") && fileNameWithOutExt.contains("@"))
 						{
-							f.delete();
-						}
-						catch (Exception ex)
-						{
-							Logger.Error("DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex.getMessage());
+							// file enthält nur den Dateinamen, nicht den Pfad. Diesen Dateinamen um den Pfad erweitern, in dem hier die
+							// Spoiler gespeichert wurden
+							String path = getSpoilerPath(gcCode);
+							File f = new File(path + '/' + file);
+							try
+							{
+								f.delete();
+							}
+							catch (Exception ex)
+							{
+								Logger.Error("DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex.getMessage());
+							}
 						}
 					}
 				}
@@ -634,6 +710,16 @@ public class DescriptionImageGrabber
 		return new String[0];
 	}
 
+	public static String getSpoilerPath(String GcCode)
+	{
+		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
+
+		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
+				+ GcCode.substring(0, 4);
+
+		return imagePath;
+	}
+
 	/**
 	 * @param GcCode
 	 * @param ImageName
@@ -646,6 +732,26 @@ public class DescriptionImageGrabber
 	 */
 	public static String BuildAdditionalImageFilename(String GcCode, String ImageName, URI uri)
 	{
+		String imagePath = getSpoilerPath(GcCode);
+
+		ImageName = ImageName.replace("[/:*?\"<>|]", "");
+		ImageName = ImageName.replace("\\", "");
+		ImageName = ImageName.replace("\n", "");
+		ImageName = ImageName.replace("\"", "");
+		ImageName = ImageName.trim();
+
+		int idx = uri.toString().lastIndexOf('.');
+		String extension = (idx >= 0) ? uri.toString().substring(idx) : ".";
+
+		return imagePath + "/" + GcCode + " - " + ImageName + extension;
+	}
+
+	/**
+	 * Alte Version mit den Klammern als Eingrenzung des Hashs. Dies funktioniert nicht, da die Klammern nicht in URL's verwendet werden
+	 * dürfen (CBServer)
+	 */
+	public static String BuildAdditionalImageFilenameHash(String GcCode, String ImageName, URI uri)
+	{
 		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
 
 		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
@@ -654,12 +760,46 @@ public class DescriptionImageGrabber
 		ImageName = ImageName.replace("[/:*?\"<>|]", "");
 		ImageName = ImageName.replace("\\", "");
 		ImageName = ImageName.replace("\n", "");
+		ImageName = ImageName.replace("\"", "");
 		ImageName = ImageName.trim();
 
 		int idx = uri.toString().lastIndexOf('.');
 		String extension = (idx >= 0) ? uri.toString().substring(idx) : ".";
 
-		return imagePath + "/" + GcCode + " - " + ImageName + extension;
+		// Create sdbm Hash from Path of URI, not from complete URI
+		return imagePath + "/" + GcCode + " - " + ImageName + " ([{" + SDBM_Hash.sdbm(uri.getPath().toString()) + "}])" + extension;
+	}
+
+	/**
+	 * Neue Version, mit @ als Eingrenzung des Hashs, da die Klammern nicht als URL's verwendet werden dürfen
+	 * 
+	 * @param GcCode
+	 * @param ImageName
+	 * @param uri
+	 * @param SpoilerFolder
+	 *            Config.settings.SpoilerFolder.getValue()
+	 * @param SpoilerFolderLocal
+	 *            Config.settings.SpoilerFolderLocal.getValue()
+	 * @return
+	 */
+	public static String BuildAdditionalImageFilenameHashNew(String GcCode, String ImageName, URI uri)
+	{
+		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
+
+		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
+				+ GcCode.substring(0, 4);
+
+		ImageName = ImageName.replace("[/:*?\"<>|]", "");
+		ImageName = ImageName.replace("\\", "");
+		ImageName = ImageName.replace("\n", "");
+		ImageName = ImageName.replace("\"", "");
+		ImageName = ImageName.trim();
+
+		int idx = uri.toString().lastIndexOf('.');
+		String extension = (idx >= 0) ? uri.toString().substring(idx) : ".";
+
+		// Create sdbm Hash from Path of URI, not from complete URI
+		return imagePath + "/" + GcCode + " - " + ImageName + " @" + SDBM_Hash.sdbm(uri.getPath().toString()) + "@" + extension;
 	}
 
 	private static boolean HandleMissingImages(boolean imageLoadError, URI uri, String local)
@@ -669,11 +809,12 @@ public class DescriptionImageGrabber
 			File file = new File(local + "_broken_link.txt");
 			if (!file.exists())
 			{
-				if (file.exists())
+				File file2 = new File(local + ".1st");
+				if (file2.exists())
 				{
 					// After first try, we can be sure that the image cannot be loaded.
 					// At this point mark the image as loaded and go ahead.
-					file.renameTo(file);
+					file2.renameTo(file);
 				}
 				else
 				{

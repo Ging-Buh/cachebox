@@ -16,9 +16,7 @@
 
 package CB_UI_Base.Math;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
 import com.badlogic.gdx.math.Vector2;
@@ -34,34 +32,30 @@ public class CB_RectF
 	// Member
 
 	/**
-	 * Linke untere Ecke des Rechtecks
+	 * Holds all values <br>
+	 * <br>
+	 * [0] = Pos.x <br>
+	 * [1] = Pos.y <br>
+	 * [2] = width <br>
+	 * [3] = height <br>
+	 * [4] = halfWidth <br>
+	 * [5] = halfHeight <br>
+	 * [6] = crossPos.x <br>
+	 * [7] = crossPos.x <br>
+	 * [8] = centerPos.x <br>
+	 * [9] = centerPos.x <br>
 	 */
-	protected Vector2 Pos = new Vector2(0, 0);
-
-	/**
-	 * rechte obere Ecke des Rechtecks
-	 */
-	protected Vector2 crossPos = new Vector2(0, 0);
-
-	/**
-	 * die Center Position des Rechtecks
-	 */
-	protected Vector2 centerPos = new Vector2(0, 0);
-
-	protected float width;
-	protected float height;
-
-	protected float halfWidth;
-	protected float halfHeight;
+	protected final float member[] = new float[]
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	public float getHalfWidth()
 	{
-		return halfWidth;
+		return member[4];
 	}
 
 	public float getHalfHeight()
 	{
-		return halfHeight;
+		return member[5];
 	}
 
 	// Constructors
@@ -71,18 +65,12 @@ public class CB_RectF
 	 */
 	public CB_RectF()
 	{
-		this.Pos.x = 0F;
-		this.Pos.y = 0F;
-		this.height = 0F;
-		this.width = 0F;
 	}
 
 	public CB_RectF(SizeF size)
 	{
-		this.Pos.x = 0F;
-		this.Pos.y = 0F;
-		this.height = size.height;
-		this.width = size.width;
+		member[3] = size.height;
+		member[2] = size.width;
 		calcCrossCorner();
 	}
 
@@ -96,35 +84,30 @@ public class CB_RectF
 	 */
 	public CB_RectF(float X, float Y, float Width, float Height)
 	{
-		this.Pos.x = X;
-		this.Pos.y = Y;
-		this.width = Width;
-		this.height = Height;
+		member[0] = X;
+		member[1] = Y;
+		member[3] = Height;
+		member[2] = Width;
 		calcCrossCorner();
 	}
 
 	public CB_RectF(CB_RectF rec)
 	{
-		this.Pos.x = rec.Pos.x;
-		this.Pos.y = rec.Pos.y;
-		this.width = rec.width;
-		this.height = rec.height;
-		calcCrossCorner();
-
+		System.arraycopy(rec.member, 0, this.member, 0, 10);
 	}
 
 	public void setWidth(float Width)
 	{
-		if (this.width == Width) return;
-		this.width = Width;
+		if (member[2] == Width) return;
+		member[2] = Width;
 		calcCrossCorner();
 		CallRecChanged();
 	}
 
 	public void setHeight(float Height)
 	{
-		if (this.height == Height) return;
-		this.height = Height;
+		if (member[3] == Height) return;
+		member[3] = Height;
 		calcCrossCorner();
 		CallRecChanged();
 	}
@@ -143,9 +126,9 @@ public class CB_RectF
 	 */
 	public boolean setSize(float Width, float Height)
 	{
-		if (this.width == Width && this.height == Height) return false;
-		this.width = Width;
-		this.height = Height;
+		if (member[2] == Width && member[3] == Height) return false;
+		member[2] = Width;
+		member[3] = Height;
 		calcCrossCorner();
 		CallRecChanged();
 		return true;
@@ -153,19 +136,15 @@ public class CB_RectF
 
 	public boolean setSize(CB_RectF rec)
 	{
-		if (this.width == rec.width && this.height == rec.height) return false;
-		this.width = rec.width;
-		this.height = rec.height;
-		calcCrossCorner();
-		CallRecChanged();
+		setSize(rec.member[2], rec.member[3]);
 		return true;
 	}
 
 	public void setPos(Vector2 Pos)
 	{
-		if (this.Pos.x == Pos.x && this.Pos.y == Pos.y) return;
-		this.Pos.x = Pos.x;
-		this.Pos.y = Pos.y;
+		if (member[0] == Pos.x && member[1] == Pos.y) return;
+		member[0] = Pos.x;
+		member[1] = Pos.y;
 		calcCrossCorner();
 	}
 
@@ -176,59 +155,30 @@ public class CB_RectF
 
 	public CB_RectF offset(float offX, float offY)
 	{
-		float newX = this.Pos.x + offX;
-		float newY = this.Pos.y + offY;
-
-		if (this.Pos.x == newX && this.Pos.y == newY) return this;
-		this.Pos.x = newX;
-		this.Pos.y = newY;
+		member[0] += offX;
+		member[1] += offY;
 		calcCrossCorner();
 		return this;
 	}
 
 	public float getX()
 	{
-		return this.Pos.x;
+		return member[0];
 	}
 
 	public float getY()
 	{
-		return this.Pos.y;
+		return member[1];
 	}
 
 	public float getWidth()
 	{
-		return this.width;
+		return member[2];
 	}
 
 	public float getHeight()
 	{
-		return this.height;
-	}
-
-	public Vector2 getPos()
-	{
-		return this.Pos;
-	}
-
-	/**
-	 * Gibt die Position der rechten oberen Ecke zurück
-	 * 
-	 * @return Vector2
-	 */
-	public Vector2 getCrossPos()
-	{
-		return this.crossPos;
-	}
-
-	/**
-	 * Gibt die Position des Zentrums zurück
-	 * 
-	 * @return Vector2
-	 */
-	public Vector2 getCenterPos()
-	{
-		return this.centerPos;
+		return member[3];
 	}
 
 	/**
@@ -236,13 +186,13 @@ public class CB_RectF
 	 */
 	protected void calcCrossCorner()
 	{
-		this.halfWidth = this.width / 2;
-		this.halfHeight = this.height / 2;
+		this.member[4] = this.member[2] / 2;
+		this.member[5] = this.member[3] / 2;
 
-		this.crossPos.x = this.Pos.x + this.width;
-		this.crossPos.y = this.Pos.y + this.height;
-		this.centerPos.x = this.Pos.x + this.halfWidth;
-		this.centerPos.y = this.Pos.y + this.halfHeight;
+		this.member[6] = this.member[0] + this.member[2];
+		this.member[7] = this.member[1] + this.member[3];
+		this.member[8] = this.member[0] + this.member[4];
+		this.member[9] = this.member[1] + this.member[5];
 	}
 
 	public boolean contains(Vector2 ret)
@@ -256,12 +206,12 @@ public class CB_RectF
 		// runde
 		float rX = Math.round(x);
 		float rY = Math.round(y);
-		float rTX = Math.round(this.Pos.x);
-		float rTY = Math.round(this.Pos.y);
-		float rTCX = Math.round(this.crossPos.x);
-		float rTCY = Math.round(this.crossPos.y);
+		float rTX = Math.round(this.member[0]);
+		float rTY = Math.round(this.member[1]);
+		float rTCX = Math.round(this.member[6]);
+		float rTCY = Math.round(this.member[7]);
 
-		return width > 0 && height > 0 // check for empty first
+		return this.member[2] > 0 && this.member[3] > 0 // check for empty first
 				&& rX >= rTX && rX <= rTCX && rY >= rTY && rY <= rTCY;
 	}
 
@@ -274,13 +224,13 @@ public class CB_RectF
 	public boolean contains(CB_RectF rec)
 	{
 		if (rec == null) return false;
-		boolean ret = this.contains(rec.Pos);
-		ret &= this.contains(rec.crossPos);
+		boolean ret = this.contains(rec.member[0], rec.member[1]);
+		ret &= this.contains(rec.member[6], rec.member[7]);
 
 		return ret;
 	}
 
-	private ArrayList<SizeChangedEvent> list = new ArrayList<SizeChangedEvent>();
+	private CB_List<SizeChangedEvent> list = new CB_List<SizeChangedEvent>(1);
 
 	public void Add(SizeChangedEvent event)
 	{
@@ -294,13 +244,17 @@ public class CB_RectF
 
 	public void CallRecChanged()
 	{
-		resize(this.width, this.height);
+		if (list == null) return; // is disposed
 
-		for (SizeChangedEvent event : list)
+		resize(this.member[2], this.member[3]);
+
+		if (list.size() > 0)
 		{
-			event.sizeChanged();
+			for (int i = 0, n = list.size(); i < n; i++)
+			{
+				list.get(i).sizeChanged();
+			}
 		}
-
 	}
 
 	public void resize(float width, float height)
@@ -309,28 +263,34 @@ public class CB_RectF
 
 	public boolean equals(CB_RectF rec)
 	{
-		if (this.Pos.x != rec.Pos.x || this.Pos.y != rec.Pos.y) return false;
-		if (this.width != rec.width || this.height != this.height) return false;
+		// Compare only x,y,width and height
+		if (this.member[0] != rec.member[0]) return false;
+		if (this.member[1] != rec.member[1]) return false;
+		if (this.member[2] != rec.member[2]) return false;
+		if (this.member[3] != rec.member[3]) return false;
+
 		return true;
 	}
 
 	public CB_RectF copy()
 	{
-		return new CB_RectF(this.Pos.x, this.Pos.y, width, height);
+		return new CB_RectF(this);
 	}
 
 	public void setY(float i)
 	{
-		if (this.Pos.y == i) return;
-		this.Pos.y = i;
+		if (this.member[1] == i) return;
+		this.member[1] = i;
 		calcCrossCorner();
+		CallRecChanged();
 	}
 
 	public void setX(float i)
 	{
-		if (this.Pos.x == i) return;
-		this.Pos.x = i;
+		if (this.member[0] == i) return;
+		this.member[0] = i;
 		calcCrossCorner();
+		CallRecChanged();
 	}
 
 	/**
@@ -338,8 +298,8 @@ public class CB_RectF
 	 */
 	public void setPO2()
 	{
-		int PO2width = getNextHighestPO2((int) this.width);
-		int PO2height = getNextHighestPO2((int) this.height);
+		int PO2width = getNextHighestPO2((int) this.member[2]);
+		int PO2height = getNextHighestPO2((int) this.member[3]);
 
 		setSize(PO2width, PO2height);
 	}
@@ -363,26 +323,6 @@ public class CB_RectF
 		return n + 1;
 	}
 
-	public float getLeft()
-	{
-		return this.Pos.x;
-	}
-
-	public float getTop()
-	{
-		return this.crossPos.y;
-	}
-
-	public float getBottom()
-	{
-		return this.Pos.y;
-	}
-
-	public float getRight()
-	{
-		return this.crossPos.x;
-	}
-
 	public CB_RectF ScaleCenter(float ScaleFactor)
 	{
 		return ScaleCenter(this, ScaleFactor);
@@ -392,8 +332,8 @@ public class CB_RectF
 	{
 		float newWidth = rectangle.getWidth() * ScaleFactor;
 		float newHeight = rectangle.getHeight() * ScaleFactor;
-		float newX = rectangle.Pos.x + ((rectangle.getWidth() - newWidth) / 2);
-		float newY = rectangle.Pos.y + ((rectangle.getHeight() - newHeight) / 2);
+		float newX = rectangle.member[0] + ((rectangle.getWidth() - newWidth) / 2);
+		float newY = rectangle.member[1] + ((rectangle.getHeight() - newHeight) / 2);
 		return new CB_RectF(newX, newY, newWidth, newHeight);
 	}
 
@@ -439,27 +379,30 @@ public class CB_RectF
 
 		Vector2 ret = new Vector2();
 
-		for (Iterator<Integer> i = Geraden.iterator(); i.hasNext();)
+		for (int i = 0, n = Geraden.size(); i < n; i++)
 		{
-			switch (i.next())
+			switch (Geraden.get(i))
 			{
 			case 1:
 
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, Pos, new Vector2(crossPos.x, Pos.y), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(
+						this.member[6], this.member[1]), ret))
 				{
 					if (contains(ret)) return ret; // 1 unten
 				}
 				break;
 
 			case 2:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, Pos, new Vector2(Pos.x, crossPos.y), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(
+						this.member[0], this.member[7]), ret))
 				{
 					if (contains(ret)) return ret; // 2 links
 				}
 				break;
 
 			case 3:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, crossPos, new Vector2(crossPos.x, Pos.y), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(
+						this.member[6], this.member[1]), ret))
 				{
 					if (contains(ret)) return ret; // 3 rechts
 				}
@@ -467,7 +410,8 @@ public class CB_RectF
 				break;
 
 			case 4:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, crossPos, new Vector2(Pos.x, crossPos.y), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(
+						this.member[0], this.member[7]), ret))
 				{
 					if (contains(ret)) return ret; // 4 oben
 				}
@@ -532,31 +476,63 @@ public class CB_RectF
 
 	public SizeF getSize()
 	{
-		return new SizeF(width, height);
+		return new SizeF(this.member[2], this.member[3]);
 	}
 
 	public void setRec(CB_RectF rec)
 	{
 		if (rec == null) return;
-		this.Pos.x = rec.Pos.x;
-		this.Pos.y = rec.Pos.y;
-		this.width = rec.width;
-		this.height = rec.height;
-
-		calcCrossCorner();
+		// chk of changes
+		if (this.equals(rec)) return;
+		System.arraycopy(rec.member, 0, this.member, 0, 10);
 		CallRecChanged();
 	}
 
 	@Override
 	public String toString()
 	{
-		return "rec X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.width + "," + this.height;
+		return "rec X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.member[2] + "," + this.member[3];
 	}
 
 	public void setPos(float x, float y)
 	{
-		this.Pos.x = x;
-		this.Pos.y = y;
+		// chk of changes
+		if (this.member[0] == x && this.member[1] == y) return;
+
+		this.member[0] = x;
+		this.member[1] = y;
 		calcCrossCorner();
+		CallRecChanged();
+	}
+
+	public float getCenterPosX()
+	{
+		return this.member[8];
+	}
+
+	public float getCenterPosY()
+	{
+		return this.member[9];
+	}
+
+	public void set(float x, float y, float width, float height)
+	{
+		// chk of changes
+		if (this.member[0] == x && this.member[1] == y && this.member[2] == width && this.member[3] == height) return;
+		this.member[0] = x;
+		this.member[1] = y;
+		this.member[2] = width;
+		this.member[3] = height;
+		calcCrossCorner();
+		CallRecChanged();
+	}
+
+	public void dispose()
+	{
+		if (list != null)
+		{
+			list.clear();
+		}
+		list = null;
 	}
 }

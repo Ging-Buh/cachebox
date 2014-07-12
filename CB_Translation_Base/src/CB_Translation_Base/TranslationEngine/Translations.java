@@ -16,6 +16,9 @@
 
 package CB_Translation_Base.TranslationEngine;
 
+import java.nio.charset.Charset;
+import java.util.Arrays;
+
 /**
  * A Structure for ID as String and this Translation as String
  * 
@@ -23,6 +26,16 @@ package CB_Translation_Base.TranslationEngine;
  */
 public class Translations
 {
+
+	public final static int lang = "lang".hashCode();
+	public final static int Misc = "Misc".hashCode();
+
+	protected static final Charset UTF_8 = Charset.forName("UTF-8");
+	private static byte[] TranslationBytes = new byte[2000];
+	private static int lastIndex = 0;
+	private final int TranslationByteIndex;
+	private final short TranslationByteLength;
+
 	/**
 	 * Constructor
 	 * 
@@ -30,14 +43,40 @@ public class Translations
 	 *            as String
 	 * @param Trans
 	 *            as String
+	 * @param defaultLang
 	 */
 	public Translations(String ID, String Trans)
 	{
-		this.IdString = ID;
-		this.Translation = Trans;
+		this.Id = ID.hashCode();
+
+		byte[] b = Trans.getBytes(UTF_8);
+		TranslationByteLength = (short) b.length;
+
+		TranslationByteIndex = lastIndex;
+		lastIndex += TranslationByteLength;
+
+		if (TranslationBytes.length < lastIndex) ensureCapacity(TranslationByteIndex + TranslationByteLength);
+		System.arraycopy(b, 0, TranslationBytes, TranslationByteIndex, TranslationByteLength);
 	}
 
-	public String IdString;
-	public String Translation;
+	private void ensureCapacity(int newSize)
+	{
+		TranslationBytes = Arrays.copyOf(TranslationBytes, newSize);
+	}
+
+	public String getTranslation()
+	{
+		byte[] b = new byte[TranslationByteLength];
+		System.arraycopy(TranslationBytes, TranslationByteIndex, b, 0, TranslationByteLength);
+		return new String(b, UTF_8);
+		// return Translation;
+	}
+
+	public int getIdString()
+	{
+		return Id;
+	}
+
+	private final int Id;
 
 }

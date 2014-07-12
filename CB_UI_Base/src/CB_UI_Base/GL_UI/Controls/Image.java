@@ -24,9 +24,9 @@ import java.util.HashMap;
 import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -42,8 +42,8 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -77,7 +77,7 @@ public class Image extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (ImageLoadError)
 		{
@@ -138,22 +138,22 @@ public class Image extends CB_View_Base
 				Wait = null;
 			}
 			inLoad = false;
-			float drawwidth = width;
-			float drawHeight = height;
+			float drawwidth = getWidth();
+			float drawHeight = getHeight();
 			float drawX = 0;
 			float drawY = 0;
 
 			if (spriteWidth > 0 && spriteHeight > 0)
 			{
-				float proportionWidth = width / spriteWidth;
-				float proportionHeight = height / spriteHeight;
+				float proportionWidth = getWidth() / spriteWidth;
+				float proportionHeight = getHeight() / spriteHeight;
 
 				float proportion = Math.min(proportionWidth, proportionHeight);
 
 				drawwidth = spriteWidth * proportion;
 				drawHeight = spriteHeight * proportion;
-				drawX = (width - drawwidth) / 2;
-				drawY = (height - drawHeight) / 2;
+				drawX = (getWidth() - drawwidth) / 2;
+				drawY = (getHeight() - drawHeight) / 2;
 			}
 
 			mDrawable.draw(batch, drawX, drawY, drawwidth, drawHeight);
@@ -163,13 +163,13 @@ public class Image extends CB_View_Base
 		{
 			if (Wait == null)
 			{
-				CB_RectF animationRec = new CB_RectF(0, 0, this.width, this.height);
+				CB_RectF animationRec = new CB_RectF(0, 0, this.getWidth(), this.getHeight());
 				Wait = WorkAnimation.GetINSTANCE(animationRec);
 				GL.that.addRenderView(Wait, GL.FRAME_RATE_ACTION);
 				this.addChild(Wait);
 			}
 
-			GL.that.renderOnce("Image Loading Animation");
+			GL.that.renderOnce();
 		}
 
 		batch.setColor(altColor);
@@ -225,20 +225,20 @@ public class Image extends CB_View_Base
 			dispose();
 			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
 		}
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	public void setDrawable(Drawable drawable)
 	{
 		mDrawable = drawable;
 		inLoad = false;
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	@Override
 	public void dispose()
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -354,7 +354,7 @@ public class Image extends CB_View_Base
 		});
 		ImageDownloadThread.start();
 
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	public void setSprite(Sprite sprite)
@@ -364,7 +364,7 @@ public class Image extends CB_View_Base
 		spriteWidth = sprite.getWidth();
 		spriteHeight = sprite.getHeight();
 		mDrawable = new SpriteDrawable(sprite);
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	public void clearImage()
@@ -430,7 +430,7 @@ public class Image extends CB_View_Base
 		if (spt != null) setSprite(spt);
 
 		isPacking = false;
-		GL.that.renderOnce("Image");
+		GL.that.renderOnce();
 	}
 
 	private String getCachedAtlasName(String inputFolder)

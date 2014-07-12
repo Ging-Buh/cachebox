@@ -22,6 +22,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
@@ -31,9 +32,9 @@ import CB_UI.GL_UI.Controls.Dialogs.RouteDialog.returnListner;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
 import CB_UI.Map.RouteOverlay.Track;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -43,6 +44,8 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.UnitFormatter;
 
@@ -85,8 +88,8 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 		tread.start();
 	}
 
-	private Coordinate start = new Coordinate();
-	private Coordinate target = new Coordinate();
+	private Coordinate start = new CoordinateGPS(0, 0);
+	private Coordinate target = new CoordinateGPS(0, 0);
 	private RouteDialog routeDia;
 	private CancelWaitDialog wd;
 
@@ -126,7 +129,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 			{
 				routeDia.close();
 
-				if (!canceld) GL.that.RunOnGL(new runOnGL()
+				if (!canceld) GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override
@@ -151,7 +154,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 										Coordinate lastAcceptedCoordinate = null;
 										float[] dist = new float[4];
 										double Distance = 0;
-										Coordinate FromPosition = new Coordinate();
+										Coordinate FromPosition = new CoordinateGPS(0, 0);
 										String routepref = "Fastest";
 
 										if (canceld) return;
@@ -226,7 +229,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														int endIdx = line.indexOf("\"", errorIdx + 9);
 														final String errorMessage = line.substring(errorIdx + 9, endIdx);
 														wd.close();
-														GL.that.RunOnGL(new runOnGL()
+														GL.that.RunOnGL(new IRunOnGL()
 														{
 															// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
 															// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
@@ -258,7 +261,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														double lat = Double.valueOf(latStr);
 														double lon = Double.valueOf(lonStr);
 
-														lastAcceptedCoordinate = new Coordinate(lat, lon);
+														lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
 
 														route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(),
 																lastAcceptedCoordinate.getLatitude(), 0, 0, null));
@@ -266,18 +269,17 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														// Calculate the length of a Track
 														if (!FromPosition.isValid())
 														{
-															FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
-															FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+															FromPosition = new Coordinate(lastAcceptedCoordinate);
 															FromPosition.setValid(true);
 														}
 														else
 														{
-															Coordinate.distanceBetween(FromPosition.getLatitude(),
-																	FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
+															MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE,
+																	FromPosition.getLatitude(), FromPosition.getLongitude(),
+																	lastAcceptedCoordinate.getLatitude(),
 																	lastAcceptedCoordinate.getLongitude(), dist);
 															Distance += dist[0];
-															FromPosition.setLongitude(lastAcceptedCoordinate.getLongitude());
-															FromPosition.setLatitude(lastAcceptedCoordinate.getLatitude());
+															FromPosition = new Coordinate(lastAcceptedCoordinate);
 															IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
 														}
 													}
@@ -292,7 +294,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 
 													wd.close();
 
-													GL.that.RunOnGL(new runOnGL()
+													GL.that.RunOnGL(new IRunOnGL()
 													{
 														// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
 														// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
@@ -309,14 +311,14 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 												{
 													wd.close();
 
-													GL.that.RunOnGL(new runOnGL()
+													GL.that.RunOnGL(new IRunOnGL()
 													{
 														// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
 														// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
 														@Override
 														public void run()
 														{
-															GL_MsgBox.Show("OpenRouteService", "no route found", MessageBoxButtons.OK,
+															GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
 																	MessageBoxIcon.Error, null);
 														}
 													});
@@ -327,21 +329,54 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 											}
 											catch (Exception e)
 											{
-												 
-												e.printStackTrace();
+												wd.close();
+
+												GL.that.RunOnGL(new IRunOnGL()
+												{
+													// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+													// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+													@Override
+													public void run()
+													{
+														GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
+																MessageBoxIcon.Error, null);
+													}
+												});
 											}
 
 											// String page = builder.toString(); //page enthält komplette zurückgelieferte Web-Seite
 										}
 										catch (ClientProtocolException e)
 										{
-											 
-											e.printStackTrace();
+											wd.close();
+
+											GL.that.RunOnGL(new IRunOnGL()
+											{
+												// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+												// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+												@Override
+												public void run()
+												{
+													GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
+															MessageBoxIcon.Error, null);
+												}
+											});
 										}
 										catch (IOException e)
 										{
-											 
-											e.printStackTrace();
+											wd.close();
+
+											GL.that.RunOnGL(new IRunOnGL()
+											{
+												// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+												// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+												@Override
+												public void run()
+												{
+													GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
+															MessageBoxIcon.Error, null);
+												}
+											});
 										}
 										RouteOverlay.RoutesChanged();
 

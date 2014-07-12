@@ -3,13 +3,13 @@ package CB_UI_Base.GL_UI.Controls;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ImageButton extends Button
 {
-	private Image image;
+	private final Image image;
 
 	public ImageButton(String name)
 	{
@@ -27,7 +27,7 @@ public class ImageButton extends Button
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 

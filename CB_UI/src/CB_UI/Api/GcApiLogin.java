@@ -30,7 +30,8 @@ import CB_UI.Config;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog;
 import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog.returnListner;
-import CB_UI_Base.GL_UI.runOnGL;
+import CB_UI.Settings.CB_UI_Settings;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -102,13 +103,13 @@ public class GcApiLogin
 				// State = 0;
 				String GC_AuthUrl;
 
-				if (Config.settings.OverrideUrl.getValue().equals(""))
+				if (CB_UI_Settings.OverrideUrl.getValue().equals(""))
 				{
 					GC_AuthUrl = CB_Api.getGcAuthUrl();
 				}
 				else
 				{
-					GC_AuthUrl = Config.settings.OverrideUrl.getValue();
+					GC_AuthUrl = CB_UI_Settings.OverrideUrl.getValue();
 				}
 
 				if (GC_AuthUrl.equals(""))
@@ -123,12 +124,12 @@ public class GcApiLogin
 				}
 				catch (ClientProtocolException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 				catch (IOException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 			}
@@ -186,7 +187,7 @@ public class GcApiLogin
 		}
 		catch (Exception e)
 		{
-			 
+
 			e.printStackTrace();
 		}
 
@@ -245,7 +246,7 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
@@ -275,11 +276,11 @@ public class GcApiLogin
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 	}
@@ -394,7 +395,7 @@ public class GcApiLogin
 			}
 		});
 
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override
@@ -473,18 +474,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 		String page = builder.toString();
@@ -554,18 +555,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 		String page = builder.toString();
@@ -629,18 +630,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 		String page = builder.toString();
@@ -702,18 +703,18 @@ public class GcApiLogin
 			}
 			catch (Exception e)
 			{
-				 
+
 				e.printStackTrace();
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
-			 
+
 		}
 		catch (IOException e)
 		{
-			 
+
 		}
 
 		String html = builder.toString();
@@ -748,7 +749,7 @@ public class GcApiLogin
 
 		closeWaitDialog();
 
-		if (SettingsActivity.that != null) SettingsActivity.that.resortList();
+		SettingsActivity.resortList();
 
 	}
 }

@@ -9,8 +9,8 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class InfoBubble extends CB_View_Base
 {
@@ -44,14 +44,15 @@ public class InfoBubble extends CB_View_Base
 
 	private CacheInfo cacheInfo;
 
-	public void setCache(Cache value, Waypoint waypoint)
+	public void setCache(Cache cache, Waypoint waypoint)
 	{
-		setCache(value, waypoint, false);
+		setCache(cache, waypoint, false);
 	}
 
-	public void setCache(Cache value, Waypoint waypoint, boolean force)
+	public void setCache(Cache Cache, Waypoint waypoint, boolean force)
 	{
-		if (value == null)
+
+		if (Cache == null)
 		{
 			mCache = null;
 			mCacheId = -1;
@@ -60,21 +61,23 @@ public class InfoBubble extends CB_View_Base
 			return;
 		}
 
+		Cache cache = Cache;
+
 		if (!force)
 		{
-			if ((mCache != null) && (mCache.Id == value.Id) && (mWaypoint == waypoint)) return;
+			if ((mCache != null) && (mCache.Id == cache.Id) && (mWaypoint == waypoint)) return;
 		}
 
 		// Logger.LogCat("New Cache @InfoBubble");
-		mCache = value;
-		mCacheId = value.Id;
+		mCache = cache;
+		mCacheId = cache.Id;
 		mWaypoint = waypoint;
 		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
-		SizeF size = new SizeF(0.96f * width, 0.72f * height);
+		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 
-		cacheInfo = new CacheInfo(size, "CacheInfo", value);
+		cacheInfo = new CacheInfo(size, "CacheInfo", cache);
 		cacheInfo.setViewMode(CacheInfo.VIEW_MODE_BUBBLE);
-		cacheInfo.setY(height - size.height);
+		cacheInfo.setY(getHeight() - size.height);
 		cacheInfo.setFont(Fonts.getBubbleNormal());
 		cacheInfo.setSmallFont(Fonts.getBubbleSmall());
 		this.removeChilds();
@@ -91,11 +94,11 @@ public class InfoBubble extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
-		Sprite sprite = (mCache == GlobalCore.getSelectedCache()) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
+		Sprite sprite = (mCache.Id == GlobalCore.getSelectedCache().Id) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
 		sprite.setPosition(0, 0);
-		sprite.setSize(width, height);
+		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);
 	}
 
@@ -109,9 +112,9 @@ public class InfoBubble extends CB_View_Base
 	{
 		// Logger.LogCat("InfoBubble RequestLayout");
 		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
-		SizeF size = new SizeF(0.96f * width, 0.72f * height);
+		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 		cacheInfo.setSize(size);
-		cacheInfo.setY(height - size.height);
+		cacheInfo.setY(getHeight() - size.height);
 	}
 
 	public Cache getCache()

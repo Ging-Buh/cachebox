@@ -15,9 +15,9 @@ import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Views.TrackableListView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -96,7 +96,7 @@ public class TB_Log extends ActivityBase
 		});
 
 		contentBox = new Box(ActivityRec(), "ContentBox");
-		contentBox.setHeight(this.height - (btnClose.getHeight() - margin) * 2.5f);
+		contentBox.setHeight(this.getHeight() - (btnClose.getHeight() - margin) * 2.5f);
 		contentBox.setBackground(SpriteCacheBase.activityBackground);
 
 		CB_RectF iconRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight());
@@ -156,7 +156,7 @@ public class TB_Log extends ActivityBase
 				final String errorMsg = Translation.Get("NoCacheSelect");
 				this.finish();
 
-				GL.that.RunOnGL(new runOnGL()
+				GL.that.RunOnGL(new IRunOnGL()
 				{
 
 					@Override
@@ -171,19 +171,19 @@ public class TB_Log extends ActivityBase
 			String msg = "";
 			if (LT == LogTypes.discovered)
 			{
-				msg = Translation.Get("discoveredAt") + ": " + GlobalCore.br + c.Name;
+				msg = Translation.Get("discoveredAt") + ": " + GlobalCore.br + c.getName();
 			}
 			if (LT == LogTypes.visited)
 			{
-				msg = Translation.Get("visitedAt") + ": " + GlobalCore.br + c.Name;
+				msg = Translation.Get("visitedAt") + ": " + GlobalCore.br + c.getName();
 			}
 			if (LT == LogTypes.dropped_off)
 			{
-				msg = Translation.Get("dropped_offAt") + ": " + GlobalCore.br + c.Name;
+				msg = Translation.Get("dropped_offAt") + ": " + GlobalCore.br + c.getName();
 			}
 			if (LT == LogTypes.retrieve)
 			{
-				msg = Translation.Get("retrieveAt") + ": " + GlobalCore.br + c.Name;
+				msg = Translation.Get("retrieveAt") + ": " + GlobalCore.br + c.getName();
 			}
 
 			CacheIcon.setSprite(SpriteCacheBase.BigIcons.get(c.Type.ordinal()));
@@ -256,7 +256,6 @@ public class TB_Log extends ActivityBase
 			@Override
 			public void isCanceld()
 			{
-				 
 
 			}
 		}, new Runnable()
@@ -330,7 +329,7 @@ public class TB_Log extends ActivityBase
 
 				if (GroundspeakAPI.LastAPIError.length() > 0)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override
@@ -347,7 +346,7 @@ public class TB_Log extends ActivityBase
 				// Refresh TB List after Droped Off or Picked or Grabed
 				if (LT == LogTypes.dropped_off || LT == LogTypes.retrieve || LT == LogTypes.grab_it)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override
@@ -391,8 +390,8 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().GcCode
-				: "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache()
+				.getGcCode() : "";
 	}
 
 	private String getCache_Name()
@@ -400,7 +399,8 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Name : "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName()
+				: "";
 	}
 
 	private long getCache_ID()
@@ -416,7 +416,8 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Url : "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getUrl()
+				: "";
 	}
 
 	private int getCache_Type()

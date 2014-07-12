@@ -62,42 +62,6 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 	public void onShow()
 	{
 
-		// // aktuellen Waypoint in der List anzeigen
-		// int first = this.getFirstVisiblePosition();
-		// int last = this.getLastVisiblePosition();
-		//
-		// if (aktCache == null) return;
-		//
-		// int itemCount = aktCache.waypoints.size() + 1;
-		// int itemSpace = this.getMaxItemCount();
-		//
-		// if (itemSpace >= itemCount)
-		// {
-		// this.setUndragable();
-		// }
-		// else
-		// {
-		// this.setDragable();
-		// }
-		//
-		// if (GlobalCore.getSelectedWaypoint() != null)
-		// {
-		// aktWaypoint = GlobalCore.getSelectedWaypoint();
-		// int id = 0;
-		//
-		// for (Waypoint wp : aktCache.waypoints)
-		// {
-		// id++;
-		// if (wp == aktWaypoint)
-		// {
-		// if (!(first < id && last > id)) this.setSelection(id);
-		// break;
-		// }
-		// }
-		// }
-		// else
-		// this.setSelection(0);
-
 		SetSelectedCache(aktCache, aktWaypoint);
 		chkSlideBack();
 
@@ -257,21 +221,14 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	public void SetSelectedCache(Cache cache, Waypoint waypoint)
 	{
+
 		if (aktCache != cache)
 		{
-			// Liste nur dann neu Erstellen, wenn der aktuelle Cache geändert
-			// wurde
-			aktCache = cache;
+			aktCache = GlobalCore.getSelectedCache();
 			this.setBaseAdapter(null);
-			lvAdapter = new CustomAdapter(cache);
+			lvAdapter = new CustomAdapter(aktCache);
 			this.setBaseAdapter(lvAdapter);
-
 		}
-		else
-		{
-			this.notifyDataSetChanged();
-		}
-
 		// aktuellen Waypoint in der List anzeigen
 
 		Point lastAndFirst = this.getFirstAndLastVisibleIndex();
@@ -310,11 +267,19 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		if (GlobalCore.getSelectedWaypoint() != null)
 		{
+
+			if (aktWaypoint == GlobalCore.getSelectedWaypoint())
+			{
+				// is selected
+				return;
+			}
+
 			aktWaypoint = GlobalCore.getSelectedWaypoint();
 			int id = 0;
 
-			for (Waypoint wp : aktCache.waypoints)
+			for (int i = 0, n = aktCache.waypoints.size(); i < n; i++)
 			{
+				Waypoint wp = aktCache.waypoints.get(i);
 				id++;
 				if (wp == aktWaypoint)
 				{
@@ -414,7 +379,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		String newGcCode = "";
 		try
 		{
-			newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+			newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 		}
 		catch (Exception e)
 		{
@@ -425,6 +390,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		if ((coord == null) || (!coord.isValid())) coord = GlobalCore.getSelectedCache().Pos;
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
 				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+
 		editWP(newWP, true);
 
 	}
@@ -466,27 +432,21 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						}
 						WaypointDAO waypointDAO = new WaypointDAO();
 						waypointDAO.WriteToDatabase(waypoint);
-						int itemCount = lvAdapter.getCount();
-						int itemSpace = that.getMaxItemCount();
 
-						if (itemSpace >= itemCount)
-						{
-							that.setUndragable();
-						}
-						else
-						{
-							that.setDragable();
-						}
+						aktCache = null;
+						aktWaypoint = null;
+
+						SelectedCacheChanged(GlobalCore.getSelectedCache(), waypoint);
 
 					}
 					else
 					{
-						aktWaypoint.Title = waypoint.Title;
+						aktWaypoint.setTitle(waypoint.getTitle());
 						aktWaypoint.Type = waypoint.Type;
 						aktWaypoint.Pos = waypoint.Pos;
-						aktWaypoint.Description = waypoint.Description;
+						aktWaypoint.setDescription(waypoint.getDescription());
 						aktWaypoint.IsStart = waypoint.IsStart;
-						aktWaypoint.Clue = waypoint.Clue;
+						aktWaypoint.setClue(waypoint.getClue());
 
 						// set waypoint as UserWaypoint, because waypoint is changed by user
 						aktWaypoint.IsUserWaypoint = true;
@@ -512,8 +472,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	private void deleteWP()
 	{
-		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.Title + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo,
-				MessageBoxIcon.Question, new OnMsgBoxClickListener()
+		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitle() + "]", Translation.Get("!DelWP"),
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
 				{
 
 					@Override
@@ -558,6 +518,9 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		createNewWaypoint = true;
 
 		final Coordinate coord = (aktWaypoint != null) ? aktWaypoint.Pos : (aktCache != null) ? aktCache.Pos : Locator.getCoordinate();
+		String ProjName = null;
+
+		ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;
 
 		Logger.DEBUG("WaypointView.addProjection()");
 		Logger.DEBUG("   AktWaypoint:" + ((aktWaypoint == null) ? "null" : aktWaypoint.toString()));
@@ -576,7 +539,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						String newGcCode = "";
 						try
 						{
-							newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+							newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 						}
 						catch (Exception e)
 						{
@@ -594,7 +557,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 					}
 
-				}, Type.projetion);
+				}, Type.projetion, ProjName);
 
 		pC.show();
 
@@ -615,7 +578,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				String newGcCode = "";
 				try
 				{
-					newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().GcCode);
+					newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
 				}
 				catch (Exception e)
 				{
@@ -636,6 +599,28 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		mC.show();
 
+	}
+
+	public void Refresh()
+	{
+		aktWaypoint = null;
+		aktCache = null;
+		SetSelectedCache(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
+	}
+
+	@Override
+	public void dispose()
+	{
+		// release all Member
+		lvAdapter = null;
+		aktWaypoint = null;
+		aktCache = null;
+		that = null;
+
+		// release all EventHandler
+		SelectedCacheEventList.Remove(this);
+		WaypointListChangedEventList.Remove(this);
+		super.dispose();
 	}
 
 }

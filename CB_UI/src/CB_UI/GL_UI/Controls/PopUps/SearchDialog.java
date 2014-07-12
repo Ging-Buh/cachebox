@@ -1,11 +1,29 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Controls.PopUps;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.Search;
+import CB_Core.Api.SearchGC;
+import CB_Core.Api.SearchGCName;
+import CB_Core.Api.SearchGCOwner;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.DAO.ImageDAO;
@@ -21,22 +39,20 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
-import CB_Locator.Map.Descriptor;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.IChkRedyHandler;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Controls.Slider.YPositionChanged;
-import CB_UI.GL_UI.Views.CacheListView;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
@@ -60,6 +76,9 @@ import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+/**
+ * @author Longri
+ */
 public class SearchDialog extends PopUp_Base
 {
 	public static SearchDialog that;
@@ -119,17 +138,17 @@ public class SearchDialog extends PopUp_Base
 	private EditTextField mEingabe;
 
 	/**
-	 * Enthält einen Iterator der aktuell durchsuchten CacheList
-	 */
-	private Iterator<Cache> CacheListIterator = null;
-
-	/**
 	 * Enthällt den Aktuellen Such Modus <br/>
 	 * 0 = Title <br/>
 	 * 1 = Gc-Code <br/>
 	 * 2 = Owner <br/>
 	 */
 	private int mSearchState = 0;
+
+	/**
+	 * Index of the beginning search
+	 */
+	private int beginnSearchIndex = -1;
 
 	public SearchDialog()
 	{
@@ -139,22 +158,11 @@ public class SearchDialog extends PopUp_Base
 
 		this.setSize(UiSizes.that.getCacheListItemSize().asFloat());
 
-		if (GlobalCore.isTab)
-		{
-			this.setBackground(SpriteCacheBase.activityBackground);
-			this.setWidth(this.width * 1.4f);
-			this.setX((UI_Size_Base.that.getWindowWidth() / 2) - this.halfWidth);
-			this.setY((UI_Size_Base.that.getWindowHeight() / 2) - this.halfHeight);
-		}
-		else
-		{
-			this.setBackground(SpriteCacheBase.ListBack);
-		}
-		// initial Buttons
+		this.setBackground(SpriteCacheBase.ListBack);
 
 		float margin = UI_Size_Base.that.getMargin();
 		if (GlobalCore.isTab) margin *= 2;
-		float btnWidth = (this.width - (margin * 7)) / 4;
+		float btnWidth = (this.getWidth() - (margin * 7)) / 4;
 
 		CB_RectF rec = new CB_RectF(0, 0, btnWidth, UI_Size_Base.that.getButtonHeight());
 
@@ -163,14 +171,14 @@ public class SearchDialog extends PopUp_Base
 		mTglBtnOwner = new MultiToggleButton(rec, "mTglBtnOwner");
 		mTglBtnOnline = new MultiToggleButton(rec, "mTglBtnOnline");
 
-		rec.setWidth(btnWidth = (this.width - (margin * 5)) / 4);
+		rec.setWidth(btnWidth = (this.getWidth() - (margin * 5)) / 4);
 
 		mBtnFilter = new ImageButton(rec, "mBtnFilter");
 		mBtnSearch = new Button(rec, "mBtnSearch");
 		mBtnNext = new Button(rec, "mBtnNext");
 		mBtnCancel = new Button(rec, "mBtnCancel");
 
-		rec.setWidth(this.width - (margin * 2));
+		rec.setWidth(this.getWidth() - (margin * 2));
 
 		mEingabe = new EditTextField(this, rec, WrapType.SINGLELINE, "");
 
@@ -233,9 +241,6 @@ public class SearchDialog extends PopUp_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// eventuell eingesetzten Search Filter zurück setzen
-				clearSearchFilter();
-
 				close();
 				return true;
 			}
@@ -283,6 +288,7 @@ public class SearchDialog extends PopUp_Base
 			{
 				closeSoftKeyPad();
 				mSearchAktive = false;
+				beginnSearchIndex = 0;
 				searchNow(false);
 				return true;
 			}
@@ -464,27 +470,29 @@ public class SearchDialog extends PopUp_Base
 
 				if (!mSearchAktive)
 				{
-					CacheListIterator = Database.Data.Query.iterator();
 					mSearchAktive = true;
 				}
 
 				Cache tmp = null;
-				while (CacheListIterator.hasNext() && !criterionMatches)
+				for (int i = beginnSearchIndex, n = Database.Data.Query.size(); i < n; i++)
 				{
-
-					tmp = CacheListIterator.next();
+					tmp = Database.Data.Query.get(i);
 
 					switch (mSearchState)
 					{
 					case 0:
-						criterionMatches = tmp.Name.toLowerCase().contains(searchPattern);
+						criterionMatches = tmp.getName().toLowerCase().contains(searchPattern);
 						break;
 					case 1:
-						criterionMatches = tmp.GcCode.toLowerCase().contains(searchPattern);
+						criterionMatches = tmp.getGcCode().toLowerCase().contains(searchPattern);
 						break;
 					case 2:
-						criterionMatches = tmp.Owner.toLowerCase().contains(searchPattern)
-								|| tmp.PlacedBy.toLowerCase().contains(searchPattern);
+						criterionMatches = tmp.getOwner().toLowerCase().contains(searchPattern);
+						break;
+					}
+					if (criterionMatches)
+					{
+						beginnSearchIndex = i + 1;
 						break;
 					}
 				}
@@ -566,22 +574,22 @@ public class SearchDialog extends PopUp_Base
 	// CacheListView.that.CacheListChangedEvent();
 	// }
 
-	private void clearSearchFilter()
-	{
-		if (!Config.dynamicFilterAtSearch.getValue()) return;
-		synchronized (Database.Data.Query)
-		{
-			for (Cache cache : Database.Data.Query)
-			{
-				cache.setSearchVisible(true);
-			}
-		}
-		if (CacheListView.that != null)
-		{
-			CacheListView.that.getListView().setHasInvisibleItems(false);
-			CacheListView.that.CacheListChangedEvent();
-		}
-	}
+	// private void clearSearchFilter()
+	// {
+	// if (!Config.dynamicFilterAtSearch.getValue()) return;
+	// synchronized (Database.Data.Query)
+	// {
+	// for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
+	// {
+	// Database.Data.Query.get(i).setSearchVisible(true);
+	// }
+	// }
+	// if (CacheListView.that != null)
+	// {
+	// CacheListView.that.getListView().setHasInvisibleItems(false);
+	// CacheListView.that.CacheListChangedEvent();
+	// }
+	// }
 
 	/**
 	 * Sucht mit den Vorgaben nach Caches über die API. Die Gefundenen Caches werden in die DB eingetragen und im Anschluss wird der lokale
@@ -600,7 +608,7 @@ public class SearchDialog extends PopUp_Base
 
 				if (ret == 0)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override
@@ -619,7 +627,7 @@ public class SearchDialog extends PopUp_Base
 				else
 				{
 
-					wd = CancelWaitDialog.ShowWait("Upload Log", DownloadAnimation.GetINSTANCE(), new IcancelListner()
+					wd = CancelWaitDialog.ShowWait(Translation.Get("search"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 					{
 
 						@Override
@@ -636,7 +644,7 @@ public class SearchDialog extends PopUp_Base
 							int ret = GroundspeakAPI.GetMembershipType();
 							if (ret == 3)
 							{
-								// closeWaitDialog();
+								closeWaitDialog();
 								searchOnlineNow();
 							}
 							else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
@@ -726,7 +734,7 @@ public class SearchDialog extends PopUp_Base
 				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-				CB_UI.Api.SearchForGeocaches.Search searchC = null;
+				Search searchC = null;
 
 				String searchPattern = mEingabe.getText().toLowerCase();
 
@@ -737,29 +745,15 @@ public class SearchDialog extends PopUp_Base
 				switch (mSearchState)
 				{
 				case 0:
-					CB_UI.Api.SearchForGeocaches.SearchGCName searchCName = new CB_UI.Api.SearchForGeocaches.SearchGCName();
-					searchCName.pos = searchCoord;
-					searchCName.distanceInMeters = 5000000;
-					searchCName.number = 50;
-					searchCName.gcName = searchPattern;
-					searchC = searchCName;
+					searchC = new SearchGCName(50, searchCoord, 5000000, searchPattern);
 					break;
 
 				case 1:
-					CB_UI.Api.SearchForGeocaches.SearchGC searchCGC = new CB_UI.Api.SearchForGeocaches.SearchGC();
-					searchCGC.gcCode = searchPattern;
-					searchCGC.number = 1;
-					searchC = searchCGC;
+					searchC = new SearchGC(searchPattern);
 					break;
 
 				case 2:
-					CB_UI.Api.SearchForGeocaches.SearchGCOwner searchCOwner = new CB_UI.Api.SearchForGeocaches.SearchGCOwner();
-					searchCOwner.OwnerName = searchPattern;
-					searchCOwner.number = 50;
-					searchCOwner.pos = searchCoord;
-					searchCOwner.distanceInMeters = 5000000;
-
-					searchC = searchCOwner;
+					searchC = new SearchGCOwner(50, searchCoord, 5000000, searchPattern);
 					break;
 				}
 
@@ -769,7 +763,7 @@ public class SearchDialog extends PopUp_Base
 					return;
 				}
 
-				CB_UI.Api.SearchForGeocaches.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
+				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
 
 				if (apiCaches.size() > 0)
 				{
@@ -788,8 +782,8 @@ public class SearchDialog extends PopUp_Base
 						for (Cache cache : apiCaches)
 						{
 							counter++;
-							cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-							cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
+							// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
+							// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
 							if (Database.Data.Query.GetCacheById(cache.Id) == null)
 							{
 								Database.Data.Query.add(cache);
@@ -810,8 +804,9 @@ public class SearchDialog extends PopUp_Base
 									imageDAO.WriteToDatabase(image, false);
 								}
 
-								for (Waypoint waypoint : cache.waypoints)
+								for (int i = 0, n = cache.waypoints.size(); i < n; i++)
 								{
+									Waypoint waypoint = (Waypoint) cache.waypoints.get(i);
 									waypointDAO.WriteToDatabase(waypoint);
 								}
 							}
@@ -898,22 +893,13 @@ public class SearchDialog extends PopUp_Base
 	{
 		try
 		{
-			if (GlobalCore.isTab)
-			{
-				if (CacheListView.that != null)
-				{
-					setY(CacheListView.that.getMaxY() - this.height);
 
-				}
-			}
-			else
+			if (TabMainView.cacheListView != null)
 			{
-				if (CacheListView.that != null)
-				{
-					setY(CacheListView.that.getMaxY() - this.height);
-					CacheListView.that.setTopPlaceHolder(this.height);
-				}
+				setY(TabMainView.cacheListView.getMaxY() - this.getHeight());
+				TabMainView.cacheListView.setTopPlaceHolder(this.getHeight());
 			}
+
 			if (!GL.that.PopUpIsShown()) that.showNotCloseAutomaticly();
 		}
 		catch (Exception e)
@@ -929,12 +915,9 @@ public class SearchDialog extends PopUp_Base
 	{
 		Slider.that.removePosChangedEvent(listner);
 
-		if (!GlobalCore.isTab)
+		if (TabMainView.cacheListView != null)
 		{
-			if (CacheListView.that != null)
-			{
-				CacheListView.that.resetPlaceHolder();
-			}
+			TabMainView.cacheListView.resetPlaceHolder();
 		}
 	}
 
@@ -944,18 +927,11 @@ public class SearchDialog extends PopUp_Base
 		@Override
 		public void Position(float SliderTop, float SliderBottom)
 		{
-			if (GlobalCore.isTab)
-			{
-				// TODO plaziere rechts neben der Cache List
-			}
-			else
-			{
-				if (CacheListView.that != null)
-				{
-					setY(CacheListView.that.getMaxY() - that.height);
-				}
-			}
 
+			if (TabMainView.cacheListView != null)
+			{
+				setY(TabMainView.cacheListView.getMaxY() - that.getHeight());
+			}
 		}
 	};
 
@@ -975,7 +951,7 @@ public class SearchDialog extends PopUp_Base
 				Logger.DEBUG("SEARCH isValidAPI_Key ret=" + ret);
 				if (ret == 0)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override
@@ -990,7 +966,7 @@ public class SearchDialog extends PopUp_Base
 				}
 				else if (ret == GroundspeakAPI.CONNECTION_TIMEOUT)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 						@Override
 						public void run()
@@ -1002,62 +978,41 @@ public class SearchDialog extends PopUp_Base
 				}
 				else
 				{
-					Logger.DEBUG("SEARCH show WD chkApiState ");
-					wd = CancelWaitDialog.ShowWait(Translation.Get("chkApiState"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
+					if (ret == 3)
 					{
-
-						@Override
-						public void isCanceld()
-						{
-							// TODO Handle Cancel
-
-						}
-					}, new Runnable()
+						// searchOnlineNow();
+						showTargetApiDialog();
+					}
+					else
 					{
+						closeWD();
 
-						@Override
-						public void run()
+						GL.that.RunOnGL(new IRunOnGL()
 						{
-							Logger.DEBUG("SEARCH run WD chkApiState ");
-							int ret = GroundspeakAPI.GetMembershipType();
-							if (ret == 3)
-							{
-								// searchOnlineNow();
-								showTargetApiDialog();
-							}
-							else
-							{
-								closeWD();
 
-								GL.that.RunOnGL(new runOnGL()
-								{
+							@Override
+							public void run()
+							{
+								MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
+										MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+										{
 
-									@Override
-									public void run()
-									{
-										MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"),
-												MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+											@Override
+											public boolean onClick(int which, Object data)
+											{
+												closeMsgBox();
+												if (which == GL_MsgBox.BUTTON_POSITIVE)
 												{
+													showTargetApiDialog();
+												}
 
-													@Override
-													public boolean onClick(int which, Object data)
-													{
-														closeMsgBox();
-														if (which == GL_MsgBox.BUTTON_POSITIVE)
-														{
-															showTargetApiDialog();
-														}
-
-														return true;
-													}
-												});
-									}
-								});
-
+												return true;
+											}
+										});
 							}
-						}
-					});
+						});
 
+					}
 				}
 			}
 		});
@@ -1076,7 +1031,7 @@ public class SearchDialog extends PopUp_Base
 
 	private void showTargetApiDialog()
 	{
-		GL.that.RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

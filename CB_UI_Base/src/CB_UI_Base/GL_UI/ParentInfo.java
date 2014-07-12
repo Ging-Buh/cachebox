@@ -13,9 +13,9 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class ParentInfo
 {
-	private Matrix4 matrix;
-	private Vector2 vector;
-	private CB_RectF rec;
+	private final Matrix4 matrix;
+	private final Vector2 vector;
+	private final CB_RectF rec;
 
 	public ParentInfo(Matrix4 Matrix, CB_RectF Rect)
 	{
@@ -29,6 +29,13 @@ public class ParentInfo
 		matrix = Matrix;
 		vector = Vector;
 		rec = Rect;
+	}
+
+	public ParentInfo()
+	{
+		this.matrix = new Matrix4();
+		this.vector = new Vector2();
+		this.rec = new CB_RectF();
 	}
 
 	public void add(Vector2 Vector)
@@ -57,11 +64,6 @@ public class ParentInfo
 		return matrix;
 	}
 
-	public ParentInfo cpy()
-	{
-		return new ParentInfo(matrix.cpy(), vector.cpy(), rec.copy());
-	}
-
 	public Vector2 Vector()
 	{
 		return vector;
@@ -69,12 +71,21 @@ public class ParentInfo
 
 	public CB_RectF drawRec()
 	{
-		return rec.copy();
+		return rec;
 	}
 
 	public void setWorldDrawRec(CB_RectF Rect)
 	{
-		this.rec = Rect.copy();
+		this.rec.setRec(Rect);
+	}
+
+	public void setParentInfo(ParentInfo parentInfo)
+	{
+		this.rec.setRec(parentInfo.rec);
+		this.vector.x = parentInfo.vector.x;
+		this.vector.y = parentInfo.vector.y;
+		this.matrix.set(parentInfo.matrix);
+
 	}
 
 }

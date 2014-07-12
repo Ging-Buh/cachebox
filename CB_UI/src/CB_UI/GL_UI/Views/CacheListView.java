@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Views;
 
 import java.util.Timer;
@@ -20,8 +35,8 @@ import CB_UI.GL_UI.Menu.CB_AllContextMenuHandler;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
 import CB_UI_Base.GL_UI.Controls.List.ListViewBase.IListPosChanged;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBase;
@@ -33,9 +48,9 @@ import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class CacheListView extends CB_View_Base implements CacheListChangedEventListner, SelectedCacheEvent, PositionChangedEvent
 {
@@ -43,7 +58,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	private V_ListView listView;
 	private Scrollbar scrollBar;
 
-	public static CacheListView that;
 	private CustomAdapter lvAdapter;
 	private BitmapFontCache emptyMsg;
 
@@ -53,7 +67,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		registerSkinChangedEvent();
 		CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Add(this);
-		that = this;
 		listView = new V_ListView(rec, Name);
 		listView.setZeroPos();
 
@@ -78,11 +91,11 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		// Logger.LogCat("CacheListView => Initial()");
 		// this.setListPos(0, false);
 		listView.chkSlideBack();
-		GL.that.renderOnce(this.getName() + " Initial()");
+		GL.that.renderOnce();
 	}
 
 	@Override
-	public void render(SpriteBatch batch)
+	public void render(Batch batch)
 	{
 		// if Track List empty, draw empty Msg
 		try
@@ -92,8 +105,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (emptyMsg == null)
 				{
 					emptyMsg = new BitmapFontCache(Fonts.getBig());
-					TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.width);
-					emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
+					TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.getWidth());
+					emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
 				}
 				if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
 			}
@@ -107,8 +120,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			if (emptyMsg == null)
 			{
 				emptyMsg = new BitmapFontCache(Fonts.getBig());
-				TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.width);
-				emptyMsg.setPosition(this.halfWidth - (bounds.width / 2), this.halfHeight - (bounds.height / 2));
+				TextBounds bounds = emptyMsg.setWrappedText(Translation.Get("EmptyCacheList"), 0, 0, this.getWidth());
+				emptyMsg.setPosition(this.getHalfWidth() - (bounds.width / 2), this.getHalfHeight() - (bounds.height / 2));
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
 		}
@@ -180,12 +193,12 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		Timer timer = new Timer();
 		timer.schedule(task, 150);
 
-		GL.that.renderOnce(this.getName() + " onShow()");
+		GL.that.renderOnce();
 	}
 
 	public void setSelectedCacheVisible()
 	{
-		listView.RunIfListInitial(new runOnGL()
+		listView.RunIfListInitial(new IRunOnGL()
 		{
 
 			@Override
@@ -196,9 +209,10 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 				synchronized (Database.Data.Query)
 				{
-					for (Cache ca : Database.Data.Query)
+					for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 					{
-						if (ca == GlobalCore.getSelectedCache())
+						Cache ca = Database.Data.Query.get(i);
+						if (ca.Id == GlobalCore.getSelectedCache().Id)
 						{
 							listView.setSelection(id);
 							if (listView.isDragable())
@@ -221,14 +235,14 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 					@Override
 					public void run()
 					{
-						GL.that.RunOnGL(new runOnGL()
+						GL.that.RunOnGL(new IRunOnGL()
 						{
 
 							@Override
 							public void run()
 							{
 								listView.chkSlideBack();
-								GL.that.renderOnce(CacheListView.this.getName() + " setSelectedCachVisible [chkSlideBack]");
+								GL.that.renderOnce();
 							}
 						});
 					}
@@ -239,7 +253,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			}
 		});
 
-		GL.that.renderOnce(this.getName() + " setSelectedCachVisible");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -335,12 +349,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			return Count;
 		}
 
-		// public Object getItem(int position)
-		// {
-		// if (cacheList == null) return null;
-		// return cacheList.get(position);
-		// }
-
 		@Override
 		public ListViewItemBase getView(int position)
 		{
@@ -351,8 +359,6 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (cacheList.size() <= position) return null;
 
 				Cache cache = cacheList.get(position);
-
-				if (!cache.isSearchVisible()) return null;
 
 				CacheListViewItem v = new CacheListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, cache);
 				v.setClickable(true);
@@ -374,12 +380,16 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 				if (cacheList.size() == 0) return 0;
 				Cache cache = cacheList.get(position);
 				if (cache == null) return 0;
-				if (!cache.isSearchVisible()) return 0;
 
 				// alle Items haben die gleiche Größe (Höhe)
 				return UiSizes.that.getCacheListItemRec().getHeight();
 			}
 
+		}
+
+		public void dispose()
+		{
+			cacheList = null;
 		}
 
 	}
@@ -414,7 +424,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 			try
 			{
-				diverend = GlobalCore.getSelectedCache() != ((CacheListViewItem) listView.getSelectedItem()).getCache();
+				diverend = GlobalCore.getSelectedCache().Id != ((CacheListViewItem) listView.getSelectedItem()).getCache().Id;
 			}
 			catch (Exception e)
 			{
@@ -435,10 +445,10 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		if (GlobalCore.getSelectedCache() != null)
 		{
 			CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
-			if (selItem != null && GlobalCore.getSelectedCache() != selItem.getCache())
+			if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id)
 			{
 				// TODO Run if ListView Initial and after showing
-				listView.RunIfListInitial(new runOnGL()
+				listView.RunIfListInitial(new IRunOnGL()
 				{
 
 					@Override
@@ -463,13 +473,13 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void PositionChanged()
 	{
-		GL.that.renderOnce("Core.CacheListView");
+		GL.that.renderOnce();
 	}
 
 	@Override
 	public void OrientationChanged()
 	{
-		GL.that.renderOnce("Core.CacheListView");
+		GL.that.renderOnce();
 	}
 
 	@Override
@@ -517,4 +527,26 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	{
 	}
 
+	@Override
+	public void dispose()
+	{
+
+		onItemLongClickListner = null;
+		onItemClickListner = null;
+
+		if (listView != null) listView.dispose();
+		listView = null;
+		if (scrollBar != null) scrollBar.dispose();
+		scrollBar = null;
+		if (lvAdapter != null) lvAdapter.dispose();
+		lvAdapter = null;
+		if (emptyMsg != null) emptyMsg.clear();
+		emptyMsg = null;
+
+		CachListChangedEventList.Remove(this);
+		SelectedCacheEventList.Remove(this);
+		PositionChangedEventList.Remove(this);
+
+		super.dispose();
+	}
 }

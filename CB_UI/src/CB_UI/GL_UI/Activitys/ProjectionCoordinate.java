@@ -2,24 +2,28 @@ package CB_UI.GL_UI.Activitys;
 
 import CB_Locator.Coordinate;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase.iBecomsFocus;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.NumPad;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.MathUtils.CalculationType;
 
 public class ProjectionCoordinate extends ActivityBase
 {
 	private Coordinate coord;
 	private Coordinate projCoord;
+	private String wpName;
 
 	private double Bearing;
 	private double Distance;
@@ -62,16 +66,17 @@ public class ProjectionCoordinate extends ActivityBase
 		public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance);
 	}
 
-	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate Coord, ReturnListner listner, Type type)
+	public ProjectionCoordinate(CB_RectF rec, String Name, Coordinate coord2, ReturnListner listner, Type type, String WP_Name)
 	{
 		super(rec, Name);
-		coord = Coord;
+		coord = coord2;
+		wpName = WP_Name;
 		radius = (type == Type.circle);
 		p2p = (type == Type.p2p);
 		mReturnListner = listner;
-		ImperialUnits = Config.settings.ImperialUnits.getValue();
+		ImperialUnits = CB_UI_Settings.ImperialUnits.getValue();
 
-		if (p2p) projCoord = Coord.copy();
+		if (p2p) projCoord = coord2.copy();
 
 		iniCacheNameLabel();
 		iniCoordButton();
@@ -88,17 +93,23 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniCacheNameLabel()
 	{
-		CB_RectF rec = new CB_RectF(leftBorder + margin, height - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
+		CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
 				MeasuredLabelHeight);
 		Title = new Label(rec, this.name);
 		this.addChild(Title);
+	}
+
+	@Override
+	public void onShow()
+	{
+		valueBearing.setFocus();
 	}
 
 	private void iniCoordButton()
 	{
 		CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		bCoord = new CoordinateButton(rec, "CoordButton", coord);
+		bCoord = new CoordinateButton(rec, "CoordButton", coord, wpName);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
 		{
@@ -106,7 +117,7 @@ public class ProjectionCoordinate extends ActivityBase
 			@Override
 			public void coordinateChanged(Coordinate Coord)
 			{
-				that.show();
+				ProjectionCoordinate.this.show();
 				coord = Coord;
 			}
 		});
@@ -125,7 +136,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 		CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
 				UI_Size_Base.that.getButtonHeight());
-		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord);
+		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord, null);
 
 		bCoord2.setCoordinateChangedListner(new CoordinateChangeListner()
 		{
@@ -133,7 +144,7 @@ public class ProjectionCoordinate extends ActivityBase
 			@Override
 			public void coordinateChanged(Coordinate Coord)
 			{
-				that.show();
+				ProjectionCoordinate.this.show();
 				projCoord = Coord;
 			}
 		});
@@ -160,6 +171,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 		lblBearing = new Label(labelRec, sBearing);
 		valueBearing = new EditTextField(textFieldRec, this);
+		valueBearing.dontShowSoftKeyBoardOnFocus();
 		lblBearingUnit = new Label(UnitRec, "°");
 
 		labelRec.setY(lblBearing.getY() - ButtonHeight);
@@ -168,6 +180,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 		lblDistance = new Label(labelRec, sDistance);
 		valueDistance = new EditTextField(textFieldRec, this);
+		valueDistance.dontShowSoftKeyBoardOnFocus();
 		lblDistanceUnit = new Label(UnitRec, sUnit);
 
 		valueDistance.setText("0");
@@ -187,6 +200,17 @@ public class ProjectionCoordinate extends ActivityBase
 			public void BecomsFocus()
 			{
 				numPad.registerTextField(valueDistance);
+				GL.that.RunOnGL(new IRunOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						int textLength = valueDistance.getText().length();
+						valueDistance.setSelection(0, textLength);
+					}
+				});
+
 			}
 		});
 
@@ -197,6 +221,17 @@ public class ProjectionCoordinate extends ActivityBase
 			public void BecomsFocus()
 			{
 				numPad.registerTextField(valueBearing);
+				GL.that.RunOnGL(new IRunOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						int textLength = valueBearing.getText().length();
+						valueBearing.setSelection(0, textLength);
+					}
+				});
+
 			}
 		});
 
@@ -257,8 +292,8 @@ public class ProjectionCoordinate extends ActivityBase
 		{
 			try
 			{
-				Distance = coord.Distance(projCoord);
-				Bearing = coord.bearingTo(projCoord);
+				Distance = coord.Distance(projCoord, CalculationType.ACCURATE);
+				Bearing = coord.bearingTo(projCoord, CalculationType.ACCURATE);
 				return true;
 			}
 			catch (Exception e)

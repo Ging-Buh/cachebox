@@ -19,8 +19,15 @@ public class HSV_Color extends Color
 		clamp();
 	}
 
+	/**
+	 * Constructor for color as Hex String WITHOUT # RGBA or RGB
+	 * 
+	 * @param hex
+	 */
 	public HSV_Color(String hex)
 	{
+		if (hex.length() != 6 && hex.length() != 8) throw new IllegalArgumentException("wrong argument: " + hex);
+
 		int values = hex.length() / 2;
 
 		int[] ret = new int[values];
@@ -31,10 +38,10 @@ public class HSV_Color extends Color
 
 		if (values == 4)
 		{
-			a = ret[0] / 255f;
-			r = ret[1] / 255f;
-			g = ret[2] / 255f;
-			b = ret[3] / 255f;
+			r = ret[0] / 255f;
+			g = ret[1] / 255f;
+			b = ret[2] / 255f;
+			a = ret[3] / 255f;
 		}
 		else
 		{
@@ -46,6 +53,38 @@ public class HSV_Color extends Color
 
 		clamp();
 
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param a
+	 *            Alpha 0-255
+	 * @param r
+	 *            Red 0-255
+	 * @param g
+	 *            Green 0-255
+	 * @param b
+	 *            Blue 0-255
+	 */
+	public HSV_Color(int a, int r, int g, int b)
+	{
+		super(r / 255f, g / 255f, b / 255f, a / 255f);
+		clamp();
+	}
+
+	public HSV_Color(int color)
+	{
+		a = ((color & 0xff000000) >>> 24) / 255f;
+		r = ((color & 0xff0000) >>> 16) / 255f;
+		g = ((color & 0xff00) >>> 8) / 255f;
+		b = (color & 0xff) / 255f;
+		clamp();
+	}
+
+	public HSV_Color(float r, float g, float b, float a)
+	{
+		super(r, g, b, a);
 	}
 
 	private int hexToInt(char c1, char c2)
@@ -175,5 +214,11 @@ public class HSV_Color extends Color
 	{
 		v = val;
 		convertHSVtoRGB();
+	}
+
+	public int toInt()
+	{
+		return (((int) (a * 255f)) & 0xff) << 24 | (((int) (r * 255f)) & 0xff) << 16 | (((int) (g * 255f)) & 0xff) << 8
+				| (((int) (b * 255f)) & 0xff);
 	}
 }

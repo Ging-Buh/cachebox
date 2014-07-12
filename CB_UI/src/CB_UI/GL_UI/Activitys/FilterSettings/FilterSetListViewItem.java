@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Activitys.FilterSettings;
 import java.util.ArrayList;
 
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -10,10 +11,10 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class FilterSetListViewItem extends ListViewItemBackground
@@ -64,7 +65,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	BitmapFontCache EntryName;
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (this.mFilterSetEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM)
 		{
@@ -73,13 +74,13 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		if (isPressed)
 		{
-			GL.that.renderOnce("");
+			GL.that.renderOnce();
 			isPressed = GL.getIsTouchDown();
 		}
 
 		// initial
 		left = getLeftWidth();
-		top = this.height - this.getTopHeight();
+		top = this.getHeight() - this.getTopHeight();
 
 		switch (this.mFilterSetEntry.getItemType())
 		{
@@ -100,10 +101,10 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		if (EntryName == null)
 		{
 			EntryName = new BitmapFontCache(Fonts.getNormal());
-			EntryName.setColor(Fonts.getFontColor());
+			EntryName.setColor(COLOR.getFontColor());
 			if (this.mFilterSetEntry.getItemType() == FilterSetListView.THREE_STATE_ITEM)
 			{
-				float TextWidth = width - (left + 20) - getRightWidth() - height;
+				float TextWidth = getWidth() - (left + 20) - getRightWidth() - getHeight();
 				EntryName.setWrappedText(name, left + 20, top, TextWidth);
 			}
 			else
@@ -118,10 +119,10 @@ public class FilterSetListViewItem extends ListViewItemBackground
 			if (Value == null)
 			{
 				Value = new BitmapFontCache(Fonts.getBig());
-				Value.setColor(Fonts.getFontColor());
+				Value.setColor(COLOR.getFontColor());
 				setValueFont = true;
 			}
-			if (setValueFont) Value.setText(String.valueOf(getValue()), (width / 1.5f), (height / 1.8f));
+			if (setValueFont) Value.setText(String.valueOf(getValue()), (getWidth() / 1.5f), (getHeight() / 1.8f));
 			setValueFont = false;
 
 			Value.draw(batch);
@@ -139,7 +140,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	private static Sprite chkOn;
 	private static Sprite chkNo;
 
-	private void drawCollapseButtonItem(SpriteBatch batch)
+	private void drawCollapseButtonItem(Batch batch)
 	{
 
 		if (this.isPressed)
@@ -149,7 +150,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 				btnBack_pressed = new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
 			}
 
-			btnBack_pressed.draw(batch, 0, 0, width, height);
+			btnBack_pressed.draw(batch, 0, 0, getWidth(), getHeight());
 
 		}
 		else
@@ -159,13 +160,13 @@ public class FilterSetListViewItem extends ListViewItemBackground
 				btnBack = new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), 16, 16, 16, 16);
 			}
 
-			btnBack.draw(batch, 0, 0, width, height);
+			btnBack.draw(batch, 0, 0, getWidth(), getHeight());
 
 		}
 
 	}
 
-	private void drawChkItem(SpriteBatch batch)
+	private void drawChkItem(Batch batch)
 	{
 		drawIcon(batch);
 		drawRightChkBox(batch);
@@ -205,7 +206,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawThreeStateItem(SpriteBatch batch)
+	private void drawThreeStateItem(Batch batch)
 	{
 		drawIcon(batch);
 		drawRightChkBox(batch);
@@ -266,12 +267,12 @@ public class FilterSetListViewItem extends ListViewItemBackground
 	private BitmapFontCache Value;
 	private boolean Clicked = false;
 
-	private void drawNumerickItem(SpriteBatch batch)
+	private void drawNumerickItem(Batch batch)
 	{
-		lBounds = new CB_RectF(0, 0, height, height);
+		lBounds = new CB_RectF(0, 0, getHeight(), getHeight());
 		lBounds = lBounds.ScaleCenter(0.95f);
 
-		rBounds = new CB_RectF(width - height, 0, height, height);
+		rBounds = new CB_RectF(getWidth() - getHeight(), 0, getHeight(), getHeight());
 		rBounds = rBounds.ScaleCenter(0.95f);
 
 		boolean rClick = false;
@@ -308,18 +309,18 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		if (Minus == null)
 		{
 			Minus = new BitmapFontCache(Fonts.getBig());
-			Minus.setColor(Fonts.getFontColor());
+			Minus.setColor(COLOR.getFontColor());
 			Minus.setText("-", 0, 0);
-			Minus.setPosition(lBounds.getCenterPos().x - (Minus.getBounds().width / 2), lBounds.getCenterPos().y
+			Minus.setPosition(lBounds.getCenterPosX() - (Minus.getBounds().width / 2), lBounds.getCenterPosY()
 					+ (Minus.getBounds().height / 2));
 		}
 
 		if (Plus == null)
 		{
 			Plus = new BitmapFontCache(Fonts.getBig());
-			Plus.setColor(Fonts.getFontColor());
+			Plus.setColor(COLOR.getFontColor());
 			Plus.setText("+", 0, 0);
-			Plus.setPosition(rBounds.getCenterPos().x - (Plus.getBounds().width / 2), rBounds.getCenterPos().y
+			Plus.setPosition(rBounds.getCenterPosX() - (Plus.getBounds().width / 2), rBounds.getCenterPosY()
 					+ (Plus.getBounds().height / 2));
 		}
 
@@ -337,7 +338,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 		if (mFilterSetEntry.getIcon() != null)
 		{
-			float iconHeight = this.halfHeight * 0.8f;
+			float iconHeight = this.getHalfHeight() * 0.8f;
 			float iconWidth = iconHeight * 5;
 			mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			mFilterSetEntry.getIcon().draw(batch);
@@ -346,11 +347,11 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawIcon(SpriteBatch batch)
+	private void drawIcon(Batch batch)
 	{
 		if (mFilterSetEntry.getIcon() != null)
 		{
-			float iconHeight = this.height * 0.8f;
+			float iconHeight = this.getHeight() * 0.8f;
 			float iconWidth = iconHeight;
 			mFilterSetEntry.getIcon().setBounds(left, UI_Size_Base.that.getMargin(), iconWidth, iconHeight);
 			mFilterSetEntry.getIcon().draw(batch);
@@ -359,11 +360,11 @@ public class FilterSetListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawRightChkBox(SpriteBatch batch)
+	private void drawRightChkBox(Batch batch)
 	{
 		if (rBounds == null || rChkBounds == null)
 		{
-			rBounds = new CB_RectF(width - height - 10, 5, height - 10, height - 10);// = right Button bounds
+			rBounds = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);// = right Button bounds
 
 			rChkBounds = rBounds.ScaleCenter(0.8f);
 		}
@@ -387,7 +388,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL.that.renderOnce("");
+		GL.that.renderOnce();
 	}
 
 	public void minusClick()
@@ -397,7 +398,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL.that.renderOnce("");
+		GL.that.renderOnce();
 	}
 
 	public void stateClick()
@@ -406,7 +407,7 @@ public class FilterSetListViewItem extends ListViewItemBackground
 		FilterSetListView.mustSaveFilter = true;
 		this.isPressed = false;
 		this.lastItemTouchPos = null;
-		GL.that.renderOnce("");
+		GL.that.renderOnce();
 	}
 
 	public void setValue(int value)

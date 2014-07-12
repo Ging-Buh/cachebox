@@ -7,7 +7,7 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class TrackableListViewItem extends ListViewItemBackground
 {
@@ -24,7 +24,7 @@ public class TrackableListViewItem extends ListViewItemBackground
 		img.setImageURL(TB.getIconUrl());
 		this.addChild(img);
 
-		lblName = new Label(img.getMaxX() + UI_Size_Base.that.getMargin(), img.getY(), this.width - img.getMaxX()
+		lblName = new Label(img.getMaxX() + UI_Size_Base.that.getMargin(), img.getY(), this.getWidth() - img.getMaxX()
 				- UI_Size_Base.that.getMargin(), img.getHeight(), "Label Name");
 		lblName.setWrappedText(TB.getName());
 		this.addChild(lblName);
@@ -36,7 +36,7 @@ public class TrackableListViewItem extends ListViewItemBackground
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
 

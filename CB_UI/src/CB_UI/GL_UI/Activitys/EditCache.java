@@ -15,7 +15,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
-import CB_UI.GL_UI.Views.CacheListView;
+import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -155,22 +155,22 @@ public class EditCache extends ActivityBase
 
 	public void Update(Cache cache)
 	{
-		newValues = new Cache();
+		newValues = new Cache(true);
 		newValues.copyFrom(cache);
-		newValues.shortDescription = "";
-		newValues.longDescription = Database.GetDescription(cache);
-		cache.longDescription = newValues.longDescription;
+		newValues.setShortDescription("");
+		newValues.setLongDescription(Database.GetDescription(cache));
+		cache.setLongDescription(newValues.getLongDescription());
 		this.cache = cache;
 		doShow();
 	}
 
 	public void Create()
 	{
-		newValues = new Cache();
+		newValues = new Cache(true);
 		newValues.Type = CacheTypes.Traditional;
 		newValues.Size = CacheSizes.micro;
-		newValues.Difficulty = 1;
-		newValues.Terrain = 1;
+		newValues.setDifficulty(1);
+		newValues.setTerrain(1);
 		newValues.Pos = Locator.getLocation().toCordinate();
 		if (!newValues.Pos.isValid()) newValues.Pos = GlobalCore.getSelectedCoord();
 		// GC - Code bestimmen für freies CWxxxx = CustomWaypint
@@ -179,25 +179,25 @@ public class EditCache extends ActivityBase
 		do
 		{
 			count++;
-			newValues.GcCode = prefix + String.format("%04d", count);
+			newValues.setGcCode(prefix + String.format("%04d", count));
 		}
-		while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.GcCode)) != null);
-		newValues.Name = newValues.GcCode;
-		newValues.Owner = "Unbekannt";
-		newValues.DateHidden = new Date();
-		newValues.Archived = false;
-		newValues.Available = true;
-		newValues.Found = false;
+		while (Database.Data.Query.GetCacheById(Cache.GenerateCacheId(newValues.getGcCode())) != null);
+		newValues.setName(newValues.getGcCode());
+		newValues.setOwner("Unbekannt");
+		newValues.setDateHidden(new Date());
+		newValues.setArchived(false);
+		newValues.setAvailable(true);
+		newValues.setFound(false);
 		newValues.NumTravelbugs = 0;
-		newValues.shortDescription = "";
-		newValues.longDescription = "";
+		newValues.setShortDescription("");
+		newValues.setLongDescription("");
 		this.cache = newValues;
 		doShow();
 	}
 
 	private void doShow()
 	{
-		cacheCode.setText(cache.GcCode);
+		cacheCode.setText(cache.getGcCode());
 		cacheTyp.setSelection(0);
 		for (int i = 0; i < CacheTypNumbers.length; i++)
 		{
@@ -214,13 +214,13 @@ public class EditCache extends ActivityBase
 				cacheSize.setSelection(i);
 			}
 		}
-		cacheDifficulty.setSelection((int) (cache.Difficulty * 2 - 2));
-		cacheTerrain.setSelection((int) (cache.Terrain * 2 - 2));
+		cacheDifficulty.setSelection((int) (cache.getDifficulty() * 2 - 2));
+		cacheTerrain.setSelection((int) (cache.getTerrain() * 2 - 2));
 		cacheCoords.setCoordinate(cache.Pos);
-		cacheTitle.setText(cache.Name);
-		cacheOwner.setText(cache.Owner);
-		if (cache.longDescription.equals(GlobalCore.br)) cache.longDescription = "";
-		cacheDescription.setText(cache.longDescription);
+		cacheTitle.setText(cache.getName());
+		cacheOwner.setText(cache.getOwner());
+		if (cache.getLongDescription().equals(GlobalCore.br)) cache.setLongDescription("");
+		cacheDescription.setText(cache.getLongDescription());
 		this.show();
 	}
 
@@ -235,10 +235,11 @@ public class EditCache extends ActivityBase
 				CacheDAO cacheDAO = new CacheDAO();
 				String gcc = cacheCode.getText().toUpperCase(); // nur wenn kein Label
 				cache.Id = Cache.GenerateCacheId(gcc);
-				Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
-				if (aktCache != null)
+
+				Cache cl = Database.Data.Query.GetCacheById(cache.Id);
+
+				if (cl != null)
 				{
-					cache = aktCache;
 					update = true;
 					if (newValues.Type == CacheTypes.Mystery)
 					{
@@ -248,15 +249,16 @@ public class EditCache extends ActivityBase
 						}
 					}
 				}
-				cache.GcCode = gcc;
+
+				cache.setGcCode(gcc);
 				cache.Type = newValues.Type;
 				cache.Size = newValues.Size;
-				cache.Difficulty = newValues.Difficulty;
-				cache.Terrain = newValues.Terrain;
+				cache.setDifficulty(newValues.getDifficulty());
+				cache.setTerrain(newValues.getTerrain());
 				cache.Pos = newValues.Pos;
-				cache.Name = cacheTitle.getText();
-				cache.Owner = cacheOwner.getText();
-				cache.longDescription = cacheDescription.getText();
+				cache.setName(cacheTitle.getText());
+				cache.setOwner(cacheOwner.getText());
+				cache.setLongDescription(cacheDescription.getText());
 				if (update)
 				{
 					cacheDAO.UpdateDatabase(cache);
@@ -268,11 +270,11 @@ public class EditCache extends ActivityBase
 					cacheDAO.WriteToDatabase(cache);
 					CachListChangedEventList.Call();
 					GlobalCore.setSelectedCache(cache);
-					CacheListView.that.setSelectedCacheVisible();
+					if (TabMainView.cacheListView != null) TabMainView.cacheListView.setSelectedCacheVisible();
 				}
 
 				// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
-				cache.longDescription = "";
+				cache.setLongDescription("");
 				finish();
 				return true;
 			}
@@ -325,7 +327,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
+				EditCache.this.show();
 				newValues.Type = CacheTypNumbers[index];
 			}
 		};
@@ -364,7 +366,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
+				EditCache.this.show();
 				newValues.Size = CacheSizeNumbers[index];
 			}
 		};
@@ -377,7 +379,7 @@ public class EditCache extends ActivityBase
 			@Override
 			public void coordinateChanged(Coordinate coord)
 			{
-				that.show();
+				EditCache.this.show();
 				newValues.Pos = coord; // oder = cacheCoords.getCoordinate()
 			}
 		});
@@ -414,8 +416,8 @@ public class EditCache extends ActivityBase
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
-				newValues.Difficulty = (index + 2.0f) / 2.0f;
+				EditCache.this.show();
+				newValues.setDifficulty((index + 2.0f) / 2.0f);
 			}
 		};
 	}
@@ -451,8 +453,8 @@ public class EditCache extends ActivityBase
 			@Override
 			public void selectionChanged(int index)
 			{
-				that.show();
-				newValues.Terrain = (index + 2.0f) / 2.0f;
+				EditCache.this.show();
+				newValues.setTerrain((index + 2.0f) / 2.0f);
 			}
 		};
 	}

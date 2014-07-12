@@ -5,6 +5,7 @@ import java.util.Date;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEventList;
+import CB_Utils.Util.UnitFormatter;
 
 /**
  * @author Longri
@@ -37,7 +38,7 @@ public class Locator
 	 * @uml.property name="that"
 	 * @uml.associationEnd
 	 */
-	private static Locator that;
+	public static Locator that;
 
 	private static long minGpsUpdateTime = 125;
 	private static double altCorrection = 0;
@@ -300,7 +301,7 @@ public class Locator
 	 * 
 	 * @return
 	 */
-	public static Coordinate getCoordinate()
+	public static CoordinateGPS getCoordinate()
 	{
 		return getLocation(ProviderType.any).toCordinate();
 	}
@@ -453,10 +454,9 @@ public class Locator
 	 */
 	public static String getAltStringWithCorection()
 	{
-		// TODO ImperialUnits ?
 		String result = getAltString();
-		if (altCorrection > 0) result += " (+" + String.format("%.0f", altCorrection) + " m)";
-		else if (altCorrection < 0) result += " (" + String.format("%.0f", altCorrection) + " m)";
+		if (altCorrection > 0) result += " (+" + UnitFormatter.AltString((float) altCorrection);
+		else if (altCorrection < 0) result += " (" + UnitFormatter.AltString((float) altCorrection);
 		return result;
 	}
 
@@ -467,9 +467,7 @@ public class Locator
 	 */
 	public static String getAltString()
 	{
-		// TODO ImperialUnits ?
-		String result = String.format("%.0f", getAlt()) + " m";
-		return result;
+		return UnitFormatter.AltString((float) getAlt());
 	}
 
 	/**
@@ -489,6 +487,7 @@ public class Locator
 	 */
 	public static boolean UseMagneticCompass()
 	{
+		if (that == null) return false;
 		synchronized (that)
 		{
 			return that.mLastUsedCompassType == CompassType.Magnetic;

@@ -1,15 +1,14 @@
 package CB_UI_Base.Events;
 
-import java.util.ArrayList;
-
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.Gdx;
 
 public class KeyboardFocusChangedEventList
 {
-	public static ArrayList<KeyboardFocusChangedEvent> list = new ArrayList<KeyboardFocusChangedEvent>();
+	public static CB_List<KeyboardFocusChangedEvent> list = new CB_List<KeyboardFocusChangedEvent>();
 
 	public static void Add(KeyboardFocusChangedEvent event)
 	{
@@ -41,9 +40,11 @@ public class KeyboardFocusChangedEventList
 		}
 		synchronized (list)
 		{
-			for (KeyboardFocusChangedEvent event : list)
+
+			for (int i = 0, n = list.size(); i < n; i++)
 			{
-				Logger.LogCat("FocusChangedEventList fire to " + event.toString());
+				KeyboardFocusChangedEvent event = list.get(i);
+				// Logger.LogCat("FocusChangedEventList fire to " + event.toString());
 				event.KeyboardFocusChanged(focus);
 			}
 		}

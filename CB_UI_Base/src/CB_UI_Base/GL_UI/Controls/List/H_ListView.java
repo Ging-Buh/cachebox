@@ -1,12 +1,9 @@
 package CB_UI_Base.GL_UI.Controls.List;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.Point;
 
 public class H_ListView extends ListViewBase
@@ -20,23 +17,23 @@ public class H_ListView extends ListViewBase
 	@Override
 	protected void RenderThreadSetPos(float value, boolean Kinetic)
 	{
-		float distance = mPos - value;
-
-		ArrayList<ListViewItemBase> clearList = new ArrayList<ListViewItemBase>();
-
 		// alle childs verschieben
 		synchronized (childs)
 		{
-			for (Iterator<GL_View_Base> iterator = childs.iterator(); iterator.hasNext();)
+
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
-				GL_View_Base tmp = iterator.next();
+				GL_View_Base tmp = childs.get(i);
+
 				if (mReloadItems)
 				{
 					clearList.add((ListViewItemBase) tmp);
 				}
 				else
 				{
-					tmp.setX(tmp.getX() + distance);
+					float itemPos = mPosDefault.get(((ListViewItemBase) tmp).getIndex());
+					itemPos -= mPos;
+					tmp.setX(itemPos);
 
 					if (tmp.getX() > this.getMaxX() || tmp.getMaxX() < 0)
 					{
@@ -47,22 +44,32 @@ public class H_ListView extends ListViewBase
 			}
 		}
 
+		mReloadItems = false;
+
 		// afräumen
 		if (clearList.size() > 0)
 		{
-			for (Iterator<ListViewItemBase> iterator = clearList.iterator(); iterator.hasNext();)
+			for (int i = 0; i < clearList.size(); i++)
 			{
-				ListViewItemBase tmp = iterator.next();
-				mAddeedIndexList.remove((Object) tmp.getIndex());
-				// Logger.LogCat("Remove: " + tmp.getName());
-				this.removeChild(tmp);
-				if (mCanDispose) tmp.dispose();
+				ListViewItemBase tmp = clearList.get(i);
+				int index = mAddeedIndexList.indexOf(tmp.getIndex());
+				if (index >= 0 && index < mAddeedIndexList.size())
+				{
+					mAddeedIndexList.remove(index);
+					// Logger.LogCat("Remove Item " + tmp.getIndex());
+					this.removeChild(tmp);
+					if (mCanDispose) tmp.dispose();
+				}
+				else
+				{
+					System.out.print("");
+				}
 			}
 			clearList.clear();
-			clearList = null;
 
 			// setze First Index, damit nicht alle Items durchlaufen werden müssen
-			Collections.sort(mAddeedIndexList);
+			mAddeedIndexList.sort();
+
 			if (mAddeedIndexList.size() > 0)
 			{
 				mFirstIndex = mAddeedIndexList.get(0) - mMaxItemCount;
@@ -83,37 +90,30 @@ public class H_ListView extends ListViewBase
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected void addVisibleItems(boolean Kinetic)
 	{
 		if (mBaseAdapter == null) return;
 		if (mPosDefault == null) calcDefaultPosList();
-
-		ArrayList<Float> tmpPosDefault;
-		synchronized (mPosDefault)
-		{
-			tmpPosDefault = (ArrayList<Float>) mPosDefault.clone();
-		}
 
 		for (int i = mFirstIndex; i < mBaseAdapter.getCount(); i++)
 		{
 			if (!mAddeedIndexList.contains(i))
 			{
 
-				if (tmpPosDefault.size() - 1 < i || mBaseAdapter.getCount() < i) return;
+				if (mPosDefault.size() - 1 < i || mBaseAdapter.getCount() < i) return;
 
 				ListViewItemBase tmp = mBaseAdapter.getView(i);
 
 				if (tmp == null) return;
 				try
 				{
-					if (tmpPosDefault.get(i) + tmp.getWidth() - mPos > 0)
+					if (mPosDefault.get(i) + tmp.getWidth() - mPos > 0)
 					{
 
-						float itemPos = tmpPosDefault.get(i);
+						float itemPos = mPosDefault.get(i);
 						itemPos -= mPos;
 
-						if (itemPos <= this.width)
+						if (itemPos <= this.getWidth())
 						{
 							tmp.setY(this.getHalfHeight() - tmp.getHalfHeight());// center Pos
 							tmp.setX(itemPos);
@@ -137,7 +137,7 @@ public class H_ListView extends ListViewBase
 			}
 
 			// RenderRequest
-			GL.that.renderOnce(this.getName() + " addVisibleItems");
+			GL.that.renderOnce();
 
 			if (selectionchanged)
 			{
@@ -164,10 +164,10 @@ public class H_ListView extends ListViewBase
 			mPosDefault = null;
 		}
 
-		mPosDefault = new ArrayList<Float>();
+		mPosDefault = new CB_List<Float>();
 
-		float countPos = this.width;
-		minimumItemSize = this.width;
+		float countPos = this.getWidth();
+		minimumItemSize = this.getWidth();
 		mAllSize = 0;
 		for (int i = 0; i < mBaseAdapter.getCount(); i++)
 		{
@@ -181,7 +181,7 @@ public class H_ListView extends ListViewBase
 		}
 		mcalcAllSizeBase = countPos - mDividerSize;
 		mPos = countPos - mDividerSize;
-		mMaxItemCount = (int) (this.width / minimumItemSize);
+		mMaxItemCount = (int) (this.getWidth() / minimumItemSize);
 		if (mMaxItemCount < 1) mMaxItemCount = 1;
 	}
 
@@ -244,7 +244,7 @@ public class H_ListView extends ListViewBase
 		calcDefaultPosList();
 		reloadItems();
 
-		if (mAllSize > this.width)
+		if (mAllSize > this.getWidth())
 		{
 			this.setDragable();
 		}
@@ -271,7 +271,7 @@ public class H_ListView extends ListViewBase
 	@Override
 	protected float getListViewLength()
 	{
-		return width;
+		return getWidth();
 	}
 
 }

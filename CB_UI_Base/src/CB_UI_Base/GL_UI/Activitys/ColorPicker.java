@@ -3,12 +3,13 @@ package CB_UI_Base.GL_UI.Activitys;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.ColorPickerRec;
 import CB_UI_Base.GL_UI.Controls.Image;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.GL_UI.utils.GradiantFill;
 import CB_UI_Base.GL_UI.utils.GradiantFilledRectangle;
@@ -117,7 +118,7 @@ public class ColorPicker extends ActivityBase
 		arrow.setDrawable(new SpriteDrawable(SpriteCacheBase.Arrows.get(11)));
 
 		float lineWidth = lastColorBox.getWidth() + margin + arrow.getWidth() + margin + actColorBox.getWidth();
-		float left = this.halfWidth - (lineWidth / 2);
+		float left = this.getHalfWidth() - (lineWidth / 2);
 		lastColorBox.setX(left);
 		arrow.setX(lastColorBox.getMaxX() + margin);
 		actColorBox.setX(arrow.getMaxX() + margin);
@@ -134,7 +135,7 @@ public class ColorPicker extends ActivityBase
 	{
 		float vWidth = bOK.getHeight();
 
-		viewHue = new Image(this.width - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.height
+		viewHue = new Image(this.getWidth() - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.getHeight()
 				- this.getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue");
 		viewHue.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_hue));
 		this.addChild(viewHue);
@@ -272,7 +273,7 @@ public class ColorPicker extends ActivityBase
 	private void regenarateActColorBox()
 	{
 
-		RunOnGL(new runOnGL()
+		GL.that.RunOnGL(new IRunOnGL()
 		{
 
 			@Override

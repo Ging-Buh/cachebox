@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import CB_Locator.Coordinate;
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
@@ -17,6 +16,9 @@ import CB_Locator.Locator.CompassType;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
+import CB_UI.Settings.CB_UI_Settings;
+import CB_Utils.MathUtils;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
 
@@ -30,6 +32,7 @@ public class TrackRecorder
 	private static FileWriter writer = null;
 	public static boolean pauseRecording = false;
 	public static boolean recording = false;
+	public static double SaveAltitude = 0;
 
 	// / Letzte aufgezeichnete Position des Empfängers
 	public static Location LastRecordedPosition = Location.NULL_LOCATION;
@@ -44,7 +47,7 @@ public class TrackRecorder
 		GlobalCore.AktuelleRoute.TrackLength = 0;
 		GlobalCore.AktuelleRoute.AltitudeDifference = 0;
 
-		String directory = Config.settings.TrackFolder.getValue();
+		String directory = CB_UI_Settings.TrackFolder.getValue();
 		if (!FileIO.createDirectory(directory)) return;
 
 		if (gpxfile == null)
@@ -200,7 +203,8 @@ public class TrackRecorder
 
 		if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
 		{
-			LastRecordedPosition = Locator.getLocation(GPS);
+			LastRecordedPosition = Locator.getLocation(GPS).cpy();
+			SaveAltitude = LastRecordedPosition.getAltitude();
 		}
 		else
 		{
@@ -210,10 +214,10 @@ public class TrackRecorder
 
 			// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
 			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
-			float[] dist = new float[4];
+			float[] dist = new float[1];
 
-			Coordinate.distanceBetween(LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS),
-					Locator.getLongitude(GPS), dist);
+			MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(),
+					LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS), Locator.getLongitude(GPS), dist);
 			float cachedDistance = dist[0];
 
 			if (cachedDistance > GlobalCore.TrackDistance)
@@ -227,7 +231,7 @@ public class TrackRecorder
 				sb.append("   <course>" + String.valueOf(Locator.getHeading(_GPS)) + "</course>\n");
 				sb.append("   <speed>" + String.valueOf(Locator.SpeedOverGround()) + "</speed>\n");
 				sb.append("</trkpt>\n");
-				AltDiff = Math.abs(LastRecordedPosition.getAltitude() - Locator.getAlt());
+
 				RandomAccessFile rand;
 				try
 				{
@@ -270,9 +274,15 @@ public class TrackRecorder
 				if (TrackListView.that != null) TrackListView.that.notifyActTrackChanged();
 
 				RouteOverlay.RoutesChanged();
-				LastRecordedPosition = Locator.getLocation(GPS);
+				LastRecordedPosition = Locator.getLocation(GPS).cpy();
 				GlobalCore.AktuelleRoute.TrackLength += cachedDistance;
-				GlobalCore.AktuelleRoute.AltitudeDifference += AltDiff;
+
+				AltDiff = Math.abs(SaveAltitude - Locator.getAlt());
+				if (AltDiff >= 25)
+				{
+					GlobalCore.AktuelleRoute.AltitudeDifference += AltDiff;
+					SaveAltitude = Locator.getAlt();
+				}
 				writePos = false;
 
 				if (mustWriteMedia)

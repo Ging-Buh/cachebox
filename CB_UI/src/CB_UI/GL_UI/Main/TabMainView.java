@@ -1,12 +1,31 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Main;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.API_ErrorEventHandler;
 import CB_Core.Api.API_ErrorEventHandlerList;
+import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
@@ -88,12 +107,19 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
+import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
+/**
+ * @author ging-buh
+ * @author Longri
+ */
 public class TabMainView extends MainViewBase implements PositionChangedEvent
 {
 	public static TabMainView that;
@@ -165,6 +191,71 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		TrackRecIsRegisted = true;
 		that = (TabMainView) (mainView = this);
 
+		Timer releaseTimer = new Timer();
+		TimerTask releaseTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				releaseNonvisibleViews();
+			}
+		};
+		releaseTimer.scheduleAtFixedRate(releaseTask, 5000, 5000);
+	}
+
+	/**
+	 * release all non visible Views
+	 */
+	private void releaseNonvisibleViews()
+	{
+		if (cacheListView != null && !cacheListView.isVisible())
+		{
+			Logger.LogCat("Rerlease CachelistView");
+			cacheListView.dispose();
+			cacheListView = null;
+		}
+
+		if (aboutView != null && !aboutView.isVisible())
+		{
+			Logger.LogCat("Rerlease aboutView");
+			aboutView.dispose();
+			aboutView = null;
+		}
+
+		if (compassView != null && !compassView.isVisible())
+		{
+			Logger.LogCat("Rerlease compassView");
+			compassView.dispose();
+			compassView = null;
+		}
+
+		if (fieldNotesView != null && !fieldNotesView.isVisible())
+		{
+			Logger.LogCat("Rerlease fieldNotesView");
+			fieldNotesView.dispose();
+			fieldNotesView = null;
+		}
+
+		if (logView != null && !logView.isVisible())
+		{
+			Logger.LogCat("Rerlease logView");
+			logView.dispose();
+			logView = null;
+		}
+
+		if (waypointView != null && !waypointView.isVisible())
+		{
+			Logger.LogCat("Rerlease waypointView");
+			waypointView.dispose();
+			waypointView = null;
+		}
+
+		if (solverView2 != null && !solverView2.isVisible())
+		{
+			Logger.LogCat("Rerlease solverView2");
+			solverView2.dispose();
+			solverView2 = null;
+		}
 	}
 
 	@Override
@@ -172,16 +263,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	{
 		GlobalCore.receiver = new CB_UI.GlobalLocationReceiver();
 
-		Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
-		Config.WriteLoggerDebugMode.addChangedEventListner(new iChanged()
-		{
-			@Override
-			public void isChanged()
-			{
-				Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
-			}
-		});
-
+		initialSettingsChangedListner();
 		ini();
 		isInitial = true;
 
@@ -203,9 +285,67 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		// add changed handler
 		Energy.addChangedEventListner(settingChangedHandler);
 
+		// change CBS settings Type from Develop to normal with TestVersion
+		if (GlobalCore.isTestVersion())
+		{
+			Config.CBS_IP.changeSettingsModus(SettingModus.Normal);
+		}
+
 	}
 
 	private boolean isInitial = false;
+
+	private void initialSettingsChangedListner()
+	{
+		Config.WriteLoggerDebugMode.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
+			}
+		});
+
+		Config.ImperialUnits.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
+			}
+		});
+
+		Config.ShowAllWaypoints.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				reloadCacheList();
+				// must reload MapViewCacheList
+				// do this over Initial WPI-List
+				if (MapView.that != null) MapView.that.setNewSettings(MapView.INITIAL_WP_LIST);
+			}
+		});
+
+		// Set settings first
+		UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
+		Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
+	}
+
+	public static void reloadCacheList()
+	{
+		String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		synchronized (Database.Data.Query)
+		{
+			CacheListDAO cacheListDAO = new CacheListDAO();
+			cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+			cacheListDAO = null;
+		}
+		CachListChangedEventList.Call();
+
+	}
 
 	private void ini()
 	{
@@ -272,11 +412,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		{
 			synchronized (Database.Data.Query)
 			{
-				for (Cache c : Database.Data.Query)
+				for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
 				{
-					if (c.GcCode.equalsIgnoreCase(sGc))
+					Cache c = Database.Data.Query.get(i);
+					if (c.getGcCode().equalsIgnoreCase(sGc))
 					{
-						Logger.DEBUG("TabMainView: Set selectedCache to " + c.GcCode + " from lastSaved.");
+						Logger.DEBUG("TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 						GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
 						break;
 					}
@@ -305,7 +446,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
+		rec.setHeight(this.getHeight() - UiSizes.that.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
 		LeftTab = new CB_TabView(rec, "Phone Tab");
@@ -359,6 +500,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		CacheListButton.addAction(new CB_ActionButton(actionShowCacheList, true, GestureDirection.Up));
 		CacheListButton.addAction(new CB_ActionButton(actionShowTrackableListView, false, GestureDirection.Right));
 		CacheListButton.addAction(new CB_ActionButton(actionShowTrackListView, false, GestureDirection.Down));
+		// CacheListButton.addAction(new CB_ActionButton(actionShowExportView, false));
 
 		btn2.addAction(new CB_ActionButton(actionShowDescriptionView, true, GestureDirection.Up));
 		btn2.addAction(new CB_ActionButton(actionShowWaypointView, false, GestureDirection.Right));
@@ -412,7 +554,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		CB_RectF rec = this.copy();
 		rec.setWidth(GL_UISizes.UI_Left.getWidth());
 
-		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
+		rec.setHeight(this.getHeight() - UiSizes.that.getInfoSliderHeight());
 		rec.setPos(0, 0);
 
 		LeftTab = new CB_TabView(rec, "Phone Tab");
@@ -501,7 +643,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		rec.setX(GL_UISizes.UI_Left.getWidth());
 		rec.setY(0);
 
-		rec.setHeight(this.height - UiSizes.that.getInfoSliderHeight());
+		rec.setHeight(this.getHeight() - UiSizes.that.getInfoSliderHeight());
 
 		RightTab = new CB_TabView(rec, "Phone Tab");
 
@@ -572,8 +714,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		// Logger.LogCat("TabMainView SetContent maxY" + y);
 		synchronized (childs)
 		{
-			for (GL_View_Base view : this.childs)
+			for (int i = 0, n = childs.size(); i < n; i++)
 			{
+				GL_View_Base view = childs.get(i);
 				if (view instanceof CB_TabView)
 				{
 					view.setHeight(y);
@@ -623,8 +766,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 			synchronized (childs)
 			{
-				for (GL_View_Base view : this.childs)
+				for (int i = 0, n = childs.size(); i < n; i++)
 				{
+					GL_View_Base view = childs.get(i);
 					if (view instanceof CB_TabView)
 					{
 						((CB_TabView) view).SkinIsChanged();
@@ -666,6 +810,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		// Set new list size at context menu
 		// ##################################
 		String Name = "";
+
 		synchronized (Database.Data.Query)
 		{
 			int filterCount = Database.Data.Query.size();
@@ -689,7 +834,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		actionShowCacheList.Execute();
 	}
 
-	public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
 		if (childs == null) return;
 		super.renderChilds(batch, parentInfo);
@@ -732,7 +877,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		if (GlobalCore.getSelectedCache() != null)
 		{
-			float distance = GlobalCore.getSelectedCache().Distance(false);
+			float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 			if (GlobalCore.getSelectedWaypoint() != null)
 			{
 				distance = GlobalCore.getSelectedWaypoint().Distance();
@@ -741,6 +886,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted
 					&& (distance < Config.SoundApproachDistance.getValue()))
 			{
+				if (compassView != null && compassView.isVisible()) return;// don't show if showing
 				actionShowCompassView.Execute();
 				GlobalCore.switchToCompassCompleted = true;
 			}

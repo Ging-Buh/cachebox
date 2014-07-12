@@ -4,25 +4,28 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GL_UI.Controls.CacheInfo;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class WaypointViewItem extends ListViewItemBackground implements PositionChangedEvent
@@ -36,7 +39,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	private final Color DISABLE_COLOR = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 	private CB_RectF ArrowRec;
 	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
-	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
+	private BitmapFontCache distance;
 	private Sprite mIconSprite;
 	private float mIconSize = 0;
 	private float mMargin = 0;
@@ -61,16 +64,16 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		}
 
 		@Override
-		public void renderChilds(final SpriteBatch batch, ParentInfo parentInfo)
+		public void renderChilds(final Batch batch, ParentInfo parentInfo)
 		{
-			if (!disableScissor) Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 
 			batch.flush();
 
 			this.render(batch);
 			batch.flush();
 
-			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 		}
 	}
 
@@ -93,7 +96,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		this.mCache = cache;
 		this.mWaypoint = waypoint;
 
-		distance.setColor(Fonts.getFontColor());
+		distance = new BitmapFontCache(Fonts.getSmall());
+		distance.setColor(COLOR.getFontColor());
+		distance.setText("", 0, 0);
 
 		if (waypoint == null) // this Item is the Cache
 		{
@@ -105,7 +110,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 				return;
 			}
 
-			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.GcCode, cache);
+			info = new extendedCacheInfo(UiSizes.that.getCacheListItemRec().asFloat(), "CacheInfo " + Index + " @" + cache.getGcCode(),
+					cache);
 			info.setZeroPos();
 			info.setViewMode(ViewMode);
 
@@ -116,8 +122,8 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		{
 			PositionChangedEventList.Add(this);
 
-			float size = this.height / 2.3f;
-			ArrowRec = new CB_RectF(this.width - (size * 1.2f), this.height - (size * 1.6f), size, size);
+			float size = this.getHeight() / 2.3f;
+			ArrowRec = new CB_RectF(this.getWidth() - (size * 1.2f), this.getHeight() - (size * 1.6f), size, size);
 			arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 			arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 
@@ -149,6 +155,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 		TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
 		float x = ArrowRec.getHalfWidth() - (bounds.width / 2f);
 		distance.setPosition(x, 0);
+
 	}
 
 	private void setActLocator()
@@ -165,11 +172,11 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			{
 				double lat = (mWaypoint == null) ? mCache.Latitude() : mWaypoint.Pos.getLatitude();
 				double lon = (mWaypoint == null) ? mCache.Longitude() : mWaypoint.Pos.getLongitude();
-				float distance = (mWaypoint == null) ? mCache.Distance(true) : mWaypoint.Distance();
+				float distance = (mWaypoint == null) ? mCache.Distance(CalculationType.FAST, true) : mWaypoint.Distance();
 
 				Coordinate position = Locator.getCoordinate();
 				double heading = Locator.getHeading();
-				double bearing = Coordinate.Bearing(position.getLatitude(), position.getLongitude(), lat, lon);
+				double bearing = CoordinateGPS.Bearing(CalculationType.FAST, position.getLatitude(), position.getLongitude(), lat, lon);
 				double cacheBearing = -(bearing - heading);
 				setDistanceString(UnitFormatter.DistanceString(distance));
 
@@ -177,7 +184,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 				if (arrow.getColor().r == DISABLE_COLOR.r && arrow.getColor().g == DISABLE_COLOR.g && arrow.getColor().b == DISABLE_COLOR.b)// ignore
 																																			// alpha
 				{
-					float size = this.height / 2.3f;
+					float size = this.getHeight() / 2.3f;
 					arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 					arrow.setBounds(ArrowRec.getX(), ArrowRec.getY(), size, size);
 					arrow.setOrigin(ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
@@ -188,7 +195,7 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (mIndex != -1) super.render(batch);
 
@@ -268,14 +275,14 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 	{
 		if (mWaypoint != null)
 		{
-			float scaleFactor = width / UiSizes.that.getCacheListItemRec().getWidth();
+			float scaleFactor = getWidth() / UiSizes.that.getCacheListItemRec().getWidth();
 			float mLeft = 3 * scaleFactor;
 			float mTop = 3 * scaleFactor;
 			mMargin = mLeft;
 
 			mIconSize = Fonts.Measure("T").height * 3.5f * scaleFactor;
 
-			Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, height - mTop - mIconSize);
+			Vector2 mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
 
 			{ // Icon Sprite erstellen
 				// MultiStage Waypoint anders darstellen wenn dieser als Startpunkt definiert ist
@@ -292,14 +299,19 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			mDescCache = new BitmapFontCache(Fonts.getBubbleNormal());
 			mCoordCache = new BitmapFontCache(Fonts.getBubbleNormal());
 
-			mNameCache.setColor(Fonts.getFontColor());
-			mDescCache.setColor(Fonts.getFontColor());
-			mCoordCache.setColor(Fonts.getFontColor());
+			mNameCache.setText("", 0, 0);
+			mDescCache.setText("", 0, 0);
+			mCoordCache.setText("", 0, 0);
 
-			float textYPos = this.height - mMargin;
+			mNameCache.setColor(COLOR.getFontColor());
+			mDescCache.setColor(COLOR.getFontColor());
+			mCoordCache.setColor(COLOR.getFontColor());
 
-			textYPos -= (mNameCache.setMultiLineText(mWaypoint.GcCode + ": " + mWaypoint.Title, mSpriteCachePos.x + mIconSize + mMargin,
-					textYPos)).height + mMargin + mMargin;
+			float textYPos = this.getHeight() - mMargin;
+
+			textYPos -= (mNameCache.setMultiLineText(mWaypoint.getGcCode() + ": " + mWaypoint.getTitle(), mSpriteCachePos.x + mIconSize
+					+ mMargin, textYPos)).height
+					+ mMargin + mMargin;
 
 			if (ViewMode == CacheInfo.VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK)
 			{
@@ -307,9 +319,9 @@ public class WaypointViewItem extends ListViewItemBackground implements Position
 			}
 			else
 			{
-				if (!mWaypoint.Description.equals(""))
+				if (!mWaypoint.getDescription().equals(""))
 				{
-					textYPos -= (mDescCache.setMultiLineText(mWaypoint.Description, mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height
+					textYPos -= (mDescCache.setMultiLineText(mWaypoint.getDescription(), mSpriteCachePos.x + mIconSize + mMargin, textYPos)).height
 							+ mMargin + mMargin;
 				}
 			}

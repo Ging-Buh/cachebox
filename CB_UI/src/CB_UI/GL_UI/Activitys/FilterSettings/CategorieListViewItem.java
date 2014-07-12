@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import CB_Core.Types.GpxFilename;
 import CB_UI.GL_UI.Activitys.FilterSettings.CategorieListView.CategorieEntry;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
@@ -12,10 +13,10 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class CategorieListViewItem extends ListViewItemBackground
@@ -81,7 +82,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 	private static float halfSize = 0;
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		if (this.categorieEntry.getItemType() != FilterSetListView.COLLAPSE_BUTTON_ITEM) super.render(batch);
 
@@ -92,11 +93,11 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 		// initial
 		left = getLeftWidth();
-		top = this.height - this.getTopHeight();
+		top = this.getHeight() - this.getTopHeight();
 
 		if (rBounds == null || rChkBounds == null || lPinBounds == null)
 		{
-			rBounds = new CB_RectF(width - height - 10, 5, height - 10, height - 10);// =
+			rBounds = new CB_RectF(getWidth() - getHeight() - 10, 5, getHeight() - 10, getHeight() - 10);// =
 			// right
 			// Button
 			// bounds
@@ -104,7 +105,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 			rChkBounds = rBounds.ScaleCenter(0.8f);
 			lPinBounds = new CB_RectF(rChkBounds);
-			lPinBounds.offset(-(width - (halfSize * 2) - rChkBounds.getWidth()), 0);
+			lPinBounds.offset(-(getWidth() - (halfSize * 2) - rChkBounds.getWidth()), 0);
 		}
 
 		// boolean selected = false;
@@ -149,18 +150,18 @@ public class CategorieListViewItem extends ListViewItemBackground
 			Count += " Caches";
 
 			EntryName = new BitmapFontCache(Fonts.getNormal());
-			EntryName.setColor(Fonts.getFontColor());
+			EntryName.setColor(COLOR.getFontColor());
 			EntryName.setMultiLineText(Name, left + UI_Size_Base.that.getMargin(), top);
 
 			top = margin + margin + Fonts.MeasureSmall(Count).height;
 
 			EntryDate = new BitmapFontCache(Fonts.getSmall());
-			EntryDate.setColor(Fonts.getFontColor());
+			EntryDate.setColor(COLOR.getFontColor());
 			EntryDate.setMultiLineText(Date, left + UI_Size_Base.that.getMargin(), top);
 
 			float measure = Fonts.Measure(Count).width;
 			EntryCount = new BitmapFontCache(Fonts.getSmall());
-			EntryCount.setColor(Fonts.getFontColor());
+			EntryCount.setColor(COLOR.getFontColor());
 			EntryCount.setMultiLineText(Count, rBounds.getX() - margin - measure, top);
 
 			// layoutEntryName = new StaticLayout(Name, textPaint, innerWidthName, Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
@@ -185,7 +186,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 	private static NinePatch btnBack;
 	private static NinePatch btnBack_pressed;
 
-	private void drawCollapseButtonItem(SpriteBatch batch)
+	private void drawCollapseButtonItem(Batch batch)
 	{
 
 		if (this.isPressed)
@@ -195,7 +196,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 				btnBack_pressed = new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), 16, 16, 16, 16);
 			}
 
-			btnBack_pressed.draw(batch, 0, 0, width, height);
+			btnBack_pressed.draw(batch, 0, 0, getWidth(), getHeight());
 
 		}
 		else
@@ -205,7 +206,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 				btnBack = new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), 16, 16, 16, 16);
 			}
 
-			btnBack.draw(batch, 0, 0, width, height);
+			btnBack.draw(batch, 0, 0, getWidth(), getHeight());
 
 		}
 
@@ -218,10 +219,10 @@ public class CategorieListViewItem extends ListViewItemBackground
 	private static Sprite sPinOff;
 	private static float margin = 0;
 
-	private void drawPin(SpriteBatch batch)
+	private void drawPin(Batch batch)
 	{
 		margin = UI_Size_Base.that.getMargin();
-		float iconHeight = this.height * 0.6f;
+		float iconHeight = this.getHeight() * 0.6f;
 		float iconWidth = iconHeight;
 
 		if (this.getCategorieEntry().getCat().pinned)
@@ -249,7 +250,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawChkItem(SpriteBatch batch)
+	private void drawChkItem(Batch batch)
 	{
 		if (this.categorieEntry == null) return;
 
@@ -290,7 +291,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		}
 	}
 
-	private void drawThreeStateItem(SpriteBatch batch)
+	private void drawThreeStateItem(Batch batch)
 	{
 		drawIcon(batch);
 		drawRightChkBox(batch);
@@ -316,7 +317,7 @@ public class CategorieListViewItem extends ListViewItemBackground
 		}
 	}
 
-	private void drawIcon(SpriteBatch batch)
+	private void drawIcon(Batch batch)
 	{
 		// if (categorieEntry.getIcon() != null) ActivityUtils.PutImageTargetHeight(batch, categorieEntry.getIcon(), left, top,
 		// UiSizes.getIconSize());
@@ -324,12 +325,13 @@ public class CategorieListViewItem extends ListViewItemBackground
 
 	}
 
-	private void drawRightChkBox(SpriteBatch batch)
+	private void drawRightChkBox(Batch batch)
 	{
 
 		if (rBounds == null || rChkBounds == null)
 		{
-			rBounds = new CB_RectF(width - height - margin, margin, height - margin, height - margin);// = right Button bounds
+			rBounds = new CB_RectF(getWidth() - getHeight() - margin, margin, getHeight() - margin, getHeight() - margin);// = right Button
+																															// bounds
 
 			rChkBounds = rBounds.ScaleCenter(0.8f);
 		}

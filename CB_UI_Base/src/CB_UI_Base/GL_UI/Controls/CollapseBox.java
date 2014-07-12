@@ -8,14 +8,14 @@ import CB_UI_Base.Math.CB_RectF;
 
 public class CollapseBox extends Box
 {
-	private CollapseBox that;
+	private final CollapseBox that;
 
 	private float maxHeight = -1;
 	private boolean collapse = false;
 
 	private float mAnimationTarget = 0;
 	private Timer mAnimationTimer;
-	private long ANIMATION_TICK = 50;
+	private final long ANIMATION_TICK = 50;
 	private boolean collapseAnimation = false;
 
 	private animatetHeightChangedListner listner;
@@ -117,7 +117,7 @@ public class CollapseBox extends Box
 		super.setHeight(Height);
 		collapse = (Height == 0);
 		if (listner != null) listner.animatedHeightChanged(Height);
-		GL.that.renderOnce("CollapseBox.setAnimationHeight");
+		GL.that.renderOnce();
 	}
 
 }

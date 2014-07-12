@@ -26,9 +26,9 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
-import CB_UI_Base.GL_UI.runOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
@@ -65,7 +65,7 @@ public class FieldNotesView extends V_ListView
 	{
 		super(rec, Name);
 		that = this;
-		ItemRec = new CB_RectF(0, 0, this.width, UI_Size_Base.that.getButtonHeight() * 1.1f);
+		ItemRec = new CB_RectF(0, 0, this.getWidth(), UI_Size_Base.that.getButtonHeight() * 1.1f);
 
 		setBackground(SpriteCacheBase.ListBack);
 
@@ -82,9 +82,7 @@ public class FieldNotesView extends V_ListView
 	@Override
 	public void onShow()
 	{
-		if (lFieldNotes == null) lFieldNotes = new FieldNoteList();
-		lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
-		this.notifyDataSetChanged();
+		reloadFieldNotes();
 		if (firstShow)
 		{
 			firstShow = false;
@@ -107,6 +105,16 @@ public class FieldNotesView extends V_ListView
 	public void Initial()
 	{
 
+	}
+
+	private void reloadFieldNotes()
+	{
+		if (lFieldNotes == null) lFieldNotes = new FieldNoteList();
+		lFieldNotes.LoadFieldNotes("", LoadingType.loadNewLastLength);
+
+		that.setBaseAdapter(null);
+		lvAdapter = new CustomAdapter(lFieldNotes);
+		that.setBaseAdapter(lvAdapter);
 	}
 
 	@Override
@@ -276,6 +284,10 @@ public class FieldNotesView extends V_ListView
 		// Found je nach CacheType
 		switch (cache.Type)
 		{
+		case Giga:
+			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
+			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
+			break;
 		case MegaEvent:
 			cm.addItem(MenuID.MI_WILL_ATTENDED, "will-attended", SpriteCacheBase.getThemedSprite("log8icon"));
 			cm.addItem(MenuID.MI_ATTENDED, "attended", SpriteCacheBase.getThemedSprite("log9icon"));
@@ -295,7 +307,7 @@ public class FieldNotesView extends V_ListView
 		cm.addItem(MenuID.MI_NOT_FOUND, "DNF", SpriteCacheBase.getThemedSprite("log1icon"));
 
 		// Aktueller Cache ist von geocaching.com dann weitere Menüeinträge freigeben
-		if (cache != null && cache.GcCode.toLowerCase().startsWith("gc"))
+		if (cache != null && cache.getGcCode().toLowerCase().startsWith("gc"))
 		{
 			cm.addItem(MenuID.MI_MAINTANCE, "maintenance", SpriteCacheBase.getThemedSprite("log5icon"));
 			cm.addItem(MenuID.MI_NOTE, "writenote", SpriteCacheBase.getThemedSprite("log2icon"));
@@ -373,7 +385,7 @@ public class FieldNotesView extends V_ListView
 		}
 
 		// chk car found?
-		if (cache.GcCode.equalsIgnoreCase("CBPark"))
+		if (cache.getGcCode().equalsIgnoreCase("CBPark"))
 		{
 
 			if (type == LogTypes.found)
@@ -391,15 +403,15 @@ public class FieldNotesView extends V_ListView
 		}
 
 		// GC fremder Cache gefunden?
-		if (!cache.GcCode.toLowerCase().startsWith("gc"))
+		if (!cache.getGcCode().toLowerCase().startsWith("gc"))
 		{
 
 			if (type == LogTypes.found)
 			{
 				// Found it! -> fremden Cache als gefunden markieren
-				if (!GlobalCore.getSelectedCache().Found)
+				if (!GlobalCore.getSelectedCache().isFound())
 				{
-					GlobalCore.getSelectedCache().Found = true;
+					GlobalCore.getSelectedCache().setFound(true);
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					QuickFieldNoteFeedbackPopUp pop = new QuickFieldNoteFeedbackPopUp(true);
@@ -410,9 +422,9 @@ public class FieldNotesView extends V_ListView
 			else if (type == LogTypes.didnt_find)
 			{
 				// DidNotFound -> fremden Cache als nicht gefunden markieren
-				if (GlobalCore.getSelectedCache().Found)
+				if (GlobalCore.getSelectedCache().isFound())
 				{
-					GlobalCore.getSelectedCache().Found = false;
+					GlobalCore.getSelectedCache().setFound(false);
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					QuickFieldNoteFeedbackPopUp pop2 = new QuickFieldNoteFeedbackPopUp(false);
@@ -454,13 +466,13 @@ public class FieldNotesView extends V_ListView
 		if (newFieldNote == null)
 		{
 			newFieldNote = new FieldNoteEntry(type);
-			newFieldNote.CacheName = cache.Name;
-			newFieldNote.gcCode = cache.GcCode;
+			newFieldNote.CacheName = cache.getName();
+			newFieldNote.gcCode = cache.getGcCode();
 			newFieldNote.foundNumber = Config.FoundOffset.getValue();
 			newFieldNote.timestamp = new Date();
 			newFieldNote.CacheId = cache.Id;
 			newFieldNote.comment = "";
-			newFieldNote.CacheUrl = cache.Url;
+			newFieldNote.CacheUrl = cache.getUrl();
 			newFieldNote.cacheType = cache.Type.ordinal();
 			newFieldNote.fillType();
 			// aktFieldNoteIndex = -1;
@@ -475,7 +487,7 @@ public class FieldNotesView extends V_ListView
 		switch (type)
 		{
 		case found:
-			if (!cache.Found) newFieldNote.foundNumber++; //
+			if (!cache.isFound()) newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
 			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(),
 					newFieldNote);
@@ -513,9 +525,9 @@ public class FieldNotesView extends V_ListView
 			if (newFieldNote.type == LogTypes.found)
 			{
 				// Found it! -> Cache als gefunden markieren
-				if (!GlobalCore.getSelectedCache().Found)
+				if (!GlobalCore.getSelectedCache().isFound())
 				{
-					GlobalCore.getSelectedCache().Found = true;
+					GlobalCore.getSelectedCache().setFound(true);
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					Config.FoundOffset.setValue(aktFieldNote.foundNumber);
@@ -527,9 +539,9 @@ public class FieldNotesView extends V_ListView
 			else if (newFieldNote.type == LogTypes.didnt_find)
 			{
 				// DidNotFound -> Cache als nicht gefunden markieren
-				if (GlobalCore.getSelectedCache().Found)
+				if (GlobalCore.getSelectedCache().isFound())
 				{
-					GlobalCore.getSelectedCache().Found = false;
+					GlobalCore.getSelectedCache().setFound(false);
 					CacheDAO cacheDAO = new CacheDAO();
 					cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 					Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
@@ -599,9 +611,9 @@ public class FieldNotesView extends V_ListView
 				// SelectedCache eine fieldNote angelegt wird
 				if (fieldNote.type == LogTypes.found)
 				{ // Found it! -> Cache als gefunden markieren
-					if (!GlobalCore.getSelectedCache().Found)
+					if (!GlobalCore.getSelectedCache().isFound())
 					{
-						GlobalCore.getSelectedCache().Found = true;
+						GlobalCore.getSelectedCache().setFound(true);
 						CacheDAO cacheDAO = new CacheDAO();
 						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 						Config.FoundOffset.setValue(aktFieldNote.foundNumber);
@@ -611,9 +623,9 @@ public class FieldNotesView extends V_ListView
 				}
 				else if (fieldNote.type == LogTypes.didnt_find)
 				{ // DidNotFound -> Cache als nicht gefunden markieren
-					if (GlobalCore.getSelectedCache().Found)
+					if (GlobalCore.getSelectedCache().isFound())
 					{
-						GlobalCore.getSelectedCache().Found = false;
+						GlobalCore.getSelectedCache().setFound(false);
 						CacheDAO cacheDAO = new CacheDAO();
 						cacheDAO.WriteToDatabase_Found(GlobalCore.getSelectedCache());
 						Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
@@ -729,7 +741,7 @@ public class FieldNotesView extends V_ListView
 
 				if (GroundspeakAPI.LastAPIError.length() > 0)
 				{
-					GL.that.RunOnGL(new runOnGL()
+					GL.that.RunOnGL(new IRunOnGL()
 					{
 
 						@Override
@@ -766,7 +778,7 @@ public class FieldNotesView extends V_ListView
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 		CacheList lCaches = new CacheList();
 		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId);
+		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
 		if (lCaches.size() > 0) tmpCache = lCaches.get(0);
 		final Cache cache = tmpCache;
 
@@ -790,9 +802,9 @@ public class FieldNotesView extends V_ListView
 					// delete aktFieldNote
 					if (cache != null)
 					{
-						if (cache.Found)
+						if (cache.isFound())
 						{
-							cache.Found = false;
+							cache.setFound(false);
 							CacheDAO cacheDAO = new CacheDAO();
 							cacheDAO.WriteToDatabase_Found(cache);
 							Config.FoundOffset.setValue(Config.FoundOffset.getValue() - 1);
@@ -804,7 +816,7 @@ public class FieldNotesView extends V_ListView
 								Cache tc = Database.Data.Query.GetCacheById(cache.Id);
 								if (tc != null)
 								{
-									tc.Found = false;
+									tc.setFound(false);
 								}
 							}
 						}
@@ -856,7 +868,11 @@ public class FieldNotesView extends V_ListView
 				{
 				case GL_MsgBox.BUTTON_POSITIVE:
 					// Yes button clicked
-					// delete aktFieldNote
+					// delete all FieldNote
+
+					// reload all Fieladnotes!
+					lFieldNotes.LoadFieldNotes("", LoadingType.Loadall);
+
 					for (FieldNoteEntry entry : lFieldNotes)
 					{
 						entry.DeleteFromDatabase();
@@ -893,7 +909,7 @@ public class FieldNotesView extends V_ListView
 		// Nicht aus der aktuellen Query, da dieser herausgefiltert sein könnte
 		CacheList lCaches = new CacheList();
 		CacheListDAO cacheListDAO = new CacheListDAO();
-		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId);
+		cacheListDAO.ReadCacheList(lCaches, "Id = " + aktFieldNote.CacheId, false, false);
 		Cache tmpCache = null;
 		if (lCaches.size() > 0) tmpCache = lCaches.get(0);
 		Cache cache = tmpCache;
@@ -974,11 +990,15 @@ public class FieldNotesView extends V_ListView
 	@Override
 	public void notifyDataSetChanged()
 	{
-		that.setBaseAdapter(null);
-		lvAdapter = new CustomAdapter(lFieldNotes);
-		that.setBaseAdapter(lvAdapter);
-
+		reloadFieldNotes();
 		super.notifyDataSetChanged();
 	}
 
+	@Override
+	public void dispose()
+	{
+		// FIXME release all Member
+		// FIXME release all EventHandler
+		super.dispose();
+	}
 }

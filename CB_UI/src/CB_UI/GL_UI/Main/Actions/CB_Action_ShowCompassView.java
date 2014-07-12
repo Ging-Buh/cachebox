@@ -3,16 +3,17 @@ package CB_UI.GL_UI.Main.Actions;
 import CB_UI.Config;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.CompassView;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
-import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
+import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.GL_UI.Menu.OptionMenu;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_Utils.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -79,51 +80,51 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_MAP, "CompassShowMap");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowMap.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowMap.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_NAME, "CompassShowWP_Name");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowWP_Name.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowWP_Name.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_ICON, "CompassShowWP_Icon");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowWP_Icon.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowWP_Icon.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_ATTRIBUTES, "CompassShowAttributes");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowAttributes.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowAttributes.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_GC_CODE, "CompassShowGcCode");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowGcCode.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowGcCode.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_COORDS, "CompassShowCoords");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowCoords.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowCoords.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_WP_DESC, "CompassShowWpDesc");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowWpDesc.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowWpDesc.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_SAT_INFO, "CompassShowSatInfos");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowSatInfos.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowSatInfos.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_SUN_MOON, "CompassShowSunMoon");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowSunMoon.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowSunMoon.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION, "CompassShowTargetDirection");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowTargetDirection.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowTargetDirection.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_S_D_T, "CompassShowSDT");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowSDT.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowSDT.getValue());
 
 		mi = icm.addItem(MenuID.MI_COMPASS_SHOW_LAST_FOUND, "CompassShowLastFound");
 		mi.setCheckable(true);
-		mi.setChecked(Config.settings.CompassShowLastFound.getValue());
+		mi.setChecked(CB_UI_Settings.CompassShowLastFound.getValue());
 
 		icm.Show();
 
@@ -142,49 +143,49 @@ public class CB_Action_ShowCompassView extends CB_Action_ShowView
 				showOtionMenu();
 				return true;
 			case MenuID.MI_COMPASS_SHOW_MAP:
-				toggleSetting(Config.settings.CompassShowMap);
+				toggleSetting(CB_UI_Settings.CompassShowMap);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_NAME:
-				toggleSetting(Config.settings.CompassShowWP_Name);
+				toggleSetting(CB_UI_Settings.CompassShowWP_Name);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_ICON:
-				toggleSetting(Config.settings.CompassShowWP_Icon);
+				toggleSetting(CB_UI_Settings.CompassShowWP_Icon);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_ATTRIBUTES:
-				toggleSetting(Config.settings.CompassShowAttributes);
+				toggleSetting(CB_UI_Settings.CompassShowAttributes);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_GC_CODE:
-				toggleSetting(Config.settings.CompassShowGcCode);
+				toggleSetting(CB_UI_Settings.CompassShowGcCode);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_COORDS:
-				toggleSetting(Config.settings.CompassShowCoords);
+				toggleSetting(CB_UI_Settings.CompassShowCoords);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_WP_DESC:
-				toggleSetting(Config.settings.CompassShowWpDesc);
+				toggleSetting(CB_UI_Settings.CompassShowWpDesc);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_SAT_INFO:
-				toggleSetting(Config.settings.CompassShowSatInfos);
+				toggleSetting(CB_UI_Settings.CompassShowSatInfos);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_SUN_MOON:
-				toggleSetting(Config.settings.CompassShowSunMoon);
+				toggleSetting(CB_UI_Settings.CompassShowSunMoon);
 				return true;
 
 			case MenuID.MI_COMPASS_SHOW_TARGET_DIRECTION:
-				toggleSetting(Config.settings.CompassShowTargetDirection);
+				toggleSetting(CB_UI_Settings.CompassShowTargetDirection);
 				return true;
 			case MenuID.MI_COMPASS_SHOW_S_D_T:
-				toggleSetting(Config.settings.CompassShowSDT);
+				toggleSetting(CB_UI_Settings.CompassShowSDT);
 				return true;
 			case MenuID.MI_COMPASS_SHOW_LAST_FOUND:
-				toggleSetting(Config.settings.CompassShowLastFound);
+				toggleSetting(CB_UI_Settings.CompassShowLastFound);
 				return true;
 			}
 			return false;

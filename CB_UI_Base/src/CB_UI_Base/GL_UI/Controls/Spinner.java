@@ -7,10 +7,10 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Spinner extends Button
@@ -109,10 +109,10 @@ public class Spinner extends Button
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
 		super.render(batch);
-		triangle.draw(batch, 0, 0, width, height);
+		triangle.draw(batch, 0, 0, getWidth(), getHeight());
 	}
 
 	@Override
@@ -140,10 +140,10 @@ public class Spinner extends Button
 				lblTxt.setHAlignment(HAlignment.LEFT);
 				if (icon == null)
 				{
-					CB_RectF rec = (new CB_RectF(0, 0, this.height, this.height)).ScaleCenter(0.7f);
+					CB_RectF rec = (new CB_RectF(0, 0, this.getHeight(), this.getHeight())).ScaleCenter(0.7f);
 
 					icon = new Image(rec, "");
-					icon.setY(this.halfHeight - icon.getHalfHeight());
+					icon.setY(this.getHalfHeight() - icon.getHalfHeight());
 
 					float margin = UI_Size_Base.that.getMargin();
 

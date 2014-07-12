@@ -65,4 +65,16 @@ public class SettingTime extends SettingBase<Integer>
 		ret.lastValue = this.lastValue;
 		return ret;
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SettingTime)) return false;
+
+		SettingTime inst = (SettingTime) obj;
+		if (!(inst.name.equals(this.name))) return false;
+		if (inst.value != this.value) return false;
+
+		return true;
+	}
 }

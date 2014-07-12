@@ -16,19 +16,11 @@ public class API_ErrorEventHandlerList
 		}
 	}
 
-	public static void removeHandler(API_ErrorEventHandler handler)
-	{
-		synchronized (list)
-		{
-			list.remove(handler);
-		}
-	}
-
 	private static Thread threadCall;
 	private static long lastCall;
 	private static final long MIN_CALL_TIME = 5000;
 
-	public static void callInvalidApiKey()
+	static void callInvalidApiKey()
 	{
 		if (lastCall != 0 && lastCall > System.currentTimeMillis() - MIN_CALL_TIME) return;
 		lastCall = System.currentTimeMillis();

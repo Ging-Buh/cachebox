@@ -2,9 +2,9 @@ package CB_UI_Base.GL_UI.Controls.Dialogs;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.Animation.AnimationBase;
 import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
-import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
@@ -12,6 +12,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Log.Logger;
 
 /**
  * Ein Wait Dialog mit übergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann
@@ -21,7 +22,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 public class CancelWaitDialog extends WaitDialog
 {
 
-	CancelWaitDialog that;
+	// CancelWaitDialog that;
 
 	public interface IcancelListner
 	{
@@ -35,25 +36,26 @@ public class CancelWaitDialog extends WaitDialog
 
 	protected IcancelListner cancelListner;
 	private IReadyListner readyListner;
-	private Runnable runnable;
+	private final Runnable runnable;
 
 	public CancelWaitDialog(Size size, String name, IcancelListner listner, Runnable runnable)
 	{
 		super(size, name);
 		this.cancelListner = listner;
 		this.runnable = runnable;
-		that = this;
 	}
 
 	public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, Runnable runnable)
 	{
-		return ShowWait(Msg, WorkAnimation.GetINSTANCE(), listner, runnable);
+		final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listner, runnable);
+		wd.setCallerName(Logger.getCallerName(2));
+		return wd;
 	}
 
 	public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListner listner, Runnable runnable)
 	{
 		final CancelWaitDialog wd = createDialog(Msg, listner, runnable);
-
+		wd.setCallerName(Logger.getCallerName(1));
 		CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 		Animation.setRec(animationRec);
 		wd.animation = Animation;
@@ -116,7 +118,7 @@ public class CancelWaitDialog extends WaitDialog
 
 		waitDialog.addChild(waitDialog.label);
 
-		return (CancelWaitDialog) waitDialog;
+		return waitDialog;
 
 	}
 
@@ -139,7 +141,7 @@ public class CancelWaitDialog extends WaitDialog
 				@Override
 				public void RunnableReady(boolean isCanceld)
 				{
-					that.close();
+					// CancelWaitDialog.this.close();
 					if (isCanceld && cancelListner != null)
 					{
 						cancelListner.isCanceld();

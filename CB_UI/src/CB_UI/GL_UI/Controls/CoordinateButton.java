@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Controls;
 
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.EditCoord;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.utils.Clipboard;
 public class CoordinateButton extends Button implements ICopyPaste
 {
 	protected Coordinate mActCoord;
+	protected String mwpName;
 	protected CopiePastePopUp popUp;
 	protected Clipboard clipboard;
 
@@ -30,11 +32,12 @@ public class CoordinateButton extends Button implements ICopyPaste
 
 	private CoordinateChangeListner mCoordinateChangedListner;
 
-	public CoordinateButton(CB_RectF rec, String name, Coordinate coord)
+	public CoordinateButton(CB_RectF rec, String name, Coordinate coordinate, String wpName)
 	{
 		super(rec, name);
-		if (coord == null) coord = new Coordinate();
-		mActCoord = coord;
+		if (coordinate == null) coordinate = new Coordinate(0, 0);
+		mActCoord = coordinate;
+		mwpName = wpName;
 		setText();
 		this.setOnClickListener(click);
 		this.setOnLongClickListener(longCLick);
@@ -44,7 +47,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 	public CoordinateButton(String name)
 	{
 		super(name);
-		mActCoord = new Coordinate();
+		mActCoord = new CoordinateGPS(0, 0);
 		this.setOnClickListener(click);
 		this.setOnLongClickListener(longCLick);
 		clipboard = GlobalCore.getDefaultClipboard();
@@ -57,7 +60,9 @@ public class CoordinateButton extends Button implements ICopyPaste
 
 	private void setText()
 	{
-		this.setText(mActCoord.FormatCoordinate());
+		if (mwpName == null) this.setText(mActCoord.FormatCoordinate());
+		else
+			this.setText(mwpName);
 	}
 
 	@Override
@@ -115,10 +120,10 @@ public class CoordinateButton extends Button implements ICopyPaste
 		}
 	};
 
-	public void setCoordinate(Coordinate coord)
+	public void setCoordinate(Coordinate pos)
 	{
-		mActCoord = coord;
-		if (mActCoord == null) mActCoord = new Coordinate();
+		mActCoord = pos;
+		if (mActCoord == null) mActCoord = new CoordinateGPS(0, 0);
 		setText();
 	}
 
@@ -134,11 +139,8 @@ public class CoordinateButton extends Button implements ICopyPaste
 
 	protected void showPopUp(int x, int y)
 	{
-		if ((popUp != null) && (popUp.getchilds() == null)) popUp = null;
-		if (popUp == null)
-		{
-			popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), this);
-		}
+
+		popUp = new CopiePastePopUp("CopiePastePopUp=>" + getName(), this);
 
 		float noseOffset = popUp.getHalfWidth() / 2;
 
@@ -169,12 +171,12 @@ public class CoordinateButton extends Button implements ICopyPaste
 	{
 		if (clipboard == null) return null;
 		String content = clipboard.getContents();
-		Coordinate cor = null;
+		CoordinateGPS cor = null;
 		if (content != null)
 		{
 			try
 			{
-				cor = new Coordinate(content);
+				cor = new CoordinateGPS(content);
 			}
 			catch (Exception e)
 			{
@@ -209,7 +211,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 		if (clipboard == null) return null;
 		String content = this.getText();
 		clipboard.setContents(content);
-		Coordinate cor = new Coordinate("N 0° 0.00 / E 0° 0.00");
+		CoordinateGPS cor = new CoordinateGPS("N 0° 0.00 / E 0° 0.00");
 		cor.setValid(false);
 		this.setCoordinate(cor);
 		return content;

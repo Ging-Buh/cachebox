@@ -1,13 +1,15 @@
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Enums.LogTypes;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Trackable;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Config;
 import CB_UI_Base.Enums.WrapType;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -18,7 +20,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
-import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -33,7 +34,7 @@ public class TB_Details extends ActivityBase
 	private Label lblName, lblAbout, lblAboutDesc, lblGoal, lblGoalDesc;
 	private Label lblTypeName, lblTbCode, lblOwner, lblBirth;
 	// TODO Visit,Home und Distance müssen noch angezeigt werden!
-	private Label TypeName, TbCode, Owner, Birth, lastVisit, Home, TravelDistance;
+	private Label TypeName, TbCode, Owner, Birth;
 	private Box AboutThisItem, GoalThisItem, DetailThisItem;
 
 	public TB_Details()
@@ -80,7 +81,7 @@ public class TB_Details extends ActivityBase
 
 		scrollBox = new ScrollBox(ActivityRec());
 		scrollBox.setVirtualHeight(innerHeight);
-		scrollBox.setHeight(this.height - (btnClose.getHeight() - margin) * 2.5f);
+		scrollBox.setHeight(this.getHeight() - (btnClose.getHeight() - margin) * 2.5f);
 		scrollBox.setBackground(SpriteCacheBase.activityBackground);
 
 		CB_RectF iconRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight());
@@ -90,31 +91,29 @@ public class TB_Details extends ActivityBase
 		lblName = new Label(iconRec, "Name");
 
 		image = new Image(iconRec, "Image");
-		lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.SINGLELINE);
+		lblAbout = new Label(Translation.Get("AboutThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
 		lblAboutDesc = new Label("AboutDesc");
 		AboutThisItem = new Box(10, 10, "AboutItemBox");
 		AboutThisItem.setBackground(SpriteCacheBase.activityBackground);
 
-		lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), Fonts.getFontColor(), WrapType.SINGLELINE);
+		lblGoal = new Label(Translation.Get("GoalThisItem"), Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE);
 		lblGoalDesc = new Label("GoalDesc");
 		GoalThisItem = new Box(10, 10, "GoalItemBox");
 		GoalThisItem.setBackground(SpriteCacheBase.activityBackground);
 
-		lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
-		lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
-		lblOwner = new Label(Translation.Get("TB_Owner"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
+		lblTypeName = new Label(Translation.Get("TB_Type"), Fonts.getSmall(), COLOR.getDisableFontColor(), WrapType.SINGLELINE);
+		lblTbCode = new Label(Translation.Get("TB_Code"), Fonts.getSmall(), COLOR.getDisableFontColor(), WrapType.SINGLELINE);
+		lblOwner = new Label(Translation.Get("TB_Owner"), Fonts.getSmall(), COLOR.getDisableFontColor(), WrapType.SINGLELINE);
 		// lbllastVisit = new Label("LastVisit");
 		// lblHome = new Label("Home");
-		lblBirth = new Label(Translation.Get("TB_Birth"), Fonts.getSmall(), Fonts.getDisableFontColor(), WrapType.SINGLELINE);
+		lblBirth = new Label(Translation.Get("TB_Birth"), Fonts.getSmall(), COLOR.getDisableFontColor(), WrapType.SINGLELINE);
 		// lblTravelDistance = new Label("TravelDistance");
 
 		TypeName = new Label("TypeName");
 		TbCode = new Label("TbCode");
 		Owner = new Label("Owner");
-		lastVisit = new Label("LastVisit");
-		Home = new Label("Home");
+
 		Birth = new Label("Birth");
-		TravelDistance = new Label("TravelDistance");
 
 		DetailThisItem = new Box(10, 10, "DetailThisItem");
 		DetailThisItem.setBackground(SpriteCacheBase.activityBackground);
@@ -134,7 +133,7 @@ public class TB_Details extends ActivityBase
 		// lblName.setVAlignment(VAlignment.CENTER);
 		lblName.setWrappedText(TB.getName());
 
-		scrollBox.setWidth(width);
+		scrollBox.setWidth(getWidth());
 		scrollBox.setMargins(margin, 0);
 
 		float minBoxHeight = Fonts.Measure("Tg").height + SpriteCacheBase.activityBackground.getBottomHeight()
@@ -150,7 +149,7 @@ public class TB_Details extends ActivityBase
 		float ImageHeight = 0;
 		if (ImgUrl != null && ImgUrl.length() > 0)
 		{
-			image.setHeight(this.width / 3);
+			image.setHeight(this.getWidth() / 3);
 			ImageHeight = image.getHeight();
 			image.setImageURL(ImgUrl);
 		}
@@ -257,7 +256,7 @@ public class TB_Details extends ActivityBase
 		AboutThisItem.setX(0);
 		GoalThisItem.setX(0);
 		DetailThisItem.setX(0);
-		GL.that.renderOnce("TB_details Layout");
+		GL.that.renderOnce();
 		GL.that.addRenderView(this, GL.FRAME_RATE_FAST_ACTION);
 	}
 
@@ -269,19 +268,19 @@ public class TB_Details extends ActivityBase
 
 		cm.addItem(MenuID.MI_TB_NOTE, "note", SpriteCacheBase.Icons.get(IconName.tbNote_63.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.discovered, Config.settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered",
-				SpriteCacheBase.Icons.get(IconName.tbDiscover_58.ordinal()));
+		if (TB.isLogTypePosible(LogTypes.discovered, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_DISCOVERED,
+				"discovered", SpriteCacheBase.Icons.get(IconName.tbDiscover_58.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.visited, Config.settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_VISIT, "visit",
+		if (TB.isLogTypePosible(LogTypes.visited, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_VISIT, "visit",
 				SpriteCacheBase.Icons.get(IconName.tbVisit_62.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.dropped_off, Config.settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_DROPPED, "dropped",
+		if (TB.isLogTypePosible(LogTypes.dropped_off, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_DROPPED, "dropped",
 				SpriteCacheBase.Icons.get(IconName.tbDrop_59.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.grab_it, Config.settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed",
+		if (TB.isLogTypePosible(LogTypes.grab_it, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed",
 				SpriteCacheBase.Icons.get(IconName.tbGrab_60.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.retrieve, Config.settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_PICKED, "picked",
+		if (TB.isLogTypePosible(LogTypes.retrieve, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_PICKED, "picked",
 				SpriteCacheBase.Icons.get(IconName.tbPicked_61.ordinal()));
 
 		cm.Show();

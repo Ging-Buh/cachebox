@@ -2,6 +2,7 @@ package de;
 
 import java.awt.Frame;
 import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -9,7 +10,10 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
+
+import org.mapsforge.map.model.DisplayModel;
 
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
@@ -18,7 +22,6 @@ import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.splash;
-import CB_UI_Base.Plattform;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.ICallUrl;
 import CB_UI_Base.Events.platformConector.IHardwarStateListner;
@@ -32,6 +35,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Plattform;
 import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
@@ -41,6 +45,7 @@ import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
+import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -62,7 +67,7 @@ public class DesktopMain
 	@SuppressWarnings("unused")
 	public static void start(devicesSizes ui, boolean debug, boolean scissor, final boolean simulate, final Frame frame)
 	{
-		GlobalCore.platform = Plattform.Desktop;
+		Plattform.used = Plattform.Desktop;
 		frame.setVisible(false);
 
 		// Initial Desctop TexturePacker
@@ -99,7 +104,7 @@ public class DesktopMain
 				}
 				catch (BackingStoreException e)
 				{
-					 
+
 					e.printStackTrace();
 				}
 
@@ -155,7 +160,8 @@ public class DesktopMain
 			Config.AcceptChanges();
 		}
 
-		new DesktopManager();
+		DisplayModel model = new DisplayModel();
+		new DesktopManager(model);
 
 		int sw = ui.Window.height > ui.Window.width ? ui.Window.width : ui.Window.height;
 
@@ -191,10 +197,10 @@ public class DesktopMain
 			lwjglAppCfg.setFromDisplayMode(dispMode);
 			lwjglAppCfg.fullscreen = false;
 			lwjglAppCfg.resizable = false;
-			lwjglAppCfg.useGL20 = true;
 			lwjglAppCfg.width = ui.Window.width;
 			lwjglAppCfg.height = ui.Window.height;
 			lwjglAppCfg.title = "DCB Desctop Cachebox";
+			lwjglAppCfg.samples = 16;
 
 			final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
 			App.getGraphics().setContinuousRendering(false);
@@ -203,7 +209,7 @@ public class DesktopMain
 			{
 
 				@Override
-				public void RequestRender(String requestName)
+				public void RequestRender()
 				{
 					App.getGraphics().requestRendering();
 
@@ -347,9 +353,9 @@ public class DesktopMain
 				if (GlobalCore.getSelectedCache() != null)
 				{
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
-					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().GcCode);
+					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
-					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().GcCode);
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 				}
 				System.exit(0);
 
@@ -409,9 +415,26 @@ public class DesktopMain
 
 	private static void showSimmulateForm()
 	{
-		final simulateForm sim = new simulateForm("Simulate Form");
-		sim.setSize(400, 130);
-		sim.setVisible(true);
+		// final simulateForm sim = new simulateForm("Simulate Form");
+		// sim.setSize(400, 130);
+		// sim.setVisible(true);
+
+		JFrame f;
+		try
+		{
+			f = SimulatorMain.createFrame();
+			f.pack();
+			f.setResizable(false);
+			f.setVisible(true);
+
+			SimulatorMain.startListener();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	/**

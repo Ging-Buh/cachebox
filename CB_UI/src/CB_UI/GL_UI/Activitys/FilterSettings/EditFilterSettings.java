@@ -1,5 +1,8 @@
 package CB_UI.GL_UI.Activitys.FilterSettings;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DB.Database;
@@ -56,7 +59,7 @@ public class EditFilterSettings extends ActivityBase
 
 		tmpFilterProps = GlobalCore.LastFilter;
 
-		float myWidth = this.width - leftBorder;
+		float myWidth = this.getWidth() - leftBorder;
 
 		Button bOK = new Button(leftBorder / 2, leftBorder, myWidth / 2, UI_Size_Base.that.getButtonHeight(), "OK Button");
 
@@ -65,31 +68,44 @@ public class EditFilterSettings extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				lvCat.SetCategory();
-				GlobalCore.LastFilter = tmpFilterProps;
-
-				// Text Filter ?
-				String txtFilter = vTxt.getFilterString();
-				if (txtFilter.length() > 0)
-				{
-					int FilterMode = vTxt.getFilterState();
-					if (FilterMode == 0) GlobalCore.LastFilter.filterName = txtFilter;
-					else if (FilterMode == 1) GlobalCore.LastFilter.filterGcCode = txtFilter;
-					else if (FilterMode == 2) GlobalCore.LastFilter.filterOwner = txtFilter;
-				}
-				else
-				{
-					GlobalCore.LastFilter.filterName = "";
-					GlobalCore.LastFilter.filterGcCode = "";
-					GlobalCore.LastFilter.filterOwner = "";
-				}
-
-				ApplyFilter(GlobalCore.LastFilter);
-
-				// Save selected filter (new JSON Format)
-				Config.FilterNew.setValue(GlobalCore.LastFilter.toString());
-				Config.AcceptChanges();
 				finish();
+
+				Timer t = new Timer();
+				TimerTask postTask = new TimerTask()
+				{
+
+					@Override
+					public void run()
+					{
+						lvCat.SetCategory();
+						GlobalCore.LastFilter = tmpFilterProps;
+
+						// Text Filter ?
+						String txtFilter = vTxt.getFilterString();
+						if (txtFilter.length() > 0)
+						{
+							int FilterMode = vTxt.getFilterState();
+							if (FilterMode == 0) GlobalCore.LastFilter.filterName = txtFilter;
+							else if (FilterMode == 1) GlobalCore.LastFilter.filterGcCode = txtFilter;
+							else if (FilterMode == 2) GlobalCore.LastFilter.filterOwner = txtFilter;
+						}
+						else
+						{
+							GlobalCore.LastFilter.filterName = "";
+							GlobalCore.LastFilter.filterGcCode = "";
+							GlobalCore.LastFilter.filterOwner = "";
+						}
+
+						ApplyFilter(GlobalCore.LastFilter);
+
+						// Save selected filter (new JSON Format)
+						Config.FilterNew.setValue(GlobalCore.LastFilter.toString());
+						Config.AcceptChanges();
+					}
+				};
+
+				t.schedule(postTask, 300);
+
 				return true;
 			}
 		});
@@ -110,9 +126,9 @@ public class EditFilterSettings extends ActivityBase
 
 		this.addChild(bCancel);
 
-		float topButtonY = this.height - leftBorder - UI_Size_Base.that.getButtonHeight();
+		float topButtonY = this.getHeight() - leftBorder - UI_Size_Base.that.getButtonHeight();
 
-		contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.width, topButtonY - bOK.getMaxY()), "contentBox");
+		contentBox = new Box(new CB_RectF(0, bOK.getMaxY(), this.getWidth(), topButtonY - bOK.getMaxY()), "contentBox");
 		contentBox.setBackground(SpriteCacheBase.activityBackground);
 		this.addChild(contentBox);
 
@@ -213,7 +229,7 @@ public class EditFilterSettings extends ActivityBase
 		bOK.setText(Translation.Get("ok"));
 		bCancel.setText(Translation.Get("cancel"));
 
-		ListViewRec = new CB_RectF(0, margin, this.width, btPre.getY() - bOK.getMaxY() - margin - margin);
+		ListViewRec = new CB_RectF(0, margin, this.getWidth(), btPre.getY() - bOK.getMaxY() - margin - margin);
 
 		initialPresets();
 		initialSettings();
@@ -374,7 +390,7 @@ public class EditFilterSettings extends ActivityBase
 						Logger.General("Main.ApplyFilter: " + sqlWhere);
 						Database.Data.Query.clear();
 						CacheListDAO cacheListDAO = new CacheListDAO();
-						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere);
+						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 						GlobalCore.checkSelectedCacheValid();
 					}
 					CachListChangedEventList.Call();

@@ -18,17 +18,20 @@ package CB_UI_Base.GL_UI.Controls;
 
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
+import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
+import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Label extends CB_View_Base
@@ -39,14 +42,16 @@ public class Label extends CB_View_Base
 		TOP, CENTER, BOTTOM
 	}
 
-	BitmapFontCache TextObject;
+	BitmapFontCache TextObject; // FIXME Create BitmapFontCache-Array and reduce PolygonSpriteBatch(10920) constructor for Labels with long
+								// Text
 
 	private String mText = "";
 	private BitmapFont mFont = Fonts.getNormal();
-	private Color mColor = Fonts.getFontColor();
+	private Color mColor = COLOR.getFontColor();
 	private VAlignment mVAlignment = VAlignment.CENTER;
 	private HAlignment mHAlignment = HAlignment.LEFT;
 	private WrapType mWrapType = WrapType.SINGLELINE;
+	private int ErrorCount = 0;
 
 	TextBounds bounds;
 
@@ -104,8 +109,9 @@ public class Label extends CB_View_Base
 	}
 
 	@Override
-	protected void render(SpriteBatch batch)
+	protected void render(Batch batch)
 	{
+
 		try
 		{
 			if (TextObject != null) TextObject.draw(batch);
@@ -113,10 +119,12 @@ public class Label extends CB_View_Base
 		catch (ArrayIndexOutOfBoundsException e)
 		{
 			// kommt manchmal wenn der Text geändert wird
+			makeText();
 		}
 		catch (NullPointerException e)
 		{
 			// kommt manchmal wenn der Text geändert wird
+			makeText();
 		}
 	}
 
@@ -179,10 +187,15 @@ public class Label extends CB_View_Base
 
 	private void makeTextObject()
 	{
-		if (!TextObject.getFont().equals(mFont))
+		if (TextObject == null)
 		{
 			TextObject = new BitmapFontCache(mFont, false);
 		}
+		else if (!TextObject.getFont().equals(mFont))
+		{
+			TextObject = new BitmapFontCache(mFont, false);
+		}
+
 		if (!TextObject.getColor().equals(mColor))
 		{
 			TextObject.setColor(mColor);
@@ -204,6 +217,8 @@ public class Label extends CB_View_Base
 			}
 		}
 		float yPosition = 0; // VAlignment.BOTTOM
+
+		if (mVAlignment == null) mVAlignment = VAlignment.CENTER;
 		switch (mVAlignment)
 		{
 		case TOP:
@@ -212,8 +227,30 @@ public class Label extends CB_View_Base
 		case CENTER:
 			yPosition = (innerHeight - bounds.height - mFont.getAscent()) / 2f;
 			break;
+		case BOTTOM:
+			// TODO implement
+			break;
+
 		}
-		TextObject.setPosition(xPosition, yPosition);
+
+		try
+		{
+			TextObject.setPosition(xPosition, yPosition);
+			ErrorCount = 0;
+		}
+		catch (Exception e)
+		{
+			// Try again
+			ErrorCount++;
+			if (ErrorCount < 5) GL.that.RunOnGL(new IRunOnGL()
+			{
+				@Override
+				public void run()
+				{
+					setTextPosition();
+				}
+			});
+		}
 	}
 
 	private void makeText()
@@ -377,7 +414,7 @@ public class Label extends CB_View_Base
 	{
 		// todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
 		mFont = Fonts.getNormal();
-		mColor = Fonts.getFontColor();
+		mColor = COLOR.getFontColor();
 		initLabel();
 	}
 
