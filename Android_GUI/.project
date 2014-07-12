@@ -3,7 +3,14 @@
 	<name>droidcachebox</name>
 	<comment></comment>
 	<projects>
-		<project>Cachebox Core</project>
+		<project>CB_Core</project>
+		<project>CB_GC_Joker_PlugIn</project>
+		<project>CB_Locator_Base</project>
+		<project>CB_mapsforge</project>
+		<project>CB_Translation_Base</project>
+		<project>CB_UI</project>
+		<project>CB_UI_Base</project>
+		<project>CB_Utils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -31,43 +38,6 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>CB_Core_src</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CB_Core/src</locationURI>
-		</link>
-		<link>
-			<name>CB_Locator_src</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CB_Locator_Base/src</locationURI>
-		</link>
-		<link>
-			<name>CB_Rpc_src</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/CB_Rpc/src</locationURI>
-		</link>
-		<link>
-			<name>CB_Translationsrc</name>
-			<type>2</type>
-			<location>C:/@Work/Longri/SVN&apos;s/Cachebox/branches/2012-11-08 - First Release on Google Play/CB_Translation_Base/src</location>
-		</link>
-		<link>
-			<name>CB_UI_BASE_src</name>
-			<type>2</type>
-			<location>C:/@Work/Longri/SVN&apos;s/Cachebox/branches/2012-11-08 - First Release on Google Play/CB_UI_Base/src</location>
-		</link>
-		<link>
-			<name>CB_UI_src</name>
-			<type>2</type>
-			<location>C:/@Work/Longri/SVN&apos;s/Cachebox/branches/2012-11-08 - First Release on Google Play/CB_UI/src</location>
-		</link>
-		<link>
-			<name>CB_UTILS_src</name>
-			<type>2</type>
-			<location>C:/@Work/Longri/SVN&apos;s/Cachebox/branches/2012-11-08 - First Release on Google Play/CB_Utils/src</location>
-		</link>
-	</linkedResources>
 	<variableList>
 		<variable>
 			<name>PROJEKT_HOME</name>
