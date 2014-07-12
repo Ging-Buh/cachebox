@@ -7,14 +7,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Core"/>
-	<classpathentry kind="lib" path="lib/gdx.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.1.jar"/>
-	<classpathentry kind="lib" path="lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry kind="lib" path="lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry kind="lib" path="lib/sjxp-2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
+	<classpathentry kind="lib" path="lib/gdx-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

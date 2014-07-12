@@ -1,6 +1,24 @@
 
 Versions Änderungen:
 
+Version : 0.7.2041
+	• Log-Text in die Zwischenablage kopieren 
+	• Filter-Logs nach Freunden 
+	• Suchen und laden von Freundes Logs 
+	• Solver2 weiter entwickelt 
+	• Integration von Map-Download (Freizeitkarte.de )
+	• Mapsforge überarbeitet (drehen von Symbolen und Texten) 
+	• Import von Benutzerhinweisen GS 
+	• Verbesserte Leistung (Energie sparen) 
+	• Verbesserte Behandlung von 0/0 Koordinaten 
+	• fix Android 4.4.2 Schreibschutz Problem 
+	• fix einige Anzeigen von imperialen Einheiten
+	• fix einige unerwartete Zustände beim benutzen der Zurück Taste 
+	• Fix Probleme beim Ein-/ Ausschalten 
+	• Fix laden der Beschreibungsbilder 
+	• Fix Ausrichtung des Kompasses in der Map 
+	• Fix Liste scrollen auf Tablet
+
 Version : 0.6.1884
 	• Anlegen von mehreren Arbeitsordnern
 	• Mapsforge 0.4.0

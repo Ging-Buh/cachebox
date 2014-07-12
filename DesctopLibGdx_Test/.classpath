@@ -3,28 +3,38 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="assets"/>
 	<classpathentry exported="true" kind="lib" path="Lib/sqlite-jdbc-3.7.8-20111025.014814-1.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/gdx-backend-lwjgl-natives.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/gdx-natives.jar"/>
 	<classpathentry kind="lib" path="Lib/kxml2-2.3.0.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI"/>
 	<classpathentry exported="true" kind="lib" path="Lib/log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/httpclient-4.0-alpha1.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/httpcore-4.0-alpha5.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/gdx-backend-lwjgl.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/gdx.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/gdx-freetype-natives.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/gdx-freetype.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Locator_Base"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Utils"/>
-	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-awt-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
-	<classpathentry exported="true" kind="lib" path="Lib/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Rpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GPS Simulator"/>
+	<classpathentry kind="lib" path="Lib/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-1.0.0.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-backend-lwjgl-1.0.0.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-freetype-1.0.0.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-freetype-platform-1.0.0-natives-desktop.jar"/>
+	<classpathentry kind="lib" path="Lib/gdx-platform-1.0.0-natives-desktop.jar"/>
+	<classpathentry kind="lib" path="Lib/jinput-2.0.5.jar"/>
+	<classpathentry kind="lib" path="Lib/jinput-platform-2.0.5-natives-linux.jar"/>
+	<classpathentry kind="lib" path="Lib/jinput-platform-2.0.5-natives-osx.jar"/>
+	<classpathentry kind="lib" path="Lib/jinput-platform-2.0.5-natives-windows.jar"/>
+	<classpathentry kind="lib" path="Lib/jlayer-1.0.1-gdx.jar"/>
+	<classpathentry kind="lib" path="Lib/jorbis-0.0.17.jar"/>
+	<classpathentry kind="lib" path="Lib/jutils-1.0.0.jar"/>
+	<classpathentry kind="lib" path="Lib/lwjgl_util-2.9.1.jar"/>
+	<classpathentry kind="lib" path="Lib/lwjgl-2.9.1.jar"/>
+	<classpathentry kind="lib" path="Lib/lwjgl-platform-2.9.1-natives-linux.jar"/>
+	<classpathentry kind="lib" path="Lib/lwjgl-platform-2.9.1-natives-osx.jar"/>
+	<classpathentry kind="lib" path="Lib/lwjgl-platform-2.9.1-natives-windows.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Desktop"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_mapsforge"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

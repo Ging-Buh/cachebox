@@ -2,14 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/gdx.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar" sourcepath="/PixMapDrawSVGMapsforge-desktop/libs/mapsforge-core-0.4.0-SNAPSHOT-CACHEBOX-PATCH-sources.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar" sourcepath="/PixMapDrawSVGMapsforge-desktop/libs/mapsforge-map-0.4.0-SNAPSHOT-CACHEBOX-PATCH-sources.jar"/>
-	<classpathentry kind="lib" path="libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH.jar" sourcepath="/PixMapDrawSVGMapsforge/libs/mapsforge-map-reader-0.4.0-SNAPSHOT-CACHEBOX-PATCH-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CB_Ui_Base"/>
 	<classpathentry kind="lib" path="libs/httpclient-4.1.1.jar"/>
 	<classpathentry kind="lib" path="libs/httpcore-4.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_UI_Base"/>
+	<classpathentry kind="lib" path="libs/gdx-1.0.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_mapsforge"/>
+	<classpathentry kind="lib" path="libs/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="libs/sjxp-2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

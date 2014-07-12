@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="com.soyatec.uml.CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/gdx.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CB_Utils"/>
+	<classpathentry kind="lib" path="lib/gdx-1.0.0.jar" sourcepath="C:/Users/Longri_2/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.0.0/8dde59f7d267fceee79e389801ede8f6fb3ab3d4/gdx-1.0.0-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
