@@ -1,5 +1,23 @@
 Changes:
 
+Version : 0.7.2203
+	• new Cyrillic CharSet 
+	• new Export List to GPX
+	• massive saving of RAM 
+	• implement some User feature request
+	• enhanced usability of Project Dialog
+	• enhanced paste clipboard to Notes
+
+	• rework Spoiler handling
+	• include one Mapsforge interpretation 
+	• update translations
+	• change api.groundspeak.com/LiveV5 to LiveV6
+
+	• fix Coordinate projection in the southern hemisphere 
+	• fix  and add GS changes with new Cache/Waypoint/Attributes types
+	• fix calculation of Track altitude
+	• fix some exceptions
+
 Version: 0.7.2041
 	•	Copy Log-Text to clipboard 
 	•	Filter Logs in LogView for special finders (friends)

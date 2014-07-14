@@ -566,15 +566,31 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (DebugSprite == null)
 		{
-			int w = getNextHighestPO2((int) getWidth());
-			int h = getNextHighestPO2((int) getHeight());
-			debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-			debugRegPixmap.setColor(1f, 0f, 0f, 1f);
-			debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
+			try
+			{
+				GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
+				{
 
-			debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
+					@Override
+					public void run()
+					{
+						int w = getNextHighestPO2((int) getWidth());
+						int h = getNextHighestPO2((int) getHeight());
+						debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+						debugRegPixmap.setColor(1f, 0f, 0f, 1f);
+						debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
 
-			DebugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
+						debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
+
+						DebugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
+					}
+				});
+
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 
 		}
 	}

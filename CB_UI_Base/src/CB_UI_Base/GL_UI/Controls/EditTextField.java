@@ -733,7 +733,7 @@ public class EditTextField extends EditTextFieldBase
 		int clickedCursor = 0;
 		int clickedCursorLine = (int) ((this.getHeight() - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
 		clickedCursorLine += topLine;
-		if (clickedCursorLine < 0) return null;
+		if (clickedCursorLine < 0) clickedCursorLine = 0;
 		if (clickedCursorLine >= displayText.size()) return null;
 
 		DisplayText dt = displayText.get(clickedCursorLine);
@@ -1037,30 +1037,34 @@ public class EditTextField extends EditTextFieldBase
 						cursorLeftRight(-1);
 						clearSelection();
 					}
-					if (keycode == Keys.RIGHT)
+					else if (keycode == Keys.RIGHT)
 					{
 						cursorLeftRight(1);
 						clearSelection();
 					}
-					if (keycode == Keys.HOME)
+					else if (keycode == Keys.HOME)
 					{
 						cursorHomeEnd(-1);
 						clearSelection();
 					}
-					if (keycode == Keys.END)
+					else if (keycode == Keys.END)
 					{
 						cursorHomeEnd(1);
 						clearSelection();
 					}
-					if (keycode == Keys.UP)
+					else if (keycode == Keys.UP)
 					{
 						cursorUpDown(-1);
 						clearSelection();
 					}
-					if (keycode == Keys.DOWN)
+					else if (keycode == Keys.DOWN)
 					{
 						cursorUpDown(1);
 						clearSelection();
+					}
+					else
+					{
+						return false;
 					}
 				}
 				GL.that.renderOnce();

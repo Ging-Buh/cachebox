@@ -1707,7 +1707,7 @@ public class GL implements ApplicationListener, InputProcessor
 				@Override
 				public void run()
 				{
-					disposeAcktivitie.dispose();
+					if (disposeAcktivitie != null) disposeAcktivitie.dispose();
 					disposeAcktivitie = null;
 					System.gc();
 				}
