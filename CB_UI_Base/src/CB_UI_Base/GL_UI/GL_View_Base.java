@@ -425,7 +425,8 @@ public abstract class GL_View_Base extends CB_RectF
 
 		if (!withoutScissor)
 		{
-			if (intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0) return; // hier gibt es nichts zu rendern
+			if (intersectRec == null || intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0) return; // hier gibt es nichts
+																														// zu rendern
 			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
 					(int) intersectRec.getHeight() + 1);
@@ -595,9 +596,9 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 	}
 
-	public final CB_RectF ThisWorldRec = new CB_RectF();
-	public final CB_RectF intersectRec = new CB_RectF();
-	public final ParentInfo myParentInfo = new ParentInfo();
+	public CB_RectF ThisWorldRec = new CB_RectF();
+	public CB_RectF intersectRec = new CB_RectF();
+	public ParentInfo myParentInfo = new ParentInfo();
 	private boolean mustSetScissor = false;
 	protected boolean childsInvalidate = false;
 	protected boolean thisInvalidate = true;
@@ -1077,7 +1078,6 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		debugRegPixmap = null;
 		debugRegTexture = null;
-
 		debugRegTexture = null;
 		name = null;
 		data = null;
@@ -1103,6 +1103,25 @@ public abstract class GL_View_Base extends CB_RectF
 			}
 			childs.clear();
 		}
+
+		if (ThisWorldRec != null)
+		{
+			ThisWorldRec.dispose();
+		}
+		ThisWorldRec = null;
+
+		if (intersectRec != null)
+		{
+			intersectRec.dispose();
+		}
+		intersectRec = null;
+
+		if (myParentInfo != null)
+		{
+			myParentInfo.dispose();
+		}
+		myParentInfo = null;
+
 		super.dispose();
 	}
 

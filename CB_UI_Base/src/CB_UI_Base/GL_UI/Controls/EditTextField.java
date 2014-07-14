@@ -1,6 +1,8 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -822,27 +824,38 @@ public class EditTextField extends EditTextFieldBase
 		showSelectionMarker(type, cursor);
 	}
 
-	protected void showSelectionMarker(SelectionMarker.Type type, Cursor tmpCursor)
+	protected void showSelectionMarker(final SelectionMarker.Type type, final Cursor tmpCursor)
 	{
 
 		GL.that.showMarker(type);
 
-		switch (type)
+		Timer v = new Timer();
+		TimerTask ta = new TimerTask()
 		{
-		case Center:
 
-			GL.that.selectionMarkerCenterMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
-			break;
-		case Left:
+			@Override
+			public void run()
+			{
+				switch (type)
+				{
+				case Center:
 
-			GL.that.selectionMarkerLeftMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
-			break;
-		case Right:
+					GL.that.selectionMarkerCenterMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
+					break;
+				case Left:
 
-			GL.that.selectionMarkerRightMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
-			break;
-		}
+					GL.that.selectionMarkerLeftMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
+					break;
+				case Right:
 
+					GL.that.selectionMarkerRightMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
+					break;
+				}
+
+			}
+		};
+
+		v.schedule(ta, 700);
 	}
 
 	private void moveSelectionMarkers(float dx, float dy)

@@ -161,9 +161,10 @@ public class SelectionMarker extends CB_View_Base
 	// move absolute
 	public void moveTo(float x, float y)
 	{
-		EditTextField tv = GL.that.getKeyboardFocus();
+		final EditTextField tv = GL.that.getKeyboardFocus();
 		if (tv != null)
 		{
+
 			x += tv.ThisWorldRec.getX();
 			y += tv.ThisWorldRec.getY();
 		}
