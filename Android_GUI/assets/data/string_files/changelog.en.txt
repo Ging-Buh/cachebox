@@ -1,6 +1,6 @@
 Changes:
 
-Version : 0.7.2203
+Version : 0.7.2215
 	• new Cyrillic CharSet 
 	• new Export List to GPX
 	• massive saving of RAM 

@@ -416,6 +416,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
+		if (myParentInfo == null) return;
 
 		if (thisInvalidate)
 		{
@@ -507,7 +508,7 @@ public abstract class GL_View_Base extends CB_RectF
 					GL_View_Base view = childs.get(i);
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
-					if (view != null && view.isVisible())
+					if (view != null && view.isVisible() && !view.isDisposed())
 					{
 
 						if (childsInvalidate) view.invalidate();
@@ -561,6 +562,11 @@ public abstract class GL_View_Base extends CB_RectF
 
 		}
 
+	}
+
+	private boolean isDisposed()
+	{
+		return isDisposed;
 	}
 
 	private void writeDebug()
@@ -651,6 +657,7 @@ public abstract class GL_View_Base extends CB_RectF
 	protected float mOriginX;
 	protected float mOriginY;
 	protected float mScale = 1f;
+	private boolean isDisposed = false;
 
 	public void setRotate(float Rotate)
 	{
@@ -1057,6 +1064,7 @@ public abstract class GL_View_Base extends CB_RectF
 	@Override
 	public void dispose()
 	{
+		isDisposed = true;
 		DebugSprite = null;
 
 		try
