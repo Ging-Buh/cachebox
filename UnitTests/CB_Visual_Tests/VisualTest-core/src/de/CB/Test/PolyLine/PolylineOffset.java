@@ -85,7 +85,7 @@ public class PolylineOffset extends PolylineTestBase
 
 		tex = Bmp2Texture(bmp);
 
-		polyLineDrawable = new PolylineDrawable(glPath, paint, 256f, 256f);
+		polyLineDrawable = new PolylineDrawable(glPath, paint, 256, 256);
 	}
 
 	@Override

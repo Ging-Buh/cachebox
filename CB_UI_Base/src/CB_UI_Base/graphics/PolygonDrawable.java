@@ -64,11 +64,6 @@ public class PolygonDrawable implements IRotateDrawable
 	@Override
 	public boolean draw(Batch batch, float x, float y, float width, float height, float rotate)
 	{
-
-		// FIXME : Don't create white TexReg and Batch.setColor
-		// Create TexReg 1Pixel for right Color
-		// Maybe use SolidTextureRegion.class
-
 		synchronized (isDisposed)
 		{
 
@@ -147,7 +142,7 @@ public class PolygonDrawable implements IRotateDrawable
 
 		if (tex != null)
 		{
-			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			tex.setFilter(TextureFilter.Linear, TextureFilter.MipMapLinearLinear);
 			texReg = new TextureRegion(tex, (int) this.WIDTH, (int) this.HEIGHT);
 
 		}

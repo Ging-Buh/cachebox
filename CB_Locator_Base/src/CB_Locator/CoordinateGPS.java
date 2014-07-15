@@ -26,6 +26,7 @@ public class CoordinateGPS extends Coordinate implements Serializable
 	{
 		super(latitude, longitude);
 		this.setElevation(0);
+		if (latitude == 0 && longitude == 0) return;
 		Valid = true;
 	}
 
@@ -34,6 +35,7 @@ public class CoordinateGPS extends Coordinate implements Serializable
 		super(latitude, longitude);
 		this.setElevation(0);
 		this.Accuracy = accuracy;
+		if (latitude == 0 && longitude == 0) return;
 		Valid = true;
 	}
 
@@ -42,6 +44,7 @@ public class CoordinateGPS extends Coordinate implements Serializable
 		super(latitude, longitude);
 		this.setElevation(0);
 		this.Accuracy = accuracy;
+		if (latitude == 0 && longitude == 0) return;
 		Valid = true;
 	}
 

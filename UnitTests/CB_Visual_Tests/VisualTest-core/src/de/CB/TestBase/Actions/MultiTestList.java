@@ -20,7 +20,7 @@ import de.CB.Test.PolyLine.PolyJoin2;
 import de.CB.Test.PolyLine.PolyJoin3;
 import de.CB.Test.PolyLine.PolyJoin4;
 import de.CB.Test.PolyLine.PolylineOffset;
-import de.CB.Test.PolyLine.Red20Butt;
+import de.CB.Test.PolyLine.green20Butt;
 import de.CB.Test.PolyLine.Red20Default;
 import de.CB.Test.PolyLine.Red20Round;
 import de.CB.Test.PolyLine.Red20Square;
@@ -48,7 +48,7 @@ public class MultiTestList extends ArrayList<TestCaseBase>
 
 //		addAll(SVGs);
 //		
-//		add(new PixmapPackertest());
+		add(new PixmapPackertest());
 //			
 //		add(new SVG_Postbox());
 //		add(new TextOnPathTest());
@@ -63,7 +63,7 @@ public class MultiTestList extends ArrayList<TestCaseBase>
 		
 		//
 		add(new Red20Default());
-		add(new Red20Butt());
+		add(new green20Butt());
 		add(new Red20Round());
 		add(new Red20Square());
 		//

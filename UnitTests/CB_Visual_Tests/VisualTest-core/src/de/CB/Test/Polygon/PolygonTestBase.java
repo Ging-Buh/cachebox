@@ -31,6 +31,9 @@ public abstract class PolygonTestBase extends TestCaseBase
 		super(TopTestMsg, BotomTestMsg);
 		vertices = new float[]
 			{ 10, 10, 100, 50, 50, 100, 50, 150, 200, 200, 200, 10, 10, 10 };
+		
+		vertices = new float[]
+				{0.0390625f, 0.0390625f, 0.390625f, 0.1953125f, 0.1953125f, 0.390625f, 0.1953125f, 0.5859375f, 0.78125f, 0.78125f, 0.78125f, 0.0390625f, 0.0390625f, 0.0390625f };
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package CB_UI_Base.GL_UI.Controls;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -733,7 +735,7 @@ public class EditTextField extends EditTextFieldBase
 		int clickedCursor = 0;
 		int clickedCursorLine = (int) ((this.getHeight() - style.font.getLineHeight() - clickPos + (lineHeight)) / lineHeight) - 1;
 		clickedCursorLine += topLine;
-		if (clickedCursorLine < 0) return null;
+		if (clickedCursorLine < 0) clickedCursorLine = 0;
 		if (clickedCursorLine >= displayText.size()) return null;
 
 		DisplayText dt = displayText.get(clickedCursorLine);
@@ -822,27 +824,38 @@ public class EditTextField extends EditTextFieldBase
 		showSelectionMarker(type, cursor);
 	}
 
-	protected void showSelectionMarker(SelectionMarker.Type type, Cursor tmpCursor)
+	protected void showSelectionMarker(final SelectionMarker.Type type, final Cursor tmpCursor)
 	{
 
 		GL.that.showMarker(type);
 
-		switch (type)
+		Timer v = new Timer();
+		TimerTask ta = new TimerTask()
 		{
-		case Center:
 
-			GL.that.selectionMarkerCenterMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
-			break;
-		case Left:
+			@Override
+			public void run()
+			{
+				switch (type)
+				{
+				case Center:
 
-			GL.that.selectionMarkerLeftMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
-			break;
-		case Right:
+					GL.that.selectionMarkerCenterMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
+					break;
+				case Left:
 
-			GL.that.selectionMarkerRightMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
-			break;
-		}
+					GL.that.selectionMarkerLeftMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
+					break;
+				case Right:
 
+					GL.that.selectionMarkerRightMoveTo(getCursorX(tmpCursor) + style.cursor.getMinWidth() / 2, getCursorY(tmpCursor.line));
+					break;
+				}
+
+			}
+		};
+
+		v.schedule(ta, 700);
 	}
 
 	private void moveSelectionMarkers(float dx, float dy)
@@ -1037,30 +1050,34 @@ public class EditTextField extends EditTextFieldBase
 						cursorLeftRight(-1);
 						clearSelection();
 					}
-					if (keycode == Keys.RIGHT)
+					else if (keycode == Keys.RIGHT)
 					{
 						cursorLeftRight(1);
 						clearSelection();
 					}
-					if (keycode == Keys.HOME)
+					else if (keycode == Keys.HOME)
 					{
 						cursorHomeEnd(-1);
 						clearSelection();
 					}
-					if (keycode == Keys.END)
+					else if (keycode == Keys.END)
 					{
 						cursorHomeEnd(1);
 						clearSelection();
 					}
-					if (keycode == Keys.UP)
+					else if (keycode == Keys.UP)
 					{
 						cursorUpDown(-1);
 						clearSelection();
 					}
-					if (keycode == Keys.DOWN)
+					else if (keycode == Keys.DOWN)
 					{
 						cursorUpDown(1);
 						clearSelection();
+					}
+					else
+					{
+						return false;
 					}
 				}
 				GL.that.renderOnce();
