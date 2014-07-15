@@ -18,9 +18,13 @@ import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -165,7 +169,20 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 										String Url = Config.NavigationProvider.getValue();
 										// String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
 
-										HttpClient httpclient = new DefaultHttpClient();
+										int conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+										int socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+										HttpParams httpParameters = new BasicHttpParams();
+										// Set the timeout in milliseconds until a connection is established.
+										// The default value is zero, that means the timeout is not used.
+
+										HttpConnectionParams.setConnectionTimeout(httpParameters, conectionTimeout);
+										// Set the default socket timeout (SO_TIMEOUT)
+										// in milliseconds which is the timeout for waiting for data.
+
+										HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
+
+										HttpClient httpclient = new DefaultHttpClient(httpParameters);
 										HttpPost httppost = new HttpPost(Url);
 
 										httppost.setHeader("User-Agent", "cachebox rev " + String.valueOf(GlobalCore.CurrentRevision));
@@ -301,7 +318,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 														@Override
 														public void run()
 														{
-															String msg = Translation.Get("generateRouteLength") + sDistance;
+															String msg = Translation.Get("generateRouteLength") + " " + sDistance;
 															GL_MsgBox.Show(msg, "OpenRouteService", MessageBoxButtons.OK,
 																	MessageBoxIcon.Information, null);
 														}
@@ -378,6 +395,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 												}
 											});
 										}
+
 										RouteOverlay.RoutesChanged();
 
 									}

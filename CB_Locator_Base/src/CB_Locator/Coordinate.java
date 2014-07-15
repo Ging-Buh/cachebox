@@ -222,12 +222,14 @@ public class Coordinate extends LatLong implements Serializable
 	public Coordinate(double latitude, double longitude)
 	{
 		super(latitude, longitude);
+		if (latitude == 0 && longitude == 0) return;
 		Valid = true;
 	}
 
 	public Coordinate(int latitude, int longitude)
 	{
 		super(latitude, longitude);
+		if (latitude == 0 && longitude == 0) return;
 		Valid = true;
 	}
 
