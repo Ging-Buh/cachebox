@@ -13,9 +13,9 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class ParentInfo
 {
-	private Matrix4 matrix;
-	private Vector2 vector;
-	private CB_RectF rec;
+	private final Matrix4 matrix;
+	private final Vector2 vector;
+	private final CB_RectF rec;
 
 	public ParentInfo(Matrix4 Matrix, CB_RectF Rect)
 	{
@@ -85,18 +85,6 @@ public class ParentInfo
 		this.vector.x = parentInfo.vector.x;
 		this.vector.y = parentInfo.vector.y;
 		this.matrix.set(parentInfo.matrix);
-
-	}
-
-	public void dispose()
-	{
-		matrix = null;
-		vector = null;
-		if (rec != null)
-		{
-			rec.dispose();
-		}
-		rec = null;
 
 	}
 

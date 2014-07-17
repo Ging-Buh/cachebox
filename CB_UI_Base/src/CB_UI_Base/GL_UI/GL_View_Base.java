@@ -1112,24 +1112,6 @@ public abstract class GL_View_Base extends CB_RectF
 			childs.clear();
 		}
 
-		if (ThisWorldRec != null)
-		{
-			ThisWorldRec.dispose();
-		}
-		ThisWorldRec = null;
-
-		if (intersectRec != null)
-		{
-			intersectRec.dispose();
-		}
-		intersectRec = null;
-
-		if (myParentInfo != null)
-		{
-			myParentInfo.dispose();
-		}
-		myParentInfo = null;
-
 		super.dispose();
 	}
 
