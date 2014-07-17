@@ -241,7 +241,13 @@ class MultiThreadQueueProcessor extends Thread
 		}
 		else
 		{
-			ManagerBase.Manager.CacheTile(queueData.CurrentLayer, desc);
+			if (ManagerBase.Manager.CacheTile(queueData.CurrentLayer, desc))
+			{
+				tile = ManagerBase.Manager.LoadLocalPixmap(queueData.CurrentLayer, desc, ThreadId);
+				addLoadedTile(desc, tile);
+				// Redraw Map after a new Tile was loaded or generated
+				GL.that.renderOnce();
+			}
 			// to avoid endless trys
 			RemoveFromQueuedTiles(desc);
 		}
