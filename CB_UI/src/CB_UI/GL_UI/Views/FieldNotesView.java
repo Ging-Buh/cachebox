@@ -282,6 +282,7 @@ public class FieldNotesView extends V_ListView
 		});
 
 		// Found je nach CacheType
+		if (cache.Type == null) return null;
 		switch (cache.Type)
 		{
 		case Giga:
