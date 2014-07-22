@@ -740,8 +740,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		float result[] = new float[4];
 
-		MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(),
-				dest.getLongitude(), result);
+		try
+		{
+			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(),
+					dest.getLatitude(), dest.getLongitude(), result);
+		}
+		catch (Exception e1)
+		{
+			return;
+		}
 
 		float distance = result[0];
 		float bearing = result[1];
