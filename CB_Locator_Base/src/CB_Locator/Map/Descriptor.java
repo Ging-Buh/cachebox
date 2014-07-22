@@ -310,9 +310,7 @@ public class Descriptor implements Comparable<Descriptor>
 		if (obj instanceof Descriptor)
 		{
 			Descriptor desc = (Descriptor) obj;
-
 			if (this.GetHashCode().longValue() == desc.GetHashCode().longValue()) return true;
-
 		}
 		return false;
 	}
