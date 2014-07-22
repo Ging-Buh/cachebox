@@ -722,4 +722,173 @@ public class GSAKGpxImportTest extends TestCase
 		assertEquals("parent CacheID muss gleich sein", 14408207876703041L, wp.CacheId);
 
 	}
+
+	public static void testGpxImportParent1_1() throws Exception
+	{
+
+		// initialize Database
+		InitTestDBs.InitalConfig();
+
+		ImportHandler importHandler = new ImportHandler();
+
+		Database.Data.beginTransaction();
+
+		try
+		{
+			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/OCF19A.gpx"));
+			assertTrue("Objekt muss konstruierbar sein", importer != null);
+			importer.doImport(importHandler, 0);
+
+			Database.Data.setTransactionSuccessful();
+		}
+		finally
+		{
+		}
+
+		Database.Data.endTransaction();
+
+		CacheDAO cacheDAO = new CacheDAO();
+
+		Cache cache = cacheDAO.getFromDbByGcCode("OCF19A", false, true);
+
+		cache.loadDetail();
+
+		assertTrue("Cache muss zurückgegeben werden", cache != null);
+
+		assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 53.00727);
+		assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 9.00923);
+		assertTrue("Pos ist ungültig", cache.Pos.isValid());
+
+		assertEquals("GcCode falsch", cache.getGcCode(), "OCF19A");
+		assertEquals("DateHidden falsch", "Wed Jan 09 00:00:00 CET 2013", cache.getDateHidden().toString());
+		assertEquals("url falsch", "http://www.opencaching.de/viewcache.php?cacheid=164939", cache.getUrl());// URL wird noch nicht
+		// ausgelesen
+		assertTrue("Found ist falsch", cache.isFound());
+
+		assertEquals("Id ist falsch", cache.getGcId(), "164939");
+		assertTrue("ist available ist falsch", cache.isAvailable());
+		assertFalse("ist archived ist falsch", cache.isArchived());
+		assertEquals("Bierdener Marsch", cache.getName());
+		assertEquals("Placed by falsch", "Danlex", cache.getPlacedBy());
+		assertEquals("Owner falsch", "Danlex", cache.getOwner());
+		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Multi);
+		assertTrue("Size ist falsch", cache.Size == CacheSizes.small);
+		assertTrue("Difficulty ist falsch", cache.getDifficulty() == 2);
+		assertTrue("Terrain ist falsch", cache.getTerrain() == 2.5);
+
+		// Attribute Tests
+
+		ArrayList<Attributes> PositvieList = new ArrayList<Attributes>();
+		ArrayList<Attributes> NegativeList = new ArrayList<Attributes>();
+
+		{
+			PositvieList.add(Attributes.Hunting);
+			PositvieList.add(Attributes.Thorns);
+			PositvieList.add(Attributes.Ticks);
+
+			NegativeList.add(Attributes.Recommended_at_night);
+			NegativeList.add(Attributes.Seasonal_Access);
+		}
+
+		Iterator<Attributes> positiveInterator = PositvieList.iterator();
+		Iterator<Attributes> negativeInterator = NegativeList.iterator();
+
+		while (positiveInterator.hasNext())
+		{
+			assertTrue("Attribut falsch", cache.isAttributePositiveSet((Attributes) positiveInterator.next()));
+		}
+
+		while (negativeInterator.hasNext())
+		{
+			Attributes tmp = negativeInterator.next();
+
+			assertTrue(tmp.name() + " negative Attribut falsch", cache.isAttributeNegativeSet((tmp)));
+		}
+
+		// fülle eine Liste mit allen Attributen
+		ArrayList<Attributes> attributes = new ArrayList<Attributes>();
+		Attributes[] tmp = Attributes.values();
+		for (Attributes item : tmp)
+		{
+			attributes.add(item);
+		}
+
+		// Lösche die vergebenen Atribute aus der Kommplett Liste
+		positiveInterator = PositvieList.iterator();
+		negativeInterator = NegativeList.iterator();
+
+		while (positiveInterator.hasNext())
+		{
+			attributes.remove(positiveInterator.next());
+		}
+
+		while (negativeInterator.hasNext())
+		{
+			attributes.remove(negativeInterator.next());
+		}
+
+		attributes.remove(Attributes.getAttributeEnumByGcComId(64));
+		attributes.remove(Attributes.getAttributeEnumByGcComId(65));
+		attributes.remove(Attributes.getAttributeEnumByGcComId(66));
+
+		// Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
+		Iterator<Attributes> RestInterator = attributes.iterator();
+
+		while (RestInterator.hasNext())
+		{
+			Attributes attr = (Attributes) RestInterator.next();
+			assertFalse(attr.name() + "Attribut falsch", cache.isAttributePositiveSet(attr));
+			assertFalse(attr.name() + "Attribut falsch", cache.isAttributeNegativeSet(attr));
+		}
+		//
+
+		String Hint = "Start: Bei geformtem in gewachsenem Holz\nFinal: Am Boden";
+		assertEquals("Hint falsch", Hint, cache.getHint());
+
+		CB_List<LogEntry> logs = new CB_List<LogEntry>();
+		logs = Database.Logs(cache);
+
+		assertTrue("es müsste 2 Logs geben", logs.size() == 2);
+
+		// Check WP count
+		assertTrue("Cache muss drei WP's haben", cache.waypoints.size() == 3);
+
+		{
+			Waypoint wp = cache.waypoints.get(0);
+			assertTrue("WpPos: Latitude falsch", wp.Pos.getLatitude() == 53.00888);
+			assertTrue("WpPos: Longitude falsch", wp.Pos.getLongitude() == 9.00828);
+			assertTrue("WpPos ist ungültig", wp.Pos.isValid());
+			assertEquals("Titel muss gleich sein", "Parkplatz", wp.getTitle());
+			assertEquals("Description muss gleich sein", "Hier haben einige Cachemobile platz", wp.getDescription());
+			assertEquals("GC-Code muss gleich sein", "OCF19A-1", wp.getGcCode());
+			assertEquals("parent CacheID muss gleich sein", cache.Id, wp.CacheId);
+			assertEquals("WP-Type muss gleich sein", CacheTypes.ParkingArea, wp.Type);
+		}
+
+		{
+			Waypoint wp = cache.waypoints.get(1);
+			assertTrue("WpPos: Latitude falsch", wp.Pos.getLatitude() == 53.00462);
+			assertTrue("WpPos: Longitude falsch", wp.Pos.getLongitude() == 8.99772);
+			assertTrue("WpPos ist ungültig", wp.Pos.isValid());
+			assertEquals("Titel muss gleich sein", "Station oder Referenzpunkt", wp.getTitle());
+			assertEquals("Description muss gleich sein", "Auf dieser Bank kann sich ausgeruht werden, sofern notwendig",
+					wp.getDescription());
+			assertEquals("GC-Code muss gleich sein", "OCF19A-2", wp.getGcCode());
+			assertEquals("parent CacheID muss gleich sein", cache.Id, wp.CacheId);
+			assertEquals("WP-Type muss gleich sein", CacheTypes.ReferencePoint, wp.Type);
+		}
+
+		{
+			Waypoint wp = cache.waypoints.get(2);
+			assertTrue("WpPos: Latitude falsch", wp.Pos.getLatitude() == 52.99973);
+			assertTrue("WpPos: Longitude falsch", wp.Pos.getLongitude() == 9.00903);
+			assertTrue("WpPos ist ungültig", wp.Pos.isValid());
+			assertEquals("Titel muss gleich sein", "Station oder Referenzpunkt", wp.getTitle());
+			assertEquals("Description muss gleich sein", "Auf dieser Bank kann sich ausgeruht werden, sofern notwendig",
+					wp.getDescription());
+			assertEquals("GC-Code muss gleich sein", "OCF19A-3", wp.getGcCode());
+			assertEquals("parent CacheID muss gleich sein", cache.Id, wp.CacheId);
+			assertEquals("WP-Type muss gleich sein", CacheTypes.ReferencePoint, wp.Type);
+		}
+	}
 }

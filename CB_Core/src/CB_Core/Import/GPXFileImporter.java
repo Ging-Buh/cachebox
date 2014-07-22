@@ -169,6 +169,15 @@ public class GPXFileImporter
 	{
 		// Cachebox Extension
 
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/Parent")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_gsak_Parrent", text);
+			}
+		});
+
 		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/note")
 		{
 			@Override
@@ -1703,7 +1712,13 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_type"))
 		{
-			waypoint.parseTypeString(values.get("wpt_type"));
+			String typeString = values.get("wpt_type");
+			if (typeString.contains("Waypoint|Flag"))
+			{
+				typeString = values.get("wpt_desc");
+			}
+
+			waypoint.parseTypeString(typeString);
 		}
 
 		if (values.containsKey("wpt_cmt"))
