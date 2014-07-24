@@ -4,12 +4,14 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import CB_Locator.Map.Descriptor;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 
 public class Coordinate_LatLong_Test extends TestCase
 {
+	private static final double DELTA = 1e-6;
 
 	@Test
 	public void test_Distance()
@@ -186,6 +188,21 @@ public class Coordinate_LatLong_Test extends TestCase
 				assertEquals("Distance Strings must be equals ", value, valueAccurate);
 			}
 		}
+	}
+
+	@Test
+	public void testCoordinateEquals()
+	{
+		Coordinate corPankow = new Coordinate("52° 34,9815N / 13° 23,540E");
+		Descriptor desc = new Descriptor(corPankow, 14);
+		Coordinate coor = desc.getCenterCoordinate();
+
+		double la = coor.getLatitude();
+		double lo = coor.getLongitude();
+
+		assertEquals("Latitude must equals", la, corPankow.getLatitude(), DELTA);
+		assertEquals("Longitude must equals", lo, corPankow.getLongitude(), DELTA);
+		assertEquals("Coords must equals", coor, corPankow);
 	}
 
 }

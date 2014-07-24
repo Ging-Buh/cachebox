@@ -78,6 +78,7 @@ public class Test_TestCoordinate extends TestCase
 
 		assertEquals("Latitude must equals", la, corPankow.getLatitude(), DELTA);
 		assertEquals("Longitude must equals", lo, corPankow.getLongitude(), DELTA);
+		assertEquals("Coords must equals", coor, corPankow);
 	}
 
 	public static double test;

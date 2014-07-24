@@ -18,6 +18,7 @@ package CB_Core.Events;
 import java.util.ArrayList;
 
 import CB_Core.CoreSettingsForward;
+import CB_Core.Api.LiveMapQue;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
@@ -64,6 +65,13 @@ public class CachListChangedEventList
 				cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(),
 						"My Parking area", CacheTypes.MyParking, "CBPark");
 				Database.Data.Query.add(0, cache);
+			}
+
+			// add all Live Caches
+			for (int i = 0; i < LiveMapQue.LiveCaches.size(); i++)
+			{
+				Cache ca = LiveMapQue.LiveCaches.get(i);
+				if (!Database.Data.Query.contains(ca)) Database.Data.Query.add(ca);
 			}
 
 		}

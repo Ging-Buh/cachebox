@@ -78,6 +78,12 @@ public class SearchForGeocaches_Core
 			apiStatus = 1;
 		}
 
+		if (!isLite)
+		{
+			// Chek if search a lite request
+			isLite = search.isLite;
+		}
+
 		HttpPost httppost = new HttpPost("https://api.groundspeak.com/LiveV6/Geocaching.svc/SearchForGeocaches?format=json");
 
 		String requestString = "";
@@ -174,6 +180,8 @@ public class SearchForGeocaches_Core
 		else if (search instanceof SearchCoordinate)
 		{
 			SearchCoordinate searchC = (SearchCoordinate) search;
+
+			boolean isLive = search instanceof SearchLiveMap;
 
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";

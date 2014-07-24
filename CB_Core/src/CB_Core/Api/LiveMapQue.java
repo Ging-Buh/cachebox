@@ -18,6 +18,7 @@ package CB_Core.Api;
 
 import java.util.ArrayList;
 
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
@@ -34,15 +35,15 @@ import CB_Utils.Log.Logger;
  */
 public class LiveMapQue implements PositionChangedEvent
 {
-	private static final byte DEFAULT_ZOOM = 14;
-	private static final int MAX_REQUEST_CACHE_COUNT = 50;
-	private static final int MAX_REQUEST_CACHE_RADIUS = 5000;
+	public static final byte DEFAULT_ZOOM = 14;
+	public static final int MAX_REQUEST_CACHE_COUNT = 50;
+	public static final int MAX_REQUEST_CACHE_RADIUS = 1062; // Descriptor Zoom 14 are 1500m * 1500m
 	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
 	public static final CB_List<Cache> LiveCaches = new CB_List<Cache>();
 
-	CB_List<Descriptor> quedDescList = new CB_List<Descriptor>();
+	static CB_List<Descriptor> quedDescList = new CB_List<Descriptor>();
 
 	@Override
 	public void PositionChanged()
@@ -76,35 +77,48 @@ public class LiveMapQue implements PositionChangedEvent
 		return Priority.Low;
 	}
 
-	public void quePosition(Coordinate coord)
+	static public boolean quePosition(Coordinate coord)
 	{
 		// no request for invalid Coords
-		if (coord == null || !coord.isValid()) return;
+		if (coord == null || !coord.isValid()) return false;
 
-		Descriptor desc = new Descriptor(coord, DEFAULT_ZOOM);
+		final Descriptor desc = new Descriptor(coord, DEFAULT_ZOOM);
 
-		if (quedDescList.contains(desc)) return; // all ready for this descriptor
+		if (quedDescList.contains(desc)) return false; // all ready for this descriptor
+		quedDescList.add(desc);
+		// Add request Time Limits (Stapel verarbeitung!?)
 
-		Coordinate requestCoordinate = desc.getCenterCoordinate();
-
-		SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, MAX_REQUEST_CACHE_RADIUS);
-
-		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-
-		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
-
-		for (Cache ca : apiCaches)
+		Thread thread = new Thread(new Runnable()
 		{
-			if (LiveCaches.contains(ca))
-			{
-				Logger.DEBUG("Live Map:Cache Doppelt geladen => " + ca.toString());
-			}
-			else
-			{
-				LiveCaches.add(ca);
-			}
-		}
-	}
 
+			@Override
+			public void run()
+			{
+				Coordinate requestCoordinate = desc.getCenterCoordinate();
+				SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, MAX_REQUEST_CACHE_RADIUS);
+
+				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+
+				CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
+				t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
+
+				for (Cache ca : apiCaches)
+				{
+					if (LiveCaches.contains(ca))
+					{
+						Logger.DEBUG("Live Map:Cache Doppelt geladen => " + ca.toString());
+					}
+					else
+					{
+						LiveCaches.add(ca);
+					}
+				}
+
+				CachListChangedEventList.Call();
+			}
+		});
+
+		thread.start();
+		return true;
+	}
 }

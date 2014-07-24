@@ -96,7 +96,13 @@ public class InfoBubble extends CB_View_Base
 	@Override
 	protected void render(Batch batch)
 	{
-		Sprite sprite = (mCache.Id == GlobalCore.getSelectedCache().Id) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
+		boolean selectedCache = false;
+		if (GlobalCore.getSelectedCache() != null)
+		{
+			selectedCache = mCache.Id == GlobalCore.getSelectedCache().Id;
+		}
+
+		Sprite sprite = selectedCache ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
 		sprite.setPosition(0, 0);
 		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);

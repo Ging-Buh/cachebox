@@ -1,9 +1,16 @@
 package API;
 
 import junit.framework.TestCase;
+
+import org.junit.Test;
+
+import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.LiveMapQue;
+import CB_Core.Types.Cache;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
 import CB_UI.Config;
+import CB_Utils.MathUtils.CalculationType;
 import __Static.InitTestDBs;
 
 public class searchLiveMapTests extends TestCase
@@ -42,7 +49,7 @@ public class searchLiveMapTests extends TestCase
 		// Descriptor Zoom Level 14 = search radius 2km
 		// Center of Descriptor x=8801 y=5368 z=14 => 52° 34,982N / 13° 23,540E (Pankow)
 		Descriptor descPankow = new Descriptor(8801, 5368, 14, false);
-		Coordinate corPankow = new Coordinate("52° 34,982N / 13° 23,540E");
+		Coordinate corPankow = new Coordinate("52° 34,9815N / 13° 23,540E");
 
 		// List of Coordinates are into x=8801 y=5368 z=14
 		Coordinate[] coordList = new Coordinate[]
@@ -61,6 +68,46 @@ public class searchLiveMapTests extends TestCase
 			Coordinate cord = desc.getCenterCoordinate();
 			assertEquals("mustEquals", cord, corPankow);
 		}
+	}
+
+	@Test
+	public void testLiveQue()
+	{
+		// get API limits and Check the limits after request
+
+		GroundspeakAPI.GetCacheLimits();
+		int CachesLeft = GroundspeakAPI.CachesLeft;
+
+		Descriptor.Init();
+		Coordinate coord = new Coordinate("52° 34,9815N / 13° 23,540E");
+		Descriptor desc = new Descriptor(coord, 14);
+
+		assertTrue("muss ausgeführt werden", LiveMapQue.quePosition(new Coordinate("52° 34,9815N / 13° 23,540E")));
+		assertFalse("darf nicht ausgeführt werden", LiveMapQue.quePosition(new Coordinate("52° 34,9815N / 13° 23,540E")));
+
+		// Chk all Caches are in to the Descriptor of new Coordinate("52° 34,973N / 13° 23,531E")
+
+		for (int i = 0; i < LiveMapQue.LiveCaches.size(); i++)
+		{
+			Cache ca = LiveMapQue.LiveCaches.get(i);
+
+			Descriptor targetDesc = new Descriptor(ca.Pos, 14);
+
+			if (!targetDesc.equals(desc))
+			{
+				// Check max Distance from Center
+				float distance = coord.Distance(ca.Pos, CalculationType.ACCURATE);
+				assertTrue("Distance from center must be closer then request distance", distance <= LiveMapQue.MAX_REQUEST_CACHE_RADIUS);
+			}
+
+		}
+
+		// Check if count are not same like requested (increase Max Count)
+		assertTrue("count mast be lower then requested", LiveMapQue.LiveCaches.size() < LiveMapQue.MAX_REQUEST_CACHE_COUNT);
+
+		GroundspeakAPI.GetCacheLimits();
+
+		assertTrue("CacheLimits must not changed", CachesLeft == GroundspeakAPI.CachesLeft);
 
 	}
 }
