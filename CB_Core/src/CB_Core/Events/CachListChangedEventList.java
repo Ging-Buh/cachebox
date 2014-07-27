@@ -23,6 +23,7 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
+import CB_Utils.Lists.CB_List;
 
 /**
  * @author Longri
@@ -68,11 +69,22 @@ public class CachListChangedEventList
 			}
 
 			// add all Live Caches
+			CB_List<Cache> removeCaches = new CB_List<Cache>();
 			for (int i = 0; i < LiveMapQue.LiveCaches.size(); i++)
 			{
 				Cache ca = LiveMapQue.LiveCaches.get(i);
-				if (!Database.Data.Query.contains(ca)) Database.Data.Query.add(ca);
+				if (!Database.Data.Query.contains(ca))
+				{
+					Database.Data.Query.add(ca);
+				}
+				else
+				{
+					// Remove this Live-Cache from the list
+					removeCaches.add(ca);
+				}
 			}
+
+			LiveMapQue.LiveCaches.removeAll(removeCaches);
 
 		}
 

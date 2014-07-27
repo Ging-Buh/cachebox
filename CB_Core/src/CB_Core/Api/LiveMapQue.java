@@ -42,8 +42,21 @@ public class LiveMapQue implements PositionChangedEvent
 	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
 	public static final CB_List<Cache> LiveCaches = new CB_List<Cache>();
+	public static boolean DownloadIsActive = false;
 
 	static CB_List<Descriptor> quedDescList = new CB_List<Descriptor>();
+
+	public static CB_List<QueStateChanged> eventList = new CB_List<LiveMapQue.QueStateChanged>();
+
+	public void AddStateChangedListner(QueStateChanged listner)
+	{
+		eventList.add(listner);
+	}
+
+	public interface QueStateChanged
+	{
+		public void stateChanged();
+	}
 
 	@Override
 	public void PositionChanged()
@@ -94,6 +107,9 @@ public class LiveMapQue implements PositionChangedEvent
 			@Override
 			public void run()
 			{
+				for (int i = 0; i < eventList.size(); i++)
+					eventList.get(i).stateChanged();
+				DownloadIsActive = true;
 				Coordinate requestCoordinate = desc.getCenterCoordinate();
 				SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, MAX_REQUEST_CACHE_RADIUS);
 
@@ -110,11 +126,15 @@ public class LiveMapQue implements PositionChangedEvent
 					}
 					else
 					{
+						ca.setLive(true);
 						LiveCaches.add(ca);
 					}
 				}
 
 				CachListChangedEventList.Call();
+				DownloadIsActive = false;
+				for (int i = 0; i < eventList.size(); i++)
+					eventList.get(i).stateChanged();
 			}
 		});
 

@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  * 
  * @author Longri
  */
-public class SpriteCache extends SpriteCacheBase
+public final class SpriteCache extends SpriteCacheBase
 {
 
 	public static class SpriteList extends ArrayList<Sprite>
@@ -893,6 +893,7 @@ public class SpriteCache extends SpriteCacheBase
 		Bubble = null;
 		ToggleBtn = null;
 		ZoomBtn = null;
+
 		ZoomValueBack = null;
 
 		if (CacheList != null) CacheList.dispose();

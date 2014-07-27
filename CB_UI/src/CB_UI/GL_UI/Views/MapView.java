@@ -47,6 +47,7 @@ import CB_UI.GL_UI.SpriteCache.IconName;
 import CB_UI.GL_UI.Activitys.EditWaypoint;
 import CB_UI.GL_UI.Activitys.EditWaypoint.ReturnListner;
 import CB_UI.GL_UI.Controls.InfoBubble;
+import CB_UI.GL_UI.Controls.LiveButton;
 import CB_UI.GL_UI.Controls.MapInfoPanel;
 import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
@@ -89,6 +90,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	boolean CompassMode = false;
 
 	// ####### Enthaltene Controls ##########
+	LiveButton liveButton;
 	MultiToggleButton togBtn;
 	MapInfoPanel info;
 	InfoBubble infoBubble;
@@ -278,6 +280,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		iconFactor = Config.MapViewDPIFaktor.getValue();
 
+		liveButton = new LiveButton();
+		liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
+
 		togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
 		togBtn.addState("Free", Color.GRAY);
@@ -325,7 +330,11 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			}
 		}
 
-		if (!CompassMode) this.addChild(togBtn);
+		if (!CompassMode)
+		{
+			this.addChild(togBtn);
+			this.addChild(liveButton);
+		}
 
 		infoBubble = new InfoBubble(GL_UISizes.Bubble, "infoBubble");
 		infoBubble.setInvisible();
@@ -1002,6 +1011,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			infoHeight = info.getHeight();
 		}
 		togBtn.setPos(new Vector2((float) (this.mapIntWidth - margin - togBtn.getWidth()), this.mapIntHeight - margin - togBtn.getHeight()));
+
+		liveButton.setRec(togBtn);
+		liveButton.setY(togBtn.getY() - margin - liveButton.getHeight());
 
 		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI),
 				this.getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());

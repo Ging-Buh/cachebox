@@ -395,10 +395,21 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			{
 				if ((cache == null) || selectedCache)
 				{
+					if (cache.isLive())
+					{// set color for underlayIcon to blue if this a LiveCache
+
+						return SpriteCacheBase.MapOverlay.get(5);
+					}
 					return SpriteCacheBase.MapOverlay.get(1);
 				}
 				else
 				{
+					if (cache.isLive())
+					{// set color for underlayIcon to blue if this a LiveCache
+
+						return SpriteCacheBase.MapOverlay.get(4);
+					}
+
 					return SpriteCacheBase.MapOverlay.get(0);
 				}
 			}

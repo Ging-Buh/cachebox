@@ -77,6 +77,7 @@ public class SpriteCacheBase
 	public static ArrayList<Drawable> Compass = null;
 
 	public static ArrayList<Sprite> ToggleBtn = null;
+	public static ArrayList<Sprite> LiveBtn = null;
 	public static ArrayList<Sprite> ZoomBtn = null;
 	public static Sprite ZoomValueBack = null;
 	public static ArrayList<Sprite> BigIcons = null;
@@ -512,6 +513,16 @@ public class SpriteCacheBase
 			MapOverlay.add(getThemedSprite("deact"));
 			MapOverlay.add(getThemedSprite("cross"));
 
+			// Live sprites with light blue color changed
+			Color c = new Color(0.8f, 0.8f, 1f, 1f);
+			Sprite live = getThemedSprite("shaddowrect");
+			Sprite liveSelected = getThemedSprite("shaddowrect-selected");
+
+			live.setColor(c);
+			liveSelected.setColor(c);
+			MapOverlay.add(live);
+			MapOverlay.add(liveSelected);
+
 		}
 
 		if (MapIcons == null) MapIcons = new ArrayList<Sprite>();
@@ -654,6 +665,23 @@ public class SpriteCacheBase
 			ToggleBtn.add(getThemedSprite("btn-normal"));
 			ToggleBtn.add(getThemedSprite("btn-pressed"));
 			ToggleBtn.add(getThemedSprite("toggle-led-gr"));
+
+		}
+
+		if (LiveBtn == null) LiveBtn = new ArrayList<Sprite>();
+		synchronized (LiveBtn)
+		{
+			LiveBtn.clear();
+			LiveBtn.add(getThemedSprite("LiveEnabled"));
+			LiveBtn.add(getThemedSprite("LiveDisabled"));
+			LiveBtn.add(getThemedSprite("Live1"));
+			LiveBtn.add(getThemedSprite("Live2"));
+			LiveBtn.add(getThemedSprite("Live3"));
+			LiveBtn.add(getThemedSprite("Live4"));
+			LiveBtn.add(getThemedSprite("Live5"));
+			LiveBtn.add(getThemedSprite("Live6"));
+			LiveBtn.add(getThemedSprite("Live7"));
+			LiveBtn.add(getThemedSprite("Live8"));
 
 		}
 
@@ -914,6 +942,7 @@ public class SpriteCacheBase
 		MapStars = null;
 		Bubble = null;
 		ToggleBtn = null;
+		LiveBtn = null;
 		ZoomBtn = null;
 		ZoomValueBack = null;
 

@@ -3,6 +3,7 @@ package CB_Core.Types;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -37,7 +38,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	private final static short MASK_AVAILABLE = 1 << 3;
 	private final static short MASK_VAVORITE = 1 << 4;
 	private final static short MASK_FOUND = 1 << 5;
-	// private final static short MASK_SEARCH_VISIBLE = 1 << 6;
+	private final static short MASK_IS_LIVE = 1 << 6;
 	// private final static short MASK_SOLVER1CHANGED = 1 << 7;
 	private final static short MASK_HAS_USER_DATA = 1 << 8;
 	private final static short MASK_LISTING_CHANGED = 1 << 9;
@@ -516,6 +517,17 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 
 	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null || !(obj instanceof Cache)) return false;
+		Cache other = (Cache) obj;
+
+		if (Arrays.equals(this.GcCode, other.GcCode)) return true;
+
+		return false;
+	}
+
+	@Override
 	public int compareTo(Cache c2)
 	{
 		float dist1 = this.cachedDistance;
@@ -876,6 +888,16 @@ public class Cache implements Comparable<Cache>, Serializable
 	public void setFound(boolean found)
 	{
 		this.setMaskValue(MASK_FOUND, found);
+	}
+
+	public boolean isLive()
+	{
+		return this.getMaskValue(MASK_IS_LIVE);
+	}
+
+	public void setLive(boolean isLive)
+	{
+		this.setMaskValue(MASK_IS_LIVE, isLive);
 	}
 
 	public boolean isHasUserData()
