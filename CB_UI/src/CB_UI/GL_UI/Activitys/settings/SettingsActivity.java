@@ -30,6 +30,8 @@ import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
+import CB_UI_Base.GL_UI.Activitys.ColorPicker;
+import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListner;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
@@ -61,6 +63,7 @@ import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
+import CB_Utils.Settings.SettingColor;
 import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingEnum;
 import CB_Utils.Settings.SettingFile;
@@ -77,6 +80,7 @@ import CB_Utils.Settings.SettingTime;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Util.FileIO;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -545,8 +549,67 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		{
 			return getAudioView((SettingsAudio) SB, BackgroundChanger);
 		}
+		else if (SB instanceof SettingColor)
+		{
+			return getColorView((SettingColor) SB, BackgroundChanger);
+		}
 
 		return null;
+	}
+
+	private CB_View_Base getColorView(final SettingColor SB, int backgroundChanger)
+	{
+		SettingsItemBase item = new SettingsItem_Color(itemRec, backgroundChanger, SB);
+		final String trans = Translation.Get(SB.getName());
+
+		item.setName(trans);
+		item.setDefault(String.valueOf(SB.getValue()));
+
+		item.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				EditKey = Config.settings.indexOf(SB);
+
+				ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListner()
+				{
+
+					@Override
+					public void returnColor(Color color)
+					{
+						if (color == null) return; // nothing changed
+
+						SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
+						if (SetValue != null) SetValue.setValue(color);
+						resortList();
+						// Activity wieder anzeigen
+						show();
+					}
+				});
+				clrPick.show();
+				return true;
+			}
+
+		});
+
+		item.setOnLongClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+
+				return false;
+			}
+
+		});
+
+		return item;
 	}
 
 	private CB_View_Base getStringView(final SettingString SB, int backgroundChanger)

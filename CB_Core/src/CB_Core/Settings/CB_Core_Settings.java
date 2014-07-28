@@ -5,6 +5,7 @@ import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingEncryptedString;
+import CB_Utils.Settings.SettingEnum;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingModus;
@@ -76,6 +77,13 @@ public interface CB_Core_Settings
 			Config_Core.WorkPath + "/PocketQuery", SettingStoreType.Global);
 
 	public static final SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", SettingCategory.Map, NORMAL, false,
+			SettingStoreType.Global);
+
+	public static final SettingEnum<CB_Core.Api.LiveMapQue.Live_Radius> Live_Radius = new SettingEnum<CB_Core.Api.LiveMapQue.Live_Radius>(
+			"Live_Radius", SettingCategory.LiveMap, NORMAL, CB_Core.Api.LiveMapQue.Live_Radius.Zoom_14, SettingStoreType.Global,
+			CB_Core.Api.LiveMapQue.Live_Radius.Zoom_14);
+
+	public static final SettingBool DisableLiveMap = new SettingBool("DisableLiveMap", SettingCategory.LiveMap, NORMAL, false,
 			SettingStoreType.Global);
 
 }

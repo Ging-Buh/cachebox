@@ -344,7 +344,7 @@ public interface CB_UI_Settings
 	public static final SettingBool ShowFieldnotesAsDefaultView = new SettingBool("ShowFieldnotesAsDefaultView",
 			SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global);
 
-	public static final SettingBool LiveMapEnabeld = new SettingBool("LiveMapEnabeld", SettingCategory.Map, EXPERT, false,
+	public static final SettingBool LiveMapEnabeld = new SettingBool("LiveMapEnabeld", SettingCategory.LiveMap, NEVER, false,
 			SettingStoreType.Global);
 
 }

@@ -1,4 +1,4 @@
-package CB_UI_Base.GL_UI.utils;
+package CB_Utils.Util;
 
 import com.badlogic.gdx.graphics.Color;
 

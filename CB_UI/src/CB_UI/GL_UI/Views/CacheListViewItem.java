@@ -63,6 +63,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	protected extendedCacheInfo info;
 	protected boolean isPressed = false;
 
+	private Sprite liveCacheIcon;
 	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
 
@@ -102,7 +103,12 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			setActLocator();
 		}
 
-		// Logger.LogCat("New CacheListItem Index:" + String.valueOf(Index));
+		if (mCache.isLive())
+		{
+			liveCacheIcon = new Sprite(SpriteCacheBase.LiveBtn.get(0));
+			liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(),
+					ArrowRec.getHalfHeight());
+		}
 
 	}
 
@@ -189,6 +195,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	{
 		super.render(batch);
 
+		if (liveCacheIcon != null) liveCacheIcon.draw(batch);
 		if (arrow != null) arrow.draw(batch);
 		if (distance != null)
 		{

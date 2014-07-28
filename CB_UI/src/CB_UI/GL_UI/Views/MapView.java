@@ -282,6 +282,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		liveButton = new LiveButton();
 		liveButton.setState(Config.LiveMapEnabeld.getDefaultValue());
+		Config.DisableLiveMap.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				requestLayout();
+			}
+		});
 
 		togBtn = new MultiToggleButton(GL_UISizes.Toggle, "toggle");
 
@@ -333,6 +341,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		if (!CompassMode)
 		{
 			this.addChild(togBtn);
+			if (Config.DisableLiveMap.getValue())
+			{
+				liveButton.setState(false);
+			}
 			this.addChild(liveButton);
 		}
 
@@ -1011,6 +1023,15 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			infoHeight = info.getHeight();
 		}
 		togBtn.setPos(new Vector2((float) (this.mapIntWidth - margin - togBtn.getWidth()), this.mapIntHeight - margin - togBtn.getHeight()));
+
+		if (Config.DisableLiveMap.getValue())
+		{
+			liveButton.setInvisible();
+		}
+		else
+		{
+			liveButton.setVisible();
+		}
 
 		liveButton.setRec(togBtn);
 		liveButton.setY(togBtn.getY() - margin - liveButton.getHeight());

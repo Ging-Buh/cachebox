@@ -29,15 +29,79 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
+import CB_Utils.Util.iChanged;
 
 /**
  * @author Longri
  */
 public class LiveMapQue implements PositionChangedEvent
 {
-	public static final byte DEFAULT_ZOOM = 14;
+	public static final byte DEFAULT_ZOOM_14 = 14;
+	public static final int MAX_REQUEST_CACHE_RADIUS_14 = 1062; // Descriptor Zoom 14 are 1500m * 1500m
+
+	public static final byte DEFAULT_ZOOM_13 = 13;
+	public static final int MAX_REQUEST_CACHE_RADIUS_13 = 4242; // Descriptor Zoom 13 are 3000m * 3000m
+
+	public enum Live_Radius
+	{
+		Zoom_13, Zoom_14
+	}
+
+	public static Live_Radius radius = CB_Core.Settings.CB_Core_Settings.Live_Radius.getEnumValue();
+
+	static
+	{
+		CB_Core.Settings.CB_Core_Settings.Live_Radius.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				radius = CB_Core.Settings.CB_Core_Settings.Live_Radius.getEnumValue();
+
+				switch (radius)
+				{
+				case Zoom_13:
+					Used_Zoom = DEFAULT_ZOOM_13;
+					Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
+					break;
+				case Zoom_14:
+					Used_Zoom = DEFAULT_ZOOM_14;
+					Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
+					break;
+				default:
+					Used_Zoom = DEFAULT_ZOOM_14;
+					Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
+					break;
+
+				}
+			}
+
+		});
+
+		radius = CB_Core.Settings.CB_Core_Settings.Live_Radius.getEnumValue();
+
+		switch (radius)
+		{
+		case Zoom_13:
+			Used_Zoom = DEFAULT_ZOOM_13;
+			Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_13;
+			break;
+		case Zoom_14:
+			Used_Zoom = DEFAULT_ZOOM_14;
+			Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
+			break;
+		default:
+			Used_Zoom = DEFAULT_ZOOM_14;
+			Used_max_request_radius = MAX_REQUEST_CACHE_RADIUS_14;
+			break;
+
+		}
+	}
+
+	public static byte Used_Zoom = 13;
+	public static int Used_max_request_radius = 4242; // Descriptor Zoom 13 are 3000m * 3000m
+
 	public static final int MAX_REQUEST_CACHE_COUNT = 50;
-	public static final int MAX_REQUEST_CACHE_RADIUS = 1062; // Descriptor Zoom 14 are 1500m * 1500m
 	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
@@ -95,7 +159,10 @@ public class LiveMapQue implements PositionChangedEvent
 		// no request for invalid Coords
 		if (coord == null || !coord.isValid()) return false;
 
-		final Descriptor desc = new Descriptor(coord, DEFAULT_ZOOM);
+		// no request if disabled
+		if (CB_Core.Settings.CB_Core_Settings.DisableLiveMap.getValue()) return false;
+
+		final Descriptor desc = new Descriptor(coord, Used_Zoom);
 
 		if (quedDescList.contains(desc)) return false; // all ready for this descriptor
 		quedDescList.add(desc);
@@ -111,7 +178,7 @@ public class LiveMapQue implements PositionChangedEvent
 					eventList.get(i).stateChanged();
 				DownloadIsActive = true;
 				Coordinate requestCoordinate = desc.getCenterCoordinate();
-				SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, MAX_REQUEST_CACHE_RADIUS);
+				SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, Used_max_request_radius);
 
 				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
 

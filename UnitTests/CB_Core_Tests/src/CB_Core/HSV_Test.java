@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import CB_UI_Base.GL_UI.utils.HSV_Color;
+import CB_Utils.Util.HSV_Color;
 
 public class HSV_Test extends TestCase
 {

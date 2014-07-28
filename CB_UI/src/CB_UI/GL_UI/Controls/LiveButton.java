@@ -24,15 +24,18 @@ public class LiveButton extends ImageButton implements QueStateChanged
 		super("");
 		this.name = "LiveButton";
 		this.setClickable(true);
+		this.setImageScale(0.9f);
 	}
 
 	@Override
 	public void Initial()
 	{
-		drawableNormal = null;
-		drawablePressed = null;
-		drawableDisabled = null;
-		drawableFocused = null;
+		super.Initial();
+
+		// drawableNormal = null;
+		// drawablePressed = null;
+		// drawableDisabled = null;
+		// drawableFocused = null;
 	}
 
 	public void setState(boolean newState)
@@ -81,6 +84,7 @@ public class LiveButton extends ImageButton implements QueStateChanged
 			lastAnimation = Animation;
 			switchImage();
 		}
+		super.render(batch);
 	}
 
 	@Override

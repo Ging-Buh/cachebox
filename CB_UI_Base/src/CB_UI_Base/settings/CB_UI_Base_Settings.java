@@ -5,6 +5,7 @@ import CB_Utils.Config_Core;
 import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
+import CB_Utils.Settings.SettingColor;
 import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingFloat;
 import CB_Utils.Settings.SettingFolder;
@@ -12,6 +13,7 @@ import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingsAudio;
+import CB_Utils.Util.HSV_Color;
 
 public interface CB_UI_Base_Settings
 {
@@ -66,5 +68,8 @@ public interface CB_UI_Base_Settings
 			Config_Core.WorkPath + "/repository/cache", SettingStoreType.Local);
 
 	public static final SettingBool GestureOn = new SettingBool("GestureOn", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global);
+
+	public static final SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", SettingCategory.LiveMap, NORMAL,
+			new HSV_Color(0.8f, 0.8f, 1f, 1f), SettingStoreType.Global);
 
 }

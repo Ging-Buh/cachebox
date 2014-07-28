@@ -97,7 +97,7 @@ public class searchLiveMapTests extends TestCase
 			{
 				// Check max Distance from Center
 				float distance = coord.Distance(ca.Pos, CalculationType.ACCURATE);
-				assertTrue("Distance from center must be closer then request distance", distance <= LiveMapQue.MAX_REQUEST_CACHE_RADIUS);
+				assertTrue("Distance from center must be closer then request distance", distance <= LiveMapQue.Used_max_request_radius);
 			}
 
 		}

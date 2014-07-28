@@ -13,9 +13,9 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.GL_UI.utils.GradiantFill;
 import CB_UI_Base.GL_UI.utils.GradiantFilledRectangle;
-import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -80,8 +80,8 @@ public class ColorPicker extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (mReturnListner != null) mReturnListner.returnColor(actColor);
 				finish();
+				if (mReturnListner != null) mReturnListner.returnColor(actColor);
 				return true;
 			}
 		});

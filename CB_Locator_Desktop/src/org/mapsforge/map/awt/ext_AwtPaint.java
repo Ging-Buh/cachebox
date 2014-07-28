@@ -18,7 +18,6 @@ package org.mapsforge.map.awt;
 import java.awt.FontMetrics;
 import java.awt.image.BufferedImage;
 
-import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.graphics.GL_FontFamily;
 import CB_UI_Base.graphics.GL_FontStyle;
 import CB_UI_Base.graphics.GL_Style;
@@ -26,6 +25,7 @@ import CB_UI_Base.graphics.Join;
 import CB_UI_Base.graphics.TileMode;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
+import CB_Utils.Util.HSV_Color;
 
 /**
  * @author Longri

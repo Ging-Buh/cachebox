@@ -9,6 +9,7 @@ public enum SettingCategory
 	Login("Login"),
 	QuickList("QuickList"),
 	Map("Map"),
+	LiveMap("LiveMap"),
 	Gps("Gps"),
 	Compass("Compass"),
 	Misc("Misc"),

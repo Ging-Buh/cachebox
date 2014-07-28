@@ -20,7 +20,6 @@ import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.DrawUtils;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.PolylineReduction;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -29,6 +28,7 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;

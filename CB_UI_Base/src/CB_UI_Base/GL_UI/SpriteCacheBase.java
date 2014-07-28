@@ -24,6 +24,7 @@ import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -514,14 +515,28 @@ public class SpriteCacheBase
 			MapOverlay.add(getThemedSprite("cross"));
 
 			// Live sprites with light blue color changed
-			Color c = new Color(0.8f, 0.8f, 1f, 1f);
+
+			Color backColor = CB_UI_Base_Settings.LiveMapBackgroundColor.getValue();
+
 			Sprite live = getThemedSprite("shaddowrect");
 			Sprite liveSelected = getThemedSprite("shaddowrect-selected");
 
-			live.setColor(c);
-			liveSelected.setColor(c);
+			live.setColor(backColor);
+			liveSelected.setColor(backColor);
 			MapOverlay.add(live);
 			MapOverlay.add(liveSelected);
+
+			CB_UI_Base_Settings.LiveMapBackgroundColor.addChangedEventListner(new iChanged()
+			{
+
+				@Override
+				public void isChanged()
+				{
+					Color backColor = CB_UI_Base_Settings.LiveMapBackgroundColor.getValue();
+					MapOverlay.get(4).setColor(backColor);
+					MapOverlay.get(5).setColor(backColor);
+				}
+			});
 
 		}
 
