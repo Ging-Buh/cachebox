@@ -31,11 +31,6 @@ public class LiveButton extends ImageButton implements QueStateChanged
 	public void Initial()
 	{
 		super.Initial();
-
-		// drawableNormal = null;
-		// drawablePressed = null;
-		// drawableDisabled = null;
-		// drawableFocused = null;
 	}
 
 	public void setState(boolean newState)
@@ -85,6 +80,7 @@ public class LiveButton extends ImageButton implements QueStateChanged
 			switchImage();
 		}
 		super.render(batch);
+		if (LiveMapQue.DownloadIsActive) GL.that.renderOnce(true);
 	}
 
 	@Override

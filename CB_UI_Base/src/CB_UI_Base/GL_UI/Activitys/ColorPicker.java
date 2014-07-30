@@ -49,7 +49,8 @@ public class ColorPicker extends ActivityBase
 	public ColorPicker(CB_RectF rec, Color color, IReturnListner listner)
 	{
 		super(rec, "ColorPicker");
-		actColor = InitialColor = new HSV_Color(color);
+		actColor = new HSV_Color(color);
+		InitialColor = new HSV_Color(color);
 
 		mReturnListner = listner;
 		this.setClickable(true);

@@ -72,4 +72,7 @@ public interface CB_UI_Base_Settings
 	public static final SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", SettingCategory.LiveMap, NORMAL,
 			new HSV_Color(0.8f, 0.8f, 1f, 1f), SettingStoreType.Global);
 
+	public static final SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", SettingCategory.Skin, NORMAL,
+			new HSV_Color(0.2f, 1f, 0.2f, 1f), SettingStoreType.Global);
+
 }

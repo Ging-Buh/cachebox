@@ -860,6 +860,25 @@ public class SpriteCacheBase
 
 		createDrawables();
 
+		// Change solved Mystery icon color
+		Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
+		MapIcons.get(21).setColor(solvedColor);
+		BigIcons.get(21).setColor(solvedColor);
+		MapIconsSmall.get(5).setColor(solvedColor);
+		MapIconsSmall.get(13).setColor(solvedColor);
+		CB_UI_Base_Settings.SolvedMysteryColor.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
+				MapIcons.get(21).setColor(solvedColor);
+				BigIcons.get(21).setColor(solvedColor);
+				MapIconsSmall.get(5).setColor(solvedColor);
+				MapIconsSmall.get(13).setColor(solvedColor);
+			}
+		});
+
 	}
 
 	protected static void createDrawables()

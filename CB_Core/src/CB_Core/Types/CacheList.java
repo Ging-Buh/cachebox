@@ -164,7 +164,7 @@ public class CacheList extends MoveableList<Cache>
 		for (int i = 0, n = this.size(); i < n; i++)
 		{
 			Cache cache = this.get(i);
-			cache.dispose();
+			if (!cache.isLive()) cache.dispose(); // don't dispose LiveCaches
 			cache = null;
 		}
 

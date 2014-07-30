@@ -252,7 +252,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.drawNodes(rotateList, this.nodes);
 		this.drawNodes(rotateList, this.areaLabels);
 
-		DrawDebug(tile);
+		// DrawDebug(tile);
 
 		clearLists();
 		this.NoBitmapDrawing = false;
