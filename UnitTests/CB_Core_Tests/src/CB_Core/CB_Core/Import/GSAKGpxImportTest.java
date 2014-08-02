@@ -10,7 +10,6 @@ import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
-import CB_Core.Enums.LogTypes;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportHandler;
 import CB_Core.Types.Cache;
@@ -34,7 +33,9 @@ public class GSAKGpxImportTest extends TestCase
 
 		try
 		{
-			GPXFileImporter importer = new GPXFileImporter(new File("./testdata/gpx/CorrectedCoordinates1.1.gpx"));
+			File importFile = new File("./testdata/gpx/CorrectedCoordinates1.1.gpx");
+			assertTrue("Import-TestFile missing", importFile.exists());
+			GPXFileImporter importer = new GPXFileImporter(importFile);
 			assertTrue("Objekt muss konstruierbar sein", importer != null);
 			importer.doImport(importHandler, 0);
 
@@ -48,44 +49,38 @@ public class GSAKGpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC1XCEW", true, true);
+		Cache cache = cacheDAO.getFromDbByGcCode("GCC0RR1", true, true);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 
-		assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 52.579333);
-		assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 13.40545);
+		assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 50.85);
+		assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 9.85);
 		assertTrue("Pos ist ungültig", cache.Pos.isValid());
 
-		assertEquals("GcCode falsch", "GC1XCEW", cache.getGcCode());
-		assertEquals("DateHidden falsch", "Mon Aug 17 08:00:00 CEST 2009", cache.getDateHidden().toString());
-		assertEquals("url falsch", "", cache.getUrl());// URL wird noch nicht
-														// ausgelesen
-		assertTrue("Found ist falsch", cache.isFound());
-
-		assertEquals("Id ist falsch", cache.getGcId(), "1358542");
-		assertFalse("ist available ist falsch", cache.isAvailable());
-		assertTrue("ist archived ist falsch", cache.isArchived());
-		assertEquals("Name falsch", "Schlossblick # 2/ View at the castle  #2", cache.getName());
-		assertEquals("Placed by falsch", "Risou", cache.getPlacedBy());
-		assertEquals("Owner falsch", "Risou", cache.getOwner());
+		assertEquals("GcCode falsch", "GCC0RR1", cache.getGcCode());
+		assertEquals("DateHidden falsch", "Tue Jun 24 08:00:00 CEST 2014", cache.getDateHidden().toString());
+		assertTrue("Found ist falsch", !cache.isFound());
+		assertEquals("Id ist falsch", cache.getGcId(), "99000003");
+		assertTrue("ist available ist falsch", cache.isAvailable());
+		assertFalse("ist archived ist falsch", cache.isArchived());
+		assertEquals("Test-Cache für GSAK Corrected Coordinates", cache.getName());
+		assertEquals("Placed by falsch", "Test Owner", cache.getPlacedBy());
+		assertEquals("Owner falsch", "Test Owner", cache.getOwner());
 		assertTrue("Typ ist falsch", cache.Type == CacheTypes.Mystery);
-		assertTrue("Size ist falsch", cache.Size == CacheSizes.micro);
-		assertTrue("Difficulty ist falsch", cache.getDifficulty() == 2);
-		assertTrue("Terrain ist falsch", cache.getTerrain() == 2);
+		assertTrue("Size ist falsch", cache.Size == CacheSizes.regular);
+		assertTrue("Difficulty ist falsch", cache.getDifficulty() == 1);
+		assertTrue("Terrain ist falsch", cache.getTerrain() == 1);
 
 		// Attribute Tests
 
 		ArrayList<Attributes> PositvieList = new ArrayList<Attributes>();
 		ArrayList<Attributes> NegativeList = new ArrayList<Attributes>();
 
-		PositvieList.add(Attributes.Bicycles);
-		PositvieList.add(Attributes.Dogs);
-		PositvieList.add(Attributes.Ticks);
-		PositvieList.add(Attributes.Thorns);
-		PositvieList.add(Attributes.Takes_less_than_an_hour);
-
-		NegativeList.add(Attributes.Available_at_all_times);
-		NegativeList.add(Attributes.Recommended_at_night);
+		// { Keine Attribute gesetzt
+		// PositvieList.add(Attributes.Bicycles);
+		//
+		// NegativeList.add(Attributes.Recommended_at_night);
+		// }
 
 		Iterator<Attributes> positiveInterator = PositvieList.iterator();
 		Iterator<Attributes> negativeInterator = NegativeList.iterator();
@@ -143,21 +138,7 @@ public class GSAKGpxImportTest extends TestCase
 		// System.out.println( cache.shortDescription );
 		// System.out.println( cache.longDescription );
 
-		assertEquals("Hint falsch", "", cache.getHint());
-
-		CB_List<LogEntry> logs = new CB_List<LogEntry>();
-		logs = Database.Logs(cache);
-
-		LogEntry log = logs.get(0);
-
-		assertEquals("CacheId ist falsch", log.CacheId, 24564478518575943L);
-		assertEquals("Id ist falsch", log.Id, 140640156);
-		assertEquals("Timestamp falsch", "Sat Jan 08 20:00:00 CET 2011", log.Timestamp.toString());
-		assertEquals("Finder falsch", "Katipa", log.Finder);
-		assertTrue("LogTyp falsch", log.Type == LogTypes.found);
-
-		assertEquals("Log Entry falsch",
-				"Jaja. Lange gesucht an den typischen Stellen, um dann letztendlich ganz woanders fündig zu werden...", log.Comment);
+		assertEquals("Hint falsch", "Final: Im Loch", cache.getHint());
 
 	}
 
