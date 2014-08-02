@@ -64,6 +64,8 @@ public class SearchForGeocaches_Core
 			ArrayList<ImageEntry> imageList, long gpxFilenameId)
 	{
 		String result = "";
+		int startIndex = 0;
+		int searchNumber = search.number <= 50 ? search.number : 50;
 
 		byte apiStatus = 0;
 		boolean isLite = true;
@@ -98,7 +100,7 @@ public class SearchForGeocaches_Core
 			{
 				request.put("AccessToken", GroundspeakAPI.GetAccessToken());
 				request.put("IsLight", false);
-				request.put("StartIndex", 0);
+				request.put("StartIndex", startIndex);
 				request.put("MaxPerPage", 1);
 				request.put("GeocacheLogCount", 10);
 				request.put("TrackableLogCount", 10);
@@ -130,8 +132,8 @@ public class SearchForGeocaches_Core
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium
-			requestString += "\"StartIndex\":0,";
-			requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
+			requestString += "\"StartIndex\":" + startIndex + ",";
+			requestString += "\"MaxPerPage\":" + String.valueOf(searchNumber) + ",";
 
 			requestString += "\"GeocacheName\":{";
 			requestString += "\"GeocacheName\":\"" + searchC.gcName + "\"},";
@@ -160,8 +162,8 @@ public class SearchForGeocaches_Core
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium
-			requestString += "\"StartIndex\":0,";
-			requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
+			requestString += "\"StartIndex\":" + startIndex + ",";
+			requestString += "\"MaxPerPage\":" + String.valueOf(searchNumber) + ",";
 			requestString += "\"GeocacheLogCount\":3,";
 			requestString += "\"TrackableLogCount\":2,";
 
@@ -181,15 +183,13 @@ public class SearchForGeocaches_Core
 		{
 			SearchCoordinate searchC = (SearchCoordinate) search;
 
-			boolean isLive = search instanceof SearchLiveMap;
-
 			requestString = "{";
 			requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
 			if (isLite) requestString += "\"IsLite\":true,"; // only lite
 			else
 				requestString += "\"IsLite\":false,"; // full for Premium
-			requestString += "\"StartIndex\":0,";
-			requestString += "\"MaxPerPage\":" + String.valueOf(searchC.number) + ",";
+			requestString += "\"StartIndex\":" + startIndex + ",";
+			requestString += "\"MaxPerPage\":" + String.valueOf(searchNumber) + ",";
 			requestString += "\"PointRadius\":{";
 			requestString += "\"DistanceInMeters\":" + String.valueOf((int) searchC.distanceInMeters) + ",";
 			requestString += "\"Point\":{";
@@ -249,12 +249,109 @@ public class SearchForGeocaches_Core
 		catch (ClientProtocolException e)
 		{
 			Logger.Error("SearchForGeocaches:ClientProtocolException", e.getMessage());
+			showToastConnectionError();
+
+			return "";
 		}
 		catch (IOException e)
 		{
 			Logger.Error("SearchForGeocaches:IOException", e.getMessage());
+			showToastConnectionError();
+
+			return "";
 		}
 
+		if (result.length() == 0)
+		{
+			showToastConnectionError();
+			return "The service is unavailable";
+		}
+
+		result = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, result, apiStatus, isLite);
+		if (cacheList.size() == searchNumber)
+		{
+			startIndex++;
+			int lastCacheListSize;
+			do
+			{
+				lastCacheListSize = cacheList.size();
+				startIndex += searchNumber;
+
+				requestString = "{";
+				requestString += "\"AccessToken\":\"" + GroundspeakAPI.GetAccessToken() + "\",";
+
+				if (isLite) requestString += "\"IsLite\":true,"; // only lite
+				else
+					requestString += "\"IsLite\":false,"; // full for Premium
+				requestString += "\"StartIndex\":" + startIndex + ",";
+				requestString += "\"MaxPerPage\":" + String.valueOf(50) + ",";
+				requestString += "\"GeocacheLogCount\":3,";
+				requestString += "\"TrackableLogCount\":2";
+				requestString += "}";
+
+				httppost = new HttpPost("https://api.groundspeak.com/LiveV6/geocaching.svc/GetMoreGeocaches?format=json");
+
+				try
+				{
+					httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
+				}
+				catch (UnsupportedEncodingException e3)
+				{
+					Logger.Error("SearchForGeocaches:UnsupportedEncodingException", e3.getMessage());
+				}
+				httppost.setHeader("Accept", "application/json");
+				httppost.setHeader("Content-type", "application/json");
+
+				// Execute HTTP Post Request
+				try
+				{
+					result = GroundspeakAPI.Execute(httppost);
+					if (result.contains("The service is unavailable"))
+					{
+						return "The service is unavailable";
+					}
+				}
+				catch (ConnectTimeoutException e)
+				{
+					Logger.Error("SearchForGeocaches:ConnectTimeoutException", e.getMessage());
+					showToastConnectionError();
+
+					return "";
+
+				}
+				catch (ClientProtocolException e)
+				{
+					Logger.Error("SearchForGeocaches:ClientProtocolException", e.getMessage());
+					showToastConnectionError();
+
+					return "";
+				}
+				catch (IOException e)
+				{
+					Logger.Error("SearchForGeocaches:IOException", e.getMessage());
+					showToastConnectionError();
+
+					return "";
+				}
+
+				if (result.length() == 0)
+				{
+					showToastConnectionError();
+					return "The service is unavailable";
+				}
+
+				result = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, result, apiStatus, isLite);
+
+			}
+			while ((startIndex + searchNumber <= search.number) && (cacheList.size() - lastCacheListSize >= searchNumber)
+					&& (lastCacheListSize != cacheList.size() || startIndex + searchNumber > cacheList.size()));
+		}
+		return result;
+	}
+
+	private String ParseJsonResult(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList,
+			long gpxFilenameId, String result, byte apiStatus, boolean isLite)
+	{
 		// Parse JSON Result
 		try
 		{
@@ -302,7 +399,7 @@ public class SearchForGeocaches_Core
 					{
 						String dateCreated = jCache.getString("DateCreated");
 						int date1 = dateCreated.indexOf("/Date(");
-						int date2 = dateCreated.indexOf("-");
+						int date2 = dateCreated.lastIndexOf("-");
 						String date = (String) dateCreated.subSequence(date1 + 6, date2);
 						cache.setDateHidden(new Date(Long.valueOf(date)));
 					}
@@ -343,30 +440,37 @@ public class SearchForGeocaches_Core
 					Boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + gcCode + "\"");
 
 					cache.setHasUserData(userData);
-					try
+					if (!isLite)
 					{
-						cache.setHint(jCache.getString("EncodedHints"));
+						try
+						{
+							cache.setHint(jCache.getString("EncodedHints"));
+						}
+						catch (Exception e1)
+						{
+							cache.setHint("");
+						}
 					}
-					catch (Exception e1)
-					{
-						cache.setHint("");
-					}
+
 					cache.Id = Cache.GenerateCacheId(cache.getGcCode());
 					cache.setListingChanged(false);
+					if (!isLite)
+					{
+						try
+						{
+							cache.setLongDescription(jCache.getString("LongDescription"));
+						}
+						catch (Exception e1)
+						{
+							Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
+							cache.setLongDescription("");
+						}
+						if (jCache.getBoolean("LongDescriptionIsHtml") == false)
+						{
+							cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+						}
+					}
 
-					try
-					{
-						cache.setLongDescription(jCache.getString("LongDescription"));
-					}
-					catch (Exception e1)
-					{
-						Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
-						cache.setLongDescription("");
-					}
-					if (jCache.getBoolean("LongDescriptionIsHtml") == false)
-					{
-						cache.setLongDescription(cache.getLongDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
-					}
 					cache.setName(jCache.getString("Name"));
 					cache.setTourName("");
 					cache.setNoteChecksum(0);
@@ -383,20 +487,23 @@ public class SearchForGeocaches_Core
 
 					}
 					cache.Rating = 0;
-					// cache.Rating =
-					try
+					if (!isLite)
 					{
-						cache.setShortDescription(jCache.getString("ShortDescription"));
+						try
+						{
+							cache.setShortDescription(jCache.getString("ShortDescription"));
+						}
+						catch (Exception e)
+						{
+							Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
+							cache.setShortDescription("");
+						}
+						if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
+						{
+							cache.setShortDescription(cache.getShortDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+						}
 					}
-					catch (Exception e)
-					{
-						Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
-						cache.setShortDescription("");
-					}
-					if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
-					{
-						cache.setShortDescription(cache.getShortDescription().replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
-					}
+
 					JSONObject jContainer = jCache.getJSONObject("ContainerType");
 					int jSize = jContainer.getInt("ContainerTypeId");
 					cache.Size = CacheSizes.parseInt(GroundspeakAPI.getCacheSize(jSize));
@@ -609,7 +716,6 @@ public class SearchForGeocaches_Core
 		{
 			e.printStackTrace();
 		}
-
 		return result;
 	}
 

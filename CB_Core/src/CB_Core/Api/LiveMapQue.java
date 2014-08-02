@@ -37,10 +37,13 @@ import CB_Utils.Util.iChanged;
 public class LiveMapQue implements PositionChangedEvent
 {
 	public static final byte DEFAULT_ZOOM_14 = 14;
-	public static final int MAX_REQUEST_CACHE_RADIUS_14 = 1062; // Descriptor Zoom 14 are 1500m * 1500m
+	public static final int MAX_REQUEST_CACHE_RADIUS_14 = 1060;
 
 	public static final byte DEFAULT_ZOOM_13 = 13;
-	public static final int MAX_REQUEST_CACHE_RADIUS_13 = 4242; // Descriptor Zoom 13 are 3000m * 3000m
+	public static final int MAX_REQUEST_CACHE_RADIUS_13 = 2120;
+
+	public static byte Used_Zoom;
+	public static int Used_max_request_radius;
 
 	public enum Live_Radius
 	{
@@ -98,10 +101,7 @@ public class LiveMapQue implements PositionChangedEvent
 		}
 	}
 
-	public static byte Used_Zoom = 13;
-	public static int Used_max_request_radius = 4242; // Descriptor Zoom 13 are 3000m * 3000m
-
-	public static final int MAX_REQUEST_CACHE_COUNT = 50;
+	public static final int MAX_REQUEST_CACHE_COUNT = 200;
 	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 

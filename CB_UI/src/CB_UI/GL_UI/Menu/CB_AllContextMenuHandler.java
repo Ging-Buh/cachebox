@@ -175,7 +175,6 @@ public class CB_AllContextMenuHandler
 
 						CachListChangedEventList.Call();
 
-						CachListChangedEventList.Call();
 						wd.close();
 					}
 				});
