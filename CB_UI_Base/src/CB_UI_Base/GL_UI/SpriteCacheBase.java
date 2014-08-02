@@ -151,6 +151,7 @@ public class SpriteCacheBase
 		tbNote_63, // 63
 		uploadFieldNote_64, // 63
 		menuFilterd_65, // 65
+		save, // 66
 	}
 
 	public static enum DialogElement
@@ -835,6 +836,7 @@ public class SpriteCacheBase
 			Icons.add(getThemedSprite("tb-note")); // 63
 			Icons.add(getThemedSprite("upload-fieldnote")); // 64
 			Icons.add(getThemedSprite("cm-icon-filterd")); // 65
+			Icons.add(getThemedSprite("save")); // 66
 		}
 
 		MapScale = new Drawable[3];

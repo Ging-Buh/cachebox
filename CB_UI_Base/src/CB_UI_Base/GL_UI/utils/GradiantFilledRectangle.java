@@ -47,10 +47,9 @@ public class GradiantFilledRectangle extends CB_View_Base
 	@Override
 	protected void render(Batch batch)
 	{
-		if (gradiant.getTexture() != null)
+		if (tex == null || tex != gradiant.getTexture())
 		{
-
-			if (tex == null || tex != gradiant.getTexture())
+			if (gradiant.getTexture() != null)
 			{
 				tex = gradiant.getTexture();
 

@@ -16,15 +16,22 @@
 
 package CB_UI.GL_UI.Views;
 
+import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.SearchGC;
+import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
+import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
+import CB_Core.Types.ImageEntry;
+import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
@@ -59,6 +66,9 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
+import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Controls.Dialogs.WaitDialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
@@ -93,6 +103,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	MapInfoPanel info;
 	InfoBubble infoBubble;
 	protected SortedMap<Integer, Integer> DistanceZoomLevel;
+	CancelWaitDialog wd = null;
 
 	MapViewCacheList mapCacheList;
 	int zoomCross = 16;
@@ -354,18 +365,75 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				if (infoBubble.getWaypoint() == null)
+				if (infoBubble.SaveButtonCliced(x, y))
 				{
-					// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
-					Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
-					// wenn ein Cache keine Final hat, aber einen StartWaypoint dann wird dieser gleich selektiert
-					if (waypoint == null) waypoint = infoBubble.getCache().GetStartWaypoint();
-					GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
+					wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
+					{
+
+						@Override
+						public void isCanceld()
+						{
+
+						}
+					}, new Runnable()
+					{
+
+						@Override
+						public void run()
+						{
+							String GcCode = infoBubble.getCache().getGcCode();
+
+							SearchGC searchC = new SearchGC(GcCode);
+							searchC.number = 1;
+							searchC.available = false;
+
+							ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+							ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+
+							try
+							{
+								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
+										infoBubble.getCache().GPXFilename_ID);
+								GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+							}
+							catch (InterruptedException e)
+							{
+								e.printStackTrace();
+							}
+
+							// Reload result from DB
+							synchronized (Database.Data.Query)
+							{
+								String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+								CacheListDAO cacheListDAO = new CacheListDAO();
+								cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+							}
+
+							CachListChangedEventList.Call();
+							Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
+							GlobalCore.setSelectedCache(selCache);
+							infoBubble.setCache(selCache, null, true);
+							wd.close();
+						}
+					});
 				}
 				else
 				{
-					GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
+					if (infoBubble.getWaypoint() == null)
+					{
+						// Wenn ein Cache einen Final waypoint hat dann soll gleich dieser aktiviert werden
+						Waypoint waypoint = infoBubble.getCache().GetFinalWaypoint();
+						// wenn ein Cache keine Final hat, aber einen StartWaypoint dann wird dieser gleich selektiert
+						if (waypoint == null) waypoint = infoBubble.getCache().GetStartWaypoint();
+						GlobalCore.setSelectedWaypoint(infoBubble.getCache(), waypoint);
+					}
+					else
+					{
+						GlobalCore.setSelectedWaypoint(infoBubble.getCache(), infoBubble.getWaypoint());
+					}
 				}
+
 				infoBubble.setInvisible();
 				return true;
 			}
