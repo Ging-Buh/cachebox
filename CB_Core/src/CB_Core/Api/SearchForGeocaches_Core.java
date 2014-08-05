@@ -237,6 +237,10 @@ public class SearchForGeocaches_Core
 			{
 				return "The service is unavailable";
 			}
+			else if (result.contains("server error"))
+			{
+				return "The service is unavailable";
+			}
 		}
 		catch (ConnectTimeoutException e)
 		{

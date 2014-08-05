@@ -23,11 +23,6 @@ public class CacheDetail implements Serializable
 	 */
 
 	/**
-	 * Id des Caches bei geocaching.com. Wird zumm Loggen benoetigt und von geotoad nicht exportiert
-	 */
-	private byte[] GcId;
-
-	/**
 	 * Erschaffer des Caches
 	 */
 	public String PlacedBy = "";
@@ -169,22 +164,6 @@ public class CacheDetail implements Serializable
 		shortDescription = null;
 		longDescription = null;
 
-	}
-
-	public String getGcId()
-	{
-		if (GcId == null) return Cache.EMPTY_STRING;
-		return new String(GcId, Cache.US_ASCII);
-	}
-
-	public void setGcId(String gcId)
-	{
-		if (gcId == null)
-		{
-			GcId = null;
-			return;
-		}
-		GcId = gcId.getBytes(Cache.US_ASCII);
 	}
 
 	public boolean isAttributePositiveSet(Attributes attribute)

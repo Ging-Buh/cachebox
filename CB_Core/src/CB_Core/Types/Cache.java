@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -74,6 +75,8 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * Name des Caches
 	 */
 	private byte[] Name;
+
+	private byte[] GcId;
 
 	/**
 	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
@@ -261,7 +264,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public void loadDetail()
 	{
-		if (detail != null) return; // Detail info already valid
 		CacheDAO dao = new CacheDAO();
 		dao.readDetail(this);
 		// load all Waypoints with full Details
@@ -714,17 +716,19 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	public String getGcId()
 	{
-		if (detail == null) return EMPTY_STRING;
-		return detail.getGcId();
+		if (GcId == null) return EMPTY_STRING;
+		return new String(GcId, UTF_8);
 	}
 
 	public void setGcId(String gcId)
 	{
-		if (detail == null)
+
+		if (gcId == null)
 		{
+			GcId = null;
 			return;
 		}
-		detail.setGcId(gcId);
+		GcId = gcId.getBytes(UTF_8);
 	}
 
 	public String getHint()
@@ -1201,6 +1205,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	{
 		if (detail != null)
 		{
+			if (detail.getLongDescription() == null || detail.getLongDescription().length() == 0) return Database.GetDescription(this);
 			return detail.getLongDescription();
 		}
 		else
@@ -1214,7 +1219,6 @@ public class Cache implements Comparable<Cache>, Serializable
 		if (detail != null)
 		{
 			detail.setShortDescription(value);
-
 		}
 	}
 

@@ -117,12 +117,21 @@ public class CacheListDAO
 		Logger.DEBUG("ReadCacheList 2.Caches");
 		try
 		{
-			sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint";
-			if (withDescription)
+			if (fullDetails)
 			{
-				sql += ", Description, Solver, Notes";
+				sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;
 			}
-			sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
+			else
+			{
+				sql = CacheDAO.SQL_GET_CACHE;
+
+			}
+
+			// if (withDescription)
+			// {
+			// sql += ", Description, Solver, Notes";
+			// }
+			sql += " from Caches " + join + " " + ((where.length() > 0) ? "where " + where : where);
 			reader = Database.Data.rawQuery(sql, null);
 
 		}
@@ -136,7 +145,7 @@ public class CacheListDAO
 		long start = System.currentTimeMillis();
 		while (!reader.isAfterLast())
 		{
-			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription, fullDetails);
+			Cache cache = cacheDAO.ReadFromCursor(reader, fullDetails);
 
 			cacheList.add(cache);
 			cache.waypoints.clear();

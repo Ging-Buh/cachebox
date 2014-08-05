@@ -90,12 +90,12 @@ public class GPX_Export extends TestCase
 			Database.Data.endTransaction();
 		}
 
-		CacheTest.assertCache_GC2T9RW_with_details(false);
+		CacheTest.assertCache_GC2T9RW_with_details(true);
 
 		{ // Set Notes,Solver and Waypoint.Clue
 			CacheDAO cacheDAO = new CacheDAO();
 
-			Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false, false);
+			Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false);
 			cache.loadDetail();
 
 			Database.SetNote(cache, "Test Note for In/Ex-port");
@@ -349,7 +349,7 @@ public class GPX_Export extends TestCase
 
 			CacheDAO cacheDAO = new CacheDAO();
 
-			Cache cache = cacheDAO.getFromDbByGcCode(newCache.getGcCode(), true, true);
+			Cache cache = cacheDAO.getFromDbByGcCode(newCache.getGcCode(), true);
 
 			assertTrue("Cache muss zurückgegeben werden", cache != null);
 
@@ -414,7 +414,7 @@ public class GPX_Export extends TestCase
 
 			assertEquals("shortDescription must be NULL", null, cache.getShortDescription());
 
-			assertEquals("longDescription must be NULL", null, cache.getLongDescription());
+			assertEquals("longDescription must be NULL", "", cache.getLongDescription());
 
 			// Check exportetd Waypoint with Parent
 

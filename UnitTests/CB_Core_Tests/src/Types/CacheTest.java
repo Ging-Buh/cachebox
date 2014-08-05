@@ -316,7 +316,7 @@ public class CacheTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", true, withDescription);
+		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", true);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 
@@ -427,14 +427,7 @@ public class CacheTest extends TestCase
 		// TODO Beschreibungstexte überprüfen
 
 		assertEquals("shortDescription must be NULL", null, cache.getShortDescription());
-		if (!withDescription)
-		{
-			assertEquals("longDescription must be NULL", null, cache.getLongDescription());
-		}
-		else
-		{
-			assertEquals("longDescription must equals", LONG_DESC, cache.getLongDescription());
-		}
+		assertEquals("longDescription must equals", LONG_DESC, cache.getLongDescription());
 
 		// assertEquals("Long description is wrong", LongDesc, cache.getLongDescription());
 
@@ -453,7 +446,7 @@ public class CacheTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false, false);
+		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 
@@ -509,7 +502,7 @@ public class CacheTest extends TestCase
 		// Check Notes
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false, false);
+		Cache cache = cacheDAO.getFromDbByGcCode("GC2T9RW", false);
 
 		assertEquals(Database.GetNote(cache), "Test Note for In/Ex-port");
 		assertEquals(Database.GetSolver(cache), "Test Solver for In/Ex-port");

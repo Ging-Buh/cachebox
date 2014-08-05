@@ -49,7 +49,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GCC0RR1", true, true);
+		Cache cache = cacheDAO.getFromDbByGcCode("GCC0RR1", true);
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
 
@@ -168,7 +168,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("GCC0RR1", false, true);
+		Cache cache = cacheDAO.getFromDbByGcCode("GCC0RR1", true);
 
 		cache.loadDetail();
 
@@ -305,9 +305,7 @@ public class GSAKGpxImportTest extends TestCase
 		Database.Data.endTransaction();
 
 		CacheDAO cacheDAO = new CacheDAO();
-
-		Cache cache = cacheDAO.getFromDbByGcCode("GCC0RR1", false, true);
-
+		Cache cache = cacheDAO.getFromDbByGcCode("GCC0RR1", false);
 		cache.loadDetail();
 
 		assertTrue("Cache muss zurückgegeben werden", cache != null);
@@ -408,7 +406,7 @@ public class GSAKGpxImportTest extends TestCase
 		assertTrue("es dürfte keine Logs geben", logs.size() == 0);
 
 		// Check Final WP
-		assertTrue("Cache einen Final WP haben", cache.GetFinalWaypoint() != null);
+		assertTrue("Cache muss einen Final WP haben", cache.GetFinalWaypoint() != null);
 
 		Waypoint wp = cache.GetFinalWaypoint();
 
@@ -444,7 +442,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("ACWP003", false, true);
+		Cache cache = cacheDAO.getFromDbByGcCode("ACWP003", true);
 
 		cache.loadDetail();
 
@@ -587,7 +585,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("ACWP003", false, true);
+		Cache cache = cacheDAO.getFromDbByGcCode("ACWP003", true);
 
 		cache.loadDetail();
 
@@ -730,7 +728,7 @@ public class GSAKGpxImportTest extends TestCase
 
 		CacheDAO cacheDAO = new CacheDAO();
 
-		Cache cache = cacheDAO.getFromDbByGcCode("OCF19A", false, true);
+		Cache cache = cacheDAO.getFromDbByGcCode("OCF19A", true);
 
 		cache.loadDetail();
 
