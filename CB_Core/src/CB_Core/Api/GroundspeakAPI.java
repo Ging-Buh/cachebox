@@ -424,7 +424,7 @@ public class GroundspeakAPI
 				}
 
 			}
-			catch (JSONException e)
+			catch (Exception e)
 			{
 				Logger.Error("GetMembershipType", "JSONException", e);
 				API_isCheked = false;
