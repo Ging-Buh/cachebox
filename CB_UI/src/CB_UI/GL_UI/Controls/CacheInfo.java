@@ -191,6 +191,7 @@ public class CacheInfo extends CB_View_Base
 		try
 		{
 			if (mCache == null) return;
+			if (mCache.Size == null) return;
 
 			this.removeChilds();
 

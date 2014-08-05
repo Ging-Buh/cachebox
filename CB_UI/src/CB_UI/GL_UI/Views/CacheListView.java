@@ -198,6 +198,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public void setSelectedCacheVisible()
 	{
+		if (GlobalCore.getSelectedCache() == null) return;
+
 		listView.RunIfListInitial(new IRunOnGL()
 		{
 
