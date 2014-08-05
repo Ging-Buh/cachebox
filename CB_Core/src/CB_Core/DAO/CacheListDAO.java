@@ -59,10 +59,10 @@ public class CacheListDAO
 		return ReadCacheList(cacheList, "", where, false, fullDetails, loadAllWaypoints);
 	}
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
-	{
-		return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
-	}
+	// public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
+	// {
+	// return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
+	// }
 
 	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails,
 			boolean loadAllWaypoints)
@@ -79,7 +79,7 @@ public class CacheListDAO
 		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
 		long aktCacheID = -1;
 
-		String sql = "select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint";
+		String sql = fullDetails ? WaypointDAO.SQL_WP_FULL : WaypointDAO.SQL_WP;
 		if (!((fullDetails || loadAllWaypoints)))
 		{
 			// when CacheList should be loaded without full details and without all Waypoints
