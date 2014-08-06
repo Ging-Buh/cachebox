@@ -272,7 +272,7 @@ public class SearchForGeocaches_Core
 		}
 
 		result = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, result, apiStatus, isLite);
-		if (cacheList.size() == searchNumber)
+		if (searchNumber > 1 && cacheList.size() == searchNumber)
 		{
 			startIndex++;
 			int lastCacheListSize;
