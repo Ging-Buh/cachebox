@@ -6,6 +6,7 @@ import CB_Core.Types.MeasuredCoordList;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.PointD;
 
 public class DescriptorTest extends TestCase
@@ -100,5 +101,27 @@ public class DescriptorTest extends TestCase
 
 		assertTrue("Die Summe der X punkte sollte  sein", sumX == 842);
 		assertTrue("Die Summe der Y punkte sollte  sein", sumY == 249);
+	}
+
+	public void testAdjustDescriptor()
+	{
+		Descriptor def = new Descriptor(4400, 2684, 13, true);
+		Descriptor def12 = new Descriptor(2200, 1342, 12, true);
+		CB_List<Descriptor> adjustDown = def.AdjustZoom(12);
+		assertTrue("return must only one Descriptor", adjustDown.size() == 1);
+		assertEquals("must Equals!", adjustDown.get(0), def12);
+
+		CB_List<Descriptor> adjustUpList = new CB_List<Descriptor>();
+		adjustUpList.add(new Descriptor(8800, 5368, 14, true));
+		adjustUpList.add(new Descriptor(8800, 5369, 14, true));
+		adjustUpList.add(new Descriptor(8801, 5368, 14, true));
+		adjustUpList.add(new Descriptor(8801, 5369, 14, true));
+		CB_List<Descriptor> adjustUp = def.AdjustZoom(14);
+		assertTrue("return must only four Descriptor", adjustUp.size() == 4);
+		for (int i = 0; i < 4; i++)
+		{
+			assertTrue("Descriptor must inside the list", adjustUp.contains(adjustUpList.get(i)));
+		}
+
 	}
 }

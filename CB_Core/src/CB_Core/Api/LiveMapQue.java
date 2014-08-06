@@ -28,6 +28,7 @@ import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Lists.CB_Stack;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.iChanged;
 
@@ -108,7 +109,7 @@ public class LiveMapQue implements PositionChangedEvent
 	public static final CB_List<Cache> LiveCaches = new CB_List<Cache>();
 	public static boolean DownloadIsActive = false;
 
-	static CB_List<Descriptor> quedDescList = new CB_List<Descriptor>();
+	static CB_Stack<Descriptor> quedDescList = new CB_Stack<Descriptor>();
 
 	public static CB_List<QueStateChanged> eventList = new CB_List<LiveMapQue.QueStateChanged>();
 
@@ -207,5 +208,13 @@ public class LiveMapQue implements PositionChangedEvent
 
 		thread.start();
 		return true;
+	}
+
+	public static void queScreen(Descriptor lo, Descriptor ru)
+	{
+		CB_List<Descriptor> descList = new CB_List<Descriptor>();
+		descList.addAll(lo.AdjustZoom(Used_Zoom));
+		descList.addAll(ru.AdjustZoom(Used_Zoom));
+
 	}
 }

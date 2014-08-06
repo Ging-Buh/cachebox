@@ -44,8 +44,6 @@ public class searchLiveMapTests extends TestCase
 	public void testSearchLive()
 	{
 
-		Descriptor.Init();
-
 		// Descriptor Zoom Level 14 = search radius 2km
 		// Center of Descriptor x=8801 y=5368 z=14 => 52° 34,982N / 13° 23,540E (Pankow)
 		Descriptor descPankow = new Descriptor(8801, 5368, 14, false);
@@ -78,7 +76,6 @@ public class searchLiveMapTests extends TestCase
 		GroundspeakAPI.GetCacheLimits();
 		int CachesLeft = GroundspeakAPI.CachesLeft;
 
-		Descriptor.Init();
 		Coordinate coord = new Coordinate("52° 34,9815N / 13° 23,540E");
 		Descriptor desc = new Descriptor(coord, 14);
 

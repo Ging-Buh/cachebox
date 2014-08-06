@@ -495,7 +495,6 @@ public abstract class ManagerBase
 				}
 			}
 		}
-		Descriptor.Init();
 		mayAddLayer = false;
 	}
 

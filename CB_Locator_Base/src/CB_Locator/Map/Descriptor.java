@@ -20,6 +20,7 @@ package CB_Locator.Map;
 
 import CB_Locator.Coordinate;
 import CB_Utils.MathUtils;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.PointD;
 
 /**
@@ -38,7 +39,7 @@ public class Descriptor implements Comparable<Descriptor>
 	public Object Data = null;
 	private long BuffertHash = 0;
 
-	public static void Init()
+	static
 	{
 		int maxZoom = 25;
 
@@ -134,19 +135,35 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Erzeugt einen neuen Deskriptor mit anderer Zoom-Stufe
 	 */
-	public Descriptor AdjustZoom(int newZoomLevel)
+	public CB_List<Descriptor> AdjustZoom(int newZoomLevel)
 	{
 		int zoomDiff = newZoomLevel - getZoom();
 		int pow = (int) Math.pow(2, Math.abs(zoomDiff));
 
-		if (zoomDiff < 0)
+		CB_List<Descriptor> ret = new CB_List<Descriptor>();
+
+		if (zoomDiff > 0)
 		{
-			return new Descriptor(getX() / pow, getY() / pow, newZoomLevel, this.NightMode);
+
+			Descriptor def = new Descriptor(getX() * pow, getY() * pow, newZoomLevel, this.NightMode);
+
+			int count = pow / 2;
+
+			for (int i = 0; i <= count; i++)
+			{
+				for (int j = 0; j <= count; j++)
+				{
+					ret.add(new Descriptor(def.getX() + i, def.getY() + j, newZoomLevel, this.NightMode));
+				}
+			}
+
 		}
 		else
 		{
-			return new Descriptor(getX() * pow, getY() * pow, newZoomLevel, this.NightMode);
+			ret.add(new Descriptor(getX() / pow, getY() / pow, newZoomLevel, this.NightMode));
 		}
+
+		return ret;
 
 	}
 

@@ -23,6 +23,7 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 
 import CB_Core.Api.GroundspeakAPI;
+import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.WaypointDAO;
@@ -1005,6 +1006,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		mapCacheList.update(data);
 
 		super.loadTiles();
+
+		if (CarMode)
+		{
+			// LiveMap queue complete screen
+			LiveMapQue.queScreen(lo, ru);
+		}
 	}
 
 	public void setCenter(CoordinateGPS value)
