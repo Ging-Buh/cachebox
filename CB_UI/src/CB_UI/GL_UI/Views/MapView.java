@@ -60,6 +60,7 @@ import CB_UI.GL_UI.Controls.MapInfoPanel.CoordType;
 import CB_UI.GL_UI.Views.MapViewCacheList.MapViewCacheListUpdateData;
 import CB_UI.GL_UI.Views.MapViewCacheList.WaypointRenderInfo;
 import CB_UI.Map.RouteOverlay;
+import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -1007,7 +1008,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		super.loadTiles();
 
-		if (CarMode)
+		if (CarMode && CB_UI_Settings.LiveMapEnabeld.getValue())
 		{
 			// LiveMap queue complete screen
 			LiveMapQue.queScreen(lo, ru);

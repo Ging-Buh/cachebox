@@ -45,7 +45,7 @@ public class LiveButton extends ImageButton implements QueStateChanged
 	{
 		if (state)
 		{
-			if (LiveMapQue.DownloadIsActive)
+			if (LiveMapQue.DownloadIsActive.get())
 			{
 				try
 				{
@@ -80,7 +80,7 @@ public class LiveButton extends ImageButton implements QueStateChanged
 			switchImage();
 		}
 		super.render(batch);
-		if (LiveMapQue.DownloadIsActive) GL.that.renderOnce(true);
+		if (LiveMapQue.DownloadIsActive.get()) GL.that.renderOnce(true);
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class LiveButton extends ImageButton implements QueStateChanged
 		switchImage();
 		if (state)
 		{
-			if (LiveMapQue.DownloadIsActive)
+			if (LiveMapQue.DownloadIsActive.get())
 			{
 				GL.that.addRenderView(this, GL.FRAME_RATE_ACTION);
 			}

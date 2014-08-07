@@ -535,6 +535,10 @@ public abstract class GL_View_Base extends CB_RectF
 				{
 					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				}
+				catch (java.lang.IndexOutOfBoundsException e)
+				{
+					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+				}
 			}
 
 			// }

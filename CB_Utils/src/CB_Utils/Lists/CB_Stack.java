@@ -16,6 +16,8 @@
 
 package CB_Utils.Lists;
 
+import CB_Utils.Log.Logger;
+
 /**
  * The Stack class represents a last-in-first-out (LIFO) stack of objects. With option for max item Size.
  * 
@@ -40,8 +42,13 @@ public class CB_Stack<T>
 	 */
 	public void add(T item)
 	{
-		items.add(item);
-		checkMaxItemSize();
+		synchronized (items)
+		{
+			if (items.contains(item)) return;
+			items.add(item);
+			Logger.LogCat("STACK add SIZE=" + items.size);
+			checkMaxItemSize();
+		}
 	}
 
 	/**
@@ -51,12 +58,24 @@ public class CB_Stack<T>
 	 */
 	public T get()
 	{
-		return items.remove(0);
+		synchronized (items)
+		{
+			if (items.size == 0)
+			{
+				Logger.LogCat("STACK empty Get");
+				return null;
+			}
+			Logger.LogCat("STACK add SIZE=" + (items.size - 1));
+			return items.remove(0);
+		}
 	}
 
 	public boolean contains(T value)
 	{
-		return items.contains(value);
+		synchronized (items)
+		{
+			return items.contains(value);
+		}
 	}
 
 	public int getMaxItemSize()
@@ -77,19 +96,33 @@ public class CB_Stack<T>
 	 */
 	public boolean empty()
 	{
-		return items.size == 0;
+		synchronized (items)
+		{
+			return items.size <= 0;
+		}
 	}
 
 	private void checkMaxItemSize()
 	{
-		if (maxItemSize < 1) return;
-		if (items.size > maxItemSize)
+		synchronized (items)
 		{
-			int removeCount = items.size - maxItemSize;
-			for (int i = 0; i < removeCount; i++)
+			if (maxItemSize < 1) return;
+			if (items.size > maxItemSize)
 			{
-				items.remove(0);
+				int removeCount = items.size - maxItemSize;
+				for (int i = 0; i < removeCount; i++)
+				{
+					items.remove(0);
+				}
 			}
+		}
+	}
+
+	public int getSize()
+	{
+		synchronized (items)
+		{
+			return items.size;
 		}
 	}
 }
