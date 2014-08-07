@@ -598,7 +598,8 @@ public class SearchForGeocaches_Core
 						int imageListSizeGC = images.length();
 
 						// insert images from Cache description
-						LinkedList<String> allImages = DescriptionImageGrabber.GetAllImages(cache);
+						LinkedList<String> allImages = null;
+						if (!search.isLite) allImages = DescriptionImageGrabber.GetAllImages(cache);
 						int imageListSizeGrabbed = 0;
 
 						if (allImages != null && allImages.size() > 0)

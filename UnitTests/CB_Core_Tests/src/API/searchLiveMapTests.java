@@ -1,16 +1,24 @@
 package API;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
+import CB_Core.Api.SearchForGeocaches_Core;
+import CB_Core.Api.SearchLiveMap;
+import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
+import CB_Core.Types.ImageEntry;
+import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
 import CB_UI.Config;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Lists.CB_List;
 import __Static.InitTestDBs;
 
 public class searchLiveMapTests extends TestCase
@@ -98,6 +106,9 @@ public class searchLiveMapTests extends TestCase
 				assertTrue("Distance from center must be closer then request distance", distance <= LiveMapQue.Used_max_request_radius);
 			}
 
+			CB_List<LogEntry> cleanLogs = new CB_List<LogEntry>();
+			cleanLogs = Database.Logs(ca);// cache.Logs();
+
 		}
 
 		// Check if count are not same like requested (increase Max Count)
@@ -107,5 +118,25 @@ public class searchLiveMapTests extends TestCase
 
 		assertTrue("CacheLimits must not changed", CachesLeft == GroundspeakAPI.CachesLeft);
 
+	}
+
+	public static final int MAX_REQUEST_CACHE_COUNT = 200;
+	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+	private static final float Used_max_request_radius = 2120;
+
+	public void test_request()
+	{
+		Coordinate requestCoordinate = new Coordinate("52° 34,9815N / 13° 23,540E");
+		SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, Used_max_request_radius);
+
+		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+
+		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
+		String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
+
+		assertTrue("ApiImage-Size must be 0", apiImages.size() == 0);
+		assertTrue("ApiLog-Size must be 0", apiLogs.size() == 0);
+		assertTrue("CacheList-Size must be 79", apiCaches.size() == 79);
 	}
 }
