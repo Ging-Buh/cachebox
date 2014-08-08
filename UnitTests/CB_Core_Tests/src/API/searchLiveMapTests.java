@@ -93,7 +93,7 @@ public class searchLiveMapTests extends TestCase
 
 		// Chk all Caches are in to the Descriptor of new Coordinate("52° 34,973N / 13° 23,531E")
 
-		for (int i = 0; i < LiveMapQue.LiveCaches.size(); i++)
+		for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++)
 		{
 			Cache ca = LiveMapQue.LiveCaches.get(i);
 
@@ -112,7 +112,7 @@ public class searchLiveMapTests extends TestCase
 		}
 
 		// Check if count are not same like requested (increase Max Count)
-		assertTrue("count mast be lower then requested", LiveMapQue.LiveCaches.size() < LiveMapQue.MAX_REQUEST_CACHE_COUNT);
+		assertTrue("count mast be lower then requested", LiveMapQue.LiveCaches.getSize() < LiveMapQue.MAX_REQUEST_CACHE_COUNT);
 
 		GroundspeakAPI.GetCacheLimits();
 
@@ -130,7 +130,7 @@ public class searchLiveMapTests extends TestCase
 		Coordinate requestCoordinate = new Coordinate("52° 34,9815N / 13° 23,540E");
 		SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, Used_max_request_radius);
 
-		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		CB_List<Cache> apiCaches = new CB_List<Cache>();
 
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
 		String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);

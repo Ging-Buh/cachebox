@@ -72,6 +72,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -730,7 +731,7 @@ public class SearchDialog extends PopUp_Base
 				GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
 				if (gpxFilename == null) return;
 
-				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+				CB_List<Cache> apiCaches = new CB_List<Cache>();
 				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
@@ -779,8 +780,9 @@ public class SearchDialog extends PopUp_Base
 					synchronized (Database.Data.Query)
 					{
 
-						for (Cache cache : apiCaches)
+						for (int j = 0; j < apiCaches.size(); j++)
 						{
+							Cache cache = apiCaches.get(j);
 							counter++;
 							// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
 							// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());

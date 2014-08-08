@@ -25,6 +25,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -82,7 +83,7 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 				searchC.number = 1;
 				searchC.available = false;
 
-				ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+				CB_List<Cache> apiCaches = new CB_List<Cache>();
 				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 

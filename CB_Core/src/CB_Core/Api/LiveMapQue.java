@@ -21,13 +21,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
+import CB_Core.Types.CacheListLive;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.LoopThread;
 import CB_Utils.Util.iChanged;
 
@@ -42,78 +42,11 @@ public class LiveMapQue
 	public static final byte DEFAULT_ZOOM_13 = 13;
 	public static final int MAX_REQUEST_CACHE_RADIUS_13 = 2120;
 
-	public static byte Used_Zoom;
-	public static int Used_max_request_radius;
-
-	private static LoopThread loop = new LoopThread(2000)
-	{
-
-		@Override
-		protected boolean LoopBraek()
-		{
-			return descStack.empty();
-		}
-
-		@Override
-		protected void Loop()
-		{
-			Descriptor desc = descStack.get();
-
-			if (desc == null) return;
-
-			for (int i = 0; i < eventList.size(); i++)
-				eventList.get(i).stateChanged();
-			DownloadIsActive.set(true);
-
-			Coordinate requestCoordinate = desc.getCenterCoordinate();
-			SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, Used_max_request_radius);
-
-			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-
-			CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-			String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
-
-			if (result.length() > 0) quedDescList.add(desc);
-
-			for (Cache ca : apiCaches)
-			{
-				if (LiveCaches.contains(ca))
-				{
-					Logger.DEBUG("Live Map:Cache Doppelt geladen => " + ca.toString());
-				}
-				else
-				{
-					ca.setLive(true);
-					LiveCaches.add(ca);
-				}
-			}
-
-			Thread callThread = new Thread(new Runnable()
-			{
-
-				@Override
-				public void run()
-				{
-					CachListChangedEventList.Call();
-					for (int i = 0; i < eventList.size(); i++)
-						eventList.get(i).stateChanged();
-				}
-			});
-			callThread.start();
-			DownloadIsActive.set(false);
-
-		}
-	};
-
-	public static CB_Stack<Descriptor> descStack = new CB_Stack<Descriptor>();
-
-	public enum Live_Radius
-	{
-		Zoom_13, Zoom_14
-	}
-
+	public static final int MAX_REQUEST_CACHE_COUNT = 200;
+	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+	public static CacheListLive LiveCaches;
 	public static Live_Radius radius = CB_Core.Settings.CB_Core_Settings.Live_Radius.getEnumValue();
-
 	static
 	{
 		CB_Core.Settings.CB_Core_Settings.Live_Radius.addChangedEventListner(new iChanged()
@@ -161,27 +94,92 @@ public class LiveMapQue
 			break;
 
 		}
+
+		int maxLiveCount = CB_Core.Settings.CB_Core_Settings.LiveMaxCount.getValue();
+		LiveCaches = new CacheListLive(maxLiveCount);
+		CB_Core.Settings.CB_Core_Settings.LiveMaxCount.addChangedEventListner(new iChanged()
+		{
+
+			@Override
+			public void isChanged()
+			{
+				int maxLiveCount = CB_Core.Settings.CB_Core_Settings.LiveMaxCount.getValue();
+				LiveCaches = new CacheListLive(maxLiveCount);
+			}
+		});
+
 	}
 
-	public static final int MAX_REQUEST_CACHE_COUNT = 200;
-	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+	public static byte Used_Zoom;
+	public static int Used_max_request_radius;
 
-	public static final CB_List<Cache> LiveCaches = new CB_List<Cache>();
 	public static AtomicBoolean DownloadIsActive = new AtomicBoolean(false);
-
 	static CB_List<Descriptor> quedDescList = new CB_List<Descriptor>();
-
 	public static CB_List<QueStateChanged> eventList = new CB_List<LiveMapQue.QueStateChanged>();
+	public static CB_Stack<Descriptor> descStack = new CB_Stack<Descriptor>();
 
-	public void AddStateChangedListner(QueStateChanged listner)
+	public enum Live_Radius
 	{
-		eventList.add(listner);
+		Zoom_13, Zoom_14
 	}
 
 	public interface QueStateChanged
 	{
 		public void stateChanged();
+	}
+
+	private static LoopThread loop = new LoopThread(2000)
+	{
+
+		@Override
+		protected boolean LoopBraek()
+		{
+			return descStack.empty();
+		}
+
+		@Override
+		protected void Loop()
+		{
+			Descriptor desc = descStack.get();
+
+			if (desc == null) return;
+
+			for (int i = 0; i < eventList.size(); i++)
+				eventList.get(i).stateChanged();
+			DownloadIsActive.set(true);
+
+			Coordinate requestCoordinate = desc.getCenterCoordinate();
+			SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, Used_max_request_radius);
+
+			CB_List<Cache> apiCaches = new CB_List<Cache>();
+
+			CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
+			String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
+
+			if (result.length() > 0) quedDescList.add(desc);
+
+			LiveCaches.add(desc, apiCaches);
+
+			Thread callThread = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					CachListChangedEventList.Call();
+					for (int i = 0; i < eventList.size(); i++)
+						eventList.get(i).stateChanged();
+				}
+			});
+			callThread.start();
+			DownloadIsActive.set(false);
+
+		}
+	};
+
+	public void AddStateChangedListner(QueStateChanged listner)
+	{
+		eventList.add(listner);
 	}
 
 	static public void quePosition(Coordinate coord)

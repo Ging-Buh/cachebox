@@ -86,4 +86,7 @@ public interface CB_Core_Settings
 	public static final SettingBool DisableLiveMap = new SettingBool("DisableLiveMap", SettingCategory.LiveMap, NORMAL, false,
 			SettingStoreType.Global);
 
+	public static final SettingInt LiveMaxCount = new SettingInt("LiveMaxCount", SettingCategory.LiveMap, EXPERT, 200,
+			SettingStoreType.Global);
+
 }

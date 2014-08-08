@@ -44,6 +44,7 @@ import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
 import CB_Utils.Plattform;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
 
@@ -1487,7 +1488,7 @@ public class GroundspeakAPI
 		return result;
 	}
 
-	public static void WriteCachesLogsImages_toDB(ArrayList<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages)
+	public static void WriteCachesLogsImages_toDB(CB_List<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages)
 			throws InterruptedException
 	{
 		// Auf eventuellen Thread Abbruch reagieren
@@ -1500,11 +1501,9 @@ public class GroundspeakAPI
 		ImageDAO imageDAO = new ImageDAO();
 		WaypointDAO waypointDAO = new WaypointDAO();
 
-		for (Cache cache : apiCaches)
+		for (int c = 0; c < apiCaches.size(); c++)
 		{
-			// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-
+			Cache cache = apiCaches.get(c);
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
 			if (aktCache == null)
 			{

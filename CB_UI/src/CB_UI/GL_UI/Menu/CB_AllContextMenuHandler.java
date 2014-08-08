@@ -29,6 +29,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -149,7 +150,7 @@ public class CB_AllContextMenuHandler
 
 						searchC.number = 1;
 
-						ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+						CB_List<Cache> apiCaches = new CB_List<Cache>();
 						ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 						ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 

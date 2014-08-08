@@ -84,6 +84,7 @@ import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.Color;
@@ -389,7 +390,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							searchC.number = 1;
 							searchC.available = false;
 
-							ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+							CB_List<Cache> apiCaches = new CB_List<Cache>();
 							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 							ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 

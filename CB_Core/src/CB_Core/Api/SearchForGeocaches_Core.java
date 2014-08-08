@@ -33,6 +33,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
 public class SearchForGeocaches_Core
@@ -60,7 +61,7 @@ public class SearchForGeocaches_Core
 		return false;
 	}
 
-	public String SearchForGeocachesJSON(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList,
+	public String SearchForGeocachesJSON(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList,
 			ArrayList<ImageEntry> imageList, long gpxFilenameId)
 	{
 		String result = "";
@@ -353,7 +354,7 @@ public class SearchForGeocaches_Core
 		return result;
 	}
 
-	private String ParseJsonResult(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList,
+	private String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList,
 			long gpxFilenameId, String result, byte apiStatus, boolean isLite)
 	{
 		// Parse JSON Result
@@ -762,7 +763,7 @@ public class SearchForGeocaches_Core
 		{
 			SearchGC search = new SearchGC(aktCache.getGcCode());
 
-			ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+			CB_List<Cache> apiCaches = new CB_List<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 			SearchForGeocachesJSON(search, apiCaches, apiLogs, apiImages, aktCache.GPXFilename_ID);

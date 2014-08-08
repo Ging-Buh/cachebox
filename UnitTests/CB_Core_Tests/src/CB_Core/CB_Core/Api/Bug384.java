@@ -2,7 +2,6 @@ package CB_Core.CB_Core.Api;
 
 import java.util.ArrayList;
 
-import __Static.InitTestDBs;
 import junit.framework.TestCase;
 import CB_Core.Api.SearchForGeocaches_Core;
 import CB_Core.Api.SearchGC;
@@ -12,6 +11,8 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_UI.Config;
+import CB_Utils.Lists.CB_List;
+import __Static.InitTestDBs;
 
 public class Bug384 extends TestCase
 {
@@ -48,7 +49,7 @@ public class Bug384 extends TestCase
 
 		searchC.number = 1;
 
-		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		CB_List<Cache> apiCaches = new CB_List<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 

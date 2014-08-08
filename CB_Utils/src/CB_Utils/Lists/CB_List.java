@@ -216,6 +216,13 @@ public class CB_List<T> implements Serializable
 		return items[0];
 	}
 
+	/** Returns the first item. */
+	public T last()
+	{
+		if (size == 0) throw new IllegalStateException("Array is empty.");
+		return items[size - 1];
+	}
+
 	public void clear()
 	{
 		Arrays.fill(items, null);

@@ -36,6 +36,7 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -467,7 +468,7 @@ public class SearchOverPosition extends ActivityBase
 							GpxFilename gpxFilename = categoryDAO.CreateNewGpxFilename(category, "API-Import");
 							if (gpxFilename != null)
 							{
-								ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+								CB_List<Cache> apiCaches = new CB_List<Cache>();
 								ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 								ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 								SearchCoordinate searchC = new SearchCoordinate(50, actSearchPos, Config.lastSearchRadius.getValue() * 1000);

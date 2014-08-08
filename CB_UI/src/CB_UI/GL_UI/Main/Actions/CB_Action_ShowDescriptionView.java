@@ -32,6 +32,7 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -140,7 +141,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 							searchC.number = 1;
 							searchC.available = false;
 
-							ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+							CB_List<Cache> apiCaches = new CB_List<Cache>();
 							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 							ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 

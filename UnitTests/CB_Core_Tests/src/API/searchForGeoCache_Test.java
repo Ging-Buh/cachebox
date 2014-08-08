@@ -1,7 +1,6 @@
 package API;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import junit.framework.TestCase;
 import CB_Core.Api.GroundspeakAPI;
@@ -17,6 +16,7 @@ import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_UI.Config;
+import CB_Utils.Lists.CB_List;
 import __Static.InitTestDBs;
 
 /**
@@ -61,7 +61,7 @@ public class searchForGeoCache_Test extends TestCase
 																			// Katipa(like
 																			// Longri)
 
-		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		CB_List<Cache> apiCaches = new CB_List<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 		SearchCoordinate searchC = new SearchCoordinate(50, searchCoord, 500000);
@@ -79,7 +79,7 @@ public class searchForGeoCache_Test extends TestCase
 
 		searchC.number = 1;
 
-		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		CB_List<Cache> apiCaches = new CB_List<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
@@ -103,7 +103,7 @@ public class searchForGeoCache_Test extends TestCase
 
 		SearchGCName searchC = new SearchGCName(30, searchCoord, 50000, "Kleiner Multi - Quer durch die Heide");
 
-		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		CB_List<Cache> apiCaches = new CB_List<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
@@ -129,7 +129,7 @@ public class searchForGeoCache_Test extends TestCase
 
 		SearchGCOwner searchC = new SearchGCOwner(30, searchCoord, 50000, "bros");
 
-		ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+		CB_List<Cache> apiCaches = new CB_List<Cache>();
 		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
@@ -141,13 +141,10 @@ public class searchForGeoCache_Test extends TestCase
 		if (apiCaches != null && apiCaches.size() > 0)
 		{
 
-			Iterator<Cache> iterator = apiCaches.iterator();
-
-			do
+			for (int i = 0; i < apiCaches.size(); i++)
 			{
-				if (iterator.next().getGcCode().equalsIgnoreCase("GC2JT2F")) Assert = true;
+				if (apiCaches.get(i).getGcCode().equalsIgnoreCase("GC2JT2F")) Assert = true;
 			}
-			while (iterator.hasNext());
 
 		}
 
