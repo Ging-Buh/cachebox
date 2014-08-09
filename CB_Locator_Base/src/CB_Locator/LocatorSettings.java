@@ -87,4 +87,7 @@ public interface LocatorSettings
 
 	public static final SettingEnum<GL_RenderType> MapsforgeRenderType = new SettingEnum<GL_RenderType>("MapsforgeRenderType",
 			SettingCategory.Map, EXPERT, GL_RenderType.Mixing, SettingStoreType.Global, GL_RenderType.Mixing);
+
+	public static final SettingBool DEBUG_MapGrid = new SettingBool("DEBUG_MapGrid", SettingCategory.Debug, NORMAL, false,
+			SettingStoreType.Global);
 }

@@ -51,10 +51,10 @@ public class CacheListLive
 
 			CB_List<Cache> cleanedCaches = removeExistCaches(caches);
 			if (map.containsKey(desc)) return;
+			includedList = null;
 			map.put(desc, cleanedCaches);
 			descriptorList.add(desc);
 			chkCapacity();
-			includedList = null;
 		}
 	}
 
@@ -113,6 +113,7 @@ public class CacheListLive
 				descriptorList.remove(desc);
 				list.clear();
 				list = null;
+				includedList = null;
 			}
 			if (getSize() > maxCapacity) chkCapacity();
 		}
@@ -132,7 +133,7 @@ public class CacheListLive
 		{
 			Descriptor desc2 = descriptorList.get(i);
 
-			int distance = Math.abs(descX - desc2.getX()) + Math.abs(descY - desc.getY());
+			int distance = Math.abs(descX - desc2.getX()) + Math.abs(descY - desc2.getY());
 
 			if (distance > tmpDistance)
 			{
@@ -194,5 +195,10 @@ public class CacheListLive
 
 			return includedList.get(i);
 		}
+	}
+
+	public boolean contains(Descriptor desc)
+	{
+		return descriptorList.contains(desc);
 	}
 }

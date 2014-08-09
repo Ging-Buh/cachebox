@@ -52,6 +52,7 @@ import org.mapsforge.map.rendertheme.rule.CB_RenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.xml.sax.SAXException;
 
+import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
@@ -252,13 +253,12 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 		this.drawNodes(rotateList, this.nodes);
 		this.drawNodes(rotateList, this.areaLabels);
 
-		DrawDebug(tile);
+		if (LocatorSettings.DEBUG_MapGrid.getValue()) DrawDebug(tile);
 
 		clearLists();
 		this.NoBitmapDrawing = false;
 	}
 
-	@SuppressWarnings("unused")
 	private void DrawDebug(Tile tile)
 	{
 		Canvas c = graphicFactory.createCanvas();

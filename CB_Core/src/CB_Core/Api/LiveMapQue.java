@@ -114,7 +114,6 @@ public class LiveMapQue
 	public static int Used_max_request_radius;
 
 	public static AtomicBoolean DownloadIsActive = new AtomicBoolean(false);
-	static CB_List<Descriptor> quedDescList = new CB_List<Descriptor>();
 	public static CB_List<QueStateChanged> eventList = new CB_List<LiveMapQue.QueStateChanged>();
 	public static CB_Stack<Descriptor> descStack = new CB_Stack<Descriptor>();
 
@@ -155,8 +154,6 @@ public class LiveMapQue
 
 			CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
 			String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
-
-			if (result.length() > 0) quedDescList.add(desc);
 
 			LiveCaches.add(desc, apiCaches);
 
@@ -214,7 +211,7 @@ public class LiveMapQue
 	private static void queDesc(Descriptor desc)
 	{
 		if (!loop.Alive()) loop.start();
-		if (quedDescList.contains(desc)) return; // all ready for this descriptor
+		if (LiveCaches.contains(desc)) return; // all ready for this descriptor
 		descStack.add(desc);
 	}
 }

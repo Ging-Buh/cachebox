@@ -12,7 +12,51 @@ public class CacheListLive_test extends TestCase
 	public void test_fillAndOverload()
 	{
 
-		CacheListLive cacheList = new CacheListLive(13);
+		// 1. aa +
+		// ab +
+		// ac +
+		// ad + 4
+		// ______________________________________
+		// 2. aa -
+		// ae +
+		// af +
+		// ag + 7
+		// _______________________________________
+		// 3. aa -
+		// ab -
+		// ac -
+		// ad - 7
+		// _______________________________________
+		// 4. ba +
+		// be +
+		// bf +
+		// bg +
+		// ba -
+		// he +
+		// hf +
+		// hg + 14
+		// ____________________________________
+		// 5. ce +
+		// cf +
+		// cg +
+		// ca +
+		// cb +
+		// cc + 20-4=16
+		// ________________________________________
+		// 6. ke +
+		// lf +
+		// mg +
+		// na +
+		// oe +
+		// pf +
+		// ef +
+		// ff +
+		// gf +
+		// hf -
+		// if +
+		// jf + 27-3=24-4=20-6=14
+
+		CacheListLive cacheList = new CacheListLive(16);
 
 		Descriptor desc1 = new Descriptor(50, 50, 13, false);
 		CB_List<Cache> listDesc1 = new CB_List<Cache>();
@@ -31,7 +75,7 @@ public class CacheListLive_test extends TestCase
 		assertTrue("Cache size must lower then max capacity", s < cacheList.getCapacity());
 		assertCacheAtList(cacheList, ca1, ca2, ca3, ca4);
 
-		// -------------------------------------------------------------------------------------
+		// 2.-------------------------------------------------------------------------------------
 
 		Descriptor desc2 = new Descriptor(51, 50, 13, false);
 		CB_List<Cache> listDesc2 = new CB_List<Cache>();
@@ -50,7 +94,7 @@ public class CacheListLive_test extends TestCase
 		assertTrue("Cache size must lower then max capacity", s < cacheList.getCapacity());
 		assertCacheAtList(cacheList, ca1, ca2, ca3, ca4, ca6, ca7, ca8);
 
-		// -------------------------------------------------------------------------------------
+		// 3. -------------------------------------------------------------------------------------
 
 		Descriptor desc3 = new Descriptor(50, 50, 13, false);
 		CB_List<Cache> listDesc3 = new CB_List<Cache>();
@@ -65,7 +109,7 @@ public class CacheListLive_test extends TestCase
 		assertTrue("Cache size must lower then max capacity", s < cacheList.getCapacity());
 		assertCacheAtList(cacheList, ca1, ca2, ca3, ca4, ca6, ca7, ca8);
 
-		// -------------------------------------------------------------------------------------
+		// 4.-------------------------------------------------------------------------------------
 
 		Descriptor desc4 = new Descriptor(51, 51, 13, false);
 		CB_List<Cache> listDesc4 = new CB_List<Cache>();
@@ -92,7 +136,7 @@ public class CacheListLive_test extends TestCase
 		assertTrue("Cache size must lower then max capacity", s < cacheList.getCapacity());
 		assertCacheAtList(cacheList, ca1, ca2, ca3, ca4, ca6, ca7, ca8, ca9, ca10, ca11, ca12, ca14, ca15, ca16);
 
-		// -------------------------------------------------------------------------------------
+		// 5.-------------------------------------------------------------------------------------
 
 		Descriptor desc5 = new Descriptor(52, 51, 13, false);
 		CB_List<Cache> listDesc5 = new CB_List<Cache>();
@@ -100,8 +144,8 @@ public class CacheListLive_test extends TestCase
 		Cache ca18 = getTmpCache("cf");
 		Cache ca19 = getTmpCache("cg");
 		Cache ca20 = getTmpCache("ca");
-		Cache ca21 = getTmpCache("ce");
-		Cache ca22 = getTmpCache("cf");
+		Cache ca21 = getTmpCache("cb");
+		Cache ca22 = getTmpCache("cc");
 		listDesc5.add(ca17);
 		listDesc5.add(ca18);
 		listDesc5.add(ca19);
@@ -111,21 +155,21 @@ public class CacheListLive_test extends TestCase
 
 		cacheList.add(desc5, listDesc5);
 		int s5 = cacheList.getSize();
-		assertTrue("Cache size must be 18", s5 == 18);// first descriptor must remove
+		assertTrue("Cache size must be 16", s5 == 16);// first descriptor must remove
 		assertTrue("Cache size must lower then max capacity", s < cacheList.getCapacity());
 		assertCacheAtList(cacheList, ca6, ca7, ca8, ca9, ca10, ca11, ca12, ca14, ca15, ca16, ca17, ca18, ca19, ca20, ca21, ca22);
 		assertCacheNotAtList(cacheList, ca1, ca2, ca3, ca4);
 
-		// -------------------------------------------------------------------------------------
+		// 6.-------------------------------------------------------------------------------------
 		// must remove three Descriptors
 		Descriptor desc6 = new Descriptor(52, 52, 13, false);
 		CB_List<Cache> listDesc6 = new CB_List<Cache>();
-		Cache ca23 = getTmpCache("ce");
-		Cache ca24 = getTmpCache("cf");
-		Cache ca25 = getTmpCache("cg");
-		Cache ca26 = getTmpCache("ca");
-		Cache ca27 = getTmpCache("ce");
-		Cache ca28 = getTmpCache("df");
+		Cache ca23 = getTmpCache("ke");
+		Cache ca24 = getTmpCache("lf");
+		Cache ca25 = getTmpCache("mg");
+		Cache ca26 = getTmpCache("na");
+		Cache ca27 = getTmpCache("oe");
+		Cache ca28 = getTmpCache("pf");
 		Cache ca29 = getTmpCache("ef");
 		Cache ca30 = getTmpCache("ff");
 		Cache ca31 = getTmpCache("gf");
@@ -147,11 +191,11 @@ public class CacheListLive_test extends TestCase
 
 		cacheList.add(desc6, listDesc6);
 		int s6 = cacheList.getSize();
-		assertTrue("Cache size must be 12", s6 == 12);// first three descriptors must remove
+		assertTrue("Cache size must be 11", s6 == 11);// first three descriptors must remove
 		assertTrue("Cache size must lower then max capacity", s < cacheList.getCapacity());
-		assertCacheAtList(cacheList, ca17, ca18, ca19, ca20, ca21, ca22, ca23, ca24, ca25, ca26, ca27, ca28, ca29, ca30, ca31, ca32, ca33,
-				ca34);
-		assertCacheNotAtList(cacheList, ca1, ca2, ca3, ca4, ca6, ca7, ca8, ca9, ca10, ca11, ca12, ca13, ca14, ca15, ca16);
+		assertCacheAtList(cacheList, ca23, ca24, ca25, ca26, ca27, ca28, ca29, ca30, ca31, ca33, ca34);
+		assertCacheNotAtList(cacheList, ca1, ca2, ca3, ca4, ca6, ca7, ca8, ca9, ca10, ca11, ca12, ca13, ca14, ca15, ca16, ca17, ca18, ca19,
+				ca20, ca21, ca22);
 
 		// -------------------------------------------------------------------------------------
 
