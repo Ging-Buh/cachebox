@@ -36,15 +36,18 @@ import CB_Utils.Log.Logger;
 public class CacheDAO
 {
 
-	static final String SQL_BY_ID = "from Caches where id = ?";
-	static final String SQL_BY_GC_CODE = "from Caches where GCCode = ?";
+	static final String SQL_BY_ID = "from Caches c where id = ?";
+	static final String SQL_BY_GC_CODE = "from Caches c where GCCode = ?";
+	public String[] SQL_ENUM =
+		{ "c.Id", "GcCode", "Latitude" };
 	static final String SQL_DETAILS = "PlacedBy, DateHidden, Url, TourName, GpxFilename_ID, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint ";
+	static final String SQL_GET_DETAIL_WITH_DESCRIPTION = "Description, Solver, Notes ";
 	static final String SQL_GET_DETAIL_FROM_ID = "select " + SQL_DETAILS + SQL_BY_ID;
 	static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
 
-	static final String SQL_GET_CACHE = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates ";
+	static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates ";
 
-	Cache ReadFromCursor(CoreCursor reader, boolean fullDetails)
+	Cache ReadFromCursor(CoreCursor reader, boolean fullDetails, boolean withDescription)
 	{
 		try
 		{
@@ -84,7 +87,7 @@ public class CacheDAO
 
 			if (fullDetails)
 			{
-				readDetailFromCursor(reader, cache.detail, fullDetails);
+				readDetailFromCursor(reader, cache.detail, fullDetails, withDescription);
 			}
 
 			return cache;
@@ -109,7 +112,7 @@ public class CacheDAO
 			if (reader != null && reader.getCount() > 0)
 			{
 				reader.moveToFirst();
-				readDetailFromCursor(reader, cache.detail, false);
+				readDetailFromCursor(reader, cache.detail, false, false);
 
 				reader.close();
 				return true;
@@ -128,7 +131,7 @@ public class CacheDAO
 		}
 	}
 
-	private boolean readDetailFromCursor(CoreCursor reader, CacheDetail detail, boolean withReaderOffset)
+	private boolean readDetailFromCursor(CoreCursor reader, CacheDetail detail, boolean withReaderOffset, boolean withDescription)
 	{
 		// Reader includes Compleate Cache or Details only
 		int readerOffset = withReaderOffset ? 20 : 0;
@@ -391,7 +394,7 @@ public class CacheDAO
 			if (reader != null && reader.getCount() > 0)
 			{
 				reader.moveToFirst();
-				Cache ret = ReadFromCursor(reader, false);
+				Cache ret = ReadFromCursor(reader, false, false);
 
 				reader.close();
 				return ret;
@@ -427,7 +430,7 @@ public class CacheDAO
 			if (reader != null && reader.getCount() > 0)
 			{
 				reader.moveToFirst();
-				Cache ret = ReadFromCursor(reader, witDetail);
+				Cache ret = ReadFromCursor(reader, witDetail, false);
 
 				reader.close();
 				return ret;
