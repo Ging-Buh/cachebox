@@ -43,23 +43,24 @@ public class CacheListLive
 		descriptorList = new CB_List<Descriptor>();
 	}
 
-	public void add(Descriptor desc, CB_List<Cache> caches)
+	public CB_List<Cache> add(Descriptor desc, CB_List<Cache> caches)
 	{
 		synchronized (map)
 		{
-			if (descriptorList.contains(desc)) return;
+			if (descriptorList.contains(desc)) return null;
 
 			CB_List<Cache> cleanedCaches = removeExistCaches(caches);
-			if (map.containsKey(desc)) return;
+			if (map.containsKey(desc)) return null;
 			includedList = null;
 			map.put(desc, cleanedCaches);
 			descriptorList.add(desc);
-			chkCapacity();
+			return chkCapacity();
 		}
 	}
 
 	private CB_List<Cache> removeExistCaches(CB_List<Cache> caches)
 	{
+		if (caches == null || caches.size() == 0) return new CB_List<Cache>();
 		CB_List<Cache> returnList = new CB_List<Cache>(caches);
 		for (CB_List<Cache> list : map.values())
 		{
@@ -92,31 +93,30 @@ public class CacheListLive
 		return this.maxCapacity;
 	}
 
-	private void chkCapacity()
+	private CB_List<Cache> chkCapacity()
 	{
-
+		CB_List<Cache> removeList = new CB_List<Cache>();
 		if (descriptorList.size() > 1)
 		{
 			if (getSize() > maxCapacity)
 			{
 				// delete the Descriptor-Caches with highest distance to last added Descriptor-Caches
 				Descriptor desc = getFarestDescriptorFromLast();
-				if (desc == null) return; // can not clear!
+				if (desc == null) return removeList; // can not clear!
 
-				CB_List<Cache> list = map.get(desc);
-				for (int i = 0; i < list.size(); i++)
+				removeList = map.get(desc);
+				for (int i = 0; i < removeList.size(); i++)
 				{
-					Cache ca = list.get(i);
+					Cache ca = removeList.get(i);
 					if (ca != null && ca.isDisposed()) ca.dispose();
 				}
 				map.remove(desc);
 				descriptorList.remove(desc);
-				list.clear();
-				list = null;
 				includedList = null;
 			}
-			if (getSize() > maxCapacity) chkCapacity();
+			if (getSize() > maxCapacity) removeList.addAll(chkCapacity());
 		}
+		return removeList;
 	}
 
 	private Descriptor getFarestDescriptorFromLast()

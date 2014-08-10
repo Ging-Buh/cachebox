@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class SettingsItem_Color extends SettingsItemBase
 {
-	private Sprite colorReck;
+	private Sprite colorRec;
 	private static CB_RectF Bounds;
 	private SettingColor colorSetting;
 
@@ -28,14 +28,14 @@ public class SettingsItem_Color extends SettingsItemBase
 			Bounds = new CB_RectF(this.getWidth() - (getHeight() - 10), 5, getHeight() - 10, getHeight() - 10);
 		}
 
-		if (colorReck == null)
+		if (colorRec == null)
 		{
-			colorReck = SpriteCacheBase.getThemedSprite("text-field-back");
-			colorReck.setBounds(Bounds.getX(), Bounds.getY(), Bounds.getWidth(), Bounds.getHeight());
-			colorReck.setColor(colorSetting.getValue());
+			colorRec = SpriteCacheBase.getThemedSprite("text-field-back");
+			colorRec.setBounds(Bounds.getX(), Bounds.getY(), Bounds.getWidth(), Bounds.getHeight());
+			colorRec.setColor(colorSetting.getValue());
 		}
 
-		colorReck.draw(batch);
+		colorRec.draw(batch);
 
 	}
 

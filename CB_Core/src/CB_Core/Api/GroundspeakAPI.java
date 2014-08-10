@@ -1407,6 +1407,10 @@ public class GroundspeakAPI
 			{
 				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
 			}
+			catch (java.lang.ClassCastException e)
+			{
+				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
+			}
 
 		}
 		catch (ConnectTimeoutException e)

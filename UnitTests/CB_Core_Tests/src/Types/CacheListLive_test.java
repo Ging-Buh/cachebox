@@ -54,7 +54,7 @@ public class CacheListLive_test extends TestCase
 		// gf +
 		// hf -
 		// if +
-		// jf + 27-3=24-4=20-6=14
+		// jf + 27-3=24-7=17-6=11
 
 		CacheListLive cacheList = new CacheListLive(16);
 

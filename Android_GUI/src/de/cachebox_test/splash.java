@@ -839,43 +839,50 @@ public class splash extends Activity
 		if (extPath.equalsIgnoreCase(workPath)) return null; // if this extPath is the same than the actual workPath -> this is the
 																// internal SD, not
 		// the external!!!
-		if (FileIO.FileExists(extPath))
+		try
 		{
-			StatFs stat = new StatFs(extPath);
-			@SuppressWarnings("deprecation")
-			long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
-			if (bytesAvailable == 0)
+			if (FileIO.FileExists(extPath))
 			{
-				return null; // ext SD-Card is not plugged in -> do not use it
-			}
-			else
-			{
-				// Check can Read/Write
-
-				File f = new File(extPath);
-				if (f.canWrite())
+				StatFs stat = new StatFs(extPath);
+				@SuppressWarnings("deprecation")
+				long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
+				if (bytesAvailable == 0)
 				{
-					if (f.canRead())
-					{
-						return f.getAbsolutePath(); // ext SD-Card is plugged in
-					}
+					return null; // ext SD-Card is not plugged in -> do not use it
 				}
-
-				// Check can Read/Write on Application Storage
-				String appPath = this.getApplication().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
-				int Pos = appPath.indexOf("/Android/data/");
-				String p = appPath.substring(Pos);
-				File fi = new File(extPath + p);// "/Android/data/de.cachebox_test/files");
-				fi.mkdirs();
-				if (fi.canWrite())
+				else
 				{
-					if (fi.canRead())
+					// Check can Read/Write
+
+					File f = new File(extPath);
+					if (f.canWrite())
 					{
-						return fi.getAbsolutePath();
+						if (f.canRead())
+						{
+							return f.getAbsolutePath(); // ext SD-Card is plugged in
+						}
 					}
+
+					// Check can Read/Write on Application Storage
+					String appPath = this.getApplication().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+					int Pos = appPath.indexOf("/Android/data/");
+					String p = appPath.substring(Pos);
+					File fi = new File(extPath + p);// "/Android/data/de.cachebox_test/files");
+					fi.mkdirs();
+					if (fi.canWrite())
+					{
+						if (fi.canRead())
+						{
+							return fi.getAbsolutePath();
+						}
+					}
+					return null;
 				}
-				return null;
 			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		return null;
 	}

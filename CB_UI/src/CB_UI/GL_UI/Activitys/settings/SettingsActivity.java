@@ -29,6 +29,7 @@ import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
 import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker;
 import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListner;
@@ -573,22 +574,31 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			{
 				EditKey = Config.settings.indexOf(SB);
 
-				ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListner()
+				GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 				{
 
 					@Override
-					public void returnColor(Color color)
+					public void run()
 					{
-						if (color == null) return; // nothing changed
+						ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListner()
+						{
 
-						SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
-						if (SetValue != null) SetValue.setValue(color);
-						resortList();
-						// Activity wieder anzeigen
-						show();
+							@Override
+							public void returnColor(Color color)
+							{
+								if (color == null) return; // nothing changed
+
+								SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
+								if (SetValue != null) SetValue.setValue(color);
+								resortList();
+								// Activity wieder anzeigen
+								show();
+							}
+						});
+						clrPick.show();
 					}
 				});
-				clrPick.show();
+
 				return true;
 			}
 

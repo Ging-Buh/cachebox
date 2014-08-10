@@ -145,6 +145,7 @@ public class GradiantFill
 
 		mTexture = new Texture(mPixmap);
 		mPixmap.dispose();
+		mPixmap = null;
 		mTextureRegion = new TextureRegion(mTexture, colorArray.size(), 1);
 
 	}
@@ -198,8 +199,22 @@ public class GradiantFill
 
 	private void disposeTexture()
 	{
-		if (mPixmap != null) mPixmap.dispose();
-		if (mTexture != null) mTexture.dispose();
+		try
+		{
+			if (mPixmap != null) mPixmap.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			if (mTexture != null) mTexture.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		mPixmap = null;
 		mTexture = null;
 		mTextureRegion = null;

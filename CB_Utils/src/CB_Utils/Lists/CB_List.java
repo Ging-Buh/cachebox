@@ -178,6 +178,7 @@ public class CB_List<T> implements Serializable
 	 */
 	public boolean removeAll(CB_List<T> array)
 	{
+		if (array == null || array.size == 0) return false;
 		int size = this.size;
 		int startSize = size;
 		T[] items = this.items;

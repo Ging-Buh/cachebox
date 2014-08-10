@@ -19,6 +19,7 @@ package CB_Core.Api;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListLive;
@@ -155,7 +156,12 @@ public class LiveMapQue
 			CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
 			String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
 
-			LiveCaches.add(desc, apiCaches);
+			CB_List<Cache> removedCaches = LiveCaches.add(desc, apiCaches);
+
+			synchronized (Database.Data.Query)
+			{
+				Database.Data.Query.removeAll(removedCaches);
+			}
 
 			Thread callThread = new Thread(new Runnable()
 			{
