@@ -29,7 +29,8 @@ public class CacheListLive
 {
 	private int maxCapacity = 100;
 	HashMap<Descriptor, CB_List<Cache>> map;
-	CB_List<Descriptor> descriptorList;
+	private CB_List<Descriptor> descriptorList;
+	private Descriptor MapCenterDesc;
 
 	/**
 	 * Constructor
@@ -47,13 +48,13 @@ public class CacheListLive
 	{
 		synchronized (map)
 		{
-			if (descriptorList.contains(desc)) return null;
+			if (getDescriptorList().contains(desc)) return null;
 
 			CB_List<Cache> cleanedCaches = removeExistCaches(caches);
 			if (map.containsKey(desc)) return null;
 			includedList = null;
 			map.put(desc, cleanedCaches);
-			descriptorList.add(desc);
+			getDescriptorList().add(desc);
 			return chkCapacity();
 		}
 	}
@@ -96,12 +97,12 @@ public class CacheListLive
 	private CB_List<Cache> chkCapacity()
 	{
 		CB_List<Cache> removeList = new CB_List<Cache>();
-		if (descriptorList.size() > 1)
+		if (getDescriptorList().size() > 1)
 		{
 			if (getSize() > maxCapacity)
 			{
 				// delete the Descriptor-Caches with highest distance to last added Descriptor-Caches
-				Descriptor desc = getFarestDescriptorFromLast();
+				Descriptor desc = getFarestDescriptorFromMapCenter();
 				if (desc == null) return removeList; // can not clear!
 
 				removeList = map.get(desc);
@@ -111,7 +112,7 @@ public class CacheListLive
 					if (ca != null && ca.isDisposed()) ca.dispose();
 				}
 				map.remove(desc);
-				descriptorList.remove(desc);
+				getDescriptorList().remove(desc);
 				includedList = null;
 			}
 			if (getSize() > maxCapacity) removeList.addAll(chkCapacity());
@@ -119,19 +120,19 @@ public class CacheListLive
 		return removeList;
 	}
 
-	private Descriptor getFarestDescriptorFromLast()
+	private Descriptor getFarestDescriptorFromMapCenter()
 	{
-		Descriptor desc = descriptorList.last();
+		if (MapCenterDesc == null) return null;
 
-		int descX = desc.getX();
-		int descY = desc.getY();
+		int descX = MapCenterDesc.getX();
+		int descY = MapCenterDesc.getY();
 
 		int tmpDistance = 0;
 		Descriptor tmpDesc = null;
 
-		for (int i = 0; i < descriptorList.size() - 1; i++)
+		for (int i = 0; i < getDescriptorList().size() - 1; i++)
 		{
-			Descriptor desc2 = descriptorList.get(i);
+			Descriptor desc2 = getDescriptorList().get(i);
 
 			int distance = Math.abs(descX - desc2.getX()) + Math.abs(descY - desc2.getY());
 
@@ -142,9 +143,7 @@ public class CacheListLive
 			}
 
 		}
-
 		return tmpDesc;
-
 	}
 
 	public int getSize()
@@ -199,6 +198,17 @@ public class CacheListLive
 
 	public boolean contains(Descriptor desc)
 	{
-		return descriptorList.contains(desc);
+		return getDescriptorList().contains(desc);
 	}
+
+	public CB_List<Descriptor> getDescriptorList()
+	{
+		return descriptorList;
+	}
+
+	public void setCenterDescriptor(Descriptor desc)
+	{
+		this.MapCenterDesc = desc;
+	}
+
 }

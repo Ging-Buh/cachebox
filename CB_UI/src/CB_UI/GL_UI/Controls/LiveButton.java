@@ -1,9 +1,11 @@
 package CB_UI.GL_UI.Controls;
 
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.LiveMapQue.QueStateChanged;
 import CB_Locator.Coordinate;
 import CB_UI.Config;
+import CB_UI.GlobalCore;
 import CB_UI.GL_UI.SpriteCache;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
@@ -73,6 +75,11 @@ public class LiveButton extends ImageButton implements QueStateChanged
 	@Override
 	public void render(Batch batch)
 	{
+		if (state && GroundspeakAPI.ApiLimit())
+		{
+			GlobalCore.MsgDownloadLimit();
+			setState(false);
+		}
 		Animation = (1 + ((int) (GL.that.getStateTime() * 1000) % Duration) / (Duration / Frames));
 		if (lastAnimation != Animation)
 		{

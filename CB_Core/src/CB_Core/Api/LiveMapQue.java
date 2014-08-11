@@ -26,9 +26,11 @@ import CB_Core.Types.CacheListLive;
 import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Locator.Coordinate;
+import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.LoopThread;
 import CB_Utils.Util.iChanged;
 
@@ -37,6 +39,7 @@ import CB_Utils.Util.iChanged;
  */
 public class LiveMapQue
 {
+
 	public static final byte DEFAULT_ZOOM_14 = 14;
 	public static final int MAX_REQUEST_CACHE_RADIUS_14 = 1060;
 
@@ -140,7 +143,15 @@ public class LiveMapQue
 		@Override
 		protected void Loop()
 		{
-			Descriptor desc = descStack.get();
+			Descriptor desc;
+			synchronized (descStack)
+			{
+				do
+				{
+					desc = descStack.get();
+				}
+				while (LiveCaches.contains(desc));
+			}
 
 			if (desc == null) return;
 
@@ -156,7 +167,15 @@ public class LiveMapQue
 			CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
 			String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
 
+			if (result.equals("download limit"))
+			{
+				GroundspeakAPI.setDownloadLimit();
+			}
+
 			CB_List<Cache> removedCaches = LiveCaches.add(desc, apiCaches);
+
+			Logger.DEBUG("LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
+			System.out.println("LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
 
 			synchronized (Database.Data.Query)
 			{
@@ -203,21 +222,35 @@ public class LiveMapQue
 
 	public static void queScreen(Descriptor lo, Descriptor ru)
 	{
+		if (GroundspeakAPI.ApiLimit()) return;
 		CB_List<Descriptor> descList = new CB_List<Descriptor>();
 		descList.addAll(lo.AdjustZoom(Used_Zoom));
 		descList.addAll(ru.AdjustZoom(Used_Zoom));
 
-		for (int i = 0; i < descList.size(); i++)
-		{
-			queDesc(descList.get(i));
-		}
+		// remove all descriptor are ready loaded at LiveCaches
+		descList.removeAll(LiveCaches.getDescriptorList());
 
+		if (!loop.Alive()) loop.start();
+
+		synchronized (descStack)
+		{
+			descStack.addAll_removeOther(descList);
+		}
+	}
+
+	public static void setCenterDescriptor(CoordinateGPS center)
+	{
+		LiveCaches.setCenterDescriptor(new Descriptor(center, Used_Zoom));
 	}
 
 	private static void queDesc(Descriptor desc)
 	{
+		if (GroundspeakAPI.ApiLimit()) return;
 		if (!loop.Alive()) loop.start();
 		if (LiveCaches.contains(desc)) return; // all ready for this descriptor
-		descStack.add(desc);
+		synchronized (descStack)
+		{
+			descStack.add(desc);
+		}
 	}
 }

@@ -598,6 +598,11 @@ public class SearchDialog extends PopUp_Base
 	 */
 	private void searchAPI()
 	{
+		if (GroundspeakAPI.ApiLimit())
+		{
+			GlobalCore.MsgDownloadLimit();
+			return;
+		}
 
 		GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
 		{

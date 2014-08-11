@@ -4,6 +4,7 @@ import CB_Core.Api.LiveMapQue;
 import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Locator.LocatorSettings;
+import CB_Locator.Map.MapViewBase;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
@@ -31,10 +32,10 @@ public class MapInfoPanel extends CB_View_Base
 	private Label lblDistance;
 	private Label lblLatitude;
 	private Label lblLongitude;
-
 	private Coordinate aktCoord;
-
 	private CoordType lastCoordType = CoordType.NULL;
+
+	private final MapViewBase parentMapView;
 
 	public enum CoordType
 	{
@@ -51,7 +52,7 @@ public class MapInfoPanel extends CB_View_Base
 				lblLatitude.setText(UnitFormatter.FormatLatitudeDM(Coord.getLatitude()));
 				lblLongitude.setText(UnitFormatter.FormatLongitudeDM(Coord.getLongitude()));
 
-				if (CB_UI_Settings.LiveMapEnabeld.getValue()) LiveMapQue.quePosition(Coord);
+				if (CB_UI_Settings.LiveMapEnabeld.getValue() && !this.parentMapView.isCarMode()) LiveMapQue.quePosition(Coord);
 
 				GL.that.renderOnce();
 			}
@@ -133,10 +134,12 @@ public class MapInfoPanel extends CB_View_Base
 		super.render(batch);
 	}
 
-	public MapInfoPanel(CB_RectF rec, String Name)
+	public MapInfoPanel(CB_RectF rec, String Name, MapViewBase parentMapView)
 	{
 		super(rec, Name);
 		registerSkinChangedEvent();
+		this.parentMapView = parentMapView;
+
 	}
 
 	@Override

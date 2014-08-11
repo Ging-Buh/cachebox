@@ -242,6 +242,10 @@ public class SearchForGeocaches_Core
 			{
 				return "The service is unavailable";
 			}
+			else if (result.contains("Cache download limit has been exceeded"))
+			{
+				return "download limit";
+			}
 		}
 		catch (ConnectTimeoutException e)
 		{
@@ -313,6 +317,7 @@ public class SearchForGeocaches_Core
 					result = GroundspeakAPI.Execute(httppost);
 					if (result.contains("The service is unavailable"))
 					{
+						Logger.Error("SearchForGeocaches:The service is unavailable", result);
 						return "The service is unavailable";
 					}
 				}
@@ -716,10 +721,12 @@ public class SearchForGeocaches_Core
 		}
 		catch (JSONException e)
 		{
+			Logger.Error("SearchForGeocaches:ParserException", result);
 			e.printStackTrace();
 		}
 		catch (ClassCastException e)
 		{
+			Logger.Error("SearchForGeocaches:ParserException", result);
 			e.printStackTrace();
 		}
 		return result;

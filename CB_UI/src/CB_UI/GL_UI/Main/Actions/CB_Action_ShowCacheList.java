@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import CB_Core.FilterProperties;
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Types.CacheWithWP;
 import CB_UI.Config;
@@ -132,6 +133,13 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					}
 					return true;
 				case MenuID.MI_CHK_STATE_API:
+
+					if (GroundspeakAPI.ApiLimit())
+					{
+						GlobalCore.MsgDownloadLimit();
+						return true;
+					}
+
 					// First check API-Key with visual Feedback
 					GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
 					{

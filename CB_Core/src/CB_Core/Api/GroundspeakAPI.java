@@ -69,6 +69,7 @@ public class GroundspeakAPI
 	public static int CurrentCacheCountLite = -1;
 	public static int MaxCacheCountLite = -1;
 	public static String MemberName = ""; // this will be filled by
+	private static boolean DownloadLimit = false;
 
 	/**
 	 * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB
@@ -1837,6 +1838,16 @@ public class GroundspeakAPI
 	public static boolean API_isCheked()
 	{
 		return API_isCheked;
+	}
+
+	public static boolean ApiLimit()
+	{
+		return DownloadLimit;
+	}
+
+	public static void setDownloadLimit()
+	{
+		DownloadLimit = true;
 	}
 
 }

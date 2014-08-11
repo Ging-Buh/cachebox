@@ -248,7 +248,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		float InfoHeight = 0;
 		if (!CompassMode)
 		{
-			info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel"));
+			info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel", this));
 			InfoHeight = info.getHeight();
 		}
 
@@ -1011,6 +1011,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if (CarMode && CB_UI_Settings.LiveMapEnabeld.getValue())
 		{
+
+			LiveMapQue.setCenterDescriptor(center);
+
 			// LiveMap queue complete screen
 			LiveMapQue.queScreen(lo, ru);
 		}

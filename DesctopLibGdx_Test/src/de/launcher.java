@@ -15,6 +15,8 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import org.apache.log4j.Logger;
+
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Math.Size;
@@ -24,6 +26,8 @@ class Ex_1
 {
 	public static void main(String[] args)
 	{
+
+		Logger.getLogger("org.apache.http").setLevel(org.apache.log4j.Level.OFF);
 
 		DesktopMain.InitalConfig();
 		Config.settings.ReadFromDB();

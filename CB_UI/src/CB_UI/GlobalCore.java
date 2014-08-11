@@ -37,9 +37,13 @@ import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.Map.RouteOverlay;
 import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
+import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
+import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -407,8 +411,30 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	static CancelWaitDialog dia;
 
+	public static void MsgDownloadLimit()
+	{
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live,
+						null);
+			}
+		});
+
+	}
+
 	public static void chkAPiLogInWithWaitDialog(final IChkRedyHandler handler)
 	{
+
+		if (GroundspeakAPI.ApiLimit())
+		{
+			MsgDownloadLimit();
+			return;
+		}
+
 		if (!GroundspeakAPI.API_isCheked())
 		{
 			dia = CancelWaitDialog.ShowWait("chk API Key", DownloadAnimation.GetINSTANCE(), new IcancelListner()

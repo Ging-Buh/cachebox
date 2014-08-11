@@ -3,6 +3,7 @@ package CB_UI.GL_UI.Main.Actions;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.IChkRedyHandler;
@@ -109,6 +110,12 @@ public class CB_Action_ShowLogView extends CB_Action_ShowView
 
 	private void reloadLogs(final boolean all)
 	{
+		if (GroundspeakAPI.ApiLimit())
+		{
+			GlobalCore.MsgDownloadLimit();
+			return;
+		}
+
 		// First check API-Key with visual Feedback
 		GlobalCore.chkAPiLogInWithWaitDialog(new IChkRedyHandler()
 		{

@@ -125,4 +125,13 @@ public class CB_Stack<T>
 			return items.size;
 		}
 	}
+
+	public void addAll_removeOther(CB_List<T> descList)
+	{
+		synchronized (items)
+		{
+			items.clear();
+			items.addAll(descList);
+		}
+	}
 }

@@ -1781,4 +1781,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		calcPixelsPerMeter();
 	}
 
+	public boolean isCarMode()
+	{
+		return CarMode;
+	}
+
 }
