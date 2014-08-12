@@ -81,4 +81,9 @@ public class Search
 	{
 		return isLite;
 	}
+
+	public void setIsLite(boolean isLite)
+	{
+		this.isLite = isLite;
+	}
 }

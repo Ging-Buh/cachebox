@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
+import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Core.Types.CacheListLive;
 import CB_Core.Types.ImageEntry;
@@ -161,6 +162,9 @@ public class LiveMapQue
 
 			Coordinate requestCoordinate = desc.getCenterCoordinate();
 			SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, Used_max_request_radius);
+
+			requestSearch.excludeFounds = CB_Core_Settings.LiveExcludeFounds.getValue();
+			requestSearch.excludeHides = CB_Core_Settings.LiveExcludeOwn.getValue();
 
 			CB_List<Cache> apiCaches = new CB_List<Cache>();
 

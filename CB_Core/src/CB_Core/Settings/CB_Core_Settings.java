@@ -89,4 +89,10 @@ public interface CB_Core_Settings
 	public static final SettingInt LiveMaxCount = new SettingInt("LiveMaxCount", SettingCategory.LiveMap, EXPERT, 200,
 			SettingStoreType.Global);
 
+	public static final SettingBool LiveExcludeFounds = new SettingBool("LiveExcludeFounds", SettingCategory.LiveMap, NORMAL, true,
+			SettingStoreType.Global);
+
+	public static final SettingBool LiveExcludeOwn = new SettingBool("LiveExcludeOwn", SettingCategory.LiveMap, NORMAL, true,
+			SettingStoreType.Global);
+
 }

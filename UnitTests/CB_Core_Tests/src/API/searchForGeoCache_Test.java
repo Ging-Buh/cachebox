@@ -122,10 +122,7 @@ public class searchForGeoCache_Test extends TestCase
 	public void testSearchByOwner()
 	{
 
-		Coordinate searchCoord = new CoordinateGPS(52.581892, 13.398128); // Home
-		// of
-		// Katipa(like
-		// Longri)
+		Coordinate searchCoord = new CoordinateGPS(52.581892, 13.398128); // Home of Katipa(like Longri)
 
 		SearchGCOwner searchC = new SearchGCOwner(30, searchCoord, 50000, "bros");
 
@@ -186,6 +183,34 @@ public class searchForGeoCache_Test extends TestCase
 		}
 
 		assertTrue("Nicht richtig aktualisiert", Assert);
+	}
+
+	public void test_searchLite()
+	{
+		SearchGC searchC = new SearchGC("GC1T33T");
+
+		searchC.number = 1;
+		searchC.setIsLite(true);
+
+		CB_List<Cache> apiCaches = new CB_List<Cache>();
+		ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+
+		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
+		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
+
+		boolean Assert = false;
+		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).getGcCode().equalsIgnoreCase("GC1T33T"))
+		{
+			Assert = true;
+		}
+
+		assertTrue("Nicht den Richtigen Cache gefunden", Assert);
+
+		Cache ca = apiCaches.get(0);
+
+		assertEquals("Date must be", ca.detail.DateHidden.toString(), "Sun May 31 09:00:00 CEST 2009");
+
 	}
 
 }
