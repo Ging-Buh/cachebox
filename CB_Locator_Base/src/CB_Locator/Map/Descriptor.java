@@ -19,9 +19,11 @@
 package CB_Locator.Map;
 
 import CB_Locator.Coordinate;
+import CB_Locator.LocatorSettings;
 import CB_Utils.MathUtils;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.PointD;
+import CB_Utils.Util.iChanged;
 
 /**
  * @author hwinkelmann
@@ -31,13 +33,25 @@ import CB_Utils.Math.PointD;
  */
 public class Descriptor implements Comparable<Descriptor>
 {
-
+	public static String TileCacheFolder;
 	public static int[] TilesPerLine = null;
 	public static int[] TilesPerColumn = null;
 	static int[] tileOffset = null;
 	// zur Übergabe beliebiger Daten
 	public Object Data = null;
 	private long BuffertHash = 0;
+
+	private static final iChanged TileCacheFolderSettingChanged = new iChanged()
+	{
+
+		@Override
+		public void isChanged()
+		{
+			TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
+			if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal
+					.getValue();
+		}
+	};
 
 	static
 	{
@@ -55,6 +69,12 @@ public class Descriptor implements Comparable<Descriptor>
 			TilesPerColumn[i] = (int) Math.pow(2, i);
 			tileOffset[i + 1] = tileOffset[i] + (TilesPerLine[i] * TilesPerColumn[i]);
 		}
+
+		TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
+		if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
+
+		LocatorSettings.TileCacheFolderLocal.addChangedEventListner(TileCacheFolderSettingChanged);
+		LocatorSettings.TileCacheFolder.addChangedEventListner(TileCacheFolderSettingChanged);
 	}
 
 	/**
@@ -412,5 +432,17 @@ public class Descriptor implements Comparable<Descriptor>
 		double divLat = (lat1 - lat) / 2;
 
 		return new Coordinate(lat + divLat, lon + divLon);
+	}
+
+	/**
+	 * Returns the local Cache Path for the given Name and this Descriptor!<br>
+	 * .\cachebox\repository\cache\ {NAME} \ {Zoom} \ {X} \ {Y}
+	 * 
+	 * @param Name
+	 * @return
+	 */
+	public String getLocalCachePath(String Name)
+	{
+		return TileCacheFolder + "/" + Name + "/" + this.getZoom() + "/" + this.getX() + "/" + this.getY();
 	}
 }

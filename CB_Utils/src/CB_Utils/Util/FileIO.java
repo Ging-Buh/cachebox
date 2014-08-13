@@ -60,9 +60,19 @@ public class FileIO
 	 */
 	public static boolean createDirectory(String folder)
 	{
+
+		// remove extention
+		int extPos = folder.lastIndexOf("/");
+		String ext = folder.substring(extPos);
+		if (ext.length() > 0 && ext.contains("."))
+		{
+			folder = folder.replace(ext, "");
+		}
+
 		if (!checkWritePermission(folder)) return false;
 
 		File f = new File(folder);
+
 		if (f.isDirectory()) return true;
 		else
 		{

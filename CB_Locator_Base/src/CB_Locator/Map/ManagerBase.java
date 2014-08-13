@@ -220,7 +220,7 @@ public abstract class ManagerBase
 			if (pack.Layer == layer) if (pack.Contains(tile) != null) return true;
 
 		String filename = layer.GetLocalFilename(tile);
-		String path = layer.GetLocalPath(tile);
+		// String path = layer.GetLocalPath(tile);
 		String url = layer.GetUrl(tile);
 
 		// Falls Kachel schon geladen wurde, kann sie übersprungen werden
@@ -250,16 +250,13 @@ public abstract class ManagerBase
 				response.getEntity().writeTo(out);
 				out.close();
 
-				// Verzeichnis anlegen
 				synchronized (this)
 				{
-					if (!FileIO.createDirectory(path)) return false;
-				}
-				// Datei schreiben
-				synchronized (this)
-				{
-					FileOutputStream stream = new FileOutputStream(filename, false);
+					// Verzeichnis anlegen
+					if (!FileIO.createDirectory(filename)) return false;
 
+					// Datei schreiben
+					FileOutputStream stream = new FileOutputStream(filename, false);
 					out.writeTo(stream);
 					stream.close();
 				}
