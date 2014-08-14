@@ -35,6 +35,7 @@ import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
+import CB_Utils.Lists.CB_Stack.iCompare;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.LoopThread;
@@ -266,8 +267,7 @@ public class LiveMapQue
 	protected static boolean descExistLiveCache(Descriptor desc)
 	{
 		String path = desc.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENTION;
-		int maxAlter = 10; // 10 min
-		return FileIO.FileExists(path, maxAlter);
+		return FileIO.FileExists(path, CB_Core_Settings.Live_Cache_Time.getEnumValue().getMinuten());
 	}
 
 	static public void quePosition(Coordinate coord)
@@ -280,9 +280,6 @@ public class LiveMapQue
 
 		final Descriptor desc = new Descriptor(coord, Used_Zoom);
 		queDesc(desc);
-
-		// Add request Time Limits (Stapel verarbeitung!?)
-
 		return;
 	}
 
@@ -299,9 +296,24 @@ public class LiveMapQue
 			if (lastLo.getX() <= lo.getX() && lastRu.getX() >= ru.getX() && lastLo.getY() <= lo.getY() && lastRu.getY() >= ru.getY()) return;
 		}
 
+		lastLo = lo;
+		lastRu = ru;
+
 		CB_List<Descriptor> descList = new CB_List<Descriptor>();
-		descList.addAll(lo.AdjustZoom(Used_Zoom));
-		descList.addAll(ru.AdjustZoom(Used_Zoom));
+		for (int i = lo.getX(); i <= ru.getX(); i++)
+		{
+			for (int j = lo.getY(); j <= ru.getY(); j++)
+			{
+				Descriptor desc = new Descriptor(i, j, lo.getZoom(), lo.NightMode);
+
+				CB_List<Descriptor> descAddList = desc.AdjustZoom(Used_Zoom);
+
+				for (int k = 0; k < descAddList.size(); k++)
+				{
+					if (!descList.contains(descAddList.get(k))) descList.add(descAddList.get(k));
+				}
+			}
+		}
 
 		// remove all descriptor are ready loaded at LiveCaches
 		descList.removeAll(LiveCaches.getDescriptorList());
@@ -314,18 +326,24 @@ public class LiveMapQue
 
 			// Descriptor MapCenter=MapViewBase.center
 
-			descStack.sort(new Comparable<Descriptor>()
+			Coordinate center = null;
+			if ((lo.Data != null) && (lo.Data instanceof Coordinate)) center = (Coordinate) lo.Data;
+			if (center != null)
 			{
-
-				@Override
-				public int compareTo(Descriptor o)
+				final Descriptor mapCenterDesc = new Descriptor(center, lo.getZoom());
+				descStack.sort(new iCompare<Descriptor>()
 				{
-					// TODO Auto-generated method stub
-					return 0;
-				}
-			});
-
-			// FIXME sort descStack closer desc first (to one position)
+					@Override
+					public int compare(Descriptor item1, Descriptor item2)
+					{
+						int distanceFromCenter1 = item1.getDistance(mapCenterDesc);
+						int distanceFromCenter2 = item2.getDistance(mapCenterDesc);
+						if (distanceFromCenter1 == distanceFromCenter2) return 0;
+						if (distanceFromCenter1 > distanceFromCenter2) return 1;
+						return -1;
+					}
+				});
+			}
 		}
 	}
 

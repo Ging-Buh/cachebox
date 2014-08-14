@@ -25,6 +25,7 @@ public abstract class LoopThread
 
 	public void start()
 	{
+		if (isAlive) return;
 		if (loop == null)
 		{
 			loop = new Thread(new Runnable()
@@ -49,7 +50,14 @@ public abstract class LoopThread
 				}
 			});
 		}
-		loop.start();
+		try
+		{
+			loop.start();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		if (lifeCycle == null) lifeCycleStart();
 	}

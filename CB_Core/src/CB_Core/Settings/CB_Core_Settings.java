@@ -1,5 +1,6 @@
 package CB_Core.Settings;
 
+import CB_Core.Enums.LiveCacheTime;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
@@ -86,7 +87,7 @@ public interface CB_Core_Settings
 	public static final SettingBool DisableLiveMap = new SettingBool("DisableLiveMap", SettingCategory.LiveMap, NORMAL, false,
 			SettingStoreType.Global);
 
-	public static final SettingInt LiveMaxCount = new SettingInt("LiveMaxCount", SettingCategory.LiveMap, EXPERT, 200,
+	public static final SettingInt LiveMaxCount = new SettingInt("LiveMaxCount", SettingCategory.LiveMap, EXPERT, 350,
 			SettingStoreType.Global);
 
 	public static final SettingBool LiveExcludeFounds = new SettingBool("LiveExcludeFounds", SettingCategory.LiveMap, NORMAL, true,
@@ -94,5 +95,8 @@ public interface CB_Core_Settings
 
 	public static final SettingBool LiveExcludeOwn = new SettingBool("LiveExcludeOwn", SettingCategory.LiveMap, NORMAL, true,
 			SettingStoreType.Global);
+
+	public static final SettingEnum<LiveCacheTime> Live_Cache_Time = new SettingEnum<LiveCacheTime>("Live_Cache_Time",
+			SettingCategory.LiveMap, NORMAL, LiveCacheTime.min_30, SettingStoreType.Global, LiveCacheTime.min_30);
 
 }

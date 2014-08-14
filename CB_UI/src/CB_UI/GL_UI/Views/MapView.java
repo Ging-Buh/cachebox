@@ -1015,6 +1015,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			LiveMapQue.setCenterDescriptor(center);
 
 			// LiveMap queue complete screen
+			lo.Data = center;
 			LiveMapQue.queScreen(lo, ru);
 		}
 	}

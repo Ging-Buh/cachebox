@@ -17,6 +17,7 @@
 package CB_Utils.Lists;
 
 import CB_Utils.Log.Logger;
+import CB_Utils.Util.MoveableList;
 
 /**
  * The Stack class represents a last-in-first-out (LIFO) stack of objects. With option for max item Size.
@@ -27,12 +28,12 @@ import CB_Utils.Log.Logger;
 public class CB_Stack<T>
 {
 
-	private CB_List<T> items;
+	private MoveableList<T> items;
 	private int maxItemSize = -1;
 
 	public CB_Stack()
 	{
-		items = new CB_List<T>();
+		items = new MoveableList<T>();
 	}
 
 	/**
@@ -46,7 +47,7 @@ public class CB_Stack<T>
 		{
 			if (items.contains(item)) return;
 			items.add(item);
-			Logger.LogCat("STACK add SIZE=" + items.size);
+			Logger.LogCat("STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
 			checkMaxItemSize();
 		}
 	}
@@ -65,8 +66,12 @@ public class CB_Stack<T>
 				Logger.LogCat("STACK empty Get");
 				return null;
 			}
-			Logger.LogCat("STACK add SIZE=" + (items.size - 1));
-			return items.remove(0);
+
+			T ret = items.remove(0);
+
+			Logger.LogCat("STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
+
+			return ret;
 		}
 	}
 
@@ -132,11 +137,34 @@ public class CB_Stack<T>
 		{
 			items.clear();
 			items.addAll(descList);
+			Logger.LogCat("STACK add ALL SIZE=" + (items.size - 1));
 		}
 	}
 
-	public void sort(Comparable<T> comparable)
+	public interface iCompare<T>
 	{
+		public int compare(T item1, T item2);
+	}
+
+	public void sort(iCompare<T> comparable)
+	{
+
+		boolean change = false;
+
+		do
+		{
+			change = false;
+			for (int i = 0; i < items.size - 1; i++)
+			{
+				int compare = comparable.compare(items.get(i), items.get(i + 1));
+				if (compare <= 0) continue; // no changes
+
+				this.items.MoveItem(i + 1, -1);
+				change = true;
+				break;
+			}
+		}
+		while (change);
 
 	}
 }

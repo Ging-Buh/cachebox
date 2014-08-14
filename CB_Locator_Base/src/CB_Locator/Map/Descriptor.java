@@ -445,4 +445,17 @@ public class Descriptor implements Comparable<Descriptor>
 	{
 		return TileCacheFolder + "/" + Name + "/" + this.getZoom() + "/" + this.getX() + "/" + this.getY();
 	}
+
+	/**
+	 * Returns the distance to the given Descriptor!
+	 * 
+	 * @param desc
+	 * @return
+	 */
+	public int getDistance(Descriptor desc)
+	{
+		int xDistance = Math.abs(desc.X - this.X);
+		int yDistance = Math.abs(desc.Y - this.Y);
+		return Math.max(xDistance, yDistance);
+	}
 }
