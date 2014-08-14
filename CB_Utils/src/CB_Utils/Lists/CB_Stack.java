@@ -134,4 +134,9 @@ public class CB_Stack<T>
 			items.addAll(descList);
 		}
 	}
+
+	public void sort(Comparable<T> comparable)
+	{
+
+	}
 }

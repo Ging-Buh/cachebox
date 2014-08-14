@@ -15,7 +15,7 @@
  */
 package CB_Core.Api;
 
-import CB_Locator.Coordinate;
+import CB_Locator.Map.Descriptor;
 
 /**
  * Search Caches around a coordinate with lite state for showing on LiveMap. <br>
@@ -27,13 +27,15 @@ import CB_Locator.Coordinate;
 public class SearchLiveMap extends SearchCoordinate
 {
 
-	public SearchLiveMap(int number, Coordinate pos, float distanceInMeters)
+	public final Descriptor descriptor;
+
+	public SearchLiveMap(int number, Descriptor desc, float distanceInMeters)
 	{
-		super(number, pos, distanceInMeters);
+		super(number, desc.getCenterCoordinate(), distanceInMeters);
 		geocacheLogCount = 0;
 		trackableLogCount = 0;
 		isLite = true;
-
+		this.descriptor = desc;
 	}
 
 }

@@ -16,6 +16,10 @@
 
 package CB_Core.Api;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,6 +36,7 @@ import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
 import CB_Utils.Log.Logger;
+import CB_Utils.Util.FileIO;
 import CB_Utils.Util.LoopThread;
 import CB_Utils.Util.iChanged;
 
@@ -40,6 +45,9 @@ import CB_Utils.Util.iChanged;
  */
 public class LiveMapQue
 {
+	public static final SearchForGeocaches_Core SEARCH_API = new SearchForGeocaches_Core();
+	public static final String LIVE_CACHE_NAME = "Live_Request";
+	public static final String LIVE_CACHE_EXTENTION = ".txt";
 
 	public static final byte DEFAULT_ZOOM_14 = 14;
 	public static final int MAX_REQUEST_CACHE_RADIUS_14 = 1060;
@@ -160,16 +168,23 @@ public class LiveMapQue
 				eventList.get(i).stateChanged();
 			DownloadIsActive.set(true);
 
-			Coordinate requestCoordinate = desc.getCenterCoordinate();
-			SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, Used_max_request_radius);
-
+			SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, desc, Used_max_request_radius);
 			requestSearch.excludeFounds = CB_Core_Settings.LiveExcludeFounds.getValue();
 			requestSearch.excludeHides = CB_Core_Settings.LiveExcludeOwn.getValue();
 
-			CB_List<Cache> apiCaches = new CB_List<Cache>();
+			CB_List<Cache> apiCaches = null;
+			String result = "";
 
-			CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-			String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
+			if (descExistLiveCache(desc))
+			{
+				apiCaches = loadDescLiveFromCache(requestSearch);
+			}
+			if (apiCaches == null)
+			{
+				apiCaches = new CB_List<Cache>();
+				CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
+				result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
+			}
 
 			if (result.equals("download limit"))
 			{
@@ -208,6 +223,53 @@ public class LiveMapQue
 		eventList.add(listner);
 	}
 
+	protected static CB_List<Cache> loadDescLiveFromCache(SearchLiveMap requestSearch)
+	{
+		String path = requestSearch.descriptor.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENTION;
+		String result = null;
+		BufferedReader br = null;
+		try
+		{
+			br = new BufferedReader(new FileReader(path));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null)
+			{
+				sb.append(line);
+				sb.append(System.lineSeparator());
+				line = br.readLine();
+			}
+			result = sb.toString();
+			br.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		// parseResult
+		CB_List<Cache> cacheList = new CB_List<Cache>();
+		if (result != null && result.length() > 0)
+		{
+			SEARCH_API.ParseJsonResult(requestSearch, cacheList, apiLogs, apiImages, 0, result, (byte) 1, true);
+			return cacheList;
+		}
+
+		return null;
+	}
+
+	protected static boolean descExistLiveCache(Descriptor desc)
+	{
+		String path = desc.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENTION;
+		int maxAlter = 10; // 10 min
+		return FileIO.FileExists(path, maxAlter);
+	}
+
 	static public void quePosition(Coordinate coord)
 	{
 		// no request for invalid Coords
@@ -224,9 +286,19 @@ public class LiveMapQue
 		return;
 	}
 
+	private static Descriptor lastLo, lastRu;
+
 	public static void queScreen(Descriptor lo, Descriptor ru)
 	{
 		if (GroundspeakAPI.ApiLimit()) return;
+
+		// check last request don't Double!
+		if (lastLo != null && lastRu != null)
+		{
+			// all Descriptor are into the last request?
+			if (lastLo.getX() <= lo.getX() && lastRu.getX() >= ru.getX() && lastLo.getY() <= lo.getY() && lastRu.getY() >= ru.getY()) return;
+		}
+
 		CB_List<Descriptor> descList = new CB_List<Descriptor>();
 		descList.addAll(lo.AdjustZoom(Used_Zoom));
 		descList.addAll(ru.AdjustZoom(Used_Zoom));
@@ -239,6 +311,21 @@ public class LiveMapQue
 		synchronized (descStack)
 		{
 			descStack.addAll_removeOther(descList);
+
+			// Descriptor MapCenter=MapViewBase.center
+
+			descStack.sort(new Comparable<Descriptor>()
+			{
+
+				@Override
+				public int compareTo(Descriptor o)
+				{
+					// TODO Auto-generated method stub
+					return 0;
+				}
+			});
+
+			// FIXME sort descStack closer desc first (to one position)
 		}
 	}
 

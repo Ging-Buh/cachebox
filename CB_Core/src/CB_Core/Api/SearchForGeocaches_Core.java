@@ -1,7 +1,11 @@
 package CB_Core.Api;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -35,6 +39,7 @@ import CB_Locator.CoordinateGPS;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
+import CB_Utils.Util.FileIO;
 
 public class SearchForGeocaches_Core
 {
@@ -276,6 +281,38 @@ public class SearchForGeocaches_Core
 			return "The service is unavailable";
 		}
 
+		// save result, if this a Live-Request
+		if (search instanceof SearchLiveMap)
+		{
+			SearchLiveMap se = (SearchLiveMap) search;
+
+			Writer writer = null;
+			try
+			{
+				String Path = se.descriptor.getLocalCachePath(LiveMapQue.LIVE_CACHE_NAME) + LiveMapQue.LIVE_CACHE_EXTENTION;
+
+				if (FileIO.createDirectory(Path))
+				{
+					writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Path), "utf-8"));
+					writer.write(result);
+				}
+			}
+			catch (IOException ex)
+			{
+				// report
+			}
+			finally
+			{
+				try
+				{
+					writer.close();
+				}
+				catch (Exception ex)
+				{
+				}
+			}
+		}
+
 		result = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, result, apiStatus, isLite);
 		if (searchNumber > 1 && cacheList.size() == searchNumber)
 		{
@@ -359,7 +396,7 @@ public class SearchForGeocaches_Core
 		return result;
 	}
 
-	private String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList,
+	String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList,
 			long gpxFilenameId, String result, byte apiStatus, boolean isLite)
 	{
 		// Parse JSON Result

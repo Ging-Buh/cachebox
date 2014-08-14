@@ -127,8 +127,8 @@ public class searchLiveMapTests extends TestCase
 
 	public void test_request()
 	{
-		Coordinate requestCoordinate = new Coordinate("52° 34,9815N / 13° 23,540E");
-		SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, requestCoordinate, Used_max_request_radius);
+		Descriptor desc = new Descriptor(new Coordinate("52° 34,9815N / 13° 23,540E"), 14);
+		SearchLiveMap requestSearch = new SearchLiveMap(MAX_REQUEST_CACHE_COUNT, desc, Used_max_request_radius);
 
 		CB_List<Cache> apiCaches = new CB_List<Cache>();
 

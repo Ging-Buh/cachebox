@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import org.apache.http.util.ByteArrayBuffer;
@@ -25,6 +26,25 @@ public class FileIO
 	{
 		File file = new File(filename);
 		return file.exists();
+	}
+
+	/**
+	 * Überprüft ob ein File exestiert! <br>
+	 * Und nicht Älter als die angegebene Zeit in Minuten ist!
+	 * 
+	 * @param filename
+	 * @param maxAge
+	 * @return true, wenn das File Exestiert und das Alter nicht größer als {maxAge} ist, ansonsten false.
+	 */
+	public static boolean FileExists(String filename, int maxAge)
+	{
+		File file = new File(filename);
+		if (!file.exists()) return false;
+
+		int age = (int) ((new Date().getTime() - file.lastModified()) / 100000);
+
+		if (age > maxAge) return false;
+		return true;
 	}
 
 	public static boolean checkWritePermission(String Path)
