@@ -2,18 +2,20 @@ package CB_Core.Solver;
 
 import java.util.ArrayList;
 
-public class VariableEntity extends Entity {
-	  // Speichert einen Wert in eine Variable
+public class VariableEntity extends Entity
+{
+	// Speichert einen Wert in eine Variable
 	String Name;
-	public VariableEntity(int id, String name) 
+
+	public VariableEntity(Solver solver, int id, String name)
 	{
-		super(id);
+		super(solver, id);
 		this.Name = name;
 	}
 
 	@Override
 	public void GetAllEntities(ArrayList<Entity> list)
-	{      
+	{
 	}
 
 	@Override
@@ -24,9 +26,9 @@ public class VariableEntity extends Entity {
 	@Override
 	public String Berechne()
 	{
-		if (Solver.Variablen.containsKey(Name.toLowerCase()))
+		if (solver.Variablen.containsKey(Name.toLowerCase()))
 		{
-			return Solver.Variablen.get(Name.toLowerCase());
+			return solver.Variablen.get(Name.toLowerCase());
 		}
 		else
 			return "Fehler";

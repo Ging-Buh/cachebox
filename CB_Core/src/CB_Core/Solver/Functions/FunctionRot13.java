@@ -1,6 +1,7 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_Utils.Util.UnitFormatter;
 
@@ -8,8 +9,9 @@ public class FunctionRot13 extends Function
 {
 	private static final long serialVersionUID = 172122667088261676L;
 
-	public FunctionRot13()
+	public FunctionRot13(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("Rot13", "en"));
 	}
 

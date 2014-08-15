@@ -1,6 +1,7 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -10,8 +11,9 @@ public class FunctionProjection extends Function
 
 	private static final long serialVersionUID = -6013883020785631158L;
 
-	public FunctionProjection()
+	public FunctionProjection(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("Projection", "en"));
 		Names.add(new LacalNames("Projektion", "de"));
 	}

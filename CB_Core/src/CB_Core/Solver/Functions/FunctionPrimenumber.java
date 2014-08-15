@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class FunctionPrimenumber extends FunctionPrimeBase
 {
 	private static final long serialVersionUID = 9017206001889511182L;
 
-	public FunctionPrimenumber()
+	public FunctionPrimenumber(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("Primenumber", "en"));
 		Names.add(new LacalNames("Primzahl", "de"));
 	}

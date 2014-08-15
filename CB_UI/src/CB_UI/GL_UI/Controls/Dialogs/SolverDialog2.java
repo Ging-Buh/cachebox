@@ -124,15 +124,17 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private Label[] lWaypoints = null;
 	// Page Coordinate
 	private CoordinateButton bCoord = null;
+	private Solver solver; // Solver Object dieses Caches für die Functions, Variablen...
 
 	public interface SolverBackStringListner
 	{
 		public void BackString(String backString);
 	}
 
-	public SolverDialog2(Cache aktCache, String solverString, boolean showVariableField, DataType dataType)
+	public SolverDialog2(Cache aktCache, Solver solver, String solverString, boolean showVariableField, DataType dataType)
 	{
 		super(ActivityRec(), "solverActivity");
+		this.solver = solver;
 		this.buildFormula = null;
 		this.solverString = solverString;
 		this.aktCache = aktCache;
@@ -829,7 +831,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// Funktionsauswahl zeigen
-				SelectSolverFunction ssf = new SelectSolverFunction(dataType, new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(solver, dataType, new IFunctionResult()
 				{
 					@Override
 					public void selectedFunction(Function function)
@@ -889,7 +891,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 						type = function.getParamType(i);
 					}
 				}
-				SolverDialog2 sd2 = new SolverDialog2(aktCache, param, false, type);
+				SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, param, false, type);
 				sd2.show(new SolverBackStringListner()
 				{
 					@Override
@@ -909,7 +911,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private DataType getFunctionDataType(String functionName)
 	{
-		Function function = Solver.functions.getFunction(functionName);
+		Function function = solver.functions.getFunction(functionName);
 		if (function == null)
 		{
 			return DataType.None;
@@ -922,7 +924,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void addFunctionParamLine(String functionString, int i, String string)
 	{
-		Function function = Solver.functions.getFunction(functionString);
+		Function function = solver.functions.getFunction(functionString);
 		addFunctionParamLine(function, i, string);
 	}
 
@@ -991,12 +993,12 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void showPageVariable()
 	{
-		cbVariables = new chkBox[Solver.Variablen.size()];
-		lVariables = new Label[Solver.Variablen.size()];
+		cbVariables = new chkBox[solver.Variablen.size()];
+		lVariables = new Label[solver.Variablen.size()];
 		int i = 0;
-		for (String variable : Solver.Variablen.keySet())
+		for (String variable : solver.Variablen.keySet())
 		{
-			String value = Solver.Variablen.get(variable);
+			String value = solver.Variablen.get(variable);
 			cbVariables[i] = new chkBox(variable);
 			cbVariables[i].setData(variable);
 			scrollBox.addChild(cbVariables[i]);
@@ -1074,7 +1076,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			{
 				param = tb.getText();
 			}
-			SolverDialog2 sd2 = new SolverDialog2(aktCache, param, false, DataType.Float);
+			SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, param, false, DataType.Float);
 			sd2.show(new SolverBackStringListner()
 			{
 				@Override

@@ -1,6 +1,7 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 // ************************************************************************
@@ -10,8 +11,9 @@ public class FunctionIQuersumme extends Function
 {
 	private static final long serialVersionUID = -1727934349667230259L;
 
-	public FunctionIQuersumme()
+	public FunctionIQuersumme(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("ICrosstotal", "en"));
 		Names.add(new LacalNames("IQuersumme", "de"));
 		Names.add(new LacalNames("ICT", "en"));

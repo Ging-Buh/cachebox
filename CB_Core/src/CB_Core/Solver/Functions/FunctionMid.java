@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class FunctionMid extends Function
 {
 	private static final long serialVersionUID = 3727854231542597267L;
 
-	public FunctionMid()
+	public FunctionMid(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("Mid", "en"));
 	}
 

@@ -1,6 +1,7 @@
 package CB_UI.GL_UI.Controls.Dialogs;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Core.Solver.Functions.Function;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Activitys.SelectSolverFunction;
@@ -75,10 +76,12 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	private String mSolverString;
 
 	private SolverBackStringListner mBackStringListner;
+	private Solver solver;
 
-	public SolverDialog(CB_RectF rec, String name, String SolverString)
+	public SolverDialog(CB_RectF rec, String name, Solver solver, String SolverString)
 	{
 		super(rec, name, "Solver", Translation.Get("solver_formula"), MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
+		this.solver = solver;
 		mSolverString = SolverString;
 		ignoreStateChange = false;
 		page = pages.Nothing;
@@ -447,7 +450,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				// Funktionsauswahl zeigen
-				SelectSolverFunction ssf = new SelectSolverFunction(DataType.None, new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, new IFunctionResult()
 				{
 					@Override
 					public void selectedFunction(Function function)

@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class FunctionIQuerprodukt extends Function
 {
 	private static final long serialVersionUID = -3859887811865649616L;
 
-	public FunctionIQuerprodukt()
+	public FunctionIQuerprodukt(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("ICrossproduct", "en"));
 		Names.add(new LacalNames("IQuerprodukt", "de"));
 		Names.add(new LacalNames("ICP", "en"));

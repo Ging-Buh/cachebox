@@ -8,9 +8,9 @@ class OperatorEntity extends Entity
 	private Entity rechts;
 	private String op;
 
-	OperatorEntity(int id, Entity links, String op, Entity rechts)
+	OperatorEntity(Solver solver, int id, Entity links, String op, Entity rechts)
 	{
-		super(id);
+		super(solver, id);
 		this.links = links;
 		this.op = op;
 		this.rechts = rechts;

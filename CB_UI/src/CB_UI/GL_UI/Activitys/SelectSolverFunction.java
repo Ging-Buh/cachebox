@@ -3,8 +3,8 @@ package CB_UI.GL_UI.Activitys;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Core.Solver.Solver;
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Core.Solver.Functions.Function;
 import CB_Core.Solver.Functions.Functions;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -34,15 +34,17 @@ public class SelectSolverFunction extends ButtonDialog
 	private CB_RectF categoryBtnRec, itemBtnRec;
 	private Function selectedFunction;
 	private DataType dataType;
+	private Solver solver;
 
 	public interface IFunctionResult
 	{
 		public void selectedFunction(Function function);
 	}
 
-	public SelectSolverFunction(DataType dataType, IFunctionResult resultListner)
+	public SelectSolverFunction(Solver solver, DataType dataType, IFunctionResult resultListner)
 	{
 		super(ActivityRec(), "SelectSolverFunctionActivity", "", "", MessageBoxButtons.OKCancel, MessageBoxIcon.None, null);
+		this.solver = solver;
 		mResultListner = resultListner;
 		this.dataType = dataType;
 
@@ -239,7 +241,7 @@ public class SelectSolverFunction extends ButtonDialog
 		 */
 		final ArrayList<Button> functBtnList = new ArrayList<Button>();
 
-		Iterator<Functions> iteratorCat = Solver.functions.values().iterator();
+		Iterator<Functions> iteratorCat = solver.functions.values().iterator();
 
 		if (iteratorCat != null && iteratorCat.hasNext())
 		{

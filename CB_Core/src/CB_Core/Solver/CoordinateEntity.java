@@ -17,9 +17,9 @@ public class CoordinateEntity extends Entity
 
 	private String gcCode = "";
 
-	public CoordinateEntity(int id, String gcCode)
+	public CoordinateEntity(Solver solver, int id, String gcCode)
 	{
-		super(id);
+		super(solver, id);
 		this.gcCode = gcCode;
 	}
 

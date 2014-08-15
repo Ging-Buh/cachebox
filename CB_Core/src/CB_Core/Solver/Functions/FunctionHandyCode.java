@@ -1,6 +1,7 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class FunctionHandyCode extends Function
@@ -8,8 +9,9 @@ public class FunctionHandyCode extends Function
 
 	private static final long serialVersionUID = -270660378762802943L;
 
-	public FunctionHandyCode()
+	public FunctionHandyCode(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("PhoneCode", "en"));
 		Names.add(new LacalNames("HandyCode", "de"));
 		Names.add(new LacalNames("PC", "en"));

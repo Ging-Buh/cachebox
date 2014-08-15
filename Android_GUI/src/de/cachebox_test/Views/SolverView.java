@@ -48,6 +48,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	Button bRight;
 
 	LinearLayout ButtonsLayout;
+	private Solver solver = new Solver("");
 
 	public SolverView(Context context, LayoutInflater inflater)
 	{
@@ -76,7 +77,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			@Override
 			public void onClick(View arg0)
 			{
-				SelectSolverFunction ssf = new SelectSolverFunction(DataType.None, new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, new IFunctionResult()
 				{
 
 					@Override
@@ -201,7 +202,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	{
 		// Hide Keyboard when Calculating
 		// showVirturalKeyboard(false);
-		Solver solver = new Solver(edSolver.getText().toString());
+		solver = new Solver(edSolver.getText().toString());
 		if (!solver.Solve())
 		{
 			Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();

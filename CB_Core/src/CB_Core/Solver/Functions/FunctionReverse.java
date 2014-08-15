@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class FunctionReverse extends Function
 {
 	private static final long serialVersionUID = 9169402073615894654L;
 
-	public FunctionReverse()
+	public FunctionReverse(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("Reverse", "en"));
 	}
 
