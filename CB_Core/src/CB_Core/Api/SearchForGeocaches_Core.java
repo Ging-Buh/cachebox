@@ -409,12 +409,12 @@ public class SearchForGeocaches_Core
 			{
 				result = "";
 				JSONArray caches = json.getJSONArray("Geocaches");
-				Logger.LogCat("got " + caches.length() + " Caches from gc");
+				// Logger.DEBUG("got " + caches.length() + " Caches from gc");
 				for (int i = 0; i < caches.length(); i++)
 				{
 					JSONObject jCache = (JSONObject) caches.get(i);
 					String gcCode = jCache.getString("Code");
-					Logger.DEBUG("handling " + gcCode);
+					// Logger.DEBUG("handling " + gcCode);
 					String name = jCache.getString("Name");
 					result += gcCode + " - " + name + "\n";
 

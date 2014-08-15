@@ -80,7 +80,7 @@ public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak
 
 		JSONArray jCaches = json.getJSONArray("CacheCodes");
 		Logger.DEBUG("got " + jCaches.length() + " Caches from gc");
-		System.out.println("got " + jCaches.length() + " Caches from gc");
+
 		for (int i = 0; i < jCaches.length(); i++)
 		{
 			String gcCode = (String) jCaches.get(i);

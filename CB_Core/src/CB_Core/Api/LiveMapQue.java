@@ -36,7 +36,6 @@ import CB_Locator.Map.Descriptor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.CB_Stack;
 import CB_Utils.Lists.CB_Stack.iCompare;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.LoopThread;
 import CB_Utils.Util.iChanged;
@@ -192,15 +191,9 @@ public class LiveMapQue
 				GroundspeakAPI.setDownloadLimit();
 			}
 
-			CB_List<Cache> removedCaches = LiveCaches.add(desc, apiCaches);
+			final CB_List<Cache> removedCaches = LiveCaches.add(desc, apiCaches);
 
-			Logger.DEBUG("LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
-			System.out.println("LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
-
-			synchronized (Database.Data.Query)
-			{
-				Database.Data.Query.removeAll(removedCaches);
-			}
+			// Logger.DEBUG("LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
 
 			Thread callThread = new Thread(new Runnable()
 			{
@@ -208,6 +201,12 @@ public class LiveMapQue
 				@Override
 				public void run()
 				{
+
+					synchronized (Database.Data.Query)
+					{
+						Database.Data.Query.removeAll(removedCaches);
+					}
+
 					CachListChangedEventList.Call();
 					for (int i = 0; i < eventList.size(); i++)
 						eventList.get(i).stateChanged();
@@ -284,6 +283,7 @@ public class LiveMapQue
 	}
 
 	private static Descriptor lastLo, lastRu;
+	private static Byte count = 0;
 
 	public static void queScreen(Descriptor lo, Descriptor ru)
 	{
@@ -293,7 +293,13 @@ public class LiveMapQue
 		if (lastLo != null && lastRu != null)
 		{
 			// all Descriptor are into the last request?
-			if (lastLo.getX() <= lo.getX() && lastRu.getX() >= ru.getX() && lastLo.getY() <= lo.getY() && lastRu.getY() >= ru.getY()) return;
+			if (lastLo.getX() == lo.getX() && lastRu.getX() == ru.getX() && lastLo.getY() == lo.getY() && lastRu.getY() == ru.getY())
+			{
+				// Still run every 15th!
+				if (count++ < 15) return;
+				count = 0;
+			}
+
 		}
 
 		lastLo = lo;

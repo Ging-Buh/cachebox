@@ -16,7 +16,6 @@
 
 package CB_Utils.Lists;
 
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.MoveableList;
 
 /**
@@ -47,7 +46,7 @@ public class CB_Stack<T>
 		{
 			if (items.contains(item)) return;
 			items.add(item);
-			Logger.LogCat("STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
+			// Logger.LogCat("STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
 			checkMaxItemSize();
 		}
 	}
@@ -63,13 +62,13 @@ public class CB_Stack<T>
 		{
 			if (items.size == 0)
 			{
-				Logger.LogCat("STACK empty Get");
+				// Logger.LogCat("STACK empty Get");
 				return null;
 			}
 
 			T ret = items.remove(0);
 
-			Logger.LogCat("STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
+			// Logger.LogCat("STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
 
 			return ret;
 		}
@@ -137,7 +136,6 @@ public class CB_Stack<T>
 		{
 			items.clear();
 			items.addAll(descList);
-			Logger.LogCat("STACK add ALL SIZE=" + (items.size - 1));
 		}
 	}
 

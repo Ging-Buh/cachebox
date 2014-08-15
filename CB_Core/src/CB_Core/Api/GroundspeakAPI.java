@@ -806,7 +806,6 @@ public class GroundspeakAPI
 			catch (JSONException e)
 			{
 				e.printStackTrace();
-				System.out.println(e.getMessage());
 				LastAPIError = "API Error: " + e.getMessage();
 				return -2;
 			}

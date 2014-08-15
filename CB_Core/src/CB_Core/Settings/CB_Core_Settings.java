@@ -97,6 +97,6 @@ public interface CB_Core_Settings
 			SettingStoreType.Global);
 
 	public static final SettingEnum<LiveCacheTime> Live_Cache_Time = new SettingEnum<LiveCacheTime>("Live_Cache_Time",
-			SettingCategory.LiveMap, NORMAL, LiveCacheTime.min_30, SettingStoreType.Global, LiveCacheTime.min_30);
+			SettingCategory.LiveMap, NORMAL, LiveCacheTime.h_6, SettingStoreType.Global, LiveCacheTime.h_6);
 
 }
