@@ -216,12 +216,12 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 
 		edResult.setText(result);
 
-		if ((Solver.MissingVariables != null) && (Solver.MissingVariables.size() > 0))
+		if ((solver.MissingVariables != null) && (solver.MissingVariables.size() > 0))
 		{
 			// es sind nicht alle Variablen zugewiesen
 			// Abfrage, ob die Deklarationen eingefügt werden sollen
 			String message = "";
-			for (String s : Solver.MissingVariables.keySet())
+			for (String s : solver.MissingVariables.keySet())
 			{
 				if (message != "") message += ", ";
 				message += s;
@@ -244,7 +244,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			case -1:
 				/* User clicked OK so do some stuff */
 				String missing = "";
-				for (String s : Solver.MissingVariables.keySet())
+				for (String s : solver.MissingVariables.keySet())
 				{
 					missing += s + "=\n";
 					edResult.setText("\n" + edSolver.getText().toString());

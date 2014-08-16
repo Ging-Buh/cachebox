@@ -167,6 +167,12 @@ public class CacheDAO
 		else
 			detail.setHint("");
 
+		if (withDescription)
+		{
+			detail.longDescription = reader.getString(readerOffset + 11);
+			detail.tmpSolver = reader.getString(readerOffset + 12);
+			detail.tmpNote = reader.getString(readerOffset + 13);
+		}
 		return true;
 	}
 

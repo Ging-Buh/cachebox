@@ -104,8 +104,8 @@ public class SolverZeile
 					TempEntity tempent = (TempEntity) tent;
 					if (tempent.Text.trim().equals("")) continue;
 					// store in global list
-					if (Solver.MissingVariables == null) Solver.MissingVariables = new TreeMap<String, Integer>();
-					if (!Solver.MissingVariables.containsKey(tempent.Text)) Solver.MissingVariables.put(tempent.Text, 0);
+					if (solver.MissingVariables == null) solver.MissingVariables = new TreeMap<String, Integer>();
+					if (!solver.MissingVariables.containsKey(tempent.Text)) solver.MissingVariables.put(tempent.Text, 0);
 					// store in local list
 					if (missingVariables == null) missingVariables = new TreeMap<String, Integer>();
 					if (!missingVariables.containsKey(tempent.Text)) missingVariables.put(tempent.Text, 0);
@@ -183,7 +183,7 @@ public class SolverZeile
 			if (tEntity.Text.equals("")) continue;
 			if (tEntity.Text.substring(0, 1).equals("\"")) continue; // in String mit Anfuehrungszeichen kann kein Operator stecken!
 
-			for (ArrayList<String> ops : Solver.operatoren.values())
+			for (ArrayList<String> ops : solver.operatoren.values())
 			{
 				while (true)
 				{
@@ -345,9 +345,9 @@ public class SolverZeile
 		entities.Pack();
 	}
 
-	static boolean IsOperator(String s)
+	boolean IsOperator(String s)
 	{
-		for (ArrayList<String> olist : Solver.operatoren.values())
+		for (ArrayList<String> olist : solver.operatoren.values())
 		{
 			for (String op : olist)
 			{
