@@ -153,9 +153,9 @@ public class BmpFilled extends PolygonTestBase
 
 			float w = StreamBMP.getWidth();
 			float h = StreamBMP.getHeight();
-			// StreamBMP.draw(batch, 200, 600, w, h);
-			//
-			// StreamBMP.draw(batch, 300, 600, w * 2, h * 2);
+			 StreamBMP.draw(batch, 200, 600, w, h);
+			
+			 StreamBMP.draw(batch, 300, 600, w * 2, h * 2);
 			isReady = true;
 		}
 	}

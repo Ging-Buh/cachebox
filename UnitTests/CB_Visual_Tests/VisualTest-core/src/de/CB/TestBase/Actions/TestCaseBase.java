@@ -169,6 +169,7 @@ public abstract class TestCaseBase extends CB_View_Base
 			if (this.getWidth() > this.getHeight())
 			{
 				secondPoint = new PointF(this.getHalfWidth() + 5, 5);
+				secondPoint = new PointF(20 + 5, 5);
 			}
 			else
 			{

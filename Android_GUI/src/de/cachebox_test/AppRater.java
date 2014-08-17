@@ -1,5 +1,6 @@
 package de.cachebox_test;
 
+import CB_Translation_Base.TranslationEngine.Translation;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -64,9 +65,14 @@ public class AppRater
 		Dialog dialog = new Dialog(mContext);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-		String message = "If you enjoy using " + APP_TITLE + ", please take a moment to rate the app. Thank you for your support!";
-		builder.setMessage(message).setTitle("Rate " + APP_TITLE).setIcon(mContext.getApplicationInfo().icon).setCancelable(false)
-				.setPositiveButton("Rate Now", new DialogInterface.OnClickListener()
+		String message = Translation.Get("Rate_Message", APP_TITLE);
+		String title = Translation.Get("Rate_Title", APP_TITLE);
+		String now = Translation.Get("Rate_now");
+		String later = Translation.Get("Rate_later");
+		String never = Translation.Get("Rate_never");
+
+		builder.setMessage(message).setTitle(title).setIcon(mContext.getApplicationInfo().icon).setCancelable(false)
+				.setPositiveButton(now, new DialogInterface.OnClickListener()
 				{
 
 					@Override
@@ -77,7 +83,7 @@ public class AppRater
 						mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PACKAGE_NAME)));
 						dialog.dismiss();
 					}
-				}).setNeutralButton("Later", new DialogInterface.OnClickListener()
+				}).setNeutralButton(later, new DialogInterface.OnClickListener()
 				{
 
 					@Override
@@ -86,7 +92,7 @@ public class AppRater
 						dialog.dismiss();
 
 					}
-				}).setNegativeButton("No, Thanks", new DialogInterface.OnClickListener()
+				}).setNegativeButton(never, new DialogInterface.OnClickListener()
 				{
 
 					@Override

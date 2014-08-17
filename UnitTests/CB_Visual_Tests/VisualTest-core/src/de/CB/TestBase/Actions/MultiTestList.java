@@ -46,6 +46,10 @@ public class MultiTestList extends ArrayList<TestCaseBase>
 	{
 		Multi_SVG_Test SVGs = new Multi_SVG_Test();
 
+		
+		 add(new RedFilled());
+		 add(new BmpFilled());
+		
 //		addAll(SVGs);
 //		
 		add(new PixmapPackertest());
@@ -87,8 +91,7 @@ public class MultiTestList extends ArrayList<TestCaseBase>
 		add(new CircleSegmentFull());
 		 add(new CircleSegmentTest());
 		//
-		 add(new RedFilled());
-		add(new BmpFilled());
+		
 		add(new RingSegmentTest());
 		add(new CircleSegmentTest());
 		add(new QuadrangleTest());

@@ -1,6 +1,6 @@
 package CB_Core.Settings;
 
-import CB_Core.Enums.LiveCacheTime;
+import CB_Core.Enums.Live_Cache_Time;
 import CB_Utils.Config_Core;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
@@ -80,8 +80,8 @@ public interface CB_Core_Settings
 	public static final SettingBool ShowAllWaypoints = new SettingBool("ShowAllWaypoints", SettingCategory.Map, NORMAL, false,
 			SettingStoreType.Global);
 
-	public static final SettingEnum<CB_Core.Api.LiveMapQue.Live_Radius> Live_Radius = new SettingEnum<CB_Core.Api.LiveMapQue.Live_Radius>(
-			"Live_Radius", SettingCategory.LiveMap, NORMAL, CB_Core.Api.LiveMapQue.Live_Radius.Zoom_14, SettingStoreType.Global,
+	public static final SettingEnum<CB_Core.Api.LiveMapQue.Live_Radius> LiveRadius = new SettingEnum<CB_Core.Api.LiveMapQue.Live_Radius>(
+			"LiveRadius", SettingCategory.LiveMap, NORMAL, CB_Core.Api.LiveMapQue.Live_Radius.Zoom_14, SettingStoreType.Global,
 			CB_Core.Api.LiveMapQue.Live_Radius.Zoom_14);
 
 	public static final SettingBool DisableLiveMap = new SettingBool("DisableLiveMap", SettingCategory.LiveMap, NORMAL, false,
@@ -96,7 +96,7 @@ public interface CB_Core_Settings
 	public static final SettingBool LiveExcludeOwn = new SettingBool("LiveExcludeOwn", SettingCategory.LiveMap, NORMAL, true,
 			SettingStoreType.Global);
 
-	public static final SettingEnum<LiveCacheTime> Live_Cache_Time = new SettingEnum<LiveCacheTime>("Live_Cache_Time",
-			SettingCategory.LiveMap, NORMAL, LiveCacheTime.h_6, SettingStoreType.Global, LiveCacheTime.h_6);
+	public static final SettingEnum<Live_Cache_Time> LiveCacheTime = new SettingEnum<Live_Cache_Time>("LiveCacheTime",
+			SettingCategory.LiveMap, NORMAL, Live_Cache_Time.h_6, SettingStoreType.Global, Live_Cache_Time.h_6);
 
 }

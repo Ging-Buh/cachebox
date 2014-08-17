@@ -1,6 +1,6 @@
 package CB_Core.Enums;
 
-public enum LiveCacheTime
+public enum Live_Cache_Time
 {
 	min_10, min_30, min_60, h_6, h_12, h_24;
 

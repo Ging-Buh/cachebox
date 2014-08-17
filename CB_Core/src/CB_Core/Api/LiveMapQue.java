@@ -59,15 +59,15 @@ public class LiveMapQue
 	private static final ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 	private static final ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 	public static CacheListLive LiveCaches;
-	public static Live_Radius radius = CB_Core.Settings.CB_Core_Settings.Live_Radius.getEnumValue();
+	public static Live_Radius radius = CB_Core.Settings.CB_Core_Settings.LiveRadius.getEnumValue();
 	static
 	{
-		CB_Core.Settings.CB_Core_Settings.Live_Radius.addChangedEventListner(new iChanged()
+		CB_Core.Settings.CB_Core_Settings.LiveRadius.addChangedEventListner(new iChanged()
 		{
 			@Override
 			public void isChanged()
 			{
-				radius = CB_Core.Settings.CB_Core_Settings.Live_Radius.getEnumValue();
+				radius = CB_Core.Settings.CB_Core_Settings.LiveRadius.getEnumValue();
 
 				switch (radius)
 				{
@@ -89,7 +89,7 @@ public class LiveMapQue
 
 		});
 
-		radius = CB_Core.Settings.CB_Core_Settings.Live_Radius.getEnumValue();
+		radius = CB_Core.Settings.CB_Core_Settings.LiveRadius.getEnumValue();
 
 		switch (radius)
 		{
@@ -266,7 +266,7 @@ public class LiveMapQue
 	protected static boolean descExistLiveCache(Descriptor desc)
 	{
 		String path = desc.getLocalCachePath(LIVE_CACHE_NAME) + LIVE_CACHE_EXTENTION;
-		return FileIO.FileExists(path, CB_Core_Settings.Live_Cache_Time.getEnumValue().getMinuten());
+		return FileIO.FileExists(path, CB_Core_Settings.LiveCacheTime.getEnumValue().getMinuten());
 	}
 
 	static public void quePosition(Coordinate coord)
