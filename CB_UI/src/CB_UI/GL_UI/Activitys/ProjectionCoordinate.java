@@ -102,6 +102,10 @@ public class ProjectionCoordinate extends ActivityBase
 	@Override
 	public void onShow()
 	{
+		if (valueBearing == null)
+		{
+			iniTextFields();
+		}
 		valueBearing.setFocus();
 	}
 

@@ -540,9 +540,15 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 	private void stopTimer()
 	{
-		if (mAnimationTimer != null)
+		try
 		{
-			mAnimationTimer.cancel();
+			if (mAnimationTimer != null)
+			{
+				mAnimationTimer.cancel();
+			}
+		}
+		finally
+		{
 			mAnimationTimer = null;
 		}
 	}

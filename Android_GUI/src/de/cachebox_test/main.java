@@ -655,7 +655,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			}
 		};
 
-		raTi.schedule(raTa, 10000);
+		raTi.schedule(raTa, 15000);
 
 	}
 

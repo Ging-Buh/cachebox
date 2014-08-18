@@ -80,7 +80,14 @@ public class AppRater
 					{
 						editor.putBoolean("dontshowagain", true);
 						editor.commit();
-						mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PACKAGE_NAME)));
+						try
+						{
+							mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PACKAGE_NAME)));
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
 						dialog.dismiss();
 					}
 				}).setNeutralButton(later, new DialogInterface.OnClickListener()

@@ -11,7 +11,7 @@ public class SkinSettings
 	public int SizeBig = 18;
 	public int SizeNormal = 15;
 	public int SizeNormalbubble = 14;
-	public int SizeSmall = 13;
-	public int SizeSmallBubble = 11;
+	public int SizeSmall = 12;
+	public int SizeSmallBubble = 10;
 	public String InternalFont = null;
 }
