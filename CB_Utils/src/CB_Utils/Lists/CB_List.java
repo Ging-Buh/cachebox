@@ -389,4 +389,11 @@ public class CB_List<T> implements Serializable
 		}
 	}
 
+	public void trimToSize()
+	{
+		T[] array = this.createNewItems(size);
+		System.arraycopy(items, 0, array, 0, size);
+		items = array;
+	}
+
 }
