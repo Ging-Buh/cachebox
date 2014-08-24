@@ -31,6 +31,7 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 	protected String name;
 	protected SettingModus modus;
 	protected SettingStoreType storeType;
+	protected SettingUsage usage;
 
 	protected T value;
 	protected T defaultValue;
@@ -44,15 +45,16 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 	private static int indexCount = 0;
 	private int index = -1;
 
-	public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType)
+	public SettingBase(String name, SettingCategory category, SettingModus modus, SettingStoreType StoreType, SettingUsage usage)
 	{
 		this.name = name;
 		this.category = category;
 		this.modus = modus;
 		this.storeType = StoreType;
-		dirty = false;
+		this.usage = usage;
+		this.dirty = false;
 
-		index = indexCount++;
+		this.index = indexCount++;
 	}
 
 	public void addChangedEventListner(iChanged listner)
@@ -199,5 +201,10 @@ public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 	}
 
 	public abstract boolean equals(Object obj);
+
+	public SettingUsage getUsage()
+	{
+		return this.usage;
+	}
 
 }
