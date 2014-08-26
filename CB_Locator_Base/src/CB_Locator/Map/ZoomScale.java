@@ -171,8 +171,12 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		disposeTexture();
 
-		int w = getNextHighestPO2((int) getWidth());
-		int h = getNextHighestPO2((int) getHeight());
+		// int w = getNextHighestPO2((int) getWidth());
+		// int h = getNextHighestPO2((int) getHeight());
+
+		int w = (int) getWidth();
+		int h = (int) getHeight();
+
 		CachedScalePixmap = new Pixmap(w, h, Pixmap.Format.RGBA4444);
 		CachedScalePixmap.setColor(0f, 0f, 0f, 1f);
 

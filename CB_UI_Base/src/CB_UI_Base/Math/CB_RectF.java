@@ -16,6 +16,8 @@
 
 package CB_UI_Base.Math;
 
+import java.util.Arrays;
+
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
@@ -45,8 +47,8 @@ public class CB_RectF
 	 * [8] = centerPos.x <br>
 	 * [9] = centerPos.x <br>
 	 */
-	protected final float member[] = new float[]
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	protected final Float member[] = new Float[]
+		{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
 	public float getHalfWidth()
 	{
@@ -234,11 +236,13 @@ public class CB_RectF
 
 	public void Add(SizeChangedEvent event)
 	{
+		if (list == null) return; // is disposed
 		list.add(event);
 	}
 
 	public void Remove(SizeChangedEvent event)
 	{
+		if (list == null) return; // is disposed
 		list.remove(event);
 	}
 
@@ -293,35 +297,35 @@ public class CB_RectF
 		CallRecChanged();
 	}
 
-	/**
-	 * Setzt Height und Width auf die nächst größere Potenz von 2
-	 */
-	public void setPO2()
-	{
-		int PO2width = getNextHighestPO2((int) this.member[2]);
-		int PO2height = getNextHighestPO2((int) this.member[3]);
+	// /**
+	// * Setzt Height und Width auf die nächst größere Potenz von 2
+	// */
+	// public void setPO2()
+	// {
+	// int PO2width = getNextHighestPO2((int) this.member[2]);
+	// int PO2height = getNextHighestPO2((int) this.member[3]);
+	//
+	// setSize(PO2width, PO2height);
+	// }
 
-		setSize(PO2width, PO2height);
-	}
-
-	/**
-	 * Calculates the next highest power of two for a given integer.
-	 * 
-	 * @param n
-	 *            the number
-	 * @return a power of two equal to or higher than n
-	 */
-	public static int getNextHighestPO2(int n)
-	{
-		n -= 1;
-		n = n | (n >> 1);
-		n = n | (n >> 2);
-		n = n | (n >> 4);
-		n = n | (n >> 8);
-		n = n | (n >> 16);
-		n = n | (n >> 32);
-		return n + 1;
-	}
+	// /**
+	// * Calculates the next highest power of two for a given integer.
+	// *
+	// * @param n
+	// * the number
+	// * @return a power of two equal to or higher than n
+	// */
+	// public static int getNextHighestPO2(int n)
+	// {
+	// n -= 1;
+	// n = n | (n >> 1);
+	// n = n | (n >> 2);
+	// n = n | (n >> 4);
+	// n = n | (n >> 8);
+	// n = n | (n >> 16);
+	// n = n | (n >> 32);
+	// return n + 1;
+	// }
 
 	public CB_RectF ScaleCenter(float ScaleFactor)
 	{
@@ -534,5 +538,11 @@ public class CB_RectF
 			list.clear();
 		}
 		list = null;
+
+		if (member != null)
+		{
+			Arrays.fill(member, null);
+		}
+
 	}
 }

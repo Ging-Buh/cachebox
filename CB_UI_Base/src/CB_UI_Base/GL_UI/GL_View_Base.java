@@ -585,8 +585,12 @@ public abstract class GL_View_Base extends CB_RectF
 					@Override
 					public void run()
 					{
-						int w = getNextHighestPO2((int) getWidth());
-						int h = getNextHighestPO2((int) getHeight());
+						// int w = getNextHighestPO2((int) getWidth());
+						// int h = getNextHighestPO2((int) getHeight());
+
+						int w = (int) getWidth();
+						int h = (int) getHeight();
+
 						debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 						debugRegPixmap.setColor(1f, 0f, 0f, 1f);
 						debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);

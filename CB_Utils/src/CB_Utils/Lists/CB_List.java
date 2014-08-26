@@ -383,10 +383,11 @@ public class CB_List<T> implements Serializable
 
 	public void dispose()
 	{
-		for (int i = 0, n = this.size(); i < n; i++)
+		if (items != null)
 		{
-			items[i] = null;
+			Arrays.fill(items, null);
 		}
+		items = null;
 	}
 
 	public void trimToSize()

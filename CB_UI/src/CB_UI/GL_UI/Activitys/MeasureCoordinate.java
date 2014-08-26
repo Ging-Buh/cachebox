@@ -208,8 +208,12 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		CB_RectF panelRec = new CB_RectF(leftBorder, bOK.getMaxY(), innerWidth, innerWidth);
 
-		int w = getNextHighestPO2((int) panelRec.getWidth());
-		int h = getNextHighestPO2((int) panelRec.getHeight());
+		// int w = getNextHighestPO2((int) panelRec.getWidth());
+		// int h = getNextHighestPO2((int) panelRec.getHeight());
+
+		int w = (int) panelRec.getWidth();
+		int h = (int) panelRec.getHeight();
+
 		drawingPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 
 		drawingPixmap.setColor(Color.LIGHT_GRAY);
