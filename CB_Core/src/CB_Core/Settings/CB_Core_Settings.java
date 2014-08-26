@@ -22,6 +22,7 @@ import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingEncryptedString;
 import CB_Utils.Settings.SettingEnum;
+import CB_Utils.Settings.SettingFile;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingModus;
@@ -38,6 +39,12 @@ public interface CB_Core_Settings
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;
 	public static final SettingModus NEVER = SettingModus.Never;
+
+	public static final SettingFile Sel_LanguagePath = (SettingFile) SettingsList.addSetting(new SettingFile("Sel_LanguagePath",
+			SettingCategory.Folder, NEVER, "data/lang/en-GB/strings.ini", SettingStoreType.Platform, SettingUsage.ALL, "lan"));
+
+	public static final SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang",
+			SettingStoreType.Global, SettingUsage.ALL);
 
 	public static final SettingString GcLogin = new SettingString("GcLogin", SettingCategory.Login, NORMAL, "", SettingStoreType.Platform,
 			SettingUsage.ALL);

@@ -224,10 +224,7 @@ public class Translation
 			readRefFile(LangFileName);
 		}
 
-		String tmp = FilePath;
-		int pos2 = tmp.lastIndexOf("/") + 1;
-		tmp = FilePath.substring(pos2);
-		mLangID = tmp.replace(".lan", "");
+		mLangID = getLangNameFromFile(FilePath);
 
 		SelectedLangChangedEventList.Call();
 	}

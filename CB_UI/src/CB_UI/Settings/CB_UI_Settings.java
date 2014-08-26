@@ -107,15 +107,11 @@ public interface CB_UI_Settings
 
 	// Folder
 
-	public static final SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang",
-			SettingStoreType.Global, SettingUsage.ACB);
-
 	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, NORMAL, Work + "/User/Tracks",
 			SettingStoreType.Global, SettingUsage.ACB);
 
 	// Files
-	public static final SettingFile Sel_LanguagePath = (SettingFile) SettingsList.addSetting(new SettingFile("Sel_LanguagePath",
-			SettingCategory.Folder, NEVER, "data/lang/en-GB/strings.ini", SettingStoreType.Platform, SettingUsage.ACB, "lan"));
+
 	public static final SettingFile DatabasePath = (SettingFile) SettingsList.addSetting(new SettingFile("DatabasePath",
 			SettingCategory.Folder, NEVER, Work + "/cachebox.db3", SettingStoreType.Global, SettingUsage.ACB, "db3"));
 	public static final SettingFile FieldNotesGarminPath = (SettingFile) SettingsList.addSetting(new SettingFile("FieldNotesGarminPath",
