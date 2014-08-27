@@ -17,6 +17,7 @@
 package CB_UI.GL_UI.Main.Actions.QuickButton;
 
 import CB_UI.GlobalCore;
+import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
@@ -116,6 +117,7 @@ public class QuickButtonItem extends ListViewItemBase
 	private int autoResortState = -1;
 	private int spoilerState = -1;
 	private int hintState = -1;
+	private int torchState = -1;
 
 	@Override
 	protected void render(Batch batch)
@@ -157,6 +159,20 @@ public class QuickButtonItem extends ListViewItemBase
 				sprite.setColor(DISABLE_COLOR);
 				mButtonIcon.setDrawable(new SpriteDrawable(sprite));
 				spoilerState = 0;
+			}
+		}
+		else if (mAction.getId() == MenuID.AID_TORCH)
+		{
+
+			if (platformConector.isTorchOn() && torchState != 1)
+			{
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_on_67.ordinal())));
+				torchState = 1;
+			}
+			else if (!platformConector.isTorchOn() && torchState != 0)
+			{
+				mButtonIcon.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.torch_Off_68.ordinal())));
+				torchState = 0;
 			}
 		}
 		else if (mAction.getId() == MenuID.AID_SHOW_HINT)

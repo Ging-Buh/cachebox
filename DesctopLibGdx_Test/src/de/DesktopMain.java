@@ -275,6 +275,27 @@ public class DesktopMain
 
 			}
 
+			@Override
+			public boolean isTorchAvailable()
+			{
+				return true; // Simulate
+			}
+
+			private boolean torchOn = false;
+
+			@Override
+			public boolean isTorchOn()
+			{
+				return torchOn;
+			}
+
+			@Override
+			public void switchTorch()
+			{
+				System.out.print("Switch Torch to => " + (torchOn ? "on" : "off"));
+				torchOn = !torchOn;
+			}
+
 		});
 
 		platformConector.setGetFileListner(new IgetFileListner()

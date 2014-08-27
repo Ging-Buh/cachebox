@@ -24,6 +24,7 @@ import CB_UI.GL_UI.Main.Actions.CB_Action_UploadFieldNote;
 import CB_UI.GL_UI.Main.Actions.CB_Action_add_WP;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Autoresort;
 import CB_UI.GL_UI.Main.Actions.CB_Action_switch_DayNight;
+import CB_UI.GL_UI.Main.Actions.CB_Action_switch_Torch;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.ViewConst;
@@ -64,6 +65,7 @@ public enum QuickActions
 	Solver2, // 22
 	Notesview, // 23
 	uploadFieldNote, // 24
+	torch, // 25
 	// ScreenLock, // 21
 
 	empty, ;
@@ -176,6 +178,8 @@ public enum QuickActions
 			return TabMainView.actionShowNotesView;
 		case 24:
 			return CB_Action_UploadFieldNote.INSTANCE;
+		case 25:
+			return action_Torch;
 		}
 		return null;
 	}
@@ -234,6 +238,8 @@ public enum QuickActions
 			return Translation.Get("Notes");
 		case 24:
 			return Translation.Get("uploadFieldNotes");
+		case 25:
+			return Translation.Get("torch");
 		}
 		return "empty";
 	}
@@ -264,8 +270,7 @@ public enum QuickActions
 	// private static CB_Action action_ScreenLock;
 
 	private static CB_Action action_SwitchAutoResort = new CB_Action_switch_Autoresort();
-
 	private static CB_Action action_Hint = new CB_Action_ShowHint();
-
 	private static CB_Action action_DayNight = new CB_Action_switch_DayNight();
+	private static CB_Action action_Torch = new CB_Action_switch_Torch();
 }

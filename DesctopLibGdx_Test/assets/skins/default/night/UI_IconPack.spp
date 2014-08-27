@@ -1,6 +1,6 @@
 
 UI_IconPack-1.png
-format: RGBA8888
+format: RGBA4444
 filter: Linear,Linear
 repeat: none
 1to4bubble

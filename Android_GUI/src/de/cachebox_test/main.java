@@ -121,6 +121,8 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -2838,6 +2840,47 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			public void vibrate()
 			{
 				main.vibrate();
+			}
+
+			private AtomicBoolean torchAvailable = null;
+			private Camera deviceCamera;
+
+			@Override
+			public boolean isTorchAvailable()
+			{
+				if (torchAvailable == null)
+				{
+					torchAvailable = new AtomicBoolean();
+					torchAvailable.set(getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH));
+				}
+
+				return torchAvailable.get();
+			}
+
+			@Override
+			public boolean isTorchOn()
+			{
+				if (deviceCamera != null) return true;
+				return false;
+			}
+
+			@Override
+			public void switchTorch()
+			{
+				if (deviceCamera == null)
+				{
+					deviceCamera = Camera.open();
+					Parameters p = deviceCamera.getParameters();
+					p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+					deviceCamera.setParameters(p);
+					deviceCamera.startPreview();
+				}
+				else
+				{
+					deviceCamera.stopPreview();
+					deviceCamera.release();
+					deviceCamera = null;
+				}
 			}
 
 		});

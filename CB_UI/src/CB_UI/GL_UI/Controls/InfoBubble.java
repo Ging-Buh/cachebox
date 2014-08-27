@@ -47,7 +47,7 @@ public class InfoBubble extends CB_View_Base
 	private Cache mCache = null;
 	private Waypoint mWaypoint = null;
 	private CacheInfo cacheInfo;
-	private Drawable saveIcon = new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.save.ordinal()));
+	private Drawable saveIcon = new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.save_66.ordinal()));
 
 	public void setCache(Cache cache, Waypoint waypoint)
 	{

@@ -158,6 +158,23 @@ public class Main
 
 			}
 
+			@Override
+			public boolean isTorchAvailable() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean isTorchOn() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public void switchTorch() {
+			
+			}
+
 		});
 
 		platformConector.setGetFileListner(new IgetFileListner()

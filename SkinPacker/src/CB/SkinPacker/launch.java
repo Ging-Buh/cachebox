@@ -248,17 +248,17 @@ public class launch extends JFrame
 		textureSettings.duplicatePadding = true;
 		textureSettings.edgePadding = true;
 		textureSettings.rotation = false;
-		if (false)
+		if (true)
 		{
-			textureSettings.minWidth = 512;
-			textureSettings.minHeight = 512;
+			textureSettings.minWidth = 128;
+			textureSettings.minHeight = 128;
 			textureSettings.maxWidth = 1024;
 			textureSettings.maxHeight = 1024;
 		}
 		else
 		{
-			textureSettings.minWidth = 2048;
-			textureSettings.minHeight = 2048;
+			textureSettings.minWidth = 128;
+			textureSettings.minHeight = 128;
 			textureSettings.maxWidth = 2048;
 			textureSettings.maxHeight = 2048;
 		}
