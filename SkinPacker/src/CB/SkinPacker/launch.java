@@ -270,7 +270,7 @@ public class launch extends JFrame
 		textureSettings.filterMag = TextureFilter.Linear;
 		textureSettings.wrapX = TextureWrap.ClampToEdge;
 		textureSettings.wrapY = TextureWrap.ClampToEdge;
-		textureSettings.format = Format.RGBA4444;
+		textureSettings.format = Format.RGBA8888;
 		textureSettings.alias = true;
 		textureSettings.outputFormat = "png";
 		textureSettings.jpegQuality = 0.9f;
@@ -438,6 +438,10 @@ public class launch extends JFrame
 						if (line.contains("filter:"))
 						{
 							builder.append("filter: MipMapLinearNearest,Nearest" + br);
+						}
+						else if (line.contains("format:"))
+						{
+							builder.append("format: RGBA4444" + br);
 						}
 						else
 						{

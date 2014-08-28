@@ -1,15 +1,10 @@
-Danke dass Du Cachebox 0.6.1884 installiert hast.
+!!!! Achtung !!!!
 
-Bediene Cachebox niemals während der Fahrt im Auto!
+Dies ist unsere Test-Version um neue Funktionen von unseren Beta-Testern testen zu lassen!
 
-Auch wenn wir bemüht sind Cachebox Fehlerfrei zu halten, kann es doch sein, dass wir etwas übersehen haben.
+Mit Großer Wahrscheinlichkeit wird es zu Abstürzen kommen, weil wir noch nicht alles fertig haben.
+Diese Version gibt uns aber die Möglichkeit, dass wir alle Fehler finden, bevor wir diese Version als Release veröffentlichen. 
 
-Einen Fehler kannst Du auf www.team-cachebox.de melden.
+Wenn Du uns helfen willst, die Cachebox zu verbessern, dann schicke uns ein Feedback in unserem Support Forum bzw. sende einen Fehlerbericht bei einem Absturz.
 
-Hier kannst Du auch Wünsche zu neuen Funktionen loswerden.
-
-
-Oder Du besuchst uns in dem von uns benutzten Forum http://www.geoclub.de/viewforum.php?f=114 .
-
-
-
+Danke, Team-Cachebox
