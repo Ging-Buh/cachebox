@@ -58,14 +58,13 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2262;
+	public static final int CurrentRevision = 2265;
 
 	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
 
 	// public static final String ps = System.getProperty("path.separator");
-	public static final String AboutMsg = "Team Cachebox (2011-2014)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009,"
-			+ br + "Groundspeak Inc. Used with permission";
+	public static final String AboutMsg = "Team Cachebox (2011-2014)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
 	public static final String splashMsg = AboutMsg + br + br + "POWERED BY:";
 
 	public static boolean restartAfterKill = false;
@@ -312,8 +311,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	public static String getVersionString()
 	{
-		final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  "
-				+ (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
+		final String ret = "Version: " + CurrentVersion + String.valueOf(CurrentRevision) + "  " + (VersionPrefix.equals("") ? "" : "(" + VersionPrefix + ")");
 		return ret;
 	}
 
@@ -419,8 +417,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 			@Override
 			public void run()
 			{
-				GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live,
-						null);
+				GL_MsgBox.Show(Translation.Get("Limit_msg"), Translation.Get("Limit_title"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
 			}
 		});
 
