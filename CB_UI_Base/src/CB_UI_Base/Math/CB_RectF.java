@@ -16,8 +16,6 @@
 
 package CB_UI_Base.Math;
 
-import java.util.Arrays;
-
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
@@ -215,6 +213,8 @@ public class CB_RectF
 
 	public boolean contains(float x, float y)
 	{
+		if (this.member == null) return false;
+
 		// runde
 		float rX = Math.round(x);
 		float rY = Math.round(y);
@@ -404,24 +404,21 @@ public class CB_RectF
 			{
 			case 1:
 
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(
-						this.member[6], this.member[1]), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[6], this.member[1]), ret))
 				{
 					if (contains(ret)) return ret; // 1 unten
 				}
 				break;
 
 			case 2:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(
-						this.member[0], this.member[7]), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[0], this.member[7]), ret))
 				{
 					if (contains(ret)) return ret; // 2 links
 				}
 				break;
 
 			case 3:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(
-						this.member[6], this.member[1]), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(this.member[6], this.member[1]), ret))
 				{
 					if (contains(ret)) return ret; // 3 rechts
 				}
@@ -429,8 +426,7 @@ public class CB_RectF
 				break;
 
 			case 4:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(
-						this.member[0], this.member[7]), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(this.member[0], this.member[7]), ret))
 				{
 					if (contains(ret)) return ret; // 4 oben
 				}
@@ -561,11 +557,11 @@ public class CB_RectF
 		}
 		list = null;
 
-		if (member != null)
-		{
-			Arrays.fill(member, null);
-		}
-		member = null;
+		// if (member != null)
+		// {
+		// Arrays.fill(member, null);
+		// }
+		// member = null;
 
 	}
 }
