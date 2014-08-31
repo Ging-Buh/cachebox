@@ -106,14 +106,20 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 		if (mCache.isLive())
 		{
 			liveCacheIcon = new Sprite(SpriteCacheBase.LiveBtn.get(0));
-			liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(),
-					ArrowRec.getHalfHeight());
+			liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
 		}
 
 	}
 
+	private String lastString = "";
+
 	private void setDistanceString(String txt)
 	{
+		if (txt.equals(lastString))
+		{
+			return;
+		}
+		lastString = txt;
 		synchronized (distance)
 		{
 			TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
@@ -160,8 +166,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 			try
 			{
-				MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(),
-						Final.getLongitude(), result);
+				MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(), Final.getLongitude(), result);
 			}
 			catch (Exception e)
 			{

@@ -16,6 +16,8 @@
 
 package CB_UI_Base.Math;
 
+import java.util.Arrays;
+
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
@@ -93,13 +95,13 @@ public class CB_RectF
 
 	public CB_RectF(CB_RectF rec)
 	{
-		if (member == null) return; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		System.arraycopy(rec.member, 0, this.member, 0, 10);
 	}
 
 	public void setWidth(float Width)
 	{
-		if (member == null) return; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (member[2] == Width) return;
 		member[2] = Width;
 		calcCrossCorner();
@@ -128,7 +130,7 @@ public class CB_RectF
 	 */
 	public boolean setSize(float Width, float Height)
 	{
-		if (member == null) return false; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! false; // isDisposed!
 		if (member[2] == Width && member[3] == Height) return false;
 		member[2] = Width;
 		member[3] = Height;
@@ -145,7 +147,7 @@ public class CB_RectF
 
 	public void setPos(Vector2 Pos)
 	{
-		if (member == null) return; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (member[0] == Pos.x && member[1] == Pos.y) return;
 		member[0] = Pos.x;
 		member[1] = Pos.y;
@@ -159,7 +161,7 @@ public class CB_RectF
 
 	public CB_RectF offset(float offX, float offY)
 	{
-		if (member == null) return null; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! null; // isDisposed!
 		member[0] += offX;
 		member[1] += offY;
 		calcCrossCorner();
@@ -168,25 +170,25 @@ public class CB_RectF
 
 	public float getX()
 	{
-		if (member == null) return 0; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return member[0];
 	}
 
 	public float getY()
 	{
-		if (member == null) return 0; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return member[1];
 	}
 
 	public float getWidth()
 	{
-		if (member == null) return 0; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return member[2];
 	}
 
 	public float getHeight()
 	{
-		if (member == null) return 0; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return member[3];
 	}
 
@@ -195,7 +197,7 @@ public class CB_RectF
 	 */
 	protected void calcCrossCorner()
 	{
-		if (member == null) return;// isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!;// isDisposed!
 		this.member[4] = this.member[2] / 2;
 		this.member[5] = this.member[3] / 2;
 
@@ -235,7 +237,7 @@ public class CB_RectF
 	 */
 	public boolean contains(CB_RectF rec)
 	{
-		if (member == null) return false; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! false; // isDisposed!
 		if (rec == null) return false;
 		boolean ret = this.contains(rec.member[0], rec.member[1]);
 		ret &= this.contains(rec.member[6], rec.member[7]);
@@ -278,7 +280,7 @@ public class CB_RectF
 
 	public boolean equals(CB_RectF rec)
 	{
-		if (member == null) return false; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! false; // isDisposed!
 
 		// Compare only x,y,width and height
 		if (this.member[0] != rec.member[0]) return false;
@@ -296,7 +298,7 @@ public class CB_RectF
 
 	public void setY(float i)
 	{
-		if (member == null) return; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (this.member[1] == i) return;
 		this.member[1] = i;
 		calcCrossCorner();
@@ -305,7 +307,7 @@ public class CB_RectF
 
 	public void setX(float i)
 	{
-		if (member == null) return; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (this.member[0] == i) return;
 		this.member[0] = i;
 		calcCrossCorner();
@@ -491,13 +493,13 @@ public class CB_RectF
 
 	public SizeF getSize()
 	{
-		if (member == null) return new SizeF(); // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! new SizeF(); // isDisposed!
 		return new SizeF(this.member[2], this.member[3]);
 	}
 
 	public void setRec(CB_RectF rec)
 	{
-		if (member == null) return; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (rec == null) return;
 		// chk of changes
 		if (this.equals(rec)) return;
@@ -508,13 +510,13 @@ public class CB_RectF
 	@Override
 	public String toString()
 	{
-		if (member == null) return "disposed Rec"; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! "disposed Rec"; // isDisposed!
 		return "rec X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.member[2] + "," + this.member[3];
 	}
 
 	public void setPos(float x, float y)
 	{
-		if (member == null) return; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		// chk of changes
 		if (this.member[0] == x && this.member[1] == y) return;
 
@@ -526,19 +528,19 @@ public class CB_RectF
 
 	public float getCenterPosX()
 	{
-		if (member == null) return 0; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return this.member[8];
 	}
 
 	public float getCenterPosY()
 	{
-		if (member == null) return 0; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return this.member[9];
 	}
 
 	public void set(float x, float y, float width, float height)
 	{
-		if (member == null) return; // isDisposed!
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!
 		// chk of changes
 		if (this.member[0] == x && this.member[1] == y && this.member[2] == width && this.member[3] == height) return;
 		this.member[0] = x;
@@ -557,11 +559,11 @@ public class CB_RectF
 		}
 		list = null;
 
-		// if (member != null)
-		// {
-		// Arrays.fill(member, null);
-		// }
-		// member = null;
+		if (member != null)
+		{
+			Arrays.fill(member, null);
+		}
+		member = null;
 
 	}
 }

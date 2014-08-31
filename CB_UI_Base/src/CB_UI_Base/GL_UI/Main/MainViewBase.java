@@ -54,4 +54,10 @@ public class MainViewBase extends CB_View_Base
 
 	}
 
+	@Override
+	public void dispose()
+	{
+		throw new IllegalStateException("MainViewBase can't disposed");
+	}
+
 }

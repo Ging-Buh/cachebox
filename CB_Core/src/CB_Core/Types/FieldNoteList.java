@@ -40,9 +40,12 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		@Override
 		public void isChanged()
 		{
-			FieldNoteList.this.clear();
-			cropedList = false;
-			actCropedLength = -1;
+			synchronized (FieldNoteList.this)
+			{
+				FieldNoteList.this.clear();
+				cropedList = false;
+				actCropedLength = -1;
+			}
 		}
 	};
 
@@ -53,95 +56,99 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 
 	public void LoadFieldNotes(String where, LoadingType loadingType)
 	{
-		LoadFieldNotes(where, "", loadingType);
+		synchronized (this)
+		{
+			LoadFieldNotes(where, "", loadingType);
+		}
 	}
 
 	public void LoadFieldNotes(String where, String order, LoadingType loadingType)
 	{
-
-		// List clear?
-		if (loadingType == LoadingType.Loadall || loadingType == LoadingType.LoadNew || loadingType == LoadingType.loadNewLastLength)
+		synchronized (this)
 		{
-			this.clear();
-		}
-
-		String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes";
-		if (!where.equals(""))
-		{
-			sql += " where " + where;
-		}
-		if (order == "")
-		{
-			sql += " order by FoundNumber DESC, Timestamp DESC";
-		}
-		else
-		{
-			sql += " order by " + order;
-		}
-
-		// SQLite Limit ?
-		boolean maybeCropped = !CB_Core_Settings.FieldNotesLoadAll.getValue() && loadingType != LoadingType.Loadall;
-
-		if (maybeCropped)
-		{
-			switch (loadingType)
+			// List clear?
+			if (loadingType == LoadingType.Loadall || loadingType == LoadingType.LoadNew || loadingType == LoadingType.loadNewLastLength)
 			{
-			case Loadall:
-				// do nothing
-				break;
-			case LoadNew:
-				actCropedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
-				sql += " LIMIT " + String.valueOf(actCropedLength + 1);
-				break;
-			case loadNewLastLength:
-				if (actCropedLength == -1) actCropedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
-				sql += " LIMIT " + String.valueOf(actCropedLength + 1);
-				break;
-			case loadMore:
-				int Offset = actCropedLength;
-				actCropedLength += CB_Core_Settings.FieldNotesLoadLength.getValue();
-				sql += " LIMIT " + String.valueOf(CB_Core_Settings.FieldNotesLoadLength.getValue() + 1);
-				sql += " OFFSET " + String.valueOf(Offset);
-			}
-		}
-
-		CoreCursor reader = null;
-		try
-		{
-			reader = Database.FieldNotes.rawQuery(sql, null);
-		}
-		catch (Exception exc)
-		{
-			Logger.Error("FieldNoteList", "LoadFieldNotes", exc);
-		}
-		reader.moveToFirst();
-		while (reader.isAfterLast() == false)
-		{
-			FieldNoteEntry fne = new FieldNoteEntry(reader);
-			if (!this.contains(fne))
-			{
-				this.add(fne);
+				this.clear();
 			}
 
-			reader.moveToNext();
-		}
-		reader.close();
-
-		// check Cropped
-		if (maybeCropped)
-		{
-			if (this.size() > actCropedLength)
+			String sql = "select CacheId, GcCode, Name, CacheType, Timestamp, Type, FoundNumber, Comment, Id, Url, Uploaded, gc_Vote, TbFieldNote, TbName, TbIconUrl, TravelBugCode, TrackingNumber, directLog from FieldNotes";
+			if (!where.equals(""))
 			{
-				cropedList = true;
-				// remove last item
-				this.remove(this.size() - 1);
+				sql += " where " + where;
+			}
+			if (order == "")
+			{
+				sql += " order by FoundNumber DESC, Timestamp DESC";
 			}
 			else
 			{
-				cropedList = false;
+				sql += " order by " + order;
+			}
+
+			// SQLite Limit ?
+			boolean maybeCropped = !CB_Core_Settings.FieldNotesLoadAll.getValue() && loadingType != LoadingType.Loadall;
+
+			if (maybeCropped)
+			{
+				switch (loadingType)
+				{
+				case Loadall:
+					// do nothing
+					break;
+				case LoadNew:
+					actCropedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
+					sql += " LIMIT " + String.valueOf(actCropedLength + 1);
+					break;
+				case loadNewLastLength:
+					if (actCropedLength == -1) actCropedLength = CB_Core_Settings.FieldNotesLoadLength.getValue();
+					sql += " LIMIT " + String.valueOf(actCropedLength + 1);
+					break;
+				case loadMore:
+					int Offset = actCropedLength;
+					actCropedLength += CB_Core_Settings.FieldNotesLoadLength.getValue();
+					sql += " LIMIT " + String.valueOf(CB_Core_Settings.FieldNotesLoadLength.getValue() + 1);
+					sql += " OFFSET " + String.valueOf(Offset);
+				}
+			}
+
+			CoreCursor reader = null;
+			try
+			{
+				reader = Database.FieldNotes.rawQuery(sql, null);
+			}
+			catch (Exception exc)
+			{
+				Logger.Error("FieldNoteList", "LoadFieldNotes", exc);
+			}
+			reader.moveToFirst();
+			while (reader.isAfterLast() == false)
+			{
+				FieldNoteEntry fne = new FieldNoteEntry(reader);
+				if (!this.contains(fne))
+				{
+					this.add(fne);
+				}
+
+				reader.moveToNext();
+			}
+			reader.close();
+
+			// check Cropped
+			if (maybeCropped)
+			{
+				if (this.size() > actCropedLength)
+				{
+					cropedList = true;
+					// remove last item
+					this.remove(this.size() - 1);
+				}
+				else
+				{
+					cropedList = false;
+				}
 			}
 		}
-
 	}
 
 	/**
@@ -161,8 +168,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 
 			for (FieldNoteEntry fieldNote : lFieldNotes)
 			{
-				String log = fieldNote.gcCode + "," + fieldNote.GetDateTimeString() + "," + fieldNote.type.toString() + ",\""
-						+ fieldNote.comment + "\"\n";
+				String log = fieldNote.gcCode + "," + fieldNote.GetDateTimeString() + "," + fieldNote.type.toString() + ",\"" + fieldNote.comment + "\"\n";
 				writer.write(log + "\n");
 
 			}
@@ -179,44 +185,50 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 
 	public void DeleteFieldNoteByCacheId(long cacheId, LogTypes type)
 	{
-		int foundNumber = 0;
-		FieldNoteEntry fne = null;
-		// löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
-		for (FieldNoteEntry fn : this)
+		synchronized (this)
 		{
-			if ((fn.CacheId == cacheId) && (fn.type == type))
+			int foundNumber = 0;
+			FieldNoteEntry fne = null;
+			// löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
+			for (FieldNoteEntry fn : this)
 			{
-				fne = fn;
+				if ((fn.CacheId == cacheId) && (fn.type == type))
+				{
+					fne = fn;
+				}
 			}
+			if (fne != null)
+			{
+				if (fne.type == LogTypes.found) foundNumber = fne.foundNumber;
+				this.remove(fne);
+				fne.DeleteFromDatabase();
+			}
+			decreaseFoundNumber(foundNumber);
 		}
-		if (fne != null)
-		{
-			if (fne.type == LogTypes.found) foundNumber = fne.foundNumber;
-			this.remove(fne);
-			fne.DeleteFromDatabase();
-		}
-		decreaseFoundNumber(foundNumber);
 	}
 
 	public void DeleteFieldNote(long id, LogTypes type)
 	{
-		int foundNumber = 0;
-		FieldNoteEntry fne = null;
-		// löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
-		for (FieldNoteEntry fn : this)
+		synchronized (this)
 		{
-			if (fn.Id == id)
+			int foundNumber = 0;
+			FieldNoteEntry fne = null;
+			// löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
+			for (FieldNoteEntry fn : this)
 			{
-				fne = fn;
+				if (fn.Id == id)
+				{
+					fne = fn;
+				}
 			}
+			if (fne != null)
+			{
+				if (fne.type == LogTypes.found) foundNumber = fne.foundNumber;
+				this.remove(fne);
+				fne.DeleteFromDatabase();
+			}
+			decreaseFoundNumber(foundNumber);
 		}
-		if (fne != null)
-		{
-			if (fne.type == LogTypes.found) foundNumber = fne.foundNumber;
-			this.remove(fne);
-			fne.DeleteFromDatabase();
-		}
-		decreaseFoundNumber(foundNumber);
 	}
 
 	public void decreaseFoundNumber(int deletedFoundNumber)
@@ -242,10 +254,13 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 
 	public boolean contains(FieldNoteEntry fne)
 	{
-		for (FieldNoteEntry item : this)
+		synchronized (this)
 		{
-			if (fne.equals(item)) return true;
+			for (FieldNoteEntry item : this)
+			{
+				if (fne.equals(item)) return true;
+			}
+			return false;
 		}
-		return false;
 	}
 }

@@ -429,8 +429,7 @@ public abstract class GL_View_Base extends CB_RectF
 			if (intersectRec == null || intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0) return; // hier gibt es nichts
 																														// zu rendern
 			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
-					(int) intersectRec.getHeight() + 1);
+			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1, (int) intersectRec.getHeight() + 1);
 		}
 
 		float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
@@ -508,22 +507,31 @@ public abstract class GL_View_Base extends CB_RectF
 					GL_View_Base view = childs.get(i);
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
-					if (view != null && view.isVisible() && !view.isDisposed())
+					if (view != null && !view.isDisposed() && view.isVisible())
 					{
+						synchronized (view)
+						{
+							if (childsInvalidate) view.invalidate();
 
-						if (childsInvalidate) view.invalidate();
+							myInfoForChild.setParentInfo(myParentInfo);
+							myInfoForChild.setWorldDrawRec(intersectRec);
 
-						myInfoForChild.setParentInfo(myParentInfo);
-						myInfoForChild.setWorldDrawRec(intersectRec);
+							myInfoForChild.add(view.getX(), view.getY());
 
-						myInfoForChild.add(view.getX(), view.getY());
+							batch.setProjectionMatrix(myInfoForChild.Matrix());
+							nDepthCounter++;
 
-						batch.setProjectionMatrix(myInfoForChild.Matrix());
-						nDepthCounter++;
-
-						view.renderChilds(batch, myInfoForChild);
-						nDepthCounter--;
-						// batch.setProjectionMatrix(myParentInfo.Matrix());
+							view.renderChilds(batch, myInfoForChild);
+							nDepthCounter--;
+						}
+					}
+					else
+					{
+						if (view.isDisposed())
+						{
+							// Remove disposedView from child list
+							this.removeChild(view);
+						}
 					}
 
 				}
