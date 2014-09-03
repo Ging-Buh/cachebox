@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Activitys;
 
 import java.util.Date;
@@ -265,65 +280,62 @@ public class TB_Log extends ActivityBase
 			public void run()
 			{
 				GroundspeakAPI.LastAPIError = "";
-				int result = GroundspeakAPI.createTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(),
-						edit.getText());
+				int result = GroundspeakAPI.createTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText());
 
 				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 				{
 					GL.that.Toast(ConnectionError.INSTANCE);
 					if (wd != null) wd.close();
-					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"),
-							MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					{
+
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							switch (which)
 							{
+							case GL_MsgBox.BUTTON_NEGATIVE:
+								logOnline();
+								return true;
 
-								@Override
-								public boolean onClick(int which, Object data)
-								{
-									switch (which)
-									{
-									case GL_MsgBox.BUTTON_NEGATIVE:
-										logOnline();
-										return true;
+							case GL_MsgBox.BUTTON_NEUTRAL:
+								return true;
 
-									case GL_MsgBox.BUTTON_NEUTRAL:
-										return true;
-
-									case GL_MsgBox.BUTTON_POSITIVE:
-										createFieldNote();
-										return true;
-									}
-									return true;
-								}
-							});
+							case GL_MsgBox.BUTTON_POSITIVE:
+								createFieldNote();
+								return true;
+							}
+							return true;
+						}
+					});
 					return;
 				}
 				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
 				{
 					GL.that.Toast(ApiUnavailable.INSTANCE);
 					if (wd != null) wd.close();
-					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"),
-							MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					{
+
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							switch (which)
 							{
+							case GL_MsgBox.BUTTON_NEGATIVE:
+								logOnline();
+								return true;
 
-								@Override
-								public boolean onClick(int which, Object data)
-								{
-									switch (which)
-									{
-									case GL_MsgBox.BUTTON_NEGATIVE:
-										logOnline();
-										return true;
+							case GL_MsgBox.BUTTON_NEUTRAL:
+								return true;
 
-									case GL_MsgBox.BUTTON_NEUTRAL:
-										return true;
-
-									case GL_MsgBox.BUTTON_POSITIVE:
-										createFieldNote();
-										return true;
-									}
-									return true;
-								}
-							});
+							case GL_MsgBox.BUTTON_POSITIVE:
+								createFieldNote();
+								return true;
+							}
+							return true;
+						}
+					});
 					return;
 				}
 
@@ -390,8 +402,7 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache()
-				.getGcCode() : "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getGcCode() : "";
 	}
 
 	private String getCache_Name()
@@ -399,8 +410,7 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName()
-				: "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getName() : "";
 	}
 
 	private long getCache_ID()
@@ -416,8 +426,7 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getUrl()
-				: "";
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().getUrl() : "";
 	}
 
 	private int getCache_Type()
@@ -425,8 +434,7 @@ public class TB_Log extends ActivityBase
 		/**
 		 * Muss je nach LogType leer oder gefüllt sein
 		 */
-		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Type
-				.ordinal() : -1;
+		return (LT == LogTypes.dropped_off || LT == LogTypes.visited || LT == LogTypes.retrieve) ? GlobalCore.getSelectedCache().Type.ordinal() : -1;
 	}
 
 	@Override

@@ -280,7 +280,7 @@ public class CB_RectF
 
 	public boolean equals(CB_RectF rec)
 	{
-		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! false; // isDisposed!
+		if (member == null || rec.member == null) return false; // any is disposed!
 
 		// Compare only x,y,width and height
 		if (this.member[0] != rec.member[0]) return false;
