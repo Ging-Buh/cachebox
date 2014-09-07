@@ -178,8 +178,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		mapTileLoader.setMaxNumTiles(maxNumTiles);
 
-		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.getHalfWidth(),
-				GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
+		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.getHalfWidth(), GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
 
 		if (!CompassMode)
 		{
@@ -205,8 +204,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				lastDynamicZoom = zoomBtn.getZoom();
 
-				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
-						System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce();
 				calcPixelsPerMeter();
@@ -224,8 +222,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				lastDynamicZoom = zoomBtn.getZoom();
 
-				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()),
-						System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(zoomBtn.getZoom()), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce();
 				calcPixelsPerMeter();
@@ -253,8 +250,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		CB_RectF ZoomScaleRec = new CB_RectF();
-		ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.DPI),
-				this.getHeight() - InfoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+		ZoomScaleRec.setSize((float) (44.6666667 * GL_UISizes.DPI), this.getHeight() - InfoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 		ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
 
 		zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
@@ -286,8 +282,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		String currentOverlayLayerName = Config.CurrentMapOverlayLayer.getValue();
 		if (ManagerBase.Manager != null)
 		{
-			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName.length() > 0) mapTileLoader
-					.setOverlayLayer(ManagerBase.Manager.GetLayerByName(currentOverlayLayerName, currentOverlayLayerName, ""));
+			if (mapTileLoader.getCurrentOverlayLayer() == null && currentOverlayLayerName.length() > 0) mapTileLoader.setOverlayLayer(ManagerBase.Manager.GetLayerByName(currentOverlayLayerName, currentOverlayLayerName, ""));
 		}
 
 		iconFactor = Config.MapViewDPIFaktor.getValue();
@@ -396,8 +391,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 							try
 							{
-								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
-										infoBubble.getCache().GPXFilename_ID);
+								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().GPXFilename_ID);
 								GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 							}
 							catch (InterruptedException e)
@@ -485,7 +479,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	}
 
-	protected void renderOverlay(Batch batch)
+	protected void renderSyncronOverlay(Batch batch)
 	{
 		batch.setProjectionMatrix(myParentInfo.Matrix());
 
@@ -498,7 +492,10 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
 		renderPositionMarker(batch);
 		RenderTargetArrow(batch);
+	}
 
+	protected void renderNonSyncronOverlay(Batch batch)
+	{
 		renderUI(batch);
 	}
 
@@ -539,9 +536,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				CrossLines.draw(batch, 0, 0, mapIntWidth, mapIntHeight, 0);
 			}
 		}
-
-		// renderDebugInfo(batch);
-
 	}
 
 	CB_RectF TargetArrowScreenRec;
@@ -551,8 +545,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if (GlobalCore.getSelectedCache() == null) return;
 
-		Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
-				.getSelectedCache().Pos;
+		Coordinate coord = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().Pos;
 
 		if (coord == null)
 		{
@@ -572,8 +565,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			if (!CompassMode)
 			{
 				TargetArrowScreenRec.ScaleCenter(0.9f);
-				TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY())
-						- zoomBtn.getHeight());
+				TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
 				TargetArrowScreenRec.setY(zoomBtn.getMaxY());
 			}
 
@@ -614,21 +606,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				float maxY = Math.max(Math.max(t[1], t[6]), Math.max(t[11], t[16]));
 				float minY = Math.min(Math.min(t[1], t[6]), Math.min(t[11], t[16]));
 				TargetArrow.set(minX, minY, maxX - minX, maxY - minY);
-
-				// {// DEBUG
-				//
-				// Pixmap debugRegPixmap = new Pixmap((int) TargetArrow.getWidth(), (int) TargetArrow.getHeight(), Pixmap.Format.RGBA8888);
-				// debugRegPixmap.setColor(1f, 0f, 0f, 1f);
-				// debugRegPixmap.drawRectangle(1, 1, (int) TargetArrow.getWidth() - 1, (int) TargetArrow.getHeight() - 1);
-				//
-				// Texture debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
-				//
-				// Sprite DebugSprite = new Sprite(debugRegTexture, (int) TargetArrow.getWidth(), (int) TargetArrow.getHeight());
-				//
-				// DebugSprite.setBounds(TargetArrow.getX(), TargetArrow.getY(), TargetArrow.getWidth(), TargetArrow.getHeight());
-				// DebugSprite.draw(batch);
-				// }
-
 			}
 			else
 			{
@@ -716,8 +693,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		if (wpi.UnderlayIcon != null)
 		{
-			wpi.UnderlayIcon.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width,
-					WpUnderlay.height);
+			wpi.UnderlayIcon.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
 			wpi.UnderlayIcon.draw(batch);
 		}
 		if (wpi.Icon != null)
@@ -729,14 +705,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		// draw Favorite symbol
 		if (wpi.Cache.isFavorite())
 		{
-			batch.draw(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()), screen.x + (WpSize.halfWidth / 2), screen.y
-					+ (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
+			batch.draw(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
 		}
 
 		if (wpi.OverlayIcon != null)
 		{
-			wpi.OverlayIcon.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width,
-					WpUnderlay.height);
+			wpi.OverlayIcon.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight, WpUnderlay.width, WpUnderlay.height);
 			wpi.OverlayIcon.draw(batch);
 		}
 
@@ -746,8 +720,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		if (showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (aktZoom >= 15))
 		{
 			Sprite rating = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
-			rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8, WpUnderlay.width,
-					WpUnderlay.Height4_8);
+			rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8, WpUnderlay.width, WpUnderlay.Height4_8);
 			rating.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			rating.setRotation(0);
 			rating.draw(batch);
@@ -773,15 +746,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		if (showDT && (!drawAsWaypoint) && (aktZoom >= 15))
 		{
 			Sprite difficulty = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
-			difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2),
-					WpUnderlay.width, WpUnderlay.Height4_8);
+			difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 			difficulty.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			difficulty.setRotation(90);
 			difficulty.draw(batch);
 
 			Sprite terrain = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getTerrain() * 2, 5 * 2));
-			terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width,
-					WpUnderlay.Height4_8);
+			terrain.setBounds(screen.x + GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
 			terrain.setOrigin(WpUnderlay.width / 2, WpUnderlay.Height4_8 / 2);
 			terrain.setRotation(90);
 			terrain.draw(batch);
@@ -823,8 +794,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		 */
 
 		// mapCacheList = new MapViewCacheList(MAX_MAP_ZOOM);
-		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
-				mapIntWidth, mapIntHeight)), aktZoom, true);
+		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 		data.hideMyFinds = this.hideMyFinds;
 		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
@@ -841,8 +811,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		try
 		{
-			CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude())
-					: new CoordinateGPS(cache.Pos.getLatitude(), cache.Pos.getLongitude());
+			CoordinateGPS target = (waypoint != null) ? new CoordinateGPS(waypoint.Pos.getLatitude(), waypoint.Pos.getLongitude()) : new CoordinateGPS(cache.Pos.getLatitude(), cache.Pos.getLongitude());
 			setCenter(target);
 		}
 		catch (Exception e)
@@ -915,8 +884,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					zoomBtn.setZoom((int) lastDynamicZoom);
 					inputState = InputState.Idle;
 
-					kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(lastDynamicZoom),
-							System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
+					kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
 					GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 					GL.that.renderOnce();
@@ -942,8 +910,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		Coordinate coord = center;
 		if ((coord == null) || (!coord.isValid())) coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.isValid())) return;
-		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
-				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
 
 		EditWaypoint EdWp = new EditWaypoint(newWP, new ReturnListner()
 		{
@@ -1001,8 +968,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	protected void loadTiles()
 	{
-		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
-				mapIntWidth, mapIntHeight)), aktZoom, false);
+		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, false);
 		data.hideMyFinds = this.hideMyFinds;
 		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
@@ -1037,10 +1003,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			{
 				Coordinate position = Locator.getCoordinate();
 
-				if (GlobalCore.getSelectedCache() != null)
+				if (GlobalCore.ifCacheSelected())
 				{
-					Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore
-							.getSelectedCache().Pos;
+					Coordinate dest = (GlobalCore.getSelectedWaypoint() != null) ? GlobalCore.getSelectedWaypoint().Pos : GlobalCore.getSelectedCache().Pos;
 
 					if (dest == null) return;
 
@@ -1048,8 +1013,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 					float result[] = new float[2];
 
-					MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(),
-							dest.getLatitude(), dest.getLongitude(), result);
+					MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
 
 					float bearing = result[1];
 
@@ -1112,8 +1076,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		liveButton.setRec(togBtn);
 		liveButton.setY(togBtn.getY() - margin - liveButton.getHeight());
 
-		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI),
-				this.getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
+		zoomScale.setSize((float) (44.6666667 * GL_UISizes.DPI), this.getHeight() - infoHeight - (GL_UISizes.margin * 4) - zoomBtn.getMaxY());
 
 		GL.that.renderOnce();
 	}
@@ -1130,9 +1093,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 			if (TargetArrow != null && TargetArrow.contains(x, y))
 			{
-				if (GlobalCore.getSelectedCache() != null)
+				if (GlobalCore.ifCacheSelected())
 				{
-					if (GlobalCore.getSelectedCache() != null)
+					if (GlobalCore.ifCacheSelected())
 					{
 						if (GlobalCore.getSelectedWaypoint() != null)
 						{
@@ -1201,8 +1164,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							GlobalCore.setSelectedWaypoint(minWpi.Cache, minWpi.Waypoint);
 							// FormMain.WaypointListPanel.AlignSelected();
 							// updateCacheList();
-							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
-									screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 							data.hideMyFinds = MapView.this.hideMyFinds;
 							data.showAllWaypoints = MapView.this.showAllWaypoints;
 							mapCacheList.update(data);
@@ -1305,12 +1267,18 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			position = Locator.getCoordinate();
 
 			float distance = -1;
-			if (GlobalCore.getSelectedCache() != null && position.isValid())
+			if (GlobalCore.ifCacheSelected() && position.isValid())
 			{
-				if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos,
-						CalculationType.ACCURATE);
-				else
-					distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos, CalculationType.ACCURATE);
+				try
+				{
+					if (GlobalCore.getSelectedWaypoint() == null) distance = position.Distance(GlobalCore.getSelectedCache().Pos, CalculationType.ACCURATE);
+					else
+						distance = position.Distance(GlobalCore.getSelectedWaypoint().Pos, CalculationType.ACCURATE);
+				}
+				catch (Exception e)
+				{
+					distance = 10;
+				}
 			}
 			int setZoomTo = zoomBtn.getMinZoom();
 
@@ -1332,8 +1300,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				zoomBtn.setZoom(setZoomTo);
 				inputState = InputState.Idle;
 
-				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(),
-						System.currentTimeMillis() + ZoomTime);
+				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(setZoomTo), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
 				GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 				GL.that.renderOnce();
@@ -1362,8 +1329,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	protected void SkinIsChanged()
 	{
 		super.SkinIsChanged();
-		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(
-				mapIntWidth, mapIntHeight)), aktZoom, true);
+		MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 		data.hideMyFinds = this.hideMyFinds;
 		data.showAllWaypoints = this.showAllWaypoints;
 		mapCacheList.update(data);
@@ -1548,8 +1514,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		{
 			if (mapCacheList != null)
 			{
-				MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)),
-						screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
+				MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(screenToWorld(new Vector2(0, 0)), screenToWorld(new Vector2(mapIntWidth, mapIntHeight)), aktZoom, true);
 				data.hideMyFinds = this.hideMyFinds;
 				data.showAllWaypoints = this.showAllWaypoints;
 				mapCacheList.update(data);
@@ -1632,8 +1597,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 						{
 							// Koordinaten des ersten Caches der Datenbank
 							// nehmen
-							setCenter(new CoordinateGPS(Database.Data.Query.get(0).Pos.getLatitude(),
-									Database.Data.Query.get(0).Pos.getLongitude()));
+							setCenter(new CoordinateGPS(Database.Data.Query.get(0).Pos.getLatitude(), Database.Data.Query.get(0).Pos.getLongitude()));
 							positionInitialized = true;
 							// setLockPosition(0);
 						}
@@ -1665,7 +1629,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	@Override
 	public void MapStateChangedToWP()
 	{
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			if (GlobalCore.getSelectedWaypoint() != null)
 			{

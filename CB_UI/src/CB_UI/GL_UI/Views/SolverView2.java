@@ -143,7 +143,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		// platformConector.hideView(ViewConst.SOLVER_VIEW);
 		// CachListChangedEventList.Add(this);
 		SelectedCacheEventList.Remove(this);
-		if (GlobalCore.getSelectedCache() != null) Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+		if (GlobalCore.ifCacheSelected()) Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 	}
 
 	@Override

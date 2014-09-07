@@ -100,7 +100,7 @@ public class InfoBubble extends CB_View_Base
 	protected void render(Batch batch)
 	{
 		boolean selectedCache = false;
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			selectedCache = mCache.Id == GlobalCore.getSelectedCache().Id;
 		}

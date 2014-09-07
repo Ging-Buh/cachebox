@@ -79,7 +79,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				{
 					if (PlaySounds && !approachSoundCompleted)
 					{
-						if (GlobalCore.getSelectedCache() != null)
+						if (GlobalCore.ifCacheSelected())
 						{
 							float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 							if (GlobalCore.getSelectedWaypoint() != null)
@@ -110,8 +110,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 						{
 							synchronized (Database.Data.Query)
 							{
-								CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(),
-										new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+								CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
 								if (ret != null && ret.getCache() != null)
 								{
@@ -128,8 +127,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				}
 				catch (Exception e)
 				{
-					Logger.Error("GlobalLocationReceiver",
-							"if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
+					Logger.Error("GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
 					e.printStackTrace();
 				}
 
@@ -184,8 +182,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 								}
 								if (resort || z == 0)
 								{
-									CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(),
-											new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+									CacheWithWP ret = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
 									GlobalCore.setSelectedWaypoint(ret.getCache(), ret.getWaypoint(), false);
 									GlobalCore.setNearestCache(ret.getCache());
@@ -221,8 +218,22 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 
 	public static void resetApprouch()
 	{
-		approachSoundCompleted = false;
-		GlobalCore.switchToCompassCompleted = false;
+
+		// set approach sound if the distance low
+
+		if (GlobalCore.ifCacheSelected())
+		{
+			float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
+			boolean value = distance < CB_UI_Settings.SoundApproachDistance.getValue();
+			approachSoundCompleted = value;
+			GlobalCore.switchToCompassCompleted = value;
+		}
+		else
+		{
+			approachSoundCompleted = true;
+			GlobalCore.switchToCompassCompleted = true;
+		}
+
 	}
 
 	@Override

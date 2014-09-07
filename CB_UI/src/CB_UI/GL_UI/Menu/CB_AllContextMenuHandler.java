@@ -208,7 +208,7 @@ public class CB_AllContextMenuHandler
 				return true;
 
 			case MenuID.MI_FAVORIT:
-				if (GlobalCore.getSelectedCache() != null)
+				if (GlobalCore.ifCacheSelected())
 				{
 					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
 					if (dao == null) dao = new CacheDAO();

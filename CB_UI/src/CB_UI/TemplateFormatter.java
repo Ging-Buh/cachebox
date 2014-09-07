@@ -30,7 +30,7 @@ public class TemplateFormatter
 		template = template.replace("<br>", "\n");
 		template = template.replace("##date##", sdate);
 		template = template.replace("##time##", stime);
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			template = template.replace("##owner##", GlobalCore.getSelectedCache().getOwner());
 		}

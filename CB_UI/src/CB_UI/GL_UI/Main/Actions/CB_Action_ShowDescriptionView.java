@@ -47,8 +47,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 	@Override
 	public void Execute()
 	{
-		if ((TabMainView.descriptionView == null) && (tabMainView != null) && (tab != null)) TabMainView.descriptionView = new DescriptionView(
-				tab.getContentRec(), "DescriptionView");
+		if ((TabMainView.descriptionView == null) && (tabMainView != null) && (tab != null)) TabMainView.descriptionView = new DescriptionView(tab.getContentRec(), "DescriptionView");
 
 		if ((TabMainView.descriptionView != null) && (tab != null)) tab.ShowView(TabMainView.descriptionView);
 	}
@@ -104,8 +103,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 					dao.UpdateDatabase(GlobalCore.getSelectedCache());
 
 					// Update Query
-					Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(
-							GlobalCore.getSelectedCache().isFavorite());
+					Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
 
 					// Update View
 					if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
@@ -126,7 +124,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 
 		MenuItem mi;
 
-		boolean isSelected = (GlobalCore.getSelectedCache() != null);
+		boolean isSelected = (GlobalCore.ifCacheSelected());
 
 		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
 		mi.setCheckable(true);
@@ -180,8 +178,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
-						GlobalCore.getSelectedCache().GPXFilename_ID);
+				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID);
 
 				try
 				{

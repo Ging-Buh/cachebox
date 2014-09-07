@@ -433,6 +433,8 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (myParentInfo == null) return;
 
+		if (this.isDisposed) return;
+
 		if (thisInvalidate)
 		{
 			myParentInfo.setParentInfo(parentInfo);
@@ -492,7 +494,21 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.setTransformMatrix(rotateMatrix);
 		}
 
-		this.render(batch);
+		try
+		{
+			this.render(batch);
+		}
+		catch (IllegalStateException e)
+		{
+			e.printStackTrace();
+			// reset Colorfilter ?
+			if (ColorFilterSeted)
+			{
+				// alte abgespeicherte Farbe des Batches wieder herstellen!
+				batch.setColor(R, G, B, A);
+			}
+			return;
+		}
 
 		// reverse rotation
 		if (isRotated)
@@ -586,7 +602,6 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			// alte abgespeicherte Farbe des Batches wieder herstellen!
 			batch.setColor(R, G, B, A);
-
 		}
 
 	}

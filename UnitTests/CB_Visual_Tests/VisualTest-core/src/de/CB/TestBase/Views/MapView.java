@@ -272,7 +272,7 @@ public class MapView extends MapViewBase
 	}
 
 	@Override
-	protected void renderOverlay(Batch arg0)
+	protected void renderSyncronOverlay(Batch arg0)
 	{
 		// TODO Auto-generated method stub
 
@@ -298,6 +298,12 @@ public class MapView extends MapViewBase
 
 		mapTileLoader.clearLoadedTiles();
 
+	}
+
+	@Override
+	protected void renderNonSyncronOverlay(Batch batch) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

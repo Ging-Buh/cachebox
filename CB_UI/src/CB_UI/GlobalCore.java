@@ -58,7 +58,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2268;
+	public static final int CurrentRevision = 2269;
 
 	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
@@ -337,7 +337,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 		CacheList List = Database.Data.Query;
 
 		// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
-		if ((List.size() > 0) && (GlobalCore.getSelectedCache() != null) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null))
+		if ((List.size() > 0) && (GlobalCore.ifCacheSelected()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null))
 		{
 			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
 			Logger.DEBUG("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
@@ -503,6 +503,20 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	public Waypoint sciGetSelectedWaypoint()
 	{
 		return getSelectedWaypoint();
+	}
+
+	/**
+	 * Returns true, if a Cache selected and this Cache object is valid.
+	 * 
+	 * @return
+	 */
+	public static boolean ifCacheSelected()
+	{
+		if (getSelectedCache() == null) return false;
+
+		if (getSelectedCache().getGcCode().length() == 0) return false;
+
+		return true;
 	}
 
 }

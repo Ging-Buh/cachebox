@@ -875,7 +875,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			e.printStackTrace();
 		}
 
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 			if (GlobalCore.getSelectedWaypoint() != null)

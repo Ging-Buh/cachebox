@@ -40,7 +40,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 	public boolean getEnabled()
 	{
 		boolean hasSpoiler = false;
-		if (GlobalCore.getSelectedCache() != null) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
+		if (GlobalCore.ifCacheSelected()) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
 		return hasSpoiler;
 	}
 
@@ -51,7 +51,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 	public Sprite getIcon()
 	{
 		boolean hasSpoiler = false;
-		if (GlobalCore.getSelectedCache() != null) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
+		if (GlobalCore.ifCacheSelected()) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
 
 		if (hasSpoiler && spoilerState != 1)
 		{
@@ -107,7 +107,7 @@ public class CB_Action_ShowSpoilerView extends CB_Action_ShowView
 					public void isReady()
 					{
 						// erst die Lokalen Images für den Cache neu laden
-						if (GlobalCore.getSelectedCache() != null)
+						if (GlobalCore.ifCacheSelected())
 						{
 							GlobalCore.getSelectedCache().ReloadSpoilerRessources();
 							Execute();

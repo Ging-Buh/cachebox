@@ -1302,30 +1302,30 @@ public class GL implements ApplicationListener, InputProcessor
 				@Override
 				public void run()
 				{
-					Point pan = kineticPan.getAktPan();
-					// Logger.LogCat("KinteicPan: " + pan.x + " - " + pan.y);
-
-					try
+					if (kineticPan != null)
 					{
-						if (kineticPan.fertig)
+						Point pan = kineticPan.getAktPan();
+						try
 						{
-							// Logger.LogCat("KineticPan fertig");
-							view.touchUp(x - pan.x, y - pan.y, pointer, 0);
+							if (kineticPan.fertig)
+							{
+								// Logger.LogCat("KineticPan fertig");
+								view.touchUp(x - pan.x, y - pan.y, pointer, 0);
+								touchDownPos.remove(pointer);
+								kineticPan = null;
+								this.cancel();
+								timer = null;
+							}
+						}
+						catch (Exception e)
+						{
 							touchDownPos.remove(pointer);
 							kineticPan = null;
 							this.cancel();
 							timer = null;
 						}
+						view.touchDragged(x - pan.x, y - pan.y, pointer, true);
 					}
-					catch (Exception e)
-					{
-						touchDownPos.remove(pointer);
-						kineticPan = null;
-						this.cancel();
-						timer = null;
-					}
-
-					view.touchDragged(x - pan.x, y - pan.y, pointer, true);
 				}
 			}, 0, FRAME_RATE_FAST_ACTION);
 		}
@@ -1764,11 +1764,12 @@ public class GL implements ApplicationListener, InputProcessor
 				@Override
 				public void run()
 				{
+					if (dialog.isDisposed()) return;
 					if (dialog.equals(mDialog)) throw new IllegalStateException("mDialog can't disposed");
 					if (dialog != null) dialog.dispose();
 				}
 			};
-			timer.schedule(task, 500);
+			timer.schedule(task, 200);
 		}
 
 		if (MsgToPlatformConector) platformConector.hideForDialog();

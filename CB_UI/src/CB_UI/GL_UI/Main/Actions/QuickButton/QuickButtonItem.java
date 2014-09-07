@@ -146,7 +146,7 @@ public class QuickButtonItem extends ListViewItemBase
 		else if (mAction.getId() == MenuID.AID_SHOW_SPOILER)
 		{
 			boolean hasSpoiler = false;
-			if (GlobalCore.getSelectedCache() != null) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
+			if (GlobalCore.ifCacheSelected()) hasSpoiler = GlobalCore.getSelectedCache().SpoilerExists();
 
 			if (hasSpoiler && spoilerState != 1)
 			{

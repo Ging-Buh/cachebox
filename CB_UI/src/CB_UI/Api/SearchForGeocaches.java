@@ -27,7 +27,7 @@ public class SearchForGeocaches extends SearchForGeocaches_Core
 		// Spoiler aktualisieren
 		// wenn der aktuelle Cache über diese API aktualisiert wird dann müssen hier dessen Spoiler erneut geladen werden
 		// damit die Anzeige in der Description und SpoilerView aktualisiert wird
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			if (GlobalCore.getSelectedCache().getGcCode().equals(cache.getGcCode()))
 			{

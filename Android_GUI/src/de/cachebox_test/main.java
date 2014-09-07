@@ -353,8 +353,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.ui.Window.width);
 		savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
 
-		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache()
-				.getGcCode());
+		if (GlobalCore.ifCacheSelected()) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGcCode());
 		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWaypoint()
 				.getGcCode());
 
@@ -916,7 +915,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					@Override
 					public void run()
 					{
-						if (GlobalCore.getSelectedCache() != null) GlobalCore.getSelectedCache().ReloadSpoilerRessources();
+						if (GlobalCore.ifCacheSelected()) GlobalCore.getSelectedCache().ReloadSpoilerRessources();
 						String MediaFolder = Config.UserImageFolder.getValue();
 						String TrackFolder = Config.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
@@ -1844,7 +1843,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		basename = Global.GetDateTimeString();
 
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
 					+ GlobalCore.getSelectedCache().getName());
@@ -1879,7 +1878,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		basename = Global.GetDateTimeString();
 
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
 					+ GlobalCore.getSelectedCache().getName());
@@ -1928,7 +1927,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			basename = Global.GetDateTimeString();
 
-			if (GlobalCore.getSelectedCache() != null)
+			if (GlobalCore.ifCacheSelected())
 			{
 				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
 						+ GlobalCore.getSelectedCache().getName());
@@ -2095,7 +2094,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void NavigateTo()
 	{
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			double lat = GlobalCore.getSelectedCache().Latitude();
 			double lon = GlobalCore.getSelectedCache().Pos.getLongitude();
@@ -3128,7 +3127,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void Quit()
 			{
-				if (GlobalCore.getSelectedCache() != null)
+				if (GlobalCore.ifCacheSelected())
 				{
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
