@@ -19,6 +19,7 @@ import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -29,6 +30,7 @@ import CB_UI_Base.GL_UI.Controls.ScrollBox;
 import CB_UI_Base.GL_UI.Controls.Spinner;
 import CB_UI_Base.GL_UI.Controls.Spinner.selectionChangedListner;
 import CB_UI_Base.GL_UI.Controls.SpinnerAdapter;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -275,7 +277,16 @@ public class EditCache extends ActivityBase
 
 				// Delete LongDescription from this Cache! LongDescription is Loading by showing DescriptionView direct from DB
 				cache.setLongDescription("");
-				finish();
+				GL.that.RunOnGL(new IRunOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						finish();
+					}
+				});
+
 				return true;
 			}
 		});

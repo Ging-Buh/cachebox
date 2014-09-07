@@ -51,7 +51,7 @@ public class CB_List<T> implements Serializable
 	{
 		size = array.size;
 		items = this.createNewItems(size);
-		System.arraycopy(array.items, 0, items, 0, size);
+		if (array.size > 0) System.arraycopy(array.items, 0, items, 0, size);
 	}
 
 	public CB_List(T[] values)
@@ -83,7 +83,17 @@ public class CB_List<T> implements Serializable
 
 	public int add(T value)
 	{
-		if (size == getItemLength()) resize(size + (size >> 1));
+		if (size == getItemLength())
+		{
+			if (size == 0)
+			{
+				resize(INITIAL_SIZE);
+			}
+			else
+			{
+				resize(size + (size >> 1));
+			}
+		}
 		int ID = size;
 		this.items[size++] = value;
 		return ID;
@@ -108,8 +118,7 @@ public class CB_List<T> implements Serializable
 
 	public void addAll(CB_List<T> array, int offset, int length)
 	{
-		if (offset + length > array.size) throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length
-				+ " <= " + array.size);
+		if (offset + length > array.size) throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		addAll(array.items, offset, length);
 	}
 
@@ -256,7 +265,14 @@ public class CB_List<T> implements Serializable
 	protected T[] resize(int newSize)
 	{
 		if (newSize < INITIAL_SIZE) newSize = INITIAL_SIZE;
-		this.items = Arrays.copyOf(this.items, newSize);
+		if (this.items == null)
+		{
+			this.items = createNewItems(newSize);
+		}
+		else
+		{
+			this.items = Arrays.copyOf(this.items, newSize);
+		}
 		return this.items;
 	}
 

@@ -88,6 +88,7 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.ILog;
@@ -838,14 +839,24 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void setSelectedCache_onUI(Cache cache, Waypoint waypoint)
 	{
-		((main) main.mainActivity).runOnUiThread(new Runnable()
+
+		float distance = cache.Distance(CalculationType.FAST, false);
+		if (waypoint != null)
 		{
-			@Override
-			public void run()
+			distance = GlobalCore.getSelectedWaypoint().Distance();
+		}
+		if (distance > Config.SoundApproachDistance.getValue())
+		{
+			((main) main.mainActivity).runOnUiThread(new Runnable()
 			{
-				GlobalCore.switchToCompassCompleted = false;
-			}
-		});
+				@Override
+				public void run()
+				{
+					GlobalCore.switchToCompassCompleted = false;
+				}
+			});
+		}
+
 	}
 
 	private CB_Locator.Location CB_location = new CB_Locator.Location(0, 0, 0);

@@ -332,7 +332,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			return;
 		}
 
-		if (this.mBaseAdapter == null || this.mBaseAdapter.getCount() == 0)
+		if (this.childs.size() == 0 && (this.mBaseAdapter == null || this.mBaseAdapter.getCount() == 0))
 		{
 			try
 			{
@@ -407,7 +407,14 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	@Override
 	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
-		super.renderChilds(batch, parentInfo);
+		try
+		{
+			super.renderChilds(batch, parentInfo);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 	}
 

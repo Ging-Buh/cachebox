@@ -111,32 +111,39 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 					break;
 				}
 
-				// balken höhe festlegen
-				if (balken[count] != null)
+				try
 				{
-					float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.getHeight(), this.getHeight());
+					// balken höhe festlegen
+					if (balken[count] != null)
+					{
+						float barHeight = Math.min((tmp.getStrength() * 3 / 100) * this.getHeight(), this.getHeight());
 
-					if (barHeight < minH)
-					{
-						barHeight = small ? SpriteCacheBase.barSmall.getTopHeight() : SpriteCacheBase.bar.getTopHeight();
-						balken[count].setDrawable(small ? SpriteCacheBase.barSmall_0 : SpriteCacheBase.bar_0);
-					}
-					else
-					{
-						balken[count].setDrawable(small ? SpriteCacheBase.barSmall : SpriteCacheBase.bar);
-					}
+						if (barHeight < minH)
+						{
+							barHeight = small ? SpriteCacheBase.barSmall.getTopHeight() : SpriteCacheBase.bar.getTopHeight();
+							balken[count].setDrawable(small ? SpriteCacheBase.barSmall_0 : SpriteCacheBase.bar_0);
+						}
+						else
+						{
+							balken[count].setDrawable(small ? SpriteCacheBase.barSmall : SpriteCacheBase.bar);
+						}
 
-					balken[count].setHeight(barHeight);
+						balken[count].setHeight(barHeight);
 
-					// // balken farbe festlegen
-					if (tmp.getFixed())
-					{
-						balken[count].setColor(grn);
+						// // balken farbe festlegen
+						if (tmp.getFixed())
+						{
+							balken[count].setColor(grn);
+						}
+						else
+						{
+							balken[count].setColor(red);
+						}
 					}
-					else
-					{
-						balken[count].setColor(red);
-					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
 				}
 
 				count++;
