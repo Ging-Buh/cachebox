@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -28,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import CB_Core.AbortableHttpRequestBase;
 import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.ImageDAO;
@@ -44,6 +46,8 @@ import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
 import CB_Utils.Plattform;
+import CB_Utils.Interfaces.ICancel;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
@@ -136,7 +140,7 @@ public class GroundspeakAPI
 	 */
 	public static boolean IsPremiumMember()
 	{
-		if (membershipType < 0) membershipType = GetMembershipType();
+		if (membershipType < 0) membershipType = GetMembershipType(null);
 		return membershipType == 3;
 	}
 
@@ -169,7 +173,7 @@ public class GroundspeakAPI
 	 * @param note
 	 * @return
 	 */
-	public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog)
+	public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog, final ICancel icancel)
 	{
 		int chk = chkMemperShip(true);
 		if (chk < 0) return chk;
@@ -201,7 +205,18 @@ public class GroundspeakAPI
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
-			String result = Execute(httppost);
+
+			AbortableHttpRequestBase req = new AbortableHttpRequestBase(httppost)
+			{
+				@Override
+				public boolean abort()
+				{
+					// TODO Auto-generated method stub
+					return false;
+				}
+			};
+
+			String result = Execute(httppost, icancel);
 
 			if (result.contains("The service is unavailable"))
 			{
@@ -275,7 +290,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int GetCachesFound()
+	public static int GetCachesFound(final ICancel icancel)
 	{
 
 		int chk = chkMemperShip(false);
@@ -297,7 +312,7 @@ public class GroundspeakAPI
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
-			String result = Execute(httppost);
+			String result = Execute(httppost, icancel);
 
 			if (result.contains("The service is unavailable"))
 			{
@@ -370,7 +385,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int GetMembershipType()
+	public static int GetMembershipType(final ICancel icancel)
 	{
 		if (API_isCheked) return membershipType;
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
@@ -389,7 +404,7 @@ public class GroundspeakAPI
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
-			String result = Execute(httppost);
+			String result = Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -480,7 +495,7 @@ public class GroundspeakAPI
 	 * @param caches
 	 * @return
 	 */
-	public static int GetGeocacheStatus(ArrayList<Cache> caches)
+	public static int GetGeocacheStatus(ArrayList<Cache> caches, final ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -517,7 +532,7 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
-			String result = Execute(httppost);
+			String result = Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -608,7 +623,7 @@ public class GroundspeakAPI
 	 * @param cache
 	 * @return
 	 */
-	public static int GetGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all)
+	public static int GetGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all, cancelRunnable cancelRun)
 	{
 		String finders = CB_Core_Settings.Friends.getValue();
 		String[] finder = finders.split("\\|");
@@ -635,7 +650,7 @@ public class GroundspeakAPI
 		int count = 100;
 
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
-		while (finderList.size() > 0 || all)
+		while (!cancelRun.cancel() && (finderList.size() > 0 || all))
 		// Schleife, solange bis entweder keine Logs mehr geladen werden oder bis alle Logs aller Finder geladen sind.
 		{
 			try
@@ -647,7 +662,7 @@ public class GroundspeakAPI
 				requestString += "&MaxPerPage=" + count;
 				HttpGet httppost = new HttpGet(URL + "GetGeocacheLogsByCacheCode?format=json" + requestString);
 
-				String result = Execute(httppost);
+				String result = Execute(httppost, cancelRun);
 				if (result.contains("The service is unavailable"))
 				{
 					return API_IS_UNAVAILABLE;
@@ -754,7 +769,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int GetCacheLimits()
+	public static int GetCacheLimits(ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -788,7 +803,7 @@ public class GroundspeakAPI
 				httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 				// Execute HTTP Post Request
-				String result = Execute(httppost);
+				String result = Execute(httppost, icancel);
 				if (result.contains("The service is unavailable"))
 				{
 					return API_IS_UNAVAILABLE;
@@ -960,7 +975,7 @@ public class GroundspeakAPI
 	 *            list
 	 * @return
 	 */
-	public static int getMyTbList(TbList list)
+	public static int getMyTbList(TbList list, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -981,7 +996,7 @@ public class GroundspeakAPI
 				httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 				// Execute HTTP Post Request
-				String result = Execute(httppost);
+				String result = Execute(httppost, icancel);
 
 				if (result.contains("The service is unavailable"))
 				{
@@ -1057,7 +1072,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int getTBbyTreckNumber(String TrackingCode, ByRef<Trackable> TB)
+	public static int getTBbyTreckNumber(String TrackingCode, ByRef<Trackable> TB, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1066,10 +1081,9 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + GetAccessToken(true) + "&trackingNumber="
-					+ TrackingCode + "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + GetAccessToken(true) + "&trackingNumber=" + TrackingCode + "&format=json");
 
-			String result = Execute(httppost);
+			String result = Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1151,7 +1165,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int getTBbyTbCode(String TrackingNumber, ByRef<Trackable> TB)
+	public static int getTBbyTbCode(String TrackingNumber, ByRef<Trackable> TB, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1159,10 +1173,9 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + GetAccessToken(true) + "&tbCode=" + TrackingNumber
-					+ "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + GetAccessToken(true) + "&tbCode=" + TrackingNumber + "&format=json");
 
-			String result = Execute(httppost);
+			String result = Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1243,7 +1256,7 @@ public class GroundspeakAPI
 	 *            list
 	 * @return
 	 */
-	public static int getImagesForGeocache(String cacheCode, ArrayList<String> images)
+	public static int getImagesForGeocache(String cacheCode, ArrayList<String> images, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1252,10 +1265,9 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken() + "&CacheCode=" + cacheCode
-					+ "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken() + "&CacheCode=" + cacheCode + "&format=json");
 
-			String result = Execute(httppost);
+			String result = Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1331,7 +1343,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int GetAllImageLinks(String cacheCode, HashMap<String, URI> list)
+	public static int GetAllImageLinks(String cacheCode, HashMap<String, URI> list, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1340,10 +1352,9 @@ public class GroundspeakAPI
 		if (list == null) list = new HashMap<String, URI>();
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode
-					+ "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode + "&format=json");
 
-			String result = Execute(httppost);
+			String result = Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1456,7 +1467,7 @@ public class GroundspeakAPI
 	 * @throws IOException
 	 * @throws ClientProtocolException
 	 */
-	public static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException, ConnectTimeoutException
+	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException
 	{
 
 		int conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
@@ -1480,7 +1491,35 @@ public class GroundspeakAPI
 
 		DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
 
+		final AtomicBoolean ready = new AtomicBoolean(false);
+		if (icancel != null)
+		{
+			Thread cancelChekThread = new Thread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					do
+					{
+						try
+						{
+							Thread.sleep(200);
+						}
+						catch (InterruptedException e)
+						{
+
+						}
+						if (icancel.cancel()) httprequest.abort();
+					}
+					while (!ready.get());
+				}
+			});
+
+			cancelChekThread.start();// start abort chk thread
+		}
 		HttpResponse response = httpClient.execute(httprequest);
+		ready.set(true);// cancel abort chk thread
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		String line = "";
@@ -1492,8 +1531,7 @@ public class GroundspeakAPI
 		return result;
 	}
 
-	public static void WriteCachesLogsImages_toDB(CB_List<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages)
-			throws InterruptedException
+	public static void WriteCachesLogsImages_toDB(CB_List<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages) throws InterruptedException
 	{
 		// Auf eventuellen Thread Abbruch reagieren
 		Thread.sleep(2);
@@ -1688,7 +1726,7 @@ public class GroundspeakAPI
 
 			if (!isValid)
 			{
-				ret = GetMembershipType();
+				ret = GetMembershipType(null);
 				isValid = membershipType > 0;
 				if (ret < 0) return ret;
 			}
@@ -1729,9 +1767,9 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int createTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note)
+	public static int createTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note, ICancel icancel)
 	{
-		return createTrackableLog(TB.getGcCode(), TB.getTrackingNumber(), cacheCode, LogTypeId, dateLogged, note);
+		return createTrackableLog(TB.getGcCode(), TB.getTrackingNumber(), cacheCode, LogTypeId, dateLogged, note, icancel);
 	}
 
 	/**
@@ -1750,7 +1788,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int createTrackableLog(String TbCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note)
+	public static int createTrackableLog(String TbCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1774,7 +1812,7 @@ public class GroundspeakAPI
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
 			// Execute HTTP Post Request
-			String result = Execute(httppost);
+			String result = Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;

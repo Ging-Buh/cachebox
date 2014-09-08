@@ -24,6 +24,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Interfaces.cancelRunnable;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
@@ -36,8 +37,7 @@ public class DeleteDialog extends ButtonDialog
 
 	public DeleteDialog()
 	{
-		super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation
-				.Get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
+		super((calcMsgBoxSize("Text", true, true, false, false)).getBounds().asFloat(), "Delete-Dialog", "", Translation.Get("DeleteCaches"), MessageBoxButtons.Cancel, null, null);
 
 		msgBoxContentSize = getContentSize();
 
@@ -53,10 +53,8 @@ public class DeleteDialog extends ButtonDialog
 		btDelArchived.setImage(SpriteCacheBase.getSpriteDrawable("delete-archived"));
 		btDelFounds.setImage(SpriteCacheBase.getSpriteDrawable("delete-founds"));
 
-		lblDelFilter = new Label(Translation.Get("DelActFilter"), Fonts.getSmall(), null, WrapType.WRAPPED)
-				.setHAlignment(HAlignment.CENTER);
-		lblDelArchived = new Label(Translation.Get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED)
-				.setHAlignment(HAlignment.CENTER);
+		lblDelFilter = new Label(Translation.Get("DelActFilter"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
+		lblDelArchived = new Label(Translation.Get("DelArchived"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
 		lblDelFounds = new Label(Translation.Get("DelFound"), Fonts.getSmall(), null, WrapType.WRAPPED).setHAlignment(HAlignment.CENTER);
 
 		Box box = new Box(new CB_RectF(0, 0, innerWidth, UI_Size_Base.that.getButtonHeight()), "");
@@ -85,19 +83,16 @@ public class DeleteDialog extends ButtonDialog
 					@Override
 					public void isCanceld()
 					{
-						 
 
 					}
-				}, new Runnable()
+				}, new cancelRunnable()
 				{
 
 					@Override
 					public void run()
 					{
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere(CB_Core_Settings.GcLogin.getValue()),
-								CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
-								CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+						long nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
 						cleanupWaypoints();
 						wd.close();
@@ -108,6 +103,13 @@ public class DeleteDialog extends ButtonDialog
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
+					}
+
+					@Override
+					public boolean cancel()
+					{
+						// TODO Handle Cancel
+						return false;
 					}
 				});
 				return true;
@@ -128,18 +130,16 @@ public class DeleteDialog extends ButtonDialog
 					@Override
 					public void isCanceld()
 					{
-						 
 
 					}
-				}, new Runnable()
+				}, new cancelRunnable()
 				{
 
 					@Override
 					public void run()
 					{
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.DelArchiv(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(),
-								Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
+						long nun = dao.DelArchiv(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
 
 						cleanupLogs();
 						cleanupWaypoints();
@@ -149,6 +149,13 @@ public class DeleteDialog extends ButtonDialog
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
+					}
+
+					@Override
+					public boolean cancel()
+					{
+						// TODO Handle Cancel
+						return false;
 					}
 				});
 				return true;
@@ -169,18 +176,16 @@ public class DeleteDialog extends ButtonDialog
 					@Override
 					public void isCanceld()
 					{
-						 
 
 					}
-				}, new Runnable()
+				}, new cancelRunnable()
 				{
 
 					@Override
 					public void run()
 					{
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.DelFound(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(),
-								Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
+						long nun = dao.DelFound(Config.SpoilerFolder.getValue(), Config.SpoilerFolderLocal.getValue(), Config.DescriptionImageFolder.getValue(), Config.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
 						cleanupWaypoints();
 						wd.close();
@@ -189,6 +194,13 @@ public class DeleteDialog extends ButtonDialog
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
+					}
+
+					@Override
+					public boolean cancel()
+					{
+						// TODO Handle Cancel
+						return false;
 					}
 				});
 				return true;

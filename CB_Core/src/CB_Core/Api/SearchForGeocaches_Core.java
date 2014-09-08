@@ -37,6 +37,7 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
@@ -66,8 +67,7 @@ public class SearchForGeocaches_Core
 		return false;
 	}
 
-	public String SearchForGeocachesJSON(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList,
-			ArrayList<ImageEntry> imageList, long gpxFilenameId)
+	public String SearchForGeocachesJSON(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, ICancel icancel)
 	{
 		String result = "";
 		int startIndex = 0;
@@ -238,7 +238,7 @@ public class SearchForGeocaches_Core
 		// Execute HTTP Post Request
 		try
 		{
-			result = GroundspeakAPI.Execute(httppost);
+			result = GroundspeakAPI.Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return "The service is unavailable";
@@ -351,7 +351,7 @@ public class SearchForGeocaches_Core
 				// Execute HTTP Post Request
 				try
 				{
-					result = GroundspeakAPI.Execute(httppost);
+					result = GroundspeakAPI.Execute(httppost, icancel);
 					if (result.contains("The service is unavailable"))
 					{
 						Logger.Error("SearchForGeocaches:The service is unavailable", result);
@@ -390,14 +390,12 @@ public class SearchForGeocaches_Core
 				result = ParseJsonResult(search, cacheList, logList, imageList, gpxFilenameId, result, apiStatus, isLite);
 
 			}
-			while ((startIndex + searchNumber <= search.number) && (cacheList.size() - lastCacheListSize >= searchNumber)
-					&& (lastCacheListSize != cacheList.size() || startIndex + searchNumber > cacheList.size()));
+			while ((startIndex + searchNumber <= search.number) && (cacheList.size() - lastCacheListSize >= searchNumber) && (lastCacheListSize != cacheList.size() || startIndex + searchNumber > cacheList.size()));
 		}
 		return result;
 	}
 
-	String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList,
-			long gpxFilenameId, String result, byte apiStatus, boolean isLite)
+	String ParseJsonResult(Search search, CB_List<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId, String result, byte apiStatus, boolean isLite)
 	{
 		// Parse JSON Result
 		try
@@ -679,8 +677,7 @@ public class SearchForGeocaches_Core
 							}
 
 						}
-						Logger.DEBUG("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC
-								+ "/" + imageListSizeGrabbed + ")");
+						Logger.DEBUG("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/" + imageListSizeGrabbed + ")");
 
 						// insert Waypoints
 						JSONArray waypoints = jCache.getJSONArray("AdditionalWaypoints");
@@ -799,7 +796,7 @@ public class SearchForGeocaches_Core
 	 *            Config.GetAccessToken();
 	 * @return
 	 */
-	public Cache LoadApiDetails(Cache aktCache)
+	public Cache LoadApiDetails(Cache aktCache, ICancel icancel)
 	{
 
 		Cache newCache = null;
@@ -810,7 +807,7 @@ public class SearchForGeocaches_Core
 			CB_List<Cache> apiCaches = new CB_List<Cache>();
 			ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 			ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-			SearchForGeocachesJSON(search, apiCaches, apiLogs, apiImages, aktCache.GPXFilename_ID);
+			SearchForGeocachesJSON(search, apiCaches, apiLogs, apiImages, aktCache.GPXFilename_ID, icancel);
 			synchronized (Database.Data.Query)
 			{
 				if (apiCaches.size() == 1)

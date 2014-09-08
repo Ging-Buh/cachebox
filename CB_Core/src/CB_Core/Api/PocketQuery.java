@@ -63,12 +63,11 @@ public class PocketQuery
 	 */
 	public static int GetPocketQueryList(ArrayList<PQ> list)
 	{
-		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryList?AccessToken=" + GroundspeakAPI.GetAccessToken(true)
-				+ "&format=json");
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryList?AccessToken=" + GroundspeakAPI.GetAccessToken(true) + "&format=json");
 		if (list == null) new NullArgumentException("PQ List");
 		try
 		{
-			String result = GroundspeakAPI.Execute(httpGet);
+			String result = GroundspeakAPI.Execute(httpGet, null);
 
 			try
 			// Parse JSON Result
@@ -153,8 +152,7 @@ public class PocketQuery
 	 */
 	public static int DownloadSinglePocketQuery(PQ pocketQuery, String PqFolder)
 	{
-		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken="
-				+ GroundspeakAPI.GetAccessToken(true) + "&PocketQueryGuid=" + pocketQuery.GUID);
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken=" + GroundspeakAPI.GetAccessToken(true) + "&PocketQueryGuid=" + pocketQuery.GUID);
 
 		try
 		{

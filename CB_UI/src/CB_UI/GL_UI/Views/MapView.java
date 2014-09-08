@@ -84,6 +84,7 @@ import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.iChanged;
 
@@ -373,7 +374,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 						{
 
 						}
-					}, new Runnable()
+					}, new cancelRunnable()
 					{
 
 						@Override
@@ -391,7 +392,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 							try
 							{
-								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().GPXFilename_ID);
+								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, infoBubble.getCache().GPXFilename_ID, this);
 								GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
 							}
 							catch (InterruptedException e)
@@ -412,6 +413,13 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							GlobalCore.setSelectedCache(selCache);
 							infoBubble.setCache(selCache, null, true);
 							wd.close();
+						}
+
+						@Override
+						public boolean cancel()
+						{
+							// TODO handle cancel
+							return false;
 						}
 					});
 				}

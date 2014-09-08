@@ -15,10 +15,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import __Static.InitTestDBs;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
 import CB_Utils.Util.FileIO;
+import __Static.InitTestDBs;
 
 /**
  * Der Test ist kein Wirklicher Test. Hier werden die GS Attribute Herrunter geladen und es wird die "Attributes.java" daraus generiert.
@@ -47,7 +47,7 @@ public class GenAttributes extends TestCase
 		{
 			HttpGet httppost = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetAttributeTypesData?AccessToken=" + accessToken + "&format=json");
 
-			String result = GroundspeakAPI.Execute(httppost);
+			String result = GroundspeakAPI.Execute(httppost, null);
 
 			try
 			// Parse JSON Result

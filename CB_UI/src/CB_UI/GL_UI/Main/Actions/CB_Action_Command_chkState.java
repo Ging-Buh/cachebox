@@ -59,14 +59,15 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 
 	int ChangedCount = 0;
 	int result = 0;
-
-	private RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler(new Runnable()
+	private boolean cancel = false;
+	private RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler()
 	{
 		final int BlockSize = 100; // die API läst nur maximal 100 zu!
 
 		@Override
 		public void run()
 		{
+			cancel = false;
 			ArrayList<Cache> chkList = new ArrayList<Cache>();
 
 			synchronized (Database.Data.Query)
@@ -132,7 +133,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 					while (Iterator2.hasNext());
 
 					// result = GroundspeakAPI.GetGeocacheStatus("WERTWEE", chkList100);
-					result = GroundspeakAPI.GetGeocacheStatus(chkList100);
+					result = GroundspeakAPI.GetGeocacheStatus(chkList100, this);
 					if (result == -1) break;// API Error
 					if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 					{
@@ -184,8 +185,12 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 			pd.close();
 
 		}
-	})
-	{
+
+		@Override
+		public boolean cancel()
+		{
+			return cancel;
+		}
 
 		@Override
 		public void RunnableReady(boolean canceld)
@@ -207,8 +212,7 @@ public class CB_Action_Command_chkState extends CB_ActionCommand
 				CachListChangedEventList.Call();
 				synchronized (Database.Data.Query)
 				{
-					GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(),
-							Translation.Get("chkState"), MessageBoxIcon.None);
+					GL_MsgBox.Show(sCanceld + Translation.Get("CachesUpdatet") + " " + ChangedCount + "/" + Database.Data.Query.size(), Translation.Get("chkState"), MessageBoxIcon.None);
 				}
 
 			}

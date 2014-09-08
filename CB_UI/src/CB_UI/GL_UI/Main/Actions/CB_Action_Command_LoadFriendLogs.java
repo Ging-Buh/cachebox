@@ -68,49 +68,44 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 	int result = 0;
 	boolean cancelThread = false;
 
-	private RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler(new Runnable()
+	private RunnableReadyHandler ChkStatRunnable = new RunnableReadyHandler()
 	{
+
+		@Override
+		public boolean cancel()
+		{
+			return cancelThread;
+		}
+
 		@Override
 		public void run()
 		{
 			result = 0;
-
 			cancelThread = false;
-
 			ArrayList<LogEntry> logList = new ArrayList<LogEntry>();
-
-			do
+			try
 			{
-
-				try
-				{
-					Thread.sleep(10);
-				}
-				catch (InterruptedException e)
-				{
-					// thread abgebrochen
-					cancelThread = true;
-				}
-
-				if (!cancelThread)
-				{
-					logList.clear();
-					result = GroundspeakAPI.GetGeocacheLogsByCache(GlobalCore.getSelectedCache(), logList, false);
-					if (result == -1) break;// API Error
-					if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
-					{
-						GL.that.Toast(ConnectionError.INSTANCE);
-						break;
-					}
-					if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
-					{
-						GL.that.Toast(ApiUnavailable.INSTANCE);
-						break;
-					}
-				}
-
+				Thread.sleep(10);
 			}
-			while (!cancelThread);
+			catch (InterruptedException e)
+			{
+				// thread abgebrochen
+				cancelThread = true;
+			}
+			if (!cancelThread)
+			{
+				logList.clear();
+				result = GroundspeakAPI.GetGeocacheLogsByCache(GlobalCore.getSelectedCache(), logList, false, this);
+				if (result == -1) // API Error
+				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+				{
+					GL.that.Toast(ConnectionError.INSTANCE);
+				}
+				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+				{
+					GL.that.Toast(ApiUnavailable.INSTANCE);
+				}
+			}
 
 			if ((result == 0) && (!cancelThread) && (logList.size() > 0))
 			{
@@ -142,10 +137,7 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 				}
 
 			}
-
 		}
-	})
-	{
 
 		@Override
 		public void RunnableReady(boolean canceld)
@@ -162,11 +154,11 @@ public class CB_Action_Command_LoadFriendLogs extends CB_ActionCommand
 				 * CachListChangedEventList.Call();
 				 */synchronized (Database.Data.Query)
 				{
-					GL_MsgBox.Show(sCanceld + Translation.Get("LogsLoaded") + " " + ChangedCount, Translation.Get("LoadLogs"),
-							MessageBoxIcon.None);
+					GL_MsgBox.Show(sCanceld + Translation.Get("LogsLoaded") + " " + ChangedCount, Translation.Get("LoadLogs"), MessageBoxIcon.None);
 				}
 
 			}
 		}
 	};
+
 }

@@ -36,6 +36,7 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton;
 import CB_UI_Base.GL_UI.Controls.chkBox;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -115,8 +116,7 @@ public class SearchOverPosition extends ActivityBase
 			{
 				if (importRuns)
 				{
-					// breche den Import Thread ab
-					if (thread != null) thread.interrupt();
+					isCanceld = true;
 				}
 				else
 				{
@@ -142,13 +142,11 @@ public class SearchOverPosition extends ActivityBase
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight,
-				lineHeight, "");
+		gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight, lineHeight, "");
 		gsLogo.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())));
 		this.addChild(gsLogo);
 
-		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4)
-				- gsLogo.getWidth(), lineHeight, "TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setWrapType(WrapType.WRAPPED);
 		lblTitle.setFont(Fonts.getBig());
 		lblTitle.setWrappedText(Translation.Get("importCachesOverPosition"));
@@ -416,7 +414,7 @@ public class SearchOverPosition extends ActivityBase
 
 	private void ImportNow()
 	{
-
+		isCanceld = false;
 		Config.SearchWithoutFounds.setValue(checkBoxExcludeFounds.isChecked());
 		Config.SearchOnlyAvible.setValue(checkBoxOnlyAvible.isChecked());
 		Config.SearchWithoutOwns.setValue(checkBoxExcludeHides.isChecked());
@@ -478,8 +476,7 @@ public class SearchOverPosition extends ActivityBase
 								searchC.available = Config.SearchOnlyAvible.getValue();
 
 								dis.setAnimationType(AnimationType.Download);
-								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
-										gpxFilename.Id);
+								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, icancel);
 								dis.setAnimationType(AnimationType.Work);
 								if (apiCaches.size() > 0)
 								{
@@ -495,13 +492,6 @@ public class SearchOverPosition extends ActivityBase
 					// Thread abgebrochen!
 					threadCanceld = true;
 				}
-
-				// Delete all LongDescription from Query! LongDescription is Loading by showing DescriptionView direct from DB
-				// for (int i = 0, n = Database.Data.Query.size(); i < n; i++)
-				// {
-				// Cache cache = Database.Data.Query.get(i);
-				// cache.longDescription = "";
-				// }
 
 				if (!threadCanceld)
 				{
@@ -537,6 +527,17 @@ public class SearchOverPosition extends ActivityBase
 		thread.start();
 
 	}
+
+	private boolean isCanceld = false;
+	ICancel icancel = new ICancel()
+	{
+
+		@Override
+		public boolean cancel()
+		{
+			return isCanceld;
+		}
+	};
 
 	@Override
 	public void dispose()

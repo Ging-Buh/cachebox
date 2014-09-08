@@ -72,6 +72,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 
@@ -502,8 +503,7 @@ public class SearchDialog extends PopUp_Base
 				{
 					mBtnNext.disable();
 					mSearchAktive = false;
-					GL_MsgBox.Show(Translation.Get("NoCacheFound"), Translation.Get("search"), MessageBoxButtons.OK,
-							MessageBoxIcon.Asterisk, null);
+					GL_MsgBox.Show(Translation.Get("NoCacheFound"), Translation.Get("search"), MessageBoxButtons.OK, MessageBoxIcon.Asterisk, null);
 				}
 				else
 				{
@@ -620,8 +620,7 @@ public class SearchDialog extends PopUp_Base
 						@Override
 						public void run()
 						{
-							GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK,
-									MessageBoxIcon.Exclamation, null);
+							GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
 						}
 					});
 
@@ -641,13 +640,13 @@ public class SearchDialog extends PopUp_Base
 						{
 							closeWaitDialog();
 						}
-					}, new Runnable()
+					}, new cancelRunnable()
 					{
 
 						@Override
 						public void run()
 						{
-							int ret = GroundspeakAPI.GetMembershipType();
+							int ret = GroundspeakAPI.GetMembershipType(null);
 							if (ret == 3)
 							{
 								closeWaitDialog();
@@ -659,21 +658,27 @@ public class SearchDialog extends PopUp_Base
 							}
 							else
 							{
-								GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
-										MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
-										{
+								GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+								{
 
-											@Override
-											public boolean onClick(int which, Object data)
-											{
-												if (which == GL_MsgBox.BUTTON_POSITIVE) searchOnlineNow();
-												else
-													closeWaitDialog();
-												return true;
-											}
-										});
+									@Override
+									public boolean onClick(int which, Object data)
+									{
+										if (which == GL_MsgBox.BUTTON_POSITIVE) searchOnlineNow();
+										else
+											closeWaitDialog();
+										return true;
+									}
+								});
 							}
 
+						}
+
+						@Override
+						public boolean cancel()
+						{
+							// TODO Handle Cancel
+							return false;
 						}
 					});
 
@@ -702,7 +707,7 @@ public class SearchDialog extends PopUp_Base
 			{
 				closeWaitDialog();
 			}
-		}, new Runnable()
+		}, new cancelRunnable()
 		{
 
 			@Override
@@ -769,7 +774,7 @@ public class SearchDialog extends PopUp_Base
 					return;
 				}
 
-				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id);
+				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, this);
 
 				if (apiCaches.size() > 0)
 				{
@@ -836,6 +841,13 @@ public class SearchDialog extends PopUp_Base
 				}
 				Logger.DEBUG("SEARCH Run search overAPI ready");
 				closeWaitDialog();
+			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO Handle Cancel
+				return false;
 			}
 		});
 	}
@@ -965,8 +977,7 @@ public class SearchDialog extends PopUp_Base
 						public void run()
 						{
 
-							GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK,
-									MessageBoxIcon.Exclamation, null);
+							GL_MsgBox.Show(Translation.Get("apiKeyNeeded"), Translation.Get("Clue"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation, null);
 						}
 					});
 
@@ -978,8 +989,7 @@ public class SearchDialog extends PopUp_Base
 						@Override
 						public void run()
 						{
-							GL_MsgBox.Show(Translation.Get("noInetMsg"), Translation.Get("noInetTitle"), MessageBoxButtons.OK,
-									MessageBoxIcon.Error, null);
+							GL_MsgBox.Show(Translation.Get("noInetMsg"), Translation.Get("noInetTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 						}
 					});
 				}
@@ -1000,22 +1010,21 @@ public class SearchDialog extends PopUp_Base
 							@Override
 							public void run()
 							{
-								MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel,
-										MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+								MSB = GL_MsgBox.Show(Translation.Get("GC_basic"), Translation.Get("GC_title"), MessageBoxButtons.OKCancel, MessageBoxIcon.Powerd_by_GC_Live, new OnMsgBoxClickListener()
+								{
+
+									@Override
+									public boolean onClick(int which, Object data)
+									{
+										closeMsgBox();
+										if (which == GL_MsgBox.BUTTON_POSITIVE)
 										{
+											showTargetApiDialog();
+										}
 
-											@Override
-											public boolean onClick(int which, Object data)
-											{
-												closeMsgBox();
-												if (which == GL_MsgBox.BUTTON_POSITIVE)
-												{
-													showTargetApiDialog();
-												}
-
-												return true;
-											}
-										});
+										return true;
+									}
+								});
 							}
 						});
 

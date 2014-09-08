@@ -29,6 +29,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -140,7 +141,7 @@ public class CB_AllContextMenuHandler
 					{
 
 					}
-				}, new Runnable()
+				}, new cancelRunnable()
 				{
 
 					@Override
@@ -154,8 +155,7 @@ public class CB_AllContextMenuHandler
 						ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 						ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-						CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
-								GlobalCore.getSelectedCache().GPXFilename_ID);
+						CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
 
 						try
 						{
@@ -177,6 +177,13 @@ public class CB_AllContextMenuHandler
 						CachListChangedEventList.Call();
 
 						wd.close();
+					}
+
+					@Override
+					public boolean cancel()
+					{
+						// TODO Handle cancel
+						return false;
 					}
 				});
 

@@ -52,6 +52,7 @@ public class ImportAnimation extends Box
 			@Override
 			public void run()
 			{
+				if (ImportAnimation.this.isDisposed()) return;
 				float size = ImportAnimation.this.getHalfWidth() / 2;
 				float halfSize = ImportAnimation.this.getHalfWidth() / 4;
 				CB_RectF imageRec = new CB_RectF(ImportAnimation.this.getHalfWidth() - halfSize, ImportAnimation.this.getHalfHeight() - halfSize, size, size);

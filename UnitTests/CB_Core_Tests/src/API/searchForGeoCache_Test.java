@@ -67,7 +67,7 @@ public class searchForGeoCache_Test extends TestCase
 		SearchCoordinate searchC = new SearchCoordinate(50, searchCoord, 500000);
 
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
+		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0, null);
 
 		assertFalse("Keine Caches gefunden", apiCaches.size() < 1);
 
@@ -84,7 +84,7 @@ public class searchForGeoCache_Test extends TestCase
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
+		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0, null);
 
 		boolean Assert = false;
 		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).getGcCode().equalsIgnoreCase("GC1T33T"))
@@ -108,7 +108,7 @@ public class searchForGeoCache_Test extends TestCase
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
+		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0, null);
 
 		boolean Assert = false;
 		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).getGcCode().equalsIgnoreCase("GC4AA8H"))
@@ -132,7 +132,7 @@ public class searchForGeoCache_Test extends TestCase
 
 		// String result =
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
+		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0, null);
 
 		boolean Assert = false;
 		if (apiCaches != null && apiCaches.size() > 0)
@@ -157,7 +157,7 @@ public class searchForGeoCache_Test extends TestCase
 		chkList.add(c);
 
 		// int result =
-		GroundspeakAPI.GetGeocacheStatus(chkList);
+		GroundspeakAPI.GetGeocacheStatus(chkList, null);
 
 		boolean Assert = false;
 
@@ -175,7 +175,7 @@ public class searchForGeoCache_Test extends TestCase
 		chkList.add(cacheNew);
 
 		// result =
-		GroundspeakAPI.GetGeocacheStatus(chkList);
+		GroundspeakAPI.GetGeocacheStatus(chkList, null);
 
 		for (Cache cache : chkList)
 		{
@@ -197,7 +197,7 @@ public class searchForGeoCache_Test extends TestCase
 		ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
+		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0, null);
 
 		boolean Assert = false;
 		if (apiCaches != null && apiCaches.size() == 1 && apiCaches.get(0).getGcCode().equalsIgnoreCase("GC1T33T"))

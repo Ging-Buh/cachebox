@@ -46,7 +46,7 @@ public class isPremium_GetFound_Test extends TestCase
 	public void testGetCachesFound()
 	{
 
-		int Anzahl = GroundspeakAPI.GetCachesFound();
+		int Anzahl = GroundspeakAPI.GetCachesFound(null);
 
 		// Bei mir
 		assertTrue("Muss Anzahl meiner Funde sein (" + Anzahl + ")", Anzahl == 489);

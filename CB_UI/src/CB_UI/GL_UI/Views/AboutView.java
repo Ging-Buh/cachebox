@@ -40,6 +40,7 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.UnitFormatter;
 
@@ -50,8 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent
 {
-	Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent,
-			Current;
+	Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
 	Image CB_Logo;
 	float margin;
 	private SatBarChart chart;
@@ -113,8 +113,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		this.setBackground(SpriteCacheBase.AboutBack);
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
 		margin = UI_Size_Base.that.getMargin();
-		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin
-				- margin, ref * 5, (ref * 5) / 4.11f);
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
 		Logger.DEBUG("CB_Logo" + CB_LogoRec.toString());
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
@@ -122,8 +121,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		String VersionString = GlobalCore.getVersionString();
 		TextBounds bounds = Fonts.getSmall().getMultiLineBounds(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
-		descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - bounds.height, this.getWidth(), bounds.height + margin,
-				"DescLabel");
+		descTextView = new Label(0, CB_Logo.getY() - margin - margin - margin - bounds.height, this.getWidth(), bounds.height + margin, "DescLabel");
 		descTextView.setFont(Fonts.getSmall()).setHAlignment(HAlignment.CENTER);
 
 		descTextView.setWrappedText(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.AboutMsg);
@@ -140,77 +138,80 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 
-				ms = GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo,
-						MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
+				ms = GL_MsgBox.Show(Translation.Get("LoadFounds"), Translation.Get("AdjustFinds"), MessageBoxButtons.YesNo, MessageBoxIcon.GC_Live, new OnMsgBoxClickListener()
+				{
+
+					@Override
+					public boolean onClick(int which, Object data)
+					{
+						// Behandle das ergebniss
+						switch (which)
 						{
-
-							@Override
-							public boolean onClick(int which, Object data)
+						case 1:
+							ms.close();
+							pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 							{
-								// Behandle das ergebniss
-								switch (which)
+
+								@Override
+								public void isCanceld()
 								{
-								case 1:
-									ms.close();
-									pd = CancelWaitDialog.ShowWait(Translation.Get("LoadFounds"), DownloadAnimation.GetINSTANCE(),
-											new IcancelListner()
-											{
-
-												@Override
-												public void isCanceld()
-												{
-
-												}
-											}, new Runnable()
-											{
-
-												@Override
-												public void run()
-												{
-													result = GroundspeakAPI.GetCachesFound();
-													pd.close();
-
-													if (result > -1)
-													{
-														String Text = Translation.Get("FoundsSetTo", String.valueOf(result));
-														GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK,
-																MessageBoxIcon.GC_Live, null);
-
-														Config.FoundOffset.setValue(result);
-														Config.AcceptChanges();
-														AboutView.this.refreshText();
-													}
-													if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
-													{
-														GL.that.Toast(ConnectionError.INSTANCE);
-													}
-													if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
-													{
-														GL.that.Toast(ApiUnavailable.INSTANCE);
-													}
-												}
-											});
-
-									break;
-								case 3:
-									ms.close();
-									GL.that.RunOnGL(new IRunOnGL()
-									{
-
-										@Override
-										public void run()
-										{
-											NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"),
-													CB_UI.Config.FoundOffset.getValue(), DialogListner);
-										}
-									});
-
-									break;
 
 								}
-								return true;
-							}
-						});
+							}, new cancelRunnable()
+							{
+
+								@Override
+								public void run()
+								{
+									result = GroundspeakAPI.GetCachesFound(this);
+									pd.close();
+
+									if (result > -1)
+									{
+										String Text = Translation.Get("FoundsSetTo", String.valueOf(result));
+										GL_MsgBox.Show(Text, Translation.Get("LoadFinds!"), MessageBoxButtons.OK, MessageBoxIcon.GC_Live, null);
+
+										Config.FoundOffset.setValue(result);
+										Config.AcceptChanges();
+										AboutView.this.refreshText();
+									}
+									if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+									{
+										GL.that.Toast(ConnectionError.INSTANCE);
+									}
+									if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+									{
+										GL.that.Toast(ApiUnavailable.INSTANCE);
+									}
+								}
+
+								@Override
+								public boolean cancel()
+								{
+									// TODO handle cancel
+									return false;
+								}
+							});
+
+							break;
+						case 3:
+							ms.close();
+							GL.that.RunOnGL(new IRunOnGL()
+							{
+
+								@Override
+								public void run()
+								{
+									NumerikInputBox.Show(Translation.Get("TelMeFounds"), Translation.Get("AdjustFinds"), CB_UI.Config.FoundOffset.getValue(), DialogListner);
+								}
+							});
+
+							break;
+
+						}
+						return true;
+					}
+				});
 
 				return true;
 			}
@@ -307,8 +308,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 
 		// create Sat Chart
 		float l = margin * 2;
-		chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, this.getWidth() - l - l, CachesFoundLabel.getY() - Gps.getMaxY()),
-				"Sat Chart");
+		chart = new SatBarChart(new CB_RectF(l, Gps.getMaxY() + l, this.getWidth() - l - l, CachesFoundLabel.getY() - Gps.getMaxY()), "Sat Chart");
 		chart.setDrawWithAlpha(true);
 		this.addChild(chart);
 		setYpositions();
@@ -351,14 +351,12 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 				if (selectedWaypoint != null)
 				{
 					WaypointLabel.setText(selectedWaypoint.getGcCode());
-					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " "
-							+ UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
+					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedWaypoint.Pos.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedWaypoint.Pos.getLongitude()));
 				}
 				else
 				{
 					WaypointLabel.setText(selectedCache.getGcCode());
-					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " "
-							+ UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
+					CoordLabel.setText(UnitFormatter.FormatLatitudeDM(selectedCache.Pos.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(selectedCache.Pos.getLongitude()));
 				}
 			}
 			catch (Exception e)
@@ -394,8 +392,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		{
 			int radius = (int) Locator.getCoordinate().getAccuracy();
 
-			if (Accuracy != null) Accuracy.setText("+/- " + UnitFormatter.DistanceString(radius) + " (" + Locator.getProvider().toString()
-					+ ")");
+			if (Accuracy != null) Accuracy.setText("+/- " + UnitFormatter.DistanceString(radius) + " (" + Locator.getProvider().toString() + ")");
 		}
 		else
 		{
@@ -403,8 +400,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		}
 		if (Locator.getProvider() == ProviderType.GPS || Locator.getProvider() == ProviderType.Network)
 		{
-			if (Current != null) Current.setText(UnitFormatter.FormatLatitudeDM(Locator.getLatitude()) + " "
-					+ UnitFormatter.FormatLongitudeDM(Locator.getLongitude()));
+			if (Current != null) Current.setText(UnitFormatter.FormatLatitudeDM(Locator.getLatitude()) + " " + UnitFormatter.FormatLongitudeDM(Locator.getLongitude()));
 			if (Gps != null) Gps.setText(GPS.getSatAndFix() + "   " + Translation.Get("alt") + " " + Locator.getAltStringWithCorection());
 		}
 		else

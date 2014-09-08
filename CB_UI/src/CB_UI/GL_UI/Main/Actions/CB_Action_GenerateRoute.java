@@ -45,6 +45,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_Utils.MathUtils;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.UnitFormatter;
@@ -143,7 +144,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 								// TODO Handle Cancel Clicket
 
 							}
-						}, new Runnable()
+						}, new cancelRunnable()
 						{
 
 							@Override
@@ -365,6 +366,13 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 								}
 								RouteOverlay.RoutesChanged();
 
+							}
+
+							@Override
+							public boolean cancel()
+							{
+								// TODO Auto-generated method stub
+								return false;
 							}
 						});
 					}

@@ -1,44 +1,43 @@
 package CB_UI_Base.GL_UI.interfaces;
 
+import CB_Utils.Interfaces.cancelRunnable;
+
 /**
  * Extends Runnable um eine Ready Meldung
  * 
  * @author Longri
  */
-public abstract class RunnableReadyHandler implements Runnable
+public abstract class RunnableReadyHandler implements cancelRunnable
 {
 
-	Runnable mRunnable;
+	// cancelRunable mRunnable;
 	Thread mRunThread;
 	boolean isCanceld = false;
 	boolean isRunning = false;
 
-	public RunnableReadyHandler(Runnable runnable)
+	public RunnableReadyHandler()
 	{
-		mRunnable = runnable;
+		// mRunnable = runnable;
 	}
 
 	public abstract void RunnableReady(boolean canceld);
 
-	public void run()
+	public void start()
 	{
 		if (!isRunning)
 		{
 			isRunning = true;
 			mRunThread = new Thread(new Runnable()
 			{
-
 				@Override
 				public void run()
 				{
-					mRunnable.run();
+					RunnableReadyHandler.this.run();
 					RunnableReady(isCanceld);
 				}
 			});
 			mRunThread.start();
-
 		}
-
 	}
 
 	/*

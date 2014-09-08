@@ -48,6 +48,7 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Logger;
 import CB_Utils.Log.Logger.iCreateDebugWithHeader;
 
@@ -58,7 +59,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2271;
+	public static final int CurrentRevision = 2272;
 
 	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
@@ -376,7 +377,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 				// TODO Handle Cancel
 
 			}
-		}, new Runnable()
+		}, new cancelRunnable()
 		{
 
 			@Override
@@ -397,6 +398,13 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 					GL.that.Toast(ApiUnavailable.INSTANCE);
 					return;
 				}
+			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO Handle Cancel
+				return false;
 			}
 		});
 		return wd;
@@ -442,7 +450,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 				{
 					dia.close();
 				}
-			}, new Runnable()
+			}, new cancelRunnable()
 			{
 
 				@Override
@@ -463,6 +471,13 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 					};
 					ti.schedule(task, 300);
 
+				}
+
+				@Override
+				public boolean cancel()
+				{
+					// TODO Handle Cancel
+					return false;
 				}
 			});
 		}

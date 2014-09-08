@@ -179,13 +179,11 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight,
-				lineHeight, "");
+		gsLogo = new Image(innerWidth - margin - lineHeight, this.getHeight() - this.getTopHeight() - lineHeight - margin, lineHeight, lineHeight, "");
 		gsLogo.setDrawable(new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.GCLive_35.ordinal())));
 		this.addChild(gsLogo);
 
-		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4)
-				- gsLogo.getWidth(), lineHeight, "TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - (margin * 4) - gsLogo.getWidth(), lineHeight, "TitleLabel");
 		lblTitle.setWrapType(WrapType.WRAPPED);
 		lblTitle.setFont(Fonts.getBig());
 		lblTitle.setWrappedText(Translation.Get("API_IMPORT_NAME_OWNER_CODE"));
@@ -403,8 +401,7 @@ public class SearchOverNameOwnerGcCode extends ActivityBase
 								searchC.available = Config.SearchOnlyAvible.getValue();
 
 								dis.setAnimationType(AnimationType.Download);
-								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
-										gpxFilename.Id);
+								CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, gpxFilename.Id, null);
 								dis.setAnimationType(AnimationType.Work);
 								if (apiCaches.size() > 0)
 								{

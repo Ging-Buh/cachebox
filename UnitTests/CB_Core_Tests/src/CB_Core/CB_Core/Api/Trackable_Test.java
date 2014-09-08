@@ -2,12 +2,12 @@ package CB_Core.CB_Core.Api;
 
 import java.util.Iterator;
 
-import __Static.InitTestDBs;
 import junit.framework.TestCase;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_UI.Config;
+import __Static.InitTestDBs;
 
 /**
  * Enthält die Tests um die Caches zu einer bestimmten Position über die API abzufragen
@@ -47,7 +47,7 @@ public class Trackable_Test extends TestCase
 	{
 		TbList list = new TbList();
 
-		GroundspeakAPI.getMyTbList(list);
+		GroundspeakAPI.getMyTbList(list, null);
 
 		// CB Developer sollten einen "coin of honour" im besitz haben.
 		boolean Assert = false;

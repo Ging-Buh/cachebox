@@ -183,7 +183,7 @@ public class LiveMapQue
 			{
 				apiCaches = new CB_List<Cache>();
 				CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-				result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
+				result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0, null);
 			}
 
 			if (result.equals("download limit"))

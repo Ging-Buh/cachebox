@@ -81,7 +81,7 @@ public class searchLiveMapTests extends TestCase
 	{
 		// get API limits and Check the limits after request
 
-		GroundspeakAPI.GetCacheLimits();
+		GroundspeakAPI.GetCacheLimits(null);
 		int CachesLeft = GroundspeakAPI.CachesLeft;
 
 		Coordinate coord = new Coordinate("52° 34,9815N / 13° 23,540E");
@@ -114,7 +114,7 @@ public class searchLiveMapTests extends TestCase
 		// Check if count are not same like requested (increase Max Count)
 		assertTrue("count mast be lower then requested", LiveMapQue.LiveCaches.getSize() < LiveMapQue.MAX_REQUEST_CACHE_COUNT);
 
-		GroundspeakAPI.GetCacheLimits();
+		GroundspeakAPI.GetCacheLimits(null);
 
 		assertTrue("CacheLimits must not changed", CachesLeft == GroundspeakAPI.CachesLeft);
 
@@ -133,7 +133,7 @@ public class searchLiveMapTests extends TestCase
 		CB_List<Cache> apiCaches = new CB_List<Cache>();
 
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0);
+		String result = t.SearchForGeocachesJSON(requestSearch, apiCaches, apiLogs, apiImages, 0, null);
 
 		assertTrue("ApiImage-Size must be 0", apiImages.size() == 0);
 		assertTrue("ApiLog-Size must be 0", apiLogs.size() == 0);

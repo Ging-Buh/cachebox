@@ -32,6 +32,7 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -160,9 +161,9 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 			@Override
 			public void isCanceld()
 			{
-
+				// TODO handle cancel
 			}
-		}, new Runnable()
+		}, new cancelRunnable()
 		{
 
 			@Override
@@ -178,7 +179,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID);
+				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
 
 				try
 				{
@@ -220,6 +221,13 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 				});
 
 				wd.close();
+			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO Auto-generated method stub
+				return false;
 			}
 		});
 	}

@@ -127,21 +127,20 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 
 				if (importStarted)
 				{
-					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo,
-							MessageBoxIcon.Stop, new OnMsgBoxClickListener()
+					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener()
+					{
+
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							if (which == GL_MsgBox.BUTTON_POSITIVE)
 							{
+								cancelImport();
+							}
+							return true;
+						}
 
-								@Override
-								public boolean onClick(int which, Object data)
-								{
-									if (which == GL_MsgBox.BUTTON_POSITIVE)
-									{
-										cancelImport();
-									}
-									return true;
-								}
-
-							});
+					});
 				}
 				else
 					finish();
@@ -157,14 +156,12 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
-				lineHeight, "TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 		this.addChild(lblTitle);
 
-		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth,
-				lineHeight);
+		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);
 
 		pgBar = new ProgressBar(rec, "ProgressBar");
 
@@ -172,8 +169,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 
 		float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
 
-		lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin,
-				SmallLineHeight, "ProgressMsg");
+		lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight, "ProgressMsg");
 
 		lblProgressMsg.setFont(Fonts.getSmall());
 
@@ -355,7 +351,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 
 				try
 				{
-					repository_freizeitkarte_android = GroundspeakAPI.Execute(httpget);
+					repository_freizeitkarte_android = GroundspeakAPI.Execute(httpget, null);
 				}
 				catch (ConnectTimeoutException e)
 				{

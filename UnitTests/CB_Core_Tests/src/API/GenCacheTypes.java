@@ -14,10 +14,10 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.Test;
 
-import __Static.InitTestDBs;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
 import CB_Utils.Util.FileIO;
+import __Static.InitTestDBs;
 
 /**
  * Der Test ist kein Wirklicher Test. Hier werden die GS CacheTypes Herrunter geladen . Damit die Cache Types immer Aktuell gehalten werden
@@ -45,7 +45,7 @@ public class GenCacheTypes extends TestCase
 		{
 			HttpGet httppost = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetGeocacheTypes?AccessToken=" + accessToken + "&format=json");
 
-			String result = GroundspeakAPI.Execute(httppost);
+			String result = GroundspeakAPI.Execute(httppost, null);
 
 			try
 			// Parse JSON Result

@@ -126,8 +126,7 @@ public class DescriptionView extends CB_View_Base
 			{
 				float infoHeight = 0;
 				if (cacheInfo != null) infoHeight = cacheInfo.getHeight();
-				platformConector.showView(ViewConst.DESCRIPTION_VIEW, DescriptionView.this.getX(), DescriptionView.this.getY(),
-						DescriptionView.this.getWidth(), DescriptionView.this.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
+				platformConector.showView(ViewConst.DESCRIPTION_VIEW, DescriptionView.this.getX(), DescriptionView.this.getY(), DescriptionView.this.getWidth(), DescriptionView.this.getHeight(), 0, (infoHeight + GL_UISizes.margin), 0, 0);
 			}
 		};
 		timer.schedule(task, 50);
@@ -188,7 +187,7 @@ public class DescriptionView extends CB_View_Base
 	private void showDownloadButton(Cache sel)
 	{
 
-		int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits();
+		int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(null);
 
 		if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 		{
@@ -285,7 +284,7 @@ public class DescriptionView extends CB_View_Base
 	private String getMessage()
 	{
 		StringBuilder sb = new StringBuilder();
-		boolean basic = CB_Core.Api.GroundspeakAPI.GetMembershipType() == 1;
+		boolean basic = CB_Core.Api.GroundspeakAPI.GetMembershipType(null) == 1;
 		String MemberType = basic ? BASIC : PREMIUM;
 		String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
 		String actLimit = Integer.toString(CB_Core.Api.GroundspeakAPI.CachesLeft - 1);

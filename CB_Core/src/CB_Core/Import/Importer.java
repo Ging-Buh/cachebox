@@ -251,11 +251,9 @@ public class Importer
 
 			i++;
 
-			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")",
-					false);
+			ip.ProgressInkrement("sendGcVote", "Sending Votes (" + String.valueOf(i) + " / " + String.valueOf(pendingVotes.size()) + ")", false);
 
-			Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote,
-					info.URL, info.GcCode);
+			Boolean ret = GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), info.Vote, info.URL, info.GcCode);
 
 			if (ret)
 			{
@@ -306,8 +304,7 @@ public class Importer
 				idLookup.put(info.GcCode, info.Id);
 			}
 
-			ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(),
-					CB_Core_Settings.GcVotePassword.getValue(), requests);
+			ArrayList<RatingData> ratingData = GCVote.GetRating(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), requests);
 
 			if (ratingData == null)
 			{
@@ -332,8 +329,7 @@ public class Importer
 
 					i++;
 
-					ip.ProgressInkrement("importGcVote",
-							"Writing Ratings (" + String.valueOf(i + failCount) + " / " + String.valueOf(count) + ")", false);
+					ip.ProgressInkrement("importGcVote", "Writing Ratings (" + String.valueOf(i + failCount) + " / " + String.valueOf(count) + ")", false);
 				}
 
 			}
@@ -417,9 +413,7 @@ public class Importer
 					if (ret < 0) return ret;
 				}
 
-				ip.ProgressInkrement("importImageUrls",
-						"get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")",
-						false);
+				ip.ProgressInkrement("importImageUrls", "get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")", false);
 			}
 		}
 
@@ -482,8 +476,7 @@ public class Importer
 
 				if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 				{
-					ip.ProgressInkrement("importImages",
-							"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
+					ip.ProgressInkrement("importImages", "Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
 				}
 			}
 
@@ -491,8 +484,7 @@ public class Importer
 			{
 				if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 				{
-					ip.ProgressInkrement("importImages",
-							"Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
+					ip.ProgressInkrement("importImages", "Importing Images for " + gccode + " (" + String.valueOf(i) + " / " + String.valueOf(count) + ")", false);
 				}
 
 			}
@@ -583,8 +575,7 @@ public class Importer
 
 				if (gcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 				{
-					ip.ProgressInkrement("importImages",
-							"Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
+					ip.ProgressInkrement("importImages", "Importing Images for " + gcCode + " (" + String.valueOf(cnt) + " / " + String.valueOf(numCaches) + ")", false);
 
 					boolean additionalImagesUpdated = false;
 					boolean descriptionImagesUpdated = false;
@@ -611,8 +602,7 @@ public class Importer
 						// do not import Spoiler Images
 						additionalImagesUpdated = true;
 					}
-					ret = importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description,
-							uri, false);
+					ret = importImagesForCacheNew(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri, false);
 				}
 				reader.moveToNext();
 			}
@@ -696,8 +686,7 @@ public class Importer
 	 *         return;<br>
 	 * <br>
 	 */
-	private int importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id,
-			String gcCode, String name, String description, String uri, boolean importAlways)
+	private int importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String uri, boolean importAlways)
 	{
 		boolean dbUpdate = false;
 
@@ -750,8 +739,7 @@ public class Importer
 		// { String.valueOf(id) });
 		// }
 
-		return DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name,
-				description, uri);
+		return DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri);
 	}
 
 	/**
@@ -855,7 +843,7 @@ public class Importer
 
 		if (GcCode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 		{
-			int result = GroundspeakAPI.getImagesForGeocache(GcCode, apiImages);
+			int result = GroundspeakAPI.getImagesForGeocache(GcCode, apiImages, null);
 
 			if (result == GroundspeakAPI.IO)
 			{

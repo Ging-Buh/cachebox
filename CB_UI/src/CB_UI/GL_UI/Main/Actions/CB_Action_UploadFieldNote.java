@@ -64,7 +64,8 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 	private void UploadFieldNotes()
 	{
 		ThreadCancel = false;
-		final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler(new Runnable()
+
+		final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler()
 		{
 
 			@Override
@@ -107,14 +108,12 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 
 						if (fieldNote.isTbFieldNote)
 						{
-							result = GroundspeakAPI.createTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode,
-									LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment);
+							result = GroundspeakAPI.createTrackableLog(fieldNote.TravelBugCode, fieldNote.TrackingNumber, fieldNote.gcCode, LogTypes.CB_LogType2GC(fieldNote.type), fieldNote.timestamp, fieldNote.comment, this);
 						}
 						else
 						{
 							boolean dl = fieldNote.isDirectLog;
-							result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode,
-									fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl);
+							result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
 						}
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
@@ -154,10 +153,14 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 				}
 
 				PD.close();
-
 			}
-		})
-		{
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO Handle cancel
+				return false;
+			}
 
 			@Override
 			public void RunnableReady(boolean canceld)
@@ -167,8 +170,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 
 					if (!UploadMeldung.equals(""))
 					{
-						if (!API_Key_error) GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK,
-								MessageBoxIcon.Error, null);
+						if (!API_Key_error) GL_MsgBox.Show(UploadMeldung, Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 					}
 					else
 					{
@@ -190,8 +192,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 		// Stimme abgeben
 		try
 		{
-			if (!GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), fieldNote.gc_Vote,
-					fieldNote.CacheUrl, fieldNote.gcCode))
+			if (!GCVote.SendVotes(CB_Core_Settings.GcLogin.getValue(), CB_Core_Settings.GcVotePassword.getValue(), fieldNote.gc_Vote, fieldNote.CacheUrl, fieldNote.gcCode))
 			{
 				UploadMeldung += fieldNote.gcCode + "\n" + "GC-Vote Error" + "\n";
 			}

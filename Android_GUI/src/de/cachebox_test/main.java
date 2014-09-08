@@ -90,6 +90,7 @@ import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.ILog;
 import CB_Utils.Log.Logger;
@@ -741,7 +742,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 								{
 									wd.close();
 								}
-							}, new Runnable()
+							}, new cancelRunnable()
 							{
 
 								@Override
@@ -780,6 +781,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									ExtSearch_GpxPath = null;
 
 									GL.that.Toast(Msg, 3000);
+								}
+
+								@Override
+								public boolean cancel()
+								{
+									// TODO handle cancel
+									return false;
 								}
 							});
 

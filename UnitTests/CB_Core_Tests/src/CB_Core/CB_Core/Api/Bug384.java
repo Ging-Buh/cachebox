@@ -55,7 +55,7 @@ public class Bug384 extends TestCase
 
 		// String result =
 		CB_Core.Api.SearchForGeocaches_Core t = new SearchForGeocaches_Core();
-		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0);
+		t.SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, 0, null);
 
 		Cache c = apiCaches.get(0);
 		Waypoint w = c.waypoints.get(0);

@@ -25,6 +25,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Util.ByRef;
 
 public class TrackableListView extends CB_View_Base
@@ -103,7 +104,7 @@ public class TrackableListView extends CB_View_Base
 						{
 
 						}
-					}, new Runnable()
+					}, new cancelRunnable()
 					{
 
 						@Override
@@ -112,7 +113,7 @@ public class TrackableListView extends CB_View_Base
 
 							Trackable tb = null;
 							ByRef<Trackable> ref = new ByRef<Trackable>(tb);
-							int result = GroundspeakAPI.getTBbyTreckNumber(TBCode, ref);
+							int result = GroundspeakAPI.getTBbyTreckNumber(TBCode, ref, this);
 
 							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 							{
@@ -127,7 +128,7 @@ public class TrackableListView extends CB_View_Base
 								return;
 							}
 
-							result = GroundspeakAPI.getTBbyTbCode(TBCode, ref);
+							result = GroundspeakAPI.getTBbyTbCode(TBCode, ref, this);
 							if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 							{
 								GL.that.Toast(ConnectionError.INSTANCE);
@@ -157,6 +158,13 @@ public class TrackableListView extends CB_View_Base
 								GL.that.Toast(Translation.Get("NoTbFound"));
 							}
 
+						}
+
+						@Override
+						public boolean cancel()
+						{
+							// TODO handle cancel
+							return false;
 						}
 					});
 
@@ -210,7 +218,7 @@ public class TrackableListView extends CB_View_Base
 			{
 
 			}
-		}, new Runnable()
+		}, new cancelRunnable()
 		{
 
 			@Override
@@ -218,7 +226,7 @@ public class TrackableListView extends CB_View_Base
 			{
 				int result = -1;
 				TbList searchList = new TbList();
-				result = CB_Core.Api.GroundspeakAPI.getMyTbList(searchList);
+				result = CB_Core.Api.GroundspeakAPI.getMyTbList(searchList, this);
 
 				if (result == GroundspeakAPI.IO)
 				{
@@ -239,6 +247,13 @@ public class TrackableListView extends CB_View_Base
 
 				wd.close();
 			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO handle cancel
+				return false;
+			}
 		});
 	}
 
@@ -255,8 +270,7 @@ public class TrackableListView extends CB_View_Base
 		@Override
 		public ListViewItemBase getView(final int position)
 		{
-			TrackableListViewItem v = new TrackableListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position,
-					TB_List.get(position));
+			TrackableListViewItem v = new TrackableListViewItem(UiSizes.that.getCacheListItemRec().asFloat(), position, TB_List.get(position));
 			v.setOnClickListener(new OnClickListener()
 			{
 				@Override

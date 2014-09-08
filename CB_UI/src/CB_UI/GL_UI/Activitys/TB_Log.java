@@ -54,6 +54,7 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Interfaces.cancelRunnable;
 
 public class TB_Log extends ActivityBase
 {
@@ -273,14 +274,14 @@ public class TB_Log extends ActivityBase
 			{
 
 			}
-		}, new Runnable()
+		}, new cancelRunnable()
 		{
 
 			@Override
 			public void run()
 			{
 				GroundspeakAPI.LastAPIError = "";
-				int result = GroundspeakAPI.createTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText());
+				int result = GroundspeakAPI.createTrackableLog(TB, getCache_GcCode(), LogTypes.CB_LogType2GC(LT), new Date(), edit.getText(), null);
 
 				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 				{
@@ -369,6 +370,13 @@ public class TB_Log extends ActivityBase
 					});
 				}
 
+			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO Handle Cancel
+				return false;
 			}
 		});
 

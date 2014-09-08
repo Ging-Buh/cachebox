@@ -12,6 +12,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Log.Logger;
 
 /**
@@ -36,23 +37,23 @@ public class CancelWaitDialog extends WaitDialog
 
 	protected IcancelListner cancelListner;
 	private IReadyListner readyListner;
-	private final Runnable runnable;
+	private final cancelRunnable runnable;
 
-	public CancelWaitDialog(Size size, String name, IcancelListner listner, Runnable runnable)
+	public CancelWaitDialog(Size size, String name, IcancelListner listner, cancelRunnable runnable)
 	{
 		super(size, name);
 		this.cancelListner = listner;
 		this.runnable = runnable;
 	}
 
-	public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, Runnable runnable)
+	public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, cancelRunnable runnable)
 	{
 		final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listner, runnable);
 		wd.setCallerName(Logger.getCallerName(2));
 		return wd;
 	}
 
-	public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListner listner, Runnable runnable)
+	public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListner listner, cancelRunnable runnable)
 	{
 		final CancelWaitDialog wd = createDialog(Msg, listner, runnable);
 		wd.setCallerName(Logger.getCallerName(1));
@@ -74,8 +75,7 @@ public class CancelWaitDialog extends WaitDialog
 		};
 
 		SizeF contentSize = wd.getContentSize();
-		float imageYPos = (contentSize.height < (wd.animation.getHeight() * 1.7)) ? contentSize.halfHeight - wd.animation.getHalfHeight()
-				: contentSize.height - wd.animation.getHeight() - margin;
+		float imageYPos = (contentSize.height < (wd.animation.getHeight() * 1.7)) ? contentSize.halfHeight - wd.animation.getHalfHeight() : contentSize.height - wd.animation.getHeight() - margin;
 		wd.animation.setY(imageYPos);
 		wd.addChild(wd.animation);
 		wd.animation.play();
@@ -83,7 +83,7 @@ public class CancelWaitDialog extends WaitDialog
 		return wd;
 	}
 
-	protected static CancelWaitDialog createDialog(String msg, IcancelListner listner, Runnable runnable)
+	protected static CancelWaitDialog createDialog(String msg, IcancelListner listner, cancelRunnable runnable)
 	{
 
 		if (msg == null) msg = "";
@@ -135,7 +135,7 @@ public class CancelWaitDialog extends WaitDialog
 			isRunning = true;
 
 			// start runnable on new Thread
-			mRunnThread = new RunnableReadyHandler(runnable)
+			mRunnThread = new RunnableReadyHandler()
 			{
 
 				@Override
@@ -153,8 +153,22 @@ public class CancelWaitDialog extends WaitDialog
 					}
 
 				}
+
+				@Override
+				public void run()
+				{
+					runnable.run();
+					if (readyListner != null) readyListner.isReady();
+					CancelWaitDialog.this.close();
+				}
+
+				@Override
+				public boolean cancel()
+				{
+					return runnable.cancel();
+				}
 			};
-			mRunnThread.run();
+			mRunnThread.start();
 		}
 	}
 
