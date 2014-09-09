@@ -17,6 +17,7 @@ import org.junit.Test;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
 import CB_Utils.Util.FileIO;
+import CB_Utils.http.HttpUtils;
 import __Static.InitTestDBs;
 
 /**
@@ -45,7 +46,7 @@ public class GenCacheTypes extends TestCase
 		{
 			HttpGet httppost = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetGeocacheTypes?AccessToken=" + accessToken + "&format=json");
 
-			String result = GroundspeakAPI.Execute(httppost, null);
+			String result = HttpUtils.Execute(httppost, null);
 
 			try
 			// Parse JSON Result

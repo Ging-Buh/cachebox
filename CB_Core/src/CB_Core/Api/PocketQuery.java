@@ -21,6 +21,7 @@ import org.json.JSONTokener;
 
 import CB_Utils.Exceptions.NullArgumentException;
 import CB_Utils.Log.Logger;
+import CB_Utils.http.HttpUtils;
 
 /***
  * @author Longri
@@ -67,7 +68,7 @@ public class PocketQuery
 		if (list == null) new NullArgumentException("PQ List");
 		try
 		{
-			String result = GroundspeakAPI.Execute(httpGet, null);
+			String result = HttpUtils.Execute(httpGet, null);
 
 			try
 			// Parse JSON Result

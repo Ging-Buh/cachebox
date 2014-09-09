@@ -13,7 +13,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ConnectTimeoutException;
 
-import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Import.BreakawayImportThread;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
@@ -38,6 +37,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.http.HttpUtils;
 
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
@@ -351,7 +351,7 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 
 				try
 				{
-					repository_freizeitkarte_android = GroundspeakAPI.Execute(httpget, null);
+					repository_freizeitkarte_android = HttpUtils.Execute(httpget, null);
 				}
 				catch (ConnectTimeoutException e)
 				{

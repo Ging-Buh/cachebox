@@ -41,6 +41,7 @@ import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+import CB_Utils.http.HttpUtils;
 
 public class SearchForGeocaches_Core
 {
@@ -238,7 +239,7 @@ public class SearchForGeocaches_Core
 		// Execute HTTP Post Request
 		try
 		{
-			result = GroundspeakAPI.Execute(httppost, icancel);
+			result = HttpUtils.Execute(httppost, icancel);
 			if (result.contains("The service is unavailable"))
 			{
 				return "The service is unavailable";
@@ -351,7 +352,7 @@ public class SearchForGeocaches_Core
 				// Execute HTTP Post Request
 				try
 				{
-					result = GroundspeakAPI.Execute(httppost, icancel);
+					result = HttpUtils.Execute(httppost, icancel);
 					if (result.contains("The service is unavailable"))
 					{
 						Logger.Error("SearchForGeocaches:The service is unavailable", result);

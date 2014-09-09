@@ -1,8 +1,6 @@
 package CB_Core.Api;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,25 +9,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.AbortableHttpRequestBase;
 import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.ImageDAO;
@@ -45,12 +35,12 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
-import CB_Utils.Plattform;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
+import CB_Utils.http.HttpUtils;
 
 public class GroundspeakAPI
 {
@@ -204,19 +194,12 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 			// Execute HTTP Post Request
-
-			AbortableHttpRequestBase req = new AbortableHttpRequestBase(httppost)
-			{
-				@Override
-				public boolean abort()
-				{
-					// TODO Auto-generated method stub
-					return false;
-				}
-			};
-
-			String result = Execute(httppost, icancel);
+			String result = HttpUtils.Execute(httppost, icancel);
 
 			if (result.contains("The service is unavailable"))
 			{
@@ -311,8 +294,12 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 			// Execute HTTP Post Request
-			String result = Execute(httppost, icancel);
+			String result = HttpUtils.Execute(httppost, icancel);
 
 			if (result.contains("The service is unavailable"))
 			{
@@ -403,8 +390,13 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 			// Execute HTTP Post Request
-			String result = Execute(httppost, icancel);
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -532,7 +524,13 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
-			String result = Execute(httppost, icancel);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -662,7 +660,13 @@ public class GroundspeakAPI
 				requestString += "&MaxPerPage=" + count;
 				HttpGet httppost = new HttpGet(URL + "GetGeocacheLogsByCacheCode?format=json" + requestString);
 
-				String result = Execute(httppost, cancelRun);
+				// set time outs
+				HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+				HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+				// Execute HTTP Post Request
+				String result = HttpUtils.Execute(httppost, cancelRun);
+
 				if (result.contains("The service is unavailable"))
 				{
 					return API_IS_UNAVAILABLE;
@@ -802,8 +806,13 @@ public class GroundspeakAPI
 
 				httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+				// set time outs
+				HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+				HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 				// Execute HTTP Post Request
-				String result = Execute(httppost, icancel);
+				String result = HttpUtils.Execute(httppost, icancel);
+
 				if (result.contains("The service is unavailable"))
 				{
 					return API_IS_UNAVAILABLE;
@@ -995,8 +1004,12 @@ public class GroundspeakAPI
 
 				httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+				// set time outs
+				HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+				HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 				// Execute HTTP Post Request
-				String result = Execute(httppost, icancel);
+				String result = HttpUtils.Execute(httppost, icancel);
 
 				if (result.contains("The service is unavailable"))
 				{
@@ -1083,7 +1096,13 @@ public class GroundspeakAPI
 		{
 			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + GetAccessToken(true) + "&trackingNumber=" + TrackingCode + "&format=json");
 
-			String result = Execute(httppost, icancel);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1175,7 +1194,13 @@ public class GroundspeakAPI
 		{
 			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + GetAccessToken(true) + "&tbCode=" + TrackingNumber + "&format=json");
 
-			String result = Execute(httppost, icancel);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1267,7 +1292,13 @@ public class GroundspeakAPI
 		{
 			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken() + "&CacheCode=" + cacheCode + "&format=json");
 
-			String result = Execute(httppost, icancel);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1354,7 +1385,13 @@ public class GroundspeakAPI
 		{
 			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode + "&format=json");
 
-			String result = Execute(httppost, icancel);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1451,84 +1488,6 @@ public class GroundspeakAPI
 
 		list = null;
 		return ERROR;
-	}
-
-	/**
-	 * Fürt ein Http Request aus und gibt die Antwort als String zurück. Da ein HttpRequestBase übergeben wird kann ein HttpGet oder
-	 * HttpPost zum Ausführen übergeben werden.
-	 * 
-	 * @param httprequest
-	 *            HttpGet oder HttpPost
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
-	 * @return Die Antwort als String.
-	 * @throws IOException
-	 * @throws ClientProtocolException
-	 */
-	public static String Execute(final HttpRequestBase httprequest, final ICancel icancel) throws IOException, ClientProtocolException, ConnectTimeoutException
-	{
-
-		int conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
-		int socketTimeout = CB_Core_Settings.socket_timeout.getValue();
-
-		httprequest.setHeader("Accept", "application/json");
-		httprequest.setHeader("Content-type", "application/json");
-
-		// Execute HTTP Post Request
-		String result = "";
-
-		HttpParams httpParameters = new BasicHttpParams();
-		// Set the timeout in milliseconds until a connection is established.
-		// The default value is zero, that means the timeout is not used.
-
-		HttpConnectionParams.setConnectionTimeout(httpParameters, conectionTimeout);
-		// Set the default socket timeout (SO_TIMEOUT)
-		// in milliseconds which is the timeout for waiting for data.
-
-		HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
-
-		DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
-
-		final AtomicBoolean ready = new AtomicBoolean(false);
-		if (icancel != null)
-		{
-			Thread cancelChekThread = new Thread(new Runnable()
-			{
-
-				@Override
-				public void run()
-				{
-					do
-					{
-						try
-						{
-							Thread.sleep(200);
-						}
-						catch (InterruptedException e)
-						{
-
-						}
-						if (icancel.cancel()) httprequest.abort();
-					}
-					while (!ready.get());
-				}
-			});
-
-			cancelChekThread.start();// start abort chk thread
-		}
-		HttpResponse response = httpClient.execute(httprequest);
-		ready.set(true);// cancel abort chk thread
-
-		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-		String line = "";
-		while ((line = rd.readLine()) != null)
-		{
-			if (Plattform.used == Plattform.Server) line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
-			result += line + "\n";
-		}
-		return result;
 	}
 
 	public static void WriteCachesLogsImages_toDB(CB_List<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages) throws InterruptedException
@@ -1811,8 +1770,13 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 			// Execute HTTP Post Request
-			String result = Execute(httppost, icancel);
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
