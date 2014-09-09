@@ -278,7 +278,7 @@ public abstract class Dialog extends CB_View_Base
 	@Override
 	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
-
+		if (this.isDisposed()) return;
 		batch.flush();
 
 		if (mHeader9patch != null && !dontRenderDialogBackground)
