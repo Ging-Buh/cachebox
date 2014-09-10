@@ -506,6 +506,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		renderSyncronOverlay(batch);
 		// }
 		// renderDebugInfo(batch);
+
+		renderNonSyncronOverlay(batch);
+
 	}
 
 	protected abstract void renderSyncronOverlay(Batch batch);

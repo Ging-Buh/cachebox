@@ -46,7 +46,7 @@ public abstract class RunnableReadyHandler implements cancelRunnable
 	public void Cancel()
 	{
 		isCanceld = true;
-		mRunThread.interrupt();
+		if (mRunThread != null) mRunThread.interrupt();
 	}
 
 }

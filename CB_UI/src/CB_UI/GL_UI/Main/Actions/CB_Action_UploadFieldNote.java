@@ -1,5 +1,7 @@
 package CB_UI.GL_UI.Main.Actions;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Enums.LogTypes;
 import CB_Core.GCVote.GCVote;
@@ -11,9 +13,11 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
 import CB_UI.GL_UI.Views.FieldNotesView;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
 import CB_UI_Base.GL_UI.Controls.MessageBox.GL_MsgBox;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
@@ -63,7 +67,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 
 	private void UploadFieldNotes()
 	{
-		ThreadCancel = false;
+		final AtomicBoolean cancel = new AtomicBoolean(false);
 
 		final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler()
 		{
@@ -92,6 +96,8 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 					API_Key_error = false;
 					for (FieldNoteEntry fieldNote : lFieldNotes)
 					{
+						if (cancel.get()) break;
+
 						if (fieldNote.uploaded) continue;
 						if (ThreadCancel) // wenn im ProgressDialog Cancel gedrückt
 											// wurde.
@@ -158,8 +164,7 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 			@Override
 			public boolean cancel()
 			{
-				// TODO Handle cancel
-				return false;
+				return cancel.get();
 			}
 
 			@Override
@@ -182,7 +187,25 @@ public class CB_Action_UploadFieldNote extends CB_ActionCommand
 		};
 
 		// ProgressDialog Anzeigen und den Abarbeitungs Thread übergeben.
-		PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
+
+		GL.that.RunOnGL(new IRunOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
+				PD.setCancelListner(new iCancelListner()
+				{
+
+					@Override
+					public void isCanceld()
+					{
+						cancel.set(true);
+					}
+				});
+			}
+		});
 
 	}
 

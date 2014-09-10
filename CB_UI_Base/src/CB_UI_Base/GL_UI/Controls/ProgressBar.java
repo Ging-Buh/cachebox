@@ -23,7 +23,7 @@ public class ProgressBar extends CB_View_Base
 	{
 		super(rec, Name);
 
-		label = new Label(this, "ProgressLabel");
+		label = new Label(this, "");
 		label.setHAlignment(HAlignment.CENTER);
 
 		this.addChild(label);
@@ -63,6 +63,7 @@ public class ProgressBar extends CB_View_Base
 	 */
 	public float setProgress(int value)
 	{
+		if (this.isDisposed()) return 0;
 		progress = value;
 		if (progress > 100) progress = 100;
 		progressDrawWidth = (getWidth() / 100) * progress;
@@ -77,6 +78,7 @@ public class ProgressBar extends CB_View_Base
 	 */
 	public float setProgress(int value, final String Msg)
 	{
+		if (this.isDisposed()) return 0;
 		msg = Msg;
 
 		float ret = setProgress(value);
@@ -107,6 +109,7 @@ public class ProgressBar extends CB_View_Base
 	@Override
 	protected void render(Batch batch)
 	{
+		if (this.isDisposed()) return;
 		if (progressFill == null || progressFillDisabled == null) Initial();
 
 		if (!isDisabled)
@@ -136,6 +139,7 @@ public class ProgressBar extends CB_View_Base
 
 	public void setText(String message)
 	{
+		if (this.isDisposed()) return;
 		msg = message;
 		label.setText(msg);
 	}

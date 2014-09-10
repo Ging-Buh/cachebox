@@ -97,8 +97,7 @@ public class GL_MsgBox extends Dialog
 			return null;
 		}
 
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)),
-				"MsgBox" + title);
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), false, (remember != null)), "MsgBox" + title);
 		msgBox.rememberSetting = remember;
 		msgBox.mMsgBoxClickListner = Listener;
 		msgBox.setButtonCaptions(buttons);
@@ -112,8 +111,7 @@ public class GL_MsgBox extends Dialog
 		return msgBox;
 	}
 
-	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener,
-			SettingBool remember)
+	public static GL_MsgBox Show(String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener, SettingBool remember)
 	{
 
 		if (remember != null && remember.getValue())
@@ -130,8 +128,7 @@ public class GL_MsgBox extends Dialog
 		// nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
 		// !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
 		Dialog.margin = 5;
-		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)),
-				"MsgBox" + title);
+		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
 
 		msgBox.rememberSetting = remember;
 		msgBox.mMsgBoxClickListner = Listener;
@@ -141,8 +138,7 @@ public class GL_MsgBox extends Dialog
 
 		SizeF contentSize = msgBox.getContentSize();
 
-		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(),
-				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		Image iconImage = new Image(imageRec, "MsgBoxIcon");
 		if (icon != MessageBoxIcon.None) iconImage.setDrawable(new SpriteDrawable(getIcon(icon)));
@@ -262,9 +258,8 @@ public class GL_MsgBox extends Dialog
 		}
 		else if (buttons == MessageBoxButtons.Cancel)
 		{
-			createButtons(this, 3);
+			createButtons(this, 2);
 			button1.setInvisible();
-			button2.setInvisible();
 			button3.setText(Translation.Get("cancel"));
 		}
 		else

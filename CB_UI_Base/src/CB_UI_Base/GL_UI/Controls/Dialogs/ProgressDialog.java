@@ -72,8 +72,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 		progressMessageTextView = new Label(leftBorder, margin, innerWidth, measuredLabelHeight, "");
 		this.addChild(progressMessageTextView);
 
-		CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width,
-				UI_Size_Base.that.getButtonHeight() * 0.75f);
+		CB_RectF rec = new CB_RectF(0, progressMessageTextView.getMaxY() + margin, this.getContentSize().width, UI_Size_Base.that.getButtonHeight() * 0.75f);
 
 		progressBar = new ProgressBar(rec, "");
 		progressBar.setProgress(0);
@@ -98,8 +97,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 			public void run()
 			{
 				ProgressDialog.this.removeChild(ProgressDialog.this.animation);
-				CB_RectF imageRec = new CB_RectF(0, progressBar.getMaxY() + margin, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that
-						.getButtonHeight());
+				CB_RectF imageRec = new CB_RectF(0, progressBar.getMaxY() + margin, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 				ProgressDialog.this.animation = Animation.INSTANCE(imageRec);
 				ProgressDialog.this.addChild(ProgressDialog.this.animation);
 			}
@@ -173,6 +171,7 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 				public void run()
 				{
 					ProgressThread.run();
+					ProgressThread.RunnableReady(ProgressThread.cancel());
 				}
 			};
 
@@ -197,12 +196,12 @@ public class ProgressDialog extends GL_MsgBox implements ProgressChangedEvent
 			@Override
 			public void run()
 			{
+				if (ProgressDialog.this.isDisposed()) return;
 				progressBar.setProgress(value);
 				progressMessageTextView.setText(ProgressMessage);
 				if (!Msg.equals("")) messageTextView.setText(Msg);
 			}
 		});
-
 	}
 
 }

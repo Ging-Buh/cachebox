@@ -45,7 +45,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public static final int MOUSE_WHEEL_POINTER_UP = -280272;
 	protected final ParentInfo myInfoForChild = new ParentInfo();
-	private final Matrix4 rotateMatrix = new Matrix4();
+	protected final Matrix4 rotateMatrix = new Matrix4();
 
 	/**
 	 * Pointer ID for Mouse wheel scrolling down
@@ -194,19 +194,15 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Gibt die Visibility dieser GL_View zurueck.</br> Wenn die Groesse dieser GL_View <=0f ist, so wird INVISIBLE zurueck gegeben.
+	 * Returns TRUE if with and height >0, is not disposed and is not set to invisible
 	 * 
 	 * @return
 	 */
-	private boolean getVisibility()
-	{
-		if (this.getWidth() <= 0f || this.getHeight() <= 0f) return false;
-		return mVisible;
-	}
-
 	public boolean isVisible()
 	{
-		return getVisibility();
+		if (this.isDisposed) return false;
+		if (this.getWidth() <= 0f || this.getHeight() <= 0f) return false;
+		return mVisible;
 	}
 
 	public GL_View_Base addChild(final GL_View_Base view)
@@ -342,6 +338,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 **/
 	public void setBackground(Drawable background)
 	{
+		if (isDisposed) return;
 		drawableBackground = background;
 		if (background != null)
 		{
@@ -667,7 +664,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 * muessen. Die detection wann sich etwas geaendert hat, kommt von der ueberschriebenen CB_RectF Methode CalcCrossPos, da diese bei
 	 * jeder Aenderung aufgerufen wird.
 	 */
-	private void CalcMyInfoForChild()
+	protected void CalcMyInfoForChild()
 	{
 		childsInvalidate = true;
 		ThisWorldRec.setRec(this);// .copy().offset(myParentInfo.Vector());
@@ -1374,7 +1371,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	// ############# End Skin changed ############
 
-	private Color mColorFilter = null;
+	protected Color mColorFilter = null;
 
 	public void setColorFilter(Color color)
 	{

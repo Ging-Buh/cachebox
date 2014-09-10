@@ -857,7 +857,7 @@ public class FieldNotesView extends V_ListView
 
 	private void deleteAllFieldNote()
 	{
-		GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener()
+		final GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener()
 		{
 			@Override
 			public boolean onClick(int which, Object data)
@@ -894,8 +894,17 @@ public class FieldNotesView extends V_ListView
 
 			}
 		};
-		String message = Translation.Get("DeleteAllFieldNotesQuestion");
-		GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener);
+		final String message = Translation.Get("DeleteAllFieldNotesQuestion");
+		GL.that.RunOnGL(new IRunOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener);
+
+			}
+		});
 
 	}
 
