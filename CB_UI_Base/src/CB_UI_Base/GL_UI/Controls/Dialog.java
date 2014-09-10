@@ -146,7 +146,7 @@ public abstract class Dialog extends CB_View_Base
 			}
 			else
 			{
-				contentChilds.add(view);
+				if (contentChilds != null) contentChilds.add(view);
 			}
 		}
 
@@ -177,7 +177,7 @@ public abstract class Dialog extends CB_View_Base
 			}
 			else
 			{
-				contentChilds.remove(view);
+				if (contentChilds != null) contentChilds.remove(view);
 			}
 		}
 
@@ -186,7 +186,7 @@ public abstract class Dialog extends CB_View_Base
 	@Override
 	public void removeChilds()
 	{
-		contentChilds.clear();
+		if (contentChilds != null) contentChilds.clear();
 		if (mContent != null) mContent.removeChilds();
 	}
 
