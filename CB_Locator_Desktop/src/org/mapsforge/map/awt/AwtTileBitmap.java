@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,6 +29,10 @@ public class AwtTileBitmap extends AwtBitmap implements TileBitmap {
 
 	AwtTileBitmap(int tileSize) {
 		super(tileSize, tileSize);
+	}
+
+	public BufferedImage getBufferedImage() {
+		return this.bufferedImage;
 	}
 
 }
