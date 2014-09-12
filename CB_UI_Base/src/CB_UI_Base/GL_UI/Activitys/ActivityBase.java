@@ -66,7 +66,6 @@ public class ActivityBase extends Dialog
 	{
 		GL.that.RunOnGL(new IRunOnGL()
 		{
-
 			@Override
 			public void run()
 			{

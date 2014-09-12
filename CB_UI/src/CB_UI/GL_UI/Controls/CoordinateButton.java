@@ -24,6 +24,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 	protected String mwpName;
 	protected CopiePastePopUp popUp;
 	protected Clipboard clipboard;
+	private EditCoord edCo;
 
 	public interface CoordinateChangeListner
 	{
@@ -75,8 +76,6 @@ public class CoordinateButton extends Button implements ICopyPaste
 		drawablePressed = tmp;
 	}
 
-	EditCoord edCo;
-
 	private void initialEdCo()
 	{
 
@@ -92,6 +91,7 @@ public class CoordinateButton extends Button implements ICopyPaste
 					if (mCoordinateChangedListner != null) mCoordinateChangedListner.coordinateChanged(coord);
 					setText();
 				}
+				if (edCo != null) edCo.dispose();
 				edCo = null;
 			}
 		});
