@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
+import CB_UI.GL_UI.Activitys.CreateTrackOverMapActivity;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -18,7 +19,6 @@ import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
-import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
@@ -60,10 +60,6 @@ public class TestView extends CB_View_Base
 
 		// ####################################################
 
-		String test = "Карти";
-
-		char c[] = test.toCharArray();
-
 		Label label = new Label(new CB_RectF(50, 50, 500, 100), "/ExtSD/Карти/Vector Maps");
 		this.addChild(label);
 		// ####################################################
@@ -78,10 +74,10 @@ public class TestView extends CB_View_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				ConnectionError INSTANCE = new ConnectionError("http:12345");
-				GL.that.Toast(INSTANCE);
+				TrackListView trk = new TrackListView(TestView.this, "TrackListView");
 
-				showProgress();
+				CreateTrackOverMapActivity activity = new CreateTrackOverMapActivity("createTrackOverMap");
+				activity.show();
 
 				return true;
 			}

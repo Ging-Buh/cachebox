@@ -74,6 +74,7 @@ import CB_UI.GL_UI.Views.FieldNotesView;
 import CB_UI.GL_UI.Views.JokerView;
 import CB_UI.GL_UI.Views.LogView;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.GL_UI.Views.NotesView;
 import CB_UI.GL_UI.Views.SolverView;
 import CB_UI.GL_UI.Views.SolverView2;
@@ -425,7 +426,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		// create MapView Instanz
 		CB_TabView mapTap = GlobalCore.isTab ? RightTab : LeftTab;
-		TabMainView.mapView = new MapView(mapTap.getContentRec(), false, "MapView");
+		TabMainView.mapView = new MapView(mapTap.getContentRec(), MapMode.Normal, "MapView");
 
 		platformConector.FirstShow();
 		filterSetChanged();

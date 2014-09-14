@@ -87,6 +87,12 @@ public class Button extends CB_View_Base
 		this.setClickable(true);
 	}
 
+	public Button(CB_RectF cb_RectF, OnClickListener onClik)
+	{
+		this(cb_RectF, "");
+		this.setOnClickListener(onClik);
+	}
+
 	public void setninePatch(Drawable drawable)
 	{
 		drawableNormal = drawable;

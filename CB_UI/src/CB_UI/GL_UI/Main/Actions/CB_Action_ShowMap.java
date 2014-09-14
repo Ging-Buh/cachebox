@@ -24,6 +24,7 @@ import CB_UI.GL_UI.Activitys.MapDownload;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
+import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base.OnClickListener;
@@ -52,8 +53,7 @@ public class CB_Action_ShowMap extends CB_Action_ShowView
 	@Override
 	public void Execute()
 	{
-		if ((TabMainView.mapView == null) && (tabMainView != null) && (tab != null)) TabMainView.mapView = new MapView(tab.getContentRec(),
-				false, "MapView");
+		if ((TabMainView.mapView == null) && (tabMainView != null) && (tab != null)) TabMainView.mapView = new MapView(tab.getContentRec(), MapMode.Normal, "MapView");
 
 		if ((TabMainView.mapView != null) && (tab != null)) tab.ShowView(TabMainView.mapView);
 	}

@@ -99,7 +99,13 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class MapView extends MapViewBase implements SelectedCacheEvent, PositionChangedEvent
 {
-	boolean CompassMode = false;
+
+	public enum MapMode
+	{
+		Normal, Compass, Track
+	}
+
+	MapMode Mode = MapMode.Normal;
 
 	// ####### Enthaltene Controls ##########
 	LiveButton liveButton;
@@ -129,11 +135,11 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	Cache lastSelectedCache = null;
 	Waypoint lastSelectedWaypoint = null;
 
-	public MapView(CB_RectF rec, boolean compassMode, String Name)
+	public MapView(CB_RectF rec, MapMode Mode, String Name)
 	{
 		super(rec, Name);
 		// statischen that nur setzen wenn die HauptMapView initialisiert wird
-		if (!compassMode)
+		if (Mode == MapMode.Normal)
 		{
 			that = this;
 		}
@@ -152,7 +158,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			});
 		}
 
-		CompassMode = compassMode;
+		this.Mode = Mode;
 
 		Config.MapsforgeDayTheme.addChangedEventListner(themeChangedEventHandler);
 		Config.MapsforgeNightTheme.addChangedEventListner(themeChangedEventHandler);
@@ -181,7 +187,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		mapScale = new MapScale(new CB_RectF(GL_UISizes.margin, GL_UISizes.margin, this.getHalfWidth(), GL_UISizes.ZoomBtn.getHalfWidth() / 4), "mapScale", this, Config.ImperialUnits.getValue());
 
-		if (!CompassMode)
+		if (Mode == MapMode.Normal)
 		{
 			this.addChild(mapScale);
 		}
@@ -192,6 +198,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		// initial Zoom Buttons
 		zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
+
+		zoomBtn.setX(this.getWidth() - (zoomBtn.getWidth() + UI_Size_Base.that.getMargin()));
+
 		zoomBtn.setOnClickListenerDown(new OnClickListener()
 		{
 			@Override
@@ -231,20 +240,20 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			}
 		});
 
-		if (!CompassMode)
+		if (Mode == MapMode.Compass)
 		{
-			this.addChild(zoomBtn);
-			zoomBtn.setMinimumFadeValue(0.25f);
+			zoomBtn.setInvisible();
 		}
 		else
 		{
-			zoomBtn.setInvisible();
+			this.addChild(zoomBtn);
+			zoomBtn.setMinimumFadeValue(0.25f);
 		}
 
 		this.setOnClickListener(onClickListner);
 
 		float InfoHeight = 0;
-		if (!CompassMode)
+		if (Mode == MapMode.Normal)
 		{
 			info = (MapInfoPanel) this.addChild(new MapInfoPanel(GL_UISizes.Info, "InfoPanel", this));
 			InfoHeight = info.getHeight();
@@ -255,7 +264,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		ZoomScaleRec.setPos(new Vector2(GL_UISizes.margin, zoomBtn.getMaxY() + GL_UISizes.margin));
 
 		zoomScale = new ZoomScale(ZoomScaleRec, "zoomScale", 2, 21, 12);
-		if (!CompassMode) this.addChild(zoomScale);
+		if (Mode == MapMode.Normal) this.addChild(zoomScale);
 
 		mapIntWidth = (int) rec.getWidth();
 		mapIntHeight = (int) rec.getHeight();
@@ -310,7 +319,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		MapState last = MapState.values()[Config.LastMapToggleBtnState.getValue()];
 		togBtn.setState(last.ordinal());
-		setMapState(last);
 
 		togBtn.setOnStateChangedListner(new OnStateChangeListener()
 		{
@@ -323,8 +331,20 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		});
 		togBtn.registerSkinChangedEvent();
 
-		setMapState(CompassMode ? MapState.GPS : last);
-		if (!CompassMode)
+		switch (Mode)
+		{
+		case Compass:
+			setMapState(MapState.GPS);
+			break;
+		case Normal:
+			setMapState(last);
+			break;
+		case Track:
+			setMapState(MapState.FREE);
+			break;
+		}
+
+		if (Mode == MapMode.Normal)
 		{
 			switch (Config.LastMapToggleBtnState.getValue())
 			{
@@ -346,7 +366,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			}
 		}
 
-		if (!CompassMode)
+		if (Mode == MapMode.Normal)
 		{
 			this.addChild(togBtn);
 			if (Config.DisableLiveMap.getValue())
@@ -443,14 +463,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				return true;
 			}
 		});
-		if (!CompassMode) this.addChild(infoBubble);
+		if (Mode == MapMode.Normal) this.addChild(infoBubble);
 
 		resize(rec.getWidth(), rec.getHeight());
 
 		center = new CoordinateGPS(Config.MapInitLatitude.getValue(), Config.MapInitLongitude.getValue());
 
 		// Info aktualisieren
-		if (!CompassMode) info.setCoord(center);
+		if (Mode == MapMode.Normal) info.setCoord(center);
 		aktZoom = Config.lastZoomLevel.getValue();
 		zoomBtn.setZoom(aktZoom);
 		calcPixelsPerMeter();
@@ -496,7 +516,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		if ((aktZoom >= 13) && (aktZoom <= 14)) iconSize = 1; // 13x13
 		else if (aktZoom > 14) iconSize = 2; // default Images
 
-		if (!CompassMode) CB_UI.Map.RouteOverlay.RenderRoute(batch, aktZoom, ySpeedVersatz);
+		if (Mode != MapMode.Compass) CB_UI.Map.RouteOverlay.RenderRoute(batch, aktZoom, ySpeedVersatz);
 		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
 		renderPositionMarker(batch);
 		RenderTargetArrow(batch);
@@ -570,13 +590,16 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		if (TargetArrowScreenRec == null)
 		{
 			TargetArrowScreenRec = new CB_RectF(0, 0, mapIntWidth, mapIntHeight);
-			if (!CompassMode)
+			if (Mode != MapMode.Compass)
 			{
 				TargetArrowScreenRec.ScaleCenter(0.9f);
-				TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
-				TargetArrowScreenRec.setY(zoomBtn.getMaxY());
-			}
 
+				if (Mode == MapMode.Normal)
+				{
+					TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
+					TargetArrowScreenRec.setY(zoomBtn.getMaxY());
+				}
+			}
 		}
 
 		Vector2 ScreenCenter = new Vector2(halfWidth, halfHeight);
@@ -996,7 +1019,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	public void setCenter(CoordinateGPS value)
 	{
-		if (!CompassMode) info.setCoord(value);
+		if (Mode == MapMode.Normal) info.setCoord(value);
 		super.setCenter(value);
 
 	}
@@ -1045,14 +1068,14 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	protected void setZoomScale(int zoom)
 	{
 		// Logger.LogCat("set zoom");
-		if (!CarMode && !CompassMode) zoomScale.setZoom(zoom);
-		if (!CompassMode) mapScale.zoomChanged();
+		if (Mode == MapMode.Normal) zoomScale.setZoom(zoom);
+		if (Mode == MapMode.Normal) mapScale.zoomChanged();
 	}
 
 	protected void calcCenter()
 	{
 		super.calcCenter();
-		if (!CompassMode)
+		if (Mode == MapMode.Normal)
 		{
 			info.setCoord(center);
 		}
@@ -1064,7 +1087,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		float margin = GL_UISizes.margin;
 
 		float infoHeight = 0;
-		if (!CompassMode)
+		if (Mode == MapMode.Normal)
 		{
 			info.setPos(new Vector2(margin, (float) (this.mapIntHeight - margin - info.getHeight())));
 			info.setVisible(showCompass);
@@ -1214,7 +1237,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		boolean wasCarMode = CarMode;
 
-		if (!CompassMode)
+		if (Mode == MapMode.Normal)
 		{
 			info.setCoordType(CoordType.Map);
 			if (state == MapState.CAR)
@@ -1267,7 +1290,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			OrientationChanged();
 		}
 
-		if (CompassMode)
+		if (Mode == MapMode.Compass)
 		{
 			// Berechne den Zoom so, dass eigene Position und WP auf der Map zu sehen sind.
 			Coordinate position = null;
@@ -1321,10 +1344,16 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	@Override
 	public boolean doubleClick(int x, int y, int pointer, int button)
 	{
-		if (CompassMode)
+		if (Mode != MapMode.Normal)
 		{
 			// Center map on CompassMode
 			setMapState(MapState.GPS);
+			if (Mode != MapMode.Normal)
+			{
+				// If TrackMode set MapState.Free for showing CenterCross
+				setMapState(MapState.FREE);
+			}
+
 			return true;
 		}
 		else
@@ -1350,7 +1379,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	@Override
 	public void onStop()
 	{
-		if (!CompassMode) // save last zoom and position only from Map, not from CompassMap
+		if (Mode == MapMode.Normal) // save last zoom and position only from Map, not from CompassMap
 		{
 			super.onStop();
 		}
@@ -1367,7 +1396,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		CB_UI.Events.SelectedCacheEventList.Add(this);
-		this.NorthOriented = CompassMode ? false : Config.MapNorthOriented.getValue();
+		this.NorthOriented = Mode == MapMode.Normal ? Config.MapNorthOriented.getValue() : false;
 		SelectedCacheChanged(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 	}
 
@@ -1380,15 +1409,21 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 	{
 		if ((InitialFlags & INITIAL_SETTINGS) != 0)
 		{
-			showRating = CompassMode ? false : Config.MapShowRating.getValue();
-			showDT = CompassMode ? false : Config.MapShowDT.getValue();
-			showTitles = CompassMode ? false : Config.MapShowTitles.getValue();
+			showRating = Mode == MapMode.Compass ? false : Config.MapShowRating.getValue();
+			showDT = Mode == MapMode.Compass ? false : Config.MapShowDT.getValue();
+			showTitles = Mode == MapMode.Compass ? false : Config.MapShowTitles.getValue();
 			hideMyFinds = Config.MapHideMyFinds.getValue();
-			showCompass = CompassMode ? false : Config.MapShowCompass.getValue();
-			showDirectLine = CompassMode ? false : Config.ShowDirektLine.getValue();
-			showAllWaypoints = CompassMode ? false : Config.ShowAllWaypoints.getValue();
-			showAccuracyCircle = CompassMode ? false : Config.ShowAccuracyCircle.getValue();
-			showMapCenterCross = CompassMode ? false : Config.ShowMapCenterCross.getValue();
+			showCompass = Mode == MapMode.Compass ? false : Config.MapShowCompass.getValue();
+			showDirectLine = Mode == MapMode.Compass ? false : Config.ShowDirektLine.getValue();
+			showAllWaypoints = Mode == MapMode.Compass ? false : Config.ShowAllWaypoints.getValue();
+			showAccuracyCircle = Mode == MapMode.Compass ? false : Config.ShowAccuracyCircle.getValue();
+			showMapCenterCross = Mode == MapMode.Compass ? false : Config.ShowMapCenterCross.getValue();
+
+			if (Mode == MapMode.Track)
+			{
+				showMapCenterCross = true;
+				setMapState(MapState.FREE);
+			}
 
 			if (info != null) info.setVisible(showCompass);
 
@@ -1396,9 +1431,9 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			{
 				iconFactor = (float) Config.MapViewDPIFaktor.getValue();
 
-				int setAktZoom = CompassMode ? Config.lastZoomLevel.getValue() : Config.lastZoomLevel.getValue();
-				int setMaxZoom = CompassMode ? Config.CompassMapMaxZommLevel.getValue() : Config.OsmMaxLevel.getValue();
-				int setMinZoom = CompassMode ? Config.CompassMapMinZoomLevel.getValue() : Config.OsmMinLevel.getValue();
+				int setAktZoom = Mode == MapMode.Compass ? Config.lastZoomLevel.getValue() : Config.lastZoomLevel.getValue();
+				int setMaxZoom = Mode == MapMode.Compass ? Config.CompassMapMaxZommLevel.getValue() : Config.OsmMaxLevel.getValue();
+				int setMinZoom = Mode == MapMode.Compass ? Config.CompassMapMinZoomLevel.getValue() : Config.OsmMinLevel.getValue();
 
 				aktZoom = setAktZoom;
 				zoomBtn.setMaxZoom(setMaxZoom);
@@ -1408,7 +1443,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 				zoomScale.setMaxZoom(setMaxZoom);
 				zoomScale.setMinZoom(setMinZoom);
 
-				if (CompassMode)
+				if (Mode == MapMode.Compass)
 				{
 					// Berechne die darstellbare Entfernung für jedes ZoomLevel
 					DistanceZoomLevel = new TreeMap<Integer, Integer>();
@@ -1494,7 +1529,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 			if (themePath != null)
 			{
-				if (CompassMode)
+				if (Mode == MapMode.Compass)
 				{
 					if (!ManagerBase.Manager.isRenderThemeSetted())
 					{
