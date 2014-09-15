@@ -20,11 +20,12 @@ import CB_Locator.CoordinateGPS;
 import CB_Locator.GPS;
 import CB_Locator.GpsStrength;
 import CB_Locator.Location.ProviderType;
+import CB_Locator.Map.Track;
+import CB_Locator.Map.TrackPoint;
 import CB_Locator.Events.GpsStateChangeEventList;
 import CB_UI.Config;
 import CB_UI.Map.RouteOverlay;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Math.TrackPoint;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -249,7 +250,7 @@ public class simulateForm extends Frame implements ActionListener, WindowListene
 		this.layout();
 	}
 
-	private static RouteOverlay.Track simulationRoute = null;
+	private static Track simulationRoute = null;
 
 	private static void simulateGpsWithGpxFile()
 	{

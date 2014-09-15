@@ -110,6 +110,8 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 	{
 		this.removeChilds();
 
+		if (this.isDisposed()) return;
+
 		this.setBackground(SpriteCacheBase.AboutBack);
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
 		margin = UI_Size_Base.that.getMargin();

@@ -1,7 +1,7 @@
 package Math;
 
 import junit.framework.TestCase;
-import CB_UI_Base.Math.PolylineReduction;
+import CB_Locator.Map.PolylineReduction;
 import CB_Utils.Math.PointD;
 
 public class PolylineReduction_Test extends TestCase

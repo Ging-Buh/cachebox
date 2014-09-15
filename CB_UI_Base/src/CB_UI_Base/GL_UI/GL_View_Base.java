@@ -44,7 +44,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 * Pointer ID for Mouse wheel scrolling up
 	 */
 	public static final int MOUSE_WHEEL_POINTER_UP = -280272;
-	protected final ParentInfo myInfoForChild = new ParentInfo();
+	private final ParentInfo myInfoForChild = new ParentInfo();
 	protected final Matrix4 rotateMatrix = new Matrix4();
 
 	/**
@@ -541,15 +541,15 @@ public abstract class GL_View_Base extends CB_RectF
 						{
 							if (childsInvalidate) view.invalidate();
 
-							myInfoForChild.setParentInfo(myParentInfo);
-							myInfoForChild.setWorldDrawRec(intersectRec);
+							getMyInfoForChild().setParentInfo(myParentInfo);
+							getMyInfoForChild().setWorldDrawRec(intersectRec);
 
-							myInfoForChild.add(view.getX(), view.getY());
+							getMyInfoForChild().add(view.getX(), view.getY());
 
-							batch.setProjectionMatrix(myInfoForChild.Matrix());
+							batch.setProjectionMatrix(getMyInfoForChild().Matrix());
 							nDepthCounter++;
 
-							view.renderChilds(batch, myInfoForChild);
+							view.renderChilds(batch, getMyInfoForChild());
 							nDepthCounter--;
 						}
 					}
@@ -1415,6 +1415,11 @@ public abstract class GL_View_Base extends CB_RectF
 	public Object getData()
 	{
 		return data;
+	}
+
+	public ParentInfo getMyInfoForChild()
+	{
+		return myInfoForChild;
 	}
 
 }

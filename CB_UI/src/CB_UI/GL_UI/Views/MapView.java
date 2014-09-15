@@ -516,7 +516,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		if ((aktZoom >= 13) && (aktZoom <= 14)) iconSize = 1; // 13x13
 		else if (aktZoom > 14) iconSize = 2; // default Images
 
-		if (Mode != MapMode.Compass) CB_UI.Map.RouteOverlay.RenderRoute(batch, aktZoom, ySpeedVersatz);
+		if (Mode != MapMode.Compass) CB_UI.Map.RouteOverlay.RenderRoute(batch, this);
 		renderWPs(GL_UISizes.WPSizes[iconSize], GL_UISizes.UnderlaySizes[iconSize], batch);
 		renderPositionMarker(batch);
 		RenderTargetArrow(batch);
@@ -685,7 +685,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		outScreenDraw = 0;
 	}
 
-	private void renderWPI(Batch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
+	public void renderWPI(Batch batch, SizeF WpUnderlay, SizeF WpSize, WaypointRenderInfo wpi)
 	{
 		Vector2 screen = worldToScreen(new Vector2(wpi.MapX, wpi.MapY));
 
@@ -734,7 +734,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		// draw Favorite symbol
-		if (wpi.Cache.isFavorite())
+		if (wpi.Cache != null && wpi.Cache.isFavorite())
 		{
 			batch.draw(SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()), screen.x + (WpSize.halfWidth / 2), screen.y + (WpSize.halfHeight / 2), WpSize.width, WpSize.height);
 		}
@@ -748,7 +748,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		boolean drawAsWaypoint = wpi.Waypoint != null;
 
 		// Rating des Caches darstellen
-		if (showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (aktZoom >= 15))
+		if (wpi.Cache != null && showRating && (!drawAsWaypoint) && (wpi.Cache.Rating > 0) && (aktZoom >= 15))
 		{
 			Sprite rating = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.Rating * 2, 5 * 2));
 			rating.setBounds(screen.x - WpUnderlay.halfWidth, screen.y - WpUnderlay.halfHeight - WpUnderlay.Height4_8, WpUnderlay.width, WpUnderlay.Height4_8);
@@ -759,7 +759,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		// Beschriftung
-		if (showTitles && (aktZoom >= 15))
+		if (wpi.Cache != null && showTitles && (aktZoom >= 15))
 		{
 			try
 			{
@@ -774,7 +774,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 
 		// Show D/T-Rating
-		if (showDT && (!drawAsWaypoint) && (aktZoom >= 15))
+		if (wpi.Cache != null && showDT && (!drawAsWaypoint) && (aktZoom >= 15))
 		{
 			Sprite difficulty = SpriteCacheBase.MapStars.get((int) Math.min(wpi.Cache.getDifficulty() * 2, 5 * 2));
 			difficulty.setBounds(screen.x - WpUnderlay.width - GL_UISizes.infoShadowHeight, screen.y - (WpUnderlay.Height4_8 / 2), WpUnderlay.width, WpUnderlay.Height4_8);
@@ -790,7 +790,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		}
 
-		if ((wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible())
+		if (wpi.Cache != null && (wpi.Cache.Id == infoBubble.getCacheId()) && infoBubble.isVisible())
 		{
 			if (infoBubble.getWaypoint() == wpi.Waypoint)
 			{

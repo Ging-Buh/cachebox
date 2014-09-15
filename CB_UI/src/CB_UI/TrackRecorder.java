@@ -13,13 +13,14 @@ import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Locator;
 import CB_Locator.Locator.CompassType;
+import CB_Locator.Map.Track;
+import CB_Locator.Map.TrackPoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Views.TrackListView;
 import CB_UI.Map.RouteOverlay;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.graphics.Color;
@@ -40,7 +41,7 @@ public class TrackRecorder
 	public static void StartRecording()
 	{
 
-		GlobalCore.AktuelleRoute = new RouteOverlay.Track(Translation.Get("actualTrack"), Color.BLUE);
+		GlobalCore.AktuelleRoute = new Track(Translation.Get("actualTrack"), Color.BLUE);
 		GlobalCore.AktuelleRoute.ShowRoute = true;
 		GlobalCore.AktuelleRoute.IsActualTrack = true;
 		GlobalCore.aktuelleRouteCount = 0;
@@ -136,9 +137,7 @@ public class TrackRecorder
 
 		if (gpxfile == null) return;
 
-		String xml = "<wpt lat=\"" + String.valueOf(location.getLatitude()) + "\" lon=\"" + String.valueOf(location.getLongitude())
-				+ "\">\n" + "   <ele>" + String.valueOf(location.getAltitude()) + "</ele>\n" + "   <time>" + timestamp + "</time>\n"
-				+ "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
+		String xml = "<wpt lat=\"" + String.valueOf(location.getLatitude()) + "\" lon=\"" + String.valueOf(location.getLongitude()) + "\">\n" + "   <ele>" + String.valueOf(location.getAltitude()) + "</ele>\n" + "   <time>" + timestamp + "</time>\n" + "   <name>" + friendlyName + "</name>\n" + "   <link href=\"" + mediaPath + "\" />\n" + "</wpt>\n";
 
 		RandomAccessFile rand;
 		try
@@ -216,16 +215,14 @@ public class TrackRecorder
 			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
 			float[] dist = new float[1];
 
-			MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(),
-					LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS), Locator.getLongitude(GPS), dist);
+			MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS), Locator.getLongitude(GPS), dist);
 			float cachedDistance = dist[0];
 
 			if (cachedDistance > GlobalCore.TrackDistance)
 			{
 				StringBuilder sb = new StringBuilder();
 
-				sb.append("<trkpt lat=\"" + String.valueOf(Locator.getLatitude()) + "\" lon=\"" + String.valueOf(Locator.getLongitude(GPS))
-						+ "\">\n");
+				sb.append("<trkpt lat=\"" + String.valueOf(Locator.getLatitude(GPS)) + "\" lon=\"" + String.valueOf(Locator.getLongitude(GPS)) + "\">\n");
 				sb.append("   <ele>" + String.valueOf(Locator.getAlt()) + "</ele>\n");
 				sb.append("   <time>" + GetDateTimeString() + "</time>\n");
 				sb.append("   <course>" + String.valueOf(Locator.getHeading(_GPS)) + "</course>\n");
@@ -265,8 +262,7 @@ public class TrackRecorder
 					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
 				}
 
-				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(_GPS),
-						new Date());
+				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(_GPS), new Date());
 
 				GlobalCore.AktuelleRoute.Points.add(NewPoint);
 

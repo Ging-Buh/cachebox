@@ -17,12 +17,12 @@ package CB_UI.GL_UI.Views.TestViews;
 
 import java.util.Iterator;
 
+import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Views.TrackListViewItem;
 import CB_UI.GL_UI.Views.TrackListViewItem.RouteChangedListner;
 import CB_UI.Map.RouteOverlay;
-import CB_UI.Map.RouteOverlay.Track;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;

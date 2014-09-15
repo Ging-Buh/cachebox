@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Views;
 
+import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Map.RouteOverlay.Track;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;

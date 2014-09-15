@@ -15,18 +15,19 @@ import java.util.Date;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.MapTileLoader;
+import CB_Locator.Map.PolylineReduction;
+import CB_Locator.Map.Track;
+import CB_Locator.Map.TrackPoint;
 import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.DrawUtils;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-import CB_UI_Base.Math.PolylineReduction;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Log.Logger;
-import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
 
@@ -75,37 +76,6 @@ public class RouteOverlay
 	{
 		mRoutesChanged = true;
 		GL.that.renderOnce();
-	}
-
-	public static class Track
-	{
-		public ArrayList<TrackPoint> Points;
-		public String Name;
-		public String FileName;
-		public boolean ShowRoute = false;
-		public boolean IsActualTrack = false;
-		private Color mColor;
-		public double TrackLength;
-		public double AltitudeDifference;
-
-		public Track(String name, Color color)
-		{
-			Points = new ArrayList<TrackPoint>();
-			Name = name;
-			mColor = color;
-		}
-
-		public Color getColor()
-		{
-			return mColor;
-		}
-
-		public void setColor(Color color)
-		{
-			mColor = color;
-			RoutesChanged();
-		}
-
 	}
 
 	// Read track from gpx file
@@ -330,13 +300,11 @@ public class RouteOverlay
 							route.setColor(color);
 						}
 
-						if ((line.indexOf("</trkpt>") > -1) | (line.indexOf("</rtept>") > -1)
-								| ((line.indexOf("/>") > -1) & IStrkptORrtept))
+						if ((line.indexOf("</trkpt>") > -1) | (line.indexOf("</rtept>") > -1) | ((line.indexOf("/>") > -1) & IStrkptORrtept))
 						{
 							// trkpt abgeschlossen, jetzt kann der Trackpunkt erzeugt werden
 							IStrkptORrtept = false;
-							route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(),
-									lastAcceptedCoordinate.getElevation(), lastAcceptedDirection, lastAcceptedTime));
+							route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getElevation(), lastAcceptedDirection, lastAcceptedTime));
 
 							// Calculate the length of a Track
 							if (!FromPosition.isValid())
@@ -347,9 +315,7 @@ public class RouteOverlay
 							}
 							else
 							{
-								MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(),
-										FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(),
-										lastAcceptedCoordinate.getLongitude(), dist);
+								MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
 								Distance += dist[0];
 								DeltaAltitude = Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
 								FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
@@ -479,9 +445,11 @@ public class RouteOverlay
 
 	private static ArrayList<Route> DrawRoutes;
 
-	public static void RenderRoute(Batch batch, int Zoom, float yVersatz) // , Descriptor desc, float dpiScaleFactorX, float
-																			// dpiScaleFactorY)
+	public static void RenderRoute(Batch batch, MapView mapView)
 	{
+
+		int Zoom = mapView.aktZoom;
+		float yVersatz = mapView.ySpeedVersatz;
 
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)
 		{// Zoom or Routes changed => calculate new Sprite Points
@@ -536,28 +504,26 @@ public class RouteOverlay
 					double MapX2 = 256.0 * Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, rt.Points.get(ii + 1).X);
 					double MapY2 = -256.0 * Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, rt.Points.get(ii + 1).Y);
 
-					Vector2 screen1 = MapView.that.worldToScreen(new Vector2((float) MapX1, (float) MapY1));
-					Vector2 screen2 = MapView.that.worldToScreen(new Vector2((float) MapX2, (float) MapY2));
+					Vector2 screen1 = mapView.worldToScreen(new Vector2((float) MapX1, (float) MapY1));
+					Vector2 screen2 = mapView.worldToScreen(new Vector2((float) MapX2, (float) MapY2));
 
 					screen1.y -= yVersatz;
 					screen2.y -= yVersatz;
 
-					CB_RectF chkRec = new CB_RectF(MapView.that);
+					CB_RectF chkRec = new CB_RectF(mapView);
 					chkRec.setPos(0, 0);
 
 					// chk if line on Screen
 					if (chkRec.contains(screen1.x, screen1.y) || chkRec.contains(screen2.x, screen2.y))
 					{
-						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, overlap * scale, screen1.x, screen1.y, screen2.x,
-								screen2.y);
+						DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, overlap * scale, screen1.x, screen1.y, screen2.x, screen2.y);
 						// DrawedLineCount++;
 					}
 					else
 					{// chk if intersection
 						if (chkRec.getIntersection(screen1, screen2, 2) != null)
 						{
-							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, overlap * scale, screen1.x, screen1.y, screen2.x,
-									screen2.y);
+							DrawUtils.drawSpriteLine(batch, ArrowSprite, PointSprite, overlap * scale, screen1.x, screen1.y, screen2.x, screen2.y);
 							// DrawedLineCount++;
 						}
 
@@ -646,8 +612,7 @@ public class RouteOverlay
 		{
 			for (int i = 0; i < track.Points.size(); i++)
 			{
-				writer.append("<trkpt lat=\"" + String.valueOf(track.Points.get(i).Y) + "\" lon=\"" + String.valueOf(track.Points.get(i).X)
-						+ "\">\n");
+				writer.append("<trkpt lat=\"" + String.valueOf(track.Points.get(i).Y) + "\" lon=\"" + String.valueOf(track.Points.get(i).X) + "\">\n");
 
 				writer.append("   <ele>" + String.valueOf(String.valueOf(track.Points.get(i).Elevation)) + "</ele>\n");
 				SimpleDateFormat datFormat = new SimpleDateFormat("yyyy-MM-dd");

@@ -241,7 +241,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	long startTime;
 	Timer myTimer;
 	boolean useNewInput = true;
-	protected float ySpeedVersatz = 200;
+	public float ySpeedVersatz = 200;
 	protected boolean CarMode = false;
 	boolean NightMode = false;
 	protected boolean NorthOriented = true;

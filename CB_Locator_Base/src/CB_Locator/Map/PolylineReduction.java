@@ -1,10 +1,9 @@
-package CB_UI_Base.Math;
+package CB_Locator.Map;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import CB_Utils.Math.PointD;
-import CB_Utils.Math.TrackPoint;
 
 /**
  * Reduktion of Ploylines with Douglas-Peucker-Algorithmus </br> </br> http://de.wikipedia.org/wiki/Douglas-Peucker-Algorithmus </br> </br>

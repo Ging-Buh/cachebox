@@ -32,10 +32,10 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
-import CB_UI.Map.RouteOverlay;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -168,7 +168,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	// #######################################
 
-	public static RouteOverlay.Track AktuelleRoute = null;
+	public static Track AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;
 	public static long TrackDistance;
 
