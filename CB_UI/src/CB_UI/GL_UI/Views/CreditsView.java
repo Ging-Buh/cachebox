@@ -70,8 +70,7 @@ public class CreditsView extends CB_View_Base
 		this.setBackground(SpriteCacheBase.AboutBack);
 
 		ref = UI_Size_Base.that.getWindowHeight() / 13;
-		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5,
-				(ref * 5) / 4.11f);
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
 
 		logo = new Image(CB_LogoRec, "Logo");
 		logo.setDrawable(SpriteCacheBase.logo);
@@ -182,8 +181,8 @@ public class CreditsView extends CB_View_Base
 				if (item.image != null)
 				{
 
-					float SeitenVewrhältnis = item.image.getHeight() / item.image.getWidth();
-					float imageWidth = itemHeight / SeitenVewrhältnis;
+					float sideRatio = item.image.getHeight() / item.image.getWidth();
+					float imageWidth = itemHeight / sideRatio;
 					float xPos = (this.getHalfWidth() - (Fonts.Measure(entry).width / 2)) - itemHeight - margin - margin;
 					if (entry == null) xPos = this.getHalfWidth() - (imageWidth / 2);
 					Image img = new Image(xPos, 0, imageWidth, itemHeight, "");
