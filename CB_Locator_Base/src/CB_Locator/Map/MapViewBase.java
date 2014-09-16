@@ -500,12 +500,20 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		 */
 		camera.update();
 
+		// synchronized (screenCenterW)
+		// {
 		renderMapTiles(batch);
-		renderOverlay(batch);
+		renderSyncronOverlay(batch);
+		// }
 		// renderDebugInfo(batch);
+
+		renderNonSyncronOverlay(batch);
+
 	}
 
-	protected abstract void renderOverlay(Batch batch);
+	protected abstract void renderSyncronOverlay(Batch batch);
+
+	protected abstract void renderNonSyncronOverlay(Batch batch);
 
 	private void renderMapTiles(Batch batch)
 	{
@@ -725,9 +733,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	// FIXME make point and vPoint final and setValues!
 	protected void renderPositionMarker(Batch batch)
 	{
-		PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getLongitude()),
-				Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, Locator.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
-				MapTileLoader.MAX_MAP_ZOOM);
+		PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, Locator.getLongitude()), Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, Locator.getLatitude()), MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
 		Vector2 vPoint = new Vector2((float) point.X, -(float) point.Y);
 
@@ -768,8 +774,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		Sprite arrow = SpriteCacheBase.Arrows.get(arrowId);
 		arrow.setRotation(-arrowHeading);
-		arrow.setBounds(myPointOnScreen.x - GL_UISizes.halfPosMarkerSize, myPointOnScreen.y - GL_UISizes.halfPosMarkerSize,
-				GL_UISizes.PosMarkerSize, GL_UISizes.PosMarkerSize);
+		arrow.setBounds(myPointOnScreen.x - GL_UISizes.halfPosMarkerSize, myPointOnScreen.y - GL_UISizes.halfPosMarkerSize, GL_UISizes.PosMarkerSize, GL_UISizes.PosMarkerSize);
 		arrow.setOrigin(GL_UISizes.halfPosMarkerSize, GL_UISizes.halfPosMarkerSize);
 		arrow.draw(batch);
 
@@ -1176,9 +1181,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			if (center == null) center = new CoordinateGPS(48.0, 12.0);
 			positionInitialized = true;
 			center = value;
-			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()),
-					Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM,
-					MapTileLoader.MAX_MAP_ZOOM);
+			PointD point = Descriptor.ToWorld(Descriptor.LongitudeToTileX(MapTileLoader.MAX_MAP_ZOOM, center.getLongitude()), Descriptor.LatitudeToTileY(MapTileLoader.MAX_MAP_ZOOM, center.getLatitude()), MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
 			setScreenCenter(new Vector2((float) point.X, (float) point.Y));
 		}
@@ -1209,16 +1212,15 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	public Vector2 worldToScreen(Vector2 point)
 	{
-		synchronized (screenCenterW)
-		{
-			Vector2 result = new Vector2(0, 0);
-			result.x = ((long) point.x - screenCenterW.x) / camera.zoom + (float) mapIntWidth / 2;
-			result.y = -(-(long) point.y + screenCenterW.y) / camera.zoom + (float) mapIntHeight / 2;
-			result.add(-(float) mapIntWidth / 2, -(float) mapIntHeight / 2);
-			result.rotate(mapHeading);
-			result.add((float) mapIntWidth / 2, (float) mapIntHeight / 2);
-			return result;
-		}
+
+		Vector2 result = new Vector2(0, 0);
+		result.x = ((long) point.x - screenCenterW.x) / camera.zoom + (float) mapIntWidth / 2;
+		result.y = -(-(long) point.y + screenCenterW.y) / camera.zoom + (float) mapIntHeight / 2;
+		result.add(-(float) mapIntWidth / 2, -(float) mapIntHeight / 2);
+		result.rotate(mapHeading);
+		result.add((float) mapIntWidth / 2, (float) mapIntHeight / 2);
+		return result;
+
 	}
 
 	protected Descriptor screenToDescriptor(Vector2 point, int zoom, Descriptor destDescriptor)
@@ -1402,8 +1404,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				zoomBtn.setZoom((int) lastDynamicZoom);
 				inputState = InputState.Idle;
 
-				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(),
-						System.currentTimeMillis() + ZoomTime);
+				kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(lastDynamicZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 
 				// kineticZoom = new KineticZoom(camera.zoom, lastDynamicZoom, System.currentTimeMillis(), System.currentTimeMillis() +
 				// 1000);
@@ -1633,8 +1634,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		// berechnet anhand des ScreenCenterW die Center-Coordinaten
 		PointD point = Descriptor.FromWorld(screenCenterW.x, screenCenterW.y, MapTileLoader.MAX_MAP_ZOOM, MapTileLoader.MAX_MAP_ZOOM);
 
-		center = new CoordinateGPS(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(
-				MapTileLoader.MAX_MAP_ZOOM, point.X));
+		center = new CoordinateGPS(Descriptor.TileYToLatitude(MapTileLoader.MAX_MAP_ZOOM, -point.Y), Descriptor.TileXToLongitude(MapTileLoader.MAX_MAP_ZOOM, point.X));
 	}
 
 	public MapViewBase(SizeF size, String Name)
@@ -1774,11 +1774,15 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		lastDynamicZoom = newZoom;
 
-		kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(newZoom), System.currentTimeMillis(),
-				System.currentTimeMillis() + ZoomTime);
+		kineticZoom = new KineticZoom(camera.zoom, MapTileLoader.getMapTilePosFactor(newZoom), System.currentTimeMillis(), System.currentTimeMillis() + ZoomTime);
 		GL.that.addRenderView(MapViewBase.this, GL.FRAME_RATE_ACTION);
 		GL.that.renderOnce();
 		calcPixelsPerMeter();
+	}
+
+	public boolean isCarMode()
+	{
+		return CarMode;
 	}
 
 }

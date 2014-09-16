@@ -17,6 +17,10 @@ import CB_Utils.Util.UnitFormatter;
 
 public class WaypointDAO
 {
+
+	public static final String SQL_WP = "select GcCode, CacheId, Latitude, Longitude, Type, SyncExclude, UserWaypoint, Title, isStart from Waypoint";
+	public static final String SQL_WP_FULL = "select GcCode, CacheId, Latitude, Longitude, Type, SyncExclude, UserWaypoint, Title, isStart, Description, Clue from Waypoint";
+
 	public void WriteToDatabase(Waypoint WP)
 	{
 		int newCheckSum = createCheckSum(WP);
@@ -124,16 +128,16 @@ public class WaypointDAO
 		double latitude = reader.getDouble(2);
 		double longitude = reader.getDouble(3);
 		WP.Pos = new Coordinate(latitude, longitude);
-		WP.Type = CacheTypes.values()[reader.getShort(5)];
-		WP.IsSyncExcluded = reader.getInt(6) == 1;
-		WP.IsUserWaypoint = reader.getInt(7) == 1;
-		WP.setTitle(reader.getString(9).trim());
-		WP.IsStart = reader.getInt(10) == 1;
+		WP.Type = CacheTypes.values()[reader.getShort(4)];
+		WP.IsSyncExcluded = reader.getInt(5) == 1;
+		WP.IsUserWaypoint = reader.getInt(6) == 1;
+		WP.setTitle(reader.getString(7).trim());
+		WP.IsStart = reader.getInt(8) == 1;
 
 		if (full)
 		{
-			WP.setClue(reader.getString(8));
-			WP.setDescription(reader.getString(4));
+			WP.setClue(reader.getString(10));
+			WP.setDescription(reader.getString(9));
 			WP.setCheckSum(createCheckSum(WP));
 		}
 		return WP;
@@ -256,11 +260,11 @@ public class WaypointDAO
 		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
 		long aktCacheID = -1;
 
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint  where CacheId = ?",
-						new String[]
-							{ String.valueOf(CacheID) });
+		StringBuilder sqlState = new StringBuilder(Full ? SQL_WP_FULL : SQL_WP);
+		sqlState.append("  where CacheId = ?");
+
+		CoreCursor reader = Database.Data.rawQuery(sqlState.toString(), new String[]
+			{ String.valueOf(CacheID) });
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
 		{

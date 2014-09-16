@@ -1,13 +1,30 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Types;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
+import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -37,7 +54,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	private final static short MASK_AVAILABLE = 1 << 3;
 	private final static short MASK_VAVORITE = 1 << 4;
 	private final static short MASK_FOUND = 1 << 5;
-	// private final static short MASK_SEARCH_VISIBLE = 1 << 6;
+	private final static short MASK_IS_LIVE = 1 << 6;
 	// private final static short MASK_SOLVER1CHANGED = 1 << 7;
 	private final static short MASK_HAS_USER_DATA = 1 << 8;
 	private final static short MASK_LISTING_CHANGED = 1 << 9;
@@ -73,6 +90,8 @@ public class Cache implements Comparable<Cache>, Serializable
 	 * Name des Caches
 	 */
 	private byte[] Name;
+
+	private byte[] GcId;
 
 	/**
 	 * Bin ich der Owner? </br>-1 noch nicht getestet </br>1 ja </br>0 nein
@@ -260,7 +279,6 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 	public void loadDetail()
 	{
-		if (detail != null) return; // Detail info already valid
 		CacheDAO dao = new CacheDAO();
 		dao.readDetail(this);
 		// load all Waypoints with full Details
@@ -516,6 +534,17 @@ public class Cache implements Comparable<Cache>, Serializable
 	 */
 
 	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null || !(obj instanceof Cache)) return false;
+		Cache other = (Cache) obj;
+
+		if (Arrays.equals(this.GcCode, other.GcCode)) return true;
+
+		return false;
+	}
+
+	@Override
 	public int compareTo(Cache c2)
 	{
 		float dist1 = this.cachedDistance;
@@ -610,7 +639,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	@Override
 	public String toString()
 	{
-		return "Cache:" + GcCode + " " + Pos.toString();
+		return "Cache:" + getGcCode();
 	}
 
 	void dispose()
@@ -702,17 +731,19 @@ public class Cache implements Comparable<Cache>, Serializable
 
 	public String getGcId()
 	{
-		if (detail == null) return EMPTY_STRING;
-		return detail.getGcId();
+		if (GcId == null) return EMPTY_STRING;
+		return new String(GcId, UTF_8);
 	}
 
 	public void setGcId(String gcId)
 	{
-		if (detail == null)
+
+		if (gcId == null)
 		{
+			GcId = null;
 			return;
 		}
-		detail.setGcId(gcId);
+		GcId = gcId.getBytes(UTF_8);
 	}
 
 	public String getHint()
@@ -876,6 +907,16 @@ public class Cache implements Comparable<Cache>, Serializable
 	public void setFound(boolean found)
 	{
 		this.setMaskValue(MASK_FOUND, found);
+	}
+
+	public boolean isLive()
+	{
+		return this.getMaskValue(MASK_IS_LIVE);
+	}
+
+	public void setLive(boolean isLive)
+	{
+		this.setMaskValue(MASK_IS_LIVE, isLive);
 	}
 
 	public boolean isHasUserData()
@@ -1179,6 +1220,7 @@ public class Cache implements Comparable<Cache>, Serializable
 	{
 		if (detail != null)
 		{
+			if (detail.getLongDescription() == null || detail.getLongDescription().length() == 0) return Database.GetDescription(this);
 			return detail.getLongDescription();
 		}
 		else
@@ -1192,7 +1234,6 @@ public class Cache implements Comparable<Cache>, Serializable
 		if (detail != null)
 		{
 			detail.setShortDescription(value);
-
 		}
 	}
 
@@ -1250,5 +1291,10 @@ public class Cache implements Comparable<Cache>, Serializable
 		{
 			return false;
 		}
+	}
+
+	public boolean isDisposed()
+	{
+		return isDisposed;
 	}
 }

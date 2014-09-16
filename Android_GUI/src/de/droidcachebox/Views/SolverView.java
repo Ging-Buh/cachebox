@@ -48,6 +48,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	Button bRight;
 
 	LinearLayout ButtonsLayout;
+	private Solver solver = new Solver("");
 
 	public SolverView(Context context, LayoutInflater inflater)
 	{
@@ -76,7 +77,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			@Override
 			public void onClick(View arg0)
 			{
-				SelectSolverFunction ssf = new SelectSolverFunction(DataType.None, new IFunctionResult()
+				SelectSolverFunction ssf = new SelectSolverFunction(solver, DataType.None, new IFunctionResult()
 				{
 
 					@Override
@@ -201,7 +202,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 	{
 		// Hide Keyboard when Calculating
 		// showVirturalKeyboard(false);
-		Solver solver = new Solver(edSolver.getText().toString());
+		solver = new Solver(edSolver.getText().toString());
 		if (!solver.Solve())
 		{
 			Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
@@ -215,12 +216,12 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 
 		edResult.setText(result);
 
-		if ((Solver.MissingVariables != null) && (Solver.MissingVariables.size() > 0))
+		if ((solver.MissingVariables != null) && (solver.MissingVariables.size() > 0))
 		{
 			// es sind nicht alle Variablen zugewiesen
 			// Abfrage, ob die Deklarationen eingefügt werden sollen
 			String message = "";
-			for (String s : Solver.MissingVariables.keySet())
+			for (String s : solver.MissingVariables.keySet())
 			{
 				if (message != "") message += ", ";
 				message += s;
@@ -243,7 +244,7 @@ public class SolverView extends FrameLayout implements ViewOptionsMenu
 			case -1:
 				/* User clicked OK so do some stuff */
 				String missing = "";
-				for (String s : Solver.MissingVariables.keySet())
+				for (String s : solver.MissingVariables.keySet())
 				{
 					missing += s + "=\n";
 					edResult.setText("\n" + edSolver.getText().toString());

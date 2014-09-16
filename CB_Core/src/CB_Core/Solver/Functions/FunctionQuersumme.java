@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class FunctionQuersumme extends Function
 {
 	private static final long serialVersionUID = 3128106685827884337L;
 
-	public FunctionQuersumme()
+	public FunctionQuersumme(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("Crosstotal", "en"));
 		Names.add(new LacalNames("Quersumme", "de"));
 		Names.add(new LacalNames("CT", "en"));

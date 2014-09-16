@@ -468,6 +468,10 @@ public class EditTextField extends EditTextFieldBase
 						displayText.remove(dt);
 						int lineCount = displayText.size();
 						sendLineCountChanged(lineCount, lineHeight * lineCount);
+						// 2014-07-09: cursor.pos und idWord = 0 setzen damit sp‰ter der Cursor auf das Ende der vorherigen Zeile gesetzt
+						// wird
+						cursor.pos = 0;
+						idWord = 0;
 					}
 					else
 					{
@@ -482,7 +486,7 @@ public class EditTextField extends EditTextFieldBase
 					{
 						// cursor ist innerhalb der Zeichen, die in die vorherige Zeile verschoben werden -> Cursor in die vorherige Zeile
 						// verschieben
-						cursor.pos = prevDt.displayText.length()/* - 1 */;
+						cursor.pos = prevDt.displayText.length() + 1/* - 1 */;
 						setCursorLine(cursor.line - 1, true);
 						// anschlieﬂende Zeile noch mal berechnen.
 						cursor.line++;

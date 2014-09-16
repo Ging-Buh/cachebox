@@ -93,8 +93,7 @@ public class ProjectionCoordinate extends ActivityBase
 
 	private void iniCacheNameLabel()
 	{
-		CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
-				MeasuredLabelHeight);
+		CB_RectF rec = new CB_RectF(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight);
 		Title = new Label(rec, this.name);
 		this.addChild(Title);
 	}
@@ -102,13 +101,24 @@ public class ProjectionCoordinate extends ActivityBase
 	@Override
 	public void onShow()
 	{
-		valueBearing.setFocus();
+		if (valueBearing == null)
+		{
+			if (!p2p)
+			{
+				iniTextFields();
+				valueBearing.setFocus();
+			}
+		}
+		else
+		{
+			valueBearing.setFocus();
+		}
+
 	}
 
 	private void iniCoordButton()
 	{
-		CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, Title.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 		bCoord = new CoordinateButton(rec, "CoordButton", coord, wpName);
 
 		bCoord.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -128,14 +138,12 @@ public class ProjectionCoordinate extends ActivityBase
 	private void iniCoordButton2()
 	{
 
-		CB_RectF labelRec = new CB_RectF(leftBorder + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth,
-				MeasuredLabelHeight);
+		CB_RectF labelRec = new CB_RectF(leftBorder + margin, bCoord.getY() - ButtonHeight - MeasuredLabelHeight, innerWidth, MeasuredLabelHeight);
 
 		lblP2P = new Label(labelRec, Translation.Get("toPoint"));
 		this.addChild(lblP2P);
 
-		CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
-				UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(leftBorder, lblP2P.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 		bCoord2 = new CoordinateButton(rec, "CoordButton2", projCoord, null);
 
 		bCoord2.setCoordinateChangedListner(new CoordinateChangeListner()
@@ -202,7 +210,6 @@ public class ProjectionCoordinate extends ActivityBase
 				numPad.registerTextField(valueDistance);
 				GL.that.RunOnGL(new IRunOnGL()
 				{
-
 					@Override
 					public void run()
 					{
@@ -210,7 +217,6 @@ public class ProjectionCoordinate extends ActivityBase
 						valueDistance.setSelection(0, textLength);
 					}
 				});
-
 			}
 		});
 
@@ -220,7 +226,7 @@ public class ProjectionCoordinate extends ActivityBase
 			@Override
 			public void BecomsFocus()
 			{
-				numPad.registerTextField(valueBearing);
+				if (numPad != null) numPad.registerTextField(valueBearing);
 				GL.that.RunOnGL(new IRunOnGL()
 				{
 

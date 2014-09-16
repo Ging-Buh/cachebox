@@ -1,5 +1,9 @@
 package CB_UI.GL_UI.Views.TestViews;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_UI_Base.Energy;
@@ -12,8 +16,11 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
@@ -32,8 +39,7 @@ public class TestView extends CB_View_Base
 
 	public static final String br = System.getProperty("line.separator");
 
-	public static final String splashMsg = "Team" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br
-			+ "Groundspeak Inc. Used with permission" + br + " " + br + "7.Zeile";
+	public static final String splashMsg = "Team" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission" + br + " " + br + "7.Zeile";
 
 	public TestView(CB_RectF rec, String Name)
 	{
@@ -43,8 +49,7 @@ public class TestView extends CB_View_Base
 
 		setBackground(SpriteCacheBase.ListBack);
 
-		CB_RectF TextFieldRec = new CB_RectF(0, this.getHeight() - (UI_Size_Base.that.getButtonHeight() * 3),
-				UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
+		CB_RectF TextFieldRec = new CB_RectF(0, this.getHeight() - (UI_Size_Base.that.getButtonHeight() * 3), UI_Size_Base.that.getButtonWidth() * 6, UI_Size_Base.that.getButtonHeight() * 3);
 
 		wrappedTextField = new CB_UI_Base.GL_UI.Controls.EditTextField(TextFieldRec, this).setWrapType(WrapType.WRAPPED);
 		wrappedTextField.setStyle(EditTextField.getDefaultStyle());
@@ -64,9 +69,7 @@ public class TestView extends CB_View_Base
 		// ####################################################
 
 		// Setting Button
-		Button btnSetting = new Button(this.getWidth() - UI_Size_Base.that.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2),
-				wrappedTextField.getY() - UI_Size_Base.that.getMargin() - UI_Size_Base.that.getButtonHeight(),
-				UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
+		Button btnSetting = new Button(this.getWidth() - UI_Size_Base.that.getMargin() - (UI_Size_Base.that.getButtonWidthWide() * 2), wrappedTextField.getY() - UI_Size_Base.that.getMargin() - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonWidthWide() * 2, UI_Size_Base.that.getButtonHeight(), "");
 
 		btnSetting.setText("Post Conection Error");
 		btnSetting.setOnClickListener(new OnClickListener()
@@ -77,6 +80,9 @@ public class TestView extends CB_View_Base
 			{
 				ConnectionError INSTANCE = new ConnectionError("http:12345");
 				GL.that.Toast(INSTANCE);
+
+				showProgress();
+
 				return true;
 			}
 		});
@@ -231,5 +237,83 @@ public class TestView extends CB_View_Base
 		long result = 1;
 		result = (long) Math.pow(2.0, MAX_MAP_ZOOM - zoom);
 		return result;
+	}
+
+	ProgressDialog PD;
+
+	private void showProgress()
+	{
+		final AtomicBoolean cancel = new AtomicBoolean(false);
+
+		final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler()
+		{
+
+			int progress = 0;
+
+			@Override
+			public boolean cancel()
+			{
+				return cancel.get();
+			}
+
+			@Override
+			public void run()
+			{
+
+				do
+				{
+					try
+					{
+						Thread.sleep(100);
+					}
+					catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					progress++;
+
+					PD.setProgress("", Integer.toString(progress) + "%", progress);
+
+					if (progress >= 100) progress = 0;
+
+				}
+				while (!cancel.get());
+
+				System.out.print("Ready");
+
+			}
+
+			@Override
+			public void RunnableReady(boolean canceld)
+			{
+				GL.that.Toast("Runable Ready");
+				PD.close();
+			}
+		};
+
+		PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
+
+		PD.setCancelListner(new iCancelListner()
+		{
+
+			@Override
+			public void isCanceld()
+			{
+				Timer t = new Timer();
+				TimerTask tt = new TimerTask()
+				{
+
+					@Override
+					public void run()
+					{
+						cancel.set(true);
+					}
+				};
+				t.schedule(tt, 3000);
+			}
+		});
+
 	}
 }

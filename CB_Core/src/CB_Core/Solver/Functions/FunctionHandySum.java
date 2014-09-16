@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class FunctionHandySum extends Function
 {
 	private static final long serialVersionUID = -9107479222557989258L;
 
-	public FunctionHandySum()
+	public FunctionHandySum(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("PhoneSum", "en"));
 		Names.add(new LacalNames("HandySum", "de"));
 		Names.add(new LacalNames("PS", "en"));

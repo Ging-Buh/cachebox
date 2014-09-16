@@ -59,10 +59,10 @@ public class CacheListDAO
 		return ReadCacheList(cacheList, "", where, false, fullDetails, loadAllWaypoints);
 	}
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
-	{
-		return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
-	}
+	// public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean fullDetails, boolean loadAllWaypoints)
+	// {
+	// return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
+	// }
 
 	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails,
 			boolean loadAllWaypoints)
@@ -79,7 +79,7 @@ public class CacheListDAO
 		CB_List<Waypoint> wpList = new CB_List<Waypoint>();
 		long aktCacheID = -1;
 
-		String sql = "select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint";
+		String sql = fullDetails ? WaypointDAO.SQL_WP_FULL : WaypointDAO.SQL_WP;
 		if (!((fullDetails || loadAllWaypoints)))
 		{
 			// when CacheList should be loaded without full details and without all Waypoints
@@ -117,11 +117,25 @@ public class CacheListDAO
 		Logger.DEBUG("ReadCacheList 2.Caches");
 		try
 		{
-			sql = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint";
-			if (withDescription)
+			if (fullDetails)
 			{
-				sql += ", Description, Solver, Notes";
+				sql = CacheDAO.SQL_GET_CACHE + ", " + CacheDAO.SQL_DETAILS;
+				if (withDescription)
+				{
+					// load Cache with Description, Solver, Notes for Transfering Data from Server to ACB
+					sql += "," + CacheDAO.SQL_GET_DETAIL_WITH_DESCRIPTION;
+				}
 			}
+			else
+			{
+				sql = CacheDAO.SQL_GET_CACHE;
+
+			}
+
+			// if (withDescription)
+			// {
+			// sql += ", Description, Solver, Notes";
+			// }
 			sql += " from Caches c " + join + " " + ((where.length() > 0) ? "where " + where : where);
 			reader = Database.Data.rawQuery(sql, null);
 
@@ -136,7 +150,7 @@ public class CacheListDAO
 		long start = System.currentTimeMillis();
 		while (!reader.isAfterLast())
 		{
-			Cache cache = cacheDAO.ReadFromCursor(reader, withDescription, fullDetails);
+			Cache cache = cacheDAO.ReadFromCursor(reader, fullDetails, withDescription);
 
 			cacheList.add(cache);
 			cache.waypoints.clear();

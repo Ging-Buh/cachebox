@@ -49,6 +49,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Interfaces.cancelRunnable;
 
 public class FieldNotesView extends V_ListView
 {
@@ -207,8 +208,7 @@ public class FieldNotesView extends V_ListView
 		{
 			float headHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + (UI_Size_Base.that.getMargin());
 			float cacheIfoHeight = (UI_Size_Base.that.getButtonHeight() / 1.5f) + UI_Size_Base.that.getMargin() + Fonts.Measure("T").height;
-			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic()
-					- ListViewItemBackground.getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2);
+			float mesurdWidth = ItemRec.getWidth() - ListViewItemBackground.getLeftWidthStatic() - ListViewItemBackground.getRightWidthStatic() - (UI_Size_Base.that.getMargin() * 2);
 
 			float mh = 0;
 			if (fne != null)
@@ -282,6 +282,7 @@ public class FieldNotesView extends V_ListView
 		});
 
 		// Found je nach CacheType
+		if (cache.Type == null) return null;
 		switch (cache.Type)
 		{
 		case Giga:
@@ -379,8 +380,7 @@ public class FieldNotesView extends V_ListView
 
 		if (cache == null)
 		{
-			GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error,
-					null);
+			GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 			return;
 		}
 
@@ -390,13 +390,11 @@ public class FieldNotesView extends V_ListView
 
 			if (type == LogTypes.found)
 			{
-				GL_MsgBox.Show(Translation.Get("My_Parking_Area_Found"), Translation.Get("thisNotWork"), MessageBoxButtons.OK,
-						MessageBoxIcon.Information, null);
+				GL_MsgBox.Show(Translation.Get("My_Parking_Area_Found"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Information, null);
 			}
 			else if (type == LogTypes.didnt_find)
 			{
-				GL_MsgBox.Show(Translation.Get("My_Parking_Area_DNF"), Translation.Get("thisNotWork"), MessageBoxButtons.OK,
-						MessageBoxIcon.Error, null);
+				GL_MsgBox.Show(Translation.Get("My_Parking_Area_DNF"), Translation.Get("thisNotWork"), MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 			}
 
 			return;
@@ -489,22 +487,18 @@ public class FieldNotesView extends V_ListView
 		case found:
 			if (!cache.isFound()) newFieldNote.foundNumber++; //
 			newFieldNote.fillType();
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(),
-					newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.FoundTemplate.getValue(), newFieldNote);
 			// wenn eine FieldNote Found erzeugt werden soll und der Cache noch
 			// nicht gefunden war -> foundNumber um 1 erhöhen
 			break;
 		case didnt_find:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.DNFTemplate.getValue(),
-					newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.DNFTemplate.getValue(), newFieldNote);
 			break;
 		case needs_maintenance:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
-					Config.NeedsMaintenanceTemplate.getValue(), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.NeedsMaintenanceTemplate.getValue(), newFieldNote);
 			break;
 		case note:
-			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(
-					Config.AddNoteTemplate.getValue(), newFieldNote);
+			if (newFieldNote.comment.equals("")) newFieldNote.comment = TemplateFormatter.ReplaceTemplate(Config.AddNoteTemplate.getValue(), newFieldNote);
 			break;
 		default:
 			break;
@@ -660,7 +654,7 @@ public class FieldNotesView extends V_ListView
 			{
 
 			}
-		}, new Runnable()
+		}, new cancelRunnable()
 		{
 
 			@Override
@@ -669,8 +663,7 @@ public class FieldNotesView extends V_ListView
 				GroundspeakAPI.LastAPIError = "";
 
 				boolean dl = fieldNote.isDirectLog;
-				int result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(),
-						fieldNote.timestamp, fieldNote.comment, dl);
+				int result = CB_Core.Api.GroundspeakAPI.CreateFieldNoteAndPublish(fieldNote.gcCode, fieldNote.type.getGcLogTypeId(), fieldNote.timestamp, fieldNote.comment, dl, this);
 
 				if (result == GroundspeakAPI.IO)
 				{
@@ -684,58 +677,56 @@ public class FieldNotesView extends V_ListView
 				{
 					GL.that.Toast(ConnectionError.INSTANCE);
 					if (wd != null) wd.close();
-					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"),
-							MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					{
+
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							switch (which)
 							{
+							case GL_MsgBox.BUTTON_NEGATIVE:
+								addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
+								return true;
 
-								@Override
-								public boolean onClick(int which, Object data)
-								{
-									switch (which)
-									{
-									case GL_MsgBox.BUTTON_NEGATIVE:
-										addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
-										return true;
+							case GL_MsgBox.BUTTON_NEUTRAL:
+								return true;
 
-									case GL_MsgBox.BUTTON_NEUTRAL:
-										return true;
-
-									case GL_MsgBox.BUTTON_POSITIVE:
-										addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
-										return true;
-									}
-									return true;
-								}
-							});
+							case GL_MsgBox.BUTTON_POSITIVE:
+								addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
+								return true;
+							}
+							return true;
+						}
+					});
 					return;
 				}
 				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
 				{
 					GL.that.Toast(ApiUnavailable.INSTANCE);
 					if (wd != null) wd.close();
-					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"),
-							MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					GL_MsgBox.Show(Translation.Get("CreateFieldnoteInstead"), Translation.Get("UploadFailed"), MessageBoxButtons.YesNoRetry, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					{
+
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							switch (which)
 							{
+							case GL_MsgBox.BUTTON_NEGATIVE:
+								addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
+								return true;
 
-								@Override
-								public boolean onClick(int which, Object data)
-								{
-									switch (which)
-									{
-									case GL_MsgBox.BUTTON_NEGATIVE:
-										addOrChangeFieldNote(fieldNote, isNewFieldNote, true);// try again
-										return true;
+							case GL_MsgBox.BUTTON_NEUTRAL:
+								return true;
 
-									case GL_MsgBox.BUTTON_NEUTRAL:
-										return true;
-
-									case GL_MsgBox.BUTTON_POSITIVE:
-										addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
-										return true;
-									}
-									return true;
-								}
-							});
+							case GL_MsgBox.BUTTON_POSITIVE:
+								addOrChangeFieldNote(fieldNote, isNewFieldNote, false);// create Fieldnote
+								return true;
+							}
+							return true;
+						}
+					});
 					return;
 				}
 
@@ -753,6 +744,13 @@ public class FieldNotesView extends V_ListView
 				}
 
 				if (wd != null) wd.close();
+			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO handle cancel
+				return false;
 			}
 		});
 
@@ -859,7 +857,7 @@ public class FieldNotesView extends V_ListView
 
 	private void deleteAllFieldNote()
 	{
-		GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener()
+		final GL_MsgBox.OnMsgBoxClickListener dialogClickListener = new GL_MsgBox.OnMsgBoxClickListener()
 		{
 			@Override
 			public boolean onClick(int which, Object data)
@@ -896,8 +894,17 @@ public class FieldNotesView extends V_ListView
 
 			}
 		};
-		String message = Translation.Get("DeleteAllFieldNotesQuestion");
-		GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener);
+		final String message = Translation.Get("DeleteAllFieldNotesQuestion");
+		GL.that.RunOnGL(new IRunOnGL()
+		{
+
+			@Override
+			public void run()
+			{
+				GL_MsgBox.Show(message, Translation.Get("DeleteAllNotes"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning, dialogClickListener);
+
+			}
+		});
 
 	}
 

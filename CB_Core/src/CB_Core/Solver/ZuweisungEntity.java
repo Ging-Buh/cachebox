@@ -10,9 +10,9 @@ public class ZuweisungEntity extends Entity
 	private Entity links;
 	private Entity rechts;
 
-	public ZuweisungEntity(int id, Entity links, Entity rechts)
+	public ZuweisungEntity(Solver solver, int id, Entity links, Entity rechts)
 	{
-		super(id);
+		super(solver, id);
 		this.links = links;
 		this.rechts = rechts;
 	}
@@ -57,16 +57,16 @@ public class ZuweisungEntity extends Entity
 			}
 			if (ungueltig) return Translation.Get("InvalidVariableName".hashCode(), lLinks);
 			// lLinks ist gueltiger Variablenname
-			if (!Solver.Variablen.containsKey(lLinks))
+			if (!solver.Variablen.containsKey(lLinks))
 			{
 				// neue Variable hinzfuegen
-				Solver.Variablen.put(lLinks, lRechts);
+				solver.Variablen.put(lLinks, lRechts);
 			}
 			else
 			{
 				// Variable aendern
-				Solver.Variablen.remove(lLinks);
-				Solver.Variablen.put(lLinks, lRechts);
+				solver.Variablen.remove(lLinks);
+				solver.Variablen.put(lLinks, lRechts);
 			}
 			return lRechts;
 		}

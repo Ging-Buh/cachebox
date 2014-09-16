@@ -60,7 +60,14 @@ public final class CB_Android_FileExplorer implements IgetFileListner, IgetFolde
 			if (!Android_FileExplorer_ES.getMyInstanz().getfolder(initialPath, TitleText, ButtonText, returnListner))
 			{
 				// No compatible file manager was found.
-				Toast.makeText(UsedActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
+				main.mainActivity.runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						Toast.makeText(UsedActivity, "No compatible file manager found", Toast.LENGTH_SHORT).show();
+					}
+				});
 			}
 		}
 		// }

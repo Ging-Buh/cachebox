@@ -17,9 +17,9 @@ public class CoordinateEntity extends Entity
 
 	private String gcCode = "";
 
-	public CoordinateEntity(int id, String gcCode)
+	public CoordinateEntity(Solver solver, int id, String gcCode)
 	{
-		super(id);
+		super(solver, id);
 		this.gcCode = gcCode;
 	}
 
@@ -106,10 +106,7 @@ public class CoordinateEntity extends Entity
 		WaypointDAO waypointDAO = new WaypointDAO();
 		Waypoint dbWaypoint = null;
 		// Suchen, ob dieser Waypoint bereits vorhanden ist.
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint where GcCode = \""
-								+ this.gcCode + "\"", null);
+		CoreCursor reader = Database.Data.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = \"" + this.gcCode + "\"", null);
 		try
 		{
 			reader.moveToFirst();

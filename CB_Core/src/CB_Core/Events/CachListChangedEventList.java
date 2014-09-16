@@ -18,6 +18,7 @@ package CB_Core.Events;
 import java.util.ArrayList;
 
 import CB_Core.CoreSettingsForward;
+import CB_Core.Api.LiveMapQue;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Settings.CB_Core_Settings;
@@ -66,6 +67,16 @@ public class CachListChangedEventList
 				Database.Data.Query.add(0, cache);
 			}
 
+			// add all Live Caches
+			for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++)
+			{
+				Cache ca = LiveMapQue.LiveCaches.get(i);
+				if (!Database.Data.Query.contains(ca))
+				{
+					ca.setLive(true);
+					Database.Data.Query.add(ca);
+				}
+			}
 		}
 
 		if (threadCall != null)

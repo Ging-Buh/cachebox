@@ -29,6 +29,8 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -139,7 +141,7 @@ public class CB_AllContextMenuHandler
 					{
 
 					}
-				}, new Runnable()
+				}, new cancelRunnable()
 				{
 
 					@Override
@@ -149,12 +151,11 @@ public class CB_AllContextMenuHandler
 
 						searchC.number = 1;
 
-						ArrayList<Cache> apiCaches = new ArrayList<Cache>();
+						CB_List<Cache> apiCaches = new CB_List<Cache>();
 						ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
 						ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
 
-						CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
-								GlobalCore.getSelectedCache().GPXFilename_ID);
+						CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
 
 						try
 						{
@@ -175,8 +176,14 @@ public class CB_AllContextMenuHandler
 
 						CachListChangedEventList.Call();
 
-						CachListChangedEventList.Call();
 						wd.close();
+					}
+
+					@Override
+					public boolean cancel()
+					{
+						// TODO Handle cancel
+						return false;
 					}
 				});
 
@@ -208,7 +215,7 @@ public class CB_AllContextMenuHandler
 				return true;
 
 			case MenuID.MI_FAVORIT:
-				if (GlobalCore.getSelectedCache() != null)
+				if (GlobalCore.ifCacheSelected())
 				{
 					GlobalCore.getSelectedCache().setFavorit(!GlobalCore.getSelectedCache().isFavorite());
 					if (dao == null) dao = new CacheDAO();

@@ -53,5 +53,4 @@ public class Box extends CB_View_Base
 	{
 
 	}
-
 }

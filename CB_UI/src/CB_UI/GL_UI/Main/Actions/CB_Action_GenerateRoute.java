@@ -18,13 +18,9 @@ import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
-import CB_Core.Settings.CB_Core_Settings;
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
@@ -49,6 +45,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_Utils.MathUtils;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Math.TrackPoint;
 import CB_Utils.Util.UnitFormatter;
@@ -114,7 +111,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 		{
 			target = GlobalCore.getSelectedWaypoint().Pos;
 		}
-		else if (GlobalCore.getSelectedCache() != null)
+		else if (GlobalCore.ifCacheSelected())
 		{
 			target = GlobalCore.getSelectedCache().Pos;
 		}
@@ -128,8 +125,7 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 		{
 
 			@Override
-			public void returnFromRoute_Dialog(final boolean canceld, final boolean Motoway, final boolean CycleWay, final boolean FootWay,
-					boolean UseTmc)
+			public void returnFromRoute_Dialog(final boolean canceld, final boolean Motoway, final boolean CycleWay, final boolean FootWay, boolean UseTmc)
 			{
 				routeDia.close();
 
@@ -139,215 +135,96 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 					@Override
 					public void run()
 					{
-						wd = CancelWaitDialog.ShowWait(Translation.Get("generateRoute"), DownloadAnimation.GetINSTANCE(),
-								new IcancelListner()
+						wd = CancelWaitDialog.ShowWait(Translation.Get("generateRoute"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
+						{
+
+							@Override
+							public void isCanceld()
+							{
+								// TODO Handle Cancel Clicket
+
+							}
+						}, new cancelRunnable()
+						{
+
+							@Override
+							public void run()
+							{
+								Coordinate lastAcceptedCoordinate = null;
+								float[] dist = new float[4];
+								double Distance = 0;
+								Coordinate FromPosition = new CoordinateGPS(0, 0);
+								String routepref = "Fastest";
+
+								if (canceld) return;
+								if (Motoway) routepref = "Fastest";
+								if (CycleWay) routepref = "Bicycle";
+								if (FootWay) routepref = "Pedestrian";
+
+								String Url = Config.NavigationProvider.getValue();
+								// String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
+
+								HttpClient httpclient = new DefaultHttpClient();
+								HttpPost httppost = new HttpPost(Url);
+
+								httppost.setHeader("User-Agent", "cachebox rev " + String.valueOf(GlobalCore.CurrentRevision));
+								httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
+								// Create a local instance of cookie store
+								CookieStore cookieStore = new BasicCookieStore();
+
+								((AbstractHttpClient) httpclient).setCookieStore(cookieStore);
+
+								// Create local HTTP context
+								HttpContext localContext = new BasicHttpContext();
+								// Bind custom cookie store to the local context
+								localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+
+								// Execute HTTP Post Request
+								// see http://wiki.openstreetmap.org/wiki/DE:OpenRouteService#ORS_.22API.22
+								// for more information
+								try
 								{
+									List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
+									nameValuePairs.add(new BasicNameValuePair("Start", String.valueOf(start.getLongitude()) + "," + String.valueOf(start.getLatitude())));
+									nameValuePairs.add(new BasicNameValuePair("End", String.valueOf(target.getLongitude()) + "," + String.valueOf(target.getLatitude())));
 
-									@Override
-									public void isCanceld()
+									nameValuePairs.add(new BasicNameValuePair("Via", ""));
+									nameValuePairs.add(new BasicNameValuePair("lang", "de"));
+									nameValuePairs.add(new BasicNameValuePair("distunit", "KM"));
+									nameValuePairs.add(new BasicNameValuePair("routepref", routepref));
+									nameValuePairs.add(new BasicNameValuePair("avoidAreas", ""));
+									nameValuePairs.add(new BasicNameValuePair("useTMC", "false"));
+									nameValuePairs.add(new BasicNameValuePair("noMotorways", "false"));
+									nameValuePairs.add(new BasicNameValuePair("noTollways", "false"));
+									nameValuePairs.add(new BasicNameValuePair("instructions", "false"));
+									nameValuePairs.add(new BasicNameValuePair("_", ""));
+									httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+									// Execute HTTP Post Request
+									HttpResponse response = httpclient.execute(httppost, localContext);
+
+									BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+									StringBuilder builder = new StringBuilder();
+									String line = "";
+									TrackColor = RouteOverlay.getNextColor();
+									Track route = new Track(null, TrackColor);
+									route.Name = "OpenRouteService";
+									route.ShowRoute = true;
+									boolean RouteGeometryBlockFound = false;
+									boolean IsRoute = false;
+
+									try
 									{
-										// TODO Handle Cancel Clicket
-
-									}
-								}, new Runnable()
-								{
-
-									@Override
-									public void run()
-									{
-										Coordinate lastAcceptedCoordinate = null;
-										float[] dist = new float[4];
-										double Distance = 0;
-										Coordinate FromPosition = new CoordinateGPS(0, 0);
-										String routepref = "Fastest";
-
-										if (canceld) return;
-										if (Motoway) routepref = "Fastest";
-										if (CycleWay) routepref = "Bicycle";
-										if (FootWay) routepref = "Pedestrian";
-
-										String Url = Config.NavigationProvider.getValue();
-										// String Url = "http://openrouteservice.org/php/OpenLSRS_DetermineRoute.php";
-
-										int conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
-										int socketTimeout = CB_Core_Settings.socket_timeout.getValue();
-
-										HttpParams httpParameters = new BasicHttpParams();
-										// Set the timeout in milliseconds until a connection is established.
-										// The default value is zero, that means the timeout is not used.
-
-										HttpConnectionParams.setConnectionTimeout(httpParameters, conectionTimeout);
-										// Set the default socket timeout (SO_TIMEOUT)
-										// in milliseconds which is the timeout for waiting for data.
-
-										HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
-
-										HttpClient httpclient = new DefaultHttpClient(httpParameters);
-										HttpPost httppost = new HttpPost(Url);
-
-										httppost.setHeader("User-Agent", "cachebox rev " + String.valueOf(GlobalCore.CurrentRevision));
-										httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-
-										// Create a local instance of cookie store
-										CookieStore cookieStore = new BasicCookieStore();
-
-										((AbstractHttpClient) httpclient).setCookieStore(cookieStore);
-
-										// Create local HTTP context
-										HttpContext localContext = new BasicHttpContext();
-										// Bind custom cookie store to the local context
-										localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-
-										// Execute HTTP Post Request
-										// see http://wiki.openstreetmap.org/wiki/DE:OpenRouteService#ORS_.22API.22
-										// for more information
-										try
+										while ((line = reader.readLine()) != null)
 										{
-											List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(12);
-											nameValuePairs.add(new BasicNameValuePair("Start", String.valueOf(start.getLongitude()) + ","
-													+ String.valueOf(start.getLatitude())));
-											nameValuePairs.add(new BasicNameValuePair("End", String.valueOf(target.getLongitude()) + ","
-													+ String.valueOf(target.getLatitude())));
-
-											nameValuePairs.add(new BasicNameValuePair("Via", ""));
-											nameValuePairs.add(new BasicNameValuePair("lang", "de"));
-											nameValuePairs.add(new BasicNameValuePair("distunit", "KM"));
-											nameValuePairs.add(new BasicNameValuePair("routepref", routepref));
-											nameValuePairs.add(new BasicNameValuePair("avoidAreas", ""));
-											nameValuePairs.add(new BasicNameValuePair("useTMC", "false"));
-											nameValuePairs.add(new BasicNameValuePair("noMotorways", "false"));
-											nameValuePairs.add(new BasicNameValuePair("noTollways", "false"));
-											nameValuePairs.add(new BasicNameValuePair("instructions", "false"));
-											nameValuePairs.add(new BasicNameValuePair("_", ""));
-											httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-											// Execute HTTP Post Request
-											HttpResponse response = httpclient.execute(httppost, localContext);
-
-											BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity()
-													.getContent()));
-											StringBuilder builder = new StringBuilder();
-											String line = "";
-											TrackColor = RouteOverlay.getNextColor();
-											Track route = new Track(null, TrackColor);
-											route.Name = "OpenRouteService";
-											route.ShowRoute = true;
-											boolean RouteGeometryBlockFound = false;
-											boolean IsRoute = false;
-
-											try
+											builder.append(line).append("\n");
+											if (line.indexOf("<xls:Error ") >= 0)
 											{
-												while ((line = reader.readLine()) != null)
-												{
-													builder.append(line).append("\n");
-													if (line.indexOf("<xls:Error ") >= 0)
-													{
-														int errorIdx = line.indexOf("message=\"");
-														int endIdx = line.indexOf("\"", errorIdx + 9);
-														final String errorMessage = line.substring(errorIdx + 9, endIdx);
-														wd.close();
-														GL.that.RunOnGL(new IRunOnGL()
-														{
-															// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-															// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
-															@Override
-															public void run()
-															{
-																GL_MsgBox.Show(errorMessage, "OpenRouteService", MessageBoxButtons.OK,
-																		MessageBoxIcon.Error, null);
-															}
-														});
-
-														return;
-													}
-
-													if (line.indexOf("<xls:RouteGeometry>") >= 0) // suche <xls:RouteGeometry> Block
-													{
-														RouteGeometryBlockFound = true;
-													}
-
-													int idx;
-													if (((idx = line.indexOf("<gml:pos>")) > 0) & RouteGeometryBlockFound)
-													{
-														int seperator = line.indexOf(" ", idx + 1);
-														int endIdx = line.indexOf("</gml:pos>", seperator + 1);
-
-														String lonStr = line.substring(idx + 9, seperator);
-														String latStr = line.substring(seperator + 1, endIdx);
-
-														double lat = Double.valueOf(latStr);
-														double lon = Double.valueOf(lonStr);
-
-														lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
-
-														route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(),
-																lastAcceptedCoordinate.getLatitude(), 0, 0, null));
-
-														// Calculate the length of a Track
-														if (!FromPosition.isValid())
-														{
-															FromPosition = new Coordinate(lastAcceptedCoordinate);
-															FromPosition.setValid(true);
-														}
-														else
-														{
-															MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE,
-																	FromPosition.getLatitude(), FromPosition.getLongitude(),
-																	lastAcceptedCoordinate.getLatitude(),
-																	lastAcceptedCoordinate.getLongitude(), dist);
-															Distance += dist[0];
-															FromPosition = new Coordinate(lastAcceptedCoordinate);
-															IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
-														}
-													}
-												}
-
-												if (IsRoute)
-												{
-													final String sDistance = UnitFormatter.DistanceString((float) Distance);
-													route.TrackLength = Distance;
-													RouteOverlay.addOpenRoute(route);
-													if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
-
-													wd.close();
-
-													GL.that.RunOnGL(new IRunOnGL()
-													{
-														// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-														// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
-														@Override
-														public void run()
-														{
-															String msg = Translation.Get("generateRouteLength") + " " + sDistance;
-															GL_MsgBox.Show(msg, "OpenRouteService", MessageBoxButtons.OK,
-																	MessageBoxIcon.Information, null);
-														}
-													});
-												}
-												else
-												{
-													wd.close();
-
-													GL.that.RunOnGL(new IRunOnGL()
-													{
-														// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-														// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
-														@Override
-														public void run()
-														{
-															GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
-																	MessageBoxIcon.Error, null);
-														}
-													});
-
-													return;
-												}
-
-											}
-											catch (Exception e)
-											{
+												int errorIdx = line.indexOf("message=\"");
+												int endIdx = line.indexOf("\"", errorIdx + 9);
+												final String errorMessage = line.substring(errorIdx + 9, endIdx);
 												wd.close();
-
 												GL.that.RunOnGL(new IRunOnGL()
 												{
 													// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
@@ -355,15 +232,72 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 													@Override
 													public void run()
 													{
-														GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
-																MessageBoxIcon.Error, null);
+														GL_MsgBox.Show(errorMessage, "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 													}
 												});
+
+												return;
 											}
 
-											// String page = builder.toString(); //page enthält komplette zurückgelieferte Web-Seite
+											if (line.indexOf("<xls:RouteGeometry>") >= 0) // suche <xls:RouteGeometry> Block
+											{
+												RouteGeometryBlockFound = true;
+											}
+
+											int idx;
+											if (((idx = line.indexOf("<gml:pos>")) > 0) & RouteGeometryBlockFound)
+											{
+												int seperator = line.indexOf(" ", idx + 1);
+												int endIdx = line.indexOf("</gml:pos>", seperator + 1);
+
+												String lonStr = line.substring(idx + 9, seperator);
+												String latStr = line.substring(seperator + 1, endIdx);
+
+												double lat = Double.valueOf(latStr);
+												double lon = Double.valueOf(lonStr);
+
+												lastAcceptedCoordinate = new CoordinateGPS(lat, lon);
+
+												route.Points.add(new TrackPoint(lastAcceptedCoordinate.getLongitude(), lastAcceptedCoordinate.getLatitude(), 0, 0, null));
+
+												// Calculate the length of a Track
+												if (!FromPosition.isValid())
+												{
+													FromPosition = new Coordinate(lastAcceptedCoordinate);
+													FromPosition.setValid(true);
+												}
+												else
+												{
+													MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, FromPosition.getLatitude(), FromPosition.getLongitude(), lastAcceptedCoordinate.getLatitude(), lastAcceptedCoordinate.getLongitude(), dist);
+													Distance += dist[0];
+													FromPosition = new Coordinate(lastAcceptedCoordinate);
+													IsRoute = true; // min. 2 Punkte, damit es eine gültige Route ist
+												}
+											}
 										}
-										catch (ClientProtocolException e)
+
+										if (IsRoute)
+										{
+											final String sDistance = UnitFormatter.DistanceString((float) Distance);
+											route.TrackLength = Distance;
+											RouteOverlay.addOpenRoute(route);
+											if (TrackListView.that != null) TrackListView.that.notifyDataSetChanged();
+
+											wd.close();
+
+											GL.that.RunOnGL(new IRunOnGL()
+											{
+												// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+												// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+												@Override
+												public void run()
+												{
+													String msg = Translation.Get("generateRouteLength") + sDistance;
+													GL_MsgBox.Show(msg, "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Information, null);
+												}
+											});
+										}
+										else
 										{
 											wd.close();
 
@@ -374,32 +308,73 @@ public class CB_Action_GenerateRoute extends CB_ActionCommand
 												@Override
 												public void run()
 												{
-													GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
-															MessageBoxIcon.Error, null);
+													GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
 												}
 											});
-										}
-										catch (IOException e)
-										{
-											wd.close();
 
-											GL.that.RunOnGL(new IRunOnGL()
-											{
-												// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
-												// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
-												@Override
-												public void run()
-												{
-													GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK,
-															MessageBoxIcon.Error, null);
-												}
-											});
+											return;
 										}
-
-										RouteOverlay.RoutesChanged();
 
 									}
-								});
+									catch (Exception e)
+									{
+										wd.close();
+
+										GL.that.RunOnGL(new IRunOnGL()
+										{
+											// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+											// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+											@Override
+											public void run()
+											{
+												GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+											}
+										});
+									}
+
+									// String page = builder.toString(); //page enthält komplette zurückgelieferte Web-Seite
+								}
+								catch (ClientProtocolException e)
+								{
+									wd.close();
+
+									GL.that.RunOnGL(new IRunOnGL()
+									{
+										// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+										// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+										@Override
+										public void run()
+										{
+											GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+										}
+									});
+								}
+								catch (IOException e)
+								{
+									wd.close();
+
+									GL.that.RunOnGL(new IRunOnGL()
+									{
+										// wird in RunOnGL ausgeführt, da erst der WaitDialog geschlossen werden muss.
+										// Die Anzeige der MsgBox erfollgt dann einen Rederdurchgang später.
+										@Override
+										public void run()
+										{
+											GL_MsgBox.Show("no route found", "OpenRouteService", MessageBoxButtons.OK, MessageBoxIcon.Error, null);
+										}
+									});
+								}
+								RouteOverlay.RoutesChanged();
+
+							}
+
+							@Override
+							public boolean cancel()
+							{
+								// TODO Auto-generated method stub
+								return false;
+							}
+						});
 					}
 				});
 

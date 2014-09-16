@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Activitys;
 
 import CB_Core.Enums.LogTypes;
@@ -136,8 +151,7 @@ public class TB_Details extends ActivityBase
 		scrollBox.setWidth(getWidth());
 		scrollBox.setMargins(margin, 0);
 
-		float minBoxHeight = Fonts.Measure("Tg").height + SpriteCacheBase.activityBackground.getBottomHeight()
-				+ SpriteCacheBase.activityBackground.getTopHeight();
+		float minBoxHeight = Fonts.Measure("Tg").height + SpriteCacheBase.activityBackground.getBottomHeight() + SpriteCacheBase.activityBackground.getTopHeight();
 
 		AboutThisItem.setWidth(scrollBox.getInnerWidth());
 		lblAbout.setHeight(lblAbout.getTextHeight() + margin);
@@ -268,20 +282,15 @@ public class TB_Details extends ActivityBase
 
 		cm.addItem(MenuID.MI_TB_NOTE, "note", SpriteCacheBase.Icons.get(IconName.tbNote_63.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.discovered, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_DISCOVERED,
-				"discovered", SpriteCacheBase.Icons.get(IconName.tbDiscover_58.ordinal()));
+		if (TB.isLogTypePosible(LogTypes.discovered, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_DISCOVERED, "discovered", SpriteCacheBase.Icons.get(IconName.tbDiscover_58.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.visited, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_VISIT, "visit",
-				SpriteCacheBase.Icons.get(IconName.tbVisit_62.ordinal()));
+		if (TB.isLogTypePosible(LogTypes.visited, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_VISIT, "visit", SpriteCacheBase.Icons.get(IconName.tbVisit_62.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.dropped_off, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_DROPPED, "dropped",
-				SpriteCacheBase.Icons.get(IconName.tbDrop_59.ordinal()));
+		if (TB.isLogTypePosible(LogTypes.dropped_off, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_DROPPED, "dropped", SpriteCacheBase.Icons.get(IconName.tbDrop_59.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.grab_it, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed",
-				SpriteCacheBase.Icons.get(IconName.tbGrab_60.ordinal()));
+		if (TB.isLogTypePosible(LogTypes.grab_it, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_GRABBED, "grabbed", SpriteCacheBase.Icons.get(IconName.tbGrab_60.ordinal()));
 
-		if (TB.isLogTypePosible(LogTypes.retrieve, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_PICKED, "picked",
-				SpriteCacheBase.Icons.get(IconName.tbPicked_61.ordinal()));
+		if (TB.isLogTypePosible(LogTypes.retrieve, CB_Core_Settings.GcLogin.getValue())) cm.addItem(MenuID.MI_TB_PICKED, "picked", SpriteCacheBase.Icons.get(IconName.tbPicked_61.ordinal()));
 
 		cm.Show();
 	}

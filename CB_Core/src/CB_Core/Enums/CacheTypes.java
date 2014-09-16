@@ -54,6 +54,7 @@ public enum CacheTypes
 			if (string.toLowerCase().contains("webcam")) string = "Camera";
 			if (string.toLowerCase().contains("question")) string = "MultiQuestion";
 			if (string.toLowerCase().contains("reference")) string = "ReferencePoint";
+			if (string.toLowerCase().contains("referenzpunkt")) string = "ReferencePoint";
 			if (string.toLowerCase().contains("parking")) string = "ParkingArea";
 			if (string.toLowerCase().contains("stages")) string = "MultiStage";
 			if (string.toLowerCase().contains("munzee")) string = "Munzee";

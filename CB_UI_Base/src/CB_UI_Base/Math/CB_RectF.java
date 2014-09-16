@@ -16,6 +16,8 @@
 
 package CB_UI_Base.Math;
 
+import java.util.Arrays;
+
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.MoveableList;
 
@@ -45,8 +47,8 @@ public class CB_RectF
 	 * [8] = centerPos.x <br>
 	 * [9] = centerPos.x <br>
 	 */
-	protected final float member[] = new float[]
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	protected Float member[] = new Float[]
+		{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
 	public float getHalfWidth()
 	{
@@ -93,11 +95,13 @@ public class CB_RectF
 
 	public CB_RectF(CB_RectF rec)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		System.arraycopy(rec.member, 0, this.member, 0, 10);
 	}
 
 	public void setWidth(float Width)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (member[2] == Width) return;
 		member[2] = Width;
 		calcCrossCorner();
@@ -126,6 +130,7 @@ public class CB_RectF
 	 */
 	public boolean setSize(float Width, float Height)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! false; // isDisposed!
 		if (member[2] == Width && member[3] == Height) return false;
 		member[2] = Width;
 		member[3] = Height;
@@ -142,6 +147,7 @@ public class CB_RectF
 
 	public void setPos(Vector2 Pos)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (member[0] == Pos.x && member[1] == Pos.y) return;
 		member[0] = Pos.x;
 		member[1] = Pos.y;
@@ -155,6 +161,7 @@ public class CB_RectF
 
 	public CB_RectF offset(float offX, float offY)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! null; // isDisposed!
 		member[0] += offX;
 		member[1] += offY;
 		calcCrossCorner();
@@ -163,21 +170,25 @@ public class CB_RectF
 
 	public float getX()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return member[0];
 	}
 
 	public float getY()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return member[1];
 	}
 
 	public float getWidth()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return member[2];
 	}
 
 	public float getHeight()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return member[3];
 	}
 
@@ -186,6 +197,7 @@ public class CB_RectF
 	 */
 	protected void calcCrossCorner()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!;// isDisposed!
 		this.member[4] = this.member[2] / 2;
 		this.member[5] = this.member[3] / 2;
 
@@ -203,6 +215,8 @@ public class CB_RectF
 
 	public boolean contains(float x, float y)
 	{
+		if (this.member == null) return false;
+
 		// runde
 		float rX = Math.round(x);
 		float rY = Math.round(y);
@@ -223,6 +237,7 @@ public class CB_RectF
 	 */
 	public boolean contains(CB_RectF rec)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! false; // isDisposed!
 		if (rec == null) return false;
 		boolean ret = this.contains(rec.member[0], rec.member[1]);
 		ret &= this.contains(rec.member[6], rec.member[7]);
@@ -234,11 +249,13 @@ public class CB_RectF
 
 	public void Add(SizeChangedEvent event)
 	{
+		if (list == null) return; // is disposed
 		list.add(event);
 	}
 
 	public void Remove(SizeChangedEvent event)
 	{
+		if (list == null) return; // is disposed
 		list.remove(event);
 	}
 
@@ -263,6 +280,8 @@ public class CB_RectF
 
 	public boolean equals(CB_RectF rec)
 	{
+		if (member == null || rec.member == null) return false; // any is disposed!
+
 		// Compare only x,y,width and height
 		if (this.member[0] != rec.member[0]) return false;
 		if (this.member[1] != rec.member[1]) return false;
@@ -279,6 +298,7 @@ public class CB_RectF
 
 	public void setY(float i)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (this.member[1] == i) return;
 		this.member[1] = i;
 		calcCrossCorner();
@@ -287,41 +307,42 @@ public class CB_RectF
 
 	public void setX(float i)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (this.member[0] == i) return;
 		this.member[0] = i;
 		calcCrossCorner();
 		CallRecChanged();
 	}
 
-	/**
-	 * Setzt Height und Width auf die nächst größere Potenz von 2
-	 */
-	public void setPO2()
-	{
-		int PO2width = getNextHighestPO2((int) this.member[2]);
-		int PO2height = getNextHighestPO2((int) this.member[3]);
+	// /**
+	// * Setzt Height und Width auf die nächst größere Potenz von 2
+	// */
+	// public void setPO2()
+	// {
+	// int PO2width = getNextHighestPO2((int) this.member[2]);
+	// int PO2height = getNextHighestPO2((int) this.member[3]);
+	//
+	// setSize(PO2width, PO2height);
+	// }
 
-		setSize(PO2width, PO2height);
-	}
-
-	/**
-	 * Calculates the next highest power of two for a given integer.
-	 * 
-	 * @param n
-	 *            the number
-	 * @return a power of two equal to or higher than n
-	 */
-	public static int getNextHighestPO2(int n)
-	{
-		n -= 1;
-		n = n | (n >> 1);
-		n = n | (n >> 2);
-		n = n | (n >> 4);
-		n = n | (n >> 8);
-		n = n | (n >> 16);
-		n = n | (n >> 32);
-		return n + 1;
-	}
+	// /**
+	// * Calculates the next highest power of two for a given integer.
+	// *
+	// * @param n
+	// * the number
+	// * @return a power of two equal to or higher than n
+	// */
+	// public static int getNextHighestPO2(int n)
+	// {
+	// n -= 1;
+	// n = n | (n >> 1);
+	// n = n | (n >> 2);
+	// n = n | (n >> 4);
+	// n = n | (n >> 8);
+	// n = n | (n >> 16);
+	// n = n | (n >> 32);
+	// return n + 1;
+	// }
 
 	public CB_RectF ScaleCenter(float ScaleFactor)
 	{
@@ -385,24 +406,21 @@ public class CB_RectF
 			{
 			case 1:
 
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(
-						this.member[6], this.member[1]), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[6], this.member[1]), ret))
 				{
 					if (contains(ret)) return ret; // 1 unten
 				}
 				break;
 
 			case 2:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(
-						this.member[0], this.member[7]), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[0], this.member[1]), new Vector2(this.member[0], this.member[7]), ret))
 				{
 					if (contains(ret)) return ret; // 2 links
 				}
 				break;
 
 			case 3:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(
-						this.member[6], this.member[1]), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(this.member[6], this.member[1]), ret))
 				{
 					if (contains(ret)) return ret; // 3 rechts
 				}
@@ -410,8 +428,7 @@ public class CB_RectF
 				break;
 
 			case 4:
-				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(
-						this.member[0], this.member[7]), ret))
+				if (com.badlogic.gdx.math.Intersector.intersectSegments(P1, P2, new Vector2(this.member[6], this.member[7]), new Vector2(this.member[0], this.member[7]), ret))
 				{
 					if (contains(ret)) return ret; // 4 oben
 				}
@@ -476,11 +493,13 @@ public class CB_RectF
 
 	public SizeF getSize()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! new SizeF(); // isDisposed!
 		return new SizeF(this.member[2], this.member[3]);
 	}
 
 	public void setRec(CB_RectF rec)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		if (rec == null) return;
 		// chk of changes
 		if (this.equals(rec)) return;
@@ -491,11 +510,13 @@ public class CB_RectF
 	@Override
 	public String toString()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! "disposed Rec"; // isDisposed!
 		return "rec X,Y/Width,Height = " + this.getX() + "," + this.getY() + "/" + this.member[2] + "," + this.member[3];
 	}
 
 	public void setPos(float x, float y)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!; // isDisposed!
 		// chk of changes
 		if (this.member[0] == x && this.member[1] == y) return;
 
@@ -507,16 +528,19 @@ public class CB_RectF
 
 	public float getCenterPosX()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return this.member[8];
 	}
 
 	public float getCenterPosY()
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed! 0; // isDisposed!
 		return this.member[9];
 	}
 
 	public void set(float x, float y, float width, float height)
 	{
+		if (member == null) throw new IllegalStateException("Is Disposed"); // isDisposed!
 		// chk of changes
 		if (this.member[0] == x && this.member[1] == y && this.member[2] == width && this.member[3] == height) return;
 		this.member[0] = x;
@@ -534,5 +558,12 @@ public class CB_RectF
 			list.clear();
 		}
 		list = null;
+
+		if (member != null)
+		{
+			Arrays.fill(member, null);
+		}
+		member = null;
+
 	}
 }

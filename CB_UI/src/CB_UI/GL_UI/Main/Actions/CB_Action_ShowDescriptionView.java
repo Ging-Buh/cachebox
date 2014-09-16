@@ -32,6 +32,8 @@ import CB_UI_Base.GL_UI.Main.Actions.CB_Action_ShowView;
 import CB_UI_Base.GL_UI.Menu.Menu;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
+import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -46,8 +48,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 	@Override
 	public void Execute()
 	{
-		if ((TabMainView.descriptionView == null) && (tabMainView != null) && (tab != null)) TabMainView.descriptionView = new DescriptionView(
-				tab.getContentRec(), "DescriptionView");
+		if ((TabMainView.descriptionView == null) && (tabMainView != null) && (tab != null)) TabMainView.descriptionView = new DescriptionView(tab.getContentRec(), "DescriptionView");
 
 		if ((TabMainView.descriptionView != null) && (tab != null)) tab.ShowView(TabMainView.descriptionView);
 	}
@@ -103,8 +104,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 					dao.UpdateDatabase(GlobalCore.getSelectedCache());
 
 					// Update Query
-					Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(
-							GlobalCore.getSelectedCache().isFavorite());
+					Database.Data.Query.GetCacheById(GlobalCore.getSelectedCache().Id).setFavorite(GlobalCore.getSelectedCache().isFavorite());
 
 					// Update View
 					if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
@@ -114,91 +114,18 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 					return true;
 				case MenuID.MI_RELOAD_CACHE:
 
-					if (GlobalCore.getSelectedCache() == null)
-					{
-						GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
-						return true;
-					}
-
-					wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
-					{
-
-						@Override
-						public void isCanceld()
-						{
-
-						}
-					}, new Runnable()
-					{
-
-						@Override
-						public void run()
-						{
-							String GcCode = GlobalCore.getSelectedCache().getGcCode();
-
-							SearchGC searchC = new SearchGC(GcCode);
-							searchC.number = 1;
-							searchC.available = false;
-
-							ArrayList<Cache> apiCaches = new ArrayList<Cache>();
-							ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
-							ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
-
-							CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages,
-									GlobalCore.getSelectedCache().GPXFilename_ID);
-
-							try
-							{
-								GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
-							}
-							catch (InterruptedException e)
-							{
-								e.printStackTrace();
-							}
-
-							// Reload result from DB
-							synchronized (Database.Data.Query)
-							{
-								String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
-								CacheListDAO cacheListDAO = new CacheListDAO();
-								cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
-							}
-
-							CachListChangedEventList.Call();
-							Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
-							GlobalCore.setSelectedCache(selCache);
-							GL.that.RunOnGL(new IRunOnGL()
-							{
-
-								@Override
-								public void run()
-								{
-									GL.that.RunOnGL(new IRunOnGL()
-									{
-
-										@Override
-										public void run()
-										{
-											if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
-											GL.that.renderOnce();
-										}
-									});
-								}
-							});
-
-							wd.close();
-						}
-					});
+					ReloadSelectedCache();
 
 					return true;
 				}
 				return false;
 			}
+
 		});
 
 		MenuItem mi;
 
-		boolean isSelected = (GlobalCore.getSelectedCache() != null);
+		boolean isSelected = (GlobalCore.ifCacheSelected());
 
 		mi = cm.addItem(MenuID.MI_FAVORIT, "Favorite", SpriteCacheBase.Icons.get(IconName.favorit_42.ordinal()));
 		mi.setCheckable(true);
@@ -218,6 +145,91 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 		if (!isSelected) mi.setEnabled(false);
 		if (selectedCacheIsNoGC) mi.setEnabled(false);
 		return cm;
+	}
+
+	public void ReloadSelectedCache()
+	{
+		if (GlobalCore.getSelectedCache() == null)
+		{
+			GL_MsgBox.Show(Translation.Get("NoCacheSelect"), Translation.Get("Error"), MessageBoxIcon.Error);
+			return;
+		}
+
+		wd = CancelWaitDialog.ShowWait(Translation.Get("ReloadCacheAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
+		{
+
+			@Override
+			public void isCanceld()
+			{
+				// TODO handle cancel
+			}
+		}, new cancelRunnable()
+		{
+
+			@Override
+			public void run()
+			{
+				String GcCode = GlobalCore.getSelectedCache().getGcCode();
+
+				SearchGC searchC = new SearchGC(GcCode);
+				searchC.number = 1;
+				searchC.available = false;
+
+				CB_List<Cache> apiCaches = new CB_List<Cache>();
+				ArrayList<LogEntry> apiLogs = new ArrayList<LogEntry>();
+				ArrayList<ImageEntry> apiImages = new ArrayList<ImageEntry>();
+
+				CB_UI.Api.SearchForGeocaches.getInstance().SearchForGeocachesJSON(searchC, apiCaches, apiLogs, apiImages, GlobalCore.getSelectedCache().GPXFilename_ID, this);
+
+				try
+				{
+					GroundspeakAPI.WriteCachesLogsImages_toDB(apiCaches, apiLogs, apiImages);
+				}
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+
+				// Reload result from DB
+				synchronized (Database.Data.Query)
+				{
+					String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+					CacheListDAO cacheListDAO = new CacheListDAO();
+					cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
+				}
+
+				CachListChangedEventList.Call();
+				Cache selCache = Database.Data.Query.GetCacheByGcCode(GcCode);
+				GlobalCore.setSelectedCache(selCache);
+				GL.that.RunOnGL(new IRunOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						GL.that.RunOnGL(new IRunOnGL()
+						{
+
+							@Override
+							public void run()
+							{
+								if (TabMainView.descriptionView != null) TabMainView.descriptionView.onShow();
+								GL.that.renderOnce();
+							}
+						});
+					}
+				});
+
+				wd.close();
+			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
 	}
 
 }

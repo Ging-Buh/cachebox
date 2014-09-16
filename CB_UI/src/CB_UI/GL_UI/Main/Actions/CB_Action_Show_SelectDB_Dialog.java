@@ -47,7 +47,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	public void Execute()
 	{
 
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
@@ -99,8 +99,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				{
 					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
 					FilterString = Config.Filter.getValue();
-					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString())
-							: new FilterProperties(FilterString);
+					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
 				}
 				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
 

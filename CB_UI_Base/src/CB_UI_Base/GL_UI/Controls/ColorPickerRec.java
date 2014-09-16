@@ -4,8 +4,8 @@ import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
-import CB_UI_Base.GL_UI.utils.HSV_Color;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Util.HSV_Color;
 
 import com.badlogic.gdx.graphics.Color;
 

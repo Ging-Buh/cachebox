@@ -35,18 +35,19 @@ import CB_Utils.Log.Logger;
 
 public class CacheDAO
 {
-	private static final String sqlgetFromDbByCacheId = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where id = ?";
-	private static final String sqlgetFromDbByGcCode = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint from Caches where GCCode = ?";
-	private static final String sqlgetFromDbByGcCodeWithDiscription = "select Id, GcCode, Latitude, Longitude, Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, PlacedBy, Owner, DateHidden, Url, NumTravelbugs, GcId, Rating, Favorit, TourName, GpxFilename_ID, HasUserData, ListingChanged, CorrectedCoordinates, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint, Description, Solver, Notes from Caches where GCCode = ?";
 
-	private static final String sqlExistsCache = "select 1 from Caches where Id = ?";
+	static final String SQL_BY_ID = "from Caches c where id = ?";
+	static final String SQL_BY_GC_CODE = "from Caches c where GCCode = ?";
+	public String[] SQL_ENUM =
+		{ "c.Id", "GcCode", "Latitude" };
+	static final String SQL_DETAILS = "PlacedBy, DateHidden, Url, TourName, GpxFilename_ID, ApiStatus, AttributesPositive, AttributesPositiveHigh, AttributesNegative, AttributesNegativeHigh, Hint ";
+	static final String SQL_GET_DETAIL_WITH_DESCRIPTION = "Description, Solver, Notes ";
+	static final String SQL_GET_DETAIL_FROM_ID = "select " + SQL_DETAILS + SQL_BY_ID;
+	static final String SQL_EXIST_CACHE = "select 1 from Caches where Id = ?";
 
-	private Cache ReadFromCursor(CoreCursor reader, boolean fullDetails)
-	{
-		return ReadFromCursor(reader, false, fullDetails);
-	}
+	static final String SQL_GET_CACHE = "select c.Id, GcCode, Latitude, Longitude, c.Name, Size, Difficulty, Terrain, Archived, Available, Found, Type, Owner, NumTravelbugs, GcId, Rating, Favorit, HasUserData, ListingChanged, CorrectedCoordinates ";
 
-	Cache ReadFromCursor(CoreCursor reader, boolean withDescription, boolean fullDetails)
+	Cache ReadFromCursor(CoreCursor reader, boolean fullDetails, boolean withDescription)
 	{
 		try
 		{
@@ -63,39 +64,32 @@ public class CacheDAO
 			cache.setAvailable(reader.getInt(9) != 0);
 			cache.setFound(reader.getInt(10) != 0);
 			cache.Type = CacheTypes.values()[reader.getShort(11)];
-			cache.setOwner(reader.getString(13).trim());
+			cache.setOwner(reader.getString(12).trim());
 
-			cache.NumTravelbugs = reader.getInt(16);
-			cache.Rating = ((float) reader.getShort(18)) / 100.0f;
-			if (reader.getInt(19) > 0) cache.setFavorit(true);
+			cache.NumTravelbugs = reader.getInt(13);
+			cache.setGcId(reader.getString(14).trim());
+			cache.Rating = ((float) reader.getShort(15)) / 100.0f;
+			if (reader.getInt(16) > 0) cache.setFavorit(true);
 			else
 				cache.setFavorit(false);
 
-			if (reader.getInt(22) > 0) cache.setHasUserData(true);
+			if (reader.getInt(17) > 0) cache.setHasUserData(true);
 			else
 				cache.setHasUserData(false);
 
-			if (reader.getInt(23) > 0) cache.setListingChanged(true);
+			if (reader.getInt(18) > 0) cache.setListingChanged(true);
 			else
 				cache.setListingChanged(false);
 
-			if (reader.getInt(24) > 0) cache.setCorrectedCoordinates(true);
+			if (reader.getInt(19) > 0) cache.setCorrectedCoordinates(true);
 			else
 				cache.setCorrectedCoordinates(false);
 
-			// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-
 			if (fullDetails)
 			{
-				readDetailFromCursor(reader, cache.detail);
+				readDetailFromCursor(reader, cache.detail, fullDetails, withDescription);
 			}
-			if (withDescription)
-			{
-				cache.setLongDescription(reader.getString(31));
-				cache.setTmpSolver(reader.getString(32));
-				cache.setTmpNote(reader.getString(33));
-			}
+
 			return cache;
 		}
 		catch (Exception exc)
@@ -110,7 +104,7 @@ public class CacheDAO
 		if (cache.detail != null) return true;
 		cache.detail = new CacheDetail();
 
-		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByCacheId, new String[]
+		CoreCursor reader = Database.Data.rawQuery(SQL_GET_DETAIL_FROM_ID, new String[]
 			{ String.valueOf(cache.Id) });
 
 		try
@@ -118,7 +112,7 @@ public class CacheDAO
 			if (reader != null && reader.getCount() > 0)
 			{
 				reader.moveToFirst();
-				readDetailFromCursor(reader, cache.detail);
+				readDetailFromCursor(reader, cache.detail, false, false);
 
 				reader.close();
 				return true;
@@ -137,16 +131,18 @@ public class CacheDAO
 		}
 	}
 
-	private boolean readDetailFromCursor(CoreCursor reader, CacheDetail detail)
+	private boolean readDetailFromCursor(CoreCursor reader, CacheDetail detail, boolean withReaderOffset, boolean withDescription)
 	{
-		detail.setGcId(reader.getString(17).trim());
-		detail.PlacedBy = reader.getString(12).trim();
+		// Reader includes Compleate Cache or Details only
+		int readerOffset = withReaderOffset ? 20 : 0;
 
-		if (reader.isNull(25)) detail.ApiStatus = (byte) 0;
+		detail.PlacedBy = reader.getString(readerOffset + 0).trim();
+
+		if (reader.isNull(readerOffset + 5)) detail.ApiStatus = (byte) 0;
 		else
-			detail.ApiStatus = (byte) reader.getInt(25);
+			detail.ApiStatus = (byte) reader.getInt(readerOffset + 5);
 
-		String sDate = reader.getString(14);
+		String sDate = reader.getString(readerOffset + 1);
 		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try
 		{
@@ -154,22 +150,29 @@ public class CacheDAO
 		}
 		catch (ParseException e)
 		{
+			e.printStackTrace();
 		}
 
-		detail.Url = reader.getString(15).trim();
-		if (reader.getString(20) != null) detail.TourName = reader.getString(20).trim();
+		detail.Url = reader.getString(readerOffset + 2).trim();
+		if (reader.getString(readerOffset + 3) != null) detail.TourName = reader.getString(readerOffset + 3).trim();
 		else
 			detail.TourName = "";
-		if (reader.getString(21) != "") detail.GPXFilename_ID = reader.getLong(21);
+		if (reader.getString(readerOffset + 4) != "") detail.GPXFilename_ID = reader.getLong(readerOffset + 4);
 		else
 			detail.GPXFilename_ID = -1;
-		detail.setAttributesPositive(new DLong(reader.getLong(27), reader.getLong(26)));
-		detail.setAttributesNegative(new DLong(reader.getLong(29), reader.getLong(28)));
+		detail.setAttributesPositive(new DLong(reader.getLong(readerOffset + 7), reader.getLong(readerOffset + 6)));
+		detail.setAttributesNegative(new DLong(reader.getLong(readerOffset + 9), reader.getLong(readerOffset + 8)));
 
-		if (reader.getString(30) != null) detail.setHint(reader.getString(30).trim());
+		if (reader.getString(readerOffset + 10) != null) detail.setHint(reader.getString(readerOffset + 10).trim());
 		else
 			detail.setHint("");
 
+		if (withDescription)
+		{
+			detail.longDescription = reader.getString(readerOffset + 11);
+			detail.tmpSolver = reader.getString(readerOffset + 12);
+			detail.tmpNote = reader.getString(readerOffset + 13);
+		}
 		return true;
 	}
 
@@ -389,7 +392,7 @@ public class CacheDAO
 
 	public Cache getFromDbByCacheId(long CacheID)
 	{
-		CoreCursor reader = Database.Data.rawQuery(sqlgetFromDbByCacheId, new String[]
+		CoreCursor reader = Database.Data.rawQuery(SQL_GET_CACHE + SQL_BY_ID, new String[]
 			{ String.valueOf(CacheID) });
 
 		try
@@ -397,7 +400,7 @@ public class CacheDAO
 			if (reader != null && reader.getCount() > 0)
 			{
 				reader.moveToFirst();
-				Cache ret = ReadFromCursor(reader, false);
+				Cache ret = ReadFromCursor(reader, false, false);
 
 				reader.close();
 				return ret;
@@ -414,12 +417,16 @@ public class CacheDAO
 			e.printStackTrace();
 			return null;
 		}
+		finally
+		{
+			reader = null;
+		}
 
 	}
 
-	public Cache getFromDbByGcCode(String GcCode, boolean witDetail, boolean withDescription) // NO_UCD (test only)
+	public Cache getFromDbByGcCode(String GcCode, boolean witDetail) // NO_UCD (test only)
 	{
-		String where = withDescription ? sqlgetFromDbByGcCodeWithDiscription : sqlgetFromDbByGcCode;
+		String where = SQL_GET_CACHE + (witDetail ? ", " + SQL_DETAILS : "") + SQL_BY_GC_CODE;
 
 		CoreCursor reader = Database.Data.rawQuery(where, new String[]
 			{ GcCode });
@@ -429,7 +436,7 @@ public class CacheDAO
 			if (reader != null && reader.getCount() > 0)
 			{
 				reader.moveToFirst();
-				Cache ret = ReadFromCursor(reader, withDescription, witDetail);
+				Cache ret = ReadFromCursor(reader, witDetail, false);
 
 				reader.close();
 				return ret;
@@ -452,7 +459,7 @@ public class CacheDAO
 	public Boolean cacheExists(long CacheID)
 	{
 
-		CoreCursor reader = Database.Data.rawQuery(sqlExistsCache, new String[]
+		CoreCursor reader = Database.Data.rawQuery(SQL_EXIST_CACHE, new String[]
 			{ String.valueOf(CacheID) });
 
 		boolean exists = (reader.getCount() > 0);

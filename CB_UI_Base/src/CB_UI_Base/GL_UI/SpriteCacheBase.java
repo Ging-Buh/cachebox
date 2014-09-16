@@ -24,6 +24,7 @@ import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -77,6 +78,7 @@ public class SpriteCacheBase
 	public static ArrayList<Drawable> Compass = null;
 
 	public static ArrayList<Sprite> ToggleBtn = null;
+	public static ArrayList<Sprite> LiveBtn = null;
 	public static ArrayList<Sprite> ZoomBtn = null;
 	public static Sprite ZoomValueBack = null;
 	public static ArrayList<Sprite> BigIcons = null;
@@ -149,6 +151,9 @@ public class SpriteCacheBase
 		tbNote_63, // 63
 		uploadFieldNote_64, // 63
 		menuFilterd_65, // 65
+		save_66, // 66
+		torch_on_67, // 67
+		torch_Off_68, // 68
 	}
 
 	public static enum DialogElement
@@ -512,6 +517,30 @@ public class SpriteCacheBase
 			MapOverlay.add(getThemedSprite("deact"));
 			MapOverlay.add(getThemedSprite("cross"));
 
+			// Live sprites with light blue color changed
+
+			Color backColor = CB_UI_Base_Settings.LiveMapBackgroundColor.getValue();
+
+			Sprite live = getThemedSprite("shaddowrect");
+			Sprite liveSelected = getThemedSprite("shaddowrect-selected");
+
+			live.setColor(backColor);
+			liveSelected.setColor(backColor);
+			MapOverlay.add(live);
+			MapOverlay.add(liveSelected);
+
+			CB_UI_Base_Settings.LiveMapBackgroundColor.addChangedEventListner(new iChanged()
+			{
+
+				@Override
+				public void isChanged()
+				{
+					Color backColor = CB_UI_Base_Settings.LiveMapBackgroundColor.getValue();
+					MapOverlay.get(4).setColor(backColor);
+					MapOverlay.get(5).setColor(backColor);
+				}
+			});
+
 		}
 
 		if (MapIcons == null) MapIcons = new ArrayList<Sprite>();
@@ -657,6 +686,23 @@ public class SpriteCacheBase
 
 		}
 
+		if (LiveBtn == null) LiveBtn = new ArrayList<Sprite>();
+		synchronized (LiveBtn)
+		{
+			LiveBtn.clear();
+			LiveBtn.add(getThemedSprite("LiveEnabled"));
+			LiveBtn.add(getThemedSprite("LiveDisabled"));
+			LiveBtn.add(getThemedSprite("Live1"));
+			LiveBtn.add(getThemedSprite("Live2"));
+			LiveBtn.add(getThemedSprite("Live3"));
+			LiveBtn.add(getThemedSprite("Live4"));
+			LiveBtn.add(getThemedSprite("Live5"));
+			LiveBtn.add(getThemedSprite("Live6"));
+			LiveBtn.add(getThemedSprite("Live7"));
+			LiveBtn.add(getThemedSprite("Live8"));
+
+		}
+
 		Progress = getThemedSprite("progress");
 		ambilwarna_hue = getThemedSprite("ambilwarna-hue");
 		ambilwarna_cursor = getThemedSprite("ambilwarna-cursor");
@@ -792,6 +838,9 @@ public class SpriteCacheBase
 			Icons.add(getThemedSprite("tb-note")); // 63
 			Icons.add(getThemedSprite("upload-fieldnote")); // 64
 			Icons.add(getThemedSprite("cm-icon-filterd")); // 65
+			Icons.add(getThemedSprite("save")); // 66
+			Icons.add(getThemedSprite("torch_on")); // 67
+			Icons.add(getThemedSprite("torch_off")); // 68
 		}
 
 		MapScale = new Drawable[3];
@@ -816,6 +865,25 @@ public class SpriteCacheBase
 		loadButtnSprites();
 
 		createDrawables();
+
+		// Change solved Mystery icon color
+		Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
+		MapIcons.get(21).setColor(solvedColor);
+		BigIcons.get(21).setColor(solvedColor);
+		MapIconsSmall.get(5).setColor(solvedColor);
+		MapIconsSmall.get(13).setColor(solvedColor);
+		CB_UI_Base_Settings.SolvedMysteryColor.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				Color solvedColor = CB_UI_Base_Settings.SolvedMysteryColor.getValue();
+				MapIcons.get(21).setColor(solvedColor);
+				BigIcons.get(21).setColor(solvedColor);
+				MapIconsSmall.get(5).setColor(solvedColor);
+				MapIconsSmall.get(13).setColor(solvedColor);
+			}
+		});
 
 	}
 
@@ -914,6 +982,7 @@ public class SpriteCacheBase
 		MapStars = null;
 		Bubble = null;
 		ToggleBtn = null;
+		LiveBtn = null;
 		ZoomBtn = null;
 		ZoomValueBack = null;
 

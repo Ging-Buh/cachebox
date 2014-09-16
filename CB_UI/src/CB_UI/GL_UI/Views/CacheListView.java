@@ -177,7 +177,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			public void run()
 			{
 				// aktuellen Cache in der List anzeigen
-				if (GlobalCore.getSelectedCache() != null)
+				if (GlobalCore.ifCacheSelected())
 				{
 					setSelectedCacheVisible();
 
@@ -198,6 +198,8 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 	public void setSelectedCacheVisible()
 	{
+		if (GlobalCore.getSelectedCache() == null) return;
+
 		listView.RunIfListInitial(new IRunOnGL()
 		{
 
@@ -418,7 +420,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			}
 		}
 
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			boolean diverend = true;
 
@@ -442,7 +444,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			CacheListViewItem selItem = (CacheListViewItem) listView.getSelectedItem();
 			if (selItem != null && GlobalCore.getSelectedCache().Id != selItem.getCache().Id)

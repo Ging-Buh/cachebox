@@ -275,6 +275,27 @@ public class DesktopMain
 
 			}
 
+			@Override
+			public boolean isTorchAvailable()
+			{
+				return true; // Simulate
+			}
+
+			private boolean torchOn = false;
+
+			@Override
+			public boolean isTorchOn()
+			{
+				return torchOn;
+			}
+
+			@Override
+			public void switchTorch()
+			{
+				System.out.print("Switch Torch to => " + (torchOn ? "on" : "off"));
+				torchOn = !torchOn;
+			}
+
 		});
 
 		platformConector.setGetFileListner(new IgetFileListner()
@@ -350,7 +371,7 @@ public class DesktopMain
 			@Override
 			public void Quit()
 			{
-				if (GlobalCore.getSelectedCache() != null)
+				if (GlobalCore.ifCacheSelected())
 				{
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());

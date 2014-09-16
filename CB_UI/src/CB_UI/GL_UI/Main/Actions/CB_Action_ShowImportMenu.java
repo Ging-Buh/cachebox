@@ -133,30 +133,29 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				else if (((MenuItem) v).getMenuItemId() == MenuID.MI_EXPORT_RUN)
 				{
 					// ExportFileName
-					StringInputBox.Show(WrapType.SINGLELINE, "Message", Translation.Get("enterFileName"), "Export.gpx",
-							new OnMsgBoxClickListener()
+					StringInputBox.Show(WrapType.SINGLELINE, "Message", Translation.Get("enterFileName"), "Export.gpx", new OnMsgBoxClickListener()
+					{
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							if (which == 1)
 							{
-								@Override
-								public boolean onClick(int which, Object data)
+								final String FileName = StringInputBox.editText.getText();
+
+								GL.that.RunOnGL(new IRunOnGL()
 								{
-									if (which == 1)
+									@Override
+									public void run()
 									{
-										final String FileName = StringInputBox.editText.getText();
-
-										GL.that.RunOnGL(new IRunOnGL()
-										{
-											@Override
-											public void run()
-											{
-												ExportGetFolderStep(FileName);
-											}
-										});
-
+										ExportGetFolderStep(FileName);
 									}
-									return true;
-								}
+								});
 
-							});
+							}
+							return true;
+						}
+
+					});
 				}
 
 				return true;
@@ -174,23 +173,22 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 
 	private void ExportGetFolderStep(final String FileName)
 	{
-		platformConector.getFolder("", Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()),
-				new IgetFolderReturnListner()
-				{
+		platformConector.getFolder("", Translation.Get("selectExportFolder".hashCode()), Translation.Get("select".hashCode()), new IgetFolderReturnListner()
+		{
 
+			@Override
+			public void getFolderReturn(final String Path)
+			{
+				GL.that.RunOnGL(new IRunOnGL()
+				{
 					@Override
-					public void getFolderReturn(final String Path)
+					public void run()
 					{
-						GL.that.RunOnGL(new IRunOnGL()
-						{
-							@Override
-							public void run()
-							{
-								EXPORT(FileName, Path);
-							}
-						});
+						EXPORT(FileName, Path);
 					}
 				});
+			}
+		});
 	}
 
 	int actExportedCount = 0;
@@ -215,7 +213,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 		{
 			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(exportFile), "UTF-8"));
 
-			pD = ProgressDialog.Show("export", new RunnableReadyHandler(new Runnable()
+			pD = ProgressDialog.Show("export", new RunnableReadyHandler()
 			{
 
 				@Override
@@ -234,7 +232,6 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 									int progress = (countExported * 100) / count;
 									pD.setProgress("EXPORT:" + countExported + "/" + count, msg, progress);
 									if (pD.isCanceld()) ser.cancel();
-
 								}
 							}
 						});
@@ -244,8 +241,12 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 
 					}
 				}
-			})
-			{
+
+				@Override
+				public boolean cancel()
+				{
+					return cancel;
+				}
 
 				@Override
 				public void RunnableReady(boolean canceld)
@@ -260,14 +261,11 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 
 					if (canceld)
 					{
-						GL_MsgBox.Show(
-								Translation.Get("exportedCanceld".hashCode(), String.valueOf(actExportedCount), String.valueOf(count)),
-								Translation.Get("export"), MessageBoxIcon.Stop);
+						GL_MsgBox.Show(Translation.Get("exportedCanceld".hashCode(), String.valueOf(actExportedCount), String.valueOf(count)), Translation.Get("export"), MessageBoxIcon.Stop);
 					}
 					else
 					{
-						GL_MsgBox.Show(Translation.Get("exported".hashCode(), String.valueOf(actExportedCount)), Translation.Get("export"),
-								MessageBoxIcon.Information);
+						GL_MsgBox.Show(Translation.Get("exported".hashCode(), String.valueOf(actExportedCount)), Translation.Get("export"), MessageBoxIcon.Information);
 					}
 
 				}
@@ -279,6 +277,7 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 				@Override
 				public void isCanceld()
 				{
+					cancel = true;
 					if (pD.isCanceld()) ser.cancel();
 				}
 			});
@@ -288,6 +287,8 @@ public class CB_Action_ShowImportMenu extends CB_Action_ShowView
 
 		}
 	}
+
+	private boolean cancel = false;
 
 	protected void showImportMenu_GCV()
 	{

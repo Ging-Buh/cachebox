@@ -1,7 +1,5 @@
 package CB_Locator.Map;
 
-import CB_Locator.LocatorSettings;
-
 public class Layer
 {
 
@@ -62,18 +60,18 @@ public class Layer
 	public String GetLocalFilename(Descriptor desc)
 	{
 		if (desc == null) return null;
-		return GetLocalPath(desc) + "/" + desc.getY() + ".png";
+		return desc.getLocalCachePath(Name) + ".png";
 	}
 
-	public String GetLocalPath(Descriptor desc)
-	{
-		if (desc == null) return null;
-
-		String TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
-		if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
-
-		return TileCacheFolder + "/" + Name + "/" + desc.getZoom() + "/" + desc.getX();
-	}
+	// public String GetLocalPath(Descriptor desc)
+	// {
+	// if (desc == null) return null;
+	//
+	// String TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
+	// if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
+	//
+	// return TileCacheFolder + "/" + Name + "/" + desc.getZoom() + "/" + desc.getX();
+	// }
 
 	public boolean isOverlay()
 	{

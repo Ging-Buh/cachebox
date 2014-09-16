@@ -285,12 +285,12 @@ public final class GpxSerializer
 		}
 		for (final Waypoint wp : originWaypoints)
 		{
-			writeCacheWaypoint(wp);
+			writeCacheWaypoint(cache, wp);
 		}
 		// Prefixes must be unique. There use numeric strings as prefixes in OWN waypoints where they are missing
 		for (final Waypoint wp : ownWaypoints)
 		{
-			writeCacheWaypoint(wp);
+			writeCacheWaypoint(cache, wp);
 		}
 	}
 
@@ -298,12 +298,13 @@ public final class GpxSerializer
 	 * Writes one waypoint entry for cache waypoint.
 	 * 
 	 * @param cache
+	 * @param cache
 	 *            The
 	 * @param wp
 	 * @param prefix
 	 * @throws IOException
 	 */
-	private void writeCacheWaypoint(final Waypoint wp) throws IOException
+	private void writeCacheWaypoint(Cache cache, final Waypoint wp) throws IOException
 	{
 		final Coordinate coords = wp.Pos;
 		if (coords != null)
@@ -319,8 +320,10 @@ public final class GpxSerializer
 					"type", "Waypoint|" + wp.Type.toString()); //
 
 			gpx.startTag(PREFIX_GPX, PREFIX_CACHEBOX);
+
 			multipleTexts(gpx, PREFIX_GPX,//
-					"clue", wp.getClue());
+					"clue", wp.getClue(),//
+					"Parent", cache.getGcCode());
 			gpx.endTag(PREFIX_GPX, PREFIX_CACHEBOX);
 
 			gpx.endTag(PREFIX_GPX, "wpt");

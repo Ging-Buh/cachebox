@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.GL_UI.Controls;
 
 import java.util.ArrayList;
@@ -14,6 +29,7 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -35,7 +51,7 @@ public abstract class Dialog extends CB_View_Base
 	private String mTitle;
 	private Label titleLabel;
 	private Box mContent;
-	private ArrayList<GL_View_Base> contentChilds = new ArrayList<GL_View_Base>();
+	private CB_List<GL_View_Base> contentChilds = new CB_List<GL_View_Base>();
 	protected String CallerName = "";
 
 	/**
@@ -80,8 +96,7 @@ public abstract class Dialog extends CB_View_Base
 			return;
 		} // noch nicht initialisiert!
 
-		if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null
-				|| lastNightMode != CB_UI_Base_Settings.nightMode.getValue())
+		if (mTitle9patch == null || mHeader9patch == null || mCenter9patch == null || mFooter9patch == null || lastNightMode != CB_UI_Base_Settings.nightMode.getValue())
 		{
 			// calcBase
 			pW = (int) (SpriteCacheBase.Dialog.get(DialogElement.footer.ordinal()).getWidth() / 8);
@@ -131,7 +146,7 @@ public abstract class Dialog extends CB_View_Base
 			}
 			else
 			{
-				contentChilds.add(view);
+				if (contentChilds != null) contentChilds.add(view);
 			}
 		}
 
@@ -162,7 +177,7 @@ public abstract class Dialog extends CB_View_Base
 			}
 			else
 			{
-				contentChilds.remove(view);
+				if (contentChilds != null) contentChilds.remove(view);
 			}
 		}
 
@@ -171,7 +186,7 @@ public abstract class Dialog extends CB_View_Base
 	@Override
 	public void removeChilds()
 	{
-		contentChilds.clear();
+		if (contentChilds != null) contentChilds.clear();
 		if (mContent != null) mContent.removeChilds();
 	}
 
@@ -199,9 +214,10 @@ public abstract class Dialog extends CB_View_Base
 
 		reziseContentBox();
 
-		for (Iterator<GL_View_Base> iterator = contentChilds.iterator(); iterator.hasNext();)
+		for (int i = 0; i < contentChilds.size(); i++)
 		{
-			mContent.addChildDirekt(iterator.next());
+			GL_View_Base view = contentChilds.get(i);
+			if (view != null && !view.isDisposed()) mContent.addChildDirekt(view);
 		}
 
 		super.addChild(mContent);
@@ -262,7 +278,7 @@ public abstract class Dialog extends CB_View_Base
 	@Override
 	public void renderChilds(final Batch batch, ParentInfo parentInfo)
 	{
-
+		if (this.isDisposed()) return;
 		batch.flush();
 
 		if (mHeader9patch != null && !dontRenderDialogBackground)
@@ -275,8 +291,7 @@ public abstract class Dialog extends CB_View_Base
 		}
 		if (mCenter9patch != null && !dontRenderDialogBackground)
 		{
-			mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(),
-					(this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
+			mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(), (this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
 		}
 
 		if (mHasTitle)
@@ -402,8 +417,7 @@ public abstract class Dialog extends CB_View_Base
 
 		float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 4);
 
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 4))
-				: (int) MeasuredTextHeight);
+		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 4)) : (int) MeasuredTextHeight);
 
 		if (hasTitle)
 		{
@@ -451,9 +465,11 @@ public abstract class Dialog extends CB_View_Base
 
 		if (contentChilds != null)
 		{
-			for (GL_View_Base v : contentChilds)
+
+			for (int i = 0; i < contentChilds.size(); i++)
 			{
-				if (v != null) v.dispose();
+				GL_View_Base v = contentChilds.get(i);
+				if (v != null && !v.isDisposed()) v.dispose();
 				v = null;
 			}
 

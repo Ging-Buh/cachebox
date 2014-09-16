@@ -425,7 +425,6 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			if ((note != null) && (note instanceof String))
 			{
 				String s = (String) note;
-				System.out.println(s);
 				cache.setTmpNote(s);
 			}
 

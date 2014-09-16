@@ -41,6 +41,7 @@ public class GradiantFill
 			return minDistance;
 		}
 
+		@Override
 		public boolean add(GradiantStop stop)
 		{
 			boolean ret = super.add(stop);
@@ -128,8 +129,8 @@ public class GradiantFill
 			colorArray.addAll(getColorsFromStep(stops.get(i), stops.get(i + 1), lineSteps));
 		}
 
-		int w = getNextHighestPO2((int) colorArray.size());
-		int h = 2;
+		int w = colorArray.size();
+		int h = 1;
 		mPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 
 		int index = 0;
@@ -138,15 +139,14 @@ public class GradiantFill
 		{
 
 			mPixmap.setColor(color);
-			mPixmap.drawLine(index, 0, index, 2);
-
+			mPixmap.drawLine(index, 0, index, 1);
 			index++;
-
 		}
 
 		mTexture = new Texture(mPixmap);
-
-		mTextureRegion = new TextureRegion(mTexture, colorArray.size(), 2);
+		mPixmap.dispose();
+		mPixmap = null;
+		mTextureRegion = new TextureRegion(mTexture, colorArray.size(), 1);
 
 	}
 
@@ -187,18 +187,6 @@ public class GradiantFill
 		return list;
 	}
 
-	public static int getNextHighestPO2(int n)
-	{
-		n -= 1;
-		n = n | (n >> 1);
-		n = n | (n >> 2);
-		n = n | (n >> 4);
-		n = n | (n >> 8);
-		n = n | (n >> 16);
-		n = n | (n >> 32);
-		return n + 1;
-	}
-
 	public float getDirection()
 	{
 		return Direction;
@@ -207,13 +195,26 @@ public class GradiantFill
 	public void dispose()
 	{
 		disposeTexture();
-
 	}
 
 	private void disposeTexture()
 	{
-		if (mPixmap != null) mPixmap.dispose();
-		if (mTexture != null) mTexture.dispose();
+		try
+		{
+			if (mPixmap != null) mPixmap.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		try
+		{
+			if (mTexture != null) mTexture.dispose();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		mPixmap = null;
 		mTexture = null;
 		mTextureRegion = null;

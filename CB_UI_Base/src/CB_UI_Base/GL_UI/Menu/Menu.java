@@ -233,8 +233,7 @@ public class Menu extends ButtonDialog
 		if (mMoreMenuToggleButtonWidth == -1)
 		{
 			float mesuredLblHeigt = Fonts.MeasureSmall("T").height;
-			mMoreMenuToggleButtonWidth = SpriteCacheBase.btn.getLeftWidth() + SpriteCacheBase.btn.getRightWidth()
-					+ (mesuredLblHeigt * 1.5f);
+			mMoreMenuToggleButtonWidth = SpriteCacheBase.btn.getLeftWidth() + SpriteCacheBase.btn.getRightWidth() + (mesuredLblHeigt * 1.5f);
 		}
 
 		mListView.setSize(this.getContentSize());
@@ -272,8 +271,7 @@ public class Menu extends ButtonDialog
 				}
 			});
 
-			mMoreMenuLabel = new Label(mMoreMenuTextRight, Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE)
-					.setHAlignment(HAlignment.CENTER);
+			mMoreMenuLabel = new Label(mMoreMenuTextRight, Fonts.getSmall(), COLOR.getFontColor(), WrapType.SINGLELINE).setHAlignment(HAlignment.CENTER);
 			// mMoreMenuLabel.setRec(mMoreMenuToggleButton);
 			mMoreMenuLabel.setWidth(mMoreMenuToggleButton.getHeight());
 			mMoreMenuLabel.setHeight(mMoreMenuToggleButton.getWidth());
@@ -306,8 +304,7 @@ public class Menu extends ButtonDialog
 		{
 			float targetValue = this.getWidth() * 1.5f;
 
-			float animateValue = (1 + ((int) ((GL.that.getStateTime() - animateStartTime) * 1000) % ANIMATION_DURATION)
-					/ (ANIMATION_DURATION / targetValue));
+			float animateValue = (1 + ((int) ((GL.that.getStateTime() - animateStartTime) * 1000) % ANIMATION_DURATION) / (ANIMATION_DURATION / targetValue));
 
 			if (mAnimationState == 1)
 			{
@@ -443,57 +440,66 @@ public class Menu extends ButtonDialog
 	private void layout()
 	{
 
-		float WithOffset = isMoreMenu ? mMoreMenuToggleButtonWidth / 2 : 0;
-		if (isMoreMenu && mMoreMenu != null) WithOffset = mMoreMenuToggleButtonWidth;
-		if (!isMoreMenu && mMoreMenu != null) WithOffset = mMoreMenuToggleButtonWidth / 2;
-		if (mListView != null)
-		{
-			mListView.setSize(this.getContentSize().width - WithOffset, this.getContentSize().height);
-			mListView.setZeroPos();
-			if (isMoreMenu && mMoreMenu != null) WithOffset /= 2;
-			if (!isMoreMenu && mMoreMenu != null) WithOffset = 0;
-			mListView.setX(WithOffset);
-		}
+		if (mListView == null || mListView.isDisposed()) return;
 
-		// Alle Items in der Breite anpassen
-		float w = mListView.getWidth();
-		for (MenuItemBase item : mItems)
+		try
 		{
-			item.setWidth(w);
-			item.resetInitial();
-		}
-		mListView.notifyDataSetChanged();
-
-		if (mMoreMenuToggleButton != null)
-		{
-
-			switch (mAnimationState)
+			float WithOffset = isMoreMenu ? mMoreMenuToggleButtonWidth / 2 : 0;
+			if (isMoreMenu && mMoreMenu != null) WithOffset = mMoreMenuToggleButtonWidth;
+			if (!isMoreMenu && mMoreMenu != null) WithOffset = mMoreMenuToggleButtonWidth / 2;
+			if (mListView != null)
 			{
-			case 0:
-				this.setWidth(getLeve0_Width());
-				mMoreMenu.setWidth(getLeve0_Width());
-				mMoreMenu.setX(-this.getLeftWidth() - this.getRightWidth() - 2.5f);
-				// TODO die -2,5f müssen auf meinem S3 sein,
-				// damit die linke Position passt auf dem desktop sind es 0 auf anderen?
-				// ich habe hier den zusammen hang noch nicht finden können
-				mMoreMenuToggleButton.setX(getLevel0_x() - mMoreMenuToggleButton.getHalfWidth() + (margin * 2));
-
-				mMoreMenuLabel.setText(mMoreMenuTextLeft);
-				break;
-			case 1:
-				mMoreMenu.setX(this.getWidth() - mMoreMenu.getWidth() - this.getLeftWidth());
-				mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - this.getLeftWidth());
-				break;
-			case 2:
-				mMoreMenu.setX(this.getWidth() - mMoreMenu.getWidth() - this.getLeftWidth());
-				mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - mMoreMenuToggleButton.getHalfWidth());
-				break;
-			case 3:
-				mMoreMenu.setWidth(0);
-				mMoreMenuToggleButton.setX(getLevel0_maxX() - mMoreMenuToggleButton.getHalfWidth() - (margin * 2));
-
-				break;
+				mListView.setSize(this.getContentSize().width - WithOffset, this.getContentSize().height);
+				mListView.setZeroPos();
+				if (isMoreMenu && mMoreMenu != null) WithOffset /= 2;
+				if (!isMoreMenu && mMoreMenu != null) WithOffset = 0;
+				mListView.setX(WithOffset);
 			}
+
+			// Alle Items in der Breite anpassen
+			float w = mListView.getWidth();
+			for (MenuItemBase item : mItems)
+			{
+				item.setWidth(w);
+				item.resetInitial();
+			}
+			mListView.notifyDataSetChanged();
+
+			if (mMoreMenuToggleButton != null)
+			{
+
+				switch (mAnimationState)
+				{
+				case 0:
+					this.setWidth(getLeve0_Width());
+					mMoreMenu.setWidth(getLeve0_Width());
+					mMoreMenu.setX(-this.getLeftWidth() - this.getRightWidth() - 2.5f);
+					// TODO die -2,5f müssen auf meinem S3 sein,
+					// damit die linke Position passt auf dem desktop sind es 0 auf anderen?
+					// ich habe hier den zusammen hang noch nicht finden können
+					mMoreMenuToggleButton.setX(getLevel0_x() - mMoreMenuToggleButton.getHalfWidth() + (margin * 2));
+
+					mMoreMenuLabel.setText(mMoreMenuTextLeft);
+					break;
+				case 1:
+					mMoreMenu.setX(this.getWidth() - mMoreMenu.getWidth() - this.getLeftWidth());
+					mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - this.getLeftWidth());
+					break;
+				case 2:
+					mMoreMenu.setX(this.getWidth() - mMoreMenu.getWidth() - this.getLeftWidth());
+					mMoreMenuToggleButton.setX(getLevel0_x() + mMoreMenu.getX() - mMoreMenuToggleButton.getHalfWidth());
+					break;
+				case 3:
+					mMoreMenu.setWidth(0);
+					mMoreMenuToggleButton.setX(getLevel0_maxX() - mMoreMenuToggleButton.getHalfWidth() - (margin * 2));
+
+					break;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 

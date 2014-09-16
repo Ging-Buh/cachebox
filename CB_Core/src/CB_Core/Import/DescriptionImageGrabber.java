@@ -115,8 +115,7 @@ public class DescriptionImageGrabber
 	public static String BuildImageFilename(String GcCode, URI uri)
 	{
 		String imagePath = CB_Core_Settings.DescriptionImageFolder.getValue() + "/" + GcCode.substring(0, 4);
-		if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.DescriptionImageFolderLocal
-				.getValue() + "/" + GcCode.substring(0, 4);
+		if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.DescriptionImageFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
 
 		// String uriName = url.Substring(url.LastIndexOf('/') + 1);
 		// int idx = uri.AbsolutePath.LastIndexOf('.');
@@ -143,8 +142,7 @@ public class DescriptionImageGrabber
 	 *            Config.settings.DescriptionImageFolderLocal.getValue()
 	 * @return
 	 */
-	public static String ResolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, LinkedList<String> NonLocalImages,
-			LinkedList<String> NonLocalImagesUrl)
+	public static String ResolveImages(Cache Cache, String html, boolean suppressNonLocalMedia, LinkedList<String> NonLocalImages, LinkedList<String> NonLocalImagesUrl)
 	{
 		/*
 		 * NonLocalImages = new List<string>(); NonLocalImagesUrl = new List<string>();
@@ -453,8 +451,7 @@ public class DescriptionImageGrabber
 	 *         return;<br>
 	 *         }<br>
 	 */
-	public static int GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated,
-			long id, String gcCode, String name, String description, String url)
+	public static int GrabImagesSelectedByCache(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String url)
 	{
 		boolean imageLoadError = false;
 
@@ -531,7 +528,7 @@ public class DescriptionImageGrabber
 				long startTs = System.currentTimeMillis();
 				do
 				{
-					result = GroundspeakAPI.GetAllImageLinks(gcCode, allimgDict);
+					result = GroundspeakAPI.GetAllImageLinks(gcCode, allimgDict, null);
 
 					if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 					{
@@ -714,8 +711,7 @@ public class DescriptionImageGrabber
 	{
 		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
 
-		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
-				+ GcCode.substring(0, 4);
+		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
 
 		return imagePath;
 	}
@@ -754,8 +750,7 @@ public class DescriptionImageGrabber
 	{
 		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
 
-		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
-				+ GcCode.substring(0, 4);
+		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
 
 		ImageName = ImageName.replace("[/:*?\"<>|]", "");
 		ImageName = ImageName.replace("\\", "");
@@ -786,8 +781,7 @@ public class DescriptionImageGrabber
 	{
 		String imagePath = CB_Core_Settings.SpoilerFolder.getValue() + "/" + GcCode.substring(0, 4);
 
-		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/"
-				+ GcCode.substring(0, 4);
+		if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0) imagePath = CB_Core_Settings.SpoilerFolderLocal.getValue() + "/" + GcCode.substring(0, 4);
 
 		ImageName = ImageName.replace("[/:*?\"<>|]", "");
 		ImageName = ImageName.replace("\\", "");

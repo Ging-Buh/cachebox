@@ -201,117 +201,124 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	private void setCache(Cache cache)
 	{
 
-		aktCache = cache;
-		if (aktCache == null) return;
-		synchronized (aktCache)
+		try
 		{
-
-			if (aktCache.isDetailLoaded())
+			aktCache = cache;
+			if (aktCache == null) return;
+			synchronized (aktCache)
 			{
-				aktCache.loadDetail();
-			}
 
-			if (showAtt)
-			{
-				try
+				if (aktCache.isDetailLoaded())
 				{
-					int attributesSize = aktCache.getAttributes().size();
-					for (int i = 0; i < 19; i++)
+					aktCache.loadDetail();
+				}
+
+				if (showAtt)
+				{
+					try
 					{
-						if (i < attributesSize)
+						int attributesSize = aktCache.getAttributes().size();
+						for (int i = 0; i < 19; i++)
 						{
-							try
+							if (i < attributesSize)
 							{
-								String ImageName = aktCache.getAttributes().get(i).getImageName() + "Icon";
-								ImageName = ImageName.replace("_", "-");
-								att[i].setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite(ImageName)));
+								try
+								{
+									String ImageName = aktCache.getAttributes().get(i).getImageName() + "Icon";
+									ImageName = ImageName.replace("_", "-");
+									att[i].setDrawable(new SpriteDrawable(SpriteCacheBase.getThemedSprite(ImageName)));
+								}
+								catch (Exception e)
+								{
+									att[i].setDrawable(null);
+								}
 							}
-							catch (Exception e)
+							else
 							{
 								att[i].setDrawable(null);
 							}
 						}
-						else
-						{
-							att[i].setDrawable(null);
-						}
+					}
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
-				catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 
-			if (showIcon && Icon != null)
-			{
-				if (aktWaypoint == null)
+				if (showIcon && Icon != null)
 				{
-					if (aktCache.CorrectedCoordiantesOrMysterySolved())
+					if (aktWaypoint == null)
 					{
-						Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(21)));
+						if (aktCache.CorrectedCoordiantesOrMysterySolved())
+						{
+							Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(21)));
+						}
+						else
+						{
+							Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktCache.Type.ordinal())));
+						}
 					}
 					else
 					{
-						Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktCache.Type.ordinal())));
+						Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktWaypoint.Type.ordinal())));
 					}
 				}
-				else
+
+				if (showName && lbl_Name != null)
 				{
-					Icon.setDrawable(new SpriteDrawable(SpriteCacheBase.BigIcons.get(aktWaypoint.Type.ordinal())));
+					if (aktWaypoint == null)
+					{
+						lbl_Name.setText(aktCache.getName());
+					}
+					else
+					{
+						lbl_Name.setText(aktWaypoint.getTitle());
+					}
 				}
+
+				if (showGcCode && lblGcCode != null)
+				{
+					lblGcCode.setText(aktCache.getGcCode());
+				}
+
+				if (showCoords && lblCoords != null)
+				{
+					if (aktWaypoint == null)
+					{
+						lblCoords.setText(aktCache.Pos.FormatCoordinate());
+					}
+					else
+					{
+						lblCoords.setText(aktWaypoint.Pos.FormatCoordinate());
+					}
+				}
+
+				if (showWpDesc && lblDesc != null)
+				{
+					if (aktWaypoint != null && !aktWaypoint.getDescription().equals(""))
+					{
+						lblDesc.setWrappedText(aktWaypoint.getDescription());
+					}
+					else
+					{
+						lblDesc.setText("");
+					}
+
+				}
+
+				if (showSDT & SDT != null)
+				{
+					SDT.setCache(aktCache);
+				}
+
 			}
-
-			if (showName && lbl_Name != null)
-			{
-				if (aktWaypoint == null)
-				{
-					lbl_Name.setText(aktCache.getName());
-				}
-				else
-				{
-					lbl_Name.setText(aktWaypoint.getTitle());
-				}
-			}
-
-			if (showGcCode && lblGcCode != null)
-			{
-				lblGcCode.setText(aktCache.getGcCode());
-			}
-
-			if (showCoords && lblCoords != null)
-			{
-				if (aktWaypoint == null)
-				{
-					lblCoords.setText(aktCache.Pos.FormatCoordinate());
-				}
-				else
-				{
-					lblCoords.setText(aktWaypoint.Pos.FormatCoordinate());
-				}
-			}
-
-			if (showWpDesc && lblDesc != null)
-			{
-				if (aktWaypoint != null && !aktWaypoint.getDescription().equals(""))
-				{
-					lblDesc.setWrappedText(aktWaypoint.getDescription());
-				}
-				else
-				{
-					lblDesc.setText("");
-				}
-
-			}
-
-			if (showSDT & SDT != null)
-			{
-				SDT.setCache(aktCache);
-			}
-
+			Layout();
 		}
-		Layout();
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void Layout()
@@ -740,8 +747,15 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		float result[] = new float[4];
 
-		MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(),
-				dest.getLongitude(), result);
+		try
+		{
+			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(),
+					dest.getLatitude(), dest.getLongitude(), result);
+		}
+		catch (Exception e1)
+		{
+			return;
+		}
 
 		float distance = result[0];
 		float bearing = result[1];

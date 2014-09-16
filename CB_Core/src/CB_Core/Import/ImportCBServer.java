@@ -34,7 +34,8 @@ public class ImportCBServer
 		long startTS = System.currentTimeMillis();
 		long tmpTS = System.currentTimeMillis();
 		int count = 0;
-		int anzToLoad = 100; // Anzahl der Caches, die auf einmal geladen werden sollen
+		int anzToLoad = 10; // Anzahl der Caches, die auf einmal geladen werden sollen
+		anzToLoad = CB_Rpc_Settings.CBS_BLOCK_SIZE.getValue();
 		int anzDownloadsTotal = 0;
 		for (ListItem item : cbServerExportList)
 		{

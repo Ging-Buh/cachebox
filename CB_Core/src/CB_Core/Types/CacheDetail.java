@@ -23,12 +23,6 @@ public class CacheDetail implements Serializable
 	 */
 
 	/**
-	 * Id des Caches bei geocaching.com. Wird zumm Loggen benoetigt und von geotoad nicht exportiert
-	 */
-	// TODO Warum ist das ein String?
-	private byte[] GcId;
-
-	/**
 	 * Erschaffer des Caches
 	 */
 	public String PlacedBy = "";
@@ -170,22 +164,6 @@ public class CacheDetail implements Serializable
 		shortDescription = null;
 		longDescription = null;
 
-	}
-
-	public String getGcId()
-	{
-		if (GcId == null) return Cache.EMPTY_STRING;
-		return new String(GcId, Cache.US_ASCII);
-	}
-
-	public void setGcId(String gcId)
-	{
-		if (gcId == null)
-		{
-			GcId = null;
-			return;
-		}
-		GcId = gcId.getBytes(Cache.US_ASCII);
 	}
 
 	public boolean isAttributePositiveSet(Attributes attribute)
@@ -343,6 +321,10 @@ public class CacheDetail implements Serializable
 	 */
 	public void ReloadSpoilerRessources(Cache cache)
 	{
+
+		String gcCode = cache.getGcCode();
+		if (gcCode.length() < 4 || !gcCode.startsWith("GC")) return;
+
 		spoilerRessources = new CB_List<ImageEntry>();
 
 		String directory = "";
@@ -351,19 +333,19 @@ public class CacheDetail implements Serializable
 		String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
 		if (path != null && path.length() > 0)
 		{
-			directory = path + "/" + cache.getGcCode().substring(0, 4);
+			directory = path + "/" + gcCode.substring(0, 4);
 			reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
 		}
 
 		// from Global Repository
 		path = CB_Core_Settings.DescriptionImageFolder.getValue();
-		directory = path + "/" + cache.getGcCode().substring(0, 4);
+		directory = path + "/" + gcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
 
 		// Spoilers are always loaden from global Repository too
 		// from globalUser changed Repository
 		path = CB_Core_Settings.SpoilerFolder.getValue();
-		directory = path + "/" + cache.getGcCode().substring(0, 4);
+		directory = path + "/" + gcCode.substring(0, 4);
 		reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
 
 		// Add own taken photo

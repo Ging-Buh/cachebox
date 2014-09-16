@@ -35,6 +35,7 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_Utils.Interfaces.cancelRunnable;
 
 public class GcApiLogin
 {
@@ -75,13 +76,20 @@ public class GcApiLogin
 			{
 				closeWaitDialog();
 			}
-		}, new Runnable()
+		}, new cancelRunnable()
 		{
 
 			@Override
 			public void run()
 			{
 				runOnWaitDialog();
+			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO Handle Cancel
+				return false;
 			}
 		});
 
@@ -417,13 +425,20 @@ public class GcApiLogin
 			{
 				closeWaitDialog();
 			}
-		}, new Runnable()
+		}, new cancelRunnable()
 		{
 
 			@Override
 			public void run()
 			{
 				runOnWaitDialog(Url, viewstate, cookieStore, User, PW);
+			}
+
+			@Override
+			public boolean cancel()
+			{
+				// TODO Handle Cancel
+				return false;
 			}
 		});
 
@@ -736,7 +751,7 @@ public class GcApiLogin
 		String act = Config.GetAccessToken();
 		if (act.length() > 0)
 		{
-			int status = GroundspeakAPI.GetMembershipType();
+			int status = GroundspeakAPI.GetMembershipType(null);
 			if (status >= 0)
 			{
 

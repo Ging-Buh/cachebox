@@ -1,7 +1,7 @@
 
 Versions Änderungen:
 
-Version : 0.7.2218
+Version : 0.7.2203
 	• Neu Kyrillischer Zeichensatz
 	• Neu exportieren in eine GPX 
 	• Massive Einsparung von RAM 

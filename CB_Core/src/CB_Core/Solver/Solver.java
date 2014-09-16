@@ -14,11 +14,11 @@ public class Solver extends ArrayList<SolverZeile>
 	public static final String errorPostfix = "";
 
 	// Liste mit den Operatoren, werden in dieser Reihenfolge abgearbeitet (. vor -)...
-	static SortedMap<Integer, ArrayList<String>> operatoren = new TreeMap<Integer, ArrayList<String>>();
-	public static FunctionCategories functions = new FunctionCategories();
+	public SortedMap<Integer, ArrayList<String>> operatoren = new TreeMap<Integer, ArrayList<String>>();
+	public FunctionCategories functions = new FunctionCategories(this);
 	// hier werden die Loesungen aller Variablen gespeichert
-	public static TreeMap<String, String> Variablen = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-	static public SortedMap<String, Integer> MissingVariables = null;
+	public TreeMap<String, String> Variablen = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+	public SortedMap<String, Integer> MissingVariables = null;
 
 	public static boolean isError(String s)
 	{
@@ -66,7 +66,7 @@ public class Solver extends ArrayList<SolverZeile>
 	public boolean Solve()
 	{
 		MissingVariables = null;
-		Solver.Variablen.clear();
+		Variablen.clear();
 		int pos = 0;
 		while (pos < source.length())
 		{

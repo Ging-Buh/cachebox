@@ -73,4 +73,8 @@ public class ext_AwtTileBitmap extends ext_AwtBitmap
 		this.bufferedImage = null;
 	}
 
+	public BufferedImage getBufferedImage() {
+		return this.bufferedImage;
+	}
+
 }

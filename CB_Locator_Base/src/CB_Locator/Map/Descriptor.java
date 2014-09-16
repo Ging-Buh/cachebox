@@ -19,8 +19,11 @@
 package CB_Locator.Map;
 
 import CB_Locator.Coordinate;
+import CB_Locator.LocatorSettings;
 import CB_Utils.MathUtils;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.PointD;
+import CB_Utils.Util.iChanged;
 
 /**
  * @author hwinkelmann
@@ -30,7 +33,7 @@ import CB_Utils.Math.PointD;
  */
 public class Descriptor implements Comparable<Descriptor>
 {
-
+	public static String TileCacheFolder;
 	public static int[] TilesPerLine = null;
 	public static int[] TilesPerColumn = null;
 	static int[] tileOffset = null;
@@ -38,7 +41,19 @@ public class Descriptor implements Comparable<Descriptor>
 	public Object Data = null;
 	private long BuffertHash = 0;
 
-	public static void Init()
+	private static final iChanged TileCacheFolderSettingChanged = new iChanged()
+	{
+
+		@Override
+		public void isChanged()
+		{
+			TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
+			if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal
+					.getValue();
+		}
+	};
+
+	static
 	{
 		int maxZoom = 25;
 
@@ -54,6 +69,12 @@ public class Descriptor implements Comparable<Descriptor>
 			TilesPerColumn[i] = (int) Math.pow(2, i);
 			tileOffset[i + 1] = tileOffset[i] + (TilesPerLine[i] * TilesPerColumn[i]);
 		}
+
+		TileCacheFolder = LocatorSettings.TileCacheFolder.getValue();
+		if (LocatorSettings.TileCacheFolderLocal.getValue().length() > 0) TileCacheFolder = LocatorSettings.TileCacheFolderLocal.getValue();
+
+		LocatorSettings.TileCacheFolderLocal.addChangedEventListner(TileCacheFolderSettingChanged);
+		LocatorSettings.TileCacheFolder.addChangedEventListner(TileCacheFolderSettingChanged);
 	}
 
 	/**
@@ -134,19 +155,35 @@ public class Descriptor implements Comparable<Descriptor>
 	/**
 	 * Erzeugt einen neuen Deskriptor mit anderer Zoom-Stufe
 	 */
-	public Descriptor AdjustZoom(int newZoomLevel)
+	public CB_List<Descriptor> AdjustZoom(int newZoomLevel)
 	{
 		int zoomDiff = newZoomLevel - getZoom();
 		int pow = (int) Math.pow(2, Math.abs(zoomDiff));
 
-		if (zoomDiff < 0)
+		CB_List<Descriptor> ret = new CB_List<Descriptor>();
+
+		if (zoomDiff > 0)
 		{
-			return new Descriptor(getX() / pow, getY() / pow, newZoomLevel, this.NightMode);
+
+			Descriptor def = new Descriptor(getX() * pow, getY() * pow, newZoomLevel, this.NightMode);
+
+			int count = pow / 2;
+
+			for (int i = 0; i <= count; i++)
+			{
+				for (int j = 0; j <= count; j++)
+				{
+					ret.add(new Descriptor(def.getX() + i, def.getY() + j, newZoomLevel, this.NightMode));
+				}
+			}
+
 		}
 		else
 		{
-			return new Descriptor(getX() * pow, getY() * pow, newZoomLevel, this.NightMode);
+			ret.add(new Descriptor(getX() / pow, getY() / pow, newZoomLevel, this.NightMode));
 		}
+
+		return ret;
 
 	}
 
@@ -310,9 +347,7 @@ public class Descriptor implements Comparable<Descriptor>
 		if (obj instanceof Descriptor)
 		{
 			Descriptor desc = (Descriptor) obj;
-
 			if (this.GetHashCode().longValue() == desc.GetHashCode().longValue()) return true;
-
 		}
 		return false;
 	}
@@ -397,5 +432,30 @@ public class Descriptor implements Comparable<Descriptor>
 		double divLat = (lat1 - lat) / 2;
 
 		return new Coordinate(lat + divLat, lon + divLon);
+	}
+
+	/**
+	 * Returns the local Cache Path for the given Name and this Descriptor!<br>
+	 * .\cachebox\repository\cache\ {NAME} \ {Zoom} \ {X} \ {Y}
+	 * 
+	 * @param Name
+	 * @return
+	 */
+	public String getLocalCachePath(String Name)
+	{
+		return TileCacheFolder + "/" + Name + "/" + this.getZoom() + "/" + this.getX() + "/" + this.getY();
+	}
+
+	/**
+	 * Returns the distance to the given Descriptor!
+	 * 
+	 * @param desc
+	 * @return
+	 */
+	public int getDistance(Descriptor desc)
+	{
+		int xDistance = Math.abs(desc.X - this.X);
+		int yDistance = Math.abs(desc.Y - this.Y);
+		return Math.max(xDistance, yDistance);
 	}
 }

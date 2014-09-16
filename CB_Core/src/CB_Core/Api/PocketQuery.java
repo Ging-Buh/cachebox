@@ -21,6 +21,7 @@ import org.json.JSONTokener;
 
 import CB_Utils.Exceptions.NullArgumentException;
 import CB_Utils.Log.Logger;
+import CB_Utils.http.HttpUtils;
 
 /***
  * @author Longri
@@ -63,12 +64,11 @@ public class PocketQuery
 	 */
 	public static int GetPocketQueryList(ArrayList<PQ> list)
 	{
-		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryList?AccessToken=" + GroundspeakAPI.GetAccessToken(true)
-				+ "&format=json");
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryList?AccessToken=" + GroundspeakAPI.GetAccessToken(true) + "&format=json");
 		if (list == null) new NullArgumentException("PQ List");
 		try
 		{
-			String result = GroundspeakAPI.Execute(httpGet);
+			String result = HttpUtils.Execute(httpGet, null);
 
 			try
 			// Parse JSON Result
@@ -143,72 +143,6 @@ public class PocketQuery
 		return 0;
 	}
 
-	// /**
-	// * @param accessToken
-	// * @param GUID
-	// * @param Uri
-	// * @param conectionTimeout
-	// * Config.settings.conection_timeout.getValue()
-	// * @param socketTimeout
-	// * Config.settings.socket_timeout.getValue()t
-	// * @return
-	// */
-	// public static int GetPocketQueryUri(String GUID, String Uri)
-	// {
-	// HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryUrls?AccessToken=" + GroundspeakAPI.GetAccessToken()
-	// + "&PocketQueryGuid=" + GUID + "&format=json");
-	// if (GUID == null || GUID.equals("")) new NullArgumentException("GUID");
-	// try
-	// {
-	// String result = GroundspeakAPI.Execute(httpGet);
-	//
-	// try
-	// // Parse JSON Result
-	// {
-	// JSONTokener tokener = new JSONTokener(result);
-	// JSONObject json = (JSONObject) tokener.nextValue();
-	// JSONObject status = json.getJSONObject("Status");
-	// if (status.getInt("StatusCode") == 0)
-	// {
-	// GroundspeakAPI.LastAPIError = "";
-	// JSONObject jPQ = json.getJSONObject("PocketQueryUrls");
-	//
-	// Uri = jPQ.getString("Uri");
-	//
-	// return 0;
-	// }
-	// else
-	// {
-	// GroundspeakAPI.LastAPIError = "";
-	// GroundspeakAPI.LastAPIError = "StatusCode = " + status.getInt("StatusCode") + "\n";
-	// GroundspeakAPI.LastAPIError += status.getString("StatusMessage") + "\n";
-	// GroundspeakAPI.LastAPIError += status.getString("ExceptionDetails");
-	//
-	// return (-1);
-	// }
-	//
-	// }
-	// catch (JSONException e)
-	// {
-	//
-	// e.printStackTrace();
-	// }
-	// }
-	// catch (ClientProtocolException e)
-	// {
-	// System.out.println(e.getMessage());
-	// return (-1);
-	// }
-	// catch (IOException e)
-	// {
-	// System.out.println(e.getMessage());
-	// return (-1);
-	// }
-	//
-	// return 0;
-	//
-	// }
-
 	/**
 	 * @param AccessToken
 	 *            Config.GetAccessToken(true)
@@ -219,8 +153,7 @@ public class PocketQuery
 	 */
 	public static int DownloadSinglePocketQuery(PQ pocketQuery, String PqFolder)
 	{
-		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken="
-				+ GroundspeakAPI.GetAccessToken(true) + "&PocketQueryGuid=" + pocketQuery.GUID);
+		HttpGet httpGet = new HttpGet(GroundspeakAPI.GS_LIVE_URL + "GetPocketQueryZippedFile?format=json&AccessToken=" + GroundspeakAPI.GetAccessToken(true) + "&PocketQueryGuid=" + pocketQuery.GUID);
 
 		try
 		{

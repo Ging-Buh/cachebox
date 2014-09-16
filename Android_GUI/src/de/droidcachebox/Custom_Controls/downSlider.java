@@ -128,7 +128,14 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	 */
 	private int measure(int measureSpec)
 	{
-		QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight();
+		try
+		{
+			QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		int result = 0;
 		int specSize = MeasureSpec.getSize(measureSpec);
 		result = specSize;
@@ -342,15 +349,19 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		if (mCache != null)
 		{
-			Iterator<Attributes> iterator = mCache.getAttributes().iterator();
 			int lines = 0;
-			if (iterator != null && iterator.hasNext())
+			if (mCache.getAttributes() != null)
 			{
-				if (attHeight == -1) attHeight = (int) (UI_Size_Base.that.getIconSize() * 0.75);
+				Iterator<Attributes> iterator = mCache.getAttributes().iterator();
 
-				lines = 1 + (mCache.getAttributes().size() / 8);
-				attCompleadHeight = (int) (lines * attHeight * 1.3);
+				if (iterator != null && iterator.hasNext())
+				{
+					if (attHeight == -1) attHeight = (int) (UI_Size_Base.that.getIconSize() * 0.75);
 
+					lines = 1 + (mCache.getAttributes().size() / 8);
+					attCompleadHeight = (int) (lines * attHeight * 1.3);
+
+				}
 			}
 
 			if (attLineHeight == -1) attLineHeight = attHeight + (UI_Size_Base.that.getScaledFontSize() / 3);
@@ -372,39 +383,42 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 			int left = 8;
 
 			int top = topCalc;
-			if (iterator != null && iterator.hasNext())
+			if (mCache.getAttributes() != null)
 			{
-				int i = 0;
-				do
+				Iterator<Attributes> iterator = mCache.getAttributes().iterator();
+				if (iterator != null && iterator.hasNext())
 				{
-					Attributes att = iterator.next();
-					String uri = "drawable/" + att.getImageName();
+					int i = 0;
+					do
+					{
+						Attributes att = iterator.next();
+						String uri = "drawable/" + att.getImageName();
 
-					int imageResource = getResources().getIdentifier(uri, null, main.mainActivity.getPackageName());
-					Drawable image = null;
-					try
-					{
-						image = getResources().getDrawable(imageResource);
-					}
-					catch (NotFoundException e)
-					{
-						image = Global.Icons[34];
-					}
-
-					if (image != null)
-					{
-						left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
-						i++;
-						if (i % 8 == 0 && i > 7)
+						int imageResource = getResources().getIdentifier(uri, null, main.mainActivity.getPackageName());
+						Drawable image = null;
+						try
 						{
-							left = 8;
-							top += attLineHeight;
+							image = getResources().getDrawable(imageResource);
 						}
+						catch (NotFoundException e)
+						{
+							image = Global.Icons[34];
+						}
+
+						if (image != null)
+						{
+							left += ActivityUtils.PutImageTargetHeight(canvas, image, left, top, attHeight) + 3;
+							i++;
+							if (i % 8 == 0 && i > 7)
+							{
+								left = 8;
+								top += attLineHeight;
+							}
+						}
+
 					}
-
+					while (iterator.hasNext());
 				}
-				while (iterator.hasNext());
-
 			}
 		}
 		canvas.translate(0, +versatz);
@@ -489,7 +503,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				downSlider.Me.setPos_onUI(0);
 			}
 
-			if (GlobalCore.getSelectedCache() != null)
+			if (GlobalCore.ifCacheSelected())
 			{
 				downSlider.Me.setCache_onUI(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint());
 			}

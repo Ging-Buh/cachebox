@@ -1,8 +1,6 @@
 package CB_Core.Api;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,17 +10,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TimeZone;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,9 +35,12 @@ import CB_Core.Types.LogEntry;
 import CB_Core.Types.TbList;
 import CB_Core.Types.Trackable;
 import CB_Core.Types.Waypoint;
-import CB_Utils.Plattform;
+import CB_Utils.Interfaces.ICancel;
+import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
+import CB_Utils.http.HttpUtils;
 
 public class GroundspeakAPI
 {
@@ -68,6 +63,7 @@ public class GroundspeakAPI
 	public static int CurrentCacheCountLite = -1;
 	public static int MaxCacheCountLite = -1;
 	public static String MemberName = ""; // this will be filled by
+	private static boolean DownloadLimit = false;
 
 	/**
 	 * Read the encrypted AccessToken from the config and check wheter it is correct for Andorid CB
@@ -134,7 +130,7 @@ public class GroundspeakAPI
 	 */
 	public static boolean IsPremiumMember()
 	{
-		if (membershipType < 0) membershipType = GetMembershipType();
+		if (membershipType < 0) membershipType = GetMembershipType(null);
 		return membershipType == 3;
 	}
 
@@ -167,7 +163,7 @@ public class GroundspeakAPI
 	 * @param note
 	 * @return
 	 */
-	public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog)
+	public static int CreateFieldNoteAndPublish(String cacheCode, int wptLogTypeId, Date dateLogged, String note, boolean directLog, final ICancel icancel)
 	{
 		int chk = chkMemperShip(true);
 		if (chk < 0) return chk;
@@ -198,8 +194,12 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 			// Execute HTTP Post Request
-			String result = Execute(httppost);
+			String result = HttpUtils.Execute(httppost, icancel);
 
 			if (result.contains("The service is unavailable"))
 			{
@@ -273,7 +273,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int GetCachesFound()
+	public static int GetCachesFound(final ICancel icancel)
 	{
 
 		int chk = chkMemperShip(false);
@@ -294,8 +294,12 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 			// Execute HTTP Post Request
-			String result = Execute(httppost);
+			String result = HttpUtils.Execute(httppost, icancel);
 
 			if (result.contains("The service is unavailable"))
 			{
@@ -368,7 +372,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int GetMembershipType()
+	public static int GetMembershipType(final ICancel icancel)
 	{
 		if (API_isCheked) return membershipType;
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
@@ -386,8 +390,13 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 			// Execute HTTP Post Request
-			String result = Execute(httppost);
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -424,7 +433,7 @@ public class GroundspeakAPI
 				}
 
 			}
-			catch (JSONException e)
+			catch (Exception e)
 			{
 				Logger.Error("GetMembershipType", "JSONException", e);
 				API_isCheked = false;
@@ -478,7 +487,7 @@ public class GroundspeakAPI
 	 * @param caches
 	 * @return
 	 */
-	public static int GetGeocacheStatus(ArrayList<Cache> caches)
+	public static int GetGeocacheStatus(ArrayList<Cache> caches, final ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -515,7 +524,13 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
-			String result = Execute(httppost);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -606,7 +621,7 @@ public class GroundspeakAPI
 	 * @param cache
 	 * @return
 	 */
-	public static int GetGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all)
+	public static int GetGeocacheLogsByCache(Cache cache, ArrayList<LogEntry> logList, boolean all, cancelRunnable cancelRun)
 	{
 		String finders = CB_Core_Settings.Friends.getValue();
 		String[] finder = finders.split("\\|");
@@ -633,7 +648,7 @@ public class GroundspeakAPI
 		int count = 100;
 
 		String URL = CB_Core_Settings.StagingAPI.getValue() ? STAGING_GS_LIVE_URL : GS_LIVE_URL;
-		while (finderList.size() > 0 || all)
+		while (!cancelRun.cancel() && (finderList.size() > 0 || all))
 		// Schleife, solange bis entweder keine Logs mehr geladen werden oder bis alle Logs aller Finder geladen sind.
 		{
 			try
@@ -645,7 +660,13 @@ public class GroundspeakAPI
 				requestString += "&MaxPerPage=" + count;
 				HttpGet httppost = new HttpGet(URL + "GetGeocacheLogsByCacheCode?format=json" + requestString);
 
-				String result = Execute(httppost);
+				// set time outs
+				HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+				HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+				// Execute HTTP Post Request
+				String result = HttpUtils.Execute(httppost, cancelRun);
+
 				if (result.contains("The service is unavailable"))
 				{
 					return API_IS_UNAVAILABLE;
@@ -752,7 +773,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int GetCacheLimits()
+	public static int GetCacheLimits(ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -785,8 +806,13 @@ public class GroundspeakAPI
 
 				httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+				// set time outs
+				HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+				HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 				// Execute HTTP Post Request
-				String result = Execute(httppost);
+				String result = HttpUtils.Execute(httppost, icancel);
+
 				if (result.contains("The service is unavailable"))
 				{
 					return API_IS_UNAVAILABLE;
@@ -804,7 +830,6 @@ public class GroundspeakAPI
 			catch (JSONException e)
 			{
 				e.printStackTrace();
-				System.out.println(e.getMessage());
 				LastAPIError = "API Error: " + e.getMessage();
 				return -2;
 			}
@@ -959,7 +984,7 @@ public class GroundspeakAPI
 	 *            list
 	 * @return
 	 */
-	public static int getMyTbList(TbList list)
+	public static int getMyTbList(TbList list, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -979,8 +1004,12 @@ public class GroundspeakAPI
 
 				httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+				// set time outs
+				HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+				HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 				// Execute HTTP Post Request
-				String result = Execute(httppost);
+				String result = HttpUtils.Execute(httppost, icancel);
 
 				if (result.contains("The service is unavailable"))
 				{
@@ -1056,7 +1085,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int getTBbyTreckNumber(String TrackingCode, ByRef<Trackable> TB)
+	public static int getTBbyTreckNumber(String TrackingCode, ByRef<Trackable> TB, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1065,10 +1094,15 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + GetAccessToken(true) + "&trackingNumber="
-					+ TrackingCode + "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTrackingNumber?AccessToken=" + GetAccessToken(true) + "&trackingNumber=" + TrackingCode + "&format=json");
 
-			String result = Execute(httppost);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1150,7 +1184,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int getTBbyTbCode(String TrackingNumber, ByRef<Trackable> TB)
+	public static int getTBbyTbCode(String TrackingNumber, ByRef<Trackable> TB, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1158,10 +1192,15 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + GetAccessToken(true) + "&tbCode=" + TrackingNumber
-					+ "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetTrackablesByTBCode?AccessToken=" + GetAccessToken(true) + "&tbCode=" + TrackingNumber + "&format=json");
 
-			String result = Execute(httppost);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1242,7 +1281,7 @@ public class GroundspeakAPI
 	 *            list
 	 * @return
 	 */
-	public static int getImagesForGeocache(String cacheCode, ArrayList<String> images)
+	public static int getImagesForGeocache(String cacheCode, ArrayList<String> images, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1251,10 +1290,15 @@ public class GroundspeakAPI
 
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken() + "&CacheCode=" + cacheCode
-					+ "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken() + "&CacheCode=" + cacheCode + "&format=json");
 
-			String result = Execute(httppost);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1330,7 +1374,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int GetAllImageLinks(String cacheCode, HashMap<String, URI> list)
+	public static int GetAllImageLinks(String cacheCode, HashMap<String, URI> list, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1339,10 +1383,15 @@ public class GroundspeakAPI
 		if (list == null) list = new HashMap<String, URI>();
 		try
 		{
-			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode
-					+ "&format=json");
+			HttpGet httppost = new HttpGet(URL + "GetImagesForGeocache?AccessToken=" + GetAccessToken(true) + "&CacheCode=" + cacheCode + "&format=json");
 
-			String result = Execute(httppost);
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
+			// Execute HTTP Post Request
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1406,6 +1455,10 @@ public class GroundspeakAPI
 			{
 				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
 			}
+			catch (java.lang.ClassCastException e)
+			{
+				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
+			}
 
 		}
 		catch (ConnectTimeoutException e)
@@ -1437,58 +1490,7 @@ public class GroundspeakAPI
 		return ERROR;
 	}
 
-	/**
-	 * Fürt ein Http Request aus und gibt die Antwort als String zurück. Da ein HttpRequestBase übergeben wird kann ein HttpGet oder
-	 * HttpPost zum Ausführen übergeben werden.
-	 * 
-	 * @param httprequest
-	 *            HttpGet oder HttpPost
-	 * @param conectionTimeout
-	 *            Config.settings.conection_timeout.getValue()
-	 * @param socketTimeout
-	 *            Config.settings.socket_timeout.getValue()
-	 * @return Die Antwort als String.
-	 * @throws IOException
-	 * @throws ClientProtocolException
-	 */
-	public static String Execute(HttpRequestBase httprequest) throws IOException, ClientProtocolException, ConnectTimeoutException
-	{
-
-		int conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
-		int socketTimeout = CB_Core_Settings.socket_timeout.getValue();
-
-		httprequest.setHeader("Accept", "application/json");
-		httprequest.setHeader("Content-type", "application/json");
-
-		// Execute HTTP Post Request
-		String result = "";
-
-		HttpParams httpParameters = new BasicHttpParams();
-		// Set the timeout in milliseconds until a connection is established.
-		// The default value is zero, that means the timeout is not used.
-
-		HttpConnectionParams.setConnectionTimeout(httpParameters, conectionTimeout);
-		// Set the default socket timeout (SO_TIMEOUT)
-		// in milliseconds which is the timeout for waiting for data.
-
-		HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
-
-		DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
-
-		HttpResponse response = httpClient.execute(httprequest);
-
-		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-		String line = "";
-		while ((line = rd.readLine()) != null)
-		{
-			if (Plattform.used == Plattform.Server) line = new String(line.getBytes("ISO-8859-1"), "UTF-8");
-			result += line + "\n";
-		}
-		return result;
-	}
-
-	public static void WriteCachesLogsImages_toDB(ArrayList<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages)
-			throws InterruptedException
+	public static void WriteCachesLogsImages_toDB(CB_List<Cache> apiCaches, ArrayList<LogEntry> apiLogs, ArrayList<ImageEntry> apiImages) throws InterruptedException
 	{
 		// Auf eventuellen Thread Abbruch reagieren
 		Thread.sleep(2);
@@ -1500,11 +1502,9 @@ public class GroundspeakAPI
 		ImageDAO imageDAO = new ImageDAO();
 		WaypointDAO waypointDAO = new WaypointDAO();
 
-		for (Cache cache : apiCaches)
+		for (int c = 0; c < apiCaches.size(); c++)
 		{
-			// cache.MapX = 256.0 * Descriptor.LongitudeToTileX(Cache.MapZoomLevel, cache.Longitude());
-			// cache.MapY = 256.0 * Descriptor.LatitudeToTileY(Cache.MapZoomLevel, cache.Latitude());
-
+			Cache cache = apiCaches.get(c);
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
 			if (aktCache == null)
 			{
@@ -1685,7 +1685,7 @@ public class GroundspeakAPI
 
 			if (!isValid)
 			{
-				ret = GetMembershipType();
+				ret = GetMembershipType(null);
 				isValid = membershipType > 0;
 				if (ret < 0) return ret;
 			}
@@ -1726,9 +1726,9 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int createTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note)
+	public static int createTrackableLog(Trackable TB, String cacheCode, int LogTypeId, Date dateLogged, String note, ICancel icancel)
 	{
-		return createTrackableLog(TB.getGcCode(), TB.getTrackingNumber(), cacheCode, LogTypeId, dateLogged, note);
+		return createTrackableLog(TB.getGcCode(), TB.getTrackingNumber(), cacheCode, LogTypeId, dateLogged, note, icancel);
 	}
 
 	/**
@@ -1747,7 +1747,7 @@ public class GroundspeakAPI
 	 *            Config.settings.socket_timeout.getValue()
 	 * @return
 	 */
-	public static int createTrackableLog(String TbCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note)
+	public static int createTrackableLog(String TbCode, String TrackingNummer, String cacheCode, int LogTypeId, Date dateLogged, String note, ICancel icancel)
 	{
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
@@ -1770,8 +1770,13 @@ public class GroundspeakAPI
 
 			httppost.setEntity(new ByteArrayEntity(requestString.getBytes("UTF8")));
 
+			// set time outs
+			HttpUtils.conectionTimeout = CB_Core_Settings.conection_timeout.getValue();
+			HttpUtils.socketTimeout = CB_Core_Settings.socket_timeout.getValue();
+
 			// Execute HTTP Post Request
-			String result = Execute(httppost);
+			String result = HttpUtils.Execute(httppost, icancel);
+
 			if (result.contains("The service is unavailable"))
 			{
 				return API_IS_UNAVAILABLE;
@@ -1834,6 +1839,16 @@ public class GroundspeakAPI
 	public static boolean API_isCheked()
 	{
 		return API_isCheked;
+	}
+
+	public static boolean ApiLimit()
+	{
+		return DownloadLimit;
+	}
+
+	public static void setDownloadLimit()
+	{
+		DownloadLimit = true;
 	}
 
 }

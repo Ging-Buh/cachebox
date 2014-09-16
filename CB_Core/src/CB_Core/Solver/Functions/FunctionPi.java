@@ -1,14 +1,16 @@
 package CB_Core.Solver.Functions;
 
 import CB_Core.Solver.DataTypes.DataType;
+import CB_Core.Solver.Solver;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public class FunctionPi extends Function
 {
 	private static final long serialVersionUID = -5961548229978339692L;
 
-	public FunctionPi()
+	public FunctionPi(Solver solver)
 	{
+		super(solver);
 		Names.add(new LacalNames("Pi", "en"));
 	}
 

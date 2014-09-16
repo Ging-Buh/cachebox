@@ -119,6 +119,7 @@ public class JSONObject
 	/**
 	 * The map where the JSONObject's properties are kept.
 	 */
+	@SuppressWarnings("rawtypes")
 	private Map map;
 
 	/**
@@ -131,6 +132,7 @@ public class JSONObject
 	/**
 	 * Construct an empty JSONObject.
 	 */
+	@SuppressWarnings("rawtypes")
 	public JSONObject()
 	{
 		this.map = new HashMap();
@@ -238,6 +240,8 @@ public class JSONObject
 	 *            A map object that can be used to initialize the contents of the JSONObject.
 	 * @throws JSONException
 	 */
+	@SuppressWarnings(
+		{ "rawtypes", "unchecked" })
 	JSONObject(Map map)
 	{
 		this.map = new HashMap();
@@ -525,6 +529,7 @@ public class JSONObject
 	 * 
 	 * @return An array of field names, or null if there are no names.
 	 */
+	@SuppressWarnings("rawtypes")
 	public static String[] getNames(JSONObject jo)
 	{
 		int length = jo.length();
@@ -548,6 +553,7 @@ public class JSONObject
 	 * 
 	 * @return An array of field names, or null if there are no names.
 	 */
+	@SuppressWarnings("rawtypes")
 	public static String[] getNames(Object object)
 	{
 		if (object == null)
@@ -657,6 +663,7 @@ public class JSONObject
 	 * 
 	 * @return An iterator of the keys.
 	 */
+	@SuppressWarnings("rawtypes")
 	public Iterator keys()
 	{
 		return this.map.keySet().iterator();
@@ -677,6 +684,7 @@ public class JSONObject
 	 * 
 	 * @return A JSONArray containing the key strings, or null if the JSONObject is empty.
 	 */
+	@SuppressWarnings("rawtypes")
 	public JSONArray names()
 	{
 		JSONArray ja = new JSONArray();
@@ -928,6 +936,8 @@ public class JSONObject
 		return NULL.equals(object) ? defaultValue : object.toString();
 	}
 
+	@SuppressWarnings(
+		{ "rawtypes", "unchecked" })
 	private void populateMap(Object bean)
 	{
 		Class klass = bean.getClass();
@@ -1013,6 +1023,8 @@ public class JSONObject
 	 * @return this.
 	 * @throws JSONException
 	 */
+	@SuppressWarnings(
+		{ "rawtypes", "unchecked" })
 	public JSONObject put(String key, Collection value) throws JSONException
 	{
 		put(key, new JSONArray(value));
@@ -1080,6 +1092,7 @@ public class JSONObject
 	 * @return this.
 	 * @throws JSONException
 	 */
+	@SuppressWarnings("rawtypes")
 	public JSONObject put(String key, Map value) throws JSONException
 	{
 		put(key, new JSONObject(value));
@@ -1098,6 +1111,7 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the value is non-finite number or if the key is null.
 	 */
+	@SuppressWarnings("unchecked")
 	public JSONObject put(String key, Object value) throws JSONException
 	{
 		if (key == null)
@@ -1377,6 +1391,7 @@ public class JSONObject
 	 * @return a printable, displayable, portable, transmittable representation of the object, beginning with <code>{</code>
 	 *         &nbsp;<small>(left brace)</small> and ending with <code>}</code>&nbsp;<small>(right brace)</small>.
 	 */
+	@SuppressWarnings("rawtypes")
 	public String toString()
 	{
 		try
@@ -1435,6 +1450,7 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the object contains an invalid number.
 	 */
+	@SuppressWarnings("rawtypes")
 	String toString(int indentFactor, int indent) throws JSONException
 	{
 		int i;
@@ -1504,6 +1520,8 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the value is or contains an invalid number.
 	 */
+	@SuppressWarnings(
+		{ "rawtypes", "unchecked" })
 	public static String valueToString(Object value) throws JSONException
 	{
 		if (value == null || value.equals(null))
@@ -1566,6 +1584,8 @@ public class JSONObject
 	 * @throws JSONException
 	 *             If the object contains an invalid number.
 	 */
+	@SuppressWarnings(
+		{ "rawtypes", "unchecked" })
 	static String valueToString(Object value, int indentFactor, int indent) throws JSONException
 	{
 		if (value == null || value.equals(null))
@@ -1627,6 +1647,8 @@ public class JSONObject
 	 *            The object to wrap
 	 * @return The wrapped value
 	 */
+	@SuppressWarnings(
+		{ "rawtypes", "unchecked" })
 	public static Object wrap(Object object)
 	{
 		try
@@ -1678,6 +1700,7 @@ public class JSONObject
 	 * @return The writer.
 	 * @throws JSONException
 	 */
+	@SuppressWarnings("rawtypes")
 	public Writer write(Writer writer) throws JSONException
 	{
 		try

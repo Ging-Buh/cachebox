@@ -144,6 +144,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	private void drawColorRec(Batch batch)
 	{
+		if (mRoute == null) return;
 		if (lBounds == null)
 		{
 			lBounds = new CB_RectF(0, 0, getHeight(), getHeight());

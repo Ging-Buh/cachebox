@@ -6,11 +6,15 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
+import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
 import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class InfoBubble extends CB_View_Base
 {
@@ -25,6 +29,7 @@ public class InfoBubble extends CB_View_Base
 	 * CacheID of the Cache showing Bubble
 	 */
 	private long mCacheId = -1;
+	private static CB_RectF saveButtonRec;
 
 	public long getCacheId()
 	{
@@ -41,18 +46,18 @@ public class InfoBubble extends CB_View_Base
 	 */
 	private Cache mCache = null;
 	private Waypoint mWaypoint = null;
-
 	private CacheInfo cacheInfo;
+	private Drawable saveIcon = new SpriteDrawable(SpriteCacheBase.Icons.get(IconName.save_66.ordinal()));
 
 	public void setCache(Cache cache, Waypoint waypoint)
 	{
 		setCache(cache, waypoint, false);
 	}
 
-	public void setCache(Cache Cache, Waypoint waypoint, boolean force)
+	public void setCache(Cache cache, Waypoint waypoint, boolean force)
 	{
 
-		if (Cache == null)
+		if (cache == null)
 		{
 			mCache = null;
 			mCacheId = -1;
@@ -60,8 +65,6 @@ public class InfoBubble extends CB_View_Base
 			cacheInfo = null;
 			return;
 		}
-
-		Cache cache = Cache;
 
 		if (!force)
 		{
@@ -96,10 +99,26 @@ public class InfoBubble extends CB_View_Base
 	@Override
 	protected void render(Batch batch)
 	{
-		Sprite sprite = (mCache.Id == GlobalCore.getSelectedCache().Id) ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
+		boolean selectedCache = false;
+		if (GlobalCore.ifCacheSelected())
+		{
+			selectedCache = mCache.Id == GlobalCore.getSelectedCache().Id;
+		}
+
+		Sprite sprite = selectedCache ? SpriteCacheBase.Bubble.get(1) : SpriteCacheBase.Bubble.get(0);
 		sprite.setPosition(0, 0);
 		sprite.setSize(getWidth(), getHeight());
 		sprite.draw(batch);
+
+		if (mCache != null && mCache.isLive())
+		{
+			if (saveButtonRec == null)
+			{
+				float s = GL_UISizes.halfBubble / 5;
+				saveButtonRec = new CB_RectF(GL_UISizes.margin, this.getHalfHeight() - (s / 3), s, s);
+			}
+			saveIcon.draw(batch, saveButtonRec.getX(), saveButtonRec.getY(), saveButtonRec.getWidth(), saveButtonRec.getHeight());
+		}
 	}
 
 	@Override
@@ -138,6 +157,15 @@ public class InfoBubble extends CB_View_Base
 		}
 
 		setCache(mCache, mWaypoint, true);
+	}
+
+	public boolean SaveButtonCliced(int x, int y)
+	{
+		if (mCache == null || !mCache.isLive()) return false;
+
+		if (saveButtonRec.contains(x, y)) return true;
+
+		return false;
 	}
 
 }

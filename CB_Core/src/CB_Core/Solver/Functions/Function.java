@@ -4,16 +4,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_Core.Solver.DataTypes.DataType;
 import CB_Core.Solver.EntityList;
 import CB_Core.Solver.FunctionEntity;
+import CB_Core.Solver.Solver;
 import CB_Core.Solver.TempEntity;
-import CB_Core.Solver.DataTypes.DataType;
 import CB_Translation_Base.TranslationEngine.Translation;
 
 public abstract class Function implements Serializable
 {
 
 	private static final long serialVersionUID = 3322289615650829139L;
+	protected Solver solver;
+
+	public Function(Solver solver)
+	{
+		this.solver = solver;
+	}
 
 	public String Name()
 	{
@@ -130,9 +137,9 @@ public abstract class Function implements Serializable
 			if (pos == 0)
 			{
 				// Insert new Entity
-				TempEntity rechts = new TempEntity(-1, tEntity.Text.substring(pos1, pos2 + 1));
+				TempEntity rechts = new TempEntity(solver, -1, tEntity.Text.substring(pos1, pos2 + 1));
 				entities.Insert(rechts);
-				FunctionEntity fEntity = new FunctionEntity(-1, this, rechts);
+				FunctionEntity fEntity = new FunctionEntity(solver, -1, this, rechts);
 				String var = entities.Insert(fEntity);
 				tEntity.Text = var;
 				return true;

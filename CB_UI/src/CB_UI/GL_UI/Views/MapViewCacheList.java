@@ -121,7 +121,12 @@ public class MapViewCacheList implements CacheListChangedEventListner
 								Cache cache = Database.Data.Query.get(i);
 								// Funde
 								if (hideMyFinds && cache.isFound()) continue;
-								boolean selectedCache = GlobalCore.getSelectedCache().Id == cache.Id;
+								boolean selectedCache = false;
+								if (GlobalCore.ifCacheSelected())
+								{
+									selectedCache = GlobalCore.getSelectedCache().Id == cache.Id;
+								}
+
 								boolean showWaypoints = showAllWaypoints || selectedCache;
 								double MapX = 256.0 * Descriptor.LongitudeToTileX(maxZoomLevel, cache.Longitude());
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
@@ -132,7 +137,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 								{
 									if (selectedCache)
 									{
-										addWaypoints(GlobalCore.getSelectedCache(), iconSize);
+										if (GlobalCore.ifCacheSelected()) addWaypoints(GlobalCore.getSelectedCache(), iconSize);
 									}
 									else
 									{
@@ -171,7 +176,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 										}
 									}
 								}
-								if (isVisible(MapX, MapY) || (GlobalCore.getSelectedCache().Id == cache.Id))
+								if (isVisible(MapX, MapY) || selectedCache)
 								{
 									// sichtbaren Cache/Mystery-Final hinzufügen
 									WaypointRenderInfo wpi = new WaypointRenderInfo();
@@ -182,7 +187,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 									wpi.Icon = getCacheIcon(cache, iconSize);
 									wpi.Cache = cache;
 									wpi.Waypoint = null; // = fwp; ist null, ausser bei Mystery-Final // null -> Beschriftung Name vom Cache
-									wpi.Selected = (GlobalCore.getSelectedCache().Id == cache.Id);
+									wpi.Selected = selectedCache;
 									if (wpi.Selected && selectedWP == null) selectedWP = wpi;// select nur wenn kein WP selectiert ist (draw
 																								// last)
 									tmplist.add(wpi);
@@ -374,7 +379,13 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 	private Sprite getUnderlayIcon(Cache cache, Waypoint waypoint, int iconSize)
 	{
-		if ((iconSize == 0) && (cache.Id != GlobalCore.getSelectedCache().Id))
+		boolean selectedCache = false;
+		if (GlobalCore.ifCacheSelected())
+		{
+			selectedCache = cache.Id == GlobalCore.getSelectedCache().Id;
+		}
+
+		if ((iconSize == 0) && (!selectedCache))
 		{
 			return null;
 		}
@@ -382,12 +393,23 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		{
 			if (waypoint == null)
 			{
-				if ((cache == null) || (cache.Id == GlobalCore.getSelectedCache().Id))
+				if ((cache == null) || selectedCache)
 				{
+					if (cache.isLive())
+					{// set color for underlayIcon to blue if this a LiveCache
+
+						return SpriteCacheBase.MapOverlay.get(5);
+					}
 					return SpriteCacheBase.MapOverlay.get(1);
 				}
 				else
 				{
+					if (cache.isLive())
+					{// set color for underlayIcon to blue if this a LiveCache
+
+						return SpriteCacheBase.MapOverlay.get(4);
+					}
+
 					return SpriteCacheBase.MapOverlay.get(0);
 				}
 			}
@@ -466,8 +488,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			if (lastPoint1 != null && lastPoint2 != null)
 			{
 				// Prüfen, ob überhaupt eine neue Liste berechnet werden muß
-				if ((data.point1.x >= lastPoint1.x) && (data.point2.x <= lastPoint2.x) && (data.point1.y >= lastPoint1.y)
-						&& (data.point2.y <= lastPoint2.y)) return;
+				if ((data.point1.x >= lastPoint1.x) && (data.point2.x <= lastPoint2.x) && (data.point1.y >= lastPoint1.y) && (data.point2.y <= lastPoint2.y)) return;
 			}
 
 		}

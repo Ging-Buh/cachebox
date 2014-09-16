@@ -6,9 +6,9 @@ class ParameterEntity extends Entity
 {
 	ArrayList<Entity> Liste = new ArrayList<Entity>();
 
-	ParameterEntity(int id)
+	ParameterEntity(Solver solver, int id)
 	{
-		super(id);
+		super(solver, id);
 	}
 
 	@Override

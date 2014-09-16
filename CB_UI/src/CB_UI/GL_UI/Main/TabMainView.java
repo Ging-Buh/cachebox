@@ -375,16 +375,12 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		if (GlobalCore.isTestVersion()) actionTestView = new CB_Action_ShowTestView();
 		actionShowSettings = new CB_Action_Show_Settings();
 
-		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO,
-				SpriteCacheBase.Icons.get(IconName.navigate_46.ordinal()));
+		actionNavigateTo1 = actionNavigateTo2 = new CB_Action_ShowActivity("NavigateTo", MenuID.AID_NAVIGATE_TO, ViewConst.NAVIGATE_TO, SpriteCacheBase.Icons.get(IconName.navigate_46.ordinal()));
 
 		actionRecTrack = new CB_Action_RecTrack();
-		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC,
-				SpriteCacheBase.Icons.get(IconName.voiceRec_11.ordinal()));
-		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO,
-				SpriteCacheBase.Icons.get(IconName.log10_47.ordinal()));
-		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC,
-				SpriteCacheBase.Icons.get(IconName.video_10.ordinal()));
+		actionRecVoice = new CB_Action_ShowActivity("VoiceRec", MenuID.AID_VOICE_REC, ViewConst.VOICE_REC, SpriteCacheBase.Icons.get(IconName.voiceRec_11.ordinal()));
+		actionRecPicture = new CB_Action_ShowActivity("TakePhoto", MenuID.AID_TAKE_PHOTO, ViewConst.TAKE_PHOTO, SpriteCacheBase.Icons.get(IconName.log10_47.ordinal()));
+		actionRecVideo = new CB_Action_ShowActivity("RecVideo", MenuID.AID_VIDEO_REC, ViewConst.VIDEO_REC, SpriteCacheBase.Icons.get(IconName.video_10.ordinal()));
 
 		actionDayNight = new CB_Action_switch_DayNight();
 		// actionScreenLock = new CB_Action_ShowActivity("screenlock", MenuID.AID_LOCK, ViewConst.LOCK, SpriteCache.Icons.get(14));
@@ -793,9 +789,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	public void filterSetChanged()
 	{
-		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.toString().equals(""))
-				|| (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter))
-				&& !GlobalCore.LastFilter.isExtendsFilter())
+		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.toString().equals("")) || (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter)) && !GlobalCore.LastFilter.isExtendsFilter())
 		{
 			CacheListButton.setButtonSprites(SpriteCacheBase.CacheList);
 			isFilterd = false;
@@ -875,7 +869,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 			e.printStackTrace();
 		}
 
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			float distance = GlobalCore.getSelectedCache().Distance(CalculationType.FAST, false);
 			if (GlobalCore.getSelectedWaypoint() != null)
@@ -883,10 +877,10 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 				distance = GlobalCore.getSelectedWaypoint().Distance();
 			}
 
-			if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted
-					&& (distance < Config.SoundApproachDistance.getValue()))
+			if (Config.switchViewApproach.getValue() && !GlobalCore.switchToCompassCompleted && (distance < Config.SoundApproachDistance.getValue()))
 			{
-				if (compassView != null && compassView.isVisible()) return;// don't show if showing
+				if (compassView != null && compassView.isVisible()) return;// don't show if showing compass
+				if (mapView != null && mapView.isVisible() && mapView.isCarMode()) return; // don't show on visible map at carMode
 				actionShowCompassView.Execute();
 				GlobalCore.switchToCompassCompleted = true;
 			}

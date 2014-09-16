@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.GL_UI;
 
 import java.util.ArrayList;
@@ -30,7 +45,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public static final int MOUSE_WHEEL_POINTER_UP = -280272;
 	protected final ParentInfo myInfoForChild = new ParentInfo();
-	private final Matrix4 rotateMatrix = new Matrix4();
+	protected final Matrix4 rotateMatrix = new Matrix4();
 
 	/**
 	 * Pointer ID for Mouse wheel scrolling down
@@ -179,19 +194,15 @@ public abstract class GL_View_Base extends CB_RectF
 	}
 
 	/**
-	 * Gibt die Visibility dieser GL_View zurueck.</br> Wenn die Groesse dieser GL_View <=0f ist, so wird INVISIBLE zurueck gegeben.
+	 * Returns TRUE if with and height >0, is not disposed and is not set to invisible
 	 * 
 	 * @return
 	 */
-	private boolean getVisibility()
-	{
-		if (this.getWidth() <= 0f || this.getHeight() <= 0f) return false;
-		return mVisible;
-	}
-
 	public boolean isVisible()
 	{
-		return getVisibility();
+		if (this.isDisposed) return false;
+		if (this.getWidth() <= 0f || this.getHeight() <= 0f) return false;
+		return mVisible;
 	}
 
 	public GL_View_Base addChild(final GL_View_Base view)
@@ -327,6 +338,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 **/
 	public void setBackground(Drawable background)
 	{
+		if (isDisposed) return;
 		drawableBackground = background;
 		if (background != null)
 		{
@@ -418,6 +430,8 @@ public abstract class GL_View_Base extends CB_RectF
 	{
 		if (myParentInfo == null) return;
 
+		if (this.isDisposed) return;
+
 		if (thisInvalidate)
 		{
 			myParentInfo.setParentInfo(parentInfo);
@@ -429,8 +443,7 @@ public abstract class GL_View_Base extends CB_RectF
 			if (intersectRec == null || intersectRec.getHeight() + 1 < 0 || intersectRec.getWidth() + 1 < 0) return; // hier gibt es nichts
 																														// zu rendern
 			if (!disableScissor) Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1,
-					(int) intersectRec.getHeight() + 1);
+			Gdx.gl.glScissor((int) intersectRec.getX(), (int) intersectRec.getY(), (int) intersectRec.getWidth() + 1, (int) intersectRec.getHeight() + 1);
 		}
 
 		float A = 0, R = 0, G = 0, B = 0; // Farbwerte der batch um diese wieder einzustellen, wenn ein ColorFilter angewandt wurde!
@@ -478,7 +491,21 @@ public abstract class GL_View_Base extends CB_RectF
 			batch.setTransformMatrix(rotateMatrix);
 		}
 
-		this.render(batch);
+		try
+		{
+			this.render(batch);
+		}
+		catch (IllegalStateException e)
+		{
+			e.printStackTrace();
+			// reset Colorfilter ?
+			if (ColorFilterSeted)
+			{
+				// alte abgespeicherte Farbe des Batches wieder herstellen!
+				batch.setColor(R, G, B, A);
+			}
+			return;
+		}
 
 		// reverse rotation
 		if (isRotated)
@@ -508,22 +535,31 @@ public abstract class GL_View_Base extends CB_RectF
 					GL_View_Base view = childs.get(i);
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
-					if (view != null && view.isVisible() && !view.isDisposed())
+					if (view != null && !view.isDisposed() && view.isVisible())
 					{
+						synchronized (view)
+						{
+							if (childsInvalidate) view.invalidate();
 
-						if (childsInvalidate) view.invalidate();
+							myInfoForChild.setParentInfo(myParentInfo);
+							myInfoForChild.setWorldDrawRec(intersectRec);
 
-						myInfoForChild.setParentInfo(myParentInfo);
-						myInfoForChild.setWorldDrawRec(intersectRec);
+							myInfoForChild.add(view.getX(), view.getY());
 
-						myInfoForChild.add(view.getX(), view.getY());
+							batch.setProjectionMatrix(myInfoForChild.Matrix());
+							nDepthCounter++;
 
-						batch.setProjectionMatrix(myInfoForChild.Matrix());
-						nDepthCounter++;
-
-						view.renderChilds(batch, myInfoForChild);
-						nDepthCounter--;
-						// batch.setProjectionMatrix(myParentInfo.Matrix());
+							view.renderChilds(batch, myInfoForChild);
+							nDepthCounter--;
+						}
+					}
+					else
+					{
+						if (view.isDisposed())
+						{
+							// Remove disposedView from child list
+							this.removeChild(view);
+						}
 					}
 
 				}
@@ -532,6 +568,10 @@ public abstract class GL_View_Base extends CB_RectF
 					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				}
 				catch (java.util.ConcurrentModificationException e)
+				{
+					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+				}
+				catch (java.lang.IndexOutOfBoundsException e)
 				{
 					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				}
@@ -559,12 +599,11 @@ public abstract class GL_View_Base extends CB_RectF
 		{
 			// alte abgespeicherte Farbe des Batches wieder herstellen!
 			batch.setColor(R, G, B, A);
-
 		}
 
 	}
 
-	private boolean isDisposed()
+	public boolean isDisposed()
 	{
 		return isDisposed;
 	}
@@ -581,8 +620,12 @@ public abstract class GL_View_Base extends CB_RectF
 					@Override
 					public void run()
 					{
-						int w = getNextHighestPO2((int) getWidth());
-						int h = getNextHighestPO2((int) getHeight());
+						// int w = getNextHighestPO2((int) getWidth());
+						// int h = getNextHighestPO2((int) getHeight());
+
+						int w = (int) getWidth();
+						int h = (int) getHeight();
+
 						debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
 						debugRegPixmap.setColor(1f, 0f, 0f, 1f);
 						debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
@@ -621,7 +664,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 * muessen. Die detection wann sich etwas geaendert hat, kommt von der ueberschriebenen CB_RectF Methode CalcCrossPos, da diese bei
 	 * jeder Aenderung aufgerufen wird.
 	 */
-	private void CalcMyInfoForChild()
+	protected void CalcMyInfoForChild()
 	{
 		childsInvalidate = true;
 		ThisWorldRec.setRec(this);// .copy().offset(myParentInfo.Vector());
@@ -1328,7 +1371,7 @@ public abstract class GL_View_Base extends CB_RectF
 
 	// ############# End Skin changed ############
 
-	private Color mColorFilter = null;
+	protected Color mColorFilter = null;
 
 	public void setColorFilter(Color color)
 	{

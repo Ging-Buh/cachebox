@@ -131,7 +131,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 
 						if (!CB_Core.Api.GroundspeakAPI.CacheStatusValid)
 						{
-							int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits();
+							int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(null);
 							if (result != 0)
 							{
 								onlineSearchReadyHandler.sendMessage(onlineSearchReadyHandler.obtainMessage(1));
@@ -268,7 +268,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 			switch (button)
 			{
 			case -1:
-				Cache newCache = SearchForGeocaches.getInstance().LoadApiDetails(aktCache);
+				Cache newCache = SearchForGeocaches.getInstance().LoadApiDetails(aktCache, null);
 				if (newCache != null)
 				{
 					aktCache = newCache;

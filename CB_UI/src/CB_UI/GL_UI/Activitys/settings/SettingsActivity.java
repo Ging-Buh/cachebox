@@ -29,7 +29,10 @@ import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
 import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
+import CB_UI_Base.GL_UI.Activitys.ColorPicker;
+import CB_UI_Base.GL_UI.Activitys.ColorPicker.IReturnListner;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.CollapseBox.animatetHeightChangedListner;
@@ -61,6 +64,7 @@ import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
+import CB_Utils.Settings.SettingColor;
 import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingEnum;
 import CB_Utils.Settings.SettingFile;
@@ -74,9 +78,11 @@ import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingStringArray;
 import CB_Utils.Settings.SettingTime;
+import CB_Utils.Settings.SettingUsage;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Util.FileIO;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
@@ -266,7 +272,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		}
 
 		SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button,
-				SettingModus.Normal, SettingStoreType.Global);
+				SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 		CB_View_Base langView = getLangSpinnerView(lang);
 
 		addControlToLinearLayout(langView, margin);
@@ -280,7 +286,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 			for (Iterator<SettingBase<?>> it = Config.settings.iterator(); it.hasNext();)
 			{
 				SettingBase<?> setting = it.next();
-				SortedSettingList.add(setting);
+				if (setting.getUsage() == SettingUsage.ACB || setting.getUsage() == SettingUsage.ALL) SortedSettingList.add(setting);
 			}
 
 			// Collections.sort(SortedSettingList);
@@ -291,7 +297,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				SettingCategory cat = iteratorCat.next();
 				SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button,
-						SettingModus.Normal, SettingStoreType.Global);
+						SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 
 				final CB_View_Base btn = getView(catBtn, 1);
 
@@ -316,7 +322,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				if (cat == SettingCategory.Login)
 				{
 					SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button,
-							SettingModus.Normal, SettingStoreType.Global);
+							SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 					final CB_View_Base btnLgIn = getView(lgIn, 1);
 					lay.addChild(btnLgIn);
 					entryCount++;
@@ -333,7 +339,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				if (cat == SettingCategory.Debug)
 				{
 					SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button,
-							SettingModus.Normal, SettingStoreType.Global);
+							SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 					final CB_View_Base btnDisp = getView(disp, 1);
 
 					btnDisp.setSize(itemRec);
@@ -345,7 +351,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				if (cat == SettingCategory.Skin)
 				{
 					SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button,
-							SettingModus.Normal, SettingStoreType.Global);
+							SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 					CB_View_Base skinView = getSkinSpinnerView(skin);
 					lay.addChild(skinView);
 					entryCount++;
@@ -545,8 +551,76 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		{
 			return getAudioView((SettingsAudio) SB, BackgroundChanger);
 		}
+		else if (SB instanceof SettingColor)
+		{
+			return getColorView((SettingColor) SB, BackgroundChanger);
+		}
 
 		return null;
+	}
+
+	private CB_View_Base getColorView(final SettingColor SB, int backgroundChanger)
+	{
+		SettingsItemBase item = new SettingsItem_Color(itemRec, backgroundChanger, SB);
+		final String trans = Translation.Get(SB.getName());
+
+		item.setName(trans);
+		item.setDefault(String.valueOf(SB.getValue()));
+
+		item.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				EditKey = Config.settings.indexOf(SB);
+
+				GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
+				{
+
+					@Override
+					public void run()
+					{
+						ColorPicker clrPick = new ColorPicker(ActivityBase.ActivityRec(), SB.getValue(), new IReturnListner()
+						{
+
+							@Override
+							public void returnColor(Color color)
+							{
+								if (color == null) return; // nothing changed
+
+								SettingColor SetValue = (SettingColor) Config.settings.get(EditKey);
+								if (SetValue != null) SetValue.setValue(color);
+								resortList();
+								// Activity wieder anzeigen
+								show();
+							}
+						});
+						clrPick.show();
+					}
+				});
+
+				return true;
+			}
+
+		});
+
+		item.setOnLongClickListener(new OnClickListener()
+		{
+
+			@Override
+			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				// zeige Beschreibung der Einstellung
+
+				GL_MsgBox.Show(Translation.Get("Desc_" + SB.getName()), MsgBoxreturnListner);
+
+				return false;
+			}
+
+		});
+
+		return item;
 	}
 
 	private CB_View_Base getStringView(final SettingString SB, int backgroundChanger)

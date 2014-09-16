@@ -44,23 +44,19 @@ public class ButtonDialog extends Dialog
 	protected OnClickListener neutralButtonClickListener;
 	protected OnClickListener negativeButtonClickListener;
 
-	public ButtonDialog(String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon,
-			OnMsgBoxClickListener Listener)
+	public ButtonDialog(String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener)
 	{
-		this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(),
-				Name, msg, title, buttons, icon, Listener);
+		this(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), (icon != MessageBoxIcon.None), false).getBounds().asFloat(), Name, msg, title, buttons, icon, Listener);
 	}
 
-	public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon,
-			OnMsgBoxClickListener Listener)
+	public ButtonDialog(CB_RectF rec, String Name, String msg, String title, MessageBoxButtons buttons, MessageBoxIcon icon, OnMsgBoxClickListener Listener)
 	{
 		super(rec, Name);
 		setTitle(title);
 		setButtonCaptions(buttons);
 		SizeF contentSize = getContentSize();
 
-		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(),
-				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
+		CB_RectF imageRec = new CB_RectF(0, contentSize.height - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 
 		if (icon != MessageBoxIcon.None && icon != null)
 		{
@@ -106,7 +102,15 @@ public class ButtonDialog extends Dialog
 
 	public void close()
 	{
-		GL.that.closeDialog(this);
+		GL.that.RunOnGL(new IRunOnGL()
+		{
+			@Override
+			public void run()
+			{
+				GL.that.closeDialog(ButtonDialog.this);
+			}
+		});
+
 	}
 
 	public void setButtonCaptions(MessageBoxButtons buttons)

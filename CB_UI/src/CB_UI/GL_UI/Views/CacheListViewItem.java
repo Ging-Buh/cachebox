@@ -63,6 +63,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	protected extendedCacheInfo info;
 	protected boolean isPressed = false;
 
+	private Sprite liveCacheIcon;
 	private Sprite arrow = new Sprite(SpriteCacheBase.Arrows.get(0));
 	private BitmapFontCache distance = new BitmapFontCache(Fonts.getSmall());
 
@@ -102,12 +103,23 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			setActLocator();
 		}
 
-		// Logger.LogCat("New CacheListItem Index:" + String.valueOf(Index));
+		if (mCache.isLive())
+		{
+			liveCacheIcon = new Sprite(SpriteCacheBase.LiveBtn.get(0));
+			liveCacheIcon.setBounds(ArrowRec.getX() + (ArrowRec.getHalfWidth() / 2), ArrowRec.getMaxY(), ArrowRec.getHalfWidth(), ArrowRec.getHalfHeight());
+		}
 
 	}
 
+	private String lastString = "";
+
 	private void setDistanceString(String txt)
 	{
+		if (txt.equals(lastString))
+		{
+			return;
+		}
+		lastString = txt;
 		synchronized (distance)
 		{
 			TextBounds bounds = distance.setText(txt, ArrowRec.getX(), ArrowRec.getY());
@@ -154,8 +166,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 
 			try
 			{
-				MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(),
-						Final.getLongitude(), result);
+				MathUtils.computeDistanceAndBearing(calcType, position.getLatitude(), position.getLongitude(), Final.getLatitude(), Final.getLongitude(), result);
 			}
 			catch (Exception e)
 			{
@@ -189,6 +200,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	{
 		super.render(batch);
 
+		if (liveCacheIcon != null) liveCacheIcon.draw(batch);
 		if (arrow != null) arrow.draw(batch);
 		if (distance != null)
 		{

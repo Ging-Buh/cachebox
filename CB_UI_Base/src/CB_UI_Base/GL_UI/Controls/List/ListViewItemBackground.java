@@ -55,7 +55,7 @@ public abstract class ListViewItemBackground extends ListViewItemBase
 			isPressed = GL.getIsTouchDown();
 		}
 
-		if (!this.isVisible()) return;
+		if (this.isDisposed() || !this.isVisible()) return;
 		super.render(batch);
 		// Draw Background
 		if (mBackIsInitial)

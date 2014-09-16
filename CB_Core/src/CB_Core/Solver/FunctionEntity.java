@@ -10,9 +10,9 @@ public class FunctionEntity extends Entity
 	private Function function;
 	private Entity entity;
 
-	public FunctionEntity(int id, Function function, Entity entity)
+	public FunctionEntity(Solver solver, int id, Function function, Entity entity)
 	{
-		super(id);
+		super(solver, id);
 		this.function = function;
 		this.entity = entity;
 	}

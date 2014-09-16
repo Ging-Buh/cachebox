@@ -169,6 +169,15 @@ public class GPXFileImporter
 	{
 		// Cachebox Extension
 
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/Parent")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_gsak_Parrent", text);
+			}
+		});
+
 		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/cachebox-extension/note")
 		{
 			@Override
@@ -596,6 +605,15 @@ public class GPXFileImporter
 
 		// GSAK Rules
 
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/gsak:wptExtension/gsak:Parent")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_gsak_Parrent", text);
+			}
+		});
+
 		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/extensions/gsak:wptExtension/gsak:LatBeforeCorrect")
 		{
 			@Override
@@ -867,6 +885,15 @@ public class GPXFileImporter
 	{
 
 		// GSAK Rules
+
+		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/gsak:wptExtension/gsak:Parent")
+		{
+			@Override
+			public void handleParsedCharacters(XMLParser<Map<String, String>> parser, String text, Map<String, String> values)
+			{
+				values.put("cache_gsak_Parrent", text);
+			}
+		});
 
 		ruleList.add(new DefaultRule<Map<String, String>>(Type.CHARACTER, "/gpx/wpt/gsak:wptExtension/gsak:LatBeforeCorrect")
 		{
@@ -1665,7 +1692,17 @@ public class GPXFileImporter
 			waypoint.setGcCode(values.get("wpt_name"));
 			waypoint.setTitle(waypoint.getGcCode());
 			// TODO Hack to get parent Cache
-			waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
+
+			if (values.containsKey("cache_gsak_Parrent"))
+			{
+				String parent = values.get("cache_gsak_Parrent");
+				waypoint.CacheId = Cache.GenerateCacheId(parent);
+			}
+			else
+			{
+				waypoint.CacheId = Cache.GenerateCacheId("GC" + waypoint.getGcCode().substring(2, waypoint.getGcCode().length()));
+			}
+
 		}
 
 		if (values.containsKey("wpt_desc"))
@@ -1675,7 +1712,13 @@ public class GPXFileImporter
 
 		if (values.containsKey("wpt_type"))
 		{
-			waypoint.parseTypeString(values.get("wpt_type"));
+			String typeString = values.get("wpt_type");
+			if (typeString.contains("Waypoint|Flag"))
+			{
+				typeString = values.get("wpt_desc");
+			}
+
+			waypoint.parseTypeString(typeString);
 		}
 
 		if (values.containsKey("wpt_cmt"))

@@ -88,7 +88,9 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
+import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Log.ILog;
 import CB_Utils.Log.Logger;
@@ -121,6 +123,8 @@ import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -351,8 +355,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		savedInstanceState.putInt("WindowWidth", UI_Size_Base.that.ui.Window.width);
 		savedInstanceState.putInt("WindowHeight", UI_Size_Base.that.ui.Window.height);
 
-		if (GlobalCore.getSelectedCache() != null) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache()
-				.getGcCode());
+		if (GlobalCore.ifCacheSelected()) savedInstanceState.putString("selectedCacheID", GlobalCore.getSelectedCache().getGcCode());
 		if (GlobalCore.getSelectedWaypoint() != null) savedInstanceState.putString("selectedWayPoint", GlobalCore.getSelectedWaypoint()
 				.getGcCode());
 
@@ -643,6 +646,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 		initialViewGL();
+
+		// Rate Timer
+		Timer raTi = new Timer();
+		TimerTask raTa = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				AppRater.app_launched(main.this);
+			}
+		};
+
+		raTi.schedule(raTa, 15000);
+
 	}
 
 	boolean flag = false;
@@ -725,7 +742,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 								{
 									wd.close();
 								}
-							}, new Runnable()
+							}, new cancelRunnable()
 							{
 
 								@Override
@@ -764,6 +781,13 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 									ExtSearch_GpxPath = null;
 
 									GL.that.Toast(Msg, 3000);
+								}
+
+								@Override
+								public boolean cancel()
+								{
+									// TODO handle cancel
+									return false;
 								}
 							});
 
@@ -823,14 +847,24 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void setSelectedCache_onUI(Cache cache, Waypoint waypoint)
 	{
-		((main) main.mainActivity).runOnUiThread(new Runnable()
+
+		float distance = cache.Distance(CalculationType.FAST, false);
+		if (waypoint != null)
 		{
-			@Override
-			public void run()
+			distance = GlobalCore.getSelectedWaypoint().Distance();
+		}
+		if (distance > Config.SoundApproachDistance.getValue())
+		{
+			((main) main.mainActivity).runOnUiThread(new Runnable()
 			{
-				GlobalCore.switchToCompassCompleted = false;
-			}
-		});
+				@Override
+				public void run()
+				{
+					GlobalCore.switchToCompassCompleted = false;
+				}
+			});
+		}
+
 	}
 
 	private CB_Locator.Location CB_location = new CB_Locator.Location(0, 0, 0);
@@ -900,7 +934,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 					@Override
 					public void run()
 					{
-						if (GlobalCore.getSelectedCache() != null) GlobalCore.getSelectedCache().ReloadSpoilerRessources();
+						if (GlobalCore.ifCacheSelected()) GlobalCore.getSelectedCache().ReloadSpoilerRessources();
 						String MediaFolder = Config.UserImageFolder.getValue();
 						String TrackFolder = Config.TrackFolder.getValue();
 						String relativPath = FileIO.getRelativePath(MediaFolder, TrackFolder, "/");
@@ -1828,7 +1862,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		basename = Global.GetDateTimeString();
 
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
 					+ GlobalCore.getSelectedCache().getName());
@@ -1863,7 +1897,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 		basename = Global.GetDateTimeString();
 
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
 					+ GlobalCore.getSelectedCache().getName());
@@ -1912,7 +1946,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 			basename = Global.GetDateTimeString();
 
-			if (GlobalCore.getSelectedCache() != null)
+			if (GlobalCore.ifCacheSelected())
 			{
 				String validName = FileIO.RemoveInvalidFatChars(GlobalCore.getSelectedCache().getGcCode() + "-"
 						+ GlobalCore.getSelectedCache().getName());
@@ -2079,7 +2113,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	private void NavigateTo()
 	{
-		if (GlobalCore.getSelectedCache() != null)
+		if (GlobalCore.ifCacheSelected())
 		{
 			double lat = GlobalCore.getSelectedCache().Latitude();
 			double lon = GlobalCore.getSelectedCache().Pos.getLongitude();
@@ -2826,6 +2860,47 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 				main.vibrate();
 			}
 
+			private AtomicBoolean torchAvailable = null;
+			private Camera deviceCamera;
+
+			@Override
+			public boolean isTorchAvailable()
+			{
+				if (torchAvailable == null)
+				{
+					torchAvailable = new AtomicBoolean();
+					torchAvailable.set(getBaseContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH));
+				}
+
+				return torchAvailable.get();
+			}
+
+			@Override
+			public boolean isTorchOn()
+			{
+				if (deviceCamera != null) return true;
+				return false;
+			}
+
+			@Override
+			public void switchTorch()
+			{
+				if (deviceCamera == null)
+				{
+					deviceCamera = Camera.open();
+					Parameters p = deviceCamera.getParameters();
+					p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+					deviceCamera.setParameters(p);
+					deviceCamera.startPreview();
+				}
+				else
+				{
+					deviceCamera.stopPreview();
+					deviceCamera.release();
+					deviceCamera = null;
+				}
+			}
+
 		});
 
 		platformConector.setShowViewListner(new IShowViewListner()
@@ -3071,7 +3146,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			@Override
 			public void Quit()
 			{
-				if (GlobalCore.getSelectedCache() != null)
+				if (GlobalCore.ifCacheSelected())
 				{
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());

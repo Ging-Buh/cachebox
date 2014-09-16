@@ -1200,11 +1200,8 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 	private Waypoint readWaypoint(String wpGcCode)
 	{
 		Waypoint result = null;
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcCode, CacheId, Latitude, Longitude, Description, Type, SyncExclude, UserWaypoint, Clue, Title, isStart from Waypoint where GcCode = ?",
-						new String[]
-							{ wpGcCode });
+		CoreCursor reader = Database.Data.rawQuery(WaypointDAO.SQL_WP_FULL + " where GcCode = ?", new String[]
+			{ wpGcCode });
 		reader.moveToFirst();
 		while (!reader.isAfterLast())
 		{

@@ -2,6 +2,7 @@ package CB_UI_Base.GL_UI.Activitys;
 
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Dialog;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -63,7 +64,15 @@ public class ActivityBase extends Dialog
 
 	protected void finish()
 	{
-		GL.that.closeActivity();
+		GL.that.RunOnGL(new IRunOnGL()
+		{
+			@Override
+			public void run()
+			{
+				GL.that.closeActivity();
+			}
+		});
+
 	}
 
 	@Override

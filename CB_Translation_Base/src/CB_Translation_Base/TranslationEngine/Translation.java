@@ -48,7 +48,7 @@ public class Translation
 	private final String BR;
 	private final CB_List<Translations> mStringList;
 	private final CB_List<Translations> mRefTranslation;
-	public final CB_List<Translations> mMissingStringList;
+	public final CB_List<MissingTranslation> mMissingStringList;
 	private String mLangID;
 	private final String mWorkPath;
 	private String mInitialLangPath;
@@ -67,7 +67,7 @@ public class Translation
 		BR = System.getProperty("line.separator");
 		mStringList = new CB_List<Translations>();
 		mRefTranslation = new CB_List<Translations>();
-		mMissingStringList = new CB_List<Translations>();
+		mMissingStringList = new CB_List<MissingTranslation>();
 		mFiletype = internal;
 
 	}
@@ -224,10 +224,7 @@ public class Translation
 			readRefFile(LangFileName);
 		}
 
-		String tmp = FilePath;
-		int pos2 = tmp.lastIndexOf("/") + 1;
-		tmp = FilePath.substring(pos2);
-		mLangID = tmp.replace(".lan", "");
+		mLangID = getLangNameFromFile(FilePath);
 
 		SelectedLangChangedEventList.Call();
 	}
@@ -303,7 +300,7 @@ public class Translation
 		{
 			retString = "$ID: " + StringId;// "No translation found";
 
-			Translations notFound = new Translations(StringId, "??");
+			MissingTranslation notFound = new MissingTranslation(StringId, "??");
 			if (!mMissingStringList.contains(notFound))
 			{
 				mMissingStringList.add(notFound);
@@ -438,8 +435,8 @@ public class Translation
 					for (int i = 0, n = mMissingStringList.size(); i < n; i++)
 					{
 						if (i >= mMissingStringList.size()) break;
-						Translations tmp = mMissingStringList.get(i);
-						sb.append(tmp.getIdString() + BR);
+						MissingTranslation tmp = mMissingStringList.get(i);
+						sb.append(tmp.getMissingString() + BR);
 					}
 					override = true;
 				}
@@ -476,7 +473,7 @@ public class Translation
 
 			if (read)
 			{
-				Translations notFound = new Translations(line, "??");
+				MissingTranslation notFound = new MissingTranslation(line, "??");
 				if (!mMissingStringList.contains(notFound))
 				{
 					mMissingStringList.add(notFound);

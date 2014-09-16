@@ -7,6 +7,7 @@ import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Button;
@@ -138,11 +139,28 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 
 				if (mReturnListner != null)
 				{
-					finish();
+					GL.that.RunOnGL(new IRunOnGL()
+					{
+						@Override
+						public void run()
+						{
+							finish();
+						}
+					});
+
 					mReturnListner.returnCoord(coord);
 				}
 				else
-					finish();
+				{
+					GL.that.RunOnGL(new IRunOnGL()
+					{
+						@Override
+						public void run()
+						{
+							finish();
+						}
+					});
+				}
 				return true;
 			}
 		});

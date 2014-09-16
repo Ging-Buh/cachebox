@@ -1,8 +1,15 @@
 package CB_Core.Solver.Functions;
 
+import CB_Core.Solver.Solver;
+
 public abstract class FunctionPrimeBase extends Function
 {
 	private static final long serialVersionUID = 4014109046993845632L;
+
+	public FunctionPrimeBase(Solver solver)
+	{
+		super(solver);
+	}
 
 	protected boolean IsPrimeNumber(long testNumber)
 	{

@@ -1,8 +1,26 @@
+/* 
+ * Copyright (C) 2011-2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.Events;
 
 import CB_UI_Base.GL_UI.ViewID;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
+/**
+ * @author Longri
+ */
 public class platformConector
 {
 	/**
@@ -100,6 +118,12 @@ public class platformConector
 
 		void vibrate();
 
+		boolean isTorchAvailable();
+
+		boolean isTorchOn();
+
+		void switchTorch();
+
 	}
 
 	private static IHardwarStateListner hardwareListner;
@@ -147,6 +171,32 @@ public class platformConector
 		}
 
 		return false;
+	}
+
+	public static boolean isTorchAvailable()
+	{
+		if (hardwareListner != null)
+		{
+			return hardwareListner.isTorchAvailable();
+		}
+		return false;
+	}
+
+	public static boolean isTorchOn()
+	{
+		if (hardwareListner != null)
+		{
+			return hardwareListner.isTorchOn();
+		}
+		return false;
+	}
+
+	public static void switchTorch()
+	{
+		if (hardwareListner != null)
+		{
+			hardwareListner.switchTorch();
+		}
 	}
 
 	private static KeyEventListner mKeyListner;

@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ImageButton extends Button
 {
-	private final Image image;
+	protected final Image image;
 
 	public ImageButton(String name)
 	{

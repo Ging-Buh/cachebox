@@ -120,7 +120,13 @@ public class Waypoint implements Serializable
 				strCacheType = arrSplitted[0];
 
 			String[] strFirstWord = strCacheType.split(" ");
-			this.Type = CacheTypes.parseString(strFirstWord[0]);
+
+			for (String word : strFirstWord)
+			{
+				this.Type = CacheTypes.parseString(word);
+				if (this.Type != CacheTypes.Undefined) break;
+			}
+
 		}
 		// Log.d(TAG, "Waypoint type: " + this.mWaypointType.toString());
 	}
