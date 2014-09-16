@@ -244,83 +244,90 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		float minPix = Math.min(panelRec.getWidth(), panelRec.getHeight());
 
-		synchronized (mMeasureList)
+		try
 		{
-
-			if (mMeasureList.size() > 0)
+			synchronized (mMeasureList)
 			{
-				// Gemittelter Punkt der GPS-Messungen
-				double medianLat = MeasuredCoord.Referenz.getLatitude();
-				double medianLon = MeasuredCoord.Referenz.getLongitude();
 
-				MeasuredCoordList sortetdList = (MeasuredCoordList) mMeasureList.clone();
-				sortetdList.sort();
-
-				double peakLat = Math.max(Math.abs(sortetdList.get(0).getLatitude() - medianLat), Math.abs(sortetdList.get(sortetdList.size() - 1).getLatitude() - medianLat));
-				double peakLon = Math.max(Math.abs(sortetdList.get(0).getLongitude() - medianLon), Math.abs(sortetdList.get(sortetdList.size() - 1).getLongitude() - medianLon));
-
-				// Umrechnung in XY
-				double medianX = Descriptor.LongitudeToTileX(projectionZoom, medianLon);
-				double medianY = Descriptor.LatitudeToTileY(projectionZoom, medianLat);
-
-				double extremeX = Descriptor.LongitudeToTileX(projectionZoom, peakLon + medianLon);
-				double extremeY = Descriptor.LatitudeToTileY(projectionZoom, peakLat + medianLat);
-
-				double peakX = Math.abs(extremeX - medianX);
-				double peakY = Math.abs(extremeY - medianY);
-
-				double maxPeak = Math.max(peakX, peakY);
-
-				double factor = 1;
-				if (maxPeak > 0) factor = minPix / maxPeak;
-
-				factor /= 2;
-
-				int x = (int) centerX;
-				int y = (int) centerY;
-
-				// Track zeichnen
-
-				for (int i = 1; i < mMeasureList.size(); i++)
+				if (mMeasureList.size() > 0)
 				{
+					// Gemittelter Punkt der GPS-Messungen
+					double medianLat = MeasuredCoord.Referenz.getLatitude();
+					double medianLon = MeasuredCoord.Referenz.getLongitude();
 
-					PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i - 1).getLatitude(), mMeasureList.get(i - 1).getLongitude(), projectionZoom);
+					MeasuredCoordList sortetdList = (MeasuredCoordList) mMeasureList.clone();
+					sortetdList.sort();
 
-					int lastX = (int) (centerX + (lastDrawEntry.X - medianX) * factor);
-					int lastY = (int) (centerY - (lastDrawEntry.Y - medianY) * factor);
+					double peakLat = Math.max(Math.abs(sortetdList.get(0).getLatitude() - medianLat), Math.abs(sortetdList.get(sortetdList.size() - 1).getLatitude() - medianLat));
+					double peakLon = Math.max(Math.abs(sortetdList.get(0).getLongitude() - medianLon), Math.abs(sortetdList.get(sortetdList.size() - 1).getLongitude() - medianLon));
 
-					PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i).getLatitude(), mMeasureList.get(i).getLongitude(), projectionZoom);
+					// Umrechnung in XY
+					double medianX = Descriptor.LongitudeToTileX(projectionZoom, medianLon);
+					double medianY = Descriptor.LatitudeToTileY(projectionZoom, medianLat);
 
-					x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
-					y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
+					double extremeX = Descriptor.LongitudeToTileX(projectionZoom, peakLon + medianLon);
+					double extremeY = Descriptor.LatitudeToTileY(projectionZoom, peakLat + medianLat);
 
-					drawingPixmap.setColor(Color.RED);
-					drawingPixmap.drawLine(lastX, lastY, x, y);
+					double peakX = Math.abs(extremeX - medianX);
+					double peakY = Math.abs(extremeY - medianY);
 
+					double maxPeak = Math.max(peakX, peakY);
+
+					double factor = 1;
+					if (maxPeak > 0) factor = minPix / maxPeak;
+
+					factor /= 2;
+
+					int x = (int) centerX;
+					int y = (int) centerY;
+
+					// Track zeichnen
+
+					for (int i = 1; i < mMeasureList.size(); i++)
+					{
+
+						PointD lastDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i - 1).getLatitude(), mMeasureList.get(i - 1).getLongitude(), projectionZoom);
+
+						int lastX = (int) (centerX + (lastDrawEntry.X - medianX) * factor);
+						int lastY = (int) (centerY - (lastDrawEntry.Y - medianY) * factor);
+
+						PointD thisDrawEntry = Descriptor.projectCoordinate(mMeasureList.get(i).getLatitude(), mMeasureList.get(i).getLongitude(), projectionZoom);
+
+						x = (int) (centerX + (thisDrawEntry.X - medianX) * factor);
+						y = (int) (centerY - (thisDrawEntry.Y - medianY) * factor);
+
+						drawingPixmap.setColor(Color.RED);
+						drawingPixmap.drawLine(lastX, lastY, x, y);
+
+					}
+
+					drawingPixmap.setColor(Color.BLUE);
+					drawingPixmap.drawCircle(x, y, 4);
 				}
-
-				drawingPixmap.setColor(Color.BLUE);
-				drawingPixmap.drawCircle(x, y, 4);
 			}
+			//
+			int m2 = (int) ((4 * minPix) / metersPerTile);
+			int m4 = m2 * 2;
+
+			drawingPixmap.setColor(Color.BLACK);
+			drawingPixmap.drawCircle(centerX, centerY, m2);
+			drawingPixmap.drawCircle(centerX, centerY, m4);
+
+			drawingPixmap.drawLine(centerX, 0, centerX, (int) panelRec.getHeight());
+			drawingPixmap.drawLine(0, centerY, (int) panelRec.getWidth(), centerY);
+
+			drawingTexture = new Texture(drawingPixmap);
+
+			drawing = new Sprite(drawingTexture, (int) panelRec.getWidth(), (int) panelRec.getHeight());
+			drawing.setX(leftBorder);
+			drawing.setY(bOK.getMaxY() + this.getBottomHeight());
+
+			inRepaint.set(false);
 		}
-		//
-		int m2 = (int) ((4 * minPix) / metersPerTile);
-		int m4 = m2 * 2;
-
-		drawingPixmap.setColor(Color.BLACK);
-		drawingPixmap.drawCircle(centerX, centerY, m2);
-		drawingPixmap.drawCircle(centerX, centerY, m4);
-
-		drawingPixmap.drawLine(centerX, 0, centerX, (int) panelRec.getHeight());
-		drawingPixmap.drawLine(0, centerY, (int) panelRec.getWidth(), centerY);
-
-		drawingTexture = new Texture(drawingPixmap);
-
-		drawing = new Sprite(drawingTexture, (int) panelRec.getWidth(), (int) panelRec.getHeight());
-		drawing.setX(leftBorder);
-		drawing.setY(bOK.getMaxY() + this.getBottomHeight());
-
-		inRepaint.set(false);
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		redraw = false;
 
