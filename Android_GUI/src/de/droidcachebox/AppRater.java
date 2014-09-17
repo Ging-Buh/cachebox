@@ -14,7 +14,7 @@ public class AppRater
 	private final static String APP_TITLE = "Cachebox";
 	private final static String APP_PACKAGE_NAME = "de.droidcachebox";
 
-	private final static int DAYS_UNTIL_PROMPT = 10;// 3;
+	private final static int DAYS_UNTIL_PROMPT = 30;// 3;
 	private final static int LAUNCHES_UNTIL_PROMPT = 15;// 7;
 
 	public static void app_launched(final Context mContext)
