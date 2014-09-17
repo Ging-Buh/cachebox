@@ -1,6 +1,10 @@
 
 Versions Änderungen:
 
+Version : 0.7.2280
+	• Neu LiveMap
+	• Fix einige Abstürze 
+
 Version : 0.7.2203
 	• Neu Kyrillischer Zeichensatz
 	• Neu exportieren in eine GPX 
