@@ -16,8 +16,7 @@ public class QuickFieldNoteFeedbackPopUp extends PopUp_Base
 
 	public QuickFieldNoteFeedbackPopUp(boolean found)
 	{
-		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 2.5f, UI_Size_Base.that.getButtonWidth() * 2.5f),
-				"QuickFieldnoteFeedback");
+		super(new CB_RectF(0, 0, UI_Size_Base.that.getButtonWidth() * 2.5f, UI_Size_Base.that.getButtonWidth() * 2.5f), "QuickFieldnoteFeedback");
 
 		if (found)
 		{
@@ -62,6 +61,13 @@ public class QuickFieldNoteFeedbackPopUp extends PopUp_Base
 		@Override
 		public void run()
 		{
+
+			if (isDisposed())
+			{
+				GL.that.renderOnce();
+				return;
+			}
+
 			if (toSmall)
 			{
 				if (counter < -5)
