@@ -3,6 +3,9 @@ package CB_UI_Base.GL_UI.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import CB_UI_Base.GL_UI.IRunOnGL;
+import CB_UI_Base.GL_UI.GL_Listener.GL;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -199,25 +202,33 @@ public class GradiantFill
 
 	private void disposeTexture()
 	{
-		try
+		GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
 		{
-			if (mPixmap != null) mPixmap.dispose();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		try
-		{
-			if (mTexture != null) mTexture.dispose();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		mPixmap = null;
-		mTexture = null;
-		mTextureRegion = null;
+			@Override
+			public void run()
+			{
+				try
+				{
+					if (mPixmap != null) mPixmap.dispose();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				try
+				{
+					if (mTexture != null) mTexture.dispose();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				mPixmap = null;
+				mTexture = null;
+				mTextureRegion = null;
+			}
+		});
+
 	}
 
 }

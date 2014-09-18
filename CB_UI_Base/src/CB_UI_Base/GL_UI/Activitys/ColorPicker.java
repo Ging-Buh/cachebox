@@ -81,7 +81,14 @@ public class ColorPicker extends ActivityBase
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				finish();
+				GL.that.RunOnGL(new IRunOnGL()
+				{
+					@Override
+					public void run()
+					{
+						finish();
+					}
+				});
 				if (mReturnListner != null) mReturnListner.returnColor(actColor);
 				return true;
 			}
@@ -136,8 +143,7 @@ public class ColorPicker extends ActivityBase
 	{
 		float vWidth = bOK.getHeight();
 
-		viewHue = new Image(this.getWidth() - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.getHeight()
-				- this.getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue");
+		viewHue = new Image(this.getWidth() - rightBorder - margin - vWidth, actColorBox.getMaxY() + margin, vWidth, this.getHeight() - this.getTopHeight() - actColorBox.getMaxY() - margin * 2, "viewHue");
 		viewHue.setDrawable(new SpriteDrawable(SpriteCacheBase.ambilwarna_hue));
 		this.addChild(viewHue);
 
