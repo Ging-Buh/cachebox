@@ -1,7 +1,7 @@
 package CB_UI.GL_UI.Views;
 
+import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Map.RouteOverlay.Track;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -133,8 +133,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 			CB_RectF rec = new CB_RectF(left, 0, this.getWidth() - left - getHeight() - 10, this.getHeight() / 2);
 			EntryLength = new Label(rec, "");
-			EntryLength.setText(Translation.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / "
-					+ UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
+			EntryLength.setText(Translation.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 
 			this.addChild(EntryLength);
 		}
@@ -229,6 +228,10 @@ public class TrackListViewItem extends ListViewItemBackground
 					@Override
 					public void returnColor(Color color)
 					{
+						if (color == null)// no changes
+						{
+							return;
+						}
 						mRoute.setColor(color);
 						colorReck = null;
 					}
@@ -242,9 +245,7 @@ public class TrackListViewItem extends ListViewItemBackground
 	public void notifyTrackChanged(Track route)
 	{
 		mRoute = route;
-		if (EntryLength != null) EntryLength.setText(Translation.Get("length") + ": "
-				+ UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / "
-				+ UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
+		if (EntryLength != null) EntryLength.setText(Translation.Get("length") + ": " + UnitFormatter.DistanceString((float) mRoute.TrackLength) + " / " + UnitFormatter.DistanceString((float) mRoute.AltitudeDifference));
 
 	}
 
