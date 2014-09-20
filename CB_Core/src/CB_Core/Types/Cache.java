@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
@@ -523,8 +524,7 @@ public class Cache implements Comparable<Cache>, Serializable
 			if (waypoint.Pos.getLatitude() == 0 && waypoint.Pos.getLongitude() == 0) toPos = Pos;
 		}
 		float[] dist = new float[4];
-		MathUtils.computeDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(),
-				dist);
+		MathUtils.computeDistanceAndBearing(type, fromPos.getLatitude(), fromPos.getLongitude(), toPos.getLatitude(), toPos.getLongitude(), dist);
 		cachedDistance = dist[0];
 		return cachedDistance;
 	}
@@ -1297,4 +1297,35 @@ public class Cache implements Comparable<Cache>, Serializable
 	{
 		return isDisposed;
 	}
+
+	public boolean correspondToFilter(FilterProperties filter)
+	{
+		if (chkFilterBoolean(filter.Finds, this.isFound())) return false;
+		if (chkFilterBoolean(filter.Own, this.ImTheOwner())) return false;
+		if (chkFilterBoolean(filter.NotAvailable, !this.isAvailable())) return false;
+		if (chkFilterBoolean(filter.Archived, this.isArchived())) return false;
+		if (chkFilterBoolean(filter.ContainsTravelbugs, this.NumTravelbugs > 0)) return false;
+		if (chkFilterBoolean(filter.Favorites, this.isFavorite())) return false;
+		if (chkFilterBoolean(filter.ListingChanged, this.isListingChanged())) return false;
+		if (chkFilterBoolean(filter.HasUserData, this.isHasUserData())) return false;
+
+		// TODO implement => if (chkFilterBoolean(filter.WithManualWaypoint, this.)) return false;
+
+		return true;
+	}
+
+	private boolean chkFilterBoolean(int filterValue, boolean found)
+	{
+		// Filter Int Values
+		// -1= Cache.{attribute} == False
+		// 0= Cache.{attribute} == False|True
+		// 1= Cache.{attribute} == True
+
+		if (filterValue != 0)
+		{
+			if (filterValue != (found ? 1 : -1)) return true;
+		}
+		return false;
+	}
+
 }
