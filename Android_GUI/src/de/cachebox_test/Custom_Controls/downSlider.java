@@ -436,17 +436,30 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		int top = LineSep * 2;
 
 		int iconWidth = 0;
-		// draw icon
-		if (((int) mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length) iconWidth = ActivityUtils.PutImageTargetHeight(canvas,
-				Global.CacheIconsBig[(int) mWaypoint.Type.ordinal()], UiSizes.that.getHalfCornerSize(), UiSizes.that.getCornerSize(),
-				imgSize);
+		try
+		{
+			// draw icon
+			if (((int) mWaypoint.Type.ordinal()) < Global.CacheIconsBig.length) iconWidth = ActivityUtils.PutImageTargetHeight(canvas,
+					Global.CacheIconsBig[(int) mWaypoint.Type.ordinal()], UiSizes.that.getHalfCornerSize(), UiSizes.that.getCornerSize(),
+					imgSize);
+		}
+		catch (Exception e1)
+		{
 
-		// draw Text info
-		left += iconWidth;
-		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutName, left, top);
-		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutDesc, left, top);
-		top += ActivityUtils.drawStaticLayout(canvas, WPLayoutCord, left, top);
-		if (mWaypoint.getClue() != null) ActivityUtils.drawStaticLayout(canvas, WPLayoutClue, left, top);
+		}
+
+		try
+		{
+			// draw Text info
+			left += iconWidth;
+			top += ActivityUtils.drawStaticLayout(canvas, WPLayoutName, left, top);
+			top += ActivityUtils.drawStaticLayout(canvas, WPLayoutDesc, left, top);
+			top += ActivityUtils.drawStaticLayout(canvas, WPLayoutCord, left, top);
+			if (mWaypoint.getClue() != null) ActivityUtils.drawStaticLayout(canvas, WPLayoutClue, left, top);
+		}
+		catch (Exception e)
+		{
+		}
 
 		return true;
 	}

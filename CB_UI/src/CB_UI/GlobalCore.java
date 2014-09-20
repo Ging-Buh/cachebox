@@ -59,7 +59,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2280;
+	public static final int CurrentRevision = 2290;
 
 	public static final String CurrentVersion = "0.7.";
 	public static final String VersionPrefix = "test";
@@ -170,7 +170,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	public static Track AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;
-	public static long TrackDistance;
+	// public static long TrackDistance;
 
 	public static boolean switchToCompassCompleted = false;
 

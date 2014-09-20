@@ -627,6 +627,20 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		btn5.addAction(new CB_ActionButton(actionClose, false));
 
 		actionShowAboutView.Execute();
+
+		// // Rate Timer
+		// Timer raTi = new Timer();
+		// TimerTask raTa = new TimerTask()
+		// {
+		// @Override
+		// public void run()
+		// {
+		// AppRater.app_launched(main.this);
+		// }
+		// };
+		//
+		// raTi.schedule(raTa, 15000);
+
 	}
 
 	private void addRightForTabletsTab()

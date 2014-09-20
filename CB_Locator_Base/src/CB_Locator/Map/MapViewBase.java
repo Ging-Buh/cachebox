@@ -591,6 +591,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 					if (!canDraw && tmpzoom == aktZoom)
 					{
+
+						// create this Tile new
+						desc.Data = this;
+						mapTileLoader.reloadTile(this, desc, aktZoom);
+
 						// für den aktuellen Zoom ist kein Tile vorhanden ->
 						// kleinere Zoomfaktoren durchsuchen
 						if (!renderBiggerTiles(batch, i, j, aktZoom))

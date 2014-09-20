@@ -218,7 +218,7 @@ public class TrackRecorder
 			MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS), Locator.getLongitude(GPS), dist);
 			float cachedDistance = dist[0];
 
-			if (cachedDistance > GlobalCore.TrackDistance)
+			if (cachedDistance > Config.TrackDistance.getValue())
 			{
 				StringBuilder sb = new StringBuilder();
 

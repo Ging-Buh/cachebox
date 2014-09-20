@@ -419,4 +419,23 @@ public class MapTileLoader
 		return result;
 	}
 
+	public void reloadTile(MapViewBase mapViewBase, Descriptor desc, int aktZoom)
+	{
+		// queue only if no Tile on Work
+		if (queueData.queuedTiles.size() != 0) return;
+
+		queueData.loadedTilesLock.lock();
+		queueData.queuedTilesLock.lock();
+
+		if (!queueData.loadedTiles.containsKey(desc.GetHashCode()))
+		{
+			if (!queueData.queuedTiles.containsKey(desc.GetHashCode()))
+			{
+				queueTile(desc, queueData.queuedTiles, queueData.queuedTilesLock);
+			}
+		}
+		queueData.loadedTilesLock.unlock();
+		queueData.queuedTilesLock.unlock();
+	}
+
 }
