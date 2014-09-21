@@ -75,7 +75,7 @@ public class CachListChangedEventList
 					Cache ca = LiveMapQue.LiveCaches.get(i);
 					if (!Database.Data.Query.contains(ca))
 					{
-						if (ca.correspondToFilter(FilterProperties.LastFilter)) continue;
+						if (!ca.correspondToFilter(FilterProperties.LastFilter)) continue;
 						ca.setLive(true);
 						Database.Data.Query.add(ca);
 					}

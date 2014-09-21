@@ -17,7 +17,7 @@ public class FilterProperties
 
 	public static boolean isFilterSet()
 	{
-		return (LastFilter == null) || (LastFilter.toString().equals("")) || (FilterProperties.presets[0].equals(LastFilter)) && !LastFilter.isExtendsFilter();
+		return !(LastFilter == null) || (LastFilter.toString().equals("")) || (FilterProperties.presets[0].equals(LastFilter)) && !LastFilter.isExtendsFilter();
 	}
 
 	public int Finds = 0;

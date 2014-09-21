@@ -803,7 +803,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	public void filterSetChanged()
 	{
-		if (FilterProperties.isFilterSet())
+		if (!FilterProperties.isFilterSet())
 		{
 			CacheListButton.setButtonSprites(SpriteCacheBase.CacheList);
 			isFilterd = false;
