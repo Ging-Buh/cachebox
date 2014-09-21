@@ -775,6 +775,8 @@ public class GroundspeakAPI
 	 */
 	public static int GetCacheLimits(ICancel icancel)
 	{
+		if (CachesLeft > -1) return 0;
+
 		int chk = chkMemperShip(false);
 		if (chk < 0) return chk;
 

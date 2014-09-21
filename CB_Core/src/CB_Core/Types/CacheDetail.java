@@ -327,32 +327,64 @@ public class CacheDetail implements Serializable
 
 		spoilerRessources = new CB_List<ImageEntry>();
 
-		String directory = "";
-
-		// from own Repository
-		String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
-		if (path != null && path.length() > 0)
+		synchronized (spoilerRessources)
 		{
-			directory = path + "/" + gcCode.substring(0, 4);
-			reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
-		}
 
-		// from Global Repository
-		path = CB_Core_Settings.DescriptionImageFolder.getValue();
-		directory = path + "/" + gcCode.substring(0, 4);
-		reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+			String directory = "";
 
-		// Spoilers are always loaden from global Repository too
-		// from globalUser changed Repository
-		path = CB_Core_Settings.SpoilerFolder.getValue();
-		directory = path + "/" + gcCode.substring(0, 4);
-		reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+			// from own Repository
+			String path = CB_Core_Settings.SpoilerFolderLocal.getValue();
+			try
+			{
+				if (path != null && path.length() > 0)
+				{
+					directory = path + "/" + gcCode.substring(0, 4);
+					reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 
-		// Add own taken photo
-		directory = CB_Core_Settings.UserImageFolder.getValue();
-		if (directory != null)
-		{
-			reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+			// from Global Repository
+			try
+			{
+				path = CB_Core_Settings.DescriptionImageFolder.getValue();
+				directory = path + "/" + gcCode.substring(0, 4);
+				reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+
+			// Spoilers are always loaden from global Repository too
+			// from globalUser changed Repository
+			try
+			{
+				path = CB_Core_Settings.SpoilerFolder.getValue();
+				directory = path + "/" + gcCode.substring(0, 4);
+				reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+
+			// Add own taken photo
+			directory = CB_Core_Settings.UserImageFolder.getValue();
+			if (directory != null)
+			{
+				try
+				{
+					reloadSpoilerResourcesFromPath(directory, spoilerRessources, cache);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -369,8 +401,7 @@ public class CacheDetail implements Serializable
 				filename = filename.toLowerCase(Locale.getDefault());
 				if (filename.indexOf(cache.getGcCode().toLowerCase(Locale.getDefault())) >= 0)
 				{
-					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png")
-							|| filename.endsWith(".gif")) return true;
+					if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".bmp") || filename.endsWith(".png") || filename.endsWith(".gif")) return true;
 				}
 				return false;
 			}
@@ -383,8 +414,7 @@ public class CacheDetail implements Serializable
 				for (String file : files)
 				{
 					String ext = FileIO.GetFileExtension(file);
-					if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp")
-							|| ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
+					if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg") || ext.equalsIgnoreCase("bmp") || ext.equalsIgnoreCase("png") || ext.equalsIgnoreCase("gif"))
 					{
 						ImageEntry imageEntry = new ImageEntry();
 						imageEntry.LocalPath = directory + "/" + file;
