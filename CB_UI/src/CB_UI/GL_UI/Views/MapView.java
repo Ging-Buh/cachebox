@@ -22,6 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
 import CB_Core.Api.SearchGC;
@@ -423,7 +424,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							// Reload result from DB
 							synchronized (Database.Data.Query)
 							{
-								String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+								String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 								CacheListDAO cacheListDAO = new CacheListDAO();
 								cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 							}

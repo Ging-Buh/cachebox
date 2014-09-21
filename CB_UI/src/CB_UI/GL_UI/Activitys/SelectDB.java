@@ -103,8 +103,7 @@ public class SelectDB extends ActivityBase
 			index++;
 		}
 
-		lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth,
-				getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
+		lvFiles = new V_ListView(new CB_RectF(leftBorder, this.getBottomHeight() + UI_Size_Base.that.getButtonHeight() * 2, innerWidth, getHeight() - (UI_Size_Base.that.getButtonHeight() * 2) - this.getTopHeight() - this.getBottomHeight()), "DB File ListView");
 
 		lvAdapter = new CustomAdapter(files);
 		lvFiles.setBaseAdapter(lvAdapter);
@@ -126,12 +125,9 @@ public class SelectDB extends ActivityBase
 		float btWidth = innerWidth / 3;
 
 		bNew = new Button(new CB_RectF(leftBorder, this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bNew");
-		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
-				"selectDB.bSelect");
-		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()),
-				"selectDB.bCancel");
-		bAutostart = new Button(new CB_RectF(leftBorder, bNew.getMaxY(), innerWidth, UI_Size_Base.that.getButtonHeight()),
-				"selectDB.bAutostart");
+		bSelect = new Button(new CB_RectF(bNew.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bSelect");
+		bCancel = new Button(new CB_RectF(bSelect.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bCancel");
+		bAutostart = new Button(new CB_RectF(leftBorder, bNew.getMaxY(), innerWidth, UI_Size_Base.that.getButtonHeight()), "selectDB.bAutostart");
 
 		this.addChild(bSelect);
 		this.addChild(bNew);
@@ -145,8 +141,7 @@ public class SelectDB extends ActivityBase
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
 				stopTimer();
-				NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB",
-						DialogListnerNewDB);
+				NewDB_InputBox.Show(WrapType.SINGLELINE, Translation.Get("NewDB"), Translation.Get("InsNewDBName"), "NewDB", DialogListnerNewDB);
 				return true;
 			}
 		});
@@ -433,16 +428,15 @@ public class SelectDB extends ActivityBase
 				String FilterString = Config.FilterNew.getValue();
 				if (FilterString.length() > 0)
 				{
-					GlobalCore.LastFilter = new FilterProperties(FilterString);
+					FilterProperties.LastFilter = new FilterProperties(FilterString);
 				}
 				else
 				{
 					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
 					FilterString = Config.Filter.getValue();
-					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString())
-							: new FilterProperties(FilterString);
+					FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
 				}
-				String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+				String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 
 				// initialize Database
 

@@ -93,17 +93,17 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				String FilterString = Config.FilterNew.getValue();
 				if (FilterString.length() > 0)
 				{
-					GlobalCore.LastFilter = new FilterProperties(FilterString);
+					FilterProperties.LastFilter = new FilterProperties(FilterString);
 				}
 				else
 				{
 					// Falls kein Neuer gefunden wurde -> das alte Format versuchen
 					FilterString = Config.Filter.getValue();
-					GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
+					FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
 				}
 				// filterSettings.LoadFilterProperties(GlobalCore.LastFilter);
 
-				String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+				String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 				Database.Data.GPXFilenameUpdateCacheCount();
 
 				synchronized (Database.Data.Query)

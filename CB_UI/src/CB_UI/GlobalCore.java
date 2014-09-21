@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Import.Importer;
@@ -178,8 +177,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	private static Cache selectedCache = null;
 	private static boolean autoResort;
-
-	public static FilterProperties LastFilter = null;
 
 	public static void setSelectedCache(Cache Cache)
 	{

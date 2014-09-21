@@ -773,7 +773,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 									Logger.DEBUG(Msg);
 
-									FilterProperties props = GlobalCore.LastFilter;
+									FilterProperties props = FilterProperties.LastFilter;
 
 									EditFilterSettings.ApplyFilter(props);
 

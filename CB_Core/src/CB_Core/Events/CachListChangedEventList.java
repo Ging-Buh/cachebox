@@ -18,6 +18,7 @@ package CB_Core.Events;
 import java.util.ArrayList;
 
 import CB_Core.CoreSettingsForward;
+import CB_Core.FilterProperties;
 import CB_Core.Api.LiveMapQue;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
@@ -62,20 +63,33 @@ public class CachListChangedEventList
 			// add Parking Cache
 			if (CB_Core_Settings.ParkingLatitude.getValue() != 0)
 			{
-				cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(),
-						"My Parking area", CacheTypes.MyParking, "CBPark");
+				cache = new Cache(CB_Core_Settings.ParkingLatitude.getValue(), CB_Core_Settings.ParkingLongitude.getValue(), "My Parking area", CacheTypes.MyParking, "CBPark");
 				Database.Data.Query.add(0, cache);
 			}
 
 			// add all Live Caches
 			for (int i = 0; i < LiveMapQue.LiveCaches.getSize(); i++)
 			{
-				Cache ca = LiveMapQue.LiveCaches.get(i);
-				if (!Database.Data.Query.contains(ca))
+				if (FilterProperties.isFilterSet())
 				{
-					ca.setLive(true);
-					Database.Data.Query.add(ca);
+					Cache ca = LiveMapQue.LiveCaches.get(i);
+					if (!Database.Data.Query.contains(ca))
+					{
+						if (ca.correspondToFilter(FilterProperties.LastFilter)) continue;
+						ca.setLive(true);
+						Database.Data.Query.add(ca);
+					}
 				}
+				else
+				{
+					Cache ca = LiveMapQue.LiveCaches.get(i);
+					if (!Database.Data.Query.contains(ca))
+					{
+						ca.setLive(true);
+						Database.Data.Query.add(ca);
+					}
+				}
+
 			}
 		}
 

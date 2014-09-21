@@ -2,6 +2,7 @@ package CB_UI.GL_UI.Menu;
 
 import java.util.ArrayList;
 
+import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.SearchGC;
 import CB_Core.DAO.CacheDAO;
@@ -169,7 +170,7 @@ public class CB_AllContextMenuHandler
 						// Reload result from DB
 						synchronized (Database.Data.Query)
 						{
-							String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+							String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 							CacheListDAO cacheListDAO = new CacheListDAO();
 							cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());
 						}

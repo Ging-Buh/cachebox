@@ -2,6 +2,7 @@ package CB_UI.GL_UI.Activitys;
 
 import java.util.ArrayList;
 
+import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
 import CB_Core.DAO.LogDAO;
 import CB_Core.DB.Database;
@@ -21,8 +22,7 @@ public class DeleteSelectedCache
 		ArrayList<String> GcCodeList = new ArrayList<String>();
 		GcCodeList.add(GlobalCore.getSelectedCache().getGcCode());
 		CacheListDAO dao = new CacheListDAO();
-		dao.delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(),
-				CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+		dao.delCacheImages(GcCodeList, CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 		GcCodeList = null;
 		dao = null;
 		// Waypoints
@@ -45,7 +45,7 @@ public class DeleteSelectedCache
 		// Database.Data.execSQL("vacuum");
 		// Filter Liste neu aufbauen oder gibt es eine schnellere Möglichkeit?
 		Logger.DEBUG("Execute LastFilter");
-		EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
+		EditFilterSettings.ApplyFilter(FilterProperties.LastFilter);
 		Logger.DEBUG("unselect Cache");
 		GlobalCore.setSelectedCache(null);
 		Logger.DEBUG("Rebuild View");

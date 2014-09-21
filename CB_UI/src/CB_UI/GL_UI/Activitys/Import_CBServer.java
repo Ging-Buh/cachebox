@@ -23,7 +23,6 @@ import CB_RpcCore.Functions.RpcAnswer_ExportChangesToServer;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.APIs.ExportCBServerListItem;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
@@ -196,20 +195,19 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 				if (importStarted)
 				{
-					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo,
-							MessageBoxIcon.Stop, new OnMsgBoxClickListener()
-							{
+					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener()
+					{
 
-								@Override
-								public boolean onClick(int which, Object data)
-								{
-									if (which == GL_MsgBox.BUTTON_POSITIVE)
-									{
-										cancelImport();
-									}
-									return true;
-								}
-							});
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							if (which == GL_MsgBox.BUTTON_POSITIVE)
+							{
+								cancelImport();
+							}
+							return true;
+						}
+					});
 				}
 				else
 					finish();
@@ -225,14 +223,12 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
-				lineHeight, "TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 		this.addChild(lblTitle);
 
-		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth,
-				lineHeight);
+		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);
 
 		pgBar = new ProgressBar(rec, "ProgressBar");
 
@@ -240,8 +236,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 		float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
 
-		lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin,
-				SmallLineHeight, "ProgressMsg");
+		lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight, "ProgressMsg");
 
 		lblProgressMsg.setFont(Fonts.getSmall());
 
@@ -259,8 +254,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		checkImportFromCBServer.setY(innerHeight - checkImportFromCBServer.getHeight());
 		if (!CBS_LINE_ACTIVE) checkImportFromCBServer.setVisible(false);
 		if (!CBS_LINE_ACTIVE) checkImportFromCBServer.setHeight(0);
-		lblCBServer = new Label(checkImportFromCBServer.getMaxX() + margin, checkImportFromCBServer.getY(), innerWidth - margin * 3
-				- checkImportFromCBServer.getWidth(), checkImportFromCBServer.getHeight(), "");
+		lblCBServer = new Label(checkImportFromCBServer.getMaxX() + margin, checkImportFromCBServer.getY(), innerWidth - margin * 3 - checkImportFromCBServer.getWidth(), checkImportFromCBServer.getHeight(), "");
 		lblCBServer.setFont(Fonts.getNormal());
 		lblCBServer.setText(Translation.Get("FromCBServer"));
 		if (!CBS_LINE_ACTIVE) lblCBServer.setVisible(false);
@@ -278,8 +272,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		checkBoxExportToCBServer.setY(innerHeight - checkBoxExportToCBServer.getHeight());
 		if (!EXPORT_LINE_ACTIVE) checkBoxExportToCBServer.setVisible(false);
 		if (!EXPORT_LINE_ACTIVE) checkBoxExportToCBServer.setHeight(0);
-		lblExportCBServer = new Label(checkBoxExportToCBServer.getMaxX() + margin, checkBoxExportToCBServer.getY(), innerWidth - margin * 3
-				- checkBoxExportToCBServer.getWidth(), checkBoxExportToCBServer.getHeight(), "");
+		lblExportCBServer = new Label(checkBoxExportToCBServer.getMaxX() + margin, checkBoxExportToCBServer.getY(), innerWidth - margin * 3 - checkBoxExportToCBServer.getWidth(), checkBoxExportToCBServer.getHeight(), "");
 		lblExportCBServer.setFont(Fonts.getNormal());
 		lblExportCBServer.setText(Translation.Get("ToCBServer"));
 		if (!EXPORT_LINE_ACTIVE) lblExportCBServer.setVisible(false);
@@ -290,8 +283,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	private void createCBServerCollapseBox()
 	{
-		CB_RectF rec = new CB_RectF(lblCBServer.getX(), lblCBServer.getY() - CollapseBoxHeight - margin, lblCBServer.getWidth(),
-				CollapseBoxHeight);
+		CB_RectF rec = new CB_RectF(lblCBServer.getX(), lblCBServer.getY() - CollapseBoxHeight - margin, lblCBServer.getWidth(), CollapseBoxHeight);
 
 		CBServerCollapseBox = new CollapseBox(rec, "CBServerCollapse");
 		CBServerCollapseBox.setBackground(this.getBackground());
@@ -312,8 +304,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			}
 		});
 
-		lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshCBServerList.getMaxY() + margin, CBServerCollapseBox.getWidth(),
-				CBServerCollapseBox.getHeight() - margin - margin - refreshCBServerList.getMaxY()), "");
+		lvCBServer = new V_ListView(new CB_RectF(leftBorder, refreshCBServerList.getMaxY() + margin, CBServerCollapseBox.getWidth(), CBServerCollapseBox.getHeight() - margin - margin - refreshCBServerList.getMaxY()), "");
 
 		lvCBServer.setEmptyMsg(Translation.Get("EmptyCBServerList"));
 
@@ -325,8 +316,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 	private void createExportCollapseBox()
 	{
-		CB_RectF rec = new CB_RectF(lblExportCBServer.getX(), lblExportCBServer.getY() - CollapseBoxHeight - margin,
-				lblExportCBServer.getWidth(), CollapseBoxHeight);
+		CB_RectF rec = new CB_RectF(lblExportCBServer.getX(), lblExportCBServer.getY() - CollapseBoxHeight - margin, lblExportCBServer.getWidth(), CollapseBoxHeight);
 
 		ExportCollapseBox = new CollapseBox(rec, "ExportCollapse");
 		ExportCollapseBox.setBackground(this.getBackground());
@@ -347,8 +337,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			}
 		});
 
-		lvExport = new V_ListView(new CB_RectF(leftBorder, refreshExportList.getMaxY() + margin, ExportCollapseBox.getWidth(),
-				ExportCollapseBox.getHeight() - margin - margin - refreshExportList.getMaxY()), "");
+		lvExport = new V_ListView(new CB_RectF(leftBorder, refreshExportList.getMaxY() + margin, ExportCollapseBox.getWidth(), ExportCollapseBox.getHeight() - margin - margin - refreshExportList.getMaxY()), "");
 
 		lvExport.setEmptyMsg(Translation.Get("EmptyExportList"));
 
@@ -365,8 +354,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		checkBoxPreloadImages.setX(innerLeft);
 		checkBoxPreloadImages.setY(ExportCollapseBox.getY() - margin - checkBoxPreloadImages.getHeight());
 
-		lblImage = new Label(checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3
-				- checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight(), "");
+		lblImage = new Label(checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3 - checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight(), "");
 		lblImage.setFont(Fonts.getNormal());
 		lblImage.setText(Translation.Get("PreloadImages"));
 
@@ -388,8 +376,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			checkBoxCleanLogs.setVisible(false);
 			checkBoxCleanLogs.setHeight(0);
 		}
-		lblLogs = new Label(checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3
-				- checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight(), "");
+		lblLogs = new Label(checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3 - checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight(), "");
 		lblLogs.setFont(Fonts.getNormal());
 		lblLogs.setText(Translation.Get("DeleteLogs"));
 
@@ -409,8 +396,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 		float SmallLineHeight = Fonts.MeasureSmall("Tg").height * 1.5f;
 		CollapseBoxLogsMaxHeight = checkBoxCleanLogs.getHeight() + (SmallLineHeight * 3.5f) + (margin * 4);
 
-		CB_RectF rec = new CB_RectF(lblLogs.getX(), lblLogs.getY() - CollapseBoxLogsMaxHeight - margin, lblLogs.getWidth(),
-				CollapseBoxLogsMaxHeight);
+		CB_RectF rec = new CB_RectF(lblLogs.getX(), lblLogs.getY() - CollapseBoxLogsMaxHeight - margin, lblLogs.getWidth(), CollapseBoxLogsMaxHeight);
 		LogCollapseBox = new CollapseBox(rec, "LogCollapse");
 		LogCollapseBox.setBackground(this.getBackground());
 		scrollBox.addChild(LogCollapseBox);
@@ -450,8 +436,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			}
 		};
 
-		spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth()
-				- margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner()
+		spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner()
 		{
 
 			@Override
@@ -464,8 +449,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 		LogCollapseBox.addChild(spinner);
 
-		Label lblButKeepLeast = new Label(margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(),
-				SmallLineHeight, "lblButKeepLeast");
+		Label lblButKeepLeast = new Label(margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(), SmallLineHeight, "lblButKeepLeast");
 		lblButKeepLeast.setText(Translation.Get("ButKeepLeast"));
 		LogCollapseBox.addChild(lblButKeepLeast);
 
@@ -483,24 +467,23 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			{
 				if (visible)
 				{
-					NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(),
-							new returnValueListner()
-							{
+					NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new returnValueListner()
+					{
 
-								@Override
-								public void returnValue(int value)
-								{
-									Config.LogMinCount.setValue(value);
-									Config.AcceptChanges();
-									input.setText(String.valueOf(value));
-								}
+						@Override
+						public void returnValue(int value)
+						{
+							Config.LogMinCount.setValue(value);
+							Config.AcceptChanges();
+							input.setText(String.valueOf(value));
+						}
 
-								@Override
-								public void cancelClicked()
-								{
+						@Override
+						public void cancelClicked()
+						{
 
-								}
-							});
+						}
+					});
 				}
 			}
 		});
@@ -518,8 +501,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 			checkBoxCompactDB.setVisible(false);
 			checkBoxCompactDB.setHeight(0);
 		}
-		lblCompact = new Label(lblImage.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3
-				- checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
+		lblCompact = new Label(lblImage.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3 - checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
 		lblCompact.setFont(Fonts.getNormal());
 		lblCompact.setText(Translation.Get("CompactDB"));
 
@@ -1064,7 +1046,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 				{
 					// import canceld
 					cancelImport();
-					FilterProperties props = GlobalCore.LastFilter;
+					FilterProperties props = FilterProperties.LastFilter;
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");
 					return;
@@ -1072,7 +1054,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 				if (BreakawayImportThread.isCanceld())
 				{
-					FilterProperties props = GlobalCore.LastFilter;
+					FilterProperties props = FilterProperties.LastFilter;
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");
 					return;
@@ -1087,12 +1069,11 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 				Date Importfin = new Date();
 				long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
-				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount)
-						+ "L in " + String.valueOf(ImportZeit);
+				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
 				Logger.DEBUG(Msg);
 
-				FilterProperties props = GlobalCore.LastFilter;
+				FilterProperties props = FilterProperties.LastFilter;
 				EditFilterSettings.ApplyFilter(props);
 
 				GL.that.Toast(Msg, 3000);

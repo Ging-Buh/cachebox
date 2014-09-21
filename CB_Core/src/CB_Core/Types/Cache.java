@@ -1308,8 +1308,26 @@ public class Cache implements Comparable<Cache>, Serializable
 		if (chkFilterBoolean(filter.Favorites, this.isFavorite())) return false;
 		if (chkFilterBoolean(filter.ListingChanged, this.isListingChanged())) return false;
 		if (chkFilterBoolean(filter.HasUserData, this.isHasUserData())) return false;
-
 		// TODO implement => if (chkFilterBoolean(filter.WithManualWaypoint, this.)) return false;
+
+		// Traditional, // = 0,
+		// Multi, // = 1,
+		// Mystery, // = 2,
+		// Camera, // = 3,
+		// Earth, // = 4,
+		// Event, // = 5,
+		// MegaEvent, // = 6,
+		// CITO, // = 7,
+		// Virtual, // = 8,
+		// Letterbox, // = 9,
+		// Wherigo, // = 10,
+		// Munzee, // 21
+		// Giga, // 22
+		int TypeIndex = this.Type.ordinal();
+		if (this.Type == CacheTypes.Munzee) TypeIndex = 11;
+		if (this.Type == CacheTypes.Giga) TypeIndex = 12;
+		if (TypeIndex < 0 || TypeIndex > 12) return false;
+		if (!filter.cacheTypes[TypeIndex]) return false;
 
 		return true;
 	}

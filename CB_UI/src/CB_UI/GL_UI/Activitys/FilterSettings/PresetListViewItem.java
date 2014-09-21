@@ -94,31 +94,6 @@ public class PresetListViewItem extends ListViewItemBackground
 	public static boolean chkPresetFilter(FilterProperties presetFilter, FilterProperties filter)
 	{
 		return (presetFilter.equals(filter));
-		//
-		// // exclude Category filter, cut String after 85 comma
-		// String probs = filterString;
-		// String[] commaSplit = probs.split(",");
-		// probs = "";
-		// if (commaSplit.length < 85) return false;
-		// for (int i = 0; i < 85; i++)
-		// {
-		// probs += commaSplit[i] + ",";
-		// }
-		//
-		// probs += ",,,,";
-		//
-		// String preset = presetString;
-		// commaSplit = preset.split(",");
-		// preset = "";
-		// if (commaSplit.length < 85) return false;
-		// for (int i = 0; i < 85; i++)
-		// {
-		// preset += commaSplit[i] + ",";
-		// }
-		//
-		// preset += ",,,,";
-		//
-		// return probs.equals(preset);
 	}
 
 	@Override

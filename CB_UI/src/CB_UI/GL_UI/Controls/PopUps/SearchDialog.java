@@ -859,20 +859,20 @@ public class SearchDialog extends PopUp_Base
 	{
 		String searchPattern = mEingabe.getText().toLowerCase();
 
-		GlobalCore.LastFilter.filterName = "";
-		GlobalCore.LastFilter.filterGcCode = "";
-		GlobalCore.LastFilter.filterOwner = "";
+		FilterProperties.LastFilter.filterName = "";
+		FilterProperties.LastFilter.filterGcCode = "";
+		FilterProperties.LastFilter.filterOwner = "";
 
-		if (mSearchState == 0) GlobalCore.LastFilter.filterName = searchPattern;
-		else if (mSearchState == 1) GlobalCore.LastFilter.filterGcCode = searchPattern;
-		if (mSearchState == 2) GlobalCore.LastFilter.filterOwner = searchPattern;
+		if (mSearchState == 0) FilterProperties.LastFilter.filterName = searchPattern;
+		else if (mSearchState == 1) FilterProperties.LastFilter.filterGcCode = searchPattern;
+		if (mSearchState == 2) FilterProperties.LastFilter.filterOwner = searchPattern;
 
 		ApplyFilter();
 	}
 
 	public void ApplyFilter()
 	{
-		ApplyFilter(GlobalCore.LastFilter);
+		ApplyFilter(FilterProperties.LastFilter);
 	}
 
 	public void ApplyFilter(FilterProperties filter)

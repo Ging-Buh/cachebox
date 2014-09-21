@@ -1,16 +1,25 @@
 package CB_Core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.DLong;
 import CB_Utils.Log.Logger;
 
 public class FilterProperties
 {
+	public static FilterProperties LastFilter = null;
+
+	public static boolean isFilterSet()
+	{
+		return (LastFilter == null) || (LastFilter.toString().equals("")) || (FilterProperties.presets[0].equals(LastFilter)) && !LastFilter.isExtendsFilter();
+	}
+
 	public int Finds = 0;
 
 	public int Own = 0;
@@ -207,11 +216,6 @@ public class FilterProperties
 		}
 		return result;
 	}
-
-	/*
-	 * public override boolean Equals(object obj) { if (obj.GetType() != this.GetType()) return false; return (obj as FilterProperties ==
-	 * this.ToString(); }
-	 */
 
 	public FilterProperties()
 	{
@@ -550,5 +554,19 @@ public class FilterProperties
 		if (!filterName.equals(filter.filterName)) return false;
 
 		return true;
+	}
+
+	public void setCachtypes(ArrayList<CacheTypes> types)
+	{
+		Arrays.fill(cacheTypes, false);
+		for (CacheTypes type : types)
+		{
+			int TypeIndex = type.ordinal();
+			if (type == CacheTypes.Munzee) TypeIndex = 11;
+			if (type == CacheTypes.Giga) TypeIndex = 12;
+			if (TypeIndex < 0 || TypeIndex > 12) continue;
+			cacheTypes[TypeIndex] = true;
+		}
+
 	}
 }

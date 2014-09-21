@@ -34,7 +34,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.TrackRecorder;
-import CB_UI.GL_UI.Activitys.FilterSettings.PresetListViewItem;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Main.Actions.CB_Action_GenerateRoute;
 import CB_UI.GL_UI.Main.Actions.CB_Action_QuickFieldNote;
@@ -337,7 +336,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	public static void reloadCacheList()
 	{
-		String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 		synchronized (Database.Data.Query)
 		{
 			CacheListDAO cacheListDAO = new CacheListDAO();
@@ -804,7 +803,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	public void filterSetChanged()
 	{
-		if ((GlobalCore.LastFilter == null) || (GlobalCore.LastFilter.toString().equals("")) || (PresetListViewItem.chkPresetFilter(FilterProperties.presets[0], GlobalCore.LastFilter)) && !GlobalCore.LastFilter.isExtendsFilter())
+		if (FilterProperties.isFilterSet())
 		{
 			CacheListButton.setButtonSprites(SpriteCacheBase.CacheList);
 			isFilterd = false;
