@@ -1,7 +1,7 @@
   
 Versions Änderungen:						Changes:
 
-Version : 0.5.xx							Version : 0.5.xx
+Version : 0.6.xx							Version : 0.5.xx
 	• Lösche Caches aus DB mit den 				• Delete Caches from DB with the 
 	   dazugehörigen Bildern.					   matching images.
 	• Komplette neu Erstellung der Karten 			• Complete rework of map view with 
