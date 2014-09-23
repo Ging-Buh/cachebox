@@ -848,7 +848,6 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 		}
 
 		GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);

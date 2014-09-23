@@ -202,4 +202,37 @@ public class CacheList extends MoveableList<Cache>
 		return list;
 	}
 
+	@Override
+	public int add(Cache ca)
+	{
+		if (ca == null) return -1;
+
+		int index = -1;
+		for (int i = 0, n = this.size(); i < n; i++)
+		{
+
+			Cache cache = get(i);
+			if (cache.Id == ca.Id)
+			{
+				index = i;
+			}
+		}
+
+		if (index > -1)
+		{
+			// Replace LiveCache with Cache
+			if (get(index).isLive())
+			{
+				if (!ca.isLive())
+				{
+					this.replasce(ca, index);
+					return index;
+				}
+			}
+
+		}
+
+		return super.add(ca);
+	}
+
 }

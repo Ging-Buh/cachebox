@@ -1508,6 +1508,9 @@ public class GroundspeakAPI
 		{
 			Cache cache = apiCaches.get(c);
 			Cache aktCache = Database.Data.Query.GetCacheById(cache.Id);
+
+			if (aktCache != null && aktCache.isLive()) aktCache = null;
+
 			if (aktCache == null)
 			{
 				aktCache = cacheDAO.getFromDbByCacheId(cache.Id);
