@@ -333,4 +333,57 @@ public class TB_Details extends ActivityBase
 		}
 	};
 
+	@Override
+	public void dispose()
+	{
+
+		if (scrollBox != null) scrollBox.dispose();
+		scrollBox = null;
+		if (btnClose != null) btnClose.dispose();
+		btnClose = null;
+		if (btnAction != null) btnAction.dispose();
+		btnAction = null;
+		if (icon != null) icon.dispose();
+		icon = null;
+		if (image != null) image.dispose();
+		image = null;
+		if (lblName != null) lblName.dispose();
+		lblName = null;
+		if (lblAbout != null) lblAbout.dispose();
+		lblAbout = null;
+		if (lblAboutDesc != null) lblAboutDesc.dispose();
+		lblAboutDesc = null;
+		if (lblGoal != null) lblGoal.dispose();
+		lblGoal = null;
+		if (lblGoalDesc != null) lblGoalDesc.dispose();
+		lblGoalDesc = null;
+		if (lblTypeName != null) lblTypeName.dispose();
+		lblTypeName = null;
+		if (lblTbCode != null) lblTbCode.dispose();
+		lblTbCode = null;
+		if (lblOwner != null) lblOwner.dispose();
+		lblOwner = null;
+		if (lblBirth != null) lblBirth.dispose();
+		lblBirth = null;
+		if (TypeName != null) TypeName.dispose();
+		TypeName = null;
+		if (TbCode != null) TbCode.dispose();
+		TbCode = null;
+		if (Owner != null) Owner.dispose();
+		Owner = null;
+		if (Birth != null) Birth.dispose();
+		Birth = null;
+		if (AboutThisItem != null) AboutThisItem.dispose();
+		AboutThisItem = null;
+		if (GoalThisItem != null) GoalThisItem.dispose();
+		GoalThisItem = null;
+		if (DetailThisItem != null) DetailThisItem.dispose();
+		DetailThisItem = null;
+
+		super.dispose();
+
+		that = null;
+
+	}
+
 }

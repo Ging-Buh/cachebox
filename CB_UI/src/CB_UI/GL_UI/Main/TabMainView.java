@@ -31,6 +31,7 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.AppRater;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI.TrackRecorder;
@@ -430,6 +431,9 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		platformConector.FirstShow();
 		filterSetChanged();
 		GL.that.removeRenderView(this);
+
+		AppRater.app_launched();
+
 	}
 
 	private void addPhoneTab()

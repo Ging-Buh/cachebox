@@ -18,6 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -412,12 +413,16 @@ public abstract class Dialog extends CB_View_Base
 
 		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
 		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
+		if (!Global.isTab)
+		{
+			Width = UI_Size_Base.that.getWindowWidth() * 0.95f;
+		}
 
 		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
 
 		float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 4);
 
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 4)) : (int) MeasuredTextHeight);
+		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
 
 		if (hasTitle)
 		{

@@ -47,7 +47,7 @@ public abstract class UI_Size_Base
 
 		margin = ini.Margin;
 
-		int b = (int) (50 * scale);
+		int b = (int) (40 * scale);
 		Button = new Size(b, b);
 
 		if (Global.isTab)

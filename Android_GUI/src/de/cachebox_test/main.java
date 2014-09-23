@@ -645,20 +645,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 		initialViewGL();
-
-		// Rate Timer
-		Timer raTi = new Timer();
-		TimerTask raTa = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				AppRater.app_launched(main.this);
-			}
-		};
-
-		raTi.schedule(raTa, 15000);
-
 	}
 
 	boolean flag = false;
