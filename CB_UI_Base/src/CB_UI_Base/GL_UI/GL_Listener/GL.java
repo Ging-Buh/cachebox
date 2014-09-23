@@ -1764,12 +1764,12 @@ public class GL implements ApplicationListener, InputProcessor
 				@Override
 				public void run()
 				{
-					if (dialog.isDisposed()) return;
+					if (dialog == null || dialog.isDisposed()) return;
 					if (dialog.equals(mDialog)) throw new IllegalStateException("mDialog can't disposed");
 					if (dialog != null) dialog.dispose();
 				}
 			};
-			timer.schedule(task, 200);
+			timer.schedule(task, 50);
 		}
 
 		if (MsgToPlatformConector) platformConector.hideForDialog();
