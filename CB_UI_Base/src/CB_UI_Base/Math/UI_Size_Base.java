@@ -1,7 +1,7 @@
 package CB_UI_Base.Math;
 
 import CB_UI_Base.Global;
-import CB_UI_Base.GL_UI.Skin.CB_Skin;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Logger;
 
 public abstract class UI_Size_Base
@@ -48,7 +48,7 @@ public abstract class UI_Size_Base
 
 		margin = ini.Margin;
 
-		float NormalTextSize = CB_Skin.INSTANCE.getSettings().SizeNormal * 3.2f;
+		float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
 
 		int b = (int) (NormalTextSize * scale);
 		Button = new Size(b, b);

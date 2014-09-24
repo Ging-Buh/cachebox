@@ -587,29 +587,28 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 		float halfWidth = mapIntWidth / 2;
 
 		// create ScreenRec
-
-		if (TargetArrowScreenRec == null)
-		{
-			TargetArrowScreenRec = new CB_RectF(0, 0, mapIntWidth, mapIntHeight);
-			if (Mode != MapMode.Compass)
-			{
-				TargetArrowScreenRec.ScaleCenter(0.9f);
-
-				if (Mode == MapMode.Normal)
-				{
-					TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
-					TargetArrowScreenRec.setY(zoomBtn.getMaxY());
-				}
-			}
-		}
-
-		Vector2 ScreenCenter = new Vector2(halfWidth, halfHeight);
-
-		Vector2 screen = worldToScreen(new Vector2(x, y));
-		Vector2 target = new Vector2(screen.x, screen.y);
-
 		try
 		{
+			if (TargetArrowScreenRec == null)
+			{
+				TargetArrowScreenRec = new CB_RectF(0, 0, mapIntWidth, mapIntHeight);
+				if (Mode != MapMode.Compass)
+				{
+					TargetArrowScreenRec.ScaleCenter(0.9f);
+
+					if (Mode == MapMode.Normal)
+					{
+						TargetArrowScreenRec.setHeight(TargetArrowScreenRec.getHeight() - (TargetArrowScreenRec.getHeight() - info.getY()) - zoomBtn.getHeight());
+						TargetArrowScreenRec.setY(zoomBtn.getMaxY());
+					}
+				}
+			}
+
+			Vector2 ScreenCenter = new Vector2(halfWidth, halfHeight);
+
+			Vector2 screen = worldToScreen(new Vector2(x, y));
+			Vector2 target = new Vector2(screen.x, screen.y);
+
 			Vector2 newTarget = TargetArrowScreenRec.getIntersection(ScreenCenter, target);
 
 			// Rotation berechnen

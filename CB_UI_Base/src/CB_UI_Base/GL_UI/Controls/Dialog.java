@@ -265,7 +265,7 @@ public abstract class Dialog extends CB_View_Base
 
 			mTitleHeight = titleLabel.getHeight();
 			mTitleWidth = titleLabel.getWidth();
-			mTitleWidth += rightBorder; // sonst sieht es blöd aus
+			mTitleWidth += rightBorder + leftBorder; // sonst sieht es blöd aus
 		}
 
 		mContent.setWidth(this.getWidth() * 0.95f);
@@ -282,81 +282,96 @@ public abstract class Dialog extends CB_View_Base
 		if (this.isDisposed()) return;
 		batch.flush();
 
-		if (mHeader9patch != null && !dontRenderDialogBackground)
+		try
 		{
-			mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mHeaderHeight, this.getWidth(), mHeaderHeight);
-		}
-		if (mFooter9patch != null && !dontRenderDialogBackground)
-		{
-			mFooter9patch.draw(batch, 0, 0, this.getWidth(), mFooterHeight + 2);
-		}
-		if (mCenter9patch != null && !dontRenderDialogBackground)
-		{
-			mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(), (this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
-		}
-
-		if (mHasTitle)
-		{
-			if (mTitleWidth < this.getWidth())
+			if (mHeader9patch != null && !dontRenderDialogBackground)
 			{
-				if (mTitle9patch != null && !dontRenderDialogBackground)
+				mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mHeaderHeight, this.getWidth(), mHeaderHeight);
+			}
+			if (mFooter9patch != null && !dontRenderDialogBackground)
+			{
+				mFooter9patch.draw(batch, 0, 0, this.getWidth(), mFooterHeight + 2);
+			}
+			if (mCenter9patch != null && !dontRenderDialogBackground)
+			{
+				mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(), (this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
+			}
+
+			if (mHasTitle)
+			{
+				if (mTitleWidth < this.getWidth())
 				{
-					mTitle9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					if (mTitle9patch != null && !dontRenderDialogBackground)
+					{
+						mTitle9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					}
+				}
+				else
+				{
+					if (mHeader9patch != null && !dontRenderDialogBackground)
+					{
+						mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					}
 				}
 			}
-			else
-			{
-				if (mHeader9patch != null && !dontRenderDialogBackground)
-				{
-					mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
-				}
-			}
+
+			batch.flush();
+		}
+		catch (Exception e1)
+		{
 		}
 
-		batch.flush();
+		if (this.isDisposed()) return;
 
 		super.renderChilds(batch, parentInfo);
 
-		if (overlay != null)
+		try
 		{
-			for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
+			if (overlay != null)
 			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-
-				GL_View_Base view;
-				try
+				for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
 				{
-					view = iterator.next();
+					// alle renderChilds() der in dieser GL_View_Base
+					// enthaltenen Childs auf rufen.
 
-					// hier nicht view.render(batch) aufrufen, da sonnst die in der
-					// view enthaldenen Childs nicht aufgerufen werden.
-					if (view != null && view.isVisible())
+					GL_View_Base view;
+					try
 					{
+						view = iterator.next();
 
-						if (childsInvalidate) view.invalidate();
+						// hier nicht view.render(batch) aufrufen, da sonnst die in der
+						// view enthaldenen Childs nicht aufgerufen werden.
+						if (view != null && view.isVisible())
+						{
 
-						getMyInfoForChild().setParentInfo(myParentInfo);
-						getMyInfoForChild().setWorldDrawRec(intersectRec);
+							if (childsInvalidate) view.invalidate();
 
-						getMyInfoForChild().add(view.getX(), view.getY());
+							getMyInfoForChild().setParentInfo(myParentInfo);
+							getMyInfoForChild().setWorldDrawRec(intersectRec);
 
-						batch.setProjectionMatrix(getMyInfoForChild().Matrix());
-						nDepthCounter++;
+							getMyInfoForChild().add(view.getX(), view.getY());
 
-						view.renderChilds(batch, getMyInfoForChild());
-						nDepthCounter--;
-						batch.setProjectionMatrix(myParentInfo.Matrix());
+							batch.setProjectionMatrix(getMyInfoForChild().Matrix());
+							nDepthCounter++;
+
+							view.renderChilds(batch, getMyInfoForChild());
+							nDepthCounter--;
+							batch.setProjectionMatrix(myParentInfo.Matrix());
+						}
+
 					}
-
-				}
-				catch (java.util.ConcurrentModificationException e)
-				{
-					// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
-					break;
+					catch (java.util.ConcurrentModificationException e)
+					{
+						// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+						break;
+					}
 				}
 			}
 		}
+		catch (Exception e)
+		{
+		}
+
 	}
 
 	public SizeF getContentSize()

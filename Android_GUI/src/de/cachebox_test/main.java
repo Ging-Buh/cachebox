@@ -926,8 +926,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
 						// die Koordinaten nach der Aufnahme verwendet werden.
 						mediaTimeString = Global.GetTrackDateTimeString();
-						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg",
-								CB_Locator.Locator.getLastSavedFineLocation(), mediaTimeString);
+
+						CB_Locator.Location last = CB_Locator.Locator.getLastSavedFineLocation();
+
+						if (last == null)
+						{
+							last = CB_Locator.Locator.getLocation(ProviderType.any);
+						}
+
+						if (last == null) return;
+
+						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", last, mediaTimeString);
 
 						TabMainView.that.reloadSprites(false);
 
