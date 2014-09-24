@@ -42,9 +42,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private enum buttons
 	{
-		Text(pages.Text, "TXT"), Zahl(pages.Zahl, "123"), Function(pages.Function, "f(x)"), Variable(pages.Variable, "@"), Operator(
-				pages.Operator,
-				"+-*/"), Waypoint(pages.Waypoint, "$GC"), Coordinate(pages.Coordinate, "°");
+		Text(pages.Text, "TXT"), Zahl(pages.Zahl, "123"), Function(pages.Function, "f(x)"), Variable(pages.Variable, "@"), Operator(pages.Operator, "+-*/"), Waypoint(pages.Waypoint, "$GC"), Coordinate(pages.Coordinate, "°");
 		private pages page;
 		public String description;
 
@@ -63,29 +61,46 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			case Coordinate:
 				return dataType == DataType.Coordinate;
 			case Function:
-				return true;
+				if (dataType != DataType.Waypoint)
+				{
+					return true;
+				}
+				break;
 			case Nothing:
-				return true;
+				if (dataType != DataType.Waypoint)
+				{
+					return true;
+				}
+				break;
 			case Operator:
 				return (dataType == DataType.Integer) || (dataType == DataType.Float);
 			case Text:
-				return true;
+				if (dataType != DataType.Waypoint)
+				{
+					return true;
+				}
+				break;
 			case Variable:
-				return true;
+				if (dataType != DataType.Waypoint)
+				{
+					return true;
+				}
+				break;
 			case Waypoint:
-				return dataType == DataType.Coordinate;
+				return (dataType == DataType.Coordinate) || (dataType == DataType.Waypoint);
 			case Zahl:
 				return (dataType == DataType.Integer) || (dataType == dataType.Float);
 			default:
 				break;
 
 			}
-			return true;
+			return false;
 		}
 	}
 
 	private SolverDialog2BuildFormula buildFormula;
 	private TreeMap<buttons, MultiToggleButton> visibleButtons = new TreeMap<buttons, MultiToggleButton>();
+	private float visibleButtonsHeight = 0;
 	private SolverBackStringListner mBackStringListner;
 	private Cache aktCache;
 	private String solverString;
@@ -98,8 +113,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private Label lblTitle;
 	private float innerLeft;
 	private EditTextField mVariableField;
+	private Button bVariableWaypoint;
 	private Label lblGleich;
-	private EditTextField tbGesamt;
 	// Page Text
 	private EditTextField mFormulaField;
 	// Page Zahl
@@ -162,12 +177,6 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		scrollBox.setY(bOK.getMaxY() + margin);
 		scrollBox.setBackground(this.getBackground());
 
-		tbGesamt = new EditTextField();
-		tbGesamt.setX(innerLeft);
-		tbGesamt.setWidth(innerWidth);
-		tbGesamt.setText(sForm);
-		// scrollBox.addChild(tbGesamt);
-
 		if (showVariableField)
 		{
 			createVariableLines();
@@ -177,7 +186,83 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		initialForm();
 
 		Layout();
-		showPage(pages.Text);
+		if (isFunction(sForm))
+		{
+			showPage(pages.Function);
+		}
+		else if (isCoordinate(sForm))
+		{
+			showPage(pages.Coordinate);
+		}
+		else if (isNumber(sForm))
+		{
+			showPage(pages.Zahl);
+		}
+		else if (isWaypoint(sForm))
+		{
+			showPage(pages.Waypoint);
+		}
+		else if (isVariable(sForm))
+		{
+			showPage(pages.Variable);
+		}
+		else if (dataType == DataType.Waypoint)
+		{
+			showPage(pages.Waypoint);
+		}
+		else
+		{
+			showPage(pages.Text);
+		}
+	}
+
+	private boolean isVariable(String solverString2)
+	{
+		for (String var : solver.Variablen.keySet())
+		{
+			if (solverString2.equalsIgnoreCase(var))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isWaypoint(String string)
+	{
+		if (string.equals("&" + aktCache.getGcCode())) return true;
+		for (int i = 0; i < aktCache.waypoints.size(); i++)
+		{
+			Waypoint waypoint = aktCache.waypoints.get(i);
+			if (this.solverString.equals("$" + waypoint.getGcCode())) return true;
+		}
+		return false;
+	}
+
+	private boolean isNumber(String string)
+	{
+		if (this.solverString.length() == 0) return false;
+		return isZahl(string);
+	}
+
+	private boolean isCoordinate(String string)
+	{
+		Coordinate coord = new Coordinate(string);
+		return coord.isValid();
+	}
+
+	private boolean isFunction(String string)
+	{
+		// Funktion aufsplitten nach Funktionsname und Parameter (falls möglich!)
+		String formula = string;
+		formula.trim();
+		int posKlammerAuf = formula.indexOf("(");
+		int posKlammerZu = formula.lastIndexOf(")");
+		if (posKlammerAuf <= 0) return false;
+		if (posKlammerZu < posKlammerAuf) return false;
+		if (posKlammerZu != formula.length() - 1) return false;
+		// gültige Formel erkannt anhand dem Format.
+		return true;
 	}
 
 	public void show(SolverBackStringListner listner)
@@ -194,9 +279,33 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		mVariableField = new EditTextField(this);
 		mVariableField.setX(innerLeft);
 		mVariableField.setY(innerHeight - mVariableField.getHeight());
-		mVariableField.setWidth(innerWidth);
+		mVariableField.setWidth(innerWidth - mVariableField.getHeight());
 		scrollBox.addChild(mVariableField);
 		mVariableField.setText(sVar);
+		bVariableWaypoint = new Button("$GC");
+		bVariableWaypoint.setX(innerLeft + innerWidth - mVariableField.getHeight());
+		bVariableWaypoint.setY(innerHeight - mVariableField.getHeight());
+		bVariableWaypoint.setWidth(mVariableField.getHeight());
+		scrollBox.addChild(bVariableWaypoint);
+		bVariableWaypoint.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public boolean onClick(final GL_View_Base v, int x, int y, int pointer, int button)
+			{
+				String param = "";
+				DataType type = DataType.Waypoint;
+				SolverDialog2 sd2 = new SolverDialog2(aktCache, solver, mVariableField.getText(), false, type);
+				sd2.show(new SolverBackStringListner()
+				{
+					@Override
+					public void BackString(String backString)
+					{
+						mVariableField.setText(backString);
+					}
+				});
+				return true;
+			}
+		});
 
 		lblGleich = new Label("=");
 		lblGleich.setWidth(innerWidth);
@@ -223,6 +332,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 				button.setOnStateChangedListner(this);
 				visibleButtons.put(btn, button);
 				scrollBox.addChild(button);
+				visibleButtonsHeight = button.getHeight();
 			}
 		}
 		float w = innerWidth / visibleButtons.size();
@@ -237,7 +347,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void Layout()
 	{
-		float y = margin + innerHeight - visibleButtons.get(buttons.Text).getHeight() * 4;
+		float y = margin + innerHeight - visibleButtonsHeight * 4;
 
 		switch (page)
 		{
@@ -326,6 +436,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		case Waypoint:
 			for (int i = cbWaypoints.length - 1; i >= 0; i--)
 			{
+				if ((dataType == DataType.Waypoint) && (i == 0))
+				{
+					continue;
+				}
 				chkBox cb = cbWaypoints[i];
 				Label l = lWaypoints[i];
 				cb.setY(y);
@@ -349,7 +463,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		{
 			mtb.setY(y);
 		}
-		y += visibleButtons.get(buttons.Text).getHeight() + margin;
+		y += visibleButtonsHeight + margin;
 
 		// tbGesamt.setY(y);
 		// y += tbGesamt.getHeight();
@@ -358,6 +472,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		{
 			lblGleich.setY(y - lblGleich.getHalfHeight() / 2);
 			y += lblGleich.getHeight() - lblGleich.getHalfHeight();
+		}
+		if (bVariableWaypoint != null)
+		{
+			bVariableWaypoint.setY(y);
 		}
 		if (mVariableField != null)
 		{
@@ -424,8 +542,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
-				lineHeight, "TitleSolver");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight, "TitleSolver");
 		lblTitle.setFont(Fonts.getBig());
 		lblTitle.setText(Translation.Get("solver_formula")).getTextWidth();
 		this.addChild(lblTitle);
@@ -449,15 +566,24 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			}
 			if (v == visibleButtons.get(buttons.Zahl))
 			{
-				newPage = pages.Zahl;
+				if (isZahl(sForm))
+				{
+					newPage = pages.Zahl;
+				}
 			}
 			if (v == visibleButtons.get(buttons.Function))
 			{
-				newPage = pages.Function;
+				if ((sForm.length() == 0) || (isFunction(sForm)))
+				{
+					newPage = pages.Function;
+				}
 			}
 			if (v == visibleButtons.get(buttons.Variable))
 			{
-				newPage = pages.Variable;
+				if ((sForm.length() == 0) || isVariable(sForm))
+				{
+					newPage = pages.Variable;
+				}
 			}
 			if (v == visibleButtons.get(buttons.Operator))
 			{
@@ -465,12 +591,19 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			}
 			if (v == visibleButtons.get(buttons.Waypoint))
 			{
-				newPage = pages.Waypoint;
+				if ((sForm.length() == 0) || (isWaypoint(sForm)))
+				{
+					newPage = pages.Waypoint;
+				}
 			}
 			if (v == visibleButtons.get(buttons.Coordinate))
 			{
-				newPage = pages.Coordinate;
+				if ((sForm.length() == 0) || (isCoordinate(sForm)))
+				{
+					newPage = pages.Coordinate;
+				}
 			}
+
 		}
 		if (newPage != null)
 		{
@@ -484,6 +617,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 				setButtonStates();
 			}
 		}
+		// check states of visibleButtons
+		setButtonStates();
 	}
 
 	// Werte der aktuellen Seite in den String sForm speichern
@@ -636,8 +771,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		if (visibleButtons.get(buttons.Variable) != null) visibleButtons.get(buttons.Variable).setState(page == pages.Variable ? 1 : 0);
 		if (visibleButtons.get(buttons.Operator) != null) visibleButtons.get(buttons.Operator).setState(page == pages.Operator ? 1 : 0);
 		if (visibleButtons.get(buttons.Waypoint) != null) visibleButtons.get(buttons.Waypoint).setState(page == pages.Waypoint ? 1 : 0);
-		if (visibleButtons.get(buttons.Coordinate) != null) visibleButtons.get(buttons.Coordinate).setState(
-				page == pages.Coordinate ? 1 : 0);
+		if (visibleButtons.get(buttons.Coordinate) != null) visibleButtons.get(buttons.Coordinate).setState(page == pages.Coordinate ? 1 : 0);
 	}
 
 	private void hidePageText()
@@ -1029,15 +1163,19 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		{
 			scrollBox.removeChild(l);
 		}
+		for (chkBox cb : cbVariables)
+		{
+			scrollBox.removeChild(cb);
+		}
 		cbVariables = null;
 		lVariables = null;
 	}
 
 	private void savePageVariable()
 	{
+		if (cbVariables == null) return;
 		for (chkBox cb : cbVariables)
 		{
-			scrollBox.removeChild(cb);
 			if (cb.isChecked())
 			{
 				String variable = (String) cb.getData();
@@ -1111,6 +1249,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 		for (int i = 0; i <= aktCache.waypoints.size(); i++)
 		{
+			if ((dataType == DataType.Waypoint) && (i == 0))
+			{
+				continue;
+			}
 			Waypoint waypoint = null;
 			String data = "";
 			String description = "";
@@ -1152,6 +1294,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageWaypoint()
 	{
+		if (cbWaypoints == null) return;
+		for (chkBox cb : cbWaypoints)
+		{
+			scrollBox.removeChild(cb);
+		}
 		for (Label l : lWaypoints)
 		{
 			scrollBox.removeChild(l);
@@ -1162,9 +1309,11 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void savePageWaypoint()
 	{
+		if (cbWaypoints == null) return;
 		for (chkBox cb : cbWaypoints)
 		{
-			scrollBox.removeChild(cb);
+			if (cb == null) continue;
+			// scrollBox.removeChild(cb);
 			if (cb.isChecked())
 			{
 				String waypoint = (String) cb.getData();
@@ -1191,6 +1340,7 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void savePageCoordinate()
 	{
+		if (bCoord == null) return;
 		if (bCoord.getCoordinate().isValid())
 		{
 			sForm = "\"" + bCoord.getCoordinate().FormatCoordinate() + "\"";
