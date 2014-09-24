@@ -322,10 +322,10 @@ public class GL_UISizes implements SizeChangedEvent
 		}
 
 		infoShadowHeight = (float) (3.333333 * defaultDPI);
-		Info.setSize((UI_Size_Base.that.RefWidth - UI_Size_Base.that.getButtonWidth() - (margin * 3)), UI_Size_Base.that.getButtonHeight());
+		Info.setSize((UI_Size_Base.that.RefWidth - (UI_Size_Base.that.getButtonWidth() * 1.1f) - (margin * 3)), UI_Size_Base.that.getButtonHeight() * 1.1f);
 		Compass.setSize((float) (44.6666667 * DPI), (float) (44.6666667 * DPI));
 		halfCompass = Compass.getHeight() / 2;
-		Toggle.setSize(UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight());
+		Toggle.setSize(UI_Size_Base.that.getButtonWidth() * 1.1f, UI_Size_Base.that.getButtonHeight() * 1.1f);
 		ZoomBtn.setSize((158 * defaultDPI), 48 * defaultDPI);
 		PosMarkerSize = (float) (46.666667 * DPI);
 		halfPosMarkerSize = PosMarkerSize / 2;

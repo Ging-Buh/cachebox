@@ -173,11 +173,6 @@ public class DesktopMain
 		// chek if tablet
 		GlobalCore.isTab = sw > 400 ? true : false;
 
-		new UiSizes();
-		UiSizes.that.initial(ui);
-
-		initialLocatorBase();
-
 		// TODO Activate Full Screen
 		if (false)
 		{
@@ -239,6 +234,10 @@ public class DesktopMain
 
 			};
 		}
+
+		new UiSizes();
+		UiSizes.that.initial(ui);
+		initialLocatorBase();
 
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask()
