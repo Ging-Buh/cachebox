@@ -117,6 +117,8 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 	private Label lblGleich;
 	// Page Text
 	private EditTextField mFormulaField;
+	private chkBox cbFormulaAsText;
+	private Label lFormulaAsText;
 	// Page Zahl
 	private String[] lZahl = new String[]
 		{ "0", ",", "<-", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
@@ -395,10 +397,15 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			break;
 		case Text:
 			// layout missing Variables
-			if (buildFormula != null)
-			{
-				y = buildFormula.Layout(y, innerLeft, innerWidth, margin);
-			}
+			// if (buildFormula != null)
+			// {
+			// y = buildFormula.Layout(y, innerLeft, innerWidth, margin);
+			// }
+			cbFormulaAsText.setY(y);
+			lFormulaAsText.setY(y);
+			lFormulaAsText.setX(cbFormulaAsText.getX() + cbFormulaAsText.getWidth());
+			lFormulaAsText.setWidth(innerWidth - cbFormulaAsText.getWidth());
+			y += cbFormulaAsText.getHeight() + margin;
 			mFormulaField.setY(y);
 			y += mFormulaField.getHeight() + margin;
 			break;
@@ -776,23 +783,41 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 
 	private void hidePageText()
 	{
-		if (buildFormula != null)
-		{
-			buildFormula.removeChilds(scrollBox);
-		}
+		// if (buildFormula != null)
+		// {
+		// buildFormula.removeChilds(scrollBox);
+		// }
 		scrollBox.removeChild(mFormulaField);
+		scrollBox.removeChild(cbFormulaAsText);
+		scrollBox.removeChild(lFormulaAsText);
 		mFormulaField = null;
+		cbFormulaAsText = null;
+		lFormulaAsText = null;
 	}
 
 	private void showPageText()
 	{
-		buildFormula = new SolverDialog2BuildFormula(sForm);
+		// buildFormula = new SolverDialog2BuildFormula(sForm);
+
+		String text = sForm;
+		boolean asText = false;
+		if (text.length() >= 2)
+		{
+			if ((text.charAt(0) == '"') && (text.charAt(text.length() - 1) == '"'))
+			{
+				if (text.indexOf("\"", 1) == text.length() - 1)
+				{
+					text = text.substring(1, text.length() - 1);
+					asText = true;
+				}
+			}
+		}
 
 		mFormulaField = new EditTextField(this);
 		mFormulaField.setWrapType(WrapType.SINGLELINE);
 		mFormulaField.setX(innerLeft);
 		mFormulaField.setWidth(innerWidth);
-		mFormulaField.setText(sForm);
+		mFormulaField.setText(text);
 		mFormulaField.setZeroPos();
 		mFormulaField.setTextFieldListener(new TextFieldListener()
 		{
@@ -806,7 +831,10 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 			{
 			}
 		});
-
+		cbFormulaAsText = new chkBox("AsText");
+		// cbFormulaAsText.setText("Als Text in \"\" eintragen");
+		cbFormulaAsText.setChecked(asText);
+		lFormulaAsText = new Label("Als Text in \"\" eintragen");
 		Solver solv = new Solver(sForm);
 		if (solv.Solve())
 		{
@@ -820,7 +848,9 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		}
 
 		scrollBox.addChild(mFormulaField);
-		buildFormula.addControls(scrollBox);
+		scrollBox.addChild(cbFormulaAsText);
+		scrollBox.addChild(lFormulaAsText);
+		// buildFormula.addControls(scrollBox);
 	}
 
 	private void savePageText()
@@ -828,6 +858,13 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		if (mFormulaField != null)
 		{
 			sForm = mFormulaField.getText();
+		}
+		if (cbFormulaAsText != null)
+		{
+			if (cbFormulaAsText.isChecked())
+			{
+				sForm = "\"" + sForm + "\"";
+			}
 		}
 	}
 

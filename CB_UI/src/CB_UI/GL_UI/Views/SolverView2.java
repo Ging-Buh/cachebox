@@ -214,6 +214,20 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				case MenuID.MI_SET_AS_MAPCENTER:
 					TabMainView.solverView2.SetAsMapCenter();
 					break;
+				case MenuID.MI_ADD_MISSING_VARIABLES:
+					int ii = 0;
+					for (String s : solver.MissingVariables.keySet())
+					{
+						solver.add(ii++, new SolverZeile(solver, s + "="));
+					}
+					for (int i = 0; i < solver.size(); i++)
+					{
+						SolverZeile zeile2 = solver.get(i);
+						zeile2.setText(zeile2.getOrgText());
+						zeile2.Parse();
+					}
+					reloadList();
+					break;
 				}
 				return false;
 			}
@@ -224,6 +238,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 		cm.addItem(MenuID.MI_DELETE_LINE, "delLine");
 		cm.addItem(MenuID.MI_SET_AS_WAYPOINT, "addWaypoint");
 		cm.addItem(MenuID.MI_SET_AS_MAPCENTER, "setMapCenter");
+		cm.addItem(MenuID.MI_ADD_MISSING_VARIABLES, "addMissingVariables");
 		return cm;
 	}
 
@@ -374,6 +389,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				solver.remove(mSelectedIndex);
 				solver = new Solver(solver.getSolverString());
 				solver.Solve();
+				solver.add(solver.size(), new SolverZeile(solver, ""));
 				reloadList();
 				return true;
 			}
