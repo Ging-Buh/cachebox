@@ -188,29 +188,38 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		initialForm();
 
 		Layout();
-		if (isFunction(sForm))
+		if (sForm.length() > 0)
 		{
-			showPage(pages.Function);
-		}
-		else if (isCoordinate(sForm))
-		{
-			showPage(pages.Coordinate);
-		}
-		else if (isNumber(sForm))
-		{
-			showPage(pages.Zahl);
-		}
-		else if (isWaypoint(sForm))
-		{
-			showPage(pages.Waypoint);
-		}
-		else if (isVariable(sForm))
-		{
-			showPage(pages.Variable);
-		}
-		else if (dataType == DataType.Waypoint)
-		{
-			showPage(pages.Waypoint);
+			// only show special page if sForm is not empty
+
+			if (isFunction(sForm))
+			{
+				showPage(pages.Function);
+			}
+			else if (isCoordinate(sForm))
+			{
+				showPage(pages.Coordinate);
+			}
+			else if (isNumber(sForm))
+			{
+				showPage(pages.Zahl);
+			}
+			else if (isWaypoint(sForm))
+			{
+				showPage(pages.Waypoint);
+			}
+			else if (isVariable(sForm))
+			{
+				showPage(pages.Variable);
+			}
+			else if (dataType == DataType.Waypoint)
+			{
+				showPage(pages.Waypoint);
+			}
+			else
+			{
+				showPage(pages.Text);
+			}
 		}
 		else
 		{
