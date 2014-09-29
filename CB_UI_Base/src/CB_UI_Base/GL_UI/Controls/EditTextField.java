@@ -1316,6 +1316,32 @@ public class EditTextField extends EditTextFieldBase
 			{
 				StringBuilder builder = new StringBuilder();
 				content = content.replace("\b", "");
+				content = content.replace("\u2010", "-");
+				content = content.replace("\u2011", "-");
+				content = content.replace("\u2012", "-");
+				content = content.replace("\u2013", "-");
+				content = content.replace("\u2014", "-");
+				content = content.replace("\u2015", "-");
+				content = content.replace("\u23AF", "-");
+				content = content.replace("\u23E4", "-");
+				content = content.replace("\u2E3A", "-");
+				content = content.replace("\u2E3B", "-");
+				content = content.replace("\u00B7", "*");
+				content = content.replace("\u2715", "*");
+				content = content.replace("\u2716", "*");
+				content = content.replace("\u22C5", "*");
+				content = content.replace("\u2219", "*");
+				content = content.replace("\u2217", "*");
+				content = content.replace("\u2062", "*");
+				content = content.replace("\u2010", "+");
+				content = content.replace("\u02D6", "+");
+				content = content.replace("\u2064", "+");
+				content = content.replace("\u2795", "+");
+				content = content.replace("\uFF0B", "+");
+				content = content.replace("\u00F7", "/");
+				content = content.replace("\u2215", "/");
+				content = content.replace("\u2044", "/");
+				content = content.replace("\u2236", "/");
 				if (!firstLine)
 				{
 					// bei jeder weiteren Zeile vor dem Einfügen einen Zeilenvorschub machen
@@ -1326,6 +1352,7 @@ public class EditTextField extends EditTextFieldBase
 				for (int i = 0; i < content.length(); i++)
 				{
 					char c = content.charAt(i);
+
 					if (style.font.containsCharacter(c))
 					{
 						builder.append(c);
