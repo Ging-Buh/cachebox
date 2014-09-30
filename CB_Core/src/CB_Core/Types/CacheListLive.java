@@ -192,7 +192,14 @@ public class CacheListLive
 				}
 			}
 
-			return includedList.get(i);
+			try
+			{
+				return includedList.get(i);
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
 		}
 	}
 

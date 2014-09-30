@@ -73,6 +73,7 @@ public class CachListChangedEventList
 				if (FilterProperties.isFilterSet())
 				{
 					Cache ca = LiveMapQue.LiveCaches.get(i);
+					if (ca == null) continue;
 					if (!Database.Data.Query.contains(ca))
 					{
 						if (!ca.correspondToFilter(FilterProperties.LastFilter)) continue;
@@ -83,6 +84,7 @@ public class CachListChangedEventList
 				else
 				{
 					Cache ca = LiveMapQue.LiveCaches.get(i);
+					if (ca == null) continue;
 					if (!Database.Data.Query.contains(ca))
 					{
 						ca.setLive(true);

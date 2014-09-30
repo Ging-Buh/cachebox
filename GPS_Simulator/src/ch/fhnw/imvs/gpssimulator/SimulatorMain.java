@@ -16,6 +16,7 @@ import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,21 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
 import org.mapsforge.map.swing.view.MapPanel;
 
+import CB_UI_Base.Events.platformConector;
+import CB_UI_Base.Events.platformConector.ICallUrl;
+import CB_UI_Base.Events.platformConector.IgetFileListner;
+import CB_UI_Base.Events.platformConector.IgetFileReturnListner;
+import CB_UI_Base.Events.platformConector.IgetFolderListner;
+import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import ch.fhnw.imvs.gpssimulator.components.BluetoothPanel;
 import ch.fhnw.imvs.gpssimulator.components.CoursePanel;
 import ch.fhnw.imvs.gpssimulator.components.GeneralPanel;
@@ -55,8 +64,7 @@ public class SimulatorMain
 
 	private static final UUID SERVICE_UUID = new UUID("0000110100001000800000805f9b34fb", false);
 	private static final String SERVICE_NAME = "GPSSimulator";
-	private static final String SERVICE_URL = "btspp://localhost:" + SERVICE_UUID + ";name=" + SERVICE_NAME
-			+ ";authorize=false;authenticate=false;encrypt=false";
+	private static final String SERVICE_URL = "btspp://localhost:" + SERVICE_UUID + ";name=" + SERVICE_NAME + ";authorize=false;authenticate=false;encrypt=false";
 
 	private static StreamConnectionNotifier connectionNotifier;
 	private static boolean closing = false;
@@ -126,6 +134,102 @@ public class SimulatorMain
 		f.add(title, BorderLayout.NORTH);
 
 		GPSData.start();
+
+		platformConector.setGetFileListner(new IgetFileListner()
+		{
+			@Override
+			public void getFile(String initialPath, final String extension, String TitleText, String ButtonText, IgetFileReturnListner returnListner)
+			{
+
+				final String ext = extension.replace("*", "");
+
+				JFileChooser chooser = new JFileChooser();
+
+				chooser.setCurrentDirectory(new java.io.File(initialPath));
+				chooser.setDialogTitle(TitleText);
+
+				FileFilter filter = new FileFilter()
+				{
+
+					@Override
+					public String getDescription()
+					{
+
+						return extension;
+					}
+
+					@Override
+					public boolean accept(File f)
+					{
+						if (f.getAbsolutePath().endsWith(ext)) return true;
+						return false;
+					}
+				};
+
+				chooser.setFileFilter(filter);
+
+				int returnVal = chooser.showOpenDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+				{
+					if (returnListner != null) returnListner.getFieleReturn(chooser.getSelectedFile().getAbsolutePath());
+					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+				}
+
+			}
+		});
+
+		platformConector.setGetFolderListner(new IgetFolderListner()
+		{
+
+			@Override
+			public void getfolder(String initialPath, String TitleText, String ButtonText, IgetFolderReturnListner returnListner)
+			{
+
+				JFileChooser chooser = new JFileChooser();
+
+				chooser.setCurrentDirectory(new java.io.File(initialPath));
+				chooser.setDialogTitle(TitleText);
+
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int returnVal = chooser.showOpenDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION)
+				{
+					if (returnListner != null) returnListner.getFolderReturn(chooser.getSelectedFile().getAbsolutePath());
+					System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+				}
+
+			}
+		});
+
+		platformConector.setCallUrlListner(new ICallUrl()
+		{
+
+			@Override
+			public void call(String url)
+			{
+				java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+				if (!desktop.isSupported(java.awt.Desktop.Action.BROWSE))
+				{
+
+					System.err.println("Desktop doesn't support the browse action (fatal)");
+					System.exit(1);
+				}
+
+				try
+				{
+
+					java.net.URI uri = new java.net.URI(url);
+					desktop.browse(uri);
+				}
+				catch (Exception e)
+				{
+
+					System.err.println(e.getMessage());
+				}
+
+			}
+		});
 
 		return f;
 	}
