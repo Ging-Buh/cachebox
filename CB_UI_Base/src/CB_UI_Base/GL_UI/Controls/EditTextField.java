@@ -1342,6 +1342,11 @@ public class EditTextField extends EditTextFieldBase
 				content = content.replace("\u2215", "/");
 				content = content.replace("\u2044", "/");
 				content = content.replace("\u2236", "/");
+				content = content.replace("\u00A0", " ");
+				content = content.replace("\u202F", " ");
+				content = content.replace("\uFEFF", " ");
+				content = content.replace("\u2007", " ");
+				content = content.replace("\u180E", " ");
 				if (!firstLine)
 				{
 					// bei jeder weiteren Zeile vor dem Einfügen einen Zeilenvorschub machen
