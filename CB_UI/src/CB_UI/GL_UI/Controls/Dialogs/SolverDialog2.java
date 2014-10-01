@@ -188,43 +188,45 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		initialForm();
 
 		Layout();
-		if (sForm.length() > 0)
-		{
-			// only show special page if sForm is not empty
 
-			if (isFunction(sForm))
-			{
-				showPage(pages.Function);
-			}
-			else if (isCoordinate(sForm))
-			{
-				showPage(pages.Coordinate);
-			}
-			else if (isNumber(sForm))
-			{
-				showPage(pages.Zahl);
-			}
-			else if (isWaypoint(sForm))
-			{
-				showPage(pages.Waypoint);
-			}
-			else if (isVariable(sForm))
-			{
-				showPage(pages.Variable);
-			}
-			else if (dataType == DataType.Waypoint)
-			{
-				showPage(pages.Waypoint);
-			}
-			else
-			{
-				showPage(pages.Text);
-			}
+		// removed: now the page Number should be shown when the right side of a formula is empty but only if a left side is available
+		// if (sForm.length() > 0)
+		// {
+		// only show special page if sForm is not empty
+
+		if (isFunction(sForm))
+		{
+			showPage(pages.Function);
+		}
+		else if (isCoordinate(sForm))
+		{
+			showPage(pages.Coordinate);
+		}
+		else if (isNumber(sForm))
+		{
+			showPage(pages.Zahl);
+		}
+		else if (isWaypoint(sForm))
+		{
+			showPage(pages.Waypoint);
+		}
+		else if (isVariable(sForm))
+		{
+			showPage(pages.Variable);
+		}
+		else if (dataType == DataType.Waypoint)
+		{
+			showPage(pages.Waypoint);
 		}
 		else
 		{
 			showPage(pages.Text);
 		}
+		// }
+		// else
+		// {
+		// showPage(pages.Text);
+		// }
 	}
 
 	private boolean isVariable(String solverString2)
@@ -272,6 +274,12 @@ public class SolverDialog2 extends ActivityBase implements OnStateChangeListener
 		if (posKlammerAuf <= 0) return false;
 		if (posKlammerZu < posKlammerAuf) return false;
 		if (posKlammerZu != formula.length() - 1) return false;
+		// in eine gültigen Formel dürfen nur normale Buchstaben oder Zahlen stehen
+		for (int i = 0; i < posKlammerAuf; i++)
+		{
+			char c = formula.charAt(i);
+			if (!Character.isLetter(c) && !Character.isDigit(c)) return false;
+		}
 		// gültige Formel erkannt anhand dem Format.
 		return true;
 	}
