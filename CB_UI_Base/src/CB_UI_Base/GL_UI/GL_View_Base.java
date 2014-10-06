@@ -535,27 +535,38 @@ public abstract class GL_View_Base extends CB_RectF
 					GL_View_Base view = childs.get(i);
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
-					if (view != null && !view.isDisposed() && view.isVisible())
+					try
 					{
-						synchronized (view)
+						if (view != null && !view.isDisposed() && view.isVisible())
 						{
-							if (childsInvalidate) view.invalidate();
+							synchronized (view)
+							{
+								if (childsInvalidate) view.invalidate();
 
-							getMyInfoForChild().setParentInfo(myParentInfo);
-							getMyInfoForChild().setWorldDrawRec(intersectRec);
+								getMyInfoForChild().setParentInfo(myParentInfo);
+								getMyInfoForChild().setWorldDrawRec(intersectRec);
 
-							getMyInfoForChild().add(view.getX(), view.getY());
+								getMyInfoForChild().add(view.getX(), view.getY());
 
-							batch.setProjectionMatrix(getMyInfoForChild().Matrix());
-							nDepthCounter++;
+								batch.setProjectionMatrix(getMyInfoForChild().Matrix());
+								nDepthCounter++;
 
-							view.renderChilds(batch, getMyInfoForChild());
-							nDepthCounter--;
+								view.renderChilds(batch, getMyInfoForChild());
+								nDepthCounter--;
+							}
+						}
+						else
+						{
+							if (view != null && view.isDisposed())
+							{
+								// Remove disposedView from child list
+								this.removeChild(view);
+							}
 						}
 					}
-					else
+					catch (java.lang.IllegalStateException e)
 					{
-						if (view.isDisposed())
+						if (view != null && view.isDisposed())
 						{
 							// Remove disposedView from child list
 							this.removeChild(view);
@@ -576,8 +587,6 @@ public abstract class GL_View_Base extends CB_RectF
 					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				}
 			}
-
-			// }
 			childsInvalidate = false;
 		}
 
