@@ -435,7 +435,7 @@ public class launch extends JFrame
 
 	private void jButton4MouseClicked(MouseEvent evt)
 	{
-		jTextFieldPackageName.setText("de.de.cachebox_donate");
+		jTextFieldPackageName.setText("de.cachebox_donate");
 		jTextField2.setText("CB_Donate");
 		iconState = 2;
 		setIconState();
