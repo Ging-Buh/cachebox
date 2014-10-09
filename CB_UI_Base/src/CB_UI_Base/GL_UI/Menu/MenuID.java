@@ -253,4 +253,5 @@ public class MenuID
 	public static final int MI_RELOADLOGS = 203;
 
 	public static final int AID_TORCH = 204;
+	public static final int MI_ADD_MISSING_VARIABLES = 205;
 }

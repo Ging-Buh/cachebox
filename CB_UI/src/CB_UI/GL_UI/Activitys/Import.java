@@ -38,7 +38,6 @@ import CB_RpcCore.ClientCB.RpcClientCB;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
@@ -1342,7 +1341,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 						Database.Data.beginTransaction();
 						try
 						{
-							importer.importGcVote(GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
+							importer.importGcVote(FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
 
 							Database.Data.setTransactionSuccessful();
 						}
@@ -1363,7 +1362,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked())
 					{
 						dis.setAnimationType(AnimationType.Download);
-						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
+						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 						{
@@ -1413,7 +1412,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				{
 					// import canceld
 					cancelImport();
-					FilterProperties props = GlobalCore.LastFilter;
+					FilterProperties props = FilterProperties.LastFilter;
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");
 					return;
@@ -1421,7 +1420,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 				if (BreakawayImportThread.isCanceld())
 				{
-					FilterProperties props = GlobalCore.LastFilter;
+					FilterProperties props = FilterProperties.LastFilter;
 					EditFilterSettings.ApplyFilter(props);
 					ip.ProgressChangeMsg("", "");
 					return;
@@ -1440,7 +1439,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 				Logger.DEBUG(Msg);
 
-				FilterProperties props = GlobalCore.LastFilter;
+				FilterProperties props = FilterProperties.LastFilter;
 				EditFilterSettings.ApplyFilter(props);
 
 				GL.that.Toast(Msg, 3000);

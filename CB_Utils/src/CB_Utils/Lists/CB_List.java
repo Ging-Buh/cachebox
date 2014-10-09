@@ -413,4 +413,10 @@ public class CB_List<T> implements Serializable
 		items = array;
 	}
 
+	public void replasce(T value, int index)
+	{
+		if (index < 0 || index > size) return;
+		items[index] = value;
+	}
+
 }

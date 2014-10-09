@@ -129,7 +129,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Criteria;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -646,20 +645,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 		if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
 
 		initialViewGL();
-
-		// Rate Timer
-		Timer raTi = new Timer();
-		TimerTask raTa = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				AppRater.app_launched(main.this);
-			}
-		};
-
-		raTi.schedule(raTa, 15000);
-
 	}
 
 	boolean flag = false;
@@ -774,7 +759,7 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 									Logger.DEBUG(Msg);
 
-									FilterProperties props = GlobalCore.LastFilter;
+									FilterProperties props = FilterProperties.LastFilter;
 
 									EditFilterSettings.ApplyFilter(props);
 
@@ -941,8 +926,17 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 						// Da ein Foto eine Momentaufnahme ist, kann hier die Zeit und
 						// die Koordinaten nach der Aufnahme verwendet werden.
 						mediaTimeString = Global.GetTrackDateTimeString();
-						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg",
-								CB_Locator.Locator.getLastSavedFineLocation(), mediaTimeString);
+
+						CB_Locator.Location last = CB_Locator.Locator.getLastSavedFineLocation();
+
+						if (last == null)
+						{
+							last = CB_Locator.Locator.getLocation(ProviderType.any);
+						}
+
+						if (last == null) return;
+
+						TrackRecorder.AnnotateMedia(basename + ".jpg", relativPath + "/" + basename + ".jpg", last, mediaTimeString);
 
 						TabMainView.that.reloadSprites(false);
 
@@ -1693,14 +1687,14 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			// GPS
 			// Get the location manager
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			// Define the criteria how to select the locatioin provider -> use
-			// default
-			Criteria criteria = new Criteria(); // noch nötig ???
-			criteria.setAccuracy(Criteria.ACCURACY_FINE);
-			criteria.setAltitudeRequired(false);
-			criteria.setBearingRequired(false);
-			criteria.setCostAllowed(true);
-			criteria.setPowerRequirement(Criteria.POWER_LOW);
+			// // Define the criteria how to select the locatioin provider -> use
+			// // default
+			// Criteria criteria = new Criteria(); // noch nötig ???
+			// criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			// criteria.setAltitudeRequired(false);
+			// criteria.setBearingRequired(false);
+			// criteria.setCostAllowed(true);
+			// criteria.setPowerRequirement(Criteria.POWER_LOW);
 
 			/*
 			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
@@ -1709,7 +1703,20 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			 * gesunden Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			int updateTime = Config.gpsUpdateTime.getValue();
+
+			Config.gpsUpdateTime.addChangedEventListner(new iChanged()
+			{
+
+				@Override
+				public void isChanged()
+				{
+					int updateTime = Config.gpsUpdateTime.getValue();
+					locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, main.this);
+				}
+			});
+
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateTime, 1, this);
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 500, this);
 
 			locationManager.addNmeaListener(this);

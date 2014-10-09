@@ -87,6 +87,12 @@ public class Button extends CB_View_Base
 		this.setClickable(true);
 	}
 
+	public Button(CB_RectF cb_RectF, OnClickListener onClik)
+	{
+		this(cb_RectF, "");
+		this.setOnClickListener(onClik);
+	}
+
 	public void setninePatch(Drawable drawable)
 	{
 		drawableNormal = drawable;
@@ -295,7 +301,7 @@ public class Button extends CB_View_Base
 
 		if (font != null) mFont = font;
 		if (mFont == null) mFont = Fonts.getBig();
-		lblTxt = new Label(Text, mFont, color, WrapType.SINGLELINE).setHAlignment(alignment);
+		lblTxt = new Label(Text, mFont, color, WrapType.WRAPPED).setHAlignment(alignment);
 		this.initRow(BOTTOMUP);
 		this.addLast(lblTxt);
 

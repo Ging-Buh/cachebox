@@ -57,7 +57,7 @@ public class EditFilterSettings extends ActivityBase
 		that = this;
 		ItemRec = new CB_RectF(leftBorder, 0, innerWidth, UI_Size_Base.that.getButtonHeight() * 1.1f);
 
-		tmpFilterProps = GlobalCore.LastFilter;
+		tmpFilterProps = FilterProperties.LastFilter;
 
 		float myWidth = this.getWidth() - leftBorder;
 
@@ -78,28 +78,28 @@ public class EditFilterSettings extends ActivityBase
 					public void run()
 					{
 						lvCat.SetCategory();
-						GlobalCore.LastFilter = tmpFilterProps;
+						FilterProperties.LastFilter = tmpFilterProps;
 
 						// Text Filter ?
 						String txtFilter = vTxt.getFilterString();
 						if (txtFilter.length() > 0)
 						{
 							int FilterMode = vTxt.getFilterState();
-							if (FilterMode == 0) GlobalCore.LastFilter.filterName = txtFilter;
-							else if (FilterMode == 1) GlobalCore.LastFilter.filterGcCode = txtFilter;
-							else if (FilterMode == 2) GlobalCore.LastFilter.filterOwner = txtFilter;
+							if (FilterMode == 0) FilterProperties.LastFilter.filterName = txtFilter;
+							else if (FilterMode == 1) FilterProperties.LastFilter.filterGcCode = txtFilter;
+							else if (FilterMode == 2) FilterProperties.LastFilter.filterOwner = txtFilter;
 						}
 						else
 						{
-							GlobalCore.LastFilter.filterName = "";
-							GlobalCore.LastFilter.filterGcCode = "";
-							GlobalCore.LastFilter.filterOwner = "";
+							FilterProperties.LastFilter.filterName = "";
+							FilterProperties.LastFilter.filterGcCode = "";
+							FilterProperties.LastFilter.filterOwner = "";
 						}
 
-						ApplyFilter(GlobalCore.LastFilter);
+						ApplyFilter(FilterProperties.LastFilter);
 
 						// Save selected filter (new JSON Format)
-						Config.FilterNew.setValue(GlobalCore.LastFilter.toString());
+						Config.FilterNew.setValue(FilterProperties.LastFilter.toString());
 						Config.AcceptChanges();
 					}
 				};
@@ -434,63 +434,61 @@ public class EditFilterSettings extends ActivityBase
 
 		if (exist)
 		{
-			GL_MsgBox.Show(Translation.Get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null,
-					MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener()
-					{
+			GL_MsgBox.Show(Translation.Get("PresetExist") + GlobalCore.br + GlobalCore.br + "\"" + existName + "\"", null, MessageBoxButtons.OK, MessageBoxIcon.Warning, new OnMsgBoxClickListener()
+			{
 
-						@Override
-						public boolean onClick(int which, Object data)
-						{
-							that.show();
-							return true;
-						}
-					});
+				@Override
+				public boolean onClick(int which, Object data)
+				{
+					that.show();
+					return true;
+				}
+			});
 			return;
 		}
 
-		StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("NewUserPreset"), Translation.Get("InsNewUserPreset"), "UserPreset",
-				new OnMsgBoxClickListener()
+		StringInputBox.Show(WrapType.SINGLELINE, Translation.Get("NewUserPreset"), Translation.Get("InsNewUserPreset"), "UserPreset", new OnMsgBoxClickListener()
+		{
+
+			@Override
+			public boolean onClick(int which, Object data)
+			{
+				String text = StringInputBox.editText.getText();
+				// Behandle das ergebniss
+				switch (which)
 				{
+				case 1: // ok Clicket
+					String uF = Config.UserFilter.getValue();
+					String aktFilter = tmpFilterProps.toString();
 
-					@Override
-					public boolean onClick(int which, Object data)
-					{
-						String text = StringInputBox.editText.getText();
-						// Behandle das ergebniss
-						switch (which)
-						{
-						case 1: // ok Clicket
-							String uF = Config.UserFilter.getValue();
-							String aktFilter = tmpFilterProps.toString();
+					// Category Filterungen aus Filter entfernen
+					int pos = aktFilter.indexOf("^");
+					aktFilter = aktFilter.substring(0, pos);
 
-							// Category Filterungen aus Filter entfernen
-							int pos = aktFilter.indexOf("^");
-							aktFilter = aktFilter.substring(0, pos);
+					uF += text + ";" + aktFilter + "#";
+					Config.UserFilter.setValue(uF);
+					Config.AcceptChanges();
+					lvPre.fillPresetList();
+					lvPre.notifyDataSetChanged();
+					that.show();
+					break;
+				case 2: // cancel clicket
+					that.show();
+					break;
+				case 3:
+					that.show();
+					break;
+				}
 
-							uF += text + ";" + aktFilter + "#";
-							Config.UserFilter.setValue(uF);
-							Config.AcceptChanges();
-							lvPre.fillPresetList();
-							lvPre.notifyDataSetChanged();
-							that.show();
-							break;
-						case 2: // cancel clicket
-							that.show();
-							break;
-						case 3:
-							that.show();
-							break;
-						}
-
-						return true;
-					}
-				});
+				return true;
+			}
+		});
 	}
 
 	@Override
 	public void onShow()
 	{
-		tmpFilterProps = GlobalCore.LastFilter;
+		tmpFilterProps = FilterProperties.LastFilter;
 
 		if (lvPre != null)
 		{
@@ -500,9 +498,9 @@ public class EditFilterSettings extends ActivityBase
 		// Load and set TxtFilter
 		if (vTxt != null)
 		{
-			if (GlobalCore.LastFilter.filterName.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterName, 0);
-			else if (GlobalCore.LastFilter.filterGcCode.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterGcCode, 1);
-			else if (GlobalCore.LastFilter.filterOwner.length() > 0) vTxt.setFilterString(GlobalCore.LastFilter.filterOwner, 2);
+			if (FilterProperties.LastFilter.filterName.length() > 0) vTxt.setFilterString(FilterProperties.LastFilter.filterName, 0);
+			else if (FilterProperties.LastFilter.filterGcCode.length() > 0) vTxt.setFilterString(FilterProperties.LastFilter.filterGcCode, 1);
+			else if (FilterProperties.LastFilter.filterOwner.length() > 0) vTxt.setFilterString(FilterProperties.LastFilter.filterOwner, 2);
 		}
 	}
 }

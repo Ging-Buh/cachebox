@@ -241,7 +241,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	long startTime;
 	Timer myTimer;
 	boolean useNewInput = true;
-	protected float ySpeedVersatz = 200;
+	public float ySpeedVersatz = 200;
 	protected boolean CarMode = false;
 	boolean NightMode = false;
 	protected boolean NorthOriented = true;
@@ -591,6 +591,11 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 					if (!canDraw && tmpzoom == aktZoom)
 					{
+
+						// create this Tile new
+						desc.Data = this;
+						mapTileLoader.reloadTile(this, desc, aktZoom);
+
 						// für den aktuellen Zoom ist kein Tile vorhanden ->
 						// kleinere Zoomfaktoren durchsuchen
 						if (!renderBiggerTiles(batch, i, j, aktZoom))

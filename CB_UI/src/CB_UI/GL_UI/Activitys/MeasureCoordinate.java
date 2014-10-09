@@ -244,11 +244,11 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 
 		float minPix = Math.min(panelRec.getWidth(), panelRec.getHeight());
 
-		synchronized (mMeasureList)
+		try
 		{
-
-			try
+			synchronized (mMeasureList)
 			{
+
 				if (mMeasureList.size() > 0)
 				{
 					// Gemittelter Punkt der GPS-Messungen
@@ -305,14 +305,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 					drawingPixmap.drawCircle(x, y, 4);
 				}
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-		//
-		try
-		{
+			//
 			int m2 = (int) ((4 * minPix) / metersPerTile);
 			int m4 = m2 * 2;
 
@@ -330,13 +323,13 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 			drawing.setY(bOK.getMaxY() + this.getBottomHeight());
 
 			inRepaint.set(false);
-
-			redraw = false;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+
+		redraw = false;
 
 		GL.that.renderOnce();
 	}

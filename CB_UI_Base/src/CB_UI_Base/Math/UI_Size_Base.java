@@ -1,6 +1,7 @@
 package CB_UI_Base.Math;
 
 import CB_UI_Base.Global;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Log.Logger;
 
 public abstract class UI_Size_Base
@@ -47,7 +48,9 @@ public abstract class UI_Size_Base
 
 		margin = ini.Margin;
 
-		int b = (int) (50 * scale);
+		float NormalTextSize = CB_UI_Base_Settings.FONT_SIZE_NORMAL.getValue() * 3.2f;
+
+		int b = (int) (NormalTextSize * scale);
 		Button = new Size(b, b);
 
 		if (Global.isTab)

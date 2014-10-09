@@ -18,6 +18,7 @@ package CB_UI_Base.GL_UI.Controls;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -264,7 +265,7 @@ public abstract class Dialog extends CB_View_Base
 
 			mTitleHeight = titleLabel.getHeight();
 			mTitleWidth = titleLabel.getWidth();
-			mTitleWidth += rightBorder; // sonst sieht es blöd aus
+			mTitleWidth += rightBorder + leftBorder; // sonst sieht es blöd aus
 		}
 
 		mContent.setWidth(this.getWidth() * 0.95f);
@@ -281,81 +282,96 @@ public abstract class Dialog extends CB_View_Base
 		if (this.isDisposed()) return;
 		batch.flush();
 
-		if (mHeader9patch != null && !dontRenderDialogBackground)
+		try
 		{
-			mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mHeaderHeight, this.getWidth(), mHeaderHeight);
-		}
-		if (mFooter9patch != null && !dontRenderDialogBackground)
-		{
-			mFooter9patch.draw(batch, 0, 0, this.getWidth(), mFooterHeight + 2);
-		}
-		if (mCenter9patch != null && !dontRenderDialogBackground)
-		{
-			mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(), (this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
-		}
-
-		if (mHasTitle)
-		{
-			if (mTitleWidth < this.getWidth())
+			if (mHeader9patch != null && !dontRenderDialogBackground)
 			{
-				if (mTitle9patch != null && !dontRenderDialogBackground)
+				mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mHeaderHeight, this.getWidth(), mHeaderHeight);
+			}
+			if (mFooter9patch != null && !dontRenderDialogBackground)
+			{
+				mFooter9patch.draw(batch, 0, 0, this.getWidth(), mFooterHeight + 2);
+			}
+			if (mCenter9patch != null && !dontRenderDialogBackground)
+			{
+				mCenter9patch.draw(batch, 0, mFooterHeight, this.getWidth(), (this.getHeight() - mFooterHeight - mHeaderHeight - mTitleHeight) + 3.5f);
+			}
+
+			if (mHasTitle)
+			{
+				if (mTitleWidth < this.getWidth())
 				{
-					mTitle9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					if (mTitle9patch != null && !dontRenderDialogBackground)
+					{
+						mTitle9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					}
+				}
+				else
+				{
+					if (mHeader9patch != null && !dontRenderDialogBackground)
+					{
+						mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
+					}
 				}
 			}
-			else
-			{
-				if (mHeader9patch != null && !dontRenderDialogBackground)
-				{
-					mHeader9patch.draw(batch, 0, this.getHeight() - mTitleHeight - mTitleVersatz, mTitleWidth, mTitleHeight);
-				}
-			}
+
+			batch.flush();
+		}
+		catch (Exception e1)
+		{
 		}
 
-		batch.flush();
+		if (this.isDisposed()) return;
 
 		super.renderChilds(batch, parentInfo);
 
-		if (overlay != null)
+		try
 		{
-			for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
+			if (overlay != null)
 			{
-				// alle renderChilds() der in dieser GL_View_Base
-				// enthaltenen Childs auf rufen.
-
-				GL_View_Base view;
-				try
+				for (Iterator<GL_View_Base> iterator = overlay.iterator(); iterator.hasNext();)
 				{
-					view = iterator.next();
+					// alle renderChilds() der in dieser GL_View_Base
+					// enthaltenen Childs auf rufen.
 
-					// hier nicht view.render(batch) aufrufen, da sonnst die in der
-					// view enthaldenen Childs nicht aufgerufen werden.
-					if (view != null && view.isVisible())
+					GL_View_Base view;
+					try
 					{
+						view = iterator.next();
 
-						if (childsInvalidate) view.invalidate();
+						// hier nicht view.render(batch) aufrufen, da sonnst die in der
+						// view enthaldenen Childs nicht aufgerufen werden.
+						if (view != null && view.isVisible())
+						{
 
-						myInfoForChild.setParentInfo(myParentInfo);
-						myInfoForChild.setWorldDrawRec(intersectRec);
+							if (childsInvalidate) view.invalidate();
 
-						myInfoForChild.add(view.getX(), view.getY());
+							getMyInfoForChild().setParentInfo(myParentInfo);
+							getMyInfoForChild().setWorldDrawRec(intersectRec);
 
-						batch.setProjectionMatrix(myInfoForChild.Matrix());
-						nDepthCounter++;
+							getMyInfoForChild().add(view.getX(), view.getY());
 
-						view.renderChilds(batch, myInfoForChild);
-						nDepthCounter--;
-						batch.setProjectionMatrix(myParentInfo.Matrix());
+							batch.setProjectionMatrix(getMyInfoForChild().Matrix());
+							nDepthCounter++;
+
+							view.renderChilds(batch, getMyInfoForChild());
+							nDepthCounter--;
+							batch.setProjectionMatrix(myParentInfo.Matrix());
+						}
+
 					}
-
-				}
-				catch (java.util.ConcurrentModificationException e)
-				{
-					// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
-					break;
+					catch (java.util.ConcurrentModificationException e)
+					{
+						// da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
+						break;
+					}
 				}
 			}
 		}
+		catch (Exception e)
+		{
+		}
+
 	}
 
 	public SizeF getContentSize()
@@ -412,12 +428,16 @@ public abstract class Dialog extends CB_View_Base
 
 		float Width = (((UI_Size_Base.that.getButtonWidthWide() + margin) * 3) + margin);
 		if (Width * 1.2 < UI_Size_Base.that.getWindowWidth()) Width *= 1.2f;
+		if (!Global.isTab)
+		{
+			Width = UI_Size_Base.that.getWindowWidth() * 0.95f;
+		}
 
 		float MsgWidth = (Width * 0.95f) - 5 - UI_Size_Base.that.getButtonHeight();
 
 		float MeasuredTextHeight = Fonts.MeasureWrapped(Text, MsgWidth).height + (margin * 4);
 
-		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 4)) : (int) MeasuredTextHeight);
+		int Height = (int) (hasIcon ? Math.max(MeasuredTextHeight, UI_Size_Base.that.getButtonHeight() + (margin * 5)) : (int) MeasuredTextHeight);
 
 		if (hasTitle)
 		{

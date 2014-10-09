@@ -1,6 +1,8 @@
-package CB_Utils.Math;
+package CB_Locator.Map;
 
 import java.util.Date;
+
+import CB_Utils.Math.PointD;
 
 public class TrackPoint extends PointD
 {

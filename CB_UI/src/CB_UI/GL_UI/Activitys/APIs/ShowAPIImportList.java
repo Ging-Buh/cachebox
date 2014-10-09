@@ -18,7 +18,6 @@ import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.ImportAnimation;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.Import_PqListItem;
@@ -71,8 +70,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 	private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
 	private Label lblTitle, lblPQ, lblGPX, lblGcVote, lblImage, lblSpoiler, lblMaps, lblProgressMsg, lblLogs, lblCompact;
 	private ProgressBar pgBar;
-	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler,
-			checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
+	private chkBox checkImportPQfromGC, checkBoxImportGPX, checkBoxGcVote, checkBoxPreloadImages, checkBoxPreloadSpoiler, checkBoxImportMaps, checkBoxCleanLogs, checkBoxCompactDB;
 	private CollapseBox PQ_ListCollapseBox, LogCollapseBox;
 	private Spinner spinner;
 
@@ -171,20 +169,19 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 				if (importStarted)
 				{
-					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo,
-							MessageBoxIcon.Stop, new OnMsgBoxClickListener()
-							{
+					GL_MsgBox.Show(Translation.Get("WontCancelImport"), Translation.Get("CancelImport"), MessageBoxButtons.YesNo, MessageBoxIcon.Stop, new OnMsgBoxClickListener()
+					{
 
-								@Override
-								public boolean onClick(int which, Object data)
-								{
-									if (which == GL_MsgBox.BUTTON_POSITIVE)
-									{
-										cancelImport();
-									}
-									return true;
-								}
-							});
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							if (which == GL_MsgBox.BUTTON_POSITIVE)
+							{
+								cancelImport();
+							}
+							return true;
+						}
+					});
 				}
 				else
 					finish();
@@ -200,14 +197,12 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		float lineHeight = UI_Size_Base.that.getButtonHeight() * 0.75f;
 
-		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin,
-				lineHeight, "TitleLabel");
+		lblTitle = new Label(leftBorder + margin, this.getHeight() - this.getTopHeight() - lineHeight - margin, innerWidth - margin, lineHeight, "TitleLabel");
 		lblTitle.setFont(Fonts.getBig());
 		float lblWidth = lblTitle.setText(Translation.Get("import")).getTextWidth();
 		this.addChild(lblTitle);
 
-		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth,
-				lineHeight);
+		CB_RectF rec = new CB_RectF(lblTitle.getX() + lblWidth + margin, lblTitle.getY(), innerWidth - margin - margin - lblWidth, lineHeight);
 
 		pgBar = new ProgressBar(rec, "ProgressBar");
 
@@ -215,8 +210,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		float SmallLineHeight = Fonts.MeasureSmall("Tg").height;
 
-		lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin,
-				SmallLineHeight, "ProgressMsg");
+		lblProgressMsg = new Label(leftBorder + margin, lblTitle.getY() - margin - SmallLineHeight, innerWidth - margin - margin, SmallLineHeight, "ProgressMsg");
 
 		lblProgressMsg.setFont(Fonts.getSmall());
 
@@ -234,8 +228,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		checkImportPQfromGC.setX(innerLeft);
 		checkImportPQfromGC.setY(innerHeight - checkImportPQfromGC.getHeight());
 
-		lblPQ = new Label(checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3
-				- checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight(), "");
+		lblPQ = new Label(checkImportPQfromGC.getMaxX() + margin, checkImportPQfromGC.getY(), innerWidth - margin * 3 - checkImportPQfromGC.getWidth(), checkImportPQfromGC.getHeight(), "");
 		lblPQ.setFont(Fonts.getNormal());
 		lblPQ.setText(Translation.Get("PQfromGC"));
 
@@ -266,8 +259,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 			}
 		});
 
-		lvPQs = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, PQ_ListCollapseBox.getWidth(),
-				PQ_ListCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
+		lvPQs = new V_ListView(new CB_RectF(leftBorder, refreshPqList.getMaxY() + margin, PQ_ListCollapseBox.getWidth(), PQ_ListCollapseBox.getHeight() - margin - margin - refreshPqList.getMaxY()), "");
 
 		lvPQs.setEmptyMsg(Translation.Get("EmptyPqList"));
 
@@ -283,8 +275,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		checkBoxImportGPX.setX(innerLeft);
 		checkBoxImportGPX.setY(PQ_ListCollapseBox.getY() - margin - checkBoxImportGPX.getHeight());
 
-		lblGPX = new Label(checkBoxImportGPX.getMaxX() + margin, checkBoxImportGPX.getY(), innerWidth - margin * 3
-				- checkBoxImportGPX.getWidth(), checkBoxImportGPX.getHeight(), "");
+		lblGPX = new Label(checkBoxImportGPX.getMaxX() + margin, checkBoxImportGPX.getY(), innerWidth - margin * 3 - checkBoxImportGPX.getWidth(), checkBoxImportGPX.getHeight(), "");
 		lblGPX.setFont(Fonts.getNormal());
 		lblGPX.setText(Translation.Get("GPX"));
 
@@ -298,8 +289,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		checkBoxGcVote.setX(innerLeft);
 		checkBoxGcVote.setY(checkBoxImportGPX.getY() - margin - checkBoxImportGPX.getHeight());
 
-		lblGcVote = new Label(checkBoxGcVote.getMaxX() + margin, checkBoxGcVote.getY(),
-				innerWidth - margin * 3 - checkBoxGcVote.getWidth(), checkBoxGcVote.getHeight(), "");
+		lblGcVote = new Label(checkBoxGcVote.getMaxX() + margin, checkBoxGcVote.getY(), innerWidth - margin * 3 - checkBoxGcVote.getWidth(), checkBoxGcVote.getHeight(), "");
 		lblGcVote.setFont(Fonts.getNormal());
 		lblGcVote.setText(Translation.Get("GCVoteRatings"));
 
@@ -314,8 +304,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		checkBoxPreloadImages.setX(innerLeft);
 		checkBoxPreloadImages.setY(checkBoxGcVote.getY() - margin - checkBoxPreloadImages.getHeight());
 
-		lblImage = new Label(checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3
-				- checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight(), "");
+		lblImage = new Label(checkBoxPreloadImages.getMaxX() + margin, checkBoxPreloadImages.getY(), innerWidth - margin * 3 - checkBoxPreloadImages.getWidth(), checkBoxPreloadImages.getHeight(), "");
 		lblImage.setFont(Fonts.getNormal());
 		lblImage.setText(Translation.Get("PreloadImages"));
 
@@ -327,8 +316,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		checkBoxPreloadSpoiler.setX(innerLeft);
 		checkBoxPreloadSpoiler.setY(checkBoxPreloadImages.getY() - margin - checkBoxPreloadSpoiler.getHeight());
 
-		lblSpoiler = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxPreloadSpoiler.getY(), innerWidth - margin * 3
-				- checkBoxPreloadSpoiler.getWidth(), checkBoxPreloadSpoiler.getHeight(), "");
+		lblSpoiler = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxPreloadSpoiler.getY(), innerWidth - margin * 3 - checkBoxPreloadSpoiler.getWidth(), checkBoxPreloadSpoiler.getHeight(), "");
 		lblSpoiler.setFont(Fonts.getNormal());
 		lblSpoiler.setText(Translation.Get("PreloadSpoiler"));
 
@@ -344,8 +332,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		checkBoxImportMaps.setX(innerLeft);
 		checkBoxImportMaps.setY(checkBoxPreloadSpoiler.getY() - margin - checkBoxImportMaps.getHeight());
 
-		lblMaps = new Label(checkBoxImportMaps.getMaxX() + margin, checkBoxImportMaps.getY(), innerWidth - margin * 3
-				- checkBoxImportMaps.getWidth(), checkBoxImportMaps.getHeight(), "");
+		lblMaps = new Label(checkBoxImportMaps.getMaxX() + margin, checkBoxImportMaps.getY(), innerWidth - margin * 3 - checkBoxImportMaps.getWidth(), checkBoxImportMaps.getHeight(), "");
 		lblMaps.setFont(Fonts.getNormal());
 		lblMaps.setText(Translation.Get("Maps"));
 
@@ -363,8 +350,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		checkBoxCleanLogs.setY(yPos - margin - checkBoxCleanLogs.getHeight());
 
-		lblLogs = new Label(checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3
-				- checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight(), "");
+		lblLogs = new Label(checkBoxCleanLogs.getMaxX() + margin, checkBoxCleanLogs.getY(), innerWidth - margin * 3 - checkBoxCleanLogs.getWidth(), checkBoxCleanLogs.getHeight(), "");
 		lblLogs.setFont(Fonts.getNormal());
 		lblLogs.setText(Translation.Get("DeleteLogs"));
 
@@ -379,8 +365,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		float SmallLineHeight = Fonts.MeasureSmall("Tg").height * 1.5f;
 		CollapseBoxLogsMaxHeight = checkBoxCleanLogs.getHeight() + (SmallLineHeight * 3.5f) + (margin * 4);
 
-		CB_RectF rec = new CB_RectF(lblLogs.getX(), lblLogs.getY() - CollapseBoxLogsMaxHeight - margin, lblLogs.getWidth(),
-				CollapseBoxLogsMaxHeight);
+		CB_RectF rec = new CB_RectF(lblLogs.getX(), lblLogs.getY() - CollapseBoxLogsMaxHeight - margin, lblLogs.getWidth(), CollapseBoxLogsMaxHeight);
 		LogCollapseBox = new CollapseBox(rec, "LogCollapse");
 		LogCollapseBox.setBackground(this.getBackground());
 		scrollBox.addChild(LogCollapseBox);
@@ -420,8 +405,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 			}
 		};
 
-		spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth()
-				- margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner()
+		spinner = new Spinner(margin, LogCollapseBox.getHeight() - margin - checkBoxCleanLogs.getHeight(), LogCollapseBox.getWidth() - margin - margin, checkBoxCleanLogs.getHeight(), "LogLifeSpinner", adapter, new selectionChangedListner()
 		{
 
 			@Override
@@ -434,8 +418,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 		LogCollapseBox.addChild(spinner);
 
-		Label lblButKeepLeast = new Label(margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(),
-				SmallLineHeight, "lblButKeepLeast");
+		Label lblButKeepLeast = new Label(margin, spinner.getY() - margin - SmallLineHeight, LogCollapseBox.getInnerWidth(), SmallLineHeight, "lblButKeepLeast");
 		lblButKeepLeast.setText(Translation.Get("ButKeepLeast"));
 		LogCollapseBox.addChild(lblButKeepLeast);
 
@@ -453,24 +436,23 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 			{
 				if (visible)
 				{
-					NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(),
-							new returnValueListner()
-							{
+					NumerikInputBox.Show(Translation.Get("ButKeepLeast"), Translation.Get("DeleteLogs"), Config.LogMinCount.getValue(), new returnValueListner()
+					{
 
-								@Override
-								public void returnValue(int value)
-								{
-									Config.LogMinCount.setValue(value);
-									Config.AcceptChanges();
-									input.setText(String.valueOf(value));
-								}
+						@Override
+						public void returnValue(int value)
+						{
+							Config.LogMinCount.setValue(value);
+							Config.AcceptChanges();
+							input.setText(String.valueOf(value));
+						}
 
-								@Override
-								public void cancelClicked()
-								{
+						@Override
+						public void cancelClicked()
+						{
 
-								}
-							});
+						}
+					});
 				}
 			}
 		});
@@ -483,8 +465,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 		checkBoxCompactDB.setX(innerLeft);
 		checkBoxCompactDB.setY(LogCollapseBox.getY() - margin - checkBoxCompactDB.getHeight());
 
-		lblCompact = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3
-				- checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
+		lblCompact = new Label(checkBoxPreloadSpoiler.getMaxX() + margin, checkBoxCompactDB.getY(), innerWidth - margin * 3 - checkBoxCompactDB.getWidth(), checkBoxCompactDB.getHeight(), "");
 		lblCompact.setFont(Fonts.getNormal());
 		lblCompact.setText(Translation.Get("CompactDB"));
 
@@ -972,7 +953,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 						Database.Data.beginTransaction();
 						try
 						{
-							importer.importGcVote(GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
+							importer.importGcVote(FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue()), ip);
 
 							Database.Data.setTransactionSuccessful();
 						}
@@ -992,8 +973,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 					if (checkBoxPreloadImages.isChecked() || checkBoxPreloadSpoiler.isChecked())
 					{
 						dis.setAnimationType(AnimationType.Download);
-						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(),
-								GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
+						int result = importer.importImagesNew(ip, checkBoxPreloadImages.isChecked(), checkBoxPreloadSpoiler.isChecked(), FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue()));
 
 						if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
 						{
@@ -1056,12 +1036,11 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 				Date Importfin = new Date();
 				long ImportZeit = Importfin.getTime() - ImportStart.getTime();
 
-				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount)
-						+ "L in " + String.valueOf(ImportZeit);
+				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
 				Logger.DEBUG(Msg);
 
-				FilterProperties props = GlobalCore.LastFilter;
+				FilterProperties props = FilterProperties.LastFilter;
 
 				EditFilterSettings.ApplyFilter(props);
 

@@ -3,6 +3,7 @@ package CB_UI.Api;
 import CB_Core.Api.SearchForGeocaches_Core;
 import CB_Core.Types.Cache;
 import CB_UI.GlobalCore;
+import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IReadyListner;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
@@ -36,9 +37,14 @@ public class SearchForGeocaches extends SearchForGeocaches_Core
 					@Override
 					public void isReady()
 					{
+						GL.that.RunOnGL(new IRunOnGL()
 						{
-							GlobalCore.getSelectedCache().ReloadSpoilerRessources();
-						}
+							@Override
+							public void run()
+							{
+								GlobalCore.getSelectedCache().ReloadSpoilerRessources();
+							}
+						});
 					}
 				});
 			}

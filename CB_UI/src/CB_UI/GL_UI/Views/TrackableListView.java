@@ -50,10 +50,7 @@ public class TrackableListView extends CB_View_Base
 	@Override
 	public void onShow()
 	{
-		if (TB_List == null) TB_List = TrackableListDAO.ReadTbList("");
-		lvAdapter = new CustomAdapter();
-		if (listView != null) listView.setBaseAdapter(lvAdapter);
-
+		reloadTB_List();
 	}
 
 	public void reloadTB_List()

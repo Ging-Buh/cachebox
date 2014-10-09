@@ -44,7 +44,7 @@ public abstract class GL_View_Base extends CB_RectF
 	 * Pointer ID for Mouse wheel scrolling up
 	 */
 	public static final int MOUSE_WHEEL_POINTER_UP = -280272;
-	protected final ParentInfo myInfoForChild = new ParentInfo();
+	private final ParentInfo myInfoForChild = new ParentInfo();
 	protected final Matrix4 rotateMatrix = new Matrix4();
 
 	/**
@@ -535,27 +535,38 @@ public abstract class GL_View_Base extends CB_RectF
 					GL_View_Base view = childs.get(i);
 					// hier nicht view.render(batch) aufrufen, da sonnst die in der
 					// view enthaldenen Childs nicht aufgerufen werden.
-					if (view != null && !view.isDisposed() && view.isVisible())
+					try
 					{
-						synchronized (view)
+						if (view != null && !view.isDisposed() && view.isVisible())
 						{
-							if (childsInvalidate) view.invalidate();
+							synchronized (view)
+							{
+								if (childsInvalidate) view.invalidate();
 
-							myInfoForChild.setParentInfo(myParentInfo);
-							myInfoForChild.setWorldDrawRec(intersectRec);
+								getMyInfoForChild().setParentInfo(myParentInfo);
+								getMyInfoForChild().setWorldDrawRec(intersectRec);
 
-							myInfoForChild.add(view.getX(), view.getY());
+								getMyInfoForChild().add(view.getX(), view.getY());
 
-							batch.setProjectionMatrix(myInfoForChild.Matrix());
-							nDepthCounter++;
+								batch.setProjectionMatrix(getMyInfoForChild().Matrix());
+								nDepthCounter++;
 
-							view.renderChilds(batch, myInfoForChild);
-							nDepthCounter--;
+								view.renderChilds(batch, getMyInfoForChild());
+								nDepthCounter--;
+							}
+						}
+						else
+						{
+							if (view != null && view.isDisposed())
+							{
+								// Remove disposedView from child list
+								this.removeChild(view);
+							}
 						}
 					}
-					else
+					catch (java.lang.IllegalStateException e)
 					{
-						if (view.isDisposed())
+						if (view != null && view.isDisposed())
 						{
 							// Remove disposedView from child list
 							this.removeChild(view);
@@ -576,8 +587,6 @@ public abstract class GL_View_Base extends CB_RectF
 					break; // da die Liste nicht mehr gültig ist, brechen wir hier den Iterator ab
 				}
 			}
-
-			// }
 			childsInvalidate = false;
 		}
 
@@ -1415,6 +1424,11 @@ public abstract class GL_View_Base extends CB_RectF
 	public Object getData()
 	{
 		return data;
+	}
+
+	public ParentInfo getMyInfoForChild()
+	{
+		return myInfoForChild;
 	}
 
 }

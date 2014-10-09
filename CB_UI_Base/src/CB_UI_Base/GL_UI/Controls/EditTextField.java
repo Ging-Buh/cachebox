@@ -197,6 +197,8 @@ public class EditTextField extends EditTextFieldBase
 	@Override
 	protected void render(Batch batch)
 	{
+		if (this.isDisposed()) return;
+
 		displayTextLock.lock();
 		try
 		{
@@ -255,8 +257,7 @@ public class EditTextField extends EditTextFieldBase
 
 				batch.begin();
 
-				Gdx.gl.glScissor((int) innerScissorReg.getX(), (int) innerScissorReg.getY(), (int) innerScissorReg.getWidth() + 1,
-						(int) innerScissorReg.getHeight() + 1);
+				Gdx.gl.glScissor((int) innerScissorReg.getX(), (int) innerScissorReg.getY(), (int) innerScissorReg.getWidth() + 1, (int) innerScissorReg.getHeight() + 1);
 
 			}
 
@@ -279,8 +280,7 @@ public class EditTextField extends EditTextFieldBase
 					float selectionX = dt.glyphPositions.get(start);
 					float selectionY = dt.glyphPositions.get(end);
 					float selectionWidth = selectionY - selectionX;
-					selectionPatch.draw(batch, x + selectionX + bgLeftWidth - leftPos, y + textY + lineHeight * topLine - lineHeight - line
-							* lineHeight - font.getDescent() / 2, selectionWidth, lineHeight);
+					selectionPatch.draw(batch, x + selectionX + bgLeftWidth - leftPos, y + textY + lineHeight * topLine - lineHeight - line * lineHeight - font.getDescent() / 2, selectionWidth, lineHeight);
 				}
 			}
 
@@ -290,8 +290,7 @@ public class EditTextField extends EditTextFieldBase
 				{
 					if (style.messageFontColor != null)
 					{
-						font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
-								style.messageFontColor.a);
+						font.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b, style.messageFontColor.a);
 					}
 					else
 					{
@@ -321,8 +320,7 @@ public class EditTextField extends EditTextFieldBase
 
 					cursorHeight = font.getLineHeight() + font.getDescent() / 2;
 
-					cursorPatch.draw(batch, getCursorX() - leftPos, getCursorY() + cursorHeight + font.getDescent(),
-							cursorPatch.getMinWidth(), cursorHeight);
+					cursorPatch.draw(batch, getCursorX() - leftPos, getCursorY() + cursorHeight + font.getDescent(), cursorPatch.getMinWidth(), cursorHeight);
 
 				}
 			}
@@ -335,6 +333,9 @@ public class EditTextField extends EditTextFieldBase
 			{
 				if (blinkTimer != null) blinkStop();
 			}
+		}
+		catch (Exception e)
+		{
 		}
 		finally
 		{
@@ -913,8 +914,7 @@ public class EditTextField extends EditTextFieldBase
 			if (pos > x)
 			{
 				int tmpCursor = Math.max(0, i - 1);
-				Point result = new Point((int) (getCursorX(new Cursor(tmpCursor, clickedCursorLine)) + style.cursor.getMinWidth() / 2),
-						(int) (getCursorY(clickedCursorLine)));
+				Point result = new Point((int) (getCursorX(new Cursor(tmpCursor, clickedCursorLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedCursorLine)));
 				if (setCursor)
 				{
 					switch (type)
@@ -941,8 +941,7 @@ public class EditTextField extends EditTextFieldBase
 			}
 		}
 		int tmpCursor = Math.max(0, dt.glyphPositions.size - 1);
-		Point result = new Point((int) (getCursorX(new Cursor(tmpCursor, clickedCursorLine)) + style.cursor.getMinWidth() / 2),
-				(int) (getCursorY(clickedCursorLine)));
+		Point result = new Point((int) (getCursorX(new Cursor(tmpCursor, clickedCursorLine)) + style.cursor.getMinWidth() / 2), (int) (getCursorY(clickedCursorLine)));
 		if (setCursor)
 		{
 			switch (type)
@@ -1317,6 +1316,37 @@ public class EditTextField extends EditTextFieldBase
 			{
 				StringBuilder builder = new StringBuilder();
 				content = content.replace("\b", "");
+				content = content.replace("\u2010", "-");
+				content = content.replace("\u2011", "-");
+				content = content.replace("\u2012", "-");
+				content = content.replace("\u2013", "-");
+				content = content.replace("\u2014", "-");
+				content = content.replace("\u2015", "-");
+				content = content.replace("\u23AF", "-");
+				content = content.replace("\u23E4", "-");
+				content = content.replace("\u2E3A", "-");
+				content = content.replace("\u2E3B", "-");
+				content = content.replace("\u00B7", "*");
+				content = content.replace("\u2715", "*");
+				content = content.replace("\u2716", "*");
+				content = content.replace("\u22C5", "*");
+				content = content.replace("\u2219", "*");
+				content = content.replace("\u2217", "*");
+				content = content.replace("\u2062", "*");
+				content = content.replace("\u2010", "+");
+				content = content.replace("\u02D6", "+");
+				content = content.replace("\u2064", "+");
+				content = content.replace("\u2795", "+");
+				content = content.replace("\uFF0B", "+");
+				content = content.replace("\u00F7", "/");
+				content = content.replace("\u2215", "/");
+				content = content.replace("\u2044", "/");
+				content = content.replace("\u2236", "/");
+				content = content.replace("\u00A0", " ");
+				content = content.replace("\u202F", " ");
+				content = content.replace("\uFEFF", " ");
+				content = content.replace("\u2007", " ");
+				content = content.replace("\u180E", " ");
 				if (!firstLine)
 				{
 					// bei jeder weiteren Zeile vor dem Einfügen einen Zeilenvorschub machen
@@ -1327,6 +1357,7 @@ public class EditTextField extends EditTextFieldBase
 				for (int i = 0; i < content.length(); i++)
 				{
 					char c = content.charAt(i);
+
 					if (style.font.containsCharacter(c))
 					{
 						builder.append(c);
@@ -1425,8 +1456,7 @@ public class EditTextField extends EditTextFieldBase
 					{
 						if (cursor.pos > 0)
 						{
-							dt.displayText = dt.displayText.substring(0, cursor.pos - 1)
-									+ dt.displayText.substring(cursor.pos, dt.displayText.length());
+							dt.displayText = dt.displayText.substring(0, cursor.pos - 1) + dt.displayText.substring(cursor.pos, dt.displayText.length());
 							updateDisplayText(dt, true);
 							cursor.pos--;
 							checkCursorVisible(true);
@@ -1471,8 +1501,7 @@ public class EditTextField extends EditTextFieldBase
 				{
 					if (cursor.pos < dt.displayText.length())
 					{
-						dt.displayText = dt.displayText.substring(0, cursor.pos)
-								+ dt.displayText.substring(cursor.pos + 1, dt.displayText.length());
+						dt.displayText = dt.displayText.substring(0, cursor.pos) + dt.displayText.substring(cursor.pos + 1, dt.displayText.length());
 						updateDisplayText(dt, true);
 						GL.that.renderOnce();
 						sendKeyTyped(character);
@@ -1547,8 +1576,7 @@ public class EditTextField extends EditTextFieldBase
 				{
 					try
 					{
-						dt.displayText = dt.displayText.substring(0, cursor.pos) + character
-								+ dt.displayText.substring(cursor.pos, dt.displayText.length());
+						dt.displayText = dt.displayText.substring(0, cursor.pos) + character + dt.displayText.substring(cursor.pos, dt.displayText.length());
 						updateDisplayText(dt, true);
 						cursor.pos++;
 						checkCursorVisible(true);

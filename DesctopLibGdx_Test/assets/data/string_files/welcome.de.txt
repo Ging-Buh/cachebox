@@ -1,10 +1,15 @@
-!!!! Achtung !!!!
+Danke dass Du Cachebox installiert hast.
 
-Dies ist unsere Test-Version um neue Funktionen von unseren Beta-Testern testen zu lassen!
+Bediene Cachebox niemals während der Fahrt im Auto!
 
-Mit Großer Wahrscheinlichkeit wird es zu Abstürzen kommen, weil wir noch nicht alles fertig haben.
-Diese Version gibt uns aber die Möglichkeit, dass wir alle Fehler finden, bevor wir diese Version als Release veröffentlichen. 
+Diese Version ist noch eine Beta Version und kann noch Fehler enthalten.
 
-Wenn Du uns helfen willst, die Cachebox zu verbessern, dann schicke uns ein Feedback in unserem Support Forum bzw. sende einen Fehlerbericht bei einem Absturz.
+Einen Fehler kannst Du auf www.team-cachebox.de melden.
 
-Danke, Team-Cachebox
+Hier kannst Du auch Wünsche zu neuen Funktionen loswerden.
+
+
+Oder Du besuchst uns in dem von uns benutzten Forum http://www.geoclub.de/viewforum.php?f=114 .
+
+
+

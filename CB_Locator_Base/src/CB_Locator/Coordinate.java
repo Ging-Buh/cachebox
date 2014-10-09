@@ -384,6 +384,11 @@ public class Coordinate extends LatLong implements Serializable
 				lon += Double.valueOf(llon.get(1)) / 60;
 				lon += Double.valueOf(llon.get(2)) / 3600;
 			}
+			else
+			{
+				values[2] = 0;
+				return values;
+			}
 		}
 		catch (Exception exc)
 		{

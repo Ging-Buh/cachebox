@@ -242,8 +242,7 @@ public class CB_Button extends Button implements OnClickListener
 								compoundMenu.addDivider();
 
 								// add MoreMenu
-								compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(),
-										viewContextMenu.getTextRightMoreMenu());
+								compoundMenu.addMoreMenu(viewContextMenu.getMoreMenu(), viewContextMenu.getTextLeftMoreMenu(), viewContextMenu.getTextRightMoreMenu());
 							}
 
 							Menu LongClickMenu = getLongClickMenu();
@@ -318,15 +317,21 @@ public class CB_Button extends Button implements OnClickListener
 	{
 		boolean hasContextMenu = false;
 
-		if (aktActionView != null && aktActionView.getView() != null)
+		try
 		{
-			isFocused = aktActionView.getView().isVisible();
-			hasContextMenu = aktActionView.HasContextMenu();
+			if (aktActionView != null && aktActionView.getView() != null)
+			{
+				isFocused = aktActionView.getView().isVisible();
+				hasContextMenu = aktActionView.HasContextMenu();
+			}
+			else
+			{
+				isFocused = false;
+				hasContextMenu = false;
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			isFocused = false;
-			hasContextMenu = false;
 		}
 
 		super.render(batch);

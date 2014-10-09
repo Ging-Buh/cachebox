@@ -1,10 +1,13 @@
-!!!! Attantion !!!! 
+Thanks for installing Cachebox.
 
-This is our trial version to get tested new features from our beta testers! 
+Do not use Cachebox during the drive in the car!
 
-With Big chance it will lead to a crash, because we still do not have everything ready. 
+This version is still in beta stage and can contain errors.
 
-But this version gives us the possibility that we find all errors before we publish this version as a release. 
-If you want to help us to improve the Cachebox, then send us a feedback on our support forum or send an error report when a crash occurs. 
+You can report an error at http://www.team-cachebox.de.
 
-Thank you, Team Cachebox
+Here you can also leave a feature request.
+
+Or you visit us at our forum http://www.geoclub.de/viewforum.php?f=114.
+Some developers and forums user also speak English, so that you can get help in English.
+

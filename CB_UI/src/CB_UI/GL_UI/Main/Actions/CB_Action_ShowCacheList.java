@@ -40,8 +40,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 	@Override
 	public void Execute()
 	{
-		if ((TabMainView.cacheListView == null) && (tabMainView != null) && (tab != null)) TabMainView.cacheListView = new CacheListView(
-				tab.getContentRec(), "CacheListView");
+		if ((TabMainView.cacheListView == null) && (tabMainView != null) && (tab != null)) TabMainView.cacheListView = new CacheListView(tab.getContentRec(), "CacheListView");
 
 		if ((TabMainView.cacheListView != null) && (tab != null)) tab.ShowView(TabMainView.cacheListView);
 	}
@@ -87,8 +86,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 				case MenuID.MI_RESORT:
 					synchronized (Database.Data.Query)
 					{
-						CacheWithWP nearstCacheWp = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(),
-								new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
+						CacheWithWP nearstCacheWp = Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 
 						GlobalCore.setSelectedWaypoint(nearstCacheWp.getCache(), nearstCacheWp.getWaypoint());
 						if (TabMainView.cacheListView != null) TabMainView.cacheListView.setSelectedCacheVisible();
@@ -98,8 +96,8 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					TabMainView.actionShowFilter.Execute();
 					return true;
 				case MenuID.MI_RESET_FILTER:
-					GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0].toString());
-					EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
+					FilterProperties.LastFilter = new FilterProperties(FilterProperties.presets[0].toString());
+					EditFilterSettings.ApplyFilter(FilterProperties.LastFilter);
 					return true;
 				case MenuID.MI_SEARCH_LIST:
 
@@ -127,8 +125,7 @@ public class CB_Action_ShowCacheList extends CB_Action_ShowView
 					{
 						synchronized (Database.Data.Query)
 						{
-							Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(),
-									GlobalCore.getSelectedWaypoint()));
+							Database.Data.Query.Resort(GlobalCore.getSelectedCoord(), new CacheWithWP(GlobalCore.getSelectedCache(), GlobalCore.getSelectedWaypoint()));
 						}
 					}
 					return true;

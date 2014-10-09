@@ -1,16 +1,25 @@
 package CB_Core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.DLong;
 import CB_Utils.Log.Logger;
 
 public class FilterProperties
 {
+	public static FilterProperties LastFilter = null;
+
+	public static boolean isFilterSet()
+	{
+		return (LastFilter != null) && (!LastFilter.toString().equals("")) && (!FilterProperties.presets[0].equals(LastFilter)) && !LastFilter.isExtendsFilter();
+	}
+
 	public int Finds = 0;
 
 	public int Own = 0;
@@ -47,49 +56,40 @@ public class FilterProperties
 
 	public static final FilterProperties[] presets = new FilterProperties[]
 		{
-				// All Caches
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				// All Caches 0
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
 				// "0,0,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
-				// All Caches to find
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				// All Caches to find 1
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
 				// "-1,-1,-1,-1,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
-				// Quick Cache
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,2.5,0.0,2.5,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,true,true,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}"),
+				// Quick Cache 2
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,-1,0,0,0,0,0,0.0,2.5,0.0,2.5,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,true,true,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}"),
 				// "-1,-1,-1,-1,0,0,0,0,0,0.0,2.5,0.0,2.5,0.0,4.0,0.0,5.0,true,false,false,true,true,false,false,false,false,false,false,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
-				// Fetch some Travelbugs
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"0,-1,-1,0,1,0,0,0,0,0.0,3.0,0.0,3.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}"),
+				// Fetch some Travelbugs 3
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"0,-1,-1,0,1,0,0,0,0,0.0,3.0,0.0,3.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}"),
 				// "0,-1,-1,0,1,0,0,0,0,0.0,3.0,0.0,3.0,0.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
-				// Drop off Travelbugs
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"0,-1,-1,0,0,0,0,0,0,0.0,3.0,0.0,3.0,2.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}"),
+				// Drop off Travelbugs 4
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"0,-1,-1,0,0,0,0,0,0,0.0,3.0,0.0,3.0,2.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,false,false,false,false,false,false,false,false,false,false,true,false\",\"filtername\":\"\"}"),
 				// "-1,-1,0,0,0,0,0,0,0,0.0,3.0,0.0,3.0,2.0,4.0,0.0,5.0,true,false,false,false,false,false,false,false,false,false,false,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
-				// Highlights
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,3.5,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				// Highlights 5
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"-1,-1,-1,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,3.5,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
 				// "-1,-1,0,0,0,0,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,3.5,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// Favoriten
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,1,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,1,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
 				// "0,0,0,0,0,1,0,0,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// prepare to archive
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,-1,-1,0,-1,-1,-1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"0,0,-1,-1,0,-1,-1,-1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}"),
 				// "0,0,-1,-1,0,-1,-1,-1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,"),
 
 				// Listing Changed
-				new FilterProperties(
-						"{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}")
+				new FilterProperties("{\"gpxfilenameids\":\"\",\"caches\":\"0,0,0,0,0,0,0,1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0\",\"filtergc\":\"\",\"filterowner\":\"\",\"categories\":\"\",\"attributes\":\"0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\",\"types\":\"true,true,true,true,true,true,true,true,true,true,true,true,true\",\"filtername\":\"\"}")
 		// "0,0,0,0,0,0,0,1,0,0.0,5.0,0.0,5.0,0.0,4.0,0.0,5.0,true,true,true,true,true,true,true,true,true,true,true,true,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,,")
 
 		};
@@ -98,8 +98,7 @@ public class FilterProperties
 		{ true, true, true, true, true, true, true, true, true, true, true, true, true };
 
 	public int[] attributesFilter = new int[]
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	public ArrayList<Long> GPXFilenameIds = new ArrayList<Long>();
 
@@ -141,13 +140,7 @@ public class FilterProperties
 		try
 		{
 
-			result = String.valueOf(Finds) + seperator + String.valueOf(NotAvailable) + seperator + String.valueOf(Archived) + seperator
-					+ String.valueOf(Own) + seperator + String.valueOf(ContainsTravelbugs) + seperator + String.valueOf(Favorites)
-					+ seperator + String.valueOf(HasUserData) + seperator + String.valueOf(ListingChanged) + seperator
-					+ String.valueOf(WithManualWaypoint) + seperator + String.valueOf(MinDifficulty) + seperator
-					+ String.valueOf(MaxDifficulty) + seperator + String.valueOf(MinTerrain) + seperator + String.valueOf(MaxTerrain)
-					+ seperator + String.valueOf(MinContainerSize) + seperator + String.valueOf(MaxContainerSize) + seperator
-					+ String.valueOf(MinRating) + seperator + String.valueOf(MaxRating);
+			result = String.valueOf(Finds) + seperator + String.valueOf(NotAvailable) + seperator + String.valueOf(Archived) + seperator + String.valueOf(Own) + seperator + String.valueOf(ContainsTravelbugs) + seperator + String.valueOf(Favorites) + seperator + String.valueOf(HasUserData) + seperator + String.valueOf(ListingChanged) + seperator + String.valueOf(WithManualWaypoint) + seperator + String.valueOf(MinDifficulty) + seperator + String.valueOf(MaxDifficulty) + seperator + String.valueOf(MinTerrain) + seperator + String.valueOf(MaxTerrain) + seperator + String.valueOf(MinContainerSize) + seperator + String.valueOf(MaxContainerSize) + seperator + String.valueOf(MinRating) + seperator + String.valueOf(MaxRating);
 
 			for (int i = 0; i < cacheTypes.length; i++)
 				result += seperator + String.valueOf(cacheTypes[i]);
@@ -176,16 +169,7 @@ public class FilterProperties
 			JSONObject json = new JSONObject();
 
 			// add Cache properties
-			json.put(
-					"caches",
-					String.valueOf(Finds) + seperator + String.valueOf(NotAvailable) + seperator + String.valueOf(Archived) + seperator
-							+ String.valueOf(Own) + seperator + String.valueOf(ContainsTravelbugs) + seperator + String.valueOf(Favorites)
-							+ seperator + String.valueOf(HasUserData) + seperator + String.valueOf(ListingChanged) + seperator
-							+ String.valueOf(WithManualWaypoint) + seperator + String.valueOf(MinDifficulty) + seperator
-							+ String.valueOf(MaxDifficulty) + seperator + String.valueOf(MinTerrain) + seperator
-							+ String.valueOf(MaxTerrain) + seperator + String.valueOf(MinContainerSize) + seperator
-							+ String.valueOf(MaxContainerSize) + seperator + String.valueOf(MinRating) + seperator
-							+ String.valueOf(MaxRating));
+			json.put("caches", String.valueOf(Finds) + seperator + String.valueOf(NotAvailable) + seperator + String.valueOf(Archived) + seperator + String.valueOf(Own) + seperator + String.valueOf(ContainsTravelbugs) + seperator + String.valueOf(Favorites) + seperator + String.valueOf(HasUserData) + seperator + String.valueOf(ListingChanged) + seperator + String.valueOf(WithManualWaypoint) + seperator + String.valueOf(MinDifficulty) + seperator + String.valueOf(MaxDifficulty) + seperator + String.valueOf(MinTerrain) + seperator + String.valueOf(MaxTerrain) + seperator + String.valueOf(MinContainerSize) + seperator + String.valueOf(MaxContainerSize) + seperator + String.valueOf(MinRating) + seperator + String.valueOf(MaxRating));
 			// add Cache Types
 			String tmp = "";
 			for (int i = 0; i < cacheTypes.length; i++)
@@ -232,11 +216,6 @@ public class FilterProperties
 		}
 		return result;
 	}
-
-	/*
-	 * public override boolean Equals(object obj) { if (obj.GetType() != this.GetType()) return false; return (obj as FilterProperties ==
-	 * this.ToString(); }
-	 */
 
 	public FilterProperties()
 	{
@@ -575,5 +554,19 @@ public class FilterProperties
 		if (!filterName.equals(filter.filterName)) return false;
 
 		return true;
+	}
+
+	public void setCachtypes(ArrayList<CacheTypes> types)
+	{
+		Arrays.fill(cacheTypes, false);
+		for (CacheTypes type : types)
+		{
+			int TypeIndex = type.ordinal();
+			if (type == CacheTypes.Munzee) TypeIndex = 11;
+			if (type == CacheTypes.Giga) TypeIndex = 12;
+			if (TypeIndex < 0 || TypeIndex > 12) continue;
+			cacheTypes[TypeIndex] = true;
+		}
+
 	}
 }

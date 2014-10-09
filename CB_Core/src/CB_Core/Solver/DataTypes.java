@@ -4,6 +4,6 @@ public class DataTypes
 {
 	public enum DataType
 	{
-		None, String, Integer, Float, Coordinate
+		None, String, Integer, Float, Coordinate, Waypoint
 	}
 }

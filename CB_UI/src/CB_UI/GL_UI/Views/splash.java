@@ -150,8 +150,7 @@ public class splash extends MainViewBase
 	{
 
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
-		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5,
-				(ref * 5) / 4.11f);
+		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref, ref * 5, (ref * 5) / 4.11f);
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(atlas.createSprite("cachebox-logo")));
 		Label dummy = new Label();
@@ -162,8 +161,7 @@ public class splash extends MainViewBase
 		this.addLast(dummy);
 
 		String VersionString = GlobalCore.getVersionString();
-		descTextView = new Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE)
-				.setHAlignment(HAlignment.CENTER);
+		descTextView = new Label(VersionString + GlobalCore.br + GlobalCore.br + GlobalCore.splashMsg, null, null, WrapType.MULTILINE).setHAlignment(HAlignment.CENTER);
 		descTextView.setHeight(descTextView.getTextHeight());
 		this.addLast(descTextView);
 
@@ -423,16 +421,15 @@ public class splash extends MainViewBase
 		String FilterString = Config.FilterNew.getValue();
 		if (FilterString.length() > 0)
 		{
-			GlobalCore.LastFilter = new FilterProperties(FilterString);
+			FilterProperties.LastFilter = new FilterProperties(FilterString);
 		}
 		else
 		{
 			// Falls kein Neuer gefunden wurde -> das alte Format versuchen
 			FilterString = Config.Filter.getValue();
-			GlobalCore.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString())
-					: new FilterProperties(FilterString);
+			FilterProperties.LastFilter = (FilterString.length() == 0) ? new FilterProperties(FilterProperties.presets[0].toString()) : new FilterProperties(FilterString);
 		}
-		String sqlWhere = GlobalCore.LastFilter.getSqlWhere(Config.GcLogin.getValue());
+		String sqlWhere = FilterProperties.LastFilter.getSqlWhere(Config.GcLogin.getValue());
 
 		CoreSettingsForward.Categories = new Categories();
 		Database.Data.GPXFilenameUpdateCacheCount();

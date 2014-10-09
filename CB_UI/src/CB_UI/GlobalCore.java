@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Import.Importer;
@@ -32,10 +31,10 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
+import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.ApiUnavailable;
-import CB_UI.Map.RouteOverlay;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Animation.DownloadAnimation;
@@ -59,10 +58,10 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2280;
+public static final int CurrentRevision = 2311;
 
-	public static final String CurrentVersion = "0.7.";
-	public static final String VersionPrefix = "store";
+public static final String CurrentVersion = "0.8.";
+public static final String VersionPrefix = "store";
 
 	// public static final String ps = System.getProperty("path.separator");
 	public static final String AboutMsg = "Team Cachebox (2011-2014)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
@@ -168,9 +167,9 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	// #######################################
 
-	public static RouteOverlay.Track AktuelleRoute = null;
+	public static Track AktuelleRoute = null;
 	public static int aktuelleRouteCount = 0;
-	public static long TrackDistance;
+	// public static long TrackDistance;
 
 	public static boolean switchToCompassCompleted = false;
 
@@ -178,8 +177,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 
 	private static Cache selectedCache = null;
 	private static boolean autoResort;
-
-	public static FilterProperties LastFilter = null;
 
 	public static void setSelectedCache(Cache Cache)
 	{

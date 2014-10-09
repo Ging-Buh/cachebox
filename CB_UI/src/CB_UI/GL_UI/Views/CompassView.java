@@ -21,6 +21,7 @@ import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI.GL_UI.Controls.SatBarChart;
+import CB_UI.GL_UI.Views.MapView.MapMode;
 import CB_UI.Util.Astronomy;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
@@ -46,8 +47,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent,
-		CacheListChangedEventListner
+public class CompassView extends CB_View_Base implements SelectedCacheEvent, PositionChangedEvent, invalidateTextureEvent, CacheListChangedEventListner
 {
 	private CB_RectF imageRec;
 	private Image frame, scale, arrow, att[], Icon, Sun, Moon;
@@ -63,8 +63,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 	private float margin, attHeight, descHeight, lblHeight;
 	private double heading;
-	private boolean isInitial, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon,
-			showAnyContent, showTargetDirection, showSDT, showLastFound;
+	private boolean isInitial, showMap, showName, showIcon, showAtt, showGcCode, showCoords, showWpDesc, showSatInfos, showSunMoon, showAnyContent, showTargetDirection, showSDT, showLastFound;
 
 	public CompassView(CB_RectF rec, String Name)
 	{
@@ -158,8 +157,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		showSDT = Config.CompassShowSDT.getValue();
 		showLastFound = Config.CompassShowLastFound.getValue();
 
-		showAnyContent = showMap || showName || showIcon || showAtt || showGcCode || showCoords || showWpDesc || showSatInfos
-				|| showSunMoon || showTargetDirection || showSDT || showLastFound;
+		showAnyContent = showMap || showName || showIcon || showAtt || showGcCode || showCoords || showWpDesc || showSatInfos || showSunMoon || showTargetDirection || showSDT || showLastFound;
 	}
 
 	@Override
@@ -423,10 +421,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		if (showSDT) contentHeight += Fonts.MeasureSmall("Tg").height * 1.3f;
 		if (showLastFound) contentHeight += Fonts.MeasureSmall("Tg").height * 1.3f;
 
-		float topH = Math.max(
-				(this.getWidth() * 0.7f),
-				this.getHeight() - contentHeight - SpriteCacheBase.activityBackground.getTopHeight()
-						- SpriteCacheBase.activityBackground.getBottomHeight());
+		float topH = Math.max((this.getWidth() * 0.7f), this.getHeight() - contentHeight - SpriteCacheBase.activityBackground.getTopHeight() - SpriteCacheBase.activityBackground.getBottomHeight());
 
 		if (showMap)
 		{
@@ -449,8 +444,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		topContentBox.setHeight(contentHeight);
 		topContentBox.setZeroPos();
 
-		leftBox = new Box(new CB_RectF(0, 0, showMap ? this.getHalfWidth() : this.getWidth(), this.getHeight() - topBox.getHeight()),
-				"left");
+		leftBox = new Box(new CB_RectF(0, 0, showMap ? this.getHalfWidth() : this.getWidth(), this.getHeight() - topBox.getHeight()), "left");
 		leftBox.setBackground(SpriteCacheBase.activityBackground);
 
 		if (showMap)
@@ -462,7 +456,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			this.addChild(rightBox);
 			this.addChild(rightBoxMask);
 
-			if (map == null) map = new MapView(rightBox, true, "CompassMap");
+			if (map == null) map = new MapView(rightBox, MapMode.Compass, "CompassMap");
 			map.setZeroPos();
 			rightBox.addChild(map);
 
@@ -749,8 +743,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 		try
 		{
-			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(),
-					dest.getLatitude(), dest.getLongitude(), result);
+			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
 		}
 		catch (Exception e1)
 		{
@@ -832,8 +825,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 
 			float result[] = new float[2];
 
-			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(),
-					dest.getLatitude(), dest.getLongitude(), result);
+			MathUtils.computeDistanceAndBearing(CalculationType.ACCURATE, position.getLatitude(), position.getLongitude(), dest.getLatitude(), dest.getLongitude(), result);
 
 			float bearing = result[1];
 

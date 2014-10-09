@@ -67,6 +67,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 
 	}
 
+	@Override
 	public boolean isDisposed()
 	{
 		return this.isDisposed;
@@ -164,10 +165,18 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			{
 				synchronized (childs)
 				{
-					for (int i = 0, n = childs.size(); i < n; i++)
+					for (int i = 0; i < childs.size(); i++)
 					{
-						GL_View_Base view = childs.get(i);
-						view.dispose();
+						GL_View_Base view;
+						try
+						{
+							view = childs.get(i);
+						}
+						catch (Exception e)
+						{
+							break;
+						}
+						if (view != null && !view.isDisposed()) view.dispose();
 					}
 
 					childs.clear();

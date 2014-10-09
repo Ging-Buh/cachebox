@@ -78,7 +78,7 @@ public class DescriptionView extends CB_View_Base
 			resetUi();
 			if (sel.isLive() || sel.getApiStatus() == 1)
 			{
-				showDownloadButton(sel);
+				showDownloadButton();
 			}
 			else
 			{
@@ -184,21 +184,30 @@ public class DescriptionView extends CB_View_Base
 		Line = null;
 	}
 
-	private void showDownloadButton(Cache sel)
+	private void showDownloadButton()
 	{
-
-		int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(null);
-
-		if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+		final Thread getLimitThread = new Thread(new Runnable()
 		{
-			GL.that.Toast(ConnectionError.INSTANCE);
-			return;
-		}
-		if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
-		{
-			GL.that.Toast(ApiUnavailable.INSTANCE);
-			return;
-		}
+			@Override
+			public void run()
+			{
+				int result = CB_Core.Api.GroundspeakAPI.GetCacheLimits(null);
+				if (result == GroundspeakAPI.CONNECTION_TIMEOUT)
+				{
+					GL.that.Toast(ConnectionError.INSTANCE);
+					return;
+				}
+				if (result == GroundspeakAPI.API_IS_UNAVAILABLE)
+				{
+					GL.that.Toast(ApiUnavailable.INSTANCE);
+					return;
+				}
+				resetUi();
+				showDownloadButton();
+			}
+		});
+
+		if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1) getLimitThread.start();
 
 		float contentWidth = this.getWidth() * 0.95f;
 		margin = GL_UISizes.margin;
@@ -289,12 +298,17 @@ public class DescriptionView extends CB_View_Base
 		String limit = basic ? BASIC_LIMIT : PREMIUM_LIMIT;
 		String actLimit = Integer.toString(CB_Core.Api.GroundspeakAPI.CachesLeft - 1);
 
+		if (CB_Core.Api.GroundspeakAPI.CachesLeft == -1)
+		{
+			actLimit = "?";
+		}
+
 		sb.append(Translation.Get("LiveDescMessage", MemberType, limit));
 		sb.append(Global.br);
 		sb.append(Global.br);
 		if (CB_Core.Api.GroundspeakAPI.CachesLeft > 0) sb.append(Translation.Get("LiveDescAfter", actLimit));
 
-		if (CB_Core.Api.GroundspeakAPI.CachesLeft <= 0)
+		if (CB_Core.Api.GroundspeakAPI.CachesLeft == 0)
 		{
 			sb.append(Translation.Get("LiveDescLimit"));
 			sb.append(Global.br);

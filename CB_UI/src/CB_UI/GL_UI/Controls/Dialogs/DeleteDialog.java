@@ -7,7 +7,6 @@ import CB_Core.DAO.WaypointDAO;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.GlobalCore;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.Fonts;
@@ -92,14 +91,14 @@ public class DeleteDialog extends ButtonDialog
 					public void run()
 					{
 						CacheListDAO dao = new CacheListDAO();
-						long nun = dao.DelFilter(GlobalCore.LastFilter.getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+						long nun = dao.DelFilter(FilterProperties.LastFilter.getSqlWhere(CB_Core_Settings.GcLogin.getValue()), CB_Core_Settings.SpoilerFolder.getValue(), CB_Core_Settings.SpoilerFolderLocal.getValue(), CB_Core_Settings.DescriptionImageFolder.getValue(), CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 						cleanupLogs();
 						cleanupWaypoints();
 						wd.close();
 
 						// reset Filter
-						GlobalCore.LastFilter = new FilterProperties(FilterProperties.presets[0].toString());
-						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);// all Caches
+						FilterProperties.LastFilter = new FilterProperties(FilterProperties.presets[0].toString());
+						EditFilterSettings.ApplyFilter(FilterProperties.LastFilter);// all Caches
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
@@ -145,7 +144,7 @@ public class DeleteDialog extends ButtonDialog
 						cleanupWaypoints();
 						wd.close();
 
-						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
+						EditFilterSettings.ApplyFilter(FilterProperties.LastFilter);
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);
@@ -190,7 +189,7 @@ public class DeleteDialog extends ButtonDialog
 						cleanupWaypoints();
 						wd.close();
 
-						EditFilterSettings.ApplyFilter(GlobalCore.LastFilter);
+						EditFilterSettings.ApplyFilter(FilterProperties.LastFilter);
 
 						String msg = Translation.Get("DeletedCaches", String.valueOf(nun));
 						GL.that.Toast(msg);

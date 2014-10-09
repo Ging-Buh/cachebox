@@ -90,9 +90,7 @@ class MultiThreadQueueProcessor extends Thread
 
 								long posFactor = MapTileLoader.getMapTilePosFactor(tmpDesc.Zoom);
 
-								double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor
-										- mapView.screenCenterW.x, 2)
-										+ Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + mapView.screenCenterW.y, 2));
+								double dist = Math.sqrt(Math.pow((double) tmpDesc.X * posFactor * 256 + 128 * posFactor - mapView.screenCenterW.x, 2) + Math.pow((double) tmpDesc.Y * posFactor * 256 + 128 * posFactor + mapView.screenCenterW.y, 2));
 
 								if (Math.abs(mapView.aktZoom - nearestZoom) > Math.abs(mapView.aktZoom - tmpDesc.Zoom))
 								{
@@ -177,7 +175,7 @@ class MultiThreadQueueProcessor extends Thread
 				}
 				else
 				{
-					Thread.sleep(1000);
+					Thread.sleep(50);
 				}
 				this.isAlive = true;
 			}
@@ -249,7 +247,7 @@ class MultiThreadQueueProcessor extends Thread
 				GL.that.renderOnce();
 			}
 			// to avoid endless trys
-			RemoveFromQueuedTiles(desc);
+			if (tile != null) RemoveFromQueuedTiles(desc);
 		}
 
 	}
