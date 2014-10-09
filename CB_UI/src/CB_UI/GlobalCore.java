@@ -58,9 +58,9 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2310;
+	public static final int CurrentRevision = 2311;
 
-	public static final String CurrentVersion = "0.7.";
+	public static final String CurrentVersion = "0.8.";
 	public static final String VersionPrefix = "test";
 
 	// public static final String ps = System.getProperty("path.separator");

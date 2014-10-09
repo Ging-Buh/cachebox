@@ -174,8 +174,8 @@ public class launch extends JFrame
 			{
 				jTextFieldVers = new JTextField();
 				jDesktopPane1.add(jTextFieldVers, JLayeredPane.DEFAULT_LAYER);
-				jTextFieldVers.setText("0.4.xxx");
-				jTextFieldVers.setBounds(123, 121, 62, 28);
+				jTextFieldVers.setText(getVersionFromGlobalCore());
+				jTextFieldVers.setBounds(123, 121, 80, 28);
 			}
 			{
 				jButton3 = new JButton();
@@ -216,8 +216,8 @@ public class launch extends JFrame
 			{
 				jTextField1 = new JTextField();
 				jDesktopPane1.add(jTextField1, JLayeredPane.DEFAULT_LAYER);
-				jTextField1.setText("Test");
-				jTextField1.setBounds(123, 156, 62, 28);
+				jTextField1.setText(getVersionPrefixFromGlobalCore());
+				jTextField1.setBounds(123, 156, 80, 28);
 			}
 			{
 				jLabel7 = new JLabel();
@@ -250,7 +250,7 @@ public class launch extends JFrame
 				{
 					jRadioButton2 = new JRadioButton();
 					jPanel1.add(jRadioButton2);
-					jRadioButton2.setText("OpenGL Icon");
+					jRadioButton2.setText("Donate Icon");
 					jRadioButton2.setBounds(31, 6, 108, 24);
 					jRadioButton2.addMouseListener(new MouseAdapter()
 					{
@@ -285,7 +285,7 @@ public class launch extends JFrame
 				{
 					jTextArea1 = new JTextArea();
 					jScrollPane1.setViewportView(jTextArea1);
-					jTextArea1.setText("jTextArea1");
+					jTextArea1.setText("");
 					jTextArea1.setBounds(451, 120, 55, 42);
 					jTextArea1.setEditable(false);
 				}
@@ -306,7 +306,7 @@ public class launch extends JFrame
 			{
 				jButton4 = new JButton();
 				jDesktopPane1.add(jButton4, JLayeredPane.DEFAULT_LAYER);
-				jButton4.setText("to OpenGL");
+				jButton4.setText("to Donate");
 				jButton4.setBounds(252, 79, 89, 23);
 				jButton4.addMouseListener(new MouseAdapter()
 				{
@@ -435,8 +435,8 @@ public class launch extends JFrame
 
 	private void jButton4MouseClicked(MouseEvent evt)
 	{
-		jTextFieldPackageName.setText("de.CB_GL");
-		jTextField2.setText("CB_GL");
+		jTextFieldPackageName.setText("de.de.cachebox_donate");
+		jTextField2.setText("CB_Donate");
 		iconState = 2;
 		setIconState();
 	}
@@ -486,7 +486,7 @@ public class launch extends JFrame
 			newIcon = "@drawable/cb_test";
 			break;
 		case 2:
-			newIcon = "@drawable/cb_gl";
+			newIcon = "@drawable/cb_donate";
 			break;
 		}
 
@@ -495,166 +495,175 @@ public class launch extends JFrame
 			public void run()
 			{
 
-				String newSourceFolder = "";
-
-				// Replace Package Name in Files
-				replaceInFiles("xml");
-				replaceInFiles("java");
-
-				// Rename Package Folder
-				String[] packageFolder = currentPackageName.split("\\.");
-				String[] newpackageFolder = newPackageName.split("\\.");
-				for (int i = packageFolder.length; i > 0; i--)
-				{
-					String pathname = "";
-					for (int j = 0; j < i; j++)
-					{
-						pathname += packageFolder[j] + "/";
-					}
-
-					String newPathname = "";
-					for (int j = 0; j < i; j++)
-					{
-						newPathname += newpackageFolder[j] + "/";
-					}
-
-					File Folder = new File(directoryPath + "src/" + pathname);
-					newSourceFolder = directoryPath + "src/" + newPathname;
-					File newFolder = new File(newSourceFolder);
-
-					addMsg("[Rename Folder:] " + pathname + " to " + newPathname);
-					Folder.renameTo(newFolder);
-
-					i = -1;
-
-				}
-
-				// Rename Values at Mainfest.xml
 				try
 				{
+					String newSourceFolder = "";
 
-					File file = new File(directoryPath + "AndroidManifest.xml");
-					BufferedReader reader = null;
+					// Replace Package Name in Files
+					replaceInFiles("xml");
+					replaceInFiles("java");
 
-					reader = new BufferedReader(new FileReader(file));
-
-					String line = "", oldtext = "";
-
-					while ((line = reader.readLine()) != null)
+					// Rename Package Folder
+					String[] packageFolder = currentPackageName.split("\\.");
+					String[] newpackageFolder = newPackageName.split("\\.");
+					for (int i = packageFolder.length; i > 0; i--)
 					{
-						oldtext += line + "\r\n";
-					}
+						String pathname = "";
+						for (int j = 0; j < i; j++)
+						{
+							pathname += packageFolder[j] + "/";
+						}
 
-					reader.close();
+						String newPathname = "";
+						for (int j = 0; j < i; j++)
+						{
+							newPathname += newpackageFolder[j] + "/";
+						}
 
-					String newtext = oldtext.replace(currentPackageName, newPackageName);
-					newtext = newtext.replace(currentMainfestVersionString, newMainfestVersionString);
-					newtext = newtext.replace(currentIcon, newIcon);
+						File Folder = new File(directoryPath + "src/" + pathname);
+						newSourceFolder = directoryPath + "src/" + newPathname;
+						File newFolder = new File(newSourceFolder);
 
-					addMsg("[Replace in:] " + file.getPath());
-					FileWriter writer = null;
+						addMsg("[Rename Folder:] " + pathname + " to " + newPathname);
+						Folder.renameTo(newFolder);
 
-					writer = new FileWriter(file);
-
-					writer.write(newtext);
-
-					writer.close();
-
-				}
-				catch (IOException ioe)
-				{
-					ioe.printStackTrace();
-				}
-
-				// Rename Version Values at Global.java
-				try
-				{
-
-					File file = new File(newSourceFolder + "Global.java");
-					BufferedReader reader = null;
-
-					reader = new BufferedReader(new FileReader(file));
-
-					String line = "", oldtext = "";
-					String altCurrentRevision = "";
-					String altCurrentVersion = "";
-					String altVersionPrefix = "";
-
-					while ((line = reader.readLine()) != null)
-					{
-						oldtext += line + "\r\n";
-
-						if (line.contains("public static final int CurrentRevision")) altCurrentRevision = line;
-						if (line.contains("public static final String CurrentVersion")) altCurrentVersion = line;
-						if (line.contains("public static final String VersionPrefix")) altVersionPrefix = line;
-					}
-
-					reader.close();
-
-					String[] splitedVersion = jTextFieldVers.getText().split("\\.");
-
-					String newCurrentRevision = splitedVersion[splitedVersion.length - 1];
-					String newCurrentVersion = jTextFieldVers.getText().replace(newCurrentRevision, "");
-					String newVersionPrefix = jTextField1.getText();
-					String newtext = oldtext.replace(altCurrentRevision, "public static final int CurrentRevision = " + newCurrentRevision
-							+ ";");
-					newtext = newtext.replace(altCurrentVersion, "public static final String CurrentVersion = \"" + newCurrentVersion
-							+ "\"" + ";");
-					newtext = newtext.replace(altVersionPrefix, "public static final String VersionPrefix = \"" + newVersionPrefix + "\""
-							+ ";");
-
-					addMsg("[Replace in:] " + file.getPath());
-					FileWriter writer = null;
-
-					writer = new FileWriter(file);
-
-					writer.write(newtext);
-
-					writer.close();
-
-				}
-				catch (IOException ioe)
-				{
-					ioe.printStackTrace();
-				}
-
-				// Rename AppName at strings.xml
-				try
-				{
-
-					File file = new File(directoryPath + "/res/values/strings.xml");
-					BufferedReader reader = null;
-
-					reader = new BufferedReader(new FileReader(file));
-
-					String line = "", oldtext = "";
-					String altAppName = "";
-
-					while ((line = reader.readLine()) != null)
-					{
-						oldtext += line + "\r\n";
-
-						if (line.contains("<string name=\"app_name\">")) altAppName = line;
+						i = -1;
 
 					}
 
-					reader.close();
+					// Rename Values at Mainfest.xml
+					try
+					{
 
-					String newtext = oldtext.replace(altAppName, "<string name=\"app_name\">" + jTextField2.getText() + "</string>");
+						File file = new File(directoryPath + "AndroidManifest.xml");
+						BufferedReader reader = null;
 
-					addMsg("[Replace in:] " + file.getPath());
-					FileWriter writer = null;
+						reader = new BufferedReader(new FileReader(file));
 
-					writer = new FileWriter(file);
+						String line = "", oldtext = "";
 
-					writer.write(newtext);
+						while ((line = reader.readLine()) != null)
+						{
+							oldtext += line + "\r\n";
+						}
 
-					writer.close();
+						reader.close();
 
+						String newtext = oldtext.replace(currentPackageName, newPackageName);
+						newtext = newtext.replace(currentMainfestVersionString, newMainfestVersionString);
+						newtext = newtext.replace(currentIcon, newIcon);
+
+						addMsg("[Replace in:] " + file.getPath());
+						FileWriter writer = null;
+
+						writer = new FileWriter(file);
+
+						writer.write(newtext);
+
+						writer.close();
+
+					}
+					catch (IOException ioe)
+					{
+						ioe.printStackTrace();
+					}
+
+					// Rename Version Values at GlobalCore.java
+					try
+					{
+
+						File file = new File(newSourceFolder + "../../../../CB_UI/src/CB_UI/GlobalCore.java");
+						BufferedReader reader = null;
+
+						reader = new BufferedReader(new FileReader(file));
+
+						String line = "", oldtext = "";
+						String altCurrentRevision = null;
+						String altCurrentVersion = null;
+						String altVersionPrefix = null;
+
+						while ((line = reader.readLine()) != null)
+						{
+							oldtext += line + "\r\n";
+
+							if (line.contains("public static final int CurrentRevision")) altCurrentRevision = line;
+							if (line.contains("public static final String CurrentVersion")) altCurrentVersion = line;
+							if (line.contains("public static final String VersionPrefix")) altVersionPrefix = line;
+
+						}
+
+						reader.close();
+
+						String[] splitedVersion = jTextFieldVers.getText().split("\\.");
+
+						String newCurrentRevision = splitedVersion[splitedVersion.length - 1];
+						String newCurrentVersion = jTextFieldVers.getText().replace(newCurrentRevision, "");
+						String newVersionPrefix = jTextField1.getText();
+						String newtext = oldtext.replace(altCurrentRevision, "public static final int CurrentRevision = "
+								+ newCurrentRevision + ";");
+						newtext = newtext.replace(altCurrentVersion, "public static final String CurrentVersion = \"" + newCurrentVersion
+								+ "\"" + ";");
+						newtext = newtext.replace(altVersionPrefix, "public static final String VersionPrefix = \"" + newVersionPrefix
+								+ "\"" + ";");
+
+						addMsg("[Replace in:] " + file.getPath());
+						FileWriter writer = null;
+
+						writer = new FileWriter(file);
+
+						writer.write(newtext);
+
+						writer.close();
+
+					}
+					catch (IOException ioe)
+					{
+						ioe.printStackTrace();
+					}
+
+					// Rename AppName at strings.xml
+					try
+					{
+
+						File file = new File(directoryPath + "/res/values/strings.xml");
+						BufferedReader reader = null;
+
+						reader = new BufferedReader(new FileReader(file));
+
+						String line = "", oldtext = "";
+						String altAppName = "";
+
+						while ((line = reader.readLine()) != null)
+						{
+							oldtext += line + "\r\n";
+
+							if (line.contains("<string name=\"app_name\">")) altAppName = line;
+
+						}
+
+						reader.close();
+
+						String newtext = oldtext.replace(altAppName, "<string name=\"app_name\">" + jTextField2.getText() + "</string>");
+
+						addMsg("[Replace in:] " + file.getPath());
+						FileWriter writer = null;
+
+						writer = new FileWriter(file);
+
+						writer.write(newtext);
+
+						writer.close();
+
+					}
+					catch (IOException ioe)
+					{
+						ioe.printStackTrace();
+					}
 				}
-				catch (IOException ioe)
+				catch (Exception e)
 				{
-					ioe.printStackTrace();
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
 				JOptionPane.showMessageDialog(null, "Ready", "", JOptionPane.OK_OPTION);
@@ -664,6 +673,88 @@ public class launch extends JFrame
 		};
 
 		t.start();
+
+	}
+
+	private String getVersionFromGlobalCore()
+	{
+		File file = new File(directoryPath + "../CB_UI/src/CB_UI/GlobalCore.java");
+		BufferedReader reader = null;
+		try
+		{
+			reader = new BufferedReader(new FileReader(file));
+
+			String line = "";
+			String altCurrentRevision = null;
+			String altCurrentVersion = null;
+
+			while ((line = reader.readLine()) != null)
+			{
+
+				if (line.contains("public static final int CurrentRevision")) altCurrentRevision = line;
+				if (line.contains("public static final String CurrentVersion")) altCurrentVersion = line;
+
+			}
+
+			reader.close();
+
+			int pos = altCurrentRevision.indexOf(";");
+			String rev = altCurrentRevision.substring("public static final int CurrentRevision = ".length() + 1, pos);
+
+			pos = altCurrentVersion.lastIndexOf("\"");
+			String ver = altCurrentVersion.substring("public static final String CurrentVersion = \"".length() + 1, pos);
+
+			return ver + rev;
+
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "";
+
+	}
+
+	private String getVersionPrefixFromGlobalCore()
+	{
+		File file = new File(directoryPath + "../CB_UI/src/CB_UI/GlobalCore.java");
+		BufferedReader reader = null;
+		try
+		{
+			reader = new BufferedReader(new FileReader(file));
+
+			String line = "";
+			String altVersionPrefix = null;
+
+			while ((line = reader.readLine()) != null)
+			{
+
+				if (line.contains("public static final String VersionPrefix"))
+				{
+					altVersionPrefix = line;
+					break;
+				}
+
+			}
+
+			reader.close();
+
+			int pos = altVersionPrefix.indexOf("\"") + 1;
+			int pos2 = altVersionPrefix.lastIndexOf("\"");
+			String pre = altVersionPrefix.substring(pos, pos2);
+
+			return pre;
+
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "";
 
 	}
 

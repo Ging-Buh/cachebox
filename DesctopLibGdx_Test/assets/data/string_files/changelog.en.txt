@@ -1,5 +1,10 @@
 Changes:
 
+Version : 0.8.2311
+	• new LiveMap
+	• enhanced usability of Solver2
+	• fix some exceptions
+	
 Version : 0.7.2203
 	• new Cyrillic CharSet 
 	• new Export List to GPX
