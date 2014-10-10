@@ -420,7 +420,7 @@ public class launch extends JFrame
 	private void jButton1MouseClicked(MouseEvent evt)
 	{
 		jTextFieldPackageName.setText("de.cachebox_test");
-		jTextField2.setText("CB_Test");
+		jTextField2.setText("Cachebox");
 		iconState = 1;
 		setIconState();
 	}
@@ -436,7 +436,7 @@ public class launch extends JFrame
 	private void jButton4MouseClicked(MouseEvent evt)
 	{
 		jTextFieldPackageName.setText("de.cachebox_donate");
-		jTextField2.setText("CB_Donate");
+		jTextField2.setText("Cachebox");
 		iconState = 2;
 		setIconState();
 	}

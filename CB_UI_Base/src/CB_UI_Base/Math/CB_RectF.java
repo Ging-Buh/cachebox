@@ -217,16 +217,23 @@ public class CB_RectF
 	{
 		if (this.member == null) return false;
 
-		// runde
-		float rX = Math.round(x);
-		float rY = Math.round(y);
-		float rTX = Math.round(this.member[0]);
-		float rTY = Math.round(this.member[1]);
-		float rTCX = Math.round(this.member[6]);
-		float rTCY = Math.round(this.member[7]);
+		try
+		{
+			// runde
+			float rX = Math.round(x);
+			float rY = Math.round(y);
+			float rTX = Math.round(this.member[0]);
+			float rTY = Math.round(this.member[1]);
+			float rTCX = Math.round(this.member[6]);
+			float rTCY = Math.round(this.member[7]);
 
-		return this.member[2] > 0 && this.member[3] > 0 // check for empty first
-				&& rX >= rTX && rX <= rTCX && rY >= rTY && rY <= rTCY;
+			return this.member[2] > 0 && this.member[3] > 0 // check for empty first
+					&& rX >= rTX && rX <= rTCX && rY >= rTY && rY <= rTCY;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
 	}
 
 	/**

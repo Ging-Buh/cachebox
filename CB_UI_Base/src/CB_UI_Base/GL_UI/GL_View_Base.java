@@ -1007,9 +1007,8 @@ public abstract class GL_View_Base extends CB_RectF
 					if (resultView != null) break;
 				}
 			}
-			catch (IndexOutOfBoundsException e)
+			catch (Exception e)
 			{
-				e.printStackTrace();
 				return null;
 			}
 		}
@@ -1047,7 +1046,7 @@ public abstract class GL_View_Base extends CB_RectF
 					if (behandelt) break;
 				}
 			}
-			catch (IndexOutOfBoundsException e)
+			catch (Exception e)
 			{
 				return false;
 			}
@@ -1085,9 +1084,8 @@ public abstract class GL_View_Base extends CB_RectF
 					if (behandelt) break;
 				}
 			}
-			catch (IndexOutOfBoundsException e)
+			catch (Exception e)
 			{
-				e.printStackTrace();
 				return false;
 			}
 		}
