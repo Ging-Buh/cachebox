@@ -60,7 +60,18 @@ public final class CB_Android_FileExplorer implements IgetFileListner, IgetFolde
 			if (!Android_FileExplorer_ES.getMyInstanz().getfolder(initialPath, TitleText, ButtonText, returnListner))
 			{
 				// No compatible file manager was found.
-				main.mainActivity.runOnUiThread(new Runnable()
+				// Tosast on Main or Splash
+				Activity activity = null;
+				if (main.mainActivity == null)
+				{
+					activity = splash.splashActivity;
+				}
+				else
+				{
+					activity = main.mainActivity;
+				}
+
+				if (activity != null) activity.runOnUiThread(new Runnable()
 				{
 					@Override
 					public void run()

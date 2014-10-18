@@ -376,9 +376,7 @@ public class Translation
 			// Cannot list a classpath directory
 			// so we hardcoded the lang path
 			files = new FileHandle[]
-				{ Gdx.files.classpath("data/lang/cs"), Gdx.files.classpath("data/lang/de"), Gdx.files.classpath("data/lang/en-GB"),
-						Gdx.files.classpath("data/lang/fr"), Gdx.files.classpath("data/lang/nl"), Gdx.files.classpath("data/lang/pl"),
-						Gdx.files.classpath("data/lang/pt-PT")
+				{ Gdx.files.classpath("data/lang/cs"), Gdx.files.classpath("data/lang/de"), Gdx.files.classpath("data/lang/en-GB"), Gdx.files.classpath("data/lang/fr"), Gdx.files.classpath("data/lang/nl"), Gdx.files.classpath("data/lang/pl"), Gdx.files.classpath("data/lang/pt-PT")
 
 				};
 		}
@@ -449,7 +447,7 @@ public class Translation
 			}
 			reader.close();
 
-			// zurück schreiben
+			// zurï¿½ck schreiben
 			PrintWriter writer = new PrintWriter(new FileWriter(file));
 
 			writer.write(sb.toString());
@@ -473,8 +471,15 @@ public class Translation
 
 			if (read)
 			{
-				MissingTranslation notFound = new MissingTranslation(line, "??");
-				if (!mMissingStringList.contains(notFound))
+				MissingTranslation notFound = null;
+				try
+				{
+					notFound = new MissingTranslation(line, "??");
+				}
+				catch (Exception e)
+				{
+				}
+				if (notFound != null && !mMissingStringList.contains(notFound))
 				{
 					mMissingStringList.add(notFound);
 				}
