@@ -49,7 +49,7 @@ public class MapPanel extends JPanel implements ActionListener
 	public MapPanel()
 	{
 		mapView = createMapView();
-		String MapPath = SimulatorMain.prefs.get("loadedMap", "../germany.map");
+		String MapPath = SimulatorMain.prefs.get("loadedMap", "");
 		try
 		{
 			addLayers(mapView, MapPath);
@@ -88,8 +88,7 @@ public class MapPanel extends JPanel implements ActionListener
 				{
 					LatLong pos = new LatLong(GPSData.getLatitude(), GPSData.getLongitude());
 					model.mapViewPosition.setCenter(pos);
-					CB_Locator.Locator.setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), GPSData.getQuality(), true,
-							(float) GPSData.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
+					CB_Locator.Locator.setNewLocation(new Location(pos.getLatitude(), pos.getLongitude(), GPSData.getQuality(), true, (float) GPSData.getSpeed(), true, GPSData.getCourse(), GPSData.getAltitude(), ProviderType.GPS));
 				}
 
 			}
@@ -105,8 +104,7 @@ public class MapPanel extends JPanel implements ActionListener
 		layers.add(createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition, layerManager, MapPath));
 	}
 
-	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager,
-			String MapPath)
+	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager, String MapPath)
 	{
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, false, GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(new File(MapPath));
