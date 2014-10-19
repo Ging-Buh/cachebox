@@ -322,7 +322,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 	private void Layout()
 	{
 
-		// Die größe des Kompasses nach rest Platz berechnen
+		// Die grï¿½ï¿½e des Kompasses nach rest Platz berechnen
 
 		float compassHeight = 0;
 
@@ -411,7 +411,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			{
 				if (aktWaypoint.getDescription() != null && !aktWaypoint.getDescription().equals(""))
 				{
-					descHeight = Fonts.MeasureWrapped(aktWaypoint.getDescription(), topContentBox.getWidth()).height + margin;
+					descHeight = Fonts.MeasureWrapped(aktWaypoint.getDescription(), this.getWidth()).height + margin;
 					contentHeight += descHeight + margin;
 				}
 			}
@@ -564,7 +564,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		}
 
 		// add GC-Code and Coord line
-		float mesuredCoorWidth = Fonts.Measure("52° 27.130N / 13° 33.117E").width + margin;
+		float mesuredCoorWidth = Fonts.Measure("52ï¿½ 27.130N / 13ï¿½ 33.117E").width + margin;
 		if (showGcCode || showCoords)
 		{
 			if (showCoords)
@@ -760,7 +760,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 			else
 				directionToTarget = bearing;
 
-			String sBearing = Translation.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "°";
+			String sBearing = Translation.Get("directionToTarget") + " : " + String.format("%.0f", directionToTarget) + "ï¿½";
 			lblBearing.setText(sBearing);
 		}
 
