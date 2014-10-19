@@ -58,7 +58,7 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2322;
+	public static final int CurrentRevision = 2323;
 
 	public static final String CurrentVersion = "0.8.";
 	public static final String VersionPrefix = "test";
