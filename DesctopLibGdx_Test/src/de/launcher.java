@@ -107,6 +107,10 @@ class Gui extends Frame implements ActionListener, WindowListener
 		add(pushButton);
 		pushButton.addActionListener(this); // listen for Button press
 
+		Button pushButton1 = new Button("Phone on MAC HDPI");
+		add(pushButton1);
+		pushButton1.addActionListener(this); // listen for Button press
+
 		Button pushButton4 = new Button("Phone 240x400 LDPI");
 		add(pushButton4);
 		pushButton4.addActionListener(this); // listen for Button press
@@ -167,6 +171,10 @@ class Gui extends Frame implements ActionListener, WindowListener
 		else if (event.getActionCommand().equals("Tab Nexus7"))
 		{
 			DesktopMain.start(iniNexus7(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
+		}
+		else if (event.getActionCommand().equals("Phone on MAC HDPI"))
+		{
+			DesktopMain.start(iniMacEmulator(), debugChkBox.getState(), scissorChkBox.getState(), simulateChkBox.getState(), this);
 		}
 	}
 
@@ -269,6 +277,34 @@ class Gui extends Frame implements ActionListener, WindowListener
 
 		return ui;
 
+	}
+
+	public static devicesSizes iniMacEmulator()
+	{
+
+		Size myInitialSize = new Size(420, 700);
+		devicesSizes ui = getMac(myInitialSize);
+
+		return ui;
+
+	}
+
+	public static devicesSizes getMac(Size myInitialSize)
+	{
+		devicesSizes ui = new devicesSizes();
+
+		ui.Window = myInitialSize;
+		ui.Density = 1.5f;
+		ui.RefSize = 64;
+		ui.TextSize_Normal = 52;
+		ui.ButtonTextSize = 50;
+		ui.IconSize = 13;
+		ui.Margin = 4;
+		ui.ArrowSizeList = 11;
+		ui.ArrowSizeMap = 18;
+		ui.TB_IconSize = 8;
+		ui.isLandscape = false;
+		return ui;
 	}
 
 	public static devicesSizes getLDPI(Size myInitialSize)

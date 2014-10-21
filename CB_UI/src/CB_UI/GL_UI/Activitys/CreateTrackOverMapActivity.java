@@ -82,6 +82,11 @@ public class CreateTrackOverMapActivity extends ActivityBase
 		btnAdd = new Button(new CB_RectF(btnOk.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onAddClik);
 		btnCancel = new Button(new CB_RectF(btnAdd.getMaxX(), this.getBottomHeight(), btWidth, UI_Size_Base.that.getButtonHeight()), onCancelClik);
 
+		// translations
+		btnOk.setText(Translation.Get("ok".hashCode()));
+		btnAdd.setText(Translation.Get("addWP"));
+		btnCancel.setText(Translation.Get("cancel".hashCode()));
+
 		this.addChild(btnOk);
 		this.addChild(btnAdd);
 		this.addChild(btnCancel);

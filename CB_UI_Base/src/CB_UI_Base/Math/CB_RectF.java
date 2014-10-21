@@ -24,7 +24,7 @@ import CB_Utils.Util.MoveableList;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Eine Structur für RectF mit besonderen Methoden Speziel für die Handhabung in der Verwendung der Berechneten Grössen und Positionen
+ * Eine Structur fï¿½r RectF mit besonderen Methoden Speziel fï¿½r die Handhabung in der Verwendung der Berechneten Grï¿½ssen und Positionen
  * einzelner UI Elemente in Cachebox
  * 
  * @author Longri
@@ -77,7 +77,7 @@ public class CB_RectF
 	}
 
 	/**
-	 * Constructor für ein neues RectF mit Angabe der linken unteren Ecke und der Höhe und Breite
+	 * Constructor fï¿½r ein neues RectF mit Angabe der linken unteren Ecke und der Hï¿½he und Breite
 	 * 
 	 * @param X
 	 * @param Y
@@ -122,7 +122,7 @@ public class CB_RectF
 	}
 
 	/**
-	 * Setzt die Werte für Height und Width. Wenn sich einer der Werte geändert hat, wird ein True zurück gegeben, ansonsten False.
+	 * Setzt die Werte fï¿½r Height und Width. Wenn sich einer der Werte geï¿½ndert hat, wird ein True zurï¿½ck gegeben, ansonsten False.
 	 * 
 	 * @param Width
 	 * @param Height
@@ -237,7 +237,7 @@ public class CB_RectF
 	}
 
 	/**
-	 * liefert True, wenn das übergebene Rechteck kommplett in diese rechteck Passt.
+	 * liefert True, wenn das ï¿½bergebene Rechteck kommplett in diese rechteck Passt.
 	 * 
 	 * @param rec
 	 * @return
@@ -256,27 +256,36 @@ public class CB_RectF
 
 	public void Add(SizeChangedEvent event)
 	{
-		if (list == null) return; // is disposed
-		list.add(event);
+		synchronized (list)
+		{
+			if (list == null) return; // is disposed
+			list.add(event);
+		}
 	}
 
 	public void Remove(SizeChangedEvent event)
 	{
-		if (list == null) return; // is disposed
-		list.remove(event);
+		synchronized (list)
+		{
+			if (list == null) return; // is disposed
+			list.remove(event);
+		}
 	}
 
 	public void CallRecChanged()
 	{
-		if (list == null) return; // is disposed
-
-		resize(this.member[2], this.member[3]);
-
-		if (list.size() > 0)
+		synchronized (list)
 		{
-			for (int i = 0, n = list.size(); i < n; i++)
+			if (list == null) return; // is disposed
+
+			resize(this.member[2], this.member[3]);
+
+			if (list.size() > 0)
 			{
-				list.get(i).sizeChanged();
+				for (int i = 0, n = list.size(); i < n; i++)
+				{
+					list.get(i).sizeChanged();
+				}
 			}
 		}
 	}
@@ -322,7 +331,7 @@ public class CB_RectF
 	}
 
 	// /**
-	// * Setzt Height und Width auf die nächst größere Potenz von 2
+	// * Setzt Height und Width auf die nï¿½chst grï¿½ï¿½ere Potenz von 2
 	// */
 	// public void setPO2()
 	// {
@@ -366,7 +375,7 @@ public class CB_RectF
 	}
 
 	/**
-	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zurück! <img src="doc-files/rec-intersection.png" width=537
+	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zurï¿½ck! <img src="doc-files/rec-intersection.png" width=537
 	 * height=307>
 	 * 
 	 * @param P1
@@ -381,8 +390,8 @@ public class CB_RectF
 	}
 
 	/**
-	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zurück! </br> Wobei die als int übergebene Nummer der Gerade
-	 * des Rechtecks als erstes überprüft wird. </br> <img src="doc-files/rec-intersection.png" width=537 height=307>
+	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zurï¿½ck! </br> Wobei die als int ï¿½bergebene Nummer der Gerade
+	 * des Rechtecks als erstes ï¿½berprï¿½ft wird. </br> <img src="doc-files/rec-intersection.png" width=537 height=307>
 	 * 
 	 * @param P1
 	 *            = start Punkt der Linie
@@ -394,7 +403,7 @@ public class CB_RectF
 	public Vector2 getIntersection(Vector2 P1, Vector2 P2, int first)
 	{
 
-		// Array mit Geraden Nummern füllen
+		// Array mit Geraden Nummern fï¿½llen
 		if (Geraden.size() < 4)
 		{
 			Geraden.add(1);
@@ -560,11 +569,14 @@ public class CB_RectF
 
 	public void dispose()
 	{
-		if (list != null)
+		synchronized (list)
 		{
-			list.clear();
+			if (list != null)
+			{
+				list.clear();
+			}
+			list = null;
 		}
-		list = null;
 
 		if (member != null)
 		{

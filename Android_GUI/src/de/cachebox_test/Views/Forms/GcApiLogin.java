@@ -52,29 +52,43 @@ public class GcApiLogin extends Activity
 		@Override
 		protected String doInBackground(Void... params)
 		{
-			String GC_AuthUrl;
-
-			if (Config.OverrideUrl.getValue().equals(""))
+			try
 			{
-				GC_AuthUrl = CB_Api.getGcAuthUrl();
-			}
-			else
-			{
-				GC_AuthUrl = Config.OverrideUrl.getValue();
-			}
+				String GC_AuthUrl;
 
-			if (GC_AuthUrl.equals(""))
-			{
-				finish();
-			}
+				if (Config.OverrideUrl.getValue().equals(""))
+				{
+					GC_AuthUrl = CB_Api.getGcAuthUrl();
+				}
+				else
+				{
+					GC_AuthUrl = Config.OverrideUrl.getValue();
+				}
 
-			return GC_AuthUrl;
+				if (GC_AuthUrl.equals(""))
+				{
+					finish();
+				}
+
+				return GC_AuthUrl;
+			}
+			catch (Exception e)
+			{
+				return "";
+			}
 		}
 
 		@Override
 		protected void onPostExecute(String GC_AuthUrl)
 		{
-			ShowWebsite(GC_AuthUrl);
+			try
+			{
+				ShowWebsite(GC_AuthUrl);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -231,7 +245,7 @@ public class GcApiLogin extends Activity
 			if (pos < 0) return;
 			int pos2 = html.indexOf("</span>", pos);
 			if (pos2 < pos) return;
-			// zwischen pos und pos2 sollte ein gültiges AccessToken sein!!!
+			// zwischen pos und pos2 sollte ein gï¿½ltiges AccessToken sein!!!
 			final String accessToken = html.substring(pos + search.length(), pos2);
 
 			Thread thread = new Thread()
@@ -242,8 +256,8 @@ public class GcApiLogin extends Activity
 					GroundspeakAPI.CacheStatusLiteValid = false;
 
 					// store the encrypted AccessToken in the Config file
-					// wir bekommen den Key schon verschlüsselt, deshalb muss er
-					// nicht noch einmal verschlüsselt werden!
+					// wir bekommen den Key schon verschlï¿½sselt, deshalb muss er
+					// nicht noch einmal verschlï¿½sselt werden!
 					if (Config.StagingAPI.getValue())
 					{
 						Config.GcAPIStaging.setEncryptedValue(accessToken);
