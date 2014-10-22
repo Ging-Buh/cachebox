@@ -50,9 +50,11 @@ import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Layer.Type;
+import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
@@ -363,10 +365,8 @@ public abstract class ManagerBase
 
 		color[1] = Math.max(0, Math.min(255, (int) ((matrix[0] * R) + (matrix[1] * G) + (matrix[2] * B) + (matrix[3] * A) + matrix[4])));
 		color[2] = Math.max(0, Math.min(255, (int) ((matrix[5] * R) + (matrix[6] * G) + (matrix[7] * B) + (matrix[8] * A) + matrix[9])));
-		color[3] = Math.max(0,
-				Math.min(255, (int) ((matrix[10] * R) + (matrix[11] * G) + (matrix[12] * B) + (matrix[13] * A) + matrix[14])));
-		color[0] = Math.max(0,
-				Math.min(255, (int) ((matrix[15] * R) + (matrix[16] * G) + (matrix[17] * B) + (matrix[18] * A) + matrix[19])));
+		color[3] = Math.max(0, Math.min(255, (int) ((matrix[10] * R) + (matrix[11] * G) + (matrix[12] * B) + (matrix[13] * A) + matrix[14])));
+		color[0] = Math.max(0, Math.min(255, (int) ((matrix[15] * R) + (matrix[16] * G) + (matrix[17] * B) + (matrix[18] * A) + matrix[19])));
 
 		return ((color[0] & 0xFF) << 24) | ((color[1] & 0xFF) << 16) | ((color[2] & 0xFF) << 8) | ((color[3] & 0xFF));
 	}
@@ -569,22 +569,22 @@ public abstract class ManagerBase
 		}
 		catch (SAXException e)
 		{
-			String ErrorMsg = e.getMessage();
-			GL.that.Toast(ErrorMsg, 5000);
+			String ErrorMsg = e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
+			GL.that.Toast(ErrorMsg, 8000);
 			Logger.Error("databaseRenderer: ", ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 		catch (ParserConfigurationException e)
 		{
 			String ErrorMsg = e.getMessage();
-			GL.that.Toast(ErrorMsg, 5000);
+			GL.that.Toast(ErrorMsg, 8000);
 			Logger.Error("databaseRenderer: ", ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 		catch (IOException e)
 		{
 			String ErrorMsg = e.getMessage();
-			GL.that.Toast(ErrorMsg, 5000);
+			GL.that.Toast(ErrorMsg, 8000);
 			Logger.Error("databaseRenderer: ", ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
@@ -654,22 +654,22 @@ public abstract class ManagerBase
 			}
 			catch (SAXException e)
 			{
-				String ErrorMsg = e.getMessage();
-				GL.that.Toast(ErrorMsg, 5000);
+				String ErrorMsg = e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
+				GL.that.Toast(ErrorMsg, 8000);
 				Logger.Error("databaseRenderer: ", ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 			catch (ParserConfigurationException e)
 			{
 				String ErrorMsg = e.getMessage();
-				GL.that.Toast(ErrorMsg, 5000);
+				GL.that.Toast(ErrorMsg, 8000);
 				Logger.Error("databaseRenderer: ", ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 			catch (IOException e)
 			{
 				String ErrorMsg = e.getMessage();
-				GL.that.Toast(ErrorMsg, 5000);
+				GL.that.Toast(ErrorMsg, 8000);
 				Logger.Error("databaseRenderer: ", ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
@@ -704,20 +704,16 @@ public abstract class ManagerBase
 			switch (RENDERING_TYPE)
 			{
 			case Mapsforge:
-				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex],
-						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
 				break;
 			case Mixing:
-				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(this.mapDatabase[ThreadIndex],
-						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), ThreadIndex);
+				databaseRenderer[ThreadIndex] = new MixedDatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()), ThreadIndex);
 				break;
 			case OpenGl:
-				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(
-						DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL);
+				databaseRenderer[ThreadIndex] = new GL_DatabaseRenderer(this.mapDatabase[ThreadIndex], new GL_GraphicFactory(DISPLAY_MODEL.getScaleFactor()), DISPLAY_MODEL);
 				break;
 			default:
-				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex],
-						getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
+				databaseRenderer[ThreadIndex] = new MF_DatabaseRenderer(this.mapDatabase[ThreadIndex], getGraphicFactory(DISPLAY_MODEL.getScaleFactor()));
 				break;
 
 			}
