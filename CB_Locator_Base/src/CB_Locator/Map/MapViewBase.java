@@ -90,7 +90,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	{
 		boolean started;
 		private boolean fertig;
-		// benutze den Abstand der letzten 5 Positionsänderungen
+		// benutze den Abstand der letzten 5 Positionsï¿½nderungen
 		final int anzPoints = 3;
 		private final int[] x = new int[anzPoints];
 		private final int[] y = new int[anzPoints];
@@ -341,7 +341,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	{
 		if (rec.getWidth() <= 0 || rec.getHeight() <= 0) return;
 
-		// wenn sich die Größe nicht geändert hat, brauchen wir nicht zu machen!
+		// wenn sich die Grï¿½ï¿½e nicht geï¿½ndert hat, brauchen wir nicht zu machen!
 		if (rec.getWidth() == this.mapIntWidth && rec.getHeight() == this.mapIntHeight)
 		{
 			// Ausser wenn Camera == null!
@@ -555,7 +555,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		try
 		{
-			// das Alter aller Tiles um 1 erhöhen
+			// das Alter aller Tiles um 1 erhï¿½hen
 			mapTileLoader.increaseLoadedTilesAge();
 		}
 		catch (Exception e)
@@ -596,13 +596,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 						desc.Data = this;
 						mapTileLoader.reloadTile(this, desc, aktZoom);
 
-						// für den aktuellen Zoom ist kein Tile vorhanden ->
+						// fï¿½r den aktuellen Zoom ist kein Tile vorhanden ->
 						// kleinere Zoomfaktoren durchsuchen
 						if (!renderBiggerTiles(batch, i, j, aktZoom))
 						{
-							// größere Zoomfaktoren noch durchsuchen, ob davon Tiles
+							// grï¿½ï¿½ere Zoomfaktoren noch durchsuchen, ob davon Tiles
 							// vorhanden sind...
-							// dafür müssen aber pro fehlendem Tile mehrere kleine
+							// dafï¿½r mï¿½ssen aber pro fehlendem Tile mehrere kleine
 							// Tiles gezeichnet werden (4 oder 16 oder 64...)
 							// dieser Aufruf kann auch rekursiv sein...
 							renderSmallerTiles(batch, i, j, aktZoom);
@@ -639,8 +639,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				TileGL tile = mapTileLoader.getDrawingTile(i);
 				if (tile == null) continue;
 
-				// Faktor, mit der dieses MapTile vergrößert gezeichnet
-				// werden muß
+				// Faktor, mit der dieses MapTile vergrï¿½ï¿½ert gezeichnet
+				// werden muï¿½
 				long posFactor = getscaledMapTilePosFactor(tile);
 
 				long xPos = tile.Descriptor.getX() * posFactor * tile.getWidth() - screenCenterW.x;
@@ -656,12 +656,13 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			}
 			batch.enableBlending();
 
-			// FIXME sort rotate List first the Symbols then the Text! sort Text with same Font! Don't change the Texture (improve the
-			// Performance)
+			// FIXME sort rotate List first the Symbols then the Text! sort Text with same Font!
+			// Don't change the Texture (improve the Performance)
 
 			for (int i = 0, n = rotateList.size(); i < n; i++)
 			{
-				rotateList.get(i).draw(batch, -mapHeading);
+				TileGL_RotateDrawables drw = rotateList.get(i);
+				if (drw != null) drw.draw(batch, -mapHeading);
 			}
 			rotateList.truncate(0);
 			rotateList = null;
@@ -678,8 +679,8 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					TileGL tile = mapTileLoader.getDrawingTileOverlay(i);
 					if (tile == null) continue;
 
-					// Faktor, mit der dieses MapTile vergrößert gezeichnet
-					// werden muß
+					// Faktor, mit der dieses MapTile vergrï¿½ï¿½ert gezeichnet
+					// werden muï¿½
 					long posFactor = getscaledMapTilePosFactor(tile);
 
 					long xPos = tile.Descriptor.getX() * posFactor * tile.getWidth() - screenCenterW.x;
@@ -828,9 +829,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	private boolean renderBiggerTiles(Batch batch, int i, int j, int zoom2)
 	{
-		// für den aktuellen Zoom ist kein Tile vorhanden -> kleinere
+		// fï¿½r den aktuellen Zoom ist kein Tile vorhanden -> kleinere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
-		// von dem gefundenen Tile muß dann nur ein Ausschnitt gezeichnet werden
+		// von dem gefundenen Tile muï¿½ dann nur ein Ausschnitt gezeichnet werden
 		int ii = i / 2;
 		int jj = j / 2;
 		int zoomzoom = zoom2 - 1;
@@ -848,10 +849,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
 		{
-			// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+			// fï¿½r den aktuellen Zoom ist kein Tile vorhanden -> grï¿½ï¿½ere
 			// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
 			// sind...
-			// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles
+			// dafï¿½r mï¿½ssen aber pro fehlendem Tile mehrere kleine Tiles
 			// gezeichnet werden (4 oder 16 oder 64...)
 			// dieser Aufruf kann auch rekursiv sein...
 			renderBiggerTiles(batch, ii, jj, zoomzoom);
@@ -861,9 +862,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	private boolean renderBiggerOverlayTiles(Batch batch, int i, int j, int zoom2)
 	{
-		// für den aktuellen Zoom ist kein Tile vorhanden -> kleinere
+		// fï¿½r den aktuellen Zoom ist kein Tile vorhanden -> kleinere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
-		// von dem gefundenen Tile muß dann nur ein Ausschnitt gezeichnet werden
+		// von dem gefundenen Tile muï¿½ dann nur ein Ausschnitt gezeichnet werden
 		int ii = i / 2;
 		int jj = j / 2;
 		int zoomzoom = zoom2 - 1;
@@ -878,10 +879,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		else if ((zoomzoom >= aktZoom - 3) && (zoomzoom >= zoomBtn.getMinZoom()))
 		{
-			// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+			// fï¿½r den aktuellen Zoom ist kein Tile vorhanden -> grï¿½ï¿½ere
 			// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
 			// sind...
-			// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles
+			// dafï¿½r mï¿½ssen aber pro fehlendem Tile mehrere kleine Tiles
 			// gezeichnet werden (4 oder 16 oder 64...)
 			// dieser Aufruf kann auch rekursiv sein...
 			renderBiggerOverlayTiles(batch, ii, jj, zoomzoom);
@@ -891,9 +892,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	private void renderSmallerTiles(Batch batch, int i, int j, int zoom2)
 	{
-		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+		// fï¿½r den aktuellen Zoom ist kein Tile vorhanden -> grï¿½ï¿½ere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
-		// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles gezeichnet
+		// dafï¿½r mï¿½ssen aber pro fehlendem Tile mehrere kleine Tiles gezeichnet
 		// werden (4 oder 16 oder 64...)
 		int i1 = i * 2;
 		int i2 = i * 2 + 1;
@@ -912,10 +913,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				}
 				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM))
 				{
-					// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+					// fï¿½r den aktuellen Zoom ist kein Tile vorhanden -> grï¿½ï¿½ere
 					// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
 					// sind...
-					// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles
+					// dafï¿½r mï¿½ssen aber pro fehlendem Tile mehrere kleine Tiles
 					// gezeichnet werden (4 oder 16 oder 64...)
 					// dieser Aufruf kann auch rekursiv sein...
 					renderSmallerTiles(batch, ii, jj, zoomzoom);
@@ -926,9 +927,9 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 	private void renderSmallerOverlayTiles(Batch batch, int i, int j, int zoom2)
 	{
-		// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+		// fï¿½r den aktuellen Zoom ist kein Tile vorhanden -> grï¿½ï¿½ere
 		// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden sind...
-		// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles gezeichnet
+		// dafï¿½r mï¿½ssen aber pro fehlendem Tile mehrere kleine Tiles gezeichnet
 		// werden (4 oder 16 oder 64...)
 		int i1 = i * 2;
 		int i2 = i * 2 + 1;
@@ -947,10 +948,10 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 				}
 				else if ((zoomzoom <= aktZoom + 0) && (zoomzoom <= MapTileLoader.MAX_MAP_ZOOM))
 				{
-					// für den aktuellen Zoom ist kein Tile vorhanden -> größere
+					// fï¿½r den aktuellen Zoom ist kein Tile vorhanden -> grï¿½ï¿½ere
 					// Zoomfaktoren noch durchsuchen, ob davon Tiles vorhanden
 					// sind...
-					// dafür müssen aber pro fehlendem Tile mehrere kleine Tiles
+					// dafï¿½r mï¿½ssen aber pro fehlendem Tile mehrere kleine Tiles
 					// gezeichnet werden (4 oder 16 oder 64...)
 					// dieser Aufruf kann auch rekursiv sein...
 					renderSmallerOverlayTiles(batch, ii, jj, zoomzoom);
@@ -1010,7 +1011,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			double lat = LocatorSettings.MapInitLatitude.getValue();
 			double lon = LocatorSettings.MapInitLongitude.getValue();
 
-			// Initialisierungskoordinaten bekannt und können übernommen werden
+			// Initialisierungskoordinaten bekannt und kï¿½nnen ï¿½bernommen werden
 			if (lat != -1000 && lon != -1000)
 			{
 				setCenter(new CoordinateGPS(lat, lon));
@@ -1126,7 +1127,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			if (themePath == null)
 			{
 
-				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
+				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme fï¿½r den CarMode gefunden!
 				if (this.NightMode)
 				{
 					themePath = ifThemeExist(LocatorSettings.MapsforgeNightTheme.getValue());
@@ -1193,7 +1194,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 	}
 
 	/**
-	 * liefert die World-Koordinate in Pixel relativ zur Map in der höchsten Auflösung
+	 * liefert die World-Koordinate in Pixel relativ zur Map in der hï¿½chsten Auflï¿½sung
 	 */
 	protected Vector2 screenToWorld(Vector2 point)
 	{
@@ -1208,7 +1209,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		catch (Exception e)
 		{
-			// wenn hier ein Fehler auftritt, dann geben wir einen Vector 0,0 zurück!
+			// wenn hier ein Fehler auftritt, dann geben wir einen Vector 0,0 zurï¿½ck!
 			point.x = 0;
 			point.y = 0;
 		}
@@ -1267,7 +1268,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		float heading = Locator.getHeading();
 
-		// im CarMode keine Richtungs Änderungen unter 20kmh
+		// im CarMode keine Richtungs ï¿½nderungen unter 20kmh
 		if (CarMode && Locator.SpeedOverGround() < 20) heading = this.mapHeading;
 
 		if (!this.NorthOriented || CarMode)
@@ -1276,7 +1277,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			this.arrowHeading = 0;
 
 			// da die Map gedreht in die offScreenBmp gezeichnet werden soll,
-			// muss der Bereich, der gezeichnet werden soll größer sein, wenn
+			// muss der Bereich, der gezeichnet werden soll grï¿½ï¿½er sein, wenn
 			// gedreht wird.
 			if (heading >= 180) heading -= 180;
 			if (heading > 90) heading = 180 - heading;
@@ -1285,7 +1286,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			double mapWidthCalcBase = mapIntWidth + (ySpeedVersatz * 1.7);
 			double beta = Math.atan(mapWidthCalcBase / mapHeightCalcBase);
 			double gammaW = Math.PI / 2 - alpha - beta;
-			// halbe Länge der Diagonalen
+			// halbe Lï¿½nge der Diagonalen
 			double diagonal = Math.sqrt(Math.pow(mapWidthCalcBase, 2) + Math.pow(mapHeightCalcBase, 2)) / 2;
 			drawingWidth = (int) (Math.cos(gammaW) * diagonal * 2);
 
@@ -1429,7 +1430,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			// debugString = "touchDragged " + inputState.toString();
 			if (inputState == InputState.IdleDown)
 			{
-				// es wurde 1x gedrückt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
+				// es wurde 1x gedrï¿½ckt -> testen, ob ein gewisser Minimum Bereich verschoben wurde
 				Point p = fingerDown.get(pointer);
 				if (p != null)
 				{
@@ -1447,7 +1448,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			}
 			if (inputState == InputState.Button)
 			{
-				// wenn ein Button gedrückt war -> beim Verschieben nichts machen!!!
+				// wenn ein Button gedrï¿½ckt war -> beim Verschieben nichts machen!!!
 				return false;
 			}
 
@@ -1456,7 +1457,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 				if (getMapState() == MapState.CAR || getMapState() == MapState.LOCK)
 				{
-					// für verschieben gesperrt!
+					// fï¿½r verschieben gesperrt!
 					return false;
 				}
 				else
@@ -1488,7 +1489,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 					int dyr = (int) (-Math.sin(angle) * dx + Math.cos(angle) * dy);
 					// debugString = dx + " - " + dy + " - " + dxr + " - " + dyr;
 
-					// Pan stufenlos anpassen an den aktuell gültigen Zoomfaktor
+					// Pan stufenlos anpassen an den aktuell gï¿½ltigen Zoomfaktor
 					float tmpZoom = camera.zoom;
 					float ffaktor = 1.5f;
 					// ffaktor = ffaktor - iconFactor + 1;
@@ -1597,12 +1598,12 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		// debugString = "touchUp " + inputState.toString();
 		if (inputState == InputState.IdleDown)
 		{
-			// es wurde gedrückt, aber nich verschoben
+			// es wurde gedrï¿½ckt, aber nich verschoben
 			fingerDown.remove(pointer);
 			inputState = InputState.Idle;
 			// -> Buttons testen
 
-			// auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrückt ist!!!
+			// auf Button Clicks nur reagieren, wenn aktuell noch kein Finger gedrï¿½ckt ist!!!
 			if (kineticPan != null)
 			// bei FingerKlick (wenn Idle) sofort das kinetische Scrollen stoppen
 			kineticPan = null;

@@ -1,5 +1,8 @@
 Changes:
 
+Version : 0.8.2327
+	• fix some exceptions
+
 Version : 0.8.2311
 	• new LiveMap
 	• enhanced usability of Solver2

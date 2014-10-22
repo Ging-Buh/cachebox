@@ -253,6 +253,10 @@ public class ZoomButtons extends CB_View_Base
 
 		float hw = HitRecDown.getWidth();
 		float hh = HitRecDown.getHeight();
+		float hx = HitRecDown.getX();
+		float hy = HitRecDown.getY();
+		float offX = 0;
+		float offY = 0;
 
 		if (portrait)
 		{
@@ -265,10 +269,13 @@ public class ZoomButtons extends CB_View_Base
 			hw = hh;
 			hh = HitRecDown.getWidth();
 
+			// caclc offset
+			offX = -(e - f);
+			offY = -(f - e);
+
 		}
 
-		btnDown.setBounds(HitRecDown.getX(), HitRecDown.getY(), hw, hh);
-
+		btnDown.setBounds(hx + offX, hy + offY, hw, hh);
 		btnDown.draw(batch, FadeValue);
 
 		// draw up button
@@ -284,6 +291,8 @@ public class ZoomButtons extends CB_View_Base
 
 		hw = HitRecUp.getWidth();
 		hh = HitRecUp.getHeight();
+		hx = HitRecUp.getX();
+		hy = HitRecUp.getY();
 
 		if (portrait)
 		{
@@ -296,8 +305,7 @@ public class ZoomButtons extends CB_View_Base
 			hh = HitRecUp.getWidth();
 		}
 
-		btnUp.setBounds(HitRecUp.getX(), HitRecUp.getY(), hw, hh);
-
+		btnUp.setBounds(hx + offX, hy + offY, hw, hh);
 		btnUp.draw(batch, FadeValue);
 	}
 

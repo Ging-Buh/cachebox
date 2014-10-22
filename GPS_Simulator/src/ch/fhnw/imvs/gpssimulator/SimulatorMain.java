@@ -263,7 +263,7 @@ public class SimulatorMain
 			System.out.println("Error: No Bluetooth device available.");
 			// System.exit(1);
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			if (!closing)
 			{
@@ -372,6 +372,6 @@ public class SimulatorMain
 		f.setResizable(false);
 		f.setVisible(true);
 
-		startListener();
+		// startListener();
 	}
 }

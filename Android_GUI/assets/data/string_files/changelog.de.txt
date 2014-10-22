@@ -1,6 +1,9 @@
 
 Versions Änderungen:
 
+Version : 0.8.2327
+	• Fix einige Abstürze 
+
 Version : 0.8.2311
 	• Neu LiveMap
 	• Verbesserte Benutzerfreundlichkeit vom Solver2 

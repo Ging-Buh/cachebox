@@ -2,7 +2,6 @@ package de;
 
 import java.awt.Frame;
 import java.io.File;
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -73,9 +72,6 @@ public class DesktopMain
 		// Initial Desctop TexturePacker
 		new Desctop_Packer();
 
-		InitalConfig();
-		Config.settings.ReadFromDB();
-
 		PlatformSettings.setPlatformSettings(new iPlatformSettings()
 		{
 
@@ -132,6 +128,9 @@ public class DesktopMain
 				return setting;
 			}
 		});
+
+		InitalConfig();
+		Config.settings.ReadFromDB();
 
 		new DesktopLogger();
 		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
@@ -447,9 +446,9 @@ public class DesktopMain
 			f.setResizable(false);
 			f.setVisible(true);
 
-			SimulatorMain.startListener();
+			// SimulatorMain.startListener();
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();

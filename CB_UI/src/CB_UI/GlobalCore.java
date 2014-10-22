@@ -58,10 +58,10 @@ import CB_Utils.Log.Logger.iCreateDebugWithHeader;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-public static final int CurrentRevision = 2311;
+	public static final int CurrentRevision = 2327;
 
-public static final String CurrentVersion = "0.8.";
-public static final String VersionPrefix = "store";
+	public static final String CurrentVersion = "0.8.";
+	public static final String VersionPrefix = "Store";
 
 	// public static final String ps = System.getProperty("path.separator");
 	public static final String AboutMsg = "Team Cachebox (2011-2014)" + br + "www.team-cachebox.de" + br + "Cache Icons Copyright 2009," + br + "Groundspeak Inc. Used with permission";
@@ -76,7 +76,7 @@ public static final String VersionPrefix = "store";
 	public final static GlobalCore INSTANCE = new GlobalCore();
 
 	/**
-	 * nur True beim ersten schreiben! Dann müssen erst die Missing Lang Strings eingelesen werden!
+	 * nur True beim ersten schreiben! Dann mï¿½ssen erst die Missing Lang Strings eingelesen werden!
 	 */
 	private static boolean firstWrite = true;
 
@@ -265,7 +265,7 @@ public static final String VersionPrefix = "store";
 	}
 
 	/**
-	 * APIisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
+	 * APIisOnline Liefert TRUE wenn die Mï¿½glichkeit besteht auf das Internet zuzugreifen und ein API Access Token vorhanden ist.
 	 */
 	public static boolean APIisOnline()
 	{
@@ -285,7 +285,8 @@ public static final String VersionPrefix = "store";
 	static boolean JokerPwExist = false;
 
 	/**
-	 * JokerisOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen und ein Passwort für gcJoker.de vorhanden ist.
+	 * JokerisOnline Liefert TRUE wenn die Mï¿½glichkeit besteht auf das Internet zuzugreifen und ein Passwort fï¿½r gcJoker.de vorhanden
+	 * ist.
 	 */
 	public static boolean JokerisOnline()
 	{
@@ -334,10 +335,10 @@ public static final String VersionPrefix = "store";
 
 		CacheList List = Database.Data.Query;
 
-		// Prüfen, ob der SelectedCache noch in der cacheList drin ist.
+		// Prï¿½fen, ob der SelectedCache noch in der cacheList drin ist.
 		if ((List.size() > 0) && (GlobalCore.ifCacheSelected()) && (List.GetCacheById(GlobalCore.getSelectedCache().Id) == null))
 		{
-			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswählen
+			// der SelectedCache ist nicht mehr in der cacheList drin -> einen beliebigen aus der CacheList auswï¿½hlen
 			Logger.DEBUG("Change SelectedCache from " + GlobalCore.getSelectedCache().getGcCode() + "to" + List.get(0).getGcCode());
 			GlobalCore.setSelectedCache(List.get(0));
 		}
@@ -491,7 +492,7 @@ public static final String VersionPrefix = "store";
 		return VersionPrefix;
 	}
 
-	// Interface für den Solver zum Zugriff auf den SelectedCache.
+	// Interface fï¿½r den Solver zum Zugriff auf den SelectedCache.
 	// Direkter Zugriff geht nicht da der Solver im Core definiert ist
 	@Override
 	public Cache sciGetSelectedCache()

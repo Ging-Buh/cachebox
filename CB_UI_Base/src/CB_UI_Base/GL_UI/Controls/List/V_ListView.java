@@ -63,7 +63,7 @@ public class V_ListView extends ListViewBase
 
 			mReloadItems = false;
 
-			// afräumen
+			// afrï¿½umen
 			if (clearList.size() > 0)
 			{
 
@@ -92,7 +92,7 @@ public class V_ListView extends ListViewBase
 
 		}
 
-		// setze First Index, damit nicht alle Items durchlaufen werden müssen
+		// setze First Index, damit nicht alle Items durchlaufen werden mï¿½ssen
 		synchronized (mAddeedIndexList)
 		{
 			mAddeedIndexList.sort();
@@ -209,74 +209,80 @@ public class V_ListView extends ListViewBase
 	@Override
 	public void calcDefaultPosList()
 	{
-		if (isInCalculation.get())
+		if (this.isDisposed() || isInCalculation.get())
 		{
-
 			return;
 		}
 		isInCalculation.set(true);
 		if (mBaseAdapter == null)
 		{
 			isInCalculation.set(false);
-			return; // can´t calc
+			return; // can't calc
 		}
 
-		if (mPosDefault != null)
+		try
 		{
-			mPosDefault.clear();
-			mPosDefault = null;
-		}
-
-		mPosDefault = new CB_List<Float>();
-
-		minimumItemSize = this.getHeight();
-
-		float countPos = this.getHeight() - mDividerSize;
-
-		mAllSize = 0;
-		if (hasInvisibleItems)
-		{
-			for (int i = 0; i < mBaseAdapter.getCount(); i++)
+			if (mPosDefault != null)
 			{
-				float itemHeight = 0;
-				ListViewItemBase item = mBaseAdapter.getView(i);
-				if (item != null && item.isVisible() && item.getHeight() > 0)
+				mPosDefault.clear();
+				mPosDefault = null;
+			}
+
+			mPosDefault = new CB_List<Float>();
+
+			minimumItemSize = this.getHeight();
+
+			float countPos = this.getHeight() - mDividerSize;
+
+			mAllSize = 0;
+			if (hasInvisibleItems)
+			{
+				for (int i = 0; i < mBaseAdapter.getCount(); i++)
 				{
-					itemHeight = mBaseAdapter.getItemSize(i);
+					float itemHeight = 0;
+					ListViewItemBase item = mBaseAdapter.getView(i);
+					if (item != null && item.isVisible() && item.getHeight() > 0)
+					{
+						itemHeight = mBaseAdapter.getItemSize(i);
+						countPos -= itemHeight + mDividerSize;
+						if (itemHeight < minimumItemSize) minimumItemSize = itemHeight;
+						mAllSize += itemHeight + mDividerSize;
+					}
+
+					mPosDefault.add(countPos);
+
+				}
+			}
+			else
+			{
+				for (int i = 0; i < mBaseAdapter.getCount(); i++)
+				{
+					float itemHeight = mBaseAdapter.getItemSize(i);
 					countPos -= itemHeight + mDividerSize;
 					if (itemHeight < minimumItemSize) minimumItemSize = itemHeight;
 					mAllSize += itemHeight + mDividerSize;
+					mPosDefault.add(countPos);
+
 				}
-
-				mPosDefault.add(countPos);
-
 			}
-		}
-		else
-		{
-			for (int i = 0; i < mBaseAdapter.getCount(); i++)
+
+			mcalcAllSizeBase = countPos - mDividerSize;
+			mMaxItemCount = (int) (this.getHeight() / minimumItemSize);
+			if (mMaxItemCount < 1) mMaxItemCount = 1;
+
+			if (mAllSize > this.getHeight())
 			{
-				float itemHeight = mBaseAdapter.getItemSize(i);
-				countPos -= itemHeight + mDividerSize;
-				if (itemHeight < minimumItemSize) minimumItemSize = itemHeight;
-				mAllSize += itemHeight + mDividerSize;
-				mPosDefault.add(countPos);
-
+				this.setDragable();
+			}
+			else
+			{
+				this.setUndragable();
 			}
 		}
-
-		mcalcAllSizeBase = countPos - mDividerSize;
-		mMaxItemCount = (int) (this.getHeight() / minimumItemSize);
-		if (mMaxItemCount < 1) mMaxItemCount = 1;
-
-		if (mAllSize > this.getHeight())
+		catch (Exception e)
 		{
-			this.setDragable();
 		}
-		else
-		{
-			this.setUndragable();
-		}
+
 		isInCalculation.set(false);
 	}
 
@@ -319,7 +325,7 @@ public class V_ListView extends ListViewBase
 		if (!mIsDrageble) return true;
 		mLastTouch = y;
 		mLastPos_onTouch = mPos;
-		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
+		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelï¿½st wird.
 	}
 
 	@Override
