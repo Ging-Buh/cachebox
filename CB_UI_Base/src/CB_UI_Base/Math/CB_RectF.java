@@ -375,8 +375,8 @@ public class CB_RectF
 	}
 
 	/**
-	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zur�ck! <img src="doc-files/rec-intersection.png" width=537
-	 * height=307>
+	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zur�ck! <img src="doc-files/rec-intersection.png"
+	 * width=537 height=307>
 	 * 
 	 * @param P1
 	 *            = start Punkt der Linie
@@ -390,8 +390,8 @@ public class CB_RectF
 	}
 
 	/**
-	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zur�ck! </br> Wobei die als int �bergebene Nummer der Gerade
-	 * des Rechtecks als erstes �berpr�ft wird. </br> <img src="doc-files/rec-intersection.png" width=537 height=307>
+	 * Gibt den ersten Schnittpunkt des Rechtecks zwichen den Punkten P1 und P2 zur�ck! </br> Wobei die als int �bergebene Nummer der
+	 * Gerade des Rechtecks als erstes �berpr�ft wird. </br> <img src="doc-files/rec-intersection.png" width=537 height=307>
 	 * 
 	 * @param P1
 	 *            = start Punkt der Linie
@@ -569,13 +569,13 @@ public class CB_RectF
 
 	public void dispose()
 	{
-		synchronized (list)
+		if (list != null)
 		{
-			if (list != null)
+			synchronized (list)
 			{
 				list.clear();
+				list = null;
 			}
-			list = null;
 		}
 
 		if (member != null)
