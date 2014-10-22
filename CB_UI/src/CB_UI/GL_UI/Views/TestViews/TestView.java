@@ -17,11 +17,13 @@ import CB_UI_Base.GL_UI.Controls.Button;
 import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
+import CB_UI_Base.GL_UI.Controls.ZoomButtons;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 
 import com.badlogic.gdx.Gdx;
@@ -109,6 +111,16 @@ public class TestView extends CB_View_Base
 		// Group.add(rb);
 		// Group.add(rb2);
 		// Group.add(rb3);
+
+		float margin = GL_UISizes.margin;
+
+		ZoomButtons zoomBtn = new ZoomButtons(GL_UISizes.ZoomBtn, this, "ZoomButtons");
+		zoomBtn.setPortrait();
+		zoomBtn.disableFadeOut();
+		zoomBtn.setSize(GL_UISizes.ZoomBtn.getHeight(), GL_UISizes.ZoomBtn.getWidth());
+		zoomBtn.setPos(this.getWidth() - margin - zoomBtn.getWidth(), this.getHeight() - margin - zoomBtn.getHeight());
+
+		this.addChild(zoomBtn);
 
 		requestLayout();
 

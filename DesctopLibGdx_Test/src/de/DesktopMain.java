@@ -72,9 +72,6 @@ public class DesktopMain
 		// Initial Desctop TexturePacker
 		new Desctop_Packer();
 
-		InitalConfig();
-		Config.settings.ReadFromDB();
-
 		PlatformSettings.setPlatformSettings(new iPlatformSettings()
 		{
 
@@ -131,6 +128,9 @@ public class DesktopMain
 				return setting;
 			}
 		});
+
+		InitalConfig();
+		Config.settings.ReadFromDB();
 
 		new DesktopLogger();
 		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
