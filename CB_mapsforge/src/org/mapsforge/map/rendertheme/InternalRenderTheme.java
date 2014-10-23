@@ -44,4 +44,9 @@ public enum InternalRenderTheme implements XmlRenderTheme {
 	public InputStream getRenderThemeAsStream() {
 		return Thread.currentThread().getClass().getResourceAsStream(this.absolutePath + this.file);
 	}
+
+	@Override
+	public boolean isFreizeitkarte() {
+		return false;
+	}
 }

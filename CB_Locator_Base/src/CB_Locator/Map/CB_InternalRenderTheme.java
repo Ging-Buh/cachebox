@@ -42,4 +42,10 @@ public enum CB_InternalRenderTheme implements XmlRenderTheme
 	{
 		return fileHandle.read();
 	}
+
+	@Override
+	public boolean isFreizeitkarte()
+	{
+		return false;
+	}
 }

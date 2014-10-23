@@ -738,7 +738,7 @@ public abstract class ManagerBase
 
 	private void LoadMapsforgeMap(Layer layer)
 	{
-		RenderThemeChanged = true;
+		// RenderThemeChanged = true;
 		mapFile = new File(layer.Url);
 
 		if (mapDatabase == null) mapDatabase = new MapDatabase[PROCESSOR_COUNT];
@@ -751,8 +751,25 @@ public abstract class ManagerBase
 		}
 
 		Logger.DEBUG("Open MapsForge Map: " + mapFile);
+		MapFileInfo info = mapDatabase[0].getMapFileInfo();
+		if (info.comment == null)
+		{
+			LoadadMapIsFreizeitkarte = false;
+		}
+		else
+			LoadadMapIsFreizeitkarte = info.comment.contains("FZK project");
 
 		mapsForgeFile = layer.Name;
+	}
+
+	private boolean LoadadMapIsFreizeitkarte = false;
+
+	/**
+	 * @return True, if the loaded map from Freizeitkarte
+	 */
+	public boolean isFreizeitKarteLoaded()
+	{
+		return LoadadMapIsFreizeitkarte;
 	}
 
 	public abstract GraphicFactory getGraphicFactory(float ScaleFactor);

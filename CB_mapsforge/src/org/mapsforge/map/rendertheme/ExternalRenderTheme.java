@@ -14,9 +14,12 @@
  */
 package org.mapsforge.map.rendertheme;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -25,6 +28,7 @@ import java.io.InputStream;
 public class ExternalRenderTheme implements XmlRenderTheme {
 	private final long lastModifiedTime;
 	private final File renderThemeFile;
+	private boolean isFreizeit;
 
 	/**
 	 * @param renderThemeFile
@@ -46,7 +50,24 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 			throw new FileNotFoundException("cannot read last modified time: " + renderThemeFile.getAbsolutePath());
 		}
 		this.renderThemeFile = renderThemeFile;
-	}
+		
+		// read is Freizeitkarte Theme
+		
+		final FileReader fileReader = new FileReader(renderThemeFile);
+        final BufferedReader bufferedReader = new BufferedReader(fileReader);
+        String line;
+        try {
+			while ((line = bufferedReader.readLine()) != null) {
+			  if( line.contains("freizeitkarte@googlemail.com")){
+				  isFreizeit=true;
+				  break;
+			  }
+			}
+			 bufferedReader.close();
+		} catch (IOException e) {
+						e.printStackTrace();
+		}
+ 	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -86,5 +107,10 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 		result = prime * result + (int) (this.lastModifiedTime ^ (this.lastModifiedTime >>> 32));
 		result = prime * result + ((this.renderThemeFile == null) ? 0 : this.renderThemeFile.hashCode());
 		return result;
+	}
+
+	@Override
+	public boolean isFreizeitkarte() {
+		return isFreizeit;
 	}
 }
