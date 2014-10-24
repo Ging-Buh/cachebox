@@ -41,8 +41,6 @@ public class GL_UISizes implements SizeChangedEvent
 		Logger.DEBUG("Initial UISizes => " + width + "/" + height);
 		Logger.DEBUG("DPI = " + DPI);
 
-		defaultDPI = CB_UI_Base_Settings.MapViewDPIFaktor.getDefaultValue();
-
 		if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue())
 		{
 
@@ -146,7 +144,7 @@ public class GL_UISizes implements SizeChangedEvent
 	/**
 	 * DPI Wert des Displays, kann nicht über die Settings verändert werden
 	 */
-	public static float defaultDPI;
+	public static float defaultDPI = 1;
 
 	/**
 	 * Die Font Größe wird über den DPI Faktor berechnet und kann über den FontFaktor zusätzlich beeinflusst werden.

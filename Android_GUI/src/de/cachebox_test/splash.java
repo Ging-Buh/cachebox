@@ -22,6 +22,7 @@ import CB_UI_Base.Events.platformConector.IgetFolderReturnListner;
 import CB_UI_Base.GL_UI.DisplayType;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
+import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
@@ -1247,6 +1248,7 @@ public class splash extends Activity
 
 		new UiSizes();
 		UI_Size_Base.that.initial(ui);
+		GL_UISizes.defaultDPI = ui.Density;
 
 		Global.Paints.init(this);
 

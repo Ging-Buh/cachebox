@@ -81,4 +81,10 @@ public class AssetsRenderTheme implements XmlRenderTheme
 		result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
 		return result;
 	}
+
+	@Override
+	public boolean isFreizeitkarte()
+	{
+		return false;
+	}
 }
