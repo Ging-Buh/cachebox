@@ -30,7 +30,6 @@ import CB_UI_Base.graphics.GL_Paint;
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Geometry.Line;
 import CB_UI_Base.graphics.Geometry.Quadrangle;
-import CB_Utils.Plattform;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -58,9 +57,9 @@ public class DescriptionView extends CB_View_Base
 		Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel");
 		lblDummy.setFont(Fonts.getNormal());
 		lblDummy.setText("Dummy DescriptionView");
-		setBackground(SpriteCacheBase.ListBack);
+		// setBackground(SpriteCacheBase.ListBack);
 
-		if (Plattform.used == Plattform.Desktop) this.addChild(lblDummy);
+		this.addChild(lblDummy);
 
 	}
 

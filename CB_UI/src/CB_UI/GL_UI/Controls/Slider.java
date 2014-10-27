@@ -18,7 +18,6 @@ import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Plattform;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -82,8 +81,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 		QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight();
 
-		quickButtonList = new QuickButtonList(new CB_RectF(0, this.getHeight() - QuickButtonMaxHeight, this.getWidth(),
-				QuickButtonMaxHeight), "QuickButtonList");
+		quickButtonList = new QuickButtonList(new CB_RectF(0, this.getHeight() - QuickButtonMaxHeight, this.getWidth(), QuickButtonMaxHeight), "QuickButtonList");
 		this.addChild(quickButtonList);
 
 		mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
@@ -92,7 +90,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		mLblCacheName.setPos(30, 0);
 		mLblCacheName.setHAlignment(HAlignment.CENTER);
 		mSlideBox.addChild(mLblCacheName);
-		if (Plattform.used == Plattform.Desktop) this.addChild(mSlideBox);
+		this.addChild(mSlideBox);
 	}
 
 	@Override
@@ -211,7 +209,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		return true;
 	}
 
-	public void ActionUp() // Slider zurück scrolllen lassen
+	public void ActionUp() // Slider zurï¿½ck scrolllen lassen
 	{
 		// Logger.LogCat("ActionUP");
 
