@@ -16,9 +16,12 @@ import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Box;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
+import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
@@ -29,7 +32,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	private QuickButtonList quickButtonList;
 
 	private Label mLblCacheName;
-	private static Box mSlideBox;
+	private static Box mSlideBox, mSlideBoxContent;
 	private int QuickButtonMaxHeight;
 	private int QuickButtonHeight;
 
@@ -82,7 +85,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight();
 
 		quickButtonList = new QuickButtonList(new CB_RectF(0, this.getHeight() - QuickButtonMaxHeight, this.getWidth(), QuickButtonMaxHeight), "QuickButtonList");
-		this.addChild(quickButtonList);
 
 		mSlideBox = new Box(new CB_RectF(-15, 100, this.getWidth() + 30, UiSizes.that.getInfoSliderHeight()), "SlideBox");
 		mSlideBox.setBackground(SpriteCacheBase.ProgressBack);
@@ -90,6 +92,15 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		mLblCacheName.setPos(30, 0);
 		mLblCacheName.setHAlignment(HAlignment.CENTER);
 		mSlideBox.addChild(mLblCacheName);
+
+		mSlideBoxContent = new Box(this, "SlideBoxContent");
+
+		Color transBackColor = new Color(0, 0.1f, 0, 0.8f);
+
+		mSlideBoxContent.setBackground(new ColorDrawable(transBackColor));
+		this.addChild(mSlideBoxContent);
+
+		this.addChild(quickButtonList);
 		this.addChild(mSlideBox);
 	}
 
@@ -131,6 +142,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 		yPos = value;
 		mSlideBox.setY(value);
+		mSlideBoxContent.setY(mSlideBox.getMaxY() - GL_UISizes.margin);
 		setQuickButtonListHeight();
 		GL.that.renderOnce();
 		callPosChangedEvent();
@@ -142,12 +154,12 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 		{
 			if (this.getHeight() - mSlideBox.getMaxY() < QuickButtonMaxHeight)
 			{
-				quickButtonList.setHeight(this.getHeight() - mSlideBox.getMaxY());
+				quickButtonList.setHeight(this.getHeight() - (mSlideBox.getMaxY() - GL_UISizes.margin));
 				quickButtonList.setY(this.getHeight() - quickButtonList.getHeight());
 			}
 			else
 			{
-				quickButtonList.setHeight(QuickButtonMaxHeight);
+				quickButtonList.setHeight(QuickButtonMaxHeight + GL_UISizes.margin);
 				quickButtonList.setY(this.getHeight() - quickButtonList.getHeight());
 			}
 		}
@@ -156,7 +168,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 			quickButtonList.setHeight(0);
 		}
 
-		TabMainView.that.setContentMaxY(this.getHeight() - quickButtonList.getHeight() - mSlideBox.getHeight());
+		TabMainView.that.setContentMaxY(this.getHeight() - quickButtonList.getHeight() - mSlideBox.getHeight() + (GL_UISizes.margin * 2));
 	}
 
 	int debugInt = 0;
@@ -380,12 +392,12 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	public static boolean setAndroidSliderHeight(int height)
 	{
-		if (that != null && mSlideBox != null)
-		{
-			mSlideBox.setHeight(height);
-			return true;
-		}
-		return false;
+		// if (that != null && mSlideBox != null)
+		// {
+		// mSlideBox.setHeight(height);
+		// return true;
+		// }
+		return true;
 	}
 
 	@Override

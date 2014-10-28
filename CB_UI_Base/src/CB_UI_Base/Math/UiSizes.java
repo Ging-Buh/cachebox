@@ -63,11 +63,11 @@ public class UiSizes extends UI_Size_Base
 
 		CornerSize = scaledRefSize_normal;
 		CacheInfoHeight = (int) (scaledRefSize_normal * 8.5);
-		infoSliderHeight = (int) (scaledRefSize_normal * 2.4);
+		infoSliderHeight = (int) (scaledRefSize_normal * 2.7);
 
 		spaceWidth = (int) (scaledFontSize_normal * 0.9);
 		tabWidth = (int) (scaledFontSize_normal * 0.6);
-		halfCornerSize = (int) CornerSize / 2;
+		halfCornerSize = CornerSize / 2;
 
 		float ItemHeight = ui.Density * 63;
 
