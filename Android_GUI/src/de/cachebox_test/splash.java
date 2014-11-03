@@ -139,12 +139,12 @@ public class splash extends Activity
 		else
 			GlobalCore.displayType = DisplayType.Small;
 
-		// überprüfen, ob ACB im Hochformat oder Querformat gestartet wurde.
+		// ï¿½berprï¿½fen, ob ACB im Hochformat oder Querformat gestartet wurde.
 		// Hochformat -> Handymodus
 		// Querformat -> Tablet-Modus
 		if (w > h) isLandscape = true;
 
-		// Porträt erzwingen wenn Normal oder Small display
+		// Portrï¿½t erzwingen wenn Normal oder Small display
 		if (isLandscape && (GlobalCore.displayType == DisplayType.Normal || GlobalCore.displayType == DisplayType.Small))
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -272,7 +272,7 @@ public class splash extends Activity
 		// first, try to find stored preferences of workPath
 		AndroidSettings = this.getSharedPreferences(Global.PREFS_NAME, 0);
 
-		workPath = AndroidSettings.getString("WorkPath", "");
+		workPath = AndroidSettings.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
 		boolean askAgain = AndroidSettings.getBoolean("AskAgain", true);
 
 		Global.initTheme(this);
@@ -366,7 +366,7 @@ public class splash extends Activity
 			}
 
 			// externe SD wurde gefunden != internal
-			// oder Tablet Layout möglich
+			// oder Tablet Layout mï¿½glich
 			// -> Auswahldialog anzeigen
 			try
 			{
@@ -953,7 +953,7 @@ public class splash extends Activity
 
 		Logger.setDebugFilePath(workPath + "/debug.txt");
 
-		// Zur Kompatibilität mit älteren Installationen wird hier noch die redirection.txt abgefragt
+		// Zur Kompatibilitï¿½t mit ï¿½lteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{
 			BufferedReader Filereader;
@@ -1058,7 +1058,7 @@ public class splash extends Activity
 			}
 		});
 
-		// wenn die Settings DB neu Erstellt wurde, müssen die Default werte
+		// wenn die Settings DB neu Erstellt wurde, mï¿½ssen die Default werte
 		// geschrieben werden.
 		if (Database.Settings.isDbNew())
 		{
@@ -1082,7 +1082,7 @@ public class splash extends Activity
 		Database.Data = new AndroidDB(DatabaseType.CacheBox, this);
 
 		// wenn eine cachebox.config existiert, werden die Werte in die DB
-		// übertragen
+		// ï¿½bertragen
 		if (FileIO.FileExists(workPath + "/cachebox.config"))
 		{
 			Config.readConfigFile(/* getAssets() */);
@@ -1219,7 +1219,7 @@ public class splash extends Activity
 			Config.AcceptChanges();
 		}
 
-		// UiSize Structur für die Berechnung der Größen zusammen stellen!
+		// UiSize Structur fï¿½r die Berechnung der Grï¿½ï¿½en zusammen stellen!
 		Resources res = this.getResources();
 
 		// WindowManager w = this.getWindowManager();

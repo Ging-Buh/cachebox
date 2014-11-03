@@ -85,7 +85,7 @@ public class splash extends MainViewBase
 		switcher = !switcher;
 		if (switcher && !breakForWait)
 		{
-			// in jedem Render Vorgang einen Step ausführen
+			// in jedem Render Vorgang einen Step ausfï¿½hren
 			switch (step)
 			{
 			case 0:
