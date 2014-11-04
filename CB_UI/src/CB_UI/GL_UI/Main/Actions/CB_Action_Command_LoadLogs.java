@@ -14,6 +14,7 @@ import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -29,6 +30,7 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Command_LoadLogs extends CB_ActionCommand
@@ -97,7 +99,7 @@ public class CB_Action_Command_LoadLogs extends CB_ActionCommand
 				}
 				catch (InterruptedException e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 
 				// Reload result from DB

@@ -15,6 +15,7 @@ import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.DescriptionView;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -36,6 +37,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
@@ -188,7 +190,7 @@ public class CB_Action_ShowDescriptionView extends CB_Action_ShowView
 				}
 				catch (InterruptedException e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 
 				// Reload result from DB

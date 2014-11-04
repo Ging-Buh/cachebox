@@ -268,7 +268,6 @@ public class SimulatorMain
 			if (!closing)
 			{
 				e.printStackTrace();
-				// System.exit(1);
 			}
 		}
 	}

@@ -111,7 +111,7 @@ public class ApiGroundspeak extends ApiBase
 	// }
 	// catch (UnsupportedEncodingException e3)
 	// {
-	// Logger.Error("ApiGroundspeak (" + getApiFunction() + "):UnsupportedEncodingException", e3.getMessage());
+	// Gdx.app.error(Tag.TAG,"ApiGroundspeak (" + getApiFunction() + "):UnsupportedEncodingException", e3.getMessage());
 	// result.setResult(-1);
 	// result.setMessage("ApiGroundspeak (" + getApiFunction() + "):UnsupportedEncodingException: " + e3.getMessage());
 	// return result;
@@ -136,7 +136,7 @@ public class ApiGroundspeak extends ApiBase
 	// }
 	// catch (ConnectTimeoutException e)
 	// {
-	// Logger.Error("SearchForGeocaches:ConnectTimeoutException", e.getMessage());
+	// Gdx.app.error(Tag.TAG,"SearchForGeocaches:ConnectTimeoutException", e.getMessage());
 	// showToastConnectionError();
 	//
 	// result.setResult(-1);
@@ -146,14 +146,14 @@ public class ApiGroundspeak extends ApiBase
 	// }
 	// catch (ClientProtocolException e)
 	// {
-	// Logger.Error("SearchForGeocaches:ClientProtocolException", e.getMessage());
+	// Gdx.app.error(Tag.TAG,"SearchForGeocaches:ClientProtocolException", e.getMessage());
 	// result.setResult(-1);
 	// result.setMessage("ApiGroundspeak (" + getApiFunction() + "): ClientProtocolException: " + e.getMessage());
 	// return result;
 	// }
 	// catch (IOException e)
 	// {
-	// Logger.Error("ApiGroundspeak (" + getApiFunction() + "):IOException", e.getMessage());
+	// Gdx.app.error(Tag.TAG,"ApiGroundspeak (" + getApiFunction() + "):IOException", e.getMessage());
 	// result.setResult(-1);
 	// result.setMessage("ApiGroundspeak (" + getApiFunction() + "): IOException: " + e.getMessage());
 	// return result;

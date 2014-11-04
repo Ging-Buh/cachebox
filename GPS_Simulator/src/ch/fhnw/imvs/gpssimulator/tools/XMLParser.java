@@ -132,7 +132,6 @@ public class XMLParser extends DefaultHandler
 				}
 				catch (Exception e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -144,7 +143,6 @@ public class XMLParser extends DefaultHandler
 			}
 			catch (Exception e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

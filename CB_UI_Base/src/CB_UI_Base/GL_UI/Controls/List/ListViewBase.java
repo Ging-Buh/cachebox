@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -12,10 +13,10 @@ import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.MoveableList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -248,7 +249,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		// Position setzen, damit die items neu geladen werden
 		setListPos(mPos, false);
-		// Logger.DEBUG("SetListPos Relod Items");
+		// Gdx.app.debug(Tag.TAG,"SetListPos Relod Items");
 		GL.that.renderOnce();
 
 	}
@@ -345,7 +346,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
 		}
@@ -398,7 +399,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -413,7 +414,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 	}
@@ -425,7 +426,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	@Override
 	public void chkSlideBack()
 	{
-		// Logger.LogCat("chkSlideBack()");
+		// Gdx.app.debug(Tag.TAG,"chkSlideBack()");
 		if (!mIsDrageble)
 		{
 			startAnimationtoTop();
@@ -479,7 +480,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		float versatz = (i < lastAndFirst.y) ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
 
-		Logger.DEBUG("SetListPos -> ScrollTO Item [" + i + "]");
+		Gdx.app.debug(Tag.TAG, "SetListPos -> ScrollTO Item [" + i + "]");
 
 		try
 		{
@@ -494,14 +495,14 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
 	public void scrollTo(float Pos)
 	{
 
-		// Logger.LogCat("Scroll TO:" + Pos);
+		// Gdx.app.debug(Tag.TAG,"Scroll TO:" + Pos);
 
 		mAnimationTarget = Pos;
 		stopTimer();
@@ -532,7 +533,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 						return;
 					}
 
-					// Logger.DEBUG("Set Animatet ListPos");
+					// Gdx.app.debug(Tag.TAG,"Set Animatet ListPos");
 					setListPos(newPos, true);
 				}
 
@@ -541,7 +542,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		catch (Exception e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
@@ -682,7 +683,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		}
 
-		// Logger.LogCat("getLastVisiblePosition = " + ret);
+		// Gdx.app.debug(Tag.TAG,"getLastVisiblePosition = " + ret);
 
 		return ret;
 	}

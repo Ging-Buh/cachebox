@@ -23,6 +23,7 @@ import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.FileIO;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 public class TrackRecorder
@@ -69,12 +70,12 @@ public class TrackRecorder
 				}
 				catch (IOException e)
 				{
-					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+					Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
 				}
 			}
 			catch (IOException e1)
 			{
-				CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e1);
+				Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e1);
 			}
 
 			try
@@ -88,7 +89,7 @@ public class TrackRecorder
 			}
 			catch (IOException e)
 			{
-				CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+				Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
 			}
 			writer = null;
 
@@ -170,11 +171,11 @@ public class TrackRecorder
 		}
 		catch (FileNotFoundException e)
 		{
-			CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+			Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
 		}
 		catch (IOException e)
 		{
-			CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+			Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
 		}
 		writeAnnotateMedia = false;
 		if (mustRecPos)
@@ -255,11 +256,11 @@ public class TrackRecorder
 				}
 				catch (FileNotFoundException e)
 				{
-					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+					Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
 				}
 				catch (IOException e)
 				{
-					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+					Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
 				}
 
 				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(_GPS), new Date());

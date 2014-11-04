@@ -34,6 +34,7 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.AppRater;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.TrackRecorder;
 import CB_UI.GL_UI.Controls.Slider;
 import CB_UI.GL_UI.Main.Actions.CB_Action_GenerateRoute;
@@ -109,12 +110,12 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
@@ -211,49 +212,49 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	{
 		if (cacheListView != null && !cacheListView.isVisible())
 		{
-			Logger.LogCat("Rerlease CachelistView");
+			Gdx.app.debug(Tag.TAG, "Rerlease CachelistView");
 			cacheListView.dispose();
 			cacheListView = null;
 		}
 
 		if (aboutView != null && !aboutView.isVisible())
 		{
-			Logger.LogCat("Rerlease aboutView");
+			Gdx.app.debug(Tag.TAG, "Rerlease aboutView");
 			aboutView.dispose();
 			aboutView = null;
 		}
 
 		if (compassView != null && !compassView.isVisible())
 		{
-			Logger.LogCat("Rerlease compassView");
+			Gdx.app.debug(Tag.TAG, "Rerlease compassView");
 			compassView.dispose();
 			compassView = null;
 		}
 
 		if (fieldNotesView != null && !fieldNotesView.isVisible())
 		{
-			Logger.LogCat("Rerlease fieldNotesView");
+			Gdx.app.debug(Tag.TAG, "Rerlease fieldNotesView");
 			fieldNotesView.dispose();
 			fieldNotesView = null;
 		}
 
 		if (logView != null && !logView.isVisible())
 		{
-			Logger.LogCat("Rerlease logView");
+			Gdx.app.debug(Tag.TAG, "Rerlease logView");
 			logView.dispose();
 			logView = null;
 		}
 
 		if (waypointView != null && !waypointView.isVisible())
 		{
-			Logger.LogCat("Rerlease waypointView");
+			Gdx.app.debug(Tag.TAG, "Rerlease waypointView");
 			waypointView.dispose();
 			waypointView = null;
 		}
 
 		if (solverView2 != null && !solverView2.isVisible())
 		{
-			Logger.LogCat("Rerlease solverView2");
+			Gdx.app.debug(Tag.TAG, "Rerlease solverView2");
 			solverView2.dispose();
 			solverView2 = null;
 		}
@@ -298,14 +299,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	private void initialSettingsChangedListner()
 	{
-		Config.WriteLoggerDebugMode.addChangedEventListner(new iChanged()
-		{
-			@Override
-			public void isChanged()
-			{
-				Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
-			}
-		});
 
 		Config.ImperialUnits.addChangedEventListner(new iChanged()
 		{
@@ -332,7 +325,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		// Set settings first
 		UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
-		Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
 	}
 
 	public static void reloadCacheList()
@@ -353,8 +345,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		API_ErrorEventHandlerList.addHandler(handler);
 
-		Logger.LogCat("Start TabMainView-Initial");
-		Logger.DEBUG("Start TabMainView-Initial");
+		Gdx.app.debug(Tag.TAG, "Start TabMainView-Initial");
+		Gdx.app.debug(Tag.TAG, "Start TabMainView-Initial");
 
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
@@ -394,7 +386,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		Slider slider = new Slider(this, "Slider");
 		this.addChild(slider);
 
-		Logger.LogCat("Ende TabMainView-Initial");
+		Gdx.app.debug(Tag.TAG, "Ende TabMainView-Initial");
 
 		autoLoadTrack();
 
@@ -414,7 +406,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 					Cache c = Database.Data.Query.get(i);
 					if (c.getGcCode().equalsIgnoreCase(sGc))
 					{
-						Logger.DEBUG("TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+						Gdx.app.debug(Tag.TAG, "TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 						GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
 						break;
 					}
@@ -725,7 +717,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	public void setContentMaxY(float y)
 	{
-		// Logger.LogCat("TabMainView SetContent maxY" + y);
+		// Gdx.app.debug(Tag.TAG,"TabMainView SetContent maxY" + y);
 		synchronized (childs)
 		{
 			for (int i = 0, n = childs.size(); i < n; i++)
@@ -793,7 +785,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		GL.that.RestartRender();
 	}
@@ -883,8 +875,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		}
 		catch (Exception e)
 		{
-			Logger.Error("Core.MainViewBase.PositionChanged()", "TrackRecorder.recordPosition()", e);
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "Core.MainViewBase.PositionChanged() TrackRecorder.recordPosition()", e);
 		}
 
 		if (GlobalCore.ifCacheSelected())

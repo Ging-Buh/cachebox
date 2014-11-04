@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_Locator.Tag;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -14,6 +15,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -98,8 +100,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 		com.badlogic.gdx.graphics.Color c = COLOR.getFontColor();
 		Fonts.getNormal().setColor(c.r, c.g, c.b, FadeValue);
-		Fonts.getNormal().draw(batch, String.valueOf(intZoom), ValueRec.getX() + (ValueRec.getWidth() / 3),
-				ValueRec.getY() + ValueRec.getHeight() / 1.15f);
+		Fonts.getNormal().draw(batch, String.valueOf(intZoom), ValueRec.getX() + (ValueRec.getWidth() / 3), ValueRec.getY() + ValueRec.getHeight() / 1.15f);
 		Fonts.getNormal().setColor(c.r, c.g, c.b, 1f);
 
 		invalidateTextureEventList.Add(this);
@@ -158,8 +159,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 
 			y = (int) ((1 - ((zoom) - minzoom) / numSteps) * (bottomRow - topRow)) + topRow;
 
-			ValueRec = new CB_RectF(rect.getX() + GL_UISizes.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY
-					+ y, rect.getWidth(), rect.getWidth() / 2);
+			ValueRec = new CB_RectF(rect.getX() + GL_UISizes.infoShadowHeight + centerColumn - rect.getWidth() / 2 - lineHeight / 2, grundY + y, rect.getWidth(), rect.getWidth() / 2);
 		}
 		else
 		{
@@ -266,7 +266,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
@@ -343,7 +343,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	@Override
 	public void onResized(CB_RectF rec)
 	{
-		// Logger.LogCat("ZoomScale Rezised");
+		// Gdx.app.debug(Tag.TAG,"ZoomScale Rezised");
 		ScaleDrawRec = null;
 		storedRec = null;
 		CachedScaleSprite = null;

@@ -20,12 +20,14 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -144,7 +146,7 @@ public class ZoomButtons extends CB_View_Base
 				if (zoom < maxzoom)
 				{
 					zoom++;
-					// Logger.LogCat("ZoomButton OnClick UP (" + zoom + ")");
+					// Gdx.app.debug(Tag.TAG,"ZoomButton OnClick UP (" + zoom + ")");
 					mOnClickListenerUp.onClick(this, x, y, pointer, button);
 				}
 				behandelt = true;
@@ -159,7 +161,7 @@ public class ZoomButtons extends CB_View_Base
 				if (zoom > minzoom)
 				{
 					zoom--;
-					// Logger.LogCat("ZoomButton OnClick Down (" + zoom + ")");
+					// Gdx.app.debug(Tag.TAG,"ZoomButton OnClick Down (" + zoom + ")");
 					mOnClickListenerDown.onClick(this, x, y, pointer, button);
 				}
 				behandelt = true;
@@ -341,7 +343,7 @@ public class ZoomButtons extends CB_View_Base
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -363,7 +365,7 @@ public class ZoomButtons extends CB_View_Base
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 

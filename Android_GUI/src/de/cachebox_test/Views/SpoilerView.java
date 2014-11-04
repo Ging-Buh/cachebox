@@ -9,7 +9,6 @@ import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.iStartPictureApp;
-import CB_Utils.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,8 +29,12 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.badlogic.gdx.Gdx;
+
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
+import de.cachebox_test.Tag;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
@@ -247,7 +250,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("SpoilerView.onShow()", "AddBitmap", exc);
+				Gdx.app.error(Tag.TAG, "SpoilerView.onShow() AddBitmap", exc);
 			}
 		}
 

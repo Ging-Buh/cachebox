@@ -8,8 +8,10 @@ import CB_UI_Base.graphics.Images.VectorDrawable;
 import CB_UI_Base.graphics.SVG.SVG;
 import CB_UI_Base.graphics.SVG.SVGParseException;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
+import de.CB.Test.Tag;
 import de.CB.TestBase.Actions.TestCaseBase;
 
 public abstract class SVG_TestBase extends TestCaseBase
@@ -42,12 +44,12 @@ public abstract class SVG_TestBase extends TestCaseBase
 		catch (FileNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		catch (SVGParseException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 	}

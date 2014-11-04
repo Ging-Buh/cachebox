@@ -5,10 +5,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.badlogic.gdx.Gdx;
+
+import de.CB.Test.Tag;
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
-import CB_Utils.Log.Logger;
+
 
 public class Config extends Config_Core implements Settings, LocatorSettings
 {
@@ -142,8 +145,7 @@ public class Config extends Config_Core implements Settings, LocatorSettings
 		}
 		catch (IOException e)
 		{
-			Logger.Error("ReadConfig", "Error when accessing cachebox.config!", e);
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG,"ReadConfig Error when accessing cachebox.config!", e);
 		}
 
 		validateDefaultConfigFile();

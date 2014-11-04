@@ -27,6 +27,7 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Locator.Map.Descriptor;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Controls.SatBarChart;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -38,6 +39,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Math.PointD;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -187,7 +189,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		try
 		{
@@ -195,7 +197,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		drawing = null;
 		drawingPixmap = null;
@@ -326,7 +328,7 @@ public class MeasureCoordinate extends ActivityBase implements PositionChangedEv
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		redraw = false;

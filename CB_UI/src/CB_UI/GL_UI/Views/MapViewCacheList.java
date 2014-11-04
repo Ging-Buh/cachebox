@@ -25,11 +25,12 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.MoveableList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
@@ -80,16 +81,16 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 		try
 		{
-			Logger.DEBUG("MapCacheList.queueProcessor Create");
+			Gdx.app.debug(Tag.TAG, "MapCacheList.queueProcessor Create");
 			queueProcessor = new queueProcessor();
 			queueProcessor.setPriority(Thread.MIN_PRIORITY);
 		}
 		catch (Exception ex)
 		{
-			Logger.Error("MapCacheList.queueProcessor", "onCreate", ex);
+			Gdx.app.error(Tag.TAG, "MapCacheList.queueProcessor onCreate", ex);
 		}
 
-		Logger.DEBUG("MapCacheList.queueProcessor Start");
+		Gdx.app.log(Tag.TAG, "MapCacheList.queueProcessor Start");
 		queueProcessor.start();
 
 		state.set(0);
@@ -233,7 +234,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			}
 			catch (Exception ex3)
 			{
-				Logger.Error("MapCacheList.queueProcessor.doInBackground()", "3", ex3);
+				Gdx.app.error(Tag.TAG, "MapCacheList.queueProcessor.doInBackground()", ex3);
 			}
 			finally
 			{

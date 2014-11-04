@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.concurrent.locks.Lock;
 
+import CB_Locator.Tag;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 /**
@@ -88,12 +89,12 @@ public class MapTileLoader
 					}
 					catch (InterruptedException e)
 					{
-						e.printStackTrace();
+						Gdx.app.error(Tag.TAG, "", e);
 					}
 
 					if (!queueProcessor[index].Alive())
 					{
-						Logger.LogCat("MapTileLoader Restart queueProcessor[" + index + "]");
+						Gdx.app.debug(Tag.TAG, "MapTileLoader Restart queueProcessor[" + index + "]");
 						queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
 						queueProcessor[index].setPriority(Thread.MIN_PRIORITY);
 						queueProcessor[index].start();

@@ -9,6 +9,7 @@ import java.util.zip.ZipException;
 
 import CB_Core.Import.UnZip;
 import CB_UI.Config;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.MapDownload.MapRepositoryInfo;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
@@ -23,6 +24,7 @@ import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.CopyHelper.Copy;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class MapDownloadItem extends CB_View_Base
@@ -49,16 +51,14 @@ public class MapDownloadItem extends CB_View_Base
 
 		checkBoxMap.setY(margin);
 
-		lblName = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(),
-				checkBoxMap.getHeight(), "");
+		lblName = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight(), "");
 		lblName.setFont(Fonts.getNormal());
 
 		// Cut "Freizeitkarte"
 		String Name = mapInfo.Name.replace("Freizeitkarte", "");
 		lblName.setText(Name);
 
-		lblSize = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(),
-				checkBoxMap.getHeight(), "");
+		lblSize = new Label(checkBoxMap.getMaxX() + margin, checkBoxMap.getY(), innerWidth - margin * 3 - checkBoxMap.getWidth(), checkBoxMap.getHeight(), "");
 		lblSize.setFont(Fonts.getNormal());
 
 		// Format Size
@@ -208,8 +208,7 @@ public class MapDownloadItem extends CB_View_Base
 							}
 							catch (InterruptedException e)
 							{
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								Gdx.app.error(Tag.TAG, "", e);
 							}
 
 						}
@@ -227,12 +226,11 @@ public class MapDownloadItem extends CB_View_Base
 				}
 				catch (ZipException e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 				catch (IOException e)
 				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 
 				// Copy and Clear
@@ -249,7 +247,7 @@ public class MapDownloadItem extends CB_View_Base
 					}
 					catch (IOException e)
 					{
-						e.printStackTrace();
+						Gdx.app.error(Tag.TAG, "", e);
 					}
 
 					try
@@ -258,7 +256,7 @@ public class MapDownloadItem extends CB_View_Base
 					}
 					catch (InterruptedException e)
 					{
-						e.printStackTrace();
+						Gdx.app.error(Tag.TAG, "", e);
 					}
 
 					deleteDirectory(newfolder);

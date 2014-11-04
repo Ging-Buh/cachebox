@@ -22,7 +22,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_Utils.Log.Logger;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,7 +35,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.badlogic.gdx.Gdx;
+
 import de.cachebox_test.Global;
+import de.cachebox_test.Tag;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Views.Forms.MessageBox;
@@ -374,8 +377,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 						}
 						catch (InterruptedException e)
 						{
-							Logger.Error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
-							e.printStackTrace();
+							Gdx.app.error(Tag.TAG, "DescriptionViewControl.setCache() Thread.sleep fehler", e);
+							Gdx.app.error(Tag.TAG, "", e);
 						}
 					}
 
@@ -391,7 +394,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 						}
 						catch (Exception e)
 						{
-							Logger.Error("DescriptionViewControl.setCache()", "downloadThread run()", e);
+							Gdx.app.error(Tag.TAG, "DescriptionViewControl.setCache() downloadThread run()", e);
 						}
 					}
 					downloadReadyHandler.post(downloadComplete);
@@ -513,8 +516,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		}
 		catch (Exception e)
 		{
-			Logger.Error("DescriptionViewControl.OnHide()", "clearCache", e);
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "DescriptionViewControl.OnHide() clearCache", e);
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
@@ -527,8 +530,8 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		}
 		catch (Exception e)
 		{
-			Logger.Error("DescriptionViewControl.OnFree()", "clearCache", e);
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "DescriptionViewControl.OnFree() clearCache", e);
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		this.destroy();
 	}
@@ -592,7 +595,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 

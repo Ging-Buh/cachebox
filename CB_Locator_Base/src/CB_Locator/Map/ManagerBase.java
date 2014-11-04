@@ -53,15 +53,17 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import CB_Locator.LocatorSettings;
+import CB_Locator.Tag;
 import CB_Locator.Map.Layer.Type;
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_RenderType;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * @author ging-buh
@@ -435,7 +437,7 @@ public abstract class ManagerBase
 					{
 						files.add(FilePath);
 						mapnames.add(tmp);
-						Logger.DEBUG("add: " + tmp);
+						Gdx.app.debug(Tag.TAG, "add: " + tmp);
 					}
 				}
 			}
@@ -454,13 +456,13 @@ public abstract class ManagerBase
 		ArrayList<String> files = new ArrayList<String>();
 		ArrayList<String> mapnames = new ArrayList<String>();
 
-		Logger.DEBUG("dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
+		Gdx.app.debug(Tag.TAG, "dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
 
-		Logger.DEBUG("dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
+		Gdx.app.debug(Tag.TAG, "dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
 
-		Logger.DEBUG("dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
+		Gdx.app.debug(Tag.TAG, "dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
 
 		if (!(files == null))
@@ -571,21 +573,21 @@ public abstract class ManagerBase
 		{
 			String ErrorMsg = e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
 			GL.that.Toast(ErrorMsg, 8000);
-			Logger.Error("databaseRenderer: ", ErrorMsg);
+			Gdx.app.error(Tag.TAG, "databaseRenderer: " + ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 		catch (ParserConfigurationException e)
 		{
 			String ErrorMsg = e.getMessage();
 			GL.that.Toast(ErrorMsg, 8000);
-			Logger.Error("databaseRenderer: ", ErrorMsg);
+			Gdx.app.error(Tag.TAG, "databaseRenderer: " + ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 		catch (IOException e)
 		{
 			String ErrorMsg = e.getMessage();
 			GL.that.Toast(ErrorMsg, 8000);
-			Logger.Error("databaseRenderer: ", ErrorMsg);
+			Gdx.app.error(Tag.TAG, "databaseRenderer: " + ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 
@@ -616,10 +618,10 @@ public abstract class ManagerBase
 			{
 				try
 				{
-					Logger.DEBUG("Suche RenderTheme: " + RenderTheme);
+					Gdx.app.debug(Tag.TAG, "Suche RenderTheme: " + RenderTheme);
 					if (RenderTheme == null)
 					{
-						Logger.DEBUG("RenderTheme not found!");
+						Gdx.app.debug(Tag.TAG, "RenderTheme not found!");
 						renderTheme = CB_InternalRenderTheme.OSMARENDER;
 
 					}
@@ -628,13 +630,13 @@ public abstract class ManagerBase
 						File file = new File(RenderTheme);
 						if (file.exists())
 						{
-							Logger.DEBUG("RenderTheme found!");
+							Gdx.app.debug(Tag.TAG, "RenderTheme found!");
 							renderTheme = new ExternalRenderTheme(file);
 
 						}
 						else
 						{
-							Logger.DEBUG("RenderTheme not found!");
+							Gdx.app.debug(Tag.TAG, "RenderTheme not found!");
 							renderTheme = CB_InternalRenderTheme.OSMARENDER;
 						}
 					}
@@ -642,7 +644,7 @@ public abstract class ManagerBase
 				}
 				catch (FileNotFoundException e)
 				{
-					Logger.Error("Load RenderTheme", "Error loading RenderTheme!", e);
+					Gdx.app.error(Tag.TAG, "Load RenderTheme Error loading RenderTheme!", e);
 					renderTheme = CB_InternalRenderTheme.OSMARENDER;
 				}
 			}
@@ -656,21 +658,21 @@ public abstract class ManagerBase
 			{
 				String ErrorMsg = e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
 				GL.that.Toast(ErrorMsg, 8000);
-				Logger.Error("databaseRenderer: ", ErrorMsg);
+				Gdx.app.error(Tag.TAG, "databaseRenderer: " + ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 			catch (ParserConfigurationException e)
 			{
 				String ErrorMsg = e.getMessage();
 				GL.that.Toast(ErrorMsg, 8000);
-				Logger.Error("databaseRenderer: ", ErrorMsg);
+				Gdx.app.error(Tag.TAG, "databaseRenderer: " + ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 			catch (IOException e)
 			{
 				String ErrorMsg = e.getMessage();
 				GL.that.Toast(ErrorMsg, 8000);
-				Logger.Error("databaseRenderer: ", ErrorMsg);
+				Gdx.app.error(Tag.TAG, "databaseRenderer: " + ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 
@@ -730,7 +732,7 @@ public abstract class ManagerBase
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		return null;
@@ -750,7 +752,7 @@ public abstract class ManagerBase
 			mapDatabase[i].openFile(mapFile);
 		}
 
-		Logger.DEBUG("Open MapsForge Map: " + mapFile);
+		Gdx.app.debug(Tag.TAG, "Open MapsForge Map: " + mapFile);
 		MapFileInfo info = mapDatabase[0].getMapFileInfo();
 		if (info.comment == null)
 		{

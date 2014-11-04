@@ -28,7 +28,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
 import CB_UI_Base.graphics.GL_RenderType;
-import CB_Utils.Log.Logger;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
@@ -259,6 +259,61 @@ public class splash extends Activity
 
 		if (mOriantationRestart) return; // wait for result
 
+		// initialisieren der PlattformSettings
+		PlatformSettings.setPlatformSettings(new iPlatformSettings()
+		{
+
+			@Override
+			public void Write(SettingBase<?> setting)
+			{
+				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
+
+				if (setting instanceof SettingBool)
+				{
+					androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString)
+				{
+					androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
+				}
+				else if (setting instanceof SettingInt)
+				{
+					androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				androidSettingEditor.commit();
+			}
+
+			@Override
+			public SettingBase<?> Read(SettingBase<?> setting)
+			{
+				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+
+				if (setting instanceof SettingString)
+				{
+					String value = androidSetting.getString(setting.getName(), "");
+					((SettingString) setting).setValue(value);
+				}
+				else if (setting instanceof SettingBool)
+				{
+					boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				}
+				else if (setting instanceof SettingInt)
+				{
+					int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+				return setting;
+			}
+		});
+
+		PlatformSettings.ReadSetting(CB_UI_Base_Settings.AktLogLevel);
+		Gdx.app = new Debug_AndroidApplication();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -329,7 +384,7 @@ public class splash extends Activity
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		// check Write permission
@@ -883,7 +938,7 @@ public class splash extends Activity
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		return null;
 	}
@@ -951,8 +1006,6 @@ public class splash extends Activity
 	{
 		// Jetzt ist der workPath erstmal festgelegt.
 
-		Logger.setDebugFilePath(workPath + "/debug.txt");
-
 		// Zur Kompatibilit�t mit �lteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{
@@ -976,8 +1029,8 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				Logger.Error("read redirection", "", e);
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "read redirection", e);
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}
@@ -1004,59 +1057,6 @@ public class splash extends Activity
 		Database.Settings = new AndroidDB(DatabaseType.Settings, this);
 		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
-
-		// initialisieren der PlattformSettings
-		PlatformSettings.setPlatformSettings(new iPlatformSettings()
-		{
-
-			@Override
-			public void Write(SettingBase<?> setting)
-			{
-				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
-				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
-
-				if (setting instanceof SettingBool)
-				{
-					androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
-				}
-
-				else if (setting instanceof SettingString)
-				{
-					androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
-				}
-				else if (setting instanceof SettingInt)
-				{
-					androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
-				}
-
-				// Commit the edits!
-				androidSettingEditor.commit();
-			}
-
-			@Override
-			public SettingBase<?> Read(SettingBase<?> setting)
-			{
-				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
-
-				if (setting instanceof SettingString)
-				{
-					String value = androidSetting.getString(setting.getName(), "");
-					((SettingString) setting).setValue(value);
-				}
-				else if (setting instanceof SettingBool)
-				{
-					boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
-					((SettingBool) setting).setValue(value);
-				}
-				else if (setting instanceof SettingInt)
-				{
-					int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
-					((SettingInt) setting).setValue(value);
-				}
-				setting.clearDirty();
-				return setting;
-			}
-		});
 
 		// wenn die Settings DB neu Erstellt wurde, m�ssen die Default werte
 		// geschrieben werden.
@@ -1165,7 +1165,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			try
@@ -1176,7 +1176,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			try
@@ -1187,7 +1187,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			try
@@ -1198,7 +1198,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			try
@@ -1209,7 +1209,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}

@@ -69,6 +69,7 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Lists.F_List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
 /**
@@ -236,8 +237,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			processReadMapData(mapReadResult);
 		}
 
-		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile,
-				rendererJob.displayModel.getTileSize());
+		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile, rendererJob.displayModel.getTileSize());
 
 		// Fixme Buffer VectorData for this tile! Don't Read and Process if this tile bufferd VerctorData
 
@@ -376,8 +376,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			GL_Paint stroke = new GL_Paint(biggestWayTextContainer.stroke);
 			float tileSize = this.currentRendererJob.displayModel.getTileSize();
 
-			TextDrawableFlipped textDrw = new TextDrawableFlipped(biggestWayTextContainer.text, biggestWayTextContainer.path, tileSize,
-					tileSize, fill, stroke, true);
+			TextDrawableFlipped textDrw = new TextDrawableFlipped(biggestWayTextContainer.text, biggestWayTextContainer.path, tileSize, tileSize, fill, stroke, true);
 
 			MatrixDrawable maDr = new MatrixDrawable(textDrw, new GL_Matrix(), true);
 
@@ -399,9 +398,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 			ext_Bitmap bmp = (ext_Bitmap) symbolContainer.symbol;
 
-			SymbolDrawable drw = new SymbolDrawable(bmp.getGlBmpHandle(), PointX, PointY,
-					this.currentRendererJob.displayModel.getTileSize(), this.currentRendererJob.displayModel.getTileSize(),
-					symbolContainer.alignCenter);
+			SymbolDrawable drw = new SymbolDrawable(bmp.getGlBmpHandle(), PointX, PointY, this.currentRendererJob.displayModel.getTileSize(), this.currentRendererJob.displayModel.getTileSize(), symbolContainer.alignCenter);
 			MatrixDrawable maDr = new MatrixDrawable(drw, new GL_Matrix(), true);
 			rotateList.add(maDr);
 
@@ -518,8 +515,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	@Override
 	public void renderWaySymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol)
 	{
-		Mixed_WayDecorator.renderSymbol(this.currentRendererJob.displayModel.getScaleFactor(), symbolBitmap, alignCenter, repeatSymbol,
-				this.coordinates, this.waySymbols);
+		Mixed_WayDecorator.renderSymbol(this.currentRendererJob.displayModel.getScaleFactor(), symbolBitmap, alignCenter, repeatSymbol, this.coordinates, this.waySymbols);
 	}
 
 	@Override
@@ -691,7 +687,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 		if (inWork.get())
 		{
-			// CB_Utils.Log.Logger.LogCat("MixedDatabaseRenderer in Work [" + ThreadId + "]");
+			// CB_Utils.Log.Gdx.app.debug(Tag.TAG,"MixedDatabaseRenderer in Work [" + ThreadId + "]");
 			return null;
 		}
 		inWork.set(true);
@@ -708,8 +704,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 					this.bitmap.compress(baos);
 					byte[] b = baos.toByteArray();
 
-					Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY,
-							rendererJob.tile.zoomLevel, false);
+					Descriptor desc = new Descriptor((int) rendererJob.tile.tileX, (int) rendererJob.tile.tileY, rendererJob.tile.zoomLevel, false);
 
 					TileGL_Mixed mixedTile = new TileGL_Mixed(desc, b, TileState.Present, Format.RGB565);
 					mixedTile.add(rotateList);
@@ -720,7 +715,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(CB_Locator.Tag.TAG, "", e);
 				}
 			}
 			inWork.set(false);

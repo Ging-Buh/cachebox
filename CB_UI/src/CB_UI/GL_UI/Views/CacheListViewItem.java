@@ -8,6 +8,7 @@ import CB_Locator.Locator;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Controls.CacheInfo;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
@@ -134,7 +135,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	private void setActLocator()
 	{
 
-		// Logger.LogCat("CacheListItem set ActLocator");
+		// Gdx.app.debug(Tag.TAG,"CacheListItem set ActLocator");
 
 		if (Locator.Valid())
 		{
@@ -170,7 +171,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			double cacheBearing = -(result[2] - heading);

@@ -29,6 +29,9 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.badlogic.gdx.Gdx;
+
+import de.CB.Test.Tag;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -353,7 +356,7 @@ public class SVGParser
 				catch (IOException e)
 				{
 					Log.w(TAG, "parsing svg", e);
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 			}
 			return result;

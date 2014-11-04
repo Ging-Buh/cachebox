@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import CB_Core.Tag;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.Enums.Attributes;
 import CB_Core.Enums.CacheSizes;
@@ -36,7 +37,8 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * @author Hubert
@@ -50,8 +52,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 	private ArrayList<LogEntry> logList;
 	private ArrayList<ImageEntry> imageList;
 
-	public ApiGroundspeak_SearchForGeocaches(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList,
-			ArrayList<ImageEntry> imageList, long gpxFilenameId)
+	public ApiGroundspeak_SearchForGeocaches(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId)
 	{
 		super();
 		this.search = search;
@@ -105,7 +106,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 		}
 		catch (JSONException e1)
 		{
-			Logger.Error("ApiGroundspeak - SearchForGeocaches:JSONException", e1.getMessage());
+			Gdx.app.error(Tag.TAG, "ApiGroundspeak - SearchForGeocaches:JSONException", e1);
 			return false;
 		}
 
@@ -119,12 +120,12 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 		ApiGroundspeakResult result = new ApiGroundspeakResult(-1, "");
 
 		JSONArray caches = json.getJSONArray("Geocaches");
-		Logger.LogCat("got " + caches.length() + " Caches from gc");
+		Gdx.app.debug(Tag.TAG, "got " + caches.length() + " Caches from gc");
 		for (int i = 0; i < caches.length(); i++)
 		{
 			JSONObject jCache = (JSONObject) caches.get(i);
 			String gcCode = jCache.getString("Code");
-			Logger.DEBUG("handling " + gcCode);
+			Gdx.app.debug(Tag.TAG, "handling " + gcCode);
 			String name = jCache.getString("Name");
 
 			Boolean CacheERROR = false;
@@ -161,7 +162,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("API", "SearchForGeocaches_ParseDate", exc);
+				Gdx.app.error(Tag.TAG, "API SearchForGeocaches_ParseDate", exc);
 			}
 			cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
@@ -216,7 +217,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 				}
 				catch (Exception e1)
 				{
-					Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
+					Gdx.app.error(Tag.TAG, "API SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
 					cache.setLongDescription("");
 				}
 				if (jCache.getBoolean("LongDescriptionIsHtml") == false)
@@ -247,7 +248,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 				}
 				catch (Exception e)
 				{
-					Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
+					Gdx.app.error(Tag.TAG, "API SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
 					cache.setShortDescription("");
 				}
 				if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
@@ -298,7 +299,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 					}
 					catch (Exception exc)
 					{
-						Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);
+						Gdx.app.error(Tag.TAG, "API SearchForGeocaches_ParseLogDate", exc);
 					}
 					log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
 					logList.add(log);
@@ -363,8 +364,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 					}
 
 				}
-				Logger.DEBUG("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/"
-						+ imageListSizeGrabbed + ")");
+				Gdx.app.debug(Tag.TAG, "Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/" + imageListSizeGrabbed + ")");
 
 				// insert Waypoints
 				JSONArray waypoints = jCache.getJSONArray("AdditionalWaypoints");

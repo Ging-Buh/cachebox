@@ -2,11 +2,13 @@ package CB_Core.DAO;
 
 import java.util.ArrayList;
 
+import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Types.ImageEntry;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 public class ImageDAO
 {
@@ -32,7 +34,7 @@ public class ImageDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Write Image", "", exc);
+			Gdx.app.error(Tag.TAG, "Write Image", exc);
 		}
 	}
 
@@ -48,9 +50,8 @@ public class ImageDAO
 	{
 		ArrayList<ImageEntry> images = new ArrayList<ImageEntry>();
 
-		CoreCursor reader = Database.Data.rawQuery(
-				"select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[]
-					{ GcCode });
+		CoreCursor reader = Database.Data.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=?", new String[]
+			{ GcCode });
 		if (reader.getCount() > 0)
 		{
 			reader.moveToFirst();
@@ -85,10 +86,8 @@ public class ImageDAO
 	{
 		ArrayList<ImageEntry> images = new ArrayList<ImageEntry>();
 
-		CoreCursor reader = Database.Data.rawQuery(
-				"select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=? and IsCacheImage=1",
-				new String[]
-					{ GcCode });
+		CoreCursor reader = Database.Data.rawQuery("select CacheId, GcCode, Name, Description, ImageUrl, IsCacheImage from Images where GcCode=? and IsCacheImage=1", new String[]
+			{ GcCode });
 
 		if (reader == null) return images;
 
@@ -127,8 +126,7 @@ public class ImageDAO
 	{
 		int count = 0;
 
-		CoreCursor reader = Database.Data.rawQuery("select count(id) from Images where GcCode in (select GcCode from Caches "
-				+ ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + ")", null);
+		CoreCursor reader = Database.Data.rawQuery("select count(id) from Images where GcCode in (select GcCode from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause) + ")", null);
 
 		if (reader == null) return 0;
 		reader.moveToFirst();
@@ -146,8 +144,7 @@ public class ImageDAO
 	{
 		ArrayList<String> gcCodes = new ArrayList<String>();
 
-		CoreCursor reader = Database.Data.rawQuery("select GcCode from Caches "
-				+ ((whereClause.length() > 0) ? "where " + whereClause : whereClause), null);
+		CoreCursor reader = Database.Data.rawQuery("select GcCode from Caches " + ((whereClause.length() > 0) ? "where " + whereClause : whereClause), null);
 
 		if (reader == null) return gcCodes;
 		reader.moveToFirst();

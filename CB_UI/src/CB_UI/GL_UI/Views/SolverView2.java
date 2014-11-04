@@ -10,6 +10,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEventList;
@@ -34,7 +35,8 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 public class SolverView2 extends V_ListView implements SelectedCacheEvent
 {
@@ -46,7 +48,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	{
 		super(rec, Name);
 
-		Logger.LogCat("Create SolverView2 => " + rec.toString());
+		Gdx.app.debug(Tag.TAG, "Create SolverView2 => " + rec.toString());
 		/*
 		 * Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel"); lblDummy.setFont(Fonts.getNormal());
 		 * lblDummy.setText("Dummy SolverView"); setBackground(SpriteCache.ListBack); ^ if (GlobalCore.platform == Plattform.Desktop)
@@ -149,7 +151,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void Initial()
 	{
-		Logger.LogCat("SolverView2 => Initial()");
+		Gdx.app.debug(Tag.TAG, "SolverView2 => Initial()");
 		this.setListPos(0, false);
 		chkSlideBack();
 		GL.that.renderOnce();

@@ -24,6 +24,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import CB_Core.FilterProperties;
+import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.Cache;
@@ -31,8 +32,9 @@ import CB_Core.Types.CacheList;
 import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * @author ging-buh
@@ -41,8 +43,7 @@ import CB_Utils.Util.FileIO;
 public class CacheListDAO
 {
 
-	public CacheList ReadCacheList(CacheList cacheList, ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails,
-			boolean loadAllWaypoints)
+	public CacheList ReadCacheList(CacheList cacheList, ArrayList<String> GC_Codes, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints)
 	{
 		ArrayList<String> orParts = new ArrayList<String>();
 
@@ -64,15 +65,14 @@ public class CacheListDAO
 	// return ReadCacheList(cacheList, join, where, false, fullDetails, loadAllWaypoints);
 	// }
 
-	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails,
-			boolean loadAllWaypoints)
+	public CacheList ReadCacheList(CacheList cacheList, String join, String where, boolean withDescription, boolean fullDetails, boolean loadAllWaypoints)
 	{
 		if (cacheList == null) return null;
 
 		// Clear List before read
 		cacheList.clear();
 
-		Logger.DEBUG("ReadCacheList 1.Waypoints");
+		Gdx.app.debug(Tag.TAG, "ReadCacheList 1.Waypoints");
 		SortedMap<Long, CB_List<Waypoint>> waypoints;
 		waypoints = new TreeMap<Long, CB_List<Waypoint>>();
 		// zuerst alle Waypoints einlesen
@@ -114,7 +114,7 @@ public class CacheListDAO
 		}
 		reader.close();
 
-		Logger.DEBUG("ReadCacheList 2.Caches");
+		Gdx.app.debug(Tag.TAG, "ReadCacheList 2.Caches");
 		try
 		{
 			if (fullDetails)
@@ -142,7 +142,7 @@ public class CacheListDAO
 		}
 		catch (Exception e)
 		{
-			Logger.Error("CacheList.LoadCaches()", "reader = Database.Data.myDB.rawQuery(....", e);
+			Gdx.app.error(Tag.TAG, "CacheList.LoadCaches() reader = Database.Data.myDB.rawQuery(....", e);
 		}
 		reader.moveToFirst();
 
@@ -172,22 +172,23 @@ public class CacheListDAO
 		}
 		reader.close();
 		long end = System.currentTimeMillis();
-		System.out.println("Dauer: " + String.valueOf(end - start));
+		Gdx.app.log(Tag.TAG, "Load Cachelist at" + String.valueOf(end - start) + "ms");
+
 		// clear other never used WP`s from Mem
 		waypoints.clear();
 		waypoints = null;
 
 		// do it manual (or automated after fix), got hanging app on startup
-		// Logger.DEBUG("ReadCacheList 3.Sorting");
+		// Gdx.app.debug(Tag.TAG,"ReadCacheList 3.Sorting");
 		try
 		{
 			// Collections.sort(cacheList);
 		}
 		catch (Exception e)
 		{
-			// Logger.Error("CacheListDAO.ReadCacheList()", "Sort ERROR", e);
+			// Gdx.app.error(Tag.TAG,"CacheListDAO.ReadCacheList()", "Sort ERROR", e);
 		}
-		// Logger.DEBUG("ReadCacheList 4. ready");
+		// Gdx.app.debug(Tag.TAG,"ReadCacheList 4. ready");
 		return cacheList;
 	}
 
@@ -206,14 +207,13 @@ public class CacheListDAO
 	{
 		try
 		{
-			delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder,
-					DescriptionImageFolderLocal);
+			delCacheImages(getGcCodeList("Archived=1"), SpoilerFolder, SpoilerFolderLocal, DescriptionImageFolder, DescriptionImageFolderLocal);
 			long ret = Database.Data.delete("Caches", "Archived=1", null);
 			return ret;
 		}
 		catch (Exception e)
 		{
-			Logger.Error("CacheListDAO.DelArchiv()", "Archiv ERROR", e);
+			Gdx.app.error(Tag.TAG, "CacheListDAO.DelArchiv()", e);
 			return -1;
 		}
 	}
@@ -239,7 +239,7 @@ public class CacheListDAO
 		}
 		catch (Exception e)
 		{
-			Logger.Error("CacheListDAO.DelFound()", "Found ERROR", e);
+			Gdx.app.error(Tag.TAG, "CacheListDAO.DelFound()", e);
 			return -1;
 		}
 	}
@@ -256,8 +256,7 @@ public class CacheListDAO
 	 *            Config.settings.DescriptionImageFolderLocal.getValue()
 	 * @return
 	 */
-	public long DelFilter(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder,
-			String DescriptionImageFolderLocal)
+	public long DelFilter(String Where, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal)
 	{
 		try
 		{
@@ -267,7 +266,7 @@ public class CacheListDAO
 		}
 		catch (Exception e)
 		{
-			Logger.Error("CacheListDAO.DelFilter()", "Filter ERROR", e);
+			Gdx.app.error(Tag.TAG, "CacheListDAO.DelFilter()", e);
 			return -1;
 		}
 	}
@@ -306,8 +305,7 @@ public class CacheListDAO
 	 * @param DescriptionImageFolderLocal
 	 *            Config.settings.DescriptionImageFolderLocal.getValue()
 	 */
-	public void delCacheImages(ArrayList<String> list, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder,
-			String DescriptionImageFolderLocal)
+	public void delCacheImages(ArrayList<String> list, String SpoilerFolder, String SpoilerFolderLocal, String DescriptionImageFolder, String DescriptionImageFolderLocal)
 	{
 		String spoilerpath = SpoilerFolder;
 		if (SpoilerFolderLocal.length() > 0) spoilerpath = SpoilerFolderLocal;
@@ -351,7 +349,7 @@ public class CacheListDAO
 				File file = new File(filename);
 				if (file.exists())
 				{
-					if (!file.delete()) Logger.DEBUG("Error deleting : " + filename);
+					if (!file.delete()) Gdx.app.debug(Tag.TAG, "Error deleting : " + filename);
 				}
 			}
 		}

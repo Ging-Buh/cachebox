@@ -5,12 +5,14 @@ import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.interfaces.ViewOptionsMenu;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
 import CB_Utils.Util.MoveableList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMenu
@@ -283,7 +285,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 	}
@@ -299,7 +301,7 @@ public abstract class CB_View_Base extends GL_View_Base implements ViewOptionsMe
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 	}

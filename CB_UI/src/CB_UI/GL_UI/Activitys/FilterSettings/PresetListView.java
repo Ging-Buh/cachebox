@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import CB_Core.FilterProperties;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
+import CB_UI.Tag;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.List.Adapter;
@@ -18,6 +19,7 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Settings.SettingString;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class PresetListView extends V_ListView
@@ -149,7 +151,7 @@ public class PresetListView extends V_ListView
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -200,7 +202,7 @@ public class PresetListView extends V_ListView
 						}
 						catch (Exception e)
 						{
-							e.printStackTrace();
+							Gdx.app.error(Tag.TAG, "", e);
 						}
 
 					}
@@ -221,58 +223,57 @@ public class PresetListView extends V_ListView
 					final int delItemIndex = ((PresetListViewItem) v).getIndex();
 
 					GL.that.closeActivity();
-					GL_MsgBox.Show(Translation.Get("?DelUserPreset"), Translation.Get("DelUserPreset"), MessageBoxButtons.YesNo,
-							MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					GL_MsgBox.Show(Translation.Get("?DelUserPreset"), Translation.Get("DelUserPreset"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
+					{
+
+						@Override
+						public boolean onClick(int which, Object data)
+						{
+							switch (which)
 							{
+							case 1: // ok Clicket
 
-								@Override
-								public boolean onClick(int which, Object data)
+								if (delItemIndex < FilterProperties.presets.length)
 								{
-									switch (which)
+									return false; // Don't delete System Presets
+								}
+								else
+								{
+									try
 									{
-									case 1: // ok Clicket
+										String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
 
-										if (delItemIndex < FilterProperties.presets.length)
+										int i = FilterProperties.presets.length;
+										String newUserEntris = "";
+										for (String entry : userEntrys)
 										{
-											return false; // Don't delete System Presets
+											if (i++ != delItemIndex) newUserEntris += entry + SettingString.STRING_SPLITTER;
 										}
-										else
-										{
-											try
-											{
-												String userEntrys[] = Config.UserFilter.getValue().split(SettingString.STRING_SPLITTER);
-
-												int i = FilterProperties.presets.length;
-												String newUserEntris = "";
-												for (String entry : userEntrys)
-												{
-													if (i++ != delItemIndex) newUserEntris += entry + SettingString.STRING_SPLITTER;
-												}
-												Config.UserFilter.setValue(newUserEntris);
-												Config.AcceptChanges();
-												EditFilterSettings.that.lvPre.fillPresetList();
-												EditFilterSettings.that.lvPre.notifyDataSetChanged();
-											}
-											catch (Exception e)
-											{
-												e.printStackTrace();
-											}
-
-										}
-										EditFilterSettings.that.show();
-										break;
-									case 2: // cancel clicket
-										EditFilterSettings.that.show();
-										break;
-									case 3:
-										EditFilterSettings.that.show();
-										break;
+										Config.UserFilter.setValue(newUserEntris);
+										Config.AcceptChanges();
+										EditFilterSettings.that.lvPre.fillPresetList();
+										EditFilterSettings.that.lvPre.notifyDataSetChanged();
+									}
+									catch (Exception e)
+									{
+										Gdx.app.error(Tag.TAG, "", e);
 									}
 
-									return true;
 								}
+								EditFilterSettings.that.show();
+								break;
+							case 2: // cancel clicket
+								EditFilterSettings.that.show();
+								break;
+							case 3:
+								EditFilterSettings.that.show();
+								break;
+							}
 
-							});
+							return true;
+						}
+
+					});
 
 					return true;
 				}

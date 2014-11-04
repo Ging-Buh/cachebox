@@ -46,9 +46,11 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_UI_Base.Global;
-import CB_Utils.Log.Logger;
 import Types.CacheTest;
 import __Static.InitTestDBs;
+import ___Test_Suites.Tag;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * Test the GPX Export
@@ -76,7 +78,7 @@ public class GPX_Export extends TestCase
 		{
 			Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 			// Logs
-			Logger.DEBUG("Delete Logs");
+			Gdx.app.debug(Tag.TAG, "Delete Logs");
 			LogDAO logdao = new LogDAO();
 			logdao.ClearOrphanedLogs();
 			logdao = null;
@@ -138,7 +140,7 @@ public class GPX_Export extends TestCase
 		{
 			Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 			// Logs
-			Logger.DEBUG("Delete Logs");
+			Gdx.app.debug(Tag.TAG, "Delete Logs");
 			LogDAO logdao = new LogDAO();
 			logdao.ClearOrphanedLogs();
 			logdao = null;
@@ -332,7 +334,7 @@ public class GPX_Export extends TestCase
 		{
 			Database.Data.delete("Caches", "GcCode='" + newCache.getGcCode() + "'", null);
 			// Logs
-			Logger.DEBUG("Delete Logs");
+			Gdx.app.debug(Tag.TAG, "Delete Logs");
 			LogDAO logdao = new LogDAO();
 			logdao.ClearOrphanedLogs();
 			logdao = null;

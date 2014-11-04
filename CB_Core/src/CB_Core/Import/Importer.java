@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.zip.ZipException;
 
+import CB_Core.Tag;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheDAO;
@@ -29,8 +30,9 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Events.ProgresssChangedEventList;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
+
+import com.badlogic.gdx.Gdx;
 
 public class Importer
 {
@@ -90,13 +92,13 @@ public class Importer
 				}
 				catch (ZipException e)
 				{
-					Logger.Error("Core.Importer.ImportGPX", "ZipException", e);
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "Core.Importer.ImportGPX ZipException", e);
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 				catch (IOException e)
 				{
-					Logger.Error("Core.Importer.ImportGPX", "IOException", e);
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "Core.Importer.ImportGPX IOException", e);
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 			}
 
@@ -157,7 +159,7 @@ public class Importer
 			catch (IOException e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			wptCount.put(File.getAbsolutePath(), countwpt);
@@ -198,8 +200,8 @@ public class Importer
 			}
 			catch (Exception e)
 			{
-				Logger.Error("Core.Importer.ImportGpx", "importer.doImport => " + File.getAbsolutePath(), e);
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "Core.Importer.ImportGpx importer.doImport => " + File.getAbsolutePath(), e);
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}

@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 import CB_Core.DB.Database;
 import CB_Utils.DB.CoreCursor;
 
+import com.badlogic.gdx.Gdx;
+
 public class TestDB extends Database
 {
 
@@ -35,7 +37,7 @@ public class TestDB extends Database
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
@@ -101,7 +103,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		// TODO Hack to get Rowcount
@@ -129,7 +131,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		finally
 		{
@@ -140,7 +142,7 @@ public class TestDB extends Database
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -160,7 +162,7 @@ public class TestDB extends Database
 		catch (SQLException e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		finally
 		{
@@ -171,7 +173,7 @@ public class TestDB extends Database
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -242,7 +244,7 @@ public class TestDB extends Database
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -312,7 +314,7 @@ public class TestDB extends Database
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 	}
@@ -360,7 +362,7 @@ public class TestDB extends Database
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -376,7 +378,7 @@ public class TestDB extends Database
 		catch (SQLException e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
@@ -389,7 +391,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
@@ -402,7 +404,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 	}
@@ -471,7 +473,7 @@ public class TestDB extends Database
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -541,7 +543,7 @@ public class TestDB extends Database
 			catch (SQLException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 	}

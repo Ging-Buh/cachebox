@@ -397,7 +397,7 @@ public class CB_Button extends Button implements OnClickListener
 		boolean result = super.onTouchUp(x, y, pointer, button);
 
 		if (!isDragged) return (GestureIsOn) ? result : true;
-		// Logger.LogCat("CB_Button onTouchUP()");
+		// Gdx.app.debug(Tag.TAG,"CB_Button onTouchUP()");
 		int dx = x - downPos.x;
 		int dy = y - downPos.y;
 		GestureDirection direction = GestureDirection.Up;

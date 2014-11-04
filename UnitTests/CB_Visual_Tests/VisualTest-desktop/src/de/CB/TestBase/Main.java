@@ -25,8 +25,6 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Config_Core;
 import CB_Utils.Plattform;
-import CB_Utils.Log.ILog;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -280,30 +278,6 @@ public class Main
 
 					System.err.println(e.getMessage());
 				}
-
-			}
-		});
-
-		Logger.Add(new ILog()
-		{
-
-			@Override
-			public void receiveShortLog(String Msg)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void receiveLogCat(String Msg)
-			{
-				System.out.print("CACHEBOX: " + Msg + Global.br);
-			}
-
-			@Override
-			public void receiveLog(String Msg)
-			{
-				// TODO Auto-generated method stub
 
 			}
 		});

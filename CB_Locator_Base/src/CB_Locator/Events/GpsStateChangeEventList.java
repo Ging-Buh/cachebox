@@ -3,6 +3,9 @@ package CB_Locator.Events;
 import java.util.ArrayList;
 
 import CB_Locator.Locator;
+import CB_Locator.Tag;
+
+import com.badlogic.gdx.Gdx;
 
 public class GpsStateChangeEventList
 {
@@ -67,8 +70,8 @@ public class GpsStateChangeEventList
 			}
 			catch (Exception e)
 			{
-				 
-				e.printStackTrace();
+
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}

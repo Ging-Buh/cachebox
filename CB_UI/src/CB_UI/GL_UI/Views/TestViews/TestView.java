@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.CreateTrackOverMapActivity;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Enums.WrapType;
@@ -62,8 +63,11 @@ public class TestView extends CB_View_Base
 
 		// ####################################################
 
-		Label label = new Label(new CB_RectF(50, 50, 500, 100), "/ExtSD/Карти/Vector Maps");
+		final Label label = new Label(new CB_RectF(50, 50, 500, 100), "/ExtSD/Карти/Vector Maps");
 		this.addChild(label);
+
+		label.dispose();
+
 		// ####################################################
 
 		// Setting Button
@@ -80,6 +84,15 @@ public class TestView extends CB_View_Base
 
 				CreateTrackOverMapActivity activity = new CreateTrackOverMapActivity("createTrackOverMap");
 				activity.show();
+
+				try
+				{
+					label.getWidth();
+				}
+				catch (Exception e)
+				{
+					Gdx.app.error(Tag.TAG, "Test Exception", e);
+				}
 
 				return true;
 			}
@@ -277,7 +290,7 @@ public class TestView extends CB_View_Base
 					catch (InterruptedException e)
 					{
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Gdx.app.error(Tag.TAG, "", e);
 					}
 
 					progress++;

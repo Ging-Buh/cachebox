@@ -3,9 +3,12 @@ package CB_Locator.Map;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import CB_Locator.Tag;
 import CB_Utils.Util.FileIO;
 import bsh.EvalError;
 import bsh.Interpreter;
+
+import com.badlogic.gdx.Gdx;
 
 public class BshLayer extends Layer
 {
@@ -22,19 +25,19 @@ public class BshLayer extends Layer
 		catch (FileNotFoundException e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			this.interpreter = null;
 		}
 		catch (IOException e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			this.interpreter = null;
 		}
 		catch (EvalError e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			this.interpreter = null;
 		}
 	}
@@ -53,7 +56,7 @@ public class BshLayer extends Layer
 		catch (EvalError e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		return null;
 	}

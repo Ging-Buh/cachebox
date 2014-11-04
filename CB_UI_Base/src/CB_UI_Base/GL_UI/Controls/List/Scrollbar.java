@@ -230,7 +230,7 @@ public class Scrollbar extends CB_View_Base
 
 			this.ListView.setListPos(lp);
 
-			// Logger.DEBUG("SliderScrollValue:" + " Draged:" + lp + " LastTouch:" + mLastTouch + " Y=" + y);
+			// Gdx.app.debug(Tag.TAG,"SliderScrollValue:" + " Draged:" + lp + " LastTouch:" + mLastTouch + " Y=" + y);
 			return true;
 		}
 

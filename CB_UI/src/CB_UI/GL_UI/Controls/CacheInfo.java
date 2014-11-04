@@ -7,6 +7,7 @@ import CB_Core.Enums.CacheTypes;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.LogEntry;
+import CB_UI.Tag;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
@@ -17,6 +18,7 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Lists.CB_List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -57,8 +59,7 @@ public class CacheInfo extends CB_View_Base
 	/**
 	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS, SHOW_GC, SHOW_LAST_FOUND, SHOW_ATTRIBUTES
 	 */
-	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_NAME
-			+ SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 126
+	public static final int VIEW_MODE_SLIDER = SHOW_ATTRIBUTES + SHOW_LAST_FOUND + SHOW_GC + SHOW_COORDS + SHOW_OWNER + SHOW_NAME + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 126
 
 	/**
 	 * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
@@ -68,8 +69,7 @@ public class CacheInfo extends CB_View_Base
 	/**
 	 * SHOW_COORDS, SHOW_COMPASS, SHOW_NAME
 	 */
-	public static final int VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK = SHOW_COORDS + SHOW_NAME + SHOW_CORRDS_WITH_LINEBRAKE + SHOW_VOTE
-			+ SHOW_ICON + SHOW_S_D_T; // 138
+	public static final int VIEW_MODE_WAYPOINTS_WITH_CORRD_LINEBREAK = SHOW_COORDS + SHOW_NAME + SHOW_CORRDS_WITH_LINEBRAKE + SHOW_VOTE + SHOW_ICON + SHOW_S_D_T; // 138
 
 	/**
 	 * SHOW_NAME, SHOW_OWNER, SHOW_CORRDS
@@ -163,7 +163,7 @@ public class CacheInfo extends CB_View_Base
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
@@ -295,8 +295,7 @@ public class CacheInfo extends CB_View_Base
 
 				mStarSize.scale(0.7f);
 				mRatingSprite = new Sprite(SpriteCacheBase.Stars.get((int) Math.min(mCache.Rating * 2, 5 * 2)));
-				mRatingSprite.setBounds(mLeft + mStarSize.height, getHeight() - mTop - mStarSize.width - mMargin - mMargin - mMargin,
-						mStarSize.width, mStarSize.height);
+				mRatingSprite.setBounds(mLeft + mStarSize.height, getHeight() - mTop - mStarSize.width - mMargin - mMargin - mMargin, mStarSize.width, mStarSize.height);
 				mRatingSprite.setOrigin(0, mStarSize.halfHeight);
 				mRatingSprite.setRotation(90);
 				mRatingSprite.setColor(gcVoteColor);
@@ -305,8 +304,7 @@ public class CacheInfo extends CB_View_Base
 				mSpriteCachePos = new Vector2(mLeft + mMargin, getHeight() - mTop - mIconSize);
 			}
 
-			if (ifModeFlag(SHOW_NAME) || ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_COORDS) || ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE)
-					|| ifModeFlag(SHOW_GC) || ifModeFlag(SHOW_LAST_FOUND))
+			if (ifModeFlag(SHOW_NAME) || ifModeFlag(SHOW_OWNER) || ifModeFlag(SHOW_COORDS) || ifModeFlag(SHOW_CORRDS_WITH_LINEBRAKE) || ifModeFlag(SHOW_GC) || ifModeFlag(SHOW_LAST_FOUND))
 			{// Text zusammensetzen
 
 				String br = String.format("%n");
@@ -438,7 +436,7 @@ public class CacheInfo extends CB_View_Base
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 	}

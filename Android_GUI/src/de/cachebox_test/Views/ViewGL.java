@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_Utils.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
@@ -15,9 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 
 import de.cachebox_test.R;
+import de.cachebox_test.Tag;
 import de.cachebox_test.Events.ViewOptionsMenu;
 
 public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listener_Interface
@@ -77,14 +78,14 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void OnShow()
 	{
-		Logger.DEBUG("OnShow");
+		Gdx.app.debug(Tag.TAG, "OnShow");
 		// GL_Listener.onStart();
 	}
 
 	@Override
 	public void OnHide()
 	{
-		Logger.DEBUG("OnHide");
+		Gdx.app.debug(Tag.TAG, "OnHide");
 		// GL_Listner.onStop();
 	}
 
@@ -154,7 +155,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	public void RequestRender()
 	{
 
-		// Logger.LogCat("RequestRender von : " + requestName);
+		// Gdx.app.debug(Tag.TAG,"RequestRender von : " + requestName);
 
 		switch (mAktSurfaceType)
 		{
@@ -171,7 +172,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void RenderDirty()
 	{
-		Logger.LogCat("Set: RenderDirty");
+		Gdx.app.debug(Tag.TAG, "Set: RenderDirty");
 		try
 		{
 			switch (mAktSurfaceType)
@@ -196,7 +197,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	public void RenderContinous()
 	{
 
-		Logger.LogCat("Set: RenderContinous");
+		Gdx.app.debug(Tag.TAG, "Set: RenderContinous");
 		switch (mAktSurfaceType)
 		{
 		case GLSURFACE_VIEW20:

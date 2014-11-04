@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
+import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
@@ -13,8 +14,9 @@ import CB_Core.Types.LogEntry;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.SDBM_Hash;
+
+import com.badlogic.gdx.Gdx;
 
 public class CacheInfoList
 {
@@ -32,10 +34,7 @@ public class CacheInfoList
 	{
 		List = new HashMap<String, CacheInfo>();
 
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches",
-						null);
+		CoreCursor reader = Database.Data.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
 
 		reader.moveToFirst();
 
@@ -241,8 +240,7 @@ public class CacheInfoList
 					ImagesUpdated = false;
 					DescriptionImagesUpdated = false;
 
-					if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) CB_Core_Settings.DescriptionImageFolder
-							.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+					if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) CB_Core_Settings.DescriptionImageFolder.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
 					// 2014-06-21 - Ging-Buh - .changed files are no longer used. Only information in DB (ImagesUpdated and
 					// DescriptionImagesUpdated) are used
@@ -305,7 +303,7 @@ public class CacheInfoList
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("CacheInfoList.writeListToDB()", "", exc);
+				Gdx.app.error(Tag.TAG, "CacheInfoList.writeListToDB()", exc);
 
 			}
 		}

@@ -129,7 +129,7 @@ public class Fader
 	public void resetFadeOut()
 	{
 
-		// Logger.DEBUG("Reset Fade Out");
+		// Gdx.app.debug(Tag.TAG,"Reset Fade Out");
 		if (mFadeIn && !mFadeOut)
 		{
 			mFadeIn = false;
@@ -166,12 +166,12 @@ public class Fader
 				mFadeValue = 1f;
 				mFadeIn = false;
 				mVirtualVisible = true;
-				// Logger.DEBUG("[" + statetime + "]finish FadeIn" + " calcvalue:" + calcedFadeValue);
+				// Gdx.app.debug(Tag.TAG,"[" + statetime + "]finish FadeIn" + " calcvalue:" + calcedFadeValue);
 			}
 			else
 			{
 				mFadeValue = calcedFadeValue;
-				// Logger.DEBUG("[" + statetime + "]fadeIn:" + mFadeValue);
+				// Gdx.app.debug(Tag.TAG,"[" + statetime + "]fadeIn:" + mFadeValue);
 			}
 		}
 		else if (mFadeOut)
@@ -185,12 +185,12 @@ public class Fader
 				mFadeValue = 0f;
 				mFadeOut = false;
 				mVirtualVisible = false;
-				// Logger.DEBUG("[" + statetime + "]finish FadeOut" + " calcvalue:" + calcedFadeValue);
+				// Gdx.app.debug(Tag.TAG,"[" + statetime + "]finish FadeOut" + " calcvalue:" + calcedFadeValue);
 			}
 			else
 			{
 				mFadeValue = calcedFadeValue;
-				// Logger.DEBUG("[" + statetime + "]fadeOut:" + mFadeValue);
+				// Gdx.app.debug(Tag.TAG,"[" + statetime + "]fadeOut:" + mFadeValue);
 			}
 		}
 	}

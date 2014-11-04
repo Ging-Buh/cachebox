@@ -52,8 +52,12 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.badlogic.gdx.Gdx;
+
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
+import de.cachebox_test.Tag;
 import de.cachebox_test.main;
 import de.cachebox_test.Components.CacheDraw;
 import de.cachebox_test.Components.CacheDraw.DrawStyle;
@@ -134,7 +138,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		int result = 0;
 		int specSize = MeasureSpec.getSize(measureSpec);

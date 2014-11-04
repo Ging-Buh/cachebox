@@ -3,9 +3,11 @@ package CB_UI_Base.GL_UI.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -213,7 +215,7 @@ public class GradiantFill
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 				try
 				{
@@ -221,7 +223,7 @@ public class GradiantFill
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 				mPixmap = null;
 				mTexture = null;

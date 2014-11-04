@@ -38,6 +38,7 @@ import CB_RpcCore.ClientCB.RpcClientCB;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
@@ -80,12 +81,12 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.StringH;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.CopyHelper.Copy;
 import CB_Utils.Util.CopyHelper.CopyRule;
 import cb_rpc.Functions.RpcAnswer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Import extends ActivityBase implements ProgressChangedEvent
@@ -1223,8 +1224,8 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 										}
 										catch (OutOfMemoryError e)
 										{
-											Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
-											e.printStackTrace();
+											Gdx.app.error(Tag.TAG, "PQ-download OutOfMemoryError-" + pq.Name, e);
+											Gdx.app.error(Tag.TAG, "", e);
 										}
 									}
 
@@ -1279,7 +1280,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 							return;
 						}
 
-						Logger.LogCat("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
+						Gdx.app.debug(Tag.TAG, "Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 
@@ -1330,7 +1331,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 							return;
 						}
 
-						Logger.LogCat("Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
+						Gdx.app.debug(Tag.TAG, "Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 					}
@@ -1437,7 +1438,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-				Logger.DEBUG(Msg);
+				Gdx.app.debug(Tag.TAG, Msg);
 
 				FilterProperties props = FilterProperties.LastFilter;
 				EditFilterSettings.ApplyFilter(props);
@@ -1520,7 +1521,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 				cancelImport();
 			}

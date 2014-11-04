@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Events.CachListChangedEventList;
 import CB_Core.Settings.CB_Core_Settings;
@@ -39,6 +40,8 @@ import CB_Utils.Lists.CB_Stack.iCompare;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.LoopThread;
 import CB_Utils.Util.iChanged;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * @author Longri
@@ -193,7 +196,8 @@ public class LiveMapQue
 
 			final CB_List<Cache> removedCaches = LiveCaches.add(desc, apiCaches);
 
-			// Logger.DEBUG("LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
+			// Gdx.app.debug(Tag.TAG,"LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" +
+			// descStack.getSize());
 
 			Thread callThread = new Thread(new Runnable()
 			{
@@ -245,11 +249,11 @@ public class LiveMapQue
 		}
 		catch (FileNotFoundException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		// parseResult

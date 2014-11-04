@@ -56,7 +56,7 @@ public class H_ListView extends ListViewBase
 				if (index >= 0 && index < mAddeedIndexList.size())
 				{
 					mAddeedIndexList.remove(index);
-					// Logger.LogCat("Remove Item " + tmp.getIndex());
+					// Gdx.app.debug(Tag.TAG,"Remove Item " + tmp.getIndex());
 					this.removeChild(tmp);
 					if (mCanDispose) tmp.dispose();
 				}
@@ -117,7 +117,7 @@ public class H_ListView extends ListViewBase
 						{
 							tmp.setY(this.getHalfHeight() - tmp.getHalfHeight());// center Pos
 							tmp.setX(itemPos);
-							// Logger.LogCat("Add: " + tmp.getName());
+							// Gdx.app.debug(Tag.TAG,"Add: " + tmp.getName());
 							if (i == mSelectedIndex)
 							{
 								tmp.isSelected = true;

@@ -9,7 +9,8 @@ import org.json.JSONTokener;
 
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.DLong;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 public class FilterProperties
 {
@@ -212,7 +213,7 @@ public class FilterProperties
 		catch (JSONException e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		return result;
 	}
@@ -364,7 +365,7 @@ public class FilterProperties
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("FilterProperties.FilterProperties()", "", exc);
+			Gdx.app.error(Tag.TAG, "FilterProperties.FilterProperties()", exc);
 		}
 	}
 

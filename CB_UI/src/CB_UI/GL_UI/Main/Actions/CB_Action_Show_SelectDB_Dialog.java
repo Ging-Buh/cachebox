@@ -9,6 +9,7 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Categories;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.SelectDB;
 import CB_UI.GL_UI.Activitys.SelectDB.ReturnListner;
 import CB_UI.GL_UI.Main.TabMainView;
@@ -19,8 +20,8 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
-import CB_Utils.Log.Logger;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
@@ -52,7 +53,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 			// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 			Config.AcceptChanges();
-			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+			Gdx.app.debug(Tag.TAG, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 		}
 
 		SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
@@ -74,7 +75,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	{
 		wd = WaitDialog.ShowWait("Load DB ...");
 
-		Logger.DEBUG("\r\nSwitch DB");
+		Gdx.app.debug(Tag.TAG, "\r\nSwitch DB");
 		Thread thread = new Thread(new Runnable()
 		{
 
@@ -122,7 +123,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 						Cache c = Database.Data.Query.get(i);
 						if (c.getGcCode().equalsIgnoreCase(sGc))
 						{
-							Logger.DEBUG("returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+							Gdx.app.debug(Tag.TAG, "returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 							GlobalCore.setSelectedCache(c);
 							break;
 						}
@@ -131,7 +132,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 				if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0))
 				{
-					Logger.DEBUG("Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
+					Gdx.app.debug(Tag.TAG, "Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
 					GlobalCore.setSelectedCache(Database.Data.Query.get(0));
 				}
 

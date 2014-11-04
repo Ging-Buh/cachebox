@@ -259,7 +259,7 @@ public class Button extends CB_View_Base
 
 		else
 
-			// Logger.LogCat("Button " + this.name + " Clicked");
+			// Gdx.app.debug(Tag.TAG,"Button " + this.name + " Clicked");
 			return super.click(x, y, pointer, button);
 	}
 

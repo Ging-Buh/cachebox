@@ -3,11 +3,13 @@ package CB_Core.DAO;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Types.Trackable;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 public class TrackableDAO
 {
@@ -22,7 +24,7 @@ public class TrackableDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Read Trackable", "", exc);
+			Gdx.app.error(Tag.TAG, "Read Trackable", exc);
 			return null;
 		}
 	}
@@ -37,7 +39,7 @@ public class TrackableDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Write Trackable", "", exc);
+			Gdx.app.error(Tag.TAG, "Write Trackable", exc);
 
 		}
 	}
@@ -52,7 +54,7 @@ public class TrackableDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Ubdate Trackable", "", exc);
+			Gdx.app.error(Tag.TAG, "Ubdate Trackable", exc);
 
 		}
 
@@ -70,7 +72,7 @@ public class TrackableDAO
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		try
@@ -79,7 +81,7 @@ public class TrackableDAO
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		Parameters args = new Parameters();
@@ -106,8 +108,7 @@ public class TrackableDAO
 	public Trackable getFromDbByGcCode(String GcCode)
 	{
 		String where = "GcCode = \"" + GcCode + "\"";
-		String query = "select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable WHERE "
-				+ where;
+		String query = "select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable WHERE " + where;
 		CoreCursor reader = Database.FieldNotes.rawQuery(query, null);
 
 		try
@@ -129,7 +130,7 @@ public class TrackableDAO
 		catch (Exception e)
 		{
 			if (reader != null) reader.close();
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			return null;
 		}
 

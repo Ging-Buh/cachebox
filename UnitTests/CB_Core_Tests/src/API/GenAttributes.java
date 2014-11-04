@@ -20,6 +20,9 @@ import CB_UI.Config;
 import CB_Utils.Util.FileIO;
 import CB_Utils.http.HttpUtils;
 import __Static.InitTestDBs;
+import ___Test_Suites.Tag;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * Der Test ist kein Wirklicher Test. Hier werden die GS Attribute Herrunter geladen und es wird die "Attributes.java" daraus generiert.
@@ -110,7 +113,7 @@ public class GenAttributes extends TestCase
 			catch (JSONException e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}

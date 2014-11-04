@@ -22,9 +22,11 @@ import CB_Core.DAO.LogDAO;
 import CB_Core.DB.Database;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportHandler;
-import CB_Utils.Log.Logger;
 import Types.CacheTest;
 import __Static.InitTestDBs;
+import ___Test_Suites.Tag;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * Test the GPX Import
@@ -48,7 +50,7 @@ public class GpxImportTest extends TestCase
 		{
 			Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 			// Logs
-			Logger.DEBUG("Delete Logs");
+			Gdx.app.debug(Tag.TAG, "Delete Logs");
 			LogDAO logdao = new LogDAO();
 			logdao.ClearOrphanedLogs();
 			logdao = null;

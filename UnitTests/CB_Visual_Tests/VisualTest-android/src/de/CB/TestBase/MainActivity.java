@@ -20,8 +20,6 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.ILog;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 import android.content.Context;
@@ -42,6 +40,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
@@ -50,7 +49,7 @@ import de.CB.TestBase.Views.MainView;
 import de.CB.TestBase.Views.splash;
 import de.CB_VisualTest.android.R;
 
-public class MainActivity extends AndroidApplication implements LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener, ILog
+public class MainActivity extends AndroidApplication implements LocationListener, GpsStatus.NmeaListener, GpsStatus.Listener
 {
 	String workPath;
 	public static LocationManager locationManager;
@@ -64,8 +63,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 
 		that = this;
 
-		Logger.Add(this);
-
+		
 		GL.resetIsInitial();
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -178,8 +176,8 @@ public class MainActivity extends AndroidApplication implements LocationListener
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.initialLocationManager()", "", e);
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG,"main.initialLocationManager()",   e);
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 	}
@@ -382,7 +380,7 @@ public class MainActivity extends AndroidApplication implements LocationListener
 					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungültig
 					double altCorrection = Double.valueOf(s[11]);
 					if (altCorrection == 0) return;
-					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
+					Gdx.app.log(Tag.TAG,"AltCorrection: " + String.valueOf(altCorrection));
 					Locator.setAltCorrection(altCorrection);
 					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
 					// Höhenkorrektur ändert sich normalerweise nicht, einmal
@@ -397,8 +395,8 @@ public class MainActivity extends AndroidApplication implements LocationListener
 		}
 		catch (Exception e)
 		{
-			Logger.Error("main.onNmeaReceived()", "", e);
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG,"main.onNmeaReceived()",   e);
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
 
@@ -589,26 +587,6 @@ public class MainActivity extends AndroidApplication implements LocationListener
 			CB_Android_FileExplorer.onActivityResult(requestCode, resultCode, data);
 			return;
 		}
-	}
-
-	@Override
-	public void receiveLog(String Msg)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void receiveShortLog(String Msg)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void receiveLogCat(String Msg)
-	{
-		Log.d("CACHEBOX", Msg);
 	}
 
 }

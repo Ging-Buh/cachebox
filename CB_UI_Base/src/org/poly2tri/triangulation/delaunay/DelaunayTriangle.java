@@ -136,7 +136,7 @@ public class DelaunayTriangle
 		}
 		else
 		{
-			// logger.error("Neighbor error, please report!");
+			// Gdx.app.error(Tag.TAG,"Neighbor error, please report!");
 			// throw new Exception("Neighbor error, please report!");
 		}
 	}
@@ -161,7 +161,7 @@ public class DelaunayTriangle
 		}
 		else
 		{
-			// logger.error("markNeighbor failed");
+			// Gdx.app.error(Tag.TAG,"markNeighbor failed");
 		}
 	}
 
@@ -274,7 +274,7 @@ public class DelaunayTriangle
 		{
 			return points[0];
 		}
-		// logger.error("point location error");
+		// Gdx.app.error(Tag.TAG,"point location error");
 		throw new RuntimeException("[FIXME] point location error");
 	}
 
@@ -293,7 +293,7 @@ public class DelaunayTriangle
 		{
 			return points[1];
 		}
-		// logger.error("point location error");
+		// Gdx.app.error(Tag.TAG,"point location error");
 		throw new RuntimeException("[FIXME] point location error");
 	}
 
@@ -320,7 +320,7 @@ public class DelaunayTriangle
 		}
 		else
 		{
-			// logger.error("legalization error");
+			// Gdx.app.error(Tag.TAG,"legalization error");
 			throw new RuntimeException("legalization bug");
 		}
 	}

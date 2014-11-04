@@ -2,7 +2,7 @@ package CB_UI.GL_UI;
 
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_Utils.Log.Logger;
+import CB_UI.Tag;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Util.iChanged;
 
@@ -113,7 +113,7 @@ public class SoundCache
 
 		if (handle == null || !handle.exists())
 		{
-			Logger.Error("LoadSound", set.getValue().Path);
+			Gdx.app.error(Tag.TAG, "LoadSound" + set.getValue().Path);
 			return null;
 		}
 
@@ -124,7 +124,7 @@ public class SoundCache
 		}
 		catch (Exception e)
 		{
-			Logger.Error("LoadSound", set.getValue().Path);
+			Gdx.app.error(Tag.TAG, "LoadSound" + set.getValue().Path);
 			return null;
 		}
 		return ret;

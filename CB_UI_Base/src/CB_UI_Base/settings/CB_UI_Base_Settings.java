@@ -17,11 +17,13 @@ package CB_UI_Base.settings;
 
 import CB_UI_Base.Global;
 import CB_Utils.Config_Core;
+import CB_Utils.LogLevel;
 import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingColor;
 import CB_Utils.Settings.SettingDouble;
+import CB_Utils.Settings.SettingEnum;
 import CB_Utils.Settings.SettingFloat;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
@@ -58,9 +60,11 @@ public interface CB_UI_Base_Settings
 
 	public static final SettingBool DebugSpriteBatchCountBuffer = new SettingBool("DebugSpriteBatchCountBuffer", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingBool DebugMode = new SettingBool("DebugMode", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
+	// public static final SettingBool DebugMode1 = new SettingBool("DebugMode", SettingCategory.Debug, EXPERT, false,
+	// SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingBool WriteLoggerDebugMode = new SettingBool("WriteLoggerDebugMode", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
+	// public static final SettingBool WriteLoggerDebugMode = new SettingBool("WriteLoggerDebugMode", SettingCategory.Debug, EXPERT, false,
+	// SettingStoreType.Global, SettingUsage.ACB);
 
 	public static final SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", SettingCategory.Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
 
@@ -73,5 +77,7 @@ public interface CB_UI_Base_Settings
 	public static final SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", SettingCategory.LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), SettingStoreType.Global, SettingUsage.ACB);
 
 	public static final SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", SettingCategory.Skin, NORMAL, new HSV_Color(0.2f, 1f, 0.2f, 1f), SettingStoreType.Global, SettingUsage.ACB);
+
+	public static final SettingEnum<Enum<LogLevel>> AktLogLevel = new SettingEnum<Enum<LogLevel>>("AktLogLevel", SettingCategory.Debug, EXPERT, LogLevel.none, SettingStoreType.Platform, SettingUsage.ALL, LogLevel.none);
 
 }

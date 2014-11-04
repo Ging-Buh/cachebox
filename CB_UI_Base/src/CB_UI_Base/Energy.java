@@ -18,8 +18,9 @@ package CB_UI_Base;
 
 import java.util.ArrayList;
 
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.iChanged;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * Contains the static queries of the state of CacheBox, for the decision whether a job being processed has to do. Thus delivers
@@ -54,7 +55,7 @@ public class Energy
 	{
 		displayOff = true;
 		fireChangedEvent();
-		Logger.DEBUG("ENERGY.set dontRender");
+		Gdx.app.debug(Tag.TAG, "ENERGY.set dontRender");
 	}
 
 	/**
@@ -64,7 +65,7 @@ public class Energy
 	{
 		displayOff = false;
 		fireChangedEvent();
-		Logger.DEBUG("ENERGY.reset dontRender");
+		Gdx.app.debug(Tag.TAG, "ENERGY.reset dontRender");
 	}
 
 	// ##############################

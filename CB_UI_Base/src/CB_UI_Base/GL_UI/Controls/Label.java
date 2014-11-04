@@ -16,6 +16,7 @@
 
 package CB_UI_Base.GL_UI.Controls;
 
+import CB_UI_Base.Tag;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
@@ -24,8 +25,8 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Log.Logger;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -140,9 +141,8 @@ public class Label extends CB_View_Base
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
-					+ " \"" + mText + "\"");
+			Gdx.app.error(Tag.TAG, "", e);
+			Gdx.app.debug(Tag.TAG, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -159,9 +159,8 @@ public class Label extends CB_View_Base
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
-					+ " \"" + mText + "\"");
+			Gdx.app.error(Tag.TAG, "", e);
+			Gdx.app.debug(Tag.TAG, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -178,9 +177,8 @@ public class Label extends CB_View_Base
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
-					+ " \"" + mText + "\"");
+			Gdx.app.error(Tag.TAG, "", e);
+			Gdx.app.debug(Tag.TAG, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -436,6 +434,7 @@ public class Label extends CB_View_Base
 	@Override
 	public void dispose()
 	{
+		super.dispose();
 		TextObject = null;
 		mVAlignment = null;
 		mHAlignment = null;

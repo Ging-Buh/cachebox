@@ -18,6 +18,7 @@ package CB_UI_Base.GL_UI;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.SizeF;
@@ -52,7 +53,6 @@ public abstract class GL_View_Base extends CB_RectF
 	 */
 	public static final int MOUSE_WHEEL_POINTER_DOWN = -280273;
 
-	public static boolean debug = false;
 	public static boolean disableScissor = false;
 
 	public boolean withoutScissor = false;
@@ -497,7 +497,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (IllegalStateException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			// reset Colorfilter ?
 			if (ColorFilterSeted)
 			{
@@ -590,19 +590,6 @@ public abstract class GL_View_Base extends CB_RectF
 			childsInvalidate = false;
 		}
 
-		// Draw Debug REC
-		if (debug)
-		{
-
-			if (DebugSprite != null)
-			{
-				batch.flush();
-				DebugSprite.draw(batch);
-
-			}
-
-		}
-
 		// reset Colorfilter ?
 		if (ColorFilterSeted)
 		{
@@ -615,43 +602,6 @@ public abstract class GL_View_Base extends CB_RectF
 	public boolean isDisposed()
 	{
 		return isDisposed;
-	}
-
-	private void writeDebug()
-	{
-		if (DebugSprite == null)
-		{
-			try
-			{
-				GL.that.RunOnGLWithThreadCheck(new IRunOnGL()
-				{
-
-					@Override
-					public void run()
-					{
-						// int w = getNextHighestPO2((int) getWidth());
-						// int h = getNextHighestPO2((int) getHeight());
-
-						int w = (int) getWidth();
-						int h = (int) getHeight();
-
-						debugRegPixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
-						debugRegPixmap.setColor(1f, 0f, 0f, 1f);
-						debugRegPixmap.drawRectangle(1, 1, (int) getWidth() - 1, (int) getHeight() - 1);
-
-						debugRegTexture = new Texture(debugRegPixmap, Pixmap.Format.RGBA8888, false);
-
-						DebugSprite = new Sprite(debugRegTexture, (int) getWidth(), (int) getHeight());
-					}
-				});
-
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-
-		}
 	}
 
 	public CB_RectF ThisWorldRec = new CB_RectF();
@@ -692,7 +642,6 @@ public abstract class GL_View_Base extends CB_RectF
 
 		thisInvalidate = false;
 
-		if (debug) writeDebug();
 	}
 
 	public void invalidate()
@@ -794,7 +743,7 @@ public abstract class GL_View_Base extends CB_RectF
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -816,7 +765,7 @@ public abstract class GL_View_Base extends CB_RectF
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -838,7 +787,7 @@ public abstract class GL_View_Base extends CB_RectF
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 	}
@@ -885,7 +834,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		return handled;
 	}
@@ -929,7 +878,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		return behandelt;
 	}
@@ -972,7 +921,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		return behandelt;
 	}
@@ -1123,7 +1072,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		try
@@ -1132,7 +1081,7 @@ public abstract class GL_View_Base extends CB_RectF
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		debugRegPixmap = null;
 		debugRegTexture = null;

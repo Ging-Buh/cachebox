@@ -27,6 +27,7 @@ import org.apache.http.protocol.HttpContext;
 import CB_Core.Api.CB_Api;
 import CB_Core.Api.GroundspeakAPI;
 import CB_UI.Config;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.settings.SettingsActivity;
 import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog;
 import CB_UI.GL_UI.Controls.Dialogs.PasswortDialog.returnListner;
@@ -36,6 +37,8 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog;
 import CB_UI_Base.GL_UI.Controls.Dialogs.CancelWaitDialog.IcancelListner;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Interfaces.cancelRunnable;
+
+import com.badlogic.gdx.Gdx;
 
 public class GcApiLogin
 {
@@ -133,12 +136,12 @@ public class GcApiLogin
 				catch (ClientProtocolException e)
 				{
 
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 				catch (IOException e)
 				{
 
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 			}
 		});
@@ -196,7 +199,7 @@ public class GcApiLogin
 		catch (Exception e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		String Post1 = "";
@@ -255,7 +258,7 @@ public class GcApiLogin
 			catch (Exception e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			String page = builder.toString();
@@ -328,24 +331,24 @@ public class GcApiLogin
 			catch (Exception e)
 			{
 				closeWaitDialog();
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}
 		catch (ClientProtocolException e)
 		{
 			closeWaitDialog();
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		catch (IOException e)
 		{
 			closeWaitDialog();
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		catch (IllegalStateException e)
 		{
 			closeWaitDialog();
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		String page = builder.toString();
@@ -490,7 +493,7 @@ public class GcApiLogin
 			catch (Exception e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}
@@ -571,7 +574,7 @@ public class GcApiLogin
 			catch (Exception e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}
@@ -646,7 +649,7 @@ public class GcApiLogin
 			catch (Exception e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}
@@ -719,7 +722,7 @@ public class GcApiLogin
 			catch (Exception e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}

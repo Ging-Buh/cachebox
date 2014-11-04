@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Types.FieldNoteEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
+import CB_UI.Tag;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -16,6 +17,7 @@ import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -63,8 +65,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 				@Override
 				public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 				{
-					if (FieldNoteViewItem.this.mOnClickListener != null) FieldNoteViewItem.this.mOnClickListener.onClick(v, x, y, pointer,
-							button);
+					if (FieldNoteViewItem.this.mOnClickListener != null) FieldNoteViewItem.this.mOnClickListener.onClick(v, x, y, pointer, button);
 					return true;
 				}
 			});
@@ -75,8 +76,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	private void iniImage()
 	{
 		if (this.fieldnote == null) return;
-		ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2),
-				UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
+		ivTyp = new Image(getLeftWidth(), this.getHeight() - (headHeight / 2) - (UI_Size_Base.that.getButtonHeight() / 1.5f / 2), UI_Size_Base.that.getButtonHeight() / 1.5f, UI_Size_Base.that.getButtonHeight() / 1.5f, "");
 		this.addChild(ivTyp);
 		ivTyp.setDrawable(getTypeIcon(this.fieldnote));
 	}
@@ -125,11 +125,10 @@ public class FieldNoteViewItem extends ListViewItemBackground
 		catch (Exception e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
-		lblDate = new Label(this.getWidth() - getRightWidth() - DateLength,
-				this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, "");
+		lblDate = new Label(this.getWidth() - getRightWidth() - DateLength, this.getHeight() - (headHeight / 2) - (MeasuredLabelHeight / 2), DateLength, MeasuredLabelHeight, "");
 		lblDate.setFont(Fonts.getNormal());
 		lblDate.setText(dateString);
 		this.addChild(lblDate);
@@ -138,9 +137,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	private void iniCacheTypeImage()
 	{
 		if (this.fieldnote == null) return;
-		ivCacheType = new Image(getLeftWidth() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight
-				- (UI_Size_Base.that.getButtonHeight()) - UI_Size_Base.that.getMargin(), UI_Size_Base.that.getButtonHeight(),
-				UI_Size_Base.that.getButtonHeight(), "");
+		ivCacheType = new Image(getLeftWidth() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight - (UI_Size_Base.that.getButtonHeight()) - UI_Size_Base.that.getMargin(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
 		this.addChild(ivCacheType);
 
 		if (fieldnote.isTbFieldNote)
@@ -156,9 +153,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	private void iniCacheNameLabel()
 	{
 		if (this.fieldnote == null) return;
-		lblCacheName = new Label(ivCacheType.getMaxX() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight - MeasuredLabelHeight
-				- UI_Size_Base.that.getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2),
-				MeasuredLabelHeight, "");
+		lblCacheName = new Label(ivCacheType.getMaxX() + UI_Size_Base.that.getMargin(), this.getHeight() - headHeight - MeasuredLabelHeight - UI_Size_Base.that.getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight, "");
 		lblCacheName.setFont(Fonts.getNormal());
 		lblCacheName.setText(fieldnote.isTbFieldNote ? fieldnote.TbName : fieldnote.CacheName);
 		this.addChild(lblCacheName);
@@ -168,8 +163,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	private void iniGcCodeLabel()
 	{
 		if (this.fieldnote == null) return;
-		lblGcCode = new Label(lblCacheName.getX(), lblCacheName.getY() - MeasuredLabelHeight - UI_Size_Base.that.getMargin(),
-				this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight, "");
+		lblGcCode = new Label(lblCacheName.getX(), lblCacheName.getY() - MeasuredLabelHeight - UI_Size_Base.that.getMargin(), this.getWidth() - ivCacheType.getMaxX() - (UI_Size_Base.that.getMargin() * 2), MeasuredLabelHeight, "");
 		lblGcCode.setFont(Fonts.getNormal());
 		lblGcCode.setText(fieldnote.gcCode);
 		this.addChild(lblGcCode);
@@ -179,9 +173,7 @@ public class FieldNoteViewItem extends ListViewItemBackground
 	private void iniCommentLabel()
 	{
 		if (this.fieldnote == null) return;
-		lblComment = new Label(getLeftWidth() + UI_Size_Base.that.getMargin(), 0, this.getWidth() - getLeftWidth() - getRightWidth()
-				- (UI_Size_Base.that.getMargin() * 2), this.getHeight() - (this.getHeight() - lblGcCode.getY())
-				- UI_Size_Base.that.getMargin(), "");
+		lblComment = new Label(getLeftWidth() + UI_Size_Base.that.getMargin(), 0, this.getWidth() - getLeftWidth() - getRightWidth() - (UI_Size_Base.that.getMargin() * 2), this.getHeight() - (this.getHeight() - lblGcCode.getY()) - UI_Size_Base.that.getMargin(), "");
 		lblComment.setFont(Fonts.getNormal());
 		lblComment.setWrappedText(fieldnote.comment);
 		this.addChild(lblComment);

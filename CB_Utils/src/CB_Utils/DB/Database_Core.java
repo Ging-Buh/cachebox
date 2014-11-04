@@ -2,7 +2,9 @@ package CB_Utils.DB;
 
 import java.util.HashMap;
 
-import CB_Utils.Log.Logger;
+import CB_Utils.Tag;
+
+import com.badlogic.gdx.Gdx;
 
 public abstract class Database_Core
 {
@@ -42,7 +44,7 @@ public abstract class Database_Core
 	{
 		try
 		{
-			Logger.DEBUG("DB Startup : " + databasePath);
+			Gdx.app.debug(Tag.TAG, "DB Startup : " + databasePath);
 		}
 		catch (Exception e)
 		{

@@ -6,8 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import CB_Core.Tag;
 import CB_Core.Api.PocketQuery.PQ;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * Imports a single PocketQuery from Groundspeak API directly without ZIP Because Groundspeak API only delivers a lite dataset of the caches
@@ -65,7 +67,7 @@ public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak
 		}
 		catch (JSONException e)
 		{
-			Logger.Error("ApiGS_GetPocketQueryData", e.getMessage());
+			Gdx.app.error(Tag.TAG, "ApiGS_GetPocketQueryData", e);
 			return false;
 		}
 
@@ -79,13 +81,13 @@ public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak
 		ApiGroundspeakResult result = new ApiGroundspeakResult(-1, "");
 
 		JSONArray jCaches = json.getJSONArray("CacheCodes");
-		Logger.DEBUG("got " + jCaches.length() + " Caches from gc");
+		Gdx.app.debug(Tag.TAG, "got " + jCaches.length() + " Caches from gc");
 
 		for (int i = 0; i < jCaches.length(); i++)
 		{
 			String gcCode = (String) jCaches.get(i);
 
-			Logger.DEBUG("handling " + gcCode);
+			Gdx.app.debug(Tag.TAG, "handling " + gcCode);
 			caches.add(gcCode);
 		}
 

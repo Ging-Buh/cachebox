@@ -514,12 +514,12 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	public void KeyboardFocusChanged(EditTextFieldBase focus)
 	{
 		/*
-		 * Logger.LogCat("SolverDialog FocusChangedEvent");
+		 * Gdx.app.debug(Tag.TAG,"SolverDialog FocusChangedEvent");
 		 * 
-		 * if (focus == null) { this.setY(initialYpos); Logger.LogCat("SolverDialog set InitialPos - noFocus"); } else { float WorldY =
+		 * if (focus == null) { this.setY(initialYpos); Gdx.app.debug(Tag.TAG,"SolverDialog set InitialPos - noFocus"); } else { float WorldY =
 		 * focus.getWorldRec().getY(); if (UiSizes.getWindowHeight() / 2 > WorldY) { this.setY(UiSizes.getWindowHeight() - WorldY);
-		 * Logger.LogCat("SolverDialog set Pos - " + (UiSizes.getWindowHeight() - WorldY)); } else {
-		 * Logger.LogCat("SolverDialog dont set Pos - " + WorldY); } }
+		 * Gdx.app.debug(Tag.TAG,"SolverDialog set Pos - " + (UiSizes.getWindowHeight() - WorldY)); } else {
+		 * Gdx.app.debug(Tag.TAG,"SolverDialog dont set Pos - " + WorldY); } }
 		 * 
 		 * GL.that.renderOnce("SolverDialog Y-Pos Changed");
 		 */

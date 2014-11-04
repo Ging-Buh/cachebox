@@ -15,12 +15,13 @@
  */
 package CB_Locator.Map;
 
+import CB_Locator.Tag;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -84,7 +85,7 @@ public class TileGL_Bmp extends TileGL
 			}
 			catch (Exception ex)
 			{
-				Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+				Gdx.app.debug(Tag.TAG, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
 			}
 			bytes = null;
 			inCreation = false;
@@ -109,7 +110,7 @@ public class TileGL_Bmp extends TileGL
 					}
 					catch (Exception ex)
 					{
-						Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
+						Gdx.app.debug(Tag.TAG, "[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
 					}
 					bytes = null;
 					inCreation = false;
@@ -174,7 +175,7 @@ public class TileGL_Bmp extends TileGL
 			}
 			catch (java.lang.NullPointerException e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 			texture = null;
 		}
@@ -192,7 +193,7 @@ public class TileGL_Bmp extends TileGL
 					}
 					catch (java.lang.NullPointerException e)
 					{
-						e.printStackTrace();
+						Gdx.app.error(Tag.TAG, "", e);
 					}
 					texture = null;
 				}

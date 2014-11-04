@@ -71,7 +71,7 @@ public class InfoBubble extends CB_View_Base
 			if ((mCache != null) && (mCache.Id == cache.Id) && (mWaypoint == waypoint)) return;
 		}
 
-		// Logger.LogCat("New Cache @InfoBubble");
+		// Gdx.app.debug(Tag.TAG,"New Cache @InfoBubble");
 		mCache = cache;
 		mCacheId = cache.Id;
 		mWaypoint = waypoint;
@@ -90,7 +90,7 @@ public class InfoBubble extends CB_View_Base
 
 	public void showBubbleSelected()
 	{
-		// Logger.LogCat("Show BubbleSelected");
+		// Gdx.app.debug(Tag.TAG,"Show BubbleSelected");
 		mCacheId = GlobalCore.getSelectedCache().Id;
 		mCache = GlobalCore.getSelectedCache();
 		setVisible();
@@ -129,7 +129,7 @@ public class InfoBubble extends CB_View_Base
 
 	private void requestLayout()
 	{
-		// Logger.LogCat("InfoBubble RequestLayout");
+		// Gdx.app.debug(Tag.TAG,"InfoBubble RequestLayout");
 		// SizeF size = new SizeF(width - (width * 0.04f), height - (height * 0.28f));
 		SizeF size = new SizeF(0.96f * getWidth(), 0.72f * getHeight());
 		cacheInfo.setSize(size);

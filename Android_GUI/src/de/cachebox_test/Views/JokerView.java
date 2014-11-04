@@ -18,7 +18,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+
+import com.badlogic.gdx.Gdx;
+
 import de.cachebox_test.Global;
+import de.cachebox_test.Tag;
 import de.cachebox_test.main;
 import de.cachebox_test.Events.ViewOptionsMenu;
 import de.cachebox_test.Ui.ActivityUtils;
@@ -61,7 +65,7 @@ public class JokerView extends ListView implements SelectedCacheEvent, ViewOptio
 				}
 				catch (RemoteException e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 					return true;
 				}
 			}

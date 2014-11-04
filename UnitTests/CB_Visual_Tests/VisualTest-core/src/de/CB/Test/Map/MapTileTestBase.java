@@ -25,7 +25,6 @@ import CB_UI_Base.GL_UI.Controls.MultiToggleButton.OnStateChangeListener;
 import CB_UI_Base.GL_UI.Main.CB_Button;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -36,6 +35,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.math.Matrix4;
 
+import de.CB.Test.Tag;
 import de.CB.TestBase.Actions.TestCaseBase;
 import de.CB.TestBase.Views.MainView;
 
@@ -147,7 +147,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 		GL_mapDatabase = new MapDatabase();
 		GL_mapDatabase.closeFile();
 		GL_mapDatabase.openFile(mapFile);
-		Logger.DEBUG("Open MapsForge Map: " + mapFile);
+		Gdx.app.debug(Tag.TAG,"Open MapsForge Map: " + mapFile);
 		// try
 		// {
 		// renderTheme = new ExternalRenderTheme(themeFile);
@@ -166,7 +166,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 		MF_mapDatabase = new org.mapsforge.map.reader.MapDatabase();
 		MF_mapDatabase.closeFile();
 		MF_mapDatabase.openFile(mapFile);
-		Logger.DEBUG("Open MapsForge Map: " + mapFile);
+		Gdx.app.debug(Tag.TAG,"Open MapsForge Map: " + mapFile);
 		// try
 		// {
 		// renderTheme = new ExternalRenderTheme(themeFile);
@@ -229,7 +229,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 					catch (InterruptedException e)
 					{
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Gdx.app.error(Tag.TAG, "", e);
 					}
 
 				}
@@ -248,7 +248,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 					catch (InterruptedException e)
 					{
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Gdx.app.error(Tag.TAG, "", e);
 					}
 				}
 			});
@@ -302,7 +302,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		return null;
 	}
@@ -348,7 +348,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		return null;
 	}
@@ -530,7 +530,7 @@ public abstract class MapTileTestBase extends TestCaseBase
 				catch (Exception e)
 				{
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 			}
 

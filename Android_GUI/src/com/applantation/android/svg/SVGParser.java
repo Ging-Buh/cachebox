@@ -50,6 +50,10 @@ import android.graphics.Typeface;
 import android.util.Base64;
 import android.util.Log;
 
+import com.badlogic.gdx.Gdx;
+
+import de.cachebox_test.Tag;
+
 /*
 
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -353,7 +357,7 @@ public class SVGParser
 				catch (IOException e)
 				{
 					Log.w(TAG, "parsing svg", e);
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 			}
 			return result;

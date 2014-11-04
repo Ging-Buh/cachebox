@@ -6,11 +6,13 @@ import CB_Core.Api.LiveMapQue.QueStateChanged;
 import CB_Locator.Coordinate;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.GL_UI.SpriteCache;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.Controls.ImageButton;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class LiveButton extends ImageButton implements QueStateChanged
@@ -55,7 +57,7 @@ public class LiveButton extends ImageButton implements QueStateChanged
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 			}
 			else

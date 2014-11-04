@@ -17,15 +17,17 @@ import java.util.LinkedList;
 
 import org.apache.http.util.ByteArrayBuffer;
 
+import CB_Core.Tag;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SDBM_Hash;
+
+import com.badlogic.gdx.Gdx;
 
 public class DescriptionImageGrabber
 {
@@ -304,7 +306,7 @@ public class DescriptionImageGrabber
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			return false;
 		}
 	}
@@ -611,7 +613,7 @@ public class DescriptionImageGrabber
 						}
 						catch (Exception ex)
 						{
-							Logger.Error("Error trying to rename Spoiler with old Name format", ex.getMessage());
+							Gdx.app.error(Tag.TAG, "Error trying to rename Spoiler with old Name format", ex);
 						}
 					}
 
@@ -668,7 +670,7 @@ public class DescriptionImageGrabber
 							}
 							catch (Exception ex)
 							{
-								Logger.Error("DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex.getMessage());
+								Gdx.app.error(Tag.TAG, "DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex);
 							}
 						}
 					}

@@ -166,7 +166,7 @@ public class Remote
 		sb.append(URLEncoder.encode(text));
 		/*
 		 * // This requires Java 1.3 try { sb.append( URLEncoder.encode( text, "8859_1" ) ); } catch ( UnsupportedEncodingException e ) {
-		 * e.printStackTrace(); }
+		 * Gdx.app.error(Tag.TAG, "", e); }
 		 */
 		String formData = sb.toString();
 

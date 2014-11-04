@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -31,7 +32,8 @@ import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 public class CacheDAO
 {
@@ -94,7 +96,7 @@ public class CacheDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Read Cache", "", exc);
+			Gdx.app.error(Tag.TAG, "Read Cache", exc);
 			return null;
 		}
 	}
@@ -126,7 +128,7 @@ public class CacheDAO
 		catch (Exception e)
 		{
 			if (reader != null) reader.close();
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			return false;
 		}
 	}
@@ -150,7 +152,7 @@ public class CacheDAO
 		}
 		catch (ParseException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		detail.Url = reader.getString(readerOffset + 2).trim();
@@ -192,7 +194,7 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		args.put("Difficulty", (int) (cache.getDifficulty() * 2));
 		args.put("Terrain", (int) (cache.getTerrain() * 2));
@@ -212,7 +214,7 @@ public class CacheDAO
 		catch (Exception e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		if ((cache.getShortDescription() != null) && (cache.getShortDescription().length() > 0))
@@ -255,7 +257,7 @@ public class CacheDAO
 			catch (Exception e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 			args.put("Url", cache.getUrl());
 			args.put("TourName", cache.getTourName());
@@ -274,7 +276,7 @@ public class CacheDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Write Cache", "", exc);
+			Gdx.app.error(Tag.TAG, "Write Cache", exc);
 
 		}
 	}
@@ -291,7 +293,7 @@ public class CacheDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Write Cache Found", "", exc);
+			Gdx.app.error(Tag.TAG, "Write Cache Found", exc);
 		}
 	}
 
@@ -316,7 +318,7 @@ public class CacheDAO
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		args.put("Difficulty", (int) (cache.getDifficulty() * 2));
 		args.put("Terrain", (int) (cache.getTerrain() * 2));
@@ -337,7 +339,7 @@ public class CacheDAO
 		catch (Exception e)
 		{
 
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 		args.put("Hint", cache.getHint());
 
@@ -384,7 +386,7 @@ public class CacheDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Update Cache", "", exc);
+			Gdx.app.error(Tag.TAG, "Update Cache", exc);
 			return false;
 
 		}
@@ -414,7 +416,7 @@ public class CacheDAO
 		catch (Exception e)
 		{
 			if (reader != null) reader.close();
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			return null;
 		}
 		finally
@@ -450,7 +452,7 @@ public class CacheDAO
 		catch (Exception e)
 		{
 			if (reader != null) reader.close();
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			return null;
 		}
 
@@ -518,7 +520,7 @@ public class CacheDAO
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("Ubdate Cache", "", exc);
+				Gdx.app.error(Tag.TAG, "Ubdate Cache", exc);
 
 			}
 		}
@@ -571,8 +573,7 @@ public class CacheDAO
 
 		ArrayList<String> GcCodes = new ArrayList<String>();
 
-		CoreCursor reader = Database.Data.rawQuery(
-				"select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
+		CoreCursor reader = Database.Data.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
 
 		if (reader.getCount() > 0)
 		{

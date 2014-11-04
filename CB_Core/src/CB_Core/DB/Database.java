@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import CB_Core.Tag;
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.Replication.Replication;
 import CB_Core.Types.Cache;
@@ -20,8 +21,9 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.SDBM_Hash;
+
+import com.badlogic.gdx.Gdx;
 
 public abstract class Database extends Database_Core
 {
@@ -191,7 +193,7 @@ public abstract class Database extends Database_Core
 							}
 							catch (Exception exc)
 							{
-								Logger.Error("Database", "Update_CategoryId", exc);
+								Gdx.app.error(Tag.TAG, "Database Update_CategoryId", exc);
 							}
 						}
 					}
@@ -285,7 +287,7 @@ public abstract class Database extends Database_Core
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("AlterDatabase", "", exc);
+				Gdx.app.error(Tag.TAG, "AlterDatabase", exc);
 			}
 			finally
 			{
@@ -347,7 +349,7 @@ public abstract class Database extends Database_Core
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("AlterDatabase", "", exc);
+				Gdx.app.error(Tag.TAG, "AlterDatabase", exc);
 			}
 			finally
 			{
@@ -373,7 +375,7 @@ public abstract class Database extends Database_Core
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("AlterDatabase", "", exc);
+				Gdx.app.error(Tag.TAG, "AlterDatabase", exc);
 			}
 			finally
 			{
@@ -426,7 +428,7 @@ public abstract class Database extends Database_Core
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Waypoint.DeleteFromDataBase()", "", exc);
+			Gdx.app.error(Tag.TAG, "Waypoint.DeleteFromDataBase()", exc);
 		}
 	}
 
@@ -586,10 +588,8 @@ public abstract class Database extends Database_Core
 		CB_List<LogEntry> result = new CB_List<LogEntry>();
 		if (cache == null) // if no cache is selected!
 		return result;
-		CoreCursor reader = Database.Data.rawQuery(
-				"select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc",
-				new String[]
-					{ Long.toString(cache.Id) });
+		CoreCursor reader = Database.Data.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]
+			{ Long.toString(cache.Id) });
 
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
@@ -670,9 +670,7 @@ public abstract class Database extends Database_Core
 		beginTransaction();
 		try
 		{
-			CoreCursor reader = rawQuery(
-					"select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID",
-					null);
+			CoreCursor reader = rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
 			reader.moveToFirst();
 
 			while (reader.isAfterLast() == false)
@@ -742,8 +740,7 @@ public abstract class Database extends Database_Core
 		// Get CacheId's from Caches with to match older Logs
 		// ###################################################
 		{
-			String command = "select cacheid from logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > "
-					+ String.valueOf(minToKeep);
+			String command = "select cacheid from logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + String.valueOf(minToKeep);
 
 			CoreCursor reader = Database.Data.rawQuery(command, null);
 			reader.moveToFirst();
@@ -785,15 +782,14 @@ public abstract class Database extends Database_Core
 						sb.append(id).append(",");
 
 					// now delete all Logs out of Date without minLogIds
-					String delCommand = "delete from Logs where Timestamp<'" + TimeStamp + "' and cacheid = " + String.valueOf(oldLogCache)
-							+ " and id not in (" + sb.toString().substring(0, sb.length() - 1) + ")";
+					String delCommand = "delete from Logs where Timestamp<'" + TimeStamp + "' and cacheid = " + String.valueOf(oldLogCache) + " and id not in (" + sb.toString().substring(0, sb.length() - 1) + ")";
 					Database.Data.execSQL(delCommand);
 				}
 				setTransactionSuccessful();
 			}
 			catch (Exception ex)
 			{
-				Logger.Error("Delete Old Logs", "", ex);
+				Gdx.app.error(Tag.TAG, "Delete Old Logs", ex);
 			}
 			finally
 			{

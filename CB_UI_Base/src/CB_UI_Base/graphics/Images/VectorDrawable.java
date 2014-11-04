@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.utils.ColorDrawable;
@@ -182,8 +183,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 		GL.batch.setProjectionMatrix(oriMatrix);
 	}
 
-	private void drawFbo(Batch batch, float x, float y, final float width, final float height, final Matrix4 oriMatrix,
-			Matrix4 thisDrawMatrix)
+	private void drawFbo(Batch batch, float x, float y, final float width, final float height, final Matrix4 oriMatrix, Matrix4 thisDrawMatrix)
 	{
 		final int fboScalerWidth = (int) (this.DEFAULT_WIDTH * FBO_SCALER);
 		final int fboScalerHeight = (int) (this.DEFAULT_HEIGHT * FBO_SCALER);
@@ -269,7 +269,7 @@ public class VectorDrawable implements ext_Bitmap, Drawable, Disposable
 						}
 						catch (Exception e)
 						{
-							e.printStackTrace();
+							Gdx.app.error(Tag.TAG, "", e);
 
 						}
 					}

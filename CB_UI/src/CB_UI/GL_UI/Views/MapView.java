@@ -48,6 +48,7 @@ import CB_Locator.Map.ZoomScale;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEventList;
@@ -89,6 +90,7 @@ import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.iChanged;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -418,7 +420,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 							}
 							catch (InterruptedException e)
 							{
-								e.printStackTrace();
+								Gdx.app.error(Tag.TAG, "", e);
 							}
 
 							// Reload result from DB
@@ -1066,7 +1068,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	protected void setZoomScale(int zoom)
 	{
-		// Logger.LogCat("set zoom");
+		// Gdx.app.debug(Tag.TAG,"set zoom");
 		if (Mode == MapMode.Normal) zoomScale.setZoom(zoom);
 		if (Mode == MapMode.Normal) mapScale.zoomChanged();
 	}
@@ -1082,7 +1084,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	public void requestLayout()
 	{
-		// Logger.LogCat("MapView clacLayout()");
+		// Gdx.app.debug(Tag.TAG,"MapView clacLayout()");
 		float margin = GL_UISizes.margin;
 
 		float infoHeight = 0;
@@ -1170,7 +1172,8 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				if (minWpi == null || minWpi.Cache == null) return true;
 				// Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
-				// Logger.LogCat("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
+				// Gdx.app.debug(Tag.TAG,"MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" +
+				// minWpi.Cache.Name
 				// + "/ ");
 
 				if (minDist < 40)

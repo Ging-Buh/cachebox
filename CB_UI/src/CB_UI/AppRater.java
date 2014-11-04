@@ -12,7 +12,8 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Plattform;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 public class AppRater
 {
@@ -37,7 +38,7 @@ public class AppRater
 			{
 				Config.AppRaterlaunchCount.setValue(launch_count);
 				Config.AcceptChanges();
-				Logger.General("10 min usage, increment launch count");
+				Gdx.app.log(Tag.TAG, "10 min usage, increment launch count");
 			}
 		};
 		t.schedule(ta, MINIMUM_RUN);

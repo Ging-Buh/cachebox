@@ -7,12 +7,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.FileIO;
+
+import com.badlogic.gdx.Gdx;
 
 public class CacheDetail implements Serializable
 {
@@ -344,7 +347,7 @@ public class CacheDetail implements Serializable
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			// from Global Repository
@@ -356,7 +359,7 @@ public class CacheDetail implements Serializable
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			// Spoilers are always loaden from global Repository too
@@ -369,7 +372,7 @@ public class CacheDetail implements Serializable
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			// Add own taken photo
@@ -382,7 +385,7 @@ public class CacheDetail implements Serializable
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 			}
 		}
@@ -391,7 +394,7 @@ public class CacheDetail implements Serializable
 	private void reloadSpoilerResourcesFromPath(String directory, CB_List<ImageEntry> spoilerRessources2, final Cache cache)
 	{
 		if (!FileIO.DirectoryExists(directory)) return;
-		// Logger.DEBUG("Loading spoilers from " + directory);
+		// Gdx.app.debug(Tag.TAG,"Loading spoilers from " + directory);
 		File dir = new File(directory);
 		FilenameFilter filter = new FilenameFilter()
 		{

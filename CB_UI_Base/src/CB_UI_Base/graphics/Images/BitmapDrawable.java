@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.IRenderFBO;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.CB_List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -166,7 +168,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 		catch (Exception e)
 		{
 			// Can't create
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 			return;
 		}
 
@@ -189,7 +191,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		if (Atlas == null)
@@ -220,8 +222,7 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 		sprite = Atlas.createSprite(AtlasHashString);
 	}
 
-	public void draw(Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY,
-			float rotation)
+	public void draw(Batch batch, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation)
 	{
 		if (Atlas == null) return;
 		if (sprite == null) createSprite();

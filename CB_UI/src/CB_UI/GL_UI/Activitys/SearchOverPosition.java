@@ -17,6 +17,7 @@ import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.CoordinateButton;
 import CB_UI.GL_UI.Controls.CoordinateButton.CoordinateChangeListner;
@@ -39,6 +40,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SearchOverPosition extends ActivityBase
@@ -427,7 +429,7 @@ public class SearchOverPosition extends ActivityBase
 		catch (NumberFormatException e)
 		{
 			// Kein Integer
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		if (radius != 0) Config.lastSearchRadius.setValue(radius);

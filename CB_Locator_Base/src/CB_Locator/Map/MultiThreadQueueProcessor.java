@@ -20,10 +20,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import CB_Locator.LocatorSettings;
+import CB_Locator.Tag;
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * @author ging-buh
@@ -43,7 +45,7 @@ class MultiThreadQueueProcessor extends Thread
 
 	MultiThreadQueueProcessor(QueueData queueData, int threadID)
 	{
-		Logger.LogCat("Create MultiThreadQueueProcessor[" + threadID + "]");
+		Gdx.app.debug(Tag.TAG, "Create MultiThreadQueueProcessor[" + threadID + "]");
 		ThreadId = threadID;
 		this.queueData = queueData;
 	}
@@ -148,9 +150,9 @@ class MultiThreadQueueProcessor extends Thread
 								inLoadDescLock.unlock();
 							}
 
-							// Logger.LogCat("LoadTile on[" + ThreadId + "]");
+							// Gdx.app.debug(Tag.TAG,"LoadTile on[" + ThreadId + "]");
 							LoadTile(desc);
-							// Logger.LogCat("finish LoadTile on[" + ThreadId + "]");
+							// Gdx.app.debug(Tag.TAG,"finish LoadTile on[" + ThreadId + "]");
 							inLoadDescLock.lock();
 							inLoadDesc.remove(desc);
 							inLoadDescLock.unlock();
@@ -168,7 +170,7 @@ class MultiThreadQueueProcessor extends Thread
 						{
 							throw ex1;
 						}
-						// Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
+						// Gdx.app.error(Tag.TAG,"MapViewGL.queueProcessor.doInBackground()", "1", ex1);
 						Thread.sleep(200);
 					}
 
@@ -183,7 +185,7 @@ class MultiThreadQueueProcessor extends Thread
 		}
 		catch (Exception ex3)
 		{
-			Logger.Error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
+			Gdx.app.error(Tag.TAG, "MapViewGL.queueProcessor.doInBackground()", ex3);
 			if (LocatorSettings.FireMapQueueProcessorExceptions.getValue())
 			{
 				try
@@ -192,7 +194,7 @@ class MultiThreadQueueProcessor extends Thread
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					Gdx.app.error(Tag.TAG, "", e);
 				}
 			}
 			try
@@ -201,7 +203,7 @@ class MultiThreadQueueProcessor extends Thread
 			}
 			catch (InterruptedException e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 			this.isAlive = false;

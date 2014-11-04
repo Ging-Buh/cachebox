@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Global;
+import CB_UI_Base.Tag;
 import CB_UI_Base.Events.KeyCodes;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
 import CB_UI_Base.Events.platformConector;
@@ -45,7 +46,6 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.iChanged;
 
@@ -335,7 +335,7 @@ public class GL implements ApplicationListener, InputProcessor
 		if (!started.get() || stopRender) return;
 		if (listenerInterface != null && listenerInterface.isContinous())
 		{
-			Logger.DEBUG("Reset Continous rendering");
+			Gdx.app.debug(Tag.TAG, "Reset Continous rendering");
 			listenerInterface.RenderDirty();
 		}
 		stateTime += Gdx.graphics.getDeltaTime();
@@ -376,7 +376,7 @@ public class GL implements ApplicationListener, InputProcessor
 							}
 							else
 							{
-								// Logger.LogCat("Max_FBO_Render_Calls" + run.toString());
+								// Gdx.app.debug(Tag.TAG,"Max_FBO_Render_Calls" + run.toString());
 								runOnGL_ListWaitpool.add(run);
 							}
 						}
@@ -411,7 +411,7 @@ public class GL implements ApplicationListener, InputProcessor
 								}
 								else
 								{
-									// Logger.LogCat("Max_FBO_Render_Calls" + run.toString());
+									// Gdx.app.debug(Tag.TAG,"Max_FBO_Render_Calls" + run.toString());
 									runOnGL_List.add(run);
 								}
 							}
@@ -493,7 +493,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (java.lang.IllegalStateException e)
 		{
-			Logger.Error("IllegalStateException", "batch.begin() without batch.end()", e);
+			Gdx.app.error(Tag.TAG, "IllegalStateException batch.begin() without batch.end()", e);
 
 			batch.flush();
 			batch.end();
@@ -573,25 +573,6 @@ public class GL implements ApplicationListener, InputProcessor
 			batch.setProjectionMatrix(prjMatrix.Matrix());
 		}
 
-		GL_View_Base.debug = CB_UI_Base_Settings.DebugMode.getValue();
-
-		if (GL_View_Base.debug && misTouchDown)
-		{
-			Sprite point = SpriteCacheBase.LogIcons.get(14);
-			TouchDownPointer first = touchDownPos.get(0);
-
-			if (first != null)
-			{
-				int x = first.point.x;
-				int y = this.height - first.point.y;
-				int pointSize = 20;
-
-				batch.draw(point, x - (pointSize / 2), y - (pointSize / 2), pointSize, pointSize);
-
-			}
-
-		}
-
 		if (Global.isTestVersion())
 		{
 
@@ -630,7 +611,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		Gdx.gl.glFlush();
@@ -666,7 +647,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public void pause()
 	{
 		// wird aufgerufen beim Wechsel der aktiven App und beim Ausschalten des Geräts
-		// Logger.LogCat("Pause");
+		// Gdx.app.debug(Tag.TAG,"Pause");
 
 		onStop();
 	}
@@ -674,7 +655,7 @@ public class GL implements ApplicationListener, InputProcessor
 	@Override
 	public void resume()
 	{
-		// Logger.LogCat("Resume");
+		// Gdx.app.debug(Tag.TAG,"Resume");
 
 		onStart();
 	}
@@ -691,7 +672,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 	}
@@ -699,7 +680,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public void onStart()
 	{
 		// App wird wiederhergestellt oder Gerät eingeschaltet
-		// Logger.LogCat("GL_Listner => onStart");
+		// Gdx.app.debug(Tag.TAG,"GL_Listner => onStart");
 		started.set(true);
 		if (listenerInterface != null) listenerInterface.RenderDirty();
 		// startTimer(FRAME_RATE_ACTION, "GL_Listner onStart()");
@@ -729,7 +710,7 @@ public class GL implements ApplicationListener, InputProcessor
 	public void onStop()
 	{
 		// App wird verkleinert oder Gerät ausgeschaltet
-		// Logger.LogCat("GL_Listner => onStop");
+		// Gdx.app.debug(Tag.TAG,"GL_Listner => onStop");
 		stopTimer();
 		if (listenerInterface != null) listenerInterface.RenderContinous();
 		child.onStop();
@@ -850,7 +831,7 @@ public class GL implements ApplicationListener, InputProcessor
 				cancelLongClickTimer();
 				// touchDragged Event an das View, das den onTouchDown bekommen hat
 				boolean behandelt = first.view.touchDragged(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, false);
-				if (TOUCH_DEBUG) Logger.LogCat("GL_Listner => onTouchDraggedBase : " + behandelt);
+				if (TOUCH_DEBUG) Gdx.app.debug(Tag.TAG, "GL_Listner => onTouchDraggedBase : " + behandelt);
 				if (!behandelt && first.view.getParent() != null)
 				{
 					// Wenn der Parent eine ScrollBox hat -> Scroll-Events dahin weiterleiten
@@ -865,7 +846,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Gdx.app.error(Tag.TAG, "", e);
 		}
 
 		return true;
@@ -911,7 +892,7 @@ public class GL implements ApplicationListener, InputProcessor
 						// normaler Click
 						boolean handled = first.view.click(x - (int) first.view.ThisWorldRec.getX(), (int) testingView.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, button);
 						if (handled) platformConector.vibrate();
-						// Logger.LogCat("GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
+						// Gdx.app.debug(Tag.TAG,"GL_Listner => onTouchUpBase (Click) : " + first.view.getName());
 						lastClickTime = System.currentTimeMillis();
 						lastClickPoint = akt;
 					}
@@ -925,7 +906,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (Exception e)
 		{
-			CB_Utils.Log.Logger.Error("GL_Listner.onTouchUpBase()", "", e);
+			Gdx.app.error(Tag.TAG, "GL_Listner.onTouchUpBase()", e);
 		}
 
 		try
@@ -944,7 +925,7 @@ public class GL implements ApplicationListener, InputProcessor
 		}
 		catch (Exception e)
 		{
-			CB_Utils.Log.Logger.Error("GL_Listner.onTouchUpBase()", "", e);
+			Gdx.app.error(Tag.TAG, "GL_Listner.onTouchUpBase()", e);
 		}
 
 		return true;
@@ -1009,7 +990,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public static void stopTimer()
 	{
-		// Logger.LogCat("Stop Timer");
+		// Gdx.app.debug(Tag.TAG,"Stop Timer");
 		if (myTimer != null)
 		{
 			myTimer.cancel();
@@ -1069,7 +1050,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 	public void Initialize()
 	{
-		// Logger.LogCat("GL_Listner => Initialize");
+		// Gdx.app.debug(Tag.TAG,"GL_Listner => Initialize");
 
 		if (Gdx.graphics.getGL20() == null) return;// kann nicht initialisiert werden
 
@@ -1086,7 +1067,7 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 			catch (java.lang.NoSuchFieldError e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 
@@ -1233,12 +1214,12 @@ public class GL implements ApplicationListener, InputProcessor
 					if (first.view.isLongClickable())
 					{
 						boolean handled = first.view.longClick(x - (int) first.view.ThisWorldRec.getX(), (int) child.getHeight() - y - (int) first.view.ThisWorldRec.getY(), pointer, 0);
-						// Logger.LogCat("GL_Listner => onLongClick : " + first.view.getName());
+						// Gdx.app.debug(Tag.TAG,"GL_Listner => onLongClick : " + first.view.getName());
 						// für diesen TouchDownn darf kein normaler Click mehr ausgeführt werden
 						touchDownPos.remove(pointer);
 						// onTouchUp nach Long-Click direkt auslösen
 						first.view.touchUp(x, (int) child.getHeight() - y, pointer, 0);
-						// Logger.LogCat("GL_Listner => onTouchUpBase : " + first.view.getName());
+						// Gdx.app.debug(Tag.TAG,"GL_Listner => onTouchUpBase : " + first.view.getName());
 						if (handled) platformConector.vibrate();
 					}
 				}
@@ -1309,7 +1290,7 @@ public class GL implements ApplicationListener, InputProcessor
 						{
 							if (kineticPan.fertig)
 							{
-								// Logger.LogCat("KineticPan fertig");
+								// Gdx.app.debug(Tag.TAG,"KineticPan fertig");
 								view.touchUp(x - pan.x, y - pan.y, pointer, 0);
 								touchDownPos.remove(pointer);
 								kineticPan = null;
@@ -1383,7 +1364,7 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 
 			anzPointsUsed++;
-			if (TOUCH_DEBUG) Logger.LogCat("AnzUsedPoints: " + anzPointsUsed);
+			if (TOUCH_DEBUG) Gdx.app.debug(Tag.TAG, "AnzUsedPoints: " + anzPointsUsed);
 			if (anzPointsUsed > anzPoints) anzPointsUsed = anzPoints;
 			for (int i = anzPoints - 2; i >= 0; i--)
 			{
@@ -1410,7 +1391,7 @@ public class GL implements ApplicationListener, InputProcessor
 				diffX = (int) ((float) diffX / FRAME_RATE_ACTION * diffTs);
 				diffY = (int) ((float) diffY / FRAME_RATE_ACTION * diffTs);
 			}
-			if (TOUCH_DEBUG) Logger.LogCat("diffx = " + diffX + " - diffy = " + diffY);
+			if (TOUCH_DEBUG) Gdx.app.debug(Tag.TAG, "diffx = " + diffX + " - diffy = " + diffY);
 
 			// debugString = x[2] + " - " + x[1] + " - " + x[0];
 		}
@@ -1439,7 +1420,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 			endTs = startTs + 1000 + abstand * 15 / anzPointsUsed;
 			// if (endTs > startTs + 6000) endTs = startTs + 6000; // max. Zeit festlegen
-			if (TOUCH_DEBUG) Logger.LogCat("endTs - startTs: " + String.valueOf(endTs - startTs));
+			if (TOUCH_DEBUG) Gdx.app.debug(Tag.TAG, "endTs - startTs: " + String.valueOf(endTs - startTs));
 			// endTs = startTs + 5000;
 			started = true;
 		}
@@ -1454,10 +1435,10 @@ public class GL implements ApplicationListener, InputProcessor
 
 			long aktTs = System.currentTimeMillis();
 			float faktor = (float) (aktTs - startTs) / (float) (endTs - startTs);
-			// Logger.LogCat("Faktor: " + faktor);
+			// Gdx.app.debug(Tag.TAG,"Faktor: " + faktor);
 			faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
 			// faktor = com.badlogic.gdx.math.Interpolation.pow5Out.apply(faktor);
-			// Logger.LogCat("Faktor2: " + faktor);
+			// Gdx.app.debug(Tag.TAG,"Faktor2: " + faktor);
 			if (faktor >= 1)
 			{
 				fertig = true;
@@ -1957,7 +1938,7 @@ public class GL implements ApplicationListener, InputProcessor
 
 		String sView = "NULL";
 		if (view != null) sView = view.toString();
-		Logger.LogCat("GL => set KeyBoardFocus to " + sView);
+		Gdx.app.debug(Tag.TAG, "GL => set KeyBoardFocus to " + sView);
 
 		// fire event
 		KeyboardFocusChangedEventList.Call(view);

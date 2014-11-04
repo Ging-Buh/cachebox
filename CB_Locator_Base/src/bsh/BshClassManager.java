@@ -47,6 +47,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import CB_Locator.Tag;
+
+import com.badlogic.gdx.Gdx;
+
 /**
  * BshClassManager manages all classloading in BeanShell. It also supports a dynamically loaded extension (bsh.classpath package) which
  * allows classpath extension and class file reloading. Currently the extension relies on 1.2 for BshClassLoader and weak references. See
@@ -102,8 +106,7 @@ public class BshClassManager
 	private transient Set<String> definingClasses = Collections.synchronizedSet(new HashSet<String>());
 	protected transient Map<String, String> definingClassesBaseNames = new Hashtable<String, String>();
 
-	private static final Map<BshClassManager, Object> classManagers = Collections
-			.synchronizedMap(new WeakHashMap<BshClassManager, Object>());
+	private static final Map<BshClassManager, Object> classManagers = Collections.synchronizedMap(new WeakHashMap<BshClassManager, Object>());
 
 	static void clearResolveCache()
 	{
@@ -196,7 +199,7 @@ public class BshClassManager
 		{
 			if (Interpreter.DEBUG)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 		}
 		try
@@ -457,9 +460,7 @@ public class BshClassManager
 		int i = baseName.indexOf("$");
 		if (i != -1) baseName = baseName.substring(i + 1);
 		String cur = definingClassesBaseNames.get(baseName);
-		if (cur != null) throw new InterpreterError("Defining class problem: " + className
-				+ ": BeanShell cannot yet simultaneously define two or more " + "dependant classes of the same name.  Attempt to define: "
-				+ className + " while defining: " + cur);
+		if (cur != null) throw new InterpreterError("Defining class problem: " + className + ": BeanShell cannot yet simultaneously define two or more " + "dependant classes of the same name.  Attempt to define: " + className + " while defining: " + cur);
 		definingClasses.add(className);
 		definingClassesBaseNames.put(baseName, className);
 	}
@@ -501,7 +502,7 @@ public class BshClassManager
 		 * 
 		 * ClassLoader cl = this.getClass().getClassLoader(); Class clas; try { clas = (Class)Reflect.invokeObjectMethod( cl, "defineClass",
 		 * new Object [] { name, code, new Primitive( (int)0 )/offset/, new Primitive( code.length )/len/ }, (Interpreter)null,
-		 * (CallStack)null, (SimpleNode)null ); } catch ( Exception e ) { e.printStackTrace(); throw new
+		 * (CallStack)null, (SimpleNode)null ); } catch ( Exception e ) { Gdx.app.error(Tag.TAG, "", e); throw new
 		 * InterpreterError("Unable to define class: "+ e ); } absoluteNonClasses.remove( name ); // may have been axed previously return
 		 * clas;
 		 */

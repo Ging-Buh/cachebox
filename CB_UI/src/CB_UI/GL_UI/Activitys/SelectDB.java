@@ -29,6 +29,7 @@ import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
+import CB_UI.Tag;
 import CB_UI.GL_UI.Controls.Dialogs.NewDB_InputBox;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI_Base.Enums.WrapType;
@@ -50,10 +51,11 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * @author ging-buh
@@ -310,7 +312,7 @@ public class SelectDB extends ActivityBase
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
+						Gdx.app.error(Tag.TAG, "", e);
 					}
 				}
 
@@ -350,7 +352,7 @@ public class SelectDB extends ActivityBase
 					if (!(firstAndLast.x <= id && firstAndLast.y >= id))
 					{
 						lvFiles.scrollToItem(id);
-						Logger.DEBUG("Scroll to:" + id);
+						Gdx.app.debug(Tag.TAG, "Scroll to:" + id);
 					}
 				}
 				break;

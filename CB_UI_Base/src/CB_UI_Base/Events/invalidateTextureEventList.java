@@ -1,7 +1,9 @@
 package CB_UI_Base.Events;
 
+import CB_UI_Base.Tag;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
+
+import com.badlogic.gdx.Gdx;
 
 public class invalidateTextureEventList
 {
@@ -39,7 +41,7 @@ public class invalidateTextureEventList
 		}
 		catch (Exception e)
 		{
-			Logger.Error("invalidateTextureEventList", "Call()", e);
+			Gdx.app.error(Tag.TAG, "invalidateTextureEventList.Call()", e);
 		}
 	}
 }

@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import CB_Translation_Base.FileUtil;
+import CB_Translation_Base.Tag;
 import CB_Utils.Lists.CB_List;
 
 import com.badlogic.gdx.Files.FileType;
@@ -403,7 +404,7 @@ public class Translation
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}

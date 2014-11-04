@@ -2,6 +2,7 @@ package CB_Core.DAO;
 
 import java.util.Iterator;
 
+import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
@@ -14,6 +15,8 @@ import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.SDBM_Hash;
 import CB_Utils.Util.UnitFormatter;
+
+import com.badlogic.gdx.Gdx;
 
 public class WaypointDAO
 {
@@ -79,8 +82,7 @@ public class WaypointDAO
 			args.put("isStart", WP.IsStart);
 			try
 			{
-				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"",
-						null);
+				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"", null);
 				if (count > 0) result = true;
 			}
 			catch (Exception exc)
@@ -171,7 +173,7 @@ public class WaypointDAO
 			catch (Exception e)
 			{
 
-				e.printStackTrace();
+				Gdx.app.error(Tag.TAG, "", e);
 			}
 
 		}
@@ -225,8 +227,7 @@ public class WaypointDAO
 				args.put("isStart", false);
 				try
 				{
-					long count = Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"",
-							null);
+					long count = Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"", null);
 
 				}
 				catch (Exception exc)
