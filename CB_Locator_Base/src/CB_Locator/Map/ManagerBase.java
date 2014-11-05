@@ -590,6 +590,13 @@ public abstract class ManagerBase
 			Gdx.app.error(Tag.TAG, "databaseRenderer: " + ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
+		catch (Exception e)
+		{
+			String ErrorMsg = e.getMessage();
+			if (GL.that != null) GL.that.Toast(ErrorMsg, 8000);
+			Gdx.app.error(Tag.TAG, "databaseRenderer: " + ErrorMsg);
+			renderTheme = CB_InternalRenderTheme.OSMARENDER;
+		}
 
 		databaseRenderer = new IDatabaseRenderer[PROCESSOR_COUNT];
 		RenderThemeChanged = false;
