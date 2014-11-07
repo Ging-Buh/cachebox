@@ -444,11 +444,11 @@ public class GL implements ApplicationListener, InputProcessor
 
 		if (CB_UI_Base_Settings.nightMode.getValue())
 		{
-			Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+			Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
 		}
 		else
 		{
-			Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
+			Gdx.gl.glClearColor(1f, 1f, 1f, 0.5f);
 		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
