@@ -16,15 +16,17 @@ package org.mapsforge.core.util;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+
+import org.mapsforge.Tag;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * A utility class with IO-specific helper methods.
  */
 public final class IOUtils {
-	private static final Logger LOGGER = Logger.getLogger(IOUtils.class.getName());
-
+	
 	/**
 	 * Invokes the {@link Closeable#close()} method on the given object. If an {@link IOException} occurs during the
 	 * method call, it will be caught and logged on level {@link Level#WARNING}.
@@ -38,7 +40,7 @@ public final class IOUtils {
 				closeable.close();
 			}
 		} catch (IOException e) {
-			LOGGER.log(Level.FINE, e.getMessage(), e);
+			Gdx.app.log(Tag.TAG, e.getMessage(), e);
 		}
 	}
 

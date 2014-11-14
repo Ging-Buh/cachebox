@@ -93,7 +93,7 @@ public class WaypointDAO
 
 			if (WP.IsUserWaypoint)
 			{
-				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. über API)
+				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. ï¿½ber API)
 				args = new Parameters();
 				args.put("hasUserData", true);
 				try
@@ -211,7 +211,7 @@ public class WaypointDAO
 		}
 	}
 
-	// Hier wird überprüft, ob für diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurückgesetzt
+	// Hier wird ï¿½berprï¿½ft, ob fï¿½r diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurï¿½ckgesetzt
 	// Damit kann bei der Definition eines neuen Start-Waypoints vorher der alte entfernt werden damit sichergestellt ist dass ein Cache nur
 	// 1 Start-Waypoint hat
 	public void ResetStartWaypoint(Cache cache, Waypoint except)
@@ -227,12 +227,11 @@ public class WaypointDAO
 				args.put("isStart", false);
 				try
 				{
-					long count = Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"", null);
-
+					Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"", null);
 				}
 				catch (Exception exc)
 				{
-
+					Gdx.app.error(Tag.TAG, "ResetStartWaypoint", exc);
 				}
 			}
 		}

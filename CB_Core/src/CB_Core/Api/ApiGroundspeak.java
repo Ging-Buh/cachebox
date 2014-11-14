@@ -216,19 +216,19 @@ public class ApiGroundspeak extends ApiBase
 		return queryType.GET;
 	}
 
-	private int checkApiState()
-	{
-		// check API staus
-		if (GroundspeakAPI.IsPremiumMember())
-		{
-			isLite = false;
-			apiStatus = 2;
-		}
-		else
-		{
-			isLite = true;
-			apiStatus = 1;
-		}
-		return 0;
-	}
+	// private int checkApiState()
+	// {
+	// // check API staus
+	// if (GroundspeakAPI.IsPremiumMember())
+	// {
+	// isLite = false;
+	// apiStatus = 2;
+	// }
+	// else
+	// {
+	// isLite = true;
+	// apiStatus = 1;
+	// }
+	// return 0;
+	// }
 }

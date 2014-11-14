@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
@@ -84,13 +82,12 @@ import com.badlogic.gdx.Gdx;
 public class SVGAndroidRenderer
 {
 	private final ext_GraphicFactory GRAPHIC_FACTORY;
+	private static final String TAG = "SVGParser";
 
 	public SVGAndroidRenderer(ext_GraphicFactory factory)
 	{
 		GRAPHIC_FACTORY = factory;
 	}
-
-	private static final Logger LOGGER = Logger.getLogger(SVG.class.getName());
 
 	private ext_Canvas canvas;
 	private Box canvasViewPort;
@@ -503,19 +500,19 @@ public class SVGAndroidRenderer
 
 	private static void warn(String format, Object... args)
 	{
-		LOGGER.log(Level.WARNING, String.format(format, args));
+		Gdx.app.log(TAG, String.format(format, args));
 
 	}
 
 	private static void error(String format, Object... args)
 	{
-		LOGGER.log(Level.SEVERE, String.format(format, args));
+		Gdx.app.error(TAG, String.format(format, args));
 
 	}
 
 	private static void debug(String format, Object... args)
 	{
-		if (LibConfig.DEBUG) LOGGER.log(Level.INFO, String.format(format, args));
+		Gdx.app.debug(TAG, String.format(format, args));
 	}
 
 	// ==============================================================================

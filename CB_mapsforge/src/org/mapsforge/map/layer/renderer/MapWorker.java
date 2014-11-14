@@ -16,8 +16,6 @@
 package org.mapsforge.map.layer.renderer;
 
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.Layer;
@@ -25,10 +23,11 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.util.PausableThread;
 
+import com.badlogic.gdx.Gdx;
+
 public class MapWorker extends PausableThread {
 	private static final boolean DEBUG_TIMING = false;
-	private static final Logger LOGGER = Logger.getLogger(MapWorker.class.getName());
-
+	
 	private final DatabaseRenderer databaseRenderer;
 	private final JobQueue<RendererJob> jobQueue;
 	private final Layer layer;
@@ -90,7 +89,7 @@ public class MapWorker extends PausableThread {
 			long te = this.totalExecutions.incrementAndGet();
 			long tt = this.totalTime.addAndGet(end - start);
 			if (te % 10 == 0) {
-				LOGGER.log(Level.INFO, "TIMING " + Long.toString(te) + " " + Double.toString(tt / te));
+				Gdx.app.log(org.mapsforge.Tag.TAG, "Mapworker TIMING " + Long.toString(te) + " " + Double.toString(tt / te));
 			}
 		}
 

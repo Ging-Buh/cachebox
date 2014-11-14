@@ -17,7 +17,10 @@ package org.mapsforge.map.reader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Logger;
+
+import org.mapsforge.Tag;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * Reads from a {@link RandomAccessFile} into a buffer and decodes the data.
@@ -28,8 +31,7 @@ public class ReadBuffer {
 	 */
 	static final int MAXIMUM_BUFFER_SIZE = 2500000;
 	private static final String CHARSET_UTF8 = "UTF-8";
-	private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
-
+	
 	private byte[] bufferData;
 	private int bufferPosition;
 	private final RandomAccessFile inputFile;
@@ -62,7 +64,7 @@ public class ReadBuffer {
 		if (this.bufferData == null || this.bufferData.length < length) {
 			// ensure that the read buffer is not too large
 			if (length > MAXIMUM_BUFFER_SIZE) {
-				LOGGER.warning("invalid read length: " + length);
+				Gdx.app.log(Tag.TAG,"invalid read length: " + length);
 				return false;
 			}
 			this.bufferData = new byte[length];
@@ -182,7 +184,7 @@ public class ReadBuffer {
 				throw new IllegalStateException(e);
 			}
 		}
-		LOGGER.warning("invalid string length: " + stringLength);
+		Gdx.app.log(Tag.TAG,"invalid string length: " + stringLength);
 		return null;
 	}
 

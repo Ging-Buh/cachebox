@@ -19,8 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -66,7 +64,6 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
 	private static final byte LAYERS = 11;
-	private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
 	private static final double STROKE_INCREASE = 1.5;
 	private static final byte STROKE_MIN_ZOOM_LEVEL = 12;
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
@@ -156,7 +153,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		}
 		else
 		{
-			LOGGER.log(Level.SEVERE, "RENDERTHEME Could not destroy RenderTheme");
+			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer RENDERTHEME Could not destroy RenderTheme");
 		}
 	}
 
@@ -383,15 +380,15 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		}
 		catch (ParserConfigurationException e)
 		{
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer.getRenderTheme", e);
 		}
 		catch (SAXException e)
 		{
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer.getRenderTheme", e);
 		}
 		catch (IOException e)
 		{
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer.getRenderTheme", e);
 		}
 		return null;
 	}

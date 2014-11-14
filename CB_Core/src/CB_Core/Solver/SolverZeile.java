@@ -46,36 +46,36 @@ public class SolverZeile
 				break;
 			}
 		}
-		String debug = entities.ToString();
+		// String debug = entities.ToString();
 		searchOperators(true);
-		debug = entities.ToString();
+		// debug = entities.ToString();
 
 		// Funktionsparamter mit ';' getrennt suchen
 		searchFunctionParameters();
-		debug = entities.ToString();
+		// debug = entities.ToString();
 
 		// zuerst Strings heraussuchen
 		searchStrings();
-		debug = entities.ToString();
+		// debug = entities.ToString();
 
 		// Auflistungen, Variablen, Konstanten und Strings
 		searchLists();
-		debug = entities.ToString();
+		// debug = entities.ToString();
 
 		// alle Operatoren herausfinden
 		searchOperators(false);
-		debug = entities.ToString();
+		// debug = entities.ToString();
 
 		// Functionen suchen
 		searchFunctions();
-		debug = entities.ToString();
+		// debug = entities.ToString();
 
 		// Variablen, Konstanten und Strings
 		searchVariables();
-		debug = entities.ToString();
+		// debug = entities.ToString();
 
 		entities.Pack();
-		debug = entities.ToString();
+		// debug = entities.ToString();
 
 		// Alle Entities holen, die Bestandteil eines anderen sind
 		ArrayList<Entity> list = new ArrayList<Entity>();
@@ -220,7 +220,7 @@ public class SolverZeile
 				}
 			}
 		}
-		String debug = entities.ToString();
+		// String debug = entities.ToString();
 		entities.Pack();
 	}
 
@@ -362,7 +362,8 @@ public class SolverZeile
 		String text;
 		boolean isFunction = false;
 		boolean isOperator = false;
-		boolean isVariable = false;
+
+		// boolean isVariable = false;
 
 		tmpListEntity(String text)
 		{
@@ -370,7 +371,7 @@ public class SolverZeile
 			if (text.length() == 0) return;
 			this.isFunction = solver.functions.isFunction(text);
 			this.isOperator = IsOperator(text);
-			isVariable = ((text.substring(0, 1).equals("#")) && (text.substring(text.length() - 1, text.length()).equals("#")));
+			// isVariable = ((text.substring(0, 1).equals("#")) && (text.substring(text.length() - 1, text.length()).equals("#")));
 		}
 	}
 

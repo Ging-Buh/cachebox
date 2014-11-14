@@ -128,7 +128,7 @@ public abstract class ManagerBase
 	public abstract PackBase CreatePack(String file) throws IOException;
 
 	// / <summary>
-	// / Läd ein Map Pack und fügt es dem Manager hinzu
+	// / Lï¿½d ein Map Pack und fï¿½gt es dem Manager hinzu
 	// / </summary>
 	// / <param name="file"></param>
 	// / <returns>true, falls das Pack erfolgreich geladen wurde, sonst
@@ -140,7 +140,7 @@ public abstract class ManagerBase
 			PackBase pack = CreatePack(file);
 			mapPacks.add(pack);
 
-			// Nach Aktualität sortieren
+			// Nach Aktualitï¿½t sortieren
 			Collections.sort(mapPacks);
 			return true;
 		}
@@ -218,7 +218,7 @@ public abstract class ManagerBase
 
 		if (layer == null) return false;
 
-		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen
+		// Gibts die Kachel schon in einem Mappack? Dann kann sie ï¿½bersprungen
 		// werden!
 		for (PackBase pack : mapPacks)
 			if (pack.Layer == layer) if (pack.Contains(tile) != null) return true;
@@ -227,7 +227,7 @@ public abstract class ManagerBase
 		// String path = layer.GetLocalPath(tile);
 		String url = layer.GetUrl(tile);
 
-		// Falls Kachel schon geladen wurde, kann sie übersprungen werden
+		// Falls Kachel schon geladen wurde, kann sie ï¿½bersprungen werden
 		synchronized (this)
 		{
 			if (FileIO.FileExists(filename)) return true;
@@ -767,6 +767,8 @@ public abstract class ManagerBase
 		}
 		else
 			LoadadMapIsFreizeitkarte = info.comment.contains("FZK project");
+
+		if (!LoadadMapIsFreizeitkarte) Gdx.app.debug(Tag.TAG, "Map is no FZK map");
 
 		mapsForgeFile = layer.Name;
 	}

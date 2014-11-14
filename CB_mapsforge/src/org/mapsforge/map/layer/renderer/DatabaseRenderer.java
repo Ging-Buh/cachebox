@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -45,6 +43,8 @@ import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.xml.sax.SAXException;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * A DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
  */
@@ -52,7 +52,6 @@ public class DatabaseRenderer implements RenderCallback {
 
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
 	private static final byte LAYERS = 11;
-	private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
 	private static final double STROKE_INCREASE = 1.5;
 	private static final byte STROKE_MIN_ZOOM_LEVEL = 12;
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
@@ -128,7 +127,7 @@ public class DatabaseRenderer implements RenderCallback {
 		if (this.renderTheme != null) {
 			this.renderTheme.destroy();
 		} else {
-			LOGGER.log(Level.SEVERE, "RENDERTHEME Could not destroy RenderTheme");
+			Gdx.app.log(org.mapsforge.Tag.TAG,  "RENDERTHEME Could not destroy RenderTheme");
 		}
 	}
 
@@ -324,11 +323,11 @@ public class DatabaseRenderer implements RenderCallback {
 		try {
 			return RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, jobTheme);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer", e);
 		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer", e);
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer", e);
 		}
 		return null;
 	}

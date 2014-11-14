@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
@@ -30,6 +28,8 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.reader.header.SubFileParameter;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * A class for reading binary map files.
@@ -73,9 +73,7 @@ public class MapDatabase {
 	 * Error message for an invalid first way offset.
 	 */
 	private static final String INVALID_FIRST_WAY_OFFSET = "invalid first way offset: ";
-
-	private static final Logger LOGGER = Logger.getLogger(MapDatabase.class.getName());
-
+	
 	/**
 	 * Maximum way nodes sequence length which is considered as valid.
 	 */
@@ -224,7 +222,7 @@ public class MapDatabase {
 
 			this.readBuffer = null;
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "MapDatabase", e);
 		}
 	}
 
@@ -288,7 +286,7 @@ public class MapDatabase {
 
 			return FileOpenResult.SUCCESS;
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "MapDatabase", e);
 			// make sure that the file is closed
 			closeFile();
 			return new FileOpenResult(e.getMessage());
@@ -311,7 +309,7 @@ public class MapDatabase {
 			// get and check the sub-file for the query zoom level
 			SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
 			if (subFileParameter == null) {
-				LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
+				Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer no sub-file for zoom level: " + queryParameters.queryZoomLevel);
 				return null;
 			}
 
@@ -320,7 +318,7 @@ public class MapDatabase {
 
 			return processBlocks(queryParameters, subFileParameter);
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "MapDatabase", e);
 			return null;
 		}
 	}
@@ -398,8 +396,8 @@ public class MapDatabase {
 	 */
 	private void logDebugSignatures() {
 		if (this.mapFileHeader.getMapFileInfo().debugFile) {
-			LOGGER.warning(DEBUG_SIGNATURE_WAY + this.signatureWay);
-			LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer"+ DEBUG_SIGNATURE_WAY + this.signatureWay);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer"+ DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
 		}
 	}
 
@@ -422,9 +420,9 @@ public class MapDatabase {
 		// get the relative offset to the first stored way in the block
 		int firstWayOffset = this.readBuffer.readUnsignedInt();
 		if (firstWayOffset < 0) {
-			LOGGER.warning(INVALID_FIRST_WAY_OFFSET + firstWayOffset);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+INVALID_FIRST_WAY_OFFSET + firstWayOffset);
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
-				LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+				Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
 			}
 			return null;
 		}
@@ -432,9 +430,9 @@ public class MapDatabase {
 		// add the current buffer position to the relative first way offset
 		firstWayOffset += this.readBuffer.getBufferPosition();
 		if (firstWayOffset > this.readBuffer.getBufferSize()) {
-			LOGGER.warning(INVALID_FIRST_WAY_OFFSET + firstWayOffset);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+INVALID_FIRST_WAY_OFFSET + firstWayOffset);
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
-				LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+				Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
 			}
 			return null;
 		}
@@ -446,9 +444,9 @@ public class MapDatabase {
 
 		// finished reading POIs, check if the current buffer position is valid
 		if (this.readBuffer.getBufferPosition() > firstWayOffset) {
-			LOGGER.warning("invalid buffer position: " + this.readBuffer.getBufferPosition());
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid buffer position: " + this.readBuffer.getBufferPosition());
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
-				LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+				Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
 			}
 			return null;
 		}
@@ -490,8 +488,8 @@ public class MapDatabase {
 				// get and check the current block pointer
 				long currentBlockPointer = currentBlockIndexEntry & BITMASK_INDEX_OFFSET;
 				if (currentBlockPointer < 1 || currentBlockPointer > subFileParameter.subFileSize) {
-					LOGGER.warning("invalid current block pointer: " + currentBlockPointer);
-					LOGGER.warning("subFileSize: " + subFileParameter.subFileSize);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid current block pointer: " + currentBlockPointer);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer subFileSize: " + subFileParameter.subFileSize);
 					return null;
 				}
 
@@ -505,8 +503,8 @@ public class MapDatabase {
 					nextBlockPointer = this.databaseIndexCache.getIndexEntry(subFileParameter, blockNumber + 1)
 							& BITMASK_INDEX_OFFSET;
 					if (nextBlockPointer > subFileParameter.subFileSize) {
-						LOGGER.warning("invalid next block pointer: " + nextBlockPointer);
-						LOGGER.warning("sub-file size: " + subFileParameter.subFileSize);
+						Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid next block pointer: " + nextBlockPointer);
+						Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer sub-file size: " + subFileParameter.subFileSize);
 						return null;
 					}
 				}
@@ -514,17 +512,17 @@ public class MapDatabase {
 				// calculate the size of the current block
 				int currentBlockSize = (int) (nextBlockPointer - currentBlockPointer);
 				if (currentBlockSize < 0) {
-					LOGGER.warning("current block size must not be negative: " + currentBlockSize);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer current block size must not be negative: " + currentBlockSize);
 					return null;
 				} else if (currentBlockSize == 0) {
 					// the current block is empty, continue with the next block
 					continue;
 				} else if (currentBlockSize > ReadBuffer.MAXIMUM_BUFFER_SIZE) {
 					// the current block is too large, continue with the next block
-					LOGGER.warning("current block size too large: " + currentBlockSize);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer current block size too large: " + currentBlockSize);
 					continue;
 				} else if (currentBlockPointer + currentBlockSize > this.fileSize) {
-					LOGGER.warning("current block largher than file size: " + currentBlockSize);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer current block largher than file size: " + currentBlockSize);
 					return null;
 				}
 
@@ -534,7 +532,7 @@ public class MapDatabase {
 				// read the current block into the buffer
 				if (!this.readBuffer.readFromFile(currentBlockSize)) {
 					// skip the current block
-					LOGGER.warning("reading current block has failed: " + currentBlockSize);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer reading current block has failed: " + currentBlockSize);
 					return null;
 				}
 
@@ -552,7 +550,7 @@ public class MapDatabase {
 						mapReadResultBuilder.add(poiWayBundle);
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
-					LOGGER.log(Level.SEVERE, null, e);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "MapDatabase", e);
 				}
 			}
 		}
@@ -575,7 +573,7 @@ public class MapDatabase {
 			// get and check the block signature
 			this.signatureBlock = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_BLOCK);
 			if (!this.signatureBlock.startsWith("###TileStart")) {
-				LOGGER.warning("invalid block signature: " + this.signatureBlock);
+				Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid block signature: " + this.signatureBlock);
 				return false;
 			}
 		}
@@ -591,8 +589,8 @@ public class MapDatabase {
 				// get and check the POI signature
 				this.signaturePoi = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_POI);
 				if (!this.signaturePoi.startsWith("***POIStart")) {
-					LOGGER.warning("invalid POI signature: " + this.signaturePoi);
-					LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid POI signature: " + this.signaturePoi);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
 					return null;
 				}
 			}
@@ -617,10 +615,10 @@ public class MapDatabase {
 			for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
 				int tagId = this.readBuffer.readUnsignedInt();
 				if (tagId < 0 || tagId >= poiTags.length) {
-					LOGGER.warning("invalid POI tag ID: " + tagId);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid POI tag ID: " + tagId);
 					if (this.mapFileHeader.getMapFileInfo().debugFile) {
-						LOGGER.warning(DEBUG_SIGNATURE_POI + this.signaturePoi);
-						LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+						Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+DEBUG_SIGNATURE_POI + this.signaturePoi);
+						Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
 					}
 					return null;
 				}
@@ -660,7 +658,7 @@ public class MapDatabase {
 		// get and check the number of way coordinate blocks (VBE-U)
 		int numberOfWayCoordinateBlocks = this.readBuffer.readUnsignedInt();
 		if (numberOfWayCoordinateBlocks < 1 || numberOfWayCoordinateBlocks > Short.MAX_VALUE) {
-			LOGGER.warning("invalid number of way coordinate blocks: " + numberOfWayCoordinateBlocks);
+			Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid number of way coordinate blocks: " + numberOfWayCoordinateBlocks);
 			logDebugSignatures();
 			return null;
 		}
@@ -673,7 +671,7 @@ public class MapDatabase {
 			// get and check the number of way nodes (VBE-U)
 			int numberOfWayNodes = this.readBuffer.readUnsignedInt();
 			if (numberOfWayNodes < 2 || numberOfWayNodes > MAXIMUM_WAY_NODES_SEQUENCE_LENGTH) {
-				LOGGER.warning("invalid number of way nodes: " + numberOfWayNodes);
+				Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid number of way nodes: " + numberOfWayNodes);
 				logDebugSignatures();
 				wayCoordinates[coordinateBlock] = null;
 				continue;
@@ -703,8 +701,8 @@ public class MapDatabase {
 				// get and check the way signature
 				this.signatureWay = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_WAY);
 				if (!this.signatureWay.startsWith("---WayStart")) {
-					LOGGER.warning("invalid way signature: " + this.signatureWay);
-					LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid way signature: " + this.signatureWay);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
 					return null;
 				}
 			}
@@ -712,9 +710,9 @@ public class MapDatabase {
 			// get the size of the way (VBE-U)
 			int wayDataSize = this.readBuffer.readUnsignedInt();
 			if (wayDataSize < 0) {
-				LOGGER.warning("invalid way data size: " + wayDataSize);
+				Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid way data size: " + wayDataSize);
 				if (this.mapFileHeader.getMapFileInfo().debugFile) {
-					LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer "+DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
 				}
 				return null;
 			}
@@ -746,7 +744,7 @@ public class MapDatabase {
 			for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
 				int tagId = this.readBuffer.readUnsignedInt();
 				if (tagId < 0 || tagId >= wayTags.length) {
-					LOGGER.warning("invalid way tag ID: " + tagId);
+					Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid way tag ID: " + tagId);
 					logDebugSignatures();
 					return null;
 				}
@@ -783,7 +781,7 @@ public class MapDatabase {
 
 			int wayDataBlocks = readOptionalWayDataBlocksByte(featureWayDataBlocksByte);
 			if (wayDataBlocks < 1) {
-				LOGGER.warning("invalid number of way data blocks: " + wayDataBlocks);
+				Gdx.app.log(org.mapsforge.Tag.TAG, "DatabaseRenderer invalid number of way data blocks: " + wayDataBlocks);
 				logDebugSignatures();
 				return null;
 			}

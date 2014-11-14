@@ -44,7 +44,7 @@ public class Importer
 
 	/**
 	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden. Oder das GPX-File
-	 * falls eine einzelne Datei übergeben wird.
+	 * falls eine einzelne Datei ï¿½bergeben wird.
 	 * 
 	 * @param directoryPath
 	 * @param ip
@@ -215,7 +215,7 @@ public class Importer
 
 		importHandler = null;
 
-		// Indexierte CacheInfos zurück schreiben
+		// Indexierte CacheInfos zurï¿½ck schreiben
 		CacheInfoList.writeListToDB();
 		CacheInfoList.dispose();
 
@@ -387,7 +387,7 @@ public class Importer
 		// get all GcCodes from Listing changed caches without Typ==4 (ErthCache)
 		ArrayList<String> gcCodes = CacheDao.getGcCodesFromMustLoadImages();
 
-		// refresch all Image Url´s
+		// refresch all Image Urlï¿½s
 		ip.setJobMax("importImageUrls", gcCodes.size());
 		int counter = 0;
 		for (String gccode : gcCodes)
@@ -405,7 +405,7 @@ public class Importer
 			if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 			{
 
-				// API zugriff nur mit gültigem API Key
+				// API zugriff nur mit gï¿½ltigem API Key
 
 				int retChk = GroundspeakAPI.isValidAPI_Key(true);
 
@@ -415,13 +415,13 @@ public class Importer
 					if (ret < 0) return ret;
 				}
 
-				ip.ProgressInkrement("importImageUrls", "get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")", false);
+				ip.ProgressInkrement("importImageUrls", "get Image Urlï¿½s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")", false);
 			}
 		}
 
 		ImageDAO imageDAO = new ImageDAO();
 
-		// Die Where Clusel sorgt dfür, dass nur die Anzahl der zu ladenden Bilder zurück gegeben wird.
+		// Die Where Clusel sorgt dfï¿½r, dass nur die Anzahl der zu ladenden Bilder zurï¿½ck gegeben wird.
 		// Da keine Bilder von ErthCaches geladen werden, wird hier auch der Typ 4 ausgelassen.
 		String where = " Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)";
 
@@ -542,7 +542,7 @@ public class Importer
 	public int importImagesNew(ImporterProgress ip, boolean importImages, boolean importSpoiler, String where)
 	{
 
-		// refresch all Image Url´s
+		// refresch all Image Urlï¿½s
 
 		int ret = 0;
 
@@ -615,7 +615,7 @@ public class Importer
 	}
 
 	/**
-	 * Importiert alle Spoiler Images für einen Cache (über die API-Funktion)
+	 * Importiert alle Spoiler Images fï¿½r einen Cache (ï¿½ber die API-Funktion)
 	 * 
 	 * @param Staging
 	 *            Config.settings.StagingAPI.getValue()
@@ -656,7 +656,7 @@ public class Importer
 
 	/**
 	 * Bilderimport. Wenn descriptionImagesUpdated oder additionalImagesUpdated == false dann werden die entsprechenden Images importiert
-	 * Aber nur dann wenn CheckLocalImages dafür false liefert. wenn importAlways == true -> die Bilder werden unabhängig davon, ob schon
+	 * Aber nur dann wenn CheckLocalImages dafï¿½r false liefert. wenn importAlways == true -> die Bilder werden unabhï¿½ngig davon, ob schon
 	 * welche existieren importiert
 	 * 
 	 * @param Staging
@@ -690,125 +690,8 @@ public class Importer
 	 */
 	private int importImagesForCacheNew(ImporterProgress ip, boolean descriptionImagesUpdated, boolean additionalImagesUpdated, long id, String gcCode, String name, String description, String uri, boolean importAlways)
 	{
-		boolean dbUpdate = false;
-
-		// if (!importAlways)
-		// {
-		// 2014-06-19 - Ging-Buh:
-		// removed this function because spoiler and images was not imported when at least one image of this cache exists.
-		// This is not good because in the DB of each cache is stored whether the images are actual. If they are not actual the image
-		// should be laoded.
-		// the .changed file is no longer used too. The information about changed caches is stored in DB
-		// if (!descriptionImagesUpdated)
-		// {
-		// if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0)
-		// {
-		// descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolderLocal.getValue(), gcCode);
-		// }
-		// else
-		// {
-		// descriptionImagesUpdated = CheckLocalImages(CB_Core_Settings.DescriptionImageFolder.getValue(), gcCode);
-		// }
-		//
-		// if (descriptionImagesUpdated)
-		// {
-		// dbUpdate = true;
-		// }
-		// }
-		// if (!additionalImagesUpdated)
-		// {
-		// if (CB_Core_Settings.SpoilerFolderLocal.getValue().length() > 0)
-		// {
-		// additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
-		// }
-		// else
-		// {
-		// additionalImagesUpdated = CheckLocalImages(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
-		// }
-		//
-		// if (additionalImagesUpdated)
-		// {
-		// dbUpdate = true;
-		// }
-		// }
-		// }
-		// if (dbUpdate)
-		// {
-		// Parameters args = new Parameters();
-		// args.put("ImagesUpdated", additionalImagesUpdated);
-		// args.put("DescriptionImagesUpdated", descriptionImagesUpdated);
-		// Database.Data.update("Caches", args, "Id = ?", new String[]
-		// { String.valueOf(id) });
-		// }
-
 		return DescriptionImageGrabber.GrabImagesSelectedByCache(ip, descriptionImagesUpdated, additionalImagesUpdated, id, gcCode, name, description, uri);
 	}
-
-	/**
-	 * Überprüft, ob für den gewählten Cache die Bilder nicht geladen werden müssen
-	 * 
-	 * @return true wenn schon Images existieren und keine .changed oder .1st Datei ansonsten false
-	 */
-	// nicht mehr benutzt
-	// private boolean CheckLocalImages(String path, final String GcCode)
-	// {
-	// boolean retval = true;
-	//
-	// String imagePath = path + "/" + GcCode.substring(0, 4);
-	// boolean imagePathDirExists = FileIO.DirectoryExists(imagePath);
-	//
-	// if (imagePathDirExists)
-	// {
-	// File dir = new File(imagePath);
-	// FilenameFilter filter = new FilenameFilter()
-	// {
-	// @Override
-	// public boolean accept(File dir, String filename)
-	// {
-	//
-	// filename = filename.toLowerCase(Locale.getDefault());
-	// if (filename.indexOf(GcCode.toLowerCase(Locale.getDefault())) == 0)
-	// {
-	// return true;
-	// }
-	// return false;
-	// }
-	// };
-	// String[] files = dir.list(filter);
-	//
-	// if (files.length > 0)
-	// {
-	// for (String file : files)
-	// {
-	// if (file.endsWith(".1st") || file.endsWith(".changed"))
-	// {
-	// if (file.endsWith(".changed"))
-	// {
-	// File f = new File(file);
-	// try
-	// {
-	// f.delete();
-	// }
-	// catch (Exception ex)
-	// {
-	// }
-	// }
-	// retval = false;
-	// }
-	// }
-	// }
-	// else
-	// {
-	// retval = false;
-	// }
-	// }
-	// else
-	// {
-	// retval = false;
-	// }
-	//
-	// return retval;
-	// }
 
 	/**
 	 * @param Staging

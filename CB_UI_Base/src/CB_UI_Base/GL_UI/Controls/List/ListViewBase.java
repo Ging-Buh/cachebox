@@ -49,17 +49,17 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract float getListViewLength();
 
 	/**
-	 * Wen True, können die Items verschoben werden
+	 * Wen True, kï¿½nnen die Items verschoben werden
 	 */
 	protected Boolean mIsDrageble = true;
 
 	/**
-	 * Ermöglicht den Zugriff auf die Liste, welche Dargestellt werden soll.
+	 * Ermï¿½glicht den Zugriff auf die Liste, welche Dargestellt werden soll.
 	 */
 	protected Adapter mBaseAdapter;
 
 	/**
-	 * Enthällt die Indexes, welche schon als Child exestieren.
+	 * Enthï¿½llt die Indexes, welche schon als Child exestieren.
 	 */
 	CB_List<Integer> mAddeedIndexList = new CB_List<Integer>();
 
@@ -77,7 +77,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected int mLastIndex = 0;
 
 	/**
-	 * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so Groß sind wie das kleinste Item in der List.
+	 * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so Groï¿½ sind wie das kleinste Item in der List.
 	 */
 	protected int mMaxItemCount = -1;
 
@@ -86,7 +86,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected float mcalcAllSizeBase = 0f;
 
 	/**
-	 * Komplette Breite oder Höhe aller Items
+	 * Komplette Breite oder Hï¿½he aller Items
 	 */
 	protected float mAllSize = 0f;
 
@@ -170,7 +170,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	/**
-	 * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich länger dauert, ist
+	 * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich lï¿½nger dauert, ist
 	 * der Standard auf False gesetzt.
 	 * 
 	 * @param value
@@ -293,7 +293,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract void RenderThreadSetPos(float value, boolean Kinetic);
 
 	/**
-	 * added die sichtbaren Items als Child und speichert den Index in einer Liste, damit das Item nicht ein zweites mal hinzugefügt wird.
+	 * added die sichtbaren Items als Child und speichert den Index in einer Liste, damit das Item nicht ein zweites mal hinzugefï¿½gt wird.
 	 * Wenn Kinetic == True werden mehr Items geladen, damit beim schnellen Scrollen die Items schon erstellt sind, bevor sie in den
 	 * sichtbaren Bereich kommen.
 	 * 
@@ -302,7 +302,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract void addVisibleItems(boolean Kinetic);
 
 	/**
-	 * Fragt die Höhen aller Items ab und speichert die damit berechneten Positonen ab.
+	 * Fragt die Hï¿½hen aller Items ab und speichert die damit berechneten Positonen ab.
 	 */
 	protected abstract void calcDefaultPosList();
 
@@ -420,7 +420,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	/**
-	 * Überprüft ob die Liste oben oder unten Platz hat und lösst eine Animation aus, in der die Liste auf die erste oder letzte Position
+	 * ï¿½berprï¿½ft ob die Liste oben oder unten Platz hat und lï¿½sst eine Animation aus, in der die Liste auf die erste oder letzte Position
 	 * scrollt.
 	 */
 	@Override
@@ -532,8 +532,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 						stopTimer();
 						return;
 					}
-
-					// Gdx.app.debug(Tag.TAG,"Set Animatet ListPos");
 					setListPos(newPos, true);
 				}
 
@@ -541,7 +539,6 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 		catch (Exception e)
 		{
-
 			Gdx.app.error(Tag.TAG, "", e);
 		}
 	}
@@ -615,7 +612,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 					}
 				}
 
-				// alle Items löschen, damit das Selection flag neu gesetzt werden kann.
+				// alle Items lï¿½schen, damit das Selection flag neu gesetzt werden kann.
 				if (childs.size() == 0)
 				{
 					reloadItems();
@@ -689,8 +686,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	/**
-	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden können, wenn alle Items so Groß sind wie das kleinste Item in der
-	 * List, zurück.
+	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden kï¿½nnen, wenn alle Items so Groï¿½ sind wie das kleinste Item in der
+	 * List, zurï¿½ck.
 	 */
 	public int getMaxItemCount()
 	{

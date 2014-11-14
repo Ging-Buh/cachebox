@@ -53,7 +53,7 @@ import com.badlogic.gdx.Gdx;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2330;
+	public static final int CurrentRevision = 2346;
 
 	public static final String CurrentVersion = "0.8.";
 	public static final String VersionPrefix = "test";
@@ -70,94 +70,10 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	// ###########create instance#############
 	public final static GlobalCore INSTANCE = new GlobalCore();
 
-	/**
-	 * nur True beim ersten schreiben! Dann m�ssen erst die Missing Lang Strings eingelesen werden!
-	 */
-	private static boolean firstWrite = true;
-
 	private GlobalCore()
 	{
 		super();
 		Solver.solverCacheInterface = this;
-		// Logger.setCreateDebugWithHeader(new iCreateDebugWithHeader()
-		// {
-		// @Override
-		// public void CreateDebugWithHeader(File DebugFile)
-		// {
-		// if (Config.newInstall.getValue())
-		// {
-		// DebugFile.delete();
-		// Config.newInstall.setValue(false);
-		// }
-		//
-		// String Msg = "";
-		//
-		// if (!DebugFile.exists())
-		// {
-		// // schreibe UI Sizes als erstes in die dbug.txt
-		// devicesSizes ui = UI_Size_Base.that.ui;
-		//
-		// if (ui == null) return; // Bin noch nicht soweit!
-		//
-		// StringBuilder sb = new StringBuilder();
-		// sb.append("###################################" + br);
-		// sb.append("##  CB Version: " + GlobalCore.getVersionString() + "         ##" + br);
-		// sb.append("###################################" + br + br + br);
-		// sb.append("################  Ui Sizes ############" + br);
-		// sb.append("Window = " + ui.Window.toString() + br);
-		// sb.append("Density = " + ui.Density + br);
-		// sb.append("RefSize = " + ui.RefSize + br);
-		// sb.append("TextSize_Normal = " + ui.TextSize_Normal + br);
-		// sb.append("ButtonTextSize = " + ui.ButtonTextSize + br);
-		// sb.append("IconSize = " + ui.IconSize + br);
-		// sb.append("Margin = " + ui.Margin + br);
-		// sb.append("ArrowSizeList = " + ui.ArrowSizeList + br);
-		// sb.append("ArrowSizeMap = " + ui.ArrowSizeMap + br);
-		// sb.append("TB_IconSize = " + ui.TB_IconSize + br);
-		// sb.append("isLandscape = " + ui.isLandscape + br);
-		// sb.append("    " + br);
-		// sb.append("MapViewDPIFaktor = " + Config.MapViewDPIFaktor.getValue() + br);
-		// sb.append("MapViewFontFaktor = " + Config.MapViewFontFaktor.getValue() + br);
-		// sb.append("#######################################" + br + br);
-		//
-		// sb.append("##########  Missing Lang Strings ######" + br);
-		//
-		// sb.append("#######################################" + br + br);
-		//
-		// Msg = sb.toString();
-		//
-		// FileWriter writer;
-		// try
-		// {
-		// writer = new FileWriter(DebugFile, true);
-		// writer.write(Msg);
-		// writer.close();
-		// }
-		// catch (IOException e)
-		// {
-		//
-		// Gdx.app.error(Tag.TAG, "", e);
-		// }
-		//
-		// }
-		// else
-		// {
-		// if (firstWrite)
-		// {
-		// try
-		// {
-		// Translation.readMissingStringsFile();
-		// }
-		// catch (IOException e)
-		// {
-		// Gdx.app.error(Tag.TAG, "", e);
-		// }
-		// firstWrite = false;
-		// }
-		// }
-		//
-		// }
-		// });
 	}
 
 	// #######################################
@@ -213,16 +129,6 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 			selectedWaypoint = null;
 			return;
 		}
-
-		// // rewrite Changed Values ( like Favroite state)
-		// if (selectedCache != null)
-		// {
-		// if (!Cache.getGcCode().equals("CBPark"))
-		// {
-		// Cache lastCache = Database.Data.Query.GetCacheById(selectedCache.Id);
-		//
-		// }
-		// }
 
 		// remove Detail Info from old selectedCache
 		if ((selectedCache != Cache) && (selectedCache != null) && (selectedCache.detail != null))
@@ -280,8 +186,7 @@ public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterfac
 	static boolean JokerPwExist = false;
 
 	/**
-	 * JokerisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein Passwort f�r gcJoker.de vorhanden
-	 * ist.
+	 * JokerisOnline Liefert TRUE wenn die M�glichkeit besteht auf das Internet zuzugreifen und ein Passwort f�r gcJoker.de vorhanden ist.
 	 */
 	public static boolean JokerisOnline()
 	{

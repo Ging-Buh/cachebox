@@ -5,9 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import CB_UI.Config;
 import CB_UI_Base.Global;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.LogLevel;
@@ -15,7 +17,6 @@ import CB_Utils.Util.iChanged;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class Debug_AndroidApplication extends AndroidApplication
@@ -115,7 +116,7 @@ public class Debug_AndroidApplication extends AndroidApplication
 
 	private void writeToLogFile(String Level, String tag, String message)
 	{
-		checkLogFile();
+		if (!checkLogFile()) return;
 		try
 		{
 			tag = addTimeToTag(tag) + Level;
@@ -134,7 +135,7 @@ public class Debug_AndroidApplication extends AndroidApplication
 
 	private void writeToLogFile(String Level, String tag, String message, Throwable exception)
 	{
-		checkLogFile();
+		if (!checkLogFile()) return;
 		try
 		{
 			tag = addTimeToTag(tag) + Level;
@@ -151,19 +152,52 @@ public class Debug_AndroidApplication extends AndroidApplication
 		}
 	}
 
-	private void checkLogFile()
+	private boolean checkLogFile()
 	{
 		if (LogFile == null)
 		{
 			// create Log file
-			String Path = Gdx.files.getLocalStoragePath() + "/Logs/";
+			String Path;
+			try
+			{
+				Path = Config.WorkPath + "/Logs/";
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
 
 			new File(Path).mkdirs();
 
 			String logFileName = Path + "Log_" + new SimpleDateFormat("yyyy-MM-dd HH_mm_ss", Locale.GERMAN).format(new Date()) + ".txt";
 			LogFile = new File(logFileName);
-		}
 
+			// delete old Log files
+			File dir = new File(Path);
+			String[] files = dir.list();
+
+			ArrayList<String> logList = new ArrayList<String>();
+			for (String file : files)
+			{
+				if (file.startsWith("Log_")) logList.add(file);
+			}
+
+			int maxLogCount = CB_UI_Base_Settings.DebugLogCount.getValue();
+
+			if (logList.size() > maxLogCount)
+			{
+				int idx = 0;
+				for (String del : logList)
+				{
+					if (idx++ < maxLogCount) continue;
+
+					// delete all other
+					File delFile = new File(del);
+					delFile.delete();
+				}
+			}
+		}
+		return true;
 	}
 
 	private String formatTag(String tag)

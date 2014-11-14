@@ -160,6 +160,8 @@ public class BitmapDrawable implements ext_Bitmap, Disposable
 
 	private void createData()
 	{
+		if (Packer.getRect(AtlasHashString) != null) return;
+
 		Pixmap pix;
 		try
 		{

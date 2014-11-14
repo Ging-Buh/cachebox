@@ -87,7 +87,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 	@Override
 	protected boolean getRequest(JSONObject request)
 	{
-		// isLite vom SearchObjekt auswerten, da dies darin geändert worden sein könnte
+		// isLite vom SearchObjekt auswerten, da dies darin geï¿½ndert worden sein kï¿½nnte
 		if (search.getIsLite())
 		{
 			isLite = search.getIsLite();
@@ -126,7 +126,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			JSONObject jCache = (JSONObject) caches.get(i);
 			String gcCode = jCache.getString("Code");
 			Gdx.app.debug(Tag.TAG, "handling " + gcCode);
-			String name = jCache.getString("Name");
+			// String name = jCache.getString("Name");
 
 			Boolean CacheERROR = false;
 
@@ -167,11 +167,11 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
 			CacheDAO dao = new CacheDAO();
-			// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
+			// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht ï¿½berschreiben
 			Boolean Favorite = dao.loadBooleanValue(gcCode, "Favorit");
 			cache.setFavorit(Favorite);
 
-			// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+			// Ein evtl. in der Datenbank vorhandenen "Found" nicht ï¿½berschreiben
 			Boolean Found = dao.loadBooleanValue(gcCode, "found");
 			if (!Found)
 			{
@@ -194,7 +194,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			}
 			cache.GPXFilename_ID = gpxFilenameId;
 
-			// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+			// Ein evtl. in der Datenbank vorhandenen "Found" nicht ï¿½berschreiben
 			Boolean userData = dao.loadBooleanValue(gcCode, "HasUserData");
 
 			cache.setHasUserData(userData);

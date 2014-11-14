@@ -25,8 +25,7 @@ import com.badlogic.gdx.graphics.Color;
 public class SettingColor extends SettingBase<Color>
 {
 
-	public SettingColor(String name, SettingCategory category, SettingModus modus, Color defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
+	public SettingColor(String name, SettingCategory category, SettingModus modus, Color defaultValue, SettingStoreType StoreType, SettingUsage usage)
 	{
 		super(name, category, modus, StoreType, usage);
 		this.defaultValue = defaultValue;
@@ -65,6 +64,9 @@ public class SettingColor extends SettingBase<Color>
 	@Override
 	public boolean equals(Object obj)
 	{
+		if (obj == null) return false;
+		if (this.name == null || this.value == null) return false;
+
 		if (!(obj instanceof SettingColor)) return false;
 
 		SettingColor inst = (SettingColor) obj;

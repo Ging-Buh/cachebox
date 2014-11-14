@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import CB_UI_Base.Global;
@@ -182,6 +183,31 @@ public class CB_LwjglApplication extends LwjglApplication
 			// create Log file
 			String logFileName = "Log_" + new SimpleDateFormat("yyyy-MM-dd HH_mm_ss").format(new Date()) + ".txt";
 			LogFile = new File(logFileName);
+
+			// delete old Log files
+			File dir = new File("./");
+			String[] files = dir.list();
+
+			ArrayList<String> logList = new ArrayList<String>();
+			for (String file : files)
+			{
+				if (file.startsWith("Log_")) logList.add(file);
+			}
+
+			int maxLogCount = CB_UI_Base_Settings.DebugLogCount.getValue();
+
+			if (logList.size() > maxLogCount)
+			{
+				int idx = 0;
+				for (String del : logList)
+				{
+					if (idx++ < maxLogCount) continue;
+
+					// delete all other
+					File delFile = new File(del);
+					delFile.delete();
+				}
+			}
 		}
 
 	}

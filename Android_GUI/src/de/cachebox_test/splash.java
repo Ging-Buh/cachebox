@@ -696,6 +696,22 @@ public class splash extends Activity
 
 	private String getExternalSdPath(String Folder)
 	{
+
+		// TODO try this
+		// String value = System.getenv("SECONDARY_STORAGE");
+		// if (!TextUtils.isEmpty(value))
+		// {
+		// String[] paths = value.split(":");
+		// for (String path : paths)
+		// {
+		// File file = new File(path);
+		// if (file.isDirectory())
+		// {
+		// System.out.print(file.getAbsolutePath());
+		// }
+		// }
+		// }
+
 		// check if Layout forced from User
 		workPath = Environment.getExternalStorageDirectory() + Folder;
 

@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -60,6 +58,8 @@ import CB_UI_Base.graphics.SVG.SVG.Unit;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * SVG parser code. Used by SVG class. Should not be called directly.
  * 
@@ -75,7 +75,6 @@ public class SVGParser extends DefaultHandler2
 		GRAPHIC_FACTORY = factory;
 	}
 
-	private static final Logger LOGGER = Logger.getLogger(SVG.class.getName());
 	private static final String TAG = "SVGParser";
 
 	private static final String SVG_NAMESPACE = "http://www.w3.org/2000/svg";
@@ -306,9 +305,7 @@ public class SVGParser extends DefaultHandler2
 	private static final String NONE = "none";
 	private static final String CURRENTCOLOR = "currentColor";
 
-	private static final String VALID_DISPLAY_VALUES = "|inline|block|list-item|run-in|compact|marker|table|inline-table"
-			+ "|table-row-group|table-header-group|table-footer-group|table-row"
-			+ "|table-column-group|table-column|table-cell|table-caption|none|";
+	private static final String VALID_DISPLAY_VALUES = "|inline|block|list-item|run-in|compact|marker|table|inline-table" + "|table-row-group|table-header-group|table-footer-group|table-row" + "|table-column-group|table-column|table-cell|table-caption|none|";
 	private static final String VALID_VISIBILITY_VALUES = "|visible|hidden|collapse|";
 
 	private static HashMap<String, Integer> colourKeywords = new HashMap<String, Integer>();
@@ -864,12 +861,7 @@ public class SVGParser extends DefaultHandler2
 		}
 
 		// Yes this is ugly. May switch to faster method in the future.
-		if (localName.equals(TAG_SVG) || localName.equals(TAG_DEFS) || localName.equals(TAG_G) || localName.equals(TAG_USE)
-				|| localName.equals(TAG_IMAGE) || localName.equals(TAG_TEXT) || localName.equals(TAG_TSPAN) || localName.equals(TAG_SWITCH)
-				|| localName.equals(TAG_SYMBOL) || localName.equals(TAG_MARKER) || localName.equals(TAG_LINEARGRADIENT)
-				|| localName.equals(TAG_RADIALGRADIENT) || localName.equals(TAG_STOP) || localName.equals(TAG_CLIPPATH)
-				|| localName.equals(TAG_TEXTPATH) || localName.equals(TAG_PATTERN) || localName.equals(TAG_VIEW)
-				|| localName.equals(TAG_MASK) || localName.equals(TAG_SOLIDCOLOR))
+		if (localName.equals(TAG_SVG) || localName.equals(TAG_DEFS) || localName.equals(TAG_G) || localName.equals(TAG_USE) || localName.equals(TAG_IMAGE) || localName.equals(TAG_TEXT) || localName.equals(TAG_TSPAN) || localName.equals(TAG_SWITCH) || localName.equals(TAG_SYMBOL) || localName.equals(TAG_MARKER) || localName.equals(TAG_LINEARGRADIENT) || localName.equals(TAG_RADIALGRADIENT) || localName.equals(TAG_STOP) || localName.equals(TAG_CLIPPATH) || localName.equals(TAG_TEXTPATH) || localName.equals(TAG_PATTERN) || localName.equals(TAG_VIEW) || localName.equals(TAG_MASK) || localName.equals(TAG_SOLIDCOLOR))
 		{
 			currentElement = ((SvgObject) currentElement).parent;
 		}
@@ -887,7 +879,7 @@ public class SVGParser extends DefaultHandler2
 
 	private void dumpNode(SVG.SvgObject elem, String indent)
 	{
-		LOGGER.log(Level.INFO, TAG + indent + elem);
+		Gdx.app.log(TAG, indent + elem);
 
 		if (elem instanceof SVG.SvgConditionalContainer)
 		{
@@ -903,7 +895,7 @@ public class SVGParser extends DefaultHandler2
 
 	private void debug(String format, Object... args)
 	{
-		if (LibConfig.DEBUG) LOGGER.log(Level.INFO, TAG + String.format(format, args));
+		Gdx.app.debug(TAG, String.format(format, args));
 
 	}
 
@@ -1370,8 +1362,7 @@ public class SVGParser extends DefaultHandler2
 					if (x == null) throw new SAXException("Invalid <" + tag + "> points attribute. Non-coordinate content found in list.");
 					scan.skipCommaWhitespace();
 					Float y = scan.nextFloat();
-					if (y == null) throw new SAXException("Invalid <" + tag
-							+ "> points attribute. There should be an even number of coordinates.");
+					if (y == null) throw new SAXException("Invalid <" + tag + "> points attribute. There should be an even number of coordinates.");
 					scan.skipCommaWhitespace();
 					points.add(x);
 					points.add(y);
@@ -1458,8 +1449,7 @@ public class SVGParser extends DefaultHandler2
 		debug("<tspan>");
 
 		if (currentElement == null) throw new SAXException("Invalid document. Root element must be <svg>");
-		if (!(currentElement instanceof SVG.TextContainer)) throw new SAXException(
-				"Invalid document. <tspan> elements are only valid inside <text> or other <tspan> elements.");
+		if (!(currentElement instanceof SVG.TextContainer)) throw new SAXException("Invalid document. <tspan> elements are only valid inside <text> or other <tspan> elements.");
 		SVG.TSpan obj = new SVG.TSpan();
 		obj.document = svgDocument;
 		obj.parent = currentElement;
@@ -1482,8 +1472,7 @@ public class SVGParser extends DefaultHandler2
 		debug("<tref>");
 
 		if (currentElement == null) throw new SAXException("Invalid document. Root element must be <svg>");
-		if (!(currentElement instanceof SVG.TextContainer)) throw new SAXException(
-				"Invalid document. <tref> elements are only valid inside <text> or <tspan> elements.");
+		if (!(currentElement instanceof SVG.TextContainer)) throw new SAXException("Invalid document. <tref> elements are only valid inside <text> or <tspan> elements.");
 		SVG.TRef obj = new SVG.TRef();
 		obj.document = svgDocument;
 		obj.parent = currentElement;
@@ -1797,8 +1786,7 @@ public class SVGParser extends DefaultHandler2
 		debug("<stop>");
 
 		if (currentElement == null) throw new SAXException("Invalid document. Root element must be <svg>");
-		if (!(currentElement instanceof SVG.GradientElement)) throw new SAXException(
-				"Invalid document. <stop> elements are only valid inside <linearGradiant> or <radialGradient> elements.");
+		if (!(currentElement instanceof SVG.GradientElement)) throw new SAXException("Invalid document. <stop> elements are only valid inside <linearGradiant> or <radialGradient> elements.");
 		SVG.Stop obj = new SVG.Stop();
 		obj.document = svgDocument;
 		obj.parent = currentElement;
@@ -2722,15 +2710,13 @@ public class SVGParser extends DefaultHandler2
 			break;
 
 		case display:
-			if (val.indexOf('|') >= 0 || (VALID_DISPLAY_VALUES.indexOf('|' + val + '|') == -1)) throw new SAXException(
-					"Invalid value for \"display\" attribute: " + val);
+			if (val.indexOf('|') >= 0 || (VALID_DISPLAY_VALUES.indexOf('|' + val + '|') == -1)) throw new SAXException("Invalid value for \"display\" attribute: " + val);
 			style.display = !val.equals(NONE);
 			style.specifiedFlags |= SVG.SPECIFIED_DISPLAY;
 			break;
 
 		case visibility:
-			if (val.indexOf('|') >= 0 || (VALID_VISIBILITY_VALUES.indexOf('|' + val + '|') == -1)) throw new SAXException(
-					"Invalid value for \"visibility\" attribute: " + val);
+			if (val.indexOf('|') >= 0 || (VALID_VISIBILITY_VALUES.indexOf('|' + val + '|') == -1)) throw new SAXException("Invalid value for \"visibility\" attribute: " + val);
 			style.visibility = val.equals("visible");
 			style.specifiedFlags |= SVG.SPECIFIED_VISIBILITY;
 			break;
@@ -3073,8 +3059,7 @@ public class SVGParser extends DefaultHandler2
 		scan.skipCommaWhitespace();
 		Float height = scan.nextFloat();
 
-		if (minX == null || minY == null || width == null || height == null) throw new SAXException(
-				"Invalid viewBox definition - should have four numbers");
+		if (minX == null || minY == null || width == null || height == null) throw new SAXException("Invalid viewBox definition - should have four numbers");
 		if (width < 0) throw new SAXException("Invalid viewBox. width cannot be negative");
 		if (height < 0) throw new SAXException("Invalid viewBox. height cannot be negative");
 
@@ -3455,8 +3440,7 @@ public class SVGParser extends DefaultHandler2
 	private static CSSClipRect parseClip(String val) throws SAXException
 	{
 		if ("auto".equals(val)) return null;
-		if (!val.toLowerCase(Locale.US).startsWith("rect(")) throw new SAXException(
-				"Invalid clip attribute shape. Only rect() is supported.");
+		if (!val.toLowerCase(Locale.US).startsWith("rect(")) throw new SAXException("Invalid clip attribute shape. Only rect() is supported.");
 
 		TextScanner scan = new TextScanner(val.substring(5));
 		scan.skipWhitespace();
@@ -3527,7 +3511,7 @@ public class SVGParser extends DefaultHandler2
 				y = scan.nextFloat();
 				if (y == null)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				// Relative moveto at the start of a path is treated as an absolute moveto.
@@ -3551,7 +3535,7 @@ public class SVGParser extends DefaultHandler2
 				y = scan.nextFloat();
 				if (y == null)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				if (pathCommand == 'l')
@@ -3580,7 +3564,7 @@ public class SVGParser extends DefaultHandler2
 				y = scan.nextFloat();
 				if (y == null)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				if (pathCommand == 'c')
@@ -3613,7 +3597,7 @@ public class SVGParser extends DefaultHandler2
 				y = scan.nextFloat();
 				if (y == null)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				if (pathCommand == 's')
@@ -3644,7 +3628,7 @@ public class SVGParser extends DefaultHandler2
 				x = scan.nextFloat();
 				if (x == null)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				if (pathCommand == 'h')
@@ -3661,7 +3645,7 @@ public class SVGParser extends DefaultHandler2
 				y = scan.nextFloat();
 				if (y == null)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				if (pathCommand == 'v')
@@ -3684,7 +3668,7 @@ public class SVGParser extends DefaultHandler2
 				y = scan.nextFloat();
 				if (y == null)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				if (pathCommand == 'q')
@@ -3711,7 +3695,7 @@ public class SVGParser extends DefaultHandler2
 				y = scan.nextFloat();
 				if (y == null)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				if (pathCommand == 't')
@@ -3744,7 +3728,7 @@ public class SVGParser extends DefaultHandler2
 				y = scan.nextFloat();
 				if (y == null || rx < 0 || ry < 0)
 				{
-					LOGGER.log(Level.INFO, TAG + "Bad path coords for " + pathCommand + " path segment");
+					Gdx.app.log(TAG, "Bad path coords for " + pathCommand + " path segment");
 					return path;
 				}
 				if (pathCommand == 'a')
@@ -3845,8 +3829,7 @@ public class SVGParser extends DefaultHandler2
 	private static String parseFunctionalIRI(String val, String attrName) throws SAXException
 	{
 		if (val.equals(NONE)) return null;
-		if (!val.startsWith("url(") || !val.endsWith(")")) throw new SAXException("Bad " + attrName
-				+ " attribute. Expected \"none\" or \"url()\" format");
+		if (!val.startsWith("url(") || !val.endsWith(")")) throw new SAXException("Bad " + attrName + " attribute. Expected \"none\" or \"url()\" format");
 
 		return val.substring(4, val.length() - 1).trim();
 		// Unlike CSS, the SVG spec seems to indicate that quotes are not allowed in "url()" references

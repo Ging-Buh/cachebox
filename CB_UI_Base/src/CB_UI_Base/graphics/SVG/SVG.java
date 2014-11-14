@@ -23,8 +23,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.xml.sax.SAXException;
 
@@ -35,6 +33,8 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Canvas;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Matrix;
 import CB_UI_Base.graphics.fromAndroid.RectF;
+
+import com.badlogic.gdx.Gdx;
 
 /**
  * AndroidSVG is a library for reading, parsing and rendering SVG documents on Android devices.
@@ -68,8 +68,6 @@ import CB_UI_Base.graphics.fromAndroid.RectF;
 
 public class SVG
 {
-
-	private static final Logger LOGGER = Logger.getLogger(SVG.class.getName());
 
 	private static final String TAG = "AndroidSVG";
 
@@ -433,7 +431,7 @@ public class SVG
 
 		if (view.viewBox == null)
 		{
-			LOGGER.log(Level.WARNING, TAG + "View element is missing a viewBox attribute.");
+			Gdx.app.log(TAG, "View element is missing a viewBox attribute.");
 			return;
 		}
 
@@ -529,7 +527,7 @@ public class SVG
 			View view = (View) elem;
 			if (view.id != null) viewIds.add(view.id);
 			else
-				LOGGER.log(Level.WARNING, TAG + "getViewList(): found a <view> without an id attribute");
+				Gdx.app.log(TAG, "getViewList(): found a <view> without an id attribute");
 		}
 		return viewIds;
 	}
@@ -923,9 +921,7 @@ public class SVG
 
 	protected static final long SPECIFIED_ALL = 0xffffffff;
 
-	protected static final long SPECIFIED_NON_INHERITING = SPECIFIED_DISPLAY | SPECIFIED_OVERFLOW | SPECIFIED_CLIP | SPECIFIED_CLIP_PATH
-			| SPECIFIED_OPACITY | SPECIFIED_STOP_COLOR | SPECIFIED_STOP_OPACITY | SPECIFIED_MASK | SPECIFIED_SOLID_COLOR
-			| SPECIFIED_SOLID_OPACITY | SPECIFIED_VIEWPORT_FILL | SPECIFIED_VIEWPORT_FILL_OPACITY | SPECIFIED_VECTOR_EFFECT;
+	protected static final long SPECIFIED_NON_INHERITING = SPECIFIED_DISPLAY | SPECIFIED_OVERFLOW | SPECIFIED_CLIP | SPECIFIED_CLIP_PATH | SPECIFIED_OPACITY | SPECIFIED_STOP_COLOR | SPECIFIED_STOP_OPACITY | SPECIFIED_MASK | SPECIFIED_SOLID_COLOR | SPECIFIED_SOLID_OPACITY | SPECIFIED_VIEWPORT_FILL | SPECIFIED_VIEWPORT_FILL_OPACITY | SPECIFIED_VECTOR_EFFECT;
 
 	protected static class Style implements Cloneable
 	{
@@ -1593,7 +1589,7 @@ public class SVG
 	}
 
 	// One of the element types that can cause graphics to be drawn onto the target canvas.
-	// Specifically: ‘circle’, ‘ellipse’, ‘image’, ‘line’, ‘path’, ‘polygon’, ‘polyline’, ‘rect’, ‘text’ and ‘use’.
+	// Specifically: ï¿½circleï¿½, ï¿½ellipseï¿½, ï¿½imageï¿½, ï¿½lineï¿½, ï¿½pathï¿½, ï¿½polygonï¿½, ï¿½polylineï¿½, ï¿½rectï¿½, ï¿½textï¿½ and ï¿½useï¿½.
 	protected static abstract class GraphicsElement extends SvgConditionalElement implements HasTransform
 	{
 		public ext_Matrix transform;
@@ -2064,8 +2060,7 @@ public class SVG
 					handler.lineTo(coordsIter.next(), coordsIter.next());
 					break;
 				case CUBICTO:
-					handler.cubicTo(coordsIter.next(), coordsIter.next(), coordsIter.next(), coordsIter.next(), coordsIter.next(),
-							coordsIter.next());
+					handler.cubicTo(coordsIter.next(), coordsIter.next(), coordsIter.next(), coordsIter.next(), coordsIter.next(), coordsIter.next());
 					break;
 				case QUADTO:
 					handler.quadTo(coordsIter.next(), coordsIter.next(), coordsIter.next(), coordsIter.next());
@@ -2076,8 +2071,7 @@ public class SVG
 				default:
 					boolean largeArcFlag = (command & 2) != 0;
 					boolean sweepFlag = (command & 1) != 0;
-					handler.arcTo(coordsIter.next(), coordsIter.next(), coordsIter.next(), largeArcFlag, sweepFlag, coordsIter.next(),
-							coordsIter.next());
+					handler.arcTo(coordsIter.next(), coordsIter.next(), coordsIter.next(), largeArcFlag, sweepFlag, coordsIter.next(), coordsIter.next());
 				}
 			}
 		}

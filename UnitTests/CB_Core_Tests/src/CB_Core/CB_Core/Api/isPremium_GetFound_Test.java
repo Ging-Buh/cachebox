@@ -6,7 +6,7 @@ import CB_UI.Config;
 import __Static.InitTestDBs;
 
 /**
- * Enthält die Tests um die Caches zu einer bestimmten Position über die API abzufragen
+ * Enthï¿½lt die Tests um die Caches zu einer bestimmten Position ï¿½ber die API abzufragen
  * 
  * @author Longri
  */
@@ -28,8 +28,8 @@ public class isPremium_GetFound_Test extends TestCase
 	}
 
 	/**
-	 * lädt die Config Datei aus dem Ordner "trunk\Cachebox Core\testdata" Hie muss eine gültige cachebox.db3 Datei liegen. Diese Datei ist
-	 * auf der Ignore list von SVN, so das diese Persönliche config nicht veröffentlicht werden kann. (zum Schutz des Persönlichen API Keys)
+	 * lï¿½dt die Config Datei aus dem Ordner "trunk\Cachebox Core\testdata" Hie muss eine gï¿½ltige cachebox.db3 Datei liegen. Diese Datei ist
+	 * auf der Ignore list von SVN, so das diese Persï¿½nliche config nicht verï¿½ffentlicht werden kann. (zum Schutz des Persï¿½nlichen API Keys)
 	 */
 	private void LoadConfig()
 	{
@@ -49,7 +49,7 @@ public class isPremium_GetFound_Test extends TestCase
 		int Anzahl = GroundspeakAPI.GetCachesFound(null);
 
 		// Bei mir
-		assertTrue("Muss Anzahl meiner Funde sein (" + Anzahl + ")", Anzahl == 489);
+		assertTrue("Muss Anzahl meiner Funde sein (" + Anzahl + ")", Anzahl == 502);
 	}
 
 }

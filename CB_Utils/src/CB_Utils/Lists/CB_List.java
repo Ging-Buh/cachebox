@@ -18,6 +18,10 @@ package CB_Utils.Lists;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import CB_Utils.Tag;
+
+import com.badlogic.gdx.Gdx;
+
 /**
  * A resizable, ordered array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class avoids a memory copy when
  * removing elements (the last element is moved to the removed element's position).
@@ -26,6 +30,9 @@ import java.util.Arrays;
  */
 public class CB_List<T> implements Serializable
 {
+	// FIXME public class CB_List<T extends Comparable<T>> implements Serializable
+	// performance !!!+++++++
+
 	private static final long serialVersionUID = 4378819539487000418L;
 	protected T[] items;
 	protected int size;
@@ -148,36 +155,27 @@ public class CB_List<T> implements Serializable
 
 	public int indexOf(T value)
 	{
+		if (size == 0) return -1;
+		if (value == null) return -1;
+		if (this.items == null) return -1;
+
+		try
+		{
+			if (value instanceof Comparable<?>)
+			{
+				return Arrays.binarySearch(this.items, 0, this.size, value);
+			}
+		}
+		catch (Exception e)
+		{
+			Gdx.app.error(Tag.TAG, "Fix Me for Performance", e);
+		}
+
 		if (this.items == null) return -1;
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
 			if (items[i].equals(value)) return i;
 		return -1;
-	}
-
-	public T remove(T value)
-	{
-		if (this.items == null) return null;
-		T[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
-		{
-			if (items[i].equals(value))
-			{
-				return remove(i);
-			}
-		}
-		return null;
-	}
-
-	/** Removes and returns the item at the specified index. */
-	public T remove(int index)
-	{
-		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
-		T[] items = this.items;
-		T value = items[index];
-		size--;
-		System.arraycopy(items, index + 1, items, index, size - index);
-		return value;
 	}
 
 	/**
@@ -190,21 +188,31 @@ public class CB_List<T> implements Serializable
 		if (array == null || array.size == 0) return false;
 		int size = this.size;
 		int startSize = size;
-		T[] items = this.items;
 		for (int i = 0, n = array.size; i < n; i++)
 		{
 			T item = array.get(i);
-			for (int ii = 0; ii < size; ii++)
-			{
-				if (item.equals(items[ii]))
-				{
-					remove(ii);
-					size--;
-					break;
-				}
-			}
+			remove(item);
 		}
 		return size != startSize;
+	}
+
+	public T remove(T value)
+	{
+		if (this.items == null) return null;
+		int idx = indexOf(value);
+		if (idx == -1) return null;
+		return remove(idx);
+	}
+
+	/** Removes and returns the item at the specified index. */
+	public T remove(int index)
+	{
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+		T[] items = this.items;
+		T value = items[index];
+		size--;
+		System.arraycopy(items, index + 1, items, index, size - index);
+		return value;
 	}
 
 	/** Removes and returns the last item. */

@@ -19,7 +19,7 @@ public class Waypoint implements Serializable
 	public static final Charset UTF_8 = Charset.forName("UTF-8");
 	public static final String EMPTY_STRING = "";
 
-	// / Id des dazugehörigen Caches in der Datenbank von geocaching.com
+	// / Id des dazugehï¿½rigen Caches in der Datenbank von geocaching.com
 	public long CacheId;
 
 	// / Waypoint Code
@@ -39,8 +39,8 @@ public class Waypoint implements Serializable
 	// / true, falls der Wegpunkt von der Synchronisation ausgeschlossen wird
 	public boolean IsSyncExcluded;
 
-	// True wenn dies der Startpunkt für den nächsten Besuch ist.
-	// Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmäßig aktiviert
+	// True wenn dies der Startpunkt fï¿½r den nï¿½chsten Besuch ist.
+	// Das CacheIcon wird dann auf diesen Waypoint verschoben und dieser Waypoint wird standardmï¿½ï¿½ig aktiviert
 	// Es muss aber sichergestellt sein dass immer nur 1 Waypoint eines Caches ein Startpunkt ist!
 	public boolean IsStart = false;
 
@@ -60,8 +60,7 @@ public class Waypoint implements Serializable
 		}
 	}
 
-	public Waypoint(String gcCode, CacheTypes type, String description, double latitude, double longitude, long cacheId, String clue,
-			String title)
+	public Waypoint(String gcCode, CacheTypes type, String description, double latitude, double longitude, long cacheId, String clue, String title)
 	{
 		setGcCode(gcCode);
 		CacheId = cacheId;
@@ -77,15 +76,14 @@ public class Waypoint implements Serializable
 	}
 
 	// / <summary>
-	// / Entfernung von der letzten gültigen Position
+	// / Entfernung von der letzten gï¿½ltigen Position
 	// / </summary>
 	public float Distance()
 	{
 		Coordinate fromPos = Locator.getLocation().toCordinate();
 		float[] dist = new float[4];
 
-		MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(),
-				Pos.getLongitude(), dist);
+		MathUtils.computeDistanceAndBearing(CalculationType.FAST, fromPos.getLatitude(), fromPos.getLongitude(), Pos.getLatitude(), Pos.getLongitude(), dist);
 		return dist[0];
 	}
 
