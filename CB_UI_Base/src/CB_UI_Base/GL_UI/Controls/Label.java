@@ -119,12 +119,12 @@ public class Label extends CB_View_Base
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
-			// kommt manchmal wenn der Text geändert wird
+			// kommt manchmal wenn der Text geï¿½ndert wird
 			makeText();
 		}
 		catch (NullPointerException e)
 		{
-			// kommt manchmal wenn der Text geändert wird
+			// kommt manchmal wenn der Text geï¿½ndert wird
 			makeText();
 		}
 	}
@@ -202,7 +202,7 @@ public class Label extends CB_View_Base
 
 	private void setTextPosition()
 	{
-		float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begründet
+		float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begrï¿½ndet
 		if (innerWidth > bounds.width)
 		{
 			if (mHAlignment == HAlignment.CENTER)
@@ -410,7 +410,7 @@ public class Label extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		// todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
+		// todo den korrekten Font (original Fontgrï¿½sse nicht bekannt) setzen
 		mFont = Fonts.getNormal();
 		mColor = COLOR.getFontColor();
 		initLabel();
@@ -440,6 +440,16 @@ public class Label extends CB_View_Base
 		mHAlignment = null;
 		mText = null;
 		bounds = null;
+	}
+
+	public Color getFontColor()
+	{
+		return this.mColor;
+	}
+
+	public HAlignment getHAlignment()
+	{
+		return mHAlignment;
 	}
 
 }

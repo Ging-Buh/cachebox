@@ -59,7 +59,6 @@ public class ActivityBase extends Dialog
 	public GL_View_Base addChild(GL_View_Base view)
 	{
 		this.addChildDirekt(view);
-
 		return view;
 	}
 
