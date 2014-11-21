@@ -204,7 +204,20 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		if (this.mapDatabase != null)
 		{
 			MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
-			processReadMapData(mapReadResult);
+			if (mapReadResult.pointOfInterests.isEmpty() && mapReadResult.ways.isEmpty())
+			{
+				Gdx.app.debug(CB_Locator.Tag.TAG, "Empty Map reader result for Tile: " + rendererJob.tile.toString());
+			}
+			else
+			{
+				processReadMapData(mapReadResult);
+			}
+
+		}
+		else
+		{
+			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer MapDatabase are NULL");
+			return null;
 		}
 
 		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile, rendererJob.displayModel.getTileSize());

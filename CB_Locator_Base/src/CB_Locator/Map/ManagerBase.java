@@ -45,6 +45,7 @@ import org.mapsforge.map.layer.renderer.MixedDatabaseRenderer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
@@ -60,6 +61,8 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_RenderType;
+import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.LogLevel;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 
@@ -729,12 +732,21 @@ public abstract class ManagerBase
 
 		}
 
-		if (databaseRenderer[ThreadIndex] == null) return null;
+		if (databaseRenderer[ThreadIndex] == null)
+		{
+			Gdx.app.error(Tag.TAG, "databaseRenderer are NULL");
+			return null;
+		}
 
 		try
 		{
+			TileGL Tile = databaseRenderer[ThreadIndex].execute(job);
+			if (Tile == null)
+			{
+				Gdx.app.error(Tag.TAG, "databaseRenderer provid no Tile for: " + job.tile.toString());
+			}
 
-			return databaseRenderer[ThreadIndex].execute(job);
+			return Tile;
 
 		}
 		catch (Exception e)
@@ -751,15 +763,25 @@ public abstract class ManagerBase
 		mapFile = new File(layer.Url);
 
 		if (mapDatabase == null) mapDatabase = new MapDatabase[PROCESSOR_COUNT];
-
+		Gdx.app.debug(Tag.TAG, "Open MapsForge Map: " + mapFile);
 		for (int i = 0; i < PROCESSOR_COUNT; i++)
 		{
 			if (mapDatabase[i] == null) mapDatabase[i] = new MapDatabase();
 			mapDatabase[i].closeFile();
-			mapDatabase[i].openFile(mapFile);
+			FileOpenResult result = mapDatabase[i].openFile(mapFile);
+
+			if (result.isSuccess())
+			{
+				Gdx.app.debug(Tag.TAG, "Open Map success");
+				if (i == 0) writeDebugMapInfo(mapDatabase[0].getMapFileInfo());
+			}
+			else
+			{
+				Gdx.app.error(Tag.TAG, "Open Map faild");
+				Gdx.app.error(Tag.TAG, result.getErrorMessage());
+			}
 		}
 
-		Gdx.app.debug(Tag.TAG, "Open MapsForge Map: " + mapFile);
 		MapFileInfo info = mapDatabase[0].getMapFileInfo();
 		if (info.comment == null)
 		{
@@ -771,6 +793,60 @@ public abstract class ManagerBase
 		if (!LoadadMapIsFreizeitkarte) Gdx.app.debug(Tag.TAG, "Map is no FZK map");
 
 		mapsForgeFile = layer.Name;
+	}
+
+	private final String NULL = "NULL";
+	private final String TRUE = "TRUE";
+	private final String FALSE = "FALSE";
+
+	private void writeDebugMapInfo(MapFileInfo info)
+	{
+
+		// only if DebugLevel
+		if (CB_UI_Base_Settings.AktLogLevel.getEnumValue() != LogLevel.debug) return;
+
+		String comment = info.comment != null ? info.comment : NULL;
+		String createdBy = info.createdBy != null ? info.createdBy : NULL;
+		String debugFile = info.debugFile ? TRUE : FALSE;
+		String fileSize = String.valueOf(info.fileSize / 1024) + " kB";
+		String fileVersion = String.valueOf(info.fileSize);
+		String boundingBox = info.boundingBox.toString();
+		String startPosition = info.startPosition != null ? info.startPosition.toString() : NULL;
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("Map file info:");
+		sb.append(Global.br);
+
+		sb.append("comment: ");
+		sb.append(comment);
+		sb.append(Global.br);
+
+		sb.append("createdBy: ");
+		sb.append(createdBy);
+		sb.append(Global.br);
+
+		sb.append("debugFile: ");
+		sb.append(debugFile);
+		sb.append(Global.br);
+
+		sb.append("fileSize: ");
+		sb.append(fileSize);
+		sb.append(Global.br);
+
+		sb.append("fileVersion: ");
+		sb.append(fileVersion);
+		sb.append(Global.br);
+
+		sb.append("boundingBox: ");
+		sb.append(boundingBox);
+		sb.append(Global.br);
+
+		sb.append("startPosition: ");
+		sb.append(startPosition);
+		sb.append(Global.br);
+
+		Gdx.app.debug(Tag.TAG, sb.toString());
+		sb = null;
 	}
 
 	private boolean LoadadMapIsFreizeitkarte = false;

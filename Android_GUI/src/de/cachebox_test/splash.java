@@ -28,7 +28,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
 import CB_UI_Base.graphics.GL_RenderType;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
@@ -312,8 +311,8 @@ public class splash extends Activity
 			}
 		});
 
-		PlatformSettings.ReadSetting(CB_UI_Base_Settings.AktLogLevel);
-		Gdx.app = new Debug_AndroidApplication();
+		// PlatformSettings.ReadSetting(CB_UI_Base_Settings.AktLogLevel);
+		// Gdx.app = new Debug_AndroidApplication();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -1004,22 +1003,6 @@ public class splash extends Activity
 		// show wait dialog if not running
 		if (pWaitD == null) showPleaseWaitDialog();
 
-		// saved workPath found -> use this
-		Thread thread = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				Initial();
-			}
-		};
-
-		thread.start();
-
-	}
-
-	private void Initial()
-	{
 		// Jetzt ist der workPath erstmal festgelegt.
 
 		// Zur Kompatibilit�t mit �lteren Installationen wird hier noch die redirection.txt abgefragt
@@ -1085,6 +1068,25 @@ public class splash extends Activity
 		{
 			Config.settings.ReadFromDB();
 		}
+
+		Gdx.app = new Debug_AndroidApplication();// Instance for Debug
+
+		// saved workPath found -> use this
+		Thread thread = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				Initial();
+			}
+		};
+
+		thread.start();
+
+	}
+
+	private void Initial()
+	{
 
 		// Check Android Version and disable MixedDatabaseRenderer with Version<14(4.0.0)
 		if (android.os.Build.VERSION.SDK_INT < 14)

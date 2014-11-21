@@ -78,10 +78,7 @@ public class PositionChangedEventList
 					}
 					catch (Exception e)
 					{
-						// TODO reactivate if possible Gdx.app.error(Tag.TAG,"Core.PositionEventList.Call(location)",
-						// event.getReceiverName(),
-						// e);
-						Gdx.app.error(Tag.TAG, "", e);
+						Gdx.app.error(Tag.TAG, "Core.PositionEventList.Call(location) reciver:" + event.getReceiverName(), e);
 					}
 				}
 			}

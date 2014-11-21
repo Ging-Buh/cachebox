@@ -53,7 +53,7 @@ import com.badlogic.gdx.Gdx;
  */
 public class GlobalCore extends CB_UI_Base.Global implements SolverCacheInterface
 {
-	public static final int CurrentRevision = 2346;
+	public static final int CurrentRevision = 2349;
 
 	public static final String CurrentVersion = "0.8.";
 	public static final String VersionPrefix = "test";

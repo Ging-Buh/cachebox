@@ -37,7 +37,7 @@ public abstract class UI_Size_Base
 
 	public Size initial(devicesSizes ini)
 	{
-		Gdx.app.debug(Tag.TAG, "UISizes.initial()");
+		if (Gdx.app != null) Gdx.app.debug(Tag.TAG, "UISizes.initial()");
 		ui = ini;
 		windowWidth = ini.Window.width;// d.getWidth();
 		windowHeight = ini.Window.height;// d.getHeight();

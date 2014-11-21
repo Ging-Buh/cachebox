@@ -14,10 +14,14 @@ import java.util.regex.Pattern;
 
 import org.apache.http.util.ByteArrayBuffer;
 
+import CB_Utils.Tag;
+
+import com.badlogic.gdx.Gdx;
+
 public class FileIO
 {
 	/**
-	 * Überprüft ob ein File exestiert!
+	 * ï¿½berprï¿½ft ob ein File exestiert!
 	 * 
 	 * @param filename
 	 * @return true, wenn das File Exestiert, ansonsten false.
@@ -29,12 +33,12 @@ public class FileIO
 	}
 
 	/**
-	 * Überprüft ob ein File exestiert! <br>
-	 * Und nicht Älter als die angegebene Zeit in Minuten ist!
+	 * ï¿½berprï¿½ft ob ein File exestiert! <br>
+	 * Und nicht ï¿½lter als die angegebene Zeit in Minuten ist!
 	 * 
 	 * @param filename
 	 * @param maxAge
-	 * @return true, wenn das File Exestiert und das Alter nicht größer als {maxAge} ist, ansonsten false.
+	 * @return true, wenn das File Exestiert und das Alter nicht grï¿½ï¿½er als {maxAge} ist, ansonsten false.
 	 */
 	public static boolean FileExists(String filename, int maxAge)
 	{
@@ -72,7 +76,7 @@ public class FileIO
 	}
 
 	/**
-	 * Überprüft ob ein Ordner exestiert und legt ihn an, wenn er nicht exestiert.
+	 * ï¿½berprï¿½ft ob ein Ordner exestiert und legt ihn an, wenn er nicht exestiert.
 	 * 
 	 * @param folder
 	 *            Pfad des Ordners
@@ -89,7 +93,11 @@ public class FileIO
 			folder = folder.replace(ext, "");
 		}
 
-		if (!checkWritePermission(folder)) return false;
+		if (!checkWritePermission(folder))
+		{
+			Gdx.app.debug(Tag.TAG, "No write permission to:" + folder);
+			return false;
+		}
 
 		File f = new File(folder);
 
@@ -244,7 +252,7 @@ public class FileIO
 	}
 
 	/**
-	 * Gibt eine ArrayList<File> zurück, die alle Files mit der Endung gpx enthält.
+	 * Gibt eine ArrayList<File> zurï¿½ck, die alle Files mit der Endung gpx enthï¿½lt.
 	 * 
 	 * @param directory
 	 * @param files
@@ -256,7 +264,7 @@ public class FileIO
 	}
 
 	/**
-	 * Gibt eine ArrayList<File> zurück, die alle Files mit der angegebenen Endung haben.
+	 * Gibt eine ArrayList<File> zurï¿½ck, die alle Files mit der angegebenen Endung haben.
 	 * 
 	 * @param directory
 	 * @param files

@@ -7,6 +7,8 @@ import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Utils.Util.UnitFormatter;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * @author Longri
  */
@@ -187,10 +189,13 @@ public class Locator
 				{
 					fix = true;
 					GPS_FallBackEventList.CallFix();
+					Gdx.app.debug(Tag.TAG, "Locator call GPS fix");
+					Gdx.app.debug(Tag.TAG, location.toString());
 				}
 
 				break;
 			default:
+				Gdx.app.error(Tag.TAG, "Locator invalid GPS provider: " + type.toString());
 				break;
 			}
 
