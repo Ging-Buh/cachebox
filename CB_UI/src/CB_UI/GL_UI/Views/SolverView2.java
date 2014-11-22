@@ -360,6 +360,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			}
 
 			reloadList();
+			// Store Solver Content into Database after editing one line
+			if (GlobalCore.ifCacheSelected()) Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 		}
 	};
 
@@ -392,6 +394,8 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				solver = new Solver(solver.getSolverString());
 				solver.Solve();
 				solver.add(solver.size(), new SolverZeile(solver, ""));
+				// Store Solver Content into Database after deleting one line
+				if (GlobalCore.ifCacheSelected()) Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 				reloadList();
 				return true;
 			}
