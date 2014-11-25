@@ -221,13 +221,13 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	private static JokerView jokerView = null; // ID 12
 
 	/**
-	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
+	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis fï¿½r alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
 	 * CreditsView = 17 </br> MapView = 18 </br>
 	 */
 	public static ViewGL viewGL = null;
 
 	/**
-	 * gdxView ist die Android.View für gdx
+	 * gdxView ist die Android.View fï¿½r gdx
 	 */
 	private View gdxView = null;
 
@@ -382,6 +382,19 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 
 		mainActivity = this;
+
+		// if (GlobalCore.isTab)
+		// {
+		// // Tab Modus only Landscape
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		//
+		// }
+		// else
+		// {
+		// // Phone Modus only Landscape
+		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		//
+		// }
 
 		if (savedInstanceState != null)
 		{
@@ -1386,7 +1399,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	}
 
 	/**
-	 * Startet die Bildschirm Sperre. Mit der der Übergabe von force = true, werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen
+	 * Startet die Bildschirm Sperre. Mit der der ï¿½bergabe von force = true, werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen
 	 * ignoriert.
 	 * 
 	 * @param force
@@ -1400,7 +1413,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			if (!runsWithAkku) return;
 			counter.cancel();
 			counterStopped = true;
-			// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
+			// ScreenLock nur Starten, wenn der Config Wert grï¿½ï¿½er 10 sec ist.
 			// Das verhindert das selber aussperren!
 			if ((Config.ScreenLock.getValue() / 1000 < 10)) return;
 		}
@@ -1440,7 +1453,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	public static boolean ScreenLockOff = false;
 
 	/**
-	 * Gibt die zur ViewID gehörige View zurück und erstellst eine Instanz, wenn sie nicht exestiert.
+	 * Gibt die zur ViewID gehï¿½rige View zurï¿½ck und erstellst eine Instanz, wenn sie nicht exestiert.
 	 * 
 	 * @param ID
 	 *            ViewID
@@ -1529,28 +1542,28 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 			if (aktView.equals(jokerView))
 			{
-				// Instanz löschenn
+				// Instanz lï¿½schenn
 				aktView = null;
 				jokerView.OnFree();
 				jokerView = null;
 			}
 			else if (aktView.equals(solverView))
 			{
-				// Instanz löschenn
+				// Instanz lï¿½schenn
 				aktView = null;
 				solverView.OnFree();
 				solverView = null;
 			}
 			else if (aktView.equals(spoilerView))
 			{
-				// Instanz löschenn
+				// Instanz lï¿½schenn
 				aktView = null;
 				spoilerView.OnFree();
 				spoilerView = null;
 			}
 			else if (aktView.equals(descriptionView))
 			{
-				// Instanz löschenn
+				// Instanz lï¿½schenn
 				aktView = null;
 				descriptionView.OnHide();
 
@@ -1572,7 +1585,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		ViewParent parent = ((View) aktView).getParent();
 		if (parent != null)
 		{
-			// aktView ist noch gebunden, also lösen
+			// aktView ist noch gebunden, also lï¿½sen
 			((FrameLayout) parent).removeAllViews();
 		}
 		frame.addView((View) aktView);
@@ -1625,7 +1638,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		ViewParent parent = ((View) aktTabView).getParent();
 		if (parent != null)
 		{
-			// aktView ist noch gebunden, also lösen
+			// aktView ist noch gebunden, also lï¿½sen
 			((FrameLayout) parent).removeAllViews();
 		}
 		tabFrame.addView((View) aktTabView);
@@ -1679,7 +1692,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			// // Define the criteria how to select the locatioin provider -> use
 			// // default
-			// Criteria criteria = new Criteria(); // noch nötig ???
+			// Criteria criteria = new Criteria(); // noch nï¿½tig ???
 			// criteria.setAccuracy(Criteria.ACCURACY_FINE);
 			// criteria.setAltitudeRequired(false);
 			// criteria.setBearingRequired(false);
@@ -1689,8 +1702,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			/*
 			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
 			 * genauigkeit, darher reicht es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe
-			 * ich die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
-			 * gesunden Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
+			 * ich die aktualiesierungs Zeit verkï¿½rzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
+			 * gesunden Verhï¿½ltnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
 			int updateTime = Config.gpsUpdateTime.getValue();
@@ -1730,7 +1743,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			// gdxView = initializeForView(glListener, GL20);
 
 			AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-			cfg.numSamples = 16;
+			cfg.numSamples = 2;
 
 			gdxView = initializeForView(glListener, cfg);
 
@@ -1765,7 +1778,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			ViewParent parent = ((View) gdxView).getParent();
 			if (parent != null)
 			{
-				// aktView ist noch gebunden, also lösen
+				// aktView ist noch gebunden, also lï¿½sen
 				((RelativeLayout) parent).removeAllViews();
 			}
 			GlFrame.addView((View) gdxView);
@@ -1775,7 +1788,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		catch (Exception e)
 		{
 			Gdx.app.error(Tag.TAG, "main.initialViewGL()", e);
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 	}
@@ -1979,7 +1992,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 			setVoiceRecIsStart(true);
-			counter.cancel(); // Während der Aufnahme Screen-Lock-Counter
+			counter.cancel(); // Wï¿½hrend der Aufnahme Screen-Lock-Counter
 								// stoppen
 			counterStopped = true;
 
@@ -2004,8 +2017,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			public void run()
 			{
 				// Debug add Joker
-				// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
-				// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
+				// Global.Jokers.AddJoker("Andre", "Hï¿½pfner", "Katipa", "12", "030 ++++++", "24/7");
+				// Global.Jokers.AddJoker("Andre", "Hï¿½pfner", "Katipa", "12", "030 ++++++", "24/7");
 
 				if (Global.Jokers.isEmpty())
 				{ // Wenn Telefonjoker-Liste leer neu laden
@@ -2043,7 +2056,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 											if (s[0].equals("1")) // 1 entspricht
 											// Warnung, Ursache
 											// ist in S[1]
-											{ // es können aber noch gültige Einträge
+											{ // es kï¿½nnen aber noch gï¿½ltige Eintrï¿½ge
 												// folgen
 												GL_MsgBox.Show(s[1]);
 											}
@@ -2290,19 +2303,19 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 				try
 				{
 					if (s[11].equals("")) return;
-					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungültig
+					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungï¿½ltig
 					double altCorrection = Double.valueOf(s[11]);
 					if (altCorrection == 0) return;
 					Gdx.app.log(Tag.TAG, "AltCorrection: " + String.valueOf(altCorrection));
 					Locator.setAltCorrection(altCorrection);
 					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
-					// Höhenkorrektur ändert sich normalerweise nicht, einmal
+					// Hï¿½henkorrektur ï¿½ndert sich normalerweise nicht, einmal
 					// auslesen reicht...
 					locationManager.removeNmeaListener(this);
 				}
 				catch (Exception exc)
 				{
-					// keine Höhenkorrektur vorhanden
+					// keine Hï¿½henkorrektur vorhanden
 				}
 			}
 		}
@@ -2385,7 +2398,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	}
 
 	/**
-	 * Überprüft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung ausgegeben.
+	 * ï¿½berprï¿½ft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung ausgegeben.
 	 */
 	private void chkGpsIsOn()
 	{
@@ -2775,7 +2788,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		platformConector.setisOnlineListner(new IHardwarStateListner()
 		{
 			/*
-			 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
+			 * isOnline Liefert TRUE wenn die Mï¿½glichkeit besteht auf das Internet zuzugreifen
 			 */
 
 			@Override
@@ -3090,7 +3103,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			{
 				if (GlobalCore.ifCacheSelected())
 				{
-					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
+					// speichere selektierten Cache, da nicht alles ï¿½ber die SelectedCacheEventList lï¿½uft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
 					Gdx.app.debug(Tag.TAG, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());

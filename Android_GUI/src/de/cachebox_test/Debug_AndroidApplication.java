@@ -41,7 +41,7 @@ public class Debug_AndroidApplication extends AndroidApplication
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		Log.d("DEBUG_ANDROID", "On create");
 	}
 
 	@Override

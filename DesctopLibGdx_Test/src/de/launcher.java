@@ -58,24 +58,24 @@ class Ex_1
 			Config.AcceptChanges();
 		}
 
-		if (files.length > 0 && !files[0].contains("src"))
-		{
-			File workJar = new File(files[0]);
-			if (workJar.exists())
-			{
-				// don't show Launcher
-				final Gui screen = new Gui("Device Launcher");
-				screen.setSize(250, 500);
-				screen.setVisible(true);
-				DesktopMain.start(Gui.iniPhone(), false, false, true, screen);
-			}
-		}
-		else
-		{
-			final Gui screen = new Gui("Device Launcher");
-			screen.setSize(250, 500);
-			screen.setVisible(true);
-		}
+		// if (files.length > 0 && !files[0].contains("src"))
+		// {
+		// File workJar = new File(files[0]);
+		// if (workJar.exists())
+		// {
+		// // don't show Launcher
+		// final Gui screen = new Gui("Device Launcher");
+		// screen.setSize(250, 500);
+		// screen.setVisible(true);
+		// DesktopMain.start(Gui.iniPhone(), false, false, true, screen);
+		// }
+		// }
+		// else
+		// {
+		final Gui screen = new Gui("Device Launcher");
+		screen.setSize(250, 500);
+		screen.setVisible(true);
+		// }
 
 	}
 } // class Ex_1

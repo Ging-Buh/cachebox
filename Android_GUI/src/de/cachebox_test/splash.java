@@ -138,13 +138,21 @@ public class splash extends Activity
 		else
 			GlobalCore.displayType = DisplayType.Small;
 
-		// �berpr�fen, ob ACB im Hochformat oder Querformat gestartet wurde.
+		// überprüfen, ob ACB im Hochformat oder Querformat gestartet wurde.
 		// Hochformat -> Handymodus
 		// Querformat -> Tablet-Modus
-		if (w > h) isLandscape = true;
+		if (w > h && GlobalCore.isTab) isLandscape = true;
 
-		// Portr�t erzwingen wenn Normal oder Small display
+		// Porträt erzwingen wenn Normal oder Small display
 		if (isLandscape && (GlobalCore.displayType == DisplayType.Normal || GlobalCore.displayType == DisplayType.Small))
+		{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
+		else if (isLandscape)
+		{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}
+		else
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
@@ -664,6 +672,9 @@ public class splash extends Activity
 		}
 		else
 		{
+			Log.d("SPLASH", "Dont askAgain");
+			Log.d("SPLASH", "Is Landscape:" + isLandscape);
+
 			if (GlobalCore.displayType == DisplayType.Large || GlobalCore.displayType == DisplayType.xLarge) GlobalCore.isTab = isLandscape;
 
 			// restore the saved workPath
@@ -1034,19 +1045,6 @@ public class splash extends Activity
 
 		}
 
-		if (GlobalCore.isTab)
-		{
-			// Tab Modus only Landscape
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-		}
-		else
-		{
-			// Phone Modus only Landscape
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-		}
-
 		new Config(workPath);
 
 		// Read Config
@@ -1312,7 +1310,14 @@ public class splash extends Activity
 
 		if (pWaitD != null)
 		{
-			pWaitD.dismiss();
+			try
+			{
+				pWaitD.dismiss();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 			pWaitD = null;
 		}
 
