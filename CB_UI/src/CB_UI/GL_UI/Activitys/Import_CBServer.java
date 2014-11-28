@@ -23,7 +23,6 @@ import CB_RpcCore.Functions.RpcAnswer_ExportChangesToServer;
 import CB_RpcCore.Functions.RpcAnswer_GetExportList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.APIs.ExportCBServerListItem;
 import CB_UI.GL_UI.Activitys.APIs.ImportAPIListItem;
@@ -64,9 +63,9 @@ import CB_Utils.StringH;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
+import CB_Utils.Log.Logger;
 import cb_rpc.Functions.RpcAnswer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Import_CBServer extends ActivityBase implements ProgressChangedEvent
@@ -1020,7 +1019,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 							return;
 						}
 
-						Gdx.app.debug(Tag.TAG, "Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
+						Logger.LogCat("Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 					}
@@ -1072,7 +1071,7 @@ public class Import_CBServer extends ActivityBase implements ProgressChangedEven
 
 				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-				Gdx.app.debug(Tag.TAG, Msg);
+				Logger.DEBUG(Msg);
 
 				FilterProperties props = FilterProperties.LastFilter;
 				EditFilterSettings.ApplyFilter(props);

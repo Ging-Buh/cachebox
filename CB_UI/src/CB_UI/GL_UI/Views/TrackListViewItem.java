@@ -2,7 +2,6 @@ package CB_UI.GL_UI.Views;
 
 import CB_Locator.Map.Track;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Tag;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Activitys.ActivityBase;
@@ -15,7 +14,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Util.UnitFormatter;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -70,7 +68,7 @@ public class TrackListViewItem extends ListViewItemBackground
 		boolean lClick = false;
 		if (this.isPressed)
 		{
-			// Gdx.app.debug(Tag.TAG,"TrackListViewItem => is Pressed");
+			// Logger.LogCat("TrackListViewItem => is Pressed");
 
 			lClick = lBounds.contains(this.lastItemTouchPos);
 			rClick = rBounds.contains(this.lastItemTouchPos);
@@ -83,7 +81,7 @@ public class TrackListViewItem extends ListViewItemBackground
 			}
 			catch (InterruptedException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 			isPressed = GL.getIsTouchDown();
@@ -92,7 +90,7 @@ public class TrackListViewItem extends ListViewItemBackground
 		{
 			if (Clicked)
 			{
-				// Gdx.app.debug(Tag.TAG,"TrackListViewItem => is Clicked");
+				// Logger.LogCat("TrackListViewItem => is Clicked");
 				Clicked = false;
 				lClick = lBounds.contains(this.lastItemTouchPos);
 				rClick = rBounds.contains(this.lastItemTouchPos);
@@ -199,7 +197,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	private void chkClick()
 	{
-		// Gdx.app.debug(Tag.TAG,"TrackListViewItem => Chk Clicked");
+		// Logger.LogCat("TrackListViewItem => Chk Clicked");
 
 		GL.that.RunOnGL(new IRunOnGL()
 		{
@@ -216,7 +214,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	private void colorClick()
 	{
-		// Gdx.app.debug(Tag.TAG,"TrackListViewItem => Color Clicked");
+		// Logger.LogCat("TrackListViewItem => Color Clicked");
 
 		GL.that.RunOnGL(new IRunOnGL()
 		{

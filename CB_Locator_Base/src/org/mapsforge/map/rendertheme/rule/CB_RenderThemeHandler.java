@@ -18,6 +18,8 @@ package org.mapsforge.map.rendertheme.rule;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -47,39 +49,33 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * SAX2 handler to parse XML render theme files.
  */
-public final class CB_RenderThemeHandler extends DefaultHandler
-{
+public final class CB_RenderThemeHandler extends DefaultHandler {
 
-	private static enum Element
-	{
+	private static enum Element {
 		RENDER_THEME, RENDERING_INSTRUCTION, RULE;
 	}
 
 	private static final String ELEMENT_NAME_RULE = "rule";
+	private static final Logger LOGGER = Logger.getLogger(CB_RenderThemeHandler.class.getName());
 	private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
 
-	public static CB_RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel, XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException
-	{
-		CB_RenderThemeHandler renderThemeHandler = new CB_RenderThemeHandler(graphicFactory, displayModel, xmlRenderTheme.getRelativePathPrefix());
+	public static CB_RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
+			XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException {
+		CB_RenderThemeHandler renderThemeHandler = new CB_RenderThemeHandler(graphicFactory, displayModel,
+				xmlRenderTheme.getRelativePathPrefix());
 		XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		xmlReader.setContentHandler(renderThemeHandler);
 		InputStream inputStream = null;
-		try
-		{
+		try {
 			inputStream = xmlRenderTheme.getRenderThemeAsStream();
 			xmlReader.parse(new InputSource(inputStream));
 			renderThemeHandler.renderTheme.incrementRefCount();
 			return renderThemeHandler.renderTheme;
-		}
-		finally
-		{
-			if (renderThemeHandler.renderTheme != null)
-			{
+		} finally {
+			if (renderThemeHandler.renderTheme != null) {
 				renderThemeHandler.renderTheme.destroy();
 			}
 			IOUtils.closeQuietly(inputStream);
@@ -95,8 +91,7 @@ public final class CB_RenderThemeHandler extends DefaultHandler
 	private CB_RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
 
-	private CB_RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix)
-	{
+	private CB_RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix) {
 		super();
 		this.graphicFactory = graphicFactory;
 		this.displayModel = displayModel;
@@ -104,10 +99,8 @@ public final class CB_RenderThemeHandler extends DefaultHandler
 	}
 
 	@Override
-	public void endDocument()
-	{
-		if (this.renderTheme == null)
-		{
+	public void endDocument() {
+		if (this.renderTheme == null) {
 			throw new IllegalArgumentException("missing element: rules");
 		}
 
@@ -116,151 +109,129 @@ public final class CB_RenderThemeHandler extends DefaultHandler
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String qName)
-	{
+	public void endElement(String uri, String localName, String qName) {
 		this.elementStack.pop();
 
-		if (ELEMENT_NAME_RULE.equals(qName))
-		{
+		if (ELEMENT_NAME_RULE.equals(qName)) {
 			this.ruleStack.pop();
-			if (this.ruleStack.empty())
-			{
+			if (this.ruleStack.empty()) {
 				this.renderTheme.addRule(this.currentRule);
-			}
-			else
-			{
+			} else {
 				this.currentRule = this.ruleStack.peek();
 			}
 		}
 	}
 
 	@Override
-	public void error(SAXParseException exception)
-	{
-		Gdx.app.error(CB_Locator.Tag.TAG, "CB_RenderThemeHandler", exception);
+	public void error(SAXParseException exception) {
+		LOGGER.log(Level.SEVERE, null, exception);
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
-	{
-		try
-		{
-			if ("rendertheme".equals(qName))
-			{
+	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+		try {
+			if ("rendertheme".equals(qName)) {
 				checkState(qName, Element.RENDER_THEME);
 				this.renderTheme = new CB_RenderThemeBuilder(this.graphicFactory, qName, attributes).build();
 			}
 
-			else if (ELEMENT_NAME_RULE.equals(qName))
-			{
+			else if (ELEMENT_NAME_RULE.equals(qName)) {
 				checkState(qName, Element.RULE);
 				Rule rule = new RuleBuilder(qName, attributes, this.ruleStack).build();
-				if (!this.ruleStack.empty())
-				{
+				if (!this.ruleStack.empty()) {
 					this.currentRule.addSubRule(rule);
 				}
 				this.currentRule = rule;
 				this.ruleStack.push(this.currentRule);
 			}
 
-			else if ("area".equals(qName))
-			{
+			else if ("area".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Area area = new AreaBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++, this.relativePathPrefix).build();
+				Area area = new AreaBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
+						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(area);
 			}
 
-			else if ("caption".equals(qName))
-			{
+			else if ("caption".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
 				this.currentRule.addRenderingInstruction(caption);
 			}
 
-			else if ("circle".equals(qName))
-			{
+			else if ("circle".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++).build();
+				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes,
+						this.level++).build();
 				this.currentRule.addRenderingInstruction(circle);
 			}
 
-			else if ("line".equals(qName))
-			{
+			else if ("line".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Line line = new LineBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++, this.relativePathPrefix).build();
+				Line line = new LineBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
+						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(line);
 			}
 
-			else if ("lineSymbol".equals(qName))
-			{
+			else if ("lineSymbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.relativePathPrefix).build();
+				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName,
+						attributes, this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(lineSymbol);
 			}
 
-			else if ("pathText".equals(qName))
-			{
+			else if ("pathText".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
+				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes)
+						.build();
 				this.currentRule.addRenderingInstruction(pathText);
 			}
 
-			else if ("symbol".equals(qName))
-			{
+			else if ("symbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.relativePathPrefix).build();
+				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
+						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(symbol);
 			}
 
-			else
-			{
+			else {
 				throw new SAXException("unknown element: " + qName);
 			}
-		}
-		catch (IOException e)
-		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "Rendertheme missing or invalid resource ", e);
+		} catch (IOException e) {
+			LOGGER.warning("Rendertheme missing or invalid resource " + e.getMessage());
 		}
 	}
 
 	@Override
-	public void warning(SAXParseException exception)
-	{
-		Gdx.app.log(CB_Locator.Tag.TAG, "CB_RenderThemeHandler", exception);
+	public void warning(SAXParseException exception) {
+		LOGGER.log(Level.SEVERE, null, exception);
 	}
 
-	private void checkElement(String elementName, Element element) throws SAXException
-	{
-		switch (element)
-		{
-		case RENDER_THEME:
-			if (!this.elementStack.empty())
-			{
-				throw new SAXException(UNEXPECTED_ELEMENT + elementName);
-			}
-			return;
+	private void checkElement(String elementName, Element element) throws SAXException {
+		switch (element) {
+			case RENDER_THEME:
+				if (!this.elementStack.empty()) {
+					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+				}
+				return;
 
-		case RULE:
-			Element parentElement = this.elementStack.peek();
-			if (parentElement != Element.RENDER_THEME && parentElement != Element.RULE)
-			{
-				throw new SAXException(UNEXPECTED_ELEMENT + elementName);
-			}
-			return;
+			case RULE:
+				Element parentElement = this.elementStack.peek();
+				if (parentElement != Element.RENDER_THEME && parentElement != Element.RULE) {
+					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+				}
+				return;
 
-		case RENDERING_INSTRUCTION:
-			if (this.elementStack.peek() != Element.RULE)
-			{
-				throw new SAXException(UNEXPECTED_ELEMENT + elementName);
-			}
-			return;
+			case RENDERING_INSTRUCTION:
+				if (this.elementStack.peek() != Element.RULE) {
+					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+				}
+				return;
 		}
 
 		throw new SAXException("unknown enum value: " + element);
 	}
 
-	private void checkState(String elementName, Element element) throws SAXException
-	{
+	private void checkState(String elementName, Element element) throws SAXException {
 		checkElement(elementName, element);
 		this.elementStack.push(element);
 	}

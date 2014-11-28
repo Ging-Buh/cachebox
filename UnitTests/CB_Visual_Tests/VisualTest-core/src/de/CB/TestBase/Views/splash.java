@@ -14,6 +14,7 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -24,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-import de.CB.Test.Tag;
 import de.CB.TestBase.Ex;
 import de.CB.TestBase.Global;
 import de.CB.TestBase.Res.ResourceCache;
@@ -200,7 +200,7 @@ public class splash extends MainViewBase
 	 */
 	private void ini_Translations()
 	{
-		Gdx.app.debug(Tag.TAG,"ini_Translations");
+		Logger.DEBUG("ini_Translations");
 		new Translation("data", FileType.Internal);
 		try
 		{
@@ -208,7 +208,7 @@ public class splash extends MainViewBase
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -218,7 +218,7 @@ public class splash extends MainViewBase
 	 */
 	private void ini_Sprites()
 	{
-		Gdx.app.debug(Tag.TAG,"ini_Sprites");
+		Logger.DEBUG("ini_Sprites");
 		ResourceCache.LoadSprites(false);
 		GL_UISizes.initial(UI_Size_Base.that.getWindowWidth(), UI_Size_Base.that.getWindowHeight());
 	}
@@ -238,7 +238,7 @@ public class splash extends MainViewBase
 	 */
 	private void ini_CacheDB()
 	{
-		Gdx.app.debug(Tag.TAG,"ini_CacheDB");
+		Logger.DEBUG("ini_CacheDB");
 		// chk if exist filter preset splitter "#" and Replace
 
 	}
@@ -249,7 +249,7 @@ public class splash extends MainViewBase
 	 */
 	private void ini_MapPaks()
 	{
-		Gdx.app.debug(Tag.TAG,"ini_MapPaks");
+		Logger.DEBUG("ini_MapPaks");
 		ManagerBase.Manager.initialMapPacks();
 	}
 
@@ -267,7 +267,7 @@ public class splash extends MainViewBase
 			return;
 		}
 
-		Gdx.app.debug(Tag.TAG,"ini_TabMainView");
+		Logger.DEBUG("ini_TabMainView");
 		GL.that.removeRenderView(this);
 		((Ex) GL.that).switchToMainView();
 

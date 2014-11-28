@@ -6,14 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import com.badlogic.gdx.Gdx;
-
-import de.CB.TestBase.Tag;
 import CB_Locator.Map.BoundingBox;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.ManagerBase;
 import CB_Locator.Map.PackBase;
- 
+import CB_Utils.Log.Logger;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -46,7 +43,7 @@ public class AndroidPack extends PackBase
 	// / <returns>Bitmap der Kachel</returns>
 	public Bitmap LoadFromBoundingBox(BoundingBox bbox, Descriptor desc)
 	{
-		Gdx.app.debug(Tag.TAG,"LoadFromBoundingBox");
+		Logger.DEBUG("LoadFromBoundingBox");
 		try
 		{
 			byte[] buffer = LoadFromBoundingBoxByteArray(bbox, desc);
@@ -117,7 +114,7 @@ public class AndroidPack extends PackBase
 				switch (BitDepth)
 				{
 				case 4:
-					// Gdx.app.debug(Tag.TAG,"[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
+					// Logger.DEBUG("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
 					Bitmap result = BitmapFactory.decodeByteArray(buffer, 0, (int) buffer.length);
 					ByteArrayOutputStream bas = new ByteArrayOutputStream();
 					result.compress(Bitmap.CompressFormat.JPEG, 80, bas);

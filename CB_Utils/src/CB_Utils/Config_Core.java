@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import CB_Utils.Converter.Base64;
 
-import com.badlogic.gdx.Gdx;
-
 public abstract class Config_Core
 {
 	static Config_Core that;
@@ -31,7 +29,7 @@ public abstract class Config_Core
 		catch (IOException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		RC4(b, Key);
@@ -96,7 +94,7 @@ public abstract class Config_Core
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		return encrypted;
 	}

@@ -1,10 +1,8 @@
 package CB_UI_Base.Math;
 
 import CB_UI_Base.Global;
-import CB_UI_Base.Tag;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public abstract class UI_Size_Base
 {
@@ -37,7 +35,7 @@ public abstract class UI_Size_Base
 
 	public Size initial(devicesSizes ini)
 	{
-		if (Gdx.app != null) Gdx.app.debug(Tag.TAG, "UISizes.initial()");
+		Logger.DEBUG("UISizes.initial()");
 		ui = ini;
 		windowWidth = ini.Window.width;// d.getWidth();
 		windowHeight = ini.Window.height;// d.getHeight();

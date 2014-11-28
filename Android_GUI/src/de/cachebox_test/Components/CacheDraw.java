@@ -26,12 +26,8 @@ import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
-
-import com.badlogic.gdx.Gdx;
-
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.Tag;
 import de.cachebox_test.Ui.ActivityUtils;
 
 public class CacheDraw
@@ -324,8 +320,8 @@ public class CacheDraw
 			SDTleft += UiSizes.that.getTabWidth();
 			canvas.drawText("D", SDTleft, SDTLineTop, DTPaint);
 			SDTleft += UiSizes.that.getSpaceWidth();
-			SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.getDifficulty() * 2)], SDTleft,
-					SDTImageTop, UI_Size_Base.that.getScaledFontSize());
+			SDTleft += ActivityUtils.PutImageTargetHeight(canvas, Global.StarIcons[(int) (cache.getDifficulty() * 2)], SDTleft, SDTImageTop,
+					UI_Size_Base.that.getScaledFontSize());
 			SDTleft += UiSizes.that.getTabWidth();
 			canvas.drawText("T", SDTleft, SDTLineTop, DTPaint);
 			SDTleft += UiSizes.that.getSpaceWidth();
@@ -392,7 +388,7 @@ public class CacheDraw
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 	}

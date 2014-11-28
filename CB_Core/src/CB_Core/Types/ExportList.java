@@ -2,11 +2,9 @@ package CB_Core.Types;
 
 import java.util.ArrayList;
 
-import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Utils.DB.CoreCursor;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public class ExportList extends ArrayList<ExportEntry>
 {
@@ -29,7 +27,7 @@ public class ExportList extends ArrayList<ExportEntry>
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "ExportList LoadExportList", exc);
+			Logger.Error("ExportList", "LoadExportList", exc);
 		}
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)

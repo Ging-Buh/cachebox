@@ -1,4 +1,4 @@
-package CB_UI_Base.view.settings;
+package CB_UI.GL_UI.Activitys.settings;
 
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.FloatControl;

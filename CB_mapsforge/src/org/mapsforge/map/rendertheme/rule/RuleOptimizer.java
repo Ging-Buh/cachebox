@@ -15,13 +15,11 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import java.util.Stack;
-
-import org.mapsforge.Tag;
-
-import com.badlogic.gdx.Gdx;
+import java.util.logging.Logger;
 
 final class RuleOptimizer {
-	
+	private static final Logger LOGGER = Logger.getLogger(RuleOptimizer.class.getName());
+
 	static AttributeMatcher optimize(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
 		if (attributeMatcher instanceof AnyMatcher || attributeMatcher instanceof NegativeMatcher) {
 			return attributeMatcher;
@@ -43,7 +41,7 @@ final class RuleOptimizer {
 			if (ruleStack.get(i).closedMatcher.isCoveredBy(closedMatcher)) {
 				return AnyMatcher.INSTANCE;
 			} else if (!closedMatcher.isCoveredBy(ruleStack.get(i).closedMatcher)) {
-				Gdx.app.error(Tag.TAG,"RuleOptimizer unreachable rule (closed)");
+				LOGGER.warning("unreachable rule (closed)");
 			}
 		}
 
@@ -60,7 +58,7 @@ final class RuleOptimizer {
 			if (rule.elementMatcher.isCoveredBy(elementMatcher)) {
 				return AnyMatcher.INSTANCE;
 			} else if (!elementMatcher.isCoveredBy(rule.elementMatcher)) {
-				Gdx.app.error(Tag.TAG,"RuleOptimizer unreachable rule (e)");
+				LOGGER.warning("unreachable rule (e)");
 			}
 		}
 

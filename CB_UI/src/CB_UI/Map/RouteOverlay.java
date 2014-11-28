@@ -19,7 +19,6 @@ import CB_Locator.Map.PolylineReduction;
 import CB_Locator.Map.Track;
 import CB_Locator.Map.TrackPoint;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.GL_UI.DrawUtils;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -28,10 +27,10 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -338,13 +337,13 @@ public class RouteOverlay
 		catch (FileNotFoundException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 			return null;
 		}
 		catch (IOException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -384,7 +383,7 @@ public class RouteOverlay
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "RouteOverlay Exception caught trying to parse date : ", e);
+			Logger.Error("RouteOverlay", "Exception caught trying to parse date : ", e);
 		}
 		return null;
 	}
@@ -455,7 +454,7 @@ public class RouteOverlay
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)
 		{// Zoom or Routes changed => calculate new Sprite Points
 
-			// Gdx.app.debug(Tag.TAG,"Zoom Changed => Calc Track Points");
+			// Logger.LogCat("Zoom Changed => Calc Track Points");
 
 			mRoutesChanged = false;
 			aktCalcedZoomLevel = Zoom;
@@ -601,12 +600,12 @@ public class RouteOverlay
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "SaveTrack IOException", e);
+				CB_Utils.Log.Logger.Error("SaveTrack", "IOException", e);
 			}
 		}
 		catch (IOException e1)
 		{
-			Gdx.app.error(Tag.TAG, "SaveTrack IOException", e1);
+			CB_Utils.Log.Logger.Error("SaveTrack", "IOException", e1);
 		}
 
 		try
@@ -631,7 +630,7 @@ public class RouteOverlay
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "SaveTrack IOException", e);
+			CB_Utils.Log.Logger.Error("SaveTrack", "IOException", e);
 		}
 		writer = null;
 	}

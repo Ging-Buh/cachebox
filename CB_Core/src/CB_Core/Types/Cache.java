@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import CB_Core.FilterProperties;
-import CB_Core.Tag;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.WaypointDAO;
 import CB_Core.DB.Database;
@@ -36,8 +35,6 @@ import CB_Locator.Locator;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.Gdx;
 
 public class Cache implements Comparable<Cache>, Serializable
 {
@@ -335,7 +332,7 @@ public class Cache implements Comparable<Cache>, Serializable
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		myCache = ret ? 1 : 0;
 		return ret;

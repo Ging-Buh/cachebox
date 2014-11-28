@@ -5,14 +5,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.iChanged;
-
-import com.badlogic.gdx.Gdx;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry>
 {
@@ -121,7 +119,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 			}
 			catch (Exception exc)
 			{
-				Gdx.app.error(Tag.TAG, "FieldNoteList LoadFieldNotes", exc);
+				Logger.Error("FieldNoteList", "LoadFieldNotes", exc);
 			}
 			reader.moveToFirst();
 			while (reader.isAfterLast() == false)
@@ -180,7 +178,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		catch (IOException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		;
 	}

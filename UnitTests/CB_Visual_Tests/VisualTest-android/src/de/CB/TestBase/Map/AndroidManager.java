@@ -16,14 +16,11 @@ import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
 import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
- 
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import android.graphics.BitmapFactory;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-
-import de.CB.TestBase.Tag;
 
 public class AndroidManager extends ManagerBase
 {
@@ -94,8 +91,11 @@ public class AndroidManager extends ManagerBase
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG,"Manager Exception", exc);
-				}
+			Logger.Error("Manager", "Exception", exc);
+			/*
+			 * #if DEBUG Global.AddLog("Manager.LoadLocalBitmap: " + exc.ToString()); #endif
+			 */
+		}
 		return null;
 	}
 

@@ -4,7 +4,6 @@ import CB_Core.DB.Database;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI_Base.Enums.WrapType;
@@ -15,8 +14,6 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
-
-import com.badlogic.gdx.Gdx;
 
 public class NotesView extends CB_View_Base implements SelectedCacheEvent
 {
@@ -88,7 +85,7 @@ public class NotesView extends CB_View_Base implements SelectedCacheEvent
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 

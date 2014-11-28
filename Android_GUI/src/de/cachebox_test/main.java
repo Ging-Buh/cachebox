@@ -92,6 +92,8 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Plattform;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.ILog;
+import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
@@ -163,7 +165,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
@@ -175,6 +176,7 @@ import de.CB_PlugIn.IPlugIn;
 import de.cachebox_test.NotifyService.LocalBinder;
 import de.cachebox_test.CB_Texturepacker.Android_Packer;
 import de.cachebox_test.Components.CacheNameView;
+import de.cachebox_test.Custom_Controls.DebugInfoPanel;
 import de.cachebox_test.Custom_Controls.Mic_On_Flash;
 import de.cachebox_test.Custom_Controls.downSlider;
 import de.cachebox_test.Custom_Controls.QuickButtonList.HorizontalListView;
@@ -198,8 +200,8 @@ import de.cachebox_test.Views.Forms.PleaseWaitMessageBox;
  */
 @SuppressLint("Wakelock")
 @SuppressWarnings("deprecation")
-public class main extends Debug_AndroidApplication implements SelectedCacheEvent, LocationListener,
-		CB_Core.Events.CacheListChangedEventListner, GpsStatus.NmeaListener, GpsStatus.Listener
+public class main extends AndroidApplication implements SelectedCacheEvent, LocationListener, CB_Core.Events.CacheListChangedEventListner,
+		GpsStatus.NmeaListener, GpsStatus.Listener, ILog
 {
 
 	private static ServiceConnection mConnection;
@@ -221,13 +223,13 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	private static JokerView jokerView = null; // ID 12
 
 	/**
-	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis fï¿½r alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
+	 * viewGl kann mehrere ID beinhalten, vieGL ist nur die Basis für alle Views auf Basis von GL_View_Base </br> TestView = 16 </br>
 	 * CreditsView = 17 </br> MapView = 18 </br>
 	 */
 	public static ViewGL viewGL = null;
 
 	/**
-	 * gdxView ist die Android.View fï¿½r gdx
+	 * gdxView ist die Android.View für gdx
 	 */
 	private View gdxView = null;
 
@@ -278,6 +280,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	private boolean mustRunSearch = false;
 
 	private Mic_On_Flash Mic_Icon;
+	private static DebugInfoPanel debugInfoPanel;
 
 	// Views
 	private ViewOptionsMenu aktView = null;
@@ -322,13 +325,13 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		public ScreenLockTimer(long millisInFuture, long countDownInterval)
 		{
 			super(millisInFuture, countDownInterval);
-			Gdx.app.debug(Tag.TAG, "create ScreenLockTimer innstanz: " + millisInFuture + "/" + countDownInterval);
+			Logger.DEBUG("create ScreenLockTimer innstanz: " + millisInFuture + "/" + countDownInterval);
 		}
 
 		@Override
 		public void onFinish()
 		{
-			Gdx.app.debug(Tag.TAG, "ScreenLockTimer => onFinish");
+			Logger.DEBUG("ScreenLockTimer => onFinish");
 
 			startScreenLock();
 		}
@@ -342,7 +345,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState)
 	{
-		Gdx.app.debug(Tag.TAG, " => onSaveInstanceState");
+		Logger.DEBUG(" => onSaveInstanceState");
 
 		savedInstanceState.putBoolean("isTab", GlobalCore.isTab);
 		savedInstanceState.putBoolean("useSmallSkin", GlobalCore.useSmallSkin);
@@ -383,23 +386,10 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 		mainActivity = this;
 
-		// if (GlobalCore.isTab)
-		// {
-		// // Tab Modus only Landscape
-		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		//
-		// }
-		// else
-		// {
-		// // Phone Modus only Landscape
-		// setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		//
-		// }
-
 		if (savedInstanceState != null)
 		{
 			// restore ACB after Kill
-			Gdx.app.debug(Tag.TAG, "restore ACB after Kill");
+			Logger.DEBUG("restore ACB after Kill");
 
 			GlobalCore.restartAfterKill = true;
 			GlobalCore.isTab = savedInstanceState.getBoolean("isTab");
@@ -482,7 +472,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "main on create Service register error", e);
+				Logger.Error("main on create", "Service register error", e);
 			}
 		}
 
@@ -505,6 +495,10 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			mReceiver = new ScreenReceiver();
 			registerReceiver(mReceiver, filter);
 		}
+
+		Logger.Add(this);
+
+		// N = Config.nightMode.getValue();
 
 		setContentView(GlobalCore.isTab ? R.layout.tab_main : R.layout.main);
 
@@ -537,6 +531,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
+		Config.DebugMode.setValue(false);
 		Config.AcceptChanges();
 
 		// Initial Android TexturePacker
@@ -708,7 +703,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 	private void startGPXImport()
 	{
-		Gdx.app.debug(Tag.TAG, "startGPXImport");
+		Logger.LogCat("startGPXImport");
 		if (ExtSearch_GpxPath != null)
 		{
 
@@ -718,7 +713,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 				@Override
 				public void run()
 				{
-					Gdx.app.debug(Tag.TAG, "startGPXImport:Timer startet");
+					Logger.LogCat("startGPXImport:Timer startet");
 					runOnUiThread(new Runnable()
 					{
 						@Override
@@ -739,7 +734,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 								public void run()
 								{
 									Date ImportStart = new Date();
-									Gdx.app.debug(Tag.TAG, "startGPXImport:Timer startet");
+									Logger.LogCat("startGPXImport:Timer startet");
 									Importer importer = new Importer();
 									ImporterProgress ip = new ImporterProgress();
 									Database.Data.beginTransaction();
@@ -762,7 +757,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 									String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C "
 											+ String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-									Gdx.app.debug(Tag.TAG, Msg);
+									Logger.DEBUG(Msg);
 
 									FilterProperties props = FilterProperties.LastFilter;
 
@@ -1047,7 +1042,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	@Override
 	protected void onPause()
 	{
-		Gdx.app.debug(Tag.TAG, "Main=> onPause");
+		Logger.LogCat("Main=> onPause");
 
 		stopped = true;
 
@@ -1074,7 +1069,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 		super.onPause();
 
-		Gdx.app.debug(Tag.TAG, "Main=> onPause release SuppressPowerSaving");
+		Logger.DEBUG("Main=> onPause release SuppressPowerSaving");
 
 		try
 		{
@@ -1148,10 +1143,10 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			invalidateTextureEventList.Call();
 		}
 
-		Gdx.app.debug(Tag.TAG, "Main=> onResume");
+		Logger.DEBUG("Main=> onResume");
 		if (input == null)
 		{
-			Gdx.app.debug(Tag.TAG, "Main=> onResume input== null");
+			Logger.DEBUG("Main=> onResume input== null");
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 			graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 					: config.resolutionStrategy);
@@ -1187,7 +1182,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		 */
 		if (Config.SuppressPowerSaving.getValue())
 		{
-			Gdx.app.debug(Tag.TAG, "Main=> onResume SuppressPowerSaving");
+			Logger.DEBUG("Main=> onResume SuppressPowerSaving");
 
 			final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
@@ -1203,7 +1198,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "onResume initialOnTouchListner", e);
+			Logger.Error("onResume", "initialOnTouchListner", e);
 		}
 
 		// Initial PlugIn
@@ -1215,7 +1210,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		{
 			ExtSearch_GcCode = extras.getString("GcCode");
 			ExtSearch_GpxPath = extras.getString("GpxPath");
-			if (ExtSearch_GpxPath != null) Gdx.app.debug(Tag.TAG, "GPX found: " + ExtSearch_GpxPath);
+			if (ExtSearch_GpxPath != null) Logger.LogCat("GPX found: " + ExtSearch_GpxPath);
 
 			if (ExtSearch_GcCode != null || ExtSearch_GpxPath != null)
 			{
@@ -1238,7 +1233,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	@Override
 	protected void onStop()
 	{
-		Gdx.app.debug(Tag.TAG, "Main=> onStop");
+		Logger.DEBUG("Main=> onStop");
 
 		if (mSensorManager != null) mSensorManager.unregisterListener(mListener);
 
@@ -1248,7 +1243,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "Main=> onStop unregisterReceiver", e);
+			Logger.Error("Main=> onStop", "unregisterReceiver", e);
 		}
 		counter.cancel();
 		super.onStop();
@@ -1277,7 +1272,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		if (isRestart)
 		{
 			Log.d("CACHEBOX", "Main=> onDestroy isFinishing");
-			Gdx.app.debug(Tag.TAG, "Main=> onDestroy isRestart");
+			Logger.DEBUG("Main=> onDestroy isRestart");
 			super.onDestroy();
 			isRestart = false;
 		}
@@ -1328,7 +1323,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 					jokerView = null;
 					descriptionView = null;
 					mainActivity = null;
-
+					debugInfoPanel.OnFree();
+					debugInfoPanel = null;
 					InfoDownSlider = null;
 
 					Config.AcceptChanges();
@@ -1399,21 +1395,21 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	}
 
 	/**
-	 * Startet die Bildschirm Sperre. Mit der der ï¿½bergabe von force = true, werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen
+	 * Startet die Bildschirm Sperre. Mit der der Übergabe von force = true, werden abfragen ob im Akkubetrieb oder die Zeit Einstellungen
 	 * ignoriert.
 	 * 
 	 * @param force
 	 */
 	public void startScreenLock(boolean force)
 	{
-		Gdx.app.debug(Tag.TAG, "Start Screenlock (force:" + force + ")");
+		Logger.DEBUG("Start Screenlock (force:" + force + ")");
 
 		if (!force)
 		{
 			if (!runsWithAkku) return;
 			counter.cancel();
 			counterStopped = true;
-			// ScreenLock nur Starten, wenn der Config Wert grï¿½ï¿½er 10 sec ist.
+			// ScreenLock nur Starten, wenn der Config Wert größer 10 sec ist.
 			// Das verhindert das selber aussperren!
 			if ((Config.ScreenLock.getValue() / 1000 < 10)) return;
 		}
@@ -1440,8 +1436,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "main.mListener.onSensorChanged()", e);
-				Gdx.app.error(Tag.TAG, "", e);
+				Logger.Error("main.mListener.onSensorChanged()", "", e);
+				e.printStackTrace();
 			}
 		}
 
@@ -1453,7 +1449,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	public static boolean ScreenLockOff = false;
 
 	/**
-	 * Gibt die zur ViewID gehï¿½rige View zurï¿½ck und erstellst eine Instanz, wenn sie nicht exestiert.
+	 * Gibt die zur ViewID gehörige View zurück und erstellst eine Instanz, wenn sie nicht exestiert.
 	 * 
 	 * @param ID
 	 *            ViewID
@@ -1542,28 +1538,28 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 			if (aktView.equals(jokerView))
 			{
-				// Instanz lï¿½schenn
+				// Instanz löschenn
 				aktView = null;
 				jokerView.OnFree();
 				jokerView = null;
 			}
 			else if (aktView.equals(solverView))
 			{
-				// Instanz lï¿½schenn
+				// Instanz löschenn
 				aktView = null;
 				solverView.OnFree();
 				solverView = null;
 			}
 			else if (aktView.equals(spoilerView))
 			{
-				// Instanz lï¿½schenn
+				// Instanz löschenn
 				aktView = null;
 				spoilerView.OnFree();
 				spoilerView = null;
 			}
 			else if (aktView.equals(descriptionView))
 			{
-				// Instanz lï¿½schenn
+				// Instanz löschenn
 				aktView = null;
 				descriptionView.OnHide();
 
@@ -1585,7 +1581,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		ViewParent parent = ((View) aktView).getParent();
 		if (parent != null)
 		{
-			// aktView ist noch gebunden, also lï¿½sen
+			// aktView ist noch gebunden, also lösen
 			((FrameLayout) parent).removeAllViews();
 		}
 		frame.addView((View) aktView);
@@ -1638,7 +1634,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		ViewParent parent = ((View) aktTabView).getParent();
 		if (parent != null)
 		{
-			// aktView ist noch gebunden, also lï¿½sen
+			// aktView ist noch gebunden, also lösen
 			((FrameLayout) parent).removeAllViews();
 		}
 		tabFrame.addView((View) aktTabView);
@@ -1668,6 +1664,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 		InfoDownSlider = (downSlider) this.findViewById(R.id.downSlider);
 
+		debugInfoPanel = (DebugInfoPanel) this.findViewById(R.id.debugInfo);
 		Mic_Icon = (Mic_On_Flash) this.findViewById(R.id.mic_flash);
 
 		cacheNameView = (CacheNameView) this.findViewById(R.id.main_cache_name_view);
@@ -1692,7 +1689,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			// // Define the criteria how to select the locatioin provider -> use
 			// // default
-			// Criteria criteria = new Criteria(); // noch nï¿½tig ???
+			// Criteria criteria = new Criteria(); // noch nötig ???
 			// criteria.setAccuracy(Criteria.ACCURACY_FINE);
 			// criteria.setAltitudeRequired(false);
 			// criteria.setBearingRequired(false);
@@ -1702,8 +1699,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			/*
 			 * Longri: Ich habe die Zeiten und Distanzen der Location Updates angepasst. Der Network Provider hat eine schlechte
 			 * genauigkeit, darher reicht es wenn er alle 10sec einen wert liefert, wen der alte um 500m abweicht. Beim GPS Provider habe
-			 * ich die aktualiesierungs Zeit verkï¿½rzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
-			 * gesunden Verhï¿½ltnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
+			 * ich die aktualiesierungs Zeit verkürzt, damit bei deaktiviertem Hardware Kompass aber die Werte trotzdem noch in einem
+			 * gesunden Verhältnis zwichen Performance und Stromverbrauch, geliefert werden. Andere apps haben hier 0.
 			 */
 
 			int updateTime = Config.gpsUpdateTime.getValue();
@@ -1727,8 +1724,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "main.initialLocationManager()", e);
-			Gdx.app.error(Tag.TAG, "", e);
+			Logger.Error("main.initialLocationManager()", "", e);
+			e.printStackTrace();
 		}
 
 	}
@@ -1739,15 +1736,15 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		{
 			// boolean GL20 = checkGL20Support(this);
 			//
-			// if (gdxView != null) Gdx.app.debug(Tag.TAG,"gdxView war initialisiert=" + gdxView.toString());
+			// if (gdxView != null) Logger.DEBUG("gdxView war initialisiert=" + gdxView.toString());
 			// gdxView = initializeForView(glListener, GL20);
 
 			AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-			cfg.numSamples = 2;
+			cfg.numSamples = 16;
 
 			gdxView = initializeForView(glListener, cfg);
 
-			Gdx.app.debug(Tag.TAG, "Initial new gdxView=" + gdxView.toString());
+			Logger.DEBUG("Initial new gdxView=" + gdxView.toString());
 
 			int GlSurfaceType = -1;
 			if (gdxView instanceof GLSurfaceView20) GlSurfaceType = ViewGL.GLSURFACE_VIEW20;
@@ -1755,7 +1752,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 			ViewGL.setSurfaceType(GlSurfaceType);
 
-			Gdx.app.debug(Tag.TAG, "InitializeForView...");
+			Logger.DEBUG("InitializeForView...");
 
 			switch (GlSurfaceType)
 			{
@@ -1778,7 +1775,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			ViewParent parent = ((View) gdxView).getParent();
 			if (parent != null)
 			{
-				// aktView ist noch gebunden, also lï¿½sen
+				// aktView ist noch gebunden, also lösen
 				((RelativeLayout) parent).removeAllViews();
 			}
 			GlFrame.addView((View) gdxView);
@@ -1787,7 +1784,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "main.initialViewGL()", e);
+			Logger.Error("main.initialViewGL()", "", e);
 			e.printStackTrace();
 		}
 
@@ -1837,7 +1834,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "gdxView.OnTouchListener", e);
+			Logger.Error("gdxView.OnTouchListener", "", e);
 			return true;
 		}
 		return true;
@@ -1992,7 +1989,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			Toast.makeText(mainActivity, "Start Voice Recorder", Toast.LENGTH_SHORT).show();
 
 			setVoiceRecIsStart(true);
-			counter.cancel(); // Wï¿½hrend der Aufnahme Screen-Lock-Counter
+			counter.cancel(); // Während der Aufnahme Screen-Lock-Counter
 								// stoppen
 			counterStopped = true;
 
@@ -2017,8 +2014,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			public void run()
 			{
 				// Debug add Joker
-				// Global.Jokers.AddJoker("Andre", "Hï¿½pfner", "Katipa", "12", "030 ++++++", "24/7");
-				// Global.Jokers.AddJoker("Andre", "Hï¿½pfner", "Katipa", "12", "030 ++++++", "24/7");
+				// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
+				// Global.Jokers.AddJoker("Andre", "Höpfner", "Katipa", "12", "030 ++++++", "24/7");
 
 				if (Global.Jokers.isEmpty())
 				{ // Wenn Telefonjoker-Liste leer neu laden
@@ -2056,7 +2053,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 											if (s[0].equals("1")) // 1 entspricht
 											// Warnung, Ursache
 											// ist in S[1]
-											{ // es kï¿½nnen aber noch gï¿½ltige Eintrï¿½ge
+											{ // es können aber noch gültige Einträge
 												// folgen
 												GL_MsgBox.Show(s[1]);
 											}
@@ -2067,7 +2064,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 										}
 										catch (Exception exc)
 										{
-											Gdx.app.error(Tag.TAG, "main.initialBtnInfoContextMenu() HTTP response Jokers", exc);
+											Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", exc);
 											return;
 										}
 									}
@@ -2082,18 +2079,18 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 					}
 					catch (MalformedURLException urlEx)
 					{
-						Gdx.app.error(Tag.TAG, "main.initialBtnInfoContextMenu() MalformedURLException HTTP response Jokers", urlEx);
+						Logger.Error("main.initialBtnInfoContextMenu()", "MalformedURLException HTTP response Jokers", urlEx);
 						// Log.d("DroidCachebox", urlEx.getMessage());
 					}
 					catch (IOException ioEx)
 					{
-						Gdx.app.error(Tag.TAG, "main.initialBtnInfoContextMenu() IOException HTTP response Jokers", ioEx);
+						Logger.Error("main.initialBtnInfoContextMenu()", "IOException HTTP response Jokers", ioEx);
 						// Log.d("DroidCachebox", ioEx.getMessage());
 						GL_MsgBox.Show(Translation.Get("internetError"));
 					}
 					catch (Exception ex)
 					{
-						Gdx.app.error(Tag.TAG, "main.initialBtnInfoContextMenu() HTTP response Jokers", ex);
+						Logger.Error("main.initialBtnInfoContextMenu()", "HTTP response Jokers", ex);
 						// Log.d("DroidCachebox", ex.getMessage());
 					}
 				}
@@ -2104,7 +2101,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 				}
 				else
 				{
-					Gdx.app.log(Tag.TAG, "Open JokerView...");
+					Logger.General("Open JokerView...");
 
 					main.this.runOnUiThread(new Runnable()
 					{
@@ -2183,7 +2180,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		catch (Exception e)
 		{
 			// Kein Navigon ohne public intent Instaliert
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		if (intent == null)
@@ -2195,7 +2192,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			catch (Exception e)
 			{
 				// Kein Navigon mit public intent Instaliert
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 
@@ -2216,7 +2213,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "main.NavigateTo() Start Navigon Fehler", e);
+			Logger.Error("main.NavigateTo()", "Start Navigon Fehler", e);
 		}
 	}
 
@@ -2230,7 +2227,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		if (intent != null)
@@ -2246,7 +2243,16 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 	public void setDebugVisible()
 	{
-
+		if (Config.DebugShowPanel.getValue())
+		{
+			debugInfoPanel.setVisibility(View.VISIBLE);
+			debugInfoPanel.onShow();
+		}
+		else
+		{
+			debugInfoPanel.setVisibility(View.GONE);
+			debugInfoPanel.onShow();
+		}
 	}
 
 	String debugMsg = "";
@@ -2260,7 +2266,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			@Override
 			public void run()
 			{
-
+				debugInfoPanel.setMsg(debugMsg);
 			}
 		});
 
@@ -2303,32 +2309,32 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 				try
 				{
 					if (s[11].equals("")) return;
-					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungï¿½ltig
+					if (!s[6].equals("1") & !s[6].equals("2")) return; // Fix ungültig
 					double altCorrection = Double.valueOf(s[11]);
 					if (altCorrection == 0) return;
-					Gdx.app.log(Tag.TAG, "AltCorrection: " + String.valueOf(altCorrection));
+					Logger.General("AltCorrection: " + String.valueOf(altCorrection));
 					Locator.setAltCorrection(altCorrection);
 					Log.d("NMEA.AltCorrection", Double.toString(altCorrection));
-					// Hï¿½henkorrektur ï¿½ndert sich normalerweise nicht, einmal
+					// Höhenkorrektur ändert sich normalerweise nicht, einmal
 					// auslesen reicht...
 					locationManager.removeNmeaListener(this);
 				}
 				catch (Exception exc)
 				{
-					// keine Hï¿½henkorrektur vorhanden
+					// keine Höhenkorrektur vorhanden
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "main.onNmeaReceived()", e);
-			Gdx.app.error(Tag.TAG, "", e);
+			Logger.Error("main.onNmeaReceived()", "", e);
+			e.printStackTrace();
 		}
 	}
 
 	public void setScreenLockTimerNew(int value)
 	{
-		Gdx.app.debug(Tag.TAG, "setScreenLockTimerNew");
+		Logger.DEBUG("setScreenLockTimerNew");
 		counter.cancel();
 		counter = new ScreenLockTimer(value, value);
 		if (runsWithAkku) counter.start();
@@ -2339,6 +2345,52 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	};
 
 	static LockClass lockObject = new LockClass();
+
+	/**
+	 * Empfängt die gelogten Meldungen und schreibt sie in die Debug.txt
+	 */
+	@Override
+	public void receiveLog(String Msg)
+	{
+
+		Log.d("CACHEBOX", Msg);
+
+	}
+
+	/**
+	 * Empfängt die gelogten Meldungen in kurz Form und schreibt sie ins Debung Panel, wenn dieses sichtbar ist!
+	 */
+	@Override
+	public void receiveShortLog(String Msg)
+	{
+		debugMsg = Msg;
+		if (threadReceiveShortLog == null) threadReceiveShortLog = new Thread()
+		{
+			public void run()
+			{
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						debugInfoPanel.addLogMsg(debugMsg);
+					}
+				});
+			}
+		};
+
+		threadReceiveShortLog.run();
+
+	}
+
+	/**
+	 * Empfängt die gelogten Meldungen in kurz Form und schreibt sie ins Debung Panel, wenn dieses sichtbar ist!
+	 */
+	@Override
+	public void receiveLogCat(String Msg)
+	{
+		Log.d("CACHEBOX", Msg);
+	}
 
 	private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver()
 	{
@@ -2370,8 +2422,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "main.mBatInfoReceiver.onReceive()", e);
-				Gdx.app.error(Tag.TAG, "", e);
+				Logger.Error("main.mBatInfoReceiver.onReceive()", "", e);
+				e.printStackTrace();
 			}
 		}
 
@@ -2398,7 +2450,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	}
 
 	/**
-	 * ï¿½berprï¿½ft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung ausgegeben.
+	 * Überprüft ob das GPS eingeschaltet ist. Wenn nicht, wird eine Meldung ausgegeben.
 	 */
 	private void chkGpsIsOn()
 	{
@@ -2444,8 +2496,8 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "main.chkGpsIsOn()", e);
-			Gdx.app.error(Tag.TAG, "", e);
+			Logger.Error("main.chkGpsIsOn()", "", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -2518,7 +2570,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 	{
 		if (ID == null)
 		{
-			Gdx.app.debug(Tag.TAG, "main.showView(is NULL)");
+			Logger.LogCat("main.showView(is NULL)");
 			return;// keine Action
 		}
 
@@ -2530,7 +2582,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			Type = ID.getType().toString();
 		}
 
-		Gdx.app.debug(Tag.TAG, "main.showView(" + ID.getID() + "/" + Pos + "/" + Type + ")");
+		Logger.LogCat("main.showView(" + ID.getID() + "/" + Pos + "/" + Type + ")");
 
 		if (ID.getType() == ViewID.UI_Type.Activity)
 		{
@@ -2661,7 +2713,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		Config.AcceptChanges();
 	}
@@ -2705,7 +2757,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 					}
 					catch (Exception e)
 					{
-						Gdx.app.error(Tag.TAG, "", e);
+						e.printStackTrace();
 					}
 
 				}
@@ -2788,7 +2840,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 		platformConector.setisOnlineListner(new IHardwarStateListner()
 		{
 			/*
-			 * isOnline Liefert TRUE wenn die Mï¿½glichkeit besteht auf das Internet zuzugreifen
+			 * isOnline Liefert TRUE wenn die Möglichkeit besteht auf das Internet zuzugreifen
 			 */
 
 			@Override
@@ -2870,7 +2922,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 					@Override
 					public void run()
 					{
-						Gdx.app.debug(Tag.TAG, "Show View from GL =>" + viewID.getID());
+						Logger.LogCat("Show View from GL =>" + viewID.getID());
 
 						// set Content size
 
@@ -2973,7 +3025,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 							aktView = null;
 						}
 
-						Gdx.app.debug(Tag.TAG, "Hide Android view");
+						Logger.DEBUG("Hide Android view");
 					}
 				});
 
@@ -2996,7 +3048,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 						if (aktTabView != null) ((View) aktTabView).setVisibility(View.INVISIBLE);
 						if (InfoDownSlider != null) ((View) InfoDownSlider).setVisibility(View.INVISIBLE);
 						if (cacheNameView != null) ((View) cacheNameView).setVisibility(View.INVISIBLE);
-						Gdx.app.debug(Tag.TAG, "Show AndroidView");
+						Logger.DEBUG("Show AndroidView");
 					}
 				});
 			}
@@ -3053,7 +3105,7 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 
 				if (mustRunSearch)
 				{
-					Gdx.app.debug(Tag.TAG, "mustRunSearch");
+					Logger.LogCat("mustRunSearch");
 					if (ExtSearch_GcCode != null) startSearchTimer();
 					if (ExtSearch_GpxPath != null) startGPXImport();
 				}
@@ -3103,10 +3155,10 @@ public class main extends Debug_AndroidApplication implements SelectedCacheEvent
 			{
 				if (GlobalCore.ifCacheSelected())
 				{
-					// speichere selektierten Cache, da nicht alles ï¿½ber die SelectedCacheEventList lï¿½uft
+					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
-					Gdx.app.debug(Tag.TAG, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 				}
 				finish();
 			}

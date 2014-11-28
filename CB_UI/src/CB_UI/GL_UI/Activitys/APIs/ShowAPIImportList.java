@@ -18,7 +18,6 @@ import CB_Core.Import.Importer;
 import CB_Core.Import.ImporterProgress;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
-import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.ImportAnimation;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Activitys.Import_PqListItem;
@@ -58,9 +57,9 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ShowAPIImportList extends ActivityBase implements ProgressChangedEvent
@@ -879,8 +878,8 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 										}
 										catch (OutOfMemoryError e)
 										{
-											Gdx.app.error(Tag.TAG, "PQ-download OutOfMemoryError-" + pq.Name, e);
-											Gdx.app.error(Tag.TAG, "", e);
+											Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
+											e.printStackTrace();
 										}
 									}
 
@@ -926,7 +925,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 							return;
 						}
 
-						Gdx.app.debug(Tag.TAG, "Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
+						Logger.LogCat("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 
@@ -1039,7 +1038,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-				Gdx.app.debug(Tag.TAG, Msg);
+				Logger.DEBUG(Msg);
 
 				FilterProperties props = FilterProperties.LastFilter;
 

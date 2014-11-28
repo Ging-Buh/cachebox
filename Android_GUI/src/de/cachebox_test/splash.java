@@ -28,6 +28,7 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
 import CB_UI_Base.graphics.GL_RenderType;
+import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
@@ -138,21 +139,13 @@ public class splash extends Activity
 		else
 			GlobalCore.displayType = DisplayType.Small;
 
-		// überprüfen, ob ACB im Hochformat oder Querformat gestartet wurde.
+		// �berpr�fen, ob ACB im Hochformat oder Querformat gestartet wurde.
 		// Hochformat -> Handymodus
 		// Querformat -> Tablet-Modus
-		if (w > h && GlobalCore.isTab) isLandscape = true;
+		if (w > h) isLandscape = true;
 
-		// Porträt erzwingen wenn Normal oder Small display
+		// Portr�t erzwingen wenn Normal oder Small display
 		if (isLandscape && (GlobalCore.displayType == DisplayType.Normal || GlobalCore.displayType == DisplayType.Small))
-		{
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		}
-		else if (isLandscape)
-		{
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		}
-		else
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
@@ -266,61 +259,6 @@ public class splash extends Activity
 
 		if (mOriantationRestart) return; // wait for result
 
-		// initialisieren der PlattformSettings
-		PlatformSettings.setPlatformSettings(new iPlatformSettings()
-		{
-
-			@Override
-			public void Write(SettingBase<?> setting)
-			{
-				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
-				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
-
-				if (setting instanceof SettingBool)
-				{
-					androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
-				}
-
-				else if (setting instanceof SettingString)
-				{
-					androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
-				}
-				else if (setting instanceof SettingInt)
-				{
-					androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
-				}
-
-				// Commit the edits!
-				androidSettingEditor.commit();
-			}
-
-			@Override
-			public SettingBase<?> Read(SettingBase<?> setting)
-			{
-				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
-
-				if (setting instanceof SettingString)
-				{
-					String value = androidSetting.getString(setting.getName(), "");
-					((SettingString) setting).setValue(value);
-				}
-				else if (setting instanceof SettingBool)
-				{
-					boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
-					((SettingBool) setting).setValue(value);
-				}
-				else if (setting instanceof SettingInt)
-				{
-					int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
-					((SettingInt) setting).setValue(value);
-				}
-				setting.clearDirty();
-				return setting;
-			}
-		});
-
-		// PlatformSettings.ReadSetting(CB_UI_Base_Settings.AktLogLevel);
-		// Gdx.app = new Debug_AndroidApplication();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -391,7 +329,7 @@ public class splash extends Activity
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		// check Write permission
@@ -672,9 +610,6 @@ public class splash extends Activity
 		}
 		else
 		{
-			Log.d("SPLASH", "Dont askAgain");
-			Log.d("SPLASH", "Is Landscape:" + isLandscape);
-
 			if (GlobalCore.displayType == DisplayType.Large || GlobalCore.displayType == DisplayType.xLarge) GlobalCore.isTab = isLandscape;
 
 			// restore the saved workPath
@@ -706,22 +641,6 @@ public class splash extends Activity
 
 	private String getExternalSdPath(String Folder)
 	{
-
-		// TODO try this
-		// String value = System.getenv("SECONDARY_STORAGE");
-		// if (!TextUtils.isEmpty(value))
-		// {
-		// String[] paths = value.split(":");
-		// for (String path : paths)
-		// {
-		// File file = new File(path);
-		// if (file.isDirectory())
-		// {
-		// System.out.print(file.getAbsolutePath());
-		// }
-		// }
-		// }
-
 		// check if Layout forced from User
 		workPath = Environment.getExternalStorageDirectory() + Folder;
 
@@ -964,7 +883,7 @@ public class splash extends Activity
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -1014,7 +933,25 @@ public class splash extends Activity
 		// show wait dialog if not running
 		if (pWaitD == null) showPleaseWaitDialog();
 
+		// saved workPath found -> use this
+		Thread thread = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				Initial();
+			}
+		};
+
+		thread.start();
+
+	}
+
+	private void Initial()
+	{
 		// Jetzt ist der workPath erstmal festgelegt.
+
+		Logger.setDebugFilePath(workPath + "/debug.txt");
 
 		// Zur Kompatibilit�t mit �lteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
@@ -1039,9 +976,22 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "read redirection", e);
-				Gdx.app.error(Tag.TAG, "", e);
+				Logger.Error("read redirection", "", e);
+				e.printStackTrace();
 			}
+
+		}
+
+		if (GlobalCore.isTab)
+		{
+			// Tab Modus only Landscape
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+		}
+		else
+		{
+			// Phone Modus only Landscape
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		}
 
@@ -1055,6 +1005,59 @@ public class splash extends Activity
 		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
 
+		// initialisieren der PlattformSettings
+		PlatformSettings.setPlatformSettings(new iPlatformSettings()
+		{
+
+			@Override
+			public void Write(SettingBase<?> setting)
+			{
+				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+				if (androidSettingEditor == null) androidSettingEditor = androidSetting.edit();
+
+				if (setting instanceof SettingBool)
+				{
+					androidSettingEditor.putBoolean(setting.getName(), ((SettingBool) setting).getValue());
+				}
+
+				else if (setting instanceof SettingString)
+				{
+					androidSettingEditor.putString(setting.getName(), ((SettingString) setting).getValue());
+				}
+				else if (setting instanceof SettingInt)
+				{
+					androidSettingEditor.putInt(setting.getName(), ((SettingInt) setting).getValue());
+				}
+
+				// Commit the edits!
+				androidSettingEditor.commit();
+			}
+
+			@Override
+			public SettingBase<?> Read(SettingBase<?> setting)
+			{
+				if (androidSetting == null) androidSetting = splash.this.getSharedPreferences(Global.PREFS_NAME, 0);
+
+				if (setting instanceof SettingString)
+				{
+					String value = androidSetting.getString(setting.getName(), "");
+					((SettingString) setting).setValue(value);
+				}
+				else if (setting instanceof SettingBool)
+				{
+					boolean value = androidSetting.getBoolean(setting.getName(), ((SettingBool) setting).getDefaultValue());
+					((SettingBool) setting).setValue(value);
+				}
+				else if (setting instanceof SettingInt)
+				{
+					int value = androidSetting.getInt(setting.getName(), ((SettingInt) setting).getDefaultValue());
+					((SettingInt) setting).setValue(value);
+				}
+				setting.clearDirty();
+				return setting;
+			}
+		});
+
 		// wenn die Settings DB neu Erstellt wurde, m�ssen die Default werte
 		// geschrieben werden.
 		if (Database.Settings.isDbNew())
@@ -1066,25 +1069,6 @@ public class splash extends Activity
 		{
 			Config.settings.ReadFromDB();
 		}
-
-		Gdx.app = new Debug_AndroidApplication();// Instance for Debug
-
-		// saved workPath found -> use this
-		Thread thread = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				Initial();
-			}
-		};
-
-		thread.start();
-
-	}
-
-	private void Initial()
-	{
 
 		// Check Android Version and disable MixedDatabaseRenderer with Version<14(4.0.0)
 		if (android.os.Build.VERSION.SDK_INT < 14)
@@ -1181,7 +1165,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 			try
@@ -1192,7 +1176,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 			try
@@ -1203,7 +1187,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 			try
@@ -1214,7 +1198,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 			try
@@ -1225,7 +1209,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
@@ -1310,14 +1294,7 @@ public class splash extends Activity
 
 		if (pWaitD != null)
 		{
-			try
-			{
-				pWaitD.dismiss();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			pWaitD.dismiss();
 			pWaitD = null;
 		}
 

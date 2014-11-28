@@ -1,6 +1,5 @@
 package CB_UI_Base.GL_UI.Controls.Dialogs;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.Label.VAlignment;
@@ -13,9 +12,8 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.StringH;
+import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class WaitDialog extends ButtonDialog
@@ -31,6 +29,7 @@ public class WaitDialog extends ButtonDialog
 	public static WaitDialog ShowWait()
 	{
 		WaitDialog wd = createDialog("");
+		wd.setCallerName(Logger.getCallerName());
 		wd.Show();
 		return wd;
 	}
@@ -38,6 +37,7 @@ public class WaitDialog extends ButtonDialog
 	public static WaitDialog ShowWait(String Msg)
 	{
 		WaitDialog wd = createDialog(Msg);
+		wd.setCallerName(Logger.getCallerName());
 		wd.Show();
 		return wd;
 	}
@@ -91,7 +91,8 @@ public class WaitDialog extends ButtonDialog
 			waitDialog.label.setVAlignment(VAlignment.TOP);
 		}
 
-		float imageYPos = (contentSize.height < (waitDialog.animation.getHeight() * 1.7)) ? contentSize.halfHeight - waitDialog.animation.getHalfHeight() : contentSize.height - waitDialog.animation.getHeight() - margin;
+		float imageYPos = (contentSize.height < (waitDialog.animation.getHeight() * 1.7)) ? contentSize.halfHeight
+				- waitDialog.animation.getHalfHeight() : contentSize.height - waitDialog.animation.getHeight() - margin;
 		waitDialog.animation.setY(imageYPos);
 
 		waitDialog.addChild(waitDialog.label);
@@ -105,7 +106,7 @@ public class WaitDialog extends ButtonDialog
 
 	public void dismis()
 	{
-		Gdx.app.debug(Tag.TAG, "WaitDialog.Dismis");
+		Logger.LogCat("WaitDialog.Dismis");
 		GL.that.RunOnGL(new IRunOnGL()
 		{
 			@Override
@@ -121,8 +122,8 @@ public class WaitDialog extends ButtonDialog
 	public void dispose()
 	{
 		super.dispose();
-		String caller = StringH.getCallerName(1);
-		Gdx.app.debug(Tag.TAG, "WaitDialog.disposed ID:[" + this.DialogID + "] called:" + caller);
+		String caller = Logger.getCallerName(1);
+		Logger.LogCat("WaitDialog.disposed ID:[" + this.DialogID + "] called:" + caller);
 	}
 
 	@Override

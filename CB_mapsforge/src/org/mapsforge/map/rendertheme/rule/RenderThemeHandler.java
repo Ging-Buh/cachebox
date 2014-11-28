@@ -18,11 +18,12 @@ package org.mapsforge.map.rendertheme.rule;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.mapsforge.Tag;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.model.DisplayModel;
@@ -48,8 +49,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * SAX2 handler to parse XML render theme files.
  */
@@ -60,6 +59,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 	}
 
 	private static final String ELEMENT_NAME_RULE = "rule";
+	private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
 	private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
 
 	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
@@ -124,7 +124,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 	@Override
 	public void error(SAXParseException exception) {
-		Gdx.app.error(Tag.TAG,"RenderThemeHandler", exception);
+		LOGGER.log(Level.SEVERE, null, exception);
 	}
 
 	@Override
@@ -197,13 +197,13 @@ public final class RenderThemeHandler extends DefaultHandler {
 				throw new SAXException("unknown element: " + qName);
 			}
 		} catch (IOException e) {
-			Gdx.app.error(Tag.TAG,"RenderThemeHandler Rendertheme missing or invalid resource " , e);
+			LOGGER.warning("Rendertheme missing or invalid resource " + e.getMessage());
 		}
 	}
 
 	@Override
 	public void warning(SAXParseException exception) {
-		Gdx.app.error(Tag.TAG,"RenderThemeHandler", exception);
+		LOGGER.log(Level.SEVERE, null, exception);
 	}
 
 	private void checkElement(String elementName, Element element) throws SAXException {

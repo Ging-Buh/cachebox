@@ -16,8 +16,9 @@
 package org.mapsforge.map.layer.download;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.mapsforge.Tag;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.Layer;
@@ -26,10 +27,9 @@ import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.util.PausableThread;
 
-import com.badlogic.gdx.Gdx;
-
 class TileDownloadThread extends PausableThread {
-	
+	private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());
+
 	private final DisplayModel displayModel;
 	private final GraphicFactory graphicFactory;
 	private JobQueue<DownloadJob> jobQueue;
@@ -60,7 +60,7 @@ class TileDownloadThread extends PausableThread {
 				downloadTile(downloadJob);
 			}
 		} catch (IOException e) {
-			Gdx.app.log(Tag.TAG,  e.getMessage(), e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		} finally {
 			this.jobQueue.remove(downloadJob);
 		}

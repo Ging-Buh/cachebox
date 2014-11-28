@@ -2,10 +2,6 @@ package CB_Locator.Events;
 
 import java.util.ArrayList;
 
-import CB_Locator.Tag;
-
-import com.badlogic.gdx.Gdx;
-
 public class GPS_FallBackEventList
 {
 	public static ArrayList<GPS_FallBackEvent> list = new ArrayList<GPS_FallBackEvent>();
@@ -31,7 +27,7 @@ public class GPS_FallBackEventList
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 
@@ -48,7 +44,7 @@ public class GPS_FallBackEventList
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 

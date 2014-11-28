@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -33,6 +32,7 @@ import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 
@@ -115,8 +115,8 @@ public class Image extends CB_View_Base
 			catch (Exception e)
 			{
 				ImageLoadError = true;
-				Gdx.app.debug(Tag.TAG, "E Load GL Image" + e.getMessage());
-				Gdx.app.error(Tag.TAG, "", e);
+				Logger.LogCat("E Load GL Image" + e.getMessage());
+				e.printStackTrace();
 			}
 			return;
 		}
@@ -344,11 +344,11 @@ public class Image extends CB_View_Base
 				}
 				catch (MalformedURLException e)
 				{
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 				catch (Exception e)
 				{
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 			}
 		});
@@ -423,7 +423,7 @@ public class Image extends CB_View_Base
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		Sprite spt = tryToLoadFromCreatetdAtlas(ImagePath);

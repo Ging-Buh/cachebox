@@ -4,10 +4,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import CB_Locator.Tag;
-
-import com.badlogic.gdx.Gdx;
-
 public class BoundingBox
 {
 	public int MinX;
@@ -45,7 +41,7 @@ public class BoundingBox
 		catch (IOException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		Stride = MaxX - MinX + 1;
 	}
@@ -74,7 +70,7 @@ public class BoundingBox
 		catch (IOException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -83,12 +79,14 @@ public class BoundingBox
 
 		try
 		{
-			return new BoundingBox(Integer.reverseBytes(reader.readInt()), Integer.reverseBytes(reader.readInt()), Integer.reverseBytes(reader.readInt()), Integer.reverseBytes(reader.readInt()), Integer.reverseBytes(reader.readInt()), Long.reverseBytes(reader.readLong()));
+			return new BoundingBox(Integer.reverseBytes(reader.readInt()), Integer.reverseBytes(reader.readInt()),
+					Integer.reverseBytes(reader.readInt()), Integer.reverseBytes(reader.readInt()), Integer.reverseBytes(reader.readInt()),
+					Long.reverseBytes(reader.readLong()));
 		}
 		catch (IOException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 			return null;
 		}
 	}

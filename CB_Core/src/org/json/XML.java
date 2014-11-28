@@ -483,7 +483,7 @@ public class XML
 		JSONArray ja;
 		JSONObject jo;
 		String key;
-		Iterator<?> keys;
+		Iterator keys;
 		int length;
 		String string;
 		Object value;
@@ -616,7 +616,8 @@ public class XML
 			else
 			{
 				string = (object == null) ? "null" : escape(object.toString());
-				return (tagName == null) ? "\"" + string + "\"" : (string.length() == 0) ? "<" + tagName + "/>" : "<" + tagName + ">" + string + "</" + tagName + ">";
+				return (tagName == null) ? "\"" + string + "\"" : (string.length() == 0) ? "<" + tagName + "/>" : "<" + tagName + ">"
+						+ string + "</" + tagName + ">";
 			}
 		}
 	}

@@ -17,7 +17,6 @@ import CB_Locator.Map.MapViewBase;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.CacheInfo;
@@ -43,7 +42,6 @@ import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.UnitFormatter;
 import CB_Utils.Util.iChanged;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -242,7 +240,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 					catch (Exception e)
 					{
 						// TODO Auto-generated catch block
-						Gdx.app.error(Tag.TAG, "", e);
+						e.printStackTrace();
 					}
 				}
 
@@ -317,7 +315,7 @@ public class CompassView extends CB_View_Base implements SelectedCacheEvent, Pos
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 

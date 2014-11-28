@@ -13,7 +13,6 @@ import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.SatBarChart;
@@ -42,9 +41,9 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.UnitFormatter;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -117,7 +116,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
 		margin = UI_Size_Base.that.getMargin();
 		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
-		Gdx.app.debug(Tag.TAG, "CB_Logo" + CB_LogoRec.toString());
+		Logger.DEBUG("CB_Logo" + CB_LogoRec.toString());
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
 		this.addChild(CB_Logo);

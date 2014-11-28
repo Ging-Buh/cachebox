@@ -21,22 +21,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.mapsforge.Tag;
 import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * A thread-safe cache for image files with a fixed size and LRU policy.
  */
 public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
-	
+	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
+
 	private static File checkDirectory(File file) {
 		if (!file.exists() && !file.mkdirs()) {
 			throw new IllegalArgumentException("could not create directory: " + file);
@@ -81,7 +81,7 @@ public class FileSystemTileCache implements TileCache {
 		if (filesToDelete != null) {
 			for (File file : filesToDelete) {
 				if (file.exists() && !file.delete()) {
-					Gdx.app.log(Tag.TAG,  "could not delete file: " + file);
+					LOGGER.log(Level.SEVERE, "could not delete file: " + file);
 				}
 			}
 		}
@@ -104,11 +104,11 @@ public class FileSystemTileCache implements TileCache {
 			// is somehow corrupted, returning null ensures it will be loaded
 			// from another source
 			this.lruCache.remove(key.hashCode());
-			Gdx.app.log(Tag.TAG,  "input stream from file system cache invalid", e);
+			LOGGER.log(Level.WARNING, "input stream from file system cache invalid", e);
 			return null;
 		} catch (IOException e) {
 			this.lruCache.remove(key.hashCode());
-			Gdx.app.error(Tag.TAG,  "FileSystemTileCache", e);
+			LOGGER.log(Level.SEVERE, null, e);
 			return null;
 		} finally {
 			IOUtils.closeQuietly(inputStream);
@@ -138,10 +138,10 @@ public class FileSystemTileCache implements TileCache {
 			outputStream = new FileOutputStream(file);
 			bitmap.compress(outputStream);
 			if (this.lruCache.put(key.hashCode(), file) != null) {
-				Gdx.app.log(Tag.TAG, "overwriting cached entry: " + key.hashCode());
+				LOGGER.warning("overwriting cached entry: " + key.hashCode());
 			}
 		} catch (IOException e) {
-			Gdx.app.log(Tag.TAG, "Disabling filesystem cache", e);
+			LOGGER.log(Level.SEVERE, "Disabling filesystem cache", e);
 			// most likely cause is that the disk is full, just disable the
 			// cache otherwise
 			// more and more exceptions will be thrown.

@@ -56,6 +56,7 @@ public class MapPanel extends JPanel implements ActionListener
 		}
 		catch (Exception e)
 		{
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));

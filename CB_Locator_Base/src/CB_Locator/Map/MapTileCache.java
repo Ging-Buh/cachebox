@@ -15,10 +15,6 @@
  */
 package CB_Locator.Map;
 
-import CB_Locator.Tag;
-
-import com.badlogic.gdx.Gdx;
-
 /**
  * @author Longri
  */
@@ -172,7 +168,7 @@ public class MapTileCache
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 	}
@@ -184,7 +180,7 @@ public class MapTileCache
 
 	public void clear()
 	{
-		// System.out.print("LOADED_TILES clear() " + StringH.getCallerName(1) + Global.br);
+		// System.out.print("LOADED_TILES clear() " + Logger.getCallerName(1) + Global.br);
 		clearIndexList();
 		clearDrawingList();
 		System.arraycopy(this.EMPTY_HashList, 0, this.HashList, 0, Capacity - 1);
@@ -235,7 +231,7 @@ public class MapTileCache
 
 	public void clearDrawingList()
 	{
-		// System.out.print("LOADED_TILES clearDrawingList() " + StringH.getCallerName(1) + Global.br);
+		// System.out.print("LOADED_TILES clearDrawingList() " + Logger.getCallerName(1) + Global.br);
 		this.TilesToDrawSize = 0;
 	}
 

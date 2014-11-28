@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.reader.ReadBuffer;
 
 final class RequiredFields {

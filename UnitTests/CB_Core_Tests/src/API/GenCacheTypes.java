@@ -19,9 +19,6 @@ import CB_UI.Config;
 import CB_Utils.Util.FileIO;
 import CB_Utils.http.HttpUtils;
 import __Static.InitTestDBs;
-import ___Test_Suites.Tag;
-
-import com.badlogic.gdx.Gdx;
 
 /**
  * Der Test ist kein Wirklicher Test. Hier werden die GS CacheTypes Herrunter geladen . Damit die Cache Types immer Aktuell gehalten werden
@@ -109,7 +106,7 @@ public class GenCacheTypes extends TestCase
 			catch (JSONException e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}

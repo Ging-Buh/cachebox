@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.GL_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
@@ -20,9 +19,9 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Config_Core;
+import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingBool;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -438,7 +437,7 @@ public class GL_MsgBox extends Dialog
 	@Override
 	public void dispose()
 	{
-		Gdx.app.debug(Tag.TAG, "Dispose GL_MsgBox=> " + name);
+		Logger.LogCat("Dispose GL_MsgBox=> " + name);
 
 		if (FooterItems != null)
 		{

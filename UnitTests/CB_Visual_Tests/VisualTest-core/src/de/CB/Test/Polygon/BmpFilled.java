@@ -13,7 +13,6 @@ import org.mapsforge.core.graphics.ResourceBitmap;
 
 
 
-
 import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_Utils.Plattform;
@@ -21,8 +20,6 @@ import CB_Utils.Plattform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
-
-import de.CB.Test.Tag;
 
 public class BmpFilled extends PolygonTestBase
 {
@@ -61,7 +58,7 @@ public class BmpFilled extends PolygonTestBase
 			catch (FileNotFoundException e)
 			{
 				// TODO Auto-generated catch block
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
@@ -112,7 +109,7 @@ public class BmpFilled extends PolygonTestBase
 				catch (FileNotFoundException e)
 				{
 					// TODO Auto-generated catch block
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 
 			}
@@ -137,12 +134,12 @@ public class BmpFilled extends PolygonTestBase
 		catch (FileNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 

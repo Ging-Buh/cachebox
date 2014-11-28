@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Global;
-import CB_UI_Base.Tag;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
@@ -23,7 +22,6 @@ import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -501,7 +499,7 @@ public class Menu extends ButtonDialog
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 

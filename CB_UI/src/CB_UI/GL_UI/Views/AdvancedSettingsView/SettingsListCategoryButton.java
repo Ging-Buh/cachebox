@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package CB_UI_Base.view.settings.AdvancedSettingsView;
+package CB_UI.GL_UI.Views.AdvancedSettingsView;
 
 import CB_Utils.Settings.SettingBase;
 import CB_Utils.Settings.SettingCategory;

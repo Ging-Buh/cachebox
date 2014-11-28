@@ -10,12 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
-import CB_Core.Tag;
 import CB_Core.Enums.LogTypes;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.UnitFormatter;
-
-import com.badlogic.gdx.Gdx;
 
 public class Trackable implements Comparable<Trackable>
 {
@@ -100,7 +98,7 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			String sDate = reader.getString(6);
 			DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -110,7 +108,7 @@ public class Trackable implements Comparable<Trackable>
 			}
 			catch (ParseException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 			try
@@ -120,7 +118,7 @@ public class Trackable implements Comparable<Trackable>
 			catch (Exception e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			try
 			{
@@ -129,7 +127,7 @@ public class Trackable implements Comparable<Trackable>
 			catch (Exception e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			try
 			{
@@ -138,7 +136,7 @@ public class Trackable implements Comparable<Trackable>
 			catch (Exception e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			try
 			{
@@ -147,7 +145,7 @@ public class Trackable implements Comparable<Trackable>
 			catch (Exception e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			try
 			{
@@ -156,7 +154,7 @@ public class Trackable implements Comparable<Trackable>
 			catch (Exception e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			try
 			{
@@ -165,7 +163,7 @@ public class Trackable implements Comparable<Trackable>
 			catch (Exception e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			try
 			{
@@ -197,7 +195,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		try
 		{
@@ -206,7 +204,7 @@ public class Trackable implements Comparable<Trackable>
 		catch (JSONException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		try
 		{
@@ -214,7 +212,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			// Gdx.app.error(Tag.TAG, "", e);
+			// e.printStackTrace();
 		}
 		try
 		{
@@ -222,7 +220,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		JSONObject jOwner;
@@ -233,7 +231,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		try
 		{
@@ -245,7 +243,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "Constructor Trackable", exc);
+			Logger.Error("Constructor Trackable", "", exc);
 		}
 		try
 		{
@@ -253,7 +251,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		try
 		{
@@ -261,7 +259,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		JSONArray jArray;
@@ -276,7 +274,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		try
@@ -286,7 +284,7 @@ public class Trackable implements Comparable<Trackable>
 		catch (JSONException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		try
 		{
@@ -296,7 +294,7 @@ public class Trackable implements Comparable<Trackable>
 		catch (JSONException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		try
 		{
@@ -305,7 +303,7 @@ public class Trackable implements Comparable<Trackable>
 		catch (JSONException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		try
 		{
@@ -313,7 +311,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		try
 		{
@@ -321,7 +319,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (JSONException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 

@@ -18,15 +18,13 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.PolylineDrawable;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_GraphicFactory;
+import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-
-import de.CB.Test.Tag;
 
 public abstract class TestCaseBase extends CB_View_Base
 {
@@ -93,7 +91,7 @@ public abstract class TestCaseBase extends CB_View_Base
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		TileGL_Bmp tile = new TileGL_Bmp(new Descriptor(0, 0, 16, false), bytes, TileGL.TileState.Present, Format.RGB565);
@@ -125,7 +123,7 @@ public abstract class TestCaseBase extends CB_View_Base
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		try
@@ -137,7 +135,7 @@ public abstract class TestCaseBase extends CB_View_Base
 		}
 		catch (Exception ex)
 		{
-			Gdx.app.error(Tag.TAG,"[TileGL] can't create Pixmap or Texture: " ,ex );
+			Logger.DEBUG("[TileGL] can't create Pixmap or Texture: " + ex.getMessage());
 		}
 		return null;
 	}

@@ -17,17 +17,15 @@ import java.util.LinkedList;
 
 import org.apache.http.util.ByteArrayBuffer;
 
-import CB_Core.Tag;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
 import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.SDBM_Hash;
-
-import com.badlogic.gdx.Gdx;
 
 public class DescriptionImageGrabber
 {
@@ -231,9 +229,9 @@ public class DescriptionImageGrabber
 
 						if (suppressNonLocalMedia)
 						{
-							// Wenn nicht-lokale Inhalte unterdrï¿½ckt werden
+							// Wenn nicht-lokale Inhalte unterdrückt werden
 							// sollen,
-							// wird das <img>-Tag vollstï¿½ndig entfernt
+							// wird das <img>-Tag vollständig entfernt
 							html = html.substring(0, img.start - 4 + delta) + html.substring(img.ende + 1 + delta);
 							delta -= 5 + img.ende - img.start;
 						}
@@ -263,7 +261,7 @@ public class DescriptionImageGrabber
 			URL aURL = null;
 			try
 			{
-				// ungï¿½ltige URL -> nicht importieren
+				// ungültige URL -> nicht importieren
 				aURL = new URL(uri.replace("&amp;", "&"));
 			}
 			catch (Exception ex)
@@ -306,7 +304,7 @@ public class DescriptionImageGrabber
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -511,9 +509,9 @@ public class DescriptionImageGrabber
 		{
 			// Get additional images (Spoiler)
 
-			// Liste aller Spoiler Images fï¿½r diesen Cache erstellen
-			// anhand dieser Liste kann ï¿½berprï¿½ft werden, ob ein Spoiler schon geladen ist und muss nicht ein 2. mal geladen werden.
-			// Auï¿½erdem kï¿½nnen anhand dieser Liste veraltete Spoiler identifiziert werden, die gelï¿½scht werden kï¿½nnen / mï¿½ssen
+			// Liste aller Spoiler Images für diesen Cache erstellen
+			// anhand dieser Liste kann überprüft werden, ob ein Spoiler schon geladen ist und muss nicht ein 2. mal geladen werden.
+			// Außerdem können anhand dieser Liste veraltete Spoiler identifiziert werden, die gelöscht werden können / müssen
 			String[] files = getFilesInDirectory(CB_Core_Settings.SpoilerFolder.getValue(), gcCode);
 			String[] filesLocal = getFilesInDirectory(CB_Core_Settings.SpoilerFolderLocal.getValue(), gcCode);
 			ArrayList<String> afiles = new ArrayList<String>();
@@ -543,8 +541,8 @@ public class DescriptionImageGrabber
 					}
 					if (result == 140)
 					{
-						// API-Limit ï¿½berschritten -> nach 15 Sekunden wiederholen
-						System.out.println("******* API-Limit ï¿½berschritten -> 15 Sekunden warten! *******");
+						// API-Limit überschritten -> nach 15 Sekunden wiederholen
+						System.out.println("******* API-Limit überschritten -> 15 Sekunden warten! *******");
 						try
 						{
 							Thread.sleep(15000);
@@ -555,7 +553,7 @@ public class DescriptionImageGrabber
 						if (System.currentTimeMillis() > startTs + 60000)
 						{
 							// Aufruf nach 1 min immer noch nicht OK -> raus!
-							System.out.println("******* Timeout API-Limit ï¿½berschritten ********");
+							System.out.println("******* Timeout API-Limit überschritten ********");
 							break;
 						}
 					}
@@ -565,7 +563,7 @@ public class DescriptionImageGrabber
 					}
 				}
 				while (true);
-				// if (allimgDict == null) return 0;
+				if (allimgDict == null) return 0;
 
 				for (String key : allimgDict.keySet())
 				{
@@ -591,15 +589,15 @@ public class DescriptionImageGrabber
 					String local = BuildAdditionalImageFilename(gcCode, decodedImageName, uri);
 					if (new File(local).exists())
 					{
-						// Spoiler ohne den Hash im Dateinamen lï¿½schen
+						// Spoiler ohne den Hash im Dateinamen löschen
 						new File(local).delete();
 					}
-					// Local Filename mit Hash erzeugen, damit ï¿½nderungen der Datei ohne ï¿½nderungen des Dateinamens erkannt werden kï¿½nnen
+					// Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden können
 					// Hier erst die alten Version mit den Klammern als Eingrenzung des Hash
-					// Dies hier machen, damit die Namen der Spoiler ins neue System Konvertiert werden kï¿½nnen.
+					// Dies hier machen, damit die Namen der Spoiler ins neue System Konvertiert werden können.
 					String localOld = BuildAdditionalImageFilenameHash(gcCode, decodedImageName, uri);
-					// Neuen Local Filename mit Hash erzeugen, damit ï¿½nderungen der Datei ohne ï¿½nderungen des Dateinamens erkannt werden
-					// kï¿½nnen
+					// Neuen Local Filename mit Hash erzeugen, damit Änderungen der Datei ohne Änderungen des Dateinamens erkannt werden
+					// können
 					// Hier jetzt mit @ als Eingrenzung des Hashs
 					local = BuildAdditionalImageFilenameHashNew(gcCode, decodedImageName, uri);
 					String filename = local.substring(local.lastIndexOf('/') + 1);
@@ -613,14 +611,14 @@ public class DescriptionImageGrabber
 						}
 						catch (Exception ex)
 						{
-							Gdx.app.error(Tag.TAG, "Error trying to rename Spoiler with old Name format", ex);
+							Logger.Error("Error trying to rename Spoiler with old Name format", ex.getMessage());
 						}
 					}
 
-					// ï¿½berprï¿½fen, ob dieser Spoiler bereits geladen wurde
+					// überprüfen, ob dieser Spoiler bereits geladen wurde
 					if (afiles.contains(filename))
 					{
-						// wenn ja, dann aus der Liste der aktuell vorhandenen Spoiler entfernen und mit dem nï¿½chsten Spoiler weiter machen
+						// wenn ja, dann aus der Liste der aktuell vorhandenen Spoiler entfernen und mit dem nächsten Spoiler weiter machen
 						// dieser Spoiler muss jetzt nicht mehr geladen werden da er schon vorhanden ist.
 						afiles.remove(filename);
 						continue;
@@ -651,16 +649,16 @@ public class DescriptionImageGrabber
 					args.put("ImagesUpdated", additionalImagesUpdated);
 					Database.Data.update("Caches", args, "Id = ?", new String[]
 						{ String.valueOf(id) });
-					// jetzt kï¿½nnen noch alle "alten" Spoiler gelï¿½scht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind, aber
-					// nicht als Link ï¿½ber die API gemeldet wurden
+					// jetzt können noch alle "alten" Spoiler gelöscht werden. "alte" Spoiler sind die, die auf der SD vorhanden sind, aber
+					// nicht als Link über die API gemeldet wurden
 					// Alle Spoiler in der Liste afiles sind "alte"
 					for (String file : afiles)
 					{
 						String fileNameWithOutExt = file.replaceFirst("[.][^.]+$", "");
-						// Testen, ob dieser Dateiname einen gï¿½ltigen ACB Hash hat (eingeschlossen zwischen @....@>
+						// Testen, ob dieser Dateiname einen gültigen ACB Hash hat (eingeschlossen zwischen @....@>
 						if (fileNameWithOutExt.endsWith("@") && fileNameWithOutExt.contains("@"))
 						{
-							// file enthï¿½lt nur den Dateinamen, nicht den Pfad. Diesen Dateinamen um den Pfad erweitern, in dem hier die
+							// file enthält nur den Dateinamen, nicht den Pfad. Diesen Dateinamen um den Pfad erweitern, in dem hier die
 							// Spoiler gespeichert wurden
 							String path = getSpoilerPath(gcCode);
 							File f = new File(path + '/' + file);
@@ -670,7 +668,7 @@ public class DescriptionImageGrabber
 							}
 							catch (Exception ex)
 							{
-								Gdx.app.error(Tag.TAG, "DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex);
+								Logger.Error("DescriptionImageGrabber - GrabImagesSelectedByCache - DeleteSpoiler", ex.getMessage());
 							}
 						}
 					}
@@ -746,7 +744,7 @@ public class DescriptionImageGrabber
 
 	/**
 	 * Alte Version mit den Klammern als Eingrenzung des Hashs. Dies funktioniert nicht, da die Klammern nicht in URL's verwendet werden
-	 * dï¿½rfen (CBServer)
+	 * dürfen (CBServer)
 	 */
 	public static String BuildAdditionalImageFilenameHash(String GcCode, String ImageName, URI uri)
 	{
@@ -768,7 +766,7 @@ public class DescriptionImageGrabber
 	}
 
 	/**
-	 * Neue Version, mit @ als Eingrenzung des Hashs, da die Klammern nicht als URL's verwendet werden dï¿½rfen
+	 * Neue Version, mit @ als Eingrenzung des Hashs, da die Klammern nicht als URL's verwendet werden dürfen
 	 * 
 	 * @param GcCode
 	 * @param ImageName

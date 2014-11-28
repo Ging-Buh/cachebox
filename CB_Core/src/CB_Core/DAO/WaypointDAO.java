@@ -2,7 +2,6 @@ package CB_Core.DAO;
 
 import java.util.Iterator;
 
-import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Import.ImporterProgress;
@@ -15,8 +14,6 @@ import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.SDBM_Hash;
 import CB_Utils.Util.UnitFormatter;
-
-import com.badlogic.gdx.Gdx;
 
 public class WaypointDAO
 {
@@ -82,7 +79,8 @@ public class WaypointDAO
 			args.put("isStart", WP.IsStart);
 			try
 			{
-				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"", null);
+				long count = Database.Data.update("Waypoint", args, "CacheId=" + WP.CacheId + " and GcCode=\"" + WP.getGcCode() + "\"",
+						null);
 				if (count > 0) result = true;
 			}
 			catch (Exception exc)
@@ -93,7 +91,7 @@ public class WaypointDAO
 
 			if (WP.IsUserWaypoint)
 			{
-				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. ï¿½ber API)
+				// HasUserData nicht updaten wenn der Waypoint kein UserWaypoint ist (z.B. über API)
 				args = new Parameters();
 				args.put("hasUserData", true);
 				try
@@ -173,7 +171,7 @@ public class WaypointDAO
 			catch (Exception e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
@@ -211,7 +209,7 @@ public class WaypointDAO
 		}
 	}
 
-	// Hier wird ï¿½berprï¿½ft, ob fï¿½r diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurï¿½ckgesetzt
+	// Hier wird überprüft, ob für diesen Cache ein Start-Waypoint existiert und dieser in diesem Fall zurückgesetzt
 	// Damit kann bei der Definition eines neuen Start-Waypoints vorher der alte entfernt werden damit sichergestellt ist dass ein Cache nur
 	// 1 Start-Waypoint hat
 	public void ResetStartWaypoint(Cache cache, Waypoint except)
@@ -227,11 +225,13 @@ public class WaypointDAO
 				args.put("isStart", false);
 				try
 				{
-					Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"", null);
+					long count = Database.Data.update("Waypoint", args, "CacheId=" + wp.CacheId + " and GcCode=\"" + wp.getGcCode() + "\"",
+							null);
+
 				}
 				catch (Exception exc)
 				{
-					Gdx.app.error(Tag.TAG, "ResetStartWaypoint", exc);
+
 				}
 			}
 		}

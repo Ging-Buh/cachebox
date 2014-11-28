@@ -4,9 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import CB_Utils.DB.CoreCursor;
-import ___Test_Suites.Tag;
-
-import com.badlogic.gdx.Gdx;
 
 public class TestCursor extends CoreCursor
 {
@@ -80,7 +77,7 @@ public class TestCursor extends CoreCursor
 		}
 		catch (SQLException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		rs = null;
 	}

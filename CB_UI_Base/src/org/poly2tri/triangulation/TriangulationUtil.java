@@ -29,10 +29,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */package org.poly2tri.triangulation;
 
-import CB_UI_Base.Tag;
-
-import com.badlogic.gdx.Gdx;
-
 /**
  * @author Thomas Åhlén, thahlen@gmail.com
  */
@@ -99,7 +95,8 @@ public class TriangulationUtil
 	 *            - point opposite a
 	 * @return true if d is inside circle, false if on circle edge
 	 */
-	public static boolean smartIncircle(final TriangulationPoint pa, final TriangulationPoint pb, final TriangulationPoint pc, final TriangulationPoint pd)
+	public static boolean smartIncircle(final TriangulationPoint pa, final TriangulationPoint pb, final TriangulationPoint pc,
+			final TriangulationPoint pd)
 	{
 		final double pdx = pd.getX();
 		final double pdy = pd.getY();
@@ -149,7 +146,8 @@ public class TriangulationUtil
 	 * @param pd
 	 * @return
 	 */
-	public static boolean inScanArea(final TriangulationPoint pa, final TriangulationPoint pb, final TriangulationPoint pc, final TriangulationPoint pd)
+	public static boolean inScanArea(final TriangulationPoint pa, final TriangulationPoint pb, final TriangulationPoint pc,
+			final TriangulationPoint pd)
 	{
 		double pdx = 0;
 		double pdy = 0;
@@ -190,7 +188,8 @@ public class TriangulationUtil
 		}
 		catch (Throwable e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return false;
 		}
 	}

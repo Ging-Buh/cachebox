@@ -23,10 +23,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import CB_Core.Tag;
 import CB_Core.Settings.CB_Core_Settings;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public class GCVote
 {
@@ -65,12 +63,12 @@ public class GCVote
 
 			httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
 
-			// Gdx.app.log(Tag.TAG,"GCVOTE-Post" + data);
+			// Logger.General("GCVOTE-Post" + data);
 
 			// Execute HTTP Post Request
 			String responseString = Execute(httppost);
 
-			// Gdx.app.log(Tag.TAG,"GCVOTE-Response" + responseString);
+			// Logger.General("GCVOTE-Response" + responseString);
 
 			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			InputSource is = new InputSource();
@@ -104,7 +102,7 @@ public class GCVote
 				else
 					Ex = "Ex = [" + e.toString() + "]";
 			}
-			Gdx.app.error(Tag.TAG, "GcVote-Error" + Ex);
+			Logger.General("GcVote-Error" + Ex);
 			return null;
 		}
 		return result;
@@ -150,7 +148,8 @@ public class GCVote
 	{
 		String guid = url.substring(url.indexOf("guid=") + 5).trim();
 
-		String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid + "&waypoint=" + waypoint;
+		String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid
+				+ "&waypoint=" + waypoint;
 
 		try
 		{

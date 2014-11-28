@@ -248,7 +248,7 @@ public class launch extends JFrame
 		textureSettings.duplicatePadding = true;
 		textureSettings.edgePadding = true;
 		textureSettings.rotation = false;
-		if (false)
+		if (true)
 		{
 			textureSettings.minWidth = 128;
 			textureSettings.minHeight = 128;
@@ -279,8 +279,8 @@ public class launch extends JFrame
 		textureSettings.debug = false;
 
 		// Pack Default day
-		String inputFolder = selectedPath + "/input/day/UI_IconPack";
-		String outputFolder = selectedPath + "/Output/day";
+		String inputFolder = selectedPath + "\\input\\day\\UI_IconPack";
+		String outputFolder = selectedPath + "\\Output\\day";
 		String Name = "UI_IconPack.spp";
 		ArrayList<String> outPutFolders = new ArrayList<String>();
 
@@ -303,8 +303,8 @@ public class launch extends JFrame
 		}
 
 		// Pack Default night
-		inputFolder = selectedPath + "/input/night/UI_IconPack";
-		outputFolder = selectedPath + "/Output/night";
+		inputFolder = selectedPath + "\\input\\night\\UI_IconPack";
+		outputFolder = selectedPath + "\\Output\\night";
 		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
 		try
@@ -326,8 +326,8 @@ public class launch extends JFrame
 		}
 
 		// Pack small day
-		inputFolder = selectedPath + "/input/day/UI_IconPack";
-		outputFolder = selectedPath + "/Output/day";
+		inputFolder = selectedPath + "\\input\\day\\UI_IconPack";
+		outputFolder = selectedPath + "\\Output\\day";
 		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
 		try
@@ -349,8 +349,8 @@ public class launch extends JFrame
 		}
 
 		// Pack small night
-		inputFolder = selectedPath + "/input/night/UI_IconPack";
-		outputFolder = selectedPath + "/Output/night";
+		inputFolder = selectedPath + "\\input\\night\\UI_IconPack";
+		outputFolder = selectedPath + "\\Output\\night";
 		outPutFolders.add(outputFolder);
 		Name = "UI_IconPack.spp";
 		try
@@ -372,8 +372,8 @@ public class launch extends JFrame
 		}
 
 		// Pack Default day
-		inputFolder = selectedPath + "/input/splash";
-		outputFolder = selectedPath + "/Output/day";
+		inputFolder = selectedPath + "\\input\\splash";
+		outputFolder = selectedPath + "\\Output\\day";
 		outPutFolders.add(outputFolder);
 		Name = "SplashPack.spp";
 		try
@@ -496,7 +496,7 @@ public class launch extends JFrame
 
 		writeMsg("Ready");
 		writeMsg("");
-		writeMsg("Donï¿½t forgot refresh and clean on Eclipse");
+		writeMsg("Don´t forgot refresh and clean on Eclipse");
 
 	}
 
@@ -508,10 +508,10 @@ public class launch extends JFrame
 	// ArrayList<CopyRule> rules = new ArrayList<CopyRule>();
 	//
 	// // for Android Proj
-	// rules.add(new CopyRule(cs + " /Output/day", workPath + "/Android_GUI/assets/skins/default"));
-	// rules.add(new CopyRule(cs + " /Output/day", workPath + "/Android_GUI/assets/skins/small"));
-	// rules.add(new CopyRule(cs + " /Output/night", workPath + "/Android_GUI/assets/skins/default"));
-	// rules.add(new CopyRule(cs + " /Output/night", workPath + "/Android_GUI/assets/skins/small"));
+	// rules.add(new CopyRule(cs + " \\Output\\day", workPath + "\\Android_GUI\\assets\\skins\\default"));
+	// rules.add(new CopyRule(cs + " \\Output\\day", workPath + "\\Android_GUI\\assets\\skins\\small"));
+	// rules.add(new CopyRule(cs + " \\Output\\night", workPath + "\\Android_GUI\\assets\\skins\\default"));
+	// rules.add(new CopyRule(cs + " \\Output\\night", workPath + "\\Android_GUI\\assets\\skins\\small"));
 	//
 	// return rules;
 	// }
@@ -691,7 +691,8 @@ class IconCellRenderer extends JLabel implements TreeCellRenderer
 		setOpaque(false);
 	}
 
-	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus)
+	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row,
+			boolean hasFocus)
 
 	{
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
@@ -870,7 +871,8 @@ class FileNode
 		}
 		catch (Exception ex)
 		{
-			JOptionPane.showMessageDialog(null, "Error reading directory " + m_file.getAbsolutePath(), "Warning", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Error reading directory " + m_file.getAbsolutePath(), "Warning",
+					JOptionPane.WARNING_MESSAGE);
 			return null;
 		}
 	}

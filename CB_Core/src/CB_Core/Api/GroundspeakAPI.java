@@ -21,7 +21,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import CB_Core.CoreSettingsForward;
-import CB_Core.Tag;
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.ImageDAO;
 import CB_Core.DAO.LogDAO;
@@ -39,10 +38,9 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
 import CB_Utils.http.HttpUtils;
-
-import com.badlogic.gdx.Gdx;
 
 public class GroundspeakAPI
 {
@@ -231,8 +229,8 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
-				Gdx.app.error(Tag.TAG, "UploadFieldNotesAPI JSON-Error", e);
+				e.printStackTrace();
+				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
 				LastAPIError = e.getMessage();
 				return ERROR;
 			}
@@ -240,22 +238,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "UploadFieldNotesAPI ConnectTimeoutException", e);
+			Logger.Error("UploadFieldNotesAPI", "ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "UploadFieldNotesAPI UnsupportedEncodingException", e);
+			Logger.Error("UploadFieldNotesAPI", "UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "UploadFieldNotesAPI ClientProtocolException", e);
+			Logger.Error("UploadFieldNotesAPI", "ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "UploadFieldNotesAPI IOException", e);
+			Logger.Error("UploadFieldNotesAPI", "IOException", e);
 			return ERROR;
 		}
 
@@ -334,28 +332,28 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetCachesFound ConnectTimeoutException", e);
+			Logger.Error("GetCachesFound", "ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetCachesFound UnsupportedEncodingException", e);
+			Logger.Error("GetCachesFound", "UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetCachesFound ClientProtocolException", e);
+			Logger.Error("GetCachesFound", "ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetCachesFound IOException", e);
+			Logger.Error("GetCachesFound", "IOException", e);
 			return ERROR;
 		}
 
@@ -429,7 +427,7 @@ public class GroundspeakAPI
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 
-					Gdx.app.error(Tag.TAG, "GetMembershipType API-Error");
+					Logger.Error("GetMembershipType", "API-Error");
 					API_isCheked = false;
 					return API_ERROR;
 				}
@@ -437,7 +435,7 @@ public class GroundspeakAPI
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "GetMembershipType JSONException", e);
+				Logger.Error("GetMembershipType", "JSONException", e);
 				API_isCheked = false;
 				return API_ERROR;
 			}
@@ -445,19 +443,19 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetMembershipType ConnectTimeoutException", e);
+			Logger.Error("GetMembershipType", "ConnectTimeoutException", e);
 			API_isCheked = false;
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetMembershipType UnsupportedEncodingException", e);
+			Logger.Error("GetMembershipType", "UnsupportedEncodingException", e);
 			API_isCheked = false;
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetMembershipType ClientProtocolException", e);
+			Logger.Error("GetMembershipType", "ClientProtocolException", e);
 			API_isCheked = false;
 			return ERROR;
 		}
@@ -465,11 +463,11 @@ public class GroundspeakAPI
 		{
 			if (e.toString().contains("UnknownHostException"))
 			{
-				Gdx.app.error(Tag.TAG, "GetMembershipType ConnectTimeoutException", e);
+				Logger.Error("GetMembershipType", "ConnectTimeoutException", e);
 				API_isCheked = false;
 				return CONNECTION_TIMEOUT;
 			}
-			Gdx.app.error(Tag.TAG, "GetMembershipType IOException", e);
+			Logger.Error("GetMembershipType", "IOException", e);
 			API_isCheked = false;
 			return ERROR;
 		}
@@ -582,28 +580,28 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus ConnectTimeoutException", e);
+			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus UnsupportedEncodingException", e);
+			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus ClientProtocolException", e);
+			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus IOException", e);
+			Logger.Error("GetGeocacheStatus", "IOException", e);
 			return ERROR;
 		}
 
@@ -709,7 +707,7 @@ public class GroundspeakAPI
 							}
 							catch (Exception exc)
 							{
-								Gdx.app.error(Tag.TAG, "API SearchForGeocaches_ParseLogDate", exc);
+								Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);
 							}
 							log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
 							logList.add(log);
@@ -733,28 +731,28 @@ public class GroundspeakAPI
 				}
 				catch (JSONException e)
 				{
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 
 			}
 			catch (ConnectTimeoutException e)
 			{
-				Gdx.app.error(Tag.TAG, "GetGeocacheLogsByCache ConnectTimeoutException", e);
+				Logger.Error("GetGeocacheLogsByCache", "ConnectTimeoutException", e);
 				return CONNECTION_TIMEOUT;
 			}
 			catch (UnsupportedEncodingException e)
 			{
-				Gdx.app.error(Tag.TAG, "GetGeocacheLogsByCache UnsupportedEncodingException", e);
+				Logger.Error("GetGeocacheLogsByCache", "UnsupportedEncodingException", e);
 				return ERROR;
 			}
 			catch (ClientProtocolException e)
 			{
-				Gdx.app.error(Tag.TAG, "GetGeocacheLogsByCache ClientProtocolException", e);
+				Logger.Error("GetGeocacheLogsByCache", "ClientProtocolException", e);
 				return ERROR;
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "GetGeocacheLogsByCache IOException", e);
+				Logger.Error("GetGeocacheLogsByCache", "IOException", e);
 				return ERROR;
 			}
 			// die nächsten Logs laden
@@ -833,7 +831,7 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 				LastAPIError = "API Error: " + e.getMessage();
 				return -2;
 			}
@@ -841,22 +839,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus ConnectTimeoutException", e);
+			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus UnsupportedEncodingException", e);
+			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus ClientProtocolException", e);
+			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus IOException", e);
+			Logger.Error("GetGeocacheStatus", "IOException", e);
 			return ERROR;
 		}
 	}
@@ -888,7 +886,7 @@ public class GroundspeakAPI
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			LastAPIError = "API Error: " + e.getMessage();
 			return -4;
@@ -1049,28 +1047,28 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus ConnectTimeoutException", e);
+			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus UnsupportedEncodingException", e);
+			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus ClientProtocolException", e);
+			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "GetGeocacheStatus IOException", e);
+			Logger.Error("GetGeocacheStatus", "IOException", e);
 			return ERROR;
 		}
 
@@ -1143,31 +1141,31 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTreckNumber ConnectTimeoutException", e);
+			Logger.Error("getTBbyTreckNumber", "ConnectTimeoutException", e);
 			TB = null;
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTreckNumber UnsupportedEncodingException", e);
+			Logger.Error("getTBbyTreckNumber", "UnsupportedEncodingException", e);
 			TB = null;
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTreckNumber ClientProtocolException", e);
+			Logger.Error("getTBbyTreckNumber", "ClientProtocolException", e);
 			TB = null;
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTreckNumber IOException", e);
+			Logger.Error("getTBbyTreckNumber", "IOException", e);
 			TB = null;
 			return ERROR;
 		}
@@ -1240,31 +1238,31 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTbCode ConnectTimeoutException", e);
+			Logger.Error("getTBbyTbCode", "ConnectTimeoutException", e);
 			TB = null;
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTbCode UnsupportedEncodingException", e);
+			Logger.Error("getTBbyTbCode", "UnsupportedEncodingException", e);
 			TB = null;
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTbCode ClientProtocolException", e);
+			Logger.Error("getTBbyTbCode", "ClientProtocolException", e);
 			TB = null;
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTbCode IOException", e);
+			Logger.Error("getTBbyTbCode", "IOException", e);
 			TB = null;
 			return ERROR;
 		}
@@ -1338,28 +1336,28 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "getImagesForGeocache ConnectTimeoutException", e);
+			Logger.Error("getImagesForGeocache", "ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "getImagesForGeocache UnsupportedEncodingException", e);
+			Logger.Error("getImagesForGeocache", "UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "getImagesForGeocache ClientProtocolException", e);
+			Logger.Error("getImagesForGeocache", "ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "getImagesForGeocache IOException", e);
+			Logger.Error("getImagesForGeocache", "IOException", e);
 			return ERROR;
 		}
 
@@ -1453,39 +1451,39 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "getTBbyTbCode JSONException", e);
+				Logger.Error("getTBbyTbCode", "JSONException", e);
 			}
 			catch (URISyntaxException e)
 			{
-				Gdx.app.error(Tag.TAG, "getTBbyTbCode URISyntaxException", e);
+				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
 			}
 			catch (java.lang.ClassCastException e)
 			{
-				Gdx.app.error(Tag.TAG, "getTBbyTbCode URISyntaxException", e);
+				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
 			}
 
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTbCode ConnectTimeoutException", e);
+			Logger.Error("getTBbyTbCode", "ConnectTimeoutException", e);
 			list = null;
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTbCode UnsupportedEncodingException", e);
+			Logger.Error("getTBbyTbCode", "UnsupportedEncodingException", e);
 			list = null;
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTbCode ClientProtocolException", e);
+			Logger.Error("getTBbyTbCode", "ClientProtocolException", e);
 			list = null;
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "getTBbyTbCode IOException", e);
+			Logger.Error("getTBbyTbCode", "IOException", e);
 			list = null;
 			return ERROR;
 		}
@@ -1811,8 +1809,8 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
-				Gdx.app.error(Tag.TAG, "UploadFieldNotesAPI JSON-Error", e);
+				e.printStackTrace();
+				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
 				LastAPIError = e.getMessage();
 				return -1;
 			}
@@ -1820,22 +1818,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Gdx.app.error(Tag.TAG, "createTrackableLog ConnectTimeoutException", e);
+			Logger.Error("createTrackableLog", "ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Gdx.app.error(Tag.TAG, "createTrackableLog UnsupportedEncodingException", e);
+			Logger.Error("createTrackableLog", "UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Gdx.app.error(Tag.TAG, "createTrackableLog ClientProtocolException", e);
+			Logger.Error("createTrackableLog", "ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "createTrackableLog IOException", e);
+			Logger.Error("createTrackableLog", "IOException", e);
 			return ERROR;
 		}
 

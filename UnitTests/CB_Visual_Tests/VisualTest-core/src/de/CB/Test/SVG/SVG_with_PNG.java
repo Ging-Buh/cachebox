@@ -7,20 +7,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 
-
-
-
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.Images.VectorDrawable;
 import CB_UI_Base.graphics.SVG.SVG;
 import CB_Utils.Plattform;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import de.CB.Test.Tag;
 import de.CB.TestBase.Actions.TestCaseBase;
 
 public class SVG_with_PNG extends TestCaseBase
@@ -68,7 +62,8 @@ public class SVG_with_PNG extends TestCaseBase
 			}
 			catch (CB_UI_Base.graphics.SVG.SVGParseException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		}

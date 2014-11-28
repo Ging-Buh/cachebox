@@ -19,11 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.Tag;
 import CB_Utils.Exceptions.NullArgumentException;
+import CB_Utils.Log.Logger;
 import CB_Utils.http.HttpUtils;
-
-import com.badlogic.gdx.Gdx;
 
 /***
  * @author Longri
@@ -104,7 +102,7 @@ public class PocketQuery
 							}
 							catch (Exception exc)
 							{
-								Gdx.app.error(Tag.TAG, "API SearchForGeocaches_ParseDate", exc);
+								Logger.Error("API", "SearchForGeocaches_ParseDate", exc);
 							}
 							pq.PQCount = jPQ.getInt("PQCount");
 							int Byte = jPQ.getInt("FileSizeInBytes");
@@ -128,7 +126,7 @@ public class PocketQuery
 			catch (JSONException e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 		catch (ClientProtocolException e)
@@ -242,7 +240,7 @@ public class PocketQuery
 			catch (JSONException e)
 			{
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 		catch (ClientProtocolException e)

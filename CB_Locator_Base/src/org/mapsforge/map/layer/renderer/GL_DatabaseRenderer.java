@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -51,8 +53,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.Images.VectorDrawable;
 import CB_Utils.Util.HSV_Color;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * @author Longri
  */
@@ -60,6 +60,7 @@ public class GL_DatabaseRenderer implements RenderCallback, IDatabaseRenderer
 {
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
 	private static final byte LAYERS = 11;
+	private static final Logger LOGGER = Logger.getLogger(GL_DatabaseRenderer.class.getName());
 	private static final double STROKE_INCREASE = 1.5;
 	private static final byte STROKE_MIN_ZOOM_LEVEL = 12;
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
@@ -198,7 +199,8 @@ public class GL_DatabaseRenderer implements RenderCallback, IDatabaseRenderer
 			processReadMapData(mapReadResult);
 		}
 
-		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile, this.currentRendererJob.displayModel.getTileSize());
+		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile,
+				this.currentRendererJob.displayModel.getTileSize());
 
 		GL_Rasterer rasterer = new GL_Rasterer(graphicFactory, rendererJob.displayModel);
 
@@ -415,22 +417,21 @@ public class GL_DatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 	private CB_RenderTheme getRenderTheme(XmlRenderTheme jobTheme)
 	{
-		Gdx.app.debug(CB_Locator.Tag.TAG, "GL_DatabaseRenderer.getRenderTheme");
 		try
 		{
 			return CB_RenderThemeHandler.getRenderTheme(graphicFactory, this.currentRendererJob.displayModel, jobTheme);
 		}
 		catch (ParserConfigurationException e)
 		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "GL_DatabaseRenderer.getRenderTheme", e);
+			LOGGER.log(Level.SEVERE, null, e);
 		}
 		catch (SAXException e)
 		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "GL_DatabaseRenderer.getRenderTheme", e);
+			LOGGER.log(Level.SEVERE, null, e);
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "GL_DatabaseRenderer.getRenderTheme", e);
+			LOGGER.log(Level.SEVERE, null, e);
 		}
 		return null;
 	}
@@ -510,8 +511,10 @@ public class GL_DatabaseRenderer implements RenderCallback, IDatabaseRenderer
 	 */
 	private Point scaleLatLong(LatLong latLong, int tileSize)
 	{
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.getLongitude(), this.currentRendererJob.tile.zoomLevel, tileSize) - MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.getLatitude(), this.currentRendererJob.tile.zoomLevel, tileSize) - MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY, tileSize);
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.getLongitude(), this.currentRendererJob.tile.zoomLevel, tileSize)
+				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.getLatitude(), this.currentRendererJob.tile.zoomLevel, tileSize)
+				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY, tileSize);
 
 		return new Point((float) pixelX, (float) pixelY);
 	}

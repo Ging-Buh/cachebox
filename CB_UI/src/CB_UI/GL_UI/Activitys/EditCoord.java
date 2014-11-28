@@ -201,7 +201,7 @@ public class EditCoord extends ActivityBase implements ICopyPaste
 
 		float noseOffset = popUp.getHalfWidth() / 2;
 
-		// Gdx.app.debug(Tag.TAG,"Show CopyPaste PopUp");
+		// Logger.LogCat("Show CopyPaste PopUp");
 
 		CB_RectF world = getWorldRec();
 

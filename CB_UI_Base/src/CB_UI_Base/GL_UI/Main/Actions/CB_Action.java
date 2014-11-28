@@ -1,8 +1,7 @@
 package CB_UI_Base.GL_UI.Main.Actions;
 
-import CB_UI_Base.Tag;
+import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action
@@ -37,7 +36,7 @@ public class CB_Action
 
 	public void CallExecute()
 	{
-		Gdx.app.debug(Tag.TAG, "ACTION => " + name + " execute");
+		Logger.LogCat("ACTION => " + name + " execute");
 		Execute();
 	}
 

@@ -249,7 +249,7 @@ public class Button extends CB_View_Base
 	@Override
 	public boolean click(int x, int y, int pointer, int button)
 	{
-		// wenn Button disabled ein Behandelt zurï¿½ck schicken,
+		// wenn Button disabled ein Behandelt zurück schicken,
 		// damit keine weiteren Abfragen durchgereicht werden.
 		// Auch wenn dieser Button ein OnClickListner hat.
 		if (isDisabled)
@@ -259,7 +259,7 @@ public class Button extends CB_View_Base
 
 		else
 
-			// Gdx.app.debug(Tag.TAG,"Button " + this.name + " Clicked");
+			// Logger.LogCat("Button " + this.name + " Clicked");
 			return super.click(x, y, pointer, button);
 	}
 
@@ -382,19 +382,7 @@ public class Button extends CB_View_Base
 	public void setHeight(float Height)
 	{
 		super.setHeight(Height);
-
-		Color c = null;
-		BitmapFont f = null;
-		HAlignment a = null;
-
-		if (this.lblTxt != null)
-		{
-			c = this.lblTxt.getFontColor();
-			f = this.lblTxt.getFont();
-			a = this.lblTxt.getHAlignment();
-		}
-
-		setText(getText(), f, c, a);
+		setText(getText());
 	}
 
 	public void setFocus(boolean value)

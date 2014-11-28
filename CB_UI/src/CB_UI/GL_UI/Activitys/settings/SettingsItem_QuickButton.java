@@ -1,9 +1,10 @@
-package CB_UI.GL_UI.Main.Actions.QuickButton;
+package CB_UI.GL_UI.Activitys.settings;
 
 import java.util.ArrayList;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GL_UI.Controls.QuickButtonList;
+import CB_UI.GL_UI.Main.Actions.QuickButton.QuickActions;
 import CB_UI.GL_UI.Main.Actions.QuickButton.QuickButtonItem;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.CB_View_Base;

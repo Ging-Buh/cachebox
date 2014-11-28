@@ -8,18 +8,14 @@ import java.util.TimerTask;
 
 
 
-
-
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_Utils.Plattform;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.ObjectSet;
 
-import de.CB.Test.Tag;
 import de.CB.TestBase.Actions.TestCaseBase;
 
 public class PixmapPackertest extends TestCaseBase
@@ -46,7 +42,7 @@ public class PixmapPackertest extends TestCaseBase
 		catch (FileNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		try
@@ -58,7 +54,7 @@ public class PixmapPackertest extends TestCaseBase
 		catch (FileNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		Thread thread = new Thread(new Runnable()
@@ -76,7 +72,7 @@ public class PixmapPackertest extends TestCaseBase
 				catch (FileNotFoundException e)
 				{
 					// TODO Auto-generated catch block
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 
 				try
@@ -88,7 +84,7 @@ public class PixmapPackertest extends TestCaseBase
 				catch (FileNotFoundException e)
 				{
 					// TODO Auto-generated catch block
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 			}
 		});
@@ -138,7 +134,7 @@ public class PixmapPackertest extends TestCaseBase
 			catch (FileNotFoundException e)
 			{
 				// TODO Auto-generated catch block
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 		else if (count < 12)
@@ -158,7 +154,7 @@ public class PixmapPackertest extends TestCaseBase
 					catch (FileNotFoundException e)
 					{
 						// TODO Auto-generated catch block
-						Gdx.app.error(Tag.TAG, "", e);
+						e.printStackTrace();
 					}
 				}
 			};
@@ -178,7 +174,7 @@ public class PixmapPackertest extends TestCaseBase
 					catch (FileNotFoundException e)
 					{
 						// TODO Auto-generated catch block
-						Gdx.app.error(Tag.TAG, "", e);
+						e.printStackTrace();
 					}
 
 				}

@@ -9,12 +9,11 @@ import CB_Core.Solver.TempEntity;
 public class FunctionCategories extends TreeMap<String, Functions>
 {
 	private static final long serialVersionUID = -4054421409675901933L;
-
-	// private Solver solver;
+	private Solver solver;
 
 	public FunctionCategories(Solver solver)
 	{
-		// this.solver = solver;
+		this.solver = solver;
 		Functions functions = new Functions("solverGroupText");
 		functions.add(new FunctionAlphaSum(solver));
 		functions.add(new FunctionAlphaPos(solver));

@@ -1,9 +1,5 @@
 package CB_Utils.Util;
 
-import CB_Utils.Tag;
-
-import com.badlogic.gdx.Gdx;
-
 public abstract class LoopThread
 {
 
@@ -47,7 +43,7 @@ public abstract class LoopThread
 						}
 						catch (InterruptedException e)
 						{
-							Gdx.app.error(Tag.TAG, "", e);
+							e.printStackTrace();
 						}
 					}
 					while (isAlive);
@@ -60,7 +56,7 @@ public abstract class LoopThread
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		if (lifeCycle == null) lifeCycleStart();
@@ -89,7 +85,7 @@ public abstract class LoopThread
 						}
 						catch (InterruptedException e)
 						{
-							Gdx.app.error(Tag.TAG, "", e);
+							e.printStackTrace();
 						}
 					}
 					while (isAlive);

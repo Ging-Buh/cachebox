@@ -10,7 +10,6 @@ import CB_Core.Events.CachListChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.GL_UI.Main.TabMainView;
 import CB_UI.GL_UI.Views.MapView;
 import CB_UI_Base.Enums.WrapType;
@@ -30,8 +29,7 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public class EditFilterSettings extends ActivityBase
 {
@@ -389,7 +387,7 @@ public class EditFilterSettings extends ActivityBase
 					synchronized (Database.Data.Query)
 					{
 						String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
-						Gdx.app.log(Tag.TAG, "Main.ApplyFilter: " + sqlWhere);
+						Logger.General("Main.ApplyFilter: " + sqlWhere);
 						Database.Data.Query.clear();
 						CacheListDAO cacheListDAO = new CacheListDAO();
 						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());

@@ -1,7 +1,5 @@
 package CB_Core.Enums;
 
-import CB_Core.Settings.CB_Core_Settings;
-
 public enum LogTypes
 {
 	found, // 0
@@ -59,7 +57,6 @@ public enum LogTypes
 	 */
 	public boolean isDirectLogType()
 	{
-		if (CB_Core_Settings.DirectOnlineLog.getValue()) return true;
 		int t = this.ordinal();
 		if (t == 4) return true; // enabled
 		if (t == 5) return true; // needs_maintenance

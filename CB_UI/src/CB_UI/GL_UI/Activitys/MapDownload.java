@@ -16,7 +16,6 @@ import org.apache.http.conn.ConnectTimeoutException;
 import CB_Core.Import.BreakawayImportThread;
 import CB_Locator.Map.ManagerBase;
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.ImportAnimation.AnimationType;
 import CB_UI.GL_UI.Controls.MapDownloadItem;
 import CB_UI_Base.GL_UI.Fonts;
@@ -40,7 +39,6 @@ import CB_Utils.Events.ProgresssChangedEventList;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.http.HttpUtils;
 
-import com.badlogic.gdx.Gdx;
 import com.thebuzzmedia.sjxp.XMLParser;
 import com.thebuzzmedia.sjxp.rule.DefaultRule;
 import com.thebuzzmedia.sjxp.rule.IRule;
@@ -271,7 +269,8 @@ public class MapDownload extends ActivityBase implements ProgressChangedEvent
 					}
 					catch (InterruptedException e)
 					{
-						Gdx.app.error(Tag.TAG, "", e);
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 
 					// chk download ready

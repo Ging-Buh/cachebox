@@ -223,7 +223,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	public void ActionUp() // Slider zur�ck scrolllen lassen
 	{
-		// Gdx.app.debug(Tag.TAG,"ActionUP");
+		// Logger.LogCat("ActionUP");
 
 		boolean QuickButtonShow = Config.quickButtonShow.getValue();
 
@@ -272,7 +272,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 	{
 		if (yPos == newYPos) return; // wir brauchen nichts Animieren
 
-		// Gdx.app.debug(Tag.TAG,"Start Animation To " + newYPos);
+		// Logger.LogCat("Start Animation To " + newYPos);
 
 		AnimationIsRunning = true;
 		AnimationTarget = newYPos;

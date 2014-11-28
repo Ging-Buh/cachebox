@@ -19,17 +19,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
@@ -48,7 +45,6 @@ import org.mapsforge.map.rendertheme.rule.CB_RenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
 import org.xml.sax.SAXException;
 
-import CB_Locator.LocatorSettings;
 import CB_Locator.Map.Descriptor;
 import CB_Locator.Map.TileGL;
 import CB_Locator.Map.TileGL.TileState;
@@ -56,7 +52,6 @@ import CB_Locator.Map.TileGL_Bmp;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Bitmap;
 import CB_Utils.Lists.F_List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
 /**
@@ -70,6 +65,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
 	private static final byte LAYERS = 11;
+	private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
 	private static final double STROKE_INCREASE = 1.5;
 	private static final byte STROKE_MIN_ZOOM_LEVEL = 12;
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
@@ -159,7 +155,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		}
 		else
 		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer RENDERTHEME Could not destroy RenderTheme");
+			LOGGER.log(Level.SEVERE, "RENDERTHEME Could not destroy RenderTheme");
 		}
 	}
 
@@ -204,23 +200,11 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		if (this.mapDatabase != null)
 		{
 			MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
-			if (mapReadResult.pointOfInterests.isEmpty() && mapReadResult.ways.isEmpty())
-			{
-				Gdx.app.debug(CB_Locator.Tag.TAG, "Empty Map reader result for Tile: " + rendererJob.tile.toString());
-			}
-			else
-			{
-				processReadMapData(mapReadResult);
-			}
-
-		}
-		else
-		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer MapDatabase are NULL");
-			return null;
+			processReadMapData(mapReadResult);
 		}
 
-		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile, rendererJob.displayModel.getTileSize());
+		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile,
+				rendererJob.displayModel.getTileSize());
 
 		TileBitmap bitmap = this.graphicFactory.createTileBitmap(rendererJob.displayModel.getTileSize(), rendererJob.hasAlpha);
 		this.canvasRasterer.setCanvasBitmap(bitmap);
@@ -235,56 +219,8 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		this.canvasRasterer.drawNodes(this.nodes);
 		this.canvasRasterer.drawNodes(this.areaLabels);
 
-		if (LocatorSettings.DEBUG_MapGrid.getValue()) DrawDebug(bitmap);
-
 		clearLists();
 		return bitmap;
-	}
-
-	private void DrawDebug(TileBitmap bitmap)
-	{
-		Canvas c = graphicFactory.createCanvas();
-		c.setBitmap(bitmap);
-
-		Paint p = graphicFactory.createPaint();
-		p.setColor(Color.RED);
-		p.setStrokeWidth(2);
-		p.setStyle(Style.STROKE);
-
-		p.setTypeface(FontFamily.DEFAULT, FontStyle.NORMAL);
-		p.setTextSize(20);
-		int s = bitmap.getHeight();
-
-		c.drawLine(0, 0, 0, s, p);
-		c.drawLine(0, s, s, s, p);
-		c.drawLine(s, s, s, 0, p);
-		c.drawLine(s, 0, 0, 0, p);
-
-		p.setStrokeWidth(0);
-		p.setColor(Color.BLACK);
-
-		String desc = "x=" + this.currentRendererJob.tile.tileX;
-		desc += " y=" + this.currentRendererJob.tile.tileY;
-		desc += " z=" + this.currentRendererJob.tile.zoomLevel;
-
-		Paint pOut = graphicFactory.createPaint();
-		pOut.setColor(Color.WHITE);
-		pOut.setStrokeWidth(13);
-		pOut.setStyle(Style.STROKE);
-
-		pOut.setTypeface(FontFamily.DEFAULT, FontStyle.NORMAL);
-		pOut.setTextSize(20);
-		c.drawText(desc, 10, 30, pOut);
-
-		Paint pIn = graphicFactory.createPaint();
-		pIn.setColor(Color.BLACK);
-		pIn.setStrokeWidth(0);
-		pIn.setStyle(Style.STROKE);
-
-		pIn.setTypeface(FontFamily.DEFAULT, FontStyle.NORMAL);
-		pIn.setTextSize(20);
-
-		c.drawText(desc, 10, 30, pIn);
 	}
 
 	public MapDatabase getMapDatabase()
@@ -447,15 +383,15 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		}
 		catch (ParserConfigurationException e)
 		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer.getRenderTheme", e);
+			LOGGER.log(Level.SEVERE, null, e);
 		}
 		catch (SAXException e)
 		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer.getRenderTheme", e);
+			LOGGER.log(Level.SEVERE, null, e);
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "MF_DatabaseRenderer.getRenderTheme", e);
+			LOGGER.log(Level.SEVERE, null, e);
 		}
 		return null;
 	}
@@ -585,7 +521,8 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(CB_Locator.Tag.TAG, "", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}

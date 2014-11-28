@@ -2,7 +2,6 @@ package CB_Locator.Map;
 
 import java.text.NumberFormat;
 
-import CB_Locator.Tag;
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -10,8 +9,8 @@ import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
+import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -107,7 +106,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "MapView.zoomChanged()", exc);
+			Logger.Error("MapView.zoomChanged()", "", exc);
 		}
 
 		if (imperialunits)
@@ -143,7 +142,8 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 		try
 		{
-			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
+			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont()
+					.getCapHeight());
 			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
 			CachedScaleDrawable = SpriteCacheBase.MapScale[scaleUnits - 3];
 			float margin = (this.getHeight() - bounds.height) / 1.6f;
@@ -151,7 +151,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 

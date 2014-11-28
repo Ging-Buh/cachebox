@@ -17,10 +17,8 @@ package CB_UI_Base.graphics;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.graphics.Images.IRotateDrawable;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -114,7 +112,7 @@ public class PolygonDrawable implements IRotateDrawable
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			batch.flush();
 			// reset color

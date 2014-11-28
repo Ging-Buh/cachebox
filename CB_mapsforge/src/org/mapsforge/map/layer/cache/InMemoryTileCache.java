@@ -15,19 +15,18 @@
 package org.mapsforge.map.layer.cache;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.mapsforge.Tag;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.queue.Job;
-
-import com.badlogic.gdx.Gdx;
 
 /**
  * A thread-safe cache for tile images with a variable size and LRU policy.
  */
 public class InMemoryTileCache implements TileCache {
-	
+	private static final Logger LOGGER = Logger.getLogger(InMemoryTileCache.class.getName());
+
 	private BitmapLRUCache lruCache;
 
 	/**
@@ -81,7 +80,7 @@ public class InMemoryTileCache implements TileCache {
 		}
 
 		if (this.lruCache.put(key, bitmap) != null) {
-			Gdx.app.log(Tag.TAG, "overwriting cached entry: " + key);
+			LOGGER.warning("overwriting cached entry: " + key);
 		}
 		bitmap.incrementRefCount();
 	}

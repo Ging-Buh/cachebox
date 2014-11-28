@@ -289,7 +289,7 @@ public abstract class EditTextFieldBase extends CB_View_Base implements ICopyPas
 
 		float noseOffset = popUp.getHalfWidth() / 2;
 
-		// Gdx.app.debug(Tag.TAG,"Show CopyPaste PopUp");
+		// Logger.LogCat("Show CopyPaste PopUp");
 
 		CB_RectF world = getWorldRec();
 

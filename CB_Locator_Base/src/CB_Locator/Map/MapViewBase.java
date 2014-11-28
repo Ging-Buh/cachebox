@@ -23,7 +23,6 @@ import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Locator;
 import CB_Locator.LocatorSettings;
-import CB_Locator.Tag;
 import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_UI_Base.Events.invalidateTextureEvent;
@@ -43,6 +42,7 @@ import CB_UI_Base.graphics.PolygonDrawable;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Math.PointD;
 import CB_Utils.Math.PointL;
@@ -360,7 +360,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 
 		camera.position.set(0, 0, 0);
 
-		// Gdx.app.debug(Tag.TAG,"MapView Size Changed MaxY=" + this.getMaxY());
+		// Logger.LogCat("MapView Size Changed MaxY=" + this.getMaxY());
 
 		requestLayout();
 
@@ -1404,7 +1404,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 			if (lastDynamicZoom != dynZoom)
 			{
 
-				// Gdx.app.debug(Tag.TAG,"Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
+				// Logger.LogCat("Mouse Zoom:" + div + "/" + zoomValue + "/" + dynZoom);
 
 				lastDynamicZoom = dynZoom;
 				zoomBtn.setZoom((int) lastDynamicZoom);
@@ -1569,7 +1569,7 @@ public abstract class MapViewBase extends CB_View_Base implements PositionChange
 		}
 		catch (Exception ex)
 		{
-			Gdx.app.error(Tag.TAG, "MapView -onTouchDragged Error", ex);
+			Logger.Error("MapView", "-onTouchDragged Error", ex);
 		}
 		return false;
 	}

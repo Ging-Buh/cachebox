@@ -34,9 +34,8 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
-import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.LogLevel;
 import CB_Utils.Plattform;
+import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
@@ -47,7 +46,6 @@ import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 import ch.fhnw.imvs.gpssimulator.SimulatorMain;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.InputProcessor;
@@ -62,6 +60,7 @@ public class DesktopMain
 
 	static GL CB_UI;
 	static float compassheading = -1;
+	// Retrieve the user preference node for the package com.mycompany
 	static Preferences prefs = Preferences.userNodeForPackage(de.DesktopMain.class);
 
 	@SuppressWarnings("unused")
@@ -102,7 +101,7 @@ public class DesktopMain
 				catch (BackingStoreException e)
 				{
 
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 
 			}
@@ -133,6 +132,9 @@ public class DesktopMain
 		InitalConfig();
 		Config.settings.ReadFromDB();
 
+		new DesktopLogger();
+		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
+
 		// create new splash
 		splash sp = new splash(0, 0, ui.Window.width, ui.Window.height, "Splash");
 
@@ -141,6 +143,7 @@ public class DesktopMain
 
 		CB_UI = new GL(ui.Window.width, ui.Window.height, sp, ma);
 
+		GL_View_Base.debug = debug;
 		GL_View_Base.disableScissor = scissor;
 
 		if (Config.installRev.getValue() < GlobalCore.CurrentRevision)
@@ -193,13 +196,7 @@ public class DesktopMain
 			lwjglAppCfg.title = "DCB Desctop Cachebox";
 			lwjglAppCfg.samples = 16;
 
-			final CB_LwjglApplication App = new CB_LwjglApplication(CB_UI, lwjglAppCfg);
-
-			// Set LogLevel
-			App.setLogLevel(LogLevel.getLevelId((LogLevel) CB_UI_Base_Settings.AktLogLevel.getEnumValue()));
-
-			App.setLogLevel(Application.LOG_DEBUG);
-
+			final LwjglApplication App = new LwjglApplication(CB_UI, lwjglAppCfg);
 			App.getGraphics().setContinuousRendering(false);
 
 			GL.listenerInterface = new GL_Listener_Interface()
@@ -377,7 +374,7 @@ public class DesktopMain
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
-					Gdx.app.debug(Tag.TAG, "LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 				}
 				System.exit(0);
 
@@ -454,7 +451,7 @@ public class DesktopMain
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 	}
@@ -481,7 +478,7 @@ public class DesktopMain
 		}
 		catch (ClassNotFoundException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		Database.Settings.StartUp(Config.WorkPath + "/User/Config.db3");
@@ -492,7 +489,7 @@ public class DesktopMain
 		}
 		catch (ClassNotFoundException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		try
@@ -501,7 +498,7 @@ public class DesktopMain
 		}
 		catch (ClassNotFoundException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		if (!FileIO.createDirectory(Config.WorkPath + "/User")) return;
 		Database.FieldNotes.StartUp(Config.WorkPath + "/User/FieldNotes.db3");

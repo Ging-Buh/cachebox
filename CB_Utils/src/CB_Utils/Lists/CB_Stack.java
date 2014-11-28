@@ -46,7 +46,7 @@ public class CB_Stack<T>
 		{
 			if (items.contains(item)) return;
 			items.add(item);
-			// Gdx.app.debug(Tag.TAG,"STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
+			// Logger.LogCat("STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
 			checkMaxItemSize();
 		}
 	}
@@ -62,13 +62,13 @@ public class CB_Stack<T>
 		{
 			if (items.size == 0)
 			{
-				// Gdx.app.debug(Tag.TAG,"STACK empty Get");
+				// Logger.LogCat("STACK empty Get");
 				return null;
 			}
 
 			T ret = items.remove(0);
 
-			// Gdx.app.debug(Tag.TAG,"STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
+			// Logger.LogCat("STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
 
 			return ret;
 		}

@@ -15,7 +15,6 @@ import CB_Core.Types.LogEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.DeleteSelectedCache;
 import CB_UI.GL_UI.Activitys.EditCache;
 import CB_UI.GL_UI.Controls.Dialogs.HintDialog;
@@ -34,7 +33,6 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class CB_AllContextMenuHandler
@@ -166,7 +164,7 @@ public class CB_AllContextMenuHandler
 						}
 						catch (InterruptedException e)
 						{
-							Gdx.app.error(Tag.TAG, "", e);
+							e.printStackTrace();
 						}
 
 						// Reload result from DB

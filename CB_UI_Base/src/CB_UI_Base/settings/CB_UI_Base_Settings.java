@@ -17,14 +17,11 @@ package CB_UI_Base.settings;
 
 import CB_UI_Base.Global;
 import CB_Utils.Config_Core;
-import CB_Utils.LogLevel;
 import CB_Utils.Settings.Audio;
 import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingColor;
 import CB_Utils.Settings.SettingDouble;
-import CB_Utils.Settings.SettingEnum;
-import CB_Utils.Settings.SettingFile;
 import CB_Utils.Settings.SettingFloat;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
@@ -32,12 +29,11 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingStoreType;
 import CB_Utils.Settings.SettingUsage;
 import CB_Utils.Settings.SettingsAudio;
-import CB_Utils.Settings.SettingsList;
 import CB_Utils.Util.HSV_Color;
 
 public interface CB_UI_Base_Settings
 {
-	// Abkï¿½rzende Schreibweisen fï¿½r die ï¿½bersichlichkeit bei den add Methoden
+	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
 	public static final SettingModus INVISIBLE = SettingModus.Invisible;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;
@@ -62,11 +58,9 @@ public interface CB_UI_Base_Settings
 
 	public static final SettingBool DebugSpriteBatchCountBuffer = new SettingBool("DebugSpriteBatchCountBuffer", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 
-	// public static final SettingBool DebugMode1 = new SettingBool("DebugMode", SettingCategory.Debug, EXPERT, false,
-	// SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool DebugMode = new SettingBool("DebugMode", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 
-	// public static final SettingBool WriteLoggerDebugMode = new SettingBool("WriteLoggerDebugMode", SettingCategory.Debug, EXPERT, false,
-	// SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool WriteLoggerDebugMode = new SettingBool("WriteLoggerDebugMode", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 
 	public static final SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", SettingCategory.Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
 
@@ -79,12 +73,5 @@ public interface CB_UI_Base_Settings
 	public static final SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", SettingCategory.LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), SettingStoreType.Global, SettingUsage.ACB);
 
 	public static final SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", SettingCategory.Skin, NORMAL, new HSV_Color(0.2f, 1f, 0.2f, 1f), SettingStoreType.Global, SettingUsage.ACB);
-
-	public static final SettingEnum<Enum<LogLevel>> AktLogLevel = new SettingEnum<Enum<LogLevel>>("AktLogLevel", SettingCategory.Debug, EXPERT, LogLevel.none, SettingStoreType.Platform, SettingUsage.ALL, LogLevel.none);
-	public static final SettingInt DebugLogCount = new SettingInt("DebugLogCount", SettingCategory.Debug, EXPERT, 10, SettingStoreType.Platform, SettingUsage.ALL);
-	public static final SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingFile Sel_LanguagePath = (SettingFile) SettingsList.addSetting(new SettingFile("Sel_LanguagePath", SettingCategory.Folder, NEVER, "data/lang/en-GB/strings.ini", SettingStoreType.Platform, SettingUsage.ALL, "lan"));
-	public static final SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang", SettingStoreType.Global, SettingUsage.ALL);
 
 }

@@ -9,7 +9,6 @@ import CB_Locator.Coordinate;
 import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEvent;
@@ -34,9 +33,8 @@ import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
-
-import com.badlogic.gdx.Gdx;
 
 public class WaypointView extends V_ListView implements SelectedCacheEvent, WaypointListChangedEvent
 {
@@ -235,22 +233,22 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		Point lastAndFirst = this.getFirstAndLastVisibleIndex();
 
-		Gdx.app.debug(Tag.TAG, "[Waypoint Select]");
+		Logger.DEBUG("[Waypoint Select]");
 		try
 		{
-			Gdx.app.debug(Tag.TAG, "First visible:[" + lastAndFirst.x + "]" + this.lvAdapter.getItem(lastAndFirst.x).toString());
+			Logger.DEBUG("First visible:[" + lastAndFirst.x + "]" + this.lvAdapter.getItem(lastAndFirst.x).toString());
 		}
 		catch (Exception e)
 		{
-			Gdx.app.debug(Tag.TAG, "no firstItem with index :" + lastAndFirst.x);
+			Logger.DEBUG("no firstItem with index :" + lastAndFirst.x);
 		}
 		try
 		{
-			Gdx.app.debug(Tag.TAG, "Last visible:[" + lastAndFirst.y + "]" + this.lvAdapter.getItem(lastAndFirst.y).toString());
+			Logger.DEBUG("Last visible:[" + lastAndFirst.y + "]" + this.lvAdapter.getItem(lastAndFirst.y).toString());
 		}
 		catch (Exception e)
 		{
-			Gdx.app.debug(Tag.TAG, "no lastItem with index :" + lastAndFirst.y);
+			Logger.DEBUG("no lastItem with index :" + lastAndFirst.y);
 		}
 
 		if (aktCache == null) return;
@@ -291,7 +289,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 						if (!(lastAndFirst.x <= id && lastAndFirst.y >= id))
 						{
 							this.scrollToItem(id);
-							Gdx.app.debug(Tag.TAG, "Scroll to:" + id);
+							Logger.DEBUG("Scroll to:" + id);
 						}
 					}
 
@@ -308,7 +306,7 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 				if (!(lastAndFirst.x <= 0 && lastAndFirst.y >= 0))
 				{
 					this.scrollToItem(0);
-					Gdx.app.debug(Tag.TAG, "Scroll to:" + 0);
+					Logger.DEBUG("Scroll to:" + 0);
 				}
 			}
 		}
@@ -390,7 +388,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 		Coordinate coord = GlobalCore.getSelectedCoord();
 		if (coord == null) coord = Locator.getCoordinate();
 		if ((coord == null) || (!coord.isValid())) coord = GlobalCore.getSelectedCache().Pos;
-		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
+		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(),
+				GlobalCore.getSelectedCache().Id, "", Translation.Get("wyptDefTitle"));
 
 		editWP(newWP, true);
 
@@ -473,44 +472,45 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 	private void deleteWP()
 	{
-		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitle() + "]", Translation.Get("!DelWP"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
-		{
-
-			@Override
-			public boolean onClick(int which, Object data)
-			{
-				switch (which)
+		GL_MsgBox.Show(Translation.Get("?DelWP") + "\n\n[" + aktWaypoint.getTitle() + "]", Translation.Get("!DelWP"),
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question, new OnMsgBoxClickListener()
 				{
-				case GL_MsgBox.BUTTON_POSITIVE:
-					// Yes button clicked
-					Database.DeleteFromDatabase(aktWaypoint);
-					GlobalCore.getSelectedCache().waypoints.remove(aktWaypoint);
-					GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
-					aktWaypoint = null;
-					that.setBaseAdapter(lvAdapter);
 
-					int itemCount = lvAdapter.getCount();
-					int itemSpace = that.getMaxItemCount();
-
-					if (itemSpace >= itemCount)
+					@Override
+					public boolean onClick(int which, Object data)
 					{
-						that.setUndragable();
-					}
-					else
-					{
-						that.setDragable();
-					}
+						switch (which)
+						{
+						case GL_MsgBox.BUTTON_POSITIVE:
+							// Yes button clicked
+							Database.DeleteFromDatabase(aktWaypoint);
+							GlobalCore.getSelectedCache().waypoints.remove(aktWaypoint);
+							GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), null);
+							aktWaypoint = null;
+							that.setBaseAdapter(lvAdapter);
 
-					that.scrollToItem(0);
+							int itemCount = lvAdapter.getCount();
+							int itemSpace = that.getMaxItemCount();
 
-					break;
-				case GL_MsgBox.BUTTON_NEGATIVE:
-					// No button clicked
-					break;
-				}
-				return true;
-			}
-		});
+							if (itemSpace >= itemCount)
+							{
+								that.setUndragable();
+							}
+							else
+							{
+								that.setDragable();
+							}
+
+							that.scrollToItem(0);
+
+							break;
+						case GL_MsgBox.BUTTON_NEGATIVE:
+							// No button clicked
+							break;
+						}
+						return true;
+					}
+				});
 	}
 
 	private void addProjection()
@@ -522,40 +522,42 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 		ProjName = (aktWaypoint != null) ? aktWaypoint.getTitle() : (aktCache != null) ? aktCache.getName() : null;
 
-		Gdx.app.debug(Tag.TAG, "WaypointView.addProjection()");
-		Gdx.app.debug(Tag.TAG, "   AktWaypoint:" + ((aktWaypoint == null) ? "null" : aktWaypoint.toString()));
-		Gdx.app.debug(Tag.TAG, "   AktCache:" + ((aktCache == null) ? "null" : aktCache.toString()));
-		Gdx.app.debug(Tag.TAG, "   using Coord:" + coord.toString());
+		Logger.DEBUG("WaypointView.addProjection()");
+		Logger.DEBUG("   AktWaypoint:" + ((aktWaypoint == null) ? "null" : aktWaypoint.toString()));
+		Logger.DEBUG("   AktCache:" + ((aktCache == null) ? "null" : aktCache.toString()));
+		Logger.DEBUG("   using Coord:" + coord.toString());
 
-		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord, new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
-		{
-
-			@Override
-			public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
-			{
-				if (coord == null || targetCoord == null || targetCoord.equals(coord)) return;
-
-				String newGcCode = "";
-				try
-				{
-					newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
-				}
-				catch (Exception e)
+		ProjectionCoordinate pC = new ProjectionCoordinate(ActivityBase.ActivityRec(), "Projection", coord,
+				new CB_UI.GL_UI.Activitys.ProjectionCoordinate.ReturnListner()
 				{
 
-					return;
-				}
-				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(), targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
-				GlobalCore.getSelectedCache().waypoints.add(newWP);
-				that.setBaseAdapter(lvAdapter);
-				aktWaypoint = newWP;
-				GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
-				WaypointDAO waypointDAO = new WaypointDAO();
-				waypointDAO.WriteToDatabase(newWP);
+					@Override
+					public void returnCoord(Coordinate targetCoord, Coordinate startCoord, double Bearing, double distance)
+					{
+						if (coord == null || targetCoord == null || targetCoord.equals(coord)) return;
 
-			}
+						String newGcCode = "";
+						try
+						{
+							newGcCode = Database.CreateFreeGcCode(GlobalCore.getSelectedCache().getGcCode());
+						}
+						catch (Exception e)
+						{
 
-		}, Type.projetion, ProjName);
+							return;
+						}
+						Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Entered Manually", targetCoord.getLatitude(),
+								targetCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "projiziert");
+						GlobalCore.getSelectedCache().waypoints.add(newWP);
+						that.setBaseAdapter(lvAdapter);
+						aktWaypoint = newWP;
+						GlobalCore.setSelectedWaypoint(GlobalCore.getSelectedCache(), newWP);
+						WaypointDAO waypointDAO = new WaypointDAO();
+						waypointDAO.WriteToDatabase(newWP);
+
+					}
+
+				}, Type.projetion, ProjName);
 
 		pC.show();
 
@@ -583,7 +585,8 @@ public class WaypointView extends V_ListView implements SelectedCacheEvent, Wayp
 
 					return;
 				}
-				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(), returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
+				Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "Measured", returnCoord.getLatitude(),
+						returnCoord.getLongitude(), GlobalCore.getSelectedCache().Id, "", "Measured");
 				GlobalCore.getSelectedCache().waypoints.add(newWP);
 				that.setBaseAdapter(lvAdapter);
 				aktWaypoint = newWP;

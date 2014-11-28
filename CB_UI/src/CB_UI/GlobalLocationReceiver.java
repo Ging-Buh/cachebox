@@ -18,8 +18,7 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils.CalculationType;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 /**
  * Empfängt alle Positions Änderungen und sortiert Liste oder spielt Sounds ab.
@@ -49,8 +48,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "GlobalLocationReceiver Load sound", e);
-			Gdx.app.error(Tag.TAG, "", e);
+			Logger.Error("GlobalLocationReceiver", "Load sound", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -99,8 +98,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				}
 				catch (Exception e)
 				{
-					Gdx.app.error(Tag.TAG, "GlobalLocationReceiver Global.PlaySound(Approach.ogg)", e);
-					Gdx.app.error(Tag.TAG, "", e);
+					Logger.Error("GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", e);
+					e.printStackTrace();
 				}
 
 				try
@@ -128,8 +127,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				}
 				catch (Exception e)
 				{
-					Gdx.app.error(Tag.TAG, "GlobalLocationReceiver if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
-					Gdx.app.error(Tag.TAG, "", e);
+					Logger.Error("GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
+					e.printStackTrace();
 				}
 
 				try
@@ -198,8 +197,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				}
 				catch (Exception e)
 				{
-					Gdx.app.error(Tag.TAG, "GlobalLocationReceiver Resort", e);
-					Gdx.app.error(Tag.TAG, "", e);
+					Logger.Error("GlobalLocationReceiver", "Resort", e);
+					e.printStackTrace();
 				}
 
 			}
@@ -264,7 +263,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 			if (!initialFixSoundCompleted && Locator.isGPSprovided() && GPS.getFixedSats() > 3)
 			{
 
-				Gdx.app.debug(Tag.TAG, "Play Fix");
+				Logger.LogCat("Play Fix");
 				if (PlaySounds) SoundCache.play(Sounds.GPS_fix);
 				initialFixSoundCompleted = true;
 				loseSoundCompleated = false;
@@ -273,8 +272,8 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "GlobalLocationReceiver Global.PlaySound(GPS_Fix.ogg)", e);
-			Gdx.app.error(Tag.TAG, "", e);
+			Logger.Error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
+			e.printStackTrace();
 		}
 
 	}

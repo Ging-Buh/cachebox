@@ -27,10 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import CB_Core.Tag;
 import CB_Core.Settings.CB_Core_Settings;
-
-import com.badlogic.gdx.Gdx;
 
 /**
  * Diese Klasse stellt eine verbindung zu Team-Cachebox.de her und gibt dort hinterlegte Informationen zurük. (GCAuth url ; Versionsnummer)
@@ -83,7 +80,7 @@ public class CB_Api
 			}
 			catch (JSONException e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}

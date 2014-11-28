@@ -23,7 +23,6 @@ import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
 import CB_Utils.Util.FileIO;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 public class TrackRecorder
@@ -36,13 +35,11 @@ public class TrackRecorder
 	public static boolean recording = false;
 	public static double SaveAltitude = 0;
 
-	// / Letzte aufgezeichnete Position des EmpfÃ¤ngers
+	// / Letzte aufgezeichnete Position des Empfängers
 	public static Location LastRecordedPosition = Location.NULL_LOCATION;
 
 	public static void StartRecording()
 	{
-
-		Gdx.app.debug(Tag.TAG, "Start Track recording");
 
 		GlobalCore.AktuelleRoute = new Track(Translation.Get("actualTrack"), Color.BLUE);
 		GlobalCore.AktuelleRoute.ShowRoute = true;
@@ -52,16 +49,11 @@ public class TrackRecorder
 		GlobalCore.AktuelleRoute.AltitudeDifference = 0;
 
 		String directory = CB_UI_Settings.TrackFolder.getValue();
-		if (!FileIO.createDirectory(directory))
-		{
-			Gdx.app.error(Tag.TAG, "Create Track folder faild");
-			return;
-		}
+		if (!FileIO.createDirectory(directory)) return;
 
 		if (gpxfile == null)
 		{
 			gpxfile = new File(directory + "/" + generateTrackFileName());
-			Gdx.app.debug(Tag.TAG, "Create Track file:" + gpxfile.getAbsolutePath());
 			try
 			{
 				writer = new FileWriter(gpxfile);
@@ -77,12 +69,12 @@ public class TrackRecorder
 				}
 				catch (IOException e)
 				{
-					Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
+					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
 				}
 			}
 			catch (IOException e1)
 			{
-				Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e1);
+				CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e1);
 			}
 
 			try
@@ -96,7 +88,7 @@ public class TrackRecorder
 			}
 			catch (IOException e)
 			{
-				Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
+				CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
 			}
 			writer = null;
 
@@ -178,11 +170,11 @@ public class TrackRecorder
 		}
 		catch (FileNotFoundException e)
 		{
-			Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
+			CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
+			CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
 		}
 		writeAnnotateMedia = false;
 		if (mustRecPos)
@@ -200,27 +192,18 @@ public class TrackRecorder
 
 	public static void recordPosition()
 	{
-		Gdx.app.debug(Tag.TAG, "Trackrecorder record position");
-		if (gpxfile == null || pauseRecording || !Locator.isGPSprovided())
-		{
 
-			if (gpxfile == null) Gdx.app.debug(Tag.TAG, "GpxFile==NULL, can't write Trackposition");
-			if (pauseRecording) Gdx.app.debug(Tag.TAG, "Pause recording");
-			if (!Locator.isGPSprovided()) Gdx.app.debug(Tag.TAG, "Wan't write Trackposition, no GPS-Provider");
-
-			return;
-		}
+		if (gpxfile == null || pauseRecording || !Locator.isGPSprovided()) return;
 
 		if (writeAnnotateMedia)
 		{
 			mustRecPos = true;
 		}
 
-		if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gÃ¼ltige Koordinaten vorliegen
+		if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
 		{
 			LastRecordedPosition = Locator.getLocation(GPS).cpy();
 			SaveAltitude = LastRecordedPosition.getAltitude();
-			Gdx.app.debug(Tag.TAG, "Wait for valid Gps-Position");
 		}
 		else
 		{
@@ -229,13 +212,13 @@ public class TrackRecorder
 			double AltDiff = 0;
 
 			// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
-			// zurÃ¼ckgelegt? Wenn nicht, dann nicht aufzeichnen.
+			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
 			float[] dist = new float[1];
 
 			MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS), Locator.getLongitude(GPS), dist);
 			float cachedDistance = dist[0];
-			float TrackDistance = Config.TrackDistance.getValue();
-			if (cachedDistance > TrackDistance)
+
+			if (cachedDistance > Config.TrackDistance.getValue())
 			{
 				StringBuilder sb = new StringBuilder();
 
@@ -272,11 +255,11 @@ public class TrackRecorder
 				}
 				catch (FileNotFoundException e)
 				{
-					Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
+					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
 				}
 				catch (IOException e)
 				{
-					Gdx.app.error(Tag.TAG, "Trackrecorder IOException", e);
+					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
 				}
 
 				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(_GPS), new Date());
@@ -304,29 +287,16 @@ public class TrackRecorder
 					AnnotateMedia(mFriendlyName, mMediaPath, mMediaCoord, mTimestamp);
 				}
 			}
-			else
-			{
-				Gdx.app.debug(Tag.TAG, "No record! distance<TrackDistance (" + cachedDistance + "<" + TrackDistance + ")");
-			}
 		}
 	}
 
 	public static void PauseRecording()
 	{
 		pauseRecording = !pauseRecording;
-		if (pauseRecording)
-		{
-			Gdx.app.debug(Tag.TAG, "Pause Trackrecording");
-		}
-		else
-		{
-			Gdx.app.debug(Tag.TAG, "Resume Trackrecording");
-		}
 	}
 
 	public static void StopRecording()
 	{
-		Gdx.app.debug(Tag.TAG, "Stop Trackrecording");
 		if (GlobalCore.AktuelleRoute != null)
 		{
 			GlobalCore.AktuelleRoute.IsActualTrack = false;

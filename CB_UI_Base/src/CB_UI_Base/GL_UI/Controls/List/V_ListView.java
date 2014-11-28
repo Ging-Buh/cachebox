@@ -2,13 +2,10 @@ package CB_UI_Base.GL_UI.Controls.List;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
 import CB_Utils.Math.Point;
-
-import com.badlogic.gdx.Gdx;
 
 public class V_ListView extends ListViewBase
 {
@@ -79,7 +76,7 @@ public class V_ListView extends ListViewBase
 						if (index >= 0 && index < mAddeedIndexList.size())
 						{
 							mAddeedIndexList.remove(index);
-							// Gdx.app.debug(Tag.TAG,"Remove Item " + tmp.getIndex());
+							// Logger.LogCat("Remove Item " + tmp.getIndex());
 							this.removeChild(tmp);
 							if (mCanDispose) tmp.dispose();
 						}
@@ -162,7 +159,7 @@ public class V_ListView extends ListViewBase
 								this.addChild(tmp);
 							}
 
-							// Gdx.app.debug(Tag.TAG,"Add Item " + i);
+							// Logger.LogCat("Add Item " + i);
 							mAddeedIndexList.add(i);
 						}
 						else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))
@@ -203,7 +200,7 @@ public class V_ListView extends ListViewBase
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 

@@ -2,11 +2,9 @@ package CB_Core.Converter;
 
 import java.io.IOException;
 
-import junit.framework.TestCase;
 import CB_Utils.Converter.Base64;
-import ___Test_Suites.Tag;
 
-import com.badlogic.gdx.Gdx;
+import junit.framework.TestCase;
 
 /**
  * test only CB used methods
@@ -30,7 +28,7 @@ public class Base64_Test extends TestCase
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		char[] c = new char[decrypted.length];

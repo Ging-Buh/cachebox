@@ -6,15 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import CB_Core.CoreSettingsForward;
-import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Types.Categories;
 import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public class CategoryDAO
 {
@@ -27,8 +25,9 @@ public class CategoryDAO
 		result.pinned = reader.getInt(2) != 0;
 
 		// alle GpxFilenames einlesen
-		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]
-			{ String.valueOf(result.Id) });
+		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?",
+				new String[]
+					{ String.valueOf(result.Id) });
 		reader2.moveToFirst();
 		while (reader2.isAfterLast() == false)
 		{
@@ -57,7 +56,7 @@ public class CategoryDAO
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "CreateNewCategory" + filename, exc);
+			Logger.Error("CreateNewCategory", filename, exc);
 		}
 
 		long Category_ID = 0;
@@ -93,7 +92,7 @@ public class CategoryDAO
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "CreateNewGpxFilename" + filename, exc);
+			Logger.Error("CreateNewGpxFilename", filename, exc);
 		}
 
 		long GPXFilename_ID = 0;
@@ -123,7 +122,7 @@ public class CategoryDAO
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "SetPinned CategoryDAO", exc);
+			Logger.Error("SetPinned", "CategoryDAO", exc);
 		}
 	}
 

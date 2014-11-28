@@ -13,10 +13,6 @@ import java.util.ArrayList;
 
 import android.content.res.AssetManager;
 
-import com.badlogic.gdx.Gdx;
-
-import de.cachebox_test.Tag;
-
 // Kopiert die OrdnerStructur des Asset-Ordners auf die SD-Karte (Cachbox Arbeitsverzeichniss)
 public class copyAssetFolder
 {
@@ -30,7 +26,7 @@ public class copyAssetFolder
 		catch (IOException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		try
@@ -44,14 +40,14 @@ public class copyAssetFolder
 				catch (IOException e)
 				{
 
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 			}
 		}
 		catch (Exception e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 

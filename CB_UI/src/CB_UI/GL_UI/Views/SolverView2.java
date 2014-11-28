@@ -10,7 +10,6 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.Events.WaypointListChangedEventList;
@@ -35,8 +34,7 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public class SolverView2 extends V_ListView implements SelectedCacheEvent
 {
@@ -48,7 +46,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	{
 		super(rec, Name);
 
-		Gdx.app.debug(Tag.TAG, "Create SolverView2 => " + rec.toString());
+		Logger.LogCat("Create SolverView2 => " + rec.toString());
 		/*
 		 * Label lblDummy = new Label(CB_RectF.ScaleCenter(rec, 0.8f), "DummyLabel"); lblDummy.setFont(Fonts.getNormal());
 		 * lblDummy.setText("Dummy SolverView"); setBackground(SpriteCache.ListBack); ^ if (GlobalCore.platform == Plattform.Desktop)
@@ -90,7 +88,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			if (s == null) s = "";
 			solver = new Solver(s);
 			solver.Solve();
-			// wenn der Solver noch leer ist oder die letzte Zeile nicht leer ist dann am Ende eine leere Zeile einfügen
+			// wenn der Solver noch leer ist oder die letzte Zeile nicht leer ist dann am Ende eine leere Zeile einfï¿½gen
 			if ((solver.size() == 0) || (solver.get(solver.size() - 1).getOrgText().length() > 0))
 			{
 				solver.add(solver.size(), new SolverZeile(solver, ""));
@@ -151,7 +149,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void Initial()
 	{
-		Gdx.app.debug(Tag.TAG, "SolverView2 => Initial()");
+		Logger.LogCat("SolverView2 => Initial()");
 		this.setListPos(0, false);
 		chkSlideBack();
 		GL.that.renderOnce();
@@ -294,10 +292,10 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 	@Override
 	public void SelectedCacheChanged(Cache cache, Waypoint waypoint)
 	{
-		if (cache == this.cache) return; // Cache hat sich nicht geändert!
+		if (cache == this.cache) return; // Cache hat sich nicht geï¿½ndert!
 		// Solver speichern
 		if (this.cache != null) Database.SetSolver(this.cache, solver.getSolverString());
-		// nächsten Cache laden
+		// nï¿½chsten Cache laden
 		this.cache = cache;
 		intiList();
 	}
@@ -351,7 +349,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 			if (!neu)
 			{
-				// wenn der letzte Eintrag geändert wurde dann soll hinter dem letzten Eintrag eine weitere neue Zeile eingefügt werden
+				// wenn der letzte Eintrag geï¿½ndert wurde dann soll hinter dem letzten Eintrag eine weitere neue Zeile eingefï¿½gt werden
 				if (mSelectedIndex == solver.size() - 1)
 				{
 					solver.add(solver.size(), new SolverZeile(solver, ""));
@@ -360,6 +358,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 			}
 
 			reloadList();
+
 			// Store Solver Content into Database after editing one line
 			if (GlobalCore.ifCacheSelected()) Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
 		}
@@ -394,8 +393,10 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 				solver = new Solver(solver.getSolverString());
 				solver.Solve();
 				solver.add(solver.size(), new SolverZeile(solver, ""));
-				// Store Solver Content into Database after deleting one line
+
+				// Store Solver Content into Database after editing one line
 				if (GlobalCore.ifCacheSelected()) Database.SetSolver(GlobalCore.getSelectedCache(), solver.getSolverString());
+
 				reloadList();
 				return true;
 			}
@@ -406,7 +407,7 @@ public class SolverView2 extends V_ListView implements SelectedCacheEvent
 
 	public void DeleteLine()
 	{
-		GL_MsgBox.Show("Zeile löschen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, deleteListener);
+		GL_MsgBox.Show("Zeile lï¿½schen?", "Solver", MessageBoxButtons.YesNo, MessageBoxIcon.Question, deleteListener);
 	}
 
 	private CoordinateGPS getSelectedCoordinateResult()

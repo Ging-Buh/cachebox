@@ -1,13 +1,12 @@
 package CB_UI_Base.Math;
 
 import CB_UI_Base.Global;
-import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Skin.CB_Skin;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.iChanged;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Vector2;
 
@@ -39,21 +38,21 @@ public class GL_UISizes implements SizeChangedEvent
 	public static void initial(float width, float height)
 	{
 
-		Gdx.app.debug(Tag.TAG, "Initial UISizes => " + width + "/" + height);
-		Gdx.app.debug(Tag.TAG, "DPI = " + DPI);
+		Logger.DEBUG("Initial UISizes => " + width + "/" + height);
+		Logger.DEBUG("DPI = " + DPI);
 
 		if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue())
 		{
 
 			DPI = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
 
-			Gdx.app.debug(Tag.TAG, "DPI != MapViewDPIFaktor " + DPI);
+			Logger.DEBUG("DPI != MapViewDPIFaktor " + DPI);
 
 			FontFaktor = (float) (0.666666666667 * DPI * CB_UI_Base_Settings.MapViewFontFaktor.getValue());
 			isInitial = false; // grössen müssen neu Berechnet werden
 		}
 
-		Gdx.app.debug(Tag.TAG, "Initial UISizes => isInitial" + isInitial);
+		Logger.DEBUG("Initial UISizes => isInitial" + isInitial);
 
 		if (SurfaceSize == null)
 		{
@@ -100,7 +99,7 @@ public class GL_UISizes implements SizeChangedEvent
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 			calcPos();
@@ -234,7 +233,7 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	private static void calcPos()
 	{
-		Gdx.app.debug(Tag.TAG, "GL_UISizes.calcPos()");
+		Logger.DEBUG("GL_UISizes.calcPos()");
 
 		float w = Global.isTab ? UI_Right.getWidth() : UI_Left.getWidth();
 		float h = Global.isTab ? UI_Right.getHeight() : UI_Left.getHeight();
@@ -291,7 +290,7 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	private static void calcSizes()
 	{
-		Gdx.app.debug(Tag.TAG, "GL_UISizes.calcSizes()");
+		Logger.DEBUG("GL_UISizes.calcSizes()");
 		// größe der Frames berechnen
 		int frameLeftwidth = UI_Size_Base.that.RefWidth;
 
@@ -348,17 +347,17 @@ public class GL_UISizes implements SizeChangedEvent
 
 	public static void writeDebug(String name, CB_RectF rec)
 	{
-		Gdx.app.debug(Tag.TAG, name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
+		Logger.LogCat(name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
 	}
 
 	public static void writeDebug(String name, float size)
 	{
-		Gdx.app.debug(Tag.TAG, name + "   ------ size =  " + size);
+		Logger.LogCat(name + "   ------ size =  " + size);
 	}
 
 	public static void writeDebug(String name, SizeF sizeF)
 	{
-		Gdx.app.debug(Tag.TAG, name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
+		Logger.LogCat(name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
 	}
 
 	public static void writeDebug(String name, SizeF[] SizeArray)
@@ -381,7 +380,7 @@ public class GL_UISizes implements SizeChangedEvent
 	@Override
 	public void sizeChanged()
 	{
-		Gdx.app.debug(Tag.TAG, "GL_UISizes.sizeChanged()");
+		Logger.DEBUG("GL_UISizes.sizeChanged()");
 		calcPos();
 
 	}

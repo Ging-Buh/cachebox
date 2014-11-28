@@ -11,9 +11,6 @@ import java.util.Map.Entry;
 
 import CB_Core.DB.Database;
 import CB_Utils.DB.CoreCursor;
-import ___Test_Suites.Tag;
-
-import com.badlogic.gdx.Gdx;
 
 public class TestDB extends Database
 {
@@ -38,7 +35,7 @@ public class TestDB extends Database
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -104,7 +101,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		// TODO Hack to get Rowcount
@@ -132,7 +129,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		return new TestCursor(rs, rowcount);
@@ -151,7 +148,7 @@ public class TestDB extends Database
 		catch (SQLException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 	}
@@ -320,7 +317,7 @@ public class TestDB extends Database
 		catch (SQLException e)
 		{
 
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -333,7 +330,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -346,7 +343,7 @@ public class TestDB extends Database
 		}
 		catch (SQLException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 	}

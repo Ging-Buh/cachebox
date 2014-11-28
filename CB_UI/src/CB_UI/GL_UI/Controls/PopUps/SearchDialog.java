@@ -42,7 +42,6 @@ import CB_Locator.Locator;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI.GlobalCore.IChkRedyHandler;
-import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.SearchOverPosition;
 import CB_UI.GL_UI.Activitys.FilterSettings.EditFilterSettings;
 import CB_UI.GL_UI.Controls.Slider;
@@ -75,8 +74,8 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
@@ -693,13 +692,13 @@ public class SearchDialog extends PopUp_Base
 
 	private void closeWaitDialog()
 	{
-		Gdx.app.debug(Tag.TAG, "SEARCH Close WD");
+		Logger.DEBUG("SEARCH Close WD");
 		if (wd != null) wd.close();
 	}
 
 	private void searchOnlineNow()
 	{
-		Gdx.app.debug(Tag.TAG, "SEARCH Show WD searchOverAPI");
+		Logger.DEBUG("SEARCH Show WD searchOverAPI");
 		wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 		{
 
@@ -714,7 +713,7 @@ public class SearchDialog extends PopUp_Base
 			@Override
 			public void run()
 			{
-				Gdx.app.debug(Tag.TAG, "SEARCH Run search overAPI");
+				Logger.DEBUG("SEARCH Run search overAPI");
 				Coordinate searchCoord = null;
 
 				if (MapView.that != null && MapView.that.isVisible())
@@ -840,7 +839,7 @@ public class SearchDialog extends PopUp_Base
 					}
 
 				}
-				Gdx.app.debug(Tag.TAG, "SEARCH Run search overAPI ready");
+				Logger.DEBUG("SEARCH Run search overAPI ready");
 				closeWaitDialog();
 			}
 
@@ -889,7 +888,7 @@ public class SearchDialog extends PopUp_Base
 	public void addSearch(String searchPattern, searchMode Mode)
 	{
 
-		Gdx.app.debug(Tag.TAG, "addSearch " + searchPattern);
+		Logger.DEBUG("addSearch " + searchPattern);
 
 		mEingabe.setText(searchPattern);
 		switchSearcheMode(Mode.ordinal());
@@ -924,7 +923,7 @@ public class SearchDialog extends PopUp_Base
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		Slider.that.registerPosChangedEvent(listner);
@@ -968,7 +967,7 @@ public class SearchDialog extends PopUp_Base
 			public void chekReady(int MemberType)
 			{
 				int ret = GroundspeakAPI.isValidAPI_Key(true);
-				Gdx.app.debug(Tag.TAG, "SEARCH isValidAPI_Key ret=" + ret);
+				Logger.DEBUG("SEARCH isValidAPI_Key ret=" + ret);
 				if (ret == 0)
 				{
 					GL.that.RunOnGL(new IRunOnGL()

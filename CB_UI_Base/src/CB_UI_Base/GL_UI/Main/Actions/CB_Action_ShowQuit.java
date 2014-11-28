@@ -1,7 +1,6 @@
 package CB_UI_Base.GL_UI.Main.Actions;
 
 import CB_Translation_Base.TranslationEngine.Translation;
-import CB_UI_Base.Tag;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.SpriteCacheBase.IconName;
@@ -11,8 +10,8 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.MenuID;
+import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowQuit extends CB_Action
@@ -59,7 +58,7 @@ public class CB_Action_ShowQuit extends CB_Action
 					if (which == GL_MsgBox.BUTTON_POSITIVE)
 					{
 
-						Gdx.app.log(Tag.TAG, "\r\n Quit");
+						Logger.DEBUG("\r\n Quit");
 						platformConector.callQuitt();
 					}
 					return true;

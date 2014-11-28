@@ -1,10 +1,10 @@
 package CB_UI_Base.GL_UI;
 
 import CB_UI_Base.Global;
-import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.Skin.SkinBase;
 import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.Files.FileType;
@@ -81,7 +81,7 @@ public class Fonts
 			font = Global.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
 		}
 
-		Gdx.app.debug(Tag.TAG, "Generate scaled Fonts from " + font);
+		Logger.DEBUG("Generate scaled Fonts from " + font);
 		generator = new FreeTypeFontGenerator(font);
 
 		double density = UiSizes.that.getScale();
@@ -208,7 +208,7 @@ public class Fonts
 		// Wenn der font nicht vorberechnet ist, dann wird er generiert
 		if (FileIO.FileExists(fontPath))
 		{
-			Gdx.app.debug(Tag.TAG, "load font for scale " + scale + " from " + fontPath);
+			Logger.DEBUG("load font for scale " + scale + " from " + fontPath);
 			// automatic load of png does not work on Android, so
 			// return new BitmapFont(Gdx.files.absolute(fontPath),false);
 			Texture tex = new Texture(Gdx.files.absolute(fontPath.replace(".fnt", ".png")));
@@ -219,7 +219,7 @@ public class Fonts
 		}
 		else
 		{
-			Gdx.app.debug(Tag.TAG, "generate font for scale " + scale);
+			Logger.DEBUG("generate font for scale " + scale);
 			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 			parameter.size = scale;
 			parameter.characters = DEFAULT_CHARACTER;

@@ -15,10 +15,7 @@
  */
 package CB_Utils.Settings;
 
-import CB_Utils.Tag;
 import CB_Utils.Lists.CB_List;
-
-import com.badlogic.gdx.Gdx;
 
 public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 {
@@ -28,7 +25,8 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 	private EnumTyp myEnum;
 
 	@SuppressWarnings("rawtypes")
-	public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, SettingStoreType StoreType, SettingUsage usage, EnumTyp enu)
+	public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, SettingStoreType StoreType,
+			SettingUsage usage, EnumTyp enu)
 	{
 		super(name, category, modus, defaultValue.name(), StoreType, usage);
 		myEnum = enu;
@@ -58,27 +56,10 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 	@Override
 	public void setValue(String value)
 	{
-		if (value == null || value.isEmpty()) return;
 		if (this.value.equals(value)) return;
-
-		try
-		{
-			myEnum = (EnumTyp) EnumTyp.valueOf(myEnum.getDeclaringClass(), value);
-			this.value = value;
-			setDirty();
-		}
-		catch (Exception e)
-		{
-			if (Gdx.app != null)
-			{
-				Gdx.app.error(Tag.TAG, "Wrong Enum" + value, e);
-			}
-			else
-			{
-				e.printStackTrace();
-			}
-
-		}
+		this.value = value;
+		myEnum = (EnumTyp) EnumTyp.valueOf(myEnum.getDeclaringClass(), value);
+		setDirty();
 	}
 
 	@SuppressWarnings(

@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.graphics.GL_Path;
 import CB_UI_Base.graphics.GL_Style;
 import CB_UI_Base.graphics.Join;
@@ -69,8 +70,6 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
 import CB_UI_Base.graphics.fromAndroid.RectF;
 
-import com.badlogic.gdx.Gdx;
-
 /**
  * The rendering part of AndroidSVG.
  * <p>
@@ -82,12 +81,13 @@ import com.badlogic.gdx.Gdx;
 public class SVGAndroidRenderer
 {
 	private final ext_GraphicFactory GRAPHIC_FACTORY;
-	private static final String TAG = "SVGParser";
 
 	public SVGAndroidRenderer(ext_GraphicFactory factory)
 	{
 		GRAPHIC_FACTORY = factory;
 	}
+
+	private static final Logger LOGGER = Logger.getLogger(SVG.class.getName());
 
 	private ext_Canvas canvas;
 	private Box canvasViewPort;
@@ -257,7 +257,8 @@ public class SVGAndroidRenderer
 		checkXMLSpaceAttribute(rootObj);
 
 		// Render the document
-		render(rootObj, rootObj.width, rootObj.height, (viewBox != null) ? viewBox : rootObj.viewBox, (positioning != null) ? positioning : rootObj.preserveAspectRatio);
+		render(rootObj, rootObj.width, rootObj.height, (viewBox != null) ? viewBox : rootObj.viewBox, (positioning != null) ? positioning
+				: rootObj.preserveAspectRatio);
 	}
 
 	// ==============================================================================
@@ -369,7 +370,8 @@ public class SVGAndroidRenderer
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		// Restore style state
 		try
@@ -378,7 +380,8 @@ public class SVGAndroidRenderer
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -500,19 +503,19 @@ public class SVGAndroidRenderer
 
 	private static void warn(String format, Object... args)
 	{
-		Gdx.app.log(TAG, String.format(format, args));
+		LOGGER.log(Level.WARNING, String.format(format, args));
 
 	}
 
 	private static void error(String format, Object... args)
 	{
-		Gdx.app.error(TAG, String.format(format, args));
+		LOGGER.log(Level.SEVERE, String.format(format, args));
 
 	}
 
 	private static void debug(String format, Object... args)
 	{
-		Gdx.app.debug(TAG, String.format(format, args));
+		if (LibConfig.DEBUG) LOGGER.log(Level.INFO, String.format(format, args));
 	}
 
 	// ==============================================================================
@@ -625,7 +628,8 @@ public class SVGAndroidRenderer
 		if (matrixStack.peek().invert())
 		{
 			float[] pts =
-				{ obj.boundingBox.minX, obj.boundingBox.minY, obj.boundingBox.maxX(), obj.boundingBox.minY, obj.boundingBox.maxX(), obj.boundingBox.maxY(), obj.boundingBox.minX, obj.boundingBox.maxY() };
+				{ obj.boundingBox.minX, obj.boundingBox.minY, obj.boundingBox.maxX(), obj.boundingBox.minY, obj.boundingBox.maxX(),
+						obj.boundingBox.maxY(), obj.boundingBox.minX, obj.boundingBox.maxY() };
 			// Now concatenate the parent's matrix to create a child-to-parent transform
 			m.preConcat(canvas.getMatrix());
 			m.mapPoints(pts);
@@ -759,7 +763,8 @@ public class SVGAndroidRenderer
 					maskedContentBuf[x] = 0;
 					continue;
 				}
-				int maskAlpha = (r * LUMINANCE_TO_ALPHA_RED + g * LUMINANCE_TO_ALPHA_GREEN + b * LUMINANCE_TO_ALPHA_BLUE) * a / (255 << LUMINANCE_FACTOR_SHIFT);
+				int maskAlpha = (r * LUMINANCE_TO_ALPHA_RED + g * LUMINANCE_TO_ALPHA_GREEN + b * LUMINANCE_TO_ALPHA_BLUE) * a
+						/ (255 << LUMINANCE_FACTOR_SHIFT);
 				int content = maskedContentBuf[x];
 				int contentAlpha = (content >> 24) & 0xff;
 				contentAlpha = (contentAlpha * maskAlpha) / 255;
@@ -1330,7 +1335,8 @@ public class SVGAndroidRenderer
 
 			if (child instanceof SVG.TextSequence)
 			{
-				textprocessor.processText(textXMLSpaceTransform(((SVG.TextSequence) child).text, isFirstChild, !iter.hasNext() /* isLastChild */));
+				textprocessor
+						.processText(textXMLSpaceTransform(((SVG.TextSequence) child).text, isFirstChild, !iter.hasNext() /* isLastChild */));
 			}
 			else
 			{
@@ -2357,7 +2363,8 @@ public class SVGAndroidRenderer
 	 * Some of this code has been borrowed from the Batik library (Apache-2 license).
 	 */
 
-	private static void arcTo(float lastX, float lastY, float rx, float ry, float angle, boolean largeArcFlag, boolean sweepFlag, float x, float y, PathInterface pather, ext_GraphicFactory GRAPHIC_FACTORY)
+	private static void arcTo(float lastX, float lastY, float rx, float ry, float angle, boolean largeArcFlag, boolean sweepFlag, float x,
+			float y, PathInterface pather, ext_GraphicFactory GRAPHIC_FACTORY)
 	{
 		if (lastX == x && lastY == y)
 		{
@@ -2478,7 +2485,8 @@ public class SVGAndroidRenderer
 		// Final step is to add the bezier curves to the path
 		for (int i = 0; i < bezierPoints.length; i += 6)
 		{
-			pather.cubicTo(bezierPoints[i], bezierPoints[i + 1], bezierPoints[i + 2], bezierPoints[i + 3], bezierPoints[i + 4], bezierPoints[i + 5]);
+			pather.cubicTo(bezierPoints[i], bezierPoints[i + 1], bezierPoints[i + 2], bezierPoints[i + 3], bezierPoints[i + 4],
+					bezierPoints[i + 5]);
 		}
 	}
 
@@ -2811,7 +2819,8 @@ public class SVGAndroidRenderer
 		PreserveAspectRatio positioning = (marker.preserveAspectRatio != null) ? marker.preserveAspectRatio : PreserveAspectRatio.LETTERBOX;
 		if (!positioning.equals(PreserveAspectRatio.STRETCH))
 		{
-			float aspectScale = (positioning.getScale() == PreserveAspectRatio.Scale.Slice) ? Math.max(xScale, yScale) : Math.min(xScale, yScale);
+			float aspectScale = (positioning.getScale() == PreserveAspectRatio.Scale.Slice) ? Math.max(xScale, yScale) : Math.min(xScale,
+					yScale);
 			xScale = yScale = aspectScale;
 		}
 
@@ -3330,7 +3339,8 @@ public class SVGAndroidRenderer
 
 		if ((obj instanceof SVG.Group) && !userUnits)
 		{
-			warn("<clipPath clipPathUnits=\"objectBoundingBox\"> is not supported when referenced from container elements (like %s)", obj.getClass().getSimpleName());
+			warn("<clipPath clipPathUnits=\"objectBoundingBox\"> is not supported when referenced from container elements (like %s)", obj
+					.getClass().getSimpleName());
 			return;
 		}
 
@@ -3797,7 +3807,8 @@ public class SVGAndroidRenderer
 		if (w == 0 || h == 0) return;
 
 		// "If attribute 'preserveAspectRatio' is not specified, then the effect is as if a value of xMidYMid meet were specified."
-		PreserveAspectRatio positioning = (pattern.preserveAspectRatio != null) ? pattern.preserveAspectRatio : PreserveAspectRatio.LETTERBOX;
+		PreserveAspectRatio positioning = (pattern.preserveAspectRatio != null) ? pattern.preserveAspectRatio
+				: PreserveAspectRatio.LETTERBOX;
 
 		// Push the state
 		statePush();

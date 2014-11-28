@@ -5,13 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import CB_Core.Tag;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DB.Database;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public class PocketqueryDAO
 {
@@ -29,7 +27,7 @@ public class PocketqueryDAO
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "Write Pocketquery to DB" + pq.Name, exc);
+			Logger.Error("Write Pocketquery to DB", pq.Name, exc);
 			return -1;
 		}
 
@@ -68,7 +66,7 @@ public class PocketqueryDAO
 					catch (ParseException e)
 					{
 						// PQ ist in der DB, aber das Datum konnte nicht geparst werden
-						Gdx.app.error(Tag.TAG, "", e);
+						e.printStackTrace();
 						return new Date(0);
 					}
 				}

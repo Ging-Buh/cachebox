@@ -1,4 +1,4 @@
-package CB_UI_Base.view.settings;
+package CB_UI.GL_UI.Activitys.settings;
 
 import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
@@ -57,7 +57,7 @@ public class SettingsItemBase extends ListViewItemBackground
 	@Override
 	public boolean click(int x, int y, int pointer, int button)
 	{
-		// wenn Item disabled ein Behandelt zurï¿½ck schicken,
+		// wenn Item disabled ein Behandelt zurück schicken,
 		// damit keine weiteren Abfragen durchgereicht werden.
 		// Auch wenn dieses Item ein OnClickListner hat.
 		if (isDisabled) return true;

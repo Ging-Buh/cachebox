@@ -1,4 +1,4 @@
-package CB_UI_Base.view.settings;
+package CB_UI.GL_UI.Activitys.settings;
 
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
@@ -11,7 +11,7 @@ public class SettingsItem_Color extends SettingsItemBase
 {
 	private Sprite colorRec;
 	private static CB_RectF Bounds;
-	private final SettingColor colorSetting;
+	private SettingColor colorSetting;
 
 	public SettingsItem_Color(CB_RectF rec, int Index, SettingColor colorSetting)
 	{
@@ -27,8 +27,6 @@ public class SettingsItem_Color extends SettingsItemBase
 		{
 			Bounds = new CB_RectF(this.getWidth() - (getHeight() - 10), 5, getHeight() - 10, getHeight() - 10);
 		}
-
-		if (colorSetting.getValue() == null) return;
 
 		if (colorRec == null)
 		{

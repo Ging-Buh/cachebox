@@ -16,7 +16,6 @@
 
 package CB_UI_Base.GL_UI.Controls;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
@@ -25,8 +24,8 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
+import CB_Utils.Log.Logger;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -119,12 +118,12 @@ public class Label extends CB_View_Base
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
-			// kommt manchmal wenn der Text geï¿½ndert wird
+			// kommt manchmal wenn der Text geändert wird
 			makeText();
 		}
 		catch (NullPointerException e)
 		{
-			// kommt manchmal wenn der Text geï¿½ndert wird
+			// kommt manchmal wenn der Text geändert wird
 			makeText();
 		}
 	}
@@ -141,8 +140,9 @@ public class Label extends CB_View_Base
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-			Gdx.app.error(Tag.TAG, "", e);
-			Gdx.app.debug(Tag.TAG, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
+			e.printStackTrace();
+			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -159,8 +159,9 @@ public class Label extends CB_View_Base
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-			Gdx.app.error(Tag.TAG, "", e);
-			Gdx.app.debug(Tag.TAG, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
+			e.printStackTrace();
+			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -177,8 +178,9 @@ public class Label extends CB_View_Base
 		catch (Exception e)
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
-			Gdx.app.error(Tag.TAG, "", e);
-			Gdx.app.debug(Tag.TAG, this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
+			e.printStackTrace();
+			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
+					+ " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -202,7 +204,7 @@ public class Label extends CB_View_Base
 
 	private void setTextPosition()
 	{
-		float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begrï¿½ndet
+		float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begründet
 		if (innerWidth > bounds.width)
 		{
 			if (mHAlignment == HAlignment.CENTER)
@@ -410,7 +412,7 @@ public class Label extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		// todo den korrekten Font (original Fontgrï¿½sse nicht bekannt) setzen
+		// todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
 		mFont = Fonts.getNormal();
 		mColor = COLOR.getFontColor();
 		initLabel();
@@ -434,22 +436,11 @@ public class Label extends CB_View_Base
 	@Override
 	public void dispose()
 	{
-		super.dispose();
 		TextObject = null;
 		mVAlignment = null;
 		mHAlignment = null;
 		mText = null;
 		bounds = null;
-	}
-
-	public Color getFontColor()
-	{
-		return this.mColor;
-	}
-
-	public HAlignment getHAlignment()
-	{
-		return mHAlignment;
 	}
 
 }

@@ -5,16 +5,13 @@ import java.util.Map.Entry;
 
 import CB_Core.DB.Database;
 import CB_Utils.DB.CoreCursor;
+import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
-import com.badlogic.gdx.Gdx;
-
-import de.cachebox_test.Tag;
 
 public class AndroidDB extends Database
 {
@@ -65,7 +62,7 @@ public class AndroidDB extends Database
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "AndroidDb resetDB", exc);
+			Logger.Error("AndroidDb", "resetDB", exc);
 		}
 	}
 
@@ -136,7 +133,7 @@ public class AndroidDB extends Database
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 		return ret;

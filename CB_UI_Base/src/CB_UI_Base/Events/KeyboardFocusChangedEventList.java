@@ -1,8 +1,8 @@
 package CB_UI_Base.Events;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.Controls.EditTextFieldBase;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.Gdx;
 
@@ -14,7 +14,7 @@ public class KeyboardFocusChangedEventList
 	{
 		synchronized (list)
 		{
-			Gdx.app.log(Tag.TAG, "FocusChangedEventList register" + event.toString());
+			Logger.LogCat("FocusChangedEventList register" + event.toString());
 			if (!list.contains(event)) list.add(event);
 		}
 	}
@@ -23,7 +23,7 @@ public class KeyboardFocusChangedEventList
 	{
 		synchronized (list)
 		{
-			Gdx.app.debug(Tag.TAG, "FocusChangedEventList unregister" + event.toString());
+			Logger.LogCat("FocusChangedEventList unregister" + event.toString());
 			list.remove(event);
 		}
 	}
@@ -44,7 +44,7 @@ public class KeyboardFocusChangedEventList
 			for (int i = 0, n = list.size(); i < n; i++)
 			{
 				KeyboardFocusChangedEvent event = list.get(i);
-				// Gdx.app.debug(Tag.TAG,"FocusChangedEventList fire to " + event.toString());
+				// Logger.LogCat("FocusChangedEventList fire to " + event.toString());
 				event.KeyboardFocusChanged(focus);
 			}
 		}

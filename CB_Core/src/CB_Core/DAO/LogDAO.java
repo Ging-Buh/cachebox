@@ -4,13 +4,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
-import CB_Core.Tag;
 import CB_Core.DB.Database;
 import CB_Core.Import.ImporterProgress;
 import CB_Core.Types.LogEntry;
 import CB_Utils.DB.Database_Core.Parameters;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public class LogDAO
 {
@@ -31,7 +29,7 @@ public class LogDAO
 		}
 		catch (Exception exc)
 		{
-			Gdx.app.error(Tag.TAG, "Write Log", exc);
+			Logger.Error("Write Log", "", exc);
 		}
 
 	}
@@ -62,7 +60,7 @@ public class LogDAO
 				// Indexiert werden
 				// und nur die noch nicht vorhandenen Logs geschrieben werden.
 
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 
 		}

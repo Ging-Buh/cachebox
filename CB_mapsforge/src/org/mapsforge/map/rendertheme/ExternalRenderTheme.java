@@ -65,7 +65,7 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 			}
 			 bufferedReader.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+						e.printStackTrace();
 		}
  	}
 

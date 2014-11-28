@@ -44,7 +44,7 @@ public class CopiePastePopUp extends PopUp_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// Gdx.app.debug(Tag.TAG,"Paste Button Clicked");
+				// Logger.LogCat("Paste Button Clicked");
 				close();
 				String Msg = copyPasteControl.pasteFromClipboard();
 				if (Msg != null) GL.that.Toast(Translation.Get("PasteFromClipboard") + Global.br + Msg);
@@ -64,7 +64,7 @@ public class CopiePastePopUp extends PopUp_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// Gdx.app.debug(Tag.TAG,"Copy Button Clicked");
+				// Logger.LogCat("Copy Button Clicked");
 				close();
 				String Msg = copyPasteControl.copyToClipboard();
 				if (Msg != null) GL.that.Toast(Translation.Get("CopyToClipboard") + Global.br + Msg);
@@ -84,7 +84,7 @@ public class CopiePastePopUp extends PopUp_Base
 			@Override
 			public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 			{
-				// Gdx.app.debug(Tag.TAG,"Cut Button Clicked");
+				// Logger.LogCat("Cut Button Clicked");
 				close();
 				String Msg = copyPasteControl.cutToClipboard();
 				if (Msg != null) GL.that.Toast(Translation.Get("CutToClipboard") + Global.br + Msg);

@@ -1,8 +1,11 @@
 package CB_UI.GL_UI.Views.TestViews;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import CB_Locator.Coordinate;
 import CB_Locator.CoordinateGPS;
-import CB_UI.Tag;
 import CB_UI.GL_UI.Activitys.CreateTrackOverMapActivity;
 import CB_UI_Base.Energy;
 import CB_UI_Base.Enums.WrapType;
@@ -15,7 +18,10 @@ import CB_UI_Base.GL_UI.Controls.EditTextField;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.Controls.Label;
 import CB_UI_Base.GL_UI.Controls.ZoomButtons;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog;
+import CB_UI_Base.GL_UI.Controls.Dialogs.ProgressDialog.iCancelListner;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
+import CB_UI_Base.GL_UI.interfaces.RunnableReadyHandler;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UI_Size_Base;
@@ -56,11 +62,8 @@ public class TestView extends CB_View_Base
 
 		// ####################################################
 
-		final Label label = new Label(new CB_RectF(50, 50, 500, 100), "/ExtSD/Карти/Vector Maps");
+		Label label = new Label(new CB_RectF(50, 50, 500, 100), "/ExtSD/Карти/Vector Maps");
 		this.addChild(label);
-
-		label.dispose();
-
 		// ####################################################
 
 		// Setting Button
@@ -77,15 +80,6 @@ public class TestView extends CB_View_Base
 
 				CreateTrackOverMapActivity activity = new CreateTrackOverMapActivity("createTrackOverMap");
 				activity.show();
-
-				try
-				{
-					label.getWidth();
-				}
-				catch (Exception e)
-				{
-					Gdx.app.error(Tag.TAG, "Test Exception", e);
-				}
 
 				return true;
 			}
@@ -253,4 +247,81 @@ public class TestView extends CB_View_Base
 		return result;
 	}
 
+	ProgressDialog PD;
+
+	private void showProgress()
+	{
+		final AtomicBoolean cancel = new AtomicBoolean(false);
+
+		final RunnableReadyHandler UploadFieldNotesdThread = new RunnableReadyHandler()
+		{
+
+			int progress = 0;
+
+			@Override
+			public boolean cancel()
+			{
+				return cancel.get();
+			}
+
+			@Override
+			public void run()
+			{
+
+				do
+				{
+					try
+					{
+						Thread.sleep(100);
+					}
+					catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					progress++;
+
+					PD.setProgress("", Integer.toString(progress) + "%", progress);
+
+					if (progress >= 100) progress = 0;
+
+				}
+				while (!cancel.get());
+
+				System.out.print("Ready");
+
+			}
+
+			@Override
+			public void RunnableReady(boolean canceld)
+			{
+				GL.that.Toast("Runable Ready");
+				PD.close();
+			}
+		};
+
+		PD = ProgressDialog.Show("Upload FieldNotes", UploadFieldNotesdThread);
+
+		PD.setCancelListner(new iCancelListner()
+		{
+
+			@Override
+			public void isCanceld()
+			{
+				Timer t = new Timer();
+				TimerTask tt = new TimerTask()
+				{
+
+					@Override
+					public void run()
+					{
+						cancel.set(true);
+					}
+				};
+				t.schedule(tt, 3000);
+			}
+		});
+
+	}
 }

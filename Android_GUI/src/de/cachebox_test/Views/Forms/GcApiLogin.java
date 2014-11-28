@@ -18,12 +18,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
-
-import com.badlogic.gdx.Gdx;
-
 import de.cachebox_test.Global;
 import de.cachebox_test.R;
-import de.cachebox_test.Tag;
 import de.cachebox_test.main;
 import de.cachebox_test.Ui.ActivityUtils;
 
@@ -91,7 +87,7 @@ public class GcApiLogin extends Activity
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 

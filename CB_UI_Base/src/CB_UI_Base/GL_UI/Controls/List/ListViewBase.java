@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.GL_View_Base;
@@ -13,10 +12,10 @@ import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
+import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.MoveableList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -49,17 +48,17 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract float getListViewLength();
 
 	/**
-	 * Wen True, kï¿½nnen die Items verschoben werden
+	 * Wen True, können die Items verschoben werden
 	 */
 	protected Boolean mIsDrageble = true;
 
 	/**
-	 * Ermï¿½glicht den Zugriff auf die Liste, welche Dargestellt werden soll.
+	 * Ermöglicht den Zugriff auf die Liste, welche Dargestellt werden soll.
 	 */
 	protected Adapter mBaseAdapter;
 
 	/**
-	 * Enthï¿½llt die Indexes, welche schon als Child exestieren.
+	 * Enthällt die Indexes, welche schon als Child exestieren.
 	 */
 	CB_List<Integer> mAddeedIndexList = new CB_List<Integer>();
 
@@ -77,7 +76,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected int mLastIndex = 0;
 
 	/**
-	 * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so Groï¿½ sind wie das kleinste Item in der List.
+	 * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so Groß sind wie das kleinste Item in der List.
 	 */
 	protected int mMaxItemCount = -1;
 
@@ -86,7 +85,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected float mcalcAllSizeBase = 0f;
 
 	/**
-	 * Komplette Breite oder Hï¿½he aller Items
+	 * Komplette Breite oder Höhe aller Items
 	 */
 	protected float mAllSize = 0f;
 
@@ -170,7 +169,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	/**
-	 * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich lï¿½nger dauert, ist
+	 * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich länger dauert, ist
 	 * der Standard auf False gesetzt.
 	 * 
 	 * @param value
@@ -249,7 +248,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		// Position setzen, damit die items neu geladen werden
 		setListPos(mPos, false);
-		// Gdx.app.debug(Tag.TAG,"SetListPos Relod Items");
+		// Logger.DEBUG("SetListPos Relod Items");
 		GL.that.renderOnce();
 
 	}
@@ -293,7 +292,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract void RenderThreadSetPos(float value, boolean Kinetic);
 
 	/**
-	 * added die sichtbaren Items als Child und speichert den Index in einer Liste, damit das Item nicht ein zweites mal hinzugefï¿½gt wird.
+	 * added die sichtbaren Items als Child und speichert den Index in einer Liste, damit das Item nicht ein zweites mal hinzugefügt wird.
 	 * Wenn Kinetic == True werden mehr Items geladen, damit beim schnellen Scrollen die Items schon erstellt sind, bevor sie in den
 	 * sichtbaren Bereich kommen.
 	 * 
@@ -302,7 +301,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract void addVisibleItems(boolean Kinetic);
 
 	/**
-	 * Fragt die Hï¿½hen aller Items ab und speichert die damit berechneten Positonen ab.
+	 * Fragt die Höhen aller Items ab und speichert die damit berechneten Positonen ab.
 	 */
 	protected abstract void calcDefaultPosList();
 
@@ -346,7 +345,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 			if (emptyMsg != null) emptyMsg.draw(batch, 0.5f);
 		}
@@ -399,7 +398,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 
@@ -414,19 +413,19 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 	}
 
 	/**
-	 * ï¿½berprï¿½ft ob die Liste oben oder unten Platz hat und lï¿½sst eine Animation aus, in der die Liste auf die erste oder letzte Position
+	 * Überprüft ob die Liste oben oder unten Platz hat und lösst eine Animation aus, in der die Liste auf die erste oder letzte Position
 	 * scrollt.
 	 */
 	@Override
 	public void chkSlideBack()
 	{
-		// Gdx.app.debug(Tag.TAG,"chkSlideBack()");
+		// Logger.LogCat("chkSlideBack()");
 		if (!mIsDrageble)
 		{
 			startAnimationtoTop();
@@ -480,7 +479,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		float versatz = (i < lastAndFirst.y) ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
 
-		Gdx.app.debug(Tag.TAG, "SetListPos -> ScrollTO Item [" + i + "]");
+		Logger.DEBUG("SetListPos -> ScrollTO Item [" + i + "]");
 
 		try
 		{
@@ -495,14 +494,14 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 
 	public void scrollTo(float Pos)
 	{
 
-		// Gdx.app.debug(Tag.TAG,"Scroll TO:" + Pos);
+		// Logger.LogCat("Scroll TO:" + Pos);
 
 		mAnimationTarget = Pos;
 		stopTimer();
@@ -532,6 +531,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 						stopTimer();
 						return;
 					}
+
+					// Logger.DEBUG("Set Animatet ListPos");
 					setListPos(newPos, true);
 				}
 
@@ -539,7 +540,8 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+
+			e.printStackTrace();
 		}
 	}
 
@@ -612,7 +614,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 					}
 				}
 
-				// alle Items lï¿½schen, damit das Selection flag neu gesetzt werden kann.
+				// alle Items löschen, damit das Selection flag neu gesetzt werden kann.
 				if (childs.size() == 0)
 				{
 					reloadItems();
@@ -680,14 +682,14 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		}
 
-		// Gdx.app.debug(Tag.TAG,"getLastVisiblePosition = " + ret);
+		// Logger.LogCat("getLastVisiblePosition = " + ret);
 
 		return ret;
 	}
 
 	/**
-	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden kï¿½nnen, wenn alle Items so Groï¿½ sind wie das kleinste Item in der
-	 * List, zurï¿½ck.
+	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden können, wenn alle Items so Groß sind wie das kleinste Item in der
+	 * List, zurück.
 	 */
 	public int getMaxItemCount()
 	{

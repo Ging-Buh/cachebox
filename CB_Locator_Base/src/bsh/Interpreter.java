@@ -50,10 +50,6 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import CB_Locator.Tag;
-
-import com.badlogic.gdx.Gdx;
-
 /**
  * The BeanShell script interpreter. An instance of Interpreter can be used to source scripts and evaluate statements or expressions.
  * <p>
@@ -182,7 +178,8 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable
 	 *            An informative string holding the filename or other description of the source from which this interpreter is reading...
 	 *            used for debugging. May be null.
 	 */
-	public Interpreter(Reader in, PrintStream out, PrintStream err, boolean interactive, NameSpace namespace, Interpreter parent, String sourceFileInfo)
+	public Interpreter(Reader in, PrintStream out, PrintStream err, boolean interactive, NameSpace namespace, Interpreter parent,
+			String sourceFileInfo)
 	{
 		// System.out.println("New Interpreter: "+this +", sourcefile = "+sourceFileInfo );
 		parser = new Parser(in);
@@ -504,7 +501,7 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable
 			catch (ParseException e)
 			{
 				error("Parser Error: " + e.getMessage(DEBUG));
-				if (DEBUG) Gdx.app.error(Tag.TAG, "", e);
+				if (DEBUG) e.printStackTrace();
 				if (!interactive) eof = true;
 
 				parser.reInitInput(in);
@@ -512,7 +509,7 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable
 			catch (InterpreterError e)
 			{
 				error("Internal Error: " + e.getMessage());
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 				if (!interactive) eof = true;
 			}
 			catch (TargetError e)
@@ -528,14 +525,14 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable
 				else
 					error("EvalError: " + e.getRawMessage());
 
-				if (DEBUG) Gdx.app.error(Tag.TAG, "", e);
+				if (DEBUG) e.printStackTrace();
 
 				if (!interactive) eof = true;
 			}
 			catch (Exception e)
 			{
 				error("Unknown error: " + e);
-				if (DEBUG) Gdx.app.error(Tag.TAG, "", e);
+				if (DEBUG) e.printStackTrace();
 				if (!interactive) eof = true;
 			}
 			catch (TokenMgrError e)
@@ -674,7 +671,7 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable
 			}
 			catch (InterpreterError e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 				throw new EvalError("Sourced file: " + sourceFileInfo + " internal Error: " + e.getMessage(), node, callstack);
 			}
 			catch (TargetError e)
@@ -685,14 +682,14 @@ public class Interpreter implements Runnable, ConsoleInterface, Serializable
 			}
 			catch (EvalError e)
 			{
-				if (DEBUG) Gdx.app.error(Tag.TAG, "", e);
+				if (DEBUG) e.printStackTrace();
 				// failsafe, set the Line as the origin of the error.
 				if (e.getNode() == null) e.setNode(node);
 				e.reThrow("Sourced file: " + sourceFileInfo);
 			}
 			catch (Exception e)
 			{
-				if (DEBUG) Gdx.app.error(Tag.TAG, "", e);
+				if (DEBUG) e.printStackTrace();
 				throw new EvalError("Sourced file: " + sourceFileInfo + " unknown error: " + e.getMessage(), node, callstack, e);
 			}
 			catch (TokenMgrError e)

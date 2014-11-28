@@ -28,7 +28,6 @@ import CB_Locator.Events.PositionChangedEvent;
 import CB_Locator.Events.PositionChangedEventList;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.Events.SelectedCacheEvent;
 import CB_UI.Events.SelectedCacheEventList;
 import CB_UI.GL_UI.Controls.PopUps.SearchDialog;
@@ -46,9 +45,9 @@ import CB_UI_Base.GL_UI.Controls.List.V_ListView;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -89,7 +88,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void Initial()
 	{
-		// Gdx.app.debug(Tag.TAG,"CacheListView => Initial()");
+		// Logger.LogCat("CacheListView => Initial()");
 		// this.setListPos(0, false);
 		listView.chkSlideBack();
 		GL.that.renderOnce();
@@ -143,7 +142,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 		}
 
 		isShown = true;
-		Gdx.app.debug(Tag.TAG, "CacheList onShow");
+		Logger.LogCat("CacheList onShow");
 		setBackground(SpriteCacheBase.ListBack);
 
 		PositionChangedEventList.Add(this);
@@ -169,7 +168,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 		TimerTask task = new TimerTask()
@@ -223,7 +222,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 								if (!(firstAndLast.x <= id && firstAndLast.y >= id))
 								{
 									listView.scrollToItem(id);
-									Gdx.app.debug(Tag.TAG, "Scroll to:" + id);
+									Logger.DEBUG("Scroll to:" + id);
 								}
 							}
 							break;
@@ -263,7 +262,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	public void onHide()
 	{
 		isShown = false;
-		Gdx.app.debug(Tag.TAG, "CacheList onHide");
+		Logger.LogCat("CacheList onHide");
 		PositionChangedEventList.Remove(this);
 
 		if (searchPlaceholder < 0)
@@ -342,7 +341,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 
 				Count = cacheList.size();
 			}
-			Gdx.app.debug(Tag.TAG, "CacheListView ctor CustomAdapter " + Count + " Caches");
+			Logger.DEBUG("CacheListView ctor CustomAdapter " + Count + " Caches");
 		}
 
 		public int getCount()
@@ -400,7 +399,7 @@ public class CacheListView extends CB_View_Base implements CacheListChangedEvent
 	@Override
 	public void CacheListChangedEvent()
 	{
-		Gdx.app.debug(Tag.TAG, "CacheListChangedEvent on Cache List");
+		Logger.DEBUG("CacheListChangedEvent on Cache List");
 		listView.setBaseAdapter(null);
 		synchronized (Database.Data.Query)
 		{

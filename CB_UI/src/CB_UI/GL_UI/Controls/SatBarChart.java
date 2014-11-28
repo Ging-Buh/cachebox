@@ -4,14 +4,12 @@ import CB_Locator.GPS;
 import CB_Locator.GpsStrength;
 import CB_Locator.Events.GpsStateChangeEvent;
 import CB_Locator.Events.GpsStateChangeEventList;
-import CB_UI.Tag;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.GL_UI.Controls.Image;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
@@ -145,7 +143,7 @@ public class SatBarChart extends CB_View_Base implements GpsStateChangeEvent
 				}
 				catch (Exception e)
 				{
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 
 				count++;

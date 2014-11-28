@@ -12,8 +12,8 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.StringH;
 import CB_Utils.Interfaces.cancelRunnable;
+import CB_Utils.Log.Logger;
 
 /**
  * Ein Wait Dialog mit übergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann
@@ -49,14 +49,14 @@ public class CancelWaitDialog extends WaitDialog
 	public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, cancelRunnable runnable)
 	{
 		final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listner, runnable);
-		wd.setCallerName(StringH.getCallerName(2));
+		wd.setCallerName(Logger.getCallerName(2));
 		return wd;
 	}
 
 	public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListner listner, cancelRunnable runnable)
 	{
 		final CancelWaitDialog wd = createDialog(Msg, listner, runnable);
-		wd.setCallerName(StringH.getCallerName(1));
+		wd.setCallerName(Logger.getCallerName(1));
 		CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 		Animation.setRec(animationRec);
 		wd.animation = Animation;

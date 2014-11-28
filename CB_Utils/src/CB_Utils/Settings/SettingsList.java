@@ -5,10 +5,8 @@ import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import CB_Utils.Tag;
 import CB_Utils.DB.Database_Core;
-
-import com.badlogic.gdx.Gdx;
+import CB_Utils.Log.Logger;
 
 public abstract class SettingsList extends ArrayList<SettingBase<?>>
 {
@@ -40,12 +38,12 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 				catch (IllegalArgumentException e)
 				{
 
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 				catch (IllegalAccessException e)
 				{
 
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 			}
 
@@ -68,11 +66,19 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 		}
 		catch (InstantiationException e)
 		{
-			Gdx.app.error(Tag.TAG, "addSetting", e);
+			e.printStackTrace();
 			return null;
 		}
 		that.add(setting);
+		if (!that.contains(setting))
+		{
 
+		}
+		else
+		{
+			String stop = "";
+			Logger.LogCat(stop);
+		}
 		return setting;
 	}
 
@@ -123,7 +129,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 				{
 					if (Data != null) dao.WriteToDatabase(Data, setting);
 				}
-				else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
+				else if (SettingStoreType.Global == setting.getStoreType()
+						|| (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 				{
 					dao.WriteToDatabase(getSettingsDB(), setting);
 				}
@@ -151,8 +158,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 		// Read from DB
 		try
 		{
-			Gdx.app.debug(Tag.TAG, "Reading global settings: " + getSettingsDB().getDatabasePath());
-			Gdx.app.debug(Tag.TAG, "and local settings: " + getSettingsDB().getDatabasePath());
+			Logger.DEBUG("Reading global settings: " + getSettingsDB().getDatabasePath());
+			Logger.DEBUG("and local settings: " + getSettingsDB().getDatabasePath());
 		}
 		catch (Exception e)
 		{
@@ -167,7 +174,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			{
 				setting = dao.ReadFromDatabase(getDataDB(), setting);
 			}
-			else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
+			else if (SettingStoreType.Global == setting.getStoreType()
+					|| (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 			{
 				setting = dao.ReadFromDatabase(getSettingsDB(), setting);
 			}

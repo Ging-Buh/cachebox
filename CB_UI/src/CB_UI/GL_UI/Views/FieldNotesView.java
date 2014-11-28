@@ -16,7 +16,6 @@ import CB_Core.Types.Waypoint;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_UI.Tag;
 import CB_UI.TemplateFormatter;
 import CB_UI.GL_UI.Activitys.EditFieldNotes;
 import CB_UI.GL_UI.Activitys.EditFieldNotes.ReturnListner;
@@ -51,8 +50,6 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
-
-import com.badlogic.gdx.Gdx;
 
 public class FieldNotesView extends V_ListView
 {
@@ -226,7 +223,7 @@ public class FieldNotesView extends V_ListView
 				catch (Exception e)
 				{
 
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 			}
 			float commentHeight = (UI_Size_Base.that.getMargin() * 3) + mh;

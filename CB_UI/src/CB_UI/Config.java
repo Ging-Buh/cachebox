@@ -11,9 +11,8 @@ import CB_UI.Settings.CB_UI_Settings;
 import CB_UI.Settings.SettingsClass;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
+import CB_Utils.Log.Logger;
 import cb_rpc.Settings.CB_Rpc_Settings;
-
-import com.badlogic.gdx.Gdx;
 
 public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings
 {
@@ -146,8 +145,8 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 		}
 		catch (IOException e)
 		{
-			Gdx.app.error(Tag.TAG, "ReadConfig Error when accessing cachebox.config!", e);
-			Gdx.app.error(Tag.TAG, "", e);
+			Logger.Error("ReadConfig", "Error when accessing cachebox.config!", e);
+			e.printStackTrace();
 		}
 
 		validateDefaultConfigFile();

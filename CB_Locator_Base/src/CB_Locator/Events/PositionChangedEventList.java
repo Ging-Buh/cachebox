@@ -5,10 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import CB_Locator.Locator;
-import CB_Locator.Tag;
 import CB_Locator.Events.PositionChangedEvent.Priority;
-
-import com.badlogic.gdx.Gdx;
 
 public class PositionChangedEventList
 {
@@ -78,13 +75,16 @@ public class PositionChangedEventList
 					}
 					catch (Exception e)
 					{
-						Gdx.app.error(Tag.TAG, "Core.PositionEventList.Call(location) reciver:" + event.getReceiverName(), e);
+						// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(location)",
+						// event.getReceiverName(),
+						// e);
+						e.printStackTrace();
 					}
 				}
 			}
 			catch (Exception e)
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 			}
 		}
 
@@ -111,9 +111,8 @@ public class PositionChangedEventList
 				}
 				catch (Exception e)
 				{
-					// TODO reactivate if possible Gdx.app.error(Tag.TAG,"Core.PositionEventList.Call(heading)", event.getReceiverName(),
-					// e);
-					Gdx.app.error(Tag.TAG, "", e);
+					// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					e.printStackTrace();
 				}
 			}
 		}
@@ -134,9 +133,8 @@ public class PositionChangedEventList
 				}
 				catch (Exception e)
 				{
-					// TODO reactivate if possible Gdx.app.error(Tag.TAG,"Core.PositionEventList.Call(heading)", event.getReceiverName(),
-					// e);
-					Gdx.app.error(Tag.TAG, "", e);
+					// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					e.printStackTrace();
 				}
 			}
 		}

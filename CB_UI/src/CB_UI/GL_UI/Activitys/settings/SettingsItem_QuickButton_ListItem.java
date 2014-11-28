@@ -1,4 +1,4 @@
-package CB_UI.GL_UI.Main.Actions.QuickButton;
+package CB_UI.GL_UI.Activitys.settings;
 
 import CB_UI_Base.GL_UI.Controls.List.ListViewItemBackground;
 import CB_UI_Base.Math.CB_RectF;

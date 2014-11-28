@@ -38,7 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
- * Enthï¿½lt die geladenen Sprites und das Handling fï¿½r Laden und Entladen.
+ * Enthält die geladenen Sprites und das Handling für Laden und Entladen.
  * 
  * @author Longri
  */
@@ -891,15 +891,18 @@ public class SpriteCacheBase
 	{
 		patch = (SpriteCacheBase.getThemedSprite("activity-back").getWidth() > 60) ? 16 : 8;
 
-		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-back"), patch, patch, patch, patch));
-		activityBorderMask = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-border"), patch, patch, patch, patch));
+		activityBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-back"), patch, patch, patch,
+				patch));
+		activityBorderMask = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("activity-border"), patch, patch, patch,
+				patch));
 		ListBack = new ColorDrawable(SkinBase.getThemedColor("background"));
 		ButtonBack = new SpriteDrawable(getThemedSprite("button-list-back"));
 		AboutBack = new SpriteDrawable(getThemedSprite("splash-back"));
 		InfoBack = new NinePatchDrawable(new NinePatch(getThemedSprite("InfoPanelBack"), patch, patch, patch, patch));
 		ProgressBack = new NinePatchDrawable(new NinePatch(ToggleBtn.get(0), patch, patch, patch, patch));
 		ProgressFill = new NinePatchDrawable(new NinePatch(SpriteCacheBase.Progress, patch - 1, patch - 1, patch - 1, patch - 1));
-		ProgressDisabled = new NinePatchDrawable(new NinePatch(getThemedSprite("progress-disabled"), patch - 1, patch - 1, patch - 1, patch - 1));
+		ProgressDisabled = new NinePatchDrawable(new NinePatch(getThemedSprite("progress-disabled"), patch - 1, patch - 1, patch - 1,
+				patch - 1));
 		btn = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-normal"), patch, patch, patch, patch));
 		btnPressed = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-pressed"), patch, patch, patch, patch));
 		btnDisabled = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("btn-disabled"), patch, patch, patch, patch));
@@ -921,8 +924,10 @@ public class SpriteCacheBase
 		radioOn = new SpriteDrawable(getThemedSprite("RadioButtonSet"));
 		radioBack = new SpriteDrawable(getThemedSprite("RadioButtonBack"));
 
-		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch, patch));
-		textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch, patch, patch, patch));
+		textFiledBackground = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back"), patch, patch, patch,
+				patch));
+		textFiledBackgroundFocus = new NinePatchDrawable(new NinePatch(SpriteCacheBase.getThemedSprite("text-field-back-focus"), patch,
+				patch, patch, patch));
 
 		selection = new SpriteDrawable(getThemedSprite("Selection"));
 		selection_set = new SpriteDrawable(getThemedSprite("Selection-set"));
@@ -955,7 +960,8 @@ public class SpriteCacheBase
 	protected static void loadButtnSprites()
 	{
 		CacheList = new ButtonSprites(getThemedSprite("db"), getThemedSprite("db-pressed"), null, getThemedSprite("db-pressed"));
-		CacheListFilter = new ButtonSprites(getThemedSprite("db-filter-active"), getThemedSprite("db-pressed-filter-active"), null, getThemedSprite("db-pressed-filter-active"));
+		CacheListFilter = new ButtonSprites(getThemedSprite("db-filter-active"), getThemedSprite("db-pressed-filter-active"), null,
+				getThemedSprite("db-pressed-filter-active"));
 		Cache = new ButtonSprites(getThemedSprite("cache"), getThemedSprite("cache-pressed"), null, getThemedSprite("cache-pressed"));
 		Nav = new ButtonSprites(getThemedSprite("Nav"), getThemedSprite("Nav-pressed"), null, getThemedSprite("Nav-pressed"));
 		Tool = new ButtonSprites(getThemedSprite("tool"), getThemedSprite("tool-pressed"), null, getThemedSprite("tool-pressed"));

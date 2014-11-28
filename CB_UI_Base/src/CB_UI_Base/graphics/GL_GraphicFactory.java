@@ -26,7 +26,6 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 
-import CB_UI_Base.Tag;
 import CB_UI_Base.graphics.Images.BitmapDrawable;
 import CB_UI_Base.graphics.Images.VectorDrawable;
 import CB_UI_Base.graphics.SVG.SVG;
@@ -39,7 +38,6 @@ import CB_UI_Base.graphics.extendedIntrefaces.ext_Paint;
 import CB_UI_Base.graphics.extendedIntrefaces.ext_Path;
 import CB_Utils.Util.HSV_Color;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 
 /**
@@ -220,7 +218,8 @@ public class GL_GraphicFactory implements ext_GraphicFactory
 		}
 		catch (SVGParseException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}

@@ -40,10 +40,6 @@ import org.poly2tri.geometry.polygon.PolygonSet;
 import org.poly2tri.triangulation.sets.ConstrainedPointSet;
 import org.poly2tri.triangulation.sets.PointSet;
 
-import CB_UI_Base.Tag;
-
-import com.badlogic.gdx.Gdx;
-
 /**
  * @author Thomas Åhlén, thahlen@gmail.com
  */
@@ -248,13 +244,13 @@ public class TriangulationProcess implements Runnable
 			}
 			else
 			{
-				Gdx.app.error(Tag.TAG, "", e);
+				e.printStackTrace();
 				sendEvent(TriangulationProcessEvent.Failed);
 			}
 		}
 		catch (Exception e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 			// logger.info("Triangulation exception {}", e.getMessage());
 			sendEvent(TriangulationProcessEvent.Failed);
 		}

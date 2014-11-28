@@ -16,8 +16,7 @@
 
 package CB_Utils.Settings;
 
-import java.util.ArrayList;
-
+import CB_Utils.Lists.CB_List;
 import CB_Utils.Util.iChanged;
 
 /**
@@ -27,7 +26,7 @@ import CB_Utils.Util.iChanged;
 public abstract class SettingBase<T> implements Comparable<SettingBase<T>>
 {
 
-	protected ArrayList<iChanged> ChangedEventList = new ArrayList<iChanged>();
+	protected CB_List<iChanged> ChangedEventList = new CB_List<iChanged>();
 	protected SettingCategory category;
 	protected String name;
 	protected SettingModus modus;

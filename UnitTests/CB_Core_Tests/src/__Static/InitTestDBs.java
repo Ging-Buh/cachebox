@@ -17,10 +17,8 @@ import CB_Utils.Settings.SettingBool;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Util.FileIO;
-import ___Test_Suites.Tag;
 
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 
 /**
  * Initialisiert die Config oder eine TestDB
@@ -52,7 +50,7 @@ public class InitTestDBs
 		}
 		catch (ClassNotFoundException e)
 		{
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 		if (!FileIO.createDirectory(Config.WorkPath)) return;
 		Database.Settings.StartUp(Config.WorkPath + "/Config.db3");
@@ -69,7 +67,7 @@ public class InitTestDBs
 		catch (ClassNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -104,7 +102,7 @@ public class InitTestDBs
 				catch (BackingStoreException e)
 				{
 
-					Gdx.app.error(Tag.TAG, "", e);
+					e.printStackTrace();
 				}
 
 			}
@@ -171,7 +169,7 @@ public class InitTestDBs
 		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
-			Gdx.app.error(Tag.TAG, "", e);
+			e.printStackTrace();
 		}
 
 	}
