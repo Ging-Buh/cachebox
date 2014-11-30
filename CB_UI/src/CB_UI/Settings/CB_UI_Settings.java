@@ -45,7 +45,7 @@ public interface CB_UI_Settings
 {
 	public static final String Work = Config.WorkPath;
 
-	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
+	// AbkÃ¼rzende Schreibweisen fÃ¼r die Ã¼bersichlichkeit bei den add Methoden
 	public static final SettingModus INVISIBLE = SettingModus.Invisible;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;
@@ -123,8 +123,6 @@ public interface CB_UI_Settings
 	public static final SettingBool DebugShowMarker = new SettingBool("DebugShowMarker", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ImportRatings = new SettingBool("ImportRatings", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool switchViewApproach = new SettingBool("switchViewApproach", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool hasCallPermission = new SettingBool("hasCallPermission", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool vibrateFeedback = new SettingBool("vibrateFeedback", SettingCategory.Misc, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
@@ -199,7 +197,7 @@ public interface CB_UI_Settings
 	public static final SettingBool ShowFieldnotesAsDefaultView = new SettingBool("ShowFieldnotesAsDefaultView", SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool LiveMapEnabeld = new SettingBool("LiveMapEnabeld", SettingCategory.LiveMap, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 
-	public static final SettingBool AppRaterDontShowAgin = new SettingBool("AppRaterDontShowAgin", SettingCategory.RememberAsk, NORMAL, false, SettingStoreType.Platform, SettingUsage.ACB);
+	public static final SettingBool AppRaterDontShowAgain = new SettingBool("AppRaterDontShowAgain", SettingCategory.RememberAsk, NORMAL, false, SettingStoreType.Platform, SettingUsage.ACB);
 	public static final SettingInt AppRaterlaunchCount = new SettingInt("AppRaterlaunchCount", SettingCategory.Internal, NEVER, 0, SettingStoreType.Platform, SettingUsage.ACB);
 	public static final SettingString AppRaterFirstLunch = new SettingString("AppRaterFirstLunch", SettingCategory.Internal, NEVER, "0", SettingStoreType.Platform, SettingUsage.ACB);
 

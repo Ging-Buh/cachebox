@@ -45,6 +45,7 @@ import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Util.FileIO;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -110,6 +111,7 @@ public class splash extends Activity
 	private static devicesSizes ui;
 	private boolean isLandscape = false;
 	private boolean ToastEx = false;
+	private Boolean showSandbox;
 
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -139,12 +141,12 @@ public class splash extends Activity
 		else
 			GlobalCore.displayType = DisplayType.Small;
 
-		// �berpr�fen, ob ACB im Hochformat oder Querformat gestartet wurde.
+		// überprüfen, ob ACB im Hochformat oder Querformat gestartet wurde.
 		// Hochformat -> Handymodus
 		// Querformat -> Tablet-Modus
 		if (w > h) isLandscape = true;
 
-		// Portr�t erzwingen wenn Normal oder Small display
+		// Porträt erzwingen wenn Normal oder Small display
 		if (isLandscape && (GlobalCore.displayType == DisplayType.Normal || GlobalCore.displayType == DisplayType.Small))
 		{
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -274,6 +276,7 @@ public class splash extends Activity
 
 		workPath = AndroidSettings.getString("WorkPath", Environment.getDataDirectory() + "/cachebox");
 		boolean askAgain = AndroidSettings.getBoolean("AskAgain", true);
+		showSandbox = AndroidSettings.getBoolean("showSandbox", false);
 
 		Global.initTheme(this);
 		Global.InitIcons(this);
@@ -429,37 +432,102 @@ public class splash extends Activity
 					}
 				});
 				Button buttonE = (Button) dialog.findViewById(R.id.button2);
-				buttonE.setText("External SD\n\n" + externalSd);
+				final boolean isSandbox = externalSd.contains("Android/data/de.cachebox_test");
 				if (!hasExtSd)
 				{
 					buttonE.setVisibility(Button.INVISIBLE);
 				}
+				else
+				{
+					String extSdText = isSandbox ? "External SD SandBox\n\n" : "External SD\n\n";
+					buttonE.setText(extSdText + externalSd);
+				}
+
 				buttonE.setOnClickListener(new OnClickListener()
 				{
 					@Override
 					public void onClick(View v)
 					{
-						// close select dialog
-						dialog.dismiss();
+						// show KitKat Massage?
 
-						// show please wait dialog
-						showPleaseWaitDialog();
-
-						// use external SD -> change workPath
-						Thread thread = new Thread()
+						if (isSandbox && !showSandbox)
 						{
-							@Override
-							public void run()
-							{
-								workPath = externalSd2;
-								boolean askAgain = cbAskAgain.isChecked();
-								// boolean useTabletLayout = rbTabletLayout.isChecked();
-								saveWorkPath(askAgain/* , useTabletLayout */);
-								startInitial();
-							}
-						};
-						thread.run();
+							AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
+							// set title
+							alertDialogBuilder.setTitle("KitKat Sandbox");
+
+							// set dialog message
+							alertDialogBuilder.setMessage(Translation.Get("Desc_Sandbox")).setCancelable(false)
+									.setPositiveButton(Translation.Get("yes"), new DialogInterface.OnClickListener()
+									{
+										public void onClick(DialogInterface dialog, int id)
+										{
+											// if this button is clicked, run Sandbox Path
+
+											showSandbox = true;
+											Config.AcceptChanges();
+
+											// close select dialog
+											dialog.dismiss();
+
+											// show please wait dialog
+											showPleaseWaitDialog();
+
+											// use external SD -> change workPath
+											Thread thread = new Thread()
+											{
+												@Override
+												public void run()
+												{
+													workPath = externalSd2;
+													boolean askAgain = cbAskAgain.isChecked();
+													// boolean useTabletLayout = rbTabletLayout.isChecked();
+													saveWorkPath(askAgain/* , useTabletLayout */);
+													startInitial();
+												}
+											};
+											thread.run();
+										}
+									}).setNegativeButton(Translation.Get("no"), new DialogInterface.OnClickListener()
+									{
+										public void onClick(DialogInterface dialog, int id)
+										{
+											// if this button is clicked, just close
+											// the dialog box and do nothing
+											dialog.cancel();
+										}
+									});
+
+							// create alert dialog
+							AlertDialog alertDialog = alertDialogBuilder.create();
+
+							// show it
+							alertDialog.show();
+						}
+						else
+						{
+							// close select dialog
+							dialog.dismiss();
+
+							// show please wait dialog
+							showPleaseWaitDialog();
+
+							// use external SD -> change workPath
+							Thread thread = new Thread()
+							{
+								@Override
+								public void run()
+								{
+									workPath = externalSd2;
+									boolean askAgain = cbAskAgain.isChecked();
+									// boolean useTabletLayout = rbTabletLayout.isChecked();
+									saveWorkPath(askAgain/* , useTabletLayout */);
+									startInitial();
+								}
+							};
+							thread.run();
+						}
 					}
 				});
 
@@ -736,24 +804,56 @@ public class splash extends Activity
 		if (android.os.Build.VERSION.SDK_INT == 19)
 		{
 			// check for Root permission
+
+			File sandboxPath = null;
+
 			try
 			{
 				String testFolderName = externalSd + "/Test";
 
 				File testFolder = new File(testFolderName);
+
+				sandboxPath = new File(testFolder.getParentFile().getParentFile().getAbsolutePath()
+						+ "/Android/data/de.cachebox_test/files/");
+
 				File test = new File(testFolderName + "/Test.txt");
 				testFolder.mkdirs();
 				test.createNewFile();
 				if (!test.exists())
 				{
-					return null;
+					externalSd = null;
 				}
 				test.delete();
 				testFolder.delete();
 			}
 			catch (IOException e)
 			{
-				return null;
+				externalSd = null;
+			}
+
+			if (externalSd == null && sandboxPath != null)
+			{
+				// Check Sandbox Path
+				try
+				{
+					String testFolderName = sandboxPath.getAbsolutePath() + "/Test";
+
+					File testFolder = new File(testFolderName);
+					File test = new File(testFolderName + "/Test.txt");
+					testFolder.mkdirs();
+					test.createNewFile();
+					if (!test.exists())
+					{
+						externalSd = null;
+					}
+					test.delete();
+					testFolder.delete();
+					externalSd = sandboxPath.getAbsolutePath();
+				}
+				catch (IOException e)
+				{
+					externalSd = null;
+				}
 			}
 		}
 
@@ -953,7 +1053,7 @@ public class splash extends Activity
 
 		Logger.setDebugFilePath(workPath + "/debug.txt");
 
-		// Zur Kompatibilit�t mit �lteren Installationen wird hier noch die redirection.txt abgefragt
+		// Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{
 			BufferedReader Filereader;
@@ -1216,10 +1316,13 @@ public class splash extends Activity
 		else
 		{
 			Config.newInstall.setValue(false);
-			Config.AcceptChanges();
 		}
 
-		// UiSize Structur f�r die Berechnung der Gr��en zusammen stellen!
+		// save askAgain for show SandboxMsg
+		Config.showSandbox.setValue(showSandbox);
+		Config.AcceptChanges();
+
+		// UiSize Structur für die Berechnung der Größen zusammen stellen!
 		Resources res = this.getResources();
 
 		// WindowManager w = this.getWindowManager();

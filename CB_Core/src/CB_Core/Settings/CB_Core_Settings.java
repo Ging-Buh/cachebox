@@ -22,7 +22,6 @@ import CB_Utils.Settings.SettingCategory;
 import CB_Utils.Settings.SettingDouble;
 import CB_Utils.Settings.SettingEncryptedString;
 import CB_Utils.Settings.SettingEnum;
-import CB_Utils.Settings.SettingFile;
 import CB_Utils.Settings.SettingFolder;
 import CB_Utils.Settings.SettingInt;
 import CB_Utils.Settings.SettingModus;
@@ -34,14 +33,12 @@ import CB_Utils.Settings.SettingsList;
 public interface CB_Core_Settings
 {
 
-	// Abkürzende Schreibweisen für die Übersichlichkeit bei den add Methoden
+	// Abkï¿½rzende Schreibweisen fï¿½r die ï¿½bersichlichkeit bei den add Methoden
 	public static final SettingModus INVISIBLE = SettingModus.Invisible;
 	public static final SettingModus NORMAL = SettingModus.Normal;
 	public static final SettingModus EXPERT = SettingModus.Expert;
 	public static final SettingModus NEVER = SettingModus.Never;
 
-	public static final SettingFile Sel_LanguagePath = (SettingFile) SettingsList.addSetting(new SettingFile("Sel_LanguagePath", SettingCategory.Folder, NEVER, "data/lang/en-GB/strings.ini", SettingStoreType.Platform, SettingUsage.ALL, "lan"));
-	public static final SettingFolder LanguagePath = new SettingFolder("LanguagePath", SettingCategory.Folder, NEVER, "data/lang", SettingStoreType.Global, SettingUsage.ALL);
 	public static final SettingString GcLogin = new SettingString("GcLogin", SettingCategory.Login, NORMAL, "", SettingStoreType.Platform, SettingUsage.ALL);
 	public static final SettingEncryptedString GcAPI = new SettingEncryptedString("GcAPI", SettingCategory.Login, INVISIBLE, "", SettingStoreType.Platform, SettingUsage.ALL);
 	public static final SettingEncryptedString GcAPIStaging = new SettingEncryptedString("GcAPIStaging", SettingCategory.Login, INVISIBLE, "", SettingStoreType.Platform, SettingUsage.ALL);
@@ -69,5 +66,7 @@ public interface CB_Core_Settings
 	public static final SettingBool LiveExcludeFounds = new SettingBool("LiveExcludeFounds", SettingCategory.LiveMap, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool LiveExcludeOwn = new SettingBool("LiveExcludeOwn", SettingCategory.LiveMap, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingEnum<Live_Cache_Time> LiveCacheTime = new SettingEnum<Live_Cache_Time>("LiveCacheTime", SettingCategory.LiveMap, NORMAL, Live_Cache_Time.h_6, SettingStoreType.Global, SettingUsage.ACB, Live_Cache_Time.h_6);
+	public static final SettingBool DirectOnlineLog = new SettingBool("DirectOnlineLog", SettingCategory.Fieldnotes, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingBool showSandbox = new SettingBool("showSandbox", SettingCategory.RememberAsk, NORMAL, false, SettingStoreType.Platform, SettingUsage.ACB);
 
 }

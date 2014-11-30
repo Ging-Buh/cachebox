@@ -25,7 +25,7 @@ public class AppRater
 
 	public static void app_launched()
 	{
-		if (Config.AppRaterDontShowAgin.getValue()) return;
+		if (Config.AppRaterDontShowAgain.getValue()) return;
 
 		// Increment launch counter
 		final int launch_count = Config.AppRaterlaunchCount.getValue() + 1;
@@ -110,7 +110,7 @@ public class AppRater
 					break;
 				case 3:
 					// never
-					Config.AppRaterDontShowAgin.setValue(true);
+					Config.AppRaterDontShowAgain.setValue(true);
 					Config.AcceptChanges();
 					break;
 				}

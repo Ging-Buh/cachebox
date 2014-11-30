@@ -298,14 +298,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	private void initialSettingsChangedListner()
 	{
-		Config.WriteLoggerDebugMode.addChangedEventListner(new iChanged()
-		{
-			@Override
-			public void isChanged()
-			{
-				Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
-			}
-		});
 
 		Config.ImperialUnits.addChangedEventListner(new iChanged()
 		{
@@ -332,7 +324,6 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		// Set settings first
 		UnitFormatter.setUseImperialUnits(Config.ImperialUnits.getValue());
-		Logger.setDebug(Config.WriteLoggerDebugMode.getValue());
 	}
 
 	public static void reloadCacheList()
@@ -440,7 +431,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	{
 		// nur ein Tab
 
-		// mit fünf Buttons
+		// mit fï¿½nf Buttons
 		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
 
 		CB_RectF rec = this.copy();
@@ -548,7 +539,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	private void addLeftForTabletsTab()
 	{
-		// mit fünf Buttons
+		// mit fï¿½nf Buttons
 		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
 
 		CB_RectF rec = this.copy();
@@ -649,7 +640,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	private void addRightForTabletsTab()
 	{
 
-		// mit fünf Buttons
+		// mit fï¿½nf Buttons
 		CB_RectF btnRec = new CB_RectF(0, 0, GL_UISizes.BottomButtonHeight, GL_UISizes.BottomButtonHeight);
 
 		CB_RectF rec = this.copy();

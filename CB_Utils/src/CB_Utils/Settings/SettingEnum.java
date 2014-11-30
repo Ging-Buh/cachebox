@@ -25,8 +25,7 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 	private EnumTyp myEnum;
 
 	@SuppressWarnings("rawtypes")
-	public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, SettingStoreType StoreType,
-			SettingUsage usage, EnumTyp enu)
+	public SettingEnum(String name, SettingCategory category, SettingModus modus, EnumTyp defaultValue, SettingStoreType StoreType, SettingUsage usage, EnumTyp enu)
 	{
 		super(name, category, modus, defaultValue.name(), StoreType, usage);
 		myEnum = enu;
@@ -35,9 +34,9 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 
 		// hier bekommst du die Klasse TestEnum
 		Class c = enu.getDeclaringClass();
-		// hier kannst du alle Zustände abfragen
+		// hier kannst du alle Zustï¿½nde abfragen
 		Object[] oo = c.getEnumConstants();
-		// hier kannst du dann über alle Zustände iterieren
+		// hier kannst du dann ï¿½ber alle Zustï¿½nde iterieren
 		for (Object o : oo)
 		{
 			// und von jedem den Namen abfragen (in unserem Beispiel "wert1",
@@ -57,6 +56,14 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 	public void setValue(String value)
 	{
 		if (this.value.equals(value)) return;
+
+		if (value.isEmpty())
+		{
+			myEnum = (EnumTyp) EnumTyp.valueOf(myEnum.getDeclaringClass(), defaultValue);
+			setDirty();
+			return;
+		}
+
 		this.value = value;
 		myEnum = (EnumTyp) EnumTyp.valueOf(myEnum.getDeclaringClass(), value);
 		setDirty();
