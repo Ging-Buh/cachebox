@@ -141,8 +141,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 		float btnW = (innerWidth - UI_Size_Base.that.getButtonWidth()) / 2;
 
 		btnOk = new Button(leftBorder, this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "OK Button");
-		btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(),
-				UI_Size_Base.that.getButtonHeight(), "Menu Button");
+		btnMenu = new Button(btnOk.getMaxX(), this.getBottomHeight(), UI_Size_Base.that.getButtonWidth(), UI_Size_Base.that.getButtonHeight(), "Menu Button");
 		btnCancel = new Button(btnMenu.getMaxX(), this.getBottomHeight(), btnW, UI_Size_Base.that.getButtonHeight(), "Cancel Button");
 
 		// Translations
@@ -271,8 +270,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		}
 
-		SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button,
-				SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+		SettingsListButtonLangSpinner<?> lang = new SettingsListButtonLangSpinner<Object>("Lang", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 		CB_View_Base langView = getLangSpinnerView(lang);
 
 		addControlToLinearLayout(langView, margin);
@@ -296,8 +294,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				int position = 0;
 
 				SettingCategory cat = iteratorCat.next();
-				SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button,
-						SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+				SettingsListCategoryButton<?> catBtn = new SettingsListCategoryButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 
 				final CB_View_Base btn = getView(catBtn, 1);
 
@@ -321,8 +318,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				int entryCount = 0;
 				if (cat == SettingCategory.Login)
 				{
-					SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button,
-							SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+					SettingsListGetApiButton<?> lgIn = new SettingsListGetApiButton<Object>(cat.name(), SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 					final CB_View_Base btnLgIn = getView(lgIn, 1);
 					lay.addChild(btnLgIn);
 					entryCount++;
@@ -338,8 +334,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				if (cat == SettingCategory.Debug)
 				{
-					SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button,
-							SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+					SettingsListCategoryButton<?> disp = new SettingsListCategoryButton<Object>("DebugDisplayInfo", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 					final CB_View_Base btnDisp = getView(disp, 1);
 
 					btnDisp.setSize(itemRec);
@@ -350,8 +345,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				if (cat == SettingCategory.Skin)
 				{
-					SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button,
-							SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
+					SettingsListButtonSkinSpinner<?> skin = new SettingsListButtonSkinSpinner<Object>("Skin", SettingCategory.Button, SettingModus.Normal, SettingStoreType.Global, SettingUsage.ACB);
 					CB_View_Base skinView = getSkinSpinnerView(skin);
 					lay.addChild(skinView);
 					entryCount++;
@@ -395,9 +389,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						if (settingItem.getModus() != SettingModus.develop || GlobalCore.isDevelop())
 						{
 
-							if (((settingItem.getModus() == SettingModus.Normal)
-									|| (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll
-										.getValue()) && (settingItem.getModus() != SettingModus.Never))
+							if (((settingItem.getModus() == SettingModus.Normal) || (settingItem.getModus() == SettingModus.Expert && Config.SettingsShowExpert.getValue()) || Config.SettingsShowAll.getValue()) && (settingItem.getModus() != SettingModus.Never))
 							{
 
 								final CB_View_Base view = getView(settingItem, position++);
@@ -642,34 +634,33 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 				type = (SB instanceof SettingLongString) ? WrapType.WRAPPED : WrapType.SINGLELINE;
 
-				StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(),
-						new OnMsgBoxClickListener()
+				StringInputBox.Show(type, "default:" + GlobalCore.br + SB.getDefaultValue(), trans, SB.getValue(), new OnMsgBoxClickListener()
+				{
+
+					@Override
+					public boolean onClick(int which, Object data)
+					{
+						String text = StringInputBox.editText.getText().toString();
+						if (which == GL_MsgBox.BUTTON_POSITIVE)
 						{
+							SettingString value = (SettingString) Config.settings.get(EditKey);
 
-							@Override
-							public boolean onClick(int which, Object data)
+							// api ohne lineBreak
+							if (value.getName().equalsIgnoreCase("GcAPI"))
 							{
-								String text = StringInputBox.editText.getText().toString();
-								if (which == GL_MsgBox.BUTTON_POSITIVE)
-								{
-									SettingString value = (SettingString) Config.settings.get(EditKey);
-
-									// api ohne lineBreak
-									if (value.getName().equalsIgnoreCase("GcAPI"))
-									{
-										text = text.replace("\r", "");
-										text = text.replace("\n", "");
-									}
-
-									if (value != null) value.setValue(text);
-
-									resortList();
-								}
-								// Activity wieder anzeigen
-								SettingsActivity.this.show();
-								return true;
+								text = text.replace("\r", "");
+								text = text.replace("\n", "");
 							}
-						});
+
+							if (value != null) value.setValue(text);
+
+							resortList();
+						}
+						// Activity wieder anzeigen
+						SettingsActivity.this.show();
+						return true;
+					}
+				});
 
 				return true;
 			}
@@ -904,27 +895,26 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				EditKey = Config.settings.indexOf(SB);
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
-						new returnValueListner()
-						{
-							@Override
-							public void returnValue(int value)
-							{
-								SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
-								if (SetValue != null) SetValue.setValue(value);
-								resortList();
-								// Activity wieder anzeigen
-								show();
-							}
+				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new returnValueListner()
+				{
+					@Override
+					public void returnValue(int value)
+					{
+						SettingInt SetValue = (SettingInt) Config.settings.get(EditKey);
+						if (SetValue != null) SetValue.setValue(value);
+						resortList();
+						// Activity wieder anzeigen
+						show();
+					}
 
-							@Override
-							public void cancelClicked()
-							{
-								// Activity wieder anzeigen
-								show();
-							}
+					@Override
+					public void cancelClicked()
+					{
+						// Activity wieder anzeigen
+						show();
+					}
 
-						});
+				});
 				return true;
 			}
 
@@ -964,26 +954,25 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				EditKey = Config.settings.indexOf(SB);
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
-						new returnValueListnerDouble()
-						{
-							@Override
-							public void returnValue(double value)
-							{
-								SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
-								if (SetValue != null) SetValue.setValue(value);
-								resortList();
-								// Activity wieder anzeigen
-								SettingsActivity.this.show();
-							}
+				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new returnValueListnerDouble()
+				{
+					@Override
+					public void returnValue(double value)
+					{
+						SettingDouble SetValue = (SettingDouble) Config.settings.get(EditKey);
+						if (SetValue != null) SetValue.setValue(value);
+						resortList();
+						// Activity wieder anzeigen
+						SettingsActivity.this.show();
+					}
 
-							@Override
-							public void cancelClicked()
-							{
-								// Activity wieder anzeigen
-								SettingsActivity.this.show();
-							}
-						});
+					@Override
+					public void cancelClicked()
+					{
+						// Activity wieder anzeigen
+						SettingsActivity.this.show();
+					}
+				});
 				return true;
 			}
 
@@ -1024,26 +1013,25 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				EditKey = Config.settings.indexOf(SB);
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(),
-						new returnValueListnerDouble()
-						{
-							@Override
-							public void returnValue(double value)
-							{
-								SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
-								if (SetValue != null) SetValue.setValue((float) value);
-								resortList();
-								// Activity wieder anzeigen
-								SettingsActivity.this.show();
-							}
+				NumerikInputBox.Show("default: " + GlobalCore.br + String.valueOf(SB.getDefaultValue()), trans, SB.getValue(), new returnValueListnerDouble()
+				{
+					@Override
+					public void returnValue(double value)
+					{
+						SettingFloat SetValue = (SettingFloat) Config.settings.get(EditKey);
+						if (SetValue != null) SetValue.setValue((float) value);
+						resortList();
+						// Activity wieder anzeigen
+						SettingsActivity.this.show();
+					}
 
-							@Override
-							public void cancelClicked()
-							{
-								// Activity wieder anzeigen
-								SettingsActivity.this.show();
-							}
-						});
+					@Override
+					public void cancelClicked()
+					{
+						// Activity wieder anzeigen
+						SettingsActivity.this.show();
+					}
+				});
 				return true;
 			}
 
@@ -1071,6 +1059,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 	private CB_View_Base getFolderView(final SettingFolder SB, int backgroundChanger)
 	{
 
+		final boolean needWritePermission = SB.needWritePermission();
 		SettingsItemBase item = new SettingsItemBase(itemRec, backgroundChanger, SB.getName());
 
 		item.setName(Translation.Get(SB.getName()));
@@ -1097,27 +1086,26 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						switch (((MenuItem) v).getMenuItemId())
 						{
 						case MenuID.MI_SELECT_PATH:
-							platformConector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"),
-									new IgetFolderReturnListner()
+							platformConector.getFolder(ApsolutePath, Translation.Get("select_folder"), Translation.Get("select"), new IgetFolderReturnListner()
+							{
+
+								@Override
+								public void getFolderReturn(String Path)
+								{
+									// check WriteProtection
+									if (!needWritePermission || FileIO.checkWritePermission(Path))
 									{
+										SB.setValue(Path);
+										resortList();
+									}
+									else
+									{
+										String WriteProtectionMsg = Translation.Get("NoWriteAcces");
+										GL.that.Toast(WriteProtectionMsg, 8000);
+									}
 
-										@Override
-										public void getFolderReturn(String Path)
-										{
-											// check WriteProtection
-											if (FileIO.checkWritePermission(Path))
-											{
-												SB.setValue(Path);
-												resortList();
-											}
-											else
-											{
-												String WriteProtectionMsg = Translation.Get("NoWriteAcces");
-												GL.that.Toast(WriteProtectionMsg);
-											}
-
-										}
-									});
+								}
+							});
 							return true;
 
 						case MenuID.MI_CLEAR_PATH:
@@ -1185,16 +1173,15 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						switch (((MenuItem) v).getMenuItemId())
 						{
 						case MenuID.MI_SELECT_PATH:
-							platformConector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"),
-									new IgetFileReturnListner()
-									{
-										@Override
-										public void getFieleReturn(String Path)
-										{
-											SB.setValue(Path);
-											resortList();
-										}
-									});
+							platformConector.getFile(Path, SB.getExt(), Translation.Get("select_file"), Translation.Get("select"), new IgetFileReturnListner()
+							{
+								@Override
+								public void getFieleReturn(String Path)
+								{
+									SB.setValue(Path);
+									resortList();
+								}
+							});
 							return true;
 
 						case MenuID.MI_CLEAR_PATH:
@@ -1259,8 +1246,7 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 						info += "Scale= " + String.valueOf(UI_Size_Base.that.getScale()) + GlobalCore.br;
 						info += "FontSize= " + String.valueOf(UI_Size_Base.that.getScaledFontSize()) + GlobalCore.br;
 						info += "GPS min pos Time= " + String.valueOf(PositionChangedEventList.minPosEventTime) + GlobalCore.br;
-						info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime)
-								+ GlobalCore.br;
+						info += "GPS min Orientation Time= " + String.valueOf(PositionChangedEventList.minOrientationEventTime) + GlobalCore.br;
 
 						GL_MsgBox.Show(info, MsgBoxreturnListner);
 
@@ -1308,26 +1294,25 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 
 		boolean full = Config.SettingsShowExpert.getValue() || Config.SettingsShowAll.getValue();
 		final String AudioName = SB.getName();
-		final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full,
-				new FloatControl.iValueChanged()
-				{
+		final SettingsItem_Audio item = new SettingsItem_Audio(itemRec, backgroundChanger, SB.getName(), full, new FloatControl.iValueChanged()
+		{
 
-					@Override
-					public void ValueChanged(int value)
-					{
-						Audio aud = new Audio(SB.getValue());
-						aud.Volume = (float) value / 100f;
-						SB.setValue(aud);
+			@Override
+			public void ValueChanged(int value)
+			{
+				Audio aud = new Audio(SB.getValue());
+				aud.Volume = (float) value / 100f;
+				SB.setValue(aud);
 
-						// play Audio now
+				// play Audio now
 
-						if (AudioName.equalsIgnoreCase("GlobalVolume")) SoundCache.play(Sounds.Global, true);
-						if (AudioName.equalsIgnoreCase("Approach")) SoundCache.play(Sounds.Approach);
-						if (AudioName.equalsIgnoreCase("GPS_lose")) SoundCache.play(Sounds.GPS_lose);
-						if (AudioName.equalsIgnoreCase("GPS_fix")) SoundCache.play(Sounds.GPS_fix);
-						if (AudioName.equalsIgnoreCase("AutoResortSound")) SoundCache.play(Sounds.AutoResortSound);
-					}
-				});
+				if (AudioName.equalsIgnoreCase("GlobalVolume")) SoundCache.play(Sounds.Global, true);
+				if (AudioName.equalsIgnoreCase("Approach")) SoundCache.play(Sounds.Approach);
+				if (AudioName.equalsIgnoreCase("GPS_lose")) SoundCache.play(Sounds.GPS_lose);
+				if (AudioName.equalsIgnoreCase("GPS_fix")) SoundCache.play(Sounds.GPS_fix);
+				if (AudioName.equalsIgnoreCase("AutoResortSound")) SoundCache.play(Sounds.AutoResortSound);
+			}
+		});
 
 		item.setName(Translation.Get(SB.getName()));
 		item.setDefault("default: " + String.valueOf(SB.getDefaultValue()));
@@ -1421,27 +1406,26 @@ public class SettingsActivity extends ActivityBase implements SelectedLangChange
 				int intValueSec = Integer.parseInt(s[1]);
 
 				// Show NumPad Int Edit
-				NumerikInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec,
-						new returnValueListnerTime()
-						{
-							@Override
-							public void returnValue(int min, int sec)
-							{
-								SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
-								int value = (min * 60 * 1000) + (sec * 1000);
-								if (SetValue != null) SetValue.setValue(value);
-								resortList();
-								// Activity wieder anzeigen
-								SettingsActivity.this.show();
-							}
+				NumerikInputBox.Show("default: " + GlobalCore.br + intToTime(SB.getDefaultValue()), trans, intValueMin, intValueSec, new returnValueListnerTime()
+				{
+					@Override
+					public void returnValue(int min, int sec)
+					{
+						SettingTime SetValue = (SettingTime) Config.settings.get(EditKey);
+						int value = (min * 60 * 1000) + (sec * 1000);
+						if (SetValue != null) SetValue.setValue(value);
+						resortList();
+						// Activity wieder anzeigen
+						SettingsActivity.this.show();
+					}
 
-							@Override
-							public void cancelClicked()
-							{
-								// Activity wieder anzeigen
-								SettingsActivity.this.show();
-							}
-						});
+					@Override
+					public void cancelClicked()
+					{
+						// Activity wieder anzeigen
+						SettingsActivity.this.show();
+					}
+				});
 				return true;
 			}
 

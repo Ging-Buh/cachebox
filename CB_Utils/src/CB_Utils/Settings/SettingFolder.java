@@ -20,10 +20,12 @@ import CB_Utils.Config_Core;
 public class SettingFolder extends SettingLongString
 {
 
-	public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType,
-			SettingUsage usage)
+	private final boolean needWritePermission;
+
+	public SettingFolder(String name, SettingCategory category, SettingModus modus, String defaultValue, SettingStoreType StoreType, SettingUsage usage, boolean needwritePermission)
 	{
 		super(name, category, modus, defaultValue, StoreType, usage);
+		this.needWritePermission = needwritePermission;
 	}
 
 	@Override
@@ -47,6 +49,11 @@ public class SettingFolder extends SettingLongString
 		rep = rep.replace("\\", System.getProperty("file.separator"));
 		rep = rep.replace("/", System.getProperty("file.separator"));
 		return rep;
+	}
+
+	public boolean needWritePermission()
+	{
+		return this.needWritePermission;
 	}
 
 }

@@ -85,7 +85,7 @@ public interface CB_UI_Settings
 	public static final SettingBool CompassShowLastFound = new SettingBool("CompassShowLastFound", SettingCategory.Compass, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingString OverrideUrl = (SettingString) SettingsList.addSetting(new SettingString("OverrideUrl", SettingCategory.Debug, EXPERT, "", SettingStoreType.Global, SettingUsage.ACB));
 	// Folder
-	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, NORMAL, Work + "/User/Tracks", SettingStoreType.Global, SettingUsage.ACB);
+	public static final SettingFolder TrackFolder = new SettingFolder("TrackFolder", SettingCategory.Folder, NORMAL, Work + "/User/Tracks", SettingStoreType.Global, SettingUsage.ACB, true);
 	// Files
 	public static final SettingFile DatabasePath = (SettingFile) SettingsList.addSetting(new SettingFile("DatabasePath", SettingCategory.Folder, NEVER, Work + "/cachebox.db3", SettingStoreType.Global, SettingUsage.ACB, "db3"));
 	public static final SettingFile FieldNotesGarminPath = (SettingFile) SettingsList.addSetting(new SettingFile("FieldNotesGarminPath", SettingCategory.Folder, INVISIBLE, Work + "/User/geocache_visits.txt", SettingStoreType.Global, SettingUsage.ACB));
