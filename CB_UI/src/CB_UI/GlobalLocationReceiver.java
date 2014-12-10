@@ -1,4 +1,21 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
@@ -18,16 +35,15 @@ import CB_UI_Base.GL_UI.Controls.Dialogs.Toast;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Log.Logger;
 
 /**
- * Empfängt alle Positions Änderungen und sortiert Liste oder spielt Sounds ab.
+ * Empfï¿½ngt alle Positions ï¿½nderungen und sortiert Liste oder spielt Sounds ab.
  * 
  * @author Longri
  */
 public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBackEvent
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GlobalLocationReceiver.class);
 	public final static boolean DEBUG_POSITION = true;
 
 	public final static String GPS_PROVIDER = "gps";
@@ -48,7 +64,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 		}
 		catch (Exception e)
 		{
-			Logger.Error("GlobalLocationReceiver", "Load sound", e);
+			log.error("GlobalLocationReceiver", "Load sound", e);
 			e.printStackTrace();
 		}
 	}
@@ -98,7 +114,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				}
 				catch (Exception e)
 				{
-					Logger.Error("GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", e);
+					log.error("GlobalLocationReceiver", "Global.PlaySound(Approach.ogg)", e);
 					e.printStackTrace();
 				}
 
@@ -127,14 +143,14 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				}
 				catch (Exception e)
 				{
-					Logger.Error("GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
+					log.error("GlobalLocationReceiver", "if (!initialResortAfterFirstFixCompleted && GlobalCore.LastValidPosition.Valid)", e);
 					e.printStackTrace();
 				}
 
 				try
 				{
-					// schau die 50 nächsten Caches durch, wenn einer davon näher ist
-					// als der aktuell nächste -> umsortieren und raus
+					// schau die 50 nï¿½chsten Caches durch, wenn einer davon nï¿½her ist
+					// als der aktuell nï¿½chste -> umsortieren und raus
 					// only when showing Map or cacheList
 					if (!Database.Data.Query.ResortAtWork)
 					{
@@ -197,7 +213,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 				}
 				catch (Exception e)
 				{
-					Logger.Error("GlobalLocationReceiver", "Resort", e);
+					log.error("GlobalLocationReceiver", "Resort", e);
 					e.printStackTrace();
 				}
 
@@ -263,7 +279,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 			if (!initialFixSoundCompleted && Locator.isGPSprovided() && GPS.getFixedSats() > 3)
 			{
 
-				Logger.LogCat("Play Fix");
+				log.debug("Play Fix");
 				if (PlaySounds) SoundCache.play(Sounds.GPS_fix);
 				initialFixSoundCompleted = true;
 				loseSoundCompleated = false;
@@ -272,7 +288,7 @@ public class GlobalLocationReceiver implements PositionChangedEvent, GPS_FallBac
 		}
 		catch (Exception e)
 		{
-			Logger.Error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
+			log.error("GlobalLocationReceiver", "Global.PlaySound(GPS_Fix.ogg)", e);
 			e.printStackTrace();
 		}
 

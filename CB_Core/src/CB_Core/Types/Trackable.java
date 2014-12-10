@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Types;
 
 import java.text.DateFormat;
@@ -9,15 +24,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.Enums.LogTypes;
 import CB_Utils.DB.CoreCursor;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.UnitFormatter;
 
 public class Trackable implements Comparable<Trackable>
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Trackable.class);
 	private int Id = -1;
 	private boolean Archived;
 	private String GcCode = "";
@@ -63,7 +78,7 @@ public class Trackable implements Comparable<Trackable>
 
 	/**
 	 * DAO Constructor <br>
-	 * Der Constructor, der ein Trackable über eine DB Abfrage erstellt! <img src="doc-files/1.png"/>
+	 * Der Constructor, der ein Trackable ï¿½ber eine DB Abfrage erstellt! <img src="doc-files/1.png"/>
 	 * 
 	 * @param dao
 	 */
@@ -243,7 +258,7 @@ public class Trackable implements Comparable<Trackable>
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Constructor Trackable", "", exc);
+			log.error("Constructor Trackable", "", exc);
 		}
 		try
 		{
@@ -446,7 +461,7 @@ public class Trackable implements Comparable<Trackable>
 
 	/**
 	 * Generiert eine Eindeutige ID aus den ASCII values des GcCodes. <br>
-	 * Damit lässt sich dieser TB schneller in der DB finden.
+	 * Damit lï¿½sst sich dieser TB schneller in der DB finden.
 	 * 
 	 * @return long
 	 */
@@ -537,7 +552,7 @@ public class Trackable implements Comparable<Trackable>
 
 		// TB at other Person
 
-		// User entered TB-Code and not TrackingCode he can´t Grabbed or Discover
+		// User entered TB-Code and not TrackingCode he canï¿½t Grabbed or Discover
 		if (TrackingCode != null && TrackingCode.length() > 0)
 		{
 			if (ID == 19 || ID == 48) return true;

@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.Map;
 
 import java.io.BufferedReader;
@@ -11,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Locator.CoordinateGPS;
 import CB_Locator.Map.Descriptor;
@@ -27,7 +44,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.MathUtils;
 import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.HSV_Color;
 
@@ -38,8 +54,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class RouteOverlay
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(RouteOverlay.class);
 	/**
-	 * ist in Routes eine von openRouteService generierter Track enthalten, dann enthällt diese Vatiable diesen track.
+	 * ist in Routes eine von openRouteService generierter Track enthalten, dann enthï¿½llt diese Vatiable diesen track.
 	 */
 	private static Track OpenRoute;
 
@@ -199,7 +216,7 @@ public class RouteOverlay
 
 							if (name_end > name_start)
 							{
-								// tmpLine, damit Groß-/Kleinschreibung beachtet wird
+								// tmpLine, damit Groï¿½-/Kleinschreibung beachtet wird
 								if (isSeg | isRte) route.Name = tmpLine.substring(name_start, name_end);
 								else
 									GPXName = tmpLine.substring(name_start, name_end);
@@ -320,7 +337,7 @@ public class RouteOverlay
 								DeltaAltitude = Math.abs(FromPosition.getElevation() - lastAcceptedCoordinate.getElevation());
 								FromPosition = new CoordinateGPS(lastAcceptedCoordinate);
 
-								if (DeltaAltitude >= 25.0) // nur aufaddieren wenn Höhenunterschied größer 10 Meter
+								if (DeltaAltitude >= 25.0) // nur aufaddieren wenn Hï¿½henunterschied grï¿½ï¿½er 10 Meter
 								{
 									FromPosition.setElevation(lastAcceptedCoordinate.getElevation());
 									AltitudeDifference = AltitudeDifference + DeltaAltitude;
@@ -383,7 +400,7 @@ public class RouteOverlay
 		}
 		catch (Exception e)
 		{
-			Logger.Error("RouteOverlay", "Exception caught trying to parse date : ", e);
+			log.error("RouteOverlay", "Exception caught trying to parse date : ", e);
 		}
 		return null;
 	}
@@ -454,7 +471,7 @@ public class RouteOverlay
 		if (aktCalcedZoomLevel != Zoom || mRoutesChanged)
 		{// Zoom or Routes changed => calculate new Sprite Points
 
-			// Logger.LogCat("Zoom Changed => Calc Track Points");
+			// log.debug("Zoom Changed => Calc Track Points");
 
 			mRoutesChanged = false;
 			aktCalcedZoomLevel = Zoom;
@@ -600,12 +617,12 @@ public class RouteOverlay
 			}
 			catch (IOException e)
 			{
-				CB_Utils.Log.Logger.Error("SaveTrack", "IOException", e);
+				log.error("SaveTrack", e);
 			}
 		}
 		catch (IOException e1)
 		{
-			CB_Utils.Log.Logger.Error("SaveTrack", "IOException", e1);
+			log.error("SaveTrack", e1);
 		}
 
 		try
@@ -630,7 +647,7 @@ public class RouteOverlay
 		}
 		catch (IOException e)
 		{
-			CB_Utils.Log.Logger.Error("SaveTrack", "IOException", e);
+			log.error("SaveTrack", e);
 		}
 		writer = null;
 	}
@@ -686,7 +703,7 @@ public class RouteOverlay
 		}
 		else
 		{
-			// erst die alte route löschen
+			// erst die alte route lï¿½schen
 			Routes.remove(OpenRoute);
 			route.setColor(OpenRoute.getColor());
 			Routes.add(0, route);

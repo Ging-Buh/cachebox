@@ -1,7 +1,24 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Activitys.FilterSettings;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
@@ -29,10 +46,10 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Log.Logger;
 
 public class EditFilterSettings extends ActivityBase
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(EditFilterSettings.class);
 	public static EditFilterSettings that;
 	public static CB_RectF ItemRec;
 
@@ -387,7 +404,7 @@ public class EditFilterSettings extends ActivityBase
 					synchronized (Database.Data.Query)
 					{
 						String sqlWhere = props.getSqlWhere(Config.GcLogin.getValue());
-						Logger.General("Main.ApplyFilter: " + sqlWhere);
+						log.info("Main.ApplyFilter: " + sqlWhere);
 						Database.Data.Query.clear();
 						CacheListDAO cacheListDAO = new CacheListDAO();
 						cacheListDAO.ReadCacheList(Database.Data.Query, sqlWhere, false, Config.ShowAllWaypoints.getValue());

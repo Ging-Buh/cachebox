@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Api;
 
 import java.io.BufferedWriter;
@@ -18,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.ImageDAO;
@@ -39,12 +55,13 @@ import CB_Locator.CoordinateGPS;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.http.HttpUtils;
 
 public class SearchForGeocaches_Core
 {
+	final static org.slf4j.Logger logger = LoggerFactory.getLogger(PocketQuery.class);
+
 	private Boolean LoadBooleanValueFromDB(String sql) // Found-Status aus Datenbank auslesen
 	{
 		CoreCursor reader = Database.Data.rawQuery(sql, null);
@@ -124,7 +141,7 @@ public class SearchForGeocaches_Core
 			}
 			catch (JSONException e)
 			{
-				Logger.Error("SearchForGeocaches:JSONException", e.getMessage());
+				logger.error("SearchForGeocaches:JSONException", e);
 			}
 			// ein einzelner Cache wird voll geladen
 			apiStatus = 2;
@@ -231,7 +248,7 @@ public class SearchForGeocaches_Core
 		}
 		catch (UnsupportedEncodingException e3)
 		{
-			Logger.Error("SearchForGeocaches:UnsupportedEncodingException", e3.getMessage());
+			logger.error("SearchForGeocaches:UnsupportedEncodingException", e3);
 		}
 		httppost.setHeader("Accept", "application/json");
 		httppost.setHeader("Content-type", "application/json");
@@ -255,7 +272,7 @@ public class SearchForGeocaches_Core
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("SearchForGeocaches:ConnectTimeoutException", e.getMessage());
+			logger.error("SearchForGeocaches:ConnectTimeoutException", e);
 			showToastConnectionError();
 
 			return "";
@@ -263,14 +280,14 @@ public class SearchForGeocaches_Core
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("SearchForGeocaches:ClientProtocolException", e.getMessage());
+			logger.error("SearchForGeocaches:ClientProtocolException", e);
 			showToastConnectionError();
 
 			return "";
 		}
 		catch (IOException e)
 		{
-			Logger.Error("SearchForGeocaches:IOException", e.getMessage());
+			logger.error("SearchForGeocaches:IOException", e);
 			showToastConnectionError();
 
 			return "";
@@ -344,7 +361,7 @@ public class SearchForGeocaches_Core
 				}
 				catch (UnsupportedEncodingException e3)
 				{
-					Logger.Error("SearchForGeocaches:UnsupportedEncodingException", e3.getMessage());
+					logger.error("SearchForGeocaches:UnsupportedEncodingException", e3);
 				}
 				httppost.setHeader("Accept", "application/json");
 				httppost.setHeader("Content-type", "application/json");
@@ -355,13 +372,13 @@ public class SearchForGeocaches_Core
 					result = HttpUtils.Execute(httppost, icancel);
 					if (result.contains("The service is unavailable"))
 					{
-						Logger.Error("SearchForGeocaches:The service is unavailable", result);
+						logger.error("SearchForGeocaches:The service is unavailable: " + result);
 						return "The service is unavailable";
 					}
 				}
 				catch (ConnectTimeoutException e)
 				{
-					Logger.Error("SearchForGeocaches:ConnectTimeoutException", e.getMessage());
+					logger.error("SearchForGeocaches:ConnectTimeoutException", e);
 					showToastConnectionError();
 
 					return "";
@@ -369,14 +386,14 @@ public class SearchForGeocaches_Core
 				}
 				catch (ClientProtocolException e)
 				{
-					Logger.Error("SearchForGeocaches:ClientProtocolException", e.getMessage());
+					logger.error("SearchForGeocaches:ClientProtocolException", e);
 					showToastConnectionError();
 
 					return "";
 				}
 				catch (IOException e)
 				{
-					Logger.Error("SearchForGeocaches:IOException", e.getMessage());
+					logger.error("SearchForGeocaches:IOException", e);
 					showToastConnectionError();
 
 					return "";
@@ -408,12 +425,12 @@ public class SearchForGeocaches_Core
 			{
 				result = "";
 				JSONArray caches = json.getJSONArray("Geocaches");
-				// Logger.DEBUG("got " + caches.length() + " Caches from gc");
+				// log.debug("got " + caches.length() + " Caches from gc");
 				for (int i = 0; i < caches.length(); i++)
 				{
 					JSONObject jCache = (JSONObject) caches.get(i);
 					String gcCode = jCache.getString("Code");
-					// Logger.DEBUG("handling " + gcCode);
+					// log.debug("handling " + gcCode);
 					String name = jCache.getString("Name");
 					result += gcCode + " - " + name + "\n";
 
@@ -451,15 +468,15 @@ public class SearchForGeocaches_Core
 					}
 					catch (Exception exc)
 					{
-						Logger.Error("API", "SearchForGeocaches_ParseDate", exc);
+						logger.error("SearchForGeocaches_ParseDate", exc);
 					}
 					cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
-					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+					// Ein evtl. in der Datenbank vorhandenen "Found" nicht ï¿½berschreiben
 					Boolean Favorite = LoadBooleanValueFromDB("select Favorit from Caches where GcCode = \"" + gcCode + "\"");
 					cache.setFavorit(Favorite);
 
-					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+					// Ein evtl. in der Datenbank vorhandenen "Found" nicht ï¿½berschreiben
 					Boolean Found = LoadBooleanValueFromDB("select found from Caches where GcCode = \"" + gcCode + "\"");
 					if (!Found)
 					{
@@ -482,7 +499,7 @@ public class SearchForGeocaches_Core
 					}
 					cache.GPXFilename_ID = gpxFilenameId;
 
-					// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+					// Ein evtl. in der Datenbank vorhandenen "Found" nicht ï¿½berschreiben
 					Boolean userData = LoadBooleanValueFromDB("select HasUserData from Caches where GcCode = \"" + gcCode + "\"");
 
 					cache.setHasUserData(userData);
@@ -508,7 +525,7 @@ public class SearchForGeocaches_Core
 						}
 						catch (Exception e1)
 						{
-							Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
+							logger.error("SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
 							cache.setLongDescription("");
 						}
 						if (jCache.getBoolean("LongDescriptionIsHtml") == false)
@@ -541,7 +558,7 @@ public class SearchForGeocaches_Core
 						}
 						catch (Exception e)
 						{
-							Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
+							logger.error("SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
 							cache.setShortDescription("");
 						}
 						if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
@@ -576,7 +593,7 @@ public class SearchForGeocaches_Core
 					cache.setUrl(jCache.getString("Url"));
 					cache.setApiStatus(apiStatus);
 
-					// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
+					// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht ï¿½berschreiben
 					Boolean fav = LoadBooleanValueFromDB("select favorit from Caches where GcCode = \"" + gcCode + "\"");
 					cache.setFavorit(fav);
 
@@ -612,7 +629,7 @@ public class SearchForGeocaches_Core
 							}
 							catch (Exception exc)
 							{
-								Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);
+								logger.error("API", "SearchForGeocaches_ParseLogDate", exc);
 							}
 							log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
 							logList.add(log);
@@ -678,7 +695,7 @@ public class SearchForGeocaches_Core
 							}
 
 						}
-						Logger.DEBUG("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/" + imageListSizeGrabbed + ")");
+						logger.debug("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/" + imageListSizeGrabbed + ")");
 
 						// insert Waypoints
 						JSONArray waypoints = jCache.getJSONArray("AdditionalWaypoints");
@@ -756,13 +773,11 @@ public class SearchForGeocaches_Core
 		}
 		catch (JSONException e)
 		{
-			Logger.Error("SearchForGeocaches:ParserException", result);
-			e.printStackTrace();
+			logger.error("SearchForGeocaches:ParserException: " + result, e);
 		}
 		catch (ClassCastException e)
 		{
-			Logger.Error("SearchForGeocaches:ParserException", result);
-			e.printStackTrace();
+			logger.error("SearchForGeocaches:ParserException: " + result, e);
 		}
 		return result;
 	}
@@ -873,7 +888,7 @@ public class SearchForGeocaches_Core
 		}
 		catch (Exception ex)
 		{
-			Logger.Error("DescriptionView", "Load CacheInfo by API", ex);
+			logger.error("Load CacheInfo by API", ex);
 			return null;
 		}
 

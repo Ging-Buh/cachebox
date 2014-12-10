@@ -1,8 +1,25 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.GL_UI.Controls.List;
 
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.Fonts;
@@ -12,7 +29,6 @@ import CB_UI_Base.GL_UI.ParentInfo;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.MoveableList;
 
@@ -22,6 +38,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 
 public abstract class ListViewBase extends CB_View_Base implements IScrollbarParent
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(ListViewBase.class);
 	protected Scrollbar scrollbar;
 	protected MoveableList<GL_View_Base> noListChilds = new MoveableList<GL_View_Base>();
 	private float mAnimationTarget = 0;
@@ -48,17 +65,17 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract float getListViewLength();
 
 	/**
-	 * Wen True, können die Items verschoben werden
+	 * Wen True, kï¿½nnen die Items verschoben werden
 	 */
 	protected Boolean mIsDrageble = true;
 
 	/**
-	 * Ermöglicht den Zugriff auf die Liste, welche Dargestellt werden soll.
+	 * Ermï¿½glicht den Zugriff auf die Liste, welche Dargestellt werden soll.
 	 */
 	protected Adapter mBaseAdapter;
 
 	/**
-	 * Enthällt die Indexes, welche schon als Child exestieren.
+	 * Enthï¿½llt die Indexes, welche schon als Child exestieren.
 	 */
 	CB_List<Integer> mAddeedIndexList = new CB_List<Integer>();
 
@@ -76,7 +93,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected int mLastIndex = 0;
 
 	/**
-	 * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so Groß sind wie das kleinste Item in der List.
+	 * Die Anzahl der Items, welche gleichzeitig dargestellt werden kann, wenn alle Items so Groï¿½ sind wie das kleinste Item in der List.
 	 */
 	protected int mMaxItemCount = -1;
 
@@ -85,7 +102,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected float mcalcAllSizeBase = 0f;
 
 	/**
-	 * Komplette Breite oder Höhe aller Items
+	 * Komplette Breite oder Hï¿½he aller Items
 	 */
 	protected float mAllSize = 0f;
 
@@ -169,7 +186,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	/**
-	 * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich länger dauert, ist
+	 * Setzt ein Flag, welches angibt, ob dies ListView Invisible Items hat. Da die Berechnung der Positionen deutlich lï¿½nger dauert, ist
 	 * der Standard auf False gesetzt.
 	 * 
 	 * @param value
@@ -248,7 +265,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		// Position setzen, damit die items neu geladen werden
 		setListPos(mPos, false);
-		// Logger.DEBUG("SetListPos Relod Items");
+		// log.debug("SetListPos Relod Items");
 		GL.that.renderOnce();
 
 	}
@@ -292,7 +309,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract void RenderThreadSetPos(float value, boolean Kinetic);
 
 	/**
-	 * added die sichtbaren Items als Child und speichert den Index in einer Liste, damit das Item nicht ein zweites mal hinzugefügt wird.
+	 * added die sichtbaren Items als Child und speichert den Index in einer Liste, damit das Item nicht ein zweites mal hinzugefï¿½gt wird.
 	 * Wenn Kinetic == True werden mehr Items geladen, damit beim schnellen Scrollen die Items schon erstellt sind, bevor sie in den
 	 * sichtbaren Bereich kommen.
 	 * 
@@ -301,7 +318,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	protected abstract void addVisibleItems(boolean Kinetic);
 
 	/**
-	 * Fragt die Höhen aller Items ab und speichert die damit berechneten Positonen ab.
+	 * Fragt die Hï¿½hen aller Items ab und speichert die damit berechneten Positonen ab.
 	 */
 	protected abstract void calcDefaultPosList();
 
@@ -419,13 +436,13 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	}
 
 	/**
-	 * Überprüft ob die Liste oben oder unten Platz hat und lösst eine Animation aus, in der die Liste auf die erste oder letzte Position
+	 * ï¿½berprï¿½ft ob die Liste oben oder unten Platz hat und lï¿½sst eine Animation aus, in der die Liste auf die erste oder letzte Position
 	 * scrollt.
 	 */
 	@Override
 	public void chkSlideBack()
 	{
-		// Logger.LogCat("chkSlideBack()");
+		// log.debug("chkSlideBack()");
 		if (!mIsDrageble)
 		{
 			startAnimationtoTop();
@@ -479,7 +496,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		float versatz = (i < lastAndFirst.y) ? -getListViewLength() + this.mBaseAdapter.getItemSize(i) : 0;
 
-		Logger.DEBUG("SetListPos -> ScrollTO Item [" + i + "]");
+		log.debug("SetListPos -> ScrollTO Item [" + i + "]");
 
 		try
 		{
@@ -501,7 +518,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 	public void scrollTo(float Pos)
 	{
 
-		// Logger.LogCat("Scroll TO:" + Pos);
+		// log.debug("Scroll TO:" + Pos);
 
 		mAnimationTarget = Pos;
 		stopTimer();
@@ -532,7 +549,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 						return;
 					}
 
-					// Logger.DEBUG("Set Animatet ListPos");
+					// log.debug("Set Animatet ListPos");
 					setListPos(newPos, true);
 				}
 
@@ -553,6 +570,10 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 			{
 				mAnimationTimer.cancel();
 			}
+		}
+		catch (Exception e)
+		{
+			mAnimationTimer = null;
 		}
 		finally
 		{
@@ -614,7 +635,7 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 					}
 				}
 
-				// alle Items löschen, damit das Selection flag neu gesetzt werden kann.
+				// alle Items lï¿½schen, damit das Selection flag neu gesetzt werden kann.
 				if (childs.size() == 0)
 				{
 					reloadItems();
@@ -682,14 +703,14 @@ public abstract class ListViewBase extends CB_View_Base implements IScrollbarPar
 
 		}
 
-		// Logger.LogCat("getLastVisiblePosition = " + ret);
+		// log.debug("getLastVisiblePosition = " + ret);
 
 		return ret;
 	}
 
 	/**
-	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden können, wenn alle Items so Groß sind wie das kleinste Item in der
-	 * List, zurück.
+	 * Gibt die Anzahl der Items, welche gleichzeitig dargestellt werden kï¿½nnen, wenn alle Items so Groï¿½ sind wie das kleinste Item in der
+	 * List, zurï¿½ck.
 	 */
 	public int getMaxItemCount()
 	{

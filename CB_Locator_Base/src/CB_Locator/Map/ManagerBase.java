@@ -49,6 +49,7 @@ import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.CB_RenderThemeHandler;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -59,7 +60,6 @@ import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.graphics.GL_GraphicFactory;
 import CB_UI_Base.graphics.GL_RenderType;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.iChanged;
 
@@ -69,7 +69,7 @@ import CB_Utils.Util.iChanged;
  */
 public abstract class ManagerBase
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(ManagerBase.class);
 	public static int PROCESSOR_COUNT;
 	private final DisplayModel DISPLAY_MODEL;
 
@@ -126,7 +126,7 @@ public abstract class ManagerBase
 	public abstract PackBase CreatePack(String file) throws IOException;
 
 	// / <summary>
-	// / Läd ein Map Pack und fügt es dem Manager hinzu
+	// / Lï¿½d ein Map Pack und fï¿½gt es dem Manager hinzu
 	// / </summary>
 	// / <param name="file"></param>
 	// / <returns>true, falls das Pack erfolgreich geladen wurde, sonst
@@ -138,7 +138,7 @@ public abstract class ManagerBase
 			PackBase pack = CreatePack(file);
 			mapPacks.add(pack);
 
-			// Nach Aktualität sortieren
+			// Nach Aktualitï¿½t sortieren
 			Collections.sort(mapPacks);
 			return true;
 		}
@@ -216,7 +216,7 @@ public abstract class ManagerBase
 
 		if (layer == null) return false;
 
-		// Gibts die Kachel schon in einem Mappack? Dann kann sie übersprungen
+		// Gibts die Kachel schon in einem Mappack? Dann kann sie ï¿½bersprungen
 		// werden!
 		for (PackBase pack : mapPacks)
 			if (pack.Layer == layer) if (pack.Contains(tile) != null) return true;
@@ -225,7 +225,7 @@ public abstract class ManagerBase
 		// String path = layer.GetLocalPath(tile);
 		String url = layer.GetUrl(tile);
 
-		// Falls Kachel schon geladen wurde, kann sie übersprungen werden
+		// Falls Kachel schon geladen wurde, kann sie ï¿½bersprungen werden
 		synchronized (this)
 		{
 			if (FileIO.FileExists(filename)) return true;
@@ -435,7 +435,7 @@ public abstract class ManagerBase
 					{
 						files.add(FilePath);
 						mapnames.add(tmp);
-						Logger.DEBUG("add: " + tmp);
+						log.debug("add: " + tmp);
 					}
 				}
 			}
@@ -454,13 +454,13 @@ public abstract class ManagerBase
 		ArrayList<String> files = new ArrayList<String>();
 		ArrayList<String> mapnames = new ArrayList<String>();
 
-		Logger.DEBUG("dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
+		log.debug("dirOwnMaps = " + LocatorSettings.MapPackFolderLocal.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolderLocal.getValue());
 
-		Logger.DEBUG("dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
+		log.debug("dirDefaultMaps = " + LocatorSettings.MapPackFolder.getDefaultValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getDefaultValue());
 
-		Logger.DEBUG("dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
+		log.debug("dirGlobalMaps = " + LocatorSettings.MapPackFolder.getValue());
 		getFiles(files, mapnames, LocatorSettings.MapPackFolder.getValue());
 
 		if (!(files == null))
@@ -571,21 +571,21 @@ public abstract class ManagerBase
 		{
 			String ErrorMsg = e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
 			GL.that.Toast(ErrorMsg, 8000);
-			Logger.Error("databaseRenderer: ", ErrorMsg);
+			log.error("databaseRenderer: ", ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 		catch (ParserConfigurationException e)
 		{
 			String ErrorMsg = e.getMessage();
 			GL.that.Toast(ErrorMsg, 8000);
-			Logger.Error("databaseRenderer: ", ErrorMsg);
+			log.error("databaseRenderer: ", ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 		catch (IOException e)
 		{
 			String ErrorMsg = e.getMessage();
 			GL.that.Toast(ErrorMsg, 8000);
-			Logger.Error("databaseRenderer: ", ErrorMsg);
+			log.error("databaseRenderer: ", ErrorMsg);
 			renderTheme = CB_InternalRenderTheme.OSMARENDER;
 		}
 
@@ -616,10 +616,10 @@ public abstract class ManagerBase
 			{
 				try
 				{
-					Logger.DEBUG("Suche RenderTheme: " + RenderTheme);
+					log.debug("Suche RenderTheme: " + RenderTheme);
 					if (RenderTheme == null)
 					{
-						Logger.DEBUG("RenderTheme not found!");
+						log.debug("RenderTheme not found!");
 						renderTheme = CB_InternalRenderTheme.OSMARENDER;
 
 					}
@@ -628,13 +628,13 @@ public abstract class ManagerBase
 						File file = new File(RenderTheme);
 						if (file.exists())
 						{
-							Logger.DEBUG("RenderTheme found!");
+							log.debug("RenderTheme found!");
 							renderTheme = new ExternalRenderTheme(file);
 
 						}
 						else
 						{
-							Logger.DEBUG("RenderTheme not found!");
+							log.debug("RenderTheme not found!");
 							renderTheme = CB_InternalRenderTheme.OSMARENDER;
 						}
 					}
@@ -642,7 +642,7 @@ public abstract class ManagerBase
 				}
 				catch (FileNotFoundException e)
 				{
-					Logger.Error("Load RenderTheme", "Error loading RenderTheme!", e);
+					log.error("Load RenderTheme", "Error loading RenderTheme!", e);
 					renderTheme = CB_InternalRenderTheme.OSMARENDER;
 				}
 			}
@@ -656,21 +656,21 @@ public abstract class ManagerBase
 			{
 				String ErrorMsg = e.getMessage() + Global.br + "Line: " + ((SAXParseException) e).getLineNumber();
 				GL.that.Toast(ErrorMsg, 8000);
-				Logger.Error("databaseRenderer: ", ErrorMsg);
+				log.error("databaseRenderer: ", ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 			catch (ParserConfigurationException e)
 			{
 				String ErrorMsg = e.getMessage();
 				GL.that.Toast(ErrorMsg, 8000);
-				Logger.Error("databaseRenderer: ", ErrorMsg);
+				log.error("databaseRenderer: ", ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 			catch (IOException e)
 			{
 				String ErrorMsg = e.getMessage();
 				GL.that.Toast(ErrorMsg, 8000);
-				Logger.Error("databaseRenderer: ", ErrorMsg);
+				log.error("databaseRenderer: ", ErrorMsg);
 				renderTheme = CB_InternalRenderTheme.OSMARENDER;
 			}
 
@@ -750,7 +750,7 @@ public abstract class ManagerBase
 			mapDatabase[i].openFile(mapFile);
 		}
 
-		Logger.DEBUG("Open MapsForge Map: " + mapFile);
+		log.debug("Open MapsForge Map: " + mapFile);
 		MapFileInfo info = mapDatabase[0].getMapFileInfo();
 		if (info.comment == null)
 		{

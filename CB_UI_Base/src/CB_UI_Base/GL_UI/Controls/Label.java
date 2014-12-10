@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2011-2012 team-cachebox.de
+ * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package CB_UI_Base.GL_UI.Controls;
 
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.GL_UI.CB_View_Base;
 import CB_UI_Base.GL_UI.COLOR;
@@ -24,7 +26,6 @@ import CB_UI_Base.GL_UI.IRunOnGL;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Label extends CB_View_Base
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Label.class);
 
 	static public enum VAlignment
 	{
@@ -118,12 +120,12 @@ public class Label extends CB_View_Base
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
-			// kommt manchmal wenn der Text geändert wird
+			// kommt manchmal wenn der Text geï¿½ndert wird
 			makeText();
 		}
 		catch (NullPointerException e)
 		{
-			// kommt manchmal wenn der Text geändert wird
+			// kommt manchmal wenn der Text geï¿½ndert wird
 			makeText();
 		}
 	}
@@ -141,8 +143,7 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
-					+ " \"" + mText + "\"");
+			log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -160,8 +161,7 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
-					+ " \"" + mText + "\"");
+			log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -179,8 +179,7 @@ public class Label extends CB_View_Base
 		{
 			// java.lang.ArrayIndexOutOfBoundsException kommt mal vor
 			e.printStackTrace();
-			Logger.DEBUG(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height
-					+ " \"" + mText + "\"");
+			log.debug(this + " (" + mWrapType + "/" + mHAlignment + "/" + mVAlignment + ") " + bounds.width + "," + bounds.height + " \"" + mText + "\"");
 		}
 		setTextPosition();
 	}
@@ -204,7 +203,7 @@ public class Label extends CB_View_Base
 
 	private void setTextPosition()
 	{
-		float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begründet
+		float xPosition = leftBorder + 1; // HAlignment.LEFT !!! Die 1 ist empirisch begrï¿½ndet
 		if (innerWidth > bounds.width)
 		{
 			if (mHAlignment == HAlignment.CENTER)
@@ -412,7 +411,7 @@ public class Label extends CB_View_Base
 	@Override
 	protected void SkinIsChanged()
 	{
-		// todo den korrekten Font (original Fontgrösse nicht bekannt) setzen
+		// todo den korrekten Font (original Fontgrï¿½sse nicht bekannt) setzen
 		mFont = Fonts.getNormal();
 		mColor = COLOR.getFontColor();
 		initLabel();

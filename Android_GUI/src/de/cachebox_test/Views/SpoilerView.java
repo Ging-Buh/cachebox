@@ -3,13 +3,14 @@ package de.cachebox_test.Views;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.Events.platformConector.iStartPictureApp;
-import CB_Utils.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -38,7 +39,7 @@ import de.cachebox_test.Events.ViewOptionsMenu;
 @SuppressWarnings("deprecation")
 public class SpoilerView extends FrameLayout implements ViewOptionsMenu, AdapterView.OnItemSelectedListener
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(SpoilerView.class);
 	RelativeLayout spoilerLayout;
 	Context context;
 	Gallery g;
@@ -247,7 +248,7 @@ public class SpoilerView extends FrameLayout implements ViewOptionsMenu, Adapter
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("SpoilerView.onShow()", "AddBitmap", exc);
+				log.error("SpoilerView.onShow() AddBitmap", exc);
 			}
 		}
 

@@ -2,10 +2,11 @@ package CB_Utils.DB;
 
 import java.util.HashMap;
 
-import CB_Utils.Log.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Database_Core
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Database_Core.class);
 	protected String databasePath;
 
 	protected boolean newDB = false;
@@ -42,7 +43,7 @@ public abstract class Database_Core
 	{
 		try
 		{
-			Logger.DEBUG("DB Startup : " + databasePath);
+			log.debug("DB Startup : " + databasePath);
 		}
 		catch (Exception e)
 		{
@@ -242,7 +243,7 @@ public abstract class Database_Core
 		}
 	}
 
-	// Zur Parameter übergabe and die DB
+	// Zur Parameter ï¿½bergabe and die DB
 	public static class Parameters extends HashMap<String, Object>
 	{
 

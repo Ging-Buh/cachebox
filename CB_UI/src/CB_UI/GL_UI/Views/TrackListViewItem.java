@@ -68,7 +68,7 @@ public class TrackListViewItem extends ListViewItemBackground
 		boolean lClick = false;
 		if (this.isPressed)
 		{
-			// Logger.LogCat("TrackListViewItem => is Pressed");
+			// log.debug("TrackListViewItem => is Pressed");
 
 			lClick = lBounds.contains(this.lastItemTouchPos);
 			rClick = rBounds.contains(this.lastItemTouchPos);
@@ -90,7 +90,7 @@ public class TrackListViewItem extends ListViewItemBackground
 		{
 			if (Clicked)
 			{
-				// Logger.LogCat("TrackListViewItem => is Clicked");
+				// log.debug("TrackListViewItem => is Clicked");
 				Clicked = false;
 				lClick = lBounds.contains(this.lastItemTouchPos);
 				rClick = rBounds.contains(this.lastItemTouchPos);
@@ -197,7 +197,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	private void chkClick()
 	{
-		// Logger.LogCat("TrackListViewItem => Chk Clicked");
+		// log.debug("TrackListViewItem => Chk Clicked");
 
 		GL.that.RunOnGL(new IRunOnGL()
 		{
@@ -214,7 +214,7 @@ public class TrackListViewItem extends ListViewItemBackground
 
 	private void colorClick()
 	{
-		// Logger.LogCat("TrackListViewItem => Color Clicked");
+		// log.debug("TrackListViewItem => Color Clicked");
 
 		GL.that.RunOnGL(new IRunOnGL()
 		{

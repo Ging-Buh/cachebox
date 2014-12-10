@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Import;
 
 import java.io.BufferedReader;
@@ -15,6 +30,8 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.zip.ZipException;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery.PQ;
 import CB_Core.DAO.CacheDAO;
@@ -29,11 +46,12 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.ImageEntry;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.Events.ProgresssChangedEventList;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
 public class Importer
 {
+	final static org.slf4j.Logger logger = LoggerFactory.getLogger(Importer.class);
+
 	public void importGC(ArrayList<PQ> pqList)
 	{
 		ProgresssChangedEventList.Call("import Gc.com", "", 0);
@@ -42,7 +60,7 @@ public class Importer
 
 	/**
 	 * Importiert die GPX files, die sich in diesem Verzeichniss befinden. Auch wenn sie sich in einem Zip-File befinden. Oder das GPX-File
-	 * falls eine einzelne Datei übergeben wird.
+	 * falls eine einzelne Datei ï¿½bergeben wird.
 	 * 
 	 * @param directoryPath
 	 * @param ip
@@ -90,12 +108,12 @@ public class Importer
 				}
 				catch (ZipException e)
 				{
-					Logger.Error("Core.Importer.ImportGPX", "ZipException", e);
+					logger.error("ZipException", e);
 					e.printStackTrace();
 				}
 				catch (IOException e)
 				{
-					Logger.Error("Core.Importer.ImportGPX", "IOException", e);
+					logger.error("IOException", e);
 					e.printStackTrace();
 				}
 			}
@@ -198,7 +216,7 @@ public class Importer
 			}
 			catch (Exception e)
 			{
-				Logger.Error("Core.Importer.ImportGpx", "importer.doImport => " + File.getAbsolutePath(), e);
+				logger.error("importer.doImport => " + File.getAbsolutePath(), e);
 				e.printStackTrace();
 			}
 
@@ -213,7 +231,7 @@ public class Importer
 
 		importHandler = null;
 
-		// Indexierte CacheInfos zurück schreiben
+		// Indexierte CacheInfos zurï¿½ck schreiben
 		CacheInfoList.writeListToDB();
 		CacheInfoList.dispose();
 
@@ -385,7 +403,7 @@ public class Importer
 		// get all GcCodes from Listing changed caches without Typ==4 (ErthCache)
 		ArrayList<String> gcCodes = CacheDao.getGcCodesFromMustLoadImages();
 
-		// refresch all Image Url´s
+		// refresch all Image Urlï¿½s
 		ip.setJobMax("importImageUrls", gcCodes.size());
 		int counter = 0;
 		for (String gccode : gcCodes)
@@ -403,7 +421,7 @@ public class Importer
 			if (gccode.toLowerCase(Locale.getDefault()).startsWith("gc")) // Abfragen nur, wenn "Cache" von geocaching.com
 			{
 
-				// API zugriff nur mit gültigem API Key
+				// API zugriff nur mit gï¿½ltigem API Key
 
 				int retChk = GroundspeakAPI.isValidAPI_Key(true);
 
@@ -413,13 +431,13 @@ public class Importer
 					if (ret < 0) return ret;
 				}
 
-				ip.ProgressInkrement("importImageUrls", "get Image Url´s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")", false);
+				ip.ProgressInkrement("importImageUrls", "get Image Urlï¿½s for " + gccode + " (" + String.valueOf(counter++) + " / " + String.valueOf(gcCodes.size()) + ")", false);
 			}
 		}
 
 		ImageDAO imageDAO = new ImageDAO();
 
-		// Die Where Clusel sorgt dfür, dass nur die Anzahl der zu ladenden Bilder zurück gegeben wird.
+		// Die Where Clusel sorgt dfï¿½r, dass nur die Anzahl der zu ladenden Bilder zurï¿½ck gegeben wird.
 		// Da keine Bilder von ErthCaches geladen werden, wird hier auch der Typ 4 ausgelassen.
 		String where = " Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)";
 
@@ -540,7 +558,7 @@ public class Importer
 	public int importImagesNew(ImporterProgress ip, boolean importImages, boolean importSpoiler, String where)
 	{
 
-		// refresch all Image Url´s
+		// refresch all Image Urlï¿½s
 
 		int ret = 0;
 
@@ -613,7 +631,7 @@ public class Importer
 	}
 
 	/**
-	 * Importiert alle Spoiler Images für einen Cache (über die API-Funktion)
+	 * Importiert alle Spoiler Images fï¿½r einen Cache (ï¿½ber die API-Funktion)
 	 * 
 	 * @param Staging
 	 *            Config.settings.StagingAPI.getValue()
@@ -654,7 +672,7 @@ public class Importer
 
 	/**
 	 * Bilderimport. Wenn descriptionImagesUpdated oder additionalImagesUpdated == false dann werden die entsprechenden Images importiert
-	 * Aber nur dann wenn CheckLocalImages dafür false liefert. wenn importAlways == true -> die Bilder werden unabhängig davon, ob schon
+	 * Aber nur dann wenn CheckLocalImages dafï¿½r false liefert. wenn importAlways == true -> die Bilder werden unabhï¿½ngig davon, ob schon
 	 * welche existieren importiert
 	 * 
 	 * @param Staging
@@ -743,7 +761,7 @@ public class Importer
 	}
 
 	/**
-	 * Überprüft, ob für den gewählten Cache die Bilder nicht geladen werden müssen
+	 * ï¿½berprï¿½ft, ob fï¿½r den gewï¿½hlten Cache die Bilder nicht geladen werden mï¿½ssen
 	 * 
 	 * @return true wenn schon Images existieren und keine .changed oder .1st Datei ansonsten false
 	 */

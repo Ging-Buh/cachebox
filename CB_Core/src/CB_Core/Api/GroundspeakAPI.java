@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Api;
 
 import java.io.IOException;
@@ -19,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.DAO.CacheDAO;
@@ -38,12 +54,12 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.Interfaces.ICancel;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.ByRef;
 import CB_Utils.http.HttpUtils;
 
 public class GroundspeakAPI
 {
+	final static org.slf4j.Logger logger = LoggerFactory.getLogger(GroundspeakAPI.class);
 	public static final String GS_LIVE_URL = "https://api.groundspeak.com/LiveV6/geocaching.svc/";
 	static final String STAGING_GS_LIVE_URL = "https://staging.api.groundspeak.com/Live/V6Beta/geocaching.svc/";
 
@@ -94,7 +110,7 @@ public class GroundspeakAPI
 			act = CB_Core_Settings.GcAPI.getValue();
 		}
 
-		// Prüfen, ob das AccessToken für ACB ist!!!
+		// Prï¿½fen, ob das AccessToken fï¿½r ACB ist!!!
 		if (!(act.startsWith("A"))) return "";
 		String result = act.substring(1, act.length());
 
@@ -230,7 +246,7 @@ public class GroundspeakAPI
 			catch (JSONException e)
 			{
 				e.printStackTrace();
-				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
+				logger.error("UploadFieldNotesAPI", e);
 				LastAPIError = e.getMessage();
 				return ERROR;
 			}
@@ -238,22 +254,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("UploadFieldNotesAPI", "ConnectTimeoutException", e);
+			logger.error("UploadFieldNotesAPI ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("UploadFieldNotesAPI", "UnsupportedEncodingException", e);
+			logger.error("UploadFieldNotesAPI UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("UploadFieldNotesAPI", "ClientProtocolException", e);
+			logger.error("UploadFieldNotesAPI ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("UploadFieldNotesAPI", "IOException", e);
+			logger.error("UploadFieldNotesAPI IOException", e);
 			return ERROR;
 		}
 
@@ -338,22 +354,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("GetCachesFound", "ConnectTimeoutException", e);
+			logger.error("GetCachesFound ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("GetCachesFound", "UnsupportedEncodingException", e);
+			logger.error("GetCachesFound UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("GetCachesFound", "ClientProtocolException", e);
+			logger.error("GetCachesFound ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("GetCachesFound", "IOException", e);
+			logger.error("GetCachesFound", e);
 			return ERROR;
 		}
 
@@ -418,7 +434,7 @@ public class GroundspeakAPI
 					MemberName = user.getString("UserName");
 					membershipType = memberTypeId;
 					API_isCheked = true;
-					// Zurücksetzen, falls ein anderer User gewählt wurde
+					// Zurï¿½cksetzen, falls ein anderer User gewï¿½hlt wurde
 					return memberTypeId;
 				}
 				else
@@ -427,7 +443,7 @@ public class GroundspeakAPI
 					result += status.getString("StatusMessage") + "\n";
 					result += status.getString("ExceptionDetails");
 
-					Logger.Error("GetMembershipType", "API-Error");
+					logger.warn("GetMembershipType API-Error");
 					API_isCheked = false;
 					return API_ERROR;
 				}
@@ -435,7 +451,7 @@ public class GroundspeakAPI
 			}
 			catch (Exception e)
 			{
-				Logger.Error("GetMembershipType", "JSONException", e);
+				logger.error("GetMembershipType JSONException", e);
 				API_isCheked = false;
 				return API_ERROR;
 			}
@@ -443,19 +459,19 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("GetMembershipType", "ConnectTimeoutException", e);
+			logger.error("GetMembershipType ConnectTimeoutException", e);
 			API_isCheked = false;
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("GetMembershipType", "UnsupportedEncodingException", e);
+			logger.error("GetMembershipType UnsupportedEncodingException", e);
 			API_isCheked = false;
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("GetMembershipType", "ClientProtocolException", e);
+			logger.error("GetMembershipType ClientProtocolException", e);
 			API_isCheked = false;
 			return ERROR;
 		}
@@ -463,11 +479,11 @@ public class GroundspeakAPI
 		{
 			if (e.toString().contains("UnknownHostException"))
 			{
-				Logger.Error("GetMembershipType", "ConnectTimeoutException", e);
+				logger.error("GetMembershipType ConnectTimeoutException", e);
 				API_isCheked = false;
 				return CONNECTION_TIMEOUT;
 			}
-			Logger.Error("GetMembershipType", "IOException", e);
+			logger.error("GetMembershipType IOException", e);
 			API_isCheked = false;
 			return ERROR;
 		}
@@ -586,22 +602,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
+			logger.error("GetGeocacheStatus ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
+			logger.error("GetGeocacheStatus UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
+			logger.error("GetGeocacheStatus ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("GetGeocacheStatus", "IOException", e);
+			logger.error("GetGeocacheStatus IOException", e);
 			return ERROR;
 		}
 
@@ -707,7 +723,7 @@ public class GroundspeakAPI
 							}
 							catch (Exception exc)
 							{
-								Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);
+								logger.error("SearchForGeocaches_ParseLogDate", exc);
 							}
 							log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
 							logList.add(log);
@@ -737,25 +753,25 @@ public class GroundspeakAPI
 			}
 			catch (ConnectTimeoutException e)
 			{
-				Logger.Error("GetGeocacheLogsByCache", "ConnectTimeoutException", e);
+				logger.error("GetGeocacheLogsByCache ConnectTimeoutException", e);
 				return CONNECTION_TIMEOUT;
 			}
 			catch (UnsupportedEncodingException e)
 			{
-				Logger.Error("GetGeocacheLogsByCache", "UnsupportedEncodingException", e);
+				logger.error("GetGeocacheLogsByCache UnsupportedEncodingException", e);
 				return ERROR;
 			}
 			catch (ClientProtocolException e)
 			{
-				Logger.Error("GetGeocacheLogsByCache", "ClientProtocolException", e);
+				logger.error("GetGeocacheLogsByCache ClientProtocolException", e);
 				return ERROR;
 			}
 			catch (IOException e)
 			{
-				Logger.Error("GetGeocacheLogsByCache", "IOException", e);
+				logger.error("GetGeocacheLogsByCache IOException", e);
 				return ERROR;
 			}
-			// die nächsten Logs laden
+			// die nï¿½chsten Logs laden
 			start += count;
 		}
 		return (-1);
@@ -785,7 +801,7 @@ public class GroundspeakAPI
 		LastAPIError = "";
 		// zum Abfragen der CacheLimits einfach nach einem Cache suchen, der
 		// nicht existiert.
-		// dadurch wird der Zähler nicht erhöht, die Limits aber zurückgegeben.
+		// dadurch wird der Zï¿½hler nicht erhï¿½ht, die Limits aber zurï¿½ckgegeben.
 		try
 		{
 			HttpPost httppost = new HttpPost(URL + "SearchForGeocaches?format=json");
@@ -824,8 +840,8 @@ public class GroundspeakAPI
 				JSONTokener tokener = new JSONTokener(result);
 				JSONObject json = (JSONObject) tokener.nextValue();
 				int status = checkCacheStatus(json, false);
-				// hier keine Überprüfung des Status, da dieser z.B. 118
-				// (Überschreitung des Limits) sein kann, aber der CacheStatus
+				// hier keine ï¿½berprï¿½fung des Status, da dieser z.B. 118
+				// (ï¿½berschreitung des Limits) sein kann, aber der CacheStatus
 				// aber trotzdem drin ist.
 				return status;
 			}
@@ -839,22 +855,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
+			logger.error("GetGeocacheStatus ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
+			logger.error("GetGeocacheStatus UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
+			logger.error("GetGeocacheStatus ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("GetGeocacheStatus", "IOException", e);
+			logger.error("GetGeocacheStatus IOException", e);
 			return ERROR;
 		}
 	}
@@ -972,7 +988,7 @@ public class GroundspeakAPI
 	}
 
 	/**
-	 * Ruft die Liste der TB´s ab, die im Besitz des Users sind
+	 * Ruft die Liste der TBï¿½s ab, die im Besitz des Users sind
 	 * 
 	 * @param Staging
 	 *            Config.settings.StagingAPI.getValue()
@@ -1053,22 +1069,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("GetGeocacheStatus", "ConnectTimeoutException", e);
+			logger.error("GetGeocacheStatus ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("GetGeocacheStatus", "UnsupportedEncodingException", e);
+			logger.error("GetGeocacheStatus UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("GetGeocacheStatus", "ClientProtocolException", e);
+			logger.error("GetGeocacheStatus ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("GetGeocacheStatus", "IOException", e);
+			logger.error("GetGeocacheStatus IOException", e);
 			return ERROR;
 		}
 
@@ -1147,25 +1163,25 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("getTBbyTreckNumber", "ConnectTimeoutException", e);
+			logger.error("getTBbyTreckNumber ConnectTimeoutException", e);
 			TB = null;
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("getTBbyTreckNumber", "UnsupportedEncodingException", e);
+			logger.error("getTBbyTreckNumber UnsupportedEncodingException", e);
 			TB = null;
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("getTBbyTreckNumber", "ClientProtocolException", e);
+			logger.error("getTBbyTreckNumber ClientProtocolException", e);
 			TB = null;
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("getTBbyTreckNumber", "IOException", e);
+			logger.error("getTBbyTreckNumber IOException", e);
 			TB = null;
 			return ERROR;
 		}
@@ -1244,25 +1260,25 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("getTBbyTbCode", "ConnectTimeoutException", e);
+			logger.error("getTBbyTbCode ConnectTimeoutException", e);
 			TB = null;
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("getTBbyTbCode", "UnsupportedEncodingException", e);
+			logger.error("getTBbyTbCode UnsupportedEncodingException", e);
 			TB = null;
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("getTBbyTbCode", "ClientProtocolException", e);
+			logger.error("getTBbyTbCode ClientProtocolException", e);
 			TB = null;
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("getTBbyTbCode", "IOException", e);
+			logger.error("getTBbyTbCode IOException", e);
 			TB = null;
 			return ERROR;
 		}
@@ -1342,22 +1358,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("getImagesForGeocache", "ConnectTimeoutException", e);
+			logger.error("getImagesForGeocache ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("getImagesForGeocache", "UnsupportedEncodingException", e);
+			logger.error("getImagesForGeocache UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("getImagesForGeocache", "ClientProtocolException", e);
+			logger.error("getImagesForGeocache ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("getImagesForGeocache", "IOException", e);
+			logger.error("getImagesForGeocache IOException", e);
 			return ERROR;
 		}
 
@@ -1435,7 +1451,7 @@ public class GroundspeakAPI
 				}
 				else if (status.getInt("StatusCode") == 140)
 				{
-					return 140; // API-Limit überschritten -> nach etwas Verzögerung wiederholen!
+					return 140; // API-Limit ï¿½berschritten -> nach etwas Verzï¿½gerung wiederholen!
 				}
 				else
 				{
@@ -1451,39 +1467,39 @@ public class GroundspeakAPI
 			}
 			catch (JSONException e)
 			{
-				Logger.Error("getTBbyTbCode", "JSONException", e);
+				logger.error("getTBbyTbCode JSONException", e);
 			}
 			catch (URISyntaxException e)
 			{
-				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
+				logger.error("getTBbyTbCode URISyntaxException", e);
 			}
 			catch (java.lang.ClassCastException e)
 			{
-				Logger.Error("getTBbyTbCode", "URISyntaxException", e);
+				logger.error("getTBbyTbCode URISyntaxException", e);
 			}
 
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("getTBbyTbCode", "ConnectTimeoutException", e);
+			logger.error("getTBbyTbCode ConnectTimeoutException", e);
 			list = null;
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("getTBbyTbCode", "UnsupportedEncodingException", e);
+			logger.error("getTBbyTbCode UnsupportedEncodingException", e);
 			list = null;
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("getTBbyTbCode", "ClientProtocolException", e);
+			logger.error("getTBbyTbCode ClientProtocolException", e);
 			list = null;
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("getTBbyTbCode", "IOException", e);
+			logger.error("getTBbyTbCode IOException", e);
 			list = null;
 			return ERROR;
 		}
@@ -1532,7 +1548,7 @@ public class GroundspeakAPI
 				cacheDAO.WriteToDatabase(cache);
 			}
 
-			// Notes von Groundspeak überprüfen und evtl. in die DB an die vorhandenen Notes anhängen
+			// Notes von Groundspeak ï¿½berprï¿½fen und evtl. in die DB an die vorhandenen Notes anhï¿½ngen
 			if (cache.getTmpNote() != null)
 			{
 				String oldNote = Database.GetNote(cache);
@@ -1810,7 +1826,7 @@ public class GroundspeakAPI
 			catch (JSONException e)
 			{
 				e.printStackTrace();
-				Logger.Error("UploadFieldNotesAPI", "JSON-Error", e);
+				logger.error("UploadFieldNotesAPI JSON-Error", e);
 				LastAPIError = e.getMessage();
 				return -1;
 			}
@@ -1818,22 +1834,22 @@ public class GroundspeakAPI
 		}
 		catch (ConnectTimeoutException e)
 		{
-			Logger.Error("createTrackableLog", "ConnectTimeoutException", e);
+			logger.error("createTrackableLog ConnectTimeoutException", e);
 			return CONNECTION_TIMEOUT;
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			Logger.Error("createTrackableLog", "UnsupportedEncodingException", e);
+			logger.error("createTrackableLog UnsupportedEncodingException", e);
 			return ERROR;
 		}
 		catch (ClientProtocolException e)
 		{
-			Logger.Error("createTrackableLog", "ClientProtocolException", e);
+			logger.error("createTrackableLog ClientProtocolException", e);
 			return ERROR;
 		}
 		catch (IOException e)
 		{
-			Logger.Error("createTrackableLog", "IOException", e);
+			logger.error("createTrackableLog IOException", e);
 			return ERROR;
 		}
 

@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Api;
 
 import java.util.ArrayList;
@@ -5,9 +20,9 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.Api.PocketQuery.PQ;
-import CB_Utils.Log.Logger;
 
 /**
  * Imports a single PocketQuery from Groundspeak API directly without ZIP Because Groundspeak API only delivers a lite dataset of the caches
@@ -21,6 +36,7 @@ import CB_Utils.Log.Logger;
  */
 public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(ApiGroundspeak_GetPocketQueryData.class);
 	private PQ pocketQuery;
 	private ArrayList<String> caches;
 
@@ -65,7 +81,7 @@ public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak
 		}
 		catch (JSONException e)
 		{
-			Logger.Error("ApiGS_GetPocketQueryData", e.getMessage());
+			log.error("ApiGS_GetPocketQueryData", e.getMessage());
 			return false;
 		}
 
@@ -79,13 +95,13 @@ public class ApiGroundspeak_GetPocketQueryData extends ApiGroundspeak
 		ApiGroundspeakResult result = new ApiGroundspeakResult(-1, "");
 
 		JSONArray jCaches = json.getJSONArray("CacheCodes");
-		Logger.DEBUG("got " + jCaches.length() + " Caches from gc");
+		log.debug("got " + jCaches.length() + " Caches from gc");
 
 		for (int i = 0; i < jCaches.length(); i++)
 		{
 			String gcCode = (String) jCaches.get(i);
 
-			Logger.DEBUG("handling " + gcCode);
+			log.debug("handling " + gcCode);
 			caches.add(gcCode);
 		}
 

@@ -1,27 +1,44 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.Math;
+
+import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.Skin.CB_Skin;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.iChanged;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Diese Klasse Kapselt die Werte, welche in der OpenGL Map benötigt werden. Auch die Benutzen Fonts werden hier gespeichert, da die Grösse
+ * Diese Klasse Kapselt die Werte, welche in der OpenGL Map benï¿½tigt werden. Auch die Benutzen Fonts werden hier gespeichert, da die Grï¿½sse
  * hier berechnet wird.
  * 
  * @author Longri
  */
 public class GL_UISizes implements SizeChangedEvent
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_UISizes.class);
 
 	// /**
-	// * Initialisiert die Größen und Positionen der UI-Elemente der OpenGL Map, anhand der zur Verfügung stehenden Größe und des
-	// * Eingestellten DPI Faktors. Für die Berechnung wird die Größe von Gdx.graphics genommen.
+	// * Initialisiert die Grï¿½ï¿½en und Positionen der UI-Elemente der OpenGL Map, anhand der zur Verfï¿½gung stehenden Grï¿½ï¿½e und des
+	// * Eingestellten DPI Faktors. Fï¿½r die Berechnung wird die Grï¿½ï¿½e von Gdx.graphics genommen.
 	// */
 	// public static void initial(Color FontColor)
 	// {
@@ -29,7 +46,7 @@ public class GL_UISizes implements SizeChangedEvent
 	// }
 
 	/**
-	 * Initialisiert die Größen und Positionen der UI-Elemente der OpenGL Map, anhand der übergebenen Größe und des Eingestellten DPI
+	 * Initialisiert die Grï¿½ï¿½en und Positionen der UI-Elemente der OpenGL Map, anhand der ï¿½bergebenen Grï¿½ï¿½e und des Eingestellten DPI
 	 * Faktors.
 	 * 
 	 * @param width
@@ -38,21 +55,21 @@ public class GL_UISizes implements SizeChangedEvent
 	public static void initial(float width, float height)
 	{
 
-		Logger.DEBUG("Initial UISizes => " + width + "/" + height);
-		Logger.DEBUG("DPI = " + DPI);
+		log.debug("Initial UISizes => " + width + "/" + height);
+		log.debug("DPI = " + DPI);
 
 		if (DPI != CB_UI_Base_Settings.MapViewDPIFaktor.getValue() || FontFaktor != CB_UI_Base_Settings.MapViewFontFaktor.getValue())
 		{
 
 			DPI = CB_UI_Base_Settings.MapViewDPIFaktor.getValue();
 
-			Logger.DEBUG("DPI != MapViewDPIFaktor " + DPI);
+			log.debug("DPI != MapViewDPIFaktor " + DPI);
 
 			FontFaktor = (float) (0.666666666667 * DPI * CB_UI_Base_Settings.MapViewFontFaktor.getValue());
-			isInitial = false; // grössen müssen neu Berechnet werden
+			isInitial = false; // grï¿½ssen mï¿½ssen neu Berechnet werden
 		}
 
-		Logger.DEBUG("Initial UISizes => isInitial" + isInitial);
+		log.debug("Initial UISizes => isInitial" + isInitial);
 
 		if (SurfaceSize == null)
 		{
@@ -65,7 +82,7 @@ public class GL_UISizes implements SizeChangedEvent
 		{
 			if (SurfaceSize.setSize(width, height))
 			{
-				// Surface grösse hat sich geändert, die Positionen der UI-Elemente müssen neu Berechnet werden.
+				// Surface grï¿½sse hat sich geï¿½ndert, die Positionen der UI-Elemente mï¿½ssen neu Berechnet werden.
 				calcSizes();
 				calcPos();
 			}
@@ -110,25 +127,25 @@ public class GL_UISizes implements SizeChangedEvent
 	}
 
 	/**
-	 * das Rechteck, welches die Größe und Position aller GL_View´s auf der linken Seite darstellt. Dieses Rechteck ist immer Gültig! Das
-	 * Rechteck UI_Reight hat die Gleiche Größe und Position wie UI_Left, wenn es sich nicht um ein Tablet Layout handelt.
+	 * das Rechteck, welches die Grï¿½ï¿½e und Position aller GL_Viewï¿½s auf der linken Seite darstellt. Dieses Rechteck ist immer Gï¿½ltig! Das
+	 * Rechteck UI_Reight hat die Gleiche Grï¿½ï¿½e und Position wie UI_Left, wenn es sich nicht um ein Tablet Layout handelt.
 	 */
 	public static CB_RectF UI_Left;
 
 	/**
-	 * Das Rechteck, welches die Größe und Position aller GL_View´s auf der rechten Seite darstellt, wenn es sich um ein Tablet Layout
-	 * handelt. Wenn es sich nicht um ein Tablet Layout handelt, hat dieses Rechteck die selbe Größe und Position wie UI_Left.
+	 * Das Rechteck, welches die Grï¿½ï¿½e und Position aller GL_Viewï¿½s auf der rechten Seite darstellt, wenn es sich um ein Tablet Layout
+	 * handelt. Wenn es sich nicht um ein Tablet Layout handelt, hat dieses Rechteck die selbe Grï¿½ï¿½e und Position wie UI_Left.
 	 */
 	public static CB_RectF UI_Right;
 
 	/**
-	 * Ist false solange die Größen nicht berechnet sind. Diese müssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
-	 * FontFaktor) in den Settings geändert Wurde.
+	 * Ist false solange die Grï¿½ï¿½en nicht berechnet sind. Diese mï¿½ssen nur einmal berechnet Werden, oder wenn ein Faktor (DPI oder
+	 * FontFaktor) in den Settings geï¿½ndert Wurde.
 	 */
 	private static boolean isInitial = false;
 
 	/**
-	 * Die Höhe des Schattens des Info Panels. Diese muss Berechnet werden, da sie für die Berechnung der Inhalt Positionen gebraucht wird.
+	 * Die Hï¿½he des Schattens des Info Panels. Diese muss Berechnet werden, da sie fï¿½r die Berechnung der Inhalt Positionen gebraucht wird.
 	 */
 	public static float infoShadowHeight;
 
@@ -137,17 +154,17 @@ public class GL_UISizes implements SizeChangedEvent
 	public static Vector2 InfoLine2;
 
 	/**
-	 * Dpi Faktor, welcher über die Settings eingestellt werden kann und mit dem HandyDisplay Wert vorbelegt ist. (HD2= 1.5)
+	 * Dpi Faktor, welcher ï¿½ber die Settings eingestellt werden kann und mit dem HandyDisplay Wert vorbelegt ist. (HD2= 1.5)
 	 */
 	public static float DPI;
 
 	/**
-	 * DPI Wert des Displays, kann nicht über die Settings verändert werden
+	 * DPI Wert des Displays, kann nicht ï¿½ber die Settings verï¿½ndert werden
 	 */
 	public static float defaultDPI = 1;
 
 	/**
-	 * Die Font Größe wird über den DPI Faktor berechnet und kann über den FontFaktor zusätzlich beeinflusst werden.
+	 * Die Font Grï¿½ï¿½e wird ï¿½ber den DPI Faktor berechnet und kann ï¿½ber den FontFaktor zusï¿½tzlich beeinflusst werden.
 	 */
 	public static float FontFaktor;
 
@@ -167,42 +184,42 @@ public class GL_UISizes implements SizeChangedEvent
 	public static CB_RectF ZoomBtn;
 
 	/**
-	 * Die Größe des Compass Icons. Welche Abhängig von der Höhe des Info Panels ist.
+	 * Die Grï¿½ï¿½e des Compass Icons. Welche Abhï¿½ngig von der Hï¿½he des Info Panels ist.
 	 */
 	public static CB_RectF Compass;
 
 	/**
-	 * Halbe Compass grösse welche den Mittelpunkt darstellt.
+	 * Halbe Compass grï¿½sse welche den Mittelpunkt darstellt.
 	 */
 	public static float halfCompass;
 
 	/**
-	 * Die Größe des zur Verfügung stehenden Bereiches von Gdx.graphics
+	 * Die Grï¿½ï¿½e des zur Verfï¿½gung stehenden Bereiches von Gdx.graphics
 	 */
 	public static CB_RectF SurfaceSize;
 
 	/**
-	 * Größe des position Markers
+	 * Grï¿½ï¿½e des position Markers
 	 */
 	public static float PosMarkerSize;
 
 	/**
-	 * Halbe Größe des Position Markers, welche den Mittelpunkt darstellt
+	 * Halbe Grï¿½ï¿½e des Position Markers, welche den Mittelpunkt darstellt
 	 */
 	public static float halfPosMarkerSize;
 
 	/**
-	 * Array der drei möglichen Grössen eines WP Icons
+	 * Array der drei mï¿½glichen Grï¿½ssen eines WP Icons
 	 */
 	public static SizeF[] WPSizes;
 
 	/**
-	 * Array der drei möglichen Grössen eines WP Underlay
+	 * Array der drei mï¿½glichen Grï¿½ssen eines WP Underlay
 	 */
 	public static SizeF[] UnderlaySizes;
 
 	/**
-	 * Größe der Cache Info Bubble
+	 * Grï¿½ï¿½e der Cache Info Bubble
 	 */
 	public static SizeF Bubble;
 
@@ -217,12 +234,12 @@ public class GL_UISizes implements SizeChangedEvent
 	public static SizeF bubbleCorrect;
 
 	/**
-	 * Größe des Target Arrows
+	 * Grï¿½ï¿½e des Target Arrows
 	 */
 	public static SizeF TargetArrow;
 
 	// /**
-	// * Die Größe der D/T Wertungs Stars
+	// * Die Grï¿½ï¿½e der D/T Wertungs Stars
 	// */
 	// public static SizeF DT_Size;
 
@@ -233,7 +250,7 @@ public class GL_UISizes implements SizeChangedEvent
 	 */
 	private static void calcPos()
 	{
-		Logger.DEBUG("GL_UISizes.calcPos()");
+		log.debug("GL_UISizes.calcPos()");
 
 		float w = Global.isTab ? UI_Right.getWidth() : UI_Left.getWidth();
 		float h = Global.isTab ? UI_Right.getHeight() : UI_Left.getHeight();
@@ -252,7 +269,7 @@ public class GL_UISizes implements SizeChangedEvent
 		TextBounds bounds;
 		if (Fonts.getNormal() != null)
 		{
-			bounds = Fonts.getNormal().getBounds("52° 34,806N ");
+			bounds = Fonts.getNormal().getBounds("52ï¿½ 34,806N ");
 		}
 		else
 		{
@@ -268,7 +285,7 @@ public class GL_UISizes implements SizeChangedEvent
 		InfoLine1.y = Info.getMaxY() - T1;
 		InfoLine2.y = Info.getY() + T1 + bounds.height;
 
-		// Aufräumen
+		// Aufrï¿½umen
 		CompassMargin = null;
 
 	}
@@ -286,12 +303,12 @@ public class GL_UISizes implements SizeChangedEvent
 	// }
 
 	/**
-	 * Berechnet die Größen der UI-Elemente
+	 * Berechnet die Grï¿½ï¿½en der UI-Elemente
 	 */
 	private static void calcSizes()
 	{
-		Logger.DEBUG("GL_UISizes.calcSizes()");
-		// größe der Frames berechnen
+		log.debug("GL_UISizes.calcSizes()");
+		// grï¿½ï¿½e der Frames berechnen
 		int frameLeftwidth = UI_Size_Base.that.RefWidth;
 
 		int WindowWidth = UI_Size_Base.that.getWindowWidth();
@@ -347,17 +364,17 @@ public class GL_UISizes implements SizeChangedEvent
 
 	public static void writeDebug(String name, CB_RectF rec)
 	{
-		Logger.LogCat(name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
+		log.debug(name + "   ------ x/y/W/H =  " + rec.getX() + "/" + rec.getY() + "/" + rec.getWidth() + "/" + rec.getHeight());
 	}
 
 	public static void writeDebug(String name, float size)
 	{
-		Logger.LogCat(name + "   ------ size =  " + size);
+		log.debug(name + "   ------ size =  " + size);
 	}
 
 	public static void writeDebug(String name, SizeF sizeF)
 	{
-		Logger.LogCat(name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
+		log.debug(name + "   ------ W/H =  " + sizeF.width + "/" + sizeF.height);
 	}
 
 	public static void writeDebug(String name, SizeF[] SizeArray)
@@ -380,7 +397,7 @@ public class GL_UISizes implements SizeChangedEvent
 	@Override
 	public void sizeChanged()
 	{
-		Logger.DEBUG("GL_UISizes.sizeChanged()");
+		log.debug("GL_UISizes.sizeChanged()");
 		calcPos();
 
 	}

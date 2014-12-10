@@ -203,8 +203,7 @@ public class MF_DatabaseRenderer implements IDatabaseRenderer, RenderCallback
 			processReadMapData(mapReadResult);
 		}
 
-		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile,
-				rendererJob.displayModel.getTileSize());
+		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile, rendererJob.displayModel.getTileSize());
 
 		TileBitmap bitmap = this.graphicFactory.createTileBitmap(rendererJob.displayModel.getTileSize(), rendererJob.hasAlpha);
 		this.canvasRasterer.setCanvasBitmap(bitmap);

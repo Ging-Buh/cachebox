@@ -46,7 +46,7 @@ public class H_ListView extends ListViewBase
 
 		mReloadItems = false;
 
-		// afräumen
+		// afrï¿½umen
 		if (clearList.size() > 0)
 		{
 			for (int i = 0; i < clearList.size(); i++)
@@ -56,7 +56,7 @@ public class H_ListView extends ListViewBase
 				if (index >= 0 && index < mAddeedIndexList.size())
 				{
 					mAddeedIndexList.remove(index);
-					// Logger.LogCat("Remove Item " + tmp.getIndex());
+					// log.debug("Remove Item " + tmp.getIndex());
 					this.removeChild(tmp);
 					if (mCanDispose) tmp.dispose();
 				}
@@ -67,7 +67,7 @@ public class H_ListView extends ListViewBase
 			}
 			clearList.clear();
 
-			// setze First Index, damit nicht alle Items durchlaufen werden müssen
+			// setze First Index, damit nicht alle Items durchlaufen werden mï¿½ssen
 			mAddeedIndexList.sort();
 
 			if (mAddeedIndexList.size() > 0)
@@ -117,7 +117,7 @@ public class H_ListView extends ListViewBase
 						{
 							tmp.setY(this.getHalfHeight() - tmp.getHalfHeight());// center Pos
 							tmp.setX(itemPos);
-							// Logger.LogCat("Add: " + tmp.getName());
+							// log.debug("Add: " + tmp.getName());
 							if (i == mSelectedIndex)
 							{
 								tmp.isSelected = true;
@@ -223,7 +223,7 @@ public class H_ListView extends ListViewBase
 		if (!mIsDrageble) return true;
 		mLastTouch = x;
 		mLastPos_onTouch = mPos;
-		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelöst wird.
+		return true; // muss behandelt werden, da sonnst kein onTouchDragged() ausgelï¿½st wird.
 	}
 
 	@Override

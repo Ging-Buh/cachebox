@@ -1,9 +1,26 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.DAO;
 
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.DB.Database;
@@ -12,10 +29,11 @@ import CB_Core.Types.Category;
 import CB_Core.Types.GpxFilename;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
-import CB_Utils.Log.Logger;
 
 public class CategoryDAO
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CategoryDAO.class);
+
 	public Category ReadFromCursor(CoreCursor reader)
 	{
 		Category result = new Category();
@@ -25,9 +43,8 @@ public class CategoryDAO
 		result.pinned = reader.getInt(2) != 0;
 
 		// alle GpxFilenames einlesen
-		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?",
-				new String[]
-					{ String.valueOf(result.Id) });
+		CoreCursor reader2 = Database.Data.rawQuery("select ID, GPXFilename, Imported, CacheCount from GpxFilenames where CategoryId=?", new String[]
+			{ String.valueOf(result.Id) });
 		reader2.moveToFirst();
 		while (reader2.isAfterLast() == false)
 		{
@@ -56,7 +73,7 @@ public class CategoryDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("CreateNewCategory", filename, exc);
+			log.error("CreateNewCategory", filename, exc);
 		}
 
 		long Category_ID = 0;
@@ -92,7 +109,7 @@ public class CategoryDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("CreateNewGpxFilename", filename, exc);
+			log.error("CreateNewGpxFilename", filename, exc);
 		}
 
 		long GPXFilename_ID = 0;
@@ -122,7 +139,7 @@ public class CategoryDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("SetPinned", "CategoryDAO", exc);
+			log.error("SetPinned", "CategoryDAO", exc);
 		}
 	}
 

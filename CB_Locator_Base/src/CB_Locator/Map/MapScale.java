@@ -1,6 +1,23 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator.Map;
 
 import java.text.NumberFormat;
+
+import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Events.invalidateTextureEvent;
 import CB_UI_Base.Events.invalidateTextureEventList;
@@ -9,7 +26,6 @@ import CB_UI_Base.GL_UI.COLOR;
 import CB_UI_Base.GL_UI.Fonts;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_UI_Base.Math.CB_RectF;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -18,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class MapScale extends CB_View_Base implements invalidateTextureEvent
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(MapScale.class);
 	private BitmapFontCache fontCache;
 	private float sollwidth = 0;
 	private final MapViewBase mapInstanz;
@@ -55,12 +72,12 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	/**
-	 * Anzahl der Schritte auf dem Maßstab
+	 * Anzahl der Schritte auf dem Maï¿½stab
 	 */
 	int scaleUnits = 10;
 
 	/**
-	 * Länge des Maßstabs in Metern
+	 * Lï¿½nge des Maï¿½stabs in Metern
 	 */
 	double scaleLength = 1000;
 
@@ -74,7 +91,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		{ 1, 1.5f, 2, 3, 4, 5, 7.5f };
 
 	/**
-	 * Nachdem Zoom verändert wurde müssen einige Werte neu berechnet werden
+	 * Nachdem Zoom verï¿½ndert wurde mï¿½ssen einige Werte neu berechnet werden
 	 */
 	public void zoomChanged()
 	{
@@ -106,7 +123,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("MapView.zoomChanged()", "", exc);
+			log.error("MapView.zoomChanged()", "", exc);
 		}
 
 		if (imperialunits)
@@ -142,8 +159,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 
 		try
 		{
-			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont()
-					.getCapHeight());
+			TextBounds bounds = fontCache.setText(distanceString, 0, fontCache.getFont().isFlipped() ? 0 : fontCache.getFont().getCapHeight());
 			this.setWidth((float) (drawableWidth + (bounds.width * 1.3)));
 			CachedScaleDrawable = SpriteCacheBase.MapScale[scaleUnits - 3];
 			float margin = (this.getHeight() - bounds.height) / 1.6f;
@@ -156,7 +172,7 @@ public class MapScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	/**
-	 * Zeichnet den Maßstab. pixelsPerKm muss durch zoomChanged initialisiert sein!
+	 * Zeichnet den Maï¿½stab. pixelsPerKm muss durch zoomChanged initialisiert sein!
 	 */
 	@Override
 	protected void render(Batch batch)

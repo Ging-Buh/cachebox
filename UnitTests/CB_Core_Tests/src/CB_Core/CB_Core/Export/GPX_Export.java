@@ -29,6 +29,7 @@ import java.util.Scanner;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.DAO.CacheDAO;
 import CB_Core.DAO.CacheListDAO;
@@ -46,7 +47,6 @@ import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_Locator.Coordinate;
 import CB_UI_Base.Global;
-import CB_Utils.Log.Logger;
 import Types.CacheTest;
 import __Static.InitTestDBs;
 
@@ -57,6 +57,7 @@ import __Static.InitTestDBs;
  */
 public class GPX_Export extends TestCase
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GPX_Export.class);
 
 	@Test
 	public void testSingleExport() throws Exception
@@ -76,7 +77,7 @@ public class GPX_Export extends TestCase
 		{
 			Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 			// Logs
-			Logger.DEBUG("Delete Logs");
+			log.debug("Delete Logs");
 			LogDAO logdao = new LogDAO();
 			logdao.ClearOrphanedLogs();
 			logdao = null;
@@ -138,7 +139,7 @@ public class GPX_Export extends TestCase
 		{
 			Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 			// Logs
-			Logger.DEBUG("Delete Logs");
+			log.debug("Delete Logs");
 			LogDAO logdao = new LogDAO();
 			logdao.ClearOrphanedLogs();
 			logdao = null;
@@ -260,8 +261,8 @@ public class GPX_Export extends TestCase
 		newCache.Size = CacheSizes.micro;
 		newCache.setDifficulty(1);
 		newCache.setTerrain(1);
-		newCache.Pos = new Coordinate("52° 33,355N / 13° 24,873E");
-		// GC - Code bestimmen für freies CWxxxx = CustomWaypint
+		newCache.Pos = new Coordinate("52ï¿½ 33,355N / 13ï¿½ 24,873E");
+		// GC - Code bestimmen fï¿½r freies CWxxxx = CustomWaypint
 		String prefix = "CW";
 		int count = 0;
 		do
@@ -289,7 +290,7 @@ public class GPX_Export extends TestCase
 		{
 			return;
 		}
-		Coordinate coord = new Coordinate("52° 33,301N / 13° 24,873E");
+		Coordinate coord = new Coordinate("52ï¿½ 33,301N / 13ï¿½ 24,873E");
 		Waypoint newWP = new Waypoint(newGcCode, CacheTypes.ReferencePoint, "", coord.getLatitude(), coord.getLongitude(), newCache.Id, "",
 				"wyptDefTitle");
 
@@ -332,7 +333,7 @@ public class GPX_Export extends TestCase
 		{
 			Database.Data.delete("Caches", "GcCode='" + newCache.getGcCode() + "'", null);
 			// Logs
-			Logger.DEBUG("Delete Logs");
+			log.debug("Delete Logs");
 			LogDAO logdao = new LogDAO();
 			logdao.ClearOrphanedLogs();
 			logdao = null;
@@ -351,11 +352,11 @@ public class GPX_Export extends TestCase
 
 			Cache cache = cacheDAO.getFromDbByGcCode(newCache.getGcCode(), true);
 
-			assertTrue("Cache muss zurückgegeben werden", cache != null);
+			assertTrue("Cache muss zurï¿½ckgegeben werden", cache != null);
 
 			assertTrue("Pos: Latitude falsch", cache.Pos.getLatitude() == 52.555916);
 			assertTrue("Pos: Longitude falsch", cache.Pos.getLongitude() == 13.41455);
-			assertTrue("Pos ist ungültig", cache.Pos.isValid());
+			assertTrue("Pos ist ungï¿½ltig", cache.Pos.isValid());
 
 			assertEquals("GcCode falsch", newCache.getGcCode(), cache.getGcCode());
 			assertEquals("DateHidden falsch", newCache.getDateHidden().toString(), cache.getDateHidden().toString());
@@ -380,7 +381,7 @@ public class GPX_Export extends TestCase
 			Iterator<Attributes> positiveInterator = PositvieList.iterator();
 			Iterator<Attributes> negativeInterator = NegativeList.iterator();
 
-			// fülle eine Liste mit allen Attributen
+			// fï¿½lle eine Liste mit allen Attributen
 			ArrayList<Attributes> attributes = new ArrayList<Attributes>();
 			Attributes[] tmp = Attributes.values();
 			for (Attributes item : tmp)
@@ -388,7 +389,7 @@ public class GPX_Export extends TestCase
 				attributes.add(item);
 			}
 
-			// Lösche die vergebenen Atribute aus der Kommplett Liste
+			// Lï¿½sche die vergebenen Atribute aus der Kommplett Liste
 			positiveInterator = PositvieList.iterator();
 			negativeInterator = NegativeList.iterator();
 
@@ -402,7 +403,7 @@ public class GPX_Export extends TestCase
 				attributes.remove(negativeInterator.next());
 			}
 
-			// Teste ob die Übrig gebliebenen Atributte auch nicht vergeben wurden.
+			// Teste ob die ï¿½brig gebliebenen Atributte auch nicht vergeben wurden.
 			Iterator<Attributes> RestInterator = attributes.iterator();
 
 			while (RestInterator.hasNext())
@@ -426,7 +427,7 @@ public class GPX_Export extends TestCase
 			Waypoint wp = cache.waypoints.get(0);
 			assertTrue("WpPos: Latitude falsch", wp.Pos.getLatitude() == 52.555016);
 			assertTrue("WpPos: Longitude falsch", wp.Pos.getLongitude() == 13.41455);
-			assertTrue("WpPos ist ungültig", wp.Pos.isValid());
+			assertTrue("WpPos ist ungï¿½ltig", wp.Pos.isValid());
 			assertEquals("Titel muss gleich sein", "wyptDefTitle", wp.getTitle());
 			assertEquals("Description muss gleich sein", "", wp.getDescription());
 			assertEquals("parent CacheID muss gleich sein", cache.Id, wp.CacheId);

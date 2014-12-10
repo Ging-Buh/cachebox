@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.PocketQuery;
@@ -80,7 +82,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.StringH;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.CopyHelper.Copy;
 import CB_Utils.Util.CopyHelper.CopyRule;
@@ -90,7 +91,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class Import extends ActivityBase implements ProgressChangedEvent
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Import.class);
 	final boolean MAP_LINE_ACTIVE = false;
 	boolean PQ_LINE_ACTIVE = true;
 	boolean CBS_LINE_ACTIVE = false;
@@ -98,7 +99,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 	boolean GCV_LINE_ACTIVE = true;
 	boolean LOG_LINE_ACTIVE = true;
 	boolean DB_LINE_ACTIVE = true;
-	private int importType = 0; // um direkt gleich den Import für eine bestimmte API starten zu können
+	private int importType = 0; // um direkt gleich den Import fï¿½r eine bestimmte API starten zu kï¿½nnen
 
 	private V_ListView lvPQs, lvCBServer;
 	private Button bOK, bCancel, refreshPqList, refreshCBServerList, btnSelectFile;
@@ -1223,7 +1224,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 										}
 										catch (OutOfMemoryError e)
 										{
-											Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
+											log.error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
 											e.printStackTrace();
 										}
 									}
@@ -1279,7 +1280,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 							return;
 						}
 
-						Logger.LogCat("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
+						log.debug("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 
@@ -1330,7 +1331,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 							return;
 						}
 
-						Logger.LogCat("Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
+						log.debug("Import CBServer took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 					}
@@ -1437,7 +1438,7 @@ public class Import extends ActivityBase implements ProgressChangedEvent
 
 				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-				Logger.DEBUG(Msg);
+				log.debug(Msg);
 
 				FilterProperties props = FilterProperties.LastFilter;
 				EditFilterSettings.ApplyFilter(props);

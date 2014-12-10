@@ -2,9 +2,10 @@ package de.cachebox_test.Views;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
-import CB_Utils.Log.Logger;
 import android.content.Context;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
@@ -22,6 +23,7 @@ import de.cachebox_test.Events.ViewOptionsMenu;
 
 public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listener_Interface
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(ViewGL.class);
 	public GL glListener;
 
 	public static View ViewGl;
@@ -77,14 +79,14 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void OnShow()
 	{
-		Logger.DEBUG("OnShow");
+		log.debug("OnShow");
 		// GL_Listener.onStart();
 	}
 
 	@Override
 	public void OnHide()
 	{
-		Logger.DEBUG("OnHide");
+		log.debug("OnHide");
 		// GL_Listner.onStop();
 	}
 
@@ -154,7 +156,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	public void RequestRender()
 	{
 
-		// Logger.LogCat("RequestRender von : " + requestName);
+		// log.debug("RequestRender von : " + requestName);
 
 		switch (mAktSurfaceType)
 		{
@@ -171,7 +173,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	@Override
 	public void RenderDirty()
 	{
-		Logger.LogCat("Set: RenderDirty");
+		log.debug("Set: RenderDirty");
 		try
 		{
 			switch (mAktSurfaceType)
@@ -196,7 +198,7 @@ public class ViewGL extends RelativeLayout implements ViewOptionsMenu, GL_Listen
 	public void RenderContinous()
 	{
 
-		Logger.LogCat("Set: RenderContinous");
+		log.debug("Set: RenderContinous");
 		switch (mAktSurfaceType)
 		{
 		case GLSURFACE_VIEW20:

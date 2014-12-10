@@ -19,8 +19,9 @@ import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.concurrent.locks.Lock;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -30,6 +31,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
  */
 public class MapTileLoader
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(MapTileLoader.class);
 	public static final int MAX_MAP_ZOOM = 22;
 	private final QueueData queueData = new QueueData();
 	private MultiThreadQueueProcessor[] queueProcessor = null;
@@ -93,7 +95,7 @@ public class MapTileLoader
 
 					if (!queueProcessor[index].Alive())
 					{
-						Logger.LogCat("MapTileLoader Restart queueProcessor[" + index + "]");
+						log.debug("MapTileLoader Restart queueProcessor[" + index + "]");
 						queueProcessor[index] = new MultiThreadQueueProcessor(queueData, index);
 						queueProcessor[index].setPriority(Thread.MIN_PRIORITY);
 						queueProcessor[index].start();
@@ -161,11 +163,11 @@ public class MapTileLoader
 			queueData.loadedOverlayTilesLock.lock();
 			queueData.queuedOverlayTilesLock.lock();
 		}
-		// Queue jedesmal löschen, damit die Tiles, die eigentlich
+		// Queue jedesmal lï¿½schen, damit die Tiles, die eigentlich
 		// mal
 		// gebraucht wurden aber trotzdem noch nicht geladen sind
 		// auch nicht mehr geladen werden
-		// dabei aber die MapView berücksichtigen, die die queuedTiles angefordert hat
+		// dabei aber die MapView berï¿½cksichtigen, die die queuedTiles angefordert hat
 		// queuedTiles.clear();
 		ArrayList<Descriptor> toDelete = new ArrayList<Descriptor>();
 		for (Descriptor desc : queueData.queuedTiles.values())
@@ -302,7 +304,7 @@ public class MapTileLoader
 
 	public void increaseLoadedTilesAge()
 	{
-		// das Alter aller Tiles um 1 erhöhen
+		// das Alter aller Tiles um 1 erhï¿½hen
 		queueData.loadedTiles.increaseLoadedTilesAge();
 
 		if (queueData.CurrentOverlayLayer != null)

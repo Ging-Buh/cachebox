@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
 import org.mapsforge.map.model.DisplayModel;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
@@ -35,7 +36,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL_Listener_Interface;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
 import CB_Utils.Plattform;
-import CB_Utils.Log.Logger;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
@@ -57,7 +57,7 @@ import de.Map.DesktopManager;
 
 public class DesktopMain
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(DesktopMain.class);
 	static GL CB_UI;
 	static float compassheading = -1;
 	// Retrieve the user preference node for the package com.mycompany
@@ -131,9 +131,6 @@ public class DesktopMain
 
 		InitalConfig();
 		Config.settings.ReadFromDB();
-
-		new DesktopLogger();
-		Logger.setDebugFilePath(Config.WorkPath + "/debug.txt");
 
 		// create new splash
 		splash sp = new splash(0, 0, ui.Window.width, ui.Window.height, "Splash");
@@ -374,7 +371,7 @@ public class DesktopMain
 					// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
 					Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 					Config.AcceptChanges();
-					Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+					log.debug("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 				}
 				System.exit(0);
 

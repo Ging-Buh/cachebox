@@ -1,6 +1,20 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de;
 
-//program to demonstrate the construction of a Container and a Button
 import java.awt.Button;
 import java.awt.Checkbox;
 import java.awt.Color;
@@ -15,22 +29,40 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import CB_UI.Config;
 import CB_UI.GlobalCore;
 import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.devicesSizes;
+import CB_Utils.Log.CB_SLF4J;
+import CB_Utils.Log.LogLevel;
+import CB_Utils.Util.iChanged;
 
 class Ex_1
 {
+
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Ex_1.class);
+	public static final String br = System.getProperty("line.separator");
+
 	public static void main(String[] args)
 	{
 
-		Logger.getLogger("org.apache.http").setLevel(org.apache.log4j.Level.OFF);
+		// Logger.getLogger("org.apache.http").setLevel(org.apache.log4j.Level.OFF);
 
 		DesktopMain.InitalConfig();
+
 		Config.settings.ReadFromDB();
+		new CB_SLF4J(Config.WorkPath);
+		CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+		Config.AktLogLevel.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+			}
+		});
 
 		File Dir = new File("./");
 		final String[] files;
@@ -78,6 +110,204 @@ class Ex_1
 		}
 
 	}
+
+	// private static void initialLogBack()
+	// {
+	// String logFolder = Config.WorkPath + "/Logs";
+	// String logBackXmlFile = logFolder + "/logbag.xml";
+	// String logfile = logFolder + "/log.txt";
+	//
+	// File logFolderFiile = new File(logFolder);
+	//
+	// if (logFolderFiile.exists() && logFolderFiile.isDirectory())
+	// {// delete all logs are not from today
+	//
+	// String fileNames[] = logFolderFiile.list();
+	// for (String fileName : fileNames)
+	// {
+	// if (!fileName.endsWith("logbag.xml"))
+	// {
+	// File file = new File(fileName);
+	//
+	// if (file.isFile() && file.lastModified() < System.currentTimeMillis() - (24 * 60 * 60 * 100))
+	// {
+	// // file is older then 24h, so we delete
+	// file.delete();
+	// }
+	// }
+	// }
+	// }
+	// else
+	// {// create folder
+	// logFolderFiile.mkdirs();
+	// }
+	//
+	// boolean xmlLogbackInitial = false;
+	// JoranException xmlLogbackexeption = null;
+	//
+	// if (new File(logBackXmlFile).exists())
+	// {// if logback.xml exists then initial with this
+	//
+	// // first change <property name="LOG_DIR" inside logback.xml to workpath/Logs
+	// String xml = null;
+	// InputStream instream = null;
+	// try
+	// {
+	//
+	// StringBuilder sb = new StringBuilder();
+	//
+	// // open the file for reading
+	// instream = new FileInputStream(logBackXmlFile);
+	//
+	// // if file the available for reading
+	// if (instream != null)
+	// {
+	// // prepare the file for reading
+	// InputStreamReader inputreader = new InputStreamReader(instream);
+	// BufferedReader buffreader = new BufferedReader(inputreader);
+	//
+	// String line;
+	//
+	// // read every line of the file into the line-variable, on line at the time
+	// do
+	// {
+	// line = buffreader.readLine();
+	// boolean red = false;
+	// if (red || line != null)
+	// {
+	// if (line.contains("<property name=\"LOG_DIR\""))
+	// {
+	// int pos = line.indexOf("value=\"") + 7;
+	// int endpos = line.lastIndexOf("\"");
+	// line = line.substring(0, pos) + logFolder + line.substring(endpos, line.length());
+	// sb.append(line);
+	// sb.append(br);
+	// red = true;
+	// }
+	// else
+	// {
+	// sb.append(line);
+	// sb.append(br);
+	// }
+	// }
+	//
+	// // do something with the line
+	// }
+	// while (line != null);
+	// xml = sb.toString();
+	// buffreader.close();
+	// }
+	// }
+	// catch (Exception ex)
+	// {
+	// // print stack trace.
+	// }
+	// finally
+	// {
+	// // close the file.
+	// try
+	// {
+	// if (instream != null) instream.close();
+	// }
+	// catch (IOException e)
+	// {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// FileWriter writer = null;
+	// try
+	// {
+	// writer = new FileWriter(logBackXmlFile, false);
+	// writer.write(xml);
+	// }
+	// catch (IOException e)
+	// {
+	// e.printStackTrace();
+	// }
+	// finally
+	// {
+	// if (writer != null) try
+	// {
+	// writer.close();
+	// }
+	// catch (IOException e)
+	// {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// // reset the default context (which may already have been initialized)
+	// // since we want to reconfigure it
+	// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+	// lc.reset();
+	//
+	// JoranConfigurator config = new JoranConfigurator();
+	// config.setContext(lc);
+	//
+	// try
+	// {
+	// config.doConfigure(logBackXmlFile);
+	// xmlLogbackInitial = true;
+	// }
+	// catch (JoranException e)
+	// {
+	// xmlLogbackexeption = e;
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// if (!xmlLogbackInitial)
+	// {// initial with default
+	//
+	// // reset the default context (which may already have been initialized)
+	// // since we want to reconfigure it
+	// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+	// lc.reset();
+	//
+	// // setup FileAppender
+	// PatternLayoutEncoder encoder1 = new PatternLayoutEncoder();
+	// encoder1.setContext(lc);
+	// encoder1.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
+	// encoder1.start();
+	//
+	// FileAppender<ILoggingEvent> fileAppender = new FileAppender<ILoggingEvent>();
+	// fileAppender.setContext(lc);
+	// fileAppender.setFile(logfile);
+	// fileAppender.setEncoder(encoder1);
+	// fileAppender.start();
+	//
+	// // setup LogcatAppender
+	// PatternLayoutEncoder encoder2 = new PatternLayoutEncoder();
+	// encoder2.setContext(lc);
+	// encoder2.setPattern("[%thread] %msg%n");
+	// encoder2.start();
+	//
+	// ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<ILoggingEvent>();
+	// consoleAppender.setContext(lc);
+	// consoleAppender.setEncoder(encoder2);
+	// consoleAppender.start();
+	//
+	// // add the newly created appenders to the root logger;
+	// // qualify Logger to disambiguate from org.slf4j.Logger
+	// ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+	// root.addAppender(fileAppender);
+	// root.addAppender(consoleAppender);
+	//
+	// }
+	//
+	// // set LogLevel from propertys
+	// ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+	// root.setLevel(Level.INFO);
+	//
+	// log.info("logger initial");
+	//
+	// if (xmlLogbackexeption != null)
+	// {
+	// log.error("logback.xml exception", xmlLogbackexeption);
+	// }
+	// }
+
 } // class Ex_1
 
 class Gui extends Frame implements ActionListener, WindowListener
@@ -396,4 +626,5 @@ class Gui extends Frame implements ActionListener, WindowListener
 		ui.isLandscape = true;
 		return ui;
 	}
+
 }

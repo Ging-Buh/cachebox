@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.GCVote;
 
 import java.io.BufferedReader;
@@ -18,16 +33,17 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import CB_Core.Settings.CB_Core_Settings;
-import CB_Utils.Log.Logger;
 
 public class GCVote
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GCVote.class);
 
 	public static RatingData GetRating(String User, String password, String Waypoint)
 	{
@@ -63,12 +79,12 @@ public class GCVote
 
 			httppost.setEntity(new ByteArrayEntity(data.getBytes("UTF8")));
 
-			// Logger.General("GCVOTE-Post" + data);
+			// log.info("GCVOTE-Post" + data);
 
 			// Execute HTTP Post Request
 			String responseString = Execute(httppost);
 
-			// Logger.General("GCVOTE-Response" + responseString);
+			// log.info("GCVOTE-Response" + responseString);
 
 			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			InputSource is = new InputSource();
@@ -102,7 +118,7 @@ public class GCVote
 				else
 					Ex = "Ex = [" + e.toString() + "]";
 			}
-			Logger.General("GcVote-Error" + Ex);
+			log.info("GcVote-Error" + Ex);
 			return null;
 		}
 		return result;
@@ -148,8 +164,7 @@ public class GCVote
 	{
 		String guid = url.substring(url.indexOf("guid=") + 5).trim();
 
-		String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid
-				+ "&waypoint=" + waypoint;
+		String data = "userName=" + User + "&password=" + password + "&voteUser=" + String.valueOf(vote / 100.0) + "&cacheId=" + guid + "&waypoint=" + waypoint;
 
 		try
 		{

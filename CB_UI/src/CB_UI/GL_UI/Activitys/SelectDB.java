@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.DAO.CacheListDAO;
@@ -50,7 +52,6 @@ import CB_UI_Base.GL_UI.Menu.MenuItem;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.Logger;
 import CB_Utils.Math.Point;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.FileList;
@@ -61,6 +62,7 @@ import CB_Utils.Util.FileList;
  */
 public class SelectDB extends ActivityBase
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(SelectDB.class);
 	private int autoStartTime = 10;
 	private int autoStartCounter = 0;
 	private String DBPath;
@@ -350,7 +352,7 @@ public class SelectDB extends ActivityBase
 					if (!(firstAndLast.x <= id && firstAndLast.y >= id))
 					{
 						lvFiles.scrollToItem(id);
-						Logger.DEBUG("Scroll to:" + id);
+						log.debug("Scroll to:" + id);
 					}
 				}
 				break;

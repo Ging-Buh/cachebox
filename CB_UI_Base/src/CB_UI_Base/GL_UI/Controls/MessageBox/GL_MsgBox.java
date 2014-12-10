@@ -1,7 +1,24 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.GL_UI.Controls.MessageBox;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -19,7 +36,6 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Config_Core;
-import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingBool;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -27,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class GL_MsgBox extends Dialog
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GL_MsgBox.class);
 	static GL_MsgBox that;
 	public static final int BUTTON_POSITIVE = 1;
 	public static final int BUTTON_NEUTRAL = 2;
@@ -89,7 +106,7 @@ public class GL_MsgBox extends Dialog
 		if (remember != null && remember.getValue())
 		{
 			// wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
-			// Wir liefern nur ein On Click auf den OK Button zurück!
+			// Wir liefern nur ein On Click auf den OK Button zurï¿½ck!
 			if (Listener != null)
 			{
 				Listener.onClick(BUTTON_POSITIVE, null);
@@ -117,7 +134,7 @@ public class GL_MsgBox extends Dialog
 		if (remember != null && remember.getValue())
 		{
 			// wir brauchen die MsgBox nicht anzeigen, da der User die Remember Funktion gesetzt hat!
-			// Wir liefern nur ein On Click auf den OK Button zurück!
+			// Wir liefern nur ein On Click auf den OK Button zurï¿½ck!
 			if (Listener != null)
 			{
 				Listener.onClick(BUTTON_POSITIVE, null);
@@ -126,7 +143,7 @@ public class GL_MsgBox extends Dialog
 		}
 
 		// nur damit bei mir die Box maximiert kommt und damit der Text nicht skaliert.
-		// !!! gilt für alle Dialoge, da statisch definiert. Könnte es auch dort ändern.
+		// !!! gilt fï¿½r alle Dialoge, da statisch definiert. Kï¿½nnte es auch dort ï¿½ndern.
 		Dialog.margin = 5;
 		GL_MsgBox msgBox = new GL_MsgBox(calcMsgBoxSize(msg, true, (buttons != MessageBoxButtons.NOTHING), true, (remember != null)), "MsgBox" + title);
 
@@ -185,7 +202,7 @@ public class GL_MsgBox extends Dialog
 	private boolean ButtonClick(int button)
 	{
 
-		// wenn Dies eine Remember MsgBox ist, überprüfen wir ob das remember gesetzt ist
+		// wenn Dies eine Remember MsgBox ist, ï¿½berprï¿½fen wir ob das remember gesetzt ist
 		if (rememberSetting != null)
 		{
 			if (chkRemember.isChecked())
@@ -437,7 +454,7 @@ public class GL_MsgBox extends Dialog
 	@Override
 	public void dispose()
 	{
-		Logger.LogCat("Dispose GL_MsgBox=> " + name);
+		log.debug("Dispose GL_MsgBox=> " + name);
 
 		if (FooterItems != null)
 		{

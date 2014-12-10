@@ -691,7 +691,7 @@ public class MixedDatabaseRenderer implements RenderCallback, IDatabaseRenderer
 
 		if (inWork.get())
 		{
-			// CB_Utils.Log.Logger.LogCat("MixedDatabaseRenderer in Work [" + ThreadId + "]");
+			// CB_Utils.Log.log.debug("MixedDatabaseRenderer in Work [" + ThreadId + "]");
 			return null;
 		}
 		inWork.set(true);

@@ -183,19 +183,19 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 		// y -= UiSizes.getButtonHeight();
 		float restPlatz = this.getHeight() - y;
-		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Länge den Anzeige Bereich
-		// überschreitet!
+		// Dieses LinearLayout wird dann in eine ScrollBox verpackt, damit dies Scrollbar ist, wenn die Lï¿½nge den Anzeige Bereich
+		// ï¿½berschreitet!
 
 		rec = new CB_RectF(0, y - restPlatz, msgBoxContentSize.width, restPlatz);
 
 		// Initial LinearLayout
-		// Dieses wird nur mit der Breite Initialisiert, die Höhe ergibt sich aus dem Inhalt
+		// Dieses wird nur mit der Breite Initialisiert, die Hï¿½he ergibt sich aus dem Inhalt
 		mBox = new Box(rec.getWidth(), innerHeight, "SelectSolverFunction-Box");
 		float margin = GL_UISizes.margin;
 		mBox.setMargins(margin, margin);
 		mBox.initRow();
 		boxYPosStart = mBox.getRowYPos(); // Startposition der Controls merken
-		// damit das LinearLayout auch Events erhällt
+		// damit das LinearLayout auch Events erhï¿½llt
 		mBox.setClickable(true);
 
 		// add LinearLayout zu ScrollBox und diese zu der Activity
@@ -210,7 +210,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 		@Override
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
-			// damit die Änderungen in sForm gespeichert werden
+			// damit die ï¿½nderungen in sForm gespeichert werden
 			showPage(pages.Nothing);
 			String result = mVariableField.getText();
 			if (result.length() > 0) result += "=";
@@ -232,7 +232,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	@Override
 	public void onStateChange(GL_View_Base v, int State)
 	{
-		// Statusänderung eines MultiToggleButtons
+		// Statusï¿½nderung eines MultiToggleButtons
 		if (State == 1)
 		{
 			if (v == btnTxt)
@@ -290,7 +290,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			break;
 		}
 
-		// y-Position der Controls zurücksetzen
+		// y-Position der Controls zurï¿½cksetzen
 		mBox.initRow(TOPDOWN, boxYPosStart);
 
 		switch (page)
@@ -332,7 +332,7 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 	private void hidePageFunction()
 	{
-		// geänderte Formel merken
+		// geï¿½nderte Formel merken
 		sForm = tbFunction.getText();
 		sForm += "(";
 		for (int i = 0; i < tbFunctionParam.length; i++)
@@ -367,12 +367,12 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 			}
 			lFunctionParam = null;
 		}
-		mBox.initRow(TOPDOWN, boxYPosStored); // Position der nächsten Controls zurücksetzen
+		mBox.initRow(TOPDOWN, boxYPosStored); // Position der nï¿½chsten Controls zurï¿½cksetzen
 	}
 
 	private void hidePageText()
 	{
-		// geänderten Text merken
+		// geï¿½nderten Text merken
 		sForm = mFormulaField.getText();
 		mBox.removeChild(mFormulaField);
 		mFormulaField = null;
@@ -407,30 +407,30 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 
 		bFunction.setText("F(x)");
 		mBox.addLast(bFunction, 0.2f);
-		boxYPosStored = mBox.getRowYPos(); // Y-Pos speichern damit nach dem löschen von Controls die nächsten wieder an der
+		boxYPosStored = mBox.getRowYPos(); // Y-Pos speichern damit nach dem lï¿½schen von Controls die nï¿½chsten wieder an der
 											// richtigen Stelle
-		// eingefügt werden können
-		// Funktion aufsplitten nach Funktionsname und Parameter (falls möglich!)
+		// eingefï¿½gt werden kï¿½nnen
+		// Funktion aufsplitten nach Funktionsname und Parameter (falls mï¿½glich!)
 		String formula = sForm.trim();
 		int posKlammerAuf = formula.indexOf("(");
 		int posKlammerZu = formula.lastIndexOf(")");
 		if ((posKlammerAuf >= 0) && (posKlammerZu > posKlammerAuf))
 		{
-			// gültige Formel erkannt
+			// gï¿½ltige Formel erkannt
 			String function = formula.substring(0, posKlammerAuf);
 			tbFunction.setText(function);
 			String parameter = formula.substring(posKlammerAuf + 1, posKlammerZu);
 			// Parameter nach ";" trennen
 			String[] parameters = parameter.split(";");
 			CB_RectF rec2 = rec.copy();
-			// Parameter einrücken
+			// Parameter einrï¿½cken
 			rec2.setX(rec2.getX() + TextFieldHeight / 2);
 
 			tbFunctionParam = new EditTextField[parameters.length];
 			lFunctionParam = new Label[parameters.length];
 			for (int i = 0; i < parameters.length; i++)
 			{
-				// Eingabefelder für die Parameter einfügen
+				// Eingabefelder fï¿½r die Parameter einfï¿½gen
 				rec2.setY(rec2.getY() - TextFieldHeight * 3 / 4);
 				lFunctionParam[i] = new Label(rec2.ScaleCenter(0.6f), "LabelFunctionParam");
 				// lFunctionParam[i].setVAlignment(VAlignment.BOTTOM);
@@ -514,12 +514,12 @@ public class SolverDialog extends ButtonScrollDialog implements OnStateChangeLis
 	public void KeyboardFocusChanged(EditTextFieldBase focus)
 	{
 		/*
-		 * Logger.LogCat("SolverDialog FocusChangedEvent");
+		 * log.debug("SolverDialog FocusChangedEvent");
 		 * 
-		 * if (focus == null) { this.setY(initialYpos); Logger.LogCat("SolverDialog set InitialPos - noFocus"); } else { float WorldY =
+		 * if (focus == null) { this.setY(initialYpos); log.debug("SolverDialog set InitialPos - noFocus"); } else { float WorldY =
 		 * focus.getWorldRec().getY(); if (UiSizes.getWindowHeight() / 2 > WorldY) { this.setY(UiSizes.getWindowHeight() - WorldY);
-		 * Logger.LogCat("SolverDialog set Pos - " + (UiSizes.getWindowHeight() - WorldY)); } else {
-		 * Logger.LogCat("SolverDialog dont set Pos - " + WorldY); } }
+		 * log.debug("SolverDialog set Pos - " + (UiSizes.getWindowHeight() - WorldY)); } else {
+		 * log.debug("SolverDialog dont set Pos - " + WorldY); } }
 		 * 
 		 * GL.that.renderOnce("SolverDialog Y-Pos Changed");
 		 */

@@ -1,4 +1,21 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.GL_UI.Controls.Dialogs;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.GL_UI.Controls.Label;
@@ -13,15 +30,16 @@ import CB_UI_Base.Math.Size;
 import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
-import CB_Utils.Log.Logger;
+import CB_Utils.Log.Trace;
 
 /**
- * Ein Wait Dialog mit übergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann
+ * Ein Wait Dialog mit ï¿½bergabe eines Runable zur Abarbeitung, welcher abgebrochen werden kann
  * 
  * @author Longri
  */
 public class CancelWaitDialog extends WaitDialog
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CancelWaitDialog.class);
 
 	// CancelWaitDialog that;
 
@@ -49,14 +67,14 @@ public class CancelWaitDialog extends WaitDialog
 	public static CancelWaitDialog ShowWait(String Msg, IcancelListner listner, cancelRunnable runnable)
 	{
 		final CancelWaitDialog wd = ShowWait(Msg, WorkAnimation.GetINSTANCE(), listner, runnable);
-		wd.setCallerName(Logger.getCallerName(2));
+		wd.setCallerName(Trace.getCallerName(2));
 		return wd;
 	}
 
 	public static CancelWaitDialog ShowWait(String Msg, AnimationBase Animation, IcancelListner listner, cancelRunnable runnable)
 	{
 		final CancelWaitDialog wd = createDialog(Msg, listner, runnable);
-		wd.setCallerName(Logger.getCallerName(1));
+		wd.setCallerName(Trace.getCallerName(1));
 		CB_RectF animationRec = new CB_RectF(0, 0, UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight());
 		Animation.setRec(animationRec);
 		wd.animation = Animation;

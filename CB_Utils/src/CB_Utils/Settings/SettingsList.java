@@ -5,11 +5,14 @@ import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Utils.DB.Database_Core;
-import CB_Utils.Log.Logger;
 
 public abstract class SettingsList extends ArrayList<SettingBase<?>>
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(SettingsList.class);
+
 	private static SettingsList that;
 
 	private static final long serialVersionUID = -969846843815877942L;
@@ -70,15 +73,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			return null;
 		}
 		that.add(setting);
-		if (!that.contains(setting))
-		{
 
-		}
-		else
-		{
-			String stop = "";
-			Logger.LogCat(stop);
-		}
 		return setting;
 	}
 
@@ -129,8 +124,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 				{
 					if (Data != null) dao.WriteToDatabase(Data, setting);
 				}
-				else if (SettingStoreType.Global == setting.getStoreType()
-						|| (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
+				else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 				{
 					dao.WriteToDatabase(getSettingsDB(), setting);
 				}
@@ -158,8 +152,8 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 		// Read from DB
 		try
 		{
-			Logger.DEBUG("Reading global settings: " + getSettingsDB().getDatabasePath());
-			Logger.DEBUG("and local settings: " + getSettingsDB().getDatabasePath());
+			log.info("Reading global settings: " + getSettingsDB().getDatabasePath());
+			log.info("and local settings: " + getSettingsDB().getDatabasePath());
 		}
 		catch (Exception e)
 		{
@@ -173,11 +167,26 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 			if (SettingStoreType.Local == setting.getStoreType())
 			{
 				setting = dao.ReadFromDatabase(getDataDB(), setting);
+				if (!setting.value.equals(setting.defaultValue))
+				{
+					log.info("Change Local setting [" + setting.name + "] to: " + setting.value.toString());
+				}
+				else
+				{
+					log.debug("Default Local setting [" + setting.name + "] to: " + setting.value.toString());
+				}
 			}
-			else if (SettingStoreType.Global == setting.getStoreType()
-					|| (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
+			else if (SettingStoreType.Global == setting.getStoreType() || (!PlatformSettings.canUsePlatformSettings() && SettingStoreType.Platform == setting.getStoreType()))
 			{
 				setting = dao.ReadFromDatabase(getSettingsDB(), setting);
+				if (!setting.value.equals(setting.defaultValue))
+				{
+					log.info("Change Global setting [" + setting.name + "] to: " + setting.value.toString());
+				}
+				else
+				{
+					log.debug("Default Global setting [" + setting.name + "] to: " + setting.value.toString());
+				}
 			}
 			else if (SettingStoreType.Platform == setting.getStoreType())
 			{
@@ -206,6 +215,7 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 						setting.setValueFrom(cpy);
 						dao.WriteToPlatformSettings(setting);
 						setting.clearDirty();
+						log.debug("Override Platform setting [" + setting.name + "] from DB to: " + setting.value.toString());
 					}
 					else
 					{
@@ -213,11 +223,13 @@ public abstract class SettingsList extends ArrayList<SettingBase<?>>
 						cpy.setValueFrom(setting);
 						dao.WriteToDatabase(getSettingsDB(), cpy);
 						cpy.clearDirty();
+						log.debug("Override PlatformDB setting [" + setting.name + "] from Platform to: " + setting.value.toString());
 					}
 				}
 
 			}
 		}
+		log.debug("Settings are loaded");
 		isLoaded = true;
 	}
 

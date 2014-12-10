@@ -391,7 +391,7 @@ public class CacheDetail implements Serializable
 	private void reloadSpoilerResourcesFromPath(String directory, CB_List<ImageEntry> spoilerRessources2, final Cache cache)
 	{
 		if (!FileIO.DirectoryExists(directory)) return;
-		// Logger.DEBUG("Loading spoilers from " + directory);
+		// log.debug("Loading spoilers from " + directory);
 		File dir = new File(directory);
 		FilenameFilter filter = new FilenameFilter()
 		{

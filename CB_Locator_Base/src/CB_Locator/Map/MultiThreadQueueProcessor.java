@@ -19,11 +19,12 @@ import java.util.SortedMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Locator.LocatorSettings;
 import CB_UI_Base.Energy;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 
 /**
  * @author ging-buh
@@ -31,6 +32,7 @@ import CB_Utils.Log.Logger;
  */
 class MultiThreadQueueProcessor extends Thread
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(MultiThreadQueueProcessor.class);
 	static int instanceCount = 0;
 	static CB_List<Descriptor> inLoadDesc = new CB_List<Descriptor>();
 	static final Lock inLoadDescLock = new ReentrantLock();
@@ -43,7 +45,7 @@ class MultiThreadQueueProcessor extends Thread
 
 	MultiThreadQueueProcessor(QueueData queueData, int threadID)
 	{
-		Logger.LogCat("Create MultiThreadQueueProcessor[" + threadID + "]");
+		log.debug("Create MultiThreadQueueProcessor[" + threadID + "]");
 		ThreadId = threadID;
 		this.queueData = queueData;
 	}
@@ -83,7 +85,7 @@ class MultiThreadQueueProcessor extends Thread
 
 							for (Descriptor tmpDesc : tmpQueuedTiles.values())
 							{
-								// zugehörige MapView aus dem Data vom Descriptor holen
+								// zugehï¿½rige MapView aus dem Data vom Descriptor holen
 								MapViewBase mapView = null;
 								if ((tmpDesc.Data != null) && (tmpDesc.Data instanceof MapViewBase)) mapView = (MapViewBase) tmpDesc.Data;
 								if (mapView == null) continue;
@@ -108,7 +110,7 @@ class MultiThreadQueueProcessor extends Thread
 									if (Math.abs(mapView.aktZoom - nearestZoom) < Math.abs(mapView.aktZoom - tmpDesc.Zoom))
 									{
 										// zuerst die Tiles, die dem
-										// aktuellen Zoom Faktor am nächsten
+										// aktuellen Zoom Faktor am nï¿½chsten
 										// sind.
 										continue;
 									}
@@ -148,9 +150,9 @@ class MultiThreadQueueProcessor extends Thread
 								inLoadDescLock.unlock();
 							}
 
-							// Logger.LogCat("LoadTile on[" + ThreadId + "]");
+							// log.debug("LoadTile on[" + ThreadId + "]");
 							LoadTile(desc);
-							// Logger.LogCat("finish LoadTile on[" + ThreadId + "]");
+							// log.debug("finish LoadTile on[" + ThreadId + "]");
 							inLoadDescLock.lock();
 							inLoadDesc.remove(desc);
 							inLoadDescLock.unlock();
@@ -168,7 +170,7 @@ class MultiThreadQueueProcessor extends Thread
 						{
 							throw ex1;
 						}
-						// Logger.Error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
+						// log.error("MapViewGL.queueProcessor.doInBackground()", "1", ex1);
 						Thread.sleep(200);
 					}
 
@@ -183,7 +185,7 @@ class MultiThreadQueueProcessor extends Thread
 		}
 		catch (Exception ex3)
 		{
-			Logger.Error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
+			log.error("MapViewGL.queueProcessor.doInBackground()", "3", ex3);
 			if (LocatorSettings.FireMapQueueProcessorExceptions.getValue())
 			{
 				try

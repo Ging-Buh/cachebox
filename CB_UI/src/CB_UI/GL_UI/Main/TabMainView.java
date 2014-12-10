@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.API_ErrorEventHandler;
@@ -109,7 +111,6 @@ import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.MathUtils.CalculationType;
-import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingModus;
 import CB_Utils.Util.FileIO;
 import CB_Utils.Util.UnitFormatter;
@@ -123,6 +124,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
  */
 public class TabMainView extends MainViewBase implements PositionChangedEvent
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(TabMainView.class);
 	public static TabMainView that;
 	private static boolean TrackRecIsRegisted = false;
 	public static CB_Action_ShowCompassView actionShowCompassView;
@@ -211,49 +213,49 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 	{
 		if (cacheListView != null && !cacheListView.isVisible())
 		{
-			Logger.LogCat("Rerlease CachelistView");
+			log.debug("Rerlease CachelistView");
 			cacheListView.dispose();
 			cacheListView = null;
 		}
 
 		if (aboutView != null && !aboutView.isVisible())
 		{
-			Logger.LogCat("Rerlease aboutView");
+			log.debug("Rerlease aboutView");
 			aboutView.dispose();
 			aboutView = null;
 		}
 
 		if (compassView != null && !compassView.isVisible())
 		{
-			Logger.LogCat("Rerlease compassView");
+			log.debug("Rerlease compassView");
 			compassView.dispose();
 			compassView = null;
 		}
 
 		if (fieldNotesView != null && !fieldNotesView.isVisible())
 		{
-			Logger.LogCat("Rerlease fieldNotesView");
+			log.debug("Rerlease fieldNotesView");
 			fieldNotesView.dispose();
 			fieldNotesView = null;
 		}
 
 		if (logView != null && !logView.isVisible())
 		{
-			Logger.LogCat("Rerlease logView");
+			log.debug("Rerlease logView");
 			logView.dispose();
 			logView = null;
 		}
 
 		if (waypointView != null && !waypointView.isVisible())
 		{
-			Logger.LogCat("Rerlease waypointView");
+			log.debug("Rerlease waypointView");
 			waypointView.dispose();
 			waypointView = null;
 		}
 
 		if (solverView2 != null && !solverView2.isVisible())
 		{
-			Logger.LogCat("Rerlease solverView2");
+			log.debug("Rerlease solverView2");
 			solverView2.dispose();
 			solverView2 = null;
 		}
@@ -344,8 +346,8 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 		API_ErrorEventHandlerList.addHandler(handler);
 
-		Logger.LogCat("Start TabMainView-Initial");
-		Logger.DEBUG("Start TabMainView-Initial");
+		log.debug("Start TabMainView-Initial");
+		log.debug("Start TabMainView-Initial");
 
 		actionShowMap = new CB_Action_ShowMap();
 		actionShowHint = new CB_Action_ShowHint();
@@ -385,7 +387,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		Slider slider = new Slider(this, "Slider");
 		this.addChild(slider);
 
-		Logger.LogCat("Ende TabMainView-Initial");
+		log.debug("Ende TabMainView-Initial");
 
 		autoLoadTrack();
 
@@ -405,7 +407,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 					Cache c = Database.Data.Query.get(i);
 					if (c.getGcCode().equalsIgnoreCase(sGc))
 					{
-						Logger.DEBUG("TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+						log.debug("TabMainView: Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 						GlobalCore.setSelectedCache(c); // !! sets GlobalCore.setAutoResort to false
 						break;
 					}
@@ -716,7 +718,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 
 	public void setContentMaxY(float y)
 	{
-		// Logger.LogCat("TabMainView SetContent maxY" + y);
+		// log.debug("TabMainView SetContent maxY" + y);
 		synchronized (childs)
 		{
 			for (int i = 0, n = childs.size(); i < n; i++)
@@ -874,7 +876,7 @@ public class TabMainView extends MainViewBase implements PositionChangedEvent
 		}
 		catch (Exception e)
 		{
-			Logger.Error("Core.MainViewBase.PositionChanged()", "TrackRecorder.recordPosition()", e);
+			log.error("Core.MainViewBase.PositionChanged()", "TrackRecorder.recordPosition()", e);
 			e.printStackTrace();
 		}
 

@@ -134,7 +134,7 @@ public class CacheListViewItem extends ListViewItemBackground implements Positio
 	private void setActLocator()
 	{
 
-		// Logger.LogCat("CacheListItem set ActLocator");
+		// log.debug("CacheListItem set ActLocator");
 
 		if (Locator.Valid())
 		{

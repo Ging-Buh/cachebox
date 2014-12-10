@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.DB.Database;
 import CB_Core.Enums.Attributes;
@@ -22,7 +24,6 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.Controls.PopUps.ConnectionError;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
-import CB_Utils.Log.Logger;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,7 +45,7 @@ import de.cachebox_test.Views.Forms.MessageBox;
 @SuppressWarnings("deprecation")
 public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(DescriptionViewControl.class);
 	public static boolean mustLoadDescription;
 	private Cache aktCache;
 	private LinkedList<String> NonLocalImages = new LinkedList<String>();
@@ -358,7 +359,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		}
 
 		// Falls nicht geladene Bilder vorliegen und eine Internetverbindung
-		// erlaubt ist, diese laden und Bilder erneut auflösen
+		// erlaubt ist, diese laden und Bilder erneut auflï¿½sen
 		if (NonLocalImagesUrl.size() > 0)
 		{
 			downloadThread = new Thread()
@@ -374,7 +375,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 						}
 						catch (InterruptedException e)
 						{
-							Logger.Error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
+							log.error("DescriptionViewControl.setCache()", "Thread.sleep fehler", e);
 							e.printStackTrace();
 						}
 					}
@@ -391,7 +392,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 						}
 						catch (Exception e)
 						{
-							Logger.Error("DescriptionViewControl.setCache()", "downloadThread run()", e);
+							log.error("DescriptionViewControl.setCache()", "downloadThread run()", e);
 						}
 					}
 					downloadReadyHandler.post(downloadComplete);
@@ -513,7 +514,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		}
 		catch (Exception e)
 		{
-			Logger.Error("DescriptionViewControl.OnHide()", "clearCache", e);
+			log.error("DescriptionViewControl.OnHide()", "clearCache", e);
 			e.printStackTrace();
 		}
 	}
@@ -527,7 +528,7 @@ public class DescriptionViewControl extends WebView implements ViewOptionsMenu
 		}
 		catch (Exception e)
 		{
-			Logger.Error("DescriptionViewControl.OnFree()", "clearCache", e);
+			log.error("DescriptionViewControl.OnFree()", "clearCache", e);
 			e.printStackTrace();
 		}
 		this.destroy();

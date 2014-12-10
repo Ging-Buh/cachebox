@@ -73,7 +73,17 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 		{ "unchecked" })
 	public EnumTyp getEnumValue()
 	{
-		return (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), value);
+		EnumTyp ret = null;
+		try
+		{
+			ret = (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), value);
+		}
+		catch (Exception e)
+		{
+			ret = (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), defaultValue);
+		}
+
+		return ret;
 	}
 
 	@SuppressWarnings(

@@ -17,6 +17,8 @@ package CB_UI.GL_UI.Views;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Events.CachListChangedEventList;
@@ -27,7 +29,6 @@ import CB_Locator.Map.Descriptor;
 import CB_UI.GlobalCore;
 import CB_UI_Base.GL_UI.SpriteCacheBase;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.MoveableList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class MapViewCacheList implements CacheListChangedEventListner
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(MapViewCacheList.class);
 	private int maxZoomLevel;
 	private queueProcessor queueProcessor = null;
 
@@ -80,16 +82,16 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 		try
 		{
-			Logger.DEBUG("MapCacheList.queueProcessor Create");
+			log.debug("MapCacheList.queueProcessor Create");
 			queueProcessor = new queueProcessor();
 			queueProcessor.setPriority(Thread.MIN_PRIORITY);
 		}
 		catch (Exception ex)
 		{
-			Logger.Error("MapCacheList.queueProcessor", "onCreate", ex);
+			log.error("MapCacheList.queueProcessor", "onCreate", ex);
 		}
 
-		Logger.DEBUG("MapCacheList.queueProcessor Start");
+		log.debug("MapCacheList.queueProcessor Start");
 		queueProcessor.start();
 
 		state.set(0);
@@ -132,7 +134,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 								double MapY = -256.0 * Descriptor.LatitudeToTileY(maxZoomLevel, cache.Latitude());
 								Waypoint fwp = null; // Final Waypoint
 								Waypoint swp = null; // Start Waypoint
-								// sichtbare Wegpunkte hinzufügen, auch wenn der Cache nicht sichtbar ist
+								// sichtbare Wegpunkte hinzufï¿½gen, auch wenn der Cache nicht sichtbar ist
 								if (showWaypoints)
 								{
 									if (selectedCache)
@@ -178,7 +180,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 								}
 								if (isVisible(MapX, MapY) || selectedCache)
 								{
-									// sichtbaren Cache/Mystery-Final hinzufügen
+									// sichtbaren Cache/Mystery-Final hinzufï¿½gen
 									WaypointRenderInfo wpi = new WaypointRenderInfo();
 									wpi.MapX = (float) MapX;
 									wpi.MapY = (float) MapY;
@@ -216,7 +218,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 						if (savedQuery != null)
 						{
 							// es steht noch eine Anfrage an!
-							// Diese jetzt ausführen!
+							// Diese jetzt ausfï¿½hren!
 							MapViewCacheListUpdateData data = new MapViewCacheListUpdateData(savedQuery);
 							data.hideMyFinds = MapViewCacheList.this.hideMyFinds;
 							data.showAllWaypoints = MapViewCacheList.this.showAllWaypoints;
@@ -233,7 +235,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			}
 			catch (Exception ex3)
 			{
-				Logger.Error("MapCacheList.queueProcessor.doInBackground()", "3", ex3);
+				log.error("MapCacheList.queueProcessor.doInBackground()", "3", ex3);
 			}
 			finally
 			{
@@ -294,7 +296,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 		}
 		else
 		{
-			// der SelectedCache wird immer mit den großen Symbolen dargestellt!
+			// der SelectedCache wird immer mit den groï¿½en Symbolen dargestellt!
 			return getMapIcon(cache);
 		}
 	}
@@ -477,7 +479,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 
 		if (state.get() != 0)
 		{
-			// Speichere Update anfrage und führe sie aus, wenn der queueProcessor wieder bereit ist!
+			// Speichere Update anfrage und fï¿½hre sie aus, wenn der queueProcessor wieder bereit ist!
 			savedQuery = data;
 			return;
 		}
@@ -487,7 +489,7 @@ public class MapViewCacheList implements CacheListChangedEventListner
 			// wenn LastPoint == 0 muss eine neue Liste Berechnet werden!
 			if (lastPoint1 != null && lastPoint2 != null)
 			{
-				// Prüfen, ob überhaupt eine neue Liste berechnet werden muß
+				// Prï¿½fen, ob ï¿½berhaupt eine neue Liste berechnet werden muï¿½
 				if ((data.point1.x >= lastPoint1.x) && (data.point2.x <= lastPoint2.x) && (data.point1.y >= lastPoint1.y) && (data.point2.y <= lastPoint2.y)) return;
 			}
 

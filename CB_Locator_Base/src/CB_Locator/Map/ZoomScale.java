@@ -207,7 +207,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	}
 
 	/**
-	 * Irgend eine Zoom Funktion ausgeführt, also FadeOut zurück setzen und die Scala Einblenden!
+	 * Irgend eine Zoom Funktion ausgefï¿½hrt, also FadeOut zurï¿½ck setzen und die Scala Einblenden!
 	 */
 	public void resetFadeOut()
 	{
@@ -343,7 +343,7 @@ public class ZoomScale extends CB_View_Base implements invalidateTextureEvent
 	@Override
 	public void onResized(CB_RectF rec)
 	{
-		// Logger.LogCat("ZoomScale Rezised");
+		// log.debug("ZoomScale Rezised");
 		ScaleDrawRec = null;
 		storedRec = null;
 		CachedScaleSprite = null;

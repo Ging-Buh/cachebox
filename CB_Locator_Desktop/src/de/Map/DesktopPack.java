@@ -112,7 +112,7 @@ public class DesktopPack extends PackBase
 				switch (BitDepth)
 				{
 				case 4:
-					// Logger.DEBUG("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
+					// log.debug("[PackBase] unsupported png in Pack " + this.Filename + " tile: " + desc);
 					InputStream in = new ByteArrayInputStream(buffer);
 					BufferedImage img = ImageIO.read(in);
 					ByteArrayOutputStream bas = new ByteArrayOutputStream();

@@ -16,7 +16,6 @@ import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListView.FilterSetEntry;
 import CB_UI.GL_UI.Activitys.FilterSettings.FilterSetListViewItem;
 import CB_UI.GL_UI.Views.FieldNoteViewItem;
-import CB_UI.Settings.CB_UI_Settings;
 import CB_UI_Base.Enums.WrapType;
 import CB_UI_Base.Events.KeyboardFocusChangedEvent;
 import CB_UI_Base.Events.KeyboardFocusChangedEventList;
@@ -171,29 +170,28 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 					}
 					catch (ParseException e)
 					{
-						final GL_MsgBox msg = GL_MsgBox.Show(Translation.Get("wrongDate"), Translation.Get("Error"), MessageBoxButtons.OK,
-								MessageBoxIcon.Error, new OnMsgBoxClickListener()
+						final GL_MsgBox msg = GL_MsgBox.Show(Translation.Get("wrongDate"), Translation.Get("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, new OnMsgBoxClickListener()
+						{
+
+							@Override
+							public boolean onClick(int which, Object data)
+							{
+								Timer runTimer = new Timer();
+								TimerTask task = new TimerTask()
 								{
 
 									@Override
-									public boolean onClick(int which, Object data)
+									public void run()
 									{
-										Timer runTimer = new Timer();
-										TimerTask task = new TimerTask()
-										{
-
-											@Override
-											public void run()
-											{
-												EditFieldNotes.this.show();
-											}
-										};
-
-										runTimer.schedule(task, 200);
-
-										return true;
+										EditFieldNotes.this.show();
 									}
-								});
+								};
+
+								runTimer.schedule(task, 200);
+
+								return true;
+							}
+						});
 
 						Timer runTimer = new Timer();
 						TimerTask task = new TimerTask()
@@ -243,8 +241,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniNameLabel()
 	{
-		tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin,
-				MeasuredLabelHeight, "CacheNameLabel");
+		tvCacheName = new Label(leftBorder + margin, getHeight() - this.getTopHeight() - MeasuredLabelHeight, innerWidth - margin, MeasuredLabelHeight, "CacheNameLabel");
 		tvCacheName.setFont(Fonts.getBig());
 		tvCacheName.setText(fieldNote.CacheName);
 		scrollBox.addChild(tvCacheName);
@@ -254,12 +251,10 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniImage()
 	{
-		ivTyp = new Image(leftBorder + margin, tvCacheName.getY() - margin - UI_Size_Base.that.getButtonHeight(),
-				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
+		ivTyp = new Image(leftBorder + margin, tvCacheName.getY() - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
 		scrollBox.addChild(ivTyp);
 
-		ivTbIcon = new Image(ivTyp.getMaxX() + (margin * 3), tvCacheName.getY() - margin - UI_Size_Base.that.getButtonHeight(),
-				UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
+		ivTbIcon = new Image(ivTyp.getMaxX() + (margin * 3), tvCacheName.getY() - margin - UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), UI_Size_Base.that.getButtonHeight(), "");
 		scrollBox.addChild(ivTbIcon);
 
 		secondTab = ivTyp.getMaxX() + (margin * 3);
@@ -267,8 +262,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 	private void iniFoundLabel()
 	{
-		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UI_Size_Base.that.getButtonHeight(), getWidth() - secondTab - rightBorder
-				- margin, UI_Size_Base.that.getButtonHeight(), "CacheNameLabel");
+		tvFounds = new Label(secondTab, ivTyp.getMaxY() - UI_Size_Base.that.getButtonHeight(), getWidth() - secondTab - rightBorder - margin, UI_Size_Base.that.getButtonHeight(), "CacheNameLabel");
 		tvFounds.setFont(Fonts.getBig());
 		scrollBox.addChild(tvFounds);
 	}
@@ -280,13 +274,11 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		LabelWidth = Math.max(Fonts.Measure(Translation.Get("date")).width, Fonts.Measure(Translation.Get("time")).width);
 		LabelWidth *= 1.3;// use Big Font
 
-		lblDate = new Label(secondTab, tvFounds.getY() - UI_Size_Base.that.getButtonHeight() - (margin * 3), LabelWidth,
-				UI_Size_Base.that.getButtonHeight(), "");
+		lblDate = new Label(secondTab, tvFounds.getY() - UI_Size_Base.that.getButtonHeight() - (margin * 3), LabelWidth, UI_Size_Base.that.getButtonHeight(), "");
 		lblDate.setFont(Fonts.getBig());
 		lblDate.setText(Translation.Get("date") + ":");
 		scrollBox.addChild(lblDate);
-		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, getWidth() - lblDate.getMaxX() - margin
-				- rightBorder, UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(lblDate.getMaxX() + margin, lblDate.getY() - margin, getWidth() - lblDate.getMaxX() - margin - rightBorder, UI_Size_Base.that.getButtonHeight());
 
 		tvDate = new EditTextField(rec, this);
 		scrollBox.addChild(tvDate);
@@ -295,13 +287,11 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 	private void iniTime()
 	{
 
-		lblTime = new Label(secondTab, lblDate.getY() - UI_Size_Base.that.getButtonHeight() - (margin * 3), LabelWidth,
-				UI_Size_Base.that.getButtonHeight(), "");
+		lblTime = new Label(secondTab, lblDate.getY() - UI_Size_Base.that.getButtonHeight() - (margin * 3), LabelWidth, UI_Size_Base.that.getButtonHeight(), "");
 		lblTime.setFont(Fonts.getBig());
 		lblTime.setText(Translation.Get("time") + ":");
 		scrollBox.addChild(lblTime);
-		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, getWidth() - lblTime.getMaxX() - margin
-				- rightBorder, UI_Size_Base.that.getButtonHeight());
+		CB_RectF rec = new CB_RectF(lblTime.getMaxX() + margin, lblTime.getY() - margin, getWidth() - lblTime.getMaxX() - margin - rightBorder, UI_Size_Base.that.getButtonHeight());
 
 		tvTime = new EditTextField(rec, this);
 		scrollBox.addChild(tvTime);
@@ -314,10 +304,8 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		{
 			float itemHeight = UI_Size_Base.that.getButtonHeight() * 1.1f;
 
-			FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCacheBase.Stars.toArray(),
-					FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
-			GcVote = new FilterSetListViewItem(new CB_RectF(leftBorder, lblTime.getY() - itemHeight - margin, innerWidth, itemHeight), 0,
-					tmp);
+			FilterSetEntry tmp = new FilterSetEntry(Translation.Get("maxRating"), SpriteCacheBase.Stars.toArray(), FilterSetListView.NUMERICK_ITEM, 0, 5, fieldNote.gc_Vote / 100.0, 0.5f);
+			GcVote = new FilterSetListViewItem(new CB_RectF(leftBorder, lblTime.getY() - itemHeight - margin, innerWidth, itemHeight), 0, tmp);
 			scrollBox.addChild(GcVote);
 		}
 
@@ -328,13 +316,11 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 		CB_RectF rec;
 		if (GcVote != null)
 		{
-			rec = new CB_RectF(leftBorder, GcVote.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth,
-					UI_Size_Base.that.getButtonHeight());
+			rec = new CB_RectF(leftBorder, GcVote.getY() - UI_Size_Base.that.getButtonHeight(), innerWidth, UI_Size_Base.that.getButtonHeight());
 		}
 		else
 		{
-			rec = new CB_RectF(leftBorder, lblTime.getY() - UI_Size_Base.that.getButtonHeight() - margin, innerWidth,
-					UI_Size_Base.that.getButtonHeight());
+			rec = new CB_RectF(leftBorder, lblTime.getY() - UI_Size_Base.that.getButtonHeight() - margin, innerWidth, UI_Size_Base.that.getButtonHeight());
 		}
 
 		etComment = new EditTextField(this, rec, WrapType.WRAPPED, "DescTextField");
@@ -399,15 +385,7 @@ public class EditFieldNotes extends ActivityBase implements KeyboardFocusChanged
 
 		if (isNewFieldNote)
 		{
-			// Choice last selection
-			if (CB_UI_Settings.TB_DirectLog.getValue())
-			{
-				rbDirectLog.setChecked(true);
-			}
-			else
-			{
-				rbOnlyFieldNote.setChecked(true);
-			}
+			rbOnlyFieldNote.setChecked(true);
 		}
 		else
 		{

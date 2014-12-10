@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Types;
 
 import java.io.File;
@@ -5,16 +20,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.DB.Database;
 import CB_Core.Enums.LogTypes;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Utils.DB.CoreCursor;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.iChanged;
 
 public class FieldNoteList extends ArrayList<FieldNoteEntry>
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(FieldNoteList.class);
 	/**
 	 * 
 	 */
@@ -119,7 +135,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("FieldNoteList", "LoadFieldNotes", exc);
+				log.error("FieldNoteList", "LoadFieldNotes", exc);
 			}
 			reader.moveToFirst();
 			while (reader.isAfterLast() == false)
@@ -189,7 +205,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		{
 			int foundNumber = 0;
 			FieldNoteEntry fne = null;
-			// löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
+			// lï¿½scht eine evtl. vorhandene FieldNote vom type fï¿½r den Cache cacheId
 			for (FieldNoteEntry fn : this)
 			{
 				if ((fn.CacheId == cacheId) && (fn.type == type))
@@ -213,7 +229,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 		{
 			int foundNumber = 0;
 			FieldNoteEntry fne = null;
-			// löscht eine evtl. vorhandene FieldNote vom type für den Cache cacheId
+			// lï¿½scht eine evtl. vorhandene FieldNote vom type fï¿½r den Cache cacheId
 			for (FieldNoteEntry fn : this)
 			{
 				if (fn.Id == id)
@@ -235,7 +251,7 @@ public class FieldNoteList extends ArrayList<FieldNoteEntry>
 	{
 		if (deletedFoundNumber > 0)
 		{
-			// alle FoundNumbers anpassen, die größer sind
+			// alle FoundNumbers anpassen, die grï¿½ï¿½er sind
 			for (FieldNoteEntry fn : this)
 			{
 				if ((fn.type == LogTypes.found) && (fn.foundNumber > deletedFoundNumber))

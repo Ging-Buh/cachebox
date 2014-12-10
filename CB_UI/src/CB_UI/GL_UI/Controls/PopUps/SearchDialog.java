@@ -17,6 +17,8 @@ package CB_UI.GL_UI.Controls.PopUps;
 
 import java.util.ArrayList;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
@@ -74,7 +76,6 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_Utils.Interfaces.cancelRunnable;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -83,10 +84,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  */
 public class SearchDialog extends PopUp_Base
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(SearchDialog.class);
 	public static SearchDialog that;
 
 	/**
-	 * True, wenn eine Suche läuft und der Iterator mit Next weiter durchlaufen werden kann.
+	 * True, wenn eine Suche lï¿½uft und der Iterator mit Next weiter durchlaufen werden kann.
 	 */
 	private boolean mSearchAktive = false;
 
@@ -125,7 +127,7 @@ public class SearchDialog extends PopUp_Base
 	private Button mBtnSearch;
 
 	/**
-	 * Button, der den nächsten Treffer einer gestarteten Suche findet
+	 * Button, der den nï¿½chsten Treffer einer gestarteten Suche findet
 	 */
 	private Button mBtnNext;
 
@@ -140,7 +142,7 @@ public class SearchDialog extends PopUp_Base
 	private EditTextField mEingabe;
 
 	/**
-	 * Enthällt den Aktuellen Such Modus <br/>
+	 * Enthï¿½llt den Aktuellen Such Modus <br/>
 	 * 0 = Title <br/>
 	 * 1 = Gc-Code <br/>
 	 * 2 = Owner <br/>
@@ -202,7 +204,7 @@ public class SearchDialog extends PopUp_Base
 
 		mEingabe.setText("");
 
-		// Layout! da es sich nicht ändert, brauchen wir es nicht in eine Methode packen
+		// Layout! da es sich nicht ï¿½ndert, brauchen wir es nicht in eine Methode packen
 		float y = margin;
 
 		mBtnFilter.setPos(margin, y);
@@ -219,11 +221,11 @@ public class SearchDialog extends PopUp_Base
 		mTglBtnGc.setPos(mTglBtnTitle.getMaxX() + margin, y);
 		mTglBtnOwner.setPos(mTglBtnGc.getMaxX() + margin, y);
 
-		// die Höhe nach dem Verbrauchten Platz einstellen
+		// die Hï¿½he nach dem Verbrauchten Platz einstellen
 
 		this.setHeight(mTglBtnOwner.getMaxY() + margin);
 
-		// Controls zum Dialog hinzufügen
+		// Controls zum Dialog hinzufï¿½gen
 		this.addChild(mTglBtnTitle);
 		this.addChild(mTglBtnGc);
 		this.addChild(mTglBtnOwner);
@@ -359,7 +361,7 @@ public class SearchDialog extends PopUp_Base
 	}
 
 	/**
-	 * Setzt die Übersetzten Texte auf die Buttons
+	 * Setzt die ï¿½bersetzten Texte auf die Buttons
 	 */
 	private void setLang()
 	{
@@ -430,7 +432,7 @@ public class SearchDialog extends PopUp_Base
 		}
 
 		// TODO Sofort Filter hat eine schlechte Performance, deshalb habe ich ihn ersteinmal abgeschalten.
-		// Es wäre aber ein schönes Feature!
+		// Es wï¿½re aber ein schï¿½nes Feature!
 		// filterSearchByTextChnge();
 	}
 
@@ -446,7 +448,7 @@ public class SearchDialog extends PopUp_Base
 	}
 
 	/**
-	 * Die aktive CahcheList wird durchsucht gefilterte Caches werden dabei nicht berücksichtigt.
+	 * Die aktive CahcheList wird durchsucht gefilterte Caches werden dabei nicht berï¿½cksichtigt.
 	 * 
 	 * @param ignoreOnlineSearch
 	 *            (True, wenn Lokal gesucht werden soll, obwohl der MultiToggleButton "Online" aktiviert ist.
@@ -593,7 +595,7 @@ public class SearchDialog extends PopUp_Base
 	// }
 
 	/**
-	 * Sucht mit den Vorgaben nach Caches über die API. Die Gefundenen Caches werden in die DB eingetragen und im Anschluss wird der lokale
+	 * Sucht mit den Vorgaben nach Caches ï¿½ber die API. Die Gefundenen Caches werden in die DB eingetragen und im Anschluss wird der lokale
 	 * Suchvorgang gestartet.
 	 */
 	private void searchAPI()
@@ -692,13 +694,13 @@ public class SearchDialog extends PopUp_Base
 
 	private void closeWaitDialog()
 	{
-		Logger.DEBUG("SEARCH Close WD");
+		log.debug("SEARCH Close WD");
 		if (wd != null) wd.close();
 	}
 
 	private void searchOnlineNow()
 	{
-		Logger.DEBUG("SEARCH Show WD searchOverAPI");
+		log.debug("SEARCH Show WD searchOverAPI");
 		wd = CancelWaitDialog.ShowWait(Translation.Get("searchOverAPI"), DownloadAnimation.GetINSTANCE(), new IcancelListner()
 		{
 
@@ -713,7 +715,7 @@ public class SearchDialog extends PopUp_Base
 			@Override
 			public void run()
 			{
-				Logger.DEBUG("SEARCH Run search overAPI");
+				log.debug("SEARCH Run search overAPI");
 				Coordinate searchCoord = null;
 
 				if (MapView.that != null && MapView.that.isVisible())
@@ -733,7 +735,7 @@ public class SearchDialog extends PopUp_Base
 				// alle per API importierten Caches landen in der Category und
 				// GpxFilename
 				// API-Import
-				// Category suchen, die dazu gehört
+				// Category suchen, die dazu gehï¿½rt
 				CategoryDAO categoryDAO = new CategoryDAO();
 				Category category = categoryDAO.GetCategory(CoreSettingsForward.Categories, "API-Import");
 				if (category == null) return; // should not happen!!!
@@ -839,7 +841,7 @@ public class SearchDialog extends PopUp_Base
 					}
 
 				}
-				Logger.DEBUG("SEARCH Run search overAPI ready");
+				log.debug("SEARCH Run search overAPI ready");
 				closeWaitDialog();
 			}
 
@@ -888,7 +890,7 @@ public class SearchDialog extends PopUp_Base
 	public void addSearch(String searchPattern, searchMode Mode)
 	{
 
-		Logger.DEBUG("addSearch " + searchPattern);
+		log.debug("addSearch " + searchPattern);
 
 		mEingabe.setText(searchPattern);
 		switchSearcheMode(Mode.ordinal());
@@ -897,7 +899,7 @@ public class SearchDialog extends PopUp_Base
 		mTglBtnOnline.setState(1);
 		setFilterBtnState();
 
-		// Suche auslösen
+		// Suche auslï¿½sen
 		mBtnSearch.performClick();
 	}
 
@@ -967,7 +969,7 @@ public class SearchDialog extends PopUp_Base
 			public void chekReady(int MemberType)
 			{
 				int ret = GroundspeakAPI.isValidAPI_Key(true);
-				Logger.DEBUG("SEARCH isValidAPI_Key ret=" + ret);
+				log.debug("SEARCH isValidAPI_Key ret=" + ret);
 				if (ret == 0)
 				{
 					GL.that.RunOnGL(new IRunOnGL()

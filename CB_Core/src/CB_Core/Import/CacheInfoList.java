@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.Import;
 
 import java.io.File;
@@ -6,6 +21,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.DB.Database;
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Core.Types.Cache;
@@ -13,29 +30,26 @@ import CB_Core.Types.LogEntry;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.SDBM_Hash;
 
 public class CacheInfoList
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheInfoList.class);
 
 	/**
-	 * Die Liste der Cache Infos, welche mit IndexDB() gefüllt und mit dispose() gelöscht wird.
+	 * Die Liste der Cache Infos, welche mit IndexDB() gefï¿½llt und mit dispose() gelï¿½scht wird.
 	 */
 	private static HashMap<String, CacheInfo> List = null;
 
 	/**
-	 * Mit dieser Methode wird die DB indexiert und die Klasse enthält dann eine Statiche Liste mit den Cache Informationen. Wenn die Liste
-	 * nicht mehr benötigt wird, sollte sie mit dispose() gelöscht werden.
+	 * Mit dieser Methode wird die DB indexiert und die Klasse enthï¿½lt dann eine Statiche Liste mit den Cache Informationen. Wenn die Liste
+	 * nicht mehr benï¿½tigt wird, sollte sie mit dispose() gelï¿½scht werden.
 	 */
 	public static void IndexDB()
 	{
 		List = new HashMap<String, CacheInfo>();
 
-		CoreCursor reader = Database.Data
-				.rawQuery(
-						"select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches",
-						null);
+		CoreCursor reader = Database.Data.rawQuery("select GcCode, Id, ListingCheckSum, ImagesUpdated, DescriptionImagesUpdated, ListingChanged, Found, CorrectedCoordinates, Latitude, Longitude, GpxFilename_Id, Favorit from Caches", null);
 
 		reader.moveToFirst();
 
@@ -135,7 +149,7 @@ public class CacheInfoList
 	}
 
 	/**
-	 * Die statische Liste der Cache Informationen wird mit diesem Aufruf gelöscht und der Speicher wieder frei gegeben.
+	 * Die statische Liste der Cache Informationen wird mit diesem Aufruf gelï¿½scht und der Speicher wieder frei gegeben.
 	 */
 	public static void dispose()
 	{
@@ -182,7 +196,7 @@ public class CacheInfoList
 	}
 
 	/**
-	 * Fügt die CacheInfo in der Liste mit dem Infos des übergebenen Caches zusammen und ändert gegebenenfalls die Changed Attribute neu!
+	 * Fï¿½gt die CacheInfo in der Liste mit dem Infos des ï¿½bergebenen Caches zusammen und ï¿½ndert gegebenenfalls die Changed Attribute neu!
 	 * 
 	 * @param cache
 	 * @param DescriptionImageFolder
@@ -241,8 +255,7 @@ public class CacheInfoList
 					ImagesUpdated = false;
 					DescriptionImagesUpdated = false;
 
-					if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) CB_Core_Settings.DescriptionImageFolder
-							.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
+					if (CB_Core_Settings.DescriptionImageFolderLocal.getValue().length() > 0) CB_Core_Settings.DescriptionImageFolder.setValue(CB_Core_Settings.DescriptionImageFolderLocal.getValue());
 
 					// 2014-06-21 - Ging-Buh - .changed files are no longer used. Only information in DB (ImagesUpdated and
 					// DescriptionImagesUpdated) are used
@@ -261,15 +274,15 @@ public class CacheInfoList
 
 			if (!info.Found)
 			{
-				// nur wenn der Cache nicht als gefunden markiert ist, wird der Wert aus dem GPX Import übernommen!
+				// nur wenn der Cache nicht als gefunden markiert ist, wird der Wert aus dem GPX Import ï¿½bernommen!
 				info.Found = cache.isFound();
 			}
 
-			// Schreibe info neu in die List(lösche den Eintrag vorher)
+			// Schreibe info neu in die List(lï¿½sche den Eintrag vorher)
 
 			List.remove(GcCode);
 			if (!info.ListingChanged) info.ListingChanged = ListingChanged; // Wenn das Flag schon gesetzt ist, dann nicht ausversehen
-																			// wieder zurücksetzen!
+																			// wieder zurï¿½cksetzen!
 
 			info.ImagesUpdated = ImagesUpdated;
 			info.DescriptionImagesUpdated = DescriptionImagesUpdated;
@@ -281,7 +294,7 @@ public class CacheInfoList
 	}
 
 	/**
-	 * Schreibt die Liste der CacheInfos zurück in die DB
+	 * Schreibt die Liste der CacheInfos zurï¿½ck in die DB
 	 */
 	public static void writeListToDB()
 	{
@@ -289,7 +302,7 @@ public class CacheInfoList
 		{
 			Parameters args = new Parameters();
 
-			// bei einem Update müssen nicht alle infos überschrieben werden
+			// bei einem Update mï¿½ssen nicht alle infos ï¿½berschrieben werden
 
 			args.put("ListingCheckSum", info.ListingCheckSum);
 			args.put("ListingChanged", info.ListingChanged ? 1 : 0);
@@ -305,7 +318,7 @@ public class CacheInfoList
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("CacheInfoList.writeListToDB()", "", exc);
+				log.error("CacheInfoList.writeListToDB()", "", exc);
 
 			}
 		}
@@ -333,7 +346,7 @@ public class CacheInfoList
 	}
 
 	/**
-	 * Packt eine neue CacheInfo des Übergebenen Caches in die Liste
+	 * Packt eine neue CacheInfo des ï¿½bergebenen Caches in die Liste
 	 * 
 	 * @param cache
 	 */

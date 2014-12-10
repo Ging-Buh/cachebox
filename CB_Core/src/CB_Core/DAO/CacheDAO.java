@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.DB.Database;
 import CB_Core.Enums.CacheSizes;
 import CB_Core.Enums.CacheTypes;
@@ -31,11 +33,10 @@ import CB_Core.Types.DLong;
 import CB_Locator.Coordinate;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
-import CB_Utils.Log.Logger;
 
 public class CacheDAO
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CacheDAO.class);
 	static final String SQL_BY_ID = "from Caches c where id = ?";
 	static final String SQL_BY_GC_CODE = "from Caches c where GCCode = ?";
 	public String[] SQL_ENUM =
@@ -94,7 +95,7 @@ public class CacheDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Read Cache", "", exc);
+			log.error("Read Cache", "", exc);
 			return null;
 		}
 	}
@@ -274,7 +275,7 @@ public class CacheDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Write Cache", "", exc);
+			log.error("Write Cache", "", exc);
 
 		}
 	}
@@ -291,7 +292,7 @@ public class CacheDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Write Cache Found", "", exc);
+			log.error("Write Cache Found", "", exc);
 		}
 	}
 
@@ -384,7 +385,7 @@ public class CacheDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Update Cache", "", exc);
+			log.error("Update Cache", "", exc);
 			return false;
 
 		}
@@ -471,7 +472,7 @@ public class CacheDAO
 	}
 
 	/**
-	 * hier wird nur die Status Abfrage zurück geschrieben und gegebenen Falls die Replication Informationen geschrieben.
+	 * hier wird nur die Status Abfrage zurï¿½ck geschrieben und gegebenen Falls die Replication Informationen geschrieben.
 	 * 
 	 * @param writeTmp
 	 */
@@ -502,7 +503,7 @@ public class CacheDAO
 		}
 
 		if (changed) // Wir brauchen die DB nur Updaten, wenn sich auch etwas
-						// geändert hat.
+						// geï¿½ndert hat.
 		{
 
 			Parameters args = new Parameters();
@@ -518,7 +519,7 @@ public class CacheDAO
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("Ubdate Cache", "", exc);
+				log.error("Ubdate Cache", "", exc);
 
 			}
 		}
@@ -571,8 +572,7 @@ public class CacheDAO
 
 		ArrayList<String> GcCodes = new ArrayList<String>();
 
-		CoreCursor reader = Database.Data.rawQuery(
-				"select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
+		CoreCursor reader = Database.Data.rawQuery("select GcCode from Caches where Type<>4 and (ImagesUpdated=0 or DescriptionImagesUpdated=0)", null);
 
 		if (reader.getCount() > 0)
 		{

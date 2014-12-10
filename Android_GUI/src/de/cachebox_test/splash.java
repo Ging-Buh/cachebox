@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.cachebox_test;
 
 import java.io.BufferedReader;
@@ -10,6 +25,7 @@ import java.util.Locale;
 
 import org.mapsforge.map.android.graphics.ext_AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.DB.Database;
 import CB_Core.DB.Database.DatabaseType;
@@ -28,7 +44,8 @@ import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
 import CB_UI_Base.Math.devicesSizes;
 import CB_UI_Base.graphics.GL_RenderType;
-import CB_Utils.Log.Logger;
+import CB_Utils.Log.CB_SLF4J;
+import CB_Utils.Log.LogLevel;
 import CB_Utils.Settings.PlatformSettings;
 import CB_Utils.Settings.PlatformSettings.iPlatformSettings;
 import CB_Utils.Settings.SettingBase;
@@ -44,6 +61,7 @@ import CB_Utils.Settings.SettingModus;
 import CB_Utils.Settings.SettingString;
 import CB_Utils.Settings.SettingTime;
 import CB_Utils.Util.FileIO;
+import CB_Utils.Util.iChanged;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -63,7 +81,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StatFs;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -87,6 +104,7 @@ import de.cachebox_test.Views.Forms.MessageBox;
 
 public class splash extends Activity
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(splash.class);
 
 	public static Activity splashActivity;
 	final Context context = this;
@@ -432,7 +450,7 @@ public class splash extends Activity
 					}
 				});
 				Button buttonE = (Button) dialog.findViewById(R.id.button2);
-				final boolean isSandbox = externalSd.contains("Android/data/de.cachebox_test");
+				final boolean isSandbox = externalSd == null ? false : externalSd.contains("Android/data/de.cachebox_test");
 				if (!hasExtSd)
 				{
 					buttonE.setVisibility(Button.INVISIBLE);
@@ -1051,8 +1069,6 @@ public class splash extends Activity
 	{
 		// Jetzt ist der workPath erstmal festgelegt.
 
-		Logger.setDebugFilePath(workPath + "/debug.txt");
-
 		// Zur Kompatibilität mit Älteren Installationen wird hier noch die redirection.txt abgefragt
 		if (FileIO.FileExists(workPath + "/redirection.txt"))
 		{
@@ -1076,8 +1092,7 @@ public class splash extends Activity
 			}
 			catch (IOException e)
 			{
-				Logger.Error("read redirection", "", e);
-				e.printStackTrace();
+				log.error("read redirection", e);
 			}
 
 		}
@@ -1169,6 +1184,17 @@ public class splash extends Activity
 		{
 			Config.settings.ReadFromDB();
 		}
+
+		new CB_SLF4J(workPath);
+		CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+		Config.AktLogLevel.addChangedEventListner(new iChanged()
+		{
+			@Override
+			public void isChanged()
+			{
+				CB_SLF4J.setLogLevel((LogLevel) Config.AktLogLevel.getEnumValue());
+			}
+		});
 
 		// Check Android Version and disable MixedDatabaseRenderer with Version<14(4.0.0)
 		if (android.os.Build.VERSION.SDK_INT < 14)
@@ -1406,7 +1432,7 @@ public class splash extends Activity
 		GlobalCore.RunFromSplash = true;
 
 		mainIntent.putExtras(b);
-		Log.d("CACHEBOX", "Splash start Main Intent");
+		log.info("Splash start Main Intent");
 		startActivity(mainIntent);
 		finish();
 	}
@@ -1450,5 +1476,4 @@ public class splash extends Activity
 
 		return super.onKeyDown(keyCode, event);
 	}
-
 }

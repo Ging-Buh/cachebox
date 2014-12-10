@@ -18,11 +18,13 @@ package CB_Core.CB_Core.Import;
 import java.io.File;
 
 import junit.framework.TestCase;
+
+import org.slf4j.LoggerFactory;
+
 import CB_Core.DAO.LogDAO;
 import CB_Core.DB.Database;
 import CB_Core.Import.GPXFileImporter;
 import CB_Core.Import.ImportHandler;
-import CB_Utils.Log.Logger;
 import Types.CacheTest;
 import __Static.InitTestDBs;
 
@@ -34,6 +36,7 @@ import __Static.InitTestDBs;
  */
 public class GpxImportTest extends TestCase
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(GpxImportTest.class);
 
 	public static void testGpxImport() throws Exception
 	{
@@ -48,7 +51,7 @@ public class GpxImportTest extends TestCase
 		{
 			Database.Data.delete("Caches", "GcCode='" + "GC2T9RW" + "'", null);
 			// Logs
-			Logger.DEBUG("Delete Logs");
+			log.debug("Delete Logs");
 			LogDAO logdao = new LogDAO();
 			logdao.ClearOrphanedLogs();
 			logdao = null;

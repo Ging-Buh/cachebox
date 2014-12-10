@@ -46,7 +46,7 @@ public class CB_Stack<T>
 		{
 			if (items.contains(item)) return;
 			items.add(item);
-			// Logger.LogCat("STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
+			// log.debug("STACK add SIZE=" + items.size + "  (item: " + item.toString() + ")");
 			checkMaxItemSize();
 		}
 	}
@@ -62,13 +62,13 @@ public class CB_Stack<T>
 		{
 			if (items.size == 0)
 			{
-				// Logger.LogCat("STACK empty Get");
+				// log.debug("STACK empty Get");
 				return null;
 			}
 
 			T ret = items.remove(0);
 
-			// Logger.LogCat("STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
+			// log.debug("STACK get SIZE=" + (items.size - 1) + "  (item: " + ret.toString() + ")");
 
 			return ret;
 		}

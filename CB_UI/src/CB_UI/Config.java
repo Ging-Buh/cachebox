@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI;
 
 import java.io.BufferedReader;
@@ -5,17 +20,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Settings.CB_Core_Settings;
 import CB_Locator.LocatorSettings;
 import CB_UI.Settings.CB_UI_Settings;
 import CB_UI.Settings.SettingsClass;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
 import CB_Utils.Config_Core;
-import CB_Utils.Log.Logger;
 import cb_rpc.Settings.CB_Rpc_Settings;
 
 public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Settings, CB_UI_Base_Settings, CB_Rpc_Settings, LocatorSettings
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Config.class);
+
 	public Config(String workPath)
 	{
 		super(workPath);
@@ -145,7 +163,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 		}
 		catch (IOException e)
 		{
-			Logger.Error("ReadConfig", "Error when accessing cachebox.config!", e);
+			log.error("ReadConfig", "Error when accessing cachebox.config!", e);
 			e.printStackTrace();
 		}
 
@@ -320,8 +338,8 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 	}
 
 	/*
-	 * Nachfolgend die Getter von Einstellungen, welche sehr häufig abgerufen werden. Diese Einstellungen werden zwischen gespeichert und
-	 * erst bei einer Änderung aktualisiert. Diese erspart das Parsen von Werten
+	 * Nachfolgend die Getter von Einstellungen, welche sehr hï¿½ufig abgerufen werden. Diese Einstellungen werden zwischen gespeichert und
+	 * erst bei einer ï¿½nderung aktualisiert. Diese erspart das Parsen von Werten
 	 */
 
 	public static void SetEncrypted(String key, String value)
@@ -364,7 +382,7 @@ public class Config extends Config_Core implements CB_Core_Settings, CB_UI_Setti
 			act = CB_Core_Settings.GcAPI.getValue();
 		}
 
-		// Prüfen, ob das AccessToken für ACB ist!!!
+		// Prï¿½fen, ob das AccessToken fï¿½r ACB ist!!!
 		if (!(act.startsWith("A"))) return "";
 		String result = act.substring(1, act.length());
 

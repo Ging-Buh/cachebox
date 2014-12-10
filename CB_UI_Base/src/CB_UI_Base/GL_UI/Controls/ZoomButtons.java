@@ -54,7 +54,7 @@ public class ZoomButtons extends CB_View_Base
 
 	// # Constructors
 	/**
-	 * Constructor für ein neues TestView mit Angabe der linken unteren Ecke und der Höhe und Breite
+	 * Constructor fï¿½r ein neues TestView mit Angabe der linken unteren Ecke und der Hï¿½he und Breite
 	 * 
 	 * @param X
 	 * @param Y
@@ -144,7 +144,7 @@ public class ZoomButtons extends CB_View_Base
 				if (zoom < maxzoom)
 				{
 					zoom++;
-					// Logger.LogCat("ZoomButton OnClick UP (" + zoom + ")");
+					// log.debug("ZoomButton OnClick UP (" + zoom + ")");
 					mOnClickListenerUp.onClick(this, x, y, pointer, button);
 				}
 				behandelt = true;
@@ -159,7 +159,7 @@ public class ZoomButtons extends CB_View_Base
 				if (zoom > minzoom)
 				{
 					zoom--;
-					// Logger.LogCat("ZoomButton OnClick Down (" + zoom + ")");
+					// log.debug("ZoomButton OnClick Down (" + zoom + ")");
 					mOnClickListenerDown.onClick(this, x, y, pointer, button);
 				}
 				behandelt = true;
@@ -378,7 +378,7 @@ public class ZoomButtons extends CB_View_Base
 	boolean virtualVisible = false;
 
 	/**
-	 * Irgend eine Taste gedrückt, also FadeOut zurück setzen
+	 * Irgend eine Taste gedrï¿½ckt, also FadeOut zurï¿½ck setzen
 	 */
 	public void resetFadeOut()
 	{
@@ -503,7 +503,7 @@ public class ZoomButtons extends CB_View_Base
 	@Override
 	public void onResized(CB_RectF rec)
 	{
-		// rect auf Teilen in zwei gleich große
+		// rect auf Teilen in zwei gleich groï¿½e
 		HitRecUp = rec.copy();
 		HitRecUp.setPos(new Vector2()); // setze auf 0,0
 		HitRecDown = rec.copy();

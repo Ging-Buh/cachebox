@@ -129,7 +129,7 @@ public class Fader
 	public void resetFadeOut()
 	{
 
-		// Logger.DEBUG("Reset Fade Out");
+		// log.debug("Reset Fade Out");
 		if (mFadeIn && !mFadeOut)
 		{
 			mFadeIn = false;
@@ -166,12 +166,12 @@ public class Fader
 				mFadeValue = 1f;
 				mFadeIn = false;
 				mVirtualVisible = true;
-				// Logger.DEBUG("[" + statetime + "]finish FadeIn" + " calcvalue:" + calcedFadeValue);
+				// log.debug("[" + statetime + "]finish FadeIn" + " calcvalue:" + calcedFadeValue);
 			}
 			else
 			{
 				mFadeValue = calcedFadeValue;
-				// Logger.DEBUG("[" + statetime + "]fadeIn:" + mFadeValue);
+				// log.debug("[" + statetime + "]fadeIn:" + mFadeValue);
 			}
 		}
 		else if (mFadeOut)
@@ -185,12 +185,12 @@ public class Fader
 				mFadeValue = 0f;
 				mFadeOut = false;
 				mVirtualVisible = false;
-				// Logger.DEBUG("[" + statetime + "]finish FadeOut" + " calcvalue:" + calcedFadeValue);
+				// log.debug("[" + statetime + "]finish FadeOut" + " calcvalue:" + calcedFadeValue);
 			}
 			else
 			{
 				mFadeValue = calcedFadeValue;
-				// Logger.DEBUG("[" + statetime + "]fadeOut:" + mFadeValue);
+				// log.debug("[" + statetime + "]fadeOut:" + mFadeValue);
 			}
 		}
 	}

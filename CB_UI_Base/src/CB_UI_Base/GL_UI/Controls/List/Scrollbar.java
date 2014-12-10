@@ -64,7 +64,7 @@ public class Scrollbar extends CB_View_Base
 	@Override
 	public void render(Batch batch)
 	{
-		// Wenn Liste länger als Clintbereich zeige Slider
+		// Wenn Liste lï¿½nger als Clintbereich zeige Slider
 		if (ListView.isDragable())
 		{
 			if (mPushSliderFader.isVisible() || mSliderFader.isVisible())
@@ -230,7 +230,7 @@ public class Scrollbar extends CB_View_Base
 
 			this.ListView.setListPos(lp);
 
-			// Logger.DEBUG("SliderScrollValue:" + " Draged:" + lp + " LastTouch:" + mLastTouch + " Y=" + y);
+			// log.debug("SliderScrollValue:" + " Draged:" + lp + " LastTouch:" + mLastTouch + " Y=" + y);
 			return true;
 		}
 

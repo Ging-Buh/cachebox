@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2011-2012 team-cachebox.de
+ * Copyright (C) 2011-2014 team-cachebox.de
  *
  * Licensed under the : GNU General Public License (GPL);
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.slf4j.LoggerFactory;
+
 import CB_UI_Base.CB_Texturepacker.Settings;
 import CB_UI_Base.CB_Texturepacker.TexturePacker_Base;
 import CB_UI_Base.GL_UI.CB_View_Base;
@@ -32,7 +34,6 @@ import CB_UI_Base.GL_UI.Controls.Animation.WorkAnimation;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.settings.CB_UI_Base_Settings;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.Downloader;
 import CB_Utils.Util.FileIO;
 
@@ -55,7 +56,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  */
 public class Image extends CB_View_Base
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Image.class);
 	private AnimationBase Wait;
 
 	private Color mColor = new Color(1, 1, 1, 1);
@@ -115,7 +116,7 @@ public class Image extends CB_View_Base
 			catch (Exception e)
 			{
 				ImageLoadError = true;
-				Logger.LogCat("E Load GL Image" + e.getMessage());
+				log.debug("E Load GL Image", e);
 				e.printStackTrace();
 			}
 			return;
@@ -223,7 +224,7 @@ public class Image extends CB_View_Base
 		if (mDrawable != null)
 		{
 			dispose();
-			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus läuft.
+			// das laden des Images in das Sprite darf erst in der Render Methode passieren, damit es aus dem GL_Thread herraus lï¿½uft.
 		}
 		GL.that.renderOnce();
 	}

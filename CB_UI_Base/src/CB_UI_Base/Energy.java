@@ -18,7 +18,8 @@ package CB_UI_Base;
 
 import java.util.ArrayList;
 
-import CB_Utils.Log.Logger;
+import org.slf4j.LoggerFactory;
+
 import CB_Utils.Util.iChanged;
 
 /**
@@ -29,6 +30,7 @@ import CB_Utils.Util.iChanged;
  */
 public class Energy
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Energy.class);
 
 	// ##########################
 	// Dont Render
@@ -54,7 +56,7 @@ public class Energy
 	{
 		displayOff = true;
 		fireChangedEvent();
-		Logger.DEBUG("ENERGY.set dontRender");
+		log.info("ENERGY.set dontRender");
 	}
 
 	/**
@@ -64,7 +66,7 @@ public class Energy
 	{
 		displayOff = false;
 		fireChangedEvent();
-		Logger.DEBUG("ENERGY.reset dontRender");
+		log.info("ENERGY.reset dontRender");
 	}
 
 	// ##############################

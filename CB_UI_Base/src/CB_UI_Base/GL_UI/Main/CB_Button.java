@@ -124,8 +124,8 @@ public class CB_Button extends Button implements OnClickListener
 		public boolean onClick(GL_View_Base v, int x, int y, int pointer, int button)
 		{
 			// GL_MsgBox.Show("Button " + Me.getName() + " recivet a LongClick Event");
-			// Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menü angezeigt aus dem eine dieser
-			// Actions gewählt werden kann
+			// Wenn diesem Button mehrere Actions zugeordnet sind dann wird nach einem Lang-Click ein Menï¿½ angezeigt aus dem eine dieser
+			// Actions gewï¿½hlt werden kann
 
 			if (mButtonActions.size() > 1)
 			{
@@ -133,7 +133,7 @@ public class CB_Button extends Button implements OnClickListener
 			}
 			else if (mButtonActions.size() == 1)
 			{
-				// nur eine Action dem Button zugeordnet -> diese Action gleich ausführen
+				// nur eine Action dem Button zugeordnet -> diese Action gleich ausfï¿½hren
 				CB_ActionButton ba = mButtonActions.get(0);
 				CB_Action action = ba.getAction();
 				if (action != null)
@@ -221,12 +221,12 @@ public class CB_Button extends Button implements OnClickListener
 					if (aktActionView.getView() != null && aktActionView.getView().isVisible())
 					{
 						// Dieses View ist aktuell das Sichtbare
-						// -> ein Click auf den Menü-Button zeigt das Contextmenü
+						// -> ein Click auf den Menï¿½-Button zeigt das Contextmenï¿½
 						// if (aktActionView.ShowContextMenu()) return true;
 
 						if (aktActionView.HasContextMenu())
 						{
-							// das View Context Menü mit dem LongKlick Menü zusammen führen!
+							// das View Context Menï¿½ mit dem LongKlick Menï¿½ zusammen fï¿½hren!
 
 							// Menu zusammen stellen!
 							// zuerst das View Context Menu
@@ -282,7 +282,7 @@ public class CB_Button extends Button implements OnClickListener
 			}
 		}
 
-		// wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausführen
+		// wenn keine Default Action defeniert ist, dann einen LongClick (Zeige ContextMenu) ausfï¿½hren
 		if (!actionExecuted)
 		{
 			OnClickListener listner = this.getOnLongClickListner();
@@ -301,7 +301,7 @@ public class CB_Button extends Button implements OnClickListener
 		onClick(null, 0, 0, 0, 0);
 	}
 
-	// ---------- überschreiben des isPresed, weil dies zur Anzeige der Activen View benutzt wird ---------
+	// ---------- ï¿½berschreiben des isPresed, weil dies zur Anzeige der Activen View benutzt wird ---------
 
 	protected static Sprite menuSprite;
 	protected static Sprite menuSpriteFilterd;
@@ -397,7 +397,7 @@ public class CB_Button extends Button implements OnClickListener
 		boolean result = super.onTouchUp(x, y, pointer, button);
 
 		if (!isDragged) return (GestureIsOn) ? result : true;
-		// Logger.LogCat("CB_Button onTouchUP()");
+		// log.debug("CB_Button onTouchUP()");
 		int dx = x - downPos.x;
 		int dy = y - downPos.y;
 		GestureDirection direction = GestureDirection.Up;

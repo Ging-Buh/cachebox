@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.DB;
 
 import java.text.DateFormat;
@@ -8,6 +23,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Core.DAO.CategoryDAO;
 import CB_Core.Replication.Replication;
@@ -20,11 +37,11 @@ import CB_Core.Types.Waypoint;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core;
 import CB_Utils.Lists.CB_List;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.SDBM_Hash;
 
 public abstract class Database extends Database_Core
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Database.class);
 	public static Database Data;
 	public static Database FieldNotes;
 	public static Database Settings;
@@ -153,9 +170,9 @@ public abstract class Database extends Database_Core
 				}
 				if (lastDatabaseSchemeVersion < 1015)
 				{
-					// GpxFilenames mit Kategorien verknüpfen
+					// GpxFilenames mit Kategorien verknï¿½pfen
 
-					// alte Category Tabelle löschen
+					// alte Category Tabelle lï¿½schen
 					delete("Category", "", null);
 					HashMap<Long, String> gpxFilenames = new HashMap<Long, String>();
 					HashMap<String, Long> categories = new HashMap<String, Long>();
@@ -191,7 +208,7 @@ public abstract class Database extends Database_Core
 							}
 							catch (Exception exc)
 							{
-								Logger.Error("Database", "Update_CategoryId", exc);
+								log.error("Database", "Update_CategoryId", exc);
 							}
 						}
 					}
@@ -216,13 +233,13 @@ public abstract class Database extends Database_Core
 				}
 				if (lastDatabaseSchemeVersion < 1019)
 				{
-					// neue Felder für die erweiterten Attribute einfügen
+					// neue Felder fï¿½r die erweiterten Attribute einfï¿½gen
 					execSQL("ALTER TABLE [CACHES] ADD [AttributesPositiveHigh] bigint NULL default 0");
 					execSQL("ALTER TABLE [CACHES] ADD [AttributesNegativeHigh] bigint NULL default 0");
 
 					// Die Nummerierung der Attribute stimmte nicht mit der von
-					// Groundspeak überein. Bei 16 und 45 wurde jeweils eine
-					// Nummber übersprungen
+					// Groundspeak ï¿½berein. Bei 16 und 45 wurde jeweils eine
+					// Nummber ï¿½bersprungen
 					CoreCursor reader = rawQuery("select Id, AttributesPositive, AttributesNegative from Caches", new String[] {});
 					reader.moveToFirst();
 					while (reader.isAfterLast() == false)
@@ -278,14 +295,14 @@ public abstract class Database extends Database_Core
 				}
 				if (lastDatabaseSchemeVersion < 1025)
 				{
-					// nicht mehr benötigt execSQL("ALTER TABLE [Waypoint] ADD COLUMN [UserNote] ntext NULL");
+					// nicht mehr benï¿½tigt execSQL("ALTER TABLE [Waypoint] ADD COLUMN [UserNote] ntext NULL");
 				}
 
 				setTransactionSuccessful();
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("AlterDatabase", "", exc);
+				log.error("AlterDatabase", "", exc);
 			}
 			finally
 			{
@@ -347,7 +364,7 @@ public abstract class Database extends Database_Core
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("AlterDatabase", "", exc);
+				log.error("AlterDatabase", "", exc);
 			}
 			finally
 			{
@@ -373,7 +390,7 @@ public abstract class Database extends Database_Core
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("AlterDatabase", "", exc);
+				log.error("AlterDatabase", "", exc);
 			}
 			finally
 			{
@@ -386,15 +403,15 @@ public abstract class Database extends Database_Core
 	private long convertAttribute(long att)
 	{
 		// Die Nummerierung der Attribute stimmte nicht mit der von Groundspeak
-		// überein. Bei 16 und 45 wurde jeweils eine Nummber übersprungen
+		// ï¿½berein. Bei 16 und 45 wurde jeweils eine Nummber ï¿½bersprungen
 		long result = 0;
-		// Maske für die untersten 15 bit
+		// Maske fï¿½r die untersten 15 bit
 		long mask = 0;
 		for (int i = 0; i < 16; i++)
 			mask += (long) 1 << i;
 		// unterste 15 bit ohne Verschiebung kopieren
 		result = att & mask;
-		// Maske für die Bits 16-45
+		// Maske fï¿½r die Bits 16-45
 		mask = 0;
 		for (int i = 16; i < 45; i++)
 			mask += (long) 1 << i;
@@ -403,7 +420,7 @@ public abstract class Database extends Database_Core
 		tmp = tmp << 1;
 		// und zum Result kopieren
 		result += tmp;
-		// Maske für die Bits 45-45
+		// Maske fï¿½r die Bits 45-45
 		mask = 0;
 		for (int i = 45; i < 63; i++)
 			mask += (long) 1 << i;
@@ -416,7 +433,7 @@ public abstract class Database extends Database_Core
 		return result;
 	}
 
-	// Methoden für Waypoint
+	// Methoden fï¿½r Waypoint
 	public static void DeleteFromDatabase(Waypoint WP)
 	{
 		Replication.WaypointDelete(WP.CacheId, 0, 1, WP.getGcCode());
@@ -426,7 +443,7 @@ public abstract class Database extends Database_Core
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Waypoint.DeleteFromDataBase()", "", exc);
+			log.error("Waypoint.DeleteFromDataBase()", "", exc);
 		}
 	}
 
@@ -470,7 +487,7 @@ public abstract class Database extends Database_Core
 		throw new Exception("Alle GcCodes sind bereits vergeben! Dies sollte eigentlich nie vorkommen!");
 	}
 
-	// Methodes für Cache
+	// Methodes fï¿½r Cache
 	public static String GetNote(Cache cache)
 	{
 		String resultString = GetNote(cache.Id);
@@ -493,7 +510,7 @@ public abstract class Database extends Database_Core
 	}
 
 	/**
-	 * geänderte Note nur in die DB schreiben
+	 * geï¿½nderte Note nur in die DB schreiben
 	 * 
 	 * @param cacheId
 	 * @param value
@@ -555,7 +572,7 @@ public abstract class Database extends Database_Core
 	}
 
 	/**
-	 * geänderten Solver nur in die DB schreiben
+	 * geï¿½nderten Solver nur in die DB schreiben
 	 * 
 	 * @param cacheId
 	 * @param value
@@ -586,10 +603,8 @@ public abstract class Database extends Database_Core
 		CB_List<LogEntry> result = new CB_List<LogEntry>();
 		if (cache == null) // if no cache is selected!
 		return result;
-		CoreCursor reader = Database.Data.rawQuery(
-				"select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc",
-				new String[]
-					{ Long.toString(cache.Id) });
+		CoreCursor reader = Database.Data.rawQuery("select CacheId, Timestamp, Finder, Type, Comment, Id from Logs where CacheId=@cacheid order by Timestamp desc", new String[]
+			{ Long.toString(cache.Id) });
 
 		reader.moveToFirst();
 		while (reader.isAfterLast() == false)
@@ -670,9 +685,7 @@ public abstract class Database extends Database_Core
 		beginTransaction();
 		try
 		{
-			CoreCursor reader = rawQuery(
-					"select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID",
-					null);
+			CoreCursor reader = rawQuery("select GPXFilename_ID, Count(*) as CacheCount from Caches where GPXFilename_ID is not null Group by GPXFilename_ID", null);
 			reader.moveToFirst();
 
 			while (reader.isAfterLast() == false)
@@ -742,8 +755,7 @@ public abstract class Database extends Database_Core
 		// Get CacheId's from Caches with to match older Logs
 		// ###################################################
 		{
-			String command = "select cacheid from logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > "
-					+ String.valueOf(minToKeep);
+			String command = "select cacheid from logs WHERE Timestamp < '" + TimeStamp + "' GROUP BY CacheId HAVING COUNT(Id) > " + String.valueOf(minToKeep);
 
 			CoreCursor reader = Database.Data.rawQuery(command, null);
 			reader.moveToFirst();
@@ -785,15 +797,14 @@ public abstract class Database extends Database_Core
 						sb.append(id).append(",");
 
 					// now delete all Logs out of Date without minLogIds
-					String delCommand = "delete from Logs where Timestamp<'" + TimeStamp + "' and cacheid = " + String.valueOf(oldLogCache)
-							+ " and id not in (" + sb.toString().substring(0, sb.length() - 1) + ")";
+					String delCommand = "delete from Logs where Timestamp<'" + TimeStamp + "' and cacheid = " + String.valueOf(oldLogCache) + " and id not in (" + sb.toString().substring(0, sb.length() - 1) + ")";
 					Database.Data.execSQL(delCommand);
 				}
 				setTransactionSuccessful();
 			}
 			catch (Exception ex)
 			{
-				Logger.Error("Delete Old Logs", "", ex);
+				log.error("Delete Old Logs", "", ex);
 			}
 			finally
 			{

@@ -76,7 +76,7 @@ public class V_ListView extends ListViewBase
 						if (index >= 0 && index < mAddeedIndexList.size())
 						{
 							mAddeedIndexList.remove(index);
-							// Logger.LogCat("Remove Item " + tmp.getIndex());
+							// log.debug("Remove Item " + tmp.getIndex());
 							this.removeChild(tmp);
 							if (mCanDispose) tmp.dispose();
 						}
@@ -159,7 +159,7 @@ public class V_ListView extends ListViewBase
 								this.addChild(tmp);
 							}
 
-							// Logger.LogCat("Add Item " + i);
+							// log.debug("Add Item " + i);
 							mAddeedIndexList.add(i);
 						}
 						else if (itemPos + mBaseAdapter.getItemSize(i) < -(mMaxItemCount * minimumItemSize))

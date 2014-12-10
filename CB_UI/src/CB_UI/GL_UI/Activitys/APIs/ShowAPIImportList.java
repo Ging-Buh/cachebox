@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Activitys.APIs;
 
 import java.io.File;
@@ -6,6 +21,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
@@ -57,14 +74,13 @@ import CB_UI_Base.Math.SizeF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Events.ProgressChangedEvent;
 import CB_Utils.Events.ProgresssChangedEventList;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ShowAPIImportList extends ActivityBase implements ProgressChangedEvent
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(ShowAPIImportList.class);
 	private V_ListView lvPQs;
 	private Button bOK, bCancel, refreshPqList;
 	private float innerLeft, innerHeight, CollapseBoxHeight, CollapseBoxMaxHeight, CollapseBoxLogsMaxHeight;
@@ -878,7 +894,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 										}
 										catch (OutOfMemoryError e)
 										{
-											Logger.Error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
+											log.error("PQ-download", "OutOfMemoryError-" + pq.Name, e);
 											e.printStackTrace();
 										}
 									}
@@ -925,7 +941,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 							return;
 						}
 
-						Logger.LogCat("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
+						log.debug("Import  GPX Import took " + (System.currentTimeMillis() - startTime) + "ms");
 
 						System.gc();
 
@@ -1038,7 +1054,7 @@ public class ShowAPIImportList extends ActivityBase implements ProgressChangedEv
 
 				String Msg = "Import " + String.valueOf(GPXFileImporter.CacheCount) + "C " + String.valueOf(GPXFileImporter.LogCount) + "L in " + String.valueOf(ImportZeit);
 
-				Logger.DEBUG(Msg);
+				log.debug(Msg);
 
 				FilterProperties props = FilterProperties.LastFilter;
 

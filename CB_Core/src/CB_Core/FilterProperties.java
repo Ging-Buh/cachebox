@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core;
 
 import java.util.ArrayList;
@@ -6,13 +21,14 @@ import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.Enums.CacheTypes;
 import CB_Core.Types.DLong;
-import CB_Utils.Log.Logger;
 
 public class FilterProperties
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(FilterProperties.class);
 	public static FilterProperties LastFilter = null;
 
 	public static boolean isFilterSet()
@@ -112,7 +128,7 @@ public class FilterProperties
 	private final String GPXseperator = "^";
 
 	/**
-	 * True, wenn diese FiletrPropertys eine Filterung nach Name, Gc-Code oder Owner enthält!
+	 * True, wenn diese FiletrPropertys eine Filterung nach Name, Gc-Code oder Owner enthï¿½lt!
 	 * 
 	 * @return
 	 */
@@ -128,7 +144,7 @@ public class FilterProperties
 	}
 
 	/**
-	 * Gibt den SQL Where String dieses Filters zurück
+	 * Gibt den SQL Where String dieses Filters zurï¿½ck
 	 * 
 	 * @return
 	 */
@@ -364,7 +380,7 @@ public class FilterProperties
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("FilterProperties.FilterProperties()", "", exc);
+			log.error("FilterProperties.FilterProperties()", "", exc);
 		}
 	}
 

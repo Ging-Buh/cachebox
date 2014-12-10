@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="assets"/>
 	<classpathentry kind="lib" path="Lib/kxml2-2.3.0.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_UI"/>
-	<classpathentry exported="true" kind="lib" path="Lib/log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/httpclient-4.0-alpha1.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/httpcore-4.0-alpha5.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CB_Translation_Base"/>
@@ -36,5 +35,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_Locator_Desktop"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CB_mapsforge"/>
 	<classpathentry kind="lib" path="Lib/sqlite-jdbc-3.7.15-SNAPSHOT-2.jar"/>
+	<classpathentry kind="lib" path="Lib/slf4j-api-1.7.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

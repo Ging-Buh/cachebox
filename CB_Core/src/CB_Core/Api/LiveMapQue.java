@@ -193,7 +193,7 @@ public class LiveMapQue
 
 			final CB_List<Cache> removedCaches = LiveCaches.add(desc, apiCaches);
 
-			// Logger.DEBUG("LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
+			// log.debug("LIVE_QUE: add " + apiCaches.size() + "from Desc:" + desc.toString() + "/ StackSize:" + descStack.getSize());
 
 			Thread callThread = new Thread(new Runnable()
 			{

@@ -136,7 +136,7 @@ public class DelaunayTriangle
 		}
 		else
 		{
-			// logger.error("Neighbor error, please report!");
+			// log.error("Neighbor error, please report!");
 			// throw new Exception("Neighbor error, please report!");
 		}
 	}
@@ -161,7 +161,7 @@ public class DelaunayTriangle
 		}
 		else
 		{
-			// logger.error("markNeighbor failed");
+			// log.error("markNeighbor failed");
 		}
 	}
 
@@ -274,7 +274,7 @@ public class DelaunayTriangle
 		{
 			return points[0];
 		}
-		// logger.error("point location error");
+		// log.error("point location error");
 		throw new RuntimeException("[FIXME] point location error");
 	}
 
@@ -293,7 +293,7 @@ public class DelaunayTriangle
 		{
 			return points[1];
 		}
-		// logger.error("point location error");
+		// log.error("point location error");
 		throw new RuntimeException("[FIXME] point location error");
 	}
 
@@ -320,7 +320,7 @@ public class DelaunayTriangle
 		}
 		else
 		{
-			// logger.error("legalization error");
+			// log.error("legalization error");
 			throw new RuntimeException("legalization bug");
 		}
 	}

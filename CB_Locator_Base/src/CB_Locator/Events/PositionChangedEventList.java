@@ -75,7 +75,7 @@ public class PositionChangedEventList
 					}
 					catch (Exception e)
 					{
-						// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(location)",
+						// TODO reactivate if possible log.error("Core.PositionEventList.Call(location)",
 						// event.getReceiverName(),
 						// e);
 						e.printStackTrace();
@@ -111,7 +111,7 @@ public class PositionChangedEventList
 				}
 				catch (Exception e)
 				{
-					// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					// TODO reactivate if possible log.error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
 					e.printStackTrace();
 				}
 			}
@@ -133,7 +133,7 @@ public class PositionChangedEventList
 				}
 				catch (Exception e)
 				{
-					// TODO reactivate if possible Logger.Error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
+					// TODO reactivate if possible log.error("Core.PositionEventList.Call(heading)", event.getReceiverName(), e);
 					e.printStackTrace();
 				}
 			}

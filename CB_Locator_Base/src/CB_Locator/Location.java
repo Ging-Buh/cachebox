@@ -95,8 +95,7 @@ public class Location extends CoordinateGPS
 	 * @param altitude
 	 * @param provider
 	 */
-	public Location(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing, float bearing,
-			double altitude, ProviderType provider)
+	public Location(double latitude, double longitude, float accuracy, boolean hasSpeed, float speed, boolean hasBearing, float bearing, double altitude, ProviderType provider)
 	{
 		super(latitude, longitude, (int) accuracy);
 		this.hasSpeed = hasSpeed;
@@ -276,6 +275,20 @@ public class Location extends CoordinateGPS
 		ret.altitude = this.altitude;
 		ret.provider = this.provider;
 		return ret;
+	}
+
+	@Override
+	public String toString()
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Location Typ:");
+		sb.append(this.provider);
+		sb.append(" [latitude=");
+		sb.append(this.latitude);
+		sb.append(", longitude=");
+		sb.append(this.longitude);
+		sb.append("]");
+		return sb.toString();
 	}
 
 }

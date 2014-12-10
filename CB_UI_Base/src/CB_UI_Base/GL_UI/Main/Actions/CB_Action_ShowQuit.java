@@ -1,4 +1,21 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.GL_UI.Main.Actions;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.platformConector;
@@ -10,13 +27,12 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Menu.MenuID;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_ShowQuit extends CB_Action
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_ShowQuit.class);
 	String OverrideAppName = null;
 
 	public CB_Action_ShowQuit()
@@ -58,7 +74,7 @@ public class CB_Action_ShowQuit extends CB_Action
 					if (which == GL_MsgBox.BUTTON_POSITIVE)
 					{
 
-						Logger.DEBUG("\r\n Quit");
+						log.debug("\r\n Quit");
 						platformConector.callQuitt();
 					}
 					return true;

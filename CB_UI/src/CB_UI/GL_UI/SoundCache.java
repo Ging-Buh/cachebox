@@ -1,8 +1,24 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI;
+
+import org.slf4j.LoggerFactory;
 
 import CB_UI.Config;
 import CB_UI.GlobalCore;
-import CB_Utils.Log.Logger;
 import CB_Utils.Settings.SettingsAudio;
 import CB_Utils.Util.iChanged;
 
@@ -12,6 +28,8 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class SoundCache
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(SoundCache.class);
+
 	public enum Sounds
 	{
 		GPS_lose, GPS_fix, Approach, AutoResortSound, Global
@@ -113,7 +131,7 @@ public class SoundCache
 
 		if (handle == null || !handle.exists())
 		{
-			Logger.Error("LoadSound", set.getValue().Path);
+			log.error("LoadSound", set.getValue().Path);
 			return null;
 		}
 
@@ -124,7 +142,7 @@ public class SoundCache
 		}
 		catch (Exception e)
 		{
-			Logger.Error("LoadSound", set.getValue().Path);
+			log.error("LoadSound", set.getValue().Path);
 			return null;
 		}
 		return ret;

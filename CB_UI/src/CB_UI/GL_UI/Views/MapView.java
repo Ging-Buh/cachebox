@@ -22,6 +22,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.FilterProperties;
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Api.LiveMapQue;
@@ -100,6 +102,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class MapView extends MapViewBase implements SelectedCacheEvent, PositionChangedEvent
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(MapView.class);
 
 	public enum MapMode
 	{
@@ -667,12 +670,12 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					WaypointRenderInfo wpi = mapCacheList.list.get(i);
 					if (wpi.Selected)
 					{
-						// wenn der Wp selectiert ist, dann immer in der größten Darstellung
+						// wenn der Wp selectiert ist, dann immer in der grï¿½ï¿½ten Darstellung
 						renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
 					}
 					else if (CarMode)
 					{
-						// wenn CarMode dann immer in der größten Darstellung
+						// wenn CarMode dann immer in der grï¿½ï¿½ten Darstellung
 						renderWPI(batch, GL_UISizes.WPSizes[2], GL_UISizes.UnderlaySizes[2], wpi);
 					}
 					else
@@ -851,7 +854,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 		GL.that.addRenderView(MapView.this, GL.FRAME_RATE_ACTION);
 
-		// für 2sec rendern lassen, bis Änderungen der WPI-list neu berechnet wurden
+		// fï¿½r 2sec rendern lassen, bis ï¿½nderungen der WPI-list neu berechnet wurden
 		TimerTask task = new TimerTask()
 		{
 			@Override
@@ -964,7 +967,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					WaypointDAO waypointDAO = new WaypointDAO();
 					waypointDAO.WriteToDatabase(waypoint);
 
-					// informiere WaypointListView über Änderung
+					// informiere WaypointListView ï¿½ber ï¿½nderung
 					WaypointListChangedEventList.Call(GlobalCore.getSelectedCache());
 					GL.that.renderOnce();
 				}
@@ -1066,7 +1069,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	protected void setZoomScale(int zoom)
 	{
-		// Logger.LogCat("set zoom");
+		// log.debug("set zoom");
 		if (Mode == MapMode.Normal) zoomScale.setZoom(zoom);
 		if (Mode == MapMode.Normal) mapScale.zoomChanged();
 	}
@@ -1082,7 +1085,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 	public void requestLayout()
 	{
-		// Logger.LogCat("MapView clacLayout()");
+		// log.debug("MapView clacLayout()");
 		float margin = GL_UISizes.margin;
 
 		float infoHeight = 0;
@@ -1170,7 +1173,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				if (minWpi == null || minWpi.Cache == null) return true;
 				// Vector2 screen = worldToScreen(new Vector2(Math.round(minWpi.MapX), Math.round(minWpi.MapY)));
-				// Logger.LogCat("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
+				// log.debug("MapClick at:" + clickedAt + " minDistance: " + minDist + " screen:" + screen + " wpi:" + minWpi.Cache.Name
 				// + "/ ");
 
 				if (minDist < 40)
@@ -1204,7 +1207,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 					else
 					{
 						// Show Bubble
-						// unabhängig davon, ob der angeklickte Cache == der selectedCache ist
+						// unabhï¿½ngig davon, ob der angeklickte Cache == der selectedCache ist
 						infoBubble.setCache(minWpi.Cache, null);
 						infoBubble.setVisible();
 					}
@@ -1444,7 +1447,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 
 				if (Mode == MapMode.Compass)
 				{
-					// Berechne die darstellbare Entfernung für jedes ZoomLevel
+					// Berechne die darstellbare Entfernung fï¿½r jedes ZoomLevel
 					DistanceZoomLevel = new TreeMap<Integer, Integer>();
 
 					int posiblePixel = (int) this.getHalfHeight();
@@ -1511,7 +1514,7 @@ public class MapView extends MapViewBase implements SelectedCacheEvent, Position
 			if (themePath == null)
 			{
 
-				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme für den CarMode gefunden!
+				// Entweder wir sind nicht im CarMode oder es wurde kein Passender Theme fï¿½r den CarMode gefunden!
 				if (Config.nightMode.getValue())
 				{
 					themePath = ifThemeExist(Config.MapsforgeNightTheme.getValue());

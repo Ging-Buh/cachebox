@@ -3,6 +3,8 @@ package CB_UI;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Translation_Base.TranslationEngine.Translation;
 import CB_UI_Base.Events.platformConector;
 import CB_UI_Base.GL_UI.IRunOnGL;
@@ -12,10 +14,10 @@ import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxButtons;
 import CB_UI_Base.GL_UI.Controls.MessageBox.MessageBoxIcon;
 import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_Utils.Plattform;
-import CB_Utils.Log.Logger;
 
 public class AppRater
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(AppRater.class);
 	private final static String APP_TITLE = "Cachebox";
 	private final static String APP_PACKAGE_NAME = "de.droidcachebox";
 
@@ -37,7 +39,7 @@ public class AppRater
 			{
 				Config.AppRaterlaunchCount.setValue(launch_count);
 				Config.AcceptChanges();
-				Logger.General("10 min usage, increment launch count");
+				log.info("10 min usage, increment launch count");
 			}
 		};
 		t.schedule(ta, MINIMUM_RUN);

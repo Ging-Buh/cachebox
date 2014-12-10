@@ -1,16 +1,33 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Core.DAO;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.DB.Database;
 import CB_Core.Types.Trackable;
 import CB_Utils.DB.CoreCursor;
 import CB_Utils.DB.Database_Core.Parameters;
-import CB_Utils.Log.Logger;
 
 public class TrackableDAO
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(TrackableDAO.class);
 
 	private Trackable ReadFromCursor(CoreCursor reader)
 	{
@@ -22,7 +39,7 @@ public class TrackableDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Read Trackable", "", exc);
+			log.error("Read Trackable", "", exc);
 			return null;
 		}
 	}
@@ -37,7 +54,7 @@ public class TrackableDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Write Trackable", "", exc);
+			log.error("Write Trackable", "", exc);
 
 		}
 	}
@@ -52,7 +69,7 @@ public class TrackableDAO
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("Ubdate Trackable", "", exc);
+			log.error("Ubdate Trackable", "", exc);
 
 		}
 
@@ -106,8 +123,7 @@ public class TrackableDAO
 	public Trackable getFromDbByGcCode(String GcCode)
 	{
 		String where = "GcCode = \"" + GcCode + "\"";
-		String query = "select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable WHERE "
-				+ where;
+		String query = "select Id ,Archived ,GcCode ,CacheId ,CurrentGoal ,CurrentOwnerName ,DateCreated ,Description ,IconUrl ,ImageUrl ,Name ,OwnerName ,Url,TypeName, Home,TravelDistance   from Trackable WHERE " + where;
 		CoreCursor reader = Database.FieldNotes.rawQuery(query, null);
 
 		try

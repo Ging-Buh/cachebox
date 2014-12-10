@@ -3,9 +3,10 @@ package de.cachebox_test.DB;
 import java.io.File;
 import java.util.Map.Entry;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.DB.Database;
 import CB_Utils.DB.CoreCursor;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -15,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class AndroidDB extends Database
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(AndroidDB.class);
 	private Activity activity;
 	public SQLiteDatabase myDB = null;
 
@@ -62,7 +64,7 @@ public class AndroidDB extends Database
 		}
 		catch (Exception exc)
 		{
-			Logger.Error("AndroidDb", "resetDB", exc);
+			log.error("resetDB", exc);
 		}
 	}
 

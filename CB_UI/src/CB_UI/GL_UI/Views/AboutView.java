@@ -1,4 +1,21 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Views;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Core.Api.GroundspeakAPI;
 import CB_Core.Types.Cache;
@@ -41,7 +58,6 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_Utils.Interfaces.cancelRunnable;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.UnitFormatter;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -51,6 +67,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsStateChangeEvent, PositionChangedEvent
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(AboutView.class);
 	Label descTextView, CachesFoundLabel, WaypointLabel, CoordLabel, lblGPS, Gps, lblAccuracy, Accuracy, lblWP, lblCoord, lblCurrent, Current;
 	Image CB_Logo;
 	float margin;
@@ -116,7 +133,7 @@ public class AboutView extends CB_View_Base implements SelectedCacheEvent, GpsSt
 		float ref = UI_Size_Base.that.getWindowHeight() / 13;
 		margin = UI_Size_Base.that.getMargin();
 		CB_RectF CB_LogoRec = new CB_RectF(this.getHalfWidth() - (ref * 2.5f), this.getHeight() - ((ref * 5) / 4.11f) - ref - margin - margin, ref * 5, (ref * 5) / 4.11f);
-		Logger.DEBUG("CB_Logo" + CB_LogoRec.toString());
+		log.debug("CB_Logo" + CB_LogoRec.toString());
 		CB_Logo = new Image(CB_LogoRec, "CB_Logo");
 		CB_Logo.setDrawable(new SpriteDrawable(SpriteCacheBase.getSpriteDrawable("cachebox-logo")));
 		this.addChild(CB_Logo);

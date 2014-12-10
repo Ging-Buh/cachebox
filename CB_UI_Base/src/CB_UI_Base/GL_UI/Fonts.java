@@ -1,10 +1,26 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI_Base.GL_UI;
+
+import org.slf4j.LoggerFactory;
 
 import CB_UI_Base.Global;
 import CB_UI_Base.GL_UI.Skin.SkinBase;
 import CB_UI_Base.GL_UI.Skin.SkinSettings;
 import CB_UI_Base.Math.UiSizes;
-import CB_Utils.Log.Logger;
 import CB_Utils.Util.FileIO;
 
 import com.badlogic.gdx.Files.FileType;
@@ -26,6 +42,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
  */
 public class Fonts
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Fonts.class);
 	static final String DEFAULT_CHARACTER = getCyrilCharSet();
 
 	static String getCyrilCharSet()
@@ -81,7 +98,7 @@ public class Fonts
 			font = Global.getInternalFileHandle("skins/default/DroidSans-Bold.ttf");
 		}
 
-		Logger.DEBUG("Generate scaled Fonts from " + font);
+		log.debug("Generate scaled Fonts from " + font);
 		generator = new FreeTypeFontGenerator(font);
 
 		double density = UiSizes.that.getScale();
@@ -208,7 +225,7 @@ public class Fonts
 		// Wenn der font nicht vorberechnet ist, dann wird er generiert
 		if (FileIO.FileExists(fontPath))
 		{
-			Logger.DEBUG("load font for scale " + scale + " from " + fontPath);
+			log.debug("load font for scale " + scale + " from " + fontPath);
 			// automatic load of png does not work on Android, so
 			// return new BitmapFont(Gdx.files.absolute(fontPath),false);
 			Texture tex = new Texture(Gdx.files.absolute(fontPath.replace(".fnt", ".png")));
@@ -219,7 +236,7 @@ public class Fonts
 		}
 		else
 		{
-			Logger.DEBUG("generate font for scale " + scale);
+			log.debug("generate font for scale " + scale);
 			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 			parameter.size = scale;
 			parameter.characters = DEFAULT_CHARACTER;

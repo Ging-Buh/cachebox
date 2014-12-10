@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 import CB_Core.DAO.CacheDAO;
 import CB_Core.Enums.Attributes;
@@ -36,7 +37,6 @@ import CB_Core.Types.ImageEntry;
 import CB_Core.Types.LogEntry;
 import CB_Core.Types.Waypoint;
 import CB_Locator.CoordinateGPS;
-import CB_Utils.Log.Logger;
 
 /**
  * @author Hubert
@@ -44,14 +44,14 @@ import CB_Utils.Log.Logger;
  */
 public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 {
+	final static org.slf4j.Logger logger = LoggerFactory.getLogger(ApiGroundspeak_SearchForGeocaches.class);
 	private Search search;
 	private long gpxFilenameId;
 	private ArrayList<Cache> cacheList;
 	private ArrayList<LogEntry> logList;
 	private ArrayList<ImageEntry> imageList;
 
-	public ApiGroundspeak_SearchForGeocaches(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList,
-			ArrayList<ImageEntry> imageList, long gpxFilenameId)
+	public ApiGroundspeak_SearchForGeocaches(Search search, ArrayList<Cache> cacheList, ArrayList<LogEntry> logList, ArrayList<ImageEntry> imageList, long gpxFilenameId)
 	{
 		super();
 		this.search = search;
@@ -86,7 +86,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 	@Override
 	protected boolean getRequest(JSONObject request)
 	{
-		// isLite vom SearchObjekt auswerten, da dies darin geändert worden sein könnte
+		// isLite vom SearchObjekt auswerten, da dies darin geï¿½ndert worden sein kï¿½nnte
 		if (search.getIsLite())
 		{
 			isLite = search.getIsLite();
@@ -105,7 +105,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 		}
 		catch (JSONException e1)
 		{
-			Logger.Error("ApiGroundspeak - SearchForGeocaches:JSONException", e1.getMessage());
+			logger.error("ApiGroundspeak - SearchForGeocaches:JSONException", e1.getMessage());
 			return false;
 		}
 
@@ -119,12 +119,12 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 		ApiGroundspeakResult result = new ApiGroundspeakResult(-1, "");
 
 		JSONArray caches = json.getJSONArray("Geocaches");
-		Logger.LogCat("got " + caches.length() + " Caches from gc");
+		logger.debug("got " + caches.length() + " Caches from gc");
 		for (int i = 0; i < caches.length(); i++)
 		{
 			JSONObject jCache = (JSONObject) caches.get(i);
 			String gcCode = jCache.getString("Code");
-			Logger.DEBUG("handling " + gcCode);
+			logger.debug("handling " + gcCode);
 			String name = jCache.getString("Name");
 
 			Boolean CacheERROR = false;
@@ -161,16 +161,16 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			}
 			catch (Exception exc)
 			{
-				Logger.Error("API", "SearchForGeocaches_ParseDate", exc);
+				logger.error("SearchForGeocaches_ParseDate", exc);
 			}
 			cache.setDifficulty((float) jCache.getDouble("Difficulty"));
 
 			CacheDAO dao = new CacheDAO();
-			// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht überschreiben
+			// Ein evtl. in der Datenbank vorhandenen "Favorit" nicht ï¿½berschreiben
 			Boolean Favorite = dao.loadBooleanValue(gcCode, "Favorit");
 			cache.setFavorit(Favorite);
 
-			// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+			// Ein evtl. in der Datenbank vorhandenen "Found" nicht ï¿½berschreiben
 			Boolean Found = dao.loadBooleanValue(gcCode, "found");
 			if (!Found)
 			{
@@ -193,7 +193,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 			}
 			cache.GPXFilename_ID = gpxFilenameId;
 
-			// Ein evtl. in der Datenbank vorhandenen "Found" nicht überschreiben
+			// Ein evtl. in der Datenbank vorhandenen "Found" nicht ï¿½berschreiben
 			Boolean userData = dao.loadBooleanValue(gcCode, "HasUserData");
 
 			cache.setHasUserData(userData);
@@ -216,7 +216,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 				}
 				catch (Exception e1)
 				{
-					Logger.Error("API", "SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
+					logger.error("SearchForGeocaches_LongDescription:" + cache.getGcCode(), e1);
 					cache.setLongDescription("");
 				}
 				if (jCache.getBoolean("LongDescriptionIsHtml") == false)
@@ -247,7 +247,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 				}
 				catch (Exception e)
 				{
-					Logger.Error("API", "SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
+					logger.error("SearchForGeocaches_shortDescription:" + cache.getGcCode(), e);
 					cache.setShortDescription("");
 				}
 				if (jCache.getBoolean("ShortDescriptionIsHtml") == false)
@@ -298,7 +298,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 					}
 					catch (Exception exc)
 					{
-						Logger.Error("API", "SearchForGeocaches_ParseLogDate", exc);
+						logger.error("SearchForGeocaches_ParseLogDate", exc);
 					}
 					log.Type = LogTypes.GC2CB_LogType(jLogType.getInt("WptLogTypeId"));
 					logList.add(log);
@@ -363,8 +363,7 @@ public class ApiGroundspeak_SearchForGeocaches extends ApiGroundspeak
 					}
 
 				}
-				Logger.DEBUG("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/"
-						+ imageListSizeGrabbed + ")");
+				logger.debug("Merged imageList has " + imageList.size() + " Entrys (" + imageListSizeOrg + "/" + imageListSizeGC + "/" + imageListSizeGrabbed + ")");
 
 				// insert Waypoints
 				JSONArray waypoints = jCache.getJSONArray("AdditionalWaypoints");

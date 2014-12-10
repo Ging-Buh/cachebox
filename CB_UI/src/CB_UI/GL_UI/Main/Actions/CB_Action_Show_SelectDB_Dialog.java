@@ -1,4 +1,21 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI.GL_UI.Main.Actions;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Core.CoreSettingsForward;
 import CB_Core.FilterProperties;
@@ -19,12 +36,12 @@ import CB_UI_Base.GL_UI.GL_Listener.GL;
 import CB_UI_Base.GL_UI.Main.Actions.CB_ActionCommand;
 import CB_UI_Base.GL_UI.Menu.MenuID;
 import CB_UI_Base.Math.CB_RectF;
-import CB_Utils.Log.Logger;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(CB_Action_Show_SelectDB_Dialog.class);
 
 	public CB_Action_Show_SelectDB_Dialog()
 	{
@@ -49,10 +66,10 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 
 		if (GlobalCore.ifCacheSelected())
 		{
-			// speichere selektierten Cache, da nicht alles über die SelectedCacheEventList läuft
+			// speichere selektierten Cache, da nicht alles ï¿½ber die SelectedCacheEventList lï¿½uft
 			Config.LastSelectedCache.setValue(GlobalCore.getSelectedCache().getGcCode());
 			Config.AcceptChanges();
-			Logger.DEBUG("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
+			log.debug("LastSelectedCache = " + GlobalCore.getSelectedCache().getGcCode());
 		}
 
 		SelectDB selectDBDialog = new SelectDB(new CB_RectF(0, 0, GL.that.getWidth(), GL.that.getHeight()), "SelectDbDialog", false);
@@ -74,7 +91,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 	{
 		wd = WaitDialog.ShowWait("Load DB ...");
 
-		Logger.DEBUG("\r\nSwitch DB");
+		log.debug("\r\nSwitch DB");
 		Thread thread = new Thread(new Runnable()
 		{
 
@@ -122,7 +139,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 						Cache c = Database.Data.Query.get(i);
 						if (c.getGcCode().equalsIgnoreCase(sGc))
 						{
-							Logger.DEBUG("returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
+							log.debug("returnFromSelectDB:Set selectedCache to " + c.getGcCode() + " from lastSaved.");
 							GlobalCore.setSelectedCache(c);
 							break;
 						}
@@ -131,7 +148,7 @@ public class CB_Action_Show_SelectDB_Dialog extends CB_ActionCommand
 				// Wenn noch kein Cache Selected ist dann einfach den ersten der Liste aktivieren
 				if ((GlobalCore.getSelectedCache() == null) && (Database.Data.Query.size() > 0))
 				{
-					Logger.DEBUG("Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
+					log.debug("Set selectedCache to " + Database.Data.Query.get(0).getGcCode() + " from firstInDB");
 					GlobalCore.setSelectedCache(Database.Data.Query.get(0));
 				}
 

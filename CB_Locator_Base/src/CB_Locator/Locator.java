@@ -1,10 +1,28 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_Locator;
 
 import java.util.Date;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Locator.Location.ProviderType;
 import CB_Locator.Events.GPS_FallBackEventList;
 import CB_Locator.Events.PositionChangedEventList;
+import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.UnitFormatter;
 
 /**
@@ -12,6 +30,8 @@ import CB_Utils.Util.UnitFormatter;
  */
 public class Locator
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Locator.class);
+
 	/**
 	 * @author Longri
 	 */
@@ -150,10 +170,12 @@ public class Locator
 	 */
 	public static void setNewLocation(Location location)
 	{
+		boolean GPSTRACE = LogLevel.isLogLevel(LogLevel.TRACE);
+		if (GPSTRACE) log.trace("new Location:" + location.toString());
+
 		synchronized (that)
 		{
-			ProviderType type = location.getProviderType();
-			switch (type)
+			switch (location.getProviderType())
 			{
 			case Saved:
 				that.mSaveLocation = location;
@@ -191,6 +213,7 @@ public class Locator
 
 				break;
 			default:
+				log.debug("invalid Location provider");
 				break;
 			}
 
@@ -391,6 +414,7 @@ public class Locator
 	 */
 	public static void setAltCorrection(double value)
 	{
+		log.debug("set alt corection to: " + value);
 		altCorrection = value;
 	}
 
@@ -403,6 +427,15 @@ public class Locator
 	{
 		synchronized (that)
 		{
+			// check if last GPS position older then 20 sec
+
+			if (that.mTimeStampSpeed + 20000 >= (new Date()).getTime())
+			{
+				log.trace("no fall back");
+				return;
+			}
+
+			log.debug("Falback2Network");
 			lastFixLose = System.currentTimeMillis();
 			fix = false;
 			that.mFineLocation = null;

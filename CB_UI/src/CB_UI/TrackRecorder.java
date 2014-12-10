@@ -1,3 +1,18 @@
+/* 
+ * Copyright (C) 2014 team-cachebox.de
+ *
+ * Licensed under the : GNU General Public License (GPL);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.gnu.org/licenses/gpl.html
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package CB_UI;
 
 import java.io.File;
@@ -8,6 +23,8 @@ import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.slf4j.LoggerFactory;
 
 import CB_Locator.Location;
 import CB_Locator.Location.ProviderType;
@@ -27,7 +44,7 @@ import com.badlogic.gdx.graphics.Color;
 
 public class TrackRecorder
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(TrackRecorder.class);
 	// StreamWriter outStream = null;
 	private static File gpxfile = null;
 	private static FileWriter writer = null;
@@ -35,7 +52,7 @@ public class TrackRecorder
 	public static boolean recording = false;
 	public static double SaveAltitude = 0;
 
-	// / Letzte aufgezeichnete Position des Empfängers
+	// / Letzte aufgezeichnete Position des Empfï¿½ngers
 	public static Location LastRecordedPosition = Location.NULL_LOCATION;
 
 	public static void StartRecording()
@@ -69,12 +86,12 @@ public class TrackRecorder
 				}
 				catch (IOException e)
 				{
-					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+					log.error("IOException", e);
 				}
 			}
 			catch (IOException e1)
 			{
-				CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e1);
+				log.error("IOException", e1);
 			}
 
 			try
@@ -88,7 +105,7 @@ public class TrackRecorder
 			}
 			catch (IOException e)
 			{
-				CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+				log.error("IOException", e);
 			}
 			writer = null;
 
@@ -170,11 +187,11 @@ public class TrackRecorder
 		}
 		catch (FileNotFoundException e)
 		{
-			CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+			log.error("FileNotFoundException", e);
 		}
 		catch (IOException e)
 		{
-			CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+			log.error("IOException", e);
 		}
 		writeAnnotateMedia = false;
 		if (mustRecPos)
@@ -200,7 +217,7 @@ public class TrackRecorder
 			mustRecPos = true;
 		}
 
-		if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gültige Koordinaten vorliegen
+		if (LastRecordedPosition.getProviderType() == ProviderType.NULL) // Warte bis 2 gï¿½ltige Koordinaten vorliegen
 		{
 			LastRecordedPosition = Locator.getLocation(GPS).cpy();
 			SaveAltitude = LastRecordedPosition.getAltitude();
@@ -212,7 +229,7 @@ public class TrackRecorder
 			double AltDiff = 0;
 
 			// wurden seit dem letzten aufgenommenen Wegpunkt mehr als x Meter
-			// zurückgelegt? Wenn nicht, dann nicht aufzeichnen.
+			// zurï¿½ckgelegt? Wenn nicht, dann nicht aufzeichnen.
 			float[] dist = new float[1];
 
 			MathUtils.computeDistanceAndBearing(CalculationType.FAST, LastRecordedPosition.getLatitude(), LastRecordedPosition.getLongitude(), Locator.getLatitude(GPS), Locator.getLongitude(GPS), dist);
@@ -255,11 +272,11 @@ public class TrackRecorder
 				}
 				catch (FileNotFoundException e)
 				{
-					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+					log.error("FileNotFoundException", e);
 				}
 				catch (IOException e)
 				{
-					CB_Utils.Log.Logger.Error("Trackrecorder", "IOException", e);
+					log.error("Trackrecorder", "IOException", e);
 				}
 
 				NewPoint = new TrackPoint(Locator.getLongitude(GPS), Locator.getLatitude(GPS), Locator.getAlt(), Locator.getHeading(_GPS), new Date());
