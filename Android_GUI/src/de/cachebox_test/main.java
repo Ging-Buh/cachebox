@@ -1800,7 +1800,6 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 			{
 				return sendMotionEvent(event);
 			}
-
 		});
 	}
 

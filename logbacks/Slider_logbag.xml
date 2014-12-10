@@ -1,0 +1,113 @@
+<!-- ################################################################### 
+
+	For work, rename this file to "logback.xml" and copy to [WORKPATH]/Logs!
+
+-->
+
+<configuration>
+<!-- ################################################################### -->
+<!-- Member -->	
+	<property name="LOG_DIR" value="/storage/extSdCard/Android/data/de.cachebox_test/files/Logs" />
+	<timestamp key="DATE" datePattern="yyyy.MM.dd._HH_mm_ss" />
+<!-- ################################################################### -->
+
+<!-- ################################################################### -->
+	
+	<!-- If system equals Android then use Locat-Apender -->
+	<if condition='property("os.name").contains("Android")'>
+	<then>
+		<!-- Create a logcat appender -->
+			<appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
+				<encoder>
+					<pattern>%msg</pattern>
+				</encoder>
+			</appender>
+  
+		<!-- Write INFO (and higher-level) messages to logcat -->
+			<root level="INFO">
+				<appender-ref ref="logcat" />
+			</root>
+	</then>
+	</if>
+
+
+
+
+	<!-- Create a console appender -->
+		<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<pattern>%-4relative [%thread] %-5level %logger - %msg%n</pattern>
+			</encoder>
+		</appender>
+  
+	<!-- Write INFO (and higher-level) messages to logcat -->
+		<root level="ALL">
+			<appender-ref ref="console" />
+		</root>
+
+ 
+
+<!-- ################################################################### -->
+
+<!-- ################################################################### -->
+<!-- Create a file appender for Settings messages -->
+	<appender name="ConfigLog" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ALL</level>
+		</filter>
+		<file>${LOG_DIR}/configlog_${DATE}.txt</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+<!-- Write messages from class CB_Utils.Settings.SettingsList to its own log -->
+	<logger name="CB_Utils.Settings.SettingsList" level="ALL">
+		<appender-ref ref="ConfigLog" />
+	</logger>
+
+  
+  <!-- ################################################################### -->
+  <!-- Create a file appender for Debug messages -->
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+		</filter>
+		<file>${LOG_DIR}/debuglog_${DATE}.txt</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+<!-- Write all messages to debug log -->
+	<root level='ALL'>
+		<appender-ref ref='FILE' />
+	</root>
+	
+
+<!-- ################################################################### -->
+<!-- Create a file appender for Slider messages -->
+	<appender name="SliderLog" class="ch.qos.logback.core.FileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ALL</level>
+		</filter>
+		<file>${LOG_DIR}/sliderlog_${DATE}.txt</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+<!-- Write messages from class de.cachebox_test.Custom_Controls.downSlider to SliderLog -->
+	<logger name="Cde.cachebox_test.Custom_Controls.downSlider" level="ALL">
+		<appender-ref ref="SliderLog" />
+	</logger>
+	
+<!-- Write messages from class CB_UI.GL_UI.Controls.Slider to SliderLog -->
+	<logger name="CB_UI.GL_UI.Controls.Slider" level="ALL">
+		<appender-ref ref="SliderLog" />
+	</logger>
+
+  
+  <!-- ################################################################### -->
+  
+</configuration>

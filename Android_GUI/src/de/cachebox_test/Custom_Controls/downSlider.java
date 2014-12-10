@@ -18,6 +18,8 @@ package de.cachebox_test.Custom_Controls;
 
 import java.util.Iterator;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Enums.Attributes;
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
@@ -36,6 +38,7 @@ import CB_UI_Base.Energy;
 import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.LogLevel;
 import CB_Utils.Util.UnitFormatter;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
@@ -61,6 +64,8 @@ import de.cachebox_test.Ui.ActivityUtils;
 
 public final class downSlider extends View implements SelectedCacheEvent, GpsStateChangeEvent
 {
+
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(downSlider.class);
 
 	public downSlider(Context context)
 	{
@@ -130,7 +135,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 	{
 		try
 		{
-			QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight();
+			QuickButtonMaxHeight = UiSizes.that.getQuickButtonListHeight() + 20;
 		}
 		catch (Exception e)
 		{
@@ -191,7 +196,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 				// String.format("%n") + "y= " + Y);
 				if (drag)
 				{
-					int value = Y - 25;// y - 25 minus halbe Button Höhe
+					int value = Y - 25;// y - 25 minus halbe Button Hï¿½he
 					int buttom = (int) (height - (UI_Size_Base.that.getScaledRefSize_normal() * 2.2));
 					if (value > buttom) value = buttom - 1;
 
@@ -261,7 +266,10 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 
 		final Drawable Slide = Global.BtnIcons[0];
 
-		mBtnRec.set(-10, yPos - 2, width + 10, (int) (yPos + 2 + UI_Size_Base.that.getScaledRefSize_normal() * 3.3));
+		mBtnRec.set(-10, yPos - UI_Size_Base.that.getMargin(), width + 10,
+				(int) (yPos + UI_Size_Base.that.getMargin() + UI_Size_Base.that.getScaledRefSize_normal() * 3.3));
+		if (LogLevel.isLogLevel(LogLevel.TRACE)) log.trace("AndroidSlider bound: " + mBtnRec.toShortString());
+
 		Slide.setBounds(mBtnRec);
 		Slide.draw(canvas);
 
@@ -615,7 +623,7 @@ public final class downSlider extends View implements SelectedCacheEvent, GpsSta
 		return mBtnRec.contains(x, y);
 	}
 
-	public void ActionUp() // Slider zurück scrolllen lassen
+	public void ActionUp() // Slider zurï¿½ck scrolllen lassen
 	{
 
 		if (main.mainActivity != null)

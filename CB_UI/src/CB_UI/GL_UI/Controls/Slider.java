@@ -2,6 +2,8 @@ package CB_UI.GL_UI.Controls;
 
 import java.util.ArrayList;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Core.Types.Cache;
 import CB_Core.Types.Waypoint;
 import CB_UI.Config;
@@ -20,6 +22,7 @@ import CB_UI_Base.GL_UI.utils.ColorDrawable;
 import CB_UI_Base.Math.CB_RectF;
 import CB_UI_Base.Math.GL_UISizes;
 import CB_UI_Base.Math.UiSizes;
+import CB_Utils.Log.LogLevel;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -27,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 public class Slider extends CB_View_Base implements SelectedCacheEvent
 {
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(Slider.class);
 	private final int ANIMATION_TIME = 50;// 50;
 	public static Slider that;
 	private QuickButtonList quickButtonList;
@@ -142,6 +146,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 		yPos = value;
 		mSlideBox.setY(value);
+		if (LogLevel.isLogLevel(LogLevel.TRACE)) log.trace("GDX_Slider bound: " + mSlideBox.toString());
 		mSlideBoxContent.setY(mSlideBox.getMaxY() - GL_UISizes.margin);
 		setQuickButtonListHeight();
 		GL.that.renderOnce();
@@ -168,7 +173,7 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 			quickButtonList.setHeight(0);
 		}
 
-		TabMainView.that.setContentMaxY(this.getHeight() - quickButtonList.getHeight() - mSlideBox.getHeight() + (GL_UISizes.margin * 2));
+		TabMainView.that.setContentMaxY(this.getHeight() - quickButtonList.getHeight() - mSlideBox.getHeight());
 	}
 
 	int debugInt = 0;
@@ -357,31 +362,6 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	}
 
-	// private void renderDebugInfo(SpriteBatch batch)
-	// {
-	// if (false) return;
-	//
-	// String str = String.valueOf(debugInt);
-	// Fonts.getNormal().draw(batch, str, 20, 120);
-	//
-	// str = "fps: " + Gdx.graphics.getFramesPerSecond();
-	// Fonts.getNormal().draw(batch, str, 20, 100);
-	//
-	// str = String.valueOf(touchYoffset);
-	// Fonts.getNormal().draw(batch, str, 20, 80);
-	//
-	// // str = "lTiles: " + loadedTiles.size() + " - qTiles: " + queuedTiles.size();
-	// // Fonts.getNormal().draw(batch, str, 20, 60);
-	// //
-	// // str = "TrackPoi: " + RouteOverlay.AllTrackPoints + " -  " + RouteOverlay.ReduceTrackPoints + " [" + RouteOverlay.DrawedLineCount
-	// // + "]";
-	// // Fonts.getNormal().draw(batch, str, 20, 40);
-	// //
-	// // str = "lastMove: " + lastMovement.x + " - " + lastMovement.y;
-	// // Fonts.getNormal().draw(batch, str, 20, 20);
-	//
-	// }
-
 	public static void setAndroidSliderPos(int pos)
 	{
 		if (that != null && mSlideBox != null)
@@ -392,11 +372,13 @@ public class Slider extends CB_View_Base implements SelectedCacheEvent
 
 	public static boolean setAndroidSliderHeight(int height)
 	{
-		// if (that != null && mSlideBox != null)
-		// {
-		// mSlideBox.setHeight(height);
-		// return true;
-		// }
+		if (that != null && mSlideBox != null)
+		{
+			// the Android Slider has transparent zones on top and button,
+			// so we reduce this given height at ~10%.
+			mSlideBox.setHeight(height * 0.9f);
+			return true;
+		}
 		return true;
 	}
 
