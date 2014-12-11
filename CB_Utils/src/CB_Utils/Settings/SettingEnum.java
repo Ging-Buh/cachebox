@@ -15,11 +15,13 @@
  */
 package CB_Utils.Settings;
 
+import org.slf4j.LoggerFactory;
+
 import CB_Utils.Lists.CB_List;
 
 public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 {
-
+	final static org.slf4j.Logger log = LoggerFactory.getLogger(SettingEnum.class);
 	private CB_List<String> values;
 
 	private EnumTyp myEnum;
@@ -51,46 +53,48 @@ public class SettingEnum<EnumTyp extends Enum<?>> extends SettingString
 		return values;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(String value)
 	{
 		if (this.value.equals(value)) return;
 
-		if (value.isEmpty())
+		if (value == null || value.isEmpty())
 		{
-			myEnum = (EnumTyp) EnumTyp.valueOf(myEnum.getDeclaringClass(), defaultValue);
+			myEnum = getEnumFromString(defaultValue);
 			setDirty();
 			return;
 		}
 
 		this.value = value;
-		myEnum = (EnumTyp) EnumTyp.valueOf(myEnum.getDeclaringClass(), value);
+		myEnum = getEnumFromString(value);
 		setDirty();
 	}
 
-	@SuppressWarnings(
-		{ "unchecked" })
 	public EnumTyp getEnumValue()
+	{
+		return getEnumFromString(value);
+	}
+
+	public EnumTyp getEnumDefaultValue()
+	{
+		return getEnumFromString(defaultValue);
+	}
+
+	@SuppressWarnings("unchecked")
+	private EnumTyp getEnumFromString(String stringValue)
 	{
 		EnumTyp ret = null;
 		try
 		{
-			ret = (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), value);
+			ret = (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), stringValue);
 		}
 		catch (Exception e)
 		{
-			ret = (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), defaultValue);
+			log.error("Wrong ENUM value:" + stringValue, e);
+			ret = getEnumFromString(defaultValue);
 		}
 
 		return ret;
-	}
-
-	@SuppressWarnings(
-		{ "unchecked" })
-	public EnumTyp getEnumDefaultValue()
-	{
-		return (EnumTyp) Enum.valueOf(myEnum.getDeclaringClass(), defaultValue);
 	}
 
 	public void setEnumValue(EnumTyp value)

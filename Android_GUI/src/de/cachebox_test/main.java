@@ -2240,16 +2240,9 @@ public class main extends AndroidApplication implements SelectedCacheEvent, Loca
 
 	public void setDebugVisible()
 	{
-		if (Config.DebugShowPanel.getValue())
-		{
-			debugInfoPanel.setVisibility(View.VISIBLE);
-			debugInfoPanel.onShow();
-		}
-		else
-		{
-			debugInfoPanel.setVisibility(View.GONE);
-			debugInfoPanel.onShow();
-		}
+		// never used anymore, so set to GONE
+		debugInfoPanel.setVisibility(View.GONE);
+		// debugInfoPanel.onShow();
 	}
 
 	String debugMsg = "";

@@ -111,16 +111,11 @@ public interface CB_UI_Settings
 	public static final SettingBool SearchWithoutOwns = new SettingBool("SearchWithoutOwns", SettingCategory.API, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool SearchOnlyAvible = new SettingBool("SearchOnlyAvible", SettingCategory.API, NEVER, true, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool quickButtonShow = new SettingBool("quickButtonShow", SettingCategory.QuickList, NORMAL, true, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool DebugShowPanel = new SettingBool("DebugShowPanel", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool DebugMemory = new SettingBool("DebugMemory", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool DebugShowMsg = new SettingBool("DebugShowMsg", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool DebugShowLog = new SettingBool("DebugShowLog", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool DescriptionNoAttributes = new SettingBool("DescriptionNoAttributes", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool quickButtonLastShow = new SettingBool("quickButtonLastShow", SettingCategory.QuickList, INVISIBLE, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool newInstall = new SettingBool("newInstall", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ImperialUnits = new SettingBool("ImperialUnits", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ShowDirektLine = new SettingBool("ShowDirektLine", SettingCategory.Map, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
-	public static final SettingBool DebugShowMarker = new SettingBool("DebugShowMarker", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ImportRatings = new SettingBool("ImportRatings", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool ImportPQsFromGeocachingCom = new SettingBool("ImportPQsFromGeocachingCom", SettingCategory.API, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool switchViewApproach = new SettingBool("switchViewApproach", SettingCategory.Misc, NORMAL, false, SettingStoreType.Global, SettingUsage.ACB);

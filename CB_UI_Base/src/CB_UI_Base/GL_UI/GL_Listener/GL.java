@@ -193,7 +193,6 @@ public class GL implements ApplicationListener, InputProcessor
 	protected SelectionMarker selectionMarkerCenter, selectionMarkerLeft, selectionMarkerRight;
 	protected boolean DialogIsShown = false, ActivityIsShown = false;
 	protected int width = 0, height = 0;
-	protected boolean debugWriteSpriteCount = false;
 
 	private MainViewBase mSplash;
 	private final MainViewBase mMainView;
@@ -235,7 +234,6 @@ public class GL implements ApplicationListener, InputProcessor
 			}
 		});
 
-		debugWriteSpriteCount = CB_UI_Base_Settings.DebugSpriteBatchCountBuffer.getValue();
 		Gdx.input.setInputProcessor(this);
 		Gdx.input.setCatchBackKey(true);
 	}

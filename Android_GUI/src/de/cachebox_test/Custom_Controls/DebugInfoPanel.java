@@ -1,6 +1,5 @@
 package de.cachebox_test.Custom_Controls;
 
-import CB_UI.Config;
 import CB_UI_Base.Math.CB_Rect;
 import CB_UI_Base.Math.UI_Size_Base;
 import CB_UI_Base.Math.UiSizes;
@@ -166,9 +165,9 @@ public final class DebugInfoPanel extends View
 
 		// Calc height
 		this.height = 0;
-		if (Config.DebugMemory.getValue()) this.height += (LineSep * 4) + LayoutMemInfo.getHeight();
-		if (Config.DebugShowMsg.getValue()) this.height += (LineSep * 2) + LayoutMsg.getHeight();
-		if (Config.DebugShowLog.getValue()) this.height += (LineSep * 2) + LayoutLogMsg.getHeight();
+		// if (Config.DebugMemory.getValue()) this.height += (LineSep * 4) + LayoutMemInfo.getHeight();
+		// if (Config.DebugShowMsg.getValue()) this.height += (LineSep * 2) + LayoutMsg.getHeight();
+		// if (Config.DebugShowLog.getValue()) this.height += (LineSep * 2) + LayoutLogMsg.getHeight();
 
 		setMeasuredDimension(this.width, this.height);
 	}
@@ -197,11 +196,11 @@ public final class DebugInfoPanel extends View
 
 		left = top = UiSizes.that.getCornerSize();
 
-		if (Config.DebugMemory.getValue()) drawMemInfo(canvas);
-
-		if (Config.DebugShowMsg.getValue()) drawMsg(canvas);
-
-		if (Config.DebugShowLog.getValue()) drawLogMsg(canvas);
+		// if (Config.DebugMemory.getValue()) drawMemInfo(canvas);
+		//
+		// if (Config.DebugShowMsg.getValue()) drawMsg(canvas);
+		//
+		// if (Config.DebugShowLog.getValue()) drawLogMsg(canvas);
 	}
 
 	private void drawMsg(Canvas canvas)

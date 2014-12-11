@@ -52,8 +52,6 @@ public interface CB_UI_Base_Settings extends CB_Utils_Settings
 	public static final SettingDouble MapViewFontFaktor = new SettingDouble("MapViewFontFaktor", SettingCategory.Map, NEVER, 1.0, SettingStoreType.Global, SettingUsage.ACB);
 
 	public static final SettingInt LongClicktime = new SettingInt("LongClicktime", SettingCategory.Misc, NORMAL, 600, SettingStoreType.Global, SettingUsage.ACB);
-
-	public static final SettingBool DebugSpriteBatchCountBuffer = new SettingBool("DebugSpriteBatchCountBuffer", SettingCategory.Debug, EXPERT, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingsAudio GlobalVolume = new SettingsAudio("GlobalVolume", SettingCategory.Sounds, NORMAL, new Audio("data/sound/Approach.ogg", false, false, 1.0f), SettingStoreType.Global, SettingUsage.ACB);
 
 	public static final SettingFloat MapViewDPIFaktor = new SettingFloat("MapViewDPIFaktor", SettingCategory.Map, EXPERT, (float) Global.displayDensity, SettingStoreType.Global, SettingUsage.ACB);
@@ -65,8 +63,6 @@ public interface CB_UI_Base_Settings extends CB_Utils_Settings
 	public static final SettingColor LiveMapBackgroundColor = new SettingColor("LiveMapBackgroundColor", SettingCategory.LiveMap, NORMAL, new HSV_Color(0.8f, 0.8f, 1f, 1f), SettingStoreType.Global, SettingUsage.ACB);
 
 	public static final SettingColor SolvedMysteryColor = new SettingColor("SolvedMysteryColor", SettingCategory.Skin, NORMAL, new HSV_Color(0.2f, 1f, 0.2f, 1f), SettingStoreType.Global, SettingUsage.ACB);
-
-	public static final SettingInt DebugLogCount = new SettingInt("DebugLogCount", SettingCategory.Debug, EXPERT, 10, SettingStoreType.Platform, SettingUsage.ALL);
 	public static final SettingBool SettingsShowExpert = new SettingBool("SettingsShowExpert", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingBool SettingsShowAll = new SettingBool("SettingsShowAll", SettingCategory.Internal, NEVER, false, SettingStoreType.Global, SettingUsage.ACB);
 	public static final SettingFile Sel_LanguagePath = (SettingFile) SettingsList.addSetting(new SettingFile("Sel_LanguagePath", SettingCategory.Folder, NEVER, "data/lang/en-GB/strings.ini", SettingStoreType.Platform, SettingUsage.ALL, "lan"));
